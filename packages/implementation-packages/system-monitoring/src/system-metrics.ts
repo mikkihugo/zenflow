@@ -62,10 +62,10 @@ export interface SystemPerformanceTracker {
 }
 
 export interface SystemHealth {
-  status: 'healthy | warning' | 'critical';
-  cpu_health: 'good | high' | 'critical';
-  memory_health: 'good | high' | 'critical';
-  load_health: 'good | high' | 'critical';
+  status: 'healthy|warning|critical';
+  cpu_health: 'good|high|critical';
+  memory_health: 'good|high|critical';
+  load_health: 'good|high|critical';
   recommendations: string[];
 }
 
@@ -91,7 +91,7 @@ export class SystemMetricsCollector {
   private logger: Logger;
 
   private constructor(logger?: Logger) {
-    this.logger = logger'' | '''' | ''getLogger('SystemMetricsCollector');
+    this.logger = logger||getLogger('SystemMetricsCollector');
     this.cpuBaseline = cpuUsage();
     this.lastCpuCheck = Date.now();
   }
@@ -174,7 +174,7 @@ export class SystemMetricsCollector {
    */
   public endPerformanceTracking(
     operationId: string
-  ): SystemPerformanceTracker'' | ''null {
+  ): SystemPerformanceTracker|null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
       this.logger.warn(`No performance tracker found for: ${operationId}`);

@@ -21,13 +21,13 @@ export interface KnowledgeErrorContext {
  * Base error class for knowledge domain operations
  */
 export declare abstract class BaseKnowledgeError extends EnhancedError {
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly category: string;
   readonly recoverable: boolean;
   constructor(
     message: string,
     category: string,
-    severity?: 'low | medium' | 'high''' | '''critical',
+    severity?: 'low|medium|high|critical',
     context?: Partial<KnowledgeErrorContext>,
     recoverable?: boolean
   );
@@ -49,7 +49,7 @@ export declare abstract class BaseKnowledgeError extends EnhancedError {
 export declare class FACTError extends BaseKnowledgeError {
   constructor(
     message: string,
-    severity?: 'low | medium' | 'high''' | '''critical',
+    severity?: 'low|medium|high|critical',
     context?: Partial<KnowledgeErrorContext>
   );
 }
@@ -63,7 +63,7 @@ export declare class FACTStorageError extends FACTError {
     message: string,
     backend: string,
     operation: string,
-    severity?: 'low | medium' | 'high''' | '''critical'
+    severity?: 'low|medium|high|critical'
   );
 }
 /**
@@ -76,19 +76,19 @@ export declare class FACTGatheringError extends FACTError {
     message: string,
     query: string,
     sources: string[],
-    severity?: 'low | medium' | 'high''' | '''critical');
+    severity?: 'low|medium|high|critical');
 }
 /**
  * Error for FACT data processing operations.
  */
 export declare class FACTProcessingError extends FACTError {
   readonly processType: string;
-  readonly dataId?: string'' | ''undefined;
+  readonly dataId?: string|undefined;
   constructor(
     message: string,
     processType: string,
-    dataId?: string'' | ''undefined,
-    severity?:'low | medium' | 'high''' | '''critical'
+    dataId?: string|undefined,
+    severity?:'low|medium|high|critical'
   );
 }
 /**
@@ -106,7 +106,7 @@ export declare class FACTProcessingError extends FACTError {
 export declare class RAGError extends BaseKnowledgeError {
   constructor(
     message: string,
-    severity?: 'low | medium' | 'high''' | '''critical',
+    severity?: 'low|medium|high|critical',
     context?: Partial<KnowledgeErrorContext>
   );
 }
@@ -114,37 +114,37 @@ export declare class RAGError extends BaseKnowledgeError {
  * Error for RAG vector operations.
  */
 export declare class RAGVectorError extends RAGError {
-  readonly operation: 'embed | search' | 'index''' | '''delete';
-  readonly vectorDimension?: number'' | ''undefined;
+  readonly operation: 'embed|search|index|delete';
+  readonly vectorDimension?: number|undefined;
   constructor(
     message: string,
-    operation:'embed | search' | 'index''' | '''delete',
-    vectorDimension?: number'' | ''undefined,
-    severity?:'low | medium' | 'high''' | '''critical');
+    operation:'embed|search|index|delete',
+    vectorDimension?: number|undefined,
+    severity?:'low|medium|high|critical');
 }
 /**
  * Error for RAG embedding operations.
  */
 export declare class RAGEmbeddingError extends RAGError {
   readonly modelName: string;
-  readonly textLength?: number'' | ''undefined;
+  readonly textLength?: number|undefined;
   constructor(
     message: string,
     modelName: string,
-    textLength?: number'' | ''undefined,
-    severity?:'low | medium' | 'high''' | '''critical');
+    textLength?: number|undefined,
+    severity?:'low|medium|high|critical');
 }
 /**
  * Error for RAG retrieval operations.
  */
 export declare class RAGRetrievalError extends RAGError {
   readonly query: string;
-  readonly similarityThreshold?: number'' | ''undefined;
+  readonly similarityThreshold?: number|undefined;
   constructor(
     message: string,
     query: string,
-    similarityThreshold?: number'' | ''undefined,
-    severity?:'low | medium' | 'high''' | '''critical'
+    similarityThreshold?: number|undefined,
+    severity?:'low|medium|high|critical'
   );
 }
 /**
@@ -156,14 +156,14 @@ export declare function isRecoverableKnowledgeError(error: Error): boolean;
  */
 export declare function getKnowledgeErrorSeverity(
   error: Error
-): 'low | medium' | 'high''' | '''critical';
+): 'low|medium|high|critical';
 /**
  * Creates a knowledge error with proper context wrapping.
  */
 export declare function createKnowledgeError(
   message: string,
-  category: 'FACT''' | '''RAG',
+  category: 'FACT|RAG'',
   context?: Partial<KnowledgeErrorContext>,
-  severity?: 'low | medium' | 'high''' | '''critical'
+  severity?: 'low|medium|high|critical'
 ): BaseKnowledgeError;
 //# sourceMappingURL=errors.d.ts.map

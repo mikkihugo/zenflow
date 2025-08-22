@@ -162,20 +162,20 @@ export interface GRPOMLConfig {
 
   // Reward shaping settings
   useRewardShaping: boolean;
-  rewardShapingMethod: 'potential_based | human_feedback' | 'curriculum';
+  rewardShapingMethod: 'potential_based|human_feedback|curriculum';
   baselineRewardWeight: number;
   explorationBonus: number;
 
   // Multi-armed bandit settings
   useMultiArmedBandit: boolean;
-  banditAlgorithm: 'ucb1 | thompson_sampling' | 'epsilon_greedy';
+  banditAlgorithm: 'ucb1|thompson_sampling|epsilon_greedy';
   explorationRate: number;
   decayRate: number;
 
   // Statistical validation
   significanceLevel: number;
   minSampleSize: number;
-  statisticalTests: Array<'t_test | mann_whitney_u' | 'wilcoxon'>;
+  statisticalTests: Array<'t_test|mann_whitney_u|wilcoxon'>;
 
   // Performance constraints
   timeoutMs: number;
@@ -374,7 +374,7 @@ export class GRPOML extends Teleprompter {
             selectAction: async (state) => ({ action: 0, probability: 0.4 }),
           }),
           computeAdvantages: async (rewards, values) =>
-            rewards.map((r, i) => r - (values[i]'' | '''' | ''0)),
+            rewards.map((r, i) => r - (values[i]||0)),
         },
         rewardShaper: {
           configure: async () => {},
@@ -484,8 +484,8 @@ export class GRPOML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: any[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: any[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {

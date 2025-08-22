@@ -44,32 +44,32 @@ export interface OptimizationTask {
 }
 
 export interface TaskDomain {
-  type:'' | '''nlp | vision' | 'reasoning''' | '''classification | generation' | 'multimodal''' | '''general';
+  type:|'nlp|vision|reasoning|classification|generation|multimodal|general'';
   specificArea?: string;
   dataCharacteristics: {
-    size: 'small | medium' | 'large''' | '''massive';
-    quality: 'poor | fair' | 'good''' | '''excellent';
-    complexity: 'simple | moderate' | 'complex''' | '''highly_complex';
+    size: 'small|medium|large|massive';
+    quality: 'poor|fair|good|excellent';
+    complexity: 'simple|moderate|complex|highly_complex';
   };
 }
 
 export interface TaskComplexity {
-  computational: 'low | medium' | 'high''' | '''extreme';
-  algorithmic: 'basic | intermediate' | 'advanced''' | '''research_level';
-  dataVolume: 'tiny | small' | 'medium' | 'large' | 'huge';
-  timeConstraints: 'relaxed | moderate' | 'tight''' | '''critical';
+  computational: 'low|medium|high|extreme';
+  algorithmic: 'basic|intermediate|advanced|research_level';
+  dataVolume: 'tiny|small|medium|large|huge';
+  timeConstraints: 'relaxed|moderate|tight|critical';
 }
 
 export interface TaskRequirements {
   minimumAccuracy: number;
   maximumLatency: number;
   memoryConstraints: number;
-  robustness: 'basic | moderate' | 'high''' | '''critical';
-  interpretability: 'not_required | helpful' | 'important''' | '''mandatory';
+  robustness: 'basic|moderate|high|critical';
+  interpretability: 'not_required|helpful|important|mandatory';
 }
 
 export interface TaskConstraints {
-  computationalBudget:'' | '''unlimited | high' | 'moderate' | 'limited' | 'minimal';
+  computationalBudget:|'unlimited|high|moderate|limited|minimal';
   timeLimit: number; // milliseconds
   memoryLimit: number; // MB
   qualityThreshold: number; // 0-1
@@ -89,8 +89,8 @@ export interface TeleprompterSelection {
 
 export interface TeleprompterVariant {
   name: string;
-  type: 'basic''' | '''ml_enhanced';
-  algorithm: 'miprov2 | copro' | 'bootstrap' | 'grpo' | 'custom';
+  type: 'basic|ml_enhanced'';
+  algorithm: 'miprov2|copro|bootstrap|grpo|custom';
   implementation: string; // Class name or identifier
   capabilities: string[];
   requiredResources: ResourceRequirements;
@@ -98,9 +98,9 @@ export interface TeleprompterVariant {
 }
 
 export interface ResourceRequirements {
-  computationLevel: 'minimal | low' | 'moderate' | 'high' | 'intensive';
+  computationLevel: 'minimal|low|moderate|high|intensive';
   memoryUsage: number; // MB
-  timeComplexity:'' | '''O(1)''' | '''O(log n)''' | '''O(n)''' | '''O(n log n)''' | '''O(n²)''' | '''O(2^n)';
+  timeComplexity:|'O(1)|O(log n)'||O(n)|O(n log n)'||O(n²)|O(2^n)'';
   gpuRequired: boolean;
   networkAccess: boolean;
 }
@@ -111,14 +111,14 @@ export interface PerformanceEstimate {
   memory: { mean: number; std: number; min: number; max: number };
   robustness: number;
   confidence: number;
-  sourceData: 'historical | predicted' | 'hybrid';
+  sourceData: 'historical|predicted|hybrid';
 }
 
 export interface SelectionMetadata {
   analysisTime: number;
   decisionFactors: Array<{ factor: string; weight: number; value: number }>;
   uncertaintyFactors: string[];
-  recommendationSource: 'ml_bridge | historical' | 'heuristic''' | '''hybrid';
+  recommendationSource: 'ml_bridge|historical|heuristic|hybrid';
   alternativeEvaluations: number;
   confidenceBreakdown: Record<string, number>;
 }
@@ -527,7 +527,7 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
 
   private generateTaskDescription(task: OptimizationTask): string {
     return `
-Domain: ${task.domain.type} (${task.domain.specificArea'' | '''' | '''general'})
+Domain: ${task.domain.type} (${task.domain.specificArea||'general'})
 Data: ${task.domain.dataCharacteristics.size} size, ${task.domain.dataCharacteristics.quality} quality, ${task.domain.dataCharacteristics.complexity} complexity
 Computational: ${task.complexity.computational} computation, ${task.complexity.algorithmic} algorithm complexity
 Requirements: ${task.requirements.minimumAccuracy} min accuracy, ${task.requirements.maximumLatency}ms max latency
@@ -602,7 +602,7 @@ Description: ${task.description}
     };
 
     const baseTime =
-      complexityMultipliers[variant.requiredResources.timeComplexity]'' | '''' | ''10;
+      complexityMultipliers[variant.requiredResources.timeComplexity]||10;
     const estimatedTime =
       (baseTime * variant.requiredResources.memoryUsage) / 256; // Rough estimate
 
@@ -644,7 +644,7 @@ Description: ${task.description}
       high: 0.8,
       critical: 0.9,
     };
-    return mapping[requirement]'' | '''' | ''0.7;
+    return mapping[requirement]||0.7;
   }
 
   private applyPerformanceWeighting(
@@ -710,7 +710,7 @@ Description: ${task.description}
     const selectedVariant = this.availableVariants.get(topCandidate[0])!;
 
     // Calculate confidence based on score margin and ML recommendation alignment
-    const scoreMargin = topCandidate[1] - (sortedEvaluations[1]?.[1]'' | '''' | ''0);
+    const scoreMargin = topCandidate[1] - (sortedEvaluations[1]?.[1]||0);
     const mlAlignment = mlRecommendation.recommendedTeleprompter.includes(
       selectedVariant.algorithm
     )
@@ -845,7 +845,7 @@ Description: ${task.description}
       complex: 0.8,
       highly_complex: 1.0,
     };
-    return complexityScores[domain.dataCharacteristics.complexity]'' | '''' | ''0.5;
+    return complexityScores[domain.dataCharacteristics.complexity]||0.5;
   }
 
   private estimateComputationalRequirements(
@@ -857,7 +857,7 @@ Description: ${task.description}
       high: 0.8,
       extreme: 1.0,
     };
-    return computationalScores[complexity.computational]'' | '''' | ''0.5;
+    return computationalScores[complexity.computational]||0.5;
   }
 
   private analyzeDataCharacteristics(
@@ -867,15 +867,15 @@ Description: ${task.description}
       sizeScore:
         { small: 0.2, medium: 0.5, large: 0.8, massive: 1.0 }[
           characteristics.size
-        ]'' | '''' | ''0.5,
+        ]||0.5,
       qualityScore:
         { poor: 0.2, fair: 0.4, good: 0.7, excellent: 1.0 }[
           characteristics.quality
-        ]'' | '''' | ''0.6,
+        ]||0.6,
       complexityScore:
         { simple: 0.2, moderate: 0.5, complex: 0.8, highly_complex: 1.0 }[
           characteristics.complexity
-        ]'' | '''' | ''0.5,
+        ]||0.5,
     };
   }
 
@@ -884,7 +884,7 @@ Description: ${task.description}
     const budgetScore =
       { unlimited: 0, high: 0.2, moderate: 0.5, limited: 0.8, minimal: 1.0 }[
         constraints.computationalBudget
-      ]'' | '''' | ''0.5;
+      ]||0.5;
     const timeScore = Math.min(1, 60000 / constraints.timeLimit); // Normalized to 1 minute baseline
     const memoryScore = Math.min(1, 512 / constraints.memoryLimit); // Normalized to 512MB baseline
 
@@ -899,7 +899,7 @@ Description: ${task.description}
     const robustnessScore =
       { basic: 0.2, moderate: 0.5, high: 0.8, critical: 1.0 }[
         requirements.robustness
-      ]'' | '''' | ''0.5;
+      ]||0.5;
 
     return (accuracyScore + latencyScore + memoryScore + robustnessScore) / 4;
   }
@@ -968,7 +968,7 @@ Variant offers ${variant.capabilities.join(', ')} capabilities with ${variant.ty
     };
   }
 
-  private findTaskById(taskId: string): OptimizationTask'' | ''undefined {
+  private findTaskById(taskId: string): OptimizationTask|undefined {
     // In a real implementation, this would query a task registry
     return undefined; // Mock implementation
   }

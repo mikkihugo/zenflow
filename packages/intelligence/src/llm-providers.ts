@@ -57,7 +57,7 @@ const logger = getLogger('Intelligence/LLMProviders');
 
 // Types re-exported from @claude-zen/llm-providers
 export interface CLIMessage {
-  role: 'system | user' | 'assistant';
+  role: 'system|user|assistant';
   content: string;
 }
 
@@ -85,8 +85,8 @@ export interface SwarmAgentRole {
 export interface LLMProviderInfo {
   id: string;
   name: string;
-  type: 'cli''' | '''api';
-  category: 'file-operations''' | '''agentic-dev''' | '''inference''' | '''conversational';
+  type: 'cli|api'';
+  category: 'file-operations|agentic-dev'||inference|conversational'';
   available: boolean;
 }
 
@@ -143,7 +143,7 @@ export class LLMProvider extends TypedEventBase {
     }
   }
 
-  getRole(): SwarmAgentRole'' | ''undefined {
+  getRole(): SwarmAgentRole|undefined {
     if (this.realInstance?.getRole) {
       return this.realInstance.getRole();
     }
@@ -178,7 +178,7 @@ export async function executeClaudeTask(
  * Delegates to @claude-zen/llm-providers for intelligent provider selection.
  */
 export function getLLMProvider(
-  capability:'' | '''file-operations''' | '''agentic-development''' | '''code-completion''' | '''chat''' | '''inference' = 'file-operations',
+  capability:|'file-operations|agentic-development'||code-completion|chat'||inference' = 'file-operations',
 ): LLMProvider {
   try {
     const { getLLMProviderByCapability } = require('@claude-zen/llm-providers');
@@ -205,7 +205,7 @@ export function getLLMProvider(
  * Supports both CLI tools (file operations) and direct APIs (inference).
  */
 export function createLLMProvider(
-  providerId:'' | '''claude-code''' | '''cursor-cli''' | '''gemini-cli''' | '''github-models-api''' | '''github-copilot-api''' | '''anthropic-api''' | '''openai-api' = 'claude-code',
+  providerId:|'claude-code|cursor-cli'||gemini-cli|github-models-api'||github-copilot-api|anthropic-api'||openai-api' = 'claude-code',
 ): LLMProvider {
   try {
     const { createLLMProvider } = require('@claude-zen/llm-providers');

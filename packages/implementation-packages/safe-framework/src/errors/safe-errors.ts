@@ -24,7 +24,7 @@ enum ErrorCategory {
   SECURITY = 'security',
 }
 
-type ErrorSeverity = 'low | medium' | 'high''' | '''critical';
+type ErrorSeverity = 'low|medium|high|critical';
 import type { LogLevel } from '@claude-zen/foundation';
 import { AIDeceptionDetector } from '@claude-zen/ai-safety';
 // Import infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
@@ -92,12 +92,12 @@ export abstract class SAFeError extends Error implements BaseError {
     this.category = SAFE_ERROR_CATEGORIES[params.safeCategory];
     this.recoverable = params.recoverable ?? true;
     this.safeCategory = params.safeCategory;
-    this.suggestedActions = params.suggestedActions'' | '''' | ''[];
+    this.suggestedActions = params.suggestedActions||[];
   }
 
   // Helper methods for BaseError compatibility
   getContext(): Record<string, unknown> {
-    return this.context'' | '''' | ''{};
+    return this.context||{};
   }
 }
 
@@ -168,7 +168,7 @@ export class BusinessCaseError extends PortfolioError {
   ) {
     super(message, params);
     this.businessCaseId = params.businessCaseId;
-    this.validationFailures = params.validationFailures'' | '''' | ''[];
+    this.validationFailures = params.validationFailures||[];
   }
 }
 
@@ -223,7 +223,7 @@ export class ProgramIncrementError extends ProgramError {
  */
 export class ArchitectureError extends SAFeError {
   public readonly componentId?: string;
-  public readonly architectureType: 'runway | enabler' | 'decision''' | '''debt';
+  public readonly architectureType: 'runway|enabler|decision|debt';
 
   constructor(
     message: string,
@@ -251,7 +251,7 @@ export class ArchitectureError extends SAFeError {
  */
 export class DevSecOpsError extends SAFeError {
   public readonly pipelineId?: string;
-  public readonly securityLevel:'' | '''scan | compliance' | 'incident''' | '''vulnerability';
+  public readonly securityLevel:|'scan|compliance|incident|vulnerability';
 
   constructor(
     message: string,
@@ -298,7 +298,7 @@ export class SolutionTrainError extends SAFeError {
       ...params,
     });
     this.solutionId = params.solutionId;
-    this.affectedARTs = params.affectedARTs'' | '''' | ''[];
+    this.affectedARTs = params.affectedARTs||[];
   }
 }
 
@@ -306,7 +306,7 @@ export class SolutionTrainError extends SAFeError {
  * Validation errors with detailed feedback
  */
 export class ValidationError extends SAFeError {
-  public readonly validationType:'' | '''wsjf''' | '''business-case''' | '''epic | feature' | 'story''' | '''architecture';
+  public readonly validationType:|'wsjf|business-case'||epic|feature|story|architecture';
   public readonly validationErrors: Array<{
     field: string;
     message: string;
@@ -355,7 +355,7 @@ export class ConfigurationError extends SAFeError {
   ) {
     super(message, {
       safeCategory: 'SYSTEM',
-      severity: params.severity'' | '''' | '''high',
+      severity: params.severity||'high',
       recoverable: true,
       suggestedActions: [
         'Review configuration settings',

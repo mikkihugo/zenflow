@@ -57,8 +57,8 @@ export interface PerformanceThresholds {
  */
 export interface PerformanceAlert {
   readonly id: string;
-  readonly type:' | ''duration'' | ''error_rate'' | ''throughput'' | ''bottleneck'' | ''trend';
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly type:|duration|error_rate|throughput|bottleneck|'trend';
+  readonly severity: 'low|medium|high|critical';
   readonly pipelineId?: string;
   readonly stageId?: string;
   readonly metric: string;
@@ -185,7 +185,7 @@ export interface BottleneckAnalysis {
   readonly averageDuration: number;
   readonly causes: string[];
   readonly solutions: string[];
-  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly priority: 'low|medium|high|critical';
 }
 
 /**
@@ -193,7 +193,7 @@ export interface BottleneckAnalysis {
  */
 export interface TrendAnalysis {
   readonly metric: string;
-  readonly direction: 'improving'' | ''stable'' | ''degrading';
+  readonly direction: 'improving|stable|degrading';
   readonly change: number;
   readonly period: string;
   readonly confidence: number;
@@ -214,12 +214,12 @@ export interface TrendForecast {
  * Performance recommendation
  */
 export interface PerformanceRecommendation {
-  readonly category:' | ''optimization'' | ''scaling'' | ''configuration'' | ''architecture';
-  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly category:|optimization|scaling|configuration|'architecture';
+  readonly priority: 'low|medium|high|critical';
   readonly title: string;
   readonly description: string;
   readonly expectedImpact: number;
-  readonly implementationEffort: 'low'' | ''medium'' | ''high';
+  readonly implementationEffort: 'low|medium|high';
   readonly estimatedTimeToValue: number;
   readonly prerequisites: string[];
 }
@@ -231,7 +231,7 @@ export interface HistoricalComparison {
   readonly previousPeriod: ComparisonPeriod;
   readonly improvements: MetricImprovement[];
   readonly degradations: MetricDegradation[];
-  readonly overallTrend: 'improving'' | ''stable'' | ''degrading';
+  readonly overallTrend: 'improving|stable|degrading';
 }
 
 /**
@@ -250,7 +250,7 @@ export interface ComparisonPeriod {
 export interface MetricImprovement {
   readonly metric: string;
   readonly improvement: number;
-  readonly significance: 'low'' | ''medium'' | ''high';
+  readonly significance: 'low|medium|high';
 }
 
 /**
@@ -259,7 +259,7 @@ export interface MetricImprovement {
 export interface MetricDegradation {
   readonly metric: string;
   readonly degradation: number;
-  readonly significance: 'low'' | ''medium'' | ''high';
+  readonly significance: 'low|medium|high';
 }
 
 // Import types from mapping service

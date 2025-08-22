@@ -173,7 +173,7 @@ export {
  * Create a basic event system for simple use cases.
  */
 export function createEventSystem(config?: any) {
-  return new EventBus(config'' | '''' | ''{});
+  return new EventBus(config||{});
 }
 
 /**

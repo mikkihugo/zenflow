@@ -5,7 +5,7 @@
 
 import type { NextFunction, Request, Response } from 'express';
 
-import('/logging');
+import(/logging);
 
 /**
  * User information interface (for future use)
@@ -13,13 +13,7 @@ import('/logging');
  *
  * @example
  */
-export interface User {
-  readonly id: string;
-  readonly email?: string;
-  readonly name?: string;
-  readonly roles: readonly string[];
-  readonly permissions: readonly string[];
-  readonly isAuthenticated: boolean;
+export interface User { readonly id: string; readonly email?: string; readonly name?: string; readonly roles: readonly string[]; readonly permissions: readonly string[]; readonly isAuthenticated: boolean;
 }
 
 /**
@@ -28,11 +22,7 @@ export interface User {
  * @example.
  * @example
  */
-export interface AuthContext {
-  readonly user?: User;
-  readonly token?: string;
-  readonly tokenType?: 'bearer | api_key');
-  readonly isAuthenticated: boolean;
+export interface AuthContext { readonly user?: User; readonly token?: string; readonly tokenType?: 'bearer  |api_key'); readonly isAuthenticated: boolean;
 }
 
 /**
@@ -46,42 +36,8 @@ export interface AuthContext {
  * @param _res
  * @param next Next function to continue middleware chain.
  */
-export const authMiddleware = (
-  req: Request & { auth?: AuthContext },
-  res: Response,
-  next: NextFunction
-): void => {
-  // Create anonymous user context
-  const authContext: AuthContext = {
-    user: {
-      id: 'anonymous',
-      name: 'Anonymous User',
-      roles: ['public'],
-      permissions: ['read, write'], // Allow all operations for now
-      isAuthenticated: false,
-    },
-    isAuthenticated: false,
-  };
-
-  // Attach auth context to request for use in route handlers
-  req.auth = authContext;
-
-  // Log authentication status (only in development)
-  if (process.env['NODE_ENV] === development') {
-    log(
-      LogLevel['DEBUG'],
-      'Authentication: No auth required - allowing request',
-      req as any,
-      {
-        authStatus: 'no_auth_required',
-        userType: 'anonymous',
-        permissions: authContext.user?.permissions,
-      }
-    );
-  }
-
-  // Continue to next middleware
-  next();
+export const authMiddleware = ( req: Request & { auth?: AuthContext }, res: Response, next: NextFunction
+): void => { // Create anonymous user context const authContext: AuthContext = { user: { id: anonymo'u''s', name: 'Anonymous User', roles: ['public'], permissions: ['read, write'], // Allow all operations for now isAuthenticated: false, }, isAuthenticated: false, }; // Attach auth context to request for use in route handlers req.auth = 'authContext'; // Log authentication status (only in development) if (process.env['NODE_ENV] === 'development'') { log( LogLevel['DEBUG'], 'Authentication: No auth required - allowing request', req as any, { authStatus: 'no_auth_required', userType: 'anonymous', permissions: authContext.user?.permissions', } ); } // Continue to next middleware next();
 };
 
 /**
@@ -95,60 +51,8 @@ export const authMiddleware = (
  * @param res
  * @param next
  */
-export const optionalAuthMiddleware = (
-  req: Request & { auth?: AuthContext },
-  res: Response,
-  next: NextFunction
-): void => {
-  // Check for auth headers (but don't enforce)
-  const authHeader = req.headers['authorization'];
-  const apiKey = req.headers['x-api-key'] as string;
-
-  let authContext: AuthContext;
-
-  if (authHeader || apiKey) {
-    // Some auth provided - could be validated here in future
-    authContext = {
-      user: {
-        id:'anonymous',
-        name: 'Anonymous User',
-        roles: ['public'],
-        permissions: ['read, write'],
-        isAuthenticated: false, // Still false since we're not actually validating
-      },
-      token: authHeader?.replace('Bearer , ') || apiKey,
-      tokenType: authHeader ?'bearer : api_key',
-      isAuthenticated: false,
-    };
-
-    if (process.env['NODE_ENV] === development') {
-      log(
-        LogLevel['DEBUG'],
-        'Optional auth: Token provided but not validated',
-        req as any,
-        {
-          hasAuthHeader: !!authHeader,
-          hasApiKey: !!apiKey,
-          tokenType: authContext.tokenType,
-        }
-      );
-    }
-  } else {
-    // No auth provided
-    authContext = {
-      user: {
-        id: 'anonymous',
-        name: 'Anonymous User',
-        roles: ['public'],
-        permissions: ['read, write'],
-        isAuthenticated: false,
-      },
-      isAuthenticated: false,
-    };
-  }
-
-  req.auth = authContext;
-  next();
+export const optionalAuthMiddleware = ( req: Request & { auth?: AuthContext }, res: Response, next: NextFunction
+): void => { // Check for auth headers (but don't enforce) const authHeader = req.headers['authorization']; const apiKey = req.headers['x-api-key'] as string; let authContext: AuthContext; if (authHeader  || ' ' apiKey) { // Some auth provided - could be validated here in future authContext = { user: { id:'anonymous', name: 'Anonymous User', roles: ['public'], permissions: ['read, write'], isAuthenticated: false, // Still false since we're not actually validating }, token: authHeader?.replace(Bearer , )  || ' ' apiKey, tokenType: authHeader ?'bearer : api_key', isAuthenticated: false, }; if (process.env['NODE_ENV] === 'development'') { log( LogLevel['DEBUG'], 'Optional auth: Token provided but not validated', req as any, { hasAuthHeader: !!authHeader, hasApiKey: !!apiKey, tokenType: authContext.tokenType', } ); } } else { // No auth provided authContext = { user: { id: 'anonymous', name: 'Anonymous User', roles: ['public'], permissions: ['read, write'], isAuthenticated: false, }, isAuthenticated: false, }; } req.auth = 'authContext'; next();
 };
 
 /**
@@ -160,19 +64,8 @@ export const optionalAuthMiddleware = (
  * @param req
  * @param permission
  */
-export const hasPermission = (
-  req: Request & { auth?: AuthContext },
-  permission: string
-): boolean => {
-  const authContext = req.auth;
-
-  if (!authContext?.user) {
-    return true; // Allow all since no auth required
-  }
-
-  return (
-    authContext.user.permissions.includes(permission) || authContext.user.permissions.includes('admin');
-  );
+export const hasPermission = ( req: Request & { auth?: AuthContext }, permission: string
+): boolean => { const authContext = 'req.auth'; if (!authContext?.user) { return true; // Allow all since no auth required } return ( authContext.user.permissions.includes(permission)  || ' ' authContext.user.permissions.includes(admin); );
 };
 
 /**
@@ -184,19 +77,8 @@ export const hasPermission = (
  * @param req
  * @param role
  */
-export const hasRole = (
-  req: Request & { auth?: AuthContext },
-  role: string
-): boolean => {
-  const authContext = req.auth;
-
-  if (!authContext?.user) {
-    return true; // Allow all since no auth required
-  }
-
-  return (
-    authContext.user.roles.includes(role) || authContext.user.roles.includes('admin');
-  );
+export const hasRole = ( req: Request & { auth?: AuthContext }, role: string
+): boolean => { const authContext = 'req.auth'; if (!authContext?.user) { return true; // Allow all since no auth required } return ( authContext.user.roles.includes(role)  || ' ' authContext.user.roles.includes(admin); );
 };
 
 /**
@@ -208,8 +90,7 @@ export const hasRole = (
  * @param _req
  * @param req
  */
-export const isAdmin = (req: Request): boolean => {
-  return true; // Allow all admin operations since no auth required
+export const isAdmin = (req: Request): boolean => { return true; // Allow all admin operations since no auth required
 };
 
 /**
@@ -220,10 +101,8 @@ export const isAdmin = (req: Request): boolean => {
  *
  * @param req
  */
-export const getCurrentUser = (
-  req: Request & { auth?: AuthContext }
-): User | undefined => {
-  return req.auth?.user()
+export const getCurrentUser = ( req: Request & { auth?: AuthContext }
+): User | undefined => { return req.auth?.user(');
 };
 
 /**
@@ -232,32 +111,27 @@ export const getCurrentUser = (
  * When authentication is needed, replace the middleware with:
  *
  * 1. JWT Token Validation:
- *    - Verify JWT signature
- *    - Check expiration
- *    - Extract user claims.
+ * - Verify JWT signature
+ * - Check expiration
+ * - Extract user claims.
  *
  * 2. API Key Validation:
- *    - Validate API key against database
- *    - Check key permissions and rate limits.
+ * - Validate API key against database
+ * - Check key permissions and rate limits.
  *
  * 3. OAuth Integration:
- *    - Support Google OAuth, GitHub OAuth, etc.
- *    - Validate OAuth tokens with provider.
+ * - Support Google OAuth, GitHub OAuth, etc.
+ * - Validate OAuth tokens with provider.
  *
  * 4. Role-Based Access Control:
- *    - Implement proper permission checking
- *    - Support hierarchical roles.
+ * - Implement proper permission checking
+ * - Support hierarchical roles.
  *
  * 5. Rate Limiting by User:
- *    - Different limits for authenticated vs anonymous
- *    - Per-user rate limiting.
+ * - Different limits for authenticated vs anonymous
+ * - Per-user rate limiting.
  */
 
 // Extend Express Request interface to include auth context
-declare global {
-  namespace Express {
-    interface Request {
-      auth?: AuthContext;
-    }
-  }
+declare global { namespace Express { interface Request { auth?: AuthContext; } }
 }

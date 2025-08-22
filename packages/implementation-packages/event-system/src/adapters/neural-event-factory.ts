@@ -149,8 +149,8 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
           ...event.metadata,
           timestamp: new Date(),
           processingTime: Date.now(),
-          modelVersion: (event.details as any)?.modelVersion'' | '''' | '''unknown',
-          computeResource: (event.details as any)?.computeResource'' | '''' | '''cpu',
+          modelVersion: (event.details as any)?.modelVersion||'unknown',
+          computeResource: (event.details as any)?.computeResource||'cpu',
         },
       };
 
@@ -415,7 +415,7 @@ class NeuralEventManager extends BaseEventManager implements EventManager {
         break;
       case 'predict':
         this.logger.debug(`Inference completed for model: ${event.modelId}`);
-        this.processingStats.batchesProcessed += event.details?.batchSize'' | '''' | ''1;
+        this.processingStats.batchesProcessed += event.details?.batchSize||1;
         break;
       case'optimize':
         this.logger.info(`Optimization completed for model: ${event.modelId}`);
@@ -584,7 +584,7 @@ export class NeuralEventManagerFactory
   private applyNeuralDefaults(config: EventManagerConfig): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners'' | '''' | ''200,
+      maxListeners: config.maxListeners||200,
       processing: {
         batchSize: 50, // Efficient batch processing
         ...config.processing,

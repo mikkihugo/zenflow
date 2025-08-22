@@ -152,7 +152,7 @@ export class ContextManager extends TypedEventBase {
    * Load context for any entity (replaces hook system context loading)
    */
   async loadContext(context: {
-    type: 'agent | swarm' | 'session''' | '''global';
+    type: 'agent|swarm|session|global';
     id: string;
     options?: {
       includeHistory?: boolean;
@@ -252,7 +252,7 @@ export class ContextManager extends TypedEventBase {
    * Save context to memory
    */
   async saveContext(
-    type: 'agent | swarm' | 'session''' | '''global',
+    type: 'agent|swarm|session|global',
     id: string,
     contextData: Record<string, unknown>
   ): Promise<boolean> {
@@ -294,7 +294,7 @@ export class ContextManager extends TypedEventBase {
   /**
    * Load agent context with full details
    */
-  async loadAgentContext(agentId: string): Promise<AgentContext'' | ''null> {
+  async loadAgentContext(agentId: string): Promise<AgentContext|null> {
     const result = await this.loadContext({ type:'agent', id: agentId });
 
     if (result.loaded && result.context) {
@@ -322,7 +322,7 @@ export class ContextManager extends TypedEventBase {
   /**
    * Load swarm context with full details
    */
-  async loadSwarmContext(swarmId: string): Promise<SwarmContext'' | ''null> {
+  async loadSwarmContext(swarmId: string): Promise<SwarmContext|null> {
     const result = await this.loadContext({ type:'swarm', id: swarmId });
 
     if (result.loaded && result.context) {
@@ -335,7 +335,7 @@ export class ContextManager extends TypedEventBase {
   /**
    * Load session context with full details
    */
-  async loadSessionContext(sessionId: string): Promise<SessionContext'' | ''null> {
+  async loadSessionContext(sessionId: string): Promise<SessionContext|null> {
     const result = await this.loadContext({ type:'session', id: sessionId });
 
     if (result.loaded && result.context) {
@@ -413,7 +413,7 @@ export class ContextManager extends TypedEventBase {
    */
   async getGlobalContext(): Promise<Record<string, unknown>> {
     const result = await this.loadContext({ type: 'global', id: 'system'});
-    return result.context'' | '''' | ''{};
+    return result.context||{};
   }
 
   /**
@@ -476,7 +476,7 @@ export class ContextManager extends TypedEventBase {
   /**
    * Get namespace for context type
    */
-  private getNamespace(type: 'agent | swarm' | 'session''' | '''global'): string {
+  private getNamespace(type: 'agent|swarm|session|global'): string {
     return this.config.namespaces[type];
   }
 
@@ -539,7 +539,7 @@ export function createContextManager(
 /**
  * Global context manager instance
  */
-let globalContextManager: ContextManager'' | ''null = null;
+let globalContextManager: ContextManager|null = null;
 
 /**
  * Get or create global context manager
@@ -564,7 +564,7 @@ export function getGlobalContextManager(
  */
 export async function withContextLoading<T>(
   contextManager: ContextManager,
-  contextType: 'agent | swarm' | 'session',
+  contextType: 'agent|swarm|session',
   contextId: string,
   fn: (context: Record<string, unknown>) => Promise<T>
 ): Promise<T> {

@@ -30,7 +30,7 @@ export interface MemoryBackend {
   /** Store a value with the given key */
   store(key: string, value: unknown): Promise<void>;
   /** Retrieve a value by key */
-  retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
+  retrieve<T = unknown>(key: string): Promise<T|null>;
   /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
   delete(key: string): Promise<boolean>;
   /** Clear all stored data */
@@ -48,7 +48,7 @@ export interface MemoryBackend {
  */
 export interface MemoryConfig {
   /** Type of memory backend to use */
-  type:'sqlite | lancedb' | 'json''' | '''memory';
+  type:'sqlite|lancedb|json|memory';
   /** Optional path for file-based backends */
   path?: string;
   /** Maximum size limit */
@@ -154,7 +154,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
+  async retrieve<T = unknown>(key: string): Promise<T|null> {
     this.logger.debug(`Retrieving key: ${key} from SQLite backend`);
     await this.ensureInitialized();
 
@@ -298,7 +298,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
+  async retrieve<T = unknown>(key: string): Promise<T|null> {
     this.logger.debug(`Retrieving key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
 
@@ -453,7 +453,7 @@ export class JsonMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
+  async retrieve<T = unknown>(key: string): Promise<T|null> {
     this.logger.debug(`Retrieving key: ${key} from JSON backend`);
     await this.ensureInitialized();
 
@@ -555,7 +555,7 @@ export class InMemoryBackend implements MemoryBackend {
     private config: MemoryConfig,
     private logger: Logger
   ) {
-    this.maxSize = config?.maxSize'' | '''' | ''10000;
+    this.maxSize = config?.maxSize||10000;
     this.logger.info(
       `Initialized in-memory backend with max size: ${this.maxSize}`
     );
@@ -578,7 +578,7 @@ export class InMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
+  async retrieve<T = unknown>(key: string): Promise<T|null> {
     this.logger.debug(`Retrieving key: ${key} from memory backend`);
 
     try {

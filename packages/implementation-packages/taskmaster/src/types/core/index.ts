@@ -243,7 +243,7 @@ export interface ApprovalGateRequirement {
  */
 export interface ApprovalCondition {
   /** Condition type */
-  type: 'user_role'' | ''task_complexity'' | ''time_based'' | ''custom';
+  type: 'user_role|task_complexity|time_based|custom';
 
   /** Condition parameters */
   parameters: Record<string, unknown>;
@@ -392,7 +392,7 @@ export interface SecurityConfig {
 export interface IntegrationConfig {
   /** Database configuration */
   database: {
-    type: 'postgresql'' | ''mysql'' | ''sqlite';
+    type: 'postgresql|mysql|sqlite';
     host: string;
     port: number;
     database: string;
@@ -505,13 +505,13 @@ export interface BottleneckInfo {
   estimatedDelayHours: number;
 
   /** Bottleneck type classification */
-  type: 'capacity'' | ''skill'' | ''dependency'' | ''process'' | ''resource';
+  type: 'capacity|skill|dependency|process|resource';
 
   /** Contributing factors */
   factors: string[];
 
   /** Historical trend */
-  trend: 'improving'' | ''stable'' | ''degrading';
+  trend: 'improving|stable|degrading';
 }
 
 /**
@@ -696,7 +696,7 @@ export interface AuditLogEntry {
   userId: UserId;
 
   /** Affected resource type */
-  resourceType: 'task'' | ''workflow'' | ''user'' | ''config';
+  resourceType: 'task|workflow|user|config';
 
   /** Affected resource ID */
   resourceId: string;
@@ -714,7 +714,7 @@ export interface AuditLogEntry {
   details: Record<string, unknown>;
 
   /** Action result */
-  result: 'success'' | ''failure'' | ''partial';
+  result: 'success|failure|partial';
 }
 
 // =============================================================================
@@ -809,7 +809,7 @@ export interface SystemHealthStatus {
  */
 export interface ComponentHealth {
   /** Component status */
-  status: 'healthy'' | ''degraded'' | ''unhealthy'' | ''unknown';
+  status: 'healthy|degraded|unhealthy|unknown';
 
   /** Response time in milliseconds */
   responseTimeMs: number;
@@ -832,7 +832,7 @@ export interface SystemAlert {
   readonly id: string;
 
   /** Alert severity */
-  severity: 'info'' | ''warning'' | ''error'' | ''critical';
+  severity: 'info|warning|error|critical';
 
   /** Alert message */
   message: string;

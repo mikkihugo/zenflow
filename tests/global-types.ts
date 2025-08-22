@@ -23,8 +23,8 @@ declare global {
   function createCoordinationMock<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
   function generateNeuralTestData(config: NeuralTestConfig): NeuralTestData[];
   function expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
-  function testWithApproach(approach: 'london''' | '''classical', testFn: () => void'' | ''Promise<void>): void'' | ''Promise<void>;
-  function createMemoryTestScenario(type:'sqlite | lancedb' | 'json'): any;
+  function testWithApproach(approach: 'london|classical', testFn: () => void|Promise<void>): void|'Promise<void>;
+  function createMemoryTestScenario(type:'sqlite|lancedb|json'): any;
 
   // Classical TDD utilities
   function generateTestMatrix(rows: number, cols: number, fillFn?: (i: number, j: number) => number): number[][];
@@ -32,7 +32,7 @@ declare global {
   function generateXORData(): Array<{ input: number[]; output: number[] }>;
   function generateLinearData(samples: number, noise?: number): Array<{ input: number[]; output: number[] }>;
   function expectPerformance(fn: () => void, maxTimeMs: number): number;
-  function expectMemoryUsage(fn: () => void, maxMemoryMB: number): number'' | ''undefined;
+  function expectMemoryUsage(fn: () => void, maxMemoryMB: number): number|undefined;
   function expectArrayNearlyEqual(actual: number[], expected: number[], tolerance?: number): void;
   function expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
 
@@ -79,11 +79,11 @@ declare global {
 
   // GC function (optional for memory testing)
   type GCFunction = () => void;
-  var gc: GCFunction'' | ''undefined;
+  var gc: GCFunction|undefined;
 
   // Neural test types
   interface NeuralTestConfig {
-    type:'xor''' | '''linear';
+    type:'xor|linear'';
     samples?: number;
     noise?: number;
   }

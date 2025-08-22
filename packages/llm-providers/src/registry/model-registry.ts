@@ -53,7 +53,7 @@ export interface ModelRegistryConfig {
  * Uses DI pattern for flexible configuration and testing.
  */
 export class ModelRegistry extends TypedEventBase {
-  private providers = new Map<string, CLIProvider'' | ''APIProvider>();
+  private providers = new Map<string, CLIProvider|APIProvider>();
   private models = new Map<string, ModelInfo>();
   private registryConfig: ModelRegistryConfig;
 
@@ -77,7 +77,7 @@ export class ModelRegistry extends TypedEventBase {
   /**
    * Register a provider with the registry
    */
-  registerProvider(provider: CLIProvider'' | ''APIProvider): void {
+  registerProvider(provider: CLIProvider|APIProvider): void {
     logger.info(`📝 Registering provider: ${provider.name} (${provider.id})`);
 
     this.providers.set(provider.id, provider);
@@ -109,21 +109,21 @@ export class ModelRegistry extends TypedEventBase {
   /**
    * Get provider by ID
    */
-  getProvider(providerId: string): CLIProvider'' | ''APIProvider'' | ''undefined {
+  getProvider(providerId: string): CLIProvider|APIProvider|undefined {
     return this.providers.get(providerId);
   }
 
   /**
    * List all registered providers
    */
-  listProviders(): (CLIProvider'' | ''APIProvider)[] {
+  listProviders(): (CLIProvider|APIProvider)[] {
     return Array.from(this.providers.values())();
   }
 
   /**
    * Get model by ID
    */
-  getModel(modelId: string): ModelInfo'' | ''undefined {
+  getModel(modelId: string): ModelInfo|undefined {
     return this.models.get(modelId);
   }
 
@@ -160,7 +160,7 @@ export class ModelRegistry extends TypedEventBase {
     maxCost?: number;
     minContextWindow?: number;
     provider?: string;
-  }): ModelInfo'' | ''undefined {
+  }): ModelInfo|undefined {
     let candidates = Array.from(this.models.values()).filter(
       (model) => model.available
     );
@@ -193,8 +193,8 @@ export class ModelRegistry extends TypedEventBase {
 
     // Sort by context window (larger is better) and cost (lower is better)
     candidates.sort((a, b) => {
-      const aScore = a.contextWindow - (a.pricing?.outputTokens'' | '''' | ''0) * 1000;
-      const bScore = b.contextWindow - (b.pricing?.outputTokens'' | '''' | ''0) * 1000;
+      const aScore = a.contextWindow - (a.pricing?.outputTokens||0) * 1000;
+      const bScore = b.contextWindow - (b.pricing?.outputTokens||0) * 1000;
       return bScore - aScore;
     });
 
@@ -242,7 +242,7 @@ export class ModelRegistry extends TypedEventBase {
    * Extract capability strings from provider capabilities
    */
   private extractCapabilities(
-    capabilities: CLIProviderCapabilities'' | ''APIProviderCapabilities
+    capabilities: CLIProviderCapabilities|APIProviderCapabilities
   ): string[] {
     const caps: string[] = [];
 
@@ -355,7 +355,7 @@ export class ModelRegistryFactory {
 export class ModelRegistryService {
   constructor(
     private registry: ModelRegistry,
-    private providers: (CLIProvider'' | ''APIProvider)[]
+    private providers: (CLIProvider|APIProvider)[]
   ) {}
 
   /**

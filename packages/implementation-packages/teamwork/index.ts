@@ -630,24 +630,24 @@ class ConversationFramework {
   static validateConfig(config: any): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    if (!config?.title''''' | '''''''''' | '''''typeof config.title !=='string') {
+    if (!config?.title''||''''||''typeof config.title !=='string') {
       errors.push('Title is required and must be a string');
     }
 
-    if (!config?.pattern''''' | '''''''''' | '''''typeof config.pattern !=='string') {
+    if (!config?.pattern''||''''||''typeof config.pattern !=='string') {
       errors.push('Pattern is required and must be a string');
     }
 
-    if (!config?.context?.goal''''' | '''''''''' | '''''typeof config.context.goal !=='string') {
+    if (!config?.context?.goal''||''''||''typeof config.context.goal !=='string') {
       errors.push('Goal is required and must be a string');
     }
 
-    if (!config?.context?.domain''''' | '''''''''' | '''''typeof config.context.domain !=='string') {
+    if (!config?.context?.domain''||''''||''typeof config.context.domain !=='string') {
       errors.push('Domain is required and must be a string');
     }
 
     if (
-      !Array.isArray(config?.initialParticipants)''''' | '''''''''' | '''''config.initialParticipants.length === 0
+      !Array.isArray(config?.initialParticipants)''||''''||''config.initialParticipants.length === 0
     ) {
       errors.push('At least one participant is required');
     }

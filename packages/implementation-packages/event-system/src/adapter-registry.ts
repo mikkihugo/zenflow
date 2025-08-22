@@ -75,7 +75,7 @@ class EventAdapterRegistry {
    * @returns Promise resolving to the factory, or null if not found
    * @throws {Error} If adapter loading fails
    */
-  async get(name: string): Promise<EventManagerFactory'' | ''null> {
+  async get(name: string): Promise<EventManagerFactory|null> {
     const loader = this.adapters.get(name);
     if (!loader) return null;
     return loader();

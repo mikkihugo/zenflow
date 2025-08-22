@@ -128,7 +128,7 @@ export const intelligenceSystem = {
   },
 
   createMemory: async (
-    type: 'conversation | learning' | 'context''' | '''knowledge',
+    type: 'conversation|learning|context|knowledge',
     config?: any,
   ) => {
     const brain = await import('./brain');

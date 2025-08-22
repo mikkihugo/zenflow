@@ -51,7 +51,7 @@ export interface ActiveConversationSummary {
     id: string;
     name: string;
     role: string;
-    status: 'active | idle' | 'disconnected';
+    status: 'active|idle|disconnected';
     lastActivity: string;
   }>;
   startTime: string;
@@ -59,7 +59,7 @@ export interface ActiveConversationSummary {
   messageCount: number;
   decisionsPending: number;
   decisionsReached: number;
-  urgency: 'low | medium' | 'high''' | '''critical';
+  urgency: 'low|medium|high|critical';
   progress: number; // 0-100%
   healthScore: number; // 0-100%
 }
@@ -472,7 +472,7 @@ export class TeamworkConversationDashboard {
       'inspect-adapt-workshop': 'Inspect & Adapt Workshop',
     };
 
-    return typeMap[conversation.type]'' | '''' | ''conversation.type;
+    return typeMap[conversation.type]||conversation.type;
   }
 
   private calculateConversationStatus(
@@ -525,7 +525,7 @@ export class TeamworkConversationDashboard {
   ): any {
     return conversations.reduce(
       (acc, c) => {
-        acc[c.type] = (acc[c.type]'' | '''' | ''0) + 1;
+        acc[c.type] = (acc[c.type]||0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -537,7 +537,7 @@ export class TeamworkConversationDashboard {
   ): any {
     return conversations.reduce(
       (acc, c) => {
-        acc[c.urgency] = (acc[c.urgency]'' | '''' | ''0) + 1;
+        acc[c.urgency] = (acc[c.urgency]||0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -550,7 +550,7 @@ export class TeamworkConversationDashboard {
     const roleCount: Record<string, number> = {};
     conversations.forEach((c) =>
       c.participants.forEach((p) => {
-        roleCount[p.role] = (roleCount[p.role]'' | '''' | ''0) + 1;
+        roleCount[p.role] = (roleCount[p.role]||0) + 1;
       })
     );
     return roleCount;

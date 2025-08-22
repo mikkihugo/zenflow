@@ -65,7 +65,7 @@ export interface TeamCapacityInput {
   plannedCapacity: number; // story points
   availableCapacity: number; // accounting for leave, etc.
   historicalVelocity: number[];
-  velocityTrend: 'increasing | stable' | 'decreasing';
+  velocityTrend: 'increasing|stable|decreasing';
   teamStability: number; // 0-1, team member retention
   skillMaturity: number; // 1-10
   domainExperience: number; // 1-10
@@ -78,8 +78,8 @@ export interface DependencyInput {
   id: string;
   providerTeam: string;
   consumerTeam: string;
-  complexity: 'low | medium' | 'high''' | '''critical';
-  riskLevel: 'low | medium' | 'high';
+  complexity: 'low|medium|high|critical';
+  riskLevel: 'low|medium|high';
   historicalResolutionTime: number; // days
   crossTeamExperience: number; // 1-10, how well teams work together
 }
@@ -88,8 +88,8 @@ export interface RiskInput {
   id: string;
   description: string;
   probability: number; // 0-1
-  impact: 'low | medium' | 'high''' | '''critical';
-  category: 'technical | resource' | 'external''' | '''process';
+  impact: 'low|medium|high|critical';
+  category: 'technical|resource|external|process';
   mitigationPlan?: string;
 }
 
@@ -138,12 +138,12 @@ export interface HistoricalPIData {
 export interface EnvironmentalFactors {
   organizationalChange: boolean;
   budgetConstraints: boolean;
-  marketPressure: 'low | medium' | 'high';
-  competitorActivity: 'low | medium' | 'high';
+  marketPressure: 'low|medium|high';
+  competitorActivity: 'low|medium|high';
   regulatoryChanges: boolean;
   technologyChanges: boolean;
-  seasonality: 'favorable | neutral' | 'challenging';
-  economicConditions: 'stable | volatile' | 'declining';
+  seasonality: 'favorable|neutral|challenging';
+  economicConditions: 'stable|volatile|declining';
 }
 
 // ============================================================================
@@ -169,7 +169,7 @@ export interface OverallPrediction {
   expectedBusinessValueRealization: number; // 0-1
   expectedScheduleAdherence: number; // 0-1
   riskScore: number; // 0-100, higher = more risk
-  confidenceLevel: 'low | medium' | 'high';
+  confidenceLevel: 'low|medium|high';
   keySuccessFactors: string[];
   primaryRisks: string[];
 }
@@ -180,7 +180,7 @@ export interface TeamPrediction {
   capacityUtilization: number; // 0-1, predicted actual vs planned
   velocityPrediction: number; // predicted story points delivered
   objectiveCompletionRate: number; // 0-1
-  riskLevel: 'low | medium' | 'high';
+  riskLevel: 'low|medium|high';
   keyRisks: string[];
   recommendations: string[];
 }
@@ -189,7 +189,7 @@ export interface ObjectivePrediction {
   objectiveId: string;
   completionProbability: number; // 0-1
   expectedDeliveryDate: string;
-  riskLevel: 'low | medium' | 'high';
+  riskLevel: 'low|medium|high';
   blockers: string[];
   successFactors: string[];
   alternatives: string[];
@@ -199,19 +199,19 @@ export interface DependencyPrediction {
   dependencyId: string;
   resolutionProbability: number; // 0-1
   expectedResolutionTime: number; // days
-  riskLevel: 'low | medium' | 'high';
-  impactOnPI: 'minimal | moderate' | 'significant''' | '''critical';
+  riskLevel: 'low|medium|high';
+  impactOnPI: 'minimal|moderate|significant|critical';
   mitigationOptions: string[];
 }
 
 export interface PredictionRecommendation {
   id: string;
-  category: 'scope | capacity' | 'timeline' | 'risk' | 'process';
-  priority: 'low | medium' | 'high''' | '''critical';
+  category: 'scope|capacity|timeline|risk|process';
+  priority: 'low|medium|high|critical';
   recommendation: string;
   rationale: string;
   expectedImpact: number; // 0-1, improvement in success probability
-  implementationEffort: 'low | medium' | 'high';
+  implementationEffort: 'low|medium|high';
   stakeholders: string[];
 }
 
@@ -229,8 +229,8 @@ export interface PredictionConfidence {
 export interface RiskFactor {
   id: string;
   description: string;
-  category: 'team | technical' | 'dependency' | 'external' | 'process';
-  severity: 'low | medium' | 'high''' | '''critical';
+  category: 'team|technical|dependency|external|process';
+  severity: 'low|medium|high|critical';
   probability: number; // 0-1
   impact: string;
   indicators: string[];
@@ -243,7 +243,7 @@ export interface MitigationStrategy {
   strategy: string;
   description: string;
   effectiveness: number; // 0-1
-  cost: 'low | medium' | 'high';
+  cost: 'low|medium|high';
   timeToImplement: number; // days
   requiredResources: string[];
   successCriteria: string[];
@@ -395,7 +395,7 @@ export class PIPlanningSuccessPredictionService {
    * Get real-time risk monitoring for ongoing PI
    */
   async monitorPIRisks(piId: string): Promise<{
-    currentRiskLevel: 'low | medium' | 'high''' | '''critical';
+    currentRiskLevel: 'low|medium|high|critical';
     emergingRisks: RiskFactor[];
     recommendedActions: string[];
     predictionAccuracy: number;
@@ -409,7 +409,7 @@ export class PIPlanningSuccessPredictionService {
         currentRiskLevel: riskLevel,
         emergingRisks,
         recommendedActions: await this.generateRiskActions(emergingRisks),
-        predictionAccuracy: this.modelAccuracy.get(piId)'' | '''' | ''0.8,
+        predictionAccuracy: this.modelAccuracy.get(piId)||0.8,
       };
     } catch (error) {
       logger.error(`Failed to monitor PI risks for ${piId}`, error);
@@ -509,7 +509,7 @@ export class PIPlanningSuccessPredictionService {
         businessValueRealization: predictions.business_value_realization,
         scheduleAdherence: predictions.schedule_adherence,
         riskScore: predictions.risk_score,
-        successFactors: predictions.success_factors'' | '''' | ''[],
+        successFactors: predictions.success_factors||[],
         confidenceScore: predictions.confidence,
       };
     } catch (error) {
@@ -578,13 +578,13 @@ export class PIPlanningSuccessPredictionService {
       const completionRate = Math.min(1, velocityPrediction / totalEffort);
 
       // Assess risk level
-      let riskLevel: 'low | medium' | 'high' = 'low';
+      let riskLevel: 'low|medium|high' = 'low';
       if (
-        capacityUtilization > 1.2'' | '''' | ''team.morale < 6'' | '''' | ''team.teamStability < 0.7
+        capacityUtilization > 1.2||team.morale < 6||team.teamStability < 0.7
       ) {
         riskLevel ='high';
       } else if (
-        capacityUtilization > 1.0'' | '''' | ''team.morale < 7'' | '''' | ''team.teamStability < 0.8
+        capacityUtilization > 1.0||team.morale < 7||team.teamStability < 0.8
       ) {
         riskLevel ='medium';
       }
@@ -707,7 +707,7 @@ export class PIPlanningSuccessPredictionService {
       );
 
       // Estimate resolution time
-      const baseTime = dependency.historicalResolutionTime'' | '''' | ''5; // days
+      const baseTime = dependency.historicalResolutionTime||5; // days
       const complexityMultiplier = {
         low: 1,
         medium: 1.5,
@@ -718,14 +718,14 @@ export class PIPlanningSuccessPredictionService {
         baseTime * complexityMultiplier[dependency.complexity];
 
       // Determine impact on PI
-      let impactOnPI:'minimal | moderate' | 'significant''' | '''critical' =
+      let impactOnPI:'minimal|moderate|significant|critical' =
         'minimal';
       if (
-        dependency.complexity === 'critical''' | '''' | ''dependency.riskLevel ==='high'
+        dependency.complexity === 'critical'||dependency.riskLevel ==='high'
       ) {
         impactOnPI = 'critical';
       } else if (
-        dependency.complexity === 'high''' | '''' | ''dependency.riskLevel ==='medium'
+        dependency.complexity === 'high'||dependency.riskLevel ==='medium'
       ) {
         impactOnPI = 'significant';
       } else if (dependency.complexity === 'medium') {
@@ -850,7 +850,7 @@ export class PIPlanningSuccessPredictionService {
     logger.info('PI prediction model accuracy validated');
   }
 
-  private mapConfidenceToLevel(confidence: number): 'low | medium' | 'high' {
+  private mapConfidenceToLevel(confidence: number): 'low|medium|high' {
     if (confidence < 0.6) return 'low';
     if (confidence < 0.8) return 'medium';
     return 'high';
@@ -888,7 +888,7 @@ export class PIPlanningSuccessPredictionService {
 
   private calculateCurrentRiskLevel(
     risks: RiskFactor[]
-  ): 'low | medium' | 'high''' | '''critical' {
+  ): 'low|medium|high|critical' {
     if (risks.some((r) => r.severity === 'critical')) return 'critical';
     if (risks.some((r) => r.severity === 'high')) return 'high';
     if (risks.some((r) => r.severity === 'medium')) return 'medium';
@@ -922,7 +922,7 @@ export class PIPlanningSuccessPredictionService {
     return {
       overall: 0.8,
       dataQuality: 0.85,
-      modelAccuracy: this.modelAccuracy.get('default')'' | '''' | ''0.8,
+      modelAccuracy: this.modelAccuracy.get('default')||0.8,
       uncertaintyFactors: ['Limited historical data'],
       confidenceInterval: {
         lower: predictions.overallSuccess - 0.1,

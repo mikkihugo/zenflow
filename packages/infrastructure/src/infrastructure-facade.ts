@@ -65,7 +65,7 @@ function validateNumber(
   min?: number,
   max?: number,
 ): ValidationResult<number> {
-  if (typeof value !== 'number''' | '''' | ''isNaN(value)) {
+  if (typeof value !== 'number'||isNaN(value)) {
     return {
       valid: false,
       errors: [{ field: fieldName, message:'Must be a valid number', value }],
@@ -89,7 +89,7 @@ function validateNumber(
 function validateConfigInput(
   config: unknown,
 ): ValidationResult<Partial<Config>> {
-  if (config === null'' | '''' | ''config === undefined) {
+  if (config === null||config === undefined) {
     return { valid: true, data: {}, errors: [] };
   }
 
@@ -112,7 +112,7 @@ function validateConfigInput(
 // =============================================================================
 
 class InfrastructureFacade {
-  private static instance: InfrastructureFacade'' | ''null = null;
+  private static instance: InfrastructureFacade|null = null;
   private readonly logger: Logger;
   private isInitialized = false;
 
@@ -268,7 +268,7 @@ class InfrastructureFacade {
           }
           const logger = getLogger('infrastructure-telemetry');
           logger.debug(
-            `Recording metric: ${nameValidation.data'' | '''' | ''name} with value ${value}`,
+            `Recording metric: ${nameValidation.data||name} with value ${value}`,
           );
         },
 
@@ -287,7 +287,7 @@ class InfrastructureFacade {
           }
           const logger = getLogger('infrastructure-telemetry');
           logger.debug(
-            `Recording histogram: ${nameValidation.data'' | '''' | ''name} with value ${valueValidation.data'' | '''' | ''value}`,
+            `Recording histogram: ${nameValidation.data||name} with value ${valueValidation.data||value}`,
           );
         },
 
@@ -306,7 +306,7 @@ class InfrastructureFacade {
           }
           const logger = getLogger('infrastructure-telemetry');
           logger.debug(
-            `Recording gauge: ${nameValidation.data'' | '''' | ''name} with value ${valueValidation.data'' | '''' | ''value}`,
+            `Recording gauge: ${nameValidation.data||name} with value ${valueValidation.data||value}`,
           );
         },
 
@@ -334,12 +334,12 @@ class InfrastructureFacade {
             throw new Error(errorMessage);
           }
           const logger = getLogger('infrastructure-telemetry');
-          logger.debug(`Starting trace: ${nameValidation.data'' | '''' | ''name}`);
+          logger.debug(`Starting trace: ${nameValidation.data||name}`);
           return {
             setAttributes: (
-              attributes: Record<string, string'' | ''number'' | ''boolean>,
+              attributes: Record<string, string|number|boolean>,
             ): void => {
-              if (typeof attributes !=='object''' | '''' | ''attributes === null) {
+              if (typeof attributes !=='object'||attributes === null) {
                 throw new Error('Attributes must be an object');
               }
               logger.debug(
@@ -347,7 +347,7 @@ class InfrastructureFacade {
               );
             },
             end: (): void => {
-              logger.debug(`Ending trace: ${nameValidation.data'' | '''' | ''name}`);
+              logger.debug(`Ending trace: ${nameValidation.data||name}`);
             },
           };
         },
@@ -367,18 +367,18 @@ class InfrastructureFacade {
   // PRIVATE VALIDATION HELPERS
   // =============================================================================
 
-  private validateEnv(env: string'' | ''undefined): Config['env'] {
-    if (env === 'development''' | '''' | ''env ==='production''' | '''' | ''env ==='test') {
+  private validateEnv(env: string|undefined): Config['env'] {
+    if (env === 'development'||env ==='production'||env ==='test') {
       return env;
     }
     return 'production';
   }
 
   private validateLogLevel(
-    level: string'' | ''undefined,
+    level: string|undefined,
   ): Config['logging']['level'] {
     if (
-      level === 'debug''' | '''' | ''level ==='info''' | '''' | ''level ==='warn''' | '''' | ''level ==='error'
+      level === 'debug'||level ==='info'||level ==='warn'||level ==='error'
     ) {
       return level;
     }
@@ -386,10 +386,10 @@ class InfrastructureFacade {
   }
 
   private validateStorageBackend(
-    backend: string'' | ''undefined,
+    backend: string|undefined,
   ): Config['storage']['backend'] {
     if (
-      backend === 'memory''' | '''' | ''backend ==='sqlite''' | '''' | ''backend ==='lancedb''' | '''' | ''backend ==='kuzu'
+      backend === 'memory'||backend ==='sqlite'||backend ==='lancedb'||backend ==='kuzu'
     ) {
       return backend;
     }
@@ -624,7 +624,7 @@ class InMemoryAgentRegistry {
       name: config.name,
       type: config.type,
       status: 'active',
-      capabilities: config.capabilities'' | '''' | ''[],
+      capabilities: config.capabilities||[],
       performance: {},
       health: {},
     };
@@ -701,7 +701,7 @@ export async function getAllAgents(): Promise<Result<AgentInstance[], Error>> {
 export async function findAgentsByCapability(
   capability: string,
 ): Promise<Result<AgentInstance[], Error>> {
-  if (!capability'' | '''' | ''typeof capability !=='string') {
+  if (!capability||typeof capability !=='string') {
     return err(new Error('Capability must be a non-empty string'));
   }
 

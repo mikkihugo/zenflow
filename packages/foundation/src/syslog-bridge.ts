@@ -16,7 +16,7 @@ import type { UnknownRecord } from './types/primitives';
 
 export interface SyslogEntry {
   timestamp: string;
-  level: 'debug | info' | 'warn' | 'error' | 'fatal';
+  level: 'debug|info|warn|error|fatal';
   component: string;
   message: string;
   metadata?: UnknownRecord;
@@ -96,7 +96,7 @@ export class LogTapeSyslogBridge {
     formatted += ` ${message}`;
 
     if (metadata && Object.keys(metadata).length > 0) {
-      formatted += `'' | ''${JSON.stringify(metadata)}`;
+      formatted += `|${JSON.stringify(metadata)}`;
     }
 
     return formatted;
@@ -158,7 +158,7 @@ export class LogTapeSyslogBridge {
     // Map to LogTape methods (no 'fatal' method)
     const logMethod =
       entry.level === 'fatal'? this.logger.error
-        : this.logger[entry.level]'' | '''' | ''this.logger.info;
+        : this.logger[entry.level]||this.logger.info;
     logMethod.call(this.logger, entry.message, {
       component: entry.component,
       metadata: entry.metadata,

@@ -295,7 +295,7 @@ export class EventValidator<T = unknown> {
    * Get schema description for debugging
    */
   getSchemaDescription(): string {
-    return this.schema.description'' | '''' | ''`Schema for ${this.name}`;
+    return this.schema.description||`Schema for ${this.name}`;
   }
 }
 

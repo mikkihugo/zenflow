@@ -103,7 +103,7 @@ export class ConversationOrchestrator extends TypedEventBase {
       await this.initialize();
     }
     return (
-      this.instance.orchestrateConversation?.(request)'' | '''' | ''this.instance.orchestrate?.(request)
+      this.instance.orchestrateConversation?.(request)||this.instance.orchestrate?.(request)
     );
   }
 
@@ -111,7 +111,7 @@ export class ConversationOrchestrator extends TypedEventBase {
     if (!this.instance) {
       return { status:'not-initialized'};
     }
-    return this.instance.getStatus?.()'' | '''' | ''{ status:'active'};
+    return this.instance.getStatus?.()||{ status:'active'};
   }
 
   async shutdown(): Promise<void> {
@@ -152,7 +152,7 @@ export class ConversationManager extends TypedEventBase {
       await this.initialize();
     }
     return (
-      this.instance.manageConversation?.(request)'' | '''' | ''this.instance.manage?.(request)
+      this.instance.manageConversation?.(request)||this.instance.manage?.(request)
     );
   }
 
@@ -194,7 +194,7 @@ export class CollaborationEngine extends TypedEventBase {
       await this.initialize();
     }
     return (
-      this.instance?.collaborate?.(request)'' | '''' | ''{
+      this.instance?.collaborate?.(request)||{
         result:'collaboration-complete',
       }
     );
@@ -253,11 +253,11 @@ export async function getTeamworkAccess() {
   const teamworkModule = await loadTeamworkModule();
   return {
     ConversationOrchestrator:
-      teamworkModule.ConversationOrchestrator'' | '''' | ''ConversationOrchestrator,
+      teamworkModule.ConversationOrchestrator||ConversationOrchestrator,
     ConversationManager:
-      teamworkModule.ConversationManager'' | '''' | ''ConversationManager,
+      teamworkModule.ConversationManager||ConversationManager,
     CollaborationEngine:
-      teamworkModule.CollaborationEngine'' | '''' | ''CollaborationEngine,
+      teamworkModule.CollaborationEngine||CollaborationEngine,
     createOrchestrator: createConversationOrchestrator,
     createManager: createConversationManager,
     createCollaborationEngine: createCollaborationEngine,
@@ -276,7 +276,7 @@ export class InMemoryConversationMemory {
   }
 
   async retrieve(key: string): Promise<any> {
-    return this.memory.get(key)'' | '''' | ''null;
+    return this.memory.get(key)||null;
   }
 
   async clear(): Promise<void> {
@@ -338,7 +338,7 @@ export interface ConversationPattern {
   participants: string[];
   messageFlow: string[];
   duration?: number;
-  priority?: 'low | medium' | 'high';
+  priority?: 'low|medium|high';
 }
 
 /**
@@ -355,7 +355,7 @@ export class ServiceCoordinatorImpl implements ServiceCoordinator {
 
   async registerService(service: any): Promise<void> {
     // Service registration logic - store service info
-    console.log(`Registering service: ${service.name'' | '''' | ''service.id}`, service);
+    console.log(`Registering service: ${service.name||service.id}`, service);
     // In a real implementation, would store service in registry
   }
 
@@ -390,7 +390,7 @@ export class ConversationAgentRegistry extends TypedEventBase {
   }
 
   async register(agent: any): Promise<void> {
-    const agentId = agent.id'' | '''' | ''agent.name'' | '''' | ''`agent-${Date.now()}`;
+    const agentId = agent.id||agent.name||`agent-${Date.now()}`;
     this.agents.set(agentId, agent);
     this.emit('agent-registered', { agentId, agent });
   }
@@ -421,7 +421,7 @@ export class ConversationAgentRegistry extends TypedEventBase {
   }
 
   async getAgent(agentId: string): Promise<any> {
-    return this.agents.get(agentId)'' | '''' | ''null;
+    return this.agents.get(agentId)||null;
   }
 
   getStatus(): any {

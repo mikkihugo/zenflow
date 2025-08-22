@@ -17,7 +17,7 @@ export interface GPUCapabilities {
   hasTensorFlowGPU: boolean;
   hasGPUJS: boolean;
   hasONNXGPU: boolean;
-  recommendedBackend: 'webgpu''' | '''tensorflow-gpu''' | '''gpu.js''' | '''onnx''' | '''cpu';
+  recommendedBackend: 'webgpu|tensorflow-gpu'||gpu.js|onnx'||cpu';
 }
 
 /**
@@ -25,7 +25,7 @@ export interface GPUCapabilities {
  */
 export interface GPUOptions {
   preferGPU?: boolean;
-  backend?: 'webgpu''' | '''tensorflow-gpu''' | '''gpu.js''' | '''onnx | auto' | 'cpu';
+  backend?: 'webgpu|tensorflow-gpu'||gpu.js|onnx | auto'|cpu';
   memoryFraction?: number;
 }
 
@@ -119,7 +119,7 @@ export async function initializeGPUAcceleration(
 }> {
   const { preferGPU = true, backend = 'auto', memoryFraction = 0.9 } = options;
 
-  if (!preferGPU'' | '''' | ''backend ==='cpu') {
+  if (!preferGPU||backend ==='cpu') {
     logger.info('GPU acceleration disabled, using CPU');
     return { backend: 'cpu', accelerated: false };
   }
@@ -137,7 +137,7 @@ export async function initializeGPUAcceleration(
 
           // Use tf to configure GPU memory settings
           logger.debug('TensorFlow GPU module loaded', {
-            version: (tf.version as any)?.['tfjs-core']'' | '''' | '''unknown',
+            version: (tf.version as any)?.['tfjs-core']||'unknown',
             backend: selectedBackend,
           });
 
@@ -170,7 +170,7 @@ export async function initializeGPUAcceleration(
           return {
             backend: 'gpu.js',
             accelerated: true,
-            device: (gpu as any).mode'' | '''' | '''unknown',
+            device: (gpu as any).mode||'unknown',
           };
         }
         break;

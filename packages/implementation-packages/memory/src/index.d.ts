@@ -30,7 +30,7 @@ export declare class SimpleMemoryFactory {
    * Create a basic memory manager.
    */
   static createBasicMemory(config?: {
-    type?: 'sqlite''' | '''memory';
+    type?: 'sqlite|memory'';
     path?: string;
   }): Promise<import('./memory').MemoryManager>;
 }

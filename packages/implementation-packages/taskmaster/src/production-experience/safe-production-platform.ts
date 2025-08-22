@@ -45,7 +45,7 @@ export interface EnhancedSAFeConfig {
 
   aiCoaching: {
     enabled: boolean;
-    personalityType:'' | '''encouraging | analytical' | 'directive''' | '''collaborative';
+    personalityType:|'encouraging|analytical|directive|collaborative';
     adaptiveLearning: boolean;
     realTimeGuidance: boolean;
   };
@@ -92,7 +92,7 @@ export interface SAFeUniverse {
     scale: number;
     lighting: LightingConfig;
     camera: CameraConfig;
-    theme: 'cosmic | corporate' | 'natural''' | '''abstract';
+    theme: 'cosmic|corporate|natural|abstract';
   };
 
   objects: SAFeVisualObject[];
@@ -103,7 +103,7 @@ export interface SAFeUniverse {
 
 export interface SAFeVisualObject {
   id: string;
-  type:'' | '''team_planet | epic_satellite' | 'objective_star' | 'dependency_bridge' | 'value_stream_galaxy';
+  type:|'team_planet|epic_satellite|objective_star|dependency_bridge|value_stream_galaxy';
   position: Point3D;
   size: number;
   properties: {
@@ -132,16 +132,16 @@ export interface Point3D {
 
 export interface SAFeConnection {
   id: string;
-  type: 'dependency | collaboration' | 'communication''' | '''value_flow';
+  type: 'dependency|collaboration|communication|value_flow';
   from: string;
   to: string;
   strength: number;
-  status: 'healthy | at_risk' | 'blocked''' | '''optimal';
+  status: 'healthy|at_risk|blocked|optimal';
 
   visualization: {
-    style: 'beam | ribbon' | 'particle_flow''' | '''energy_arc';
+    style: 'beam|ribbon|particle_flow|energy_arc';
     color: string;
-    animation: 'pulse | flow' | 'static''' | '''oscillate';
+    animation: 'pulse|flow|static|oscillate';
     intensity: number;
   };
 }
@@ -171,7 +171,7 @@ export interface PersonalAICoach {
 }
 
 export interface CoachingFocus {
-  area:'' | '''facilitation | leadership' | 'technical_excellence' | 'value_delivery' | 'continuous_improvement';
+  area:|'facilitation|leadership|technical_excellence|value_delivery|continuous_improvement';
   currentGoals: Goal[];
   progressTracking: ProgressTracker;
   nextActions: ActionItem[];
@@ -210,8 +210,8 @@ export interface Achievement {
   id: string;
   title: string;
   description: string;
-  category:'' | '''collaboration | leadership' | 'delivery' | 'innovation' | 'learning';
-  difficulty: 'easy | medium' | 'hard''' | '''legendary';
+  category:|'collaboration|leadership|delivery|innovation|learning';
+  difficulty: 'easy|medium|hard|legendary';
   points: number;
   requirements: AchievementRequirement[];
   rewards: Reward[];
@@ -249,7 +249,7 @@ export interface PredictiveSAFeIntelligence {
 export interface BusinessImpactPrediction {
   predictionId: string;
   timestamp: string;
-  timeHorizon: '1_month | 3_months' | '6_months''' | '''1_year';
+  timeHorizon: '1_month|3_months|6_months|1_year';
   confidence: number;
 
   revenueImpact: {
@@ -261,7 +261,7 @@ export interface BusinessImpactPrediction {
 
   customerSatisfaction: {
     predicted: number;
-    trend: 'improving | stable' | 'declining';
+    trend: 'improving|stable|declining';
     influencingFactors: Factor[];
     recommendations: string[];
   };
@@ -288,9 +288,9 @@ export interface EcosystemIntegrationHub {
 export interface ToolConnection {
   toolId: string;
   toolName: string;
-  category:'' | '''development | planning' | 'communication' | 'analytics' | 'deployment';
-  status: 'connected | pending' | 'error''' | '''disabled';
-  syncLevel: 'real_time | periodic' | 'manual';
+  category:|'development|planning|communication|analytics|deployment';
+  status: 'connected|pending|error|disabled';
+  syncLevel: 'real_time|periodic|manual';
 
   configuration: ToolConfig;
   dataFlow: DataFlowConfig;

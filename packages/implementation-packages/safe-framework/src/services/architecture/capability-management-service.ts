@@ -49,12 +49,12 @@ export interface ArchitectureCapability {
 /**
  * Capability categories for organization
  */
-export type CapabilityCategory =' | ''business_capability'' | ''technology_capability'' | ''process_capability'' | ''data_capability'' | ''security_capability'' | ''integration_capability'' | ''platform_capability'' | ''infrastructure_capability'' | ''governance_capability'' | ''innovation_capability';
+export type CapabilityCategory =|business_capability|technology_capability|process_capability|data_capability|security_capability|integration_capability|platform_capability|infrastructure_capability|governance_capability|'innovation_capability';
 
 /**
  * Capability status enumeration
  */
-export type CapabilityStatus =' | ''planning'' | ''developing'' | ''active'' | ''optimizing'' | ''retiring'' | ''deprecated'' | ''suspended';
+export type CapabilityStatus =|planning|developing|active|optimizing|retiring|deprecated|'suspended';
 
 /**
  * Capability KPI with enhanced tracking
@@ -78,12 +78,12 @@ export interface CapabilityKPI {
 /**
  * KPI trend analysis
  */
-export type KPITrend =' | ''improving'' | ''stable'' | ''declining'' | ''volatile'' | ''unknown';
+export type KPITrend =|improving|stable|declining|volatile|'unknown';
 
 /**
  * Measurement frequency options
  */
-export type MeasurementFrequency =' | ''real_time'' | ''hourly'' | ''daily'' | ''weekly'' | ''monthly'' | ''quarterly'' | ''annually';
+export type MeasurementFrequency =|real_time|hourly|daily|weekly|monthly|quarterly|'annually';
 
 /**
  * Performance threshold configuration
@@ -93,7 +93,7 @@ export interface PerformanceThreshold {
   readonly good: number; // Acceptable performance
   readonly warning: number; // Warning threshold
   readonly critical: number; // Critical threshold
-  readonly direction: 'higher_is_better'' | ''lower_is_better';
+  readonly direction: 'higher_is_better|lower_is_better';
 }
 
 /**
@@ -113,7 +113,7 @@ export interface HistoricalDataPoint {
 export interface DataSource {
   readonly sourceId: string;
   readonly name: string;
-  readonly type: 'database'' | ''api'' | ''file'' | ''manual'' | ''stream';
+  readonly type: 'database|api|file|manual|stream';
   readonly endpoint?: string;
   readonly refreshRate: number; // minutes
   readonly reliability: number; // 0-1 scale
@@ -204,8 +204,8 @@ export interface InvestmentMilestone {
 export interface TimelineDependency {
   readonly dependencyId: string;
   readonly description: string;
-  readonly type: 'capability'' | ''resource'' | ''approval'' | ''external';
-  readonly criticality: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly type: 'capability|resource|approval|external';
+  readonly criticality: 'low|medium|high|critical';
   readonly mitigation: string;
 }
 
@@ -213,7 +213,7 @@ export interface TimelineDependency {
  * ROI projection for investments
  */
 export interface ROIProjection {
-  readonly method:' | ''net_present_value'' | ''internal_rate_of_return'' | ''payback_period'' | ''benefit_cost_ratio';
+  readonly method:|net_present_value|internal_rate_of_return|payback_period|'benefit_cost_ratio';
   readonly timeHorizon: number; // years
   readonly discountRate: number; // percentage
   readonly expectedROI: number; // percentage
@@ -239,7 +239,7 @@ export interface InvestmentRiskAssessment {
 export interface InvestmentRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly category:' | ''technical'' | ''financial'' | ''market'' | ''operational'' | ''regulatory';
+  readonly category:|technical|financial|market|operational|'regulatory';
   readonly probability: number; // 0-1 scale
   readonly impact: number; // 0-10 scale
   readonly riskScore: number; // probability * impact
@@ -254,7 +254,7 @@ export interface InvestmentRisk {
 export interface ApprovalStatus {
   readonly approvalId: string;
   readonly approver: string;
-  readonly status: 'pending'' | ''approved'' | ''rejected'' | ''conditional';
+  readonly status: 'pending|approved|rejected|conditional';
   readonly conditions?: string[];
   readonly comments?: string;
   readonly timestamp: Date;
@@ -286,7 +286,7 @@ export interface CapabilityInitiative {
   readonly expectedBenefits: string[];
   readonly deliverables: string[];
   readonly owner: string;
-  readonly status: 'planned'' | ''active'' | ''completed'' | ''cancelled';
+  readonly status: 'planned|active|completed|cancelled';
 }
 
 /**
@@ -296,9 +296,9 @@ export interface RoadmapDependency {
   readonly dependencyId: string;
   readonly fromInitiative: string;
   readonly toInitiative: string;
-  readonly type: 'finish_to_start'' | ''start_to_start'' | ''finish_to_finish';
+  readonly type: 'finish_to_start|start_to_start|finish_to_finish';
   readonly lag: number; // days
-  readonly criticality: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly criticality: 'low|medium|high|critical';
 }
 
 /**
@@ -321,7 +321,7 @@ export interface CapabilityMetric {
   readonly metricId: string;
   readonly name: string;
   readonly description: string;
-  readonly type:' | ''performance'' | ''efficiency'' | ''quality'' | ''adoption'' | ''value';
+  readonly type:|performance|efficiency|quality|adoption|'value';
   readonly currentValue: number;
   readonly targetValue: number;
   readonly unit: string;
@@ -338,7 +338,7 @@ export interface CapabilityConfig {
   readonly enableAutomatedAssessment: boolean;
   readonly enableRoadmapPlanning: boolean;
   readonly enableInvestmentOptimization: boolean;
-  readonly maturityAssessmentFrequency: 'monthly'' | ''quarterly'' | ''annually';
+  readonly maturityAssessmentFrequency: 'monthly|quarterly|annually';
   readonly maxCapabilities: number;
   readonly minBusinessValueThreshold: number;
   readonly maxComplexityThreshold: number;
@@ -371,7 +371,7 @@ export interface InvestmentAllocation {
   readonly allocation: number;
   readonly percentage: number;
   readonly roi: number;
-  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly riskLevel: 'low|medium|high|critical';
 }
 
 /**
@@ -382,7 +382,7 @@ export interface MaturityTrend {
   readonly averageMaturity: number;
   readonly improvementRate: number;
   readonly investmentEfficiency: number;
-  readonly trend: 'accelerating'' | ''stable'' | ''decelerating';
+  readonly trend: 'accelerating|stable|decelerating';
 }
 
 /**
@@ -514,7 +514,7 @@ export class CapabilityManagementService {
    */
   async addCapability(
     capability: Omit<
-      ArchitectureCapability,' | ''id'' | ''createdAt'' | ''updatedAt'' | ''businessValue'' | ''technicalComplexity'' | ''investmentPlan'' | ''roadmap'' | ''metrics'
+      ArchitectureCapability,|id|createdAt|updatedAt|businessValue|technicalComplexity|investmentPlan|roadmap|'metrics'
     >
   ): Promise<ArchitectureCapability> {
     if (!this.initialized) await this.initialize();

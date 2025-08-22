@@ -314,24 +314,24 @@ export class SafeMemoryStore extends TypedEventBase {
       entries: number;
       totalSize: number;
       averageSize: number;
-      oldestEntry: Date'' | ''null;
-      newestEntry: Date'' | ''null;
+      oldestEntry: Date|null;
+      newestEntry: Date|null;
     }>
   > {
     try {
       const entries = this.store.size;
       let totalSize = 0;
-      let oldestEntry: Date'' | ''null = null;
-      let newestEntry: Date'' | ''null = null;
+      let oldestEntry: Date|null = null;
+      let newestEntry: Date|null = null;
 
       for (const metadata of this.metadata.values()) {
         totalSize += metadata.size;
 
-        if (!oldestEntry'' | '''' | ''metadata?.created < oldestEntry) {
+        if (!oldestEntry||metadata?.created < oldestEntry) {
           oldestEntry = metadata?.created;
         }
 
-        if (!newestEntry'' | '''' | ''metadata?.created > newestEntry) {
+        if (!newestEntry||metadata?.created > newestEntry) {
           newestEntry = metadata?.created;
         }
       }

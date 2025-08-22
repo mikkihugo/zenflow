@@ -32,7 +32,7 @@ export interface FileAwareResponse {
 }
 
 export interface FileChange {
-  type: 'create | modify' | 'delete''' | '''rename';
+  type: 'create|modify|delete|rename';
   path: string;
   content?: string;
   reasoning: string;
@@ -48,7 +48,7 @@ export interface FileInfo {
 
 export interface SymbolReference {
   name: string;
-  type: 'function | class' | 'interface' | 'variable' | 'type';
+  type: 'function|class|interface|variable|type';
   file: string;
   line: number;
   column: number;
@@ -57,7 +57,7 @@ export interface SymbolReference {
 export interface FileDependency {
   from: string;
   to: string;
-  type: 'import | reference' | 'inheritance';
+  type: 'import|reference|inheritance';
 }
 
 export interface AnalyzedContext {
@@ -65,11 +65,11 @@ export interface AnalyzedContext {
   dependencies: FileDependency[];
   symbols: SymbolReference[];
   summary: string;
-  complexity: 'low | medium' | 'high';
+  complexity: 'low|medium|high';
 }
 
 export interface FileAwareConfig {
-  provider: 'codeMesh | codeMeshCopilot' | 'opencode''' | '''fallback';
+  provider: 'codeMesh|codeMeshCopilot|opencode|fallback';
   model?: string;
   rootPath: string;
   excludePatterns?: string[];

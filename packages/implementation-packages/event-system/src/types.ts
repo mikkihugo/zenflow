@@ -16,9 +16,9 @@ import type { EventPriority, SystemEvent } from './core/interfaces';
  * @example
  */
 export interface SystemLifecycleEvent extends SystemEvent {
-  type:'' | '''system:startup''' | '''system:shutdown''' | '''system:restart''' | '''system:error''' | '''system:health';
-  operation: 'start | stop' | 'restart' | 'status' | 'healthcheck';
-  status: 'success | warning' | 'error''' | '''critical';
+  type:|'system:startup|system:shutdown'||system:restart|system:error'||system:health';
+  operation: 'start|stop|restart|status|healthcheck';
+  status: 'success|warning|error|critical';
   details?: {
     component?: string;
     version?: string;
@@ -35,12 +35,12 @@ export interface SystemLifecycleEvent extends SystemEvent {
  * @example
  */
 export interface CoordinationEvent extends SystemEvent {
-  type:'' | '''coordination:swarm''' | '''coordination:agent''' | '''coordination:task''' | '''coordination:topology';
-  operation:'' | '''init | spawn' | 'destroy''' | '''coordinate | distribute' | 'complete''' | '''fail';
+  type:|'coordination:swarm|coordination:agent'||coordination:task|coordination:topology';
+  operation:|''init|spawn|destroy|coordinate|distribute|complete|fail'';
   targetId: string; // swarmId, agentId, taskId, etc.
   details?: {
     agentCount?: number;
-    topology?: 'mesh | hierarchical' | 'ring''' | '''star';
+    topology?: 'mesh|hierarchical|ring|star';
     taskType?: string;
     assignedTo?: string[];
     progress?: number;
@@ -63,9 +63,9 @@ export interface CoordinationEvent extends SystemEvent {
  * @example
  */
 export interface CommunicationEvent extends SystemEvent {
-  type:'' | '''communication:websocket''' | '''communication:http''' | '''communication:protocol';
-  operation:'' | '''connect | disconnect' | 'send''' | '''receive | error' | 'timeout''' | '''retry';
-  protocol:'' | '''http | https' | 'ws''' | '''wss | stdio' | 'tcp' | 'udp' | 'custom';
+  type:|'communication:websocket|communication:http'||communication:protocol';
+  operation:|'connect|disconnect|send|receive|error|timeout|retry';
+  protocol:|''http|https|ws|wss|stdio|tcp|udp|custom';
   endpoint?: string;
   details?: {
     requestId?: string;
@@ -85,14 +85,14 @@ export interface CommunicationEvent extends SystemEvent {
  * @example
  */
 export interface MonitoringEvent extends SystemEvent {
-  type:'' | '''monitoring:metrics''' | '''monitoring:health''' | '''monitoring:performance''' | '''monitoring:alert';
-  operation:'' | '''collect | report' | 'alert''' | '''recover | threshold' | 'anomaly';
+  type:|'monitoring:metrics|monitoring:health'||monitoring:performance|monitoring:alert';
+  operation:|''collect|report|alert|recover|threshold|anomaly';
   component: string;
   details?: {
     metricName?: string;
     metricValue?: number;
     threshold?: number;
-    severity?: 'info | warning' | 'error''' | '''critical';
+    severity?: 'info|warning|error|critical';
     alertId?: string;
     healthScore?: number;
     performanceData?: {
@@ -113,9 +113,9 @@ export interface MonitoringEvent extends SystemEvent {
  * @example
  */
 export interface InterfaceEvent extends SystemEvent {
-  type: 'interface:cli''' | '''interface:web''' | '''interface:tui''' | '''interface:api';
-  operation:'' | '''start | stop' | 'command''' | '''request | response' | 'interaction''' | '''render';
-  interface: 'cli | web' | 'tui''' | '''api';
+  type: 'interface:cli|interface:web'||interface:tui|interface:api';
+  operation:|''start|stop|command|request|response|interaction|render'';
+  interface: 'cli|web|tui|api';
   details?: {
     command?: string;
     args?: string[];
@@ -125,7 +125,7 @@ export interface InterfaceEvent extends SystemEvent {
     responseTime?: number;
     userId?: string;
     sessionId?: string;
-    interactionType?: 'click | key' | 'scroll' | 'focus' | 'input';
+    interactionType?: 'click|key|scroll|focus|input';
     renderTime?: number;
   };
 }
@@ -136,8 +136,8 @@ export interface InterfaceEvent extends SystemEvent {
  * @example
  */
 export interface NeuralEvent extends SystemEvent {
-  type:'' | '''neural:training''' | '''neural:inference''' | '''neural:optimization''' | '''neural:evaluation';
-  operation:'' | '''train | predict' | 'evaluate''' | '''optimize | load' | 'save''' | '''export';
+  type:|'neural:training|neural:inference'||neural:optimization|neural:evaluation';
+  operation:|''train|predict|evaluate|optimize|load|save|export';
   modelId: string;
   details?: {
     modelType?: string;
@@ -162,11 +162,11 @@ export interface NeuralEvent extends SystemEvent {
  * @example
  */
 export interface DatabaseEvent extends SystemEvent {
-  type:'' | '''database:query''' | '''database:transaction''' | '''database:migration''' | '''database:backup';
-  operation:'' | '''select | insert' | 'update''' | '''delete | create' | 'drop''' | '''index | backup' | 'restore';
+  type:|''database:query|database:transaction'||database:migration|database:backup';
+  operation:|''select|insert|update|delete|create|drop|index | backup'|restore';
   details?: {
     tableName?: string;
-    queryType?: 'read | write' | 'ddl''' | '''dcl';
+    queryType?: 'read|write|ddl|dcl';
     recordCount?: number;
     queryTime?: number;
     cacheHit?: boolean;
@@ -184,8 +184,8 @@ export interface DatabaseEvent extends SystemEvent {
  * @example
  */
 export interface MemoryEvent extends SystemEvent {
-  type: 'memory:cache''' | '''memory:store''' | '''memory:gc''' | '''memory:pool';
-  operation:'' | '''get | set' | 'delete''' | '''clear | expire' | 'cleanup' | 'allocate' | 'deallocate';
+  type: 'memory:cache|memory:store'||memory:gc|memory:pool';
+  operation:|''get|set|delete|clear|expire|cleanup|allocate|deallocate';
   details?: {
     key?: string;
     size?: number;
@@ -195,7 +195,7 @@ export interface MemoryEvent extends SystemEvent {
     memoryUsage?: number;
     poolSize?: number;
     gcDuration?: number;
-    gcType?: 'minor | major' | 'full';
+    gcType?: 'minor|major|full';
     objectCount?: number;
   };
 }
@@ -206,8 +206,8 @@ export interface MemoryEvent extends SystemEvent {
  * @example
  */
 export interface WorkflowEvent extends SystemEvent {
-  type:'' | '''workflow:execution''' | '''workflow:task''' | '''workflow:condition''' | '''workflow:trigger''' | '''workflow:orchestration';
-  operation:'' | '''start | complete' | 'fail''' | '''retry | skip' | 'branch''' | '''merge | loop' | 'create' | 'pause' | 'resume''' | '''task-complete''' | '''task-fail''' | '''dependency-resolved''' | '''orchestrate';
+  type:|'workflow:execution|workflow:task'||workflow:condition|workflow:trigger'||workflow:orchestration';
+  operation:|'start|complete|fail|retry|skip|branch|merge | loop'|create|pause|resume|task-complete'||task-fail|dependency-resolved'||orchestrate';
   workflowId: string;
   taskId?: string;
   details?: {
@@ -242,9 +242,9 @@ export interface WorkflowEvent extends SystemEvent {
  * Multi-level orchestration events for Portfolio → Program → Swarm execution.
  */
 export interface OrchestrationEvent extends SystemEvent {
-  type:'' | '''orchestration:portfolio''' | '''orchestration:program''' | '''orchestration:execution''' | '''orchestration:flow''' | '''orchestration:bottleneck';
-  operation:'' | '''plan | execute' | 'monitor''' | '''optimize | escalate' | 'delegate' | 'coordinate' | 'sync';
-  level: 'portfolio | program' | 'execution';
+  type:|'orchestration:portfolio|orchestration:program'||orchestration:execution|orchestration:flow'||orchestration:bottleneck';
+  operation:|'plan|execute|monitor|optimize|escalate|delegate|coordinate|sync';
+  level: 'portfolio|program|execution';
   details?: {
     orchestrationId?: string;
     parentId?: string;
@@ -270,16 +270,16 @@ export interface OrchestrationEvent extends SystemEvent {
  * SAFe (Scaled Agile Framework) events for enterprise agile coordination.
  */
 export interface SafeEvent extends SystemEvent {
-  type:'' | '''safe:portfolio''' | '''safe:pi''' | '''safe:value_stream''' | '''safe:planning''' | '''safe:execution';
-  operation:'' | '''epic_created | epic_prioritized' | 'epic_approved''' | '''epic_funded | epic_completed' | 'pi_planning''' | '''pi_execution | pi_review' | 'value_stream_mapped''' | '''objective_set';
+  type:|'safe:portfolio|safe:pi'||safe:value_stream|safe:planning'||safe:execution';
+  operation:|'epic_created|epic_prioritized|epic_approved|epic_funded|epic_completed|pi_planning|pi_execution | pi_review'|value_stream_mapped|objective_set'';
   details?: {
     epicId?: string;
     piId?: string;
     valueStreamId?: string;
     businessValue?: number;
     confidence?: number;
-    phase?: 'preparation | day1' | 'day2''' | '''finalization';
-    investmentHorizon?: 'near | mid' | 'long';
+    phase?: 'preparation|day1|day2|finalization';
+    investmentHorizon?: 'near|mid|long';
     budgetAllocation?: number;
     piObjectives?: Array<{
       id: string;
@@ -298,16 +298,16 @@ export interface SafeEvent extends SystemEvent {
  * Memory orchestration events for advanced memory coordination across systems.
  */
 export interface MemoryOrchestrationEvent extends SystemEvent {
-  type:'' | '''memory_orchestration:sync''' | '''memory_orchestration:coordination''' | '''memory_orchestration:cache''' | '''memory_orchestration:consistency''' | '''memory_orchestration:optimization';
-  operation:'' | '''sync_initiated | sync_completed' | 'coordination_updated''' | '''cache_populated | cache_invalidated' | 'cache_refreshed''' | '''cache_migrated | consistency_check' | 'optimization_applied';
+  type:|'memory_orchestration:sync|memory_orchestration:coordination'||memory_orchestration:cache|memory_orchestration:consistency'||memory_orchestration:optimization';
+  operation:|'sync_initiated|sync_completed|coordination_updated|cache_populated|cache_invalidated|cache_refreshed|cache_migrated | consistency_check'|optimization_applied';
   details?: {
     systemId?: string;
     cacheId?: string;
-    syncType?: 'full | incremental' | 'delta';
+    syncType?: 'full|incremental|delta';
     dataSize?: number;
     keyPattern?: string;
-    consistencyLevel?: 'eventual | strong' | 'weak';
-    optimizationStrategy?: 'lru | lfu' | 'ttl''' | '''adaptive';
+    consistencyLevel?: 'eventual|strong|weak';
+    optimizationStrategy?: 'lru|lfu|ttl|adaptive';
     memoryPools?: string[];
     crossSystemSync?: boolean;
   };
@@ -316,7 +316,7 @@ export interface MemoryOrchestrationEvent extends SystemEvent {
 /**
  * Union type for all UEL events.
  */
-export type UELEvent ='' | ''SystemLifecycleEvent'' | ''CoordinationEvent'' | ''CommunicationEvent'' | ''MonitoringEvent'' | ''InterfaceEvent'' | ''NeuralEvent'' | ''DatabaseEvent'' | ''MemoryEvent'' | ''WorkflowEvent'' | ''OrchestrationEvent'' | ''SafeEvent'' | ''MemoryOrchestrationEvent;
+export type UELEvent =|SystemLifecycleEvent|CoordinationEvent|CommunicationEvent|MonitoringEvent|InterfaceEvent|NeuralEvent|DatabaseEvent|MemoryEvent|WorkflowEvent|OrchestrationEvent|SafeEvent|MemoryOrchestrationEvent;
 
 /**
  * Event category mappings for organization.
@@ -343,7 +343,7 @@ export const EventTypePatterns = {
   // System events
   SYSTEM_ALL: 'system:*',
   SYSTEM_LIFECYCLE:
-    'system:startup'' | ''system:shutdown'' | ''system:restart'' | ''system:error'' | ''system:health',
+    'system:startup|system:shutdown|system:restart|system:error|system:health',
 
   // Coordination events
   COORDINATION_ALL: 'coordination:*',

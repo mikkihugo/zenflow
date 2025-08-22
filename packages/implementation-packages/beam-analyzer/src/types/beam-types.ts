@@ -6,7 +6,7 @@
 import type { Result } from '@claude-zen/foundation';
 
 // BEAM Language Types
-export type BeamLanguage = 'erlang | elixir' | 'gleam''' | '''lfe';
+export type BeamLanguage = 'erlang|elixir|gleam|lfe';
 
 // BEAM Analysis Configuration
 export interface BeamAnalysisConfig {
@@ -46,13 +46,13 @@ export interface BeamProject {
   configFiles: string[];
 }
 
-export type BeamBuildTool = 'mix | rebar3' | 'gleam' | 'lfetool' | 'unknown';
+export type BeamBuildTool = 'mix|rebar3|gleam|lfetool|unknown';
 
 export interface BeamApplication {
   /** Application name */
   name: string;
   /** Application type */
-  type: 'application | library' | 'release';
+  type: 'application|library|release';
   /** Entry point module */
   entryPoint?: string;
   /** Supervision tree root */
@@ -69,7 +69,7 @@ export interface BeamDependency {
   /** Version specification */
   version: string;
   /** Dependency source */
-  source: 'hex | git' | 'path''' | '''unknown';
+  source: 'hex|git|path|unknown';
   /** Security vulnerabilities */
   vulnerabilities?: BeamVulnerability[];
 }
@@ -112,9 +112,9 @@ export interface BeamFinding {
   related?: string[];
 }
 
-export type BeamSeverity = 'info | low' | 'medium' | 'high' | 'critical';
+export type BeamSeverity = 'info|low|medium|high|critical';
 
-export type BeamFindingCategory ='' | '''security | performance' | 'reliability''' | '''maintainability''' | '''otp-patterns''' | '''concurrency''' | '''fault-tolerance''' | '''type-safety';
+export type BeamFindingCategory =|'security|performance|reliability|maintainability||otp-patterns|concurrency'||fault-tolerance|type-safety';
 
 export interface BeamLocation {
   /** File path */
@@ -131,7 +131,7 @@ export interface BeamLocation {
   context?: string;
 }
 
-export type BeamAnalysisTool ='' | '''dialyzer | sobelow' | 'elvis' | 'xref' | 'custom''' | '''beam-analyzer';
+export type BeamAnalysisTool =|''dialyzer|sobelow|elvis|xref|custom|beam-analyzer';
 
 export interface BeamFixSuggestion {
   /** Human-readable description */
@@ -180,7 +180,7 @@ export interface DialyzerWarning {
   location: BeamLocation;
 }
 
-export type DialyzerWarningType ='' | '''no_return | unused_fun' | 'undef''' | '''unknown_function | unknown_type' | 'race_condition''' | '''contract_types | invalid_contract' | 'pattern_match' | 'opaque' | 'specdiffs';
+export type DialyzerWarningType =|''no_return|unused_fun|undef|unknown_function|unknown_type|race_condition|contract_types | invalid_contract'|pattern_match|opaque|specdiffs';
 
 export interface SuccessTyping {
   /** Function name */
@@ -204,7 +204,7 @@ export interface SobelowFinding {
   /** Security category */
   category: SobelowCategory;
   /** Confidence level */
-  confidence: 'high | medium' | 'low';
+  confidence: 'high|medium|low';
   /** Details */
   details: string;
   /** Location */
@@ -215,7 +215,7 @@ export interface SobelowFinding {
   cwe?: number;
 }
 
-export type SobelowCategory ='' | '''sql_injection | xss' | 'csrf''' | '''directory_traversal | command_injection' | 'code_injection''' | '''redirect | traversal' | 'rce' | 'dos' | 'misc';
+export type SobelowCategory =|'sql_injection|xss|csrf|directory_traversal|command_injection|code_injection|redirect | traversal'|rce|dos|misc';
 
 export interface PhoenixSecurityIssue {
   /** Issue type */
@@ -228,7 +228,7 @@ export interface PhoenixSecurityIssue {
   mitigation: string;
 }
 
-export type PhoenixIssueType ='' | '''unsafe_params | missing_csrf' | 'weak_session''' | '''insecure_headers | unsafe_redirect' | 'mass_assignment''' | '''weak_crypto';
+export type PhoenixIssueType =|'unsafe_params|missing_csrf|weak_session|insecure_headers|unsafe_redirect|mass_assignment|weak_crypto';
 
 export interface ConfigSecurityIssue {
   /** Configuration file */
@@ -261,13 +261,13 @@ export interface ElvisViolation {
   category: ElvisCategory;
 }
 
-export type ElvisCategory ='' | '''line_length | no_tabs' | 'no_trailing_whitespace''' | '''macro_names | operator_spaces' | 'nesting_level''' | '''function_naming | variable_naming' | 'module_naming';
+export type ElvisCategory =|''line_length|no_tabs|no_trailing_whitespace|macro_names|operator_spaces|nesting_level|function_naming | variable_naming'|module_naming';
 
 export interface CustomAnalysisResult {
   /** Rule name */
   rule: string;
   /** Analysis type */
-  type: 'pattern | security' | 'performance''' | '''otp';
+  type: 'pattern|security|performance|otp';
   /** Findings */
   findings: BeamFinding[];
   /** Execution time */
@@ -294,7 +294,7 @@ export interface BeamAnalysisRule {
 
 export interface BeamPattern {
   /** Pattern type */
-  type: 'ast | regex' | 'function_call''' | '''module_attribute';
+  type: 'ast|regex|function_call|module_attribute';
   /** Pattern expression */
   expression: string;
   /** Additional constraints */
@@ -380,7 +380,7 @@ export interface BeamAnalysisError {
   originalError?: Error;
 }
 
-export type BeamErrorCode ='' | '''TOOL_NOT_FOUND | COMPILATION_FAILED' | 'TIMEOUT''' | '''INVALID_PROJECT | PERMISSION_DENIED' | 'NETWORK_ERROR' | 'CONFIGURATION_ERROR' | 'ANALYSIS_FAILED';
+export type BeamErrorCode =|'TOOL_NOT_FOUND|COMPILATION_FAILED|TIMEOUT|INVALID_PROJECT|PERMISSION_DENIED|NETWORK_ERROR|CONFIGURATION_ERROR|ANALYSIS_FAILED';
 
 // Result Wrapper Types
 export type BeamAnalysisExecutionResult = Result<

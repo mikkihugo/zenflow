@@ -25,11 +25,11 @@ import type { DSPyLLMBridge } from '../../coordination/dspy-llm-bridge';
 /**
  * Language and framework types for principle research
  */
-export type ProgrammingLanguage =' | ''typescript'' | ''javascript'' | ''python'' | ''rust'' | ''go'' | ''java'' | ''csharp'' | ''swift'' | ''kotlin';
+export type ProgrammingLanguage =|typescript|javascript|python|rust|go|java|csharp|swift|'kotlin';
 
-export type TaskDomain =' | ''rest-api'' | ''web-app'' | ''mobile-app'' | ''desktop-app'' | ''microservices'' | ''data-pipeline'' | ''ml-model'' | ''blockchain'' | ''game-dev'' | ''embedded';
+export type TaskDomain =|rest-api|web-app|mobile-app|desktop-app|microservices|data-pipeline|ml-model|blockchain|game-dev|'embedded';
 
-export type DevelopmentRole =' | ''backend-developer'' | ''frontend-developer'' | ''fullstack-developer'' | ''mobile-developer'' | ''devops-engineer'' | ''ml-engineer'' | ''architect'' | ''tech-lead';
+export type DevelopmentRole =|backend-developer|frontend-developer|fullstack-developer|mobile-developer|devops-engineer|ml-engineer|architect|'tech-lead';
 
 /**
  * Coding principles research configuration
@@ -48,7 +48,7 @@ export interface PrinciplesResearchConfig {
   /** Include testing guidelines */
   includeTesting?: boolean;
   /** Research depth level */
-  depth?: 'basic'' | ''intermediate'' | ''advanced'' | ''expert';
+  depth?: 'basic|intermediate|advanced|expert';
 }
 
 /**
@@ -153,7 +153,7 @@ export interface AgentExecutionFeedback {
     language: ProgrammingLanguage;
     domain?: TaskDomain;
     role?: DevelopmentRole;
-    taskComplexity:'simple'' | ''moderate'' | ''complex';
+    taskComplexity:'simple|moderate|complex';
     requirementsCount: number;
   };
   timestamp: Date;
@@ -894,8 +894,8 @@ Respond in JSON format with structured guidelines that cover all research areas 
    */
   private generateReviewableTemplate(principles: CodingPrinciples): string {
     return `# ${principles.language.toUpperCase()} Coding Principles
-${principles.domain ? `## Domain: ${principles.domain}` : ''}
-${principles.role ? `## Role: ${principles.role}` : ''}
+${principles.domain ? `## Domain: ${principles.domain}` : '}
+${principles.role ? `## Role: ${principles.role}` : '}
 
 ## 📁 File Naming & Organization
 ${principles.coreStandards.fileNaming.map((item) => `- ${item}`).join('\n')}

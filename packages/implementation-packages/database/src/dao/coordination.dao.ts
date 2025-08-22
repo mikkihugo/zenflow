@@ -149,8 +149,8 @@ export class CoordinationDao<T>
     this.logger.debug(`Releasing lock: ${lockId}`);
 
     // Find lock by ID
-    let resourceId: string'' | ''null = null;
-    let lockInfo: LockInfo'' | ''null = null;
+    let resourceId: string|null = null;
+    let lockInfo: LockInfo|null = null;
 
     for (const [resource, lock] of this.locks.entries()) {
       if (lock.id === lockId) {
@@ -339,7 +339,7 @@ export class CoordinationDao<T>
     return created;
   }
 
-  override async update(id: string'' | ''number, updates: Partial<T>): Promise<T> {
+  override async update(id: string|number, updates: Partial<T>): Promise<T> {
     const updated = await super.update(id, updates);
 
     // Emit change notification
@@ -348,7 +348,7 @@ export class CoordinationDao<T>
     return updated;
   }
 
-  override async delete(id: string'' | ''number): Promise<boolean> {
+  override async delete(id: string|number): Promise<boolean> {
     const deleted = await super.delete(id);
 
     if (deleted) {
@@ -419,7 +419,7 @@ export class CoordinationDao<T>
     maxRetries: number = 3,
     retryDelay: number = 1000,
     lockTimeout: number = 30000
-  ): Promise<CoordinationLock'' | ''null> {
+  ): Promise<CoordinationLock|null> {
     this.logger.debug(
       `Trying to acquire lock for resource: ${resourceId} (max retries: ${maxRetries})`
     );
@@ -529,8 +529,8 @@ export class CoordinationDao<T>
    */
 
   private async emitChange(
-    type: 'create | update' | 'delete',
-    entityId: string'' | ''number,
+    type: 'create|update|delete',
+    entityId: string|number,
     entity?: T
   ): Promise<void> {
     const change: CoordinationChange<T> = {
@@ -556,7 +556,7 @@ export class CoordinationDao<T>
 
     const regex = new RegExp(pattern.replace(/\*/g, '.*'));
     return (
-      regex.test(change.type)'' | '''' | ''regex.test(change.entityId.toString())'' | '''' | ''regex.test(this.tableName)
+      regex.test(change.type)||regex.test(change.entityId.toString())||regex.test(this.tableName)
     );
   }
 
@@ -619,7 +619,7 @@ export class CoordinationDao<T>
         event_data: JSON.stringify(event.data),
         source: event.source,
         timestamp: event.timestamp,
-        metadata: JSON.stringify(event.metadata'' | '''' | ''{}),
+        metadata: JSON.stringify(event.metadata||{}),
       };
 
       await this.adapter.execute(

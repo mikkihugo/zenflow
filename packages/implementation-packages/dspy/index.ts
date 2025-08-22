@@ -186,7 +186,7 @@
  *   constructor(private config: {
  *     domain: string;
  *     expertKnowledge: string[];
- *     optimizationStrategy: 'conservative'''' | ''''aggressive';
+ *     optimizationStrategy: 'conservative'||'aggressive';
  *   }) {}
  *
  *   async optimize(module: Module, examples: Example[]) {
@@ -217,7 +217,7 @@
  *     // Add domain-specific context to examples
  *     return examples.map(example => ({
  *       ...example,
- *       context: this.config.expertKnowledge.join('\\n')
+ *       context: this.config.expertKnowledge.join('\n')
  *     }));
  *   }
  *
@@ -225,7 +225,7 @@
  *     // Generate prompts tailored to domain
  *     const basePrompt = module.getPrompt();
  *     const domainPrompts = this.config.expertKnowledge.map(knowledge =>
- *       `${basePrompt}\\n\\nDomain expertise: ${knowledge}`
+ *       `${basePrompt}\n\nDomain expertise: ${knowledge}`
  *     );
  *
  *     return domainPrompts;

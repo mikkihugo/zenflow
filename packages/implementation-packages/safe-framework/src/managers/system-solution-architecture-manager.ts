@@ -123,8 +123,8 @@ export interface Stakeholder {
   readonly name: string;
   readonly role: string;
   readonly concerns: string[];
-  readonly influence: 'high | medium' | 'low';
-  readonly involvement: 'active | consulted' | 'informed';
+  readonly influence: 'high|medium|low';
+  readonly involvement: 'active|consulted|informed';
 }
 
 /**
@@ -132,10 +132,10 @@ export interface Stakeholder {
  */
 export interface ArchitecturalDriver {
   readonly id: string;
-  readonly type: 'functional | quality' | 'constraint';
+  readonly type: 'functional|quality|constraint';
   readonly description: string;
   readonly rationale: string;
-  readonly priority: 'critical | high' | 'medium''' | '''low';
+  readonly priority: 'critical|high|medium|low';
   readonly source: string;
   readonly impactedComponents: string[];
 }
@@ -194,7 +194,7 @@ export interface ArchitecturalTactic {
  */
 export interface ArchitecturalConstraint {
   readonly id: string;
-  readonly type: 'technical | business' | 'regulatory''' | '''organizational';
+  readonly type: 'technical|business|regulatory|organizational';
   readonly description: string;
   readonly rationale: string;
   readonly implications: string[];
@@ -236,7 +236,7 @@ export enum ComponentType {
 export interface ComponentInterface {
   readonly id: string;
   readonly name: string;
-  readonly type: 'synchronous | asynchronous' | 'batch';
+  readonly type: 'synchronous|asynchronous|batch';
   readonly protocol: string;
   readonly producer: string;
   readonly consumer: string;
@@ -265,7 +265,7 @@ export interface ComplianceRequirement {
   readonly description: string;
   readonly controls: ControlRequirement[];
   readonly evidence: string[];
-  readonly status: 'compliant | non_compliant' | 'partial''' | '''not_assessed';
+  readonly status: 'compliant|non_compliant|partial|not_assessed';
 }
 
 /**
@@ -287,8 +287,8 @@ export interface ControlRequirement {
 export interface ArchitectureReview {
   readonly id: string;
   readonly reviewerId: string;
-  readonly reviewType: 'peer | formal' | 'compliance''' | '''security';
-  readonly status:'' | '''pending | in_progress' | 'approved' | 'rejected' | 'conditionally_approved';
+  readonly reviewType: 'peer|formal|compliance|security';
+  readonly status:|'pending|in_progress|approved|rejected|conditionally_approved';
   readonly findings: ReviewFinding[];
   readonly recommendations: string[];
   readonly decision: string;
@@ -301,8 +301,8 @@ export interface ArchitectureReview {
  */
 export interface ReviewFinding {
   readonly id: string;
-  readonly category: 'compliance | design' | 'quality''' | '''risk';
-  readonly severity: 'critical | high' | 'medium' | 'low' | 'info';
+  readonly category: 'compliance|design|quality|risk';
+  readonly severity: 'critical|high|medium|low|info';
   readonly description: string;
   readonly recommendation: string;
   readonly impactedComponents: string[];
@@ -378,7 +378,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
           enableAutomatedRemediation: false,
           enableRealTimeAlerts: true,
           monitoringInterval:
-            this.configuration.complianceCheckInterval'' | '''' | ''3600000,
+            this.configuration.complianceCheckInterval||3600000,
         }
       );
       await this.complianceMonitoringService.initialize();
@@ -389,7 +389,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
         this.logger,
         {
           maxConcurrentReviews: this.configuration.maxConcurrentReviews,
-          defaultReviewTimeout: this.configuration.reviewTimeout'' | '''' | ''480,
+          defaultReviewTimeout: this.configuration.reviewTimeout||480,
           enableAIAnalysis: true,
           enableAutomatedReviews: true,
         }
@@ -471,7 +471,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
    */
   async initiateArchitectureReview(
     systemDesignId: string,
-    reviewType: 'peer | formal' | 'compliance''' | '''security',
+    reviewType: 'peer|formal|compliance|security',
     reviewerId: string
   ): Promise<ArchitectureReview> {
     if (!this.initialized) await this.initialize();
@@ -489,7 +489,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
         reviewerId,
         priority: 'medium'as const,
         deadline: new Date(
-          Date.now() + (this.configuration.reviewTimeout'' | '''' | ''480) * 60000
+          Date.now() + (this.configuration.reviewTimeout||480) * 60000
         ),
       };
 
@@ -569,8 +569,8 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
   /**
    * Get system design by ID - Delegates to System Design Management Service
    */
-  getSystemDesign(id: string): SystemDesign'' | ''undefined {
-    if (!this.initialized'' | '''' | ''!this.systemDesignService) {
+  getSystemDesign(id: string): SystemDesign|undefined {
+    if (!this.initialized||!this.systemDesignService) {
       return undefined;
     }
     return this.systemDesignService.getSystemDesign(id);
@@ -580,7 +580,7 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
    * Get all system designs - Delegates to System Design Management Service
    */
   getAllSystemDesigns(): SystemDesign[] {
-    if (!this.initialized'' | '''' | ''!this.systemDesignService) {
+    if (!this.initialized||!this.systemDesignService) {
       return [];
     }
     return this.systemDesignService.getAllSystemDesigns();
@@ -589,8 +589,8 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
   /**
    * Get architecture review by ID - Delegates to Architecture Review Management Service
    */
-  getArchitectureReview(id: string): ArchitectureReview'' | ''undefined {
-    if (!this.initialized'' | '''' | ''!this.architectureReviewService) {
+  getArchitectureReview(id: string): ArchitectureReview|undefined {
+    if (!this.initialized||!this.architectureReviewService) {
       return undefined;
     }
     return this.architectureReviewService.getArchitectureReview(id);
@@ -606,32 +606,32 @@ export class SystemSolutionArchitectureManager extends TypedEventBase {
       // Get metrics from each service
       const [designDashboard, reviewDashboard, complianceDashboard] =
         await Promise.all([
-          this.systemDesignService?.getSystemDesignDashboard()'' | '''' | ''Promise.resolve(null),
-          this.architectureReviewService?.getArchitectureReviewDashboard()'' | '''' | ''Promise.resolve(null),
-          this.complianceMonitoringService?.getComplianceDashboard()'' | '''' | ''Promise.resolve(null),
+          this.systemDesignService?.getSystemDesignDashboard()||Promise.resolve(null),
+          this.architectureReviewService?.getArchitectureReviewDashboard()||Promise.resolve(null),
+          this.complianceMonitoringService?.getComplianceDashboard()||Promise.resolve(null),
         ]);
 
       return {
         systemDesigns: {
-          total: designDashboard?.totalDesigns'' | '''' | ''0,
-          byStatus: designDashboard?.designsByStatus'' | '''' | ''{},
-          byType: designDashboard?.designsByType'' | '''' | ''{},
-          byPattern: designDashboard?.designsByPattern'' | '''' | ''{},
-          qualityScore: designDashboard?.designQualityScore'' | '''' | ''0,
+          total: designDashboard?.totalDesigns||0,
+          byStatus: designDashboard?.designsByStatus||{},
+          byType: designDashboard?.designsByType||{},
+          byPattern: designDashboard?.designsByPattern||{},
+          qualityScore: designDashboard?.designQualityScore||0,
         },
         reviews: {
-          total: reviewDashboard?.totalReviews'' | '''' | ''0,
-          active: reviewDashboard?.pendingReviews?.length'' | '''' | ''0,
-          byType: reviewDashboard?.reviewsByType'' | '''' | ''{},
-          averageTime: reviewDashboard?.averageReviewTime'' | '''' | ''0,
+          total: reviewDashboard?.totalReviews||0,
+          active: reviewDashboard?.pendingReviews?.length||0,
+          byType: reviewDashboard?.reviewsByType||{},
+          averageTime: reviewDashboard?.averageReviewTime||0,
           effectiveness:
-            reviewDashboard?.reviewEffectiveness?.overallEffectiveness'' | '''' | ''0,
+            reviewDashboard?.reviewEffectiveness?.overallEffectiveness||0,
         },
         compliance: {
-          overallRate: complianceDashboard?.overallComplianceRate'' | '''' | ''0,
-          byFramework: complianceDashboard?.complianceByFramework'' | '''' | ''{},
-          violations: complianceDashboard?.violationsBySeverity'' | '''' | ''{},
-          criticalCount: complianceDashboard?.criticalViolations?.length'' | '''' | ''0,
+          overallRate: complianceDashboard?.overallComplianceRate||0,
+          byFramework: complianceDashboard?.complianceByFramework||{},
+          violations: complianceDashboard?.violationsBySeverity||{},
+          criticalCount: complianceDashboard?.criticalViolations?.length||0,
         },
       };
     } catch (error) {

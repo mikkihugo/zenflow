@@ -48,7 +48,7 @@ export interface SAFeEventsManagerConfig {
 
 export interface SAFeEventConfig {
   id: string;
-  type:'' | '''system-demo''' | '''inspect-adapt''' | '''art-sync''' | '''cross-art-sync''' | '''pi-planning';
+  type:|'system-demo|inspect-adapt'||art-sync|cross-art-sync'||pi-planning';
   title: string;
   description: string;
   duration: number;
@@ -73,14 +73,14 @@ export interface EventAgendaItem {
   id: string;
   title: string;
   duration: number;
-  type: 'presentation | discussion' | 'workshop' | 'demo' | 'retrospective';
+  type: 'presentation|discussion|workshop|demo|retrospective';
   facilitator?: string;
   materials?: string[];
   objectives: string[];
 }
 
 export interface EventSchedulingPattern {
-  type: 'weekly''' | '''bi-weekly''' | '''monthly''' | '''per-iteration''' | '''per-pi';
+  type: 'weekly|bi-weekly'||monthly|per-iteration'||per-pi';
   dayOfWeek?: number;
   timeOfDay?: string;
   iterationWeek?: number;
@@ -107,7 +107,7 @@ export interface EventExecutionContext {
 
 export interface EventOutcome {
   eventId: string;
-  status: 'completed | cancelled' | 'postponed''' | '''partial';
+  status: 'completed|cancelled|postponed|partial';
   duration: number;
   attendance: {
     expected: number;
@@ -128,7 +128,7 @@ export interface EventDecision {
   decisionMaker: string;
   participants: string[];
   rationale: string;
-  impact: 'low | medium' | 'high''' | '''critical';
+  impact: 'low|medium|high|critical';
   implementationDate?: Date;
   responsible: string[];
 }
@@ -139,8 +139,8 @@ export interface ActionItem {
   description: string;
   assignee: string;
   dueDate: Date;
-  priority: 'low | medium' | 'high''' | '''critical';
-  status: 'open''' | '''in-progress''' | '''completed''' | '''cancelled';
+  priority: 'low|medium|high|critical';
+  status: 'open|in-progress'||completed|cancelled'';
   dependencies: string[];
 }
 
@@ -433,14 +433,14 @@ export class SAFeEventsManager extends TypedEventBase {
   /**
    * Get scheduled event by ID
    */
-  getScheduledEvent(eventId: string): SAFeEventConfig'' | ''undefined {
+  getScheduledEvent(eventId: string): SAFeEventConfig|undefined {
     return this.scheduledEvents.get(eventId);
   }
 
   /**
    * Get event outcome by ID
    */
-  getEventOutcome(eventId: string): EventOutcome'' | ''undefined {
+  getEventOutcome(eventId: string): EventOutcome|undefined {
     return this.eventOutcomes.get(eventId);
   }
 

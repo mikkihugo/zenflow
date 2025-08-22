@@ -8,7 +8,7 @@
  * Create a complete AGUI system with task approval capabilities
  */
 export async function createAGUISystem(config?: {
-  aguiType?: 'web''' | '''headless';
+  aguiType?: 'web|headless'';
   taskApprovalConfig?: Partial<
     import('./task-approval-system').TaskApprovalConfig
   >;

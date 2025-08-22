@@ -45,7 +45,7 @@ class ConversationMemoryImpl {
     await this.backend.store(`conversation:${conversation.id}`, conversation);
   }
 
-  async getConversation(id: string): Promise<ConversationSession'' | ''null> {
+  async getConversation(id: string): Promise<ConversationSession|null> {
     const result = await this.backend.retrieve(`conversation:${id}`);
     if (!result) return null;
 
@@ -67,7 +67,7 @@ class ConversationMemoryImpl {
     limit?: number;
     offset?: number;
   }): Promise<ConversationSession[]> {
-    const searchTerm = criteria.agentId'' | '''' | ''criteria.pattern'' | '''' | '''';
+    const searchTerm = criteria.agentId||criteria.pattern||';
     const results = await this.backend.search(searchTerm);
     const conversations = Object.values(results) as ConversationSession[];
 
@@ -85,12 +85,12 @@ class ConversationMemoryImpl {
     if (criteria.pattern) {
       filteredConversations = filteredConversations.filter(
         (conv) =>
-          conv.context.domain.includes(criteria.pattern)'' | '''' | ''conv.title.toLowerCase().includes(criteria.pattern.toLowerCase())
+          conv.context.domain.includes(criteria.pattern)|'|conv.title.toLowerCase().includes(criteria.pattern.toLowerCase())
       );
     }
 
     // Apply pagination
-    const start = criteria.offset'' | '''' | ''0;
+    const start = criteria.offset||0;
     const end = criteria.limit ? start + criteria.limit : undefined;
     return end
       ? filteredConversations.slice(start, end)

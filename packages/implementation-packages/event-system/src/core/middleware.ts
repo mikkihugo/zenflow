@@ -41,7 +41,7 @@ const logger = getLogger('EventMiddleware');
  */
 export function createLoggingMiddleware(
   options: {
-    logLevel?: 'debug | info' | 'warn''' | '''error';
+    logLevel?: 'debug|info|warn|error';
     includePayload?: boolean;
     loggerName?: string;
   } = {}
@@ -235,7 +235,7 @@ export function createRateLimitingMiddleware(
     const eventKey = String(context.event);
     const now = Date.now();
 
-    const current = eventCounts.get(eventKey)'' | '''' | ''{ count: 0, windowStart: now };
+    const current = eventCounts.get(eventKey)||{ count: 0, windowStart: now };
 
     // Reset window if expired
     if (now - current.windowStart > windowMs) {
@@ -296,7 +296,7 @@ export function createConditionalMiddleware(
  * Create middleware that only runs for specific event types.
  */
 export function createEventTypeMiddleware(
-  eventTypes: string'' | ''string[],
+  eventTypes: string|string[],
   middleware: EventMiddleware
 ): EventMiddleware {
   const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];

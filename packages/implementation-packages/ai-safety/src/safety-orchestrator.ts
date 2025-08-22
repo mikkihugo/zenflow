@@ -119,7 +119,7 @@ export interface HumanEscalationResult {
   sessionPaused: boolean;
   timeMs: number;
   timestamp: Timestamp;
-  escalationLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
+  escalationLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
 }
 
 /**
@@ -170,10 +170,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
   private detectionCircuitBreaker: any;
 
   // Comprehensive foundation integration
-  private storage: KeyValueStore'' | ''null = null;
+  private storage: KeyValueStore|null = null;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;
-  private telemetryManager: BasicTelemetryManager'' | ''null = null;
+  private telemetryManager: BasicTelemetryManager|null = null;
   private errorAggregator = createErrorAggregator();
   private sessionCircuitBreaker: any;
   private initialized = false;
@@ -380,8 +380,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
     totalInterventions += phase2.guidedInterventions;
 
     // Phase 3: Human Escalation if needed (like phase3_integration)
-    let phase3: HumanEscalationResult'' | ''undefined;
-    if (phase1.alertsGenerated >= 3'' | '''' | ''phase2.behavioralDeviations >= 2) {
+    let phase3: HumanEscalationResult|undefined;
+    if (phase1.alertsGenerated >= 3||phase2.behavioralDeviations >= 2) {
       phase3 = await this.triggerHumanEscalation(phase1, phase2);
     }
 
@@ -573,7 +573,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
         // Store in intervention history
         const existing =
-          this.interventionHistory.get(interactionData.agentId)'' | '''' | ''[];
+          this.interventionHistory.get(interactionData.agentId)||[];
         this.interventionHistory.set(interactionData.agentId, [
           ...existing,
           ...alerts,
@@ -689,9 +689,9 @@ export class AISafetyOrchestrator extends TypedEventBase {
     this.deceptionDetector.on('deception:escalation', (data: unknown) => {
       // Type-safe escalation data with defaults
       const escalationData = {
-        agentId: (data as any)?.agentId'' | '''' | '''unknown',
-        totalInterventions: (data as any)?.totalInterventions'' | '''' | ''0,
-        recentAlerts: (data as any)?.recentAlerts'' | '''' | ''[],
+        agentId: (data as any)?.agentId||'unknown',
+        totalInterventions: (data as any)?.totalInterventions||0,
+        recentAlerts: (data as any)?.recentAlerts||[],
       };
       this.handleEscalation(escalationData);
     });
@@ -830,31 +830,31 @@ export class AISafetyOrchestrator extends TypedEventBase {
     environment?: string;
   }): Promise<{
     safe: boolean;
-    riskLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
+    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
     warnings: string[];
     recommendations: string[];
     blocked?: boolean;
   }> {
     return withTrace('safety-validation', async (span) => {
       span?.setAttributes({
-        command: context.command'' | '''' | '''unknown',
-        agentId: context.agentId'' | '''' | '''unknown',
-        toolCallsCount: context.toolCalls?.length'' | '''' | ''0,
+        command: context.command||'unknown',
+        agentId: context.agentId||'unknown',
+        toolCallsCount: context.toolCalls?.length||0,
       });
 
       // Basic safety checks
       const warnings: string[] = [];
       const recommendations: string[] = [];
-      let riskLevel:'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL' = 'LOW';
+      let riskLevel:'LOW|MEDIUM|HIGH|CRITICAL' = 'LOW';
       let blocked = false;
 
       // Check for dangerous commands
       if (context.command) {
         const dangerousPatterns = [
-          /rm\s+-rf\s+\/(?!tmp'' | ''var\/tmp)/i, // Dangerous rm commands
-          /sudo\s+(?!which'' | ''type)/i, // Sudo commands (except safe ones)
-          /curl.*\'' | ''\s*(?:sh'' | ''bash)/i, // Piping curl to shell
-          /wget.*\'' | ''\s*(?:sh'' | ''bash)/i, // Piping wget to shell
+          /rm\s+-rf\s+\/(?!tmp|var\/tmp)/i, // Dangerous rm commands
+          /sudo\s+(?!which|type)/i, // Sudo commands (except safe ones)
+          /curl.*\|\s*(?:sh|bash)/i, // Piping curl to shell
+          /wget.*\|\s*(?:sh|bash)/i, // Piping wget to shell
           /eval\s*\(/i, // Eval statements
         ];
 
@@ -888,7 +888,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
                 warnings.push(...subValidation.warnings);
                 recommendations.push(...subValidation.recommendations);
                 riskLevel = subValidation.riskLevel;
-                blocked = blocked'' | '''' | ''subValidation.blocked'' | '''' | ''false;
+                blocked = blocked||subValidation.blocked||false;
               }
             }
           }
@@ -905,15 +905,15 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
       // Record metrics
       recordMetric('safety_validations_total', 1, {
-        agentId: context.agentId'' | '''' | '''unknown',
+        agentId: context.agentId||'unknown',
         riskLevel,
         blocked: blocked ? 'true' : 'false',
       });
 
       if (blocked) {
         recordMetric('safety_validations_blocked', 1, {
-          agentId: context.agentId'' | '''' | '''unknown',
-          reason: warnings[0]'' | '''' | '''unknown',
+          agentId: context.agentId||'unknown',
+          reason: warnings[0]||'unknown',
         });
         logger.warn('🛡️ Safety validation BLOCKED command', {
           command: context.command,

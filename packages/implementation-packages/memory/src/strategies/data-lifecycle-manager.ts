@@ -22,7 +22,7 @@ import type {
 } from './types';
 
 interface LifecycleAction {
-  type: 'promote | demote' | 'migrate' | 'cleanup' | 'archive';
+  type: 'promote|demote|migrate|cleanup|archive';
   key: string;
   fromStage: LifecycleStage;
   toStage: LifecycleStage;
@@ -105,8 +105,8 @@ export class DataLifecycleManager extends TypedEventBase {
     }
 
     const now = Date.now();
-    const stage = options.stage'' | '''' | '''hot';
-    const size = options.size'' | '''' | ''this.estimateSize(value);
+    const stage = options.stage||'hot';
+    const size = options.size||this.estimateSize(value);
 
     // Check stage capacity
     if (!this.canAccommodateInStage(stage, size)) {
@@ -124,9 +124,9 @@ export class DataLifecycleManager extends TypedEventBase {
       size,
       migrationHistory: [],
       metadata: {
-        priority: options.priority'' | '''' | ''1,
-        tags: options.tags'' | '''' | ''[],
-        source: options.source'' | '''' | '''unknown',
+        priority: options.priority||1,
+        tags: options.tags||[],
+        source: options.source||'unknown',
       },
     };
 
@@ -140,7 +140,7 @@ export class DataLifecycleManager extends TypedEventBase {
     this.logger.debug(`Data stored in ${stage} stage: ${key}`);
   }
 
-  retrieve(key: string): { value: unknown; entry: LifecycleEntry }'' | ''null {
+  retrieve(key: string): { value: unknown; entry: LifecycleEntry }|null {
     if (!this.configuration.enabled) {
       return null;
     }
@@ -260,7 +260,7 @@ export class DataLifecycleManager extends TypedEventBase {
     const now = Date.now();
 
     // Promotion rules based on access patterns
-    if (entry.stage === 'warm''' | '''' | ''entry.stage ==='cold') {
+    if (entry.stage === 'warm'||entry.stage ==='cold') {
       const timeSinceLastAccess = now - entry.lastAccessed;
       const hotThreshold = this.configuration.stages.hot.accessThreshold;
 
@@ -340,7 +340,7 @@ export class DataLifecycleManager extends TypedEventBase {
 
     // Demote if not accessed recently and exceeds stage duration
     if (
-      timeSinceAccess > stageConfig.duration'' | '''' | ''age > stageConfig.duration * 2
+      timeSinceAccess > stageConfig.duration||age > stageConfig.duration * 2
     ) {
       return true;
     }
@@ -382,21 +382,21 @@ export class DataLifecycleManager extends TypedEventBase {
     // Demotion logic
     if (entry.stage === 'hot') {
       const hotDuration = this.configuration.stages.hot.duration;
-      if (timeSinceAccess > hotDuration'' | '''' | ''age > hotDuration * 2) {
+      if (timeSinceAccess > hotDuration||age > hotDuration * 2) {
         return'warm';
       }
     }
 
     if (entry.stage === 'warm') {
       const warmDuration = this.configuration.stages.warm.duration;
-      if (timeSinceAccess > warmDuration'' | '''' | ''age > warmDuration * 2) {
+      if (timeSinceAccess > warmDuration||age > warmDuration * 2) {
         return'cold';
       }
     }
 
     if (entry.stage === 'cold') {
       const coldDuration = this.configuration.stages.cold.duration;
-      if (timeSinceAccess > coldDuration'' | '''' | ''age > coldDuration * 2) {
+      if (timeSinceAccess > coldDuration||age > coldDuration * 2) {
         return this.configuration.stages.archive.enabled
           ?'archive'
           : 'expired';
@@ -560,7 +560,7 @@ export class DataLifecycleManager extends TypedEventBase {
           const timeSinceAccess = now - entry.lastAccessed;
 
           if (
-            timeSinceAccess > this.configuration.cleanup.unusedDataThreshold'' | '''' | ''age > this.configuration.cleanup.expiredDataThreshold
+            timeSinceAccess > this.configuration.cleanup.unusedDataThreshold||age > this.configuration.cleanup.expiredDataThreshold
           ) {
             this.delete(key);
             cleaned++;
@@ -635,8 +635,8 @@ export class DataLifecycleManager extends TypedEventBase {
     return { ...this.metrics };
   }
 
-  getEntryInfo(key: string): LifecycleEntry'' | ''null {
-    return this.entries.get(key)'' | '''' | ''null;
+  getEntryInfo(key: string): LifecycleEntry|null {
+    return this.entries.get(key)||null;
   }
 
   listKeys(stage?: LifecycleStage): string[] {

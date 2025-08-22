@@ -51,10 +51,10 @@ interface SharedModule {
  * DSPy Service - Central coordinator for @claude-zen/foundation integration
  */
 export class DSPyService {
-  private llmProvider: LLMProvider'' | ''null = null;
-  private dbAccess: DatabaseAccess'' | ''null = null;
+  private llmProvider: LLMProvider|null = null;
+  private dbAccess: DatabaseAccess|null = null;
   private logger: Logger;
-  private config: Config'' | ''null = null;
+  private config: Config|null = null;
   private initialized = false;
 
   constructor() {
@@ -118,14 +118,14 @@ export class DSPyService {
     options: {
       temperature?: number;
       maxTokens?: number;
-      role?: 'user | analyst' | 'architect';
+      role?: 'user|analyst|architect';
     } = {}
   ): Promise<string> {
     const llm = await this.getLLMProvider();
 
     // DSPy should use 'analyst' role by default (not 'coder'which is for tool access)
     // DSPy is pure LLM operations for prompt optimization, no tool access needed
-    const dspyRole = options.role'' | '''' | '''analyst';
+    const dspyRole = options.role||'analyst';
     if (llm.setRole) {
       llm.setRole(dspyRole);
     }
@@ -138,8 +138,8 @@ export class DSPyService {
 
     try {
       const result = await llm.complete(prompt, {
-        temperature: options.temperature'' | '''' | ''0.7,
-        maxTokens: options.maxTokens'' | '''' | ''16384, // 16K default for DSPy operations
+        temperature: options.temperature||0.7,
+        maxTokens: options.maxTokens||16384, // 16K default for DSPy operations
       });
 
       this.logger.debug('DSPy prompt execution completed', {
@@ -197,8 +197,8 @@ export class DSPyService {
     return {
       async analyze(prompt: string, options?: any): Promise<string> {
         return llmProvider.complete(prompt, {
-          temperature: options?.temperature'' | '''' | ''0.7,
-          maxTokens: options?.maxTokens'' | '''' | ''16384, // 16K for backward compatibility
+          temperature: options?.temperature||0.7,
+          maxTokens: options?.maxTokens||16384, // 16K for backward compatibility
         });
       },
 

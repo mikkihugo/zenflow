@@ -345,7 +345,7 @@ describe('Comprehensive Claude SDK Tests', () => {
           logger.info('✅ Task completed within timeout');
         } else {
           logger.info('✅ Task cancelled or timed out as expected');
-          expect(result.error.message).toMatch(/timeout'' | ''cancel'' | ''abort/i);
+          expect(result.error.message).toMatch(/timeout|cancel|abort/i);
         }
       },
       10000

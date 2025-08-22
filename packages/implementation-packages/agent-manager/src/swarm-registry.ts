@@ -46,7 +46,7 @@ export class SwarmRegistry extends TypedEventBase {
   private projectRoot: string;
   private swarmDir: string;
   private registryPath: string;
-  private registryCache: Map<string, EphemeralSwarm>'' | ''null = null;
+  private registryCache: Map<string, EphemeralSwarm>|null = null;
   private initialized = false;
 
   constructor() {
@@ -144,7 +144,7 @@ export class SwarmRegistry extends TypedEventBase {
   /**
    * Get a swarm from the global registry (compatible with existing SwarmRegistry interface)
    */
-  getSwarm(swarmId: string): EphemeralSwarm'' | ''undefined {
+  getSwarm(swarmId: string): EphemeralSwarm|undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<EphemeralSwarm>(swarmId);
@@ -382,7 +382,7 @@ export class SwarmRegistry extends TypedEventBase {
 
     const statusCounts = allSwarms.reduce(
       (counts, swarm) => {
-        counts[swarm.status] = (counts[swarm.status]'' | '''' | ''0) + 1;
+        counts[swarm.status] = (counts[swarm.status]||0) + 1;
         return counts;
       },
       {} as Record<string, number>
@@ -390,7 +390,7 @@ export class SwarmRegistry extends TypedEventBase {
 
     const topologyCounts = allSwarms.reduce(
       (counts, swarm) => {
-        counts[swarm.topology] = (counts[swarm.topology]'' | '''' | ''0) + 1;
+        counts[swarm.topology] = (counts[swarm.topology]||0) + 1;
         return counts;
       },
       {} as Record<string, number>
@@ -646,7 +646,7 @@ export class SwarmRegistry extends TypedEventBase {
     };
   }
 
-  private getOldestSwarm(swarms: EphemeralSwarm[]): EphemeralSwarm'' | ''null {
+  private getOldestSwarm(swarms: EphemeralSwarm[]): EphemeralSwarm|null {
     if (swarms.length === 0) return null;
 
     return swarms.reduce((oldest, current) =>
@@ -654,7 +654,7 @@ export class SwarmRegistry extends TypedEventBase {
     );
   }
 
-  private getNewestSwarm(swarms: EphemeralSwarm[]): EphemeralSwarm'' | ''null {
+  private getNewestSwarm(swarms: EphemeralSwarm[]): EphemeralSwarm|null {
     if (swarms.length === 0) return null;
 
     return swarms.reduce((newest, current) =>
@@ -666,7 +666,7 @@ export class SwarmRegistry extends TypedEventBase {
 /**
  * Global registry instance for backward compatibility
  */
-let swarmRegistryInstance: SwarmRegistry'' | ''null = null;
+let swarmRegistryInstance: SwarmRegistry|null = null;
 
 /**
  * Get singleton instance (compatible with existing pattern)

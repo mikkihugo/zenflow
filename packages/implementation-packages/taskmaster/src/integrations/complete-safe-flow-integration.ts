@@ -190,7 +190,7 @@ export enum SafeFlowStage {
  * Complete SAFE entity types that flow through gates
  */
 export interface SafeEntity {
-  type:'' | '''strategic_theme | epic' | 'capability''' | '''feature | story' | 'task''' | '''enabler | solution' | 'release';
+  type:|'strategic_theme|epic|capability|feature|story|task|enabler | solution'|release';
   id: string;
   title: string;
   description?: string;
@@ -211,8 +211,8 @@ export interface SafeEntity {
 
   // Business context
   businessValue: number;
-  priority: 'low | medium' | 'high''' | '''critical';
-  complexity: 'simple | moderate' | 'complex''' | '''very_complex';
+  priority: 'low|medium|high|critical';
+  complexity: 'simple|moderate|complex|very_complex';
 
   // Stakeholders
   owner: string;
@@ -289,7 +289,7 @@ export interface CompleteSafeFlowConfig {
     enableFullTraceability: boolean;
     enableLearning: boolean;
     enablePatternRecognition: boolean;
-    auditLevel: 'basic | soc2' | 'comprehensive';
+    auditLevel: 'basic|soc2|comprehensive';
     retentionDays: number;
   };
 }
@@ -623,7 +623,7 @@ export class CompleteSafeFlowIntegration {
     gates.push(inspectAdaptGate);
 
     // Update flow orchestration
-    const existingOrchestration = this.gateOrchestration.get(flowId)'' | '''' | ''[];
+    const existingOrchestration = this.gateOrchestration.get(flowId)||[];
     this.gateOrchestration.set(flowId, [
       ...existingOrchestration,
       CompleteSafeGateCategory.PLANNING_INTERVAL_PLANNING, // SAFe 6.0
@@ -693,10 +693,10 @@ export class CompleteSafeFlowIntegration {
         },
         currentStage: SafeFlowStage.SPRINT_PLANNING,
         targetStage: SafeFlowStage.SPRINT_EXECUTION,
-        businessValue: story.businessValue'' | '''' | ''50,
+        businessValue: story.businessValue||50,
         priority: story.priority as any,
         complexity: this.assessStoryComplexity(story),
-        owner: story.assignee'' | '''' | ''sprint.teamMembers[0].id,
+        owner: story.assignee||sprint.teamMembers[0].id,
         stakeholders: sprint.teamMembers.map((m) => m.id),
         approvers: sprint.teamMembers
           .filter((m) => m.role ==='product_owner')
@@ -720,7 +720,7 @@ export class CompleteSafeFlowIntegration {
       gates.push(storyGate);
 
       // 2. Code Review Gates (for each task)
-      for (const task of story.tasks'' | '''' | ''[]) {
+      for (const task of story.tasks||[]) {
         const codeReviewGate = await this.createCodeReviewGate(
           storyEntity,
           task,
@@ -746,13 +746,13 @@ export class CompleteSafeFlowIntegration {
       currentStage: SafeFlowStage.SPRINT_EXECUTION,
       targetStage: SafeFlowStage.SPRINT_REVIEW_STAGE,
       businessValue: sprint.stories.reduce(
-        (sum, s) => sum + (s.businessValue'' | '''' | ''0),
+        (sum, s) => sum + (s.businessValue||0),
         0
       ),
       priority:'high',
       complexity: 'moderate',
       owner:
-        sprint.teamMembers.find((m) => m.role === 'scrum_master')?.id'' | '''' | ''sprint.teamMembers[0].id, // Scrum Master role maintained
+        sprint.teamMembers.find((m) => m.role === 'scrum_master')?.id||sprint.teamMembers[0].id, // Scrum Master role maintained
       stakeholders: sprint.teamMembers.map((m) => m.id),
       approvers: sprint.teamMembers
         .filter((m) => m.role ==='product_owner')
@@ -786,7 +786,7 @@ export class CompleteSafeFlowIntegration {
     flowId: string,
     deployment: {
       id: string;
-      environment: 'development | staging' | 'production';
+      environment: 'development|staging|production';
       artifacts: any[];
       pipeline: string;
       targetVersion: string;
@@ -903,11 +903,11 @@ export class CompleteSafeFlowIntegration {
       pendingGates: number;
     };
     traceabilityChain: Array<{
-      level: 'portfolio | art' | 'team' | 'solution' | 'cd';
+      level: 'portfolio|art|team|solution|cd';
       entity: SafeEntity;
       gates: Array<{
         category: CompleteSafeGateCategory;
-        status: 'pending | approved' | 'rejected''' | '''escalated';
+        status: 'pending|approved|rejected|escalated';
         traceabilityRecord: any;
       }>;
     }>;
@@ -1322,8 +1322,8 @@ export class CompleteSafeFlowIntegration {
 
   private assessStoryComplexity(
     story: Story
-  ): 'simple | moderate' | 'complex''' | '''very_complex'{
-    const points = story.storyPoints'' | '''' | ''0;
+  ): 'simple|moderate|complex|very_complex'{
+    const points = story.storyPoints||0;
     if (points <= 2) return'simple';
     if (points <= 5) return 'moderate';
     if (points <= 8) return 'complex';
@@ -1529,7 +1529,7 @@ export class CompleteSafeFlowIntegration {
    */
   async implementContinuousValueDelivery(
     deliveryConfiguration: {
-      automationLevel: 'basic | advanced' | 'full';
+      automationLevel: 'basic|advanced|full';
       feedbackLoops: any[];
       cicdPipelines: any[];
       valueStreamMetrics: any[];

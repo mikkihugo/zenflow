@@ -19,7 +19,7 @@ export class ConsoleExporter implements BaseExporter {
   private logger: Logger;
   private exportCount = 0;
   private lastExportTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   constructor(config: ExporterConfig) {
     this.config = config;
@@ -29,7 +29,7 @@ export class ConsoleExporter implements BaseExporter {
   async initialize(): Promise<void> {
     this.logger.info('Console exporter initialized', {
       name: this.config.name,
-      signals: this.config.signals'' | '''' | ''['traces', 'metrics', 'logs'],
+      signals: this.config.signals||['traces', 'metrics', 'logs'],
     });
   }
 
@@ -108,14 +108,14 @@ export class ConsoleExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
     return {
       status: this.lastError ? 'degraded' : 'healthy',
-      lastSuccess: this.lastExportTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastSuccess: this.lastExportTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 
@@ -167,7 +167,7 @@ export class ConsoleExporter implements BaseExporter {
       );
     }
 
-    console.log(''); // Empty line for readability
+    console.log('); // Empty line for readability
   }
 
   /**
@@ -180,7 +180,7 @@ export class ConsoleExporter implements BaseExporter {
         for (const span of data.data.spans.slice(0, 3)) {
           // Show first 3 spans
           console.log(
-            `     ├─ ${span.name'' | '''' | '''unnamed'} (${span.duration'' | '''' | '''unknown'}ms)`
+            `     ├─ ${span.name|||unnamed'} (${span.duration||'unknown'}ms)`
           );
         }
         if (data.data.spans.length > 3) {
@@ -203,8 +203,8 @@ export class ConsoleExporter implements BaseExporter {
         console.log(`   📈 Metrics: ${data.data.metrics.length}`);
         for (const metric of data.data.metrics.slice(0, 5)) {
           // Show first 5 metrics
-          const value = metric.value'' | '''' | ''metric.count'' | '''' | ''metric.sum'' | '''' | '''N/A';
-          console.log(`     ├─ ${metric.name}: ${value} ${metric.unit'' | '''' | ''''}`);
+          const value = metric.value||metric.count||metric.sum||'N/A';
+          console.log(`     ├─ ${metric.name}: ${value} ${metric.unit||'}`);
         }
         if (data.data.metrics.length > 5) {
           console.log(`     └─ ... and ${data.data.metrics.length - 5} more`);
@@ -226,8 +226,8 @@ export class ConsoleExporter implements BaseExporter {
         console.log(`   📄 Logs: ${data.data.logs.length}`);
         for (const log of data.data.logs.slice(0, 3)) {
           // Show first 3 logs
-          const level = log.level'' | '''' | '''INFO';
-          const message = (log.message'' | '''' | ''log.body'' | '''' | '''no message').substring(
+          const level = log.level|||INFO';
+          const message = (log.message||log.body||'no message').substring(
             0,
             100
           );

@@ -33,7 +33,7 @@ export interface SemanticPatterns {
  * Document classification result with confidence scoring
  */
 export interface DocumentClassification {
-  documentType: 'research | technical' | 'algorithm' | 'implementation' | 'strategic';
+  documentType: 'research|technical|algorithm|implementation|strategic';
   confidence: number; // 0-1 confidence score
   algorithmDensity: number; // 0-1 algorithm content density
   conceptComplexity: number; // 0-1 concept complexity score
@@ -43,7 +43,7 @@ export interface DocumentClassification {
     confidence: Record<string, number>;
     weights: Record<string, number>;
   };
-  recommendedStrategy: 'semantic_research_focused | algorithm_preserve_integrity' | 'concept_implementation_hybrid''' | '''strategic_vision_analysis';
+  recommendedStrategy: 'semantic_research_focused|algorithm_preserve_integrity|concept_implementation_hybrid|strategic_vision_analysis';
 }
 
 /**
@@ -53,7 +53,7 @@ export interface ClassifierConfig {
   confidenceThreshold: number;
   enableDeepAnalysis: boolean;
   customPatterns?: Partial<SemanticPatterns>;
-  weightingStrategy: 'balanced | algorithm_focused' | 'concept_focused';
+  weightingStrategy: 'balanced|algorithm_focused|concept_focused';
 }
 
 /**
@@ -67,9 +67,9 @@ export class SemanticClassifier extends TypedEventBase {
     super();
     
     this.config = {
-      confidenceThreshold: config.confidenceThreshold'' | '''' | ''0.7,
+      confidenceThreshold: config.confidenceThreshold||0.7,
       enableDeepAnalysis: config.enableDeepAnalysis !== false,
-      weightingStrategy: config.weightingStrategy'' | '''' | '''balanced',
+      weightingStrategy: config.weightingStrategy||'balanced',
       ...config
     };
 
@@ -240,7 +240,7 @@ export class SemanticClassifier extends TypedEventBase {
       research: 'research',
       strategic: 'strategic'};
 
-    return categoryMap[topCategory]'' | '''' | '''technical';
+    return categoryMap[topCategory]||'technical';
   }
 
   /**
@@ -250,9 +250,9 @@ export class SemanticClassifier extends TypedEventBase {
     const algorithmPatterns = [
       /algorithm\s+\d+/gi,
       /procedure\s+\d+/gi,
-      /(for\s+each'' | ''while'' | ''if.*then'' | ''repeat.*until)/gi,
-      /(input:'' | ''output:'' | ''returns?:'' | ''require:'' | ''ensure:)/gi,
-      /\b(sort'' | ''search'' | ''traverse'' | ''iterate'' | ''compute)\b/gi
+      /(for\s+each|while|if.*then|repeat.*until)/gi,
+      /(input:|output:|returns?:|require:|ensure:)/gi,
+      /\b(sort|search|traverse|iterate|compute)\b/gi
     ];
 
     let totalMatches = 0;
@@ -273,11 +273,11 @@ export class SemanticClassifier extends TypedEventBase {
    */
   private calculateConceptComplexity(content: string): number {
     const complexityIndicators = [
-      /\b(theorem'' | ''lemma'' | ''proof'' | ''corollary'' | ''proposition)\b/gi,
-      /\b(optimization'' | ''complexity'' | ''efficiency'' | ''performance)\b/gi,
-      /\b(distributed'' | ''concurrent'' | ''parallel'' | ''asynchronous)\b/gi,
-      /\b(machine learning'' | ''neural network'' | ''deep learning)\b/gi,
-      /\b(cryptography'' | ''security'' | ''authentication'' | ''encryption)\b/gi
+      /\b(theorem|lemma|proof|corollary|proposition)\b/gi,
+      /\b(optimization|complexity|efficiency|performance)\b/gi,
+      /\b(distributed|concurrent|parallel|asynchronous)\b/gi,
+      /\b(machine learning|neural network|deep learning)\b/gi,
+      /\b(cryptography|security|authentication|encryption)\b/gi
     ];
 
     let complexityScore = 0;
@@ -298,11 +298,11 @@ export class SemanticClassifier extends TypedEventBase {
    */
   private calculateTechnicalDepth(content: string): number {
     const technicalPatterns = [
-      /\b(API'' | ''SDK'' | ''framework'' | ''library'' | ''module'' | ''component)\b/gi,
-      /\b(database'' | ''SQL'' | ''NoSQL'' | ''schema'' | ''migration)\b/gi,
-      /\b(REST'' | ''GraphQL'' | ''HTTP'' | ''JSON'' | ''XML'' | ''YAML)\b/gi,
-      /\b(Docker'' | ''Kubernetes'' | ''cloud'' | ''serverless)\b/gi,
-      /\b(testing'' | ''CI\/CD'' | ''deployment'' | ''monitoring)\b/gi
+      /\b(API|SDK|framework|library|module|component)\b/gi,
+      /\b(database|SQL|NoSQL|schema|migration)\b/gi,
+      /\b(REST|GraphQL|HTTP|JSON|XML|YAML)\b/gi,
+      /\b(Docker|Kubernetes|cloud|serverless)\b/gi,
+      /\b(testing|CI\/CD|deployment|monitoring)\b/gi
     ];
 
     let depthScore = 0;
@@ -351,7 +351,7 @@ export class SemanticClassifier extends TypedEventBase {
       strategic: 0.85
     };
 
-    return weightMap[category]'' | '''' | ''0.5;
+    return weightMap[category]||0.5;
   }
 
   /**
@@ -384,7 +384,7 @@ export class SemanticClassifier extends TypedEventBase {
       return 'semantic_research_focused';
     }
     
-    if (documentType === 'algorithm''' | '''' | ''algorithmDensity > 0.5) {
+    if (documentType === 'algorithm'||algorithmDensity > 0.5) {
       return'algorithm_preserve_integrity';
     }
     

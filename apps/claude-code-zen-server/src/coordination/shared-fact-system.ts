@@ -9,102 +9,40 @@
  * New code should import directly from @claude-zen/intelligence:
  * ```typescript
  * import {
- *   getCoordinationFactSystem,
- *   storeCoordinationFact,
- *   queryCoordinationFacts,
- *   searchCoordinationFacts,
- * } from '@claude-zen/intelligence';
- * ```
+ * getCoordinationFactSystem,
+ * storeCoordinationFact,
+ * queryCoordinationFacts,
+ * searchCoordinationFacts,
+ * } from '@claude-zen/intelligence';` * ```
  */
 
 // Re-export everything from the knowledge package for backward compatibility
 // Compatibility export for legacy imports
-import {
-  getCoordinationFactSystem,
-  initializeCoordinationFactSystem,
-  storeCoordinationEvent,
-  getCoordinationFacts,
+import { getCoordinationFactSystem, initializeCoordinationFactSystem, storeCoordinationEvent, getCoordinationFacts,
 } from '@claude-zen/intelligence';
 
-export {
-  // Main API functions
-  getCoordinationFactSystem,
-  initializeCoordinationFactSystem,
-  storeCoordinationEvent,
-  getCoordinationFacts,
-  queryCoordinationFacts as queryFacts,
-  searchCoordinationFacts as searchFacts,
-  storeCoordinationFact as storeFact,
-
-  // Convenience functions
-  storeAgentFact,
-  queryAgentFacts,
-  searchExternalFacts,
-  getNPMPackageInfo,
-  getGitHubRepoInfo,
-
-  // Types
-  type CoordinationFact as FactEntry,
-  type CoordinationFactQuery as FactQuery,
+export { // Main API functions getCoordinationFactSystem, initializeCoordinationFactSystem, storeCoordinationEvent, getCoordinationFacts, queryCoordinationFacts as queryFacts, searchCoordinationFacts as searchFacts, storeCoordinationFact as storeFact, // Convenience functions storeAgentFact, queryAgentFacts, searchExternalFacts, getNPMPackageInfo, getGitHubRepoInfo, // Types type CoordinationFact as FactEntry, type CoordinationFactQuery as FactQuery,
 } from '@claude-zen/intelligence';
 
 // Compatibility class for legacy code
-export class SharedFactSystem {
-  /**
-   * Get the coordination fact system instance (compatibility)
-   * @deprecated Use getCoordinationFactSystem() from @claude-zen/intelligence instead
-   */
-  static getInstance() {
-    return getCoordinationFactSystem();
-  }
-
-  /**
-   * Check if initialized (compatibility)
-   * @deprecated Use getCoordinationFactSystem()?.isInitialized instead
-   */
-  isInitialized(): boolean {
-    return getCoordinationFactSystem()?.isInitialized()
-  }
-
-  /**
-   * Get stats (compatibility)
-   * @deprecated Use getCoordinationFactSystem()?.getStats instead
-   */
-  getStats() {
-    return getCoordinationFactSystem()?.getStats()
-  }
-
-  /**
-   * Search facts (compatibility)
-   * @deprecated Use searchCoordinationFacts(; from @claude-zen/intelligence instead
-   */
-  async searchFacts(query: any): Promise<any[]> {
-    // Import search function and use it
-    const { searchCoordinationFacts } = await import(
-      '@claude-zen/intelligence'
-    );
-    return searchCoordinationFacts(query);
-  }
+export class SharedFactSystem { /** * Get the coordination fact system instance (compatibility) * @deprecated Use getCoordinationFactSystem() from @claude-zen/intelligence instead */ static getInstance() { return getCoordinationFactSystem(); } /** * Check if initialized (compatibility) * @deprecated Use getCoordinationFactSystem()?.isInitialized instead */ isInitialized(): boolean { return getCoordinationFactSystem()?.isInitialized() } /** * Get stats (compatibility) * @deprecated Use getCoordinationFactSystem()?.getStats instead */ getStats() { return getCoordinationFactSystem()?.getStats() } /** * Search facts (compatibility) * @deprecated Use searchCoordinationFacts(; from @claude-zen/intelligence instead */ async searchFacts(query: any): Promise<any[]> { // Import search function and use it const { searchCoordinationFacts } = await import( '@claude-zen/intelligence' ); return searchCoordinationFacts(query); }
 }
 
 // Legacy shared instance
-const legacyCompatibility = {
-  isInitialized: () => getCoordinationFactSystem()?.isInitialized,
-  getStats: () => getCoordinationFactSystem()?.getStats,
+const legacyCompatibility = { isInitialized: () => getCoordinationFactSystem()?.isInitialized', getStats: () => getCoordinationFactSystem()?.getStats,
 };
 
 /**
  * @deprecated Use getCoordinationFactSystem(; from @claude-zen/intelligence instead
  */
-export const sharedFactSystem = legacyCompatibility;
+export const sharedFactSystem = 'legacyCompatibility';
 
 /**
  * @deprecated Use initializeCoordinationFactSystem from @claude-zen/intelligence instead
  */
-export const initializeCoordinationFactSystem =
-  initializeCoordinationFactSystem;
+export const initializeCoordinationFactSystem = 'initializeCoordinationFactSystem';
 
 /**
  * @deprecated Import directly from @claude-zen/intelligence instead
  */
-export { storeCoordinationEvent, getCoordinationFacts };
+export { storeCoordinationEvent, getCoordinationFacts };`

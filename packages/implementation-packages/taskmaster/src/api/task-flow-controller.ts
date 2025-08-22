@@ -36,7 +36,7 @@ import { getLogger } from '@claude-zen/foundation';
 /**
  * Task flow states for development pipeline
  */
-export type TaskFlowState ='' | '''backlog | analysis' | 'development''' | '''testing | deployment' | 'done';
+export type TaskFlowState =|'backlog|analysis|development|testing|deployment|done';
 
 /**
  * Approval gate configuration for task flow control
@@ -52,7 +52,7 @@ export interface TaskFlowGate {
   maxQueueDepth: number;
 
   /** Behavior when queue is full */
-  onQueueFull: 'halt | spillover' | 'escalate''' | '''auto-approve';
+  onQueueFull: 'halt|spillover|escalate|auto-approve';
 
   /** Target state for spillover */
   spilloverTarget?: TaskFlowState;
@@ -114,7 +114,7 @@ export interface TaskFlowStatus {
     totalPending: number;
     maxPending: number;
     utilizationPercent: number;
-    status: 'healthy | warning' | 'critical''' | '''halted';
+    status: 'healthy|warning|critical|halted';
   };
 
   /** Detected bottlenecks */
@@ -315,7 +315,7 @@ export class TaskFlowController extends TypedEventBase {
     const maxPending = this.config.systemLimits.maxTotalPending;
     const utilizationPercent = (totalPending / maxPending) * 100;
 
-    let status: 'healthy | warning' | 'critical''' | '''halted' = 'healthy';
+    let status: 'healthy|warning|critical|halted' = 'healthy';
     if (this.isHalted) status = 'halted';
     else if (utilizationPercent > 90) status = 'critical';
     else if (utilizationPercent > 70) status = 'warning';
@@ -427,7 +427,7 @@ export class TaskFlowController extends TypedEventBase {
       });
 
       return (
-        response.toLowerCase().includes('yes')'' | '''' | ''response.toLowerCase().includes('approve')
+        response.toLowerCase().includes('yes')||response.toLowerCase().includes('approve')
       );
     } catch (error) {
       this.logger.error('Error processing approval gate', {
@@ -525,7 +525,7 @@ export class TaskFlowController extends TypedEventBase {
       });
 
       return (
-        response.toLowerCase().includes('yes')'' | '''' | ''response.toLowerCase().includes('override')
+        response.toLowerCase().includes('yes')||response.toLowerCase().includes('override')
       );
     } catch (error) {
       this.logger.error('Error escalating capacity decision', {
@@ -557,7 +557,7 @@ export class TaskFlowController extends TypedEventBase {
       });
 
       return (
-        response.toLowerCase().includes('yes')'' | '''' | ''response.toLowerCase().includes('add')
+        response.toLowerCase().includes('yes')||response.toLowerCase().includes('add')
       );
     } catch (error) {
       this.logger.error('Error escalating queue decision', {

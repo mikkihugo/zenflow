@@ -79,9 +79,9 @@ import { getLogger } from '@claude-zen/foundation';
 // Use compatible ValidationQuestion interface that matches AGUI expectations
 interface ValidationQuestion {
   question: string;
-  type: 'yesno | choice' | 'input''' | '''dead-code-action''' | '''batch-operation';
+  type: 'yesno|choice|input|dead-code-action||batch-operation';
   choices?: string[];
-  defaultValue?: string'' | ''boolean;
+  defaultValue?: string|boolean;
 }
 
 // Define Knip output interfaces for strict TypeScript compliance
@@ -98,7 +98,7 @@ interface KnipExportItem {
 }
 
 interface KnipOutput {
-  files?: (KnipFileItem'' | ''string)[];
+  files?: (KnipFileItem|string)[];
   exports?: KnipExportItem[];
   [key: string]: any;
 }
@@ -107,7 +107,7 @@ const logger = getLogger('automated-dead-code-manager') as any; // Use any to al
 
 export interface DeadCodeItem {
   id: string;
-  type: 'export | file' | 'dependency''' | '''import';
+  type: 'export|file|dependency|import';
   location: string;
   name: string;
   confidence: number; // 0-1, how confident we are it's truly dead
@@ -134,19 +134,19 @@ export interface DeadCodeScanResult {
 
 export interface DeadCodeDecision {
   itemId: string;
-  action: 'remove | keep' | 'investigate''' | '''defer''' | '''wire-up';
+  action: 'remove|keep|investigate|defer||wire-up';
   reason?: string;
   timestamp: Date;
   humanApprover?: string;
 }
 
 export class AutomatedDeadCodeManager {
-  private aguiInterface: AGUIInterface'' | ''null = null;
+  private aguiInterface: AGUIInterface|null = null;
   private scanHistory: DeadCodeScanResult[] = [];
   private pendingDecisions = new Map<string, DeadCodeItem>();
 
   constructor(aguiInterface?: AGUIInterface) {
-    this.aguiInterface = aguiInterface'' | '''' | ''null;
+    this.aguiInterface = aguiInterface||null;
   }
 
   /**
@@ -452,7 +452,7 @@ export class AutomatedDeadCodeManager {
    */
   private parseTsPruneOutput(output: string): DeadCodeItem[] {
     const items: DeadCodeItem[] = [];
-    const lines = output.split('\\n').filter((line) => line.trim())();
+    const lines = output.split('\n').filter((line) => line.trim())();
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -470,7 +470,7 @@ export class AutomatedDeadCodeManager {
           safetyScore: this.calculateSafetyScore(filePath, exportName),
           context: {
             publicAPI:
-              filePath.includes('index')'' | '''' | ''filePath.includes('public-api'),
+              filePath.includes('index')||filePath.includes('public-api'),
           },
         });
       }
@@ -489,8 +489,8 @@ export class AutomatedDeadCodeManager {
 
       // Parse knip's structured output
       if (data.files) {
-        data.files.forEach((file: KnipFileItem'' | ''string, index: number) => {
-          const filePath = typeof file ==='string'? file : file.path'' | '''' | '''';
+        data.files.forEach((file: KnipFileItem|string, index: number) => {
+          const filePath = typeof file ==='string'? file : file.path||'';
           items.push({
             id: `knip-file-${index}`,
             type: 'file',
@@ -507,12 +507,12 @@ export class AutomatedDeadCodeManager {
           items.push({
             id: `knip-export-${index}`,
             type: 'export',
-            location: `${exp.file'' | '''' | ''''}:${exp.line'' | '''' | ''1}`,
-            name: exp.name'' | '''' | '''',
+            location: `${exp.file||'}:${exp.line|'|1}`,
+            name: exp.name||',
             confidence: 0.85,
             safetyScore: this.calculateSafetyScore(
-              exp.file'' | '''' | '''',
-              exp.name'' | '''' | ''''
+              exp.file|||,
+              exp.name|||'
             ),
           });
         });
@@ -531,22 +531,22 @@ export class AutomatedDeadCodeManager {
     let score = 0.5; // Base score
 
     // Lower safety for public APIs
-    if (filePath.includes('index')'' | '''' | ''filePath.includes('public-api')) {
+    if (filePath.includes('index')||filePath.includes('public-api')) {
       score -= 0.3;
     }
 
     // Lower safety for types (might be used in .d.ts files)
-    if (name.includes('Type')'' | '''' | ''name.includes('Interface')) {
+    if (name.includes('Type')||name.includes('Interface')) {
       score -= 0.2;
     }
 
     // Higher safety for test files
-    if (filePath.includes('test')'' | '''' | ''filePath.includes('__tests__')) {
+    if (filePath.includes('test')||filePath.includes('__tests__')) {
       score += 0.3;
     }
 
     // Higher safety for clearly internal files
-    if (filePath.includes('internal')'' | '''' | ''filePath.includes('utils')) {
+    if (filePath.includes('internal')||filePath.includes('utils')) {
       score += 0.2;
     }
 
@@ -599,7 +599,7 @@ export class AutomatedDeadCodeManager {
       parts.push('✅ Has test coverage');
     }
 
-    return parts.join('\\n');
+    return parts.join('\n');
   }
 
   /**
@@ -648,13 +648,13 @@ export class AutomatedDeadCodeManager {
     if (lower.includes('remove')) {
       return 'remove';
     }
-    if (lower.includes('wire')'' | '''' | ''lower.includes('connect')) {
+    if (lower.includes('wire')||lower.includes('connect')) {
       return 'wire-up';
     }
     if (lower.includes('keep')) {
       return 'keep';
     }
-    if (lower.includes('investigate')'' | '''' | ''lower.includes('analyze')) {
+    if (lower.includes('investigate')||lower.includes('analyze')) {
       return 'investigate';
     }
 

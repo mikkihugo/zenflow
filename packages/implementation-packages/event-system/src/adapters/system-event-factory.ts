@@ -33,8 +33,8 @@ export class SystemEventManagerFactory
   private instances = new Map<string, SystemEventAdapter>();
 
   constructor(logger?: Logger, config?: Config) {
-    this.logger = logger'' | '''' | ''getLogger('SystemEventManagerFactory');
-    this.config = config'' | '''' | ''({} as any);
+    this.logger = logger||getLogger('SystemEventManagerFactory');
+    this.config = config||({} as any);
     this.logger.debug('SystemEventManagerFactory initialized');
   }
 
@@ -115,7 +115,7 @@ export class SystemEventManagerFactory
    *
    * @param name
    */
-  get(name: string): EventManager'' | ''undefined {
+  get(name: string): EventManager|undefined {
     return this.instances.get(name);
   }
 
@@ -334,7 +334,7 @@ export class SystemEventManagerFactory
    * @param config
    */
   private validateConfig(config: SystemEventAdapterConfig): void {
-    if (!config?.name'' | '''' | ''typeof config?.name !=='string') {
+    if (!config?.name||typeof config?.name !=='string') {
       throw new Error(
         'System event manager configuration must have a valid name'
       );

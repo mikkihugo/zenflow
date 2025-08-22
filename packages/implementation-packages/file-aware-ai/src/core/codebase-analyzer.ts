@@ -24,8 +24,8 @@ import type {
 const logger = getLogger('file-aware-ai:codebase-analyzer');
 
 export class CodebaseAnalyzer {
-  private index: CodebaseIndex'' | ''null = null;
-  private gitignore: ReturnType<typeof ignore>'' | ''null = null;
+  private index: CodebaseIndex|null = null;
+  private gitignore: ReturnType<typeof ignore>|null = null;
   private readonly rootPath: string;
   private readonly config: FileAwareConfig;
 
@@ -52,8 +52,8 @@ export class CodebaseAnalyzer {
     }
 
     logger.info('Codebase analyzer initialized', {
-      filesIndexed: this.index?.files.length'' | '''' | ''0,
-      symbolsIndexed: this.index?.symbols.size'' | '''' | ''0,
+      filesIndexed: this.index?.files.length||0,
+      symbolsIndexed: this.index?.symbols.size||0,
     });
   }
 
@@ -167,7 +167,7 @@ export class CodebaseAnalyzer {
 
           // Extract symbols and dependencies for TypeScript files
           if (
-            fileInfo.language === 'ts''' | '''' | ''fileInfo.language ==='tsx''' | '''' | ''fileInfo.language ==='js''' | '''' | ''fileInfo.language ==='jsx'
+            fileInfo.language === 'ts'||fileInfo.language ==='tsx'||fileInfo.language ==='js'||fileInfo.language ==='jsx'
           ) {
             const analysis = await this.analyzeTypeScriptFile(filePath);
 
@@ -206,7 +206,7 @@ export class CodebaseAnalyzer {
   /**
    * Analyze a single file
    */
-  private async analyzeFile(filePath: string): Promise<FileInfo'' | ''null> {
+  private async analyzeFile(filePath: string): Promise<FileInfo|null> {
     try {
       const stats = await fs.stat(filePath);
       const content = await fs.readFile(filePath,'utf8');
@@ -407,7 +407,7 @@ export class CodebaseAnalyzer {
   private getDependenciesForFile(filePath: string): FileDependency[] {
     if (!this.index) return [];
     return this.index.dependencies.filter(
-      (dep) => dep.from === filePath'' | '''' | ''dep.to === filePath
+      (dep) => dep.from === filePath||dep.to === filePath
     );
   }
 
@@ -442,7 +442,7 @@ export class CodebaseAnalyzer {
   private assessComplexity(
     files: string[],
     dependencies: FileDependency[]
-  ): 'low | medium' | 'high' {
+  ): 'low|medium|high' {
     if (files.length <= 3 && dependencies.length <= 5) return 'low';
     if (files.length <= 10 && dependencies.length <= 20) return 'medium';
     return 'high';

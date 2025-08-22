@@ -5,48 +5,21 @@
  */
 
 // Workflow types stub
-export interface WorkflowExecutionContext {
-  workflowId: string;
-  stepId?: string;
-  data?: Record<string, any>;
+export interface WorkflowExecutionContext { workflowId: string; stepId?: string; data?: Record<string, any>;
 }
 
-export interface WorkflowStepResult {
-  stepId: string;
-  success: boolean;
-  output?: any;
-  error?: string;
-  timestamp: number;
+export interface WorkflowStepResult { stepId: string; success: boolean; output?: any; error?: string; timestamp: number;
 }
 
-export interface WorkflowMetadata {
-  workflowId: string;
-  name: string;
-  version: string;
-  status: 'pending'' | ''running'' | ''completed'' | ''failed'' | ''paused');
+export interface WorkflowMetadata { workflowId: string; name: string; version: string; status: 'pending  |running| 'completed | failed | pause'd'');
 }
 
-export interface WorkflowConfig {
-  id: string;
-  name: string;
-  description?: string;
-  version?: string;
-  timeout?: number;
+export interface WorkflowConfig { id: string; name: string; description?: string; version?: string; timeout?: number;
 }
 
-export interface WorkflowGateConfig {
-  gateId: string;
-  workflowId: string;
-  stepId: string;
-  approvalRequired?: boolean;
-  timeout?: number;
+export interface WorkflowGateConfig { gateId: string; workflowId: string; stepId: string; approvalRequired?: boolean; timeout?: number;
 }
 
 // Re-export common types
-export type {
-  WorkflowExecutionContext,
-  WorkflowStepResult,
-  WorkflowMetadata,
-  WorkflowConfig,
-  WorkflowGateConfig,
+export type { WorkflowExecutionContext, WorkflowStepResult, WorkflowMetadata, WorkflowConfig, WorkflowGateConfig,
 };

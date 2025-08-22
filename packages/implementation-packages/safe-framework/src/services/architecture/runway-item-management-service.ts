@@ -28,11 +28,11 @@ export interface ArchitectureRunwayItem {
   id: string;
   title: string;
   description: string;
-  type: 'infrastructure'' | ''platform'' | ''enabler'' | ''technical-debt';
-  priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  type: 'infrastructure|platform|enabler|technical-debt';
+  priority: 'critical|high|medium|low';
   effort: number; // story points or hours
   dependencies: string[];
-  status: 'backlog'' | ''planned'' | ''in-progress'' | ''completed'' | ''blocked';
+  status: 'backlog|planned|in-progress|completed|blocked';
   assignedTo?: string;
   targetPI?: string;
   createdAt: Date;
@@ -46,7 +46,7 @@ export interface RunwayPlanningConfig {
   readonly maxRunwayItems: number;
   readonly runwayPlanningHorizon: number; // in days
   readonly governanceApprovalThreshold: number;
-  readonly prioritizationStrategy:' | ''value-based'' | ''effort-based'' | ''risk-based'' | ''ai-optimized';
+  readonly prioritizationStrategy:|value-based|effort-based|risk-based|'ai-optimized';
 }
 
 /**
@@ -176,7 +176,7 @@ export class RunwayItemManagementService {
   async addRunwayItem(
     item: Omit<
       ArchitectureRunwayItem,
-      'id'' | ''createdAt'' | ''updatedAt'' | ''status'
+      'id|createdAt|updatedAt|status'
     >
   ): Promise<ArchitectureRunwayItem> {
     if (!this.initialized) await this.initialize();

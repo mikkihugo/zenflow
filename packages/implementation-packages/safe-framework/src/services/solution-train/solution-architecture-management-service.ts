@@ -350,7 +350,7 @@ export enum DecisionType {
  * Approval threshold
  */
 export interface ApprovalThreshold {
-  readonly type: 'unanimous'' | ''majority'' | ''single';
+  readonly type: 'unanimous|majority|single';
   readonly percentage?: number;
   readonly minimumCount?: number;
 }
@@ -1048,7 +1048,7 @@ interface ArchitecturalComplianceReport {
 interface ComplianceViolation {
   readonly violationId: string;
   readonly type: string;
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly description: string;
   readonly recommendation: string;
 }
@@ -1096,8 +1096,8 @@ interface RunwayTimebox {
 interface RunwayRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly probability: 'low'' | ''medium'' | ''high';
-  readonly impact: 'low'' | ''medium'' | ''high';
+  readonly probability: 'low|medium|high';
+  readonly impact: 'low|medium|high';
   readonly mitigation: string;
 }
 

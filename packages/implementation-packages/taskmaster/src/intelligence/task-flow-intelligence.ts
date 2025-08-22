@@ -265,7 +265,7 @@ export class TaskFlowIntelligence {
   async forecastCapacity(hoursAhead: number = 24): Promise<{
     expectedLoad: number;
     requiredCapacity: number;
-    riskLevel: 'low | medium' | 'high';
+    riskLevel: 'low|medium|high';
     recommendations: string[];
   }> {
     const recentMetrics = this.flowHistory.slice(-100); // Last 100 data points
@@ -288,7 +288,7 @@ export class TaskFlowIntelligence {
     const maxQueueDepth = Math.max(...recentMetrics.map((m) => m.queueDepth));
     const requiredCapacity = expectedLoad + maxQueueDepth * 0.2; // 20% buffer
 
-    let riskLevel: 'low | medium' | 'high' = 'low';
+    let riskLevel: 'low|medium|high' = 'low';
     if (requiredCapacity > 0.8) riskLevel = 'high';
     else if (requiredCapacity > 0.6) riskLevel = 'medium';
 
@@ -313,7 +313,7 @@ export class TaskFlowIntelligence {
         timestamp: Date.now(),
         state: state as TaskFlowState,
         wipUsage: usage.utilization,
-        queueDepth: status.approvalQueues[`${state}-gate`]?.pending'' | '''' | ''0,
+        queueDepth: status.approvalQueues[`${state}-gate`]?.pending||0,
         throughput: this.calculateThroughput(state as TaskFlowState),
       });
     }

@@ -97,7 +97,7 @@ interface ChaosEngineeringSystemConfig {
  * Implementation of chaos engineering access via runtime delegation
  */
 class ChaosEngineeringSystemAccessImpl implements ChaosEngineeringSystemAccess {
-  private chaosEngineeringModule: ChaosEngineeringSystemModule'' | ''null = null;
+  private chaosEngineeringModule: ChaosEngineeringSystemModule|null = null;
 
   private async getChaosEngineeringModule(): Promise<ChaosEngineeringSystemModule> {
     if (!this.chaosEngineeringModule) {
@@ -157,7 +157,7 @@ class ChaosEngineeringSystemAccessImpl implements ChaosEngineeringSystemAccess {
 }
 
 // Global singleton instance
-let globalChaosEngineeringSystemAccess: ChaosEngineeringSystemAccess'' | ''null =
+let globalChaosEngineeringSystemAccess: ChaosEngineeringSystemAccess|null =
   null;
 
 /**

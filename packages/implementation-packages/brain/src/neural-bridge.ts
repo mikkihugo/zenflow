@@ -25,10 +25,10 @@ export interface NeuralConfig {
 
 export interface NeuralNetwork {
   id: string;
-  type: 'feedforward | lstm' | 'transformer''' | '''autoencoder';
+  type: 'feedforward|lstm|transformer|autoencoder';
   layers: number[];
   weights?: Float32Array; // Changed to Float32Array for WASM compatibility
-  status: 'idle | training' | 'predicting''' | '''error';
+  status: 'idle|training|predicting|error';
   handle?: number; // WASM network handle
 }
 
@@ -44,7 +44,7 @@ export interface PredictionResult {
 }
 
 export interface NetworkArchitecture {
-  type: 'feedforward | lstm' | 'transformer''' | '''autoencoder | cnn' | 'gnn';
+  type: 'feedforward|lstm|transformer|autoencoder|cnn|gnn';
   layers: number[];
   activation: ActivationFunction;
   outputActivation?: ActivationFunction;
@@ -54,7 +54,7 @@ export interface NetworkArchitecture {
   metadata?: Record<string, unknown>;
 }
 
-export type ActivationFunction ='' | '''sigmoid | tanh' | 'relu''' | '''leaky_relu | softmax' | 'linear' | 'swish' | 'gelu';
+export type ActivationFunction =|'sigmoid|tanh|relu|leaky_relu|softmax|linear|swish|gelu';
 
 /**
  * Neural Network Bridge for Claude-Zen integration.
@@ -82,7 +82,7 @@ export class NeuralBridge {
   private initialized = false;
   private wasmModule: any = null; // Will hold the WASM module
   private dbAccess: any = null; // DatabaseAccess via infrastructure facade
-  private smartNeuralCoordinator: SmartNeuralCoordinator'' | ''null = null; // Smart neural backend
+  private smartNeuralCoordinator: SmartNeuralCoordinator|null = null; // Smart neural backend
 
   constructor(
     private foundationLogger: Logger = getLogger('Neural'),
@@ -99,7 +99,7 @@ export class NeuralBridge {
   static getInstance(logger?: Logger, config?: NeuralConfig): NeuralBridge {
     if (!NeuralBridge.instance) {
       // For singleton pattern with DI, we need to provide a logger
-      const defaultLogger = logger'' | '''' | ''getLogger('Neural');
+      const defaultLogger = logger||getLogger('Neural');
       NeuralBridge.instance = new NeuralBridge(defaultLogger, config);
     }
     return NeuralBridge.instance;
@@ -123,7 +123,7 @@ export class NeuralBridge {
       // Initialize SmartNeuralCoordinator for intelligent neural backend
       if (this.config.smartNeuralBackend !== undefined) {
         this.smartNeuralCoordinator = new SmartNeuralCoordinator(
-          this.config.smartNeuralBackend'' | '''' | ''{}
+          this.config.smartNeuralBackend||{}
         );
         await this.smartNeuralCoordinator.initialize();
         this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully'
@@ -224,7 +224,7 @@ export class NeuralBridge {
     const wasmNetwork = this.networks.get(networkId);
     const metadata = this.networkMetadata.get(networkId);
 
-    if (!wasmNetwork'' | '''' | ''!metadata) {
+    if (!wasmNetwork||!metadata) {
       throw new Error(`Network not found: ${networkId}`);
     }
 
@@ -291,7 +291,7 @@ export class NeuralBridge {
     const wasmNetwork = this.networks.get(networkId);
     const metadata = this.networkMetadata.get(networkId);
 
-    if (!wasmNetwork'' | '''' | ''!metadata) {
+    if (!wasmNetwork||!metadata) {
       throw new Error(`Network not found: ${networkId}`);
     }
 
@@ -354,7 +354,7 @@ export class NeuralBridge {
    *
    * @param networkId
    */
-  getNetworkStatus(networkId: string): NeuralNetwork'' | ''undefined {
+  getNetworkStatus(networkId: string): NeuralNetwork|undefined {
     return this.networkMetadata.get(networkId);
   }
 
@@ -480,8 +480,8 @@ export class NeuralBridge {
     text: string,
     options?: {
       context?: string;
-      priority?: 'low | medium' | 'high';
-      qualityLevel?: 'basic | standard' | 'premium';
+      priority?: 'low|medium|high';
+      qualityLevel?: 'basic|standard|premium';
     }
   ): Promise<NeuralEmbeddingResult> {
     if (!this.smartNeuralCoordinator) {
@@ -492,8 +492,8 @@ export class NeuralBridge {
     const request: NeuralEmbeddingRequest = {
       text,
       context: options?.context,
-      priority: options?.priority'' | '''' | '''medium',
-      qualityLevel: options?.qualityLevel'' | '''' | '''standard',
+      priority: options?.priority||'medium',
+      qualityLevel: options?.qualityLevel||'standard',
     };
 
     return await this.smartNeuralCoordinator.generateEmbedding(request);

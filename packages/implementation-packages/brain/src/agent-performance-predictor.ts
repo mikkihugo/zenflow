@@ -42,7 +42,7 @@ export interface PerformancePrediction {
   readonly confidence: number;
   readonly loadForecast: number; // Expected load in next time window
   readonly recommendedTaskCount: number;
-  readonly performanceTrend: 'improving | stable' | 'declining';
+  readonly performanceTrend: 'improving|stable|declining';
   readonly riskFactors: string[];
 }
 
@@ -101,7 +101,7 @@ export class AgentPerformancePredictor {
 
     try {
       // Get or create performance history for agent
-      let history = this.performanceHistory.get(data.agentId)'' | '''' | ''[];
+      let history = this.performanceHistory.get(data.agentId)||[];
 
       // Add new data point
       history.push(data);
@@ -137,7 +137,7 @@ export class AgentPerformancePredictor {
     }
 
     try {
-      const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+      const history = this.performanceHistory.get(agentId)||[];
 
       if (history.length < 3) {
         // Not enough data, return conservative estimates
@@ -147,7 +147,7 @@ export class AgentPerformancePredictor {
       // Filter relevant historical data
       const relevantData = history.filter(
         (d) =>
-          d.taskType === taskType'' | '''' | ''Math.abs(d.complexity - complexity) < 0.2
+          d.taskType === taskType||Math.abs(d.complexity - complexity) < 0.2
       );
 
       // Time series analysis for completion time
@@ -226,7 +226,7 @@ export class AgentPerformancePredictor {
 
       // Calculate performance scores for each agent
       for (const agentId of allAgents) {
-        const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+        const history = this.performanceHistory.get(agentId)||[];
         const recentData = history.slice(-20); // Last 20 data points
 
         if (recentData.length > 0) {
@@ -304,12 +304,12 @@ export class AgentPerformancePredictor {
         agentId: data.agentId,
         timestamp: Date.now(),
         taskType: data.taskType,
-        complexity: data.complexity'' | '''' | ''0.5,
+        complexity: data.complexity||0.5,
         completionTime: data.duration,
         successRate: data.success ? 1.0 : 0.0,
         errorRate: data.success ? 0.0 : 1.0,
-        cpuUsage: data.resourceUsage'' | '''' | ''0.5,
-        memoryUsage: data.resourceUsage'' | '''' | ''0.5,
+        cpuUsage: data.resourceUsage||0.5,
+        memoryUsage: data.resourceUsage||0.5,
         concurrentTasks: 1, // Default to 1 if not provided
       };
 
@@ -335,7 +335,7 @@ export class AgentPerformancePredictor {
     performanceTrend: string;
     dataPoints: number;
   } {
-    const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+    const history = this.performanceHistory.get(agentId)||[];
 
     if (history.length === 0) {
       return {
@@ -363,26 +363,26 @@ export class AgentPerformancePredictor {
   // Private helper methods
 
   private predictTimeSeriesValue(values: number[]): number {
-    if (values.length < 3) return values[values.length - 1]'' | '''' | ''5000; // Default 5 seconds
+    if (values.length < 3) return values[values.length - 1]||5000; // Default 5 seconds
 
     // Use exponential moving average for prediction
     const emaValues = ema(values, Math.min(5, values.length));
-    return emaValues[emaValues.length - 1]'' | '''' | ''values[values.length - 1];
+    return emaValues[emaValues.length - 1]||values[values.length - 1];
   }
 
   private predictSuccessRate(successRates: number[]): number {
     if (successRates.length < 3)
-      return successRates[successRates.length - 1]'' | '''' | ''0.5;
+      return successRates[successRates.length - 1]||0.5;
 
     // Use weighted moving average with more weight on recent data
     const wmaValues = wma(successRates, Math.min(3, successRates.length));
-    return Math.max(0, Math.min(1, wmaValues[wmaValues.length - 1]'' | '''' | ''0.5));
+    return Math.max(0, Math.min(1, wmaValues[wmaValues.length - 1]||0.5));
   }
 
   private analyzePerformanceTrend(
     agentId: string
-  ):'improving | stable' | 'declining'{
-    const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+  ):'improving|stable|declining'{
+    const history = this.performanceHistory.get(agentId)||[];
 
     if (history.length < 5) return'stable';
 
@@ -407,7 +407,7 @@ export class AgentPerformancePredictor {
   }
 
   private async forecastAgentLoad(agentId: string): Promise<number> {
-    const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+    const history = this.performanceHistory.get(agentId)||[];
 
     if (history.length < 3) return 0.5; // Default moderate load
 
@@ -441,7 +441,7 @@ export class AgentPerformancePredictor {
     agentId: string,
     loadForecast: number
   ): number {
-    const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+    const history = this.performanceHistory.get(agentId)||[];
 
     if (history.length < 3) return 1; // Conservative default
 
@@ -551,7 +551,7 @@ export class AgentPerformancePredictor {
     let validAgents = 0;
 
     for (const agentId of allAgents) {
-      const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+      const history = this.performanceHistory.get(agentId)||[];
       const recentData = history.slice(-5);
 
       if (recentData.length > 0) {
@@ -572,14 +572,14 @@ export class AgentPerformancePredictor {
     const allAgents = Array.from(this.performanceHistory.keys())();
 
     for (const agentId of allAgents) {
-      const history = this.performanceHistory.get(agentId)'' | '''' | ''[];
+      const history = this.performanceHistory.get(agentId)||[];
       const recentData = history.slice(-5);
 
       if (recentData.length > 0) {
         const avgCpuUsage = ss.mean(recentData.map((d) => d.cpuUsage));
         const avgErrorRate = ss.mean(recentData.map((d) => d.errorRate));
 
-        if (avgCpuUsage > 0.9'' | '''' | ''avgErrorRate > 0.15) {
+        if (avgCpuUsage > 0.9||avgErrorRate > 0.15) {
           bottlenecks.push(`Agent ${agentId} (high resource usage/errors)`);
         }
       }

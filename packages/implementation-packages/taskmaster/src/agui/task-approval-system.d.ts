@@ -85,7 +85,7 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
   /** Type discriminator, always 'task' for task documents */
   type: 'task';
   /** Task priority level affecting swarm assignment and execution order */
-  priority: 'low | medium' | 'high''' | '''critical';
+  priority: 'low|medium|high|critical';
   /** Estimated hours required to complete the task */
   estimatedHours: number;
   /** List of criteria that must be met for task completion */
@@ -197,7 +197,7 @@ export interface CodeAnalysisResult {
   /** Type or category of the analysis result */
   type: string;
   /** Severity level of the detected issue */
-  severity: 'low | medium' | 'high''' | '''critical';
+  severity: 'low|medium|high|critical';
   /** Code snippet showing the problematic code (if applicable) */
   codeSnippet?: string;
   /** Categorization tags for filtering and organization */
@@ -245,9 +245,9 @@ export interface GeneratedSwarmTask {
   /** Detailed task description and context */
   description: string;
   /** Task classification for routing and prioritization */
-  type: 'task | feature' | 'epic' | 'bug' | 'improvement';
+  type: 'task|feature|epic|bug|improvement';
   /** Priority level affecting execution order */
-  priority: 'low | medium' | 'high''' | '''critical';
+  priority: 'low|medium|high|critical';
   /** Estimated hours required for completion */
   estimatedHours: number;
   /** Recommended swarm type for optimal task execution */
@@ -367,11 +367,11 @@ export interface ApprovalWorkflowConfig {
 export interface TaskApprovalDecision {
   taskId: string;
   approved: boolean;
-  decision: 'approve | reject' | 'modify''' | '''defer';
+  decision: 'approve|reject|modify|defer';
   modifications?: {
     title?: string;
     description?: string;
-    priority?: 'low | medium' | 'high''' | '''critical';
+    priority?: 'low|medium|high|critical';
     estimatedHours?: number;
     requiredAgentTypes?: string[];
     acceptanceCriteria?: string[];
@@ -537,7 +537,7 @@ export declare class TaskApprovalSystem extends TypedEventBase {
   /**
    * Export approval decisions for audit with Foundation telemetry
    */
-  exportDecisions(format?: 'json''' | '''csv'): string;
+  exportDecisions(format?: 'json|csv''): string;
   /**
    * Graceful shutdown with Foundation cleanup
    */

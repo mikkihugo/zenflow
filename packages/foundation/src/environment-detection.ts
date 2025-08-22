@@ -50,7 +50,7 @@ const PACKAGE_MANAGER_TYPE = 'package-manager'as const;
 
 export interface EnvironmentTool {
   name: string;
-  type:'' | '''package-manager''' | '''runtime''' | '''compiler''' | '''cli-tool''' | '''build-tool''' | '''version-control';
+  type:|'package-manager|runtime'||compiler|cli-tool'||build-tool|version-control'';
   available: boolean;
   version?: string;
   path?: string;
@@ -94,13 +94,13 @@ export interface NixPackage {
   description?: string;
   available: boolean;
   installed: boolean;
-  category: 'nodejs''' | '''system''' | '''dev-tools''' | '''other';
+  category: 'nodejs|system'||dev-tools|other';
 }
 
 export interface NixEnvironment {
   nixAvailable: boolean;
   flakesEnabled: boolean;
-  currentShell: string'' | ''null;
+  currentShell: string|'null;
   packages: NixPackage[];
   suggestedSetup: string[];
 }
@@ -129,11 +129,11 @@ export class EnvironmentDetectionError extends Error {
 // ============================================================================
 
 export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
-  private snapshot: EnvironmentSnapshot'' | ''null = null;
-  private detectionInterval: NodeJS.Timeout'' | ''null = null;
+  private snapshot: EnvironmentSnapshot|null = null;
+  private detectionInterval: NodeJS.Timeout|null = null;
   private isDetecting = false;
   private logger: Logger;
-  private workspaceDetector: WorkspaceDetector'' | ''null;
+  private workspaceDetector: WorkspaceDetector|null;
 
   constructor(
     private projectRoot: string = process.cwd(),
@@ -148,7 +148,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       maxListeners: 20,
     });
 
-    this.logger = logger'' | '''' | ''getLogger('EnvironmentDetector');
+    this.logger = logger||getLogger('EnvironmentDetector');
     // Initialize workspace detector for comprehensive environment analysis
     this.workspaceDetector = null;
 
@@ -194,7 +194,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
    */
   async detectEnvironment(): Promise<EnvironmentSnapshot> {
     if (this.isDetecting) {
-      return this.snapshot'' | '''' | ''this.createEmptySnapshot();
+      return this.snapshot||this.createEmptySnapshot();
     }
 
     this.isDetecting = true;
@@ -370,8 +370,8 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     return results.map((result, index) =>
       result.status === 'fulfilled'? result.value
         : {
-            name: toolsToDetect[index]?.name'' | '''' | '''unknown',
-            type: toolsToDetect[index]?.type'' | '''' | '''cli-tool',
+            name: toolsToDetect[index]?.name||'unknown',
+            type: toolsToDetect[index]?.type||'cli-tool',
             available: false,
           }
     );
@@ -400,7 +400,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     );
 
     // Integrate with workspace detector for comprehensive project analysis
-    let workspace: DetectedWorkspace'' | ''undefined;
+    let workspace: DetectedWorkspace|undefined;
     try {
       // Initialize workspace detector if not already done
       if (!this.workspaceDetector) {
@@ -462,7 +462,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
     const podmanAvailable = await this.checkCommandExists('podman');
 
     // Basic virtualization detection
-    const virtualizationAvailable = dockerAvailable'' | '''' | ''podmanAvailable;
+    const virtualizationAvailable = dockerAvailable||podmanAvailable;
 
     return {
       operatingSystem: os,
@@ -485,7 +485,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   /**
    * Detect Nix environment and available packages
    */
-  private async detectNixEnvironment(): Promise<NixEnvironment'' | ''undefined> {
+  private async detectNixEnvironment(): Promise<NixEnvironment|undefined> {
     try {
       // Check if Nix is available
       const nixTool = await this.checkCommandExists('nix');
@@ -496,7 +496,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
           currentShell: null,
           packages: [],
           suggestedSetup: [
-            'Install Nix: curl -L https://nixos.org/nix/install'' | ''sh',
+            'Install Nix: curl -L https://nixos.org/nix/install|sh',
           ],
         };
       }
@@ -537,7 +537,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   /**
    * Get current Nix shell information
    */
-  private getCurrentNixShell(): string'' | ''null {
+  private getCurrentNixShell(): string|null {
     if (process.env['IN_NIX_SHELL']) {
       return 'nix-shell';
     }
@@ -644,7 +644,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   private async isNixPackageAvailable(packageName: string): Promise<boolean> {
     try {
       const { stdout } = await execAsync(
-        `nix-env -qaP ${packageName}'' | ''head -1`,
+        `nix-env -qaP ${packageName}|head -1`,
         { timeout: 5000 }
       );
       return stdout.trim().length > 0;
@@ -662,11 +662,11 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
       let binaryName = packageName;
       if (packageName.includes('.')) {
         const parts = packageName.split('.');
-        binaryName = parts[parts.length - 1]'' | '''' | ''packageName;
+        binaryName = parts[parts.length - 1]||packageName;
       }
       if (packageName.includes('_')) {
         const parts = packageName.split('_');
-        binaryName = parts[0]'' | '''' | ''packageName;
+        binaryName = parts[0]||packageName;
       }
 
       return await this.checkCommandExists(binaryName);
@@ -774,7 +774,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   // Helper methods
   private parseVersion(output: string): string {
     const versionMatch = output.match(/v?(\d+\.\d+\.\d+)/);
-    return versionMatch?.[1]'' | '''' | ''output.split('\n')[0]'' | '''' | '''unknown';
+    return versionMatch?.[1]||output.split('\n')[0]||'unknown';
   }
 
   private async checkCommandExists(command: string): Promise<boolean> {
@@ -845,7 +845,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   }
 
   // Public API methods
-  getSnapshot(): EnvironmentSnapshot'' | ''null {
+  getSnapshot(): EnvironmentSnapshot|null {
     return this.snapshot;
   }
 
@@ -854,7 +854,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   }
 
   getAvailableTools(): EnvironmentTool[] {
-    return this.snapshot?.tools.filter((t) => t.available)'' | '''' | ''[];
+    return this.snapshot?.tools.filter((t) => t.available)||[];
   }
 
   hasTools(...toolNames: string[]): boolean {
@@ -867,15 +867,15 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   /**
    * Get Nix environment information
    */
-  getNixEnvironment(): NixEnvironment'' | ''null {
-    return this.snapshot?.nixEnvironment'' | '''' | ''null;
+  getNixEnvironment(): NixEnvironment|null {
+    return this.snapshot?.nixEnvironment||null;
   }
 
   /**
    * Check if Nix is available
    */
   hasNix(): boolean {
-    return this.getNixEnvironment()?.nixAvailable'' | '''' | ''false;
+    return this.getNixEnvironment()?.nixAvailable||false;
   }
 
   /**
@@ -889,7 +889,7 @@ export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
    * Get installed Nix packages
    */
   getInstalledNixPackages(): NixPackage[] {
-    return this.getNixEnvironment()?.packages.filter((p) => p.installed)'' | '''' | ''[];
+    return this.getNixEnvironment()?.packages.filter((p) => p.installed)||[];
   }
 
   /**
@@ -933,7 +933,7 @@ export class NixIntegration {
     private environmentDetector?: EnvironmentDetector,
     logger?: Logger
   ) {
-    this.logger = logger'' | '''' | ''getLogger('NixIntegration');
+    this.logger = logger||getLogger('NixIntegration');
     this.cachePath = join(projectRoot, '.cache', 'nix-integration.json');
 
     // Create environment detector if not provided
@@ -962,7 +962,7 @@ export class NixIntegration {
       throw new Error('Environment detector not initialized');
     }
     const snapshot = await this.environmentDetector.detectEnvironment();
-    const nixEnvironment = snapshot.nixEnvironment'' | '''' | ''{
+    const nixEnvironment = snapshot.nixEnvironment||{
       nixAvailable: false,
       flakesEnabled: false,
       currentShell: null,
@@ -1059,11 +1059,11 @@ export class NixIntegration {
             curl
           ];
           
-          shellHook = ''
+          shellHook = '
             echo "🚀 Claude Code Zen Development Environment"
             echo "📦 TypeScript/Node.js development ready"
             echo "🛠️  Ready for development!"
-          '';
+          ';
         };
       });
 }`;
@@ -1126,7 +1126,7 @@ export class NixIntegration {
   private async loadCache(): Promise<{
     timestamp: number;
     data: NixEnvironment;
-  }'' | ''null> {
+  }|null> {
     try {
       const content = await readFile(this.cachePath,'utf8');
       return JSON.parse(content);

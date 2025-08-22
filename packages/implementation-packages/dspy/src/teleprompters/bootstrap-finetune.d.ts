@@ -18,14 +18,14 @@ import type { Adapter } from '../interfaces/adapter';
 /**
  * Data format types for fine-tuning
  */
-export type DataFormat = 'chat | completion' | 'instruction';
+export type DataFormat = 'chat|completion|instruction';
 /**
  * Failed prediction class for error handling
  */
 export declare class FailedPrediction {
   completion_text: string;
-  format_reward?: number'' | ''null;
-  constructor(completion_text: string, format_reward?: number'' | ''null);
+  format_reward?: number|null;
+  constructor(completion_text: string, format_reward?: number|null);
 }
 /**
  * Trace data interface
@@ -35,13 +35,13 @@ export interface TraceData {
   example: Example;
   prediction: Prediction;
   trace: Array<[any, Record<string, any>, Prediction]>;
-  score?: number'' | ''null;
+  score?: number|null;
 }
 /**
  * Fine-tuning job interface
  */
 export interface FinetuneJob {
-  result(): Promise<LMInterface'' | ''Error>;
+  result(): Promise<LMInterface|Error>;
   thread: {
     join(): void;
   };
@@ -53,7 +53,7 @@ export interface FinetuneJob {
 export declare abstract class FinetuneTeleprompter extends Teleprompter {
   protected trainKwargs: Map<LMInterface, any>;
   constructor(
-    train_kwargs?:' | 'Record<string, any>' | 'Map<LMInterface, Record<string, any>>' | 'null
+    train_kwargs?:|Record<string, any>|Map<LMInterface, Record<string, any>>|null
   );
   /**
    * Convert train_kwargs to LM-specific dictionary
@@ -69,17 +69,17 @@ export declare abstract class FinetuneTeleprompter extends Teleprompter {
  */
 export interface BootstrapFinetuneConfig {
   /** Metric function for evaluation */
-  metric?: MetricFunction'' | ''null;
+  metric?: MetricFunction|null;
   /** Whether to use multitask fine-tuning */
   multitask?: boolean;
   /** Training kwargs for fine-tuning */
-  train_kwargs?:'' | ''Record<string, any>'' | ''Map<LMInterface, Record<string, any>>'' | ''null;
+  train_kwargs?:|Record<string, any>|Map<LMInterface, Record<string, any>>|null;
   /** Adapter for formatting fine-tuning data */
-  adapter?: Adapter'' | ''Map<LMInterface, Adapter>'' | ''null;
+  adapter?: Adapter|Map<LMInterface, Adapter>|null;
   /** Whether to exclude demos after fine-tuning */
   exclude_demos?: boolean;
   /** Number of threads for evaluation */
-  num_threads?: number'' | ''null;
+  num_threads?: number|null;
 }
 /**
  * BootstrapFinetune Teleprompter
@@ -250,8 +250,8 @@ export declare class BootstrapFinetune extends FinetuneTeleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''DSPyModule[]'' | ''null;
-      valset?: Example[]'' | ''null;
+      teacher?: DSPyModule|DSPyModule[]|null;
+      valset?: Example[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule>;

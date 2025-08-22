@@ -248,7 +248,7 @@ export interface DataConnection {
  * Authentication configuration
  */
 export interface AuthenticationConfig {
-  readonly type: 'none'' | ''basic'' | ''token'' | ''oauth'' | ''certificate';
+  readonly type: 'none|basic|token|oauth|certificate';
   readonly credentials: Record<string, any>;
 }
 
@@ -321,7 +321,7 @@ export interface ActionTrigger {
  * Trigger condition
  */
 export interface TriggerCondition {
-  readonly type: 'threshold'' | ''pattern'' | ''anomaly'' | ''change'' | ''time';
+  readonly type: 'threshold|pattern|anomaly|change|time';
   readonly parameters: Record<string, any>;
   readonly evaluation: ConditionEvaluation;
 }
@@ -330,7 +330,7 @@ export interface TriggerCondition {
  * Condition evaluation
  */
 export interface ConditionEvaluation {
-  readonly operator: 'gt'' | ''lt'' | ''eq'' | ''ne'' | ''between'' | ''contains';
+  readonly operator: 'gt|lt|eq|ne|between|contains';
   readonly value: any;
   readonly duration: number; // minutes
   readonly confidence: number; // 0-100
@@ -363,7 +363,7 @@ export enum ActionType {
 export interface ActionParameters {
   readonly [key: string]: any;
   readonly description?: string;
-  readonly urgency?: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly urgency?: 'low|medium|high|critical';
   readonly category?: string;
 }
 
@@ -392,9 +392,9 @@ export interface ClosureCondition {
  * Closure criteria
  */
 export interface ClosureCriteria {
-  readonly type: 'metric'' | ''time'' | ''approval'' | ''combination';
+  readonly type: 'metric|time|approval|combination';
   readonly requirements: CriteriaRequirement[];
-  readonly operator: 'and'' | ''or';
+  readonly operator: 'and|or';
 }
 
 /**
@@ -412,7 +412,7 @@ export interface CriteriaRequirement {
  * Validation method
  */
 export interface ValidationMethod {
-  readonly method: 'automated'' | ''manual'' | ''hybrid';
+  readonly method: 'automated|manual|hybrid';
   readonly validator: string;
   readonly evidence: EvidenceRequirement[];
 }
@@ -421,7 +421,7 @@ export interface ValidationMethod {
  * Evidence requirement
  */
 export interface EvidenceRequirement {
-  readonly evidenceType: 'data'' | ''document'' | ''observation'' | ''test';
+  readonly evidenceType: 'data|document|observation|test';
   readonly description: string;
   readonly required: boolean;
 }
@@ -432,7 +432,7 @@ export interface EvidenceRequirement {
 export interface ApprovalRequirement {
   readonly required: boolean;
   readonly approvers: string[];
-  readonly threshold: 'any'' | ''majority'' | ''all';
+  readonly threshold: 'any|majority|all';
   readonly timeout: number; // hours
 }
 
@@ -632,9 +632,9 @@ export interface ReportingAudience {
  */
 export interface InformationNeed {
   readonly needId: string;
-  readonly category: 'strategic'' | ''tactical'' | ''operational';
+  readonly category: 'strategic|tactical|operational';
   readonly description: string;
-  readonly urgency: 'low'' | ''medium'' | ''high';
+  readonly urgency: 'low|medium|high';
   readonly frequency: string;
 }
 
@@ -644,7 +644,7 @@ export interface InformationNeed {
 export interface AudiencePreferences {
   readonly format: ReportFormat[];
   readonly frequency: ReportingFrequency;
-  readonly detail: 'summary'' | ''detailed'' | ''comprehensive';
+  readonly detail: 'summary|detailed|comprehensive';
   readonly delivery: DeliveryMethod[];
 }
 
@@ -791,7 +791,7 @@ export interface ValidationRule {
   readonly ruleId: string;
   readonly description: string;
   readonly condition: string;
-  readonly severity: 'warning'' | ''error';
+  readonly severity: 'warning|error';
   readonly action: string;
 }
 
@@ -821,7 +821,7 @@ export interface MonitoringRequirement {
 export interface AlertingConfig {
   readonly enabled: boolean;
   readonly channels: string[];
-  readonly severity: 'info'' | ''warning'' | ''error'' | ''critical';
+  readonly severity: 'info|warning|error|critical';
   readonly escalation: EscalationRule[];
 }
 
@@ -893,7 +893,7 @@ export interface EstimatedEffort {
  * Resource requirement
  */
 export interface ResourceRequirement {
-  readonly resourceType: 'people'' | ''technology'' | ''budget'' | ''time';
+  readonly resourceType: 'people|technology|budget|time';
   readonly quantity: number;
   readonly duration: number; // days
   readonly skills: string[];

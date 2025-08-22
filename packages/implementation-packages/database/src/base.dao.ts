@@ -123,7 +123,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    *
    * @param id
    */
-  async findById(id: string'' | ''number): Promise<T'' | ''null> {
+  async findById(id: string|number): Promise<T|null> {
     this.logger.debug(
       `Finding entity by ID: ${id} in table: ${this.tableName}`
     );
@@ -217,7 +217,7 @@ export abstract class BaseDao<T> implements Repository<T> {
 
       // Fallback: assume auto-generated ID and fetch the entity
       const createdId =
-        (result as any)?.rows?.[0]?.id'' | '''' | ''(result as any)?.rows?.[0]?.insertId;
+        (result as any)?.rows?.[0]?.id||(result as any)?.rows?.[0]?.insertId;
       if (createdId) {
         const created = await this.findById(createdId);
         if (created) {
@@ -240,7 +240,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * @param id
    * @param updates
    */
-  async update(id: string'' | ''number, updates: Partial<T>): Promise<T> {
+  async update(id: string|number, updates: Partial<T>): Promise<T> {
     this.logger.debug(`Updating entity ${id} in table: ${this.tableName}`, {
       updates,
     });
@@ -269,7 +269,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    *
    * @param id
    */
-  async delete(id: string'' | ''number): Promise<boolean> {
+  async delete(id: string|number): Promise<boolean> {
     this.logger.debug(`Deleting entity ${id} from table: ${this.tableName}`);
 
     try {
@@ -299,7 +299,7 @@ export abstract class BaseDao<T> implements Repository<T> {
       const query = this.buildCountQuery(criteria);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return (result as any)?.rows?.[0]?.count'' | '''' | ''0;
+      return (result as any)?.rows?.[0]?.count||0;
     } catch (error) {
       this.logger.error(`Failed to count entities: ${error}`);
       throw new Error(
@@ -313,7 +313,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    *
    * @param id
    */
-  async exists(id: string'' | ''number): Promise<boolean> {
+  async exists(id: string|number): Promise<boolean> {
     this.logger.debug(
       `Checking if entity ${id} exists in table: ${this.tableName}`
     );
@@ -341,11 +341,11 @@ export abstract class BaseDao<T> implements Repository<T> {
 
       if (typeof query.query ==='string') {
         sql = query.query;
-        params = Object.values(query.parameters'' | '''' | ''{});
+        params = Object.values(query.parameters||{});
       } else {
         // Handle object-based queries (could be extended for different DB types)
         sql = JSON.stringify(query.query);
-        params = Object.values(query.parameters'' | '''' | ''{});
+        params = Object.values(query.parameters||{});
       }
 
       const result = await this.adapter.query(sql, params);
@@ -363,7 +363,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    *
    * @param id
    */
-  protected buildFindByIdQuery(id: string'' | ''number): {
+  protected buildFindByIdQuery(id: string|number): {
     sql: string;
     params: unknown[];
   } {
@@ -496,7 +496,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * ```
    */
   protected buildUpdateQuery(
-    id: string'' | ''number,
+    id: string|number,
     updates: Partial<T>
   ): { sql: string; params: unknown[] } {
     const mappedUpdates = this.mapEntityToRow(updates);
@@ -510,7 +510,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     return { sql, params };
   }
 
-  protected buildDeleteQuery(id: string'' | ''number): {
+  protected buildDeleteQuery(id: string|number): {
     sql: string;
     params: unknown[];
   } {
@@ -524,7 +524,7 @@ export abstract class BaseDao<T> implements Repository<T> {
     sql: string;
     params: unknown[];
   } {
-    if (!criteria'' | '''' | ''Object.keys(criteria).length === 0) {
+    if (!criteria||Object.keys(criteria).length === 0) {
       return {
         sql: `SELECT COUNT(*) as count FROM ${this.tableName}`,
         params: [],
@@ -586,7 +586,7 @@ export abstract class BaseDao<T> implements Repository<T> {
    * ```
    */
   protected buildOrderClause(sortCriteria?: SortCriteria[]): string {
-    if (!sortCriteria'' | '''' | ''sortCriteria.length === 0) {
+    if (!sortCriteria||sortCriteria.length === 0) {
       return'';
     }
 
@@ -729,7 +729,7 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
 
       return {
         type: this.getDatabaseType(),
-        version: (schema as any).version'' | '''' | '''1.0.0',
+        version: (schema as any).version||'1.0.0',
         features: this.getSupportedFeatures(),
         schema: schema as any,
         config: this.getConfiguration(),

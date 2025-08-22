@@ -45,7 +45,7 @@ export interface Timestamped {
  */
 export interface TimestampedWithDeletion extends Timestamped {
   /** When this entity was soft-deleted (null if not deleted) */
-  deletedAt: Timestamp'' | ''null;
+  deletedAt: Timestamp|null;
 }
 
 /**
@@ -91,7 +91,7 @@ export interface VersionedWithRevision extends Versioned {
   /** Unique revision identifier */
   readonly revisionId: UUID;
   /** Previous version number (null for initial version) */
-  readonly previousVersion: number'' | ''null;
+  readonly previousVersion: number|null;
 }
 
 /**
@@ -215,9 +215,9 @@ export interface CursorPaginated<T> {
  */
 export interface CursorPaginationMetadata {
   /** Cursor for next page (null if no next page) */
-  nextCursor: string'' | ''null;
+  nextCursor: string|null;
   /** Cursor for previous page (null if no previous page) */
-  previousCursor: string'' | ''null;
+  previousCursor: string|null;
   /** Whether there are more items after this page */
   hasNextPage: boolean;
   /** Whether there are more items before this page */
@@ -311,7 +311,7 @@ export interface SortCriteria {
   /** Field to sort by */
   field: string;
   /** Sort direction */
-  direction:'asc''' | '''desc';
+  direction:'asc|desc'';
 }
 
 /**
@@ -385,9 +385,9 @@ export interface AuditEntry {
   /** Type of entity that was changed */
   entityType: string;
   /** Type of operation performed */
-  operation: 'create | update' | 'delete''' | '''read';
+  operation: 'create|update|delete|read';
   /** Who performed the operation */
-  performedBy: UUID'' | '''system';
+  performedBy: UUID|'system';
   /** When the operation was performed */
   performedAt: Timestamp;
   /** What changed (field-level changes) */
@@ -419,7 +419,7 @@ export interface CoordinationRequest {
   /** Request parameters */
   params?: Record<string, unknown>;
   /** Request priority */
-  priority?: 'low | normal' | 'high''' | '''critical';
+  priority?: 'low|normal|high|critical';
   /** Request timeout in milliseconds */
   timeout?: number;
   /** Request metadata */
@@ -471,7 +471,7 @@ export interface Lifecycle {
  */
 export interface SystemHealth {
   /** Overall system status */
-  status: 'healthy | degraded' | 'unhealthy''' | '''unknown';
+  status: 'healthy|degraded|unhealthy|unknown';
   /** Overall health score (0-100) */
   score: number;
   /** Individual component health checks */
@@ -505,7 +505,7 @@ export interface SystemHealth {
  */
 export interface ComponentHealth {
   /** Component status */
-  status: 'healthy | degraded' | 'unhealthy''' | '''unknown';
+  status: 'healthy|degraded|unhealthy|unknown';
   /** Component health score (0-100) */
   score: number;
   /** Component-specific metrics */

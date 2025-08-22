@@ -47,11 +47,11 @@ export interface ArchitectureRunwayItem {
   id: string;
   title: string;
   description: string;
-  type: 'infrastructure | platform' | 'enabler''' | '''technical-debt';
-  priority: 'critical | high' | 'medium''' | '''low';
+  type: 'infrastructure|platform|enabler|technical-debt';
+  priority: 'critical|high|medium|low';
   effort: number; // story points or hours
   dependencies: string[];
-  status: 'backlog''' | '''planned''' | '''in-progress''' | '''completed''' | '''blocked';
+  status: 'backlog|planned'||in-progress|completed'||blocked';
   assignedTo?: string;
   targetPI?: string;
   createdAt: Date;
@@ -65,11 +65,11 @@ export interface TechnicalDebtItem {
   id: string;
   title: string;
   description: string;
-  severity: 'critical | high' | 'medium''' | '''low';
+  severity: 'critical|high|medium|low';
   impact: string;
   effort: number;
   component: string;
-  status: 'identified | approved' | 'planned''' | '''in-progress''' | '''resolved';
+  status: 'identified|approved|planned|in-progress||resolved';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -80,7 +80,7 @@ export interface TechnicalDebtItem {
 export interface ArchitectureDecisionRecord {
   id: string;
   title: string;
-  status: 'proposed | accepted' | 'deprecated''' | '''superseded';
+  status: 'proposed|accepted|deprecated|superseded';
   context: string;
   decision: string;
   consequences: string[];
@@ -98,9 +98,9 @@ export interface ArchitectureCapability {
   id: string;
   name: string;
   description: string;
-  category: 'business | technology' | 'process';
+  category: 'business|technology|process';
   maturityLevel: number; // 1-5 scale
-  status: 'developing | active' | 'retiring''' | '''deprecated';
+  status: 'developing|active|retiring|deprecated';
   enablers: string[]; // References to runway items
   dependencies: string[];
   kpis: CapabilityKPI[];
@@ -119,7 +119,7 @@ export interface CapabilityKPI {
   target: number;
   current: number;
   unit: string;
-  trend: 'improving | stable' | 'declining';
+  trend: 'improving|stable|declining';
 }
 
 /**
@@ -246,7 +246,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
   async addRunwayItem(
     item: Omit<
       ArchitectureRunwayItem,
-      'id | createdAt' | 'updatedAt''' | '''status'
+      'id|createdAt|updatedAt|status'
     >
   ): Promise<ArchitectureRunwayItem> {
     if (!this.initialized) await this.initialize();
@@ -280,7 +280,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
     itemId: string,
     status: ArchitectureRunwayItem['status'],
     context?: any
-  ): Promise<ArchitectureRunwayItem'' | ''null> {
+  ): Promise<ArchitectureRunwayItem|null> {
     if (!this.initialized) await this.initialize();
 
     try {
@@ -318,7 +318,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    * Add Technical Debt Item - Delegates to TechnicalDebtManagementService
    */
   async addTechnicalDebtItem(
-    item: Omit<TechnicalDebtItem, 'id | createdAt' | 'updatedAt''' | '''status'>
+    item: Omit<TechnicalDebtItem, 'id|createdAt|updatedAt|status'>
   ): Promise<TechnicalDebtItem> {
     if (!this.initialized) await this.initialize();
     if (!this.config.enableTechnicalDebtManagement) {
@@ -354,7 +354,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
   async createArchitectureDecisionRecord(
     decision: Omit<
       ArchitectureDecisionRecord,
-      'id | createdAt' | 'updatedAt''' | '''status'
+      'id|createdAt|updatedAt|status'
     >
   ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();
@@ -391,7 +391,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    * Add Architecture Capability - Delegates to CapabilityManagementService
    */
   async addCapability(
-    capability: Omit<ArchitectureCapability, 'id | createdAt' | 'updatedAt'>
+    capability: Omit<ArchitectureCapability, 'id|createdAt|updatedAt'>
   ): Promise<ArchitectureCapability> {
     if (!this.initialized) await this.initialize();
     if (!this.config.enableCapabilityTracking) {
@@ -484,7 +484,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
       pros: string[];
       cons: string[];
     }>;
-    impact: 'low | medium' | 'high''' | '''critical';
+    impact: 'low|medium|high|critical';
     deadline?: Date;
   }): Promise<{
     approved: boolean;
@@ -509,12 +509,12 @@ export class ArchitectureRunwayManager extends TypedEventBase {
           riskLevel:
             decision.impact === 'critical'
               ? 'high'
-              : ('medium' as 'low | medium' | 'high'),
+              : ('medium' as 'low|medium|high'),
         })),
         requester: 'architecture-runway-manager',
         stakeholders: ['architect', 'tech-lead'],
         deadline: decision.deadline,
-        priority: decision.impact as 'low | medium' | 'high''' | '''critical',
+        priority: decision.impact as 'low|medium|high|critical',
         businessJustification: `Architecture decision with ${decision.impact} impact`,
       };
 
@@ -567,9 +567,9 @@ export class ArchitectureRunwayManager extends TypedEventBase {
 
       return {
         runway: {
-          totalItems: runwayAnalytics?.totalItems'' | '''' | ''0,
-          itemsByStatus: runwayAnalytics?.itemsByStatus'' | '''' | ''{},
-          itemsByPriority: runwayAnalytics?.itemsByPriority'' | '''' | ''{},
+          totalItems: runwayAnalytics?.totalItems||0,
+          itemsByStatus: runwayAnalytics?.itemsByStatus||{},
+          itemsByPriority: runwayAnalytics?.itemsByPriority||{},
         },
         technicalDebt: {
           totalDebt: debtAnalytics.totalDebtItems,
@@ -577,9 +577,9 @@ export class ArchitectureRunwayManager extends TypedEventBase {
           debtBySeverity: debtAnalytics.debtBySeverity,
         },
         capabilities: {
-          totalCapabilities: capabilityAnalytics?.totalCapabilities'' | '''' | ''0,
+          totalCapabilities: capabilityAnalytics?.totalCapabilities||0,
           capabilitiesByCategory:
-            capabilityAnalytics?.capabilitiesByCategory'' | '''' | ''{},
+            capabilityAnalytics?.capabilitiesByCategory||{},
         },
         decisions: {
           totalDecisions: adrAnalytics.totalDecisions,
@@ -595,7 +595,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
   /**
    * Get runway item by ID - Delegates to RunwayItemManagementService
    */
-  getRunwayItem(itemId: string): ArchitectureRunwayItem'' | ''undefined {
+  getRunwayItem(itemId: string): ArchitectureRunwayItem|undefined {
     if (!this.initialized) return undefined;
     return this.runwayItemService?.getRunwayItem(itemId);
   }
@@ -605,13 +605,13 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    */
   getAllRunwayItems(): ArchitectureRunwayItem[] {
     if (!this.initialized) return [];
-    return this.runwayItemService?.getAllRunwayItems()'' | '''' | ''[];
+    return this.runwayItemService?.getAllRunwayItems()||[];
   }
 
   /**
    * Get technical debt item by ID - Delegates to TechnicalDebtManagementService
    */
-  getTechnicalDebtItem(itemId: string): TechnicalDebtItem'' | ''undefined {
+  getTechnicalDebtItem(itemId: string): TechnicalDebtItem|undefined {
     if (!this.initialized) return undefined;
     return this.technicalDebtService?.getDebtItem(itemId);
   }
@@ -621,7 +621,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    */
   getAllTechnicalDebtItems(): TechnicalDebtItem[] {
     if (!this.initialized) return [];
-    return this.technicalDebtService?.getAllDebtItems()'' | '''' | ''[];
+    return this.technicalDebtService?.getAllDebtItems()||[];
   }
 
   /**
@@ -629,7 +629,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    */
   getArchitectureDecisionRecord(
     adrId: string
-  ): ArchitectureDecisionRecord'' | ''undefined {
+  ): ArchitectureDecisionRecord|undefined {
     if (!this.initialized) return undefined;
     return this.architectureDecisionService?.getDecisionRecord(adrId);
   }
@@ -639,13 +639,13 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    */
   getAllArchitectureDecisionRecords(): ArchitectureDecisionRecord[] {
     if (!this.initialized) return [];
-    return this.architectureDecisionService?.getAllDecisionRecords()'' | '''' | ''[];
+    return this.architectureDecisionService?.getAllDecisionRecords()||[];
   }
 
   /**
    * Get capability by ID - Delegates to CapabilityManagementService
    */
-  getCapability(capabilityId: string): ArchitectureCapability'' | ''undefined {
+  getCapability(capabilityId: string): ArchitectureCapability|undefined {
     if (!this.initialized) return undefined;
     return this.capabilityService?.getCapability(capabilityId);
   }
@@ -655,7 +655,7 @@ export class ArchitectureRunwayManager extends TypedEventBase {
    */
   getAllCapabilities(): ArchitectureCapability[] {
     if (!this.initialized) return [];
-    return this.capabilityService?.getAllCapabilities()'' | '''' | ''[];
+    return this.capabilityService?.getAllCapabilities()||[];
   }
 
   // ============================================================================

@@ -48,7 +48,7 @@ export interface FlowMetrics {
 export interface BottleneckInfo {
   readonly level: OrchestrationLevel;
   readonly location: string;
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly impact: number; // Impact on overall flow
   readonly suggestedActions: string[];
 }
@@ -60,7 +60,7 @@ export interface BottleneckInfo {
 /**
  * Stream status
  */
-export type StreamStatus ='' | '''initializing | active' | 'paused''' | '''blocked | completed' | 'failed''' | '''stopped';
+export type StreamStatus =|'initializing|active|paused|blocked|completed|failed|stopped'';
 
 /**
  * Stream metrics
@@ -114,9 +114,9 @@ export interface PortfolioItem {
   readonly title: string;
   readonly description: string;
   readonly businessValue: number; // 1-10 scale
-  readonly complexity: 'low | medium' | 'high';
-  readonly priority: 'low | medium' | 'high''' | '''critical';
-  readonly status:'' | '''draft | review' | 'approved' | 'in_progress' | 'completed';
+  readonly complexity: 'low|medium|high';
+  readonly priority: 'low|medium|high|critical';
+  readonly status:|'draft|review|approved|in_progress|completed';
   readonly stakeholders: string[];
   readonly targetMarket: string[];
   readonly successMetrics: SuccessMetric[];
@@ -150,12 +150,12 @@ export interface ProgramItem {
   readonly portfolioItemId: string; // Parent PRD
   readonly acceptanceCriteria: string[];
   readonly technicalRequirements: string[];
-  readonly status: 'planning | analysis' | 'development' | 'testing' | 'done';
-  readonly aiCollaborationLevel: 'human_led | ai_assisted' | 'ai_led';
+  readonly status: 'planning|analysis|development|testing|done';
+  readonly aiCollaborationLevel: 'human_led|ai_assisted|ai_led';
   readonly estimatedEffort: number; // Story points or hours
   readonly actualEffort?: number;
   readonly assignedSwarms: string[]; // Swarm IDs implementing features
-  readonly riskLevel: 'low | medium' | 'high';
+  readonly riskLevel: 'low|medium|high';
   readonly blockers: string[];
   readonly createdAt: number;
   readonly updatedAt: number;
@@ -175,8 +175,8 @@ export interface SwarmExecutionItem {
   readonly programItemId: string; // Parent Epic
   readonly sparcPhase: SPARCPhase;
   readonly sparcProjectId?: string;
-  readonly automationLevel: 'full | human_approval' | 'human_review';
-  readonly status:'' | '''queued | specification' | 'pseudocode''' | '''architecture | refinement' | 'completion''' | '''done';
+  readonly automationLevel: 'full|human_approval|human_review';
+  readonly status:|'queued|specification|pseudocode|architecture|refinement|completion|done';
   readonly assignedAgents: string[];
   readonly technicalSpecs: TechnicalSpecification;
   readonly testRequirements: string[];
@@ -202,7 +202,7 @@ export interface TechnicalSpecification {
  * Code artifact produced during implementation
  */
 export interface CodeArtifact {
-  readonly type:'' | '''component | service' | 'test' | 'documentation' | 'configuration';
+  readonly type:|''component|service|test|documentation|configuration';
   readonly path: string;
   readonly description: string;
   readonly size: number; // Lines of code
@@ -216,8 +216,8 @@ export interface CodeArtifact {
 export interface QualityGate {
   readonly id: string;
   readonly name: string;
-  readonly type: 'automated | human_review' | 'ai_validation';
-  readonly status: 'pending | passed' | 'failed''' | '''skipped';
+  readonly type: 'automated|human_review|ai_validation';
+  readonly status: 'pending|passed|failed|skipped';
   readonly criteria: string[];
   readonly results?: QualityGateResult[];
 }
@@ -246,8 +246,8 @@ export interface CrossLevelDependency {
   readonly targetLevel: OrchestrationLevel;
   readonly sourceItemId: string;
   readonly targetItemId: string;
-  readonly dependencyType: 'blocks | enables' | 'informs''' | '''validates';
-  readonly status: 'pending | satisfied' | 'violated''' | '''obsolete';
+  readonly dependencyType: 'blocks|enables|informs|validates';
+  readonly status: 'pending|satisfied|violated|obsolete';
   readonly createdAt: number;
   readonly resolvedAt?: number;
 }
@@ -258,8 +258,8 @@ export interface CrossLevelDependency {
 export interface OptimizationRecommendation {
   readonly id: string;
   readonly level: OrchestrationLevel;
-  readonly type:'' | '''wip_adjustment | resource_reallocation' | 'dependency_resolution''' | '''bottleneck_removal';
-  readonly priority: 'low | medium' | 'high';
+  readonly type: 'wip_adjustment|resource_reallocation|dependency_resolution|bottleneck_removal';
+  readonly priority: 'low|medium|high';
   readonly impact: number; // Estimated improvement (0-1)
   readonly description: string;
   readonly actionItems: string[];
@@ -351,7 +351,7 @@ export interface CrossLevelDependencyEvent
   extends MultiLevelOrchestrationEvent {
   readonly type: 'dependency:cross_level';
   readonly dependency: CrossLevelDependency;
-  readonly action: 'created | satisfied' | 'violated''' | '''resolved';
+  readonly action: 'created|satisfied|violated|resolved';
 }
 
 // ============================================================================

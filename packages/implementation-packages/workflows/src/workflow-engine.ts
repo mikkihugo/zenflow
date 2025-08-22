@@ -470,7 +470,7 @@ export class WorkflowEngine extends TypedEventBase {
   @tracedAsync('workflow-start')
   @metered('workflow_start_operation')
   async startWorkflow(
-    definitionOrName: string'' | ''WorkflowDefinition,
+    definitionOrName: string|WorkflowDefinition,
     context: WorkflowContext = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     return withAsyncTrace('workflow-start', async (span) => {
@@ -606,7 +606,7 @@ export class WorkflowEngine extends TypedEventBase {
     return true;
   }
 
-  getWorkflowStatus(workflowId: string): WorkflowState'' | ''null {
+  getWorkflowStatus(workflowId: string): WorkflowState|null {
     return this.activeWorkflows.get(workflowId) ?? null;
   }
 
@@ -675,8 +675,8 @@ export class WorkflowEngine extends TypedEventBase {
 
       setTraceAttributes({
         'document.event.type': eventType,
-        'document.data.type': docData.type'' | '''' | '''unknown',
-        'document.data.id': docData.id'' | '''' | '''unknown',
+        'document.data.type': docData.type||'unknown',
+        'document.data.id': docData.id||'unknown',
       });
 
       recordEvent('document_event_processing_started', {
@@ -699,7 +699,7 @@ export class WorkflowEngine extends TypedEventBase {
             });
             recordMetric('document_event_no_workflows', 1, {
               eventType,
-              documentType: docData.type'' | '''' | '''unknown',
+              documentType: docData.type||'unknown',
             });
 
             logger.debug(`No workflows for document type: ${docData.type}`, {
@@ -748,7 +748,7 @@ export class WorkflowEngine extends TypedEventBase {
                   {
                     workflowName,
                     eventType,
-                    documentType: docData.type'' | '''' | '''unknown',
+                    documentType: docData.type||'unknown',
                   }
                 );
 
@@ -816,7 +816,7 @@ export class WorkflowEngine extends TypedEventBase {
             totalProcessingDuration,
             {
               eventType,
-              documentType: docData.type'' | '''' | '''unknown',
+              documentType: docData.type||'unknown',
             }
           );
           recordGauge('document_event_workflows_triggered', results.length);
@@ -907,8 +907,8 @@ export class WorkflowEngine extends TypedEventBase {
     return {
       id: entity.id,
       type: entity.type,
-      title: entity.title'' | '''' | ''`${entity.type} Document`,
-      content: entity.content'' | '''' | '''',
+      title: entity.title||`${entity.type} Document`,
+      content: entity.content||',
       metadata: {
         entityId: entity.id,
         createdAt: entity.created_at,
@@ -923,7 +923,7 @@ export class WorkflowEngine extends TypedEventBase {
   // DATA ACCESS METHODS
   // --------------------------------------------------------------------------
 
-  getWorkflowData(workflowId: string): WorkflowData'' | ''null {
+  getWorkflowData(workflowId: string): WorkflowData|'null {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) return null;
 
@@ -1182,7 +1182,7 @@ export class WorkflowEngine extends TypedEventBase {
       if (!gateResult.success) {
         return {
           success: false,
-          error: gateResult.error?.message'' | '''' | '''Gate approval failed',
+          error: gateResult.error?.message||'Gate approval failed',
           duration: Date.now() - startTime,
         };
       }
@@ -1216,8 +1216,8 @@ export class WorkflowEngine extends TypedEventBase {
 
     try {
       const output = await Promise.race([
-        handler(workflow.context, step.params'' | '''' | ''{}),
-        this.createTimeoutPromise(step.timeout'' | '''' | ''this.config.stepTimeout),
+        handler(workflow.context, step.params||{}),
+        this.createTimeoutPromise(step.timeout||this.config.stepTimeout),
       ]);
 
       return {
@@ -1237,14 +1237,14 @@ export class WorkflowEngine extends TypedEventBase {
   private registerDefaultStepHandlers(): void {
     // Default step handlers
     this.registerStepHandler('delay', async (context, params) => {
-      const duration = (params as { duration?: number }).duration'' | '''' | ''1000;
+      const duration = (params as { duration?: number }).duration||1000;
       await new Promise((resolve) => setTimeout(resolve, duration));
       return { delayed: duration };
     });
 
     this.registerStepHandler('log', (context, params) => {
       const message =
-        (params as { message?: string }).message'' | '''' | '''Step executed';
+        (params as { message?: string }).message||'Step executed';
       logger.info(message);
       return Promise.resolve({ logged: message });
     });
@@ -1254,7 +1254,7 @@ export class WorkflowEngine extends TypedEventBase {
         input?: string;
         transformation?: unknown;
       };
-      const inputValue = this.getNestedValue(context, input'' | '''' | '''');
+      const inputValue = this.getNestedValue(context, input||');
       return Promise.resolve({
         transformed: this.applyTransformation(inputValue, transformation),
       });
@@ -1262,10 +1262,10 @@ export class WorkflowEngine extends TypedEventBase {
   }
 
   private resolveDefinition(
-    definitionOrName: string'' | ''WorkflowDefinition
-  ): WorkflowDefinition'' | ''null {
+    definitionOrName: string|WorkflowDefinition
+  ): WorkflowDefinition|'null {
     if (typeof definitionOrName ==='string') {
-      return this.workflowDefinitions.get(definitionOrName)'' | '''' | ''null;
+      return this.workflowDefinitions.get(definitionOrName)||null;
     }
     return definitionOrName;
   }
@@ -1280,7 +1280,7 @@ export class WorkflowEngine extends TypedEventBase {
       prd: ['prd-to-epics'],
       epic: ['epic-to-features'],
     };
-    return typeWorkflowMap[documentType'' | '''' | '''']'' | '''' | ''[];
+    return typeWorkflowMap[documentType||']|'|[];
   }
 
   private async ensureInitialized(): Promise<void> {
@@ -1345,32 +1345,32 @@ export class WorkflowEngine extends TypedEventBase {
         // ValidationQuestion base properties
         id: gateId,
         type: 'checkpoint',
-        question: `Approve execution of step: ${step.name'' | '''' | ''step.type}?`,
+        question: `Approve execution of step: ${step.name||step.type}?`,
         context: {
           workflowId: workflow.id,
-          stepName: step.name'' | '''' | ''step.type,
+          stepName: step.name||step.type,
           stepType: step.type,
-          stepParams: step.params'' | '''' | ''{},
+          stepParams: step.params||{},
         },
         confidence: 0.8,
         priority:
           step.gateConfig.businessImpact ==='critical' ? 'critical' : 'medium',
-        validationReason: `Workflow step gate: ${step.name'' | '''' | ''step.type}`,
+        validationReason: `Workflow step gate: ${step.name||step.type}`,
         expectedImpact: step.gateConfig.businessImpact ==='high'? 0.7 : 0.4,
 
         // WorkflowGateRequest specific properties
         workflowContext: {
           workflowId: workflow.id,
-          stepName: step.name'' | '''' | ''step.type,
-          businessImpact: step.gateConfig.businessImpact'' | '''' | '''medium',
+          stepName: step.name||step.type,
+          businessImpact: step.gateConfig.businessImpact||'medium',
           decisionScope: 'task',
-          stakeholders: step.gateConfig.stakeholders'' | '''' | ''['workflow-manager'],
+          stakeholders: step.gateConfig.stakeholders||['workflow-manager'],
           dependencies: [],
           riskFactors: [],
         },
-        gateType: step.gateConfig.gateType'' | '''' | '''checkpoint',
+        gateType: step.gateConfig.gateType||'checkpoint',
         timeoutConfig: {
-          initialTimeout: step.timeout'' | '''' | ''300000, // 5 minutes
+          initialTimeout: step.timeout||300000, // 5 minutes
           escalationTimeouts: [600000, 1200000], // 10, 20 minutes
           maxTotalTimeout: 1800000, // 30 minutes
         },
@@ -1396,7 +1396,7 @@ export class WorkflowEngine extends TypedEventBase {
           processingTime: 10,
           escalationLevel: 0,
           decisionMaker:'auto-approval',
-          correlationId: gateRequest.integrationConfig?.correlationId'' | '''' | '''',
+          correlationId: gateRequest.integrationConfig?.correlationId||'',
         };
       }
 
@@ -1410,17 +1410,17 @@ export class WorkflowEngine extends TypedEventBase {
         processingTime: 100,
         escalationLevel: 0,
         decisionMaker: approved ? 'stakeholder' : 'rejected',
-        correlationId: gateRequest.integrationConfig?.correlationId'' | '''' | '''',
+        correlationId: gateRequest.integrationConfig?.correlationId||',
       };
     } catch (error) {
       return {
         success: false,
-        gateId: '',
+        gateId: ',
         approved: false,
         processingTime: 0,
         escalationLevel: 0,
         error: error instanceof Error ? error : new Error(String(error)),
-        correlationId: '',
+        correlationId: ',
       };
     }
   }
@@ -1432,8 +1432,8 @@ export class WorkflowEngine extends TypedEventBase {
     step: WorkflowStep,
     workflow: WorkflowState
   ): boolean {
-    const businessImpact = step.gateConfig?.businessImpact'' | '''' | '''medium';
-    const stakeholders = step.gateConfig?.stakeholders'' | '''' | ''[];
+    const businessImpact = step.gateConfig?.businessImpact|||medium';
+    const stakeholders = step.gateConfig?.stakeholders||[];
 
     // Auto-approve if configured
     if (step.gateConfig?.autoApproval) {
@@ -1501,7 +1501,7 @@ export class WorkflowEngine extends TypedEventBase {
       return { success: false, error: 'Workflow not found'};
     }
 
-    if (!workflow.pausedForGate'' | '''' | ''workflow.pausedForGate.gateId !== gateId) {
+    if (!workflow.pausedForGate||workflow.pausedForGate.gateId !== gateId) {
       return { success: false, error:'Workflow not paused for this gate' };
     }
 

@@ -127,9 +127,9 @@ export abstract class TypedEventBase<
       }
 
       // Get listeners for this event
-      const eventListeners = this.listeners.get(String(eventName))'' | '''' | ''new Set();
+      const eventListeners = this.listeners.get(String(eventName))||new Set();
       const onceEventListeners =
-        this.onceListeners.get(String(eventName))'' | '''' | ''new Set();
+        this.onceListeners.get(String(eventName))||new Set();
 
       // Create event metadata
       const metadata: EventMetadata = {
@@ -189,7 +189,7 @@ export abstract class TypedEventBase<
       // Clear once listeners
       this.onceListeners.delete(String(eventName));
 
-      return eventListeners.size > 0'' | '''' | ''onceEventListeners.size > 0;
+      return eventListeners.size > 0||onceEventListeners.size > 0;
     } catch (error) {
       logger.error(`Error emitting event ${String(eventName)}:`, error);
       return false;
@@ -295,8 +295,8 @@ export abstract class TypedEventBase<
    */
   public listenerCount<K extends keyof TEvents>(eventName: K): number {
     const key = String(eventName);
-    const regularCount = this.listeners.get(key)?.size'' | '''' | ''0;
-    const onceCount = this.onceListeners.get(key)?.size'' | '''' | ''0;
+    const regularCount = this.listeners.get(key)?.size||0;
+    const onceCount = this.onceListeners.get(key)?.size||0;
     return regularCount + onceCount;
   }
 
@@ -312,14 +312,14 @@ export abstract class TypedEventBase<
   /**
    * Get event metrics (if enabled)
    */
-  public getMetrics(): EventMetrics'' | ''null {
+  public getMetrics(): EventMetrics|null {
     return this.config.enableMetrics ? { ...this.metrics } : null;
   }
 
   /**
    * Get event history (if enabled)
    */
-  public getEventHistory(): InternalEvent[]'' | ''null {
+  public getEventHistory(): InternalEvent[]|null {
     return this.config.enableHistory ? [...this.eventHistory] : null;
   }
 
@@ -337,7 +337,7 @@ export abstract class TypedEventBase<
     eventName: K,
     data: TEvents[K]
   ): void {
-    if (data === null'' | '''' | ''data === undefined) {
+    if (data === null||data === undefined) {
       throw new Error(
         `Event data cannot be null or undefined for event: ${String(eventName)}`
       );
@@ -386,7 +386,7 @@ export abstract class TypedEventBase<
   private updateMetrics(eventName: string, listenerCount: number): void {
     this.metrics.totalEvents++;
     this.metrics.eventsByType[eventName] =
-      (this.metrics.eventsByType[eventName]'' | '''' | ''0) + 1;
+      (this.metrics.eventsByType[eventName]||0) + 1;
     this.metrics.lastEvent = new Date();
 
     // Update average listeners using actual listener count

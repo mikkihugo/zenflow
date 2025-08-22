@@ -5,7 +5,7 @@
  */
 export interface LLMApprovalConfig {
   enabled: boolean;
-  model: 'claude-3-5-sonnet''' | '''claude-3-haiku''' | '''claude-3-opus';
+  model: 'claude-3-5-sonnet|claude-3-haiku'||claude-3-opus';
   prompt: string;
   criteria: string[];
   confidenceThreshold: number;
@@ -48,7 +48,7 @@ export interface EnhancedApprovalGate {
   humanFallback: boolean;
   allowHumanOverride: boolean;
   escalationConditions: string[];
-  state:'' | '''pending | llm_analyzing' | 'auto_approved''' | '''human_review | approved' | 'rejected''' | '''escalated | timed_out' | 'cancelled';
+  state:|'pending|llm_analyzing|auto_approved|human_review|approved|rejected|escalated | timed_out'|cancelled';
   llmDecisions: LLMApprovalDecision[];
   humanOverrides: HumanOverride[];
   createdAt: Date;
@@ -61,7 +61,7 @@ export interface EnhancedApprovalGate {
 export interface HumanOverride {
   id: string;
   userId: string;
-  action: 'approve | reject' | 'escalate''' | '''override_llm';
+  action: 'approve|reject|escalate|override_llm';
   reason: string;
   previousLLMDecision?: LLMApprovalDecision;
   timestamp: Date;
@@ -90,7 +90,7 @@ export interface LLMApprovalContext {
   history: {
     similarTasks: Array<{
       taskId: string;
-      decision: 'approved''' | '''rejected';
+      decision: 'approved|rejected'';
       confidence: number;
       reasoning: string;
     }>;
@@ -103,7 +103,7 @@ export interface LLMApprovalContext {
   security: {
     hasSecrets: boolean;
     affectedSystems: string[];
-    riskLevel: 'low | medium' | 'high''' | '''critical';
+    riskLevel: 'low|medium|high|critical';
     complianceFlags: string[];
   };
   codeAnalysis?: {
@@ -133,7 +133,7 @@ export interface ApprovalLearning {
     reasoning: string;
     userId: string;
   };
-  feedback: 'correct | incorrect' | 'partially_correct';
+  feedback: 'correct|incorrect|partially_correct';
   learningWeight: number;
   patterns: string[];
 }

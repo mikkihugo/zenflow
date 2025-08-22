@@ -60,10 +60,10 @@ export interface PIPlanningEventConfig {
 export interface PlanningParticipant {
   readonly id: string;
   readonly name: string;
-  readonly role:' | ''product-manager'' | ''system-architect'' | ''team-member'' | ''stakeholder';
+  readonly role:|product-manager|system-architect|team-member|'stakeholder';
   readonly team?: string;
   readonly responsibilities: string[];
-  readonly attendance: 'required'' | ''optional';
+  readonly attendance: 'required|optional';
   readonly remote: boolean;
 }
 
@@ -157,8 +157,8 @@ export interface ActionItem {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high'' | ''medium'' | ''low';
-  readonly status: 'open'' | ''in_progress'' | ''completed';
+  readonly priority: 'high|medium|low';
+  readonly status: 'open|in_progress|completed';
 }
 
 /**

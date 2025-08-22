@@ -6,16 +6,7 @@
  */
 
 // Re-export from the intelligence strategic facade
-export {
-  LLMStatsService,
-  type LLMCallRecord,
-  type LLMError,
-  type LLMProviderStats,
-  type LLMRoutingStats,
-  type LLMSystemHealth,
-  type LLMAnalytics,
-  type AnalysisRequest,
-  type AnalysisResult,
+export { LLMStatsService, type LLMCallRecord, type LLMError, type LLMProviderStats, type LLMRoutingStats, type LLMSystemHealth, type LLMAnalytics, type AnalysisRequest, type AnalysisResult,
 } from '@claude-zen/intelligence';
 
 // Export default for backward compatibility

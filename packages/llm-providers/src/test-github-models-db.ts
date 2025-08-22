@@ -65,7 +65,7 @@ async function testGitHubModelsDatabase() {
     logger.info('📊 Context Window Analysis:');
     const contextSummary = new Map<number, number>();
     allModels.forEach((model) => {
-      const current = contextSummary.get(model.contextWindow)'' | '''' | ''0;
+      const current = contextSummary.get(model.contextWindow)||0;
       contextSummary.set(model.contextWindow, current + 1);
     });
 

@@ -130,13 +130,13 @@ export async function getFactProcessing(
         totalFacts: facts.length,
         sourceBreakdown: facts.reduce(
           (acc, fact) => {
-            acc[fact.source] = (acc[fact.source]'' | '''' | ''0) + 1;
+            acc[fact.source] = (acc[fact.source]||0) + 1;
             return acc;
           },
           {} as Record<string, number>
         ),
         confidence:
-          facts.reduce((sum, fact) => sum + (fact.confidence'' | '''' | ''0), 0) /
+          facts.reduce((sum, fact) => sum + (fact.confidence||0), 0) /
           facts.length,
       };
     },
@@ -174,7 +174,7 @@ export async function getFactIntelligence(
       // Reasoning implementation
       return {
         insights: facts.map(
-          (fact) => `${fact.source}: ${fact.summary'' | '''' | ''fact.content}`
+          (fact) => `${fact.source}: ${fact.summary||fact.content}`
         ),
         patterns: [], // Pattern detection would be implemented here
         recommendations: [], // Recommendations based on facts
@@ -186,8 +186,8 @@ export async function getFactIntelligence(
       for (let i = 0; i < facts.length; i++) {
         for (let j = i + 1; j < facts.length; j++) {
           // Simple correlation based on common terms
-          const fact1Terms = (facts[i].content'' | '''' | '''').toLowerCase().split(' ');
-          const fact2Terms = (facts[j].content'' | '''' | '''').toLowerCase().split(' ');
+          const fact1Terms = (facts[i].content||'').toLowerCase().split(' ');
+          const fact2Terms = (facts[j].content||'').toLowerCase().split(' ');
           const commonTerms = fact1Terms.filter((term) =>
             fact2Terms.includes(term)
           );

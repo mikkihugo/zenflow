@@ -160,7 +160,7 @@ export interface TaskDeletedEvent extends TaskBaseEvent {
 export interface TaskStateChangedEvent extends TaskBaseEvent {
   type: 'task:state_changed';
   transition: TaskStateTransition;
-  triggeredBy: 'user | system' | 'automation';
+  triggeredBy: 'user|system|automation';
 }
 
 export interface TaskAssignedEvent extends TaskBaseEvent {
@@ -285,14 +285,14 @@ export interface PerformanceThresholdExceededEvent extends BaseEvent {
   metric: string;
   value: number;
   threshold: number;
-  severity: 'warning''' | '''critical';
+  severity: 'warning|critical'';
   affectedTasks: TaskId[];
 }
 
 export interface BottleneckDetectedEvent extends BaseEvent {
   type: 'performance:bottleneck_detected';
   bottleneck: BottleneckInfo;
-  detectionMethod: 'algorithm | manual' | 'wasm_ml';
+  detectionMethod: 'algorithm|manual|wasm_ml';
   confidence: number;
   recommendedActions: string[];
 }
@@ -309,13 +309,13 @@ export interface WIPViolationEvent extends BaseEvent {
 export interface MetricsUpdatedEvent extends BaseEvent {
   type: 'performance:metrics_updated';
   metrics: FlowMetrics;
-  calculationMethod: 'real_time | batch' | 'wasm_accelerated';
+  calculationMethod: 'real_time|batch|wasm_accelerated';
   processingTimeMs: number;
 }
 
 export interface PredictionCompletedEvent extends BaseEvent {
   type: 'performance:prediction_completed';
-  predictionType:'' | '''throughput | cycle_time' | 'bottleneck''' | '''wip_optimization';
+  predictionType:|'throughput|cycle_time|bottleneck|wip_optimization';
   results: unknown;
   confidence: number;
   modelVersion: string;
@@ -334,7 +334,7 @@ export interface SystemStartedEvent extends BaseEvent {
 
 export interface SystemShutdownEvent extends BaseEvent {
   type: 'system:shutdown';
-  reason: 'graceful | forced' | 'error';
+  reason: 'graceful|forced|error';
   uptimeMs: number;
 }
 
@@ -349,7 +349,7 @@ export interface SystemHealthCheckEvent extends BaseEvent {
   type: 'system:health_check';
   health: SystemHealthStatus;
   previousHealth?: SystemHealthStatus;
-  healthTrend: 'improving | stable' | 'degrading';
+  healthTrend: 'improving|stable|degrading';
 }
 
 export interface ConfigurationChangedEvent extends BaseEvent {
@@ -445,7 +445,7 @@ export interface ComplianceCheckEvent extends BaseEvent {
   type: 'audit:compliance_check';
   framework: string;
   checkType: string;
-  result: 'passed | failed' | 'warning';
+  result: 'passed|failed|warning';
   findings: string[];
 }
 
@@ -699,14 +699,14 @@ export class TaskMasterEventManager {
    * Replay events from a specific timestamp
    */
   async replayEvents(fromTimestamp: Date, toTimestamp?: Date): Promise<void> {
-    if (!this.config.enableReplay'' | '''' | ''!this.eventStore) {
+    if (!this.config.enableReplay||!this.eventStore) {
       throw new Error('Event replay is not enabled');
     }
 
     try {
       const events = await this.eventStore.getEvents({
         from: fromTimestamp,
-        to: toTimestamp'' | '''' | ''new Date(),
+        to: toTimestamp||new Date(),
       });
 
       this.logger.info('Replaying events', {
@@ -756,15 +756,15 @@ export class TaskMasterEventManager {
   private enrichEvent(eventType: string, eventData: any): any {
     const enriched = {
       ...eventData,
-      id: eventData.id'' | '''' | ''this.generateEventId(),
-      timestamp: eventData.timestamp'' | '''' | ''new Date(),
-      source: eventData.source'' | '''' | '''taskmaster',
-      version: eventData.version'' | '''' | '''2.0.0',
+      id: eventData.id||this.generateEventId(),
+      timestamp: eventData.timestamp||new Date(),
+      source: eventData.source||'taskmaster',
+      version: eventData.version||'2.0.0',
       type: eventType,
       metadata: {
         ...eventData.metadata,
         emittedAt: new Date(),
-        nodeId: process.env.NODE_ID'' | '''' | '''unknown',
+        nodeId: process.env.NODE_ID||'unknown',
       },
     };
 
@@ -776,7 +776,7 @@ export class TaskMasterEventManager {
 
     for (const middleware of this.middleware) {
       try {
-        processedEvent = (await middleware(processedEvent))'' | '''' | ''processedEvent;
+        processedEvent = (await middleware(processedEvent))||processedEvent;
       } catch (error) {
         this.logger.error('Middleware error', error, { eventType: event.type });
         throw error;

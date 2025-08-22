@@ -65,8 +65,8 @@ export interface HealthStatus {
 
 // Core database types
 export type EntityType =
-  | 'relational | vector' | 'graph' | 'memory' | 'coordination';
-export type DatabaseType = 'sqlite | lancedb' | 'kuzu';
+  || 'relational|vector|graph|memory|coordination';
+export type DatabaseType = 'sqlite|lancedb|kuzu';
 
 export interface QueryOptions {
   limit?: number;
@@ -76,7 +76,7 @@ export interface QueryOptions {
 
 export interface SortCriteria {
   field: string;
-  direction: 'asc''' | '''desc';
+  direction: 'asc|desc'';
 }
 
 export interface CustomQuery {
@@ -96,7 +96,7 @@ export interface DatabaseMetadata {
 }
 
 export interface TransactionOperation {
-  type: 'query | execute' | 'create''' | '''update | delete' | 'custom';
+  type: 'query|execute|create|update|delete|custom';
   sql?: string;
   cypher?: string;
   params?: any[];
@@ -107,7 +107,7 @@ export interface TransactionOperation {
 
 export interface Repository<T> {
   /** Find entity by ID */
-  findById(id: string'' | ''number): Promise<T'' | ''null>;
+  findById(id: string|number): Promise<T|null>;
 
   /** Find entities by criteria with optional sorting and pagination */
   findBy(criteria: Partial<T>, options?: QueryOptions): Promise<T[]>;
@@ -119,16 +119,16 @@ export interface Repository<T> {
   create(entity: Omit<T,'id'>): Promise<T>;
 
   /** Update an existing entity */
-  update(id: string'' | ''number, updates: Partial<T>): Promise<T>;
+  update(id: string|number, updates: Partial<T>): Promise<T>;
 
   /** Delete an entity by ID */
-  delete(id: string'' | ''number): Promise<boolean>;
+  delete(id: string|number): Promise<boolean>;
 
   /** Count entities matching criteria */
   count(criteria?: Partial<T>): Promise<number>;
 
   /** Check if entity exists */
-  exists(id: string'' | ''number): Promise<boolean>;
+  exists(id: string|number): Promise<boolean>;
 
   /** Execute custom query specific to the underlying database */
   executeCustomQuery<R = any>(query: CustomQuery): Promise<R>;
@@ -165,7 +165,7 @@ export interface DataAccessObject<T> {
 export interface GraphRepository<T> extends Repository<T> {
   /** Execute graph traversal query */
   traverse(
-    startNode: string'' | ''number,
+    startNode: string|number,
     relationshipType: string,
     maxDepth?: number
   ): Promise<GraphTraversalResult>;
@@ -178,15 +178,15 @@ export interface GraphRepository<T> extends Repository<T> {
 
   /** Find relationships between nodes */
   findRelationships(
-    fromNodeId: string'' | ''number,
-    toNodeId: string'' | ''number,
+    fromNodeId: string|number,
+    toNodeId: string|number,
     relationshipType?: string
   ): Promise<GraphRelationship[]>;
 
   /** Create relationship between nodes */
   createRelationship(
-    fromNodeId: string'' | ''number,
-    toNodeId: string'' | ''number,
+    fromNodeId: string|number,
+    toNodeId: string|number,
     relationshipType: string,
     properties?: Record<string, unknown>
   ): Promise<GraphRelationship>;
@@ -230,16 +230,16 @@ export interface VectorRepository<T> extends Repository<T> {
  */
 export interface MemoryRepository<T> extends Repository<T> {
   /** Set TTL (time to live) for an entity */
-  setTTL(id: string'' | ''number, ttlSeconds: number): Promise<void>;
+  setTTL(id: string|number, ttlSeconds: number): Promise<void>;
 
   /** Get TTL for an entity */
-  getTTL(id: string'' | ''number): Promise<number'' | ''null>;
+  getTTL(id: string|number): Promise<number|null>;
 
   /** Cache entity with optional TTL */
   cache(key: string, value: T, ttlSeconds?: number): Promise<void>;
 
   /** Get cached entity */
-  getCached(key: string): Promise<T'' | ''null>;
+  getCached(key: string): Promise<T|null>;
 
   /** Clear cache */
   clearCache(pattern?: string): Promise<number>;
@@ -300,7 +300,7 @@ export interface AgentMemoryDao<T> extends CoordinationDao<T> {
   getAgentMemory(
     agentId: string,
     key: string
-  ): Promise<{ key: string; value: unknown }'' | ''null>;
+  ): Promise<{ key: string; value: unknown }|null>;
 
   /** Get all memory for an agent */
   getAllMemory(
@@ -362,12 +362,12 @@ export enum DatabaseTypes {
  * @example
  */
 export interface DatabaseQuery {
-  type: 'select | insert' | 'update' | 'delete' | 'aggregate';
+  type: 'select|insert|update|delete|aggregate';
   table?: string;
   columns?: string[];
   conditions?: Record<string, unknown>;
   joins?: Array<{
-    type: 'inner | left' | 'right''' | '''full';
+    type: 'inner|left|right|full';
     table: string;
     on: string;
   }>;
@@ -450,7 +450,7 @@ export interface QueryOptions {
  */
 export interface SortCriteria {
   field: string;
-  direction: 'asc''' | '''desc';
+  direction: 'asc|desc'';
 }
 
 /**
@@ -460,10 +460,10 @@ export interface SortCriteria {
  */
 export interface CustomQuery {
   /** Query type identifier */
-  type: 'sql | cypher' | 'vector' | 'memory' | 'coordination';
+  type: 'sql|cypher|vector|memory|coordination';
 
   /** The actual query string or object */
-  query: string'' | ''object;
+  query: string|object;
 
   /** Query parameters */
   parameters?: Record<string, unknown>;
@@ -479,7 +479,7 @@ export interface CustomQuery {
  */
 export interface TransactionOperation {
   /** Operation type */
-  type:'query | execute' | 'create''' | '''update | delete' | 'custom';
+  type:'query|execute|create|update|delete|custom';
 
   /** Entity type */
   entityType?: string;
@@ -498,7 +498,7 @@ export interface TransactionOperation {
  */
 export interface DatabaseMetadata {
   /** Database type */
-  type: 'sqlite | lancedb' | 'kuzu';
+  type: 'sqlite|lancedb|kuzu';
 
   /** Database version */
   version: string;
@@ -550,16 +550,16 @@ export interface PerformanceMetrics {
  * @example
  */
 export interface GraphNode {
-  id: string'' | ''number;
+  id: string|number;
   labels: string[];
   properties: Record<string, unknown>;
 }
 
 export interface GraphRelationship {
-  id: string'' | ''number;
+  id: string|number;
   type: string;
-  fromNodeId: string'' | ''number;
-  toNodeId: string'' | ''number;
+  fromNodeId: string|number;
+  toNodeId: string|number;
   properties: Record<string, unknown>;
 }
 
@@ -588,7 +588,7 @@ export interface GraphQueryResult {
  * @example
  */
 export interface VectorDocument<T> {
-  id: string'' | ''number;
+  id: string|number;
   vector: number[];
   metadata: T;
 }
@@ -596,12 +596,12 @@ export interface VectorDocument<T> {
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  metric?:'cosine | euclidean' | 'dot';
+  metric?:'cosine|euclidean|dot';
   filter?: Record<string, unknown>;
 }
 
 export interface VectorSearchResult<T> {
-  id: string'' | ''number;
+  id: string|number;
   score: number;
   document: T;
   vector?: number[];
@@ -609,13 +609,13 @@ export interface VectorSearchResult<T> {
 
 export interface VectorInsertResult {
   inserted: number;
-  errors: Array<{ id: string'' | ''number; error: string }>;
+  errors: Array<{ id: string|number; error: string }>;
 }
 
 export interface VectorIndexConfig {
   name: string;
   dimension: number;
-  metric:'cosine | euclidean' | 'dot';
+  metric:'cosine|euclidean|dot';
   type?: string;
   parameters?: Record<string, unknown>;
 }
@@ -628,7 +628,7 @@ export interface VectorStats {
 }
 
 export interface ClusteringOptions {
-  algorithm?: 'kmeans | dbscan' | 'hierarchical';
+  algorithm?: 'kmeans|dbscan|hierarchical';
   numClusters?: number;
   epsilon?: number;
   minSamples?: number;
@@ -638,7 +638,7 @@ export interface ClusterResult {
   clusters: Array<{
     id: number;
     centroid: number[];
-    members: Array<string'' | ''number>;
+    members: Array<string|number>;
   }>;
   statistics: {
     silhouetteScore?: number;
@@ -674,7 +674,7 @@ export interface CoordinationLock {
 }
 
 export interface CoordinationChange<T> {
-  type:'create | update' | 'delete';
+  type:'create|update|delete';
   entityId: string | number;
   entity?: T;
   timestamp: Date;

@@ -7,66 +7,37 @@
 /**
  * Base API response structure
  */
-export interface BaseApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-  timestamp?: string;
+export interface BaseApiResponse<T = unknown> { success: boolean; data?: T; error?: string; message?: string; timestamp?: string;
 }
 /**
  * Successful API response
  */
-export interface SuccessResponse<T = unknown> extends BaseApiResponse<T> {
-  success: true;
-  data: T;
+export interface SuccessResponse<T = unknown> extends BaseApiResponse<T> { success: true; data: T;
 }
 /**
  * Error API response
  */
-export interface ErrorResponse extends BaseApiResponse<never> {
-  success: false;
-  error: string;
-  data?: never;
+export interface ErrorResponse extends BaseApiResponse<never> { success: false; error: string; data?: never;
 }
 /**
  * API response with additional details
  */
-export interface DetailedApiResponse<T = unknown> extends BaseApiResponse<T> {
-  details?: Record<string, unknown>;
-  metadata?: Record<string, unknown>;
+export interface DetailedApiResponse<T = unknown> extends BaseApiResponse<T> { details?: Record<string, unknown>; metadata?: Record<string, unknown>;
 }
 /**
  * Command execution result
  */
-export interface CommandResult {
-  success: boolean;
-  stdout?: string;
-  stderr?: string;
-  code?: number;
-  error?: string;
+export interface CommandResult { success: boolean; stdout?: string; stderr?: string; code?: number; error?: string;
 }
 /**
  * Test execution result
  */
-export interface TestResult {
-  success: boolean;
-  details?: Record<string, unknown>;
-  error?: string;
-  data?: any;
+export interface TestResult { success: boolean; details?: Record<string, unknown>; error?: string; data?: any;
 }
 /**
  * SPARC-specific response types
  */
-export interface SparcGenerationResult extends BaseApiResponse<unknown> {
-  algorithms?: any[];
-  dataStructures?: any[];
-  controlFlows?: any[];
-  validation?: any[];
-  pseudocodeStructure?: {
-    id: string;
-    [key: string]: any;
-  };
+export interface SparcGenerationResult extends BaseApiResponse<unknown> { algorithms?: any[]; dataStructures?: any[]; controlFlows?: any[]; validation?: any[]; pseudocodeStructure?: { id: string; [key: string]: any; };
 }
 /**
  * Type guard for checking if response has success property
@@ -75,13 +46,11 @@ export declare function isApiResponse(obj: any): obj is BaseApiResponse;
 /**
  * Type guard for checking if response is successful
  */
-export declare function isSuccessResponse<T>(
-  response: BaseApiResponse<T>
+export declare function isSuccessResponse<T>( response: BaseApiResponse<T>
 ): response is SuccessResponse<T>;
 /**
  * Type guard for checking if response is an error
  */
-export declare function isErrorResponse(
-  response: BaseApiResponse
+export declare function isErrorResponse( response: BaseApiResponse
 ): response is ErrorResponse;
 //# sourceMappingURL=api-response.d.ts.map

@@ -98,10 +98,10 @@ export interface SafeConfiguration {
   level: SafeConfigurationLevel;
   features: SafeFeatureToggles;
   customizations: {
-    organizationSize: 'small | medium' | 'large''' | '''enterprise';
+    organizationSize: 'small|medium|large|enterprise';
     industry: string;
     complianceRequirements: string[];
-    aiIntegrationLevel: 'basic | advanced' | 'full';
+    aiIntegrationLevel: 'basic|advanced|full';
   };
   metadata: {
     version: string;

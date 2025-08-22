@@ -27,13 +27,13 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
   private uelManager?: EventManager;
   private uelEnabled = false;
   private eventMappings = new Map<string, string>();
-  private migrationMode: 'disabled | passive' | 'active' = 'passive';
+  private migrationMode: 'disabled|passive|active' = 'passive';
   private logger?: Logger;
 
   constructor(options?: {
     enableUEL?: boolean;
     uelManager?: EventManager;
-    migrationMode?: 'disabled | passive' | 'active';
+    migrationMode?: 'disabled|passive|active';
     logger?: Logger;
   }) {
     super();
@@ -93,7 +93,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
    * @param eventName
    * @param {...any} args
    */
-  override emit(eventName: string'' | ''symbol, ...args: unknown[]): boolean {
+  override emit(eventName: string|symbol, ...args: unknown[]): boolean {
     const result = super.emit(eventName, ...args);
 
     // UEL integration if enabled
@@ -113,7 +113,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
    * @param listener
    */
   override on(
-    eventName: string'' | ''symbol,
+    eventName: string|symbol,
     listener: (...args: unknown[]) => void
   ): this {
     const result = super.on(eventName, listener);
@@ -138,7 +138,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
    * @param listener
    */
   override once(
-    eventName: string'' | ''symbol,
+    eventName: string|symbol,
     listener: (...args: unknown[]) => void
   ): this {
     const result = super.once(eventName, listener);
@@ -200,7 +200,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
 
     try {
       // Get mapped event type or use original name
-      const uelEventType = this.eventMappings.get(eventName)'' | '''' | ''eventName;
+      const uelEventType = this.eventMappings.get(eventName)||eventName;
 
       // Create UEL-compatible event
       const uelEvent = this.createUELEvent(uelEventType, eventName, args);
@@ -225,7 +225,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
     if (!this.uelManager) return;
 
     try {
-      const uelEventType = this.eventMappings.get(eventName)'' | '''' | ''eventName;
+      const uelEventType = this.eventMappings.get(eventName)||eventName;
 
       // Create UEL-compatible listener
       const uelListener = (event: SystemEvent) => {
@@ -235,7 +235,7 @@ export class UELCompatibleEventEmitter extends TypedEventBase {
       };
 
       // Subscribe to UEL manager
-      let subscriptionId: string'' | ''undefined;
+      let subscriptionId: string|undefined;
       if (this.uelManager) {
         subscriptionId = (this.uelManager as any).subscribe(
           [uelEventType],
@@ -345,7 +345,7 @@ export class EventEmitterMigrationHelper {
     managerType: EventManagerType = EventManagerTypes.SYSTEM,
     options?: {
       enableUEL?: boolean;
-      migrationMode?: 'disabled | passive' | 'active';
+      migrationMode?: 'disabled|passive|active';
       autoMigrate?: boolean;
     }
   ): Promise<UELCompatibleEventEmitter> {
@@ -354,7 +354,7 @@ export class EventEmitterMigrationHelper {
     //   type: managerType,
     //   name: managerName,
     // });
-    const uelManager: EventManager'' | ''undefined = undefined; // Temporarily disabled
+    const uelManager: EventManager|undefined = undefined; // Temporarily disabled
 
     // Create compatible EventEmitter
     const eventEmitter = new UELCompatibleEventEmitter({
@@ -396,7 +396,7 @@ export class EventEmitterMigrationHelper {
       //   type: managerType,
       //   name: managerName,
       // });
-      const uelManager: EventManager'' | ''undefined = undefined; // Temporarily disabled
+      const uelManager: EventManager|undefined = undefined; // Temporarily disabled
 
       // Create new compatible instance
       const compatibleEmitter = new UELCompatibleEventEmitter({
@@ -445,7 +445,7 @@ export class EventEmitterMigrationHelper {
     listenerCounts: Record<string, number>;
     maxListeners: number;
     recommendations: string[];
-    migrationComplexity: 'low | medium' | 'high';
+    migrationComplexity: 'low|medium|high';
   } {
     const eventNames = emitter.eventNames();
     const eventTypes = eventNames.map((name) => String(name));
@@ -460,7 +460,7 @@ export class EventEmitterMigrationHelper {
     }
 
     const recommendations: string[] = [];
-    let complexity: 'low | medium' | 'high' = 'low';
+    let complexity: 'low|medium|high' = 'low';
 
     // Analyze patterns and provide recommendations
     if (totalListeners > 50) {
@@ -477,12 +477,12 @@ export class EventEmitterMigrationHelper {
       complexity = 'high';
     }
 
-    if (eventTypes.some((type) => type.includes(':')'' | '''' | ''type.includes('.'))) {
+    if (eventTypes.some((type) => type.includes(':')||type.includes('.'))) {
       recommendations.push(
         'Structured event names detected - good UEL migration candidate');
     }
 
-    const maxListeners = (emitter as any)._maxListeners'' | '''' | ''10; // EventEmitter3 default
+    const maxListeners = (emitter as any)._maxListeners||10; // EventEmitter3 default
     if (maxListeners > 20) {
       recommendations.push('High max listeners - UEL provides better scaling');
       complexity = 'high';
@@ -509,17 +509,17 @@ export class EventEmitterMigrationHelper {
       phase: string;
       description: string;
       steps: string[];
-      estimatedEffort: 'low | medium' | 'high';
+      estimatedEffort: 'low|medium|high';
       dependencies: string[];
     }>;
-    totalEffort: 'low | medium' | 'high';
+    totalEffort: 'low|medium|high';
     timeline: string;
   } {
     const phases: Array<{
       phase: string;
       description: string;
       steps: string[];
-      estimatedEffort: 'low | medium' | 'high';
+      estimatedEffort: 'low|medium|high';
       dependencies: string[];
     }> = [];
 
@@ -662,7 +662,7 @@ export class CompatibilityFactory {
     type: EventManagerType = EventManagerTypes.SYSTEM,
     options?: {
       enableUEL?: boolean;
-      migrationMode?: 'disabled | passive' | 'active';
+      migrationMode?: 'disabled|passive|active';
     }
   ): Promise<UELCompatibleEventEmitter> {
     if (!this.migrationHelper) {
@@ -698,7 +698,7 @@ export class CompatibilityFactory {
   /**
    * Get migration helper for advanced operations.
    */
-  getMigrationHelper(): EventEmitterMigrationHelper'' | ''undefined {
+  getMigrationHelper(): EventEmitterMigrationHelper|undefined {
     return this.migrationHelper;
   }
 }

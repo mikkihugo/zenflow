@@ -93,13 +93,13 @@ export interface TypedEventMap {
 }
 
 // Handler type for type-safe event listeners
-export type TypedEventHandler<T = any> = (event: T) => void'' | ''Promise<void>;
+export type TypedEventHandler<T = any> = (event: T) => void|Promise<void>;
 
 // Wildcard handler type
 export type WildcardHandler = (
-  type: string'' | ''symbol,
+  type: string|symbol,
   event: any
-) => void'' | ''Promise<void>;
+) => void|Promise<void>;
 
 // =============================================================================
 // TYPE-SAFE EVENT BUS IMPLEMENTATION
@@ -263,7 +263,7 @@ export class TypedEventBus {
     handler: TypedEventHandler<TypedEventMap[K]>
   ): void {
     // Check listener limits
-    const currentCount = this.listenerCounts.get(String(type))'' | '''' | ''0;
+    const currentCount = this.listenerCounts.get(String(type))||0;
     if (currentCount >= this.config.maxListeners) {
       logger.warn(
         `[TypedEventBus] Max listeners (${this.config.maxListeners}) reached for event: ${String(type)}`
@@ -322,7 +322,7 @@ export class TypedEventBus {
     this.emitter.off(type, handler);
 
     if (handler) {
-      const currentCount = this.listenerCounts.get(String(type))'' | '''' | ''0;
+      const currentCount = this.listenerCounts.get(String(type))||0;
       this.listenerCounts.set(String(type), Math.max(0, currentCount - 1));
     } else {
       // Removing all listeners for this type
@@ -376,7 +376,7 @@ export class TypedEventBus {
     event: unknown
   ): Promise<Result<unknown, Error>> {
     const validator =
-      this.validators.get(eventType)'' | '''' | ''this.validators.get('*');
+      this.validators.get(eventType)||this.validators.get('*');
 
     if (!validator) {
       // Try base event validation as fallback
@@ -423,7 +423,7 @@ export class TypedEventBus {
    * Get listener count for event type.
    */
   getListenerCount(eventType: string): number {
-    return this.listenerCounts.get(eventType)'' | '''' | ''0;
+    return this.listenerCounts.get(eventType)||0;
   }
 
   /**

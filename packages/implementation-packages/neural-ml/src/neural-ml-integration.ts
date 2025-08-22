@@ -51,13 +51,13 @@ import {
 
 // DSPy Integration Types
 export interface DSPyOptimizationConfig {
-  teleprompter_type: 'mipro | copro' | 'grpo';
+  teleprompter_type: 'mipro|copro|grpo';
   use_ml_enhancement: boolean;
   max_iterations: number;
   population_size?: number;
   learning_rate?: number;
   gradient_steps?: number;
-  bayesian_acquisition: 'ei | pi' | 'ucb''' | '''poi';
+  bayesian_acquisition: 'ei|pi|ucb|poi';
   multi_objective_weights?: number[];
   drift_detection: boolean;
   pattern_analysis: boolean;
@@ -87,8 +87,8 @@ export interface NeuralCoordinationConfig {
   enable_learning: boolean;
   enable_adaptation: boolean;
   enable_prediction: boolean;
-  coordination_strategy: 'centralized | distributed' | 'hierarchical';
-  ml_backend: 'rust_wasm''' | '''fallback_js';
+  coordination_strategy: 'centralized|distributed|hierarchical';
+  ml_backend: 'rust_wasm|fallback_js'';
   performance_tracking: boolean;
   real_time_optimization: boolean;
 }
@@ -279,7 +279,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     const multiObjConfig: MultiObjectiveConfig = {
       ...DefaultConfigs.multiObjective(),
       max_iterations: config.max_iterations,
-      population_size: config.population_size'' | '''' | ''50,
+      population_size: config.population_size||50,
       timeout_ms: config.timeout_ms,
       memory_limit_mb: config.memory_limit_mb,
     };
@@ -336,8 +336,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
         recall: bestSolution.objectives[0] * 0.98,
         loss: 1.0 - bestSolution.objectives[0],
         convergence_rate:
-          optimizationResult.metrics?.custom_metrics?.convergence_rate'' | '''' | ''0.8,
-        iterations_used: optimizationResult.metrics?.iterations'' | '''' | ''0,
+          optimizationResult.metrics?.custom_metrics?.convergence_rate||0.8,
+        iterations_used: optimizationResult.metrics?.iterations||0,
       },
       optimization_history: this.convertSolutionsToPoints(
         paretoFront.solutions
@@ -373,7 +373,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Online learning for concept drift detection
     const onlineConfig: OnlineLearningConfig = {
       ...DefaultConfigs.onlineLearning(),
-      learning_rate: config.learning_rate'' | '''' | ''0.01,
+      learning_rate: config.learning_rate||0.01,
       drift_detection_method:'page_hinkley',
     };
 
@@ -421,12 +421,12 @@ export class MLNeuralCoordinator extends TypedEventBase {
       // Update optimization history
       optimizationHistory.push({
         parameters: [
-          learningUpdate.data?.learning_rate'' | '''' | ''0.01,
+          learningUpdate.data?.learning_rate||0.01,
           Math.random(),
           Math.random(),
           Math.random(),
         ],
-        objective: learningUpdate.data?.accuracy'' | '''' | ''0.5,
+        objective: learningUpdate.data?.accuracy||0.5,
         timestamp: Date.now(),
       });
 
@@ -474,8 +474,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Gradient-based optimization for GRPO
     const gradientConfig: GradientConfig = {
       ...DefaultConfigs.gradient(),
-      max_iterations: config.gradient_steps'' | '''' | ''100,
-      learning_rate: config.learning_rate'' | '''' | ''0.001,
+      max_iterations: config.gradient_steps||100,
+      learning_rate: config.learning_rate||0.001,
       timeout_ms: config.timeout_ms,
       memory_limit_mb: config.memory_limit_mb,
     };
@@ -497,7 +497,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
     for (
       let iteration = 0;
-      iteration < config.gradient_steps'' | '''' | ''50;
+      iteration < config.gradient_steps||50;
       iteration++
     ) {
       // Simulate forward pass and compute gradients
@@ -754,7 +754,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       throw new Error('Empty Pareto front');
     }
 
-    if (!weights'' | '''' | ''weights.length !== solutions[0].objectives.length) {
+    if (!weights||weights.length !== solutions[0].objectives.length) {
       // Default: select solution with highest first objective (usually accuracy)
       return solutions.reduce((best, current) =>
         current.objectives[0] > best.objectives[0] ? current : best
@@ -952,7 +952,7 @@ export function createMLNeuralCoordinator(
  * Utility function to create DSPy optimization configuration with ML enhancement
  */
 export function createDSPyMLConfig(
-  teleprompter_type: 'mipro | copro' | 'grpo',
+  teleprompter_type: 'mipro|copro|grpo',
   overrides?: Partial<DSPyOptimizationConfig>
 ): DSPyOptimizationConfig {
   const baseConfig: DSPyOptimizationConfig = {

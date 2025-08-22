@@ -33,7 +33,7 @@ interface CodeMeshProvider {
 }
 
 interface CodeMeshSession {
-  addMessage(role: 'user''' | '''assistant', content: string): void;
+  addMessage(role: 'user|assistant', content: string): void;
   getMessages(): any[];
   save(): Promise<string>;
   load(sessionId: string): Promise<void>;
@@ -49,9 +49,9 @@ interface CodeMeshToolRegistry {
  * Bridge class that integrates CodeMesh capabilities with claude-code-zen
  */
 export class CodeMeshBridge {
-  private provider: CodeMeshProvider'' | ''null = null;
-  private session: CodeMeshSession'' | ''null = null;
-  private tools: CodeMeshToolRegistry'' | ''null = null;
+  private provider: CodeMeshProvider|null = null;
+  private session: CodeMeshSession|null = null;
+  private tools: CodeMeshToolRegistry|'null = null;
   private rootPath: string;
 
   constructor(rootPath: string) {
@@ -78,7 +78,7 @@ export class CodeMeshBridge {
       this.provider = {
         generateCompletion: async (messages: any[]) => {
           return {
-            content: `Generated response for: ${messages[0]?.content'' | '''' | '''unknown'}`,
+            content: `Generated response for: ${messages[0]?.content||'unknown'}`,
             model: 'code-mesh-wasm',
           };
         },
@@ -172,7 +172,7 @@ export class CodeMeshBridge {
     request: FileAwareRequest
   ): Promise<FileAwareResponse> {
     const startTime = Date.now();
-    if (!this.provider'' | '''' | ''!this.session'' | '''' | ''!this.tools) {
+    if (!this.provider||!this.session||!this.tools) {
       throw new Error('CodeMesh not properly initialized');
     }
 
@@ -180,7 +180,7 @@ export class CodeMeshBridge {
     this.session.addMessage('user', request.task);
 
     // Use CodeMesh tools for file analysis
-    const fileContext = await this.analyzeFiles(request.files'' | '''' | ''[]);
+    const fileContext = await this.analyzeFiles(request.files||[]);
 
     // Prepare context for AI
     const contextPrompt = this.prepareContextPrompt(request, fileContext);
@@ -303,7 +303,7 @@ export class CodeMeshBridge {
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
       const functionMatch = line.match(
-        /(?:function'' | ''const'' | ''let'' | ''var)\s+(\w+)\s*[=:]?\s*(?:function'' | ''\()/
+        /(?:function|const|let|var)\s+(\w+)\s*[=:]?\s*(?:function|\()/
       );
       if (functionMatch && functionMatch[1]) {
         symbols.push({
@@ -316,7 +316,7 @@ export class CodeMeshBridge {
       }
 
       // Extract class declarations
-      const classMatch = line.match(/(?:class'' | ''interface)\s+(\w+)/);
+      const classMatch = line.match(/(?:class|interface)\s+(\w+)/);
       if (classMatch && classMatch[1]) {
         symbols.push({
           name: classMatch[1],
@@ -384,12 +384,12 @@ export class CodeMeshBridge {
 
     for (const change of changes) {
       try {
-        if (change.type === 'modify''' | '''' | ''change.type ==='create') {
+        if (change.type === 'modify'||change.type ==='create') {
           await this.tools.execute(
             'write',
             {
               file_path: change.path,
-              content: change.content'' | '''' | '''',
+              content: change.content||'',
             },
             context
           );
@@ -421,7 +421,7 @@ export class CodeMeshBridge {
   selectOptimalProvider(request: FileAwareRequest): string {
     // Use existing LLM routing with file-aware context
     const contextLength =
-      request.task.length + (request.files?.length'' | '''' | ''0) * 1000;
+      request.task.length + (request.files?.length||0) * 1000;
 
     const providers = llmRoutingAvailable
       ? getOptimalProvider({
@@ -435,7 +435,7 @@ export class CodeMeshBridge {
 
     // Prefer CodeMesh-enabled providers
     const codeMeshProviders = providers.filter(
-      (p: string) => p.includes('copilot')'' | '''' | ''p.includes('code-mesh')
+      (p: string) => p.includes('copilot')||p.includes('code-mesh')
     );
 
     return codeMeshProviders.length > 0 ? codeMeshProviders[0] : providers[0];
@@ -444,7 +444,7 @@ export class CodeMeshBridge {
   /**
    * Get CodeMesh session for persistence
    */
-  async getSession(): Promise<string'' | ''null> {
+  async getSession(): Promise<string|null> {
     if (!this.session) return null;
     return await this.session.save();
   }
@@ -462,7 +462,7 @@ export class CodeMeshBridge {
  * Factory function to create CodeMesh bridge
  */
 export async function createCodeMeshBridge(
-  config: string'' | ''{ rootPath: string; provider?: string; model?: string }
+  config: string|{ rootPath: string; provider?: string; model?: string }
 ): Promise<CodeMeshBridge> {
   // Handle both string and object parameters
   const rootPath = typeof config ==='string' ? config : config.rootPath;

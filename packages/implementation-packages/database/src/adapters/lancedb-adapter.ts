@@ -24,7 +24,7 @@ export interface LanceDBConfig {
   database: string;
   options?: {
     vectorSize?: number;
-    metricType?: 'cosine | l2' | 'dot';
+    metricType?: 'cosine|l2|dot';
     createIfNotExists?: boolean;
     uri?: string;
   };
@@ -47,7 +47,7 @@ export interface VectorSearchOptions {
 }
 
 export class LanceDBAdapter implements DatabaseAdapter {
-  private connection: Connection'' | ''null = null;
+  private connection: Connection|null = null;
   private config: LanceDBConfig;
   private connected = false;
   private tables: Map<string, Table> = new Map();
@@ -69,7 +69,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       }
 
       // Create real LanceDB connection
-      const uri = this.config.options?.uri'' | '''' | ''this.config.database;
+      const uri = this.config.options?.uri||this.config.database;
       this.connection = await connect(uri);
 
       this.connected = true;
@@ -131,8 +131,8 @@ export class LanceDBAdapter implements DatabaseAdapter {
       const defaultSchema: VectorDocument[] = [
         {
           id: '0',
-          vector: new Array(this.config.options?.vectorSize'' | '''' | ''384).fill(0),
-          text:'',
+          vector: new Array(this.config.options?.vectorSize||384).fill(0),
+          text:',
           metadata: {},
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -154,8 +154,8 @@ export class LanceDBAdapter implements DatabaseAdapter {
       // Add timestamps if not present
       const documentsWithTimestamps = documents.map((doc) => ({
         ...doc,
-        created_at: doc.created_at'' | '''' | ''new Date().toISOString(),
-        updated_at: doc.updated_at'' | '''' | ''new Date().toISOString(),
+        created_at: doc.created_at|'|new Date().toISOString(),
+        updated_at: doc.updated_at||new Date().toISOString(),
       }));
 
       await table.add(documentsWithTimestamps);
@@ -369,7 +369,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   async health(): Promise<HealthStatus> {
     try {
-      if (!this.connected'' | '''' | ''!this.connection) {
+      if (!this.connected||!this.connection) {
         return {
           healthy: false,
           isHealthy: false,
@@ -445,7 +445,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
           vector: r.vector,
           text: r.text,
           metadata: r.metadata,
-          distance: r._distance'' | '''' | ''0,
+          distance: r._distance||0,
         })),
       };
     } catch (error) {
@@ -490,8 +490,8 @@ export class LanceDBAdapter implements DatabaseAdapter {
         row_count: count,
         schema: schema,
         vector_columns: schema.fields.filter((field: unknown) => {
-          const fieldName = (field as { name?: string })?.name'' | '''' | '''';
-          return fieldName === 'vector''' | '''' | ''fieldName.includes('embedding');
+          const fieldName = (field as { name?: string })?.name||'';
+          return fieldName === 'vector'||fieldName.includes('embedding');
         }),
       };
     } catch (error) {

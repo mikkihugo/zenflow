@@ -10,10 +10,10 @@
 // ==========================================
 
 export type AgentType =
-  | 'researcher | coder' | 'analyst''' | '''optimizer | coordinator' | 'architect''' | '''tester | security' | 'data''' | '''ops | debug' | 'queen' | 'specialist' | 'developer''' | '''api-dev''' | '''frontend-dev''' | '''fullstack-dev''' | '''database-architect''' | '''devops-engineer''' | '''documentation-specialist';
+  || 'researcher|coder|analyst|optimizer|coordinator|architect|tester | security'|data|ops | debug'|queen|specialist|developer|api-dev'||frontend-dev|fullstack-dev'||database-architect|devops-engineer'||documentation-specialist';
 
 // Cognitive archetype for specialized thinking patterns (primary intelligence types)
-export type CognitiveArchetype ='' | '''researcher | coder' | 'analyst''' | '''architect';
+export type CognitiveArchetype =|'researcher|coder|analyst|architect';
 
 // ==========================================
 // EPHEMERAL SWARM TYPES (ruvswarm-style)
@@ -29,7 +29,7 @@ export interface SwarmCreationConfig {
   /** Auto-dissolve timeout in milliseconds (default: 3600000 = 1 hour) */
   maxDuration?: number;
   /** Task complexity level affecting agent behavior */
-  complexity?: 'low | medium' | 'high';
+  complexity?: 'low|medium|high';
   /** Enable WASM neural processing for enhanced decisions */
   neuralAcceleration?: boolean;
   /** Session persistence - survive Claude CLI restarts (default: true) */
@@ -52,7 +52,7 @@ export interface EphemeralSwarm {
   /** Auto-dissolution timestamp (can be extended) */
   expiresAt: Date;
   /** Current execution status */
-  status: 'initializing | active' | 'executing' | 'paused' | 'dissolved';
+  status: 'initializing|active|executing|paused|dissolved';
   /** Session persistence enabled */
   persistent: boolean;
   /** Performance metrics (ephemeral but recoverable) */
@@ -77,7 +77,7 @@ export interface CognitiveAgent {
   /** Cognitive archetype defining thinking patterns */
   archetype: CognitiveArchetype;
   /** Current operational status */
-  status: 'initializing | ready' | 'thinking' | 'coordinating' | 'dissolved';
+  status: 'initializing|ready|thinking|coordinating|dissolved';
   /** Specialized capabilities based on archetype */
   capabilities: string[];
   /** Performance characteristics */
@@ -149,9 +149,9 @@ export interface SwarmDecision {
   };
 }
 
-export type AgentStatus ='' | '''idle | busy' | 'offline''' | '''error | initializing' | 'terminated';
+export type AgentStatus =|'idle|busy|offline|error|initializing|terminated';
 
-export type SwarmTopology = 'mesh | hierarchical' | 'ring''' | '''star';
+export type SwarmTopology = 'mesh|hierarchical|ring|star';
 
 export type AgentId = string;
 
@@ -248,7 +248,7 @@ export interface SwarmOptions {
   maxAgents: number;
   timeout: number;
   retryAttempts?: number;
-  coordinationStrategy?: 'adaptive''' | '''static';
+  coordinationStrategy?: 'adaptive|static';
 }
 
 // ==========================================
@@ -278,7 +278,7 @@ export interface SwarmCoordinationEvent {
   /** Unique event identifier for tracking and deduplication */
   id: string;
   /** Event type for routing and processing */
-  type:'' | '''agent_added | agent_removed' | 'agent_status_changed''' | '''task_assigned | task_completed' | 'coordination_event';
+  type:|''agent_added|agent_removed|agent_status_changed|task_assigned|task_completed|coordination_event';
   /** Agent identifier associated with the event (optional) */
   agentId?: string;
   /** Task identifier associated with the event (optional) */

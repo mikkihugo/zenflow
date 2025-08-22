@@ -34,12 +34,12 @@ export type {
 /**
  * Task priority levels for workflow coordination
  */
-export type TaskPriority = 'critical | high' | 'medium''' | '''low';
+export type TaskPriority = 'critical|high|medium|low';
 
 /**
  * Flow direction for task movement
  */
-export type FlowDirection = 'forward | backward' | 'lateral';
+export type FlowDirection = 'forward|backward|lateral';
 
 // OptimizationStrategy imported from events.ts
 
@@ -114,9 +114,9 @@ export interface WIPViolation {
   readonly state: TaskState;
   readonly currentCount: number;
   readonly limit: number;
-  readonly violationType: 'soft''' | '''hard';
+  readonly violationType: 'soft|hard'';
   readonly detectedAt: Date;
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly recommendedAction: string;
 }
 
@@ -130,8 +130,8 @@ export interface WIPViolation {
 export interface WorkflowBottleneck {
   readonly id: string;
   readonly state: TaskState;
-  readonly type: 'capacity | dependency' | 'resource' | 'skill' | 'process';
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly type: 'capacity|dependency|resource|skill|process';
+  readonly severity: 'low|medium|high|critical';
   readonly impactScore: number; // 0-1
   readonly detectedAt: Date;
   readonly affectedTasks: string[];
@@ -174,7 +174,7 @@ export interface BottleneckResolution {
  */
 export interface BottleneckTrend {
   readonly state: TaskState;
-  readonly trend: 'improving | stable' | 'degrading';
+  readonly trend: 'improving|stable|degrading';
   readonly trendScore: number; // -1 to 1
   readonly dataPoints: number;
   readonly timeRange: {
@@ -212,9 +212,9 @@ export interface FlowState {
   readonly systemLoad: number; // 0-1
   readonly flowHealth: number; // 0-1
   readonly trends: {
-    readonly throughput: 'up | down' | 'stable';
-    readonly cycleTime: 'up | down' | 'stable';
-    readonly blockageRate: 'up | down' | 'stable';
+    readonly throughput: 'up|down|stable';
+    readonly cycleTime: 'up|down|stable';
+    readonly blockageRate: 'up|down|stable';
   };
 }
 
@@ -223,9 +223,9 @@ export interface FlowState {
  */
 export interface PerformanceThreshold {
   readonly metric: keyof FlowMetrics;
-  readonly operator: 'gt | lt' | 'eq' | 'gte' | 'lte';
+  readonly operator: 'gt|lt|eq|gte|lte';
   readonly value: number;
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly alertMessage: string;
   readonly enabled: boolean;
 }
@@ -257,7 +257,7 @@ export interface WorkflowKanbanConfig {
  */
 export interface WorkflowContext {
   readonly sessionId: string;
-  readonly orchestratorType: 'queen | commander' | 'cube''' | '''matron';
+  readonly orchestratorType: 'queen|commander|cube|matron';
   readonly orchestratorId: string;
   readonly timestamp: Date;
   readonly metadata: Record<string, unknown>;

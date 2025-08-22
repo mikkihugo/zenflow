@@ -52,7 +52,6 @@
     "@claude-zen/ai-safety": "link:../../packages/implementation-packages/ai-safety",
     "@claude-zen/brain": "link:../../packages/implementation-packages/brain",
     "@claude-zen/chaos-engineering": "workspace:*",
-    "@claude-zen/coordination-core": "workspace:*",
     "@claude-zen/dspy": "workspace:*",
     "@claude-zen/event-system": "link:../../packages/implementation-packages/event-system",
     "@claude-zen/fact-system": "workspace:*",

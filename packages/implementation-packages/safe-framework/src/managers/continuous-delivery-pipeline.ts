@@ -487,15 +487,15 @@ export class ContinuousDeliveryPipelineManager extends TypedEventBase {
         this.state = {
           ...this.state,
           ...persistedState,
-          pipelineTemplates: new Map(persistedState.pipelineTemplates'' | '''' | ''[]),
-          activePipelines: new Map(persistedState.activePipelines'' | '''' | ''[]),
+          pipelineTemplates: new Map(persistedState.pipelineTemplates||[]),
+          activePipelines: new Map(persistedState.activePipelines||[]),
           qualityGateTemplates: new Map(
-            persistedState.qualityGateTemplates'' | '''' | ''[]
+            persistedState.qualityGateTemplates||[]
           ),
           automationTemplates: new Map(
-            persistedState.automationTemplates'' | '''' | ''[]
+            persistedState.automationTemplates||[]
           ),
-          performanceMetrics: new Map(persistedState.performanceMetrics'' | '''' | ''[]),
+          performanceMetrics: new Map(persistedState.performanceMetrics||[]),
         };
         this.logger.info('CD Pipeline Manager state loaded');
       }

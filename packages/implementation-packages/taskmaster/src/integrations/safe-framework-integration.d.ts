@@ -65,7 +65,7 @@ export interface SafeIntegrationConfig {
     enableContinuousLearning: boolean;
     trackDecisionPatterns: boolean;
     adaptPrompts: boolean;
-    auditCompliance: 'basic | soc2' | 'comprehensive';
+    auditCompliance: 'basic | soc2|comprehensive';
   };
 }
 /**
@@ -74,7 +74,7 @@ export interface SafeIntegrationConfig {
 export interface SafeGateContext {
   category: SafeGateCategory;
   safeEntity: {
-    type: 'epic | feature' | 'story' | 'capability' | 'solution';
+    type: 'epic | feature|story|capability|solution';
     id: string;
     metadata: Record<string, unknown>;
   };
@@ -91,7 +91,7 @@ export interface SafeGateContext {
   compliance: {
     required: boolean;
     frameworks: string[];
-    auditLevel: 'basic | enhanced' | 'comprehensive';
+    auditLevel: 'basic | enhanced|comprehensive';
   };
 }
 /**
@@ -111,7 +111,7 @@ export interface SafeGateTraceabilityRecord {
   };
   humanDecision?: {
     approver: string;
-    decision: 'approved | rejected' | 'escalated';
+    decision: 'approved | rejected|escalated';
     reasoning: string;
     timestamp: Date;
     reviewTime: number;

@@ -171,7 +171,7 @@ export abstract class BaseLM implements LMInterface {
     this.usage.last_used = Date.now();
 
     if (cost !== undefined) {
-      this.usage.total_cost = (this.usage.total_cost'' | '''' | ''0) + cost;
+      this.usage.total_cost = (this.usage.total_cost||0) + cost;
     }
 
     // Track daily usage
@@ -197,7 +197,7 @@ export abstract class BaseLM implements LMInterface {
       dayUsage.output_tokens += outputTokens;
       dayUsage.api_calls += 1;
       if (cost !== undefined) {
-        dayUsage.cost = (dayUsage.cost'' | '''' | ''0) + cost;
+        dayUsage.cost = (dayUsage.cost||0) + cost;
       }
     }
   }
@@ -226,7 +226,7 @@ export abstract class BaseLM implements LMInterface {
    */
   getInfo(): ModelInfo {
     return {
-      name: this.model'' | '''' | '''unknown',
+      name: this.model||'unknown',
       provider: 'unknown',
     };
   }

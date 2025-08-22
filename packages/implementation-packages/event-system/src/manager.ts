@@ -226,7 +226,7 @@ export class EventManager implements CoreEventManager {
   private coordinationSettings: CoordinationSettings;
   private statistics: ManagerStatistics;
   private initialized = false;
-  private healthCheckInterval?: NodeJS.Timeout'' | ''undefined;
+  private healthCheckInterval?: NodeJS.Timeout|undefined;
   private recoveryAttempts = new Map<string, number>();
   private storage = Storage;
   private database = getDatabaseAccess();
@@ -463,7 +463,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.SYSTEM,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'REAL_TIME',
     });
 
@@ -483,7 +483,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.COORDINATION,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'HIGH_THROUGHPUT',
     });
 
@@ -503,7 +503,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.COMMUNICATION,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'REAL_TIME',
     });
 
@@ -523,7 +523,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.MONITORING,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'BATCH_PROCESSING',
     });
 
@@ -543,7 +543,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.INTERFACE,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'REAL_TIME',
     });
 
@@ -563,7 +563,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.NEURAL,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'RELIABLE',
     });
 
@@ -583,7 +583,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.DATABASE,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'BATCH_PROCESSING',
     });
 
@@ -603,7 +603,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.MEMORY,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
     });
 
     return manager as unknown as MemoryEventManager;
@@ -622,7 +622,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.WORKFLOW,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'RELIABLE',
     });
 
@@ -634,9 +634,9 @@ export class EventManager implements CoreEventManager {
    *
    * @param name
    */
-  getEventManager(name: string): EventManager'' | ''undefined {
+  getEventManager(name: string): EventManager|undefined {
     return (
-      this.activeManagers.get(name)'' | '''' | ''(this.registry.findEventManager(name) as any)
+      this.activeManagers.get(name)||(this.registry.findEventManager(name) as any)
     );
   }
 
@@ -699,7 +699,7 @@ export class EventManager implements CoreEventManager {
       throw new Error(`Event manager not found: ${name}`);
     }
 
-    const attempts = this.recoveryAttempts.get(name)'' | '''' | ''0;
+    const attempts = this.recoveryAttempts.get(name)||0;
     this.recoveryAttempts.set(name, attempts + 1);
     this.statistics.recoveryAttempts++;
 
@@ -762,7 +762,7 @@ export class EventManager implements CoreEventManager {
 
     Object.values(EventManagerTypes).forEach((type) => {
       const connections =
-        this.connectionManager.connections.get(type)?.size'' | '''' | ''0;
+        this.connectionManager.connections.get(type)?.size||0;
       connectionsByType[type] = connections;
       totalConnections += connections;
     });
@@ -832,7 +832,7 @@ export class EventManager implements CoreEventManager {
     totalManagers: number;
     healthyManagers: number;
     healthPercentage: number;
-    status:'healthy | warning' | 'critical';
+    status:'healthy|warning|critical';
     registry: ReturnType<EventRegistry['getRegistryStats']>;
     statistics: ManagerStatistics;
     uptime: number;
@@ -1032,7 +1032,7 @@ export class EventManager implements CoreEventManager {
     options: EventManagerCreationOptions
   ): EventManagerConfig {
     const defaults =
-      (DefaultEventManagerConfigs as any)?.[options?.type]'' | '''' | ''(DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
+      (DefaultEventManagerConfigs as any)?.[options?.type]||(DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
     const presetConfig = options?.preset
       ? EventManagerPresets[options?.preset]
       : {};
@@ -1081,7 +1081,7 @@ export class EventManager implements CoreEventManager {
             health?.healthy &&
             this.connectionManager.autoReconnect
           ) {
-            const attempts = this.recoveryAttempts.get(name)'' | '''' | ''0;
+            const attempts = this.recoveryAttempts.get(name)||0;
 
             if (attempts < this.connectionManager.maxReconnectAttempts) {
               this._logger.warn(
@@ -1157,8 +1157,8 @@ export class EventManager implements CoreEventManager {
   }
 
   subscribe<T extends SystemEvent>(
-    eventTypes: string'' | ''string[],
-    listener: (event: T) => void'' | ''Promise<void>,
+    eventTypes: string|string[],
+    listener: (event: T) => void|Promise<void>,
     options?: any
   ): string {
     // Basic subscription implementation

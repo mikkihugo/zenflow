@@ -133,7 +133,7 @@ export interface CoproStats {
  * ```
  */
 export class COPRO extends Teleprompter {
-  private metric?: MetricFunction'' | ''null;
+  private metric?: MetricFunction|null;
   private breadth: number;
   private depth: number;
   private init_temperature: number;
@@ -170,7 +170,7 @@ export class COPRO extends Teleprompter {
   constructor(
     config: {
       prompt_model?: any;
-      metric?: MetricFunction'' | ''null;
+      metric?: MetricFunction|null;
       breadth?: number;
       depth?: number;
       init_temperature?: number;
@@ -198,8 +198,8 @@ export class COPRO extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: Example[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: Example[]|null;
       eval_kwargs?: Record<string, any>;
       [key: string]: any;
     }
@@ -224,7 +224,7 @@ export class COPRO extends Teleprompter {
       const predictorId = this._getPredictorId(predictor);
       const signature = this._getSignature(predictor);
 
-      const basic_instruction = signature.instructions'' | '''' | '''';
+      const basic_instruction = signature.instructions||'';
       const basic_prefix = this._getOutputPrefix(signature);
 
       // Generate instruction variations
@@ -274,10 +274,10 @@ export class COPRO extends Teleprompter {
         ) {
           const instruction = candidates_.proposed_instruction[c_i]
             .trim()
-            .replace(/"/g, '');
+            .replace(/"/g, ');
           const prefix = candidates_.proposed_prefix_for_output_field[c_i]
             .trim()
-            .replace(/"/g, '');
+            .replace(/"/g, ');
 
           // Set this new module with our instruction / prefix
           this._updateSignature(p_new, instruction, prefix);
@@ -291,7 +291,7 @@ export class COPRO extends Teleprompter {
           const score = await evaluate(module_clone, trainset);
           this.total_calls++;
 
-          const candidateKey = `${instruction}'' | '''' | '''' | ''${prefix}`;
+          const candidateKey = `${instruction}|||${prefix}`;
           let replace_entry = true;
 
           if (evaluated_candidates[predictorId][candidateKey]) {
@@ -654,7 +654,7 @@ export class COPRO extends Teleprompter {
    * Helper methods matching Stanford implementation exactly
    */
   private _getPredictorId(predictor: any): string {
-    return (predictor as any)._dspy_id'' | '''' | ''this._generateId(predictor);
+    return (predictor as any)._dspy_id||this._generateId(predictor);
   }
 
   private _getSignature(predictor: any): any {
@@ -662,13 +662,13 @@ export class COPRO extends Teleprompter {
   }
 
   private _getOutputPrefix(signature: any): string {
-    const fields = signature.fields'' | '''' | ''{};
+    const fields = signature.fields||{};
     const fieldKeys = Object.keys(fields);
-    if (fieldKeys.length === 0) return'';
+    if (fieldKeys.length === 0) return';
 
     const lastKey = fieldKeys[fieldKeys.length - 1];
     const lastField = fields[lastKey];
-    return lastField?.json_schema_extra?.prefix'' | '''' | '''';
+    return lastField?.json_schema_extra?.prefix|||';
   }
 
   private _updateSignature(

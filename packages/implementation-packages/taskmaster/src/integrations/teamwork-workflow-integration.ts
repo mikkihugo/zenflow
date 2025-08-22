@@ -51,11 +51,11 @@ export interface ConversationTriggeredWorkflow {
 }
 
 export interface ConversationWorkflowTrigger {
-  triggerType:'' | '''decision_reached | consensus_achieved' | 'escalation_needed''' | '''completion';
+  triggerType:|'decision_reached|consensus_achieved|escalation_needed|completion';
   conditions: {
     decisionType?: string;
     participantConsensus?: number; // 0-1
-    urgencyLevel?: 'low | medium' | 'high''' | '''critical';
+    urgencyLevel?: 'low|medium|high|critical';
     conversationDuration?: number; // minutes
   };
   autoTrigger: boolean;
@@ -65,7 +65,7 @@ export interface ConversationWorkflowTrigger {
 export interface WorkflowConversationUpdate {
   workflowId: string;
   conversationId: string;
-  updateType: 'progress | completion' | 'approval_needed''' | '''error';
+  updateType: 'progress|completion|approval_needed|error';
   data: any;
   requiresHumanInput: boolean;
 }
@@ -75,8 +75,8 @@ export interface WorkflowConversationUpdate {
 // ============================================================================
 
 export class TeamworkWorkflowIntegration {
-  private workflowEngine: WorkflowEngine'' | ''null = null;
-  private conversationOrchestrator: ConversationOrchestrator'' | ''null = null;
+  private workflowEngine: WorkflowEngine|null = null;
+  private conversationOrchestrator: ConversationOrchestrator|null = null;
   private activeIntegrations: Map<string, ConversationTriggeredWorkflow> =
     new Map();
   private conversationWorkflowMappings: Map<string, string[]> = new Map(); // conversation -> workflows
@@ -143,8 +143,8 @@ export class TeamworkWorkflowIntegration {
           conversationId,
           conversationOutcome: outcome,
           triggerTimestamp: new Date().toISOString(),
-          participants: outcome.participants'' | '''' | ''[],
-          decisions: outcome.decisions'' | '''' | ''[],
+          participants: outcome.participants||[],
+          decisions: outcome.decisions||[],
           metadata: {
             conversationType,
             workflowType:'conversation_triggered',
@@ -173,7 +173,7 @@ export class TeamworkWorkflowIntegration {
 
         // Map conversation to workflow for future updates
         const existingWorkflows =
-          this.conversationWorkflowMappings.get(conversationId)'' | '''' | ''[];
+          this.conversationWorkflowMappings.get(conversationId)||[];
         existingWorkflows.push(workflowDef.id);
         this.conversationWorkflowMappings.set(
           conversationId,
@@ -663,7 +663,7 @@ export class TeamworkWorkflowIntegration {
     // Check consensus threshold if specified
     if (
       trigger.conditions.participantConsensus &&
-      (outcome.consensus'' | '''' | ''0) < trigger.conditions.participantConsensus
+      (outcome.consensus||0) < trigger.conditions.participantConsensus
     ) {
       return false;
     }
@@ -685,7 +685,7 @@ export class TeamworkWorkflowIntegration {
       'system-demo-feedback': 'SYSTEM_DEMO',
       'inspect-adapt-workshop': 'INSPECT_ADAPT',
     };
-    return typeMap[conversationType]'' | '''' | '''UNKNOWN';
+    return typeMap[conversationType]||'UNKNOWN';
   }
 
   private determineWorkflowApprovers(
@@ -700,7 +700,7 @@ export class TeamworkWorkflowIntegration {
       'inspect-adapt-improvement': ['rte', 'process_owner'],
     };
 
-    return approverMap[workflowDef.id]'' | '''' | ''['system_admin'];
+    return approverMap[workflowDef.id]||['system_admin'];
   }
 
   private generateWorkflowUpdateMessage(
@@ -726,7 +726,7 @@ export class TeamworkWorkflowIntegration {
     };
 
     return (
-      messageMap[update.updateType]'' | '''' | ''{
+      messageMap[update.updateType]||{
         content:'Workflow status update received',
         type: 'workflow_update',
       }

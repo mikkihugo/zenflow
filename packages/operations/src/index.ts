@@ -157,7 +157,7 @@ async function loadSystemMonitoring() {
 export const getSystemMonitor = async () => {
   const systemModule = await loadSystemMonitoring();
   return (
-    systemModule.createSystemMonitor?.()'' | '''' | ''systemModule.createSystemMonitor()
+    systemModule.createSystemMonitor?.()||systemModule.createSystemMonitor()
   );
 };
 

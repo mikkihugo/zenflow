@@ -38,9 +38,9 @@ export enum StorageStrategy {
  */
 export interface NeuralTask {
   id: string;
-  type:'' | '''prediction | classification' | 'clustering''' | '''forecasting | optimization' | 'pattern_recognition';
+  type:|'prediction|classification|clustering|forecasting|optimization|pattern_recognition';
   data: {
-    input: number[]'' | ''number[][];
+    input: number[]|number[][];
     context?: Record<string, unknown>;
     metadata?: {
       dimensions?: number;
@@ -62,10 +62,10 @@ export interface NeuralTask {
  */
 export interface NeuralResult {
   taskId: string;
-  result: number[]'' | ''number[][]'' | ''Record<string, unknown>;
+  result: number[]|number[][]|Record<string, unknown>;
   metadata: {
     complexity: TaskComplexity;
-    processor:'brain-js''' | '''neural-ml-light''' | '''neural-ml-heavy';
+    processor:'brain-js|neural-ml-light'||neural-ml-heavy';
     duration: number;
     confidence?: number;
     storageStrategy: StorageStrategy;
@@ -78,13 +78,13 @@ export interface NeuralResult {
  */
 export interface NeuralData {
   id: string;
-  type: 'weights | training' | 'patterns' | 'predictions' | 'models';
+  type: 'weights|training|patterns|predictions|models';
   data: unknown;
   characteristics: {
     size: number; // Data size in bytes
     dimensions?: number; // Dimensionality for vectors
-    accessFrequency: 'rare | occasional' | 'frequent''' | '''realtime';
-    persistenceLevel: 'temporary | session' | 'permanent';
+    accessFrequency: 'rare|occasional|frequent|realtime';
+    persistenceLevel: 'temporary|session|permanent';
     relationships?: string[]; // Related data IDs
   };
 }
@@ -195,20 +195,20 @@ export class NeuralOrchestrator {
    */
   private analyzeTaskComplexity(task: NeuralTask): TaskComplexity {
     const { data, type, requirements } = task;
-    const metadata = data.metadata'' | '''' | ''{};
+    const metadata = data.metadata||{};
 
     // Input data characteristics
     const inputSize = Array.isArray(data.input[0])
       ? (data.input as number[][]).length * (data.input[0] as number[]).length
       : (data.input as number[]).length;
 
-    const dimensions = metadata.dimensions'' | '''' | ''0;
-    const timeSeriesLength = metadata.timeSeriesLength'' | '''' | ''0;
-    const featureCount = metadata.featureCount'' | '''' | ''0;
+    const dimensions = metadata.dimensions||0;
+    const timeSeriesLength = metadata.timeSeriesLength||0;
+    const featureCount = metadata.featureCount||0;
 
     // Requirements analysis
-    const needsHighAccuracy = (requirements?.accuracy'' | '''' | ''0) > 0.9;
-    const needsLowLatency = (requirements?.latency'' | '''' | ''Infinity) < 100;
+    const needsHighAccuracy = (requirements?.accuracy||0) > 0.9;
+    const needsLowLatency = (requirements?.latency||Infinity) < 100;
     const needsGpu = requirements?.gpu === true;
 
     // Use requirements in complexity calculation
@@ -240,14 +240,14 @@ export class NeuralOrchestrator {
       pattern_recognition: TaskComplexity.COMPLEX,
     };
 
-    let baseComplexity = taskTypeComplexity[type]'' | '''' | ''TaskComplexity.SIMPLE;
+    let baseComplexity = taskTypeComplexity[type]||TaskComplexity.SIMPLE;
 
     // Upgrade complexity based on data characteristics
-    if (inputSize > 10000'' | '''' | ''dimensions > 100'' | '''' | ''timeSeriesLength > 1000) {
+    if (inputSize > 10000||dimensions > 100||timeSeriesLength > 1000) {
       baseComplexity = this.upgradeComplexity(baseComplexity);
     }
 
-    if (featureCount > 50'' | '''' | ''needsHighAccuracy'' | '''' | ''needsGpu) {
+    if (featureCount > 50||needsHighAccuracy||needsGpu) {
       baseComplexity = this.upgradeComplexity(baseComplexity);
     }
 
@@ -317,8 +317,8 @@ export class NeuralOrchestrator {
     );
 
     // Enhanced processing with some ML features
-    const input = task.data.input as number[]'' | ''number[][];
-    let result: number[]'' | ''number[][];
+    const input = task.data.input as number[]|number[][];
+    let result: number[]|number[][];
 
     if (Array.isArray(input[0])) {
       // Matrix processing
@@ -455,7 +455,7 @@ export class NeuralOrchestrator {
    */
   private async simulateNeuralMlProcessing(
     task: NeuralTask,
-    mode: 'light''' | '''heavy'): Promise<number[]'' | ''number[][]> {
+    mode: 'light|heavy'): Promise<number[]|'number[][]> {
     // This is a simulation - actual implementation would call neural-ml APIs
     const input = task.data.input;
 
@@ -652,14 +652,14 @@ export class NeuralOrchestrator {
   private async processWithNeuralMl(
     task: NeuralTask,
     neuralMl: any,
-    modelType: 'light''' | '''heavy'): Promise<any> {
+    modelType: 'light|heavy'): Promise<any> {
     try {
       // Use neural-ml API for actual processing
       if (neuralMl.processTask) {
         return await neuralMl.processTask(task, {
           modelType,
-          priority: (task.data.metadata as any)?.priority'' | '''' | '''medium',
-          timeout: (task.data.metadata as any)?.timeout'' | '''' | ''30000,
+          priority: (task.data.metadata as any)?.priority|||medium',
+          timeout: (task.data.metadata as any)?.timeout||30000,
         });
       } else {
         logger.warn(

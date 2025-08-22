@@ -38,7 +38,7 @@ export interface FileAwareResponse {
 
 export interface FileChange {
   path: string;
-  type: 'create | modify' | 'delete''' | '''rename';
+  type: 'create|modify|delete|rename';
   oldContent?: string;
   newContent?: string;
   diff?: string;
@@ -50,19 +50,19 @@ export interface AnalyzedContext {
   dependencies: FileDependency[];
   symbols: SymbolReference[];
   summary: string;
-  complexity: 'low | medium' | 'high';
+  complexity: 'low|medium|high';
 }
 
 export interface FileDependency {
   from: string;
   to: string;
-  type: 'import | reference' | 'extend''' | '''implement';
+  type: 'import|reference|extend|implement';
   symbols: string[];
 }
 
 export interface SymbolReference {
   name: string;
-  type: 'function | class' | 'interface''' | '''type | variable' | 'constant';
+  type: 'function|class|interface|type|variable|constant';
   file: string;
   line: number;
   column: number;
@@ -73,7 +73,7 @@ export interface SymbolUsage {
   file: string;
   line: number;
   column: number;
-  type: 'definition | usage' | 'modification';
+  type: 'definition|usage|modification';
 }
 
 export interface CodebaseIndex {
@@ -106,13 +106,13 @@ export interface ContextSelectionStrategy {
 }
 
 export interface PriorityRule {
-  type:'' | '''file_size | modification_date' | 'dependency_count' | 'usage_frequency' | 'semantic_similarity';
+  type:|'file_size|modification_date|dependency_count|usage_frequency|semantic_similarity';
   weight: number;
-  direction: 'ascending''' | '''descending';
+  direction: 'ascending|descending'';
 }
 
 export interface CompressionRule {
-  type: 'summarize | extract_signatures' | 'remove_comments''' | '''remove_tests';
+  type: 'summarize|extract_signatures|remove_comments|remove_tests';
   threshold: number; // Token count threshold
   priority: number;
 }
@@ -135,7 +135,7 @@ export interface FileAwareConfig {
     requireConfirmation: boolean;
     createBackups: boolean;
     maxFilesPerOperation: number;
-    allowedOperations: ('create | modify' | 'delete''' | '''rename')[];
+    allowedOperations: ('create|modify|delete|rename')[];
   };
   git: {
     autoCommit: boolean;

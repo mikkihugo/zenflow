@@ -72,7 +72,7 @@ const logger = getLogger('llm-provider');
 
 // Generic LLM Provider with pluggable CLI tool backends and event system integration
 export class LLMProvider extends TypedEventBase {
-  private cliProvider: CLIProvider'' | ''null = null;
+  private cliProvider: CLIProvider|null = null;
   private requestCount = 0;
   private lastRequestTime = 0;
   private providerId: string;
@@ -199,7 +199,7 @@ export class LLMProvider extends TypedEventBase {
   }
 
   // Get current role
-  getRole(): SwarmAgentRole'' | ''undefined {
+  getRole(): SwarmAgentRole|undefined {
     return this.cliProvider?.getRole();
   }
 
@@ -284,7 +284,7 @@ export class LLMProvider extends TypedEventBase {
         return err(cliError);
       }
 
-      const timeout = this.llmConfig.timeout'' | '''' | ''30000; // Default 30 seconds
+      const timeout = this.llmConfig.timeout||30000; // Default 30 seconds
       const result = await withTimeout(
         () => Promise.resolve(retryResult.value),
         timeout,
@@ -299,7 +299,7 @@ export class LLMProvider extends TypedEventBase {
           typeof result === 'object' &&
           'isOk'in result &&
           result.isOk()
-            ? (result.value as any)?.content?.length'' | '''' | ''0
+            ? (result.value as any)?.content?.length||0
             : 0,
       });
 
@@ -344,11 +344,11 @@ export class LLMProvider extends TypedEventBase {
         if (message.includes('timeout')) {
           cliError.code = CLI_ERROR_CODES.TIMEOUT_ERROR;
         } else if (
-          message.includes('network')'' | '''' | ''message.includes('connection')
+          message.includes('network')||message.includes('connection')
         ) {
           cliError.code = CLI_ERROR_CODES.NETWORK_ERROR;
         } else if (
-          message.includes('auth')'' | '''' | ''message.includes('unauthorized')
+          message.includes('auth')||message.includes('unauthorized')
         ) {
           cliError.code = CLI_ERROR_CODES.AUTH_ERROR;
         } else if (message.includes('rate limit')) {
@@ -520,18 +520,18 @@ export class LLMProvider extends TypedEventBase {
     currentRole?: string;
     provider?: string;
   } {
-    const providerStats = this.cliProvider?.getUsageStats()'' | '''' | ''{
+    const providerStats = this.cliProvider?.getUsageStats()||{
       requestCount: 0,
       lastRequestTime: 0,
     };
     return {
-      requestCount: this.requestCount + (providerStats.requestCount'' | '''' | ''0),
+      requestCount: this.requestCount + (providerStats.requestCount||0),
       lastRequestTime: Math.max(
         this.lastRequestTime,
-        providerStats.lastRequestTime'' | '''' | ''0
+        providerStats.lastRequestTime||0
       ),
       currentRole: providerStats.currentRole,
-      provider: this.cliProvider?.id'' | '''' | ''this.providerId,
+      provider: this.cliProvider?.id||this.providerId,
     };
   }
 
@@ -539,10 +539,10 @@ export class LLMProvider extends TypedEventBase {
 }
 
 // Singleton instance for shared usage
-let globalLLM: LLMProvider'' | ''null = null;
+let globalLLM: LLMProvider|null = null;
 
 export function getGlobalLLM(providerId?: string): LLMProvider {
-  if (!globalLLM'' | '''' | ''providerId) {
+  if (!globalLLM||providerId) {
     globalLLM = new LLMProvider(providerId); // Defaults to Claude provider with'coder' role
     globalLLM.setRole('coder'); // Set coder role with dangerous permissions
   }
@@ -571,9 +571,9 @@ export interface SwarmTask {
   description: string;
   agents: Array<{
     role: keyof typeof SWARM_AGENT_ROLES;
-    model?: 'sonnet''' | '''opus';
+    model?: 'sonnet|opus'';
   }>;
-  coordination?: 'parallel''' | '''sequential';
+  coordination?: 'parallel|sequential'';
 }
 
 export interface SwarmTaskResult {
@@ -600,7 +600,7 @@ export async function executeSwarmTask(
       }
 
       const result = await llm.complete(task.description, {
-        model: agent.model'' | '''' | '''sonnet',
+        model: agent.model||'sonnet',
       });
 
       results.push({
@@ -621,7 +621,7 @@ export async function executeSwarmTask(
       }
 
       const result = await agentLLM.complete(task.description, {
-        model: agent.model'' | '''' | '''sonnet',
+        model: agent.model||'sonnet',
       });
 
       return {

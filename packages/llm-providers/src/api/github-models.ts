@@ -36,7 +36,7 @@ const logger = getLogger('GitHubModelsAPI');
 
 export interface GitHubModelsOptions {
   token: string;
-  model?:'' | '''openai/gpt-4.1''' | '''openai/gpt-4o''' | '''openai/gpt-5''' | '''openai/o1''' | '''meta/llama-3.3-70b-instruct''' | '''mistral-ai/mistral-large-2411''' | '''deepseek/deepseek-r1''' | '''xai/grok-3';
+  model?:|'openai/gpt-4.1|openai/gpt-4o'||openai/gpt-5|openai/o1'||meta/llama-3.3-70b-instruct|mistral-ai/mistral-large-2411'||deepseek/deepseek-r1|xai/grok-3'';
   baseURL?: string;
   maxTokens?: number;
   temperature?: number;
@@ -111,7 +111,7 @@ export class GitHubModelsAPI implements APIProvider {
       }
 
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content'' | '''' | '''';
+      const content = data.choices?.[0]?.message?.content||'';
 
       return ok({
         content,

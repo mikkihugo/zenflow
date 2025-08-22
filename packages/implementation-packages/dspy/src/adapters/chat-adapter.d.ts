@@ -33,7 +33,7 @@ export interface ChatAdapterConfig {
  * Chat message interface
  */
 export interface ChatMessage {
-  role: 'system | user' | 'assistant';
+  role: 'system|user|assistant';
   content: string;
   metadata?: Record<string, any>;
 }
@@ -77,7 +77,7 @@ export declare class ChatAdapter extends BaseAdapter {
   toAnthropicFormat(messages: ChatMessage[]): {
     system?: string;
     messages: Array<{
-      role: 'user''' | '''assistant';
+      role: 'user|assistant'';
       content: string;
     }>;
   };

@@ -36,7 +36,7 @@ export declare function initializeCoordinationFactSystem(): Promise<void>;
  * Store a coordination-specific fact
  */
 export declare function storeCoordinationFact(
-  fact: Omit<CoordinationFact, 'id''' | '''timestamp'>
+  fact: Omit<CoordinationFact, 'id|timestamp''>
 ): Promise<string>;
 /**
  * Query coordination facts based on criteria

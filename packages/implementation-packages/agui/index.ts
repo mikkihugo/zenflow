@@ -292,7 +292,7 @@ export const APPROVAL_SYSTEM_INFO = {
  *
  * ## Question Types and Interactions
  *
- *''''' | '''''Type''''' | '''''Description''''' | '''''Example''''' | '''''*''''' | '''''------''''' | '''''-------------''''' | '''''---------''''' | '''''*''''' | '''''boolean''''' | '''''Yes/No questions''''' | ''''''Proceed with deployment?'''''' | '''''*''''' | '''''choice''''' | '''''Multiple choice''''' | ''''''Select environment: [dev, staging, prod]'''''' | '''''*''''' | '''''text''''' | '''''Free text input''''' | ''''''Enter commit message:'''''' | '''''*''''' | '''''number''''' | '''''Numeric input''''' | ''''''How many instances to deploy?'''''' | '''''*''''' | '''''password''''' | '''''Secure input''''' | ''''''Enter API key:' |
+ *''||'Type'||'Description'||'Example'||'*'||'------'||'-------------'||'---------'||'*'||'boolean'||'Yes/No questions'||''Proceed with deployment?''||'*'||'choice'||'Multiple choice'||''Select environment: [dev, staging, prod]''||'*'||'text'||'Free text input'||''Enter commit message:''||'*'||'number'||'Numeric input'||''How many instances to deploy?''||'*'||'password'||'Secure input'||'''Enter API key:' |
  *
  * ## Approval Workflow States
  *

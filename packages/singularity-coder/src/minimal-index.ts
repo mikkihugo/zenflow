@@ -58,15 +58,15 @@ export async function createFileAwareAI(config: FileAwareConfig): Promise<{
           },
         ],
         metadata: {
-          filesAnalyzed: request.files?.length'' | '''' | ''0,
+          filesAnalyzed: request.files?.length||0,
           provider: config.provider,
-          model: config.model'' | '''' | '''default',
+          model: config.model||'default',
           executionTime: Date.now() - startTime,
         },
       };
     },
 
-    async getSession(): Promise<string'' | ''null> {
+    async getSession(): Promise<string|null> {
       return `session-${Date.now()}`;
     },
   };

@@ -33,14 +33,14 @@ export class BeamBridge {
 
   constructor(config: BeamAnalysisConfig = {}) {
     this.config = {
-      languages: config.languages'' | '''' | ''['erlang', 'elixir'],
+      languages: config.languages||['erlang', 'elixir'],
       useDialyzer: config.useDialyzer ?? true,
       useSobelow: config.useSobelow ?? true,
       useElvis: config.useElvis ?? false,
-      customRules: config.customRules'' | '''' | ''[],
-      timeout: config.timeout'' | '''' | ''300000, // 5 minutes
+      customRules: config.customRules||[],
+      timeout: config.timeout||300000, // 5 minutes
       includeDeps: config.includeDeps ?? true,
-      otpVersion: config.otpVersion'' | '''' | '''latest',
+      otpVersion: config.otpVersion||'latest',
     };
   }
 
@@ -185,7 +185,7 @@ export class BeamBridge {
       const rebarConfig = path.join(projectPath, 'rebar.config');
       const rebar3Config = path.join(projectPath, 'rebar3');
       if (
-        (await this.fileExists(rebarConfig))'' | '''' | ''(await this.fileExists(rebar3Config))
+        (await this.fileExists(rebarConfig))||(await this.fileExists(rebar3Config))
       ) {
         if (project.language ==='erlang') {
           // Don't override Elixir
@@ -475,7 +475,7 @@ export class BeamBridge {
 
       child.on('close', (code) => {
         if (code === 0) {
-          resolve(output.trim().split('\n')[0]'' | '''' | '''unknown');
+          resolve(output.trim().split('\n')[0]||'unknown');
         } else {
           reject(new Error(`Failed to get version for ${tool}`));
         }

@@ -28,7 +28,7 @@ export function processClaudeMessage(
 
   try {
     // Validate basic structure
-    if (!message'' | '''' | ''typeof message !=='object') {
+    if (!message||typeof message !=='object') {
       throw new Error('Invalid message structure');
     }
 
@@ -102,7 +102,7 @@ function extractMessageTypeAndContent(msg: Record<string, unknown>): {
   }
 
   // Check for result indicators
-  if (msg['success'] !== undefined'' | '''' | ''msg['exitCode'] !== undefined) {
+  if (msg['success'] !== undefined||msg['exitCode'] !== undefined) {
     return {
       type: 'result',
       content: extractContent(msg),
@@ -110,7 +110,7 @@ function extractMessageTypeAndContent(msg: Record<string, unknown>): {
   }
 
   // Check for system message indicators
-  if (msg['level']'' | '''' | ''msg['source'] === 'system') {
+  if (msg['level']||msg['source'] === 'system') {
     return {
       type: 'system',
       content: extractContent(msg),
@@ -160,7 +160,7 @@ function extractContent(msg: Record<string, unknown>): string {
 
   // Fallback to string representation
   return String(
-    msg['content']'' | '''' | ''msg['message']'' | '''' | ''msg['text']'' | '''' | '''Empty message'
+    msg['content']||msg['message']||msg['text']||'Empty message'
   );
 }
 
@@ -205,10 +205,10 @@ function extractAssistantMetadata(
 ) {
   return {
     ...base,
-    model: msg['model']'' | '''' | ''msg['modelName'],
+    model: msg['model']||msg['modelName'],
     tokens:
-      msg['tokens']'' | '''' | ''(msg['usage'] as JsonObject'' | ''undefined)?.['total_tokens'],
-    executionTime: msg['executionTime']'' | '''' | ''msg['duration'],
+      msg['tokens']||(msg['usage'] as JsonObject|undefined)?.['total_tokens'],
+    executionTime: msg['executionTime']||msg['duration'],
     toolsUsed: Array.isArray(msg['toolsUsed']) ? msg['toolsUsed'] : undefined,
   };
 }
@@ -257,8 +257,8 @@ function extractSystemMetadata(
 ) {
   return {
     ...base,
-    level: msg['level']'' | '''' | '''info',
-    source: msg['source']'' | '''' | '''system',
+    level: msg['level']||'info',
+    source: msg['source']||'system',
     category: msg['category'],
   };
 }
@@ -273,14 +273,14 @@ function extractSystemMetadata(
 export function validateProcessedMessage(
   message: unknown
 ): message is ClaudeMessage {
-  if (!message'' | '''' | ''typeof message !=='object') {
+  if (!message||typeof message !=='object') {
     return false;
   }
 
   const msg = message as Record<string, unknown>;
 
   // Check required fields
-  if (typeof msg['type'] !== 'string''' | '''' | ''!msg['type']) {
+  if (typeof msg['type'] !== 'string'||!msg['type']) {
     return false;
   }
 

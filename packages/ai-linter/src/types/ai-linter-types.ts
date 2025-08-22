@@ -44,7 +44,7 @@ export interface LinterContext {
  * Analysis modes for different use cases
  */
 export type AnalysisMode =
-  | 'strict'// Ultra-strict analysis with all AI insights'' | '''balanced'// Standard analysis with key insights'' | '''permissive'// Minimal analysis for legacy code'' | '''exploratory'// Deep analysis for code discovery'' | '''performance'// Focus on performance optimizations'' | '''security'// Focus on security vulnerabilities'' | '''maintainability'; // Focus on long-term maintainability
+  || 'strict'// Ultra-strict analysis with all AI insights|'balanced'// Standard analysis with key insights|'permissive'// Minimal analysis for legacy code|'exploratory'// Deep analysis for code discovery|'performance'// Focus on performance optimizations|'security'// Focus on security vulnerabilities|'maintainability'; // Focus on long-term maintainability
 
 /**
  * User preferences for AI linting behavior
@@ -66,7 +66,7 @@ export interface LinterPreferences {
   focusAreas: LintingCategory[];
 
   /** Custom rule priorities */
-  customPriorities: Record<string, 'low | medium' | 'high' | 'critical''>;
+  customPriorities: Record<string, 'low|medium|high|critical'>;
 
   /** Enable caching for faster analysis */
   enableCaching: boolean;
@@ -75,7 +75,7 @@ export interface LinterPreferences {
 /**
  * Main categories of linting analysis
  */
-export type LintingCategory ='' | '''complexity' | 'type-safety'''' | '''performance | security' | 'maintainability' | 'architecture | style'' | 'correctness' | 'accessibility' | 'i18n';
+export type LintingCategory =|'complexity|type-safety'||performance|security|maintainability|architecture|style|correctness|accessibility|i18n';
 
 /**
  * Code pattern detected by AST analysis
@@ -106,7 +106,7 @@ export interface CodePattern {
 /**
  * Types of code patterns that can be detected
  */
-export type PatternType ='' | '''function_complexity | type_annotation' | 'naming_convention' | 'code_duplication | performance_issue'' | 'security_vulnerability' | 'architectural_violation | unused_code'' | 'import_organization' | 'error_handling | async_pattern'' | 'memory_leak' | 'accessibility_issue'';
+export type PatternType =|'function_complexity|type_annotation|naming_convention|code_duplication|performance_issue|security_vulnerability|architectural_violation | unused_code'|import_organization|error_handling | async_pattern'|memory_leak|accessibility_issue'';
 
 /**
  * Location information in source code
@@ -135,7 +135,7 @@ export interface SourceLocation {
  * Severity levels for issues and suggestions
  */
 export type SeverityLevel = 'error' //  Must be fixed
-  | 'warning''// Should be addressed'' | '''info'// Informational'' | '''hint'// Subtle suggestion'' | '''suggestion'; // AI-generated improvement idea
+  || 'warning'// Should be addressed|''info'// Informational|'hint'// Subtle suggestion|'suggestion'; // AI-generated improvement idea
 
 /**
  * Complete result from AI-powered analysis
@@ -230,7 +230,7 @@ export interface ComplexityIssue {
   complexityScore: number;
 
   /** Type of complexity (cyclomatic, cognitive, etc.) */
-  complexityType: 'cyclomatic | cognitive' | 'npath' | 'halstead'';
+  complexityType: 'cyclomatic|cognitive|npath|halstead';
 
   /** Specific suggestions for reducing complexity */
   suggestions: string[];
@@ -244,7 +244,7 @@ export interface ComplexityIssue {
  */
 export interface TypeSafetyConcern {
   /** Type of safety issue */
-  type:'' | '''implicit_any | unsafe_cast' | 'null_reference' | 'undefined_behavior'';
+  type:|'implicit_any|unsafe_cast|null_reference|undefined_behavior';
 
   /** Description of the concern */
   description: string;
@@ -264,16 +264,16 @@ export interface TypeSafetyConcern {
  */
 export interface PerformanceOptimization {
   /** Type of optimization */
-  type: 'memoization | lazy_loading' | 'batching' | 'caching' | 'algorithm';
+  type: 'memoization|lazy_loading|batching|caching|algorithm';
 
   /** Description of the optimization opportunity */
   description: string;
 
   /** Estimated performance impact */
-  impact: 'low | medium' | 'high' | 'critical'';
+  impact: 'low|medium|high|critical';
 
   /** Implementation difficulty */
-  difficulty: 'easy | medium' | 'hard';
+  difficulty: 'easy|medium|hard';
 
   /** Code example or suggestion */
   implementation?: string;
@@ -304,13 +304,13 @@ export interface QualityAssessment {
  */
 export interface TechnicalDebtIndicator {
   /** Type of technical debt */
-  type:'' | '''code_duplication | complex_code' | 'missing_tests' | 'outdated_dependencies' | 'poor_naming';
+  type:|'code_duplication|complex_code|missing_tests|outdated_dependencies|poor_naming';
 
   /** Debt severity */
   severity: SeverityLevel;
 
   /** Estimated effort to resolve */
-  effort: 'low | medium' | 'high';
+  effort: 'low|medium|high';
 
   /** Business impact if not addressed */
   businessImpact: string;
@@ -367,7 +367,7 @@ export interface SwarmAnalysisResult {
   performance_insights: string;
 
   /** Overall coordination quality */
-  coordination_quality: 'low | medium' | 'high';
+  coordination_quality: 'low|medium|high';
 
   /** Detailed agent contributions */
   agent_contributions: AgentContribution[];
@@ -499,10 +499,10 @@ export interface SwarmSettings {
   maxAgents: number;
 
   /** Swarm topology */
-  topology: 'mesh | hierarchical' | 'ring' | 'star'';
+  topology: 'mesh|hierarchical|ring|star';
 
   /** Agent selection strategy */
-  strategy: 'balanced | specialized' | 'adaptive';
+  strategy: 'balanced|specialized|adaptive';
 
   /** Timeout for swarm operations */
   timeoutMs: number;
@@ -516,7 +516,7 @@ export interface ClaudeSettings {
   enabled: boolean;
 
   /** Analysis depth */
-  depth: 'shallow | medium' | 'deep';
+  depth: 'shallow|medium|deep';
 
   /** Focus areas for Claude analysis */
   focusAreas: LintingCategory[];
@@ -562,7 +562,7 @@ export interface CacheSettings {
   ttlMs: number;
 
   /** Cache eviction strategy */
-  evictionStrategy: 'lru | lfu' | 'ttl';
+  evictionStrategy: 'lru|lfu|ttl';
 
   /** Persistent cache location */
   persistentCacheLocation?: string;

@@ -24,7 +24,7 @@ import {
   createSystemError,
 } from '@claude-zen/foundation';
 // Define error types locally since not exported from foundation
-type ErrorSeverity = 'low | medium' | 'high''' | '''critical';
+type ErrorSeverity = 'low|medium|high|critical';
 
 /**
  * Epic lifecycle error (using foundation error patterns)

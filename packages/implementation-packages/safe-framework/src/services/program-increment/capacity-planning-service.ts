@@ -47,17 +47,17 @@ export interface TeamCapacity {
 export interface TeamMember {
   readonly memberId: string;
   readonly name: string;
-  readonly role:' | ''developer'' | ''tester'' | ''architect'' | ''analyst'' | ''designer'' | ''devops';
+  readonly role:|developer|tester|architect|analyst|designer|'devops';
   readonly capacity: number; // individual capacity
   readonly skills: string[];
-  readonly experience: 'junior'' | ''mid'' | ''senior'' | ''expert';
+  readonly experience: 'junior|mid|senior|expert';
   readonly availability: number; // 0-1, percentage availability for PI
   readonly crossTrainingAreas: string[];
 }
 
 export interface TeamSkill {
   readonly skillName: string;
-  readonly proficiency: 'basic'' | ''intermediate'' | ''advanced'' | ''expert';
+  readonly proficiency: 'basic|intermediate|advanced|expert';
   readonly memberCount: number; // number of team members with this skill
   readonly capacity: number; // capacity available for this skill
   readonly critical: boolean; // is this a critical bottleneck skill
@@ -70,7 +70,7 @@ export interface FeatureAllocationRequest {
   readonly businessValue: number; // 1-100 scale
   readonly complexity: number; // story points or similar
   readonly requiredSkills: string[];
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
   readonly dependencies: string[];
   readonly acceptanceCriteria: string[];
   readonly estimatedDuration: number; // in iterations
@@ -93,17 +93,17 @@ export interface TeamAllocation {
 export interface SkillMatch {
   readonly skill: string;
   readonly required: boolean;
-  readonly proficiencyRequired:' | ''basic'' | ''intermediate'' | ''advanced'' | ''expert';
-  readonly proficiencyAvailable:' | ''basic'' | ''intermediate'' | ''advanced'' | ''expert';
+  readonly proficiencyRequired:|basic|intermediate|advanced|'expert';
+  readonly proficiencyAvailable:|basic|intermediate|advanced|'expert';
   readonly memberCount: number;
-  readonly matchQuality: 'perfect'' | ''good'' | ''adequate'' | ''poor';
+  readonly matchQuality: 'perfect|good|adequate|poor';
 }
 
 export interface AllocationRisk {
-  readonly riskType:' | ''capacity'' | ''skill'' | ''dependency'' | ''timeline'' | ''quality';
+  readonly riskType:|capacity|skill|dependency|timeline|'quality';
   readonly description: string;
   readonly probability: number; // 0-1
-  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly impact: 'low|medium|high|critical';
   readonly mitigation: string;
   readonly owner: string;
 }
@@ -123,11 +123,11 @@ export interface CapacityPlanningResult {
 
 export interface CapacityRisk {
   readonly riskId: string;
-  readonly type:' | ''overallocation'' | ''underutilization'' | ''skill_gap'' | ''dependency'' | ''timeline';
+  readonly type:|overallocation|underutilization|skill_gap|dependency|'timeline';
   readonly description: string;
   readonly impact: string;
   readonly mitigation: string;
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly affectedTeams: string[];
   readonly affectedFeatures: string[];
   readonly dueDate: Date;
@@ -135,13 +135,13 @@ export interface CapacityRisk {
 
 export interface CapacityRecommendation {
   readonly recommendationId: string;
-  readonly type:' | ''rebalancing'' | ''skill_development'' | ''scope_adjustment'' | ''timeline_adjustment';
+  readonly type:|rebalancing|skill_development|scope_adjustment|'timeline_adjustment';
   readonly title: string;
   readonly description: string;
   readonly benefits: string[];
-  readonly effort: 'low'' | ''medium'' | ''high';
+  readonly effort: 'low|medium|high';
   readonly timeline: string;
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
   readonly implementation: RecommendationImplementation;
 }
 
@@ -680,7 +680,7 @@ export class CapacityPlanningService extends TypedEventBase {
    */
   private calculateAverageProficiency(
     proficiencies: string[]
-  ): 'basic'' | ''intermediate'' | ''advanced'' | ''expert'{
+  ): 'basic|intermediate|advanced|expert'{
     const proficiencyValues = {
       basic: 1,
       intermediate: 2,
@@ -880,7 +880,7 @@ export class CapacityPlanningService extends TypedEventBase {
     required: string,
     available: string,
     memberCount: number
-  ): 'perfect'' | ''good'' | ''adequate'' | ''poor'{
+  ): 'perfect|good|adequate|poor'{
     const proficiencyLevels = {
       basic: 1,
       intermediate: 2,

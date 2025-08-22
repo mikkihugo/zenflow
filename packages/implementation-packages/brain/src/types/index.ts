@@ -134,7 +134,7 @@ export interface RetentionPolicy {
  * Consolidation strategy for memory
  */
 export interface ConsolidationStrategy {
-  type: 'immediate | delayed' | 'periodic''' | '''threshold';
+  type: 'immediate|delayed|periodic|threshold';
   interval?: number;
   threshold?: number;
 }
@@ -143,7 +143,7 @@ export interface ConsolidationStrategy {
  * Retrieval mechanism for memory
  */
 export interface RetrievalMechanism {
-  type: 'associative | semantic' | 'episodic''' | '''hybrid';
+  type: 'associative|semantic|episodic|hybrid';
   similarity: number;
   context: boolean;
 }
@@ -155,7 +155,7 @@ export interface AdaptationConfig {
   enabled: boolean;
   rate: number;
   threshold: number;
-  strategy: 'gradual | immediate' | 'batch';
+  strategy: 'gradual|immediate|batch';
 }
 
 /**
@@ -163,7 +163,7 @@ export interface AdaptationConfig {
  */
 export interface FeedbackConfig {
   enabled: boolean;
-  type: 'explicit | implicit' | 'reinforcement';
+  type: 'explicit|implicit|reinforcement';
   weight: number;
   delay?: number;
 }
@@ -215,7 +215,7 @@ export interface LearningProgress {
  * Adaptation event
  */
 export interface AdaptationEvent {
-  type: 'parameter | architecture' | 'strategy';
+  type: 'parameter|architecture|strategy';
   trigger: string;
   changes: Record<string, any>;
   timestamp: Timestamp;
@@ -226,7 +226,7 @@ export interface AdaptationEvent {
  * Consensus algorithm
  */
 export interface ConsensusAlgorithm {
-  type: 'majority | weighted' | 'unanimous''' | '''threshold';
+  type: 'majority|weighted|unanimous|threshold';
   threshold?: number;
   weights?: Record<string, number>;
 }
@@ -235,7 +235,7 @@ export interface ConsensusAlgorithm {
  * Synchronization strategy
  */
 export interface SynchronizationStrategy {
-  type: 'sync | async' | 'eventual''' | '''strong';
+  type: 'sync|async|eventual|strong';
   interval?: number;
   tolerance?: number;
 }
@@ -267,7 +267,7 @@ export interface Attachment {
  */
 export interface FeatureSpec {
   name: string;
-  type: 'numeric | categorical' | 'text''' | '''image';
+  type: 'numeric|categorical|text|image';
   description?: string;
   range?: [number, number];
   categories?: string[];
@@ -278,7 +278,7 @@ export interface FeatureSpec {
  */
 export interface LabelSpec {
   name: string;
-  type: 'binary | multiclass' | 'regression';
+  type: 'binary|multiclass|regression';
   classes?: string[];
   range?: [number, number];
 }
@@ -287,17 +287,17 @@ export interface LabelSpec {
  * Preprocessing configuration
  */
 export interface PreprocessingConfig {
-  normalization?: 'minmax | zscore' | 'robust';
-  encoding?: 'onehot | label' | 'binary';
-  featureSelection?: 'variance | correlation' | 'mutual_info';
-  dimensionReduction?: 'pca | tsne' | 'umap';
+  normalization?: 'minmax|zscore|robust';
+  encoding?: 'onehot|label|binary';
+  featureSelection?: 'variance|correlation|mutual_info';
+  dimensionReduction?: 'pca|tsne|umap';
 }
 
 /**
  * Validation configuration
  */
 export interface ValidationConfig {
-  method: 'holdout | kfold' | 'stratified''' | '''timeseries';
+  method: 'holdout|kfold|stratified|timeseries';
   splits: number;
   testSize: number;
   randomState?: number;
@@ -352,7 +352,7 @@ export interface NetworkArchitecture {
  * Layer configuration for neural networks
  */
 export interface LayerConfig {
-  type: 'dense | conv2d' | 'lstm' | 'attention' | 'embedding';
+  type: 'dense|conv2d|lstm|attention|embedding';
   size: number;
   activation?: ActivationFunction;
   dropout?: number;
@@ -392,8 +392,8 @@ export interface EarlyStoppingConfig {
   enabled: boolean;
   patience: number;
   minDelta: number;
-  metric: 'loss | accuracy' | 'f1' | 'precision' | 'recall';
-  mode: 'min''' | '''max';
+  metric: 'loss|accuracy|f1|precision|recall';
+  mode: 'min|max'';
   restoreBestWeights: boolean;
 }
 
@@ -401,7 +401,7 @@ export interface EarlyStoppingConfig {
  * Learning rate scheduler configuration
  */
 export interface LearningRateScheduler {
-  type: 'exponential | step' | 'cosine' | 'plateau' | 'warmup';
+  type: 'exponential|step|cosine|plateau|warmup';
   parameters: Record<string, number>;
   warmupSteps?: number;
 }
@@ -492,7 +492,7 @@ export enum ReasoningStyle {
  * Memory model configuration
  */
 export interface MemoryModel {
-  type: 'episodic | semantic' | 'procedural' | 'working' | 'hybrid';
+  type: 'episodic|semantic|procedural|working|hybrid';
   capacity: number;
   retention: RetentionPolicy;
   consolidation: ConsolidationStrategy;
@@ -503,7 +503,7 @@ export interface MemoryModel {
  * Attention mechanism configuration
  */
 export interface AttentionMechanism {
-  type: 'focused | distributed' | 'selective' | 'divided' | 'sustained';
+  type: 'focused|distributed|selective|divided|sustained';
   scope: number; // attention span
   intensity: number; // attention strength
   adaptability: number; // dynamic adjustment
@@ -696,7 +696,7 @@ export interface PerformanceTrend {
   metric: MetricType;
   timeWindow: TimeWindow;
   values: TimeSeriesData[];
-  trend: 'increasing | decreasing' | 'stable''' | '''volatile';
+  trend: 'increasing|decreasing|stable|volatile';
   confidence: number;
 }
 
@@ -715,8 +715,8 @@ export interface TimeSeriesData {
 export interface TimeWindow {
   start: Timestamp;
   end: Timestamp;
-  granularity: 'second | minute' | 'hour''' | '''day | week' | 'month';
-  aggregation: 'mean | median' | 'max''' | '''min | sum' | 'count';
+  granularity: 'second|minute|hour|day|week|month';
+  aggregation: 'mean|median|max|min|sum|count';
 }
 
 // =============================================================================
@@ -751,8 +751,8 @@ export enum CoordinationTopology {
  * Communication protocols for neural agents
  */
 export interface CommunicationProtocol {
-  type:'' | '''message_passing | shared_memory' | 'event_driven' | 'rpc' | 'streaming';
-  format: 'json | binary' | 'protobuf''' | '''custom';
+  type:|'message_passing|shared_memory|event_driven|rpc|streaming';
+  format: 'json|binary|protobuf|custom';
   encryption: boolean;
   compression: boolean;
   reliability: ReliabilityLevel;
@@ -774,7 +774,7 @@ export enum ReliabilityLevel {
 export interface AgentMessage {
   id: UUID;
   from: UUID; // sender agent ID
-  to: UUID'' | ''UUID[]; // recipient agent ID(s)
+  to: UUID|UUID[]; // recipient agent ID(s)
   type: MessageType;
   payload: MessagePayload;
   priority: Priority;
@@ -856,7 +856,7 @@ export enum AgentStatus {
  * Health status for neural agents
  */
 export interface HealthStatus {
-  status: 'healthy | degraded' | 'critical''' | '''unknown';
+  status: 'healthy|degraded|critical|unknown';
   score: number; // 0.0 - 1.0
   issues: HealthIssue[];
   lastCheck: Timestamp;
@@ -867,8 +867,8 @@ export interface HealthStatus {
  * Health issue tracking
  */
 export interface HealthIssue {
-  type: 'performance | memory' | 'network' | 'learning' | 'coordination';
-  severity: 'low | medium' | 'high''' | '''critical';
+  type: 'performance|memory|network|learning|coordination';
+  severity: 'low|medium|high|critical';
   message: string;
   timestamp: Timestamp;
   resolved: boolean;
@@ -1057,7 +1057,7 @@ export type CoordinationResult = Result<
 export interface NeuralError extends Error {
   readonly type: 'NeuralError';
   readonly message: string;
-  readonly category:'' | '''training | inference' | 'coordination''' | '''configuration';
+  readonly category:|'training|inference|coordination|configuration';
   readonly modelId?: UUID;
   readonly agentId?: UUID;
   readonly timestamp: Timestamp;

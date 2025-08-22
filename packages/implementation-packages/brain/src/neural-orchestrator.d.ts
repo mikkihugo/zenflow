@@ -31,9 +31,9 @@ export declare enum StorageStrategy {
  */
 export interface NeuralTask {
   id: string;
-  type:'' | '''prediction | classification' | 'clustering''' | '''forecasting | optimization' | 'pattern_recognition';
+  type:|'prediction|classification|clustering|forecasting|optimization|pattern_recognition';
   data: {
-    input: number[]'' | ''number[][];
+    input: number[]|number[][];
     context?: Record<string, unknown>;
     metadata?: {
       dimensions?: number;
@@ -54,10 +54,10 @@ export interface NeuralTask {
  */
 export interface NeuralResult {
   taskId: string;
-  result: number[]'' | ''number[][]'' | ''Record<string, unknown>;
+  result: number[]|number[][]|Record<string, unknown>;
   metadata: {
     complexity: TaskComplexity;
-    processor:'brain-js''' | '''neural-ml-light''' | '''neural-ml-heavy';
+    processor:'brain-js|neural-ml-light'||neural-ml-heavy';
     duration: number;
     confidence?: number;
     storageStrategy: StorageStrategy;
@@ -69,13 +69,13 @@ export interface NeuralResult {
  */
 export interface NeuralData {
   id: string;
-  type: 'weights | training' | 'patterns' | 'predictions' | 'models';
+  type: 'weights|training|patterns|predictions|models';
   data: unknown;
   characteristics: {
     size: number;
     dimensions?: number;
-    accessFrequency: 'rare | occasional' | 'frequent''' | '''realtime';
-    persistenceLevel: 'temporary | session' | 'permanent';
+    accessFrequency: 'rare|occasional|frequent|realtime';
+    persistenceLevel: 'temporary|session|permanent';
     relationships?: string[];
   };
 }

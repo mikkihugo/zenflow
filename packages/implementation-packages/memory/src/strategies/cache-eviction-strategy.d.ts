@@ -28,7 +28,7 @@ export declare class CacheEvictionStrategy extends TypedEventBase {
       metadata?: Record<string, unknown>;
     }
   ): boolean;
-  get(key: string): unknown'' | ''undefined;
+  get(key: string): unknown|undefined;
   delete(key: string): boolean;
   has(key: string): boolean;
   clear(): void;
@@ -57,7 +57,7 @@ export declare class CacheEvictionStrategy extends TypedEventBase {
     maxSize: number;
     memoryUsage: number;
     maxMemory: number;
-    algorithm:'ttl | lru' | 'lfu''' | '''adaptive | fifo' | 'random';
+    algorithm:'ttl|lru|lfu|adaptive|fifo|random';
     metrics: {
       totalEvictions: number;
       evictionsByReason: Record<EvictionReason, number>;

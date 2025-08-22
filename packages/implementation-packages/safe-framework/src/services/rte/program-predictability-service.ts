@@ -54,7 +54,7 @@ export interface ProgramPredictability {
  * Predictability trend analysis
  */
 export interface PredictabilityTrend {
-  readonly direction: 'improving'' | ''stable'' | ''declining';
+  readonly direction: 'improving|stable|declining';
   readonly changeRate: number; // percentage change
   readonly trendPeriod: number; // PIs analyzed
   readonly confidenceLevel: number; // 0-100%
@@ -83,7 +83,7 @@ export interface ObjectiveCompletionTracking {
   readonly actualValue: number;
   readonly completion: number; // 0-100%
   readonly confidence: number; // 1-5
-  readonly status:' | ''not_started'' | ''in_progress'' | ''completed'' | ''at_risk'' | ''missed';
+  readonly status:|not_started|in_progress|completed|at_risk|'missed';
   readonly blockers: string[];
   readonly adjustments: ObjectiveAdjustment[];
 }
@@ -93,7 +93,7 @@ export interface ObjectiveCompletionTracking {
  */
 export interface ObjectiveAdjustment {
   readonly date: Date;
-  readonly type:' | ''scope_change'' | ''priority_change'' | ''resource_change'' | ''timeline_change';
+  readonly type:|scope_change|priority_change|resource_change|'timeline_change';
   readonly description: string;
   readonly impact: number; // -100 to 100 (percentage impact)
   readonly reason: string;
@@ -110,7 +110,7 @@ export interface VelocityTracking {
   readonly actualVelocity: number;
   readonly velocityVariance: number; // percentage
   readonly historicalAverage: number;
-  readonly trend: 'increasing'' | ''stable'' | ''decreasing';
+  readonly trend: 'increasing|stable|decreasing';
   readonly factors: VelocityFactor[];
 }
 
@@ -121,7 +121,7 @@ export interface VelocityFactor {
   readonly factor: string;
   readonly impact: number; // -100 to 100
   readonly duration: number; // sprints affected
-  readonly category:' | ''team_composition'' | ''technical_debt'' | ''dependencies'' | ''external';
+  readonly category:|team_composition|technical_debt|dependencies|'external';
 }
 
 /**
@@ -143,7 +143,7 @@ export interface ProgramSynchronization {
 export interface SynchronizationBlocker {
   readonly blocker: string;
   readonly affectedTeams: string[];
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly duration: number; // days
   readonly resolution: string;
   readonly owner: string;
@@ -169,7 +169,7 @@ export interface MultiARTCoordination {
 export interface CoordinationChallenge {
   readonly challenge: string;
   readonly artIds: string[];
-  readonly impact: 'low'' | ''medium'' | ''high';
+  readonly impact: 'low|medium|high';
   readonly resolution: string;
   readonly timeline: number; // days
   readonly owner: string;
@@ -182,8 +182,8 @@ export interface BusinessImpactAssessment {
   readonly impactId: string;
   readonly piId: string;
   readonly description: string;
-  readonly category: 'customer'' | ''revenue'' | ''compliance'' | ''strategic';
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly category: 'customer|revenue|compliance|strategic';
+  readonly severity: 'low|medium|high|critical';
   readonly likelihood: number; // 0-100%
   readonly timelineImpact: number; // days delayed
   readonly financialImpact: number; // cost impact
@@ -299,7 +299,7 @@ export class ProgramPredictabilityService {
       actualValue: number;
       completion: number;
       confidence: number;
-      status:' | ''not_started'' | ''in_progress'' | ''completed'' | ''at_risk'' | ''missed';
+      status:|not_started|in_progress|completed|at_risk|'missed';
       blockers?: string[];
     }
   ): Promise<ObjectiveCompletionTracking> {
@@ -378,8 +378,8 @@ export class ProgramPredictabilityService {
   async assessBusinessImpact(impact: {
     piId: string;
     description: string;
-    category: 'customer'' | ''revenue'' | ''compliance'' | ''strategic';
-    severity: 'low'' | ''medium'' | ''high'' | ''critical';
+    category: 'customer|revenue|compliance|strategic';
+    severity: 'low|medium|high|critical';
     likelihood: number;
     timelineImpact: number;
     financialImpact: number;
@@ -536,7 +536,7 @@ export class ProgramPredictabilityService {
   private determineTrend(
     actualVelocity: number,
     historicalAverage: number
-  ): 'increasing'' | ''stable'' | ''decreasing' {
+  ): 'increasing|stable|decreasing' {
     const variance = (actualVelocity - historicalAverage) / historicalAverage;
 
     if (variance > 0.1) return 'increasing';

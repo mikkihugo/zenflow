@@ -37,8 +37,8 @@ export class FileAwareAIEngine {
     try {
       // Analyze codebase context
       const context = await this.analyzer.analyzeContext(
-        request.files'' | '''' | ''[],
-        request.context?.maxFiles'' | '''' | ''50
+        request.files||[],
+        request.context?.maxFiles||50
       );
 
       // Generate changes based on the request and context
@@ -53,7 +53,7 @@ export class FileAwareAIEngine {
         metadata: {
           filesAnalyzed: context.relevantFiles.length,
           provider:'fallback',
-          model: request.options?.model'' | '''' | '''default',
+          model: request.options?.model||'default',
           executionTime,
         },
       };
@@ -73,7 +73,7 @@ export class FileAwareAIEngine {
         metadata: {
           filesAnalyzed: 0,
           provider: 'fallback',
-          model: request.options?.model'' | '''' | '''default',
+          model: request.options?.model||'default',
           executionTime,
         },
       };

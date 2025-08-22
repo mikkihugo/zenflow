@@ -33,7 +33,7 @@ const logger = getLogger('agent-manager-cli');
 const program = new Command();
 
 // Global AgentManager instance
-let globalManager: AgentManager'' | ''null = null;
+let globalManager: AgentManager|null = null;
 
 async function getManager(): Promise<AgentManager> {
   if (!globalManager) {
@@ -94,7 +94,7 @@ program
               .split(',')
               .map((type: string) => type.trim()) as CognitiveArchetype[])
           : ['researcher', 'coder'];
-        topology = options.topology'' | '''' | '''mesh';
+        topology = options.topology||'mesh';
 
         // Validate manual inputs
         const validTypes: CognitiveArchetype[] = [
@@ -157,7 +157,7 @@ program
                 .split(',')
                 .map((type: string) => type.trim()) as CognitiveArchetype[])
             : recommendation.cognitiveTypes;
-          topology = options.topology'' | '''' | ''recommendation.topology;
+          topology = options.topology||recommendation.topology;
 
           // Display recommendation
           console.log('\n🎯 Intelligent Configuration:');
@@ -184,7 +184,7 @@ program
             );
           }
 
-          if (options.cognitive'' | '''' | ''options.topology) {
+          if (options.cognitive||options.topology) {
             console.log('\n⚠️  User overrides applied to intelligent configuration'
             );
           }
@@ -501,7 +501,7 @@ program
           for (const agent of swarm.agents) {
             archetypeCounts.set(
               agent.archetype,
-              (archetypeCounts.get(agent.archetype)'' | '''' | ''0) + 1
+              (archetypeCounts.get(agent.archetype)||0) + 1
             );
           }
         }

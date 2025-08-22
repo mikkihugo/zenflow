@@ -131,7 +131,7 @@ import type { GraphDatabaseAdapter } from '../providers/database-providers';
  * // Find all users connected within 3 degrees of separation
  * const socialNetwork = await userGraphDao.traverse(
  *   'user123',
- *   'KNOWS'' | ''FOLLOWS'' | ''FRIENDS', // Multiple relationship types
+ *   'KNOWS|FOLLOWS|FRIENDS', // Multiple relationship types
  *   3                         // Maximum depth
  * );
  *
@@ -193,7 +193,7 @@ export class GraphDao<T>
    *
    * @async
    * @method traverse
-   * @param {string'' | ''number} startNode - Starting node identifier (D field value)
+   * @param {string|number} startNode - Starting node identifier (D field value)
    * @param {string} relationshipType - Relationship type to traverse (e.g.,'FOLLOWS', 'KNOWS')
    * @param {number} [maxDepth=3] - Maximum traversal depth (1-10 recommended, default 3)
    *
@@ -238,12 +238,12 @@ export class GraphDao<T>
    * const reachByDepth = new Map();
    * for (const path of influence.paths) {
    *   const depth = path.length - 1;
-   *   reachByDepth.set(depth, (reachByDepth.get(depth)'' | '''' | ''0) + 1);
+   *   reachByDepth.set(depth, (reachByDepth.get(depth)||0) + 1);
    * }
    * ```
    */
   async traverse(
-    startNode: string'' | ''number,
+    startNode: string|number,
     relationshipType: string,
     maxDepth: number = 3
   ): Promise<GraphTraversalResult> {
@@ -334,8 +334,8 @@ export class GraphDao<T>
    * @param relationshipType
    */
   async findRelationships(
-    fromNodeId: string'' | ''number,
-    toNodeId: string'' | ''number,
+    fromNodeId: string|number,
+    toNodeId: string|number,
     relationshipType?: string
   ): Promise<GraphRelationship[]> {
     this.logger.debug(
@@ -380,8 +380,8 @@ export class GraphDao<T>
    * @param properties
    */
   async createRelationship(
-    fromNodeId: string'' | ''number,
-    toNodeId: string'' | ''number,
+    fromNodeId: string|number,
+    toNodeId: string|number,
     relationshipType: string,
     properties?: Record<string, unknown>
   ): Promise<GraphRelationship> {
@@ -566,8 +566,8 @@ export class GraphDao<T>
    * @param direction
    */
   async getNodeDegree(
-    nodeId: string'' | ''number,
-    direction:'in | out' | 'both' = 'both'
+    nodeId: string|number,
+    direction:'in|out|both' = 'both'
   ): Promise<number> {
     this.logger.debug(
       `Getting node degree for ${nodeId}, direction: ${direction}`
@@ -593,7 +593,7 @@ export class GraphDao<T>
       const result = await this.graphAdapter.queryGraph(cypher, [
         nodeId,
       ] as any);
-      return (result as any).results[0]?.degree'' | '''' | ''0;
+      return (result as any).results[0]?.degree||0;
     } catch (error) {
       this.logger.error(`Get node degree failed: ${error}`);
       throw new Error(
@@ -610,10 +610,10 @@ export class GraphDao<T>
    * @param relationshipType
    */
   async findShortestPath(
-    fromNodeId: string'' | ''number,
-    toNodeId: string'' | ''number,
+    fromNodeId: string|number,
+    toNodeId: string|number,
     relationshipType?: string
-  ): Promise<GraphTraversalResult'' | ''null> {
+  ): Promise<GraphTraversalResult|null> {
     this.logger.debug(`Finding shortest path: ${fromNodeId} -> ${toNodeId}`, {
       relationshipType,
     });
@@ -721,12 +721,12 @@ export class GraphDao<T>
 
     return {
       id,
-      labels: labels'' | '''' | ''[this.tableName],
+      labels: labels||[this.tableName],
       properties,
     };
   }
 
-  protected override buildFindByIdQuery(id: string'' | ''number): {
+  protected override buildFindByIdQuery(id: string|number): {
     sql: string;
     params: unknown[];
   } {

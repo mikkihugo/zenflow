@@ -36,7 +36,7 @@ export interface OptimizationContext {
   readonly task: string;
   readonly basePrompt: string;
   readonly agentRole?: string;
-  readonly priority?: 'low | medium' | 'high';
+  readonly priority?: 'low|medium|high';
   readonly context?: Record<string, any>;
   readonly expectedComplexity?: number; // 0-1 scale
   readonly timeConstraint?: number; // milliseconds
@@ -45,7 +45,7 @@ export interface OptimizationContext {
 export interface OptimizationResult {
   readonly optimizedPrompt: string;
   readonly confidence: number;
-  readonly method: 'dspy | ml' | 'hybrid''' | '''fallback';
+  readonly method: 'dspy|ml|hybrid|fallback';
   readonly processingTime: number;
   readonly improvementScore: number; // Estimated improvement over original
   readonly reasoning: string[];
@@ -78,9 +78,9 @@ interface MethodPerformance {
  * - Continuous learning from results
  */
 export class AutonomousOptimizationEngine {
-  private dspyBridge: DSPyLLMBridge'' | ''null = null;
-  private smartOptimizer: SmartPromptOptimizer'' | ''null = null;
-  private complexityEstimator: TaskComplexityEstimator'' | ''null = null;
+  private dspyBridge: DSPyLLMBridge|null = null;
+  private smartOptimizer: SmartPromptOptimizer|null = null;
+  private complexityEstimator: TaskComplexityEstimator|null = null;
   private initialized = false;
 
   // Performance tracking for each method
@@ -110,7 +110,7 @@ export class AutonomousOptimizationEngine {
     try {
       logger.info('🚀 Initializing Autonomous Optimization Engine...');
 
-      this.dspyBridge = dspyBridge'' | '''' | ''null;
+      this.dspyBridge = dspyBridge||null;
 
       // Initialize Smart ML Optimizer
       this.smartOptimizer = new SmartPromptOptimizer();
@@ -150,14 +150,14 @@ export class AutonomousOptimizationEngine {
       logger.info(`🤖 Autonomous optimization for: "${context.task}"`);
 
       // 1. Estimate task complexity automatically
-      let complexityEstimate: ComplexityEstimate'' | ''null = null;
+      let complexityEstimate: ComplexityEstimate|null = null;
       if (this.complexityEstimator) {
         try {
           complexityEstimate =
             await this.complexityEstimator.estimateComplexity(
               context.task,
               context.basePrompt,
-              context.context'' | '''' | ''{},
+              context.context||{},
               context.agentRole
             );
 
@@ -199,7 +199,7 @@ export class AutonomousOptimizationEngine {
           await this.complexityEstimator.learnFromOutcome(
             context.task,
             context.basePrompt,
-            context.context'' | '''' | ''{},
+            context.context||{},
             actualComplexity,
             result.processingTime,
             result.confidence > 0.7, // Success indicator
@@ -436,8 +436,8 @@ export class AutonomousOptimizationEngine {
 
   private async selectOptimalMethod(
     context: OptimizationContext,
-    complexityEstimate?: ComplexityEstimate'' | ''null
-  ): Promise<'dspy | ml' | 'hybrid'> {
+    complexityEstimate?: ComplexityEstimate|null
+  ): Promise<'dspy|ml|hybrid'> {
     // If we don't have enough data, use complexity estimate guidance
     if (this.optimizationHistory.length < this.minDataPoints) {
       if (complexityEstimate?.suggestedMethod) {
@@ -472,11 +472,11 @@ export class AutonomousOptimizationEngine {
   }
 
   private calculateMethodScore(
-    method: 'dspy | ml' | 'hybrid',
+    method: 'dspy|ml|hybrid',
     context: OptimizationContext
   ): number {
     const performance = this.methodPerformance.get(method);
-    if (!performance'' | '''' | ''performance.usageCount < 2) {
+    if (!performance||performance.usageCount < 2) {
       return 0.5; // Default score for insufficient data
     }
 
@@ -510,7 +510,7 @@ export class AutonomousOptimizationEngine {
 
   private async executeOptimization(
     context: OptimizationContext,
-    method: 'dspy | ml' | 'hybrid'
+    method: 'dspy|ml|hybrid'
   ): Promise<OptimizationResult> {
     const startTime = Date.now();
 
@@ -547,7 +547,7 @@ export class AutonomousOptimizationEngine {
         taskType: context.task,
         agentRole: context.agentRole,
       },
-      priority: context.priority'' | '''' | '''medium',
+      priority: context.priority||'medium',
     };
 
     const result = await this.dspyBridge.processCoordinationTask(
@@ -560,7 +560,7 @@ export class AutonomousOptimizationEngine {
     );
 
     return {
-      optimizedPrompt: String(result.result'' | '''' | ''context.basePrompt),
+      optimizedPrompt: String(result.result||context.basePrompt),
       confidence: result.confidence,
       method:'dspy',
       processingTime: Date.now() - startTime,
@@ -615,7 +615,7 @@ export class AutonomousOptimizationEngine {
     // Step 2: If ML confidence is low and we have time, enhance with DSPy
     if (
       mlResult.confidence < 0.7 &&
-      (!context.timeConstraint'' | '''' | ''Date.now() - startTime < context.timeConstraint * 0.5) &&
+      (!context.timeConstraint||Date.now() - startTime < context.timeConstraint * 0.5) &&
       this.dspyBridge
     ) {
       try {

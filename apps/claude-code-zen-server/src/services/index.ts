@@ -24,10 +24,7 @@ export { createHybridServices } from './factories/hybrid-service-factory';
 export { createProductionServices } from './factories/production-service-factory';
 
 // Re-export common types that services expose
-export type {
-  DocumentCreateOptions,
-  DocumentQueryOptions,
-  DocumentSearchOptions,
+export type { DocumentCreateOptions, DocumentQueryOptions, DocumentSearchOptions,
 } from './document/document-service';
 
 export type { ADRCreateOptions, ADRQueryOptions } from './document/adr-service';

@@ -17,10 +17,10 @@ export interface NeuralConfig {
 }
 export interface NeuralNetwork {
   id: string;
-  type: 'feedforward | lstm' | 'transformer''' | '''autoencoder';
+  type: 'feedforward|lstm|transformer|autoencoder';
   layers: number[];
   weights?: Float32Array;
-  status: 'idle | training' | 'predicting''' | '''error';
+  status: 'idle|training|predicting|error';
   handle?: number;
 }
 export interface TrainingData {
@@ -33,7 +33,7 @@ export interface PredictionResult {
   processingTime: number;
 }
 export interface NetworkArchitecture {
-  type: 'feedforward | lstm' | 'transformer''' | '''autoencoder | cnn' | 'gnn';
+  type: 'feedforward|lstm|transformer|autoencoder|cnn|gnn';
   layers: number[];
   activation: ActivationFunction;
   outputActivation?: ActivationFunction;
@@ -42,7 +42,7 @@ export interface NetworkArchitecture {
   epochs?: number;
   metadata?: Record<string, unknown>;
 }
-export type ActivationFunction ='' | '''sigmoid | tanh' | 'relu''' | '''leaky_relu | softmax' | 'linear' | 'swish' | 'gelu';
+export type ActivationFunction =|'sigmoid|tanh|relu|leaky_relu|softmax|linear|swish|gelu';
 export declare class NeuralBridge {
   private foundationLogger;
   private static instance;
@@ -103,7 +103,7 @@ export declare class NeuralBridge {
    *
    * @param networkId
    */
-  getNetworkStatus(networkId: string): NeuralNetwork'' | ''undefined;
+  getNetworkStatus(networkId: string): NeuralNetwork|undefined;
   /**
    * List all networks.
    */
@@ -141,8 +141,8 @@ export declare class NeuralBridge {
     text: string,
     options?: {
       context?: string;
-      priority?:'low | medium' | 'high';
-      qualityLevel?: 'basic | standard' | 'premium';
+      priority?:'low|medium|high';
+      qualityLevel?: 'basic|standard|premium';
     }
   ): Promise<NeuralEmbeddingResult>;
   /**

@@ -102,14 +102,14 @@ export interface PlanningHorizon {
   readonly currentPI: number;
   readonly planningWindow: number; // number of PIs to plan
   readonly lookaheadPeriod: number; // number of PIs for lookahead
-  readonly planningCadence: 'quarterly'' | ''continuous';
+  readonly planningCadence: 'quarterly|continuous';
 }
 
 /**
  * Coordination strategy
  */
 export interface CoordinationStrategy {
-  readonly approach: 'centralized'' | ''federated'' | ''hybrid';
+  readonly approach: 'centralized|federated|hybrid';
   readonly coordinationEvents: CoordinationEvent[];
   readonly communicationProtocols: CommunicationProtocol[];
   readonly decisionMaking: DecisionMakingProcess;
@@ -198,17 +198,17 @@ export interface CommunicationProtocol {
  * Communication channel
  */
 export interface CommunicationChannel {
-  readonly channelType: 'email'' | ''slack'' | ''dashboard'' | ''meeting'' | ''wiki';
+  readonly channelType: 'email|slack|dashboard|meeting|wiki';
   readonly address: string;
   readonly purpose: string;
-  readonly urgency: 'high'' | ''medium'' | ''low';
+  readonly urgency: 'high|medium|low';
 }
 
 /**
  * Decision making process
  */
 export interface DecisionMakingProcess {
-  readonly framework:' | ''consensus'' | ''consultation'' | ''delegation'' | ''autocratic';
+  readonly framework:|consensus|consultation|delegation|'autocratic';
   readonly escalationPath: EscalationLevel[];
   readonly timeboxes: Record<string, number>; // minutes
   readonly votingMechanism?: VotingMechanism;
@@ -228,7 +228,7 @@ export interface EscalationLevel {
  * Voting mechanism
  */
 export interface VotingMechanism {
-  readonly type: 'majority'' | ''consensus'' | ''weighted'' | ''veto';
+  readonly type: 'majority|consensus|weighted|veto';
   readonly threshold: number; // percentage or count
   readonly anonymity: boolean;
 }
@@ -277,8 +277,8 @@ export enum InterestLevel {
  */
 export interface CommunicationPreference {
   readonly channel: CommunicationChannel['channelType'];
-  readonly frequency: 'real_time'' | ''daily'' | ''weekly'' | ''on_demand';
-  readonly detail: 'summary'' | ''detailed'' | ''executive';
+  readonly frequency: 'real_time|daily|weekly|on_demand';
+  readonly detail: 'summary|detailed|executive';
 }
 
 /**
@@ -446,7 +446,7 @@ export interface NextStep {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high'' | ''medium'' | ''low';
+  readonly priority: 'high|medium|low';
   readonly dependencies: string[];
 }
 

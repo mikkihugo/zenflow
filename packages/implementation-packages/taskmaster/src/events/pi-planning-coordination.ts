@@ -106,7 +106,7 @@ export interface PIPlanningEvent {
       toTeam: string;
       description: string;
       resolvedBy: Date;
-      status: 'identified | resolved' | 'accepted_risk';
+      status: 'identified|resolved|accepted_risk';
     }>;
 
     milestones: Array<{
@@ -150,7 +150,7 @@ export interface PIPlanningEvent {
   // Metadata
   createdAt: Date;
   completedAt?: Date;
-  status: 'planning | in_progress' | 'completed''' | '''cancelled';
+  status: 'planning|in_progress|completed|cancelled';
 }
 
 /**
@@ -185,8 +185,8 @@ export interface TeamBreakoutSession {
 
   riskAssessment: Array<{
     risk: string;
-    probability: 'low | medium' | 'high';
-    impact: 'low | medium' | 'high';
+    probability: 'low|medium|high';
+    impact: 'low|medium|high';
     mitigation: string;
     owner: UserId;
   }>;
@@ -299,10 +299,10 @@ export class PIPlanningCoordinationService {
         adjustmentsNeeded: false,
       },
       approvalGates: {
-        businessContextApproval: '' as ApprovalGateId,
-        teamPlanningApproval: '' as ApprovalGateId,
-        dependencyResolutionApproval: '' as ApprovalGateId,
-        finalCommitmentApproval: '' as ApprovalGateId,
+        businessContextApproval: ' as ApprovalGateId,
+        teamPlanningApproval: ' as ApprovalGateId,
+        dependencyResolutionApproval: ' as ApprovalGateId,
+        finalCommitmentApproval: ' as ApprovalGateId,
       },
       commitments: [],
       createdAt: new Date(),
@@ -469,7 +469,7 @@ export class PIPlanningCoordinationService {
       }>;
       dependencyResolution: Array<{
         dependencyId: string;
-        resolution: 'resolved | accepted_risk' | 'needs_escalation';
+        resolution: 'resolved|accepted_risk|needs_escalation';
         resolutionPlan: string;
         owner: UserId;
       }>;

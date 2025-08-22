@@ -140,7 +140,7 @@ export interface ErrorResult<E> {
   error: E;
 }
 
-export type Result<T, E = Error> = SuccessResult<T>'' | ''ErrorResult<E>;
+export type Result<T, E = Error> = SuccessResult<T>|ErrorResult<E>;
 
 // Async operation results
 export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
@@ -148,7 +148,7 @@ export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
 // Query patterns
 export interface QueryCriteria {
   filters?: Record<string, unknown>;
-  sort?: { field: string; direction:'asc''' | '''desc' }[];
+  sort?: { field: string; direction:'asc|desc'' }[];
   pagination?: PaginationOptions;
 }
 
@@ -166,7 +166,7 @@ export interface AuditEntry extends Timestamped {
 // Additional utility types needed by brain package
 export type NonEmptyArray<T> = [T, ...T[]];
 
-export type LogLevel = 'debug | info' | 'warn' | 'error' | 'fatal';
+export type LogLevel = 'debug|info|warn|error|fatal';
 
 // =============================================================================
 // TYPE UTILITIES - Advanced type manipulation utilities
@@ -180,7 +180,7 @@ export type LogLevel = 'debug | info' | 'warn' | 'error' | 'fatal';
  * @example String Manipulation
  * ```typescript
  * // Create union types with autocomplete support
- * type ModelName = LiteralUnion<'claude-3''' | '''gpt-4', string>;
+ * type ModelName = LiteralUnion<'claude-3|gpt-4'', string>;
  * const model: ModelName = 'claude-3'; // ✅ Autocomplete
  * const customModel: ModelName = 'custom-model'; // ✅ Also valid
  *
@@ -199,7 +199,7 @@ export type LogLevel = 'debug | info' | 'warn' | 'error' | 'fatal';
  * }
  *
  * // Make specific properties optional
- * type UserInput = SetOptional<User, 'id''' | '''metadata'>;
+ * type UserInput = SetOptional<User, 'id|metadata''>;
  *
  * // Merge interfaces intelligently
  * type ExtendedUser = Merge<User, { lastLogin: Date; permissions: string[] }>;
@@ -353,19 +353,19 @@ export type {
  * interface Agent {
  *   id: string;
  *   name: string;
- *   status: 'active''' | '''inactive';
+ *   status: 'active|inactive'';
  *   config: Record<string, unknown>;
  *   metadata: object;
  * }
  *
  * // Mark specific properties as optional
- * type AgentInput = MarkOptional<Agent, 'id''' | '''metadata'>;
+ * type AgentInput = MarkOptional<Agent, 'id|metadata''>;
  *
  * // Mark specific properties as required
- * type ValidAgent = MarkRequired<AgentInput, 'name''' | '''status'>;
+ * type ValidAgent = MarkRequired<AgentInput, 'name|status''>;
  *
  * // Make specific properties readonly
- * type ImmutableAgent = MarkReadonly<Agent, 'id''' | '''name'>;
+ * type ImmutableAgent = MarkReadonly<Agent, 'id|name''>;
  * ```
  *
  * @example Dictionary and Type Guards
@@ -380,7 +380,7 @@ export type {
  * }
  *
  * // Non-undefined type checking
- * function isDefined<T>(value: T'' | ''undefined): value is T {
+ * function isDefined<T>(value: T|undefined): value is T {
  *   return value !== undefined;
  * }
  * ```

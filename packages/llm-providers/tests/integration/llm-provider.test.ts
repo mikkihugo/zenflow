@@ -174,7 +174,7 @@ describe('LLM Provider - Integration Tests (Real API)', () => {
         });
         expect(analysisResponse.success).toBe(true);
         expect(analysisResponse.content.toLowerCase()).toMatch(
-          /(mean'' | ''average'' | ''sum)/
+          /(mean|average|sum)/
         );
       },
       120000

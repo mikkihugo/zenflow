@@ -46,11 +46,11 @@ export interface WorkflowStep {
   readonly params?: Record<string, unknown>;
   readonly timeout?: number;
   readonly retries?: number;
-  readonly onError?: 'stop | continue' | 'skip';
+  readonly onError?: 'stop|continue|skip';
   readonly gateConfig?: {
     readonly enabled: boolean;
-    readonly gateType?: 'approval | checkpoint' | 'review''' | '''decision';
-    readonly businessImpact?: 'low | medium' | 'high''' | '''critical';
+    readonly gateType?: 'approval|checkpoint|review|decision';
+    readonly businessImpact?: 'low|medium|high|critical';
     readonly stakeholders?: string[];
     readonly autoApproval?: boolean;
   };
@@ -67,7 +67,7 @@ export interface WorkflowContext {
 export interface WorkflowState {
   readonly id: string;
   readonly definition: WorkflowDefinition;
-  status:'' | '''pending | running' | 'paused''' | '''completed | failed' | 'cancelled';
+  status:|'pending|running|paused|completed|failed|cancelled';
   readonly context: WorkflowContext;
   currentStep: number;
   readonly stepResults: Record<string, unknown>;
@@ -89,7 +89,7 @@ export interface WorkflowEngineConfig {
   readonly persistencePath?: string;
   readonly retryAttempts?: number;
   readonly enableAdvancedOrchestration?: boolean;
-  readonly orchestrationMode?: 'basic | advanced' | 'intelligent';
+  readonly orchestrationMode?: 'basic|advanced|intelligent';
   readonly enableErrorRecovery?: boolean;
   readonly enablePerformanceTracking?: boolean;
 }

@@ -80,13 +80,13 @@ export interface MeetingIssue {
   title: string;
   description: string;
   domains: string[];
-  severity: 'low | medium' | 'high''' | '''critical';
+  severity: 'low|medium|high|critical';
   context?: Record<string, any>;
   stakeholders?: string[];
   requiredExpertise?: string[];
   deadline?: Date;
   impact?: {
-    scope: 'local | system' | 'enterprise';
+    scope: 'local|system|enterprise';
     domains: string[];
     urgency: number;
   };
@@ -97,12 +97,12 @@ export interface MeetingIssue {
  */
 export interface BrainMeetingParticipant {
   id: string;
-  role:'' | '''queen | commander' | 'matron''' | '''specialist | coordinator' | 'analyst''' | '''researcher';
+  role:|'queen|commander|matron|specialist|coordinator|analyst|researcher'';
   domain: string;
   expertise: string[];
   availability: number; // 0-1 availability score
   effectiveness: number; // Historical effectiveness score
-  collaborationStyle: 'leader | facilitator' | 'analyst''' | '''implementer';
+  collaborationStyle: 'leader|facilitator|analyst|implementer';
   neuralProfile?: {
     decisionSpeed: number;
     consensusBuilding: number;
@@ -146,7 +146,7 @@ export interface BrainMeetingOutcome {
   };
   consensus: {
     level: number;
-    participants: Record<string, 'support | oppose' | 'abstain'>;
+    participants: Record<string, 'support|oppose|abstain'>;
     rationale: string[];
   };
   brainInsights: {
@@ -203,7 +203,7 @@ export class BrainMeetingIntelligence {
   constructor(conversationOrchestrator?: ConversationOrchestratorImpl) {
     this.logger = getLogger('brain-meeting-intelligence');
     this.conversationOrchestrator =
-      conversationOrchestrator'' | '''' | ''new ConversationOrchestratorImpl();
+      conversationOrchestrator||new ConversationOrchestratorImpl();
 
     this.initializeBrainIntelligence().catch((error) => {
       this.logger.warn('Brain meeting intelligence initialization failed, using fallback:',
@@ -581,7 +581,7 @@ export class BrainMeetingIntelligence {
       return await this.complexityEstimator.estimateComplexity({
         description: issue.description,
         domains: issue.domains,
-        context: issue.context'' | '''' | ''{},
+        context: issue.context||{},
         type:'brain-collaborative-decision',
       });
     }
@@ -652,9 +652,9 @@ export class BrainMeetingIntelligence {
           selectedParticipants.push({
             id: `neural-${roleData.role}-${nanoid(6)}`,
             role: roleData.role as BrainMeetingParticipant['role'],
-            domain: issue.domains[index % issue.domains.length]'' | '''' | '''general',
+            domain: issue.domains[index % issue.domains.length]||'general',
             expertise: [
-              issue.domains[index % issue.domains.length]'' | '''' | '''general',
+              issue.domains[index % issue.domains.length]||'general',
               roleData.role,
               'neural-optimization',
               'rust-powered',
@@ -695,17 +695,17 @@ export class BrainMeetingIntelligence {
             domains: issue.domains,
             complexity: complexity.score,
             severity: issue.severity,
-            requiredExpertise: issue.requiredExpertise'' | '''' | ''[],
+            requiredExpertise: issue.requiredExpertise||[],
           });
 
         return recommendations.recommendations.map((rec: any) => ({
-          id: rec.agentId'' | '''' | ''rec.id'' | '''' | ''nanoid(),
-          role: this.mapBrainRole(rec.role'' | '''' | '''specialist'),
-          domain: rec.domain'' | '''' | ''issue.domains[0]'' | '''' | '''general',
-          expertise: rec.expertise'' | '''' | ''[],
-          availability: rec.availability'' | '''' | ''0.8,
-          effectiveness: rec.effectiveness'' | '''' | ''0.7,
-          collaborationStyle: rec.collaborationStyle'' | '''' | '''analyst',
+          id: rec.agentId||rec.id||nanoid(),
+          role: this.mapBrainRole(rec.role||'specialist'),
+          domain: rec.domain||issue.domains[0]||'general',
+          expertise: rec.expertise||[],
+          availability: rec.availability||0.8,
+          effectiveness: rec.effectiveness||0.7,
+          collaborationStyle: rec.collaborationStyle||'analyst',
           neuralProfile: {
             decisionSpeed: 0.7,
             consensusBuilding: 0.8,
@@ -735,7 +735,7 @@ export class BrainMeetingIntelligence {
     const features = new Array(15).fill(0);
 
     // Feature 0-4: Issue characteristics
-    features[0] = complexity.score'' | '''' | ''0.5; // Complexity score
+    features[0] = complexity.score||0.5; // Complexity score
     features[1] = issue.domains.length / 5.0; // Normalized domain count
     features[2] =
       issue.severity ==='critical'
@@ -744,8 +744,8 @@ export class BrainMeetingIntelligence {
           ? 0.75
           : issue.severity === 'medium'? 0.5
             : 0.25; // Severity mapping
-    features[3] = (issue.requiredExpertise?.length'' | '''' | ''0) / 10.0; // Expertise requirements
-    features[4] = issue.impact?.urgency'' | '''' | ''0.5; // Urgency level
+    features[3] = (issue.requiredExpertise?.length||0) / 10.0; // Expertise requirements
+    features[4] = issue.impact?.urgency||0.5; // Urgency level
 
     // Feature 5-9: Domain indicators (top 5 common domains)
     const commonDomains = ['architecture',
@@ -762,7 +762,7 @@ export class BrainMeetingIntelligence {
     features[10] = issue.type === 'architectural-decision' ? 1.0 : 0.0;
     features[11] = issue.type === 'performance-optimization' ? 1.0 : 0.0;
     features[12] = issue.type === 'security-review'? 1.0 : 0.0;
-    features[13] = (issue.stakeholders?.length'' | '''' | ''0) / 8.0; // Normalized stakeholder count
+    features[13] = (issue.stakeholders?.length||0) / 8.0; // Normalized stakeholder count
     features[14] = issue.deadline
       ? Math.min(
           1.0,
@@ -921,7 +921,7 @@ export class BrainMeetingIntelligence {
         'brain-intelligence',
       ],
       deadline: config.issue.deadline,
-      domain: config.issue.domains[0]'' | '''' | '''general',
+      domain: config.issue.domains[0]||'general',
       expertise: [
         ...config.participants.flatMap((p) => p.expertise),
         'neural-networks',
@@ -964,7 +964,7 @@ export class BrainMeetingIntelligence {
       analyst: 'analyst',
       researcher: 'researcher',
     };
-    return roleMap[role]'' | '''' | '''specialist';
+    return roleMap[role]||'specialist';
   }
 
   private mapAgentType(role: BrainMeetingParticipant['role']): any {
@@ -977,7 +977,7 @@ export class BrainMeetingIntelligence {
       analyst: 'analyst',
       researcher: 'researcher',
     };
-    return typeMap[role]'' | '''' | '''researcher';
+    return typeMap[role]||'researcher';
   }
 
   private extractBrainDecisionFromOutcomes(
@@ -998,7 +998,7 @@ export class BrainMeetingIntelligence {
       timeline: {},
       confidence:
         outcomes.length > 0
-          ? Math.min(1.0, (outcomes[0]?.confidence'' | '''' | ''0.7) + 0.1)
+          ? Math.min(1.0, (outcomes[0]?.confidence||0.7) + 0.1)
           : 0.8, // Brain boost
     };
   }
@@ -1119,7 +1119,7 @@ export class BrainMeetingIntelligence {
             timeElapsed: Date.now() - session.startTime.getTime(),
             brainEnhanced: true,
           });
-        return prediction.finalConsensus'' | '''' | ''0.6;
+        return prediction.finalConsensus||0.6;
       } catch (error) {
         this.logger.warn('Brain consensus prediction failed:',
           error instanceof Error ? error.message : String(error)
@@ -1140,8 +1140,8 @@ export class BrainMeetingIntelligence {
     features[0] = session.participants.length / 10.0; // Normalized participant count
     features[1] = session.messages.length / 50.0; // Normalized message count
     features[2] = (Date.now() - session.startTime.getTime()) / 3600000.0; // Time elapsed in hours
-    features[3] = session.metrics.consensusScore'' | '''' | ''0.5; // Current consensus
-    features[4] = session.metrics.qualityRating'' | '''' | ''0.5; // Discussion quality
+    features[3] = session.metrics.consensusScore||0.5; // Current consensus
+    features[4] = session.metrics.qualityRating||0.5; // Discussion quality
 
     // Feature 5-9: Message type distribution
     const messageTypes = ['question',
@@ -1162,7 +1162,7 @@ export class BrainMeetingIntelligence {
     participantIds.forEach((id, index) => {
       if (index < 5) {
         // Limit to 5 participants for features
-        const participation = session.metrics.participationByAgent[id]'' | '''' | ''0;
+        const participation = session.metrics.participationByAgent[id]||0;
         features[10 + index] =
           participation / Math.max(1, session.messages.length);
       }

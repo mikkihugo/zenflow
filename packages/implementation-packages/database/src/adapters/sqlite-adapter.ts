@@ -31,7 +31,7 @@ import type {
 } from '../interfaces.js';
 
 export class SQLiteAdapter implements DatabaseAdapter {
-  private db: Database.Database'' | ''null = null;
+  private db: Database.Database|null = null;
   private config: SQLiteConfig;
   private connected = false;
 
@@ -51,9 +51,9 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
       // Create real SQLite database connection
       this.db = new Database(this.config.database, {
-        readonly: this.config.options?.readonly'' | '''' | ''false,
-        fileMustExist: this.config.options?.fileMustExist'' | '''' | ''false,
-        timeout: this.config.options?.timeout'' | '''' | ''5000,
+        readonly: this.config.options?.readonly||false,
+        fileMustExist: this.config.options?.fileMustExist||false,
+        timeout: this.config.options?.timeout||5000,
       });
 
       // Initialize database with required tables
@@ -97,7 +97,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
       const rows = stmt.all(...paramArray);
 
       return {
-        rows: (rows'' | '''' | ''[]) as T[],
+        rows: (rows||[]) as T[],
         rowCount: rows ? rows.length : 0,
         fields: [],
       };
@@ -118,8 +118,8 @@ export class SQLiteAdapter implements DatabaseAdapter {
       const result = stmt.run(...params);
 
       return {
-        affectedRows: result.changes'' | '''' | ''0,
-        insertId: result.lastInsertRowid'' | '''' | ''null,
+        affectedRows: result.changes||0,
+        insertId: result.lastInsertRowid||null,
         executionTime: 1,
       };
     } catch (error) {
@@ -155,7 +155,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   async health(): Promise<HealthStatus> {
     try {
-      if (!this.connected'' | '''' | ''!this.db) {
+      if (!this.connected||!this.db) {
         return {
           healthy: false,
           isHealthy: false,
@@ -189,7 +189,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
   }
 
   async getSchema(): Promise<any> {
-    if (!this.connected'' | '''' | ''!this.db) return { tables: [], views: [] };
+    if (!this.connected||!this.db) return { tables: [], views: [] };
 
     try {
       const tables = this.db

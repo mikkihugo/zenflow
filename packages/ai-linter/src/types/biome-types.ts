@@ -52,7 +52,7 @@ export interface VCSConfiguration {
   enabled?: boolean;
 
   /** VCS client type */
-  clientKind?: 'git | svn' | 'hg';
+  clientKind?: 'git|svn|hg';
 
   /** Use VCS ignore files */
   useIgnoreFile?: boolean;
@@ -68,8 +68,8 @@ export interface AssistConfiguration {
   /** Assist actions */
   actions?: {
     source?: {
-      organizeImports?: 'on' | 'off'';
-      fixAll?: 'on' | 'off'';
+      organizeImports?: 'on|off'';
+      fixAll?: 'on|off'';
     };
   };
 }
@@ -88,13 +88,13 @@ export interface FormatterConfiguration {
   lineWidth?: number;
 
   /** Indentation style */
-  indentStyle?: 'tab' | 'space'';
+  indentStyle?: 'tab|space'';
 
   /** Indentation width */
   indentWidth?: number;
 
   /** Attribute position in HTML/JSX */
-  attributePosition?: 'auto' | 'multiline'';
+  attributePosition?: 'auto|multiline';
 }
 
 /**
@@ -152,8 +152,8 @@ export interface LinterRules {
 /**
  * Individual rule configuration
  */
-export type RuleConfiguration ='' | '''off | warn' | 'error''' | ''{
-      level:'off | warn' | 'error' | 'info'';
+export type RuleConfiguration =|''off|warn|error'|{
+      level:'off|warn|error|info';
       options?: Record<string, unknown>;
     };
 
@@ -171,7 +171,7 @@ export interface AIRuleConfiguration {
   allowDynamicUpdates?: boolean;
 
   /** AI rule generation frequency */
-  generationFrequency?: 'on-demand' | 'periodic'''' | '''on-change';
+  generationFrequency?: 'on-demand|periodic'||on-change';
 
   /** Custom AI rule templates */
   customTemplates?: AIRuleTemplate[];
@@ -211,7 +211,7 @@ export interface BiomeRule {
   category: keyof LinterRules;
 
   /** Default severity level */
-  level: 'off | warn' | 'error' | 'info'';
+  level: 'off|warn|error|info';
 
   /** Rule options */
   options?: Record<string, unknown>;
@@ -282,19 +282,19 @@ export interface JavaScriptConfiguration {
  */
 export interface JavaScriptFormatterConfiguration {
   /** Quote style */
-  quoteStyle?: 'single' | 'double'';
+  quoteStyle?: 'single|double'';
 
   /** Quote properties */
-  quoteProperties?: 'asNeeded | consistent' | 'preserve';
+  quoteProperties?: 'asNeeded|consistent|preserve';
 
   /** Semicolon usage */
-  semicolons?: 'always' | 'asNeeded'';
+  semicolons?: 'always|asNeeded'';
 
   /** Trailing commas */
-  trailingCommas?: 'none | es5' | 'all';
+  trailingCommas?: 'none|es5|all';
 
   /** Arrow function parentheses */
-  arrowParentheses?: 'always' | 'asNeeded'';
+  arrowParentheses?: 'always|asNeeded'';
 
   /** Bracket spacing */
   bracketSpacing?: boolean;
@@ -382,7 +382,7 @@ export interface CSSFormatterConfiguration {
   enabled?: boolean;
 
   /** Indentation style */
-  indentStyle?: 'tab' | 'space'';
+  indentStyle?: 'tab|space'';
 
   /** Indentation width */
   indentWidth?: number;
@@ -391,7 +391,7 @@ export interface CSSFormatterConfiguration {
   lineWidth?: number;
 
   /** Quote style */
-  quoteStyle?: 'single' | 'double'';
+  quoteStyle?: 'single|double'';
 }
 
 /**
@@ -482,10 +482,10 @@ export interface AIRuleGenerationSettings {
   autoGenerate?: boolean;
 
   /** Generation triggers */
-  triggers?: ('file-change' | 'manual'''' | '''scheduled')[];
+  triggers?: ('file-change|manual'||scheduled')[];
 
   /** Rule approval process */
-  approvalProcess?: 'automatic | manual' | 'hybrid';
+  approvalProcess?: 'automatic|manual|hybrid';
 
   /** Custom rule categories */
   customCategories?: string[];
@@ -499,7 +499,7 @@ export interface ClaudeIntegrationSettings {
   enabled?: boolean;
 
   /** Analysis depth */
-  analysisDepth?: 'shallow | medium' | 'deep';
+  analysisDepth?: 'shallow|medium|deep';
 
   /** Real-time analysis */
   realTimeAnalysis?: boolean;
@@ -519,13 +519,13 @@ export interface SwarmCoordinationSettings {
   enabled?: boolean;
 
   /** Swarm topology */
-  topology?: 'mesh | hierarchical' | 'star';
+  topology?: 'mesh|hierarchical|star';
 
   /** Maximum agents */
   maxAgents?: number;
 
   /** Coordination strategy */
-  strategy?: 'balanced | specialized' | 'adaptive';
+  strategy?: 'balanced|specialized|adaptive';
 }
 
 /**
@@ -543,7 +543,7 @@ export interface AIMonitoringSettings {
 
   /** Export metrics */
   exportMetrics?: {
-    format: 'json | csv' | 'prometheus';
+    format: 'json|csv|prometheus';
     interval: number;
     destination: string;
   };

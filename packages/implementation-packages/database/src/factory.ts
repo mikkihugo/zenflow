@@ -142,7 +142,7 @@ interface DatabaseProviderFactory {
  */
 export interface RepositoryConfig {
   /** Database type to use */
-  databaseType:'' | '''postgresql | sqlite' | 'kuzu''' | '''lancedb | mysql' | 'memory''' | '''coordination';
+  databaseType:|'postgresql|sqlite|kuzu|lancedb|mysql|memory|coordination'';
 
   /** Entity type name */
   entityType: string;
@@ -189,7 +189,7 @@ export interface RepositoryConfig {
  * }
  * ```
  */
-export type RepositoryType<T> ='' | ''Repository<T>'' | ''GraphRepository<T>'' | ''VectorRepository<T>'' | ''MemoryRepository<T>'' | ''CoordinationRepository<T>;
+export type RepositoryType<T> =|Repository<T>|GraphRepository<T>|VectorRepository<T>|MemoryRepository<T>|CoordinationRepository<T>;
 
 /**
  * Entity Type Registry Interface.
@@ -632,7 +632,7 @@ export class DALFactory {
    * entity type is not registered.
    *
    * @param {string} entityType - The entity type name to look up.
-   * @returns {EntityTypeRegistry[string]'' | ''undefined} Entity configuration or undefined.
+   * @returns {EntityTypeRegistry[string]|undefined} Entity configuration or undefined.
    * @example Getting Entity Configuration
    * ```typescript
    * const userConfig = factory.getEntityConfig('User');
@@ -654,14 +654,14 @@ export class DALFactory {
    *
    * // Use configuration for DAO creation
    * const productDAO = await factory.createDAO({
-   *   databaseType: config.databaseType'' | '''' | '''postgresql',
+   *   databaseType: config.databaseType||'postgresql',
    *   entityType,
    *   tableName: config.tableName,
    *   schema: config.schema
    * });
    * ```
    */
-  getEntityConfig(entityType: string): EntityTypeRegistry[string]'' | ''undefined {
+  getEntityConfig(entityType: string): EntityTypeRegistry[string]|undefined {
     return this.entityRegistry[entityType];
   }
 
@@ -720,7 +720,7 @@ export class DALFactory {
    * ```typescript
    * interface Concept {
    *   id: string;
-   *   type: 'concept | entity' | 'relationship';
+   *   type: 'concept|entity|relationship';
    *   properties: Record<string, unknown>;
    * }
    *
@@ -743,7 +743,7 @@ export class DALFactory {
     const config: RepositoryConfig = {
       databaseType: 'kuzu',
       entityType,
-      tableName: tableName'' | '''' | ''entityType,
+      tableName: tableName||entityType,
       databaseConfig: this.getDefaultKuzuConfig(),
     };
 
@@ -904,8 +904,8 @@ export class DALFactory {
    * ```typescript
    * interface CoordinationTask {
    *   id: string;
-   *   type: 'processing | cleanup' | 'migration';
-   *   status: 'pending | processing' | 'completed''' | '''failed';
+   *   type: 'processing|cleanup|migration';
+   *   status: 'pending|processing|completed|failed';
    *   assignedTo?: string;
    *   priority: number;
    *   payload: Record<string, unknown>;
@@ -1244,9 +1244,9 @@ export class DALFactory {
     const { MemoryDao } = await import('./dao/memory.dao');
     const { CoordinationDao } = await import('./dao/coordination.dao');
 
-    const tableName = config?.['tableName']'' | '''' | ''config?.['entityType'];
+    const tableName = config?.['tableName']||config?.['entityType'];
     const entitySchema =
-      config?.['schema']'' | '''' | ''this.entityRegistry[config?.['entityType']]?.schema;
+      config?.['schema']||this.entityRegistry[config?.['entityType']]?.schema;
 
     switch (config?.['databaseType']) {
       case 'kuzu':
@@ -1302,9 +1302,9 @@ export class DALFactory {
     const { MemoryDao } = await import('./dao/memory.dao');
     const { CoordinationDao } = await import('./dao/coordination.dao');
 
-    const tableName = config?.['tableName']'' | '''' | ''config?.['entityType'];
+    const tableName = config?.['tableName']||config?.['entityType'];
     const entitySchema =
-      config?.['schema']'' | '''' | ''this.entityRegistry[config?.['entityType']]?.schema;
+      config?.['schema']||this.entityRegistry[config?.['entityType']]?.schema;
 
     switch (config?.['databaseType']) {
       case 'kuzu':
@@ -1350,14 +1350,14 @@ export class DALFactory {
 
   private generateCacheKey(
     config: RepositoryConfig,
-    type: 'repo''' | '''dao' = 'repo'
+    type: 'repo|dao'' = 'repo'
   ): string {
     const parts = [
       type,
       config?.['databaseType'],
       config?.['entityType'],
-      config?.['tableName']'' | '''' | ''config?.['entityType'],
-      JSON.stringify(config?.['options']'' | '''' | ''{}),
+      config?.['tableName']||config?.['entityType'],
+      JSON.stringify(config?.['options']||{}),
     ];
     return parts.join(':');
   }
@@ -1369,9 +1369,9 @@ export class DALFactory {
 
     return [
       config?.['databaseType'],
-      config?.['databaseConfig']?.host'' | '''' | '''localhost',
-      config?.['databaseConfig']?.database'' | '''' | '''default',
-      config?.['databaseConfig']?.port'' | '''' | '''default',
+      config?.['databaseConfig']?.host||'localhost',
+      config?.['databaseConfig']?.database||'default',
+      config?.['databaseConfig']?.port||'default',
     ].join(':');
   }
 

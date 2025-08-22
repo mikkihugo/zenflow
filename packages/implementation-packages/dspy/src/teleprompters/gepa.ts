@@ -47,10 +47,10 @@ export interface GEPAFeedbackMetric {
   (
     gold: Example,
     pred: Prediction,
-    trace?: DSPyTrace'' | ''null,
-    pred_name?: string'' | ''null,
-    pred_trace?: DSPyTrace'' | ''null
-  ): number'' | ''ScoreWithFeedback;
+    trace?: DSPyTrace|null,
+    pred_name?: string|null,
+    pred_trace?: DSPyTrace|null
+  ): number|ScoreWithFeedback;
 }
 
 /**
@@ -75,7 +75,7 @@ export class DspyGEPAResult {
   public readonly candidates: DSPyModule[];
 
   /** Lineage info; for each candidate i, parents[i] is a list of parent indices or None */
-  public readonly parents: Array<Array<number'' | ''null>>;
+  public readonly parents: Array<Array<number|null>>;
 
   /** Per-candidate aggregate score on the validation set (higher is better) */
   public readonly val_aggregate_scores: number[];
@@ -92,32 +92,32 @@ export class DspyGEPAResult {
   /** Best outputs on validation set (optional) */
   public readonly best_outputs_valset?: Array<
     Array<[number, Prediction[]]>
-  >'' | ''null;
+  >|null;
 
   /** Total number of metric calls made across the run */
-  public readonly total_metric_calls?: number'' | ''null;
+  public readonly total_metric_calls?: number|null;
 
   /** Number of full validation evaluations performed */
-  public readonly num_full_val_evals?: number'' | ''null;
+  public readonly num_full_val_evals?: number|null;
 
   /** Where artifacts were written (if any) */
-  public readonly log_dir?: string'' | ''null;
+  public readonly log_dir?: string|null;
 
   /** RNG seed for reproducibility (if known) */
-  public readonly seed?: number'' | ''null;
+  public readonly seed?: number|null;
 
   constructor(data: {
     candidates: DSPyModule[];
-    parents: Array<Array<number'' | ''null>>;
+    parents: Array<Array<number|null>>;
     val_aggregate_scores: number[];
     val_subscores: number[][];
     per_val_instance_best_candidates: Set<number>[];
     discovery_eval_counts: number[];
-    best_outputs_valset?: Array<Array<[number, Prediction[]]>>'' | ''null;
-    total_metric_calls?: number'' | ''null;
-    num_full_val_evals?: number'' | ''null;
-    log_dir?: string'' | ''null;
-    seed?: number'' | ''null;
+    best_outputs_valset?: Array<Array<[number, Prediction[]]>>|null;
+    total_metric_calls?: number|null;
+    num_full_val_evals?: number|null;
+    log_dir?: string|null;
+    seed?: number|null;
   }) {
     this.candidates = data.candidates;
     this.parents = data.parents;
@@ -301,71 +301,71 @@ export class GEPA extends Teleprompter {
   private metric_fn: GEPAFeedbackMetric;
 
   // Budget configuration
-  private auto?: 'light | medium' | 'heavy''' | ''null;
-  private max_full_evals?: number'' | ''null;
-  private max_metric_calls?: number'' | ''null;
+  private auto?: 'light|medium|heavy'|null;
+  private max_full_evals?: number|null;
+  private max_metric_calls?: number|null;
 
   // Reflection configuration
   private reflection_minibatch_size: number;
-  private candidate_selection_strategy:'pareto''' | '''current_best';
+  private candidate_selection_strategy:'pareto|current_best';
   private reflection_lm: (input: string) => string;
   private skip_perfect_score: boolean;
   private add_format_failure_as_feedback: boolean;
 
   // Merge configuration
   private use_merge: boolean;
-  private max_merge_invocations?: number'' | ''null;
+  private max_merge_invocations?: number|null;
 
   // Evaluation configuration
-  private num_threads?: number'' | ''null;
+  private num_threads?: number|null;
   private failure_score: number;
   private perfect_score: number;
 
   // Logging configuration
-  private log_dir?: string'' | ''null;
+  private log_dir?: string|null;
   private track_stats: boolean;
   private use_wandb: boolean;
-  private wandb_api_key?: string'' | ''null;
-  private wandb_init_kwargs?: Record<string, any>'' | ''null;
+  private wandb_api_key?: string|null;
+  private wandb_init_kwargs?: Record<string, any>|null;
   private track_best_outputs: boolean;
 
   // Reproducibility
-  private seed?: number'' | ''null;
+  private seed?: number|'null;
 
   constructor(config: {
     metric: GEPAFeedbackMetric;
 
     // Budget configuration (exactly one required)
-    auto?:'light | medium' | 'heavy''' | ''null;
-    max_full_evals?: number'' | ''null;
-    max_metric_calls?: number'' | ''null;
+    auto?:'light|medium|heavy'|null;
+    max_full_evals?: number|null;
+    max_metric_calls?: number|null;
 
     // Reflection configuration
     reflection_minibatch_size?: number;
-    candidate_selection_strategy?:'pareto''' | '''current_best';
-    reflection_lm?: LMInterface'' | ''null;
+    candidate_selection_strategy?:'pareto|current_best';
+    reflection_lm?: LMInterface|null;
     skip_perfect_score?: boolean;
     add_format_failure_as_feedback?: boolean;
 
     // Merge configuration
     use_merge?: boolean;
-    max_merge_invocations?: number'' | ''null;
+    max_merge_invocations?: number|null;
 
     // Evaluation configuration
-    num_threads?: number'' | ''null;
+    num_threads?: number|null;
     failure_score?: number;
     perfect_score?: number;
 
     // Logging configuration
-    log_dir?: string'' | ''null;
+    log_dir?: string|null;
     track_stats?: boolean;
     use_wandb?: boolean;
-    wandb_api_key?: string'' | ''null;
-    wandb_init_kwargs?: Record<string, any>'' | ''null;
+    wandb_api_key?: string|null;
+    wandb_init_kwargs?: Record<string, any>|null;
     track_best_outputs?: boolean;
 
     // Reproducibility
-    seed?: number'' | ''null;
+    seed?: number|'null;
   }) {
     super();
 
@@ -455,7 +455,7 @@ export class GEPA extends Teleprompter {
       1.5 * num_candidates
     );
 
-    if (num_trials < 0'' | '''' | ''valset_size < 0'' | '''' | ''minibatch_size < 0) {
+    if (num_trials < 0||valset_size < 0||minibatch_size < 0) {
       throw new Error('num_trials, valset_size, and minibatch_size must be >= 0.'
       );
     }
@@ -497,14 +497,14 @@ export class GEPA extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: Example[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: Example[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     const { trainset, teacher, valset } = config;
 
-    if (!trainset'' | '''' | ''trainset.length === 0) {
+    if (!trainset||trainset.length === 0) {
       throw new Error('Trainset must be provided and non-empty');
     }
 
@@ -526,7 +526,7 @@ export class GEPA extends Teleprompter {
       this.max_metric_calls =
         this.max_full_evals * (trainset.length + (valset ? valset.length : 0));
     } else if (
-      this.max_metric_calls === null'' | '''' | ''this.max_metric_calls === undefined
+      this.max_metric_calls === null||this.max_metric_calls === undefined
     ) {
       throw new Error('Either auto, max_full_evals, or max_metric_calls must be set.'
       );
@@ -542,7 +542,7 @@ export class GEPA extends Teleprompter {
         )} full evals on the ${valset === null ? 'train' : 'train+val'} set.`
     );
 
-    const actualValset = valset'' | '''' | ''trainset;
+    const actualValset = valset||trainset;
     console.log(
       `Using ${actualValset.length} examples for tracking Pareto scores. ` +
         `You can consider using a smaller sample of the valset to allow GEPA to explore ` +
@@ -550,7 +550,7 @@ export class GEPA extends Teleprompter {
     );
 
     // Initialize random number generator
-    const rng = this.createSeededRNG(this.seed'' | '''' | ''0);
+    const rng = this.createSeededRNG(this.seed||0);
 
     // Create feedback function for each predictor
     const feedback_map: Record<string, any> = {};
@@ -571,7 +571,7 @@ export class GEPA extends Teleprompter {
     // Create base program from current instructions
     const base_program: Record<string, string> = {};
     for (const [name, pred] of student.namedPredictors()) {
-      base_program[name] = (pred as any).signature?.instruction'' | '''' | '''';
+      base_program[name] = (pred as any).signature?.instruction||'';
     }
 
     // Run GEPA optimization
@@ -725,14 +725,14 @@ export class GEPA extends Teleprompter {
     reflection_minibatch_size: number;
     perfect_score: number;
     use_merge: boolean;
-    max_merge_invocations?: number'' | ''null;
+    max_merge_invocations?: number|null;
     max_metric_calls: number;
-    run_dir?: string'' | ''null;
+    run_dir?: string|null;
     use_wandb: boolean;
-    wandb_api_key?: string'' | ''null;
-    wandb_init_kwargs?: Record<string, any>'' | ''null;
+    wandb_api_key?: string|null;
+    wandb_init_kwargs?: Record<string, any>|null;
     track_best_outputs: boolean;
-    seed?: number'' | ''null;
+    seed?: number|null;
   }): Promise<any> {
     console.log('🧬 Starting GEPA optimization...');
 
@@ -912,7 +912,7 @@ export class GEPA extends Teleprompter {
     candidate: Record<string, string>,
     strategy: string,
     reflection_lm: (input: string) => string
-  ): Promise<Record<string, string>'' | ''null> {
+  ): Promise<Record<string, string>|null> {
     const mutated: Record<string, string> = {};
 
     for (const [pred_name, instruction] of Object.entries(candidate)) {
@@ -947,8 +947,8 @@ export class GEPA extends Teleprompter {
    */
   private simplifyInstruction(instruction: string): string {
     return instruction
-      .replace(/\b(very'' | ''really'' | ''quite'' | ''extremely)\s+/gi,'')
-      .replace(/\b(please'' | ''kindly)\s+/gi,'')
+      .replace(/\b(very|really|quite|extremely)\s+/gi,')
+      .replace(/\b(please|kindly)\s+/gi,')
       .replace(/\s+/g, ' ')
       .trim();
   }

@@ -37,9 +37,9 @@ export interface ComplexityEstimate {
   readonly estimatedComplexity: number; // 0-1 scale
   readonly confidence: number;
   readonly reasoning: string[];
-  readonly suggestedMethod: 'dspy | ml' | 'hybrid';
+  readonly suggestedMethod: 'dspy|ml|hybrid';
   readonly estimatedDuration: number; // milliseconds
-  readonly difficultyLevel: 'trivial | easy' | 'medium' | 'hard' | 'expert';
+  readonly difficultyLevel: 'trivial|easy|medium|hard|expert';
   readonly keyFactors: string[];
 }
 
@@ -349,7 +349,7 @@ export class TaskComplexityEstimator {
     }
 
     // Question complexity
-    const questionMarks = (prompt.match(/\?/g)'' | '''' | ''[]).length;
+    const questionMarks = (prompt.match(/\?/g)||[]).length;
     if (questionMarks > 3) {
       complexity += 0.2;
       factors.push('multiple questions');
@@ -357,7 +357,7 @@ export class TaskComplexityEstimator {
 
     // Code-related complexity
     if (
-      prompt.includes('```')'' | '''' | ''prompt.includes('function')'' | '''' | ''prompt.includes('class')
+      prompt.includes('```')||prompt.includes('function')||prompt.includes('class')
     ) {
       complexity += 0.2;
       factors.push('code involved');
@@ -451,7 +451,7 @@ export class TaskComplexityEstimator {
     context: Record<string, any>
   ): Promise<{ score: number; reasoning: string }> {
     let bestMatch = 0;
-    let bestPattern = '';
+    let bestPattern = ';
 
     for (const pattern of this.complexityPatterns) {
       let matchScore = 0;
@@ -459,7 +459,7 @@ export class TaskComplexityEstimator {
       // Check keyword matches
       const keywordMatches = pattern.keywords.filter(
         (keyword) =>
-          prompt.toLowerCase().includes(keyword)'' | '''' | ''task.toLowerCase().includes(keyword)
+          prompt.toLowerCase().includes(keyword)|'|task.toLowerCase().includes(keyword)
       ).length;
 
       if (keywordMatches > 0) {
@@ -485,7 +485,7 @@ export class TaskComplexityEstimator {
       bestMatch > 0.5
         ? this.complexityPatterns.find(
             (p) => p.keywords.join(', ') === bestPattern
-          )?.complexity'' | '''' | ''0.5
+          )?.complexity||0.5
         : 0.5;
 
     return {
@@ -520,7 +520,7 @@ export class TaskComplexityEstimator {
     const complexity =
       roleComplexities[
         agentRole.toLowerCase() as keyof typeof roleComplexities
-      ]'' | '''' | ''0.5;
+      ]||0.5;
 
     return {
       score: complexity * 0.3, // Scale down role impact
@@ -531,7 +531,7 @@ export class TaskComplexityEstimator {
   private suggestOptimizationMethod(
     complexity: number,
     context: Record<string, any>
-  ):'dspy | ml' | 'hybrid' {
+  ):'dspy|ml|hybrid' {
     // High complexity tasks benefit from DSPy's sophisticated optimization
     if (complexity > 0.7) {
       return 'dspy';
@@ -572,7 +572,7 @@ export class TaskComplexityEstimator {
       const multiplier =
         roleMultipliers[
           agentRole.toLowerCase() as keyof typeof roleMultipliers
-        ]'' | '''' | ''1.0;
+        ]||1.0;
       baseDuration *= multiplier;
     }
 
@@ -581,7 +581,7 @@ export class TaskComplexityEstimator {
 
   private mapComplexityToDifficulty(
     complexity: number
-  ):'trivial | easy' | 'medium' | 'hard' | 'expert' {
+  ):'trivial|easy|medium|hard|expert' {
     if (complexity < 0.1) return 'trivial';
     if (complexity < 0.3) return 'easy';
     if (complexity < 0.6) return 'medium';
@@ -742,7 +742,7 @@ export class TaskComplexityEstimator {
     return [
       prompt.length / 1000, // Normalized length
       Object.keys(context).length / 10, // Normalized context size
-      (prompt.match(/\?/g)'' | '''' | ''[]).length / 5, // Normalized question count
+      (prompt.match(/\?/g)||[]).length / 5, // Normalized question count
       prompt.toLowerCase().includes('complex') ? 1 : 0,
       prompt.toLowerCase().includes('simple') ? 1 : 0,
     ];

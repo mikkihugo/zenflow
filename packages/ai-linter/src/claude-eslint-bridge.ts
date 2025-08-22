@@ -210,7 +210,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
             endColumn: message.endColumn,
           },
           severity: this.convertESLintSeverity(message.severity),
-          pattern: message.ruleId'' | '''' | '''unknown',
+          pattern: message.ruleId||'unknown',
           data: {
             rule: message.ruleId,
             message: message.message,
@@ -230,7 +230,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
    * Get pattern type from ESLint rule ID
    */
   private getPatternTypeFromRule(
-    ruleId: string'' | ''null
+    ruleId: string|null
   ): import('./types/ai-linter-types').PatternType {
     if (!ruleId) return 'code_duplication';
 
@@ -257,7 +257,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
       'n/no-sync': 'async_pattern',
     };
 
-    return ruleMap[ruleId]'' | '''' | '''code_duplication';
+    return ruleMap[ruleId]||'code_duplication';
   }
 
   /**
@@ -265,7 +265,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
    */
   private convertESLintSeverity(
     severity: number
-  ): 'error | warning' | 'info' | 'hint' | 'suggestion' {
+  ): 'error|warning|info|hint|suggestion' {
     switch (severity) {
       case 2:
         return 'error';
@@ -463,10 +463,10 @@ export class ClaudeESLintBridge extends TypedEventBase {
       await ESLint.outputFixes(results);
 
       // Return fixed code if available, otherwise original
-      const fixed = results[0]?.output'' | '''' | ''content;
+      const fixed = results[0]?.output||content;
 
       if (fixed !== content) {
-        const fixCount = results[0]?.fixableErrorCount'' | '''' | ''0;
+        const fixCount = results[0]?.fixableErrorCount||0;
         this.logger.info(`  ESLint fixed ${fixCount} issues`);
       }
 
@@ -489,7 +489,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
       const prettier = await import('prettier');
 
       // Get Prettier config from project or use defaults
-      const options = (await prettier.resolveConfig(filePath))'' | '''' | ''{
+      const options = (await prettier.resolveConfig(filePath))||{
         semi: true,
         trailingComma:'es5',
         singleQuote: true,
@@ -523,7 +523,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
   /**
    * Get Prettier parser from file extension
    */
-  private getPrettierParser(filePath: string): string'' | ''undefined {
+  private getPrettierParser(filePath: string): string|undefined {
     const ext = filePath.split('.').pop()?.toLowerCase();
     const parserMap: Record<string, string> = {
       js: 'babel',
@@ -540,7 +540,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
       yml: 'yaml',
       yaml: 'yaml',
     };
-    return parserMap[ext'' | '''' | ''''];
+    return parserMap[ext||'];
   }
 
   /**
@@ -554,7 +554,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
     try {
       // Only apply AI fixes if there are significant issues to fix
       const hasComplexIssues =
-        analysisResult.claudeInsights.complexity_issues.length > 0'' | '''' | ''analysisResult.claudeInsights.type_safety_concerns.length > 0'' | '''' | ''analysisResult.claudeInsights.performance_optimizations.length > 0;
+        analysisResult.claudeInsights.complexity_issues.length > 0|'|analysisResult.claudeInsights.type_safety_concerns.length > 0||analysisResult.claudeInsights.performance_optimizations.length > 0;
 
       if (!hasComplexIssues) {
         this.logger.info('  No complex issues detected, skipping Claude AI fixes'
@@ -638,7 +638,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
       cs: 'csharp',
       php: 'php',
     };
-    return langMap[ext'' | '''' | '''']'' | '''' | '''typescript';
+    return langMap[ext||']|||typescript';
   }
 
   /**

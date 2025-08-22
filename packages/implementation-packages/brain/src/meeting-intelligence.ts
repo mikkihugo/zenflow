@@ -21,7 +21,7 @@ export class MeetingIntelligence {
 
         // Analyze participant engagement
         const activeParticipants = data.participants.filter(
-          (p: any) => p.spoke'' | '''' | ''p.engagement > 0.5
+          (p: any) => p.spoke||p.engagement > 0.5
         );
         if (activeParticipants.length > 0) {
           insights.push(
@@ -36,7 +36,7 @@ export class MeetingIntelligence {
         // Identify key themes
         const keyTopics = data.topics
           .slice(0, 3)
-          .map((topic: any) => topic.title'' | '''' | ''topic.name'' | '''' | ''topic);
+          .map((topic: any) => topic.title||topic.name||topic);
         if (keyTopics.length > 0) {
           insights.push(`Key themes: ${keyTopics.join(', ')}`);
         }
@@ -49,7 +49,7 @@ export class MeetingIntelligence {
 
         // Analyze urgency
         const urgentItems = data.actionItems.filter(
-          (item: any) => item.priority === 'high''' | '''' | ''item.urgent
+          (item: any) => item.priority === 'high'||item.urgent
         );
         if (urgentItems.length > 0) {
           insights.push(
@@ -62,7 +62,7 @@ export class MeetingIntelligence {
       if (data.sentiment) {
         const sentimentScore =
           typeof data.sentiment ==='number'? data.sentiment
-            : data.sentiment.overall'' | '''' | ''data.sentiment.average'' | '''' | ''0.5;
+            : data.sentiment.overall||data.sentiment.average||0.5;
         const sentimentLabel =
           sentimentScore > 0.6
             ?'positive'

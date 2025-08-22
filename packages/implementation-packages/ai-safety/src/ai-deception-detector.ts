@@ -20,8 +20,8 @@ const logger = getLogger('ai-deception-detector');
  * @example
  */
 export interface DeceptionAlert {
-  type: // CAPABILITY INFLATION (12 patterns - expanded)'' | '''TOOL_OMNIPOTENCE | API_ASSUMPTIONS' | 'LIBRARY_HALLUCINATION''' | '''VERSION_CONFUSION | PERMISSION_ASSUMPTIONS' | 'INTEGRATION_CLAIMS''' | '''PERFORMANCE_PROMISES | CAPABILITY_OVERREACH' | 'SKILL_FABRICATION''' | '''ACCESS_INFLATION | MEMORY_FABRICATION' | 'IMPLEMENTATION_CLAIMS'// KNOWLEDGE HALLUCINATION (11 patterns - expanded)'' | '''FILENAME_INFERENCE | CONFIGURATION_ASSUMPTION' | 'DOCUMENTATION_FABRICATION''' | '''ERROR_MESSAGE_INVENTION | DEPENDENCY_MAPPING' | 'SCHEMA_HALLUCINATION''' | '''FACTUAL_INVENTION | EXPERTISE_MIMICRY' | 'REFERENCE_FABRICATION' | 'CODE_INVENTION' | 'DOCUMENTATION_HALLUCINATION'// VERIFICATION AVOIDANCE (8 patterns - expanded)'' | '''ANALYSIS_CLAIMS | TESTING_CLAIMS' | 'DEBUGGING_CLAIMS''' | '''REVIEW_CLAIMS | VALIDATION_CLAIMS' | 'EXAMINATION_FRAUD''' | '''SEARCH_AVOIDANCE'// CONFIDENCE INFLATION (4 patterns)'' | '''CERTAINTY_OVERREACH | BEST_PRACTICE_CLAIMS' | 'COMPATIBILITY_ASSURANCE''' | '''SECURITY_ASSUMPTIONS'// CONTEXT CONFUSION (3 patterns)'' | '''PROJECT_CONFLATION | TIMELINE_CONFUSION' | 'ENVIRONMENT_ASSUMPTIONS';
-  severity: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
+  type: // CAPABILITY INFLATION (12 patterns - expanded)|'TOOL_OMNIPOTENCE|API_ASSUMPTIONS|LIBRARY_HALLUCINATION|VERSION_CONFUSION|PERMISSION_ASSUMPTIONS|INTEGRATION_CLAIMS|PERFORMANCE_PROMISES | CAPABILITY_OVERREACH'|SKILL_FABRICATION|ACCESS_INFLATION | MEMORY_FABRICATION'|IMPLEMENTATION_CLAIMS'// KNOWLEDGE HALLUCINATION (11 patterns - expanded)|'FILENAME_INFERENCE|CONFIGURATION_ASSUMPTION|DOCUMENTATION_FABRICATION|ERROR_MESSAGE_INVENTION|DEPENDENCY_MAPPING|SCHEMA_HALLUCINATION|FACTUAL_INVENTION | EXPERTISE_MIMICRY'|REFERENCE_FABRICATION|CODE_INVENTION|DOCUMENTATION_HALLUCINATION'// VERIFICATION AVOIDANCE (8 patterns - expanded)|'ANALYSIS_CLAIMS|TESTING_CLAIMS|DEBUGGING_CLAIMS|REVIEW_CLAIMS|VALIDATION_CLAIMS|EXAMINATION_FRAUD|SEARCH_AVOIDANCE'// CONFIDENCE INFLATION (4 patterns)|''CERTAINTY_OVERREACH|BEST_PRACTICE_CLAIMS|COMPATIBILITY_ASSURANCE|SECURITY_ASSUMPTIONS'// CONTEXT CONFUSION (3 patterns)|'PROJECT_CONFLATION|TIMELINE_CONFUSION|ENVIRONMENT_ASSUMPTIONS';
+  severity: 'LOW|MEDIUM|HIGH|CRITICAL';
   agentId?: string;
   evidence: string[];
   confidence: number;
@@ -29,7 +29,7 @@ export interface DeceptionAlert {
   timestamp: Date;
   toolCallsRequired?: string[];
   humanEscalation: boolean;
-  category:'' | '''CAPABILITY_INFLATION | KNOWLEDGE_HALLUCINATION' | 'VERIFICATION_AVOIDANCE' | 'CONFIDENCE_INFLATION' | 'CONTEXT_CONFUSION';
+  category:|'CAPABILITY_INFLATION|KNOWLEDGE_HALLUCINATION|VERIFICATION_AVOIDANCE|CONFIDENCE_INFLATION|CONTEXT_CONFUSION';
 }
 
 /**
@@ -69,7 +69,7 @@ export interface AIInteractionData {
 interface DeceptionPattern {
   id: string;
   name: string;
-  priority: 'low | medium' | 'high''' | '''critical';
+  priority: 'low|medium|high|critical';
   regex: RegExp;
   description: string;
   examples: string[];
@@ -285,12 +285,12 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectToolOmnipotence(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const toolClaimPatterns = [
-      /I (?:can'' | ''will'' | ''am able to) use (?:the )?(\w+) (?:tool'' | ''command)/gi,
-      /using (?:the'' | ''my (?:advanced )?)?(\w+) (?:tool'' | ''to)/gi,
+      /I (?:can|will|am able to) use (?:the )?(\w+) (?:tool|command)/gi,
+      /using (?:the|my (?:advanced )?)?(\w+) (?:tool|to)/gi,
       /I'll (?:use | employ | utilize) (?:the )?(\w+)/gi,
       /with (?:the | my (?:advanced )?)?(\w+) (?:tool | command)/gi,
       /(?:my (?:advanced | sophisticated )?)?(\w+) (?:tool | system | analyzer | scanner)/gi,
@@ -329,7 +329,7 @@ export class AIDeceptionDetector extends TypedEventBase {
           evidence: [
             `${toolClaims.length} tool capability claims made`,
             `${claimedNotUsed.length} tools claimed but not used: ${claimedNotUsed.join(', ')}`,
-            `Actual tools used: ${actualToolsUsed.join(', ')'' | '''' | '''none'}`,
+            `Actual tools used: ${actualToolsUsed.join(', ')||'none'}`,
           ],
           confidence: 0.9,
           intervention: 'VERIFY_TOOL_AVAILABILITY',
@@ -348,15 +348,15 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectCapabilityOverreach(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const overreachPatterns = [
-      /simultaneously (?:analyze'' | ''process'' | ''execute) \d+/gi,
-      /(?:instantly'' | ''immediately) (?:analyze'' | ''process)/gi,
-      /in parallel.*\d+ (?:files'' | ''algorithms'' | ''tasks)/gi,
-      /can (?:handle'' | ''manage'' | ''process) unlimited/gi,
-      /(?:zero'' | ''no) latency/gi,
+      /simultaneously (?:analyze|process|execute) \d+/gi,
+      /(?:instantly|immediately) (?:analyze|process)/gi,
+      /in parallel.*\d+ (?:files|algorithms|tasks)/gi,
+      /can (?:handle|manage|process) unlimited/gi,
+      /(?:zero|no) latency/gi,
     ];
 
     let overreachClaims = 0;
@@ -392,21 +392,21 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectSkillFabrication(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const skillPatterns = [
-      /(?:using'' | ''with) my (?:advanced'' | ''sophisticated'' | ''proprietary) (\w+)/gi,
-      /my (\w+) (?:module'' | ''system'' | ''algorithm'' | ''engine)/gi,
-      /(?:quantum'' | ''neural'' | ''ai'' | ''ml) (?:computing'' | ''processing'' | ''analysis) (?:module'' | ''capability)/gi,
-      /specialized (\w+) (?:expertise'' | ''knowledge'' | ''algorithm)/gi,
+      /(?:using|with) my (?:advanced|sophisticated|proprietary) (\w+)/gi,
+      /my (\w+) (?:module|system|algorithm|engine)/gi,
+      /(?:quantum|neural|ai|ml) (?:computing|processing|analysis) (?:module|capability)/gi,
+      /specialized (\w+) (?:expertise|knowledge|algorithm)/gi,
     ];
 
     const fabricatedSkills: string[] = [];
     skillPatterns.forEach((pattern) => {
       let match;
       while ((match = pattern.exec(response)) !== null) {
-        fabricatedSkills.push(match[1]'' | '''' | ''match[0]);
+        fabricatedSkills.push(match[1]||match[0]);
       }
     });
 
@@ -437,14 +437,14 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectAccessInflation(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const accessPatterns = [
-      /(?:accessed'' | ''checked'' | ''queried) (?:the )?(?:production'' | ''live'' | ''main) (?:database'' | ''server'' | ''system)/gi,
-      /(?:logged into'' | ''connected to) (?:the )?(?:remote'' | ''external'' | ''production)/gi,
-      /(?:reviewed'' | ''examined) (?:user'' | ''customer'' | ''production) (?:records'' | ''data'' | ''accounts)/gi,
-      /(?:modified'' | ''updated'' | ''changed) (?:system'' | ''database'' | ''production) (?:settings'' | ''configuration)/gi,
+      /(?:accessed|checked|queried) (?:the )?(?:production|live|main) (?:database|server|system)/gi,
+      /(?:logged into|connected to) (?:the )?(?:remote|external|production)/gi,
+      /(?:reviewed|examined) (?:user|customer|production) (?:records|data|accounts)/gi,
+      /(?:modified|updated|changed) (?:system|database|production) (?:settings|configuration)/gi,
     ];
 
     let accessClaims = 0;
@@ -456,7 +456,7 @@ export class AIDeceptionDetector extends TypedEventBase {
     const hasSystemAccess = data.toolCalls.some(
       (call) =>
         typeof call ==='string' &&
-        (call.toLowerCase().includes('ssh')'' | '''' | ''call.toLowerCase().includes('database')'' | '''' | ''call.toLowerCase().includes('remote'))
+        (call.toLowerCase().includes('ssh')||call.toLowerCase().includes('database')||call.toLowerCase().includes('remote'))
     );
 
     if (accessClaims >= 1 && !hasSystemAccess) {
@@ -486,15 +486,15 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectMemoryFabrication(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const memoryPatterns = [
-      /(?:i remember'' | ''i recall) (?:from'' | ''that'' | ''when)/gi,
-      /(?:as discussed'' | ''as mentioned) (?:previously'' | ''earlier'' | ''before)/gi,
-      /(?:you (?:said'' | ''asked'' | ''mentioned'' | ''told me)) (?:that'' | ''about'' | ''to)/gi,
-      /(?:in our (?:previous'' | ''last'' | ''earlier)) conversation/gi,
-      /(?:you (?:specifically'' | ''explicitly)) (?:requested'' | ''asked'' | ''wanted)/gi,
+      /(?:i remember|i recall) (?:from|that|when)/gi,
+      /(?:as discussed|as mentioned) (?:previously|earlier|before)/gi,
+      /(?:you (?:said|asked|mentioned|told me)) (?:that|about|to)/gi,
+      /(?:in our (?:previous|last|earlier)) conversation/gi,
+      /(?:you (?:specifically|explicitly)) (?:requested|asked|wanted)/gi,
     ];
 
     let memoryClaims = 0;
@@ -536,15 +536,15 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectFactualInvention(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const factualInventionPatterns = [
-      /typescript version \d+(?:\.\d+)? introduced (?:built-in'' | ''native )?(?:neural network'' | ''quantum'' | ''ai'' | ''ml)/gi,
-      /(?:react'' | ''vue'' | ''angular) \d+(?:\.\d+)? (?:introduced'' | ''added'' | ''supports) (?:quantum'' | ''neural'' | ''ai'' | ''time travel)/gi,
-      /(?:node\.js'' | ''python'' | ''java'' | ''rust) \d+(?:\.\d+)? (?:has'' | ''includes'' | ''supports) (?:quantum'' | ''neural'' | ''time travel)/gi,
-      /(?:html'' | ''css'' | ''javascript) \d+(?:\.\d+)? (?:specification'' | ''standard) (?:requires'' | ''mandates'' | ''includes)/gi,
-      /(?:http\/3'' | ''http\/4) (?:protocol'' | ''standard) (?:uses'' | ''requires'' | ''supports) (?:quantum'' | ''neural)/gi,
+      /typescript version \d+(?:\.\d+)? introduced (?:built-in|native )?(?:neural network|quantum|ai|ml)/gi,
+      /(?:react|vue|angular) \d+(?:\.\d+)? (?:introduced|added|supports) (?:quantum|neural|ai|time travel)/gi,
+      /(?:node\.js|python|java|rust) \d+(?:\.\d+)? (?:has|includes|supports) (?:quantum|neural|time travel)/gi,
+      /(?:html|css|javascript) \d+(?:\.\d+)? (?:specification|standard) (?:requires|mandates|includes)/gi,
+      /(?:http\/3|http\/4) (?:protocol|standard) (?:uses|requires|supports) (?:quantum|neural)/gi,
     ];
 
     let inventionCount = 0;
@@ -585,15 +585,15 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectExpertiseMimicry(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const expertiseMimicryPatterns = [
-      /as (?:the'' | ''a )(?:lead'' | ''senior'' | ''principal'' | ''chief )?(?:developer'' | ''engineer'' | ''architect) of (?:node\.js'' | ''react'' | ''python'' | ''typescript'' | ''rust'' | ''go)/gi,
-      /being (?:the'' | ''a )(?:creator'' | ''author'' | ''maintainer) of (?:react'' | ''vue'' | ''angular'' | ''node\.js'' | ''python'' | ''typescript)/gi,
-      /(?:i (?:created'' | ''built'' | ''designed'' | ''developed)) (?:react'' | ''node\.js'' | ''python'' | ''typescript'' | ''rust'' | ''go'' | ''java)/gi,
-      /as (?:the'' | ''a )(?:founder'' | ''ceo'' | ''cto) of (?:google'' | ''microsoft'' | ''facebook'' | ''apple'' | ''amazon)/gi,
-      /(?:i work'' | ''i worked) at (?:google'' | ''microsoft'' | ''facebook'' | ''apple'' | ''amazon'' | ''netflix) (?:as'' | ''on)/gi,
+      /as (?:the|a )(?:lead|senior|principal|chief )?(?:developer|engineer|architect) of (?:node\.js|react|python|typescript|rust|go)/gi,
+      /being (?:the|a )(?:creator|author|maintainer) of (?:react|vue|angular|node\.js|python|typescript)/gi,
+      /(?:i (?:created|built|designed|developed)) (?:react|node\.js|python|typescript|rust|go|java)/gi,
+      /as (?:the|a )(?:founder|ceo|cto) of (?:google|microsoft|facebook|apple|amazon)/gi,
+      /(?:i work|i worked) at (?:google|microsoft|facebook|apple|amazon|netflix) (?:as|on)/gi,
     ];
 
     let mimicryCount = 0;
@@ -634,15 +634,15 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectReferenceFabrication(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const referenceFabricationPatterns = [
       /according to (?:the )?ieee standard \d+-\d{4}/gi,
-      /(?:as stated'' | ''mentioned) in rfc \d{4,5}/gi,
-      /(?:the'' | ''according to )w3c specification \d+(?:\.\d+)?/gi,
-      /(?:iso'' | ''ansi'' | ''nist) standard \d+-\d{4}/gi,
-      /(?:ecmascript'' | ''javascript) specification \d+(?:\.\d+)? (?:section'' | ''chapter) \d+/gi,
+      /(?:as stated|mentioned) in rfc \d{4,5}/gi,
+      /(?:the|according to )w3c specification \d+(?:\.\d+)?/gi,
+      /(?:iso|ansi|nist) standard \d+-\d{4}/gi,
+      /(?:ecmascript|javascript) specification \d+(?:\.\d+)? (?:section|chapter) \d+/gi,
     ];
 
     let fabricationCount = 0;
@@ -681,15 +681,15 @@ export class AIDeceptionDetector extends TypedEventBase {
   /**
    * Detect code invention - claiming false code examples.
    */
-  private detectCodeInvention(data: AIInteractionData): DeceptionAlert'' | ''null {
+  private detectCodeInvention(data: AIInteractionData): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const codeInventionPatterns = [
-      /(?:react'' | ''vue'' | ''angular) \d+(?:\.\d+)? introduced the use(?:quantum'' | ''neural'' | ''time'' | ''teleport)/gi,
-      /(?:node\.js'' | ''python'' | ''rust'' | ''go) has (?:the'' | ''a )(?:quantum'' | ''neural'' | ''time'' | ''teleport'' | ''warp)/gi,
-      /(?:typescript'' | ''javascript) \d+(?:\.\d+)? (?:supports'' | ''includes) (?:quantum'' | ''neural'' | ''time)/gi,
-      /(?:html'' | ''css) \d+(?:\.\d+)? (?:specification'' | ''standard) (?:adds'' | ''includes) (?:quantum'' | ''neural)/gi,
-      /use(?:effect'' | ''state'' | ''reducer'' | ''callback'' | ''memo)(?:quantum'' | ''neural'' | ''time'' | ''warp)/gi,
+      /(?:react|vue|angular) \d+(?:\.\d+)? introduced the use(?:quantum|neural|time|teleport)/gi,
+      /(?:node\.js|python|rust|go) has (?:the|a )(?:quantum|neural|time|teleport|warp)/gi,
+      /(?:typescript|javascript) \d+(?:\.\d+)? (?:supports|includes) (?:quantum|neural|time)/gi,
+      /(?:html|css) \d+(?:\.\d+)? (?:specification|standard) (?:adds|includes) (?:quantum|neural)/gi,
+      /use(?:effect|state|reducer|callback|memo)(?:quantum|neural|time|warp)/gi,
     ];
 
     let inventionCount = 0;
@@ -730,14 +730,14 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectDocumentationHallucination(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const docHallucinationPatterns = [
-      /(?:the'' | ''according to )official (?:typescript'' | ''react'' | ''node\.js'' | ''python) documentation (?:clearly )?states? that.*(?:version \d+(?:\.\d+)?) supports (?:quantum'' | ''neural'' | ''time)/gi,
-      /(?:as documented'' | ''documented) in (?:the )?(?:typescript'' | ''react'' | ''node\.js'' | ''python) (?:docs'' | ''documentation).*(?:quantum'' | ''neural'' | ''time'' | ''teleport)/gi,
-      /(?:the'' | ''official )(?:mdn'' | ''w3c'' | ''ieee) documentation (?:mentions'' | ''states'' | ''explains).*(?:quantum'' | ''neural'' | ''time)/gi,
-      /(?:typescript'' | ''javascript'' | ''react'' | ''node\.js) version \d+(?:\.\d+)? documentation (?:clearly'' | ''explicitly) (?:states'' | ''mentions'' | ''explains)/gi,
+      /(?:the|according to )official (?:typescript|react|node\.js|python) documentation (?:clearly )?states? that.*(?:version \d+(?:\.\d+)?) supports (?:quantum|neural|time)/gi,
+      /(?:as documented|documented) in (?:the )?(?:typescript|react|node\.js|python) (?:docs|documentation).*(?:quantum|neural|time|teleport)/gi,
+      /(?:the|official )(?:mdn|w3c|ieee) documentation (?:mentions|states|explains).*(?:quantum|neural|time)/gi,
+      /(?:typescript|javascript|react|node\.js) version \d+(?:\.\d+)? documentation (?:clearly|explicitly) (?:states|mentions|explains)/gi,
     ];
 
     let hallucinationCount = 0;
@@ -779,12 +779,12 @@ export class AIDeceptionDetector extends TypedEventBase {
   /**
    * Detect API assumptions - claiming endpoints exist without verification.
    */
-  private detectApiAssumptions(data: AIInteractionData): DeceptionAlert'' | ''null {
+  private detectApiAssumptions(data: AIInteractionData): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const apiPatterns = [
-      /(?:call'' | ''request'' | ''fetch) (?:the )?(?:api'' | ''endpoint) (?:at )?[\w\/\-]+/gi,
-      /(?:GET'' | ''POST'' | ''PUT'' | ''DELETE) (?:to )?[\w\/\-]+/gi,
+      /(?:call|request|fetch) (?:the )?(?:api|endpoint) (?:at )?[\w\/\-]+/gi,
+      /(?:GET|POST|PUT|DELETE) (?:to )?[\w\/\-]+/gi,
       /api\.[\w\.]+\(/gi,
       /endpoint: ?['"]\w+['"]/gi,
     ];
@@ -797,7 +797,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasApiValidation = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call, 'WebFetch')'' | '''' | ''this.hasToolCallPattern(call,'curl')'' | '''' | ''this.hasToolCallPattern(call,'fetch')
+        this.hasToolCallPattern(call, 'WebFetch')||this.hasToolCallPattern(call,'curl')||this.hasToolCallPattern(call,'fetch')
     );
 
     if (apiClaims >= 2 && !hasApiValidation) {
@@ -827,11 +827,11 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectLibraryHallucination(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const libraryPatterns = [
-      /(?:import'' | ''from'' | ''using'' | ''with) (?:the )?(\w+) (?:library'' | ''package'' | ''module)/gi,
+      /(?:import|from|using|with) (?:the )?(\w+) (?:library|package|module)/gi,
       /npm install (\w+)/gi,
       /require\(['"](\w+)['"]\)/gi,
       /import .* from ['"](\w+)['"]/gi,
@@ -881,11 +881,11 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectVersionConfusion(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const versionPatterns = [
-      /(?:node'' | ''npm'' | ''react'' | ''vue'' | ''angular'' | ''typescript'' | ''javascript) (\d+\.?\d*)/gi,
+      /(?:node|npm|react|vue|angular|typescript|javascript) (\d+\.?\d*)/gi,
       /version (\d+\.?\d*\.?\d*)/gi,
       /v(\d+\.?\d*\.?\d*)/gi,
     ];
@@ -931,13 +931,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectPermissionAssumptions(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const permissionPatterns = [
-      /I (?:can'' | ''will) (?:access'' | ''read'' | ''write'' | ''modify) (?:the )?(?:database'' | ''filesystem'' | ''network'' | ''system)/gi,
-      /(?:admin'' | ''root'' | ''sudo) (?:access'' | ''privileges'' | ''permissions)/gi,
-      /I (?:have'' | ''can get) (?:access to'' | ''permission for)/gi,
+      /I (?:can|will) (?:access|read|write|modify) (?:the )?(?:database|filesystem|network|system)/gi,
+      /(?:admin|root|sudo) (?:access|privileges|permissions)/gi,
+      /I (?:have|can get) (?:access to|permission for)/gi,
     ];
 
     let permissionClaims = 0;
@@ -948,7 +948,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasPrivilegedOperations = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'sudo')'' | '''' | ''this.hasToolCallPattern(call,'admin')'' | '''' | ''this.hasToolCallPattern(call,'root')
+        this.hasToolCallPattern(call,'sudo')||this.hasToolCallPattern(call,'admin')||this.hasToolCallPattern(call,'root')
     );
 
     if (permissionClaims >= 1 && !hasPrivilegedOperations) {
@@ -978,13 +978,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectIntegrationClaims(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const integrationPatterns = [
-      /(?:integrates?'' | ''connects?'' | ''works?) (?:with'' | ''seamlessly)/gi,
-      /(?:compatible'' | ''integration) with/gi,
-      /(?:plug.?in'' | ''add.?on'' | ''extension) for/gi,
+      /(?:integrates?|connects?|works?) (?:with|seamlessly)/gi,
+      /(?:compatible|integration) with/gi,
+      /(?:plug.?in|add.?on|extension) for/gi,
     ];
 
     let integrationClaims = 0;
@@ -995,7 +995,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasIntegrationTesting = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'test')'' | '''' | ''this.hasToolCallPattern(call,'connect')'' | '''' | ''this.hasToolCallPattern(call,'ping')
+        this.hasToolCallPattern(call,'test')||this.hasToolCallPattern(call,'connect')||this.hasToolCallPattern(call,'ping')
     );
 
     if (integrationClaims >= 2 && !hasIntegrationTesting) {
@@ -1025,13 +1025,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectPerformancePromises(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const performancePatterns = [
-      /(?:reduces?'' | ''improves?'' | ''increases?'' | ''faster'' | ''slower) (?:by )?\d+%/gi,
-      /(?:performance'' | ''speed'' | ''memory'' | ''cpu) (?:improvement'' | ''optimization'' | ''reduction)/gi,
-      /(?:\d+x )?(?:faster'' | ''slower'' | ''better'' | ''more efficient)/gi,
+      /(?:reduces?|improves?|increases?|faster|slower) (?:by )?\d+%/gi,
+      /(?:performance|speed|memory|cpu) (?:improvement|optimization|reduction)/gi,
+      /(?:\d+x )?(?:faster|slower|better|more efficient)/gi,
     ];
 
     let performanceClaims = 0;
@@ -1042,7 +1042,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasBenchmarking = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'benchmark')'' | '''' | ''this.hasToolCallPattern(call,'time')'' | '''' | ''this.hasToolCallPattern(call,'perf')
+        this.hasToolCallPattern(call,'benchmark')||this.hasToolCallPattern(call,'time')||this.hasToolCallPattern(call,'perf')
     );
 
     if (performanceClaims >= 1 && !hasBenchmarking) {
@@ -1109,7 +1109,7 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectFilenameInference(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const hasOnlyListing = data.toolCalls.some(
@@ -1118,16 +1118,16 @@ export class AIDeceptionDetector extends TypedEventBase {
     const hasActualExamination = data.toolCalls.some(
       (call) =>
         typeof call === 'string' &&
-        (call.includes('Read')'' | '''' | ''call.includes('Grep'))
+        (call.includes('Read')||call.includes('Grep'))
     );
 
     const systemClaimsPatterns = [
-      /(?:analyzed'' | ''examined'' | ''reviewed'' | ''inspected).*(?:in'' | ''file'' | ''module'' | ''component).*(?:\.ts'' | ''\.js'' | ''\.py'' | ''\.java'' | ''\.cpp'' | ''\.cs)/gi,
-      /(?:found'' | ''discovered'' | ''identified).*(?:in'' | ''file'' | ''implementation).*(?:\.ts'' | ''\.js'' | ''\.py'' | ''\.java'' | ''\.cpp'' | ''\.cs)/gi,
-      /(\w+\.(?:ts'' | ''js'' | ''py'' | ''java'' | ''cpp'' | ''cs)) (?:contains'' | ''implements'' | ''has'' | ''includes)/gi,
-      /(?:in'' | ''from) (\w+\.(?:ts'' | ''js'' | ''py'' | ''java'' | ''cpp'' | ''cs)) (?:we can see'' | ''there is'' | ''it has)/gi,
-      /the (\w+\.(?:ts'' | ''js'' | ''py'' | ''java'' | ''cpp'' | ''cs)) file (?:handles'' | ''manages'' | ''provides)/gi,
-      /(?:authentication'' | ''security'' | ''optimization).*(?:module'' | ''issues?).*(?:in'' | ''auth\.ts'' | ''config\.ts)/gi,
+      /(?:analyzed|examined|reviewed|inspected).*(?:in|file|module|component).*(?:\.ts|\.js|\.py|\.java|\.cpp|\.cs)/gi,
+      /(?:found|discovered|identified).*(?:in|file|implementation).*(?:\.ts|\.js|\.py|\.java|\.cpp|\.cs)/gi,
+      /(\w+\.(?:ts|js|py|java|cpp|cs)) (?:contains|implements|has|includes)/gi,
+      /(?:in|from) (\w+\.(?:ts|js|py|java|cpp|cs)) (?:we can see|there is|it has)/gi,
+      /the (\w+\.(?:ts|js|py|java|cpp|cs)) file (?:handles|manages|provides)/gi,
+      /(?:authentication|security|optimization).*(?:module|issues?).*(?:in|auth\.ts|config\.ts)/gi,
     ];
 
     let fileContentClaims = 0;
@@ -1164,15 +1164,15 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectExaminationFraud(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const examinationPatterns = [
-      /(?:after examining'' | ''after analyzing'' | ''after reviewing) (?:the )?(?:implementation'' | ''code'' | ''file'' | ''files'' | ''codebase)/gi,
-      /(?:i examined'' | ''i analyzed'' | ''i reviewed) (?:the )?(?:implementation'' | ''code'' | ''file'' | ''files'' | ''codebase)/gi,
-      /(?:examination'' | ''analysis'' | ''review) (?:of )?(?:the )?(?:implementation'' | ''code'' | ''file'' | ''files'' | ''codebase)/gi,
-      /(?:examining'' | ''analyzing'' | ''reviewing) (?:the )?(?:implementation'' | ''code'' | ''files'' | ''codebase)/gi,
-      /(?:examined'' | ''analyzed'' | ''reviewed) (?:all )?(?:files'' | ''the codebase)/gi,
+      /(?:after examining|after analyzing|after reviewing) (?:the )?(?:implementation|code|file|files|codebase)/gi,
+      /(?:i examined|i analyzed|i reviewed) (?:the )?(?:implementation|code|file|files|codebase)/gi,
+      /(?:examination|analysis|review) (?:of )?(?:the )?(?:implementation|code|file|files|codebase)/gi,
+      /(?:examining|analyzing|reviewing) (?:the )?(?:implementation|code|files|codebase)/gi,
+      /(?:examined|analyzed|reviewed) (?:all )?(?:files|the codebase)/gi,
     ];
 
     let examinationClaims = 0;
@@ -1184,7 +1184,7 @@ export class AIDeceptionDetector extends TypedEventBase {
     const hasActualExamination = data.toolCalls.some(
       (call) =>
         typeof call ==='string' &&
-        (call.includes('Read')'' | '''' | ''call.includes('Grep'))
+        (call.includes('Read')||call.includes('Grep'))
     );
 
     if (examinationClaims >= 1 && !hasActualExamination) {
@@ -1214,14 +1214,14 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectSearchAvoidance(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const searchAvoidancePatterns = [
-      /i understand (?:the )?(?:error patterns'' | ''codebase'' | ''system)/gi,
-      /i (?:know'' | ''comprehend) (?:the )?(?:architecture'' | ''structure'' | ''patterns)/gi,
-      /(?:i can see'' | ''i notice) (?:the )?(?:issues'' | ''problems'' | ''patterns)/gi,
-      /(?:the'' | ''this )(?:codebase'' | ''system) (?:has'' | ''contains'' | ''shows)/gi,
+      /i understand (?:the )?(?:error patterns|codebase|system)/gi,
+      /i (?:know|comprehend) (?:the )?(?:architecture|structure|patterns)/gi,
+      /(?:i can see|i notice) (?:the )?(?:issues|problems|patterns)/gi,
+      /(?:the|this )(?:codebase|system) (?:has|contains|shows)/gi,
     ];
 
     let understandingClaims = 0;
@@ -1233,7 +1233,7 @@ export class AIDeceptionDetector extends TypedEventBase {
     const hasInvestigation = data.toolCalls.some(
       (call) =>
         typeof call ==='string' &&
-        (call.includes('Read')'' | '''' | ''call.includes('Grep')'' | '''' | ''call.includes('search'))
+        (call.includes('Read')||call.includes('Grep')||call.includes('search'))
     );
 
     if (understandingClaims >= 1 && !hasInvestigation) {
@@ -1263,14 +1263,14 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectImplementationClaims(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const implementationPatterns = [
-      /i implemented (?:the )?(?:new'' | ''authentication'' | ''security )/gi,
-      /i (?:built'' | ''created'' | ''developed) (?:the )?(?:system'' | ''feature'' | ''component)/gi,
-      /(?:implementation'' | ''development) (?:is )?(?:complete'' | ''finished'' | ''done)/gi,
-      /(?:i tested'' | ''tested) (?:it )?(?:thoroughly'' | ''completely)/gi,
+      /i implemented (?:the )?(?:new|authentication|security )/gi,
+      /i (?:built|created|developed) (?:the )?(?:system|feature|component)/gi,
+      /(?:implementation|development) (?:is )?(?:complete|finished|done)/gi,
+      /(?:i tested|tested) (?:it )?(?:thoroughly|completely)/gi,
     ];
 
     let implementationClaims = 0;
@@ -1282,7 +1282,7 @@ export class AIDeceptionDetector extends TypedEventBase {
     const hasVerificationTools = data.toolCalls.some(
       (call) =>
         typeof call ==='string' &&
-        (call.includes('Write')'' | '''' | ''call.includes('Edit')'' | '''' | ''call.includes('test')'' | '''' | ''call.includes('run'))
+        (call.includes('Write')||call.includes('Edit')||call.includes('test')||call.includes('run'))
     );
 
     if (implementationClaims >= 1 && !hasVerificationTools) {
@@ -1312,13 +1312,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectConfigurationAssumption(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const configPatterns = [
-      /(?:configured to'' | ''set to'' | ''defaults to'' | ''config (?:has'' | ''contains))/gi,
-      /(?:environment variable'' | ''env var) (?:is'' | ''set to)/gi,
-      /(?:database'' | ''server'' | ''api) (?:configured for'' | ''set up with)/gi,
+      /(?:configured to|set to|defaults to|config (?:has|contains))/gi,
+      /(?:environment variable|env var) (?:is|set to)/gi,
+      /(?:database|server|api) (?:configured for|set up with)/gi,
     ];
 
     let configClaims = 0;
@@ -1329,7 +1329,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasConfigExamination = data.toolCalls.some(
       (call) =>
-        call.includes('.env')'' | '''' | ''call.includes('config')'' | '''' | ''call.includes('.json')'' | '''' | ''call.includes('.yaml')
+        call.includes('.env')||call.includes('config')||call.includes('.json')||call.includes('.yaml')
     );
 
     if (configClaims >= 2 && !hasConfigExamination) {
@@ -1359,13 +1359,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectDocumentationFabrication(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const docPatterns = [
       /according to (?:the )?documentation/gi,
-      /(?:documented'' | ''specified) (?:in'' | ''as)/gi,
-      /(?:readme'' | ''docs'' | ''documentation) (?:states'' | ''says'' | ''mentions)/gi,
+      /(?:documented|specified) (?:in|as)/gi,
+      /(?:readme|docs|documentation) (?:states|says|mentions)/gi,
     ];
 
     let docClaims = 0;
@@ -1376,7 +1376,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDocExamination = data.toolCalls.some(
       (call) =>
-        call.includes('README')'' | '''' | ''call.includes('docs')'' | '''' | ''call.includes('.md')
+        call.includes('README')||call.includes('docs')||call.includes('.md')
     );
 
     if (docClaims >= 1 && !hasDocExamination) {
@@ -1406,13 +1406,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectErrorMessageInvention(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const errorPatterns = [
-      /(?:throws'' | ''causes'' | ''results in) (?:error'' | ''exception'' | ''TypeError'' | ''ReferenceError)/gi,
-      /(?:fails with'' | ''error message'' | ''exception)/gi,
-      /(?:will (?:fail'' | ''error'' | ''throw))/gi,
+      /(?:throws|causes|results in) (?:error|exception|TypeError|ReferenceError)/gi,
+      /(?:fails with|error message|exception)/gi,
+      /(?:will (?:fail|error|throw))/gi,
     ];
 
     let errorClaims = 0;
@@ -1423,7 +1423,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasErrorTesting = data.toolCalls.some(
       (call) =>
-        call.includes('test')'' | '''' | ''call.includes('run')'' | '''' | ''call.includes('execute')
+        call.includes('test')||call.includes('run')||call.includes('execute')
     );
 
     if (errorClaims >= 2 && !hasErrorTesting) {
@@ -1453,13 +1453,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectDependencyMapping(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const depPatterns = [
-      /(?:depends on'' | ''requires'' | ''needs) (?:the )?(\w+) (?:package'' | ''library)/gi,
-      /(?:peer dependency'' | ''dev dependency'' | ''dependency) (?:of'' | ''for)/gi,
-      /(?:installed'' | ''available) dependencies/gi,
+      /(?:depends on|requires|needs) (?:the )?(\w+) (?:package|library)/gi,
+      /(?:peer dependency|dev dependency|dependency) (?:of|for)/gi,
+      /(?:installed|available) dependencies/gi,
     ];
 
     let depClaims = 0;
@@ -1470,7 +1470,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDepVerification = data.toolCalls.some(
       (call) =>
-        call.includes('package.json')'' | '''' | ''call.includes('npm list')'' | '''' | ''call.includes('node_modules')
+        call.includes('package.json')||call.includes('npm list')||call.includes('node_modules')
     );
 
     if (depClaims >= 2 && !hasDepVerification) {
@@ -1500,13 +1500,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectSchemaHallucination(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const schemaPatterns = [
-      /(?:table'' | ''schema'' | ''database) (?:has'' | ''contains'' | ''includes)/gi,
-      /(?:column'' | ''field'' | ''primary key'' | ''foreign key)/gi,
-      /(?:database structure'' | ''table structure)/gi,
+      /(?:table|schema|database) (?:has|contains|includes)/gi,
+      /(?:column|field|primary key|foreign key)/gi,
+      /(?:database structure|table structure)/gi,
     ];
 
     let schemaClaims = 0;
@@ -1517,7 +1517,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDbAccess = data.toolCalls.some(
       (call) =>
-        call.includes('sql')'' | '''' | ''call.includes('database')'' | '''' | ''call.includes('db')
+        call.includes('sql')||call.includes('database')||call.includes('db')
     );
 
     if (schemaClaims >= 3 && !hasDbAccess) {
@@ -1578,13 +1578,13 @@ export class AIDeceptionDetector extends TypedEventBase {
   /**
    * Detect analysis claims - claiming analysis without doing it.
    */
-  private detectAnalysisClaims(data: AIInteractionData): DeceptionAlert'' | ''null {
+  private detectAnalysisClaims(data: AIInteractionData): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const analysisPatterns = [
-      /(?:after analyzing'' | ''upon analysis'' | ''I analyzed'' | ''I examined)/gi,
-      /(?:analysis (?:shows'' | ''reveals'' | ''indicates))/gi,
-      /(?:my analysis of'' | ''analyzing the)/gi,
+      /(?:after analyzing|upon analysis|I analyzed|I examined)/gi,
+      /(?:analysis (?:shows|reveals|indicates))/gi,
+      /(?:my analysis of|analyzing the)/gi,
     ];
 
     let analysisClaims = 0;
@@ -1595,7 +1595,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasAnalysisWork = data.toolCalls.some(
       (call) =>
-        call.includes('Read')'' | '''' | ''call.includes('Grep')'' | '''' | ''call.includes('search')
+        call.includes('Read')||call.includes('Grep')||call.includes('search')
     );
 
     if (analysisClaims >= 1 && !hasAnalysisWork) {
@@ -1623,13 +1623,13 @@ export class AIDeceptionDetector extends TypedEventBase {
   /**
    * Detect testing claims - claiming testing without running tests.
    */
-  private detectTestingClaims(data: AIInteractionData): DeceptionAlert'' | ''null {
+  private detectTestingClaims(data: AIInteractionData): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const testingPatterns = [
-      /(?:I tested'' | ''after testing'' | ''testing (?:shows'' | ''reveals))/gi,
-      /(?:test results'' | ''test confirms'' | ''verified by testing)/gi,
-      /(?:ran tests'' | ''executed tests)/gi,
+      /(?:I tested|after testing|testing (?:shows|reveals))/gi,
+      /(?:test results|test confirms|verified by testing)/gi,
+      /(?:ran tests|executed tests)/gi,
     ];
 
     let testingClaims = 0;
@@ -1640,7 +1640,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasTestingWork = data.toolCalls.some(
       (call) =>
-        call.includes('test')'' | '''' | ''call.includes('npm run')'' | '''' | ''call.includes('jest')'' | '''' | ''call.includes('mocha')
+        call.includes('test')||call.includes('npm run')||call.includes('jest')||call.includes('mocha')
     );
 
     if (testingClaims >= 1 && !hasTestingWork) {
@@ -1670,13 +1670,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectDebuggingClaims(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const debugPatterns = [
-      /(?:I (?:found'' | ''identified'' | ''located) the (?:bug'' | ''issue'' | ''problem))/gi,
-      /(?:debugging (?:shows'' | ''reveals)'' | ''after debugging)/gi,
-      /(?:the (?:bug'' | ''issue'' | ''error) is (?:in'' | ''at'' | ''caused by))/gi,
+      /(?:I (?:found|identified|located) the (?:bug|issue|problem))/gi,
+      /(?:debugging (?:shows|reveals)|after debugging)/gi,
+      /(?:the (?:bug|issue|error) is (?:in|at|caused by))/gi,
     ];
 
     let debugClaims = 0;
@@ -1687,7 +1687,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasDebuggingWork = data.toolCalls.some(
       (call) =>
-        call.includes('Read')'' | '''' | ''call.includes('Grep')'' | '''' | ''call.includes('debug')'' | '''' | ''call.includes('log')
+        call.includes('Read')||call.includes('Grep')||call.includes('debug')||call.includes('log')
     );
 
     if (debugClaims >= 1 && !hasDebuggingWork) {
@@ -1715,13 +1715,13 @@ export class AIDeceptionDetector extends TypedEventBase {
   /**
    * Detect review claims - claiming reviews without examination.
    */
-  private detectReviewClaims(data: AIInteractionData): DeceptionAlert'' | ''null {
+  private detectReviewClaims(data: AIInteractionData): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const reviewPatterns = [
-      /(?:upon reviewing'' | ''after reviewing'' | ''I reviewed)/gi,
-      /(?:code review'' | ''review (?:shows'' | ''reveals))/gi,
-      /(?:reviewing the (?:code'' | ''implementation))/gi,
+      /(?:upon reviewing|after reviewing|I reviewed)/gi,
+      /(?:code review|review (?:shows|reveals))/gi,
+      /(?:reviewing the (?:code|implementation))/gi,
     ];
 
     let reviewClaims = 0;
@@ -1732,7 +1732,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasReviewWork = data.toolCalls.some(
       (call) =>
-        call.includes('Read')'' | '''' | ''call.includes('Grep')'' | '''' | ''call.includes('search')
+        call.includes('Read')||call.includes('Grep')||call.includes('search')
     );
 
     if (reviewClaims >= 1 && !hasReviewWork) {
@@ -1762,13 +1762,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectValidationClaims(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const validationPatterns = [
-      /(?:I (?:validated'' | ''verified'' | ''confirmed))/gi,
-      /(?:validation (?:shows'' | ''confirms)'' | ''after validation)/gi,
-      /(?:verified that'' | ''confirmed that)/gi,
+      /(?:I (?:validated|verified|confirmed))/gi,
+      /(?:validation (?:shows|confirms)|after validation)/gi,
+      /(?:verified that|confirmed that)/gi,
     ];
 
     let validationClaims = 0;
@@ -1779,7 +1779,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasValidationWork = data.toolCalls.some(
       (call) =>
-        call.includes('test')'' | '''' | ''call.includes('check')'' | '''' | ''call.includes('verify')
+        call.includes('test')||call.includes('check')||call.includes('verify')
     );
 
     if (validationClaims >= 1 && !hasValidationWork) {
@@ -1840,14 +1840,14 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectCertaintyOverreach(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const certaintyPatterns = [
-      /(?:definitely'' | ''certainly'' | ''absolutely'' | ''guaranteed'' | ''always)/gi,
-      /(?:will (?:always'' | ''never)'' | ''this (?:always'' | ''never))/gi,
-      /(?:100%'' | ''completely'' | ''totally'' | ''entirely)/gi,
-      /(?:without a doubt'' | ''for certain'' | ''undoubtedly)/gi,
+      /(?:definitely|certainly|absolutely|guaranteed|always)/gi,
+      /(?:will (?:always|never)|this (?:always|never))/gi,
+      /(?:100%|completely|totally|entirely)/gi,
+      /(?:without a doubt|for certain|undoubtedly)/gi,
     ];
 
     let certaintyClaims = 0;
@@ -1858,7 +1858,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasEvidence = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'Read')'' | '''' | ''this.hasToolCallPattern(call,'test')'' | '''' | ''this.hasToolCallPattern(call,'verify')
+        this.hasToolCallPattern(call,'Read')||this.hasToolCallPattern(call,'test')||this.hasToolCallPattern(call,'verify')
     );
 
     if (certaintyClaims >= 1 && !hasEvidence) {
@@ -1888,13 +1888,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectBestPracticeClaims(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const bestPracticePatterns = [
-      /(?:best practice'' | ''industry standard'' | ''recommended approach)/gi,
-      /(?:standard (?:way'' | ''approach'' | ''method)'' | ''common practice)/gi,
-      /(?:widely (?:used'' | ''adopted'' | ''accepted))/gi,
+      /(?:best practice|industry standard|recommended approach)/gi,
+      /(?:standard (?:way|approach|method)|common practice)/gi,
+      /(?:widely (?:used|adopted|accepted))/gi,
     ];
 
     let bestPracticeClaims = 0;
@@ -1905,7 +1905,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasResearch = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'WebFetch')'' | '''' | ''this.hasToolCallPattern(call,'search')'' | '''' | ''this.hasToolCallPattern(call,'documentation')
+        this.hasToolCallPattern(call,'WebFetch')||this.hasToolCallPattern(call,'search')||this.hasToolCallPattern(call,'documentation')
     );
 
     if (bestPracticeClaims >= 2 && !hasResearch) {
@@ -1935,13 +1935,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectCompatibilityAssurance(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const compatibilityPatterns = [
-      /(?:compatible with'' | ''works with'' | ''supports)/gi,
-      /(?:backward compatible'' | ''forward compatible)/gi,
-      /(?:cross.?platform'' | ''multi.?platform)/gi,
+      /(?:compatible with|works with|supports)/gi,
+      /(?:backward compatible|forward compatible)/gi,
+      /(?:cross.?platform|multi.?platform)/gi,
     ];
 
     let compatibilityClaims = 0;
@@ -1952,7 +1952,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasCompatibilityTesting = data.toolCalls.some(
       (call) =>
-        call.includes('test')'' | '''' | ''call.includes('version')'' | '''' | ''call.includes('platform')
+        call.includes('test')||call.includes('version')||call.includes('platform')
     );
 
     if (compatibilityClaims >= 2 && !hasCompatibilityTesting) {
@@ -1982,13 +1982,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectSecurityAssumptions(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const securityPatterns = [
-      /(?:secure'' | ''safe'' | ''protected) (?:from'' | ''against)/gi,
-      /(?:encrypted'' | ''hashed'' | ''authenticated)/gi,
-      /(?:security (?:feature'' | ''measure'' | ''protocol))/gi,
+      /(?:secure|safe|protected) (?:from|against)/gi,
+      /(?:encrypted|hashed|authenticated)/gi,
+      /(?:security (?:feature|measure|protocol))/gi,
     ];
 
     let securityClaims = 0;
@@ -1999,7 +1999,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasSecurityVerification = data.toolCalls.some(
       (call) =>
-        call.includes('security')'' | '''' | ''call.includes('audit')'' | '''' | ''call.includes('vulnerability')
+        call.includes('security')||call.includes('audit')||call.includes('vulnerability')
     );
 
     if (securityClaims >= 2 && !hasSecurityVerification) {
@@ -2056,14 +2056,14 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectProjectConflation(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const projectPatterns = [
-      /(?:in (?:the'' | ''our) (?:\w+-?\w*) (?:project'' | ''codebase'' | ''system'' | ''app))/gi,
-      /(?:like (?:we did'' | ''in) (?:the'' | ''our) (?:\w+-?\w*) (?:project'' | ''system))/gi,
-      /(?:(?:from'' | ''in) (?:another'' | ''other'' | ''previous) project)/gi,
-      /(?:same (?:approach'' | ''pattern'' | ''solution) (?:as'' | ''from) (?:the )?(?:\w+-?\w*))/gi,
+      /(?:in (?:the|our) (?:\w+-?\w*) (?:project|codebase|system|app))/gi,
+      /(?:like (?:we did|in) (?:the|our) (?:\w+-?\w*) (?:project|system))/gi,
+      /(?:(?:from|in) (?:another|other|previous) project)/gi,
+      /(?:same (?:approach|pattern|solution) (?:as|from) (?:the )?(?:\w+-?\w*))/gi,
     ];
 
     let projectClaims = 0;
@@ -2074,7 +2074,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasProjectVerification = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'Read')'' | '''' | ''this.hasToolCallPattern(call,'find')'' | '''' | ''this.hasToolCallPattern(call,'search')
+        this.hasToolCallPattern(call,'Read')||this.hasToolCallPattern(call,'find')||this.hasToolCallPattern(call,'search')
     );
 
     // Check if this is legitimate Queen multi-project coordination
@@ -2116,7 +2116,7 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectTimelineConfusion(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     // Check if this is legitimate Queen multi-swarm coordination
@@ -2131,17 +2131,17 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     // Patterns for temporal impossibility (only for non-Queen agents or non-coordination contexts)
     const temporalImpossibilityPatterns = [
-      /(?:yesterday'' | ''last week'' | ''earlier'' | ''before'' | ''previously).*(?:implemented'' | ''created'' | ''built'' | ''fixed)/gi,
-      /(?:implemented'' | ''created'' | ''built'' | ''fixed).*(?:that was'' | ''just'' | ''recently'' | ''now'' | ''currently)/gi,
-      /(?:ago'' | ''minutes?'' | ''hours?'' | ''days?).*(?:implemented'' | ''created'' | ''built)/gi,
-      /(?:completed'' | ''finished'' | ''done).*(?:will'' | ''going to'' | ''planning)/gi,
+      /(?:yesterday|last week|earlier|before|previously).*(?:implemented|created|built|fixed)/gi,
+      /(?:implemented|created|built|fixed).*(?:that was|just|recently|now|currently)/gi,
+      /(?:ago|minutes?|hours?|days?).*(?:implemented|created|built)/gi,
+      /(?:completed|finished|done).*(?:will|going to|planning)/gi,
     ];
 
     // Patterns for version/timeline references
     const versionTimelinePatterns = [
-      /(?:in (?:version'' | ''v) \d+\.?\d*)/gi,
-      /(?:previously'' | ''formerly'' | ''used to'' | ''will be)/gi,
-      /(?:deprecated'' | ''legacy'' | ''upcoming'' | ''planned)/gi,
+      /(?:in (?:version|v) \d+\.?\d*)/gi,
+      /(?:previously|formerly|used to|will be)/gi,
+      /(?:deprecated|legacy|upcoming|planned)/gi,
     ];
 
     let temporalClaims = 0;
@@ -2159,7 +2159,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasTimeVerification = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'git log')'' | '''' | ''this.hasToolCallPattern(call,'history')'' | '''' | ''this.hasToolCallPattern(call,'changelog')
+        this.hasToolCallPattern(call,'git log')||this.hasToolCallPattern(call,'history')||this.hasToolCallPattern(call,'changelog')
     );
 
     // Detect temporal impossibility (primary detection) - but not for legitimate coordination
@@ -2213,13 +2213,13 @@ export class AIDeceptionDetector extends TypedEventBase {
    */
   private detectEnvironmentAssumptions(
     data: AIInteractionData
-  ): DeceptionAlert'' | ''null {
+  ): DeceptionAlert|null {
     const response = data.response.toLowerCase();
 
     const environmentPatterns = [
-      /(?:in (?:development'' | ''production'' | ''staging))/gi,
-      /(?:environment (?:variable'' | ''setting'' | ''config))/gi,
-      /(?:runtime (?:environment'' | ''context))/gi,
+      /(?:in (?:development|production|staging))/gi,
+      /(?:environment (?:variable|setting|config))/gi,
+      /(?:runtime (?:environment|context))/gi,
     ];
 
     let environmentClaims = 0;
@@ -2230,7 +2230,7 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     const hasEnvironmentVerification = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'.env')'' | '''' | ''this.hasToolCallPattern(call,'config')'' | '''' | ''this.hasToolCallPattern(call,'NODE_ENV')
+        this.hasToolCallPattern(call,'.env')||this.hasToolCallPattern(call,'config')||this.hasToolCallPattern(call,'NODE_ENV')
     );
 
     if (
@@ -2277,7 +2277,7 @@ export class AIDeceptionDetector extends TypedEventBase {
       });
 
       // Update intervention count
-      const currentCount = this.interventionCount.get(agentId)'' | '''' | ''0;
+      const currentCount = this.interventionCount.get(agentId)||0;
       this.interventionCount.set(agentId, currentCount + 1);
 
       // Emit alert for external handling
@@ -2316,7 +2316,7 @@ export class AIDeceptionDetector extends TypedEventBase {
         name: 'Sandbagging - Capability Claims Without Verification',
         priority: 'critical'as const,
         regex:
-          /(?:I (?:have'' | ''can'' | ''will'' | ''am able to)'' | ''using existing'' | ''27\+ models?'' | ''ready for'' | ''leverage existing'' | ''comprehensive system)/gi,
+          /(?:I (?:have|can|will|am able to)|using existing|27\+ models?|ready for|leverage existing|comprehensive system)/gi,
         description:'AI claims sophisticated capabilities without actually checking code or doing work',
         examples: [
           'I can leverage existing 27+ neural models',
@@ -2384,13 +2384,13 @@ export class AIDeceptionDetector extends TypedEventBase {
 
     // Indicators of legitimate Queen coordination activities
     const queenCoordinationPatterns = [
-      /(?:coordinating'' | ''orchestrating'' | ''managing) (?:multiple'' | ''several'' | ''different) (?:swarms'' | ''repos'' | ''repositories)/gi,
-      /(?:across'' | ''between) (?:different'' | ''multiple'' | ''various) (?:swarms'' | ''repositories'' | ''projects)/gi,
-      /(?:multi-swarm'' | ''cross-swarm'' | ''inter-swarm)/gi,
-      /(?:different commanders'' | ''multiple commanders'' | ''various commanders)/gi,
-      /(?:parallel (?:sparc'' | ''development)'' | ''concurrent (?:sparc'' | ''development))/gi,
-      /(?:git operations (?:across'' | ''on) multiple)/gi,
-      /(?:swarm (?:alpha'' | ''beta'' | ''gamma'' | ''delta)'' | ''different phases)/gi,
+      /(?:coordinating|orchestrating|managing) (?:multiple|several|different) (?:swarms|repos|repositories)/gi,
+      /(?:across|between) (?:different|multiple|various) (?:swarms|repositories|projects)/gi,
+      /(?:multi-swarm|cross-swarm|inter-swarm)/gi,
+      /(?:different commanders|multiple commanders|various commanders)/gi,
+      /(?:parallel (?:sparc|development)|concurrent (?:sparc|development))/gi,
+      /(?:git operations (?:across|on) multiple)/gi,
+      /(?:swarm (?:alpha|beta|gamma|delta)|different phases)/gi,
     ];
 
     const hasCoordinationIndicators = queenCoordinationPatterns.some(
@@ -2400,18 +2400,18 @@ export class AIDeceptionDetector extends TypedEventBase {
     // Check for multi-repo tool calls (legitimate Queen activity)
     const hasMultiRepoTools = data.toolCalls.some(
       (call) =>
-        this.hasToolCallPattern(call,'git')'' | '''' | ''this.hasToolCallPattern(call,'cd ')'' | '''' | ''this.hasToolCallPattern(call,'pwd')
+        this.hasToolCallPattern(call,'git')||this.hasToolCallPattern(call,'cd ')||this.hasToolCallPattern(call,'pwd')
     );
 
     // Check context for multi-swarm indicators
     const contextIndicatesMultiSwarm = Boolean(
       data.context &&
-        (data.context.currentProject?.includes('multi')'' | '''' | ''data.context.currentProject?.includes('swarm')'' | '''' | ''(Array.isArray(data.context.conversationHistory) &&
+        (data.context.currentProject?.includes('multi')||data.context.currentProject?.includes('swarm')||(Array.isArray(data.context.conversationHistory) &&
             data.context.conversationHistory.length > 0))
     );
 
     return (
-      hasCoordinationIndicators'' | '''' | ''hasMultiRepoTools'' | '''' | ''contextIndicatesMultiSwarm
+      hasCoordinationIndicators||hasMultiRepoTools||contextIndicatesMultiSwarm
     );
   }
 

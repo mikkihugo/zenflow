@@ -61,11 +61,11 @@ export interface AIRuleGeneratorConfig {
  * Rule generation strategies
  */
 export type RuleGenerationStrategy = 'pattern-based' //  Generate rules from detected patterns
-  | 'statistical' //  Generate rules from codebase statistics
-  | 'context-aware' //  Generate rules based on project context
-  | 'collaborative' //  Generate rules from team feedback
-  | 'evolutionary' //  Evolve existing rules based on effectiveness
-  | 'creative'; // Generate innovative rules via AI creativity
+  || 'statistical' //  Generate rules from codebase statistics
+  || 'context-aware' //  Generate rules based on project context
+  || 'collaborative' //  Generate rules from team feedback
+  || 'evolutionary' //  Evolve existing rules based on effectiveness
+  || 'creative'; // Generate innovative rules via AI creativity
 
 /**
  * Rule evolution configuration
@@ -138,7 +138,7 @@ export interface ProjectMetadata {
   name: string;
 
   /** Project type/category */
-  type: 'web-app' | 'library' | 'cli' | 'api' | 'mobile' | 'desktop';
+  type: 'web-app|library|cli|api|mobile|desktop';
 
   /** Primary programming languages */
   languages: string[];
@@ -150,7 +150,7 @@ export interface ProjectMetadata {
   teamSize: number;
 
   /** Development stage */
-  stage: 'prototype' | 'development' | 'production' | 'maintenance';
+  stage: 'prototype|development|production|maintenance';
 
   /** Quality requirements */
   qualityRequirements: QualityRequirement[];
@@ -164,7 +164,7 @@ export interface QualityRequirement {
   category: LintingCategory;
 
   /** Importance level */
-  importance: 'low' | 'medium' | 'high' | 'critical';
+  importance: 'low|medium|high|critical';
 
   /** Specific requirements */
   requirements: string[];
@@ -178,7 +178,7 @@ export interface QualityRequirement {
  */
 export interface TeamPreferences {
   /** Preferred coding style */
-  codingStyle: 'strict' | 'moderate' | 'permissive';
+  codingStyle: 'strict|moderate|permissive';
 
   /** Priority categories */
   priorityCategories: LintingCategory[];
@@ -210,7 +210,7 @@ export interface RuleFeedback {
   improvements: string[];
 
   /** Usage frequency */
-  usageFrequency: 'never' | 'rarely' | 'sometimes' | 'often' | 'always';
+  usageFrequency: 'never|rarely|sometimes|often|always';
 
   /** False positive reports */
   falsePositives: number;

@@ -117,7 +117,7 @@ export class QueryRunner {
 
     // Prepare output file
     const outputFile =
-      options.outputPath'' | '''' | ''path.join(
+      options.outputPath||path.join(
         this.config.tempDir!,
         `results_${database.id}_${queryPack.name}_${Date.now()}.sarif`
       );
@@ -153,7 +153,7 @@ export class QueryRunner {
     try {
       // Execute query
       const commandResult = await this.executeCommand(args, {
-        timeout: options.queryTimeout'' | '''' | ''60000,
+        timeout: options.queryTimeout||60000,
       });
 
       // Read and parse results
@@ -247,7 +247,7 @@ export class QueryRunner {
           databaseSizeBytes: database.sizeBytes,
           filesAnalyzed: 0, // Would need to calculate
           linesAnalyzed: 0, // Would need to calculate
-          peakMemoryMb: this.config.maxMemory'' | '''' | ''0,
+          peakMemoryMb: this.config.maxMemory||0,
           cpuTimeMs: 0, // Would need OS-level tracking
         },
       };
@@ -299,7 +299,7 @@ export class QueryRunner {
     options: { cwd?: string; env?: NodeJS.ProcessEnv; timeout?: number } = {}
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     return new Promise((resolve, reject) => {
-      const timeout = options.timeout'' | '''' | ''this.config.timeout'' | '''' | ''60000;
+      const timeout = options.timeout||this.config.timeout||60000;
 
       this.logger.debug('Executing CodeQL command', {
         command: this.config.codeqlPath,
@@ -308,13 +308,13 @@ export class QueryRunner {
       });
 
       const child = spawn(this.config.codeqlPath!, args, {
-        cwd: options.cwd'' | '''' | ''process.cwd(),
+        cwd: options.cwd||process.cwd(),
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: options.env'' | '''' | ''process.env,
+        env: options.env||process.env,
       });
 
-      let stdout ='';
-      let stderr = '';
+      let stdout =';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();

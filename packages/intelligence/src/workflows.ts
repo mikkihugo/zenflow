@@ -53,7 +53,7 @@ async function loadWorkflowsModule() {
 
           constructor(config?: unknown) {
             super();
-            this.stubConfig = config'' | '''' | ''{ maxConcurrentWorkflows: 10 };
+            this.stubConfig = config||{ maxConcurrentWorkflows: 10 };
           }
           async initialize() {
             console.log('WorkflowEngine initialized with config:',
@@ -149,11 +149,11 @@ export class WorkflowEngine extends TypedEventBase {
 
   generateWorkflowVisualization(workflow: any): string {
     // Synchronous method, might need initialization first
-    return this.instance?.generateWorkflowVisualization?.(workflow)'' | '''' | '''';
+    return this.instance?.generateWorkflowVisualization?.(workflow)||';
   }
 
   listActiveWorkflows(): string[] {
-    return this.instance?.listActiveWorkflows?.()'' | '''' | ''[];
+    return this.instance?.listActiveWorkflows?.()|'|[];
   }
 
   async shutdown(): Promise<void> {
@@ -170,27 +170,27 @@ export class WorkflowEngine extends TypedEventBase {
   async executeWorkflow(definition: any, context?: any): Promise<any> {
     await this.initialize();
     return (
-      (await this.instance.executeWorkflow?.(definition, context))'' | '''' | ''(await this.startWorkflow(definition, context))
+      (await this.instance.executeWorkflow?.(definition, context))||(await this.startWorkflow(definition, context))
     );
   }
 
   async createWorkflow(definition: any): Promise<string> {
     await this.initialize();
     return (
-      (await this.instance.createWorkflow?.(definition))'' | '''' | ''definition.id'' | '''' | '''workflow-1');
+      (await this.instance.createWorkflow?.(definition))||definition.id||'workflow-1');
   }
 
   async cancelWorkflow(workflowId: string): Promise<void> {
     await this.initialize();
     return (
-      (await this.instance.cancelWorkflow?.(workflowId))'' | '''' | ''(await this.stopWorkflow(workflowId))
+      (await this.instance.cancelWorkflow?.(workflowId))||(await this.stopWorkflow(workflowId))
     );
   }
 
   async getWorkflowStatus(workflowId: string): Promise<any> {
     await this.initialize();
     return (
-      (await this.instance.getWorkflowStatus?.(workflowId))'' | '''' | ''(await this.getWorkflowState(workflowId))
+      (await this.instance.getWorkflowStatus?.(workflowId))||(await this.getWorkflowState(workflowId))
     );
   }
 }
@@ -260,7 +260,7 @@ export interface WorkflowData {
 
 export interface WorkflowState {
   id: string;
-  status:'' | '''pending | running' | 'paused''' | '''completed | failed' | 'cancelled';
+  status:|'pending|running|paused|completed|failed|cancelled';
   currentStep: number;
   totalSteps: number;
   startedAt?: Date;

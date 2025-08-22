@@ -39,7 +39,7 @@ export async function retry<T>(
   maxRetries = 3,
   baseDelay = 1000
 ): Promise<T> {
-  let lastError: Error'' | ''undefined;
+  let lastError: Error|undefined;
 
   for (let i = 0; i < maxRetries; i++) {
     try {
@@ -52,7 +52,7 @@ export async function retry<T>(
     }
   }
 
-  throw lastError'' | '''' | ''new Error('All retry attempts failed');
+  throw lastError||new Error('All retry attempts failed');
 }
 
 /**
@@ -72,7 +72,7 @@ export function deepClone<T>(obj: T): T {
  * @example
  */
 export function isEmpty(value: unknown): boolean {
-  if (value === null'' | '''' | ''value === undefined) {
+  if (value === null||value === undefined) {
     return true;
   }
   if (typeof value ==='string') {

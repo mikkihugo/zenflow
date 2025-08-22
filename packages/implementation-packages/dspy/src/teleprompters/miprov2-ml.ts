@@ -51,24 +51,24 @@ export interface MIPROv2MLConfig {
   useStatisticalValidation: boolean;
 
   // Bayesian optimization settings
-  acquisitionFunction:'' | '''expected_improvement | upper_confidence_bound' | 'probability_improvement';
-  kernelType: 'rbf | matern' | 'linear';
+  acquisitionFunction:|'expected_improvement|upper_confidence_bound|probability_improvement';
+  kernelType: 'rbf|matern|linear';
   explorationWeight: number;
 
   // Multi-objective settings
-  objectives: Array<'accuracy | speed' | 'memory''' | '''robustness'>;
+  objectives: Array<'accuracy|speed|memory|robustness'>;
   objectiveWeights?: number[];
   paretoFrontSize: number;
 
   // Pattern analysis settings
-  patternTypes: Array<'sequential | cyclical' | 'convergence''' | '''divergence'>;
+  patternTypes: Array<'sequential|cyclical|convergence|divergence'>;
   patternMinSupport: number;
   patternConfidenceThreshold: number;
 
   // Statistical validation
   significanceLevel: number;
   minimumSampleSize: number;
-  statisticalTests: Array<'t_test | anova' | 'regression'>;
+  statisticalTests: Array<'t_test|anova|regression'>;
 
   // Performance constraints
   timeoutMs: number;
@@ -274,8 +274,8 @@ export class MIPROv2ML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: any[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: any[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -399,12 +399,12 @@ export class MIPROv2ML extends Teleprompter {
 
     const result = await this.multiObjectiveOptimizer!.optimize(objectives);
 
-    if (!result'' | '''' | ''result.solutions.length === 0) {
+    if (!result||result.solutions.length === 0) {
       throw new Error('Multi-objective optimization failed to find solutions');
     }
 
     // Select best solution from Pareto front based on weighted objectives
-    const weights = this.config.objectiveWeights'' | '''' | ''[0.6, 0.25, 0.15]; // Prioritize accuracy
+    const weights = this.config.objectiveWeights||[0.6, 0.25, 0.15]; // Prioritize accuracy
     const bestSolution = this.selectBestSolution(result, weights);
 
     this.logger.info(
@@ -462,7 +462,7 @@ export class MIPROv2ML extends Teleprompter {
    */
   private async analyzeOptimizationPatterns(): Promise<Pattern[]> {
     if (
-      !this.config.usePatternAnalysis'' | '''' | ''this.optimizationHistory.length < 10
+      !this.config.usePatternAnalysis||this.optimizationHistory.length < 10
     ) {
       return [];
     }
@@ -494,7 +494,7 @@ export class MIPROv2ML extends Teleprompter {
       await this.patternLearner!.trainPatterns(trainingExamples);
     const patterns = Array.isArray(patternResult)
       ? patternResult
-      : patternResult.patterns'' | '''' | ''[];
+      : patternResult.patterns||[];
 
     this.logger.info(`Detected ${patterns.length} optimization patterns`);
 
@@ -506,7 +506,7 @@ export class MIPROv2ML extends Teleprompter {
    */
   private async performStatisticalValidation(): Promise<HypothesisTest[]> {
     if (
-      !this.config.useStatisticalValidation'' | '''' | ''this.optimizationHistory.length < this.config.minimumSampleSize
+      !this.config.useStatisticalValidation||this.optimizationHistory.length < this.config.minimumSampleSize
     ) {
       return [];
     }

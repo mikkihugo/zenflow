@@ -387,7 +387,7 @@ export class LiveAPIConnector {
 
       // Determine severity
       const score = metrics?.cvssData?.baseScore || 0;
-      let severity:'low'' | ''medium'' | ''high'' | ''critical';
+      let severity:'low|medium|high|critical';
       if (score >= 9.0) severity = 'critical';
       else if (score >= 7.0) severity = 'high';
       else if (score >= 4.0) severity = 'medium';
@@ -430,7 +430,7 @@ export class LiveAPIConnector {
 
     if (repository.url) {
       // Clean up git+https:// URLs
-      return repository.url.replace(/^git\+/, '').replace(/\.git$/, '');
+      return repository.url.replace(/^git\+/, ').replace(/\.git$/, ');
     }
 
     return undefined;
@@ -580,8 +580,8 @@ export class LiveAPIConnector {
       return {
         path: modulePath,
         version: moduleInfo.Version,
-        description: pkgData?.Synopsis || '',
-        license: pkgData?.License || '',
+        description: pkgData?.Synopsis || ',
+        license: pkgData?.License || ',
         repository: pkgData?.Repository || `https://${modulePath}`,
         homepage: `https://pkg.go.dev/${modulePath}`,
         goVersion: pkgData?.GoVersion,
@@ -710,10 +710,10 @@ export class LiveAPIConnector {
         artifactId: artifact.a,
         version: targetVersion,
         name: packageName,
-        description:'',
-        license: '',
-        repository: '',
-        homepage: '',
+        description:',
+        license: ',
+        repository: ',
+        homepage: ',
         packaging: artifact.p || 'jar',
         dependencies: [], // Would require POM parsing
         javaVersion: '',

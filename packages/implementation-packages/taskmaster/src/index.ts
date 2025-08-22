@@ -276,10 +276,10 @@ export const isValidOptimizationStrategy = (
  */
 export const getNextWorkflowState = (
   currentState: TaskState
-): TaskState'' | ''null => {
+): TaskState|null => {
   const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
   if (
-    currentIndex === -1'' | '''' | ''currentIndex === DEFAULT_WORKFLOW_STATES.length - 1
+    currentIndex === -1||currentIndex === DEFAULT_WORKFLOW_STATES.length - 1
   ) {
     return null;
   }
@@ -291,7 +291,7 @@ export const getNextWorkflowState = (
  */
 export const getPreviousWorkflowState = (
   currentState: TaskState
-): TaskState'' | ''null => {
+): TaskState|null => {
   const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
   if (currentIndex <= 0) {
     return null;
@@ -308,7 +308,7 @@ export const isValidStateTransition = (
 ): boolean => {
   // Special states can transition to any state
   if (
-    SPECIAL_WORKFLOW_STATES.includes(fromState)'' | '''' | ''SPECIAL_WORKFLOW_STATES.includes(toState)
+    SPECIAL_WORKFLOW_STATES.includes(fromState)||SPECIAL_WORKFLOW_STATES.includes(toState)
   ) {
     return true;
   }
@@ -317,12 +317,12 @@ export const isValidStateTransition = (
   const fromIndex = DEFAULT_WORKFLOW_STATES.indexOf(fromState);
   const toIndex = DEFAULT_WORKFLOW_STATES.indexOf(toState);
 
-  if (fromIndex === -1'' | '''' | ''toIndex === -1) {
+  if (fromIndex === -1||toIndex === -1) {
     return false;
   }
 
   // Allow forward movement, backward movement (for rework), or staying in same state
-  return Math.abs(toIndex - fromIndex) <= 2'' | '''' | ''toIndex >= fromIndex;
+  return Math.abs(toIndex - fromIndex) <= 2||toIndex >= fromIndex;
 };
 
 // =============================================================================

@@ -37,10 +37,10 @@ const assert_structural_equivalency = {} as any;
  * GRPO Configuration exactly matching Stanford DSPy API
  */
 export interface GRPOConfig {
-  metric?: MetricFunction'' | ''null;
+  metric?: MetricFunction|null;
   multitask?: boolean;
-  train_kwargs?:'' | ''Record<string, any>'' | ''Map<LMInterface, Record<string, any>>'' | ''null;
-  adapter?: Adapter'' | ''Map<LMInterface, Adapter>'' | ''null;
+  train_kwargs?:|Record<string, any>|Map<LMInterface, Record<string, any>>|null;
+  adapter?: Adapter|Map<LMInterface, Adapter>|null;
   exclude_demos?: boolean;
   num_threads?: number;
   num_train_steps?: number;
@@ -52,8 +52,8 @@ export interface GRPOConfig {
   report_train_scores?: boolean;
   failure_score?: number;
   format_failure_score?: number;
-  variably_invoked_predictor_grouping_mode?:'truncate | fill' | 'ragged';
-  variably_invoked_predictor_fill_strategy?: 'randint''' | '''max''' | ''null;
+  variably_invoked_predictor_grouping_mode?:'truncate|fill|ragged';
+  variably_invoked_predictor_fill_strategy?: 'randint|max''|null;
 }
 
 /**
@@ -63,11 +63,11 @@ class Counter {
   private counts = new Map<number, number>();
 
   increment(id: number): void {
-    this.counts.set(id, (this.counts.get(id)'' | '''' | ''0) + 1);
+    this.counts.set(id, (this.counts.get(id)||0) + 1);
   }
 
   get(id: number): number {
-    return this.counts.get(id)'' | '''' | ''0;
+    return this.counts.get(id)||0;
   }
 
   most_common(): Array<[number, number]> {
@@ -81,7 +81,7 @@ class Counter {
  * Exact implementation matching Stanford DSPy GRPO teleprompter with 100% API compatibility.
  */
 export class GRPO extends FinetuneTeleprompter {
-  private metric: MetricFunction'' | ''null;
+  private metric: MetricFunction|null;
   private multitask: boolean;
   private adapter: Map<LMInterface, Adapter>;
   private exclude_demos: boolean;
@@ -95,8 +95,8 @@ export class GRPO extends FinetuneTeleprompter {
   private report_train_scores: boolean;
   private failure_score: number;
   private format_failure_score: number;
-  private variably_invoked_predictor_grouping_mode:'' | '''truncate | fill' | 'ragged';
-  private variably_invoked_predictor_fill_strategy: 'randint''' | '''max''' | ''null;
+  private variably_invoked_predictor_grouping_mode:|'truncate|fill|ragged';
+  private variably_invoked_predictor_fill_strategy: 'randint|max''|null;
   private shuffled_trainset_ids: number[];
   private epoch: number;
   private id_freqs: Counter;
@@ -194,7 +194,7 @@ export class GRPO extends FinetuneTeleprompter {
    * Convert adapter to LM dictionary
    */
   private convert_to_lm_dict(
-    adapter: Adapter'' | ''Map<LMInterface, Adapter>'' | ''null
+    adapter: Adapter|Map<LMInterface, Adapter>|null
   ): Map<LMInterface, Adapter> {
     if (adapter instanceof Map) {
       return adapter;
@@ -285,7 +285,7 @@ export class GRPO extends FinetuneTeleprompter {
   private async report_validation_metrics(
     student: DSPyModule,
     trainset: Example[],
-    valset: Example[]'' | ''null,
+    valset: Example[]|null,
     logger: any,
     step_idx: number = -1
   ): Promise<void> {
@@ -572,8 +572,8 @@ export class GRPO extends FinetuneTeleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''DSPyModule[]'' | ''null;
-      valset?: Example[]'' | ''null;
+      teacher?: DSPyModule|DSPyModule[]|null;
+      valset?: Example[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -639,7 +639,7 @@ export class GRPO extends FinetuneTeleprompter {
     logger.info(
       'Preparing the teacher program(s)... We will ensure that the provided programs have the same program structure as the student program.');
     let teachers: DSPyModule[];
-    if ((Array.isArray(teacher) && teacher.length === 0)'' | '''' | ''teacher === null) {
+    if ((Array.isArray(teacher) && teacher.length === 0)||teacher === null) {
       teachers = [student];
     } else {
       teachers = Array.isArray(teacher) ? teacher : [teacher];
@@ -676,7 +676,7 @@ export class GRPO extends FinetuneTeleprompter {
 
     // Update train_kwargs
     for (const pred of student.predictors()) {
-      let train_kwargs = this.trainKwargs?.get(pred.lm)'' | '''' | ''{};
+      let train_kwargs = this.trainKwargs?.get(pred.lm)||{};
       train_kwargs = { ...train_kwargs };
       train_kwargs['num_generations'] = this.num_rollouts_per_grpo_step;
       this.trainKwargs?.set(pred.lm, train_kwargs);
@@ -867,7 +867,7 @@ export class GRPO extends FinetuneTeleprompter {
                 const predictor = trace_instance[0];
                 const pred_lm = predictor.lm;
 
-                const adapter = this.adapter.get(pred_lm)'' | '''' | ''new ChatAdapter();
+                const adapter = this.adapter.get(pred_lm)||new ChatAdapter();
                 if (!(adapter instanceof ChatAdapter)) {
                   throw new Error(
                     `Adapter ${adapter} is not a ChatAdapter. GRPO training is not supported for this adapter.`
@@ -883,7 +883,7 @@ export class GRPO extends FinetuneTeleprompter {
                 if (this.is_failed_prediction(trace_instance[2])) {
                   const failed_pred = trace_instance[2] as FailedPrediction;
                   const failure_score =
-                    failed_pred.format_reward'' | '''' | ''this.format_failure_score;
+                    failed_pred.format_reward||this.format_failure_score;
 
                   example_training_data[group_idx].push({
                     messages: inp_messages,
@@ -970,7 +970,7 @@ export class GRPO extends FinetuneTeleprompter {
         const train_data =
           data_key === null
             ? train_batch_per_predictor.flat()
-            : train_batch_per_predictor[data_key]'' | '''' | ''[];
+            : train_batch_per_predictor[data_key]||[];
 
         for (const group of train_data) {
           if (group.length !== this.num_rollouts_per_grpo_step) {

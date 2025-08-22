@@ -83,7 +83,7 @@ export interface RecoveryStrategy {
   description?: string;
 
   /** Error severity level this strategy handles */
-  severity: 'low | medium' | 'high''' | '''critical';
+  severity: 'low|medium|high|critical';
 
   /** Maximum time to wait for recovery completion (ms) */
   timeout: number;
@@ -92,7 +92,7 @@ export interface RecoveryStrategy {
   maxRetries: number;
 
   /** Delay strategy between retries */
-  backoffStrategy: 'linear | exponential' | 'fixed';
+  backoffStrategy: 'linear|exponential|fixed';
 
   /** Base delay for backoff strategies (ms) */
   baseDelay?: number;
@@ -118,7 +118,7 @@ export interface RecoveryStrategy {
  */
 export interface RecoveryAction {
   /** Type of recovery action */
-  type:'' | '''restart | rollback' | 'failover''' | '''scale | notify' | 'repair''' | '''custom';
+  type:|'restart|rollback|failover|scale|notify|repair|custom'';
 
   /** Target component/service for the action */
   target: string;
@@ -150,7 +150,7 @@ export interface ErrorInfo {
   errorType: string;
 
   /** Error severity level */
-  severity: 'low | medium' | 'high''' | '''critical';
+  severity: 'low|medium|high|critical';
 
   /** Error message */
   message?: string;
@@ -261,14 +261,14 @@ export class ErrorRecoverySystem extends TypedEventBase<ServiceEvents> {
 
     // Set defaults
     this.recoveryConfig = {
-      strategies: config.strategies'' | '''' | ''[],
-      defaultTimeout: config.defaultTimeout'' | '''' | ''30000,
-      maxConcurrentRecoveries: config.maxConcurrentRecoveries'' | '''' | ''10,
+      strategies: config.strategies||[],
+      defaultTimeout: config.defaultTimeout||30000,
+      maxConcurrentRecoveries: config.maxConcurrentRecoveries||10,
       autoRecovery: config.autoRecovery ?? true,
       monitoring: {
         enabled: config.monitoring?.enabled ?? true,
-        metricsInterval: config.monitoring?.metricsInterval'' | '''' | ''60000,
-        alertThresholds: config.monitoring?.alertThresholds'' | '''' | ''{},
+        metricsInterval: config.monitoring?.metricsInterval||60000,
+        alertThresholds: config.monitoring?.alertThresholds||{},
       },
     };
 
@@ -478,7 +478,7 @@ export class ErrorRecoverySystem extends TypedEventBase<ServiceEvents> {
 
   private findRecoveryStrategy(
     errorInfo: ErrorInfo
-  ): RecoveryStrategy'' | ''undefined {
+  ): RecoveryStrategy|undefined {
     const candidates = Array.from(this.strategies.values())
       .filter(
         (strategy) =>
@@ -505,7 +505,7 @@ export class ErrorRecoverySystem extends TypedEventBase<ServiceEvents> {
     return strategy.conditions.some((condition) => {
       // Simple pattern matching - could be extended with regex or more complex rules
       return (
-        condition ==='*''' | '''' | ''condition === errorInfo.component'' | '''' | ''condition === errorInfo.errorType'' | '''' | ''condition === errorInfo.operation'' | '''' | ''errorInfo.message?.includes(condition)
+        condition ==='*'||condition === errorInfo.component||condition === errorInfo.errorType||condition === errorInfo.operation||errorInfo.message?.includes(condition)
       );
     });
   }
@@ -573,7 +573,7 @@ export class ErrorRecoverySystem extends TypedEventBase<ServiceEvents> {
     strategy: RecoveryStrategy
   ): Promise<RecoveryActionResult> {
     const startTime = Date.now();
-    const actionTimeout = action.timeout'' | '''' | ''strategy.timeout;
+    const actionTimeout = action.timeout||strategy.timeout;
 
     this.logger.debug('Executing recovery action', {
       actionType: action.type,

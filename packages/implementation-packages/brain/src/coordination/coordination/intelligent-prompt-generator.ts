@@ -31,14 +31,14 @@ import {
 /**
  * Development phase types for prompt generation
  */
-export type DevelopmentPhase =' | ''specification'' | ''pseudocode'' | ''architecture'' | ''refinement'' | ''completion'' | ''general';
+export type DevelopmentPhase =|specification|pseudocode|architecture|refinement|completion|'general';
 
 /**
  * Coding standards configuration
  */
 export interface CodingStandardsConfig {
   /** Target language (default: typescript) */
-  language?: 'typescript'' | ''javascript'' | ''rust'' | ''python';
+  language?: 'typescript|javascript|rust|python';
   /** Maximum function complexity (default: 10) */
   maxComplexity?: number;
   /** Maximum lines per function (default: 30) */
@@ -46,7 +46,7 @@ export interface CodingStandardsConfig {
   /** Maximum parameters per function (default: 5) */
   maxParameters?: number;
   /** File naming convention (default: kebab-case) */
-  fileNaming?: 'kebab-case'' | ''camelCase'' | ''PascalCase'' | ''snake_case';
+  fileNaming?: 'kebab-case|camelCase|PascalCase|snake_case';
   /** Include performance guidelines */
   includePerformance?: boolean;
   /** Include security guidelines */
@@ -954,7 +954,7 @@ Remember: This prompt learns from your execution. The better you follow and prov
       additionalNeeds: string[];
       actualCodeQuality: number;
       executionTime: number;
-      taskComplexity: 'simple'' | ''moderate'' | ''complex';
+      taskComplexity: 'simple|moderate|complex';
       requirementsCount: number;
     }
   ): Promise<void> {

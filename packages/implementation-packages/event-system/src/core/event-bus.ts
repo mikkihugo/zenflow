@@ -66,7 +66,7 @@ export interface EventBusConfig {
   logLevel: string;
 }
 
-export type EventListenerFunction = (event: unknown) => void'' | ''Promise<void>;
+export type EventListenerFunction = (event: unknown) => void|Promise<void>;
 
 export interface EventMap {
   [key: string]: any;
@@ -82,7 +82,7 @@ export interface EventMetrics {
 
 // Modern koa-compose compatible middleware types
 export interface EventContext {
-  event: string'' | ''symbol;
+  event: string|symbol;
   payload: unknown;
   timestamp: number;
   processedBy: string[];
@@ -108,7 +108,7 @@ export type EventMiddleware = (
 @injectable()
 @singleton()
 export class EventBus extends TypedEventBase {
-  private static instance: EventBus'' | ''null = null;
+  private static instance: EventBus|null = null;
   private middleware: EventMiddleware[] = [];
   private metrics: EventMetrics;
   private config: EventBusConfig;
@@ -188,7 +188,7 @@ export class EventBus extends TypedEventBase {
         // Update local metrics
         this.metrics.eventCount++;
         this.metrics.eventTypes[event] =
-          (this.metrics.eventTypes[event]'' | '''' | ''0) + 1;
+          (this.metrics.eventTypes[event]||0) + 1;
 
         // Run middleware if enabled (now async with koa-compose)
         if (this.config.enableMiddleware && this.middleware.length > 0) {
@@ -230,7 +230,7 @@ export class EventBus extends TypedEventBase {
    * @param event - Event name
    * @param payload - Event payload
    */
-  override emit(event: string'' | ''symbol, payload?: any): boolean {
+  override emit(event: string|symbol, payload?: any): boolean {
     const startTime = Date.now();
 
     try {
@@ -238,7 +238,7 @@ export class EventBus extends TypedEventBase {
       this.metrics.eventCount++;
       const eventKey = String(event);
       this.metrics.eventTypes[eventKey] =
-        (this.metrics.eventTypes[eventKey]'' | '''' | ''0) + 1;
+        (this.metrics.eventTypes[eventKey]||0) + 1;
 
       // Handle middleware for synchronous usage
       if (this.config.enableMiddleware && this.middleware.length > 0) {
@@ -276,7 +276,7 @@ export class EventBus extends TypedEventBase {
   /**
    * Type-safe event listener registration with telemetry.
    */
-  override on(event: string'' | ''symbol, listener: EventListenerFunction): this {
+  override on(event: string|symbol, listener: EventListenerFunction): this {
     super.on(event, listener);
     this.metrics.listenerCount++;
 
@@ -294,7 +294,7 @@ export class EventBus extends TypedEventBase {
   /**
    * Type-safe once listener registration.
    */
-  override once(event: string'' | ''symbol, listener: EventListenerFunction): this {
+  override once(event: string|symbol, listener: EventListenerFunction): this {
     super.once(event, listener);
     this.metrics.listenerCount++;
     return this;
@@ -303,7 +303,7 @@ export class EventBus extends TypedEventBase {
   /**
    * Type-safe event listener removal with telemetry.
    */
-  override off(event: string'' | ''symbol, listener: EventListenerFunction): this {
+  override off(event: string|symbol, listener: EventListenerFunction): this {
     super.off(event, listener);
     this.metrics.listenerCount = Math.max(0, this.metrics.listenerCount - 1);
 

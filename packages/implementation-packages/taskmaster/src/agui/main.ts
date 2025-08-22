@@ -35,7 +35,7 @@
  * terminal-based and mock interfaces for development and testing.
  *
  * @param config - Optional configuration object for AGUI system setup
- * @param config.aguiType - Type of AGUI interface to create ('terminal''' | '''mock'). Defaults to 'terminal'
+ * @param config.aguiType - Type of AGUI interface to create ('terminal|mock''). Defaults to 'terminal'
  * @param config.taskApprovalConfig - Partial configuration for the task approval system
  *
  * @returns Promise resolving to an object containing both the AGUI interface and task approval system
@@ -292,7 +292,7 @@ export async function getHumanInteraction(config?: AGUIConfig): Promise<any> {
     approve: (request: ApprovalRequest) =>
       taskApproval.requestApproval(request),
     notify: (message: string, type?: MessageType) =>
-      agui.showMessage?.(message, type'' | '''' | '''info'),
+      agui.showMessage?.(message, type||'info'),
     progress: (info: ProgressInfo) => agui.showProgress?.(info),
   };
 }

@@ -112,7 +112,7 @@ export interface SafeIntegrationConfig {
     enableContinuousLearning: boolean;
     trackDecisionPatterns: boolean;
     adaptPrompts: boolean;
-    auditCompliance: 'basic | soc2' | 'comprehensive';
+    auditCompliance: 'basic|soc2|comprehensive';
   };
 }
 
@@ -122,7 +122,7 @@ export interface SafeIntegrationConfig {
 export interface SafeGateContext {
   category: SafeGateCategory;
   safeEntity: {
-    type: 'epic | feature' | 'story' | 'capability' | 'solution';
+    type: 'epic|feature|story|capability|solution';
     id: string;
     metadata: Record<string, unknown>;
   };
@@ -139,7 +139,7 @@ export interface SafeGateContext {
   compliance: {
     required: boolean;
     frameworks: string[];
-    auditLevel: 'basic | enhanced' | 'comprehensive';
+    auditLevel: 'basic|enhanced|comprehensive';
   };
 }
 
@@ -163,7 +163,7 @@ export interface SafeGateTraceabilityRecord {
 
   humanDecision?: {
     approver: string;
-    decision: 'approved | rejected' | 'escalated';
+    decision: 'approved|rejected|escalated';
     reasoning: string;
     timestamp: Date;
     reviewTime: number;
@@ -552,7 +552,7 @@ export class SafeFrameworkIntegration {
    */
   async getTraceabilityRecord(
     traceabilityId: string
-  ): Promise<SafeGateTraceabilityRecord'' | ''null> {
+  ): Promise<SafeGateTraceabilityRecord|null> {
     const record = this.traceabilityRecords.get(traceabilityId);
     if (record) {
       return record;
@@ -914,8 +914,8 @@ export class SafeFrameworkIntegration {
         approved: qualityResult.status === 'pass',
         confidence: qualityResult.score / 100,
         reasoning: qualityResult.message,
-        concerns: qualityResult.recommendations'' | '''' | ''[],
-        suggestedActions: qualityResult.recommendations'' | '''' | ''[],
+        concerns: qualityResult.recommendations||[],
+        suggestedActions: qualityResult.recommendations||[],
         metadata: {
           model:'quality-gate-ai',
           processingTime: qualityResult.executionTime,
@@ -928,7 +928,7 @@ export class SafeFrameworkIntegration {
         qualityResult.score / 100 >=
           this.config.qualityGates.humanFallbackThreshold,
       escalatedToHuman:
-        qualityResult.status !== 'pass''' | '''' | ''qualityResult.score / 100 <
+        qualityResult.status !== 'pass'||qualityResult.score / 100 <
           this.config.qualityGates.humanFallbackThreshold,
       processingTime: qualityResult.executionTime,
       timestamp: qualityResult.timestamp,
@@ -1058,13 +1058,13 @@ export class SafeFrameworkIntegration {
   private async updateLearningModels(
     record: SafeGateTraceabilityRecord
   ): Promise<void> {
-    if (!record.aiDecision'' | '''' | ''!record.humanDecision) return;
+    if (!record.aiDecision||!record.humanDecision) return;
 
     // Update LLM approval service with human feedback
     const humanOverride = {
       id: `override-${record.id}`,
       userId: record.humanDecision.approver,
-      action: record.humanDecision.decision as'approve''' | '''reject',
+      action: record.humanDecision.decision as'approve|reject'',
       reason: record.humanDecision.reasoning,
       previousLLMDecision: {
         approved: record.aiDecision.confidence > 0.7,
@@ -1130,7 +1130,7 @@ export class SafeFrameworkIntegration {
 
   private async loadTraceabilityRecord(
     traceabilityId: string
-  ): Promise<SafeGateTraceabilityRecord'' | ''null> {
+  ): Promise<SafeGateTraceabilityRecord|null> {
     const row = await this.database('safe_gate_traceability')
       .where('id', traceabilityId)
       .first();
@@ -1167,7 +1167,7 @@ export class SafeFrameworkIntegration {
       [PortfolioKanbanState.DONE]: 'completion',
     };
 
-    return transitions[toState]'' | '''' | '''unknown';
+    return transitions[toState]||'unknown';
   }
 
   private getRequiredApprovalCount(
@@ -1206,7 +1206,7 @@ export class SafeFrameworkIntegration {
 
   private assessRiskLevel(
     context: SafeGateContext
-  ): 'low | medium' | 'high''' | '''critical' {
+  ): 'low|medium|high|critical' {
     // Assess based on compliance and entity type
     if (context.compliance.auditLevel === 'comprehensive') return 'high';
     if (context.safeEntity.type === 'epic') return 'medium';

@@ -59,7 +59,7 @@ interface ErrorCategories {
  */
 interface AlphaCertification {
   timestamp: string;
-  status: 'ALPHA_READY''' | '''IN_PROGRESS';
+  status: 'ALPHA_READY|IN_PROGRESS'';
   errorCount: number;
   buildSuccess: boolean;
   verifiedBy: string;
@@ -75,7 +75,7 @@ interface BuildReport {
   currentErrorCount: number;
   buildHistory: BuildResult[];
   errorCategories: ErrorCategories;
-  status: 'ALPHA_READY''' | '''IN_PROGRESS';
+  status: 'ALPHA_READY|IN_PROGRESS'';
 }
 
 /**
@@ -115,7 +115,7 @@ class BuildMonitor {
   async runBuild(): Promise<BuildResult> {
     try {
       const { stdout, stderr } = await execAsync('npm run build');
-      const buildOutput = stderr'' | '''' | ''stdout;
+      const buildOutput = stderr||stdout;
       const errors = this.parseErrors(buildOutput);
       const buildResult: BuildResult = {
         timestamp: new Date().toISOString(),
@@ -153,7 +153,7 @@ class BuildMonitor {
 
     const errorLines = buildOutput
       .split('\n')
-      .filter((line) => line.includes('error TS')'' | '''' | ''line.includes('Error'));
+      .filter((line) => line.includes('error TS')||line.includes('Error'));
 
     return errorLines.map((line) => {
       const match = line.match(/([^:]+):\s*error\s+TS(\d+):\s*(.+)/);
@@ -179,7 +179,7 @@ class BuildMonitor {
       const { stdout } = await execAsync(
         'npx claude-zen hooks pre-search --query "agent-progress" --cache-results true'
       );
-      return stdout.includes('progress')'' | '''' | ''stdout.includes('fixed');
+      return stdout.includes('progress')||stdout.includes('fixed');
     } catch (_error) {
       // Swarm memory check failed, assume no activity
       return false;

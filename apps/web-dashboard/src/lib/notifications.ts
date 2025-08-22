@@ -5,12 +5,12 @@
 
 import { toast } from '@zerodevx/svelte-toast';
 
-export type NotificationType = 'success | error' | 'warning''' | '''info';
+export type NotificationType = 'success|error|warning|info';
 
 export interface NotificationOptions {
   duration?: number;
   dismissible?: boolean;
-  position?: 'top-right''' | '''top-left''' | '''bottom-right''' | '''bottom-left';
+  position?: 'top-right|top-left'||bottom-right|bottom-left'';
   id?: string;
 }
 
@@ -58,7 +58,7 @@ export function notifySuccess(
 ): number {
   return toast.push(`${icons.success} ${message}`, {
     theme: themes.success,
-    duration: options.duration'' | '''' | ''4000,
+    duration: options.duration||4000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -73,7 +73,7 @@ export function notifyError(
 ): number {
   return toast.push(`${icons.error} ${message}`, {
     theme: themes.error,
-    duration: options.duration'' | '''' | ''6000,
+    duration: options.duration||6000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -88,7 +88,7 @@ export function notifyWarning(
 ): number {
   return toast.push(`${icons.warning} ${message}`, {
     theme: themes.warning,
-    duration: options.duration'' | '''' | ''5000,
+    duration: options.duration||5000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -103,7 +103,7 @@ export function notifyInfo(
 ): number {
   return toast.push(`${icons.info} ${message}`, {
     theme: themes.info,
-    duration: options.duration'' | '''' | ''4000,
+    duration: options.duration||4000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -122,7 +122,7 @@ export function notify(
   
   return toast.push(`${icon} ${message}`, {
     theme,
-    duration: options.duration'' | '''' | ''4000,
+    duration: options.duration||4000,
     dismissible: options.dismissible ?? true,
     ...options
   });

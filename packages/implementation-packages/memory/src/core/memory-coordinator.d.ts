@@ -6,7 +6,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 export interface BackendInterface {
   initialize(): Promise<void>;
   store(key: string, value: unknown, namespace?: string): Promise<unknown>;
-  retrieve(key: string, namespace?: string): Promise<any'' | ''null>;
+  retrieve(key: string, namespace?: string): Promise<any|null>;
   search(pattern: string, namespace?: string): Promise<Record<string, unknown>>;
   delete(key: string, namespace?: string): Promise<boolean>;
   listNamespaces(): Promise<string[]>;
@@ -18,34 +18,34 @@ export interface MemoryCoordinationConfig {
   consensus: {
     quorum: number;
     timeout: number;
-    strategy:'majority | unanimous' | 'leader';
+    strategy:'majority|unanimous|leader';
   };
   distributed: {
     replication: number;
-    consistency: 'eventual | strong' | 'weak';
-    partitioning: 'hash | range' | 'consistent';
+    consistency: 'eventual|strong|weak';
+    partitioning: 'hash|range|consistent';
   };
   optimization: {
     autoCompaction: boolean;
-    cacheEviction: 'lru | lfu' | 'adaptive';
+    cacheEviction: 'lru|lfu|adaptive';
     memoryThreshold: number;
   };
 }
 export interface MemoryNode {
   id: string;
   backend: BackendInterface;
-  status: 'active | inactive' | 'degraded';
+  status: 'active|inactive|degraded';
   lastHeartbeat: number;
   load: number;
   capacity: number;
 }
 export interface CoordinationDecision {
   id: string;
-  type: 'read | write' | 'delete' | 'sync' | 'repair';
+  type: 'read|write|delete|sync|repair';
   sessionId: string;
   target: string;
   participants: string[];
-  status: 'pending | executing' | 'completed''' | '''failed';
+  status: 'pending|executing|completed|failed';
   timestamp: number;
   metadata?: Record<string, unknown>;
 }

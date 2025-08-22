@@ -26,20 +26,20 @@ export declare const WorkflowStepSchema: z.ZodObject<
   {
     type: string;
     retries: number;
-    onError: 'stop'' | ''continue'' | ''skip';
-    params?: Record<string, unknown>' | 'undefined;
-    name?: string | undefined;
-    timeout?: number | undefined;
-    output?: string | undefined;
+    onError: 'stop|continue|skip';
+    params?: Record<string, unknown>|undefined;
+    name?: string|undefined;
+    timeout?: number|undefined;
+    output?: string|undefined;
   },
   {
     type: string;
-    params?: Record<string, unknown>' | 'undefined;
+    params?: Record<string, unknown>|undefined;
     name?: string | undefined;
     retries?: number | undefined;
     timeout?: number | undefined;
     output?: string | undefined;
-    onError?:'stop'' | ''continue'' | ''skip'' | 'undefined;
+    onError?:'stop|continue|skip'|undefined;
   }
 >;
 /**
@@ -64,20 +64,20 @@ export declare const WorkflowDefinitionSchema: z.ZodObject<
         {
           type: string;
           retries: number;
-          onError: 'stop'' | ''continue'' | ''skip';
-          params?: Record<string, unknown>' | 'undefined;
-          name?: string | undefined;
-          timeout?: number | undefined;
-          output?: string | undefined;
+          onError: 'stop|continue|skip';
+          params?: Record<string, unknown>|undefined;
+          name?: string|undefined;
+          timeout?: number|undefined;
+          output?: string|undefined;
         },
         {
           type: string;
-          params?: Record<string, unknown>' | 'undefined;
+          params?: Record<string, unknown>|undefined;
           name?: string | undefined;
           retries?: number | undefined;
           timeout?: number | undefined;
           output?: string | undefined;
-          onError?:'stop'' | ''continue'' | ''skip'' | 'undefined;
+          onError?:'stop|continue|skip'|undefined;
         }
       >,'many'
     >;
@@ -94,33 +94,33 @@ export declare const WorkflowDefinitionSchema: z.ZodObject<
     steps: {
       type: string;
       retries: number;
-      onError: 'stop'' | ''continue'' | ''skip';
-      params?: Record<string, unknown>' | 'undefined;
-      name?: string | undefined;
-      timeout?: number | undefined;
-      output?: string | undefined;
+      onError: 'stop|continue|skip';
+      params?: Record<string, unknown>|undefined;
+      name?: string|undefined;
+      timeout?: number|undefined;
+      output?: string|undefined;
     }[];
     maxConcurrency: number;
-    description?: string | undefined;
-    timeout?: number | undefined;
-    version?: string | undefined;
-    tags?: string[]' | 'undefined;
+    description?: string|undefined;
+    timeout?: number|undefined;
+    version?: string|undefined;
+    tags?: string[]|undefined;
   },
   {
     name: string;
     steps: {
       type: string;
-      params?: Record<string, unknown>' | 'undefined;
+      params?: Record<string, unknown>|undefined;
       name?: string | undefined;
       retries?: number | undefined;
       timeout?: number | undefined;
       output?: string | undefined;
-      onError?:'stop'' | ''continue'' | ''skip'' | 'undefined;
+      onError?:'stop|continue|skip'|undefined;
     }[];
-    description?: string | undefined;
-    timeout?: number | undefined;
-    version?: string | undefined;
-    tags?: string[]' | 'undefined;
+    description?: string|undefined;
+    timeout?: number|undefined;
+    version?: string|undefined;
+    tags?: string[]|undefined;
     maxConcurrency?: number | undefined;
   }
 >;

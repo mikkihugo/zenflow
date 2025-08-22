@@ -20,7 +20,7 @@ import { DataLifecycleManager } from './data-lifecycle-manager';
 interface SwarmSession {
   sessionId: string;
   swarmId: string;
-  type:'' | '''dev-swarm''' | '''ops-swarm''' | '''coordination-swarm''' | '''hybrid-swarm''' | '''sparc-swarm';
+  type:|'dev-swarm|ops-swarm'||coordination-swarm|hybrid-swarm'||sparc-swarm';
   startTime: number;
   endTime: number;
   participants: Array<{
@@ -31,7 +31,7 @@ interface SwarmSession {
   decisions: Array<{
     decisionId: string;
     context: string;
-    outcome: 'success | failure' | 'partial';
+    outcome: 'success|failure|partial';
     metrics: Record<string, number>;
   }>;
   collaborationPatterns: Array<{
@@ -40,7 +40,7 @@ interface SwarmSession {
     frequency: number;
   }>;
   artifacts: Array<{
-    type: 'code | documentation' | 'decision''' | '''analysis';
+    type: 'code|documentation|decision|analysis';
     content: string;
     quality: number;
   }>;
@@ -439,23 +439,23 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
     return (
       entryData &&
       typeof entryData === 'object' &&
-      ('sessionId'in entryData'' | '''' | '''swarmId' in entryData) &&
-      ('participants'in entryData'' | '''' | '''decisions'in entryData)
+      ('sessionId'in entryData||'swarmId' in entryData) &&
+      ('participants'in entryData||'decisions'in entryData)
     );
   }
 
   private parseSessionData(entryData: any): SwarmSession {
     // Parse and normalize session data from various formats
     return {
-      sessionId: entryData.sessionId'' | '''' | ''entryData.id'' | '''' | ''`session-${Date.now()}`,
-      swarmId: entryData.swarmId'' | '''' | '''unknown',
-      type: entryData.type'' | '''' | '''coordination-swarm',
-      startTime: entryData.startTime'' | '''' | ''Date.now() - 3600000,
-      endTime: entryData.endTime'' | '''' | ''Date.now(),
-      participants: entryData.participants'' | '''' | ''[],
-      decisions: entryData.decisions'' | '''' | ''[],
-      collaborationPatterns: entryData.collaborationPatterns'' | '''' | ''[],
-      artifacts: entryData.artifacts'' | '''' | ''[],
+      sessionId: entryData.sessionId||entryData.id||`session-${Date.now()}`,
+      swarmId: entryData.swarmId||'unknown',
+      type: entryData.type||'coordination-swarm',
+      startTime: entryData.startTime||Date.now() - 3600000,
+      endTime: entryData.endTime||Date.now(),
+      participants: entryData.participants||[],
+      decisions: entryData.decisions||[],
+      collaborationPatterns: entryData.collaborationPatterns||[],
+      artifacts: entryData.artifacts||[],
       sparcPhases: entryData.sparcPhases,
     };
   }
@@ -477,8 +477,8 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
             ...mlPatterns.map((p: any) => ({
               pattern: p.description,
               successRate: p.confidence,
-              contexts: p.contexts'' | '''' | ''[],
-              recommendations: p.recommendations'' | '''' | ''[],
+              contexts: p.contexts||[],
+              recommendations: p.recommendations||[],
             }))
           );
         }
@@ -532,7 +532,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       try {
         const features = [avgTaskCompletion, avgCollaboration, decisionQuality];
         const prediction = await this.brainCoordinator.predict(features);
-        adaptabilityScore = prediction.output.adaptability'' | '''' | ''0.5;
+        adaptabilityScore = prediction.output.adaptability||0.5;
       } catch (error) {
         this.logger.debug('Brain adaptability prediction failed, using default'
         );
@@ -590,7 +590,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
       // Group failures by context
       const failureGroups = new Map<string, typeof failures>();
       failures.forEach((failure) => {
-        const context = failure.context'' | '''' | '''unknown';
+        const context = failure.context||'unknown';
         if (!failureGroups.has(context)) {
           failureGroups.set(context, []);
         }
@@ -612,8 +612,8 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
 
   private async extractSPARCInsights(
     sessionData: SwarmSession
-  ): Promise<ExtractedKnowledge['sparcInsights']'' | ''undefined> {
-    if (!sessionData.sparcPhases'' | '''' | ''!this.sparcEngine) {
+  ): Promise<ExtractedKnowledge['sparcInsights']|undefined> {
+    if (!sessionData.sparcPhases||!this.sparcEngine) {
       return undefined;
     }
 
@@ -689,7 +689,7 @@ export class SwarmKnowledgeExtractor extends TypedEventBase {
           sessionData.participants.length,
         ];
         const prediction = await this.brainCoordinator.predict(features);
-        const mlImportance = prediction.output.importance'' | '''' | ''0.5;
+        const mlImportance = prediction.output.importance||0.5;
         importance = (importance + mlImportance) / 2; // Blend manual and ML scores
       } catch (error) {
         this.logger.debug('Brain importance prediction failed, using manual calculation'

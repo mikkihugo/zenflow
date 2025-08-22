@@ -52,7 +52,7 @@ export interface WIPLimitExceededEvent extends OrchestrationEvent {
 /**
  * Union of all orchestration event types
  */
-export type OrchestrationEventType ='' | ''StreamStatusChangedEvent'' | ''WIPLimitExceededEvent;
+export type OrchestrationEventType =|StreamStatusChangedEvent|WIPLimitExceededEvent;
 
 // ============================================================================
 // EVENT TYPE GUARDS
@@ -63,8 +63,8 @@ export type OrchestrationEventType ='' | ''StreamStatusChangedEvent'' | ''WIPLim
  */
 export function isStreamEvent(
   event: OrchestrationEventType
-): event is StreamStatusChangedEvent'' | ''WIPLimitExceededEvent {
+): event is StreamStatusChangedEvent|WIPLimitExceededEvent {
   return (
-    event.type.startsWith('orchestration:stream:')'' | '''' | ''event.type.startsWith('orchestration:wip:')
+    event.type.startsWith('orchestration:stream:')||event.type.startsWith('orchestration:wip:')
   );
 }

@@ -224,7 +224,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     });
 
     it('should handle different priority levels', async () => {
-      const priorities: Array<'low'' | ''medium'' | ''high'> = [
+      const priorities: Array<'low|medium|high'> = [
         'low',
         'medium',
         'high',
@@ -247,7 +247,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     });
 
     it('should handle different quality levels', async () => {
-      const qualityLevels: Array<'basic'' | ''standard'' | ''premium'> = [
+      const qualityLevels: Array<'basic|standard|premium'> = [
         'basic',
         'standard',
         'premium',
@@ -602,7 +602,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     });
 
     it('should handle different quality levels for classification', async () => {
-      const qualityLevels: Array<'basic'' | ''standard'' | ''premium'> = [
+      const qualityLevels: Array<'basic|standard|premium'> = [
         'basic',
         'standard',
         'premium',
@@ -794,7 +794,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     });
 
     it('should handle different image formats', async () => {
-      const formats: Array<'png'' | ''jpg'' | ''jpeg'' | ''webp'' | ''gif'> = [
+      const formats: Array<'png|jpg|jpeg|webp|gif'> = [
         'png',
         'jpg',
         'jpeg',

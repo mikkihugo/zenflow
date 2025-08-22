@@ -17,8 +17,8 @@ import type { DSPyExample } from '../types/interfaces.js';
 export interface BrainAnalysisRequest {
   task: string;
   context?: string;
-  complexity?: 'simple | moderate' | 'complex';
-  role?: 'user | analyst' | 'architect';
+  complexity?: 'simple | moderate|complex';
+  role?: 'user | analyst|architect';
   optimizePrompt?: boolean;
 }
 export interface BrainOptimizationRequest {

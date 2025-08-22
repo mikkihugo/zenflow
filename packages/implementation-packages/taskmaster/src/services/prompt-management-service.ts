@@ -30,7 +30,7 @@ export interface PromptVersion {
   approvedAt?: Date;
 
   // Status tracking
-  status: 'draft | review' | 'approved' | 'deprecated' | 'archived';
+  status: 'draft|review|approved|deprecated|archived';
 
   // Performance tracking
   performance: {
@@ -114,7 +114,7 @@ export interface PromptVariant {
 export interface PromptAuditEntry {
   id: string;
   promptId: string;
-  action:'' | '''created | updated' | 'approved''' | '''deployed | deprecated' | 'accessed''' | '''variant_created';
+  action:|'created|updated|approved|deployed|deprecated|accessed|variant_created'';
   userId: string;
   timestamp: Date;
 
@@ -133,7 +133,7 @@ export interface PromptAuditEntry {
   // Compliance metadata
   reason?: string;
   approvalReference?: string;
-  riskAssessment?: 'low | medium' | 'high';
+  riskAssessment?: 'low|medium|high';
 
   metadata: Record<string, unknown>;
 }
@@ -151,7 +151,7 @@ export interface PromptDraft {
   comments: DraftComment[];
 
   // Workflow integration
-  reviewStatus: 'pending | in_review' | 'approved''' | '''rejected';
+  reviewStatus: 'pending|in_review|approved|rejected';
   workflowInstanceId?: string;
 
   createdAt: Date;
@@ -239,9 +239,9 @@ export class PromptManagementService {
       variants: [],
       accessControl: {
         owners: data.owners,
-        editors: data.editors'' | '''' | ''[],
-        viewers: data.viewers'' | '''' | ''[],
-        approvers: data.approvers'' | '''' | ''[],
+        editors: data.editors||[],
+        viewers: data.viewers||[],
+        approvers: data.approvers||[],
       },
       auditLog: [],
       createdAt: new Date(),
@@ -309,7 +309,7 @@ export class PromptManagementService {
         ...template.versions[template.versions.length - 1].config,
         ...data.config,
       },
-      tags: data.tags'' | '''' | ''[],
+      tags: data.tags||[],
       metadata: {},
     };
 
@@ -428,7 +428,7 @@ export class PromptManagementService {
         ...template.versions[template.versions.length - 1].config,
         ...data.config,
       },
-      collaborators: data.collaborators'' | '''' | ''[],
+      collaborators: data.collaborators||[],
       comments: [],
       reviewStatus:'pending',
       createdAt: new Date(),
@@ -456,7 +456,7 @@ export class PromptManagementService {
     auditContext: any,
     approvalData: {
       reason: string;
-      riskAssessment: 'low | medium' | 'high';
+      riskAssessment: 'low|medium|high';
       approvalReference?: string;
     }
   ): Promise<void> {
@@ -603,7 +603,7 @@ export class PromptManagementService {
   private async checkPermission(
     template: PromptTemplate,
     userId: string,
-    action: 'view | edit' | 'approve'
+    action: 'view|edit|approve'
   ): Promise<void> {
     const { accessControl } = template;
 
@@ -642,7 +642,7 @@ export class PromptManagementService {
     return `${major}.${minor}.${patch + 1}`;
   }
 
-  private selectVariant(template: PromptTemplate): PromptVariant'' | ''undefined {
+  private selectVariant(template: PromptTemplate): PromptVariant|undefined {
     const activeVariants = template.variants.filter((v) => v.isActive);
     if (activeVariants.length === 0) return undefined;
 
@@ -883,7 +883,7 @@ export class PromptManagementService {
 
   private async getPromptTemplate(
     promptId: string
-  ): Promise<PromptTemplate'' | ''null> {
+  ): Promise<PromptTemplate|null> {
     // Implementation would fetch from database and reconstruct object
     // This is a placeholder
     return null;
@@ -898,7 +898,7 @@ export class PromptManagementService {
 
   private async getPromptTemplateByVersionId(
     versionId: string
-  ): Promise<PromptTemplate'' | ''null> {
+  ): Promise<PromptTemplate|null> {
     // Implementation would fetch template by version ID
     return null;
   }

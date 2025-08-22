@@ -75,7 +75,7 @@ export interface EpicKanbanContext {
 /**
  * Epic Kanban state machine events
  */
-export type EpicKanbanEvent ='' | ''{ type:'SUBMIT_FOR_ANALYSIS'; businessCase: BusinessCase }'' | ''{ type:'ANALYSIS_COMPLETE'; wsjfPriority: WSJFPriority }'' | ''{ type:'ANALYSIS_REJECTED'; reason: string }'' | ''{ type:'APPROVE_FOR_IMPLEMENTATION'}'' | ''{ type:'CAPACITY_AVAILABLE'}'' | ''{ type:'CAPACITY_FULL'}'' | ''{ type:'IMPLEMENTATION_STARTED'; startTime: Date }'' | ''{ type:'IMPLEMENTATION_BLOCKED'; blockers: string[] }'' | ''{ type:'UNBLOCK_IMPLEMENTATION'}'' | ''{ type:'IMPLEMENTATION_COMPLETE'}'' | ''{ type:'SPLIT_EPIC'; splitEpics: PortfolioEpic[] }'' | ''{ type:'CANCEL_EPIC'; reason: string }'' | ''{ type:'RETRY' };
+export type EpicKanbanEvent =|{ type:'SUBMIT_FOR_ANALYSIS'; businessCase: BusinessCase }|{ type:'ANALYSIS_COMPLETE'; wsjfPriority: WSJFPriority }|{ type:'ANALYSIS_REJECTED'; reason: string }|{ type:'APPROVE_FOR_IMPLEMENTATION'}|{ type:'CAPACITY_AVAILABLE'}|{ type:'CAPACITY_FULL'}|{ type:'IMPLEMENTATION_STARTED'; startTime: Date }|{ type:'IMPLEMENTATION_BLOCKED'; blockers: string[] }|{ type:'UNBLOCK_IMPLEMENTATION'}|{ type:'IMPLEMENTATION_COMPLETE'}|{ type:'SPLIT_EPIC'; splitEpics: PortfolioEpic[] }|{ type:'CANCEL_EPIC'; reason: string }|{ type:'RETRY' };
 
 // ============================================================================
 // GUARDS (BUSINESS RULES)

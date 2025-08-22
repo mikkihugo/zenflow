@@ -70,7 +70,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0]'' | '''' | ''{
+      initiator: config.initialParticipants[0]||{
         id:'unknown',
         swarmId: 'system',
         type: 'coordinator',
@@ -222,7 +222,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     session.messages.push(message);
     session.metrics.messageCount++;
     session.metrics.participationByAgent[message.fromAgent.id] =
-      (session.metrics.participationByAgent[message.fromAgent.id]'' | '''' | ''0) + 1;
+      (session.metrics.participationByAgent[message.fromAgent.id]||0) + 1;
 
     // Update storage
     await this.storage.addMessage(message.conversationId, message);
@@ -435,7 +435,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * Simple event system.
    */
   private async emit(event: string, data: unknown): Promise<void> {
-    const handlers = this.eventHandlers.get(event)'' | '''' | ''[];
+    const handlers = this.eventHandlers.get(event)||[];
     await Promise.all(handlers.map((handler) => handler(data)));
   }
 
@@ -459,7 +459,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Get conversation by ID.
    */
-  public getSession(conversationId: string): ConversationSession'' | ''undefined {
+  public getSession(conversationId: string): ConversationSession|undefined {
     return this.activeSessions.get(conversationId);
   }
 }

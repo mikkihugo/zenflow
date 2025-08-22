@@ -140,12 +140,12 @@ export interface EventManagerTransaction {
   id: string;
   operations: Array<{
     manager: string;
-    operation: 'emit | subscribe' | 'unsubscribe';
+    operation: 'emit|subscribe|unsubscribe';
     data: unknown;
     result?: unknown;
     error?: Error;
   }>;
-  status: 'pending | executing' | 'completed''' | '''failed';
+  status: 'pending|executing|completed|failed';
   startTime: Date;
   endTime?: Date;
   error?: Error;
@@ -354,7 +354,7 @@ export class UELFactory {
     return (await this.createEventManager({
       managerType: EventManagerTypes.SYSTEM,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'REAL_TIME',
     })) as SystemEventManager;
   }
@@ -372,7 +372,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.COORDINATION,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'HIGH_THROUGHPUT',
     });
   }
@@ -390,7 +390,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.COMMUNICATION,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'REAL_TIME',
     });
   }
@@ -408,7 +408,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.MONITORING,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'BATCH_PROCESSING',
     });
   }
@@ -426,7 +426,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.INTERFACE,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'REAL_TIME',
     });
   }
@@ -444,7 +444,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.NEURAL,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'RELIABLE',
     });
   }
@@ -462,7 +462,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.DATABASE,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'BATCH_PROCESSING',
     });
   }
@@ -480,7 +480,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.MEMORY,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
     });
   }
 
@@ -497,7 +497,7 @@ export class UELFactory {
     return await this.createEventManager({
       managerType: EventManagerTypes.WORKFLOW,
       name,
-      config: config'' | '''' | ''undefined,
+      config: config||undefined,
       preset:'RELIABLE',
     });
   }
@@ -507,8 +507,8 @@ export class UELFactory {
    *
    * @param managerId
    */
-  getEventManager(managerId: string): EventManager'' | ''null {
-    return this.managerRegistry.findEventManager?.(managerId)'' | '''' | ''null;
+  getEventManager(managerId: string): EventManager|null {
+    return this.managerRegistry.findEventManager?.(managerId)||null;
   }
 
   /**
@@ -584,7 +584,7 @@ export class UELFactory {
   async executeTransaction(
     operations: Array<{
       manager: string;
-      operation: 'emit | subscribe' | 'unsubscribe';
+      operation: 'emit|subscribe|unsubscribe';
       data: unknown;
     }>
   ): Promise<EventManagerTransaction> {
@@ -854,7 +854,7 @@ export class UELFactory {
       throw new Error(`Invalid event manager type: ${managerType}`);
     }
 
-    if (!name'' | '''' | ''typeof name !=='string') {
+    if (!name||typeof name !=='string') {
       throw new Error(`Invalid event manager name: ${name}`);
     }
 
@@ -868,7 +868,7 @@ export class UELFactory {
     preset?: keyof typeof EventManagerPresets
   ): EventManagerConfig {
     const defaults =
-      (DefaultEventManagerConfigs as any)?.[managerType]'' | '''' | ''(DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
+      (DefaultEventManagerConfigs as any)?.[managerType]||(DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
     const presetConfig = preset ? EventManagerPresets[preset] : {};
 
     return {
@@ -945,7 +945,7 @@ export class UELRegistry implements EventManagerRegistry {
 
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T>'' | ''undefined {
+  ): EventManagerFactory<T>|undefined {
     return this.factories.get(type) as EventManagerFactory<T>;
   }
 
@@ -957,7 +957,7 @@ export class UELRegistry implements EventManagerRegistry {
     return new Map(this.globalEventManagers);
   }
 
-  findEventManager(name: string): EventManager'' | ''undefined {
+  findEventManager(name: string): EventManager|undefined {
     return this.globalEventManagers.get(name);
   }
 

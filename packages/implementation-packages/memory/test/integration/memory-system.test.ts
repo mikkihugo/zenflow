@@ -313,8 +313,8 @@ describe('Memory System Integration', () => {
 
       memorySystem.store.mockImplementation(
         async (key: string, value: any, options: any = {}) => {
-          const primaryBackend = options.backend'' | '''' | '''cache';
-          const fallbackBackend = options.fallback'' | '''' | '''session';
+          const primaryBackend = options.backend||'cache';
+          const fallbackBackend = options.fallback||'session';
 
           try {
             await mockBackends[primaryBackend].store(key, value);

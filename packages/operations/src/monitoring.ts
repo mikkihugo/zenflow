@@ -34,9 +34,9 @@ const logger = getLogger('operations-monitoring');
  * Custom error types for monitoring operations
  */
 export class MonitoringSystemError extends Error {
-  public override cause?: Error'' | ''undefined;
+  public override cause?: Error|undefined;
 
-  constructor(message: string, cause?: Error'' | ''undefined) {
+  constructor(message: string, cause?: Error|undefined) {
     super(message);
     this.name ='MonitoringSystemError';
     this.cause = cause;
@@ -44,7 +44,7 @@ export class MonitoringSystemError extends Error {
 }
 
 export class MonitoringSystemConnectionError extends MonitoringSystemError {
-  constructor(message: string, cause?: Error'' | ''undefined) {
+  constructor(message: string, cause?: Error|undefined) {
     super(message, cause);
     this.name ='MonitoringSystemConnectionError';
   }
@@ -198,7 +198,7 @@ interface MonitoringSystemConfig {
  * Implementation of monitoring access via runtime delegation
  */
 class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
-  private monitoringModule: MonitoringSystemModule'' | ''null = null;
+  private monitoringModule: MonitoringSystemModule|null = null;
 
   private async getMonitoringModule(): Promise<MonitoringSystemModule> {
     if (!this.monitoringModule) {
@@ -278,7 +278,7 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
 }
 
 // Global singleton instance
-let globalMonitoringSystemAccess: MonitoringSystemAccess'' | ''null = null;
+let globalMonitoringSystemAccess: MonitoringSystemAccess|null = null;
 
 /**
  * Get monitoring access interface (singleton pattern)
@@ -379,7 +379,7 @@ interface TelemetryMonitoringModule {
 
 export class TelemetryManager {
   private enabled = true;
-  private monitoringModule: TelemetryMonitoringModule'' | ''null = null;
+  private monitoringModule: TelemetryMonitoringModule|null = null;
 
   constructor(config?: TelemetryConfig) {
     this.enabled = config?.enabled !== false;

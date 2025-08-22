@@ -397,8 +397,8 @@ export class ValueStreamMapper extends TypedEventBase {
     const analysis = await this.analyzeValueStreamFlow(valueStreamId);
 
     const metrics: ValueStreamMetrics = {
-      flowEfficiency: analysis.overallFlowEfficiency'' | '''' | ''0.8,
-      leadTime: analysis.totalLeadTime'' | '''' | ''72,
+      flowEfficiency: analysis.overallFlowEfficiency||0.8,
+      leadTime: analysis.totalLeadTime||72,
       throughput: this.calculateThroughput(analysis),
       defectRate: this.calculateDefectRate(analysis),
       customerSatisfaction: this.calculateCustomerSatisfaction(valueStreamId),
@@ -439,13 +439,13 @@ export class ValueStreamMapper extends TypedEventBase {
         this.state = {
           ...this.state,
           ...state,
-          valueStreams: new Map(state.valueStreams'' | '''' | ''[]),
-          flowAnalyses: new Map(state.flowAnalyses'' | '''' | ''[]),
-          bottlenecks: new Map(state.bottlenecks'' | '''' | ''[]),
+          valueStreams: new Map(state.valueStreams||[]),
+          flowAnalyses: new Map(state.flowAnalyses||[]),
+          bottlenecks: new Map(state.bottlenecks||[]),
           optimizationRecommendations: new Map(
-            state.optimizationRecommendations'' | '''' | ''[]
+            state.optimizationRecommendations||[]
           ),
-          valueDeliveryTracking: new Map(state.valueDeliveryTracking'' | '''' | ''[]),
+          valueDeliveryTracking: new Map(state.valueDeliveryTracking||[]),
         };
         this.logger.info('Value Stream Mapper state loaded');
       }

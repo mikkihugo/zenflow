@@ -37,14 +37,14 @@ export declare class MemoryError extends Error {
   readonly code: MemoryErrorCode;
   readonly context: MemoryErrorContext;
   readonly recoverable: boolean;
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly severity: 'low|medium|high|critical';
   constructor(
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
     options?: {
       recoverable?: boolean;
-      severity?: 'low | medium' | 'high''' | '''critical';
+      severity?: 'low|medium|high|critical';
       cause?: Error;
     }
   );
@@ -61,7 +61,7 @@ export declare class MemoryError extends Error {
    */
   static getSeverity(
     code: MemoryErrorCode
-  ): 'low | medium' | 'high''' | '''critical';
+  ): 'low|medium|high|critical';
   /**
    * Convert to a serializable object.
    */
@@ -71,8 +71,8 @@ export declare class MemoryError extends Error {
     code: MemoryErrorCode;
     context: MemoryErrorContext;
     recoverable: boolean;
-    severity: 'low | medium' | 'high''' | '''critical';
-    stack: string'' | ''undefined;
+    severity: 'low|medium|high|critical';
+    stack: string|undefined;
   };
   /**
    * Create a MemoryError from a generic error.
@@ -132,9 +132,9 @@ export declare class MemoryErrorClassifier {
    *
    * @param error
    */
-  static classify(error: Error'' | ''MemoryError): {
-    category:'coordination | backend' | 'data' | 'performance' | 'system';
-    priority: 'low | medium' | 'high''' | '''critical';
+  static classify(error: Error|MemoryError): {
+    category:'coordination|backend|data|performance|system';
+    priority: 'low|medium|high|critical';
     actionRequired: boolean;
     suggestedActions: string[];
   };

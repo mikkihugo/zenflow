@@ -39,7 +39,7 @@ export interface FactSearchQuery {
   /** SQL-like query against facts database */
   query: string;
   /** Fact types to search within */
-  factTypes?: ('' | '''npm-package''' | '''github-repo''' | '''security-advisory''' | '''hex-package''' | '''api-docs''' | '''rust-crate''' | '''go-module''' | '''perl-package''' | '''java-package''' | '''gitlab-repo''' | '''bitbucket-repo')[];
+  factTypes?: (|'npm-package|github-repo'||security-advisory|hex-package'||api-docs|rust-crate'||go-module|perl-package'||java-package|gitlab-repo'||bitbucket-repo')[];
   /** Data sources to search within */
   sources?: string[];
   /** Maximum results to return */
@@ -52,7 +52,7 @@ export interface FactSearchQuery {
  */
 export interface FactQuery {
   /** Fact type to query (npm-package, github-repo, security-advisory, hex-package, rust-crate, go-module, perl-package, java-package, gitlab-repo, bitbucket-repo) */
-  factType:'' | '''npm-package''' | '''github-repo''' | '''security-advisory''' | '''hex-package''' | '''api-docs''' | '''rust-crate''' | '''go-module''' | '''perl-package''' | '''java-package''' | '''gitlab-repo''' | '''bitbucket-repo';
+  factType:|'npm-package|github-repo'||security-advisory|hex-package'||api-docs|rust-crate'||go-module|perl-package'||java-package|gitlab-repo'||bitbucket-repo';
   /** Specific identifier (package name, repo name, CVE ID, etc.) */
   identifier: string;
   /** Optional version for packages */
@@ -70,7 +70,7 @@ export interface FactQuery {
  */
 export interface FactSearchResult {
   /** Type of resource this points to */
-  factType:'' | '''npm-package''' | '''github-repo''' | '''security-advisory''' | '''hex-package''' | '''api-docs''' | '''rust-crate''' | '''go-module''' | '''perl-package''' | '''java-package''' | '''gitlab-repo''' | '''bitbucket-repo';
+  factType:|'npm-package|github-repo'||security-advisory|hex-package'||api-docs|rust-crate'||go-module|perl-package'||java-package|gitlab-repo'||bitbucket-repo';
   /** Resource identifier (package name, repo owner/name, CVE ID) */
   identifier: string;
   /** Optional version for packages */
@@ -100,7 +100,7 @@ export interface FactResult {
   /** Unique identifier for this fact */
   identifier: string;
   /** Structured fact data */
-  data:'' | ''NPMFactResult'' | ''GitHubFactResult'' | ''SecurityFactResult'' | ''HexFactResult'' | ''APIDocumentationFactResult'' | ''RustCrateFactResult'' | ''GoModuleFactResult'' | ''PerlPackageFactResult'' | ''JavaPackageFactResult'' | ''GitLabRepoFactResult'' | ''BitbucketRepoFactResult;
+  data:|NPMFactResult|GitHubFactResult|SecurityFactResult|HexFactResult|APIDocumentationFactResult|RustCrateFactResult|GoModuleFactResult|PerlPackageFactResult|JavaPackageFactResult|GitLabRepoFactResult|BitbucketRepoFactResult;
   /** Data freshness indicator */
   isCached: boolean;
   /** Cache timestamp */
@@ -212,7 +212,7 @@ export interface SecurityFactResult {
   /** Vulnerability description */
   description: string;
   /** Severity level */
-  severity:'low | medium' | 'high''' | '''critical';
+  severity:'low|medium|high|critical';
   /** CVSS score */
   score: number;
   /** CVSS vector string */
@@ -387,7 +387,7 @@ export interface RustCrateFactResult {
   dependencies: Array<{
     name: string;
     version: string;
-    kind: 'normal | dev' | 'build';
+    kind: 'normal|dev|build';
     optional: boolean;
   }>;
   /** Features */
@@ -484,8 +484,8 @@ export interface PerlPackageFactResult {
   dependencies: Array<{
     module: string;
     version?: string;
-    phase: 'configure | build' | 'test''' | '''runtime';
-    relationship: 'requires | recommends' | 'suggests';
+    phase: 'configure|build|test|runtime';
+    relationship: 'requires|recommends|suggests';
   }>;
   /** Keywords */
   keywords: string[];
@@ -527,7 +527,7 @@ export interface JavaPackageFactResult {
     groupId: string;
     artifactId: string;
     version: string;
-    scope: 'compile | provided' | 'runtime' | 'test' | 'system';
+    scope: 'compile|provided|runtime|test|system';
     optional: boolean;
   }>;
   /** Java version requirement */
@@ -581,7 +581,7 @@ export interface GitLabRepoFactResult {
   /** Open issues count */
   openIssues: number;
   /** Visibility level */
-  visibility: 'private | internal' | 'public';
+  visibility: 'private|internal|public';
   /** Repository topics */
   topics: string[];
   /** Default branch */
@@ -637,7 +637,7 @@ export interface BitbucketRepoFactResult {
   /** Whether repository is private */
   private: boolean;
   /** Fork policy */
-  forkPolicy: 'allow_forks | no_public_forks' | 'no_forks';
+  forkPolicy: 'allow_forks|no_public_forks|no_forks';
   /** Has issues enabled */
   hasIssues: boolean;
   /** Has wiki enabled */
@@ -670,7 +670,7 @@ export interface BitbucketRepoFactResult {
   /** Timestamp */
   timestamp: number;
 }
-export type FactSourceType ='' | '''npm | github' | 'rust''' | '''go | api' | 'security';
+export type FactSourceType =|'npm|github|rust|go|api|security';
 export interface FactProcessingOptions {
   parallel?: boolean;
   timeout?: number;

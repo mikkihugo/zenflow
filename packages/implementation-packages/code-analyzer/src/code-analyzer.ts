@@ -110,7 +110,7 @@ import type {
 
 // Enhanced type-safe configurations using foundation utilities
 type AnalysisMode = LiteralUnion<
-  'intelligent' | 'fast' | 'thorough' | 'realtime',
+  'intelligent|fast|thorough|realtime',
   string
 >;
 type AnalysisPriority = Priority;
@@ -885,7 +885,7 @@ Provide:
 
   private extractImports(content: string, language: SupportedLanguage): any[] {
     const imports = [];
-    if (language === 'typescript''' | '''' | ''language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {
       const importMatches =
         content.match(/import.*from.*['"]([^'"]*)['"]/g)|| [];
       imports.push(
@@ -957,7 +957,7 @@ Provide:
   private analyzeBindings(content: string, language: SupportedLanguage): any[] {
     // Basic binding analysis
     const bindings = [];
-    if (language === 'typescript''' | '''' | ''language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {
       const letBindings = (content.match(/\blet\s+(\w+)/g)|| []).map((m) => ({
         type: 'let',
         name: m,
@@ -994,9 +994,9 @@ Provide:
     // Basic control flow analysis
     const nodes = [];
     const edges = [];
-    if (language === 'typescript''' | '''' | ''language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {
       const controlStatements =
-        content.match(/\b(if'' | ''for'' | ''while'' | ''switch'' | ''return)\b/g)|| [];
+        content.match(/\b(if|for|while|switch|return)\b/g)|| [];
       controlStatements.forEach((stmt, index) => {
         nodes.push({ id: index, type: stmt });
         if (index > 0) {
@@ -1032,7 +1032,7 @@ Provide:
     const entryPoints = [];
     const recursiveCalls = [];
 
-    if (language === 'typescript''' | '''' | ''language ==='javascript') {
+    if (language === 'typescript'||language ==='javascript') {
       const functionCalls = content.match(/(\w+)\s*\(/g)|| [];
       functionCalls.forEach((call, index) => {
         nodes.push({ id: index, name: call });
@@ -1090,7 +1090,7 @@ Provide:
 export interface DependencyNode {
   id: string;
   name: string;
-  type: 'module' | 'class' | 'function' | 'interface' | 'type' | 'variable' | 'namespace';
+  type: 'module|class|function|interface|type|variable|namespace';
   filePath: string;
   location: {
     line: number;
@@ -1101,7 +1101,7 @@ export interface DependencyNode {
   metadata: {
     isExported: boolean;
     isDefault: boolean;
-    visibility: 'public' | 'private' | 'protected' | 'internal';
+    visibility: 'public|private|protected|internal';
     complexity: number;
     size: number;
     lastModified: Date;
@@ -1112,13 +1112,13 @@ export interface DependencyEdge {
   id: string;
   from: string;
   to: string;
-  type: 'import' | 'call' | 'inheritance' | 'composition' | 'implementation' | 'reference';
+  type: 'import|call|inheritance|composition|implementation|reference';
   weight: number;
   metadata: {
-    importType?: 'named' | 'default' | 'namespace' | 'side-effect';
+    importType?: 'named|default|namespace|side-effect';
     isCircular: boolean;
     distance: number;
-    criticality: 'low' | 'medium' | 'high' | 'critical';
+    criticality: 'low|medium|high|critical';
   };
 }
 
@@ -1134,8 +1134,8 @@ export interface DependencyCluster {
 }
 
 export interface ArchitecturalViolation {
-  type: 'circular-dependency' | 'layer-violation' | 'coupling-violation' | 'cohesion-violation';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: 'circular-dependency|layer-violation|coupling-violation|cohesion-violation';
+  severity: 'low|medium|high|critical';
   description: string;
   affectedNodes: string[];
   suggestedFix: string;
@@ -1164,7 +1164,7 @@ export interface DependencyAnalysis {
 
 export interface DependencyHotspot {
   nodeId: string;
-  type: 'high-coupling' | 'high-complexity' | 'frequent-changes' | 'bottleneck';
+  type: 'high-coupling|high-complexity|frequent-changes|bottleneck';
   score: number;
   impact: string;
   recommendation: string;
@@ -1172,25 +1172,25 @@ export interface DependencyHotspot {
 
 export interface DependencyAntipattern {
   name: string;
-  type: 'god-class' | 'feature-envy' | 'inappropriate-intimacy' | 'shotgun-surgery';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: 'god-class|feature-envy|inappropriate-intimacy|shotgun-surgery';
+  severity: 'low|medium|high|critical';
   affectedNodes: string[];
   description: string;
   refactoringStrategy: string;
 }
 
 export interface RefactoringOpportunity {
-  type: 'extract-module' | 'merge-modules' | 'break-cycle' | 'reduce-coupling';
+  type: 'extract-module|merge-modules|break-cycle|reduce-coupling';
   priority: number;
-  effort: 'low' | 'medium' | 'high';
-  benefit: 'low' | 'medium' | 'high';
+  effort: 'low|medium|high';
+  benefit: 'low|medium|high';
   description: string;
   steps: string[];
   affectedFiles: string[];
 }
 
 export interface EvolutionPrediction {
-  stabilityTrend: 'improving' | 'stable' | 'degrading';
+  stabilityTrend: 'improving|stable|degrading';
   changePronenessScore: number;
   maintenanceEffort: {
     current: number;
@@ -1249,7 +1249,7 @@ export class DependencyRelationshipMapper {
     includeTests?: boolean;
     includeNodeModules?: boolean;
     maxDepth?: number;
-    analysisType?: 'full' | 'incremental' | 'focused';
+    analysisType?: 'full|incremental|focused';
   } = {}): Promise<Result<DependencyRelationshipMap, Error>> {
     const startTime = performance.now();
     
@@ -1315,7 +1315,7 @@ export class DependencyRelationshipMapper {
   async detectCircularDependencies(
     nodes: DependencyNode[],
     edges: DependencyEdge[]
-  ): Promise<Array<{ cycle: string[]; severity: 'low' | 'medium' | 'high' | 'critical' }>> {
+  ): Promise<Array<{ cycle: string[]; severity: 'low|medium|high|critical' }>> {
     const circles = [];
     const adjacencyList = this.buildAdjacencyList(edges);
     const visited = new Set<string>();
@@ -1668,7 +1668,7 @@ export class DependencyRelationshipMapper {
     return adjacencyList;
   }
 
-  private assessCircularDependencySeverity(cycle: string[], edges: DependencyEdge[]): 'low' | 'medium' | 'high' | 'critical' {
+  private assessCircularDependencySeverity(cycle: string[], edges: DependencyEdge[]): 'low|medium|high|critical' {
     if (cycle.length <= 2) return 'low';
     if (cycle.length <= 4) return 'medium';
     if (cycle.length <= 6) return 'high';

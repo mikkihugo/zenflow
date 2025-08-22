@@ -277,12 +277,12 @@ export function getOptimalProvider(context: ProviderRoutingContext): string[] {
     const canHandleTokens = estimatedTokens <= config.maxContextTokens;
 
     const meetsContextRequirements =
-      (isSmallContext && config.routing.useForSmallContext)'' | '''' | ''(isLargeContext && config.routing.useForLargeContext)'' | '''' | ''!(isSmallContext'' | '''' | ''isLargeContext); // Medium context
+      (isSmallContext && config.routing.useForSmallContext)||(isLargeContext && config.routing.useForLargeContext)||!(isSmallContext||isLargeContext); // Medium context
 
     const meetsFeatureRequirements =
-      (!requiresFileOps'' | '''' | ''config.features.fileOperations) &&
-      (!requiresCodebaseAware'' | '''' | ''config.features.codebaseAware) &&
-      (!requiresStructuredOutput'' | '''' | ''config.features.structuredOutput);
+      (!requiresFileOps||config.features.fileOperations) &&
+      (!requiresCodebaseAware||config.features.codebaseAware) &&
+      (!requiresStructuredOutput||config.features.structuredOutput);
 
     if (
       canHandleTokens &&
@@ -348,7 +348,7 @@ export function updateProvider(
 /**
  * Get provider configuration
  */
-export function getProvider(providerId: string): ProviderConfig'' | ''undefined {
+export function getProvider(providerId: string): ProviderConfig|undefined {
   return LLM_PROVIDER_CONFIG[providerId];
 }
 

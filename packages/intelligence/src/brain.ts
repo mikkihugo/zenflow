@@ -125,7 +125,7 @@ export const getBrainSystemAccess = async () => {
 export const getBrainCoordinator = async (config?: any) => {
   const brainModule = await loadBrainModule();
   return (
-    brainModule.getBrainCoordinator?.(config)'' | '''' | ''new brainModule.BrainCoordinator(config)
+    brainModule.getBrainCoordinator?.(config)||new brainModule.BrainCoordinator(config)
   );
 };
 
@@ -137,7 +137,7 @@ export const getTaskComplexityEstimator = async (config?: any) => {
 export const getBehavioralIntelligence = async (config?: any) => {
   const brainModule = await loadBrainModule();
   return (
-    brainModule.getBehavioralIntelligence?.(config)'' | '''' | ''new brainModule.BehavioralIntelligence(config)
+    brainModule.getBehavioralIntelligence?.(config)||new brainModule.BehavioralIntelligence(config)
   );
 };
 
@@ -145,7 +145,7 @@ export const getNeuralBridge = async (config?: any) => {
   const brainModule = await loadBrainModule();
   if (brainModule.NeuralBridge) {
     return (
-      brainModule.NeuralBridge.getInstance?.(config)'' | '''' | ''new brainModule.NeuralBridge(config)
+      brainModule.NeuralBridge.getInstance?.(config)||new brainModule.NeuralBridge(config)
     );
   }
   return null;
@@ -195,7 +195,7 @@ export class BrainCoordinator extends TypedEventBase {
       await this.initialize();
     }
     return (
-      this.instance.coordinate?.(task)'' | '''' | ''this.instance.coordinateTask?.(task)
+      this.instance.coordinate?.(task)||this.instance.coordinateTask?.(task)
     );
   }
 
@@ -203,7 +203,7 @@ export class BrainCoordinator extends TypedEventBase {
     if (!this.instance) {
       return { status:'not-initialized'};
     }
-    return this.instance.getStatus?.()'' | '''' | ''{ status:'active' };
+    return this.instance.getStatus?.()||{ status:'active' };
   }
 
   async shutdown(): Promise<void> {
@@ -231,7 +231,7 @@ export class BrainCoordinator extends TypedEventBase {
  * • No neural computation - compatibility stubs only
  */
 export class NeuralBridge extends TypedEventBase {
-  private static instance: NeuralBridge'' | ''null = null;
+  private static instance: NeuralBridge|null = null;
   private realInstance: any = null;
   private neuralConfig: any;
 
@@ -252,7 +252,7 @@ export class NeuralBridge extends TypedEventBase {
       const brainModule = await loadBrainModule();
       if (brainModule.NeuralBridge) {
         this.realInstance =
-          brainModule.NeuralBridge.getInstance?.(this.neuralConfig)'' | '''' | ''new brainModule.NeuralBridge(this.neuralConfig);
+          brainModule.NeuralBridge.getInstance?.(this.neuralConfig)||new brainModule.NeuralBridge(this.neuralConfig);
         await this.realInstance.initialize?.();
       }
     }
@@ -810,7 +810,7 @@ export async function getMemoryManager(config?: any): Promise<any> {
       'Memory implementation not available, using memory system fallback',
     );
     const memorySystem = await getMemorySystem(config);
-    return memorySystem.getManager?.()'' | '''' | ''memorySystem;
+    return memorySystem.getManager?.()||memorySystem;
   }
 }
 
@@ -910,7 +910,7 @@ export async function getMemoryCoordination(config?: any): Promise<any> {
     );
     const memorySystem = await getMemorySystem(config);
     return (
-      memorySystem.getCoordination?.()'' | '''' | ''{
+      memorySystem.getCoordination?.()||{
         coordinate: async () => ({
           success: true,
           message:'Basic coordination',

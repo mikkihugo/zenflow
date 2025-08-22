@@ -153,7 +153,7 @@ export interface IncidentTimelineEntry {
   readonly action: string;
   readonly description: string;
   readonly performer: string;
-  readonly category:' | ''detection'' | ''analysis'' | ''containment'' | ''eradication'' | ''recovery'' | ''communication';
+  readonly category:|detection|analysis|containment|eradication|recovery|'communication';
   readonly evidence?: string;
 }
 
@@ -191,7 +191,7 @@ export enum EvidenceType {
  */
 export interface ChainOfCustodyEntry {
   readonly timestamp: Date;
-  readonly action: 'collected'' | ''transferred'' | ''analyzed'' | ''stored';
+  readonly action: 'collected|transferred|analyzed|stored';
   readonly person: string;
   readonly location: string;
   readonly notes: string;
@@ -319,7 +319,7 @@ export interface PostIncidentReview {
  */
 export interface ReviewFinding {
   readonly findingId: string;
-  readonly category: 'process'' | ''technology'' | ''people'' | ''communication';
+  readonly category: 'process|technology|people|communication';
   readonly description: string;
   readonly impact: ImpactLevel;
   readonly recommendation: string;
@@ -332,7 +332,7 @@ export interface ImprovementRecommendation {
   readonly recommendationId: string;
   readonly title: string;
   readonly description: string;
-  readonly priority: 'high'' | ''medium'' | ''low';
+  readonly priority: 'high|medium|low';
   readonly estimatedCost: number;
   readonly timeframe: string;
   readonly owner: string;
@@ -397,10 +397,10 @@ export interface CommunicationPlan {
  */
 export interface CommunicationChannel {
   readonly channelId: string;
-  readonly type: 'email'' | ''phone'' | ''slack'' | ''sms'' | ''dashboard';
+  readonly type: 'email|phone|slack|sms|dashboard';
   readonly recipients: string[];
   readonly purpose: string;
-  readonly urgency: 'immediate'' | ''high'' | ''normal'' | ''low';
+  readonly urgency: 'immediate|high|normal|low';
 }
 
 /**
@@ -410,7 +410,7 @@ export interface StakeholderMapping {
   readonly severityLevel: IncidentSeverity;
   readonly stakeholders: string[];
   readonly notificationTiming: string;
-  readonly informationLevel: 'detailed'' | ''summary'' | ''minimal';
+  readonly informationLevel: 'detailed|summary|minimal';
 }
 
 /**
@@ -515,9 +515,9 @@ export class SecurityIncidentResponseService {
         effectiveness: 0,
       },
       resolution: {
-        rootCause: '',
+        rootCause: ',
         resolutionDate: new Date(),
-        resolutionSummary: '',
+        resolutionSummary: ',
         preventiveMeasures: [],
         lessonsLearned: [],
         totalResponseTime: 0,
@@ -602,7 +602,7 @@ export class SecurityIncidentResponseService {
     incidentId: string,
     evidence: Omit<
       IncidentEvidence,
-      'evidenceId'' | ''collectedDate'' | ''chainOfCustody'
+      'evidenceId|collectedDate|chainOfCustody'
     >
   ): void {
     const incident = this.incidents.get(incidentId);
@@ -657,7 +657,7 @@ export class SecurityIncidentResponseService {
   async initiateContainment(
     incidentId: string,
     strategy: ContainmentStrategy,
-    actions: Omit<ContainmentAction, 'actionId'' | ''status'' | ''startTime'>[]
+    actions: Omit<ContainmentAction, 'actionId|status|startTime'>[]
   ): Promise<void> {
     const incident = this.incidents.get(incidentId);
     if (!incident) {
@@ -711,7 +711,7 @@ export class SecurityIncidentResponseService {
     incidentId: string,
     resolution: Omit<
       IncidentResolution,
-      'resolutionDate'' | ''totalResponseTime'
+      'resolutionDate|totalResponseTime'
     >,
     resolvedBy: string
   ): SecurityIncident {

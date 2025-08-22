@@ -259,9 +259,9 @@ export class ProductVisionService {
     }
 
     // Check for key elements
-    const hasWho = /customer'' | ''user'' | ''client/i.test(visionStatement);
-    const hasWhat = /provide'' | ''deliver'' | ''enable'' | ''create/i.test(visionStatement);
-    const hasWhy = /because'' | ''to'' | ''for'' | ''so that/i.test(visionStatement);
+    const hasWho = /customer|user|client/i.test(visionStatement);
+    const hasWhat = /provide|deliver|enable|create/i.test(visionStatement);
+    const hasWhy = /because|to|for|so that/i.test(visionStatement);
 
     if (hasWho) score += 10;
     if (hasWhat) score += 10;

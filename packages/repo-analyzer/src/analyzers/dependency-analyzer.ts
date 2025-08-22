@@ -102,7 +102,7 @@ export class DependencyAnalyzer {
         : ['!**/*.{test,spec}.{ts,tsx,js,jsx}', '!**/test/**', '!**/tests/**']),
       ...(options?.includeNodeModules ? [] : ['!**/node_modules/**']),
       ...(options?.includeDotFiles ? [] : ['!**/.*']),
-      ...(options?.excludePatterns'' | '''' | ''[]).map((p) => `!${p}`),
+      ...(options?.excludePatterns||[]).map((p) => `!${p}`),
     ];
 
     return fastGlob(patterns, {
@@ -126,9 +126,9 @@ export class DependencyAnalyzer {
         excludeRegExp: [
           ...(options?.includeTests
             ? []
-            : [/\.test\.'' | ''\.spec\.'' | ''\/test\/'' | ''\/tests\//]),
+            : [/\.test\.|\.spec\.|\/test\/|\/tests\//]),
           ...(options?.includeNodeModules ? [] : [/node_modules/]),
-          /dist\/'' | ''build\/'' | ''\.git\//,
+          /dist\/|build\/|\.git\//,
         ],
         tsConfig: `${rootPath}/tsconfig.json`,
         webpackConfig: `${rootPath}/webpack.config.js`,
@@ -282,7 +282,7 @@ export class DependencyAnalyzer {
   private async resolveDependencyPath(
     depName: string,
     fromFile: string
-  ): Promise<string'' | ''null> {
+  ): Promise<string|null> {
     try {
       if (depName.startsWith('.')) {
         // Relative import
@@ -324,7 +324,7 @@ export class DependencyAnalyzer {
   private calculateDependencyWeight(depName: string, content: string): number {
     // Count usage frequency
     const regex = new RegExp(
-      depName.replace(/[.*+?^${}()'' | ''[\]\\]/g,'\\$&'),
+      depName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),
       'g'
     );
     const matches = content.match(regex);
@@ -337,7 +337,7 @@ export class DependencyAnalyzer {
   private classifyDependency(
     depName: string,
     content: string
-  ): 'import''' | '''require''' | '''dynamic-import''' | '''type-only' {
+  ): 'import|require'||dynamic-import|type-only'' {
     if (content.includes(`import type`) && content.includes(depName))
       return 'type-only';
     if (content.includes(`import(`) && content.includes(depName))
@@ -355,7 +355,7 @@ export class DependencyAnalyzer {
     for (let i = 0; i < lines.length; i++) {
       if (
         lines[i].includes(depName) &&
-        (lines[i].includes('import')'' | '''' | ''lines[i].includes('require'))
+        (lines[i].includes('import')||lines[i].includes('require'))
       ) {
         return i + 1;
       }
@@ -539,7 +539,7 @@ export class DependencyAnalyzer {
     for (const node of graph.nodes) {
       const afferent = graph.edges.filter((e) => e.to === node.id).length;
       const efferent = graph.edges.filter((e) => e.from === node.id).length;
-      const instability = efferent / (afferent + efferent'' | '''' | ''1);
+      const instability = efferent / (afferent + efferent||1);
 
       totalAfferent += afferent;
       totalEfferent += efferent;
@@ -625,26 +625,26 @@ export class DependencyAnalyzer {
 
   // Helper methods
   private getFileType(filePath: string): string {
-    if (filePath.endsWith('.ts')'' | '''' | ''filePath.endsWith('.tsx'))
+    if (filePath.endsWith('.ts')||filePath.endsWith('.tsx'))
       return 'typescript';
-    if (filePath.endsWith('.js')'' | '''' | ''filePath.endsWith('.jsx'))
+    if (filePath.endsWith('.js')||filePath.endsWith('.jsx'))
       return 'javascript';
-    if (filePath.endsWith('.mts')'' | '''' | ''filePath.endsWith('.cts'))
+    if (filePath.endsWith('.mts')||filePath.endsWith('.cts'))
       return 'typescript';
-    if (filePath.endsWith('.mjs')'' | '''' | ''filePath.endsWith('.cjs'))
+    if (filePath.endsWith('.mjs')||filePath.endsWith('.cjs'))
       return 'javascript';
     return 'javascript';
   }
 
   private classifyFileType(
     filePath: string
-  ): 'module | component' | 'service' | 'utility' | 'test' {
+  ): 'module|component|service|utility|test' {
     const fileName = filePath.toLowerCase();
-    if (fileName.includes('test')'' | '''' | ''fileName.includes('spec')) return 'test';
+    if (fileName.includes('test')||fileName.includes('spec')) return 'test';
     if (fileName.includes('service')) return 'service';
-    if (fileName.includes('component')'' | '''' | ''fileName.includes('view'))
+    if (fileName.includes('component')||fileName.includes('view'))
       return 'component';
-    if (fileName.includes('util')'' | '''' | ''fileName.includes('helper'))
+    if (fileName.includes('util')||fileName.includes('helper'))
       return 'utility';
     return 'module';
   }
@@ -712,10 +712,10 @@ export class DependencyAnalyzer {
   ): number {
     const externalEdges = edges.filter(
       (e) =>
-        (nodeIds.includes(e.from) && !nodeIds.includes(e.to))'' | '''' | ''(!nodeIds.includes(e.from) && nodeIds.includes(e.to))
+        (nodeIds.includes(e.from) && !nodeIds.includes(e.to))||(!nodeIds.includes(e.from) && nodeIds.includes(e.to))
     );
     const totalEdges = edges.filter(
-      (e) => nodeIds.includes(e.from)'' | '''' | ''nodeIds.includes(e.to)
+      (e) => nodeIds.includes(e.from)||nodeIds.includes(e.to)
     );
     return totalEdges.length > 0 ? externalEdges.length / totalEdges.length : 0;
   }
@@ -724,21 +724,21 @@ export class DependencyAnalyzer {
     const segments = path.split('/').filter(Boolean);
     if (segments.includes('components')) return 'ui';
     if (segments.includes('services')) return 'api';
-    if (segments.includes('utils')'' | '''' | ''segments.includes('helpers'))
+    if (segments.includes('utils')||segments.includes('helpers'))
       return 'utility';
-    if (segments.includes('test')'' | '''' | ''segments.includes('tests')) return 'test';
+    if (segments.includes('test')||segments.includes('tests')) return 'test';
     if (segments.includes('core')) return 'core';
-    return segments[segments.length - 1]'' | '''' | '''unknown';
+    return segments[segments.length - 1]||'unknown';
   }
 
   private estimateComplexity(content: string): number {
     // Simple complexity estimation
     const lines = content.split('\n').length;
     const functions = (
-      content.match(/function\s+\w+'' | ''=>\s*{'' | ''^\s*\w+\s*:/gm)'' | '''' | ''[]
+      content.match(/function\s+\w+|=>\s*{|^\s*\w+\s*:/gm)||[]
     ).length;
     const conditionals = (
-      content.match(/\b(if'' | ''else'' | ''switch'' | ''case'' | ''while'' | ''for)\b/g)'' | '''' | ''[]
+      content.match(/\b(if|else|switch|case|while|for)\b/g)||[]
     ).length;
 
     return Math.min(100, lines * 0.1 + functions * 2 + conditionals * 3);
@@ -748,9 +748,9 @@ export class DependencyAnalyzer {
     // Would require full AST analysis for accuracy
     // This is a simple heuristic
     const fileName = filePath.toLowerCase();
-    if (fileName.includes('interface')'' | '''' | ''fileName.includes('abstract'))
+    if (fileName.includes('interface')||fileName.includes('abstract'))
       return 0.8;
-    if (fileName.includes('base')'' | '''' | ''fileName.includes('core')) return 0.6;
+    if (fileName.includes('base')||fileName.includes('core')) return 0.6;
     return 0.2;
   }
 
@@ -822,7 +822,7 @@ interface FileDependencyInfo {
 // Secondary DependencyInfo interface for individual dependencies
 interface IndividualDependencyInfo {
   name: string;
-  type: 'import''' | '''require''' | '''dynamic-import''' | '''type-only';
+  type: 'import|require'||dynamic-import|type-only'';
   resolvedPath: string | null;
   weight: number;
   line: number;

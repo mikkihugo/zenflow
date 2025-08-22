@@ -32,7 +32,7 @@ interface ResourceMetric {
   current: number;
   peak: number;
   average: number;
-  trend: 'increasing | decreasing' | 'stable';
+  trend: 'increasing|decreasing|stable';
   utilization: number;
   threshold: number;
   constraint?: ResourceConstraint;
@@ -697,7 +697,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
    */
   private calculateTrend(
     values: number[]
-  ): 'increasing | decreasing' | 'stable' {
+  ): 'increasing|decreasing|stable' {
     if (values.length < 3) return 'stable';
 
     const n = values.length;
@@ -767,7 +767,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     metrics: Map<string, LoadMetrics>,
     isOverloaded: boolean
   ): number {
-    const baseLatency = metrics.get(agent.id)?.responseTime'' | '''' | ''1000;
+    const baseLatency = metrics.get(agent.id)?.responseTime||1000;
     return isOverloaded ? baseLatency * 2 : baseLatency;
   }
 
@@ -781,7 +781,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
 
   private calculateAverageUtilization(
     profiles: ResourceProfile[],
-    resource: keyof Pick<ResourceProfile,'cpu | memory' | 'disk''' | '''network'>
+    resource: keyof Pick<ResourceProfile,'cpu|memory|disk|network'>
   ): number {
     if (profiles.length === 0) return 0;
     return (

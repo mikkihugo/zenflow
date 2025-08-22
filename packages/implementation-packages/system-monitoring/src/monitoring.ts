@@ -36,7 +36,7 @@ import type {
 export class SystemMonitor {
   private config: Required<InfrastructureConfig>;
   private logger = getLogger('SystemMonitor');
-  private monitoringInterval: NodeJS.Timeout'' | ''null = null;
+  private monitoringInterval: NodeJS.Timeout|null = null;
   private initialized = false;
 
   constructor(config: InfrastructureConfig = {}) {
@@ -113,18 +113,18 @@ export class SystemMonitor {
           usage: Math.round((memory.used / memory.total) * 100),
         },
         disk: {
-          total: disk[0]?.size'' | '''' | ''0,
-          used: disk[0]?.used'' | '''' | ''0,
-          free: disk[0]?.available'' | '''' | ''0,
+          total: disk[0]?.size||0,
+          used: disk[0]?.used||0,
+          free: disk[0]?.available||0,
           usage: Math.round(
-            ((disk[0]?.used'' | '''' | ''0) / (disk[0]?.size'' | '''' | ''1)) * 100
+            ((disk[0]?.used||0) / (disk[0]?.size||1)) * 100
           ),
         },
         network: {
-          bytesIn: network[0]?.rx_bytes'' | '''' | ''0,
-          bytesOut: network[0]?.tx_bytes'' | '''' | ''0,
-          packetsIn: network[0]?.rx_sec'' | '''' | ''0,
-          packetsOut: network[0]?.tx_sec'' | '''' | ''0,
+          bytesIn: network[0]?.rx_bytes||0,
+          bytesOut: network[0]?.tx_bytes||0,
+          packetsIn: network[0]?.rx_sec||0,
+          packetsOut: network[0]?.tx_sec||0,
         },
         uptime: uptime.uptime,
         timestamp: Date.now(),
@@ -146,7 +146,7 @@ export class SystemMonitor {
   async getProcessMetrics(pid?: number): Promise<any> {
     return withAsyncTrace('system.get_process_metrics', async () => {
       try {
-        const processId = pid'' | '''' | ''process.pid;
+        const processId = pid||process.pid;
         const stats = await pidusage(processId);
 
         const processMetrics = {
@@ -168,7 +168,7 @@ export class SystemMonitor {
       } catch (error) {
         this.logger.warn('Failed to get process metrics', { pid, error });
         return {
-          pid: pid'' | '''' | ''process.pid,
+          pid: pid||process.pid,
           cpu: 0,
           memory: 0,
           ppid: 0,
@@ -496,7 +496,7 @@ export class PerformanceTracker {
           allOperations.length
         : 0;
     const systemThroughput = allOperations.reduce(
-      (sum, op) => sum + (op.throughput'' | '''' | ''0),
+      (sum, op) => sum + (op.throughput||0),
       0
     );
 
@@ -516,7 +516,7 @@ export class PerformanceTracker {
    */
   private calculateTrend(
     durations: number[]
-  ):'improving | stable' | 'degrading' {
+  ):'improving|stable|degrading' {
     if (durations.length < 10) return 'stable';
 
     const recent = durations.slice(-10);

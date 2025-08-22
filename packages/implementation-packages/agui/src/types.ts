@@ -8,17 +8,17 @@
 /**
  * Priority levels for questions and interactions
  */
-export type Priority = 'critical | high' | 'medium''' | '''low';
+export type Priority = 'critical|high|medium|low';
 
 /**
  * Message types for display formatting
  */
-export type MessageType = 'info | warning' | 'error' | 'success' | 'debug';
+export type MessageType = 'info|warning|error|success|debug';
 
 /**
  * Question types for different interaction patterns
  */
-export type QuestionType ='' | '''approval'// Yes/No approval questions'' | '''choice'// Multiple choice selection'' | '''input'// Free text input'' | '''confirmation'// Confirmation dialogs'' | '''review'// Review and feedback'' | '''validation'// Data validation'' | '''checkpoint'// Workflow checkpoints'' | '''emergency'// Emergency escalation'' | '''custom'// Custom question types'' | '''relevance'// Relevance validation'' | '''boundary'// Boundary validation'' | '''relationship'// Relationship validation'' | '''naming'// Naming validation'' | '''priority'; // Priority validation
+export type QuestionType =|'approval'// Yes/No approval questions|'choice'// Multiple choice selection|'input'// Free text input|'confirmation'// Confirmation dialogs|'review'// Review and feedback|'validation'// Data validation|'checkpoint'// Workflow checkpoints|'emergency'// Emergency escalation|'custom'// Custom question types|'relevance'// Relevance validation|'boundary'// Boundary validation|'relationship'// Relationship validation|'naming'// Naming validation|'priority'; // Priority validation
 
 /**
  * AGUI adapter types
@@ -39,7 +39,7 @@ export interface QuestionContext {
   source?: string;
 
   /** Business impact level */
-  businessImpact?: 'low | medium' | 'high''' | '''critical';
+  businessImpact?: 'low|medium|high|critical';
 
   /** Stakeholders involved */
   stakeholders?: string[];
@@ -102,7 +102,7 @@ export interface ValidationQuestion {
   helpText?: string;
 
   /** Validation function for input */
-  validator?: (input: string) => boolean'' | ''string;
+  validator?: (input: string) => boolean|string;
 }
 
 /**
@@ -145,7 +145,7 @@ export interface AGUIResponse {
   responseTime: number;
 
   /** Source of the response */
-  source: 'user | system' | 'timeout''' | '''default';
+  source: 'user|system|timeout|default';
 
   /** Additional metadata */
   metadata?: Record<string, unknown>;
@@ -269,7 +269,7 @@ export interface EventHandlerConfig {
  */
 export type AGUIFactory<T extends AGUIInterface = AGUIInterface> = (
   config?: AGUIConfig
-) => T'' | ''Promise<T>;
+) => T|Promise<T>;
 
 /**
  * Registry of AGUI factories
@@ -283,7 +283,7 @@ export interface AGUIRegistry {
   create<T extends AGUIInterface>(
     type: string,
     config?: AGUIConfig
-  ): T'' | ''Promise<T>;
+  ): T|Promise<T>;
 
   getAvailableTypes(): string[];
 }

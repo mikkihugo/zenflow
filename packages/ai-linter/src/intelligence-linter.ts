@@ -121,7 +121,7 @@ export class IntelligenceLinter {
     options: {
       useNeuralAnalysis?: boolean;
       enableLearning?: boolean;
-      complexity?: 'auto | low' | 'medium' | 'high'';
+      complexity?: 'auto|low|medium|high';
       focusAreas?: string[];
     } = {}
   ): Promise<ClaudeInsights> {
@@ -156,7 +156,7 @@ export class IntelligenceLinter {
           'pattern-recognition',
           'quality-assessment',
         ],
-        focusAreas: options.focusAreas'' | '''' | ''['complexity',
+        focusAreas: options.focusAreas||['complexity',
           'maintainability',
           'type-safety',
         ],
@@ -235,7 +235,7 @@ export class IntelligenceLinter {
         codeLength: code.length,
         language: context.language,
         projectType: context.projectType,
-        dependencies: context.dependencies'' | '''' | ''[],
+        dependencies: context.dependencies||[],
       });
 
       return complexity.level; //'low', 'medium', 'high'
@@ -341,7 +341,7 @@ export class IntelligenceLinter {
 - Language: ${context.language}
 - Project Type: ${context.projectType}
 - Complexity Level: ${complexity}
-- Framework: ${context.framework'' | '''' | '''none'}
+- Framework: ${context.framework||'none'}
 
 **Code to Analyze:**
 \`\`\`${context.language}
@@ -360,10 +360,10 @@ ${code}
   "summary": "Brief overall assessment",
   "patterns": ["identified patterns"],
   "issues": {
-    "complexity": [{"severity": "high'' | ''medium'' | ''low", "message": "issue description", "line": number}],
-    "typeSafety": [{"severity": "high'' | ''medium'' | ''low", "message": "issue description", "line": number}],
-    "performance": [{"severity": "high'' | ''medium'' | ''low", "message": "issue description", "line": number}],
-    "maintainability": [{"severity": "high'' | ''medium'' | ''low", "message": "issue description", "line": number}]
+    "complexity": [{"severity": "high|medium|low", "message": "issue description", "line": number}],
+    "typeSafety": [{"severity": "high|medium|low", "message": "issue description", "line": number}],
+    "performance": [{"severity": "high|medium|low", "message": "issue description", "line": number}],
+    "maintainability": [{"severity": "high|medium|low", "message": "issue description", "line": number}]
   },
   "suggestions": ["actionable improvement suggestions"],
   "confidence": 0.95
@@ -456,31 +456,31 @@ Provide specific, actionable feedback with line numbers where applicable.`;
   ): Promise<ClaudeInsights> {
     const insights: ClaudeInsights = {
       summary:
-        claudeInsights.summary'' | '''' | ''`Intelligence-powered analysis completed with ${complexity} complexity`,
+        claudeInsights.summary||`Intelligence-powered analysis completed with ${complexity} complexity`,
       patterns: [
-        ...(workflowResult.steps['identify-patterns']?.patterns'' | '''' | ''[]),
-        ...(claudeInsights.patterns'' | '''' | ''[]),
+        ...(workflowResult.steps['identify-patterns']?.patterns||[]),
+        ...(claudeInsights.patterns||[]),
       ],
       issues: [
         ...this.extractComplexityIssues(workflowResult),
         ...this.extractTypeSafetyIssues(workflowResult),
         ...this.extractPerformanceIssues(workflowResult),
         ...this.extractMaintainabilityIssues(workflowResult),
-        ...(claudeInsights.issues'' | '''' | ''[]),
+        ...(claudeInsights.issues||[]),
       ],
       suggestions: [
-        ...(workflowResult.steps['generate-insights']?.suggestions'' | '''' | ''[]),
-        ...(claudeInsights.suggestions'' | '''' | ''[]),
+        ...(workflowResult.steps['generate-insights']?.suggestions||[]),
+        ...(claudeInsights.suggestions||[]),
       ],
       confidence: Math.max(
-        workflowResult.confidence'' | '''' | ''0.8,
-        claudeInsights.confidence'' | '''' | ''0.8
+        workflowResult.confidence||0.8,
+        claudeInsights.confidence||0.8
       ),
       // Required ClaudeInsights properties
       complexity_issues: this.extractComplexityIssues(workflowResult),
       type_safety_concerns: this.extractTypeSafetyIssues(workflowResult),
       architectural_suggestions:
-        workflowResult.steps['generate-insights']?.suggestions'' | '''' | ''[],
+        workflowResult.steps['generate-insights']?.suggestions||[],
       performance_optimizations: this.extractPerformanceIssues(workflowResult),
       maintainability_score: this.calculateMaintainabilityScore(workflowResult),
       quality_assessment: {
@@ -554,28 +554,28 @@ Provide specific, actionable feedback with line numbers where applicable.`;
    * Extract complexity issues from workflow results
    */
   private extractComplexityIssues(workflowResult: any): ComplexityIssue[] {
-    return workflowResult.steps['assess-quality']?.complexityIssues'' | '''' | ''[];
+    return workflowResult.steps['assess-quality']?.complexityIssues||[];
   }
 
   /**
    * Extract type safety concerns from workflow results
    */
   private extractTypeSafetyIssues(workflowResult: any): TypeSafetyConcern[] {
-    return workflowResult.steps['assess-quality']?.typeSafetyIssues'' | '''' | ''[];
+    return workflowResult.steps['assess-quality']?.typeSafetyIssues||[];
   }
 
   /**
    * Extract performance issues from workflow results
    */
   private extractPerformanceIssues(workflowResult: any): PerformanceIssue[] {
-    return workflowResult.steps['assess-quality']?.performanceIssues'' | '''' | ''[];
+    return workflowResult.steps['assess-quality']?.performanceIssues||[];
   }
 
   /**
    * Extract maintainability issues from workflow results
    */
   private extractMaintainabilityIssues(workflowResult: any): any[] {
-    return workflowResult.steps['assess-quality']?.maintainabilityIssues'' | '''' | ''[];
+    return workflowResult.steps['assess-quality']?.maintainabilityIssues||[];
   }
 
   /**
@@ -618,8 +618,8 @@ Provide specific, actionable feedback with line numbers where applicable.`;
       return {
         totalAnalyses: conversationStats.totalEntries,
         learningEntries: learningStats.totalEntries,
-        averageConfidence: learningStats.averageConfidence'' | '''' | ''0.8,
-        topPatterns: learningStats.topPatterns'' | '''' | ''[],
+        averageConfidence: learningStats.averageConfidence||0.8,
+        topPatterns: learningStats.topPatterns||[],
       };
     } catch (error) {
       logger.warn('Failed to get analysis stats:', error);

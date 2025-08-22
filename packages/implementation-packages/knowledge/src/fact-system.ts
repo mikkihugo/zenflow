@@ -101,7 +101,7 @@ export interface CoordinationFactQuery {
  * This class should NOT be exported from the knowledge package's main API.
  */
 class KnowledgeFactSystem {
-  private factClient: FactClient'' | ''null = null;
+  private factClient: FactClient|null = null;
   private factBridge: FactBridge;
   private listeners = new Set<(fact: CoordinationFact) => void>();
   private coordinationFacts = new Map<string, CoordinationFact>();
@@ -147,7 +147,7 @@ class KnowledgeFactSystem {
    * Store a coordination-specific fact
    */
   async storeFact(
-    fact: Omit<CoordinationFact, 'id''' | '''timestamp'>
+    fact: Omit<CoordinationFact, 'id|timestamp''>
   ): Promise<string> {
     await this.ensureInitialized();
 
@@ -230,9 +230,9 @@ class KnowledgeFactSystem {
   /**
    * Get a specific fact by ID
    */
-  async getFact(id: string): Promise<CoordinationFact'' | ''null> {
+  async getFact(id: string): Promise<CoordinationFact|null> {
     await this.ensureInitialized();
-    return this.coordinationFacts.get(id)'' | '''' | ''null;
+    return this.coordinationFacts.get(id)||null;
   }
 
   /**
@@ -285,7 +285,7 @@ class KnowledgeFactSystem {
         const searchQuery = {
           query,
           factTypes: type
-            ? [type as 'npm-package''' | '''github-repo''' | '''security-advisory']
+            ? [type as 'npm-package|github-repo'||security-advisory']
             : undefined,
           limit: limit - results.length,
         };
@@ -295,11 +295,11 @@ class KnowledgeFactSystem {
         for (const extResult of externalResults) {
           results.push({
             id: `ext-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            type: type'' | '''' | ''extResult.factType'' | '''' | '''external-knowledge',
-            data: extResult.metadata'' | '''' | ''extResult,
+            type: type||extResult.factType||'external-knowledge',
+            data: extResult.metadata||extResult,
             timestamp: new Date(),
             source:'rust-fact-bridge',
-            confidence: extResult.score'' | '''' | ''0.8,
+            confidence: extResult.score||0.8,
             tags: ['external', 'search', 'rust-bridge'],
           });
         }
@@ -319,7 +319,7 @@ class KnowledgeFactSystem {
           for (const extResult of fallbackResults) {
             results.push({
               id: `ext-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-              type: type'' | '''' | '''external-knowledge',
+              type: type||'external-knowledge',
               data: extResult,
               timestamp: new Date(),
               source: 'foundation-fallback',
@@ -467,7 +467,7 @@ class KnowledgeFactSystem {
   /**
    * Get foundation fact client for advanced operations (internal use only)
    */
-  getFoundationFactClient(): FactClient'' | ''null {
+  getFoundationFactClient(): FactClient|null {
     return this.factClient;
   }
 
@@ -486,8 +486,8 @@ class KnowledgeFactSystem {
     let totalConfidence = 0;
 
     for (const fact of facts) {
-      factsByType[fact.type] = (factsByType[fact.type]'' | '''' | ''0) + 1;
-      factsBySource[fact.source] = (factsBySource[fact.source]'' | '''' | ''0) + 1;
+      factsByType[fact.type] = (factsByType[fact.type]||0) + 1;
+      factsBySource[fact.source] = (factsBySource[fact.source]||0) + 1;
       totalConfidence += fact.confidence;
     }
 

@@ -188,7 +188,7 @@ export class AgentManager extends TypedEventBase {
     logger.debug('Manager initialized successfully');
 
     const swarmId = `swarm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const expiresAt = new Date(Date.now() + (config.maxDuration'' | '''' | ''3600000)); // 1 hour default
+    const expiresAt = new Date(Date.now() + (config.maxDuration||3600000)); // 1 hour default
     logger.debug('Generated swarm ID', { swarmId });
 
     // Instantiate cognitive agents based on requested archetypes
@@ -256,7 +256,7 @@ export class AgentManager extends TypedEventBase {
     if (!swarm.persistent) {
       setTimeout(() => {
         manager.dissolveSwarm(swarmId);
-      }, config.maxDuration'' | '''' | ''3600000);
+      }, config.maxDuration||3600000);
     }
 
     return swarm;
@@ -293,7 +293,7 @@ export class AgentManager extends TypedEventBase {
         this.buildSwarmExecutionPrompt(swarm),
         swarm.agents.map((a) => a.id),
         {
-          maxTurns: options?.maxTurns'' | '''' | ''50, // Much higher default for complex tasks
+          maxTurns: options?.maxTurns||50, // Much higher default for complex tasks
           timeoutMs: 300000, // 5 minutes per execution
         }
       );

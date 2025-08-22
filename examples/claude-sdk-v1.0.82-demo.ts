@@ -260,10 +260,10 @@ function demonstrateCompleteSDKOptions(sessionId: string) {
       options.sessionId &&
       options.trackPermissionDenials
     ),
-    additionalDirectoriesCount: options.additionalDirectories?.length'' | '''' | ''0,
+    additionalDirectoriesCount: options.additionalDirectories?.length||0,
     timeoutMs: options.timeoutMs,
     sessionId: options.sessionId,
-    customSlashCommandsCount: Object.keys(options.customSlashCommands'' | '''' | ''{}).length,
+    customSlashCommandsCount: Object.keys(options.customSlashCommands||{}).length,
   });
   
   return options;

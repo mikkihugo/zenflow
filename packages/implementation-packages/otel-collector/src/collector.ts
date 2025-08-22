@@ -36,7 +36,7 @@ import { getDefaultConfig } from './config/index.js';
 export class InternalOTELCollector {
   private config: CollectorConfig;
   private logger: Logger;
-  private httpServer: Server'' | ''null = null;
+  private httpServer: Server|null = null;
   private exporterManager: ExporterManager;
   private processorManager: ProcessorManager;
   private stats: CollectorStats;
@@ -49,8 +49,8 @@ export class InternalOTELCollector {
     this.startTime = Date.now();
 
     // Initialize managers
-    this.exporterManager = new ExporterManager(this.config.exporters'' | '''' | ''[]);
-    this.processorManager = new ProcessorManager(this.config.processors'' | '''' | ''[]);
+    this.exporterManager = new ExporterManager(this.config.exporters||[]);
+    this.processorManager = new ProcessorManager(this.config.processors||[]);
 
     // Initialize stats
     this.stats = {
@@ -89,8 +89,8 @@ export class InternalOTELCollector {
       this.logger.info('Internal OTEL Collector started', {
         httpPort: this.config.httpPort,
         grpcPort: this.config.grpcPort,
-        exporters: this.config.exporters?.length'' | '''' | ''0,
-        processors: this.config.processors?.length'' | '''' | ''0,
+        exporters: this.config.exporters?.length||0,
+        processors: this.config.processors?.length||0,
       });
     } catch (error) {
       this.logger.error('Failed to start OTEL collector', error);
@@ -151,7 +151,7 @@ export class InternalOTELCollector {
           this.stats.exported[data.type]++;
         } else {
           this.stats.errors[result.backend] =
-            (this.stats.errors[result.backend]'' | '''' | ''0) + 1;
+            (this.stats.errors[result.backend]||0) + 1;
         }
       }
     } catch (error) {
@@ -212,7 +212,7 @@ export class InternalOTELCollector {
       (h) => h.status === 'degraded'
     );
 
-    let overallStatus: 'healthy | degraded' | 'unhealthy' = 'healthy';
+    let overallStatus: 'healthy|degraded|unhealthy' = 'healthy';
     if (hasUnhealthyExporter) {
       overallStatus = 'unhealthy';
     } else if (hasDegradedExporter) {
@@ -311,7 +311,7 @@ export class InternalOTELCollector {
     });
 
     // Start server
-    const port = this.config.httpPort'' | '''' | ''4318;
+    const port = this.config.httpPort||4318;
     this.httpServer = createServer(app);
 
     await new Promise<void>((resolve, reject) => {
@@ -339,7 +339,7 @@ export class InternalOTELCollector {
         type: signalType,
         timestamp: Date.now(),
         service: {
-          name: (req.headers['x-service-name'] as string)'' | '''' | '''unknown',
+          name: (req.headers['x-service-name'] as string)||'unknown',
           version: req.headers['x-service-version'] as string,
           instance: req.headers['x-service-instance'] as string,
         },

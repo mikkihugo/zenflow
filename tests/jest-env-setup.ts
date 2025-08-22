@@ -14,7 +14,7 @@ process.env.NODE_ENV = 'test';
 process.env.ZEN_TEST_MODE = 'true';
 process.env.AI_TEST_MODE = 'jest';
 process.env.CLAUDE_CODE_TEST = 'true';
-process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID'' | '''' | '''1';
+process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID||'1';
 
 // Disable external network calls in tests
 process.env.DISABLE_EXTERNAL_APIS = 'true';

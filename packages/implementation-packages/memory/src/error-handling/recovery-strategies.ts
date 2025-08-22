@@ -22,7 +22,7 @@ export interface RecoveryStrategy {
 }
 
 export interface RecoveryContext {
-  backends: Map<string, BackendInterface'' | ''BaseMemoryBackend>;
+  backends: Map<string, BackendInterface|BaseMemoryBackend>;
   coordinator?: unknown;
   optimizer?: unknown;
   sessionId?: string;
@@ -238,7 +238,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
       maxRetries: 3,
       execute: async (error, context) => {
         const startTime = Date.now();
-        const backendId = error.context.backendId'' | '''' | ''error.context.nodeId;
+        const backendId = error.context.backendId||error.context.nodeId;
 
         if (!(backendId && context.backends.has(backendId))) {
           return {
@@ -300,7 +300,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
       maxRetries: 2,
       execute: async (error, context) => {
         const startTime = Date.now();
-        const key = error.context.key'' | '''' | ''context.key;
+        const key = error.context.key||context.key;
 
         if (!key) {
           return {
@@ -334,7 +334,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
                 const dataKey = JSON.stringify(data);
                 dataVersions?.set(
                   dataKey,
-                  (dataVersions?.get(dataKey)'' | '''' | ''0) + 1
+                  (dataVersions?.get(dataKey)||0) + 1
                 );
                 healthyBackends.push({ id, backend, data } as never);
               }

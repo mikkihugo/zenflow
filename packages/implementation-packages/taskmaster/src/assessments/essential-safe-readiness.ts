@@ -24,12 +24,12 @@ const logger = getLogger('EssentialSafeReadiness');
  */
 export interface EssentialSafeComponent {
   name: string;
-  category: 'role | event' | 'artifact' | 'competency' | 'practice';
+  category: 'role | event|artifact|competency|practice';
   description: string;
   required: boolean;
-  taskMasterSupport: 'complete | partial' | 'missing';
+  taskMasterSupport: 'complete | partial|missing';
   implementationGap: string;
-  effortEstimate: 'low | medium' | 'high';
+  effortEstimate: 'low | medium|high';
 }
 
 /**

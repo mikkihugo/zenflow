@@ -134,8 +134,8 @@ const testCases: TestCase[] = [
     replace: "new content",
   },
   {
-    content: "const regex = /[.*+?^${}()' | '[\\\\]\\\\\\\\]/g;",
-    find: "/[.*+?^${}()' | '[\\\\]\\\\\\\\]/g",
+    content: "const regex = /[.*+?^${}()|[\\\\]\\\\\\\\]/g;",
+    find: "/[.*+?^${}()|[\\\\]\\\\\\\\]/g",
     replace: "/\\\\w+/g",
   },
   {
@@ -147,7 +147,7 @@ const testCases: TestCase[] = [
   // EscapeNormalizedReplacer cases
   {
     content: 'console.log("Hello\nWorld");',
-    find: 'console.log("Hello\\nWorld");',
+    find: 'console.log("Hello\nWorld");',
     replace: 'console.log("Hello\nUniverse");',
   },
   {
@@ -272,9 +272,9 @@ const testCases: TestCase[] = [
     replace: 'const path = "D:\\Users";',
   },
   {
-    content: 'console.log("Line1\\nLine2");',
-    find: 'console.log("Line1\\nLine2");',
-    replace: 'console.log("First\\nSecond");',
+    content: 'console.log("Line1\nLine2");',
+    find: 'console.log("Line1\nLine2");',
+    replace: 'console.log("First\nSecond");',
   },
 
   // BlockAnchorReplacer - test edge case with exact newline boundaries

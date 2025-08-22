@@ -37,29 +37,29 @@ export interface OptimizationTask {
   metadata?: Record<string, any>;
 }
 export interface TaskDomain {
-  type:'' | '''nlp | vision' | 'reasoning''' | '''classification | generation' | 'multimodal''' | '''general';
+  type:|'nlp|vision|reasoning|classification|generation|multimodal|general'';
   specificArea?: string;
   dataCharacteristics: {
-    size: 'small | medium' | 'large''' | '''massive';
-    quality: 'poor | fair' | 'good''' | '''excellent';
-    complexity: 'simple | moderate' | 'complex''' | '''highly_complex';
+    size: 'small|medium|large|massive';
+    quality: 'poor|fair|good|excellent';
+    complexity: 'simple|moderate|complex|highly_complex';
   };
 }
 export interface TaskComplexity {
-  computational: 'low | medium' | 'high''' | '''extreme';
-  algorithmic: 'basic | intermediate' | 'advanced''' | '''research_level';
-  dataVolume: 'tiny | small' | 'medium' | 'large' | 'huge';
-  timeConstraints: 'relaxed | moderate' | 'tight''' | '''critical';
+  computational: 'low|medium|high|extreme';
+  algorithmic: 'basic|intermediate|advanced|research_level';
+  dataVolume: 'tiny|small|medium|large|huge';
+  timeConstraints: 'relaxed|moderate|tight|critical';
 }
 export interface TaskRequirements {
   minimumAccuracy: number;
   maximumLatency: number;
   memoryConstraints: number;
-  robustness: 'basic | moderate' | 'high''' | '''critical';
-  interpretability: 'not_required | helpful' | 'important''' | '''mandatory';
+  robustness: 'basic|moderate|high|critical';
+  interpretability: 'not_required|helpful|important|mandatory';
 }
 export interface TaskConstraints {
-  computationalBudget:'' | '''unlimited | high' | 'moderate' | 'limited' | 'minimal';
+  computationalBudget:|'unlimited|high|moderate|limited|minimal';
   timeLimit: number;
   memoryLimit: number;
   qualityThreshold: number;
@@ -76,17 +76,17 @@ export interface TeleprompterSelection {
 }
 export interface TeleprompterVariant {
   name: string;
-  type: 'basic''' | '''ml_enhanced';
-  algorithm: 'miprov2 | copro' | 'bootstrap' | 'grpo' | 'custom';
+  type: 'basic|ml_enhanced'';
+  algorithm: 'miprov2|copro|bootstrap|grpo|custom';
   implementation: string;
   capabilities: string[];
   requiredResources: ResourceRequirements;
   estimatedPerformance: PerformanceEstimate;
 }
 export interface ResourceRequirements {
-  computationLevel: 'minimal | low' | 'moderate' | 'high' | 'intensive';
+  computationLevel: 'minimal|low|moderate|high|intensive';
   memoryUsage: number;
-  timeComplexity:'' | '''O(1)''' | '''O(log n)''' | '''O(n)''' | '''O(n log n)''' | '''O(n²)''' | '''O(2^n)';
+  timeComplexity:|'O(1)|O(log n)'||O(n)|O(n log n)'||O(n²)|O(2^n)'';
   gpuRequired: boolean;
   networkAccess: boolean;
 }
@@ -111,7 +111,7 @@ export interface PerformanceEstimate {
   };
   robustness: number;
   confidence: number;
-  sourceData: 'historical | predicted' | 'hybrid';
+  sourceData: 'historical|predicted|hybrid';
 }
 export interface SelectionMetadata {
   analysisTime: number;
@@ -121,7 +121,7 @@ export interface SelectionMetadata {
     value: number;
   }>;
   uncertaintyFactors: string[];
-  recommendationSource: 'ml_bridge | historical' | 'heuristic''' | '''hybrid';
+  recommendationSource: 'ml_bridge|historical|heuristic|hybrid';
   alternativeEvaluations: number;
   confidenceBreakdown: Record<string, number>;
 }

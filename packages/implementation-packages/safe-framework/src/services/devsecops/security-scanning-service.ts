@@ -34,10 +34,10 @@ export interface SecurityAssessment {
   readonly description: string;
   readonly assessmentType: SecurityAssessmentType;
   readonly findings: SecurityFinding[];
-  readonly overallRisk: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly overallRisk: 'low|medium|high|critical';
 }
 
-export type SecurityAssessmentType =' | ''vulnerability_scan'' | ''penetration_test'' | ''code_review'' | ''compliance_audit'' | ''risk_assessment';
+export type SecurityAssessmentType =|vulnerability_scan|penetration_test|code_review|compliance_audit|'risk_assessment';
 
 export interface SecurityFinding {
   readonly id: string;
@@ -45,7 +45,7 @@ export interface SecurityFinding {
   readonly description: string;
   readonly severity: SecuritySeverity;
   readonly category: string;
-  readonly status: 'open'' | ''in_progress'' | ''resolved'' | ''false_positive';
+  readonly status: 'open|in_progress|resolved|false_positive';
   readonly cwe?: string;
   readonly cvssScore?: CVSSScore;
   readonly location?: {
@@ -71,7 +71,7 @@ export interface SecurityFinding {
 export interface SecurityTool {
   readonly id: string;
   readonly name: string;
-  readonly type: 'static'' | ''dynamic'' | ''interactive'' | ''manual';
+  readonly type: 'static|dynamic|interactive|manual';
   readonly capabilities: string[];
 }
 
@@ -82,10 +82,10 @@ export interface SecurityStandard {
   readonly requirements: string[];
 }
 
-export type SecuritySeverity =' | ''low'' | ''medium'' | ''high'' | ''critical'' | ''informational';
+export type SecuritySeverity =|low|medium|high|critical|'informational';
 
 export interface CVSSScore {
-  readonly version: '2.0'' | ''3.0'' | ''3.1';
+  readonly version: '2.0|3.0|3.1';
   readonly baseScore: number;
   readonly temporalScore?: number;
   readonly environmentalScore?: number;
@@ -97,7 +97,7 @@ export interface CVSSScore {
  */
 export interface SecurityScanConfig {
   readonly scanId: string;
-  readonly scanType:' | ''static'' | ''dynamic'' | ''dependency'' | ''container'' | ''infrastructure';
+  readonly scanType:|static|dynamic|dependency|container|'infrastructure';
   readonly tools: SecurityTool[];
   readonly targets: ScanTarget[];
   readonly standards: SecurityStandard[];
@@ -109,18 +109,18 @@ export interface SecurityScanConfig {
  * Scan target configuration
  */
 export interface ScanTarget {
-  readonly type: 'code'' | ''container'' | ''infrastructure'' | ''api';
+  readonly type: 'code|container|infrastructure|api';
   readonly path: string;
   readonly inclusions: string[];
   readonly exclusions: string[];
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
 }
 
 /**
  * Scan scheduling configuration
  */
 export interface ScanSchedule {
-  readonly frequency: 'every-commit'' | ''daily'' | ''weekly'' | ''monthly';
+  readonly frequency: 'every-commit|daily|weekly|monthly';
   readonly timeWindow: string; // cron expression
   readonly maxDuration: number; // minutes
   readonly parallelScans: number;
@@ -130,7 +130,7 @@ export interface ScanSchedule {
  * Scan reporting configuration
  */
 export interface ScanReporting {
-  readonly format: 'json'' | ''xml'' | ''sarif'' | ''html';
+  readonly format: 'json|xml|sarif|html';
   readonly destinations: string[];
   readonly includeRawResults: boolean;
   readonly aggregateResults: boolean;
@@ -143,7 +143,7 @@ export interface SecurityScanResult {
   readonly scanId: string;
   readonly timestamp: Date;
   readonly duration: number; // milliseconds
-  readonly status: 'completed'' | ''failed'' | ''cancelled'' | ''timeout';
+  readonly status: 'completed|failed|cancelled|timeout';
   readonly findings: SecurityFinding[];
   readonly metrics: ScanMetrics;
   readonly toolResults: ToolScanResult[];
@@ -156,7 +156,7 @@ export interface SecurityScanResult {
 export interface ToolScanResult {
   readonly toolId: string;
   readonly toolName: string;
-  readonly status: 'success'' | ''failure'' | ''timeout'' | ''error';
+  readonly status: 'success|failure|timeout|error';
   readonly duration: number;
   readonly findings: SecurityFinding[];
   readonly rawOutput: string;

@@ -19,7 +19,7 @@ export interface PortfolioEpic {
   readonly description: string;
   readonly businessValue: number;
   readonly priority: number;
-  readonly status: 'analyzing | implementing' | 'done''' | '''backlog';
+  readonly status: 'analyzing|implementing|done|backlog';
 }
 
 // Value Stream type
@@ -34,7 +34,7 @@ export interface ValueStreamStep {
   readonly id: string;
   readonly name: string;
   readonly duration: number;
-  readonly type:'' | '''value-added''' | '''non-value-added''' | '''necessary-non-value-added';
+  readonly type: 'value-added|non-value-added'||necessary-non-value-added';
 }
 
 // Multi-level orchestration manager placeholder
@@ -62,7 +62,7 @@ export interface ComplianceRequirement {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly priority: 'low | medium' | 'high''' | '''critical';
+  readonly priority: 'low|medium|high|critical';
   readonly assessmentFrequency?: number; // days
   readonly validationRules: ValidationRule[];
   readonly evidenceRequirements: EvidenceRequirement[];
@@ -72,8 +72,8 @@ export interface ValidationRule {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly ruleType: 'automated | manual' | 'hybrid';
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly ruleType: 'automated|manual|hybrid';
+  readonly severity: 'low|medium|high|critical';
   readonly category: string;
 }
 
@@ -81,7 +81,7 @@ export interface EvidenceRequirement {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'document | artifact' | 'screenshot' | 'log' | 'report';
+  readonly type: 'document|artifact|screenshot|log|report';
   readonly required: boolean;
 }
 
@@ -91,10 +91,10 @@ export interface SecurityAssessment {
   readonly description: string;
   readonly assessmentType: SecurityAssessmentType;
   readonly findings: SecurityFinding[];
-  readonly overallRisk: 'low | medium' | 'high''' | '''critical';
+  readonly overallRisk: 'low|medium|high|critical';
 }
 
-export type SecurityAssessmentType ='' | '''vulnerability_scan | penetration_test' | 'code_review' | 'compliance_audit' | 'risk_assessment';
+export type SecurityAssessmentType =|'vulnerability_scan|penetration_test|code_review|compliance_audit|risk_assessment';
 
 export interface SecurityFinding {
   readonly id: string;
@@ -102,7 +102,7 @@ export interface SecurityFinding {
   readonly description: string;
   readonly severity: SecuritySeverity;
   readonly category: string;
-  readonly status: 'open | in_progress' | 'resolved''' | '''false_positive';
+  readonly status: 'open|in_progress|resolved|false_positive';
   readonly cwe?: string;
   readonly cvssScore?: CVSSScore;
   readonly location?: {
@@ -128,7 +128,7 @@ export interface SecurityFinding {
 export interface SecurityTool {
   readonly id: string;
   readonly name: string;
-  readonly type: 'static | dynamic' | 'interactive''' | '''manual';
+  readonly type: 'static|dynamic|interactive|manual';
   readonly capabilities: string[];
 }
 
@@ -139,10 +139,10 @@ export interface SecurityStandard {
   readonly requirements: string[];
 }
 
-export type SecuritySeverity = 'low | medium' | 'high''' | '''critical';
+export type SecuritySeverity = 'low|medium|high|critical';
 
 export interface CVSSScore {
-  readonly version: '2.0''' | '''3.0''' | '''3.1';
+  readonly version: '2.0|3.0'||3.1';
   readonly baseScore: number;
   readonly temporalScore?: number;
   readonly environmentalScore?: number;

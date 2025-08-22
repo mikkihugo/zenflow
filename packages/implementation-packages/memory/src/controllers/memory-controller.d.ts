@@ -62,7 +62,7 @@ export interface MemoryBatchRequest {
   /** Array of operations to perform */
   operations: Array<{
     /** Type of operation */
-    type: 'store | retrieve' | 'delete';
+    type: 'store | retrieve|delete';
     /** Key for the operation */
     key: string;
     /** Value for store operations */
@@ -106,7 +106,7 @@ export interface MemoryAnalytics {
   /** System health information */
   health: {
     /** Overall health status */
-    status: 'healthy | warning' | 'critical';
+    status: 'healthy | warning|critical';
     /** System uptime in seconds */
     uptime: number;
     /** Last health check timestamp */

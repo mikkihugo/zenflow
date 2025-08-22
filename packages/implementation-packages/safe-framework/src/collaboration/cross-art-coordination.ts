@@ -105,7 +105,7 @@ export class CrossARTCoordinator {
       title: `Solution Train Sync - ${params.solutionId}`,
       pattern: 'planning',
       initialParticipants: [], // Convert participants to AgentId later
-      timeout: (params.duration'' | '''' | ''90) * 60 * 1000, // Convert to milliseconds
+      timeout: (params.duration||90) * 60 * 1000, // Convert to milliseconds
       context: {
         task: `Solution Train Sync for ${params.solutionId}`,
         goal:'Coordinate dependencies and align on solution objectives',
@@ -201,7 +201,7 @@ export class CrossARTCoordinator {
       dependencies: params.dependencies,
     });
 
-    if (!result.success'' | '''' | ''!result.workflowId) {
+    if (!result.success||!result.workflowId) {
       throw new Error(`Failed to start PI Planning workflow: ${result.error}`);
     }
 
@@ -215,7 +215,7 @@ export class CrossARTCoordinator {
     impedimentId: string;
     affectedARTs: string[];
     description: string;
-    severity:'low | medium' | 'high''' | '''critical';
+    severity:'low|medium|high|critical';
     owner: string;
   }): Promise<{
     resolutionConversationId: string;

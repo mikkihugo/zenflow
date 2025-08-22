@@ -39,7 +39,7 @@ export class BeamPatternAnalyzer {
       // Get default rules for the project's languages
       const defaultRules = this.getDefaultRules([
         project.language,
-        ...(project.additionalLanguages'' | '''' | ''[]),
+        ...(project.additionalLanguages||[]),
       ]);
       const allRules = [...defaultRules, ...customRules];
 
@@ -223,7 +223,7 @@ export class BeamPatternAnalyzer {
         languages: ['elixir'],
         pattern: {
           type: 'regex',
-          expression: 'Enum\\.into\\s*\\(.+\\'' | ''>\\s*Enum\\.',
+          expression: 'Enum\\.into\\s*\\(.+\\|>\\s*Enum\\.',
           constraints: {},
         },
         messageTemplate:
@@ -275,7 +275,7 @@ export class BeamPatternAnalyzer {
         languages: ['gleam'],
         pattern: {
           type: 'regex',
-          expression: '//.*(TODO'' | ''FIXME'' | ''XXX)',
+          expression: '//.*(TODO|FIXME|XXX)',
           constraints: {},
         },
         messageTemplate: 'TODO/FIXME comment should be addressed',
@@ -437,7 +437,7 @@ export class BeamPatternAnalyzer {
     lines: string[]
   ): BeamLocation {
     const beforeMatch = match.input!.substring(0, match.index);
-    const lineCount = (beforeMatch.match(/\n/g)'' | '''' | ''[]).length;
+    const lineCount = (beforeMatch.match(/\n/g)||[]).length;
     const lineStart = beforeMatch.lastIndexOf('\n') + 1;
     const column = match.index! - lineStart + 1;
 
@@ -482,19 +482,19 @@ export class BeamPatternAnalyzer {
    * Map rule to finding category
    */
   private getCategoryFromRule(rule: BeamAnalysisRule): BeamFindingCategory {
-    if (rule.name.includes('leak')'' | '''' | ''rule.name.includes('monitor')) {
+    if (rule.name.includes('leak')||rule.name.includes('monitor')) {
       return 'reliability';
     }
-    if (rule.name.includes('performance')'' | '''' | ''rule.name.includes('enum')) {
+    if (rule.name.includes('performance')||rule.name.includes('enum')) {
       return 'performance';
     }
-    if (rule.name.includes('supervisor')'' | '''' | ''rule.name.includes('genserver')) {
+    if (rule.name.includes('supervisor')||rule.name.includes('genserver')) {
       return 'otp-patterns';
     }
-    if (rule.name.includes('async')'' | '''' | ''rule.name.includes('task')) {
+    if (rule.name.includes('async')||rule.name.includes('task')) {
       return 'concurrency';
     }
-    if (rule.name.includes('restart')'' | '''' | ''rule.name.includes('exit')) {
+    if (rule.name.includes('restart')||rule.name.includes('exit')) {
       return 'fault-tolerance';
     }
 

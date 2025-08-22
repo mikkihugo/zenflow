@@ -41,7 +41,7 @@ export class LLMStatsService {
       routingReason: string;
     },
     metadata?: {
-      requestType?: 'analyze | analyzeSmart' | 'analyzeArchitectureAB';
+      requestType?: 'analyze|analyzeSmart|analyzeArchitectureAB';
       tokenUsage?: { inputTokens?: number; outputTokens?: number };
       sessionId?: string;
     }
@@ -49,11 +49,11 @@ export class LLMStatsService {
     const record: LLMCallRecord = {
       id: this.generateCallId(),
       timestamp: new Date(),
-      requestType: metadata?.requestType'' | '''' | '''analyze',
+      requestType: metadata?.requestType||'analyze',
       provider: result.provider,
       model: this.getProviderModel(result.provider),
       task: request.task,
-      contextLength: (request.prompt'' | '''' | '''').length,
+      contextLength: (request.prompt||').length,
       executionTime: result.executionTime,
       success: result.success,
       error: result.error,
@@ -62,8 +62,8 @@ export class LLMStatsService {
             inputTokens: metadata.tokenUsage.inputTokens,
             outputTokens: metadata.tokenUsage.outputTokens,
             totalTokens:
-              (metadata.tokenUsage.inputTokens'' | '''' | ''0) +
-              (metadata.tokenUsage.outputTokens'' | '''' | ''0),
+              (metadata.tokenUsage.inputTokens|'|0) +
+              (metadata.tokenUsage.outputTokens||0),
           }
         : undefined,
       routingDecision: {
@@ -83,7 +83,7 @@ export class LLMStatsService {
       metadata: {
         requiresFileOps: request.requiresFileOperations,
         requiresCodebaseAware:
-          request.task ==='domain-analysis''' | '''' | ''request.task ==='code-review',
+          request.task ==='domain-analysis'||request.task ==='code-review',
         taskComplexity: this.assessTaskComplexity(request),
         sessionId: metadata?.sessionId,
       },
@@ -106,7 +106,7 @@ export class LLMStatsService {
    * Gets comprehensive analytics for LLM system
    */
   getAnalytics(timeRange?: { start: Date; end: Date }): LLMAnalytics {
-    const range = timeRange'' | '''' | ''{
+    const range = timeRange||{
       start: this.startTime,
       end: new Date(),
     };
@@ -136,7 +136,7 @@ export class LLMStatsService {
               filteredCalls.length
             : 0,
         totalTokensUsed: filteredCalls.reduce(
-          (sum, c) => sum + (c.tokenUsage?.totalTokens'' | '''' | ''0),
+          (sum, c) => sum + (c.tokenUsage?.totalTokens||0),
           0
         ),
         costSavings: this.calculateCostSavings(filteredCalls),
@@ -160,7 +160,7 @@ export class LLMStatsService {
   /**
    * Gets detailed stats for a specific provider
    */
-  getProviderStats(providerId: string): LLMProviderStats'' | ''null {
+  getProviderStats(providerId: string): LLMProviderStats|null {
     const providerCalls = this.callHistory.filter(
       (call) => call.provider === providerId
     );
@@ -212,7 +212,7 @@ export class LLMStatsService {
   /**
    * Exports statistics data for external analysis
    */
-  exportStats(format: 'json''' | '''csv'): string {
+  exportStats(format: 'json|csv''): string {
     if (format === 'csv') {
       return this.exportToCsv();
     }
@@ -261,17 +261,17 @@ export class LLMStatsService {
 
   private getProviderModel(providerId: string): string {
     const config = LLM_PROVIDER_CONFIG[providerId];
-    return config?.defaultModel'' | '''' | '''unknown';
+    return config?.defaultModel||'unknown';
   }
 
   private assessTaskComplexity(
     request: AnalysisRequest
-  ): 'low | medium' | 'high'{
-    const contextLength = (request.prompt'' | '''' | '''').length;
+  ): 'low|medium|high'{
+    const contextLength = (request.prompt||'').length;
 
-    if (request.task === 'domain-analysis''' | '''' | ''contextLength > 10000)
+    if (request.task === 'domain-analysis'||contextLength > 10000)
       return'high';
-    if (request.task === 'typescript-error-analysis''' | '''' | ''contextLength > 5000)
+    if (request.task === 'typescript-error-analysis'||contextLength > 5000)
       return'medium';
     return 'low';
   }
@@ -283,7 +283,7 @@ export class LLMStatsService {
     if (!rateLimits) return 50; // Default score
 
     // Higher requests per minute = higher score
-    return Math.min(100, (rateLimits.requestsPerMinute'' | '''' | ''60) / 3);
+    return Math.min(100, (rateLimits.requestsPerMinute||60) / 3);
   }
 
   private calculateReliabilityScore(providerId: string): number {
@@ -308,7 +308,7 @@ export class LLMStatsService {
       'gemini-pro': 30, // Premium model
     };
 
-    return costScores[providerId]'' | '''' | ''50;
+    return costScores[providerId]||50;
   }
 
   private calculateProviderStats(calls: LLMCallRecord[]): LLMProviderStats[] {
@@ -330,7 +330,7 @@ export class LLMStatsService {
 
     return {
       providerId,
-      displayName: config?.displayName'' | '''' | ''providerId,
+      displayName: config?.displayName||providerId,
       totalCalls: calls.length,
       successfulCalls: successfulCalls.length,
       failedCalls: failedCalls.length,
@@ -343,7 +343,7 @@ export class LLMStatsService {
           ? calls.reduce((sum, c) => sum + c.contextLength, 0) / calls.length
           : 0,
       totalTokensUsed: calls.reduce(
-        (sum, c) => sum + (c.tokenUsage?.totalTokens'' | '''' | ''0),
+        (sum, c) => sum + (c.tokenUsage?.totalTokens||0),
         0
       ),
       successRate: calls.length > 0 ? successfulCalls.length / calls.length : 0,
@@ -361,7 +361,7 @@ export class LLMStatsService {
           : 0,
       reliability: this.calculateReliabilityScore(providerId),
       rateLimitHits: failedCalls.filter(
-        (c) => c.error?.includes('rate limit')'' | '''' | ''c.error?.includes('quota')
+        (c) => c.error?.includes('rate limit')||c.error?.includes('quota')
       ).length,
       lastUsed:
         calls.length > 0
@@ -388,7 +388,7 @@ export class LLMStatsService {
     calls.forEach((call) => {
       const pattern = [call.routingDecision.originalPreference, call.provider];
       const key = pattern.join('→');
-      const existing = patterns.get(key)'' | '''' | ''{ count: 0, successes: 0 };
+      const existing = patterns.get(key)||{ count: 0, successes: 0 };
       patterns.set(key, {
         count: existing.count + 1,
         successes: existing.successes + (call.success ? 1 : 0),
@@ -514,8 +514,8 @@ export class LLMStatsService {
     );
 
     return {
-      topPerformingProvider: sortedByReliability[0]?.providerId'' | '''' | '''none',
-      mostEfficientProvider: sortedByEfficiency[0]?.providerId'' | '''' | '''none',
+      topPerformingProvider: sortedByReliability[0]?.providerId||'none',
+      mostEfficientProvider: sortedByEfficiency[0]?.providerId||'none',
       bottlenecks: this.identifyBottlenecks(providerStats),
       optimizationOpportunities: this.identifyOptimizations(
         providerStats,
@@ -541,7 +541,7 @@ export class LLMStatsService {
 
     const recentErrors = recentCalls.filter((c) => !c.success);
     const rateLimitErrors = recentErrors.filter(
-      (c) => c.error?.includes('rate limit')'' | '''' | ''c.error?.includes('quota')
+      (c) => c.error?.includes('rate limit')||c.error?.includes('quota')
     );
 
     if (rateLimitErrors.length > 0) return 'cooldown';
@@ -557,7 +557,7 @@ export class LLMStatsService {
     const taskCounts = new Map<string, number>();
 
     calls.forEach((call) => {
-      const count = taskCounts.get(call.task)'' | '''' | ''0;
+      const count = taskCounts.get(call.task)||0;
       taskCounts.set(call.task, count + 1);
     });
 
@@ -569,7 +569,7 @@ export class LLMStatsService {
 
   private calculatePerformanceTrend(
     calls: LLMCallRecord[]
-  ):'improving | stable' | 'declining' {
+  ):'improving|stable|declining' {
     if (calls.length < 10) return 'stable';
 
     const recent = calls.slice(-5);
@@ -619,7 +619,7 @@ export class LLMStatsService {
       const providers = new Map<string, { count: number; successes: number }>();
 
       taskCalls.forEach((call) => {
-        const existing = providers.get(call.provider)'' | '''' | ''{
+        const existing = providers.get(call.provider)||{
           count: 0,
           successes: 0,
         };
@@ -634,7 +634,7 @@ export class LLMStatsService {
       );
 
       result[task] = {
-        preferredProvider: sorted[0]?.[0]'' | '''' | '''none',
+        preferredProvider: sorted[0]?.[0]||'none',
         alternativeProviders: sorted.slice(1).map(([provider]) => provider),
         successRate:
           taskCalls.length > 0

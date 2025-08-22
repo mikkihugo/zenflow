@@ -146,7 +146,7 @@ class MemoryEventManagerImpl
           ...event.metadata,
           timestamp: new Date(),
           processingTime: Date.now(),
-          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed||0,
           cacheSize: event.details?.size,
         },
       };
@@ -158,7 +158,7 @@ class MemoryEventManagerImpl
       await this.routeMemoryEvent(enrichedEvent);
 
       this.logger.debug(
-        `Memory event emitted: ${event.operation} for ${event.details?.key'' | '''' | '''system'}`
+        `Memory event emitted: ${event.operation} for ${event.details?.key||'system'}`
       );
     } catch (error) {
       this.logger.error('Failed to emit memory event:', error);
@@ -363,7 +363,7 @@ class MemoryEventManagerImpl
         details: {
           key,
           size: JSON.stringify(data).length,
-          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed||0,
         },
         payload:
           typeof data ==='object' && data !== null
@@ -400,7 +400,7 @@ class MemoryEventManagerImpl
         details: {
           key,
           cacheHit: true, // Simplified for demonstration
-          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed||0,
         },
         payload: { key, retrieved: true },
         metadata: {
@@ -436,7 +436,7 @@ class MemoryEventManagerImpl
         type: 'memory:cache',
         operation: 'clear',
         details: {
-          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed||0,
         },
         payload: { cleared: true },
         metadata: {
@@ -497,7 +497,7 @@ class MemoryEventManagerImpl
       // Track access patterns
       if (event.details?.key) {
         const currentCount =
-          this.memoryMetrics.accessPatterns.get(event.details.key)'' | '''' | ''0;
+          this.memoryMetrics.accessPatterns.get(event.details.key)||0;
         this.memoryMetrics.accessPatterns.set(
           event.details.key,
           currentCount + 1
@@ -715,7 +715,7 @@ export class MemoryEventManagerFactory
   /**
    * Get an event manager by name.
    */
-  get(name: string): EventManager'' | ''undefined {
+  get(name: string): EventManager|undefined {
     return this.managers.get(name);
   }
 
@@ -942,7 +942,7 @@ export class MemoryEventManagerFactory
   private applyMemoryDefaults(config: EventManagerConfig): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners'' | '''' | ''500,
+      maxListeners: config.maxListeners||500,
       processing: {
         batchSize: 200, // High batch size for memory events
         ...config.processing,

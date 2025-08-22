@@ -30,8 +30,8 @@ export class SobelowIntegration {
     project: BeamProject,
     context: BeamAnalysisContext,
     options: {
-      format?: 'json | txt' | 'compact';
-      confidence?: 'high | medium' | 'low';
+      format?: 'json|txt|compact';
+      confidence?: 'high|medium|low';
       skipFiles?: string[];
       configFile?: string;
       verbose?: boolean;
@@ -61,7 +61,7 @@ export class SobelowIntegration {
       // Parse results
       const result = this.parseSobelowOutput(
         analysisResult.value,
-        options.format'' | '''' | '''json'
+        options.format||'json'
       );
 
       this.logger.info(
@@ -147,8 +147,8 @@ export class SobelowIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = ';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -160,7 +160,7 @@ export class SobelowIntegration {
 
       child.on('close', (code) => {
         // Sobelow returns non-zero when vulnerabilities are found
-        if (code === 0'' | '''' | ''code === 1) {
+        if (code === 0||code === 1) {
           resolve(ok(stdout));
         } else {
           this.logger.error(`Sobelow failed with code ${code}: ${stderr}`);
@@ -229,13 +229,13 @@ export class SobelowIntegration {
     for (const finding of jsonData.findings) {
       const sobelowFinding: SobelowFinding = {
         category: this.mapSobelowCategory(finding.type),
-        confidence: finding.confidence'' | '''' | '''medium',
-        details: finding.details'' | '''' | ''finding.message'' | '''' | '''',
+        confidence: finding.confidence||'medium',
+        details: finding.details||finding.message||',
         location: {
-          file: finding.file'' | '''' | '''',
-          line: finding.line'' | '''' | ''1,
+          file: finding.file|||,
+          line: finding.line|'|1,
           column: finding.column,
-          context: finding.fun'' | '''' | ''finding.variable'' | '''' | ''finding.module,
+          context: finding.fun||finding.variable||finding.module,
         },
         owasp: finding.owasp,
         cwe: finding.cwe ? parseInt(finding.cwe, 10) : undefined,
@@ -254,7 +254,7 @@ export class SobelowIntegration {
     const findings: SobelowFinding[] = [];
     const lines = output.split('\n');
 
-    let currentFinding: Partial<SobelowFinding>'' | ''null = null;
+    let currentFinding: Partial<SobelowFinding>|null = null;
 
     for (const line of lines) {
       const trimmed = line.trim();
@@ -276,7 +276,7 @@ export class SobelowIntegration {
 
         currentFinding = {
           category: this.mapSobelowCategoryFromText(headerMatch[1]),
-          confidence: headerMatch[2].toLowerCase() as 'high | medium' | 'low',
+          confidence: headerMatch[2].toLowerCase() as 'high|medium|low',
           details: headerMatch[1],
           location: {
             file: '',
@@ -324,10 +324,10 @@ export class SobelowIntegration {
       issues.push({
         type: issue.type,
         component:
-          issue.component'' | '''' | ''issue.controller'' | '''' | ''issue.view'' | '''' | '''unknown',
-        risk: this.mapSeverity(issue.severity'' | '''' | '''medium'),
+          issue.component||issue.controller||issue.view||'unknown',
+        risk: this.mapSeverity(issue.severity||'medium'),
         mitigation:
-          issue.mitigation'' | '''' | '''Review and apply security best practices',
+          issue.mitigation||'Review and apply security best practices',
       });
     }
 
@@ -346,10 +346,10 @@ export class SobelowIntegration {
 
     for (const issue of jsonData.config) {
       issues.push({
-        file: issue.file'' | '''' | '''config/config.exs',
-        setting: issue.setting'' | '''' | '''unknown',
-        issue: issue.issue'' | '''' | ''issue.message'' | '''' | '''',
-        recommendation: issue.recommendation'' | '''' | '''Apply security best practices',
+        file: issue.file||'config/config.exs',
+        setting: issue.setting||'unknown',
+        issue: issue.issue||issue.message||',
+        recommendation: issue.recommendation|||Apply security best practices',
       });
     }
 
@@ -404,18 +404,18 @@ export class SobelowIntegration {
     const lowerText = text.toLowerCase();
 
     if (lowerText.includes('sql')) return 'sql_injection';
-    if (lowerText.includes('xss')'' | '''' | ''lowerText.includes('cross-site scripting'))
+    if (lowerText.includes('xss')||lowerText.includes('cross-site scripting'))
       return 'xss';
-    if (lowerText.includes('csrf')'' | '''' | ''lowerText.includes('cross-site request'))
+    if (lowerText.includes('csrf')||lowerText.includes('cross-site request'))
       return 'csrf';
-    if (lowerText.includes('directory')'' | '''' | ''lowerText.includes('path'))
+    if (lowerText.includes('directory')||lowerText.includes('path'))
       return 'directory_traversal';
     if (lowerText.includes('command')) return 'command_injection';
     if (lowerText.includes('code injection')) return 'code_injection';
     if (lowerText.includes('redirect')) return 'redirect';
     if (lowerText.includes('traversal')) return 'traversal';
     if (lowerText.includes('execution')) return 'rce';
-    if (lowerText.includes('dos')'' | '''' | ''lowerText.includes('denial')) return 'dos';
+    if (lowerText.includes('dos')||lowerText.includes('denial')) return 'dos';
 
     return 'misc';
   }
@@ -447,8 +447,8 @@ export class SobelowIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = ';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -460,7 +460,7 @@ export class SobelowIntegration {
 
       child.on('close', (code) => {
         if (code === 0) {
-          const version = stdout.trim().split('\n')[0]'' | '''' | '''unknown';
+          const version = stdout.trim().split('\n')[0]||'unknown';
           resolve(ok(version));
         } else {
           resolve(

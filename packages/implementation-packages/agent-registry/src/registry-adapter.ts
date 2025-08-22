@@ -355,20 +355,20 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
     // Simple sorting by performance metrics
     filteredAgents.sort((a, b) => {
       const aScore =
-        (a.metrics?.successRate'' | '''' | ''0.5) * (1 - (a.metrics?.loadFactor'' | '''' | ''0.5));
+        (a.metrics?.successRate||0.5) * (1 - (a.metrics?.loadFactor||0.5));
       const bScore =
-        (b.metrics?.successRate'' | '''' | ''0.5) * (1 - (b.metrics?.loadFactor'' | '''' | ''0.5));
+        (b.metrics?.successRate||0.5) * (1 - (b.metrics?.loadFactor||0.5));
       return bScore - aScore;
     });
 
-    const maxResults = criteria.maxResults'' | '''' | ''3;
+    const maxResults = criteria.maxResults||3;
     return filteredAgents.slice(0, maxResults);
   }
 
   /**
    * Get agent by ID
    */
-  getAgent(agentId: string): JsonValue'' | ''undefined {
+  getAgent(agentId: string): JsonValue|undefined {
     return this.agents.get(agentId);
   }
 
@@ -397,7 +397,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
     const byType = agents.reduce(
       (acc, agent) => {
-        acc[agent.type] = (acc[agent.type]'' | '''' | ''0) + 1;
+        acc[agent.type] = (acc[agent.type]||0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -405,7 +405,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
     const byStatus = agents.reduce(
       (acc, agent) => {
-        acc[agent.status] = (acc[agent.status]'' | '''' | ''0) + 1;
+        acc[agent.status] = (acc[agent.status]||0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -416,13 +416,13 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
       agentsByType: byType,
       agentsByStatus: byStatus,
       averageLoadFactor:
-        agents.reduce((sum, a) => sum + (a.metrics?.loadFactor'' | '''' | ''0), 0) /
-          agents.length'' | '''' | ''0,
+        agents.reduce((sum, a) => sum + (a.metrics?.loadFactor||0), 0) /
+          agents.length||0,
       averageHealth:
-        agents.reduce((sum, a) => sum + (a.health'' | '''' | ''1), 0) / agents.length'' | '''' | ''0,
+        agents.reduce((sum, a) => sum + (a.health||1), 0) / agents.length||0,
       averageSuccessRate:
-        agents.reduce((sum, a) => sum + (a.metrics?.successRate'' | '''' | ''0.5), 0) /
-          agents.length'' | '''' | ''0,
+        agents.reduce((sum, a) => sum + (a.metrics?.successRate||0.5), 0) /
+          agents.length||0,
       // Enhanced with ServiceContainer stats
       serviceContainerStats: serviceStats,
       migrationStats: this.getMigrationStats(),
@@ -467,10 +467,10 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
   }
 
   private agentHasCapability(agent: JsonValue, capability: string): boolean {
-    const capabilities = agent.capabilities'' | '''' | ''{};
+    const capabilities = agent.capabilities||{};
     return (
-      (capabilities.languages && capabilities.languages.includes(capability))'' | '''' | ''(capabilities.frameworks &&
-        capabilities.frameworks.includes(capability))'' | '''' | ''(capabilities.domains && capabilities.domains.includes(capability))'' | '''' | ''(capabilities.tools && capabilities.tools.includes(capability))
+      (capabilities.languages && capabilities.languages.includes(capability))||(capabilities.frameworks &&
+        capabilities.frameworks.includes(capability))||(capabilities.domains && capabilities.domains.includes(capability))||(capabilities.tools && capabilities.tools.includes(capability))
     );
   }
 }
@@ -498,7 +498,7 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
   ): void {
     const result = this.container.registerService(name, implementation, {
       lifetime: Lifetime.SINGLETON,
-      capabilities: options.capabilities'' | '''' | ''[],
+      capabilities: options.capabilities||[],
       ...options,
     });
 
@@ -607,9 +607,9 @@ export class RegistryMigrationUtil {
         // Use type-safe method call based on adapter type
         if ('register' in adapter && typeof adapter.register === 'function') {
           (adapter as UnknownRecord)['register'](service.id, service, {
-            lifetime: service.lifetime'' | '''' | ''Lifetime.SINGLETON,
-            capabilities: service.capabilities'' | '''' | ''[],
-            metadata: service.metadata'' | '''' | ''{},
+            lifetime: service.lifetime||Lifetime.SINGLETON,
+            capabilities: service.capabilities||[],
+            metadata: service.metadata||{},
           });
         } else if ('registerAgent' in adapter &&
           typeof adapter.registerAgent === 'function'

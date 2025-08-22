@@ -233,7 +233,7 @@ describe('Foundation DI Container (Jest)', () => {
     it('should throw error for unregistered service', () => {
       expect(() => {
         container.resolve('UnregisteredService');
-      }).toThrow(/not registered'' | ''not found/i);
+      }).toThrow(/not registered|not found/i);
     });
 
     it('should resolve nested dependencies', async () => {
@@ -319,7 +319,7 @@ describe('Foundation DI Container (Jest)', () => {
       // Should either detect and prevent or handle circular dependencies
       expect(() => {
         container.resolve('ServiceA');
-      }).toThrow(/circular'' | ''dependency/i);
+      }).toThrow(/circular|dependency/i);
     });
   });
 
@@ -385,17 +385,17 @@ describe('Foundation DI Container (Jest)', () => {
     it('should handle invalid service identifiers', () => {
       expect(() => {
         container.register(null as any, UserService);
-      }).toThrow(/identifier'' | ''invalid/i);
+      }).toThrow(/identifier|invalid/i);
       
       expect(() => {
         container.register(undefined as any, UserService);
-      }).toThrow(/identifier'' | ''invalid/i);
+      }).toThrow(/identifier|invalid/i);
     });
 
     it('should handle invalid service implementations', () => {
       expect(() => {
         container.register('InvalidService', null as any);
-      }).toThrow(/implementation'' | ''invalid/i);
+      }).toThrow(/implementation|invalid/i);
     });
 
     it('should provide meaningful error messages', () => {
@@ -404,7 +404,7 @@ describe('Foundation DI Container (Jest)', () => {
         fail('Should have thrown an error');
       } catch (error) {
         expect(error.message).toMatch(/NonExistentService/);
-        expect(error.message).toMatch(/not registered'' | ''not found/i);
+        expect(error.message).toMatch(/not registered|not found/i);
       }
     });
 

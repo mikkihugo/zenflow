@@ -29,11 +29,11 @@ export interface TechnicalDebtItem {
   id: string;
   title: string;
   description: string;
-  severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  severity: 'critical|high|medium|low';
   impact: string;
   effort: number;
   component: string;
-  status: 'identified'' | ''approved'' | ''planned'' | ''in-progress'' | ''resolved';
+  status: 'identified|approved|planned|in-progress|resolved';
   category: TechnicalDebtCategory;
   priority: number; // AI-calculated priority score
   businessImpact: BusinessImpactLevel;
@@ -46,13 +46,13 @@ export interface TechnicalDebtItem {
 /**
  * Technical debt categories
  */
-export type TechnicalDebtCategory =' | ''code_quality'' | ''security_vulnerability'' | ''performance_issue'' | ''maintainability'' | ''scalability'' | ''architecture_drift'' | ''deprecated_technology'' | ''test_debt'' | ''documentation_gap'' | ''infrastructure_debt';
+export type TechnicalDebtCategory =|code_quality|security_vulnerability|performance_issue|maintainability|scalability|architecture_drift|deprecated_technology|test_debt|documentation_gap|'infrastructure_debt';
 
 /**
  * Business impact levels for technical debt
  */
 export type BusinessImpactLevel = {
-  readonly level: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly level: 'low|medium|high|critical';
   readonly customerImpact: number; // 0-10 scale
   readonly revenueImpact: number; // 0-10 scale
   readonly operationalImpact: number; // 0-10 scale
@@ -63,7 +63,7 @@ export type BusinessImpactLevel = {
  * Technical risk levels
  */
 export type TechnicalRiskLevel = {
-  readonly level: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly level: 'low|medium|high|critical';
   readonly securityRisk: number; // 0-10 scale
   readonly performanceRisk: number; // 0-10 scale
   readonly maintainabilityRisk: number; // 0-10 scale
@@ -75,7 +75,7 @@ export type TechnicalRiskLevel = {
  */
 export interface RemediationPlan {
   readonly planId: string;
-  readonly approachType: 'incremental'' | ''big_bang'' | ''parallel'' | ''hybrid';
+  readonly approachType: 'incremental|big_bang|parallel|hybrid';
   readonly phases: RemediationPhase[];
   readonly timeline: {
     readonly startDate: Date;
@@ -105,10 +105,10 @@ export interface RemediationPhase {
  * Resource requirement for remediation
  */
 export interface ResourceRequirement {
-  readonly resourceType:' | ''developer'' | ''architect'' | ''qa'' | ''devops'' | ''security';
-  readonly skillLevel: 'junior'' | ''mid'' | ''senior'' | ''expert';
+  readonly resourceType:|developer|architect|qa|devops|'security';
+  readonly skillLevel: 'junior|mid|senior|expert';
   readonly hoursRequired: number;
-  readonly timeframe: 'immediate'' | ''short_term'' | ''medium_term'' | ''long_term';
+  readonly timeframe: 'immediate|short_term|medium_term|long_term';
 }
 
 /**
@@ -132,7 +132,7 @@ export interface SuccessMetric {
   readonly description: string;
   readonly targetValue: number;
   readonly measurementMethod: string;
-  readonly validationFrequency: 'daily'' | ''weekly'' | ''monthly';
+  readonly validationFrequency: 'daily|weekly|monthly';
 }
 
 /**
@@ -155,8 +155,8 @@ export interface TechnicalDebtConfig {
   readonly criticalSeverityThreshold: number;
   readonly autoApprovalThreshold: number;
   readonly remediationPlanningThreshold: number;
-  readonly prioritizationStrategy:' | ''severity_based'' | ''impact_based'' | ''ai_optimized'' | ''business_value';
-  readonly trackingGranularity:' | ''component'' | ''module'' | ''system'' | ''enterprise';
+  readonly prioritizationStrategy:|severity_based|impact_based|ai_optimized|'business_value';
+  readonly trackingGranularity:|component|module|system|'enterprise';
 }
 
 /**
@@ -195,7 +195,7 @@ export interface QualityMetric {
   readonly metricName: string;
   readonly currentValue: number;
   readonly targetValue: number;
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
   readonly measurement: string;
 }
 
@@ -207,7 +207,7 @@ export interface TrendData {
   readonly debtIntroduced: number;
   readonly debtResolved: number;
   readonly netDebtChange: number;
-  readonly velocityTrend: 'accelerating'' | ''stable'' | ''decelerating';
+  readonly velocityTrend: 'accelerating|stable|decelerating';
 }
 
 // ============================================================================
@@ -324,7 +324,7 @@ export class TechnicalDebtManagementService {
    */
   async addTechnicalDebtItem(
     item: Omit<
-      TechnicalDebtItem,' | ''id'' | ''createdAt'' | ''updatedAt'' | ''status'' | ''priority'' | ''businessImpact'' | ''technicalRisk'
+      TechnicalDebtItem,|id|createdAt|updatedAt|status|priority|businessImpact|'technicalRisk'
     >
   ): Promise<TechnicalDebtItem> {
     if (!this.initialized) await this.initialize();

@@ -31,8 +31,8 @@ export interface RTEManagerConfig {
   readonly enableRiskAndDependencyManagement: boolean;
   readonly enableMultiARTCoordination: boolean;
   readonly enableImpedimentTracking: boolean;
-  readonly scrumOfScrumsFrequency: 'daily''' | '''twice-weekly''' | '''weekly';
-  readonly systemDemoFrequency: 'iteration''' | '''bi-weekly''' | '''monthly';
+  readonly scrumOfScrumsFrequency: 'daily|twice-weekly'||weekly';
+  readonly systemDemoFrequency: 'iteration|bi-weekly'||monthly';
   readonly impedimentEscalationThreshold: number; // days
   readonly programSyncInterval: number; // milliseconds
   readonly predictabilityReportingInterval: number; // milliseconds
@@ -50,7 +50,7 @@ export interface FacilitationConfig {
   readonly enableConflictResolution: boolean;
   readonly enableConsensusBuilding: boolean;
   readonly enableActionItemTracking: boolean;
-  readonly facilitationStyle: 'collaborative | directive' | 'adaptive';
+  readonly facilitationStyle: 'collaborative|directive|adaptive';
   readonly timeboxDurationMinutes: number;
   readonly breakFrequencyMinutes: number;
   readonly participantEngagementTracking: boolean;

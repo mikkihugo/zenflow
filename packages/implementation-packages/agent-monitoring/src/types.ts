@@ -14,7 +14,7 @@ export interface AgentId {
 }
 
 export type AgentType =
-  | 'researcher | coder' | 'analyst''' | '''optimizer | coordinator' | 'tester''' | '''architect';
+  || 'researcher|coder|analyst|optimizer|coordinator|tester|architect'';
 
 // Agent Metrics and Performance
 export interface AgentMetrics {
@@ -38,7 +38,7 @@ export interface ResourceUsage {
 // Health Monitoring
 export interface HealthStatus {
   agentId: string;
-  status: 'healthy | warning' | 'critical''' | '''offline';
+  status: 'healthy|warning|critical|offline';
   lastSeen: number;
   issues: string[];
   recommendations: string[];
@@ -63,7 +63,7 @@ export interface PerformanceHistory {
   agentId: string;
   entries: PerformanceEntry[];
   averageSuccessRate: number;
-  trend: 'improving | declining' | 'stable';
+  trend: 'improving|declining|stable';
 }
 
 export interface PerformanceEntry {
@@ -129,7 +129,7 @@ export interface IntelligenceMetrics {
 
 export interface EmergentBehavior {
   id: string;
-  type: 'coordination | optimization' | 'adaptation''' | '''learning';
+  type: 'coordination|optimization|adaptation|learning';
   description: string;
   strength: number;
   participants: AgentId[];
@@ -139,7 +139,7 @@ export interface EmergentBehavior {
 
 // Swarm Types
 export type SwarmId = string;
-export type ForecastHorizon = '1h | 6h' | '24h' | '7d' | '30d';
+export type ForecastHorizon = '1h|6h|24h|7d|30d';
 
 // System Health Types
 export interface SystemHealthSummary {
@@ -207,11 +207,11 @@ export interface MonitoringConfig {
 
 // Event Types
 export interface MonitoringEvent {
-  type: 'health | performance' | 'learning' | 'prediction' | 'emergency';
+  type: 'health|performance|learning|prediction|emergency';
   agentId?: string;
   timestamp: number;
   data: Record<string, unknown>;
-  severity: 'info | warning' | 'critical';
+  severity: 'info|warning|critical';
 }
 
 // Additional missing types from the codebase
@@ -273,7 +273,7 @@ export interface IntelligenceSystem {
     context?: Record<string, unknown>
   ): Promise<MultiHorizonTaskPrediction>;
 
-  getAgentLearningState(agentId: AgentId): AgentLearningState'' | ''null;
+  getAgentLearningState(agentId: AgentId): AgentLearningState|null;
 
   updateAgentPerformance(
     agentId: AgentId,
@@ -281,7 +281,7 @@ export interface IntelligenceSystem {
     metadata?: Record<string, unknown>
   ): void;
 
-  getAgentHealth(agentId: AgentId): AgentHealth'' | ''null;
+  getAgentHealth(agentId: AgentId): AgentHealth|null;
 
   forecastPerformanceOptimization(
     swarmId: SwarmId,

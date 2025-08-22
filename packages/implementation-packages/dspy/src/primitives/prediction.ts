@@ -83,12 +83,12 @@ export class PredictionUtils {
     const reasoning = predictions
       .map((p) => p.reasoning)
       .filter(Boolean)
-      .join(''' | ''');
+      .join(|);
 
     // Average confidence
     const confidences = predictions
       .map((p) => p.confidence)
-      .filter((c) => typeof c === 'number');
+      .filter((c) => typeof c === ''number');
     const avgConfidence =
       confidences.length > 0
         ? confidences.reduce((sum, c) => sum + c, 0) / confidences.length
@@ -128,7 +128,7 @@ export class PredictionUtils {
    * Check if prediction has field
    */
   static hasField(prediction: Prediction, field: string): boolean {
-    return (prediction.data && field in prediction.data)'' | '''' | ''field in prediction;
+    return (prediction.data && field in prediction.data)||field in prediction;
   }
 
   /**

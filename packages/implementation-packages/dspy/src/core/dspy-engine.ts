@@ -90,18 +90,18 @@ class InMemoryDSPyKV implements DSPyKV {
  */
 export class DSPyEngine {
   private config: DSPyConfig;
-  private kv: DSPyKV'' | ''null = null;
+  private kv: DSPyKV|null = null;
   private llmService: any = null;
   private optimizationHistory = new Map<string, DSPyOptimizationResult[]>();
 
   constructor(config: Partial<DSPyConfig> = {}) {
     this.config = {
-      maxIterations: config.maxIterations'' | '''' | ''5,
-      fewShotExamples: config.fewShotExamples'' | '''' | ''3,
-      temperature: config.temperature'' | '''' | ''0.1,
-      model: config.model'' | '''' | '''claude-3-sonnet',
-      metrics: config.metrics'' | '''' | ''['accuracy', 'latency'],
-      swarmCoordination: config.swarmCoordination'' | '''' | ''false,
+      maxIterations: config.maxIterations||5,
+      fewShotExamples: config.fewShotExamples||3,
+      temperature: config.temperature||0.1,
+      model: config.model||'claude-3-sonnet',
+      metrics: config.metrics||['accuracy', 'latency'],
+      swarmCoordination: config.swarmCoordination||false,
       ...config,
     };
 
@@ -169,7 +169,7 @@ export class DSPyEngine {
       id: `dspy-${Date.now()}`,
       name: task,
       signature: 'input -> output',
-      prompt: initialPrompt'' | '''' | ''`Complete this task: ${task}`,
+      prompt: initialPrompt||`Complete this task: ${task}`,
       examples,
       metrics: this.createInitialMetrics(),
     };
@@ -206,7 +206,7 @@ export class DSPyEngine {
       variation.score = score;
 
       // Update best if improved
-      if (score > (program.metrics.accuracy'' | '''' | ''0)) {
+      if (score > (program.metrics.accuracy||0)) {
         program.prompt = variation.prompt;
         program.metrics.accuracy = score;
         logger.info(`DSPy improvement found: ${score.toFixed(3)} accuracy`);
@@ -216,13 +216,13 @@ export class DSPyEngine {
     const duration = Date.now() - startTime;
     const result: DSPyOptimizationResult = {
       programId: program.id,
-      originalPrompt: initialPrompt'' | '''' | ''`Complete this task: ${task}`,
+      originalPrompt: initialPrompt||`Complete this task: ${task}`,
       optimizedPrompt: program.prompt,
-      improvement: (program.metrics.accuracy'' | '''' | ''0) - 0.5, // Assume 0.5 baseline
+      improvement: (program.metrics.accuracy||0) - 0.5, // Assume 0.5 baseline
       iterations: this.config.maxIterations,
       variations,
       metrics: {
-        accuracy: program.metrics.accuracy'' | '''' | ''0,
+        accuracy: program.metrics.accuracy||0,
         latency: duration,
         tokenUsage: variations.length * 100, // Rough estimate
         cost: variations.length * 0.001, // Rough estimate
@@ -396,7 +396,7 @@ Improved prompt:`;
       await kv.set(key, result);
 
       // Update history
-      const history = this.optimizationHistory.get(task)'' | '''' | ''[];
+      const history = this.optimizationHistory.get(task)||[];
       history.push(result);
       this.optimizationHistory.set(task, history);
 
@@ -430,7 +430,7 @@ Improved prompt:`;
       );
     } catch (error) {
       logger.warn('Failed to get optimization history:', error);
-      return this.optimizationHistory.get(task)'' | '''' | ''[];
+      return this.optimizationHistory.get(task)||[];
     }
   }
 
@@ -532,7 +532,7 @@ export const dspyUtils = {
 
     if (
       typeof config?.temperature === 'number'&&
-      (config.temperature < 0'' | '''' | ''config.temperature > 1)
+      (config.temperature < 0||config.temperature > 1)
     ) {
       errors.push('temperature must be between 0 and 1');
     }

@@ -80,7 +80,7 @@ export class LLMApprovalService {
         llmDecision.approved &&
         llmDecision.confidence >= config.confidenceThreshold;
 
-      const escalatedToHuman = !autoApproved'' | '''' | ''llmDecision.concerns.length > 0;
+      const escalatedToHuman = !autoApproved||llmDecision.concerns.length > 0;
 
       if (autoApproved) {
         this.logger.info('LLM auto-approved task', {
@@ -174,7 +174,7 @@ export class LLMApprovalService {
 TASK DETAILS:
 - ID: ${task.id}
 - Title: ${task.title}
-- Description: ${task.description'' | '''' | '''None'}
+- Description: ${task.description||'None'}
 - Type: ${task.type}
 - Complexity: ${task.complexity}
 - Priority: ${task.priority}
@@ -249,8 +249,8 @@ Be conservative: when in doubt, escalate to human review.`;
 
       return {
         approved: Boolean(parsed.approved),
-        confidence: Math.max(0, Math.min(1, Number(parsed.confidence)'' | '''' | ''0)),
-        reasoning: String(parsed.reasoning'' | '''' | '''No reasoning provided'),
+        confidence: Math.max(0, Math.min(1, Number(parsed.confidence)||0)),
+        reasoning: String(parsed.reasoning||'No reasoning provided'),
         concerns: Array.isArray(parsed.concerns) ? parsed.concerns : [],
         suggestedActions: Array.isArray(parsed.suggestedActions)
           ? parsed.suggestedActions
@@ -258,7 +258,7 @@ Be conservative: when in doubt, escalate to human review.`;
         metadata: {
           model: config.model,
           processingTime: 0, // Will be filled by caller
-          tokenUsage: response.tokenUsage'' | '''' | ''0,
+          tokenUsage: response.tokenUsage||0,
           version:'1.0.0',
         },
       };
@@ -398,7 +398,7 @@ Be conservative: when in doubt, escalate to human review.`;
   private determineFeedbackType(
     llmDecision: LLMApprovalDecision,
     humanOverride: HumanOverride
-  ): 'correct | incorrect' | 'partially_correct' {
+  ): 'correct|incorrect|partially_correct' {
     const llmApproved = llmDecision.approved;
     const humanApproved = humanOverride.action === 'approve';
 

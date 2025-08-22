@@ -178,7 +178,7 @@ export default defineConfig({
        * V8 provides native Node.js coverage with better performance.
        * 
        * @type {'v8'}
-       * @alternative 'c8''' | '''istanbul'
+       * @alternative 'c8|istanbul''
        * @performance V8 is fastest for TypeScript projects
        */
       provider: 'v8',
@@ -287,7 +287,7 @@ export default defineConfig({
      * Uses worker threads for parallel test execution.
      * 
      * @type {'threads'}
-     * @alternative 'forks''' | '''vmThreads'
+     * @alternative 'forks|vmThreads''
      * @performance Threads provide best balance of speed and isolation
      */
     pool: 'threads',

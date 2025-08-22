@@ -12,7 +12,7 @@ import type { MemoryNode, MemoryLoadMetrics } from './types';
 
 interface LoadBalancingConfig {
   enabled: boolean;
-  algorithm:'' | '''round-robin''' | '''least-connections''' | '''weighted''' | '''resource-aware';
+  algorithm:|'round-robin|least-connections'||weighted|resource-aware'';
   weights?: Record<string, number>;
   thresholds?: {
     maxLatency: number;
@@ -66,7 +66,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
   }
 
   selectNode(availableNodes: MemoryNode[]): MemoryNode {
-    if (!this.config.enabled'' | '''' | ''availableNodes.length === 0) {
+    if (!this.config.enabled||availableNodes.length === 0) {
       throw new Error('No nodes available for load balancing');
     }
 
@@ -135,11 +135,11 @@ export class MemoryLoadBalancer extends TypedEventBase {
   }
 
   private selectWeighted(nodes: MemoryNode[]): MemoryNode {
-    const weights = this.config.weights'' | '''' | ''{};
+    const weights = this.config.weights||{};
 
     // Calculate total weight
     const totalWeight = nodes.reduce((sum, node) => {
-      const weight = weights[node.id]'' | '''' | ''node.weight'' | '''' | ''1;
+      const weight = weights[node.id]||node.weight||1;
       return sum + weight;
     }, 0);
 
@@ -147,7 +147,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
     let random = Math.random() * totalWeight;
 
     for (const node of nodes) {
-      const weight = weights[node.id]'' | '''' | ''node.weight'' | '''' | ''1;
+      const weight = weights[node.id]||node.weight||1;
       random -= weight;
       if (random <= 0) {
         return node;
@@ -173,7 +173,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
 
   private calculateNodeScore(node: MemoryNode): number {
     const metrics = node.metrics;
-    const thresholds = this.config.thresholds'' | '''' | ''{
+    const thresholds = this.config.thresholds||{
       maxLatency: 100,
       maxErrorRate: 0.05,
       maxConnectionsPerNode: 100,
@@ -213,7 +213,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
   }
 
   private checkNodeOverload(node: MemoryNode): void {
-    const thresholds = this.config.thresholds'' | '''' | ''{
+    const thresholds = this.config.thresholds||{
       maxLatency: 100,
       maxErrorRate: 0.05,
       maxConnectionsPerNode: 100,
@@ -221,7 +221,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
     };
 
     const isOverloaded =
-      node.metrics.averageResponseTime > thresholds.maxLatency'' | '''' | ''node.status.errorRate > thresholds.maxErrorRate'' | '''' | ''node.metrics.connections > thresholds.maxConnectionsPerNode'' | '''' | ''node.metrics.memoryUsage > thresholds.maxMemoryUsage;
+      node.metrics.averageResponseTime > thresholds.maxLatency||node.status.errorRate > thresholds.maxErrorRate||node.metrics.connections > thresholds.maxConnectionsPerNode||node.metrics.memoryUsage > thresholds.maxMemoryUsage;
 
     const wasOverloaded = this.stats.overloadedNodes.includes(node.id);
 
@@ -290,7 +290,7 @@ export class MemoryLoadBalancer extends TypedEventBase {
     }
 
     // If average latency is high, recommend more nodes
-    const maxLatency = this.config.thresholds?.maxLatency'' | '''' | ''100;
+    const maxLatency = this.config.thresholds?.maxLatency||100;
     if (avgLatency > maxLatency) {
       return Math.ceil(currentNodes * 1.2);
     }

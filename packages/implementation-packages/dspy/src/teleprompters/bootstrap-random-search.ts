@@ -44,8 +44,8 @@ class LabeledFewShot extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: Example[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: Example[]|null;
       sample?: boolean;
       [key: string]: any;
     }
@@ -221,20 +221,20 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 
   constructor(config: {
     metric: MetricFunction;
-    teacher_settings?: Record<string, any>'' | ''null;
+    teacher_settings?: Record<string, any>|null;
     max_bootstrapped_demos?: number;
     max_labeled_demos?: number;
     max_rounds?: number;
     num_candidate_programs?: number;
-    num_threads?: number'' | ''null;
-    max_errors?: number'' | ''null;
-    stop_at_score?: number'' | ''null;
-    metric_threshold?: number'' | ''null;
+    num_threads?: number|null;
+    max_errors?: number|null;
+    stop_at_score?: number|null;
+    metric_threshold?: number|null;
   }) {
     super();
 
     this.metric = config.metric;
-    this.teacher_settings = config.teacher_settings'' | '''' | ''{};
+    this.teacher_settings = config.teacher_settings||{};
     this.max_rounds = config.max_rounds ?? 1;
 
     this.num_threads = config.num_threads ?? undefined;
@@ -261,9 +261,9 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: Example[]'' | ''null;
-      restrict?: number[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: Example[]|null;
+      restrict?: number[]|null;
       labeled_sample?: boolean;
       [key: string]: any;
     }
@@ -277,14 +277,14 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
     } = config;
 
     this.trainset = trainset;
-    this.valset = valset'' | '''' | ''trainset; // Note: Stanford DSPy uses trainset as fallback
+    this.valset = valset||trainset; // Note: Stanford DSPy uses trainset as fallback
 
     const effective_max_errors = this.max_errors ?? 10; // dspy.settings.max_errors equivalent
 
     const scores: number[] = [];
     const all_subscores: number[][] = [];
     const score_data: CandidateResult[] = [];
-    let best_program: DSPyModule'' | ''undefined;
+    let best_program: DSPyModule|undefined;
 
     // Generate candidate programs exactly matching Stanford implementation
     for (let seed = -3; seed < this.num_candidate_sets; seed++) {
@@ -361,7 +361,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 
       all_subscores.push(subscores);
 
-      if (scores.length === 0'' | '''' | ''score > Math.max(...scores)) {
+      if (scores.length === 0||score > Math.max(...scores)) {
         console.log('New best score:', score, 'for seed', seed);
         best_program = program;
       }

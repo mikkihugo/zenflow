@@ -18,7 +18,7 @@ export { LoggingLevel } from './logging';
  * Basic foundation configuration
  */
 export interface FoundationConfig {
-  logLevel: 'debug | info' | 'warn''' | '''error';
+  logLevel: 'debug|info|warn|error';
   enableConsoleLogging?: boolean;
   enableFileLogging?: boolean;
 }

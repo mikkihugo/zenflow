@@ -30,7 +30,7 @@ vi.stubGlobal('process', {
 const originalSetTimeout = globalThis.setTimeout;
 globalThis.setTimeout = ((callback: (...args: any[]) => void, delay?: number, ...args: any[]) => {
   // Limit timeouts to max 60 seconds to prevent infinite hangs
-  const safeDelay = Math.min(delay'' | '''' | ''0, 60000);
+  const safeDelay = Math.min(delay||0, 60000);
   return originalSetTimeout(callback, safeDelay, ...args);
 }) as typeof setTimeout;
 
@@ -94,16 +94,16 @@ globalThis.testUtils = {
     database: {
       type: 'sqlite',
       path: ':memory:',
-      ...(overrides.database'' | '''' | ''{}),
+      ...(overrides.database||{}),
     },
     memory: {
       type:'memory',
       maxSize: 1000,
-      ...(overrides.memory'' | '''' | ''{}),
+      ...(overrides.memory||{}),
     },
     neural: {
       enabled: false,
-      ...(overrides.neural'' | '''' | ''{}),
+      ...(overrides.neural||{}),
     },
     ...overrides,
   }),

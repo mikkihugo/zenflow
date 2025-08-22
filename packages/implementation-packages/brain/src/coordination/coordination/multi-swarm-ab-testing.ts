@@ -35,7 +35,7 @@ const logger = getLogger('multi-swarm-ab-testing');
 /**
  * Supported AI model backends for swarm A/B testing
  */
-export type AIModelBackend =' | ''claude-sonnet'' | ''claude-opus'' | ''claude-haiku'' | ''gemini-pro'' | ''gemini-flash'' | ''gpt-4'' | ''gpt-4-turbo'' | ''aider'' | ''custom';
+export type AIModelBackend =|claude-sonnet|claude-opus|claude-haiku|gemini-pro|gemini-flash|gpt-4|gpt-4-turbo|aider|'custom';
 
 /**
  * A/B test strategy configuration
@@ -49,17 +49,17 @@ export interface ABTestStrategy {
   modelBackend: AIModelBackend;
   /** Swarm configuration parameters */
   swarmConfig: {
-    topology: 'mesh'' | ''hierarchical'' | ''ring'' | ''star';
+    topology: 'mesh|hierarchical|ring|star';
     maxAgents: number;
-    strategy: 'balanced'' | ''specialized'' | ''adaptive';
-    coordinationApproach: 'conservative'' | ''aggressive'' | ''exploratory';
+    strategy: 'balanced|specialized|adaptive';
+    coordinationApproach: 'conservative|aggressive|exploratory';
   };
   /** Research configuration for this strategy */
   researchConfig?: Partial<PrinciplesResearchConfig>;
   /** Custom prompt variations */
   promptVariations?: {
-    style: 'concise'' | ''detailed'' | ''step-by-step'' | ''creative';
-    focus: 'performance'' | ''quality'' | ''speed'' | ''innovation';
+    style: 'concise|detailed|step-by-step|creative';
+    focus: 'performance|quality|speed|innovation';
   };
 }
 
@@ -143,7 +143,7 @@ export interface ABTestResult {
     /** Confidence in winner selection (0-1) */
     confidence: number;
     /** Statistical significance */
-    significance: 'high'' | ''medium'' | ''low'' | ''none';
+    significance: 'high|medium|low|none';
     /** Performance differences */
     performanceDelta: Record<string, number>;
   };
@@ -286,7 +286,7 @@ export class MultiSwarmABTesting {
    * Create predefined strategy sets for common scenarios
    */
   createStrategySet(
-    scenario: 'performance'' | ''quality'' | ''innovation'' | ''comprehensive'
+    scenario: 'performance|quality|innovation|comprehensive'
   ): ABTestStrategy[] {
     switch (scenario) {
       case 'performance':
@@ -1192,7 +1192,7 @@ Execute this task using the specified strategy.`;
  */
 export async function quickABTest(
   taskDescription: string,
-  scenario:' | ''performance'' | ''quality'' | ''innovation'' | ''comprehensive' = 'comprehensive',
+  scenario:|performance|quality|innovation|'comprehensive' = 'comprehensive',
   options: {
     useGitTrees?: boolean;
     timeoutMs?: number;

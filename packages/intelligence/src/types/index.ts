@@ -21,7 +21,7 @@ export interface BrainSystemConfig {
   };
   enableMetrics?: boolean;
   enableGPU?: boolean;
-  neuralNetworkType?: 'feedforward | recurrent' | 'transformer';
+  neuralNetworkType?: 'feedforward|recurrent|transformer';
   maxConcurrentTasks?: number;
 }
 
@@ -31,7 +31,7 @@ export interface AISafetySystemConfig {
   enableNeuralSafety?: boolean;
   enableLogAnalysis?: boolean;
   safetyThreshold?: number;
-  detectionSensitivity?: 'low | medium' | 'high''' | '''critical';
+  detectionSensitivity?: 'low|medium|high|critical';
 }
 
 // Fact System Types - local definitions with fallback compatibility
@@ -79,7 +79,7 @@ export interface IntelligenceSystemConfig {
     };
     enableMetrics?: boolean;
     enableGPU?: boolean;
-    neuralNetworkType?: 'feedforward | recurrent' | 'transformer';
+    neuralNetworkType?: 'feedforward|recurrent|transformer';
     maxConcurrentTasks?: number;
   };
 
@@ -88,7 +88,7 @@ export interface IntelligenceSystemConfig {
     enableNeuralSafety?: boolean;
     enableLogAnalysis?: boolean;
     safetyThreshold?: number;
-    detectionSensitivity?: 'low | medium' | 'high''' | '''critical';
+    detectionSensitivity?: 'low|medium|high|critical';
   };
 
   // Note: neuralML and dspy configs are handled internally by brain package
@@ -121,7 +121,7 @@ export interface IntelligenceSystemStatus {
   safety: {
     isConnected: boolean;
     isMonitoring: boolean;
-    threatLevel: 'low | medium' | 'high''' | '''critical';
+    threatLevel: 'low|medium|high|critical';
     detectionsCount: number;
   };
 
@@ -166,4 +166,4 @@ export interface IntelligenceSystemMetrics {
 }
 
 // Document Type exports
-export type DocumentType ='' | '''text | markdown' | 'json''' | '''xml | html' | 'code' | 'configuration' | 'unknown';
+export type DocumentType =|'text|markdown|json|xml|html|code|configuration|unknown';

@@ -106,7 +106,7 @@ class PerformanceOptimizer {
         execSync(`which ${dep}`, { stdio: 'ignore' });
       } catch {
         try {
-          if (dep === 'wasm-opt''' | '''' | ''dep ==='binaryen') {
+          if (dep === 'wasm-opt'||dep ==='binaryen') {
             execSync(
               `sudo apt-get update && sudo apt-get install -y binaryen`,
               {
@@ -184,7 +184,7 @@ class PerformanceOptimizer {
       packageJson.scripts = {
         ...packageJson.scripts,
         'clean:cache': 'rm -rf .tsbuildinfo node_modules/.cache dist/.cache',
-        'build:cached': 'npm run build:ts'' | '''' | ''npm run build:fast',
+        'build:cached': 'npm run build:ts||npm run build:fast',
       };
     }
 

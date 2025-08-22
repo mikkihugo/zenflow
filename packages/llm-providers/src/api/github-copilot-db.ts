@@ -23,7 +23,7 @@ export interface GitHubCopilotModelMetadata {
   contextWindow: number;
   maxOutputTokens: number;
   maxPromptTokens: number;
-  category: 'versatile | lightweight' | 'powerful';
+  category: 'versatile|lightweight|powerful';
   supportsVision: boolean;
   supportsToolCalls: boolean;
   supportsStreaming: boolean;
@@ -32,7 +32,7 @@ export interface GitHubCopilotModelMetadata {
   modelPickerEnabled: boolean;
   preview: boolean;
   tokenizer: string;
-  type: 'chat''' | '''embeddings';
+  type: 'chat|embeddings'';
   visionLimits?: {
     maxImageSize: number;
     maxImages: number;
@@ -63,13 +63,13 @@ function loadCopilotToken(): string {
     logger.warn('Failed to load Copilot OAuth token from config:', error);
   }
 
-  return process.env.GITHUB_COPILOT_TOKEN'' | '''' | '''';
+  return process.env.GITHUB_COPILOT_TOKEN||';
 }
 
 class GitHubCopilotDatabase {
   private models: Map<string, GitHubCopilotModelMetadata> = new Map();
   private lastUpdate: Date = new Date(0);
-  private updateInterval: NodeJS.Timeout'' | ''null = null;
+  private updateInterval: NodeJS.Timeout|'null = null;
   private token: string;
 
   constructor() {
@@ -136,22 +136,22 @@ class GitHubCopilotDatabase {
       const data = await response.json();
       const updatedModels = new Map<string, GitHubCopilotModelMetadata>();
 
-      for (const modelData of data.data'' | '''' | ''[]) {
+      for (const modelData of data.data||[]) {
         const capabilities = modelData.capabilities;
-        const limits = capabilities?.limits'' | '''' | ''{};
+        const limits = capabilities?.limits||{};
         const vision = limits.vision;
-        const supports = capabilities?.supports'' | '''' | ''{};
+        const supports = capabilities?.supports||{};
 
         const model: GitHubCopilotModelMetadata = {
           id: modelData.id,
           name: modelData.name,
-          vendor: modelData.vendor'' | '''' | '''Unknown',
-          family: capabilities?.family'' | '''' | '''unknown',
-          version: modelData.version'' | '''' | ''modelData.id,
-          contextWindow: limits.max_context_window_tokens'' | '''' | ''128000,
-          maxOutputTokens: limits.max_output_tokens'' | '''' | ''4096,
-          maxPromptTokens: limits.max_prompt_tokens'' | '''' | ''128000,
-          category: modelData.model_picker_category'' | '''' | '''versatile',
+          vendor: modelData.vendor||'Unknown',
+          family: capabilities?.family||'unknown',
+          version: modelData.version||modelData.id,
+          contextWindow: limits.max_context_window_tokens||128000,
+          maxOutputTokens: limits.max_output_tokens||4096,
+          maxPromptTokens: limits.max_prompt_tokens||128000,
+          category: modelData.model_picker_category||'versatile',
           supportsVision: !!vision,
           supportsToolCalls: !!supports.tool_calls,
           supportsStreaming: !!supports.streaming,
@@ -159,23 +159,23 @@ class GitHubCopilotDatabase {
           supportsStructuredOutputs: !!supports.structured_outputs,
           modelPickerEnabled: !!modelData.model_picker_enabled,
           preview: !!modelData.preview,
-          tokenizer: capabilities?.tokenizer'' | '''' | '''unknown',
-          type: capabilities?.type'' | '''' | '''chat',
+          tokenizer: capabilities?.tokenizer||'unknown',
+          type: capabilities?.type||'chat',
           lastUpdated: new Date(),
         };
 
         if (vision) {
           model.visionLimits = {
-            maxImageSize: vision.max_prompt_image_size'' | '''' | ''0,
-            maxImages: vision.max_prompt_images'' | '''' | ''0,
-            supportedFormats: vision.supported_media_types'' | '''' | ''[],
+            maxImageSize: vision.max_prompt_image_size||0,
+            maxImages: vision.max_prompt_images||0,
+            supportedFormats: vision.supported_media_types||[],
           };
         }
 
-        if (supports.max_thinking_budget'' | '''' | ''supports.min_thinking_budget) {
+        if (supports.max_thinking_budget||supports.min_thinking_budget) {
           model.thinkingBudget = {
-            min: supports.min_thinking_budget'' | '''' | ''0,
-            max: supports.max_thinking_budget'' | '''' | ''0,
+            min: supports.min_thinking_budget||0,
+            max: supports.max_thinking_budget||0,
           };
         }
 
@@ -212,7 +212,7 @@ class GitHubCopilotDatabase {
   /**
    * Get model by ID
    */
-  getModel(id: string): GitHubCopilotModelMetadata'' | ''undefined {
+  getModel(id: string): GitHubCopilotModelMetadata|undefined {
     return this.models.get(id);
   }
 
@@ -229,7 +229,7 @@ class GitHubCopilotDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category:'versatile | lightweight' | 'powerful'
+    category:'versatile|lightweight|powerful'
   ): GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model.category === category
@@ -277,7 +277,7 @@ class GitHubCopilotDatabase {
   getVendorStats(): string {
     const stats = new Map<string, number>();
     for (const model of this.models.values()) {
-      stats.set(model.vendor, (stats.get(model.vendor)'' | '''' | ''0) + 1);
+      stats.set(model.vendor, (stats.get(model.vendor)||0) + 1);
     }
     return Array.from(stats.entries())
       .map(([vendor, count]) => `${vendor}:${count}`)
@@ -293,7 +293,7 @@ class GitHubCopilotDatabase {
       if (model.type === 'chat') {
         analysis.set(
           model.contextWindow,
-          (analysis.get(model.contextWindow)'' | '''' | ''0) + 1
+          (analysis.get(model.contextWindow)||0) + 1
         );
       }
     }

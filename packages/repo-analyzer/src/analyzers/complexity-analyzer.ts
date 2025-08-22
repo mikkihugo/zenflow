@@ -178,7 +178,7 @@ export class ComplexityAnalyzer {
         report = complexityReport.run(content, options);
       } else {
         // Fallback for different module structures
-        const cr = (complexityReport as any).default'' | '''' | ''complexityReport;
+        const cr = (complexityReport as any).default||complexityReport;
         report = cr.run ? cr.run(content, options) : cr(content, options);
       }
 
@@ -200,7 +200,7 @@ export class ComplexityAnalyzer {
       let ast;
 
       // Try TypeScript first
-      if (filePath.endsWith('.ts')'' | '''' | ''filePath.endsWith('.tsx')) {
+      if (filePath.endsWith('.ts')||filePath.endsWith('.tsx')) {
         const sourceFile = this.project?.getSourceFile(filePath);
         if (sourceFile) {
           return this.calculateHalsteadFromTSMorph(sourceFile);
@@ -266,7 +266,7 @@ export class ComplexityAnalyzer {
         operatorCount++;
       }
       // Operands (identifiers, literals)
-      else if (kind === SyntaxKind.Identifier'' | '''' | ''this.isLiteralKind(kind)) {
+      else if (kind === SyntaxKind.Identifier||this.isLiteralKind(kind)) {
         operands.add(text);
         operandCount++;
       }
@@ -339,8 +339,8 @@ export class ComplexityAnalyzer {
   ): HalsteadMetrics {
     const vocabulary = n1 + n2;
     const length = N1 + N2;
-    const volume = length * Math.log2(vocabulary'' | '''' | ''1);
-    const difficulty = (n1 / 2) * (N2 / (n2'' | '''' | ''1));
+    const volume = length * Math.log2(vocabulary||1);
+    const difficulty = (n1 / 2) * (N2 / (n2||1));
     const effort = difficulty * volume;
     const time = effort / 18;
     const bugs = volume / 3000;
@@ -378,7 +378,7 @@ export class ComplexityAnalyzer {
         /\bcase\b/g,
         /\bcatch\b/g,
         /\&\&/g,
-        /\'' | ''\'' | ''/g,
+        /\|\|/g,
         /\?/g, // Ternary operator
       ];
 
@@ -480,7 +480,7 @@ export class ComplexityAnalyzer {
       );
 
       if (
-        complexity > this.thresholds.cyclomaticComplexity'' | '''' | ''maintainabilityIndex < this.thresholds.maintainabilityIndex
+        complexity > this.thresholds.cyclomaticComplexity||maintainabilityIndex < this.thresholds.maintainabilityIndex
       ) {
         hotspots.push({
           file: filePath,
@@ -512,13 +512,13 @@ export class ComplexityAnalyzer {
     loc: number
   ): number {
     // Microsoft Maintainability Index formula
-    const volume = halstead.volume'' | '''' | ''1;
+    const volume = halstead.volume||1;
     const mi = Math.max(
       0,
       171 -
         5.2 * Math.log(volume) -
         0.23 * complexity -
-        16.2 * Math.log(loc'' | '''' | ''1)
+        16.2 * Math.log(loc||1)
     );
     return Math.round(mi * 100) / 100;
   }
@@ -540,7 +540,7 @@ export class ComplexityAnalyzer {
   }
 
   // Helper methods
-  private async readFile(filePath: string): Promise<string'' | ''null> {
+  private async readFile(filePath: string): Promise<string|null> {
     try {
       const fs = await import('fs/promises');
       return await fs.readFile(filePath, 'utf-8');
@@ -627,15 +627,15 @@ export class ComplexityAnalyzer {
     // Simple regex-based method extraction
     const methodRegex = /^\s*(async\s+)?(function\s+)?(\w+)\s*\([^)]*\)\s*\{?/;
     const arrowFunctionRegex =
-      /^\s*(?:const'' | ''let'' | ''var)?\s*(\w+)\s*=\s*(?:async\s+)?\([^)]*\)\s*=>\s*\{?/;
+      /^\s*(?:const|let|var)?\s*(\w+)\s*=\s*(?:async\s+)?\([^)]*\)\s*=>\s*\{?/;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const methodMatch =
-        line.match(methodRegex)'' | '''' | ''line.match(arrowFunctionRegex);
+        line.match(methodRegex)||line.match(arrowFunctionRegex);
 
       if (methodMatch) {
-        const name = methodMatch[3]'' | '''' | ''methodMatch[1]'' | '''' | '''anonymous';
+        const name = methodMatch[3]||methodMatch[1]||'anonymous';
         const startLine = i + 1;
         let endLine = startLine;
         let braceCount = 0;
@@ -727,7 +727,7 @@ export class ComplexityAnalyzer {
       const line = lines[i];
 
       // Variable declarations
-      const varMatch = line.match(/(?:const'' | ''let'' | ''var)\s+(\w+)/);
+      const varMatch = line.match(/(?:const|let|var)\s+(\w+)/);
       if (varMatch) {
         declarations.set(varMatch[1], { line: i + 1, type:'variable' });
       }
@@ -744,7 +744,7 @@ export class ComplexityAnalyzer {
       for (const [name] of declarations) {
         if (
           line.includes(name) &&
-          !line.match(new RegExp(`(?:const'' | ''let'' | ''var'' | ''function)\\s+${name}`))
+          !line.match(new RegExp(`(?:const|let|var|function)\\s+${name}`))
         ) {
           usages.add(name);
         }
@@ -769,7 +769,7 @@ export class ComplexityAnalyzer {
     complexity: number,
     maintainabilityIndex: number,
     lines: number
-  ):'low | medium' | 'high''' | '''urgent' {
+  ):'low|medium|high|urgent' {
     let score = 0;
 
     if (complexity > this.thresholds.cyclomaticComplexity * 2) score += 3;

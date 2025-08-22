@@ -40,7 +40,7 @@ const logger = getLogger('BrainPoweredPISuccessPrediction');
 export interface BrainPIPredictionRequest {
   piId: string;
   artId: string;
-  analysisType: 'comprehensive | quick' | 'focused';
+  analysisType: 'comprehensive|quick|focused';
   piData: {
     objectives: any[];
     teams: any[];
@@ -50,7 +50,7 @@ export interface BrainPIPredictionRequest {
   };
   brainConfig?: {
     useNeuralML: boolean;
-    complexity: 'simple | moderate' | 'complex';
+    complexity: 'simple|moderate|complex';
     timeoutMs: number;
     confidenceThreshold: number;
   };
@@ -202,7 +202,7 @@ export class BrainPoweredPIPredictionService {
    * Real-time PI monitoring using brain intelligence
    */
   async monitorPIWithBrain(piId: string): Promise<{
-    riskLevel: 'low | medium' | 'high''' | '''critical';
+    riskLevel: 'low|medium|high|critical';
     brainInsights: any;
     suggestedInterventions: any[];
     confidenceScore: number;
@@ -287,8 +287,8 @@ export class BrainPoweredPIPredictionService {
       sessionId: `pi-analysis-${request.piId}`,
       type: 'predictive_analysis',
       config: {
-        complexity: request.brainConfig?.complexity'' | '''' | '''moderate',
-        timeout: request.brainConfig?.timeoutMs'' | '''' | ''30000,
+        complexity: request.brainConfig?.complexity||'moderate',
+        timeout: request.brainConfig?.timeoutMs||30000,
         useCache: true,
         learningEnabled: true,
       },
@@ -491,10 +491,10 @@ export class BrainPoweredPIPredictionService {
     // Simple data quality assessment
     let qualityScore = 1.0;
 
-    if (!piData.objectives'' | '''' | ''piData.objectives.length === 0)
+    if (!piData.objectives||piData.objectives.length === 0)
       qualityScore -= 0.3;
-    if (!piData.teams'' | '''' | ''piData.teams.length === 0) qualityScore -= 0.3;
-    if (!piData.historicalData'' | '''' | ''piData.historicalData.length < 3)
+    if (!piData.teams||piData.teams.length === 0) qualityScore -= 0.3;
+    if (!piData.historicalData||piData.historicalData.length < 3)
       qualityScore -= 0.2;
     if (!piData.dependencies) qualityScore -= 0.2;
 

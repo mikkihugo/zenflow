@@ -26,7 +26,7 @@ import { nanoid } from 'nanoid';
 // CORE ORCHESTRATION TYPES
 // ============================================================================
 
-export type OrchestrationLevel = 'portfolio''' | '''program''' | '''swarm-execution';
+export type OrchestrationLevel = 'portfolio|program'||swarm-execution';
 
 export interface WIPLimits {
   portfolio: number;
@@ -40,7 +40,7 @@ export interface FlowMetrics {
   leadTime: number;
   cycleTime: number;
   wipUtilization: number;
-  bottleneckLevel: OrchestrationLevel'' | ''null;
+  bottleneckLevel: OrchestrationLevel|null;
   queueDepth: Record<OrchestrationLevel, number>;
 }
 
@@ -48,8 +48,8 @@ export interface PortfolioItem {
   id: string;
   name: string;
   description: string;
-  priority:'low | medium' | 'high''' | '''critical';
-  status: 'planned | active' | 'completed''' | '''cancelled';
+  priority:'low|medium|high|critical';
+  status: 'planned|active|completed|cancelled';
   programs: string[]; // Program IDs
   objectives: string[];
   successMetrics: SuccessMetric[];
@@ -62,7 +62,7 @@ export interface ProgramItem {
   portfolioId: string;
   name: string;
   description: string;
-  status: 'planned | active' | 'completed''' | '''cancelled';
+  status: 'planned|active|completed|cancelled';
   swarmExecutions: string[]; // Swarm execution IDs
   features: string[];
   deliverables: string[];
@@ -75,7 +75,7 @@ export interface SwarmExecutionItem {
   programId: string;
   name: string;
   description: string;
-  status: 'queued | active' | 'completed' | 'failed' | 'cancelled';
+  status: 'queued|active|completed|failed|cancelled';
   tasks: string[];
   assignedAgents: string[];
   executionPlan: ExecutionPlan;
@@ -85,11 +85,11 @@ export interface SwarmExecutionItem {
 
 export interface SuccessMetric {
   name: string;
-  type: 'quantitative''' | '''qualitative';
-  target: number'' | ''string;
-  actual?: number'' | ''string;
+  type: 'quantitative|qualitative';
+  target: number|string;
+  actual?: number|'string;
   unit?: string;
-  status:'not-started''' | '''in-progress''' | '''achieved''' | '''missed';
+  status:'not-started|in-progress'||achieved|missed'';
 }
 
 export interface ExecutionPlan {
@@ -105,7 +105,7 @@ export interface ExecutionPhase {
   tasks: string[];
   dependencies: string[];
   estimatedDuration: number;
-  status: 'pending | active' | 'completed''' | '''failed';
+  status: 'pending|active|completed|failed';
 }
 
 export interface CrossLevelDependency {
@@ -114,9 +114,9 @@ export interface CrossLevelDependency {
   toLevel: OrchestrationLevel;
   fromItemId: string;
   toItemId: string;
-  dependencyType: 'blocking | informational' | 'resource';
-  status: 'pending | satisfied' | 'violated';
-  escalationLevel: 'none | warning' | 'critical';
+  dependencyType: 'blocking|informational|resource';
+  status: 'pending|satisfied|violated';
+  escalationLevel: 'none|warning|critical';
   createdAt: Date;
 }
 
@@ -158,8 +158,8 @@ export interface SystemPerformanceMetrics {
 }
 
 export interface BottleneckInfo {
-  level: OrchestrationLevel'' | ''null;
-  severity:'none | minor' | 'moderate''' | '''severe';
+  level: OrchestrationLevel|null;
+  severity:'none|minor|moderate|severe';
   impact: string;
   recommendation: string;
 }
@@ -169,7 +169,7 @@ export interface LevelTransition {
   fromLevel: OrchestrationLevel;
   toLevel: OrchestrationLevel;
   itemId: string;
-  status: 'pending''' | '''in-progress''' | '''completed''' | '''failed';
+  status: 'pending|in-progress'||completed|failed'';
   startedAt: Date;
   completedAt?: Date;
   metadata: Record<string, unknown>;
@@ -207,7 +207,7 @@ export interface LevelTransitionConfig {
 export interface TransitionTrigger {
   readonly event: string;
   readonly condition: (context: unknown) => Promise<boolean>;
-  readonly priority: 'low | medium' | 'high''' | '''critical';
+  readonly priority: 'low|medium|high|critical';
   readonly timeout: number;
 }
 
@@ -338,8 +338,8 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
         bottleneckAnalysis: {
           level: null,
           severity: 'none',
-          impact: '',
-          recommendation: '',
+          impact: ',
+          recommendation: ',
         },
         lastUpdated: new Date(),
       },
@@ -441,7 +441,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
    * Add portfolio item
    */
   async addPortfolioItem(
-    item: Omit<PortfolioItem, 'id | createdAt' | 'updatedAt'>
+    item: Omit<PortfolioItem, 'id|createdAt|updatedAt'>
   ): Promise<PortfolioItem> {
     const portfolioItem: PortfolioItem = {
       id: nanoid(),
@@ -475,7 +475,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
    * Add program item
    */
   async addProgramItem(
-    item: Omit<ProgramItem, 'id | createdAt' | 'updatedAt'>
+    item: Omit<ProgramItem, 'id|createdAt|updatedAt'>
   ): Promise<ProgramItem> {
     const programItem: ProgramItem = {
       id: nanoid(),
@@ -514,7 +514,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
    * Add swarm execution item
    */
   async addSwarmExecutionItem(
-    item: Omit<SwarmExecutionItem, 'id | createdAt' | 'updatedAt'>
+    item: Omit<SwarmExecutionItem, 'id|createdAt|updatedAt'>
   ): Promise<SwarmExecutionItem> {
     const swarmItem: SwarmExecutionItem = {
       id: nanoid(),
@@ -927,20 +927,20 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
       totalItems,
       activeItems,
       completedItems,
-      throughputRate: completedItems / totalItems'' | '''' | ''0,
+      throughputRate: completedItems / totalItems||0,
       averageLeadTime: 120, // Mock value
-      systemUtilization: activeItems / totalItems'' | '''' | ''0,
-      bottleneckAnalysis: this.identifyBottlenecks()'' | '''' | ''{
+      systemUtilization: activeItems / totalItems||0,
+      bottleneckAnalysis: this.identifyBottlenecks()||{
         level: null,
         severity:'none',
-        impact: '',
-        recommendation: '',
+        impact: ',
+        recommendation: ',
       },
       lastUpdated: new Date(),
     };
   }
 
-  private identifyBottleneckLevel(): OrchestrationLevel'' | ''null {
+  private identifyBottleneckLevel(): OrchestrationLevel|null {
     const utilizations = [
       {
         level:'portfolio' as const,
@@ -963,7 +963,7 @@ export class MultiLevelOrchestrationManager extends TypedEventBase {
     return highest.utilization > 0.8 ? highest.level : null;
   }
 
-  private identifyBottlenecks(): BottleneckInfo'' | ''null {
+  private identifyBottlenecks(): BottleneckInfo|null {
     const bottleneckLevel = this.identifyBottleneckLevel();
 
     if (!bottleneckLevel) {

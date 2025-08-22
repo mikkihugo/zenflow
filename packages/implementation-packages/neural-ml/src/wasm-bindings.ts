@@ -48,9 +48,9 @@ export interface OptimizationConfig {
 
 // Bayesian Optimization Types
 export interface BayesianConfig extends OptimizationConfig {
-  kernel_type: 'rbf | matern' | 'polynomial''' | '''linear';
+  kernel_type: 'rbf|matern|polynomial|linear';
   kernel_params: Record<string, number>;
-  acquisition_type: 'ei | pi' | 'ucb''' | '''poi';
+  acquisition_type: 'ei|pi|ucb|poi';
   acquisition_params: Record<string, number>;
   noise_level: number;
 }
@@ -69,7 +69,7 @@ export interface OptimizationBounds {
 
 // Gradient Optimization Types
 export interface GradientConfig extends OptimizationConfig {
-  optimizer_type: 'sgd | adam' | 'rmsprop''' | '''adagrad';
+  optimizer_type: 'sgd|adam|rmsprop|adagrad';
   learning_rate: number;
   momentum?: number;
   beta1?: number;
@@ -119,7 +119,7 @@ export interface ParetoFront {
 // Online Learning Types
 export interface OnlineLearningConfig {
   learning_rate: number;
-  drift_detection_method: 'page_hinkley | adwin' | 'ddm' | 'eddm' | 'ks_test';
+  drift_detection_method: 'page_hinkley|adwin|ddm|eddm|ks_test';
   drift_threshold: number;
   adaptation_rate: number;
   buffer_size: number;
@@ -128,7 +128,7 @@ export interface OnlineLearningConfig {
 
 export interface ConceptDriftAlert {
   detected: boolean;
-  drift_type: 'gradual | sudden' | 'recurring''' | '''incremental';
+  drift_type: 'gradual|sudden|recurring|incremental';
   confidence: number;
   affected_features: number[];
   timestamp: number;
@@ -144,7 +144,7 @@ export interface LearningUpdate {
 
 // Pattern Recognition Types
 export interface PatternConfig {
-  pattern_types: ('' | '''sequential | temporal' | 'frequency''' | '''structural | behavioral' | 'optimization'
+  pattern_types: (|'sequential|temporal|frequency|structural|behavioral|optimization'
   )[];
   min_support: number;
   min_confidence: number;
@@ -162,17 +162,17 @@ export interface EmbeddingConfig {
 }
 
 export interface SimilarityConfig {
-  metric: 'cosine | euclidean' | 'manhattan' | 'jaccard' | 'mahalanobis';
+  metric: 'cosine|euclidean|manhattan|jaccard|mahalanobis';
   threshold: number;
   normalize_inputs: boolean;
 }
 
 export interface ClusteringConfig {
-  algorithm: 'kmeans | dbscan' | 'hierarchical';
+  algorithm: 'kmeans|dbscan|hierarchical';
   n_clusters?: number;
   eps?: number;
   min_samples?: number;
-  linkage?: 'single | complete' | 'average''' | '''ward';
+  linkage?: 'single|complete|average|ward';
   distance_metric?: string;
 }
 

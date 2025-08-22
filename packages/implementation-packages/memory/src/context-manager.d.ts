@@ -113,7 +113,7 @@ export declare class ContextManager extends TypedEventBase {
    * Load context for any entity (replaces hook system context loading)
    */
   loadContext(context: {
-    type: 'agent | swarm' | 'session''' | '''global';
+    type: 'agent|swarm|session|global';
     id: string;
     options?: {
       includeHistory?: boolean;
@@ -125,22 +125,22 @@ export declare class ContextManager extends TypedEventBase {
    * Save context to memory
    */
   saveContext(
-    type: 'agent | swarm' | 'session''' | '''global',
+    type: 'agent|swarm|session|global',
     id: string,
     contextData: Record<string, unknown>
   ): Promise<boolean>;
   /**
    * Load agent context with full details
    */
-  loadAgentContext(agentId: string): Promise<AgentContext'' | ''null>;
+  loadAgentContext(agentId: string): Promise<AgentContext|null>;
   /**
    * Load swarm context with full details
    */
-  loadSwarmContext(swarmId: string): Promise<SwarmContext'' | ''null>;
+  loadSwarmContext(swarmId: string): Promise<SwarmContext|null>;
   /**
    * Load session context with full details
    */
-  loadSessionContext(sessionId: string): Promise<SessionContext'' | ''null>;
+  loadSessionContext(sessionId: string): Promise<SessionContext|null>;
   /**
    * Update agent metrics in context
    */
@@ -217,7 +217,7 @@ export declare function getGlobalContextManager(
  */
 export declare function withContextLoading<T>(
   contextManager: ContextManager,
-  contextType: 'agent | swarm' | 'session',
+  contextType: 'agent|swarm|session',
   contextId: string,
   fn: (context: Record<string, unknown>) => Promise<T>
 ): Promise<T>;

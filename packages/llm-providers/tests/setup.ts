@@ -74,7 +74,7 @@ vi.mock('@claude-zen/foundation', () => ({
       isOk: () => false,
       isErr: () => true,
       _unsafeUnwrapErr: () => error,
-      error: { message: error?.message'' | '''' | '''Test error'},
+      error: { message: error?.message||'Test error'},
       value: undefined,
     }),
   },
@@ -89,7 +89,7 @@ vi.mock('@claude-zen/foundation', () => ({
     isOk: () => false,
     isErr: () => true,
     _unsafeUnwrapErr: () => error,
-    error: { message: error?.message'' | '''' | '''Test error'},
+    error: { message: error?.message||'Test error'},
     value: undefined,
   }),
   withRetry: vi.fn().mockImplementation(async (fn: Function, options?: any) => {
@@ -109,7 +109,7 @@ vi.mock('@claude-zen/foundation', () => ({
     const result = {
       isOk: () => true,
       isErr: () => false,
-      value: data'' | '''' | ''{},
+      value: data||{},
       error: undefined,
     };
     return result;

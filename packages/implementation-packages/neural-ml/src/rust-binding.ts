@@ -15,7 +15,7 @@ import type { Logger } from '@claude-zen/foundation';
 
 // Simple interfaces for Rust integration
 export interface RustMLConfig {
-  backend?: 'cpu | gpu' | 'auto';
+  backend?: 'cpu|gpu|auto';
   threads?: number;
   memory_limit?: number;
   enableTelemetry?: boolean;
@@ -98,7 +98,7 @@ export class RustNeuralML {
         performance: {
           duration_ms: Date.now() - startTime,
           memory_used: process.memoryUsage().heapUsed,
-          iterations: result.iterations'' | '''' | ''0,
+          iterations: result.iterations||0,
         },
       };
     } catch (error) {
@@ -187,7 +187,7 @@ export class RustNeuralML {
       this.logger.warn('Could not get performance stats:', error);
       return {
         backend: this.config.backend,
-        threads: this.config.threads'' | '''' | ''1,
+        threads: this.config.threads||1,
         gpu_available: false,
       };
     }
@@ -281,8 +281,8 @@ export class RustNeuralML {
         cwd: options.cwd,
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = ';
+      let stderr = ';
 
       child.stdout?.on('data', (data) => {
         stdout += data.toString();

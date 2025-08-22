@@ -21,12 +21,12 @@ import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 export class PrometheusExporter implements BaseExporter {
   private config: ExporterConfig;
   private logger: Logger;
-  private httpServer: Server'' | ''null = null;
+  private httpServer: Server|null = null;
   private metrics: Map<string, Metric<string>> = new Map();
   private metricsRegistry = register;
   private exportCount = 0;
   private lastExportTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   constructor(config: ExporterConfig) {
     this.config = config;
@@ -159,14 +159,14 @@ export class PrometheusExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
     return {
       status: this.lastError ? 'unhealthy' : 'healthy',
-      lastSuccess: this.lastExportTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastSuccess: this.lastExportTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 
@@ -195,7 +195,7 @@ export class PrometheusExporter implements BaseExporter {
     });
 
     // Custom metrics endpoint (if configured)
-    const customPath = this.config.config?.metricsPath'' | '''' | '''/metrics';
+    const customPath = this.config.config?.metricsPath||'/metrics';
     if (customPath !== '/metrics') {
       app.get(customPath, async (req, res) => {
         try {
@@ -258,10 +258,10 @@ export class PrometheusExporter implements BaseExporter {
     metricData: any,
     telemetryData: TelemetryData
   ): Promise<void> {
-    const name = this.sanitizeMetricName(metricData.name'' | '''' | '''unnamed_metric');
+    const name = this.sanitizeMetricName(metricData.name||'unnamed_metric');
     const help =
-      metricData.description'' | '''' | ''`Metric ${name} from ${telemetryData.service.name}`;
-    const value = metricData.value'' | '''' | ''metricData.count'' | '''' | ''metricData.sum'' | '''' | ''0;
+      metricData.description||`Metric ${name} from ${telemetryData.service.name}`;
+    const value = metricData.value||metricData.count||metricData.sum||0;
     const labels = {
       ...metricData.labels,
       ...metricData.attributes,
@@ -275,7 +275,7 @@ export class PrometheusExporter implements BaseExporter {
     };
 
     // Determine metric type
-    const metricType = metricData.type'' | '''' | ''this.inferMetricType(metricData);
+    const metricType = metricData.type||this.inferMetricType(metricData);
 
     try {
       let metric = this.metrics.get(name);
@@ -296,7 +296,7 @@ export class PrometheusExporter implements BaseExporter {
               name,
               help,
               labelNames: Object.keys(labels),
-              buckets: metricData.buckets'' | '''' | ''[0.1, 0.5, 1, 2.5, 5, 10],
+              buckets: metricData.buckets||[0.1, 0.5, 1, 2.5, 5, 10],
               registers: [this.metricsRegistry],
             });
             break;
@@ -342,9 +342,9 @@ export class PrometheusExporter implements BaseExporter {
    * Infer metric type from metric data
    */
   private inferMetricType(metricData: any): string {
-    if (metricData.buckets'' | '''' | ''metricData.histogram) {
+    if (metricData.buckets||metricData.histogram) {
       return'histogram';
-    } else if (metricData.monotonic'' | '''' | ''metricData.counter) {
+    } else if (metricData.monotonic||metricData.counter) {
       return'counter';
     } else {
       return 'gauge';
@@ -355,7 +355,7 @@ export class PrometheusExporter implements BaseExporter {
    * Get port for metrics server
    */
   private getPort(): number {
-    return this.config.config?.port'' | '''' | ''9090;
+    return this.config.config?.port||9090;
   }
 
   /**
@@ -363,7 +363,7 @@ export class PrometheusExporter implements BaseExporter {
    */
   private getMetricsEndpoint(): string {
     const port = this.getPort();
-    const path = this.config.config?.metricsPath'' | '''' | '''/metrics';
+    const path = this.config.config?.metricsPath||'/metrics';
     return `http://localhost:${port}${path}`;
   }
 }

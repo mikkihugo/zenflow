@@ -20,7 +20,7 @@ export interface DocumentationIndex {
   id: string;
   title: string;
   path: string;
-  type:'' | '''vision | adr' | 'prd''' | '''epic | feature' | 'task''' | '''spec | readme' | 'api''' | '''guide';
+  type:|'vision|adr|prd|epic|feature|task|spec | readme'|api|guide'';
   keywords: string[];
   sections: Array<{
     title: string;
@@ -34,7 +34,7 @@ export interface DocumentationIndex {
     language?: string;
   };
   links: Array<{
-    type: 'internal | external' | 'code';
+    type: 'internal|external|code';
     target: string;
     text: string;
   }>;
@@ -44,7 +44,7 @@ export interface CodeReference {
   file: string;
   line: number;
   column?: number;
-  type: 'todo | comment' | 'function''' | '''class | method' | 'import';
+  type: 'todo|comment|function|class|method|import';
   text: string;
   context: string;
   suggestedLinks: Array<{
@@ -59,17 +59,17 @@ export interface CodeReference {
 export interface CrossReference {
   sourceDocument: string;
   targetDocument: string;
-  linkType:'' | '''references | implements' | 'extends' | 'validates' | 'supersedes';
+  linkType:|'references|implements|extends|validates|supersedes';
   confidence: number;
   context: string;
 }
 
 export interface LinkSuggestion {
-  type: 'missing_doc | broken_link' | 'enhancement''' | '''cross_reference';
+  type: 'missing_doc|broken_link|enhancement|cross_reference';
   source: string;
   target?: string;
   description: string;
-  priority: 'low | medium' | 'high';
+  priority: 'low|medium|high';
   autoFixable: boolean;
 }
 
@@ -103,7 +103,7 @@ export class DocumentationLinker extends TypedEventBase {
       excludePatterns: ['node_modules', '.git', 'dist', 'build'],
       keywordThreshold: 0.6,
       confidenceThreshold: 0.7,
-      ...(config as Record<string, string[]'' | ''number>),
+      ...(config as Record<string, string[]|number>),
     };
   }
 
@@ -252,7 +252,7 @@ export class DocumentationLinker extends TypedEventBase {
         // Find TODO comments
         if (line) {
           const todoMatch =
-            line.match(/\/\/\s*todo:?\s*(.+)/i)'' | '''' | ''line.match(/#\s*todo:?\s*(.+)/i);
+            line.match(/\/\/\s*todo:?\s*(.+)/i)||line.match(/#\s*todo:?\s*(.+)/i);
           if (todoMatch && todoMatch?.[1]) {
             await this.addCodeReference({
               file: filePath,
@@ -267,7 +267,7 @@ export class DocumentationLinker extends TypedEventBase {
         // Find documentation comments
         if (line) {
           const docCommentMatch =
-            line.match(/\/\*\*\s*(.+?)\s*\*\//s)'' | '''' | ''line.match(/\*\s*(.+)/);
+            line.match(/\/\*\*\s*(.+?)\s*\*\//s)||line.match(/\*\s*(.+)/);
           if (
             docCommentMatch &&
             docCommentMatch?.[1] &&
@@ -286,7 +286,7 @@ export class DocumentationLinker extends TypedEventBase {
         // Find function/class definitions that might need documentation
         if (line) {
           const functionMatch = line.match(
-            /(?:function'' | ''class'' | ''interface'' | ''type)\s+(\w+)/
+            /(?:function|class|interface|type)\s+(\w+)/
           );
           if (functionMatch) {
             const precedingComment =
@@ -315,7 +315,7 @@ export class DocumentationLinker extends TypedEventBase {
   }
 
   private async addCodeReference(
-    reference: Omit<CodeReference, 'suggestedLinks''' | '''confidence'>
+    reference: Omit<CodeReference, 'suggestedLinks|confidence'>
   ): Promise<void> {
     const suggestedLinks = this.findRelatedDocumentation(reference.text);
     const confidence = this.calculateLinkConfidence(
@@ -324,7 +324,7 @@ export class DocumentationLinker extends TypedEventBase {
     );
 
     if (
-      confidence >= this.config.confidenceThreshold'' | '''' | ''suggestedLinks.length > 0
+      confidence >= this.config.confidenceThreshold|'|suggestedLinks.length > 0
     ) {
       this.codeReferences.push({
         ...reference,
@@ -433,12 +433,12 @@ export class DocumentationLinker extends TypedEventBase {
     report.push(`- **Documents Indexed**: ${this.documentationIndex.size}`);
     report.push(`- **Code References**: ${this.codeReferences.length}`);
     report.push(`- **Cross References**: ${this.crossReferences.length}`);
-    report.push('');
+    report.push(');
 
     // Document Types
     const typeBreakdown = new Map<string, number>();
     for (const doc of this.documentationIndex.values()) {
-      typeBreakdown.set(doc.type, (typeBreakdown.get(doc.type)'' | '''' | ''0) + 1);
+      typeBreakdown.set(doc.type, (typeBreakdown.get(doc.type)|'|0) + 1);
     }
 
     report.push('## Document Types');
@@ -551,7 +551,7 @@ export class DocumentationLinker extends TypedEventBase {
       for (const word of words) {
         if (
           titleWords.some(
-            (titleWord) => titleWord.includes(word)'' | '''' | ''word.includes(titleWord)
+            (titleWord) => titleWord.includes(word)||word.includes(titleWord)
           )
         ) {
           score += 2;
@@ -602,7 +602,7 @@ export class DocumentationLinker extends TypedEventBase {
   private analyzeDocumentRelationship(
     doc1: DocumentationIndex,
     doc2: DocumentationIndex
-  ): CrossReference'' | ''null {
+  ): CrossReference|null {
     // Simple relationship analysis
     const commonKeywords = doc1.keywords.filter((k) =>
       doc2.keywords.includes(k)
@@ -644,8 +644,8 @@ export class DocumentationLinker extends TypedEventBase {
 
   private isCodeFile(filename: string): boolean {
     const codeExtensions = [
-      '',
-      '',
+      ',
+      ',
       '.jsx',
       '.tsx',
       '.py',
@@ -662,7 +662,7 @@ export class DocumentationLinker extends TypedEventBase {
   private generateDocumentId(filePath: string): string {
     return Buffer.from(filePath)
       .toString('base64')
-      .replace(/[+/=]/g, '')
+      .replace(/[+/=]/g, ')
       .substring(0, 16);
   }
 
@@ -674,9 +674,9 @@ export class DocumentationLinker extends TypedEventBase {
     // Try to extract from filename
     const filename = relative(process.cwd(), filePath).replace(
       extname(filePath),
-      ''
+      '
     );
-    return filename.split('/').pop()?.replace(/[_-]/g, ' ')'' | '''' | '''Untitled';
+    return filename.split('/').pop()?.replace(/[_-]/g, ' ')||'Untitled';
   }
 
   private determineDocumentType(
@@ -693,7 +693,7 @@ export class DocumentationLinker extends TypedEventBase {
     if (path.includes('/task')) return 'task';
     if (path.includes('/spec')) return 'spec';
     if (path.includes('readme')) return 'readme';
-    if (content.includes('API')'' | '''' | ''content.includes('api')) return 'api';
+    if (content.includes('API')||content.includes('api')) return 'api';
 
     return 'guide';
   }
@@ -702,10 +702,10 @@ export class DocumentationLinker extends TypedEventBase {
     const keywords = new Set<string>();
 
     // Extract from headings
-    const headings = content.match(/^#+\s+(.+)$/gm)'' | '''' | ''[];
+    const headings = content.match(/^#+\s+(.+)$/gm)||[];
     for (const heading of headings) {
       const words = heading
-        .replace(/^#+\s+/,'')
+        .replace(/^#+\s+/,')
         .toLowerCase()
         .split(/\s+/);
       words.forEach((word) => {
@@ -714,7 +714,7 @@ export class DocumentationLinker extends TypedEventBase {
     }
 
     // Extract important terms (simple approach)
-    const importantTerms = content.match(/\*\*([^*]+)\*\*/g)'' | '''' | ''[];
+    const importantTerms = content.match(/\*\*([^*]+)\*\*/g)|'|[];
     for (const term of importantTerms) {
       const word = term.replace(/\*\*/g,'').toLowerCase();
       if (word.length > 3) keywords.add(word);
@@ -734,7 +734,7 @@ export class DocumentationLinker extends TypedEventBase {
       title: string;
       level: number;
       content: string;
-    }'' | ''null = null;
+    }|null = null;
 
     for (const line of lines) {
       const headingMatch = line.match(/^(#+)\s+(.+)$/);
@@ -767,18 +767,18 @@ export class DocumentationLinker extends TypedEventBase {
   }
 
   private extractLinks(content: string): Array<{
-    type: 'internal | external' | 'code';
+    type: 'internal|external|code';
     target: string;
     text: string;
   }> {
     const links: Array<{
-      type: 'internal | external' | 'code';
+      type: 'internal|external|code';
       target: string;
       text: string;
     }> = [];
 
     // Markdown links
-    const markdownLinks = content.match(/\[([^\]]+)]\(([^)]+)\)/g)'' | '''' | ''[];
+    const markdownLinks = content.match(/\[([^\]]+)]\(([^)]+)\)/g)||[];
     for (const link of markdownLinks) {
       const match = link.match(/\[([^\]]+)]\(([^)]+)\)/);
       if (match && match?.[1] && match?.[2]) {

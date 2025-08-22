@@ -32,7 +32,7 @@ export interface BeamModule {
   path: string;
 
   /** Programming language */
-  language: 'elixir | erlang' | 'gleam';
+  language: 'elixir|erlang|gleam';
 
   /** Exported functions */
   exports: BeamFunction[];
@@ -64,7 +64,7 @@ export interface BeamFunction {
   arity: number;
 
   /** Visibility scope */
-  visibility: 'public''' | '''private';
+  visibility: 'public|private'';
 
   /** Function signature */
   signature: string;
@@ -99,7 +99,7 @@ export interface BeamType {
   lineNumber: number;
 
   /** Type category */
-  category?: 'custom | alias' | 'opaque''' | '''spec';
+  category?: 'custom|alias|opaque|spec';
 }
 
 /**
@@ -177,7 +177,7 @@ export class BeamLanguageParser {
       const content = await readFile(filePath, 'utf8');
 
       // Check file size limit
-      if (content.length > (this.options.maxFileSize'' | '''' | ''10485760)) {
+      if (content.length > (this.options.maxFileSize||10485760)) {
         return err(new Error(`File too large: ${content.length} bytes`));
       }
 
@@ -278,7 +278,7 @@ export class BeamLanguageParser {
   /**
    * Detect language from file extension
    */
-  private detectLanguage(ext: string): 'elixir | erlang' | 'gleam''' | ''null {
+  private detectLanguage(ext: string): 'elixir|erlang|gleam'|null {
     switch (ext.toLowerCase()) {
       case'.ex':
       case '.exs':
@@ -301,7 +301,7 @@ export class BeamLanguageParser {
     content: string
   ): Promise<BeamModule> {
     const moduleName =
-      this.extractElixirModuleName(content)'' | '''' | ''basename(filePath,'.ex');
+      this.extractElixirModuleName(content)||basename(filePath,'.ex');
     const functions = this.extractElixirFunctions(content);
     const types = this.extractElixirTypes(content);
     const docs = this.options.extractDocumentation
@@ -325,7 +325,7 @@ export class BeamLanguageParser {
         hasPhoenix: content.includes('use Phoenix'),
         hasEcto: content.includes('use Ecto'),
         hasLiveView: content.includes('use Phoenix.LiveView'),
-        hasOTP: /use\s+(GenServer'' | ''GenStateMachine'' | ''Agent'' | ''Task)/.test(content),
+        hasOTP: /use\s+(GenServer|GenStateMachine|Agent|Task)/.test(content),
         protocolImplementations: this.extractElixirProtocols(content),
       },
     };
@@ -339,7 +339,7 @@ export class BeamLanguageParser {
     content: string
   ): Promise<BeamModule> {
     const moduleName =
-      this.extractErlangModuleName(content)'' | '''' | ''basename(filePath,'.erl');
+      this.extractErlangModuleName(content)||basename(filePath,'.erl');
     const functions = this.extractErlangFunctions(content);
     const types = this.extractErlangTypes(content);
     const docs = this.options.extractDocumentation
@@ -399,7 +399,7 @@ export class BeamLanguageParser {
   }
 
   // Enhanced Elixir parsing methods
-  private extractElixirModuleName(content: string): string'' | ''null {
+  private extractElixirModuleName(content: string): string|null {
     const match = content.match(/defmodule\s+([A-Z][\w.]*)/);
     return match ? match[1] : null;
   }
@@ -407,12 +407,12 @@ export class BeamLanguageParser {
   private extractElixirFunctions(content: string): BeamFunction[] {
     const functions: BeamFunction[] = [];
     const defRegex =
-      /(?:def'' | ''defp'' | ''defmacro'' | ''defmacrop)\s+([_a-z]\w*[!?]?)\s*(?:\(([^)]*)\))?/g;
+      /(?:def|defp|defmacro|defmacrop)\s+([_a-z]\w*[!?]?)\s*(?:\(([^)]*)\))?/g;
 
     let match;
     while ((match = defRegex.exec(content)) !== null) {
       const functionName = match[1];
-      const params = match[2]'' | '''' | '''';
+      const params = match[2]||'';
       const arity = params ? params.split(',').length : 0;
       const lineNumber = content.substring(0, match.index).split('\n').length;
       const isPrivate = content
@@ -550,7 +550,7 @@ export class BeamLanguageParser {
   }
 
   // Enhanced Erlang parsing methods
-  private extractErlangModuleName(content: string): string'' | ''null {
+  private extractErlangModuleName(content: string): string|null {
     const match = content.match(/-module\s*\(\s*([a-z]\w*)\s*\)/);
     return match ? match[1] : null;
   }
@@ -562,7 +562,7 @@ export class BeamLanguageParser {
     let match;
     while ((match = funcRegex.exec(content)) !== null) {
       const functionName = match[1];
-      const params = match[2]'' | '''' | '''';
+      const params = match[2]||'';
       const arity = params ? params.split(',').length : 0;
       const lineNumber = content.substring(0, match.index).split('\n').length;
 
@@ -733,7 +733,7 @@ export class BeamLanguageParser {
     let match;
     while ((match = funcRegex.exec(content)) !== null) {
       const functionName = match[1];
-      const params = match[2]'' | '''' | '''';
+      const params = match[2]||'';
       const arity = params ? params.split(',').length : 0;
       const lineNumber = content.substring(0, match.index).split('\n').length;
       const isPublic = content
@@ -862,7 +862,7 @@ export class BeamLanguageParser {
 
   private findFunctionEnd(content: string, start: number): number {
     // Simple heuristic to find function end - look for next 'def' or 'end'const fromStart = content.substring(start);
-    const nextDef = fromStart.search(/\n\s*(?:def'' | ''end)/);
+    const nextDef = fromStart.search(/\n\s*(?:def|end)/);
     return nextDef > 0 ? start + nextDef : content.length;
   }
 
@@ -885,7 +885,7 @@ export class BeamLanguageParser {
     ).length;
 
     const complexities = module.exports
-      .map((f) => f.complexity'' | '''' | ''1)
+      .map((f) => f.complexity||1)
       .filter((c) => c > 0);
     const averageComplexity =
       complexities.length > 0

@@ -51,7 +51,7 @@ export interface QualityGateExecutionConfig {
  */
 export interface QualityGateContext {
   readonly projectId: string;
-  readonly environment: 'development'' | ''staging'' | ''production';
+  readonly environment: 'development|staging|production';
   readonly artifacts: QualityArtifact[];
   readonly metadata: Record<string, unknown>;
   readonly previousResults?: QualityGateResult[];
@@ -63,7 +63,7 @@ export interface QualityGateContext {
  */
 export interface QualityArtifact {
   readonly id: string;
-  readonly type:' | ''code'' | ''binary'' | ''test_results'' | ''security_scan'' | ''documentation';
+  readonly type:|code|binary|test_results|security_scan|'documentation';
   readonly location: string;
   readonly size: number;
   readonly checksum: string;
@@ -86,7 +86,7 @@ export interface QualityHistoricalData {
  */
 export interface QualityTrend {
   readonly metric: string;
-  readonly direction: 'improving'' | ''stable'' | ''degrading';
+  readonly direction: 'improving|stable|degrading';
   readonly change: number;
   readonly period: string;
   readonly confidence: number;
@@ -109,8 +109,8 @@ export interface QualityBenchmark {
 export interface QualityImprovement {
   readonly area: string;
   readonly suggestion: string;
-  readonly impact: 'low'' | ''medium'' | ''high';
-  readonly effort: 'low'' | ''medium'' | ''high';
+  readonly impact: 'low|medium|high';
+  readonly effort: 'low|medium|high';
   readonly priority: number;
 }
 
@@ -120,7 +120,7 @@ export interface QualityImprovement {
 export interface GateRetryPolicy {
   readonly enabled: boolean;
   readonly maxAttempts: number;
-  readonly backoffStrategy: 'linear'' | ''exponential'' | ''fixed';
+  readonly backoffStrategy: 'linear|exponential|fixed';
   readonly baseDelay: number;
   readonly maxDelay: number;
   readonly retryableFailures: string[];
@@ -136,7 +136,7 @@ export interface QualityGateTemplate {
   readonly applicableStages: string[];
   readonly defaultCriteria: QualityGateCriterion[];
   readonly recommendedTimeout: number;
-  readonly category:' | ''security'' | ''performance'' | ''quality'' | ''compliance'' | ''architecture';
+  readonly category:|security|performance|quality|compliance|'architecture';
 }
 
 /**
@@ -943,7 +943,7 @@ export class QualityGateService {
     criterionResults: CriterionResult[],
     gate: QualityGate,
     scoreAdjustment: any
-  ): 'pass'' | ''fail'' | ''warning' {
+  ): 'pass|fail|warning' {
     const criticalFailures = criterionResults.filter(
       (r) =>
         !r.passed && gate.criteria.find((c) => c.metric === r.metric)?.critical

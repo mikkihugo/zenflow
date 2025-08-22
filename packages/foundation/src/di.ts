@@ -26,7 +26,7 @@ import type { UnknownRecord } from './types/primitives';
 /**
  * Modern injection token type (compatible with both awilix and legacy APIs)
  */
-export type InjectionToken<T> ='' | ''string'' | ''symbol'' | ''(new (...args: unknown[]) => T);
+export type InjectionToken<T> =|string|symbol|(new (...args: unknown[]) => T);
 
 /**
  * Lifecycle options for compatibility with legacy APIs
@@ -44,7 +44,7 @@ export enum LifecycleCompat {
 export interface DIContainer {
   register<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
+    target: (new (...args: unknown[]) => T)|(() => T)|T,
     options?: {
       lifecycle?: LifecycleCompat;
     }
@@ -52,7 +52,7 @@ export interface DIContainer {
 
   registerSingleton<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T
+    target: (new (...args: unknown[]) => T)|(() => T)|T
   ): this;
   registerInstance<T>(token: InjectionToken<T>, instance: T): this;
   registerFactory<T>(
@@ -126,7 +126,7 @@ export const TOKENS = FOUNDATION_TOKENS;
 export function inject<T>(_token: InjectionToken<T>) {
   return function (
     _target: unknown,
-    _propertyKey: string'' | ''symbol'' | ''undefined,
+    _propertyKey: string|symbol|undefined,
     _parameterIndex: number
   ) {
     // Simple marker for dependency injection
@@ -157,12 +157,12 @@ export interface DIContainerFactory {
   createContainer(name?: string, parent?: DIContainer): DIContainer;
   registerGlobal<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
+    target: (new (...args: unknown[]) => T)|(() => T)|T,
     options?: { lifecycle?: LifecycleCompat }
   ): void;
   registerGlobalSingleton<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T
+    target: (new (...args: unknown[]) => T)|(() => T)|T
   ): void;
   registerGlobalInstance<T>(token: InjectionToken<T>, instance: T): void;
   resolveGlobal<T>(token: InjectionToken<T>): T;
@@ -184,7 +184,7 @@ export class SimpleDIContainer implements DIContainer {
 
   register<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
+    target: (new (...args: unknown[]) => T)|(() => T)|T,
     _options?: { lifecycle?: LifecycleCompat }
   ): this {
     const key = this.getTokenKey(token);
@@ -200,7 +200,7 @@ export class SimpleDIContainer implements DIContainer {
 
   registerSingleton<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T
+    target: (new (...args: unknown[]) => T)|(() => T)|T
   ): this {
     return this.register(token, target, {
       lifecycle: LifecycleCompat.Singleton,
@@ -257,7 +257,7 @@ export class SimpleDIContainer implements DIContainer {
   }
 
   createChild(name?: string): DIContainer {
-    return new SimpleDIContainer(name'' | '''' | ''`${this.name}-child`);
+    return new SimpleDIContainer(name||`${this.name}-child`);
   }
 
   getRawContainer(): unknown {
@@ -280,7 +280,7 @@ export class SimpleDIContainer implements DIContainer {
       return token.toString();
     }
     if (typeof token === 'function') {
-      return token.name'' | '''' | '''anonymous';
+      return token.name||'anonymous';
     }
     return String(token);
   }
@@ -289,7 +289,7 @@ export class SimpleDIContainer implements DIContainer {
 /**
  * Global container instance
  */
-let globalContainer: DIContainer'' | ''null = null;
+let globalContainer: DIContainer|null = null;
 
 /**
  * Service container factory implementation
@@ -343,7 +343,7 @@ export function createServiceContainer(name?: string): Promise<{
  * Storage adapter interface - allows different storage backends
  */
 export interface RegistryStorage<T> {
-  get(id: string): T'' | ''null;
+  get(id: string): T|null;
   set(id: string, entity: T): void;
   delete(id: string): boolean;
   getAll(): T[];
@@ -357,7 +357,7 @@ export interface RegistryStorage<T> {
 export interface RegistryInterface<T> {
   register(entity: T): { id: string; registered: boolean };
   unregister(id: string): { id: string; unregistered: boolean };
-  findById(id: string): T'' | ''null;
+  findById(id: string): T|null;
   findByCapability?(capability: string): T[];
   getAll(): T[];
   getStatus(): { healthy: boolean; count: number };
@@ -371,8 +371,8 @@ export interface RegistryInterface<T> {
 export class InMemoryStorage<T> implements RegistryStorage<T> {
   private entities = new Map<string, T>();
 
-  get(id: string): T'' | ''null {
-    return this.entities.get(id)'' | '''' | ''null;
+  get(id: string): T|null {
+    return this.entities.get(id)||null;
   }
 
   set(id: string, entity: T): void {
@@ -407,7 +407,7 @@ export class BaseRegistry<T extends { id?: string }>
 
   constructor(name ='default-registry', storage?: RegistryStorage<T>) {
     this.name = name;
-    this.storage = storage'' | '''' | ''new InMemoryStorage<T>();
+    this.storage = storage||new InMemoryStorage<T>();
   }
 
   setStorage(storage: RegistryStorage<T>): void {
@@ -416,7 +416,7 @@ export class BaseRegistry<T extends { id?: string }>
 
   register(entity: T): { id: string; registered: boolean } {
     const id =
-      entity.id'' | '''' | ''`entity-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      entity.id||`entity-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const entityWithId = { ...entity, id } as T & { id: string };
     this.storage.set(id, entityWithId);
     // Note: Registered entity in registry
@@ -429,7 +429,7 @@ export class BaseRegistry<T extends { id?: string }>
     return { id, unregistered: existed };
   }
 
-  findById(id: string): T'' | ''null {
+  findById(id: string): T|null {
     return this.storage.get(id);
   }
 
@@ -446,7 +446,7 @@ export class BaseRegistry<T extends { id?: string }>
         (hasCapabilities &&
           (entity as { capabilities: string[] }).capabilities.includes(
             capability
-          ))'' | '''' | ''(hasCapability &&
+          ))||(hasCapability &&
           (entity as { capability: string }).capability === capability)
       );
     });
@@ -479,7 +479,7 @@ export class BaseRegistry<T extends { id?: string }>
  */
 export class Registry<T extends { id?: string }> extends BaseRegistry<T> {
   constructor(name ='default-registry', storage?: RegistryStorage<T>) {
-    super(name, storage'' | '''' | ''new InMemoryStorage<T>());
+    super(name, storage||new InMemoryStorage<T>());
   }
 }
 
@@ -493,7 +493,7 @@ export interface Agent {
   name?: string;
   capability?: string;
   capabilities?: string[];
-  status?:'active | inactive' | 'error''' | '''busy';
+  status?:'active|inactive|error|busy';
   type?: string;
   metadata?: Record<string, unknown>;
   [key: string]: unknown;
@@ -503,9 +503,9 @@ export interface Agent {
 export interface Service {
   id?: string;
   name: string;
-  type: 'api | worker' | 'database''' | '''queue | storage' | 'other';
+  type: 'api|worker|database|queue|storage|other';
   url?: string;
-  status?: 'running | stopped' | 'error''' | '''starting';
+  status?: 'running|stopped|error|starting';
   version?: string;
   capabilities?: string[];
   config?: Record<string, unknown>;
@@ -517,8 +517,8 @@ export interface Task {
   id?: string;
   title: string;
   description?: string;
-  status?: 'pending | running' | 'completed' | 'failed' | 'cancelled';
-  priority?: 'low | medium' | 'high''' | '''urgent';
+  status?: 'pending|running|completed|failed|cancelled';
+  priority?: 'low|medium|high|urgent';
   assignedTo?: string;
   createdAt?: number;
   updatedAt?: number;
@@ -530,9 +530,9 @@ export interface Task {
 export interface Resource {
   id?: string;
   name: string;
-  type: 'file | database' | 'api''' | '''cache | queue' | 'storage''' | '''other';
+  type: 'file|database|api|cache|queue|storage|other'';
   url?: string;
-  status?: 'available | unavailable' | 'error''' | '''maintenance';
+  status?: 'available|unavailable|error|maintenance';
   capabilities?: string[];
   config?: Record<string, unknown>;
   [key: string]: unknown;
@@ -549,9 +549,9 @@ export class AgentRegistry extends Registry<Agent> {
     super('agent-registry', storage);
   }
 
-  override findById(id: string): Agent'' | ''null {
+  override findById(id: string): Agent|null {
     const agent = super.findById(id);
-    return agent ? { ...agent, status: agent.status'' | '''' | '''active' } : null;
+    return agent ? { ...agent, status: agent.status||'active' } : null;
   }
 
   findByStatus(status: Agent['status']): Agent[] {

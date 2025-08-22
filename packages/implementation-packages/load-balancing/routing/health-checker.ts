@@ -14,13 +14,13 @@ import type { Agent } from '../types';
 
 const logger = {
   debug: (message: string, meta?: unknown) =>
-    console.log(`[DEBUG] ${message}`, meta'' | '''' | ''''),
+    console.log(`[DEBUG] ${message}`, meta||'),
   info: (message: string, meta?: unknown) =>
-    console.log(`[INFO] ${message}`, meta'' | '''' | ''''),
+    console.log(`[INFO] ${message}`, meta|||),
   warn: (message: string, meta?: unknown) =>
-    console.warn(`[WARN] ${message}`, meta'' | '''' | ''''),
+    console.warn(`[WARN] ${message}`, meta|||),
   error: (message: string, meta?: unknown) =>
-    console.error(`[ERROR] ${message}`, meta'' | '''' | ''''),
+    console.error(`[ERROR] ${message}`, meta|||),
 };
 
 interface HealthStatus {
@@ -34,7 +34,7 @@ interface HealthStatus {
 export class HealthChecker extends TypedEventBase implements HealthChecker {
   private healthStatuses: Map<string, HealthStatus> = new Map();
   private checkInterval: number;
-  private healthCheckTimer: NodeJS.Timeout'' | ''null = null;
+  private healthCheckTimer: NodeJS.Timeout|null = null;
   private activeAgents: Agent[] = [];
 
   constructor(checkInterval: number = 30000) {
@@ -50,7 +50,7 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
       const isHealthy = Math.random() > 0.1; // 90% success rate
       const responseTime = Date.now() - startTime;
 
-      const status = this.healthStatuses.get(agent.id)'' | '''' | ''{
+      const status = this.healthStatuses.get(agent.id)|'|{
         healthy: true,
         lastCheck: new Date(),
         consecutiveFailures: 0,
@@ -76,7 +76,7 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
 
       return isHealthy;
     } catch (error) {
-      const status = this.healthStatuses.get(agent.id)'' | '''' | ''{
+      const status = this.healthStatuses.get(agent.id)||{
         healthy: false,
         lastCheck: new Date(),
         consecutiveFailures: 1,
@@ -123,7 +123,7 @@ export class HealthChecker extends TypedEventBase implements HealthChecker {
 
   public async getHealthStatus(agentId: string): Promise<HealthStatus> {
     return (
-      this.healthStatuses.get(agentId)'' | '''' | ''{
+      this.healthStatuses.get(agentId)||{
         healthy: false,
         lastCheck: new Date(0),
         details:'No health data available',

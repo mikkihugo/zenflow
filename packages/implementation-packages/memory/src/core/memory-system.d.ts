@@ -9,9 +9,9 @@
  */
 import type { MemoryStats } from '../backends/base-backend';
 export type { MemoryStats };
-export type JSONValue ='' | ''string'' | ''number'' | ''boolean'' | ''null'' | ''{
+export type JSONValue =|string|number|boolean|null|{
       [key: string]: JSONValue;
-    }'' | ''JSONValue[];
+    }|JSONValue[];
 /**
  * Backend Stats format used by some legacy implementations.
  *
@@ -60,9 +60,9 @@ export interface BackendInterface {
   /** Store a value with the given key */
   store(key: string, value: JSONValue, namespace?: string): Promise<void>;
   /** Retrieve a value by key */
-  retrieve<T = JSONValue>(key: string): Promise<T'' | ''null>;
+  retrieve<T = JSONValue>(key: string): Promise<T|null>;
   /** Alternative method name for retrieve */
-  get<T = JSONValue>(key: string): Promise<T'' | ''null>;
+  get<T = JSONValue>(key: string): Promise<T|null>;
   /** Alternative method name for store */
   set(key: string, value: JSONValue): Promise<void>;
   /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
@@ -79,7 +79,7 @@ export interface BackendInterface {
   /** Close the backend connection */
   close(): Promise<void>;
   /** Get backend statistics - async version for interface compatibility */
-  getStats?(): Promise<MemoryStats>'' | ''MemoryStats;
+  getStats?(): Promise<MemoryStats>|MemoryStats;
   /** Get backend health status */
   health?(): Promise<boolean>;
   /** Get the size/count of stored items */
@@ -91,7 +91,7 @@ export interface BackendInterface {
  * @example
  */
 export interface BackendConfig {
-  type:'sqlite | lancedb' | 'json''' | '''memory';
+  type:'sqlite|lancedb|json|memory';
   path?: string;
   maxSize?: number;
   ttl?: number;
@@ -122,7 +122,7 @@ export interface MemoryEntryMetadata {
   size: number;
   ttl?: number;
   tags?: string[];
-  priority?: 'low | medium' | 'high';
+  priority?: 'low|medium|high';
 }
 /**
  * Memory Entry with metadata.

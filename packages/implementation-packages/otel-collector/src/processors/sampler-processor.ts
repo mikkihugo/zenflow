@@ -14,7 +14,7 @@ import type { TelemetryData, ProcessorConfig } from '../types.js';
 /**
  * Sampling strategy types
  */
-type SamplingStrategy ='' | '''rate | probabilistic' | 'attribute' | 'priority' | 'adaptive';
+type SamplingStrategy =|'rate|probabilistic|attribute|priority|adaptive';
 
 /**
  * Sampling rule interface
@@ -25,7 +25,7 @@ interface SamplingRule {
   probability?: number;
   attribute?: string;
   value?: any;
-  priority?: 'high | medium' | 'low';
+  priority?: 'high|medium|low';
   condition?: string;
 }
 
@@ -39,7 +39,7 @@ export class SamplerProcessor implements BaseProcessor {
   private processedCount = 0;
   private sampledCount = 0;
   private lastProcessedTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   // Rate limiting state
   private rateCounter = 0;
@@ -56,8 +56,8 @@ export class SamplerProcessor implements BaseProcessor {
     this.logger = getLogger(`SamplerProcessor:${config.name}`);
 
     // Parse sampling rules
-    this.samplingRules = this.parseSamplingRules(config.config?.rules'' | '''' | ''[]);
-    this.targetRate = config.config?.targetRate'' | '''' | ''0.1;
+    this.samplingRules = this.parseSamplingRules(config.config?.rules||[]);
+    this.targetRate = config.config?.targetRate||0.1;
     this.currentRate = this.targetRate;
   }
 
@@ -72,7 +72,7 @@ export class SamplerProcessor implements BaseProcessor {
     this.startAdaptiveSampling();
   }
 
-  async process(data: TelemetryData): Promise<TelemetryData'' | ''null> {
+  async process(data: TelemetryData): Promise<TelemetryData|null> {
     try {
       const shouldSample = this.shouldSample(data);
 
@@ -161,11 +161,11 @@ export class SamplerProcessor implements BaseProcessor {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
-    let status: 'healthy | degraded' | 'unhealthy' = 'healthy';
+    let status: 'healthy|degraded|unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
@@ -180,8 +180,8 @@ export class SamplerProcessor implements BaseProcessor {
 
     return {
       status,
-      lastProcessed: this.lastProcessedTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastProcessed: this.lastProcessedTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 
@@ -236,13 +236,13 @@ export class SamplerProcessor implements BaseProcessor {
   private applySamplingRule(
     data: TelemetryData,
     rule: SamplingRule
-  ): boolean'' | ''null {
+  ): boolean|null {
     switch (rule.strategy) {
       case'rate':
-        return this.applyRateSampling(rule.rate'' | '''' | ''1);
+        return this.applyRateSampling(rule.rate||1);
 
       case'probabilistic':
-        return Math.random() < (rule.probability'' | '''' | ''0.1);
+        return Math.random() < (rule.probability||0.1);
 
       case'attribute':
         return this.applyAttributeSampling(data, rule);
@@ -281,7 +281,7 @@ export class SamplerProcessor implements BaseProcessor {
   private applyAttributeSampling(
     data: TelemetryData,
     rule: SamplingRule
-  ): boolean'' | ''null {
+  ): boolean|null {
     if (!rule.attribute) return null;
 
     const attributeValue = this.getFieldValue(data, rule.attribute);
@@ -301,7 +301,7 @@ export class SamplerProcessor implements BaseProcessor {
   private applyPrioritySampling(
     data: TelemetryData,
     rule: SamplingRule
-  ): boolean'' | ''null {
+  ): boolean|null {
     const priority = this.inferPriority(data);
 
     if (!rule.priority) return null;
@@ -313,7 +313,7 @@ export class SamplerProcessor implements BaseProcessor {
       low: 0.1, // 10% for low priority
     };
 
-    const samplingRate = rates[rule.priority]'' | '''' | ''0.1;
+    const samplingRate = rates[rule.priority]||0.1;
     return Math.random() < samplingRate;
   }
 
@@ -340,11 +340,11 @@ export class SamplerProcessor implements BaseProcessor {
   /**
    * Infer priority from telemetry data
    */
-  private inferPriority(data: TelemetryData): 'high | medium' | 'low' {
+  private inferPriority(data: TelemetryData): 'high|medium|low' {
     // Check for error indicators
     if (data.type === 'logs' && data.data && typeof data.data === 'object') {
       const level = (data.data as any).level;
-      if (level === 'error''' | '''' | ''level ==='critical''' | '''' | ''level ==='fatal') {
+      if (level === 'error'||level ==='critical'||level ==='fatal') {
         return 'high';
       }
       if (level === 'warn') {
@@ -362,11 +362,11 @@ export class SamplerProcessor implements BaseProcessor {
     }
 
     // Check attributes for priority hints
-    const priority = data.attributes?.priority'' | '''' | ''data.attributes?.level;
-    if (priority ==='high''' | '''' | ''priority ==='error') {
+    const priority = data.attributes?.priority||data.attributes?.level;
+    if (priority ==='high'||priority ==='error') {
       return 'high';
     }
-    if (priority === 'medium''' | '''' | ''priority ==='warn') {
+    if (priority === 'medium'||priority ==='warn') {
       return 'medium';
     }
 
@@ -431,7 +431,7 @@ export class SamplerProcessor implements BaseProcessor {
     let value = data;
 
     for (const part of parts) {
-      if (value === null'' | '''' | ''value === undefined) {
+      if (value === null||value === undefined) {
         return undefined;
       }
       value = value[part];
@@ -474,7 +474,7 @@ export class SamplerProcessor implements BaseProcessor {
    */
   private parseSamplingRules(rules: any[]): SamplingRule[] {
     return rules.map((rule) => ({
-      strategy: rule.strategy'' | '''' | '''probabilistic',
+      strategy: rule.strategy||'probabilistic',
       rate: rule.rate,
       probability: rule.probability,
       attribute: rule.attribute,

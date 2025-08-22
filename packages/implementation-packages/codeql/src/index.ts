@@ -59,10 +59,10 @@ export async function analyzeRepository(
 
   // Use provided query packs or defaults
   const queryPacks =
-    options.queryPacks'' | '''' | ''(options.languages ? bridge.getDefaultQueryPacks(options.languages) : []);
+    options.queryPacks||(options.languages ? bridge.getDefaultQueryPacks(options.languages) : []);
 
   return bridge.analyzeRepository(repositoryPath, queryPacks, {
-    languages: options.languages'' | '''' | ''['typescript', 'javascript'],
+    languages: options.languages||['typescript', 'javascript'],
     overwrite: true,
   });
 }
@@ -80,7 +80,7 @@ export async function performSecurityScan(
   const bridge = createCodeQLBridge(options.config);
 
   // Get security-focused query packs
-  const languages = options.languages'' | '''' | ''['typescript', 'javascript'];
+  const languages = options.languages||['typescript', 'javascript'];
   const securityQueryPacks: import('./types/codeql-types').QueryPack[] = [];
 
   for (const language of languages) {
@@ -128,7 +128,7 @@ export async function analyzeFile(
   }
 
   const queryPacks =
-    options.queryPacks'' | '''' | ''bridge.getDefaultQueryPacks([language]);
+    options.queryPacks||bridge.getDefaultQueryPacks([language]);
 
   return bridge.analyzeFile(filePath, queryPacks);
 }
@@ -138,7 +138,7 @@ export async function analyzeFile(
  */
 function detectLanguageFromPath(
   filePath: string
-): import('./types/codeql-types').CodeQLLanguage'' | ''null {
+): import('./types/codeql-types').CodeQLLanguage|null {
   const ext = require('path').extname(filePath).toLowerCase();
 
   const languageMap: Record<
@@ -161,14 +161,14 @@ function detectLanguageFromPath(
     '.kt': 'kotlin',
   };
 
-  return languageMap[ext]'' | '''' | ''null;
+  return languageMap[ext]||null;
 }
 
 /**
  * Create CodeQL configuration for different project types
  */
 export function createProjectConfig(
-  projectType:'web-app''' | '''library | api' | 'cli''' | '''monorepo'
+  projectType:'web-app|library | api'|cli|monorepo''
 ): Partial<import('./types/codeql-types').CodeQLConfig> {
   const baseConfig = { ...DEFAULT_CODEQL_CONFIG };
 
@@ -276,7 +276,7 @@ export function getPerformanceQueryPacks(
   const queryPacks: import('./types/codeql-types').QueryPack[] = [];
 
   for (const language of languages) {
-    if (language === 'javascript''' | '''' | ''language ==='typescript') {
+    if (language === 'javascript'||language ==='typescript') {
       queryPacks.push({
         name: 'claude-zen-performance',
         path: require('path').join(

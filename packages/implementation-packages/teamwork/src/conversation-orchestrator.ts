@@ -66,9 +66,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       description: config.description,
       participants: [...config.initialParticipants],
       initiator:
-        config.initialParticipants[0]'' | '''' | ''({
-          id:'',
-          swarmId: '',
+        config.initialParticipants[0]||({
+          id:',
+          swarmId: ',
           type: 'researcher' as const,
           instance: 0,
         } as AgentId),
@@ -209,7 +209,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     session.messages.push(messageWithId);
     session.metrics.messageCount++;
     session.metrics.participationByAgent[message.fromAgent.id] =
-      (session.metrics.participationByAgent[message.fromAgent.id]'' | '''' | ''0) + 1;
+      (session.metrics.participationByAgent[message.fromAgent.id]||0) + 1;
 
     // Update in memory
     await this.memory.updateConversation(message.conversationId, {
@@ -270,7 +270,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     // Fallback to memory
     const session = await this.memory.getConversation(conversationId);
-    return session?.messages'' | '''' | ''[];
+    return session?.messages||[];
   }
 
   async terminateConversation(

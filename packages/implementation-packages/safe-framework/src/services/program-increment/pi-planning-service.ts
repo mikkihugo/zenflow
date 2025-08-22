@@ -48,9 +48,9 @@ export interface PIPlanningEventConfig {
 export interface PlanningParticipant {
   readonly userId: string;
   readonly name: string;
-  readonly role:' | ''product-owner'' | ''architect'' | ''team-lead'' | ''scrum-master'' | ''stakeholder';
+  readonly role:|product-owner|architect|team-lead|scrum-master|'stakeholder';
   readonly teamId?: string;
-  readonly artRole?:' | ''rte'' | ''product-manager'' | ''system-architect'' | ''business-owner';
+  readonly artRole?:|rte|product-manager|system-architect|'business-owner';
   readonly required: boolean;
 }
 
@@ -79,9 +79,9 @@ export interface BusinessContext {
 }
 
 export interface BusinessConstraint {
-  readonly type:' | ''budget'' | ''timeline'' | ''resource'' | ''regulatory'' | ''technical';
+  readonly type:|budget|timeline|resource|regulatory|'technical';
   readonly description: string;
-  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly impact: 'low|medium|high|critical';
   readonly mitigation: string;
   readonly owner: string;
 }
@@ -120,11 +120,11 @@ export interface ArchitecturalDecision {
   readonly context: string;
   readonly decision: string;
   readonly consequences: string[];
-  readonly status: 'proposed'' | ''accepted'' | ''superseded';
+  readonly status: 'proposed|accepted|superseded';
 }
 
 export interface ArchitecturalConstraint {
-  readonly type: 'platform'' | ''integration'' | ''security'' | ''performance';
+  readonly type: 'platform|integration|security|performance';
   readonly description: string;
   readonly rationale: string;
   readonly implications: string[];
@@ -133,7 +133,7 @@ export interface ArchitecturalConstraint {
 export interface IntegrationPoint {
   readonly id: string;
   readonly name: string;
-  readonly type: 'api'' | ''message'' | ''database'' | ''file';
+  readonly type: 'api|message|database|file';
   readonly description: string;
   readonly interfaces: string[];
   readonly protocols: string[];
@@ -141,7 +141,7 @@ export interface IntegrationPoint {
 }
 
 export interface PlanningAdjustment {
-  readonly type: 'scope'' | ''timeline'' | ''resources'' | ''quality';
+  readonly type: 'scope|timeline|resources|quality';
   readonly description: string;
   readonly impact: string;
   readonly adjustment: any;
@@ -161,7 +161,7 @@ export interface PIPlanningResult {
 
 export interface PlanningOutcome {
   readonly agendaItemId: string;
-  readonly outcome: 'completed'' | ''partial'' | ''deferred'' | ''failed';
+  readonly outcome: 'completed|partial|deferred|failed';
   readonly deliverables: string[];
   readonly issues: string[];
   readonly nextActions: string[];
@@ -185,9 +185,9 @@ export interface PlanningDecision {
 export interface PlanningRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly category:' | ''schedule'' | ''scope'' | ''resource'' | ''technical'' | ''business';
+  readonly category:|schedule|scope|resource|technical|'business';
   readonly probability: number;
-  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly impact: 'low|medium|high|critical';
   readonly mitigation: string;
   readonly owner: string;
   readonly dueDate: Date;
@@ -197,11 +197,11 @@ export interface PlanningDependency {
   readonly dependencyId: string;
   readonly fromItem: string;
   readonly toItem: string;
-  readonly type: 'finish-to-start'' | ''start-to-start'' | ''finish-to-finish';
+  readonly type: 'finish-to-start|start-to-start|finish-to-finish';
   readonly description: string;
-  readonly criticality: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly criticality: 'low|medium|high|critical';
   readonly owner: string;
-  readonly status: 'identified'' | ''planned'' | ''resolved'' | ''blocked';
+  readonly status: 'identified|planned|resolved|blocked';
 }
 
 export interface PIPlanningConfiguration {
@@ -923,7 +923,7 @@ export class PIPlanningService extends TypedEventBase {
   private getDependencyStatus(
     prerequisiteId: string,
     outcomes: PlanningOutcome[]
-  ): 'identified'' | ''planned'' | ''resolved'' | ''blocked' {
+  ): 'identified|planned|resolved|blocked' {
     const outcome = outcomes.find((o) => o.agendaItemId === prerequisiteId);
 
     if (!outcome) return 'identified';

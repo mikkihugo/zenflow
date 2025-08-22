@@ -78,14 +78,14 @@ export class GitHubModelsContainer {
   /**
    * Setup GitHub Models API provider
    */
-  private setupModelsApi(): APIProvider'' | ''null {
+  private setupModelsApi(): APIProvider|null {
     if (!this.config.modelsApi.enabled) {
       logger.info('⏭️ GitHub Models API disabled, skipping...');
       return null;
     }
 
     try {
-      const token = this.config.modelsApi.token'' | '''' | ''process.env.GITHUB_TOKEN;
+      const token = this.config.modelsApi.token||process.env.GITHUB_TOKEN;
       if (!token) {
         logger.warn('⚠️ No GitHub token found for Models API, skipping...');
         return null;
@@ -103,7 +103,7 @@ export class GitHubModelsContainer {
   /**
    * Setup GitHub Copilot API provider
    */
-  private setupCopilotApi(): APIProvider'' | ''null {
+  private setupCopilotApi(): APIProvider|null {
     if (!this.config.copilotApi.enabled) {
       logger.info('⏭️ GitHub Copilot API disabled, skipping...');
       return null;
@@ -166,7 +166,7 @@ export class GitHubModelsContainer {
   /**
    * Get registry service
    */
-  getRegistryService(): ModelRegistryService'' | ''undefined {
+  getRegistryService(): ModelRegistryService|undefined {
     return this.registryService;
   }
 
@@ -190,7 +190,7 @@ export class GitHubModelsContainer {
 
     models.forEach((model) => {
       providerCounts[model.provider] =
-        (providerCounts[model.provider]'' | '''' | ''0) + 1;
+        (providerCounts[model.provider]||0) + 1;
       model.capabilities.forEach((cap) => capabilitySet.add(cap));
     });
 
@@ -245,7 +245,7 @@ export async function setupGitHubModelsDefault(): Promise<ModelRegistryService> 
 export async function setupGitHubModelsAdvanced(options: {
   enableModelsApi?: boolean;
   enableCopilot?: boolean;
-  tokenSource?: 'env | config' | 'auto';
+  tokenSource?: 'env|config|auto';
   filterModels?: (modelId: string) => boolean;
 }): Promise<ModelRegistryService> {
   const config: Partial<GitHubModelsConfig> = {

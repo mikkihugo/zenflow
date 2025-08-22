@@ -12,12 +12,12 @@ const logger = getLogger('SafeObservabilityDashboard');
 
 export interface DashboardWidget {
   id: string;
-  type:'' | '''visualization | coaching' | 'gamification' | 'prediction' | 'integration';
+  type:|'visualization|coaching|gamification|prediction|integration';
   title: string;
-  size: 'small | medium' | 'large''' | '''full-width';
+  size: 'small|medium|large|full-width';
   position: { x: number; y: number };
   roleSpecific: boolean;
-  immersionLevel: 'basic | enhanced' | 'production';
+  immersionLevel: 'basic|enhanced|production';
   data: any;
 }
 
@@ -42,7 +42,7 @@ export class SafeObservabilityDashboard {
   private integration: SafeIntegrationPlatform;
   private state: SafeDashboardState;
   private brainSystem: any;
-  private updateInterval: NodeJS.Timeout'' | ''null = null;
+  private updateInterval: NodeJS.Timeout|null = null;
 
   constructor(config: SafePlatformConfig, userId: string) {
     this.integration = new SafeIntegrationPlatform(config);
@@ -130,7 +130,7 @@ export class SafeObservabilityDashboard {
   private async updateDashboardForPIPlanning(event: any): Promise<void> {
     // Update PI Planning specific widgets
     const planningWidgets = this.state.activeWidgets.filter(
-      (w) => w.title.includes('PI Planning')'' | '''' | ''w.type ==='integration'
+      (w) => w.title.includes('PI Planning')||w.type ==='integration'
     );
 
     for (const widget of planningWidgets) {
@@ -304,7 +304,7 @@ export class SafeObservabilityDashboard {
 
     return [
       ...commonWidgets,
-      ...(roleSpecificWidgets[this.state.userRole]'' | '''' | ''[]),
+      ...(roleSpecificWidgets[this.state.userRole]||[]),
     ];
   }
 
@@ -313,13 +313,13 @@ export class SafeObservabilityDashboard {
   ): Promise<DashboardWidget> {
     const widget: DashboardWidget = {
       id: `widget_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      type: template.type'' | '''' | '''prediction',
-      title: template.title'' | '''' | '''Untitled Widget',
-      size: template.size'' | '''' | '''medium',
-      position: template.position'' | '''' | ''{ x: 0, y: 0 },
+      type: template.type||'prediction',
+      title: template.title||'Untitled Widget',
+      size: template.size||'medium',
+      position: template.position||{ x: 0, y: 0 },
       roleSpecific: true,
-      immersionLevel: template.immersionLevel'' | '''' | '''basic',
-      data: await this.generateWidgetData(template.type'' | '''' | '''prediction'),
+      immersionLevel: template.immersionLevel||'basic',
+      data: await this.generateWidgetData(template.type||'prediction'),
     };
 
     return widget;

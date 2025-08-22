@@ -154,13 +154,13 @@ export class ValidationUtils {
     const from = TaskStateSchema.safeParse(fromState);
     const to = TaskStateSchema.safeParse(toState);
 
-    if (!from.success'' | '''' | ''!to.success) {
+    if (!from.success||!to.success) {
       return false;
     }
 
     // Special states can transition to any state
     if (
-      ['blocked', 'expedite'].includes(from.data)'' | '''' | ''['blocked', 'expedite'].includes(to.data)
+      ['blocked', 'expedite'].includes(from.data)||['blocked', 'expedite'].includes(to.data)
     ) {
       return true;
     }

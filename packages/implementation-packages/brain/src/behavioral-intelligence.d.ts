@@ -60,7 +60,7 @@ export interface TaskComplexityAnalysis {
   readonly estimatedComplexity: number;
   readonly requiredSkills: string[];
   readonly estimatedDuration: number;
-  readonly difficulty: 'easy | medium' | 'hard''' | '''expert';
+  readonly difficulty: 'easy|medium|hard|expert';
   readonly confidence: number;
 }
 /**
@@ -181,7 +181,7 @@ export declare class BehavioralIntelligence {
    * @param agentId - ID of the agent
    * @returns Agent behavioral profile or null if not found
    */
-  getAgentProfile(agentId: string): AgentBehavioralProfile'' | ''null;
+  getAgentProfile(agentId: string): AgentBehavioralProfile|null;
   /**
    * Get all agent profiles
    *
@@ -226,7 +226,7 @@ export declare class BehavioralIntelligence {
    * Predict agent performance trend using time series analysis
    */
   predictPerformanceTrend(agentId: string): Promise<{
-    trend:'improving | stable' | 'declining';
+    trend:'improving|stable|declining';
     confidence: number;
     forecast: number[];
   }>;

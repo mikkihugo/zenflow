@@ -123,11 +123,11 @@ export interface WorkflowStep extends Entity {
   action: StepAction;
   conditions: StepCondition[];
   dependencies: UUID[];
-  retry: RetryConfig'' | ''undefined;
-  timeout: number'' | ''undefined;
-  resources: ResourceRequirement'' | ''undefined;
-  validation: StepValidation'' | ''undefined;
-  rollback: RollbackConfig'' | ''undefined;
+  retry: RetryConfig|undefined;
+  timeout: number|undefined;
+  resources: ResourceRequirement|undefined;
+  validation: StepValidation|undefined;
+  rollback: RollbackConfig|undefined;
 }
 /**
  * Step types for categorization
@@ -161,10 +161,10 @@ export interface StepAction {
  * Step execution condition
  */
 export interface StepCondition {
-  type: 'skip | execute' | 'retry''' | '''fail';
+  type: 'skip|execute|retry|fail';
   expression: string;
   variables: string[];
-  operator: 'and | or' | 'not';
+  operator: 'and|or|not';
 }
 /**
  * Workflow execution instance
@@ -228,7 +228,7 @@ export interface StepExecution extends Entity {
 export interface StepError {
   code: string;
   message: string;
-  type: 'validation | execution' | 'timeout' | 'resource' | 'permission';
+  type: 'validation|execution|timeout|resource|permission';
   stack?: string;
   context?: Record<string, unknown>;
   recoverable: boolean;
@@ -480,7 +480,7 @@ export interface StepLog {
   level: LogLevel;
   message: string;
   data?: Record<string, unknown>;
-  phase: 'start | execute' | 'complete' | 'error' | 'retry';
+  phase: 'start|execute|complete|error|retry';
 }
 /**
  * Log levels
@@ -510,7 +510,7 @@ export interface WorkflowArtifact extends Entity {
  */
 export interface StepArtifact extends WorkflowArtifact {
   stepId: UUID;
-  phase: 'input | output' | 'temporary''' | '''log';
+  phase: 'input|output|temporary|log';
 }
 /**
  * Artifact types
@@ -625,7 +625,7 @@ export interface WorkflowPermissions {
  * Permission specification
  */
 export interface Permission {
-  type: 'user | role' | 'group''' | '''service';
+  type: 'user|role|group|service';
   principal: string;
   conditions?: PermissionCondition[];
   expiry?: Timestamp;
@@ -781,7 +781,7 @@ export declare enum LockType {
 export type WorkflowId = Branded<UUID, 'WorkflowId'>;
 export type ExecutionId = Branded<UUID, 'ExecutionId'>;
 export type StepId = Branded<UUID, 'StepId'>;
-export type WorkflowEventType ='' | '''workflow.created''' | '''workflow.started''' | '''workflow.completed''' | '''workflow.failed''' | '''workflow.cancelled''' | '''step.started''' | '''step.completed''' | '''step.failed''' | '''step.retried';
+export type WorkflowEventType =|'workflow.created|workflow.started'||workflow.completed|workflow.failed'||workflow.cancelled|step.started'||step.completed|step.failed'||step.retried';
 export interface WorkflowMetadata {
   tags: string[];
   author: string;
@@ -964,7 +964,7 @@ export type StepResult = Result<StepExecution, StepExecutionError>;
  */
 export interface WorkflowError extends Omit<ValidationError, 'type'> {
   type: 'WorkflowError';
-  category:'' | '''definition | execution' | 'validation' | 'permission' | 'resource';
+  category:|'definition|execution|validation|permission|resource';
   workflowId?: UUID;
   executionId?: UUID;
 }
@@ -983,7 +983,7 @@ export interface ExecutionError extends WorkflowError {
 export interface StepExecutionError extends WorkflowError {
   category: 'execution';
   stepId: UUID;
-  phase: 'validation | execution' | 'output''' | '''cleanup';
+  phase: 'validation|execution|output|cleanup';
   recoverable: boolean;
 }
 declare const _default: {

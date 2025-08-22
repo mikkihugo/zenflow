@@ -41,7 +41,7 @@ export interface DSPyExample {
   metadata?: {
     createdAt: Date;
     source?: string;
-    difficulty?: 'easy | medium' | 'hard';
+    difficulty?: 'easy|medium|hard';
     tags?: string[];
   };
 }
@@ -89,7 +89,7 @@ export interface DSPyPromptVariation {
   /** The prompt text */
   prompt: string;
   /** Optimization strategy used */
-  strategy: 'few-shot-optimization''' | '''fallback''' | '''manual';
+  strategy: 'few-shot-optimization|fallback'||manual';
   /** Iteration number */
   iteration: number;
   /** Evaluation score */
@@ -128,7 +128,7 @@ export interface DSPyOptimizationResult {
 /**
  * DSPy Optimization Strategy
  */
-export type DSPyOptimizationStrategy ='' | '''few-shot-optimization'// Use few-shot examples for improvement'' | '''iterative-refinement'// Iterative prompt refinement'' | '''pattern-matching'// Match successful patterns'' | '''fallback'; // Simple fallback strategy
+export type DSPyOptimizationStrategy =|'few-shot-optimization'// Use few-shot examples for improvement|'iterative-refinement'// Iterative prompt refinement|'pattern-matching'// Match successful patterns|'fallback'; // Simple fallback strategy
 
 /**
  * DSPy Pattern for Learning
@@ -137,7 +137,7 @@ export interface DSPyPattern {
   /** Pattern identifier */
   id: string;
   /** Pattern type */
-  type: 'prompt-template''' | '''example-structure''' | '''optimization-strategy';
+  type: 'prompt-template|example-structure'||optimization-strategy';
   /** Pattern content */
   pattern: string;
   /** Effectiveness score */

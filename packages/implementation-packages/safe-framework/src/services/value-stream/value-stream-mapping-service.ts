@@ -42,7 +42,7 @@ export interface FlowStepAnalysis {
   readonly stepId: string;
   readonly name: string;
   readonly duration: number;
-  readonly type:' | ''value-added'' | ''non-value-added'' | ''necessary-non-value-added';
+  readonly type:|value-added|non-value-added|'necessary-non-value-added';
 }
 
 export interface DetailedFlowMetrics {
@@ -53,7 +53,7 @@ export interface DetailedFlowMetrics {
 }
 
 export interface ValueStreamMapperState {
-  readonly status: 'idle'' | ''mapping'' | ''optimizing'' | ''completed';
+  readonly status: 'idle|mapping|optimizing|completed';
   readonly progress: number;
   readonly currentStep?: string;
 }
@@ -80,7 +80,7 @@ export interface ValueStreamMappingConfig {
 export interface WorkflowValueStreamMapping {
   readonly workflowId: string;
   readonly valueStreamId: string;
-  readonly mappingType: 'direct'' | ''composite'' | ''distributed';
+  readonly mappingType: 'direct|composite|distributed';
   readonly confidence: number;
   readonly mappingReason: string;
   readonly steps: WorkflowStepMapping[];
@@ -104,8 +104,8 @@ export interface WorkflowStepMapping {
  */
 export interface ValueStreamCreationContext {
   readonly workflowType: string;
-  readonly complexity: 'simple'' | ''moderate'' | ''complex'' | ''enterprise';
-  readonly organizationalLevel: 'team'' | ''program'' | ''portfolio'' | ''enterprise';
+  readonly complexity: 'simple|moderate|complex|enterprise';
+  readonly organizationalLevel: 'team|program|portfolio|enterprise';
   readonly businessContext: BusinessContext;
   readonly technicalContext: TechnicalContext;
   readonly stakeholderContext: StakeholderContext;
@@ -160,8 +160,8 @@ export interface MappingValidationResult {
  * Mapping validation issue
  */
 export interface MappingValidationIssue {
-  readonly type: 'conflict'' | ''gap'' | ''redundancy'' | ''misalignment';
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly type: 'conflict|gap|redundancy|misalignment';
+  readonly severity: 'low|medium|high|critical';
   readonly description: string;
   readonly affectedElements: string[];
   readonly suggestedResolution: string;

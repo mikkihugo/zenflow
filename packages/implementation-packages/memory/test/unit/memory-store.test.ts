@@ -289,7 +289,7 @@ describe('SessionMemoryStore', () => {
 
       const result = await store.store('circular', circularObj);
       // Should handle serialization gracefully
-      expect(result.isOk()'' | '''' | ''result.isErr()).toBe(true);
+      expect(result.isOk()||result.isErr()).toBe(true);
     });
   });
 

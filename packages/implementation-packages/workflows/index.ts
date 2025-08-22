@@ -244,7 +244,7 @@ export const WORKFLOWS_INFO = {
  *
  * ## Workflow Types and Patterns
  *
- *'''''' | ''''''Pattern'''''' | ''''''Use Case'''''' | ''''''Complexity'''''' | ''''''*'''''' | ''''''---------'''''' | ''''''----------'''''' | ''''''------------'''''' | ''''''*'''''' | ''''''Sequential'''''' | ''''''Linear step-by-step processes'''''' | ''''''Low'''''' | ''''''*'''''' | ''''''Conditional'''''' | ''''''Decision-based branching'''''' | ''''''Medium'''''' | ''''''*'''''' | ''''''Parallel'''''' | ''''''Concurrent execution'''''' | ''''''Medium'''''' | ''''''*'''''' | ''''''Loop'''''' | ''''''Iterative processing'''''' | ''''''Medium'''''' | ''''''*'''''' | ''''''Nested'''''' | ''''''Complex hierarchical workflows'''''' | ''''''High'''''' | ''''''*
+ *'''||''Pattern''||''Use Case''||''Complexity''||''*''||''---------''||''----------''||''------------''||''*''||''Sequential''||''Linear step-by-step processes''||''Low''||''*''||''Conditional''||''Decision-based branching''||''Medium''||''*''||''Parallel''||''Concurrent execution''||''Medium''||''*''||''Loop''||''Iterative processing''||''Medium''||''*''||''Nested''||''Complex hierarchical workflows''||''High''||'''*
  * ## Performance Characteristics
  *
  * - **Execution Overhead**: <5ms per workflow step
@@ -286,7 +286,7 @@ export const WorkflowUtils = {
    */
   createDelayStep: (duration: number, name?: string) => ({
     type: 'delay',
-    name: name'''''' | '''''''''''' | ''''''`Delay ${duration}ms`,
+    name: name'''||''''''||'''`Delay ${duration}ms`,
     params: { duration },
   }),
 
@@ -305,7 +305,7 @@ export const WorkflowUtils = {
     name?: string
   ) => ({
     type:'transform',
-    name: name'''''' | '''''''''''' | '''''''Transform Data',
+    name: name'''||''''''||''''Transform Data',
     params: { input, transformation },
     output,
   }),
@@ -325,7 +325,7 @@ export const WorkflowUtils = {
     name?: string
   ) => ({
     type: 'condition',
-    name: name'''''' | '''''''''''' | '''''''Conditional Step',
+    name: name'''||''''''||''''Conditional Step',
     params: { condition, thenStep, elseStep },
   }),
 
@@ -337,7 +337,7 @@ export const WorkflowUtils = {
    */
   createParallelStep: (tasks: unknown[], name?: string) => ({
     type: 'parallel',
-    name: name'''''' | '''''''''''' | '''''''Parallel Execution',
+    name: name'''||''''''||''''Parallel Execution',
     params: { tasks },
   }),
 
@@ -350,7 +350,7 @@ export const WorkflowUtils = {
    */
   createLoopStep: (items: string, step: unknown, name?: string) => ({
     type: 'loop',
-    name: name'''''' | '''''''''''' | '''''''Loop',
+    name: name'''||''''''||''''Loop',
     params: { items, step },
   }),
 
@@ -360,7 +360,7 @@ export const WorkflowUtils = {
    * @param workflow
    */
   validateWorkflow: (workflow: unknown): boolean => {
-    if (!workflow'''''' | '''''''''''' | ''''''typeof workflow !=='object') {
+    if (!workflow'''||''''''||'''typeof workflow !=='object') {
       return false;
     }
 

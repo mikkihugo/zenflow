@@ -42,7 +42,7 @@ export interface FinetuneDataInput {
   /** Input data */
   inputs: Record<string, any>;
   /** Output data */
-  outputs: Prediction'' | ''Record<string, any>;
+  outputs: Prediction|Record<string, any>;
   /** Additional metadata */
   metadata?: Record<string, any>;
 }
@@ -52,7 +52,7 @@ export interface FinetuneDataInput {
 export interface FinetuneDataOutput {
   /** Formatted messages for training */
   messages: Array<{
-    role:'system | user' | 'assistant';
+    role:'system|user|assistant';
     content: string;
     metadata?: Record<string, any>;
   }>;

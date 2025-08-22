@@ -64,7 +64,7 @@ type SessionMemoryStoreOptions = SessionMemoryStoreOptionsType;
 
 @injectable()
 export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
-  private backend: BackendInterface'' | ''null = null;
+  private backend: BackendInterface|null = null;
   private initialized = false;
   private sessions = new Map<string, SessionState>();
   private options: Required<SessionMemoryStoreOptions>;
@@ -72,7 +72,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   private cache = new Map<string, CacheEntry>();
   private cacheKeys: string[] = [];
 
-  private storage: KeyValueStore'' | ''null = null;
+  private storage: KeyValueStore|null = null;
   private circuitBreaker: any;
   private errorAggregator = createErrorAggregator();
   private telemetryInitialized = false;
@@ -109,7 +109,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
         cacheEnabled: this.options.enableCache,
         cacheSize: this.options.cacheSize,
         vectorEnabled: this.options.enableVectorStorage,
-        backendType: this.options.backendConfig?.type'' | '''' | '''unknown',
+        backendType: this.options.backendConfig?.type||'unknown',
       }
     );
 
@@ -167,7 +167,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
             this.initialized = true;
 
             performanceTracker.endTimer('memory_initialize');
-            const initTime = timer.duration'' | '''' | ''0;
+            const initTime = timer.duration||0;
 
             // Record comprehensive metrics
             recordMetric('memory_store_initializations', 1);
@@ -229,15 +229,15 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   ): Promise<void>;
   async store(
     sessionIdOrKey: string,
-    keyOrData?: string'' | ''unknown,
-    dataOrOptions?: unknown'' | ''StoreOptions,
+    keyOrData?: string|unknown,
+    dataOrOptions?: unknown|StoreOptions,
     options?: StoreOptions
   ): Promise<void> {
     // Handle both overloads: (sessionId, key, data, options) and (key, data, options)
     let sessionId: string;
     let key: string;
     let data: unknown;
-    let storeOptions: StoreOptions'' | ''undefined;
+    let storeOptions: StoreOptions|undefined;
 
     if (typeof keyOrData ==='string') {
       // (sessionId, key, data, options) overload
@@ -250,7 +250,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
       sessionId = 'default';
       key = sessionIdOrKey;
       data = keyOrData;
-      storeOptions = dataOrOptions as StoreOptions'' | ''undefined;
+      storeOptions = dataOrOptions as StoreOptions|undefined;
     }
 
     this.ensureInitialized();
@@ -272,8 +272,8 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
                   updated: Date.now(),
                   accessed: Date.now(),
                   size: 0,
-                  tags: storeOptions?.tags'' | '''' | ''[],
-                  priority: storeOptions?.priority'' | '''' | '''medium',
+                  tags: storeOptions?.tags||[],
+                  priority: storeOptions?.priority||'medium',
                   ttl: storeOptions?.ttl,
                 },
                 vectors: new Map(),
@@ -307,7 +307,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
             }
 
             performanceTracker.endTimer('memory_store');
-            const storeTime = timer.duration'' | '''' | ''0;
+            const storeTime = timer.duration||0;
 
             // Record comprehensive metrics
             recordMetric('memory_store_operations', 1);
@@ -353,15 +353,15 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   async retrieve<T = unknown>(
     sessionId: string,
     key: string
-  ): Promise<T'' | ''null>;
-  async retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
+  ): Promise<T|null>;
+  async retrieve<T = unknown>(key: string): Promise<T|null>;
   async retrieve<T = unknown>(
     sessionIdOrKey: string,
     key?: string
-  ): Promise<T'' | ''null> {
+  ): Promise<T|null> {
     // Handle both overloads
     const actualSessionId = key ? sessionIdOrKey :'default';
-    const actualKey = key'' | '''' | ''sessionIdOrKey;
+    const actualKey = key||sessionIdOrKey;
     const retrieveKey = `${actualSessionId}:${actualKey}`;
 
     this.ensureInitialized();
@@ -380,12 +380,12 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
                 recordMetric('memory_cache_hits', 1);
                 recordHistogram(
                   'memory_retrieve_duration_ms',
-                  timer.duration'' | '''' | ''0
+                  timer.duration||0
                 );
 
                 logger.debug('Memory retrieve cache hit', {
                   key: retrieveKey,
-                  duration: timer.duration'' | '''' | ''0,
+                  duration: timer.duration||0,
                 });
 
                 return cached as T;
@@ -403,7 +403,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
             const result = (session?.data[actualKey] as T) ?? null;
 
             performanceTracker.endTimer('memory_retrieve');
-            const retrieveTime = timer.duration'' | '''' | ''0;
+            const retrieveTime = timer.duration||0;
 
             // Record comprehensive metrics
             recordMetric('memory_retrieve_operations', 1);
@@ -456,7 +456,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     });
   }
 
-  async retrieveSession(sessionId: string): Promise<SessionState'' | ''null> {
+  async retrieveSession(sessionId: string): Promise<SessionState|null> {
     this.ensureInitialized();
 
     if (this.sessions.has(sessionId)) {
@@ -487,7 +487,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   async delete(sessionIdOrKey: string, key?: string): Promise<boolean> {
     // Handle both overloads
     const actualSessionId = key ? sessionIdOrKey :'default';
-    const actualKey = key'' | '''' | ''sessionIdOrKey;
+    const actualKey = key||sessionIdOrKey;
     const deleteKey = `${actualSessionId}:${actualKey}`;
 
     this.ensureInitialized();
@@ -502,11 +502,11 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
             if (!(session && actualKey in session.data)) {
               performanceTracker.endTimer('memory_delete');
               recordMetric('memory_delete_not_found', 1);
-              recordHistogram('memory_delete_duration_ms', timer.duration'' | '''' | ''0);
+              recordHistogram('memory_delete_duration_ms', timer.duration||0);
 
               logger.debug('Memory delete operation - key not found', {
                 key: deleteKey,
-                duration: timer.duration'' | '''' | ''0,
+                duration: timer.duration||0,
               });
 
               return false;
@@ -535,7 +535,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
             }
 
             performanceTracker.endTimer('memory_delete');
-            const deleteTime = timer.duration'' | '''' | ''0;
+            const deleteTime = timer.duration||0;
 
             // Record comprehensive metrics
             recordMetric('memory_delete_operations', 1);
@@ -761,7 +761,7 @@ export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
    * Circuit breaker operation handler with comprehensive error handling and metrics
    */
   private async performStorageOperation(params: {
-    operation: 'store''' | '''retrieve';
+    operation: 'store|retrieve'';
     sessionId: string;
     key?: string;
     data?: any;
@@ -907,7 +907,7 @@ export class MemoryManager {
             this.managerInitialized = true;
             this.performanceTracker.endTimer('memory_manager_initialize');
 
-            const initTime = timer.duration'' | '''' | ''0;
+            const initTime = timer.duration||0;
             recordMetric('memory_manager_initializations', 1);
             recordHistogram(
               'memory_manager_initialization_duration_ms',
@@ -967,7 +967,7 @@ export class MemoryManager {
             });
 
             this.performanceTracker.endTimer('memory_manager_store');
-            const storeTime = timer.duration'' | '''' | ''0;
+            const storeTime = timer.duration||0;
 
             recordMetric('memory_manager_store_operations', 1);
             recordHistogram('memory_manager_store_duration_ms', storeTime);
@@ -1011,7 +1011,7 @@ export class MemoryManager {
 
   async retrieve<T = unknown>(
     key: string
-  ): Promise<Result<T'' | ''null, MemoryError>> {
+  ): Promise<Result<T|null, MemoryError>> {
     const timer = this.performanceTracker.startTimer('memory_manager_retrieve');
 
     return withTrace('memory-manager-retrieve', async () => {
@@ -1024,7 +1024,7 @@ export class MemoryManager {
             });
 
             this.performanceTracker.endTimer('memory_manager_retrieve');
-            const retrieveTime = timer.duration'' | '''' | ''0;
+            const retrieveTime = timer.duration||0;
 
             recordMetric('memory_manager_retrieve_operations', 1);
             recordHistogram(
@@ -1049,7 +1049,7 @@ export class MemoryManager {
               duration: retrieveTime,
             });
 
-            return result as T'' | ''null;
+            return result as T|null;
           });
         },
         {
@@ -1095,7 +1095,7 @@ export class MemoryManager {
         this.managerInitialized = false;
         this.performanceTracker.endTimer('memory_manager_shutdown');
 
-        const shutdownTime = timer.duration'' | '''' | ''0;
+        const shutdownTime = timer.duration||0;
         recordMetric('memory_manager_shutdowns', 1);
         recordHistogram('memory_manager_shutdown_duration_ms', shutdownTime);
 
@@ -1126,7 +1126,7 @@ export class MemoryManager {
         });
 
         this.performanceTracker.endTimer('memory_manager_clear');
-        const clearTime = timer.duration'' | '''' | ''0;
+        const clearTime = timer.duration||0;
 
         recordMetric('memory_manager_clear_operations', 1);
         recordHistogram('memory_manager_clear_duration_ms', clearTime);
@@ -1156,7 +1156,7 @@ export class MemoryManager {
       this.performanceTracker.endTimer('memory_manager_size');
 
       recordMetric('memory_manager_size_operations', 1);
-      recordHistogram('memory_manager_size_duration_ms', timer.duration'' | '''' | ''0);
+      recordHistogram('memory_manager_size_duration_ms', timer.duration||0);
 
       return size;
     });
@@ -1170,7 +1170,7 @@ export class MemoryManager {
 
       recordMetric('memory_manager_health_checks', 1);
       recordMetric('memory_manager_health_status', isHealthy ? 1 : 0);
-      recordHistogram('memory_manager_health_duration_ms', timer.duration'' | '''' | ''0);
+      recordHistogram('memory_manager_health_duration_ms', timer.duration||0);
 
       return isHealthy;
     });
@@ -1183,7 +1183,7 @@ export class MemoryManager {
       this.performanceTracker.endTimer('memory_manager_stats');
 
       recordMetric('memory_manager_stats_operations', 1);
-      recordHistogram('memory_manager_stats_duration_ms', timer.duration'' | '''' | ''0);
+      recordHistogram('memory_manager_stats_duration_ms', timer.duration||0);
       recordMetric('memory_manager_current_entries', stats.entries);
       recordMetric('memory_manager_current_size_bytes', stats.size);
 
@@ -1202,7 +1202,7 @@ export class MemoryManager {
         });
 
         this.performanceTracker.endTimer('memory_manager_delete');
-        const deleteTime = timer.duration'' | '''' | ''0;
+        const deleteTime = timer.duration||0;
 
         recordMetric('memory_manager_delete_operations', 1);
         recordHistogram('memory_manager_delete_duration_ms', deleteTime);
@@ -1239,7 +1239,7 @@ export class MemoryManager {
    * Circuit breaker operation handler for manager operations
    */
   private async performManagerOperation(params: {
-    operation: 'store | retrieve' | 'delete''' | '''clear';
+    operation: 'store|retrieve|delete|clear';
     key?: string;
     data?: unknown;
     options?: StoreOptions;

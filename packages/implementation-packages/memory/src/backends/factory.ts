@@ -13,7 +13,7 @@ import type { MemoryConfig } from '../types';
 import { type BackendCapabilities, BaseMemoryBackend } from './base-backend';
 
 // Additional types needed for factory
-export type MemoryBackendType = 'memory | file' | 'sqlite''' | '''jsonb';
+export type MemoryBackendType = 'memory|file|sqlite|jsonb';
 
 // Backend registry for dynamic loading
 const backendRegistry = new Map<
@@ -65,7 +65,7 @@ export class MemoryBackendFactory {
     instanceId?: string
   ): Promise<BaseMemoryBackend & BackendInterface> {
     const fullConfig = this.mergeConfig(config);
-    const id = instanceId'' | '''' | ''`${type}-${Date.now()}`;
+    const id = instanceId||`${type}-${Date.now()}`;
 
     // Check if backend is already created
     if (this.backends.has(id)) {
@@ -98,8 +98,8 @@ export class MemoryBackendFactory {
    *
    * @param instanceId
    */
-  public getBackend(instanceId: string): BaseMemoryBackend'' | ''null {
-    return this.backends.get(instanceId)'' | '''' | ''null;
+  public getBackend(instanceId: string): BaseMemoryBackend|null {
+    return this.backends.get(instanceId)||null;
   }
 
   /**
@@ -262,7 +262,7 @@ export class MemoryBackendFactory {
     return {
       ...this.defaultConfig,
       ...config,
-      type: config?.type'' | '''' | '''memory',
+      type: config?.type||'memory',
     } as MemoryConfig;
   }
 
@@ -271,7 +271,7 @@ export class MemoryBackendFactory {
   ): MemoryBackendType {
     // Auto-detect optimal backend based on requirements
     const wantsPersistent =
-      config?.type === 'sqlite''' | '''' | ''config?.type ==='lancedb';
+      config?.type === 'sqlite'||config?.type ==='lancedb';
     if (wantsPersistent) {
       return config?.maxSize && config?.maxSize > 50 * 1024 * 1024
         ? 'sqlite'

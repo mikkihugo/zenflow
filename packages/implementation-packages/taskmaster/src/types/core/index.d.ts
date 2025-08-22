@@ -185,7 +185,7 @@ export interface ApprovalGateRequirement {
  */
 export interface ApprovalCondition {
   /** Condition type */
-  type: 'user_role'' | ''task_complexity'' | ''time_based'' | ''custom';
+  type: 'user_role|task_complexity|time_based|custom';
   /** Condition parameters */
   parameters: Record<string, unknown>;
   /** Condition evaluation script */
@@ -296,7 +296,7 @@ export interface SecurityConfig {
 export interface IntegrationConfig {
   /** Database configuration */
   database: {
-    type: 'postgresql'' | ''mysql'' | ''sqlite';
+    type: 'postgresql|mysql|sqlite';
     host: string;
     port: number;
     database: string;
@@ -381,11 +381,11 @@ export interface BottleneckInfo {
   /** Estimated delay in hours */
   estimatedDelayHours: number;
   /** Bottleneck type classification */
-  type: 'capacity'' | ''skill'' | ''dependency'' | ''process'' | ''resource';
+  type: 'capacity|skill|dependency|process|resource';
   /** Contributing factors */
   factors: string[];
   /** Historical trend */
-  trend: 'improving'' | ''stable'' | ''degrading';
+  trend: 'improving|stable|degrading';
 }
 /**
  * Bottleneck resolution recommendation
@@ -521,7 +521,7 @@ export interface AuditLogEntry {
   /** User who performed action */
   userId: UserId;
   /** Affected resource type */
-  resourceType: 'task'' | ''workflow'' | ''user'' | ''config';
+  resourceType: 'task|workflow|user|config';
   /** Affected resource ID */
   resourceId: string;
   /** Action timestamp */
@@ -533,7 +533,7 @@ export interface AuditLogEntry {
   /** Action details */
   details: Record<string, unknown>;
   /** Action result */
-  result: 'success'' | ''failure'' | ''partial';
+  result: 'success|failure|partial';
 }
 /**
  * TaskMaster event types for real-time coordination
@@ -607,7 +607,7 @@ export interface SystemHealthStatus {
  */
 export interface ComponentHealth {
   /** Component status */
-  status: 'healthy'' | ''degraded'' | ''unhealthy'' | ''unknown';
+  status: 'healthy|degraded|unhealthy|unknown';
   /** Response time in milliseconds */
   responseTimeMs: number;
   /** Error rate (0-1) */
@@ -624,7 +624,7 @@ export interface SystemAlert {
   /** Alert ID */
   readonly id: string;
   /** Alert severity */
-  severity: 'info'' | ''warning'' | ''error'' | ''critical';
+  severity: 'info|warning|error|critical';
   /** Alert message */
   message: string;
   /** Affected component */

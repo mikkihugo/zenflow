@@ -31,7 +31,7 @@ export interface BaseExporter {
   shutdown(): Promise<void>;
   getQueueSize(): number;
   getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy | degraded|unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }>;
@@ -234,7 +234,7 @@ export class ExporterManager {
     Record<
       string,
       {
-        status: 'healthy | degraded' | 'unhealthy';
+        status: 'healthy | degraded|unhealthy';
         lastSuccess?: number;
         lastError?: string;
       }

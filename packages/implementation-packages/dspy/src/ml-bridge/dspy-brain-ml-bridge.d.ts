@@ -25,8 +25,8 @@
  */
 export interface DSPyOptimizationTask {
   type: 'teleprompter_optimization';
-  teleprompterType: 'miprov2 | copro' | 'bootstrap''' | '''grpo';
-  objective: 'accuracy | speed' | 'memory''' | '''multi_objective';
+  teleprompterType: 'miprov2|copro|bootstrap|grpo';
+  objective: 'accuracy|speed|memory|multi_objective';
   parameters: DSPyParameters;
   constraints: OptimizationConstraints;
   dataset: TrainingDataset;

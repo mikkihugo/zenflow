@@ -59,11 +59,11 @@ async function testGPT5Question(): Promise<void> {
 
       // Check if response mentions GPT-5
       const content = response.content.toLowerCase();
-      if (content.includes('gpt-5')'' | '''' | ''content.includes('gpt 5')) {
+      if (content.includes('gpt-5')||content.includes('gpt 5')) {
         logger.info('🎯 Response mentions GPT-5!');
       } else if (content.includes('claude')) {
         logger.info('🎯 Response indicates Claude model');
-      } else if (content.includes('gpt-4')'' | '''' | ''content.includes('gpt 4')) {
+      } else if (content.includes('gpt-4')||content.includes('gpt 4')) {
         logger.info('🎯 Response indicates GPT-4');
       } else {
         logger.info('🤔 Model identity unclear from response');
@@ -106,7 +106,7 @@ async function testGPT5Question(): Promise<void> {
           // Check for GPT-5 indicators
           const content = response.content.toLowerCase();
           if (
-            content.includes('yes i am gpt-5')'' | '''' | ''content.includes('i am gpt-5')
+            content.includes('yes i am gpt-5')||content.includes('i am gpt-5')
           ) {
             logger.info('🎯 FOUND GPT-5! This provider has access to GPT-5!');
           } else if (content.includes('gpt-5')) {

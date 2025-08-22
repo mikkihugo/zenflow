@@ -17,7 +17,7 @@ export type MetricFunction = (
   example: Example,
   prediction: Prediction,
   trace?: any[]
-) => number'' | ''boolean;
+) => number|boolean;
 /**
  * Teleprompter compile options
  */
@@ -27,7 +27,7 @@ export interface CompileOptions {
   /** Validation examples */
   valset?: Example[];
   /** Teacher module(s) */
-  teacher?: DSPyModule'' | ''DSPyModule[]'' | ''null;
+  teacher?: DSPyModule|DSPyModule[]|null;
   /** Number of trials/iterations */
   num_trials?: number;
   /** Maximum number of examples to use */
@@ -142,7 +142,7 @@ export interface Hyperparameter {
   /** Parameter value */
   value: any;
   /** Parameter type */
-  type:'number | string' | 'boolean' | 'array' | 'object';
+  type:'number|string|boolean|array|object';
   /** Valid range/options */
   range?: {
     min?: number;
@@ -167,7 +167,7 @@ export interface OptimizationConfig {
   /** Hyperparameter search space */
   search_space?: Hyperparameter[];
   /** Optimization strategy */
-  strategy?: 'random | grid' | 'bayesian''' | '''genetic';
+  strategy?: 'random|grid|bayesian|genetic';
 }
 /**
  * Model configuration interface

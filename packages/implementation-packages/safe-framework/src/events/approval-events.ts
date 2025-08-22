@@ -19,10 +19,10 @@ import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
  */
 export interface ApprovalRequestEvent {
   readonly requestId: string;
-  readonly type:'' | '''epic | feature' | 'architecture''' | '''business-case''' | '''resource''' | '''process';
+  readonly type: 'epic|feature|architecture|business-case||resource|process'';
   readonly title: string;
   readonly description: string;
-  readonly priority: 'low | medium' | 'high''' | '''critical';
+  readonly priority: 'low|medium|high|critical';
   readonly requestedBy: string;
   readonly approvers: string[];
   readonly deadline?: Date;
@@ -80,7 +80,7 @@ export function createApprovalRequest(params: {
     type: params.type,
     title: params.title,
     description: params.description,
-    priority: params.priority'' | '''' | '''medium',
+    priority: params.priority||'medium',
     requestedBy: params.requestedBy,
     approvers: params.approvers,
     deadline: params.deadline,

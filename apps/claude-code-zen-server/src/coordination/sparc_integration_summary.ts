@@ -7,94 +7,91 @@
  * ===================.
  *
  * 1. DATABASE-DRIVEN PRODUCT FLOW (WHAT to build)
- *    Vision → ADRs → PRDs → Epics → Features → Tasks
- *    - Uses DatabaseDrivenSystem for orchestration
- *    - Features and Tasks are database entities
- *    - Follows business requirements workflow.
+ * Vision → ADRs → PRDs → Epics → Features → Tasks
+ * - Uses DatabaseDrivenSystem for orchestration
+ * - Features and Tasks are database entities
+ * - Follows business requirements workflow.
  *
  * 2. SPARC METHODOLOGY (HOW to implement)
- *    Specification → Pseudocode → Architecture → Refinement → Completion
- *    - Applied by SPARCSwarmCoordinator when processing Features/Tasks
- *    - Uses specialized agents for each phase
- *    - Provides systematic implementation approach.
+ * Specification → Pseudocode → Architecture → Refinement → Completion
+ * - Applied by SPARCSwarmCoordinator when processing Features/Tasks
+ * - Uses specialized agents for each phase
+ * - Provides systematic implementation approach.
  *
  * 3. NTEGRATION BRIDGE
- *    DatabaseSPARCBridge connects the flows:
- *    - Receives Features/Tasks from database-driven system
- *    - Assigns to SPARC swarm for implementation
- *    - Coordinates agent specialization per SPARC phase
- *    - Returns implementation artifacts to database.
+ * DatabaseSPARCBridge connects the flows:
+ * - Receives Features/Tasks from database-driven system
+ * - Assigns to SPARC swarm for implementation
+ * - Coordinates agent specialization per SPARC phase
+ * - Returns implementation artifacts to database.
  *
  * Component Integration:
  * ====================.
  *
  * DatabaseDrivenSystem
- *   ↓ (generates Features/Tasks)
+ * ↓ (generates Features/Tasks)
  * DatabaseSPARCBridge
- *   ↓ (assigns work)
+ * ↓ (assigns work)
  * SPARCSwarmCoordinator
- *   ↓ (applies SPARC methodology)
+ * ↓ (applies SPARC methodology)
  * Specialized Agents (per phase)
- *   ↓ (produces artifacts)
+ * ↓ (produces artifacts)
  * Database (stores results).
  *
  * Key Features Implemented:
  * ========================.
  *
  * ✅ SPARCSwarmCoordinator
- *    - Applies SPARC phases to Features/Tasks
- *    - Coordinates specialized agents per phase
- *    - Tracks progress and quality metrics
- *    - Generates implementation artifacts.
+ * - Applies SPARC phases to Features/Tasks
+ * - Coordinates specialized agents per phase
+ * - Tracks progress and quality metrics
+ * - Generates implementation artifacts.
  *
  * ✅ DatabaseSPARCBridge
- *    - Connects database-driven flow to SPARC swarm
- *    - Manages work assignments and results
- *    - Updates database with implementation status
- *    - Provides monitoring and metrics.
+ * - Connects database-driven flow to SPARC swarm
+ * - Manages work assignments and results
+ * - Updates database with implementation status
+ * - Provides monitoring and metrics.
  *
  * ✅ Enhanced TaskCoordinator
- *    - Supports SPARC methodology option
- *    - Routes complex tasks to SPARC swarm
- *    - Falls back to direct execution for simple tasks
- *    - Tracks methodology applied.
+ * - Supports SPARC methodology option
+ * - Routes complex tasks to SPARC swarm
+ * - Falls back to direct execution for simple tasks
+ * - Tracks methodology applied.
  *
  * ✅ CLI Commands
- *    - sparc-swarm init: Initialize integration
- *    - sparc-swarm assign-feature: Assign feature to SPARC
- *    - sparc-swarm assign-task: Assign task to SPARC
- *    - sparc-swarm status: Monitor swarm and assignments
- *    - sparc-swarm demo: Demonstrate methodology
+ * - sparc-swarm init: Initialize integration
+ * - sparc-swarm assign-feature: Assign feature to SPARC
+ * - sparc-swarm assign-task: Assign task to SPARC
+ * - sparc-swarm status: Monitor swarm and assignments
+ * - sparc-swarm demo: Demonstrate methodology
  *
  * ✅ Integration Example
- *    - Complete workflow demonstration
- *    - Shows database → SPARC → results flow
- *    - Includes monitoring and metrics.
+ * - Complete workflow demonstration
+ * - Shows database → SPARC → results flow
+ * - Includes monitoring and metrics.
  *
  * Usage Flow:
  * ===========
  *
  * 1. Initialize Systems:
- *    ```bash
- *    claude-zen sparc-swarm init --swarm-size 10
- *    ```
+ * ```bash
+ * claude-zen sparc-swarm init --swarm-size 10` * ```
  *
  * 2. Database-driven product flow creates Features/Tasks:
- *    - Vision documents generate Features
- *    - Features generate Tasks
- *    - Complex items auto-assigned to SPARC swarm
+ * - Vision documents generate Features
+ * - Features generate Tasks
+ * - Complex items auto-assigned to SPARC swarm
  *
  * 3. SPARC methodology executes:
- *    - Specification: Requirements analysis
- *    - Pseudocode: Algorithm design
- *    - Architecture: System design
- *    - Refinement: Code review & optimization
- *    - Completion: Testing & deployment
+ * - Specification: Requirements analysis
+ * - Pseudocode: Algorithm design
+ * - Architecture: System design
+ * - Refinement: Code review & optimization
+ * - Completion: Testing & deployment
  *
- * 4. Monitor progress:
- *    ```bash
- *    claude-zen sparc-swarm status --detailed
- *    ```
+ * 4. Monitor progress:` * ```bash
+ * claude-zen sparc-swarm status --detailed` * ```
  *
  * 5. Results stored in database with full traceability
  *
@@ -102,24 +99,24 @@
  * ==========================
  *
  * 🎯 Systematic Implementation
- *    - Structured approach to complex tasks
- *    - Quality gates at each phase
- *    - Comprehensive artifact generation
+ * - Structured approach to complex tasks
+ * - Quality gates at each phase
+ * - Comprehensive artifact generation
  *
  * 🤖 Agent Specialization
- *    - Different agents for different phases
- *    - Optimal resource utilization
- *    - Parallel processing where possible
+ * - Different agents for different phases
+ * - Optimal resource utilization
+ * - Parallel processing where possible
  *
  * 📊 Quality Assurance
- *    - Validation at each phase
- *    - Quality scoring and feedback
- *    - Iterative improvement
+ * - Validation at each phase
+ * - Quality scoring and feedback
+ * - Iterative improvement
  *
  * 🔗 Integration
- *    - Seamless with database-driven flow
- *    - Preserves business requirements
- *    - Adds technical implementation rigor
+ * - Seamless with database-driven flow
+ * - Preserves business requirements
+ * - Adds technical implementation rigor
  *
  * Technical Implementation:
  * ========================
@@ -143,17 +140,5 @@
  * @file Coordination system: sparc_integration_summary.
  */
 
-export const SPARC_SWARM_INTEGRATION_SUMMARY = {
-  implemented: true,
-  architecture: 'database-driven + sparc-swarm-coordination',
-  components: [
-    'SPARCSwarmCoordinator',
-    'DatabaseSPARCBridge',
-    'Enhanced TaskCoordinator',
-    'CLI Commands',
-    'Integration Examples',
-  ],
-  methodology: 'SPARC phases applied by specialized swarm agents',
-  status: 'integration-complete',
-  usage: 'claude-zen sparc-swarm [command]',
-} as const;
+export const SPARC_SWARM_INTEGRATION_SUMMARY = { implemented: true, architecture: 'database-driven + sparc-swarm-coordination', components: [ 'SPARCSwarmCoordinator', 'DatabaseSPARCBridge', 'Enhanced TaskCoordinator', 'CLI Commands', 'Integration Examples', ], methodology: 'SPARC phases applied by specialized swarm agents', status: 'integration-complete', usage: 'claude-zen sparc-swarm [command]',
+} as const;`

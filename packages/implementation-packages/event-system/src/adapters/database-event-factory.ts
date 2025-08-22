@@ -151,7 +151,7 @@ class DatabaseEventManagerImpl
           ...event.metadata,
           timestamp: new Date(),
           processingTime: Date.now(),
-          database: event.details?.tableName'' | '''' | '''default',
+          database: event.details?.tableName||'default',
           connectionId: event.details?.transactionId,
         },
       };
@@ -163,7 +163,7 @@ class DatabaseEventManagerImpl
       await this.routeDatabaseEvent(enrichedEvent);
 
       this.logger.debug(
-        `Database event emitted: ${event.operation} on ${event.details?.tableName'' | '''' | '''unknown'}`
+        `Database event emitted: ${event.operation} on ${event.details?.tableName||'unknown'}`
       );
     } catch (error) {
       this.databaseMetrics.failedQueries++;
@@ -745,7 +745,7 @@ export class DatabaseEventManagerFactory
   /**
    * Get an event manager by name.
    */
-  get(name: string): EventManager'' | ''undefined {
+  get(name: string): EventManager|undefined {
     return this.managers.get(name);
   }
 
@@ -987,12 +987,12 @@ export class DatabaseEventManagerFactory
   ): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners'' | '''' | ''300,
+      maxListeners: config.maxListeners||300,
       processing: {
         batchSize: 100, // Efficient batch processing for DB operations
         queueSize: 5000,
         ...config.processing,
-        strategy: config.processing?.strategy'' | '''' | '''queued', // Database operations benefit from queuing
+        strategy: config.processing?.strategy||'queued', // Database operations benefit from queuing
       },
       retry: {
         attempts: 3,

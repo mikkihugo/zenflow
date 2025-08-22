@@ -18,10 +18,10 @@ export class BatchProcessor implements BaseProcessor {
   private config: ProcessorConfig;
   private logger: Logger;
   private batch: TelemetryData[] = [];
-  private batchTimer: NodeJS.Timeout'' | ''null = null;
+  private batchTimer: NodeJS.Timeout|null = null;
   private processedCount = 0;
   private lastProcessedTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
   private isShuttingDown = false;
 
   // Configuration
@@ -34,8 +34,8 @@ export class BatchProcessor implements BaseProcessor {
     this.logger = getLogger(`BatchProcessor:${config.name}`);
 
     // Extract configuration
-    this.maxBatchSize = config.config?.maxBatchSize'' | '''' | ''100;
-    this.batchTimeout = config.config?.batchTimeout'' | '''' | ''5000; // 5 seconds
+    this.maxBatchSize = config.config?.maxBatchSize||100;
+    this.batchTimeout = config.config?.batchTimeout||5000; // 5 seconds
     this.flushOnShutdown = config.config?.flushOnShutdown !== false;
   }
 
@@ -50,7 +50,7 @@ export class BatchProcessor implements BaseProcessor {
     });
   }
 
-  async process(data: TelemetryData): Promise<TelemetryData'' | ''null> {
+  async process(data: TelemetryData): Promise<TelemetryData|null> {
     if (this.isShuttingDown) {
       return data;
     }
@@ -134,13 +134,13 @@ export class BatchProcessor implements BaseProcessor {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
     const batchUtilization = this.batch.length / this.maxBatchSize;
 
-    let status: 'healthy | degraded' | 'unhealthy' = 'healthy';
+    let status: 'healthy|degraded|unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
@@ -151,8 +151,8 @@ export class BatchProcessor implements BaseProcessor {
 
     return {
       status,
-      lastProcessed: this.lastProcessedTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastProcessed: this.lastProcessedTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 

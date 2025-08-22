@@ -24,7 +24,7 @@ import type {
 const logger = getLogger('database-providers');
 
 export interface DatabaseConfig {
-  type: 'sqlite | lancedb' | 'kuzu' | 'postgresql' | 'mysql';
+  type: 'sqlite | lancedb|kuzu|postgresql|mysql';
   database: string;
   options?: any;
   [key: string]: any;

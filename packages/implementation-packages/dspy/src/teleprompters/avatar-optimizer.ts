@@ -35,7 +35,7 @@ const DEFAULT_MAX_EXAMPLES = 10;
 export interface EvalResult {
   example: Record<string, any>;
   score: number;
-  actions?: any[]'' | ''null;
+  actions?: any[]|null;
 }
 
 /**
@@ -101,7 +101,7 @@ export class AvatarOptimizer extends Teleprompter {
   private upper_bound: number;
   private max_positive_inputs: number;
   private max_negative_inputs: number;
-  private optimize_for:'max''' | '''min';
+  private optimize_for:'max|min';
 
   // Internal components exactly matching Stanford implementation
   private comparator: any;
@@ -112,8 +112,8 @@ export class AvatarOptimizer extends Teleprompter {
     max_iters?: number;
     lower_bound?: number;
     upper_bound?: number;
-    max_positive_inputs?: number'' | ''null;
-    max_negative_inputs?: number'' | ''null;
+    max_positive_inputs?: number|null;
+    max_negative_inputs?: number|'null;
     optimize_for?: string;
   }) {
     super();
@@ -124,7 +124,7 @@ export class AvatarOptimizer extends Teleprompter {
     }
 
     this.metric = config.metric;
-    this.optimize_for = (config.optimize_for as 'max''' | '''min')'' | '''' | '''max';
+    this.optimize_for = (config.optimize_for as 'max|min')|||max';
     this.max_iters = config.max_iters ?? 10;
     this.lower_bound = config.lower_bound ?? 0;
     this.upper_bound = config.upper_bound ?? 1;
@@ -145,8 +145,8 @@ export class AvatarOptimizer extends Teleprompter {
     student: AvatarModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: Example[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: Example[]|null;
       [key: string]: any;
     }
   ): Promise<AvatarModule> {
@@ -209,7 +209,7 @@ export class AvatarOptimizer extends Teleprompter {
 
       // Update best actor exactly matching Stanford logic
       const should_update =
-        (this.optimize_for === 'max'&& best_score < score)'' | '''' | ''(this.optimize_for ==='min'&& best_score > score);
+        (this.optimize_for === 'max'&& best_score < score)||(this.optimize_for ==='min'&& best_score > score);
 
       if (should_update) {
         best_actor.actor.signature =
@@ -318,13 +318,13 @@ export class AvatarOptimizer extends Teleprompter {
         pos_inputs.push({
           example: example.inputs,
           score,
-          actions: prediction?.actions'' | '''' | ''null,
+          actions: prediction?.actions||null,
         });
       } else if (score <= this.lower_bound) {
         neg_inputs.push({
           example: example.inputs,
           score,
-          actions: prediction?.actions'' | '''' | ''null,
+          actions: prediction?.actions||null,
         });
       }
     }

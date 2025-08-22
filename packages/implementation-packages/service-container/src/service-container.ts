@@ -43,13 +43,13 @@ import type { JsonValue, UnknownRecord } from '@claude-zen/foundation/types';
 export interface BasicServiceRegistrationOptions<T = unknown>
   extends BuildResolverOptions<T> {
   /** Service lifetime management */
-  lifetime?:'' | ''typeof Lifetime.SINGLETON'' | ''typeof Lifetime.TRANSIENT'' | ''typeof Lifetime.SCOPED;
+  lifetime?:|typeof Lifetime.SINGLETON|typeof Lifetime.TRANSIENT|typeof Lifetime.SCOPED;
   /** Service resolution mode (deprecated in newer versions) */
   // resolutionMode?: ResolutionMode;
   /** Service capabilities for discovery */
   capabilities?: string[];
   /** Health check function */
-  healthCheck?: () => Promise<boolean>'' | ''boolean;
+  healthCheck?: () => Promise<boolean>|boolean;
   /** Service metadata */
   metadata?: Record<string, unknown>;
   /** Enable/disable service */
@@ -63,9 +63,9 @@ export interface BasicServiceRegistrationOptions<T = unknown>
  */
 export interface ServiceDiscoveryOptions extends ListModulesOptions {
   /** File pattern for service discovery */
-  pattern?: string'' | ''string[];
+  pattern?: string|string[];
   /** Exclude pattern */
-  excludePattern?: string'' | ''string[];
+  excludePattern?: string|string[];
   /** Auto-register discovered services */
   autoRegister?: boolean;
   /** Default service options */
@@ -87,7 +87,7 @@ export interface ServiceInfo {
   /** Service dependencies */
   dependencies: string[];
   /** Service lifetime */
-  lifetime:'' | ''typeof Lifetime.SINGLETON'' | ''typeof Lifetime.TRANSIENT'' | ''typeof Lifetime.SCOPED;
+  lifetime:|typeof Lifetime.SINGLETON|typeof Lifetime.TRANSIENT|typeof Lifetime.SCOPED;
   /** Service enabled status */
   enabled: boolean;
   /** Last health check timestamp */
@@ -149,7 +149,7 @@ export class ServiceContainer {
     name = 'default',
     options: {
       healthCheckFrequency?: number;
-      injectionMode?: typeof InjectionMode.CLASSIC'' | ''typeof InjectionMode.PROXY;
+      injectionMode?: typeof InjectionMode.CLASSIC|typeof InjectionMode.PROXY;
     } = {}
   ) {
     this.name = name;
@@ -168,7 +168,7 @@ export class ServiceContainer {
    */
   registerService<T>(
     name: string,
-    implementation: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
+    implementation: (new (...args: unknown[]) => T)|(() => T)|T,
     options: BasicServiceRegistrationOptions<T> = {}
   ): Result<void, ServiceContainerError> {
     // Handle different implementation types
@@ -478,7 +478,7 @@ export class ServiceContainer {
   /**
    * Get service information
    */
-  getServiceInfo(name: string): ServiceInfo'' | ''undefined {
+  getServiceInfo(name: string): ServiceInfo|undefined {
     return this.services.get(name);
   }
 
@@ -502,7 +502,7 @@ export class ServiceContainer {
    * Discover services from filesystem
    */
   async discoverServices(
-    globPatterns: string'' | ''string[],
+    globPatterns: string|string[],
     options: ServiceDiscoveryOptions = {}
   ): Promise<Result<string[], ServiceContainerError>> {
     try {
@@ -531,7 +531,7 @@ export class ServiceContainer {
             // Dynamic import of the service module
             const serviceModule = await import(modulePath);
             const ServiceClass =
-              serviceModule.default'' | '''' | ''serviceModule[serviceName];
+              serviceModule.default||serviceModule[serviceName];
 
             if (ServiceClass) {
               const registrationResult = this.registerService(
@@ -698,7 +698,7 @@ export class ServiceContainer {
    * Create a child container
    */
   createChild(name?: string): ServiceContainer {
-    const childName = name'' | '''' | ''`${this.name}-child-${Date.now()}`;
+    const childName = name||`${this.name}-child-${Date.now()}`;
     const childServiceContainer = new ServiceContainer(childName);
 
     // Create child container
@@ -758,7 +758,7 @@ export class ServiceContainer {
     const lifetimeDistribution = services.reduce(
       (acc, service) => {
         const lifetime = service.lifetime;
-        acc[lifetime] = (acc[lifetime]'' | '''' | ''0) + 1;
+        acc[lifetime] = (acc[lifetime]||0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -777,7 +777,7 @@ export class ServiceContainer {
 
   private async performHealthCheck(
     name: string,
-    healthCheck: () => Promise<boolean>'' | ''boolean
+    healthCheck: () => Promise<boolean>|boolean
   ): Promise<void> {
     try {
       const isHealthy = await healthCheck();
@@ -826,7 +826,7 @@ export function createServiceContainer(
   name?: string,
   options?: {
     healthCheckFrequency?: number;
-    injectionMode?: typeof InjectionMode.CLASSIC'' | ''typeof InjectionMode.PROXY;
+    injectionMode?: typeof InjectionMode.CLASSIC|typeof InjectionMode.PROXY;
   }
 ): ServiceContainer {
   return new ServiceContainer(name, options);
@@ -835,7 +835,7 @@ export function createServiceContainer(
 /**
  * Global service container instance
  */
-let globalServiceContainer: ServiceContainer'' | ''null = null;
+let globalServiceContainer: ServiceContainer|null = null;
 
 /**
  * Get the global service container

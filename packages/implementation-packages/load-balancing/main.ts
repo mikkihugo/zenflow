@@ -177,7 +177,7 @@ export class LoadBalancer extends TypedEventBase {
   private loadBalancingConfig!: LoadBalancingConfig;
   private metricsHistory: Map<string, LoadMetrics[]> = new Map();
   private isRunning = false;
-  private monitoringInterval: NodeJS.Timeout'''' | ''''null = null;
+  private monitoringInterval: NodeJS.Timeout'||'null = null;
   private startTime?: number;
 
   // Battle-tested dependencies with comprehensive Foundation monitoring
@@ -419,7 +419,7 @@ export class LoadBalancer extends TypedEventBase {
         total_agents: this.agents.size,
         avg_load: this.calculateAverageLoad(),
         uptime: this.isRunning
-          ? Date.now() - (this.startTime'''' | '''''''' | ''''Date.now())
+          ? Date.now() - (this.startTime'||''||'Date.now())
           : 0,
         timestamp: Date.now(),
       });
@@ -867,10 +867,10 @@ export class LoadBalancer extends TypedEventBase {
         // Use consistent hashing for certain task types
         let routingResult: RoutingResult;
 
-        if (task.type === 'stateful''''' | '''''''' | ''''task.sessionId) {
+        if (task.type === 'stateful''||''||task.sessionId) {
           // Use consistent hashing for stateful tasks
           const hashedAgent = this.consistentHashing.get(
-            task.sessionId'''' | '''''''' | ''''task.id'''' | '''''''' | '''''default'
+            task.sessionId||''||task.id||''||''default'
           );
           const agent = hashedAgent ? this.agents.get(hashedAgent) : undefined;
 
@@ -882,7 +882,7 @@ export class LoadBalancer extends TypedEventBase {
               reasoning: 'Consistent hashing for stateful task',
               alternativeAgents: [],
               estimatedLatency:
-                this.getLatestMetrics(agent.id)?.responseTime'''' | '''''''' | ''''100,
+                this.getLatestMetrics(agent.id)?.responseTime'||''||'100,
               expectedQuality: 0.9,
             };
           } else {
@@ -934,7 +934,7 @@ export class LoadBalancer extends TypedEventBase {
         recordMetric('load_balancer_tasks_routed_total', 1);
         recordHistogram(
           'load_balancer_routing_latency_ms',
-          routingResult.estimatedLatency'''' | '''''''' | ''''0
+          routingResult.estimatedLatency'||''||'0
         );
 
         this.logger.debug('Task routed successfully', {
@@ -948,9 +948,9 @@ export class LoadBalancer extends TypedEventBase {
         if (span) {
           span.setAttributes({
             'routing.success': true,
-            'routing.agent_id': routingResult?.selectedAgent?.id'''' | '''''''' | '''''none',
-            'routing.confidence': routingResult?.confidence'''' | '''''''' | ''''0,'routing.decision': routingResult?.routingDecision'''' | '''''''' | '''''unknown',
-            'routing.estimated_latency': routingResult?.estimatedLatency'''' | '''''''' | ''''0,
+            'routing.agent_id': routingResult?.selectedAgent?.id'||''||''none',
+            'routing.confidence': routingResult?.confidence'||''||'0,'routing.decision': routingResult?.routingDecision'||''||''unknown',
+            'routing.estimated_latency': routingResult?.estimatedLatency'||''||'0,
           });
           span.end();
         }
@@ -983,7 +983,7 @@ export class LoadBalancer extends TypedEventBase {
    */
   private async getEnhancedMetrics(
     agentId: string
-  ): Promise<LoadMetrics'''' | ''''null> {
+  ): Promise<LoadMetrics'||null> {
     try {
       const storedMetrics = this.getLatestMetrics(agentId);
 
@@ -998,13 +998,13 @@ export class LoadBalancer extends TypedEventBase {
         cpuUsage: cpuUsage / 100, // Convert to 0-1 range
         memoryUsage:
           (memInfo.totalMemMb - memInfo.freeMemMb) / memInfo.totalMemMb,
-        diskUsage: storedMetrics?.diskUsage'''' | '''''''' | ''''0,
-        networkUsage: storedMetrics?.networkUsage'''' | '''''''' | ''''0,
-        activeTasks: storedMetrics?.activeTasks'''' | '''''''' | ''''0,
-        queueLength: storedMetrics?.queueLength'''' | '''''''' | ''''0,
-        responseTime: storedMetrics?.responseTime'''' | '''''''' | ''''100,
-        errorRate: storedMetrics?.errorRate'''' | '''''''' | ''''0,
-        throughput: storedMetrics?.throughput'''' | '''''''' | ''''0,
+        diskUsage: storedMetrics?.diskUsage||''||0,
+        networkUsage: storedMetrics?.networkUsage||''||0,
+        activeTasks: storedMetrics?.activeTasks||''||0,
+        queueLength: storedMetrics?.queueLength||''||0,
+        responseTime: storedMetrics?.responseTime||''||100,
+        errorRate: storedMetrics?.errorRate||''||0,
+        throughput: storedMetrics?.throughput||''||'0,
         loadAverage: loadAvg[0], // 1-minute load average
       };
 
@@ -1030,7 +1030,7 @@ export class LoadBalancer extends TypedEventBase {
         .selectAgent(task, agents, metricsMap);
     }
 
-    let bestAgent: Agent'''' | ''''null = null;
+    let bestAgent: Agent'||'null = null;
     let bestPrediction = -1;
 
     // Predict success probability for each agent
@@ -1083,7 +1083,7 @@ export class LoadBalancer extends TypedEventBase {
       confidence: bestPrediction,
       reasoning: 'ML prediction based routing',
       alternativeAgents: [],
-      estimatedLatency: metricsMap.get(bestAgent.id)?.responseTime'''' | '''''''' | ''''100,
+      estimatedLatency: metricsMap.get(bestAgent.id)?.responseTime'||''||'100,
       expectedQuality: bestPrediction,
       mlPrediction: bestPrediction,
     };
@@ -1215,7 +1215,7 @@ export class LoadBalancer extends TypedEventBase {
       maxLoad,
       minLoad,
       loadVariance: this.calculateLoadVariance(),
-      uptime: this.isRunning ? Date.now() - (this.startTime'''' | '''''''' | ''''Date.now()) : 0,
+      uptime: this.isRunning ? Date.now() - (this.startTime'||''||'Date.now()) : 0,
     };
   }
 
@@ -1433,23 +1433,23 @@ export class LoadBalancer extends TypedEventBase {
   ): LoadBalancingConfig {
     return {
       algorithm:
-        config?.algorithm'''' | '''''''' | ''''LoadBalancingAlgorithmType.WEIGHTED_ROUND_ROBIN,
-      healthCheckInterval: config?.healthCheckInterval'''' | '''''''' | ''''5000,
-      maxRetries: config?.maxRetries'''' | '''''''' | ''''3,
-      timeoutMs: config?.timeoutMs'''' | '''''''' | ''''30000,
-      circuitBreakerConfig: config?.circuitBreakerConfig'''' | '''''''' | ''''{
+        config?.algorithm'||''||LoadBalancingAlgorithmType.WEIGHTED_ROUND_ROBIN,
+      healthCheckInterval: config?.healthCheckInterval||''||5000,
+      maxRetries: config?.maxRetries||''||3,
+      timeoutMs: config?.timeoutMs||''||30000,
+      circuitBreakerConfig: config?.circuitBreakerConfig||''||{
         failureThreshold: 5,
         recoveryTimeout: 60000,
         halfOpenMaxCalls: 3,
         monitoringPeriod: 10000,
       },
-      stickySessionConfig: config?.stickySessionConfig'''' | '''''''' | ''''{
+      stickySessionConfig: config?.stickySessionConfig||''||'{
         enabled: false,
         sessionTimeout: 300000,
         affinityStrength: 0.8,
         fallbackStrategy:'redistribute',
       },
-      autoScalingConfig: config?.autoScalingConfig'''' | '''''''' | ''''{
+      autoScalingConfig: config?.autoScalingConfig'||''||{
         enabled: true,
         minAgents: 2,
         maxAgents: 20,
@@ -1457,7 +1457,7 @@ export class LoadBalancer extends TypedEventBase {
         scaleDownThreshold: 0.3,
         cooldownPeriod: 300000,
       },
-      optimizationConfig: config?.optimizationConfig'''' | '''''''' | ''''{
+      optimizationConfig: config?.optimizationConfig||''||{
         connectionPooling: true,
         requestBatching: true,
         cacheAwareRouting: true,
@@ -1509,7 +1509,7 @@ export class LoadBalancer extends TypedEventBase {
       networkUsage: baseEstimation.network,
       activeTasks: 1,
       queueLength: 0,
-      responseTime: task.estimatedDuration'''' | '''''''' | ''''stats.mean([100, 200, 300]), // Use stats for default
+      responseTime: task.estimatedDuration||''||stats.mean([100, 200, 300]), // Use stats for default
       errorRate: 0,
       throughput: 1,
       loadAverage: 0,
@@ -1548,7 +1548,7 @@ export class LoadBalancer extends TypedEventBase {
     }
   }
 
-  private getLatestMetrics(agentId: string): LoadMetrics'''' | ''''null {
+  private getLatestMetrics(agentId: string): LoadMetrics||'null {
     const history = this.metricsHistory.get(agentId);
     return history && history.length > 0 ? history[history.length - 1] : null;
   }

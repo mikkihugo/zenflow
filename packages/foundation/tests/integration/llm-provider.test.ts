@@ -362,7 +362,7 @@ describe('LLM Provider - Integration Tests (Real API)', () => {
         const analysisResponse = await llmProvider.executeAsAnalyst(
           '[1, 2, 3, 4, 5]',
           'statistical summary');
-        expect(analysisResponse.toLowerCase()).toMatch(/(mean'' | ''average'' | ''sum)/);
+        expect(analysisResponse.toLowerCase()).toMatch(/(mean|average|sum)/);
       },
       120000
     ); // 120 second timeout for complex tasks

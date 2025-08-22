@@ -127,7 +127,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     };
   }
 
-  getAgentLearningState(agentId: AgentId): AgentLearningState'' | ''null {
+  getAgentLearningState(agentId: AgentId): AgentLearningState|null {
     // Implement agent-specific learning state retrieval
     logger.debug('Retrieving agent learning state', {
       agentId: agentId.id,
@@ -188,9 +188,9 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
       logger.debug('Performance metadata analyzed', {
         agentId: agentId.id,
         metadataKeys: Object.keys(metadata),
-        duration: metadata.duration'' | '''' | '''unknown',
-        taskType: metadata.taskType'' | '''' | '''generic',
-        complexity: metadata.complexity'' | '''' | '''normal',
+        duration: metadata.duration||'unknown',
+        taskType: metadata.taskType||'generic',
+        complexity: metadata.complexity||'normal',
       });
 
       // Use metadata for predictive intelligence
@@ -211,7 +211,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     }
   }
 
-  getAgentHealth(agentId: AgentId): AgentHealth'' | ''null {
+  getAgentHealth(agentId: AgentId): AgentHealth|null {
     // Implement comprehensive agent health assessment
     logger.debug('Assessing agent health status', {
       agentId: agentId.id,
@@ -236,7 +236,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     );
 
     // Determine status based on health score
-    const status: 'healthy | warning' | 'critical''' | '''offline' =
+    const status: 'healthy|warning|critical|offline' =
       overallHealth >= 0.85
         ? 'healthy'
         : overallHealth >= 0.7
@@ -284,7 +284,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     horizon?: ForecastHorizon
   ): Promise<PerformanceOptimizationForecast> {
     // Convert horizon string to days for analysis
-    const horizonDays = this.convertHorizonToDays(horizon'' | '''' | '''7d');
+    const horizonDays = this.convertHorizonToDays(horizon||'7d');
 
     // Adjust prediction confidence based on horizon
     let predictedPerformance = 0.9;

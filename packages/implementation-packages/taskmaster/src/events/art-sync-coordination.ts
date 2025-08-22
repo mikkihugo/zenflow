@@ -116,7 +116,7 @@ export interface ARTTeam {
   capacity: number;
 
   // Status indicators
-  healthStatus: 'green | yellow' | 'red';
+  healthStatus: 'green|yellow|red';
   blockers: string[];
   dependencies: string[]; // Dependent on other teams
   providesTo: string[]; // Provides dependencies to other teams
@@ -167,9 +167,9 @@ export interface TeamProgressReport {
     qualityMetrics: {
       defectRate: number;
       testCoverage: number;
-      technicalDebt: 'low | medium' | 'high';
+      technicalDebt: 'low|medium|high';
     };
-    deploymentStatus: 'ready | blocked' | 'in_progress';
+    deploymentStatus: 'ready|blocked|in_progress';
   };
 }
 
@@ -184,7 +184,7 @@ export interface CrossTeamDependency {
   // Dependency relationship
   providerTeam: string;
   consumerTeam: string;
-  dependencyType: 'feature | api' | 'data' | 'infrastructure' | 'knowledge';
+  dependencyType: 'feature|api|data|infrastructure|knowledge';
 
   // Timeline and commitment
   requiredBy: Date;
@@ -192,9 +192,9 @@ export interface CrossTeamDependency {
   actualDelivery?: Date;
 
   // Status and health
-  status:'' | '''planned | in_progress' | 'at_risk''' | '''blocked | delivered' | 'cancelled';
-  healthStatus: 'green | yellow' | 'red';
-  riskLevel: 'low | medium' | 'high''' | '''critical';
+  status:|'planned|in_progress|at_risk|blocked|delivered|cancelled';
+  healthStatus: 'green|yellow|red';
+  riskLevel: 'low|medium|high|critical';
 
   // Resolution tracking
   mitigationPlan?: string;
@@ -204,7 +204,7 @@ export interface CrossTeamDependency {
   // Approval workflow integration
   requiresApproval: boolean;
   approvalGateId?: ApprovalGateId;
-  approvalStatus?: 'pending | approved' | 'rejected';
+  approvalStatus?: 'pending|approved|rejected';
 }
 
 /**
@@ -216,9 +216,9 @@ export interface Impediment {
   description: string;
 
   // Categorization
-  type: 'technical | resource' | 'process' | 'external' | 'organizational';
-  severity: 'low | medium' | 'high''' | '''critical';
-  scope: 'team | art' | 'portfolio''' | '''enterprise';
+  type: 'technical|resource|process|external|organizational';
+  severity: 'low|medium|high|critical';
+  scope: 'team|art|portfolio|enterprise';
 
   // Impact assessment
   impact: {
@@ -236,7 +236,7 @@ export interface Impediment {
   actualResolution?: Date;
 
   // Escalation workflow
-  escalationLevel: 'team | art' | 'portfolio';
+  escalationLevel: 'team|art|portfolio';
   requiresApproval: boolean;
   approvalGateId?: ApprovalGateId;
   resolutionPlan?: string;
@@ -251,12 +251,12 @@ export interface ARTRiskItem {
   description: string;
 
   // Risk assessment
-  probability: 'low | medium' | 'high';
-  impact: 'low | medium' | 'high''' | '''critical';
+  probability: 'low|medium|high';
+  impact: 'low|medium|high|critical';
   riskScore: number; // calculated from probability x impact
 
   // Context
-  category:'' | '''technical | schedule' | 'resource''' | '''dependency | external' | 'quality';
+  category:|'technical|schedule|resource|dependency|external|quality';
   affectedAreas: string[];
   triggers: string[];
 
@@ -280,7 +280,7 @@ export interface ScopeChangeRequest {
   description: string;
 
   // Change details
-  changeType: 'addition | removal' | 'modification''' | '''deferral';
+  changeType: 'addition|removal|modification|deferral';
   affectedObjectives: string[];
   businessJustification: string;
 
@@ -301,7 +301,7 @@ export interface ScopeChangeRequest {
   approvalGateId?: ApprovalGateId;
 
   // Decision tracking
-  decision?: 'approved | rejected' | 'deferred';
+  decision?: 'approved|rejected|deferred';
   decisionRationale?: string;
   decisionDate?: Date;
 }
@@ -351,7 +351,7 @@ export interface ARTSyncOutcomes {
     description: string;
     assignedTo: string;
     dueDate: Date;
-    priority: 'low | medium' | 'high''' | '''critical';
+    priority: 'low|medium|high|critical';
     requiresApproval: boolean;
     approvalGateId?: ApprovalGateId;
   }>;
@@ -369,10 +369,10 @@ export interface ARTSyncOutcomes {
 
   // Health assessment
   artHealth: {
-    overallStatus: 'green | yellow' | 'red';
+    overallStatus: 'green|yellow|red';
     piObjectiveHealth: number; // percentage on track
     dependencyHealth: number; // percentage resolved/on track
-    riskLevel: 'low | medium' | 'high';
+    riskLevel: 'low|medium|high';
     recommendedActions: string[];
   };
 }
@@ -662,7 +662,7 @@ export class ARTSyncCoordination {
     progressReports: TeamProgressReport[]
   ): Promise<{
     artHealthAssessment: {
-      overallHealth: 'green | yellow' | 'red';
+      overallHealth: 'green|yellow|red';
       piObjectiveStatus: number; // percentage on track
       teamHealthSummary: Array<{
         teamId: string;
@@ -671,7 +671,7 @@ export class ARTSyncCoordination {
       }>;
     };
     recommendedAdjustments: Array<{
-      type: 'scope | resource' | 'timeline';
+      type: 'scope|resource|timeline';
       description: string;
       affectedTeams: string[];
       requiresApproval: boolean;
@@ -770,16 +770,16 @@ export class ARTSyncCoordination {
       name: string;
       piNumber: number;
       currentIteration: number;
-      overallHealth: 'green | yellow' | 'red';
+      overallHealth: 'green|yellow|red';
       piObjectiveProgress: number;
     };
     teamStatus: Array<{
       teamId: string;
       teamName: string;
-      health: 'green | yellow' | 'red';
+      health: 'green|yellow|red';
       currentBlockers: number;
       dependenciesStatus: string;
-      progressTrend: 'up | stable' | 'down';
+      progressTrend: 'up|stable|down';
     }>;
     dependencyHealth: {
       totalDependencies: number;
@@ -934,7 +934,7 @@ export class ARTSyncCoordination {
 
     // Create gates for high-priority dependencies
     const criticalDependencies = config.inputs.identifiedDependencies.filter(
-      (d) => d.riskLevel === 'critical''' | '''' | ''d.riskLevel ==='high'
+      (d) => d.riskLevel === 'critical'||d.riskLevel ==='high'
     );
 
     for (const dependency of criticalDependencies) {
@@ -948,7 +948,7 @@ export class ARTSyncCoordination {
             requiresEscalation: false,
             resolutionPlan: 'Requires cross-team coordination approval',
             mitigationPlan:
-              dependency.mitigationPlan'' | '''' | '''No mitigation plan provided',
+              dependency.mitigationPlan||'No mitigation plan provided',
             escalationLevel: 'art',
           }
         );
@@ -963,14 +963,14 @@ export class ARTSyncCoordination {
 
     // Create gates for critical impediments
     const criticalImpediments = config.inputs.escalatedImpediments.filter(
-      (i) => i.severity === 'critical''' | '''' | ''i.severity ==='high');
+      (i) => i.severity === 'critical'||i.severity ==='high');
 
     for (const impediment of criticalImpediments) {
       if (impediment.requiresApproval) {
         const gateId = await this.createImpedimentEscalationGate(impediment, {
           canResolveAtARTLevel: false,
           targetLevel: impediment.escalationLevel,
-          resolutionPlan: impediment.resolutionPlan'' | '''' | '''Escalation required',
+          resolutionPlan: impediment.resolutionPlan||'Escalation required',
           resourcesNeeded: [],
         });
 
@@ -1169,7 +1169,7 @@ export class ARTSyncCoordination {
     const canResolveDirectly =
       dependency.riskLevel === 'low' && dependency.status !== 'blocked';
     const requiresApproval =
-      dependency.riskLevel === 'high''' | '''' | ''dependency.riskLevel ==='critical';
+      dependency.riskLevel === 'high'||dependency.riskLevel ==='critical';
     const requiresEscalation =
       dependency.status === 'blocked' && dependency.riskLevel === 'critical';
 
@@ -1178,9 +1178,9 @@ export class ARTSyncCoordination {
       requiresApproval,
       requiresEscalation,
       resolutionPlan:
-        dependency.mitigationPlan'' | '''' | ''`Direct coordination between ${dependency.providerTeam} and ${dependency.consumerTeam}`,
+        dependency.mitigationPlan||`Direct coordination between ${dependency.providerTeam} and ${dependency.consumerTeam}`,
       mitigationPlan:
-        dependency.contingencyPlan'' | '''' | '''Alternative solution if dependency cannot be delivered on time',
+        dependency.contingencyPlan||'Alternative solution if dependency cannot be delivered on time',
       escalationLevel: requiresEscalation ? 'portfolio' : 'art',
     };
   }
@@ -1195,14 +1195,14 @@ export class ARTSyncCoordination {
     resourcesNeeded: string[];
   }> {
     const canResolveAtARTLevel =
-      impediment.scope === 'team''' | '''' | ''impediment.scope ==='art';
+      impediment.scope === 'team'||impediment.scope ==='art';
     const targetLevel = impediment.escalationLevel;
 
     return {
       canResolveAtARTLevel,
       targetLevel,
       resolutionPlan:
-        impediment.resolutionPlan'' | '''' | ''`Escalate ${impediment.type} impediment to ${targetLevel} level`,
+        impediment.resolutionPlan||`Escalate ${impediment.type} impediment to ${targetLevel} level`,
       resourcesNeeded: [], // Would analyze resource requirements
     };
   }

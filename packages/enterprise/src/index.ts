@@ -50,7 +50,6 @@ registerFacade(
     '@claude-zen/kanban',
     '@claude-zen/multi-level-orchestration',
     '@claude-zen/agent-manager',
-    '@claude-zen/coordination-core',
     '@claude-zen/enterprise-coordination',
     '@claude-zen/document-processing',
     '@claude-zen/documentation',
@@ -66,7 +65,6 @@ registerFacade(
     'Kanban workflow management and task coordination',
     'Multi-level system orchestration',
     'Agent lifecycle and coordination management',
-    'Core coordination primitives and patterns',
     'Enterprise coordination implementation',
     'Document workflow and processing systems',
     'Documentation management and linking',
@@ -88,7 +86,6 @@ export * from './knowledge';
 export * from './kanban';
 export * from './multi-level-orchestration';
 export * from './agent-manager';
-export * from './coordination-core';
 export * from './document-processing';
 export * from './documentation';
 export * from './exporters';
@@ -148,7 +145,6 @@ export const enterpriseSystem = {
   agui: () => import('./agui'),
   orchestration: () => import('./multi-level-orchestration'),
   agents: () => import('./agent-manager'),
-  coordination: () => import('./coordination-core'),
 
   // Document processing modules
   documentProcessing: () => import('./document-processing'),

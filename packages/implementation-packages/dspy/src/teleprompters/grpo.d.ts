@@ -19,10 +19,10 @@ import { Example } from '../primitives/example';
  * GRPO Configuration exactly matching Stanford DSPy API
  */
 export interface GRPOConfig {
-  metric?: MetricFunction'' | ''null;
+  metric?: MetricFunction|null;
   multitask?: boolean;
-  train_kwargs?:'' | ''Record<string, any>'' | ''Map<LMInterface, Record<string, any>>'' | ''null;
-  adapter?: Adapter'' | ''Map<LMInterface, Adapter>'' | ''null;
+  train_kwargs?:|Record<string, any>|Map<LMInterface, Record<string, any>>|null;
+  adapter?: Adapter|Map<LMInterface, Adapter>|null;
   exclude_demos?: boolean;
   num_threads?: number;
   num_train_steps?: number;
@@ -34,8 +34,8 @@ export interface GRPOConfig {
   report_train_scores?: boolean;
   failure_score?: number;
   format_failure_score?: number;
-  variably_invoked_predictor_grouping_mode?:'truncate | fill' | 'ragged';
-  variably_invoked_predictor_fill_strategy?: 'randint''' | '''max' | null;
+  variably_invoked_predictor_grouping_mode?:'truncate|fill|ragged';
+  variably_invoked_predictor_fill_strategy?: 'randint|max' || null;
 }
 /**
  * GRPO (Gradient-based Reward Policy Optimization) Teleprompter

@@ -212,10 +212,10 @@ export class ClaudeSDKIntegration {
     const results = new Map<string, ClaudeInsights>();
 
     // Use the first file's context as representative
-    const representativeContext = files[0]?.context'' | '''' | ''{
+    const representativeContext = files[0]?.context||{
       language:'typescript',
-      filePath: '',
-      projectRoot: '',
+      filePath: ',
+      projectRoot: ',
       mode: 'balanced',
       preferences: {
         enableAIRules: true,
@@ -250,7 +250,7 @@ export class ClaudeSDKIntegration {
       // Convert batch response to individual insights
       for (const file of files) {
         const fileInsights =
-          batchInsights.get(file.filePath)'' | '''' | ''this.getFallbackInsights(file.patterns);
+          batchInsights.get(file.filePath)||this.getFallbackInsights(file.patterns);
         results.set(file.filePath, fileInsights);
       }
     } catch (error) {
@@ -441,8 +441,8 @@ Return JSON with file-specific insights:
       "file": "relative/path.ts",
       "issues": [
         {
-          "type": "complexity'' | ''type-safety'' | ''performance'' | ''security'' | ''maintainability'' | ''style",
-          "severity": "critical'' | ''high'' | ''medium'' | ''low",
+          "type": "complexity|type-safety|performance|security|maintainability|style",
+          "severity": "critical|high|medium|low",
           "line": number,
           "message": "Clear problem description", 
           "fix": "Specific fix instruction"
@@ -481,7 +481,7 @@ Return JSON with file-specific insights:
 
     return `🔍 EXPERT ${context.language.toUpperCase()} CODE ANALYSIS
 
-📁 File: ${filePath}${context.framework ? `'' | ''Framework: ${context.framework}` :''}${eslintContext}
+📁 File: ${filePath}${context.framework ? `|Framework: ${context.framework}` :'}${eslintContext}
 
 \`\`\`${context.language}
 ${content}
@@ -494,8 +494,8 @@ Return concise JSON with ACTIONABLE insights:
 {
   "issues": [
     {
-      "type": "complexity'' | ''type-safety'' | ''performance'' | ''security'' | ''maintainability'' | ''style",
-      "severity": "critical'' | ''high'' | ''medium'' | ''low", 
+      "type": "complexity|type-safety|performance|security|maintainability|style",
+      "severity": "critical|high|medium|'low", 
       "line": number,
       "message": "Clear problem description",
       "fix": "Specific fix instruction",
@@ -541,7 +541,7 @@ Return concise JSON with ACTIONABLE insights:
       balanced: 'Provide comprehensive analysis across all quality dimensions',
     };
 
-    return `You are a WORLD-CLASS ${context.language}${context.framework ? ` ${context.framework}` : ''} code reviewer with 15+ years experience.
+    return `You are a WORLD-CLASS ${context.language}${context.framework ? ` ${context.framework}` : '} code reviewer with 15+ years experience.
 
 🏆 GOLDEN STANDARDS:
 • Score 1-100 (90+ = production-ready, 70+ = good, 50+ = needs work, <50 = major issues)
@@ -550,7 +550,7 @@ Return concise JSON with ACTIONABLE insights:
 • Balance criticism with recognition of good practices
 • Focus on maintainability, readability, and real-world performance
 
-⚡ MODE: ${context.mode.toUpperCase()} - ${modeInstructions[context.mode as keyof typeof modeInstructions]'' | '''' | '''Standard analysis'}
+⚡ MODE: ${context.mode.toUpperCase()} - ${modeInstructions[context.mode as keyof typeof modeInstructions]|||Standard analysis'}
 
 🎯 OUTPUT: Valid JSON only. No markdown, no explanations outside JSON. Be concise but thorough.`;
   }
@@ -565,7 +565,7 @@ Return concise JSON with ACTIONABLE insights:
     try {
       // Get the last message content which should contain the analysis
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content'' | '''' | '''';
+      const content = lastMessage?.content||'';
 
       // Extract JSON from the response
       const jsonMatch = content.match(/{[\S\s]*}/);
@@ -577,11 +577,11 @@ Return concise JSON with ACTIONABLE insights:
       const analysisData = JSON.parse(jsonMatch[0]);
 
       // Transform new simplified format to existing ClaudeInsights structure
-      const issues = analysisData.issues'' | '''' | ''[];
-      const score = analysisData.score'' | '''' | ''60;
-      const improvements = analysisData.improvements'' | '''' | ''[];
-      const goodPractices = analysisData.patterns?.good'' | '''' | ''[];
-      const antipatterns = analysisData.patterns?.antipatterns'' | '''' | ''[];
+      const issues = analysisData.issues||[];
+      const score = analysisData.score||60;
+      const improvements = analysisData.improvements||[];
+      const goodPractices = analysisData.patterns?.good||[];
+      const antipatterns = analysisData.patterns?.antipatterns||[];
 
       // Convert issues to structured format
       const complexity_issues = issues
@@ -591,7 +591,7 @@ Return concise JSON with ACTIONABLE insights:
           complexityScore: Math.max(10, 20 - score / 5), // Derive complexity from score
           complexityType: 'cognitive',
           suggestions: [i.fix],
-          location: { line: i.line'' | '''' | ''1, column: 1 },
+          location: { line: i.line||1, column: 1 },
         }));
 
       const type_safety_concerns = issues
@@ -601,7 +601,7 @@ Return concise JSON with ACTIONABLE insights:
           description: i.message,
           suggestedFix: i.fix,
           severity: i.severity,
-          location: { line: i.line'' | '''' | ''1, column: 1 },
+          location: { line: i.line||1, column: 1 },
         }));
 
       // Validate and structure the response
@@ -610,7 +610,7 @@ Return concise JSON with ACTIONABLE insights:
         type_safety_concerns,
         architectural_suggestions: improvements.filter(
           (imp: string) =>
-            imp.toLowerCase().includes('architect')'' | '''' | ''imp.toLowerCase().includes('design')
+            imp.toLowerCase().includes('architect')||imp.toLowerCase().includes('design')
         ),
         performance_optimizations: issues
           .filter((i: any) => i.type === 'performance')
@@ -684,7 +684,7 @@ Return concise JSON with ACTIONABLE insights:
       .map((issue) => ({
         functionName: issue.functionName,
         complexityScore: issue.complexityScore,
-        complexityType: issue.complexityType'' | '''' | '''cognitive',
+        complexityType: issue.complexityType||'cognitive',
         suggestions: Array.isArray(issue.suggestions) ? issue.suggestions : [],
         location: issue.location,
       }));
@@ -701,8 +701,8 @@ Return concise JSON with ACTIONABLE insights:
       .map((concern) => ({
         type: concern.type,
         description: concern.description,
-        suggestedFix: concern.suggestedFix'' | '''' | '''',
-        severity: concern.severity'' | '''' | '''warning',
+        suggestedFix: concern.suggestedFix||',
+        severity: concern.severity|||warning',
         location: concern.location,
       }));
   }
@@ -718,8 +718,8 @@ Return concise JSON with ACTIONABLE insights:
       .map((opt) => ({
         type: opt.type,
         description: opt.description,
-        impact: opt.impact'' | '''' | '''medium',
-        difficulty: opt.difficulty'' | '''' | '''medium',
+        impact: opt.impact||'medium',
+        difficulty: opt.difficulty||'medium',
         implementation: opt.implementation,
       }));
   }
@@ -742,10 +742,10 @@ Return concise JSON with ACTIONABLE insights:
     };
 
     return {
-      overallScore: Math.min(Math.max(assessment?.overallScore'' | '''' | ''50, 0), 100),
+      overallScore: Math.min(Math.max(assessment?.overallScore||50, 0), 100),
       categoryScores: {
         ...defaultScores,
-        ...(assessment?.categoryScores'' | '''' | ''{}),
+        ...(assessment?.categoryScores||{}),
       },
       strengths: Array.isArray(assessment?.strengths)
         ? assessment.strengths
@@ -753,7 +753,7 @@ Return concise JSON with ACTIONABLE insights:
       improvements: Array.isArray(assessment?.improvements)
         ? assessment.improvements
         : [],
-      technicalDebt: assessment?.technicalDebt'' | '''' | ''[],
+      technicalDebt: assessment?.technicalDebt||[],
     };
   }
 
@@ -767,7 +767,7 @@ Return concise JSON with ACTIONABLE insights:
       .filter((p) => p.type === 'function_complexity')
       .map((pattern) => ({
         functionName: 'unknown',
-        complexityScore: (pattern.data?.complexity as number)'' | '''' | ''10,
+        complexityScore: (pattern.data?.complexity as number)||10,
         complexityType:'cognitive' as const,
         suggestions: [
           'Consider breaking down complex logic',
@@ -837,7 +837,7 @@ Return concise JSON with ACTIONABLE insights:
           `🔴 ERROR ${index + 1}: ${pattern.type} at Line ${pattern.location.line}
    Severity: ${pattern.severity}
    Rule: ${pattern.pattern}
-   ESLint Message: ${pattern.description'' | '''' | '''N/A'}`
+   ESLint Message: ${pattern.description||'N/A'}`
       )
       .join('\n\n');
 
@@ -940,7 +940,7 @@ Return JSON:
 • Use modern ${context.language} best practices and conventions
 • Provide clear explanations for each fix made
 • Maintain code readability and maintainability
-• Follow ${context.framework'' | '''' | '''standard'} patterns when applicable
+• Follow ${context.framework||'standard'} patterns when applicable
 
 🎯 OUTPUT: Valid JSON only with fixed code and detailed fix explanations.`;
   }
@@ -949,7 +949,7 @@ Return JSON:
    * Build system prompt for batch file fixing
    */
   private buildBatchFixerSystemPrompt(context?: LinterContext): string {
-    const lang = context?.language'' | '''' | '''TypeScript';
+    const lang = context?.language||'TypeScript';
     return `You are an EXPERT ${lang} CODE FIXER analyzing and fixing MULTIPLE FILES.
 
 🔧 BATCH FIXING STANDARDS:
@@ -971,7 +971,7 @@ Return JSON:
   ): { fixedContent: string; fixes: string[] } {
     try {
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content'' | '''' | '''';
+      const content = lastMessage?.content||'';
 
       const jsonMatch = content.match(/{[\S\s]*}/);
       if (!jsonMatch) {
@@ -982,7 +982,7 @@ Return JSON:
       const fixData = JSON.parse(jsonMatch[0]);
 
       return {
-        fixedContent: fixData.fixedCode'' | '''' | ''originalContent,
+        fixedContent: fixData.fixedCode||originalContent,
         fixes: Array.isArray(fixData.fixes) ? fixData.fixes : [],
       };
     } catch (error) {
@@ -1005,7 +1005,7 @@ Return JSON:
 
     try {
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content'' | '''' | '''';
+      const content = lastMessage?.content||'';
 
       const jsonMatch = content.match(/{[\S\s]*}/);
       if (!jsonMatch) {
@@ -1018,12 +1018,12 @@ Return JSON:
       }
 
       const batchFixData = JSON.parse(jsonMatch[0]);
-      const fileResults = batchFixData.files'' | '''' | ''[];
+      const fileResults = batchFixData.files||[];
 
       // Process each file result
       for (const fileResult of fileResults) {
         const filePath = fileResult.file;
-        const fixedContent = fileResult.fixedCode'' | '''' | '''';
+        const fixedContent = fileResult.fixedCode||'';
         const fixes = Array.isArray(fileResult.fixes) ? fileResult.fixes : [];
 
         results.set(filePath, { fixedContent, fixes });
@@ -1057,7 +1057,7 @@ Return JSON:
 
     try {
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content'' | '''' | '''';
+      const content = lastMessage?.content||'';
 
       const jsonMatch = content.match(/{[\S\s]*}/);
       if (!jsonMatch) {
@@ -1070,14 +1070,14 @@ Return JSON:
       }
 
       const batchData = JSON.parse(jsonMatch[0]);
-      const fileResults = batchData.files'' | '''' | ''[];
+      const fileResults = batchData.files||[];
 
       // Process each file result (similar to single file, but for multiple files)
       for (const fileResult of fileResults) {
         const filePath = fileResult.file;
-        const issues = fileResult.issues'' | '''' | ''[];
-        const score = fileResult.score'' | '''' | ''60;
-        const improvements = fileResult.improvements'' | '''' | ''[];
+        const issues = fileResult.issues||[];
+        const score = fileResult.score||60;
+        const improvements = fileResult.improvements||[];
 
         // Convert to ClaudeInsights format (same as single file parsing)
         const insights: ClaudeInsights = {
@@ -1088,7 +1088,7 @@ Return JSON:
               complexityScore: Math.max(10, 20 - score / 5),
               complexityType: 'cognitive',
               suggestions: [i.fix],
-              location: { line: i.line'' | '''' | ''1, column: 1 },
+              location: { line: i.line||1, column: 1 },
             })),
           type_safety_concerns: issues
             .filter((i: any) => i.type ==='type-safety')
@@ -1097,11 +1097,11 @@ Return JSON:
               description: i.message,
               suggestedFix: i.fix,
               severity: i.severity,
-              location: { line: i.line'' | '''' | ''1, column: 1 },
+              location: { line: i.line||1, column: 1 },
             })),
           architectural_suggestions: improvements.filter(
             (imp: string) =>
-              imp.toLowerCase().includes('architect')'' | '''' | ''imp.toLowerCase().includes('design')
+              imp.toLowerCase().includes('architect')||imp.toLowerCase().includes('design')
           ),
           performance_optimizations: issues
             .filter((i: any) => i.type === 'performance')
@@ -1127,7 +1127,7 @@ Return JSON:
               accessibility: score - 10,
               i18n: score - 5,
             },
-            strengths: batchData.overall?.patterns?.good'' | '''' | ''[],
+            strengths: batchData.overall?.patterns?.good||[],
             improvements: improvements,
             technicalDebt: [],
           },

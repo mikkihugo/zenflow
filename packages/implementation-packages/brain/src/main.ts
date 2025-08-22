@@ -220,7 +220,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low | medium' | 'high';
+    priority?: 'low|medium|high';
     timeLimit?: number;
     qualityRequirement?: number;
   }): Promise<{
@@ -420,7 +420,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
    */
   async predict(
     input: number[],
-    type: 'prediction''' | '''classification' = 'prediction'
+    type: 'prediction|classification'' = 'prediction'
   ): Promise<number[]> {
     const task: NeuralTask = {
       id: `simple-${Date.now()}`,
@@ -466,7 +466,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     featureId?: string;
     solutionTrainId?: string;
     flowState?: string;
-    neuralTaskType: 'optimization | prediction' | 'analysis''' | '''learning';
+    neuralTaskType: 'optimization|prediction|analysis|learning';
     context?: Record<string, unknown>;
   }): Promise<{
     recommendation: string;
@@ -495,7 +495,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       if (this.safe6DevelopmentManager) {
         try {
           flowMetrics = await this.safe6DevelopmentManager.getFlowMetrics(
-            request.epicId'' | '''' | ''request.featureId
+            request.epicId||request.featureId
           );
         } catch (error) {
           this.logger.warn('Failed to get flow metrics from SAFe 6.0 Development Manager',
@@ -545,7 +545,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
         neuralResult,
         flowMetrics
       );
-      const confidence = (neuralResult as any).confidence'' | '''' | ''0.8;
+      const confidence = (neuralResult as any).confidence||0.8;
       const nextActions = this.generateSafeNextActions(neuralResult, request);
 
       // Update SAFe 6.0 Development Manager with neural insights
@@ -555,13 +555,13 @@ export class FoundationBrainCoordinator extends TypedEventBase {
           if (
             typeof this.safe6DevelopmentManager.updateWithNeuralInsights ==='function') {
             await this.safe6DevelopmentManager.updateWithNeuralInsights({
-              entityId: request.epicId'' | '''' | ''request.featureId,
+              entityId: request.epicId||request.featureId,
               insights: {
                 recommendation,
                 confidence,
                 neuralTaskId: neuralTask.id,
                 processingTime:
-                  (neuralResult as any).processingTime'' | '''' | ''Date.now() - startTime,
+                  (neuralResult as any).processingTime||Date.now() - startTime,
                 metadata: neuralResult.metadata,
               },
             });
@@ -612,7 +612,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     flowLoad: number;
     predictability: number;
     recommendations: string[];
-  }'' | ''null> {
+  }|null> {
     if (!this.safe6DevelopmentManager) {
       return null;
     }
@@ -716,7 +716,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     flowMetrics: any
   ): string {
     const baseRecommendation =
-      (neuralResult as any).recommendation'' | '''' | '''Proceed with current approach';
+      (neuralResult as any).recommendation||'Proceed with current approach';
 
     if (!flowMetrics) {
       return `Neural Analysis: ${baseRecommendation}`;
@@ -806,7 +806,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low | medium' | 'high';
+    priority?: 'low|medium|high';
     timeLimit?: number;
     qualityRequirement?: number;
   }) {
@@ -816,9 +816,9 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     return {
       complexity,
       token_count: Math.round(tokenCount),
-      priority: request.priority'' | '''' | '''medium',
-      time_limit: request.timeLimit'' | '''' | ''30000, // 30 seconds default
-      quality_requirement: request.qualityRequirement'' | '''' | ''0.8,
+      priority: request.priority||'medium',
+      time_limit: request.timeLimit||30000, // 30 seconds default
+      quality_requirement: request.qualityRequirement||0.8,
       context_size: request.context ? Object.keys(request.context).length : 0,
       task_type: this.inferTaskType(request.task),
       previous_performance: 0.75, // Default starting performance
@@ -833,9 +833,9 @@ export class FoundationBrainCoordinator extends TypedEventBase {
    */
   private mapToValidNeuralTaskType(
     requestType: string
-  ):'' | '''prediction | classification' | 'clustering''' | '''forecasting | optimization' | 'pattern_recognition'{
+  ):|'prediction|classification|clustering|forecasting|optimization|pattern_recognition'{
     const typeMap: Record<
-      string,'' | '''prediction | classification' | 'clustering''' | '''forecasting | optimization' | 'pattern_recognition'
+      string,|'prediction|classification|clustering|forecasting|optimization|pattern_recognition'
     > = {
       analysis: 'pattern_recognition',
       processing: 'classification',
@@ -848,7 +848,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       pattern_recognition: 'pattern_recognition',
     };
 
-    return typeMap[requestType]'' | '''' | '''pattern_recognition';
+    return typeMap[requestType]||'pattern_recognition';
   }
 
   private async getCurrentResourceState() {
@@ -895,7 +895,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low | medium' | 'high';
+    priority?: 'low|medium|high';
   }): number {
     let complexity = 0.5; // Base complexity
 
@@ -906,13 +906,13 @@ export class FoundationBrainCoordinator extends TypedEventBase {
 
     // Factor in task type indicators
     const taskLower = request.task.toLowerCase();
-    if (taskLower.includes('reasoning')'' | '''' | ''taskLower.includes('analysis'))
+    if (taskLower.includes('reasoning')||taskLower.includes('analysis'))
       complexity += 0.15;
-    if (taskLower.includes('creative')'' | '''' | ''taskLower.includes('generate'))
+    if (taskLower.includes('creative')||taskLower.includes('generate'))
       complexity += 0.1;
-    if (taskLower.includes('complex')'' | '''' | ''taskLower.includes('advanced'))
+    if (taskLower.includes('complex')||taskLower.includes('advanced'))
       complexity += 0.2;
-    if (taskLower.includes('simple')'' | '''' | ''taskLower.includes('basic'))
+    if (taskLower.includes('simple')||taskLower.includes('basic'))
       complexity -= 0.1;
 
     // Factor in context size
@@ -936,18 +936,18 @@ export class FoundationBrainCoordinator extends TypedEventBase {
   private inferTaskType(task: string): string {
     const taskLower = task.toLowerCase();
 
-    if (taskLower.includes('reason')'' | '''' | ''taskLower.includes('analysis'))
+    if (taskLower.includes('reason')||taskLower.includes('analysis'))
       return 'reasoning';
-    if (taskLower.includes('creative')'' | '''' | ''taskLower.includes('generate'))
+    if (taskLower.includes('creative')||taskLower.includes('generate'))
       return 'creative';
-    if (taskLower.includes('classify')'' | '''' | ''taskLower.includes('categorize'))
+    if (taskLower.includes('classify')||taskLower.includes('categorize'))
       return 'classification';
-    if (taskLower.includes('summarize')'' | '''' | ''taskLower.includes('summary'))
+    if (taskLower.includes('summarize')||taskLower.includes('summary'))
       return 'summarization';
     if (taskLower.includes('translate')) return 'translation';
-    if (taskLower.includes('code')'' | '''' | ''taskLower.includes('programming'))
+    if (taskLower.includes('code')||taskLower.includes('programming'))
       return 'coding';
-    if (taskLower.includes('math')'' | '''' | ''taskLower.includes('calculate'))
+    if (taskLower.includes('math')||taskLower.includes('calculate'))
       return 'mathematical';
 
     return 'general';
@@ -992,12 +992,12 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       const optimized = await dspyOptimization.fewShot(module, examples, 3);
 
       // Return optimized prompt with DSPy enhancement
-      return `[DSPy Optimized] ${prompt}\n\nContext: ${JSON.stringify(context'' | '''' | ''{})}`;
+      return `[DSPy Optimized] ${prompt}\n\nContext: ${JSON.stringify(context||{})}`;
     } catch (error) {
       this.logger.warn('DSPy optimization failed, using enhanced prompt', {
         error: String(error),
       });
-      return `[Enhanced] ${prompt}\n\nOptimization Context: ${JSON.stringify(context'' | '''' | ''{})}`;
+      return `[Enhanced] ${prompt}\n\nOptimization Context: ${JSON.stringify(context||{})}`;
     }
   }
 
@@ -1037,7 +1037,7 @@ export class FoundationBrainCoordinator extends TypedEventBase {
       const optimized = await dspyOptimization.bootstrap(module, examples, 2); // Fewer rounds
 
       // Return constrained optimization
-      return `[DSPy Constrained] ${prompt}\n\nEfficient Context: ${JSON.stringify(context'' | '''' | ''{})}`;
+      return `[DSPy Constrained] ${prompt}\n\nEfficient Context: ${JSON.stringify(context||{})}`;
     } catch (error) {
       this.logger.warn('Constrained DSPy optimization failed, using basic enhancement',
         { error: String(error) }
@@ -1104,13 +1104,13 @@ export class FoundationBrainCoordinator extends TypedEventBase {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low | medium' | 'high';
+    priority?: 'low|medium|high';
     timeLimit?: number;
     qualityRequirement?: number;
   }): string {
     // Create a hash-like key based on request properties
-    const contextStr = request.context ? JSON.stringify(request.context) : '';
-    const key = `${request.task}-${request.basePrompt.substring(0, 50)}-${request.priority'' | '''' | '''medium'}-${request.qualityRequirement'' | '''' | ''0.8}-${contextStr}`;
+    const contextStr = request.context ? JSON.stringify(request.context) : ';
+    const key = `${request.task}-${request.basePrompt.substring(0, 50)}-${request.priority|||medium'}-${request.qualityRequirement||0.8}-${contextStr}`;
     return Buffer.from(key).toString('base64').substring(0, 32);
   }
 
@@ -1301,7 +1301,7 @@ export function createNeuralNetwork(
   logger.debug('Creating neural network', config);
   return Promise.resolve({
     id: `network-${Date.now()}`,
-    config: config'' | '''' | ''{},
+    config: config||{},
   });
 }
 

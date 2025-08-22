@@ -48,7 +48,7 @@ export interface CustomerResearchConfig {
   readonly feedbackRetentionDays: number;
   readonly competitorAnalysisFrequency: number; // days
   readonly customerInterviewQuota: number; // per month
-  readonly marketResearchDepth: 'basic | comprehensive' | 'advanced';
+  readonly marketResearchDepth: 'basic|comprehensive|advanced';
 }
 
 /**
@@ -59,8 +59,8 @@ export interface CustomerFeedback {
   readonly customerId: string;
   readonly segmentId: string;
   readonly feedback: string;
-  readonly sentiment: 'positive | negative' | 'neutral';
-  readonly category:'' | '''feature | usability' | 'performance' | 'support' | 'pricing';
+  readonly sentiment: 'positive|negative|neutral';
+  readonly category:|'feature|usability|performance|support|pricing';
   readonly priority: CustomerNeedPriority;
   readonly source: string;
   readonly collectedAt: Date;
@@ -73,8 +73,8 @@ export interface CustomerFeedback {
 export interface MarketInsight {
   readonly id: string;
   readonly insight: string;
-  readonly category: 'trend | opportunity' | 'threat''' | '''competitive';
-  readonly impact: 'high | medium' | 'low';
+  readonly category: 'trend|opportunity|threat|competitive';
+  readonly impact: 'high|medium|low';
   readonly confidence: number; // 0-100%
   readonly sources: string[];
   readonly discoveredAt: Date;
@@ -115,7 +115,7 @@ export interface CompetitivePositioning {
   readonly strengthsVsCompetitors: string[];
   readonly weaknessesVsCompetitors: string[];
   readonly differentiationOpportunities: string[];
-  readonly competitiveThreat: 'low | medium' | 'high';
+  readonly competitiveThreat: 'low|medium|high';
 }
 
 /**
@@ -187,7 +187,7 @@ export class CustomerResearchService {
       );
       const avgSatisfaction = meanBy(needs, 'satisfactionLevel');
       const maxWillingness =
-        maxBy(needs, 'willingnessToPay')?.willingnessToPay'' | '''' | ''0;
+        maxBy(needs, 'willingnessToPay')?.willingnessToPay||0;
 
       // Calculate composite priority score
       const priorityScore =
@@ -385,7 +385,7 @@ export class CustomerResearchService {
       one_time: 10,
     };
 
-    return frequencyScores[frequency]'' | '''' | ''25;
+    return frequencyScores[frequency]||25;
   }
 
   /**
@@ -415,7 +415,7 @@ export class CustomerResearchService {
     strengths: string[];
     weaknesses: string[];
     opportunities: string[];
-    threatLevel: 'low | medium' | 'high';
+    threatLevel: 'low|medium|high';
   } {
     const topCompetitors = orderBy(competitors, 'marketShare', 'desc').slice(
       0,
@@ -445,7 +445,7 @@ export class CustomerResearchService {
       churnRisk: Math.random() * 30, // Mock churn risk
       valueScore: segment.size * 0.1 + Math.random() * 40,
       keyInsights: [
-        `Primary need: ${segment.needs[0]?.description'' | '''' | '''Unknown'}`,
+        `Primary need: ${segment.needs[0]?.description||'Unknown'}`,
       ],
     }));
   }

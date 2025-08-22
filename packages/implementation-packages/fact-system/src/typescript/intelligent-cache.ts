@@ -157,7 +157,7 @@ export class IntelligentCache {
   /**
    * Get cached data with intelligent cache logic
    */
-  async get(type: string, key: string): Promise<any'' | ''null> {
+  async get(type: string, key: string): Promise<any|null> {
     const cacheKey = `${type}:${key}`;
 
     try {
@@ -197,7 +197,7 @@ export class IntelligentCache {
    * Store data in cache with intelligent expiration
    */
   async set(type: string, key: string, data: any): Promise<void> {
-    const config = this.cacheConfigs.get(type)'' | '''' | ''this.getDefaultConfig();
+    const config = this.cacheConfigs.get(type)||this.getDefaultConfig();
     const cacheKey = `${type}:${key}`;
 
     // Adapt TTL based on data freshness and access patterns
@@ -267,7 +267,7 @@ export class IntelligentCache {
    * Detect if data shows signs of high volatility
    */
   private detectHighVolatility(data: any): boolean {
-    if (typeof data !=='object''' | '''' | ''!data) return false;
+    if (typeof data !=='object'||!data) return false;
 
     // Check for time-sensitive indicators
     const volatilityIndicators = ['trending',
@@ -291,7 +291,7 @@ export class IntelligentCache {
    * Detect if data shows signs of low volatility (stable)
    */
   private detectLowVolatility(data: any): boolean {
-    if (typeof data !== 'object''' | '''' | ''!data) return false;
+    if (typeof data !== 'object'||!data) return false;
 
     // Check for stability indicators
     const stabilityIndicators = ['archived',
@@ -311,7 +311,7 @@ export class IntelligentCache {
   /**
    * Get cache configuration by tier
    */
-  private getCacheConfigByTier(tier: CacheTier): CacheConfig'' | ''undefined {
+  private getCacheConfigByTier(tier: CacheTier): CacheConfig|undefined {
     for (const config of this.cacheConfigs.values()) {
       if (config.tier === tier) {
         return config;

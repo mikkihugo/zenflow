@@ -187,7 +187,7 @@ ${data.keywords.length > 0 ? data.keywords.map((k) => `\`${k}\``).join(', ') : '
 **Date**: ${new Date(data.publishedAt).toLocaleDateString()}
 
 ---
-*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}|Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -241,7 +241,7 @@ ${data.releases
     : ''}
 
 ---
-*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}|Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -297,7 +297,7 @@ ${
 - **Last Updated**: ${new Date(data.updatedAt).toLocaleDateString()}
 
 ---
-*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}|Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -328,7 +328,7 @@ ${data.mitigation || '*No mitigation advice available*'}
 ${data.references.map((ref) => `- [${ref}](${ref})`).join('\n')}
 
 ---
-*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}|Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -373,7 +373,7 @@ ${data.sdks.map((sdk) => `- ${sdk}`).join('\n')}`
     : ''}
 
 ---
-*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}|Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**

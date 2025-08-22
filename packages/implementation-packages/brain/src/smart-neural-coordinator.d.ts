@@ -18,7 +18,7 @@
  */
 export interface NeuralBackendConfig {
   /** Primary model strategy */
-  primaryModel: 'all-mpnet-base-v2''' | '''all-MiniLM-L6-v2''' | '''custom';
+  primaryModel: 'all-mpnet-base-v2|all-MiniLM-L6-v2'||custom';
   /** Enable smart fallback chain */
   enableFallbacks: boolean;
   /** Cache configuration */
@@ -57,15 +57,15 @@ export interface NeuralBackendConfig {
 export interface NeuralEmbeddingRequest {
   text: string;
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   cacheKey?: string;
 }
 export interface NeuralEmbeddingResult {
   success: boolean;
   embedding: number[];
   confidence: number;
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -75,8 +75,8 @@ export interface NeuralEmbeddingResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     confidence: number;
     qualityScore: number;
@@ -87,11 +87,11 @@ export interface NeuralEmbeddingResult {
  */
 export interface NeuralClassificationRequest {
   text: string;
-  taskType:'' | '''sentiment | intent' | 'category''' | '''toxicity | language' | 'custom';
+  taskType:|'sentiment|intent|category|toxicity|language|custom';
   categories?: string[];
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   confidenceThreshold?: number;
   cacheKey?: string;
 }
@@ -102,7 +102,7 @@ export interface NeuralClassificationResult {
     confidence: number;
     scores: Record<string, number>;
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -113,8 +113,8 @@ export interface NeuralClassificationResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     confidenceThreshold?: number;
     qualityScore: number;
@@ -125,14 +125,14 @@ export interface NeuralClassificationResult {
  */
 export interface NeuralGenerationRequest {
   prompt: string;
-  taskType:'' | '''completion | summarization' | 'translation''' | '''paraphrase | creative' | 'code''' | '''custom';
+  taskType:|'completion|summarization|translation|paraphrase|creative|code|custom'';
   maxLength?: number;
   temperature?: number;
   topP?: number;
   topK?: number;
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   cacheKey?: string;
   stopSequences?: string[];
 }
@@ -140,11 +140,11 @@ export interface NeuralGenerationResult {
   success: boolean;
   generated: {
     text: string;
-    finishReason: 'completed | length' | 'stop_sequence''' | '''error';
+    finishReason: 'completed|length|stop_sequence|error';
     tokensGenerated: number;
     alternatives?: string[];
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -155,8 +155,8 @@ export interface NeuralGenerationResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     parameters: {
       maxLength?: number;
@@ -171,12 +171,12 @@ export interface NeuralGenerationResult {
  * Phase 4: Vision Phase
  */
 export interface NeuralVisionRequest {
-  image: string'' | ''Buffer'' | ''ArrayBuffer;
-  taskType:'' | '''describe | ocr' | 'classify''' | '''detect_objects | analyze_scene' | 'custom';
+  image: string|Buffer|ArrayBuffer;
+  taskType:|'describe|ocr|classify|detect_objects|analyze_scene|custom';
   prompt?: string;
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   maxTokens?: number;
   cacheKey?: string;
 }
@@ -202,7 +202,7 @@ export interface NeuralVisionResult {
     };
     analysis?: Record<string, any>;
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -213,8 +213,8 @@ export interface NeuralVisionResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     imageInfo?: {
       format: string;
@@ -231,7 +231,7 @@ export interface NeuralVisionResult {
  * Phase 5: Other Neural Tasks
  */
 export interface NeuralTaskRequest {
-  taskType:'' | '''question_answering | similarity' | 'clustering''' | '''anomaly_detection | feature_extraction' | 'custom';
+  taskType:|'question_answering|similarity|clustering|anomaly_detection|feature_extraction|custom';
   input: {
     text?: string;
     texts?: string[];
@@ -244,12 +244,12 @@ export interface NeuralTaskRequest {
     threshold?: number;
     topK?: number;
     algorithm?: string;
-    metric?: 'cosine | euclidean' | 'manhattan''' | '''jaccard';
+    metric?: 'cosine|euclidean|manhattan|jaccard';
     clusterCount?: number;
     [key: string]: any;
   };
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   cacheKey?: string;
 }
 export interface NeuralTaskResult {
@@ -286,7 +286,7 @@ export interface NeuralTaskResult {
     };
     custom?: Record<string, any>;
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -297,8 +297,8 @@ export interface NeuralTaskResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     parameters?: Record<string, any>;
     qualityScore: number;
   };
@@ -316,7 +316,7 @@ export interface ModelStatus {
   name: string;
   loaded: boolean;
   loading: boolean;
-  error: string'' | ''null;
+  error: string|null;
   loadingTime?: number;
   errorMessage?: string;
   lastUsed?: number;
@@ -409,7 +409,7 @@ export declare class SmartNeuralCoordinator {
     };
     models: {
       primary: {
-        status: 'ready | loading' | 'error''' | '''not_loaded';
+        status: 'ready|loading|error|not_loaded';
         model?: string;
         lastUsed?: number;
       };

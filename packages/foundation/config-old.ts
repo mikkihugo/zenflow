@@ -212,11 +212,11 @@ const configSchema = {
  * TypeScript interfaces for configuration
  */
 export interface LoggingConfig {
-  level: 'error''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''warn''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''info''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''debug''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''trace';
+  level: 'error|warn|info|debug|trace';
   console: boolean;
   file: boolean;
   timestamp: boolean;
-  format: 'text''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''json';
+  format: 'text|json';
 }
 
 export interface MetricsConfig {
@@ -225,7 +225,7 @@ export interface MetricsConfig {
 }
 
 export interface StorageConfig {
-  backend: 'memory''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''sqlite''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''lancedb''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''kuzu';
+  backend: 'memory|sqlite|lancedb|kuzu';
   dataDir: string;
   memoryDir: string;
   dbPath: string;
@@ -411,7 +411,7 @@ function ensureRepoGitignore(): void {
       const lines = gitignoreContent.split('\n');
       const hasZenIgnore = lines.some(
         (line) =>
-          line.trim() === zenIgnoreEntry'''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' | ''''''''''''''''''''''''''''''''''''''''''''''''''line.trim() ==='.claude-zen''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' | ''''''''''''''''''''''''''''''''''''''''''''''''''line.trim() ==='.claude-zen/'
+          line.trim() === zenIgnoreEntry || line.trim() === '.claude-zen' || line.trim() === '.claude-zen/'
       );
 
       if (!hasZenIgnore) {
@@ -449,7 +449,7 @@ function ensureRepoGitignore(): void {
 const config = convict(configSchema);
 
 // Load configuration files from .claude-zen directory (user home or per-repo)
-const env = process.env['NODE_ENV']'''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''development';
+const env = process.env['NODE_ENV'] || 'development';
 
 // Check environment variable or default to user home mode
 const storeInUserHome =
@@ -594,7 +594,7 @@ class ConfigImplementation implements Config {
 }
 
 // Global configuration instance
-let globalConfig: ConfigImplementation'''''''''''''''''''''''''''''''''''''''''''''''''' | ''''''''''''''''''''''''''''''''''''''''''''''''''null = null;
+let globalConfig: ConfigImplementation'''''''''''''''''''''''''''''''''''''''''''''''||'''''''''''''''''''''''''''''''''''''''''''''''null = null;
 
 /**
  * Get the global configuration instance
@@ -670,7 +670,7 @@ export function getDataStoragePaths(): {
     process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
 
   let baseDataDir: string;
-  let projectId: string'''''''''''''''''''''''''''''''''''''''''''''''''' | ''''''''''''''''''''''''''''''''''''''''''''''''''undefined;
+  let projectId: string'''''''''''''''''''''''''''''''''''''''''''''''||'''''''''''''''''''''''''''''''''''''''''''''''undefined;
 
   if (storeInUserHome) {
     // User mode: isolate project data in project-specific subdirectories
@@ -716,7 +716,7 @@ export function getTelemetryConfig() {
     serviceVersion: '1.0.0',
     enableTracing: config.metrics.enabled,
     enableMetrics: config.metrics.enabled,
-    enableLogging: config.logging.console'''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' | ''''''''''''''''''''''''''''''''''''''''''''''''''config.logging.file,
+    enableLogging: config.logging.console'''''''''''''''''''''''''''''''''''''''''''''''||''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''||'''''''''''''''''''''''''''''''''''''''''''''''config.logging.file,
     enableAutoInstrumentation: config.metrics.enabled,
     traceSamplingRatio: 1.0,
     metricsInterval: config.metrics.interval,
@@ -749,7 +749,7 @@ export function validateConfig(): void {
 export function checkConfigDirectoryConflicts(): {
   hasUserConfig: boolean;
   hasRepoConfig: boolean;
-  currentMode: 'user''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''repo';
+  currentMode: 'user''''''''''''''''''''''''''''''''''''''''''''''''||''''''''''''''''''''''''''''''''''''''''''''''''repo';
   activeConfigDir: string;
   ignoredConfigDir?: string;
   warning?: string;
@@ -1000,7 +1000,7 @@ export function getRegisteredProjects(): Array<{
     );
     if (fs.existsSync(registryPath)) {
       const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
-      return registry.projects'''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' | ''''''''''''''''''''''''''''''''''''''''''''''''''[];
+      return registry.projects'''''''''''''''''''''''''''''''''''''''''''''''||''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''||'''''''''''''''''''''''''''''''''''''''''''''''[];
     }
   } catch (error) {
     logger.warn('Failed to read project registry:', error);
@@ -1016,15 +1016,15 @@ export function getCurrentProject(): {
   id: string;
   name: string;
   path: string;
-  mode: 'user''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''repo';
+  mode: 'user''''''''''''''''''''''''''''''''''''''''''''''''||''''''''''''''''''''''''''''''''''''''''''''''''repo';
 } {
   const storeInUserHome =
     process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
   const dataPaths = getDataStoragePaths();
 
   return {
-    id: dataPaths.projectId'''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''local',
-    name: dataPaths.projectId'''''''''''''''''''''''''''''''''''''''''''''''''' | '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' | ''''''''''''''''''''''''''''''''''''''''''''''''''path.basename(process.cwd()),
+    id: dataPaths.projectId'''''''''''''''''''''''''''''''''''''''''''''''||''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''||''''''''''''''''''''''''''''''''''''''''''''''''local',
+    name: dataPaths.projectId'''''''''''''''''''''''''''''''''''''''''''''''||''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''||'''''''''''''''''''''''''''''''''''''''''''''''path.basename(process.cwd()),
     path: process.cwd(),
     mode: storeInUserHome ?'user' : 'repo',
   };

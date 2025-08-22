@@ -95,7 +95,7 @@ export interface FileAwareContext {
  */
 export interface DependencyRelationship {
   /** Type of dependency */
-  type: 'import | export' | 'reference' | 'inheritance'';
+  type: 'import|export|reference|inheritance';
   /** Source file */
   source: string;
   /** Target file */
@@ -111,7 +111,7 @@ export interface DependencyRelationship {
  */
 export interface CrossFilePattern {
   /** Pattern type */
-  type:'' | '''code-duplication' | 'architecture-violation'''' | '''inconsistent-style' | 'missing-abstraction'';
+  type:|'code-duplication|architecture-violation'||inconsistent-style|missing-abstraction'';
   /** Files involved */
   files: string[];
   /** Pattern description */
@@ -127,11 +127,11 @@ export interface CrossFilePattern {
  */
 export interface ProjectContextInsight {
   /** Insight category */
-  category: 'architecture | scalability' | 'maintainability' | 'performance'';
+  category: 'architecture|scalability|maintainability|performance';
   /** Insight description */
   description: string;
   /** Impact level */
-  impact: 'low | medium' | 'high' | 'critical'';
+  impact: 'low|medium|high|critical';
   /** Recommendation */
   recommendation: string;
   /** Files affected */
@@ -448,11 +448,11 @@ export class SingularityIntegration {
       return {
         hardwareInfo,
         optimizationStrategy,
-        cpuCores: hardwareInfo?.cpu?.cores'' | '''' | '''unknown',
+        cpuCores: hardwareInfo?.cpu?.cores||'unknown',
         memoryGb: hardwareInfo?.memory?.total
           ? Math.round(hardwareInfo.memory.total / (1024 * 1024 * 1024))
           : 'unknown',
-        hasGpu: hardwareInfo?.gpu?.available'' | '''' | ''false,
+        hasGpu: hardwareInfo?.gpu?.available||false,
       };
     } catch (error) {
       this.logger.warn('Hardware detection failed:', error);
@@ -536,9 +536,9 @@ export class SingularityIntegration {
 
       const response = await llmProvider.generateCompletion({
         messages: [{ role: 'user', content: prompt }],
-        model: options.model'' | '''' | '''claude-3-sonnet',
-        maxTokens: options.maxTokens'' | '''' | ''1024,
-        temperature: options.temperature'' | '''' | ''0.7,
+        model: options.model||'claude-3-sonnet',
+        maxTokens: options.maxTokens||1024,
+        temperature: options.temperature||0.7,
       });
 
       this.logger.debug('✅ TypeScript LLM provider responded successfully to Rust WASM');
@@ -546,7 +546,7 @@ export class SingularityIntegration {
       return {
         success: true,
         content: response.content,
-        usage: response.usage'' | '''' | ''{
+        usage: response.usage||{
           total_tokens: 0,
           prompt_tokens: 0,
           completion_tokens: 0,
@@ -576,7 +576,7 @@ export class SingularityIntegration {
       const bridgeResponse = await this.handleLLMBridgeCall(prompt, options);
       return bridgeResponse.success
         ? bridgeResponse.content
-        : bridgeResponse.error'' | '''' | '''Bridge call failed';
+        : bridgeResponse.error||'Bridge call failed';
     } catch (error) {
       this.logger.warn('Legacy LLM call failed:', error);
       return 'LLM call failed - using heuristic analysis';
@@ -600,7 +600,7 @@ export class SingularityIntegration {
     );
 
     // Use Claude's existing analysis as the base, or create a minimal one if not provided
-    const baseResult: AIAnalysisResult = claudeBaseAnalysis'' | '''' | ''{
+    const baseResult: AIAnalysisResult = claudeBaseAnalysis||{
       filePath,
       timestamp: Date.now(),
       patterns: [],
@@ -632,8 +632,8 @@ export class SingularityIntegration {
       },
       generatedRules: [],
       swarmEnhancements: {
-        architectural_review: '',
-        security_analysis: '',
+        architectural_review: ',
+        security_analysis: ',
         performance_insights: '',
         coordination_quality: 'medium' as const,
         agent_contributions: [],
@@ -780,7 +780,7 @@ export class SingularityIntegration {
             agentId,
             agentType,
             task,
-            findings: findings'' | '''' | ''`${agentType} analysis completed`,
+            findings: findings||`${agentType} analysis completed`,
             confidence: 0.85,
             performanceMetrics: {
               executionTimeMs: executionTime,
@@ -834,9 +834,9 @@ export class SingularityIntegration {
         healthIndicators: {
           typesSafety: context.language === 'typescript' ? 0.9 : 0.6,
           testCoverage:
-            content.includes('test')'' | '''' | ''content.includes('spec') ? 0.8 : 0.3,
+            content.includes('test')||content.includes('spec') ? 0.8 : 0.3,
           documentation:
-            (content.match(/\/\*\*'' | ''\*\/'' | ''\/\//g)'' | '''' | ''[]).length /
+            (content.match(/\/\*\*|\*\/|\/\//g)||[]).length /
             content.split('\n').length,
           consistency: 0.85,
         },
@@ -861,10 +861,10 @@ export class SingularityIntegration {
     try {
       // Analyze content for performance characteristics
       const lineCount = content.split('\n').length;
-      const functionCount = (content.match(/function'' | ''const\s+\w+\s*=/g)'' | '''' | ''[])
+      const functionCount = (content.match(/function|const\s+\w+\s*=/g)||[])
         .length;
       const loopCount = (
-        content.match(/for\s*\('' | ''while\s*\('' | ''\.map\('' | ''\.forEach\(/g)'' | '''' | ''[]
+        content.match(/for\s*\(|while\s*\(|\.map\(|\.forEach\(/g)||[]
       ).length;
 
       // Runtime performance prediction
@@ -893,7 +893,7 @@ export class SingularityIntegration {
 
       // Bundle size prediction (for web code)
       if (
-        context.language === 'javascript''' | '''' | ''context.language ==='typescript'
+        context.language === 'javascript'||context.language ==='typescript'
       ) {
         predictions.push({
           metric: 'Bundle Size',
@@ -931,9 +931,9 @@ export class SingularityIntegration {
     try {
       // Analyze imports/exports to find related files
       const importMatches =
-        content.match(/import.*from\s+["'`]([^"'`]+)["'`]/g)'' | '''' | ''[];
+        content.match(/import.*from\s+["'`]([^"'`]+)["'`]/g)||[];
       const exportMatches =
-        content.match(/export.*from\s+["'`]([^"'`]+)["'`]/g)'' | '''' | ''[];
+        content.match(/export.*from\s+["'`]([^"'`]+)["'`]/g)||[];
 
       // Extract dependency relationships
       for (const importMatch of importMatches) {
@@ -956,7 +956,7 @@ export class SingularityIntegration {
       }
 
       // Detect cross-file patterns
-      if (content.includes('TODO')'' | '''' | ''content.includes('FIXME')) {
+      if (content.includes('TODO')||content.includes('FIXME')) {
         fileAwareContext.crossFilePatterns.push({
           type: 'missing-abstraction',
           files: [filePath],
@@ -968,7 +968,7 @@ export class SingularityIntegration {
       }
 
       // Check for code duplication patterns
-      const functionMatches = content.match(/function\s+(\w+)/g)'' | '''' | ''[];
+      const functionMatches = content.match(/function\s+(\w+)/g)||[];
       if (functionMatches.length > 5) {
         fileAwareContext.crossFilePatterns.push({
           type:'code-duplication',
@@ -997,8 +997,8 @@ export class SingularityIntegration {
       }
 
       // Performance insights based on content analysis
-      const asyncMatches = content.match(/async\s+function'' | ''await\s+/g)'' | '''' | ''[];
-      const syncLoopMatches = content.match(/for\s*\('' | ''while\s*\(/g)'' | '''' | ''[];
+      const asyncMatches = content.match(/async\s+function|await\s+/g)||[];
+      const syncLoopMatches = content.match(/for\s*\(|while\s*\(/g)||[];
 
       if (asyncMatches.length > 0 && syncLoopMatches.length > 2) {
         fileAwareContext.projectContext.push({

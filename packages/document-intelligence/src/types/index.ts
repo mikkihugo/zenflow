@@ -116,12 +116,22 @@ export interface ProcessingMetrics {
 /**
  * Document intelligence capability
  */
-export type DocumentIntelligenceCapability ='' | '''semantic-analysis''' | '''strategic-vision''' | '''workflow-processing''' | '''swarm-integration''' | '''pattern-recognition''' | '''intelligent-segmentation';
+export type DocumentIntelligenceCapability =
+  || 'semantic-analysis'
+  || 'strategic-vision'
+  || 'workflow-processing'
+  || 'swarm-integration'
+  || 'pattern-recognition'
+  || 'intelligent-segmentation';
 
 /**
  * Analysis result confidence levels
  */
-export type ConfidenceLevel ='' | '''low | medium' | 'high''' | '''very-high';
+export type ConfidenceLevel =
+  || 'low'
+  || 'medium'
+  || 'high'
+  || 'very-high';
 
 /**
  * Document complexity metrics
@@ -151,7 +161,16 @@ export interface ContentAnalysisResult {
 /**
  * Document intelligence event types
  */
-export type DocumentIntelligenceEvent ='' | '''initialized | analysis_started' | 'analysis_complete''' | '''classification_complete | segmentation_complete' | 'scanning_complete''' | '''processing_complete | error' | 'shutdown';
+export type DocumentIntelligenceEvent =
+  || 'initialized'
+  || 'analysis_started'
+  || 'analysis_complete'
+  || 'classification_complete'
+  || 'segmentation_complete'
+  || 'scanning_complete'
+  || 'processing_complete'
+  || 'error'
+  || 'shutdown';
 
 /**
  * Event payload types
@@ -185,7 +204,12 @@ export class DocumentIntelligenceError extends Error {
 /**
  * Service component types
  */
-export type ServiceComponent ='' | '''semanticClassifier | segmentationEngine' | 'visionService' | 'documentScanner' | 'documentProcessor';
+export type ServiceComponent =
+  || 'semanticClassifier'
+  || 'segmentationEngine'
+  || 'visionService'
+  || 'documentScanner'
+  || 'documentProcessor';
 
 /**
  * Configuration validation result

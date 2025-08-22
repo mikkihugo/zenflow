@@ -34,17 +34,17 @@ export interface COPROMLConfig {
   useDriftDetection: boolean;
   useAdaptiveLearning: boolean;
   useFeedbackAnalysis: boolean;
-  acquisitionFunction:'' | '''expected_improvement | upper_confidence_bound' | 'probability_improvement''' | '''entropy_search';
+  acquisitionFunction:|'expected_improvement|upper_confidence_bound|probability_improvement|entropy_search';
   initialExplorationBudget: number;
   exploitationThreshold: number;
-  onlineLearningAlgorithm:'' | '''perceptron | passive_aggressive' | 'sgd_classifier';
+  onlineLearningAlgorithm:|'perceptron|passive_aggressive|sgd_classifier';
   adaptiveLearningRate: boolean;
   forgettingFactor: number;
-  driftDetectionMethod: 'page_hinkley | adwin' | 'kswin''' | '''ddm';
+  driftDetectionMethod: 'page_hinkley|adwin|kswin|ddm';
   driftSensitivity: number;
   minDriftSamples: number;
   feedbackWindowSize: number;
-  feedbackAggregationMethod:'' | '''exponential_smoothing | sliding_window' | 'weighted_average';
+  feedbackAggregationMethod:|'exponential_smoothing|sliding_window|weighted_average';
   qualityGates: {
     minAccuracy: number;
     maxLatency: number;

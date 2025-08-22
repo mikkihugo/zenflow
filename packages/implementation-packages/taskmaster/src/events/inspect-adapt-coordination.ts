@@ -121,7 +121,7 @@ export interface InspectAdaptConfig {
       enabled: boolean;
       duration: number; // hours
       maxProblemsToAddress: number;
-      techniques: ('' | '''fishbone | 5_whys' | 'root_cause_analysis''' | '''solution_brainstorming'
+      techniques: (|'fishbone|5_whys|root_cause_analysis|solution_brainstorming'
       )[];
     };
   };
@@ -205,7 +205,7 @@ export interface PIMetrics {
   quality: {
     defectRate: number;
     escapedDefects: number;
-    technicalDebtTrend: 'improving | stable' | 'degrading';
+    technicalDebtTrend: 'improving|stable|degrading';
     testCoverage: number;
     automationCoverage: number;
   };
@@ -262,9 +262,9 @@ export interface IASystemProblem {
   description: string;
 
   // Problem categorization
-  category:'' | '''process | technical' | 'organizational''' | '''tooling | communication' | 'quality';
-  scope: 'team | cross_team' | 'art' | 'portfolio' | 'enterprise';
-  severity: 'low | medium' | 'high''' | '''critical';
+  category:|'process|technical|organizational|tooling|communication|quality';
+  scope: 'team|cross_team|art|portfolio|enterprise';
+  severity: 'low|medium|high|critical';
 
   // Impact assessment
   impact: {
@@ -272,7 +272,7 @@ export interface IASystemProblem {
     affectedObjectives: string[];
     businessImpact: string;
     estimatedCost: string; // opportunity cost
-    frequencyOfOccurrence: 'rare | occasional' | 'frequent''' | '''constant';
+    frequencyOfOccurrence: 'rare|occasional|frequent|constant';
   };
 
   // Problem context
@@ -304,7 +304,7 @@ export interface IASystemProblem {
  */
 export interface RootCauseAnalysis {
   problemId: string;
-  technique: 'fishbone | 5_whys' | 'root_cause_analysis';
+  technique: 'fishbone|5_whys|root_cause_analysis';
 
   // Analysis process
   process: {
@@ -377,10 +377,10 @@ export interface ProposedSolution {
 
   // Feasibility
   feasibility: {
-    technicalFeasibility: 'low | medium' | 'high';
-    organizationalFeasibility: 'low | medium' | 'high';
-    costFeasibility: 'low | medium' | 'high';
-    timelineFeasibility: 'low | medium' | 'high';
+    technicalFeasibility: 'low|medium|high';
+    organizationalFeasibility: 'low|medium|high';
+    costFeasibility: 'low|medium|high';
+    timelineFeasibility: 'low|medium|high';
   };
 
   // Workshop evaluation
@@ -423,7 +423,7 @@ export interface ImprovementBacklogItem {
     acceptanceCriteria: string[];
     businessValue: number; // 1-10
     effortEstimate: number; // story points or days
-    priority: 'low | medium' | 'high''' | '''critical';
+    priority: 'low|medium|high|critical';
   };
 
   // Implementation planning
@@ -447,7 +447,7 @@ export interface ImprovementBacklogItem {
 
   // Tracking
   tracking: {
-    status:'' | '''backlog | planned' | 'in_progress''' | '''completed | deferred' | 'cancelled';
+    status:|'backlog|planned|in_progress|completed|deferred|cancelled';
     progressUpdates: Array<{
       date: Date;
       update: string;
@@ -469,7 +469,7 @@ export interface InspectAdaptOutcomes {
     completed: boolean;
     actualDuration: number; // hours
     participantCount: number;
-    partsCompleted: ('pi_demo | measurement_review' | 'problem_solving')[];
+    partsCompleted: ('pi_demo|measurement_review|problem_solving')[];
   };
 
   // Problems addressed
@@ -535,7 +535,7 @@ export interface QualityMetrics {
 
   technicalDebt: {
     technicalDebtItems: number;
-    technicalDebtTrend: 'improving | stable' | 'degrading';
+    technicalDebtTrend: 'improving|stable|degrading';
     refactoringEffort: number; // story points
   };
 }
@@ -983,7 +983,7 @@ export class InspectAdaptCoordination {
    */
   async getInspectAdaptStatus(workshopId: string): Promise<{
     workshopStatus: {
-      phase:'' | '''preparation | pi_demo' | 'measurement_review' | 'problem_solving' | 'completed';
+      phase:|'preparation|pi_demo|measurement_review|problem_solving|completed';
       progress: number; // percentage
       currentActivity: string;
       nextSteps: string[];
@@ -1016,9 +1016,9 @@ export class InspectAdaptCoordination {
     const statusData = await this.loadWorkshopStatus(workshopId);
 
     // Analyze problem-solving progress
-    const problemAnalyses = this.problemAnalysis.get(workshopId)'' | '''' | ''[];
-    const solutions = this.solutionBrainstorming.get(workshopId)'' | '''' | ''[];
-    const improvementItems = this.improvementBacklog.get(workshopId)'' | '''' | ''[];
+    const problemAnalyses = this.problemAnalysis.get(workshopId)||[];
+    const solutions = this.solutionBrainstorming.get(workshopId)||[];
+    const improvementItems = this.improvementBacklog.get(workshopId)||[];
 
     // Assess participant engagement
     const participantEngagement = await this.assessParticipantEngagement(
@@ -1419,7 +1419,7 @@ export class InspectAdaptCoordination {
     score += frequencyWeights[problem.impact.frequencyOfOccurrence] * 2;
 
     // Voting weight
-    score += (problem.workshop.priorityVotes'' | '''' | ''0) * 5;
+    score += (problem.workshop.priorityVotes||0) * 5;
 
     return score;
   }
@@ -1452,14 +1452,14 @@ export class InspectAdaptCoordination {
   private selectRootCauseTechnique(
     problem: IASystemProblem,
     config: InspectAdaptConfig
-  ):'fishbone | 5_whys' | 'root_cause_analysis' {
+  ):'fishbone|5_whys|root_cause_analysis' {
     // Choose technique based on problem characteristics
     if (
-      problem.category === 'process''' | '''' | ''problem.category ==='organizational'
+      problem.category === 'process'||problem.category ==='organizational'
     ) {
       return 'fishbone'; // Good for complex multi-factor problems
     } else if (
-      problem.severity === 'critical''' | '''' | ''problem.scope ==='enterprise'
+      problem.severity === 'critical'||problem.scope ==='enterprise'
     ) {
       return 'root_cause_analysis'; // Comprehensive for critical issues
     } else {
@@ -1469,7 +1469,7 @@ export class InspectAdaptCoordination {
 
   private async executeRootCauseAnalysis(
     problem: IASystemProblem,
-    technique: 'fishbone | 5_whys' | 'root_cause_analysis',
+    technique: 'fishbone|5_whys|root_cause_analysis',
     config: InspectAdaptConfig
   ): Promise<RootCauseAnalysis> {
     const analysis: RootCauseAnalysis = {

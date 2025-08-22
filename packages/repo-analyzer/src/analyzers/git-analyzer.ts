@@ -102,7 +102,7 @@ export class GitAnalyzer {
   /**
    * Get repository status
    */
-  private async getRepositoryStatus(): Promise<StatusResult'' | ''null> {
+  private async getRepositoryStatus(): Promise<StatusResult|null> {
     try {
       return await this.git.status();
     } catch (error) {
@@ -277,11 +277,11 @@ export class GitAnalyzer {
       let filesModified = 0;
 
       for (const line of lines) {
-        if (line.includes('|')) {
+        if (line.includes(||)) {
           filesModified++;
 
           const match = line.match(
-            /(\d+)\s+insertions?\(\+\)'' | ''(\d+)\s+deletions?\(-\)/g
+            /(\d+)\s+insertions?\(\+\)|(\d+)\s+deletions?\(-\)/g
           );
           if (match) {
             for (const m of match) {
@@ -310,7 +310,7 @@ export class GitAnalyzer {
         '--format=',
         commitHash,
       ]);
-      return diff.split('\n').filter((file) => file.trim() !== '');
+      return diff.split('\n').filter((file) => file.trim() !== ');
     } catch (error) {
       return [];
     }
@@ -351,7 +351,7 @@ export class GitAnalyzer {
   private countActiveBranches(localBranches: any): number {
     // Consider branches active if they have commits in the last 30 days
     // This would require checking last commit date for each branch
-    return localBranches.all?.length'' | '''' | ''0;
+    return localBranches.all?.length|'|0;
   }
 
   /**
@@ -393,10 +393,10 @@ export class GitAnalyzer {
       // Simple complexity estimation
       const lines = content.split('\n').length;
       const functions = (
-        content.match(/function\s+\w+'' | ''=>\s*{'' | ''^\s*\w+\s*:/gm)'' | '''' | ''[]
+        content.match(/function\s+\w+|=>\s*{|^\s*\w+\s*:/gm)||[]
       ).length;
       const conditionals = (
-        content.match(/\b(if'' | ''else'' | ''switch'' | ''case'' | ''while'' | ''for)\b/g)'' | '''' | ''[]
+        content.match(/\b(if|else|switch|case|while|for)\b/g)||[]
       ).length;
 
       return Math.min(100, lines * 0.1 + functions * 2 + conditionals * 3);
@@ -452,7 +452,7 @@ export class GitAnalyzer {
         totalChurn += churn;
 
         const author = commit.author_name;
-        churnByAuthor[author] = (churnByAuthor[author]'' | '''' | ''0) + churn;
+        churnByAuthor[author] = (churnByAuthor[author]||0) + churn;
 
         const date = new Date(commit.date).toISOString().split('T')[0];
         const existingEntry = churnTrend.find((entry) => entry.date === date);
@@ -503,9 +503,9 @@ export class GitAnalyzer {
           year: 'numeric',
         });
 
-        hourlyDistribution[hour] = (hourlyDistribution[hour]'' | '''' | ''0) + 1;
-        dailyDistribution[dayOfWeek] = (dailyDistribution[dayOfWeek]'' | '''' | ''0) + 1;
-        monthlyDistribution[month] = (monthlyDistribution[month]'' | '''' | ''0) + 1;
+        hourlyDistribution[hour] = (hourlyDistribution[hour]||0) + 1;
+        dailyDistribution[dayOfWeek] = (dailyDistribution[dayOfWeek]||0) + 1;
+        monthlyDistribution[month] = (monthlyDistribution[month]||0) + 1;
       }
 
       return {
@@ -640,7 +640,7 @@ export class GitAnalyzer {
       const commits = await this.getCommitHistory({ maxCount: 100 });
       const mergeCommits = commits.filter(
         (commit) =>
-          commit.message.includes('Merge')'' | '''' | ''commit.parents.length > 1
+          commit.message.includes('Merge')||commit.parents.length > 1
       );
 
       if (mergeCommits.length === 0) return 0.1;
@@ -648,7 +648,7 @@ export class GitAnalyzer {
       // Estimate conflict rate based on merge commit patterns
       const conflictIndicators = mergeCommits.filter(
         (commit) =>
-          commit.message.includes('conflict')'' | '''' | ''commit.message.includes('resolve')'' | '''' | ''commit.message.includes('fix merge')
+          commit.message.includes('conflict')||commit.message.includes('resolve')||commit.message.includes('fix merge')
       );
 
       return conflictIndicators.length / mergeCommits.length;

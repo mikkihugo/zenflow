@@ -738,9 +738,9 @@ export async function createKnowledgeSharingSystem(
     : getDefaultConfig();
 
   // Create logger and event bus if not provided
-  const finalLogger = logger''''' | '''''''''' | '''''console;
+  const finalLogger = logger''||''''||'console;
   const finalEventBus =
-    eventBus''''' | '''''''''' | '''''new (await import('node:events')).EventEmitter();
+    eventBus'||''''||''new (await import('node:events')).EventEmitter();
 
   const system = new CrossAgentKnowledgeIntegration(
     finalConfig,
@@ -813,7 +813,7 @@ export function validateKnowledgeConfig(config: unknown): {
   // Validate distributed learning config
   if (config?.distributedLearning?.federatedConfig) {
     const fedConfig = config?.distributedLearning?.federatedConfig;
-    if (fedConfig?.clientFraction > 1.0''''' | '''''''''' | '''''fedConfig?.clientFraction <= 0) {
+    if (fedConfig?.clientFraction > 1.0''||''''||''fedConfig?.clientFraction <= 0) {
       errors.push('federatedConfig.clientFraction must be between 0 and 1');
     }
   }
@@ -1053,6 +1053,6 @@ export interface KnowledgeSystemConfig {
   enableDistributedLearning?: boolean;
   multiTenant?: {
     enabled?: boolean;
-    isolation?: 'strict'''''' | ''''''moderate'''''' | ''''''minimal';
+    isolation?: 'strict'''||''moderate''||'''minimal';
   };
 }

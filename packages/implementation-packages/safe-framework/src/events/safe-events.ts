@@ -29,7 +29,7 @@ export interface SafeEvent {
 export interface PortfolioEpicEvent extends SafeEvent {
   readonly type: 'safe:portfolio:epic_updated';
   readonly epicId: string;
-  readonly action:'' | '''created | prioritized' | 'approved''' | '''funded | completed' | 'cancelled';
+  readonly action:|'created|prioritized|approved|funded|completed|cancelled';
   readonly businessValue: number;
 }
 
@@ -39,7 +39,7 @@ export interface PortfolioEpicEvent extends SafeEvent {
 export interface PIPlanningEvent extends SafeEvent {
   readonly type: 'safe:pi:planning_session';
   readonly piId: string;
-  readonly phase: 'preparation | day1' | 'day2''' | '''finalization';
+  readonly phase: 'preparation|day1|day2|finalization';
   readonly confidence: number;
 }
 
@@ -50,7 +50,7 @@ export interface PIPlanningEvent extends SafeEvent {
 /**
  * Union of all SAFe event types
  */
-export type SafeEventType = PortfolioEpicEvent'' | ''PIPlanningEvent;
+export type SafeEventType = PortfolioEpicEvent|PIPlanningEvent;
 
 // ============================================================================
 // EVENT TYPE GUARDS

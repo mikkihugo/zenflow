@@ -206,13 +206,13 @@ async function loadServiceContainer() {
 // Professional exports for advanced infrastructure components
 export const getOtelCollector = async () => {
   const otelModule = await loadOtelCollector();
-  return otelModule.createOtelCollector?.()'' | '''' | ''otelModule.createOtelCollector();
+  return otelModule.createOtelCollector?.()||otelModule.createOtelCollector();
 };
 
 export const getServiceContainer = async (name?: string) => {
   const containerModule = await loadServiceContainer();
   return (
-    containerModule.createServiceContainer?.(name)'' | '''' | ''containerModule.createServiceContainer(name)
+    containerModule.createServiceContainer?.(name)||containerModule.createServiceContainer(name)
   );
 };
 

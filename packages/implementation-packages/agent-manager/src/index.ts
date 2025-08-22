@@ -143,7 +143,7 @@ export function createAgent(
  * Utility function to create AgentManager with common configurations
  */
 export function createAgentManager(
-  preset?: 'small | medium' | 'large''' | '''enterprise'
+  preset?: 'small|medium|large|enterprise'
 ) {
   // Import dynamically to avoid circular dependency issues during build
   const { AgentManager } = require('./agent-manager');

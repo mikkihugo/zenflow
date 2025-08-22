@@ -88,7 +88,7 @@ function loadCopilotToken(): string {
   }
 
   // Fallback to environment variables (should be OAuth token, not PAT)
-  const token = process.env.GITHUB_COPILOT_TOKEN'' | '''' | '''';
+  const token = process.env.GITHUB_COPILOT_TOKEN||'';
   if (token && !token.startsWith('gho_')) {
     logger.warn(
       '⚠️ Token may not be a valid GitHub Copilot OAuth token. Expected format: gho_xxx'
@@ -185,7 +185,7 @@ export class GitHubCopilotAPI implements APIProvider {
 
       const data = await response.json();
       const content =
-        data.choices?.[0]?.message?.content'' | '''' | '''No response content';
+        data.choices?.[0]?.message?.content||'No response content';
 
       logger.info(
         `GitHub Copilot API response received: ${content.length} characters`
@@ -375,8 +375,8 @@ export async function executeGitHubCopilotTask(
   prompt: string,
   options: {
     token: string;
-    model?: 'gpt-4''' | '''gpt-4-turbo''' | '''gpt-3.5-turbo''' | '''claude-3-sonnet';
-  } = { token: '' }
+    model?: 'gpt-4|gpt-4-turbo'||gpt-3.5-turbo|claude-3-sonnet';
+  } = { token: ' }
 ): Promise<string> {
   const provider = createGitHubCopilotProvider(options);
 

@@ -287,7 +287,7 @@ export class RepositoryAnalyzer {
           ]),
       ...(options.includeNodeModules ? [] : ['!**/node_modules/**']),
       ...(options.includeDotFiles ? [] : ['!**/.*']),
-      ...(options.excludePatterns'' | '''' | ''[]).map((p) => `!${p}`),'!**/dist/**',
+      ...(options.excludePatterns||[]).map((p) => `!${p}`),'!**/dist/**',
       '!**/build/**',
       '!**/.git/**',
     ];
@@ -396,7 +396,7 @@ export class RepositoryAnalyzer {
             break;
         }
 
-        languages[language] = (languages[language]'' | '''' | ''0) + lines;
+        languages[language] = (languages[language]||0) + lines;
       } catch {
         // Skip files that can't be read
       }
@@ -530,7 +530,7 @@ export class RepositoryAnalyzer {
   }
 
   private getRepositoryName(): string {
-    return this.repositoryPath.split('/').pop()'' | '''' | '''unknown';
+    return this.repositoryPath.split('/').pop()||'unknown';
   }
 
   private getSettledValue<T>(

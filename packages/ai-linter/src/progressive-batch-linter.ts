@@ -308,15 +308,15 @@ export class ProgressiveBatchLinter {
     // Check if overall confidence is below threshold
     if (analysis.confidence < this.config.confidenceThreshold) {
       // Add issues that Claude couldn't fix with high confidence
-      const complexityIssues = analysis.claudeInsights.complexity_issues'' | '''' | ''[];
+      const complexityIssues = analysis.claudeInsights.complexity_issues||[];
       const typeSafetyIssues =
-        analysis.claudeInsights.type_safety_concerns'' | '''' | ''[];
+        analysis.claudeInsights.type_safety_concerns||[];
 
       for (const issue of complexityIssues) {
         if (issue.complexityScore > 15) {
           // High complexity
           lowConfidenceIssues.push({
-            line: issue.location?.line'' | '''' | ''1,
+            line: issue.location?.line||1,
             issue: `High complexity (${issue.complexityScore}): ${issue.functionName}`,
             confidence: analysis.confidence,
           });
@@ -324,9 +324,9 @@ export class ProgressiveBatchLinter {
       }
 
       for (const issue of typeSafetyIssues) {
-        if (issue.severity ==='error''' | '''' | ''issue.severity ==='critical') {
+        if (issue.severity ==='error'||issue.severity ==='critical') {
           lowConfidenceIssues.push({
-            line: issue.location?.line'' | '''' | ''1,
+            line: issue.location?.line||1,
             issue: `Type safety: ${issue.description}`,
             confidence: analysis.confidence,
           });
@@ -404,7 +404,7 @@ export class ProgressiveBatchLinter {
       '.html': '<!--',
       '.xml': '<!--',
     };
-    return commentMap[ext]'' | '''' | '''//';
+    return commentMap[ext]||'//';
   }
 
   /**
@@ -427,7 +427,7 @@ export class ProgressiveBatchLinter {
       '.cs': 'csharp',
       '.php': 'php',
     };
-    return langMap[ext]'' | '''' | '''typescript';
+    return langMap[ext]||'typescript';
   }
 
   /**
@@ -464,7 +464,7 @@ export class ProgressiveBatchLinter {
       const saved = JSON.parse(progressData);
 
       this.progress.completedFiles = new Set(saved.completedFiles);
-      this.progress.currentBatch = saved.currentBatch'' | '''' | ''0;
+      this.progress.currentBatch = saved.currentBatch||0;
       this.progress.stats = { ...this.progress.stats, ...saved.stats };
 
       this.logger.info(

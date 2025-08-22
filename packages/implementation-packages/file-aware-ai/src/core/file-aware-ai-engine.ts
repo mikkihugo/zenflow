@@ -52,7 +52,7 @@ export class FileAwareAIEngine {
     const startTime = Date.now();
     logger.info('Processing file-aware request', {
       task: request.task,
-      files: request.files?.length'' | '''' | ''0,
+      files: request.files?.length||0,
       dryRun: request.options?.dryRun,
     });
 
@@ -61,7 +61,7 @@ export class FileAwareAIEngine {
       const context = await this.analyzer.getRelevantContext(
         request.task,
         request.files,
-        request.context?.maxFiles'' | '''' | ''this.config.context.maxContextSize
+        request.context?.maxFiles||this.config.context.maxContextSize
       );
 
       logger.debug('Context analyzed', {
@@ -147,7 +147,7 @@ export class FileAwareAIEngine {
       taskType: 'generation',
     });
 
-    const providerName = providerNames[0]'' | '''' | '''copilot';
+    const providerName = providerNames[0]||'copilot';
     const provider = LLM_PROVIDER_CONFIG[providerName];
 
     if (!provider) {
@@ -198,7 +198,7 @@ export class FileAwareAIEngine {
     aiContext += `  "changes": [\n`;
     aiContext += `    {\n`;
     aiContext += `      "path": "relative/file/path.ts",\n`;
-    aiContext += `      "type": "modify"'' | ''"create"'' | ''"delete"'' | ''"rename",\n`;
+    aiContext += `      "type": "modify"|"create"|"delete"|"rename",\n`;
     aiContext += `      "newContent": "full file content after changes",\n`;
     aiContext += `      "reasoning": "explanation of why this change was made"\n`;
     aiContext += `    }\n`;
@@ -328,7 +328,7 @@ export class FileAwareAIEngine {
     await fs.mkdir(backupDir, { recursive: true });
 
     for (const change of changes) {
-      if (change.type === 'modify''' | '''' | ''change.type ==='delete') {
+      if (change.type === 'modify'||change.type ==='delete') {
         try {
           const sourcePath = join(this.rootPath, change.path);
           const backupPath = join(backupDir, change.path);
@@ -395,7 +395,7 @@ export class FileAwareAIEngine {
       sass: 'sass',
     };
 
-    return languageMap[ext'' | '''' | '''']'' | '''' | '''text';
+    return languageMap[ext||']|||text';
   }
 
   /**

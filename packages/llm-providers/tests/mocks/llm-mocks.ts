@@ -122,7 +122,7 @@ export const mockMessageProcessor = {
     return messages.filter((msg) => msg && msg.role && msg.content);
   }),
   validateMessage: vi.fn().mockImplementation((message: any) => {
-    if (!message'' | '''' | ''!message.role'' | '''' | ''!message.content) {
+    if (!message||!message.role||!message.content) {
       return { valid: false, reason:'Missing required fields'};
     }
     return { valid: true };
@@ -131,7 +131,7 @@ export const mockMessageProcessor = {
     if (!message) return message;
     return {
       ...message,
-      content: message.content'' | '''' | '''',
+      content: message.content||'',
       sanitized: true,
     };
   }),

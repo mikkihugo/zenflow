@@ -32,7 +32,7 @@ import type { ARTTeam, Dependency, Risk, Logger } from '../../types';
 export interface ScrumOfScrumsConfig {
   readonly id: string;
   readonly artId: string;
-  readonly frequency: 'daily'' | ''twice-weekly'' | ''weekly';
+  readonly frequency: 'daily|twice-weekly|weekly';
   readonly duration: number; // minutes
   readonly participants: ScrumOfScrumsParticipant[];
   readonly agenda: ScrumOfScrumsAgenda;
@@ -48,7 +48,7 @@ export interface ScrumOfScrumsParticipant {
   readonly teamId: string;
   readonly teamName: string;
   readonly representative: string;
-  readonly role: 'scrum-master'' | ''product-owner'' | ''team-lead';
+  readonly role: 'scrum-master|product-owner|team-lead';
   readonly backupRepresentative?: string;
   readonly participationHistory: ParticipationRecord[];
 }
@@ -85,7 +85,7 @@ export interface ScrumOfScrumsQuestion {
   readonly question: string;
   readonly purpose: string;
   readonly timeAllocation: number; // minutes
-  readonly facilitation: 'round-robin'' | ''open-discussion'' | ''focused';
+  readonly facilitation: 'round-robin|open-discussion|focused';
 }
 
 /**
@@ -95,7 +95,7 @@ export interface AgendaCustomItem {
   readonly item: string;
   readonly owner: string;
   readonly duration: number;
-  readonly frequency: 'weekly'' | ''bi-weekly'' | ''monthly';
+  readonly frequency: 'weekly|bi-weekly|monthly';
 }
 
 /**
@@ -197,7 +197,7 @@ export interface AttendanceRecord {
   readonly attended: boolean;
   readonly late: boolean;
   readonly earlyLeave: boolean;
-  readonly contributionLevel: 'high'' | ''medium'' | ''low';
+  readonly contributionLevel: 'high|medium|low';
 }
 
 /**
@@ -208,8 +208,8 @@ export interface ScrumActionItem {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high'' | ''medium'' | ''low';
-  readonly status: 'open'' | ''in_progress'' | ''completed';
+  readonly priority: 'high|medium|low';
+  readonly status: 'open|in_progress|completed';
   readonly relatedImpediment?: string;
 }
 
@@ -244,7 +244,7 @@ export class ScrumOfScrumsService {
   async configureScrumsOfScrums(
     artId: string,
     config: {
-      frequency: 'daily'' | ''twice-weekly'' | ''weekly';
+      frequency: 'daily|twice-weekly|weekly';
       duration: number;
       teams: ARTTeam[];
     }

@@ -57,7 +57,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
     // Use provided factory or create a minimal one
     this.dalFactory =
-      dalFactory'' | '''' | ''new DatabaseProviderFactory(
+      dalFactory||new DatabaseProviderFactory(
         console, // Simple logger for now
         {} // Minimal config
       );
@@ -133,7 +133,7 @@ export class SQLiteBackend implements FACTStorageBackend {
             entry.id,
             entry.query,
             entry.response,
-            entry.metadata.domains?.join(' ')'' | '''' | '''',
+            entry.metadata.domains?.join(' ')||'',
             entry.metadata.type,
           ]
         );
@@ -144,7 +144,7 @@ export class SQLiteBackend implements FACTStorageBackend {
     }
   }
 
-  async get(id: string): Promise<FACTKnowledgeEntry'' | ''null> {
+  async get(id: string): Promise<FACTKnowledgeEntry|null> {
     if (!this.dalAdapter) {
       throw new Error('SQLite backend not initialized');
     }
@@ -243,7 +243,7 @@ export class SQLiteBackend implements FACTStorageBackend {
           ORDER BY timestamp DESC, access_count DESC
           LIMIT ?
         `;
-        params?.push(query.limit'' | '''' | ''50);
+        params?.push(query.limit||50);
       }
 
       const result = await this.dalAdapter.query(sql, params);
@@ -284,7 +284,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
 
-      return (result?.rowsAffected'' | '''' | ''0) > 0;
+      return (result?.rowsAffected||0) > 0;
     } catch (error) {
       logger.error('Failed to delete FACT entry:', error);
       return false;
@@ -311,7 +311,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
 
-      return result?.rowsAffected'' | '''' | ''0;
+      return result?.rowsAffected||0;
     } catch (error) {
       logger.error('Failed to cleanup FACT entries:', error);
       return 0;
@@ -396,7 +396,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
 
-      return result?.rowsAffected'' | '''' | ''0;
+      return result?.rowsAffected||0;
     } catch (error) {
       logger.error('Failed to clear entries by quality:', error);
       return 0;
@@ -423,7 +423,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
 
-      return result?.rowsAffected'' | '''' | ''0;
+      return result?.rowsAffected||0;
     } catch (error) {
       logger.error('Failed to clear entries by age:', error);
       return 0;
@@ -445,7 +445,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       const countResult = await this.dalAdapter.query(
         `SELECT COUNT(*) as count FROM ${this.config.tableName}`
       );
-      const totalEntries = countResult?.rows?.[0]?.count'' | '''' | ''0;
+      const totalEntries = countResult?.rows?.[0]?.count||0;
 
       await this.clear();
       return totalEntries;
@@ -456,7 +456,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   async optimize(
-    strategy: 'aggressive | balanced' | 'conservative' = 'balanced'
+    strategy: 'aggressive|balanced|conservative' = 'balanced'
   ): Promise<{ optimized: boolean; details: string }> {
     if (!this.dalAdapter) {
       throw new Error('SQLite backend not initialized');
@@ -470,7 +470,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       operations.push('VACUUM completed');
 
       // Reindex based on strategy
-      if (strategy === 'aggressive''' | '''' | ''strategy ==='balanced') {
+      if (strategy === 'aggressive'||strategy ==='balanced') {
         await this.dalAdapter.execute('REINDEX');
         operations.push('REINDEX completed');
       }
@@ -529,18 +529,18 @@ export class SQLiteBackend implements FACTStorageBackend {
         domainsResult?.rows
           ?.flatMap((row: unknown) => {
             try {
-              const domains = JSON.parse(row.domains'' | '''' | '''[]');
+              const domains = JSON.parse(row.domains||'[]');
               return Array.isArray(domains) ? domains : [];
             } catch {
               return [];
             }
           })
-          .slice(0, 10)'' | '''' | ''[];
+          .slice(0, 10)||[];
 
       // Calculate storage health based on various metrics
-      let storageHealth:'excellent | good' | 'fair''' | '''poor' = 'excellent';
-      const totalEntries = basicStats?.total_count'' | '''' | ''0;
-      const avgAccessCount = basicStats?.avg_access_count'' | '''' | ''0;
+      let storageHealth:'excellent|good|fair|poor' = 'excellent';
+      const totalEntries = basicStats?.total_count||0;
+      const avgAccessCount = basicStats?.avg_access_count||0;
 
       if (totalEntries > 10000 && avgAccessCount < 2) {
         storageHealth ='fair';
@@ -555,8 +555,8 @@ export class SQLiteBackend implements FACTStorageBackend {
         persistentEntries: totalEntries,
         totalMemorySize: 0, // SQLite backend doesn't use memory cache
         cacheHitRate: 0, // Not applicable for persistent-only storage
-        oldestEntry: basicStats?.oldest_timestamp'' | '''' | ''0,
-        newestEntry: basicStats?.newest_timestamp'' | '''' | ''0,
+        oldestEntry: basicStats?.oldest_timestamp||0,
+        newestEntry: basicStats?.newest_timestamp||0,
         topDomains,
         storageHealth,
       };

@@ -49,9 +49,9 @@ export interface ArchitectureReviewConfig {
  */
 export interface ReviewWorkflowRequest {
   readonly systemDesignId: string;
-  readonly reviewType: 'peer'' | ''formal'' | ''compliance'' | ''security';
+  readonly reviewType: 'peer|formal|compliance|security';
   readonly reviewerId: string;
-  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly priority: 'low|medium|high|critical';
   readonly deadline?: Date;
   readonly context?: any;
 }
@@ -288,7 +288,7 @@ export class ArchitectureReviewManagementService {
    */
   async completeArchitectureReview(
     reviewId: string,
-    decision: 'approved'' | ''rejected'' | ''conditionally_approved',
+    decision: 'approved|rejected|conditionally_approved',
     findings: ReviewFinding[],
     comments?: string
   ): Promise<ArchitectureReview> {

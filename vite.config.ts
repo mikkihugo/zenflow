@@ -38,7 +38,7 @@ export default defineConfig({
 	
 	// Define configuration
 	define: {
-		__VERSION__: JSON.stringify(process.env.npm_package_version'' | '''' | '''2.0.0'),
+		__VERSION__: JSON.stringify(process.env.npm_package_version||'2.0.0'),
 		__BUILD_TIME__: JSON.stringify(new Date().toISOString())
 	},
 	

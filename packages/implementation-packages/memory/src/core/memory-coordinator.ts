@@ -9,7 +9,7 @@ import { TypedEventBase } from '@claude-zen/foundation';
 export interface BackendInterface {
   initialize(): Promise<void>;
   store(key: string, value: unknown, namespace?: string): Promise<unknown>;
-  retrieve(key: string, namespace?: string): Promise<any'' | ''null>;
+  retrieve(key: string, namespace?: string): Promise<any|null>;
   search(pattern: string, namespace?: string): Promise<Record<string, unknown>>;
   delete(key: string, namespace?: string): Promise<boolean>;
   listNamespaces(): Promise<string[]>;
@@ -22,16 +22,16 @@ export interface MemoryCoordinationConfig {
   consensus: {
     quorum: number;
     timeout: number;
-    strategy:'majority | unanimous' | 'leader';
+    strategy:'majority|unanimous|leader';
   };
   distributed: {
     replication: number;
-    consistency: 'eventual | strong' | 'weak';
-    partitioning: 'hash | range' | 'consistent';
+    consistency: 'eventual|strong|weak';
+    partitioning: 'hash|range|consistent';
   };
   optimization: {
     autoCompaction: boolean;
-    cacheEviction: 'lru | lfu' | 'adaptive';
+    cacheEviction: 'lru|lfu|adaptive';
     memoryThreshold: number;
   };
 }
@@ -39,7 +39,7 @@ export interface MemoryCoordinationConfig {
 export interface MemoryNode {
   id: string;
   backend: BackendInterface;
-  status: 'active | inactive' | 'degraded';
+  status: 'active|inactive|degraded';
   lastHeartbeat: number;
   load: number;
   capacity: number;
@@ -47,11 +47,11 @@ export interface MemoryNode {
 
 export interface CoordinationDecision {
   id: string;
-  type: 'read | write' | 'delete' | 'sync' | 'repair';
+  type: 'read|write|delete|sync|repair';
   sessionId: string;
   target: string;
   participants: string[];
-  status: 'pending | executing' | 'completed''' | '''failed';
+  status: 'pending|executing|completed|failed';
   timestamp: number;
   metadata?: Record<string, unknown>;
 }
@@ -112,10 +112,10 @@ export class MemoryCoordinator extends TypedEventBase {
   ): Promise<CoordinationDecision> {
     const decision: CoordinationDecision = {
       id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-      type: operation.type'' | '''' | '''read',
-      sessionId: operation.sessionId'' | '''' | '''',
-      target: operation.target'' | '''' | '''',
-      participants: this.selectParticipants(operation.type'' | '''' | '''read'),
+      type: operation.type||'read',
+      sessionId: operation.sessionId||',
+      target: operation.target|||,
+      participants: this.selectParticipants(operation.type|||read'),
       status: 'pending',
       timestamp: Date.now(),
       metadata: operation.metadata,
@@ -318,7 +318,7 @@ export class MemoryCoordinator extends TypedEventBase {
     const valueCount = new Map();
     validValues.forEach((value) => {
       const key = JSON.stringify(value);
-      valueCount.set(key, (valueCount.get(key)'' | '''' | ''0) + 1);
+      valueCount.set(key, (valueCount.get(key)||0) + 1);
     });
 
     const [winningValue] = Array.from(valueCount.entries()).sort(

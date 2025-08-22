@@ -8,7 +8,7 @@
  */
 
 export interface FACTStorageConfig {
-  backend: 'sqlite | jsonb' | 'file''' | '''memory';
+  backend: 'sqlite|jsonb|file|memory';
   maxMemoryCacheSize: number;
   defaultTTL: number;
   cleanupInterval: number;
@@ -56,7 +56,7 @@ export interface FACTStorageStats {
   oldestEntry: number;
   newestEntry: number;
   topDomains: string[];
-  storageHealth: 'excellent | good' | 'fair''' | '''poor';
+  storageHealth: 'excellent|good|fair|poor';
 }
 
 export interface FACTStorageBackend {

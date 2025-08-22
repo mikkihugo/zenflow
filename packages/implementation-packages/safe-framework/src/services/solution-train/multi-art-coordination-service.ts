@@ -215,7 +215,7 @@ export enum SynchronizationFrequency {
  */
 export interface SynchronizationStrategy {
   readonly strategyName: string;
-  readonly approach: 'centralized'' | ''federated'' | ''hybrid';
+  readonly approach: 'centralized|federated|hybrid';
   readonly coordinationMechanisms: CoordinationMechanism[];
   readonly synchronizationPoints: SynchronizationPoint[];
   readonly escalationPaths: EscalationPath[];
@@ -227,7 +227,7 @@ export interface SynchronizationStrategy {
 export interface CoordinationMechanism {
   readonly mechanismId: string;
   readonly name: string;
-  readonly type: 'meeting'' | ''tool'' | ''process'' | ''artifact';
+  readonly type: 'meeting|tool|process|artifact';
   readonly frequency: string;
   readonly participants: string[];
   readonly purpose: string;
@@ -270,10 +270,10 @@ export interface EscalationLevel {
  * Dependency management configuration
  */
 export interface DependencyManagementConfig {
-  readonly trackingStrategy: 'manual'' | ''automated'' | ''hybrid';
+  readonly trackingStrategy: 'manual|automated|hybrid';
   readonly identificationMethods: string[];
   readonly managementTools: string[];
-  readonly reportingCadence: 'daily'' | ''weekly'' | ''bi-weekly';
+  readonly reportingCadence: 'daily|weekly|bi-weekly';
   readonly escalationCriteria: EscalationCriteria;
 }
 
@@ -283,7 +283,7 @@ export interface DependencyManagementConfig {
 export interface EscalationCriteria {
   readonly daysOverdue: number;
   readonly criticalityThreshold: DependencyCriticality;
-  readonly impactThreshold: 'low'' | ''medium'' | ''high';
+  readonly impactThreshold: 'low|medium|high';
   readonly automaticEscalation: boolean;
 }
 
@@ -296,7 +296,7 @@ export interface CommunicationProtocol {
   readonly purpose: string;
   readonly participants: string[];
   readonly frequency: string;
-  readonly format: 'synchronous'' | ''asynchronous';
+  readonly format: 'synchronous|asynchronous';
   readonly channels: string[];
   readonly agenda: string[];
 }
@@ -342,7 +342,7 @@ export interface ARTCoordinationResult {
  */
 export interface CoordinationActivity {
   readonly activityId: string;
-  readonly activityType:' | ''planning'' | ''synchronization'' | ''integration'' | ''review';
+  readonly activityType:|planning|synchronization|integration|'review';
   readonly duration: number; // minutes
   readonly participants: string[];
   readonly outcomes: string[];
@@ -367,7 +367,7 @@ export interface SynchronizationOutcome {
  */
 export interface CoordinationIssue {
   readonly issueId: string;
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly description: string;
   readonly impactedARTs: string[];
   readonly rootCause: string;
@@ -384,9 +384,9 @@ export interface ActionItem {
   readonly description: string;
   readonly owner: string;
   readonly assignedART: string;
-  readonly priority: 'high'' | ''medium'' | ''low';
+  readonly priority: 'high|medium|low';
   readonly dueDate: Date;
-  readonly status: 'open'' | ''in_progress'' | ''completed'' | ''cancelled';
+  readonly status: 'open|in_progress|completed|cancelled';
   readonly dependencies: string[];
 }
 

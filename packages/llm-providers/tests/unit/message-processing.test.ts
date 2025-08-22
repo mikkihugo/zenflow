@@ -309,7 +309,7 @@ describe('Message Processing', () => {
         msg.content.includes('Execute this command')
       );
       // In a real implementation, this might be filtered out or modified
-      expect(bashMessage === undefined'' | '''' | ''bashMessage.tools.length === 0)
+      expect(bashMessage === undefined||bashMessage.tools.length === 0)
         .toBeTruthy;
     });
 

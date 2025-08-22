@@ -133,7 +133,7 @@ export interface QualityGate {
  */
 export interface QualityGateCriterion {
   readonly metric: string;
-  readonly operator: 'gt'' | ''gte'' | ''lt'' | ''lte'' | ''eq'' | ''neq';
+  readonly operator: 'gt|gte|lt|lte|eq|neq';
   readonly threshold: number;
   readonly weight: number;
   readonly critical: boolean;
@@ -158,7 +158,7 @@ export interface StageAutomation {
  * Automation trigger
  */
 export interface AutomationTrigger {
-  readonly event:' | ''stage_start'' | ''stage_complete'' | ''gate_pass'' | ''gate_fail'' | ''manual';
+  readonly event:|stage_start|stage_complete|gate_pass|gate_fail|'manual';
   readonly conditions: string[];
   readonly delay: number;
 }
@@ -167,7 +167,7 @@ export interface AutomationTrigger {
  * Automation action
  */
 export interface AutomationAction {
-  readonly type:' | ''command'' | ''api_call'' | ''notification'' | ''gate_check'' | ''deployment';
+  readonly type:|command|api_call|notification|gate_check|'deployment';
   readonly configuration: unknown;
   readonly timeout: number;
   readonly retryOnFailure: boolean;
@@ -183,8 +183,8 @@ export interface PipelineExecutionContext {
   readonly valueStreamId: string;
   readonly sparcProjectId: string;
   readonly initiator: string;
-  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
-  readonly environment: 'development'' | ''staging'' | ''production';
+  readonly priority: 'low|medium|high|critical';
+  readonly environment: 'development|staging|production';
   readonly metadata: Record<string, unknown>;
   readonly startTime: Date;
   readonly timeoutAt: Date;
@@ -228,7 +228,7 @@ export interface StageExecution {
 export interface RetryPolicy {
   readonly enabled: boolean;
   readonly maxAttempts: number;
-  readonly backoffStrategy: 'linear'' | ''exponential'' | ''fixed';
+  readonly backoffStrategy: 'linear|exponential|fixed';
   readonly baseDelay: number;
   readonly maxDelay: number;
 }
@@ -262,7 +262,7 @@ export interface AutomationCondition {
 
 export interface AutomationResult {
   readonly automationId: string;
-  readonly status: 'success'' | ''failure'' | ''skipped';
+  readonly status: 'success|failure|skipped';
   readonly startTime: Date;
   readonly endTime: Date;
   readonly output: string;
@@ -271,7 +271,7 @@ export interface AutomationResult {
 
 export interface QualityGateResult {
   readonly gateId: string;
-  readonly status: 'pass'' | ''fail'' | ''warning'' | ''pending';
+  readonly status: 'pass|fail|warning|pending';
   readonly score: number;
   readonly criterionResults: CriterionResult[];
   readonly executionTime: number;
@@ -292,7 +292,7 @@ export interface CriterionResult {
 export interface PipelineArtifact {
   readonly id: string;
   readonly name: string;
-  readonly type:' | ''binary'' | ''report'' | ''log'' | ''configuration'' | ''documentation';
+  readonly type:|binary|report|log|configuration|'documentation';
   readonly location: string;
   readonly size: number;
   readonly checksum: string;
@@ -324,15 +324,15 @@ export interface PipelineBottleneck {
 
 export interface MetricTrend {
   readonly metric: string;
-  readonly direction: 'improving'' | ''stable'' | ''degrading';
+  readonly direction: 'improving|stable|degrading';
   readonly change: number;
   readonly period: string;
-  readonly significance: 'low'' | ''medium'' | ''high';
+  readonly significance: 'low|medium|high';
 }
 
 export interface PipelineError {
   readonly stage: string;
-  readonly type: 'validation'' | ''execution'' | ''timeout'' | ''system';
+  readonly type: 'validation|execution|timeout|system';
   readonly message: string;
   readonly details: unknown;
   readonly timestamp: Date;
@@ -1191,7 +1191,7 @@ export interface CDPipelineConfig {
   readonly pipelineId: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'standard'' | ''microservice'' | ''library'' | ''enterprise';
+  readonly type: 'standard|microservice|library|enterprise';
   readonly stages: CDPipelineStage[];
   readonly triggers: PipelineTrigger[];
   readonly variables: Record<string, string>;
@@ -1209,7 +1209,7 @@ export interface CDPipelineConfig {
  */
 export interface PipelineTrigger {
   readonly id: string;
-  readonly type: 'webhook'' | ''schedule'' | ''manual'' | ''dependency';
+  readonly type: 'webhook|schedule|manual|dependency';
   readonly enabled: boolean;
   readonly configuration: Record<string, unknown>;
   readonly conditions: TriggerCondition[];
@@ -1220,7 +1220,7 @@ export interface PipelineTrigger {
  */
 export interface TriggerCondition {
   readonly field: string;
-  readonly operator:' | ''equals'' | ''contains'' | ''matches'' | ''greater_than'' | ''less_than';
+  readonly operator:|equals|contains|matches|greater_than|'less_than';
   readonly value: string;
   readonly caseSensitive: boolean;
 }
@@ -1230,7 +1230,7 @@ export interface TriggerCondition {
  */
 export interface NotificationConfig {
   readonly id: string;
-  readonly channel: 'email'' | ''slack'' | ''teams'' | ''webhook';
+  readonly channel: 'email|slack|teams|webhook';
   readonly recipients: string[];
   readonly events: NotificationEvent[];
   readonly template: string;
@@ -1240,7 +1240,7 @@ export interface NotificationConfig {
 /**
  * Notification event
  */
-export type NotificationEvent =' | ''pipeline_started'' | ''pipeline_completed'' | ''pipeline_failed'' | ''stage_completed'' | ''stage_failed'' | ''quality_gate_failed'' | ''security_check_failed';
+export type NotificationEvent =|pipeline_started|pipeline_completed|pipeline_failed|stage_completed|stage_failed|quality_gate_failed|'security_check_failed';
 
 /**
  * Security check configuration
@@ -1248,7 +1248,7 @@ export type NotificationEvent =' | ''pipeline_started'' | ''pipeline_completed''
 export interface SecurityCheck {
   readonly id: string;
   readonly name: string;
-  readonly type:' | ''vulnerability_scan'' | ''dependency_check'' | ''secrets_scan'' | ''compliance_check';
+  readonly type:|vulnerability_scan|dependency_check|secrets_scan|'compliance_check';
   readonly tool: string;
   readonly configuration: Record<string, unknown>;
   readonly enabled: boolean;
@@ -1291,7 +1291,7 @@ export interface CDPipelineState {
   readonly status: PipelineStatus;
   readonly progress: number;
   readonly estimatedCompletion?: Date;
-  readonly health: 'healthy'' | ''degraded'' | ''unhealthy';
+  readonly health: 'healthy|degraded|unhealthy';
 }
 
 /**
@@ -1301,7 +1301,7 @@ export interface SwarmExecutionOrchestrator {
   readonly id: string;
   readonly name: string;
   readonly pipelines: string[];
-  readonly coordination: 'sequential'' | ''parallel'' | ''adaptive';
+  readonly coordination: 'sequential|parallel|adaptive';
   readonly loadBalancing: boolean;
   readonly monitoring: boolean;
 }

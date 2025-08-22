@@ -31,21 +31,21 @@ export interface BootstrapFinetuneMLConfig {
   useArchitectureSearch: boolean;
   useStatisticalValidation: boolean;
   bayesianConfig: {
-    acquisitionFunction:'' | '''expected_improvement | upper_confidence_bound' | 'probability_improvement';
-    kernelType: 'rbf | matern' | 'linear';
+    acquisitionFunction:|'expected_improvement|upper_confidence_bound|probability_improvement';
+    kernelType: 'rbf|matern|linear';
     explorationRate: number;
     noiseLevel: number;
     maxIterations: number;
   };
   multiObjectiveConfig: {
-    objectives: Array<'accuracy | speed' | 'memory''' | '''robustness'>;
-    scalarizationMethod:'' | '''weighted_sum | tchebycheff' | 'augmented_tchebycheff';
+    objectives: Array<'accuracy|speed|memory|robustness'>;
+    scalarizationMethod:|'weighted_sum|tchebycheff|augmented_tchebycheff';
     weights: number[];
     paretoFrontSize: number;
   };
   adaptiveLearningConfig: {
     initialLearningRate: number;
-    decayStrategy: 'exponential | polynomial' | 'cosine''' | '''adaptive';
+    decayStrategy: 'exponential|polynomial|cosine|adaptive';
     decayRate: number;
     minLearningRate: number;
     patience: number;
@@ -58,7 +58,7 @@ export interface BootstrapFinetuneMLConfig {
       dropoutRates: number[];
       optimizerTypes: string[];
     };
-    searchStrategy: 'grid | random' | 'bayesian''' | '''evolutionary';
+    searchStrategy: 'grid|random|bayesian|evolutionary';
     maxArchitectures: number;
     evaluationMetric: string;
   };

@@ -221,7 +221,7 @@ export class NeuralEventProcessor {
   ): Promise<Result<string[], Error>> {
     return withTrace('neural_event.predict_route', async () => {
       return safeAsync(async () => {
-        if (!this.config.smartRoutingEnabled'' | '''' | ''!this.isInitialized) {
+        if (!this.config.smartRoutingEnabled||!this.isInitialized) {
           return this.getDefaultRoutes(event);
         }
 
@@ -258,7 +258,7 @@ export class NeuralEventProcessor {
   ): Promise<Result<BaseEvent[], Error>> {
     return withTrace('neural_event.predict_flow', async () => {
       return safeAsync(async () => {
-        if (!this.config.predictionEnabled'' | '''' | ''!this.isInitialized) {
+        if (!this.config.predictionEnabled||!this.isInitialized) {
           return [];
         }
 
@@ -297,7 +297,7 @@ export class NeuralEventProcessor {
   async trainOnEventPatterns(): Promise<Result<void, Error>> {
     return withTrace('neural_event.train', async () => {
       return safeAsync(async () => {
-        if (!this.config.enableLearning'' | '''' | ''this.trainingData.length < 10) {
+        if (!this.config.enableLearning||this.trainingData.length < 10) {
           logger.warn('[NeuralEventProcessor] Insufficient training data', {
             dataSize: this.trainingData.length,
             minRequired: 10,
@@ -319,7 +319,7 @@ export class NeuralEventProcessor {
           if (dataPoint.optimizationResult) {
             await this.brainBridge.learnFromResult(
               dataPoint.optimizationResult,
-              dataPoint.success'' | '''' | ''false,
+              dataPoint.success||false,
               dataPoint.feedback
             );
           }
@@ -370,7 +370,7 @@ export class NeuralEventProcessor {
       INTERFACE: 0.7,
       CORE: 0.8,
     };
-    features.push(domainMap[event.domain]'' | '''' | ''0.0);
+    features.push(domainMap[event.domain]||0.0);
 
     // Temporal features
     const timestamp = new Date(event.timestamp).getTime();
@@ -378,14 +378,14 @@ export class NeuralEventProcessor {
     features.push(new Date(event.timestamp).getDay() / 7); // Day of week (0-1)
 
     // Payload size (if exists)
-    const payloadSize = JSON.stringify(event.payload'' | '''' | ''{}).length;
+    const payloadSize = JSON.stringify(event.payload||{}).length;
     features.push(Math.min(payloadSize / 1000, 1)); // Normalize to 0-1
 
     // Version features
-    const version = event.version'' | '''' | '''1.0.0';
+    const version = event.version||'1.0.0';
     const versionParts = version.split('.').map(Number);
-    features.push((versionParts[0]'' | '''' | ''1) / 10); // Major version
-    features.push((versionParts[1]'' | '''' | ''0) / 10); // Minor version
+    features.push((versionParts[0]||1) / 10); // Major version
+    features.push((versionParts[1]||0) / 10); // Minor version
 
     return features;
   }
@@ -447,7 +447,7 @@ export class NeuralEventProcessor {
     }
 
     // Add priority-based routes
-    const confidence = Math.max(...Object.values(prediction.output'' | '''' | ''{}));
+    const confidence = Math.max(...Object.values(prediction.output||{}));
     if (confidence > 0.8) {
       routes.push('priority-queue');
     } else {
@@ -514,7 +514,7 @@ export class NeuralEventProcessor {
     event: BaseEvent
   ): EventClassification {
     // Use optimization confidence as classification confidence
-    const confidence = result.confidence'' | '''' | ''0.5;
+    const confidence = result.confidence||0.5;
 
     return {
       category: event.domain,
@@ -544,7 +544,7 @@ export class NeuralEventProcessor {
     }
 
     // Add priority-based routes based on optimization confidence
-    const confidence = result.confidence'' | '''' | ''0.5;
+    const confidence = result.confidence||0.5;
     if (confidence > 0.8) {
       routes.push('priority-queue');
     } else {
@@ -565,7 +565,7 @@ export class NeuralEventProcessor {
     const predicted: BaseEvent[] = [];
 
     // Use optimization confidence for prediction
-    const confidence = result.confidence'' | '''' | ''0.5;
+    const confidence = result.confidence||0.5;
 
     if (confidence > 0.7) {
       // Predict likely follow-up events

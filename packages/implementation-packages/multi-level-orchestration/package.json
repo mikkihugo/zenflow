@@ -30,7 +30,6 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@claude-zen/coordination-core": "workspace:*",
     "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/workflows": "workspace:*",

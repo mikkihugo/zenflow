@@ -22,8 +22,8 @@ export class IncrementalAIFixer {
     // Fix malformed union types
     {
       name: 'malformed_union_types',
-      pattern: /'([^']+)\s*\' | '\s*([^']+)'\s*\)/g,
-      replacement: "'$1'' | ''$2'"
+      pattern: /'([^']+)\s*\|\s*([^']+)'\s*\)/g,
+      replacement: "'$1|$2'"
     },
     // Fix import statement syntax  
     {

@@ -97,8 +97,8 @@ export interface EventHandlerConfig {
   readonly priority?: number;
   readonly timeout?: number;
   readonly retries?: number;
-  readonly backoffStrategy?: 'linear''' | '''exponential';
-  readonly errorHandling?: 'ignore | retry' | 'failfast';
+  readonly backoffStrategy?: 'linear|exponential'';
+  readonly errorHandling?: 'ignore|retry|failfast';
   readonly validatePayload?: boolean;
   readonly trackMetrics?: boolean;
 }
@@ -149,7 +149,7 @@ export interface AgentCreatedEvent extends CoordinationEvent {
   readonly payload: {
     readonly agent: Agent;
     readonly capabilities: string[];
-    readonly initialStatus: 'idle''' | '''busy';
+    readonly initialStatus: 'idle|busy'';
   };
 }
 
@@ -158,7 +158,7 @@ export interface AgentDestroyedEvent extends CoordinationEvent {
   readonly payload: {
     readonly agentId: string;
     readonly reason: string;
-    readonly finalStatus: 'idle''' | '''busy';
+    readonly finalStatus: 'idle|busy'';
   };
 }
 
@@ -338,7 +338,7 @@ export interface MemoryEvictedEvent extends MemoryEvent {
   readonly type: 'memory.evicted';
   readonly payload: {
     readonly key: string;
-    readonly reason: 'ttl | capacity' | 'manual';
+    readonly reason: 'ttl|capacity|manual';
     readonly size: number;
   };
 }
@@ -355,7 +355,7 @@ export interface KnowledgeUpdatedEvent extends KnowledgeEvent {
   readonly payload: {
     readonly entityId: string;
     readonly entityType: string;
-    readonly updateType: 'create | update' | 'delete';
+    readonly updateType: 'create|update|delete';
     readonly version: number;
   };
 }
@@ -381,7 +381,7 @@ export interface HumanValidationRequestedEvent extends InterfaceEvent {
   readonly type: 'human.validation.requested';
   readonly payload: {
     readonly requestId: string;
-    readonly validationType: 'approval | selection' | 'input''' | '''review';
+    readonly validationType: 'approval|selection|input|review';
     readonly context: unknown;
     readonly priority: EventPriority;
     readonly timeout?: number;
@@ -449,7 +449,7 @@ export interface ErrorOccurredEvent extends CoreEvent {
   readonly payload: {
     readonly error: Error;
     readonly context: unknown;
-    readonly severity: 'low | medium' | 'high''' | '''critical';
+    readonly severity: 'low|medium|high|critical';
     readonly recoverable: boolean;
   };
 }
@@ -457,12 +457,12 @@ export interface ErrorOccurredEvent extends CoreEvent {
 /**
  * Union type of all domain events
  */
-export type DomainEvent ='' | ''CoordinationEvent'' | ''WorkflowDomainEvent'' | ''NeuralEvent'' | ''DatabaseEvent'' | ''MemoryEvent'' | ''KnowledgeEvent'' | ''InterfaceEvent'' | ''CoreEvent;
+export type DomainEvent =|CoordinationEvent|WorkflowDomainEvent|NeuralEvent|DatabaseEvent|MemoryEvent|KnowledgeEvent|InterfaceEvent|CoreEvent;
 
 /**
  * Union type of all specific event types
  */
-export type SystemEvent ='' | ''AgentCreatedEvent'' | ''AgentDestroyedEvent'' | ''TaskAssignedEvent'' | ''TaskCompletedEvent'' | ''SwarmStateChangedEvent'' | ''WorkflowStartedEvent'' | ''WorkflowCompletedEvent'' | ''WorkflowFailedEvent'' | ''WorkflowStepCompletedEvent'' | ''NetworkTrainingStartedEvent'' | ''NetworkTrainingCompletedEvent'' | ''NetworkPredictionEvent'' | ''QueryExecutedEvent'' | ''TransactionCompletedEvent'' | ''MemoryStoredEvent'' | ''MemoryRetrievedEvent'' | ''MemoryEvictedEvent'' | ''KnowledgeUpdatedEvent'' | ''KnowledgeQueryEvent'' | ''HumanValidationRequestedEvent'' | ''HumanValidationCompletedEvent'' | ''AGUIGateOpenedEvent'' | ''AGUIGateClosedEvent'' | ''SystemStartedEvent'' | ''SystemShutdownEvent'' | ''ErrorOccurredEvent;
+export type SystemEvent =|AgentCreatedEvent|AgentDestroyedEvent|TaskAssignedEvent|TaskCompletedEvent|SwarmStateChangedEvent|WorkflowStartedEvent|WorkflowCompletedEvent|WorkflowFailedEvent|WorkflowStepCompletedEvent|NetworkTrainingStartedEvent|NetworkTrainingCompletedEvent|NetworkPredictionEvent|QueryExecutedEvent|TransactionCompletedEvent|MemoryStoredEvent|MemoryRetrievedEvent|MemoryEvictedEvent|KnowledgeUpdatedEvent|KnowledgeQueryEvent|HumanValidationRequestedEvent|HumanValidationCompletedEvent|AGUIGateOpenedEvent|AGUIGateClosedEvent|SystemStartedEvent|SystemShutdownEvent|ErrorOccurredEvent;
 
 // ============================================================================
 // EVENT SCHEMAS - TypeSchema definitions for runtime validation
@@ -601,7 +601,7 @@ export const EventSchemas = {
 export type EventHandler<TEvent extends BaseEvent = BaseEvent> = (
   event: TEvent,
   context: EventHandlerContext
-) => Promise<void>'' | ''void;
+) => Promise<void>|void;
 
 /**
  * Event handler context
@@ -732,24 +732,24 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     } = {}
   ): Promise<EventProcessingResult> {
     const startTime = Date.now();
-    const eventId = event.id'' | '''' | ''this.generateEventId();
+    const eventId = event.id||this.generateEventId();
 
     try {
       // Enhanced event with processing metadata
       const enhancedEvent: TEvent = {
         ...event,
         id: eventId,
-        timestamp: event.timestamp'' | '''' | ''new Date(),
-        version: event.version'' | '''' | '''1.0.0',
+        timestamp: event.timestamp||new Date(),
+        version: event.version||'1.0.0',
         metadata: {
           ...event.metadata,
           correlationId:
-            options.correlationId'' | '''' | ''event.metadata?.correlationId'' | '''' | ''this.generateCorrelationId(),
+            options.correlationId||event.metadata?.correlationId||this.generateCorrelationId(),
           priority:
             options.priority ??
             event.metadata?.priority ??
             EventPriority.NORMAL,
-          source: event.metadata?.source'' | '''' | '''type-safe-event-bus',
+          source: event.metadata?.source||'type-safe-event-bus',
         },
       };
 
@@ -810,7 +810,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
             (r) => !r.success
           ).length,
           totalProcessingTime: Date.now() - startTime,
-          validationTime: processingResult.validationTime'' | '''' | ''0,
+          validationTime: processingResult.validationTime||0,
         },
       };
     } catch (error) {
@@ -1037,7 +1037,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
    * Get all handlers for an event type
    */
   public getHandlers(eventType: string): TypedEventHandler[] {
-    return this.eventHandlers.get(eventType)'' | '''' | ''[];
+    return this.eventHandlers.get(eventType)||[];
   }
 
   /**
@@ -1216,7 +1216,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
   /**
    * Get event by ID
    */
-  public getEvent(eventId: string): BaseEvent'' | ''undefined {
+  public getEvent(eventId: string): BaseEvent|undefined {
     // Check cache first
     if (this.config.enableCaching && this.eventCache.has(eventId)) {
       return this.eventCache.get(eventId);
@@ -1333,8 +1333,8 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         averageTime: sum / count,
         minTime: sortedTimes[0],
         maxTime: sortedTimes[sortedTimes.length - 1],
-        p95Time: sortedTimes[Math.floor(count * 0.95)]'' | '''' | ''0,
-        p99Time: sortedTimes[Math.floor(count * 0.99)]'' | '''' | ''0,
+        p95Time: sortedTimes[Math.floor(count * 0.95)]||0,
+        p99Time: sortedTimes[Math.floor(count * 0.99)]||0,
       };
     }
 
@@ -1478,7 +1478,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
       logger: this.logger,
       startTime: new Date(),
       correlationId:
-        event.metadata?.correlationId'' | '''' | ''this.generateCorrelationId(),
+        event.metadata?.correlationId||this.generateCorrelationId(),
       metadata: {},
     };
 
@@ -1507,7 +1507,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
           new Promise((_, reject) =>
             setTimeout(
               () => reject(new Error('Handler timeout')),
-              handler.config.timeout'' | '''' | ''options.timeout
+              handler.config.timeout||options.timeout
             )
           ),
         ]);
@@ -1585,7 +1585,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         } else {
           return {
             success: false,
-            error: validationResult.error'' | '''' | ''new Error('Validation failed'),
+            error: validationResult.error||new Error('Validation failed'),
           };
         }
       }
@@ -1601,7 +1601,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
         return {
           success: false,
           error:
-            basicValidationResult.error'' | '''' | ''new Error('Basic validation failed'),
+            basicValidationResult.error||new Error('Basic validation failed'),
         };
       }
     } catch (error) {
@@ -1634,7 +1634,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
           return {
             success: false,
             error:
-              validationResult.error'' | '''' | ''new Error('Cross-domain validation failed'),
+              validationResult.error||new Error('Cross-domain validation failed'),
           };
         }
       }
@@ -1650,7 +1650,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
     }
   }
 
-  private getEventSchema(eventType: string): EventTypeSchema'' | ''undefined {
+  private getEventSchema(eventType: string): EventTypeSchema|undefined {
     // Check cache first
     if (this.schemaCache.has(eventType)) {
       return this.schemaCache.get(eventType);
@@ -1765,7 +1765,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
   /**
    * Legacy emit method for EventBus compatibility
    */
-  emit(eventName: string'' | ''symbol, ...args: unknown[]): boolean {
+  emit(eventName: string|symbol, ...args: unknown[]): boolean {
     // Handle both the new typed events and legacy event emitter events
     const result = super.emit(eventName, ...args);
 
@@ -1789,7 +1789,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
   /**
    * Legacy on method for EventBus compatibility
    */
-  on(eventName: string'' | ''symbol, listener: (...args: unknown[]) => void): this {
+  on(eventName: string|symbol, listener: (...args: unknown[]) => void): this {
     super.on(eventName, listener);
     return this;
   }
@@ -1798,7 +1798,7 @@ export class TypeSafeEventBus extends TypedEventBase implements EventBus {
    * Legacy off method for EventBus compatibility
    */
   off(
-    eventName: string'' | ''symbol,
+    eventName: string|symbol,
     listener: (...args: unknown[]) => void
   ): this {
     super.off(eventName, listener);
@@ -1826,7 +1826,7 @@ export function createTypeSafeEventBus(
 export function createEvent<TEvent extends BaseEvent>(
   type: TEvent['type'],
   domain: Domain,
-  payload: Omit<TEvent, 'id | type' | 'domain' | 'timestamp' | 'version'>,
+  payload: Omit<TEvent, 'id|type|domain|timestamp|version'>,
   metadata?: Partial<EventMetadata>
 ): TEvent {
   return {
@@ -1851,7 +1851,7 @@ export function createCorrelationId(): string {
  * Type guard to check if an object is a valid base event
  */
 export function isBaseEvent(obj: unknown): obj is BaseEvent {
-  if (!obj'' | '''' | ''typeof obj !=='object') return false;
+  if (!obj||typeof obj !=='object') return false;
 
   const event = obj as any;
   return (

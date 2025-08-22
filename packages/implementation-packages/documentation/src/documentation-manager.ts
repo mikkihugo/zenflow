@@ -75,8 +75,8 @@ export class DocumentationManager extends TypedEventBase {
     this.memory = memory;
     this.config = {
       autoLink: config?.['autoLink'] !== false,
-      scanPaths: config?.['scanPaths']'' | '''' | ''['./docs', './src'],
-      maxDepth: config?.['maxDepth']'' | '''' | ''10,
+      scanPaths: config?.['scanPaths']||['./docs', './src'],
+      maxDepth: config?.['maxDepth']||10,
     };
     this.stats = {
       indexedDocuments: 0,
@@ -108,7 +108,7 @@ export class DocumentationManager extends TypedEventBase {
     await this.memory.store(
       docId,
       {
-        title: document.title'' | '''' | '''Untitled',
+        title: document.title||'Untitled',
         path: document.path,
         content: document.content,
         type: document.type,
@@ -117,7 +117,7 @@ export class DocumentationManager extends TypedEventBase {
       'documentation');
 
     this.stats.indexedDocuments++;
-    logger.debug(`Indexed document: ${document.title'' | '''' | ''document.path}`);
+    logger.debug(`Indexed document: ${document.title||document.path}`);
   }
 
   async scanDocumentation(): Promise<void> {

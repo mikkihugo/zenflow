@@ -18,24 +18,16 @@
  */
 
 // Re-export types from foundation packages
-export type {
-  Result,
-  Logger,
-  Config,
-  AsyncResult,
-  Optional,
-  DeepPartial,
-  // Disposable // Not available in foundation package
+export type { Result, Logger, Config, AsyncResult, Optional, DeepPartial, // Disposable // Not available in foundation package
 } from '@claude-zen/foundation';
 
 // Local interface for missing Disposable
-export interface Disposable {
-  dispose(): void'' | ''Promise<void>;
+export interface Disposable { dispose(): void  || Promise<void>;
 }
 
-export type { MetricData } from'@claude-zen/foundation');
+export type { MetricData } from@claude-zen/foundation);
 
-export type { EventData } from '@claude-zen/intelligence';
+export type { EventData } fro'm'' '@claude-zen/intelligence';
 
 /**
  * DEPRECATION NOTICE:
@@ -44,6 +36,5 @@ export type { EventData } from '@claude-zen/intelligence';
  * **Migration Path:**
  * ```typescript
  * // Old: import { Result } from './utils/types';
- * // New: import { Result } from '@claude-zen/foundation';
- * ```
- */
+ * // New: import { Result } from '@claude-zen/foundation';` * ```
+ */`

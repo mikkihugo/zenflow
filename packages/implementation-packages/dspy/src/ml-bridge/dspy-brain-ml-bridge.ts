@@ -44,8 +44,8 @@ interface BrainCoordinator {
 // ML interfaces for DSPy-Brain communication
 export interface DSPyOptimizationTask {
   type: 'teleprompter_optimization';
-  teleprompterType: 'miprov2 | copro' | 'bootstrap''' | '''grpo';
-  objective: 'accuracy | speed' | 'memory''' | '''multi_objective';
+  teleprompterType: 'miprov2|copro|bootstrap|grpo';
+  objective: 'accuracy|speed|memory|multi_objective';
   parameters: DSPyParameters;
   constraints: OptimizationConstraints;
   dataset: TrainingDataset;
@@ -199,7 +199,7 @@ interface PredictionResult {
  */
 export class DSPyBrainMLBridge extends TypedEventBase {
   private logger: Logger;
-  private brainCoordinator: BrainCoordinator'' | ''null = null;
+  private brainCoordinator: BrainCoordinator|null = null;
   private initialized = false;
   private optimizationHistory = new Map<string, DSPyOptimizationResult>();
 
@@ -350,7 +350,7 @@ export class DSPyBrainMLBridge extends TypedEventBase {
 
     try {
       // Use Brain's pattern recognition for intelligent selection (fallback if MLEngine not available)
-      const mlEngine = this.brainCoordinator.getMLEngine?.()'' | '''' | ''null;
+      const mlEngine = this.brainCoordinator.getMLEngine?.()||null;
 
       // Analyze task characteristics
       const taskAnalysis =
@@ -412,58 +412,58 @@ export class DSPyBrainMLBridge extends TypedEventBase {
     originalTask: DSPyOptimizationTask
   ): DSPyOptimizationResult {
     // Brain result has different structure - adapt it
-    const result = brainResult.result'' | '''' | ''brainResult;
+    const result = brainResult.result||brainResult;
 
     return {
       success: brainResult.success !== false, // Default to true if not specified
       optimizedParameters: {
         instructions:
-          result.optimizedPrompt?.instructions'' | '''' | ''result.prompt?.split('\n')'' | '''' | ''originalTask.parameters.instructions,
-        prefixes: result.optimizedPrefixes'' | '''' | ''originalTask.parameters.prefixes,
+          result.optimizedPrompt?.instructions||result.prompt?.split('\n')||originalTask.parameters.instructions,
+        prefixes: result.optimizedPrefixes||originalTask.parameters.prefixes,
         demonstrations:
-          result.optimizedDemonstrations'' | '''' | ''originalTask.parameters.demonstrations,
+          result.optimizedDemonstrations||originalTask.parameters.demonstrations,
         populationSize:
-          result.optimalPopulationSize'' | '''' | ''originalTask.parameters.populationSize,
+          result.optimalPopulationSize||originalTask.parameters.populationSize,
         maxIterations:
-          result.optimalIterations'' | '''' | ''originalTask.parameters.maxIterations,
-        learningRate: result.optimalLearningRate'' | '''' | ''0.01,
-        regularization: result.optimalRegularization'' | '''' | ''0.001,
+          result.optimalIterations||originalTask.parameters.maxIterations,
+        learningRate: result.optimalLearningRate||0.01,
+        regularization: result.optimalRegularization||0.001,
       },
       metrics: {
-        accuracy: result.confidence'' | '''' | ''result.expectedPerformance'' | '''' | ''0.8,
-        speed: result.averageSpeed'' | '''' | ''1.0,
-        memoryUsage: result.peakMemoryUsage'' | '''' | ''512,
-        convergenceTime: result.timeEstimate'' | '''' | ''result.convergenceTime'' | '''' | ''1000,
-        iterationsUsed: result.iterationsUsed'' | '''' | ''10,
-        paretoOptimality: result.paretoOptimality'' | '''' | ''0.5,
+        accuracy: result.confidence||result.expectedPerformance||0.8,
+        speed: result.averageSpeed||1.0,
+        memoryUsage: result.peakMemoryUsage||512,
+        convergenceTime: result.timeEstimate||result.convergenceTime||1000,
+        iterationsUsed: result.iterationsUsed||10,
+        paretoOptimality: result.paretoOptimality||0.5,
       },
       neuralAnalysis: {
-        patternRecognition: result.patterns'' | '''' | ''[],
-        conceptDrift: result.driftDetection'' | '''' | ''{
+        patternRecognition: result.patterns||[],
+        conceptDrift: result.driftDetection||{
           driftDetected: false,
           driftMagnitude: 0,
           recommendedAdaptation:'none',
         },
-        statisticalSignificance: result.statisticalTest'' | '''' | ''{
+        statisticalSignificance: result.statisticalTest||{
           testType:'none',
           pValue: 1.0,
           significant: false,
           confidenceInterval: [0, 0],
         },
-        neuralPredictions: result.predictions'' | '''' | ''[],
+        neuralPredictions: result.predictions||[],
       },
       convergenceInfo: {
-        converged: result.converged'' | '''' | ''false,
-        convergenceIteration: result.convergenceIteration'' | '''' | ''0,
-        finalLoss: result.finalLoss'' | '''' | ''Infinity,
-        lossTrajectory: result.lossTrajectory'' | '''' | ''[],
-        gradientNorm: result.gradientNorm'' | '''' | ''0,
+        converged: result.converged||false,
+        convergenceIteration: result.convergenceIteration||0,
+        finalLoss: result.finalLoss||Infinity,
+        lossTrajectory: result.lossTrajectory||[],
+        gradientNorm: result.gradientNorm||0,
       },
       recommendations: {
-        suggestedParameters: result.nextParameters'' | '''' | ''{},
-        alternativeObjectives: result.alternativeObjectives'' | '''' | ''[],
-        performanceBottlenecks: result.bottlenecks'' | '''' | ''[],
-        nextOptimizationSteps: result.nextSteps'' | '''' | ''[],
+        suggestedParameters: result.nextParameters||{},
+        alternativeObjectives: result.alternativeObjectives||[],
+        performanceBottlenecks: result.bottlenecks||[],
+        nextOptimizationSteps: result.nextSteps||[],
       },
     };
   }
@@ -546,7 +546,7 @@ export class DSPyBrainMLBridge extends TypedEventBase {
   }
 
   // Helper methods for task analysis
-  private estimateComplexity(description: string): 'low | medium' | 'high' {
+  private estimateComplexity(description: string): 'low|medium|high' {
     const complexityKeywords = [
       'complex',
       'difficult',
@@ -560,7 +560,7 @@ export class DSPyBrainMLBridge extends TypedEventBase {
       : 'medium';
   }
 
-  private estimateDataSize(description: string): 'small | medium' | 'large' {
+  private estimateDataSize(description: string): 'small|medium|large' {
     const largeSizeKeywords = [
       'large',
       'big',
@@ -578,7 +578,7 @@ export class DSPyBrainMLBridge extends TypedEventBase {
 
   private estimateAccuracyRequirement(
     description: string
-  ): 'low | medium' | 'high' {
+  ): 'low|medium|high' {
     const highAccuracyKeywords = [
       'precise',
       'accurate',
@@ -595,7 +595,7 @@ export class DSPyBrainMLBridge extends TypedEventBase {
 
   private estimateSpeedRequirement(
     description: string
-  ): 'low | medium' | 'high' {
+  ): 'low|medium|high' {
     const speedKeywords = ['fast', 'quick', 'real-time', 'immediate', 'urgent'];
     return speedKeywords.some((keyword) =>
       description.toLowerCase().includes(keyword)

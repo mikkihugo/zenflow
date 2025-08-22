@@ -59,7 +59,7 @@ export function getTelemetryManager(config?: {
   enableTracing?: boolean;
   enableMetrics?: boolean;
 }) {
-  const serviceName = config?.serviceName'' | '''' | '''default-service';
+  const serviceName = config?.serviceName||'default-service';
   const enableTracing = config?.enableTracing !== false;
   const enableMetrics = config?.enableMetrics !== false;
 

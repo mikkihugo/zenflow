@@ -72,14 +72,14 @@ interface Project {
 
 class ApiClient {
   private baseUrl: string;
-  public currentProjectId: string'' | ''null = null;
+  public currentProjectId: string|null = null;
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
   }
 
   // Set current project context for all API calls
-  setProjectContext(projectId: string'' | ''null) {
+  setProjectContext(projectId: string|null) {
     this.currentProjectId = projectId;
     console.log('🎯 API client project context updated:', projectId);
   }
@@ -118,7 +118,7 @@ class ApiClient {
 
   async getAgents(): Promise<Agent[]> {
     const response = await this.request<{ agents: Agent[]; total: number }>('/v1/coordination/agents');
-    return response.agents'' | '''' | ''[];
+    return response.agents||[];
   }
 
   async createAgent(agentData: Partial<Agent>): Promise<Agent> {
@@ -190,7 +190,7 @@ class ApiClient {
 
   async getMemoryStores(): Promise<any[]> {
     const response = await this.request<{ stores: any[]; total: number }>('/v1/memory/stores');
-    return response.stores'' | '''' | ''[];
+    return response.stores||[];
   }
 
   async getMemoryStats(storeId: string): Promise<any> {
@@ -230,7 +230,7 @@ class ApiClient {
   }
 
   async executeTransaction(transactionData: {
-    operations: Array<{ type: 'query''' | '''execute'; sql: string; params?: any[] }>;
+    operations: Array<{ type: 'query|execute''; sql: string; params?: any[] }>;
     useTransaction?: boolean;
   }): Promise<any> {
     return await this.request('/v1/database/transaction', {
@@ -385,7 +385,7 @@ class ApiClient {
 
   async getProjects(): Promise<Project[]> {
     const response = await this.request<{ projects: Project[]; total: number }>('/v1/projects');
-    return response.projects'' | '''' | ''[];
+    return response.projects||[];
   }
 
   async getCurrentProject(): Promise<Project> {
@@ -706,11 +706,11 @@ class ApiClient {
     return await this.request('/roadmap/strategic-alignment');
   }
 
-  async getRoadmapReports(type: 'summary | detailed' | 'executive'): Promise<any> {
+  async getRoadmapReports(type: 'summary|detailed|executive'): Promise<any> {
     return await this.request(`/roadmap/reports/${type}`);
   }
 
-  async exportRoadmap(roadmapId: string, format: 'pdf | excel' | 'json'): Promise<any> {
+  async exportRoadmap(roadmapId: string, format: 'pdf|excel|json'): Promise<any> {
     return await this.request(`/roadmap/roadmaps/${roadmapId}/export?format=${format}`);
   }
 

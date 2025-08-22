@@ -30,7 +30,7 @@ export interface BrainSpecificConfig {
     customPresets?: Record<string, any>;
   };
   dspy: {
-    teleprompter:'' | '''MIPROv2 | BootstrapFewShot' | 'LabeledFewShot''' | '''Ensemble';
+    teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble';
     maxTokens: number;
     optimizationSteps: number;
     coordinationFeedback: boolean;
@@ -74,7 +74,7 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
     const sharedConfig = getConfig();
 
     // Get neural-specific config from shared system
-    const neuralConfig = getNeuralConfig ? getNeuralConfig()'' | '''' | ''{} : {};
+    const neuralConfig = getNeuralConfig ? getNeuralConfig()||{} : {};
 
     // Log neural config availability for debugging
     logger.debug('Neural configuration loaded', {
@@ -87,7 +87,7 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
     const debugMode = isDebugMode();
     // Use NODE_ENV or fallback to debug mode inference
     const environment =
-      process.env.NODE_ENV'' | '''' | ''(debugMode ?'development' : 'production');
+      process.env.NODE_ENV||(debugMode ?'development' : 'production');
 
     logger.info(`Loading brain config for environment: ${environment}`, {
       debugMode,
@@ -139,27 +139,27 @@ export function validateBrainConfig(
   config: Partial<BrainSpecificConfig>
 ): boolean {
   try {
-    if (!config.wasmPath'' | '''' | ''typeof config.wasmPath !=='string') {
+    if (!config.wasmPath||typeof config.wasmPath !=='string') {
       throw new Error('wasmPath must be a valid string');
     }
 
     if (
       config.maxNetworks &&
-      (config.maxNetworks < 1'' | '''' | ''config.maxNetworks > 100)
+      (config.maxNetworks < 1||config.maxNetworks > 100)
     ) {
       throw new Error('maxNetworks must be between 1 and 100');
     }
 
     if (
       config.defaultBatchSize &&
-      (config.defaultBatchSize < 1'' | '''' | ''config.defaultBatchSize > 1024)
+      (config.defaultBatchSize < 1||config.defaultBatchSize > 1024)
     ) {
       throw new Error('defaultBatchSize must be between 1 and 1024');
     }
 
     if (
       config.dspy?.maxTokens &&
-      (config.dspy.maxTokens < 100'' | '''' | ''config.dspy.maxTokens > 10000)
+      (config.dspy.maxTokens < 100||config.dspy.maxTokens > 10000)
     ) {
       throw new Error('DSPy maxTokens must be between 100 and 10000');
     }

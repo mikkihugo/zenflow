@@ -42,7 +42,7 @@ export interface GovernanceDecision {
   readonly criteria: DecisionCriteria[];
   readonly risks: RiskFactor[];
   readonly implications: Implication[];
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
   readonly status: DecisionStatus;
   readonly createdAt: Date;
   readonly requestedDecisionDate: Date;
@@ -56,9 +56,9 @@ export interface GovernanceDecision {
   readonly auditTrail: AuditRecord[];
 }
 
-export type DecisionType =' | ''architecture_standard'' | ''technology_selection'' | ''design_pattern'' | ''security_policy'' | ''integration_approach'' | ''data_governance'' | ''performance_requirement'' | ''compliance_exception'' | ''investment_decision'' | ''strategic_direction';
+export type DecisionType =|architecture_standard|technology_selection|design_pattern|security_policy|integration_approach|data_governance|performance_requirement|compliance_exception|investment_decision|'strategic_direction';
 
-export type DecisionStatus =' | ''submitted'' | ''under_review'' | ''pending_approval'' | ''approved'' | ''rejected'' | ''escalated'' | ''withdrawn'' | ''implemented'' | ''closed';
+export type DecisionStatus =|submitted|under_review|pending_approval|approved|rejected|escalated|withdrawn|implemented|'closed';
 
 export interface DecisionMaker {
   readonly userId: string;
@@ -76,13 +76,13 @@ export interface AvailabilityWindow {
   readonly startDate: Date;
   readonly endDate: Date;
   readonly timezone: string;
-  readonly type: 'available'' | ''limited'' | ''unavailable';
+  readonly type: 'available|limited|unavailable';
 }
 
 export interface DecisionArtifact {
   readonly id: string;
   readonly name: string;
-  readonly type:' | ''document'' | ''diagram'' | ''specification'' | ''analysis'' | ''proposal'' | ''evidence';
+  readonly type:|document|diagram|specification|analysis|proposal|'evidence';
   readonly url: string;
   readonly description: string;
   readonly version: string;
@@ -90,14 +90,14 @@ export interface DecisionArtifact {
   readonly uploadedAt: Date;
   readonly size: number;
   readonly checksum: string;
-  readonly confidentiality:' | ''public'' | ''internal'' | ''confidential'' | ''restricted';
+  readonly confidentiality:|public|internal|confidential|'restricted';
 }
 
 export interface DecisionCriteria {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly category:' | ''technical'' | ''business'' | ''compliance'' | ''financial'' | ''operational'' | ''strategic';
+  readonly category:|technical|business|compliance|financial|operational|'strategic';
   readonly weight: number; // 0-1
   readonly mandatory: boolean;
   readonly measurable: boolean;
@@ -106,7 +106,7 @@ export interface DecisionCriteria {
 }
 
 export interface CriteriaEvaluation {
-  readonly method: 'quantitative'' | ''qualitative'' | ''binary'' | ''scoring';
+  readonly method: 'quantitative|qualitative|binary|scoring';
   readonly scale: EvaluationScale;
   readonly evidence: string[];
   readonly evaluator: string;
@@ -116,7 +116,7 @@ export interface CriteriaEvaluation {
 }
 
 export interface EvaluationScale {
-  readonly type: 'numeric'' | ''categorical'' | ''boolean';
+  readonly type: 'numeric|categorical|boolean';
   readonly range: ScaleRange;
   readonly labels?: string[];
 }
@@ -129,29 +129,29 @@ export interface ScaleRange {
 }
 
 export interface EvaluationThreshold {
-  readonly operator: 'gt'' | ''lt'' | ''gte'' | ''lte'' | ''eq'' | ''neq';
+  readonly operator: 'gt|lt|gte|lte|eq|neq';
   readonly value: number;
-  readonly action: 'accept'' | ''reject'' | ''escalate'' | ''review';
+  readonly action: 'accept|reject|escalate|review';
 }
 
 export interface RiskFactor {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly category:' | ''technical'' | ''business'' | ''operational'' | ''security'' | ''compliance'' | ''financial';
+  readonly category:|technical|business|operational|security|compliance|'financial';
   readonly probability: number; // 0-1
-  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly impact: 'low|medium|high|critical';
   readonly timeframe: string;
   readonly owner: string;
   readonly mitigation: RiskMitigation;
-  readonly status:' | ''identified'' | ''assessed'' | ''mitigated'' | ''accepted'' | ''transferred';
+  readonly status:|identified|assessed|mitigated|accepted|'transferred';
 }
 
 export interface RiskMitigation {
-  readonly strategy: 'avoid'' | ''mitigate'' | ''transfer'' | ''accept';
+  readonly strategy: 'avoid|mitigate|transfer|accept';
   readonly description: string;
   readonly actions: MitigationAction[];
-  readonly cost: 'low'' | ''medium'' | ''high';
+  readonly cost: 'low|medium|high';
   readonly timeline: string;
   readonly effectiveness: number; // 0-1
   readonly owner: string;
@@ -163,20 +163,20 @@ export interface MitigationAction {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly status: 'planned'' | ''in_progress'' | ''completed'' | ''blocked';
+  readonly status: 'planned|in_progress|completed|blocked';
   readonly dependencies: string[];
 }
 
 export interface Implication {
   readonly id: string;
-  readonly type: 'immediate'' | ''short_term'' | ''medium_term'' | ''long_term';
-  readonly category:' | ''technical'' | ''business'' | ''operational'' | ''financial'' | ''organizational';
+  readonly type: 'immediate|short_term|medium_term|long_term';
+  readonly category:|technical|business|operational|financial|'organizational';
   readonly description: string;
-  readonly impact: 'positive'' | ''negative'' | ''neutral';
-  readonly magnitude: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly impact: 'positive|negative|neutral';
+  readonly magnitude: 'low|medium|high|critical';
   readonly stakeholders: string[];
   readonly timeframe: string;
-  readonly reversibility:' | ''reversible'' | ''partially_reversible'' | ''irreversible';
+  readonly reversibility:|reversible|partially_reversible|'irreversible';
   readonly dependencies: string[];
 }
 
@@ -201,7 +201,7 @@ export interface BudgetConstraint {
   readonly amount: number;
   readonly currency: string;
   readonly period: string;
-  readonly flexibility: 'fixed'' | ''flexible'' | ''negotiable';
+  readonly flexibility: 'fixed|flexible|negotiable';
   readonly source: string;
 }
 
@@ -215,7 +215,7 @@ export interface TechnicalContext {
 }
 
 export interface TechnicalConstraint {
-  readonly type:' | ''platform'' | ''security'' | ''performance'' | ''integration'' | ''data'' | ''compliance';
+  readonly type:|platform|security|performance|integration|data|'compliance';
   readonly description: string;
   readonly mandatory: boolean;
   readonly source: string;
@@ -228,7 +228,7 @@ export interface PerformanceRequirement {
   readonly threshold: number;
   readonly unit: string;
   readonly measurement: string;
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
 }
 
 export interface OrganizationalContext {
@@ -245,9 +245,9 @@ export interface OrganizationalStakeholder {
   readonly name: string;
   readonly role: string;
   readonly department: string;
-  readonly influence: 'high'' | ''medium'' | ''low';
-  readonly interest: 'high'' | ''medium'' | ''low';
-  readonly sentiment: 'supportive'' | ''neutral'' | ''opposed';
+  readonly influence: 'high|medium|low';
+  readonly interest: 'high|medium|low';
+  readonly sentiment: 'supportive|neutral|opposed';
   readonly requirements: string[];
 }
 
@@ -268,12 +268,12 @@ export interface RegulatoryRequirement {
   readonly compliance: ComplianceStatus;
 }
 
-export type ComplianceStatus =' | ''compliant'' | ''non_compliant'' | ''partially_compliant'' | ''under_review';
+export type ComplianceStatus =|compliant|non_compliant|partially_compliant|'under_review';
 
 export interface VendorConstraint {
   readonly vendor: string;
   readonly constraint: string;
-  readonly type: 'licensing'' | ''technical'' | ''commercial'' | ''support';
+  readonly type: 'licensing|technical|commercial|support';
   readonly impact: string;
   readonly workaround?: string;
 }
@@ -291,13 +291,13 @@ export interface DecisionWorkflow {
 export interface WorkflowStage {
   readonly stageId: string;
   readonly name: string;
-  readonly type:' | ''review'' | ''analysis'' | ''approval'' | ''implementation'' | ''closure';
+  readonly type:|review|analysis|approval|implementation|'closure';
   readonly owner: string;
   readonly participants: string[];
   readonly duration: string;
   readonly prerequisites: string[];
   readonly deliverables: string[];
-  readonly status:' | ''pending'' | ''in_progress'' | ''completed'' | ''skipped'' | ''failed';
+  readonly status:|pending|in_progress|completed|skipped|'failed';
   readonly startDate?: Date;
   readonly completedDate?: Date;
 }
@@ -306,13 +306,13 @@ export interface EscalationRule {
   readonly ruleId: string;
   readonly trigger: EscalationTrigger;
   readonly escalateTo: string[];
-  readonly action: 'notify'' | ''reassign'' | ''expedite'' | ''override';
+  readonly action: 'notify|reassign|expedite|override';
   readonly message: string;
   readonly autoExecute: boolean;
 }
 
 export interface EscalationTrigger {
-  readonly type: 'timeout'' | ''criteria_not_met'' | ''manual'' | ''risk_threshold';
+  readonly type: 'timeout|criteria_not_met|manual|risk_threshold';
   readonly threshold: any;
   readonly condition: string;
 }
@@ -334,10 +334,10 @@ export interface ApprovalLevel {
 }
 
 export interface VotingRule {
-  readonly method: 'unanimous'' | ''majority'' | ''weighted'' | ''quorum';
+  readonly method: 'unanimous|majority|weighted|quorum';
   readonly threshold?: number;
   readonly tieBreaker: string;
-  readonly abstentionHandling: 'ignore'' | ''count_as_no'' | ''escalate';
+  readonly abstentionHandling: 'ignore|count_as_no|escalate';
 }
 
 export interface DelegationRule {
@@ -359,20 +359,20 @@ export interface WorkflowTimeout {
   readonly stage: string;
   readonly duration: string;
   readonly warningTime: string;
-  readonly action: 'escalate'' | ''auto_approve'' | ''auto_reject'' | ''extend';
+  readonly action: 'escalate|auto_approve|auto_reject|extend';
   readonly notifications: string[];
 }
 
 export interface NotificationRule {
   readonly event: string;
   readonly recipients: string[];
-  readonly method: 'email'' | ''slack'' | ''teams'' | ''dashboard';
+  readonly method: 'email|slack|teams|dashboard';
   readonly template: string;
   readonly delay?: string;
 }
 
 export interface DecisionOutcome {
-  readonly decision: 'approved'' | ''rejected'' | ''deferred'' | ''modified';
+  readonly decision: 'approved|rejected|deferred|modified';
   readonly finalApprovers: string[];
   readonly votes: DecisionVote[];
   readonly conditions: string[];
@@ -384,7 +384,7 @@ export interface DecisionOutcome {
 
 export interface DecisionVote {
   readonly voterId: string;
-  readonly vote: 'approve'' | ''reject'' | ''abstain'' | ''delegate';
+  readonly vote: 'approve|reject|abstain|delegate';
   readonly weight: number;
   readonly timestamp: Date;
   readonly rationale: string;
@@ -414,7 +414,7 @@ export interface ImplementationPhase {
 }
 
 export interface ResourceRequirement {
-  readonly type: 'human'' | ''technical'' | ''financial'' | ''infrastructure';
+  readonly type: 'human|technical|financial|infrastructure';
   readonly description: string;
   readonly quantity: number;
   readonly unit: string;
@@ -434,7 +434,7 @@ export interface MonitoringPlan {
 
 export interface MonitoringMetric {
   readonly name: string;
-  readonly type: 'technical'' | ''business'' | ''operational'' | ''financial';
+  readonly type: 'technical|business|operational|financial';
   readonly measurement: string;
   readonly target: number;
   readonly threshold: number;
@@ -461,7 +461,7 @@ export interface CommunicationAudience {
 
 export interface CommunicationChannel {
   readonly channelId: string;
-  readonly type: 'email'' | ''meeting'' | ''document'' | ''portal'' | ''workshop';
+  readonly type: 'email|meeting|document|portal|workshop';
   readonly format: string;
   readonly frequency: string;
   readonly owner: string;
@@ -477,7 +477,7 @@ export interface CommunicationTimeline {
 }
 
 export interface FeedbackMechanism {
-  readonly type: 'survey'' | ''interview'' | ''workshop'' | ''observation';
+  readonly type: 'survey|interview|workshop|observation';
   readonly frequency: string;
   readonly participants: string[];
   readonly questions: string[];
@@ -503,14 +503,14 @@ export interface GovernanceDecisionRequest {
   readonly description: string;
   readonly requesterId: string;
   readonly requesterRole: string;
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
   readonly requestedDecisionDate: Date;
   readonly decisionMakers: string[];
-  readonly criteria: Omit<DecisionCriteria, 'id'' | ''evaluation'>[];
-  readonly risks: Omit<RiskFactor, 'id'' | ''status'>[];
+  readonly criteria: Omit<DecisionCriteria, 'id|evaluation'>[];
+  readonly risks: Omit<RiskFactor, 'id|status'>[];
   readonly implications: Omit<Implication, 'id'>[];
   readonly context: DecisionContext;
-  readonly artifacts: Omit<DecisionArtifact, 'id'' | ''uploadedAt'>[];
+  readonly artifacts: Omit<DecisionArtifact, 'id|uploadedAt'>[];
 }
 
 // ============================================================================

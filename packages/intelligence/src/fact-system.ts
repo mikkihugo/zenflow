@@ -52,7 +52,7 @@ function createFallbackFactSystem() {
 function createFallbackFactEngine() {
   return {
     query: async (query: any) => ({
-      result: `fallback-query-for-${query?.question'' | '''' | '''unknown'}`,
+      result: `fallback-query-for-${query?.question||'unknown'}`,
       facts: [],
       confidence: 0.5,
       timestamp: Date.now(),
@@ -66,7 +66,7 @@ function createFallbackFactEngine() {
 function createFallbackReasoningEngine() {
   return {
     reason: async (premise: any) => ({
-      result: `fallback-reasoning-for-${premise?.topic'' | '''' | '''unknown'}`,
+      result: `fallback-reasoning-for-${premise?.topic||'unknown'}`,
       conclusion: 'fallback-conclusion',
       confidence: 0.7,
       steps: ['fallback-reasoning-step'],
@@ -80,17 +80,17 @@ function createFallbackReasoningEngine() {
 // Professional naming patterns - delegate to fact-system implementation or fallback
 export const getFactSystemAccess = async () => {
   const factModule = await loadFactModule();
-  return factModule.getFactSystemAccess?.()'' | '''' | ''createFallbackFactSystem();
+  return factModule.getFactSystemAccess?.()||createFallbackFactSystem();
 };
 
 export const getFactEngine = async () => {
   const factModule = await loadFactModule();
-  return factModule.getFactEngine?.()'' | '''' | ''createFallbackFactEngine();
+  return factModule.getFactEngine?.()||createFallbackFactEngine();
 };
 
 export const getReasoningEngine = async () => {
   const factModule = await loadFactModule();
-  return factModule.getReasoningEngine?.()'' | '''' | ''createFallbackReasoningEngine();
+  return factModule.getReasoningEngine?.()||createFallbackReasoningEngine();
 };
 
 // Export FactEngine class with delegation
@@ -101,7 +101,7 @@ export class FactEngine {
     const factModule = await loadFactModule();
     if (factModule.FactEngine) {
       this.instance = new factModule.FactEngine(config);
-      return this.instance.initialize?.()'' | '''' | ''Promise.resolve();
+      return this.instance.initialize?.()||Promise.resolve();
     }
     this.instance = new factModule.FactEngine(); // Fallback class
     return Promise.resolve();
@@ -171,7 +171,7 @@ export const getCoordinationFactSystem = async () => {
     },
     queryCoordinationFacts: async (query: any) => {
       // Query coordination facts using the provided query
-      const results = (await factSystem.queryFacts?.(query))'' | '''' | ''[];
+      const results = (await factSystem.queryFacts?.(query))||[];
       return { facts: results, count: results.length, query };
     },
   };

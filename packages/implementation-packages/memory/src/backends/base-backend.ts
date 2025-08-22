@@ -39,7 +39,7 @@ export interface MemoryQueryOptions {
   limit?: number;
   offset?: number;
   orderBy?: string;
-  orderDirection?: 'asc''' | '''desc';
+  orderDirection?: 'asc|desc';
 }
 
 export interface MemorySearchResult {
@@ -85,7 +85,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     value: unknown,
     namespace?: string
   ): Promise<void>;
-  abstract retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
+  abstract retrieve<T = unknown>(key: string): Promise<T|null>;
   abstract delete(key: string): Promise<boolean>;
   abstract list(pattern?: string): Promise<string[]>;
   abstract clear(): Promise<void>;
@@ -93,7 +93,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   abstract getCapabilities(): BackendCapabilities;
 
   // Additional methods for BackendInterface compatibility
-  abstract get<T = unknown>(key: string): Promise<T'' | ''null>;
+  abstract get<T = unknown>(key: string): Promise<T|'null>;
   abstract set(key: string, value: unknown): Promise<void>;
   abstract listNamespaces(): Promise<string[]>;
 
@@ -125,7 +125,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
 
   // Protected utility methods for subclasses
   protected updateStats(
-    operation: 'read | write' | 'delete',
+    operation: 'read|write|delete',
     size?: number
   ): void {
     this.stats.lastAccessed = Date.now();
@@ -154,7 +154,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     return {
       key,
       value,
-      metadata: metadata'' | '''' | ''{},
+      metadata: metadata||{},
       timestamp: Date.now(),
       size: this.calculateSize(value),
       type: this.detectType(value),
@@ -178,7 +178,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   }
 
   protected validateKey(key: string): void {
-    if (!key'' | '''' | ''typeof key !=='string') {
+    if (!key||typeof key !=='string') {
       throw new Error('Key must be a non-empty string');
     }
     if (key.length > 255) {
@@ -270,8 +270,8 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
 
   public async batchRetrieve<T = unknown>(
     keys: string[]
-  ): Promise<Record<string, T'' | ''null>> {
-    const results: Record<string, T'' | ''null> = {};
+  ): Promise<Record<string, T|null>> {
+    const results: Record<string, T|null> = {};
     for (const key of keys) {
       results[key] = await this.retrieve<T>(key);
     }

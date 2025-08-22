@@ -132,7 +132,7 @@ describe('Foundation Core - Working Systems', () => {
         throw new Error('Intentional error');
       };
 
-      let caughtError: Error'' | ''null = null;
+      let caughtError: Error|null = null;
 
       try {
         throwingFunction();
@@ -196,7 +196,7 @@ describe('Foundation Core - Working Systems', () => {
         throw new Error('Async error');
       };
 
-      let error: Error'' | ''null = null;
+      let error: Error|null = null;
 
       try {
         await rejectingOperation();
@@ -261,12 +261,12 @@ describe('Foundation Core - Working Systems', () => {
 
   describe('Edge Cases', () => {
     it('should handle empty values', () => {
-      const emptyString = '';
+      const emptyString = ';
       const nullValue = null;
       const undefinedValue = undefined;
       const zeroValue = 0;
 
-      expect(emptyString).toBe('');
+      expect(emptyString).toBe(');
       expect(nullValue).toBeNull();
       expect(undefinedValue).toBeUndefined();
       expect(zeroValue).toBe(0);
@@ -284,10 +284,10 @@ describe('Foundation Core - Working Systems', () => {
 
     it('should handle unicode and special characters', () => {
       const unicode = '🚀 Test 测试 🎯';
-      const specialChars = '!@#$%^&*()[]{}'' | '';:,.<>?';
+      const specialChars = '!@#$%^&*()[]{}|;:,.<>?';
 
       expect(unicode).toBe('🚀 Test 测试 🎯');
-      expect(specialChars).toBe('!@#$%^&*()[]{}'' | '';:,.<>?');
+      expect(specialChars).toBe('!@#$%^&*()[]{}|;:,.<>?');
     });
   });
 

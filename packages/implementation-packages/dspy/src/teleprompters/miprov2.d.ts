@@ -21,23 +21,23 @@ export interface MIPROv2Config {
   /** Metric function for evaluation */
   metric: MetricFunction;
   /** Model for prompt generation (defaults to dspy.settings.lm) */
-  prompt_model?: LMInterface'' | ''null;
+  prompt_model?: LMInterface|null;
   /** Model for task execution (defaults to dspy.settings.lm) */
-  task_model?: LMInterface'' | ''null;
+  task_model?: LMInterface|null;
   /** Teacher settings for bootstrapping */
-  teacher_settings?: Record<string, any>'' | ''null;
+  teacher_settings?: Record<string, any>|null;
   /** Maximum bootstrapped demonstrations */
   max_bootstrapped_demos?: number;
   /** Maximum labeled demonstrations */
   max_labeled_demos?: number;
   /** Auto configuration mode */
-  auto?:'light | medium' | 'heavy''' | ''null;
+  auto?:'light|medium|heavy'|null;
   /** Number of candidates (overridden by auto) */
-  num_candidates?: number'' | ''null;
+  num_candidates?: number|null;
   /** Number of threads for evaluation */
-  num_threads?: number'' | ''null;
+  num_threads?: number|null;
   /** Maximum errors allowed */
-  max_errors?: number'' | ''null;
+  max_errors?: number|null;
   /** Random seed */
   seed?: number;
   /** Initial temperature for instruction generation */
@@ -47,9 +47,9 @@ export interface MIPROv2Config {
   /** Track statistics */
   track_stats?: boolean;
   /** Log directory for saving candidates */
-  log_dir?: string'' | ''null;
+  log_dir?: string|null;
   /** Metric threshold for filtering */
-  metric_threshold?: number'' | ''null;
+  metric_threshold?: number|null;
 }
 /**
  * Instruction candidates type

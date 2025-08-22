@@ -224,7 +224,7 @@ export class RecommendationEngine {
     // Code smells
     if (complexity.codeSmells.length > 10) {
       const criticalSmells = complexity.codeSmells.filter(
-        (s) => s.severity === 'high''' | '''' | ''s.severity ==='critical'
+        (s) => s.severity === 'high'||s.severity ==='critical'
       );
 
       if (criticalSmells.length > 0) {
@@ -826,8 +826,8 @@ export class RecommendationEngine {
     options?: AnalysisOptions
   ): Promise<{
     focusAreas: string[];
-    depth: 'shallow | moderate' | 'deep';
-    performanceMode: 'fast | balanced' | 'thorough';
+    depth: 'shallow|moderate|deep';
+    performanceMode: 'fast|balanced|thorough';
     customThresholds: Record<string, number>;
   }> {
     const defaultContext = {

@@ -19,7 +19,7 @@ export interface PromptVersion {
   createdAt: Date;
   approvedBy?: string;
   approvedAt?: Date;
-  status: 'draft | review' | 'approved' | 'deprecated' | 'archived';
+  status: 'draft|review|approved|deprecated|archived';
   performance: {
     usageCount: number;
     successRate: number;
@@ -78,7 +78,7 @@ export interface PromptVariant {
 export interface PromptAuditEntry {
   id: string;
   promptId: string;
-  action:'' | '''created | updated' | 'approved''' | '''deployed | deprecated' | 'accessed''' | '''variant_created';
+  action:|'created|updated|approved|deployed|deprecated|accessed|variant_created'';
   userId: string;
   timestamp: Date;
   ipAddress?: string;
@@ -91,7 +91,7 @@ export interface PromptAuditEntry {
   }[];
   reason?: string;
   approvalReference?: string;
-  riskAssessment?: 'low | medium' | 'high';
+  riskAssessment?: 'low|medium|high';
   metadata: Record<string, unknown>;
 }
 export interface PromptDraft {
@@ -103,7 +103,7 @@ export interface PromptDraft {
   config: PromptVersion['config'];
   collaborators: string[];
   comments: DraftComment[];
-  reviewStatus: 'pending | in_review' | 'approved''' | '''rejected';
+  reviewStatus: 'pending|in_review|approved|rejected';
   workflowInstanceId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -195,7 +195,7 @@ export declare class PromptManagementService {
     auditContext: any,
     approvalData: {
       reason: string;
-      riskAssessment: 'low | medium' | 'high';
+      riskAssessment: 'low|medium|high';
       approvalReference?: string;
     }
   ): Promise<void>;

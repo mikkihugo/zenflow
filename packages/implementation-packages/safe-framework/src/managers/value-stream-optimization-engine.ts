@@ -28,7 +28,7 @@ export interface OptimizationEngineConfig {
   readonly enableAutomatedKaizen: boolean;
   readonly enablePredictiveAnalytics: boolean;
   readonly enableContinuousLearning: boolean;
-  readonly bottleneckAnalysisDepth: 'shallow | deep' | 'comprehensive';
+  readonly bottleneckAnalysisDepth: 'shallow|deep|comprehensive';
   readonly optimizationFrequency: number; // milliseconds
   readonly kaizenCycleLength: number; // days
   readonly predictionHorizon: number; // days
@@ -39,7 +39,7 @@ export interface OptimizationEngineConfig {
 
 export interface OptimizationEngineState {
   readonly isRunning: boolean;
-  readonly lastOptimizationRun: Date'' | ''null;
+  readonly lastOptimizationRun: Date|null;
   readonly totalOptimizationCycles: number;
   readonly learningData: Map<string, any>;
   readonly activeRecommendations: Set<string>;

@@ -26,7 +26,7 @@ export interface DocumentSegment {
   content: string;
   startPosition: number;
   endPosition: number;
-  segmentType: 'algorithm | concept' | 'implementation | context' | 'metadata';
+  segmentType: 'algorithm | concept|implementation | context|metadata';
   importance: number; // 0-1 importance score
   preserveIntegrity: boolean; // Whether to keep segment intact
   relatedSegments: string[]; // IDs of related segments
@@ -83,7 +83,7 @@ export interface SegmentationConfig {
 interface AlgorithmBlock {
   startIndex: number;
   endIndex: number;
-  type: 'pseudocode | procedure' | 'mathematical | implementation' | 'formula | complexity-analysis';
+  type: 'pseudocode | procedure|mathematical | implementation|formula | complexity-analysis';
   confidence: number;
   complexity: {
     cyclomaticComplexity: number; // Control flow complexity
@@ -102,7 +102,7 @@ interface AlgorithmBlock {
   relatedDescription: {
     startIndex: number;
     endIndex: number;
-    relationType: 'explanation | example' | 'proof | context';
+    relationType: 'explanation | example|proof | context';
   } | null;
   extractedElements: {
     variables: string[];
@@ -491,7 +491,7 @@ export class SegmentationEngine extends TypedEventBase {
         return {
           startIndex: adjustedStart,
           endIndex,
-          relationType: relationType as 'explanation | example' | 'proof | context'
+          relationType: relationType as 'explanation | example|proof | context'
         };
       }
     }
@@ -508,7 +508,7 @@ export class SegmentationEngine extends TypedEventBase {
         return {
           startIndex,
           endIndex: adjustedEnd,
-          relationType: relationType as 'explanation | example' | 'proof | context'
+          relationType: relationType as 'explanation | example|proof | context'
         };
       }
     }

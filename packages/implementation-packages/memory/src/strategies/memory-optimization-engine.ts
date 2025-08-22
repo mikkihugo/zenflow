@@ -32,7 +32,7 @@ interface OptimizationSample {
 
 interface OptimizationAction {
   id: string;
-  type: 'memory | cache' | 'performance''' | '''configuration';
+  type: 'memory|cache|performance|configuration';
   action: string;
   parameters: Record<string, unknown>;
   expectedImpact: number;
@@ -238,7 +238,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
   }
 
   private analyzePerformanceTrends(): {
-    trends: Record<string, 'improving | stable' | 'degrading'>;
+    trends: Record<string, 'improving|stable|degrading'>;
     anomalies: string[];
     bottlenecks: string[];
     opportunities: string[];
@@ -255,7 +255,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     const recent = this.samples.slice(-10); // Last 10 samples
     const older = this.samples.slice(-20, -10); // Previous 10 samples
 
-    const trends: Record<string, 'improving | stable' | 'degrading'> = {};
+    const trends: Record<string, 'improving|stable|degrading'> = {};
     const anomalies: string[] = [];
     const bottlenecks: string[] = [];
     const opportunities: string[] = [];
@@ -336,7 +336,7 @@ export class MemoryOptimizationEngine extends TypedEventBase {
     older: number,
     target: number,
     inverse = false
-  ): 'improving | stable' | 'degrading' {
+  ): 'improving|stable|degrading' {
     if (older === 0) return 'stable';
 
     const change = (recent - older) / older;

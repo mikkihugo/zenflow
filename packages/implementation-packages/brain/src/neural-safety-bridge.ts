@@ -59,7 +59,7 @@ export interface EnhancedDeceptionResult {
   };
   behavioralAnalysis: {
     anomalyScore: number;
-    riskLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
+    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
     recommendation: string;
   };
   combinedVerdict: {
@@ -242,10 +242,10 @@ export class NeuralSafetyBridge extends TypedEventBase {
     return [
       // Response characteristics
       response.length / 1000, // Normalized response length
-      (response.match(/\b(?:i'' | ''me'' | ''my)\b/gi)'' | '''' | ''[]).length /
+      (response.match(/\b(?:i|me|my)\b/gi)||[]).length /
         response.split(' ').length, // Self-reference ratio
       (
-        response.match(/\b(?:definitely'' | ''certainly'' | ''absolutely'' | ''guarantee)\b/gi)'' | '''' | ''[]
+        response.match(/\b(?:definitely|certainly|absolutely|guarantee)\b/gi)||[]
       ).length, // Certainty words
 
       // Tool usage patterns (toolCalls is string[])
@@ -264,20 +264,20 @@ export class NeuralSafetyBridge extends TypedEventBase {
         : 0, // Bash operations
 
       // Content analysis
-      (response.match(/\b(?:analyzed'' | ''examined'' | ''implemented'' | ''built)\b/gi)'' | '''' | ''[])
+      (response.match(/\b(?:analyzed|examined|implemented|built)\b/gi)||[])
         .length, // Action claims
-      (response.match(/\b(?:advanced'' | ''sophisticated'' | ''comprehensive)\b/gi)'' | '''' | ''[])
+      (response.match(/\b(?:advanced|sophisticated|comprehensive)\b/gi)||[])
         .length, // Complexity claims
-      (response.match(/\?/g)'' | '''' | ''[]).length, // Question marks (uncertainty)
+      (response.match(/\?/g)||[]).length, // Question marks (uncertainty)
 
       // Temporal indicators
-      (response.match(/\b(?:will'' | ''can'' | ''would'' | ''could)\b/gi)'' | '''' | ''[]).length, // Future/conditional
-      (response.match(/\b(?:did'' | ''have'' | ''was'' | ''were)\b/gi)'' | '''' | ''[]).length, // Past tense claims
+      (response.match(/\b(?:will|can|would|could)\b/gi)||[]).length, // Future/conditional
+      (response.match(/\b(?:did|have|was|were)\b/gi)||[]).length, // Past tense claims
 
       // Technical specificity
-      (response.match(/\b\w+\.\w+\b/g)'' | '''' | ''[]).length, // File references
-      (response.match(/\b\d+\b/g)'' | '''' | ''[]).length, // Numbers/metrics
-      (response.match(/\b(?:error'' | ''warning'' | ''issue'' | ''problem)\b/gi)'' | '''' | ''[]).length, // Problem indicators
+      (response.match(/\b\w+\.\w+\b/g)||[]).length, // File references
+      (response.match(/\b\d+\b/g)||[]).length, // Numbers/metrics
+      (response.match(/\b(?:error|warning|issue|problem)\b/gi)||[]).length, // Problem indicators
     ];
   }
 
@@ -286,7 +286,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
    */
   private async analyzeBehavioralPatterns(features: number[]): Promise<{
     anomalyScore: number;
-    riskLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
+    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
     recommendation: string;
   }> {
     // Analyze behavioral features for anomaly detection
@@ -295,11 +295,11 @@ export class NeuralSafetyBridge extends TypedEventBase {
     // Use features for behavioral pattern analysis
     if (features && features.length > 0) {
       // Calculate weighted feature analysis
-      const responseLength = features[0]'' | '''' | ''0;
-      const selfReferenceRatio = features[1]'' | '''' | ''0;
-      const certaintyWords = features[2]'' | '''' | ''0;
-      const toolCalls = features[3]'' | '''' | ''0;
-      const actionClaims = features[7]'' | '''' | ''0;
+      const responseLength = features[0]||0;
+      const selfReferenceRatio = features[1]||0;
+      const certaintyWords = features[2]||0;
+      const toolCalls = features[3]||0;
+      const actionClaims = features[7]||0;
 
       // Detect suspicious patterns based on features
       let suspicionScore = 0;
@@ -332,7 +332,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
     const anomalyScore = 1 - prediction; // Invert performance for anomaly
 
-    let riskLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
+    let riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
     let recommendation: string;
 
     if (anomalyScore >= 0.8) {
@@ -394,7 +394,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
     // Basic feature extraction
     vector[0] = words.length / 100; // Normalized word count
-    vector[1] = (text.match(/[!.?]/g)'' | '''' | ''[]).length / words.length; // Punctuation density
+    vector[1] = (text.match(/[!.?]/g)||[]).length / words.length; // Punctuation density
     vector[2] = words.filter((w) => w.length > 7).length / words.length; // Complex word ratio
 
     return vector;
@@ -438,7 +438,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
     // Behavioral analysis weight: 20%
     if (
-      behavioralAnalysis.riskLevel ==='HIGH''' | '''' | ''behavioralAnalysis.riskLevel ==='CRITICAL'
+      behavioralAnalysis.riskLevel ==='HIGH'||behavioralAnalysis.riskLevel ==='CRITICAL'
     ) {
       deceptionIndicators += 1;
       combinedConfidence += 0.2 * behavioralAnalysis.anomalyScore;
@@ -455,9 +455,9 @@ export class NeuralSafetyBridge extends TypedEventBase {
     }
 
     const isDeceptive =
-      deceptionIndicators >= 2'' | '''' | ''combinedConfidence > this.neuralSafetyConfig.interventionThreshold;
+      deceptionIndicators >= 2||combinedConfidence > this.neuralSafetyConfig.interventionThreshold;
     const interventionRequired =
-      deceptionIndicators >= 3'' | '''' | ''behavioralAnalysis.riskLevel ==='CRITICAL''' | '''' | ''standardDetection.some((a) => a.severity ==='CRITICAL');
+      deceptionIndicators >= 3||behavioralAnalysis.riskLevel ==='CRITICAL'||standardDetection.some((a) => a.severity ==='CRITICAL');
 
     return {
       isDeceptive,
@@ -526,10 +526,10 @@ export class NeuralSafetyBridge extends TypedEventBase {
     const structuredInteractionData = new AIInteractionData({
       agentId: interactionData.agentId,
       response: interactionData.response,
-      toolCalls: interactionData.toolCalls'' | '''' | ''[],
+      toolCalls: interactionData.toolCalls||[],
       timestamp: Date.now(),
       sessionId: interactionData.sessionId,
-      metadata: interactionData.metadata'' | '''' | ''{},
+      metadata: interactionData.metadata||{},
     });
 
     // Create DeceptionAlert if deception was detected
@@ -544,8 +544,8 @@ export class NeuralSafetyBridge extends TypedEventBase {
       });
 
       this.logger.warn('Deception confirmed - creating alert', {
-        alertId: deceptionAlert.id'' | '''' | '''unknown',
-        severity: deceptionAlert.severity'' | '''' | '''HIGH',
+        alertId: deceptionAlert.id||'unknown',
+        severity: deceptionAlert.severity||'HIGH',
         agentId: interactionData.agentId,
       });
     }
@@ -559,7 +559,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
         aiClaims: [],
         deceptionPatterns: [],
       },
-      structuredInteractionData.response'' | '''' | ''interactionData.response,
+      structuredInteractionData.response||interactionData.response,
       actualDeception,
       feedback
     );
@@ -573,11 +573,11 @@ export class NeuralSafetyBridge extends TypedEventBase {
       featureCount: features.length,
       actualDeception,
       keyFeatures: {
-        responseLength: features[0]'' | '''' | ''0,
-        selfReferenceRatio: features[1]'' | '''' | ''0,
-        certaintyWords: features[2]'' | '''' | ''0,
-        toolCalls: features[3]'' | '''' | ''0,
-        actionClaims: features[7]'' | '''' | ''0,
+        responseLength: features[0]||0,
+        selfReferenceRatio: features[1]||0,
+        certaintyWords: features[2]||0,
+        toolCalls: features[3]||0,
+        actionClaims: features[7]||0,
       },
     });
 
@@ -612,7 +612,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
       actualDeception: actualDeception.toString(),
       agentId: interactionData.agentId,
       hasDeceptionAlert: deceptionAlert ? 'true' : 'false',
-      alertSeverity: deceptionAlert?.severity'' | '''' | '''none',
+      alertSeverity: deceptionAlert?.severity||'none',
       featureComplexity: featureComplexity.toString(),
       featureCount: features.length.toString(),
     });

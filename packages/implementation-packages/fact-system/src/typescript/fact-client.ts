@@ -60,7 +60,7 @@ export class FactClient {
 
     this.database = config.database;
     this.bridge = new FactBridge({
-      useRustEngine: this.config.useRustEngine'' | '''' | ''false,
+      useRustEngine: this.config.useRustEngine||false,
       database: this.database,
     });
   }
@@ -213,7 +213,7 @@ export class FactClient {
 
     return {
       ...stats,
-      rustEngineActive: this.config.useRustEngine'' | '''' | ''false,
+      rustEngineActive: this.config.useRustEngine||false,
     };
   }
 

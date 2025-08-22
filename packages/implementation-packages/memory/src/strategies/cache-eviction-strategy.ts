@@ -90,9 +90,9 @@ export class CacheEvictionStrategy extends TypedEventBase {
     }
 
     const now = Date.now();
-    const size = options.size'' | '''' | ''this.estimateSize(value);
-    const priority = options.priority'' | '''' | ''1;
-    const ttl = options.ttl'' | '''' | ''this.config.ttl;
+    const size = options.size||this.estimateSize(value);
+    const priority = options.priority||1;
+    const ttl = options.ttl||this.config.ttl;
 
     // Check if we need to evict before adding
     if (!this.canAccommodate(size)) {
@@ -110,7 +110,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
       createdAt: now,
       expiresAt: ttl > 0 ? now + ttl : undefined,
       priority,
-      metadata: options.metadata'' | '''' | ''{},
+      metadata: options.metadata||{},
     };
 
     // Update tracking structures
@@ -124,7 +124,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
     return true;
   }
 
-  get(key: string): unknown'' | ''undefined {
+  get(key: string): unknown|undefined {
     if (!this.config.enabled) {
       return undefined;
     }
@@ -299,7 +299,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     for (const key of prioritizedCandidates) {
       const entry = this.cache.get(key);
-      if ((entry && !this.config.preservePriority)'' | '''' | ''entry.priority <= 1) {
+      if ((entry && !this.config.preservePriority)||entry.priority <= 1) {
         finalCandidates.push(key);
         estimatedSpace += entry.size;
 
@@ -391,7 +391,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
       const entryA = this.cache.get(a);
       const entryB = this.cache.get(b);
 
-      if (!entryA'' | '''' | ''!entryB) return 0;
+      if (!entryA||!entryB) return 0;
 
       // Lower priority gets evicted first
       return entryA.priority - entryB.priority;
@@ -446,7 +446,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
     this.accessOrder.set(entry.key, ++this.accessCounter);
 
     // Update LFU tracking
-    const currentFreq = this.frequencyMap.get(entry.key)'' | '''' | ''0;
+    const currentFreq = this.frequencyMap.get(entry.key)||0;
     entry.frequency = currentFreq + 1;
     this.frequencyMap.set(entry.key, entry.frequency);
   }

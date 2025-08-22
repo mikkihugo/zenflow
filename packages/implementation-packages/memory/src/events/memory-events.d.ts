@@ -19,7 +19,7 @@ export interface MemoryEvent {
 export interface MemorySystemSyncEvent extends MemoryEvent {
   readonly type: 'memory:system:sync_initiated';
   readonly systemId: string;
-  readonly syncType: 'full | incremental' | 'delta';
+  readonly syncType: 'full|incremental|delta';
   readonly dataSize: number;
 }
 /**
@@ -28,7 +28,7 @@ export interface MemorySystemSyncEvent extends MemoryEvent {
 export interface CacheCoordinationEvent extends MemoryEvent {
   readonly type: 'memory:cache:coordination_updated';
   readonly cacheId: string;
-  readonly operation: 'populate | invalidate' | 'refresh''' | '''migrate';
+  readonly operation: 'populate|invalidate|refresh|migrate';
   readonly keyPattern: string;
 }
 /**

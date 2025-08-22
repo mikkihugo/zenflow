@@ -21,7 +21,7 @@ const logger = getLogger('DocumentDriven');
 
 // Document types in your workflow
 export interface VisionaryDocument {
-  type: 'vision | adr' | 'prd''' | '''epic | feature' | 'task''' | '''spec';
+  type: 'vision|adr|prd|epic|feature|task|spec';
   path: string;
   content?: string;
   metadata?: {
@@ -48,7 +48,7 @@ export interface DocumentWorkspace {
 export interface WorkflowContext {
   workspace: DocumentWorkspace;
   activeDocuments: Map<string, VisionaryDocument>;
-  maestroPhase?:'' | '''requirements | research' | 'design''' | '''planning | execution' | 'validation';
+  maestroPhase?:|''requirements|research|design|planning|execution|validation';
   swarmSupport: boolean; // Background swarm assistance
 }
 
@@ -345,15 +345,15 @@ export class DocumentDrivenSystem extends TypedEventBase {
    * @param path
    */
   private getDocumentType(path: string): VisionaryDocument['type'] {
-    if (path.includes('/01-vision/')'' | '''' | ''path.includes('/vision/'))
+    if (path.includes('/01-vision/')||path.includes('/vision/'))
       return 'vision';
-    if (path.includes('/02-adrs/')'' | '''' | ''path.includes('/adrs/')) return 'adr';
-    if (path.includes('/03-prds/')'' | '''' | ''path.includes('/prds/')) return 'prd';
-    if (path.includes('/04-epics/')'' | '''' | ''path.includes('/epics/')) return 'epic';
-    if (path.includes('/05-features/')'' | '''' | ''path.includes('/features/'))
+    if (path.includes('/02-adrs/')||path.includes('/adrs/')) return 'adr';
+    if (path.includes('/03-prds/')||path.includes('/prds/')) return 'prd';
+    if (path.includes('/04-epics/')||path.includes('/epics/')) return 'epic';
+    if (path.includes('/05-features/')||path.includes('/features/'))
       return 'feature';
-    if (path.includes('/06-tasks/')'' | '''' | ''path.includes('/tasks/')) return 'task';
-    if (path.includes('/07-specs/')'' | '''' | ''path.includes('/specs/')) return 'spec';
+    if (path.includes('/06-tasks/')||path.includes('/tasks/')) return 'task';
+    if (path.includes('/07-specs/')||path.includes('/specs/')) return 'spec';
     return 'task'; // default
   }
 

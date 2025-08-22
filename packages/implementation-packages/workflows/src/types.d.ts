@@ -23,13 +23,13 @@ export interface WorkflowTemplate {
     version: string;
     author?: string;
     tags?: string[];
-    complexity?: 'simple | medium' | 'complex';
+    complexity?: 'simple|medium|complex';
   };
 }
 export interface WorkflowExecution {
   id: string;
   workflowId: string;
-  status:'' | '''queued | running' | 'paused''' | '''completed | failed' | 'cancelled';
+  status:|'queued|running|paused|completed|failed|cancelled';
   startTime: string;
   endTime?: string;
   currentStep: number;
@@ -48,7 +48,7 @@ export interface WorkflowRegistry {
   executions: Map<string, WorkflowExecution>;
 }
 export interface WorkflowEvent {
-  type:'' | '''workflow.started''' | '''workflow.completed''' | '''workflow.failed''' | '''step.started''' | '''step.completed''' | '''step.failed';
+  type:|'workflow.started|workflow.completed'||workflow.failed|step.started'||step.completed|step.failed'';
   workflowId: string;
   stepIndex?: number;
   data?: Record<string, unknown>;

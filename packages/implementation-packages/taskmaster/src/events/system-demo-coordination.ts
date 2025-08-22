@@ -75,7 +75,7 @@ export interface SystemDemoConfig {
 
   // Demo environment
   environment: {
-    type: 'production | staging' | 'demo';
+    type: 'production|staging|demo';
     url?: string;
     credentials?: string;
     setupInstructions: string;
@@ -99,7 +99,7 @@ export interface SystemDemoConfig {
     recordDemo: boolean;
     enableLiveFeedback: boolean;
     requireFormalApproval: boolean;
-    feedbackCollectionMethod: 'real_time | post_demo' | 'hybrid';
+    feedbackCollectionMethod: 'real_time|post_demo|hybrid';
     businessValueValidation: boolean;
   };
 
@@ -239,14 +239,14 @@ export interface StakeholderFeedback {
 
   // Feedback source
   providedBy: string;
-  role:'' | '''business_owner | customer' | 'product_manager' | 'stakeholder' | 'team_member';
+  role:|'business_owner|customer|product_manager|stakeholder|team_member';
   timestamp: Date;
 
   // Feedback content
   feedback: {
-    type:'' | '''positive | concern' | 'suggestion''' | '''question | approval' | 'rejection';
-    category:'' | '''functionality | usability' | 'performance''' | '''business_value | technical' | 'process';
-    priority: 'low | medium' | 'high''' | '''critical';
+    type:|'positive|concern|suggestion|question|approval|rejection';
+    category:|'functionality|usability|performance|business_value|technical|process';
+    priority: 'low|medium|high|critical';
     description: string;
     specificDetails: string;
   };
@@ -338,8 +338,8 @@ export interface DemoActionItem {
   // Action details
   title: string;
   description: string;
-  type:'' | '''bug_fix | enhancement' | 'investigation' | 'process_improvement' | 'follow_up';
-  priority: 'low | medium' | 'high''' | '''critical';
+  type:|'bug_fix|enhancement|investigation|process_improvement|follow_up';
+  priority: 'low|medium|high|critical';
 
   // Assignment
   assignedTo: string;
@@ -358,7 +358,7 @@ export interface DemoActionItem {
   approvalGateId?: ApprovalGateId;
 
   // Tracking
-  status: 'open | in_progress' | 'resolved' | 'deferred' | 'cancelled';
+  status: 'open|in_progress|resolved|deferred|cancelled';
   resolution?: string;
   completionDate?: Date;
 }
@@ -615,7 +615,7 @@ export class SystemDemoCoordination {
    */
   async executeSystemDemo(
     demoId: string,
-    executionMode: 'live | recorded' | 'hybrid'
+    executionMode: 'live|recorded|hybrid'
   ): Promise<{
     execution: {
       started: boolean;
@@ -680,7 +680,7 @@ export class SystemDemoCoordination {
    */
   async captureStakeholderFeedback(
     demoId: string,
-    feedback: Omit<StakeholderFeedback, 'id | demoId' | 'timestamp'>
+    feedback: Omit<StakeholderFeedback, 'id|demoId|timestamp'>
   ): Promise<{
     feedbackId: string;
     processed: boolean;
@@ -711,18 +711,18 @@ export class SystemDemoCoordination {
     });
 
     // Store feedback
-    const existingFeedback = this.feedbackCollectors.get(demoId)'' | '''' | ''[];
+    const existingFeedback = this.feedbackCollectors.get(demoId)||[];
     existingFeedback.push(fullFeedback);
     this.feedbackCollectors.set(demoId, existingFeedback);
 
     // Analyze feedback for immediate action needs
     const analysis = await this.analyzeFeedbackForImmediateAction(fullFeedback);
 
-    let approvalGateId: ApprovalGateId'' | ''undefined;
+    let approvalGateId: ApprovalGateId|undefined;
     let approvalTriggered = false;
 
     // Create approval workflow if needed
-    if (fullFeedback.triggersApproval'' | '''' | ''analysis.requiresImmediateResponse) {
+    if (fullFeedback.triggersApproval||analysis.requiresImmediateResponse) {
       approvalGateId = await this.createFeedbackApprovalGate(
         fullFeedback,
         config
@@ -781,7 +781,7 @@ export class SystemDemoCoordination {
     });
 
     // Gather all feedback for assessment
-    const allFeedback = this.feedbackCollectors.get(demoId)'' | '''' | ''[];
+    const allFeedback = this.feedbackCollectors.get(demoId)||[];
 
     // Generate comprehensive assessment
     const assessment = await this.generateDemoAssessment(
@@ -832,7 +832,7 @@ export class SystemDemoCoordination {
    */
   async getDemoCoordinationStatus(demoId: string): Promise<{
     demoStatus: {
-      phase:'' | '''preparation | execution' | 'feedback' | 'assessment' | 'completed';
+      phase:|'preparation|execution|feedback|assessment|completed';
       readiness: number; // percentage
       issues: string[];
       nextSteps: string[];
@@ -865,7 +865,7 @@ export class SystemDemoCoordination {
     const statusData = await this.loadDemoStatus(demoId);
 
     // Analyze feedback summary
-    const allFeedback = this.feedbackCollectors.get(demoId)'' | '''' | ''[];
+    const allFeedback = this.feedbackCollectors.get(demoId)||[];
     const feedbackSummary = this.analyzeFeedbackSummary(allFeedback);
 
     // Assess team progress
@@ -1025,7 +1025,7 @@ export class SystemDemoCoordination {
       // Feature approval gates for high-value features
       for (const feature of team.featuresDemo) {
         if (
-          feature.businessValue >= 7'' | '''' | ''feature.stakeholderInterests.businessOwners.length > 0
+          feature.businessValue >= 7||feature.stakeholderInterests.businessOwners.length > 0
         ) {
           const featureGate = await this.createFeatureApprovalGate(
             feature,
@@ -1245,7 +1245,7 @@ export class SystemDemoCoordination {
     } else if (feedback.feedback.priority === 'high') {
       approvers = ['product-manager', 'team-lead'];
     } else {
-      approvers = feedback.approvalRequired'' | '''' | ''['product-owner'];
+      approvers = feedback.approvalRequired||['product-owner'];
     }
 
     const requirement: ApprovalGateRequirement = {
@@ -1441,7 +1441,7 @@ export class SystemDemoCoordination {
     return {
       requiresImmediateResponse: feedback.feedback.priority === 'critical',
       urgent:
-        feedback.feedback.priority === 'critical''' | '''' | ''feedback.feedback.type ==='rejection',
+        feedback.feedback.priority === 'critical'||feedback.feedback.type ==='rejection',
     };
   }
 

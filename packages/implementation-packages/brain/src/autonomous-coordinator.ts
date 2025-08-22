@@ -39,7 +39,7 @@ export interface SystemMetrics {
 }
 
 export interface AutonomousDecision {
-  readonly type:'' | '''resource_allocation | agent_routing' | 'performance_tuning' | 'scaling' | 'optimization';
+  readonly type: 'resource_allocation|agent_routing|performance_tuning|scaling|optimization';
   readonly action: string;
   readonly reasoning: string[];
   readonly confidence: number;
@@ -49,11 +49,11 @@ export interface AutonomousDecision {
 }
 
 export interface ScalingDecision {
-  readonly action: 'scale_up | scale_down' | 'maintain''' | '''optimize';
+  readonly action: 'scale_up|scale_down|maintain|optimize';
   readonly targetAgents: number;
   readonly confidence: number;
   readonly reasoning: string;
-  readonly urgency: 'low | medium' | 'high''' | '''critical';
+  readonly urgency: 'low|medium|high|critical';
 }
 
 /**
@@ -63,8 +63,8 @@ export interface ScalingDecision {
  * without requiring human intervention. Continuously learns and adapts.
  */
 export class AutonomousCoordinator {
-  private behavioralIntelligence: BehavioralIntelligence'' | ''null = null;
-  private optimizationEngine: AutonomousOptimizationEngine'' | ''null = null;
+  private behavioralIntelligence: BehavioralIntelligence|null = null;
+  private optimizationEngine: AutonomousOptimizationEngine|null = null;
   private initialized = false;
 
   // System monitoring and learning
@@ -116,8 +116,8 @@ export class AutonomousCoordinator {
     try {
       logger.info('🚀 Initializing Autonomous Coordinator...');
 
-      this.behavioralIntelligence = behavioralIntelligence'' | '''' | ''null;
-      this.optimizationEngine = optimizationEngine'' | '''' | ''null;
+      this.behavioralIntelligence = behavioralIntelligence||null;
+      this.optimizationEngine = optimizationEngine||null;
 
       // Initialize performance baselines
       await this.initializeBaselines();
@@ -202,7 +202,7 @@ export class AutonomousCoordinator {
    */
   private async autonomousResourceManagement(
     metrics: SystemMetrics
-  ): Promise<AutonomousDecision'' | ''null> {
+  ): Promise<AutonomousDecision|null> {
     const { cpu, memory, responseTime } =
       this.autonomousConfig.resourceThresholds;
 
@@ -224,7 +224,7 @@ export class AutonomousCoordinator {
 
     // Make autonomous resource decisions
     if (
-      cpuPressure ==='critical''' | '''' | ''memoryPressure ==='critical''' | '''' | ''timePressure ==='poor'
+      cpuPressure ==='critical'||memoryPressure ==='critical'||timePressure ==='poor'
     ) {
       return {
         type: 'resource_allocation',
@@ -278,7 +278,7 @@ export class AutonomousCoordinator {
    */
   private async autonomousAgentRouting(
     metrics: SystemMetrics
-  ): Promise<AutonomousDecision'' | ''null> {
+  ): Promise<AutonomousDecision|null> {
     if (!this.behavioralIntelligence) return null;
 
     try {
@@ -300,7 +300,7 @@ export class AutonomousCoordinator {
       const highPerformanceAgents = Object.entries(
         agentStats.performanceTrends
       ).filter(
-        ([_, trend]) => trend ==='improving''' | '''' | ''trend ==='excellent'
+        ([_, trend]) => trend ==='improving'||trend ==='excellent'
       ).length;
 
       if (routingEfficiency < 0.6) {
@@ -365,7 +365,7 @@ export class AutonomousCoordinator {
    */
   private async autonomousPerformanceTuning(
     metrics: SystemMetrics
-  ): Promise<AutonomousDecision'' | ''null> {
+  ): Promise<AutonomousDecision|null> {
     // Add current metrics to history for analysis
     this.systemMetricsHistory.push(metrics);
 
@@ -446,7 +446,7 @@ export class AutonomousCoordinator {
    */
   private async autonomousScaling(
     metrics: SystemMetrics
-  ): Promise<AutonomousDecision'' | ''null> {
+  ): Promise<AutonomousDecision|null> {
     const scalingDecision = await this.calculateScalingDecision(metrics);
 
     if (scalingDecision.action !=='maintain') {
@@ -479,7 +479,7 @@ export class AutonomousCoordinator {
    */
   private async autonomousSystemOptimization(
     metrics: SystemMetrics
-  ): Promise<AutonomousDecision'' | ''null> {
+  ): Promise<AutonomousDecision|null> {
     if (!this.optimizationEngine) return null;
 
     // Get optimization insights
@@ -487,11 +487,11 @@ export class AutonomousCoordinator {
 
     // Check if current system performance indicates need for optimization
     const needsOptimization =
-      metrics.cpuUsage > 0.8'' | '''' | ''metrics.averageResponseTime > 1000'' | '''' | ''metrics.errorRate > 0.05;
+      metrics.cpuUsage > 0.8||metrics.averageResponseTime > 1000||metrics.errorRate > 0.05;
 
     // Decide if system-wide optimization is needed
     if (
-      (insights.adaptationRate < 0.1 && insights.totalOptimizations > 20)'' | '''' | ''needsOptimization
+      (insights.adaptationRate < 0.1 && insights.totalOptimizations > 20)||needsOptimization
     ) {
       return {
         type:'optimization',
@@ -532,7 +532,7 @@ export class AutonomousCoordinator {
       const decisionsByType = new Map<string, AutonomousDecision[]>();
 
       recentDecisions.forEach((decision) => {
-        const decisions = decisionsByType.get(decision.type)'' | '''' | ''[];
+        const decisions = decisionsByType.get(decision.type)||[];
         decisions.push(decision);
         decisionsByType.set(decision.type, decisions);
       });
@@ -546,7 +546,7 @@ export class AutonomousCoordinator {
         if (avgConfidence > 0.8 && avgImpact > 0.6) {
           // High effectiveness - be more aggressive
           this.adjustParametersForType(type,'aggressive');
-        } else if (avgConfidence < 0.6'' | '''' | ''avgImpact < 0.4) {
+        } else if (avgConfidence < 0.6||avgImpact < 0.4) {
           // Low effectiveness - be more conservative
           this.adjustParametersForType(type,'conservative');
         }
@@ -566,7 +566,7 @@ export class AutonomousCoordinator {
     decisionsByType: Record<string, number>;
     averageConfidence: number;
     recentTrends: string[];
-    systemHealth: 'excellent | good' | 'fair''' | '''poor';
+    systemHealth: 'excellent|good|fair|poor';
     autonomyLevel: number;
   } {
     const decisionsByType: Record<string, number> = {};
@@ -574,7 +574,7 @@ export class AutonomousCoordinator {
 
     this.decisionHistory.forEach((decision) => {
       decisionsByType[decision.type] =
-        (decisionsByType[decision.type]'' | '''' | ''0) + 1;
+        (decisionsByType[decision.type]||0) + 1;
       totalConfidence += decision.confidence;
     });
 
@@ -606,7 +606,7 @@ export class AutonomousCoordinator {
   private calculatePressureLevel(
     usage: number,
     thresholds: any
-  ):'low | medium' | 'high''' | '''critical' {
+  ):'low|medium|high|critical' {
     if (usage >= thresholds.critical) return 'critical';
     if (usage >= thresholds.high) return 'high';
     if (usage >= thresholds.medium) return 'medium';
@@ -615,7 +615,7 @@ export class AutonomousCoordinator {
 
   private calculateResponseTimePressure(
     responseTime: number
-  ): 'excellent | good' | 'acceptable''' | '''poor' {
+  ): 'excellent|good|acceptable|poor' {
     const { excellent, good, acceptable } =
       this.autonomousConfig.resourceThresholds.responseTime;
 
@@ -704,7 +704,7 @@ export class AutonomousCoordinator {
 
   private adjustParametersForType(
     type: string,
-    direction: 'aggressive''' | '''conservative'
+    direction: 'aggressive|conservative''
   ): void {
     const factor = direction === 'aggressive' ? 0.9 : 1.1;
 
@@ -732,7 +732,7 @@ export class AutonomousCoordinator {
 
   private calculateSystemHealth(
     recentMetrics: SystemMetrics[]
-  ): 'excellent | good' | 'fair''' | '''poor' {
+  ): 'excellent|good|fair|poor' {
     if (recentMetrics.length === 0) return 'fair';
 
     const avgCpuUsage = ss.mean(recentMetrics.map((m) => m.cpuUsage));
@@ -817,7 +817,7 @@ export class AutonomousCoordinator {
     thresholds: any
   ): {
     category: string;
-    severity: 'low | medium' | 'high''' | '''critical';
+    severity: 'low|medium|high|critical';
     improvementNeeded: boolean;
   } {
     const { excellent, good, acceptable, poor } = thresholds;

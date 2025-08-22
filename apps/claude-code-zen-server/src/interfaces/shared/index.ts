@@ -23,17 +23,7 @@ export type { ComplexityLevel, ProjectType } from '@claude-zen/foundation';
 // Re-export command types from command-interfaces
 export type { CommandResult } from "./command-interfaces";
 export * from "./config";
-export type {
-  // Export the types defined in contracts
-  CommandContext,
-  CommandExecutorContract,
-  ConfigurationContract,
-  DataServiceContract,
-  ProjectConfig,
-  ProjectManagerContract,
-  SwarmCoordinatorContract,
-  SystemHealth,
-  SystemMonitorContract,
+export type { // Export the types defined in contracts CommandContext, CommandExecutorContract, ConfigurationContract, DataServiceContract, ProjectConfig, ProjectManagerContract, SwarmCoordinatorContract, SystemHealth, SystemMonitorContract,
 } from "./contracts";
 // Export all contracts
 export * from "./contracts";

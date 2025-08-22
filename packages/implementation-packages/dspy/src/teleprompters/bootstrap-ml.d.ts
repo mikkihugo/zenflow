@@ -28,13 +28,13 @@ export interface BootstrapMLConfig {
   useDiversitySampling: boolean;
   useActiveLearning: boolean;
   useStatisticalValidation: boolean;
-  clusteringMethod: 'kmeans | hierarchical' | 'dbscan';
-  diversityMetric: 'cosine | euclidean' | 'jaccard''' | '''hamming';
+  clusteringMethod: 'kmeans|hierarchical|dbscan';
+  diversityMetric: 'cosine|euclidean|jaccard|hamming';
   embeddingDimension: number;
-  samplingStrategy: 'uniform | weighted' | 'adaptive';
+  samplingStrategy: 'uniform|weighted|adaptive';
   uncertaintySampling: boolean;
-  queryStrategy: 'uncertainty | diversity' | 'expected_error_reduction';
-  acquisitionFunction: 'entropy | margin' | 'confidence';
+  queryStrategy: 'uncertainty|diversity|expected_error_reduction';
+  acquisitionFunction: 'entropy|margin|confidence';
   significanceLevel: number;
   minSampleSize: number;
   bootstrapIterations: number;

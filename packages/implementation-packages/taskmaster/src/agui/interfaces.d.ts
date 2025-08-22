@@ -30,13 +30,13 @@ import { TypedEventBase } from '@claude-zen/foundation';
  */
 export interface ValidationQuestion {
   id: string;
-  type:'' | '''relevance | boundary' | 'relationship''' | '''naming | priority' | 'checkpoint''' | '''review';
+  type:|'relevance|boundary|relationship|naming|priority|checkpoint|review'';
   question: string;
   context: unknown;
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
-  priority?: 'critical | high' | 'medium''' | '''low';
+  priority?: 'critical|high|medium|low';
   validationReason?: string;
   expectedImpact?: number;
 }
@@ -78,7 +78,7 @@ export interface AGUIInterface {
   showProgress(progress: unknown): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info | warning' | 'error''' | '''success'
+    type?: 'info|warning|error|success'
   ): Promise<void>;
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
   clear?(): Promise<void>;
@@ -125,7 +125,7 @@ export declare class WebAGUI extends TypedEventBase implements AGUIInterface {
   showProgress(progress: unknown): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info | warning' | 'error''' | '''success'
+    type?: 'info|warning|error|success'
   ): Promise<void>;
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
   clear(): Promise<void>;
@@ -145,7 +145,7 @@ export declare class HeadlessAGUI implements AGUIInterface {
   showProgress(progress: unknown): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info | warning' | 'error''' | '''success'
+    type?: 'info|warning|error|success'
   ): Promise<void>;
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
   clear(): Promise<void>;
@@ -155,6 +155,6 @@ export declare class HeadlessAGUI implements AGUIInterface {
  * Factory function to create appropriate AGUI instance.
  */
 export declare function createAGUI(
-  type?: 'web''' | '''headless',
+  type?: 'web|headless'',
   containerSelector?: string
 ): AGUIInterface;

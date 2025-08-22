@@ -66,7 +66,7 @@ interface RustFactEngine {
  * Bridge between TypeScript and Rust fact processing engine
  */
 export class FactBridge {
-  private rustEngine?: RustFactEngine'' | ''null;
+  private rustEngine?: RustFactEngine|null;
   private database: DatabaseAccess;
   private useRustEngine: boolean;
   private initialized = false;
@@ -106,7 +106,7 @@ export class FactBridge {
       try {
         const resultJson = await this.rustEngine.search_facts(
           query.query,
-          query.factTypes'' | '''' | ''['npm-package',
+          query.factTypes||['npm-package',
             'github-repo',
             'security-advisory',
             'hex-package',
@@ -117,7 +117,7 @@ export class FactBridge {
             'gitlab-repo',
             'bitbucket-repo',
           ],
-          query.limit'' | '''' | ''10
+          query.limit||10
         );
 
         const rustResults = JSON.parse(resultJson);
@@ -476,7 +476,7 @@ export class FactBridge {
     const mockResults: FactSearchResult[] = [];
 
     // Example: search for "react" in npm packages
-    if (!query.factTypes'' | '''' | ''query.factTypes.includes('npm-package')) {
+    if (!query.factTypes||query.factTypes.includes('npm-package')) {
       if (query.query.toLowerCase().includes('react')) {
         mockResults.push({
           factType: 'npm-package',
@@ -506,7 +506,7 @@ export class FactBridge {
     }
 
     // Example: search for repositories
-    if (!query.factTypes'' | '''' | ''query.factTypes.includes('github-repo')) {
+    if (!query.factTypes||query.factTypes.includes('github-repo')) {
       if (query.query.toLowerCase().includes('typescript')) {
         mockResults.push({
           factType: 'github-repo',
@@ -524,7 +524,7 @@ export class FactBridge {
     }
 
     // Example: search for Hex packages
-    if (!query.factTypes'' | '''' | ''query.factTypes.includes('hex-package')) {
+    if (!query.factTypes||query.factTypes.includes('hex-package')) {
       if (query.query.toLowerCase().includes('phoenix')) {
         mockResults.push({
           factType: 'hex-package',
@@ -542,9 +542,9 @@ export class FactBridge {
     }
 
     // Example: search for security advisories
-    if (!query.factTypes'' | '''' | ''query.factTypes.includes('security-advisory')) {
+    if (!query.factTypes||query.factTypes.includes('security-advisory')) {
       if (
-        query.query.toLowerCase().includes('cve-2024')'' | '''' | ''query.query.toLowerCase().includes('vulnerability')
+        query.query.toLowerCase().includes('cve-2024')||query.query.toLowerCase().includes('vulnerability')
       ) {
         mockResults.push({
           factType: 'security-advisory',
@@ -563,7 +563,7 @@ export class FactBridge {
 
     return mockResults
       .sort((a, b) => b.score - a.score)
-      .slice(0, query.limit'' | '''' | ''10);
+      .slice(0, query.limit||10);
   }
 
   /**
@@ -779,9 +779,9 @@ export class FactBridge {
         const openApiSpec = await response.json();
 
         // Parse OpenAPI 3.0 spec
-        const info = openApiSpec.info'' | '''' | ''{};
-        const servers = openApiSpec.servers'' | '''' | ''[];
-        const paths = openApiSpec.paths'' | '''' | ''{};
+        const info = openApiSpec.info||{};
+        const servers = openApiSpec.servers||[];
+        const paths = openApiSpec.paths||{};
 
         // Extract endpoints from paths
         const endpoints: Array<{
@@ -813,9 +813,9 @@ export class FactBridge {
                 if (operation.parameters) {
                   for (const param of operation.parameters) {
                     parameters[param.name] = {
-                      type: param.schema?.type'' | '''' | '''string',
+                      type: param.schema?.type||'string',
                       description: param.description,
-                      required: param.required'' | '''' | ''false,
+                      required: param.required||false,
                       in: param.in,
                     };
                   }
@@ -834,7 +834,7 @@ export class FactBridge {
                   path: pathStr,
                   method: method.toUpperCase(),
                   description:
-                    operation.summary'' | '''' | ''operation.description'' | '''' | ''`${method.toUpperCase()} ${pathStr}`,
+                    operation.summary||operation.description||`${method.toUpperCase()} ${pathStr}`,
                   parameters,
                 });
               }
@@ -865,19 +865,19 @@ export class FactBridge {
         if (endpoint) {
           filteredEndpoints = endpoints.filter(
             (ep) =>
-              ep.path.includes(endpoint)'' | '''' | ''ep.description.toLowerCase().includes(endpoint.toLowerCase())
+              ep.path.includes(endpoint)||ep.description.toLowerCase().includes(endpoint.toLowerCase())
           );
         }
 
         return {
-          name: info.title'' | '''' | ''apiName,
-          baseUrl: servers[0]?.url'' | '''' | ''`https://api.${apiNameLower}.com`,
+          name: info.title||apiName,
+          baseUrl: servers[0]?.url||`https://api.${apiNameLower}.com`,
           authentication,
           endpoints: filteredEndpoints.slice(0, 20), // Limit to first 20 endpoints
           endpoint,
           rateLimit:'See documentation',
           documentation:
-            info.contact?.url'' | '''' | ''openApiSpec.externalDocs?.url'' | '''' | ''`https://docs.${apiNameLower}.com`,
+            info.contact?.url||openApiSpec.externalDocs?.url||`https://docs.${apiNameLower}.com`,
           sdks: [], // Would need additional lookup
           confidence: 1.0, // High confidence for actual OpenAPI spec
           source:'openapi-spec-live',
@@ -914,16 +914,16 @@ export class FactBridge {
           const openApiSpec = await response.json();
 
           // Basic validation that this looks like an OpenAPI spec
-          if (openApiSpec.openapi'' | '''' | ''openApiSpec.swagger) {
+          if (openApiSpec.openapi||openApiSpec.swagger) {
             logger.info(`Found OpenAPI spec at ${patternUrl}`);
 
             // Parse basic info (simplified version of above)
-            const info = openApiSpec.info'' | '''' | ''{};
-            const servers = openApiSpec.servers'' | '''' | ''[];
+            const info = openApiSpec.info||{};
+            const servers = openApiSpec.servers||[];
 
             return {
-              name: info.title'' | '''' | ''apiName,
-              baseUrl: servers[0]?.url'' | '''' | ''`https://api.${apiNameLower}.com`,
+              name: info.title||apiName,
+              baseUrl: servers[0]?.url||`https://api.${apiNameLower}.com`,
               authentication:'API Key',
               endpoints: [],
               endpoint,
@@ -985,15 +985,15 @@ export class FactBridge {
             return {
               name: apiName,
               baseUrl:
-                searchResult.baseUrl'' | '''' | ''`https://api.${apiNameLower}.com`,
-              authentication: searchResult.authentication'' | '''' | '''API Key',
+                searchResult.baseUrl||`https://api.${apiNameLower}.com`,
+              authentication: searchResult.authentication||'API Key',
               endpoints: [],
               endpoint,
               rateLimit: 'See documentation',
               documentation:
-                searchResult.documentation'' | '''' | ''`https://docs.${apiNameLower}.com`,
+                searchResult.documentation||`https://docs.${apiNameLower}.com`,
               sdks: [],
-              confidence: Math.min(searchResult.confidence'' | '''' | ''0.6, 0.8), // Cap at 0.8 for LLM search
+              confidence: Math.min(searchResult.confidence||0.6, 0.8), // Cap at 0.8 for LLM search
               source:'llm-knowledge-discovery',
               timestamp: Date.now(),
             };
@@ -1034,9 +1034,9 @@ export class FactBridge {
       identifier: result.identifier,
       version: result.version,
       resourceUrl: result.resource_url,
-      score: result.score'' | '''' | ''0.8,
-      indexedAt: result.indexed_at'' | '''' | ''Date.now(),
-      metadata: result.metadata'' | '''' | ''{
+      score: result.score||0.8,
+      indexedAt: result.indexed_at||Date.now(),
+      metadata: result.metadata||{
         title: result.identifier,
         description: result.description,
       },
@@ -1048,13 +1048,13 @@ export class FactBridge {
    */
   private convertRustFactResult(rustResult: any, query: FactQuery): FactResult {
     return {
-      source: rustResult.source'' | '''' | '''rust-engine',
+      source: rustResult.source||'rust-engine',
       factType: query.factType,
       identifier: query.identifier,
-      data: rustResult.data'' | '''' | ''rustResult,
-      isCached: rustResult.is_cached'' | '''' | ''false,
+      data: rustResult.data||rustResult,
+      isCached: rustResult.is_cached||false,
       cacheTimestamp: rustResult.cache_timestamp,
-      ttl: rustResult.ttl'' | '''' | ''query.cacheTTL'' | '''' | ''3600000,
+      ttl: rustResult.ttl||query.cacheTTL||3600000,
       timestamp: Date.now(),
     };
   }

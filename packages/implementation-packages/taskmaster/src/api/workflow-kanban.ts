@@ -171,7 +171,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   private readonly config: WorkflowKanbanConfig;
   private readonly eventBus?: TypeSafeEventBus;
 
-  private workflowMachine: ActorRef<any, any>'' | ''null = null;
+  private workflowMachine: ActorRef<any, any>|null = null;
   private machine: ReturnType<typeof createWorkflowMachine>;
   private initialized = false;
   private readonly taskIndex = new Map<string, WorkflowTask>();
@@ -283,7 +283,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   async createTask(taskData: {
     title: string;
     description?: string;
-    priority: 'critical | high' | 'medium''' | '''low';
+    priority: 'critical|high|medium|low';
     estimatedEffort: number;
     assignedAgent?: string;
     dependencies?: string[];
@@ -432,7 +432,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       // Emit events
       this.emit('task:moved', taskId, fromState, toState);
       if (toState === 'blocked') {
-        this.emit('task:blocked', taskId, reason'' | '''' | '''Unknown reason');
+        this.emit('task:blocked', taskId, reason||'Unknown reason');
       }
       if (toState === 'done' && duration) {
         this.emit('task:completed', taskId, duration);
@@ -470,9 +470,9 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   /**
    * Get task by ID
    */
-  async getTask(taskId: string): Promise<WorkflowTask'' | ''null> {
+  async getTask(taskId: string): Promise<WorkflowTask|null> {
     this.ensureInitialized();
-    return this.taskIndex.get(taskId)'' | '''' | ''null;
+    return this.taskIndex.get(taskId)||null;
   }
 
   /**
@@ -565,7 +565,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   /**
    * Get current flow metrics using Immer for safe calculations
    */
-  async getFlowMetrics(): Promise<FlowMetrics'' | ''null> {
+  async getFlowMetrics(): Promise<FlowMetrics|null> {
     this.ensureInitialized();
 
     // Get current tasks and calculate metrics using Immer utilities
@@ -600,7 +600,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     this.ensureInitialized();
 
     const allTasks = Array.from(this.taskIndex.values())();
-    const range = timeRange'' | '''' | ''{
+    const range = timeRange||{
       start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
       end: new Date(),
     };
@@ -617,13 +617,13 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       .filter((t) => t.startedAt && t.completedAt)
       .map(
         (t) =>
-          ((t.completedAt?.getTime()'' | '''' | ''0) - (t.startedAt?.getTime()'' | '''' | ''0)) /
+          ((t.completedAt?.getTime()||0) - (t.startedAt?.getTime()||0)) /
           (1000 * 60 * 60)
       );
 
     const leadTimes = completedTasks.map(
       (t) =>
-        ((t.completedAt?.getTime()'' | '''' | ''0) - t.createdAt.getTime()) /
+        ((t.completedAt?.getTime()||0) - t.createdAt.getTime()) /
         (1000 * 60 * 60)
     );
 
@@ -897,7 +897,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   }
 
   private calculateQualityIndex(
-    completedTasks: WorkflowTask[]'' | ''any[]
+    completedTasks: WorkflowTask[]|any[]
   ): number {
     // Simple quality metric based on tasks not being blocked
     const totalTasks = completedTasks.length;

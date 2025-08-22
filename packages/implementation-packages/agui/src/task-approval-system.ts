@@ -124,7 +124,7 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
   /** Type discriminator, always 'task' for task documents */
   type: 'task';
   /** Task priority level affecting swarm assignment and execution order */
-  priority: 'low | medium' | 'high''' | '''critical';
+  priority: 'low|medium|high|critical';
   /** Estimated hours required to complete the task */
   estimatedHours: number;
   /** List of criteria that must be met for task completion */
@@ -239,7 +239,7 @@ export interface CodeAnalysisResult {
   /** Type or category of the analysis result */
   type: string;
   /** Severity level of the detected issue */
-  severity: 'low | medium' | 'high''' | '''critical';
+  severity: 'low|medium|high|critical';
   /** Code snippet showing the problematic code (if applicable) */
   codeSnippet?: string;
   /** Categorization tags for filtering and organization */
@@ -288,9 +288,9 @@ export interface GeneratedSwarmTask {
   /** Detailed task description and context */
   description: string;
   /** Task classification for routing and prioritization */
-  type: 'task | feature' | 'epic' | 'bug' | 'improvement';
+  type: 'task|feature|epic|bug|improvement';
   /** Priority level affecting execution order */
-  priority: 'low | medium' | 'high''' | '''critical';
+  priority: 'low|medium|high|critical';
   /** Estimated hours required for completion */
   estimatedHours: number;
   /** Recommended swarm type for optimal task execution */
@@ -416,11 +416,11 @@ const logger = getLogger('TaskApprovalSystem');
 export interface TaskApprovalDecision {
   taskId: string;
   approved: boolean;
-  decision: 'approve | reject' | 'modify''' | '''defer';
+  decision: 'approve|reject|modify|defer';
   modifications?: {
     title?: string;
     description?: string;
-    priority?: 'low | medium' | 'high''' | '''critical';
+    priority?: 'low|medium|high|critical';
     estimatedHours?: number;
     requiredAgentTypes?: string[];
     acceptanceCriteria?: string[];
@@ -1022,7 +1022,7 @@ export class TaskApprovalSystem extends TypedEventBase {
           let rationale = this.extractRationale(response);
           if (
             !rationale &&
-            (this.config.requireRationale'' | '''' | ''decision.decision ==='reject')
+            (this.config.requireRationale||decision.decision ==='reject')
           ) {
             const rationaleStartTime = Date.now();
             rationale = await this.askForRationale(decision.decision);
@@ -1068,7 +1068,7 @@ export class TaskApprovalSystem extends TypedEventBase {
             approved: decision.approved,
             decision: decision.decision,
             ...(modifications !== undefined && { modifications }),
-            rationale: rationale'' | '''' | '''No rationale provided',
+            rationale: rationale||'No rationale provided',
             decisionMaker: 'user', // In production, this would be actual user ID
             timestamp: new Date(),
             correlationId,
@@ -1391,10 +1391,10 @@ ${'='.repeat(60)}
 
 📊 Source Analysis:
    • File: ${task.sourceAnalysis.filePath}
-   • Line: ${task.sourceAnalysis.lineNumber'' | '''' | '''N/A'}
+   • Line: ${task.sourceAnalysis.lineNumber||'N/A'}
    • Type: ${task.sourceAnalysis.type}
    • Severity: ${task.sourceAnalysis.severity}
-   • Code: ${task.sourceAnalysis.codeSnippet'' | '''' | '''N/A'}
+   • Code: ${task.sourceAnalysis.codeSnippet||'N/A'}
 
 ✅ Acceptance Criteria:
 ${task.acceptanceCriteria.map((criterion) => `   • ${criterion}`).join('\n')}
@@ -1487,16 +1487,16 @@ ${
   } {
     const lowerResponse = response.toLowerCase();
 
-    if (lowerResponse.includes('approve')'' | '''' | ''lowerResponse ==='1') {
+    if (lowerResponse.includes('approve')||lowerResponse ==='1') {
       return { decision: 'approve', approved: true };
     }
-    if (lowerResponse.includes('modify')'' | '''' | ''lowerResponse ==='2') {
+    if (lowerResponse.includes('modify')||lowerResponse ==='2') {
       return { decision: 'modify', approved: true };
     }
-    if (lowerResponse.includes('reject')'' | '''' | ''lowerResponse ==='3') {
+    if (lowerResponse.includes('reject')||lowerResponse ==='3') {
       return { decision: 'reject', approved: false };
     }
-    if (lowerResponse.includes('defer')'' | '''' | ''lowerResponse ==='4') {
+    if (lowerResponse.includes('defer')||lowerResponse ==='4') {
       return { decision: 'defer', approved: false };
     }
 
@@ -1512,7 +1512,7 @@ ${
   /**
    * Extract rationale from response
    */
-  private extractRationale(response: string): string'' | ''undefined {
+  private extractRationale(response: string): string|undefined {
     const rationaleMarkers = ['because',
       'since',
       'reason:',
@@ -1580,16 +1580,16 @@ ${
     const modifyResponse = await this.agui.askQuestion(modifyQuestion);
 
     // Handle specific modifications based on response
-    if (modifyResponse.includes('Title')'' | '''' | ''modifyResponse ==='1') {
+    if (modifyResponse.includes('Title')||modifyResponse ==='1') {
       modifications.title = await this.askForNewValue('title', task.title);
     }
-    if (modifyResponse.includes('Description')'' | '''' | ''modifyResponse ==='2') {
+    if (modifyResponse.includes('Description')||modifyResponse ==='2') {
       modifications.description = await this.askForNewValue(
         'description',
         task.description
       );
     }
-    if (modifyResponse.includes('Priority')'' | '''' | ''modifyResponse ==='3') {
+    if (modifyResponse.includes('Priority')||modifyResponse ==='3') {
       const priorityQuestion: ValidationQuestion = {
         id: `priority-${task.id}`,
         type: 'review',
@@ -1601,13 +1601,13 @@ ${
       const newPriority = await this.agui.askQuestion(priorityQuestion);
       modifications.priority = newPriority as any;
     }
-    if (modifyResponse.includes('Hours')'' | '''' | ''modifyResponse ==='4') {
+    if (modifyResponse.includes('Hours')||modifyResponse ==='4') {
       const hoursStr = await this.askForNewValue(
         'estimated hours',
         task.estimatedHours.toString()
       );
       modifications.estimatedHours =
-        Number.parseInt(hoursStr)'' | '''' | ''task.estimatedHours;
+        Number.parseInt(hoursStr)||task.estimatedHours;
     }
 
     return modifications;
@@ -1644,15 +1644,15 @@ ${
 
     return {
       ...task,
-      title: decision.modifications.title'' | '''' | ''task.title,
-      description: decision.modifications.description'' | '''' | ''task.description,
-      priority: decision.modifications.priority'' | '''' | ''task.priority,
+      title: decision.modifications.title||task.title,
+      description: decision.modifications.description||task.description,
+      priority: decision.modifications.priority||task.priority,
       estimatedHours:
-        decision.modifications.estimatedHours'' | '''' | ''task.estimatedHours,
+        decision.modifications.estimatedHours||task.estimatedHours,
       requiredAgentTypes:
-        decision.modifications.requiredAgentTypes'' | '''' | ''task.requiredAgentTypes,
+        decision.modifications.requiredAgentTypes||task.requiredAgentTypes,
       acceptanceCriteria:
-        decision.modifications.acceptanceCriteria'' | '''' | ''task.acceptanceCriteria,
+        decision.modifications.acceptanceCriteria||task.acceptanceCriteria,
     };
   }
 
@@ -1821,7 +1821,7 @@ ${
             ? 'unknown'
             : 'task';
           this.statistics.approvalsByType[taskType] =
-            (this.statistics.approvalsByType[taskType]'' | '''' | ''0) + 1;
+            (this.statistics.approvalsByType[taskType]||0) + 1;
         }
       }
 
@@ -1941,7 +1941,7 @@ ${
   /**
    * Export approval decisions for audit with Foundation telemetry
    */
-  exportDecisions(format: 'json''' | '''csv' = 'json'): string {
+  exportDecisions(format: 'json|csv'' = 'json'): string {
     return withTrace('export-approval-decisions', (span) => {
       const startTime = Date.now();
 

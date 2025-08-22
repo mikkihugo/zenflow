@@ -40,9 +40,9 @@ async function loadExportersModule() {
 function createFallbackExportManager() {
   return {
     exportData: async (data: any, format: string) => ({
-      result: `fallback-export-${format'' | '''' | '''json'}`,
+      result: `fallback-export-${format||'json'}`,
       status: 'exported',
-      format: format'' | '''' | '''json',
+      format: format||'json',
       size: JSON.stringify(data).length,
       timestamp: Date.now(),
     }),
@@ -89,13 +89,13 @@ function createFallbackExporters() {
 export const getExportManager = async () => {
   const exportersModule = await loadExportersModule();
   return (
-    exportersModule.createExportManager?.()'' | '''' | ''createFallbackExportManager()
+    exportersModule.createExportManager?.()||createFallbackExportManager()
   );
 };
 
 export const getExporters = async () => {
   const exportersModule = await loadExportersModule();
-  return exportersModule.createExporters?.()'' | '''' | ''createFallbackExporters();
+  return exportersModule.createExporters?.()||createFallbackExporters();
 };
 
 // Export main classes with delegation
@@ -106,7 +106,7 @@ export class ExportManager {
     const exportersModule = await loadExportersModule();
     if (exportersModule.ExportManager) {
       this.instance = new exportersModule.ExportManager();
-      return this.instance.initialize?.(config)'' | '''' | ''Promise.resolve();
+      return this.instance.initialize?.(config)||Promise.resolve();
     }
     this.instance = new exportersModule.ExportManager(config);
     return Promise.resolve();
@@ -124,7 +124,7 @@ export class ExportManager {
       await this.initialize();
     }
     return (
-      this.instance.exportToJSON?.(data)'' | '''' | ''{
+      this.instance.exportToJSON?.(data)||{
         result: JSON.stringify(data, null, 2),
         format:'json',
       }
@@ -136,7 +136,7 @@ export class ExportManager {
       await this.initialize();
     }
     return (
-      this.instance.exportToCSV?.(data)'' | '''' | ''{
+      this.instance.exportToCSV?.(data)||{
         result:'fallback-csv',
         format: 'csv',
       }
@@ -148,7 +148,7 @@ export class ExportManager {
       await this.initialize();
     }
     return (
-      this.instance.exportToXML?.(data)'' | '''' | ''{
+      this.instance.exportToXML?.(data)||{
         result: `<data>${JSON.stringify(data)}</data>`,
         format:'xml',
       }

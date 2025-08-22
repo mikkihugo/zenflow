@@ -169,22 +169,22 @@ export interface SafetyConfig {
 
 /** Safety event interface */
 export interface SafetyEvent {
-  type: 'alert | intervention' | 'escalation''' | '''shutdown';
+  type: 'alert|intervention|escalation|shutdown';
   timestamp: number;
   agentId?: string;
-  severity: 'low | medium' | 'high''' | '''critical';
+  severity: 'low|medium|high|critical';
   data: Record<string, any>;
 }
 
 /** Risk level enum */
-export type RiskLevel ='' | '''minimal | low' | 'medium''' | '''high | critical' | 'extreme';
+export type RiskLevel =|'minimal|low|medium|high|critical|extreme';
 
 /** Safety status enum */
-export type SafetyStatus ='' | '''safe | monitoring' | 'warning''' | '''alert | intervention' | 'emergency';
+export type SafetyStatus =|'safe|monitoring|warning|alert|intervention|emergency';
 
 /** Intervention action interface */
 export interface InterventionAction {
-  type: 'pause | restrict' | 'terminate''' | '''escalate';
+  type: 'pause|restrict|terminate|escalate';
   target: string;
   reason: string;
   timestamp: number;

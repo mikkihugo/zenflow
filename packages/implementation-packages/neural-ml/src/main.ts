@@ -104,7 +104,7 @@ async function withRetry<T>(
       lastError = error instanceof Error ? error : new Error(String(error));
       if (i < options.retries) {
         await new Promise((resolve) =>
-          setTimeout(resolve, options.minTimeout'' | '''' | ''1000)
+          setTimeout(resolve, options.minTimeout||1000)
         );
       }
     }
@@ -235,7 +235,7 @@ const logger = getLogger('NeuralMLEngine');
  */
 export interface OptimizationBackend {
   /** Backend type */
-  readonly type:'' | '''apple-silicon''' | '''nvidia-cuda''' | '''intel-amd''' | '''arm-neon''' | '''cpu-optimized';
+  readonly type: 'apple-silicon|nvidia-cuda'||intel-amd|arm-neon'||cpu-optimized';
   /** Available acceleration features */
   readonly features: {
     readonly metalAvailable?: boolean;
@@ -265,13 +265,13 @@ export interface OptimizationBackend {
  */
 export interface NeuralMLConfig {
   /** Target hardware (auto-detect by default) */
-  readonly target?: 'auto''' | '''apple-silicon''' | '''cuda''' | '''cpu';
+  readonly target?: 'auto|apple-silicon'||cuda|cpu'';
   /** Precision mode */
-  readonly precision?: 'f32 | f16' | 'mixed';
+  readonly precision?: 'f32|f16|mixed';
   /** Enable performance monitoring */
   readonly enableProfiling?: boolean;
   /** Memory optimization level */
-  readonly memoryOptimization?: 'none | basic' | 'aggressive';
+  readonly memoryOptimization?: 'none|basic|aggressive';
   /** Maximum memory usage (bytes) */
   readonly maxMemoryUsage?: number;
   /** Performance threshold for backend switching */
@@ -295,9 +295,9 @@ export interface OptimizerConfig {
   /** Optimizer name/ID */
   readonly name: string;
   /** Target backend preference */
-  readonly target?: 'auto | gpu' | 'cpu''' | '''simd';
+  readonly target?: 'auto|gpu|cpu|simd';
   /** Precision preference */
-  readonly precision?: 'f32''' | '''f16';
+  readonly precision?: 'f32|f16'';
   /** Enable caching of operations */
   readonly enableCaching?: boolean;
   /** Adaptive threshold settings */
@@ -341,7 +341,7 @@ export interface VectorOperationResult {
 /**
  * Neural activation types supported by neural-ml
  */
-export type ActivationType = 'relu | sigmoid' | 'tanh''' | '''gelu';
+export type ActivationType = 'relu|sigmoid|tanh|gelu';
 
 /**
  * Neural activation result
@@ -428,8 +428,8 @@ export class NeuralMLEngine {
   private optimizers: Map<string, NeuralMLOptimizerInstance> = new Map();
   private config: NeuralMLConfig;
   private initialized = false;
-  private dbAccess: any'' | ''null = null;
-  private detectedBackend: OptimizationBackend'' | ''null = null;
+  private dbAccess: any|null = null;
+  private detectedBackend: OptimizationBackend|null = null;
 
   // Foundation monitoring and telemetry
   private mlMonitor: MLMonitor;
@@ -629,7 +629,7 @@ export class NeuralMLEngine {
 
     return safeAsync(async () => {
       // Validate input parameters
-      if (!id'' | '''' | ''typeof id !=='string') {
+      if (!id||typeof id !=='string') {
         throw new ValidationError('Optimizer ID must be a non-empty string', {
           id,
         });
@@ -754,7 +754,7 @@ export class NeuralMLEngine {
     return withTrace('neural-ml-matrix-multiply', async (span: Span) => {
       return safeAsync(async () => {
         // Validate dimensions
-        if (a.length !== m * k'' | '''' | ''b.length !== k * n) {
+        if (a.length !== m * k||b.length !== k * n) {
           const error = new ValidationError('Matrix dimensions do not match provided sizes',
             {
               aLength: a.length,
@@ -929,7 +929,7 @@ export class NeuralMLEngine {
             operation: 'matrix_multiply',
             status: 'error',
             error: error.constructor.name,
-            backend: this.detectedBackend?.type'' | '''' | '''unknown',
+            backend: this.detectedBackend?.type||'unknown',
           });
 
           return withContext(error, {
@@ -1277,7 +1277,7 @@ export class NeuralMLEngine {
   getStats(): {
     totalOptimizers: number;
     activeOptimizers: number;
-    detectedBackend: OptimizationBackend'' | ''null;
+    detectedBackend: OptimizationBackend|null;
     totalOperations: number;
     avgThroughput: number;
     memoryUsage: number;
@@ -1316,7 +1316,7 @@ export class NeuralMLEngine {
     optimizers.forEach((opt) => {
       Object.entries(opt.stats.backendUsage).forEach(([backend, count]) => {
         backendDistribution[backend] =
-          (backendDistribution[backend]'' | '''' | ''0) + count;
+          (backendDistribution[backend]||0) + count;
       });
     });
 
@@ -1349,9 +1349,9 @@ export class NeuralMLEngine {
                 : 'unknown';
           })(),
         },
-        telemetryEnabled: this.config.enableTelemetry'' | '''' | ''false,
+        telemetryEnabled: this.config.enableTelemetry||false,
         monitoringActive:
-          (this.initialized && this.config.enableTelemetry)'' | '''' | ''false,
+          (this.initialized && this.config.enableTelemetry)||false,
       },
       performance: {
         totalProcessingTime: totalTime,
@@ -1507,10 +1507,10 @@ export class NeuralMLEngine {
    * Get comprehensive system health status
    */
   getSystemHealth(): {
-    status: 'healthy | degraded' | 'critical';
+    status: 'healthy|degraded|critical';
     details: {
       initialization: boolean;
-      backend: OptimizationBackend'' | ''null;
+      backend: OptimizationBackend|null;
       circuitBreakers: {
         gpu: { state: string; failures: number };
         cpu: { state: string; failures: number };
@@ -1532,7 +1532,7 @@ export class NeuralMLEngine {
     const recommendations: string[] = [];
 
     // Determine overall health status
-    let status:'healthy | degraded' | 'critical' = 'healthy';
+    let status:'healthy|degraded|critical' = 'healthy';
 
     if (!this.initialized) {
       status = 'critical';
@@ -1590,7 +1590,7 @@ export class NeuralMLEngine {
                   ? 'closed'
                   : 'unknown';
             })(),
-            failures: this.gpuCircuitBreaker.getStats?.()?.failures'' | '''' | ''0,
+            failures: this.gpuCircuitBreaker.getStats?.()?.failures||0,
           },
           cpu: {
             state: (() => {
@@ -1601,7 +1601,7 @@ export class NeuralMLEngine {
                   ? 'closed'
                   : 'unknown';
             })(),
-            failures: this.cpuCircuitBreaker.getStats?.()?.failures'' | '''' | ''0,
+            failures: this.cpuCircuitBreaker.getStats?.()?.failures||0,
           },
         },
         monitoring: {
@@ -1678,13 +1678,13 @@ export class NeuralMLEngine {
       return {
         type: 'cpu-optimized',
         features: {
-          threads: navigator.hardwareConcurrency'' | '''' | ''4,
+          threads: navigator.hardwareConcurrency||4,
           simdLevel:'scalar',
         },
         performance: {
           estimatedThroughput: 1000000,
           memoryBandwidth: 1000000000,
-          computeUnits: navigator.hardwareConcurrency'' | '''' | ''4,
+          computeUnits: navigator.hardwareConcurrency||4,
         },
       };
     }
@@ -1706,7 +1706,7 @@ export class NeuralMLEngine {
     const newThroughput = operationSize
       ? (operationSize / processingTime) * 1000000
       : 1000000 / processingTime;
-    const backendType = this.detectedBackend?.type'' | '''' | '''unknown';
+    const backendType = this.detectedBackend?.type||'unknown';
 
     const updatedStats: OptimizerPerformanceStats = {
       operationsCount: optimizer.stats.operationsCount + 1,
@@ -1714,7 +1714,7 @@ export class NeuralMLEngine {
       avgThroughput: (optimizer.stats.avgThroughput + newThroughput) / 2,
       backendUsage: {
         ...optimizer.stats.backendUsage,
-        [backendType]: (optimizer.stats.backendUsage[backendType]'' | '''' | ''0) + 1,
+        [backendType]: (optimizer.stats.backendUsage[backendType]||0) + 1,
       },
       memoryEfficiency: optimizer.stats.memoryEfficiency,
     };

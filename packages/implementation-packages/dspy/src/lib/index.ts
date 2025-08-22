@@ -472,14 +472,14 @@ export class Evaluate {
       for (const item of dataset) {
         try {
           // Execute the program with the test input
-          const result = await program.forward(item.input'' | '''' | ''item);
+          const result = await program.forward(item.input||item);
 
           // Evaluate result using foundation LLM
           const evaluationPrompt = `
 Evaluate this DSPy program output for accuracy and quality:
 
-Input: ${JSON.stringify(item.input'' | '''' | ''item)}
-Expected: ${JSON.stringify(item.output'' | '''' | ''item.expected'' | '''' | '''No expected output')}
+Input: ${JSON.stringify(item.input||item)}
+Expected: ${JSON.stringify(item.output||item.expected||'No expected output')}
 Actual: ${JSON.stringify(result)}
 
 Rate the accuracy on a scale of 0.0 to 1.0 where:
@@ -532,9 +532,9 @@ Respond with just the numeric score (e.g., 0.85):`;
       let totalScore = 0;
       for (const item of dataset) {
         try {
-          const result = await program.forward(item.input'' | '''' | ''item);
+          const result = await program.forward(item.input||item);
           // Simple string similarity scoring as fallback
-          const expected = item.output'' | '''' | ''item.expected'' | '''' | '''';
+          const expected = item.output||item.expected||'';
           const actual = JSON.stringify(result);
           const similarity = this.calculateStringSimilarity(
             expected.toString(),

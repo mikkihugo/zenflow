@@ -94,8 +94,8 @@ export interface VisionArtifact {
   stakeholders: Array<{
     role: string;
     name: string;
-    influence: 'high | medium' | 'low';
-    commitment: 'champion | supporter' | 'neutral''' | '''skeptic';
+    influence: 'high|medium|low';
+    commitment: 'champion|supporter|neutral|skeptic';
   }>;
 
   // Governance
@@ -113,7 +113,7 @@ export interface VisionArtifact {
   // Metadata
   tags: string[];
   attachments: Array<{
-    type: 'document | image' | 'video''' | '''link';
+    type: 'document|image|video|link';
     url: string;
     description: string;
   }>;
@@ -178,7 +178,7 @@ export interface VisionAlignment {
   alignmentGaps: Array<{
     area: string;
     gap: string;
-    impact: 'high | medium' | 'low';
+    impact: 'high|medium|low';
     recommendation: string;
   }>;
 
@@ -187,7 +187,7 @@ export interface VisionAlignment {
     action: string;
     owner: UserId;
     dueDate: Date;
-    priority: 'high | medium' | 'low';
+    priority: 'high|medium|low';
   }>;
 
   overallScore: number;
@@ -347,7 +347,7 @@ export class VisionManagementService {
     requestContext: {
       userId: UserId;
       reason: string;
-      changeImpact: 'minor | major' | 'breaking';
+      changeImpact: 'minor|major|breaking';
     }
   ): Promise<{
     success: boolean;
@@ -419,8 +419,8 @@ export class VisionManagementService {
       id: visionBoardId,
       visionId,
       visionCanvas: visionCanvasData.visionCanvas,
-      personas: visionCanvasData.personas'' | '''' | ''[],
-      customerJourney: visionCanvasData.customerJourney'' | '''' | ''[],
+      personas: visionCanvasData.personas||[],
+      customerJourney: visionCanvasData.customerJourney||[],
       createdAt: new Date(),
       lastUpdatedAt: new Date(),
     };
@@ -523,7 +523,7 @@ export class VisionManagementService {
 
     // Store alignment assessment
     const alignmentId = `alignment-${visionId}-${Date.now()}`;
-    const existingAssessments = this.alignmentAssessments.get(visionId)'' | '''' | ''[];
+    const existingAssessments = this.alignmentAssessments.get(visionId)||[];
     existingAssessments.push(alignment);
     this.alignmentAssessments.set(visionId, existingAssessments);
 
@@ -697,7 +697,7 @@ export class VisionManagementService {
     changeImpact: string
   ): boolean {
     // Major or breaking changes require new approval
-    if (changeImpact === 'major''' | '''' | ''changeImpact ==='breaking') {
+    if (changeImpact === 'major'||changeImpact ==='breaking') {
       return true;
     }
 

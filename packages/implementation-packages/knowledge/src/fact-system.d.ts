@@ -71,7 +71,7 @@ declare class KnowledgeFactSystem {
   /**
    * Store a coordination-specific fact
    */
-  storeFact(fact: Omit<CoordinationFact, 'id''' | '''timestamp'>): Promise<string>;
+  storeFact(fact: Omit<CoordinationFact, 'id|timestamp''>): Promise<string>;
   /**
    * Retrieve facts based on query
    */

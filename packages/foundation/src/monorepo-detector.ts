@@ -35,7 +35,7 @@ interface WorkspaceInfo {
 export interface DetectedProject {
   name: string;
   path: string;
-  type:'' | '''app | package' | 'lib''' | '''service | tool' | 'example' | 'test' | 'doc';
+  type:|'app|package|lib|service|tool|example|test|doc';
   framework?: string;
   language?: string;
   packageFile?: string;
@@ -43,7 +43,7 @@ export interface DetectedProject {
 
 export interface DetectedWorkspace {
   root: string;
-  tool:'' | '''yarn | npm' | 'pnpm''' | '''lerna | rush' | 'bun''' | '''bazel | nx' | 'unknown';
+  tool:|'yarn|npm|pnpm|lerna|rush|bun|bazel | nx'|unknown';
   configFile?: string;
   projects: DetectedProject[];
   totalProjects: number;
@@ -58,7 +58,7 @@ export class WorkspaceDetector {
    */
   async detectWorkspaceRoot(
     startPath: string = process.cwd()
-  ): Promise<DetectedWorkspace'' | ''null> {
+  ): Promise<DetectedWorkspace|null> {
     try {
       // Use @manypkg/find-root which supports Yarn, npm, Lerna, pnpm, Bun, Rush
       const result = await findRoot(startPath);
@@ -101,7 +101,7 @@ export class WorkspaceDetector {
       // find-workspaces returns an array of workspace package info
       const workspaces = await findWorkspaces(rootDir);
 
-      if (!workspaces'' | '''' | ''!Array.isArray(workspaces)) {
+      if (!workspaces||!Array.isArray(workspaces)) {
         return [];
       }
 
@@ -109,11 +109,11 @@ export class WorkspaceDetector {
         const relativePath = path.relative(rootDir, workspace.location);
         const packageFile = this.detectProjectFile(workspace.location);
         const workspaceName =
-          workspace.name'' | '''' | ''path.basename(workspace.location);
+          workspace.name||path.basename(workspace.location);
         const packageName = workspace.package?.name;
 
         return {
-          name: packageName'' | '''' | ''workspaceName,
+          name: packageName||workspaceName,
           path: relativePath,
           type: this.inferProjectType(relativePath, packageName),
           framework: this.detectFramework(workspace.location, packageFile),
@@ -172,7 +172,7 @@ export class WorkspaceDetector {
   /**
    * Find workspace configuration file
    */
-  private findWorkspaceConfigFile(rootDir: string): string'' | ''undefined {
+  private findWorkspaceConfigFile(rootDir: string): string|undefined {
     const configFiles = ['pnpm-workspace.yaml',
       'pnpm-workspace.yml',
       'lerna.json',
@@ -196,7 +196,7 @@ export class WorkspaceDetector {
   /**
    * Detect project file for a directory
    */
-  private detectProjectFile(projectDir: string): string'' | ''undefined {
+  private detectProjectFile(projectDir: string): string|undefined {
     const projectFiles = [
       PACKAGE_JSON_FILE, // Node.js/TypeScript/React Native'Cargo.toml', // Rust
       'go.mod', // Go
@@ -223,8 +223,8 @@ export class WorkspaceDetector {
   private detectFramework(
     projectDir: string,
     packageFile?: string
-  ): string'' | ''undefined {
-    if (!packageFile'' | '''' | ''packageFile !== PACKAGE_JSON_FILE) {
+  ): string|undefined {
+    if (!packageFile||packageFile !== PACKAGE_JSON_FILE) {
       return undefined;
     }
 
@@ -287,7 +287,7 @@ export class WorkspaceDetector {
   private detectLanguage(
     _projectDir: string,
     packageFile?: string
-  ): string'' | ''undefined {
+  ): string|undefined {
     if (!packageFile) {
       return undefined;
     }
@@ -311,31 +311,31 @@ export class WorkspaceDetector {
     name?: string
   ): DetectedProject['type'] {
     const pathLower = relativePath.toLowerCase();
-    const nameLower = name?.toLowerCase()'' | '''' | '''';
+    const nameLower = name?.toLowerCase()||'';
 
     // Path-based detection
-    if (pathLower.includes('apps/')'' | '''' | ''pathLower.startsWith('apps/')) {
+    if (pathLower.includes('apps/')||pathLower.startsWith('apps/')) {
       return 'app';
     }
-    if (pathLower.includes('packages/')'' | '''' | ''pathLower.startsWith('packages/')) {
+    if (pathLower.includes('packages/')||pathLower.startsWith('packages/')) {
       return 'package';
     }
-    if (pathLower.includes('libs/')'' | '''' | ''pathLower.startsWith('libs/')) {
+    if (pathLower.includes('libs/')||pathLower.startsWith('libs/')) {
       return 'lib';
     }
-    if (pathLower.includes('services/')'' | '''' | ''pathLower.startsWith('services/')) {
+    if (pathLower.includes('services/')||pathLower.startsWith('services/')) {
       return 'service';
     }
-    if (pathLower.includes('tools/')'' | '''' | ''pathLower.startsWith('tools/')) {
+    if (pathLower.includes('tools/')||pathLower.startsWith('tools/')) {
       return 'tool';
     }
-    if (pathLower.includes('examples/')'' | '''' | ''pathLower.startsWith('examples/')) {
+    if (pathLower.includes('examples/')||pathLower.startsWith('examples/')) {
       return 'example';
     }
-    if (pathLower.includes('test')'' | '''' | ''pathLower.includes('spec')) {
+    if (pathLower.includes('test')||pathLower.includes('spec')) {
       return 'test';
     }
-    if (pathLower.includes('docs/')'' | '''' | ''pathLower.includes('documentation/')) {
+    if (pathLower.includes('docs/')||pathLower.includes('documentation/')) {
       return 'doc';
     }
 

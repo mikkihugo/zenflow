@@ -27,7 +27,7 @@ export interface GEPAMLConfig {
   crossoverRate: number;
   mutationRate: number;
   adaptiveRates: boolean;
-  selectionMethod: 'tournament | roulette' | 'rank''' | '''stochastic_universal';
+  selectionMethod: 'tournament|roulette|rank|stochastic_universal';
   useMultiPopulation: boolean;
   numPopulations: number;
   migrationInterval: number;
@@ -38,10 +38,10 @@ export interface GEPAMLConfig {
   useCoevolution: boolean;
   diversityMaintenance: boolean;
   diversityThreshold: number;
-  diversityMeasure: 'hamming | euclidean' | 'phenotypic';
+  diversityMeasure: 'hamming|euclidean|phenotypic';
   convergenceThreshold: number;
   stagnationGenerations: number;
-  statisticalTests: Array<'anova | t_test' | 'kruskal_wallis'>;
+  statisticalTests: Array<'anova|t_test|kruskal_wallis'>;
   parallelEvaluation: boolean;
   cacheResults: boolean;
   maxEvaluationTime: number;

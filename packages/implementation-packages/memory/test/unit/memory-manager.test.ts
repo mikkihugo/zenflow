@@ -341,7 +341,7 @@ describe('MemoryManager', () => {
 
       const result = await manager.store('test-key', 'test-value');
       // Should handle failure gracefully
-      expect(result.isOk()'' | '''' | ''result.isErr()).toBe(true);
+      expect(result.isOk()||result.isErr()).toBe(true);
     });
 
     it('should implement circuit breaker pattern', async () => {
@@ -373,7 +373,7 @@ describe('MemoryManager', () => {
         'key',
         Symbol('invalid') as any
       );
-      expect(invalidValueResult.isOk()'' | '''' | ''invalidValueResult.isErr()).toBe(
+      expect(invalidValueResult.isOk()||invalidValueResult.isErr()).toBe(
         true
       );
     });

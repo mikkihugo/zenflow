@@ -34,7 +34,7 @@ import type { Logger } from '../../types';
 export interface BottleneckAnalysisConfig {
   readonly analysisId: string;
   readonly valueStreamId: string;
-  readonly analysisDepth: 'shallow'' | ''deep'' | ''comprehensive';
+  readonly analysisDepth: 'shallow|deep|comprehensive';
   readonly timeWindow: TimeWindow;
   readonly analysisScope: AnalysisScope;
   readonly detectionThresholds: DetectionThresholds;
@@ -47,7 +47,7 @@ export interface BottleneckAnalysisConfig {
 export interface TimeWindow {
   readonly startDate: Date;
   readonly endDate: Date;
-  readonly granularity: 'hourly'' | ''daily'' | ''weekly';
+  readonly granularity: 'hourly|daily|weekly';
   readonly includeSeasonality: boolean;
 }
 
@@ -822,7 +822,7 @@ export class BottleneckAnalysisService {
 
   private mapSeverityToPriority(
     severity: BottleneckSeverity
-  ): 'critical'' | ''high'' | ''medium'' | ''low' {
+  ): 'critical|high|medium|low' {
     switch (severity) {
       case BottleneckSeverity.CRITICAL:
         return 'critical';
@@ -869,7 +869,7 @@ interface ErrorMetrics {
 }
 
 interface TrendAnalysis {
-  readonly direction: 'increasing'' | ''decreasing'' | ''stable';
+  readonly direction: 'increasing|decreasing|stable';
   readonly magnitude: number;
   readonly confidence: number;
   readonly seasonality: boolean;
@@ -877,7 +877,7 @@ interface TrendAnalysis {
 
 interface SeasonalityPattern {
   readonly patternId: string;
-  readonly type: 'daily'' | ''weekly'' | ''monthly'' | ''quarterly';
+  readonly type: 'daily|weekly|monthly|quarterly';
   readonly strength: number;
   readonly phase: string;
   readonly description: string;
@@ -885,28 +885,28 @@ interface SeasonalityPattern {
 
 interface Evidence {
   readonly evidenceId: string;
-  readonly type: 'statistical'' | ''observational'' | ''historical';
+  readonly type: 'statistical|observational|historical';
   readonly description: string;
   readonly confidence: number;
   readonly source: string;
 }
 
 interface CauseImpact {
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
-  readonly scope: 'limited'' | ''moderate'' | ''widespread';
-  readonly timeframe: 'short'' | ''medium'' | ''long';
+  readonly severity: 'low|medium|high|critical';
+  readonly scope: 'limited|moderate|widespread';
+  readonly timeframe: 'short|medium|long';
 }
 
 interface Addressability {
-  readonly difficulty: 'easy'' | ''medium'' | ''hard'' | ''very_hard';
-  readonly cost: 'low'' | ''medium'' | ''high'' | ''very_high';
-  readonly timeline: 'short'' | ''medium'' | ''long'' | ''very_long';
+  readonly difficulty: 'easy|medium|hard|very_hard';
+  readonly cost: 'low|medium|high|very_high';
+  readonly timeline: 'short|medium|long|very_long';
 }
 
 interface CausalLink {
   readonly fromCause: string;
   readonly toCause: string;
-  readonly relationship: 'direct'' | ''indirect'' | ''contributory';
+  readonly relationship: 'direct|indirect|contributory';
   readonly strength: number;
 }
 
@@ -925,13 +925,13 @@ interface QualityImpact {
 interface CustomerImpact {
   readonly affectedCustomers: number;
   readonly satisfactionScore: number;
-  readonly churnRisk: 'low'' | ''medium'' | ''high';
+  readonly churnRisk: 'low|medium|high';
 }
 
 interface TeamImpact {
   readonly moralImpact: number;
-  readonly stressLevel: 'low'' | ''medium'' | ''high';
-  readonly burnoutRisk: 'low'' | ''medium'' | ''high';
+  readonly stressLevel: 'low|medium|high';
+  readonly burnoutRisk: 'low|medium|high';
 }
 
 enum ImpactSeverity {
@@ -949,9 +949,9 @@ enum FactorFrequency {
 }
 
 interface FactorImpact {
-  readonly magnitude: 'low'' | ''medium'' | ''high'' | ''critical';
-  readonly scope: 'local'' | ''regional'' | ''global';
-  readonly duration: 'temporary'' | ''persistent'' | ''permanent';
+  readonly magnitude: 'low|medium|high|critical';
+  readonly scope: 'local|regional|global';
+  readonly duration: 'temporary|persistent|permanent';
   readonly cascading: boolean;
 }
 
@@ -959,8 +959,8 @@ interface BottleneckRecommendation {
   readonly recommendationId: string;
   readonly title: string;
   readonly description: string;
-  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
-  readonly estimatedEffort: 'low'' | ''medium'' | ''high';
-  readonly estimatedImpact: 'low'' | ''medium'' | ''high';
+  readonly priority: 'low|medium|high|critical';
+  readonly estimatedEffort: 'low|medium|high';
+  readonly estimatedImpact: 'low|medium|high';
   readonly implementation: string[];
 }

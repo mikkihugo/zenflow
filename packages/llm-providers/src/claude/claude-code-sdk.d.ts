@@ -7,7 +7,7 @@
 
 declare module '@anthropic-ai/claude-code/sdk.mjs' {
   export interface ClaudeCodeMessage {
-    role: 'user | assistant' | 'system';
+    role: 'user | assistant|system';
     content: string;
   }
 

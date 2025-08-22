@@ -19,8 +19,8 @@ import type { MemoryConfig } from '../providers/memory-providers';
 import type { JSONValue } from '../core/memory-system';
 
 interface FoundationMemoryConfig extends MemoryConfig {
-  storageType: 'kv | database' | 'hybrid';
-  databaseType?: 'sqlite | lancedb' | 'kuzu';
+  storageType: 'kv|database|hybrid';
+  databaseType?: 'sqlite|lancedb|kuzu';
 }
 
 export class FoundationMemoryBackend extends BaseMemoryBackend {
@@ -90,7 +90,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
   override async retrieve<T = JSONValue>(
     key: string,
-    namespace = 'default'): Promise<T'' | ''null> {
+    namespace = 'default'): Promise<T|null> {
     await this.ensureInitialized();
 
     const finalKey = `${namespace}:${key}`;
@@ -114,7 +114,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     return null;
   }
 
-  override async get<T = JSONValue>(key: string): Promise<T'' | ''null> {
+  override async get<T = JSONValue>(key: string): Promise<T|null> {
     return this.retrieve<T>(key);
   }
 
@@ -156,7 +156,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       keys = allKeys
         .filter((key) => key.startsWith(namespacePrefix))
         .map((key) => key.substring(namespacePrefix.length))
-        .filter((key) => !pattern'' | '''' | ''key.includes(pattern));
+        .filter((key) => !pattern||key.includes(pattern));
     }
 
     return keys.sort();
@@ -182,7 +182,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
     recordMetric('memory_operations_total', 1, {
       operation: 'clear',
-      namespace: namespace'' | '''' | '''all',
+      namespace: namespace||'all',
     });
   }
 
@@ -201,7 +201,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       persistent: true,
       searchable: true,
       transactional:
-        config.storageType === 'database''' | '''' | ''config.storageType ==='hybrid',
+        config.storageType === 'database'||config.storageType ==='hybrid',
       vectorized: config.databaseType === 'lancedb',
       distributed: false,
       concurrent: true,
@@ -242,7 +242,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   }
 
   private validateKey(key: string): void {
-    if (!key'' | '''' | ''typeof key !=='string') {
+    if (!key||typeof key !=='string') {
       throw new Error('Key must be a non-empty string');
     }
   }

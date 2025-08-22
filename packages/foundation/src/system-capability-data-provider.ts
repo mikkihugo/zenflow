@@ -38,7 +38,7 @@ export interface InstallationSuggestion {
   package: string;
   facade: string;
   reason: string;
-  priority: 'high | medium' | 'low';
+  priority: 'high|medium|low';
   features: string[];
 }
 
@@ -83,7 +83,7 @@ export async function getSystemCapabilityData(): Promise<SystemCapabilityData> {
       capability: status.capability,
       healthScore: status.healthScore,
       availablePackages: Object.values(status.packages).filter(
-        (pkg) => pkg.status === 'available''' | '''' | ''pkg.status ==='registered'
+        (pkg) => pkg.status === 'available'||pkg.status ==='registered'
       ).length,
       totalPackages: Object.keys(status.packages).length,
       missingPackages: status.missingPackages,
@@ -116,7 +116,7 @@ export async function getInstallationSuggestions(): Promise<
   Object.entries(systemStatus.facades).forEach(([facadeName, facade]) => {
     facade.missingPackages.forEach((packageName) => {
       // Determine priority based on facade type
-      let priority: 'high | medium' | 'low' = 'medium';
+      let priority: 'high|medium|low' = 'medium';
       if (facadeName === 'infrastructure') {
         priority = 'high';
       }
@@ -294,7 +294,7 @@ export function startSystemMonitoring(): void {
     'package-loaded',
     (data: { packageName: string; version?: string; timestamp: Date }) => {
       logger.info(`📦 Package ${data.packageName} loaded successfully`, {
-        version: data.version'' | '''' | '''unknown',
+        version: data.version||'unknown',
         timestamp: data.timestamp.toISOString(),
       });
     }

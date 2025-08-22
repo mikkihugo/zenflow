@@ -21,7 +21,7 @@ import type {
  */
 export class ConfigManager {
   private logger: Logger;
-  private config: CollectorConfig'' | ''null = null;
+  private config: CollectorConfig|null = null;
 
   constructor() {
     this.logger = getLogger('ConfigManager');
@@ -108,12 +108,12 @@ export class ConfigManager {
       service: {
         name: 'claude-zen-otel-collector',
         version: '1.0.0',
-        instance: process.env.HOSTNAME'' | '''' | '''localhost',
+        instance: process.env.HOSTNAME||'localhost',
       },
       http: {
         enabled: true,
-        port: parseInt(process.env.OTEL_COLLECTOR_PORT'' | '''' | '''4318'),
-        host: process.env.OTEL_COLLECTOR_HOST'' | '''' | '''0.0.0.0',
+        port: parseInt(process.env.OTEL_COLLECTOR_PORT||'4318'),
+        host: process.env.OTEL_COLLECTOR_HOST||'0.0.0.0',
         cors: {
           enabled: true,
           origins: ['*'],
@@ -197,7 +197,7 @@ export class ConfigManager {
         },
       },
       logging: {
-        level: process.env.LOG_LEVEL'' | '''' | '''info',
+        level: process.env.LOG_LEVEL||'info',
         format: 'json',
         enableConsole: true,
         enableFile: false,
@@ -219,11 +219,11 @@ export class ConfigManager {
       if (configPath.endsWith('.json')) {
         const content = readFileSync(resolvedPath, 'utf-8');
         return JSON.parse(content);
-      } else if (configPath.endsWith('.js')'' | '''' | ''configPath.endsWith('.mjs')) {
+      } else if (configPath.endsWith('.js')||configPath.endsWith('.mjs')) {
         // Dynamic import for JS config files
         delete require.cache[resolvedPath];
         const config = require(resolvedPath);
-        return config.default'' | '''' | ''config;
+        return config.default||config;
       } else {
         throw new Error(`Unsupported configuration file format: ${configPath}`);
       }
@@ -246,7 +246,7 @@ export class ConfigManager {
     const merged = { ...base };
 
     for (const [key, value] of Object.entries(override)) {
-      if (value === undefined'' | '''' | ''value === null) {
+      if (value === undefined||value === null) {
         continue;
       }
 
@@ -331,7 +331,7 @@ export class ConfigManager {
       };
 
       envOverrides.exporters = [
-        ...(envOverrides.exporters'' | '''' | ''config.exporters),
+        ...(envOverrides.exporters||config.exporters),
         otlpExporter,
       ];
     }
@@ -349,7 +349,7 @@ export class ConfigManager {
       };
 
       envOverrides.exporters = [
-        ...(envOverrides.exporters'' | '''' | ''config.exporters),
+        ...(envOverrides.exporters||config.exporters),
         prometheusExporter,
       ];
     }
@@ -367,13 +367,13 @@ export class ConfigManager {
     }
 
     if (
-      !config.http?.port'' | '''' | ''config.http.port < 1'' | '''' | ''config.http.port > 65535
+      !config.http?.port||config.http.port < 1||config.http.port > 65535
     ) {
       throw new Error('Configuration invalid http.port');
     }
 
     // Validate exporters
-    if (!Array.isArray(config.exporters)'' | '''' | ''config.exporters.length === 0) {
+    if (!Array.isArray(config.exporters)||config.exporters.length === 0) {
       throw new Error('Configuration must have at least one exporter');
     }
 
@@ -405,7 +405,7 @@ export class ConfigManager {
 
     this.logger.debug('Configuration validation passed', {
       exporters: enabledExporters.length,
-      processors: config.processors?.length'' | '''' | ''0,
+      processors: config.processors?.length||0,
     });
   }
 }

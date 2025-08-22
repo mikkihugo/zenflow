@@ -12,7 +12,7 @@ import { EventEmitter } from '@claude-zen/foundation';
 /**
  * Event priority levels for processing order.
  */
-export type EventPriority = 'critical | high' | 'medium''' | '''low';
+export type EventPriority = 'critical|high|medium|low';
 
 // Re-export SystemLifecycleEvent from types for backwards compatibility
 export type { SystemLifecycleEvent } from '../types';
@@ -20,7 +20,7 @@ export type { SystemLifecycleEvent } from '../types';
 /**
  * Event processing strategies.
  */
-export type EventProcessingStrategy ='' | '''immediate | queued' | 'batched''' | '''throttled';
+export type EventProcessingStrategy =|'immediate|queued|batched|throttled';
 
 /**
  * Event filtering criteria for selective event processing.
@@ -98,7 +98,7 @@ export interface EventRetryConfig {
   /** Initial delay between retries in milliseconds */
   delay: number;
   /** Backoff strategy for increasing delay between retries */
-  backoff: 'linear | exponential' | 'fixed';
+  backoff: 'linear|exponential|fixed';
   /** Maximum delay between retries in milliseconds */
   maxDelay?: number;
   /** Function to determine if an error/event combination should be retried */
@@ -219,7 +219,7 @@ export interface SystemEvent {
  */
 export type EventListener<T extends SystemEvent = SystemEvent> = (
   event: T
-) => void'' | ''Promise<void>;
+) => void|Promise<void>;
 
 /**
  * Event subscription configuration for managing event listeners.
@@ -270,7 +270,7 @@ export interface EventSubscription<T extends SystemEvent = SystemEvent> {
 export interface EventManagerStatus {
   name: string;
   type: EventManagerType;
-  status: 'healthy | degraded' | 'unhealthy''' | '''stopped';
+  status: 'healthy|degraded|unhealthy|stopped';
   lastCheck: Date;
   subscriptions: number;
   queueSize: number;
@@ -336,8 +336,8 @@ export interface EventQueryOptions {
   filter?: EventFilter;
   limit?: number;
   offset?: number;
-  sortBy?: 'timestamp | priority' | 'type''' | '''source';
-  sortOrder?: 'asc''' | '''desc';
+  sortBy?: 'timestamp|priority|type|source';
+  sortOrder?: 'asc|desc'';
   includeMetadata?: boolean;
 }
 
@@ -452,7 +452,7 @@ export interface EventManager {
    * @throws {EventSubscriptionError} If subscription fails.
    */
   subscribe<T extends SystemEvent>(
-    eventTypes: string'' | ''string[],
+    eventTypes: string|string[],
     listener: EventListener<T>,
     options?: Partial<EventSubscription<T>>
   ): string;
@@ -567,7 +567,7 @@ export interface EventManager {
    * @param handler - Function to handle the lifecycle event.
    */
   on(
-    event:'start | stop' | 'error' | 'subscription' | 'emission',
+    event:'start|stop|error|subscription|emission',
     handler: (...args: unknown[]) => void
   ): void;
 
@@ -643,7 +643,7 @@ export interface EventManagerFactory<
    * @param name - Name of the event manager.
    * @returns Event manager instance or undefined if not found.
    */
-  get(name: string): EventManager'' | ''undefined;
+  get(name: string): EventManager|undefined;
 
   /**
    * List all event managers managed by this factory.
@@ -771,7 +771,7 @@ export interface EventManagerRegistry {
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T>'' | ''undefined;
+  ): EventManagerFactory<T>|undefined;
 
   /**
    * List all registered factory types.
@@ -794,7 +794,7 @@ export interface EventManagerRegistry {
    * @param name - Name of the event manager to find.
    * @returns Event manager instance or undefined if not found.
    */
-  findEventManager(name: string): EventManager'' | ''undefined;
+  findEventManager(name: string): EventManager|undefined;
 
   /**
    * Get all event managers of a specific type.
@@ -859,7 +859,7 @@ export interface EventManagerRegistry {
 /**
  * Event manager types for different categories.
  */
-export type EventManagerType ='' | '''system'// Core system lifecycle events'' | '''coordination'// Swarm coordination and agent management'' | '''communication'// WebSocket, MCP, protocol communication'' | '''monitoring'// Metrics, health checks, performance'' | '''interface'// CLI, web, terminal interface events'' | '''neural'// Neural network and AI operations'' | '''database'// Database operations and queries'' | '''memory'// Memory operations and caching'' | '''workflow'// Workflow execution and orchestration'' | '''custom'; // Custom event types
+export type EventManagerType =|'system'// Core system lifecycle events|'coordination'// Swarm coordination and agent management|'communication'// WebSocket, MCP, protocol communication|'monitoring'// Metrics, health checks, performance|'interface'// CLI, web, terminal interface events|'neural'// Neural network and AI operations|'database'// Database operations and queries|'memory'// Memory operations and caching|'workflow'// Workflow execution and orchestration|'custom'; // Custom event types
 
 /**
  * Event manager type mappings for convenience.

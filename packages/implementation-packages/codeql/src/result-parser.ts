@@ -76,8 +76,8 @@ export class ResultParser {
   private async parseAnalysisResult(
     result: SARIFAnalysisResult,
     run: any
-  ): Promise<CodeQLFinding'' | ''null> {
-    if (!result.locations'' | '''' | ''result.locations.length === 0) {
+  ): Promise<CodeQLFinding|null> {
+    if (!result.locations||result.locations.length === 0) {
       return null;
     }
 
@@ -90,7 +90,7 @@ export class ResultParser {
     const relatedLocations =
       result.relatedLocations
         ?.map((loc) => this.parseLocation(loc))
-        .filter((loc): loc is SourceLocation => loc !== null)'' | '''' | ''[];
+        .filter((loc): loc is SourceLocation => loc !== null)||[];
 
     // Parse data flow if present
     const dataFlow =
@@ -100,7 +100,7 @@ export class ResultParser {
 
     // Get rule information
     const rule = this.findRule(result.ruleId, run);
-    const ruleName = rule?.name'' | '''' | ''result.ruleId;
+    const ruleName = rule?.name||result.ruleId;
 
     // Generate security classification
     const security = this.generateSecurityClassification(result.ruleId, rule);
@@ -115,7 +115,7 @@ export class ResultParser {
       id: `finding_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       ruleId: result.ruleId,
       ruleName,
-      severity: this.mapSeverity(result.level'' | '''' | '''warning'),
+      severity: this.mapSeverity(result.level||'warning'),
       filePath: primaryLocation.filePath,
       location: primaryLocation,
       relatedLocations,
@@ -139,7 +139,7 @@ export class ResultParser {
   /**
    * Parse SARIF location to source location
    */
-  private parseLocation(sarifLocation: SARIFLocation): SourceLocation'' | ''null {
+  private parseLocation(sarifLocation: SARIFLocation): SourceLocation|null {
     const physicalLocation = sarifLocation.physicalLocation;
     if (!physicalLocation) {
       return null;
@@ -163,19 +163,19 @@ export class ResultParser {
   /**
    * Parse CodeQL data flow from SARIF code flows
    */
-  private parseDataFlow(codeFlow: any): DataFlowPath'' | ''undefined {
-    if (!codeFlow.threadFlows'' | '''' | ''codeFlow.threadFlows.length === 0) {
+  private parseDataFlow(codeFlow: any): DataFlowPath|undefined {
+    if (!codeFlow.threadFlows||codeFlow.threadFlows.length === 0) {
       return undefined;
     }
 
     const threadFlow = codeFlow.threadFlows[0];
-    if (!threadFlow.locations'' | '''' | ''threadFlow.locations.length < 2) {
+    if (!threadFlow.locations||threadFlow.locations.length < 2) {
       return undefined;
     }
 
     const steps: DataFlowStep[] = [];
-    let source: SourceLocation'' | ''null = null;
-    let sink: SourceLocation'' | ''null = null;
+    let source: SourceLocation|null = null;
+    let sink: SourceLocation|null = null;
 
     for (let i = 0; i < threadFlow.locations.length; i++) {
       const flowLocation = threadFlow.locations[i];
@@ -192,13 +192,13 @@ export class ResultParser {
 
       steps.push({
         location,
-        description: flowLocation.location.message?.text'' | '''' | ''`Step ${i + 1}`,
+        description: flowLocation.location.message?.text||`Step ${i + 1}`,
         stepNumber: i + 1,
         isSanitizer: flowLocation.importance ==='unimportant', // Heuristic
       });
     }
 
-    if (!source'' | '''' | ''!sink) {
+    if (!source||!sink) {
       return undefined;
     }
 
@@ -227,7 +227,7 @@ export class ResultParser {
   private generateSecurityClassification(
     ruleId: string,
     rule: any
-  ): SecurityClassification'' | ''undefined {
+  ): SecurityClassification|undefined {
     // Map common CodeQL security rules to classifications
     const securityMappings: Record<string, Partial<SecurityClassification>> = {'js/sql-injection': {
         cweId: 89,
@@ -270,7 +270,7 @@ export class ResultParser {
     if (!mapping) {
       // Check if rule appears to be security-related
       const isSecurityRule =
-        ruleId.includes('security')'' | '''' | ''ruleId.includes('injection')'' | '''' | ''ruleId.includes('xss')'' | '''' | ''ruleId.includes('csrf')'' | '''' | ''ruleId.includes('auth');
+        ruleId.includes('security')||ruleId.includes('injection')||ruleId.includes('xss')||ruleId.includes('csrf')||ruleId.includes('auth');
 
       if (!isSecurityRule) {
         return undefined;
@@ -331,7 +331,7 @@ export class ResultParser {
    */
   private async extractCodeSnippet(
     location: SourceLocation
-  ): Promise<string'' | ''undefined> {
+  ): Promise<string|undefined> {
     try {
       const content = await fs.readFile(location.filePath,'utf-8');
       const lines = content.split('\n');
@@ -339,7 +339,7 @@ export class ResultParser {
       const startLine = Math.max(0, location.startLine - 1);
       const endLine = Math.min(
         lines.length,
-        location.endLine'' | '''' | ''location.startLine
+        location.endLine||location.startLine
       );
 
       return lines.slice(startLine, endLine).join('\n');
@@ -353,7 +353,7 @@ export class ResultParser {
    */
   private mapSeverity(
     sarifLevel: string
-  ): 'error | warning' | 'note''' | '''info' {
+  ): 'error|warning|note|info' {
     switch (sarifLevel.toLowerCase()) {
       case 'error':
         return 'error';
@@ -385,7 +385,7 @@ export class ResultParser {
     // Adjust based on data flow complexity
     if (result.codeFlows && result.codeFlows.length > 0) {
       const flowLength =
-        result.codeFlows[0].threadFlows?.[0]?.locations?.length'' | '''' | ''0;
+        result.codeFlows[0].threadFlows?.[0]?.locations?.length||0;
       if (flowLength > 5) {
         confidence = Math.max(0.6, confidence - 0.1); // Complex flows are less certain
       }

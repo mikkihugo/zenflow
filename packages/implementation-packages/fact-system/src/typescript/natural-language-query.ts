@@ -128,7 +128,7 @@ export class NaturalLanguageQuery {
     if (
       this.matchesPatterns(
         query,
-        this.patterns.get(QueryIntent.NPM_PACKAGE)'' | '''' | ''[]
+        this.patterns.get(QueryIntent.NPM_PACKAGE)||[]
       )
     ) {
       return QueryIntent.NPM_PACKAGE;
@@ -138,7 +138,7 @@ export class NaturalLanguageQuery {
     if (
       this.matchesPatterns(
         query,
-        this.patterns.get(QueryIntent.GITHUB_REPO)'' | '''' | ''[]
+        this.patterns.get(QueryIntent.GITHUB_REPO)||[]
       )
     ) {
       return QueryIntent.GITHUB_REPO;
@@ -148,7 +148,7 @@ export class NaturalLanguageQuery {
     if (
       this.matchesPatterns(
         query,
-        this.patterns.get(QueryIntent.SECURITY_CHECK)'' | '''' | ''[]
+        this.patterns.get(QueryIntent.SECURITY_CHECK)||[]
       )
     ) {
       return QueryIntent.SECURITY_CHECK;
@@ -156,7 +156,7 @@ export class NaturalLanguageQuery {
 
     // API documentation queries
     if (
-      this.matchesPatterns(query, this.patterns.get(QueryIntent.API_DOCS)'' | '''' | ''[])
+      this.matchesPatterns(query, this.patterns.get(QueryIntent.API_DOCS)||[])
     ) {
       return QueryIntent.API_DOCS;
     }
@@ -165,7 +165,7 @@ export class NaturalLanguageQuery {
     if (
       this.matchesPatterns(
         query,
-        this.patterns.get(QueryIntent.COMPARISON)'' | '''' | ''[]
+        this.patterns.get(QueryIntent.COMPARISON)||[]
       )
     ) {
       return QueryIntent.COMPARISON;
@@ -173,7 +173,7 @@ export class NaturalLanguageQuery {
 
     // Trending queries
     if (
-      this.matchesPatterns(query, this.patterns.get(QueryIntent.TRENDING)'' | '''' | ''[])
+      this.matchesPatterns(query, this.patterns.get(QueryIntent.TRENDING)||[])
     ) {
       return QueryIntent.TRENDING;
     }
@@ -190,7 +190,7 @@ export class NaturalLanguageQuery {
 
     // Extract package names (common npm packages)
     const packagePattern =
-      /(?:package'' | ''npm'' | ''install'' | ''dependency)\s+([a-z0-9-]+(?:\/[a-z0-9-]+)?)/gi;
+      /(?:package|npm|install|dependency)\s+([a-z0-9-]+(?:\/[a-z0-9-]+)?)/gi;
     const packageMatches = [...query.matchAll(packagePattern)];
     if (packageMatches.length > 0) {
       entities.packageNames = packageMatches.map((match) => match[1]);
@@ -198,18 +198,18 @@ export class NaturalLanguageQuery {
 
     // Extract direct package mentions
     const directPackagePattern =
-      /\b(react'' | ''vue'' | ''angular'' | ''express'' | ''typescript'' | ''next'' | ''webpack'' | ''vite'' | ''jest'' | ''eslint'' | ''lodash'' | ''axios'' | ''moment'' | ''jquery'' | ''bootstrap'' | ''tailwind)\b/gi;
+      /\b(react|vue|angular|express|typescript|next|webpack|vite|jest|eslint|lodash|axios|moment|jquery|bootstrap|tailwind)\b/gi;
     const directPackageMatches = [...query.matchAll(directPackagePattern)];
     if (directPackageMatches.length > 0) {
       entities.packageNames = [
-        ...(entities.packageNames'' | '''' | ''[]),
+        ...(entities.packageNames||[]),
         ...directPackageMatches.map((match) => match[1]),
       ];
     }
 
     // Extract GitHub repository references
     const repoPattern =
-      /(?:github'' | ''repo'' | ''repository)\s+([a-z0-9-]+)\/([a-z0-9-]+)/gi;
+      /(?:github|repo|repository)\s+([a-z0-9-]+)\/([a-z0-9-]+)/gi;
     const repoMatches = [...query.matchAll(repoPattern)];
     if (repoMatches.length > 0) {
       entities.repoOwners = repoMatches.map((match) => match[1]);
@@ -221,11 +221,11 @@ export class NaturalLanguageQuery {
     const directRepoMatches = [...query.matchAll(directRepoPattern)];
     if (directRepoMatches.length > 0) {
       entities.repoOwners = [
-        ...(entities.repoOwners'' | '''' | ''[]),
+        ...(entities.repoOwners||[]),
         ...directRepoMatches.map((match) => match[1]),
       ];
       entities.repoNames = [
-        ...(entities.repoNames'' | '''' | ''[]),
+        ...(entities.repoNames||[]),
         ...directRepoMatches.map((match) => match[2]),
       ];
     }
@@ -239,7 +239,7 @@ export class NaturalLanguageQuery {
 
     // Extract technology keywords
     const techPattern =
-      /\b(javascript'' | ''typescript'' | ''python'' | ''rust'' | ''go'' | ''java'' | ''react'' | ''vue'' | ''angular'' | ''node'' | ''deno'' | ''bun)\b/gi;
+      /\b(javascript|typescript|python|rust|go|java|react|vue|angular|node|deno|bun)\b/gi;
     const techMatches = [...query.matchAll(techPattern)];
     if (techMatches.length > 0) {
       entities.technologies = techMatches.map((match) => match[1]);
@@ -255,29 +255,29 @@ export class NaturalLanguageQuery {
     const modifiers: ParsedQuery['modifiers'] = {};
 
     // Time range modifiers
-    if (/\b(recent'' | ''latest'' | ''new'' | ''updated'' | ''fresh)\b/i.test(query)) {
+    if (/\b(recent|latest|new|updated|fresh)\b/i.test(query)) {
       modifiers.timeRange ='recent';
     }
-    if (/\b(old'' | ''legacy'' | ''deprecated'' | ''archived)\b/i.test(query)) {
+    if (/\b(old|legacy|deprecated|archived)\b/i.test(query)) {
       modifiers.timeRange ='older';
     }
 
     // Sorting modifiers
-    if (/\b(popular'' | ''trending'' | ''most used'' | ''widely adopted)\b/i.test(query)) {
+    if (/\b(popular|trending|most used|widely adopted)\b/i.test(query)) {
       modifiers.sortBy ='popularity';
     }
-    if (/\b(performance'' | ''fast'' | ''speed'' | ''benchmarks)\b/i.test(query)) {
+    if (/\b(performance|fast|speed|benchmarks)\b/i.test(query)) {
       modifiers.sortBy ='performance';
     }
 
     // Focus modifiers
-    if (/\b(security'' | ''vulnerability'' | ''safe'' | ''secure'' | ''cve)\b/i.test(query)) {
+    if (/\b(security|vulnerability|safe|secure|cve)\b/i.test(query)) {
       modifiers.securityFocus = true;
     }
-    if (/\b(performance'' | ''speed'' | ''fast'' | ''benchmark'' | ''optimize)\b/i.test(query)) {
+    if (/\b(performance|speed|fast|benchmark|optimize)\b/i.test(query)) {
       modifiers.performanceFocus = true;
     }
-    if (/\b(stats'' | ''metrics'' | ''numbers'' | ''downloads'' | ''stars)\b/i.test(query)) {
+    if (/\b(stats|metrics|numbers|downloads|stars)\b/i.test(query)) {
       modifiers.includeMetrics = true;
     }
 
@@ -352,8 +352,8 @@ export class NaturalLanguageQuery {
       case QueryIntent.COMPARISON:
         // For comparisons, query all mentioned entities
         const allEntities = [
-          ...(parsed.entities.packageNames'' | '''' | ''[]),
-          ...(parsed.entities.technologies'' | '''' | ''[]),
+          ...(parsed.entities.packageNames||[]),
+          ...(parsed.entities.technologies||[]),
         ];
         for (const entity of allEntities) {
           queries.push({
@@ -366,7 +366,7 @@ export class NaturalLanguageQuery {
 
       case QueryIntent.TRENDING:
         queries.push({
-          query: `trending ${parsed.entities.technologies?.join(' ')'' | '''' | '''repositories'}`,
+          query: `trending ${parsed.entities.technologies?.join(' ')||'repositories'}`,
           sources: ['github', 'npm'],
           limit: 20,
         });
@@ -439,57 +439,57 @@ export class NaturalLanguageQuery {
     const patterns = new Map<QueryIntent, RegExp[]>();
 
     patterns.set(QueryIntent.NPM_PACKAGE, [
-      /npm\s+(?:package'' | ''install'' | ''info'' | ''details)/i,
-      /package\s+(?:info'' | ''details'' | ''dependencies)/i,
+      /npm\s+(?:package|install|info|details)/i,
+      /package\s+(?:info|details|dependencies)/i,
       /what\s+is\s+(?:the\s+)?(?:npm\s+)?package/i,
       /tell\s+me\s+about\s+(?:the\s+)?(?:npm\s+)?package/i,
-      /(?:analyze'' | ''check'' | ''examine)\s+(?:npm\s+)?package/i,
-      /dependencies\s+(?:of'' | ''for)/i,
-      /(?:download'' | ''install)\s+(?:statistics'' | ''stats'' | ''numbers)/i,
+      /(?:analyze|check|examine)\s+(?:npm\s+)?package/i,
+      /dependencies\s+(?:of|for)/i,
+      /(?:download|install)\s+(?:statistics|stats|numbers)/i,
     ]);
 
     patterns.set(QueryIntent.GITHUB_REPO, [
-      /github\s+(?:repo'' | ''repository)/i,
-      /repository\s+(?:info'' | ''details'' | ''stats)/i,
-      /what\s+is\s+(?:the\s+)?(?:github\s+)?(?:repo'' | ''repository)/i,
-      /tell\s+me\s+about\s+(?:the\s+)?(?:github\s+)?(?:repo'' | ''repository)/i,
-      /(?:analyze'' | ''check'' | ''examine)\s+(?:github\s+)?(?:repo'' | ''repository)/i,
-      /(?:stars'' | ''forks'' | ''issues'' | ''contributors)\s+(?:of'' | ''for'' | ''in)/i,
-      /repository\s+(?:activity'' | ''health'' | ''status)/i,
+      /github\s+(?:repo|repository)/i,
+      /repository\s+(?:info|details|stats)/i,
+      /what\s+is\s+(?:the\s+)?(?:github\s+)?(?:repo|repository)/i,
+      /tell\s+me\s+about\s+(?:the\s+)?(?:github\s+)?(?:repo|repository)/i,
+      /(?:analyze|check|examine)\s+(?:github\s+)?(?:repo|repository)/i,
+      /(?:stars|forks|issues|contributors)\s+(?:of|for|in)/i,
+      /repository\s+(?:activity|health|status)/i,
     ]);
 
     patterns.set(QueryIntent.SECURITY_CHECK, [
-      /security\s+(?:check'' | ''scan'' | ''audit'' | ''analysis)/i,
-      /vulnerabilities?\s+(?:in'' | ''for'' | ''of)/i,
+      /security\s+(?:check|scan|audit|analysis)/i,
+      /vulnerabilities?\s+(?:in|for|of)/i,
       /cve-?\d{4}-?\d{4,}/i,
-      /(?:is'' | ''check)\s+.+\s+(?:secure'' | ''safe)/i,
-      /security\s+(?:issues'' | ''problems'' | ''concerns)/i,
-      /(?:known\s+)?security\s+(?:flaws'' | ''bugs)/i,
-      /(?:check'' | ''scan)\s+for\s+vulnerabilities/i,
+      /(?:is|check)\s+.+\s+(?:secure|safe)/i,
+      /security\s+(?:issues|problems|concerns)/i,
+      /(?:known\s+)?security\s+(?:flaws|bugs)/i,
+      /(?:check|scan)\s+for\s+vulnerabilities/i,
     ]);
 
     patterns.set(QueryIntent.API_DOCS, [
-      /api\s+(?:docs'' | ''documentation'' | ''reference)/i,
+      /api\s+(?:docs|documentation|reference)/i,
       /how\s+to\s+use\s+(?:the\s+)?api/i,
-      /api\s+(?:endpoints'' | ''methods'' | ''calls)/i,
-      /(?:show'' | ''get)\s+api\s+documentation/i,
-      /api\s+(?:usage'' | ''examples'' | ''guide)/i,
+      /api\s+(?:endpoints|methods|calls)/i,
+      /(?:show|get)\s+api\s+documentation/i,
+      /api\s+(?:usage|examples|guide)/i,
     ]);
 
     patterns.set(QueryIntent.COMPARISON, [
-      /compare\s+.+\s+(?:with'' | ''to'' | ''vs'' | ''versus)/i,
-      /(?:what'' | ''which)\s+is\s+better.+(?:or'' | ''vs)/i,
+      /compare\s+.+\s+(?:with|to|vs|versus)/i,
+      /(?:what|which)\s+is\s+better.+(?:or|vs)/i,
       /differences?\s+between/i,
       /alternatives?\s+to/i,
-      /(?:pros\s+and\s+cons'' | ''advantages\s+and\s+disadvantages)/i,
+      /(?:pros\s+and\s+cons|advantages\s+and\s+disadvantages)/i,
       /.+\s+vs\s+.+/i,
     ]);
 
     patterns.set(QueryIntent.TRENDING, [
-      /trending\s+(?:repos'' | ''repositories'' | ''packages'' | ''projects)/i,
-      /popular\s+(?:repos'' | ''repositories'' | ''packages'' | ''projects)/i,
-      /most\s+(?:popular'' | ''used'' | ''starred)/i,
-      /(?:hot'' | ''trending'' | ''popular)\s+(?:in'' | ''for)\s+\w+/i,
+      /trending\s+(?:repos|repositories|packages|projects)/i,
+      /popular\s+(?:repos|repositories|packages|projects)/i,
+      /most\s+(?:popular|used|starred)/i,
+      /(?:hot|trending|popular)\s+(?:in|for)\s+\w+/i,
       /what['\s]s\s+trending/i,
       /top\s+(?:\d+\s+)?(?:repos | repositories | packages)/i,
     ]);

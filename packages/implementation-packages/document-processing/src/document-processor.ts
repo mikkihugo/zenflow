@@ -33,7 +33,7 @@ const logger = getLogger('DocumentProcessor');
 /**
  * Document types in the processing workflow.
  */
-export type DocumentType ='' | '''vision | architecture_runway' | 'business_epic''' | '''program_epic | feature' | 'task' | 'story' | 'spec';
+export type DocumentType =|'vision|architecture_runway|business_epic|program_epic|feature|task|story|spec';
 
 /**
  * Document processing configuration.
@@ -78,7 +78,7 @@ export interface DocumentMetadata {
   /** Document tags */
   tags?: string[];
   /** Document priority */
-  priority?: 'low | medium' | 'high';
+  priority?: 'low|medium|high';
 }
 
 /**
@@ -136,7 +136,7 @@ export interface ProcessingContext {
   /** Active documents */
   activeDocuments: Map<string, Document>;
   /** Current processing phase */
-  phase?: 'requirements | design' | 'planning' | 'execution' | 'validation';
+  phase?: 'requirements|design|planning|execution|validation';
   /** Enable background processing */
   backgroundProcessing: boolean;
 }
@@ -164,7 +164,7 @@ export interface DocumentStats {
  */
 export class DocumentProcessor extends TypedEventBase {
   private memory: BrainCoordinator;
-  private workflowEngine: WorkflowEngine'' | ''null = null;
+  private workflowEngine: WorkflowEngine|null = null;
   private configuration: Required<DocumentProcessorConfig>;
   private workspaces: Map<string, ProcessingContext> = new Map();
   private documentWatchers: Map<string, any> = new Map();
@@ -190,19 +190,19 @@ export class DocumentProcessor extends TypedEventBase {
   ) {
     super();
     this.memory = memory;
-    this.workflowEngine = workflowEngine'' | '''' | ''null;
+    this.workflowEngine = workflowEngine||null;
     this.config = {
       autoWatch: config?.autoWatch !== false,
       enableWorkflows: config?.enableWorkflows !== false,
-      workspaceRoot: config?.workspaceRoot'' | '''' | '''./docs',
+      workspaceRoot: config?.workspaceRoot||'./docs',
       documentDirs: {
-        vision: config?.documentDirs?.vision'' | '''' | '''01-vision',
-        adrs: config?.documentDirs?.adrs'' | '''' | '''02-adrs',
-        prds: config?.documentDirs?.prds'' | '''' | '''03-prds',
-        epics: config?.documentDirs?.epics'' | '''' | '''04-epics',
-        features: config?.documentDirs?.features'' | '''' | '''05-features',
-        tasks: config?.documentDirs?.tasks'' | '''' | '''06-tasks',
-        specs: config?.documentDirs?.specs'' | '''' | '''07-specs',
+        vision: config?.documentDirs?.vision||'01-vision',
+        adrs: config?.documentDirs?.adrs||'02-adrs',
+        prds: config?.documentDirs?.prds||'03-prds',
+        epics: config?.documentDirs?.epics||'04-epics',
+        features: config?.documentDirs?.features||'05-features',
+        tasks: config?.documentDirs?.tasks||'06-tasks',
+        specs: config?.documentDirs?.specs||'07-specs',
         ...config?.documentDirs,
       },
     };
@@ -567,15 +567,15 @@ export class DocumentProcessor extends TypedEventBase {
    * @param path
    */
   private getDocumentType(path: string): DocumentType {
-    if (path.includes('/01-vision/')'' | '''' | ''path.includes('/vision/'))
+    if (path.includes('/01-vision/')||path.includes('/vision/'))
       return 'vision';
-    if (path.includes('/02-adrs/')'' | '''' | ''path.includes('/adrs/')) return 'adr';
-    if (path.includes('/03-prds/')'' | '''' | ''path.includes('/prds/')) return 'prd';
-    if (path.includes('/04-epics/')'' | '''' | ''path.includes('/epics/')) return 'epic';
-    if (path.includes('/05-features/')'' | '''' | ''path.includes('/features/'))
+    if (path.includes('/02-adrs/')||path.includes('/adrs/')) return 'adr';
+    if (path.includes('/03-prds/')||path.includes('/prds/')) return 'prd';
+    if (path.includes('/04-epics/')||path.includes('/epics/')) return 'epic';
+    if (path.includes('/05-features/')||path.includes('/features/'))
       return 'feature';
-    if (path.includes('/06-tasks/')'' | '''' | ''path.includes('/tasks/')) return 'task';
-    if (path.includes('/07-specs/')'' | '''' | ''path.includes('/specs/')) return 'spec';
+    if (path.includes('/06-tasks/')||path.includes('/tasks/')) return 'task';
+    if (path.includes('/07-specs/')||path.includes('/specs/')) return 'spec';
     return 'task'; // default
   }
 
@@ -624,30 +624,30 @@ export class DocumentProcessor extends TypedEventBase {
       const trimmedLine = line.trim();
 
       if (
-        trimmedLine.startsWith('- **Author:**')'' | '''' | ''trimmedLine.startsWith('Author:')
+        trimmedLine.startsWith('- **Author:**')||trimmedLine.startsWith('Author:')
       ) {
         const author = trimmedLine.split(':')[1]?.trim();
         if (author) metadata.author = author;
       }
       if (
-        trimmedLine.startsWith('- **Created:**')'' | '''' | ''trimmedLine.startsWith('Created:')
+        trimmedLine.startsWith('- **Created:**')||trimmedLine.startsWith('Created:')
       ) {
         const dateStr = trimmedLine.split(':')[1]?.trim();
         if (dateStr) metadata.created = new Date(dateStr);
       }
       if (
-        trimmedLine.startsWith('- **Status:**')'' | '''' | ''trimmedLine.startsWith('Status:')
+        trimmedLine.startsWith('- **Status:**')||trimmedLine.startsWith('Status:')
       ) {
         const status = trimmedLine.split(':')[1]?.trim();
         if (status) metadata.status = status;
       }
       if (
-        trimmedLine.startsWith('- **Priority:**')'' | '''' | ''trimmedLine.startsWith('Priority:')
+        trimmedLine.startsWith('- **Priority:**')||trimmedLine.startsWith('Priority:')
       ) {
         metadata.priority = trimmedLine.split(':')[1]?.trim() as any;
       }
       if (
-        trimmedLine.startsWith('- **Tags:**')'' | '''' | ''trimmedLine.startsWith('Tags:')
+        trimmedLine.startsWith('- **Tags:**')||trimmedLine.startsWith('Tags:')
       ) {
         const tagsStr = trimmedLine.split(':')[1]?.trim();
         if (tagsStr) {
@@ -733,7 +733,7 @@ ${content}
         'Begin implementation',
       ],
     };
-    return nextSteps[documentType]'' | '''' | ''[];
+    return nextSteps[documentType]||[];
   }
 
   /**
@@ -744,10 +744,10 @@ ${content}
   private updateStats(document: Document): void {
     this.stats.totalDocuments++;
     this.stats.byType[document.type] =
-      (this.stats.byType[document.type]'' | '''' | ''0) + 1;
+      (this.stats.byType[document.type]||0) + 1;
 
-    const status = document.metadata?.status'' | '''' | '''unknown';
-    this.stats.byStatus[status] = (this.stats.byStatus[status]'' | '''' | ''0) + 1;
+    const status = document.metadata?.status||'unknown';
+    this.stats.byStatus[status] = (this.stats.byStatus[status]||0) + 1;
   }
 
   /**

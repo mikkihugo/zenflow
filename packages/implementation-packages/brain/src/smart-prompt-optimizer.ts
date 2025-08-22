@@ -41,7 +41,7 @@ export interface PromptAnalysisData {
 }
 
 export interface OptimizationPattern {
-  readonly patternType:'' | '''length_optimization | structure_enhancement' | 'context_addition''' | '''clarity_improvement';
+  readonly patternType:|'length_optimization|structure_enhancement|context_addition|clarity_improvement';
   readonly confidence: number;
   readonly improvement: number;
   readonly applicableContexts: string[];
@@ -202,7 +202,7 @@ export class SmartPromptOptimizer {
         const trend = sma(successRates, 3);
 
         logger.debug(
-          `📈 Performance trend: ${trend[trend.length - 1]?.toFixed(2)'' | '''' | '''N/A'}`
+          `📈 Performance trend: ${trend[trend.length - 1]?.toFixed(2)||'N/A'}`
         );
       }
     } catch (error) {
@@ -233,7 +233,7 @@ export class SmartPromptOptimizer {
     // Calculate trend using exponential moving average
     const successRates = recentData.map((d) => d.successRate);
     const trendData = successRates.length >= 3 ? ema(successRates, 3) : [0];
-    const recentTrend = trendData[trendData.length - 1]'' | '''' | ''0;
+    const recentTrend = trendData[trendData.length - 1]||0;
 
     return {
       totalOptimizations: this.performanceHistory.length,
@@ -297,17 +297,17 @@ export class SmartPromptOptimizer {
     return {
       length: prompt.length,
       wordCount: prompt.split(/\s+/).length,
-      questionCount: (prompt.match(/\?/g)'' | '''' | ''[]).length,
-      exclamationCount: (prompt.match(/!/g)'' | '''' | ''[]).length,
+      questionCount: (prompt.match(/\?/g)||[]).length,
+      exclamationCount: (prompt.match(/!/g)||[]).length,
       technicalTerms: (
         prompt.match(
-          /\b(function'' | ''class'' | ''method'' | ''algorithm'' | ''data'' | ''system'' | ''process)\b/gi
-        )'' | '''' | ''[]
+          /\b(function|class|method|algorithm|data|system|process)\b/gi
+        )||[]
       ).length,
       complexity: Math.min(1, prompt.length / 500), // 0-1 scale
       specificity: Math.min(
         1,
-        (prompt.match(/\b(specific'' | ''exactly'' | ''precisely'' | ''detailed)\b/gi)'' | '''' | ''[])
+        (prompt.match(/\b(specific|exactly|precisely|detailed)\b/gi)||[])
           .length / 10
       ),
     };
@@ -332,7 +332,7 @@ export class SmartPromptOptimizer {
         }
         if (context?.complexity) {
           const complexityDiff = Math.abs(
-            (data.metadata?.complexity'' | '''' | ''1) - context.complexity
+            (data.metadata?.complexity||1) - context.complexity
           );
           contextMatch = contextMatch && complexityDiff <= 0.3; // Similar complexity
         }
@@ -546,7 +546,7 @@ export class SmartPromptOptimizer {
         )
       ) {
         // Adjust confidence based on performance metrics and feature complexity
-        const performanceScore = analysisData.metrics?.qualityScore'' | '''' | ''0.5;
+        const performanceScore = analysisData.metrics?.qualityScore||0.5;
         const complexityAdjustment = 1 - featureComplexity * 0.1; // High complexity reduces confidence gain
 
         // Create updated pattern with new confidence (immutable update)

@@ -27,7 +27,7 @@ export interface RetrainingTrigger {
   timestamp: Date;
   reason: string;
   metrics: Record<string, number>;
-  strategy: 'performance | manual' | 'scheduled';
+  strategy: 'performance|manual|scheduled';
 }
 
 export interface RetrainingResult {
@@ -45,7 +45,7 @@ export interface MonitoringMetrics {
   currentCoordinationSuccessRate: number;
   lastRetrainingTimestamp?: number;
   retrainingFrequency: number;
-  cooldownStatus: 'active''' | '''inactive';
+  cooldownStatus: 'active|inactive';
   dailyLimitStatus: {
     used: number;
     limit: number;
@@ -60,7 +60,7 @@ export interface MonitoringMetrics {
  */
 // @injectable - Temporarily removed due to constructor type incompatibility
 export class RetrainingMonitor {
-  private intervalId: NodeJS.Timeout'' | ''null = null;
+  private intervalId: NodeJS.Timeout|'null = null;
   private dbAccess: any = null; // DatabaseAccess via infrastructure facade
   private isMonitoring = false;
   private logger: Logger;
@@ -201,7 +201,7 @@ export class RetrainingMonitor {
       // Get current coordination success rate from database
       const currentMetrics = await this.getCurrentMetrics();
       const coordinationSuccessRate =
-        currentMetrics.coordinationSuccessRate'' | '''' | ''0;
+        currentMetrics.coordinationSuccessRate||0;
 
       this.logger.debug(
         `Current coordination success rate: ${coordinationSuccessRate} (threshold: ${config.minCoordinationSuccessRateThreshold})`
@@ -311,7 +311,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
       const duration = Date.now() - startTime;
       const result: RetrainingResult = {
         success: true,
-        strategy: parsedPlan.approach'' | '''' | '''llm-generated',
+        strategy: parsedPlan.approach||'llm-generated',
         duration,
         improvementMetrics: {
           estimatedImprovementPercent: 15, // Simulated improvement

@@ -156,13 +156,13 @@
  *   rules: [
  *     {
  *       name: 'financial-fraud-detection',
- *       pattern: /(?:transfer''''' | '''''send''''' | '''''payment).*(?:bitcoin''''' | '''''crypto''''' | '''''wire)/i,
+ *       pattern: /(?:transfer''||'send'||'payment).*(?:bitcoin'||'crypto'||''wire)/i,
  *       severity:'critical',
  *       action: 'immediate-termination'
  *     },
  *     {
  *       name: 'data-exfiltration-attempt',
- *       pattern: /(?:download''''' | '''''export''''' | '''''backup).*(?:database''''' | '''''credentials''''' | '''''secrets)/i,
+ *       pattern: /(?:download''||'export'||'backup).*(?:database'||'credentials'||''secrets)/i,
  *       severity:'high',
  *       action: 'pause-and-review'
  *     }
@@ -279,7 +279,7 @@ export type { SafetyMetrics } from './src/safety-orchestrator';
 
 // Additional safety types
 export interface InterventionAction {
-  type: 'pause'''''' | ''''''restrict'''''' | ''''''terminate'''''' | ''''''escalate';
+  type: 'pause'''||''restrict''||''terminate''||'''escalate';
   target: string;
   reason: string;
   timestamp: number;
@@ -370,7 +370,7 @@ export const aiSafetySystem = {
 export interface AISafetySystemConfig {
   riskThreshold?: number;
   enableNeuralDetection?: boolean;
-  interventionMode?: 'manual'''''' | ''''''automatic'''''' | ''''''advisory';
+  interventionMode?: 'manual'''||''automatic''||'''advisory';
   monitoring?: {
     realTimeMetrics?: boolean;
     healthChecks?: boolean;

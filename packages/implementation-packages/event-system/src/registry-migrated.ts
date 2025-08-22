@@ -205,7 +205,7 @@ export class MigratedEventRegistry
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T>'' | ''undefined {
+  ): EventManagerFactory<T>|undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<EventManagerFactory<T>>(
@@ -268,7 +268,7 @@ export class MigratedEventRegistry
             managerType: config.type,
             factoryName: factory.constructor.name,
             registeredAt: new Date(),
-            version: config.version'' | '''' | '''1.0.0',
+            version: config.version||'1.0.0',
           },
           enabled: true,
           healthCheck: () => this.performManagerHealthCheck(manager),
@@ -300,7 +300,7 @@ export class MigratedEventRegistry
   /**
    * Find event manager by name (compatible with existing EventRegistry interface)
    */
-  findEventManager(name: string): EventManager'' | ''undefined {
+  findEventManager(name: string): EventManager|undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<EventManager>(name);
@@ -418,12 +418,12 @@ export class MigratedEventRegistry
         type: eventType,
         category: config.category,
         priority:
-          config.priority'' | '''' | ''(typeof EventPriorityMap['medium'] === 'number'
+          config.priority||(typeof EventPriorityMap['medium'] === 'number'
             ? EventPriorityMap['medium']
             : 2),
         schema: config.schema,
         managerTypes: config.managerTypes,
-        config: config.options'' | '''' | ''{},
+        config: config.options||{},
         registered: new Date(),
         usage: {
           totalEmissions: 0,
@@ -450,7 +450,7 @@ export class MigratedEventRegistry
     const containerTypes = this.container
       .getServiceNames()
       .filter((name) => name.startsWith('eventType:'))
-      .map((name) => name.replace('eventType:', ''));
+      .map((name) => name.replace('eventType:', '));
 
     const legacyTypes = Object.keys(this.eventTypes);
 
@@ -462,7 +462,7 @@ export class MigratedEventRegistry
   /**
    * Get event type configuration (compatible with existing EventRegistry interface)
    */
-  getEventTypeConfig(eventType: string): any'' | ''undefined {
+  getEventTypeConfig(eventType: string): any|'undefined {
     try {
       const result = this.container.resolve<any>(`eventType:${eventType}`);
       if (result.isOk()) {
@@ -551,7 +551,7 @@ export class MigratedEventRegistry
 
     for (const [name, manager] of allManagers) {
       if (manager.type) {
-        managersByType[manager.type] = (managersByType[manager.type]'' | '''' | ''0) + 1;
+        managersByType[manager.type] = (managersByType[manager.type]||0) + 1;
       }
     }
 
@@ -565,7 +565,7 @@ export class MigratedEventRegistry
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
       factoryUsage[type] =
-        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
+        this.factoryRegistry[type]?.usage.managersCreated||0;
     });
 
     return {
@@ -685,14 +685,14 @@ export class MigratedEventRegistry
 
     for (const [name, manager] of allManagers) {
       if (manager.type) {
-        managersByType[manager.type] = (managersByType[manager.type]'' | '''' | ''0) + 1;
+        managersByType[manager.type] = (managersByType[manager.type]||0) + 1;
       }
     }
 
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
       factoryUsage[type] =
-        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
+        this.factoryRegistry[type]?.usage.managersCreated||0;
     });
 
     return {
@@ -728,7 +728,7 @@ export class MigratedEventRegistry
         return {
           name,
           type: manager.type,
-          config: (serviceInfo?.metadata as any)'' | '''' | ''{},
+          config: (serviceInfo?.metadata as any)||{},
           status: serviceInfo?.enabled ?'enabled' : 'disabled',
           usage: {},
         };
@@ -966,7 +966,7 @@ export class MigratedEventRegistry
 /**
  * Global registry instance for backward compatibility
  */
-let migratedEventRegistryInstance: MigratedEventRegistry'' | ''null = null;
+let migratedEventRegistryInstance: MigratedEventRegistry|null = null;
 
 /**
  * Get singleton instance (compatible with globalEventRegistry)

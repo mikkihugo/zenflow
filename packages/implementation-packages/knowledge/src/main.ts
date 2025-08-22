@@ -58,7 +58,7 @@ import {
 export interface KnowledgeItem {
   id: UUID;
   content: string;
-  type: 'fact | rule' | 'pattern''' | '''insight | procedure' | 'concept';
+  type: 'fact|rule|pattern|insight|procedure|concept';
   confidence: number;
   timestamp: Timestamp;
   source?: string;
@@ -90,7 +90,7 @@ export interface KnowledgeStats {
   itemsByType: Record<KnowledgeItem['type'], number>;
   averageConfidence: number;
   lastUpdated: Timestamp;
-  storageHealth: 'healthy | degraded' | 'unhealthy';
+  storageHealth: 'healthy|degraded|unhealthy';
 }
 
 export class KnowledgeError extends ContextError {
@@ -106,10 +106,10 @@ export class KnowledgeError extends ContextError {
 
 export interface KnowledgeStore {
   add(
-    item: Omit<KnowledgeItem, 'id | timestamp' | 'version''' | '''isActive'>,
+    item: Omit<KnowledgeItem, 'id|timestamp|version|isActive'>,
     options?: KnowledgeItemOptions
   ): Promise<Result<UUID, KnowledgeError>>;
-  get(id: UUID): Promise<Result<KnowledgeItem'' | ''null, KnowledgeError>>;
+  get(id: UUID): Promise<Result<KnowledgeItem|null, KnowledgeError>>;
   update(
     id: UUID,
     updates: Partial<KnowledgeItem>
@@ -137,10 +137,10 @@ export class FoundationKnowledgeStore
   implements KnowledgeStore
 {
   private items = new Map<UUID, KnowledgeItem>();
-  private storage: KeyValueStore'' | ''null = null;
+  private storage: KeyValueStore|null = null;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;
-  private telemetryManager: BasicTelemetryManager'' | ''null = null;
+  private telemetryManager: BasicTelemetryManager|null = null;
   private errorAggregator = createErrorAggregator();
   private circuitBreaker: any;
   private initialized = false;
@@ -233,7 +233,7 @@ export class FoundationKnowledgeStore
    * Add knowledge item with comprehensive foundation integration
    */
   async add(
-    item: Omit<KnowledgeItem, 'id | timestamp' | 'version''' | '''isActive'>,
+    item: Omit<KnowledgeItem, 'id|timestamp|version|isActive'>,
     options?: KnowledgeItemOptions
   ): Promise<Result<UUID, KnowledgeError>> {
     if (!this.initialized) {
@@ -342,7 +342,7 @@ export class FoundationKnowledgeStore
   /**
    * Get knowledge item by ID with comprehensive error handling
    */
-  async get(id: UUID): Promise<Result<KnowledgeItem'' | ''null, KnowledgeError>> {
+  async get(id: UUID): Promise<Result<KnowledgeItem|null, KnowledgeError>> {
     if (!this.initialized) {
       const initResult = await this.initialize();
       if (!initResult.success) return err(initResult.error);
@@ -456,8 +456,8 @@ export class FoundationKnowledgeStore
         results.sort((a, b) => b.timestamp - a.timestamp);
 
         // Apply pagination
-        const offset = query?.offset'' | '''' | ''0;
-        const limit = query?.limit'' | '''' | ''results.length;
+        const offset = query?.offset||0;
+        const limit = query?.limit||results.length;
         results = results.slice(offset, offset + limit);
 
         recordMetric('knowledge_store_queries', 1);
@@ -483,7 +483,7 @@ export class FoundationKnowledgeStore
     return this.query({
       contentSearch: text,
       type: options?.type,
-      limit: options?.limit'' | '''' | ''50,
+      limit: options?.limit||50,
     });
   }
 
@@ -671,7 +671,7 @@ export interface KnowledgeManager {
     type: KnowledgeItem['type'],
     options?: { confidence?: number; source?: string; tags?: string[] }
   ): Promise<Result<UUID, KnowledgeError>>;
-  getKnowledge(id: UUID): Promise<Result<KnowledgeItem'' | ''null, KnowledgeError>>;
+  getKnowledge(id: UUID): Promise<Result<KnowledgeItem|null, KnowledgeError>>;
   queryKnowledge(
     query?: KnowledgeQuery
   ): Promise<Result<KnowledgeItem[], KnowledgeError>>;
@@ -689,7 +689,7 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
   private logger: Logger;
 
   constructor(store?: KnowledgeStore) {
-    this.store = store'' | '''' | ''new FoundationKnowledgeStore();
+    this.store = store||new FoundationKnowledgeStore();
     this.logger = getLogger('knowledge-manager');
   }
 
@@ -710,7 +710,7 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
 
   async getKnowledge(
     id: UUID
-  ): Promise<Result<KnowledgeItem'' | ''null, KnowledgeError>> {
+  ): Promise<Result<KnowledgeItem|null, KnowledgeError>> {
     return withContext({ operation:'getKnowledge', id }, () =>
       this.store.get(id)
     );
@@ -784,8 +784,8 @@ export async function getKnowledgeSystemAccess(
       const factResults = await factSystem.gatherFacts(sources, options);
       // Convert fact results to knowledge items
       const knowledgePromises = factResults.map((fact: any) =>
-        manager.addKnowledge(fact.content'' | '''' | ''fact.summary,'fact', {
-          confidence: fact.confidence'' | '''' | ''0.8,
+        manager.addKnowledge(fact.content||fact.summary,'fact', {
+          confidence: fact.confidence||0.8,
           source: fact.source,
           tags: [fact.source,'auto-gathered'],
         })
@@ -807,7 +807,7 @@ export async function getKnowledgeSystemAccess(
         facts: factResults,
         combined: [
           ...(localResults.success ? localResults.data : []),
-          ...(factResults'' | '''' | ''[]),
+          ...(factResults||[]),
         ],
       };
     },
@@ -872,8 +872,8 @@ export async function getKnowledgeManagement(config?: any): Promise<any> {
         // Convert top facts to knowledge items
         const topFacts = searchResults.facts.slice(0, 5);
         const knowledgePromises = topFacts.map((fact: any) =>
-          system.addKnowledge(fact.content'' | '''' | ''fact.summary,'insight', {
-            confidence: fact.confidence'' | '''' | ''0.7,
+          system.addKnowledge(fact.content||fact.summary,'insight', {
+            confidence: fact.confidence||0.7,
             source: `fact-derived-${fact.source}`,
             tags: ['fact-derived', fact.source],
           })

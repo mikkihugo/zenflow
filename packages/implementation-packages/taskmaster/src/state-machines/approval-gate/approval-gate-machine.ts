@@ -35,7 +35,7 @@ export interface ApprovalRequest {
   gateType: string;
   question: string;
   confidence: number;
-  priority: 'low'' | ''medium'' | ''high'' | ''critical';
+  priority: 'low|medium|high|critical';
   context?: Record<string, any>;
   timestamp: number;
 }
@@ -47,7 +47,7 @@ export interface ApprovalGateConfig {
   gateId: string;
   autoApproveThreshold: number;
   maxQueueDepth: number;
-  onQueueFull: 'halt'' | ''spillover'' | ''escalate'' | ''auto-approve';
+  onQueueFull: 'halt|spillover|escalate|auto-approve';
   spilloverTarget?: string;
   humanApprovalTimeout: number; // milliseconds
 }
@@ -58,10 +58,10 @@ export interface ApprovalGateConfig {
 export interface ApprovalDecision {
   requestId: string;
   approved: boolean;
-  decision: 'approve'' | ''reject'' | ''defer'' | ''escalate';
+  decision: 'approve|reject|defer|escalate';
   rationale?: string;
   timestamp: number;
-  decidedBy: 'auto'' | ''human'' | ''system';
+  decidedBy: 'auto|human|system';
 }
 
 /**
@@ -80,7 +80,7 @@ interface ApprovalGateContext {
 /**
  * State machine events
  */
-type ApprovalGateEvent =' | '{ type:'REQUEST_APPROVAL'; request: ApprovalRequest }' | '{ type:'HUMAN_DECISION'; decision: ApprovalDecision }' | '{ type:'AUTO_APPROVE'; reason: string }' | '{ type:'AUTO_REJECT'; reason: string }' | '{ type:'TIMEOUT'}' | '{ type:'QUEUE_OVERFLOW'}' | '{ type:'RESET'}' | '{ type:'UPDATE_CONFIG'; config: Partial<ApprovalGateConfig> };
+type ApprovalGateEvent =|{ type:'REQUEST_APPROVAL'; request: ApprovalRequest }|{ type:'HUMAN_DECISION'; decision: ApprovalDecision }|{ type:'AUTO_APPROVE'; reason: string }|{ type:'AUTO_REJECT'; reason: string }|{ type:'TIMEOUT'}|{ type:'QUEUE_OVERFLOW'}|{ type:'RESET'}|{ type:'UPDATE_CONFIG'; config: Partial<ApprovalGateConfig> };
 
 // =============================================================================
 // APPROVAL GATE STATE MACHINE

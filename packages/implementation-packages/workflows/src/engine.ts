@@ -62,7 +62,7 @@ export interface WorkflowStep {
   retries?: number;
   timeout?: number;
   output?: string;
-  onError?: 'stop | continue' | 'skip';
+  onError?: 'stop|continue|skip';
 }
 
 export interface WorkflowDefinition {
@@ -102,7 +102,7 @@ export interface WorkflowData {
 export interface WorkflowState {
   id: string;
   definition: WorkflowDefinition;
-  status:'' | '''pending | running' | 'paused''' | '''completed | failed' | 'cancelled';
+  status:|'pending|running|paused|completed|failed|cancelled';
   context: WorkflowContext;
   currentStep: number;
   steps: WorkflowStep[];
@@ -278,7 +278,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     this.registerStepHandler(
       'delay',
       async (_context: WorkflowContext, params: unknown) => {
-        const duration = (params as any)?.duration'' | '''' | ''1000;
+        const duration = (params as any)?.duration||1000;
         await ObservableUtils.delay(duration).toPromise();
         return { delayed: duration };
       }
@@ -300,8 +300,8 @@ export class WorkflowEngine extends TypedEventBase3 {
     this.registerStepHandler(
       'parallel',
       async (context: WorkflowContext, params: unknown) => {
-        const tasks = (params as any)?.tasks'' | '''' | ''[];
-        const concurrencyLimit = (params as any)?.concurrency'' | '''' | ''5;
+        const tasks = (params as any)?.tasks||[];
+        const concurrencyLimit = (params as any)?.concurrency||5;
 
         // Use p-limit for controlled concurrency
         const limit = pLimit(concurrencyLimit);
@@ -318,7 +318,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     this.registerStepHandler('loop',
       async (context: WorkflowContext, params: unknown) => {
         const items = this.getContextValue(context, (params as any)?.items);
-        const concurrencyLimit = (params as any)?.concurrency'' | '''' | ''1; // Sequential by default
+        const concurrencyLimit = (params as any)?.concurrency||1; // Sequential by default
         const step = (params as any)?.step;
 
         if (!Array.isArray(items)) {
@@ -374,7 +374,7 @@ export class WorkflowEngine extends TypedEventBase3 {
       throw new Error(`No handler registered for step type: ${step.type}`);
     }
 
-    return await handler(context, step.params'' | '''' | ''{});
+    return await handler(context, step.params||{});
   }
 
   private evaluateCondition(
@@ -417,7 +417,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     // Simple object transformation
     if (typeof transformation === 'object') {
       return ObjectProcessor.mapValues(
-        (transformation'' | '''' | ''{}) as Record<string, unknown>,
+        (transformation||{}) as Record<string, unknown>,
         (value) => {
           if (typeof value ==='string' && value.startsWith('$.')) {
             return this.getContextValue({ data }, value.substring(2));
@@ -441,7 +441,7 @@ export class WorkflowEngine extends TypedEventBase3 {
         const workflowData = await kvStore.get(key);
         if (
           workflowData &&
-          (workflowData.status === 'running''' | '''' | ''workflowData.status ==='paused')
+          (workflowData.status === 'running'||workflowData.status ==='paused')
         ) {
           this.activeWorkflows.set(workflowData.id, workflowData);
         }
@@ -493,7 +493,7 @@ export class WorkflowEngine extends TypedEventBase3 {
   }
 
   async startWorkflow(
-    workflowDefinitionOrName: string'' | ''WorkflowDefinition,
+    workflowDefinitionOrName: string|WorkflowDefinition,
     context: WorkflowContext = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     await this.initialize();
@@ -602,7 +602,7 @@ export class WorkflowEngine extends TypedEventBase3 {
         this.emit('step-started', workflow.id, stepId);
 
         // Set up timeout
-        const timeout = step.timeout'' | '''' | ''this.config.stepTimeout;
+        const timeout = step.timeout||this.config.stepTimeout;
         const timeoutPromise = new Promise((_, reject) => {
           setTimeout(() => reject(new Error('Step timeout')), timeout);
         });
@@ -806,7 +806,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     };
 
     workflows.forEach((w) => {
-      metrics[w.status] = (metrics[w.status]'' | '''' | ''0) + 1;
+      metrics[w.status] = (metrics[w.status]||0) + 1;
     });
 
     const completed = workflows.filter((w) => w.status ==='completed');
@@ -830,7 +830,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     return metrics;
   }
 
-  generateWorkflowVisualization(workflow: WorkflowState): string'' | ''null {
+  generateWorkflowVisualization(workflow: WorkflowState): string|null {
     if (!this.config.enableVisualization) return null;
 
     // Generate an enhanced Mermaid diagram with proper styling
@@ -842,7 +842,7 @@ export class WorkflowEngine extends TypedEventBase3 {
 
     workflow.steps.forEach((step, index) => {
       const nodeId = `step${index}`;
-      const label = (step.name'' | '''' | ''step.type).replace(/[^a-zA-Z0-9\s]/g,''); // Clean label for Mermaid
+      const label = (step.name||step.type).replace(/[^a-zA-Z0-9\s]/g,''); // Clean label for Mermaid
       const status =
         index < workflow.currentStep
           ? 'completed'
@@ -906,7 +906,7 @@ export class WorkflowEngine extends TypedEventBase3 {
   /**
    * Generate advanced Mermaid visualization with state transitions
    */
-  generateAdvancedVisualization(_workflow: WorkflowState): string'' | ''null {
+  generateAdvancedVisualization(_workflow: WorkflowState): string|null {
     if (!this.config.enableVisualization) return null;
 
     // Generate state diagram showing workflow states
@@ -937,7 +937,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     scheduleId?: string
   ): string {
     const id =
-      scheduleId'' | '''' | ''`schedule-${workflowName}-${SecureIdGenerator.generate(8)}`;
+      scheduleId||`schedule-${workflowName}-${SecureIdGenerator.generate(8)}`;
 
     if (!cron.validate(cronExpression)) {
       throw new Error(`Invalid cron expression: ${cronExpression}`);
@@ -1107,7 +1107,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     logger.info(`Processing document event: ${eventType}`);
 
     // Auto-trigger workflows based on document type
-    const documentType = (documentData as any)?.type'' | '''' | '''unknown';
+    const documentType = (documentData as any)?.type||'unknown';
     const triggerWorkflows: string[] = [];
 
     switch (documentType) {
@@ -1148,8 +1148,8 @@ export class WorkflowEngine extends TypedEventBase3 {
     return {
       id: entity.id,
       type: entity.type,
-      title: entity.title'' | '''' | ''`${entity.type} Document`,
-      content: entity.content'' | '''' | '''',
+      title: entity.title||`${entity.type} Document`,
+      content: entity.content||',
       metadata: {
         entityId: entity.id,
         createdAt: entity.createdAt,
@@ -1176,7 +1176,7 @@ export class WorkflowEngine extends TypedEventBase3 {
         throw new Error(`No handler found for step type: ${step.type}`);
       }
 
-      const output = await handler(context, step.params'' | '''' | ''{});
+      const output = await handler(context, step.params|'|{});
       const duration = DateCalculator.getDurationMs(startTime);
 
       return { success: true, output, duration };
@@ -1193,7 +1193,7 @@ export class WorkflowEngine extends TypedEventBase3 {
   /**
    * Get workflow data by ID.
    */
-  async getWorkflowData(workflowId: string): Promise<WorkflowData'' | ''null> {
+  async getWorkflowData(workflowId: string): Promise<WorkflowData|null> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
       return null;
@@ -1224,7 +1224,7 @@ export class WorkflowEngine extends TypedEventBase3 {
       steps: [],
     };
 
-    const result = await this.startWorkflow(definition, data.data'' | '''' | ''{});
+    const result = await this.startWorkflow(definition, data.data||{});
     if (!(result.success && result.workflowId)) {
       throw new Error(`Failed to create workflow: ${result.error}`);
     }
@@ -1272,10 +1272,10 @@ export class WorkflowEngine extends TypedEventBase3 {
     // Gather workflow performance data
     const performanceData = {
       executionHistory: workflow.steps.map((step) => ({
-        name: step.name'' | '''' | ''step.type,
+        name: step.name||step.type,
         avgDuration: 0, // Would be calculated from actual metrics
         errorRate: 0,
-        retryCount: step.retries'' | '''' | ''0,
+        retryCount: step.retries||0,
       })),
       totalExecutions: 1, // Would be tracked in real metrics
       successfulExecutions: workflow.status ==='completed' ? 1 : 0,
@@ -1289,7 +1289,7 @@ export class WorkflowEngine extends TypedEventBase3 {
     const analysisPrompt = `Analyze this workflow performance data and provide optimization suggestions:
 
 Workflow: ${workflow.definition.name}
-Description: ${workflow.definition.description'' | '''' | '''No description'}
+Description: ${workflow.definition.description||'No description'}
 Steps: ${workflow.definition.steps.length}
 Current Status: ${workflow.status}
 
@@ -1314,8 +1314,8 @@ Format as JSON with keys: performance, suggestions, optimizations`;
       const parsedAnalysis = JSON.parse(analysis);
 
       logger.info(`Intelligent analysis completed for workflow ${workflowId}`, {
-        suggestions: parsedAnalysis.suggestions?.length'' | '''' | ''0,
-        optimizations: parsedAnalysis.optimizations?.length'' | '''' | ''0,
+        suggestions: parsedAnalysis.suggestions?.length||0,
+        optimizations: parsedAnalysis.optimizations?.length||0,
         operation:'intelligent_workflow_analysis',
       });
 
@@ -1353,10 +1353,10 @@ Format as JSON with keys: performance, suggestions, optimizations`;
     const docPrompt = `Generate comprehensive documentation for this workflow:
 
 Workflow Name: ${workflow.definition.name}
-Description: ${workflow.definition.description'' | '''' | '''No description provided'}
+Description: ${workflow.definition.description||'No description provided'}
 
 Steps:
-${workflow.definition.steps.map((step, index) => `${index + 1}. ${step.name'' | '''' | ''step.type} (${step.type})`).join('\n')}
+${workflow.definition.steps.map((step, index) => `${index + 1}. ${step.name||step.type} (${step.type})`).join('\n')}
 
 Please generate:
 1. Overview - high-level explanation of what this workflow does

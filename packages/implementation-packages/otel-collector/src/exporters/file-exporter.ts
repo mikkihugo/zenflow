@@ -22,16 +22,16 @@ import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 export class FileExporter implements BaseExporter {
   private config: ExporterConfig;
   private logger: Logger;
-  private writeStream: WriteStream'' | ''null = null;
-  private currentFilePath: string'' | ''null = null;
-  private fileRotationTimer: NodeJS.Timeout'' | ''null = null;
+  private writeStream: WriteStream|null = null;
+  private currentFilePath: string|null = null;
+  private fileRotationTimer: NodeJS.Timeout|null = null;
   private exportCount = 0;
   private lastExportTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   // Configuration
   private readonly baseFilePath: string;
-  private readonly format:'json''' | '''jsonl';
+  private readonly format:'json|jsonl';
   private readonly maxFileSize: number;
   private readonly rotationInterval: number;
   private readonly compression: boolean;
@@ -42,12 +42,12 @@ export class FileExporter implements BaseExporter {
     this.logger = getLogger(`FileExporter:${config.name}`);
 
     // Extract configuration
-    this.baseFilePath = config.config?.filePath'' | '''' | '''./telemetry-data';
-    this.format = config.config?.format'' | '''' | '''jsonl';
-    this.maxFileSize = config.config?.maxFileSize'' | '''' | ''50 * 1024 * 1024; // 50MB
-    this.rotationInterval = config.config?.rotationInterval'' | '''' | ''3600000; // 1 hour
+    this.baseFilePath = config.config?.filePath|||./telemetry-data';
+    this.format = config.config?.format||'jsonl';
+    this.maxFileSize = config.config?.maxFileSize||50 * 1024 * 1024; // 50MB
+    this.rotationInterval = config.config?.rotationInterval||3600000; // 1 hour
     this.compression = config.config?.compression !== false; // Default true
-    this.maxFiles = config.config?.maxFiles'' | '''' | ''10;
+    this.maxFiles = config.config?.maxFiles||10;
   }
 
   async initialize(): Promise<void> {
@@ -163,23 +163,23 @@ export class FileExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
     // Check if file is writable
-    let status: 'healthy | degraded' | 'unhealthy' = 'healthy';
+    let status: 'healthy|degraded|unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
-    } else if (!this.writeStream'' | '''' | ''this.writeStream.destroyed) {
+    } else if (!this.writeStream||this.writeStream.destroyed) {
       status ='degraded';
     }
 
     return {
       status,
-      lastSuccess: this.lastExportTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastSuccess: this.lastExportTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 
@@ -187,7 +187,7 @@ export class FileExporter implements BaseExporter {
    * Write telemetry data to file
    */
   private async writeToFile(data: TelemetryData): Promise<void> {
-    if (!this.writeStream'' | '''' | ''this.writeStream.destroyed) {
+    if (!this.writeStream||this.writeStream.destroyed) {
       await this.rotateFile();
     }
 
@@ -278,7 +278,7 @@ export class FileExporter implements BaseExporter {
   private async cleanupOldFiles(): Promise<void> {
     try {
       const dir = dirname(this.baseFilePath);
-      const baseName = this.baseFilePath.split('/').pop()'' | '''' | '''telemetry-data';
+      const baseName = this.baseFilePath.split('/').pop()||'telemetry-data';
 
       const files = await fs.readdir(dir);
       const telemetryFiles = files

@@ -19,7 +19,7 @@ export interface CompileOptions {
   /** Validation dataset (optional) */
   valset?: Example[];
   /** Teacher program (optional) */
-  teacher?: DSPyModule'' | ''DSPyModule[];
+  teacher?: DSPyModule|DSPyModule[];
   /** Additional compilation parameters */
   [key: string]: any;
 }
@@ -57,7 +57,7 @@ export interface OptimizationResult {
  * It follows the exact API design of Stanford DSPy's Teleprompter class.
  *
  * EXACT Stanford DSPy API:
- * def compile(self, student: Module, *, trainset: list[Example], teacher: Module | None = None, valset: list[Example]' | 'None = None, **kwargs) -> Module:
+ * def compile(self, student: Module, *, trainset: list[Example], teacher: Module|None = None, valset: list[Example]|None = None, **kwargs) -> Module:
  *
  * @abstract
  */
@@ -83,7 +83,7 @@ export abstract class Teleprompter {
     config: {
       trainset: Example[];
       teacher?: DSPyModule | null;
-      valset?: Example[]' | 'null;
+      valset?: Example[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule>;

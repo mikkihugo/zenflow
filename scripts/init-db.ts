@@ -16,7 +16,7 @@ async function main() {
 
   try {
     const databasePath =
-      process.argv[2]'' | '''' | ''join(process.cwd(),'data', 'claude-zen.db');
+      process.argv[2]||join(process.cwd(),'data', 'claude-zen.db');
     console.log(`📂 Database location: ${databasePath}`);
 
     const initializer = await initializeDatabase(databasePath);

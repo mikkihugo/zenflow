@@ -13,11 +13,11 @@ import { AgentStatus } from '../types';
 import type { AutoScalingConfig, LoadMetrics, Agent } from '../types';
 
 interface ScalingDecision {
-  action: 'scale_up | scale_down' | 'no_action';
+  action: 'scale_up|scale_down|no_action';
   targetCount: number;
   confidence: number;
   reasoning: string;
-  urgency: 'low | medium' | 'high''' | '''critical';
+  urgency: 'low|medium|high|critical';
 }
 
 interface ScalingHistory {
@@ -131,7 +131,7 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
 
     // Scale up conditions
     if (
-      (avgUtilization > this.autoScalingConfig.scaleUpThreshold'' | '''' | ''maxUtilization > 0.95) &&
+      (avgUtilization > this.autoScalingConfig.scaleUpThreshold||maxUtilization > 0.95) &&
       agentCount < this.autoScalingConfig.maxAgents
     ) {
       const targetCount = Math.min(

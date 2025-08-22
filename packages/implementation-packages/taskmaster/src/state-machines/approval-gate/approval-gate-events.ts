@@ -52,7 +52,7 @@ export interface ApprovalRequestedEvent extends ApprovalGateEvent {
  */
 export interface ApprovalAutoProcessedEvent extends ApprovalGateEvent {
   type: 'approval:auto-processed';
-  operation: 'auto-approve'' | ''auto-reject';
+  operation: 'auto-approve|auto-reject';
   status: 'success';
   details: {
     request: ApprovalRequest;
@@ -82,7 +82,7 @@ export interface ApprovalHumanRequestedEvent extends ApprovalGateEvent {
  */
 export interface ApprovalHumanDecisionEvent extends ApprovalGateEvent {
   type: 'approval:human-decision';
-  operation: 'human-approve'' | ''human-reject';
+  operation: 'human-approve|human-reject';
   status: 'success';
   details: {
     request: ApprovalRequest;
@@ -98,7 +98,7 @@ export interface ApprovalHumanDecisionEvent extends ApprovalGateEvent {
 export interface ApprovalQueueOverflowEvent extends ApprovalGateEvent {
   type: 'approval:queue-overflow';
   operation: 'overflow-handling';
-  status: 'warning'' | ''critical';
+  status: 'warning|critical';
   details: {
     queueDepth: number;
     maxDepth: number;
@@ -142,7 +142,7 @@ export interface ApprovalBottleneckEvent extends ApprovalGateEvent {
 export interface ApprovalCapacityAlertEvent extends ApprovalGateEvent {
   type: 'approval:capacity-alert';
   operation: 'capacity-monitoring';
-  status: 'warning'' | ''critical';
+  status: 'warning|critical';
   details: {
     utilizationPercent: number;
     capacityThreshold: number;
@@ -158,7 +158,7 @@ export interface ApprovalCapacityAlertEvent extends ApprovalGateEvent {
 /**
  * Union type of all approval gate events
  */
-export type ApprovalGateEventType =' | 'ApprovalRequestedEvent | ApprovalAutoProcessedEvent | ApprovalHumanRequestedEvent | ApprovalHumanDecisionEvent | ApprovalQueueOverflowEvent | ApprovalConfigUpdatedEvent | ApprovalBottleneckEvent | ApprovalCapacityAlertEvent;
+export type ApprovalGateEventType =|ApprovalRequestedEvent | ApprovalAutoProcessedEvent | ApprovalHumanRequestedEvent | ApprovalHumanDecisionEvent | ApprovalQueueOverflowEvent | ApprovalConfigUpdatedEvent | ApprovalBottleneckEvent | ApprovalCapacityAlertEvent;
 
 // =============================================================================
 // EVENT BUILDERS

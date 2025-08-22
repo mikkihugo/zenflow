@@ -33,7 +33,7 @@ export interface WorkspaceProject {
 export interface WorkspaceDependency {
   name: string;
   version: string;
-  type: 'dependency | devDependency' | 'peerDependency';
+  type: 'dependency|devDependency|peerDependency';
   workspace?: string;
   external: boolean;
 }
@@ -51,7 +51,7 @@ export interface BuildTarget {
 }
 
 export interface WorkspaceMetadata {
-  packageManager: 'npm | yarn' | 'pnpm''' | '''bun';
+  packageManager: 'npm|yarn|pnpm|bun';
   nodeVersion?: string;
   lockFile?: string;
   totalProjects: number;
@@ -75,7 +75,7 @@ export interface ProjectNode {
 export interface ProjectEdge {
   source: string;
   target: string;
-  type: 'static | dynamic' | 'implicit';
+  type: 'static|dynamic|implicit';
 }
 
 export interface TaskGraph {
@@ -93,12 +93,12 @@ export interface TaskNode {
 export interface TaskDependency {
   source: string;
   target: string;
-  type: 'depends''' | '''parallel';
+  type: 'depends|parallel';
 }
 
-export type WorkspaceTool ='' | '''nx | bazel' | 'moon''' | '''turbo | rush' | 'lerna''' | '''yarn-workspaces''' | '''pnpm-workspaces''' | '''npm-workspaces''' | '''nix''' | '''unknown';
+export type WorkspaceTool =|''nx|bazel|moon|turbo|rush|lerna|yarn-workspaces'||pnpm-workspaces|npm-workspaces'||nix|unknown';
 
-export type ProjectType ='' | '''application | library' | 'tool''' | '''package | service' | 'unknown';
+export type ProjectType =|''application|library|tool|package|service|unknown';
 
 export class WorkspaceAnalyzer {
   private logger = getLogger('WorkspaceAnalyzer');
@@ -259,7 +259,7 @@ export class WorkspaceAnalyzer {
       unknown: ['package.json'],
     };
 
-    const configPatterns = patterns[tool]'' | '''' | ''patterns.unknown;
+    const configPatterns = patterns[tool]||patterns.unknown;
 
     return fastGlob(configPatterns, {
       cwd: rootPath,
@@ -295,8 +295,8 @@ export class WorkspaceAnalyzer {
       try {
         const content = await fs.readFile(projectFile, 'utf-8');
         const projectConfig = JSON.parse(content);
-        const projectPath = projectFile.replace('/project.json', '');
-        const projectName = projectConfig.name'' | '''' | ''projectPath.split('/').pop();
+        const projectPath = projectFile.replace('/project.json', ');
+        const projectName = projectConfig.name|'|projectPath.split('/').pop();
 
         const project: WorkspaceProject = {
           name: projectName,
@@ -308,7 +308,7 @@ export class WorkspaceAnalyzer {
           devDependencies:
             await this.extractProjectDevDependencies(projectPath),
           targets: this.extractNxTargets(projectConfig),
-          tags: projectConfig.tags'' | '''' | ''[],
+          tags: projectConfig.tags||[],
           metadata: {
             projectType: projectConfig.projectType,
             sourceRoot: projectConfig.sourceRoot,
@@ -375,7 +375,7 @@ export class WorkspaceAnalyzer {
         const content = await fs.readFile(buildFile, 'utf-8');
         const targets = this.parseBazelBuildFile(content);
         const projectPath = buildFile.replace(/\/BUILD.*$/, '');
-        const projectName = projectPath.split('/').pop()'' | '''' | '''root';
+        const projectName = projectPath.split('/').pop()||'root';
 
         const project: WorkspaceProject = {
           name: projectName,
@@ -387,7 +387,7 @@ export class WorkspaceAnalyzer {
           targets: targets.map((t) => ({
             name: t.name,
             executor: t.rule,
-            dependsOn: t.deps'' | '''' | ''[],
+            dependsOn: t.deps||[],
             metadata: t,
           })),
           metadata: { bazelTargets: targets },
@@ -449,9 +449,9 @@ export class WorkspaceAnalyzer {
         const yaml = await import('yaml');
         const content = await fs.readFile(configFile, 'utf-8');
         const config = yaml.parse(content);
-        const projectPath = configFile.replace('/moon.yml', '');
+        const projectPath = configFile.replace('/moon.yml', ');
         const projectName =
-          config.project?.name'' | '''' | ''projectPath.split('/').pop();
+          config.project?.name|'|projectPath.split('/').pop();
 
         const project: WorkspaceProject = {
           name: projectName,
@@ -460,7 +460,7 @@ export class WorkspaceAnalyzer {
           language: config.project?.language
             ? [config.project.language]
             : this.detectLanguages(projectPath),
-          dependencies: config.project?.deps'' | '''' | ''[],
+          dependencies: config.project?.deps||[],
           devDependencies: [],
           targets: this.extractMoonTasks(config),
           metadata: config,
@@ -516,8 +516,8 @@ export class WorkspaceAnalyzer {
       path: pkg.path,
       type: this.inferProjectType(pkg.config, pkg.path),
       language: this.detectLanguages(pkg.path),
-      dependencies: Object.keys(pkg.config.dependencies'' | '''' | ''{}),
-      devDependencies: Object.keys(pkg.config.devDependencies'' | '''' | ''{}),
+      dependencies: Object.keys(pkg.config.dependencies||{}),
+      devDependencies: Object.keys(pkg.config.devDependencies||{}),
       targets: this.extractTurboTargets(pkg.config, turboConfig),
       metadata: {
         packageJson: pkg.config,
@@ -572,7 +572,7 @@ export class WorkspaceAnalyzer {
         const derivations = this.parseNixDerivations(content);
         const projectPath = nixFile.replace(/\/[^/]+\.nix$/, '');
         const projectName =
-          nixFile.split('/').pop()?.replace('.nix', '')'' | '''' | '''default';
+          nixFile.split('/').pop()?.replace('.nix', ')|||default';
 
         if (derivations.length > 0) {
           const project: WorkspaceProject = {
@@ -580,13 +580,13 @@ export class WorkspaceAnalyzer {
             path: projectPath,
             type: this.inferNixProjectType(derivations),
             language: this.detectLanguagesFromNix(derivations),
-            dependencies: derivations.flatMap((d) => d.buildInputs'' | '''' | ''[]),
+            dependencies: derivations.flatMap((d) => d.buildInputs||[]),
             devDependencies: derivations.flatMap(
-              (d) => d.nativeBuildInputs'' | '''' | ''[]
+              (d) => d.nativeBuildInputs||[]
             ),
             targets: derivations.map((d) => ({
               name: d.name,
-              command: d.buildPhase'' | '''' | '''nix-build',
+              command: d.buildPhase||'nix-build',
               metadata: d,
             })),
             metadata: { nixDerivations: derivations },
@@ -648,8 +648,8 @@ export class WorkspaceAnalyzer {
       path: pkg.path,
       type: this.inferProjectType(pkg.config, pkg.path),
       language: this.detectLanguages(pkg.path),
-      dependencies: Object.keys(pkg.config.dependencies'' | '''' | ''{}),
-      devDependencies: Object.keys(pkg.config.devDependencies'' | '''' | ''{}),
+      dependencies: Object.keys(pkg.config.dependencies||{}),
+      devDependencies: Object.keys(pkg.config.devDependencies||{}),
       targets: this.extractPackageJsonTargets(pkg.config),
       metadata: { packageJson: pkg.config },
     }));
@@ -682,8 +682,8 @@ export class WorkspaceAnalyzer {
       path: pkg.path,
       type: this.inferProjectType(pkg.config, pkg.path),
       language: this.detectLanguages(pkg.path),
-      dependencies: Object.keys(pkg.config.dependencies'' | '''' | ''{}),
-      devDependencies: Object.keys(pkg.config.devDependencies'' | '''' | ''{}),
+      dependencies: Object.keys(pkg.config.dependencies||{}),
+      devDependencies: Object.keys(pkg.config.devDependencies||{}),
       targets: this.extractPackageJsonTargets(pkg.config),
       metadata: { packageJson: pkg.config },
     }));
@@ -721,10 +721,10 @@ export class WorkspaceAnalyzer {
       try {
         const content = await fs.readFile(packageFile, 'utf-8');
         const config = JSON.parse(content);
-        const path = packageFile.replace('/package.json', '');
+        const path = packageFile.replace('/package.json', ');
 
         projects.push({
-          name: config.name'' | '''' | ''path.split('/').pop()'' | '''' | '''unknown',
+          name: config.name|'|path.split('/').pop()||'unknown',
           path,
           config,
         });
@@ -736,7 +736,7 @@ export class WorkspaceAnalyzer {
 
   private async detectPackageManager(
     rootPath: string
-  ): Promise<'npm | yarn' | 'pnpm''' | '''bun'> {
+  ): Promise<'npm|yarn|pnpm|bun'> {
     const fs = await this.fs;
 
     try {
@@ -758,12 +758,12 @@ export class WorkspaceAnalyzer {
   }
 
   private inferProjectType(config: any, path: string): ProjectType {
-    if (config.main'' | '''' | ''config.exports) return'library';
+    if (config.main||config.exports) return'library';
     if (config.bin) return 'tool';
-    if (path.includes('app')'' | '''' | ''path.includes('application'))
+    if (path.includes('app')||path.includes('application'))
       return 'application';
     if (path.includes('service')) return 'service';
-    if (path.includes('lib')'' | '''' | ''path.includes('package')) return 'library';
+    if (path.includes('lib')||path.includes('package')) return 'library';
     return 'unknown';
   }
 
@@ -771,26 +771,26 @@ export class WorkspaceAnalyzer {
     // This would be enhanced with actual file scanning
     const languages: string[] = [];
 
-    if (projectPath.includes('ts')'' | '''' | ''projectPath.includes('typescript')) {
+    if (projectPath.includes('ts')||projectPath.includes('typescript')) {
       languages.push('typescript');
     }
-    if (projectPath.includes('js')'' | '''' | ''projectPath.includes('javascript')) {
+    if (projectPath.includes('js')||projectPath.includes('javascript')) {
       languages.push('javascript');
     }
-    if (projectPath.includes('py')'' | '''' | ''projectPath.includes('python')) {
+    if (projectPath.includes('py')||projectPath.includes('python')) {
       languages.push('python');
     }
     if (projectPath.includes('go')) {
       languages.push('go');
     }
-    if (projectPath.includes('rust')'' | '''' | ''projectPath.includes('rs')) {
+    if (projectPath.includes('rust')||projectPath.includes('rs')) {
       languages.push('rust');
     }
 
     return languages.length > 0 ? languages : ['javascript'];
   }
 
-  private detectFramework(config: any, path: string): string'' | ''undefined {
+  private detectFramework(config: any, path: string): string|undefined {
     const deps = { ...config.dependencies, ...config.devDependencies };
 
     if (deps.react) return'react';
@@ -813,9 +813,9 @@ export class WorkspaceAnalyzer {
         targets.push({
           name,
           executor: (target as any).executor,
-          dependsOn: (target as any).dependsOn'' | '''' | ''[],
-          inputs: (target as any).inputs'' | '''' | ''[],
-          outputs: (target as any).outputs'' | '''' | ''[],
+          dependsOn: (target as any).dependsOn||[],
+          inputs: (target as any).inputs||[],
+          outputs: (target as any).outputs||[],
           cache: (target as any).cache !== false,
           metadata: target,
         });
@@ -830,18 +830,18 @@ export class WorkspaceAnalyzer {
     turboConfig: any
   ): BuildTarget[] {
     const targets: BuildTarget[] = [];
-    const scripts = packageConfig.scripts'' | '''' | ''{};
-    const pipeline = turboConfig.pipeline'' | '''' | ''{};
+    const scripts = packageConfig.scripts||{};
+    const pipeline = turboConfig.pipeline||{};
 
     for (const [name, script] of Object.entries(scripts)) {
-      const pipelineConfig = pipeline[name]'' | '''' | ''{};
+      const pipelineConfig = pipeline[name]||{};
 
       targets.push({
         name,
         script: script as string,
-        dependsOn: pipelineConfig.dependsOn'' | '''' | ''[],
-        inputs: pipelineConfig.inputs'' | '''' | ''[],
-        outputs: pipelineConfig.outputs'' | '''' | ''[],
+        dependsOn: pipelineConfig.dependsOn||[],
+        inputs: pipelineConfig.inputs||[],
+        outputs: pipelineConfig.outputs||[],
         cache: pipelineConfig.cache !== false,
         metadata: { script, pipeline: pipelineConfig },
       });
@@ -852,15 +852,15 @@ export class WorkspaceAnalyzer {
 
   private extractMoonTasks(config: any): BuildTarget[] {
     const targets: BuildTarget[] = [];
-    const tasks = config.tasks'' | '''' | ''{};
+    const tasks = config.tasks||{};
 
     for (const [name, task] of Object.entries(tasks)) {
       targets.push({
         name,
         command: (task as any).command,
-        dependsOn: (task as any).deps'' | '''' | ''[],
-        inputs: (task as any).inputs'' | '''' | ''[],
-        outputs: (task as any).outputs'' | '''' | ''[],
+        dependsOn: (task as any).deps||[],
+        inputs: (task as any).inputs||[],
+        outputs: (task as any).outputs||[],
         metadata: task,
       });
     }
@@ -870,7 +870,7 @@ export class WorkspaceAnalyzer {
 
   private extractPackageJsonTargets(config: any): BuildTarget[] {
     const targets: BuildTarget[] = [];
-    const scripts = config.scripts'' | '''' | ''{};
+    const scripts = config.scripts||{};
 
     for (const [name, script] of Object.entries(scripts)) {
       targets.push({
@@ -950,11 +950,11 @@ export class WorkspaceAnalyzer {
           id: taskId,
           target: target.name,
           project: project.name,
-          command: target.command'' | '''' | ''target.script'' | '''' | '''',
+          command: target.command||target.script||',
         });
 
         // Add dependencies
-        for (const dep of target.dependsOn'' | '''' | ''[]) {
+        for (const dep of target.dependsOn|'|[]) {
           const depTaskId = dep.includes(':') ? dep : `${project.name}:${dep}`;
           dependencies.push({
             source: taskId,
@@ -1017,10 +1017,10 @@ export class WorkspaceAnalyzer {
   }
 
   private inferBazelProjectType(targets: any[]): ProjectType {
-    if (targets.some((t) => t.rule === 'cc_binary''' | '''' | ''t.rule ==='java_binary'))
+    if (targets.some((t) => t.rule === 'cc_binary'||t.rule ==='java_binary'))
       return 'application';
     if (
-      targets.some((t) => t.rule === 'cc_library''' | '''' | ''t.rule ==='java_library')
+      targets.some((t) => t.rule === 'cc_library'||t.rule ==='java_library')
     )
       return 'library';
     return 'unknown';

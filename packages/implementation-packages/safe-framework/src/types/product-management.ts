@@ -198,7 +198,7 @@ export interface Influencer {
   readonly role: string;
   readonly department: string;
   readonly influenceLevel: InfluenceLevel;
-  readonly influenceType: 'technical | business' | 'financial''' | '''strategic';
+  readonly influenceType: 'technical|business|financial|strategic';
   readonly relationshipToDecisionMaker: string;
   readonly keyMessages: string[];
 }
@@ -264,7 +264,7 @@ export interface CompetitorPerformance {
   readonly competitor: string;
   readonly marketPosition: number; // 1-10
   readonly customerSatisfaction: number; // 0-100%
-  readonly pricing: 'premium | competitive' | 'budget';
+  readonly pricing: 'premium|competitive|budget';
   readonly strengths: string[];
   readonly weaknesses: string[];
   readonly marketShare: number; // 0-100%
@@ -274,7 +274,7 @@ export interface CompetitorPerformance {
  * Budget cycle information
  */
 export interface BudgetCycle {
-  readonly cycleType: 'annual | quarterly' | 'project_based''' | '''continuous';
+  readonly cycleType: 'annual|quarterly|project_based|continuous';
   readonly startMonth: number; // 1-12
   readonly planningHorizon: number; // months
   readonly approvalProcess: string[];
@@ -317,7 +317,7 @@ export interface CompetitorAnalysis {
  */
 export interface MarketTrend {
   readonly trend: string;
-  readonly impact: 'positive | negative' | 'neutral';
+  readonly impact: 'positive|negative|neutral';
   readonly timeframe: string;
   readonly confidence: number; // 0-100%
 }
@@ -327,7 +327,7 @@ export interface MarketTrend {
  */
 export interface MarketBarrier {
   readonly barrier: string;
-  readonly severity: 'high | medium' | 'low';
+  readonly severity: 'high|medium|low';
   readonly mitigation: string[];
 }
 
@@ -344,7 +344,7 @@ export interface MarketDriver {
  * Pricing strategy definition
  */
 export interface PricingStrategy {
-  readonly model: 'premium | competitive' | 'penetration''' | '''skimming';
+  readonly model: 'premium|competitive|penetration|skimming';
   readonly basePrice: number;
   readonly discount: number;
   readonly bundling: boolean;
@@ -366,7 +366,7 @@ export interface SuccessCriterion {
 export interface StrategyAlignment {
   readonly strategicTheme: string;
   readonly alignmentScore: number; // 0-100%
-  readonly contributionLevel: 'direct | indirect' | 'supporting';
+  readonly contributionLevel: 'direct|indirect|supporting';
   readonly strategicImportance: number; // 1-10
 }
 
@@ -378,5 +378,5 @@ export interface StakeholderAlignment {
   readonly alignmentLevel: number; // 0-100%
   readonly lastReviewed: Date;
   readonly concerns: string[];
-  readonly supportLevel:'' | '''champion | supporter' | 'neutral' | 'skeptic' | 'blocker';
+  readonly supportLevel:|'champion|supporter|neutral|skeptic|blocker';
 }

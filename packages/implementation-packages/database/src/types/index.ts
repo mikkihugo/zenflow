@@ -16,8 +16,8 @@
 // Core primitive types (self-contained)
 export type UUID = string;
 export type Timestamp = Date;
-export type Priority = 'low | medium' | 'high''' | '''critical';
-export type Status = 'active | inactive' | 'pending''' | '''error';
+export type Priority = 'low|medium|high|critical';
+export type Status = 'active|inactive|pending|error';
 
 export interface Entity {
   id: UUID;
@@ -37,7 +37,7 @@ export interface ValidationError {
   code?: string;
 }
 
-export type Optional<T> = T'' | ''undefined;
+export type Optional<T> = T|undefined;
 export type NonEmptyArray<T> = [T, ...T[]];
 export type Brand<T, B> = T & { __brand: B };
 
@@ -169,8 +169,8 @@ export interface PerformanceConfig {
   enableQueryPlan: boolean;
   cacheSize: number;
   walMode?: boolean; // SQLite WAL mode
-  synchronous?: 'off | normal' | 'full'; // SQLite synchronous mode
-  journalMode?: 'delete | truncate' | 'persist' | 'memory' | 'wal';
+  synchronous?: 'off|normal|full'; // SQLite synchronous mode
+  journalMode?: 'delete|truncate|persist|memory|wal';
 }
 
 /**
@@ -266,12 +266,12 @@ export interface DatabaseAdapter {
 /**
  * Query parameters type
  */
-export type QueryParams = Array<QueryValue>'' | ''Record<string, QueryValue>;
+export type QueryParams = Array<QueryValue>|Record<string, QueryValue>;
 
 /**
  * Query value types
  */
-export type QueryValue ='' | ''string'' | ''number'' | ''boolean'' | ''Date'' | ''Buffer'' | ''null'' | ''undefined;
+export type QueryValue =|string|number|boolean|Date|Buffer|null|undefined;
 
 /**
  * Transaction function type
@@ -441,7 +441,7 @@ export interface ExecutionMetadata {
 export interface Warning {
   code: string;
   message: string;
-  severity: 'info | warning' | 'error';
+  severity: 'info|warning|error';
   sqlState?: string;
 }
 
@@ -527,7 +527,7 @@ export interface SchemaInfo {
 export interface TableInfo {
   name: string;
   schema?: string;
-  type: 'table | view' | 'materialized_view''' | '''temporary';
+  type: 'table|view|materialized_view|temporary';
   columns: ColumnInfo[];
   constraints: ConstraintInfo[];
   indexes: string[];
@@ -606,7 +606,7 @@ export enum IndexType {
 export interface IndexColumn {
   name: string;
   position: number;
-  direction: 'asc''' | '''desc';
+  direction: 'asc|desc'';
   nullsFirst?: boolean;
   expression?: string;
 }
@@ -786,7 +786,7 @@ export interface VectorOptions {
  * Vector document/record
  */
 export interface VectorDocument extends Entity {
-  vector: Float32Array'' | ''number[];
+  vector: Float32Array|number[];
   metadata?: Record<string, QueryValue>;
   distance?: number; // populated in search results
   score?: number; // similarity score
@@ -810,7 +810,7 @@ export interface VectorSearchOptions {
  */
 export interface VectorFilter {
   conditions: VectorCondition[];
-  operator:'and''' | '''or';
+  operator:'and|or';
 }
 
 /**
@@ -818,8 +818,8 @@ export interface VectorFilter {
  */
 export interface VectorCondition {
   field: string;
-  operator:'' | '''eq | ne' | 'gt''' | '''gte | lt' | 'lte''' | '''in | nin' | 'contains';
-  value: QueryValue'' | ''QueryValue[];
+  operator:|''eq|ne|gt|gte|lt|lte|in | nin'|contains';
+  value: QueryValue|QueryValue[];
 }
 
 // =============================================================================
@@ -864,7 +864,7 @@ export interface GraphRelationship extends Entity {
   fromNode: UUID;
   toNode: UUID;
   properties?: Record<string, QueryValue>;
-  direction:'incoming | outgoing' | 'both';
+  direction:'incoming|outgoing|both';
 }
 
 /**
@@ -872,7 +872,7 @@ export interface GraphRelationship extends Entity {
  */
 export interface GraphQueryOptions {
   maxDepth?: number;
-  direction?: 'in | out' | 'both';
+  direction?: 'in|out|both';
   nodeLabels?: string[];
   relationshipTypes?: string[];
   properties?: Record<string, QueryValue>;
@@ -1021,12 +1021,12 @@ export interface LockStats {
  * Replication statistics
  */
 export interface ReplicationStats {
-  role: 'primary | secondary' | 'standby';
+  role: 'primary|secondary|standby';
   lag: number;
   lastSyncTime: Timestamp;
   replicatedTransactions: number;
   failedReplications: number;
-  syncStatus: 'syncing | in_sync' | 'delayed''' | '''error';
+  syncStatus: 'syncing|in_sync|delayed|error';
 }
 
 // =============================================================================
@@ -1122,7 +1122,7 @@ export interface AnalyzeResult {
  * Analyze improvement recommendations
  */
 export interface AnalyzeImprovement {
-  type: 'index | query' | 'schema''' | '''configuration';
+  type: 'index|query|schema|configuration';
   priority: Priority;
   description: string;
   estimatedImpact: number;
@@ -1138,9 +1138,9 @@ export interface AnalyzeImprovement {
  */
 export interface DatabaseError extends ValidationError {
   type: 'DatabaseError';
-  category: 'connection | query' | 'transaction' | 'schema' | 'constraint';
+  category: 'connection|query|transaction|schema|constraint';
   sqlState?: string;
-  errorCode?: string'' | ''number;
+  errorCode?: string|number;
   databaseType: DatabaseType;
   operation?: OperationType;
 }
@@ -1183,7 +1183,7 @@ export interface TransactionError extends DatabaseError {
  */
 export interface SchemaError extends DatabaseError {
   category: 'schema';
-  objectType?: 'table | column' | 'index''' | '''constraint';
+  objectType?: 'table|column|index|constraint';
   objectName?: string;
 }
 
@@ -1215,7 +1215,7 @@ export type SchemaOperationResult = Result<void, SchemaError>;
  * Database health status
  */
 export interface HealthStatus {
-  status: 'healthy | degraded' | 'critical''' | '''offline';
+  status: 'healthy|degraded|critical|offline';
   score: number; // 0.0 - 1.0
   checks: HealthCheck[];
   lastCheck: Timestamp;
@@ -1228,7 +1228,7 @@ export interface HealthStatus {
  */
 export interface HealthCheck {
   name: string;
-  status: 'pass | warn' | 'fail';
+  status: 'pass|warn|fail';
   duration: number;
   output?: string;
   observedValue?: number;
@@ -1258,7 +1258,7 @@ export interface MigrationInfo {
  * Table alteration operations
  */
 export interface TableAlteration {
-  type:'' | '''add_column | drop_column' | 'modify_column''' | '''rename_column | add_constraint' | 'drop_constraint';
+  type:|'add_column|drop_column|modify_column|rename_column|add_constraint|drop_constraint';
   columnName?: string;
   newColumnName?: string;
   columnDefinition?: ColumnDefinition;
@@ -1299,8 +1299,8 @@ export interface TriggerInfo {
   name: string;
   table: string;
   schema?: string;
-  event: 'INSERT | UPDATE' | 'DELETE';
-  timing: 'BEFORE''' | '''AFTER''' | '''INSTEAD OF';
+  event: 'INSERT|UPDATE|DELETE';
+  timing: 'BEFORE|AFTER'||INSTEAD OF';
   definition: string;
   enabled: boolean;
   comment?: string;
@@ -1327,7 +1327,7 @@ export interface ConstraintInfo {
 export interface ProcedureParameter {
   name: string;
   dataType: DataType;
-  mode: 'IN | OUT' | 'INOUT';
+  mode: 'IN|OUT|INOUT';
   defaultValue?: QueryValue;
 }
 
@@ -1344,7 +1344,7 @@ export interface FunctionParameter {
  * Partitioning options
  */
 export interface PartitioningOptions {
-  type: 'range | list' | 'hash''' | '''key';
+  type: 'range|list|hash|key';
   column: string;
   partitions: PartitionDefinition[];
 }
@@ -1529,7 +1529,7 @@ export const DatabaseTypeGuards = {
       typeof obj === 'object' &&
       obj !== null &&
       'vector'in obj &&
-      (Array.isArray((obj as any).vector)'' | '''' | ''(obj as any).vector instanceof Float32Array)
+      (Array.isArray((obj as any).vector)||(obj as any).vector instanceof Float32Array)
     );
   },
 

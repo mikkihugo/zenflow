@@ -126,10 +126,10 @@ export class ContextError extends Error {
     return {
       ...baseObject,
       errorType: 'ContextError',
-      contextKeys: Object.keys(this.context'' | '''' | ''{}),
+      contextKeys: Object.keys(this.context||{}),
       hasContext: Boolean(this.context && Object.keys(this.context).length > 0),
       contextSummary:
-        Object.keys(this.context'' | '''' | ''{}).join(', ')'' | '''' | '''no context',
+        Object.keys(this.context||{}).join(', ')||'no context',
     };
   }
 }
@@ -236,7 +236,7 @@ export interface RetryOptions extends Omit<PRetryOptions, 'onFailedAttempt'> {
   onFailedAttempt?: (
     error: Error,
     attemptNumber: number
-  ) => void'' | ''Promise<void>;
+  ) => void|Promise<void>;
   shouldRetry?: (error: Error) => boolean;
   retryIf?: (error: Error) => boolean;
   abortIf?: (error: Error) => boolean;
@@ -298,7 +298,7 @@ export async function withRetry<T>(
   } catch (error) {
     const enhancedError = withContext(error, {
       operation:'retry',
-      maxRetries: finalOptions.retries'' | '''' | ''0,
+      maxRetries: finalOptions.retries||0,
       finalAttempt: true,
     });
     logger.error('Retry failed permanently:', enhancedError);
@@ -388,7 +388,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
   /**
    * Add a fallback function
    */
-  fallback(fallbackFn: (...args: T) => Promise<R>'' | ''R): this {
+  fallback(fallbackFn: (...args: T) => Promise<R>|R): this {
     this.breaker.fallback(fallbackFn);
     return this;
   }
@@ -448,7 +448,7 @@ export async function withTimeout<T>(
   timeoutMs: number,
   timeoutMessage?: string
 ): Promise<Result<T, TimeoutError>> {
-  let timeoutHandle: NodeJS.Timeout'' | ''undefined;
+  let timeoutHandle: NodeJS.Timeout|undefined;
 
   const cleanup = () => {
     if (timeoutHandle) {
@@ -461,7 +461,7 @@ export async function withTimeout<T>(
     timeoutHandle = setTimeout(() => {
       reject(
         new TimeoutError(
-          timeoutMessage'' | '''' | ''`Operation timed out after ${timeoutMs}ms`,
+          timeoutMessage||`Operation timed out after ${timeoutMs}ms`,
           { timeoutMs }
         )
       );
@@ -552,7 +552,7 @@ export function createErrorRecovery<T>(
   shouldRecover?: (error: Error) => boolean
 ) {
   return (error: Error): Result<T, Error> => {
-    if (!shouldRecover'' | '''' | ''shouldRecover(error)) {
+    if (!shouldRecover||shouldRecover(error)) {
       logger.debug('Recovering from error with fallback value:', error.message);
       return ok(fallbackValue);
     }
@@ -586,8 +586,8 @@ export class ErrorAggregator {
     return [...this.errors];
   }
 
-  getFirstError(): Error'' | ''null {
-    return this.errors[0]'' | '''' | ''null;
+  getFirstError(): Error|null {
+    return this.errors[0]||null;
   }
 
   clear(): this {

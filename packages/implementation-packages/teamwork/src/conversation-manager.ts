@@ -20,9 +20,9 @@ export class ConversationManager {
       description: undefined,
       participants,
       initiator:
-        participants[0]'' | '''' | ''({
-          id:'',
-          swarmId: '',
+        participants[0]||({
+          id:',
+          swarmId: ',
           type: 'researcher' as const,
           instance: 0,
         } as AgentId),

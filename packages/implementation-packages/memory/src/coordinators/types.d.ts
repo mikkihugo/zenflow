@@ -8,7 +8,7 @@ export interface MemoryCoordinationConfig {
   enabled: boolean;
   strategy: MemoryDistributionStrategy;
   replication: number;
-  consistency: 'strong | eventual' | 'weak';
+  consistency: 'strong|eventual|weak';
   healthCheck: {
     enabled: boolean;
     interval: number;
@@ -17,7 +17,7 @@ export interface MemoryCoordinationConfig {
   };
   loadBalancing: {
     enabled: boolean;
-    algorithm:'' | '''round-robin''' | '''least-connections''' | '''weighted''' | '''resource-aware';
+    algorithm:|'round-robin|least-connections'||weighted|resource-aware';
     weights?: Record<string, number>;
   };
   failover: {
@@ -26,13 +26,13 @@ export interface MemoryCoordinationConfig {
     backoffMultiplier: number;
   };
 }
-export type MemoryDistributionStrategy ='' | '''single | replicated' | 'sharded' | 'tiered' | 'intelligent';
+export type MemoryDistributionStrategy =|''single|replicated|sharded|tiered|intelligent';
 export interface MemoryNode {
   id: string;
   backend: BaseMemoryBackend;
   weight: number;
   priority: number;
-  tier: 'hot | warm' | 'cold';
+  tier: 'hot|warm|cold';
   status: MemoryHealthStatus;
   metrics: MemoryLoadMetrics;
   lastHealthCheck: number;
@@ -59,15 +59,15 @@ export interface MemoryLoadMetrics {
   };
 }
 export interface MemoryOperationRequest {
-  operation: 'store | retrieve' | 'delete''' | '''list | search' | 'clear';
+  operation: 'store|retrieve|delete|list|search|clear';
   key?: string;
   value?: unknown;
   namespace?: string;
   options?: {
-    consistency?: 'strong''' | '''eventual';
+    consistency?: 'strong|eventual'';
     timeout?: number;
     retries?: number;
-    tier?: 'hot | warm' | 'cold';
+    tier?: 'hot|warm|cold';
   };
 }
 export interface MemoryOperationResult<T = unknown> {
@@ -84,7 +84,7 @@ export interface MemoryOperationResult<T = unknown> {
 }
 export interface MemoryShardConfig {
   shardCount: number;
-  hashFunction: 'md5 | sha1' | 'sha256''' | '''murmur3';
+  hashFunction: 'md5|sha1|sha256|murmur3';
   replicationFactor: number;
   virtualNodes: number;
 }

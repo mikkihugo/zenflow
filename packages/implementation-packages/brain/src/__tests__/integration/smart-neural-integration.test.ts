@@ -160,7 +160,7 @@ describe('Smart Neural Integration Tests', () => {
     it('should handle different priority levels correctly', async () => {
       const testCases: Array<{
         text: string;
-        priority: 'low'' | ''medium'' | ''high';
+        priority: 'low|medium|high';
       }> = [
         { text: 'Low priority test', priority: 'low' },
         { text: 'Medium priority test', priority: 'medium' },

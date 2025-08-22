@@ -76,7 +76,7 @@ export class MemoryHealthMonitor extends TypedEventBase {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized'' | '''' | ''!this.config.enabled) return;
+    if (this.initialized||!this.config.enabled) return;
 
     try {
       this.initialized = true;
@@ -245,13 +245,13 @@ export class MemoryHealthMonitor extends TypedEventBase {
         const backendHealth = await node.backend.healthCheck();
         details.connectivity = backendHealth.healthy;
         details.memoryUsage =
-          backendHealth.details?.memoryUsage'' | '''' | ''details.memoryUsage;
+          backendHealth.details?.memoryUsage||details.memoryUsage;
         details.storageUsage =
-          backendHealth.details?.storageUsage'' | '''' | ''details.storageUsage;
+          backendHealth.details?.storageUsage||details.storageUsage;
       }
 
       // Check error rate from recent operations
-      const history = this.healthHistory.get(node.id)'' | '''' | ''[];
+      const history = this.healthHistory.get(node.id)||[];
       const recentHistory = history.slice(-10); // Last 10 checks
       const recentFailures = recentHistory.filter((h) => !h.healthy).length;
       details.errorRate =
@@ -276,7 +276,7 @@ export class MemoryHealthMonitor extends TypedEventBase {
   }
 
   private storeHealthResult(result: HealthCheckResult): void {
-    const history = this.healthHistory.get(result.nodeId)'' | '''' | ''[];
+    const history = this.healthHistory.get(result.nodeId)||[];
 
     // Add new result
     history.push(result);
@@ -317,7 +317,7 @@ export class MemoryHealthMonitor extends TypedEventBase {
     node: MemoryNode,
     result: HealthCheckResult
   ): void {
-    const history = this.healthHistory.get(node.id)'' | '''' | ''[];
+    const history = this.healthHistory.get(node.id)||[];
 
     if (history.length < 2) return;
 
@@ -361,7 +361,7 @@ export class MemoryHealthMonitor extends TypedEventBase {
   }
 
   private getConsecutiveFailures(nodeId: string): number {
-    const history = this.healthHistory.get(nodeId)'' | '''' | ''[];
+    const history = this.healthHistory.get(nodeId)||[];
     let count = 0;
 
     for (let i = history.length - 1; i >= 0; i--) {
@@ -376,7 +376,7 @@ export class MemoryHealthMonitor extends TypedEventBase {
   }
 
   private getConsecutiveSuccesses(nodeId: string): number {
-    const history = this.healthHistory.get(nodeId)'' | '''' | ''[];
+    const history = this.healthHistory.get(nodeId)||[];
     let count = 0;
 
     for (let i = history.length - 1; i >= 0; i--) {
@@ -400,7 +400,7 @@ export class MemoryHealthMonitor extends TypedEventBase {
     this.stats.recoveringNodes = nodes.filter((n) => {
       if (n.status.healthy) return false;
 
-      const history = this.healthHistory.get(n.id)'' | '''' | ''[];
+      const history = this.healthHistory.get(n.id)||[];
       if (history.length < 3) return false;
 
       // Check if last few checks show improvement
@@ -425,18 +425,18 @@ export class MemoryHealthMonitor extends TypedEventBase {
 
   // Public methods
 
-  getNodeHealth(nodeId: string): MemoryHealthStatus'' | ''null {
+  getNodeHealth(nodeId: string): MemoryHealthStatus|null {
     const node = this.nodes.get(nodeId);
     return node ? { ...node.status } : null;
   }
 
   getNodeHealthHistory(nodeId: string, limit = 10): HealthCheckResult[] {
-    const history = this.healthHistory.get(nodeId)'' | '''' | ''[];
+    const history = this.healthHistory.get(nodeId)||[];
     return history.slice(-limit);
   }
 
   getOverallHealth(): {
-    status:'healthy | degraded' | 'unhealthy';
+    status:'healthy|degraded|unhealthy';
     score: number;
     summary: string;
     details: HealthStats;
@@ -453,7 +453,7 @@ export class MemoryHealthMonitor extends TypedEventBase {
     }
 
     const healthyRatio = this.stats.healthyNodes / totalNodes;
-    let status: 'healthy | degraded' | 'unhealthy';
+    let status: 'healthy|degraded|unhealthy';
     let score = Math.round(healthyRatio * 100);
 
     if (healthyRatio >= 0.8) {

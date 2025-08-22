@@ -281,9 +281,9 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   }
 
   private analyzePerformanceTrends(): {
-    responseTimeTrend: 'improving | stable' | 'degrading';
-    throughputTrend: 'improving | stable' | 'degrading';
-    memoryTrend: 'improving | stable' | 'degrading';
+    responseTimeTrend: 'improving|stable|degrading';
+    throughputTrend: 'improving|stable|degrading';
+    memoryTrend: 'improving|stable|degrading';
     overallHealth: number;
     bottlenecks: string[];
   } {
@@ -375,7 +375,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     recent: number,
     older: number,
     higherIsBetter: boolean
-  ): 'improving | stable' | 'degrading' {
+  ): 'improving|stable|degrading' {
     if (older === 0) return 'stable';
 
     const change = (recent - older) / older;
@@ -406,7 +406,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
 
     // Response time optimization
     if (
-      analysis.responseTimeTrend === 'degrading''' | '''' | ''snapshot.responseTime > this.config.targets.responseTime
+      analysis.responseTimeTrend === 'degrading'||snapshot.responseTime > this.config.targets.responseTime
     ) {
       if (this.config.actions.adjustCacheSize) {
         recommendations.push({
@@ -421,9 +421,9 @@ export class PerformanceTuningStrategy extends TypedEventBase {
           parameters: {
             currentSize: this.tuningParameters.get('cacheSize')?.currentValue,
             newSize: Math.min(
-              (this.tuningParameters.get('cacheSize')?.currentValue'' | '''' | ''1000) *
+              (this.tuningParameters.get('cacheSize')?.currentValue||1000) *
                 1.2,
-              this.tuningParameters.get('cacheSize')?.maxValue'' | '''' | ''10000
+              this.tuningParameters.get('cacheSize')?.maxValue||10000
             ),
           },
           estimatedImprovement: {
@@ -459,7 +459,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
 
     // Throughput optimization
     if (
-      analysis.throughputTrend === 'degrading''' | '''' | ''snapshot.throughput < this.config.targets.throughput
+      analysis.throughputTrend === 'degrading'||snapshot.throughput < this.config.targets.throughput
     ) {
       if (this.config.actions.balanceLoad) {
         recommendations.push({
@@ -509,7 +509,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
 
     // Memory optimization
     if (
-      analysis.memoryTrend === 'degrading''' | '''' | ''snapshot.memoryUsage > this.config.targets.memoryEfficiency * 1000
+      analysis.memoryTrend === 'degrading'||snapshot.memoryUsage > this.config.targets.memoryEfficiency * 1000
     ) {
       recommendations.push({
         action:'increase_cleanup_frequency',
@@ -569,7 +569,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
   private calculateOptimalTtl(snapshot: PerformanceSnapshot): number {
     // Simple heuristic: adjust TTL based on cache hit rate
     const currentTtl =
-      this.tuningParameters.get('cacheTtl')?.currentValue'' | '''' | ''300000;
+      this.tuningParameters.get('cacheTtl')?.currentValue||300000;
 
     if (snapshot.cacheHitRate < 0.7) {
       // Low hit rate, increase TTL
@@ -790,7 +790,7 @@ export class PerformanceTuningStrategy extends TypedEventBase {
     const param = this.tuningParameters.get(name);
     if (!param) return false;
 
-    if (value < param.minValue'' | '''' | ''value > param.maxValue) {
+    if (value < param.minValue||value > param.maxValue) {
       return false;
     }
 

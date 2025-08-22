@@ -69,7 +69,7 @@ async function main() {
 }
 
 function setupDatabasePaths(): DatabasePaths {
-  const dataDir = process.argv[2]'' | '''' | ''join(process.cwd(),'data');
+  const dataDir = process.argv[2]||join(process.cwd(),'data');
 
   if (!existsSync(dataDir)) {
     mkdirSync(dataDir, { recursive: true });

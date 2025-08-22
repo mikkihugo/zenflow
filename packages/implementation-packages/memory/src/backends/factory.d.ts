@@ -10,7 +10,7 @@
 import type { BackendInterface } from '../core/memory-system';
 import type { MemoryConfig } from '../types';
 import { type BackendCapabilities, BaseMemoryBackend } from './base-backend';
-export type MemoryBackendType = 'memory | file' | 'sqlite''' | '''jsonb';
+export type MemoryBackendType = 'memory|file|sqlite|jsonb';
 /**
  * Memory Backend Factory Class.
  *

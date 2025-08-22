@@ -8,8 +8,8 @@
  */
 
 export interface Config {
-  env: 'development | production' | 'test';
-  logLevel: 'debug | info' | 'warn''' | '''error';
+  env: 'development|production|test';
+  logLevel: 'debug|info|warn|error';
   enableMetrics?: boolean;
   orchestrator?: {
     dataDir?: string;
@@ -26,7 +26,7 @@ export interface Config {
     maxSessions?: number;
   };
   memory?: {
-    backend?: 'sqlite''' | '''memory';
+    backend?: 'sqlite|memory'';
     ttl?: number;
     maxEntries?: number;
   };
@@ -62,9 +62,9 @@ export interface Config {
 
 // Logging configuration interface
 export interface LoggingConfig {
-  level: 'debug | info' | 'warn''' | '''error';
-  format: 'text''' | '''json';
-  destination: 'console | file' | 'both';
+  level: 'debug|info|warn|error';
+  format: 'text|json'';
+  destination: 'console|file|both';
   file?: {
     path: string;
     maxSize: number;
@@ -102,7 +102,7 @@ export interface OrchestratorMetrics {
 export interface AgentProfile {
   id: string;
   name: string;
-  type: 'coordinator | researcher' | 'implementer' | 'analyst' | 'custom';
+  type: 'coordinator|researcher|implementer|analyst|custom';
   capabilities: string[];
   systemPrompt?: string;
   maxConcurrentTasks: number;
@@ -119,7 +119,7 @@ export interface AgentSession {
   terminalId: string;
   startTime: Date;
   endTime?: Date;
-  status: 'active | idle' | 'terminated''' | '''error';
+  status: 'active|idle|terminated|error';
   lastActivity: Date;
   memoryBankId: string;
 }
@@ -142,14 +142,14 @@ export interface Task {
   metadata?: Record<string, unknown>;
 }
 
-export type TaskStatus ='' | '''pending | queued' | 'assigned''' | '''running | completed' | 'failed''' | '''cancelled';
+export type TaskStatus =|'pending|queued|assigned|running|completed|failed|cancelled'';
 
 // Memory-related types
 export interface MemoryEntry {
   id: string;
   agentId: string;
   sessionId: string;
-  type: 'observation | insight' | 'decision' | 'artifact' | 'error';
+  type: 'observation|insight|decision|artifact|error';
   content: string;
   context: Record<string, unknown>;
   timestamp: Date;
@@ -287,7 +287,7 @@ export interface OrchestratorConfig {
 }
 
 export interface TerminalConfig {
-  type: 'vscode | native' | 'auto';
+  type: 'vscode|native|auto';
   poolSize: number;
   recycleAfter: number;
   healthCheckInterval: number;
@@ -295,10 +295,10 @@ export interface TerminalConfig {
 }
 
 export interface MemoryConfig {
-  backend: 'sqlite | markdown' | 'hybrid';
+  backend: 'sqlite|markdown|hybrid';
   cacheSizeMB: number;
   syncInterval: number;
-  conflictResolution: 'last-write''' | '''crdt''' | '''manual';
+  conflictResolution: 'last-write|crdt'||manual';
   retentionDays: number;
   sqlitePath?: string;
   markdownDir?: string;
@@ -314,14 +314,14 @@ export interface CoordinationConfig {
 
 // Health and monitoring types
 export interface HealthStatus {
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy|degraded|unhealthy';
   components: Record<string, ComponentHealth>;
   timestamp: Date;
 }
 
 export interface ComponentHealth {
   name: string;
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy|degraded|unhealthy';
   lastCheck: Date;
   error?: string;
   metrics?: Record<string, number>;
@@ -368,8 +368,8 @@ export interface EventBus {
 export interface Terminal {
   id: string;
   pid?: number;
-  type: 'vscode''' | '''native';
-  status: 'active | idle' | 'dead';
+  type: 'vscode|native'';
+  status: 'active|idle|dead';
 }
 
 export interface TerminalCommand {

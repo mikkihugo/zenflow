@@ -47,7 +47,7 @@ export interface PerformanceStats {
   totalOperations: number;
   avgDuration: number;
   successRate: number;
-  memoryTrend: 'increasing | stable' | 'decreasing';
+  memoryTrend: 'increasing | stable|decreasing';
   cpuEfficiency: number;
   recentFailures: number;
 }

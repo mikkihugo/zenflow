@@ -42,7 +42,7 @@ export class MonitoringEventFactory {
       throw new Error(`Monitoring event adapter '${name}'already exists`);
     }
 
-    const defaultConfig = MonitoringEventFactory.defaultConfigs.get(name)'' | '''' | ''{};
+    const defaultConfig = MonitoringEventFactory.defaultConfigs.get(name)||{};
     const finalConfig = createDefaultMonitoringEventAdapterConfig(name, {
       ...defaultConfig,
       ...config,
@@ -59,7 +59,7 @@ export class MonitoringEventFactory {
    *
    * @param name
    */
-  static get(name: string): MonitoringEventAdapter'' | ''undefined {
+  static get(name: string): MonitoringEventAdapter|undefined {
     return MonitoringEventFactory.instances.get(name);
   }
 
@@ -644,7 +644,7 @@ export class MonitoringEventRegistry {
    *
    * @param name
    */
-  static get(name: string): MonitoringEventAdapter'' | ''undefined {
+  static get(name: string): MonitoringEventAdapter|undefined {
     return MonitoringEventRegistry.adapters.get(name);
   }
 
@@ -732,8 +732,8 @@ export class MonitoringEventRegistry {
  * @example
  */
 export class MonitoringEventManager {
-  private static instance: MonitoringEventAdapter'' | ''null = null;
-  private static config: MonitoringEventAdapterConfig'' | ''null = null;
+  private static instance: MonitoringEventAdapter|null = null;
+  private static config: MonitoringEventAdapterConfig|null = null;
 
   /**
    * Initialize global monitoring event manager.
@@ -786,7 +786,7 @@ export class MonitoringEventManager {
   /**
    * Get current configuration.
    */
-  static getConfig(): MonitoringEventAdapterConfig'' | ''null {
+  static getConfig(): MonitoringEventAdapterConfig|null {
     return MonitoringEventManager.config;
   }
 }

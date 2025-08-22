@@ -15,7 +15,7 @@ import type { TelemetryData, ProcessorConfig } from '../types.js';
  * Transform operation interface
  */
 interface TransformOperation {
-  type: 'add | modify' | 'remove' | 'rename' | 'map';
+  type: 'add|modify|remove|rename|map';
   field: string;
   value?: any;
   newField?: string;
@@ -33,7 +33,7 @@ export class TransformProcessor implements BaseProcessor {
   private processedCount = 0;
   private transformedCount = 0;
   private lastProcessedTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   // Configuration
   private readonly addAttributes: Record<string, any>;
@@ -45,10 +45,10 @@ export class TransformProcessor implements BaseProcessor {
     this.logger = getLogger(`TransformProcessor:${config.name}`);
 
     // Parse configuration
-    this.addAttributes = config.config?.addAttributes'' | '''' | ''{};
-    this.removeFields = config.config?.removeFields'' | '''' | ''[];
-    this.fieldMappings = config.config?.fieldMappings'' | '''' | ''{};
-    this.operations = this.parseOperations(config.config?.operations'' | '''' | ''[]);
+    this.addAttributes = config.config?.addAttributes||{};
+    this.removeFields = config.config?.removeFields||[];
+    this.fieldMappings = config.config?.fieldMappings||{};
+    this.operations = this.parseOperations(config.config?.operations||[]);
   }
 
   async initialize(): Promise<void> {
@@ -60,7 +60,7 @@ export class TransformProcessor implements BaseProcessor {
     });
   }
 
-  async process(data: TelemetryData): Promise<TelemetryData'' | ''null> {
+  async process(data: TelemetryData): Promise<TelemetryData|null> {
     try {
       const transformedData = await this.transformData(data);
 
@@ -129,14 +129,14 @@ export class TransformProcessor implements BaseProcessor {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
     return {
       status: this.lastError ? 'unhealthy' : 'healthy',
-      lastProcessed: this.lastProcessedTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastProcessed: this.lastProcessedTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 
@@ -311,7 +311,7 @@ export class TransformProcessor implements BaseProcessor {
     let value = data;
 
     for (const part of parts) {
-      if (value === null'' | '''' | ''value === undefined) {
+      if (value === null||value === undefined) {
         return undefined;
       }
       value = value[part];
@@ -329,7 +329,7 @@ export class TransformProcessor implements BaseProcessor {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part]'' | '''' | ''typeof current[part] !=='object') {
+      if (!current[part]||typeof current[part] !=='object') {
         current[part] = {};
       }
       current = current[part];
@@ -425,7 +425,7 @@ export class TransformProcessor implements BaseProcessor {
    */
   private parseOperations(operations: any[]): TransformOperation[] {
     return operations.map((op) => ({
-      type: op.type'' | '''' | '''add',
+      type: op.type||'add',
       field: op.field,
       value: op.value,
       newField: op.newField,

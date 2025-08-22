@@ -154,7 +154,7 @@ export interface StatisticalAnalyzer {
 }
 
 // Additional types expected by teleprompters - simplified for compatibility
-export type MLVector = Float32Array'' | ''number[];
+export type MLVector = Float32Array|number[];
 
 export interface MLDataset {
   features: MLVector[];
@@ -174,7 +174,7 @@ export interface Pattern {
   id?: string;
   type?: string;
   metadata?: Record<string, any>;
-  centroid?: number[]'' | ''Float32Array; // Add centroid for clustering patterns
+  centroid?: number[]|Float32Array; // Add centroid for clustering patterns
 }
 
 // Data structures that map to Rust implementations
@@ -188,8 +188,8 @@ export interface OptimizationTask {
 }
 
 export interface OptimizationBounds {
-  lower: number[]'' | ''Float32Array;
-  upper: number[]'' | ''Float32Array;
+  lower: number[]|Float32Array;
+  upper: number[]|Float32Array;
   constraints?: Array<(params: number[]) => boolean>;
 }
 
@@ -347,10 +347,10 @@ export class SimpleMLEngine implements MLEngine {
 
     return {
       success: rustResult.success,
-      bestParams: Array.from(rustResult.result.best_params'' | '''' | ''[]),
-      bestValue: rustResult.result.best_value'' | '''' | ''0,
+      bestParams: Array.from(rustResult.result.best_params||[]),
+      bestValue: rustResult.result.best_value||0,
       iterations: rustResult.performance.iterations,
-      convergence: rustResult.result.convergence'' | '''' | ''false,
+      convergence: rustResult.result.convergence||false,
       performance: rustResult.performance,
     };
   }
@@ -366,16 +366,16 @@ export class SimpleMLEngine implements MLEngine {
     const result = await this.rustML.optimize(task);
 
     return {
-      mean: result.result.mean'' | '''' | ''0,
-      std: result.result.std'' | '''' | ''0,
-      median: result.result.median'' | '''' | ''0,
-      quantiles: result.result.quantiles'' | '''' | ''[0, 0.25, 0.5, 0.75, 1],
-      distribution: result.result.distribution'' | '''' | '''unknown',
-      outliers: result.result.outliers'' | '''' | ''[],
+      mean: result.result.mean||0,
+      std: result.result.std||0,
+      median: result.result.median||0,
+      quantiles: result.result.quantiles||[0, 0.25, 0.5, 0.75, 1],
+      distribution: result.result.distribution||'unknown',
+      outliers: result.result.outliers||[],
       normalityTest: {
-        statistic: result.result.normality_statistic'' | '''' | ''0,
-        pValue: result.result['normality_p_value']'' | '''' | ''1,
-        isNormal: result.result['is_normal']'' | '''' | ''false,
+        statistic: result.result.normality_statistic||0,
+        pValue: result.result['normality_p_value']||1,
+        isNormal: result.result['is_normal']||false,
       },
     };
   }
@@ -392,9 +392,9 @@ export class SimpleMLEngine implements MLEngine {
     const result = await this.rustML.optimize(task);
 
     return {
-      patterns: result.result['patterns']'' | '''' | ''[],
-      clusters: result.result['clusters']'' | '''' | ''[],
-      similarity: result.result['similarity']'' | '''' | ''0,
+      patterns: result.result['patterns']||[],
+      clusters: result.result['clusters']||[],
+      similarity: result.result['similarity']||0,
     };
   }
 
@@ -411,15 +411,15 @@ export function createMLEngine(config?: any, logger?: Logger): MLEngine {
   // Handle different call signatures - support both (config, logger) and (config) patterns
   const rustConfig: RustMLConfig = {
     enableTelemetry:
-      config?.enableTelemetry'' | '''' | ''config?.enableProfiling'' | '''' | ''false,
-    optimizationLevel: config?.optimizationLevel'' | '''' | '''moderate',
+      config?.enableTelemetry||config?.enableProfiling||false,
+    optimizationLevel: config?.optimizationLevel||'moderate',
     parallelExecution:
-      config?.parallelExecution'' | '''' | ''config?.parallelEvaluation'' | '''' | ''false,
-    enableProfiling: config?.enableProfiling'' | '''' | ''false,
-    parallelEvaluation: config?.parallelEvaluation'' | '''' | ''false,
+      config?.parallelExecution||config?.parallelEvaluation||false,
+    enableProfiling: config?.enableProfiling||false,
+    parallelEvaluation: config?.parallelEvaluation||false,
   };
   const loggerInstance =
-    logger'' | '''' | ''({
+    logger||({
       info: console.log,
       error: console.error,
       debug: console.log,
@@ -608,8 +608,8 @@ export function createMultiObjectiveOptimizer(
 }
 
 export function createGradientOptimizer(config: any): GradientOptimizer {
-  let learningRate = config?.learningRate'' | '''' | ''0.01;
-  let epsilon = config?.epsilon'' | '''' | ''1e-8;
+  let learningRate = config?.learningRate||0.01;
+  let epsilon = config?.epsilon||1e-8;
 
   return {
     async initialize(cfg: any): Promise<void> {
@@ -659,9 +659,9 @@ export function createGradientOptimizer(config: any): GradientOptimizer {
 }
 
 export function createPatternLearner(config: any): PatternLearner {
-  let clusterCount = config?.clusterCount'' | '''' | ''3;
-  let similarityThreshold = config?.similarityThreshold'' | '''' | ''0.7;
-  let windowSize = config?.windowSize'' | '''' | ''5;
+  let clusterCount = config?.clusterCount||3;
+  let similarityThreshold = config?.similarityThreshold||0.7;
+  let windowSize = config?.windowSize||5;
 
   return {
     async initialize(cfg: any): Promise<void> {
@@ -690,7 +690,7 @@ export function createPatternLearner(config: any): PatternLearner {
       for (let i = 0; i <= numericalData.length - windowSize; i++) {
         const window = numericalData.slice(i, i + windowSize);
         const patternKey = window.join(',');
-        patternCounts.set(patternKey, (patternCounts.get(patternKey)'' | '''' | ''0) + 1);
+        patternCounts.set(patternKey, (patternCounts.get(patternKey)||0) + 1);
       }
 
       // Convert frequent patterns to results
@@ -856,7 +856,7 @@ export function createPatternLearner(config: any): PatternLearner {
         const allPatterns = groupedPatterns.flatMap((gp) =>
           gp.patterns.map((p) => ({ ...p, label: gp.label }))
         );
-        const allClusters = groupedPatterns.flatMap((gp) => gp.clusters'' | '''' | ''[]);
+        const allClusters = groupedPatterns.flatMap((gp) => gp.clusters||[]);
         const avgSimilarity =
           groupedPatterns.reduce((sum, gp) => sum + gp.similarity, 0) /
           groupedPatterns.length;
@@ -882,11 +882,11 @@ export function createPatternLearner(config: any): PatternLearner {
 
 export function createOnlineLearner(config: any): OnlineLearner {
   let learnerConfig: OnlineLearnerConfig = {
-    algorithm: config?.algorithm'' | '''' | '''sgd',
-    learningRate: config?.learningRate'' | '''' | ''0.01,
-    regularization: config?.regularization'' | '''' | ''0.001,
+    algorithm: config?.algorithm||'sgd',
+    learningRate: config?.learningRate||0.01,
+    regularization: config?.regularization||0.001,
     adaptiveLearningRate: config?.adaptiveLearningRate ?? true,
-    forgettingFactor: config?.forgettingFactor'' | '''' | ''0.95,
+    forgettingFactor: config?.forgettingFactor||0.95,
   };
 
   let weights: number[] = [];
@@ -981,7 +981,7 @@ export function createOnlineLearner(config: any): OnlineLearner {
       predictions: number[],
       targets: number[]
     ): Promise<ConceptDriftDetection> {
-      if (predictions.length !== targets.length'' | '''' | ''predictions.length < 10) {
+      if (predictions.length !== targets.length||predictions.length < 10) {
         return {
           driftDetected: false,
           driftStrength: 0,
@@ -1008,7 +1008,7 @@ export function createOnlineLearner(config: any): OnlineLearner {
       const driftStrength = Math.abs(recentErrorRate - olderErrorRate);
       const driftDetected = driftStrength > 0.1; // Threshold for drift detection
 
-      let changePoint: number'' | ''undefined;
+      let changePoint: number|undefined;
       if (driftDetected) {
         // Simple change point detection - find where error rate starts increasing
         for (let i = windowSize; i < predictions.length - 5; i++) {
@@ -1051,7 +1051,7 @@ export function createOnlineLearner(config: any): OnlineLearner {
       if (Array.isArray(data)) return data.filter((x) => typeof x === 'number');
       if (typeof data === 'string') {
         // Simple text features: length, vowel count, word count
-        const vowelCount = (data.match(/[aeiou]/gi)'' | '''' | ''[]).length;
+        const vowelCount = (data.match(/[aeiou]/gi)||[]).length;
         const wordCount = data.split(/\s+/).length;
         return [data.length, vowelCount, wordCount];
       }

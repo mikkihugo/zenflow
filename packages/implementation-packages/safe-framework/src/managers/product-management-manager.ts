@@ -39,7 +39,7 @@ interface ProductManagerState {
   readonly isInitialized: boolean;
   readonly activeProducts: Map<string, ProductLifecycleStage>;
   readonly visionCount: number;
-  readonly lastMarketAnalysis: Date'' | ''null;
+  readonly lastMarketAnalysis: Date|null;
   readonly customerSegmentCount: number;
 }
 
@@ -203,7 +203,7 @@ export class ProductManagementManager extends TypedEventBase {
       .map((si) => si.segment)
       .filter(
         (segment) =>
-          segment.urgency === 'immediate''' | '''' | ''segment.urgency ==='short_term''' | '''' | ''segment.urgency ==='medium_term'
+          segment.urgency === 'immediate'||segment.urgency ==='short_term'||segment.urgency ==='medium_term'
       );
 
     // Update state
@@ -295,10 +295,10 @@ export class ProductManagementManager extends TypedEventBase {
     // Transform features for WSJF calculation
     const featuresWithWSJF = features.map((feature) => ({
       ...feature,
-      businessValue: feature.businessValue'' | '''' | ''20,
+      businessValue: feature.businessValue||20,
       urgency: 15, // Mock urgency score
       riskReduction: 10, // Mock risk reduction score
-      size: feature.stories?.length'' | '''' | ''8, // Use story count as size estimate
+      size: feature.stories?.length||8, // Use story count as size estimate
     }));
 
     const prioritizedFeatures =

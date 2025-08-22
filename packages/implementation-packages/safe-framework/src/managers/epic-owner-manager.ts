@@ -74,7 +74,7 @@ interface EpicOwnerState {
   readonly isInitialized: boolean;
   readonly activeEpicsCount: number;
   readonly portfolioValue: number;
-  readonly lastWSJFUpdate: Date'' | ''null;
+  readonly lastWSJFUpdate: Date|null;
   readonly businessCasesCount: number;
 }
 
@@ -156,7 +156,7 @@ export class EpicOwnerManager extends TypedEventBase {
     this.approvalWorkflow = new ApprovalWorkflowManager();
 
     // Store optional AI enhancements
-    this.aiEnhancements = aiEnhancements'' | '''' | ''{};
+    this.aiEnhancements = aiEnhancements||{};
 
     this.setupEventHandlers();
   }
@@ -386,7 +386,7 @@ export class EpicOwnerManager extends TypedEventBase {
     };
     risks: Array<{
       description: string;
-      category:'' | '''technical | market' | 'financial' | 'regulatory' | 'operational';
+      category:|'technical|market|financial|regulatory|operational';
       probability: number;
       impact: number;
       owner: string;
@@ -394,7 +394,7 @@ export class EpicOwnerManager extends TypedEventBase {
     assumptions: string[];
   }): Promise<{
     businessCaseId: string;
-    recommendation: 'proceed | defer' | 'pivot''' | '''stop';
+    recommendation: 'proceed|defer|pivot|stop';
     financialViability: boolean;
     roi: number;
     paybackPeriod: number;
@@ -556,8 +556,8 @@ export class EpicOwnerManager extends TypedEventBase {
     epicId: string,
     blockerData: {
       description: string;
-      category:'' | '''technical | business' | 'resource' | 'external' | 'regulatory';
-      severity: 'low | medium' | 'high''' | '''critical';
+      category:|'technical|business|resource|external|regulatory';
+      severity: 'low|medium|high|critical';
       owner: string;
       resolutionPlan: string[];
       impact: string;
@@ -673,7 +673,7 @@ export class EpicOwnerManager extends TypedEventBase {
       await this.lifecycleService.getPortfolioKanbanMetrics();
 
     const completedCount =
-      kanbanMetrics.stateDistribution[PortfolioKanbanState.DONE]'' | '''' | ''0;
+      kanbanMetrics.stateDistribution[PortfolioKanbanState.DONE]||0;
     const totalCount = Object.values(kanbanMetrics.stateDistribution).reduce(
       (sum, count) => sum + count,
       0
@@ -738,7 +738,7 @@ export class EpicOwnerManager extends TypedEventBase {
     }
   ): Promise<{
     requestId: string;
-    status: 'pending''' | '''auto-approved';
+    status: 'pending|auto-approved'';
     message: string;
   }> {
     if (!this.initialized) await this.initialize();
@@ -901,7 +901,7 @@ export class EpicOwnerManager extends TypedEventBase {
   private async restoreState(): Promise<void> {
     try {
       const savedState = (await this.memorySystem.retrieve(
-        'epic-owner-state')) as Partial<EpicOwnerState>'' | ''null;
+        'epic-owner-state')) as Partial<EpicOwnerState>|null;
       if (savedState && typeof savedState ==='object') {
         this.state = { ...this.state, ...savedState };
         this.logger.info('Epic owner state restored from memory');

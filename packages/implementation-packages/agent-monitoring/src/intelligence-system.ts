@@ -68,7 +68,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     };
   }
 
-  getAgentLearningState(agentId: AgentId): AgentLearningState'' | ''null {
+  getAgentLearningState(agentId: AgentId): AgentLearningState|null {
     return null;
   }
 
@@ -80,7 +80,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     logger.debug('Agent performance updated', { agentId: agentId.id, success });
   }
 
-  getAgentHealth(agentId: AgentId): AgentHealth'' | ''null {
+  getAgentHealth(agentId: AgentId): AgentHealth|null {
     return null;
   }
 

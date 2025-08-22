@@ -47,15 +47,15 @@ export interface ArchitectureHealthMetrics {
   readonly scalability: ScalabilityHealth;
 }
 
-export type HealthGrade = 'A'' | ''B'' | ''C'' | ''D'' | ''F';
+export type HealthGrade = 'A|B|C|D|F';
 
 export interface HealthDimension {
   readonly name: string;
-  readonly category: 'technical'' | ''operational'' | ''strategic'' | ''compliance';
+  readonly category: 'technical|operational|strategic|compliance';
   readonly score: number; // 0-100
   readonly weight: number; // 0-1
-  readonly status: 'excellent'' | ''good'' | ''fair'' | ''poor'' | ''critical';
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly status: 'excellent|good|fair|poor|critical';
+  readonly trend: 'improving|stable|declining';
   readonly metrics: DimensionMetric[];
   readonly issues: HealthIssue[];
   readonly recommendations: string[];
@@ -68,7 +68,7 @@ export interface DimensionMetric {
   readonly unit: string;
   readonly target: number;
   readonly threshold: MetricThreshold;
-  readonly importance: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly importance: 'critical|high|medium|low';
   readonly dataSource: string;
   readonly lastUpdated: Date;
   readonly trend: MetricTrend;
@@ -83,7 +83,7 @@ export interface MetricThreshold {
 }
 
 export interface MetricTrend {
-  readonly direction: 'up'' | ''down'' | ''stable';
+  readonly direction: 'up|down|stable';
   readonly velocity: number;
   readonly confidence: number; // 0-1
   readonly projection: TrendProjection;
@@ -100,8 +100,8 @@ export interface HealthIssue {
   readonly issueId: string;
   readonly title: string;
   readonly description: string;
-  readonly category:' | ''architecture'' | ''design'' | ''implementation'' | ''operations'' | ''governance';
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly category:|architecture|design|implementation|operations|'governance';
+  readonly severity: 'critical|high|medium|low';
   readonly impact: IssueImpact;
   readonly rootCause: string[];
   readonly affectedComponents: string[];
@@ -109,16 +109,16 @@ export interface HealthIssue {
   readonly estimatedResolution: string;
   readonly cost: IssueCost;
   readonly dependencies: string[];
-  readonly status: 'open'' | ''in_progress'' | ''resolved'' | ''accepted';
+  readonly status: 'open|in_progress|resolved|accepted';
 }
 
 export interface IssueImpact {
-  readonly performance: 'high'' | ''medium'' | ''low'' | ''none';
-  readonly security: 'high'' | ''medium'' | ''low'' | ''none';
-  readonly maintainability: 'high'' | ''medium'' | ''low'' | ''none';
-  readonly scalability: 'high'' | ''medium'' | ''low'' | ''none';
-  readonly compliance: 'high'' | ''medium'' | ''low'' | ''none';
-  readonly business: 'high'' | ''medium'' | ''low'' | ''none';
+  readonly performance: 'high|medium|low|none';
+  readonly security: 'high|medium|low|none';
+  readonly maintainability: 'high|medium|low|none';
+  readonly scalability: 'high|medium|low|none';
+  readonly compliance: 'high|medium|low|none';
+  readonly business: 'high|medium|low|none';
 }
 
 export interface IssueCost {
@@ -130,17 +130,17 @@ export interface IssueCost {
 }
 
 export interface ResourceRequirement {
-  readonly type: 'developer'' | ''architect'' | ''ops'' | ''security'' | ''budget';
+  readonly type: 'developer|architect|ops|security|budget';
   readonly quantity: number;
   readonly duration: string;
-  readonly skillLevel: 'junior'' | ''mid'' | ''senior'' | ''expert';
+  readonly skillLevel: 'junior|mid|senior|expert';
   readonly availability: string;
 }
 
 export interface HealthTrend {
   readonly dimension: string;
   readonly period: string;
-  readonly direction: 'improving'' | ''stable'' | ''declining';
+  readonly direction: 'improving|stable|declining';
   readonly velocity: number;
   readonly significance: number; // 0-1
   readonly confidence: number; // 0-1
@@ -153,13 +153,13 @@ export interface TrendFactor {
   readonly impact: number; // -1 to 1
   readonly confidence: number; // 0-1
   readonly description: string;
-  readonly category: 'internal'' | ''external'' | ''organizational'' | ''technical';
+  readonly category: 'internal|external|organizational|technical';
 }
 
 export interface HealthAlert {
   readonly alertId: string;
-  readonly type:' | ''threshold_breach'' | ''trend_deterioration'' | ''anomaly_detected'' | ''prediction_warning';
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly type:|threshold_breach|trend_deterioration|anomaly_detected|'prediction_warning';
+  readonly severity: 'critical|high|medium|low';
   readonly title: string;
   readonly message: string;
   readonly dimension: string;
@@ -172,13 +172,13 @@ export interface HealthAlert {
   readonly escalation: EscalationRule;
   readonly createdAt: Date;
   readonly acknowledgedBy?: string;
-  readonly status: 'active'' | ''acknowledged'' | ''resolved'' | ''suppressed';
+  readonly status: 'active|acknowledged|resolved|suppressed';
 }
 
 export interface AlertImpact {
-  readonly immediate: 'high'' | ''medium'' | ''low';
-  readonly shortTerm: 'high'' | ''medium'' | ''low';
-  readonly longTerm: 'high'' | ''medium'' | ''low';
+  readonly immediate: 'high|medium|low';
+  readonly shortTerm: 'high|medium|low';
+  readonly longTerm: 'high|medium|low';
   readonly affectedSystems: string[];
   readonly affectedTeams: string[];
   readonly businessImpact: string;
@@ -194,8 +194,8 @@ export interface EscalationRule {
 
 export interface HealthRecommendation {
   readonly recommendationId: string;
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
-  readonly category: 'immediate'' | ''short_term'' | ''long_term'' | ''strategic';
+  readonly priority: 'critical|high|medium|low';
+  readonly category: 'immediate|short_term|long_term|strategic';
   readonly title: string;
   readonly description: string;
   readonly rationale: string;
@@ -217,27 +217,27 @@ export interface RecommendationImpact {
 }
 
 export interface BusinessImpact {
-  readonly revenue: 'positive'' | ''negative'' | ''neutral';
-  readonly cost: 'decrease'' | ''increase'' | ''neutral';
-  readonly risk: 'decrease'' | ''increase'' | ''neutral';
-  readonly agility: 'increase'' | ''decrease'' | ''neutral';
-  readonly innovation: 'increase'' | ''decrease'' | ''neutral';
+  readonly revenue: 'positive|negative|neutral';
+  readonly cost: 'decrease|increase|neutral';
+  readonly risk: 'decrease|increase|neutral';
+  readonly agility: 'increase|decrease|neutral';
+  readonly innovation: 'increase|decrease|neutral';
 }
 
 export interface TechnicalImpact {
-  readonly performance: 'improve'' | ''degrade'' | ''neutral';
-  readonly scalability: 'improve'' | ''degrade'' | ''neutral';
-  readonly maintainability: 'improve'' | ''degrade'' | ''neutral';
-  readonly security: 'improve'' | ''degrade'' | ''neutral';
-  readonly reliability: 'improve'' | ''degrade'' | ''neutral';
+  readonly performance: 'improve|degrade|neutral';
+  readonly scalability: 'improve|degrade|neutral';
+  readonly maintainability: 'improve|degrade|neutral';
+  readonly security: 'improve|degrade|neutral';
+  readonly reliability: 'improve|degrade|neutral';
 }
 
 export interface OperationalImpact {
-  readonly deployability: 'improve'' | ''degrade'' | ''neutral';
-  readonly monitoring: 'improve'' | ''degrade'' | ''neutral';
-  readonly troubleshooting: 'improve'' | ''degrade'' | ''neutral';
-  readonly automation: 'increase'' | ''decrease'' | ''neutral';
-  readonly complexity: 'decrease'' | ''increase'' | ''neutral';
+  readonly deployability: 'improve|degrade|neutral';
+  readonly monitoring: 'improve|degrade|neutral';
+  readonly troubleshooting: 'improve|degrade|neutral';
+  readonly automation: 'increase|decrease|neutral';
+  readonly complexity: 'decrease|increase|neutral';
 }
 
 export interface ImplementationGuide {
@@ -254,7 +254,7 @@ export interface ImplementationPhase {
   readonly name: string;
   readonly description: string;
   readonly duration: string;
-  readonly effort: 'low'' | ''medium'' | ''high';
+  readonly effort: 'low|medium|high';
   readonly parallelizable: boolean;
   readonly deliverables: string[];
   readonly acceptance: string[];
@@ -265,8 +265,8 @@ export interface TrainingRequirement {
   readonly audience: string;
   readonly topic: string;
   readonly duration: string;
-  readonly format: 'classroom'' | ''online'' | ''hands_on'' | ''mentoring';
-  readonly priority: 'required'' | ''recommended'' | ''optional';
+  readonly format: 'classroom|online|hands_on|mentoring';
+  readonly priority: 'required|recommended|optional';
 }
 
 export interface RecommendationCost {
@@ -314,7 +314,7 @@ export interface HistoricalHealthData {
 
 export interface HealthEvent {
   readonly eventId: string;
-  readonly type:' | ''improvement'' | ''degradation'' | ''incident'' | ''change'' | ''milestone';
+  readonly type:|improvement|degradation|incident|change|'milestone';
   readonly description: string;
   readonly impact: number;
   readonly duration: string;
@@ -338,11 +338,11 @@ export interface ArchitecturalDebt {
 }
 
 export interface DebtCategory {
-  readonly category:' | ''technical'' | ''design'' | ''documentation'' | ''testing'' | ''security';
+  readonly category:|technical|design|documentation|testing|'security';
   readonly amount: number;
   readonly percentage: number;
   readonly items: DebtItem[];
-  readonly trend: 'increasing'' | ''decreasing'' | ''stable';
+  readonly trend: 'increasing|decreasing|stable';
 }
 
 export interface DebtItem {
@@ -351,7 +351,7 @@ export interface DebtItem {
   readonly description: string;
   readonly cost: number;
   readonly interest: number; // ongoing cost
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly severity: 'critical|high|medium|low';
   readonly components: string[];
   readonly introduced: Date;
   readonly lastUpdated: Date;
@@ -366,7 +366,7 @@ export interface DebtTimeline {
 }
 
 export interface TimelineRecommendation {
-  readonly period: 'immediate'' | ''short_term'' | ''medium_term'' | ''long_term';
+  readonly period: 'immediate|short_term|medium_term|long_term';
   readonly items: string[];
   readonly rationale: string;
   readonly impact: string;
@@ -381,7 +381,7 @@ export interface DebtPriority {
 }
 
 export interface DebtTrend {
-  readonly direction: 'increasing'' | ''decreasing'' | ''stable';
+  readonly direction: 'increasing|decreasing|stable';
   readonly velocity: number;
   readonly projectedDebt: number;
   readonly timeframe: string;
@@ -394,7 +394,7 @@ export interface ComplianceHealth {
   readonly standards: StandardCompliance[];
   readonly policies: PolicyCompliance[];
   readonly violations: ComplianceViolation[];
-  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly riskLevel: 'low|medium|high|critical';
 }
 
 export interface RegulationCompliance {
@@ -407,7 +407,7 @@ export interface RegulationCompliance {
 
 export interface RequirementCompliance {
   readonly requirement: string;
-  readonly status: 'compliant'' | ''non_compliant'' | ''partially_compliant';
+  readonly status: 'compliant|non_compliant|partially_compliant';
   readonly evidence: string[];
   readonly lastVerified: Date;
 }
@@ -415,7 +415,7 @@ export interface RequirementCompliance {
 export interface ComplianceGap {
   readonly gapId: string;
   readonly description: string;
-  readonly impact: 'high'' | ''medium'' | ''low';
+  readonly impact: 'high|medium|low';
   readonly remediation: string;
   readonly timeline: string;
   readonly owner: string;
@@ -439,10 +439,10 @@ export interface ComplianceViolation {
   readonly violationId: string;
   readonly type: string;
   readonly description: string;
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly severity: 'critical|high|medium|low';
   readonly component: string;
   readonly detectedAt: Date;
-  readonly status: 'open'' | ''in_progress'' | ''resolved';
+  readonly status: 'open|in_progress|resolved';
 }
 
 export interface PerformanceHealth {
@@ -459,7 +459,7 @@ export interface ThroughputMetrics {
   readonly target: number;
   readonly peak: number;
   readonly unit: string;
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
 }
 
 export interface LatencyMetrics {
@@ -468,7 +468,7 @@ export interface LatencyMetrics {
   readonly p99: number;
   readonly target: number;
   readonly unit: string;
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
 }
 
 export interface AvailabilityMetrics {
@@ -490,7 +490,7 @@ export interface ScalabilityMetrics {
 export interface PerformanceBottleneck {
   readonly bottleneckId: string;
   readonly component: string;
-  readonly type:' | ''cpu'' | ''memory'' | ''disk'' | ''network'' | ''database'' | ''application';
+  readonly type:|cpu|memory|disk|network|database|'application';
   readonly impact: number;
   readonly frequency: number;
   readonly resolution: string;
@@ -502,16 +502,16 @@ export interface SecurityHealth {
   readonly threats: SecurityThreat[];
   readonly controls: SecurityControl[];
   readonly incidents: SecurityIncident[];
-  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly riskLevel: 'low|medium|high|critical';
 }
 
 export interface SecurityVulnerability {
   readonly cveId?: string;
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly severity: 'critical|high|medium|low';
   readonly component: string;
   readonly description: string;
   readonly discovered: Date;
-  readonly status: 'open'' | ''patched'' | ''mitigated'' | ''accepted';
+  readonly status: 'open|patched|mitigated|accepted';
 }
 
 export interface SecurityThreat {
@@ -525,16 +525,16 @@ export interface SecurityThreat {
 
 export interface SecurityControl {
   readonly controlId: string;
-  readonly type: 'preventive'' | ''detective'' | ''corrective';
+  readonly type: 'preventive|detective|corrective';
   readonly effectiveness: number;
   readonly coverage: number;
-  readonly status: 'active'' | ''inactive'' | ''partial';
+  readonly status: 'active|inactive|partial';
 }
 
 export interface SecurityIncident {
   readonly incidentId: string;
   readonly type: string;
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly severity: 'critical|high|medium|low';
   readonly occurred: Date;
   readonly resolved?: Date;
   readonly impact: string;
@@ -609,7 +609,7 @@ export interface ElasticityMetrics {
 }
 
 export interface ScalabilityConstraint {
-  readonly type:' | ''resource'' | ''architectural'' | ''data'' | ''network'' | ''operational';
+  readonly type:|resource|architectural|data|network|'operational';
   readonly description: string;
   readonly impact: number;
   readonly remediation: string;
@@ -634,9 +634,9 @@ export interface AlertThreshold {
 }
 
 export interface ReportingSchedule {
-  readonly frequency: 'hourly'' | ''daily'' | ''weekly'' | ''monthly'' | ''quarterly';
+  readonly frequency: 'hourly|daily|weekly|monthly|quarterly';
   readonly recipients: string[];
-  readonly format: 'dashboard'' | ''email'' | ''slack'' | ''api';
+  readonly format: 'dashboard|email|slack|api';
   readonly includeRecommendations: boolean;
 }
 

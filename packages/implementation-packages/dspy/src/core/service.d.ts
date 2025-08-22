@@ -57,7 +57,7 @@ export declare class DSPyService {
     options?: {
       temperature?: number;
       maxTokens?: number;
-      role?: 'user | analyst' | 'architect';
+      role?: 'user | analyst|architect';
     }
   ): Promise<string>;
   /**

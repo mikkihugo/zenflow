@@ -7,7 +7,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('NeuralInterface');
+const logger = getLogger(NeuralInterface);
 
 /**
  * @deprecated Use BrainCoordinator directly from @claude-zen/intelligence
@@ -21,11 +21,10 @@ const logger = getLogger('NeuralInterface');
  * import { BrainCoordinator } from '@claude-zen/intelligence';
  *
  * const brain = new BrainCoordinator();
- * await brain?.initialize()
- * ```
+ * await brain?.initialize()` * ```
  */
 
 // Re-export BrainCoordinator for easier migration
 export { BrainCoordinator } from '@claude-zen/intelligence';
 
-// TODO: Remove this file entirely once all imports are updated
+// TODO: Remove this file entirely once all imports are updated`

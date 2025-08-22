@@ -55,7 +55,7 @@ export class SignatureOptimizer extends COPRO {
   constructor(
     config: {
       prompt_model?: any;
-      metric?: MetricFunction'' | ''null;
+      metric?: MetricFunction|null;
       breadth?: number;
       depth?: number;
       init_temperature?: number;

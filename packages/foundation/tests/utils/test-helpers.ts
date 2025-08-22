@@ -40,7 +40,7 @@ export const asyncUtils = {
     new Promise<void>((resolve) => setTimeout(resolve, ms)),
 
   waitForCondition: async (
-    condition: () => boolean'' | ''Promise<boolean>,
+    condition: () => boolean|Promise<boolean>,
     timeout = 5000
   ) => {
     const start = Date.now();

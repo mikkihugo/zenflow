@@ -23,7 +23,7 @@ export interface SafeSparcWorkflowConfig {
   workflowId: string;
   enableAutomation: boolean;
   qualityGates: string[];
-  aiAssistanceLevel?: 'minimal | moderate' | 'extensive';
+  aiAssistanceLevel?: 'minimal|moderate|extensive';
 }
 
 // Epic proposal interface (shared across SAFe integration)
@@ -34,13 +34,13 @@ export interface EpicProposal {
   estimatedValue: number;
   estimatedCost: number;
   timeframe: string;
-  riskLevel: 'low | medium' | 'high';
+  riskLevel: 'low|medium|high';
 }
 
 // Portfolio decision interface (shared across SAFe integration)
 export interface PortfolioDecision {
   approved: boolean;
-  priority: 'low | medium' | 'high''' | '''critical';
+  priority: 'low|medium|high|critical';
   fundingAllocated: number;
   timeline: string;
 }
@@ -50,7 +50,7 @@ export interface SparcArtifacts {
   specification: string;
   architecture: string;
   implementation: string;
-  status: 'pending | in_progress' | 'complete''' | '''failed';
+  status: 'pending|in_progress|complete|failed';
 }
 
 // SPARC execution context
@@ -116,7 +116,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     this.workflowConfig = config;
 
     // Use provided logger or create a simple console logger
-    this.logger = logger'' | '''' | ''getLogger('SafeSparcWorkflow');
+    this.logger = logger||getLogger('SafeSparcWorkflow');
 
     this.logger.info(
       `SPARC Workflow initialized: ${this.workflowConfig.workflowId}`
@@ -239,15 +239,15 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
         specification:
           this.extractDeliverablesByType(
             methodologyResult.deliverables,
-            'requirements')'' | '''' | '''Generated specification based on epic requirements',
+            'requirements')||'Generated specification based on epic requirements',
         architecture:
           this.extractDeliverablesByType(
             methodologyResult.deliverables,
-            'architecture')'' | '''' | '''Generated architecture design and component structure',
+            'architecture')||'Generated architecture design and component structure',
         implementation:
           this.extractDeliverablesByType(
             methodologyResult.deliverables,
-            'implementation')'' | '''' | '''Implementation plan and development roadmap',
+            'implementation')||'Implementation plan and development roadmap',
         status: methodologyResult.success ? 'complete' : 'failed',
         phases: {
           specification: this.findPhaseByName(
@@ -307,7 +307,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      if (!this.initialized'' | '''' | ''!this.sparcEngine'' | '''' | ''!this.workflowEngine)
+      if (!this.initialized||!this.sparcEngine||!this.workflowEngine)
         return false;
 
       // Check SPARC engine health by creating a test project
@@ -457,18 +457,18 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
     const text = `${epic.title} ${epic.businessCase}`.toLowerCase();
 
     if (
-      text.includes('web')'' | '''' | ''text.includes('frontend')'' | '''' | ''text.includes('ui')
+      text.includes('web')||text.includes('frontend')||text.includes('ui')
     ) {
       return 'web-development';
     } else if (
-      text.includes('api')'' | '''' | ''text.includes('backend')'' | '''' | ''text.includes('service')
+      text.includes('api')||text.includes('backend')||text.includes('service')
     ) {
       return 'backend-development';
     } else if (
-      text.includes('data')'' | '''' | ''text.includes('analytics')'' | '''' | ''text.includes('ml')
+      text.includes('data')||text.includes('analytics')||text.includes('ml')
     ) {
       return 'data-science';
-    } else if (text.includes('mobile')'' | '''' | ''text.includes('app')) {
+    } else if (text.includes('mobile')||text.includes('app')) {
       return 'mobile-development';
     } else {
       return 'system'; // Default domain
@@ -477,11 +477,11 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
 
   private determinePipelineType(project: any): string {
     // Determine pipeline type based on project characteristics
-    const domain = project.domain'' | '''' | '''system';
+    const domain = project.domain||'system';
 
-    if (domain === 'microservice''' | '''' | ''project.name.includes('microservice')) {
+    if (domain === 'microservice'||project.name.includes('microservice')) {
       return 'microservice';
-    } else if (domain === 'library''' | '''' | ''project.name.includes('library')) {
+    } else if (domain === 'library'||project.name.includes('library')) {
       return 'library';
     } else if (project.context?.epic?.estimatedCost > 1000000) {
       return 'enterprise';
@@ -493,7 +493,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
   private extractDeliverablesByType(
     deliverables: any[],
     type: string
-  ): string'' | ''null {
+  ): string|null {
     const matching = deliverables.filter((d) => d.type === type);
     return matching.length > 0
       ? matching.map((d) => d.content).join('\n\n')
@@ -501,7 +501,7 @@ export class SafeSparcWorkflow extends TypedEventBase<WorkflowEvents> {
   }
 
   private findPhaseByName(phases: any[], name: string): any {
-    return phases.find((p) => p.name === name)'' | '''' | ''null;
+    return phases.find((p) => p.name === name)||null;
   }
 
   private calculatePhasesDuration(phases: any[]): Record<string, number> {

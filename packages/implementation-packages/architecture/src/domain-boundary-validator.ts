@@ -20,13 +20,13 @@ import { getLogger } from '@claude-zen/foundation';
 interface Agent {
   id: string;
   capabilities: string[];
-  status: 'idle''' | '''busy';
+  status: 'idle|busy'';
 }
 
 interface Task {
   id: string;
   description: string;
-  strategy: 'parallel | sequential' | 'adaptive''' | '''consensus';
+  strategy: 'parallel|sequential|adaptive|consensus';
   dependencies: string[];
   requiredCapabilities: string[];
   maxAgents: number;
@@ -47,7 +47,7 @@ interface WorkflowDefinition {
  * Schema definition for runtime type validation
  */
 export interface TypeSchema<T = any> {
-  type:'' | '''string | number' | 'boolean''' | '''object | array' | 'null' | 'undefined' | 'function';
+  type:|'string|number|boolean|object|array|null|undefined|function';
   required?: boolean;
   properties?: { [K in keyof T]?: TypeSchema<T[K]> };
   items?: TypeSchema;
@@ -60,11 +60,11 @@ export interface TypeSchema<T = any> {
 /**
  * Result type for domain operations with comprehensive error handling
  */
-export type Result<T = any, E = Error> ='' | ''{
+export type Result<T = any, E = Error> =|{
       success: true;
       data: T;
       metadata?: DomainMetadata;
-    }'' | ''{
+    }|{
       success: false;
       error: E;
       metadata?: DomainMetadata;
@@ -116,7 +116,7 @@ export interface DomainOperation {
   id: string;
   sourceDomain: Domain;
   targetDomain: Domain;
-  operationType: 'read | write' | 'execute' | 'transform' | 'validate';
+  operationType: 'read|write|execute|transform|validate';
   inputSchema: TypeSchema;
   outputSchema: TypeSchema;
   contractValidation: ContractRule[];
@@ -136,7 +136,7 @@ export interface ContractRule {
   name: string;
   description: string;
   validator: (input: unknown, context: DomainContext) => Promise<boolean>;
-  severity: 'error | warning' | 'info';
+  severity: 'error|warning|info';
   errorMessage: string;
 }
 
@@ -156,7 +156,7 @@ export interface DomainContext {
  */
 export interface RetryPolicy {
   maxAttempts: number;
-  backoffStrategy: 'linear''' | '''exponential';
+  backoffStrategy: 'linear|exponential'';
   baseDelay: number;
   maxDelay: number;
 }
@@ -217,7 +217,7 @@ export class DomainValidationError extends Error {
     this.operation = operation;
     this.validationPath = validationPath;
     this.actualValue = actualValue;
-    this.expectedType = expectedType'' | '''' | '''unknown';
+    this.expectedType = expectedType||'unknown';
     this.timestamp = new Date();
   }
 }
@@ -229,7 +229,7 @@ export class ContractViolationError extends Error {
   public readonly contractRule: string;
   public readonly domain: Domain;
   public readonly operation: string;
-  public readonly severity: 'error | warning' | 'info';
+  public readonly severity: 'error|warning|info';
   public readonly timestamp: Date;
 
   constructor(
@@ -237,7 +237,7 @@ export class ContractViolationError extends Error {
     contractRule: string,
     domain: Domain,
     operation: string,
-    severity: 'error | warning' | 'info' = 'error'
+    severity: 'error|warning|info' = 'error'
   ) {
     super(message);
     this.name = 'ContractViolationError';
@@ -309,7 +309,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
       }
 
       // Track performance metrics
-      this.updatePerformanceMetrics(schema.description'' | '''' | '''unknown', {
+      this.updatePerformanceMetrics(schema.description||'unknown', {
         validationTimeMs: validationTime,
         schemaComplexity: this.calculateSchemaComplexity(schema),
         dataSize: this.estimateDataSize(data),
@@ -328,7 +328,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
       const validationTime = Date.now() - startTime;
 
       // Track failed validation metrics
-      this.updatePerformanceMetrics(schema.description'' | '''' | '''unknown', {
+      this.updatePerformanceMetrics(schema.description||'unknown', {
         validationTimeMs: validationTime,
         schemaComplexity: this.calculateSchemaComplexity(schema),
         dataSize: this.estimateDataSize(data),
@@ -585,8 +585,8 @@ export class DomainBoundaryValidator implements DomainBoundary {
     path: string[]
   ): T {
     // Handle null/undefined values
-    if (data === null'' | '''' | ''data === undefined) {
-      if (schema.type ==='null''' | '''' | ''schema.type ==='undefined') {
+    if (data === null||data === undefined) {
+      if (schema.type ==='null'||schema.type ==='undefined') {
         return data as T;
       }
       if (!schema.required) {
@@ -620,7 +620,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
         break;
 
       case 'number':
-        if (typeof data !== 'number''' | '''' | ''isNaN(data)) {
+        if (typeof data !== 'number'||isNaN(data)) {
           throw new DomainValidationError(
             `Expected number, got ${typeof data}`,'TYPE_MISMATCH',
             this.domain,
@@ -647,7 +647,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
         break;
 
       case 'object':
-        if (typeof data !== 'object''' | '''' | ''Array.isArray(data)) {
+        if (typeof data !== 'object'||Array.isArray(data)) {
           throw new DomainValidationError(
             `Expected object, got ${typeof data}`,'TYPE_MISMATCH',
             this.domain,
@@ -755,7 +755,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
   }
 
   private simpleHash(str: string): string {
-    if (!str'' | '''' | ''str.length === 0) return'0';
+    if (!str||str.length === 0) return'0';
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
@@ -767,7 +767,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
 
   private safeStringify(obj: unknown): string {
     try {
-      return JSON.stringify(obj, this.getCircularReplacer())'' | '''' | '''null';
+      return JSON.stringify(obj, this.getCircularReplacer())||'null';
     } catch {
       return 'stringify-error';
     }
@@ -1053,7 +1053,7 @@ export const CommonSchemas = {
       version: { type: 'string', required: true },
       // Additional properties would be defined based on the actual WorkflowDefinition interface
     },
-  } as TypeSchema<Pick<WorkflowDefinition, 'id | name' | 'version'>>,
+  } as TypeSchema<Pick<WorkflowDefinition, 'id|name|version'>>,
 } as const;
 
 // ============================================================================

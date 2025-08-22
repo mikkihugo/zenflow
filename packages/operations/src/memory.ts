@@ -23,9 +23,9 @@ const logger = getLogger('operations-memory');
  * Custom error types for memory operations
  */
 export class MemorySystemError extends Error {
-  public override cause?: Error'' | ''undefined;
+  public override cause?: Error|undefined;
 
-  constructor(message: string, cause?: Error'' | ''undefined) {
+  constructor(message: string, cause?: Error|undefined) {
     super(message);
     this.name ='MemorySystemError';
     this.cause = cause;
@@ -33,7 +33,7 @@ export class MemorySystemError extends Error {
 }
 
 export class MemorySystemConnectionError extends MemorySystemError {
-  constructor(message: string, cause?: Error'' | ''undefined) {
+  constructor(message: string, cause?: Error|undefined) {
     super(message, cause);
     this.name ='MemorySystemConnectionError';
   }
@@ -103,7 +103,7 @@ interface MemorySystemConfig {
  * Implementation of memory access via runtime delegation
  */
 class MemorySystemAccessImpl implements MemorySystemAccess {
-  private memoryModule: MemorySystemModule'' | ''null = null;
+  private memoryModule: MemorySystemModule|null = null;
 
   private async getMemoryModule(): Promise<MemorySystemModule> {
     if (!this.memoryModule) {
@@ -171,7 +171,7 @@ class MemorySystemAccessImpl implements MemorySystemAccess {
 }
 
 // Global singleton instance
-let globalMemorySystemAccess: MemorySystemAccess'' | ''null = null;
+let globalMemorySystemAccess: MemorySystemAccess|null = null;
 
 /**
  * Get memory access interface (singleton pattern)

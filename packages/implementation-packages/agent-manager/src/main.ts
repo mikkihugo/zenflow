@@ -168,7 +168,7 @@ export function createAgent(
   id: string,
   type: AgentType,
   category?: keyof typeof CAPABILITY_SETS
-): Omit<SwarmAgent, 'performance''' | '''connections'> {
+): Omit<SwarmAgent, 'performance|connections''> {
   return {
     id,
     type,
@@ -181,7 +181,7 @@ export function createAgent(
  * Utility function to create AgentManager with common configurations
  */
 export function createAgentManager(
-  preset?: 'small | medium' | 'large''' | '''enterprise'
+  preset?: 'small|medium|large|enterprise'
 ) {
   // Import dynamically to avoid circular dependency issues during build
   const { AgentManager } = require('./agent-manager');

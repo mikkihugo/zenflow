@@ -33,7 +33,7 @@ export interface MemoryQueryOptions {
   limit?: number;
   offset?: number;
   orderBy?: string;
-  orderDirection?: 'asc''' | '''desc';
+  orderDirection?: 'asc|desc';
 }
 export interface MemorySearchResult {
   key: string;
@@ -61,13 +61,13 @@ export declare abstract class BaseMemoryBackend extends TypedEventBase {
     value: unknown,
     namespace?: string
   ): Promise<void>;
-  abstract retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
+  abstract retrieve<T = unknown>(key: string): Promise<T|null>;
   abstract delete(key: string): Promise<boolean>;
   abstract list(pattern?: string): Promise<string[]>;
   abstract clear(): Promise<void>;
   abstract close(): Promise<void>;
   abstract getCapabilities(): BackendCapabilities;
-  abstract get<T = unknown>(key: string): Promise<T'' | ''null>;
+  abstract get<T = unknown>(key: string): Promise<T|'null>;
   abstract set(key: string, value: unknown): Promise<void>;
   abstract listNamespaces(): Promise<string[]>;
   protected ensureInitialized(): Promise<void>;
@@ -76,7 +76,7 @@ export declare abstract class BaseMemoryBackend extends TypedEventBase {
   getConfig(): MemoryConfig;
   isReady(): boolean;
   protected updateStats(
-    operation:'read | write' | 'delete',
+    operation:'read|write|delete',
     size?: number
   ): void;
   protected createMemoryEntry(

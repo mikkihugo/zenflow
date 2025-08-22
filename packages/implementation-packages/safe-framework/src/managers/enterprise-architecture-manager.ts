@@ -291,7 +291,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         statement,
         rationale,
         category,
-        priority: priority as 'critical | high' | 'medium''' | '''low',
+        priority: priority as 'critical|high|medium|low',
         implications,
         owner: 'chief-architect',
         stakeholders: ['architecture-board', 'technical-leads'],
@@ -346,11 +346,11 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
       const config = {
         principleId,
         validationScope: {
-          includeProjects: validationScope.includeProjects'' | '''' | ''[],
-          excludeProjects: validationScope.excludeProjects'' | '''' | ''[],
-          includeTeams: validationScope.includeTeams'' | '''' | ''[],
-          excludeTeams: validationScope.excludeTeams'' | '''' | ''[],
-          includeArtifacts: validationScope.includeArtifacts'' | '''' | ''[],
+          includeProjects: validationScope.includeProjects||[],
+          excludeProjects: validationScope.excludeProjects||[],
+          includeTeams: validationScope.includeTeams||[],
+          excludeTeams: validationScope.excludeTeams||[],
+          includeArtifacts: validationScope.includeArtifacts||[],
           timeWindow: {
             startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
             endDate: new Date(),
@@ -432,8 +432,8 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
     type: string = 'recommended',
     mandatory: boolean = false,
     applicability: string[] = [],
-    implementation: string = '',
-    verification: string = '',
+    implementation: string = ',
+    verification: string = ',
     owner: string = 'technology-board'
   ): Promise<TechnologyStandard> {
     if (!this.initialized) await this.initialize();
@@ -467,7 +467,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
               id: 'req-1',
               description: 'Standard implementation required',
               priority: 'mandatory'as const,
-              verification: verification'' | '''' | '''Manual review',
+              verification: verification||'Manual review',
               examples: [],
               dependencies: [],
             },
@@ -490,7 +490,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
             {
               checklistId: 'manual-1',
               name: 'Manual Verification',
-              description: verification'' | '''' | '''Manual standard verification',
+              description: verification||'Manual standard verification',
               frequency: 'per_project' as const,
               owner,
               checklist: [
@@ -577,7 +577,7 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
         description,
         requesterId,
         requesterRole: 'architect',
-        priority: priority as 'critical | high' | 'medium''' | '''low',
+        priority: priority as 'critical|high|medium|low',
         requestedDecisionDate,
         decisionMakers,
         criteria:
@@ -772,30 +772,30 @@ export class EnterpriseArchitectureManager extends TypedEventBase {
    * Get architecture principles
    */
   getArchitecturePrinciples(): ArchitecturePrinciple[] {
-    if (!this.initialized'' | '''' | ''!this.architecturePrincipleService) {
+    if (!this.initialized||!this.architecturePrincipleService) {
       return [];
     }
-    return this.architecturePrincipleService.getAllPrinciples()'' | '''' | ''[];
+    return this.architecturePrincipleService.getAllPrinciples()||[];
   }
 
   /**
    * Get technology standards
    */
   getTechnologyStandards(): TechnologyStandard[] {
-    if (!this.initialized'' | '''' | ''!this.technologyStandardsService) {
+    if (!this.initialized||!this.technologyStandardsService) {
       return [];
     }
-    return this.technologyStandardsService.getAllStandards()'' | '''' | ''[];
+    return this.technologyStandardsService.getAllStandards()||[];
   }
 
   /**
    * Get governance decisions
    */
   getGovernanceDecisions(): GovernanceDecision[] {
-    if (!this.initialized'' | '''' | ''!this.governanceDecisionService) {
+    if (!this.initialized||!this.governanceDecisionService) {
       return [];
     }
-    return this.governanceDecisionService.getAllDecisions()'' | '''' | ''[];
+    return this.governanceDecisionService.getAllDecisions()||[];
   }
 
   /**

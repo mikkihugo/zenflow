@@ -44,7 +44,7 @@ const brainCapabilities = {
   neuralNetworks: typeof brain.NeuralNetwork === 'function',
   recurrentNetworks: typeof brain.recurrent?.LSTM === 'function',
   feedForward: typeof brain.FeedForward === 'function',
-  version: brain.version'' | '''' | '''unknown',
+  version: brain.version||'unknown',
 };
 
 // Optional ML packages (API compatibility issues - available for future enhancement)
@@ -91,7 +91,7 @@ export interface TaskComplexityAnalysis {
   readonly estimatedComplexity: number; // 0-1 scale
   readonly requiredSkills: string[];
   readonly estimatedDuration: number;
-  readonly difficulty: 'easy | medium' | 'hard''' | '''expert';
+  readonly difficulty: 'easy|medium|hard|expert';
   readonly confidence: number;
 }
 
@@ -157,7 +157,7 @@ export class BehavioralIntelligence {
 
   constructor(brainJsBridge?: BrainJsBridge) {
     // If no bridge provided, we'll use a mock implementation for compatibility
-    this.brainJsBridge = brainJsBridge'' | '''' | ''this.createMockBridge();
+    this.brainJsBridge = brainJsBridge||this.createMockBridge();
   }
 
   /**
@@ -167,9 +167,9 @@ export class BehavioralIntelligence {
     return {
       async createNeuralNet(id: string, type: string, config: any) {
         logger.debug(`Mock: Creating neural network ${id} of type ${type}`, {
-          hiddenLayers: config?.hiddenLayers'' | '''' | '''default',
-          learningRate: config?.learningRate'' | '''' | '''default',
-          activation: config?.activation'' | '''' | '''default',
+          hiddenLayers: config?.hiddenLayers||'default',
+          learningRate: config?.learningRate||'default',
+          activation: config?.activation||'default',
         });
         return Promise.resolve();
       },
@@ -404,7 +404,7 @@ export class BehavioralIntelligence {
         requiredSkills: this.inferRequiredSkills(taskType, output[0]),
         estimatedDuration: this.estimateDurationFromComplexity(output[0]),
         difficulty: this.mapComplexityToDifficulty(output[0]),
-        confidence: output[1]'' | '''' | ''0.7,
+        confidence: output[1]||0.7,
       };
     } catch (error) {
       logger.error('Error analyzing task complexity:', error);
@@ -475,7 +475,7 @@ export class BehavioralIntelligence {
       logger.error('Error finding best agent for task:', error);
 
       return {
-        agentId: availableAgents[0]'' | '''' | '''default',
+        agentId: availableAgents[0]||'default',
         confidence: 0.1,
         reasoning: 'Error in selection, using first available agent',
       };
@@ -488,8 +488,8 @@ export class BehavioralIntelligence {
    * @param agentId - ID of the agent
    * @returns Agent behavioral profile or null if not found
    */
-  getAgentProfile(agentId: string): AgentBehavioralProfile'' | ''null {
-    return this.agentProfiles.get(agentId)'' | '''' | ''null;
+  getAgentProfile(agentId: string): AgentBehavioralProfile|null {
+    return this.agentProfiles.get(agentId)||null;
   }
 
   /**
@@ -551,7 +551,7 @@ export class BehavioralIntelligence {
     timeSeries.update(executionData.efficiency);
 
     // Update performance history for trend analysis
-    let history = this.agentPerformanceHistory.get(executionData.agentId)'' | '''' | ''[];
+    let history = this.agentPerformanceHistory.get(executionData.agentId)||[];
     history.push(executionData.efficiency);
 
     // Keep only last 100 data points
@@ -622,7 +622,7 @@ export class BehavioralIntelligence {
    */
   private getAgentTypeLabel(agentTypeNum: number): string {
     const typeLabels = ['unknown', 'generalist', 'adaptive', 'specialist'];
-    return typeLabels[agentTypeNum]'' | '''' | '''unknown';
+    return typeLabels[agentTypeNum]||'unknown';
   }
 
   /**
@@ -684,12 +684,12 @@ export class BehavioralIntelligence {
    * Predict agent performance trend using time series analysis
    */
   async predictPerformanceTrend(agentId: string): Promise<{
-    trend: 'improving | stable' | 'declining';
+    trend: 'improving|stable|declining';
     confidence: number;
     forecast: number[];
   }> {
     const history = this.agentPerformanceHistory.get(agentId);
-    if (!history'' | '''' | ''history.length < 5) {
+    if (!history||history.length < 5) {
       return { trend:'stable', confidence: 0.1, forecast: [] };
     }
 
@@ -720,7 +720,7 @@ export class BehavioralIntelligence {
 
     return {
       trend,
-      confidence: result.r2'' | '''' | ''0.5,
+      confidence: result.r2||0.5,
       forecast: smoothedForecast,
     };
   }
@@ -978,10 +978,10 @@ export class BehavioralIntelligence {
     return [
       taskComplexity,
       this.encodeTaskType(taskType),
-      profile?.averagePerformance'' | '''' | ''0.5,
-      profile?.consistencyScore'' | '''' | ''0.5,
-      profile?.learningRate'' | '''' | ''0.1,
-      profile?.adaptabilityScore'' | '''' | ''0.5,
+      profile?.averagePerformance||0.5,
+      profile?.consistencyScore||0.5,
+      profile?.learningRate||0.1,
+      profile?.adaptabilityScore||0.5,
       profile?.specializations.includes(taskType) ? 1 : 0,
       this.calculateAgentExperience(agentId),
     ];
@@ -1009,7 +1009,7 @@ export class BehavioralIntelligence {
       monitoring: 0.3,
       research: 0.9,
     };
-    return (types as Record<string, number>)[taskType]'' | '''' | ''0.5;
+    return (types as Record<string, number>)[taskType]||0.5;
   }
 
   private encodeContextComplexity(context: Record<string, unknown>): number {
@@ -1133,7 +1133,7 @@ export class BehavioralIntelligence {
       research: ['investigation', 'analysis', 'synthesis'],
     };
 
-    const skills = (baseSkills as Record<string, string[]>)[taskType]'' | '''' | ''['general',
+    const skills = (baseSkills as Record<string, string[]>)[taskType]||['general',
     ];
 
     if (complexity > 0.7) {
@@ -1150,7 +1150,7 @@ export class BehavioralIntelligence {
 
   private mapComplexityToDifficulty(
     complexity: number
-  ): 'easy | medium' | 'hard''' | '''expert' {
+  ): 'easy|medium|hard|expert' {
     if (complexity < 0.25) return 'easy';
     if (complexity < 0.5) return 'medium';
     if (complexity < 0.75) return 'hard';
@@ -1182,7 +1182,7 @@ export class BehavioralIntelligence {
         if (pointIndex < labels.length) {
           const label = labels[pointIndex];
           labelsByCluster[clusterIndex][label] =
-            (labelsByCluster[clusterIndex][label]'' | '''' | ''0) + 1;
+            (labelsByCluster[clusterIndex][label]||0) + 1;
         }
       });
 

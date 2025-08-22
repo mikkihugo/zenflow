@@ -31,7 +31,7 @@ export class DialyzerIntegration {
       buildPlt?: boolean;
       apps?: string[];
       warnings?: DialyzerWarningType[];
-      outputFormat?: 'formatted''' | '''raw';
+      outputFormat?: 'formatted|raw'';
     } = {}
   ): Promise<Result<DialyzerResult, BeamAnalysisError>> {
     try {
@@ -41,7 +41,7 @@ export class DialyzerIntegration {
 
       // 1. Ensure PLT exists or build it
       const pltPath = path.join(project.root, '.dialyzer.plt');
-      if (options.buildPlt'' | '''' | ''!(await this.fileExists(pltPath))) {
+      if (options.buildPlt||!(await this.fileExists(pltPath))) {
         this.logger.info('Building Dialyzer PLT...');
         const buildResult = await this.buildPlt(project, context, pltPath);
         if (!buildResult.isOk()) {
@@ -131,8 +131,8 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = ';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -181,7 +181,7 @@ export class DialyzerIntegration {
     options: {
       apps?: string[];
       warnings?: DialyzerWarningType[];
-      outputFormat?: 'formatted''' | '''raw';
+      outputFormat?: 'formatted|raw'';
     }
   ): Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
@@ -225,8 +225,8 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = ';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -239,7 +239,7 @@ export class DialyzerIntegration {
       child.on('close', (code) => {
         // Dialyzer returns non-zero code when warnings are found
         // Code 2 means warnings, code 1 means errors, code 0 means success
-        if (code === 0'' | '''' | ''code === 2) {
+        if (code === 0||code === 2) {
           resolve(ok(stdout));
         } else {
           this.logger.error(`Dialyzer failed with code ${code}: ${stderr}`);
@@ -274,7 +274,7 @@ export class DialyzerIntegration {
     const lines = output.split('\n');
 
     for (const line of lines) {
-      if (line.trim() === '''' | '''' | ''line.startsWith('  ')) {
+      if (line.trim() === ''||line.startsWith('  ')) {
         continue;
       }
 
@@ -290,7 +290,7 @@ export class DialyzerIntegration {
   /**
    * Parse a single Dialyzer warning line
    */
-  private parseDialyzerWarningLine(line: string): DialyzerWarning'' | ''null {
+  private parseDialyzerWarningLine(line: string): DialyzerWarning|null {
     // Dialyzer warning format:
     // filename.erl:line: Warning: warning_type message
     // or
@@ -312,12 +312,12 @@ export class DialyzerIntegration {
     const location: BeamLocation = {
       file,
       line: lineNum,
-      context: functionSig'' | '''' | ''undefined,
+      context: functionSig||undefined,
     };
 
     return {
       type: warningType,
-      function: functionSig'' | '''' | '''unknown',
+      function: functionSig||'unknown',
       message: message.trim(),
       location,
     };
@@ -330,16 +330,16 @@ export class DialyzerIntegration {
     const lowerMessage = message.toLowerCase();
 
     if (
-      lowerMessage.includes('no local return')'' | '''' | ''lowerMessage.includes('no return')
+      lowerMessage.includes('no local return')||lowerMessage.includes('no return')
     ) {
       return 'no_return';
     }
     if (
-      lowerMessage.includes('unused')'' | '''' | ''lowerMessage.includes('will never be called')
+      lowerMessage.includes('unused')||lowerMessage.includes('will never be called')
     ) {
       return 'unused_fun';
     }
-    if (lowerMessage.includes('undefined')'' | '''' | ''lowerMessage.includes('undef')) {
+    if (lowerMessage.includes('undefined')||lowerMessage.includes('undef')) {
       return 'undef';
     }
     if (lowerMessage.includes('unknown function')) {
@@ -349,7 +349,7 @@ export class DialyzerIntegration {
       return 'unknown_type';
     }
     if (
-      lowerMessage.includes('race condition')'' | '''' | ''lowerMessage.includes('race')
+      lowerMessage.includes('race condition')||lowerMessage.includes('race')
     ) {
       return 'race_condition';
     }
@@ -359,7 +359,7 @@ export class DialyzerIntegration {
     if (lowerMessage.includes('invalid contract')) {
       return 'invalid_contract';
     }
-    if (lowerMessage.includes('pattern')'' | '''' | ''lowerMessage.includes('match')) {
+    if (lowerMessage.includes('pattern')||lowerMessage.includes('match')) {
       return 'pattern_match';
     }
     if (lowerMessage.includes('opaque')) {
@@ -383,8 +383,8 @@ export class DialyzerIntegration {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = ';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();

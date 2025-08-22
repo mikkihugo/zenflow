@@ -12,8 +12,8 @@
  * @version 1.0.0
  */
 export type TaskState =
-  | 'backlog | analysis' | 'development''' | '''testing | review' | 'done''' | '''blocked';
-export type OptimizationStrategy ='' | '''wip_reduction | bottleneck_removal' | 'parallel_processing''' | '''load_balancing | priority_queue' | 'resource_allocation';
+  || 'backlog|analysis|development|testing|review|done|blocked';
+export type OptimizationStrategy =|''wip_reduction|bottleneck_removal|parallel_processing|load_balancing|priority_queue|resource_allocation';
 export interface WorkflowTask {
   id: string;
   title: string;
@@ -39,7 +39,7 @@ export interface WIPLimits {
 export interface WorkflowBottleneck {
   state: TaskState;
   count: number;
-  severity: 'low | medium' | 'high';
+  severity: 'low|medium|high';
 }
 export interface WorkflowKanbanConfig {
   wipLimits: WIPLimits;
@@ -135,7 +135,7 @@ export interface FlowAnalysisCompleteEvent {
 export interface OptimizationTriggeredEvent {
   type: 'OPTIMIZATION_TRIGGERED';
   strategy: OptimizationStrategy;
-  triggeredBy: 'manual | automatic' | 'emergency';
+  triggeredBy: 'manual|automatic|emergency';
   timestamp: Date;
 }
 /**
@@ -171,7 +171,7 @@ export interface ErrorOccurredEvent {
   error: string;
   errorContext: string;
   timestamp: Date;
-  severity?: 'low | medium' | 'high''' | '''critical';
+  severity?: 'low|medium|high|critical';
 }
 /**
  * System restart event
@@ -228,7 +228,7 @@ export interface RetryOperationEvent {
  * This type ensures type safety across all XState event handlers
  * and provides comprehensive event payload validation.
  */
-export type WorkflowEvent ='' | ''TaskCreatedEvent'' | ''TaskMovedEvent'' | ''TaskUpdatedEvent'' | ''TaskCompletedEvent'' | ''TaskBlockedEvent'' | ''WIPLimitExceededEvent'' | ''WIPLimitsUpdatedEvent'' | ''BottleneckDetectedEvent'' | ''BottleneckResolvedEvent'' | ''FlowAnalysisCompleteEvent'' | ''OptimizationTriggeredEvent'' | ''SystemHealthUpdatedEvent'' | ''SystemHealthCheckEvent'' | ''ConfigurationUpdatedEvent'' | ''ErrorOccurredEvent'' | ''RestartSystemEvent'' | ''EnterMaintenanceEvent'' | ''ResumeOperationEvent'' | ''PauseOperationEvent'' | ''OptimizationCompleteEvent'' | ''RetryOperationEvent;
+export type WorkflowEvent =|TaskCreatedEvent|TaskMovedEvent|TaskUpdatedEvent|TaskCompletedEvent|TaskBlockedEvent|WIPLimitExceededEvent|WIPLimitsUpdatedEvent|BottleneckDetectedEvent|BottleneckResolvedEvent|FlowAnalysisCompleteEvent|OptimizationTriggeredEvent|SystemHealthUpdatedEvent|SystemHealthCheckEvent|ConfigurationUpdatedEvent|ErrorOccurredEvent|RestartSystemEvent|EnterMaintenanceEvent|ResumeOperationEvent|PauseOperationEvent|OptimizationCompleteEvent|RetryOperationEvent;
 /**
  * Event creation utilities for type-safe event construction
  */
@@ -265,7 +265,7 @@ export declare class WorkflowEventUtils {
   static createErrorOccurred(
     error: string,
     errorContext: string,
-    severity?:'low | medium' | 'high''' | '''critical'
+    severity?:'low|medium|high|critical'
   ): ErrorOccurredEvent;
   /**
    * Create configuration updated event

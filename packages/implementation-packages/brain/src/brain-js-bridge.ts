@@ -73,7 +73,7 @@ export interface BrainJsConfig {
  */
 export interface BrainJsNetworkConfig {
   /** Type of neural network */
-  readonly type: 'feedforward | rnn' | 'lstm''' | '''gru';
+  readonly type: 'feedforward|rnn|lstm|gru';
   /** Hidden layer sizes (for feedforward networks) */
   readonly hiddenLayers?: readonly number[];
   /** Input size (for RNN/LSTM/GRU networks) */
@@ -95,9 +95,9 @@ export interface BrainJsNetworkConfig {
  */
 export interface BrainJsTrainingData {
   /** Input data */
-  readonly input: number[]'' | ''Record<string, number>;
+  readonly input: number[]|Record<string, number>;
   /** Expected output */
-  readonly output: number[]'' | ''Record<string, number>;
+  readonly output: number[]|Record<string, number>;
 }
 
 /**
@@ -127,7 +127,7 @@ export interface BrainJsTrainingOptions {
  */
 export interface BrainJsPredictionResult {
   /** Network output */
-  readonly output: number[]'' | ''Record<string, number>;
+  readonly output: number[]|Record<string, number>;
   /** Confidence score (if available) */
   readonly confidence?: number;
   /** Processing time in milliseconds */
@@ -286,7 +286,7 @@ export class BrainJsBridge {
 
     return safeAsync(async () => {
       // Validate input parameters
-      if (!id'' | '''' | ''typeof id !=='string') {
+      if (!id||typeof id !=='string') {
         throw new ValidationError('Network ID must be a non-empty string', {
           id,
         });
@@ -310,41 +310,41 @@ export class BrainJsBridge {
       switch (type) {
         case 'feedforward':
           network = new brain.NeuralNetwork({
-            hiddenLayers: (networkConfig.hiddenLayers as number[])'' | '''' | ''[3],
+            hiddenLayers: (networkConfig.hiddenLayers as number[])||[3],
             learningRate:
-              networkConfig.learningRate'' | '''' | ''this.config.learningRate,
-            binaryThresh: networkConfig.binaryThresh'' | '''' | ''0.5,
+              networkConfig.learningRate||this.config.learningRate,
+            binaryThresh: networkConfig.binaryThresh||0.5,
             bias: networkConfig.bias !== false,
           });
           break;
 
         case'rnn':
           network = new brain.Recurrent({
-            inputSize: networkConfig.inputSize'' | '''' | ''1,
-            hiddenLayers: (networkConfig.hiddenLayers as number[])'' | '''' | ''[20],
-            outputSize: networkConfig.outputSize'' | '''' | ''1,
+            inputSize: networkConfig.inputSize||1,
+            hiddenLayers: (networkConfig.hiddenLayers as number[])||[20],
+            outputSize: networkConfig.outputSize||1,
             learningRate:
-              networkConfig.learningRate'' | '''' | ''this.config.learningRate,
+              networkConfig.learningRate||this.config.learningRate,
           });
           break;
 
         case'lstm':
           network = new brain.LSTMTimeStep({
-            inputSize: networkConfig.inputSize'' | '''' | ''1,
-            hiddenLayers: (networkConfig.hiddenLayers as number[])'' | '''' | ''[20],
-            outputSize: networkConfig.outputSize'' | '''' | ''1,
+            inputSize: networkConfig.inputSize||1,
+            hiddenLayers: (networkConfig.hiddenLayers as number[])||[20],
+            outputSize: networkConfig.outputSize||1,
             learningRate:
-              networkConfig.learningRate'' | '''' | ''this.config.learningRate,
+              networkConfig.learningRate||this.config.learningRate,
           });
           break;
 
         case'gru':
           network = new brain.GRUTimeStep({
-            inputSize: networkConfig.inputSize'' | '''' | ''1,
-            hiddenLayers: (networkConfig.hiddenLayers as number[])'' | '''' | ''[20],
-            outputSize: networkConfig.outputSize'' | '''' | ''1,
+            inputSize: networkConfig.inputSize||1,
+            hiddenLayers: (networkConfig.hiddenLayers as number[])||[20],
+            outputSize: networkConfig.outputSize||1,
             learningRate:
-              networkConfig.learningRate'' | '''' | ''this.config.learningRate,
+              networkConfig.learningRate||this.config.learningRate,
           });
           break;
 
@@ -430,7 +430,7 @@ export class BrainJsBridge {
 
     return safeAsync(async () => {
       // Validate training data
-      if (!trainingData'' | '''' | ''trainingData.length === 0) {
+      if (!trainingData||trainingData.length === 0) {
         throw new ValidationError('Training data cannot be empty', {
           networkId,
         });
@@ -454,14 +454,14 @@ export class BrainJsBridge {
 
       // Prepare training options
       const trainingOptions: any = {
-        iterations: options.iterations'' | '''' | ''this.config.iterations,
-        errorThreshold: options.errorThreshold'' | '''' | ''this.config.errorThreshold,
-        logPeriod: options.logPeriod'' | '''' | ''this.config.logPeriod,
-        learningRate: options.learningRate'' | '''' | ''this.config.learningRate,
-        momentum: options.momentum'' | '''' | ''0.1,
+        iterations: options.iterations||this.config.iterations,
+        errorThreshold: options.errorThreshold||this.config.errorThreshold,
+        logPeriod: options.logPeriod||this.config.logPeriod,
+        learningRate: options.learningRate||this.config.learningRate,
+        momentum: options.momentum||0.1,
         callback: options.callback,
-        callbackPeriod: options.callbackPeriod'' | '''' | ''10,
-        timeout: options.timeout'' | '''' | ''this.config.timeout,
+        callbackPeriod: options.callbackPeriod||10,
+        timeout: options.timeout||this.config.timeout,
       };
 
       // Train the network
@@ -558,7 +558,7 @@ export class BrainJsBridge {
    */
   async predictWithNeuralNet(
     networkId: string,
-    input: number[]'' | ''Record<string, number>
+    input: number[]|Record<string, number>
   ): Promise<Result<BrainJsPredictionResult, ContextError>> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
@@ -717,7 +717,7 @@ export class BrainJsBridge {
     return safeAsync(async () => {
       // Validate input
       if (
-        !networkData'' | '''' | ''!networkData.id'' | '''' | ''!networkData.type'' | '''' | ''!networkData.network
+        !networkData||!networkData.id||!networkData.type||!networkData.network
       ) {
         throw new ValidationError('Invalid network data format');
       }
@@ -765,14 +765,14 @@ export class BrainJsBridge {
         id,
         type,
         network,
-        config: config'' | '''' | ''{},
-        trainingState: trainingState'' | '''' | ''{
+        config: config||{},
+        trainingState: trainingState||{
           isTrained: true,
           isTraining: false,
           iterations: 0,
           error: 0,
         },
-        metadata: metadata'' | '''' | ''{
+        metadata: metadata||{
           created: new Date().toISOString(),
           updated: new Date().toISOString(),
         },
@@ -825,7 +825,7 @@ export class BrainJsBridge {
     const networkTypes: Record<string, number> = {};
 
     for (const network of networks) {
-      networkTypes[network.type] = (networkTypes[network.type]'' | '''' | ''0) + 1;
+      networkTypes[network.type] = (networkTypes[network.type]||0) + 1;
     }
 
     return {
@@ -914,11 +914,11 @@ export class BrainJsBridge {
       case 'rnn':
       case 'lstm':
       case 'gru':
-        const inputSize = config.inputSize'' | '''' | ''1;
+        const inputSize = config.inputSize||1;
         const hiddenSize = Array.isArray(config.hiddenLayers)
           ? config.hiddenLayers[0]
           : 20;
-        const outputSize = config.outputSize'' | '''' | ''1;
+        const outputSize = config.outputSize||1;
 
         // Rough estimation for RNN variants
         const rnnParams =

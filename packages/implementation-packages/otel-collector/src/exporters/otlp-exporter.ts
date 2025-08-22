@@ -19,14 +19,14 @@ import type { ExporterConfig, TelemetryData, ExportResult } from '../types.js';
 export class OTLPExporter implements BaseExporter {
   private config: ExporterConfig;
   private logger: Logger;
-  private traceExporter: OTLPTraceExporter'' | ''null = null;
-  private metricExporter: OTLPMetricExporter'' | ''null = null;
+  private traceExporter: OTLPTraceExporter|null = null;
+  private metricExporter: OTLPMetricExporter|null = null;
   private queue: TelemetryData[] = [];
-  private batchTimer: NodeJS.Timeout'' | ''null = null;
+  private batchTimer: NodeJS.Timeout|null = null;
   private isShuttingDown = false;
   private exportCount = 0;
   private lastExportTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   // Configuration
   private readonly maxQueueSize: number;
@@ -37,21 +37,21 @@ export class OTLPExporter implements BaseExporter {
     this.config = config;
     this.logger = getLogger(`OTLPExporter:${config.name}`);
 
-    this.maxQueueSize = config.config?.maxQueueSize'' | '''' | ''1000;
-    this.batchTimeout = config.config?.batchTimeout'' | '''' | ''5000;
-    this.maxBatchSize = config.config?.maxBatchSize'' | '''' | ''100;
+    this.maxQueueSize = config.config?.maxQueueSize||1000;
+    this.batchTimeout = config.config?.batchTimeout||5000;
+    this.maxBatchSize = config.config?.maxBatchSize||100;
   }
 
   async initialize(): Promise<void> {
     try {
       const baseConfig = {
-        url: this.config.endpoint'' | '''' | '''http://localhost:4318',
-        headers: this.config.headers'' | '''' | ''{},
+        url: this.config.endpoint||'http://localhost:4318',
+        headers: this.config.headers||{},
         ...(this.config.timeout && { timeoutMillis: this.config.timeout }),
       };
 
       // Initialize exporters based on supported signals
-      const signals = this.config.signals'' | '''' | ''['traces', 'metrics', 'logs'];
+      const signals = this.config.signals||['traces', 'metrics', 'logs'];
 
       if (signals.includes('traces')) {
         this.traceExporter = new OTLPTraceExporter({
@@ -230,13 +230,13 @@ export class OTLPExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
     const queueUtilization = this.queue.length / this.maxQueueSize;
 
-    let status: 'healthy | degraded' | 'unhealthy' = 'healthy';
+    let status: 'healthy|degraded|unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
@@ -246,8 +246,8 @@ export class OTLPExporter implements BaseExporter {
 
     return {
       status,
-      lastSuccess: this.lastExportTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastSuccess: this.lastExportTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 
@@ -266,7 +266,7 @@ export class OTLPExporter implements BaseExporter {
    * Process queued items
    */
   private async processBatch(): Promise<void> {
-    if (this.queue.length === 0'' | '''' | ''this.isShuttingDown) {
+    if (this.queue.length === 0||this.isShuttingDown) {
       return;
     }
 
@@ -295,7 +295,7 @@ export class OTLPExporter implements BaseExporter {
         } else {
           reject(
             new Error(
-              `OTLP trace export failed: ${result.error'' | '''' | '''Unknown error'}`
+              `OTLP trace export failed: ${result.error||'Unknown error'}`
             )
           );
         }
@@ -319,7 +319,7 @@ export class OTLPExporter implements BaseExporter {
         } else {
           reject(
             new Error(
-              `OTLP metric export failed: ${result.error'' | '''' | '''Unknown error'}`
+              `OTLP metric export failed: ${result.error||'Unknown error'}`
             )
           );
         }

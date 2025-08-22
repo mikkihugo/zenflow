@@ -2,8 +2,8 @@ import * as os from 'os';
 import '../types/hardware-types';
 
 // Optional native dependencies for enhanced hardware detection
-let osUtils: typeof import('os-utils')'' | ''null = null;
-let si: typeof import('systeminformation')'' | ''null = null;
+let osUtils: typeof import('os-utils')|null = null;
+let si: typeof import('systeminformation')|null = null;
 
 try {
   osUtils = require('os-utils');
@@ -27,7 +27,7 @@ export interface HardwareInfo {
   gpu_memory_mb?: number;
   gpu_vendor?: string;
   platform: string;
-  optimization_level: 'Low | Medium' | 'High';
+  optimization_level: 'Low|Medium|High';
   cpu_model: string;
   cpu_speed_ghz: number;
   load_average: number[];
@@ -45,7 +45,7 @@ export interface OptimizationStrategy {
 }
 
 export class NativeHardwareDetector {
-  private cachedInfo: HardwareInfo'' | ''null = null;
+  private cachedInfo: HardwareInfo|null = null;
   private cacheTimestamp: number = 0;
   private readonly CACHE_TTL = 30000; // 30 seconds cache
 
@@ -75,8 +75,8 @@ export class NativeHardwareDetector {
       has_gpu: false,
       platform: platform,
       optimization_level: 'Medium',
-      cpu_model: cpus[0]?.model'' | '''' | '''Unknown',
-      cpu_speed_ghz: (cpus[0]?.speed'' | '''' | ''1000) / 1000,
+      cpu_model: cpus[0]?.model||'Unknown',
+      cpu_speed_ghz: (cpus[0]?.speed||1000) / 1000,
       load_average: loadAvg,
     };
 
@@ -92,10 +92,10 @@ export class NativeHardwareDetector {
         // Get detailed CPU info
         const cpuInfo = await si.cpu();
         if (cpuInfo) {
-          hardwareInfo.cpu_cores = cpuInfo.cores'' | '''' | ''cpus.length;
-          hardwareInfo.cpu_model = cpuInfo.brand'' | '''' | ''hardwareInfo.cpu_model;
+          hardwareInfo.cpu_cores = cpuInfo.cores||cpus.length;
+          hardwareInfo.cpu_model = cpuInfo.brand||hardwareInfo.cpu_model;
           hardwareInfo.cpu_speed_ghz =
-            cpuInfo.speed'' | '''' | ''hardwareInfo.cpu_speed_ghz;
+            cpuInfo.speed||hardwareInfo.cpu_speed_ghz;
         }
 
         // Get memory info
@@ -121,9 +121,9 @@ export class NativeHardwareDetector {
             if (gpu.vram) {
               hardwareInfo.gpu_memory_mb = gpu.vram;
             }
-            hardwareInfo.gpu_vendor = gpu.vendor'' | '''' | '''Unknown';
+            hardwareInfo.gpu_vendor = gpu.vendor||'Unknown';
             console.log(
-              `GPU detected: ${gpu.vendor'' | '''' | '''Unknown'} with ${gpu.vram'' | '''' | ''0}MB VRAM`
+              `GPU detected: ${gpu.vendor||'Unknown'} with ${gpu.vram||0}MB VRAM`
             );
           }
         }
@@ -168,7 +168,7 @@ export class NativeHardwareDetector {
 
   private determineOptimizationLevel(
     info: HardwareInfo
-  ): 'Low | Medium' | 'High' {
+  ): 'Low|Medium|High' {
     let score = 0;
 
     // CPU cores scoring

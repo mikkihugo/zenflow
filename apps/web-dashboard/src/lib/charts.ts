@@ -323,7 +323,7 @@ export function createRealTimeChart(
 
   const addDataPoint = (label: string, ...values: number[]) => {
     // Add new label
-    chartData.labels = chartData.labels'' | '''' | ''[];
+    chartData.labels = chartData.labels||[];
     chartData.labels.push(label);
 
     // Add data points to each dataset
@@ -354,7 +354,7 @@ export function createRealTimeChart(
 /**
  * Format timestamp for chart labels
  */
-export function formatChartTimestamp(timestamp: string'' | ''Date): string {
+export function formatChartTimestamp(timestamp: string|Date): string {
   const date = new Date(timestamp);
   return date.toLocaleTimeString('en-US', {
     hour: '2-digit',

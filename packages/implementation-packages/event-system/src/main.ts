@@ -24,8 +24,8 @@ import type { Logger } from '@claude-zen/foundation/logging';
 // Simple utilities to replace missing foundation imports
 function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16)'' | ''0;
-    const v = c =='x'? r : (r & 0x3)'' | ''0x8;
+    const r = (Math.random() * 16)|0;
+    const v = c =='x'? r : (r & 0x3)|0x8;
     return v.toString(16);
   });
 }
@@ -68,7 +68,7 @@ export interface EventBusMetrics {
   averageLatency: number;
   errorRate: number;
   eventsPerSecond: number;
-  circuitBreakerState?: 'closed''' | '''open''' | '''half-open';
+  circuitBreakerState?: 'closed|open'||half-open';
   lastErrorTime?: Timestamp;
 }
 
@@ -92,7 +92,7 @@ export class FoundationEventBus extends TypedEventBase {
   private config: EventBusConfig;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;
-  private telemetryManager: BasicTelemetryManager'' | ''null = null;
+  private telemetryManager: BasicTelemetryManager|null = null;
   private errorAggregator = createErrorAggregator();
   private circuitBreaker: any;
   private initialized = false;
@@ -119,10 +119,10 @@ export class FoundationEventBus extends TypedEventBase {
     this.circuitBreaker = createCircuitBreaker(
       this.performEventOperation.bind(this),
       {
-        timeout: this.config.circuitBreakerConfig?.timeout'' | '''' | ''5000,
+        timeout: this.config.circuitBreakerConfig?.timeout||5000,
         errorThresholdPercentage:
-          this.config.circuitBreakerConfig?.errorThresholdPercentage'' | '''' | ''50,
-        resetTimeout: this.config.circuitBreakerConfig?.resetTimeout'' | '''' | ''30000,
+          this.config.circuitBreakerConfig?.errorThresholdPercentage||50,
+        resetTimeout: this.config.circuitBreakerConfig?.resetTimeout||30000,
       },'event-bus-circuit-breaker'
     );
 
@@ -312,7 +312,7 @@ export class FoundationEventBus extends TypedEventBase {
     try {
       const enhancedMetrics: EventBusMetrics = {
         ...this.metrics,
-        circuitBreakerState: this.circuitBreaker?.getState?.()'' | '''' | '''unknown',
+        circuitBreakerState: this.circuitBreaker?.getState?.()||'unknown',
       };
 
       recordHistogram('event_bus_total_events', this.metrics.totalEvents);
@@ -438,7 +438,7 @@ export class FoundationEventBus extends TypedEventBase {
     }
   }
 
-  private updateMetrics(type: 'success''' | '''error', latency?: number): void {
+  private updateMetrics(type: 'success|error'', latency?: number): void {
     this.metrics.totalEvents++;
 
     if (type === 'error') {
@@ -479,11 +479,11 @@ export interface TypedEventBusConfig extends EventBusConfig {
   enableNeuralRouting?: boolean;
 }
 
-export type TypedEventHandler<T = any> = (event: T) => void'' | ''Promise<void>;
+export type TypedEventHandler<T = any> = (event: T) => void|Promise<void>;
 export type WildcardHandler = (
   type: string,
   event: any
-) => void'' | ''Promise<void>;
+) => void|Promise<void>;
 
 /**
  * TypedEventBus with type-safe event handling and foundation integration
@@ -708,16 +708,16 @@ export function createUEL(config: UELConfig = {}): EventBus {
 
 export type EventMiddleware = (
   event: any,
-  next?: () => void'' | ''Promise<void>
-) => void'' | ''Promise<void>;
+  next?: () => void|Promise<void>
+) => void|Promise<void>;
 export type EventContext = { event: any; metadata?: Record<string, any> };
 
 export function createLoggingMiddleware(
   config: { prefix?: string } = {}
 ): EventMiddleware {
-  const prefix = config.prefix'' | '''' | '''[EventSystem]';
+  const prefix = config.prefix||'[EventSystem]';
   return (event, next) => {
-    console.log(prefix, event.type'' | '''' | '''unknown', event);
+    console.log(prefix, event.type||'unknown', event);
     if (next) return next();
   };
 }
@@ -752,7 +752,7 @@ export function createValidationMiddleware(
   config: { strict?: boolean } = {}
 ): EventMiddleware {
   return (event, next) => {
-    if (!event'' | '''' | ''typeof event !=='object') {
+    if (!event||typeof event !=='object') {
       if (config.strict) {
         throw new Error('Invalid event object');
       }
@@ -781,10 +781,10 @@ export function createRateLimitingMiddleware(
   config: { maxEventsPerSecond?: number } = {}
 ): EventMiddleware {
   const rateLimitMap = new Map<string, number[]>();
-  const limit = config.maxEventsPerSecond'' | '''' | ''100;
+  const limit = config.maxEventsPerSecond||100;
 
   return (event, next) => {
-    const eventType = event.type'' | '''' | '''unknown';
+    const eventType = event.type||'unknown';
     const now = Date.now();
     const windowStart = now - 1000; // 1 second window
 
@@ -857,7 +857,7 @@ export interface ValidationResult {
 
 export class EventValidator {
   validate(event: any): ValidationResult {
-    if (!event'' | '''' | ''typeof event !=='object') {
+    if (!event||typeof event !=='object') {
       return { valid: false, errors: ['Event must be an object'] };
     }
     return { valid: true, errors: [] };
@@ -913,7 +913,7 @@ export interface EventSchema<T = any> {
   parse(data: unknown): T;
   safeParse(
     data: unknown
-  ): { success: true; data: T }'' | ''{ success: false; error: Error };
+  ): { success: true; data: T }|{ success: false; error: Error };
 }
 
 export const BaseEventSchema: EventSchema<any> = {
@@ -933,7 +933,7 @@ export const EventSchemas = {
 // DOMAIN BOUNDARY TYPES
 // =============================================================================
 
-export type DomainBoundary ='' | '''COORDINATION | WORKFLOW' | 'NEURAL''' | '''DATABASE | MEMORY' | 'KNOWLEDGE' | 'INTERFACE' | 'CORE';
+export type DomainBoundary =|'COORDINATION|WORKFLOW|NEURAL|DATABASE|MEMORY|KNOWLEDGE|INTERFACE|CORE';
 
 export interface BaseEvent {
   id: string;
@@ -961,7 +961,7 @@ export interface CoreEvent extends BaseEvent {
 }
 
 export type EventTypeFromSchema<T> = T extends EventSchema<infer U> ? U : never;
-export type AllEventTypes ='' | ''BaseEvent'' | ''CoordinationEvent'' | ''WorkflowEvent'' | ''InterfaceEvent'' | ''CoreEvent;
+export type AllEventTypes =|BaseEvent|CoordinationEvent|WorkflowEvent|InterfaceEvent|CoreEvent;
 
 // =============================================================================
 // CORE INTERFACES
@@ -985,7 +985,7 @@ export interface EventManagerMetrics {
 }
 
 export type EventFilter = (event: any) => boolean;
-export type EventManagerType ='basic | typed' | 'validated''' | '''neural';
+export type EventManagerType ='basic|typed|validated|neural';
 export type EventListener = (...args: any[]) => void;
 export type EventSubscription = { unsubscribe: () => void };
 

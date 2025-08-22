@@ -43,7 +43,7 @@ export interface ComplianceRequirement {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly priority: 'low|medium|high|critical';
   readonly assessmentFrequency?: number; // days
   readonly validationRules: ValidationRule[];
   readonly evidenceRequirements: EvidenceRequirement[];
@@ -53,8 +53,8 @@ export interface ValidationRule {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly ruleType: 'automated'' | ''manual'' | ''hybrid';
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly ruleType: 'automated|manual|hybrid';
+  readonly severity: 'low|medium|high|critical';
   readonly category: string;
 }
 
@@ -62,7 +62,7 @@ export interface EvidenceRequirement {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'document'' | ''artifact'' | ''screenshot'' | ''log'' | ''report';
+  readonly type: 'document|artifact|screenshot|log|report';
   readonly required: boolean;
   readonly source: string;
 }
@@ -84,8 +84,8 @@ export interface ComplianceMonitoringConfig {
  * Reporting schedule configuration
  */
 export interface ReportingSchedule {
-  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''quarterly'' | ''annual';
-  readonly format: 'json'' | ''xml'' | ''pdf'' | ''html'' | ''csv';
+  readonly frequency: 'daily|weekly|monthly|quarterly|annual';
+  readonly format: 'json|xml|pdf|html|csv';
   readonly recipients: string[];
   readonly customReports: CustomReport[];
 }
@@ -117,7 +117,7 @@ export interface ComplianceThresholds {
  * Escalation rule for compliance violations
  */
 export interface EscalationRule {
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly threshold: number;
   readonly timeframe: number; // hours
   readonly recipients: string[];
@@ -157,11 +157,11 @@ export interface RequirementComplianceStatus {
  */
 export interface Evidence {
   readonly evidenceId: string;
-  readonly type:' | ''document'' | ''automated_scan'' | ''manual_assessment'' | ''audit_log';
+  readonly type:|document|automated_scan|manual_assessment|'audit_log';
   readonly source: string;
   readonly description: string;
   readonly timestamp: Date;
-  readonly validity: 'valid'' | ''expired'' | ''pending_review';
+  readonly validity: 'valid|expired|pending_review';
   readonly metadata: Record<string, any>;
 }
 
@@ -172,10 +172,10 @@ export interface ComplianceViolation {
   readonly violationId: string;
   readonly frameworkId: string;
   readonly requirementId: string;
-  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly severity: 'low|medium|high|critical';
   readonly description: string;
   readonly detectedDate: Date;
-  readonly status:' | ''open'' | ''acknowledged'' | ''in_remediation'' | ''resolved'' | ''false_positive';
+  readonly status:|open|acknowledged|in_remediation|resolved|'false_positive';
   readonly assignedTo?: string;
   readonly dueDate?: Date;
   readonly remediationPlan?: string;
@@ -189,7 +189,7 @@ export interface ComplianceTrend {
   readonly period: string;
   readonly complianceScore: number;
   readonly violationCount: number;
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
   readonly factors: string[];
 }
 
@@ -198,7 +198,7 @@ export interface ComplianceTrend {
  */
 export interface ComplianceReport {
   readonly reportId: string;
-  readonly reportType: 'summary'' | ''detailed'' | ''executive'' | ''audit';
+  readonly reportType: 'summary|detailed|executive|audit';
   readonly generatedDate: Date;
   readonly period: ReportPeriod;
   readonly frameworks: ComplianceFrameworkReport[];
@@ -381,7 +381,7 @@ export class ComplianceMonitoringService {
    * Generate compliance report
    */
   generateComplianceReport(
-    reportType: 'summary'' | ''detailed'' | ''executive'' | ''audit',
+    reportType: 'summary|detailed|executive|audit',
     frameworkIds: string[],
     period: ReportPeriod
   ): ComplianceReport {

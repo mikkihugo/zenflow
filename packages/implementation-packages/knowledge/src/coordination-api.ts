@@ -44,7 +44,7 @@ export async function initializeCoordinationFactSystem(): Promise<void> {
  * Store a coordination-specific fact
  */
 export async function storeCoordinationFact(
-  fact: Omit<CoordinationFact, 'id''' | '''timestamp'>
+  fact: Omit<CoordinationFact, 'id|timestamp''>
 ): Promise<string> {
   return await knowledgeFactSystem.storeFact(fact);
 }

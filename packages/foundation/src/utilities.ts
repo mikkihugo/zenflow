@@ -117,7 +117,7 @@ export function validateInput<T>(
     return ok(validated);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const message = `Validation failed: ${error.issues.map((e: { path: (string'' | ''number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
+      const message = `Validation failed: ${error.issues.map((e: { path: (string|number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
       return err(new Error(message));
     }
     return err(
@@ -192,7 +192,7 @@ export async function withTimeout<T>(
   try {
     const result = await pTimeout(promise, {
       milliseconds: timeoutMs,
-      message: timeoutMessage'' | '''' | ''`Operation timed out after ${timeoutMs}ms`,
+      message: timeoutMessage||`Operation timed out after ${timeoutMs}ms`,
     });
     return ok(result);
   } catch (error) {

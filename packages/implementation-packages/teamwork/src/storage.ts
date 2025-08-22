@@ -65,7 +65,7 @@ export class TeamworkStorage {
   /**
    * Retrieve conversation session
    */
-  async getSession(sessionId: string): Promise<ConversationSession'' | ''null> {
+  async getSession(sessionId: string): Promise<ConversationSession|null> {
     await this.ensureInitialized();
 
     try {
@@ -86,12 +86,12 @@ export class TeamworkStorage {
             (data['messages'] as any[])?.map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp),
-            }))'' | '''' | ''[],
+            }))||[],
           outcomes:
             (data['outcomes'] as any[])?.map((outcome) => ({
               ...outcome,
               timestamp: new Date(outcome.timestamp),
-            }))'' | '''' | ''[],
+            }))||[],
         } as ConversationSession;
       }
 
@@ -119,7 +119,7 @@ export class TeamworkStorage {
           message.fromAgent.id,
           JSON.stringify(message.content),
           message.timestamp.toISOString(),
-          JSON.stringify(message.metadata'' | '''' | ''{}),
+          JSON.stringify(message.metadata||{}),
         ]
       );
       logger.debug(`Stored message: ${message.id}`);
@@ -156,9 +156,9 @@ export class TeamworkStorage {
         }, // Reconstruct AgentId
         toAgent: undefined, // Will need to be stored if needed
         timestamp: new Date(row.timestamp),
-        content: JSON.parse(row.content'' | '''' | '''{}'),
+        content: JSON.parse(row.content||'{}'),
         messageType: 'system_notification', // Default type
-        metadata: JSON.parse(row.metadata'' | '''' | '''{}'),
+        metadata: JSON.parse(row.metadata||'{}'),
       })) as ConversationMessage[];
     } catch (error) {
       logger.error(

@@ -66,9 +66,9 @@ export class VectorDao<T>
       this.validateVector(queryVector);
 
       const searchOptions = {
-        limit: options?.limit'' | '''' | ''10,
-        threshold: options?.threshold'' | '''' | ''0.0,
-        metric: (options?.metric as'cosine | l2' | 'dot')'' | '''' | '''cosine',
+        limit: options?.limit||10,
+        threshold: options?.threshold||0.0,
+        metric: (options?.metric as'cosine|l2|dot')||'cosine',
         filter: options?.filter,
       };
 
@@ -87,7 +87,7 @@ export class VectorDao<T>
             score: match?.score,
             document: this.mapVectorDocumentToEntity(match),
             vector: match?.vector,
-          }))'' | '''' | ''[];
+          }))||[];
 
       this.logger.debug(
         `Similarity search completed: ${results.length} results`
@@ -207,10 +207,10 @@ export class VectorDao<T>
 
     try {
       const clusterOptions = {
-        algorithm: options?.algorithm'' | '''' | '''kmeans',
-        numClusters: options?.numClusters'' | '''' | ''5,
-        epsilon: options?.epsilon'' | '''' | ''0.5,
-        minSamples: options?.minSamples'' | '''' | ''5,
+        algorithm: options?.algorithm||'kmeans',
+        numClusters: options?.numClusters||5,
+        epsilon: options?.epsilon||0.5,
+        minSamples: options?.minSamples||5,
       };
 
       // This is a simplified implementation - real clustering would use specialized algorithms
@@ -227,7 +227,7 @@ export class VectorDao<T>
         clusters: clusters as {
           id: number;
           centroid: number[];
-          members: (string'' | ''number)[];
+          members: (string|number)[];
         }[],
         statistics: {
           silhouetteScore: 0.7, // Mock score
@@ -258,7 +258,7 @@ export class VectorDao<T>
    * @param options
    */
   async findSimilarToEntity(
-    entityId: string'' | ''number,
+    entityId: string|number,
     options?: VectorSearchOptions
   ): Promise<VectorSearchResult<T>[]> {
     this.logger.debug(`Finding entities similar to: ${entityId}`);
@@ -293,7 +293,7 @@ export class VectorDao<T>
    * @param newVector
    */
   async updateVector(
-    entityId: string'' | ''number,
+    entityId: string|number,
     newVector: number[]
   ): Promise<T> {
     this.logger.debug(`Updating vector for entity: ${entityId}`);
@@ -446,7 +446,7 @@ export class VectorDao<T>
 
   private getVectorDimension(): number {
     // Get from schema or default configuration
-    return (this.entitySchema as any)?.vector?.dimension'' | '''' | ''384;
+    return (this.entitySchema as any)?.vector?.dimension||384;
   }
 
   private mapVectorDocumentToEntity(match: unknown): T {
@@ -458,9 +458,9 @@ export class VectorDao<T>
     } as T;
   }
 
-  private extractVectorFromEntity(entity: T): number[]'' | ''null {
+  private extractVectorFromEntity(entity: T): number[]|null {
     const entityObj = entity as any;
-    return entityObj.vector'' | '''' | ''null;
+    return entityObj.vector||null;
   }
 
   private performSimpleClustering(

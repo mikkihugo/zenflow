@@ -12,7 +12,7 @@
  * console.log(`Overall: ${systemStatus.overall}, Health: ${systemStatus.healthScore}%`);
  *
  * const health = getHealthSummary();
- * // Returns: { status: 'healthy | degraded' | 'unhealthy', details: {...} }
+ * // Returns: { status: 'healthy|degraded|unhealthy', details: {...} }
  * ```
  *
  * @example Service Resolution with Fallbacks
@@ -55,7 +55,7 @@
  * app.get('/health', (req, res) => {
  *   const health = getHealthSummary();
  *   res.json({
- *     status: health.status, // 'healthy | degraded' | 'unhealthy'
+ *     status: health.status, // 'healthy|degraded|unhealthy'
  *     timestamp: new Date().toISOString(),
  *     details: health.details
  *   });
@@ -68,7 +68,7 @@
  *     overall: systemStatus.overall,
  *     facades: Object.entries(systemStatus.facades).map(([name, status]) => ({
  *       name,
- *       capability: status.capability, // 'full | partial' | 'fallback'
+ *       capability: status.capability, // 'full|partial|fallback'
  *       healthScore: status.healthScore,
  *       missingPackages: status.missingPackages
  *     }))
@@ -92,7 +92,7 @@ import type { JsonObject, JsonValue } from './types/primitives';
 // Temporary types to replace Awilix during build issues
 type AwilixContainer = {
   register: (
-    nameOrRegistrations: string'' | ''JsonObject,
+    nameOrRegistrations: string|JsonObject,
     resolver?: JsonValue,
     options?: JsonObject
   ) => void;
@@ -104,7 +104,7 @@ type AwilixContainer = {
 // Fallback container implementation
 const createContainer = (): AwilixContainer => ({
   register: (
-    nameOrRegistrations: string'' | ''JsonObject,
+    nameOrRegistrations: string|JsonObject,
     resolver?: JsonValue,
     options?: JsonObject
   ) => {
@@ -230,13 +230,13 @@ interface FacadeStatusEvents {
  * Central facade status manager with Awilix integration and typed events
  */
 export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
-  private static instance: FacadeStatusManager'' | ''null = null;
+  private static instance: FacadeStatusManager|null = null;
   private packageCache = new Map<string, PackageInfo>();
   private facadeStatus = new Map<string, FacadeStatus>();
   private packageCacheExpiry = new Map<string, number>();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   private container: AwilixContainer;
-  private statusUpdateInterval: NodeJS.Timeout'' | ''null = null;
+  private statusUpdateInterval: NodeJS.Timeout|null = null;
 
   constructor() {
     super({
@@ -313,7 +313,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
       lastChecked: Date.now(),
       capabilities: [],
       awilixRegistered: false,
-      serviceName: serviceName'' | '''' | ''packageName.replace('@claude-zen/', ''),
+      serviceName: serviceName||packageName.replace('@claude-zen/', ''),
     };
 
     try {
@@ -435,7 +435,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
     packageChecks.forEach((pkg) => {
       packages[pkg.name] = pkg;
       if (
-        pkg.status === PackageStatus.AVAILABLE'' | '''' | ''pkg.status === PackageStatus.REGISTERED
+        pkg.status === PackageStatus.AVAILABLE||pkg.status === PackageStatus.REGISTERED
       ) {
         availableCount++;
         if (pkg.awilixRegistered && pkg.serviceName) {
@@ -508,7 +508,7 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
   getService<T>(
     serviceName: string,
     fallback?: () => T
-  ): T'' | ''null {
+  ): T|null {
     try {
       // Try to resolve the service directly - if it fails, the service doesn't exist
       return this.container.resolve<T>(serviceName);
@@ -600,12 +600,12 @@ export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
    * Get simple status summary for health checks
    */
   getHealthSummary(): {
-    status:'healthy | degraded' | 'unhealthy';
+    status:'healthy|degraded|unhealthy';
     details: JsonObject;
   } {
     const systemStatus = this.getSystemStatus();
 
-    let status: 'healthy | degraded' | 'unhealthy';
+    let status: 'healthy|degraded|unhealthy';
     if (systemStatus.healthScore >= 80) {
       status = 'healthy';
     } else if (systemStatus.healthScore >= 40) {

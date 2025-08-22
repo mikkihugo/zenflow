@@ -13,27 +13,22 @@
  */
 
 // Project coordination - Use enterprise strategic facade
-export {
-  ProjectCoordinator,
-  getProjectCoordinator,
-  createProjectConfig,
+export { ProjectCoordinator, getProjectCoordinator, createProjectConfig,
 } from '@claude-zen/enterprise';
 // Removed problematic type exports - use facade patterns instead
 // export type {
-//   ProjectCoordinationConfig,
-//   CoordinationStatus,
+// ProjectCoordinationConfig,
+// CoordinationStatus,
 // } from '@claude-zen/enterprise';
 
 // Development coordination - Use enterprise strategic facade
-export {
-  DevelopmentCoordinator,
-  createDevelopmentConfig,
+export { DevelopmentCoordinator, createDevelopmentConfig,
 } from '@claude-zen/enterprise';
 // Removed problematic type exports - use facade patterns instead
 // export type {
-//   DevelopmentCoordinationConfig,
-//   DevelopmentTask,
-//   SPARCPhase,
+// DevelopmentCoordinationConfig,
+// DevelopmentTask,
+// SPARCPhase,
 // } from '@claude-zen/enterprise';
 
 // Git coordination - Use development strategic facade (delegates to git-operations)
@@ -44,14 +39,12 @@ export { getGitOperationsManager } from '@claude-zen/development';
 export { DevelopmentManager } from '@claude-zen/enterprise';
 // Removed problematic type exports - use facade patterns instead
 // export type {
-//   DevelopmentManagerConfig,
-//   DevelopmentTeam,
+// DevelopmentManagerConfig,
+// DevelopmentTeam,
 // } from '@claude-zen/enterprise';
 
 // SPARC integration (universal development workflow)
-export {
-  SPARCDevelopmentIntegration,
-  createSPARCDevelopmentIntegration,
+export { SPARCDevelopmentIntegration, createSPARCDevelopmentIntegration,
 } from "./sparc-development-integration";
 export type { SPARCWorkflowState } from "./sparc-development-integration";
 

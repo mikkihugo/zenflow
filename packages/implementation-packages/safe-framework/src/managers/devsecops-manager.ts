@@ -66,7 +66,7 @@ export interface DevSecOpsManagerConfig {
   readonly enableIncidentResponse: boolean;
   readonly enableSecurityTraining: boolean;
   readonly enablePenetrationTesting: boolean;
-  readonly securityScanFrequency: 'every-commit''' | '''daily''' | '''weekly';
+  readonly securityScanFrequency: 'every-commit|daily'||weekly';
   readonly complianceReportingInterval: number; // milliseconds
   readonly vulnerabilityAssessmentInterval: number; // milliseconds
   readonly securityTrainingInterval: number; // milliseconds
@@ -86,7 +86,7 @@ export interface ComplianceConfig {
   readonly enableAutomatedScanning: boolean;
   readonly enableComplianceReporting: boolean;
   readonly enableAuditTrail: boolean;
-  readonly reportingFormat: 'json | xml' | 'pdf''' | '''html';
+  readonly reportingFormat: 'json|xml|pdf|html';
   readonly auditRetentionDays: number;
   readonly complianceThreshold: number; // percentage
 }
@@ -123,7 +123,7 @@ export interface ComplianceRequirement {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly priority: 'low | medium' | 'high''' | '''critical';
+  readonly priority: 'low|medium|high|critical';
   readonly assessmentFrequency?: number; // days
   readonly validationRules: ValidationRule[];
   readonly evidenceRequirements: EvidenceRequirement[];
@@ -136,7 +136,7 @@ export interface ValidationRule {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly ruleType: 'automated | manual' | 'hybrid';
+  readonly ruleType: 'automated|manual|hybrid';
 }
 
 /**
@@ -144,7 +144,7 @@ export interface ValidationRule {
  */
 export interface EvidenceRequirement {
   readonly id: string;
-  readonly type: 'document | log' | 'configuration''' | '''assessment';
+  readonly type: 'document|log|configuration|assessment';
   readonly source: string;
   readonly description: string;
 }
@@ -167,7 +167,7 @@ export interface SecurityControl {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly implementation: 'manual | automated' | 'hybrid';
+  readonly implementation: 'manual|automated|hybrid';
 }
 
 /**
@@ -183,7 +183,7 @@ export interface SecurityTool {
   readonly configuration: Record<string, any>;
 }
 
-export type SecurityToolType ='' | '''static_analysis | dynamic_analysis' | 'dependency_scanner''' | '''secrets_scanner | container_scanner' | 'infrastructure_scanner''' | '''vulnerability_scanner';
+export type SecurityToolType =|'static_analysis|dynamic_analysis|dependency_scanner|secrets_scanner|container_scanner|infrastructure_scanner|vulnerability_scanner';
 
 /**
  * Security assessment
@@ -197,7 +197,7 @@ export interface SecurityAssessment {
   readonly summary: AssessmentSummary;
 }
 
-export type SecurityAssessmentType ='' | '''vulnerability_scan | penetration_test' | 'code_review''' | '''compliance_audit';
+export type SecurityAssessmentType =|''vulnerability_scan|penetration_test|code_review|compliance_audit';
 
 /**
  * Assessment scope
@@ -208,7 +208,7 @@ export interface AssessmentScope {
     readonly start: Date;
     readonly end: Date;
   };
-  readonly depth: 'surface | standard' | 'deep';
+  readonly depth: 'surface|standard|deep';
 }
 
 /**
@@ -229,13 +229,13 @@ export interface SecurityFinding {
   readonly toolId?: string;
   readonly discoveredDate: Date;
   readonly lastSeenDate: Date;
-  readonly status: 'open | in_progress' | 'resolved''' | '''false_positive';
+  readonly status: 'open|in_progress|resolved|false_positive';
   readonly falsePositive: boolean;
 }
 
-export type SecuritySeverity ='' | '''critical | high' | 'medium' | 'low' | 'informational';
+export type SecuritySeverity =|'critical|high|medium|low|informational';
 
-export type SecurityCategory ='' | '''injection | authentication' | 'authorization''' | '''sensitive_data | xml_entities' | 'access_control''' | '''security_config | cross_site_scripting' | 'insecure_deserialization' | 'vulnerable_components' | 'logging_monitoring';
+export type SecurityCategory =|'injection|authentication|authorization|sensitive_data|xml_entities|access_control|security_config | cross_site_scripting'|insecure_deserialization|vulnerable_components|logging_monitoring';
 
 /**
  * CVSS score
@@ -262,9 +262,9 @@ export interface FindingLocation {
  * Security impact
  */
 export interface SecurityImpact {
-  readonly confidentiality: 'none | low' | 'medium''' | '''high';
-  readonly integrity: 'none | low' | 'medium''' | '''high';
-  readonly availability: 'none | low' | 'medium''' | '''high';
+  readonly confidentiality: 'none|low|medium|high';
+  readonly integrity: 'none|low|medium|high';
+  readonly availability: 'none|low|medium|high';
   readonly businessImpact: string;
 }
 
@@ -372,7 +372,7 @@ export class DevSecOpsManager extends TypedEventBase {
       const scanConfig = {
         scanId: `scan-${Date.now()}`,
         scanType: this.mapAssessmentToScanType(assessmentConfig.assessmentType),
-        tools: assessmentConfig.tools'' | '''' | ''this.getDefaultTools(),
+        tools: assessmentConfig.tools||this.getDefaultTools(),
         targets: this.convertScopeToTargets(assessmentConfig.scope),
         standards: this.configuration.security.securityStandards,
         schedule: {
@@ -542,7 +542,7 @@ export class DevSecOpsManager extends TypedEventBase {
    * Generate compliance report - Delegates to Compliance Monitoring Service
    */
   async generateComplianceReport(
-    reportType: 'summary | detailed' | 'executive''' | '''audit',
+    reportType: 'summary|detailed|executive|audit',
     frameworkIds: string[],
     period: {
       startDate: Date;

@@ -36,7 +36,7 @@ import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('agent-manager-mcp');
 
 // Global AgentManager instance
-let globalManager: AgentManager'' | ''null = null;
+let globalManager: AgentManager|null = null;
 
 async function getManager(): Promise<AgentManager> {
   if (!globalManager) {
@@ -303,11 +303,11 @@ class AgentManagerMCPServer {
     const swarm = await AgentManager.createSwarm({
       task: args.task,
       cognitiveTypes: args.cognitiveTypes,
-      topology: args.topology'' | '''' | '''mesh',
-      maxDuration: args.maxDuration'' | '''' | ''3600000,
+      topology: args.topology||'mesh',
+      maxDuration: args.maxDuration||3600000,
       persistent: args.persistent ?? true,
-      neuralAcceleration: args.neuralAcceleration'' | '''' | ''false,
-      maxTurns: args.maxTurns'' | '''' | ''50,
+      neuralAcceleration: args.neuralAcceleration||false,
+      maxTurns: args.maxTurns||50,
     });
 
     return {
@@ -347,7 +347,7 @@ class AgentManagerMCPServer {
     const manager = await getManager();
 
     const result = await manager.executeSwarm(args.swarmId, {
-      maxTurns: args.maxTurns'' | '''' | ''50,
+      maxTurns: args.maxTurns||50,
     });
 
     return {
@@ -495,7 +495,7 @@ class AgentManagerMCPServer {
       for (const agent of swarm.agents) {
         archetypeCounts.set(
           agent.archetype,
-          (archetypeCounts.get(agent.archetype)'' | '''' | ''0) + 1
+          (archetypeCounts.get(agent.archetype)||0) + 1
         );
       }
     }

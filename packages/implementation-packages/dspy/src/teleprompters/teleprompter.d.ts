@@ -17,7 +17,7 @@ export interface CompileOptions {
   /** Validation dataset (optional) */
   valset?: Example[];
   /** Teacher program (optional) */
-  teacher?: DSPyModule'' | ''DSPyModule[];
+  teacher?: DSPyModule|DSPyModule[];
   /** Additional compilation parameters */
   [key: string]: any;
 }

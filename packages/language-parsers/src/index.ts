@@ -50,9 +50,9 @@ export const SUPPORTED_EXTENSIONS = {
 /**
  * Language detection utility
  */
-export function detectLanguageFamily(filePath: string): string'' | ''null {
+export function detectLanguageFamily(filePath: string): string|null {
   const ext = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
-  return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS]'' | '''' | ''null;
+  return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS]||null;
 }
 
 /**

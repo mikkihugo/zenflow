@@ -106,7 +106,7 @@ export class ProjectCoordinator extends TypedEventBase {
   /**
    * Get project coordination status
    */
-  getProjectStatus(projectId: string): CoordinationStatus'' | ''null {
+  getProjectStatus(projectId: string): CoordinationStatus|null {
     const config = this.projects.get(projectId);
     if (!config) return null;
 
@@ -182,7 +182,7 @@ export class ProjectCoordinator extends TypedEventBase {
 }
 
 // Global instance
-let globalCoordinator: ProjectCoordinator'' | ''null = null;
+let globalCoordinator: ProjectCoordinator|null = null;
 
 /**
  * Get global project coordinator instance

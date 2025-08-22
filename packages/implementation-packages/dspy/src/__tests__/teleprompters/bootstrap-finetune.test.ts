@@ -688,7 +688,7 @@ describe('BootstrapFinetune Teleprompter', () => {
       const result = await bootstrapFinetune.compile(
         mockStudent, // student: Module
         trainset, // trainset: list[Example]
-        mockTeacher // teacher: Module | list[Module]' | 'None
+        mockTeacher // teacher: Module | list[Module]|None
       );
 
       expect(result).toBeDefined();

@@ -120,7 +120,7 @@ export class EpicLifecycleService {
     });
 
     const currentStage = this.getCurrentLifecycleStage(epicId);
-    const blockers = this.blockers.get(epicId)'' | '''' | ''[];
+    const blockers = this.blockers.get(epicId)||[];
 
     // Validate gate criteria for progression
     const gateValidation = await this.validateGateCriteria(
@@ -162,7 +162,7 @@ export class EpicLifecycleService {
     };
 
     // Update lifecycle stages
-    const stages = this.lifecycleStages.get(epicId)'' | '''' | ''[];
+    const stages = this.lifecycleStages.get(epicId)||[];
     stages.push(newStage);
     this.lifecycleStages.set(epicId, stages);
 
@@ -275,7 +275,7 @@ export class EpicLifecycleService {
    */
   async addEpicBlocker(
     epicId: string,
-    blockerData: Omit<EpicBlocker, 'id''' | '''identifiedAt'>
+    blockerData: Omit<EpicBlocker, 'id|identifiedAt'>
   ): Promise<string> {
     const blocker: EpicBlocker = {
       id: `blocker-${nanoid(8)}`,
@@ -283,7 +283,7 @@ export class EpicLifecycleService {
       ...blockerData,
     };
 
-    const existingBlockers = this.blockers.get(epicId)'' | '''' | ''[];
+    const existingBlockers = this.blockers.get(epicId)|'|[];
     existingBlockers.push(blocker);
     this.blockers.set(epicId, existingBlockers);
 
@@ -300,7 +300,7 @@ export class EpicLifecycleService {
    * Resolve epic blocker
    */
   async resolveEpicBlocker(epicId: string, blockerId: string): Promise<void> {
-    const blockers = this.blockers.get(epicId)'' | '''' | ''[];
+    const blockers = this.blockers.get(epicId)||[];
     const blockerIndex = blockers.findIndex((b) => b.id === blockerId);
 
     if (blockerIndex === -1) {
@@ -338,7 +338,7 @@ export class EpicLifecycleService {
       (e) => e.status === PortfolioKanbanState.DONE
     );
     const leadTimes = completedEpics.map((epic) => {
-      const stages = this.lifecycleStages.get(epic.id)'' | '''' | ''[];
+      const stages = this.lifecycleStages.get(epic.id)||[];
       const firstStage = stages[0];
       const lastStage = stages[stages.length - 1];
 
@@ -355,16 +355,16 @@ export class EpicLifecycleService {
     const cycleTimeStages = filter(
       allStages,
       (s) =>
-        s.stage === PortfolioKanbanState.IMPLEMENTING'' | '''' | ''s.stage === PortfolioKanbanState.DONE
+        s.stage === PortfolioKanbanState.IMPLEMENTING||s.stage === PortfolioKanbanState.DONE
     );
     const averageCycleTime =
       cycleTimeStages.length > 1
-        ? meanBy(cycleTimeStages, (s) => s.duration'' | '''' | ''0)
+        ? meanBy(cycleTimeStages, (s) => s.duration||0)
         : 0;
 
     // Throughput (completed epics per month)
     const recentCompletions = filter(completedEpics, (epic) => {
-      const stages = this.lifecycleStages.get(epic.id)'' | '''' | ''[];
+      const stages = this.lifecycleStages.get(epic.id)||[];
       const doneStage = stages.find(
         (s) => s.stage === PortfolioKanbanState.DONE
       );
@@ -439,8 +439,8 @@ export class EpicLifecycleService {
   /**
    * Get current lifecycle stage for epic
    */
-  private getCurrentLifecycleStage(epicId: string): EpicLifecycleStage'' | ''null {
-    const stages = this.lifecycleStages.get(epicId)'' | '''' | ''[];
+  private getCurrentLifecycleStage(epicId: string): EpicLifecycleStage|null {
+    const stages = this.lifecycleStages.get(epicId)||[];
     return stages.length > 0 ? stages[stages.length - 1] : null;
   }
 
@@ -464,14 +464,14 @@ export class EpicLifecycleService {
 
     for (const criterion of gateCriteria) {
       const hasEvidence = evidence && evidence[criterion.criterion]?.length > 0;
-      const isCompleted = hasEvidence'' | '''' | ''criterion.status ==='completed';
+      const isCompleted = hasEvidence||criterion.status ==='completed';
 
       if (isCompleted) {
         passedCriteria.push({
           ...criterion,
           status: 'completed',
           completionDate: new Date(),
-          evidence: evidence?.[criterion.criterion]'' | '''' | ''[],
+          evidence: evidence?.[criterion.criterion]||[],
         });
       } else {
         unmetCriteria.push(criterion);
@@ -567,7 +567,7 @@ export class EpicLifecycleService {
       [PortfolioKanbanState.CANCELLED]: [],
     };
 
-    return baseCriteria[state]'' | '''' | ''[];
+    return baseCriteria[state]||[];
   }
 
   /**
@@ -583,7 +583,7 @@ export class EpicLifecycleService {
       [PortfolioKanbanState.CANCELLED]: 0,
     };
 
-    return completionMap[state]'' | '''' | ''0;
+    return completionMap[state]||0;
   }
 
   /**
@@ -620,7 +620,7 @@ export class EpicLifecycleService {
       ],
     };
 
-    return activitiesMap[state]'' | '''' | ''[];
+    return activitiesMap[state]||[];
   }
 
   /**
@@ -652,7 +652,7 @@ export class EpicLifecycleService {
       [PortfolioKanbanState.CANCELLED]: ['Portfolio Manager', 'Epic Owner'],
     };
 
-    return stakeholdersMap[state]'' | '''' | ''[];
+    return stakeholdersMap[state]||[];
   }
 
   /**
@@ -682,7 +682,7 @@ export class EpicLifecycleService {
       ],
     };
 
-    return actionsMap[state]'' | '''' | ''[];
+    return actionsMap[state]||[];
   }
 
   /**
@@ -690,7 +690,7 @@ export class EpicLifecycleService {
    */
   private mapKanbanStateToEpicStatus(
     kanbanState: PortfolioKanbanState
-  ):'analyzing | implementing' | 'done''' | '''backlog' {
+  ):'analyzing|implementing|done|backlog' {
     switch (kanbanState) {
       case PortfolioKanbanState.ANALYZING:
         return 'analyzing';

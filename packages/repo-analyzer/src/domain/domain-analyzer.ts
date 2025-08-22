@@ -71,7 +71,7 @@ export class DomainAnalyzer {
     files: string[],
     rootPath: string,
     options?: AnalysisOptions
-  ): Promise<Domain'' | ''null> {
+  ): Promise<Domain|null> {
     if (files.length === 0) return null;
 
     const name = this.inferDomainName(path);
@@ -165,11 +165,11 @@ export class DomainAnalyzer {
    */
   private inferDomainName(path: string): string {
     const segments = path.split('/').filter(Boolean);
-    const lastSegment = segments[segments.length - 1]'' | '''' | '''root';
+    const lastSegment = segments[segments.length - 1]||'root';
 
     // Clean up common prefixes/suffixes
     return lastSegment
-      .replace(/^(src'' | ''lib'' | ''app'' | ''components'' | ''modules'' | ''packages)$/,'core')
+      .replace(/^(src|lib|app|components|modules|packages)$/,'core')
       .replace(/[-_]/g, ' ')
       .split(' ')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -222,55 +222,55 @@ export class DomainAnalyzer {
 
     // Infrastructure patterns
     if (
-      pathLower.includes('config')'' | '''' | ''pathLower.includes('infrastructure')'' | '''' | ''pathLower.includes('database')'' | '''' | ''pathLower.includes('migration')
+      pathLower.includes('config')||pathLower.includes('infrastructure')||pathLower.includes('database')||pathLower.includes('migration')
     ) {
       return 'infrastructure';
     }
 
     // API patterns
     if (
-      pathLower.includes('api')'' | '''' | ''pathLower.includes('route')'' | '''' | ''pathLower.includes('endpoint')'' | '''' | ''pathLower.includes('controller')
+      pathLower.includes('api')||pathLower.includes('route')||pathLower.includes('endpoint')||pathLower.includes('controller')
     ) {
       return 'api';
     }
 
     // UI patterns
     if (
-      pathLower.includes('component')'' | '''' | ''pathLower.includes('view')'' | '''' | ''pathLower.includes('ui')'' | '''' | ''pathLower.includes('frontend')
+      pathLower.includes('component')||pathLower.includes('view')||pathLower.includes('ui')||pathLower.includes('frontend')
     ) {
       return 'ui';
     }
 
     // Utility patterns
     if (
-      pathLower.includes('util')'' | '''' | ''pathLower.includes('helper')'' | '''' | ''pathLower.includes('tool')'' | '''' | ''pathLower.includes('lib')
+      pathLower.includes('util')||pathLower.includes('helper')||pathLower.includes('tool')||pathLower.includes('lib')
     ) {
       return 'utility';
     }
 
     // Test patterns
     if (
-      pathLower.includes('test')'' | '''' | ''pathLower.includes('spec')'' | '''' | ''Object.keys(fileTypes).some((type) => type.includes('test'))
+      pathLower.includes('test')||pathLower.includes('spec')||Object.keys(fileTypes).some((type) => type.includes('test'))
     ) {
       return 'test';
     }
 
     // Data patterns
     if (
-      pathLower.includes('model')'' | '''' | ''pathLower.includes('entity')'' | '''' | ''pathLower.includes('data')'' | '''' | ''pathLower.includes('repository')
+      pathLower.includes('model')||pathLower.includes('entity')||pathLower.includes('data')||pathLower.includes('repository')
     ) {
       return 'data';
     }
 
     // Core business logic
     if (
-      pathLower.includes('core')'' | '''' | ''pathLower.includes('business')'' | '''' | ''pathLower.includes('domain')'' | '''' | ''pathLower.includes('service')
+      pathLower.includes('core')||pathLower.includes('business')||pathLower.includes('domain')||pathLower.includes('service')
     ) {
       return 'core';
     }
 
     // Feature-specific
-    if (pathLower.includes('feature')'' | '''' | ''pathLower.includes('module')) {
+    if (pathLower.includes('feature')||pathLower.includes('module')) {
       return 'feature';
     }
 
@@ -295,10 +295,10 @@ export class DomainAnalyzer {
 
         // Simple pattern matching
         functions += (
-          content.match(/function\s+\w+'' | ''=>\s*{'' | ''^\s*\w+\s*:/gm)'' | '''' | ''[]
+          content.match(/function\s+\w+|=>\s*{|^\s*\w+\s*:/gm)||[]
         ).length;
-        classes += (content.match(/class\s+\w+/gm)'' | '''' | ''[]).length;
-        interfaces += (content.match(/interface\s+\w+/gm)'' | '''' | ''[]).length;
+        classes += (content.match(/class\s+\w+/gm)||[]).length;
+        interfaces += (content.match(/interface\s+\w+/gm)||[]).length;
       } catch {
         // Skip files that can't be read
       }
@@ -336,7 +336,7 @@ export class DomainAnalyzer {
    */
   private calculateDomainCohesion(files: string[]): number {
     // Simple cohesion heuristic based on file naming patterns
-    const fileNames = files.map((f) => f.split('/').pop()'' | '''' | '''');
+    const fileNames = files.map((f) => f.split('/').pop()||'');
     const commonPrefixes = this.findCommonPrefixes(fileNames);
     const commonSuffixes = this.findCommonSuffixes(fileNames);
 
@@ -390,7 +390,7 @@ export class DomainAnalyzer {
     coupling: number,
     size: DomainSize,
     files: string[]
-  ): SplitRecommendation'' | ''undefined {
+  ): SplitRecommendation|undefined {
     let score = 0;
     const reasons: string[] = [];
 
@@ -415,7 +415,7 @@ export class DomainAnalyzer {
     }
 
     // Large size suggests splitting
-    if (size.files > 20'' | '''' | ''size.lines > 2000) {
+    if (size.files > 20||size.lines > 2000) {
       score += 1;
       reasons.push('Large size makes the domain hard to understand and maintain'
       );
@@ -532,8 +532,8 @@ export class DomainAnalyzer {
     const types: Record<string, number> = {};
 
     for (const file of files) {
-      const ext = file.split('.').pop()?.toLowerCase()'' | '''' | '''unknown';
-      types[ext] = (types[ext]'' | '''' | ''0) + 1;
+      const ext = file.split('.').pop()?.toLowerCase()||'unknown';
+      types[ext] = (types[ext]||0) + 1;
     }
 
     return types;
@@ -617,7 +617,7 @@ export class DomainAnalyzer {
   }
 
   private calculateExtensionConsistency(files: string[]): number {
-    const extensions = files.map((f) => f.split('.').pop()'' | '''' | '''');
+    const extensions = files.map((f) => f.split('.').pop()||'');
     const uniqueExtensions = new Set(extensions);
     return 1 - (uniqueExtensions.size - 1) / Math.max(1, extensions.length - 1);
   }

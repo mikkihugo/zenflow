@@ -30,16 +30,16 @@ export interface PluginManifest {
 // Swarm coordination types
 export interface SwarmCoordinator {
   id: string;
-  type: 'mesh | hierarchical' | 'ring''' | '''star';
+  type: 'mesh|hierarchical|ring|star';
   agents: SwarmAgent[];
-  status: 'active | inactive' | 'error';
+  status: 'active|inactive|error';
   metadata?: Record<string, unknown>;
 }
 
 export interface SwarmAgent {
   id: string;
   type: string;
-  status: 'active | inactive' | 'busy''' | '''error';
+  status: 'active|inactive|busy|error';
   capabilities: string[];
   metadata?: Record<string, unknown>;
 }
@@ -48,7 +48,7 @@ export interface SwarmAgent {
 export interface NeuralEngine {
   id: string;
   type: string;
-  status: 'initialized | training' | 'ready''' | '''error';
+  status: 'initialized|training|ready|error';
   metrics?: NeuralMetrics;
   train(data: unknown[]): Promise<void>;
   predict(input: unknown): Promise<unknown>;
@@ -98,7 +98,7 @@ export interface LLMOptimizationResponse {
 
 // Database provider types
 export interface DatabaseProvider {
-  type: 'sqlite | lancedb' | 'kuzu';
+  type: 'sqlite|lancedb|kuzu';
   connection: unknown;
   isConnected(): boolean;
   query(sql: string, params?: unknown[]): Promise<unknown>;
@@ -136,8 +136,8 @@ export class FoundationLLMIntegrationService implements LLMIntegrationService {
       const prompt = `Analyze the following task and provide insights:
       
 Task: ${request.task}
-Context: ${request.context'' | '''' | '''No additional context'}
-Expected Output: ${(request as any).expectedFormat'' | '''' | '''General analysis'}
+Context: ${request.context||'No additional context'}
+Expected Output: ${(request as any).expectedFormat||'General analysis'}
 
 Please provide a comprehensive analysis with specific recommendations.`;
 
@@ -147,11 +147,11 @@ Please provide a comprehensive analysis with specific recommendations.`;
       });
 
       return {
-        result: result.content'' | '''' | ''result,
+        result: result.content||result,
         confidence: 0.95,
         metadata: {
           foundationMode: true,
-          model: (llm as any).model'' | '''' | '''foundation-llm',
+          model: (llm as any).model||'foundation-llm',
           timestamp: new Date().toISOString(),
         },
       };
@@ -170,8 +170,8 @@ Please provide a comprehensive analysis with specific recommendations.`;
       const optimizationPrompt = `Optimize the following prompt for better performance:
 
 Original Prompt: "${request.prompt}"
-Target Domain: ${(request as any).domain'' | '''' | '''general'}
-Performance Goals: ${(request as any).goals?.join(', ')'' | '''' | '''clarity, accuracy, efficiency'}
+Target Domain: ${(request as any).domain||'general'}
+Performance Goals: ${(request as any).goals?.join(', ')||'clarity, accuracy, efficiency'}
 
 Provide an optimized version with specific improvements and reasoning.`;
 
@@ -219,7 +219,7 @@ Provide an optimized version with specific improvements and reasoning.`;
     const quotedMatch = result.match(/["']([^"']{20,})["']/);
     if (quotedMatch && quotedMatch[1]) return quotedMatch[1];
 
-    return result.split('\n').find((line) => line.trim().length > 20)'' | '''' | ''result;
+    return result.split('\n').find((line) => line.trim().length > 20)||result;
   }
 
   private extractImprovements(result: string): string[] {
@@ -248,14 +248,14 @@ Provide an optimized version with specific improvements and reasoning.`;
 
 export class FoundationDatabaseProvider implements DatabaseProvider {
   private dbAccess = getDatabaseAccess();
-  type: 'sqlite | lancedb' | 'kuzu' = 'sqlite';
+  type: 'sqlite|lancedb|kuzu' = 'sqlite';
 
   get connection() {
-    return (this.dbAccess as any).connection'' | '''' | ''{};
+    return (this.dbAccess as any).connection||{};
   }
 
   isConnected(): boolean {
-    return (this.dbAccess as any).isConnected?.()'' | '''' | ''true;
+    return (this.dbAccess as any).isConnected?.()||true;
   }
 
   async query(sql: string, params?: unknown[]): Promise<unknown> {

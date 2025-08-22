@@ -69,7 +69,7 @@ export interface MemoryBatchRequest {
   /** Array of operations to perform */
   operations: Array<{
     /** Type of operation */
-    type: 'store | retrieve' | 'delete';
+    type: 'store|retrieve|delete';
     /** Key for the operation */
     key: string;
     /** Value for store operations */
@@ -114,7 +114,7 @@ export interface MemoryAnalytics {
   /** System health information */
   health: {
     /** Overall health status */
-    status: 'healthy | warning' | 'critical';
+    status: 'healthy|warning|critical';
     /** System uptime in seconds */
     uptime: number;
     /** Last health check timestamp */
@@ -176,8 +176,8 @@ export class MemoryController {
           ),
           configuration: {
             type: this._config.type,
-            maxSize: this._config.maxSize'' | '''' | ''-1,
-            ttl: this._config.ttl'' | '''' | ''0,
+            maxSize: this._config.maxSize||-1,
+            ttl: this._config.ttl||0,
             compression: this._config.compression,
           },
         },
@@ -246,7 +246,7 @@ export class MemoryController {
           key: request.key,
           stored: true,
           compressed: request.options?.compress,
-          ttl: request.options?.ttl'' | '''' | ''0,
+          ttl: request.options?.ttl||0,
         },
         metadata: {
           size,
@@ -304,7 +304,7 @@ export class MemoryController {
           key,
           value: processedValue?.value,
           exists: rawValue !== undefined,
-          metadata: processedValue?.metadata'' | '''' | ''{},
+          metadata: processedValue?.metadata||{},
           retrieved: true,
         },
         metadata: {
@@ -583,7 +583,7 @@ export class MemoryController {
         },
         usage: {
           memoryUsed: process.memoryUsage().heapUsed,
-          maxMemory: this._config.maxSize'' | '''' | ''-1,
+          maxMemory: this._config.maxSize||-1,
           utilizationPercent: this._config.maxSize
             ? (size / this._config.maxSize) * 100
             : 0,
@@ -657,7 +657,7 @@ export class MemoryController {
       value,
       metadata: {
         storedAt: Date.now(),
-        ttl: options?.ttl'' | '''' | ''0,
+        ttl: options?.ttl||0,
         compressed: options?.compress,
         originalSize: 0, // Will be set below if compression is enabled
         ...options?.metadata,
@@ -679,7 +679,7 @@ export class MemoryController {
    * @param rawValue
    */
   private processValueFromStorage(rawValue: unknown): unknown {
-    if (!rawValue'' | '''' | ''typeof rawValue !=='object') {
+    if (!rawValue||typeof rawValue !=='object') {
       return { value: rawValue, metadata: {} };
     }
 

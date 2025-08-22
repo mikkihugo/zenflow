@@ -634,7 +634,7 @@ export class InterfaceEventManagerFactory
   /**
    * Get an event manager by name.
    */
-  get(name: string): EventManager'' | ''undefined {
+  get(name: string): EventManager|undefined {
     return this.managers.get(name);
   }
 
@@ -872,12 +872,12 @@ export class InterfaceEventManagerFactory
   ): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners'' | '''' | ''500,
+      maxListeners: config.maxListeners||500,
       processing: {
         batchSize: 10,
         queueSize: 1000,
         ...config.processing,
-        strategy: config.processing?.strategy'' | '''' | '''immediate', // UI needs immediate processing
+        strategy: config.processing?.strategy||'immediate', // UI needs immediate processing
       },
       monitoring: {
         enabled: true,

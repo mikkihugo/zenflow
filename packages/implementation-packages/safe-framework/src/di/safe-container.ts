@@ -228,7 +228,7 @@ export class SafeContainer {
         try {
           const { TelemetryManager } = await import('@claude-zen/foundation');
           const telemetry = new TelemetryManager(
-            aiConfig.telemetryConfig'' | '''' | ''{
+            aiConfig.telemetryConfig||{
               serviceName:'safe-framework',
               enableTracing: true,
               enableMetrics: true,
@@ -360,7 +360,7 @@ export class SafeContainer {
   /**
    * Try to resolve an optional dependency (returns undefined if not available)
    */
-  tryResolve<T>(token: any): T'' | ''undefined {
+  tryResolve<T>(token: any): T|undefined {
     if (!this.initialized) {
       return undefined;
     }
@@ -473,7 +473,7 @@ export async function createSAFeContainer(
 /**
  * Global SAFe container instance
  */
-let globalSAFeContainer: SafeContainer'' | ''null = null;
+let globalSAFeContainer: SafeContainer|null = null;
 
 /**
  * Get the global SAFe container

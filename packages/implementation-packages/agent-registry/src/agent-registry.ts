@@ -76,7 +76,7 @@ export class AgentRegistry extends TypedEventBase {
 
     // Listen for container events
     this.container.on('serviceResolved', (event) => {
-      const existing = this.performanceMetrics.get(event.name)'' | '''' | ''{
+      const existing = this.performanceMetrics.get(event.name)||{
         createTime: Date.now(),
         accessCount: 0,
         lastAccessed: Date.now(),
@@ -340,7 +340,7 @@ export class AgentRegistry extends TypedEventBase {
     type?: string;
     capabilities?: string[];
     maxResults?: number;
-    prioritizeBy?: 'performance | availability' | 'load';
+    prioritizeBy?: 'performance|availability|load';
     excludeIds?: string[];
   }): Promise<JsonValue[]> {
     const startTime = process.hrtime.bigint();
@@ -350,7 +350,7 @@ export class AgentRegistry extends TypedEventBase {
 
       if (loadBalancer.isOk()) {
         const results =
-          (await (loadBalancer.value as JsonObject).selectAgents?.(criteria))'' | '''' | ''[];
+          (await (loadBalancer.value as JsonObject).selectAgents?.(criteria))||[];
 
         const endTime = process.hrtime.bigint();
         const selectionTime = Number(endTime - startTime) / 1_000_000;
@@ -389,7 +389,7 @@ export class AgentRegistry extends TypedEventBase {
       .map((service) => service.service)
       .sort(
         (a, b) =>
-          (b.performance?.successRate'' | '''' | ''0) - (a.performance?.successRate'' | '''' | ''0)
+          (b.performance?.successRate||0) - (a.performance?.successRate||0)
       );
   }
 
@@ -491,7 +491,7 @@ export class AgentRegistry extends TypedEventBase {
     const averageAccessTime =
       performanceData.length > 0
         ? performanceData.reduce(
-            (sum, m) => sum + (m.lastResolutionTime'' | '''' | ''0),
+            (sum, m) => sum + (m.lastResolutionTime||0),
             0
           ) / performanceData.length
         : 0;
@@ -561,7 +561,7 @@ export class AgentRegistry extends TypedEventBase {
   private createAgentFactory() {
     return (config: JsonObject) => {
       // Use config for factory customization
-      const factoryConfig = config'' | '''' | ''{};
+      const factoryConfig = config||{};
       return {
         createAgent: (spec: JsonObject) => {
           // Professional agent creation with performance optimization
@@ -585,7 +585,7 @@ export class AgentRegistry extends TypedEventBase {
   private createAgentSelector() {
     return (registry: JsonObject) => {
       // Use registry for enhanced selection
-      const registryConfig = registry'' | '''' | ''{};
+      const registryConfig = registry||{};
       return {
         selectAgents: async (criteria: JsonObject) => {
           // Intelligent agent selection algorithm
@@ -596,20 +596,20 @@ export class AgentRegistry extends TypedEventBase {
             .sort((a, b) => {
               if (criteria.prioritizeBy ==='performance') {
                 return (
-                  (b.performance?.successRate'' | '''' | ''0) -
-                  (a.performance?.successRate'' | '''' | ''0)
+                  (b.performance?.successRate||0) -
+                  (a.performance?.successRate||0)
                 );
               } else if (criteria.prioritizeBy ==='availability') {
                 return (
-                  (a.performance?.tasksInProgress'' | '''' | ''0) -
-                  (b.performance?.tasksInProgress'' | '''' | ''0)
+                  (a.performance?.tasksInProgress||0) -
+                  (b.performance?.tasksInProgress||0)
                 );
               } else if (criteria.prioritizeBy ==='load') {
-                return (a.loadFactor'' | '''' | ''0) - (b.loadFactor'' | '''' | ''0);
+                return (a.loadFactor||0) - (b.loadFactor||0);
               }
               return 0;
             })
-            .slice(0, criteria.maxResults'' | '''' | ''10);
+            .slice(0, criteria.maxResults||10);
         },
       };
     };
@@ -632,7 +632,7 @@ export class AgentRegistry extends TypedEventBase {
             const scoreB = this.calculateAgentScore(b);
             return scoreB - scoreA;
           })
-          .slice(0, criteria.maxResults'' | '''' | ''5);
+          .slice(0, criteria.maxResults||5);
       },
     });
   }
@@ -641,16 +641,16 @@ export class AgentRegistry extends TypedEventBase {
    * Helper: Calculate agent performance score
    */
   private calculateAgentScore(agent: JsonValue): number {
-    const performance = agent.performance'' | '''' | ''{};
-    const health = agent.health'' | '''' | ''0.5;
-    const loadFactor = agent.loadFactor'' | '''' | ''0.5;
+    const performance = agent.performance||{};
+    const health = agent.health||0.5;
+    const loadFactor = agent.loadFactor||0.5;
 
     // Weighted scoring algorithm
     return (
-      (performance.successRate'' | '''' | ''0.8) * 0.4 +
+      (performance.successRate||0.8) * 0.4 +
       health * 0.3 +
       (1 - loadFactor) * 0.2 +
-      (1 / (performance.averageResponseTime'' | '''' | ''1000)) * 0.1
+      (1 / (performance.averageResponseTime||1000)) * 0.1
     );
   }
 
@@ -670,7 +670,7 @@ export class AgentRegistry extends TypedEventBase {
         }
         return true;
       })
-      .slice(0, criteria.maxResults'' | '''' | ''10);
+      .slice(0, criteria.maxResults||10);
   }
 }
 

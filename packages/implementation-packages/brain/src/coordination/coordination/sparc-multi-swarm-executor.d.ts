@@ -22,15 +22,15 @@ import { type ABTestStrategy } from './multi-swarm-ab-testing';
  */
 export interface SPARCStrategy extends ABTestStrategy {
   sparcConfig: {
-    methodology:' | ''full-sparc'' | ''rapid-sparc'' | ''quality-sparc'' | ''performance-sparc';
+    methodology:|full-sparc|rapid-sparc|quality-sparc|'performance-sparc';
     phaseOptimization: {
-      specification: 'detailed'' | ''concise'' | ''user-driven';
-      pseudocode: 'algorithmic'' | ''high-level'' | ''step-by-step';
-      architecture: 'microservices'' | ''monolithic'' | ''layered'' | ''event-driven';
-      refinement: 'performance'' | ''quality'' | ''maintainability';
-      completion: 'mvp'' | ''production-ready'' | ''enterprise-grade';
+      specification: 'detailed|concise|user-driven';
+      pseudocode: 'algorithmic|high-level|step-by-step';
+      architecture: 'microservices|monolithic|layered|event-driven';
+      refinement: 'performance|quality|maintainability';
+      completion: 'mvp|production-ready|enterprise-grade';
     };
-    gitTreeStrategy: 'isolated'' | ''shared'' | ''hybrid';
+    gitTreeStrategy: 'isolated|shared|hybrid';
     intelligentSystems: {
       usePromptGeneration: boolean;
       useBehavioralIntelligence: boolean;
@@ -86,7 +86,7 @@ export interface SPARCMultiSwarmResult {
   comparison: {
     winner: SPARCStrategy;
     confidence: number;
-    significance: 'high'' | ''medium'' | ''low'' | ''none';
+    significance: 'high|medium|low|none';
     sparcPerformanceDelta: Record<string, number>;
     qualityDelta: Record<string, number>;
   };
@@ -132,7 +132,7 @@ export declare class SPARCMultiSwarmExecutor {
    * Create predefined SPARC strategy sets for common scenarios
    */
   createSPARCStrategySet(
-    scenario:' | ''rapid-development'' | ''quality-focused'' | ''enterprise-grade'' | ''comprehensive'): SPARCStrategy[];
+    scenario:|rapid-development|quality-focused|enterprise-grade|'comprehensive'): SPARCStrategy[];
   /**
    * Execute SPARC strategies in parallel with git tree isolation
    */
@@ -179,7 +179,7 @@ export declare class SPARCMultiSwarmExecutor {
  */
 export declare function quickSPARCTest(
   taskDescription: string,
-  scenario?:' | ''rapid-development'' | ''quality-focused'' | ''enterprise-grade'' | ''comprehensive',
+  scenario?:|rapid-development|quality-focused|enterprise-grade|'comprehensive',
   options?: {
     useGitTrees?: boolean;
     timeoutMs?: number;

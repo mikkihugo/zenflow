@@ -22,7 +22,7 @@ export interface CodeQLConfig {
 }
 
 // Supported Languages
-export type CodeQLLanguage ='' | '''javascript | typescript' | 'python''' | '''java | csharp' | 'cpp''' | '''go | ruby' | 'swift''' | '''kotlin';
+export type CodeQLLanguage =|'javascript|typescript|python|java|csharp|cpp|go | ruby'|swift|kotlin'';
 
 // Database Management
 export interface CodeQLDatabase {
@@ -81,7 +81,7 @@ export interface QueryPack {
 
 export interface QueryExecutionOptions {
   /** Output format for results */
-  format: 'sarif-latest''' | '''sarif-2.1.0''' | '''csv''' | '''json';
+  format: 'sarif-latest|sarif-2.1.0'||csv|json'';
   /** Output file path */
   outputPath?: string;
   /** Maximum number of results per query */
@@ -146,7 +146,7 @@ export interface SARIFRule {
   fullDescription?: SARIFMessage;
   /** Default severity level */
   defaultConfiguration?: {
-    level: 'error | warning' | 'note''' | '''info';
+    level: 'error|warning|note|info';
     rank?: number;
   };
   /** Help information */
@@ -169,7 +169,7 @@ export interface SARIFAnalysisResult {
   /** Code flows (for taint tracking) */
   codeFlows?: SARIFCodeFlow[];
   /** Result severity level */
-  level?: 'error | warning' | 'note''' | '''info';
+  level?: 'error|warning|note|info';
   /** Analysis target */
   analysisTarget?: SARIFArtifactLocation;
   /** Result properties */
@@ -268,7 +268,7 @@ export interface SARIFThreadFlowLocation {
   /** Execution order */
   executionOrder?: number;
   /** Location importance */
-  importance?: 'important | essential' | 'unimportant';
+  importance?: 'important|essential|unimportant';
 }
 
 export interface SARIFArtifact {
@@ -334,7 +334,7 @@ export interface SARIFNotification {
   /** Notification message */
   message: SARIFMessage;
   /** Severity level */
-  level?: 'error | warning' | 'note''' | '''info';
+  level?: 'error|warning|note|info';
   /** Associated locations */
   locations?: SARIFLocation[];
 }
@@ -383,7 +383,7 @@ export interface CodeQLFinding {
   /** Rule name */
   ruleName?: string;
   /** Severity level */
-  severity: 'error | warning' | 'note''' | '''info';
+  severity: 'error|warning|note|info';
   /** Primary file path */
   filePath: string;
   /** Primary location */
@@ -431,7 +431,7 @@ export interface DataFlowPath {
   /** Sink of the flow */
   sink: SourceLocation;
   /** Flow type */
-  type: 'taint | value' | 'control';
+  type: 'taint|value|control';
 }
 
 export interface DataFlowStep {
@@ -451,9 +451,9 @@ export interface SecurityClassification {
   /** OWASP Top 10 category */
   owaspCategory?: string;
   /** Security severity */
-  securitySeverity: 'critical | high' | 'medium''' | '''low';
+  securitySeverity: 'critical|high|medium|low';
   /** Attack vector */
-  attackVector?: 'network | adjacent' | 'local''' | '''physical';
+  attackVector?: 'network|adjacent|local|physical';
   /** Exploitability score (0-1) */
   exploitability?: number;
 }
@@ -468,7 +468,7 @@ export interface FixSuggestion {
   /** Confidence in fix (0-1) */
   confidence: number;
   /** Fix type */
-  type: 'replace | insert' | 'delete''' | '''rewrite';
+  type: 'replace|insert|delete|rewrite';
 }
 
 export interface TextReplacement {
@@ -511,9 +511,9 @@ export interface AnalysisMetrics {
 // Error Types
 export interface CodeQLError extends Error {
   /** Error type */
-  type: 'config | database' | 'query' | 'parse' | 'system';
+  type: 'config|database|query|parse|system';
   /** Error code */
-  code?: string'' | ''number;
+  code?: string|number;
   /** Command that failed */
   command?: string;
   /** Exit code */

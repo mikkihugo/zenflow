@@ -359,7 +359,7 @@ export class ProgramIncrementManager extends TypedEventBase {
       featureName: feature.name,
       description: feature.description,
       businessValue: feature.businessValue,
-      complexity: feature.stories?.length'' | '''' | ''5, // Use story count as complexity
+      complexity: feature.stories?.length||5, // Use story count as complexity
       requiredSkills: ['general'],
       priority: 'medium' as const,
       dependencies: [],
@@ -427,7 +427,7 @@ export class ProgramIncrementManager extends TypedEventBase {
       piId,
       progress: currentMetrics.progressPercentage,
       predictability:
-        currentMetrics.predictabilityMetrics?.overallPredictability'' | '''' | ''0,
+        currentMetrics.predictabilityMetrics?.overallPredictability||0,
     });
 
     this.emit('pi-progress-updated', { piId, metrics: currentMetrics });
@@ -566,12 +566,12 @@ export class ProgramIncrementManager extends TypedEventBase {
         this.state = {
           ...this.state,
           ...state,
-          activeARTs: new Map(state.activeARTs'' | '''' | ''[]),
-          activePIs: new Map(state.activePIs'' | '''' | ''[]),
-          piMetrics: new Map(state.piMetrics'' | '''' | ''[]),
-          teamCapacities: new Map(state.teamCapacities'' | '''' | ''[]),
-          dependencyMatrix: new Map(state.dependencyMatrix'' | '''' | ''[]),
-          riskRegister: new Map(state.riskRegister'' | '''' | ''[]),
+          activeARTs: new Map(state.activeARTs||[]),
+          activePIs: new Map(state.activePIs||[]),
+          piMetrics: new Map(state.piMetrics||[]),
+          teamCapacities: new Map(state.teamCapacities||[]),
+          dependencyMatrix: new Map(state.dependencyMatrix||[]),
+          riskRegister: new Map(state.riskRegister||[]),
         };
         this.logger.info('PI Manager state loaded');
       }
@@ -689,7 +689,7 @@ export class ProgramIncrementManager extends TypedEventBase {
         enablers: [],
         status: 'planned' as any,
         owner: 'product-owner',
-        team: teamCapacities[0]?.teamId'' | '''' | '''team-1',
+        team: teamCapacities[0]?.teamId||'team-1',
       },
     ];
   }

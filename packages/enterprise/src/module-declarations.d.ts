@@ -36,41 +36,6 @@ declare module '@claude-zen/agent-manager' {
   }
 }
 
-declare module '@claude-zen/coordination-core' {
-  export class QueenCoordinator {
-    initialize(): Promise<this>;
-  }
-  export class SwarmCommander {
-    execute(command: any): Promise<any>;
-  }
-  export class CoordinationEventBus {
-    emit(event: any): void;
-  }
-  export class CoordinationEngine {
-    start(): Promise<void>;
-  }
-  export class TaskCoordinator {
-    coordinate(task: any): Promise<any>;
-  }
-  export interface QueenConfig {
-    [key: string]: any;
-  }
-  export interface CoordinationMetrics {
-    [key: string]: any;
-  }
-  export interface SwarmConfig {
-    [key: string]: any;
-  }
-  export interface TaskConfig {
-    [key: string]: any;
-  }
-  export interface CoordinationEvent {
-    [key: string]: any;
-  }
-  export interface CoordinationResult {
-    [key: string]: any;
-  }
-}
 
 declare module '@claude-zen/multi-level-orchestration' {
   export class MultiLevelOrchestrationManager {

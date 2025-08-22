@@ -170,7 +170,7 @@ export class RelationalDao<T>
 
     // Handle common SQL data type conversions
     for (const [key, value] of Object.entries(row)) {
-      if (value === null'' | '''' | ''value === undefined) {
+      if (value === null||value === undefined) {
         entity[key] = value;
         continue;
       }
@@ -195,7 +195,7 @@ export class RelationalDao<T>
       if (this.isDateColumn(key)) {
         if (value instanceof Date) {
           entity[key] = value;
-        } else if (typeof value === 'string''' | '''' | ''typeof value ==='number') {
+        } else if (typeof value === 'string'||typeof value ==='number') {
           entity[key] = new Date(value);
         } else {
           entity[key] = value;
@@ -260,7 +260,7 @@ export class RelationalDao<T>
     const row = {} as Record<string, unknown>;
 
     for (const [key, value] of Object.entries(entity)) {
-      if (value === null'' | '''' | ''value === undefined) {
+      if (value === null||value === undefined) {
         row[key] = value;
         continue;
       }
@@ -268,7 +268,7 @@ export class RelationalDao<T>
       // Handle JSON columns - serialize objects/arrays
       if (
         this.isJsonColumn(key) &&
-        (typeof value ==='object''' | '''' | ''Array.isArray(value))
+        (typeof value ==='object'||Array.isArray(value))
       ) {
         row[key] = JSON.stringify(value);
         continue;
@@ -278,7 +278,7 @@ export class RelationalDao<T>
       if (this.isDateColumn(key)) {
         if (value instanceof Date) {
           row[key] = value.toISOString();
-        } else if (typeof value ==='string''' | '''' | ''typeof value ==='number') {
+        } else if (typeof value ==='string'||typeof value ==='number') {
           row[key] = new Date(value).toISOString();
         } else {
           row[key] = value;
@@ -447,7 +447,7 @@ export class RelationalDao<T>
    * interface Order {
    *   id: string;
    *   total: number;
-   *   status: 'pending | completed' | 'cancelled';
+   *   status: 'pending|completed|cancelled';
    *   createdAt: Date;
    * }
    *
@@ -471,7 +471,7 @@ export class RelationalDao<T>
    * ```
    */
   async aggregate(
-    aggregateFunction: 'COUNT | SUM' | 'AVG' | 'MIN' | 'MAX',
+    aggregateFunction: 'COUNT|SUM|AVG|MIN|MAX',
     column: string = '*',
     criteria?: Partial<T>
   ): Promise<number> {
@@ -482,14 +482,14 @@ export class RelationalDao<T>
     try {
       const whereClause = criteria
         ? this.buildWhereClause(this.mapEntityToRow(criteria))
-        : '';
+        : ';
       const sql = `SELECT ${aggregateFunction}(${column}) as result FROM ${this.tableName} ${whereClause}`;
       const params = criteria
         ? Object.values(this.mapEntityToRow(criteria))
         : [];
 
       const result = await this.adapter.query(sql, params);
-      return Number((result?.rows?.[0] as any)?.result'' | '''' | ''0);
+      return Number((result?.rows?.[0] as any)?.result|'|0);
     } catch (error) {
       this.logger.error(`Aggregate query failed: ${error}`);
       throw new Error(
@@ -579,7 +579,7 @@ export class RelationalDao<T>
         this.mapEntityToRow(entity as Partial<T>)
       );
 
-      if (mappedEntities.length === 0'' | '''' | ''!mappedEntities[0]) {
+      if (mappedEntities.length === 0||!mappedEntities[0]) {
         throw new Error('No valid entities to insert');
       }
 
@@ -695,7 +695,7 @@ export class RelationalDao<T>
       ];
 
       const result = await this.adapter.query(sql, params);
-      return result?.rowCount'' | '''' | ''0;
+      return result?.rowCount||0;
     } catch (error) {
       this.logger.error(`Update many failed: ${error}`);
       throw new Error(
@@ -774,7 +774,7 @@ export class RelationalDao<T>
       const params = Object.values(mappedCriteria);
 
       const result = await this.adapter.query(sql, params);
-      return result?.rowCount'' | '''' | ''0;
+      return result?.rowCount||0;
     } catch (error) {
       this.logger.error(`Delete many failed: ${error}`);
       throw new Error(
@@ -951,7 +951,7 @@ export class RelationalDao<T>
    * // Group by day for trending analysis
    * const activityByDay = recentActivity.reduce((acc, log) => {
    *   const day = log.timestamp.toISOString().split('T')[0];
-   *   acc[day] = (acc[day]'' | '''' | ''0) + 1;
+   *   acc[day] = (acc[day]||0) + 1;
    *   return acc;
    * }, {} as Record<string, number>);
    * ```
@@ -997,25 +997,25 @@ export class RelationalDao<T>
    */
   private isJsonColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'json''' | '''' | ''columnName.endsWith('_json')'' | '''' | ''columnName ==='metadata''' | '''' | ''columnName ==='properties''' | '''' | ''columnName ==='data'
+      (this.entitySchema as any)?.[columnName]?.type === 'json'||columnName.endsWith('_json')||columnName ==='metadata'||columnName ==='properties'||columnName ==='data'
     );
   }
 
   private isBooleanColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'boolean''' | '''' | ''columnName.startsWith('is_')'' | '''' | ''columnName.startsWith('has_')'' | '''' | ''columnName.endsWith('_flag')'' | '''' | ''['active', 'enabled', 'visible', 'deleted'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'boolean'||columnName.startsWith('is_')||columnName.startsWith('has_')||columnName.endsWith('_flag')||['active', 'enabled', 'visible', 'deleted'].includes(columnName)
     );
   }
 
   private isDateColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'date''' | '''' | ''(this.entitySchema as any)?.[columnName]?.type ==='datetime''' | '''' | ''columnName.endsWith('_at')'' | '''' | ''columnName.endsWith('_date')'' | '''' | ''columnName.endsWith('_time')'' | '''' | ''['created', 'updated', 'deleted', 'timestamp'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'date'||(this.entitySchema as any)?.[columnName]?.type ==='datetime'||columnName.endsWith('_at')||columnName.endsWith('_date')||columnName.endsWith('_time')||['created', 'updated', 'deleted', 'timestamp'].includes(columnName)
     );
   }
 
   private isNumberColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'number''' | '''' | ''(this.entitySchema as any)?.[columnName]?.type ==='integer''' | '''' | ''(this.entitySchema as any)?.[columnName]?.type ==='float''' | '''' | ''columnName.endsWith('_id')'' | '''' | ''columnName.endsWith('_count')'' | '''' | ''columnName.endsWith('_size')'' | '''' | ''['id', 'count', 'size', 'length', 'duration'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'number'||(this.entitySchema as any)?.[columnName]?.type ==='integer'||(this.entitySchema as any)?.[columnName]?.type ==='float'||columnName.endsWith('_id')||columnName.endsWith('_count')||columnName.endsWith('_size')||['id', 'count', 'size', 'length', 'duration'].includes(columnName)
     );
   }
 

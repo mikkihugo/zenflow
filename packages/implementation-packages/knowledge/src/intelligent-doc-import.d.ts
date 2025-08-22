@@ -23,8 +23,8 @@
 import { TypedEventBase } from '@claude-zen/foundation';
 interface WorkflowGateRequest {
   id: string;
-  type: 'approval | decision' | 'input''' | '''confirmation';
-  gateType: 'approval | decision' | 'input''' | '''confirmation';
+  type: 'approval|decision|input|confirmation';
+  gateType: 'approval|decision|input|confirmation';
   workflowContext: {
     workflowId: string;
     stepName: string;
@@ -44,12 +44,12 @@ export interface IntelligentDocImportConfig {
   /** Swarm configuration for analysis */
   swarmConfig: {
     maxAgents: number;
-    topology: 'mesh | hierarchical' | 'star';
+    topology: 'mesh|hierarchical|star';
     enableUltraThink: boolean;
   };
   /** Database configuration */
   databaseConfig: {
-    type: 'postgresql | sqlite' | 'mysql';
+    type: 'postgresql|sqlite|mysql';
     connectionString?: string;
   };
   /** Analysis configuration */
@@ -69,9 +69,9 @@ export interface IntelligentDocImportConfig {
  */
 export interface FileAnalysisResult {
   filePath: string;
-  fileType: 'document | code' | 'config''' | '''other';
+  fileType: 'document|code|config|other';
   /** Document classification (if document) */
-  documentType?:'' | '''vision | adr' | 'prd''' | '''epic | feature' | 'task''' | '''spec';
+  documentType?:|'vision|adr|prd|epic|feature|task|spec'';
   /** Documentation completeness (if code) */
   documentationScore?: {
     overall: number;
@@ -90,7 +90,7 @@ export interface FileAnalysisResult {
   };
   /** Recommended actions */
   recommendations: {
-    action: 'import | improve' | 'reject''' | '''manual_review';
+    action: 'import|improve|reject|manual_review';
     reasoning: string;
     improvements?: string[];
     confidence: number;
@@ -115,7 +115,7 @@ export interface ImportWorkflowResult {
     summary: string;
     keyFindings: string[];
     suggestedActions: string[];
-    estimatedEffort: 'low | medium' | 'high';
+    estimatedEffort: 'low|medium|high';
   };
   /** Approval gates created */
   approvalGates: WorkflowGateRequest[];

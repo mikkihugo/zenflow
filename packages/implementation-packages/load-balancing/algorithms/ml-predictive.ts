@@ -97,7 +97,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   };
 
   constructor(predictionEngine?: PredictionEngine) {
-    this.predictionEngine = predictionEngine'' | '''' | ''new DefaultPredictionEngine();
+    this.predictionEngine = predictionEngine||new DefaultPredictionEngine();
     this.brainJsConfig = {
       latencyNetwork: null,
       successNetwork: null,
@@ -180,7 +180,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     this.config = { ...this.config, ...config };
 
     // Retrain models if configuration changed significantly
-    if (config?.modelEnsembleWeights'' | '''' | ''config?.adaptiveLearningRate) {
+    if (config?.modelEnsembleWeights||config?.adaptiveLearningRate) {
       await this.retrainModels();
     }
   }
@@ -389,12 +389,12 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       estimatedDuration: task.estimatedDuration,
       timeOfDay: now.getHours(),
       dayOfWeek: now.getDay(),
-      currentLoad: metrics?.activeTasks'' | '''' | ''0,
-      avgResponseTime: metrics?.responseTime'' | '''' | ''1000,
-      errorRate: metrics?.errorRate'' | '''' | ''0,
-      cpuUsage: metrics?.cpuUsage'' | '''' | ''0,
-      memoryUsage: metrics?.memoryUsage'' | '''' | ''0,
-      recentThroughput: metrics?.throughput'' | '''' | ''0,
+      currentLoad: metrics?.activeTasks||0,
+      avgResponseTime: metrics?.responseTime||1000,
+      errorRate: metrics?.errorRate||0,
+      cpuUsage: metrics?.cpuUsage||0,
+      memoryUsage: metrics?.memoryUsage||0,
+      recentThroughput: metrics?.throughput||0,
       historicalSuccessRate: this.getHistoricalSuccessRate(agent.id, task.type),
       agentCapability: this.calculateAgentCapability(agent, task),
     };
@@ -443,7 +443,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     let totalWeight = 0;
 
     for (const [modelType, prediction] of predictions) {
-      let weight = weights[modelType as keyof typeof weights]'' | '''' | ''0;
+      let weight = weights[modelType as keyof typeof weights]||0;
 
       // Give brain.js higher weight if it's available and confident
       if (modelType === 'brainjs'&& prediction.confidence > 0.7) {
@@ -479,7 +479,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    */
   private async getBrainJsPrediction(
     features: MLFeatures
-  ): Promise<any'' | ''null> {
+  ): Promise<any|null> {
     if (!this.brainJsConfig.initialized) {
       return null;
     }
@@ -598,7 +598,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    * Retrain brain.js neural networks with historical data.
    */
   private async retrainBrainJsModels(): Promise<void> {
-    if (!this.brainJsConfig.initialized'' | '''' | ''this.historicalData.length < 50) {
+    if (!this.brainJsConfig.initialized||this.historicalData.length < 50) {
       return; // Need at least 50 samples for neural network training
     }
 
@@ -607,7 +607,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       const brainJsData = this.prepareBrainJsTrainingData();
 
       if (
-        brainJsData.latencyData.length === 0'' | '''' | ''brainJsData.successData.length === 0
+        brainJsData.latencyData.length === 0||brainJsData.successData.length === 0
       ) {
         logger.warn('Insufficient data for brain.js retraining');
         return;
@@ -704,7 +704,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     return (
       // Retrain every 500 new data points
-      timeSinceRetraining > this.config.retrainingInterval'' | '''' | ''this.historicalData.length % 500 === 0
+      timeSinceRetraining > this.config.retrainingInterval||this.historicalData.length % 500 === 0
     );
   }
 
@@ -746,7 +746,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       alternativeAgents: availableAgents
         .filter((a) => a.id !== bestAgent.id)
         .slice(0, 2),
-      estimatedLatency: metrics.get(bestAgent.id)?.responseTime'' | '''' | ''1000,
+      estimatedLatency: metrics.get(bestAgent.id)?.responseTime||1000,
       expectedQuality: 0.7,
     };
   }

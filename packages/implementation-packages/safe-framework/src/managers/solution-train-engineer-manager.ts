@@ -37,25 +37,25 @@ export interface SolutionContext {
   solutionId: string;
   solutionName: string;
   domain: string;
-  complexity: 'moderate''' | '''high''' | '''very-high';
+  complexity: 'moderate|high'||very-high';
   artCount: number;
   teamCount: number;
   stakeholderCount: number;
   complianceRequirements: string[];
   businessValue: string;
-  strategicImportance: 'low | medium' | 'high''' | '''critical';
+  strategicImportance: 'low|medium|high|critical';
 }
 
 export interface ARTCoordinationConfig {
-  coordinationStrategy: 'hierarchical | network' | 'hybrid';
-  synchronizationFrequency: 'daily''' | '''weekly''' | '''bi-weekly';
+  coordinationStrategy: 'hierarchical|network|hybrid';
+  synchronizationFrequency: 'daily|weekly'||bi-weekly';
   dependencyManagement: DependencyManagementStrategy;
   escalationMatrix: EscalationRule[];
   communicationProtocols: CommunicationProtocol[];
 }
 
 export interface SolutionPlanningConfig {
-  planningApproach: 'big-room''' | '''distributed''' | '''hybrid';
+  planningApproach: 'big-room|distributed'||hybrid';
   planningHorizon: number;
   stakeholderInvolvement: StakeholderInvolvement[];
   riskManagement: RiskManagementStrategy;
@@ -63,7 +63,7 @@ export interface SolutionPlanningConfig {
 }
 
 export interface SolutionGovernanceConfig {
-  framework: 'lightweight | standard' | 'comprehensive';
+  framework: 'lightweight|standard|comprehensive';
   decisionRights: DecisionRight[];
   complianceRequirements: ComplianceRequirement[];
   auditRequirements: AuditRequirement[];
@@ -71,8 +71,8 @@ export interface SolutionGovernanceConfig {
 
 export interface SolutionMetricsConfig {
   kpiFramework: string;
-  measurementFrequency: 'real-time''' | '''daily | weekly' | 'monthly';
-  reportingCadence: 'weekly | monthly' | 'quarterly';
+  measurementFrequency: 'real-time|daily | weekly'|monthly';
+  reportingCadence: 'weekly|monthly|quarterly';
   stakeholderReporting: StakeholderReportingConfig[];
 }
 
@@ -222,12 +222,12 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
   private solutionPlanningService: any;
   private solutionArchitectureManagementService: any;
   private initialized = false;
-  private configuration: SolutionTrainEngineerConfig'' | ''null = null;
+  private configuration: SolutionTrainEngineerConfig|null = null;
 
   constructor(config?: SolutionTrainEngineerConfig) {
     super();
     this.logger = getLogger('SolutionTrainEngineerManager');
-    this.config = config'' | '''' | ''null;
+    this.config = config||null;
   }
 
   /**
@@ -503,13 +503,13 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
       artCount: this.config?.solutionContext.artCount,
       teamCount: this.config?.solutionContext.teamCount,
       dependencies:
-        this.multiARTCoordinationService?.getAllDependencies?.()'' | '''' | ''[],
-      commitments: this.solutionPlanningService?.getAllCommitments?.()'' | '''' | ''[],
-      risks: this.solutionPlanningService?.getAllRisks?.()'' | '''' | ''[],
+        this.multiARTCoordinationService?.getAllDependencies?.()||[],
+      commitments: this.solutionPlanningService?.getAllCommitments?.()||[],
+      risks: this.solutionPlanningService?.getAllRisks?.()||[],
       architecturalDecisions:
-        this.solutionArchitectureManagementService?.getAllArchitecturalDecisions?.()'' | '''' | ''[],
+        this.solutionArchitectureManagementService?.getAllArchitecturalDecisions?.()||[],
       runwayComponents:
-        this.solutionArchitectureManagementService?.getAllRunwayComponents?.()'' | '''' | ''[],
+        this.solutionArchitectureManagementService?.getAllRunwayComponents?.()||[],
     };
   }
 

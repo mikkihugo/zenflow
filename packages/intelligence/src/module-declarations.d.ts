@@ -50,7 +50,7 @@ declare module '@claude-zen/llm-providers' {
     name: string;
     models: string[];
     capabilities: string[];
-    status: 'available''' | '''unavailable';
+    status: 'available|unavailable'';
   }
 
   export interface LLMProviderConfig {
@@ -123,7 +123,7 @@ declare module '@claude-zen/llm-providers' {
   }
 
   export function createLLMProvider(
-    type: 'claude | openai' | 'anthropic' | string,
+    type: 'claude|openai|anthropic || string,
     config?: LLMProviderConfig
   ): LLMProvider;
   export function getLLMProviderByCapability(capability: string): LLMProvider;

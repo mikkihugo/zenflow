@@ -46,7 +46,7 @@ export interface FlowOptimizationConfig {
  * AI model configuration
  */
 export interface AIModelConfig {
-  readonly modelType:' | ''neural_network'' | ''genetic_algorithm'' | ''reinforcement_learning'' | ''hybrid';
+  readonly modelType:|neural_network|genetic_algorithm|reinforcement_learning|'hybrid';
   readonly learningRate: number;
   readonly trainingData: TrainingDataConfig;
   readonly validationThreshold: number;
@@ -82,7 +82,7 @@ export interface OptimizationScope {
   readonly excludeStages: string[];
   readonly focusAreas: FocusArea[];
   readonly optimizationHorizon: number; // days
-  readonly granularity: 'stage'' | ''team'' | ''individual';
+  readonly granularity: 'stage|team|individual';
 }
 
 /**
@@ -122,7 +122,7 @@ export interface BudgetConstraint {
  * Budget allocation
  */
 export interface BudgetAllocation {
-  readonly category: 'people'' | ''technology'' | ''process'' | ''training';
+  readonly category: 'people|technology|process|training';
   readonly percentage: number;
   readonly maxAmount: number;
 }
@@ -133,7 +133,7 @@ export interface BudgetAllocation {
 export interface ROIRequirement {
   readonly minimumROI: number; // percentage
   readonly timeToROI: number; // months
-  readonly calculation:' | ''net_present_value'' | ''internal_rate_return'' | ''payback_period';
+  readonly calculation:|net_present_value|internal_rate_return|'payback_period';
 }
 
 /**
@@ -182,7 +182,7 @@ export interface ResourceConstraint {
  */
 export interface SkillConstraint {
   readonly skill: string;
-  readonly requiredLevel: 'beginner'' | ''intermediate'' | ''advanced'' | ''expert';
+  readonly requiredLevel: 'beginner|intermediate|advanced|expert';
   readonly availableCapacity: number; // hours
   readonly trainingOptions: TrainingOption[];
 }
@@ -242,7 +242,7 @@ export interface QualityMetric {
  * Testing requirement
  */
 export interface TestingRequirement {
-  readonly testType: 'unit'' | ''integration'' | ''system'' | ''acceptance';
+  readonly testType: 'unit|integration|system|acceptance';
   readonly coverage: number; // percentage
   readonly automated: boolean;
   readonly duration: number; // hours
@@ -336,7 +336,7 @@ export enum RiskTolerance {
  * Change management preference
  */
 export interface ChangeManagementPreference {
-  readonly approach: 'big_bang'' | ''phased'' | ''pilot'' | ''gradual';
+  readonly approach: 'big_bang|phased|pilot|gradual';
   readonly stakeholderInvolvement: StakeholderInvolvement[];
   readonly communicationPlan: CommunicationPlan;
   readonly trainingRequirements: TrainingRequirement[];
@@ -348,8 +348,8 @@ export interface ChangeManagementPreference {
 export interface StakeholderInvolvement {
   readonly stakeholder: string;
   readonly role: string;
-  readonly involvement:' | ''inform'' | ''consult'' | ''involve'' | ''collaborate'' | ''empower';
-  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''milestone';
+  readonly involvement:|inform|consult|involve|collaborate|'empower';
+  readonly frequency: 'daily|weekly|monthly|milestone';
 }
 
 /**
@@ -366,7 +366,7 @@ export interface CommunicationPlan {
  * Communication channel
  */
 export interface CommunicationChannel {
-  readonly channelType: 'email'' | ''slack'' | ''teams'' | ''meeting'' | ''dashboard';
+  readonly channelType: 'email|slack|teams|meeting|dashboard';
   readonly audience: string[];
   readonly purpose: string;
   readonly frequency: string;
@@ -376,7 +376,7 @@ export interface CommunicationChannel {
  * Feedback mechanism
  */
 export interface FeedbackMechanism {
-  readonly mechanismType: 'survey'' | ''interview'' | ''observation'' | ''metrics';
+  readonly mechanismType: 'survey|interview|observation|metrics';
   readonly frequency: string;
   readonly participants: string[];
   readonly purpose: string;
@@ -389,8 +389,8 @@ export interface TrainingRequirement {
   readonly trainingType: string;
   readonly audience: string[];
   readonly duration: number; // hours
-  readonly delivery: 'classroom'' | ''online'' | ''hands_on'' | ''hybrid';
-  readonly timing: 'before'' | ''during'' | ''after';
+  readonly delivery: 'classroom|online|hands_on|hybrid';
+  readonly timing: 'before|during|after';
 }
 
 /**
@@ -407,7 +407,7 @@ export enum AutomationLevel {
  */
 export interface MonitoringRequirement {
   readonly metricName: string;
-  readonly frequency: 'real_time'' | ''hourly'' | ''daily'' | ''weekly';
+  readonly frequency: 'real_time|hourly|daily|weekly';
   readonly alertThreshold: number;
   readonly dashboard: boolean;
   readonly reporting: ReportingRequirement;
@@ -417,9 +417,9 @@ export interface MonitoringRequirement {
  * Reporting requirement
  */
 export interface ReportingRequirement {
-  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''quarterly';
+  readonly frequency: 'daily|weekly|monthly|quarterly';
   readonly audience: string[];
-  readonly format: 'dashboard'' | ''report'' | ''email'' | ''presentation';
+  readonly format: 'dashboard|report|email|presentation';
   readonly content: string[];
 }
 
@@ -548,7 +548,7 @@ export interface ImplementationMilestone {
  * Required resource
  */
 export interface RequiredResource {
-  readonly resourceType: 'people'' | ''technology'' | ''budget'' | ''time';
+  readonly resourceType: 'people|technology|budget|time';
   readonly name: string;
   readonly quantity: number;
   readonly duration: number; // days
@@ -1160,7 +1160,7 @@ interface OptimizationStrategy {
   readonly strategyId: string;
   readonly name: string;
   readonly description: string;
-  readonly riskProfile: 'low'' | ''medium'' | ''high';
+  readonly riskProfile: 'low|medium|high';
   readonly timeline: number; // days
   readonly expectedROI: number; // percentage
   readonly recommendations: FlowOptimizationRecommendation[];
@@ -1187,7 +1187,7 @@ interface ExpectedOutcome {
   readonly description: string;
   readonly category: string;
   readonly probability: number; // 0-1
-  readonly impact: 'low'' | ''medium'' | ''high';
+  readonly impact: 'low|medium|high';
   readonly timeframe: number; // days
   readonly metrics: PredictedMetric[];
 }
@@ -1202,7 +1202,7 @@ interface PredictedMetric {
 
 interface RiskAssessment {
   readonly assessmentId: string;
-  readonly overallRisk: 'low'' | ''medium'' | ''high';
+  readonly overallRisk: 'low|medium|high';
   readonly riskScore: number; // 0-100
   readonly topRisks: Risk[];
   readonly mitigationPlan: MitigationPlan;

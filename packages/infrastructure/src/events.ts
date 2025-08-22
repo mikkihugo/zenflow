@@ -28,9 +28,9 @@ const logger = getLogger('infrastructure-events');
  * Custom error types for event system operations
  */
 export class EventSystemError extends Error {
-  public override cause?: Error'' | ''undefined;
+  public override cause?: Error|undefined;
 
-  constructor(message: string, cause?: Error'' | ''undefined) {
+  constructor(message: string, cause?: Error|undefined) {
     super(message);
     this.name ='EventSystemError';
     this.cause = cause;
@@ -38,7 +38,7 @@ export class EventSystemError extends Error {
 }
 
 export class EventSystemConnectionError extends EventSystemError {
-  constructor(message: string, cause?: Error'' | ''undefined) {
+  constructor(message: string, cause?: Error|undefined) {
     super(message, cause);
     this.name ='EventSystemConnectionError';
   }
@@ -97,7 +97,7 @@ export interface EventSystemConfig {
  * Implementation of event system access via runtime delegation
  */
 class EventSystemAccessImpl implements EventSystemAccess {
-  private eventSystemModule: EventSystemModule'' | ''null = null;
+  private eventSystemModule: EventSystemModule|null = null;
 
   private async getEventSystemModule(): Promise<EventSystemModule> {
     if (!this.eventSystemModule) {
@@ -142,7 +142,7 @@ class EventSystemAccessImpl implements EventSystemAccess {
 }
 
 // Global singleton instance
-let globalEventSystemAccess: EventSystemAccess'' | ''null = null;
+let globalEventSystemAccess: EventSystemAccess|null = null;
 
 /**
  * Get event system access interface (singleton pattern)

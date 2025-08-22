@@ -43,7 +43,7 @@ export interface PICompletionWorkflowConfig {
 export interface CompletionStakeholder {
   readonly userId: string;
   readonly name: string;
-  readonly role:' | ''product-owner'' | ''rte'' | ''business-owner'' | ''team-lead'' | ''architect';
+  readonly role:|product-owner|rte|business-owner|team-lead|'architect';
   readonly responsibilities: string[];
   readonly signOffRequired: boolean;
 }
@@ -52,8 +52,8 @@ export interface CompletionDeliverable {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'report'' | ''metrics'' | ''documentation'' | ''presentation';
-  readonly status: 'pending'' | ''in-progress'' | ''completed'' | ''approved';
+  readonly type: 'report|metrics|documentation|presentation';
+  readonly status: 'pending|in-progress|completed|approved';
   readonly owner: string;
   readonly dueDate: Date;
   readonly dependencies: string[];
@@ -83,11 +83,11 @@ export interface WorkshopAgendaItem {
 }
 
 export interface ArchivalRequirement {
-  readonly category:' | ''metrics'' | ''decisions'' | ''lessons'' | ''artifacts'' | ''communications';
+  readonly category:|metrics|decisions|lessons|artifacts|'communications';
   readonly description: string;
   readonly retentionPeriod: number; // months
-  readonly accessLevel: 'public'' | ''internal'' | ''restricted';
-  readonly format: 'json'' | ''pdf'' | ''csv'' | ''archive';
+  readonly accessLevel: 'public|internal|restricted';
+  readonly format: 'json|pdf|csv|archive';
 }
 
 export interface PICompletionReport {
@@ -111,7 +111,7 @@ export interface PICompletionReport {
 }
 
 export interface Achievement {
-  readonly category:' | ''delivery'' | ''quality'' | ''innovation'' | ''collaboration'' | ''process';
+  readonly category:|delivery|quality|innovation|collaboration|'process';
   readonly title: string;
   readonly description: string;
   readonly impact: string;
@@ -120,7 +120,7 @@ export interface Achievement {
 }
 
 export interface Challenge {
-  readonly category:' | ''technical'' | ''process'' | ''resource'' | ''external'' | ''communication';
+  readonly category:|technical|process|resource|external|'communication';
   readonly title: string;
   readonly description: string;
   readonly impact: string;
@@ -131,21 +131,21 @@ export interface Challenge {
 }
 
 export interface LessonLearned {
-  readonly category:' | ''planning'' | ''execution'' | ''coordination'' | ''technical'' | ''leadership';
+  readonly category:|planning|execution|coordination|technical|'leadership';
   readonly lesson: string;
   readonly context: string;
   readonly outcome: string;
   readonly applicability: string[];
   readonly actionItems: string[];
-  readonly priority: 'high'' | ''medium'' | ''low';
+  readonly priority: 'high|medium|low';
 }
 
 export interface ImprovementRecommendation {
-  readonly area: 'process'' | ''tools'' | ''skills'' | ''communication'' | ''planning';
+  readonly area: 'process|tools|skills|communication|planning';
   readonly recommendation: string;
   readonly rationale: string;
   readonly expectedBenefit: string;
-  readonly implementationEffort: 'low'' | ''medium'' | ''high';
+  readonly implementationEffort: 'low|medium|high';
   readonly timeline: string;
   readonly owner: string;
   readonly successCriteria: string[];
@@ -195,7 +195,7 @@ export interface RiskTrend {
   readonly period: string;
   readonly riskCount: number;
   readonly avgProbability: number;
-  readonly trend: 'improving'' | ''stable'' | ''worsening';
+  readonly trend: 'improving|stable|worsening';
 }
 
 export interface BudgetAnalysis {
@@ -1172,6 +1172,6 @@ export interface CompletionTrendAnalysis {
   readonly trends: string[];
   readonly insights: string[];
   readonly periodAnalyzed: string;
-  readonly successRateTrend: 'improving'' | ''stable'' | ''declining';
+  readonly successRateTrend: 'improving|stable|declining';
   readonly recommendations: string[];
 }

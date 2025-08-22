@@ -20,7 +20,7 @@ export interface GitHubModelMetadata {
   provider: string;
   contextWindow: number;
   maxOutputTokens: number;
-  category: 'low | medium' | 'high''' | '''embedding';
+  category: 'low|medium|high|embedding';
   supportsVision: boolean;
   supportsMultimodal: boolean;
   rateLimits: {
@@ -596,7 +596,7 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
 class GitHubModelsDatabase {
   private models: Map<string, GitHubModelMetadata> = new Map();
   private lastUpdate: Date = new Date(0);
-  private updateInterval: NodeJS.Timeout'' | ''null = null;
+  private updateInterval: NodeJS.Timeout|null = null;
 
   /**
    * Initialize the database and start hourly updates
@@ -637,7 +637,7 @@ class GitHubModelsDatabase {
 
       for (const line of lines) {
         const [id, name] = line.split('\t');
-        if (!id'' | '''' | ''!name) continue;
+        if (!id||!name) continue;
 
         const provider = id.split('/')[0];
         const metadata = MODEL_CONTEXT_SIZES[id];
@@ -646,12 +646,12 @@ class GitHubModelsDatabase {
           id,
           name,
           provider,
-          contextWindow: metadata?.contextWindow'' | '''' | ''8000, // GitHub default is 8k
-          maxOutputTokens: metadata?.maxOutputTokens'' | '''' | ''4000, // GitHub default is 4k
-          category: metadata?.category'' | '''' | '''medium',
-          supportsVision: metadata?.supportsVision'' | '''' | ''false,
-          supportsMultimodal: metadata?.supportsMultimodal'' | '''' | ''false,
-          rateLimits: metadata?.rateLimits'' | '''' | ''{
+          contextWindow: metadata?.contextWindow||8000, // GitHub default is 8k
+          maxOutputTokens: metadata?.maxOutputTokens||4000, // GitHub default is 4k
+          category: metadata?.category||'medium',
+          supportsVision: metadata?.supportsVision||false,
+          supportsMultimodal: metadata?.supportsMultimodal||false,
+          rateLimits: metadata?.rateLimits||{
             requestsPerMinute: 15,
             requestsPerDay: 150,
             concurrentRequests: 5,
@@ -687,7 +687,7 @@ class GitHubModelsDatabase {
   /**
    * Get model by ID
    */
-  getModel(id: string): GitHubModelMetadata'' | ''undefined {
+  getModel(id: string): GitHubModelMetadata|undefined {
     return this.models.get(id);
   }
 
@@ -704,7 +704,7 @@ class GitHubModelsDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category:'low | medium' | 'high''' | '''embedding'): GitHubModelMetadata[] {
+    category:'low|medium|high|embedding'): GitHubModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model.category === category
     );
@@ -725,7 +725,7 @@ class GitHubModelsDatabase {
   getProviderStats(): string {
     const stats = new Map<string, number>();
     for (const model of this.models.values()) {
-      stats.set(model.provider, (stats.get(model.provider)'' | '''' | ''0) + 1);
+      stats.set(model.provider, (stats.get(model.provider)||0) + 1);
     }
     return Array.from(stats.entries())
       .map(([provider, count]) => `${provider}:${count}`)

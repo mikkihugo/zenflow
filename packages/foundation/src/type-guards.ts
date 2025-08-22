@@ -30,12 +30,12 @@ export function isFunction(value: unknown): value is Function {
   return typeof value === 'function';
 }
 
-export function isDefined<T>(value: T'' | ''undefined'' | ''null): value is T {
+export function isDefined<T>(value: T|undefined|null): value is T {
   return value !== undefined && value !== null;
 }
 
-export function isNullOrUndefined(value: unknown): value is null'' | ''undefined {
-  return value === null'' | '''' | ''value === undefined;
+export function isNullOrUndefined(value: unknown): value is null|undefined {
+  return value === null||value === undefined;
 }
 
 // Property checking
@@ -89,7 +89,7 @@ export function isErrorWithContext(
 }
 
 // Safe JSON operations
-export function safeJsonParse<T = unknown>(json: string): T'' | ''null {
+export function safeJsonParse<T = unknown>(json: string): T|null {
   try {
     return JSON.parse(json) as T;
   } catch {
@@ -97,7 +97,7 @@ export function safeJsonParse<T = unknown>(json: string): T'' | ''null {
   }
 }
 
-export function safeJsonStringify(value: unknown): string'' | ''null {
+export function safeJsonStringify(value: unknown): string|null {
   try {
     return JSON.stringify(value);
   } catch {
@@ -121,7 +121,7 @@ export function toBoolean(value: unknown): boolean {
 
 // Assertion utilities
 export function assertDefined<T>(
-  value: T'' | ''undefined'' | ''null,
+  value: T|undefined|null,
   message ='Value must be defined'
 ): asserts value is T {
   if (!isDefined(value)) {

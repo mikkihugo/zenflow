@@ -48,7 +48,7 @@ export interface CollectorConfig {
  */
 export interface ExporterConfig {
   /** Exporter type */
-  type:'' | '''jaeger''' | '''otlp-http''' | '''otlp-grpc''' | '''prometheus | console' | 'file';
+  type:|'jaeger|otlp-http'||otlp-grpc|prometheus | console'|file';
 
   /** Exporter name/identifier */
   name: string;
@@ -66,7 +66,7 @@ export interface ExporterConfig {
   timeout?: number;
 
   /** Which signals to export */
-  signals?: ('traces | metrics' | 'logs')[];
+  signals?: ('traces|metrics|logs')[];
 
   /** Exporter-specific configuration */
   config?: Record<string, any>;
@@ -77,7 +77,7 @@ export interface ExporterConfig {
  */
 export interface ProcessorConfig {
   /** Processor type */
-  type: 'batch | memory_limiter' | 'resource' | 'attribute' | 'sampling';
+  type: 'batch|memory_limiter|resource|attribute|sampling';
 
   /** Processor name */
   name: string;
@@ -160,13 +160,13 @@ export interface CollectorStats {
  */
 export interface HealthStatus {
   /** Overall health status */
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy|degraded|unhealthy';
 
   /** Individual exporter health */
   exporters: Record<
     string,
     {
-      status: 'healthy | degraded' | 'unhealthy';
+      status: 'healthy|degraded|unhealthy';
       lastSuccess?: number;
       lastError?: string;
     }
@@ -174,9 +174,9 @@ export interface HealthStatus {
 
   /** System resource status */
   resources: {
-    memory: 'ok | warning' | 'critical';
-    disk: 'ok | warning' | 'critical';
-    cpu: 'ok | warning' | 'critical';
+    memory: 'ok|warning|critical';
+    disk: 'ok|warning|critical';
+    cpu: 'ok|warning|critical';
   };
 
   /** Timestamp of health check */
@@ -186,17 +186,17 @@ export interface HealthStatus {
 /**
  * Signal types supported by collector
  */
-export type SignalType = 'traces | metrics' | 'logs';
+export type SignalType = 'traces|metrics|logs';
 
 /**
  * Backend types supported
  */
-export type BackendType ='' | '''jaeger''' | '''otlp-http''' | '''otlp-grpc''' | '''prometheus | console' | 'file';
+export type BackendType =|'jaeger|otlp-http'||otlp-grpc|prometheus | console'|file';
 
 /**
  * Processor types available
  */
-export type ProcessorType ='' | '''batch | memory_limiter' | 'resource' | 'attribute' | 'sampling';
+export type ProcessorType =|'batch|memory_limiter|resource|attribute|sampling';
 
 /**
  * Internal telemetry data structure

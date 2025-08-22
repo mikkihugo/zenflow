@@ -55,7 +55,7 @@ export interface PerformanceStats {
   totalOperations: number;
   avgDuration: number;
   successRate: number;
-  memoryTrend: 'increasing | stable' | 'decreasing';
+  memoryTrend: 'increasing|stable|decreasing';
   cpuEfficiency: number;
   recentFailures: number;
 }
@@ -139,7 +139,7 @@ export class PerformanceTracker {
 
     try {
       const startTime = Date.now();
-      const operationId = `${context.agentId'' | '''' | '''unknown'}-${context.operation'' | '''' | '''unknown'}-${startTime}`;
+      const operationId = `${context.agentId||'unknown'}-${context.operation||'unknown'}-${startTime}`;
 
       const memoryUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
@@ -147,14 +147,14 @@ export class PerformanceTracker {
       // Track active operation
       this.activeOperations.set(operationId, {
         startTime,
-        operation: context.operation'' | '''' | '''unknown',
-        agentId: context.agentId'' | '''' | '''unknown',
+        operation: context.operation||'unknown',
+        agentId: context.agentId||'unknown',
       });
 
       // Record start metrics
       recordMetric('performance_tracking_started', 1, {
-        operation: context.operation'' | '''' | '''unknown',
-        agentId: context.agentId'' | '''' | '''unknown',
+        operation: context.operation||'unknown',
+        agentId: context.agentId||'unknown',
       });
 
       return {
@@ -253,9 +253,9 @@ export class PerformanceTracker {
   /**
    * Get performance statistics for an agent
    */
-  getAgentPerformanceStats(agentId: string): PerformanceStats'' | ''null {
+  getAgentPerformanceStats(agentId: string): PerformanceStats|null {
     const snapshots = this.snapshots.get(agentId);
-    if (!snapshots'' | '''' | ''snapshots.length === 0) {
+    if (!snapshots||snapshots.length === 0) {
       return null;
     }
 
@@ -350,13 +350,13 @@ export class PerformanceTracker {
    */
   private calculateMemoryTrend(
     snapshots: PerformanceSnapshot[]
-  ): 'increasing | stable' | 'decreasing' {
+  ): 'increasing|stable|decreasing' {
     if (snapshots.length < 3) return 'stable';
 
     const recentMemory = snapshots.slice(-5).map((s) => s.memoryUsage.rss);
     const olderMemory = snapshots.slice(-10, -5).map((s) => s.memoryUsage.rss);
 
-    if (recentMemory.length === 0'' | '''' | ''olderMemory.length === 0) return'stable';
+    if (recentMemory.length === 0||olderMemory.length === 0) return'stable';
 
     const recentAvg =
       recentMemory.reduce((sum, m) => sum + m, 0) / recentMemory.length;

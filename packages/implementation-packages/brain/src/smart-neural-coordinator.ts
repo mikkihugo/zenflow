@@ -50,7 +50,7 @@ let openaiModule: any = null;
 // Interface definitions
 export interface NeuralBackendConfig {
   /** Primary model strategy */
-  primaryModel: 'all-mpnet-base-v2''' | '''all-MiniLM-L6-v2''' | '''custom';
+  primaryModel: 'all-mpnet-base-v2|all-MiniLM-L6-v2'||custom';
 
   /** Enable smart fallback chain */
   enableFallbacks: boolean;
@@ -99,8 +99,8 @@ export interface NeuralBackendConfig {
 export interface NeuralEmbeddingRequest {
   text: string;
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   cacheKey?: string;
 }
 
@@ -108,7 +108,7 @@ export interface NeuralEmbeddingResult {
   success: boolean;
   embedding: number[];
   confidence: number;
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -118,8 +118,8 @@ export interface NeuralEmbeddingResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     confidence: number;
     qualityScore: number;
@@ -131,11 +131,11 @@ export interface NeuralEmbeddingResult {
  */
 export interface NeuralClassificationRequest {
   text: string;
-  taskType:'' | '''sentiment | intent' | 'category''' | '''toxicity | language' | 'custom';
+  taskType:|'sentiment|intent|category|toxicity|language|custom';
   categories?: string[]; // For custom classification
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   confidenceThreshold?: number;
   cacheKey?: string;
 }
@@ -147,7 +147,7 @@ export interface NeuralClassificationResult {
     confidence: number;
     scores: Record<string, number>; // All category scores
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -158,8 +158,8 @@ export interface NeuralClassificationResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     confidenceThreshold?: number;
     qualityScore: number;
@@ -171,14 +171,14 @@ export interface NeuralClassificationResult {
  */
 export interface NeuralGenerationRequest {
   prompt: string;
-  taskType:'' | '''completion | summarization' | 'translation''' | '''paraphrase | creative' | 'code''' | '''custom';
+  taskType:|'completion|summarization|translation|paraphrase|creative|code|custom'';
   maxLength?: number;
   temperature?: number; // 0.0 - 2.0
   topP?: number;
   topK?: number;
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   cacheKey?: string;
   stopSequences?: string[];
 }
@@ -187,11 +187,11 @@ export interface NeuralGenerationResult {
   success: boolean;
   generated: {
     text: string;
-    finishReason: 'completed | length' | 'stop_sequence''' | '''error';
+    finishReason: 'completed|length|stop_sequence|error';
     tokensGenerated: number;
     alternatives?: string[]; // Multiple generation candidates
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -202,8 +202,8 @@ export interface NeuralGenerationResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     parameters: {
       maxLength?: number;
@@ -219,12 +219,12 @@ export interface NeuralGenerationResult {
  * Phase 4: Vision Phase
  */
 export interface NeuralVisionRequest {
-  image: string'' | ''Buffer'' | ''ArrayBuffer; // Base64 string, Buffer, or ArrayBuffer
-  taskType:'' | '''describe | ocr' | 'classify''' | '''detect_objects | analyze_scene' | 'custom';
+  image: string|Buffer|ArrayBuffer; // Base64 string, Buffer, or ArrayBuffer
+  taskType:|'describe|ocr|classify|detect_objects|analyze_scene|custom';
   prompt?: string; // Additional context for vision-language tasks
   context?: string;
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   maxTokens?: number;
   cacheKey?: string;
 }
@@ -246,7 +246,7 @@ export interface NeuralVisionResult {
     };
     analysis?: Record<string, any>; // Custom analysis results
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -257,8 +257,8 @@ export interface NeuralVisionResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     context?: string;
     imageInfo?: {
       format: string;
@@ -273,7 +273,7 @@ export interface NeuralVisionResult {
  * Phase 5: Other Neural Tasks
  */
 export interface NeuralTaskRequest {
-  taskType:'' | '''question_answering | similarity' | 'clustering''' | '''anomaly_detection | feature_extraction' | 'custom';
+  taskType:|'question_answering|similarity|clustering|anomaly_detection|feature_extraction|custom';
   input: {
     text?: string;
     texts?: string[]; // For similarity, clustering
@@ -286,12 +286,12 @@ export interface NeuralTaskRequest {
     threshold?: number;
     topK?: number;
     algorithm?: string;
-    metric?: 'cosine | euclidean' | 'manhattan''' | '''jaccard';
+    metric?: 'cosine|euclidean|manhattan|jaccard';
     clusterCount?: number;
     [key: string]: any;
   };
-  priority?: 'low | medium' | 'high';
-  qualityLevel?: 'basic | standard' | 'premium';
+  priority?: 'low|medium|high';
+  qualityLevel?: 'basic|standard|premium';
   cacheKey?: string;
 }
 
@@ -337,7 +337,7 @@ export interface NeuralTaskResult {
     // Custom results
     custom?: Record<string, any>;
   };
-  model: 'transformers''' | '''brain-js''' | '''basic''' | '''openai';
+  model: 'transformers|brain-js'||basic|openai'';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -348,8 +348,8 @@ export interface NeuralTaskResult {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?: 'low | medium' | 'high';
-    qualityLevel?: 'basic | standard' | 'premium';
+    priority?: 'low|medium|high';
+    qualityLevel?: 'basic|standard|premium';
     parameters?: Record<string, any>;
     qualityScore: number;
   };
@@ -369,7 +369,7 @@ export interface ModelStatus {
   name: string;
   loaded: boolean;
   loading: boolean;
-  error: string'' | ''null;
+  error: string|null;
   loadingTime?: number;
   errorMessage?: string;
   lastUsed?: number;
@@ -601,7 +601,7 @@ export class SmartNeuralCoordinator {
         const startTime = Date.now();
 
         // Input validation
-        if (!request.text'' | '''' | ''request.text.trim().length === 0) {
+        if (!request.text||request.text.trim().length === 0) {
           return {
             success: false,
             embedding: [],
@@ -647,12 +647,12 @@ export class SmartNeuralCoordinator {
           };
         }
 
-        const cacheKey = request.cacheKey'' | '''' | ''this.generateCacheKey(request);
+        const cacheKey = request.cacheKey||this.generateCacheKey(request);
 
         // Set comprehensive telemetry attributes
         span.setAttributes({'neural.request.text_length': request.text.length,
-          'neural.request.priority': request.priority'' | '''' | '''medium',
-          'neural.request.quality_level': request.qualityLevel'' | '''' | '''standard',
+          'neural.request.priority': request.priority||'medium',
+          'neural.request.quality_level': request.qualityLevel||'standard',
           'neural.request.has_context': Boolean(request.context),
           'neural.request.cache_key': cacheKey,
         });
@@ -674,7 +674,7 @@ export class SmartNeuralCoordinator {
             recordMetric('smart_neural_embedding_generated', 1, {
               cache_hit: 'true',
               model: cachedResult.model,
-              quality_level: request.qualityLevel'' | '''' | '''standard',
+              quality_level: request.qualityLevel||'standard',
               status: 'success',
             });
 
@@ -734,9 +734,9 @@ export class SmartNeuralCoordinator {
           recordMetric('smart_neural_embedding_generated', 1, {
             cache_hit: 'false',
             model: result.model,
-            quality_level: request.qualityLevel'' | '''' | '''standard',
+            quality_level: request.qualityLevel||'standard',
             status: 'success',
-            fallbacks_used: String(result.fallbacksUsed?.length'' | '''' | ''0),
+            fallbacks_used: String(result.fallbacksUsed?.length||0),
           });
 
           recordHistogram('smart_neural_embedding_duration_ms',
@@ -752,7 +752,7 @@ export class SmartNeuralCoordinator {
             result.qualityScore,
             {
               model: result.model,
-              quality_level: request.qualityLevel'' | '''' | '''standard',
+              quality_level: request.qualityLevel||'standard',
             }
           );
 
@@ -763,7 +763,7 @@ export class SmartNeuralCoordinator {
             'neural.embedding.quality_score': result.qualityScore,
             'neural.embedding.processing_time_ms': processingTime,
             'neural.embedding.fallbacks_used':
-              result.fallbacksUsed?.length'' | '''' | ''0,
+              result.fallbacksUsed?.length||0,
           });
 
           this.logger.info(
@@ -774,7 +774,7 @@ export class SmartNeuralCoordinator {
             model: result.model,
             processing_time_ms: String(processingTime),
             quality_score: String(result.qualityScore),
-            fallbacks_used: String(result.fallbacksUsed?.length'' | '''' | ''0),
+            fallbacks_used: String(result.fallbacksUsed?.length||0),
           });
 
           return {
@@ -862,7 +862,7 @@ export class SmartNeuralCoordinator {
       const startTime = Date.now();
 
       // Input validation
-      if (!request.text'' | '''' | ''request.text.trim().length === 0) {
+      if (!request.text||request.text.trim().length === 0) {
         return this.createClassificationErrorResult('Input text cannot be empty',
           startTime,
           request
@@ -878,13 +878,13 @@ export class SmartNeuralCoordinator {
       }
 
       const cacheKey =
-        request.cacheKey'' | '''' | ''this.generateClassificationCacheKey(request);
+        request.cacheKey||this.generateClassificationCacheKey(request);
 
       span.setAttributes({'neural.classification.text_length': request.text.length,
         'neural.classification.task_type': request.taskType,
-        'neural.classification.priority': request.priority'' | '''' | '''medium',
+        'neural.classification.priority': request.priority||'medium',
         'neural.classification.quality_level':
-          request.qualityLevel'' | '''' | '''standard',
+          request.qualityLevel||'standard',
         'neural.classification.cache_key': cacheKey,
       });
 
@@ -974,7 +974,7 @@ export class SmartNeuralCoordinator {
       const startTime = Date.now();
 
       // Input validation
-      if (!request.prompt'' | '''' | ''request.prompt.trim().length === 0) {
+      if (!request.prompt||request.prompt.trim().length === 0) {
         return this.createGenerationErrorResult('Input prompt cannot be empty',
           startTime,
           request
@@ -990,13 +990,13 @@ export class SmartNeuralCoordinator {
       }
 
       const cacheKey =
-        request.cacheKey'' | '''' | ''this.generateGenerationCacheKey(request);
+        request.cacheKey||this.generateGenerationCacheKey(request);
 
       span.setAttributes({'neural.generation.prompt_length': request.prompt.length,
         'neural.generation.task_type': request.taskType,
-        'neural.generation.priority': request.priority'' | '''' | '''medium',
-        'neural.generation.quality_level': request.qualityLevel'' | '''' | '''standard',
-        'neural.generation.max_length': request.maxLength'' | '''' | ''1000,'neural.generation.temperature': request.temperature'' | '''' | ''0.7,'neural.generation.cache_key': cacheKey,
+        'neural.generation.priority': request.priority||'medium',
+        'neural.generation.quality_level': request.qualityLevel||'standard',
+        'neural.generation.max_length': request.maxLength||1000,'neural.generation.temperature': request.temperature||0.7,'neural.generation.cache_key': cacheKey,
       });
 
       this.cacheStats.totalRequests++;
@@ -1103,13 +1103,13 @@ export class SmartNeuralCoordinator {
       }
 
       const cacheKey =
-        request.cacheKey'' | '''' | ''this.generateVisionCacheKey(request, imageInfo);
+        request.cacheKey||this.generateVisionCacheKey(request, imageInfo);
 
       span.setAttributes({'neural.vision.task_type': request.taskType,
         'neural.vision.image_format': imageInfo.format,
         'neural.vision.image_size': imageInfo.size,
-        'neural.vision.priority': request.priority'' | '''' | '''medium',
-        'neural.vision.quality_level': request.qualityLevel'' | '''' | '''standard',
+        'neural.vision.priority': request.priority||'medium',
+        'neural.vision.quality_level': request.qualityLevel||'standard',
         'neural.vision.cache_key': cacheKey,
       });
 
@@ -1205,11 +1205,11 @@ export class SmartNeuralCoordinator {
       }
 
       const cacheKey =
-        request.cacheKey'' | '''' | ''this.generateNeuralTaskCacheKey(request);
+        request.cacheKey||this.generateNeuralTaskCacheKey(request);
 
       span.setAttributes({'neural.task.type': request.taskType,
-        'neural.task.priority': request.priority'' | '''' | '''medium',
-        'neural.task.quality_level': request.qualityLevel'' | '''' | '''standard',
+        'neural.task.priority': request.priority||'medium',
+        'neural.task.quality_level': request.qualityLevel||'standard',
         'neural.task.cache_key': cacheKey,
       });
 
@@ -1291,7 +1291,7 @@ export class SmartNeuralCoordinator {
     };
     models: {
       primary: {
-        status: 'ready | loading' | 'error''' | '''not_loaded';
+        status: 'ready|loading|error|not_loaded';
         model?: string;
         lastUsed?: number;
       };
@@ -1709,7 +1709,7 @@ export class SmartNeuralCoordinator {
     }
 
     // Try primary transformers model
-    if (this.transformerModel'' | '''' | ''this.config.loading.lazyLoading) {
+    if (this.transformerModel||this.config.loading.lazyLoading) {
       try {
         if (!this.transformerModel && this.config.loading.lazyLoading) {
           await this.loadTransformersModel();
@@ -1733,7 +1733,7 @@ export class SmartNeuralCoordinator {
     // Try Brain.js fallback
     if (
       this.config.enableFallbacks &&
-      (this.brainJsNetwork'' | '''' | ''this.config.loading.lazyLoading)
+      (this.brainJsNetwork||this.config.loading.lazyLoading)
     ) {
       try {
         if (!this.brainJsNetwork && this.config.loading.lazyLoading) {
@@ -1918,11 +1918,11 @@ export class SmartNeuralCoordinator {
   }
 
   private generateCacheKey(request: NeuralEmbeddingRequest): string {
-    const content = `${request.text}${request.context'' | '''' | ''''}`;
-    return `${request.qualityLevel'' | '''' | '''standard'}:${this.hashString(content)}`;
+    const content = `${request.text}${request.context||'}`;
+    return `${request.qualityLevel|||standard'}:${this.hashString(content)}`;
   }
 
-  private getCachedEmbedding(cacheKey: string): CacheEntry'' | ''null {
+  private getCachedEmbedding(cacheKey: string): CacheEntry|null {
     const entry = this.embeddingCache.get(cacheKey);
 
     if (!entry) {
@@ -2002,7 +2002,7 @@ export class SmartNeuralCoordinator {
 
     // Update success rate
     const totalRequests =
-      this.performanceMetrics.modelUsageCount.get(model)'' | '''' | ''0;
+      this.performanceMetrics.modelUsageCount.get(model)||0;
     const previousSuccesses = totalRequests * status.successRate;
     const newSuccesses = previousSuccesses + (success ? 1 : 0);
     const newTotal = totalRequests + 1;
@@ -2030,7 +2030,7 @@ export class SmartNeuralCoordinator {
     // Update quality distribution
     const qualityBucket = Math.floor(qualityScore * 10) / 10; // Round to nearest 0.1
     const currentCount =
-      this.performanceMetrics.qualityDistribution.get(String(qualityBucket))'' | '''' | ''0;
+      this.performanceMetrics.qualityDistribution.get(String(qualityBucket))||0;
     this.performanceMetrics.qualityDistribution.set(
       String(qualityBucket),
       currentCount + 1
@@ -2111,11 +2111,11 @@ export class SmartNeuralCoordinator {
   private generateClassificationCacheKey(
     request: NeuralClassificationRequest
   ): string {
-    const content = `${request.text}${request.taskType}${request.categories?.join(',')'' | '''' | ''''}${request.context'' | '''' | ''''}`;
-    return `classify:${request.qualityLevel'' | '''' | '''standard'}:${this.hashString(content)}`;
+    const content = `${request.text}${request.taskType}${request.categories?.join(',')||'}${request.context|||}`;
+    return `classify:${request.qualityLevel|||standard'}:${this.hashString(content)}`;
   }
 
-  private getCachedClassification(cacheKey: string): any'' | ''null {
+  private getCachedClassification(cacheKey: string): any|null {
     return this.getCachedEmbedding(cacheKey); // Reuse same cache structure
   }
 
@@ -2158,7 +2158,7 @@ export class SmartNeuralCoordinator {
     }
 
     // Try transformers model
-    if (this.transformerModel'' | '''' | ''this.config.loading.lazyLoading) {
+    if (this.transformerModel||this.config.loading.lazyLoading) {
       try {
         if (!this.transformerModel && this.config.loading.lazyLoading) {
           await this.loadTransformersModel();
@@ -2182,7 +2182,7 @@ export class SmartNeuralCoordinator {
     // Try Brain.js fallback
     if (
       this.config.enableFallbacks &&
-      (this.brainJsNetwork'' | '''' | ''this.config.loading.lazyLoading)
+      (this.brainJsNetwork||this.config.loading.lazyLoading)
     ) {
       try {
         if (!this.brainJsNetwork && this.config.loading.lazyLoading) {
@@ -2350,11 +2350,11 @@ export class SmartNeuralCoordinator {
   // =============================================================================
 
   private generateGenerationCacheKey(request: NeuralGenerationRequest): string {
-    const content = `${request.prompt}${request.taskType}${request.temperature'' | '''' | ''0.7}${request.maxLength'' | '''' | ''1000}${request.context'' | '''' | ''''}`;
-    return `generate:${request.qualityLevel'' | '''' | '''standard'}:${this.hashString(content)}`;
+    const content = `${request.prompt}${request.taskType}${request.temperature||0.7}${request.maxLength||1000}${request.context||'}`;
+    return `generate:${request.qualityLevel|||standard'}:${this.hashString(content)}`;
   }
 
-  private getCachedGeneration(cacheKey: string): any'' | ''null {
+  private getCachedGeneration(cacheKey: string): any|null {
     return this.getCachedEmbedding(cacheKey); // Reuse same cache structure
   }
 
@@ -2395,7 +2395,7 @@ export class SmartNeuralCoordinator {
     }
 
     // Try transformers model
-    if (this.transformerModel'' | '''' | ''this.config.loading.lazyLoading) {
+    if (this.transformerModel||this.config.loading.lazyLoading) {
       try {
         const result = await this.generateTransformersText(request);
         span.setAttributes({'neural.generation.primary_method': 'transformers',
@@ -2448,18 +2448,18 @@ export class SmartNeuralCoordinator {
     // Use imageInfo for enhanced cache key generation
     const imageMetadata = imageInfo
       ? {
-          format: imageInfo.format'' | '''' | '''unknown',
-          size: imageInfo.size'' | '''' | ''0,
-          valid: imageInfo.valid'' | '''' | ''false,
+          format: imageInfo.format||'unknown',
+          size: imageInfo.size||0,
+          valid: imageInfo.valid||false,
         }
       : { format:'unknown', size: 0, valid: true };
 
     // Include image metadata in cache key for better cache differentiation
-    const content = `${imageHash}${request.taskType}${request.prompt'' | '''' | ''''}${request.context'' | '''' | ''''}${
+    const content = `${imageHash}${request.taskType}${request.prompt||'}${request.context|||'}${
       imageMetadata.format
     }_${imageMetadata.size}_${imageMetadata.valid ? 'valid' : 'invalid'}`;
 
-    const cacheKey = `vision:${request.qualityLevel'' | '''' | '''standard'}:${this.hashString(content)}`;
+    const cacheKey = `vision:${request.qualityLevel||'standard'}:${this.hashString(content)}`;
 
     // Log cache key generation with image metadata
     this.logger.debug('Vision cache key generated with image info', {
@@ -2467,14 +2467,14 @@ export class SmartNeuralCoordinator {
       imageSize: imageMetadata.size,
       imageValid: imageMetadata.valid,
       taskType: request.taskType,
-      qualityLevel: request.qualityLevel'' | '''' | '''standard',
+      qualityLevel: request.qualityLevel||'standard',
       cacheKeyLength: cacheKey.length,
     });
 
     return cacheKey;
   }
 
-  private analyzeImageInput(image: string'' | ''Buffer'' | ''ArrayBuffer): any {
+  private analyzeImageInput(image: string|Buffer|ArrayBuffer): any {
     try {
       let format ='unknown';
       let size = 0;
@@ -2524,7 +2524,7 @@ export class SmartNeuralCoordinator {
     }
   }
 
-  private hashImageData(image: string'' | ''Buffer'' | ''ArrayBuffer): string {
+  private hashImageData(image: string|Buffer|ArrayBuffer): string {
     try {
       let data: string;
       if (typeof image ==='string') {
@@ -2557,25 +2557,25 @@ export class SmartNeuralCoordinator {
   // NEURAL TASK PHASE IMPLEMENTATION METHODS
   // =============================================================================
 
-  private validateNeuralTaskRequest(request: NeuralTaskRequest): string'' | ''null {
+  private validateNeuralTaskRequest(request: NeuralTaskRequest): string|null {
     if (!request.input) {
       return'Input data is required for neural tasks';
     }
 
     switch (request.taskType) {
       case 'question_answering':
-        if (!request.input.question'' | '''' | ''!request.input.context) {
+        if (!request.input.question||!request.input.context) {
           return'Question answering requires both question and context';
         }
         break;
       case 'similarity':
-        if (!request.input.texts'' | '''' | ''request.input.texts.length < 2) {
+        if (!request.input.texts||request.input.texts.length < 2) {
           return'Similarity task requires at least 2 texts';
         }
         break;
       case 'clustering':
         if (
-          !request.input.data'' | '''' | ''!Array.isArray(request.input.data)'' | '''' | ''request.input.data.length < 2
+          !request.input.data||!Array.isArray(request.input.data)||request.input.data.length < 2
         ) {
           return'Clustering task requires an array of data with at least 2 items';
         }
@@ -2587,7 +2587,7 @@ export class SmartNeuralCoordinator {
 
   private generateNeuralTaskCacheKey(request: NeuralTaskRequest): string {
     const inputStr = JSON.stringify(request.input).substring(0, 1000); // Limit size
-    const paramsStr = JSON.stringify(request.parameters'' | '''' | ''{});
+    const paramsStr = JSON.stringify(request.parameters||{});
     const content = `${request.taskType}${inputStr}${paramsStr}`;
     return `task:${this.hashString(content)}`;
   }
@@ -2848,7 +2848,7 @@ export class SmartNeuralCoordinator {
 
     // Question detection
     if (
-      textLower.includes('?')'' | '''' | ''textLower.startsWith('what')'' | '''' | ''textLower.startsWith('how')'' | '''' | ''textLower.startsWith('why')'' | '''' | ''textLower.startsWith('when')'' | '''' | ''textLower.startsWith('where')
+      textLower.includes('?')||textLower.startsWith('what')||textLower.startsWith('how')||textLower.startsWith('why')||textLower.startsWith('when')||textLower.startsWith('where')
     ) {
       bestIntent = availableCategories.includes('question')
         ? 'question'
@@ -2857,7 +2857,7 @@ export class SmartNeuralCoordinator {
     }
     // Request detection
     else if (
-      textLower.includes('please')'' | '''' | ''textLower.startsWith('can you')'' | '''' | ''textLower.startsWith('could you')'' | '''' | ''textLower.includes('help')
+      textLower.includes('please')||textLower.startsWith('can you')||textLower.startsWith('could you')||textLower.includes('help')
     ) {
       bestIntent = availableCategories.includes('request')
         ? 'request'
@@ -2866,7 +2866,7 @@ export class SmartNeuralCoordinator {
     }
     // Complaint detection
     else if (
-      textLower.includes('problem')'' | '''' | ''textLower.includes('issue')'' | '''' | ''textLower.includes('wrong')'' | '''' | ''textLower.includes('broken')
+      textLower.includes('problem')||textLower.includes('issue')||textLower.includes('wrong')||textLower.includes('broken')
     ) {
       bestIntent = availableCategories.includes('complaint')
         ? 'complaint'
@@ -2875,7 +2875,7 @@ export class SmartNeuralCoordinator {
     }
     // Action detection
     else if (
-      textLower.includes('do')'' | '''' | ''textLower.includes('execute')'' | '''' | ''textLower.includes('run')'' | '''' | ''textLower.includes('perform')
+      textLower.includes('do')||textLower.includes('execute')||textLower.includes('run')||textLower.includes('perform')
     ) {
       bestIntent = availableCategories.includes('action')
         ? 'action'
@@ -2895,7 +2895,7 @@ export class SmartNeuralCoordinator {
     this.logger.debug('Intent classified using text analysis', {
       textLength,
       wordCount: words.length,
-      providedCategories: categories?.length'' | '''' | ''0,
+      providedCategories: categories?.length||0,
       availableCategories: availableCategories.length,
       bestIntent,
       confidence,
@@ -2979,7 +2979,7 @@ export class SmartNeuralCoordinator {
       };
 
       // Check for keyword matches
-      const categoryKeywords = keywords[category.toLowerCase()]'' | '''' | ''[
+      const categoryKeywords = keywords[category.toLowerCase()]||[
         category.toLowerCase(),
       ];
       for (const keyword of categoryKeywords) {
@@ -3001,7 +3001,7 @@ export class SmartNeuralCoordinator {
       {
         textLength: text.length,
         wordCount: words.length,
-        providedCategories: categories?.length'' | '''' | ''0,
+        providedCategories: categories?.length||0,
         availableCategories: availableCategories.length,
         bestCategory,
         confidence,
@@ -3028,7 +3028,7 @@ export class SmartNeuralCoordinator {
     categories?: string[]
   ): Promise<any> {
     // Implement custom classification using text analysis and provided categories
-    if (!categories'' | '''' | ''categories.length === 0) {
+    if (!categories||categories.length === 0) {
       this.logger.warn('Custom classification requires categories', {
         textLength: text.length,
         categoriesProvided: false,
@@ -3059,7 +3059,7 @@ export class SmartNeuralCoordinator {
 
         // Partial word matching
         for (const word of words) {
-          if (word.includes(categoryWord)'' | '''' | ''categoryWord.includes(word)) {
+          if (word.includes(categoryWord)||categoryWord.includes(word)) {
             score += 0.1;
           }
         }
@@ -3108,17 +3108,17 @@ export class SmartNeuralCoordinator {
     // Convert brain.js output to classification format
     const values = Object.values(output) as number[];
     const maxIndex = values.indexOf(Math.max(...values));
-    const categories = request.categories'' | '''' | ''['category1',
+    const categories = request.categories||['category1',
       'category2',
       'category3',
     ];
 
     return {
-      label: categories[maxIndex]'' | '''' | '''unknown',
-      confidence: values[maxIndex]'' | '''' | ''0.5,
+      label: categories[maxIndex]||'unknown',
+      confidence: values[maxIndex]||0.5,
       scores: categories.reduce(
         (acc, cat, idx) => {
-          acc[cat] = values[idx]'' | '''' | ''0;
+          acc[cat] = values[idx]||0;
           return acc;
         },
         {} as Record<string, number>
@@ -3142,7 +3142,7 @@ export class SmartNeuralCoordinator {
   }
 
   private parseOpenAIClassificationResponse(
-    response: string'' | ''null,
+    response: string|null,
     request: NeuralClassificationRequest
   ): any {
     if (!response) {
@@ -3202,15 +3202,15 @@ export class SmartNeuralCoordinator {
     const response = await this.openaiClient.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: request.prompt }],
-      max_tokens: request.maxLength'' | '''' | ''1000,
-      temperature: request.temperature'' | '''' | ''0.7,
+      max_tokens: request.maxLength||1000,
+      temperature: request.temperature||0.7,
     });
 
     return {
       generated: {
-        text: response.choices[0].message.content'' | '''' | '''',
+        text: response.choices[0].message.content||'',
         finishReason: 'completed'as const,
-        tokensGenerated: response.usage?.completion_tokens'' | '''' | ''0,
+        tokensGenerated: response.usage?.completion_tokens||0,
       },
       model:'openai',
       qualityScore: 0.95,
@@ -3245,7 +3245,7 @@ export class SmartNeuralCoordinator {
 
     return {
       success: true,
-      classification: cachedResult.classificationData'' | '''' | ''{
+      classification: cachedResult.classificationData||{
         label:'cached',
         confidence: cachedResult.confidence,
         scores: {},
@@ -3277,7 +3277,7 @@ export class SmartNeuralCoordinator {
       cache_hit: String(fromCache),
       model: result.model,
       task_type: request.taskType,
-      quality_level: request.qualityLevel'' | '''' | '''standard',
+      quality_level: request.qualityLevel||'standard',
       status: 'success',
     });
 
@@ -3338,7 +3338,7 @@ export class SmartNeuralCoordinator {
   // STUB METHODS FOR VISION AND NEURAL TASKS (TO BE FULLY IMPLEMENTED)
   // =============================================================================
 
-  private getCachedVision(cacheKey: string): any'' | ''null {
+  private getCachedVision(cacheKey: string): any|null {
     return null;
   }
   private cacheVision(
@@ -3387,7 +3387,7 @@ export class SmartNeuralCoordinator {
     return this.createVisionErrorResult('Fallback error', Date.now(), request);
   }
 
-  private getCachedNeuralTask(cacheKey: string): any'' | ''null {
+  private getCachedNeuralTask(cacheKey: string): any|null {
     return null;
   }
   private cacheNeuralTask(
@@ -3422,17 +3422,17 @@ export class SmartNeuralCoordinator {
     return {
       success: true,
       result: cached.result,
-      model: (cached.model'' | '''' | '''basic') as'' | '''transformers''' | '''brain-js''' | '''basic''' | '''openai',
+      model: (cached.model||'basic') as|'transformers|brain-js'||basic|openai',
       processingTime,
       fromCache: true,
-      qualityScore: cached.qualityScore'' | '''' | ''0.8,
+      qualityScore: cached.qualityScore|'|0.8,
       metadata: {
-        model: cached.model'' | '''' | '''cached',
+        model: cached.model||'cached',
         processingTime,
         fromCache: true,
         taskType: request.taskType,
         qualityLevel: request.qualityLevel,
-        qualityScore: cached.qualityScore'' | '''' | ''0.8,
+        qualityScore: cached.qualityScore||0.8,
       },
     };
   }
@@ -3526,7 +3526,7 @@ export class SmartNeuralCoordinator {
       return {
         success: true,
         result: fallbackResult,
-        model: 'basic' as 'transformers''' | '''brain-js''' | '''basic''' | '''openai',
+        model: 'basic' as 'transformers|brain-js'||basic|openai'',
         processingTime,
         fromCache: false,
         qualityScore: 0.1,
@@ -3565,21 +3565,21 @@ export class SmartNeuralCoordinator {
     return {
       success: true,
       generated: cached.generated,
-      model: (cached.model'' | '''' | '''basic') as'' | '''transformers''' | '''brain-js''' | '''basic''' | '''openai',
+      model: (cached.model||'basic') as|'transformers|brain-js'||basic|openai',
       processingTime,
       fromCache: true,
-      qualityScore: cached.qualityScore'' | '''' | ''0.8,
+      qualityScore: cached.qualityScore|'|0.8,
       metadata: {
-        model: cached.model'' | '''' | '''cached',
+        model: cached.model||'cached',
         processingTime,
         fromCache: true,
-        taskType: request.taskType'' | '''' | '''generation',
+        taskType: request.taskType||'generation',
         qualityLevel: request.qualityLevel,
         parameters: {
           maxLength: 100,
           temperature: 0.7,
         },
-        qualityScore: cached.qualityScore'' | '''' | ''0.8,
+        qualityScore: cached.qualityScore||0.8,
       },
     };
   }
@@ -3664,7 +3664,7 @@ export class SmartNeuralCoordinator {
           finishReason:'error',
           tokensGenerated: generatedText.split(' ').length,
         },
-        model: 'basic' as 'transformers''' | '''brain-js''' | '''basic''' | '''openai',
+        model: 'basic' as 'transformers|brain-js'||basic|openai'',
         processingTime,
         fromCache: false,
         qualityScore: 0.1,

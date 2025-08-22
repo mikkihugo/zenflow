@@ -18,107 +18,39 @@
  */
 
 // Strategic imports and re-exports from @claude-zen packages
-import type {
-  HttpMethod,
-  ErrorSeverity,
-  ResponseFormat,
-  CompressionType,
-  SerializationFormat,
-  CircuitBreakerState,
-  LoadBalancingStrategy,
+import type { HttpMethod, ErrorSeverity, ResponseFormat, CompressionType, SerializationFormat, CircuitBreakerState, LoadBalancingStrategy,
 } from '@claude-zen/foundation';
 import { isString } from '@claude-zen/foundation';
-import type {
-  WebSocketEventType,
-  KnowledgeQueryType,
-  McpClientMessageType,
+import type { WebSocketEventType, KnowledgeQueryType, McpClientMessageType,
 } from '@claude-zen/intelligence';
 
 // Type guards using foundation delegation
 
 // Re-export foundation types
-export type {
-  HttpMethod,
-  ErrorSeverity,
-  ResponseFormat,
-  CompressionType,
-  SerializationFormat,
-  CircuitBreakerState,
-  LoadBalancingStrategy,
-  WebSocketEventType,
-  KnowledgeQueryType,
-  McpClientMessageType,
+export type { HttpMethod, ErrorSeverity, ResponseFormat, CompressionType, SerializationFormat, CircuitBreakerState, LoadBalancingStrategy, WebSocketEventType, KnowledgeQueryType, McpClientMessageType,
 };
 
 // Client-specific types (minimal custom definitions)
-export type ClientType ='' | '''http | websocket' | 'knowledge' | 'mcpclient' | 'generic');
-export type ProtocolType ='' | '''http | https' | 'ws''' | '''wss | tcp' | 'udp''' | '''stdio | ipc' | 'custom');
-export type AuthType ='' | '''none | bearer' | 'basic''' | '''api-key''' | '''oauth | jwt' | 'custom');
-export type ClientStatus ='' | '''disconnected | connecting' | 'connected''' | '''reconnecting | error' | 'suspended');
-export type ClientPreset ='' | '''default | fast' | 'reliable''' | '''minimal | secure' | 'debug');
+export type ClientType = 'http  || websocket || ' 'knowledge | mcpclient | generi'c'');
+export type ProtocolType = 'http  || https || ' 'ws | wss | tcp | udp | stdi'o || ipc  || cust'o''m');
+export type AuthType = 'none  || bearer || ' 'basic | api-key | oaut'h | jwt  || custom);
+export type ClientStatus = disconnected | connecting | connect'e''d | reconnecting || ''error ' || suspended);
+export type ClientPreset =default | fast | reliab'l''e | minimal || ''secure ' || debug);
 
 // Core enums and constants (delegated to @claude-zen packages when possible)
-export const ClientTypes = {
-  HTTP: 'http' as const,
-  WEBSOCKET: 'websocket' as const,
-  KNOWLEDGE: 'knowledge' as const,
-  MCPCLIENT: 'mcpclient' as const,
-  GENERIC: 'generic' as const,
+export const ClientTypes = { HTTP:ht't''p' as const, WEBSOCKET: 'websocket' as const, KNOWLEDGE: 'knowledge' as const, MCPCLIENT: 'mcpclient' as const, GENERIC: 'generic' as const,
 } as const;
 
-export const ClientStatuses = {
-  DISCONNECTED: 'disconnected' as const,
-  CONNECTING: 'connecting' as const,
-  CONNECTED: 'connected' as const,
-  RECONNECTING: 'reconnecting' as const,
-  ERROR: 'error' as const,
-  SUSPENDED: 'suspended' as const,
+export const ClientStatuses = { DISCONNECTED: 'disconnected' as const, CONNECTING: 'connecting' as const, CONNECTED: 'connected' as const, RECONNECTING: 'reconnecting' as const, ERROR: 'error' as const, SUSPENDED: 'suspended' as const,
 } as const;
 
 // Essential client configuration (minimal)
-export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
-  http: ClientTypes.HTTP,
-  https: ClientTypes.HTTP,
-  ws: ClientTypes.WEBSOCKET,
-  wss: ClientTypes.WEBSOCKET,
-  tcp: ClientTypes.GENERIC,
-  udp: ClientTypes.GENERIC,
-  stdio: ClientTypes.MCPCLIENT,
-  ipc: ClientTypes.GENERIC,
-  custom: ClientTypes.GENERIC,
+export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = { http: ClientTypes.HTTP, https: ClientTypes.HTTP, ws: ClientTypes.WEBSOCKET, wss: ClientTypes.WEBSOCKET, tcp: ClientTypes.GENERIC, udp: ClientTypes.GENERIC, stdio: ClientTypes.MCPCLIENT, ipc: ClientTypes.GENERIC, custom: ClientTypes.GENERIC,
 } as const;
 
 // Basic client instance interface for UACL compatibility
-export interface ClientInstance {
-  id: string;
-  name?: string;
-  type: ClientType;
-  status: ClientStatus;
-  version?: string;
-  capabilities?: string[];
-  protocols?: string[];
-  isConnected?: boolean;
-  healthCheck?: () => boolean;
-  config?: {
-    enabled: boolean;
-    priority?: number;
-    timeout?: number;
-    [key: string]: any;
-  };
+export interface ClientInstance { id: string; name?: string; type: ClientType; status: ClientStatus; version?: string; capabilities?: string[]; protocols?: string[]; isConnected?: boolean; healthCheck?: () = '> boolean'; config?: { enabled: boolean; priority?: number; timeout?: number; [key: string]: any; };
 }
 
-export const TypeGuards = {
-  isClientType: (value: any): value is ClientType => {
-    return (
-      isString(value) &&
-      Object.values()(ClientTypes).includes(value as ClientType)
-    );
-  },
-
-  isClientStatus: (value: any): value is ClientStatus => {
-    return (
-      isString(value) &&
-      Object.values()(ClientStatuses).includes(value as ClientStatus)
-    );
-  },
+export const TypeGuards = { isClientType: (value: any): value is ClientType => { return ( isString(value) && Object.values()(ClientTypes).includes(value as ClientType) ); }, isClientStatus: (value: any): value is ClientStatus => { return ( isString(value) && Object.values()(ClientStatuses).includes(value as ClientStatus) ); },
 } as const;

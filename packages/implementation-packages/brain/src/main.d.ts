@@ -69,7 +69,7 @@ export declare class FoundationBrainCoordinator {
     task: string;
     basePrompt: string;
     context?: Record<string, unknown>;
-    priority?: 'low | medium' | 'high';
+    priority?: 'low|medium|high';
     timeLimit?: number;
     qualityRequirement?: number;
   }): Promise<{
@@ -100,7 +100,7 @@ export declare class FoundationBrainCoordinator {
    */
   predict(
     input: number[],
-    type?: 'prediction''' | '''classification'
+    type?: 'prediction|classification''
   ): Promise<number[]>;
   /**
    * Convenience method for complex forecasting

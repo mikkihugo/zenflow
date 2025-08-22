@@ -46,10 +46,10 @@ export interface ProjectInfo {
   framework?: string;
   language?: string;
   workspace?: {
-    type: 'monorepo | single' | 'multi' | 'bazel' | 'complex';
+    type: 'monorepo|single|multi|bazel|complex';
     workspaceFile?: string; // pnpm-workspace.yaml, lerna.json, WORKSPACE, etc.
     monorepoRoot?: string; // Path to monorepo root (only for type: 'multi')
-    buildSystem?:'' | '''pnpm | lerna' | 'nx''' | '''rush | bazel' | 'gradle' | 'maven' | 'custom';
+    buildSystem?:|'pnpm|lerna|nx|rush|bazel|gradle|maven|custom';
     structure?: {
       hasServices?: boolean; // services/ directory
       hasDomains?: boolean; // domains/ directory
@@ -62,7 +62,7 @@ export interface ProjectInfo {
     subProjects?: Array<{
       path: string;
       name: string;
-      type:'' | '''service | domain' | 'app''' | '''lib | package' | 'tool''' | '''example | test' | 'benchmark' | 'crate' | 'doc';
+      type:|'service|domain|app|lib|package|tool|example | test'|benchmark|crate|doc';
     }>;
   };
   metadata?: UnknownRecord;
@@ -85,7 +85,7 @@ export class ProjectManager {
   private configDir: string;
   private projectsFile: string;
   private projectsDir: string;
-  private registry: ProjectRegistry'' | ''null = null;
+  private registry: ProjectRegistry|null = null;
 
   private constructor() {
     const config = getConfig();
@@ -401,7 +401,7 @@ Thumbs.db
     const projectId = this.generateProjectId();
     const projectInfo: ProjectInfo = {
       id: projectId,
-      name: options.name'' | '''' | ''path.basename(resolvedPath),
+      name: options.name||path.basename(resolvedPath),
       path: resolvedPath,
       description: options.description,
       createdAt: new Date().toISOString(),
@@ -449,7 +449,7 @@ Thumbs.db
   /**
    * Get project by ID or path
    */
-  getProject(idOrPath: string): ProjectInfo'' | ''null {
+  getProject(idOrPath: string): ProjectInfo|null {
     const registry = this.loadRegistry();
 
     // Try by ID first
@@ -590,7 +590,7 @@ Thumbs.db
 
         // Determine if this is a complex monorepo based on structure
         const isComplex =
-          structure?.hasServices'' | '''' | ''structure?.hasDomains'' | '''' | ''(subProjects && subProjects.length > 10)'' | '''' | ''buildSystem ==='bazel';
+          structure?.hasServices||structure?.hasDomains||(subProjects && subProjects.length > 10)||buildSystem ==='bazel';
 
         return {
           type: isComplex ? 'complex' : type,
@@ -615,7 +615,7 @@ Thumbs.db
 
           return {
             type:
-              structure?.hasServices'' | '''' | ''structure?.hasDomains
+              structure?.hasServices||structure?.hasDomains
                 ?'complex'
                 : 'monorepo',
             workspaceFile: PACKAGE_JSON_FILENAME,
@@ -750,7 +750,7 @@ Thumbs.db
       if (fs.existsSync(dirPath)) {
         this.walkDirectory(dirPath, (filePath) => {
           if (
-            path.basename(filePath) === 'BUILD''' | '''' | ''path.basename(filePath) ==='BUILD.bazel'
+            path.basename(filePath) === 'BUILD'||path.basename(filePath) ==='BUILD.bazel'
           ) {
             const relativePath = path.relative(
               projectPath,
@@ -907,7 +907,7 @@ Thumbs.db
   private inferProjectType(
     relativePath: string,
     parentDir: string
-  ):'' | '''service | domain' | 'app''' | '''lib | package' | 'tool''' | '''example | test' | 'benchmark' | 'crate' | 'doc' {
+  ):|'service|domain|app|lib|package|tool|example | test'|benchmark|crate|doc' {
     // Direct parent directory mapping using Map for reduced complexity
     const parentDirMap = new Map([
       ['services', 'service'],
@@ -945,7 +945,7 @@ Thumbs.db
   private inferTypeFromPackageName(
     packageName: string, 
     relativePath: string
-  ): 'service | domain' | 'app''' | '''lib | package' | 'tool' {
+  ): 'service|domain|app|lib|package|tool' {
     // Check package name patterns
     const typePatterns = [
       { type: 'service' as const, patterns: ['-service', 'service'] },
@@ -957,7 +957,7 @@ Thumbs.db
 
     for (const { type, patterns } of typePatterns) {
       if (patterns.some(pattern => 
-        packageName.endsWith(pattern)'' | '''' | ''packageName.includes(pattern)'' | '''' | ''relativePath.includes(pattern)
+        packageName.endsWith(pattern)||packageName.includes(pattern)||relativePath.includes(pattern)
       )) {
         return type;
       }
@@ -970,7 +970,7 @@ Thumbs.db
    * Find the monorepo root by walking up from a given path
    * Enhanced to support Bazel and other build systems
    */
-  private findMonorepoRoot(startPath: string): string'' | ''null {
+  private findMonorepoRoot(startPath: string): string|null {
     let currentPath = path.resolve(startPath);
 
     while (currentPath !== path.dirname(currentPath)) {
@@ -1017,7 +1017,7 @@ Thumbs.db
   /**
    * Detect git remote URL
    */
-  private detectGitRemote(projectPath: string): string'' | ''undefined {
+  private detectGitRemote(projectPath: string): string|undefined {
     try {
       const gitConfigPath = path.join(projectPath,'.git', 'config');
       if (fs.existsSync(gitConfigPath)) {
@@ -1038,7 +1038,7 @@ Thumbs.db
    */
   findProjectRoot(
     startPath: string = process.cwd()
-  ): { projectId: string; projectPath: string; configPath: string }'' | ''null {
+  ): { projectId: string; projectPath: string; configPath: string }|null {
     // First check if we have a registered project for this path or any parent path
     let currentPath = path.resolve(startPath);
 
@@ -1063,7 +1063,7 @@ Thumbs.db
    */
   private smartProjectDiscovery(
     startPath: string
-  ): { projectId: string; projectPath: string; configPath: string }'' | ''null {
+  ): { projectId: string; projectPath: string; configPath: string }|null {
     const resolvedStartPath = path.resolve(startPath);
 
     // Step 1: Find if we're in a monorepo
@@ -1118,7 +1118,7 @@ Thumbs.db
    */
   private registerMonorepoProject(
     monorepoRoot: string
-  ): { projectId: string; projectPath: string; configPath: string }'' | ''null {
+  ): { projectId: string; projectPath: string; configPath: string }|null {
     try {
       // Use synchronous registration for immediate return
       const projectId = this.registerProjectSync(monorepoRoot, {
@@ -1160,13 +1160,13 @@ Thumbs.db
       // 4. Is a published package
       const hasSignificantScripts =
         packageJson.scripts &&
-        (packageJson.scripts.build'' | '''' | ''packageJson.scripts.test'' | '''' | ''packageJson.scripts.dev'' | '''' | ''packageJson.scripts.start);
+        (packageJson.scripts.build||packageJson.scripts.test||packageJson.scripts.dev||packageJson.scripts.start);
 
       const hasDependencies =
-        packageJson.dependencies'' | '''' | ''packageJson.devDependencies;
-      const isPublishable = !packageJson.private'' | '''' | ''packageJson.publishConfig;
+        packageJson.dependencies||packageJson.devDependencies;
+      const isPublishable = !packageJson.private||packageJson.publishConfig;
 
-      return !!(hasSignificantScripts'' | '''' | ''hasDependencies'' | '''' | ''isPublishable);
+      return !!(hasSignificantScripts||hasDependencies||isPublishable);
     } catch {
       return false;
     }
@@ -1177,7 +1177,7 @@ Thumbs.db
    */
   private traditionalProjectDiscovery(
     startPath: string
-  ): { projectId: string; projectPath: string; configPath: string }'' | ''null {
+  ): { projectId: string; projectPath: string; configPath: string }|null {
     let currentPath = startPath;
 
     while (currentPath !== path.dirname(currentPath)) {
@@ -1260,7 +1260,7 @@ Thumbs.db
    */
   async updateProject(
     idOrPath: string,
-    updates: Partial<Omit<ProjectInfo, 'id''' | '''createdAt'>>
+    updates: Partial<Omit<ProjectInfo, 'id|createdAt''>>
   ): Promise<boolean> {
     const registry = this.loadRegistry();
     const project = this.getProject(idOrPath);

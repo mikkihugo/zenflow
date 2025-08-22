@@ -65,13 +65,13 @@ export interface ComplianceViolation {
   readonly violationId: string;
   readonly framework: string;
   readonly requirement: string;
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly severity: 'critical|high|medium|low';
   readonly description: string;
   readonly evidenceGaps: string[];
   readonly impactAssessment: string;
   readonly remediationSteps: string[];
   readonly estimatedEffort: number; // hours
-  readonly businessRisk: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly businessRisk: 'critical|high|medium|low';
 }
 
 /**
@@ -79,12 +79,12 @@ export interface ComplianceViolation {
  */
 export interface ComplianceRecommendation {
   readonly recommendationId: string;
-  readonly type:' | ''process_improvement'' | ''control_enhancement'' | ''technology_update'' | ''training';
+  readonly type:|process_improvement|control_enhancement|technology_update|'training';
   readonly title: string;
   readonly description: string;
   readonly expectedImpact: string;
   readonly implementationPlan: ImplementationStep[];
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
   readonly estimatedCost: number;
   readonly timeline: string;
 }
@@ -123,7 +123,7 @@ export interface ComplianceTrendData {
   readonly complianceRate: number;
   readonly violationCount: number;
   readonly criticalViolations: number;
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
 }
 
 /**
@@ -134,8 +134,8 @@ export interface ValidationSchedule {
   readonly systemDesignName: string;
   readonly framework: string;
   readonly scheduledDate: Date;
-  readonly validationType: 'scheduled'' | ''triggered'' | ''ad_hoc';
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly validationType: 'scheduled|triggered|ad_hoc';
+  readonly priority: 'critical|high|medium|low';
 }
 
 /**
@@ -149,7 +149,7 @@ export interface RemediationProgress {
   readonly progressPercentage: number;
   readonly estimatedCompletion: Date;
   readonly responsible: string;
-  readonly status: 'not_started'' | ''in_progress'' | ''completed'' | ''blocked';
+  readonly status: 'not_started|in_progress|completed|blocked';
 }
 
 /**
@@ -577,7 +577,7 @@ export class ComplianceMonitoringService {
   private assessViolationSeverity(
     violation: any,
     analysis: any
-  ): 'critical'' | ''high'' | ''medium'' | ''low' {
+  ): 'critical|high|medium|low' {
     // AI-enhanced severity assessment
     if (analysis.severityScores && analysis.severityScores[violation.id]) {
       const score = analysis.severityScores[violation.id];
@@ -598,7 +598,7 @@ export class ComplianceMonitoringService {
   private assessBusinessRisk(
     violation: any,
     analysis: any
-  ): 'critical'' | ''high'' | ''medium'' | ''low' {
+  ): 'critical|high|medium|low' {
     // AI-enhanced business risk assessment
     if (
       analysis.businessRiskScores &&

@@ -26,7 +26,7 @@ export interface MemoryMetrics {
   };
   backends: {
     [id: string]: {
-      status: 'healthy | degraded' | 'failed';
+      status: 'healthy|degraded|failed';
       operations: number;
       errors: number;
       latency: number;
@@ -38,8 +38,8 @@ export interface MemoryMetrics {
 }
 export interface MemoryAlert {
   id: string;
-  type: 'performance | capacity' | 'error''' | '''coordination';
-  severity: 'info | warning' | 'error''' | '''critical';
+  type: 'performance|capacity|error|coordination';
+  severity: 'info|warning|error|critical';
   message: string;
   timestamp: number;
   source: string;
@@ -140,7 +140,7 @@ export declare class MemoryMonitor extends TypedEventBase {
   /**
    * Get current metrics.
    */
-  getCurrentMetrics(): MemoryMetrics'' | ''null;
+  getCurrentMetrics(): MemoryMetrics|null;
   /**
    * Get metrics for a time range.
    *
@@ -172,7 +172,7 @@ export declare class MemoryMonitor extends TypedEventBase {
       metricsCollected: number;
       operationsTracked: number;
     };
-    current: MemoryMetrics'' | ''null;
+    current: MemoryMetrics|null;
     alerts: {
       total: number;
       active: number;
@@ -188,7 +188,7 @@ export declare class MemoryMonitor extends TypedEventBase {
    * Generate a health report.
    */
   generateHealthReport(): {
-    overall:'healthy | warning' | 'critical';
+    overall:'healthy|warning|critical';
     score: number;
     details: Record<string, unknown>;
     recommendations: string[];

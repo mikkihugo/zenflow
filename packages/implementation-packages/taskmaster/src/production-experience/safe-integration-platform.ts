@@ -19,8 +19,8 @@ export interface SafePlatformConfig {
   enableGamification: boolean;
   enablePredictiveIntelligence: boolean;
   enableEcosystemIntegration: boolean;
-  immersionLevel: 'basic | enhanced' | 'production';
-  userRole:'' | '''team_member | scrum_master' | 'po''' | '''rte | architect' | 'business_owner';
+  immersionLevel: 'basic|enhanced|production';
+  userRole:|'team_member|scrum_master|po|rte|architect|business_owner';
 }
 
 export class SafeIntegrationPlatform {
@@ -308,15 +308,15 @@ export class SafeIntegrationPlatform {
       business_owner: 1.6,
     };
 
-    const basePoint = basePoints[milestoneEvent.type]'' | '''' | ''10;
-    const multiplier = multipliers[this.config.userRole]'' | '''' | ''1.0;
+    const basePoint = basePoints[milestoneEvent.type]||10;
+    const multiplier = multipliers[this.config.userRole]||1.0;
 
     return Math.round(basePoint * multiplier);
   }
 
   private async determineBadgeEligibility(
     milestoneEvent: any
-  ): Promise<string'' | ''null> {
+  ): Promise<string|null> {
     // Logic to determine if milestone earns a badge
     const badges = {
       first_epic_delivery:

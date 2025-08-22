@@ -41,7 +41,7 @@ const logger = getLogger('claude-sdk');
 // Global State Management (Simplified)
 // =============================================================================
 
-let globalTaskManager: ClaudeTaskManager'' | ''null = null;
+let globalTaskManager: ClaudeTaskManager|null = null;
 
 // =============================================================================
 // Main SDK Functions
@@ -102,7 +102,7 @@ export async function executeClaudeTask(
       shouldRetry: (error: Error) => {
         const message = error.message.toLowerCase();
         return (
-          message.includes('timeout')'' | '''' | ''message.includes('network')'' | '''' | ''message.includes('connection')'' | '''' | ''message.includes('econnreset')'' | '''' | ''message.includes('rate limit')
+          message.includes('timeout')||message.includes('network')||message.includes('connection')||message.includes('econnreset')||message.includes('rate limit')
         );
       },
     };
@@ -191,7 +191,7 @@ export async function executeSwarmCoordinationTask(
   const swarmOptions = {
     ...options,
     systemPrompt:
-      `${options.systemPrompt'' | '''' | ''''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`.trim(),
+      `${options.systemPrompt||''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`.trim(),
   };
 
   return executeClaudeTask(prompt, swarmOptions);
@@ -279,7 +279,7 @@ export class ClaudeTaskManager {
   private history: ClaudeMessage[] = [];
 
   constructor(options: ClaudeSDKOptions = {}) {
-    this.sessionId = options.sessionId'' | '''' | ''generateSessionId();
+    this.sessionId = options.sessionId||generateSessionId();
     logger.debug(`Created task manager with session: ${this.sessionId}`);
   }
 
@@ -343,7 +343,7 @@ export function filterMessagesForClaudeCode(
     }
 
     // Ensure content is not empty
-    if (!msg.content'' | '''' | ''msg.content.trim().length === 0) {
+    if (!msg.content||msg.content.trim().length === 0) {
       return false;
     }
 

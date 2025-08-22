@@ -38,7 +38,7 @@ import type { Logger } from '../types';
  * Market analysis configuration
  */
 export interface MarketAnalysisConfig {
-  readonly analysisDepth: 'basic | standard' | 'comprehensive';
+  readonly analysisDepth: 'basic|standard|comprehensive';
   readonly competitorTrackingCount: number;
   readonly trendAnalysisHorizon: number; // months
   readonly marketDataRefreshDays: number;
@@ -67,8 +67,8 @@ export interface CompetitiveLandscape {
   readonly niche: CompetitorAnalysis[];
   readonly emerging: CompetitorAnalysis[];
   readonly marketConcentration: number; // HHI index
-  readonly competitiveIntensity: 'low | medium' | 'high''' | '''extreme';
-  readonly barrierToEntry: 'low | medium' | 'high';
+  readonly competitiveIntensity: 'low|medium|high|extreme';
+  readonly barrierToEntry: 'low|medium|high';
 }
 
 /**
@@ -417,7 +417,7 @@ export class MarketAnalysisService {
    */
   private assessCompetitiveIntensity(
     competitors: CompetitorAnalysis[]
-  ): 'low | medium' | 'high''' | '''extreme' {
+  ): 'low|medium|high|extreme' {
     const hhi = this.calculateHHI(competitors);
 
     if (hhi > 2500) return 'low'; // Highly concentrated
@@ -431,10 +431,10 @@ export class MarketAnalysisService {
    */
   private evaluateBarrierToEntry(
     competitors: CompetitorAnalysis[]
-  ): 'low | medium' | 'high' {
+  ): 'low|medium|high' {
     const avgMarketShare = meanBy(competitors, 'marketShare');
     const topCompetitorShare =
-      maxBy(competitors, 'marketShare')?.marketShare'' | '''' | ''0;
+      maxBy(competitors, 'marketShare')?.marketShare||0;
 
     if (topCompetitorShare > 40) return'high';
     if (avgMarketShare > 15) return 'medium';
@@ -463,9 +463,9 @@ export class MarketAnalysisService {
    * Parse timeframe string to months
    */
   private parseTimeframe(timeframe: string): number {
-    if (timeframe.includes('year')) return parseInt(timeframe) * 12'' | '''' | ''24;
-    if (timeframe.includes('month')) return parseInt(timeframe)'' | '''' | ''12;
-    if (timeframe.includes('quarter')) return parseInt(timeframe) * 3'' | '''' | ''6;
+    if (timeframe.includes('year')) return parseInt(timeframe) * 12||24;
+    if (timeframe.includes('month')) return parseInt(timeframe)||12;
+    if (timeframe.includes('quarter')) return parseInt(timeframe) * 3||6;
     return 12; // Default 1 year
   }
 

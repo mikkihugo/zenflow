@@ -74,19 +74,19 @@ export interface BusinessCaseAnalysis {
  * Risk profile assessment
  */
 export interface RiskProfile {
-  readonly overallRiskLevel: 'low | medium' | 'high''' | '''critical';
+  readonly overallRiskLevel: 'low|medium|high|critical';
   readonly riskScore: number; // 0-100
   readonly criticalRisks: EpicRisk[];
   readonly mitigationCoverage: number; // 0-100%
   readonly residualRisk: number; // 0-100%
-  readonly riskTrend: 'improving | stable' | 'worsening';
+  readonly riskTrend: 'improving|stable|worsening';
 }
 
 /**
  * Business recommendation
  */
 export interface BusinessRecommendation {
-  readonly recommendation: 'proceed | defer' | 'pivot''' | '''stop';
+  readonly recommendation: 'proceed|defer|pivot|stop';
   readonly confidence: number; // 0-100%
   readonly reasoning: string[];
   readonly conditions: string[];
@@ -108,7 +108,7 @@ export interface SensitivityAnalysis {
  * Business scenario analysis
  */
 export interface BusinessScenario {
-  readonly scenario: 'optimistic | realistic' | 'pessimistic';
+  readonly scenario: 'optimistic|realistic|pessimistic';
   readonly probability: number; // 0-100%
   readonly roi: number;
   readonly npv: number;
@@ -123,7 +123,7 @@ export interface FinancialDriver {
   readonly driver: string;
   readonly impact: number; // -100 to +100
   readonly likelihood: number; // 0-100%
-  readonly category: 'revenue | cost' | 'timeline''' | '''market';
+  readonly category: 'revenue|cost|timeline|market';
 }
 
 /**
@@ -134,7 +134,7 @@ export interface BreakpointAnalysis {
   readonly breakpoint: number;
   readonly currentValue: number;
   readonly margin: number; // percentage difference
-  readonly riskLevel: 'low | medium' | 'high';
+  readonly riskLevel: 'low|medium|high';
 }
 
 /**
@@ -154,7 +154,7 @@ export interface CompetitivePosition {
 export interface CompetitorResponse {
   readonly competitor: string;
   readonly likelyResponse: string;
-  readonly impact: 'positive | negative' | 'neutral';
+  readonly impact: 'positive|negative|neutral';
   readonly timeframe: number; // months
   readonly mitigation: string[];
 }
@@ -180,7 +180,7 @@ export class BusinessCaseService {
     epicId: string;
     businessHypothesis: Omit<
       BusinessHypothesis,
-      'assumptionsList | validationPlan' | 'riskMitigations'
+      'assumptionsList|validationPlan|riskMitigations'
     >;
     marketData: MarketAnalysis;
     financialInputs: {
@@ -189,7 +189,7 @@ export class BusinessCaseService {
       operationalCost: number;
       revenueAssumptions: Omit<RevenueProjection, 'period'>[];
     };
-    risks: Omit<EpicRisk, 'id | identifiedAt' | 'status'>[];
+    risks: Omit<EpicRisk, 'id|identifiedAt|status'>[];
     assumptions: string[];
   }): EpicBusinessCase {
     this.logger.info('Creating business case', { epicId: input.epicId });
@@ -427,7 +427,7 @@ export class BusinessCaseService {
    * Generate risk mitigations
    */
   private generateRiskMitigations(
-    risks: Omit<EpicRisk, 'id | identifiedAt' | 'status'>[]
+    risks: Omit<EpicRisk, 'id|identifiedAt|status'>[]
   ): string[] {
     return risks.map(
       (risk) =>
@@ -443,7 +443,7 @@ export class BusinessCaseService {
     const revenueProjections: RevenueProjection[] = [];
     for (let year = 1; year <= 5; year++) {
       const baseRevenue =
-        financialInputs.revenueAssumptions[0]?.revenue'' | '''' | ''1000000;
+        financialInputs.revenueAssumptions[0]?.revenue||1000000;
       revenueProjections.push({
         period: `Year ${year}`,
         revenue: baseRevenue * Math.pow(1.2, year - 1), // 20% annual growth
@@ -557,7 +557,7 @@ export class BusinessCaseService {
    * Perform risk assessment
    */
   private performRiskAssessment(
-    risks: Omit<EpicRisk, 'id | identifiedAt' | 'status'>[]
+    risks: Omit<EpicRisk, 'id|identifiedAt|status'>[]
   ): RiskAssessment {
     const epicRisks: EpicRisk[] = risks.map((risk) => ({
       ...risk,

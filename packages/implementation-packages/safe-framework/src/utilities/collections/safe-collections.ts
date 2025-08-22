@@ -182,7 +182,7 @@ export class SafePortfolioUtils {
    */
   static calculatePortfolioMetrics<
     T extends {
-      status: 'green'' | ''yellow'' | ''red';
+      status: 'green|yellow|red';
       budget: number;
       actualSpent: number;
     },

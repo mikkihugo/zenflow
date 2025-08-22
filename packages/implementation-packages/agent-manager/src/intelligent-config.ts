@@ -33,15 +33,15 @@ const logger = getLogger('intelligent-config');
  * Repository analysis results for swarm optimization
  */
 export interface RepositoryAnalysis {
-  projectType:'' | '''web-app''' | '''api | library' | 'cli' | 'mobile' | 'desktop''' | '''data-science''' | '''unknown';
+  projectType:|'web-app|api | library'|cli|mobile|desktop|data-science'||unknown';
   technologies: string[];
-  complexity: 'low | medium' | 'high''' | '''very-high';
-  codebaseSize: 'small | medium' | 'large''' | '''very-large';
+  complexity: 'low|medium|high|very-high';
+  codebaseSize: 'small|medium|large|very-large';
   hasTests: boolean;
   hasDocs: boolean;
   mainLanguages: string[];
   fileCount: number;
-  recentActivity: 'low | medium' | 'high';
+  recentActivity: 'low|medium|high';
 }
 
 /**
@@ -68,7 +68,7 @@ export interface SwarmRecommendation {
 export async function analyzeRepository(
   projectRoot?: string
 ): Promise<RepositoryAnalysis> {
-  const rootDir = projectRoot'' | '''' | ''cwd();
+  const rootDir = projectRoot||cwd();
   logger.info('🔍 Analyzing repository structure', { rootDir });
 
   const analysis: RepositoryAnalysis = {
@@ -91,14 +91,14 @@ export async function analyzeRepository(
 
       // Determine project type from dependencies and scripts
       if (
-        packageJson.dependencies?.['react']'' | '''' | ''packageJson.dependencies?.['vue']'' | '''' | ''packageJson.dependencies?.['angular']
+        packageJson.dependencies?.['react']||packageJson.dependencies?.['vue']||packageJson.dependencies?.['angular']
       ) {
         analysis.projectType = 'web-app';
       } else if (
-        packageJson.dependencies?.['express']'' | '''' | ''packageJson.dependencies?.['fastify']'' | '''' | ''packageJson.dependencies?.['koa']
+        packageJson.dependencies?.['express']||packageJson.dependencies?.['fastify']||packageJson.dependencies?.['koa']
       ) {
         analysis.projectType = 'api';
-      } else if (packageJson.bin'' | '''' | ''packageJson.scripts?.['start']) {
+      } else if (packageJson.bin||packageJson.scripts?.['start']) {
         analysis.projectType = 'cli';
       } else {
         analysis.projectType = 'library';
@@ -113,13 +113,13 @@ export async function analyzeRepository(
 
       // Check for tests
       analysis.hasTests = !!(
-        packageJson.scripts?.['test']'' | '''' | ''allDeps['jest']'' | '''' | ''allDeps['vitest']'' | '''' | ''allDeps['mocha']
+        packageJson.scripts?.['test']||allDeps['jest']||allDeps['vitest']||allDeps['mocha']
       );
     }
 
     // Check for documentation
     analysis.hasDocs =
-      existsSync(join(rootDir, 'README.md'))'' | '''' | ''existsSync(join(rootDir,'docs'));
+      existsSync(join(rootDir, 'README.md'))||existsSync(join(rootDir,'docs'));
 
     // Analyze for other project types
     if (existsSync(join(rootDir, 'Cargo.toml'))) {
@@ -131,14 +131,14 @@ export async function analyzeRepository(
       analysis.mainLanguages.push('Go');
     }
     if (
-      existsSync(join(rootDir, 'requirements.txt'))'' | '''' | ''existsSync(join(rootDir,'pyproject.toml'))
+      existsSync(join(rootDir, 'requirements.txt'))||existsSync(join(rootDir,'pyproject.toml'))
     ) {
       analysis.technologies.push('python');
       analysis.mainLanguages.push('Python');
       if (
         analysis.technologies.some(
           (t) =>
-            t.includes('jupyter')'' | '''' | ''t.includes('pandas')'' | '''' | ''t.includes('numpy')
+            t.includes('jupyter')||t.includes('pandas')||t.includes('numpy')
         )
       ) {
         analysis.projectType = 'data-science';
@@ -162,7 +162,7 @@ export async function generateIntelligentConfig(
 ): Promise<SwarmRecommendation> {
   logger.info('🧠 Generating intelligent swarm configuration', { task });
 
-  const repoAnalysis = repositoryAnalysis'' | '''' | ''(await analyzeRepository())();
+  const repoAnalysis = repositoryAnalysis||(await analyzeRepository())();
 
   const analysisPrompt = buildAnalysisPrompt(task, repoAnalysis);
 
@@ -212,7 +212,7 @@ function buildAnalysisPrompt(
 **REPOSITORY CONTEXT:**
 - Project Type: ${repoAnalysis.projectType}
 - Main Technologies: ${repoAnalysis.technologies.slice(0, 10).join(', ')}
-- Languages: ${repoAnalysis.mainLanguages.join(', ')'' | '''' | '''JavaScript/TypeScript'}
+- Languages: ${repoAnalysis.mainLanguages.join(', ')||'JavaScript/TypeScript'}
 - Complexity: ${repoAnalysis.complexity}
 - Codebase Size: ${repoAnalysis.codebaseSize}
 - Has Tests: ${repoAnalysis.hasTests ? 'Yes' : 'No'}
@@ -316,7 +316,7 @@ function parseClaudeRecommendation(
       'star',
     ];
 
-    const cognitiveTypes = (config.cognitiveTypes'' | '''' | ''['researcher', 'coder'])
+    const cognitiveTypes = (config.cognitiveTypes||['researcher', 'coder'])
       .filter((type: string) =>
         validCognitiveTypes.includes(type as CognitiveArchetype)
       )
@@ -328,7 +328,7 @@ function parseClaudeRecommendation(
     const agentCount = Math.min(
       Math.max(
         cognitiveTypes.length,
-        config.agentCount'' | '''' | ''cognitiveTypes.length
+        config.agentCount||cognitiveTypes.length
       ),
       6
     );
@@ -339,17 +339,17 @@ function parseClaudeRecommendation(
       agentCount,
       reasoning: {
         taskAnalysis:
-          config.reasoning?.taskAnalysis'' | '''' | '''Task analysis not provided',
+          config.reasoning?.taskAnalysis||'Task analysis not provided',
         cognitiveRationale:
-          config.reasoning?.cognitiveRationale'' | '''' | '''Cognitive rationale not provided',
+          config.reasoning?.cognitiveRationale||'Cognitive rationale not provided',
         topologyRationale:
-          config.reasoning?.topologyRationale'' | '''' | '''Topology rationale not provided',
+          config.reasoning?.topologyRationale||'Topology rationale not provided',
         agentCountRationale:
-          config.reasoning?.agentCountRationale'' | '''' | '''Agent count rationale not provided',
+          config.reasoning?.agentCountRationale||'Agent count rationale not provided',
         repositoryInfluence:
-          config.reasoning?.repositoryInfluence'' | '''' | '''Repository influence not analyzed',
+          config.reasoning?.repositoryInfluence||'Repository influence not analyzed',
       },
-      confidence: Math.min(Math.max(config.confidence'' | '''' | ''75, 0), 100),
+      confidence: Math.min(Math.max(config.confidence||75, 0), 100),
     };
   } catch (error) {
     logger.warn('⚠️ Failed to parse Claude recommendation, using intelligent fallback',
@@ -371,34 +371,34 @@ function generateIntelligentFallback(task: string): SwarmRecommendation {
   let reasoning = '';
 
   if (
-    taskLower.includes('analy')'' | '''' | ''taskLower.includes('research')'' | '''' | ''taskLower.includes('investigate')
+    taskLower.includes('analy')||taskLower.includes('research')||taskLower.includes('investigate')
   ) {
     cognitiveTypes = ['researcher', 'analyst'];
     topology = 'hierarchical';
     reasoning =
       'Analysis/research task detected - using researcher + analyst with hierarchical coordination';
   } else if (
-    taskLower.includes('implement')'' | '''' | ''taskLower.includes('build')'' | '''' | ''taskLower.includes('code')
+    taskLower.includes('implement')||taskLower.includes('build')||taskLower.includes('code')
   ) {
     cognitiveTypes = ['coder', 'architect'];
     topology = 'star';
     reasoning =
       'Implementation task detected - using coder + architect with centralized coordination';
   } else if (
-    taskLower.includes('design')'' | '''' | ''taskLower.includes('architect')'' | '''' | ''taskLower.includes('plan')
+    taskLower.includes('design')||taskLower.includes('architect')||taskLower.includes('plan')
   ) {
     cognitiveTypes = ['architect', 'analyst', 'researcher'];
     topology = 'mesh';
     reasoning =
       'Design/architecture task detected - using diverse cognitive types with mesh topology for collaboration';
   } else if (
-    taskLower.includes('debug')'' | '''' | ''taskLower.includes('fix')'' | '''' | ''taskLower.includes('error')
+    taskLower.includes('debug')||taskLower.includes('fix')||taskLower.includes('error')
   ) {
     cognitiveTypes = ['coder', 'researcher'];
     topology = 'ring';
     reasoning =
       'Debugging task detected - using coder + researcher with sequential ring topology';
-  } else if (taskLower.includes('test')'' | '''' | ''taskLower.includes('validate')) {
+  } else if (taskLower.includes('test')||taskLower.includes('validate')) {
     cognitiveTypes = ['coder', 'analyst'];
     topology = 'hierarchical';
     reasoning =
@@ -454,7 +454,7 @@ function generateFallbackConfiguration(
 
   // Adjust based on complexity
   if (
-    repoAnalysis.complexity === 'high''' | '''' | ''repoAnalysis.complexity ==='very-high'
+    repoAnalysis.complexity === 'high'||repoAnalysis.complexity ==='very-high'
   ) {
     if (!cognitiveTypes.includes('architect')) {
       cognitiveTypes.push('architect');
@@ -492,9 +492,9 @@ export async function createIntelligentSwarmConfig(
     const config: SwarmCreationConfig = {
       task,
       cognitiveTypes:
-        userPreferences?.cognitiveTypes'' | '''' | ''recommendation.cognitiveTypes,
-      topology: userPreferences?.topology'' | '''' | ''recommendation.topology,
-      maxDuration: userPreferences?.maxDuration'' | '''' | ''3600000, // 1 hour default
+        userPreferences?.cognitiveTypes||recommendation.cognitiveTypes,
+      topology: userPreferences?.topology||recommendation.topology,
+      maxDuration: userPreferences?.maxDuration||3600000, // 1 hour default
       persistent: userPreferences?.persistent ?? true,
       neuralAcceleration: userPreferences?.neuralAcceleration ?? false,
       ...userPreferences,

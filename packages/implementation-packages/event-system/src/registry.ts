@@ -70,7 +70,7 @@ export interface EventRegistryEntry {
   lastHealthCheck: Date;
 
   /** Current operational status of the manager */
-  status: 'healthy | unhealthy' | 'stopped''' | '''error';
+  status: 'healthy|unhealthy|stopped|error';
 
   /** Latest health check results */
   healthStatus?: EventManagerStatus;
@@ -137,7 +137,7 @@ export interface EventTypeRegistry {
  * @example
  */
 export interface FactoryRegistry {
-  [key: string]:'' | ''{
+  [key: string]:|{
         /** Factory instance */
         factory: EventManagerFactory;
 
@@ -158,7 +158,7 @@ export interface FactoryRegistry {
           totalRequests: number;
           successRate: number;
         };
-      }'' | ''undefined;
+      }|undefined;
 }
 
 /**
@@ -242,11 +242,11 @@ export class EventRegistry implements EventManagerRegistry {
   private factoryRegistry: FactoryRegistry = {} as FactoryRegistry;
   private healthMonitoring: HealthMonitoringConfig;
   private discoveryConfig: EventDiscoveryConfig;
-  private healthCheckInterval?: NodeJS.Timeout'' | ''undefined;
+  private healthCheckInterval?: NodeJS.Timeout|undefined;
   private initialized = false;
 
   constructor(private _logger?: Logger) {
-    this._logger = _logger'' | '''' | ''getLogger('EventRegistry');
+    this._logger = _logger||getLogger('EventRegistry');
     this.healthMonitoring = {
       checkInterval: 30000, // 30 seconds
       timeout: 5000,
@@ -260,7 +260,7 @@ export class EventRegistry implements EventManagerRegistry {
       autoDiscover: true,
       patterns: ['*Event', '*event', 'event:*'],
       scanPaths: ['./events', './src/events'],
-      fileExtensions: ['', ''],
+      fileExtensions: [', '],
     };
   }
 
@@ -377,7 +377,7 @@ export class EventRegistry implements EventManagerRegistry {
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T>'' | ''undefined {
+  ): EventManagerFactory<T>|undefined {
     const factory = this.factories.get(type);
 
     if (factory && this.factoryRegistry[type]) {
@@ -460,7 +460,7 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * Find event manager by name.
    */
-  findEventManager(name: string): EventManager'' | ''undefined {
+  findEventManager(name: string): EventManager|undefined {
     const entry = this.eventManagers.get(name);
 
     if (entry) {
@@ -538,12 +538,12 @@ export class EventRegistry implements EventManagerRegistry {
       type: eventType,
       category: config?.category,
       priority:
-        config?.priority'' | '''' | ''(typeof EventPriorityMap['medium'] === 'number'
+        config?.priority||(typeof EventPriorityMap['medium'] === 'number'
           ? EventPriorityMap['medium']
           : 2),
       schema: config?.schema,
       managerTypes: config?.managerTypes,
-      config: config?.options'' | '''' | ''{},
+      config: config?.options||{},
       registered: new Date(),
       usage: {
         totalEmissions: 0,
@@ -565,7 +565,7 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * Get event type configuration.
    */
-  getEventTypeConfig(eventType: string): EventTypeRegistry[string]'' | ''undefined {
+  getEventTypeConfig(eventType: string): EventTypeRegistry[string]|undefined {
     return this.eventTypes[eventType];
   }
 
@@ -675,16 +675,16 @@ export class EventRegistry implements EventManagerRegistry {
 
     managers.forEach((entry) => {
       managersByType[entry.config.type] =
-        (managersByType[entry.config.type]'' | '''' | ''0) + 1;
+        (managersByType[entry.config.type]||0) + 1;
       managersByStatus[entry.status] =
-        (managersByStatus[entry.status]'' | '''' | ''0) + 1;
+        (managersByStatus[entry.status]||0) + 1;
     });
 
     // Factory usage statistics
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
       factoryUsage[type] =
-        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
+        this.factoryRegistry[type]?.usage.managersCreated||0;
     });
 
     return {
@@ -807,7 +807,7 @@ export class EventRegistry implements EventManagerRegistry {
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
       factoryUsage[type] =
-        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
+        this.factoryRegistry[type]?.usage.managersCreated||0;
     });
 
     return {
@@ -818,7 +818,7 @@ export class EventRegistry implements EventManagerRegistry {
       managersByType,
       factoryUsage,
       uptime: this.initialized
-        ? Date.now() - (managers[0]?.created.getTime()'' | '''' | ''Date.now())
+        ? Date.now() - (managers[0]?.created.getTime()||Date.now())
         : 0,
     };
   }

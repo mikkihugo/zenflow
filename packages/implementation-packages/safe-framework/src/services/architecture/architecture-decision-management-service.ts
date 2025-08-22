@@ -52,20 +52,20 @@ export interface ArchitectureDecisionRecord {
 /**
  * ADR status enumeration
  */
-export type ADRStatus =' | ''draft'' | ''proposed'' | ''under_review'' | ''accepted'' | ''rejected'' | ''deprecated'' | ''superseded'' | ''amended';
+export type ADRStatus =|draft|proposed|under_review|accepted|rejected|deprecated|superseded|'amended';
 
 /**
  * Decision categories for organization
  */
-export type DecisionCategory =' | ''architecture_pattern'' | ''technology_selection'' | ''integration_approach'' | ''security_policy'' | ''performance_standard'' | ''data_management'' | ''deployment_strategy'' | ''quality_standard'' | ''governance_policy'' | ''infrastructure_decision';
+export type DecisionCategory =|architecture_pattern|technology_selection|integration_approach|security_policy|performance_standard|data_management|deployment_strategy|quality_standard|governance_policy|'infrastructure_decision';
 
 /**
  * Decision impact assessment
  */
 export interface DecisionImpact {
-  readonly scope: 'local'' | ''system'' | ''enterprise'' | ''ecosystem';
-  readonly timeHorizon:' | ''short_term'' | ''medium_term'' | ''long_term'' | ''strategic';
-  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly scope: 'local|system|enterprise|ecosystem';
+  readonly timeHorizon:|short_term|medium_term|long_term|'strategic';
+  readonly riskLevel: 'low|medium|high|critical';
   readonly businessImpact: number; // 0-10 scale
   readonly technicalComplexity: number; // 0-10 scale
   readonly implementationEffort: number; // story points or hours
@@ -95,7 +95,7 @@ export interface CostAnalysis {
   readonly maintenanceCost: number;
   readonly opportunityCost: number;
   readonly currency: string;
-  readonly timeframe: 'annual'' | ''project'' | ''lifetime';
+  readonly timeframe: 'annual|project|lifetime';
   readonly confidence: number; // 0-100 scale
 }
 
@@ -138,7 +138,7 @@ export interface Risk {
  * Review cycle for decision governance
  */
 export interface ReviewCycle {
-  readonly frequency: 'one_time'' | ''quarterly'' | ''annually'' | ''on_change';
+  readonly frequency: 'one_time|quarterly|annually|on_change';
   readonly nextReviewDate?: Date;
   readonly reviewCriteria: string[];
   readonly reviewers: string[];
@@ -151,7 +151,7 @@ export interface ReviewCycle {
 export interface Attachment {
   readonly attachmentId: string;
   readonly name: string;
-  readonly type: 'document'' | ''diagram'' | ''code'' | ''link'' | ''image';
+  readonly type: 'document|diagram|code|link|image';
   readonly url: string;
   readonly description: string;
   readonly uploadedBy: string;
@@ -168,7 +168,7 @@ export interface DecisionMetric {
   readonly targetValue: number;
   readonly currentValue: number;
   readonly unit: string;
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
   readonly lastMeasured: Date;
 }
 
@@ -183,7 +183,7 @@ export interface DecisionRequest {
   readonly requester: string;
   readonly stakeholders: string[];
   readonly deadline?: Date;
-  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly priority: 'low|medium|high|critical';
   readonly businessJustification: string;
 }
 
@@ -197,7 +197,7 @@ export interface DecisionOption {
   readonly cons: string[];
   readonly estimatedCost: number;
   readonly estimatedEffort: number;
-  readonly riskLevel: 'low'' | ''medium'' | ''high';
+  readonly riskLevel: 'low|medium|high';
 }
 
 /**
@@ -262,7 +262,7 @@ export interface DecisionTrend {
   readonly decisionsAccepted: number;
   readonly decisionsRejected: number;
   readonly avgTimeToDecision: number; // days
-  readonly qualityTrend: 'improving'' | ''stable'' | ''declining';
+  readonly qualityTrend: 'improving|stable|declining';
 }
 
 // ============================================================================
@@ -379,7 +379,7 @@ export class ArchitectureDecisionManagementService {
    */
   async createArchitectureDecisionRecord(
     decision: Omit<
-      ArchitectureDecisionRecord,' | ''id'' | ''createdAt'' | ''updatedAt'' | ''status'' | ''confidenceLevel'' | ''alternatives'
+      ArchitectureDecisionRecord,|id|createdAt|updatedAt|status|confidenceLevel|'alternatives'
     >
   ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();

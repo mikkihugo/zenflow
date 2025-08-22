@@ -174,7 +174,7 @@ export class StrategicVisionService {
       // Import from code comments (TODOs, STRATEGY, VISION annotations)
       const codeImportResults = await this.importFromCodeAnnotations(
         options.projectId,
-        options.projectPath'' | '''' | ''`/home/mhugo/code/${options.projectId}`,
+        options.projectPath||`/home/mhugo/code/${options.projectId}`,
         existingTypes
       );
 
@@ -198,7 +198,7 @@ export class StrategicVisionService {
    */
   async createVisionDocument(
     projectId: string,
-    type:'vision | prd' | 'epic''' | '''strategy',
+    type:'vision|prd|epic|strategy',
     content: {
       title: string;
       summary: string;
@@ -229,7 +229,7 @@ export class StrategicVisionService {
         project_id: projectId,
         status: 'draft' as const,
         priority: 'high'as const,
-        keywords: content.goals'' | '''' | ''[],
+        keywords: content.goals||[],
         tags: [type,'strategic', 'vision'],
         metadata: {
           stakeholders: content.stakeholders,
@@ -253,14 +253,14 @@ export class StrategicVisionService {
       if (!createResult.success) {
         return {
           success: false,
-          error: createResult.error?.message'' | '''' | '''Failed to create document',
+          error: createResult.error?.message||'Failed to create document',
         };
       }
 
       const documentId = createResult.data?.id;
 
       // Optionally save to repo (only for specific document types)
-      let repoPath: string'' | ''undefined;
+      let repoPath: string|undefined;
       if (saveToRepo && ['vision', 'strategy'].includes(type)) {
         repoPath = await this.saveToRepository(projectId, type, content);
       }
@@ -307,31 +307,31 @@ export class StrategicVisionService {
     projectId: string,
     documents: BaseDocumentEntity[]
   ): Promise<StrategicVisionAnalysis> {
-    const visionDoc = documents.find((doc) => doc.type === 'vision') as'' | ''any'' | ''undefined;
-    const prdDoc = documents.find((doc) => doc.type ==='prd') as'' | ''any'' | ''undefined;
+    const visionDoc = documents.find((doc) => doc.type === 'vision') as|any|undefined;
+    const prdDoc = documents.find((doc) => doc.type ==='prd') as|any|undefined;
     const epicDocs = documents.filter((doc) => doc.type ==='epic') as any[];
 
     // Extract strategic information from structured documents
     const missionStatement =
-      visionDoc?.content?.split('\n')[0]'' | '''' | ''prdDoc?.summary'' | '''' | '''Mission extracted from structured documents';
+      visionDoc?.content?.split('\n')[0]||prdDoc?.summary||'Mission extracted from structured documents';
 
     const strategicGoals = [
-      ...(visionDoc?.keywords'' | '''' | ''[]),
-      ...(prdDoc?.keywords'' | '''' | ''[]),
-      ...epicDocs.flatMap((epic) => epic.keywords'' | '''' | ''[]),
+      ...(visionDoc?.keywords||[]),
+      ...(prdDoc?.keywords||[]),
+      ...epicDocs.flatMap((epic) => epic.keywords||[]),
     ].slice(0, 8);
 
     const stakeholders = [
-      ...(visionDoc?.metadata?.stakeholders'' | '''' | ''[]),
-      ...(prdDoc?.metadata?.stakeholders'' | '''' | ''[]),
+      ...(visionDoc?.metadata?.stakeholders||[]),
+      ...(prdDoc?.metadata?.stakeholders||[]),
     ];
 
     const risks = [
-      ...(visionDoc?.metadata?.risks'' | '''' | ''[]),
-      ...(prdDoc?.metadata?.risks'' | '''' | ''[]),
+      ...(visionDoc?.metadata?.risks||[]),
+      ...(prdDoc?.metadata?.risks||[]),
     ];
 
-    const keyMetrics = visionDoc?.metadata?.key_metrics'' | '''' | ''prdDoc?.metadata?.key_metrics'' | '''' | ''['Quality',
+    const keyMetrics = visionDoc?.metadata?.key_metrics||prdDoc?.metadata?.key_metrics||['Quality',
         'Performance',
         'User satisfaction',
       ];
@@ -349,14 +349,14 @@ export class StrategicVisionService {
       businessValue: 0.85, // High confidence from structured data
       technicalImpact: 0.85,
       marketPosition:
-        visionDoc?.metadata?.market_position'' | '''' | '''Database-driven analysis',
+        visionDoc?.metadata?.market_position||'Database-driven analysis',
       targetOutcome:
-        visionDoc?.metadata?.target_outcome'' | '''' | ''strategicGoals[0]'' | '''' | '''Structured outcome delivery',
+        visionDoc?.metadata?.target_outcome||strategicGoals[0]||'Structured outcome delivery',
       keyMetrics,
       stakeholders:
         stakeholders.length > 0 ? stakeholders : ['Database stakeholders'],
       timeline:
-        visionDoc?.metadata?.timeline'' | '''' | '''Timeline from structured documents',
+        visionDoc?.metadata?.timeline||'Timeline from structured documents',
       risks: risks.length > 0 ? risks : ['Database-identified risks'],
       confidenceScore,
       sourceDocuments: documents.map((doc) => doc.id),
@@ -527,10 +527,10 @@ export class StrategicVisionService {
     confidence: number;
     extractedKeywords: string[];
     suggestedTags: string[];
-    suggestedPriority: 'low | medium' | 'high';
+    suggestedPriority: 'low|medium|high';
     suggestedActions: string[];
     contentThemes: string[];
-    documentMaturity: 'draft | partial' | 'complete''' | '''outdated';
+    documentMaturity: 'draft|partial|complete|outdated';
     strategicRelevance: number; // 0-1 score
     suggestedDependencies: string[];
   }> {
@@ -643,7 +643,7 @@ export class StrategicVisionService {
             : 'low';
 
       // Add maturity-based actions
-      if (documentMaturity === 'draft''' | '''' | ''documentMaturity ==='partial') {
+      if (documentMaturity === 'draft'||documentMaturity ==='partial') {
         actions.push('Complete missing sections and add more detail');
       } else if (documentMaturity === 'outdated') {
         actions.push(
@@ -766,9 +766,9 @@ export class StrategicVisionService {
     const hasHeaders = /^#{1,6}\s/.test(content);
     const hasBullets = /^\s*[*+-]\s/.test(content);
     const hasNumbering = /^\s*\d+\.\s/.test(content);
-    const hasCode = /```/.test(content)'' | '''' | ''/`[^`]+`/.test(content);
+    const hasCode = /```/.test(content)||/`[^`]+`/.test(content);
 
-    return hasHeaders'' | '''' | ''hasBullets'' | '''' | ''hasNumbering'' | '''' | ''hasCode;
+    return hasHeaders||hasBullets||hasNumbering||hasCode;
   }
 
   private extractKeywordsFromContent(content: string): string[] {
@@ -805,7 +805,7 @@ export class StrategicVisionService {
     // Count frequency and return top keywords
     const frequency = new Map<string, number>();
     words.forEach((word) => {
-      frequency.set(word, (frequency.get(word)'' | '''' | ''0) + 1);
+      frequency.set(word, (frequency.get(word)||0) + 1);
     });
 
     return Array.from(frequency.entries())
@@ -816,19 +816,19 @@ export class StrategicVisionService {
 
   private assessDocumentMaturity(
     content: string
-  ):'draft | partial' | 'complete''' | '''outdated' {
+  ):'draft|partial|complete|outdated' {
     const lines = content.split('\n').filter((line) => line?.trim().length > 0);
     const totalLength = content.length;
 
     // Check for draft indicators
     if (
-      content?.toLowerCase().includes('draft')'' | '''' | ''content?.toLowerCase().includes('todo')'' | '''' | ''content?.toLowerCase().includes('wip')
+      content?.toLowerCase().includes('draft')||content?.toLowerCase().includes('todo')||content?.toLowerCase().includes('wip')
     ) {
       return 'draft';
     }
 
     // Check for completeness indicators
-    if (totalLength < 500'' | '''' | ''lines.length < 10) {
+    if (totalLength < 500||lines.length < 10) {
       return'partial';
     }
 
@@ -896,7 +896,7 @@ export class StrategicVisionService {
     }
 
     // Generate from filename and type
-    const baseName = filename.replace(/\.(md'' | ''txt'' | ''rst'' | ''adoc)$/i,'');
+    const baseName = filename.replace(/\.(md|txt|rst|adoc)$/i,'');
     const typePrefix =
       documentType === 'vision'
         ? 'Vision:'
@@ -911,8 +911,8 @@ export class StrategicVisionService {
 
   private generateContentSummary(content: string, themes: string[]): string {
     const firstSentence = content.split('.')[0]?.trim();
-    const themesText = themes.length > 0 ? ` Covers: ${themes.join(', ')}` : '';
-    return `${firstSentence'' | '''' | '''Content summary'}.${themesText}`;
+    const themesText = themes.length > 0 ? ` Covers: ${themes.join(', ')}` : ';
+    return `${firstSentence|||Content summary'}.${themesText}`;
   }
 
   // .gitignore support helpers
@@ -995,11 +995,11 @@ export class StrategicVisionService {
           // Directory pattern
           const dirPattern = pattern.slice(0, -1);
           if (
-            relativePath.startsWith(dirPattern + '/')'' | '''' | ''relativePath === dirPattern
+            relativePath.startsWith(dirPattern + '/')||relativePath === dirPattern
           )
             return true;
         } else if (
-          relativePath === pattern'' | '''' | ''relativePath.startsWith(pattern +'/')
+          relativePath === pattern||relativePath.startsWith(pattern +'/')
         ) {
           return true;
         }
@@ -1043,16 +1043,16 @@ export class StrategicVisionService {
             // Extract different types of strategic annotations
             const todoMatches =
               content.match(
-                /\/\/\s*todo[\s:]*(.*)'' | ''\/\*\s*todo[\s:]*(.*?)\*\//gi
-              )'' | '''' | ''[];
+                /\/\/\s*todo[\s:]*(.*)|\/\*\s*todo[\s:]*(.*?)\*\//gi
+              )||[];
             const strategyMatches =
               content.match(
-                /\/\/\s*strategy[\s:]*(.*)'' | ''\/\*\s*strategy[\s:]*(.*?)\*\//gi
-              )'' | '''' | ''[];
+                /\/\/\s*strategy[\s:]*(.*)|\/\*\s*strategy[\s:]*(.*?)\*\//gi
+              )||[];
             const visionMatches =
               content.match(
-                /\/\/\s*vision[\s:]*(.*)'' | ''\/\*\s*vision[\s:]*(.*?)\*\//gi
-              )'' | '''' | ''[];
+                /\/\/\s*vision[\s:]*(.*)|\/\*\s*vision[\s:]*(.*?)\*\//gi
+              )||[];
 
             todoAnnotations.push(
               ...todoMatches.map((match) => `${file}: ${match?.trim()}`)
@@ -1141,7 +1141,7 @@ export class StrategicVisionService {
     projectId: string,
     type: string,
     content: any
-  ): Promise<string'' | ''undefined> {
+  ): Promise<string|undefined> {
     // Only save specific document types back to repo
     if (!['vision', 'strategy'].includes(type)) {
       return undefined;

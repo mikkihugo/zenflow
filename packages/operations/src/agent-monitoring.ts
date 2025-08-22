@@ -70,7 +70,7 @@ interface TaskPredictor {
 
 interface HealthStatus {
   agentId: string;
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy|degraded|unhealthy';
   lastCheck: Date;
   metrics?: Record<string, any>;
 }
@@ -90,7 +90,7 @@ interface AgentBehavior {
   timestamp: Date;
   action: string;
   context: Record<string, unknown>;
-  outcome: 'success | failure' | 'partial';
+  outcome: 'success|failure|partial';
 }
 
 interface AgentInsights {
@@ -125,7 +125,7 @@ interface PerformanceReport {
 
 interface PerformanceTrend {
   metric: string;
-  direction: 'improving | declining' | 'stable';
+  direction: 'improving|declining|stable';
   confidence: number;
 }
 
@@ -152,7 +152,7 @@ interface BehaviorPattern {
 interface BehaviorAnomaly {
   id: string;
   description: string;
-  severity: 'low | medium' | 'high';
+  severity: 'low|medium|high';
   timestamp: Date;
 }
 
@@ -242,7 +242,7 @@ interface AgentMonitoringSystemConfig {
  * Implementation of agent monitoring access via runtime delegation
  */
 class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
-  private agentMonitoringModule: AgentMonitoringSystemModule'' | ''null = null;
+  private agentMonitoringModule: AgentMonitoringSystemModule|null = null;
 
   private async getAgentMonitoringModule(): Promise<AgentMonitoringSystemModule> {
     if (!this.agentMonitoringModule) {
@@ -322,7 +322,7 @@ class AgentMonitoringSystemAccessImpl implements AgentMonitoringSystemAccess {
 }
 
 // Global singleton instance
-let globalAgentMonitoringSystemAccess: AgentMonitoringSystemAccess'' | ''null =
+let globalAgentMonitoringSystemAccess: AgentMonitoringSystemAccess|null =
   null;
 
 /**
@@ -398,7 +398,7 @@ interface LLMCompletionOptions {
 }
 
 interface LLMMessage {
-  role: 'user | assistant' | 'system';
+  role: 'user|assistant|system';
   content: string;
 }
 

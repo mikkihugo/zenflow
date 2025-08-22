@@ -142,7 +142,7 @@ export class MemorySystemManager extends TypedEventBase {
     options: {
       weight?: number;
       priority?: number;
-      tier?: 'hot | warm' | 'cold';
+      tier?: 'hot|warm|cold';
     } = {}
   ): Promise<void> {
     if (!this.coordination) {
@@ -181,8 +181,8 @@ export class MemorySystemManager extends TypedEventBase {
     value: JSONValue,
     namespace = 'default',
     options?: {
-      consistency?: 'strong''' | '''eventual';
-      tier?: 'hot | warm' | 'cold';
+      consistency?: 'strong|eventual'';
+      tier?: 'hot|warm|cold';
       ttl?: number;
       priority?: number;
       tags?: string[];
@@ -196,7 +196,7 @@ export class MemorySystemManager extends TypedEventBase {
       span?.setAttributes({
         'memory.key': key,
         'memory.namespace': namespace,
-        'memory.tier': options?.tier'' | '''' | '''warm',
+        'memory.tier': options?.tier||'warm',
       });
 
       // Store via coordination system
@@ -209,7 +209,7 @@ export class MemorySystemManager extends TypedEventBase {
       // Also store in lifecycle manager if enabled
       if (this.lifecycle && this.config.lifecycle?.enabled) {
         this.lifecycle.store(key, value, {
-          stage: options?.tier'' | '''' | '''warm',
+          stage: options?.tier||'warm',
           priority: options?.priority,
           tags: options?.tags,
           source: 'memory-system',
@@ -230,10 +230,10 @@ export class MemorySystemManager extends TypedEventBase {
     key: string,
     namespace = 'default',
     options?: {
-      consistency?: 'strong''' | '''eventual';
+      consistency?: 'strong|eventual';
       timeout?: number;
     }
-  ): Promise<T'' | ''null> {
+  ): Promise<T|'null> {
     if (!this.coordination) {
       throw new Error('Coordination system not initialized');
     }
@@ -271,7 +271,7 @@ export class MemorySystemManager extends TypedEventBase {
         success: result.success ? 'true' : 'false',
       });
 
-      return result.success ? result.data'' | '''' | ''null : null;
+      return result.success ? result.data||null : null;
     });
   }
 
@@ -311,7 +311,7 @@ export class MemorySystemManager extends TypedEventBase {
 
     return withTrace('memory-system-clear', async (span) => {
       span?.setAttributes({
-        'memory.namespace': namespace'' | '''' | '''all',
+        'memory.namespace': namespace||'all',
       });
 
       // Clear cache eviction if enabled
@@ -324,7 +324,7 @@ export class MemorySystemManager extends TypedEventBase {
 
       recordMetric('memory_system_clear', 1, {
         systemName: this.config.name,
-        namespace: namespace'' | '''' | '''all',
+        namespace: namespace||'all',
       });
     });
   }
@@ -343,11 +343,11 @@ export class MemorySystemManager extends TypedEventBase {
       status: this.calculateOverallStatus(componentHealth),
       uptime,
       nodes: {
-        total: coordinationStatus?.totalNodes'' | '''' | ''0,
-        healthy: coordinationStatus?.healthyNodes'' | '''' | ''0,
+        total: coordinationStatus?.totalNodes||0,
+        healthy: coordinationStatus?.healthyNodes||0,
         unhealthy:
-          (coordinationStatus?.totalNodes'' | '''' | ''0) -
-          (coordinationStatus?.healthyNodes'' | '''' | ''0),
+          (coordinationStatus?.totalNodes||0) -
+          (coordinationStatus?.healthyNodes||0),
       },
       performance: {
         averageResponseTime: this.getAverageResponseTime(),
@@ -362,8 +362,8 @@ export class MemorySystemManager extends TypedEventBase {
       },
       optimization: {
         optimizationsApplied:
-          this.optimization?.getMetrics().operations.compressions'' | '''' | ''0,
-        improvementScore: this.optimization?.getMetrics().health.score'' | '''' | ''100,
+          this.optimization?.getMetrics().operations.compressions||0,
+        improvementScore: this.optimization?.getMetrics().health.score||100,
         lastOptimization: this.getLastOptimizationTime(),
       },
       health: {
@@ -388,17 +388,17 @@ export class MemorySystemManager extends TypedEventBase {
         mode: this.config.mode,
       },
       coordination: {
-        totalNodes: coordinationStatus?.totalNodes'' | '''' | ''0,
-        healthyNodes: coordinationStatus?.healthyNodes'' | '''' | ''0,
+        totalNodes: coordinationStatus?.totalNodes||0,
+        healthyNodes: coordinationStatus?.healthyNodes||0,
         operationsPerSecond: 0, // Would come from actual metrics
         averageLatency: 0, // Would come from actual metrics
         successRate: 0.99, // Would come from actual metrics
       },
       optimization: {
-        optimizationCycles: optimizationMetrics?.operations.compressions'' | '''' | ''0,
-        improvementsApplied: optimizationMetrics?.operations.reads'' | '''' | ''0,
-        performanceGain: optimizationMetrics?.health.score'' | '''' | ''0,
-        memoryEfficiency: optimizationMetrics?.memoryUsage.current'' | '''' | ''0,
+        optimizationCycles: optimizationMetrics?.operations.compressions||0,
+        improvementsApplied: optimizationMetrics?.operations.reads||0,
+        performanceGain: optimizationMetrics?.health.score||0,
+        memoryEfficiency: optimizationMetrics?.memoryUsage.current||0,
       },
       lifecycle: {
         totalEntries: 0, // Would get from lifecycle manager
@@ -406,13 +406,13 @@ export class MemorySystemManager extends TypedEventBase {
         warmEntries: 0,
         coldEntries: 0,
         archivedEntries: 0,
-        migrationsPerHour: lifecycleMetrics?.migrations'' | '''' | ''0,
+        migrationsPerHour: lifecycleMetrics?.migrations||0,
       },
       performance: {
         responseTime: {
-          p50: performanceMetrics?.stabilityScore'' | '''' | ''0,
-          p95: performanceMetrics?.stabilityScore'' | '''' | ''0,
-          p99: performanceMetrics?.stabilityScore'' | '''' | ''0,
+          p50: performanceMetrics?.stabilityScore||0,
+          p95: performanceMetrics?.stabilityScore||0,
+          p99: performanceMetrics?.stabilityScore||0,
         },
         throughput: 0,
         cacheMetrics: {
@@ -569,7 +569,7 @@ export class MemorySystemManager extends TypedEventBase {
 
   private shouldInitializeCacheEviction(): boolean {
     return (
-      this.config.coordination.strategy === 'intelligent''' | '''' | ''this.config.optimization?.strategies.compression'' | '''' | ''this.config.performance?.actions.adjustCacheSize'' | '''' | ''false
+      this.config.coordination.strategy === 'intelligent'||this.config.optimization?.strategies.compression||this.config.performance?.actions.adjustCacheSize||false
     );
   }
 
@@ -743,8 +743,8 @@ export class MemorySystemManager extends TypedEventBase {
 
   // Public methods
 
-  getComponentStatus(componentName: string): ManagedComponent'' | ''null {
-    return this.components.get(componentName)'' | '''' | ''null;
+  getComponentStatus(componentName: string): ManagedComponent|null {
+    return this.components.get(componentName)||null;
   }
 
   getAllComponents(): Map<string, ManagedComponent> {

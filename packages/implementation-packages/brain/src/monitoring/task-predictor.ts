@@ -24,7 +24,7 @@ export interface TaskPrediction {
   metadata?: {
     sampleSize: number;
     algorithm: string;
-    trendDirection: 'improving | stable' | 'declining';
+    trendDirection: 'improving|stable|declining';
   };
 }
 
@@ -166,7 +166,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     contextFactors?: Record<string, unknown>
   ): TaskPrediction {
     const key = `${agentId.id}-${taskType}`;
-    const history = this.taskHistory.get(key)'' | '''' | ''[];
+    const history = this.taskHistory.get(key)||[];
 
     if (history.length < this.config.minSamplesRequired) {
       return this.createFallbackPrediction(agentId.id, taskType);
@@ -313,7 +313,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
    */
   private calculateTrendDirection(
     durations: number[]
-  ): 'improving | stable' | 'declining' {
+  ): 'improving|stable|declining' {
     if (durations.length < 3) return 'stable';
 
     const firstHalf = durations.slice(0, Math.floor(durations.length / 2));

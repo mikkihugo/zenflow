@@ -38,7 +38,7 @@ import type { JsonValue, UnknownRecord } from './primitives';
  * Generic Result type following Rust/Functional patterns
  * Simpler than OperationResult for when you just need ok/error
  */
-export type Result<T, E = Error> = Success<T>'' | ''Failure<E>;
+export type Result<T, E = Error> = Success<T>|Failure<E>;
 
 /**
  * Generic success result
@@ -117,7 +117,7 @@ export function isValidationFailure(
 /**
  * Database query result types
  */
-export type DatabaseResult<T = JsonValue> = QuerySuccess<T>'' | ''QueryError;
+export type DatabaseResult<T = JsonValue> = QuerySuccess<T>|QueryError;
 
 export interface QuerySuccess<T = JsonValue> {
   readonly success: true;
@@ -162,7 +162,7 @@ export function isQueryError(result: DatabaseResult): result is QueryError {
 // MEMORY STORE RESULT TYPE GUARDS
 // =============================================================================
 
-export type MemoryResult<T = JsonValue> ='' | ''MemorySuccess<T>'' | ''MemoryNotFound'' | ''MemoryError;
+export type MemoryResult<T = JsonValue> =|MemorySuccess<T>|MemoryNotFound|MemoryError;
 
 export interface MemorySuccess<T = JsonValue> {
   readonly found: true;
@@ -176,7 +176,7 @@ export interface MemorySuccess<T = JsonValue> {
 export interface MemoryNotFound {
   readonly found: false;
   readonly key: string;
-  readonly reason:'not_found''' | '''expired';
+  readonly reason:'not_found|expired'';
 }
 
 export interface MemoryError {
@@ -217,7 +217,7 @@ export function isMemoryError(result: MemoryResult): result is MemoryError {
 // API RESPONSE TYPE GUARDS
 // =============================================================================
 
-export type APIResult<T = JsonValue> = APISuccess<T>'' | ''APIError;
+export type APIResult<T = JsonValue> = APISuccess<T>|APIError;
 
 export interface APISuccess<T = JsonValue> {
   readonly success: true;
@@ -264,7 +264,7 @@ export function isAPIError(result: APIResult): result is APIError {
 // NEURAL NETWORK RESULT TYPE GUARDS
 // =============================================================================
 
-export type NeuralResult = TrainingResult'' | ''InferenceResult'' | ''NeuralError;
+export type NeuralResult = TrainingResult|InferenceResult|NeuralError;
 
 export interface TrainingResult {
   readonly type:'training';
@@ -291,7 +291,7 @@ export interface NeuralError {
   readonly error: {
     code: string;
     message: string;
-    operation: 'training | inference' | 'initialization';
+    operation: 'training|inference|initialization';
     details?: unknown;
   };
 }
@@ -341,9 +341,9 @@ export function hasProperty<T, K extends PropertyKey>(
  * Safe property access with comprehensive type checking
  */
 export function safePropertyAccess<T, K extends keyof T>(
-  obj: T'' | ''null'' | ''undefined,
+  obj: T|null|undefined,
   prop: K
-): T[K]'' | ''undefined {
+): T[K]|undefined {
   if (
     obj !== null &&
     obj !== undefined &&
@@ -390,7 +390,7 @@ export function isObjectArrayWithProps<T>(
   }
 
   return arr.every((item) => {
-    if (typeof item !== 'object''' | '''' | ''item === null) {
+    if (typeof item !== 'object'||item === null) {
       return false;
     }
 
@@ -405,7 +405,7 @@ export function isObjectArrayWithProps<T>(
 /**
  * Safely extract data from a database result
  */
-export function extractData<T>(result: DatabaseResult<T>): T'' | ''null {
+export function extractData<T>(result: DatabaseResult<T>): T|null {
   if (isQuerySuccess(result)) {
     return result.data;
   }
@@ -416,8 +416,8 @@ export function extractData<T>(result: DatabaseResult<T>): T'' | ''null {
  * Safely extract error message from any result type
  */
 export function extractErrorMessage(
-  result:'' | ''DatabaseResult'' | ''MemoryResult'' | ''NeuralResult'' | ''APIResult'' | ''OperationResult'' | ''Result<JsonValue, JsonValue>
-): string'' | ''null {
+  result:|DatabaseResult|MemoryResult|NeuralResult|APIResult|OperationResult|Result<JsonValue, JsonValue>
+): string|null {
   // Handle OperationResult pattern
   if ('success' in result &&
     !result.success &&
@@ -500,5 +500,5 @@ export function operationToResult<T, E = Error>(
 ): Result<T, E> {
   return isOperationSuccess(operation)
     ? createSuccess(operation.data)
-    : createFailure(operation.error'' | '''' | ''(new Error('Operation failed') as E));
+    : createFailure(operation.error||(new Error('Operation failed') as E));
 }

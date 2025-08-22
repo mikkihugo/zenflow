@@ -52,8 +52,8 @@ export interface EpicBlockedEvent {
   readonly epicId: string;
   readonly currentState: PortfolioKanbanState;
   readonly blockerId: string;
-  readonly blockerType:'' | '''technical | business' | 'resource' | 'external' | 'regulatory';
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly blockerType:|'technical|business|resource|external|regulatory';
+  readonly severity: 'low|medium|high|critical';
   readonly description: string;
   readonly owner: string;
   readonly timestamp: Date;
@@ -217,7 +217,7 @@ export class PortfolioKanbanStateMachine {
   getAllowedTransitions(
     currentState: PortfolioKanbanState
   ): PortfolioKanbanState[] {
-    return this.allowedTransitions.get(currentState)'' | '''' | ''[];
+    return this.allowedTransitions.get(currentState)||[];
   }
 
   /**
@@ -319,7 +319,7 @@ export class PortfolioKanbanWorkflow {
     message: string;
   } {
     const currentState =
-      this.epicStates.get(params.epicId)'' | '''' | ''PortfolioKanbanState.FUNNEL;
+      this.epicStates.get(params.epicId)||PortfolioKanbanState.FUNNEL;
 
     // Validate transition according to SAFe rules
     if (
@@ -389,7 +389,7 @@ export class PortfolioKanbanWorkflow {
     owner: string;
   }): string {
     const currentState =
-      this.epicStates.get(params.epicId)'' | '''' | ''PortfolioKanbanState.FUNNEL;
+      this.epicStates.get(params.epicId)||PortfolioKanbanState.FUNNEL;
 
     const blockedEvent = createEpicBlocked({
       epicId: params.epicId,
@@ -401,7 +401,7 @@ export class PortfolioKanbanWorkflow {
     });
 
     // Track blocker
-    const existingBlockers = this.blockedEpics.get(params.epicId)'' | '''' | ''[];
+    const existingBlockers = this.blockedEpics.get(params.epicId)||[];
     existingBlockers.push(blockedEvent);
     this.blockedEpics.set(params.epicId, existingBlockers);
 

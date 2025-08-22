@@ -34,7 +34,7 @@ import type { Logger } from '@claude-zen/foundation';
 export interface PIExecutionMetrics {
   readonly piId: string;
   readonly timestamp: Date;
-  readonly overallHealth: 'healthy'' | ''at-risk'' | ''critical';
+  readonly overallHealth: 'healthy|at-risk|critical';
   readonly progressPercentage: number; // 0-100
   readonly burnupData: BurnupDataPoint[];
   readonly velocityTrend: VelocityTrend;
@@ -62,7 +62,7 @@ export interface VelocityTrend {
   readonly currentVelocity: number;
   readonly averageVelocity: number;
   readonly velocityHistory: VelocityDataPoint[];
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
   readonly confidence: number; // 0-1
   readonly stabilityIndex: number; // 0-1, consistency of velocity
 }
@@ -82,7 +82,7 @@ export interface PredictabilityMetrics {
   readonly qualityPredictability: number; // 0-100%
   readonly riskMitigation: number; // 0-100%
   readonly overallPredictability: number; // 0-100%
-  readonly predictabilityTrend: 'improving'' | ''stable'' | ''declining';
+  readonly predictabilityTrend: 'improving|stable|declining';
   readonly benchmarkComparison: BenchmarkComparison;
 }
 
@@ -90,7 +90,7 @@ export interface BenchmarkComparison {
   readonly industryAverage: number;
   readonly organizationAverage: number;
   readonly artAverage: number;
-  readonly relativePerformance: 'above'' | ''at'' | ''below';
+  readonly relativePerformance: 'above|at|below';
   readonly improvementOpportunity: number; // percentage points
 }
 
@@ -101,7 +101,7 @@ export interface QualityMetrics {
   readonly technicalDebt: number;
   readonly customerSatisfaction: number;
   readonly systemReliability: number;
-  readonly qualityTrend: 'improving'' | ''stable'' | ''declining';
+  readonly qualityTrend: 'improving|stable|declining';
   readonly qualityGates: QualityGateStatus[];
 }
 
@@ -109,7 +109,7 @@ export interface QualityGateStatus {
   readonly gateId: string;
   readonly name: string;
   readonly criteria: QualityGateCriteria[];
-  readonly status: 'passed'' | ''warning'' | ''failed'' | ''not_evaluated';
+  readonly status: 'passed|warning|failed|not_evaluated';
   readonly lastEvaluated: Date;
   readonly nextEvaluation: Date;
 }
@@ -119,7 +119,7 @@ export interface QualityGateCriteria {
   readonly metric: string;
   readonly threshold: number;
   readonly actual: number;
-  readonly status: 'passed'' | ''warning'' | ''failed';
+  readonly status: 'passed|warning|failed';
   readonly weight: number;
 }
 
@@ -128,7 +128,7 @@ export interface RiskBurndown {
   readonly openRisks: number;
   readonly mitigatedRisks: number;
   readonly closedRisks: number;
-  readonly riskTrend: 'improving'' | ''stable'' | ''worsening';
+  readonly riskTrend: 'improving|stable|worsening';
   readonly highRiskItems: RiskItem[];
   readonly riskVelocity: number; // risks resolved per iteration
   readonly projectedBurndown: RiskProjection[];
@@ -139,10 +139,10 @@ export interface RiskItem {
   readonly description: string;
   readonly category: string;
   readonly probability: number;
-  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly impact: 'low|medium|high|critical';
   readonly severity: number; // calculated risk score
   readonly owner: string;
-  readonly status: 'open'' | ''mitigating'' | ''closed';
+  readonly status: 'open|mitigating|closed';
   readonly dueDate: Date;
   readonly mitigationProgress: number; // 0-100%
 }
@@ -159,7 +159,7 @@ export interface DependencyHealth {
   readonly resolvedDependencies: number;
   readonly blockedDependencies: number;
   readonly atRiskDependencies: number;
-  readonly dependencyHealth: 'healthy'' | ''at-risk'' | ''critical';
+  readonly dependencyHealth: 'healthy|at-risk|critical';
   readonly criticalPath: string[];
   readonly dependencyBurndown: DependencyBurndownPoint[];
   readonly blockageImpact: BlockageImpact[];
@@ -178,7 +178,7 @@ export interface BlockageImpact {
   readonly blockedFeatures: string[];
   readonly blockedTeams: string[];
   readonly estimatedDelay: number; // in days
-  readonly businessImpact: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly businessImpact: 'low|medium|high|critical';
 }
 
 export interface TeamExecutionMetrics {
@@ -190,7 +190,7 @@ export interface TeamExecutionMetrics {
   readonly commitmentReliability: number;
   readonly qualityScore: number;
   readonly satisfactionScore: number;
-  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly riskLevel: 'low|medium|high|critical';
   readonly completedFeatures: number;
   readonly inProgressFeatures: number;
   readonly blockedFeatures: number;
@@ -200,8 +200,8 @@ export interface TeamExecutionMetrics {
 
 export interface ExecutionAlert {
   readonly alertId: string;
-  readonly severity: 'info'' | ''warning'' | ''error'' | ''critical';
-  readonly category:' | ''velocity'' | ''quality'' | ''scope'' | ''dependency'' | ''risk'' | ''team';
+  readonly severity: 'info|warning|error|critical';
+  readonly category:|velocity|quality|scope|dependency|risk|'team';
   readonly title: string;
   readonly message: string;
   readonly affectedItems: string[];
@@ -232,7 +232,7 @@ export interface ProbabilityDistribution {
 
 export interface CompletionFactor {
   readonly factor: string;
-  readonly impact: 'positive'' | ''negative'' | ''neutral';
+  readonly impact: 'positive|negative|neutral';
   readonly magnitude: number; // -1 to 1
   readonly confidence: number; // 0-1
 }
@@ -248,18 +248,18 @@ export interface ScopeProjection {
 export interface QualityProjection {
   readonly currentQuality: number;
   readonly projectedQuality: number;
-  readonly qualityDebtTrend: 'improving'' | ''stable'' | ''worsening';
+  readonly qualityDebtTrend: 'improving|stable|worsening';
   readonly qualityRisk: number; // 0-1
 }
 
 export interface ForecastRecommendation {
   readonly recommendationId: string;
-  readonly type: 'scope'' | ''capacity'' | ''quality'' | ''timeline'' | ''risk';
+  readonly type: 'scope|capacity|quality|timeline|risk';
   readonly title: string;
   readonly description: string;
   readonly expectedBenefit: string;
-  readonly effort: 'low'' | ''medium'' | ''high';
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly effort: 'low|medium|high';
+  readonly priority: 'critical|high|medium|low';
   readonly implementation: string[];
 }
 
@@ -270,8 +270,8 @@ export interface PIExecutionConfiguration {
   readonly enableAutomatedAlerts: boolean;
   readonly metricsUpdateInterval: number; // milliseconds
   readonly alertThresholds: AlertThresholds;
-  readonly forecastUpdateFrequency: 'daily'' | ''iteration'' | ''weekly';
-  readonly qualityGateFrequency: 'iteration'' | ''weekly'' | ''continuous';
+  readonly forecastUpdateFrequency: 'daily|iteration|weekly';
+  readonly qualityGateFrequency: 'iteration|weekly|continuous';
 }
 
 export interface AlertThresholds {
@@ -1440,7 +1440,7 @@ export class PIExecutionService extends TypedEventBase {
     alerts: ExecutionAlert[],
     riskBurndown: RiskBurndown,
     dependencyHealth: DependencyHealth
-  ): 'healthy'' | ''at-risk'' | ''critical' {
+  ): 'healthy|at-risk|critical' {
     const criticalAlerts = alerts.filter(
       (a) => a.severity === 'critical'
     ).length;

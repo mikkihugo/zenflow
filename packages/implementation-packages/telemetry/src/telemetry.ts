@@ -120,7 +120,7 @@ export class TelemetryManager {
       startTime: Date.now(),
       endTime: 0,
       duration: 0,
-      attributes: options?.attributes'' | '''' | ''{},
+      attributes: options?.attributes||{},
       status:'active',
     };
 
@@ -146,7 +146,7 @@ export class TelemetryManager {
 
   withTrace<T>(fn: () => T): T;
   withTrace<T>(name: string, fn: () => T): T;
-  withTrace<T>(nameOrFn: string'' | ''(() => T), fn?: () => T): T {
+  withTrace<T>(nameOrFn: string|(() => T), fn?: () => T): T {
     // Handle both signatures: withTrace(fn) and withTrace(name, fn)
     if (typeof nameOrFn ==='function') {
       const span = this.startTrace('anonymous');
@@ -176,7 +176,7 @@ export class TelemetryManager {
   async withAsyncTrace<T>(fn: () => Promise<T>): Promise<T>;
   async withAsyncTrace<T>(name: string, fn: () => Promise<T>): Promise<T>;
   async withAsyncTrace<T>(
-    nameOrFn: string'' | ''(() => Promise<T>),
+    nameOrFn: string|(() => Promise<T>),
     fn?: () => Promise<T>
   ): Promise<T> {
     // Handle both signatures: withAsyncTrace(fn) and withAsyncTrace(name, fn)
@@ -218,7 +218,7 @@ export class TelemetryManager {
 // GLOBAL TELEMETRY INSTANCE
 // =============================================================================
 
-let globalTelemetry: TelemetryManager'' | ''null = null;
+let globalTelemetry: TelemetryManager|null = null;
 
 export async function initializeTelemetry(
   config?: TelemetryConfig
@@ -282,7 +282,7 @@ export function startTrace(name: string, options?: SpanOptions): any {
 
 export function withTrace<T>(fn: () => T): T;
 export function withTrace<T>(name: string, fn: () => T): T;
-export function withTrace<T>(nameOrFn: string'' | ''(() => T), fn?: () => T): T {
+export function withTrace<T>(nameOrFn: string|(() => T), fn?: () => T): T {
   if (typeof nameOrFn ==='function') {
     return getTelemetry().withTrace(nameOrFn);
   } else {
@@ -296,7 +296,7 @@ export async function withAsyncTrace<T>(
   fn: () => Promise<T>
 ): Promise<T>;
 export async function withAsyncTrace<T>(
-  nameOrFn: string'' | ''(() => Promise<T>),
+  nameOrFn: string|(() => Promise<T>),
   fn?: () => Promise<T>
 ): Promise<T> {
   if (typeof nameOrFn ==='function') {
@@ -318,7 +318,7 @@ export function traced(name?: string) {
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
-      const traceName = name'' | '''' | ''`${target.constructor.name}.${propertyKey}`;
+      const traceName = name||`${target.constructor.name}.${propertyKey}`;
       return withTrace(traceName, () => originalMethod.apply(this, args));
     };
   };
@@ -332,7 +332,7 @@ export function tracedAsync(name?: string) {
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: any[]) {
-      const traceName = name'' | '''' | ''`${target.constructor.name}.${propertyKey}`;
+      const traceName = name||`${target.constructor.name}.${propertyKey}`;
       return withAsyncTrace(traceName, () => originalMethod.apply(this, args));
     };
   };
@@ -347,7 +347,7 @@ export function metered(name?: string) {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: any[]) {
       const metricName =
-        name'' | '''' | ''`${target.constructor.name}.${propertyKey}.calls`;
+        name||`${target.constructor.name}.${propertyKey}.calls`;
       recordMetric(metricName, 1);
       return originalMethod.apply(this, args);
     };

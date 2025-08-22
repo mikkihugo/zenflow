@@ -49,7 +49,7 @@ export class MemoryError extends Error {
   public readonly code: MemoryErrorCode;
   public readonly context: MemoryErrorContext;
   public readonly recoverable: boolean;
-  public readonly severity: 'low | medium' | 'high''' | '''critical';
+  public readonly severity: 'low|medium|high|critical';
 
   constructor(
     code: MemoryErrorCode,
@@ -57,7 +57,7 @@ export class MemoryError extends Error {
     context: MemoryErrorContext,
     options: {
       recoverable?: boolean;
-      severity?: 'low | medium' | 'high''' | '''critical';
+      severity?: 'low|medium|high|critical';
       cause?: Error;
     } = {}
   ) {
@@ -103,7 +103,7 @@ export class MemoryError extends Error {
    */
   static getSeverity(
     code: MemoryErrorCode
-  ): 'low | medium' | 'high''' | '''critical' {
+  ): 'low|medium|high|critical' {
     const severityMap = {
       [MemoryErrorCode.COORDINATION_FAILED]: 'high',
       [MemoryErrorCode.CONSENSUS_TIMEOUT]: 'medium',
@@ -127,7 +127,7 @@ export class MemoryError extends Error {
       [MemoryErrorCode.UNKNOWN_ERROR]: 'medium',
     } as const;
 
-    return severityMap[code]'' | '''' | '''medium';
+    return severityMap[code]||'medium';
   }
 
   /**
@@ -158,17 +158,17 @@ export class MemoryError extends Error {
     if (error.message.includes('timeout')) {
       code = MemoryErrorCode.CONSENSUS_TIMEOUT;
     } else if (
-      error.message.includes('connection')'' | '''' | ''error.message.includes('unreachable')
+      error.message.includes('connection')||error.message.includes('unreachable')
     ) {
       code = MemoryErrorCode.NODE_UNREACHABLE;
     } else if (
-      error.message.includes('corruption')'' | '''' | ''error.message.includes('corrupted')
+      error.message.includes('corruption')||error.message.includes('corrupted')
     ) {
       code = MemoryErrorCode.DATA_CORRUPTION;
     } else if (error.message.includes('not found')) {
       code = MemoryErrorCode.DATA_NOT_FOUND;
     } else if (
-      error.message.includes('capacity')'' | '''' | ''error.message.includes('full')
+      error.message.includes('capacity')||error.message.includes('full')
     ) {
       code = MemoryErrorCode.BACKEND_CAPACITY_EXCEEDED;
     }
@@ -235,9 +235,9 @@ export class MemoryErrorClassifier {
    *
    * @param error
    */
-  static classify(error: Error'' | ''MemoryError): {
-    category:'coordination | backend' | 'data' | 'performance' | 'system';
-    priority: 'low | medium' | 'high''' | '''critical';
+  static classify(error: Error|MemoryError): {
+    category:'coordination|backend|data|performance|system';
+    priority: 'low|medium|high|critical';
     actionRequired: boolean;
     suggestedActions: string[];
   } {
@@ -252,7 +252,7 @@ export class MemoryErrorClassifier {
     return {
       category,
       priority,
-      actionRequired: priority === 'high''' | '''' | ''priority ==='critical',
+      actionRequired: priority === 'high'||priority ==='critical',
       suggestedActions: MemoryErrorClassifier.getSuggestedActions(
         category,
         error.message
@@ -261,10 +261,10 @@ export class MemoryErrorClassifier {
   }
 
   private static classifyMemoryError(error: MemoryError) {
-    let category:'' | '''coordination | backend' | 'data' | 'performance' | 'system';
+    let category:|'coordination|backend|data|performance|system';
 
     if (
-      error.code.includes('COORDINATION')'' | '''' | ''error.code.includes('CONSENSUS')'' | '''' | ''error.code.includes('QUORUM')
+      error.code.includes('COORDINATION')||error.code.includes('CONSENSUS')||error.code.includes('QUORUM')
     ) {
       category = 'coordination';
     } else if (error.code.includes('BACKEND')) {
@@ -272,7 +272,7 @@ export class MemoryErrorClassifier {
     } else if (error.code.includes('DATA')) {
       category = 'data';
     } else if (
-      error.code.includes('OPTIMIZATION')'' | '''' | ''error.code.includes('CACHE')'' | '''' | ''error.code.includes('LATENCY')
+      error.code.includes('OPTIMIZATION')||error.code.includes('CACHE')||error.code.includes('LATENCY')
     ) {
       category = 'performance';
     } else {
@@ -283,7 +283,7 @@ export class MemoryErrorClassifier {
       category,
       priority: error.severity,
       actionRequired:
-        error.severity === 'high''' | '''' | ''error.severity ==='critical',
+        error.severity === 'high'||error.severity ==='critical',
       suggestedActions: MemoryErrorClassifier.getSuggestedActions(
         category,
         error.message
@@ -293,26 +293,26 @@ export class MemoryErrorClassifier {
 
   private static inferCategory(
     error: Error
-  ): 'coordination | backend' | 'data' | 'performance' | 'system' {
+  ): 'coordination|backend|data|performance|system' {
     const message = error.message.toLowerCase();
 
     if (
-      message.includes('coordination')'' | '''' | ''message.includes('consensus')'' | '''' | ''message.includes('node')
+      message.includes('coordination')||message.includes('consensus')||message.includes('node')
     ) {
       return 'coordination';
     }
     if (
-      message.includes('backend')'' | '''' | ''message.includes('connection')'' | '''' | ''message.includes('database')
+      message.includes('backend')||message.includes('connection')||message.includes('database')
     ) {
       return 'backend';
     }
     if (
-      message.includes('data')'' | '''' | ''message.includes('corruption')'' | '''' | ''message.includes('not found')
+      message.includes('data')||message.includes('corruption')||message.includes('not found')
     ) {
       return 'data';
     }
     if (
-      message.includes('performance')'' | '''' | ''message.includes('slow')'' | '''' | ''message.includes('cache')
+      message.includes('performance')||message.includes('slow')||message.includes('cache')
     ) {
       return 'performance';
     }
@@ -321,21 +321,21 @@ export class MemoryErrorClassifier {
 
   private static inferPriority(
     error: Error
-  ): 'low | medium' | 'high''' | '''critical' {
+  ): 'low|medium|high|critical' {
     const message = error.message.toLowerCase();
 
     if (
-      message.includes('corruption')'' | '''' | ''message.includes('critical')'' | '''' | ''message.includes('fatal')
+      message.includes('corruption')||message.includes('critical')||message.includes('fatal')
     ) {
       return 'critical';
     }
     if (
-      message.includes('failed')'' | '''' | ''message.includes('error')'' | '''' | ''message.includes('unreachable')
+      message.includes('failed')||message.includes('error')||message.includes('unreachable')
     ) {
       return 'high';
     }
     if (
-      message.includes('warning')'' | '''' | ''message.includes('slow')'' | '''' | ''message.includes('timeout')
+      message.includes('warning')||message.includes('slow')||message.includes('timeout')
     ) {
       return 'medium';
     }

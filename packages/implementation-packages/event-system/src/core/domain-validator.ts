@@ -19,7 +19,7 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
   validate<T>(data: T, schema: TypeSchema): Result<T> {
     try {
       // Basic validation - just check if data exists and matches basic type
-      if (data === null'' | '''' | ''data === undefined) {
+      if (data === null||data === undefined) {
         return {
           success: false,
           error: new Error('Data is null or undefined'),
@@ -49,7 +49,7 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
   validateCrossDomain<T>(source: Domain, target: Domain, data: T): Result<T> {
     try {
       // Basic cross-domain validation
-      if (!source'' | '''' | ''!target) {
+      if (!source||!target) {
         return {
           success: false,
           error: new Error('Source and target domains are required'),

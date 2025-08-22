@@ -22,12 +22,12 @@ import type { EventManagerConfig } from './interfaces';
 export class UEL {
   private static instance: UEL;
   private initialized = false;
-  private factory: UELFactory'' | ''null = null;
-  private registry: UELRegistry'' | ''null = null;
-  private eventManager: EventManager'' | ''null = null;
-  private eventRegistry: EventRegistry'' | ''null = null;
-  private validationFramework: UELValidationFramework'' | ''null = null;
-  private compatibilityFactory: CompatibilityFactory'' | ''null = null;
+  private factory: UELFactory|null = null;
+  private registry: UELRegistry|null = null;
+  private eventManager: EventManager|null = null;
+  private eventRegistry: EventRegistry|null = null;
+  private validationFramework: UELValidationFramework|null = null;
+  private compatibilityFactory: CompatibilityFactory|null = null;
 
   private constructor() {}
 
@@ -39,7 +39,7 @@ export class UEL {
   }
 
   async initialize(config?: {
-    logger?:'' | ''Console'' | ''{ debug: Function; info: Function; warn: Function; error: Function };
+    logger?:|Console|{ debug: Function; info: Function; warn: Function; error: Function };
     config?: Record<string, unknown>;
     autoRegisterFactories?: boolean;
     enableValidation?: boolean;
@@ -61,7 +61,7 @@ export class UEL {
     const container = new DIContainer();
 
     // Register dependencies
-    const logger = config?.logger'' | '''' | ''{
+    const logger = config?.logger||{
       debug: (message: string, meta?: unknown) => console.debug(message, meta),
       info: (message: string, meta?: unknown) => console.info(message, meta),
       warn: (message: string, meta?: unknown) => console.warn(message, meta),
@@ -72,7 +72,7 @@ export class UEL {
     // TODO: Implement proper DI container registration when Foundation DI is ready
     (container as any).register(TOKENS.Logger, logger);
     (container as any).register(TOKENS.Config, () => {
-      const configData = config?.config'' | '''' | ''{};
+      const configData = config?.config||{};
       return {
         get: <T>(key: string, defaultValue?: T): T => {
           return (configData as any)[key] ?? defaultValue;
@@ -178,11 +178,11 @@ export class UEL {
     return this.eventRegistry;
   }
 
-  getValidationFramework(): UELValidationFramework'' | ''null {
+  getValidationFramework(): UELValidationFramework|null {
     return this.validationFramework;
   }
 
-  getCompatibilityFactory(): CompatibilityFactory'' | ''null {
+  getCompatibilityFactory(): CompatibilityFactory|null {
     return this.compatibilityFactory;
   }
 
@@ -254,7 +254,7 @@ export class UEL {
           errorRate: 0,
           uptime: 0,
           lastCheck: new Date(),
-          metadata: data.details'' | '''' | ''{},
+          metadata: data.details||{},
         })
       );
       return healthStatus;

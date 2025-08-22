@@ -67,7 +67,7 @@ export class IntelligentRoutingEngine
   private networkOptimizer: NetworkLatencyOptimizer;
   private capacityManager: CapacityManager;
   private routingMetrics: RoutingMetrics;
-  private networkTopology: NetworkTopology'' | ''null = null;
+  private networkTopology: NetworkTopology|null = null;
 
   private config = {
     routeUpdateInterval: 30000, // 30 seconds
@@ -82,7 +82,7 @@ export class IntelligentRoutingEngine
     failoverThreshold: 0.8,
     adaptiveRoutingEnabled: true,
     geographicAwareRouting: true,
-    loadBalancingStrategy:'intelligent'as'' | '''round_robin | least_connections' | 'intelligent',
+    loadBalancingStrategy:'intelligent'as|'round_robin|least_connections|intelligent',
   };
 
   constructor(capacityManager: CapacityManager) {
@@ -228,7 +228,7 @@ export class IntelligentRoutingEngine
     return {
       ...this.routingMetrics,
       routingTableSize: this.routingTable.size,
-      avgRouteReliability: avgReliability'' | '''' | ''0,
+      avgRouteReliability: avgReliability||0,
     };
   }
 

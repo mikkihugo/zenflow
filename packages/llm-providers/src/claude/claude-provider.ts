@@ -110,7 +110,7 @@ export class ClaudeProvider implements CLIProvider {
 
   private requestCount = 0;
   private lastRequestTime = 0;
-  private currentRole: SwarmAgentRole'' | ''undefined;
+  private currentRole: SwarmAgentRole|undefined;
 
   constructor() {
     // Set assistant as default role with safe permissions
@@ -168,7 +168,7 @@ export class ClaudeProvider implements CLIProvider {
   }
 
   // Get current role
-  getRole(): SwarmAgentRole'' | ''undefined {
+  getRole(): SwarmAgentRole|undefined {
     return this.currentRole;
   }
 
@@ -206,11 +206,11 @@ export class ClaudeProvider implements CLIProvider {
         if (message.includes('timeout')) {
           cliError.code = CLI_ERROR_CODES.TIMEOUT_ERROR;
         } else if (
-          message.includes('network')'' | '''' | ''message.includes('connection')
+          message.includes('network')||message.includes('connection')
         ) {
           cliError.code = CLI_ERROR_CODES.NETWORK_ERROR;
         } else if (
-          message.includes('auth')'' | '''' | ''message.includes('unauthorized')
+          message.includes('auth')||message.includes('unauthorized')
         ) {
           cliError.code = CLI_ERROR_CODES.AUTH_ERROR;
         } else if (message.includes('rate limit')) {

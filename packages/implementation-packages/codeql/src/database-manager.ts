@@ -105,7 +105,7 @@ export class DatabaseManager {
     }
 
     // Set working directory
-    const workingDirectory = options.workingDirectory'' | '''' | ''absolutePath;
+    const workingDirectory = options.workingDirectory||absolutePath;
 
     try {
       // Execute database creation
@@ -113,7 +113,7 @@ export class DatabaseManager {
         cwd: workingDirectory,
         env: {
           ...process.env,
-          ...(options.environmentVariables'' | '''' | ''{}),
+          ...(options.environmentVariables||{}),
         },
       });
 
@@ -324,13 +324,13 @@ export class DatabaseManager {
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     return new Promise((resolve, reject) => {
       const child = spawn(this.config.codeqlPath!, args, {
-        cwd: options.cwd'' | '''' | ''process.cwd(),
+        cwd: options.cwd||process.cwd(),
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: options.env'' | '''' | ''process.env,
+        env: options.env||process.env,
       });
 
-      let stdout ='';
-      let stderr = '';
+      let stdout =';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();

@@ -38,8 +38,8 @@ export interface HalsteadMetrics {
 
 export interface CodeSmell {
   type:
-    | 'long-method''' | '''large-class''' | '''duplicate-code''' | '''dead-code''' | '''god-class''' | '''feature-envy';
-  severity: 'low | medium' | 'high''' | '''critical';
+    || 'long-method|large-class'||duplicate-code|dead-code'||god-class|feature-envy'';
+  severity: 'low|medium|high|critical';
   file: string;
   startLine: number;
   endLine: number;
@@ -54,7 +54,7 @@ export interface ComplexityHotspot {
   complexity: number;
   lines: number;
   maintainabilityIndex: number;
-  priority: 'low | medium' | 'high''' | '''urgent';
+  priority: 'low|medium|high|urgent';
 }
 
 export interface DependencyMetrics {
@@ -70,7 +70,7 @@ export interface DependencyMetrics {
 
 export interface CircularDependency {
   cycle: string[]; // File paths in the cycle
-  severity: 'warning''' | '''error';
+  severity: 'warning|error'';
   impactScore: number; // 0-1 impact on codebase
   suggestions: string[]; // How to break the cycle
 }
@@ -84,7 +84,7 @@ export interface DependencyGraph {
 export interface DependencyNode {
   id: string;
   file: string;
-  type: 'module | component' | 'service' | 'utility' | 'test';
+  type: 'module|component|service|utility|test';
   size: number; // Lines of code
   complexity: number;
   stability: number; // 0-1 stability score
@@ -94,7 +94,7 @@ export interface DependencyEdge {
   from: string;
   to: string;
   weight: number; // Coupling strength
-  type: 'import''' | '''require''' | '''dynamic-import''' | '''type-only';
+  type: 'import|require'||dynamic-import|type-only';
 }
 
 export interface DependencyCluster {
@@ -110,7 +110,7 @@ export interface CouplingMetrics {
   efferentCoupling: number; // Ce - outgoing dependencies
   instability: number; // I = Ce / (Ca + Ce)
   abstractness: number; // A = abstract classes / total classes
-  distance: number; // D ='' | ''A + I - 1'' | ''}
+  distance: number; // D =|A + I - 1|}
 
 export interface CohesionMetrics {
   lcom: number; // Lack of Cohesion of Methods
@@ -184,7 +184,7 @@ export interface DomainSize {
   interfaces: number;
 }
 
-export type DomainType ='' | '''core'// Central business logic'' | '''feature'// Feature-specific code'' | '''infrastructure'// Infrastructure/framework code'' | '''utility'// Shared utilities'' | '''api'// API/interface layer'' | '''ui'// User interface'' | '''data'// Data access layer'' | '''test'; // Test code
+export type DomainType =|''core'// Central business logic|'feature'// Feature-specific code|'infrastructure'// Infrastructure/framework code|'utility'// Shared utilities|'api'// API/interface layer|'ui'// User interface|'data'// Data access layer|'test'; // Test code
 
 export interface SplitRecommendation {
   shouldSplit: boolean;
@@ -206,7 +206,7 @@ export interface SuggestedSplit {
 
 export interface EffortEstimate {
   hours: number;
-  difficulty: 'low | medium' | 'high''' | '''very-high';
+  difficulty: 'low|medium|high|very-high';
   phases: EffortPhase[];
 }
 
@@ -227,8 +227,8 @@ export interface SplitBenefits {
 }
 
 export interface SplitRisk {
-  type:'' | '''data-consistency''' | '''performance''' | '''complexity''' | '''team-coordination''' | '''technical';
-  severity: 'low | medium' | 'high''' | '''critical';
+  type:|'data-consistency|performance'||complexity|team-coordination'||technical';
+  severity: 'low|medium|high|critical';
   description: string;
   mitigation: string;
   probability: number; // 0-1 probability
@@ -241,13 +241,13 @@ export interface AnalysisOptions {
   maxFileSize?: number; // Skip files larger than this (bytes)
   excludePatterns?: string[]; // Glob patterns to exclude
   includeDotFiles?: boolean;
-  analysisDepth?: 'shallow | moderate' | 'deep''' | '''comprehensive';
+  analysisDepth?: 'shallow|moderate|deep|comprehensive';
   enableGitAnalysis?: boolean;
   enableComplexityAnalysis?: boolean;
   enableDependencyAnalysis?: boolean;
   enableDomainAnalysis?: boolean;
   complexityThresholds?: ComplexityThresholds;
-  performanceMode?: 'fast | balanced' | 'thorough';
+  performanceMode?: 'fast|balanced|thorough';
 }
 
 export interface ComplexityThresholds {
@@ -267,8 +267,8 @@ export interface AnalysisResult {
 }
 
 export interface AnalysisRecommendation {
-  type:'' | '''split-domain''' | '''merge-domains''' | '''refactor-hotspot''' | '''reduce-coupling''' | '''improve-cohesion';
-  priority: 'low | medium' | 'high''' | '''urgent';
+  type:|'split-domain|merge-domains'||refactor-hotspot|reduce-coupling'||improve-cohesion';
+  priority: 'low|medium|high|urgent';
   title: string;
   description: string;
   rationale: string;
@@ -280,7 +280,7 @@ export interface AnalysisRecommendation {
 
 export interface ActionItem {
   description: string;
-  type:'' | '''code-change''' | '''architecture-change''' | '''process-change''' | '''tooling-change';
+  type:|'code-change|architecture-change'||process-change|tooling-change'';
   estimatedHours: number;
   dependencies: string[];
 }
@@ -296,13 +296,13 @@ export interface AnalysisSummary {
 }
 
 export interface RiskAssessment {
-  technicalDebtRisk: 'low | medium' | 'high''' | '''critical';
-  maintainabilityRisk: 'low | medium' | 'high''' | '''critical';
-  scalabilityRisk: 'low | medium' | 'high''' | '''critical';
-  teamVelocityRisk: 'low | medium' | 'high''' | '''critical';
+  technicalDebtRisk: 'low|medium|high|critical';
+  maintainabilityRisk: 'low|medium|high|critical';
+  scalabilityRisk: 'low|medium|high|critical';
+  teamVelocityRisk: 'low|medium|high|critical';
 }
 
-export type ExportFormat ='' | '''json | yaml' | 'csv''' | '''html | markdown' | 'pdf' | 'graphml' | 'dot';
+export type ExportFormat =|'json|yaml|csv|html|markdown|pdf|graphml|dot';
 
 export interface ValidationResult {
   valid: boolean;
@@ -313,7 +313,7 @@ export interface ValidationResult {
 
 export interface ValidationError {
   type: string;
-  severity: 'error''' | '''warning';
+  severity: 'error|warning'';
   message: string;
   file?: string;
   line?: number;

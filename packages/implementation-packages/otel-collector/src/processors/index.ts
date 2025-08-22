@@ -23,7 +23,7 @@ export interface BaseProcessor {
   /**
    * Process telemetry data
    */
-  process(data: TelemetryData): Promise<TelemetryData'' | ''null>;
+  process(data: TelemetryData): Promise<TelemetryData|null>;
 
   /**
    * Process batch of telemetry data
@@ -39,7 +39,7 @@ export interface BaseProcessor {
    * Get processor health status
    */
   getHealthStatus(): Promise<{
-    status:'healthy | degraded' | 'unhealthy';
+    status:'healthy|degraded|unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }>;
@@ -55,7 +55,7 @@ export class ProcessorManager extends TypedEventBase {
   private isShuttingDown = false;
   private processedCount = 0;
   private lastProcessedTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   constructor() {
     super();
@@ -105,12 +105,12 @@ export class ProcessorManager extends TypedEventBase {
   /**
    * Process telemetry data through all processors
    */
-  async process(data: TelemetryData): Promise<TelemetryData'' | ''null> {
-    if (!this.initialized'' | '''' | ''this.isShuttingDown) {
+  async process(data: TelemetryData): Promise<TelemetryData|null> {
+    if (!this.initialized||this.isShuttingDown) {
       return data;
     }
 
-    let processedData: TelemetryData'' | ''null = data;
+    let processedData: TelemetryData|null = data;
 
     try {
       // Process through each processor in order
@@ -144,7 +144,7 @@ export class ProcessorManager extends TypedEventBase {
    * Process batch of telemetry data
    */
   async processBatch(dataItems: TelemetryData[]): Promise<TelemetryData[]> {
-    if (!this.initialized'' | '''' | ''this.isShuttingDown) {
+    if (!this.initialized||this.isShuttingDown) {
       return dataItems;
     }
 
@@ -181,7 +181,7 @@ export class ProcessorManager extends TypedEventBase {
   /**
    * Get processor by name
    */
-  getProcessor(name: string): BaseProcessor'' | ''undefined {
+  getProcessor(name: string): BaseProcessor|undefined {
     return this.processors.get(name);
   }
 
@@ -216,17 +216,17 @@ export class ProcessorManager extends TypedEventBase {
    * Get processor manager health status
    */
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     processorCount: number;
     lastProcessed?: number;
     lastError?: string;
     processors: Array<{
       name: string;
-      status: 'healthy | degraded' | 'unhealthy';
+      status: 'healthy|degraded|unhealthy';
     }>;
   }> {
     const processorStatuses = [];
-    let overallStatus: 'healthy | degraded' | 'unhealthy' = 'healthy';
+    let overallStatus: 'healthy|degraded|unhealthy' = 'healthy';
 
     // Check each processor
     for (const [name, processor] of this.processors) {
@@ -256,8 +256,8 @@ export class ProcessorManager extends TypedEventBase {
     return {
       status: overallStatus,
       processorCount: this.processors.size,
-      lastProcessed: this.lastProcessedTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastProcessed: this.lastProcessedTime||undefined,
+      lastError: this.lastError||undefined,
       processors: processorStatuses,
     };
   }

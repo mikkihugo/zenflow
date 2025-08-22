@@ -22,7 +22,7 @@ export class ReportGenerator {
 
     const timestamp = new Date().toISOString().replace(/[.:]/g, '-');
     const defaultPath =
-      outputPath'' | '''' | ''`./repo-analysis-${timestamp}.${this.getFileExtension(format)}`;
+      outputPath||`./repo-analysis-${timestamp}.${this.getFileExtension(format)}`;
 
     switch (format) {
       case'json':
@@ -200,12 +200,12 @@ export class ReportGenerator {
             
             <h3>Strengths</h3>
             <ul>
-                ${result.summary.strengths.map((strength) => `<li>${strength}</li>`).join('')}
+                ${result.summary.strengths.map((strength) => `<li>${strength}</li>`).join(')}
             </ul>
             
             <h3>Areas for Improvement</h3>
             <ul>
-                ${result.summary.weaknesses.map((weakness) => `<li>${weakness}</li>`).join('')}
+                ${result.summary.weaknesses.map((weakness) => `<li>${weakness}</li>`).join(')}
             </ul>
 
             <h3>Risk Assessment</h3>
@@ -237,22 +237,22 @@ export class ReportGenerator {
                     <p><strong>Effort:</strong> ${rec.effort.hours} hours (${rec.effort.difficulty})</p>
                     <p><strong>Benefits:</strong></p>
                     <ul>
-                        ${rec.benefits.map((benefit) => `<li>${benefit}</li>`).join('')}
+                        ${rec.benefits.map((benefit) => `<li>${benefit}</li>`).join(')}
                     </ul>
                     ${
                       rec.risks.length > 0
                         ? `
                         <p><strong>Risks:</strong></p>
                         <ul>
-                            ${rec.risks.map((risk) => `<li>${risk}</li>`).join('')}
+                            ${rec.risks.map((risk) => `<li>${risk}</li>`).join(')}
                         </ul>
                     `
-                        : ''
+                        : '
                     }
                 </div>
             `
               )
-              .join('')}
+              .join(')}
         </div>
 
         <div class="section">
@@ -283,12 +283,12 @@ export class ReportGenerator {
                         <p><strong>Split Recommendation:</strong> ${domain.splitRecommendation.shouldSplit ? 'Yes' : 'No'} 
                         (Confidence: ${(domain.splitRecommendation.confidence * 100).toFixed(1)}%)</p>
                     `
-                        : ''
+                        : '
                     }
                 </div>
             `
               )
-              .join('')}
+              .join(')}
         </div>
 
         <div class="section">
@@ -303,7 +303,7 @@ export class ReportGenerator {
                     </div>
                 `
                   )
-                  .join('')}
+                  .join(')}
             </div>
         </div>
 
@@ -332,7 +332,7 @@ export class ReportGenerator {
                 </div>
             </div>
         `
-            : ''
+            : '
         }
 
         <div class="section">
@@ -380,7 +380,7 @@ export class ReportGenerator {
 
 ## Overall Health Score: ${(result.summary.overallScore * 100).toFixed(1)}%
 
-## Summary'' | ''Metric'' | ''Value'' | '''' | ''--------'' | ''-------'' | '''' | ''Total Files'' | ''${result.repository.totalFiles}'' | '''' | ''Total Lines'' | ''${result.repository.totalLines.toLocaleString()}'' | '''' | ''Cyclomatic Complexity'' | ''${result.repository.complexity.cyclomatic}'' | '''' | ''Maintainability Index'' | ''${result.repository.complexity.maintainabilityIndex.toFixed(1)}'' | '''' | ''Total Dependencies'' | ''${result.repository.dependencies.totalDependencies}'' | '''' | ''Domains'' | ''${result.domains.length}'' | ''### Strengths
+## Summary|Metric|Value||--------|-------||Total Files|${result.repository.totalFiles}||Total Lines|${result.repository.totalLines.toLocaleString()}||Cyclomatic Complexity|${result.repository.complexity.cyclomatic}||Maintainability Index|${result.repository.complexity.maintainabilityIndex.toFixed(1)}||Total Dependencies|${result.repository.dependencies.totalDependencies}||Domains|${result.domains.length}|### Strengths
 ${result.summary.strengths.map((s) => `- ${s}`).join('\n')}
 
 ### Areas for Improvement
@@ -529,7 +529,7 @@ ${
       <data key="complexity">${node.complexity}</data>
     </node>`
       )
-      .join('')}
+      .join(')}
     
     ${result.repository.dependencies.dependencyGraph.edges
       .map(
@@ -538,7 +538,7 @@ ${
       <data key="weight">${edge.weight}</data>
     </edge>`
       )
-      .join('')}
+      .join(')}
   </graph>
 </graphml>`;
 
@@ -563,7 +563,7 @@ ${
 ${result.repository.dependencies.dependencyGraph.nodes
   .map(
     (node) =>
-      `  "${node.id}" [label="${node.file}\\n${node.type}", fillcolor="${this.getNodeColor(node.type)}"];`
+      `  "${node.id}" [label="${node.file}\n${node.type}", fillcolor="${this.getNodeColor(node.type)}"];`
   )
   .join('\n')}
   
@@ -610,7 +610,7 @@ ${result.repository.dependencies.dependencyGraph.edges
       utility: 'lightgray',
       test: 'lightpink',
     };
-    return colors[type]'' | '''' | '''white';
+    return colors[type]||'white';
   }
 
   /**

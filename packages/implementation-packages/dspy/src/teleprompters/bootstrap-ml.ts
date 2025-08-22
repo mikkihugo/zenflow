@@ -51,15 +51,15 @@ export interface BootstrapMLConfig {
   useStatisticalValidation: boolean;
 
   // Intelligent sampling parameters
-  clusteringMethod: 'kmeans | hierarchical' | 'dbscan';
-  diversityMetric: 'cosine | euclidean' | 'jaccard''' | '''hamming';
+  clusteringMethod: 'kmeans|hierarchical|dbscan';
+  diversityMetric: 'cosine|euclidean|jaccard|hamming';
   embeddingDimension: number;
-  samplingStrategy: 'uniform | weighted' | 'adaptive';
+  samplingStrategy: 'uniform|weighted|adaptive';
 
   // Active learning parameters
   uncertaintySampling: boolean;
-  queryStrategy: 'uncertainty | diversity' | 'expected_error_reduction';
-  acquisitionFunction: 'entropy | margin' | 'confidence';
+  queryStrategy: 'uncertainty|diversity|expected_error_reduction';
+  acquisitionFunction: 'entropy|margin|confidence';
 
   // Statistical validation parameters
   significanceLevel: number;
@@ -139,10 +139,10 @@ export class BootstrapML extends Teleprompter {
   private eventEmitter: EventEmitter = new TypedEventBase();
   private config: BootstrapMLConfig;
   private logger: Logger;
-  private mlEngine: MLEngine'' | ''null = null;
-  private bayesianOptimizer: BayesianOptimizer'' | ''null = null;
-  private patternLearner: PatternLearner'' | ''null = null;
-  private statisticalAnalyzer: StatisticalAnalyzer'' | ''null = null;
+  private mlEngine: MLEngine|null = null;
+  private bayesianOptimizer: BayesianOptimizer|null = null;
+  private patternLearner: PatternLearner|null = null;
+  private statisticalAnalyzer: StatisticalAnalyzer|null = null;
 
   private exampleEmbeddings: Map<string, MLVector> = new Map();
   private clusterAssignments: Map<string, number> = new Map();
@@ -273,16 +273,16 @@ export class BootstrapML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: any[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: any[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     const result = await this.compileML(
       student,
-      config.teacher'' | '''' | ''undefined,
+      config.teacher||undefined,
       config.trainset,
-      config.valset'' | '''' | ''undefined
+      config.valset||undefined
     );
     return result.optimizedModule;
   }
@@ -309,7 +309,7 @@ export class BootstrapML extends Teleprompter {
       });
 
       // Phase 1: Generate example embeddings for intelligent sampling
-      const examples = trainset'' | '''' | ''[];
+      const examples = trainset||[];
       const embeddings = await this.generateExampleEmbeddings(examples);
 
       // Phase 2: Perform clustering for diversity sampling
@@ -450,7 +450,7 @@ export class BootstrapML extends Teleprompter {
         // Generate real text embeddings using simple TF-IDF-like approach
         const embedding = this.generateTextEmbedding(
           text,
-          this.config.embeddingDimension'' | '''' | ''128
+          this.config.embeddingDimension||128
         );
 
         embeddings.push(embedding);
@@ -495,7 +495,7 @@ export class BootstrapML extends Teleprompter {
       for (let c = 0; c < clusters.patterns.length; c++) {
         // Use cluster center if available, otherwise create a simple centroid
         const centroid =
-          clusters.clusters?.[c]?.center'' | '''' | ''new Float32Array(embeddings[i].length).fill(0.5);
+          clusters.clusters?.[c]?.center||new Float32Array(embeddings[i].length).fill(0.5);
         const similarity = this.calculateSimilarity(
           embeddings[i],
           centroid,
@@ -678,12 +678,12 @@ export class BootstrapML extends Teleprompter {
     const embedding = new Float32Array(dimension);
 
     // Simple word-based feature extraction
-    const words = text.toLowerCase().match(/\b\w+\b/g)'' | '''' | ''[];
+    const words = text.toLowerCase().match(/\b\w+\b/g)||[];
     const wordFreq = new Map<string, number>();
 
     // Count word frequencies
     for (const word of words) {
-      wordFreq.set(word, (wordFreq.get(word)'' | '''' | ''0) + 1);
+      wordFreq.set(word, (wordFreq.get(word)||0) + 1);
     }
 
     // Create embedding based on word hashes and frequencies

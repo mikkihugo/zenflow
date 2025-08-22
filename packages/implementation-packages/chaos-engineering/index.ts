@@ -336,7 +336,7 @@
  *
  * **EXPERIMENT CATALOG:**
  *
- *''''' | '''''Experiment Type''''' | '''''Target''''' | '''''Impact Level''''' | '''''Duration''''' | '''''Recovery Time''''' | '''''*''''' | '''''----------------''''' | '''''--------''''' | '''''--------------''''' | '''''----------''''' | '''''---------------''''' | '''''*''''' | '''''Network Latency''''' | '''''API Gateway''''' | '''''Low''''' | '''''5-10 min''''' | '''''<30 sec''''' | '''''*''''' | '''''Service Failure''''' | '''''Microservice''''' | '''''Medium''''' | '''''2-5 min''''' | '''''<60 sec''''' | '''''*''''' | '''''Database Failover''''' | '''''Primary DB''''' | '''''High''''' | '''''1-2 min''''' | '''''<90 sec''''' | '''''*''''' | '''''Zone Outage''''' | '''''Infrastructure''''' | '''''High''''' | '''''5-15 min''''' | '''''<120 sec''''' | '''''*''''' | '''''Memory Pressure''''' | '''''Application''''' | '''''Medium''''' | '''''3-8 min''''' | '''''<45 sec''''' | '''''*
+ *''||'Experiment Type'||'Target'||'Impact Level'||'Duration'||'Recovery Time'||'*'||'----------------'||'--------'||'--------------'||'----------'||'---------------'||'*'||'Network Latency'||'API Gateway'||'Low'||'5-10 min'||'<30 sec'||'*'||'Service Failure'||'Microservice'||'Medium'||'2-5 min'||'<60 sec'||'*'||'Database Failover'||'Primary DB'||'High'||'1-2 min'||'<90 sec'||'*'||'Zone Outage'||'Infrastructure'||'High'||'5-15 min'||'<120 sec'||'*'||'Memory Pressure'||'Application'||'Medium'||'3-8 min'||'<45 sec'||''*
  * **SAFETY BENCHMARKS:**
  *
  * - **Experiment Setup Accuracy**: 99.9%+ precise targeting without collateral impact

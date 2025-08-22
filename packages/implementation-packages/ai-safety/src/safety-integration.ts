@@ -18,7 +18,7 @@ import {
 /**
  * Global safety orchestrator instance.
  */
-let globalSafetyOrchestrator: AISafetyOrchestrator'' | ''null = null;
+let globalSafetyOrchestrator: AISafetyOrchestrator|null = null;
 
 /**
  * Initialize AI safety monitoring system.
@@ -81,7 +81,7 @@ export async function monitorAIInteraction(
 
   const interactionData: AIInteractionData = {
     agentId,
-    input: '',
+    input: ',
     response,
     toolCalls,
     timestamp: new Date(),
@@ -97,7 +97,7 @@ export async function monitorAIInteraction(
  *
  * @example
  */
-export function getSafetyMetrics(): SafetyMetrics'' | ''null {
+export function getSafetyMetrics(): SafetyMetrics|'null {
   if (!globalSafetyOrchestrator) {
     return null;
   }

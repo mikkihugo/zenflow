@@ -54,8 +54,8 @@ export interface GraphQueryOptions {
 }
 
 export class KuzuAdapter implements DatabaseAdapter {
-  private database: any'' | ''null = null;
-  private connection: any'' | ''null = null;
+  private database: any|null = null;
+  private connection: any|null = null;
   private config: KuzuConfig;
   private connected = false;
 
@@ -172,7 +172,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
     try {
       const id =
-        properties.id'' | '''' | ''`${label}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        properties.id||`${label}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       const propsWithId = { id, ...properties };
       const propKeys = Object.keys(propsWithId);
@@ -386,7 +386,7 @@ export class KuzuAdapter implements DatabaseAdapter {
           id: `rel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           from: fromNodeId,
           to: toNodeId,
-          type: relationshipType'' | '''' | '''UNKNOWN',
+          type: relationshipType||'UNKNOWN',
           properties: relationshipData,
         });
       }
@@ -444,13 +444,13 @@ export class KuzuAdapter implements DatabaseAdapter {
 
         // Process relationships
         for (const rel of pathRels) {
-          const relId = `rel_${rel.id'' | '''' | ''Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const relId = `rel_${rel.id||Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           if (!relIds.has(relId)) {
             relationships.push({
               id: relId,
               from: rel.src.id,
               to: rel.dst.id,
-              type: rel.type'' | '''' | '''UNKNOWN',
+              type: rel.type||'UNKNOWN',
               properties: rel,
             });
             relIds.add(relId);
@@ -602,7 +602,7 @@ export class KuzuAdapter implements DatabaseAdapter {
 
   async health(): Promise<HealthStatus> {
     try {
-      if (!this.connected'' | '''' | ''!this.connection) {
+      if (!this.connected||!this.connection) {
         return {
           healthy: false,
           isHealthy: false,
@@ -637,7 +637,7 @@ export class KuzuAdapter implements DatabaseAdapter {
   }
 
   async getSchema(): Promise<unknown> {
-    if (!this.connected'' | '''' | ''!this.connection) return { tables: [], views: [] };
+    if (!this.connected||!this.connection) return { tables: [], views: [] };
 
     try {
       // Use fallback to known schema - safer approach for Kuzu
@@ -686,7 +686,7 @@ export class KuzuAdapter implements DatabaseAdapter {
     let paramIndex = 0;
 
     // Replace $paramName or $ placeholders with actual values
-    result = result.replace(/\$\w+'' | ''\$/g, (match) => {
+    result = result.replace(/\$\w+|\$/g, (match) => {
       if (paramIndex < params.length) {
         const value = params[paramIndex++];
         if (Array.isArray(value)) {
@@ -696,7 +696,7 @@ export class KuzuAdapter implements DatabaseAdapter {
           return `'${value.replace(/'/g, "''")}'`; // Escape single quotes
         } else if (typeof value === 'number') {
           return value.toString();
-        } else if (value === null'' | '''' | ''value === undefined) {
+        } else if (value === null||value === undefined) {
           return'NULL';
         } else {
           return `'${String(value).replace(/'/g, "''")}'`;
@@ -716,10 +716,10 @@ export class KuzuAdapter implements DatabaseAdapter {
       const result = await this.query(cypher, paramArray);
 
       return {
-        rows: (result as any).rows'' | '''' | ''[],
-        rowCount: (result as any).rowCount'' | '''' | ''0,
-        executionTime: (result as any).executionTime'' | '''' | ''0,
-        records: ((result as any).rows'' | '''' | ''[]).map((row: any) => ({
+        rows: (result as any).rows||[],
+        rowCount: (result as any).rowCount||0,
+        executionTime: (result as any).executionTime||0,
+        records: ((result as any).rows||[]).map((row: any) => ({
           fields: row,
         })),
       };

@@ -40,8 +40,8 @@ export interface WorkAssignment {
   storyId: string;
   featureId: string;
   assignedTo: string;
-  priority: 'low | medium' | 'high''' | '''critical';
-  status: 'pending | in_progress' | 'completed''' | '''blocked';
+  priority: 'low|medium|high|critical';
+  status: 'pending|in_progress|completed|blocked';
   sparcPhase?: string;
   estimatedHours: number;
   description: string;
@@ -124,7 +124,7 @@ export class DatabaseSPARCBridge {
     return {
       id: `work-${Date.now()}`,
       storyId,
-      featureId: featureContext.featureId'' | '''' | '''unknown',
+      featureId: featureContext.featureId||'unknown',
       assignedTo: 'fallback-agent',
       priority: 'medium',
       status: 'pending',
@@ -151,8 +151,8 @@ export class DatabaseSPARCBridge {
     return {
       workAssignmentId: workId,
       success: true,
-      deliverables: result.deliverables'' | '''' | ''['fallback-deliverable'],
-      qualityMetrics: result.qualityMetrics'' | '''' | ''{ quality: 0.8 },
+      deliverables: result.deliverables||['fallback-deliverable'],
+      qualityMetrics: result.qualityMetrics||{ quality: 0.8 },
       completedAt: new Date(),
       sparcMetrics: {
         phaseCompletionRate: 0.9,
@@ -183,7 +183,7 @@ export class SafePortfolioManager {
 
   // Method to access the real manager (ensures realManager is used)
   getRealManager() {
-    return this.realManager'' | '''' | ''{ status:'fallback' };
+    return this.realManager||{ status:'fallback' };
   }
 
   private async initializeManager(config: any) {

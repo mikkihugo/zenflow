@@ -22,7 +22,7 @@ const logger = getLogger('claude-sdk-utils');
 /**
  * Find workspace root by looking for workspace configuration files
  */
-export function findWorkspaceRoot(startPath: string): string'' | ''null {
+export function findWorkspaceRoot(startPath: string): string|null {
   let currentPath = startPath;
 
   while (currentPath !== path.dirname(currentPath)) {
@@ -54,7 +54,7 @@ export function findWorkspaceRoot(startPath: string): string'' | ''null {
  */
 export function findProjectRoot(
   startPath: string = process.cwd()
-): string'' | ''null {
+): string|null {
   let currentPath = startPath;
 
   while (currentPath !== path.dirname(currentPath)) {
@@ -93,7 +93,7 @@ export function validateTaskInputs(
   prompt: string,
   options: ClaudeSDKOptions = {}
 ): void {
-  if (!prompt'' | '''' | ''typeof prompt !=='string''' | '''' | ''prompt.trim().length === 0) {
+  if (!prompt||typeof prompt !=='string'||prompt.trim().length === 0) {
     throw new Error('Prompt must be a non-empty string');
   }
 
@@ -103,19 +103,19 @@ export function validateTaskInputs(
 
   if (
     options.maxTokens &&
-    (options.maxTokens < 1'' | '''' | ''options.maxTokens > 200000)
+    (options.maxTokens < 1||options.maxTokens > 200000)
   ) {
     throw new Error('maxTokens must be between 1 and 200000');
   }
 
   if (
     options.temperature &&
-    (options.temperature < 0'' | '''' | ''options.temperature > 2)
+    (options.temperature < 0||options.temperature > 2)
   ) {
     throw new Error('temperature must be between 0 and 2');
   }
 
-  if (options.topP && (options.topP < 0'' | '''' | ''options.topP > 1)) {
+  if (options.topP && (options.topP < 0||options.topP > 1)) {
     throw new Error('topP must be between 0 and 1');
   }
 
@@ -210,10 +210,10 @@ export function sanitizeString(str: string): string {
 
   // Additional security patterns
   sanitized = sanitized
-    .replace(/javascript:/gi, '')
-    .replace(/vbscript:/gi, '')
-    .replace(/data:/gi, '')
-    .replace(/[$&;`'' | '']/g,''); // Command injection chars
+    .replace(/javascript:/gi, ')
+    .replace(/vbscript:/gi, ')
+    .replace(/data:/gi, ')
+    .replace(/[$&;`|]/g,'); // Command injection chars
 
   return sanitized;
 }
@@ -230,7 +230,7 @@ export function sanitizeFilePath(filePath: string): string {
   const normalized = path.normalize(filePath);
 
   // Ensure no path traversal
-  if (normalized.includes('..')'' | '''' | ''normalized.includes('~')) {
+  if (normalized.includes('..')||normalized.includes('~')) {
     throw new Error('Path traversal detected');
   }
 
@@ -240,7 +240,7 @@ export function sanitizeFilePath(filePath: string): string {
 
   for (const dangerousPath of dangerousPaths) {
     if (
-      resolvedPath.startsWith(dangerousPath + '/')'' | '''' | ''resolvedPath === dangerousPath
+      resolvedPath.startsWith(dangerousPath + '/')||resolvedPath === dangerousPath
     ) {
       throw new Error(`Access to ${dangerousPath} is not allowed`);
     }
@@ -282,13 +282,13 @@ export function validateCommand(command: string): boolean {
   ];
 
   const firstWord = command.trim().split(/\s+/)[0];
-  if (!firstWord'' | '''' | ''!allowedCommands.includes(firstWord)) {
+  if (!firstWord||!allowedCommands.includes(firstWord)) {
     logger.warn(`Command'${firstWord || 'empty'}'is not in allowlist`);
     return false;
   }
 
   // Check for dangerous patterns
-  if (/[$&;<>`'' | '']/.test(command)) {
+  if (/[$&;<>`|]/.test(command)) {
     logger.warn('Command contains dangerous characters');
     return false;
   }

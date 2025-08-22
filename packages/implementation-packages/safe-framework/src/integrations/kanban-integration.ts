@@ -66,22 +66,22 @@ import type {
 /**
  * Portfolio Kanban states for Epic lifecycle (SAFe-specific)
  */
-export type SafePortfolioKanbanState ='' | '''funnel'// Ideas and opportunities'' | '''analyzing'// Business case analysis and WSJF'' | '''portfolio_backlog'// Prioritized and approved epics'' | '''implementing'// Active development across ARTs'' | '''done'; // Epic completed and value delivered
+export type SafePortfolioKanbanState =|'funnel'// Ideas and opportunities|'analyzing'// Business case analysis and WSJF|'portfolio_backlog'// Prioritized and approved epics|'implementing'// Active development across ARTs|'done'; // Epic completed and value delivered
 
 /**
  * Program Kanban states for Feature flow (SAFe-specific)
  */
-export type SafeProgramKanbanState ='' | '''backlog'// Feature backlog'' | '''analysis'// Feature analysis and acceptance criteria'' | '''development'// Implementation across teams'' | '''testing'// Integration and system testing'' | '''review'// Demo and stakeholder review'' | '''deployment'// Production deployment'' | '''done'; // Feature delivered
+export type SafeProgramKanbanState =|'backlog'// Feature backlog|'analysis'// Feature analysis and acceptance criteria|'development'// Implementation across teams|'testing'// Integration and system testing|'review'// Demo and stakeholder review|'deployment'// Production deployment|'done'; // Feature delivered
 
 /**
  * Team Kanban states for Story and Task flow (SAFe-specific)
  */
-export type SafeTeamKanbanState ='' | '''backlog'// Product backlog'' | '''analysis'// Story analysis and task breakdown'' | '''development'// Implementation'' | '''testing'// Unit and integration testing'' | '''review'// Code review and acceptance'' | '''deployment'// Deployment and verification'' | '''done'; // Story complete
+export type SafeTeamKanbanState =|'backlog'// Product backlog|'analysis'// Story analysis and task breakdown|'development'// Implementation|'testing'// Unit and integration testing|'review'// Code review and acceptance|'deployment'// Deployment and verification|'done'; // Story complete
 
 /**
  * Solution Kanban states for large solution coordination (SAFe-specific)
  */
-export type SafeSolutionKanbanState ='' | '''vision'// Solution vision and architecture'' | '''analysis'// Solution analysis and capability mapping'' | '''development'// Cross-ART development coordination'' | '''integration'// Solution integration and testing'' | '''validation'// Solution validation and demo'' | '''deployment'// Solution deployment'' | '''done'; // Solution capability delivered
+export type SafeSolutionKanbanState =|'vision'// Solution vision and architecture|'analysis'// Solution analysis and capability mapping|'development'// Cross-ART development coordination|'integration'// Solution integration and testing|'validation'// Solution validation and demo|'deployment'// Solution deployment|'done'; // Solution capability delivered
 
 // ============================================================================
 // SAFE WORKFLOW CONFIGURATIONS
@@ -470,23 +470,23 @@ export function portfolioEpicToKanbanTask(
     id: epic.id,
     title: epic.title,
     description: epic.description,
-    state: mapPortfolioStateToKanbanState((epic as any).state'' | '''' | ''epic.status),
-    priority: mapEpicPriorityToKanbanPriority((wsjf as any)?.ranking'' | '''' | ''5),
-    estimatedEffort: (epic as any).estimatedValue'' | '''' | ''epic.businessValue'' | '''' | ''1,
-    assignedTo: (epic as any).epicOwner'' | '''' | '''unassigned',
-    createdAt: (epic as any).createdAt'' | '''' | ''new Date(),
-    updatedAt: (epic as any).lastModified'' | '''' | ''new Date(),
+    state: mapPortfolioStateToKanbanState((epic as any).state||epic.status),
+    priority: mapEpicPriorityToKanbanPriority((wsjf as any)?.ranking||5),
+    estimatedEffort: (epic as any).estimatedValue||epic.businessValue||1,
+    assignedTo: (epic as any).epicOwner||'unassigned',
+    createdAt: (epic as any).createdAt||new Date(),
+    updatedAt: (epic as any).lastModified||new Date(),
     completedAt:
-      ((epic as any).state'' | '''' | ''epic.status) ==='done'? (epic as any).lastModified
+      ((epic as any).state||epic.status) ==='done'? (epic as any).lastModified
         : undefined,
-    dependencies: (epic as any).dependencies?.map((d: any) => d.id)'' | '''' | ''[],
-    tags: [(epic as any).category'' | '''' | '''epic', ...((epic as any).themes'' | '''' | ''[])],
+    dependencies: (epic as any).dependencies?.map((d: any) => d.id)||[],
+    tags: [(epic as any).category||'epic', ...((epic as any).themes||[])],
     metadata: {
       wsjfScore: wsjf?.wsjfScore,
       businessValue: epic.businessValue,
-      timeCriticality: (epic as any).timeCriticality'' | '''' | ''0,
-      jobSize: (epic as any).jobSize'' | '''' | ''1,
-      valueStream: (epic as any).valueStream?.name'' | '''' | '''default',
+      timeCriticality: (epic as any).timeCriticality||0,
+      jobSize: (epic as any).jobSize||1,
+      valueStream: (epic as any).valueStream?.name||'default',
     },
   };
 }
@@ -497,26 +497,26 @@ export function portfolioEpicToKanbanTask(
 export function featureToKanbanTask(feature: Feature): WorkflowTask {
   return {
     id: feature.id,
-    title: (feature as any).title'' | '''' | ''feature.id,
+    title: (feature as any).title||feature.id,
     description: feature.description,
-    state: (feature.status as TaskState)'' | '''' | '''backlog',
-    priority: ((feature as any).priority as TaskPriority)'' | '''' | '''medium',
-    estimatedEffort: (feature as any).storyPoints'' | '''' | ''1,
+    state: (feature.status as TaskState)||'backlog',
+    priority: ((feature as any).priority as TaskPriority)||'medium',
+    estimatedEffort: (feature as any).storyPoints||1,
     assignedTo:
-      (feature as any).owner'' | '''' | ''(feature as any).assignee'' | '''' | '''unassigned',
+      (feature as any).owner||(feature as any).assignee||'unassigned',
     createdAt: new Date(
-      (feature as any).createdAt'' | '''' | ''(feature as any).createdDate'' | '''' | ''Date.now()
+      (feature as any).createdAt||(feature as any).createdDate||Date.now()
     ),
     updatedAt: new Date(
-      (feature as any).updatedAt'' | '''' | ''(feature as any).lastModified'' | '''' | ''Date.now()
+      (feature as any).updatedAt||(feature as any).lastModified||Date.now()
     ),
     dependencies:
-      (feature as any).dependencies?.map((d: any) => d.toString())'' | '''' | ''[],
-    tags: ['feature', ...((feature as any).labels'' | '''' | ''[])],
+      (feature as any).dependencies?.map((d: any) => d.toString())||[],
+    tags: ['feature', ...((feature as any).labels||[])],
     metadata: {
-      epicId: (feature as any).epicId'' | '''' | ''feature.piId,
-      programIncrement: (feature as any).programIncrementId'' | '''' | '''current',
-      acceptanceCriteria: (feature as any).acceptanceCriteria'' | '''' | ''[],
+      epicId: (feature as any).epicId||feature.piId,
+      programIncrement: (feature as any).programIncrementId||'current',
+      acceptanceCriteria: (feature as any).acceptanceCriteria||[],
     },
   };
 }
@@ -527,21 +527,21 @@ export function featureToKanbanTask(feature: Feature): WorkflowTask {
 export function storyToKanbanTask(story: Story): WorkflowTask {
   return {
     id: story.id,
-    title: (story as any).title'' | '''' | ''story.id,
+    title: (story as any).title||story.id,
     description: story.description,
-    state: (story.status as TaskState)'' | '''' | '''backlog',
-    priority: (story.priority as TaskPriority)'' | '''' | '''medium',
-    estimatedEffort: story.storyPoints'' | '''' | ''1,
-    assignedTo: (story as any).assignee'' | '''' | '''unassigned',
-    createdAt: new Date((story as any).createdDate'' | '''' | ''Date.now()),
-    updatedAt: new Date((story as any).lastModified'' | '''' | ''Date.now()),
+    state: (story.status as TaskState)||'backlog',
+    priority: (story.priority as TaskPriority)||'medium',
+    estimatedEffort: story.storyPoints||1,
+    assignedTo: (story as any).assignee||'unassigned',
+    createdAt: new Date((story as any).createdDate||Date.now()),
+    updatedAt: new Date((story as any).lastModified||Date.now()),
     dependencies:
-      (story as any).dependencies?.map((d: any) => d.toString())'' | '''' | ''[],
-    tags: ['story', ...((story as any).labels'' | '''' | ''[])],
+      (story as any).dependencies?.map((d: any) => d.toString())||[],
+    tags: ['story', ...((story as any).labels||[])],
     metadata: {
       featureId: story.featureId,
       acceptanceCriteria: story.acceptanceCriteria,
-      testCases: (story as any).testCases'' | '''' | ''[],
+      testCases: (story as any).testCases||[],
     },
   };
 }
@@ -562,7 +562,7 @@ function mapPortfolioStateToKanbanState(portfolioState: string): TaskState {
     done: 'done',
   };
 
-  return stateMap[portfolioState]'' | '''' | '''backlog';
+  return stateMap[portfolioState]||'backlog';
 }
 
 /**

@@ -44,7 +44,7 @@ export declare class DataLifecycleManager extends TypedEventBase {
   retrieve(key: string): {
     value: unknown;
     entry: LifecycleEntry;
-  }'' | ''null;
+  }|null;
   delete(key: string): boolean;
   private initializeMetrics;
   private initializeStages;

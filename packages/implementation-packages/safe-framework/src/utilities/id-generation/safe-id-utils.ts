@@ -152,7 +152,7 @@ export class SafeIdValidator {
   /**
    * Extract year and quarter from PI ID
    */
-  static parsePIId(piId: string): { year: number; quarter: string }' | 'null {
+  static parsePIId(piId: string): { year: number; quarter: string }|null {
     const match = piId.match(/PI-?(\d{4})(Q[1-4])/);
     if (!match) return null;
 

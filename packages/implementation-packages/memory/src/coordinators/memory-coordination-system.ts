@@ -99,7 +99,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     options: {
       weight?: number;
       priority?: number;
-      tier?: 'hot | warm' | 'cold';
+      tier?: 'hot|warm|cold';
     } = {}
   ): Promise<void> {
     this.ensureInitialized();
@@ -108,7 +108,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
       await withTrace('memory-coordination-add-node', async (span) => {
         span?.setAttributes({
           'memory.node.id': id,
-          'memory.node.tier': options.tier'' | '''' | '''warm',
+          'memory.node.tier': options.tier||'warm',
         });
 
         // Initialize the backend
@@ -118,9 +118,9 @@ export class MemoryCoordinationSystem extends TypedEventBase {
         const node: MemoryNode = {
           id,
           backend,
-          weight: options.weight'' | '''' | ''1,
-          priority: options.priority'' | '''' | ''1,
-          tier: options.tier'' | '''' | '''warm',
+          weight: options.weight||1,
+          priority: options.priority||1,
+          tier: options.tier||'warm',
           status: {
             healthy: true,
             latency: 0,
@@ -150,7 +150,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
 
         // Set as primary if it's the first node or higher priority
         if (
-          !this.primaryNode'' | '''' | ''node.priority > (this.nodes.get(this.primaryNode)?.priority'' | '''' | ''0)
+          !this.primaryNode||node.priority > (this.nodes.get(this.primaryNode)?.priority||0)
         ) {
           this.primaryNode = id;
         }
@@ -207,8 +207,8 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     value: JSONValue,
     namespace = 'default',
     options?: {
-      consistency?: 'strong''' | '''eventual';
-      tier?: 'hot | warm' | 'cold';
+      consistency?: 'strong|eventual'';
+      tier?: 'hot|warm|cold';
       replicate?: boolean;
     }
   ): Promise<MemoryOperationResult> {
@@ -229,7 +229,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     key: string,
     namespace = 'default',
     options?: {
-      consistency?: 'strong''' | '''eventual';
+      consistency?: 'strong|eventual'';
       timeout?: number;
     }
   ): Promise<MemoryOperationResult<T>> {
@@ -249,7 +249,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     key: string,
     namespace = 'default',
     options?: {
-      consistency?: 'strong''' | '''eventual';
+      consistency?: 'strong|eventual'';
     }
   ): Promise<MemoryOperationResult<boolean>> {
     this.ensureInitialized();
@@ -313,8 +313,8 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     return withTrace('memory-coordination-operation', async (span) => {
       span?.setAttributes({
         'memory.operation': request.operation,
-        'memory.key': request.key'' | '''' | '''',
-        'memory.namespace': request.namespace'' | '''' | '''default',
+        'memory.key': request.key||'',
+        'memory.namespace': request.namespace||'default',
         'memory.strategy': this.config.strategy,
       });
 
@@ -388,7 +388,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
             nodeId: 'unknown',
             latency,
             fromCache: false,
-            consistency: request.options?.consistency'' | '''' | '''eventual',
+            consistency: request.options?.consistency||'eventual',
             timestamp: Date.now(),
           },
         };
@@ -432,7 +432,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     request: MemoryOperationRequest,
     nodes: MemoryNode[]
   ): MemoryNode[] {
-    if (!request.key'' | '''' | ''!this.shardConfig) {
+    if (!request.key||!this.shardConfig) {
       return [nodes[0]];
     }
 
@@ -448,7 +448,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     request: MemoryOperationRequest,
     nodes: MemoryNode[]
   ): MemoryNode[] {
-    const tier = request.options?.tier'' | '''' | '''warm';
+    const tier = request.options?.tier||'warm';
     const tieredNodes = nodes.filter((node) => node.tier === tier);
 
     return tieredNodes.length > 0 ? [tieredNodes[0]] : [nodes[0]];
@@ -471,7 +471,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     const startTime = Date.now();
 
     try {
-      let data: T'' | ''undefined;
+      let data: T|undefined;
 
       switch (request.operation) {
         case'store':
@@ -522,7 +522,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
           nodeId: node.id,
           latency,
           fromCache: false,
-          consistency: request.options?.consistency'' | '''' | '''eventual',
+          consistency: request.options?.consistency||'eventual',
           timestamp: Date.now(),
         },
       };
@@ -540,9 +540,9 @@ export class MemoryCoordinationSystem extends TypedEventBase {
   ): Promise<MemoryOperationResult<T>> {
     // For read operations, use primary node
     if (
-      request.operation === 'retrieve''' | '''' | ''request.operation ==='list''' | '''' | ''request.operation ==='search') {
+      request.operation === 'retrieve'||request.operation ==='list'||request.operation ==='search') {
       const primaryNode =
-        nodes.find((n) => n.id === this.primaryNode)'' | '''' | ''nodes[0];
+        nodes.find((n) => n.id === this.primaryNode)||nodes[0];
       return this.executeSingleNode<T>(request, primaryNode);
     }
 
@@ -563,7 +563,7 @@ export class MemoryCoordinationSystem extends TypedEventBase {
     const primaryResult = successfulResults.find(
       (r) => r.value.metadata.nodeId === this.primaryNode
     );
-    return primaryResult?.value'' | '''' | ''successfulResults[0].value;
+    return primaryResult?.value||successfulResults[0].value;
   }
 
   private async executeSharded<T>(

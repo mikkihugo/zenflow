@@ -24,9 +24,9 @@ const logger = getLogger('sparc-facade');
 // ============================================================================
 
 // Core SPARC types - Export from real package when available
-export type SPARCPhase ='' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion';
-export type ProjectComplexity ='' | '''simple | moderate' | 'high' | 'complex' | 'enterprise';
-export type ProjectDomain ='' | '''swarm-coordination''' | '''neural-networks''' | '''wasm-integration''' | '''rest-api''' | '''memory-systems''' | '''interfaces''' | '''general';
+export type SPARCPhase =|'specification|pseudocode|architecture|refinement|completion';
+export type ProjectComplexity =|'simple|moderate|high|complex|enterprise';
+export type ProjectDomain =|'swarm-coordination|neural-networks'||wasm-integration|rest-api'||memory-systems|interfaces'||general';
 
 export interface SPARCConfig {
   enabled?: boolean;
@@ -150,11 +150,11 @@ export class SPARCMethodology extends TypedEventBase {
         this.sparcEngine &&
         typeof this.sparcEngine.executePhase === 'function') {
         const project =
-          input.project'' | '''' | ''(await this.sparcEngine.initializeProject({
-            name: input.name'' | '''' | '''SPARC Project',
-            domain: input.domain'' | '''' | '''general',
-            requirements: input.requirements'' | '''' | ''[],
-            complexity: input.complexity'' | '''' | '''moderate',
+          input.project||(await this.sparcEngine.initializeProject({
+            name: input.name||'SPARC Project',
+            domain: input.domain||'general',
+            requirements: input.requirements||[],
+            complexity: input.complexity||'moderate',
           }));
 
         const result = await this.sparcEngine.executePhase(project, phase);
@@ -270,7 +270,7 @@ export class SPARCMethodology extends TypedEventBase {
 
     const fallbackOutputs: Record<SPARCPhase, any> = {
       specification: {
-        goals: input.requirements'' | '''' | ''['Define project goals'],
+        goals: input.requirements||['Define project goals'],
         scope: 'Project scope to be determined',
         constraints: ['Time constraints', 'Resource constraints'],
         stakeholders: ['Development team'],

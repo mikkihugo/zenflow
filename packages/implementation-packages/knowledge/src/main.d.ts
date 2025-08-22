@@ -7,20 +7,20 @@
 export interface KnowledgeItem {
   id: string;
   content: string;
-  type: 'fact | rule' | 'pattern''' | '''insight';
+  type: 'fact|rule|pattern|insight';
   confidence: number;
   timestamp: number;
 }
 export interface KnowledgeStore {
   items: Map<string, KnowledgeItem>;
   add(item: KnowledgeItem): void;
-  get(id: string): KnowledgeItem'' | ''undefined;
+  get(id: string): KnowledgeItem|undefined;
   query(type?: string): KnowledgeItem[];
 }
 export declare class SimpleKnowledgeStore implements KnowledgeStore {
   items: Map<string, KnowledgeItem>;
   add(item: KnowledgeItem): void;
-  get(id: string): KnowledgeItem'' | ''undefined;
+  get(id: string): KnowledgeItem|undefined;
   query(type?: string): KnowledgeItem[];
 }
 export interface KnowledgeManager {
@@ -30,7 +30,7 @@ export interface KnowledgeManager {
     type: KnowledgeItem['type'],
     confidence?: number
   ): string;
-  getKnowledge(id: string): KnowledgeItem'' | ''undefined;
+  getKnowledge(id: string): KnowledgeItem|undefined;
   queryKnowledge(type?: string): KnowledgeItem[];
 }
 export declare class BasicKnowledgeManager implements KnowledgeManager {

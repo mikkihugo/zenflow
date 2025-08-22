@@ -114,7 +114,7 @@ export interface SeasonalityPeriod {
   readonly name: string;
   readonly length: number; // days
   readonly strength: number; // 0-1
-  readonly pattern: 'additive'' | ''multiplicative';
+  readonly pattern: 'additive|multiplicative';
 }
 
 /**
@@ -122,7 +122,7 @@ export interface SeasonalityPeriod {
  */
 export interface TrendConfig {
   readonly enabled: boolean;
-  readonly method: 'linear'' | ''exponential'' | ''logarithmic'' | ''polynomial';
+  readonly method: 'linear|exponential|logarithmic|polynomial';
   readonly strength: number; // 0-1
   readonly changepoints: ChangepointConfig;
 }
@@ -257,7 +257,7 @@ export enum FeatureType {
 export interface DataSource {
   readonly sourceId: string;
   readonly name: string;
-  readonly type: 'database'' | ''api'' | ''file'' | ''stream';
+  readonly type: 'database|api|file|stream';
   readonly connection: ConnectionConfig;
   readonly refresh: RefreshConfig;
 }
@@ -276,7 +276,7 @@ export interface ConnectionConfig {
  * Authentication configuration
  */
 export interface AuthConfig {
-  readonly type: 'none'' | ''basic'' | ''token'' | ''oauth';
+  readonly type: 'none|basic|token|oauth';
   readonly credentials: Record<string, string>;
 }
 
@@ -358,8 +358,8 @@ export interface PreprocessingConfig {
  * Missing value handling
  */
 export interface MissingValueHandling {
-  readonly strategy: 'remove'' | ''impute'' | ''interpolate';
-  readonly method?:' | ''mean'' | ''median'' | ''mode'' | ''forward_fill'' | ''backward_fill';
+  readonly strategy: 'remove|impute|interpolate';
+  readonly method?:|mean|median|mode|forward_fill|'backward_fill';
   readonly threshold: number; // percentage
 }
 
@@ -417,7 +417,7 @@ export enum ScalingMethod {
  */
 export interface EncodingMethod {
   readonly feature: string;
-  readonly type: 'one_hot'' | ''label'' | ''target'' | ''binary';
+  readonly type: 'one_hot|label|target|binary';
   readonly parameters: Record<string, any>;
 }
 
@@ -576,7 +576,7 @@ export interface PredictionFactor {
  * Factor impact
  */
 export interface FactorImpact {
-  readonly direction: 'positive'' | ''negative'' | ''neutral';
+  readonly direction: 'positive|negative|neutral';
   readonly magnitude: number; // 0-100
   readonly unit: string;
 }
@@ -585,7 +585,7 @@ export interface FactorImpact {
  * Factor trend
  */
 export interface FactorTrend {
-  readonly direction: 'increasing'' | ''decreasing'' | ''stable';
+  readonly direction: 'increasing|decreasing|stable';
   readonly rate: number; // percentage per day
   readonly stability: number; // 0-100
 }
@@ -659,7 +659,7 @@ export interface ValidationResult {
  */
 export interface AccuracyTracking {
   readonly currentAccuracy: number; // 0-100
-  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly trend: 'improving|stable|declining';
   readonly recentPredictions: RecentPrediction[];
   readonly alertThreshold: number; // 0-100
 }
@@ -740,7 +740,7 @@ export interface ScenarioAssumption {
 export interface ScenarioImpact {
   readonly deliveryTimeChange: number; // percentage
   readonly confidenceChange: number; // percentage
-  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly riskLevel: 'low|medium|high|critical';
   readonly mitigationStrategies: string[];
 }
 

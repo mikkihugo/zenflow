@@ -36,8 +36,8 @@ export interface ArchitecturePrinciple {
   readonly rationale: string;
   readonly implications: string[];
   readonly category: string;
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
-  readonly status: 'active'' | ''deprecated'' | ''draft'' | ''under_review';
+  readonly priority: 'critical|high|medium|low';
+  readonly status: 'active|deprecated|draft|under_review';
   readonly owner: string;
   readonly stakeholders: string[];
   readonly createdAt: Date;
@@ -54,14 +54,14 @@ export interface PrincipleComplianceMetrics {
   readonly violationCount: number;
   readonly lastComplianceCheck: Date;
   readonly criticalViolations: ComplianceViolation[];
-  readonly trend: 'improving'' | ''stable'' | ''declining';
-  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly trend: 'improving|stable|declining';
+  readonly riskLevel: 'low|medium|high|critical';
 }
 
 export interface ComplianceViolation {
   readonly id: string;
   readonly principleId: string;
-  readonly violationType: 'major'' | ''minor'' | ''critical';
+  readonly violationType: 'major|minor|critical';
   readonly description: string;
   readonly impact: string;
   readonly detectedAt: Date;
@@ -69,20 +69,20 @@ export interface ComplianceViolation {
   readonly recommendation: string;
   readonly assignee?: string;
   readonly dueDate?: Date;
-  readonly status: 'open'' | ''in_progress'' | ''resolved'' | ''accepted_risk';
+  readonly status: 'open|in_progress|resolved|accepted_risk';
 }
 
 export interface ApprovalRecord {
   readonly approver: string;
   readonly approvedAt: Date;
-  readonly status: 'approved'' | ''rejected'' | ''pending';
+  readonly status: 'approved|rejected|pending';
   readonly comments: string;
   readonly conditions?: string[];
 }
 
 export interface PrincipleRelationship {
   readonly relatedPrincipleId: string;
-  readonly relationshipType:' | ''depends_on'' | ''conflicts_with'' | ''complements'' | ''supersedes';
+  readonly relationshipType:|depends_on|conflicts_with|complements|'supersedes';
   readonly description: string;
   readonly strength: number; // 0-1
 }
@@ -112,7 +112,7 @@ export interface ComplianceRule {
   readonly name: string;
   readonly description: string;
   readonly condition: string; // Logical expression
-  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly severity: 'critical|high|medium|low';
   readonly automated: boolean;
   readonly remediation: string;
   readonly category: string;
@@ -129,9 +129,9 @@ export interface ValidationThresholds {
 }
 
 export interface ReportingConfig {
-  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''quarterly';
+  readonly frequency: 'daily|weekly|monthly|quarterly';
   readonly recipients: string[];
-  readonly format: 'dashboard'' | ''email'' | ''api'' | ''all';
+  readonly format: 'dashboard|email|api|all';
   readonly includeRecommendations: boolean;
   readonly includeTrends: boolean;
 }
@@ -141,7 +141,7 @@ export interface PrincipleCreationRequest {
   readonly statement: string;
   readonly rationale: string;
   readonly category: string;
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly priority: 'critical|high|medium|low';
   readonly implications: string[];
   readonly owner: string;
   readonly stakeholders: string[];
@@ -163,36 +163,36 @@ export interface PrincipleValidationResult {
 
 export interface ValidationRecommendation {
   readonly id: string;
-  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
-  readonly category: 'process'' | ''technology'' | ''governance'' | ''training';
+  readonly priority: 'critical|high|medium|low';
+  readonly category: 'process|technology|governance|training';
   readonly description: string;
   readonly implementation: string;
   readonly expectedImpact: string;
-  readonly effort: 'low'' | ''medium'' | ''high';
+  readonly effort: 'low|medium|high';
   readonly timeline: string;
   readonly dependencies: string[];
 }
 
 export interface RiskAssessment {
-  readonly overallRisk: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly overallRisk: 'low|medium|high|critical';
   readonly riskFactors: RiskFactor[];
   readonly mitigationStrategies: MitigationStrategy[];
-  readonly residualRisk: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly residualRisk: 'low|medium|high|critical';
 }
 
 export interface RiskFactor {
   readonly factor: string;
-  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
+  readonly impact: 'low|medium|high|critical';
   readonly probability: number; // 0-1
   readonly description: string;
-  readonly category: 'technical'' | ''organizational'' | ''compliance'' | ''external';
+  readonly category: 'technical|organizational|compliance|external';
 }
 
 export interface MitigationStrategy {
   readonly strategy: string;
   readonly description: string;
   readonly effectiveness: number; // 0-1
-  readonly cost: 'low'' | ''medium'' | ''high';
+  readonly cost: 'low|medium|high';
   readonly timeline: string;
   readonly owner: string;
 }

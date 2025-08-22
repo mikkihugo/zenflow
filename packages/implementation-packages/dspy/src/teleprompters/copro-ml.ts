@@ -53,23 +53,23 @@ export interface COPROMLConfig {
   useFeedbackAnalysis: boolean;
 
   // Bayesian optimization settings
-  acquisitionFunction:'' | '''expected_improvement | upper_confidence_bound' | 'probability_improvement''' | '''entropy_search';
+  acquisitionFunction:|'expected_improvement|upper_confidence_bound|probability_improvement|entropy_search';
   initialExplorationBudget: number;
   exploitationThreshold: number;
 
   // Online learning settings
-  onlineLearningAlgorithm:'' | '''perceptron | passive_aggressive' | 'sgd_classifier';
+  onlineLearningAlgorithm:|'perceptron|passive_aggressive|sgd_classifier';
   adaptiveLearningRate: boolean;
   forgettingFactor: number;
 
   // Drift detection settings
-  driftDetectionMethod: 'page_hinkley | adwin' | 'kswin''' | '''ddm';
+  driftDetectionMethod: 'page_hinkley|adwin|kswin|ddm';
   driftSensitivity: number;
   minDriftSamples: number;
 
   // Feedback analysis
   feedbackWindowSize: number;
-  feedbackAggregationMethod:'' | '''exponential_smoothing | sliding_window' | 'weighted_average';
+  feedbackAggregationMethod:|'exponential_smoothing|sliding_window|weighted_average';
   qualityGates: {
     minAccuracy: number;
     maxLatency: number;
@@ -313,8 +313,8 @@ export class COPROML extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: any[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: any[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: any[]|null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
@@ -546,7 +546,7 @@ export class COPROML extends Teleprompter {
    * Analyze feedback patterns using clustering and temporal analysis
    */
   private async analyzeFeedbackPatterns(): Promise<Pattern[]> {
-    if (!this.config.useFeedbackAnalysis'' | '''' | ''this.feedbackBuffer.length < 20) {
+    if (!this.config.useFeedbackAnalysis||this.feedbackBuffer.length < 20) {
       return [];
     }
 
@@ -579,7 +579,7 @@ export class COPROML extends Teleprompter {
       await this.patternLearner!.trainPatterns(trainingExamples);
     const patterns = Array.isArray(patternResult)
       ? patternResult
-      : patternResult.patterns'' | '''' | ''[];
+      : patternResult.patterns||[];
 
     this.logger.info(`Detected ${patterns.length} feedback patterns`);
 
@@ -725,14 +725,14 @@ export class COPROML extends Teleprompter {
     // Get current best configuration from optimization history
     const bestPoint = this.optimizationHistory.reduce(
       (best, current) => (current.accuracy > best.accuracy ? current : best),
-      this.optimizationHistory[0]'' | '''' | ''{ accuracy: 0 }
+      this.optimizationHistory[0]||{ accuracy: 0 }
     );
 
     return {
       prefix_strength: 0.8, // Mock value
       learning_rate: this.currentLearningRate,
       regularization: 0.01,
-      confidence_threshold: bestPoint?.confidence'' | '''' | ''0.7,
+      confidence_threshold: bestPoint?.confidence||0.7,
     };
   }
 
@@ -807,7 +807,7 @@ export class COPROML extends Teleprompter {
   private async processExponentialSmoothing(): Promise<void> {
     // Apply exponential smoothing to feedback
     const alpha = 0.3;
-    let smoothedAccuracy = this.feedbackBuffer[0]?.accuracy'' | '''' | ''0;
+    let smoothedAccuracy = this.feedbackBuffer[0]?.accuracy||0;
 
     for (let i = 1; i < this.feedbackBuffer.length; i++) {
       smoothedAccuracy =
@@ -917,7 +917,7 @@ export class COPROML extends Teleprompter {
       convergence: this.getBestAccuracy() > 0.8,
       success: this.getBestAccuracy() > 0.6,
       performance: {
-        duration_ms: Date.now() - (this.startTime?.getTime()'' | '''' | ''Date.now()),
+        duration_ms: Date.now() - (this.startTime?.getTime()||Date.now()),
         memory_used: 512,
         iterations: this.currentIteration,
       },
@@ -930,7 +930,7 @@ export class COPROML extends Teleprompter {
     }
 
     const avgConfidence =
-      this.feedbackBuffer.reduce((sum, fb) => sum + (fb.prediction'' | '''' | ''0.5), 0) /
+      this.feedbackBuffer.reduce((sum, fb) => sum + (fb.prediction||0.5), 0) /
       this.feedbackBuffer.length;
     const avgLatency =
       this.feedbackBuffer.reduce(

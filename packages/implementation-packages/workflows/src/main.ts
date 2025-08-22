@@ -152,7 +152,7 @@ export async function getWorkflowVisualization(
       system.generateVisualization(workflow),
     export: (
       workflow: WorkflowDefinition,
-      format: 'mermaid''' | '''svg' = 'mermaid'
+      format: 'mermaid|svg'' = 'mermaid'
     ) => system.generateVisualization(workflow),
   };
 }

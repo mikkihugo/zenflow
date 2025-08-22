@@ -36,14 +36,14 @@ export interface SPARCProject {
   requirements: string[];
   phases: SPARCPhase[];
   context: ProjectContext;
-  status: 'initializing | active' | 'completed''' | '''failed';
+  status: 'initializing|active|completed|failed';
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface SPARCPhase {
-  name:'' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion';
-  status: 'pending | active' | 'completed''' | '''failed';
+  name:|'specification|pseudocode|architecture|refinement|completion';
+  status: 'pending|active|completed|failed';
   startedAt?: Date;
   completedAt?: Date;
   deliverables: SPARCDeliverable[];
@@ -263,8 +263,8 @@ export class SPARCCommander extends TypedEventBase {
       requirements: config.requirements,
       phases: this.initializePhases(),
       context: {
-        workingDirectory: config.workingDirectory'' | '''' | ''process.cwd(),
-        outputDirectory: config.outputDirectory'' | '''' | '''./sparc-output',
+        workingDirectory: config.workingDirectory||process.cwd(),
+        outputDirectory: config.outputDirectory||'./sparc-output',
         configuration: this.configuration,
       },
       status: 'initializing',
@@ -858,7 +858,7 @@ This document outlines the detailed specifications for each component in the ${p
 ${project.requirements
   .map(
     (req, i) => `
-## Component ${i + 1}: ${req.replace(/\s+/g, '')}Component
+## Component ${i + 1}: ${req.replace(/\s+/g, ')}Component
 
 ### Purpose
 ${req}
@@ -870,7 +870,7 @@ ${req}
 
 ### Interfaces
 \`\`\`typescript
-interface ${req.replace(/\s+/g, '')}Component {
+interface ${req.replace(/\s+/g, ')}Component {
   initialize(): Promise<void>;
   process(input: unknown): Promise<unknown>;
   cleanup(): Promise<void>;
@@ -919,9 +919,9 @@ export class ${project.name.replace(/\s+/g, '')} {
     ${project.requirements
       .map(
         (req) => `
-    this.components.set('${req}', new ${req.replace(/\s+/g, '')}Component())();`
+    this.components.set('${req}', new ${req.replace(/\s+/g, ')}Component())();`
       )
-      .join('')}
+      .join(')}
   }
   
   public async execute(): Promise<boolean> {
@@ -970,10 +970,10 @@ import { describe, it, expect } from 'vitest';
 import { ${project.name.replace(/\s+/g, '')} } from './implementation';
 
 describe('${project.name}', () => {
-  let instance: ${project.name.replace(/\s+/g, '')};
+  let instance: ${project.name.replace(/\s+/g, ')};
   
   beforeEach(() => {
-    instance = new ${project.name.replace(/\s+/g, '')}();
+    instance = new ${project.name.replace(/\s+/g, ')}();
   });
   
   ${project.requirements

@@ -17,7 +17,7 @@ import { getLogger } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 
 // SPARC types for development coordination
-export type SPARCPhase ='' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion';
+export type SPARCPhase =|'specification|pseudocode|architecture|refinement|completion';
 
 /**
  * Development coordination configuration
@@ -33,12 +33,12 @@ export interface DevelopmentCoordinationConfig {
   autoProgressPhases: boolean;
 
   // Git settings
-  branchStrategy: 'feature''' | '''gitflow''' | '''github-flow';
+  branchStrategy: 'feature|gitflow'||github-flow';
   autoCommitMessages: boolean;
 
   // Swarm settings
   maxSwarmSize: number;
-  swarmStrategy: 'collaborative | specialized' | 'mixed';
+  swarmStrategy: 'collaborative|specialized|mixed';
 }
 
 /**
@@ -50,7 +50,7 @@ export interface DevelopmentTask {
   sparcPhase: SPARCPhase;
   gitBranch?: string;
   assignedAgents: string[];
-  status: 'pending | in_progress' | 'review''' | '''completed';
+  status: 'pending|in_progress|review|completed';
   dependencies: string[];
 }
 
@@ -66,7 +66,7 @@ export interface DevelopmentTask {
  */
 export class DevelopmentCoordinator extends TypedEventBase {
   private logger: Logger;
-  private config: DevelopmentCoordinationConfig'' | ''null = null;
+  private config: DevelopmentCoordinationConfig|null = null;
   private activeTasks = new Map<string, DevelopmentTask>();
   private initialized = false;
 
@@ -109,7 +109,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
    * Start SPARC workflow for a task
    */
   async startSPARCWorkflow(
-    task: Omit<DevelopmentTask, 'id''' | '''status'>
+    task: Omit<DevelopmentTask, 'id|status''>
   ): Promise<string> {
     if (!this.config?.sparcEnabled) {
       throw new Error('SPARC workflow not enabled');
@@ -208,8 +208,8 @@ export class DevelopmentCoordinator extends TypedEventBase {
   /**
    * Get task status
    */
-  getTask(taskId: string): DevelopmentTask'' | ''null {
-    return this.activeTasks.get(taskId)'' | '''' | ''null;
+  getTask(taskId: string): DevelopmentTask|null {
+    return this.activeTasks.get(taskId)||null;
   }
 
   /**

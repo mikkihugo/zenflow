@@ -17,7 +17,7 @@ export interface MemoryBackend {
   /** Store a value with the given key */
   store(key: string, value: unknown): Promise<void>;
   /** Retrieve a value by key */
-  retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
+  retrieve<T = unknown>(key: string): Promise<T|null>;
   /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
   delete(key: string): Promise<boolean>;
   /** Clear all stored data */
@@ -34,7 +34,7 @@ export interface MemoryBackend {
  */
 export interface MemoryConfig {
   /** Type of memory backend to use */
-  type:'sqlite | lancedb' | 'json''' | '''memory';
+  type:'sqlite|lancedb|json|memory';
   /** Optional path for file-based backends */
   path?: string;
   /** Maximum size limit */

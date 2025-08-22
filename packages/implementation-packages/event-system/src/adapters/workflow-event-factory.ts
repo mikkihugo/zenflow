@@ -453,7 +453,7 @@ class WorkflowEventManagerImpl
             id: event.workflowId,
             status: 'running',
             startTime: Date.now(),
-            totalTasks: event.details?.totalTasks'' | '''' | ''0,
+            totalTasks: event.details?.totalTasks||0,
             completedTasks: 0,
             failedTasks: 0,
           });
@@ -543,7 +543,7 @@ class WorkflowEventManagerImpl
         }
         break;
       case 'task':
-        if (event.operation === 'create''' | '''' | ''event.operation ==='start') {
+        if (event.operation === 'create'||event.operation ==='start') {
           this.workflowMetrics.totalTasks++;
         }
         break;
@@ -701,7 +701,7 @@ export class WorkflowEventManagerFactory
   ): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners'' | '''' | ''200,
+      maxListeners: config.maxListeners||200,
       processing: {
         batchSize: 25, // Moderate batch size for workflows
         ...config.processing,
@@ -760,7 +760,7 @@ export class WorkflowEventManagerFactory
     return Promise.all(configs.map((config) => this.create(config)));
   }
 
-  get(name: string): EventManager'' | ''undefined {
+  get(name: string): EventManager|undefined {
     return this.managers.get(name);
   }
 

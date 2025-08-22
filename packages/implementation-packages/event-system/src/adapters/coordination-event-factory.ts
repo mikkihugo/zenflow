@@ -38,7 +38,7 @@ export class CoordinationEventManagerFactory
   private instances = new Map<string, CoordinationEventAdapter>();
 
   constructor(logger?: Logger) {
-    this.logger = logger'' | '''' | ''getLogger('CoordinationEventManagerFactory');
+    this.logger = logger||getLogger('CoordinationEventManagerFactory');
     this.logger.debug('CoordinationEventManagerFactory initialized');
   }
 
@@ -119,8 +119,8 @@ export class CoordinationEventManagerFactory
    *
    * @param name
    */
-  get(name: string): EventManager'' | ''undefined {
-    return this.instances.get(name) as EventManager'' | ''undefined;
+  get(name: string): EventManager|undefined {
+    return this.instances.get(name) as EventManager|undefined;
   }
 
   /**
@@ -346,7 +346,7 @@ export class CoordinationEventManagerFactory
    * @param config
    */
   private validateConfig(config: CoordinationEventAdapterConfig): void {
-    if (!config?.name'' | '''' | ''typeof config?.name !=='string') {
+    if (!config?.name||typeof config?.name !=='string') {
       throw new Error(
         'Coordination event manager configuration must have a valid name'
       );

@@ -26,13 +26,13 @@ interface QueueItem {
 export class JaegerExporter implements BaseExporter {
   private config: ExporterConfig;
   private logger: Logger;
-  private jaegerExporter: OTELJaegerExporter'' | ''null = null;
+  private jaegerExporter: OTELJaegerExporter|null = null;
   private queue: QueueItem[] = [];
-  private batchTimer: NodeJS.Timeout'' | ''null = null;
+  private batchTimer: NodeJS.Timeout|null = null;
   private isShuttingDown = false;
   private exportCount = 0;
   private lastExportTime = 0;
-  private lastError: string'' | ''null = null;
+  private lastError: string|null = null;
 
   // Configuration
   private readonly maxQueueSize: number;
@@ -44,17 +44,17 @@ export class JaegerExporter implements BaseExporter {
     this.logger = getLogger(`JaegerExporter:${config.name}`);
 
     // Extract configuration values
-    this.maxQueueSize = config.config?.maxQueueSize'' | '''' | ''1000;
-    this.batchTimeout = config.config?.batchTimeout'' | '''' | ''5000; // 5 seconds
-    this.maxBatchSize = config.config?.maxBatchSize'' | '''' | ''100;
+    this.maxQueueSize = config.config?.maxQueueSize||1000;
+    this.batchTimeout = config.config?.batchTimeout||5000; // 5 seconds
+    this.maxBatchSize = config.config?.maxBatchSize||100;
   }
 
   async initialize(): Promise<void> {
     try {
       // Create Jaeger exporter
       this.jaegerExporter = new OTELJaegerExporter({
-        endpoint: this.config.endpoint'' | '''' | '''http://localhost:14268/api/traces',
-        headers: this.config.headers'' | '''' | ''{},
+        endpoint: this.config.endpoint||'http://localhost:14268/api/traces',
+        headers: this.config.headers||{},
         // Add timeout if specified
         ...(this.config.timeout && { timeout: this.config.timeout }),
       });
@@ -214,14 +214,14 @@ export class JaegerExporter implements BaseExporter {
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy | degraded' | 'unhealthy';
+    status: 'healthy|degraded|unhealthy';
     lastSuccess?: number;
     lastError?: string;
   }> {
     // Check if queue is getting too full
     const queueUtilization = this.queue.length / this.maxQueueSize;
 
-    let status: 'healthy | degraded' | 'unhealthy' = 'healthy';
+    let status: 'healthy|degraded|unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
@@ -231,8 +231,8 @@ export class JaegerExporter implements BaseExporter {
 
     return {
       status,
-      lastSuccess: this.lastExportTime'' | '''' | ''undefined,
-      lastError: this.lastError'' | '''' | ''undefined,
+      lastSuccess: this.lastExportTime||undefined,
+      lastError: this.lastError||undefined,
     };
   }
 
@@ -251,7 +251,7 @@ export class JaegerExporter implements BaseExporter {
    * Process queued items in batches
    */
   private async processBatch(): Promise<void> {
-    if (this.queue.length === 0'' | '''' | ''this.isShuttingDown) {
+    if (this.queue.length === 0||this.isShuttingDown) {
       return;
     }
 
@@ -292,7 +292,7 @@ export class JaegerExporter implements BaseExporter {
         } else {
           reject(
             new Error(
-              `Jaeger export failed: ${result.error'' | '''' | '''Unknown error'}`
+              `Jaeger export failed: ${result.error||'Unknown error'}`
             )
           );
         }

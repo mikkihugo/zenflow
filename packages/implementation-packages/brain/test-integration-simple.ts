@@ -86,7 +86,7 @@ async function runIntegrationTest() {
     const result = await coordinator.generateEmbedding(request);
     console.log('🧠 Embedding Result:');
     console.log('  Success:', result.success);
-    console.log('  Embedding Length:', result.embedding?.length''''''''''' | '''''''''''''''''''''' | '''''''''''0);
+    console.log('  Embedding Length:', result.embedding?.length''''''''||''''''''''''''''||''''''''0);
     console.log('  Model:', result.metadata?.model);
     console.log('  From Cache:', result.metadata?.fromCache);
     console.log('  Processing Time:', result.metadata?.processingTime + 'ms');

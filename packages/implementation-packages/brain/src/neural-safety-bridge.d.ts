@@ -23,7 +23,7 @@ export interface EnhancedDeceptionResult {
   };
   behavioralAnalysis: {
     anomalyScore: number;
-    riskLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
+    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL';
     recommendation: string;
   };
   combinedVerdict: {

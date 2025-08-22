@@ -99,15 +99,15 @@ function validateUserData(user: {
 }): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
   
-  if (!user.id'' | '''' | ''user.id.trim().length === 0) {
+  if (!user.id||user.id.trim().length === 0) {
     errors.push('User ID is required');
   }
   
-  if (!user.name'' | '''' | ''user.name.trim().length === 0) {
+  if (!user.name||user.name.trim().length === 0) {
     errors.push('User name is required');
   }
   
-  if (!user.email'' | '''' | ''!user.email.includes('@')) {
+  if (!user.email||!user.email.includes('@')) {
     errors.push('Valid email is required');
   }
   
@@ -301,7 +301,7 @@ export async function testRealFileLinting(filePath: string): Promise<void> {
       '.go': 'go',
     };
 
-    const language = languageMap[fileExtension]'' | '''' | '''typescript';
+    const language = languageMap[fileExtension]||'typescript';
 
     // Create singularity integration
     const singularity = createSingularityIntegration({

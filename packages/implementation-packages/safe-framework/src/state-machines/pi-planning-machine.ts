@@ -68,7 +68,7 @@ export interface PIPlanningContext {
   readonly dependencies: Dependency[];
   readonly risks: Risk[];
   readonly confidenceVote?: number; // 1-5 scale
-  readonly commitmentLevel: 'uncommitted | partial' | 'committed';
+  readonly commitmentLevel: 'uncommitted|partial|committed';
   readonly blockers: string[];
   readonly facilitatorNotes: string[];
   readonly errorMessage?: string;
@@ -77,12 +77,12 @@ export interface PIPlanningContext {
 /**
  * PI Planning state machine events
  */
-export type PIPlanningEvent ='' | ''{ type:'START_PLANNING'; startTime: Date }'' | ''{ type:'BUSINESS_CONTEXT_COMPLETE'}'' | ''{ type:'ARCHITECTURE_VISION_COMPLETE'}'' | ''{ type:'PLANNING_CONTEXT_COMPLETE'}'' | ''{ type:'BEGIN_DAY1_PLANNING'}'' | ''{
+export type PIPlanningEvent =|{ type:'START_PLANNING'; startTime: Date }|{ type:'BUSINESS_CONTEXT_COMPLETE'}|{ type:'ARCHITECTURE_VISION_COMPLETE'}|{ type:'PLANNING_CONTEXT_COMPLETE'}|{ type:'BEGIN_DAY1_PLANNING'}|{
       type:'TEAM_PLANNING_COMPLETE';
       artId: string;
       capacity: TeamCapacity;
       features: Feature[];
-    }'' | ''{ type:'DAY1_COMPLETE'; dependencies: Dependency[]; risks: Risk[] }'' | ''{ type:'BEGIN_DAY2_PLANNING'}'' | ''{ type:'DEPENDENCY_RESOLVED'; dependencyId: string }'' | ''{ type:'RISK_ADDRESSED'; riskId: string }'' | ''{ type:'OBJECTIVE_DEFINED'; objective: PIObjective }'' | ''{ type:'DAY2_COMPLETE'; objectives: PIObjective[] }'' | ''{ type:'CONFIDENCE_VOTE'; vote: number }'' | ''{ type:'PLANNING_ADJUSTMENTS_NEEDED'; adjustments: string[] }'' | ''{ type:'ADJUSTMENTS_COMPLETE'}'' | ''{ type:'COMMIT_TO_PI'}'' | ''{ type:'ABORT_PLANNING'; reason: string }'' | ''{ type:'RESTART_PLANNING' };
+    }|{ type:'DAY1_COMPLETE'; dependencies: Dependency[]; risks: Risk[] }|{ type:'BEGIN_DAY2_PLANNING'}|{ type:'DEPENDENCY_RESOLVED'; dependencyId: string }|{ type:'RISK_ADDRESSED'; riskId: string }|{ type:'OBJECTIVE_DEFINED'; objective: PIObjective }|{ type:'DAY2_COMPLETE'; objectives: PIObjective[] }|{ type:'CONFIDENCE_VOTE'; vote: number }|{ type:'PLANNING_ADJUSTMENTS_NEEDED'; adjustments: string[] }|{ type:'ADJUSTMENTS_COMPLETE'}|{ type:'COMMIT_TO_PI'}|{ type:'ABORT_PLANNING'; reason: string }|{ type:'RESTART_PLANNING' };
 
 // ============================================================================
 // GUARDS (BUSINESS RULES)
@@ -114,7 +114,7 @@ const piPlanningGuards = {
    */
   dependenciesManageable: ({ context }: { context: PIPlanningContext }) => {
     const criticalDependencies = context.dependencies.filter(
-      (d) => (d as any).criticality === 'high''' | '''' | ''(d as any).type ==='blocking'
+      (d) => (d as any).criticality === 'high'||(d as any).type ==='blocking'
     ).length;
     return criticalDependencies <= 5;
   },
@@ -153,7 +153,7 @@ const piPlanningGuards = {
       0
     );
     const plannedWork = context.plannedFeatures.reduce(
-      (sum, f) => sum + (f.businessValue'' | '''' | ''0),
+      (sum, f) => sum + (f.businessValue||0),
       0
     );
     const utilization = plannedWork / totalCapacity;

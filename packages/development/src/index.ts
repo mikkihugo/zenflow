@@ -446,49 +446,49 @@ async function loadArchitecture() {
 
 export const getCodeAnalyzer = async () => {
   const codeModule = await loadCodeAnalyzer();
-  return codeModule.createCodeAnalyzer?.()'' | '''' | ''codeModule.createCodeAnalyzer();
+  return codeModule.createCodeAnalyzer?.()||codeModule.createCodeAnalyzer();
 };
 
 export const getGitOperationsManager = async () => {
   const gitModule = await loadGitOperations();
   return (
-    gitModule.createGitOperationsManager?.()'' | '''' | ''gitModule.createGitOperationsManager()
+    gitModule.createGitOperationsManager?.()||gitModule.createGitOperationsManager()
   );
 };
 
 export const getCodeQLBridge = async () => {
   const codeqlModule = await loadCodeQL();
   return (
-    codeqlModule.createCodeQLBridge?.()'' | '''' | ''codeqlModule.createCodeQLBridge()
+    codeqlModule.createCodeQLBridge?.()||codeqlModule.createCodeQLBridge()
   );
 };
 
 export const getBeamAnalyzer = async () => {
   const beamModule = await loadBeamAnalyzer();
-  return beamModule.createBeamAnalyzer?.()'' | '''' | ''beamModule.createBeamAnalyzer();
+  return beamModule.createBeamAnalyzer?.()||beamModule.createBeamAnalyzer();
 };
 
 export const getRepositoryAnalyzer = async () => {
   const repoModule = await loadRepoAnalyzer();
   return (
-    repoModule.createRepositoryAnalyzer?.()'' | '''' | ''repoModule.createRepositoryAnalyzer()
+    repoModule.createRepositoryAnalyzer?.()||repoModule.createRepositoryAnalyzer()
   );
 };
 
 export const getAILinter = async () => {
   const linterModule = await loadAILinter();
-  return linterModule.createAILinter?.()'' | '''' | ''linterModule.createAILinter();
+  return linterModule.createAILinter?.()||linterModule.createAILinter();
 };
 
 export const getLanguageParser = async () => {
   const parserModule = await loadLanguageParsers();
-  return parserModule.createBeamParser?.()'' | '''' | ''parserModule.createBeamParser();
+  return parserModule.createBeamParser?.()||parserModule.createBeamParser();
 };
 
 export const getArchitectureValidator = async () => {
   const archModule = await loadArchitecture();
   return (
-    archModule.createDomainBoundaryValidator?.()'' | '''' | ''archModule.createDomainBoundaryValidator()
+    archModule.createDomainBoundaryValidator?.()||archModule.createDomainBoundaryValidator()
   );
 };
 
@@ -548,14 +548,14 @@ export const getSafe6DevelopmentManager = async () => {
 export const createSafe6SolutionTrainManager = async (...args: any[]) => {
   const sparcModule = await loadSafe6DevelopmentManager();
   return (
-    sparcModule.createSafe6SolutionTrainManager?.(...args)'' | '''' | ''new sparcModule.Safe6DevelopmentManager()
+    sparcModule.createSafe6SolutionTrainManager?.(...args)||new sparcModule.Safe6DevelopmentManager()
   );
 };
 
 export const createSafe6BusinessAgilityManager = async (...args: any[]) => {
   const sparcModule = await loadSafe6DevelopmentManager();
   return (
-    sparcModule.createSafe6BusinessAgilityManager?.(...args)'' | '''' | ''new sparcModule.Safe6DevelopmentManager()
+    sparcModule.createSafe6BusinessAgilityManager?.(...args)||new sparcModule.Safe6DevelopmentManager()
   );
 };
 

@@ -56,7 +56,7 @@ export interface BrainJsConfig {
  */
 export interface BrainJsNetworkConfig {
   /** Type of neural network */
-  readonly type: 'feedforward | rnn' | 'lstm''' | '''gru';
+  readonly type: 'feedforward|rnn|lstm|gru';
   /** Hidden layer sizes (for feedforward networks) */
   readonly hiddenLayers?: readonly number[];
   /** Input size (for RNN/LSTM/GRU networks) */
@@ -77,9 +77,9 @@ export interface BrainJsNetworkConfig {
  */
 export interface BrainJsTrainingData {
   /** Input data */
-  readonly input: number[]'' | ''Record<string, number>;
+  readonly input: number[]|Record<string, number>;
   /** Expected output */
-  readonly output: number[]'' | ''Record<string, number>;
+  readonly output: number[]|Record<string, number>;
 }
 /**
  * Training options for brain.js networks
@@ -107,7 +107,7 @@ export interface BrainJsTrainingOptions {
  */
 export interface BrainJsPredictionResult {
   /** Network output */
-  readonly output: number[]'' | ''Record<string, number>;
+  readonly output: number[]|Record<string, number>;
   /** Confidence score (if available) */
   readonly confidence?: number;
   /** Processing time in milliseconds */
@@ -222,7 +222,7 @@ export declare class BrainJsBridge {
    */
   predictWithNeuralNet(
     networkId: string,
-    input: number[]'' | ''Record<string, number>
+    input: number[]|Record<string, number>
   ): Promise<Result<BrainJsPredictionResult, ContextError>>;
   /**
    * Get network information

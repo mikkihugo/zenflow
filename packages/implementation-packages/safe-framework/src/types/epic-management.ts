@@ -86,7 +86,7 @@ export interface EpicLifecycleStage {
  */
 export interface GateCriterion {
   readonly criterion: string;
-  readonly status: 'pending | in_progress' | 'completed''' | '''blocked';
+  readonly status: 'pending|in_progress|completed|blocked';
   readonly owner: string;
   readonly dueDate: Date;
   readonly completionDate?: Date;
@@ -100,8 +100,8 @@ export interface GateCriterion {
 export interface EpicBlocker {
   readonly id: string;
   readonly description: string;
-  readonly category:'' | '''technical | business' | 'resource' | 'external' | 'regulatory';
-  readonly severity: 'low | medium' | 'high''' | '''critical';
+  readonly category:|'technical|business|resource|external|regulatory';
+  readonly severity: 'low|medium|high|critical';
   readonly identifiedAt: Date;
   readonly resolvedAt?: Date;
   readonly owner: string;
@@ -128,7 +128,7 @@ export interface EpicBusinessCase {
   readonly implementationPlan: ImplementationPlan;
   readonly successMetrics: SuccessMetric[];
   readonly alternativeSolutions: AlternativeSolution[];
-  readonly recommendedAction: 'proceed | defer' | 'pivot''' | '''stop';
+  readonly recommendedAction: 'proceed|defer|pivot|stop';
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly version: string;
@@ -169,9 +169,9 @@ export interface BusinessHypothesis {
  */
 export interface BusinessAssumption {
   readonly assumption: string;
-  readonly criticality: 'high | medium' | 'low';
+  readonly criticality: 'high|medium|low';
   readonly validationMethod: string;
-  readonly validationStatus:'' | '''unvalidated | validating' | 'validated''' | '''invalidated';
+  readonly validationStatus:|'unvalidated|validating|validated|invalidated';
   readonly validationResult?: string;
   readonly impactIfIncorrect: string;
 }
@@ -181,7 +181,7 @@ export interface BusinessAssumption {
  */
 export interface ValidationStep {
   readonly step: string;
-  readonly method:'' | '''customer_interview | market_research' | 'prototype' | 'mvp' | 'analytics';
+  readonly method:|'customer_interview|market_research|prototype|mvp|analytics';
   readonly timeline: number; // days
   readonly owner: string;
   readonly successCriteria: string[];
@@ -221,14 +221,14 @@ export interface EpicCustomerNeed {
   readonly urgency: number; // 1-10
   readonly currentSatisfaction: number; // 0-100%
   readonly willingnessToPay: number;
-  readonly frequency: 'daily | weekly' | 'monthly' | 'quarterly' | 'annually';
+  readonly frequency: 'daily|weekly|monthly|quarterly|annually';
 }
 
 /**
  * Market entry strategy
  */
 export interface MarketEntryStrategy {
-  readonly approach: 'direct | partnership' | 'acquisition''' | '''gradual';
+  readonly approach: 'direct|partnership|acquisition|gradual';
   readonly timeline: number; // months
   readonly investmentRequired: number;
   readonly expectedMarketShare: number; // 0-100%
@@ -294,7 +294,7 @@ export interface ROICalculation {
  */
 export interface RiskAssessment {
   readonly risks: EpicRisk[];
-  readonly overallRiskLevel: 'low | medium' | 'high''' | '''critical';
+  readonly overallRiskLevel: 'low|medium|high|critical';
   readonly riskMitigationPlan: RiskMitigation[];
   readonly contingencyPlans: ContingencyPlan[];
   readonly riskOwners: string[];
@@ -306,13 +306,13 @@ export interface RiskAssessment {
 export interface EpicRisk {
   readonly id: string;
   readonly description: string;
-  readonly category:'' | '''technical | market' | 'financial' | 'regulatory' | 'operational';
+  readonly category:|'technical|market|financial|regulatory|operational';
   readonly probability: number; // 0-100%
   readonly impact: number; // 1-10
   readonly riskScore: number; // probability * impact
   readonly owner: string;
   readonly identifiedAt: Date;
-  readonly status:'' | '''identified | assessing' | 'mitigating' | 'monitoring' | 'closed';
+  readonly status:|'identified|assessing|mitigating|monitoring|closed';
 }
 
 /**
@@ -370,12 +370,12 @@ export interface ImplementationPhase {
  * Resource requirement specification
  */
 export interface ResourceRequirement {
-  readonly resourceType: 'human | technology' | 'budget''' | '''infrastructure';
+  readonly resourceType: 'human|technology|budget|infrastructure';
   readonly description: string;
   readonly quantity: number;
   readonly duration: number; // months
   readonly cost: number;
-  readonly availability: 'available | partial' | 'unavailable''' | '''pending';
+  readonly availability: 'available|partial|unavailable|pending';
 }
 
 /**
@@ -383,11 +383,11 @@ export interface ResourceRequirement {
  */
 export interface EpicDependency {
   readonly id: string;
-  readonly type: 'epic | feature' | 'capability' | 'enabler' | 'external';
+  readonly type: 'epic|feature|capability|enabler|external';
   readonly dependsOn: string;
-  readonly relationship: 'blocks | enables' | 'influences''' | '''related';
-  readonly criticality: 'critical | high' | 'medium''' | '''low';
-  readonly status: 'pending | in_progress' | 'resolved''' | '''blocked';
+  readonly relationship: 'blocks|enables|influences|related';
+  readonly criticality: 'critical|high|medium|low';
+  readonly status: 'pending|in_progress|resolved|blocked';
   readonly owner: string;
   readonly targetDate: Date;
 }
@@ -401,7 +401,7 @@ export interface EpicMilestone {
   readonly description: string;
   readonly targetDate: Date;
   readonly actualDate?: Date;
-  readonly status:'' | '''upcoming | in_progress' | 'completed' | 'missed' | 'cancelled';
+  readonly status:|'upcoming|in_progress|completed|missed|cancelled';
   readonly deliverables: string[];
   readonly owner: string;
   readonly stakeholders: string[];
@@ -414,7 +414,7 @@ export interface QualityGate {
   readonly gate: string;
   readonly criteria: QualityCriterion[];
   readonly owner: string;
-  readonly status: 'pending | in_review' | 'passed' | 'failed' | 'waived';
+  readonly status: 'pending|in_review|passed|failed|waived';
   readonly reviewDate: Date;
   readonly evidence: string[];
 }
@@ -427,7 +427,7 @@ export interface QualityCriterion {
   readonly threshold: string;
   readonly measurement: string;
   readonly actual?: string;
-  readonly status: 'pass | fail' | 'pending';
+  readonly status: 'pass|fail|pending';
 }
 
 // =============================================================================
@@ -439,12 +439,12 @@ export interface QualityCriterion {
  */
 export interface SuccessMetric {
   readonly metric: string;
-  readonly category: 'financial | customer' | 'operational''' | '''strategic';
+  readonly category: 'financial|customer|operational|strategic';
   readonly target: number;
   readonly baseline: number;
   readonly current?: number;
   readonly unit: string;
-  readonly measurementFrequency: 'daily | weekly' | 'monthly''' | '''quarterly';
+  readonly measurementFrequency: 'daily|weekly|monthly|quarterly';
   readonly owner: string;
   readonly achievementDate?: Date;
 }
@@ -466,7 +466,7 @@ export interface AlternativeSolution {
  * Approval status tracking
  */
 export interface ApprovalStatus {
-  readonly status:'' | '''draft | pending' | 'approved' | 'rejected' | 'conditional';
+  readonly status:|'draft|pending|approved|rejected|conditional';
   readonly approver: string;
   readonly approvedAt?: Date;
   readonly conditions?: string[];

@@ -60,11 +60,11 @@ export interface ServiceRegistrationOptions<T = unknown>
   /** Service metadata for filtering */
   metadata?: Record<string, unknown>;
   /** Service health check function */
-  healthCheck?: () => boolean'' | ''Promise<boolean>;
+  healthCheck?: () => boolean|Promise<boolean>;
   /** Service interceptors */
   interceptors?: ServiceInterceptor[];
   /** Auto-discovery patterns */
-  discoveryPattern?: string'' | ''string[];
+  discoveryPattern?: string|string[];
   /** Service dependencies */
   dependencies?: string[];
   /** Service tags */
@@ -95,7 +95,7 @@ export interface DiscoveredService {
   service: unknown;
   metadata: ServiceRegistrationOptions;
   capabilities: string[];
-  health:'healthy | unhealthy' | 'unknown';
+  health:'healthy|unhealthy|unknown';
   performance: {
     resolutionTime: number;
     lastAccessed: number;
@@ -130,7 +130,7 @@ export class DIContainer extends TypedEventBase {
     string,
     { resolutionTime: number; lastAccessed: number; accessCount: number }
   >();
-  private healthChecks = new Map<string, () => boolean'' | ''Promise<boolean>>();
+  private healthChecks = new Map<string, () => boolean|Promise<boolean>>();
   private interceptors = new Map<string, ServiceInterceptor[]>();
   private dependencyGraph = new Map<string, string[]>();
   private logger: Logger;
@@ -139,7 +139,7 @@ export class DIContainer extends TypedEventBase {
   constructor(
     name ='di-container',
     options: {
-      injectionMode?: 'PROXY''' | '''CLASSIC';
+      injectionMode?: 'PROXY|CLASSIC';
       resolutionMode?: ResolutionMode;
       strict?: boolean;
     } = {}
@@ -149,13 +149,13 @@ export class DIContainer extends TypedEventBase {
 
     // Create container with options
     this.container = createContainer({
-      injectionMode: options.injectionMode'' | '''' | ''InjectionMode.PROXY,
+      injectionMode: options.injectionMode|'|InjectionMode.PROXY,
       strict: options.strict ?? true,
     });
 
     this.logger.info(`✅ DI container created: ${name}`, {
-      injectionMode: options.injectionMode'' | '''' | '''PROXY',
-      resolutionMode: options.resolutionMode'' | '''' | ''ResolutionMode.PROXY,
+      injectionMode: options.injectionMode||'PROXY',
+      resolutionMode: options.resolutionMode||ResolutionMode.PROXY,
       strict: options.strict ?? true,
     });
   }
@@ -172,7 +172,7 @@ export class DIContainer extends TypedEventBase {
       // Register with library
       this.container.register({
         [name]: asClass(classConstructor, {
-          lifetime: options.lifetime'' | '''' | ''Lifetime.SINGLETON,
+          lifetime: options.lifetime||Lifetime.SINGLETON,
           injectionMode: options.injectionMode,
           ...options,
         }),
@@ -227,7 +227,7 @@ export class DIContainer extends TypedEventBase {
     try {
       this.container.register({
         [name]: asFunction(func, {
-          lifetime: options.lifetime'' | '''' | ''Lifetime.SINGLETON,
+          lifetime: options.lifetime||Lifetime.SINGLETON,
           injectionMode: options.injectionMode,
           ...options,
         }),
@@ -292,7 +292,7 @@ export class DIContainer extends TypedEventBase {
    * Auto-discover and register services from modules
    */
   async autoDiscoverServices(
-    pattern: string'' | ''string[],
+    pattern: string|string[],
     options: ListModulesOptions = {}
   ): Promise<Result<string[], Error>> {
     try {
@@ -389,7 +389,7 @@ export class DIContainer extends TypedEventBase {
       if (metadata.capabilities?.includes(capability)) {
         const resolveResult = this.resolve(name);
         if (resolveResult.isOk()) {
-          const performance = this.performanceMetrics.get(name)'' | '''' | ''{
+          const performance = this.performanceMetrics.get(name)||{
             resolutionTime: 0,
             lastAccessed: Date.now(),
             accessCount: 0,
@@ -399,7 +399,7 @@ export class DIContainer extends TypedEventBase {
             name,
             service: resolveResult.value,
             metadata,
-            capabilities: metadata.capabilities'' | '''' | ''[],
+            capabilities: metadata.capabilities||[],
             health:'healthy', // TODO: Implement health checking
             performance,
           });
@@ -408,7 +408,7 @@ export class DIContainer extends TypedEventBase {
     }
 
     return results.sort(
-      (a, b) => (b.metadata.priority'' | '''' | ''0) - (a.metadata.priority'' | '''' | ''0)
+      (a, b) => (b.metadata.priority||0) - (a.metadata.priority||0)
     );
   }
 
@@ -422,7 +422,7 @@ export class DIContainer extends TypedEventBase {
       if (metadata.tags?.includes(tag)) {
         const resolveResult = this.resolve(name);
         if (resolveResult.isOk()) {
-          const performance = this.performanceMetrics.get(name)'' | '''' | ''{
+          const performance = this.performanceMetrics.get(name)||{
             resolutionTime: 0,
             lastAccessed: Date.now(),
             accessCount: 0,
@@ -432,7 +432,7 @@ export class DIContainer extends TypedEventBase {
             name,
             service: resolveResult.value,
             metadata,
-            capabilities: metadata.capabilities'' | '''' | ''[],
+            capabilities: metadata.capabilities||[],
             health:'healthy',
             performance,
           });
@@ -499,7 +499,7 @@ export class DIContainer extends TypedEventBase {
     const services = Array.from(this.serviceMetadata.keys())();
     const capabilityCount = new Set(
       Array.from(this.serviceMetadata.values()).flatMap(
-        (m) => m.capabilities'' | '''' | ''[]
+        (m) => m.capabilities||[]
       )
     ).size;
 
@@ -507,8 +507,8 @@ export class DIContainer extends TypedEventBase {
       this.serviceMetadata.values()
     ).reduce(
       (acc, metadata) => {
-        const lifetime = metadata.lifetime'' | '''' | ''Lifetime.SINGLETON;
-        acc[lifetime] = (acc[lifetime]'' | '''' | ''0) + 1;
+        const lifetime = metadata.lifetime||Lifetime.SINGLETON;
+        acc[lifetime] = (acc[lifetime]||0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -524,7 +524,7 @@ export class DIContainer extends TypedEventBase {
         Array.from(this.performanceMetrics.values()).reduce(
           (sum, m) => sum + m.resolutionTime,
           0
-        ) / services.length'' | '''' | ''0,
+        ) / services.length||0,
     };
   }
 
@@ -573,7 +573,7 @@ export class DIContainer extends TypedEventBase {
    */
   private isService(exportValue: UnknownRecord): boolean {
     return (
-      typeof exportValue === 'function''' | '''' | ''(typeof exportValue ==='object' && exportValue !== null)
+      typeof exportValue === 'function'||(typeof exportValue ==='object' && exportValue !== null)
     );
   }
 
@@ -584,12 +584,12 @@ export class DIContainer extends TypedEventBase {
     exportValue: UnknownRecord
   ): ServiceRegistrationOptions {
     // Look for metadata on the export
-    const metadata = ((exportValue as UnknownRecord)['__serviceMetadata']'' | '''' | ''{}) as ServiceRegistrationOptions;
+    const metadata = ((exportValue as UnknownRecord)['__serviceMetadata']||{}) as ServiceRegistrationOptions;
     return {
-      lifetime: metadata.lifetime'' | '''' | ''Lifetime.SINGLETON,
-      capabilities: metadata.capabilities'' | '''' | ''[],
-      tags: metadata.tags'' | '''' | ''[],
-      priority: metadata.priority'' | '''' | ''0,
+      lifetime: metadata.lifetime||Lifetime.SINGLETON,
+      capabilities: metadata.capabilities||[],
+      tags: metadata.tags||[],
+      priority: metadata.priority||0,
       ...metadata,
     };
   }
@@ -616,7 +616,7 @@ export class DIContainer extends TypedEventBase {
       visited.add(node);
       recursionStack.add(node);
 
-      const dependencies = this.dependencyGraph.get(node)'' | '''' | ''[];
+      const dependencies = this.dependencyGraph.get(node)||[];
       for (const dep of dependencies) {
         dfs(dep, [...path, node]);
       }
@@ -663,10 +663,10 @@ export function Service(options: ServiceRegistrationOptions = {}) {
  */
 export function Capability(...capabilities: string[]) {
   return function <T extends Constructor<JsonValue>>(constructor: T) {
-    const existing = ((constructor as UnknownRecord)['__serviceMetadata']'' | '''' | ''{}) as ServiceRegistrationOptions;
+    const existing = ((constructor as UnknownRecord)['__serviceMetadata']||{}) as ServiceRegistrationOptions;
     (constructor as UnknownRecord)['__serviceMetadata'] = {
       ...existing,
-      capabilities: [...(existing.capabilities'' | '''' | ''[]), ...capabilities],
+      capabilities: [...(existing.capabilities||[]), ...capabilities],
     };
     return constructor;
   };
@@ -677,7 +677,7 @@ export function Capability(...capabilities: string[]) {
  */
 export function Tag(...tags: string[]) {
   return function <T extends Constructor<JsonValue>>(constructor: T) {
-    const existing = ((constructor as UnknownRecord)['__serviceMetadata']'' | '''' | ''{}) as ServiceRegistrationOptions;
+    const existing = ((constructor as UnknownRecord)['__serviceMetadata']||{}) as ServiceRegistrationOptions;
     (constructor as UnknownRecord)['__serviceMetadata'] = {
       ...existing,
       tags: [...(existing.tags || []), ...tags],

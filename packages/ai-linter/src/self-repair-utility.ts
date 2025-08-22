@@ -3,7 +3,7 @@
  * 
  * This utility fixes systematic syntax corruptions caused by bulk replacements
  * that went wrong in the AI linter processing. It repairs:
- * - Malformed union types ('a'' | ''b' instead of 'a' | 'b'')
+ * - Malformed union types ('a|b' instead of 'a|b'')
  * - Import statement syntax errors ()'; instead of ;)
  * - Function call syntax errors
  */
@@ -32,8 +32,8 @@ export class SelfRepairUtility {
     // Fix malformed union types
     {
       name: 'malformed_union_types',
-      pattern: /'([^']+)\s*\'' | ''\s*([^']+)'\s*\)/g,
-      replacement: "'$1' | '$2''"
+      pattern: /'([^']+)\s*\|\s*([^']+)'\s*\)/g,
+      replacement: "'$1|$2''"
     },
     // Fix import statement syntax
     {
@@ -56,8 +56,8 @@ export class SelfRepairUtility {
     // Fix algorithm union types
     {
       name: 'algorithm_union_types',  
-      pattern: /algorithm:\s*'([^']+)\s*\'' | ''\s*([^']+)'\s*\'' | ''\s*'([^']+)'\s*\);/g,
-      replacement: "algorithm: '$1' | '$2'''' | '''$3';"
+      pattern: /algorithm:\s*'([^']+)\s*\|\s*([^']+)'\s*\|\s*'([^']+)'\s*\);/g,
+      replacement: "algorithm: '$1|$2'||$3';"
     }
   ];
 
@@ -105,9 +105,9 @@ export class SelfRepairUtility {
         
         if (content !== originalContent) {
           const matches = originalContent.match(pattern.pattern);
-          const fixCount = matches?.length'' | '''' | ''0;
+          const fixCount = matches?.length||0;
           fileErrors += fixCount;
-          this.stats.patterns[pattern.name] = (this.stats.patterns[pattern.name]'' | '''' | ''0) + fixCount;
+          this.stats.patterns[pattern.name] = (this.stats.patterns[pattern.name]||0) + fixCount;
           modified = true;
         }
       }

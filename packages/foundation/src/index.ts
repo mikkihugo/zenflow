@@ -484,8 +484,8 @@ export type { LLMProvider as LLMProviderType };
 export const getGlobalLLM = (): LLMProvider => {
   // Note: Use @claude-zen/intelligence for production LLM access
   return {
-    generate: () => ({ text: '' }),
-    complete: () => '',
+    generate: () => ({ text: ' }),
+    complete: () => ',
     chat: () => ({ response: '' }),
     setRole: () => {},
   };
@@ -532,7 +532,7 @@ export const startTrace = (
   };
 };
 
-export const withTrace = <T>(nameOrFn: string'' | ''(() => T), fn?: () => T): T => {
+export const withTrace = <T>(nameOrFn: string|(() => T), fn?: () => T): T => {
   getLogger('foundation').warn('withTrace: Use @claude-zen/operations for production tracing');
   if (typeof nameOrFn === 'function') {
     return nameOrFn();
@@ -688,7 +688,7 @@ export class EventEmitter {
 
 // KeyValueStore interface for memory backends
 export interface KeyValueStore {
-  get(key: string): Promise<string'' | ''null>;
+  get(key: string): Promise<string|null>;
   set(key: string, value: string): Promise<void>;
   has(key: string): Promise<boolean>;
   delete(key: string): Promise<boolean>;
@@ -698,7 +698,7 @@ export interface KeyValueStore {
 
 // Memory configuration interfaces
 export interface MemoryConfig {
-  type?:'sqlite | lancedb' | 'json''' | '''memory';
+  type?:'sqlite|lancedb|json|memory';
   path?: string;
   maxSize?: number;
   ttl?: number;
@@ -708,7 +708,7 @@ export interface MemoryConfig {
 
 // Database configuration and factory types
 export interface DatabaseConfig {
-  type: 'sqlite | lancedb' | 'kuzu' | 'postgresql' | 'mysql';
+  type: 'sqlite|lancedb|kuzu|postgresql|mysql';
   path?: string;
   connectionString?: string;
   host?: string;

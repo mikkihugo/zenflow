@@ -40,7 +40,7 @@ async function glob(pattern: string, options: any): Promise<string[]> {
               walkDir(fullPath, fileList);
             } else if (stat.isFile() && options.onlyFiles) {
               const relativePath = path.relative(
-                options.cwd'' | '''' | ''process.cwd(),
+                options.cwd||process.cwd(),
                 fullPath
               );
               fileList.push(relativePath);
@@ -68,7 +68,7 @@ async function glob(pattern: string, options: any): Promise<string[]> {
       return fileList;
     }
 
-    const baseDir = options.cwd'' | '''' | ''process.cwd();
+    const baseDir = options.cwd||process.cwd();
 
     // Validate baseDir is a string
     if (typeof baseDir !=='string') {
@@ -214,7 +214,7 @@ export class CodebaseAnalyzer {
    */
   private extractImports(content: string, filePath: string): FileDependency[] {
     const dependencies: FileDependency[] = [];
-    const importRegex = /(?:import'' | ''require'' | ''from)\s+['"](.*?)['"];?/g;
+    const importRegex = /(?:import|require|from)\s+['"](.*?)['"];?/g;
     let match;
 
     while ((match = importRegex.exec(content)) !== null) {
@@ -248,7 +248,7 @@ export class CodebaseAnalyzer {
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
       const functionMatch = line.match(
-        /(?:function'' | ''const'' | ''let'' | ''var)\s+(\w+)\s*[=:]?\s*(?:function'' | ''\()/
+        /(?:function|const|let|var)\s+(\w+)\s*[=:]?\s*(?:function|\()/
       );
       if (functionMatch && functionMatch[1]) {
         symbols.push({
@@ -261,7 +261,7 @@ export class CodebaseAnalyzer {
       }
 
       // Extract class declarations
-      const classMatch = line.match(/(?:class'' | ''interface)\s+(\w+)/);
+      const classMatch = line.match(/(?:class|interface)\s+(\w+)/);
       if (classMatch && classMatch[1] && classMatch[0]) {
         symbols.push({
           name: classMatch[1],
@@ -290,7 +290,7 @@ export class CodebaseAnalyzer {
     return (
       `Codebase analysis: ${files.length} files, ${symbols.length} symbols, ${dependencies.length} dependencies. ` +
       `Primary languages: ${mainLanguages.join(', ')}. ` +
-      `Structure includes ${fileTypes['ts']'' | '''' | ''0} TypeScript, ${fileTypes['js']'' | '''' | ''0} JavaScript, ${fileTypes['json']'' | '''' | ''0} config files.`
+      `Structure includes ${fileTypes['ts']||0} TypeScript, ${fileTypes['js']||0} JavaScript, ${fileTypes['json']||0} config files.`
     );
   }
 
@@ -301,7 +301,7 @@ export class CodebaseAnalyzer {
     files: string[],
     dependencies: FileDependency[],
     symbols: SymbolReference[]
-  ):'low | medium' | 'high' {
+  ):'low|medium|high' {
     const fileCount = files.length;
     const dependencyCount = dependencies.length;
     const symbolCount = symbols.length;
@@ -322,8 +322,8 @@ export class CodebaseAnalyzer {
     const categories: Record<string, number> = {};
 
     files.forEach((file) => {
-      const ext = path.extname(file).slice(1)'' | '''' | '''unknown';
-      categories[ext] = (categories[ext]'' | '''' | ''0) + 1;
+      const ext = path.extname(file).slice(1)||'unknown';
+      categories[ext] = (categories[ext]||0) + 1;
     });
 
     return categories;
@@ -397,7 +397,7 @@ export class CodebaseAnalyzer {
       '.txt': 1,
     };
 
-    return priorities[ext]'' | '''' | ''0;
+    return priorities[ext]||0;
   }
 
   /**
@@ -415,7 +415,7 @@ export class CodebaseAnalyzer {
   /**
    * Read file content
    */
-  private async readFile(filePath: string): Promise<string'' | ''null> {
+  private async readFile(filePath: string): Promise<string|null> {
     try {
       // Validate that filePath is actually a string
       if (typeof filePath !=='string') {

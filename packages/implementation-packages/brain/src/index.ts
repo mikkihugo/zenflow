@@ -1132,7 +1132,7 @@ export const BRAIN_INFO = {
  *
  * ## Autonomous Decision Pipeline
  *
- *'' | ''Stage'' | ''Component'' | ''Function'' | ''*'' | ''-------'' | ''-----------'' | ''----------'' | ''*'' | ''1. Analysis'' | ''TaskComplexityEstimator'' | ''ML-powered complexity analysis'' | ''*'' | ''2. Strategy'' | ''AutonomousOptimizationEngine'' | ''Intelligent method selection'' | ''*'' | ''3. Execution'' | ''SmartPromptOptimizer + DSPy'' | ''Advanced optimization'' | ''*'' | ''4. Monitoring'' | ''AgentPerformancePredictor'' | ''Behavioral analysis'' | ''*'' | ''5. Coordination'' | ''AutonomousCoordinator'' | ''Resource allocation'' | ''*'' | ''6. Learning'' | ''BehavioralIntelligence'' | ''Continuous improvement'' | ''*
+ *|Stage|Component|Function|*|-------|-----------|----------|*|1. Analysis|TaskComplexityEstimator|ML-powered complexity analysis|*|2. Strategy|AutonomousOptimizationEngine|Intelligent method selection|*|3. Execution|SmartPromptOptimizer + DSPy|Advanced optimization|*|4. Monitoring|AgentPerformancePredictor|Behavioral analysis|*|5. Coordination|AutonomousCoordinator|Resource allocation|*|6. Learning|BehavioralIntelligence|Continuous improvement|*
  * ## Neural Network Features
  *
  * - **FANN Integration**: Fast Artificial Neural Network library with Rust/WASM

@@ -24,22 +24,22 @@ export interface PluginManifest {
 }
 export interface SwarmCoordinator {
   id: string;
-  type: 'mesh | hierarchical' | 'ring''' | '''star';
+  type: 'mesh|hierarchical|ring|star';
   agents: SwarmAgent[];
-  status: 'active | inactive' | 'error';
+  status: 'active|inactive|error';
   metadata?: Record<string, unknown>;
 }
 export interface SwarmAgent {
   id: string;
   type: string;
-  status: 'active | inactive' | 'busy''' | '''error';
+  status: 'active|inactive|busy|error';
   capabilities: string[];
   metadata?: Record<string, unknown>;
 }
 export interface NeuralEngine {
   id: string;
   type: string;
-  status: 'initialized | training' | 'ready''' | '''error';
+  status: 'initialized|training|ready|error';
   metrics?: NeuralMetrics;
   train(data: unknown[]): Promise<void>;
   predict(input: unknown): Promise<unknown>;
@@ -80,7 +80,7 @@ export interface LLMOptimizationResponse {
   metrics?: Record<string, number>;
 }
 export interface DatabaseProvider {
-  type: 'sqlite | lancedb' | 'kuzu';
+  type: 'sqlite|lancedb|kuzu';
   connection: unknown;
   isConnected(): boolean;
   query(sql: string, params?: unknown[]): Promise<unknown>;
@@ -109,7 +109,7 @@ export declare class FoundationLLMIntegrationService
 }
 export declare class FoundationDatabaseProvider implements DatabaseProvider {
   private dbAccess;
-  type: 'sqlite | lancedb' | 'kuzu';
+  type: 'sqlite|lancedb|kuzu';
   get connection(): any;
   isConnected(): boolean;
   query(sql: string, params?: unknown[]): Promise<unknown>;

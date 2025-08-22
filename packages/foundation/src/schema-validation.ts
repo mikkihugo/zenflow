@@ -42,7 +42,7 @@ export interface SchemaRegistry {
   [schemaName: string]: {
     schema: JsonObject; // JSON Schema Draft 7
     validator: ValidateFunction;
-    modes: ('kanban | agile' | 'safe')[];
+    modes: ('kanban|agile|safe')[];
   };
 }
 
@@ -142,14 +142,14 @@ export class JsonSchemaManager {
    */
   private extractSupportedModes(
     schema: JsonObject
-  ): ('kanban | agile' | 'safe')[] {
+  ): ('kanban|agile|safe')[] {
     // Check schema metadata for supported modes
     const metadata = schema['metadata'];
     if (metadata && typeof metadata === 'object' && !Array.isArray(metadata)) {
       const metadataObj = metadata as JsonObject;
       const supportedModes = metadataObj['supportedModes'];
       if (Array.isArray(supportedModes)) {
-        return supportedModes as ('kanban | agile' | 'safe')[];
+        return supportedModes as ('kanban|agile|safe')[];
       }
     }
 
@@ -163,7 +163,7 @@ export class JsonSchemaManager {
   validate(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban | agile' | 'safe' = 'kanban'
+    mode: 'kanban|agile|safe' = 'kanban'
   ): {
     isValid: boolean;
     errors?: string[];
@@ -190,8 +190,8 @@ export class JsonSchemaManager {
     if (!isValid) {
       const errors = schemaEntry.validator.errors?.map((err) => {
         const error = err as unknown as UnknownRecord;
-        return `${error['instancePath']'' | '''' | ''error['schemaPath']'' | '''' | '''root'}: ${error['message']'' | '''' | '''Unknown error'}`;
-      })'' | '''' | ''['Unknown validation error'];
+        return `${error['instancePath']||error['schemaPath']||'root'}: ${error['message']||'Unknown error'}`;
+      })||['Unknown validation error'];
 
       return { isValid: false, errors };
     }
@@ -205,14 +205,14 @@ export class JsonSchemaManager {
   validateWithErrors(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban | agile' | 'safe' = 'kanban'): JsonValue {
+    mode: 'kanban|agile|safe' = 'kanban'): JsonValue {
     const result = this.validate(documentType, data, mode);
 
     if (!result.isValid) {
       throw new SchemaValidationError(
         `Schema validation failed for ${documentType}`,
         documentType,
-        result.errors'' | '''' | ''[]
+        result.errors||[]
       );
     }
 
@@ -227,7 +227,7 @@ export class JsonSchemaManager {
    */
   getSchema(
     documentType: string,
-    mode: 'kanban | agile' | 'safe' = 'kanban'
+    mode: 'kanban|agile|safe' = 'kanban'
   ): JsonObject {
     const schemaEntry = this.schemas[documentType];
 
@@ -250,7 +250,7 @@ export class JsonSchemaManager {
   createDocument(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban | agile' | 'safe' = 'kanban'
+    mode: 'kanban|agile|safe' = 'kanban'
   ): JsonValue {
     // Apply schema defaults
     const schema = this.getSchema(documentType, mode);
@@ -275,7 +275,7 @@ export class JsonSchemaManager {
    * Apply schema defaults to data
    */
   private applyDefaults(schema: JsonObject, data: JsonValue): JsonValue {
-    if (typeof data !== 'object''' | '''' | ''data === null'' | '''' | ''Array.isArray(data)) {
+    if (typeof data !== 'object'||data === null||Array.isArray(data)) {
       return data;
     }
 
@@ -310,7 +310,7 @@ export class JsonSchemaManager {
    */
   private getSchemaVersion(
     _documentType: string,
-    mode: 'kanban | agile' | 'safe'
+    mode: 'kanban|agile|safe'
   ): string {
     const modeVersionMap = {
       kanban: '1.0.0',
@@ -343,7 +343,7 @@ export class JsonSchemaManager {
    */
   isAvailableInMode(
     documentType: string,
-    mode: 'kanban | agile' | 'safe'
+    mode: 'kanban|agile|safe'
   ): boolean {
     const schema = this.schemas[documentType];
     return schema ? schema.modes.includes(mode) : false;

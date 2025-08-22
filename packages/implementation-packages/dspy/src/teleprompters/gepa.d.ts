@@ -49,10 +49,10 @@ export interface GEPAFeedbackMetric {
   (
     gold: Example,
     pred: Prediction,
-    trace?: DSPyTrace'' | ''null,
-    pred_name?: string'' | ''null,
-    pred_trace?: DSPyTrace'' | ''null
-  ): number'' | ''ScoreWithFeedback;
+    trace?: DSPyTrace|null,
+    pred_name?: string|null,
+    pred_trace?: DSPyTrace|null
+  ): number|ScoreWithFeedback;
 }
 /**
  * DSPy trace type for execution tracking
@@ -73,7 +73,7 @@ export declare class DspyGEPAResult {
   /** Proposed candidates (component_name -> component_text) */
   readonly candidates: DSPyModule[];
   /** Lineage info; for each candidate i, parents[i] is a list of parent indices or None */
-  readonly parents: Array<Array<number'' | ''null>>;
+  readonly parents: Array<Array<number|null>>;
   /** Per-candidate aggregate score on the validation set (higher is better) */
   readonly val_aggregate_scores: number[];
   /** Per-candidate per-instance scores on the validation set */
@@ -83,27 +83,27 @@ export declare class DspyGEPAResult {
   /** Budget consumed up to the discovery of each candidate */
   readonly discovery_eval_counts: number[];
   /** Best outputs on validation set (optional) */
-  readonly best_outputs_valset?: Array<Array<[number, Prediction[]]>>'' | ''null;
+  readonly best_outputs_valset?: Array<Array<[number, Prediction[]]>>|null;
   /** Total number of metric calls made across the run */
-  readonly total_metric_calls?: number'' | ''null;
+  readonly total_metric_calls?: number|null;
   /** Number of full validation evaluations performed */
-  readonly num_full_val_evals?: number'' | ''null;
+  readonly num_full_val_evals?: number|null;
   /** Where artifacts were written (if any) */
-  readonly log_dir?: string'' | ''null;
+  readonly log_dir?: string|null;
   /** RNG seed for reproducibility (if known) */
-  readonly seed?: number'' | ''null;
+  readonly seed?: number|null;
   constructor(data: {
     candidates: DSPyModule[];
-    parents: Array<Array<number'' | ''null>>;
+    parents: Array<Array<number|null>>;
     val_aggregate_scores: number[];
     val_subscores: number[][];
     per_val_instance_best_candidates: Set<number>[];
     discovery_eval_counts: number[];
-    best_outputs_valset?: Array<Array<[number, Prediction[]]>>'' | ''null;
-    total_metric_calls?: number'' | ''null;
-    num_full_val_evals?: number'' | ''null;
-    log_dir?: string'' | ''null;
-    seed?: number'' | ''null;
+    best_outputs_valset?: Array<Array<[number, Prediction[]]>>|null;
+    total_metric_calls?: number|null;
+    num_full_val_evals?: number|null;
+    log_dir?: string|null;
+    seed?: number|null;
   });
   /** Candidate index with the highest val_aggregate_scores */
   get best_idx(): number;
@@ -229,11 +229,11 @@ export declare class GEPA extends Teleprompter {
   private seed?;
   constructor(config: {
     metric: GEPAFeedbackMetric;
-    auto?: 'light | medium' | 'heavy''' | ''null;
-    max_full_evals?: number'' | ''null;
-    max_metric_calls?: number'' | ''null;
+    auto?: 'light|medium|heavy'|null;
+    max_full_evals?: number|null;
+    max_metric_calls?: number|null;
     reflection_minibatch_size?: number;
-    candidate_selection_strategy?:'pareto''' | '''current_best';
+    candidate_selection_strategy?:'pareto|current_best'';
     reflection_lm?: LMInterface | null;
     skip_perfect_score?: boolean;
     add_format_failure_as_feedback?: boolean;

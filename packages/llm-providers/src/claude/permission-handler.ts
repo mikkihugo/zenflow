@@ -107,7 +107,7 @@ class PermissionAuditor {
     totalChecks: number;
     deniedCount: number;
     highRiskAllowed: number;
-    timeRange: { start: number; end: number }'' | ''null;
+    timeRange: { start: number; end: number }|null;
   } {
     if (this.auditLog.length === 0) {
       return {
@@ -130,8 +130,8 @@ class PermissionAuditor {
       deniedCount,
       highRiskAllowed,
       timeRange: {
-        start: this.auditLog[0]?.timestamp'' | '''' | ''Date.now(),
-        end: this.auditLog[this.auditLog.length - 1]?.timestamp'' | '''' | ''Date.now(),
+        start: this.auditLog[0]?.timestamp||Date.now(),
+        end: this.auditLog[this.auditLog.length - 1]?.timestamp||Date.now(),
       },
     };
   }
@@ -281,11 +281,11 @@ function createInteractiveHandler(): CanUseTool {
     const paramKeys = Object.keys(params);
     const hasFileParams = paramKeys.some(
       (key) =>
-        key.toLowerCase().includes('file')'' | '''' | ''key.toLowerCase().includes('path')
+        key.toLowerCase().includes('file')||key.toLowerCase().includes('path')
     );
     const hasNetworkParams = paramKeys.some(
       (key) =>
-        key.toLowerCase().includes('url')'' | '''' | ''key.toLowerCase().includes('host')
+        key.toLowerCase().includes('url')||key.toLowerCase().includes('host')
     );
 
     if (safeFunctions.includes(toolName)) {
@@ -372,7 +372,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
   ): Promise<PermissionResult> => {
     try {
       // Validate inputs
-      if (!toolName'' | '''' | ''typeof toolName !=='string') {
+      if (!toolName||typeof toolName !=='string') {
         logger.error('Invalid tool name provided to permission handler');
         return {
           allowed: false,
@@ -380,7 +380,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
         };
       }
 
-      if (!params'' | '''' | ''typeof params !=='object') {
+      if (!params||typeof params !=='object') {
         logger.error('Invalid parameters provided to permission handler');
         return {
           allowed: false,
@@ -402,7 +402,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
 
       // Validate result
       if (
-        !result'' | '''' | ''typeof result !=='object''' | '''' | ''typeof result.allowed !=='boolean'
+        !result||typeof result !=='object'||typeof result.allowed !=='boolean'
       ) {
         logger.error('Custom permission handler returned invalid result');
         return {
@@ -415,7 +415,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
         logger.warn('Permission denied but no reason provided');
         return {
           ...result,
-          reason: result.reason'' | '''' | '''Permission denied by custom handler',
+          reason: result.reason||'Permission denied by custom handler',
         };
       }
 
@@ -462,7 +462,7 @@ function createCustomHandlerWrapper(customHandler: CanUseTool): CanUseTool {
 export function validatePermissionResult(
   result: unknown
 ): result is PermissionResult {
-  if (!result'' | '''' | ''typeof result !=='object') {
+  if (!result||typeof result !=='object') {
     return false;
   }
 

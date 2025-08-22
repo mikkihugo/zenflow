@@ -52,14 +52,14 @@ export class CodeQLBridge {
 
     // Default configuration
     this.config = {
-      codeqlPath: config.codeqlPath'' | '''' | '''codeql',
-      maxMemory: config.maxMemory'' | '''' | ''4096,
+      codeqlPath: config.codeqlPath||'codeql',
+      maxMemory: config.maxMemory||4096,
       threads:
-        config.threads'' | '''' | ''Math.max(1, Math.floor(require('os').cpus().length / 2)),
+        config.threads||Math.max(1, Math.floor(require('os').cpus().length / 2)),
       verbose: config.verbose ?? false,
-      timeout: config.timeout'' | '''' | ''300000, // 5 minutes
+      timeout: config.timeout||300000, // 5 minutes
       tempDir:
-        config.tempDir'' | '''' | ''path.join(require('os').tmpdir(), 'codeql-zen'),
+        config.tempDir||path.join(require('os').tmpdir(), 'codeql-zen'),
       ...config,
     };
 
@@ -82,7 +82,7 @@ export class CodeQLBridge {
     return await safeAsync(async () => {
       const result = await this.executeCommand(['version', '--format=json']);
       const versionData = JSON.parse(result.stdout);
-      return versionData.productVersion'' | '''' | ''versionData.version'' | '''' | '''unknown';
+      return versionData.productVersion||versionData.version||'unknown';
     });
   }
 
@@ -156,13 +156,13 @@ export class CodeQLBridge {
         languages,
         buildCommand: options.buildCommand,
         additionalSources: options.additionalSources,
-        excludePatterns: options.excludePatterns'' | '''' | ''['**/node_modules/**',
+        excludePatterns: options.excludePatterns||['**/node_modules/**',
           '**/dist/**',
           '**/build/**',
           '**/.git/**',
         ],
         overwrite: options.overwrite ?? true,
-        workingDirectory: options.workingDirectory'' | '''' | ''repositoryPath,
+        workingDirectory: options.workingDirectory||repositoryPath,
         environmentVariables: options.environmentVariables,
       };
 
@@ -173,11 +173,11 @@ export class CodeQLBridge {
 
       // Step 3: Execute queries
       const queryOptions: QueryExecutionOptions = {
-        format: options.format'' | '''' | '''sarif-latest',
+        format: options.format||'sarif-latest',
         outputPath: options.outputPath,
-        maxResults: options.maxResults'' | '''' | ''10000,
-        queryTimeout: options.queryTimeout'' | '''' | ''60000,
-        additionalArgs: options.additionalArgs'' | '''' | ''[],
+        maxResults: options.maxResults||10000,
+        queryTimeout: options.queryTimeout||60000,
+        additionalArgs: options.additionalArgs||[],
       };
 
       const queryResults = await this.queryRunner.executeQueries(
@@ -208,7 +208,7 @@ export class CodeQLBridge {
           databaseSizeBytes: database.sizeBytes,
           filesAnalyzed: await this.countAnalyzedFiles(database),
           linesAnalyzed: 0, // Would need to calculate from database
-          peakMemoryMb: this.config.maxMemory'' | '''' | ''0,
+          peakMemoryMb: this.config.maxMemory||0,
           cpuTimeMs: 0, // Would need OS-level tracking
         },
       };
@@ -325,8 +325,8 @@ export class CodeQLBridge {
     options: { cwd?: string; timeout?: number } = {}
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     return new Promise((resolve, reject) => {
-      const timeout = options.timeout'' | '''' | ''this.config.timeout'' | '''' | ''300000;
-      const cwd = options.cwd'' | '''' | ''process.cwd();
+      const timeout = options.timeout||this.config.timeout||300000;
+      const cwd = options.cwd||process.cwd();
 
       this.logger.debug('Executing CodeQL command', {
         command: this.config.codeqlPath,
@@ -341,8 +341,8 @@ export class CodeQLBridge {
         env: process.env,
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = ';
+      let stderr = ';
 
       child.stdout.on('data', (data) => {
         stdout += data.toString();
@@ -452,7 +452,7 @@ export class CodeQLBridge {
     const versions: Record<string, string> = {};
 
     for (const pack of queryPacks) {
-      versions[pack.name] = pack.version'' | '''' | '''latest';
+      versions[pack.name] = pack.version||'latest';
     }
 
     return versions;

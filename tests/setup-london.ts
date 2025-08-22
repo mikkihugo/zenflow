@@ -50,7 +50,7 @@ interface ProtocolResponse {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const __protocolTypesIdentity = <T>(v: T) => v;
 __protocolTypesIdentity<
-  ProtocolMessage'' | ''ProtocolResponse'' | ''ExpectedCall'' | ''undefined
+  ProtocolMessage|ProtocolResponse|ExpectedCall|undefined
 >(undefined);
 
 // Enhanced mock configuration for London TDD

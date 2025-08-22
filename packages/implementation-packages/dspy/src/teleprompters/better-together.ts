@@ -47,9 +47,9 @@ export class BetterTogether extends Teleprompter {
 
   constructor(config: {
     metric: MetricFunction;
-    prompt_optimizer?: Teleprompter'' | ''null;
-    weight_optimizer?: Teleprompter'' | ''null;
-    seed?: number'' | ''null;
+    prompt_optimizer?: Teleprompter|null;
+    weight_optimizer?: Teleprompter|null;
+    seed?: number|null;
   }) {
     super();
 
@@ -62,9 +62,9 @@ export class BetterTogether extends Teleprompter {
 
     // Initialize optimizers with defaults exactly matching Stanford implementation
     this.prompt_optimizer =
-      prompt_optimizer'' | '''' | ''new BootstrapFewShotWithRandomSearch({ metric });
+      prompt_optimizer||new BootstrapFewShotWithRandomSearch({ metric });
     this.weight_optimizer =
-      weight_optimizer'' | '''' | ''new BootstrapFinetune({ metric });
+      weight_optimizer||new BootstrapFinetune({ metric });
 
     // Validate supported optimizers exactly matching Stanford implementation
     const is_supported_prompt =
@@ -72,13 +72,13 @@ export class BetterTogether extends Teleprompter {
     const is_supported_weight =
       this.weight_optimizer instanceof BootstrapFinetune;
 
-    if (!is_supported_prompt'' | '''' | ''!is_supported_weight) {
+    if (!is_supported_prompt||!is_supported_weight) {
       throw new Error('The BetterTogether optimizer only supports the following optimizers for now: ' +
           'BootstrapFinetune, BootstrapFewShotWithRandomSearch.');
     }
 
     // Initialize seeded RNG exactly matching Stanford Random implementation
-    let currentSeed = seed'' | '''' | ''Math.floor(Math.random() * 1000000);
+    let currentSeed = seed||Math.floor(Math.random() * 1000000);
     this.rng = {
       shuffle: <T>(array: T[]): void => {
         // Fisher-Yates shuffle with seeded RNG
@@ -98,8 +98,8 @@ export class BetterTogether extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule'' | ''null;
-      valset?: Example[]'' | ''null;
+      teacher?: DSPyModule|null;
+      valset?: Example[]|null;
       strategy?: string;
       valset_ratio?: number;
       [key: string]: any;
@@ -135,7 +135,7 @@ export class BetterTogether extends Teleprompter {
   private _parse_strategy(strategy: string): string[] {
     const parsed_strategy = strategy.toLowerCase().split(STRAT_SEP);
 
-    if (!parsed_strategy.every((s) => s === 'p''' | '''' | ''s ==='w')) {
+    if (!parsed_strategy.every((s) => s === 'p'||s ==='w')) {
       throw new Error(
         `The strategy should be a sequence of 'p' and 'w' separated by '${STRAT_SEP}', but found: ${strategy}`
       );

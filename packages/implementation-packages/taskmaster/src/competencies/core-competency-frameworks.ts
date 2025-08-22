@@ -111,7 +111,7 @@ export interface CompetencyAssessmentConfig {
 
   // Assessment methodology
   methodology: {
-    assessmentType:'' | '''self_assessment | peer_assessment' | 'expert_assessment''' | '''comprehensive';
+    assessmentType:|'self_assessment|peer_assessment|expert_assessment|comprehensive';
     evidenceRequired: boolean;
     practiceDemonstration: boolean;
     metricsValidation: boolean;
@@ -305,7 +305,7 @@ export interface PracticeMetric {
   currentValue: number;
   targetValue: number;
   unit: string;
-  trend: 'improving | stable' | 'declining';
+  trend: 'improving|stable|declining';
   measurementPeriod: {
     startDate: Date;
     endDate: Date;
@@ -322,8 +322,8 @@ export interface PracticeImprovementAction {
 
   // Action details
   practiceArea: string;
-  improvementType:'' | '''process | training' | 'tooling' | 'culture' | 'measurement';
-  priority: 'low | medium' | 'high''' | '''critical';
+  improvementType:|'process|training|tooling|culture|measurement';
+  priority: 'low|medium|high|critical';
 
   // Implementation planning
   assignedTo: string;
@@ -343,7 +343,7 @@ export interface PracticeImprovementAction {
   approvalGateId?: ApprovalGateId;
 
   // Tracking
-  status: 'planned | in_progress' | 'completed' | 'blocked' | 'cancelled';
+  status: 'planned|in_progress|completed|blocked|cancelled';
   progressUpdates: Array<{
     date: Date;
     update: string;
@@ -398,7 +398,7 @@ export interface TTATeamFormationPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''team_structure | role_definition' | 'skill_development''' | '''team_dynamics';
+  category:|'team_structure|role_definition|skill_development|team_dynamics';
 
   // Practice details
   practiceElements: string[];
@@ -426,7 +426,7 @@ export interface TTATeamPerformancePractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''velocity_management | quality_metrics' | 'predictability''' | '''flow_efficiency';
+  category:|'velocity_management|quality_metrics|predictability|flow_efficiency';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -443,7 +443,7 @@ export interface TTACollaborationPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''communication | knowledge_sharing' | 'pair_programming''' | '''collective_ownership';
+  category:|'communication|knowledge_sharing|pair_programming|collective_ownership';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -460,7 +460,7 @@ export interface TTAARTCoordinationPractice {
   id: string;
   name: string;
   description: string;
-  category: 'pi_planning | art_sync' | 'system_demo''' | '''inspect_adapt';
+  category: 'pi_planning|art_sync|system_demo|inspect_adapt';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -477,7 +477,7 @@ export interface TTACrossTeamPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''dependency_coordination | knowledge_transfer' | 'shared_services''' | '''community_practice';
+  category:|'dependency_coordination|knowledge_transfer|shared_services|community_practice';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -494,7 +494,7 @@ export interface TTADependencyPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''dependency_identification | dependency_resolution' | 'dependency_tracking''' | '''dependency_prevention';
+  category:|'dependency_identification|dependency_resolution|dependency_tracking|dependency_prevention';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -511,7 +511,7 @@ export interface TTATechnicalPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''test_driven_development | continuous_integration' | 'refactoring' | 'pair_programming' | 'code_review';
+  category:|'test_driven_development|continuous_integration|refactoring|pair_programming|code_review';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -530,7 +530,7 @@ export interface TTAQualityPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''automated_testing | quality_gates' | 'defect_prevention''' | '''quality_metrics';
+  category:|'automated_testing|quality_gates|defect_prevention|quality_metrics';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -549,7 +549,7 @@ export interface TTADevOpsPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''culture_collaboration | automation' | 'monitoring''' | '''feedback_loops';
+  category:|'culture_collaboration|automation|monitoring|feedback_loops';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -572,7 +572,7 @@ export interface APDDesignThinkingPractice {
   id: string;
   name: string;
   description: string;
-  category: 'empathy | define' | 'ideate' | 'prototype' | 'test';
+  category: 'empathy|define|ideate|prototype|test';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -591,7 +591,7 @@ export interface APDCustomerResearchPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''customer_interviews | market_research' | 'analytics''' | '''feedback_collection';
+  category:|'customer_interviews|market_research|analytics|feedback_collection';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -610,7 +610,7 @@ export interface APDUserExperiencePractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''user_journey_mapping | usability_testing' | 'accessibility''' | '''interaction_design';
+  category:|'user_journey_mapping|usability_testing|accessibility|interaction_design';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -629,7 +629,7 @@ export interface APDProductManagementPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''product_strategy | backlog_management' | 'stakeholder_management''' | '''value_prioritization';
+  category:|'product_strategy|backlog_management|stakeholder_management|value_prioritization';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -648,7 +648,7 @@ export interface APDRoadmapPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''strategic_planning | feature_planning' | 'dependency_planning''' | '''capacity_planning';
+  category:|'strategic_planning|feature_planning|dependency_planning|capacity_planning';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -667,7 +667,7 @@ export interface APDIterativePractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''iteration_planning | increment_delivery' | 'feedback_integration''' | '''adaptive_planning';
+  category:|'iteration_planning|increment_delivery|feedback_integration|adaptive_planning';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -686,7 +686,7 @@ export interface APDContinuousDeliveryPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''pipeline_automation | testing_automation' | 'deployment_automation''' | '''monitoring_observability';
+  category:|'pipeline_automation|testing_automation|deployment_automation|monitoring_observability';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -705,7 +705,7 @@ export interface APDDeploymentPractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''deployment_patterns | rollback_strategy' | 'environment_management''' | '''risk_mitigation';
+  category:|'deployment_patterns|rollback_strategy|environment_management|risk_mitigation';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -724,7 +724,7 @@ export interface APDReleasePractice {
   id: string;
   name: string;
   description: string;
-  category:'' | '''release_planning | feature_toggles' | 'canary_releases''' | '''market_timing';
+  category:|'release_planning|feature_toggles|canary_releases|market_timing';
 
   practiceElements: string[];
   implementationGuidance: string;
@@ -816,8 +816,8 @@ export interface CompetencyImprovementPlan {
   // Risk management
   risks: Array<{
     risk: string;
-    probability: 'low | medium' | 'high';
-    impact: 'low | medium' | 'high';
+    probability: 'low|medium|high';
+    impact: 'low|medium|high';
     mitigation: string;
   }>;
 
@@ -855,8 +855,8 @@ export class CoreCompetencyFrameworks {
   private brainSystem: any;
 
   // Practice frameworks
-  private ttaFramework: TeamTechnicalAgilityFramework'' | ''null = null;
-  private apdFramework: AgileProductDeliveryFramework'' | ''null = null;
+  private ttaFramework: TeamTechnicalAgilityFramework|null = null;
+  private apdFramework: AgileProductDeliveryFramework|null = null;
 
   // Assessment state
   private activeAssessments = new Map<string, CompetencyAssessmentConfig>();
@@ -922,7 +922,7 @@ export class CoreCompetencyFrameworks {
     config: CompetencyAssessmentConfig
   ): Promise<{
     assessmentId: string;
-    framework: TeamTechnicalAgilityFramework'' | ''AgileProductDeliveryFramework;
+    framework: TeamTechnicalAgilityFramework|AgileProductDeliveryFramework;
     assessmentGates: Array<{ area: string; gateId: ApprovalGateId }>;
     coordinationTraceabilityId: string;
   }> {
@@ -940,7 +940,7 @@ export class CoreCompetencyFrameworks {
     this.activeAssessments.set(assessmentId, config);
 
     // Initialize appropriate framework
-    let framework:'' | ''TeamTechnicalAgilityFramework'' | ''AgileProductDeliveryFramework;
+    let framework:|TeamTechnicalAgilityFramework|AgileProductDeliveryFramework;
 
     if (
       config.competencyType === CoreCompetencyType.TEAM_AND_TECHNICAL_AGILITY
@@ -1104,7 +1104,7 @@ export class CoreCompetencyFrameworks {
    */
   async getCompetencyAssessmentStatus(assessmentId: string): Promise<{
     assessmentProgress: {
-      phase:'' | '''preparation | execution' | 'analysis''' | '''planning | implementation' | 'completed';
+      phase:|'preparation|execution|analysis|planning|implementation|completed';
       progress: number; // percentage
       currentActivity: string;
       nextSteps: string[];
@@ -1442,7 +1442,7 @@ export class CoreCompetencyFrameworks {
 
   private async createAssessmentApprovalGates(
     config: CompetencyAssessmentConfig,
-    framework: TeamTechnicalAgilityFramework'' | ''AgileProductDeliveryFramework,
+    framework: TeamTechnicalAgilityFramework|AgileProductDeliveryFramework,
     traceabilityId: string
   ): Promise<Array<{ area: string; gateId: ApprovalGateId }>> {
     const gates: Array<{ area: string; gateId: ApprovalGateId }> = [];
@@ -1718,9 +1718,9 @@ export class CoreCompetencyFrameworks {
 
   private async createEmptyAssessment(): Promise<PracticeAssessment> {
     return {
-      assessmentId: '',
+      assessmentId: ',
       assessmentDate: new Date(),
-      assessor: '',
+      assessor: ',
       currentMaturity: PracticeMaturityLevel.INITIAL,
       targetMaturity: PracticeMaturityLevel.DEFINED,
       maturityGap: 2,
@@ -1834,7 +1834,7 @@ export class CoreCompetencyFrameworks {
   ): Promise<any> {
     return {
       started: true,
-      currentPhase: phaseNumber'' | '''' | ''1,
+      currentPhase: phaseNumber||1,
       activeActions: 5,
     };
   }

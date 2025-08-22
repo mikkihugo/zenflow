@@ -20,7 +20,7 @@ logger.info('DSPy LLM Bridge fallback implementation loaded', {
 export interface DSPyCoordinationTask {
   id: string;
   type: string;
-  complexity?: 'simple | moderate' | 'complex''' | '''heavy';
+  complexity?: 'simple|moderate|complex|heavy';
   data?: any;
   requirements?: any;
   // Additional flexible properties
@@ -31,7 +31,7 @@ export interface DSPyCoordinationTask {
 }
 
 export interface DSPyOptimizationConfig {
-  teleprompter?:'' | '''BootstrapFewShot | COPRO' | 'MIPRO' | 'Ensemble' | 'MIPROv2';
+  teleprompter?:|'BootstrapFewShot|COPRO|MIPRO|Ensemble|MIPROv2';
   optimizationSteps?: number;
   maxTokens?: number;
   temperature?: number;
@@ -118,15 +118,15 @@ export class DSPyLLMBridge {
     });
 
     // Use config to enhance fallback behavior
-    const optimizationSteps = config.optimizationSteps'' | '''' | ''1;
-    const maxTokens = config.maxTokens'' | '''' | ''1000;
-    const teleprompter = config.teleprompter'' | '''' | '''BootstrapFewShot';
+    const optimizationSteps = config.optimizationSteps||1;
+    const maxTokens = config.maxTokens||1000;
+    const teleprompter = config.teleprompter||'BootstrapFewShot';
 
     this.logger.debug('Config applied to coordination task', {
       optimizationSteps,
       maxTokens,
       teleprompter,
-      hybridMode: config.hybridMode'' | '''' | ''false,
+      hybridMode: config.hybridMode||false,
     });
 
     // Fallback implementation

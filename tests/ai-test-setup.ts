@@ -25,15 +25,15 @@ import { jest } from '@jest/globals';
    */
   createMockAgent: (config: {
     id?: string;
-    type?: 'worker | coordinator' | 'specialist';
+    type?: 'worker|coordinator|specialist';
     capabilities?: string[];
     performance?: { success: number; speed: number };
     forceSuccess?: boolean;
   } = {}) => ({
-    id: config.id'' | '''' | ''`agent-${Math.random().toString(36).substr(2, 9)}`,
-    type: config.type'' | '''' | '''worker',
-    capabilities: config.capabilities'' | '''' | ''['read', 'write', 'analyze'],
-    performance: config.performance'' | '''' | ''{ success: 0.85, speed: 0.75 },
+    id: config.id||`agent-${Math.random().toString(36).substr(2, 9)}`,
+    type: config.type||'worker',
+    capabilities: config.capabilities||['read', 'write', 'analyze'],
+    performance: config.performance||{ success: 0.85, speed: 0.75 },
     
     execute: jest.fn().mockImplementation(async (task: any) => {
       // Simulate realistic AI execution time
@@ -41,32 +41,32 @@ import { jest } from '@jest/globals';
       
       // Make tests deterministic when forceSuccess is true
       const success = config.forceSuccess !== false ? 
-        (config.forceSuccess'' | '''' | ''Math.random() < (config.performance?.success'' | '''' | ''0.95)) :
-        Math.random() < (config.performance?.success'' | '''' | ''0.95);
+        (config.forceSuccess||Math.random() < (config.performance?.success||0.95)) :
+        Math.random() < (config.performance?.success||0.95);
       return {
-        agent: config.id'' | '''' | '''mock-agent',
+        agent: config.id||'mock-agent',
         task,
         success,
-        result: success ? `Completed: ${task.name'' | '''' | ''task}` : `Failed: ${task.name'' | '''' | ''task}`,
+        result: success ? `Completed: ${task.name||task}` : `Failed: ${task.name||task}`,
         duration: Math.random() * 1000 + 200,
         confidence: success ? 0.8 + Math.random() * 0.2 : 0.3 + Math.random() * 0.4,
       };
     }),
     
     coordinate: jest.fn().mockImplementation(async (otherAgents: any[]) => ({
-      coordinator: config.id'' | '''' | '''mock-agent',
+      coordinator: config.id||'mock-agent',
       coordinated: otherAgents.length,
       strategy: 'balanced',
       success: Math.random() < 0.9,
     })),
     
     learn: jest.fn().mockImplementation(async (feedback: any) => ({
-      agent: config.id'' | '''' | '''mock-agent',
+      agent: config.id||'mock-agent',
       feedback,
       improvement: Math.random() * 0.1 + 0.05, // 5-15% improvement
       newPerformance: {
-        success: Math.min(0.95, (config.performance?.success'' | '''' | ''0.85) + Math.random() * 0.1),
-        speed: Math.min(0.95, (config.performance?.speed'' | '''' | ''0.75) + Math.random() * 0.1),
+        success: Math.min(0.95, (config.performance?.success||0.85) + Math.random() * 0.1),
+        speed: Math.min(0.95, (config.performance?.speed||0.75) + Math.random() * 0.1),
       },
     })),
   }),
@@ -76,10 +76,10 @@ import { jest } from '@jest/globals';
    */
   createMockSwarm: (config: {
     size?: number;
-    topology?:'mesh | hierarchical' | 'ring''' | '''star';
+    topology?:'mesh|hierarchical|ring|star';
     performance?: { coordination: number; efficiency: number };
   } = {}) => {
-    const agents = Array.from({ length: config.size'' | '''' | ''5 }, (_, i) => 
+    const agents = Array.from({ length: config.size||5 }, (_, i) => 
       (globalThis as any).aiAdvancedUtils.createMockAgent({
         id: `swarm-agent-${i}`,
         type: i === 0 ?'coordinator' : 'worker',
@@ -88,10 +88,10 @@ import { jest } from '@jest/globals';
 
     return {
       id: `swarm-${Math.random().toString(36).substr(2, 9)}`,
-      topology: config.topology'' | '''' | '''hierarchical',
+      topology: config.topology||'hierarchical',
       agents,
       size: agents.length,
-      performance: config.performance'' | '''' | ''{ coordination: 0.8, efficiency: 0.75 },
+      performance: config.performance||{ coordination: 0.8, efficiency: 0.75 },
 
       executeTask: jest.fn().mockImplementation(async (task: any) => {
         // Simulate swarm coordination delay
@@ -107,11 +107,11 @@ import { jest } from '@jest/globals';
         const overallSuccess = successCount / results.length >= 0.6;
 
         return {
-          swarm: config.topology'' | '''' | '''hierarchical',
+          swarm: config.topology||'hierarchical',
           task,
           results,
           success: overallSuccess,
-          coordination: config.performance?.coordination'' | '''' | ''0.8,
+          coordination: config.performance?.coordination||0.8,
           efficiency: successCount / results.length,
           duration: Math.max(...results.map(r => r.duration)),
         };
@@ -151,16 +151,16 @@ import { jest } from '@jest/globals';
     trainingData?: any[];
   } = {}) => ({
     id: `neural-${Math.random().toString(36).substr(2, 9)}`,
-    layers: config.layers'' | '''' | ''3,
-    nodes: config.nodes'' | '''' | ''[10, 5, 2],
-    accuracy: config.accuracy'' | '''' | ''0.85,
+    layers: config.layers||3,
+    nodes: config.nodes||[10, 5, 2],
+    accuracy: config.accuracy||0.85,
     trained: false,
 
     train: jest.fn().mockImplementation(async (data: any[]) => {
       // Simulate training time
       await new Promise(resolve => setTimeout(resolve, Math.random() * 300 + 200));
 
-      const accuracy = Math.min(0.98, (config.accuracy'' | '''' | ''0.85) + Math.random() * 0.15);
+      const accuracy = Math.min(0.98, (config.accuracy||0.85) + Math.random() * 0.15);
       
       return {
         network:'mock-neural',
@@ -177,7 +177,7 @@ import { jest } from '@jest/globals';
       // Simulate prediction time
       await new Promise(resolve => setTimeout(resolve, Math.random() * 50 + 10));
 
-      const confidence = (config.accuracy'' | '''' | ''0.85) + (Math.random() - 0.5) * 0.2;
+      const confidence = (config.accuracy||0.85) + (Math.random() - 0.5) * 0.2;
       
       return {
         input,
@@ -191,7 +191,7 @@ import { jest } from '@jest/globals';
     evaluate: jest.fn().mockImplementation(async (testData: any[]) => ({
       network: 'mock-neural',
       testSamples: testData.length,
-      accuracy: (config.accuracy'' | '''' | ''0.85) + (Math.random() - 0.5) * 0.1,
+      accuracy: (config.accuracy||0.85) + (Math.random() - 0.5) * 0.1,
       precision: 0.82 + Math.random() * 0.15,
       recall: 0.78 + Math.random() * 0.18,
       f1Score: 0.80 + Math.random() * 0.12,
@@ -214,12 +214,12 @@ import { jest } from '@jest/globals';
       { pattern: /^refactor/i, response: 'Refactoring plan created. 5 files need updates.', confidence: 0.75 },
     ];
 
-    const responses = config.responses'' | '''' | ''defaultResponses;
+    const responses = config.responses||defaultResponses;
 
     return {
-      model: config.model'' | '''' | '''mock-llm-v1',
-      temperature: config.temperature'' | '''' | ''0.7,
-      maxTokens: config.maxTokens'' | '''' | ''4000,
+      model: config.model||'mock-llm-v1',
+      temperature: config.temperature||0.7,
+      maxTokens: config.maxTokens||4000,
 
       generateText: jest.fn().mockImplementation(async (prompt: string) => {
         // Simulate LLM response time
@@ -228,7 +228,7 @@ import { jest } from '@jest/globals';
 
         // Find matching response pattern
         const matchedResponse = responses.find(r => r.pattern.test(prompt));
-        const response = matchedResponse'' | '''' | ''responses[Math.floor(Math.random() * responses.length)];
+        const response = matchedResponse||responses[Math.floor(Math.random() * responses.length)];
 
         return {
           text: response.response,
@@ -239,8 +239,8 @@ import { jest } from '@jest/globals';
             totalTokens: Math.floor((prompt.length + response.response.length) / 4),
           },
           metadata: {
-            model: config.model'' | '''' | '''mock-llm-v1',
-            temperature: config.temperature'' | '''' | ''0.7,
+            model: config.model||'mock-llm-v1',
+            temperature: config.temperature||0.7,
             responseTime,
             reasoning: ['Analyzed prompt context', 'Applied domain knowledge', 'Generated structured response'],
           },
@@ -249,7 +249,7 @@ import { jest } from '@jest/globals';
 
       generateStream: jest.fn().mockImplementation(async function*(prompt: string) {
         const matchedResponse = responses.find(r => r.pattern.test(prompt));
-        const response = matchedResponse'' | '''' | ''responses[Math.floor(Math.random() * responses.length)];
+        const response = matchedResponse||responses[Math.floor(Math.random() * responses.length)];
 
         // Stream response word by word
         const words = response.response.split(' ');
@@ -263,7 +263,7 @@ import { jest } from '@jest/globals';
         }
 
         yield {
-          text: '',
+          text: ',
           confidence: response.confidence,
           isComplete: true,
           usage: {
@@ -292,9 +292,9 @@ import { jest } from '@jest/globals';
         const result = await Promise.race([
           step.execute(),
           new Promise((_, reject) => {
-            const timeoutId = setTimeout(() => reject(new Error(`Step timeout: ${step.name}`)), workflow.timeout'' | '''' | ''30000);
+            const timeoutId = setTimeout(() => reject(new Error(`Step timeout: ${step.name}`)), workflow.timeout|'|30000);
             // Store timeout for cleanup
-            (globalThis as any).__testTimeouts = (globalThis as any).__testTimeouts'' | '''' | ''[];
+            (globalThis as any).__testTimeouts = (globalThis as any).__testTimeouts||[];
             (globalThis as any).__testTimeouts.push(timeoutId);
           })
         ]);

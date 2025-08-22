@@ -212,7 +212,7 @@ async function testSafe6CrossPackageIntegration(): Promise<{
       results.taskMasterIntegration = {
         status: 'success',
         integration:
-          !!taskMasterIntegration.default'' | '''' | ''!!taskMasterIntegration.SafeFrameworkIntegration,
+          !!taskMasterIntegration.default||!!taskMasterIntegration.SafeFrameworkIntegration,
       };
       logger.info('✅ TaskMaster integration imports working');
     } catch (error) {
