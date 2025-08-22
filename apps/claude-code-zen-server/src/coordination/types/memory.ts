@@ -19,12 +19,12 @@ export type MemoryType =
   | 'shared' // Shared between agents
   | 'cached' // Cached data with TTL
   | 'session' // Session-specific memory
-  | 'configuration'; // Configuration memory
+  | 'configuration'); // Configuration memory
 
 /**
  * Memory priority levels
  */
-export type MemoryPriority = 'low | medium' | 'high | critical';
+export type MemoryPriority = 'low | medium' | 'high | critical');
 
 /**
  * Memory access patterns
@@ -33,7 +33,7 @@ export type MemoryAccessPattern =
   | 'read-only'
   | 'write-only'
   | 'read-write'
-  | 'append-only';
+  | 'append-only');
 
 /**
  * Basic memory entry structure
@@ -270,7 +270,7 @@ export type MemoryEventType =
   | 'entry_deleted'
   | 'entry_expired'
   | 'cleanup_performed'
-  | 'backup_created';
+  | 'backup_created');
 
 /**
  * Memory event
@@ -308,7 +308,7 @@ export interface MemoryBackup {
 export interface MemoryTransaction {
   id: string;
   operations: Array<{
-    type: 'store | update' | 'delete';
+    type: 'store | update' | 'delete');
     key: string;
     value?: any;
     namespace?: string;

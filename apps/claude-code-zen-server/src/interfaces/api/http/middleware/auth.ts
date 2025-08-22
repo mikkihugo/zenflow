@@ -3,9 +3,9 @@
  * Provides no-op authentication for development with structure for future implementation.
  */
 
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express');
 
-import('./logging';
+import('/logging');
 
 /**
  * User information interface (for future use)
@@ -31,7 +31,7 @@ export interface User {
 export interface AuthContext {
   readonly user?: User;
   readonly token?: string;
-  readonly tokenType?: 'bearer | api_key';
+  readonly tokenType?: 'bearer | api_key');
   readonly isAuthenticated: boolean;
 }
 
@@ -172,7 +172,7 @@ export const hasPermission = (
 
   return (
     authContext.user.permissions.includes(permission) ||
-    authContext.user.permissions.includes('admin')
+    authContext.user.permissions.includes('admin');
   );
 };
 
@@ -197,7 +197,7 @@ export const hasRole = (
 
   return (
     authContext.user.roles.includes(role) ||
-    authContext.user.roles.includes('admin')
+    authContext.user.roles.includes('admin');
   );
 };
 

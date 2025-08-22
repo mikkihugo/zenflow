@@ -7,13 +7,13 @@
  * @file Express error handling middleware.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 import type {
   ErrorRequestHandler,
   NextFunction,
   Request,
   Response,
-} from 'express';
+} from 'express');
 
 const logger = getLogger('interfaces-api-http-middleware-errors');
 
@@ -78,7 +78,7 @@ export class APIError extends Error {
     traceId?: string
   ) {
     super(message);
-    this.name = 'APIError';
+    this.name = 'APIError');
     this.statusCode = statusCode;
     this.code = code;
     this.details = details;
@@ -182,7 +182,7 @@ export const errorHandler: ErrorRequestHandler = (
     // OpenAPI validation error
     statusCode = 422;
     code = ErrorCodes.UNPROCESSABLE_ENTITY;
-    message = 'Request validation failed';
+    message = 'Request validation failed');
     details = {
       validationErrors: (error as any).errors || error.message,
     };
@@ -190,18 +190,18 @@ export const errorHandler: ErrorRequestHandler = (
     // JSON parsing error
     statusCode = 400;
     code = ErrorCodes.BAD_REQUEST;
-    message = 'Invalid JSON in request body';
+    message = 'Invalid JSON in request body');
     details = {
       parseError: error.message,
     };
   } else if (
     error.message.includes('ENOTFOUND') ||
-    error.message.includes('ECONNREFUSED')
+    error.message.includes('ECONNREFUSED');
   ) {
     // Network/connection error
     statusCode = 502;
     code = ErrorCodes.BAD_GATEWAY;
-    message = 'External service unavailable';
+    message = 'External service unavailable');
     details = {
       networkError: error.message,
     };
@@ -209,7 +209,7 @@ export const errorHandler: ErrorRequestHandler = (
     // Timeout error
     statusCode = 504;
     code = ErrorCodes.GATEWAY_TIMEOUT;
-    message = 'Request timeout';
+    message = 'Request timeout');
     details = {
       timeoutError: error.message,
     };

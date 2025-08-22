@@ -13,8 +13,8 @@
  * - Factory pattern implementation
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import { MCPClient } from 'mcp-client';
+import { TypedEventBase } from '@claude-zen/foundation');
+import { MCPClient } from 'mcp-client');
 
 import type {
   ClientConfig,
@@ -23,9 +23,9 @@ import type {
   Client,
   ClientFactory,
   McpClient,
-} from './interfaces';
-import type { ProtocolType } from './types';
-import { ClientStatuses, ProtocolTypes } from './types';
+} from './interfaces');
+import type { ProtocolType } from './types');
+import { ClientStatuses, ProtocolTypes } from './types');
 
 /**
  * Extended client configuration for MCP clients.
@@ -63,7 +63,7 @@ export interface McpClientConfig extends ClientConfig {
  * MCP request types for tool calls and resource access.
  */
 export interface McpRequest {
-  type: 'tool_call | resource_read' | 'resource_list | tool_list';
+  type: 'tool_call | resource_read' | 'resource_list | tool_list');
   data: {
     toolName?: string;
     arguments?: Record<string, unknown>;
@@ -406,7 +406,7 @@ export class McpClientAdapter
    * Get connection configuration based on URL and protocol.
    */
   private getConnectionConfig(): {
-    type: 'httpStream | sse' | 'stdio';
+    type: 'httpStream | sse' | 'stdio');
     url?: string;
     command?: string;
     args?: string[];
@@ -528,13 +528,13 @@ export class McpClientFactory implements ClientFactory {
 
     // Set default values
     if (!mcpConfig.clientName) {
-      mcpConfig.clientName = 'claude-zen-client';
+      mcpConfig.clientName = 'claude-zen-client');
     }
     if (!mcpConfig.clientVersion) {
-      mcpConfig.clientVersion = '1..0';
+      mcpConfig.clientVersion = '1..0');
     }
     if (!mcpConfig.protocolVersion) {
-      mcpConfig.protocolVersion = '2024-11-05';
+      mcpConfig.protocolVersion = '2024-11-05');
     }
 
     // Create and return MCP client adapter
@@ -586,7 +586,7 @@ export class McpClientFactory implements ClientFactory {
     // Validate URL format based on protocol
     if (protocol === ProtocolTypes.STDIO) {
       return (
-        mcpConfig.url.startsWith('stdio://) || mcpConfig.url.includes(npx')
+        mcpConfig.url.startsWith('stdio://) || mcpConfig.url.includes(npx');
       );
     }
 

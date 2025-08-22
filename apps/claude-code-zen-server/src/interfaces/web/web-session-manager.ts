@@ -8,10 +8,10 @@
  * @file Web-session management system.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { NextFunction, Request, Response } from 'express';
+import { getLogger } from '@claude-zen/foundation');
+import type { NextFunction, Request, Response } from 'express');
 
-import('./web-config';
+import('/web-config');
 
 export class WebSessionManager {
   private logger = getLogger('WebSessions');

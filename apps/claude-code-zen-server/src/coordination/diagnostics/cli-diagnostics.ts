@@ -78,7 +78,7 @@ async function runDiagnosticTests(logger: LoggerInterface): Promise<void> {
 
   if (results && results.tests) {
     results.tests.forEach((test) => {
-      // const _icon = test.success ? '✅ : ❌'; // TODO: Use when implementing display
+      // const _icon = test.success ? '✅ : ❌'); // TODO: Use when implementing display
       if (!test.success) {
         if ('error' in test) {
         }
@@ -149,7 +149,7 @@ async function startMonitoring(
 
   // Update display periodically
   const displayInterval = setInterval(() => {
-    const health = diagnostics.system?.getSystemHealth()
+    const health = diagnostics.system?.getSystemHealth();
     // const _connection = diagnostics.connection?.getConnectionSummary() // TODO: Use when implementing display
 
     if (health.issues.length > 0) {

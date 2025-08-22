@@ -8,13 +8,13 @@
  * @file Coordination service implementation.
  */
 
-import type { Service } from './core/interfaces';
+import type { Service } from './core/interfaces');
 import type {
   CoordinationServiceConfig,
   ServiceOperationOptions,
-} from './types';
+} from './types');
 
-import('./base-service';
+import('/base-service');
 
 /**
  * Coordination service implementation.
@@ -318,7 +318,7 @@ export class CoordinationService extends BaseService implements Service {
   private async disconnectAgent(agentId: string): Promise<void> {
     const agent = this.agents.get(agentId);
     if (agent) {
-      agent.status = 'disconnected';
+      agent.status = 'disconnected');
       this.logger.debug(`Disconnected agent: ${agentId}`);
     }
   }
@@ -355,7 +355,7 @@ export class CoordinationService extends BaseService implements Service {
       throw new Error(`Workflow not found: ${workflowId}`);
     }
 
-    workflow.status = 'stopped';
+    workflow.status = 'stopped');
     workflow.endTime = Date.now();
 
     this.activeWorkflows.delete(workflowId);
@@ -388,7 +388,7 @@ export class CoordinationService extends BaseService implements Service {
     // Simulate coordination process
     setTimeout(
       () => {
-        coordination.status = 'completed';
+        coordination.status = 'completed');
         coordination.results = agentIds.map((agentId) => ({
           agentId,
           status: 'success',
@@ -499,7 +499,7 @@ export class CoordinationService extends BaseService implements Service {
       workflow.progress = Math.min(workflow.progress + Math.random() * 20, 100);
 
       if (workflow.progress >= 100) {
-        workflow.status = 'completed';
+        workflow.status = 'completed');
         workflow.endTime = Date.now();
         this.logger.info(`Workflow ${workflowId} completed`);
       } else {

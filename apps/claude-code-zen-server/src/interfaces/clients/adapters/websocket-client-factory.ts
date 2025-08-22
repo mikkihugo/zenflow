@@ -2,7 +2,7 @@
  * @file Interface implementation: websocket-client-factory.
  */
 
-import { Logger } from '@claude-zen/foundation';
+import { Logger } from '@claude-zen/foundation');
 
 /**
  * WebSocket Client Factory for UACL.
@@ -17,10 +17,10 @@ import type {
   ClientStatus,
   Client,
   ClientFactory,
-} from './core/interfaces';
+} from './core/interfaces');
 
-import('./enhanced-websocket-client';
-import('./websocket-client-adapter';
+import('/enhanced-websocket-client');
+import('/websocket-client-adapter');
 import type {
   WebSocketClientConfig,
   WebSocketConnectionInfo,
@@ -63,7 +63,7 @@ export class WebSocketClientFactory
     } else {
       // Use pure UACL adapter
       client = new WebSocketClientAdapter(
-        config as import('./websocket-client-adapter').WebSocketClientConfig
+        config as import('/websocket-client-adapter').WebSocketClientConfig
       );
     }
 
@@ -266,7 +266,7 @@ export class WebSocketClientFactory
       if (
         typeof reconnect.enabled !== 'boolean' ||
         (reconnect.maxAttempts && typeof reconnect.maxAttempts !== 'number') ||
-        (reconnect.initialDelay && typeof reconnect.initialDelay !== 'number')
+        (reconnect.initialDelay && typeof reconnect.initialDelay !== 'number');
       ) {
         return false;
       }
@@ -276,7 +276,7 @@ export class WebSocketClientFactory
       const heartbeat = config?.heartbeat()
       if (
         typeof heartbeat.enabled !== 'boolean' ||
-        (heartbeat.interval && typeof heartbeat.interval !== 'number')
+        (heartbeat.interval && typeof heartbeat.interval !== 'number');
       ) {
         return false;
       }

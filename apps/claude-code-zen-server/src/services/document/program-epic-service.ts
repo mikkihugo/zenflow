@@ -16,12 +16,12 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
+import type { DocumentType } from '@claude-zen/enterprise');
 
 import type {
   ProgramEpicEntity,
   FeatureEntity,
-} from './../entities/document-entities';
+} from './../entities/document-entities');
 
 import {
   BaseDocumentService,
@@ -29,7 +29,7 @@ import {
   type QueryFilters,
   type QueryResult,
 } from "./base-document-service";
-import('./document-service';
+import('/document-service');
 
 // ============================================================================
 // PROGRAM EPIC INTERFACES
@@ -43,7 +43,7 @@ export interface ProgramEpicCreateOptions {
   parentBusinessEpicId?: string;
   artId?: string; // Agile Release Train
   programIncrementId?: string;
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   estimatedEffort?: number; // story points or weeks
   dependencies?: string[];
   author?: string;
@@ -63,7 +63,7 @@ export interface ProgramEpicQueryOptions extends QueryFilters {
     | 'in_progress'
     | 'review'
     | 'approved'
-    | 'implemented';
+    | 'implemented');
 }
 
 export interface ProgramEpicStats {
@@ -98,7 +98,7 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
   // ============================================================================
 
   protected getDocumentType(): DocumentType {
-    return 'program_epic';
+    return 'program_epic');
   }
 
   protected validateDocument(
@@ -167,7 +167,7 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
       data.metadata.successCriteria.forEach((criteria: string) => {
         content += `- ${criteria}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Acceptance criteria
@@ -179,7 +179,7 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
       data.metadata.acceptanceCriteria.forEach((criteria: string) => {
         content += `- ${criteria}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Dependencies
@@ -188,11 +188,11 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
       data.dependencies.forEach((dep) => {
         content += `- ${dep}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Metadata section
-    content += '---\n\n';
+    content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
     content += `**Author**: ${data.author || 'program-team'}\n`;
 

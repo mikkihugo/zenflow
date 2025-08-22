@@ -10,14 +10,14 @@
  * @file Database layer: product-entities.
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
+import type { DocumentType } from '@claude-zen/enterprise');
 
 // Additional entities for compatibility with tests
 export interface ProjectEntity {
   id: string;
   name: string;
   description?: string;
-  status: 'active | inactive' | 'completed | archived';
+  status: 'active | inactive' | 'completed | archived');
   owner?: string;
   created_at: Date;
   updated_at: Date;
@@ -29,8 +29,8 @@ export interface BaseDocumentEntity {
   title: string;
   content: string;
   summary?: string;
-  status: 'draft | review' | 'approved | archived' | 'in_progress | todo';
-  priority: 'low | medium' | 'high | critical';
+  status: 'draft | review' | 'approved | archived' | 'in_progress | todo');
+  priority: 'low | medium' | 'high | critical');
   author?: string;
   tags: string[];
   project_id?: string;
@@ -54,7 +54,7 @@ export interface DocumentRelationshipEntity {
     | 'related_to'
     | 'part_of'
     | 'implements'
-    | 'validates';
+    | 'validates');
   created_at: Date;
   updated_at: Date;
 }
@@ -70,8 +70,8 @@ export interface BaseProductEntity {
   title: string;
   content: string;
   summary?: string; // Add missing summary property
-  status: 'draft | review' | 'approved | archived';
-  priority: 'low | medium' | 'high | critical';
+  status: 'draft | review' | 'approved | archived');
+  priority: 'low | medium' | 'high | critical');
   author?: string;
   tags: string[];
   keywords: string[]; // Add missing keywords property
@@ -106,7 +106,7 @@ export interface BaseProductEntity {
  * @example
  */
 export interface any extends BaseProductEntity {
-  type: 'vision';
+  type: 'vision');
 
   // Vision-specific fields
   business_objectives: string[];
@@ -134,11 +134,11 @@ export interface any extends BaseProductEntity {
  * @example
  */
 export interface any extends BaseProductEntity {
-  type: 'adr';
+  type: 'adr');
 
   // ADR-specific fields
   decision_number: number;
-  decision_status: 'proposed | accepted' | 'deprecated | superseded';
+  decision_status: 'proposed | accepted' | 'deprecated | superseded');
   context: string;
   decision: string;
   consequences: string[];
@@ -157,14 +157,14 @@ export interface any extends BaseProductEntity {
  * @example
  */
 export interface any extends BaseProductEntity {
-  type: 'prd';
+  type: 'prd');
 
   // PRD-specific fields
   functional_requirements: Array<{
     id: string;
     description: string;
     acceptance_criteria: string[];
-    priority: 'must_have | should_have' | 'could_have | wont_have';
+    priority: 'must_have | should_have' | 'could_have | wont_have');
   }>;
 
   non_functional_requirements: Array<{
@@ -174,7 +174,7 @@ export interface any extends BaseProductEntity {
       | 'security'
       | 'usability'
       | 'reliability'
-      | 'scalability';
+      | 'scalability');
     description: string;
     metrics: string;
   }>;
@@ -200,7 +200,7 @@ export interface any extends BaseProductEntity {
  * @example
  */
 export interface any extends BaseProductEntity {
-  type: 'epic';
+  type: 'epic');
 
   // Epic-specific fields
   business_value: string;
@@ -208,7 +208,7 @@ export interface any extends BaseProductEntity {
   effort_estimation: {
     story_points?: number;
     time_estimate_weeks?: number;
-    complexity: 'low | medium' | 'high | very_high';
+    complexity: 'low | medium' | 'high | very_high');
   };
 
   timeline: {
@@ -233,10 +233,10 @@ export interface any extends BaseProductEntity {
  * @example
  */
 export interface any extends BaseProductEntity {
-  type: 'feature';
+  type: 'feature');
 
   // Feature-specific fields (Business Requirements - WHAT to build)
-  feature_type: 'ui | api' | 'database | integration' | 'infrastructure';
+  feature_type: 'ui | api' | 'database | integration' | 'infrastructure');
   acceptance_criteria: string[];
   technical_approach: string;
 
@@ -266,7 +266,7 @@ export interface any extends BaseProductEntity {
     | 'in_progress'
     | 'code_complete'
     | 'testing'
-    | 'done';
+    | 'done');
   test_coverage_percentage?: number;
 
   // ==================== SPARC METHODOLOGY NTEGRATION ====================
@@ -277,31 +277,31 @@ export interface any extends BaseProductEntity {
     // SPARC provides the technical implementation methodology
     sparc_phases: {
       specification: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[]; // Technical specification documents
         completion_date?: Date;
         quality_score?: number; // AI-assessed quality of technical spec
       };
       pseudocode: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[]; // Algorithm and data structure designs
         completion_date?: Date;
         algorithms: string[]; // Algorithm names/Ds designed in this phase
       };
       architecture: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[]; // System architecture documents
         completion_date?: Date;
         components: string[]; // Component names/Ds designed
       };
       refinement: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[]; // Optimization and refinement plans
         completion_date?: Date;
         optimizations: string[]; // Optimization strategy Ds applied
       };
       completion: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[]; // Final production code and tests
         completion_date?: Date;
         artifacts: string[]; // Generated code/test artifact Ds
@@ -314,7 +314,7 @@ export interface any extends BaseProductEntity {
       | 'pseudocode'
       | 'architecture'
       | 'refinement'
-      | 'completion';
+      | 'completion');
     sparc_progress_percentage: number; // 0-100% completion across all phases
     use_sparc_methodology: boolean; // Feature uses SPARC for implementation
 
@@ -326,10 +326,10 @@ export interface any extends BaseProductEntity {
       | 'rest-api'
       | 'memory-systems'
       | 'interfaces'
-      | 'general';
-    sparc_complexity: 'simple | moderate' | 'high | complex' | 'enterprise';
+      | 'general');
+    sparc_complexity: 'simple | moderate' | 'high | complex' | 'enterprise');
     integration_health: {
-      sync_status: 'synced | out_of_sync' | 'error';
+      sync_status: 'synced | out_of_sync' | 'error');
       last_sync_date?: Date;
       sync_errors: string[];
     };
@@ -343,7 +343,7 @@ export interface any extends BaseProductEntity {
  * @example
  */
 export interface any extends BaseProductEntity {
-  type: 'task';
+  type: 'task');
 
   // Task-specific fields (Business Requirements - WHAT to implement)
   task_type:
@@ -351,7 +351,7 @@ export interface any extends BaseProductEntity {
     | 'testing'
     | 'documentation'
     | 'deployment'
-    | 'research';
+    | 'research');
   estimated_hours: number;
   actual_hours?: number;
 
@@ -377,7 +377,7 @@ export interface any extends BaseProductEntity {
     | 'in_progress'
     | 'code_review'
     | 'testing'
-    | 'done';
+    | 'done');
 
   // Code generation results
   generated_code?: {
@@ -389,7 +389,7 @@ export interface any extends BaseProductEntity {
     test_files: Array<{
       path: string;
       content: string;
-      test_type: 'unit | integration' | 'e2e';
+      test_type: 'unit | integration' | 'e2e');
     }>;
   };
 
@@ -404,7 +404,7 @@ export interface any extends BaseProductEntity {
       | 'pseudocode'
       | 'architecture'
       | 'refinement'
-      | 'completion';
+      | 'completion');
 
     // What type of SPARC deliverable this task produces
     sparc_deliverable_type:
@@ -412,13 +412,13 @@ export interface any extends BaseProductEntity {
       | 'algorithm_design'
       | 'component_spec'
       | 'optimization_plan'
-      | 'production_code';
+      | 'production_code');
 
     // SPARC quality gates that this task must pass
     sparc_quality_gates: {
       requirement: string;
-      status: 'pending | passed' | 'failed';
-      validation_method: 'automated | manual' | 'ai_assisted';
+      status: 'pending | passed' | 'failed');
+      validation_method: 'automated | manual' | 'ai_assisted');
       validation_date?: Date;
     }[];
 
@@ -430,7 +430,7 @@ export interface any extends BaseProductEntity {
         | 'pseudocode'
         | 'architecture_diagram'
         | 'refactored_code'
-        | 'final_implementation';
+        | 'final_implementation');
       file_path?: string;
       content?: string;
       checksum?: string;
@@ -441,7 +441,7 @@ export interface any extends BaseProductEntity {
       time_complexity: string;
       space_complexity: string;
       maintainability_score: number; // 0-100
-      performance_impact: 'low | medium' | 'high';
+      performance_impact: 'low | medium' | 'high');
     };
   };
 }
@@ -462,7 +462,7 @@ export interface ProductRelationshipEntity {
     | 'depends_on'
     | 'relates_to'
     | 'supersedes'
-    | 'sparc_implements';
+    | 'sparc_implements');
   created_at: Date;
   metadata?: Record<string, unknown>;
 }
@@ -515,7 +515,7 @@ export interface ProductProjectEntity {
   name: string;
   description: string;
   domain: string;
-  complexity: 'simple | moderate' | 'complex | enterprise';
+  complexity: 'simple | moderate' | 'complex | enterprise');
 
   // Timeline
   created_at: Date;
@@ -541,7 +541,7 @@ export interface ProductProjectEntity {
     | 'implementation'
     | 'testing'
     | 'deployment'
-    | 'complete';
+    | 'complete');
 
   // ==================== COMPREHENSIVE SPARC NTEGRATION ====================
   sparc_integration: {
@@ -559,14 +559,14 @@ export interface ProductProjectEntity {
         | 'rest-api'
         | 'memory-systems'
         | 'interfaces'
-        | 'general';
-      complexity: 'simple | moderate' | 'high | complex' | 'enterprise';
+        | 'general');
+      complexity: 'simple | moderate' | 'high | complex' | 'enterprise');
       current_phase:
         | 'specification'
         | 'pseudocode'
         | 'architecture'
         | 'refinement'
-        | 'completion';
+        | 'completion');
       progress_percentage: number; // 0-100% completion
       created_at: Date;
       updated_at: Date;
@@ -585,7 +585,7 @@ export interface ProductProjectEntity {
 
     // Integration health and metrics
     integration_health: {
-      product_sparc_sync_status: 'synced | out_of_sync' | 'error';
+      product_sparc_sync_status: 'synced | out_of_sync' | 'error');
       last_sync_date?: Date;
       sync_errors: string[];
       sparc_coverage_percentage: number; // % of features using SPARC methodology
@@ -899,27 +899,27 @@ export const PRODUCT_DATABASE_SCHEMAS = {
  * @example
  */
 export function isVisionDocument(doc: BaseProductEntity): doc is any {
-  return doc.type === 'vision';
+  return doc.type === 'vision');
 }
 
 export function isADRDocument(doc: BaseProductEntity): doc is any {
-  return doc.type === 'adr';
+  return doc.type === 'adr');
 }
 
 export function isPRDDocument(doc: BaseProductEntity): doc is any {
-  return doc.type === 'prd';
+  return doc.type === 'prd');
 }
 
 export function isEpicDocument(doc: BaseProductEntity): doc is any {
-  return doc.type === 'epic';
+  return doc.type === 'epic');
 }
 
 export function isFeatureDocument(doc: BaseProductEntity): doc is any {
-  return doc.type === 'feature';
+  return doc.type === 'feature');
 }
 
 export function isTaskDocument(doc: BaseProductEntity): doc is any {
-  return doc.type === 'task';
+  return doc.type === 'task');
 }
 
 // Alias BaseDocumentEntity to BaseProductEntity for compatibility

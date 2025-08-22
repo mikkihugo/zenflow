@@ -12,17 +12,17 @@
  * @version 2..0
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'fs');
+import * as path from 'path');
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { TypedEventBase, getLogger } from '@claude-zen/foundation');
 import {
   getRegisteredProjects,
   getCurrentProject,
   ensureDataDirectories,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
-import { initializeClaudeZen, shutdownClaudeZen } from './index';
+import { initializeClaudeZen, shutdownClaudeZen } from './index');
 
 const logger = getLogger('ProjectSwitcher');
 
@@ -53,7 +53,7 @@ export interface ProjectSwitchResult {
  * Project switcher status
  */
 export interface ProjectSwitcherStatus {
-  status: 'idle | switching' | 'error';
+  status: 'idle | switching' | 'error');
   isSwitching: boolean;
   currentProject?: string;
   lastSwitch?: string;
@@ -102,7 +102,7 @@ export class ProjectSwitcher extends TypedEventBase {
     try {
       logger.info('Starting project switch', {
         projectId: request.projectId,
-        projectPath: request.projectPath ? '[provided] : [from registry]',
+        projectPath: request.projectPath ? '[provided]' : '[from registry]',
       });
 
       this.emit('switchStarted', request);

@@ -36,7 +36,8 @@ import type {
   TechnicalSpecification,
   WorkflowStream,
 } from "./multi-level-types";
-import('./workflow-gates';
+
+import('/workflow-gates');
 
 // ============================================================================
 // PROGRAM ORCHESTRATOR CONFIGURATION
@@ -105,11 +106,11 @@ export interface TeamCapacity {
 export interface PIRisk {
   readonly id: string;
   readonly description: string;
-  readonly impact: 'low | medium' | 'high';
-  readonly probability: 'low | medium' | 'high';
+  readonly impact: 'low' | 'medium' | 'high';
+  readonly probability: 'low' | 'medium' | 'high';
   readonly mitigation: string;
   readonly owner: string;
-  readonly status: 'open | mitigated' | 'closed';
+  readonly status: 'open' | 'mitigated' | 'closed';
 }
 
 /**
@@ -142,12 +143,12 @@ export interface EpicCoordination {
  * Coordination need
  */
 export interface CoordinationNeed {
-  readonly type: 'technical | business' | 'resource | timeline';
+  readonly type: 'technical' | 'business' | 'resource' | 'timeline';
   readonly description: string;
-  readonly urgency: 'low | medium' | 'high | critical';
+  readonly urgency: 'low' | 'medium' | 'high' | 'critical';
   readonly involvedTeams: string[];
   readonly resolution: string;
-  readonly status: 'open | in_progress' | 'resolved';
+  readonly status: 'open' | 'in_progress' | 'resolved';
 }
 
 /**
@@ -157,7 +158,7 @@ export interface DependencyAnalysis {
   readonly epicId: string;
   readonly dependencies: ProgramDependency[];
   readonly criticalPath: string[];
-  readonly riskLevel: 'low | medium' | 'high | critical';
+  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
   readonly resolutionPlan: string;
   readonly estimatedDelay: number; // days
 }
@@ -193,7 +194,7 @@ export interface ProgramHealth {
  */
 export interface HealthTrend {
   readonly metric: string;
-  readonly direction: 'up | down' | 'stable';
+  readonly direction: 'up' | 'down' | 'stable';
   readonly change: number;
   readonly period: string;
 }

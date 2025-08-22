@@ -6,9 +6,8 @@
  * external facts (NPM, GitHub, security, etc.) through the foundation fact system.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
-import('./shared-fact-system';
 import {
   sharedFactSystem,
   storeAgentFact,
@@ -17,6 +16,8 @@ import {
   getNPMPackageInfo,
   getGitHubRepoInfo,
 } from "./shared-fact-system";
+
+import('/shared-fact-system');
 
 const logger = getLogger('UniversalFactMixin');
 

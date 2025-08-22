@@ -105,7 +105,7 @@ export interface WorkflowGateContext {
   stepId?: string;
   taskId?: string;
   domain: string;
-  priority: 'low | medium' | 'high | critical';
+  priority: 'low' | 'medium' | 'high' | 'critical';
   metadata: Record<string, unknown>;
 }
 
@@ -145,13 +145,13 @@ export interface GateMetrics {
   reviewerCount: number;
   escalationCount: number;
   reopenCount: number;
-  complexity: 'low | medium' | 'high';
+  complexity: 'low' | 'medium' | 'high';
 }
 
 export interface WorkflowGateResult {
   gateId: string;
   status: WorkflowHumanGateStatus;
-  decision: 'approve | reject' | 'modify';
+  decision: 'approve' | 'reject' | 'modify';
   reasoning: string;
   reviewerId: string;
   reviewerNotes?: string;
@@ -356,7 +356,7 @@ export class WorkflowGatesManager extends TypedEventBase {
       // Process through AGUI approval system
       const approvalResult = await this.approvalSystem.processApproval(gateId, {
         approverId: reviewerId,
-        decision: decision === 'approve ? approved' : 'rejected',
+        decision: decision === 'approve' ? 'approved' : 'rejected',
         comments: reasoning,
         timestamp: new Date(),
         metadata: modifications,

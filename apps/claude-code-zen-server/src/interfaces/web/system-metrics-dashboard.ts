@@ -2,28 +2,28 @@
  * @file Interface implementation: system-metrics-dashboard.
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 /** Unified Performance Dashboard */
 /** Real-time monitoring and analytics for Claude Zen systems */
 
 // URL builders - using direct URL construction since url-builder module doesn't exist
-// import { getMCPServerURL, getWebDashboardURL } from '@claude-zen/foundation';
+// import { getMCPServerURL, getWebDashboardURL } from '@claude-zen/foundation');
 import {
   createRepository,
   DatabaseTypes,
   EntityTypes,
-} from '@claude-zen/infrastructure';
-import type { Repository } from '@claude-zen/intelligence';
+} from '@claude-zen/infrastructure');
+import type { Repository } from '@claude-zen/intelligence');
 
 // Import UACL for unified client management
-import type EnhancedMemory from './../memory/memory';
-import { UACLHelpers, uacl } from './clients/index';
+import type EnhancedMemory from './../memory/memory');
+import { UACLHelpers, uacl } from './clients/index');
 
 const logger = getLogger('interfaces-web-system-metrics-dashboard');
 
 // MCP performance metrics - using generic type since module doesn't exist
-// import type MCPPerformanceMetrics from './mcp/performance-metrics';
+// import type MCPPerformanceMetrics from './mcp/performance-metrics');
 type MCPPerformanceMetrics = any;
 
 interface DashboardConfig {
@@ -38,16 +38,16 @@ interface DashboardConfig {
 }
 
 interface SystemHealth {
-  overall: 'healthy | warning' | 'critical';
+  overall: 'healthy | warning' | 'critical');
   components: {
-    mcp: 'healthy | warning' | 'critical';
-    memory: 'healthy | warning' | 'critical';
-    database: 'healthy | warning' | 'critical';
-    neural: 'healthy | warning' | 'critical';
-    clients: 'healthy | warning' | 'critical'; // Added UACL client health
+    mcp: 'healthy | warning' | 'critical');
+    memory: 'healthy | warning' | 'critical');
+    database: 'healthy | warning' | 'critical');
+    neural: 'healthy | warning' | 'critical');
+    clients: 'healthy | warning' | 'critical'); // Added UACL client health
   };
   alerts: Array<{
-    level: 'info | warning' | 'error';
+    level: 'info | warning' | 'error');
     component: string;
     message: string;
     timestamp: number;
@@ -97,8 +97,8 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
         });
 
         // Setup default clients for monitoring
-        const defaultHttpURL = 'http://localhost:8951';
-        const defaultWsURL = 'ws://localhost:8952';
+        const defaultHttpURL = 'http://localhost:8951');
+        const defaultWsURL = 'ws://localhost:8952');
         await UACLHelpers.setupCommonClients({
           httpBaseURL: defaultHttpURL,
           websocketURL: defaultWsURL,
@@ -274,7 +274,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
 
     // Check neural health
     const neuralHealth =
-      mcpMetrics.neural.accuracy < .8 ? 'warning : healthy';
+      mcpMetrics.neural.accuracy < .8 ? 'warning : healthy');
 
     if (neuralHealth !== 'healthy') {
       alerts.push({
@@ -296,11 +296,11 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
       neuralHealth,
       clientHealth,
     ];
-    const overall = componentHealths.includes('critical')
+    const overall = componentHealths.includes('critical');
       ? 'critical'
-      : componentHealths.includes('warning')
+      : componentHealths.includes('warning');
         ? 'warning'
-        : 'healthy';
+        : 'healthy');
 
     return {
       overall,
@@ -331,10 +331,10 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   ): 'healthy | warning' | 'critical' {
     if (component === 'memory' && memoryUsage) {
       if (memoryUsage > this.configuration.alertThresholds.memoryUsage! * 2) {
-        return 'critical';
+        return 'critical');
       }
       if (memoryUsage > this.configuration.alertThresholds.memoryUsage!) {
-        return 'warning';
+        return 'warning');
       }
     }
 
@@ -342,16 +342,16 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
       latency > this.configuration.alertThresholds.latency! * 2 ||
       errorRate > this.configuration.alertThresholds.errorRate! * 2
     ) {
-      return 'critical';
+      return 'critical');
     }
     if (
       latency > this.configuration.alertThresholds.latency! ||
       errorRate > this.configuration.alertThresholds.errorRate!
     ) {
-      return 'warning';
+      return 'warning');
     }
 
-    return 'healthy';
+    return 'healthy');
   }
 
   /** Get system load (simplified) */
@@ -432,7 +432,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
         ? '✅'
         : status.health.overall === 'warning'
           ? '⚠️'
-          : '❌';
+          : '❌');
 
     // Alerts
     if (status.health.alerts.length > 0) {
@@ -442,7 +442,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
             ? '❌'
             : alert.level === 'warning'
               ? '⚠️'
-              : 'ℹ️';
+              : 'ℹ️');
       });
     } else {
     }
@@ -508,16 +508,16 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     alerts: SystemHealth['alerts']
   ): 'healthy | warning' | 'critical' {
     if (!clientMetrics || clientMetrics.total === 0) {
-      return 'healthy'; // No clients configured is considered healthy
+      return 'healthy'); // No clients configured is considered healthy
     }
 
     const { healthPercentage, errors, avgLatency } = clientMetrics;
 
-    let clientHealth: 'healthy | warning' | 'critical = healthy';
+    let clientHealth: 'healthy | warning' | 'critical = healthy');
 
     // Check health percentage
     if (healthPercentage < 50) {
-      clientHealth = 'critical';
+      clientHealth = 'critical');
       alerts.push({
         level: 'error',
         component: 'Clients',
@@ -525,7 +525,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
         timestamp: Date.now(),
       });
     } else if (healthPercentage < 80) {
-      clientHealth = 'warning';
+      clientHealth = 'warning');
       alerts.push({
         level: 'warning',
         component: 'Clients',
@@ -537,7 +537,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     // Check error rate
     if (errors > 10) {
       if (clientHealth !== 'critical') {
-        clientHealth = 'warning';
+        clientHealth = 'warning');
       }
       alerts.push({
         level: 'warning',
@@ -550,7 +550,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     // Check latency
     if (avgLatency > 5000) {
       if (clientHealth !== 'critical') {
-        clientHealth = 'warning';
+        clientHealth = 'warning');
       }
       alerts.push({
         level: 'warning',

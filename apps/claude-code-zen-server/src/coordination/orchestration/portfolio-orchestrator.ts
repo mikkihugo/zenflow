@@ -30,7 +30,8 @@ import type {
   ResourceRequirements,
   WorkflowStream,
 } from "./multi-level-types";
-import('./workflow-gates';
+
+import('/workflow-gates');
 
 // ============================================================================
 // PORTFOLIO ORCHESTRATOR CONFIGURATION
@@ -127,8 +128,8 @@ export interface PortfolioHealth {
  * Health recommendations
  */
 export interface HealthRecommendation {
-  readonly type: 'strategic | resource' | 'risk | delivery';
-  readonly priority: 'low | medium' | 'high | critical';
+  readonly type: 'strategic' | 'resource' | 'risk' | 'delivery';
+  readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly description: string;
   readonly actionItems: string[];
   readonly expectedImpact: number;
@@ -170,7 +171,7 @@ export interface Investment {
     | 'infrastructure'
     | 'research'
     | 'marketing';
-  readonly approvalStatus: 'pending | approved' | 'rejected';
+  readonly approvalStatus: 'pending' | 'approved' | 'rejected';
   readonly approvedBy?: string;
   readonly approvalDate?: Date;
   readonly actualSpend: number;

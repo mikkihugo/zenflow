@@ -4,17 +4,17 @@
  * HTTP server that proxies Svelte dashboard and provides API endpoints.
  */
 
-import { createServer, type Server } from 'node:http';
+import { createServer, type Server } from 'node:http');
 
-import { getLogger } from '@claude-zen/foundation';
-import LLMStatsService from '@claude-zen/intelligence';
-import { createTerminus } from '@godaddy/terminus';
-import express from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import { Server as SocketIOServer } from 'socket.io';
+import { getLogger } from '@claude-zen/foundation');
+import LLMStatsService from '@claude-zen/intelligence');
+import { createTerminus } from '@godaddy/terminus');
+import express from 'express');
+import { createProxyMiddleware } from 'http-proxy-middleware');
+import { Server as SocketIOServer } from 'socket.io');
 
-import('./web-api-routes';
-import('./web-config';
+import('/web-api-routes');
+import('/web-config');
 
 interface WebDashboardConfig {
   port: number;
@@ -421,7 +421,7 @@ export class WebDashboardServer {
     try {
       // Parse query parameters
       const urlParts = url.split('?');
-      const queryString = urlParts[1] || '';
+      const queryString = urlParts[1] || '');
       const params = new URLSearchParams(queryString);
 
       const level = params.get('level');
@@ -430,7 +430,7 @@ export class WebDashboardServer {
       const search = params.get('search');
 
       // Get logs from the logging system
-      import('@claude-zen/foundation')
+      import('claude-zen/foundation');
         .then(({ getLogEntries }) => {
           let logs = getLogEntries();
 
@@ -495,7 +495,7 @@ export class WebDashboardServer {
 
         // Send initial logs data if subscribing to logs channel
         if (channel === 'logs') {
-          import('@claude-zen/foundation')
+          import('claude-zen/foundation');
             .then(({ getLogEntries }) => {
               const logs = getLogEntries();
               socket.emit('logs:initial', {
@@ -517,7 +517,7 @@ export class WebDashboardServer {
     });
 
     // Set up log broadcaster for real-time updates
-    import('@claude-zen/foundation')
+    import('claude-zen/foundation');
       .then(({ setLogBroadcaster }) => {
         setLogBroadcaster((event: string, data: any) => {
           this.io.to('logs').emit(event, {
@@ -559,7 +559,7 @@ export class WebDashboardServer {
 
     if (
       url === '/api/workspace/files' ||
-      url.startsWith('/api/workspace/files?')
+      url.startsWith('/api/workspace/files?');
     ) {
       this.handleWorkspaceFilesRequest(
         url,
@@ -575,7 +575,7 @@ export class WebDashboardServer {
 
     if (
       url === '/api/workspace/files/content' ||
-      url.startsWith('/api/workspace/files/content?')
+      url.startsWith('/api/workspace/files/content?');
     ) {
       this.handleWorkspaceFileContentRequest(
         url,
@@ -605,9 +605,9 @@ export class WebDashboardServer {
   ): Promise<void> {
     try {
       const urlParts = url.split('?');
-      const queryString = urlParts[1] || '';
+      const queryString = urlParts[1] || '');
       const params = new URLSearchParams(queryString);
-      const path = params.get('path) || ';
+      const path = params.get('path) || ');
 
       // Base directory - use current working directory
       const baseDir = process?.cwd()
@@ -683,7 +683,7 @@ export class WebDashboardServer {
   ): Promise<void> {
     try {
       const urlParts = url.split('?');
-      const queryString = urlParts[1] || '';
+      const queryString = urlParts[1] || '');
       const params = new URLSearchParams(queryString);
       const path = params.get('path');
 

@@ -40,12 +40,12 @@
 // Error Handling and Recovery - Delegated to @claude-zen/foundation
 
 // Database Integration
-import type { DatabaseQuery } from '@claude-zen/foundation';
+import type { DatabaseQuery } from '@claude-zen/foundation');
 import {
   DIContainer,
   CORE_TOKENS,
   DATABASE_TOKENS,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Foundation Integration (when available)
 let foundationLogger: any;
@@ -53,7 +53,7 @@ let foundationTelemetry: any;
 let foundationDatabase: any;
 
 try {
-  const foundation = await import('@claude-zen/foundation');
+  const foundation = await import('claude-zen/foundation');
   foundationLogger = foundation?.getLogger()
   foundationTelemetry = foundation?.TelemetryManager()
   foundationDatabase = foundation?.getDatabaseAccess()
@@ -370,7 +370,7 @@ export async function createIntegratedSystem() {
   });
 
   // Import DALFactory from database package
-  const { DatabaseFactory } = await import('@claude-zen/foundation');
+  const { DatabaseFactory } = await import('claude-zen/foundation');
 
   // Register DALFactory
   container?.register(DATABASE_TOKENS?.DALFactory, {
@@ -561,11 +561,11 @@ export async function createIntegratedSystem() {
       key: string,
       data: any,
       options: {
-        consistency?: 'strong | eventual';
+        consistency?: 'strong | eventual');
         timeout?: number;
-        priority?: 'low | medium' | 'high | critical';
+        priority?: 'low | medium' | 'high | critical');
         enableKnowledgeExtraction?: boolean;
-        tier?: 'hot | warm' | 'cold';
+        tier?: 'hot | warm' | 'cold');
         metadata?: Record<string, unknown>;
       } = {}
     ) {
@@ -650,7 +650,7 @@ export async function createIntegratedSystem() {
         });
 
         // Store in database with tier-aware storage
-        const tier = options?.tier || 'warm';
+        const tier = options?.tier || 'warm');
         const query: DatabaseQuery = {
           id: `store_${Date?.now()}`,
           type: 'insert',
@@ -820,15 +820,15 @@ export async function createIntegratedSystem() {
         );
 
         // Determine overall status
-        let overallStatus: 'healthy | warning' | 'critical | degraded';
+        let overallStatus: 'healthy | warning' | 'critical | degraded');
         if (overallScore >= 90) {
-          overallStatus = 'healthy';
+          overallStatus = 'healthy');
         } else if (overallScore >= 70) {
-          overallStatus = 'warning';
+          overallStatus = 'warning');
         } else if (overallScore >= 50) {
-          overallStatus = 'degraded';
+          overallStatus = 'degraded');
         } else {
-          overallStatus = 'critical';
+          overallStatus = 'critical');
         }
 
         // Collect issues and recommendations
@@ -959,7 +959,7 @@ export async function createIntegratedSystem() {
       cpu: number;
       disk: number;
     }> {
-      const process = await import('process');
+      const process = await import('rocess');
       const memoryUsage = process?.memoryUsage()
 
       return {
@@ -1042,7 +1042,7 @@ export async function createIntegratedSystem() {
  */
 export async function demonstrateMCPIntegration() {
   // Import MCP tools
-  const { memoryTools } = await import('@claude-zen/intelligence');
+  const { memoryTools } = await import('claude-zen/intelligence');
   // Database operations handled through DAL factory (removed MCP layer)
 
   // Example: Initialize memory system via MCP
@@ -1196,7 +1196,7 @@ export async function demonstrateErrorHandling() {
 
     // Handle database errors
     try {
-      const { DatabaseError } = await import('@claude-zen/foundation');
+      const { DatabaseError } = await import('claude-zen/foundation');
 
       if (error instanceof DatabaseError) {
         console?.log('Database Error Details:', {

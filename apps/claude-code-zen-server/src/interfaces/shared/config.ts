@@ -4,8 +4,8 @@
  * Interface-specific configuration utilities that integrate with the unified config system.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { config, type InterfaceConfig } from '@claude-zen/intelligence';
+import { getLogger } from '@claude-zen/foundation');
+import { config, type InterfaceConfig } from '@claude-zen/intelligence');
 
 const logger = getLogger('interfaces-shared-config');
 
@@ -187,7 +187,7 @@ export class ConfigurationUtils {
     theme?: 'dark | light' | 'auto'
   ): typeof COLOR_SCHEMES.dark {
     const currentTheme =
-      theme || config?.get('interfaces.shared.theme) || dark';
+      theme || config?.get('interfaces.shared.theme) || dark');
 
     if (currentTheme === 'auto') {
       // In a real implementation, this would detect system theme

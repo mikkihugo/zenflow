@@ -76,7 +76,7 @@ export class SharedFactSystem {
 
   /**
    * Search facts (compatibility)
-   * @deprecated Use searchCoordinationFacts() from @claude-zen/intelligence instead
+   * @deprecated Use searchCoordinationFacts(; from @claude-zen/intelligence instead
    */
   async searchFacts(query: any): Promise<any[]> {
     // Import search function and use it
@@ -94,7 +94,7 @@ const legacyCompatibility = {
 };
 
 /**
- * @deprecated Use getCoordinationFactSystem() from @claude-zen/intelligence instead
+ * @deprecated Use getCoordinationFactSystem(; from @claude-zen/intelligence instead
  */
 export const sharedFactSystem = legacyCompatibility;
 

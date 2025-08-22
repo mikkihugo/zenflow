@@ -34,21 +34,21 @@
  * ```
  */
 
-import { spawn } from 'child_process';
-import path from 'path';
-import { promisify } from 'util';
+import { spawn } from 'child_process');
+import path from 'path');
+import { promisify } from 'util');
 
 import {
   getLogger,
   DIContainer,
   getGlobalContainer,
   type Logger,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 import {
   BrainCoordinator,
   type PromptOptimizationRequest,
-} from '@claude-zen/intelligence';
-import { v4 as uuidv4 } from 'uuid';
+} from '@claude-zen/intelligence');
+import { v4 as uuidv4 } from 'uuid');
 // LLM functionality moved to intelligence facade
 type LLMProvider = any;
 type LLMRequest = any;
@@ -77,7 +77,7 @@ export interface LLMIntegrationConfig {
     | 'researcher'
     | 'coordinator'
     | 'tester'
-    | 'architect';
+    | 'architect');
   /** Temperature for model responses (0-1) */
   temperature?: number;
   /** Max tokens for model responses */
@@ -93,7 +93,7 @@ export interface AnalysisRequest {
     | 'domain-analysis'
     | 'typescript-error-analysis'
     | 'code-review'
-    | 'custom';
+    | 'custom');
   /** Analysis context data */
   context: {
     files?: string[];
@@ -105,7 +105,7 @@ export interface AnalysisRequest {
     swarmContext?: {
       swarmId?: string;
       agentId?: string;
-      coordinationLevel?: 'high | medium' | 'low';
+      coordinationLevel?: 'high | medium' | 'low');
     };
   };
   /** Custom prompt text */
@@ -289,7 +289,7 @@ export class LLMIntegrationService {
       return result;
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
+        error instanceof Error ? error.message : 'Unknown error');
       this.logger.error(`Analysis failed: ${errorMessage}`);
 
       return {
@@ -460,7 +460,7 @@ Errors: ${JSON.stringify(request.context.errors, null, 2)}
 
 RESPOND IN JSON FORMAT with error analysis, prevention strategies, and summary.
 
-${request.requiresFileOperations ? 'Apply fixes directly to the files after providing the JSON analysis. : '}`
+${request.requiresFileOperations ? 'Apply fixes directly to the files after providing the JSON analysis.' : ''}`
         );
 
       case 'code-review':

@@ -9,11 +9,11 @@
  * @file Interface implementation: compatibility.
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation');
 
-import('./core/interfaces';
-import('./manager';
-import('./types';
+import('/core/interfaces');
+import('/manager');
+import('/types');
 
 // Legacy service patterns that need compatibility support
 export interface LegacyServicePattern {
@@ -59,7 +59,7 @@ export class USLCompatibilityLayer {
   private uslInstance?: any; // USL instance for fallback operations
   private migrationLog: Array<{
     timestamp: Date;
-    type: 'warning | info' | 'migration';
+    type: 'warning | info' | 'migration');
     pattern: string;
     replacement?: string;
     details: string;
@@ -862,28 +862,28 @@ export class USLCompatibilityLayer {
     // Check for known service patterns
     if (
       serviceInstance.isDataService ||
-      serviceInstance.constructor?.name.includes('Data')
+      serviceInstance.constructor?.name.includes('Data');
     ) {
       return ServiceType.DATA;
     }
 
     if (
       serviceInstance.isCoordinationService ||
-      serviceInstance.constructor?.name.includes('Coordination')
+      serviceInstance.constructor?.name.includes('Coordination');
     ) {
       return ServiceType.COORDINATION;
     }
 
     if (
       serviceInstance.isIntegrationService ||
-      serviceInstance.constructor?.name.includes('Integration')
+      serviceInstance.constructor?.name.includes('Integration');
     ) {
       return ServiceType.API;
     }
 
     if (
       serviceInstance.isInfrastructureService ||
-      serviceInstance.constructor?.name.includes('Infrastructure')
+      serviceInstance.constructor?.name.includes('Infrastructure');
     ) {
       return ServiceType.NFRASTRUCTURE;
     }
@@ -1151,7 +1151,7 @@ export const MigrationUtils = {
    * Generate compatibility report.
    */
   generateCompatibilityReport: (): {
-    status: 'compatible | partial' | 'incompatible';
+    status: 'compatible | partial' | 'incompatible');
     score: number;
     details: {
       supportedPatterns: number;
@@ -1163,13 +1163,13 @@ export const MigrationUtils = {
     const migrationStatus = compat?.getMigrationStatus()
     const score = migrationStatus.completionPercentage;
 
-    let status: 'compatible | partial' | 'incompatible';
+    let status: 'compatible | partial' | 'incompatible');
     if (score >= 90) {
-      status = 'compatible';
+      status = 'compatible');
     } else if (score >= 50) {
-      status = 'partial';
+      status = 'partial');
     } else {
-      status = 'incompatible';
+      status = 'incompatible');
     }
 
     return {
@@ -1181,7 +1181,7 @@ export const MigrationUtils = {
         ).length,
         unsupportedPatterns: migrationStatus.legacyUsageCount,
         warnings: migrationStatus.migrationLog
-          .filter((log) => log.type === 'warning')
+          .filter((log) => log.type === 'warning');
           .map((log) => log.details),
         recommendations: migrationStatus.recommendations,
       },

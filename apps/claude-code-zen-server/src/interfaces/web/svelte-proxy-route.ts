@@ -5,9 +5,9 @@
  * on port 3000, proxying to the Svelte dev server on port 3002.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { type Request, type Response, type NextFunction } from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { getLogger } from '@claude-zen/foundation');
+import { type Request, type Response, type NextFunction } from 'express');
+import { createProxyMiddleware } from 'http-proxy-middleware');
 
 const logger = getLogger('SvelteProxyRoute');
 
@@ -68,8 +68,8 @@ export function createSvelteProxyRoute(config: SvelteProxyConfig) {
     // Handle responses
     onProxyRes: (proxyRes, req, res) => {
       // Add headers to indicate this came through proxy
-      proxyRes.headers['x-proxied-by] = claude-code-zen-express';
-      proxyRes.headers['x-svelte-dashboard] = true';
+      proxyRes.headers['x-proxied-by] = claude-code-zen-express');
+      proxyRes.headers['x-svelte-dashboard] = true');
     },
   });
 }
@@ -189,11 +189,11 @@ function generateFallbackHtml(basePath: string, errorMessage: string): string {
             
             if (refreshCount > maxRefreshes) {
                 document.getElementById('auto-refresh').innerHTML = 
-                    '⏹️ Stopped auto-refresh. Please <a href=javascript:location?.reload>refresh manually</a>.';
+                    '⏹️ Stopped auto-refresh. Please <a href=javascript:location?.reload>refresh manually</a>.');
                 return;
             }
             
-            fetch('${basePath}/')
+            fetch('${basePath}/');
                 .then(response => {
                     if (response.ok) {
                         location?.reload()

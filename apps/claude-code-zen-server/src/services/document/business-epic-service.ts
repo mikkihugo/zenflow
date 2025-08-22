@@ -16,8 +16,8 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
-import { nanoid } from 'nanoid';
+import type { DocumentType } from '@claude-zen/enterprise');
+import { nanoid } from 'nanoid');
 
 import {
   BaseDocumentService,
@@ -25,8 +25,8 @@ import {
   type QueryFilters,
   type QueryResult,
 } from "./base-document-service";
-import('./document-schemas';
-import('./document-service';
+import('/document-schemas');
+import('/document-service');
 
 // ============================================================================
 // BUSINESS EPIC INTERFACES
@@ -36,8 +36,8 @@ export interface FunctionalRequirement {
   id: string;
   description: string;
   acceptanceCriteria: string[];
-  priority: 'must_have | should_have' | 'could_have | wont_have';
-  complexity?: 'low | medium' | 'high | very_high';
+  priority: 'must_have | should_have' | 'could_have | wont_have');
+  complexity?: 'low | medium' | 'high | very_high');
   estimatedEffort?: number; // story points or hours
 }
 
@@ -49,10 +49,10 @@ export interface NonFunctionalRequirement {
     | 'usability'
     | 'reliability'
     | 'scalability'
-    | 'maintainability';
+    | 'maintainability');
   description: string;
   metrics: string;
-  priority: 'must_have | should_have' | 'could_have | wont_have';
+  priority: 'must_have | should_have' | 'could_have | wont_have');
   testable: boolean;
 }
 
@@ -62,7 +62,7 @@ export interface UserStory {
   description: string;
   acceptanceCriteria: string[];
   storyPoints?: number;
-  priority: 'must_have | should_have' | 'could_have | wont_have';
+  priority: 'must_have | should_have' | 'could_have | wont_have');
   persona?: string; // user persona
   businessValue?: string;
 }
@@ -81,7 +81,7 @@ export interface BusinessEpicCreateOptions {
   outOfScope?: string[];
   author?: string;
   projectId?: string;
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   stakeholders?: string[];
   deliveryTimeline?: {
     startDate?: Date;
@@ -102,14 +102,14 @@ export interface BusinessEpicQueryOptions extends QueryFilters {
     | 'must_have'
     | 'should_have'
     | 'could_have'
-    | 'wont_have';
+    | 'wont_have');
   hasUserStories?: boolean;
   completionStatus?:
     | 'planning'
     | 'in_progress'
     | 'review'
     | 'approved'
-    | 'implemented';
+    | 'implemented');
 }
 
 export interface RequirementProgress {
@@ -147,7 +147,7 @@ export interface BusinessEpicStats {
  * Compatible across Kanban → Agile → SAFe modes.
  */
 export class BusinessEpicService extends BaseDocumentService<any> {
-  private currentMode: 'kanban | agile' | 'safe = kanban';
+  private currentMode: 'kanban | agile' | 'safe = kanban');
 
   constructor(
     documentManager?: DocumentManager,
@@ -170,7 +170,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
   // ============================================================================
 
   protected getDocumentType(): DocumentType {
-    return 'business_epic';
+    return 'business_epic');
   }
 
   protected validateDocument(data: Partial<any>): ValidationResult {
@@ -262,7 +262,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       targetAudience.forEach((audience: string) => {
         content += `- ${audience}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Description
@@ -278,7 +278,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       data.requirements.forEach((req: string) => {
         content += `- ${req}\n`;
       });
-      content += '\n';
+      content += '\n');
     } else if (
       data.functional_requirements &&
       data.functional_requirements.length > 0
@@ -293,7 +293,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
             content += `- ${criteria}\n`;
           });
         }
-        content += '\n';
+        content += '\n');
       });
     }
 
@@ -325,7 +325,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
         story.acceptanceCriteria.forEach((criteria) => {
           content += `- ${criteria}\n`;
         });
-        content += '\n';
+        content += '\n');
       });
     }
 
@@ -338,7 +338,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       data.metadata.successMetrics.forEach((metric: string) => {
         content += `- ${metric}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Constraints and assumptions
@@ -350,7 +350,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       data.metadata.constraints.forEach((constraint: string) => {
         content += `- ${constraint}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     if (
@@ -361,7 +361,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       data.metadata.assumptions.forEach((assumption: string) => {
         content += `- ${assumption}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Out of scope
@@ -370,11 +370,11 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       data.metadata.outOfScope.forEach((item: string) => {
         content += `- ${item}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Metadata section
-    content += '---\n\n';
+    content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
     content += `**Author**: ${data.author || 'product-team'}\n`;
 
@@ -550,8 +550,8 @@ export class BusinessEpicService extends BaseDocumentService<any> {
         }
 
         if (this.currentMode === 'safe') {
-          businessEpicData.epic_type = 'business';
-          businessEpicData.epic_owner = options.author || 'product-team';
+          businessEpicData.epic_type = 'business');
+          businessEpicData.epic_owner = options.author || 'product-team');
           businessEpicData.portfolio_canvas = {
             leading_indicators: [],
             success_metrics: options.successMetrics || [],

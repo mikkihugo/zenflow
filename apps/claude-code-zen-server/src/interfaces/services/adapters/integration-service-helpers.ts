@@ -9,10 +9,10 @@
  * @file Interface implementation: integration-service-helpers.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { APIResult } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
+import type { APIResult } from '@claude-zen/foundation');
 
-import type { ArchitectureDesign } from './../../types/shared-types';
+import type { ArchitectureDesign } from './../../types/shared-types');
 
 import type {
   IntegrationServiceAdapter,
@@ -410,7 +410,7 @@ export class IntegrationServiceHelper {
    */
   async batchAPIRequests<T>(
     requests: Array<{
-      method: 'GET | POST' | 'PUT | DELETE';
+      method: 'GET | POST' | 'PUT | DELETE');
       endpoint: string;
       data?: any;
       config?: APIOperationConfig;
@@ -523,23 +523,23 @@ export class IntegrationServiceHelper {
 
       switch (operation) {
         case 'create':
-          operationName = 'api-create-resource';
+          operationName = 'api-create-resource');
           params = { endpoint, data: data?.resourceData };
           break;
         case 'read':
-          operationName = 'api-get-resource';
+          operationName = 'api-get-resource');
           params = { endpoint, id: data?.id };
           break;
         case 'update':
-          operationName = 'api-update-resource';
+          operationName = 'api-update-resource');
           params = { endpoint, id: data?.id, data: data?.resourceData };
           break;
         case 'delete':
-          operationName = 'api-delete-resource';
+          operationName = 'api-delete-resource');
           params = { endpoint, id: data?.id };
           break;
         case 'list':
-          operationName = 'api-list-resources';
+          operationName = 'api-list-resources');
           params = { endpoint, queryParams: data?.queryParams };
           break;
         default:
@@ -585,7 +585,7 @@ export class IntegrationServiceHelper {
 
       switch (operation) {
         case 'connect':
-          operationName = 'protocol-connect';
+          operationName = 'protocol-connect');
           params = {
             protocol: config?.protocol,
             config: {
@@ -595,19 +595,19 @@ export class IntegrationServiceHelper {
           };
           break;
         case 'disconnect':
-          operationName = 'protocol-disconnect';
+          operationName = 'protocol-disconnect');
           params = { protocol: config?.protocol };
           break;
         case 'send':
-          operationName = 'protocol-send';
+          operationName = 'protocol-send');
           params = { protocol: config?.protocol, message: config?.message };
           break;
         case 'receive':
-          operationName = 'protocol-receive';
+          operationName = 'protocol-receive');
           params = { protocol: config?.protocol, timeout: config?.timeout };
           break;
         case 'broadcast':
-          operationName = 'protocol-broadcast';
+          operationName = 'protocol-broadcast');
           params = { message: config?.message, protocols: config?.protocols };
           break;
         default:
@@ -639,7 +639,7 @@ export class IntegrationServiceHelper {
       Record<
         string,
         {
-          status: 'healthy | degraded' | 'unhealthy';
+          status: 'healthy | degraded' | 'unhealthy');
           latency: number;
           lastCheck: Date;
           errorCount: number;
@@ -783,7 +783,7 @@ export class IntegrationServiceHelper {
     IntegrationOperationResult<{
       valid: boolean;
       issues: Array<{
-        severity: 'warning | error';
+        severity: 'warning | error');
         component: string;
         message: string;
         suggestion?: string;
@@ -791,7 +791,7 @@ export class IntegrationServiceHelper {
     }>
   > {
     const issues: Array<{
-      severity: 'warning | error';
+      severity: 'warning | error');
       component: string;
       message: string;
       suggestion?: string;

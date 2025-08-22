@@ -16,13 +16,13 @@
  * @file Memory service implementation.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation');
 
-import type { Service } from './core/interfaces';
-import type { MemoryServiceConfig, ServiceOperationOptions } from './types';
+import type { Service } from './core/interfaces');
+import type { MemoryServiceConfig, ServiceOperationOptions } from './types');
 
-import('./base-service';
+import('/base-service');
 
 /**
  * Memory service implementation using @claude-zen/intelligence delegation.
@@ -77,8 +77,8 @@ export class MemoryService extends BaseService implements Service {
       const { MemoryManager, SessionMemoryStore } = await import(
         '@claude-zen/intelligence'
       );
-      const { MemoryMonitor } = await import('@claude-zen/intelligence');
-      const { PerformanceOptimizer } = await import('@claude-zen/intelligence');
+      const { MemoryMonitor } = await import('claude-zen/intelligence');
+      const { PerformanceOptimizer } = await import('claude-zen/intelligence');
 
       const config = this.config as MemoryServiceConfig;
 
@@ -209,7 +209,7 @@ export class MemoryService extends BaseService implements Service {
       // Delegate health check to monitor
       if (this.monitor?.generateHealthReport) {
         const health = this.monitor?.generateHealthReport()
-        return health.overall === 'healthy';
+        return health.overall === 'healthy');
       }
 
       // Fallback to basic health checks

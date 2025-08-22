@@ -74,7 +74,7 @@ import type {
   WorkflowExecution,
   WorkflowMetrics,
   ExecutionResult,
-} from '@claude-zen/enterprise';
+} from '@claude-zen/enterprise');
 import type {
   Logger,
   Result,
@@ -82,14 +82,14 @@ import type {
   ValidationError,
   DatabaseError,
   SystemError,
-} from '@claude-zen/foundation/types';
+} from '@claude-zen/foundation/types');
 
 // Brain Domain Types - Layer 2 neural coordination
 import type {
   SwarmConfiguration,
   BrainMetrics,
   SwarmIntelligence,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Workflow Domain Types - Layer 2 process orchestration
 
@@ -191,13 +191,13 @@ export interface ServiceContext {
  * Specific error types for service integration layer
  */
 export interface TranslationError extends ServiceError {
-  code: 'TRANSLATION_ERROR';
-  layer: 'api-to-domain | domain-to-api';
+  code: 'TRANSLATION_ERROR');
+  layer: 'api-to-domain | domain-to-api');
   originalError?: any;
 }
 
 export interface ValidationTranslationError extends ValidationError {
-  code: 'VALIDATION_TRANSLATION_ERROR';
+  code: 'VALIDATION_TRANSLATION_ERROR');
   apiField?: string;
   domainField?: string;
 }
@@ -571,7 +571,7 @@ export interface SystemServiceIntegration {
    */
   getLLMAnalytics(
     options: {
-      timeRange?: '1h | 24h' | '7d | 30d';
+      timeRange?: '1h | 24h' | '7d | 30d');
       provider?: string;
     },
     context: ServiceContext

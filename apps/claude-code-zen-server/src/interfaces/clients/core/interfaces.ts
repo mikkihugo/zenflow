@@ -24,7 +24,7 @@
  * @example
  * ```typescript
  * // Implement a custom client using UACL interfaces.
- * import('./core/interfaces';
+ * import('/core/interfaces');
  *
  * class CustomClient extends TypedEventBase implements Client {
  *   constructor(public readonly config: ClientConfig) {
@@ -109,7 +109,7 @@
  */
 export interface AuthenticationConfig {
   /** Authentication method type */
-  type: 'bearer | apikey' | 'oauth | basic' | 'custom';
+  type: 'bearer | apikey' | 'oauth | basic' | 'custom');
 
   /** Bearer token for token-based authentication */
   token?: string;
@@ -200,7 +200,7 @@ export interface RetryConfig {
   /** Base delay between retries in milliseconds */
   delay: number;
   /** Backoff strategy for calculating retry delays */
-  backoff: 'linear | exponential' | 'fixed';
+  backoff: 'linear | exponential' | 'fixed');
   /** Maximum delay cap for backoff strategies (milliseconds) */
   maxDelay?: number;
   /** Custom function to determine if an error should trigger a retry */
@@ -257,7 +257,7 @@ export interface ClientConfig {
  */
 export interface ClientHealthStatus {
   name: string;
-  status: 'healthy | degraded' | 'unhealthy | disconnected';
+  status: 'healthy | degraded' | 'unhealthy | disconnected');
   lastCheck: Date;
   responseTime: number;
   errorRate: number;
@@ -319,7 +319,7 @@ export interface ClientResponse<T = any> {
  * @example
  * ```typescript
  * // Using a UACL client through the Client interface
- * import('./core/interfaces';
+ * import('/core/interfaces');
  *
  * async function useClient(client: Client) {
  *   // Connection management
@@ -598,7 +598,7 @@ export class ClientError extends Error {
     public readonly cause?: Error
   ) {
     super(message);
-    this.name = 'ClientError';
+    this.name = 'ClientError');
   }
 }
 
@@ -610,7 +610,7 @@ export class ConnectionError extends ClientError {
       client,
       cause
     );
-    this.name = 'ConnectionError';
+    this.name = 'ConnectionError');
   }
 }
 
@@ -622,7 +622,7 @@ export class AuthenticationError extends ClientError {
       client,
       cause
     );
-    this.name = 'AuthenticationError';
+    this.name = 'AuthenticationError');
   }
 }
 
@@ -634,7 +634,7 @@ export class TimeoutError extends ClientError {
       client,
       cause
     );
-    this.name = 'TimeoutError';
+    this.name = 'TimeoutError');
   }
 }
 
@@ -646,7 +646,7 @@ export class RetryExhaustedError extends ClientError {
       client,
       cause
     );
-    this.name = 'RetryExhaustedError';
+    this.name = 'RetryExhaustedError');
   }
 }
 
@@ -665,4 +665,4 @@ export interface ClientResponse<T = any> {
 }
 
 // Re-export types from types.ts for convenience
-export type { ClientStatus, ProtocolType } from './types';
+export type { ClientStatus, ProtocolType } from './types');

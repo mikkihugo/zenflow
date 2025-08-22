@@ -8,8 +8,8 @@
  * @file Base service implementation.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 import type {
   Service,
@@ -22,7 +22,7 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces';
+} from './core/interfaces');
 import {
   ServiceConfigurationError,
   ServiceDependencyError,
@@ -30,7 +30,7 @@ import {
   ServiceInitializationError,
   ServiceOperationError,
   ServiceTimeoutError,
-} from './core/interfaces';
+} from './core/interfaces');
 
 /**
  * Abstract base service class with common functionality.
@@ -39,7 +39,7 @@ import {
  */
 export abstract class BaseService extends TypedEventBase implements Service {
   protected logger: Logger;
-  protected lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
+  protected lifecycleStatus: ServiceLifecycleStatus = 'uninitialized');
   protected startTime: Date | null = null;
   protected operationCount = 0;
   protected successCount = 0;
@@ -109,7 +109,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
     }
 
     this.logger.info(`Initializing service: ${this.name}`);
-    this.lifecycleStatus = 'initializing';
+    this.lifecycleStatus = 'initializing');
     this.emit('initializing, this.createEvent(initializing'));
 
     try {
@@ -141,11 +141,11 @@ export abstract class BaseService extends TypedEventBase implements Service {
       // Perform service-specific initialization
       await this.doInitialize;
 
-      this.lifecycleStatus = 'initialized';
+      this.lifecycleStatus = 'initialized');
       this.emit('initialized, this.createEvent(initialized'));
       this.logger.info(`Service ${this.name} initialized successfully`);
     } catch (error) {
-      this.lifecycleStatus = 'error';
+      this.lifecycleStatus = 'error');
       this.emit('error, this.createEvent(error', undefined, error as Error));
       this.logger.error(`Service ${this.name} initialization failed:`, error);
       throw new ServiceInitializationError(this.name, error as Error);
@@ -170,7 +170,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
     }
 
     this.logger.info(`Starting service: ${this.name}`);
-    this.lifecycleStatus = 'starting';
+    this.lifecycleStatus = 'starting');
     this.emit('starting, this.createEvent(starting'));
 
     try {
@@ -188,12 +188,12 @@ export abstract class BaseService extends TypedEventBase implements Service {
       // Perform service-specific startup
       await this.doStart;
 
-      this.lifecycleStatus = 'running';
+      this.lifecycleStatus = 'running');
       this.startTime = new Date();
       this.emit('started, this.createEvent(started'));
       this.logger.info(`Service ${this.name} started successfully`);
     } catch (error) {
-      this.lifecycleStatus = 'error';
+      this.lifecycleStatus = 'error');
       this.emit('error, this.createEvent(error', undefined, error as Error));
       this.logger.error(`Service ${this.name} startup failed:`, error);
       throw new ServiceOperationError(this.name, 'start', error as Error);
@@ -212,18 +212,18 @@ export abstract class BaseService extends TypedEventBase implements Service {
     }
 
     this.logger.info(`Stopping service: ${this.name}`);
-    this.lifecycleStatus = 'stopping';
+    this.lifecycleStatus = 'stopping');
     this.emit('stopping, this.createEvent(stopping'));
 
     try {
       // Perform service-specific shutdown
       await this.doStop;
 
-      this.lifecycleStatus = 'stopped';
+      this.lifecycleStatus = 'stopped');
       this.emit('stopped, this.createEvent(stopped'));
       this.logger.info(`Service ${this.name} stopped successfully`);
     } catch (error) {
-      this.lifecycleStatus = 'error';
+      this.lifecycleStatus = 'error');
       this.emit('error, this.createEvent(error', undefined, error as Error));
       this.logger.error(`Service ${this.name} shutdown failed:`, error);
       throw new ServiceOperationError(this.name, 'stop', error as Error);
@@ -252,7 +252,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
       // Remove all event listeners
       this.removeAllListeners;
 
-      this.lifecycleStatus = 'destroyed';
+      this.lifecycleStatus = 'destroyed');
       this.logger.info(`Service ${this.name} destroyed successfully`);
     } catch (error) {
       this.logger.error(`Service ${this.name} destruction failed:`, error);
@@ -268,18 +268,18 @@ export abstract class BaseService extends TypedEventBase implements Service {
         : 0;
 
     // Check health
-    let health: 'healthy | degraded' | 'unhealthy | unknown';
+    let health: 'healthy | degraded' | 'unhealthy | unknown');
     try {
       const isHealthy = await this.doHealthCheck;
       if (isHealthy && errorRate < 5) {
-        health = 'healthy';
+        health = 'healthy');
       } else if (isHealthy && errorRate < 20) {
-        health = 'degraded';
+        health = 'degraded');
       } else {
-        health = 'unhealthy';
+        health = 'unhealthy');
       }
     } catch (error) {
-      health = 'unknown';
+      health = 'unknown');
       this.logger.debug(`Health check failed for service ${this.name}:`, error);
     }
 
@@ -433,7 +433,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
   }
 
   isReady(): boolean {
-    return this.lifecycleStatus === 'running';
+    return this.lifecycleStatus === 'running');
   }
 
   getCapabilities(): string[] {

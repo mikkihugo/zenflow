@@ -16,7 +16,7 @@
  * @file Knowledge-client adapter implementation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 
 // Import existing FACT integration.
 import type {
@@ -30,9 +30,9 @@ import type {
   KnowledgeSearchOptions,
   KnowledgeStats,
   SemanticSearchOptions,
-} from './interfaces';
-import type { ProtocolType } from './types';
-import { ClientStatuses, ProtocolTypes } from './types';
+} from './interfaces');
+import type { ProtocolType } from './types');
+import { ClientStatuses, ProtocolTypes } from './types');
 
 /**
  * Extended client configuration for Knowledge clients.
@@ -40,7 +40,7 @@ import { ClientStatuses, ProtocolTypes } from './types';
  * @example
  */
 export interface KnowledgeClientConfig extends ClientConfig {
-  provider: 'fact | custom';
+  provider: 'fact | custom');
   factConfig?: {
     pythonPath?: string;
     factRepoPath: string;
@@ -60,7 +60,7 @@ export interface KnowledgeClientConfig extends ClientConfig {
   // Vector search configuration
   vectorConfig?: {
     dimensions: number;
-    similarity: 'cosine | euclidean' | 'dot';
+    similarity: 'cosine | euclidean' | 'dot');
     threshold: number;
   };
 }
@@ -72,7 +72,7 @@ export interface KnowledgeClientConfig extends ClientConfig {
  */
 export interface KnowledgeRequest {
   query: string;
-  type: 'exact | fuzzy' | 'semantic | vector' | 'hybrid';
+  type: 'exact | fuzzy' | 'semantic | vector' | 'hybrid');
   tools?: string[] | undefined;
   metadata?: Record<string, unknown>;
   options?: KnowledgeQueryOptions | undefined;
@@ -631,7 +631,7 @@ export class KnowledgeClientFactory implements ClientFactory {
 
     // Ensure provider is set
     if (!knowledgeConfig?.provider) {
-      knowledgeConfig.provider = 'fact';
+      knowledgeConfig.provider = 'fact');
     }
 
     // Create and return Knowledge client adapter
@@ -758,7 +758,7 @@ export async function createCustomKnowledgeClient(
   options?: Partial<KnowledgeClientConfig>
 ): Promise<KnowledgeClientAdapter> {
   const config: KnowledgeClientConfig = {
-    protocol: url.startsWith('https')
+    protocol: url.startsWith('https');
       ? ProtocolTypes.HTTPS
       : ProtocolTypes.HTTP,
     url,

@@ -177,7 +177,7 @@ export interface operations {
   getHealth: {
     responses: {
       200: {
-        description: 'System health status';
+        description: 'System health status');
         content: {
           'application/json': {
             schema: ApiResponse<ApiHealthResponse>;
@@ -185,7 +185,7 @@ export interface operations {
         };
       };
       503: {
-        description: 'Service unavailable';
+        description: 'Service unavailable');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -198,7 +198,7 @@ export interface operations {
   getSystemStatus: {
     responses: {
       200: {
-        description: 'Detailed system status with domain integration';
+        description: 'Detailed system status with domain integration');
         content: {
           'application/json': {
             schema: ApiResponse<ApiSystemStatusResponse>;
@@ -206,7 +206,7 @@ export interface operations {
         };
       };
       500: {
-        description: 'Internal server error';
+        description: 'Internal server error');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -228,7 +228,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'List of swarms with brain domain metrics';
+        description: 'List of swarms with brain domain metrics');
         content: {
           'application/json': {
             schema: PaginatedApiResponse<ApiSwarmResponse>;
@@ -249,7 +249,7 @@ export interface operations {
     };
     responses: {
       201: {
-        description: 'Swarm created with brain domain configuration';
+        description: 'Swarm created with brain domain configuration');
         content: {
           'application/json': {
             schema: ApiResponse<ApiSwarmResponse>;
@@ -257,7 +257,7 @@ export interface operations {
         };
       };
       400: {
-        description: 'Invalid swarm configuration';
+        description: 'Invalid swarm configuration');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -275,7 +275,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'Swarm details with comprehensive brain integration';
+        description: 'Swarm details with comprehensive brain integration');
         content: {
           'application/json': {
             schema: ApiResponse<ApiSwarmResponse>;
@@ -283,7 +283,7 @@ export interface operations {
         };
       };
       404: {
-        description: 'Swarm not found';
+        description: 'Swarm not found');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -309,7 +309,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'Swarm updated with domain type validation';
+        description: 'Swarm updated with domain type validation');
         content: {
           'application/json': {
             schema: ApiResponse<ApiSwarmResponse>;
@@ -317,7 +317,7 @@ export interface operations {
         };
       };
       404: {
-        description: 'Swarm not found';
+        description: 'Swarm not found');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -335,10 +335,10 @@ export interface operations {
     };
     responses: {
       204: {
-        description: 'Swarm deleted successfully';
+        description: 'Swarm deleted successfully');
       };
       404: {
-        description: 'Swarm not found';
+        description: 'Swarm not found');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -356,7 +356,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'Comprehensive swarm metrics from brain domain';
+        description: 'Comprehensive swarm metrics from brain domain');
         content: {
           'application/json': {
             schema: ApiResponse<ApiSwarmMetricsResponse>;
@@ -364,7 +364,7 @@ export interface operations {
         };
       };
       404: {
-        description: 'Swarm not found';
+        description: 'Swarm not found');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -386,7 +386,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'List of tasks with workflow domain integration';
+        description: 'List of tasks with workflow domain integration');
         content: {
           'application/json': {
             schema: PaginatedApiResponse<ApiTaskResponse>;
@@ -407,7 +407,7 @@ export interface operations {
     };
     responses: {
       201: {
-        description: 'Task created with workflow domain validation';
+        description: 'Task created with workflow domain validation');
         content: {
           'application/json': {
             schema: ApiResponse<ApiTaskResponse>;
@@ -425,7 +425,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'Task details with comprehensive workflow integration';
+        description: 'Task details with comprehensive workflow integration');
         content: {
           'application/json': {
             schema: ApiResponse<ApiTaskResponse>;
@@ -433,7 +433,7 @@ export interface operations {
         };
       };
       404: {
-        description: 'Task not found';
+        description: 'Task not found');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -459,7 +459,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'Task updated with workflow domain type safety';
+        description: 'Task updated with workflow domain type safety');
         content: {
           'application/json': {
             schema: ApiResponse<ApiTaskResponse>;
@@ -477,10 +477,10 @@ export interface operations {
     };
     responses: {
       204: {
-        description: 'Task deleted successfully';
+        description: 'Task deleted successfully');
       };
       404: {
-        description: 'Task not found';
+        description: 'Task not found');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -498,7 +498,7 @@ export interface operations {
     };
     responses: {
       202: {
-        description: 'Task execution started with workflow orchestration';
+        description: 'Task execution started with workflow orchestration');
         content: {
           'application/json': {
             schema: ApiResponse<ApiTaskExecutionResponse>;
@@ -519,7 +519,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'List of documents with database integration';
+        description: 'List of documents with database integration');
         content: {
           'application/json': {
             schema: PaginatedApiResponse<ApiDocumentResponse>;
@@ -537,7 +537,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'File content with comprehensive metadata';
+        description: 'File content with comprehensive metadata');
         content: {
           'application/json': {
             schema: ApiResponse<ApiFileContentResponse>;
@@ -545,7 +545,7 @@ export interface operations {
         };
       };
       404: {
-        description: 'File not found';
+        description: 'File not found');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -574,7 +574,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'File content updated successfully';
+        description: 'File content updated successfully');
         content: {
           'application/json': {
             schema: ApiResponse<ApiDocumentResponse>;
@@ -596,7 +596,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'Command executed with comprehensive result tracking';
+        description: 'Command executed with comprehensive result tracking');
         content: {
           'application/json': {
             schema: ApiResponse<ApiCommandResult>;
@@ -604,7 +604,7 @@ export interface operations {
         };
       };
       400: {
-        description: 'Invalid command or parameters';
+        description: 'Invalid command or parameters');
         content: {
           'application/json': {
             schema: ApiErrorResponse;
@@ -618,7 +618,7 @@ export interface operations {
   getSettings: {
     responses: {
       200: {
-        description: 'Application settings with foundation integration';
+        description: 'Application settings with foundation integration');
         content: {
           'application/json': {
             schema: ApiResponse<ApiSettingsResponse>;
@@ -639,7 +639,7 @@ export interface operations {
     };
     responses: {
       200: {
-        description: 'Settings updated with foundation type validation';
+        description: 'Settings updated with foundation type validation');
         content: {
           'application/json': {
             schema: ApiResponse<ApiSettingsResponse>;
@@ -653,13 +653,13 @@ export interface operations {
   getLLMAnalytics: {
     parameters: {
       query?: {
-        timeRange?: '1h | 24h' | '7d | 30d';
+        timeRange?: '1h | 24h' | '7d | 30d');
         provider?: string;
       };
     };
     responses: {
       200: {
-        description: 'LLM usage analytics with comprehensive metrics';
+        description: 'LLM usage analytics with comprehensive metrics');
         content: {
           'application/json': {
             schema: ApiResponse<ApiLLMAnalyticsResponse>;
@@ -679,17 +679,17 @@ export interface operations {
     };
     responses: {
       101: {
-        description: 'WebSocket connection upgraded for real-time coordination';
+        description: 'WebSocket connection upgraded for real-time coordination');
         headers: {
           Upgrade: {
             schema: {
-              type: 'string';
+              type: 'string');
               enum: ['websocket'];
             };
           };
           Connection: {
             schema: {
-              type: 'string';
+              type: 'string');
               enum: ['Upgrade'];
             };
           };

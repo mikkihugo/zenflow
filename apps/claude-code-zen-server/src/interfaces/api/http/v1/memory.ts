@@ -15,12 +15,12 @@
  * @file Memory management domain API routes.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
-import { type Request, type Response, Router } from 'express';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation');
+import { type Request, type Response, Router } from 'express');
 
-import { asyncHandler } from './middleware/errors';
-import { LogLevel, log, logPerformance } from './middleware/logging';
+import { asyncHandler } from './middleware/errors');
+import { LogLevel, log, logPerformance } from './middleware/logging');
 
 /**
  * Create memory management routes with @claude-zen/intelligence delegation.

@@ -8,11 +8,11 @@
  * @file Web-socket management system.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { Server as SocketIOServer } from 'socket.io';
+import { getLogger } from '@claude-zen/foundation');
+import type { Server as SocketIOServer } from 'socket.io');
 
-import('./web-config';
-import('./web-data-service';
+import('/web-config');
+import('/web-data-service');
 
 const { getVersion } = (global as any).claudeZenFoundation;
 
@@ -132,7 +132,7 @@ export class WebSocketManager {
         }
         case 'logs': {
           // Send initial logs from the logging system
-          const { getLogEntries } = await import('@claude-zen/foundation');
+          const { getLogEntries } = await import('claude-zen/foundation');
           const logs = getLogEntries();
           socket.emit('logs:initial', {
             data: logs,
@@ -188,7 +188,7 @@ export class WebSocketManager {
     // Logs updates every 2 seconds (more frequent for real-time feel)
     const logsInterval = setInterval(async () => {
       try {
-        const { getLogEntries } = await import('@claude-zen/foundation');
+        const { getLogEntries } = await import('claude-zen/foundation');
         const logs = getLogEntries();
         // Only broadcast if we have logs
         if (logs.length > 0) {
@@ -285,7 +285,7 @@ export class WebSocketManager {
   private setupLogBroadcaster(): void {
     try {
       // Dynamically import to avoid circular dependencies
-      import('@claude-zen/foundation')
+      import('claude-zen/foundation');
         .then(({ setLogBroadcaster }) => {
           setLogBroadcaster((event: string, data: any) => {
             // Broadcast to the logs room specifically

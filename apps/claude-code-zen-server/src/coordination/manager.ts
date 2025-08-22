@@ -57,7 +57,7 @@ export interface CoordinationConfig {
 export interface Agent {
   id: string;
   type: string;
-  status: 'idle | busy' | 'error | offline';
+  status: 'idle' | 'busy' | 'error' | 'offline';
   capabilities: string[];
   lastHeartbeat: Date;
   taskCount: number;
@@ -76,7 +76,7 @@ export interface Task {
   type: string;
   priority: number;
   assignedAgent?: string;
-  status: 'pending | assigned' | 'running | completed' | 'failed';
+  status: 'pending' | 'assigned' | 'running' | 'completed' | 'failed';
   created: Date;
   metadata?: Record<string, unknown>;
 }
@@ -639,7 +639,7 @@ export class CoordinationManager extends TypedEventBus {
         this.config.enableTeamworkPatterns && !!this.teamwork,
       chaosEngineeringActive:
         this.config.enableChaosEngineering && !!this.chaosEngineering,
-      aiSystemsStatus: this.isRunning ? 'active : inactive',
+      aiSystemsStatus: this.isRunning ? 'active' : 'inactive',
     };
 
     // Record comprehensive metrics
@@ -962,7 +962,7 @@ export class CoordinationManager extends TypedEventBus {
     aiSafety: boolean;
     teamwork: boolean;
     chaosEngineering: boolean;
-    overallHealth: 'healthy | degraded' | 'critical';
+    overallHealth: 'healthy' | 'degraded' | 'critical';
   }> {
     const health = {
       loadBalancer: !!this.loadBalancer && this.config.enableLoadBalancing,
@@ -975,7 +975,7 @@ export class CoordinationManager extends TypedEventBus {
       overallHealth: 'healthy' as const,
     };
 
-    const healthyCount = Object.values()(health).filter(Boolean).length - 1; // Exclude overallHealth
+    const healthyCount = Object.values(health).filter(Boolean).length - 1; // Exclude overallHealth
     const totalSystems = 6;
 
     if (healthyCount < totalSystems * .5) {

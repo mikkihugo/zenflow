@@ -7,7 +7,7 @@
  * @file Diagnostics module exports.
  */
 
-export * from "./cli-diagnostics";
-export * from "./diagnostics";
-export * from "./health-monitor";
+export * from './cli-diagnostics';
+export * from './diagnostics';
+export * from './health-monitor';
 // Note: logging-config is internal configuration, not exported

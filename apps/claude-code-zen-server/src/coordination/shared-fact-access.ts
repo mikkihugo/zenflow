@@ -15,7 +15,8 @@ import {
   getNPMPackageInfo,
   getGitHubRepoInfo,
 } from "./shared-fact-system";
-import('./shared-fact-system';
+
+import('/shared-fact-system');
 
 const logger = getLogger('SharedFactAccess');
 
@@ -101,7 +102,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
         },
         source: `coordination:${fromAgent}`,
         confidence: 1.0,
-        tags: ['interaction, agent', 'coordination'],
+        tags: ['interaction', 'agent', 'coordination'],
       });
     } catch (error) {
       logger.error(
@@ -155,7 +156,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
         },
         source: `swarm:${swarmId}`,
         confidence: 1.0,
-        tags: ['swarm, state', swarmId],
+        tags: ['swarm', 'state', swarmId],
       });
     } catch (error) {
       logger.error(`Failed to record swarm state for: ${swarmId}`, error);
@@ -197,7 +198,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
         },
         source: 'coordination',
         confidence: 1.0,
-        tags: ['decision, coordination', 'reasoning'],
+        tags: ['decision', 'coordination', 'reasoning'],
       });
     } catch (error) {
       logger.error('Failed to record coordination decision:', error);
@@ -237,7 +238,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
         },
         source: `metrics:${component}`,
         confidence: 1.0,
-        tags: ['performance, metrics', component],
+        tags: ['performance', 'metrics', component],
       });
     } catch (error) {
       logger.error(
@@ -283,8 +284,8 @@ export class SharedFactAccess implements CoordinationFactAccess {
       // Simple text search in fact data
       return allFacts
         .filter((fact) => {
-          const dataStr = JSON.stringify(fact.data)?.toLowerCase()
-          return dataStr.includes(searchTerm?.toLowerCase);
+          const dataStr = JSON.stringify(fact.data).toLowerCase();
+          return dataStr.includes(searchTerm.toLowerCase());
         })
         .slice(0, limit);
     } catch (error) {
@@ -312,7 +313,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
   async getNPMPackageInfo(packageName: string, version?: string) {
     try {
       logger.debug(
-        `Getting NPM package info: ${packageName}${version ? '@ + version : '}`
+        `Getting NPM package info: ${packageName}${version ? '@' + version : ''}`
       );
       return await getNPMPackageInfo(packageName, version);
     } catch (error) {
@@ -347,7 +348,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
     topTypes: Array<{ type: string; count: number }>;
   }> {
     try {
-      const stats = sharedFactSystem?.getStats()
+      const stats = sharedFactSystem.getStats();
       const recentFacts = await sharedFactSystem.queryFacts({
         limit: 100,
       });
@@ -362,7 +363,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
       const agentCounts: Record<string, number> = {};
       for (const [source, count] of Object.entries(stats.factsBySource)) {
         if (source.startsWith('agent:')) {
-          const agentId = source.replace('agent:, ');
+          const agentId = source.replace('agent:', '');
           agentCounts[agentId] = count as any;
         }
       }

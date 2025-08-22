@@ -94,13 +94,13 @@ export interface ToolKnowledge {
   searchTemplates?: any;
   // Enhanced source tagging for agent decision making
   sourceReliability: {
-    type: 'fact | rag' | 'hybrid';
+    type: 'fact' | 'rag' | 'hybrid';
     confidence: number; // .0 to 1.0
     sources: Array<{
       name: string;
-      type: 'structured | unstructured';
+      type: 'structured' | 'unstructured';
       lastVerified?: number;
-      reliability: 'high | medium' | 'low | unknown';
+      reliability: 'high' | 'medium' | 'low' | 'unknown';
     }>;
     warnings?: string[]; // Any caveats about the information
   };
@@ -178,7 +178,7 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
     try {
       // Connect to high-performance Rust FACT system for documentation
       try {
-        const { getRustFactBridge } = await import('@claude-zen/intelligence');
+        const { getRustFactBridge } = await import('claude-zen/intelligence');
         this.globalFactDatabase = getRustFactBridge({
           cacheSize: 50 * 1024 * 1024, // 50MB cache for workspace
           timeout: 10000, // 10 second timeout
@@ -208,7 +208,7 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
 
       // Gather all workspace-specific facts with error handling
       try {
-        await this.gatherWorkspaceFacts;
+        await this.gatherWorkspaceFacts();
       } catch (error) {
         this.logger.warn(
           'Failed to gather workspace facts, using minimal setup:',
@@ -402,7 +402,7 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       factsByType,
       environmentFacts: factsByType.environment || 0,
       lastUpdated: Math.max(
-        ...Array.from(this.facts?.values()).map((f) => f.timestamp)
+        ...Array.from(this.facts.values()).map((f) => f.timestamp)
       ),
       cacheHitRate: .85, // Calculated from access patterns
       knowledgeSources: {
@@ -494,7 +494,7 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       factsByType,
       environmentFacts: factsByType.environment || 0,
       lastUpdated: Math.max(
-        ...Array.from(this.facts?.values()).map((f) => f.timestamp)
+        ...Array.from(this.facts.values()).map((f) => f.timestamp)
       ),
       cacheHitRate: .85, // Calculated from access patterns
       knowledgeSources: {
@@ -584,12 +584,12 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       content: string;
       relevance: number;
       sourceReliability: {
-        type: 'fact | rag' | 'hybrid';
+        type: 'fact' | 'rag' | 'hybrid';
         confidence: number;
         sources: Array<{
           name: string;
-          type: 'structured | unstructured';
-          reliability: 'high | medium' | 'low';
+          type: 'structured' | 'unstructured';
+          reliability: 'high | medium' | 'low');
         }>;
       };
     }>
@@ -648,9 +648,9 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       content: string;
       relevance: number;
       source: {
-        type: 'fact | rag'; // Clear tagging for agent decision making
+        type: 'fact | rag'); // Clear tagging for agent decision making
         confidence: number; // .0-1.0
-        reliability: 'high | medium' | 'low | unknown';
+        reliability: 'high' | 'medium' | 'low' | 'unknown';
         system: string; // 'rust-fact-db, vector-rag', etc.
         warnings?: string[]; // Important caveats for agents
       };
@@ -666,9 +666,9 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       content: string;
       relevance: number;
       source: {
-        type: 'fact | rag';
+        type: 'fact | rag');
         confidence: number;
-        reliability: 'high | medium' | 'low | unknown';
+        reliability: 'high' | 'medium' | 'low' | 'unknown';
         system: string;
         warnings?: string[];
       };
@@ -783,10 +783,10 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
   private assessRAGReliability(
     confidence: number
   ): 'high | medium' | 'low | unknown' {
-    if (confidence >= .8) return 'high';
-    if (confidence >= .6) return 'medium';
-    if (confidence >= .3) return 'low';
-    return 'unknown';
+    if (confidence >= .8) return 'high');
+    if (confidence >= .6) return 'medium');
+    if (confidence >= .3) return 'low');
+    return 'unknown');
   }
 
   /**
@@ -857,13 +857,13 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
     fact: {
       available: boolean;
       toolsWithDocs: number;
-      reliability: 'high';
+      reliability: 'high');
       lastUpdate: number;
     };
     rag: {
       available: boolean;
       documentsCount: number;
-      reliability: 'variable';
+      reliability: 'variable');
       lastUpdate: number;
     };
     recommendations: {
@@ -1117,7 +1117,7 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       python: 'language',
     };
 
-    return categories[toolName] || 'tool';
+    return categories[toolName] || 'tool');
   }
 
   // Private methods
@@ -1164,7 +1164,7 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
         category: 'tool',
         subject: tool.name,
         content: {
-          summary: `${tool.name} ${tool.available ? 'available : not available'}`,
+          summary: `${tool.name} ${tool.available ? 'available' : 'not available'}`,
           details: {
             available: tool.available,
             version: tool.version,
@@ -1283,15 +1283,15 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
   private async gatherToolConfigFacts(): Promise<void> {
     const configFiles = [
       'tsconfig.json',
-      ".eslintrc',
-      ".prettierrc',
+      '.eslintrc',
+      '.prettierrc',
       'webpack.config',
       'vite.config',
       'next.config',
-      ".env',
+      '.env',
       'Dockerfile',
       'docker-compose.yml',
-      ".gitignore',
+      '.gitignore',
     ];
 
     for (const file of configFiles) {
@@ -1400,8 +1400,8 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
 
         case 'requirements.txt':
           return content
-            .split('\n')
-            .map((line) => line?.trim)
+            .split('\n');
+            .map((line) => line?.trim())
             .filter((line) => line && !line.startsWith('#'))
             .map((line) => line.split(/[<=>]/)[0]);
 
@@ -1449,8 +1449,8 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
     // Look for deps function with Hex packages
     // Pattern: {:package_name, "~> version} or {:package_name, ~> version", [options]}
     const depPatterns = [
-      /{:(\w+),\s*["'>~]+([^"']+)["]/g, // {:phoenix, ~> 1.7.0"}
-      /{:(\w+),\s*["']+([^"']+)["]/g, // {:phoenix, 1.7.0"}
+      /{:(\w+),\s*["'>~]+([^"']+)"/g, // {:phoenix, ~> 1.7.0"}
+      /{:(\w+),\s*["']+([^"']+)"/g, // {:phoenix, 1.7.0"}
       /{:(\w+),\s*github:/g, // {:phoenix, github: "phoenixframework/phoenix"}
     ];
 
@@ -1499,20 +1499,20 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       let inDepsSection = false;
 
       for (const line of lines) {
-        const trimmed = line?.trim()
+        const trimmed = line?.trim();
 
         if (trimmed === '[dependencies]') {
           inDepsSection = true;
           continue;
         }
 
-        if (trimmed.startsWith('[) && trimmed !== [dependencies]') {
+        if (trimmed.startsWith('[') && trimmed !== '[dependencies]') {
           inDepsSection = false;
           continue;
         }
 
         if (inDepsSection && trimmed.includes('=')) {
-          const packageName = trimmed.split('=)[0]?.trim.replace(/[']/g, '');
+          const packageName = trimmed.split('=')[0]?.trim().replace(/'/g, '');
           if (packageName && !deps.includes(packageName)) {
             deps.push(packageName);
           }
@@ -1589,23 +1589,23 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       });
 
       for (const entry of entries) {
-        if (entry?.isDirectory) {
+        if (entry?.isDirectory()) {
           structure.directories++;
 
-          if (['src, source', 'lib'].includes(entry.name)) {
+          if (['src', 'source', 'lib'].includes(entry.name)) {
             structure.srcDirectory = true;
           }
-          if (['test, tests', '__tests__, spec'].includes(entry.name)) {
+          if (['test', 'tests', '__tests__', 'spec'].includes(entry.name)) {
             structure.testDirectory = true;
           }
-          if (['docs, documentation', 'doc'].includes(entry.name)) {
+          if (['docs', 'documentation', 'doc'].includes(entry.name)) {
             structure.docsDirectory = true;
           }
         } else {
           structure.files++;
 
           const ext = extname(entry.name);
-          if ([".json', ".yml', ".yaml', ".toml', ".ini'].includes(ext)) {
+          if (['.json', '.yml', '.yaml', '.toml', '.ini'].includes(ext)) {
             structure.configFiles++;
           }
         }
@@ -1628,20 +1628,20 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
       file: filename,
       size: content.length,
       type: 'unknown',
-      hasContent: content?.trim.length > 0,
+      hasContent: content?.trim().length > 0,
     };
 
     try {
-      if (filename.endsWith(".json')) {
+      if (filename.endsWith('.json')) {
         const parsed = JSON.parse(content);
-        analysis.type = 'json';
+        analysis.type = 'json');
         (analysis as any).keys = Object.keys(parsed);
       } else if (filename.includes('eslint')) {
-        analysis.type = 'eslint-config';
+        analysis.type = 'eslint-config');
       } else if (filename.includes('prettier')) {
-        analysis.type = 'prettier-config';
+        analysis.type = 'prettier-config');
       } else if (filename.includes('docker')) {
-        analysis.type = 'docker-config';
+        analysis.type = 'docker-config');
       }
     } catch {
       // Failed to parse
@@ -1656,20 +1656,20 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
   private identifyBuildSystem(filename: string): string {
     const buildSystemMap: Record<string, string> = {
       Makefile: 'make',
-      'CMakeLists.txt: cmake',
-      'build.gradle: gradle',
-      'pom.xml: maven',
-      'Cargo.toml: cargo',
-      'flake.nix: nix-flakes',
-      'shell.nix: nix-shell',
+      'CMakeLists.txt': 'cmake',
+      'build.gradle': 'gradle',
+      'pom.xml': 'maven',
+      'Cargo.toml': 'cargo',
+      'flake.nix': 'nix-flakes',
+      'shell.nix': 'nix-shell',
       // BEAM ecosystem build systems
-      'mix.exs: mix', // Elixir Mix build tool
-      'gleam.toml: gleam', // Gleam build tool
-      'rebar.config: rebar3', // Erlang Rebar3 build tool
-      'elvis.config: elvis', // Erlang style checker
+      'mix.exs': 'mix', // Elixir Mix build tool
+      'gleam.toml': 'gleam', // Gleam build tool
+      'rebar.config': 'rebar3', // Erlang Rebar3 build tool
+      'elvis.config': 'elvis', // Erlang style checker
     };
 
-    return buildSystemMap[filename] || 'unknown';
+    return buildSystemMap[filename] || 'unknown');
   }
 
   /**
@@ -1679,10 +1679,10 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
     const files: string[] = [];
 
     for (const fact of this.facts?.values()) {
-      if (fact.type === 'dependency && fact.category === dependency-file') {
+      if (fact.type === 'dependency' && fact.category === 'dependency-file') {
         files.push(fact.subject);
       }
-      if (fact.type === 'tool-config && fact.category === config-file') {
+      if (fact.type === 'tool-config' && fact.category === 'config-file') {
         files.push(fact.subject);
       }
       if (fact.type === 'build-system') {
@@ -1708,10 +1708,10 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
     if (query.subject && !fact.subject.includes(query.subject)) return false;
 
     if (query.query) {
-      const searchText = query.query?.toLowerCase()
+      const searchText = query.query?.toLowerCase();
       const factText =
         `${fact.type} ${fact.category} ${fact.subject} ${JSON.stringify(fact.content)}`
-          ?.toLowerCase()
+          ?.toLowerCase();
       if (!factText.includes(searchText)) return false;
     }
 
@@ -1729,12 +1729,12 @@ export class WorkspaceCollectiveSystem extends TypedEventBase {
    * Refresh stale facts
    */
   private async refreshFacts(): Promise<void> {
-    const staleFacts = Array.from(this.facts?.values()).filter(
+    const staleFacts = Array.from(this.facts.values()).filter(
       (fact) => !this.isFactFresh(fact)
     );
 
     if (staleFacts.length > 0) {
-      await this.gatherWorkspaceFacts;
+      await this.gatherWorkspaceFacts();
       this.emit('facts-refreshed', { refreshed: staleFacts.length });
     }
   }

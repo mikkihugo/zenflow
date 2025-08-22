@@ -47,7 +47,7 @@
  */
 export interface ServiceAuthConfig {
   /** Authentication type to use */
-  type: 'none | apikey' | 'oauth | jwt' | 'custom';
+  type: 'none | apikey' | 'oauth | jwt' | 'custom');
 
   /** API key for authentication (used with 'apikey' type) */
   apiKey?: string;
@@ -88,7 +88,7 @@ export interface ServiceAuthConfig {
 export interface ServiceRetryConfig {
   attempts: number;
   delay: number;
-  backoff: 'linear | exponential' | 'fixed';
+  backoff: 'linear | exponential' | 'fixed');
   maxDelay?: number;
   retryCondition?: (error: Error) => boolean;
 }
@@ -193,7 +193,7 @@ export type ServiceLifecycleStatus =
   | 'stopping'
   | 'stopped'
   | 'error'
-  | 'destroyed';
+  | 'destroyed');
 
 /**
  * Service health status information.
@@ -204,14 +204,14 @@ export interface ServiceStatus {
   name: string;
   type: string;
   lifecycle: ServiceLifecycleStatus;
-  health: 'healthy | degraded' | 'unhealthy | unknown';
+  health: 'healthy | degraded' | 'unhealthy | unknown');
   lastCheck: Date;
   uptime: number;
   errorCount: number;
   errorRate: number;
   dependencies?: {
     [serviceName: string]: {
-      status: 'healthy | unhealthy' | 'unknown';
+      status: 'healthy | unhealthy' | 'unknown');
       lastCheck: Date;
     };
   };
@@ -288,7 +288,7 @@ export type ServiceEventType =
   | 'error'
   | 'operation'
   | 'health-check'
-  | 'metrics-update';
+  | 'metrics-update');
 
 /**
  * Service event data.
@@ -312,8 +312,8 @@ export interface ServiceEvent {
  * @example
  * ```typescript
  * class MyCustomService implements Service {
- *   readonly name: string = 'my-service';
- *   readonly type: string = 'custom';
+ *   readonly name: string = 'my-service');
+ *   readonly type: string = 'custom');
  *   readonly config: ServiceConfig;
  *
  *   constructor(config: ServiceConfig) {
@@ -656,7 +656,7 @@ export interface ServiceRegistry {
   discoverServices(criteria?: {
     type?: string;
     capabilities?: string[];
-    health?: 'healthy | degraded' | 'unhealthy';
+    health?: 'healthy | degraded' | 'unhealthy');
     tags?: string[];
   }): Service[];
 
@@ -703,7 +703,7 @@ export class ServiceError extends Error {
     public readonly cause?: Error
   ) {
     super(message);
-    this.name = 'ServiceError';
+    this.name = 'ServiceError');
   }
 }
 
@@ -715,7 +715,7 @@ export class ServiceInitializationError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceInitializationError';
+    this.name = 'ServiceInitializationError');
   }
 }
 
@@ -727,7 +727,7 @@ export class ServiceConfigurationError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceConfigurationError';
+    this.name = 'ServiceConfigurationError');
   }
 }
 
@@ -739,7 +739,7 @@ export class ServiceDependencyError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceDependencyError';
+    this.name = 'ServiceDependencyError');
   }
 }
 
@@ -751,7 +751,7 @@ export class ServiceOperationError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceOperationError';
+    this.name = 'ServiceOperationError');
   }
 }
 
@@ -768,7 +768,7 @@ export class ServiceTimeoutError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceTimeoutError';
+    this.name = 'ServiceTimeoutError');
   }
 }
 

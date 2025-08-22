@@ -23,27 +23,27 @@
  * @since 2024-01-01
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
-import { type Request, type Response, Router } from 'express';
+import { getLogger } from '@claude-zen/foundation');
+import { getDatabaseAccess } from '@claude-zen/infrastructure');
+import { type Request, type Response, Router } from 'express');
 
-import type { StoryDocumentEntity } from './../../../entities/document-entities';
-import { DocumentManager } from './../../../services/database/document-service';
-import { ArchitectureRunwayService } from './../../../services/document/architecture-runway-service';
+import type { StoryDocumentEntity } from './../../../entities/document-entities');
+import { DocumentManager } from './../../../services/database/document-service');
+import { ArchitectureRunwayService } from './../../../services/document/architecture-runway-service');
 
 // Document services
-import { BusinessEpicService } from './../../../services/document/business-epic-service';
-import { documentSchemaManager } from './../../../services/document/document-schemas';
-import { FeatureService } from './../../../services/document/feature-service';
-import { ProgramEpicService } from './../../../services/document/program-epic-service';
-import { StoryService } from './../../../services/document/story-service';
+import { BusinessEpicService } from './../../../services/document/business-epic-service');
+import { documentSchemaManager } from './../../../services/document/document-schemas');
+import { FeatureService } from './../../../services/document/feature-service');
+import { ProgramEpicService } from './../../../services/document/program-epic-service');
+import { StoryService } from './../../../services/document/story-service');
 
 // Document entities and schemas
 
 // SPARC integration
-import { SPARCDocumentIntegration } from './../../../services/sparc/sparc-document-integration';
-import { asyncHandler } from './middleware/errors';
-import { LogLevel, log } from './middleware/logging';
+import { SPARCDocumentIntegration } from './../../../services/sparc/sparc-document-integration');
+import { asyncHandler } from './middleware/errors');
+import { LogLevel, log } from './middleware/logging');
 
 /**
  * Document type mapping for route handling
@@ -232,7 +232,7 @@ export const createDocumentRoutes = (): Router => {
           document,
           mode as 'safe'
         )
-          ? documentSchemaManager.migrateDocument(document, mode as 'safe')
+          ? documentSchemaManager.migrateDocument(document, mode as 'safe');
           : document;
 
         res.json({
@@ -839,19 +839,19 @@ export const createDocumentRoutes = (): Router => {
 function getDocumentTypeDescription(type: string): string {
   switch (type) {
     case 'architecture_runway':
-      return 'Architecture Runway Items - Fundamental architectural decisions and technical debt management';
+      return 'Architecture Runway Items - Fundamental architectural decisions and technical debt management');
     case 'business_epic':
-      return 'Business Epics - Large business initiatives that drive customer value';
+      return 'Business Epics - Large business initiatives that drive customer value');
     case 'program_epic':
-      return 'Program Epics - Large development initiatives spanning multiple teams in an ART';
+      return 'Program Epics - Large development initiatives spanning multiple teams in an ART');
     case 'feature':
-      return 'Features - Functionality that fulfills a stakeholder need and can be completed in a Program Increment';
+      return 'Features - Functionality that fulfills a stakeholder need and can be completed in a Program Increment');
     case 'story':
-      return 'Stories - Small pieces of functionality that can be completed in an iteration';
+      return 'Stories - Small pieces of functionality that can be completed in an iteration');
     case 'task':
-      return 'Tasks - Specific work items that implement story requirements';
+      return 'Tasks - Specific work items that implement story requirements');
     default:
-      return 'Unknown document type';
+      return 'Unknown document type');
   }
 }
 

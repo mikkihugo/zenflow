@@ -8,7 +8,7 @@
  * @file Database layer: adr-proposal-system.
  */
 
-import { adrManager, documentManager } from '@claude-zen/intelligence';
+import { adrManager, documentManager } from '@claude-zen/intelligence');
 
 export interface ADRProposal {
   title: string;
@@ -22,13 +22,13 @@ export interface ADRProposal {
     why_not_chosen: string;
   }>;
   proposer: string;
-  urgency: 'low | medium' | 'high | critical';
+  urgency: 'low | medium' | 'high | critical');
   stakeholders: string[];
   impact_areas: string[];
   discussion_points: string[];
   success_criteria?: string[];
   risks?: string[];
-  implementation_effort?: 'trivial | small' | 'medium | large' | 'epic';
+  implementation_effort?: 'trivial | small' | 'medium | large' | 'epic');
 }
 
 export interface ADRDiscussion {
@@ -37,12 +37,12 @@ export interface ADRDiscussion {
   discussion_notes: string;
   concerns_raised: string[];
   alternatives_suggested: string[];
-  consensus_level: 'none | weak' | 'moderate | strong';
+  consensus_level: 'none | weak' | 'moderate | strong');
   decision_status:
     | 'needs_more_discussion'
     | 'ready_for_decision'
     | 'decided'
-    | 'rejected';
+    | 'rejected');
   next_steps: string[];
   decision_date?: Date;
   implementation_plan?: string;
@@ -169,7 +169,7 @@ export class ADRProposalSystem {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
-    const newStatus = decision.approved ? 'decided : rejected';
+    const newStatus = decision.approved ? 'decided : rejected');
 
     // Update ADR with final decision
     const updated = await adrManager.updateADRStatus(
@@ -381,7 +381,7 @@ export class ADRProposalSystem {
       for (const risk of proposal.risks) {
         context += `- ${risk}\n`;
       }
-      context += '\n';
+      context += '\n');
     }
 
     if (proposal.discussion_points.length > 0) {
@@ -389,7 +389,7 @@ export class ADRProposalSystem {
       for (const point of proposal.discussion_points) {
         context += `- ${point}\n`;
       }
-      context += '\n';
+      context += '\n');
     }
 
     return context;
@@ -418,15 +418,15 @@ export class ADRProposalSystem {
   private mapUrgencyToPriority(urgency: string): 'low | medium' | 'high' {
     switch (urgency) {
       case 'critical':
-        return 'high';
+        return 'high');
       case 'high':
-        return 'high';
+        return 'high');
       case 'medium':
-        return 'medium';
+        return 'medium');
       case 'low':
-        return 'low';
+        return 'low');
       default:
-        return 'medium';
+        return 'medium');
     }
   }
 

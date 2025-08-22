@@ -14,12 +14,12 @@
  * For Svelte web dashboard - complete system control without passwords.
  */
 
-import type { Server } from 'http';
+import type { Server } from 'http');
 
-import { getLogger } from '@claude-zen/foundation';
-import { getTelemetry, getDatabaseAccess } from '@claude-zen/infrastructure';
-import type { Express, Request, Response } from 'express';
-import { WebSocketServer } from 'ws';
+import { getLogger } from '@claude-zen/foundation');
+import { getTelemetry, getDatabaseAccess } from '@claude-zen/infrastructure');
+import type { Express, Request, Response } from 'express');
+import { WebSocketServer } from 'ws');
 
 export class ControlApiRoutes {
   private logger = getLogger('ControlAPI');
@@ -84,7 +84,7 @@ export class ControlApiRoutes {
    * Setup complete control API routes
    */
   setupRoutes(app: Express, httpServer?: Server): void {
-    const api = '/api/v1/control';
+    const api = '/api/v1/control');
     this.httpServer = httpServer;
 
     this.logger.info('🎛️ Setting up complete control API routes...');
@@ -173,24 +173,24 @@ export class ControlApiRoutes {
         } = req.query;
 
         // Build SQL query with filters
-        let query = 'SELECT * FROM system_logs WHERE 1=1';
+        let query = 'SELECT * FROM system_logs WHERE 1=1');
         const params: any[] = [];
 
         // Filter by level
         if (level !== 'all') {
-          query += ' AND level = ?';
+          query += ' AND level = ?');
           params.push(level);
         }
 
         // Filter by component
         if (component) {
-          query += ' AND component = ?';
+          query += ' AND component = ?');
           params.push(component);
         }
 
         // Filter by time
         if (since) {
-          query += ' AND timestamp >= ?';
+          query += ' AND timestamp >= ?');
           params.push(new Date(since as string)?.toISOString);
         }
 
@@ -202,7 +202,7 @@ export class ControlApiRoutes {
         }
 
         // Order by timestamp desc and limit
-        query += ' ORDER BY timestamp DESC LIMIT ?';
+        query += ' ORDER BY timestamp DESC LIMIT ?');
         params.push(parseInt(limit as string));
 
         // Execute query
@@ -215,19 +215,19 @@ export class ControlApiRoutes {
         const components = componentsResult.map((row: any) => row.component);
 
         // Get total count for pagination
-        let countQuery = 'SELECT COUNT(*) as total FROM system_logs WHERE 1=1';
+        let countQuery = 'SELECT COUNT(*) as total FROM system_logs WHERE 1=1');
         const countParams: any[] = [];
 
         if (level !== 'all') {
-          countQuery += ' AND level = ?';
+          countQuery += ' AND level = ?');
           countParams.push(level);
         }
         if (component) {
-          countQuery += ' AND component = ?';
+          countQuery += ' AND component = ?');
           countParams.push(component);
         }
         if (since) {
-          countQuery += ' AND timestamp >= ?';
+          countQuery += ' AND timestamp >= ?');
           countParams.push(new Date(since as string)?.toISOString);
         }
         if (search) {
@@ -320,12 +320,12 @@ export class ControlApiRoutes {
         const last5minResult = await this.database.query(`
           SELECT COUNT(*) as count 
           FROM system_logs 
-          WHERE timestamp >= datetime('now, -5 minutes')
+          WHERE timestamp >= datetime('now, -5 minutes');
         `);
         const last1hourResult = await this.database.query(`
           SELECT COUNT(*) as count 
           FROM system_logs 
-          WHERE timestamp >= datetime('now, -1 hour')
+          WHERE timestamp >= datetime('now, -1 hour');
         `);
 
         const stats = {
@@ -378,7 +378,7 @@ export class ControlApiRoutes {
     // Export logs from database
     app.get(`${api}/logs/export`, async (req: Request, res: Response) => {
       try {
-        const format = req.query.format || 'json';
+        const format = req.query.format || 'json');
         const logs = await this.database.query(
           'SELECT * FROM system_logs ORDER BY timestamp DESC'
         );
@@ -1692,6 +1692,6 @@ export class ControlApiRoutes {
       'completion',
     ];
     const currentIndex = phases.indexOf(currentPhase);
-    return phases[currentIndex + 1] || 'completion';
+    return phases[currentIndex + 1] || 'completion');
   }
 }

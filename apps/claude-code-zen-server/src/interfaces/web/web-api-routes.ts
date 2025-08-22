@@ -48,23 +48,23 @@
  * **REDUCTION ACHIEVED: 1,854 → 420 lines (77.3% reduction) through strategic delegation**
  */
 
-import type { AdvancedGUI } from '@claude-zen/enterprise';
-import type { SystemMonitor, WebMiddleware } from '@claude-zen/foundation';
+import type { AdvancedGUI } from '@claude-zen/enterprise');
+import type { SystemMonitor, WebMiddleware } from '@claude-zen/foundation');
 import {
   getLogger,
   assertDefined,
   getErrorMessage,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 import type {
   WorkflowEngine,
   CollaborationEngine,
   DocumentationManager,
-} from '@claude-zen/intelligence';
-import type { Express, Request, Response, NextFunction } from 'express';
+} from '@claude-zen/intelligence');
+import type { Express, Request, Response, NextFunction } from 'express');
 
-import('./web-config';
-import('./web-data-service';
-import('./web-session-manager';
+import('/web-config');
+import('/web-data-service');
+import('/web-session-manager');
 
 // Strategic imports from @claude-zen packages
 
@@ -129,7 +129,7 @@ export class WebApiRoutes {
 
     try {
       // Delegate to @claude-zen/enterprise for advanced GUI capabilities
-      const { AdvancedGUI } = await import('@claude-zen/enterprise');
+      const { AdvancedGUI } = await import('claude-zen/enterprise');
       this.advancedGUI = new AdvancedGUI({
         enableApprovalWorkflows: true,
         enableHumanInTheLoop: true,
@@ -138,7 +138,7 @@ export class WebApiRoutes {
       await this.advancedGUI?.initialize()
 
       // Delegate to @claude-zen/intelligence for task orchestration
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         enableWebIntegration: true,
         enableRESTAPI: true,
@@ -146,7 +146,7 @@ export class WebApiRoutes {
       await this.workflowEngine?.initialize()
 
       // Delegate to @claude-zen/monitoring for health and metrics
-      const { SystemMonitor } = await import('@claude-zen/foundation');
+      const { SystemMonitor } = await import('claude-zen/foundation');
       this.healthMonitor = new SystemMonitor({
         enableWebEndpoints: true,
         enableMetricsCollection: true,
@@ -154,7 +154,7 @@ export class WebApiRoutes {
       await this.healthMonitor?.initialize()
 
       // Delegate to @claude-zen/foundation for web middleware
-      const { WebMiddleware } = await import('@claude-zen/foundation');
+      const { WebMiddleware } = await import('claude-zen/foundation');
       this.webMiddleware = new WebMiddleware({
         enableSecurity: true,
         enableValidation: true,
@@ -163,7 +163,7 @@ export class WebApiRoutes {
       });
 
       // Delegate to @claude-zen/intelligence for collaboration
-      const { CollaborationEngine } = await import('@claude-zen/intelligence');
+      const { CollaborationEngine } = await import('claude-zen/intelligence');
       this.collaborationEngine = new CollaborationEngine({
         enableWebAPI: true,
         enableRealTimeUpdates: true,
@@ -171,7 +171,7 @@ export class WebApiRoutes {
       await this.collaborationEngine?.initialize()
 
       // Delegate to @claude-zen/intelligence for documentation
-      const { DocumentationManager } = await import('@claude-zen/intelligence');
+      const { DocumentationManager } = await import('claude-zen/intelligence');
       this.documentationManager = new DocumentationManager({
         enableAPIDocumentation: true,
         enableSwagger: true,

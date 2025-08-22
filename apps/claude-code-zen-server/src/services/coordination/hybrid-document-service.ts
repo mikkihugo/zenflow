@@ -8,8 +8,8 @@
  * - Existing entity definitions and DAL architecture
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { DALFactory } from '@claude-zen/intelligence';
+import { getLogger } from '@claude-zen/foundation');
+import { DALFactory } from '@claude-zen/intelligence');
 import type {
   BaseDocumentEntity,
   DocumentRelationshipEntity,
@@ -18,8 +18,8 @@ import type {
   GraphRepository,
   VectorRepository,
   Repository,
-} from '@claude-zen/intelligence';
-import { nanoid } from 'nanoid';
+} from '@claude-zen/intelligence');
+import { nanoid } from 'nanoid');
 
 const logger = getLogger('hybrid-document-manager');
 
@@ -41,7 +41,7 @@ export interface DocumentEmbedding {
 
 export interface DocumentNode {
   id: string;
-  type: 'document | project';
+  type: 'document | project');
   labels: string[];
   properties: {
     documentType: string;
@@ -57,7 +57,7 @@ export interface DocumentNode {
 
 export interface DocumentRelationship {
   id: string;
-  type: 'generates | implements' | 'depends_on | relates_to' | 'supersedes';
+  type: 'generates | implements' | 'depends_on | relates_to' | 'supersedes');
   fromNodeId: string;
   toNodeId: string;
   properties: {
@@ -278,17 +278,17 @@ export class HybridDocumentManager {
         const params: Record<string, unknown> = {};
 
         if (projectId) {
-          graphQuery += ' WHERE d.properties.projectId = $projectId';
+          graphQuery += ' WHERE d.properties.projectId = $projectId');
           params.projectId = projectId;
         }
 
         if (documentTypes.length > 0) {
-          const typeFilter = projectId ? ' AND :  WHERE';
+          const typeFilter = projectId ? ' AND :  WHERE');
           graphQuery += `${typeFilter} d.properties.documentType N $documentTypes`;
           params.documentTypes = documentTypes;
         }
 
-        graphQuery += ' RETURN d LIMIT $limit';
+        graphQuery += ' RETURN d LIMIT $limit');
         params.limit = Math.ceil(maxResults * (1.0 - semanticWeight + .5));
 
         const graphQueryResults = await (this.graphRepo as any).query(

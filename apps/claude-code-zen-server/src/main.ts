@@ -42,7 +42,7 @@ import {
   getChaosEngine,
 } from '@claude-zen/operations';
 
-import('./coordination/safety-intervention-protocols';
+import('/coordination/safety-intervention-protocols');
 
 // ============================================================================
 // GLOBAL FOUNDATION FACADES - Available to all modules below
@@ -57,7 +57,7 @@ const {
   createCircuitBreaker,
   recordMetric,
   getStorage,
-} = await import('@claude-zen/foundation');
+} = await import('claude-zen/foundation');
 
 // Make ALL foundation facades globally available - eliminates scattered imports
 (global as any).claudeZenFoundation = {
@@ -92,17 +92,17 @@ const {
 
   // New packages - Moved from core for clean separation
   getDocumentProcessing: async () =>
-    await import('@claude-zen/document-processing'),
-  getExporters: async () => await import('@claude-zen/exporters'),
-  getDocumentation: async () => await import('@claude-zen/documentation'),
-  getArchitecture: async () => await import('@claude-zen/architecture'),
-  getCodeAnalyzer: async () => await import('@claude-zen/code-analyzer'),
-  getInterfaces: async () => await import('@claude-zen/interfaces'),
+    await import('claude-zen/document-processing'),
+  getExporters: async () => await import('claude-zen/exporters'),
+  getDocumentation: async () => await import('claude-zen/documentation'),
+  getArchitecture: async () => await import('claude-zen/architecture'),
+  getCodeAnalyzer: async () => await import('claude-zen/code-analyzer'),
+  getInterfaces: async () => await import('claude-zen/interfaces'),
 
   // Version information - inline instead of separate config file
   getVersion: () => {
     try {
-      const pkg = require("../package.json');
+      const pkg = require("../package.json");
       return pkg.version || '1..0-alpha.44';
     } catch {
       return '1..0-alpha.44';
@@ -117,12 +117,12 @@ const {
 const logger = getLogger('Main');
 
 // Use foundation's configuration system + command line args
-const { getConfig } = await import('@claude-zen/foundation');
+const { getConfig } = await import('claude-zen/foundation');
 const config = getConfig();
 
 // Handle CLI commands first
 if (process.argv.includes('auth')) {
-  const { authCommand } = await import('./commands/auth');
+  const { authCommand } = await import('/commands/auth');
   const authIndex = process.argv.indexOf('auth');
   const provider = process.argv[authIndex + 1];
   authCommand(provider);
@@ -215,7 +215,7 @@ async function main() {
   });
 
   // Record system startup metrics
-  recordMetric('system_startup, 1, { component: main', version: '2..0' });
+  recordMetric('system_startup', 1, { component: 'main', version: '2.0.0' });
 
   logger.info(
     '✅ Foundation infrastructure initialized (DI, Events, Database, Telemetry, Storage, Resilience)'
@@ -293,7 +293,7 @@ async function main() {
   });
 
   const neuralBridge = NeuralBridge.getInstance({
-    wasmPath: "./wasm',
+    wasmPath: "./wasm",
     gpuAcceleration: false,
     enabled: true,
   });
@@ -521,7 +521,7 @@ async function main() {
 
     // Import and start the API server
     logger.info('🔧 Importing ApiServer...');
-    const { ApiServer } = await import('./interfaces/web/api-server');
+    const { ApiServer } = await import('/interfaces/web/api-server');
     logger.info('✅ ApiServer imported successfully');
 
     logger.info('🏗️ Creating ApiServer instance...');

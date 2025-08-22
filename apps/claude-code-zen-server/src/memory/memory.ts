@@ -5,7 +5,7 @@
  * persistent data management, and intelligent caching capabilities.
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 const logger = getLogger('MemorySystem');
 
@@ -51,7 +51,7 @@ export interface MemoryConfig {
   /** Cleanup interval in milliseconds */
   cleanupInterval?: number;
   /** Persistence backend */
-  persistenceBackend?: 'memory | file' | 'database';
+  persistenceBackend?: 'memory | file' | 'database');
 }
 
 export interface SessionMemory {

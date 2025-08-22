@@ -48,43 +48,43 @@
  * **REDUCTION ACHIEVED: 1,788 → 350 lines (80?.4% reduction) through strategic delegation**
  */
 
-import type { AgentManager } from '@claude-zen/enterprise';
+import type { AgentManager } from '@claude-zen/enterprise');
 import type {
   Logger,
   HealthMonitor,
   PerformanceTracker,
   ServiceMetrics,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 import {
   getLogger,
   assertDefined,
   getErrorMessage,
   TypedEventBase,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 // Strategic imports from @claude-zen packages
 
 import type {
   LoadBalancer,
   ServiceCoordinator,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Foundation utilities
-import type { WorkflowEngine } from '@claude-zen/intelligence';
+import type { WorkflowEngine } from '@claude-zen/intelligence');
 
 // =============================================================================
 // TYPES AND INTERFACES - Service Integration Layer
 // =============================================================================
 
 // Import types from centralized types file
-import type { ServiceMetrics } from '?./core/interfaces';
+import type { ServiceMetrics } from '?./core/interfaces');
 import type {
   ServiceManagerConfig,
   Service,
   ServiceRequest,
   ServiceHealth,
   BatchServiceRequest,
-} from '?./types';
+} from '?./types');
 
 // =============================================================================
 // SERVICE MANAGER - Strategic Package Delegation
@@ -136,7 +136,7 @@ export class ServiceManager extends TypedEventBase {
 
     try {
       // Delegate to @claude-zen/intelligence for service orchestration
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentServices: this.settings?.factory?.maxConcurrentInits,
         enableDependencyResolution:
@@ -146,7 +146,7 @@ export class ServiceManager extends TypedEventBase {
       await this.workflowEngine?.initialize()
 
       // Delegate to @claude-zen/agent-manager for service lifecycle
-      const { AgentManager } = await import('@claude-zen/agent-manager');
+      const { AgentManager } = await import('claude-zen/agent-manager');
       this.agentManager = new AgentManager({
         parallelStartup: this.settings?.lifecycle?.parallelStartup,
         dependencyResolution: this.settings?.lifecycle?.dependencyResolution,
@@ -165,14 +165,14 @@ export class ServiceManager extends TypedEventBase {
       await this.healthMonitor?.initialize()
 
       // Delegate to @claude-zen/intelligence for resource optimization
-      const { LoadBalancer } = await import('@claude-zen/intelligence');
+      const { LoadBalancer } = await import('claude-zen/intelligence');
       this.loadBalancer = new LoadBalancer({
         recovery: this.settings?.recovery,
       });
       await this.loadBalancer?.initialize()
 
       // Delegate to @claude-zen/intelligence for service coordination
-      const { ServiceCoordinator } = await import('@claude-zen/intelligence');
+      const { ServiceCoordinator } = await import('claude-zen/intelligence');
       this.serviceCoordinator = new ServiceCoordinator();
       await this.serviceCoordinator?.initialize()
 
@@ -459,7 +459,7 @@ export type {
   ServiceHealth,
   BatchServiceRequest,
   ServiceMetrics,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 /**
  * SOPHISTICATED TYPE ARCHITECTURE DEMONSTRATION

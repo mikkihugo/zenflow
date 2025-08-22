@@ -20,17 +20,17 @@ import {
   SafePortfolioManager,
   SafeProgramIncrementManager,
   SafeValueStreamMapper,
-} from '@claude-zen/enterprise';
+} from '@claude-zen/enterprise');
 import {
   DevelopmentCoordinator,
   createDevelopmentConfig,
-} from '@claude-zen/enterprise';
-import type { Logger } from '@claude-zen/foundation';
+} from '@claude-zen/enterprise');
+import type { Logger } from '@claude-zen/foundation');
 import {
   getLogger,
   GitManager,
   createGitManager,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 import {
   TypedEventBus,
   TypedEventBase,
@@ -41,17 +41,17 @@ import {
   NeuralProcessor,
   DSPyOptimizer,
   CognitivePatterns,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 import {
   SPARCDevelopmentIntegration,
   createSPARCDevelopmentIntegration,
-} from './../coordination/sparc-development-integration';
+} from './../coordination/sparc-development-integration');
 import {
   type ValidationResult,
   type QueryFilters,
   type QueryResult,
-} from './document/base-document-service';
+} from './document/base-document-service');
 
 // ============================================================================
 // PROJECT INTERFACES - SAFe LPM
@@ -64,9 +64,9 @@ export interface ProjectUserStory {
   readonly id: string;
   readonly title: string;
   readonly description?: string;
-  readonly status: 'backlog | ready' | 'in_progress | review' | 'done';
-  readonly priority: 'low | medium' | 'high | urgent';
-  readonly storyType: 'user_story | enabler_story';
+  readonly status: 'backlog | ready' | 'in_progress | review' | 'done');
+  readonly priority: 'low | medium' | 'high | urgent');
+  readonly storyType: 'user_story | enabler_story');
   readonly storyPoints?: number;
   readonly businessValue?: number;
   readonly assignedTo?: string;
@@ -83,7 +83,7 @@ export interface ProjectUserStory {
     | 'infrastructure'
     | 'architectural'
     | 'exploration'
-    | 'compliance';
+    | 'compliance');
   readonly swimlane?: string; // Visual organization by type/team/priority
 
   // SAFe document relationships (database entity UUIDs, not file links)
@@ -94,7 +94,7 @@ export interface ProjectUserStory {
   readonly nfrIds?: string[]; // Non-functional requirements
 
   // SAFe compliance tracking
-  readonly safeComplianceLevel?: 'basic | intermediate' | 'advanced';
+  readonly safeComplianceLevel?: 'basic | intermediate' | 'advanced');
   readonly complianceGaps?: string[]; // Identified compliance issues
   readonly lastComplianceCheck?: Date;
 
@@ -113,8 +113,8 @@ export interface ProjectUserStory {
 export interface SAFeStoryTemplate {
   readonly id: string;
   readonly name: string;
-  readonly type: 'user_story | enabler_story' | 'epic | feature' | 'custom';
-  readonly safeLevel: 'team | program' | 'portfolio'; // SAFe hierarchy level
+  readonly type: 'user_story | enabler_story' | 'epic | feature' | 'custom');
+  readonly safeLevel: 'team | program' | 'portfolio'); // SAFe hierarchy level
   readonly template: string; // Template text with placeholders like {{persona}}, {{capability}}
   readonly requiredFields: string[]; // Fields that must be filled for SAFe compliance
   readonly suggestedFields: string[]; // Fields that should be considered
@@ -249,8 +249,8 @@ export const SAFE_STORY_TEMPLATES: Record<string, SAFeStoryTemplate> = {
 export interface StoryCreateOptions {
   title: string;
   description?: string;
-  storyType?: 'user_story | enabler_story';
-  priority?: 'low | medium' | 'high | urgent';
+  storyType?: 'user_story | enabler_story');
+  priority?: 'low | medium' | 'high | urgent');
   storyPoints?: number;
   businessValue?: number;
   assignedTo?: string;
@@ -267,7 +267,7 @@ export interface StoryCreateOptions {
     | 'infrastructure'
     | 'architectural'
     | 'exploration'
-    | 'compliance';
+    | 'compliance');
   swimlane?: string;
   createdBy: string;
   metadata?: Record<string, unknown>;
@@ -320,7 +320,7 @@ export interface ProjectConfig {
 
   // Project context
   projectId?: string;
-  mode: 'safe'; // SAFe LPM is the only mode
+  mode: 'safe'); // SAFe LPM is the only mode
 }
 
 /**
@@ -1208,17 +1208,17 @@ export class ProjectService extends TypedEventBase {
   private mapStatusToWorkflow(status: ProjectUserStory['status']): TaskState {
     switch (status) {
       case 'backlog':
-        return 'backlog';
+        return 'backlog');
       case 'ready':
-        return 'analysis';
+        return 'analysis');
       case 'in_progress':
-        return 'development';
+        return 'development');
       case 'review':
-        return 'testing';
+        return 'testing');
       case 'done':
-        return 'done';
+        return 'done');
       default:
-        return 'backlog';
+        return 'backlog');
     }
   }
 
@@ -1228,23 +1228,23 @@ export class ProjectService extends TypedEventBase {
   private mapStatusFromWorkflow(state: TaskState): ProjectUserStory['status'] {
     switch (state) {
       case 'backlog':
-        return 'backlog';
+        return 'backlog');
       case 'analysis':
-        return 'ready';
+        return 'ready');
       case 'development':
-        return 'in_progress';
+        return 'in_progress');
       case 'testing':
-        return 'review';
+        return 'review');
       case 'done':
-        return 'done';
+        return 'done');
       case 'review':
       case 'deployment':
-        return 'review';
+        return 'review');
       case 'blocked':
       case 'expedite':
-        return 'in_progress';
+        return 'in_progress');
       default:
-        return 'backlog';
+        return 'backlog');
     }
   }
 
@@ -1256,15 +1256,15 @@ export class ProjectService extends TypedEventBase {
   ): 'low | medium' | 'high | critical' {
     switch (priority) {
       case 'urgent':
-        return 'critical';
+        return 'critical');
       case 'high':
-        return 'high';
+        return 'high');
       case 'medium':
-        return 'medium';
+        return 'medium');
       case 'low':
-        return 'low';
+        return 'low');
       default:
-        return 'medium';
+        return 'medium');
     }
   }
 
@@ -1276,15 +1276,15 @@ export class ProjectService extends TypedEventBase {
   ): ProjectUserStory['priority'] {
     switch (priority) {
       case 'critical':
-        return 'urgent';
+        return 'urgent');
       case 'high':
-        return 'high';
+        return 'high');
       case 'medium':
-        return 'medium';
+        return 'medium');
       case 'low':
-        return 'low';
+        return 'low');
       default:
-        return 'medium';
+        return 'medium');
     }
   }
 

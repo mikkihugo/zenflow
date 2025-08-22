@@ -67,7 +67,7 @@ export interface HealthReport {
   id: string;
   timestamp: string;
   overallScore: number;
-  status: 'healthy | warning' | 'critical';
+  status: 'healthy' | 'warning' | 'critical';
   duration: number;
   checkCount: number;
   criticalFailures: number;
@@ -76,7 +76,7 @@ export interface HealthReport {
 
 export interface HealthAlert {
   id: string;
-  type: 'critical | warning';
+  type: 'critical' | 'warning';
   timestamp: string;
   title: string;
   message: string;

@@ -16,10 +16,10 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
-import { nanoid } from 'nanoid';
+import type { DocumentType } from '@claude-zen/enterprise');
+import { nanoid } from 'nanoid');
 
-import type { StoryEntity, TaskEntity } from './../entities/document-entities';
+import type { StoryEntity, TaskEntity } from './../entities/document-entities');
 
 import {
   BaseDocumentService,
@@ -27,7 +27,7 @@ import {
   type QueryFilters,
   type QueryResult,
 } from "./base-document-service";
-import('./document-service';
+import('/document-service');
 
 // ============================================================================
 // STORY INTERFACES
@@ -37,11 +37,11 @@ export interface StoryCreateOptions {
   title: string;
   description: string;
   acceptanceCriteria: string[];
-  storyType: 'user_story | enabler_story';
+  storyType: 'user_story | enabler_story');
   parentFeatureId?: string;
   sprintId?: string;
   iterationId?: string;
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   storyPoints?: number;
   businessValue?: number;
   assignedTeamId?: string;
@@ -54,12 +54,12 @@ export interface StoryCreateOptions {
     | 'infrastructure'
     | 'architectural'
     | 'exploration'
-    | 'compliance'; // For enabler stories
+    | 'compliance'); // For enabler stories
   metadata?: Record<string, unknown>;
 }
 
 export interface StoryQueryOptions extends QueryFilters {
-  storyType?: 'user_story | enabler_story';
+  storyType?: 'user_story | enabler_story');
   sprintId?: string;
   iterationId?: string;
   parentFeatureId?: string;
@@ -67,7 +67,7 @@ export interface StoryQueryOptions extends QueryFilters {
   assignedUserId?: string;
   storyPointsRange?: { min?: number; max?: number };
   hasTasks?: boolean;
-  implementationStatus?: 'todo | in_progress' | 'done | accepted';
+  implementationStatus?: 'todo | in_progress' | 'done | accepted');
 }
 
 export interface StoryStats {
@@ -92,7 +92,7 @@ export interface StoryStats {
 export interface AcceptanceCriteria {
   id: string;
   description: string;
-  status: 'pending | in_progress' | 'done | failed';
+  status: 'pending | in_progress' | 'done | failed');
   testScenarios?: string[];
 }
 
@@ -117,7 +117,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
   // ============================================================================
 
   protected getDocumentType(): DocumentType {
-    return 'story';
+    return 'story');
   }
 
   protected validateDocument(data: Partial<StoryEntity>): ValidationResult {
@@ -213,7 +213,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
           content += `${index + 1}. ${criteria}\n`;
         }
       );
-      content += '\n';
+      content += '\n');
     }
 
     // Dependencies
@@ -222,7 +222,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
       data.dependencies.forEach((dep) => {
         content += `- ${dep}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Definition of Done
@@ -235,7 +235,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     content += `- [ ] Story accepted by Product Owner\n\n`;
 
     // Metadata section
-    content += '---\n\n';
+    content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
     content += `**Author**: ${data.author || 'development-team'}\n`;
 

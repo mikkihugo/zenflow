@@ -23,7 +23,7 @@ export interface WorkflowMetadata {
   workflowId: string;
   name: string;
   version: string;
-  status: 'pending | running' | 'completed | failed' | 'paused';
+  status: 'pending | running' | 'completed | failed' | 'paused');
 }
 
 export interface WorkflowConfig {

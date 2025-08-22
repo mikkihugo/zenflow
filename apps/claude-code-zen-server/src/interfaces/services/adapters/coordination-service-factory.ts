@@ -9,11 +9,8 @@
  * @file Interface implementation: coordination-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
-
-import type { ServiceFactory } from './core/interfaces';
-import { ServicePriority, ServiceType } from './types';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation');
 
 import {
   type CoordinationServiceAdapter,
@@ -21,6 +18,9 @@ import {
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
 } from "./coordination-service-adapter";
+import type { ServiceFactory } from './core/interfaces');
+import { ServicePriority, ServiceType } from './types');
+
 
 /**
  * Factory class for creating CoordinationServiceAdapter instances.
@@ -339,7 +339,7 @@ export function createAgentCoordinationConfig(
   name: string,
   options?: {
     maxAgents?: number;
-    topology?: 'mesh | hierarchical' | 'ring | star';
+    topology?: 'mesh | hierarchical' | 'ring | star');
     enableLearning?: boolean;
     autoSpawn?: boolean;
   }

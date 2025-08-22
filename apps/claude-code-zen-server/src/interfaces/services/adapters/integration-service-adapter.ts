@@ -17,12 +17,12 @@ import type {
   ServiceManager,
   MetricsCollector,
   ConnectionManager,
-} from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 import type {
   WorkflowEngine,
   CollaborationEngine,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 import type {
   Service,
@@ -34,9 +34,9 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces';
-import type { IntegrationServiceConfig } from './types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
+} from './core/interfaces');
+import type { IntegrationServiceConfig } from './types');
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types');
 
 // ============================================
 // Service-Specific Error Classes
@@ -48,7 +48,7 @@ class ServiceDependencyError extends Error {
     message: string
   ) {
     super(`Service dependency error [${serviceName}]: ${message}`);
-    this.name = 'ServiceDependencyError';
+    this.name = 'ServiceDependencyError');
   }
 }
 
@@ -58,7 +58,7 @@ class ServiceOperationError extends Error {
     message: string
   ) {
     super(`Service operation error [${operation}]: ${message}`);
-    this.name = 'ServiceOperationError';
+    this.name = 'ServiceOperationError');
   }
 }
 
@@ -68,7 +68,7 @@ class ServiceTimeoutError extends Error {
     message: string
   ) {
     super(`Service timeout error [${timeout}ms]: ${message}`);
-    this.name = 'ServiceTimeoutError';
+    this.name = 'ServiceTimeoutError');
   }
 }
 
@@ -99,7 +99,7 @@ export interface IntegrationServiceAdapterConfig
   cacheSettings: {
     ttl: number;
     maxSize: number;
-    strategy: 'lru | fifo' | 'lfu';
+    strategy: 'lru | fifo' | 'lfu');
   };
 
   // Monitoring and metrics
@@ -142,12 +142,12 @@ export class IntegrationServiceAdapter
   private connectionManager: ConnectionManager;
   private collaborationEngine: CollaborationEngine;
   private metricsCollector: MetricsCollector;
-  private status: ServiceLifecycleStatus = 'stopped';
+  private status: ServiceLifecycleStatus = 'stopped');
 
   constructor(config: IntegrationServiceAdapterConfig) {
     super();
 
-    this.name = config.name || 'integration-service';
+    this.name = config.name || 'integration-service');
     this.type = config.type || ServiceType.INTEGRATION;
     this.config = config;
     this.logger = getLogger();
@@ -160,7 +160,7 @@ export class IntegrationServiceAdapter
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {
     try {
       this.logger.info(`Initializing ${this.name}`);
-      this.status = 'initializing';
+      this.status = 'initializing');
 
       // Merge configuration
       if (config) {
@@ -168,11 +168,11 @@ export class IntegrationServiceAdapter
       }
 
       // Initialize delegates from @claude-zen packages
-      const { ServiceManager } = await import('@claude-zen/foundation');
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
-      const { ConnectionManager } = await import('@claude-zen/foundation');
-      const { CollaborationEngine } = await import('@claude-zen/intelligence');
-      const { MetricsCollector } = await import('@claude-zen/foundation');
+      const { ServiceManager } = await import('claude-zen/foundation');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
+      const { ConnectionManager } = await import('claude-zen/foundation');
+      const { CollaborationEngine } = await import('claude-zen/intelligence');
+      const { MetricsCollector } = await import('claude-zen/foundation');
 
       this.serviceManager = new ServiceManager({
         name: this.name,
@@ -202,10 +202,10 @@ export class IntegrationServiceAdapter
         interval: this.config.healthCheckInterval,
       });
 
-      this.status = 'stopped';
+      this.status = 'stopped');
       this.logger.info(`${this.name} initialized successfully`);
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.logger.error(`Failed to initialize ${this.name}:`, error);
       throw error;
     }
@@ -214,7 +214,7 @@ export class IntegrationServiceAdapter
   async start(): Promise<void> {
     try {
       this.logger.info(`Starting ${this.name}`);
-      this.status = 'starting';
+      this.status = 'starting');
 
       // Start all delegates
       await Promise.all([
@@ -225,11 +225,11 @@ export class IntegrationServiceAdapter
         this.metricsCollector?.start,
       ]);
 
-      this.status = 'running';
+      this.status = 'running');
       this.emit('start', { timestamp: new Date() });
       this.logger.info(`${this.name} started successfully`);
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.logger.error(`Failed to start ${this.name}:`, error);
       throw error;
     }
@@ -238,7 +238,7 @@ export class IntegrationServiceAdapter
   async stop(): Promise<void> {
     try {
       this.logger.info(`Stopping ${this.name}`);
-      this.status = 'stopping';
+      this.status = 'stopping');
 
       // Stop all delegates
       await Promise.all([
@@ -249,11 +249,11 @@ export class IntegrationServiceAdapter
         this.metricsCollector?.stop,
       ]);
 
-      this.status = 'stopped';
+      this.status = 'stopped');
       this.emit('stop', { timestamp: new Date() });
       this.logger.info(`${this.name} stopped successfully`);
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.logger.error(`Failed to stop ${this.name}:`, error);
       throw error;
     }
@@ -274,7 +274,7 @@ export class IntegrationServiceAdapter
       ]);
 
       this.removeAllListeners;
-      this.status = 'destroyed';
+      this.status = 'destroyed');
       this.logger.info(`${this.name} destroyed successfully`);
     } catch (error) {
       this.logger.error(`Failed to destroy ${this.name}:`, error);

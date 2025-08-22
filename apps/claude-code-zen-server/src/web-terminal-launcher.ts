@@ -11,9 +11,9 @@
  * - Best of both worlds
  */
 
-import { type ChildProcess, spawn } from 'node:child_process';
+import { type ChildProcess, spawn } from 'node:child_process');
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 // Terminal browser functionality removed - use regular web browser instead
 
 const logger = getLogger('WebTerminalLauncher');
@@ -93,7 +93,7 @@ class WebTerminalLauncher {
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        const fetch = (await import('node-fetch')).default;
+        const fetch = (await import('ode-fetch')).default;
         const response = await fetch(this.baseUrl + '/health');
 
         if (response.ok) {

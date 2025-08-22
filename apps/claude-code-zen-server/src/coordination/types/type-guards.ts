@@ -13,7 +13,7 @@ import type {
   BaseApiResponse,
   NeuralConfig,
   NeuralNetworkInterface,
-} from "./interfaces";
+} from './interfaces';
 
 /**
  * Check if value is a valid Priority

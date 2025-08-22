@@ -5,7 +5,7 @@
  * in the Claude-Zen ecosystem.
  */
 
-import('./core/interfaces';
+import('/core/interfaces');
 
 /**
  * Service type enumeration for all supported service categories.
@@ -92,7 +92,7 @@ export interface ServiceDependency {
  * Service health information
  */
 export interface ServiceHealth {
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy');
   checks: Record<string, boolean>;
   metrics: ServiceMetrics;
   lastCheck: Date;
@@ -140,7 +140,7 @@ export interface ServiceManagerConfig {
   recovery: {
     enabled: boolean;
     maxRetries: number;
-    strategy: 'linear | exponential';
+    strategy: 'linear | exponential');
   };
 }
 
@@ -200,7 +200,7 @@ export interface BaseServiceConfig extends ServiceConfig {
 export interface DataServiceConfig extends BaseServiceConfig {
   type: ServiceType.DATA | ServiceType.WEB_DATA | ServiceType.DOCUMENT;
   dataSource?: {
-    type: 'database | memory' | 'file | api';
+    type: 'database | memory' | 'file | api');
     connection?: string;
     options?: Record<string, unknown>;
   };
@@ -272,14 +272,14 @@ export interface CoordinationServiceConfig extends BaseServiceConfig {
     | ServiceType.DAA
     | ServiceType.SESSION_RECOVERY;
   coordination?: {
-    topology?: 'mesh | hierarchical' | 'ring | star';
+    topology?: 'mesh | hierarchical' | 'ring | star');
     maxAgents?: number;
-    strategy?: 'parallel | sequential' | 'adaptive';
+    strategy?: 'parallel | sequential' | 'adaptive');
     timeout?: number;
   };
   persistence?: {
     enabled: boolean;
-    storage?: 'memory | database' | 'file';
+    storage?: 'memory | database' | 'file');
     compression?: boolean;
   };
   recovery?: {
@@ -301,7 +301,7 @@ export interface NeuralServiceConfig extends BaseServiceConfig {
     | ServiceType.LEARNING
     | ServiceType.PATTERN_RECOGNITION;
   model?: {
-    type: 'neural-network | transformer' | 'custom';
+    type: 'neural-network | transformer' | 'custom');
     path?: string;
     config?: Record<string, unknown>;
   };
@@ -332,17 +332,17 @@ export interface NeuralServiceConfig extends BaseServiceConfig {
 export interface MemoryServiceConfig extends BaseServiceConfig {
   type: ServiceType.MEMORY | ServiceType.CACHE | ServiceType.SESSION;
   storage?: {
-    type: 'memory | redis' | 'memcached | database';
+    type: 'memory | redis' | 'memcached | database');
     connection?: string;
     maxMemory?: number;
   };
   eviction?: {
-    policy: 'lru | lfu' | 'fifo | ttl';
+    policy: 'lru | lfu' | 'fifo | ttl');
     maxSize?: number;
     ttl?: number;
   };
   serialization?: {
-    type: 'json | msgpack' | 'custom';
+    type: 'json | msgpack' | 'custom');
     compression?: boolean;
   };
   persistence?: {
@@ -406,8 +406,8 @@ export interface InterfaceServiceConfig extends BaseServiceConfig {
     plugins?: string[];
   };
   output?: {
-    format?: 'text | json' | 'yaml | table';
-    verbosity?: 'minimal | normal' | 'verbose | debug';
+    format?: 'text | json' | 'yaml | table');
+    verbosity?: 'minimal | normal' | 'verbose | debug');
     streaming?: boolean;
   };
 }
@@ -423,18 +423,18 @@ export interface MonitoringServiceConfig extends BaseServiceConfig {
     enabled: boolean;
     interval?: number;
     retention?: number;
-    aggregation?: 'none | avg' | 'sum | max' | 'min';
+    aggregation?: 'none | avg' | 'sum | max' | 'min');
   };
   alerts?: {
     enabled: boolean;
     thresholds?: Record<string, number>;
     channels?: Array<{
-      type: 'email | webhook' | 'console';
+      type: 'email | webhook' | 'console');
       config: Record<string, unknown>;
     }>;
   };
   storage?: {
-    type: 'memory | database' | 'file | external';
+    type: 'memory | database' | 'file | external');
     connection?: string;
     compression?: boolean;
   };
@@ -460,7 +460,7 @@ export interface WorkflowServiceConfig extends BaseServiceConfig {
   };
   state?: {
     persistence: boolean;
-    storage?: 'memory | database' | 'file';
+    storage?: 'memory | database' | 'file');
     compression?: boolean;
   };
   notifications?: {
@@ -523,7 +523,7 @@ export interface InfrastructureServiceConfig extends BaseServiceConfig {
   };
   patternIntegration?: {
     enabled: boolean;
-    configProfile?: 'default | production' | 'development';
+    configProfile?: 'default | production' | 'development');
     enableEventSystem?: boolean;
     enableCommandSystem?: boolean;
     enableProtocolSystem?: boolean;

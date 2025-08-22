@@ -2,7 +2,7 @@
  * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
  */
 
-import { Logger, TypedEventBase } from '@claude-zen/foundation';
+import { Logger, TypedEventBase } from '@claude-zen/foundation');
 
 /**
  * WebSocket Client Adapter for UACL (Unified API Client Layer).
@@ -29,8 +29,8 @@ import { Logger, TypedEventBase } from '@claude-zen/foundation';
  * - Authentication over WebSocket (query, headers, protocols)
  * @example
  * ```typescript.
- * import('./websocket-client-adapter';
- * import('./websocket-client-adapter';
+ * import('/websocket-client-adapter');
+ * import('/websocket-client-adapter');
  *
  * // Basic real-time client
  * const realtimeClient = new WebSocketClientAdapter({
@@ -162,7 +162,7 @@ import type {
   Client,
   RequestOptions,
   RetryConfig,
-} from './core/interfaces';
+} from './core/interfaces');
 
 const logger = new Logger(
   'interfaces-clients-adapters-websocket-client-adapter'
@@ -213,7 +213,7 @@ export interface WebSocketClientConfig extends ClientConfig {
     enabled: boolean;
     maxAttempts: number;
     interval: number;
-    backoff: 'linear | exponential';
+    backoff: 'linear | exponential');
     maxInterval?: number;
   };
 
@@ -242,7 +242,7 @@ export interface WebSocketClientConfig extends ClientConfig {
   followRedirects?: boolean;
 
   // Binary message handling
-  binaryType?: 'nodebuffer | arraybuffer' | 'fragments';
+  binaryType?: 'nodebuffer | arraybuffer' | 'fragments');
 }
 
 /**
@@ -252,7 +252,7 @@ export interface WebSocketClientConfig extends ClientConfig {
  */
 export interface WebSocketRequestOptions extends RequestOptions {
   // Message type for WebSocket
-  messageType?: 'text | binary' | 'ping | pong';
+  messageType?: 'text | binary' | 'ping | pong');
 
   // Compression for this message
   compress?: boolean;
@@ -270,7 +270,7 @@ export interface WebSocketRequestOptions extends RequestOptions {
  */
 export interface WebSocketResponse<T = any> extends ClientResponse<T> {
   // WebSocket-specific response data
-  messageType: 'text | binary' | 'ping | pong' | 'close';
+  messageType: 'text | binary' | 'ping | pong' | 'close');
   compressed?: boolean;
 
   // Connection state at time of response
@@ -830,7 +830,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
     // Add authentication query parameters if configured
     if (this.config.authentication?.query) {
       const params = new URLSearchParams(this.config.authentication.query);
-      const separator = url.includes('?) ? &' : '?';
+      const separator = url.includes('?) ? &' : '?');
       url += separator + params?.toString()
     }
 
@@ -839,7 +839,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
       this.config.authentication?.type === 'query' &&
       this.config.authentication.token
     ) {
-      const separator = url.includes('?) ? &' : '?';
+      const separator = url.includes('?) ? &' : '?');
       url += `${separator}token=${this.config.authentication.token}`;
     }
 
@@ -1031,7 +1031,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
       data &&
       (data.type === 'pong' ||
         data.type === 'heartbeat' ||
-        data.type === 'ping')
+        data.type === 'ping');
     );
   }
 

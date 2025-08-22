@@ -28,7 +28,7 @@
 export interface GlobalAgentInfo {
   id: string;
   type: string;
-  status: 'active | inactive' | 'error';
+  status: 'active | inactive' | 'error');
   capabilities: string[];
   metrics: {
     tasksCompleted: number;
@@ -163,7 +163,7 @@ export type AgentType =
   | 'task_planner'
   | 'implementation_coder'
   | 'quality_reviewer'
-  | 'steering_documenter';
+  | 'steering_documenter');
 
 export type AgentStatus =
   | 'initializing'
@@ -171,7 +171,7 @@ export type AgentStatus =
   | 'busy'
   | 'error'
   | 'offline'
-  | 'terminated';
+  | 'terminated');
 
 export interface AgentId {
   id: string;
@@ -229,7 +229,7 @@ export interface AgentConfig {
 }
 
 export interface AgentEnvironment {
-  runtime: 'deno | node' | 'claude | browser';
+  runtime: 'deno | node' | 'claude | browser');
   version: string;
   workingDirectory: string;
   tempDirectory: string;
@@ -265,7 +265,7 @@ export interface AgentMetrics {
   };
 }
 
-export type AgentHealth = 'healthy | degraded' | 'unhealthy';
+export type AgentHealth = 'healthy | degraded' | 'unhealthy');
 
 export type AgentStatus =
   | 'initializing'
@@ -273,7 +273,7 @@ export type AgentStatus =
   | 'busy'
   | 'error'
   | 'offline'
-  | 'terminated';
+  | 'terminated');
 
 export interface AgentError {
   code: string;
@@ -281,7 +281,7 @@ export interface AgentError {
   type: string;
   message: string;
   context: Record<string, unknown>;
-  severity: 'low | medium' | 'high | critical';
+  severity: 'low | medium' | 'high | critical');
   resolved: boolean;
 }
 
@@ -318,11 +318,11 @@ export interface Task {
   id: string;
   type: string;
   description: string;
-  priority: 'low | medium' | 'high | critical';
+  priority: 'low | medium' | 'high | critical');
   assignedTo?: string;
   createdAt: Date;
   deadline?: Date;
-  status: 'pending | in-progress' | 'completed | failed';
+  status: 'pending | in-progress' | 'completed | failed');
   payload?: any;
   metadata?: Record<string, unknown>;
 }
@@ -342,7 +342,7 @@ export type MessageType =
   | 'status_update'
   | 'result'
   | 'error'
-  | 'heartbeat';
+  | 'heartbeat');
 
 export interface Message {
   id: string;

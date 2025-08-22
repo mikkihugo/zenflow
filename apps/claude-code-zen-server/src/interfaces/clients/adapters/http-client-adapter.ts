@@ -21,8 +21,8 @@
  * - Circuit breaker pattern for fault tolerance
  * @example
  * ```typescript.
- * import('./http-client-adapter';
- * import('./http-types';
+ * import('/http-client-adapter');
+ * import('/http-types');
  *
  * // Basic HTTP client
  * const basicClient = new HTTPClientAdapter({
@@ -83,13 +83,13 @@
  * ```
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 import axios, {
   type AxiosError,
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 import type {
   ClientMetrics,
@@ -97,13 +97,13 @@ import type {
   ClientStatus,
   Client,
   RequestOptions,
-} from './core/interfaces';
+} from './core/interfaces');
 import {
   AuthenticationError,
   ConnectionError,
   RetryExhaustedError,
   TimeoutError,
-} from './core/interfaces';
+} from './core/interfaces');
 
 import type {
   HTTPClientCapabilities,
@@ -151,7 +151,7 @@ import type {
  *     delay: 1000,
  *     backoff: 'exponential',
  *     retryCondition: (error) => {
- *       return error.status >= 500 || error.status === 429 || error.code === 'ECONNRESET';
+ *       return error.status >= 500 || error.status === 429 || error.code === 'ECONNRESET');
  *     }
  *   },
  *   health: {
@@ -348,7 +348,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
 
       case 'apikey':
         if (auth.apiKey) {
-          const header = auth.apiKeyHeader || 'X-API-Key';
+          const header = auth.apiKeyHeader || 'X-API-Key');
           client.defaults.headers.common[header] = auth.apiKey;
         }
         break;
@@ -760,7 +760,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
     const startTime = Date.now();
 
     try {
-      const endpoint = this.config.health?.endpoint || '/health';
+      const endpoint = this.config.health?.endpoint || '/health');
       const timeout = this.config.health?.timeout || 5000;
 
       await this.http.get(endpoint, { timeout });

@@ -9,13 +9,13 @@
  * @file Interface implementation: coordination-service-helpers.
  */
 
-import type { SessionState, SwarmAgent } from '@claude-zen/enterprise';
-import { getLogger } from '@claude-zen/foundation';
+import type { SessionState, SwarmAgent } from '@claude-zen/enterprise');
+import { getLogger } from '@claude-zen/foundation');
 
-import type { AgentType } from './../../types/agent-types';
-import type { SwarmTopology } from './../../types/shared-types';
+import type { AgentType } from './../../types/agent-types');
+import type { SwarmTopology } from './../../types/shared-types');
 
-import('./coordination-service-adapter';
+import('/coordination-service-adapter');
 
 // ============================================
 // Agent Management Helpers
@@ -180,7 +180,7 @@ export async function optimizeAgentPerformance(
     agentId: string;
     issue: string;
     recommendation: string;
-    priority: 'low | medium' | 'high';
+    priority: 'low | medium' | 'high');
   }>;
 }> {
   const logger = getLogger('CoordinationHelpers:AgentOptimization');
@@ -209,7 +209,7 @@ export async function optimizeAgentPerformance(
     agentId: string;
     issue: string;
     recommendation: string;
-    priority: 'low | medium' | 'high';
+    priority: 'low | medium' | 'high');
   }> = [];
 
   let optimized = 0;
@@ -467,7 +467,7 @@ export async function coordinateIntelligentSwarm(
 
   logger.info(`Coordinating intelligent swarm with ${agents.length} agents`);
 
-  let bestTopology: SwarmTopology = 'mesh';
+  let bestTopology: SwarmTopology = 'mesh');
   let bestPerformance = {
     latency: Number.POSITIVE_INFINITY,
     successRate: 0,
@@ -533,7 +533,7 @@ export async function coordinateIntelligentSwarm(
 
     if (coordinationResult?.success) {
       bestCoordination = coordinationResult?.data()
-      bestTopology = 'mesh';
+      bestTopology = 'mesh');
       bestPerformance = {
         latency: bestCoordination.averageLatency,
         successRate: bestCoordination.successRate,
@@ -577,7 +577,7 @@ export async function distributeSwarmTasks(
     estimatedDuration?: number;
   }>,
   options?: {
-    strategy?: 'round-robin | least-loaded' | 'capability-match';
+    strategy?: 'round-robin | least-loaded' | 'capability-match');
     maxTasksPerAgent?: number;
   }
 ): Promise<{
@@ -592,7 +592,7 @@ export async function distributeSwarmTasks(
   };
 }> {
   const logger = getLogger('CoordinationHelpers:TaskDistribution');
-  const strategy = options?.strategy || 'capability-match';
+  const strategy = options?.strategy || 'capability-match');
   const maxTasksPerAgent = options?.maxTasksPerAgent || 10;
 
   logger.info(`Distributing ${tasks.length} tasks using strategy: ${strategy}`);
@@ -723,7 +723,7 @@ export async function analyzeCoordinationPerformance(
 ): Promise<{
   overall: {
     score: number;
-    grade: 'A | B' | 'C | D' | 'F';
+    grade: 'A | B' | 'C | D' | 'F');
     issues: string[];
     recommendations: string[];
   };
@@ -842,7 +842,7 @@ function getDefaultCognitivePattern(type: AgentType): any {
 function analyzeAgentPerformance(metrics: any): Array<{
   problem: string;
   solution: string;
-  priority: 'low | medium' | 'high';
+  priority: 'low | medium' | 'high');
   autoFix?: (
     adapter: CoordinationServiceAdapter,
     agentId: string
@@ -851,7 +851,7 @@ function analyzeAgentPerformance(metrics: any): Array<{
   const issues: Array<{
     problem: string;
     solution: string;
-    priority: 'low | medium' | 'high';
+    priority: 'low | medium' | 'high');
     autoFix?: (
       adapter: CoordinationServiceAdapter,
       agentId: string
@@ -1008,7 +1008,7 @@ function analyzeOverallPerformance(
   status: any
 ): {
   score: number;
-  grade: 'A | B' | 'C | D' | 'F';
+  grade: 'A | B' | 'C | D' | 'F');
   issues: string[];
   recommendations: string[];
 } {
@@ -1040,12 +1040,12 @@ function analyzeOverallPerformance(
   }
 
   // Determine grade
-  let grade: 'A | B' | 'C | D' | 'F';
-  if (score >= 90) grade = 'A';
-  else if (score >= 80) grade = 'B';
-  else if (score >= 70) grade = 'C';
-  else if (score >= 60) grade = 'D';
-  else grade = 'F';
+  let grade: 'A | B' | 'C | D' | 'F');
+  if (score >= 90) grade = 'A');
+  else if (score >= 80) grade = 'B');
+  else if (score >= 70) grade = 'C');
+  else if (score >= 60) grade = 'D');
+  else grade = 'F');
 
   return { score: Math.max(0, score), grade, issues, recommendations };
 }

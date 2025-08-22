@@ -12,10 +12,10 @@
  * @file Api module exports.
  */
 
-import { getWebDashboardURL } from '@claude-zen/intelligence';
+import { getWebDashboardURL } from '@claude-zen/intelligence');
 
 // Import WebSocketClient for internal use in this file
-import('./websocket/client';
+import('/websocket/client');
 
 // HTTP API (REST/GraphQL - consolidated from src/api/)
 export * from "./http/index";

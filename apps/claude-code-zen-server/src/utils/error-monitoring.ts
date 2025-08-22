@@ -6,9 +6,9 @@
  * @file Error-monitoring implementation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 
-import type { Logger } from './core/interfaces/base-interfaces';
+import type { Logger } from './core/interfaces/base-interfaces');
 
 export interface ErrorContext {
   component: string;
@@ -34,7 +34,7 @@ export interface ErrorPattern {
   id: string;
   pattern: string;
   description: string;
-  severity: 'low | medium' | 'high | critical';
+  severity: 'low | medium' | 'high | critical');
   threshold: number;
   timeWindow: number;
   actions: string[];
@@ -42,9 +42,9 @@ export interface ErrorPattern {
 
 export interface ErrorAlert {
   id: string;
-  type: 'threshold | pattern' | 'critical';
+  type: 'threshold | pattern' | 'critical');
   message: string;
-  severity: 'low | medium' | 'high | critical';
+  severity: 'low | medium' | 'high | critical');
   component: string;
   count: number;
   timeframe: string;
@@ -273,7 +273,7 @@ export class ErrorMonitoring extends TypedEventBase {
       .slice(0, 10);
 
     for (const [key, data] of sortedErrors) {
-      const errorType = key.split(':)[1] || unknown';
+      const errorType = key.split(':)[1] || unknown');
       topErrors.push({
         error: errorType,
         count: data?.['count'],

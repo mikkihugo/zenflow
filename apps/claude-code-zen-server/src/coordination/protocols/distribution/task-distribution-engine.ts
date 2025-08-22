@@ -32,7 +32,7 @@ export interface TaskDefinition {
 
 export interface TaskDependency {
   taskId: string;
-  type: 'blocking | soft' | 'data | resource';
+  type: 'blocking' | 'soft' | 'data' | 'resource';
   weight: number;
   condition?: string;
 }
@@ -68,11 +68,11 @@ export interface TaskConstraints {
   completeBefore?: Date;
   maxRetries: number;
   timeoutMs: number;
-  isolationLevel: 'none | process' | 'container | vm';
-  securityLevel: 'low | medium' | 'high | critical';
+  isolationLevel: 'none' | 'process' | 'container' | 'vm';
+  securityLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export type TaskPriority = 'low | normal' | 'high | urgent' | 'critical';
+export type TaskPriority = 'low' | 'normal' | 'high' | 'urgent' | 'critical';
 export type TaskComplexity =
   | 'trivial'
   | 'simple'
@@ -122,7 +122,7 @@ export interface SubTask {
 }
 
 export interface ExecutionPlan {
-  strategy: 'sequential | parallel' | 'pipeline | adaptive';
+  strategy: 'sequential' | 'parallel' | 'pipeline' | 'adaptive';
   phases: ExecutionPhase[];
   checkpoints: Checkpoint[];
   rollbackPlan: RollbackStep[];
@@ -146,8 +146,8 @@ export interface Checkpoint {
 
 export interface ValidationRule {
   condition: string;
-  severity: 'warning | error' | 'critical';
-  action: 'continue | pause' | 'rollback | fail';
+  severity: 'warning' | 'error' | 'critical';
+  action: 'continue' | 'pause' | 'rollback' | 'fail';
 }
 
 export interface RollbackStep {
@@ -157,11 +157,11 @@ export interface RollbackStep {
 }
 
 export interface CoordinationStrategy {
-  type: 'centralized | distributed' | 'hierarchical | peer-to-peer';
+  type: 'centralized' | 'distributed' | 'hierarchical' | 'peer-to-peer';
   coordinator?: string;
-  communicationPattern: 'broadcast | multicast' | 'point-to-point | gossip';
+  communicationPattern: 'broadcast' | 'multicast' | 'point-to-point' | 'gossip';
   syncPoints: string[];
-  conflictResolution: 'priority | consensus' | 'coordinator | voting';
+  conflictResolution: 'priority' | 'consensus' | 'coordinator' | 'voting';
 }
 
 export interface AgentCapability {
@@ -194,13 +194,13 @@ export interface PerformanceMetrics {
 
 export interface PerformanceTrend {
   metric: string;
-  direction: 'improving | stable' | 'declining';
+  direction: 'improving' | 'stable' | 'declining';
   slope: number;
   confidence: number;
 }
 
 export interface AvailabilityProfile {
-  currentStatus: 'available | busy' | 'maintenance | offline';
+  currentStatus: 'available' | 'busy' | 'maintenance' | 'offline';
   utilization: number;
   predictedAvailability: PredictedSlot[];
   workingHours?: { start: number; end: number };
@@ -217,7 +217,7 @@ export interface PredictedSlot {
 export interface TimeWindow {
   start: Date;
   end: Date;
-  recurring?: 'daily | weekly' | 'monthly';
+  recurring?: 'daily' | 'weekly' | 'monthly';
   description?: string;
 }
 
@@ -262,16 +262,16 @@ export interface AssignmentMonitoring {
 }
 
 export interface QualityCheck {
-  checkType: 'progress | output' | 'resource | performance';
+  checkType: 'progress' | 'output' | 'resource' | 'performance';
   frequency: number;
   threshold: number;
-  action: 'warn | escalate' | 'reassign | terminate';
+  action: 'warn' | 'escalate' | 'reassign' | 'terminate';
 }
 
 export interface EscalationTrigger {
   condition: string;
   threshold: number;
-  action: 'notify | reassign' | 'add_agents | priority_boost';
+  action: 'notify' | 'reassign' | 'add_agents' | 'priority_boost';
   target?: string;
 }
 

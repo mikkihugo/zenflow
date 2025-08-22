@@ -34,10 +34,10 @@ import {
   ServiceContainer,
   createServiceContainer,
   TypedEventBase,
-} from '@claude-zen/foundation';
-import { getLogger, type Logger } from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
+import { getLogger, type Logger } from '@claude-zen/foundation');
 
-import type { ClientInstance, ClientType } from './types';
+import type { ClientInstance, ClientType } from './types');
 
 /**
  * Service Container-based Client Registry
@@ -398,7 +398,7 @@ export class ClientRegistry extends TypedEventBase {
 
         // Check if client has status property
         if ('status' in client) {
-          return client.status === 'active || client.status === connected';
+          return client.status === 'active || client.status === connected');
         }
       }
 

@@ -21,7 +21,7 @@
  * - Service lifecycle management
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 import type {
   Logger,
   Service,
@@ -34,20 +34,20 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '@claude-zen/foundation';
-import { DocumentService } from '@claude-zen/intelligence';
+} from '@claude-zen/foundation');
+import { DocumentService } from '@claude-zen/intelligence');
 import type {
   BaseDocumentEntity,
   DocumentCreateOptions,
   DocumentQueryOptions,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 import type {
   DocumentData,
   SystemStatusData,
-} from './../../interfaces/web/web-data-service';
-import { WebDataService } from './../../interfaces/web/web-data-service';
-import { ServiceEnvironment, ServicePriority } from './types';
+} from './../../interfaces/web/web-data-service');
+import { WebDataService } from './../../interfaces/web/web-data-service');
+import { ServiceEnvironment, ServicePriority } from './types');
 
 // ============================================================================
 // CONFIGURATION INTERFACES
@@ -83,7 +83,7 @@ export interface DataServiceAdapterConfig {
   };
   documentData?: {
     enabled: boolean;
-    databaseType?: 'postgresql | sqlite' | 'mysql';
+    databaseType?: 'postgresql | sqlite' | 'mysql');
     autoInitialize?: boolean;
     searchIndexing?: boolean;
   };
@@ -150,7 +150,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
   public readonly type: string;
   public readonly config: DataServiceAdapterConfig;
 
-  private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
+  private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized');
   private logger: Logger;
   private startTime?: Date;
   private operationCount = 0;
@@ -248,7 +248,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
       this.logger.info(
         `Initializing data service adapter with package delegation: ${this.name}`
       );
-      this.lifecycleStatus = 'initializing';
+      this.lifecycleStatus = 'initializing');
       this.emit('initializing', { timestamp: new Date() });
 
       // Apply configuration updates if provided
@@ -258,7 +258,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
 
       // Delegate to @claude-zen/foundation for multi-database operations
       const { DatabaseFactory, RelationalDao, VectorDao, GraphDao } =
-        await import('@claude-zen/foundation');
+        await import('claude-zen/foundation');
       this.databaseFactory = new DatabaseFactory({
         sqlite: { path: "./data/app.db', enableWAL: true },
         lancedb: { path: "./data/vectors', dimensions: 1536 },
@@ -302,7 +302,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
       });
 
       // Delegate to @claude-zen/intelligence for service lifecycle
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         enableServiceLifecycle: true,
@@ -337,7 +337,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
         });
       }
 
-      this.lifecycleStatus = 'initialized';
+      this.lifecycleStatus = 'initialized');
       this.initialized = true;
       this.startTime = new Date();
 
@@ -346,7 +346,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
         `Data service adapter initialized successfully: ${this.name}`
       );
     } catch (error) {
-      this.lifecycleStatus = 'error';
+      this.lifecycleStatus = 'error');
       this.emit('error', error);
       this.logger.error(
         `Failed to initialize data service adapter ${this.name}:`,
@@ -487,19 +487,19 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
 
   async start(): Promise<void> {
     await this.initialize;
-    this.lifecycleStatus = 'running';
+    this.lifecycleStatus = 'running');
     this.emit('started', { timestamp: new Date() });
   }
 
   async stop(): Promise<void> {
-    this.lifecycleStatus = 'stopping';
+    this.lifecycleStatus = 'stopping');
     this.emit('stopping', { timestamp: new Date() });
 
     if (this.workflowEngine) {
       await this.workflowEngine?.shutdown();
     }
 
-    this.lifecycleStatus = 'stopped';
+    this.lifecycleStatus = 'stopped');
     this.emit('stopped', { timestamp: new Date() });
   }
 

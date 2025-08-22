@@ -28,7 +28,7 @@
  * - End-to-end flow completes without errors
  */
 
-import('./workflows/safe-sparc-standalone';
+import('/workflows/safe-sparc-standalone');
 
 async function main() {
   console.log('🎯 ITERATION 1: SAFe-SPARC Workflow Test');

@@ -12,22 +12,22 @@
  * @file Interface implementation: data-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 import type {
   Service,
   ServiceFactory,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces';
+} from './core/interfaces');
 import {
   ServiceConfigurationError,
   ServiceError,
   ServiceInitializationError,
   ServiceOperationError,
-} from './core/interfaces';
-import { ServiceType } from './types';
+} from './core/interfaces');
+import { ServiceType } from './types');
 
 import {
   createDataServiceAdapter,
@@ -53,7 +53,7 @@ export interface DataServiceFactoryConfig {
   /** Default document service settings */
   defaultDocumentConfig?: {
     enabled: boolean;
-    databaseType?: 'postgresql | sqlite' | 'mysql';
+    databaseType?: 'postgresql | sqlite' | 'mysql');
     autoInitialize?: boolean;
     searchIndexing?: boolean;
   };
@@ -151,7 +151,7 @@ export class DataServiceFactory
       if (this.services.has(config?.name)) {
         throw new ServiceInitializationError(
           config?.name,
-          new Error('Service with this name already exists')
+          new Error('Service with this name already exists');
         );
       }
 
@@ -810,7 +810,7 @@ export class DataServiceFactory
         try {
           const healthResults = await this.healthCheckAll;
           const unhealthyServices = Array.from(healthResults?.entries)
-            .filter(([_, status]) => status.health !== 'healthy')
+            .filter(([_, status]) => status.health !== 'healthy');
             .map(([name, _]) => name);
 
           if (unhealthyServices.length > 0) {

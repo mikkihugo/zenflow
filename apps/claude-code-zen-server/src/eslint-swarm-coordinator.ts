@@ -9,19 +9,19 @@
  * @version 2"..0'-alpha.73
  */
 
-import { type ChildProcess, execSync, spawn } from 'child_process';
-import path from 'path';
+import { type ChildProcess, execSync, spawn } from 'child_process');
+import path from 'path');
 
 import {
   getConsoleReplacementLogger,
   TypedEventBase,
-} from '@claude-zen/foundation';
-import type { logger } from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
+import type { logger } from '@claude-zen/foundation');
 
 // Import existing coordination infrastructure (will be dynamically imported)
-// import('./coordination/swarm/core/swarm-coordinator';
-// import('./core/application-coordinator';
-// import('./core/logger';
+// import('/coordination/swarm/core/swarm-coordinator');
+// import('/core/application-coordinator');
+// import('/core/logger');
 
 // Temporary type definition until proper import is available
 type SwarmCoordinator = any;
@@ -137,7 +137,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
     this.logger.info(
       '🐝 Initializing ESLint Swarm Coordinator with Extended Timeouts'
     );
-    this.logger.info('=".repeat(80));
+    this.logger.info('='.repeat(80));
     this.logger.info(
       `⏱️  Extended timeouts: Claude inactivity ${EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY / 60000}min, Max total ${EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL / 60000}min`
     );
@@ -179,9 +179,9 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
 
       let violations: ESLintViolation[] = [];
 
-      for (const [index, strategy] of strategies?.entries) {
+      for (const [index, strategy] of strategies.entries()) {
         this.logger.info(
-          `  Strategy ${index + 1}/3: ${strategy.split(' )[2] || Full analysis'}`
+          `  Strategy ${index + 1}/3: ${strategy.split(' ')[2] || 'Full analysis'}`
         );
 
         try {
@@ -300,7 +300,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
     );
 
     const agentStats = this.agentStats.get(agentType)!;
-    agentStats.status = 'launching';
+    agentStats.status = 'launching');
     agentStats.lastActivity = Date.now();
 
     const violations = agentStats.violations || [];
@@ -308,7 +308,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
       this.logger.warn(
         `  ${config?.color}⚠️ No violations assigned to ${config?.name}\x1b[0m`
       );
-      agentStats.status = 'completed';
+      agentStats.status = 'completed');
       return;
     }
 
@@ -333,7 +333,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
     this.setupExtendedTimeoutMonitoring(agentType, agentProcess);
     this.monitorAgentOutputWithExtendedVisibility(agentType, agentProcess);
 
-    agentStats.status = 'active';
+    agentStats.status = 'active');
     this.emit('agent:launched', {
       agentType,
       config: config?.name,
@@ -505,17 +505,17 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
         clearTimeout(agentProcess.inactivityTimeout);
       if (agentProcess.maxTimeout) clearTimeout(agentProcess.maxTimeout);
 
-      stats.status = code === 0 ? 'completed : failed';
+      stats.status = code === 0 ? 'completed' : 'failed');
       stats.averageTime = duration;
 
-      const statusIcon = code === 0 ? '✅ : ❌';
-      const level = code === 0 ? 'info : error';
+      const statusIcon = code === 0 ? '✅' : '❌');
+      const level = code === 0 ? 'info' : 'error');
       this.logger[level]('Agent process completed', {
         agent: config?.name,
         agentType,
         exitCode: code,
         durationSeconds: Number.parseFloat(duration.toFixed(1)),
-        status: code === 0 ? 'completed : failed',
+        status: code === 0 ? 'completed' : 'failed',
       });
 
       this.emit('agent:completed', { agentType, code, duration, stats: stats });
@@ -531,7 +531,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
         clearTimeout(agentProcess.inactivityTimeout);
       if (agentProcess.maxTimeout) clearTimeout(agentProcess.maxTimeout);
 
-      stats.status = 'failed';
+      stats.status = 'failed');
       this.logger.error('Agent process error', {
         agent: config?.name,
         agentType,
@@ -573,9 +573,9 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
         : 0;
 
     // Clear screen and display header
-    logger?.info()
+    logger?.info('');
     logger.info('🐝 ESLint Swarm Coordinator - Enhanced Real-Time Dashboard');
-    logger.info('=".repeat(80));
+    logger.info('='.repeat(80));
     logger.info(
       `⏱️  Runtime: ${Math.floor(elapsed / 60)}m ${elapsed % 60}s | 📈 Progress: ${progress}% (${this.processedViolations}/${this.totalViolations})`
     );
@@ -586,9 +586,9 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
 
     // Enhanced agent status table
     logger.info('🤖 Agent Status & Performance:');
-    logger.info('-".repeat(80));
+    logger.info('-'.repeat(80));
 
-    for (const [agentType, stats] of this.agentStats?.entries) {
+    for (const [agentType, stats] of this.agentStats.entries()) {
       const config = AGENT_SPECIALISTS[agentType];
       const statusIcon = this.getStatusIcon(stats.status);
       const successRate =
@@ -604,7 +604,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
           ? '🟢 Active'
           : timeSinceActivity < 120
             ? '🟡 Recent'
-            : '⭕ Inactive';
+            : '⭕ Inactive');
 
       logger.info(
         `${config?.color}${statusIcon} ${config?.name?.padEnd(30)}\x1b[0m | ` +
@@ -776,7 +776,7 @@ Begin processing now with real-time progress updates.`;
     timeoutType: 'inactivity | maximum'
   ): void {
     const stats = this.agentStats.get(agentType)!;
-    stats.status = 'timeout';
+    stats.status = 'timeout');
 
     logger.info(
       `⚠️ Agent ${agentType} timed out (${timeoutType}). Processed: ${stats.processed}, Fixed: ${stats.fixed}`
@@ -865,7 +865,7 @@ Begin processing now with real-time progress updates.`;
       failed: '❌',
       timeout: '⏰',
     };
-    return icons[status] || '❓';
+    return icons[status] || '❓');
   }
 
   private logDetailedProgress(): void {
@@ -926,7 +926,7 @@ interface ESLintViolation {
   message: string;
   line: number;
   column: number;
-  severity: 'error | warning';
+  severity: 'error | warning');
 }
 
 interface ViolationDistribution {

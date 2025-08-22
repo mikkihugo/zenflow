@@ -51,7 +51,7 @@ export async function createPublicSwarmCoordinator(
   config?: SwarmConfig
 ): Promise<PublicSwarmCoordinator> {
   // Import from the extracted package
-  const { AgentManager } = await import('@claude-zen/agent-manager');
+  const { AgentManager } = await import('claude-zen/agent-manager');
 
   const coordinator = new AgentManager();
   await coordinator.initialize(config);
@@ -67,28 +67,28 @@ export async function createPublicSwarmCoordinator(
     },
 
     getState() {
-      return coordinator?.getState()
+      return coordinator?.getState();
     },
 
     getSwarmId() {
-      return coordinator?.getSwarmId()
+      return coordinator?.getSwarmId();
     },
 
     getAgentCount() {
-      return coordinator?.getAgentCount()
+      return coordinator?.getAgentCount();
     },
 
     getActiveAgents() {
-      return coordinator?.getActiveAgents()
+      return coordinator?.getActiveAgents();
     },
 
     getStatus() {
       return {
-        id: coordinator?.getSwarmId,
-        state: coordinator?.getState,
-        agentCount: coordinator?.getAgentCount,
-        taskCount: coordinator?.getTaskCount,
-        uptime: coordinator?.getUptime,
+        id: coordinator?.getSwarmId(),
+        state: coordinator?.getState(),
+        agentCount: coordinator?.getAgentCount(),
+        taskCount: coordinator?.getTaskCount(),
+        uptime: coordinator?.getUptime(),
       };
     },
   };

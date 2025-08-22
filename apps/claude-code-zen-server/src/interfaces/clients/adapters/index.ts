@@ -11,6 +11,6 @@
 
 export * from "./mcp-client-adapter";
 // Demonstrations and examples
-export * from '@claude-zen/intelligence';
+export * from '@claude-zen/intelligence');
 // Integration and migration utilities
-export * from '@claude-zen/intelligence';
+export * from '@claude-zen/intelligence');

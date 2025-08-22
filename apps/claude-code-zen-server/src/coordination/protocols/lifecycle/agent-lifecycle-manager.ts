@@ -95,7 +95,7 @@ export interface ScalingConfig {
   scaleUpThreshold: number;
   scaleDownThreshold: number;
   cooldownPeriod: number;
-  strategy: 'reactive | predictive' | 'scheduled';
+  strategy: 'reactive' | 'predictive' | 'scheduled';
 }
 
 export interface AgentInstance {
@@ -140,7 +140,7 @@ export interface HealthStatus {
     connectivity: number;
   };
   issues: HealthIssue[];
-  trend: 'improving | stable' | 'degrading';
+  trend: 'improving' | 'stable' | 'degrading';
   lastCheck: Date;
 }
 
@@ -151,7 +151,7 @@ export interface HealthIssue {
     | 'resource'
     | 'connectivity'
     | 'security';
-  severity: 'low | medium' | 'high | critical';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   message: string;
   timestamp: Date;
   resolved: boolean;
@@ -175,7 +175,7 @@ export interface PerformanceMetrics {
 
 export interface PerformanceTrend {
   metric: string;
-  direction: 'up | down' | 'stable';
+  direction: 'up' | 'down' | 'stable';
   rate: number;
   confidence: number;
   period: number;
@@ -206,7 +206,7 @@ export interface TaskAssignment {
   taskId: string;
   assignedAt: Date;
   expectedDuration: number;
-  status: 'assigned | active' | 'completed | failed' | 'cancelled';
+  status: 'assigned' | 'active' | 'completed' | 'failed' | 'cancelled';
   progress: number;
   quality: number;
 }
@@ -220,7 +220,7 @@ export interface AgentError {
     | 'resource'
     | 'task'
     | 'shutdown';
-  severity: 'low | medium' | 'high | critical';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   message: string;
   stack?: string;
   context: Record<string, unknown>;
@@ -261,12 +261,12 @@ export interface TerminationResult {
 }
 
 export interface ScalingDecision {
-  action: 'scale_up | scale_down' | 'no_action';
+  action: 'scale_up' | 'scale_down' | 'no_action';
   targetCount: number;
   currentCount: number;
   reasoning: string[];
   confidence: number;
-  urgency: 'low | medium' | 'high | critical';
+  urgency: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface LifecycleMetrics {
@@ -1084,7 +1084,7 @@ export class AgentLifecycleManager extends TypedEventBase {
     const now = Date.now();
     const lifetimes = Array.from(this.agents?.values())
       .filter((agent) => agent.status === 'terminated')
-      .map((agent) => now - agent.startTime?.getTime);
+      .map((agent) => now - (agent.startTime?.getTime() ?? 0));
 
     return lifetimes.length > 0
       ? lifetimes.reduce((sum, time) => sum + time, 0) / lifetimes.length
@@ -1152,7 +1152,7 @@ export class AgentLifecycleManager extends TypedEventBase {
         (a) => a.taskId === data?.taskId
       );
       if (assignment) {
-        assignment.status = 'completed';
+        assignment.status = 'completed');
         assignment.progress = 100;
         assignment.quality = data?.quality || 1.0;
       }
@@ -1171,7 +1171,7 @@ export class AgentLifecycleManager extends TypedEventBase {
         (a) => a.taskId === data?.taskId
       );
       if (assignment) {
-        assignment.status = 'failed';
+        assignment.status = 'failed');
       }
 
       this.addAgentError(agent, {
@@ -1191,7 +1191,7 @@ export class AgentLifecycleManager extends TypedEventBase {
       this.addAgentError(agent, data?.error);
 
       if (data?.error?.severity === 'critical') {
-        agent.status = 'unhealthy';
+        agent.status = 'unhealthy');
       }
     }
   }
@@ -1249,7 +1249,7 @@ export class AgentLifecycleManager extends TypedEventBase {
       error: error.message,
     });
 
-    agent.status = 'failed';
+    agent.status = 'failed');
     this.addAgentError(agent, {
       timestamp: new Date(),
       type: 'runtime',
@@ -1612,7 +1612,7 @@ class RecoveryEngine {
 
     // For now, just mark as recovered (actual implementation would restart the agent)
     agent.health.overall = .8;
-    agent.status = 'idle';
+    agent.status = 'idle');
   }
 }
 

@@ -6,7 +6,7 @@
  * for proper event coordination instead of custom EventEmitter implementation.
  */
 
-// import { getEventSystemAccess } from '@claude-zen/infrastructure';
+// import { getEventSystemAccess } from '@claude-zen/infrastructure');
 // Temporarily comment out until infrastructure facade is available
 
 export interface SystemEvent {

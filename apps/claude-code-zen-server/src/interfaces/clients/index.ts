@@ -13,7 +13,7 @@
  * @example
  * ```typescript
  * // Initialize UACL system
- * import('./interfaces/clients';
+ * import('/interfaces/clients');
  *
  * // Initialize with default configuration
  * await initializeUACL();
@@ -44,7 +44,7 @@
  * ```
  */
 
-import { Logger } from '@claude-zen/foundation';
+import { Logger } from '@claude-zen/foundation');
 
 import {
   globalClientManager as actualGlobalClientManager,
@@ -61,12 +61,12 @@ import {
 } from "./registry";
 
 // Legacy FACT integration
-export { FACTIntegration } from './../knowledge/knowledge-client';
+export { FACTIntegration } from './../knowledge/knowledge-client');
 // Re-export client implementations for convenience
-export { APIClient, createAPIClient } from './api/http/client';
+export { APIClient, createAPIClient } from './api/http/client');
 // WebSocket clients - both legacy and UACL
-export { WebSocketClient } from './api/websocket/client'; // Legacy WebSocket client
-export { ExternalMCPClient } from './mcp/external-mcp-client';
+export { WebSocketClient } from './api/websocket/client'); // Legacy WebSocket client
+export { ExternalMCPClient } from './mcp/external-mcp-client');
 // UACL Knowledge Client Adapter
 export {
   createCustomKnowledgeClient,
@@ -78,7 +78,7 @@ export {
   type KnowledgeRequest,
   type KnowledgeResponse,
 } from "./adapters/knowledge-client-adapter";
-export * from "./adapters/websocket-index'; // UACL WebSocket adapters
+export * from "./adapters/websocket-index'); // UACL WebSocket adapters
 // Core interfaces for UACL compatibility
 export type {
   ClientConfig as CoreClientConfig,
@@ -158,7 +158,7 @@ export {
  * const clients = await Promise.all([
  *   uacl.createHTTPClient('api, https://api.service.com'),
  *   uacl.createWebSocketClient('realtime, wss://live.service.com'),
- *   uacl.createKnowledgeClient('kb, ./knowledge', 'api-key')
+ *   uacl.createKnowledgeClient('kb, ./knowledge', 'api-key');
  * ]);
  *
  * // Monitor all clients
@@ -864,7 +864,7 @@ export class UACL {
  *              This is the recommended way to access UACL functionality in most applications.
  * @example
  * ```typescript
- * import('./interfaces/clients';
+ * import('/interfaces/clients');
  *
  * // Direct access to UACL functionality
  * await uacl?.initialize()
@@ -889,7 +889,7 @@ export const uacl = UACL?.getInstance()
  *              This is equivalent to calling `uacl.initialize(config)` but provides a more functional approach.
  * @example
  * ```typescript
- * import('./interfaces/clients';
+ * import('/interfaces/clients');
  *
  * // Initialize with default settings
  * await initializeUACL();
@@ -1119,7 +1119,7 @@ export const UACLHelpers = {
     totalClients: number;
     healthyClients: number;
     healthPercentage: number;
-    status: 'healthy | warning' | 'critical';
+    status: 'healthy | warning' | 'critical');
   } {
     if (!uacl?.isInitialized) {
       return {
@@ -1140,7 +1140,7 @@ export const UACLHelpers = {
         ? 'healthy'
         : healthPercentage >= 50
           ? 'warning'
-          : 'critical';
+          : 'critical');
 
     return {
       initialized: true,
@@ -1166,7 +1166,7 @@ export const UACLHelpers = {
    *
    * console.log('Individual client health:');
    * Object.entries(healthResults).forEach(([clientId, isHealthy]) => {
-   *   const status = isHealthy ? '✅ : ❌';
+   *   const status = isHealthy ? '✅ : ❌');
    *   console.log(`${status} ${clientId}: ${isHealthy ? 'Healthy : Unhealthy'}`);
    * });
    *
@@ -1224,7 +1224,7 @@ export const UACLHelpers = {
     const healthChecks = allClients.map(async (client) => {
       try {
         // This would need actual health check implementation per client type
-        const isHealthy = client.status === 'connected';
+        const isHealthy = client.status === 'connected');
         return { [client.id]: isHealthy };
       } catch {
         return { [client.id]: false };

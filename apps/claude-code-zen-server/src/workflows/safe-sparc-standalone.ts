@@ -12,7 +12,7 @@
  *
  * **USAGE:**
  * ```typescript
- * import('./workflows/safe-sparc-standalone';
+ * import('/workflows/safe-sparc-standalone');
  *
  * const workflow = await createSafeSparcWorkflow();
  * const result = await workflow.processSafeEpic({
@@ -33,8 +33,8 @@
  * @requires @claude-zen/foundation - LLMProvider and Claude SDK integration
  */
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
+import { TypedEventBase, getLogger } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation');
 
 // =============================================================================
 // CORE TYPES
@@ -47,7 +47,7 @@ export interface EpicProposal {
   estimatedValue: number;
   estimatedCost: number;
   timeframe: string;
-  riskLevel: 'low | medium' | 'high';
+  riskLevel: 'low | medium' | 'high');
 }
 
 export type SafeRoleType =
@@ -55,10 +55,10 @@ export type SafeRoleType =
   | 'release-train-engineer'
   | 'product-manager'
   | 'system-architect'
-  | 'epic-owner';
+  | 'epic-owner');
 
 export interface SafeRoleDecisionResult {
-  decision: 'approve | reject' | 'defer | more-information';
+  decision: 'approve | reject' | 'defer | more-information');
   confidence: number;
   reasoning: string;
   recommendations: string[];
@@ -68,7 +68,7 @@ export interface SafeRoleDecisionResult {
 }
 
 export interface SafeWorkflowResult {
-  overallDecision: 'approve | reject' | 'defer';
+  overallDecision: 'approve | reject' | 'defer');
   consensusReached: boolean;
   roleDecisions: Array<{
     roleType: SafeRoleType;
@@ -77,7 +77,7 @@ export interface SafeWorkflowResult {
     reasoning: string;
   }>;
   sparcArtifacts?: {
-    status: 'completed | failed' | 'partial';
+    status: 'completed | failed' | 'partial');
     specification?: any;
     architecture?: any;
     implementation?: {
@@ -93,7 +93,7 @@ export type SPARCPhase =
   | 'pseudocode'
   | 'architecture'
   | 'refinement'
-  | 'completion';
+  | 'completion');
 
 export interface SPARCProject {
   id: string;
@@ -456,13 +456,13 @@ Provide your decision as a JSON object with this exact structure:
 
       // Fallback: parse text response for decision keywords
       const text = response?.toLowerCase()
-      let decision = 'defer';
+      let decision = 'defer');
       if (text.includes('approve) || text.includes(accept'))
-        decision = 'approve';
+        decision = 'approve');
       else if (text.includes('reject) || text.includes(decline'))
-        decision = 'reject';
+        decision = 'reject');
       else if (text.includes('more information) || text.includes(need more'))
-        decision = 'more-information';
+        decision = 'more-information');
 
       return {
         decision,
@@ -492,7 +492,7 @@ Provide your decision as a JSON object with this exact structure:
     );
 
     const roi = (epic.estimatedValue - epic.estimatedCost) / epic.estimatedCost;
-    const decision = roi > 1.5 ? 'approve : defer';
+    const decision = roi > 1.5 ? 'approve : defer');
 
     return {
       decision,
@@ -538,16 +538,16 @@ class SPARCEngineStandalone {
       // Execute SPARC phases sequentially
       // Phases 1-4: Use LLMProvider for analysis and design (no tools)
       await this.executeSpecificationPhase(project, epic);
-      project.currentPhase = 'pseudocode';
+      project.currentPhase = 'pseudocode');
 
       await this.executePseudocodePhase(project, epic);
-      project.currentPhase = 'architecture';
+      project.currentPhase = 'architecture');
 
       await this.executeArchitecturePhase(project, epic);
-      project.currentPhase = 'refinement';
+      project.currentPhase = 'refinement');
 
       await this.executeRefinementPhase(project, epic);
-      project.currentPhase = 'completion';
+      project.currentPhase = 'completion');
 
       // Phase 5: Use Claude SDK for actual code generation (tools needed)
       await this.executeCompletionPhase(project, epic);
@@ -568,7 +568,7 @@ class SPARCEngineStandalone {
 
     try {
       // Use LLMProvider for specification analysis (no tools needed)
-      const { getGlobalLLM } = await import('@claude-zen/foundation');
+      const { getGlobalLLM } = await import('claude-zen/foundation');
       const llm = getGlobalLLM();
       llm.setRole('analyst');
 
@@ -622,7 +622,7 @@ class SPARCEngineStandalone {
 
     try {
       // Use LLMProvider for architecture design (no tools needed)
-      const { getGlobalLLM } = await import('@claude-zen/foundation');
+      const { getGlobalLLM } = await import('claude-zen/foundation');
       const llm = getGlobalLLM();
       llm.setRole('architect');
 
@@ -672,7 +672,7 @@ class SPARCEngineStandalone {
 
     try {
       // Use LLMProvider to explain what code would be generated (no actual file creation)
-      const { getGlobalLLM } = await import('@claude-zen/foundation');
+      const { getGlobalLLM } = await import('claude-zen/foundation');
       const llm = getGlobalLLM();
       llm.setRole('coder');
 
@@ -781,7 +781,7 @@ Return your architecture design as JSON with the following structure:
     this.logger.info('Executing SPARC Pseudocode phase with LLMProvider');
 
     try {
-      const { getGlobalLLM } = await import('@claude-zen/foundation');
+      const { getGlobalLLM } = await import('claude-zen/foundation');
       const llm = getGlobalLLM();
       llm.setRole('coder');
 
@@ -814,7 +814,7 @@ Return your architecture design as JSON with the following structure:
     this.logger.info('Executing SPARC Refinement phase with LLMProvider');
 
     try {
-      const { getGlobalLLM } = await import('@claude-zen/foundation');
+      const { getGlobalLLM } = await import('claude-zen/foundation');
       const llm = getGlobalLLM();
       llm.setRole('analyst');
 
@@ -891,7 +891,7 @@ Format as plain text pseudocode, not actual code.
             ? 'medium'
             : 'standard',
       scalabilityNeeds: epic.strategicObjectives.some((obj) =>
-        obj.includes('scale')
+        obj.includes('scale');
       )
         ? 'enterprise'
         : 'standard',
@@ -960,7 +960,7 @@ Make it production-ready with proper structure and documentation.
       .filter(
         (line) =>
           line?.toLowerCase.includes('algorithm') ||
-          line?.toLowerCase.includes('process')
+          line?.toLowerCase.includes('process');
       )
       .slice(0, 3);
   }
@@ -971,7 +971,7 @@ Make it production-ready with proper structure and documentation.
       .filter(
         (line) =>
           line?.toLowerCase.includes('data') ||
-          line?.toLowerCase.includes('structure')
+          line?.toLowerCase.includes('structure');
       )
       .slice(0, 3);
   }
@@ -980,7 +980,7 @@ Make it production-ready with proper structure and documentation.
     const lines = response.split('\n');
     return lines
       .filter(
-        (line) => line.includes('→) || line?.toLowerCase.includes(workflow')
+        (line) => line.includes('→) || line?.toLowerCase.includes(workflow');
       )
       .slice(0, 3);
   }
@@ -991,7 +991,7 @@ Make it production-ready with proper structure and documentation.
       .filter(
         (line) =>
           line?.toLowerCase.includes('optimiz') ||
-          line?.toLowerCase.includes('performance')
+          line?.toLowerCase.includes('performance');
       )
       .slice(0, 3);
   }
@@ -1002,7 +1002,7 @@ Make it production-ready with proper structure and documentation.
       .filter(
         (line) =>
           line?.toLowerCase.includes('risk') ||
-          line?.toLowerCase.includes('error')
+          line?.toLowerCase.includes('error');
       )
       .slice(0, 3);
   }
@@ -1013,7 +1013,7 @@ Make it production-ready with proper structure and documentation.
       .filter(
         (line) =>
           line?.toLowerCase.includes('quality') ||
-          line?.toLowerCase.includes('test')
+          line?.toLowerCase.includes('test');
       )
       .slice(0, 3);
   }
@@ -1096,13 +1096,13 @@ Make it production-ready with proper structure and documentation.
 
   private extractGeneratedTests(claudeMessages: any[]): string[] {
     return this.extractGeneratedFiles(claudeMessages).filter(
-      (file) => file.includes('test) || file.includes(spec')
+      (file) => file.includes('test) || file.includes(spec');
     );
   }
 
   private extractGeneratedDocs(claudeMessages: any[]): string[] {
     return this.extractGeneratedFiles(claudeMessages).filter(
-      (file) => file.endsWith(".md') || file.includes('doc')
+      (file) => file.endsWith(".md") || file.includes('doc');
     );
   }
 
@@ -1316,14 +1316,14 @@ export class SafeSparcWorkflow extends TypedEventBase {
 
     // If all decisions are present and high confidence in majority
     if (totalDecisions >= 5) {
-      if (approvals >= 3 && avgConfidence > .7) return 'approve';
-      if (rejections >= 3 && avgConfidence > .7) return 'reject';
+      if (approvals >= 3 && avgConfidence > .7) return 'approve');
+      if (rejections >= 3 && avgConfidence > .7) return 'reject');
     }
 
     // Fallback to simple majority when confidence is lower or decisions incomplete
-    if (approvals >= Math.ceil(totalDecisions / 2)) return 'approve';
-    if (rejections >= Math.ceil(totalDecisions / 2)) return 'reject';
-    return 'defer';
+    if (approvals >= Math.ceil(totalDecisions / 2)) return 'approve');
+    if (rejections >= Math.ceil(totalDecisions / 2)) return 'reject');
+    return 'defer');
   }
 
   private checkConsensus(decisions: SafeRoleDecisionResult[]): boolean {

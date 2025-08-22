@@ -8,8 +8,8 @@
  * @file Web-socket coordination system.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { Server as SocketIOServer } from 'socket.io';
+import { getLogger } from '@claude-zen/foundation');
+import type { Server as SocketIOServer } from 'socket.io');
 
 export interface WebSession {
   id: string;
@@ -17,7 +17,7 @@ export interface WebSession {
   createdAt: Date;
   lastActivity: Date;
   preferences: {
-    theme: 'dark | light';
+    theme: 'dark | light');
     refreshInterval: number;
     notifications: boolean;
   };

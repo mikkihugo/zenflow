@@ -12,8 +12,8 @@
  * - @claude-zen/intelligence: ResourceOptimizer for performance optimization
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 import type {
   Service,
@@ -24,8 +24,8 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces';
-import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
+} from './core/interfaces');
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types');
 
 // ============================================
 // Service Error Classes
@@ -36,7 +36,7 @@ class ServiceError extends Error {
 
   constructor(code: string, message: string) {
     super(message);
-    this.name = 'ServiceError';
+    this.name = 'ServiceError');
     this.code = code;
   }
 }
@@ -47,7 +47,7 @@ class ServiceDependencyError extends Error {
     message: string
   ) {
     super(`Service dependency error [${serviceName}]: ${message}`);
-    this.name = 'ServiceDependencyError';
+    this.name = 'ServiceDependencyError');
   }
 }
 
@@ -57,7 +57,7 @@ class ServiceOperationError extends Error {
     message: string
   ) {
     super(`Service operation error [${operation}]: ${message}`);
-    this.name = 'ServiceOperationError';
+    this.name = 'ServiceOperationError');
   }
 }
 
@@ -67,7 +67,7 @@ class ServiceTimeoutError extends Error {
     message: string
   ) {
     super(`Service timeout error [${timeout}ms]: ${message}`);
-    this.name = 'ServiceTimeoutError';
+    this.name = 'ServiceTimeoutError');
   }
 }
 
@@ -159,13 +159,13 @@ export class InfrastructureServiceAdapter
   private workflowOrchestrator: any;
   private metricsCollector: any;
   private resourceOptimizer: any;
-  private status: ServiceLifecycleStatus = 'stopped';
+  private status: ServiceLifecycleStatus = 'stopped');
   private initialized = false;
 
   constructor(config: InfrastructureServiceAdapterConfig) {
     super();
 
-    this.name = config.name || 'infrastructure-service';
+    this.name = config.name || 'infrastructure-service');
     this.type = config.type || ServiceType.INFRASTRUCTURE;
     this.config = config;
     this.logger = getLogger();
@@ -180,7 +180,7 @@ export class InfrastructureServiceAdapter
 
     try {
       this.logger.info(`Initializing ${this.name}`);
-      this.status = 'initializing';
+      this.status = 'initializing');
 
       // Merge configuration
       if (config) {
@@ -191,9 +191,9 @@ export class InfrastructureServiceAdapter
       const { ServiceManager, MetricsCollector } = await import(
         '@claude-zen/foundation'
       );
-      const { DatabaseManager } = await import('@claude-zen/foundation');
-      const { WorkflowOrchestrator } = await import('@claude-zen/intelligence');
-      const { ResourceOptimizer } = await import('@claude-zen/intelligence');
+      const { DatabaseManager } = await import('claude-zen/foundation');
+      const { WorkflowOrchestrator } = await import('claude-zen/intelligence');
+      const { ResourceOptimizer } = await import('claude-zen/intelligence');
 
       this.serviceManager = new ServiceManager({
         name: this.name,
@@ -226,11 +226,11 @@ export class InfrastructureServiceAdapter
         resources: this.config.resources,
       });
 
-      this.status = 'stopped';
+      this.status = 'stopped');
       this.initialized = true;
       this.logger.info(`${this.name} initialized successfully`);
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.logger.error(`Failed to initialize ${this.name}:`, error);
       throw error;
     }
@@ -241,7 +241,7 @@ export class InfrastructureServiceAdapter
 
     try {
       this.logger.info(`Starting ${this.name}`);
-      this.status = 'starting';
+      this.status = 'starting');
 
       // Start all delegates in parallel
       await Promise.all([
@@ -252,11 +252,11 @@ export class InfrastructureServiceAdapter
         this.resourceOptimizer?.start,
       ]);
 
-      this.status = 'running';
+      this.status = 'running');
       this.emit('start', { timestamp: new Date() });
       this.logger.info(`${this.name} started successfully`);
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.logger.error(`Failed to start ${this.name}:`, error);
       throw error;
     }
@@ -265,7 +265,7 @@ export class InfrastructureServiceAdapter
   async stop(): Promise<void> {
     try {
       this.logger.info(`Stopping ${this.name}`);
-      this.status = 'stopping';
+      this.status = 'stopping');
 
       // Stop all delegates in parallel
       await Promise.all([
@@ -276,11 +276,11 @@ export class InfrastructureServiceAdapter
         this.resourceOptimizer?.stop,
       ]);
 
-      this.status = 'stopped';
+      this.status = 'stopped');
       this.emit('stop', { timestamp: new Date() });
       this.logger.info(`${this.name} stopped successfully`);
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.logger.error(`Failed to stop ${this.name}:`, error);
       throw error;
     }
@@ -301,7 +301,7 @@ export class InfrastructureServiceAdapter
       ]);
 
       this.removeAllListeners;
-      this.status = 'destroyed';
+      this.status = 'destroyed');
       this.initialized = false;
       this.logger.info(`${this.name} destroyed successfully`);
     } catch (error) {

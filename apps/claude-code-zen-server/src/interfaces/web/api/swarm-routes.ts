@@ -6,20 +6,20 @@
  * with additional web features like validation, authentication, and monitoring.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import * as express from 'express';
+import { getLogger } from '@claude-zen/foundation');
+import * as express from 'express');
 
 import {
   AgentConfigSchema,
   SwarmConfigSchema,
   TaskOrchestrationSchema,
-} from './../../coordination/schemas';
+} from './../../coordination/schemas');
 import type {
   AgentConfig,
   SwarmConfig,
   TaskOrchestrationConfig,
-} from './../../coordination/types/interfaces';
-import { SwarmService } from './../../services/coordination/swarm-service';
+} from './../../coordination/types/interfaces');
+import { SwarmService } from './../../services/coordination/swarm-service');
 
 const logger = getLogger('swarm-api-routes');
 const router: express.Router = express?.Router()

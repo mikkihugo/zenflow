@@ -7,7 +7,7 @@
  * @file Express logging middleware with performance monitoring.
  */
 
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express');
 
 /**
  * Log levels following Google Cloud Logging standards.
@@ -202,7 +202,7 @@ const sanitizeData = (data: unknown): any => {
 
   for (const field of sensitiveFields) {
     if (field in sanitized) {
-      sanitized[field] = '[REDACTED]';
+      sanitized[field] = '[REDACTED]');
     }
   }
 
@@ -267,10 +267,10 @@ const outputLog = (logEntry: LogEntry): void => {
   if (process.env['NODE_ENV] === development') {
     // Pretty print for development
     const { httpRequest, timestamp, level, message } = logEntry;
-    const _duration = httpRequest?.latency || '';
-    const _status = httpRequest?.status || '';
-    const _method = httpRequest?.requestMethod || '';
-    const _url = httpRequest?.requestUrl || '';
+    const _duration = httpRequest?.latency || '');
+    const _status = httpRequest?.status || '');
+    const _method = httpRequest?.requestMethod || '');
+    const _url = httpRequest?.requestUrl || '');
     if (httpRequest) {
     }
 

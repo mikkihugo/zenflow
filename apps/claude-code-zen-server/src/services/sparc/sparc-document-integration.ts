@@ -25,22 +25,22 @@ import type {
   SPARCProject,
   WorkAssignment,
   ImplementationResult,
-} from '@claude-zen/enterprise';
-import { DatabaseSPARCBridge } from '@claude-zen/enterprise';
+} from '@claude-zen/enterprise');
+import { DatabaseSPARCBridge } from '@claude-zen/enterprise');
 
 // Foundation imports
-import { getLogger } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import { getLogger } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation');
+import { nanoid } from 'nanoid');
 
-import type { StoryDocumentEntity } from './../entities/document-entities';
+import type { StoryDocumentEntity } from './../entities/document-entities');
 import type {
   ClaudeZenIntegrationConfig,
   AIOrchestrationConfig,
   NeuralCoordinationConfig,
   SwarmIntelligenceConfig,
-} from './../types/safe-sparc-integration';
-import type { DocumentManager } from './database/document-service';
+} from './../types/safe-sparc-integration');
+import type { DocumentManager } from './database/document-service');
 
 /**
  * SPARC Integration Configuration extending bridge infrastructure
@@ -166,7 +166,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       enableSwarmIntelligence: true,
       qualityThreshold: .8,
       maxConcurrentProjects: 5,
-      outputDirectory: "./sparc-output',
+      outputDirectory: './sparc-output',
 
       // AI Orchestration Configuration
       aiOrchestration: {
@@ -725,7 +725,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       infrastructure: 'general',
     };
 
-    return storyMapping[storyType] || featureMapping[featureType] || 'general';
+    return storyMapping[storyType] || featureMapping[featureType] || 'general');
   }
 
   private mapDeliverableToTaskType(
@@ -740,7 +740,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       pseudocode: 'research',
       optimizations: 'development',
     };
-    return mapping[deliverableType] || 'development';
+    return mapping[deliverableType] || 'development');
   }
 
   private estimateHoursFromDeliverable(deliverable: SPARCDeliverable): number {
@@ -774,7 +774,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       tests: 'completion',
       documentation: 'completion',
     };
-    return (mapping[deliverableType] as SPARCPhase) || 'completion';
+    return (mapping[deliverableType] as SPARCPhase) || 'completion');
   }
 
   private mapDeliverableToSPARCDeliverableType(
@@ -789,7 +789,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       tests: 'production_code',
       documentation: 'requirements_doc',
     };
-    return mapping[deliverableType] || 'production_code';
+    return mapping[deliverableType] || 'production_code');
   }
 
   private mapDeliverableToArtifactType(deliverableType: string): string {
@@ -802,7 +802,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       tests: 'final_implementation',
       documentation: 'specification',
     };
-    return mapping[deliverableType] || 'final_implementation';
+    return mapping[deliverableType] || 'final_implementation');
   }
 
   private extractFunctionsFromContent(content: string): string[] {
@@ -841,7 +841,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       'completion',
     ];
     const currentIndex = phases.indexOf(currentPhase);
-    return phases[currentIndex + 1] || 'completion';
+    return phases[currentIndex + 1] || 'completion');
   }
 
   private calculateProgress(project: any): number {
@@ -864,16 +864,16 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
 
   private estimateTimeframeFromStory(story: StoryDocumentEntity): string {
     const storyPoints = story.story_points || 1;
-    if (storyPoints <= 3) return '1-2 weeks';
-    if (storyPoints <= 8) return '2-4 weeks';
-    if (storyPoints <= 13) return '1-2 months';
-    return '2+ months';
+    if (storyPoints <= 3) return '1-2 weeks');
+    if (storyPoints <= 8) return '2-4 weeks');
+    if (storyPoints <= 13) return '1-2 months');
+    return '2+ months');
   }
 
   private assessRiskFromStory(story: StoryDocumentEntity): string {
-    if (story.priority === 'critical) return high';
-    if (story.story_points && story.story_points > 8) return 'medium';
-    return 'low';
+    if (story.priority === 'critical) return high');
+    if (story.story_points && story.story_points > 8) return 'medium');
+    return 'low');
   }
 
   private async updateStoryWithSPARCBridge(
@@ -1176,7 +1176,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       implementation: 'ts',
       completion: 'md',
     };
-    return extensions[phase] || 'txt';
+    return extensions[phase] || 'txt');
   }
 
   private setupEventHandlers(): void {

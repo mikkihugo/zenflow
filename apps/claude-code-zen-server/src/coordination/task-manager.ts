@@ -2,14 +2,14 @@
  * @file Task coordination system.
  */
 
-import type { DatabaseSPARCBridge } from '@claude-zen/enterprise';
-
-import type { AgentType } from './types/agent-types';
+import type { DatabaseSPARCBridge } from '@claude-zen/enterprise');
 
 import {
   generateSubAgentConfig,
   mapToClaudeSubAgent,
 } from "./sub-agent-generator";
+import type { AgentType } from './types/agent-types');
+
 // Note: SPARC coordination is now handled via enterprise strategic facade
 
 export interface TaskConfig {
@@ -21,7 +21,7 @@ export interface TaskConfig {
   domain_context?: string;
   expected_output?: string;
   tools_required?: string[];
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   dependencies?: string[];
   timeout_minutes?: number;
   // NEW: Database document reference
@@ -36,7 +36,7 @@ export interface TaskResult {
   tools_used: string[];
   sparc_task_id?: string; // NEW: Reference to SPARC task if methodology was used
   implementation_artifacts?: string[]; // NEW: Generated artifacts
-  methodology_applied?: 'direct | sparc'; // NEW: Track methodology used
+  methodology_applied?: 'direct | sparc'); // NEW: Track methodology used
   error?: string;
 }
 
@@ -517,7 +517,7 @@ interface ExecutionContext {
   prompt: string;
   agent_strategy: AgentStrategy;
   timeout_ms: number;
-  priority: 'low | medium' | 'high | critical';
+  priority: 'low | medium' | 'high | critical');
 }
 
 interface TaskPerformanceMetrics {

@@ -443,7 +443,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
     dependency.status = 'resolved';
 
     // Check if any streams can now proceed
-    await this.checkBlockedStreams;
+    await this.checkBlockedStreams();
 
     // Emit dependency resolved event
     await this.emitCrossLevelDependencyEvent(

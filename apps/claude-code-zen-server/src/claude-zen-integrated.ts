@@ -139,7 +139,7 @@ export class ClaudeZenIntegrated {
   private async startServer(): Promise<void> {
     try {
       // Import express dynamically to avoid loading it if not needed
-      const express = await import('express');
+      const express = await import('xpress');
       const app = express.default();
 
       // Basic health check endpoint

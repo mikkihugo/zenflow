@@ -2,7 +2,7 @@
  * @fileoverview Temporary stub for @claude-zen/intelligence/coordinator
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 
 export interface CoordinatorConfig {
   enabled?: boolean;

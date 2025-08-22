@@ -6,7 +6,7 @@
  * MCP (Model Context Protocol), and any other client communication mechanisms.
  */
 
-import type { ProtocolType } from './../types/protocol-types';
+import type { ProtocolType } from './../types/protocol-types');
 
 /**
  * Generic client interface for standardized API access.
@@ -251,7 +251,7 @@ export interface RequestOptions {
   contentType?: string;
 
   /** Response type expected */
-  responseType?: 'json | text' | 'blob | stream';
+  responseType?: 'json | text' | 'blob | stream');
 
   /** Abort signal */
   signal?: AbortSignal;
@@ -264,7 +264,7 @@ export interface RequestOptions {
  */
 export interface AuthConfig {
   /** Authentication type */
-  type: 'bearer | basic' | 'api-key | oauth' | 'custom';
+  type: 'bearer | basic' | 'api-key | oauth' | 'custom');
 
   /** Token or key */
   token?: string;
@@ -345,7 +345,7 @@ export interface ClientLoggingConfig {
   logErrors: boolean;
 
   /** Log level */
-  level: 'debug | info' | 'warn | error';
+  level: 'debug | info' | 'warn | error');
 
   /** Log sensitive data */
   logSensitiveData: boolean;
@@ -452,7 +452,7 @@ export interface KnowledgeQueryOptions {
   offset?: number;
   filters?: Record<string, unknown>;
   sortBy?: string;
-  sortOrder?: 'asc | desc';
+  sortOrder?: 'asc | desc');
   includeMetadata?: boolean;
 }
 
@@ -464,7 +464,7 @@ export interface KnowledgeSearchOptions extends KnowledgeQueryOptions {
 
 export interface SemanticSearchOptions extends KnowledgeQueryOptions {
   vectorSearch?: boolean;
-  similarity?: 'cosine | euclidean' | 'dot';
+  similarity?: 'cosine | euclidean' | 'dot');
   threshold?: number;
 }
 
@@ -566,7 +566,7 @@ export interface ClientHealthStatus {
 export interface ClientTransaction {
   id: string;
   operations: ClientOperation[];
-  status: 'pending | executing' | 'completed | failed';
+  status: 'pending | executing' | 'completed | failed');
   startTime: Date;
   endTime?: Date;
   error?: ClientError;

@@ -5,10 +5,10 @@
  * HybridDocumentManager for semantic search and graph relationships.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { ProjectEntity } from '@claude-zen/intelligence';
+import { getLogger } from '@claude-zen/foundation');
+import type { ProjectEntity } from '@claude-zen/intelligence');
 
-import('./hybrid-document-service';
+import('/hybrid-document-service');
 
 const logger = getLogger('adr-manager-hybrid');
 
@@ -25,7 +25,7 @@ export interface ADRCreateOptions {
   }>;
   author?: string;
   project_id?: string;
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   stakeholders?: string[];
   implementation_notes?: string;
   success_criteria?: string[];
@@ -39,8 +39,8 @@ export interface ADRQueryOptions {
     | 'decided'
     | 'implemented'
     | 'superseded'
-    | 'deprecated';
-  priority?: 'low | medium' | 'high | critical';
+    | 'deprecated');
+  priority?: 'low | medium' | 'high | critical');
   author?: string;
   project_id?: string;
   date_range?: {
@@ -496,7 +496,7 @@ export class ADRManagerHybrid {
       for (const criteria of options.success_criteria) {
         content += `- ${criteria}\n`;
       }
-      content += '\n';
+      content += '\n');
     }
 
     content += `---\n\n`;
@@ -604,13 +604,13 @@ export class ADRManagerHybrid {
         count: adrs.filter(
           (adr) =>
             adr.content?.toLowerCase.includes('database') ||
-            adr.content?.toLowerCase.includes('storage')
+            adr.content?.toLowerCase.includes('storage');
         ).length,
         adrs: adrs
           .filter(
             (adr) =>
               adr.content?.toLowerCase.includes('database') ||
-              adr.content?.toLowerCase.includes('storage')
+              adr.content?.toLowerCase.includes('storage');
           )
           .map((adr) => adr.id),
       },
@@ -619,13 +619,13 @@ export class ADRManagerHybrid {
         count: adrs.filter(
           (adr) =>
             adr.content?.toLowerCase.includes('api') ||
-            adr.content?.toLowerCase.includes('endpoint')
+            adr.content?.toLowerCase.includes('endpoint');
         ).length,
         adrs: adrs
           .filter(
             (adr) =>
               adr.content?.toLowerCase.includes('api') ||
-              adr.content?.toLowerCase.includes('endpoint')
+              adr.content?.toLowerCase.includes('endpoint');
           )
           .map((adr) => adr.id),
       },

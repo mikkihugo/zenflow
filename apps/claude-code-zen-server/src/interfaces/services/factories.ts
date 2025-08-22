@@ -13,7 +13,7 @@
  * - Event-driven service coordination.
  * @example
  * ```typescript
- * import { USLFactory, globalUSLFactory } from '@claude-zen/usl';
+ * import { USLFactory, globalUSLFactory } from '@claude-zen/usl');
  *
  * // Configure and use the global factory
  * await globalUSLFactory.initialize({
@@ -35,8 +35,8 @@
  * ```
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation';
-import { TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation');
 
 import type {
   Service,
@@ -729,7 +729,7 @@ export class USLFactory implements ServiceFactory {
 
       case ServiceType.WEB:
       case ServiceType.API: {
-        const { WebService } = await import('./implementations/web-service');
+        const { WebService } = await import('/implementations/web-service');
         return new WebService(config as WebServiceConfig);
       }
 
@@ -752,7 +752,7 @@ export class USLFactory implements ServiceFactory {
       }
 
       case ServiceType.NEURAL: {
-        const { NeuralService } = await import('@claude-zen/intelligence');
+        const { NeuralService } = await import('claude-zen/intelligence');
         return new NeuralService(config as NeuralServiceConfig);
       }
 
@@ -946,7 +946,7 @@ export class USLFactory implements ServiceFactory {
     throw new ServiceOperationError(
       service.name,
       'recovery',
-      new Error('All recovery attempts failed')
+      new Error('All recovery attempts failed');
     );
   }
 
@@ -970,7 +970,7 @@ export class USLFactory implements ServiceFactory {
       try {
         const healthResults = await this.healthCheckAll;
         const unhealthyServices = Array.from(healthResults?.entries)
-          .filter(([_, status]) => status.health !== 'healthy')
+          .filter(([_, status]) => status.health !== 'healthy');
           .map(([name, _]) => name);
 
         if (unhealthyServices.length > 0) {
@@ -1211,7 +1211,7 @@ export class ServiceRegistry implements ServiceRegistry {
   discoverServices(criteria?: {
     type?: string;
     capabilities?: string[];
-    health?: 'healthy | degraded' | 'unhealthy';
+    health?: 'healthy | degraded' | 'unhealthy');
     tags?: string[];
   }): Service[] {
     const allServices = Array.from(this.getAllServices?.values());

@@ -28,8 +28,8 @@ export class PerformanceOptimizer {
       success: true,
       improvements: ['memory-usage, response-time'],
       metrics: {
-        'memory-reduction': .2,
-        'speed-improvement': .15,
+        'memory-reduction': 0.2,
+        'speed-improvement': 0.15,
       },
     };
   }

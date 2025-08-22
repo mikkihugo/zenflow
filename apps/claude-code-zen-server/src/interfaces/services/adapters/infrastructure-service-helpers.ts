@@ -9,9 +9,9 @@
  * @file Interface implementation: infrastructure-service-helpers.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
-import type { ServiceOperationOptions } from './core/interfaces';
+import type { ServiceOperationOptions } from './core/interfaces');
 
 import type {
   InfrastructureServiceAdapter,
@@ -21,8 +21,8 @@ import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
 } from "./infrastructure-service-adapter";
-import('./infrastructure-service-factory';
-import('./infrastructure-service-factory';
+import('/infrastructure-service-factory');
+import('/infrastructure-service-factory');
 
 const logger = getLogger('InfrastructureServiceHelpers');
 
@@ -144,7 +144,7 @@ export async function createFacadeOnlyInfrastructureService(
 export async function createPatternIntegrationOnlyService(
   name: string,
   patternOptions: {
-    configProfile?: 'default | production' | 'development';
+    configProfile?: 'default | production' | 'development');
     maxAgents?: number;
     enableAutoOptimization?: boolean;
   } = {}
@@ -306,7 +306,7 @@ export async function initializeProjectWithRetries(
   }
 
   throw (
-    lastError || new Error('Project initialization failed after all retries')
+    lastError || new Error('Project initialization failed after all retries');
   );
 }
 
@@ -329,7 +329,7 @@ export async function processDocumentEnhanced(
   options: {
     useNeural?: boolean;
     cacheResults?: boolean;
-    priority?: 'low | medium' | 'high | critical';
+    priority?: 'low | medium' | 'high | critical');
     timeout?: number;
     swarmId?: string;
   } = {}
@@ -476,7 +476,7 @@ export async function getSystemStatusCached(
 export async function initializeOptimizedSwarm(
   service: InfrastructureServiceAdapter,
   swarmConfig: {
-    topology?: 'mesh | hierarchical' | 'ring | star';
+    topology?: 'mesh | hierarchical' | 'ring | star');
     agentCount?: number;
     capabilities?: string[];
     enableAutoOptimization?: boolean;

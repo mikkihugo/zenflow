@@ -8,12 +8,12 @@
  * @file Daemon-process management system.
  */
 
-import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { spawn } from 'node:child_process');
+import { existsSync } from 'node:fs');
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises');
+import { join } from 'node:path');
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
 export interface DaemonConfig {
   pidFile?: string;
@@ -26,7 +26,7 @@ export interface DaemonConfig {
 export interface ProcessInfo {
   pid: number;
   startTime: Date;
-  status: 'running | stopped' | 'error';
+  status: 'running | stopped' | 'error');
   command: string;
   args: string[];
 }
@@ -230,7 +230,7 @@ export class DaemonProcessManager {
     pid?: number;
     uptime?: number;
     memory?: NodeJS.MemoryUsage;
-    status: 'healthy | unhealthy' | 'stopped';
+    status: 'healthy | unhealthy' | 'stopped');
   }> {
     const processInfo = await this.getRunningProcess;
 

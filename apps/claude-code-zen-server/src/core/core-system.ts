@@ -129,7 +129,7 @@
  * The API maintains compatibility while providing a much cleaner internal architecture?.
  */
 
-import { WorkflowEngine } from '@claude-zen/enterprise';
+import { WorkflowEngine } from '@claude-zen/enterprise');
 import {
   getLogger,
   createCircuitBreaker,
@@ -137,7 +137,7 @@ import {
   DocumentationManager,
   ExportSystem as ExportManager,
   InterfaceManager,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 import {
   TypedEventBus,
   createEventBus,
@@ -145,8 +145,8 @@ import {
   NeuralML,
   initializeCoordinationFactSystem,
   storeCoordinationFact,
-} from '@claude-zen/intelligence';
-import { AgentMonitoring, getChaosEngine } from '@claude-zen/operations';
+} from '@claude-zen/intelligence');
+import { AgentMonitoring, getChaosEngine } from '@claude-zen/operations');
 
 // 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration
 
@@ -235,7 +235,7 @@ const logger = getLogger('CoreSystem');
 export interface SystemConfig {
   // Memory configuration
   memory?: {
-    backend?: 'lancedb | sqlite' | 'json';
+    backend?: 'lancedb | sqlite' | 'json');
     directory?: string;
     namespace?: string;
   };
@@ -248,7 +248,7 @@ export interface SystemConfig {
 
   // Interface configuration
   interface?: {
-    defaultMode?: 'auto | cli' | ' | web';
+    defaultMode?: 'auto | cli' | ' | web');
     webPort?: number;
   };
 
@@ -314,7 +314,7 @@ export interface SystemConfig {
  * ```
  */
 export interface SystemStatus {
-  status: 'initializing | ready' | 'error | shutdown';
+  status: 'initializing | ready' | 'error | shutdown');
   version: string;
   components: {
     memory: { status: string; entries: number };
@@ -435,7 +435,7 @@ export interface SystemStatus {
  */
 export class System extends TypedEventBase {
   private configuration: SystemConfig;
-  private status: SystemStatus['status] = initializing';
+  private status: SystemStatus['status'] = 'initializing');
   private startTime: number;
 
   // Core components with clear responsibilities
@@ -628,7 +628,7 @@ export class System extends TypedEventBase {
     logger?.info('🚀 Initializing Core System');
 
     try {
-      this.status = 'initializing';
+      this.status = 'initializing');
       this.emit('status:changed', this.status);
 
       // Initialize components in dependency order
@@ -654,13 +654,13 @@ export class System extends TypedEventBase {
       logger?.info('🧠 Initializing AI enhancement systems?.?.?.');
       await this.initializeAISystemsAsync;
 
-      this.status = 'ready';
+      this.status = 'ready');
       this.initialized = true;
 
       this.emit('initialized', {});
       logger?.info('✅ Core System ready');
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.emit('status:changed', this.status);
       logger?.error('❌ Failed to initialize Core System:', error);
       throw error;
@@ -786,7 +786,7 @@ export class System extends TypedEventBase {
   async shutdown(): Promise<void> {
     logger?.info('Shutting down Core System?.?.?.');
 
-    this.status = 'shutdown';
+    this.status = 'shutdown');
     this.emit('status:changed', this.status);
 
     try {
@@ -795,14 +795,14 @@ export class System extends TypedEventBase {
       await this.shutdownAISystemsAsync();
 
       // Shutdown components in reverse order
-      await this.interfaceManager??.shutdown();
-      await this.documentationManager??.shutdown();
-      await this.exportManager??.shutdown();
-      await this.documentProcessor??.shutdown();
-      await this.workflowEngine??.shutdown();
-      await this.memorySystem??.shutdown();
+      await this.interfaceManager?.shutdown();
+      await this.documentationManager?.shutdown();
+      await this.exportManager?.shutdown();
+      await this.documentProcessor?.shutdown();
+      await this.workflowEngine?.shutdown();
+      await this.memorySystem?.shutdown();
 
-      this.removeAllListeners;
+      this.removeAllListeners();
       this.emit('shutdown', {});
       logger?.info('Core System shutdown complete');
     } catch (error) {
@@ -927,8 +927,8 @@ export class System extends TypedEventBase {
               source: data?.documentPath,
             },
             source: 'core-system',
-            confidence: 1?.0,
-            tags: ['document, processed'],
+            confidence: 1.0,
+            tags: ['document', 'processed'],
           });
           logger?.debug(`Document processed and stored in knowledge system`);
         } catch (error) {
@@ -1040,7 +1040,7 @@ export class System extends TypedEventBase {
     factSystem: boolean;
     neuralML: boolean;
     agentMonitoring: boolean;
-    overallHealth: 'healthy | degraded' | 'unavailable';
+    overallHealth: 'healthy | degraded' | 'unavailable');
   }> {
     const status = {
       chaosEngineering: !!this.chaosEngineering,
@@ -1055,7 +1055,7 @@ export class System extends TypedEventBase {
 
     if (availableSystems === 0) {
       status?.overallHealth = 'unavailable' as any;
-    } else if (availableSystems < totalSystems * 0?.75) {
+    } else if (availableSystems < totalSystems * 0.75) {
       status?.overallHealth = 'degraded' as any;
     }
 

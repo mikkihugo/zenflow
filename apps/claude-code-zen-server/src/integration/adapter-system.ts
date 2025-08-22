@@ -3,7 +3,7 @@
  * Provides protocol adaptation and legacy system integration.
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 const logger = getLogger('src-integration-adapter-system');
 
@@ -41,7 +41,7 @@ export interface ConnectionConfig {
 }
 
 export interface AuthConfig {
-  type: 'none | basic' | 'bearer | oauth' | 'api-key';
+  type: 'none | basic' | 'bearer | oauth' | 'api-key');
   credentials?: {
     username?: string;
     password?: string;
@@ -74,7 +74,7 @@ export interface ProtocolAdapter {
 // MCP Protocol Adapter (HTTP and stdio)
 export class MCPAdapter implements ProtocolAdapter {
   private connected = false;
-  private protocol: 'http | stdio';
+  private protocol: 'http | stdio');
   private httpClient?: any;
   private stdioProcess?: any;
   private eventHandlers: Map<string, ((message: ProtocolMessage) => void)[]> =
@@ -326,7 +326,7 @@ export class MCPAdapter implements ProtocolAdapter {
       capabilities: '/capabilities',
     };
 
-    return endpointMap[messageType] || '/tools/unknown';
+    return endpointMap[messageType] || '/tools/unknown');
   }
 
   private handleStdioMessage(data: string): void {
@@ -506,7 +506,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
   }
 
   getProtocolName(): string {
-    return 'websocket';
+    return 'websocket');
   }
 
   getCapabilities(): string[] {
@@ -692,7 +692,7 @@ export class RESTAdapter implements ProtocolAdapter {
   }
 
   getProtocolName(): string {
-    return 'rest-api';
+    return 'rest-api');
   }
 
   getCapabilities(): string[] {
@@ -771,7 +771,7 @@ export class RESTAdapter implements ProtocolAdapter {
       document_process: '/documents/process',
     };
 
-    return endpointMap[messageType] || '/unknown';
+    return endpointMap[messageType] || '/unknown');
   }
 }
 
@@ -887,7 +887,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
   }
 
   getProtocolName(): string {
-    return 'legacy-system';
+    return 'legacy-system');
   }
 
   getCapabilities(): string[] {

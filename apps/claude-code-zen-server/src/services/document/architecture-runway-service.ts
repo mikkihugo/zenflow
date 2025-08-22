@@ -15,7 +15,7 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
+import type { DocumentType } from '@claude-zen/enterprise');
 
 import {
   BaseDocumentService,
@@ -23,8 +23,8 @@ import {
   type QueryFilters,
   type QueryResult,
 } from "./base-document-service";
-import('./document-schemas';
-import('./document-service';
+import('/document-schemas');
+import('/document-service');
 
 // ============================================================================
 // ARCHITECTURE RUNWAY INTERFACES
@@ -43,7 +43,7 @@ export interface ArchitectureRunwayCreateOptions {
   }>;
   author?: string;
   projectId?: string;
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   stakeholders?: string[];
   implementationNotes?: string;
   successCriteria?: string[];
@@ -51,7 +51,7 @@ export interface ArchitectureRunwayCreateOptions {
 }
 
 export interface ArchitectureRunwayQueryOptions extends QueryFilters {
-  decisionStatus?: 'proposed | accepted' | 'deprecated | superseded';
+  decisionStatus?: 'proposed | accepted' | 'deprecated | superseded');
   adrNumber?: number;
   adrId?: string;
 }
@@ -70,7 +70,7 @@ export type DecisionStatus =
   | 'proposed'
   | 'accepted'
   | 'deprecated'
-  | 'superseded';
+  | 'superseded');
 
 // ============================================================================
 // ARCHITECTURE RUNWAY SERVICE
@@ -84,7 +84,7 @@ export type DecisionStatus =
  * Compatible across Kanban → Agile → SAFe modes.
  */
 export class ArchitectureRunwayService extends BaseDocumentService<any> {
-  private currentMode: 'kanban | agile' | 'safe = kanban';
+  private currentMode: 'kanban | agile' | 'safe = kanban');
 
   constructor(
     documentManager?: DocumentManager,
@@ -107,7 +107,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
   // ============================================================================
 
   protected getDocumentType(): DocumentType {
-    return 'architecture_runway';
+    return 'architecture_runway');
   }
 
   protected validateDocument(data: Partial<any>): ValidationResult {
@@ -161,7 +161,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
     let content = `# ${data.title}\n\n`;
 
     // Status section
-    const status = data.decision_status || 'proposed';
+    const status = data.decision_status || 'proposed');
     content += `## Status\n**${status?.toUpperCase}**\n\n`;
 
     // Runway ID
@@ -182,7 +182,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
         content += `- ${consequence}\n`;
       });
     }
-    content += '\n';
+    content += '\n');
 
     // Alternatives section (if any)
     if (
@@ -201,12 +201,12 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
         if (alt.rejectedReason || alt.rejected_reason) {
           content += `**Rejected because**: ${alt.rejectedReason || alt.rejected_reason}\n`;
         }
-        content += '\n';
+        content += '\n');
       });
     }
 
     // Metadata section
-    content += '---\n\n';
+    content += '---\n\n');
     content += `**Decision Date**: ${new Date()?.toISOString.split('T')[0]}\n`;
     content += `**Author**: ${data.author || 'architecture-team'}\n`;
 
@@ -354,7 +354,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
 
       // Agile mode fields
       if (this.currentMode === 'agile || this.currentMode === safe') {
-        runwayData.decision_status = 'proposed';
+        runwayData.decision_status = 'proposed');
         runwayData.alternatives_considered = options.alternatives || [];
         runwayData.stakeholders = options.stakeholders || [];
       }
@@ -363,7 +363,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
       if (this.currentMode === 'safe') {
         runwayData.runway_number = runwayNumber;
         runwayData.runway_id = runwayId;
-        runwayData.architecture_impact = 'system';
+        runwayData.architecture_impact = 'system');
         runwayData.implementation_timeline = {
           dependencies: [],
         };
@@ -596,7 +596,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
 
       for (const runway of runways) {
         // Decision status stats
-        const status = runway.decision_status || 'proposed';
+        const status = runway.decision_status || 'proposed');
         stats.byDecisionStatus[status] =
           (stats.byDecisionStatus[status] || 0) + 1;
 
@@ -706,7 +706,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
    */
   private extractRunwayId(title: string): string {
     const match = title.match(/^(AR-\d+)/);
-    return match ? match[1] : '';
+    return match ? match[1] : '');
   }
 
   /**
@@ -722,7 +722,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
       superseded: 'archived',
     };
 
-    return statusMap[decisionStatus] || 'draft';
+    return statusMap[decisionStatus] || 'draft');
   }
 }
 

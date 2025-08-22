@@ -20,7 +20,7 @@ export interface SafetyInterventionConfig {
   enabled: boolean;
   autoEscalationThreshold: number;
   humanTimeoutMs: number;
-  defaultDecision: 'pause | continue' | 'terminate';
+  defaultDecision: 'pause | continue' | 'terminate');
   escalationChannels: ('agui | log' | 'webhook')[];
   criticalPatterns: string[];
 }
@@ -30,7 +30,7 @@ export interface SafetyIncident {
   timestamp: number;
   agentId: string;
   agentType: string;
-  severity: 'LOW | MEDIUM' | 'HIGH | CRITICAL';
+  severity: 'LOW | MEDIUM' | 'HIGH | CRITICAL');
   deceptionPatterns: string[];
   confidence: number;
   context: {
@@ -44,8 +44,8 @@ export interface SafetyIncident {
 
 export interface InterventionDecision {
   incidentId: string;
-  decision: 'continue | pause' | 'terminate | retrain' | 'escalate';
-  approvedBy: 'human | automated' | 'timeout';
+  decision: 'continue | pause' | 'terminate | retrain' | 'escalate');
+  approvedBy: 'human | automated' | 'timeout');
   timestamp: number;
   reasoning: string;
   followUpActions: string[];
@@ -203,7 +203,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
     // High confidence deception in coordination agents
     if (
       incident.confidence >= this.configuration.autoEscalationThreshold &&
-      (incident.agentType === 'queen || incident.agentType === commander')
+      (incident.agentType === 'queen || incident.agentType === commander');
     ) {
       return true;
     }
@@ -219,7 +219,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
 
     // Multiple verification failures
     const verificationPatterns = incident.deceptionPatterns.filter(
-      (p) => p.includes('VERIFICATION) || p.includes(TOOL_OMNIPOTENCE')
+      (p) => p.includes('VERIFICATION) || p.includes(TOOL_OMNIPOTENCE');
     );
 
     if (verificationPatterns.length >= 2) {
@@ -260,7 +260,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
         operation: incident.context.operation,
         response: incident.context.response.substring(0, 500), // Truncate for display
       },
-      priority: incident.severity === 'CRITICAL ? high' : 'medium',
+      priority: incident.severity === 'CRITICAL' ? 'high' : 'medium',
       requiredDecision: true,
       timeoutMs: this.configuration.humanTimeoutMs,
     };
@@ -319,7 +319,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
     this.logger.info('✅ Human intervention decision received', {
       incidentId: incident.incidentId,
       decision: decision.decision,
-      humanFeedback: decision.humanFeedback ? 'provided : none',
+      humanFeedback: decision.humanFeedback ? 'provided' : 'none',
     });
 
     return decision;
@@ -337,15 +337,15 @@ export class SafetyInterventionProtocols extends TypedEventBase {
       confidence: incident.confidence,
     });
 
-    let automaticDecision: 'continue | pause' | 'terminate';
+    let automaticDecision: 'continue | pause' | 'terminate');
 
     // Automatic decision logic
     if (incident.severity === 'HIGH' && incident.confidence > .8) {
-      automaticDecision = 'pause';
+      automaticDecision = 'pause');
     } else if (incident.severity === 'MEDIUM' && incident.confidence > .9) {
-      automaticDecision = 'pause';
+      automaticDecision = 'pause');
     } else if (incident.deceptionPatterns.includes('VERIFICATION_FRAUD')) {
-      automaticDecision = 'pause';
+      automaticDecision = 'pause');
     } else {
       automaticDecision =
         this.configuration.defaultDecision === 'terminate'

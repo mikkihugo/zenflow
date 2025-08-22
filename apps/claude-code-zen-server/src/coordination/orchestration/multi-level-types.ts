@@ -60,7 +60,7 @@ export interface FlowMetrics {
 export interface BottleneckInfo {
   readonly level: OrchestrationLevel;
   readonly location: string;
-  readonly severity: 'low | medium' | 'high | critical';
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
   readonly impact: number; // Impact on overall flow
   readonly suggestedActions: string[];
 }
@@ -143,7 +143,7 @@ export interface GateConfiguration {
  */
 export interface EscalationRule {
   readonly condition: string;
-  readonly action: 'escalate | auto_approve' | 'require_review';
+  readonly action: 'escalate' | 'auto_approve' | 'require_review';
   readonly targetRole: string;
   readonly timeoutMinutes: number;
 }
@@ -170,7 +170,7 @@ export interface AutoScalingConfig {
 export interface PortfolioItem {
   readonly id: string;
   readonly title: string;
-  readonly type: 'prd | strategic_initiative' | 'market_expansion';
+  readonly type: 'prd' | 'strategic_initiative' | 'market_expansion';
   readonly status: PortfolioItemStatus;
   readonly priority: PortfolioPriority;
   readonly businessValue: number; // 0-100 scale
@@ -333,7 +333,7 @@ export interface GateCriteria {
 /**
  * Gate status
  */
-export type GateStatus = 'pending | approved' | 'rejected | conditional';
+export type GateStatus = 'pending' | 'approved' | 'rejected' | 'conditional';
 
 /**
  * Portfolio-level metrics
@@ -358,7 +358,7 @@ export interface ProgramItem {
   readonly id: string;
   readonly portfolioItemId: string;
   readonly title: string;
-  readonly type: 'epic | capability' | 'integration';
+  readonly type: 'epic' | 'capability' | 'integration';
   readonly status: ProgramItemStatus;
   readonly priority: ProgramPriority;
   readonly complexity: ComplexityLevel;
@@ -411,11 +411,11 @@ export enum ComplexityLevel {
  */
 export interface ProgramDependency {
   readonly id: string;
-  readonly type: 'technical | business' | 'resource | external';
+  readonly type: 'technical' | 'business' | 'resource' | 'external';
   readonly dependsOn: string;
-  readonly relationship: 'blocks | enables' | 'enhances';
-  readonly impact: 'low | medium' | 'high | critical';
-  readonly status: 'pending | resolved' | 'blocked';
+  readonly relationship: 'blocks' | 'enables' | 'enhances';
+  readonly impact: 'low' | 'medium' | 'high' | 'critical';
+  readonly status: 'pending' | 'resolved' | 'blocked';
   readonly resolutionPlan?: string;
 }
 
@@ -454,7 +454,7 @@ export interface ProgramCheckpoint {
   readonly id: string;
   readonly name: string;
   readonly date: Date;
-  readonly type: 'review | demo' | 'decision_point';
+  readonly type: 'review' | 'demo' | 'decision_point';
   readonly participants: string[];
   readonly agenda: string[];
   readonly outcomes?: CheckpointOutcome[];
@@ -478,8 +478,8 @@ export interface ActionItem {
   readonly description: string;
   readonly assignee: string;
   readonly dueDate: Date;
-  readonly priority: 'low | medium' | 'high';
-  readonly status: 'open | in_progress' | 'completed';
+  readonly priority: 'low' | 'medium' | 'high';
+  readonly status: 'open' | 'in_progress' | 'completed';
 }
 
 /**
@@ -540,7 +540,7 @@ export interface IntegrationSpec {
  */
 export interface InterfaceSpec {
   readonly name: string;
-  readonly type: 'api | ui' | 'data | event';
+  readonly type: 'api' | 'ui' | 'data' | 'event';
   readonly specification: string;
   readonly consumers: string[];
   readonly sla: ServiceLevelAgreement;
@@ -650,7 +650,7 @@ export interface TechnicalCriteria {
  * AI recommendation for gate decisions
  */
 export interface AIRecommendation {
-  readonly decision: 'approve | reject' | 'conditional';
+  readonly decision: 'approve' | 'reject' | 'conditional';
   readonly confidence: number; // 0-1
   readonly reasoning: string[];
   readonly risks: string[];
@@ -697,7 +697,7 @@ export interface DecisionPoint {
   readonly name: string;
   readonly description: string;
   readonly date: Date;
-  readonly decisionMaker: 'human | ai' | 'collaborative';
+  readonly decisionMaker: 'human' | 'ai' | 'collaborative';
   readonly options: DecisionOption[];
   readonly criteria: string[];
   readonly outcome?: DecisionOutcome;
@@ -750,7 +750,7 @@ export interface SwarmExecutionItem {
   readonly id: string;
   readonly programItemId: string;
   readonly title: string;
-  readonly type: 'feature | bug_fix' | 'refactoring | technical_debt';
+  readonly type: 'feature' | 'bug_fix' | 'refactoring' | 'technical_debt';
   readonly status: SwarmExecutionStatus;
   readonly priority: SwarmExecutionPriority;
   readonly complexity: ComplexityLevel;
@@ -798,7 +798,7 @@ export interface EffortEstimate {
   readonly storyPoints: number;
   readonly hours: number;
   readonly confidence: number; // 0-1
-  readonly estimatedBy: 'human | ai' | 'hybrid';
+  readonly estimatedBy: 'human' | 'ai' | 'hybrid';
   readonly factors: EstimationFactor[];
 }
 
@@ -816,10 +816,10 @@ export interface EstimationFactor {
  */
 export interface SwarmDependency {
   readonly id: string;
-  readonly type: 'code | data' | 'api | infrastructure' | 'knowledge';
+  readonly type: 'code' | 'data' | 'api' | 'infrastructure' | 'knowledge';
   readonly dependsOn: string;
-  readonly relationship: 'requires | uses' | 'extends';
-  readonly status: 'available | pending' | 'blocked';
+  readonly relationship: 'requires' | 'uses' | 'extends';
+  readonly status: 'available' | 'pending' | 'blocked';
   readonly resolutionStrategy?: string;
 }
 
@@ -849,7 +849,7 @@ export interface SPARCPhaseTimeline {
  * Testing windows
  */
 export interface TestingWindow {
-  readonly type: 'unit | integration' | 'system | acceptance';
+  readonly type: 'unit' | 'integration' | 'system' | 'acceptance';
   readonly startDate: Date;
   readonly endDate: Date;
   readonly automated: boolean;
@@ -860,7 +860,7 @@ export interface TestingWindow {
  * Deployment windows
  */
 export interface DeploymentWindow {
-  readonly environment: 'dev | test' | 'staging | production';
+  readonly environment: 'dev' | 'test' | 'staging' | 'production';
   readonly startDate: Date;
   readonly endDate: Date;
   readonly strategy: string;
@@ -986,8 +986,8 @@ export interface CrossLevelDependency {
   readonly toLevel: OrchestrationLevel;
   readonly fromItemId: string;
   readonly toItemId: string;
-  readonly type: 'blocks | enables' | 'informs';
-  readonly status: 'pending | resolved' | 'blocked';
+  readonly type: 'blocks' | 'enables' | 'informs';
+  readonly status: 'pending' | 'resolved' | 'blocked';
   readonly impact: number; // 0-1 scale
 }
 
@@ -1016,7 +1016,7 @@ export interface WIPLimitExceededEvent extends ParallelExecutionEvent {
     readonly streamId: string;
     readonly currentWIP: number;
     readonly limit: number;
-    readonly action: 'block | escalate' | 'rebalance';
+    readonly action: 'block' | 'escalate' | 'rebalance';
   };
 }
 
@@ -1084,7 +1084,7 @@ export interface SPARCMetrics {
 export interface AGUIIntegration {
   readonly gateId: string;
   readonly gateType: string;
-  readonly status: 'pending | approved' | 'rejected';
+  readonly status: 'pending' | 'approved' | 'rejected';
   readonly humanInput: boolean;
   readonly automatedDecision: boolean;
   readonly escalation?: EscalationInfo;
@@ -1098,7 +1098,7 @@ export interface EscalationInfo {
   readonly escalatedTo: string;
   readonly reason: string;
   readonly deadline: Date;
-  readonly impact: 'low | medium' | 'high | critical';
+  readonly impact: 'low' | 'medium' | 'high' | 'critical';
 }
 
 // ============================================================================
@@ -1174,7 +1174,7 @@ export interface OptimizationRecommendation {
   readonly description: string;
   readonly impact: number; // Expected improvement 0-1
   readonly effort: number; // Implementation effort 0-1
-  readonly priority: 'low | medium' | 'high | critical';
+  readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly actions: string[];
   readonly metrics: string[]; // Metrics to track success
 }

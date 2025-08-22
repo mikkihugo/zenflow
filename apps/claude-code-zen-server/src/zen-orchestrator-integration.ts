@@ -153,11 +153,11 @@ async function loadNativeBinding(): Promise<NativeZenSwarmOrchestrator> {
     // Platform-specific binding
     `../bindings/${getPlatformBindingName()}`,
     // Fallback to linux x64 (most common)
-    "../bindings/zen-code-bindings.linux-x64-gnu.node',
+    "../bindings/zen-code-bindings.linux-x64-gnu.node",
     // Alternative location
-    "../bindings/2/zen-code-bindings.linux-x64-gnu.node',
+    "../bindings/2/zen-code-bindings.linux-x64-gnu.node",
     // Relative to current file
-    "./bindings/zen-code-bindings.linux-x64-gnu.node',
+    "./bindings/zen-code-bindings.linux-x64-gnu.node",
   ];
 
   // Try each binding path
@@ -317,7 +317,7 @@ export class ZenOrchestratorIntegration {
     this.config = {
       host: config?.host || 'localhost',
       port: config?.port || 4003,
-      storage_path: config?.storage_path || ".zen/collective',
+      storage_path: config?.storage_path || ".zen/collective",
       enabled: config?.enabled ?? true,
 
       // A2A Protocol defaults
@@ -437,7 +437,7 @@ export class ZenOrchestratorIntegration {
    * Get binding information
    */
   getBindingInfo(): {
-    mode: 'native | fallback';
+    mode: 'native' | 'fallback';
     platform?: string;
     arch?: string;
   } {
@@ -618,15 +618,15 @@ export class ZenOrchestratorIntegration {
   }> {
     // Map legacy service names to neural task types
     const taskTypeMap: { [key: string]: string } = {
-      'neural-forecast: forecasting-predict',
-      'neural-compute: compute-execute',
-      'collective-intelligence: collective-intelligence',
-      'health-check: neural-forward', // Use neural-forward for health check
+      'neural-forecast': 'forecasting-predict',
+      'neural-compute': 'compute-execute',
+      'collective-intelligence': 'collective-intelligence',
+      'health-check': 'neural-forward', // Use neural-forward for health check
       echo: 'neural-forward',
-      'quantum-test: quantum-test',
-      'quantum-execute: quantum-execute',
-      'quantum-backends: quantum-backends',
-      'quantum-submit: quantum-submit',
+      'quantum-test': 'quantum-test',
+      'quantum-execute': 'quantum-execute',
+      'quantum-backends': 'quantum-backends',
+      'quantum-submit': 'quantum-submit',
     };
 
     const taskType = taskTypeMap[serviceName] || serviceName;
@@ -744,7 +744,7 @@ export class ZenOrchestratorIntegration {
    * Get version information
    */
   getVersion(): string {
-    return 'zen-swarm-orchestrator-1..0';
+    return 'zen-swarm-orchestrator-1..0');
   }
 
   /**

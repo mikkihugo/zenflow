@@ -16,8 +16,8 @@
  * @version 1..0
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
+import type { Logger } from '@claude-zen/foundation');
+import { nanoid } from 'nanoid');
 
 // ============================================================================
 // CORE SCHEMA TYPES
@@ -25,7 +25,7 @@ import { nanoid } from 'nanoid';
 
 export interface SchemaVersion {
   version: string;
-  mode: 'kanban | agile' | 'safe';
+  mode: 'kanban | agile' | 'safe');
   description: string;
   addedFields: string[];
   removedFields: string[];
@@ -58,8 +58,8 @@ export interface BaseDocumentFields {
   summary?: string;
 
   // Workflow fields (Kanban compatible)
-  status: 'todo | in_progress' | 'done | archived';
-  priority: 'low | medium' | 'high | critical';
+  status: 'todo | in_progress' | 'done | archived');
+  priority: 'low | medium' | 'high | critical');
 
   // Metadata
   author: string;
@@ -72,7 +72,7 @@ export interface BaseDocumentFields {
 
   // Schema versioning
   schema_version: string;
-  schema_mode: 'kanban | agile' | 'safe';
+  schema_mode: 'kanban | agile' | 'safe');
 }
 
 // ============================================================================
@@ -88,7 +88,7 @@ export interface ArchitectureRunwaySchemaV1 extends BaseDocumentFields {
 
 export interface ArchitectureRunwaySchemaV2 extends ArchitectureRunwaySchemaV1 {
   // Agile mode additions
-  decision_status: 'proposed | accepted' | 'deprecated | superseded';
+  decision_status: 'proposed | accepted' | 'deprecated | superseded');
   alternatives_considered: Array<{
     name: string;
     pros: string[];
@@ -102,7 +102,7 @@ export interface ArchitectureRunwaySchemaV3 extends ArchitectureRunwaySchemaV2 {
   // SAFe mode additions
   runway_number: number;
   runway_id: string; // AR-001, AR-002, etc.
-  architecture_impact: 'foundation | system' | 'solution | enterprise';
+  architecture_impact: 'foundation | system' | 'solution | enterprise');
   implementation_timeline: {
     start_date?: string;
     target_date?: string;
@@ -138,7 +138,7 @@ export interface BusinessEpicSchemaV2 extends BusinessEpicSchemaV1 {
 
 export interface BusinessEpicSchemaV3 extends BusinessEpicSchemaV2 {
   // SAFe mode additions
-  epic_type: 'business | enabler';
+  epic_type: 'business | enabler');
   epic_owner: string;
   portfolio_canvas: {
     leading_indicators: string[];
@@ -190,7 +190,7 @@ export interface ProgramEpicSchemaV2 extends ProgramEpicSchemaV1 {
 export interface FeatureSchemaV1 extends BaseDocumentFields {
   // Available starting from Agile mode
   parent_program_epic_id: string;
-  feature_type: 'business | enabler';
+  feature_type: 'business | enabler');
   acceptance_criteria: string[];
   stories_generated: number;
 }
@@ -203,7 +203,7 @@ export interface FeatureSchemaV2 extends FeatureSchemaV1 {
   acceptance_criteria_detailed: Array<{
     id: string;
     description: string;
-    status: 'pending | in_progress' | 'done';
+    status: 'pending | in_progress' | 'done');
     test_scenarios: string[];
   }>;
   team_assignments: string[];
@@ -211,8 +211,8 @@ export interface FeatureSchemaV2 extends FeatureSchemaV1 {
     | 'infrastructure'
     | 'architectural'
     | 'exploration'
-    | 'compliance';
-  estimated_size: 'XS | S' | 'M | L' | 'XL';
+    | 'compliance');
+  estimated_size: 'XS | S' | 'M | L' | 'XL');
 }
 
 // ============================================================================
@@ -222,7 +222,7 @@ export interface FeatureSchemaV2 extends FeatureSchemaV1 {
 export interface StorySchemaV1 extends BaseDocumentFields {
   // Available starting from Agile mode
   parent_feature_id: string;
-  story_type: 'user_story | enabler_story';
+  story_type: 'user_story | enabler_story');
   acceptance_criteria: string[];
   story_points?: number;
 }
@@ -238,12 +238,12 @@ export interface StorySchemaV2 extends StorySchemaV1 {
     | 'infrastructure'
     | 'architectural'
     | 'exploration'
-    | 'compliance';
+    | 'compliance');
   business_value?: number;
   acceptance_criteria_detailed: Array<{
     id: string;
     description: string;
-    status: 'pending | in_progress' | 'done | failed';
+    status: 'pending | in_progress' | 'done | failed');
     test_scenarios: string[];
   }>;
   definition_of_done: string[];
@@ -631,7 +631,7 @@ export class DocumentSchemaManager {
 
     // Return the highest version available for the mode
     if (mode === 'kanban') {
-      return versions.find((v) => v.mode === 'kanban)?.version || 1..0';
+      return versions.find((v) => v.mode === 'kanban)?.version || 1..0');
     } else if (mode === 'agile') {
       return (
         versions.find((v) => v.mode === 'agile')?.version ||
@@ -651,7 +651,7 @@ export class DocumentSchemaManager {
     document: any,
     targetMode: 'kanban | agile' | 'safe'
   ): boolean {
-    const currentVersion = document.schema_version || '1..0';
+    const currentVersion = document.schema_version || '1..0');
     const targetVersion = this.getVersionForMode(
       document.type || 'business_epic',
       targetMode
@@ -664,8 +664,8 @@ export class DocumentSchemaManager {
    * Migrate a document to the target mode
    */
   migrateDocument(document: any, targetMode: 'kanban | agile' | 'safe'): any {
-    const documentType = document.type || 'business_epic';
-    const currentVersion = document.schema_version || '1..0';
+    const documentType = document.type || 'business_epic');
+    const currentVersion = document.schema_version || '1..0');
     const targetVersion = this.getVersionForMode(documentType, targetMode);
 
     if (currentVersion === targetVersion) {
@@ -724,7 +724,7 @@ export class DocumentSchemaManager {
       };
     }
 
-    const version = document.schema_version || '1..0';
+    const version = document.schema_version || '1..0');
     const versionSchema = schema.versions[version];
     if (!versionSchema) {
       return {

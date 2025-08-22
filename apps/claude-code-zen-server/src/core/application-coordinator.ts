@@ -15,23 +15,23 @@
  * @file Application coordination system.
  */
 
-import { DocumentDrivenSystem } from '@claude-zen/document-processing';
-import { DocumentationLinker } from '@claude-zen/documentation';
-import { WorkflowEngine } from '@claude-zen/enterprise';
-import { ExportSystem as ExportManager } from '@claude-zen/exporters';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
-import { BrainCoordinator, MemoryManager } from '@claude-zen/intelligence';
-import { InterfaceLauncher } from '@claude-zen/interfaces';
+import { DocumentDrivenSystem } from '@claude-zen/document-processing');
+import { DocumentationLinker } from '@claude-zen/documentation');
+import { WorkflowEngine } from '@claude-zen/enterprise');
+import { ExportSystem as ExportManager } from '@claude-zen/exporters');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { BrainCoordinator, MemoryManager } from '@claude-zen/intelligence');
+import { InterfaceLauncher } from '@claude-zen/interfaces');
 
 const logger = getLogger('ApplicationCoordinator');
 
 export interface ApplicationCoordinatorConfig {
   // Interface configuration
   interface?: {
-    defaultMode?: 'auto | cli' | ' | web';
+    defaultMode?: 'auto | cli' | ' | web');
     webPort?: number;
     enableRealTime?: boolean;
-    theme?: 'dark | light';
+    theme?: 'dark | light');
   };
 
   // Memory configuration
@@ -72,7 +72,7 @@ export interface ApplicationCoordinatorConfig {
 }
 
 export interface SystemStatus {
-  status: 'initializing | ready' | 'error | shutdown';
+  status: 'initializing | ready' | 'error | shutdown');
   version: string;
   components: {
     interface: { status: string; mode?: string; url?: string };
@@ -92,7 +92,7 @@ export interface SystemStatus {
 
 export class ApplicationCoordinator extends TypedEventBase {
   private configuration: ApplicationCoordinatorConfig;
-  private status: SystemStatus['status] = initializing';
+  private status: SystemStatus['status'] = 'initializing');
   private startTime: number;
 
   // Core components - using definite assignment assertion since they're initialized in constructor
@@ -127,13 +127,13 @@ export class ApplicationCoordinator extends TypedEventBase {
     // Memory system (existing)
     this.memorySystem = new BrainCoordinator({
       backend: 'json', // Default to JSON backend
-      path: this.configuration.memory?.directory || "./data/memory',
+      path: this.configuration.memory?.directory || "./data/memory",
     });
 
     this.memoryManager = new MemoryManager({
       backendConfig: {
         type: 'json',
-        path: this.configuration.memory?.directory || "./data/memory',
+        path: this.configuration.memory?.directory || "./data/memory",
       },
       enableCache: this.configuration.memory?.enableCache !== false,
       enableVectorStorage:
@@ -144,9 +144,9 @@ export class ApplicationCoordinator extends TypedEventBase {
     this.workflowEngine = new WorkflowEngine(this.memorySystem, {
       maxConcurrentWorkflows:
         this.configuration.workflow?.maxConcurrentWorkflows || 10,
-      workspaceRoot: "./',
-      templatesPath: "./templates',
-      outputPath: "./output',
+      workspaceRoot: "./",
+      templatesPath: "./templates",
+      outputPath: "./output",
       defaultTimeout: 300000,
       enableMetrics: true,
       enablePersistence: true,
@@ -261,7 +261,7 @@ export class ApplicationCoordinator extends TypedEventBase {
     logger.info('🚀 Initializing Unified Core System');
 
     try {
-      this.status = 'initializing';
+      this.status = 'initializing');
       this.emit('status:changed', this.status);
 
       // Initialize components in order
@@ -294,13 +294,13 @@ export class ApplicationCoordinator extends TypedEventBase {
         }
       }
 
-      this.status = 'ready';
+      this.status = 'ready');
       this.initialized = true;
 
       this.emit('initialized', {});
       logger.info('✅ Unified Core System ready');
     } catch (error) {
-      this.status = 'error';
+      this.status = 'error');
       this.emit('status:changed', this.status);
       logger.error('❌ Failed to initialize Unified Core System:', error);
       throw error;
@@ -384,7 +384,7 @@ export class ApplicationCoordinator extends TypedEventBase {
             this.documentationLinker?.getDocumentationIndex.size,
         },
         workspace: {
-          status: this.activeWorkspaceId ? 'ready : none',
+          status: this.activeWorkspaceId ? 'ready' : 'none',
           ...(this.activeWorkspaceId !== undefined && {
             workspaceId: this.activeWorkspaceId,
           }),
@@ -532,7 +532,7 @@ export class ApplicationCoordinator extends TypedEventBase {
   async shutdown(): Promise<void> {
     logger.info('Shutting down Unified Core System...');
 
-    this.status = 'shutdown';
+    this.status = 'shutdown');
     this.emit('status:changed', this.status);
 
     try {
@@ -571,7 +571,7 @@ export class ApplicationCoordinator extends TypedEventBase {
    */
   private detectWorkspaceRoot(): string | null {
     // Simple workspace detection logic
-    const candidates = ["./docs', "./adrs', "./prds', ".'];
+    const candidates = ["./docs", "./adrs", "./prds", "."];
 
     for (const candidate of candidates) {
       try {

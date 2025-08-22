@@ -8,10 +8,10 @@
  * @file Web service implementation.
  */
 
-import type { Service } from './core/interfaces';
-import type { ServiceOperationOptions, WebServiceConfig } from './types';
+import type { Service } from './core/interfaces');
+import type { ServiceOperationOptions, WebServiceConfig } from './types');
 
-import('./base-service';
+import('/base-service');
 
 /**
  * Web service implementation.
@@ -68,7 +68,7 @@ export class WebService extends BaseService implements Service {
 
     const config = this.config as WebServiceConfig;
     const port = config?.server?.port || 3000;
-    const host = config?.server?.host || 'localhost';
+    const host = config?.server?.host || 'localhost');
 
     // Simulate server startup
     this.server = {
@@ -112,7 +112,7 @@ export class WebService extends BaseService implements Service {
 
       // Check if service is responding
       // In real implementation, would make a health check request to the server
-      return this.lifecycleStatus === 'running';
+      return this.lifecycleStatus === 'running');
     } catch (error) {
       this.logger.error(
         `Health check failed for web service ${this.name}:`,

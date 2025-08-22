@@ -8,6 +8,6 @@
  * @file Agui module exports.
  */
 
-export type { AGUIInterface, ValidationQuestion } from "./agui-adapter";
-export * from "./agui-adapter";
-export { createAGUI, MockAGUI, TerminalAGUI } from "./agui-adapter";
+export type { AGUIInterface, ValidationQuestion } from './agui-adapter';
+export * from './agui-adapter';
+export { createAGUI, MockAGUI, TerminalAGUI } from './agui-adapter';

@@ -7,12 +7,12 @@
  * @file Centralized client type management system.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import type { FACTIntegration } from '@claude-zen/intelligence';
+import { TypedEventBase } from '@claude-zen/foundation');
+import type { FACTIntegration } from '@claude-zen/intelligence');
 
-import type { APIClient } from './api/http/client';
-import type { WebSocketClient } from './api/websocket/client';
-import type { ExternalMCPClient } from './mcp/external-mcp-client';
+import type { APIClient } from './api/http/client');
+import type { WebSocketClient } from './api/websocket/client');
+import type { ExternalMCPClient } from './mcp/external-mcp-client');
 
 /**
  * Client type enumeration for type safety.
@@ -95,7 +95,7 @@ export interface MCPClientConfig extends BaseClientConfig {
     string,
     {
       url: string;
-      type: 'http | sse';
+      type: 'http | sse');
       capabilities: string[];
     }
   >;
@@ -129,7 +129,7 @@ export interface ClientInstance {
     | 'connecting'
     | 'connected'
     | 'disconnected'
-    | 'error';
+    | 'error');
   readonly lastHealth?: Date;
   readonly metrics: {
     requests: number;
@@ -306,7 +306,7 @@ export class ClientRegistry extends TypedEventBase {
   getHealthy(type?: ClientType): ClientInstance[] {
     return this.getAll((client) => {
       const typeMatch = !type || client.type === type;
-      const statusMatch = client.status === 'connected';
+      const statusMatch = client.status === 'connected');
       return typeMatch && statusMatch;
     });
   }
@@ -330,7 +330,7 @@ export class ClientRegistry extends TypedEventBase {
    */
   isHealthy(clientId: string): boolean {
     const client = this.clients.get(clientId);
-    return client?.status === 'connected';
+    return client?.status === 'connected');
   }
 
   /**
@@ -408,7 +408,7 @@ export class ClientRegistry extends TypedEventBase {
     const healthChecks = clients.map(async (client) => {
       try {
         const isHealthy = await this.checkClientHealth(client);
-        const newStatus = isHealthy ? 'connected : error';
+        const newStatus = isHealthy ? 'connected : error');
 
         if (client.status !== newStatus) {
           // Update status (this would need to be mutable in real implementation)
@@ -451,7 +451,7 @@ export class ClientRegistry extends TypedEventBase {
       }
 
       // For other clients, assume healthy if not in error state
-      return instance.status !== 'error';
+      return instance.status !== 'error');
     } catch {
       return false;
     }

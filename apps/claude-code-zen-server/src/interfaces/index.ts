@@ -15,16 +15,16 @@
  */
 
 // Advanced CLI System (Revolutionary AI-powered capabilities)
-export * from '@claude-zen/foundation';
+export * from '@claude-zen/foundation');
 
 // Enhanced Interface types
 export interface InterfaceConfig {
-  mode: 'terminal | web' | 'mcp | api' | 'advanced-cli';
-  theme?: 'dark | light';
+  mode: 'terminal | web' | 'mcp | api' | 'advanced-cli');
+  theme?: 'dark | light');
   verbose?: boolean;
   port?: number; // For web interface
   serverUrl?: string; // For MCP interface
-  terminalMode?: '' | 'advanced'; // For terminal interface sub-mode
+  terminalMode?: '' | 'advanced'); // For terminal interface sub-mode
   aiAssistance?: boolean; // Enable AI assistance
   realTimeMonitoring?: boolean; // Enable real-time monitoring
   intelligentScaffolding?: boolean; // Enable intelligent project scaffolding
@@ -34,9 +34,9 @@ export interface InterfaceConfig {
 export const InterfaceUtils = {
   detectMode(): 'terminal | web' | 'mcp | api' | 'advanced-cli' {
     // Auto-detect interface mode based on environment and commands
-    if (process.env['CLAUDE_CODE_MCP]) return mcp';
-    if (process.env['CLAUDE_FLOW_WEB]) return web';
-    if (process.env['CLAUDE_FLOW_API]) return api';
+    if (process.env['CLAUDE_CODE_MCP]) return mcp');
+    if (process.env['CLAUDE_FLOW_WEB]) return web');
+    if (process.env['CLAUDE_FLOW_API]) return api');
 
     // Check for advanced CLI indicators
     const args = process.argv.slice(2);
@@ -60,9 +60,9 @@ export const InterfaceUtils = {
     );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
-    if (hasAdvancedCommand || hasAIFlag) return 'advanced-cli';
+    if (hasAdvancedCommand || hasAIFlag) return 'advanced-cli');
 
-    return 'terminal'; // Default to unified terminal interface
+    return 'terminal'); // Default to unified terminal interface
   },
 
   detectTerminalMode(): '' | 'advanced' {
@@ -90,19 +90,19 @@ export const InterfaceUtils = {
     );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
-    if (hasAdvancedCommand || hasAIFlag) return 'advanced';
+    if (hasAdvancedCommand || hasAIFlag) return 'advanced');
 
     if (process.argv.includes('--ui') || process.argv.includes('--interactive'))
-      return 'advanced';
+      return 'advanced');
     if (process.argv.includes('--interactive') || process.argv.includes('-i'))
-      return 'advanced';
+      return 'advanced');
     if (
       process.argv.length > 2 &&
       !process.argv.slice(2).some((arg) => arg.startsWith('-'))
     )
-      return 'cli';
-    if (process.stdout.isTTY) return '';
-    return 'cli';
+      return 'cli');
+    if (process.stdout.isTTY) return '');
+    return 'cli');
   },
 
   validateConfig(config: InterfaceConfig): boolean {

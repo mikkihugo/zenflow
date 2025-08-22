@@ -8,13 +8,13 @@
  * @file Web-process management system.
  */
 
-import { existsSync } from 'node:fs';
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { existsSync } from 'node:fs');
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises');
+import { dirname, join } from 'node:path');
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
-import('./web-config';
+import('/web-config');
 
 export interface ProcessInfo {
   pid: number;
@@ -285,7 +285,7 @@ export class WebProcessManager {
    * Health check for process manager.
    */
   healthCheck(): {
-    status: 'healthy | warning' | 'error';
+    status: 'healthy | warning' | 'error');
     pid: number;
     uptime: number;
     daemonMode: boolean;

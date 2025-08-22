@@ -13,30 +13,30 @@ import {
   type Request,
   type Response,
   Router,
-} from 'express';
+} from 'express');
 
 import {
   checkDatabaseContainerHealth,
   getDatabaseController,
-} from './di/database-container';
+} from './di/database-container');
 import {
   authMiddleware,
   hasPermission,
   optionalAuthMiddleware,
-} from './middleware/auth';
+} from './middleware/auth');
 import {
   asyncHandler,
   createInternalError,
   createValidationError,
-} from './middleware/errors';
-import { LogLevel, log, logPerformance } from './middleware/logging';
+} from './middleware/errors');
+import { LogLevel, log, logPerformance } from './middleware/logging');
 import {
   adminOperationsLimiter,
   heavyOperationsLimiter,
   lightOperationsLimiter,
   mediumOperationsLimiter,
   rateLimitInfoMiddleware,
-} from './middleware/rate-limit';
+} from './middleware/rate-limit');
 
 // Type definitions for request/response interfaces
 interface QueryRequest {
@@ -53,7 +53,7 @@ interface CommandRequest {
 
 interface BatchRequest {
   operations: Array<{
-    type: 'query | execute';
+    type: 'query | execute');
     sql: string;
     params?: any[];
   }>;
@@ -482,7 +482,7 @@ export const createDatabaseRoutes = (): Router => {
         const overallStatus =
           containerHealth.status === 'healthy' && controllerHealth.success
             ? 'healthy'
-            : 'unhealthy';
+            : 'unhealthy');
         const statusCode = overallStatus === 'healthy' ? 200 : 503;
 
         const healthResponse = {

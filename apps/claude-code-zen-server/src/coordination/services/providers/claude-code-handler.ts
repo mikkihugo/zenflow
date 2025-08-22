@@ -10,33 +10,33 @@ import {
   filterMessagesForClaudeCode,
   getLogger,
   type ClaudeSDKOptions,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 // Simple message types - no external SDK dependency needed
 export interface MessageParam {
-  role: 'user | assistant' | 'system';
-  content: string | Array<{ type: 'text'; text: string }>;
+  role: 'user | assistant' | 'system');
+  content: string | Array<{ type: 'text'); text: string }>;
 }
 
 // Stream types (from Cline's stream.ts)
 export type ApiStream = AsyncGenerator<ApiStreamChunk>;
 
 export interface ApiStreamChunk {
-  type: 'text | reasoning' | 'usage';
+  type: 'text | reasoning' | 'usage');
 }
 
 export interface ApiStreamTextChunk extends ApiStreamChunk {
-  type: 'text';
+  type: 'text');
   text: string;
 }
 
 export interface ApiStreamReasoningChunk extends ApiStreamChunk {
-  type: 'reasoning';
+  type: 'reasoning');
   reasoning: string;
 }
 
 export interface ApiStreamUsageChunk extends ApiStreamChunk {
-  type: 'usage';
+  type: 'usage');
   inputTokens: number;
   outputTokens: number;
   cacheReadTokens?: number;
@@ -73,7 +73,7 @@ export const claudeCodeModels = {
 } as const;
 
 export type ClaudeCodeModelId = keyof typeof claudeCodeModels;
-export const claudeCodeDefaultModelId: ClaudeCodeModelId = 'sonnet'; // Use Sonnet as default
+export const claudeCodeDefaultModelId: ClaudeCodeModelId = 'sonnet'); // Use Sonnet as default
 
 // API Handler interface - using our own simple types instead of Anthropic SDK
 export interface ApiHandler {
@@ -165,7 +165,7 @@ export class ClaudeCodeHandler implements ApiHandler {
           return `${msg.role}: ${msg.content}`;
         } else {
           const textParts = msg.content
-            .filter((c) => c.type === 'text')
+            .filter((c) => c.type === 'text');
             .map((c) => c.text);
           return `${msg.role}: ${textParts.join(' ')}`;
         }
@@ -207,7 +207,7 @@ export class ClaudeCodeHandler implements ApiHandler {
 
       if (chunk.type === 'system && chunk.subtype === init') {
         // Based on my tests, subscription usage sets the `apiKeySource` to "none"
-        isPaidUsage = chunk.apiKeySource !== 'none';
+        isPaidUsage = chunk.apiKeySource !== 'none');
         continue;
       }
 

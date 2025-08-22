@@ -5,10 +5,10 @@
  * monorepo detection, dependency analysis, and architectural insights.
  */
 
-import { existsSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync, statSync } from 'node:fs');
+import { join } from 'node:path');
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 const logger = getLogger('ProjectContextAnalyzer');
 
@@ -16,11 +16,11 @@ export interface MonorepoInfo {
   /** Root directory of the monorepo */
   rootPath: string;
   /** Package manager used (npm, yarn, pnpm) */
-  packageManager: 'npm | yarn' | 'pnpm | unknown';
+  packageManager: 'npm | yarn' | 'pnpm | unknown');
   /** List of workspace packages */
   workspaces: string[];
   /** Build tool configuration */
-  buildTool?: 'webpack | vite' | 'rollup | esbuild' | 'unknown';
+  buildTool?: 'webpack | vite' | 'rollup | esbuild' | 'unknown');
   /** Framework detection */
   frameworks: string[];
   /** Language configuration */
@@ -32,12 +32,12 @@ export interface MonorepoInfo {
   /** Whether monorepo has a root package.json */
   hasRootPackageJson: boolean;
   /** Type of monorepo structure */
-  type: 'lerna | nx' | 'rush | pnpm' | 'yarn | standard';
+  type: 'lerna | nx' | 'rush | pnpm' | 'yarn | standard');
 }
 
 export interface ProjectStructure {
   /** Project type classification */
-  type: 'monorepo | single-package' | 'library | application';
+  type: 'monorepo | single-package' | 'library | application');
   /** Source directories */
   sourceDirs: string[];
   /** Test directories */
@@ -52,13 +52,13 @@ export interface ProjectStructure {
 
 export interface ArchitecturalInsight {
   /** Insight category */
-  category: 'architecture | performance' | 'maintainability | security';
+  category: 'architecture | performance' | 'maintainability | security');
   /** Insight title */
   title: string;
   /** Detailed description */
   description: string;
   /** Severity level */
-  severity: 'low | medium' | 'high | critical';
+  severity: 'low | medium' | 'high | critical');
   /** Suggested actions */
   suggestions: string[];
   /** Confidence score (0-1) */
@@ -218,9 +218,9 @@ export class ProjectContextAnalyzer extends TypedEventBase {
 
       // Detect project type
       if (this.hasWorkspaces) {
-        structure.type = 'monorepo';
+        structure.type = 'monorepo');
       } else if (structure.sourceDirs.length > 0) {
-        structure.type = this.isLibrary ? 'library : application';
+        structure.type = this.isLibrary ? 'library : application');
       }
     }
 
@@ -346,10 +346,10 @@ export class ProjectContextAnalyzer extends TypedEventBase {
   }
 
   private detectPackageManager(): 'npm | yarn' | 'pnpm | unknown' {
-    if (existsSync(join(this.rootPath, 'pnpm-lock.yaml))) return pnpm';
-    if (existsSync(join(this.rootPath, 'yarn.lock))) return yarn';
-    if (existsSync(join(this.rootPath, 'package-lock.json))) return npm';
-    return 'unknown';
+    if (existsSync(join(this.rootPath, 'pnpm-lock.yaml))) return pnpm');
+    if (existsSync(join(this.rootPath, 'yarn.lock))) return yarn');
+    if (existsSync(join(this.rootPath, 'package-lock.json))) return npm');
+    return 'unknown');
   }
 
   private getWorkspaces(packageJson: any): string[] {

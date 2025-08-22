@@ -3,17 +3,17 @@
  * Consolidates all Express servers into one with organized routes.
  */
 
-import { createServer } from 'http';
-import path from 'path';
+import { createServer } from 'http');
+import path from 'path');
 
-import { Logger, Config } from '@claude-zen/foundation';
-import type { SystemConfiguration } from '@claude-zen/intelligence';
-import compression from 'compression';
-import cors from 'cors';
-import express from 'express';
-import rateLimit from 'express-rate-limit';
-import helmet from 'helmet';
-import type { Server as SocketIOServer } from 'socket.io';
+import { Logger, Config } from '@claude-zen/foundation');
+import type { SystemConfiguration } from '@claude-zen/intelligence');
+import compression from 'compression');
+import cors from 'cors');
+import express from 'express');
+import rateLimit from 'express-rate-limit');
+import helmet from 'helmet');
+import type { Server as SocketIOServer } from 'socket.io');
 // Foundation package - unified interface for all shared utilities
 
 // Type moved to @claude-zen/infrastructure
@@ -55,8 +55,8 @@ export class UnifiedClaudeZenServer {
 
   private buildServerConfig(): ServerConfig {
     // Get the full system configuration using foundation Config
-    const systemConfig = config.has('system')
-      ? config.get<SystemConfiguration>('system')
+    const systemConfig = config.has('system');
+      ? config.get<SystemConfiguration>('system');
       : null;
 
     // Default fallback configuration if system config is not available
@@ -343,10 +343,10 @@ export class UnifiedClaudeZenServer {
       const { createCoordinationRoutes } = await import(
         "./api/http/v1/coordination'
       );
-      const { createDatabaseRoutes } = await import('./api/http/v1/database');
-      const { createDocumentRoutes } = await import('./api/http/v1/documents');
-      const { createMemoryRoutes } = await import('./api/http/v1/memory');
-      const { createProjectRoutes } = await import('./api/http/v1/projects');
+      const { createDatabaseRoutes } = await import('/api/http/v1/database');
+      const { createDocumentRoutes } = await import('/api/http/v1/documents');
+      const { createMemoryRoutes } = await import('/api/http/v1/memory');
+      const { createProjectRoutes } = await import('/api/http/v1/projects');
 
       // Mount REST API routes
       this.app.use('/api/v1/coordination', createCoordinationRoutes());

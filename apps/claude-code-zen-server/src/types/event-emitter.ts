@@ -5,7 +5,7 @@
  * for properties like 'on, code', and other event-related functionality.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 
 /**
  * Base error interface with common error properties
@@ -70,7 +70,7 @@ export function hasErrorCode(error: any): error is BaseError {
     error !== null &&
     'code' in error &&
     (typeof (error as any).code === 'string' ||
-      typeof (error as any).code === 'number')
+      typeof (error as any).code === 'number');
   );
 }
 
@@ -89,7 +89,7 @@ export function isSystemError(error: any): error is SystemError {
  * Type guard to check if error is a network error
  */
 export function isNetworkError(error: any): error is NetworkError {
-  return hasErrorCode(error) && typeof (error as any).code === 'string';
+  return hasErrorCode(error) && typeof (error as any).code === 'string');
 }
 
 /**

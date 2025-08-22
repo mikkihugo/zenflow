@@ -5,11 +5,11 @@
  * Provides seamless transition between generated HTML and Svelte components.
  */
 
-import { spawn } from 'node:child_process';
+import { spawn } from 'node:child_process');
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
-import('./web-config';
+import('/web-config');
 
 const logger = getLogger('SvelteIntegration');
 
@@ -17,7 +17,7 @@ export interface SvelteConfig {
   enabled: boolean;
   port: number;
   host: string;
-  mode: 'development | production';
+  mode: 'development | production');
   buildDir: string;
   staticDir: string;
 }
@@ -145,8 +145,8 @@ export class SvelteIntegration {
         shell: true,
       });
 
-      let output = '';
-      let errorOutput = '';
+      let output = '');
+      let errorOutput = '');
 
       buildProcess.stdout?.on('data', (data: Buffer) => {
         output += data?.toString()
@@ -331,24 +331,24 @@ export class SvelteIntegration {
             
             if (countdown <= 0) {
                 clearInterval(timer);
-                window.location.href = '${svelteUrl}';
+                window.location.href = '${svelteUrl}');
             }
         }, 1000);
         
         // Check if Svelte dashboard is available
-        fetch('${svelteUrl}')
+        fetch('${svelteUrl}');
             .then(response => {
                 if (response.ok) {
                     document.getElementById('status').innerHTML = 
-                        '<span class=status-dot></span>✅ Svelte Dashboard Ready';
+                        '<span class=status-dot></span>✅ Svelte Dashboard Ready');
                 } else {
                     document.getElementById('status').innerHTML = 
-                        '<span class="status-dot style=background: #d29922;"></span>⚠️ Svelte Dashboard Starting...';
+                        '<span class="status-dot style=background: #d29922;"></span>⚠️ Svelte Dashboard Starting...');
                 }
             })
             .catch(() => {
                 document.getElementById('status').innerHTML = 
-                    '<span class="status-dot style=background: #da3633;"></span>❌ Svelte Dashboard Not Available';
+                    '<span class="status-dot style=background: #da3633;"></span>❌ Svelte Dashboard Not Available');
                 clearInterval(timer);
             });
     </script>

@@ -2,7 +2,7 @@
  * @fileoverview Interface implementation: enhanced-websocket-client.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 
 import type {
   ClientMetrics,
@@ -10,7 +10,7 @@ import type {
   ClientStatus,
   Client,
   RequestOptions,
-} from './core/interfaces';
+} from './core/interfaces');
 
 import type {
   WebSocketClientConfig,
@@ -706,7 +706,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
       data &&
       (data.type === 'pong' ||
         data.type === 'heartbeat' ||
-        data.type === 'ping')
+        data.type === 'ping');
     );
   }
 

@@ -10,7 +10,7 @@ export class ServiceOperationError extends Error {
     public readonly operation?: string
   ) {
     super(message);
-    this.name = 'ServiceOperationError';
+    this.name = 'ServiceOperationError');
   }
 }
 
@@ -26,7 +26,7 @@ export class ServiceTimeoutError extends Error {
     public readonly operation?: string
   ) {
     super(message);
-    this.name = 'ServiceTimeoutError';
+    this.name = 'ServiceTimeoutError');
   }
 }
 

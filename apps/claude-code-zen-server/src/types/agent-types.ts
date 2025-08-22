@@ -139,7 +139,7 @@ export type AgentType =
   | 'task_planner'
   | 'implementation_coder'
   | 'quality_reviewer'
-  | 'steering_documenter';
+  | 'steering_documenter');
 
 export type AgentStatus =
   | 'idle'
@@ -147,7 +147,7 @@ export type AgentStatus =
   | 'offline'
   | 'error'
   | 'initializing'
-  | 'terminated';
+  | 'terminated');
 
 export type AgentId = string;
 

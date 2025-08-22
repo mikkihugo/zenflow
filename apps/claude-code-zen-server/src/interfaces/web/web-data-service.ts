@@ -1,4 +1,4 @@
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
 const { getVersion } = (global as any).claudeZenFoundation;
 /**

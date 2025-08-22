@@ -2,7 +2,7 @@
  * @file Interface implementation: safe-api-client.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
 /**
  * Safe API Response Handler.
@@ -18,12 +18,12 @@ import {
   extractErrorMessage,
   isAPIError,
   isAPISuccess,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 const logger = getLogger('interfaces-api-safe-api-client');
 
 export interface APIRequestOptions {
-  method: 'GET | POST' | 'PUT | DELETE' | 'PATCH';
+  method: 'GET | POST' | 'PUT | DELETE' | 'PATCH');
   headers?: Record<string, string>;
   body?: any;
   timeout?: number;
@@ -175,7 +175,7 @@ export class SafeAPIClient {
             const contentType = response?.headers?.get('content-type');
             let data: T;
 
-            data = contentType?.includes('application/json')
+            data = contentType?.includes('application/json');
               ? ((await response?.json) as T)
               : ((await response?.text) as unknown as T);
 
@@ -367,7 +367,7 @@ export class SafeAPIService {
   ): Promise<APIResult<{ items: TResource[]; pagination: any }>> {
     const queryString = params
       ? `?${new URLSearchParams(params)?.toString}`
-      : '';
+      : '');
     return this.client.get<{ items: TResource[]; pagination: any }>(
       `${endpoint}${queryString}`
     );

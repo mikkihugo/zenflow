@@ -10,23 +10,23 @@
  * @file Interface implementation: integration-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
-import { getMCPServerURL } from '@claude-zen/intelligence';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation');
+import { getMCPServerURL } from '@claude-zen/intelligence');
 
 import type {
   Service,
   ServiceFactory,
   ServiceConfig,
-} from './core/interfaces';
-import type { ServiceType } from './types';
-
+} from './core/interfaces');
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
   type IntegrationServiceAdapter,
   type IntegrationServiceAdapterConfig,
 } from "./integration-service-adapter";
+import type { ServiceType } from './types');
+
 
 /**
  * Integration Service Factory Options for different integration patterns.
@@ -37,7 +37,7 @@ export interface IntegrationServiceFactoryOptions {
   /** Default base URL for Safe API integrations */
   defaultBaseURL?: string;
   /** Default database type for Architecture Storage integrations */
-  defaultDatabaseType?: 'postgresql | sqlite' | 'mysql';
+  defaultDatabaseType?: 'postgresql | sqlite' | 'mysql');
   /** Default supported protocols for Protocol Management integrations */
   defaultProtocols?: string[];
   /** Enable caching across all created services */
@@ -566,7 +566,7 @@ export class IntegrationServiceFactory
     name: string,
     options: {
       baseURL?: string;
-      databaseType?: 'postgresql | sqlite' | 'mysql';
+      databaseType?: 'postgresql | sqlite' | 'mysql');
       supportedProtocols?: string[];
     } & Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
@@ -1062,7 +1062,7 @@ export const IntegrationServiceHelpers = {
     name: string,
     options: {
       baseURL?: string;
-      databaseType?: 'postgresql | sqlite' | 'mysql';
+      databaseType?: 'postgresql | sqlite' | 'mysql');
       supportedProtocols?: string[];
     } = {}
   ): Promise<IntegrationServiceAdapter> {

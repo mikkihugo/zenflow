@@ -11,13 +11,13 @@
  * @file Interface implementation: api-client-wrapper.
  */
 
-import { getMCPServerURL } from '@claude-zen/foundation';
+import { getMCPServerURL } from '@claude-zen/foundation');
 import type {
   NeuralNetwork,
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 import type {
   Agent,
@@ -25,9 +25,9 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from './../../coordination/schemas';
-import { HTTPClientAdapter } from './adapters/http-client-adapter';
-import type { HTTPClientConfig } from './adapters/http-types';
+} from './../../coordination/schemas');
+import { HTTPClientAdapter } from './adapters/http-client-adapter');
+import type { HTTPClientConfig } from './adapters/http-types');
 
 /**
  * Legacy API Client Configuration (maintained for compatibility).
@@ -393,7 +393,7 @@ export class APIClient {
       timeRange?: '1h | 24h' | '7d | 30d',
       options?: RequestOptions
     ) => {
-      const queryParams = timeRange ? `?timeRange=${timeRange}` : '';
+      const queryParams = timeRange ? `?timeRange=${timeRange}` : '');
       return this.request<PerformanceMetrics>(
         'GET',
         `/api/v1/coordination/metrics${queryParams}`,
@@ -485,7 +485,7 @@ export class APIClient {
     ) => {
       return this.request<{
         trainingId: string;
-        status: 'started';
+        status: 'started');
       }>('POST', `/api/v1/neural/networks/${networkId}/train`, data, options);
     },
 
@@ -524,7 +524,7 @@ export class APIClient {
       return this.request<{
         id: string;
         networkId: string;
-        status: 'pending | running' | 'completed | failed' | 'cancelled';
+        status: 'pending | running' | 'completed | failed' | 'cancelled');
         progress: number;
         currentEpoch?: number;
         totalEpochs: number;

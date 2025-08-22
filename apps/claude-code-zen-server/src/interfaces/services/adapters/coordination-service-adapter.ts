@@ -18,8 +18,8 @@
  * - Enhanced performance monitoring and optimization
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 import type {
   Service,
@@ -29,10 +29,10 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces';
-import { ServiceOperationError } from './core/interfaces';
-import type { CoordinationServiceConfig } from './types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
+} from './core/interfaces');
+import { ServiceOperationError } from './core/interfaces');
+import type { CoordinationServiceConfig } from './types');
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types');
 
 // ============================================================================
 // COORDINATION SERVICE ADAPTER CONFIGURATION - SIMPLIFIED
@@ -88,7 +88,7 @@ export interface CoordinationServiceAdapterConfig {
  * Agent coordination request for multi-agent operations
  */
 export interface AgentCoordinationRequest {
-  readonly operation: 'spawn | coordinate' | 'conversation | consensus';
+  readonly operation: 'spawn | coordinate' | 'conversation | consensus');
   readonly agents?: string[];
   readonly context?: Record<string, unknown>;
   readonly timeout?: number;
@@ -99,7 +99,7 @@ export interface AgentCoordinationRequest {
  * Session management request for session operations
  */
 export interface SessionRequest {
-  readonly operation: 'create | restore' | 'checkpoint | destroy';
+  readonly operation: 'create | restore' | 'checkpoint | destroy');
   readonly sessionId?: string;
   readonly config?: Record<string, unknown>;
   readonly data?: any;
@@ -146,7 +146,7 @@ export class CoordinationServiceAdapter
   private adaptiveLearning: any;
 
   // Service state
-  private _status: ServiceLifecycleStatus = 'stopped';
+  private _status: ServiceLifecycleStatus = 'stopped');
   private initialized = false;
   private activeOperations = new Map<string, any>();
   private sessionManager: any;
@@ -172,7 +172,7 @@ export class CoordinationServiceAdapter
     if (this.initialized) return;
 
     try {
-      this._status = 'starting';
+      this._status = 'starting');
       this.emit('statusChanged', { status: this._status });
 
       // Delegate to @claude-zen/intelligence for multi-agent coordination
@@ -186,7 +186,7 @@ export class CoordinationServiceAdapter
       );
 
       // Delegate to @claude-zen/intelligence for coordination processes
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         name: 'coordination-service-workflows',
         persistWorkflows: true,
@@ -222,7 +222,7 @@ export class CoordinationServiceAdapter
 
       // Delegate to @claude-zen/intelligence for neural ML capabilities (per CLAUDE.md)
       if (this.settings.performance?.enableLearning !== false) {
-        const { BrainCoordinator } = await import('@claude-zen/intelligence');
+        const { BrainCoordinator } = await import('claude-zen/intelligence');
         this.adaptiveLearning = new BrainCoordinator({
           autonomous: {
             enabled: true,
@@ -239,14 +239,14 @@ export class CoordinationServiceAdapter
       }
 
       this.initialized = true;
-      this._status = 'running';
+      this._status = 'running');
       this.logger.info(
         'Coordination Service Adapter initialized successfully with @claude-zen package delegation'
       );
       this.emit('initialized', { timestamp: new Date() });
       this.emit('statusChanged', { status: this._status });
     } catch (error) {
-      this._status = 'error';
+      this._status = 'error');
       this.logger.error(
         'Failed to initialize Coordination Service Adapter:',
         error
@@ -485,11 +485,11 @@ export class CoordinationServiceAdapter
   // ============================================================================
 
   get id(): string {
-    return this.settings.name || 'coordination-service-adapter';
+    return this.settings.name || 'coordination-service-adapter');
   }
 
   get name(): string {
-    return this.settings.service.name || 'CoordinationServiceAdapter';
+    return this.settings.service.name || 'CoordinationServiceAdapter');
   }
 
   get type(): ServiceType {
@@ -505,7 +505,7 @@ export class CoordinationServiceAdapter
   }
 
   get version(): string {
-    return this.settings.service.version || '1..0';
+    return this.settings.service.version || '1..0');
   }
 
   get status(): ServiceLifecycleStatus {
@@ -522,7 +522,7 @@ export class CoordinationServiceAdapter
 
   async stop(): Promise<void> {
     try {
-      this._status = 'stopping';
+      this._status = 'stopping');
       this.emit('statusChanged', { status: this._status });
 
       // Clear active operations
@@ -536,12 +536,12 @@ export class CoordinationServiceAdapter
         await this.telemetryManager?.shutdown();
       }
 
-      this._status = 'stopped';
+      this._status = 'stopped');
       this.logger.info('Coordination Service Adapter stopped successfully');
       this.emit('stopped', { timestamp: new Date() });
       this.emit('statusChanged', { status: this._status });
     } catch (error) {
-      this._status = 'error';
+      this._status = 'error');
       this.logger.error('Error stopping Coordination Service Adapter:', error);
       this.emit('statusChanged', { status: this._status, error });
       throw error;

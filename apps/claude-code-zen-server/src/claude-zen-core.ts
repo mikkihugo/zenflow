@@ -57,7 +57,7 @@ class AppEventBus extends TypedEventBase implements EventBus {
   }
 
   emitSystemEvent(
-    event: import('./coordination/core/event-bus').SystemEvent
+    event: import('/coordination/core/event-bus').SystemEvent
   ): boolean {
     return super.emit(event.type, event);
   }

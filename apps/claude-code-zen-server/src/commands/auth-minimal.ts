@@ -111,7 +111,7 @@ const ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token';
 // Simple config reader that doesn't trigger LogTape
 async function getAuthConfig(): Promise<{ useProjectConfig?: boolean }> {
   // Check for project-local config first
-  const projectConfigPath = join(process.cwd(), '.claude-zen, config.json');
+  const projectConfigPath = join(process.cwd(), '.claude-zen', 'config.json');
   try {
     const projectConfig = JSON.parse(
       await fs.readFile(projectConfigPath, 'utf8')
@@ -119,7 +119,7 @@ async function getAuthConfig(): Promise<{ useProjectConfig?: boolean }> {
     return projectConfig.auth || {};
   } catch {
     // Fall back to user config
-    const userConfigPath = join(homedir(), '.claude-zen, config.json');
+    const userConfigPath = join(homedir(), '.claude-zen', 'config.json');
     try {
       const userConfig = JSON.parse(await fs.readFile(userConfigPath, 'utf8'));
       return userConfig.auth || {};

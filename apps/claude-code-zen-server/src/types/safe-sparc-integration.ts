@@ -18,8 +18,8 @@ import type {
   IntegrationConfiguration,
   QualityGate,
   IntegratedMetrics,
-} from '@claude-zen/enterprise';
-import type { AgentType, ConversationPattern } from '@claude-zen/intelligence';
+} from '@claude-zen/enterprise');
+import type { AgentType, ConversationPattern } from '@claude-zen/intelligence');
 
 // ============================================================================
 // CLAUDE-ZEN SPECIFIC AGENT EXTENSIONS
@@ -58,7 +58,7 @@ export type ClaudeSpecificCapability =
   | 'predictive-risk-assessment'
   | 'autonomous-refactoring'
   | 'cross-domain-knowledge-transfer'
-  | 'real-time-performance-optimization';
+  | 'real-time-performance-optimization');
 
 /**
  * Neural coordination profile for AI agents
@@ -76,10 +76,10 @@ export interface NeuralCoordinationProfile {
  */
 export interface SwarmIntegrationProfile {
   readonly swarmId: string;
-  readonly preferredTopology: 'mesh | hierarchical' | 'ring | star';
+  readonly preferredTopology: 'mesh | hierarchical' | 'ring | star');
   readonly communicationProtocol: string;
   readonly loadBalancingStrategy: string;
-  readonly faultToleranceLevel: 'basic | enhanced' | 'enterprise';
+  readonly faultToleranceLevel: 'basic | enhanced' | 'enterprise');
 }
 
 /**
@@ -87,8 +87,8 @@ export interface SwarmIntegrationProfile {
  */
 export interface LearningHistoryEntry {
   readonly timestamp: Date;
-  readonly context: 'safe-ceremony | sparc-phase' | 'integration-handoff';
-  readonly outcome: 'success | partial-success' | 'failure';
+  readonly context: 'safe-ceremony | sparc-phase' | 'integration-handoff');
+  readonly outcome: 'success | partial-success' | 'failure');
   readonly lessonsLearned: string[];
   readonly performanceImpact: number; // -1 to 1
 }
@@ -125,7 +125,7 @@ export interface HumanInTheLoopConfig {
   readonly requiredApprovals: ApprovalRequirement[];
   readonly notificationChannels: string[];
   readonly timeoutMinutes: number;
-  readonly fallbackStrategy: 'block | proceed' | 'escalate';
+  readonly fallbackStrategy: 'block | proceed' | 'escalate');
 }
 
 /**
@@ -136,7 +136,7 @@ export interface ApprovalRequirement {
     | 'high-risk-decision'
     | 'budget-threshold'
     | 'compliance-critical'
-    | 'novel-approach';
+    | 'novel-approach');
   readonly approverRole: string;
   readonly requiredApprovers: number;
   readonly timeout: number; // minutes
@@ -150,7 +150,7 @@ export interface NeuralDecisionPoint {
   readonly context:
     | 'feature-complexity-assessment'
     | 'architecture-pattern-selection'
-    | 'risk-mitigation-strategy';
+    | 'risk-mitigation-strategy');
   readonly neuralModel: string;
   readonly inputFeatures: string[];
   readonly outputActions: string[];
@@ -168,7 +168,7 @@ export interface SwarmCoordinationPoint {
     | 'consensus'
     | 'leader-follower'
     | 'democratic'
-    | 'expertise-weighted';
+    | 'expertise-weighted');
   readonly timeoutSeconds: number;
 }
 
@@ -192,7 +192,7 @@ export type LearningType =
   | 'risk-assessment'
   | 'resource-allocation'
   | 'timeline-prediction'
-  | 'stakeholder-satisfaction';
+  | 'stakeholder-satisfaction');
 
 // ============================================================================
 // CLAUDE-ZEN QUALITY GATES EXTENSIONS
@@ -226,7 +226,7 @@ export interface AIValidator {
     | 'code-quality'
     | 'architecture-compliance'
     | 'security-scan'
-    | 'performance-check';
+    | 'performance-check');
   readonly model: string;
   readonly weight: number; // 0-1
   readonly timeout: number; // seconds
@@ -316,7 +316,7 @@ export interface KnowledgeManagementConfig {
  */
 export interface PerformanceOptimizationConfig {
   readonly enablePerformanceOptimization: boolean;
-  readonly cacheStrategy: 'lru | lfu' | 'adaptive';
+  readonly cacheStrategy: 'lru | lfu' | 'adaptive');
   readonly prefetching: boolean;
   readonly loadBalancing: boolean;
   readonly resourceMonitoring: boolean;

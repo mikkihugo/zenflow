@@ -40,8 +40,8 @@
  *
  * @example API Translation Usage
  * ```typescript
- * import('./api-translation-layer';
- * import('./api-types';
+ * import('/api-translation-layer');
+ * import('/api-types');
  *
  * // API types delegate to comprehensive domain types
  * const swarmResponse: ApiSwarmResponse = {
@@ -76,7 +76,7 @@ import type {
   StepStatus,
   WorkflowMetrics,
   ExecutionResult,
-} from '@claude-zen/enterprise';
+} from '@claude-zen/enterprise');
 import type {
   BaseEntity,
   EntityStatus,
@@ -87,7 +87,7 @@ import type {
   DatabaseConfig,
   DatabaseStats,
   HealthCheck as DatabaseHealthCheck,
-} from '@claude-zen/foundation/types';
+} from '@claude-zen/foundation/types');
 import type {
   SwarmConfiguration,
   SwarmStatus,
@@ -95,7 +95,7 @@ import type {
   AgentCapability,
   BrainMetrics,
   SwarmIntelligence,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Brain domain types - Neural coordination and intelligence
 
@@ -181,7 +181,7 @@ export interface PaginatedApiResponse<TData = unknown>
  */
 export interface ApiHealthResponse {
   /** Overall system status */
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy');
 
   /** System uptime in milliseconds */
   uptime: number;
@@ -373,7 +373,7 @@ export interface ApiTaskResponse extends TimestampedEntity {
   metrics: WorkflowMetrics;
 
   /** Task priority */
-  priority: 'low | medium' | 'high | critical';
+  priority: 'low | medium' | 'high | critical');
 
   /** Assigned swarm ID */
   swarmId?: string;
@@ -401,7 +401,7 @@ export interface ApiCreateTaskRequest {
   strategy?: ExecutionStrategy;
 
   /** Task priority */
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
 
   /** Target swarm ID */
   swarmId?: string;
@@ -607,7 +607,7 @@ export interface ApiSettingsResponse {
 
   /** Logging configuration */
   logging: {
-    level: 'debug | info' | 'warn | error';
+    level: 'debug | info' | 'warn | error');
     enableConsole: boolean;
     enableFile: boolean;
     maxFileSize: number;

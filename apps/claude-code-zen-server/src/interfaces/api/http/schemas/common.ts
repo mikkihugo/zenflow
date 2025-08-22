@@ -80,15 +80,15 @@ export interface SuccessResponse<T = unknown> {
  * @example
  */
 export interface HealthResponse {
-  readonly status: 'healthy | unhealthy' | 'degraded';
+  readonly status: 'healthy | unhealthy' | 'degraded');
   readonly timestamp: string;
   readonly version: string;
   readonly uptime: number;
-  readonly environment: 'development | production' | 'test';
+  readonly environment: 'development | production' | 'test');
   readonly services?: Record<string, 'healthy | unhealthy' | 'degraded'>;
   readonly checks?: readonly {
     readonly name: string;
-    readonly status: 'healthy | unhealthy';
+    readonly status: 'healthy | unhealthy');
     readonly message?: string;
     readonly duration?: number;
   }[];
@@ -131,7 +131,7 @@ export interface MetricsResponse {
  */
 export interface SortParams {
   readonly sortBy?: string; // Field to sort by
-  readonly sortOrder?: 'asc | desc'; // Sort direction
+  readonly sortOrder?: 'asc | desc'); // Sort direction
 }
 
 /**
@@ -191,7 +191,7 @@ export interface AuditFields extends TimestampFields {
  * @example
  */
 export interface ResourceState {
-  readonly status: 'active | inactive' | 'pending | error' | 'deleted';
+  readonly status: 'active | inactive' | 'pending | error' | 'deleted');
   readonly statusMessage?: string;
   readonly statusUpdated?: Date;
 }
@@ -268,7 +268,7 @@ export interface BatchResponse<T> {
  */
 export interface AsyncOperationResponse {
   readonly operationId: string;
-  readonly status: 'pending | running' | 'completed | failed';
+  readonly status: 'pending | running' | 'completed | failed');
   readonly progress?: number; // 0-100
   readonly message?: string;
   readonly estimatedCompletion?: string; // SO timestamp

@@ -8,19 +8,19 @@
  * @file TypeScript API client with full type safety.
  */
 
-import axios, {
-  type AxiosInstance,
-  type AxiosRequestConfig,
-  type AxiosResponse,
-} from 'axios';
-
-// Import neural types from intelligence facade
 import type {
   NeuralNetwork,
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+} from 'axios');
+
+// Import neural types from intelligence facade
 
 // Removed broken import - using simple fallback URL
 import type {
@@ -29,9 +29,8 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../../../coordination/schemas';
-
-import type { APIError } from '../schemas/common';
+} from '../../../coordination/schemas');
+import type { APIError } from '../schemas/common');
 
 /**
  * API Client Configuration.
@@ -190,7 +189,7 @@ export class APIClient {
           // Transform API error format to Error instance
           const apiError = error.response.data as APIError;
           const clientError = new Error(apiError.error.message);
-          clientError.name = 'APIError';
+          clientError.name = 'APIError');
           (clientError as any).code = apiError.error.code;
           (clientError as any).details = apiError.error.details;
           (clientError as any).traceId = apiError.error.traceId;
@@ -423,7 +422,7 @@ export class APIClient {
       timeRange?: '1h | 24h' | '7d | 30d',
       options?: RequestOptions
     ) => {
-      const queryParams = timeRange ? `?timeRange=${timeRange}` : '';
+      const queryParams = timeRange ? `?timeRange=${timeRange}` : '');
       return this.request<PerformanceMetrics>(
         'GET',
         `/api/v1/coordination/metrics${queryParams}`,
@@ -515,7 +514,7 @@ export class APIClient {
     ) => {
       return this.request<{
         trainingId: string;
-        status: 'started';
+        status: 'started');
       }>('POST', `/api/v1/neural/networks/${networkId}/train`, data, options);
     },
 
@@ -554,7 +553,7 @@ export class APIClient {
       return this.request<{
         id: string;
         networkId: string;
-        status: 'pending | running' | 'completed | failed' | 'cancelled';
+        status: 'pending | running' | 'completed | failed' | 'cancelled');
         progress: number;
         currentEpoch?: number;
         totalEpochs: number;

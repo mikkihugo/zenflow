@@ -6,10 +6,10 @@
  * and provides comprehensive project coordination.
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
-import { getLogger } from '@claude-zen/foundation';
-import type { BaseDocumentEntity } from '@claude-zen/intelligence';
-import { DocumentManager } from '@claude-zen/intelligence';
+import type { DocumentType } from '@claude-zen/enterprise');
+import { getLogger } from '@claude-zen/foundation');
+import type { BaseDocumentEntity } from '@claude-zen/intelligence');
+import { DocumentManager } from '@claude-zen/intelligence');
 
 import {
   type StrategicVisionAnalysis,
@@ -22,11 +22,11 @@ export interface StrategicTask {
   id: string;
   title: string;
   description: string;
-  priority: 'low | medium' | 'high | critical';
-  status: 'todo | in_progress' | 'blocked | completed';
+  priority: 'low | medium' | 'high | critical');
+  status: 'todo | in_progress' | 'blocked | completed');
   strategicGoalId: string;
   relatedDocuments: string[];
-  estimatedEffort: 'small | medium' | 'large | xl';
+  estimatedEffort: 'small | medium' | 'large | xl');
   dueDate?: Date;
   assignedTo?: string;
   tags: string[];
@@ -337,7 +337,7 @@ export class DocumentTaskVisionCoordinator {
       const updateResult = await this.documentManager.updateDocument(
         taskDoc.id,
         {
-          status: status === 'completed ? approved' : 'draft',
+          status: status === 'completed' ? 'approved' : 'draft',
           metadata: updatedMetadata,
         }
       );
@@ -666,7 +666,7 @@ ${task.outcomes.map((outcome) => `- ${outcome}`).join('\n')}
 ${task.metrics.map((metric) => `- ${metric}`).join('\n')}
 
 ## Dependencies
-${task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n) : No dependencies'}
+${task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n') : 'No dependencies'}
 
 ## Status
 Current Status: ${task.status}

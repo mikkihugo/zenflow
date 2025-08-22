@@ -5,9 +5,9 @@
  * Provides complete type safety for AI tools interacting with Express routes.
  */
 
-import type { Request, Response } from 'express';
+import type { Request, Response } from 'express');
 
-import('./api-types';
+import('/api-types');
 
 // Extract all schema types from OpenAPI components
 export type Schemas = components['schemas'];
@@ -197,7 +197,7 @@ export type ValidationMiddleware<T extends keyof ValidationSchemas> = (
  */
 export interface RouteConfig<TReq extends Request = Request, TRes = any> {
   path: string;
-  method: 'get | post' | 'put | delete' | 'patch';
+  method: 'get | post' | 'put | delete' | 'patch');
   handler: (req: TReq, res: TypedResponse<TRes>) => Promise<void> | void;
   validation?: ValidationMiddleware<any>;
   middleware?: Array<(req: Request, res: Response, next: () => void) => void>;

@@ -17,10 +17,10 @@
  * - Advanced search and indexing capabilities
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
-import type { BaseDocumentEntity } from '@claude-zen/intelligence';
-import { nanoid } from 'nanoid';
+import type { DocumentType } from '@claude-zen/enterprise');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import type { BaseDocumentEntity } from '@claude-zen/intelligence');
+import { nanoid } from 'nanoid');
 
 const logger = getLogger('services-document-service');
 
@@ -46,12 +46,12 @@ export interface DocumentQueryOptions {
     | 'updated_at'
     | 'title'
     | 'priority'
-    | 'completion_percentage';
-  sortOrder?: 'asc | desc';
+    | 'completion_percentage');
+  sortOrder?: 'asc | desc');
 }
 
 export interface DocumentSearchOptions extends DocumentQueryOptions {
-  searchType: 'fulltext | semantic' | 'keyword | combined';
+  searchType: 'fulltext | semantic' | 'keyword | combined');
   query: string;
   documentTypes?: DocumentType[];
   projectId?: string;
@@ -60,7 +60,7 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
   dateRange?: {
     start: Date;
     end: Date;
-    field: 'created_at | updated_at';
+    field: 'created_at | updated_at');
   };
 }
 
@@ -95,7 +95,7 @@ export class DocumentManager extends TypedEventBase {
   private workflowRepository: any;
 
   private initialized = false;
-  private databaseType: 'postgresql | sqlite' | 'mysql';
+  private databaseType: 'postgresql | sqlite' | 'mysql');
 
   constructor(databaseType: 'postgresql | sqlite' | 'mysql = postgresql') {
     super();
@@ -110,7 +110,7 @@ export class DocumentManager extends TypedEventBase {
 
     try {
       // Delegate to @claude-zen/infrastructure for document storage
-      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
+      const { getDatabaseAccess } = await import('claude-zen/infrastructure');
       this.databaseAccess = getDatabaseAccess();
 
       // Create repository facades
@@ -132,7 +132,7 @@ export class DocumentManager extends TypedEventBase {
       );
 
       // Delegate to @claude-zen/intelligence for document workflows
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: 100,
@@ -142,11 +142,11 @@ export class DocumentManager extends TypedEventBase {
       await this.workflowEngine?.registerDocumentWorkflows()
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation');
+      const { PerformanceTracker } = await import('claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
 
       // Delegate to @claude-zen/monitoring for service observability
-      const { SystemMonitor } = await import('@claude-zen/foundation');
+      const { SystemMonitor } = await import('claude-zen/foundation');
       this.monitoringSystem = new SystemMonitor({
         serviceName: 'document-service',
         metricsCollection: { enabled: true },
@@ -154,7 +154,7 @@ export class DocumentManager extends TypedEventBase {
       });
 
       // Delegate to @claude-zen/intelligence for document search and indexing
-      const { KnowledgeManager } = await import('@claude-zen/intelligence');
+      const { KnowledgeManager } = await import('claude-zen/intelligence');
       this.knowledgeManager = new KnowledgeManager({
         enableSemantic: true,
         enableGraph: true,

@@ -20,7 +20,7 @@ export type TopologyType =
   | 'star'
   | 'hybrid'
   | 'small-world'
-  | 'scale-free';
+  | 'scale-free');
 
 export interface TopologyConfig {
   type: TopologyType;
@@ -41,7 +41,7 @@ export interface TopologyConfig {
 
 export interface NetworkNode {
   id: string;
-  type: 'agent | broker' | 'coordinator | gateway';
+  type: 'agent | broker' | 'coordinator | gateway');
   capabilities: string[];
   connections: Map<string, Connection>;
   metrics: NodeMetrics;
@@ -52,7 +52,7 @@ export interface NetworkNode {
 
 export interface Connection {
   targetId: string;
-  type: 'direct | relay' | 'broadcast | multicast';
+  type: 'direct | relay' | 'broadcast | multicast');
   quality: ConnectionQuality;
   traffic: TrafficStats;
   established: Date;
@@ -102,7 +102,7 @@ export interface TopologyDecision {
   reason: string;
   expectedImprovement: number;
   migrationCost: number;
-  riskLevel: 'low | medium' | 'high';
+  riskLevel: 'low | medium' | 'high');
 }
 
 /**
@@ -1072,7 +1072,7 @@ class TopologyAdaptationEngine {
     reason: string;
     expectedImprovement: number;
     migrationCost: number;
-    riskLevel: 'low | medium' | 'high';
+    riskLevel: 'low | medium' | 'high');
   }> {
     // Placeholder for ML analysis
     // Would use neural networks, decision trees, or reinforcement learning
@@ -1151,7 +1151,7 @@ interface MigrationPlan {
 
 interface MigrationStep {
   id: string;
-  type: 'disconnect | connect' | 'reconfigure | validate';
+  type: 'disconnect | connect' | 'reconfigure | validate');
   nodeIds: string[];
   parameters: Record<string, unknown>;
   timeout: number;

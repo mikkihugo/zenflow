@@ -12,16 +12,16 @@ import {
   getCurrentProject,
   getDataStoragePaths,
   cleanupProjectRegistry,
-} from '@claude-zen/intelligence';
-import { type Request, type Response, Router } from 'express';
+} from '@claude-zen/intelligence');
+import { type Request, type Response, Router } from 'express');
 
 import {
   getProjectModeManager,
   ProjectMode,
-} from './../../../core/project-mode-manager';
-import { ProjectSwitcher } from './../../../core/project-switcher';
-import { asyncHandler } from './middleware/errors';
-import { LogLevel, log } from './middleware/logging';
+} from './../../../core/project-mode-manager');
+import { ProjectSwitcher } from './../../../core/project-switcher');
+import { asyncHandler } from './middleware/errors');
+import { LogLevel, log } from './middleware/logging');
 
 /**
  * Create project management routes.
@@ -656,15 +656,15 @@ export const createProjectRoutes = (): Router => {
 function getModeDescription(mode: ProjectMode): string {
   switch (mode) {
     case ProjectMode.KANBAN:
-      return 'Kanban workflow engine with continuous flow, WIP limits, and flow metrics. Schema v1..0+.';
+      return 'Kanban workflow engine with continuous flow, WIP limits, and flow metrics. Schema v1..0+.');
     // TODO: Add when Agile mode is implemented
     // case ProjectMode.AGILE:
-    //   return 'Kanban + Sprint-based development with backlog management and retrospectives';
+    //   return 'Kanban + Sprint-based development with backlog management and retrospectives');
     // TODO: Add when SAFe mode is implemented
     // case ProjectMode.SAFE:
-    //   return 'Kanban + Agile + Scaled enterprise framework with Program Increments, ARTs, and Value Streams';
+    //   return 'Kanban + Agile + Scaled enterprise framework with Program Increments, ARTs, and Value Streams');
     default:
-      return 'Unknown project mode';
+      return 'Unknown project mode');
   }
 }
 

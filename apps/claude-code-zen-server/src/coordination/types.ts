@@ -107,7 +107,7 @@ export interface AgentError {
   timestamp: Date;
   stack?: string;
   type?: string;
-  severity?: 'low | medium' | 'high | critical';
+  severity?: 'low' | 'medium' | 'high' | 'critical';
   context?: Record<string, unknown>;
   resolved?: boolean;
 }
@@ -186,7 +186,7 @@ export interface Agent {
 export interface Task {
   id: string;
   description: string;
-  strategy: 'parallel | sequential' | 'adaptive | consensus';
+  strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus';
   dependencies: string[];
   requiredCapabilities: string[];
   maxAgents: number;
@@ -197,14 +197,14 @@ export interface PhaseAssignment {
   phase: string;
   agentId: string;
   capabilities: AgentCapabilities;
-  status: 'pending | in_progress' | 'completed | failed';
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
 }
 
 export interface ExecutionCheckpoint {
   id: string;
   phase: string;
   timestamp: Date;
-  status: 'pending | completed';
+  status: 'pending' | 'completed';
   data?: Record<string, unknown>;
 }
 

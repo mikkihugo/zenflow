@@ -5,7 +5,7 @@
  * for all dashboard components. Handles reconnection and error management.
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from 'svelte/store');
 
 import type {
   WebSocketMessage,
@@ -13,10 +13,10 @@ import type {
   SystemStatus,
   SwarmInfo,
   PerformanceMetrics,
-} from './types/dashboard';
+} from './types/dashboard');
 
-// import { browser } from '$app/environment'; // SvelteKit environment - handled by build system
-const browser = typeof window !== 'undefined'; // Browser environment detection
+// import { browser } from '$app/environment'); // SvelteKit environment - handled by build system
+const browser = typeof window !== 'undefined'); // Browser environment detection
 
 // Create the main WebSocket store
 function createWebSocketStore() {
@@ -246,7 +246,7 @@ export const websocketStore = createWebSocketStore();
 
 // Derived stores for computed values
 export const connectionStatus = derived(websocketStore, ($ws) =>
-  $ws.connected ? 'connected : disconnected'
+  $ws.connected ? 'connected' : 'disconnected'
 );
 
 export const lastUpdateTime = derived(

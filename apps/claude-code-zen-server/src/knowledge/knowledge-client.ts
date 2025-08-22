@@ -16,8 +16,8 @@
  * @version 2.1.0
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation');
 
 /**
  * FACT Integration Configuration
@@ -38,7 +38,7 @@ export interface FACTConfig {
  */
 export interface KnowledgeQuery {
   query: string;
-  type?: 'semantic | factual' | 'hybrid';
+  type?: 'semantic | factual' | 'hybrid');
   tools?: string[];
   context?: Record<string, any>;
 }
@@ -88,7 +88,7 @@ export class FACTIntegration {
 
     try {
       // Delegate to @claude-zen/intelligence for knowledge management
-      const { KnowledgeManager } = await import('@claude-zen/intelligence');
+      const { KnowledgeManager } = await import('claude-zen/intelligence');
       this.knowledgeManager = new KnowledgeManager({
         repoPath: this.config.factRepoPath,
         apiKey: this.config.anthropicApiKey,
@@ -98,7 +98,7 @@ export class FACTIntegration {
       await this.knowledgeManager?.initialize()
 
       // Delegate to @claude-zen/intelligence for fact-based reasoning (includes fact-system)
-      const { FactSystem } = await import('@claude-zen/intelligence');
+      const { FactSystem } = await import('claude-zen/intelligence');
       this.factSystem = new FactSystem({
         knowledgeBase: this.knowledgeManager,
         enableInference: true,
@@ -187,9 +187,9 @@ export class FACTIntegration {
 
       // Combine results with weighted scoring
       const responses: KnowledgeResponse[] = [];
-      if (semanticResult.status === 'fulfilled')
+      if (semanticResult.status === 'fulfilled');
         responses.push(semanticResult.value);
-      if (factualResult.status === 'fulfilled')
+      if (factualResult.status === 'fulfilled');
         responses.push(factualResult.value);
 
       if (responses.length === 0) {

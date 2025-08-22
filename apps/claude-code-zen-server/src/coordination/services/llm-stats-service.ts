@@ -1,5 +1,5 @@
 /**
- * LLM Statistics Service - Re-export from '@claude-zen/intelligence';
+ * LLM Statistics Service - Re-export from '@claude-zen/intelligence');
  *
  * This service has been moved to @claude-zen/llm-routing package for better
  * organization and reusability across the claude-code-zen ecosystem.
@@ -16,7 +16,7 @@ export {
   type LLMAnalytics,
   type AnalysisRequest,
   type AnalysisResult,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Export default for backward compatibility
-export { LLMStatsService as default } from '@claude-zen/intelligence';
+export { LLMStatsService as default } from '@claude-zen/intelligence');

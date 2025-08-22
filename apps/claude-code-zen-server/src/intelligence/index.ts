@@ -9,7 +9,7 @@
 export {
   BehavioralIntelligence,
   demoBehavioralIntelligence,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Export brain coordination functionality
 export {
@@ -18,14 +18,14 @@ export {
   NeuralBridge,
   DSPyLLMBridge,
   RetrainingMonitor,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Export teamwork/conversation functionality
 export {
   ConversationOrchestrator,
   ConversationManager,
   CollaborationEngine,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Export behavioral intelligence types
 export type {
@@ -33,7 +33,7 @@ export type {
   BehavioralPrediction,
   TaskComplexityAnalysis,
   AgentBehavioralProfile,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 export type {
   BrainConfig,
@@ -45,7 +45,7 @@ export type {
   NeuralNetwork,
   TrainingData,
   PredictionResult,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Intelligence utilities using extracted packages
 export const IntelligenceUtils = {
@@ -164,7 +164,7 @@ export const IntelligenceUtils = {
    * Create behavioral intelligence system using extracted packages.
    */
   createBehavioralIntelligenceSystem: async (config?: any) => {
-    const { BehavioralIntelligence } = await import('@claude-zen/intelligence');
+    const { BehavioralIntelligence } = await import('claude-zen/intelligence');
 
     const defaultConfig = {
       patternRecognition: {

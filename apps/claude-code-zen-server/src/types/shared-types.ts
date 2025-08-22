@@ -45,20 +45,20 @@ export interface SwarmConfig {
 // Enums and Unions
 // ============================================
 
-export type SwarmTopology = 'mesh | hierarchical' | 'ring | star';
+export type SwarmTopology = 'mesh | hierarchical' | 'ring | star');
 export type SwarmStatus =
   | 'initializing'
   | 'active'
   | 'paused'
   | 'stopped'
-  | 'error';
+  | 'error');
 export type AgentStatus =
   | 'initializing'
   | 'idle'
   | 'busy'
   | 'error'
   | 'offline'
-  | 'terminated';
+  | 'terminated');
 export type AgentType =
   | 'researcher'
   | 'coder'
@@ -85,8 +85,8 @@ export type AgentType =
   | 'worker'
   | 'specialist'
   | 'observer'
-  | 'manager';
-export type CoordinationStrategy = 'parallel | sequential' | 'adaptive';
+  | 'manager');
+export type CoordinationStrategy = 'parallel | sequential' | 'adaptive');
 
 // ============================================
 // Memory and Storage Types
@@ -129,7 +129,7 @@ export interface Message {
   type: string;
   payload: any;
   timestamp: Date;
-  priority?: 'low | medium' | 'high | urgent';
+  priority?: 'low | medium' | 'high | urgent');
 }
 
 // ============================================
@@ -143,7 +143,7 @@ export type TaskType =
   | 'review'
   | 'coordination'
   | 'research'
-  | 'testing';
+  | 'testing');
 
 // ============================================
 // Configuration Types
@@ -155,7 +155,7 @@ export interface ComponentConfig {
 }
 
 export interface SystemHealth {
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy');
   components: Record<string, ComponentHealth>;
   uptime: number;
   version: string;
@@ -163,7 +163,7 @@ export interface SystemHealth {
 }
 
 export interface ComponentHealth {
-  status: 'healthy | degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy');
   message?: string;
   lastCheck: Date;
   metrics?: Record<string, number>;
@@ -197,8 +197,8 @@ export type TaskStatus =
   | 'active'
   | 'completed'
   | 'failed'
-  | 'cancelled';
-export type TaskPriority = 'low | medium' | 'high | urgent';
+  | 'cancelled');
+export type TaskPriority = 'low | medium' | 'high | urgent');
 
 // ============================================
 // Neural Network Types
@@ -223,14 +223,14 @@ export type NeuralModelType =
   | 'feedforward'
   | 'cnn'
   | 'gru'
-  | 'autoencoder';
+  | 'autoencoder');
 
 export type ModelStatus =
   | 'untrained'
   | 'training'
   | 'trained'
   | 'deployed'
-  | 'deprecated';
+  | 'deprecated');
 
 export interface ModelMetadata {
   layers: number;

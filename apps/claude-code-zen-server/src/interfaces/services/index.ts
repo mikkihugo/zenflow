@@ -17,10 +17,10 @@
  * - Professional service lifecycle patterns
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
-import('./core/interfaces';
-import('./types';
+import('/core/interfaces');
+import('/types');
 
 // ServiceContainer-enhanced service registry (zero breaking changes)
 export { ServiceRegistry, createServiceRegistry } from "./registry";
@@ -120,7 +120,7 @@ export class USL extends TypedEventBase {
       this.performanceTracker = new PerformanceTracker();
 
       // Delegate to @claude-zen/intelligence for service lifecycle
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: 50,
@@ -128,11 +128,11 @@ export class USL extends TypedEventBase {
       await this.workflowEngine?.initialize()
 
       // Delegate to @claude-zen/infrastructure for storage services
-      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
+      const { getDatabaseAccess } = await import('claude-zen/infrastructure');
       this.databaseAccess = getDatabaseAccess();
 
       // Delegate to @claude-zen/monitoring for service monitoring
-      const { SystemMonitor } = await import('@claude-zen/foundation');
+      const { SystemMonitor } = await import('claude-zen/foundation');
       this.monitoringSystem = new MonitoringSystem({
         metricsCollection: { enabled: true },
         performanceTracking: { enabled: true },
@@ -140,7 +140,7 @@ export class USL extends TypedEventBase {
       });
 
       // Delegate to @claude-zen/intelligence for multi-service coordination
-      const { TeamworkCoordinator } = await import('@claude-zen/intelligence');
+      const { TeamworkCoordinator } = await import('claude-zen/intelligence');
       this.teamworkCoordinator = new TeamworkCoordinator({
         enableCollaboration: true,
         maxTeamSize: 10,
@@ -516,9 +516,9 @@ export class USL extends TypedEventBase {
       status: service.getStatus?.() || service.status,
     }));
 
-    const overall = services.every((s) => s.status === 'running')
+    const overall = services.every((s) => s.status === 'running');
       ? 'healthy'
-      : 'degraded';
+      : 'degraded');
 
     return { overall, services };
   }

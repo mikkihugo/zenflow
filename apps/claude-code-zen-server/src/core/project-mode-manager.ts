@@ -13,7 +13,7 @@
  * @version 2.3.0
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 
 // Use simple console logging for now instead of complex logger dependencies
 const logger = {
@@ -396,9 +396,9 @@ export class ProjectModeManager extends TypedEventBase {
   getModeArchitectureDescription(mode: ProjectMode): string {
     switch (mode) {
       case ProjectMode.SAFE:
-        return 'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services.';
+        return 'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services.');
       default:
-        return 'Unknown project mode';
+        return 'Unknown project mode');
     }
   }
 }

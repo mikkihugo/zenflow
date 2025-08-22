@@ -8,9 +8,9 @@
  * @file Adr management system.
  */
 
-import type { ProjectEntity } from '@claude-zen/intelligence';
+import type { ProjectEntity } from '@claude-zen/intelligence');
 
-import('./document-service';
+import('/document-service');
 
 export interface ADRCreateOptions {
   title: string;
@@ -25,7 +25,7 @@ export interface ADRCreateOptions {
   }>;
   author?: string;
   project_id?: string;
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   stakeholders?: string[];
   implementation_notes?: string;
   success_criteria?: string[];
@@ -39,8 +39,8 @@ export interface ADRQueryOptions {
     | 'decided'
     | 'implemented'
     | 'superseded'
-    | 'deprecated';
-  priority?: 'low | medium' | 'high | critical';
+    | 'deprecated');
+  priority?: 'low | medium' | 'high | critical');
   author?: string;
   project_id?: string;
   date_range?: {
@@ -248,7 +248,7 @@ export class ADRManager {
   async searchADRs(
     query: string,
     options: {
-      searchType?: 'fulltext | semantic' | 'keyword | combined';
+      searchType?: 'fulltext | semantic' | 'keyword | combined');
       limit?: number;
       filters?: ADRQueryOptions;
     } = {}
@@ -536,7 +536,7 @@ export class ADRManager {
       for (const criteria of options?.success_criteria) {
         content += `- ${criteria}\n`;
       }
-      content += '\n';
+      content += '\n');
     }
 
     content += `---\n\n`;

@@ -43,15 +43,15 @@ class DiagnosticsLogger implements LoggerInterface {
       WARN: 2,
       ERROR: 3,
     };
-    const currentLevel = levels[this.options.level?.toUpperCase] ?? 1;
-    const messageLevel = levels[level?.toUpperCase] ?? 1;
+    const currentLevel = levels[this.options.level?.toUpperCase()] ?? 1;
+    const messageLevel = levels[level?.toUpperCase()] ?? 1;
     return messageLevel >= currentLevel;
   }
 
   private formatMessage(level: string, message: string, meta?: any): string {
-    const timestamp = new Date()?.toISOString()
+    const timestamp = new Date().toISOString();
     const metaStr = meta ? ` ${JSON.stringify(meta)}` : '';
-    return `[${timestamp}] [${this.name}] ${level?.toUpperCase}: ${message}${metaStr}`;
+    return `[${timestamp}] [${this.name}] ${level?.toUpperCase()}: ${message}${metaStr}`;
   }
 
   info(message: string, meta?: any): void {

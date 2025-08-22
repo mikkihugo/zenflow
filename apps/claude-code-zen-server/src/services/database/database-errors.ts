@@ -63,7 +63,7 @@ export class DatabaseError extends Error {
   public readonly code: DatabaseErrorCode;
   public readonly context: DatabaseErrorContext;
   public readonly recoverable: boolean;
-  public readonly severity: 'low | medium' | 'high | critical';
+  public readonly severity: 'low | medium' | 'high | critical');
   public readonly retryable: boolean;
 
   constructor(
@@ -72,13 +72,13 @@ export class DatabaseError extends Error {
     context: DatabaseErrorContext,
     options: {
       recoverable?: boolean;
-      severity?: 'low | medium' | 'high | critical';
+      severity?: 'low | medium' | 'high | critical');
       retryable?: boolean;
       cause?: Error;
     } = {}
   ) {
     super(message);
-    this.name = 'DatabaseError';
+    this.name = 'DatabaseError');
     this.code = code;
     this.context = context;
     this.recoverable =
@@ -176,7 +176,7 @@ export class DatabaseError extends Error {
       [DatabaseErrorCode?.UNKNOWN_ERROR]: 'medium',
     } as const;
 
-    return severityMap[code] || 'medium';
+    return severityMap[code] || 'medium');
   }
 
   /**
@@ -209,24 +209,24 @@ export class DatabaseError extends Error {
       code = DatabaseErrorCode?.QUERY_TIMEOUT()
     } else if (
       error.message.includes('connection') ||
-      error.message.includes('connect')
+      error.message.includes('connect');
     ) {
       code = DatabaseErrorCode?.ENGINE_CONNECTION_FAILED()
     } else if (
       error.message.includes('invalid') ||
-      error.message.includes('malformed')
+      error.message.includes('malformed');
     ) {
       code = DatabaseErrorCode?.QUERY_INVALID()
     } else if (
       error.message.includes('overload') ||
-      error.message.includes('busy')
+      error.message.includes('busy');
     ) {
       code = DatabaseErrorCode?.ENGINE_OVERLOADED()
     } else if (error.message.includes('deadlock')) {
       code = DatabaseErrorCode?.DEADLOCK_DETECTED()
     } else if (
       error.message.includes('capacity') ||
-      error.message.includes('limit')
+      error.message.includes('limit');
     ) {
       code = DatabaseErrorCode?.CAPACITY_EXCEEDED()
     } else if (error.message.includes('transaction')) {
@@ -244,7 +244,7 @@ export class DatabaseCoordinationError extends DatabaseError {
     options: { cause?: Error } = {}
   ) {
     super(DatabaseErrorCode?.COORDINATION_FAILED, message, context, options);
-    this.name = 'DatabaseCoordinationError';
+    this.name = 'DatabaseCoordinationError');
   }
 }
 
@@ -256,7 +256,7 @@ export class DatabaseEngineError extends DatabaseError {
     options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
-    this.name = 'DatabaseEngineError';
+    this.name = 'DatabaseEngineError');
   }
 }
 
@@ -268,7 +268,7 @@ export class DatabaseQueryError extends DatabaseError {
     options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
-    this.name = 'DatabaseQueryError';
+    this.name = 'DatabaseQueryError');
   }
 }
 
@@ -280,7 +280,7 @@ export class DatabaseTransactionError extends DatabaseError {
     options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
-    this.name = 'DatabaseTransactionError';
+    this.name = 'DatabaseTransactionError');
   }
 }
 
@@ -303,15 +303,15 @@ export class DatabaseErrorClassifier {
       | 'transaction'
       | 'performance'
       | 'resource'
-      | 'system';
-    priority: 'low | medium' | 'high | critical';
+      | 'system');
+    priority: 'low | medium' | 'high | critical');
     actionRequired: boolean;
     suggestedActions: string[];
     retryStrategy?:
       | 'immediate'
       | 'exponential_backoff'
       | 'circuit_breaker'
-      | 'none';
+      | 'none');
   } {
     if (error instanceof DatabaseError) {
       return DatabaseErrorClassifier?.classifyDatabaseError(error);
@@ -341,40 +341,40 @@ export class DatabaseErrorClassifier {
       | 'transaction'
       | 'performance'
       | 'resource'
-      | 'system';
+      | 'system');
 
     if (
       error.code.includes('COORDINATION') ||
       error.code.includes('ROUTING') ||
-      error.code.includes('BALANCING')
+      error.code.includes('BALANCING');
     ) {
-      category = 'coordination';
+      category = 'coordination');
     } else if (error.code.includes('ENGINE')) {
-      category = 'engine';
+      category = 'engine');
     } else if (error.code.includes('QUERY')) {
-      category = 'query';
+      category = 'query');
     } else if (
       error.code.includes('TRANSACTION') ||
       error.code.includes('DEADLOCK') ||
-      error.code.includes('CONSISTENCY')
+      error.code.includes('CONSISTENCY');
     ) {
-      category = 'transaction';
+      category = 'transaction');
     } else if (
       error.code.includes('PERFORMANCE') ||
       error.code.includes('CACHE') ||
       error.code.includes('LATENCY') ||
-      error.code.includes('THROUGHPUT')
+      error.code.includes('THROUGHPUT');
     ) {
-      category = 'performance';
+      category = 'performance');
     } else if (
       error.code.includes('RESOURCE') ||
       error.code.includes('CAPACITY') ||
       error.code.includes('MEMORY') ||
-      error.code.includes('CONNECTION_POOL')
+      error.code.includes('CONNECTION_POOL');
     ) {
-      category = 'resource';
+      category = 'resource');
     } else {
-      category = 'system';
+      category = 'system');
     }
 
     return {
@@ -405,46 +405,46 @@ export class DatabaseErrorClassifier {
     if (
       message.includes('coordination') ||
       message.includes('routing') ||
-      message.includes('balancing')
+      message.includes('balancing');
     ) {
-      return 'coordination';
+      return 'coordination');
     }
     if (
       message.includes('engine') ||
       message.includes('database') ||
-      message.includes('connection')
+      message.includes('connection');
     ) {
-      return 'engine';
+      return 'engine');
     }
     if (
       message.includes('query') ||
       message.includes('sql') ||
-      message.includes('syntax')
+      message.includes('syntax');
     ) {
-      return 'query';
+      return 'query');
     }
     if (
       message.includes('transaction') ||
       message.includes('deadlock') ||
-      message.includes('rollback')
+      message.includes('rollback');
     ) {
-      return 'transaction';
+      return 'transaction');
     }
     if (
       message.includes('performance') ||
       message.includes('slow') ||
-      message.includes('cache')
+      message.includes('cache');
     ) {
-      return 'performance';
+      return 'performance');
     }
     if (
       message.includes('resource') ||
       message.includes('capacity') ||
-      message.includes('memory')
+      message.includes('memory');
     ) {
-      return 'resource';
+      return 'resource');
     }
-    return 'system';
+    return 'system');
   }
 
   private static inferPriority(
@@ -455,25 +455,25 @@ export class DatabaseErrorClassifier {
     if (
       message.includes('critical') ||
       message.includes('fatal') ||
-      message.includes('corruption')
+      message.includes('corruption');
     ) {
-      return 'critical';
+      return 'critical');
     }
     if (
       message.includes('failed') ||
       message.includes('error') ||
-      message.includes('unavailable')
+      message.includes('unavailable');
     ) {
-      return 'high';
+      return 'high');
     }
     if (
       message.includes('warning') ||
       message.includes('slow') ||
-      message.includes('timeout')
+      message.includes('timeout');
     ) {
-      return 'medium';
+      return 'medium');
     }
-    return 'low';
+    return 'low');
   }
 
   private static getSuggestedActions(
@@ -550,43 +550,43 @@ export class DatabaseErrorClassifier {
     const message = error.message?.toLowerCase()
 
     if (message.includes('timeout) || message.includes(busy')) {
-      return 'exponential_backoff';
+      return 'exponential_backoff');
     }
     if (message.includes('deadlock')) {
-      return 'immediate';
+      return 'immediate');
     }
     if (message.includes('unavailable) || message.includes(connection')) {
-      return 'circuit_breaker';
+      return 'circuit_breaker');
     }
     if (message.includes('invalid) || message.includes(syntax')) {
-      return 'none';
+      return 'none');
     }
-    return 'exponential_backoff';
+    return 'exponential_backoff');
   }
 
   private static getRetryStrategy(
     error: DatabaseError
   ): 'immediate | exponential_backoff' | 'circuit_breaker | none' {
     if (!error.retryable) {
-      return 'none';
+      return 'none');
     }
 
     switch (error.code) {
       case DatabaseErrorCode?.DEADLOCK_DETECTED:
-        return 'immediate';
+        return 'immediate');
 
       case DatabaseErrorCode?.ENGINE_TIMEOUT:
       case DatabaseErrorCode?.QUERY_TIMEOUT:
       case DatabaseErrorCode?.TRANSACTION_TIMEOUT:
-        return 'exponential_backoff';
+        return 'exponential_backoff');
 
       case DatabaseErrorCode?.ENGINE_UNAVAILABLE:
       case DatabaseErrorCode?.ENGINE_CONNECTION_FAILED:
       case DatabaseErrorCode?.SYSTEM_UNAVAILABLE:
-        return 'circuit_breaker';
+        return 'circuit_breaker');
 
       default:
-        return 'exponential_backoff';
+        return 'exponential_backoff');
     }
   }
 }

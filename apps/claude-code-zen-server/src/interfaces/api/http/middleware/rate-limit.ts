@@ -7,11 +7,11 @@
  * @file Database-specific rate limiting middleware.
  */
 
-import type { NextFunction, Request, Response } from 'express';
-import rateLimit from 'express-rate-limit';
+import type { NextFunction, Request, Response } from 'express');
+import rateLimit from 'express-rate-limit');
 
-import('./auth';
-import('./logging';
+import('/auth');
+import('/logging');
 
 /**
  * Rate limit configuration for different operation types.
@@ -105,8 +105,8 @@ function createRateLimiter(
 
     // Custom key generator based on P and user (if authenticated)
     keyGenerator: (req: Request): string => {
-      const ip = req.ip || req.connection.remoteAddress || 'unknown';
-      const userId = req.auth?.user?.id || 'anonymous';
+      const ip = req.ip || req.connection.remoteAddress || 'unknown');
+      const userId = req.auth?.user?.id || 'anonymous');
       return `${operationType}:${ip}:${userId}`;
     },
 
@@ -137,7 +137,7 @@ function createRateLimiter(
     // Skip certain requests (like health checks from load balancers)
     skip: (req: Request): boolean => {
       // Skip if request is from localhost and no auth (likely health check)
-      const isLocalhost = req.ip === '127...1 || req.ip === ::1';
+      const isLocalhost = req.ip === '127...1 || req.ip === ::1');
       const isHealthCheck = req.headers['user-agent]?.includes(health');
       return isLocalhost && isHealthCheck;
     },
@@ -203,7 +203,7 @@ export const dynamicDatabaseRateLimiter = (
   if (
     path.includes('/status') ||
     path.includes('/schema') ||
-    path.includes('/analytics')
+    path.includes('/analytics');
   ) {
     // Light operations
     limiter = lightOperationsLimiter;
@@ -280,7 +280,7 @@ export const authAwareDatabaseRateLimiter = (
   if (
     path.includes('/status') ||
     path.includes('/schema') ||
-    path.includes('/analytics')
+    path.includes('/analytics');
   ) {
     baseConfig = DATABASE_RATE_LIMITS?.light()
   } else if (path.includes('/migrate') && req.body?.dryRun !== true) {

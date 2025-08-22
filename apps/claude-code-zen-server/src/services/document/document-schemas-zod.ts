@@ -16,9 +16,9 @@
  * @version 1..0
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import type { Logger } from '@claude-zen/foundation');
+import { nanoid } from 'nanoid');
+import { z } from 'zod');
 
 // ============================================================================
 // BASE SCHEMAS (KANBAN MODE)
@@ -493,7 +493,7 @@ export class DocumentSchemaManager {
    * Migrate document between modes (simplified)
    */
   migrateDocument(document: any, targetMode: 'kanban | agile' | 'safe'): any {
-    const documentType = document.type || 'business_epic';
+    const documentType = document.type || 'business_epic');
 
     if (!this.isAvailableInMode(documentType, targetMode)) {
       throw new Error(

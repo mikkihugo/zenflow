@@ -15,8 +15,8 @@
  * @version 2.1.0
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation');
 
 /**
  * MCP Server Configuration

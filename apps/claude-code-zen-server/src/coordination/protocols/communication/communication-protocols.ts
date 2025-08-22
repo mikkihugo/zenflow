@@ -62,22 +62,22 @@ export interface MessagePayload {
 
 export interface EncryptionConfig {
   enabled: boolean;
-  algorithm?: 'aes-256-gcm | chacha20-poly1305' | 'none';
+  algorithm?: 'aes-256-gcm' | 'chacha20-poly1305' | 'none';
   keyId?: string;
   nonce?: Buffer;
 }
 
 export interface CompressionConfig {
   enabled: boolean;
-  algorithm: 'gzip | lz4' | 'brotli | none';
+  algorithm: 'gzip' | 'lz4' | 'brotli' | 'none';
   level: number;
   threshold: number; // Minimum size to compress.
 }
 
 export interface RoutingConfig {
-  strategy: 'direct | relay' | 'multipath | adaptive';
+  strategy: 'direct' | 'relay' | 'multipath' | 'adaptive';
   maxHops: number;
-  reliabilityMode: 'best-effort | at-least-once' | 'exactly-once';
+  reliabilityMode: 'best-effort' | 'at-least-once' | 'exactly-once';
   acknowledgment: boolean;
   timeout: number;
 }
@@ -94,7 +94,7 @@ export interface CommunicationNode {
   id: string;
   address: string;
   port: number;
-  status: 'online | offline' | 'degraded';
+  status: 'online' | 'offline' | 'degraded';
   capabilities: CommunicationCapabilities;
   metrics: CommunicationMetrics;
   lastSeen: Date;
@@ -130,7 +130,7 @@ export interface GossipState {
 
 export interface ConsensusProposal {
   id: string;
-  type: 'value | leader' | 'configuration';
+  type: 'value' | 'leader' | 'configuration';
   proposer: string;
   value: any;
   round: number;
@@ -141,7 +141,7 @@ export interface ConsensusProposal {
 export interface ConsensusVote {
   proposalId: string;
   voter: string;
-  decision: 'accept | reject' | 'abstain';
+  decision: 'accept' | 'reject' | 'abstain';
   reasoning?: string;
   timestamp: Date;
   signature: string;
@@ -838,7 +838,7 @@ export class CommunicationProtocols extends TypedEventBase {
 
     if (votes.length >= requiredVotes) {
       const acceptVotes = votes.filter((v) => v.decision === 'accept').length;
-      const result = acceptVotes >= requiredVotes ? 'accepted : rejected';
+      const result = acceptVotes >= requiredVotes ? 'accepted' : 'rejected';
 
       this.emit('consensus:reached', {
         proposalId,
@@ -1043,11 +1043,11 @@ export class CommunicationProtocols extends TypedEventBase {
       timestamp: message.timestamp,
     });
 
-    return createHash('sha256).update(data).digest(hex');
+    return createHash('sha256').update(data).digest('hex');
   }
 
   private calculateDataChecksum(data: any): string {
-    return createHash('sha256).update(JSON.stringify(data)).digest(hex');
+    return createHash('sha256').update(JSON.stringify(data)).digest('hex');
   }
 
   private verifyChecksum(message: Message): boolean {
@@ -1064,7 +1064,7 @@ export class CommunicationProtocols extends TypedEventBase {
     decision: ConsensusVote['decision']
   ): string {
     const data = `${proposalId}:${decision}:${this._nodeId}:${Date.now()}`;
-    return createHash('sha256).update(data).digest(hex');
+    return createHash('sha256').update(data).digest('hex');
   }
 
   private async evaluateProposal(
@@ -1072,7 +1072,7 @@ export class CommunicationProtocols extends TypedEventBase {
   ): Promise<ConsensusVote['decision']> {
     // Simplified evaluation logic
     // In practice, this would involve complex decision-making algorithms
-    return Math.random() > .3 ? 'accept : reject';
+    return Math.random() > .3 ? 'accept' : 'reject';
   }
 
   private updateMessageMetrics(message: Message): void {

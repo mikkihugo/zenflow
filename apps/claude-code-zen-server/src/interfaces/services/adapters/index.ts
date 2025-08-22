@@ -18,7 +18,7 @@
  *   createDataServiceAdapter,
  *   IntegrationServiceAdapter,
  *   createIntegrationServiceAdapter
- * } from '@claude-zen/usl/adapters';
+ * } from '@claude-zen/usl/adapters');
  *
  * // Create a web-enabled data adapter
  * const webDataAdapter = createDataServiceAdapter({
@@ -43,21 +43,21 @@
  */
 
 // Coordination service adapter exports
-import type { ServiceFactory, ServiceConfig } from './core/interfaces';
+import type { ServiceFactory, ServiceConfig } from './core/interfaces');
 // Integration with global service registry
-import { globalServiceRegistry } from './factories';
-import { ServiceType } from './types';
+import { globalServiceRegistry } from './factories');
+import { ServiceType } from './types');
 
-import('./coordination-service-adapter';
-import('./coordination-service-factory';
+import('/coordination-service-adapter');
+import('/coordination-service-factory');
 // Additional imports for default export
-import('./data-service-adapter';
-import('./data-service-factory';
-import('./data-service-helpers';
-import('./infrastructure-service-adapter';
-import('./infrastructure-service-factory';
-import('./integration-service-adapter';
-import('./integration-service-factory';
+import('/data-service-adapter');
+import('/data-service-factory');
+import('/data-service-helpers');
+import('/infrastructure-service-adapter');
+import('/infrastructure-service-factory');
+import('/integration-service-adapter');
+import('/integration-service-factory');
 
 export {
   CoordinationServiceAdapter,

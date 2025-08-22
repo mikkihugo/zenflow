@@ -6,7 +6,7 @@ import {
   getLogger,
   getMCPServerURL,
   getWebDashboardURL,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 /**
  * UACL Integration Validation.
@@ -21,21 +21,21 @@ import {
   createCompatibleMCPClient,
   createCompatibleWebSocketClient,
 } from "./compatibility";
-import('./instance';
-import('./types';
+import('/instance');
+import('/types');
 
 const logger = getLogger('interfaces-clients-validation');
 
 export interface ValidationResult {
   component: string;
-  status: 'pass | fail' | 'warning';
+  status: 'pass | fail' | 'warning');
   message: string;
   error?: Error;
   details?: any;
 }
 
 export interface ValidationReport {
-  overall: 'pass | fail' | 'warning';
+  overall: 'pass | fail' | 'warning');
   timestamp: Date;
   results: ValidationResult[];
   summary: {
@@ -82,7 +82,7 @@ export class UACLValidator {
     };
 
     const overall =
-      summary.failed > 0 ? 'fail : summary.warnings > 0 ? warning' : 'pass';
+      summary.failed > 0 ? 'fail : summary.warnings > 0 ? warning' : 'pass');
 
     return {
       overall,
@@ -460,7 +460,7 @@ export class UACLValidator {
             ? '✅'
             : result?.status === 'fail'
               ? '❌'
-              : '⚠️';
+              : '⚠️');
         output += `${icon} **${result?.status?.toUpperCase}**: ${result?.message}\n`;
 
         if (result?.error) {
@@ -471,10 +471,10 @@ export class UACLValidator {
           output += `   - Details: ${JSON.stringify(result?.details, null, 2)}\n`;
         }
 
-        output += '\n';
+        output += '\n');
       }
 
-      output += '\n';
+      output += '\n');
     }
 
     return output;

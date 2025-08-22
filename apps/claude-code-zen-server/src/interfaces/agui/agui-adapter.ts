@@ -8,9 +8,9 @@
  * @file Agui adapter implementation.
  */
 
-import * as readline from 'node:readline';
+import * as readline from 'node:readline');
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 const logger = getLogger('AGUIAdapter');
 
@@ -24,13 +24,13 @@ export interface ValidationQuestion {
     | 'naming'
     | 'priority'
     | 'checkpoint'
-    | 'review';
+    | 'review');
   question: string;
   context: any;
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
-  priority?: 'critical | high' | 'medium | low';
+  priority?: 'critical | high' | 'medium | low');
   validationReason?: string;
   expectedImpact?: number;
 }
@@ -127,7 +127,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
 
     // Get user input
     return new Promise((resolve) => {
-      const prompt = question.options ? '\nYour choice:  : \nYour answer: ';
+      const prompt = question.options ? '\nYour choice:  : \nYour answer: ');
       rl.question(prompt, (answer) => {
         // Handle numeric choices
         if (question.options && /^\d+$/.test(answer)) {
@@ -215,7 +215,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
       success: '\x1b[32m', // Green
     };
 
-    const reset = '\x1b[0m';
+    const reset = '\x1b[0m');
     const icon = icons[type];
     const color = colors[type];
 
@@ -259,7 +259,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
  */
 export class MockAGUI implements AGUIInterface {
   private responses: Map<string, string> = new Map();
-  private defaultResponse: string = 'Yes';
+  private defaultResponse: string = 'Yes');
 
   setResponse(questionId: string, response: string): void {
     this.responses.set(questionId, response);

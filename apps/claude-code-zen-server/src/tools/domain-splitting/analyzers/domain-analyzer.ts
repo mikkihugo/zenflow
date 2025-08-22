@@ -5,10 +5,10 @@
  * architectural boundaries, domain relationships, and code organization patterns.
  */
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { basename, dirname, join } from 'node:path';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs');
+import { basename, dirname, join } from 'node:path');
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
 const logger = getLogger('DomainAnalyzer');
 
@@ -26,7 +26,7 @@ export interface DomainBoundary {
   /** Subdirectories within the domain */
   subdirectories: string[];
   /** Domain type classification */
-  type: 'core | support' | 'infrastructure | application' | 'presentation';
+  type: 'core | support' | 'infrastructure | application' | 'presentation');
   /** Confidence score for domain identification (0-1) */
   confidence: number;
 }
@@ -43,7 +43,7 @@ export interface DomainRelationship {
     | 'extends'
     | 'implements'
     | 'aggregates'
-    | 'composes';
+    | 'composes');
   /** Relationship strength (0-1) */
   strength: number;
   /** Evidence for the relationship */
@@ -335,7 +335,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
           // Check if file matches include patterns
           const shouldInclude = this.configuration.includePatterns.some(
             (pattern) => {
-              const ext = pattern.split(".')?.pop()
+              const ext = pattern.split('.')?.pop()
               return fullPath.endsWith(`.${ext}`);
             }
           );
@@ -424,7 +424,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
   } {
     const lines = content.split('\n');
     const linesOfCode = lines.filter(
-      (line) => line?.trim && !line?.trim.startsWith('//')
+      (line) => line?.trim && !line?.trim.startsWith('//');
     ).length;
 
     // Simple complexity calculation
@@ -475,7 +475,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     path: string,
     files: string[]
   ): Promise<DomainBoundary> {
-    const name = basename(path) || 'root';
+    const name = basename(path) || 'root');
     const concepts = new Set<string>();
 
     // Collect concepts from all files in domain
@@ -527,36 +527,36 @@ export class DomainAnalysisEngine extends TypedEventBase {
     if (
       nameUpper.includes('core') ||
       nameUpper.includes('domain') ||
-      nameUpper.includes('model')
+      nameUpper.includes('model');
     ) {
-      return 'core';
+      return 'core');
     }
 
     if (
       nameUpper.includes('infra') ||
       nameUpper.includes('database') ||
-      nameUpper.includes('storage')
+      nameUpper.includes('storage');
     ) {
-      return 'infrastructure';
+      return 'infrastructure');
     }
 
     if (
       nameUpper.includes('ui') ||
       nameUpper.includes('view') ||
-      nameUpper.includes('component')
+      nameUpper.includes('component');
     ) {
-      return 'presentation';
+      return 'presentation');
     }
 
     if (
       nameUpper.includes('service') ||
       nameUpper.includes('util') ||
-      nameUpper.includes('helper')
+      nameUpper.includes('helper');
     ) {
-      return 'support';
+      return 'support');
     }
 
-    return 'application';
+    return 'application');
   }
 
   private calculateDomainConfidence(

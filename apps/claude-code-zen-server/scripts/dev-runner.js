@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from 'child_process';
+import { execSync } from 'child_process';
 import { createServer } from 'http';
 import { readFileSync, watch } from 'fs';
 import { join } from 'path';
@@ -47,6 +48,24 @@ const colors = {
   reset: '\x1b[0m',
   bold: '\x1b[1m'
 };
+
+// Helper function to find tsc path and handle spawn ENOENT issues
+function getTscCommand() {
+  try {
+    // Try to use local tsc from node_modules
+    const localTscPath = path.join(process.cwd(), 'apps/claude-code-zen-server/node_modules/.bin/tsc');
+    execSync(`${localTscPath} --version`, { stdio: 'ignore' });
+    return localTscPath;
+  } catch {
+    // Fallback to npx tsc
+    try {
+      const npxPath = execSync('which npx', { encoding: 'utf8' }).trim();
+      return [npxPath, 'tsc'];
+    } catch {
+      return ['npx', 'tsc'];
+    }
+  }
+}
 
 function createErrorPage(error) {
   return `<!DOCTYPE html>
@@ -174,10 +193,23 @@ function runTypeCheck() {
   return new Promise((resolve, reject) => {
     console.log(`${colors.blue}🔍 Running TypeScript type check...${colors.reset}`);
     
-    const tsc = spawn('npx', ['tsc', '--noEmit', '--project', './tsconfig.json'], {
-      stdio: 'pipe',
-      cwd: path.join(process.cwd(), 'apps/claude-code-zen-server')
-    });
+    const tscCommand = getTscCommand();
+    let tsc;
+    if (Array.isArray(tscCommand)) {
+      // Using npx tsc
+      tsc = spawn(tscCommand[0], [tscCommand[1], '--noEmit', '--project', './tsconfig.json'], {
+        stdio: 'pipe',
+        cwd: process.cwd(),
+        env: { ...process.env, PATH: process.env.PATH }
+      });
+    } else {
+      // Using local tsc
+      tsc = spawn(tscCommand, ['--noEmit', '--project', './tsconfig.json'], {
+        stdio: 'pipe',
+        cwd: process.cwd(),
+        env: { ...process.env, PATH: process.env.PATH }
+      });
+    }
     
     let stdout = '';
     let stderr = '';
@@ -221,11 +253,21 @@ function startMainServer() {
   return new Promise((resolve, reject) => {
     console.log(`${colors.green}🚀 Starting main server...${colors.reset}`);
     
-    mainServer = spawn('npx', ['tsx', './src/main.ts'], {
-      stdio: ['inherit', 'inherit', 'pipe'],
-      cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
-      env: { ...process.env, NODE_ENV: 'development' }
-    });
+    try {
+      const npxPath = execSync('which npx', { encoding: 'utf8' }).trim();
+      mainServer = spawn(npxPath, ['tsx', './src/main.ts'], {
+        stdio: ['inherit', 'inherit', 'pipe'],
+        cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
+        env: { ...process.env, NODE_ENV: 'development' }
+      });
+    } catch {
+      // Fallback to direct node command if npx fails
+      mainServer = spawn('node', ['--require', 'tsx/cjs', './src/main.ts'], {
+        stdio: ['inherit', 'inherit', 'pipe'],
+        cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
+        env: { ...process.env, NODE_ENV: 'development' }
+      });
+    }
     
     let startupError = '';
     

@@ -18,7 +18,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
   AgentCapabilities,
@@ -45,18 +45,18 @@ export type {
 } from "./shared-types";
 
 // Type guards and utilities
-export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
+export function isZenSwarm(obj: any): obj is import('/shared-types').ZenSwarm {
   return (
     obj &&
     typeof obj.id === 'string' &&
-    typeof obj['topology] === string' &&
+    typeof obj['topology'] === 'string' &&
     Array.isArray(obj['agents'])
   );
 }
 
 export function isSwarmAgent(
   obj: any
-): obj is import('./shared-types').SwarmAgent {
+): obj is import('/shared-types').SwarmAgent {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -67,7 +67,7 @@ export function isSwarmAgent(
 
 export function isSystemEvent(
   obj: any
-): obj is import('./shared-types').SystemEvent {
+): obj is import('/shared-types').SystemEvent {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -84,7 +84,7 @@ export {
   isObjectArrayWithProps,
   isPositiveNumber,
   isValidNumber,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 export * from "./client-types";
 export * from "./events-types";
 export * from "./knowledge-types";

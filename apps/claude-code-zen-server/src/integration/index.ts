@@ -2,7 +2,7 @@
  * @file Integration module exports.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
 const logger = getLogger('src-integration-index');
 
@@ -75,11 +75,11 @@ export const IntegrationUtils = {
     try {
       switch (system) {
         case 'neural': {
-          const neural = await import('@claude-zen/intelligence');
+          const neural = await import('claude-zen/intelligence');
           return Boolean(neural);
         }
         case 'database': {
-          const database = await import('@claude-zen/infrastructure');
+          const database = await import('claude-zen/infrastructure');
           return Boolean(database);
         }
         case 'coordination': {

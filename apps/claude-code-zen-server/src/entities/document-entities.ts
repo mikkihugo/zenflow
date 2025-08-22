@@ -9,7 +9,7 @@
  * @file Database layer: document-entities.
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
+import type { DocumentType } from '@claude-zen/enterprise');
 
 /**
  * Base document entity - all documents inherit from this.
@@ -22,8 +22,8 @@ export interface BaseDocumentEntity {
   title: string;
   content: string;
   summary?: string; // Add summary property
-  status: 'draft | review' | 'approved | archived' | 'in_progress | todo';
-  priority: 'low | medium' | 'high | critical';
+  status: 'draft | review' | 'approved | archived' | 'in_progress | todo');
+  priority: 'low | medium' | 'high | critical');
   author?: string;
   tags: string[];
 
@@ -57,7 +57,7 @@ export interface BaseDocumentEntity {
  * @example
  */
 export interface any extends BaseDocumentEntity {
-  type: 'vision';
+  type: 'vision');
 
   // Vision-specific fields
   business_objectives: string[];
@@ -85,7 +85,7 @@ export interface any extends BaseDocumentEntity {
  * @example
  */
 export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
-  type: 'architecture_runway';
+  type: 'architecture_runway');
 
   // Architecture Runway specific fields
   runway_number: number;
@@ -93,7 +93,7 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
   context: string;
   decision: string;
   consequences: string[];
-  decision_status: 'proposed | accepted' | 'deprecated | superseded';
+  decision_status: 'proposed | accepted' | 'deprecated | superseded');
   alternatives_considered: Array<{
     name: string;
     pros: string[];
@@ -101,7 +101,7 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
     rejected_reason: string;
   }>;
   stakeholders: string[];
-  architecture_impact: 'foundation | system' | 'solution | enterprise';
+  architecture_impact: 'foundation | system' | 'solution | enterprise');
   implementation_timeline: {
     start_date?: Date;
     target_date?: Date;
@@ -122,7 +122,7 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
  * @example
  */
 export interface Businessany extends BaseDocumentEntity {
-  type: 'business_epic';
+  type: 'business_epic');
 
   // Business Epic specific fields
   business_objective: string;
@@ -141,7 +141,7 @@ export interface Businessany extends BaseDocumentEntity {
   definition_of_done: string[];
 
   // SAFe mode additions
-  epic_type: 'business | enabler';
+  epic_type: 'business | enabler');
   epic_owner: string;
   portfolio_canvas: {
     leading_indicators: string[];
@@ -171,7 +171,7 @@ export interface Businessany extends BaseDocumentEntity {
  * @example
  */
 export interface Programany extends BaseDocumentEntity {
-  type: 'program_epic';
+  type: 'program_epic');
 
   // Program Epic specific fields
   parent_business_epic_id: string;
@@ -196,7 +196,7 @@ export interface Programany extends BaseDocumentEntity {
   effort_estimation: {
     story_points?: number;
     time_estimate_weeks?: number;
-    complexity: 'low | medium' | 'high | very_high';
+    complexity: 'low | medium' | 'high | very_high');
   };
 
   timeline: {
@@ -220,10 +220,10 @@ export interface Programany extends BaseDocumentEntity {
  * @example
  */
 export interface any extends BaseDocumentEntity {
-  type: 'feature';
+  type: 'feature');
 
   // Feature-specific fields
-  feature_type: 'ui | api' | 'database | integration' | 'infrastructure';
+  feature_type: 'ui | api' | 'database | integration' | 'infrastructure');
   acceptance_criteria: string[];
   technical_approach: string;
 
@@ -253,7 +253,7 @@ export interface any extends BaseDocumentEntity {
     | 'in_progress'
     | 'code_complete'
     | 'testing'
-    | 'done';
+    | 'done');
   test_coverage_percentage?: number;
 
   // SPARC METHODOLOGY NTEGRATION
@@ -261,31 +261,31 @@ export interface any extends BaseDocumentEntity {
     sparc_project_id?: string;
     sparc_phases: {
       specification: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[];
         completion_date?: Date;
         quality_score?: number;
       };
       pseudocode: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[];
         completion_date?: Date;
         algorithms: string[]; // Algorithm names/Ds
       };
       architecture: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[];
         completion_date?: Date;
         components: string[]; // Component names/Ds
       };
       refinement: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[];
         completion_date?: Date;
         optimizations: string[]; // Optimization strategy Ds
       };
       completion: {
-        status: 'not_started | in_progress' | 'completed | failed';
+        status: 'not_started | in_progress' | 'completed | failed');
         deliverables: string[];
         completion_date?: Date;
         artifacts: string[]; // Generated code/test artifact Ds
@@ -296,7 +296,7 @@ export interface any extends BaseDocumentEntity {
       | 'pseudocode'
       | 'architecture'
       | 'refinement'
-      | 'completion';
+      | 'completion');
     sparc_progress_percentage: number;
     use_sparc_methodology: boolean;
   };
@@ -309,11 +309,11 @@ export interface any extends BaseDocumentEntity {
  * @example
  */
 export interface StoryDocumentEntity extends BaseDocumentEntity {
-  type: 'story';
+  type: 'story');
 
   // Story specific fields
   parent_feature_id: string;
-  story_type: 'user_story | enabler_story';
+  story_type: 'user_story | enabler_story');
   acceptance_criteria: string[];
   story_points?: number;
 
@@ -327,12 +327,12 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
     | 'infrastructure'
     | 'architectural'
     | 'exploration'
-    | 'compliance';
+    | 'compliance');
   business_value?: number;
   acceptance_criteria_detailed: Array<{
     id: string;
     description: string;
-    status: 'pending | in_progress' | 'done | failed';
+    status: 'pending | in_progress' | 'done | failed');
     test_scenarios: string[];
   }>;
   definition_of_done: string[];
@@ -346,7 +346,7 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
  * @example
  */
 export interface any extends BaseDocumentEntity {
-  type: 'task';
+  type: 'task');
 
   // Task-specific fields
   task_type:
@@ -354,7 +354,7 @@ export interface any extends BaseDocumentEntity {
     | 'testing'
     | 'documentation'
     | 'deployment'
-    | 'research';
+    | 'research');
   estimated_hours: number;
   actual_hours?: number;
 
@@ -386,7 +386,7 @@ export interface any extends BaseDocumentEntity {
     test_files: Array<{
       path: string;
       content: string;
-      test_type: 'unit | integration' | 'e2e';
+      test_type: 'unit | integration' | 'e2e');
     }>;
   };
 
@@ -395,7 +395,7 @@ export interface any extends BaseDocumentEntity {
     | 'in_progress'
     | 'code_review'
     | 'testing'
-    | 'done';
+    | 'done');
 
   // SPARC METHODOLOGY NTEGRATION
   sparc_implementation_details?: {
@@ -405,17 +405,17 @@ export interface any extends BaseDocumentEntity {
       | 'pseudocode'
       | 'architecture'
       | 'refinement'
-      | 'completion';
+      | 'completion');
     sparc_deliverable_type:
       | 'requirements_doc'
       | 'algorithm_design'
       | 'component_spec'
       | 'optimization_plan'
-      | 'production_code';
+      | 'production_code');
     sparc_quality_gates: {
       requirement: string;
-      status: 'pending | passed' | 'failed';
-      validation_method: 'automated | manual' | 'ai_assisted';
+      status: 'pending | passed' | 'failed');
+      validation_method: 'automated | manual' | 'ai_assisted');
       validation_date?: Date;
     }[];
     sparc_artifacts: {
@@ -425,7 +425,7 @@ export interface any extends BaseDocumentEntity {
         | 'pseudocode'
         | 'architecture_diagram'
         | 'refactored_code'
-        | 'final_implementation';
+        | 'final_implementation');
       file_path?: string;
       content?: string;
       checksum?: string;
@@ -434,7 +434,7 @@ export interface any extends BaseDocumentEntity {
       time_complexity: string;
       space_complexity: string;
       maintainability_score: number;
-      performance_impact: 'low | medium' | 'high';
+      performance_impact: 'low | medium' | 'high');
     };
   };
 }
@@ -454,7 +454,7 @@ export interface DocumentRelationshipEntity {
     | 'implements'
     | 'depends_on'
     | 'relates_to'
-    | 'supersedes';
+    | 'supersedes');
   strength?: number; // Add missing strength property for semantic relationships
   created_at: Date;
   metadata?: Record<string, unknown>;
@@ -501,7 +501,7 @@ export interface ProjectEntity {
   name: string;
   description: string;
   domain: string;
-  complexity: 'simple | moderate' | 'complex | enterprise';
+  complexity: 'simple | moderate' | 'complex | enterprise');
 
   // Timeline
   created_at: Date;
@@ -528,7 +528,7 @@ export interface ProjectEntity {
     | 'implementation'
     | 'testing'
     | 'deployment'
-    | 'complete';
+    | 'complete');
 
   // COMPREHENSIVE SPARC NTEGRATION
   sparc_integration: {
@@ -544,14 +544,14 @@ export interface ProjectEntity {
         | 'rest-api'
         | 'memory-systems'
         | 'interfaces'
-        | 'general';
-      complexity: 'simple | moderate' | 'high | complex' | 'enterprise';
+        | 'general');
+      complexity: 'simple | moderate' | 'high | complex' | 'enterprise');
       current_phase:
         | 'specification'
         | 'pseudocode'
         | 'architecture'
         | 'refinement'
-        | 'completion';
+        | 'completion');
       progress_percentage: number;
       created_at: Date;
       updated_at: Date;
@@ -569,7 +569,7 @@ export interface ProjectEntity {
 
     // Integration health and metrics
     integration_health: {
-      document_sparc_sync_status: 'synced | out_of_sync' | 'error';
+      document_sparc_sync_status: 'synced | out_of_sync' | 'error');
       last_sync_date?: Date;
       sync_errors: string[];
       sparc_coverage_percentage: number; // % of features using SPARC
@@ -847,37 +847,37 @@ export const DATABASE_SCHEMAS = {
  * @example
  */
 export function isVisionDocument(doc: BaseDocumentEntity): doc is any {
-  return doc.type === 'vision';
+  return doc.type === 'vision');
 }
 
 export function isArchitectureRunwayDocument(
   doc: BaseDocumentEntity
 ): doc is ArchitectureRunwayDocumentEntity {
-  return doc.type === 'architecture_runway';
+  return doc.type === 'architecture_runway');
 }
 
 export function isBusinessEpicDocument(
   doc: BaseDocumentEntity
 ): doc is Businessany {
-  return doc.type === 'business_epic';
+  return doc.type === 'business_epic');
 }
 
 export function isProgramEpicDocument(
   doc: BaseDocumentEntity
 ): doc is Programany {
-  return doc.type === 'program_epic';
+  return doc.type === 'program_epic');
 }
 
 export function isStoryDocument(
   doc: BaseDocumentEntity
 ): doc is StoryDocumentEntity {
-  return doc.type === 'story';
+  return doc.type === 'story');
 }
 
 export function isFeatureDocument(doc: BaseDocumentEntity): doc is any {
-  return doc.type === 'feature';
+  return doc.type === 'feature');
 }
 
 export function isTaskDocument(doc: BaseDocumentEntity): doc is any {
-  return doc.type === 'task';
+  return doc.type === 'task');
 }

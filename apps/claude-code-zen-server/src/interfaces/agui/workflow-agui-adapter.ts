@@ -19,15 +19,15 @@ import type {
   type DomainBoundaryValidator,
   getDomainValidator,
   type Result,
-} from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation');
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
   createCorrelationId,
   createEvent,
   type TypeSafeEventBus,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 import type {
   EscalationChain,
@@ -35,9 +35,9 @@ import type {
   GateEscalationLevel,
   WorkflowContext,
   WorkflowGateRequest,
-} from './../coordination/workflows/workflow-gate-request';
+} from './../coordination/workflows/workflow-gate-request');
 
-import('./agui-adapter';
+import('/agui-adapter');
 
 const logger = getLogger('workflow-agui-adapter');
 
@@ -423,7 +423,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       const approvers = level.approvers.join(', ');
       const timeLimit = level.timeLimit
         ? `${Math.round(level.timeLimit / 60000)}min`
-        : 'no limit';
+        : 'no limit');
       console.log(`   ${levelName}: ${approvers} (${timeLimit})`);
     });
   }
@@ -820,10 +820,10 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     const lowerResponse = response?.toLowerCase()
 
     if (approvalKeywords.some((keyword) => lowerResponse.includes(keyword))) {
-      return 'approved';
+      return 'approved');
     }
     if (rejectionKeywords.some((keyword) => lowerResponse.includes(keyword))) {
-      return 'rejected';
+      return 'rejected');
     }
 
     return response; // Return as-is if no clear approval/rejection

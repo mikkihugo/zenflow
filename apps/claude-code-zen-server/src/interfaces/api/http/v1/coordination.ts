@@ -8,11 +8,11 @@
  * @file Coordination domain API routes.
  */
 
-import { type Request, type Response, Router } from 'express';
+import { type Request, type Response, Router } from 'express');
 
-import { CoordinationAPI } from './../../../coordination/api';
-import { asyncHandler } from './middleware/errors';
-import { LogLevel, log } from './middleware/logging';
+import { CoordinationAPI } from './../../../coordination/api');
+import { asyncHandler } from './middleware/errors');
+import { LogLevel, log } from './middleware/logging');
 
 /**
  * Create coordination routes.

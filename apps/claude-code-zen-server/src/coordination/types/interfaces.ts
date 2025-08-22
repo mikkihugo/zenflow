@@ -6,19 +6,19 @@
 /**
  * Priority levels for tasks and operations
  */
-export type Priority = 'low | medium' | 'high | critical';
+export type Priority = 'low | medium' | 'high | critical');
 
 /**
  * Risk level assessment
  */
-export type RiskLevel = 'low | medium' | 'high | critical';
+export type RiskLevel = 'low | medium' | 'high | critical');
 
 /**
  * Server instance interface - wraps Express.Server with additional metadata
  */
 export interface ServerInstance {
   id: string;
-  status: 'starting | running' | 'stopping | stopped' | 'error';
+  status: 'starting | running' | 'stopping | stopped' | 'error');
   port?: number;
   host?: string;
   uptime?: number;
@@ -43,7 +43,7 @@ export interface BaseError {
 export interface TestResult {
   id?: string;
   name?: string;
-  status?: 'passed | failed' | 'skipped | pending';
+  status?: 'passed | failed' | 'skipped | pending');
   success: boolean;
   duration?: number;
   error?: BaseError | string;
@@ -81,7 +81,7 @@ export interface BaseApiResponse {
  * Basic neural configuration for coordination components
  */
 export interface NeuralConfig {
-  modelType: 'feedforward | recurrent' | 'transformer';
+  modelType: 'feedforward | recurrent' | 'transformer');
   layers: number[];
   activations: string[];
   learningRate: number;
@@ -244,7 +244,7 @@ export type AgentType =
   | 'analyze-code-quality'
   | 'security-analyzer'
   | 'refactoring-analyzer'
-  | 'user-guide-writer';
+  | 'user-guide-writer');
 
 export type AgentStatus =
   // Basic states
@@ -255,7 +255,7 @@ export type AgentStatus =
   | 'offline'
   // Extended states
   | 'initializing'
-  | 'terminated';
+  | 'terminated');
 
 export interface AgentCapabilities {
   canCoordinate: boolean;
@@ -365,7 +365,7 @@ export interface QueenPool {
 }
 
 export interface QueenHealth {
-  status: 'healthy | degraded' | 'critical | unhealthy';
+  status: 'healthy | degraded' | 'critical | unhealthy');
   lastCheck: Date;
   issues: string[];
   queenId?: string; // Queen ID for queen-coordinator
@@ -373,18 +373,18 @@ export interface QueenHealth {
   components?: Record<
     string,
     {
-      status: 'healthy | degraded' | 'critical | unhealthy';
+      status: 'healthy | degraded' | 'critical | unhealthy');
       lastCheck?: Date;
       metrics?: Record<string, unknown>;
     }
   >; // Optional components used by queen-coordinator
   overall?: {
-    status: 'healthy | degraded' | 'critical | unhealthy';
+    status: 'healthy | degraded' | 'critical | unhealthy');
     score: number;
   }; // Optional overall health used by queen-coordinator
 }
 
-export type QueenType = 'primary | secondary' | 'backup';
+export type QueenType = 'primary | secondary' | 'backup');
 
 export interface QueenCapabilities extends AgentCapabilities {
   canManageSwarms: boolean;
@@ -549,7 +549,7 @@ export type QueenStatus = AgentStatus;
  * Event Bus and Logger interfaces
  * Re-export from event-system package for better integration
  */
-export type { SystemEvent } from '@claude-zen/intelligence';
+export type { SystemEvent } from '@claude-zen/intelligence');
 
 // Use the comprehensive EventBus from event-system package instead of basic interface
 export interface EventBus {

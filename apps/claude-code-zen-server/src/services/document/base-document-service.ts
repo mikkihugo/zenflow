@@ -11,11 +11,11 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { DocumentType } from '@claude-zen/enterprise');
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
-import type { BaseDocumentEntity } from './../entities/document-entities';
+import type { BaseDocumentEntity } from './../entities/document-entities');
 
 import {
   DocumentManager,
@@ -35,7 +35,7 @@ export interface ValidationResult {
 
 export interface QueryFilters {
   status?: string;
-  priority?: 'low | medium' | 'high | critical';
+  priority?: 'low | medium' | 'high | critical');
   author?: string;
   projectId?: string;
   tags?: string[];
@@ -56,7 +56,7 @@ export interface QueryResult<T> {
 
 export interface SearchOptions extends QueryFilters {
   query: string;
-  searchType?: 'fulltext | semantic' | 'keyword | combined';
+  searchType?: 'fulltext | semantic' | 'keyword | combined');
   includeRelationships?: boolean;
   includeWorkflowState?: boolean;
 }

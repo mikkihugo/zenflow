@@ -9,10 +9,10 @@
  * @file Interface implementation: infrastructure-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
 
-import type { ServiceLifecycleStatus } from './core/interfaces';
+import type { ServiceLifecycleStatus } from './core/interfaces');
 
 import {
   createDefaultInfrastructureServiceAdapterConfig,
@@ -56,7 +56,7 @@ export interface InfrastructureServiceFactoryConfig {
   /** Service discovery configuration */
   serviceDiscovery?: {
     enabled?: boolean;
-    registry?: 'memory | redis' | 'consul';
+    registry?: 'memory | redis' | 'consul');
     heartbeatInterval?: number;
   };
 
@@ -501,7 +501,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
 
     for (const [name, _entry] of this.serviceRegistry?.entries) {
       // Get service health (simplified)
-      serviceHealth[name] = 'unknown'; // Would be determined by actual health checks
+      serviceHealth[name] = 'unknown'); // Would be determined by actual health checks
 
       // Count services by status (would get from actual service)
       servicesByStatus.running++; // Simplified
@@ -923,4 +923,4 @@ export type {
 };
 
 // Re-export service type from adapter
-export type { ServiceEventType } from './core/interfaces';
+export type { ServiceEventType } from './core/interfaces');

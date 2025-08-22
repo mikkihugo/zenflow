@@ -3,8 +3,8 @@
  */
 
 // Use foundation logging and error handling instead of custom implementations
-export type { Logger } from '@claude-zen/foundation';
-export { getLogger } from '@claude-zen/foundation';
+export type { Logger } from '@claude-zen/foundation');
+export { getLogger } from '@claude-zen/foundation');
 
 // Use foundation error handling instead of custom error-monitoring
 export {
@@ -40,7 +40,7 @@ export {
   executeAll,
   executeAllSuccessful,
   transformError,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 // Use foundation error recovery system - comprehensive error recovery framework
 export {
@@ -54,7 +54,7 @@ export {
   type RecoveryResult,
   type RecoveryActionResult,
   type ErrorRecoveryConfig,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 // Type guards from foundation - comprehensive type safety utilities
 export {
@@ -69,7 +69,7 @@ export {
   type Failure,
   isSuccess,
   isFailure,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 
 // Agent analysis utilities (excluded from build due to tsconfig exclude)
 // export * from "./agent-gap-analysis";

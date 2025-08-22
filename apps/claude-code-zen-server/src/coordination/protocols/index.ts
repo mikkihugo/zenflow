@@ -17,14 +17,14 @@ import type { Logger } from '@claude-zen/foundation';
 import { PerformanceOptimizer } from '@claude-zen/operations';
 
 import type { EventBusInterface as EventBus } from './core/event-bus';
-
-import('./communication/communication-protocols';
-import('./distribution/task-distribution-engine';
-import('./lifecycle/agent-lifecycle-manager';
 import {
   TopologyManager,
   type TopologyType,
 } from "./topology/topology-manager";
+
+import('/communication/communication-protocols');
+import('/distribution/task-distribution-engine');
+import('/lifecycle/agent-lifecycle-manager');
 
 export {
   type CommunicationNode,
@@ -177,7 +177,7 @@ export interface AdvancedCoordinationConfig {
   };
   patterns: {
     election: {
-      algorithm: 'bully | ring' | 'raft | fast-bully';
+      algorithm: 'bully' | 'ring' | 'raft' | 'fast-bully';
       timeoutMs: number;
       heartbeatInterval: number;
       maxRetries: number;
@@ -185,7 +185,7 @@ export interface AdvancedCoordinationConfig {
       minNodes: number;
     };
     consensus: {
-      algorithm: 'raft | pbft' | 'tendermint';
+      algorithm: 'raft' | 'pbft' | 'tendermint';
       electionTimeout: [number, number];
       heartbeatInterval: number;
       logReplicationTimeout: number;

@@ -42,7 +42,7 @@ export type TerminalMode =
   | 'help'
   | 'daemon'
   | 'dev'
-  | 'test';
+  | 'test');
 
 export interface ModeDetectionResult {
   mode: TerminalMode;

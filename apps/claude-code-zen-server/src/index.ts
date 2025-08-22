@@ -9,7 +9,7 @@
 // CORE SYSTEMS
 // =============================================================================
 
-export * as Config from '@claude-zen/foundation';
+export * as Config from '@claude-zen/foundation');
 export * as Core from "./core/index";
 export * as Types from "./types/agent-types";
 export * as Utils from "./utils/index";
@@ -21,7 +21,7 @@ export * as Utils from "./utils/index";
 // Coordination System - All swarm and orchestration functionality
 export * as Coordination from "./coordination/index";
 // SPARC Methodology System - Systematic development workflow via strategic facades
-export * as SPARC from '@claude-zen/enterprise';
+export * as SPARC from '@claude-zen/enterprise');
 
 /**
  * Database System - Complete data persistence and storage management.
@@ -32,7 +32,7 @@ export * as SPARC from '@claude-zen/enterprise';
  *
  * @example
  * ```typescript
- * import { Database } from 'claude-code-zen';
+ * import { Database } from 'claude-code-zen');
  *
  * const manager = await Database?.createDatabaseManager()
  * const dao = manager?.getCoordinationDAO()
@@ -43,7 +43,7 @@ export * as SPARC from '@claude-zen/enterprise';
  * @see {@link ./database/index.ts} - Database implementation modules
  * @since 1"..0'-alpha.43
  */
-export * as Database from '@claude-zen/intelligence';
+export * as Database from '@claude-zen/intelligence');
 
 /**
  * Memory System - Advanced memory management and persistence.
@@ -54,7 +54,7 @@ export * as Database from '@claude-zen/intelligence';
  *
  * @example
  * ```typescript
- * import { Memory } from 'claude-code-zen';
+ * import { Memory } from 'claude-code-zen');
  *
  * const system = await Memory.BrainCoordinatorFactory?.createBasicBrainCoordinator()
  * await system.store('session-key', sessionData);
@@ -65,7 +65,7 @@ export * as Database from '@claude-zen/intelligence';
  * @see {@link ./memory/index.ts} - Memory system implementation
  * @since 1"..0'-alpha.43
  */
-export * as Memory from '@claude-zen/intelligence';
+export * as Memory from '@claude-zen/intelligence');
 
 /**
  * Neural System - AI/ML infrastructure and neural network management.
@@ -76,7 +76,7 @@ export * as Memory from '@claude-zen/intelligence';
  *
  * @example
  * ```typescript
- * import { Neural } from 'claude-code-zen';
+ * import { Neural } from 'claude-code-zen');
  *
  * const agent = new Neural.NeuralAgent(baseAgent, 'researcher');
  * const bridge = Neural.NeuralBridge?.getInstance()
@@ -87,7 +87,7 @@ export * as Memory from '@claude-zen/intelligence';
  * @see {@link ./neural/index.ts} - Neural system implementation
  * @since 1"..0'-alpha.43
  */
-export * as Neural from '@claude-zen/intelligence';
+export * as Neural from '@claude-zen/intelligence');
 
 /**
  * Optimization System - Performance optimization and resource management.
@@ -98,7 +98,7 @@ export * as Neural from '@claude-zen/intelligence';
  *
  * @example
  * ```typescript
- * import { Optimization } from 'claude-code-zen';
+ * import { Optimization } from 'claude-code-zen');
  *
  * const monitor = new Optimization?.OptimizationMonitor()
  * await monitor?.startMonitoring()
@@ -109,7 +109,7 @@ export * as Neural from '@claude-zen/intelligence';
  * @see {@link ./optimization/index.ts} - Optimization system implementation
  * @since 1"..0'-alpha.43
  */
-export * as Optimization from '@claude-zen/operations';
+export * as Optimization from '@claude-zen/operations');
 
 /**
  * Workflow System - Advanced workflow execution and management engine.
@@ -120,7 +120,7 @@ export * as Optimization from '@claude-zen/operations';
  *
  * @example
  * ```typescript
- * import { Workflows } from 'claude-code-zen';
+ * import { Workflows } from 'claude-code-zen');
  *
  * const engine = new Workflows.WorkflowEngine(memorySystem);
  * const workflow = await engine.executeWorkflow(workflowDefinition);
@@ -131,7 +131,7 @@ export * as Optimization from '@claude-zen/operations';
  * @see {@link ./workflows/index.ts} - Workflow system implementation
  * @since 1"..0'-alpha.43
  */
-export * as Workflows from '@claude-zen/enterprise';
+export * as Workflows from '@claude-zen/enterprise');
 
 // =============================================================================
 // NTERFACE SYSTEMS
@@ -146,7 +146,7 @@ export * as Workflows from '@claude-zen/enterprise';
  *
  * @example
  * ```typescript
- * import { Interfaces } from 'claude-code-zen';
+ * import { Interfaces } from 'claude-code-zen');
  *
  * const mcpServer = new Interfaces.MCP?.HTTPMCPServer()
  * await mcpServer?.start()
@@ -173,7 +173,7 @@ export * as Interfaces from "./interfaces/index";
  *
  * @example
  * ```typescript
- * import { BrainCoordinator } from 'claude-code-zen';
+ * import { BrainCoordinator } from 'claude-code-zen');
  *
  * const brain = new BrainCoordinator();
  * await brain?.initialize()
@@ -195,7 +195,7 @@ export { BrainCoordinator } from "./neural/neural-interface";
  *
  * @example
  * ```typescript
- * import { Integration } from 'claude-code-zen';
+ * import { Integration } from 'claude-code-zen');
  *
  * const wrapper = new Integration?.DSPyWrapperArchitecture()
  * const bridge = new Integration?.MemoryDatabaseIntegration()
@@ -250,8 +250,8 @@ export * as Integration from "./integration/index";
 export * from "./coordination/public-api";
 
 // Utils and core services - use strategic facades
-export { getLogger } from '@claude-zen/intelligence';
-export type { Logger } from '@claude-zen/intelligence';
+export { getLogger } from '@claude-zen/intelligence');
+export type { Logger } from '@claude-zen/intelligence');
 
 // Terminal Interface (CLI and TUI unified)
 
@@ -272,7 +272,7 @@ export type { Logger } from '@claude-zen/intelligence';
  *
  * @example
  * ```typescript
- * import { NeuralAgent } from 'claude-code-zen';
+ * import { NeuralAgent } from 'claude-code-zen');
  *
  * // Create a specialized research agent
  * const agent = new NeuralAgent(baseAgent, 'researcher');
@@ -302,10 +302,10 @@ export {
    */
   NeuralAgent,
   // Note: createNeuralAgent, NeuralAgentConfig, NeuralAgentState not available
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Neural network integration
-export * from '@claude-zen/intelligence';
+export * from '@claude-zen/intelligence');
 
 /**
  * Shared Type Definitions - Central type system for Claude Code Zen.
@@ -315,7 +315,7 @@ export * from '@claude-zen/intelligence';
  *
  * @example
  * ```typescript
- * import { SharedTypes } from 'claude-code-zen';
+ * import { SharedTypes } from 'claude-code-zen');
  *
  * type Config = SharedTypes.WASMNeuralConfig;
  * const metrics: SharedTypes.WASMPerformanceMetrics = {...};
@@ -339,7 +339,7 @@ export * as SharedTypes from "./types/index";
  *
  * @example
  * ```typescript
- * import type { ClaudeZenConfig } from 'claude-code-zen';
+ * import type { ClaudeZenConfig } from 'claude-code-zen');
  *
  * const config: ClaudeZenConfig = {
  *   mcp: {
@@ -373,8 +373,8 @@ export interface ClaudeZenConfig {
   // Swarm orchestration
   swarm: {
     maxAgents: number;
-    topology: 'mesh | hierarchical' | 'ring | star';
-    strategy: 'balanced | specialized' | 'adaptive | parallel';
+    topology: 'mesh | hierarchical' | 'ring | star');
+    strategy: 'balanced | specialized' | 'adaptive | parallel');
   };
 
   // Neural network settings
@@ -393,7 +393,7 @@ export interface ClaudeZenConfig {
 
   // Database and persistence
   persistence: {
-    provider: 'sqlite | postgresql' | 'memory';
+    provider: 'sqlite | postgresql' | 'memory');
     connectionString?: string;
   };
 
@@ -425,7 +425,7 @@ export interface ClaudeZenConfig {
  *
  * @example
  * ```typescript
- * import { defaultConfig, initializeClaudeZen } from 'claude-code-zen';
+ * import { defaultConfig, initializeClaudeZen } from 'claude-code-zen');
  *
  * // Use default configuration
  * await initializeClaudeZen();
@@ -484,7 +484,7 @@ export async function initializeClaudeZen(
 
   // Initialize SwarmOrchestrator from coordination module
   try {
-    const coordinationModule = await import('./coordination/public-api');
+    const coordinationModule = await import('/coordination/public-api');
     // Create and initialize a public swarm coordinator
     const swarmCoordinator =
       await coordinationModule.createPublicSwarmCoordinator({
@@ -497,7 +497,7 @@ export async function initializeClaudeZen(
     (global as any).swarmCoordinator = swarmCoordinator;
 
     const logger = await (
-      await import('@claude-zen/infrastructure')
+      await import('claude-zen/infrastructure');
     ).getLogger('SystemInitializer');
     logger.info('✅ Swarm coordination system initialized', {
       id: swarmCoordinator?.getSwarmId,
@@ -506,7 +506,7 @@ export async function initializeClaudeZen(
     });
   } catch (error) {
     const logger = await (
-      await import('@claude-zen/infrastructure')
+      await import('claude-zen/infrastructure');
     ).getLogger('SystemInitializer');
     logger.warn('⚠️ SwarmOrchestrator initialization failed:', error);
     // Gracefully continue without swarm coordination
@@ -532,14 +532,14 @@ export async function initializeClaudeZen(
     (global as any).memorySystem = memorySystem;
 
     const logger = await (
-      await import('@claude-zen/infrastructure')
+      await import('claude-zen/infrastructure');
     ).getLogger('SystemInitializer');
     logger.info('✅ Memory system initialized with', {
       provider: finalConfig?.persistence?.provider || 'sqlite',
     });
   } catch (error) {
     const logger = await (
-      await import('@claude-zen/infrastructure')
+      await import('claude-zen/infrastructure');
     ).getLogger('SystemInitializer');
     logger.error('⚠️ Memory system initialization failed:', error);
     // Continue without memory system - some features may be limited
@@ -547,7 +547,7 @@ export async function initializeClaudeZen(
 
   // Initialize neural bridge if enabled
   if (finalConfig?.neural?.enabled) {
-    const { getBrainSystem } = await import('@claude-zen/intelligence');
+    const { getBrainSystem } = await import('claude-zen/intelligence');
     const brainSystem = await getBrainSystem();
     const neuralBridge = brainSystem.createNeuralBridge(finalConfig?.neural);
     await neuralBridge?.initialize()
@@ -555,7 +555,7 @@ export async function initializeClaudeZen(
 
   // Initialize SPARC methodology system if enabled
   if (finalConfig?.sparc?.enabled) {
-    const { SPARC } = await import('@claude-zen/enterprise');
+    const { SPARC } = await import('claude-zen/enterprise');
     const _sparcEngine = SPARC?.getEngine()
   }
 
@@ -574,13 +574,13 @@ export async function initializeClaudeZen(
  */
 export async function shutdownClaudeZen(): Promise<void> {
   const logger = await (
-    await import('@claude-zen/infrastructure')
+    await import('claude-zen/infrastructure');
   ).getLogger('SystemShutdown');
   logger.info('🔄 Initiating Claude-Zen system shutdown...');
 
   const shutdownResults: Array<{
     component: string;
-    status: 'success | error';
+    status: 'success | error');
     error?: string;
   }> = [];
 
@@ -610,7 +610,7 @@ export async function shutdownClaudeZen(): Promise<void> {
 
     // Shutdown neural bridge if initialized
     try {
-      const { getBrainSystem } = await import('@claude-zen/intelligence');
+      const { getBrainSystem } = await import('claude-zen/intelligence');
       const brainSystem = await getBrainSystem();
       const neuralBridge = brainSystem?.createNeuralBridge()
       if (neuralBridge && typeof neuralBridge?.shutdown() === 'function') {
@@ -692,7 +692,7 @@ export async function healthCheck() {
     components: {} as Record<
       string,
       {
-        status: 'healthy | degraded' | 'unhealthy | unknown';
+        status: 'healthy | degraded' | 'unhealthy | unknown');
         details?: any;
         error?: string;
       }
@@ -763,7 +763,7 @@ export async function healthCheck() {
 
   // Check Neural system
   try {
-    const { getBrainSystem } = await import('@claude-zen/intelligence');
+    const { getBrainSystem } = await import('claude-zen/intelligence');
     const brainSystem = await getBrainSystem();
     const neuralBridge = brainSystem?.createNeuralBridge()
     if (neuralBridge && typeof neuralBridge.getHealth === 'function') {
@@ -852,11 +852,11 @@ export async function healthCheck() {
 
   // Determine overall health status
   if (!overallHealthy) {
-    healthStatus.status = 'unhealthy';
+    healthStatus.status = 'unhealthy');
   } else if (degradedComponents > 0) {
-    healthStatus.status = 'degraded';
+    healthStatus.status = 'degraded');
   } else {
-    healthStatus.status = 'healthy';
+    healthStatus.status = 'healthy');
   }
 
   return healthStatus;
@@ -895,7 +895,7 @@ export function getVersion() {
  * @example
  * ```typescript
  * // ESM import
- * import ClaudeZen from 'claude-code-zen';
+ * import ClaudeZen from 'claude-code-zen');
  *
  * await ClaudeZen?.initializeClaudeZen()
  * const agent = new ClaudeZen.Neural.NeuralAgent(...);

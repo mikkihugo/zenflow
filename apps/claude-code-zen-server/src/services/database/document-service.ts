@@ -23,9 +23,9 @@
  * - Advanced analytics and reporting
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import type { Logger } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getDatabaseAccess } from '@claude-zen/infrastructure');
 import type {
   BaseDocumentEntity,
   DocumentRelationshipEntity,
@@ -35,8 +35,8 @@ import type {
   DocumentSearchResult,
   DocumentAnalytics,
   DocumentRelationshipType,
-} from '@claude-zen/intelligence';
-import { nanoid } from 'nanoid';
+} from '@claude-zen/intelligence');
+import { nanoid } from 'nanoid');
 
 /**
  * Document Service Configuration
@@ -127,7 +127,7 @@ export class DocumentManager extends TypedEventBase {
 
       // Delegate to @claude-zen/intelligence for workflow management
       if (this.configuration.enableWorkflow) {
-        const { WorkflowEngine } = await import('@claude-zen/intelligence');
+        const { WorkflowEngine } = await import('claude-zen/intelligence');
         this.workflowEngine = new WorkflowEngine({
           persistWorkflows: true,
           enableVisualization: false,
@@ -137,7 +137,7 @@ export class DocumentManager extends TypedEventBase {
 
       // Delegate to @claude-zen/intelligence for search capabilities
       if (this.configuration.enableSearch) {
-        const { KnowledgeManager } = await import('@claude-zen/intelligence');
+        const { KnowledgeManager } = await import('claude-zen/intelligence');
         this.knowledgeManager = new KnowledgeManager({
           enableSemanticSearch: true,
           enableFullTextSearch: true,

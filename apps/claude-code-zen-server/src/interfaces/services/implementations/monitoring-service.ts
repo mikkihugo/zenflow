@@ -8,13 +8,13 @@
  * @file Monitoring service implementation.
  */
 
-import type { Service } from './core/interfaces';
+import type { Service } from './core/interfaces');
 import type {
   MonitoringServiceConfig,
   ServiceOperationOptions,
-} from './types';
+} from './types');
 
-import('./base-service';
+import('/base-service');
 
 /**
  * Monitoring service implementation.

@@ -52,9 +52,9 @@ import type {
   WorkflowEngine,
   TaskExecution,
   WorkflowResult,
-} from '@claude-zen/enterprise';
-import { getLogger, TypedEventBase } from '@claude-zen/foundation';
-import { assertDefined, getErrorMessage } from '@claude-zen/intelligence';
+} from '@claude-zen/enterprise');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { assertDefined, getErrorMessage } from '@claude-zen/intelligence');
 import type {
   BrainCoordinator,
   SwarmConfiguration,
@@ -63,14 +63,14 @@ import type {
   ServiceContext,
   ServiceResult,
   TranslationError,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 import type {
   AgentManager,
   AgentStatus,
   PerformanceTracker,
   HealthMonitor,
   SystemMetrics,
-} from '@claude-zen/operations';
+} from '@claude-zen/operations');
 
 // Strategic imports from @claude-zen packages
 
@@ -110,9 +110,9 @@ export interface AgentConfig {
  */
 export interface TaskOrchestrationConfig {
   task: string;
-  strategy: 'sequential | parallel' | 'adaptive';
+  strategy: 'sequential | parallel' | 'adaptive');
   maxAgents?: number;
-  priority?: 'low | medium' | 'high';
+  priority?: 'low | medium' | 'high');
   timeout?: number;
 }
 
@@ -208,7 +208,7 @@ export class SwarmService extends TypedEventBase {
 
     try {
       // Delegate to @claude-zen/intelligence for neural coordination
-      const { BrainCoordinator } = await import('@claude-zen/intelligence');
+      const { BrainCoordinator } = await import('claude-zen/intelligence');
       this.brainCoordinator = new BrainCoordinator({
         maxSwarms: this.settings?.maxSwarms,
         enableNeuralCoordination: this.settings?.enableNeuralCoordination,
@@ -222,7 +222,7 @@ export class SwarmService extends TypedEventBase {
       await this.brainCoordinator?.initialize()
 
       // Delegate to @claude-zen/agent-manager for agent lifecycle
-      const { AgentManager } = await import('@claude-zen/agent-manager');
+      const { AgentManager } = await import('claude-zen/agent-manager');
       this.agentManager = new AgentManager({
         maxAgents: this.settings?.maxSwarms * this.settings?.maxAgentsPerSwarm,
         enableNeuralAgents: true,
@@ -231,7 +231,7 @@ export class SwarmService extends TypedEventBase {
       await this.agentManager?.initialize()
 
       // Delegate to @claude-zen/intelligence for task orchestration
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentTasks: 100,
         enableAdaptiveScheduling: true,
@@ -240,7 +240,7 @@ export class SwarmService extends TypedEventBase {
       await this.workflowEngine?.initialize()
 
       // Delegate to @claude-zen/intelligence for collaboration
-      const { CollaborationEngine } = await import('@claude-zen/intelligence');
+      const { CollaborationEngine } = await import('claude-zen/intelligence');
       this.collaborationEngine = new CollaborationEngine({
         enableMultiAgentCoordination: true,
         enableRealTimeSync: true,

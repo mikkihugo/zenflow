@@ -5,12 +5,12 @@
  * for the command palette and file explorer.
  */
 
-import { spawn } from 'child_process';
-import * as path from 'path';
+import { spawn } from 'child_process');
+import * as path from 'path');
 
-import { getLogger } from '@claude-zen/foundation';
-import type { Express, Request, Response } from 'express';
-import * as fs from 'fs-extra';
+import { getLogger } from '@claude-zen/foundation');
+import type { Express, Request, Response } from 'express');
+import * as fs from 'fs-extra');
 
 export class WorkspaceApiRoutes {
   private logger = getLogger('WorkspaceAPI');
@@ -24,7 +24,7 @@ export class WorkspaceApiRoutes {
    * Setup workspace API routes
    */
   setupRoutes(app: Express): void {
-    const prefix = '/api/workspace';
+    const prefix = '/api/workspace');
 
     // File system operations
     app.get(`${prefix}/files`, this.listFiles.bind(this));
@@ -63,7 +63,7 @@ export class WorkspaceApiRoutes {
    */
   private async listFiles(req: Request, res: Response): Promise<void> {
     try {
-      const requestedPath = (req.query.path as string) || '';
+      const requestedPath = (req.query.path as string) || '');
       const fullPath = path.resolve(this.workspaceRoot, requestedPath);
 
       // Security check - ensure path is within workspace
@@ -372,8 +372,8 @@ export class WorkspaceApiRoutes {
         stdio: 'pipe',
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = '');
+      let stderr = '');
 
       child.stdout?.on('data', (data) => {
         stdout += data?.toString()
@@ -417,8 +417,8 @@ export class WorkspaceApiRoutes {
         stdio: 'pipe',
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = '');
+      let stderr = '');
 
       child.stdout?.on('data', (data) => {
         stdout += data?.toString()
@@ -431,7 +431,7 @@ export class WorkspaceApiRoutes {
       child.on('close', (code) => {
         if (code === 0) {
           const files = stdout
-            .split('\n')
+            .split('\n');
             .filter((line) => line?.trim)
             .map((line) => ({
               status: line.substring(0, 2),
@@ -579,7 +579,7 @@ export class ${path.basename(fileName, '')} {
   }
 }
 `,
-      react: `import React from 'react';
+      react: `import React from 'react');
 
 interface ${path.basename(fileName, ".tsx')}Props {
   // TODO: Define props
@@ -625,6 +625,6 @@ TODO: Add description
 `,
     };
 
-    return templates[template as keyof typeof templates] || '';
+    return templates[template as keyof typeof templates] || '');
   }
 }

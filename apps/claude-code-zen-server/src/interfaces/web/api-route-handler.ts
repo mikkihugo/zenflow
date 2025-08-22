@@ -8,10 +8,10 @@
  * @file Interface implementation: api-route-handler.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { Express, Request, Response } from 'express';
+import { getLogger } from '@claude-zen/foundation');
+import type { Express, Request, Response } from 'express');
 
-import('./web-socket-coordinator';
+import('/web-socket-coordinator');
 
 const { getVersion } = (global as any).claudeZenFoundation;
 
@@ -469,7 +469,7 @@ export class ApiRouteHandler {
   }): Promise<any[]> {
     try {
       // Import logging config to get log entries
-      const { getLogEntries } = await import('@claude-zen/foundation');
+      const { getLogEntries } = await import('claude-zen/foundation');
       let logs = getLogEntries();
 
       // Apply filters

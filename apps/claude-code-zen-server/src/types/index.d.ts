@@ -15,7 +15,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from './neural/types/wasm-types';
+} from './neural/types/wasm-types');
 export type {
   AgentCapabilities,
   AgentConfig,
@@ -39,13 +39,13 @@ export type {
 } from "./shared-types";
 export declare function isZenSwarm(
   obj: any
-): obj is import('./shared-types').ZenSwarm;
+): obj is import('/shared-types').ZenSwarm;
 export declare function isSwarmAgent(
   obj: any
-): obj is import('./shared-types').SwarmAgent;
+): obj is import('/shared-types').SwarmAgent;
 export declare function isSystemEvent(
   obj: any
-): obj is import('./shared-types').SystemEvent;
+): obj is import('/shared-types').SystemEvent;
 export {
   isActivationFunction,
   isNeuralNetworkConfig,
@@ -53,7 +53,7 @@ export {
   isObjectArrayWithProps,
   isPositiveNumber,
   isValidNumber,
-} from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
 export * from "./client-types";
 export * from "./events-types";
 export * from "./knowledge-types";

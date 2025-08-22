@@ -57,9 +57,9 @@
  * ```
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
 
-import type { EventBus, Logger } from './core/interfaces/base-interfaces';
+import type { EventBus, Logger } from './core/interfaces/base-interfaces');
 
 /**
  * Configuration interface for orchestrator initialization.
@@ -276,7 +276,7 @@ export class Orchestrator extends TypedEventBase {
     super();
 
     this.configuration = {
-      name: config?.['name] || claude-zen-orchestrator',
+      name: config?.['name'] || 'claude-zen-orchestrator',
       timeout: config?.['timeout'] || 30000,
       maxConcurrentTasks: config?.['maxConcurrentTasks'] || 10,
       enableHealthCheck: config?.['enableHealthCheck'] !== false,

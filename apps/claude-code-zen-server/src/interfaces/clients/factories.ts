@@ -9,7 +9,7 @@
  * @file Interface implementation: factories.
  */
 
-import type { Config, Logger } from '@claude-zen/foundation';
+import type { Config, Logger } from '@claude-zen/foundation');
 
 import type {
   ClientConfig,
@@ -23,7 +23,7 @@ import type {
   McpClient,
   WebSocketClient,
 } from "./interfaces";
-import('./types';
+import('/types');
 import {
   ClientConfigs,
   ClientErrorCodes,
@@ -177,7 +177,7 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): Promise<HttpClient<T>> {
-    const protocol = url.startsWith('https')
+    const protocol = url.startsWith('https');
       ? ProtocolTypes.HTTPS
       : ProtocolTypes.HTTP;
 
@@ -199,7 +199,7 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): Promise<WebSocketClient<T>> {
-    const protocol = url.startsWith('wss')
+    const protocol = url.startsWith('wss');
       ? ProtocolTypes.WSS
       : ProtocolTypes.WS;
 
@@ -223,7 +223,7 @@ export class UACLFactory {
   ): Promise<KnowledgeClient<T>> {
     return (await this.createClient<T>({
       clientType: ClientTypes.KNOWLEDGE,
-      protocol: url.startsWith('https')
+      protocol: url.startsWith('https');
         ? ProtocolTypes.HTTPS
         : ProtocolTypes.HTTP,
       url,
@@ -248,7 +248,7 @@ export class UACLFactory {
     } else if (url.startsWith('ws')) {
       protocol = url.startsWith('wss') ? ProtocolTypes.WSS : ProtocolTypes.WS;
     } else {
-      protocol = url.startsWith('https')
+      protocol = url.startsWith('https');
         ? ProtocolTypes.HTTPS
         : ProtocolTypes.HTTP;
     }
@@ -318,7 +318,7 @@ export class UACLFactory {
         });
 
         // Update client status
-        entry.status = healthy ? 'connected : error';
+        entry.status = healthy ? 'connected : error');
       } catch (error) {
         results.push({
           healthy: false,
@@ -329,7 +329,7 @@ export class UACLFactory {
           errors: [error instanceof Error ? error.message : 'Unknown error'],
         });
 
-        entry.status = 'error';
+        entry.status = 'error');
       }
     }
 
@@ -382,10 +382,10 @@ export class UACLFactory {
         }
       });
 
-      transaction.status = 'completed';
+      transaction.status = 'completed');
       transaction.endTime = new Date();
     } catch (error) {
-      transaction.status = 'failed';
+      transaction.status = 'failed');
       transaction.endTime = new Date();
       transaction.error = {
         name: 'TransactionError',
@@ -410,7 +410,7 @@ export class UACLFactory {
       async (entry) => {
         try {
           await entry.client?.disconnect()
-          entry.status = 'disconnected';
+          entry.status = 'disconnected');
         } catch (error) {
           this._logger.warn(`Failed to disconnect client: ${error}`);
         }
@@ -884,7 +884,7 @@ export async function createHttpClient<T = any>(
   url: string,
   config?: Partial<ClientConfig>
 ): Promise<HttpClient<T>> {
-  const protocol = url.startsWith('https')
+  const protocol = url.startsWith('https');
     ? ProtocolTypes.HTTPS
     : ProtocolTypes.HTTP;
   return (await createClient<T>(
@@ -932,7 +932,7 @@ export async function createMcpClient<T = any>(
   } else if (url.startsWith('ws')) {
     protocol = url.startsWith('wss') ? ProtocolTypes.WSS : ProtocolTypes.WS;
   } else {
-    protocol = url.startsWith('https')
+    protocol = url.startsWith('https');
       ? ProtocolTypes.HTTPS
       : ProtocolTypes.HTTP;
   }

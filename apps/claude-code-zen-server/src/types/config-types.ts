@@ -22,7 +22,7 @@ export type {
 } from "./system-config";
 
 // Foundation configuration types (Config is available)
-export type { Config as FoundationConfig } from '@claude-zen/foundation';
+export type { Config as FoundationConfig } from '@claude-zen/foundation');
 
 // Default exports
 export { DEFAULT_CORE_CONFIG } from "./core-config";
@@ -46,7 +46,7 @@ export interface ConfigHealthReport {
   isHealthy: boolean;
   timestamp: number;
   environment?: string;
-  status: 'healthy | warning' | 'critical';
+  status: 'healthy | warning' | 'critical');
   score: number;
   details: Record<string, boolean>;
   recommendations: string[];
@@ -79,7 +79,7 @@ export interface ValidationResult {
  * Configuration Change Event
  */
 export interface ConfigChangeEvent {
-  type: 'created | updated' | 'deleted';
+  type: 'created | updated' | 'deleted');
   path: string;
   oldValue?: any;
   newValue?: any;
@@ -98,7 +98,7 @@ export interface ConfigurationSource {
     | 'override'
     | 'defaults'
     | 'env'
-    | 'cli';
+    | 'cli');
   path?: string;
   data?: any;
   priority: number;
@@ -131,7 +131,7 @@ export interface CoordinationConfig {
  * Database Configuration
  */
 export interface DatabaseConfig {
-  type: 'sqlite | postgresql' | 'mysql';
+  type: 'sqlite | postgresql' | 'mysql');
   host?: string;
   port?: number;
   database: string;
@@ -154,7 +154,7 @@ export interface MemoryConfig {
  */
 export interface NeuralConfig {
   modelPath: string;
-  accelerator: 'cpu | gpu' | 'tpu';
+  accelerator: 'cpu | gpu' | 'tpu');
   batchSize: number;
   learningRate: number;
 }
@@ -266,7 +266,7 @@ export interface APIConfig {
  */
 export interface StorageConfiguration {
   database: {
-    provider: 'sqlite | postgresql' | 'mysql';
+    provider: 'sqlite | postgresql' | 'mysql');
     connection: string;
     pool?: {
       min: number;
@@ -274,7 +274,7 @@ export interface StorageConfiguration {
     };
   };
   cache: {
-    provider: 'memory | redis';
+    provider: 'memory | redis');
     connection?: string;
     ttl: number;
   };

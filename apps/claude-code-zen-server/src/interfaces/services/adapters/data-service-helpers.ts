@@ -10,9 +10,9 @@
  * a higher-level abstraction over the core adapter functionality.
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation');
 
-import('./data-service-adapter';
+import('/data-service-adapter');
 
 // Mock types for missing imports
 export interface BaseDocumentEntity {
@@ -33,7 +33,7 @@ export interface DocumentSearchOptions {
   includeContent?: boolean | undefined;
 }
 
-export type DocumentType = 'document | note' | 'file | resource';
+export type DocumentType = 'document | note' | 'file | resource');
 
 export interface SwarmData {
   id: string;
@@ -117,14 +117,14 @@ export interface EnhancedSearchOptions {
   filters?: Record<string, unknown>;
   sort?: {
     field: string;
-    direction: 'asc | desc';
+    direction: 'asc | desc');
   };
   pagination?: {
     limit: number;
     offset: number;
   };
   includeMetadata?: boolean;
-  searchType?: 'fulltext | semantic' | 'keyword | combined';
+  searchType?: 'fulltext | semantic' | 'keyword | combined');
 }
 
 /**
@@ -136,7 +136,7 @@ export interface DataAggregationOptions {
   groupBy?: string | string[];
   aggregations?: Array<{
     field: string;
-    operation: 'count | sum' | 'avg | min' | 'max';
+    operation: 'count | sum' | 'avg | min' | 'max');
     alias?: string;
   }>;
   having?: Record<string, unknown>;
@@ -148,7 +148,7 @@ export interface DataAggregationOptions {
  * @example
  */
 export interface TransformationStep {
-  type: 'filter | map' | 'reduce | sort' | 'group | validate';
+  type: 'filter | map' | 'reduce | sort' | 'group | validate');
   config: Record<string, unknown>;
 }
 
@@ -207,7 +207,7 @@ export class DataServiceHelper {
    */
   async getSystemHealthSummary(): Promise<
     DataOperationResult<{
-      overall: 'healthy | degraded' | 'unhealthy';
+      overall: 'healthy | degraded' | 'unhealthy');
       components: Array<{
         name: string;
         status: string;
@@ -263,7 +263,7 @@ export class DataServiceHelper {
       };
     } catch (error) {
       return this.createErrorResult<{
-        overall: 'healthy | degraded' | 'unhealthy';
+        overall: 'healthy | degraded' | 'unhealthy');
         components: Array<{
           name: string;
           status: string;
@@ -548,7 +548,7 @@ export class DataServiceHelper {
     title: string;
     description?: string;
     assignedAgents?: string[];
-    priority?: 'low | medium' | 'high';
+    priority?: 'low | medium' | 'high');
     eta?: string;
     dependencies?: string[];
   }): Promise<DataOperationResult<TaskData>> {
@@ -599,7 +599,7 @@ export class DataServiceHelper {
   async searchDocuments<T extends BaseDocumentEntity>(
     query: string,
     options?: {
-      searchType?: 'fulltext | semantic' | 'keyword | combined';
+      searchType?: 'fulltext | semantic' | 'keyword | combined');
       documentTypes?: DocumentType[];
       projectId?: string;
       limit?: number;
@@ -658,7 +658,7 @@ export class DataServiceHelper {
    */
   async bulkDocumentOperations(
     operations: Array<{
-      action: 'create | update' | 'delete';
+      action: 'create | update' | 'delete');
       documentId?: string;
       document?: Record<string, unknown>;
       updates?: Record<string, unknown>;
@@ -787,7 +787,7 @@ export class DataServiceHelper {
       return {
         success: errors.length === 0,
         data: results,
-        error: errors.length > 0 ? errors.join('; ') : undefined,
+        error: errors.length > 0 ? errors.join('); ') : undefined,
         metadata: this.createMetadata('batch-operations', startTime),
       } as DataOperationResult<unknown[]>;
     } catch (error) {
@@ -1216,7 +1216,7 @@ export class DataServiceHelper {
   }
 
   private convertToCSV(data: Record<string, unknown>[]): string {
-    if (data.length === 0) return '';
+    if (data.length === 0) return '');
 
     const headers = Object.keys(data[0]);
     const csvRows = [
@@ -1234,7 +1234,7 @@ export class DataServiceHelper {
             }
             return String(value || '');
           })
-          .join(',')
+          .join(',');
       ),
     ];
 
@@ -1314,7 +1314,7 @@ export const DataServiceUtils = {
     prefix = 'data:'
   ): string {
     const paramString =
-      Object.keys(params).length > 0 ? JSON.stringify(params) : '';
+      Object.keys(params).length > 0 ? JSON.stringify(params) : '');
     const hash = Buffer.from(paramString).toString('base64').slice(0, 16);
     return `${prefix}${operation}:${hash}`;
   },

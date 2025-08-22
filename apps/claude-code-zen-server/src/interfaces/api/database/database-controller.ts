@@ -21,21 +21,21 @@
  * - Enterprise dependency injection integration
  */
 
-import { TypedEventBase } from '@claude-zen/foundation';
-import type { ConnectionStats, Logger } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation');
+import type { ConnectionStats, Logger } from '@claude-zen/foundation');
 import {
   inject,
   injectable,
   CORE_TOKENS,
   DATABASE_TOKENS,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 import type {
   DatabaseAdapter,
   DatabaseProviderFactory,
   GraphDatabaseAdapter,
   VectorData,
   VectorDatabaseAdapter,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Preserve original interfaces for API compatibility
 export interface QueryRequest {
@@ -79,7 +79,7 @@ export interface VectorInsertRequest {
 export interface VectorIndexRequest {
   name: string;
   dimension: number;
-  metric?: 'euclidean | cosine' | 'dot';
+  metric?: 'euclidean | cosine' | 'dot');
   type?: string;
 }
 
@@ -170,7 +170,7 @@ export class DatabaseController extends TypedEventBase {
       );
 
       // Delegate to @claude-zen/infrastructure for database operations
-      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
+      const { getDatabaseAccess } = await import('claude-zen/infrastructure');
       const dbAccess = getDatabaseAccess();
 
       // Use foundation's storage abstraction for multi-database access
@@ -211,7 +211,7 @@ export class DatabaseController extends TypedEventBase {
       await this.healthMonitor?.initialize()
 
       // Delegate to @claude-zen/intelligence for resource optimization
-      const { LoadBalancer } = await import('@claude-zen/intelligence');
+      const { LoadBalancer } = await import('claude-zen/intelligence');
       this.loadBalancer = new LoadBalancer({
         strategy: 'resource-aware',
         enablePredictiveScaling: true,

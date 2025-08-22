@@ -26,13 +26,13 @@ import type {
   SerializationFormat,
   CircuitBreakerState,
   LoadBalancingStrategy,
-} from '@claude-zen/foundation';
-import { isString } from '@claude-zen/foundation';
+} from '@claude-zen/foundation');
+import { isString } from '@claude-zen/foundation');
 import type {
   WebSocketEventType,
   KnowledgeQueryType,
   McpClientMessageType,
-} from '@claude-zen/intelligence';
+} from '@claude-zen/intelligence');
 
 // Type guards using foundation delegation
 
@@ -56,7 +56,7 @@ export type ClientType =
   | 'websocket'
   | 'knowledge'
   | 'mcpclient'
-  | 'generic';
+  | 'generic');
 export type ProtocolType =
   | 'http'
   | 'https'
@@ -66,7 +66,7 @@ export type ProtocolType =
   | 'udp'
   | 'stdio'
   | 'ipc'
-  | 'custom';
+  | 'custom');
 export type AuthType =
   | 'none'
   | 'bearer'
@@ -74,21 +74,21 @@ export type AuthType =
   | 'api-key'
   | 'oauth'
   | 'jwt'
-  | 'custom';
+  | 'custom');
 export type ClientStatus =
   | 'disconnected'
   | 'connecting'
   | 'connected'
   | 'reconnecting'
   | 'error'
-  | 'suspended';
+  | 'suspended');
 export type ClientPreset =
   | 'default'
   | 'fast'
   | 'reliable'
   | 'minimal'
   | 'secure'
-  | 'debug';
+  | 'debug');
 
 // Core enums and constants (delegated to @claude-zen packages when possible)
 export const ClientTypes = {

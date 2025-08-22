@@ -49,11 +49,11 @@
  */
 
 // Strategic imports from @claude-zen packages
-import type { ValidationEngine } from '@claude-zen/foundation';
-import type { HealthValidator } from '@claude-zen/foundation';
-import { assertDefined, getErrorMessage } from '@claude-zen/foundation';
-import { getLogger, type Logger } from '@claude-zen/foundation';
-import type { SecurityValidator, LoadTester } from '@claude-zen/intelligence';
+import type { ValidationEngine } from '@claude-zen/foundation');
+import type { HealthValidator } from '@claude-zen/foundation');
+import { assertDefined, getErrorMessage } from '@claude-zen/foundation');
+import { getLogger, type Logger } from '@claude-zen/foundation');
+import type { SecurityValidator, LoadTester } from '@claude-zen/intelligence');
 
 // Strategic facade imports for validation
 
@@ -67,7 +67,7 @@ import type { SecurityValidator, LoadTester } from '@claude-zen/intelligence';
  * Validation Configuration with Domain Type Integration
  */
 export interface ValidationConfig {
-  strictness: 'strict | moderate' | 'lenient';
+  strictness: 'strict | moderate' | 'lenient');
   scopes: {
     configuration: boolean;
     dependencies: boolean;
@@ -111,7 +111,7 @@ export interface ValidationConfig {
  * Comprehensive Validation Result
  */
 export interface ValidationResult {
-  overall: 'pass | warning' | 'fail';
+  overall: 'pass | warning' | 'fail');
   score: number;
   timestamp: Date;
   duration: number;
@@ -132,18 +132,18 @@ export interface ValidationResult {
   };
   recommendations: Array<{
     category: string;
-    severity: 'low | medium' | 'high | critical';
+    severity: 'low | medium' | 'high | critical');
     message: string;
     action: string;
   }>;
 }
 
 export interface ValidationSectionResult {
-  status: 'pass | warning' | 'fail';
+  status: 'pass | warning' | 'fail');
   score: number;
   checks: Array<{
     name: string;
-    status: 'pass | warning' | 'fail';
+    status: 'pass | warning' | 'fail');
     message: string;
     details?: any;
   }>;
@@ -197,7 +197,7 @@ export class USLValidationFramework {
 
     try {
       // Delegate to @claude-zen/foundation for core validation
-      const { ValidationEngine } = await import('@claude-zen/foundation');
+      const { ValidationEngine } = await import('claude-zen/foundation');
       this.validationEngine = new ValidationEngine({
         strictness: this.config.strictness,
         enableSchemaValidation: true,
@@ -208,7 +208,7 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/foundation for performance validation
       if (this.config.scopes.performance) {
-        const { SystemMonitor } = await import('@claude-zen/foundation');
+        const { SystemMonitor } = await import('claude-zen/foundation');
         this.healthValidator = new HealthValidator({
           thresholds: this.config.thresholds,
           timeouts: this.config.timeouts,
@@ -219,7 +219,7 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/ai-safety for security validation
       if (this.config.scopes.security) {
-        const { SecurityValidator } = await import('@claude-zen/intelligence');
+        const { SecurityValidator } = await import('claude-zen/intelligence');
         this.securityValidator = new SecurityValidator({
           enableThreatDetection: true,
           enableComplianceCheck: true,
@@ -233,7 +233,7 @@ export class USLValidationFramework {
         this.config.testScenarios.loadTest.enabled ||
         this.config.testScenarios.stressTest.enabled
       ) {
-        const { LoadTester } = await import('@claude-zen/intelligence');
+        const { LoadTester } = await import('claude-zen/intelligence');
         this.loadTester = new LoadTester({
           maxConcurrentUsers:
             this.config.testScenarios.loadTest.concurrentUsers,
@@ -245,7 +245,7 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/chaos-engineering for failover testing
       if (this.config.testScenarios.failoverTest.enabled) {
-        const { getChaosEngine } = await import('@claude-zen/operations');
+        const { getChaosEngine } = await import('claude-zen/operations');
         this.chaosValidator = await getChaosEngine({
           scenarios: this.config.testScenarios.failoverTest.scenarios,
           enableResilienceValidation: true,
@@ -256,7 +256,7 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/intelligence for integration validation
       if (this.config.scopes.integration || this.config.scopes.compatibility) {
-        const { getTeamworkAccess } = await import('@claude-zen/enterprise');
+        const { getTeamworkAccess } = await import('claude-zen/enterprise');
         this.integrationValidator = await getTeamworkAccess({
           enableCompatibilityCheck: this.config.scopes.compatibility,
           enableIntegrationTesting: this.config.scopes.integration,
@@ -605,7 +605,7 @@ export class USLValidationFramework {
     const warnings = sections.filter((s) => s?.status === 'warning').length;
     const failures = sections.filter((s) => s?.status === 'fail').length;
 
-    const overall = failures > 0 ? 'fail : warnings > 0 ? warning' : 'pass';
+    const overall = failures > 0 ? 'fail : warnings > 0 ? warning' : 'pass');
 
     return {
       overall,

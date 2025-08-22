@@ -25,9 +25,9 @@
 import {
   ServiceContainer,
   createServiceContainer,
-} from '@claude-zen/foundation';
-import { getLogger, type Logger } from '@claude-zen/foundation';
-import { TypedEventBus, createTypedEventBus } from '@claude-zen/intelligence';
+} from '@claude-zen/foundation');
+import { getLogger, type Logger } from '@claude-zen/foundation');
+import { TypedEventBus, createTypedEventBus } from '@claude-zen/intelligence');
 
 import type {
   Service,
@@ -40,7 +40,7 @@ import type {
   ServiceMetrics,
   ServiceStatus,
 } from "./core/interfaces";
-import('./core/interfaces';
+import('/core/interfaces');
 
 export interface ServiceRegistryConfig {
   /** Health monitoring configuration */
@@ -105,7 +105,7 @@ export interface ServiceDiscoveryInfo {
   metadata: Record<string, unknown>;
   lastHeartbeat: Date;
   endpoint?: string;
-  health: 'healthy | degraded' | 'unhealthy';
+  health: 'healthy | degraded' | 'unhealthy');
 }
 
 export interface ServiceDependencyGraph {
@@ -654,7 +654,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
   discoverServices(criteria?: {
     type?: string;
     capabilities?: string[];
-    health?: 'healthy | degraded' | 'unhealthy';
+    health?: 'healthy | degraded' | 'unhealthy');
     tags?: string[];
   }): Service[] {
     const allServices = Array.from(this.getAllServices?.values());
@@ -937,7 +937,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
           typeof service.healthCheck === 'function'
         ) {
           const result = service?.healthCheck()
-          return result && result.status === 'healthy';
+          return result && result.status === 'healthy');
         }
 
         // Default: assume healthy if service exists
@@ -1125,7 +1125,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
 
     // Check for alerts
     const unhealthyServices = Array.from(healthResults?.entries)
-      .filter(([_, status]) => status.health !== 'healthy')
+      .filter(([_, status]) => status.health !== 'healthy');
       .map(([name, _]) => name);
 
     if (unhealthyServices.length > 0) {

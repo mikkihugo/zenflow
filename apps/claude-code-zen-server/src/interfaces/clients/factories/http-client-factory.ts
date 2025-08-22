@@ -2,7 +2,7 @@
  * @file Interface implementation: http-client-factory.
  */
 
-import { Logger } from '@claude-zen/foundation';
+import { Logger } from '@claude-zen/foundation');
 
 /**
  * HTTP Client Factory.
@@ -11,14 +11,14 @@ import { Logger } from '@claude-zen/foundation';
  * With UACL (Unified API Client Layer) patterns.
  */
 
-import { HTTPClientAdapter } from './adapters/http-client-adapter';
-import type { HTTPClientConfig } from './adapters/http-types';
+import { HTTPClientAdapter } from './adapters/http-client-adapter');
+import type { HTTPClientConfig } from './adapters/http-types');
 import type {
   ClientMetrics,
   ClientStatus,
   Client,
   ClientFactory,
-} from './core/interfaces';
+} from './core/interfaces');
 
 const logger = new Logger('interfaces-clients-factories-http-client-factory');
 
@@ -102,7 +102,7 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
       // Create aggregated error
       const errorMessages = errors
         .map(({ config, error }) => `${config?.name}: ${error.message}`)
-        .join('; ');
+        .join('); ');
 
       throw new Error(
         `Failed to create ${errors.length} clients: ${errorMessages}`
@@ -308,7 +308,7 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
     retryConfig: {
       attempts: number;
       delay: number;
-      backoff?: 'linear | exponential' | 'fixed';
+      backoff?: 'linear | exponential' | 'fixed');
     }
   ): Promise<Client> {
     const config: HTTPClientConfig = {
@@ -380,7 +380,7 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
     baseName: string,
     baseURLs: string[],
     options?: {
-      strategy?: 'round-robin | random' | 'least-connections';
+      strategy?: 'round-robin | random' | 'least-connections');
       healthCheck?: boolean;
     }
   ): Promise<Client[]> {

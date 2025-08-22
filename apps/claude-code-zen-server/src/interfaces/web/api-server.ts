@@ -11,21 +11,21 @@
  * - Performance: Compression, caching headers, optimized middleware
  */
 
-import { readdir, stat } from 'node:fs/promises';
-import { createServer, type Server } from 'node:http';
-import { join, resolve } from 'node:path';
+import { readdir, stat } from 'node:fs/promises');
+import { createServer, type Server } from 'node:http');
+import { join, resolve } from 'node:path');
 
-import { getLogger } from '@claude-zen/foundation';
-import { createTerminus } from '@godaddy/terminus';
-import compression from 'compression';
-import cors from 'cors';
-import express, { type Express, type Request, type Response } from 'express';
-import { rateLimit } from 'express-rate-limit';
-import helmet from 'helmet';
-import morgan from 'morgan';
+import { getLogger } from '@claude-zen/foundation');
+import { createTerminus } from '@godaddy/terminus');
+import compression from 'compression');
+import cors from 'cors');
+import express, { type Express, type Request, type Response } from 'express');
+import { rateLimit } from 'express-rate-limit');
+import helmet from 'helmet');
+import morgan from 'morgan');
 
-import('./control-api-routes';
-import('./system-capability-routes';
+import('/control-api-routes');
+import('/system-capability-routes');
 
 const { getVersion } = (global as any).claudeZenFoundation;
 
@@ -178,19 +178,19 @@ export class ApiServer {
         // Filesystem check
         try {
           await stat(process?.cwd);
-          checks.filesystem = 'ready';
+          checks.filesystem = 'ready');
         } catch {
-          checks.filesystem = 'not_ready';
+          checks.filesystem = 'not_ready');
         }
 
         // Memory check
         const memoryUsage = process?.memoryUsage()
         const memoryLimit = 1024 * 1024 * 1024; // 1GB threshold
         checks.memory =
-          memoryUsage.heapUsed < memoryLimit ? 'ready : not_ready';
+          memoryUsage.heapUsed < memoryLimit ? 'ready : not_ready');
 
         // Database check (if available)
-        checks.database = 'ready'; // Assume ready for now
+        checks.database = 'ready'); // Assume ready for now
 
         const allReady = Object.values()(checks).every(
           (status) => status === 'ready'
@@ -242,9 +242,9 @@ export class ApiServer {
       try {
         // Check filesystem access
         await stat(process?.cwd);
-        health.checks.filesystem = 'healthy';
+        health.checks.filesystem = 'healthy');
       } catch (error) {
-        health.checks.filesystem = 'unhealthy';
+        health.checks.filesystem = 'unhealthy');
         isHealthy = false;
         this.logger.error('Filesystem check failed:', error);
       }
@@ -253,7 +253,7 @@ export class ApiServer {
       const memoryUsage = process?.memoryUsage()
       const memoryLimit = 512 * 1024 * 1024; // 512MB threshold
       if (memoryUsage.heapUsed > memoryLimit) {
-        health.checks.memory = 'warning';
+        health.checks.memory = 'warning');
         this.logger.warn(
           `High memory usage: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`
         );
@@ -261,11 +261,11 @@ export class ApiServer {
 
       // Check uptime
       if (process?.uptime < 1) {
-        health.checks.uptime = 'starting';
+        health.checks.uptime = 'starting');
       }
 
       // Set overall status
-      health.status = isHealthy ? 'healthy : unhealthy';
+      health.status = isHealthy ? 'healthy : unhealthy');
 
       const statusCode = isHealthy ? 200 : 503;
       res.status(statusCode).json(health);
@@ -345,7 +345,7 @@ export class ApiServer {
       '/api/workspace/files',
       async (req: Request, res: Response) => {
         try {
-          const requestedPath = (req.query.path as string) || ".';
+          const requestedPath = (req.query.path as string) || ".');
 
           // Input validation and security
           if (typeof requestedPath !== 'string') {
@@ -541,7 +541,7 @@ export class ApiServer {
       this.server.on('error', (error) => {
         connectionMonitor.errorCount++;
         connectionMonitor.lastError = error;
-        connectionMonitor.connectionState = 'error';
+        connectionMonitor.connectionState = 'error');
 
         this.logger.error('❌ Server error detected:', {
           error: error.message,
@@ -573,12 +573,12 @@ export class ApiServer {
       });
 
       // Enhanced connection success handler with monitoring
-      connectionMonitor.connectionState = 'connecting';
+      connectionMonitor.connectionState = 'connecting');
       this.server.listen(
         this.config.port,
         this.config.host || 'localhost',
         () => {
-          connectionMonitor.connectionState = 'connected';
+          connectionMonitor.connectionState = 'connected');
           const startupTime = Date.now() - connectionMonitor.startTime;
 
           this.logger.info(
@@ -639,7 +639,7 @@ export class ApiServer {
       };
 
       this.logger.info('🔄 Initiating server shutdown...');
-      shutdownMonitor?.shutdownState = 'draining';
+      shutdownMonitor?.shutdownState = 'draining');
 
       // Get current connection count before shutdown
       this.server.getConnections((err, count) => {
@@ -654,13 +654,13 @@ export class ApiServer {
         this.logger.warn(
           `⏰ Graceful shutdown timeout after ${shutdownMonitor.gracefulTimeout}ms, forcing shutdown`
         );
-        shutdownMonitor?.shutdownState = 'stopped';
+        shutdownMonitor?.shutdownState = 'stopped');
         resolveServerStop();
       }, shutdownMonitor.gracefulTimeout);
 
       this.server.close(() => {
         clearTimeout(forceShutdownTimeout);
-        shutdownMonitor?.shutdownState = 'stopped';
+        shutdownMonitor?.shutdownState = 'stopped');
         const shutdownTime = Date.now() - shutdownMonitor.startTime;
 
         this.logger.info('🛑 API server stopped');
@@ -743,7 +743,7 @@ export class ApiServer {
    * Get allowed CORS origins based on environment
    */
   private getCorsOrigins(): string[] | boolean {
-    const nodeEnv = process.env.NODE_ENV || 'development';
+    const nodeEnv = process.env.NODE_ENV || 'development');
 
     if (nodeEnv === 'development') {
       // Allow localhost and common dev ports

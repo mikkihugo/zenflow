@@ -5,7 +5,7 @@
  * capability assessment, and performance optimization.
  */
 
-import('./core-config';
+import('/core-config');
 
 /**
  * System Information Interface
@@ -240,7 +240,7 @@ export const DEFAULT_SYSTEM_CONFIG: Partial<SystemConfiguration> = {
   optimization: {
     autoScale: true,
     maxWorkers: 4,
-    memoryThreshold: .8,
-    cpuThreshold: .7,
+    memoryThreshold: 0.8,
+    cpuThreshold: 0.7,
   },
 };

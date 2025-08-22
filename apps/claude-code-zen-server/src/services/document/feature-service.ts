@@ -16,12 +16,12 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise';
+import type { DocumentType } from '@claude-zen/enterprise');
 
 import type {
   FeatureEntity,
   StoryEntity,
-} from './../entities/document-entities';
+} from './../entities/document-entities');
 
 import {
   BaseDocumentService,
@@ -29,7 +29,7 @@ import {
   type QueryFilters,
   type QueryResult,
 } from "./base-document-service";
-import('./document-service';
+import('/document-service');
 
 // ============================================================================
 // FEATURE INTERFACES
@@ -43,8 +43,8 @@ export interface FeatureCreateOptions {
   parentProgramEpicId?: string;
   artId?: string; // Agile Release Train
   programIncrementId?: string;
-  priority?: 'low | medium' | 'high | critical';
-  estimatedSize?: 'XS | S' | 'M | L' | 'XL';
+  priority?: 'low | medium' | 'high | critical');
+  estimatedSize?: 'XS | S' | 'M | L' | 'XL');
   dependencies?: string[];
   author?: string;
   projectId?: string;
@@ -70,7 +70,7 @@ export interface FeatureQueryOptions extends QueryFilters {
     | 'implementing'
     | 'validating'
     | 'deploying'
-    | 'released';
+    | 'released');
 }
 
 export interface FeatureStats {
@@ -91,7 +91,7 @@ export interface BenefitHypothesis {
   hypothesis: string;
   successMetrics: string[];
   measurableOutcome: string;
-  validationStatus: 'pending | validating' | 'validated | rejected';
+  validationStatus: 'pending | validating' | 'validated | rejected');
   validationResults?: string;
 }
 
@@ -116,7 +116,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
   // ============================================================================
 
   protected getDocumentType(): DocumentType {
-    return 'feature';
+    return 'feature');
   }
 
   protected validateDocument(data: Partial<FeatureEntity>): ValidationResult {
@@ -193,7 +193,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
       data.metadata.acceptanceCriteria.forEach((criteria: string) => {
         content += `- ${criteria}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Dependencies
@@ -202,7 +202,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
       data.dependencies.forEach((dep) => {
         content += `- ${dep}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Team assignments
@@ -214,11 +214,11 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
       data.metadata.teamAssignments.forEach((team: string) => {
         content += `- ${team}\n`;
       });
-      content += '\n';
+      content += '\n');
     }
 
     // Metadata section
-    content += '---\n\n';
+    content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
     content += `**Author**: ${data.author || 'feature-team'}\n`;
 

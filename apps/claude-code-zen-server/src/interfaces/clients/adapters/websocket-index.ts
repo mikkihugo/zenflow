@@ -2,7 +2,7 @@
  * @file Interface implementation: websocket-index.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
 // Import for internal use
 import {
@@ -12,7 +12,7 @@ import {
 } from "./websocket-client-factory";
 
 // Import types for internal use
-import('./websocket-types';
+import('/websocket-types');
 
 const logger = getLogger('interfaces-clients-adapters-websocket-index');
 
@@ -31,7 +31,7 @@ export type {
   Client,
   ClientFactory,
   RequestOptions,
-} from './core/interfaces';
+} from './core/interfaces');
 
 // Enhanced WebSocket client with backward compatibility
 export {
@@ -104,7 +104,7 @@ export async function createOptimalWebSocketClient(
     useEnhanced?: boolean;
     loadBalancing?: {
       enabled: boolean;
-      strategy?: 'round-robin | random' | 'least-connections';
+      strategy?: 'round-robin | random' | 'least-connections');
       urls?: string[];
     };
     failover?: {

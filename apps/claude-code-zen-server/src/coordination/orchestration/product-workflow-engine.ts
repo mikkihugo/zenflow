@@ -39,12 +39,12 @@ import { nanoid } from 'nanoid';
 
 // Document entity types replaced with any
 import { WorkflowAGUIAdapter } from './../interfaces/agui/workflow-agui-adapter';
-import type { WorkflowGateRequest } from './workflows/workflow-gate-request';
-
 import type {
   WorkflowGateContext,
   WorkflowGatePriority,
 } from "./workflow-gates";
+import type { WorkflowGateRequest } from './workflows/workflow-gate-request';
+
 
 // Import WorkflowStep from workflow-types
 
@@ -102,7 +102,7 @@ type WorkflowStepResults = Record<string, any | any>;
 
 interface WorkflowStepState {
   step: WorkflowStep;
-  status: 'pending | running' | 'completed | failed' | 'skipped';
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'skipped';
   attempts: number;
 }
 
@@ -240,8 +240,8 @@ export class ProductWorkflowEngine extends TypedEventBase {
       },
       autoTriggerSPARC: true,
       sparcQualityGates: true,
-      templatesPath: "./templates',
-      outputPath: "./output',
+      templatesPath: "./templates",
+      outputPath: "./output",
       maxConcurrentWorkflows: 10,
       defaultTimeout: 300000,
       enableMetrics: true,
@@ -263,7 +263,7 @@ export class ProductWorkflowEngine extends TypedEventBase {
       );
 
       // Delegate to @claude-zen/intelligence for workflow orchestration
-      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: this.config.enablePersistence,
         enableVisualization: true,
@@ -281,7 +281,7 @@ export class ProductWorkflowEngine extends TypedEventBase {
 
       // Delegate to @claude-zen/enterprise for human-in-the-loop workflows
       if (this.aguiAdapter) {
-        const { TaskApprovalSystem } = await import('@claude-zen/enterprise');
+        const { TaskApprovalSystem } = await import('claude-zen/enterprise');
         this.taskApprovalSystem = new TaskApprovalSystem({
           enableRichPrompts: true,
           enableDecisionLogging: true,

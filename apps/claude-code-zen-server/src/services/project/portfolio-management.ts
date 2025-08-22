@@ -12,10 +12,10 @@ import type {
   WorkflowKanban,
   WorkflowTask,
   TaskState,
-} from '@claude-zen/enterprise';
-import { createWorkflowKanban } from '@claude-zen/enterprise';
-import { TypedEventBase, getLogger } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
+} from '@claude-zen/enterprise');
+import { createWorkflowKanban } from '@claude-zen/enterprise');
+import { TypedEventBase, getLogger } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation');
 
 /**
  * User story for MVP kanban
@@ -24,8 +24,8 @@ export interface UserStory {
   id: string;
   title: string;
   description?: string;
-  status: 'backlog | todo' | 'doing | review' | 'done';
-  priority: 'low | medium' | 'high | urgent';
+  status: 'backlog | todo' | 'doing | review' | 'done');
+  priority: 'low | medium' | 'high | urgent');
   assignedTo?: string;
   storyPoints?: number; // Estimation in story points
   tags: string[]; // Labels/tags for categorization
@@ -181,10 +181,10 @@ export class SimpleKanban extends TypedEventBase {
    * Get stories with filtering options
    */
   async getStories(filters?: {
-    status?: 'backlog | todo' | 'doing | review' | 'done';
+    status?: 'backlog | todo' | 'doing | review' | 'done');
     assignedTo?: string;
     projectId?: string;
-    priority?: 'low | medium' | 'high | urgent';
+    priority?: 'low | medium' | 'high | urgent');
     tags?: string[];
     dueBefore?: Date;
   }): Promise<UserStory[]> {
@@ -438,19 +438,19 @@ export class SimpleKanban extends TypedEventBase {
     switch (state) {
       case 'backlog':
       case 'analysis':
-        return 'todo';
+        return 'todo');
       case 'development':
       case 'testing':
       case 'review':
       case 'deployment':
-        return 'doing';
+        return 'doing');
       case 'done':
-        return 'done';
+        return 'done');
       case 'blocked':
       case 'expedite':
-        return 'doing'; // Treat special states as "doing"
+        return 'doing'); // Treat special states as "doing"
       default:
-        return 'todo';
+        return 'todo');
     }
   }
 
@@ -462,13 +462,13 @@ export class SimpleKanban extends TypedEventBase {
   ): TaskState {
     switch (status) {
       case 'todo':
-        return 'backlog';
+        return 'backlog');
       case 'doing':
-        return 'development';
+        return 'development');
       case 'done':
-        return 'done';
+        return 'done');
       default:
-        return 'backlog';
+        return 'backlog');
     }
   }
 }

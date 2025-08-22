@@ -3,7 +3,7 @@
  * Database Domain DI Container Setup - Simplified.
  * Configures dependency injection for database operations.
  */
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation');
 
 const logger = getLogger('interfaces-api-http-di-database-container');
 
@@ -60,7 +60,7 @@ export interface BatchRequest {
   /** Array of operations to execute */
   operations: Array<{
     /** Type of operation */
-    type: 'query | execute';
+    type: 'query | execute');
     /** SQL statement */
     sql: string;
     /** Parameters */
@@ -122,7 +122,7 @@ export interface DatabaseResponse {
  */
 export interface DatabaseHealthStatus {
   /** Overall health status */
-  status: 'healthy | warning' | 'critical | unknown';
+  status: 'healthy | warning' | 'critical | unknown');
   /** Database adapter type */
   adapter: string;
   /** Connection status */
@@ -167,7 +167,7 @@ class ConsoleLogger {
  * @example
  */
 interface DatabaseConfig {
-  type: 'sqlite | postgresql' | 'mysql | lancedb' | 'kuzu';
+  type: 'sqlite | postgresql' | 'mysql | lancedb' | 'kuzu');
   host?: string;
   port?: number;
   database?: string;
@@ -987,7 +987,7 @@ class SimplifiedDatabaseController {
       trimmedSql.startsWith('with') ||
       trimmedSql.startsWith('show') ||
       trimmedSql.startsWith('explain') ||
-      trimmedSql.startsWith('describe')
+      trimmedSql.startsWith('describe');
     );
   }
 
@@ -1050,7 +1050,7 @@ export function resetDatabaseContainer(): void {
  * @example
  */
 export async function checkDatabaseContainerHealth(): Promise<{
-  status: 'healthy | unhealthy';
+  status: 'healthy | unhealthy');
   services: {
     logger: boolean;
     config: boolean;
