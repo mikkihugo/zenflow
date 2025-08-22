@@ -1,11 +1,11 @@
 /**
- * AGUI Adapter - Bridges @ag-ui/core with Claude-Zen's human validation needs0.
+ * AGUI Adapter - Bridges @ag-ui/core with Claude-Zen's human validation needs.
  *
- * The @ag-ui/core package provides the Agent-User Interaction Protocol0.
- * This adapter wraps it to provide the interface expected by our discovery system0.
+ * The @ag-ui/core package provides the Agent-User Interaction Protocol.
+ * This adapter wraps it to provide the interface expected by our discovery system.
  */
 /**
- * @file Agui adapter implementation0.
+ * @file Agui adapter implementation.
  */
 
 import * as readline from 'node:readline';
@@ -30,7 +30,7 @@ export interface ValidationQuestion {
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
-  priority?: 'critical' | 'high' | 'medium' | 'low';
+  priority?: 'critical | high' | 'medium | low';
   validationReason?: string;
   expectedImpact?: number;
 }
@@ -41,7 +41,7 @@ export interface AGUIInterface {
   showProgress(progress: any): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info' | 'warning' | 'error' | 'success'
+    type?: 'info | warning' | 'error | success'
   ): Promise<void>;
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
   clear?(): Promise<void>;
@@ -49,93 +49,93 @@ export interface AGUIInterface {
 }
 
 /**
- * Terminal-based AGUI implementation0.
- * Since @ag-ui/core is a protocol definition, we implement our own UI0.
+ * Terminal-based AGUI implementation.
+ * Since @ag-ui/core is a protocol definition, we implement our own UI.
  *
  * @example
  */
 export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
-  private rl: readline0.Interface | null = null;
+  private rl: readline.Interface | null = null;
 
-  private getReadline(): readline0.Interface {
-    if (!this0.rl) {
-      this0.rl = readline0.createInterface({
-        input: process0.stdin,
-        output: process0.stdout,
+  private getReadline(): readline.Interface {
+    if (!this.rl) {
+      this.rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
         terminal: true,
       });
     }
-    return this0.rl;
+    return this.rl;
   }
 
   async askQuestion(question: ValidationQuestion): Promise<string> {
-    const rl = this?0.getReadline;
+    const rl = this.getReadline;
 
     // Display formatted question
-    console0.log('\n' + '='0.repeat(60));
-    console0.log(`📋 ${question0.type?0.toUpperCase} QUESTION`);
-    console0.log('='0.repeat(60));
+    console.log('\n' + '=".repeat(60));
+    console.log(`📋 ${question.type?.toUpperCase} QUESTION`);
+    console.log('=".repeat(60));
 
     // Show priority if set
-    if (question0.priority) {
+    if (question.priority) {
       const priorityIcon = {
         critical: '🔴',
         high: '🟡',
         medium: '🔵',
         low: '🟢',
-      }[question0.priority];
-      console0.log(
-        `${priorityIcon} Priority: ${question0.priority?0.toUpperCase}`
+      }[question.priority];
+      console.log(
+        `${priorityIcon} Priority: ${question.priority?.toUpperCase}`
       );
     }
 
     // Show confidence
-    if (question0.confidence !== undefined) {
-      const confidencePercent = Math0.round(question0.confidence * 100);
-      console0.log(`🎯 Confidence: ${confidencePercent}%`);
+    if (question.confidence !== undefined) {
+      const confidencePercent = Math.round(question.confidence * 100);
+      console.log(`🎯 Confidence: ${confidencePercent}%`);
     }
 
     // Show validation reason
-    if (question0.validationReason) {
-      console0.log(`💡 Reason: ${question0.validationReason}`);
+    if (question.validationReason) {
+      console.log(`💡 Reason: ${question.validationReason}`);
     }
 
-    console0.log('\n' + question0.question);
+    console.log('\n' + question.question);
 
     // Show options if available
-    if (question0.options && question0.options0.length > 0) {
-      console0.log('\n📝 Available Options:');
-      question0.options0.forEach((opt, idx) => {
-        console0.log(`   ${idx + 1}0. ${opt}`);
+    if (question.options && question.options.length > 0) {
+      console.log('\n📝 Available Options:');
+      question.options.forEach((opt, idx) => {
+        console.log(`   ${idx + 1}. ${opt}`);
       });
-      if (question0.allowCustom) {
-        console0.log('   0. Custom response');
+      if (question.allowCustom) {
+        console.log('   . Custom response');
       }
     }
 
     // Show context if available
-    if (question0.context && Object0.keys(question0.context)0.length > 0) {
-      console0.log('\n📊 Context Information:');
-      Object0.entries(question0.context)0.forEach(([key, value]) => {
+    if (question.context && Object.keys(question.context).length > 0) {
+      console.log('\n📊 Context Information:');
+      Object.entries(question.context).forEach(([key, value]) => {
         if (typeof value === 'object' && value !== null) {
-          console0.log(`   ${key}: ${JSON0.stringify(value, null, 2)}`);
+          console.log(`   ${key}: ${JSON.stringify(value, null, 2)}`);
         } else {
-          console0.log(`   ${key}: ${value}`);
+          console.log(`   ${key}: ${value}`);
         }
       });
     }
 
     // Get user input
     return new Promise((resolve) => {
-      const prompt = question0.options ? '\nYour choice: ' : '\nYour answer: ';
-      rl0.question(prompt, (answer) => {
+      const prompt = question.options ? '\nYour choice:  : \nYour answer: ';
+      rl.question(prompt, (answer) => {
         // Handle numeric choices
-        if (question0.options && /^\d+$/0.test(answer)) {
-          const idx = Number0.parseInt(answer) - 1;
-          if (idx >= 0 && idx < question0.options0.length) {
-            resolve(question0.options[idx] || '');
-          } else if (answer === '0' && question0.allowCustom) {
-            rl0.question('Enter custom response: ', (custom) => {
+        if (question.options && /^\d+$/.test(answer)) {
+          const idx = Number.parseInt(answer) - 1;
+          if (idx >= 0 && idx < question.options.length) {
+            resolve(question.options[idx] || '');
+          } else if (answer === '0' && question.allowCustom) {
+            rl.question('Enter custom response: ', (custom) => {
               resolve(custom);
             });
           } else {
@@ -151,11 +151,11 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
     const answers: string[] = [];
 
-    for (let i = 0; i < questions0.length; i++) {
+    for (let i = 0; i < questions.length; i++) {
       const question = questions[i];
       if (question) {
-        const answer = await this0.askQuestion(question);
-        answers0.push(answer);
+        const answer = await this.askQuestion(question);
+        answers.push(answer);
       }
     }
 
@@ -166,40 +166,40 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
     if (typeof progress === 'object' && progress !== null) {
       const prog = progress as any;
 
-      if (prog0.current !== undefined && prog0.total !== undefined) {
-        const percentage = Math0.round((prog0.current / prog0.total) * 100);
-        const progressBar = this0.createProgressBar(percentage);
+      if (prog.current !== undefined && prog.total !== undefined) {
+        const percentage = Math.round((prog.current / prog.total) * 100);
+        const progressBar = this.createProgressBar(percentage);
 
-        console0.log(
-          `\n📈 Progress: ${prog0.current}/${prog0.total} (${percentage}%)`
+        console.log(
+          `\n📈 Progress: ${prog.current}/${prog.total} (${percentage}%)`
         );
-        console0.log(`${progressBar}`);
+        console.log(`${progressBar}`);
 
-        if (prog0.description) {
-          console0.log(`📋 ${prog0.description}`);
+        if (prog.description) {
+          console.log(`📋 ${prog.description}`);
         }
 
-        if (prog0.estimatedRemaining) {
-          const minutes = Math0.ceil(prog0.estimatedRemaining / 60000);
-          console0.log(`⏱️  Est0. remaining: ${minutes}m`);
+        if (prog.estimatedRemaining) {
+          const minutes = Math.ceil(prog.estimatedRemaining / 60000);
+          console.log(`⏱️  Est. remaining: ${minutes}m`);
         }
       } else {
-        console0.log(`\n📊 Status: ${JSON0.stringify(progress, null, 2)}`);
+        console.log(`\n📊 Status: ${JSON.stringify(progress, null, 2)}`);
       }
     } else {
-      console0.log(`\n📊 Progress: ${progress}`);
+      console.log(`\n📊 Progress: ${progress}`);
     }
   }
 
   private createProgressBar(percentage: number, width: number = 40): string {
-    const filled = Math0.round((percentage / 100) * width);
+    const filled = Math.round((percentage / 100) * width);
     const empty = width - filled;
-    return `[${'█'0.repeat(filled)}${'░'0.repeat(empty)}] ${percentage}%`;
+    return `[${'█".repeat(filled)}${'░".repeat(empty)}] ${percentage}%`;
   }
 
   async showMessage(
     message: string,
-    type: 'info' | 'warning' | 'error' | 'success' = 'info'
+    type: 'info | warning' | 'error | success' = 'info'
   ): Promise<void> {
     const icons = {
       info: 'ℹ️ ',
@@ -219,41 +219,41 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
     const icon = icons[type];
     const color = colors[type];
 
-    console0.log(`\n${icon}${color}${message}${reset}`);
+    console.log(`\n${icon}${color}${message}${reset}`);
   }
 
   async showInfo(title: string, data: Record<string, unknown>): Promise<void> {
-    console0.log(`\\n📋 ${title}`);
-    console0.log('='0.repeat(Math0.max(title0.length + 3, 40)));
+    console.log(`\\n📋 ${title}`);
+    console.log('=".repeat(Math.max(title.length + 3, 40)));
 
-    Object0.entries(data)0.forEach(([key, value]) => {
+    Object.entries(data).forEach(([key, value]) => {
       if (typeof value === 'object' && value !== null) {
-        console0.log(`   ${key}:`);
-        console0.log(
-          `      ${JSON0.stringify(value, null, 6)0.replace(/\\n/g, '\\n      ')}`
+        console.log(`   ${key}:`);
+        console.log(
+          `      ${JSON.stringify(value, null, 6).replace(/\\n/g, '\\n      ')}`
         );
       } else {
-        console0.log(`   ${key}: ${value}`);
+        console.log(`   ${key}: ${value}`);
       }
     });
-    console0.log('');
+    console.log('');
   }
 
   async clear(): Promise<void> {
     // Clear terminal screen
-    console?0.clear();
+    console?.clear();
   }
 
   close(): void {
-    if (this0.rl) {
-      this0.rl?0.close;
-      this0.rl = null;
+    if (this.rl) {
+      this.rl?.close()
+      this.rl = null;
     }
   }
 }
 
 /**
- * Mock AGUI for testing - provides automatic responses0.
+ * Mock AGUI for testing - provides automatic responses.
  *
  * @example
  */
@@ -262,57 +262,57 @@ export class MockAGUI implements AGUIInterface {
   private defaultResponse: string = 'Yes';
 
   setResponse(questionId: string, response: string): void {
-    this0.responses0.set(questionId, response);
+    this.responses.set(questionId, response);
   }
 
   setDefaultResponse(response: string): void {
-    this0.defaultResponse = response;
+    this.defaultResponse = response;
   }
 
   async askQuestion(question: ValidationQuestion): Promise<string> {
-    logger0.debug('Mock AGUI Question:', question);
-    return this0.responses0.get(question0.id) || this0.defaultResponse;
+    logger.debug('Mock AGUI Question:', question);
+    return this.responses.get(question.id) || this.defaultResponse;
   }
 
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
-    logger0.debug(`Mock AGUI Batch: ${questions0.length} questions`);
-    return questions0.map(
-      (q) => this0.responses0.get(q0.id) || this0.defaultResponse
+    logger.debug(`Mock AGUI Batch: ${questions.length} questions`);
+    return questions.map(
+      (q) => this.responses.get(q.id) || this.defaultResponse
     );
   }
 
   async showProgress(progress: any): Promise<void> {
-    logger0.debug('Mock AGUI Progress:', progress);
+    logger.debug('Mock AGUI Progress:', progress);
   }
 
   async showMessage(
     message: string,
-    type?: 'info' | 'warning' | 'error' | 'success'
+    type?: 'info | warning' | 'error | success'
   ): Promise<void> {
-    logger0.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
+    logger.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
   }
 
   async showInfo(title: string, data: Record<string, unknown>): Promise<void> {
-    logger0.debug(`Mock AGUI Info [${title}]:`, data);
+    logger.debug(`Mock AGUI Info [${title}]:`, data);
   }
 
   async clear(): Promise<void> {
-    logger0.debug('Mock AGUI: Clear called');
+    logger.debug('Mock AGUI: Clear called');
   }
 
   close(): void {
-    logger0.debug('Mock AGUI: Close called');
+    logger.debug('Mock AGUI: Close called');
   }
 }
 
 /**
- * Factory function to create appropriate AGUI instance0.
+ * Factory function to create appropriate AGUI instance.
  *
  * @param type
  * @example
  */
 export function createAGUI(
-  type: 'terminal' | 'mock' = 'terminal'
+  type: 'terminal | mock' = 'terminal'
 ): AGUIInterface {
   switch (type) {
     case 'mock':

@@ -27,11 +27,10 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import { DSPyBrainMLBridge } from '../ml-bridge/dspy-brain-ml-bridge';
-import type { Teleprompter } from '../teleprompters/teleprompter';
+// Removed unused import: import type { Teleprompter } from '../teleprompters/teleprompter';
 
 // Task analysis interfaces
 export interface OptimizationTask {

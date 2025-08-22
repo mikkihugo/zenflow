@@ -4,7 +4,7 @@
  * **APPLICATION-SPECIFIC INTEGRATION TYPES**
  *
  * This file extends the base SAFe-SPARC integration types from @claude-zen/enterprise
- * with Claude Code Zen specific business logic, workflows, and agent behaviors0.
+ * with Claude Code Zen specific business logic, workflows, and agent behaviors.
  *
  * **ARCHITECTURE PATTERN:**
  * - Base types: @claude-zen/enterprise (reusable across organizations)
@@ -76,10 +76,10 @@ export interface NeuralCoordinationProfile {
  */
 export interface SwarmIntegrationProfile {
   readonly swarmId: string;
-  readonly preferredTopology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  readonly preferredTopology: 'mesh | hierarchical' | 'ring | star';
   readonly communicationProtocol: string;
   readonly loadBalancingStrategy: string;
-  readonly faultToleranceLevel: 'basic' | 'enhanced' | 'enterprise';
+  readonly faultToleranceLevel: 'basic | enhanced' | 'enterprise';
 }
 
 /**
@@ -87,8 +87,8 @@ export interface SwarmIntegrationProfile {
  */
 export interface LearningHistoryEntry {
   readonly timestamp: Date;
-  readonly context: 'safe-ceremony' | 'sparc-phase' | 'integration-handoff';
-  readonly outcome: 'success' | 'partial-success' | 'failure';
+  readonly context: 'safe-ceremony | sparc-phase' | 'integration-handoff';
+  readonly outcome: 'success | partial-success' | 'failure';
   readonly lessonsLearned: string[];
   readonly performanceImpact: number; // -1 to 1
 }
@@ -125,7 +125,7 @@ export interface HumanInTheLoopConfig {
   readonly requiredApprovals: ApprovalRequirement[];
   readonly notificationChannels: string[];
   readonly timeoutMinutes: number;
-  readonly fallbackStrategy: 'block' | 'proceed' | 'escalate';
+  readonly fallbackStrategy: 'block | proceed' | 'escalate';
 }
 
 /**
@@ -316,7 +316,7 @@ export interface KnowledgeManagementConfig {
  */
 export interface PerformanceOptimizationConfig {
   readonly enablePerformanceOptimization: boolean;
-  readonly cacheStrategy: 'lru' | 'lfu' | 'adaptive';
+  readonly cacheStrategy: 'lru | lfu' | 'adaptive';
   readonly prefetching: boolean;
   readonly loadBalancing: boolean;
   readonly resourceMonitoring: boolean;
@@ -413,12 +413,12 @@ export function createClaudeZenIntegrationConfig(): ClaudeZenIntegrationConfig {
       escalationThresholds: [
         {
           metric: 'quality-gate-failure-rate',
-          threshold: 0.3,
+          threshold: .3,
           timeWindow: 3600000, // 1 hour
           severity: 'high',
         },
       ],
-      notificationChannels: ['email', 'slack', 'dashboard'],
+      notificationChannels: ['email, slack', 'dashboard'],
       maxEscalationLevels: 3,
     },
     metricsSettings: {
@@ -440,7 +440,7 @@ export function createClaudeZenIntegrationConfig(): ClaudeZenIntegrationConfig {
     neuralCoordination: {
       enableNeuralCoordination: true,
       maxNeuralAgents: 20,
-      consensusThreshold: 0.8,
+      consensusThreshold: .8,
       learningEnabled: true,
       crossDomainTransfer: true,
     },

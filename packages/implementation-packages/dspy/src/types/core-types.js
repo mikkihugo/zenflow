@@ -5,13 +5,11 @@
  */
 // Foundation-based implementations for production usage
 import { getLogger as getFoundationLogger } from '@claude-zen/foundation';
-// LLM access from intelligence facade  
-import { getLLMProvider // Use intelligence facade for LLM access
- } from '@claude-zen/intelligence';
+import { getGlobalLLM, getDatabaseAccess } from '@claude-zen/foundation';
 export class FoundationLLMIntegrationService {
     async analyze(request) {
         try {
-            const llm = await getLLMProvider();
+            const llm = getGlobalLLM();
             // Configure LLM for analysis role
             const prompt = `Analyze the following task and provide insights:
       

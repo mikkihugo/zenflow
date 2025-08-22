@@ -2,7 +2,7 @@
  * LLM Statistics Service - Re-export from '@claude-zen/intelligence';
  *
  * This service has been moved to @claude-zen/llm-routing package for better
- * organization and reusability across the claude-code-zen ecosystem0.
+ * organization and reusability across the claude-code-zen ecosystem.
  */
 
 // Re-export from the intelligence strategic facade

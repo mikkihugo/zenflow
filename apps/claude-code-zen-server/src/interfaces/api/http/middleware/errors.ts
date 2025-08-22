@@ -1,10 +1,10 @@
 /**
- * Error Handling Middleware0.
+ * Error Handling Middleware.
  *
- * Standardized error handling following Google API Design Guide0.
- * Provides consistent error responses across all API endpoints0.
+ * Standardized error handling following Google API Design Guide.
+ * Provides consistent error responses across all API endpoints.
  *
- * @file Express error handling middleware0.
+ * @file Express error handling middleware.
  */
 
 import { getLogger } from '@claude-zen/foundation';
@@ -18,8 +18,8 @@ import type {
 const logger = getLogger('interfaces-api-http-middleware-errors');
 
 /**
- * Standard API Error Response Structure0.
- * Following Google API Design Guide error format0.
+ * Standard API Error Response Structure.
+ * Following Google API Design Guide error format.
  *
  * @example
  */
@@ -36,8 +36,8 @@ export interface APIErrorResponse {
 }
 
 /**
- * Error codes mapping HTTP status to error types0.
- * Following Google API Design Guide standards0.
+ * Error codes mapping HTTP status to error types.
+ * Following Google API Design Guide standards.
  */
 export const ErrorCodes = {
   // Client Errors (4xx)
@@ -59,8 +59,8 @@ export const ErrorCodes = {
 } as const;
 
 /**
- * Custom API Error Class0.
- * Extends Error with additional metadata for API responses0.
+ * Custom API Error Class.
+ * Extends Error with additional metadata for API responses.
  *
  * @example
  */
@@ -78,69 +78,69 @@ export class APIError extends Error {
     traceId?: string
   ) {
     super(message);
-    this0.name = 'APIError';
-    this0.statusCode = statusCode;
-    this0.code = code;
-    this0.details = details;
-    this0.traceId = traceId;
+    this.name = 'APIError';
+    this.statusCode = statusCode;
+    this.code = code;
+    this.details = details;
+    this.traceId = traceId;
 
-    // Maintains proper stack trace for where our error was thrown (Node0.js only)
-    if (Error0.captureStackTrace) {
-      Error0.captureStackTrace(this, APIError);
+    // Maintains proper stack trace for where our error was thrown (Node.js only)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, APIError);
     }
   }
 }
 
 /**
- * Generate unique trace ID for error tracking0.
- * Simple implementation - can be enhanced with proper UUID library0.
+ * Generate unique trace ID for error tracking.
+ * Simple implementation - can be enhanced with proper UUID library.
  */
 const generateTraceId = (): string => {
-  return `trace-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 8)}`;
+  return `trace-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 };
 
 /**
- * Determine error code from HTTP status code0.
- * Maps status codes to standardized error codes0.
+ * Determine error code from HTTP status code.
+ * Maps status codes to standardized error codes.
  *
  * @param statusCode
  */
 const _getErrorCodeFromStatus = (statusCode: number): string => {
   switch (statusCode) {
     case 400:
-      return ErrorCodes0.BAD_REQUEST;
+      return ErrorCodes.BAD_REQUEST;
     case 401:
-      return ErrorCodes0.UNAUTHORIZED;
+      return ErrorCodes.UNAUTHORIZED;
     case 403:
-      return ErrorCodes0.FORBIDDEN;
+      return ErrorCodes.FORBIDDEN;
     case 404:
-      return ErrorCodes0.NOT_FOUND;
+      return ErrorCodes.NOT_FOUND;
     case 405:
-      return ErrorCodes0.METHOD_NOT_ALLOWED;
+      return ErrorCodes.METHOD_NOT_ALLOWED;
     case 409:
-      return ErrorCodes0.CONFLICT;
+      return ErrorCodes.CONFLICT;
     case 422:
-      return ErrorCodes0.UNPROCESSABLE_ENTITY;
+      return ErrorCodes.UNPROCESSABLE_ENTITY;
     case 429:
-      return ErrorCodes0.TOO_MANY_REQUESTS;
+      return ErrorCodes.TOO_MANY_REQUESTS;
     case 500:
-      return ErrorCodes0.INTERNAL_SERVER_ERROR;
+      return ErrorCodes.INTERNAL_SERVER_ERROR;
     case 501:
-      return ErrorCodes0.NOT_IMPLEMENTED;
+      return ErrorCodes.NOT_IMPLEMENTED;
     case 502:
-      return ErrorCodes0.BAD_GATEWAY;
+      return ErrorCodes.BAD_GATEWAY;
     case 503:
-      return ErrorCodes0.SERVICE_UNAVAILABLE;
+      return ErrorCodes.SERVICE_UNAVAILABLE;
     case 504:
-      return ErrorCodes0.GATEWAY_TIMEOUT;
+      return ErrorCodes.GATEWAY_TIMEOUT;
     default:
-      return ErrorCodes0.INTERNAL_SERVER_ERROR;
+      return ErrorCodes.INTERNAL_SERVER_ERROR;
   }
 };
 
 /**
- * Main Error Handler Middleware0.
- * Catches all errors and formats them according to Google API standards0.
+ * Main Error Handler Middleware.
+ * Catches all errors and formats them according to Google API standards.
  *
  * @param error
  * @param req
@@ -156,15 +156,15 @@ export const errorHandler: ErrorRequestHandler = (
   const traceId = generateTraceId();
 
   // Log error for monitoring (in production, use proper logging service)
-  logger0.error(`[${traceId}] Error occurred:`, {
-    message: error0.message,
-    stack: error0.stack,
-    path: req0.path,
-    method: req0.method,
-    body: req0.body,
-    query: req0.query,
-    params: req0.params,
-    timestamp: new Date()?0.toISOString,
+  logger.error(`[${traceId}] Error occurred:`, {
+    message: error.message,
+    stack: error.stack,
+    path: req.path,
+    method: req.method,
+    body: req.body,
+    query: req.query,
+    params: req.params,
+    timestamp: new Date()?.toISOString,
   });
 
   let statusCode: number;
@@ -174,58 +174,58 @@ export const errorHandler: ErrorRequestHandler = (
 
   if (error instanceof APIError) {
     // Custom API error - use provided values
-    statusCode = error0.statusCode;
-    code = error0.code;
-    message = error0.message;
-    details = error0.details;
-  } else if (error0.name === 'ValidationError') {
+    statusCode = error.statusCode;
+    code = error.code;
+    message = error.message;
+    details = error.details;
+  } else if (error.name === 'ValidationError') {
     // OpenAPI validation error
     statusCode = 422;
-    code = ErrorCodes0.UNPROCESSABLE_ENTITY;
+    code = ErrorCodes.UNPROCESSABLE_ENTITY;
     message = 'Request validation failed';
     details = {
-      validationErrors: (error as any)0.errors || error0.message,
+      validationErrors: (error as any).errors || error.message,
     };
-  } else if (error0.name === 'SyntaxError' && 'body' in error) {
+  } else if (error.name === 'SyntaxError && body' in error) {
     // JSON parsing error
     statusCode = 400;
-    code = ErrorCodes0.BAD_REQUEST;
+    code = ErrorCodes.BAD_REQUEST;
     message = 'Invalid JSON in request body';
     details = {
-      parseError: error0.message,
+      parseError: error.message,
     };
   } else if (
-    error0.message0.includes('ENOTFOUND') ||
-    error0.message0.includes('ECONNREFUSED')
+    error.message.includes('ENOTFOUND') ||
+    error.message.includes('ECONNREFUSED')
   ) {
     // Network/connection error
     statusCode = 502;
-    code = ErrorCodes0.BAD_GATEWAY;
+    code = ErrorCodes.BAD_GATEWAY;
     message = 'External service unavailable';
     details = {
-      networkError: error0.message,
+      networkError: error.message,
     };
-  } else if (error0.message0.includes('timeout')) {
+  } else if (error.message.includes('timeout')) {
     // Timeout error
     statusCode = 504;
-    code = ErrorCodes0.GATEWAY_TIMEOUT;
+    code = ErrorCodes.GATEWAY_TIMEOUT;
     message = 'Request timeout';
     details = {
-      timeoutError: error0.message,
+      timeoutError: error.message,
     };
   } else {
     // Generic error - treat as internal server error
     statusCode = 500;
-    code = ErrorCodes0.INTERNAL_SERVER_ERROR;
+    code = ErrorCodes.INTERNAL_SERVER_ERROR;
     message =
-      process0.env['NODE_ENV'] === 'production'
+      process.env['NODE_ENV] === production'
         ? 'An internal error occurred'
-        : error0.message;
+        : error.message;
 
-    if (process0.env['NODE_ENV'] !== 'production') {
+    if (process.env['NODE_ENV] !== production') {
       details = {
-        stack: error0.stack,
-        originalError: error?0.toString,
+        stack: error.stack,
+        originalError: error?.toString,
       };
     }
   }
@@ -236,20 +236,20 @@ export const errorHandler: ErrorRequestHandler = (
       code,
       message,
       details,
-      timestamp: new Date()?0.toISOString,
-      path: req0.path,
-      method: req0.method,
+      timestamp: new Date()?.toISOString,
+      path: req.path,
+      method: req.method,
       traceId,
     },
   };
 
   // Send error response
-  res0.status(statusCode)0.json(errorResponse);
+  res.status(statusCode).json(errorResponse);
 };
 
 /**
- * Not Found Handler0.
- * Handles 404 errors for unmatched routes0.
+ * Not Found Handler.
+ * Handles 404 errors for unmatched routes.
  *
  * @param req
  * @param res
@@ -257,11 +257,11 @@ export const errorHandler: ErrorRequestHandler = (
 export const notFoundHandler = (req: Request, res: Response): void => {
   const errorResponse: APIErrorResponse = {
     error: {
-      code: ErrorCodes0.NOT_FOUND,
-      message: `The endpoint ${req0.method} ${req0.path} does not exist`,
-      timestamp: new Date()?0.toISOString,
-      path: req0.path,
-      method: req0.method,
+      code: ErrorCodes.NOT_FOUND,
+      message: `The endpoint ${req.method} ${req.path} does not exist`,
+      timestamp: new Date()?.toISOString,
+      path: req.path,
+      method: req.method,
       details: {
         availableEndpoints: '/api',
         documentation: '/docs',
@@ -269,12 +269,12 @@ export const notFoundHandler = (req: Request, res: Response): void => {
     },
   };
 
-  res0.status(404)0.json(errorResponse);
+  res.status(404).json(errorResponse);
 };
 
 /**
- * Async Error Handler Wrapper0.
- * Wraps async route handlers to catch errors automatically0.
+ * Async Error Handler Wrapper.
+ * Wraps async route handlers to catch errors automatically.
  *
  * @param fn
  */
@@ -282,13 +282,13 @@ export const asyncHandler = (
   fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>
 ) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    Promise0.resolve(fn(req, res, next))0.catch(next);
+    Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
 
 /**
- * Validation Error Creator0.
- * Helper to create validation errors with detailed information0.
+ * Validation Error Creator.
+ * Helper to create validation errors with detailed information.
  *
  * @param field
  * @param value
@@ -303,7 +303,7 @@ export const createValidationError = (
 ): APIError => {
   return new APIError(
     422,
-    ErrorCodes0.UNPROCESSABLE_ENTITY,
+    ErrorCodes.UNPROCESSABLE_ENTITY,
     `Validation failed for field '${field}'`,
     {
       field,
@@ -315,8 +315,8 @@ export const createValidationError = (
 };
 
 /**
- * Not Found Error Creator0.
- * Helper to create consistent 404 errors0.
+ * Not Found Error Creator.
+ * Helper to create consistent 404 errors.
  *
  * @param resource
  * @param identifier
@@ -329,7 +329,7 @@ export const createNotFoundError = (
 ): APIError => {
   return new APIError(
     404,
-    ErrorCodes0.NOT_FOUND,
+    ErrorCodes.NOT_FOUND,
     `${resource} not found`,
     {
       resource,
@@ -340,8 +340,8 @@ export const createNotFoundError = (
 };
 
 /**
- * Conflict Error Creator0.
- * Helper to create resource conflict errors0.
+ * Conflict Error Creator.
+ * Helper to create resource conflict errors.
  *
  * @param resource
  * @param reason
@@ -354,7 +354,7 @@ export const createConflictError = (
 ): APIError => {
   return new APIError(
     409,
-    ErrorCodes0.CONFLICT,
+    ErrorCodes.CONFLICT,
     `${resource} conflict: ${reason}`,
     {
       resource,
@@ -365,8 +365,8 @@ export const createConflictError = (
 };
 
 /**
- * Rate Limit Error Creator0.
- * Helper to create rate limiting errors0.
+ * Rate Limit Error Creator.
+ * Helper to create rate limiting errors.
  *
  * @param limit
  * @param windowMs
@@ -379,20 +379,20 @@ export const createRateLimitError = (
 ): APIError => {
   return new APIError(
     429,
-    ErrorCodes0.TOO_MANY_REQUESTS,
+    ErrorCodes.TOO_MANY_REQUESTS,
     'Rate limit exceeded',
     {
       limit,
       windowMs,
-      retryAfter: Math0.ceil(windowMs / 1000),
+      retryAfter: Math.ceil(windowMs / 1000),
     },
     traceId
   );
 };
 
 /**
- * Internal Error Creator0.
- * Helper to create internal server errors with optional details0.
+ * Internal Error Creator.
+ * Helper to create internal server errors with optional details.
  *
  * @param message
  * @param details
@@ -405,7 +405,7 @@ export const createInternalError = (
 ): APIError => {
   return new APIError(
     500,
-    ErrorCodes0.INTERNAL_SERVER_ERROR,
+    ErrorCodes.INTERNAL_SERVER_ERROR,
     message,
     details,
     traceId

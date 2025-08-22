@@ -1,16 +1,16 @@
 /**
- * Strategic Vision Service - Database-driven strategic analysis0.
+ * Strategic Vision Service - Database-driven strategic analysis.
  *
  * Integrates with DocumentManager and DomainDiscoveryBridge to provide
- * comprehensive strategic vision analysis using structured database documents0.
- * Does not re-import documents already saved to repo0.
+ * comprehensive strategic vision analysis using structured database documents.
+ * Does not re-import documents already saved to repo.
  */
 
 import type { DocumentType } from '@claude-zen/enterprise';
 import { getLogger } from '@claude-zen/foundation';
 import type { BaseDocumentEntity } from '@claude-zen/intelligence';
 
-import { DocumentManager } from '0.0./0.0./services/document/document-service';
+import { DocumentManager } from './../services/document/document-service';
 
 const logger = getLogger('coordination-services-strategic-vision');
 
@@ -44,7 +44,7 @@ export class StrategicVisionService {
   private documentManager: DocumentManager;
 
   constructor() {
-    this0.documentManager = new DocumentManager();
+    this.documentManager = new DocumentManager();
   }
 
   /**
@@ -54,44 +54,44 @@ export class StrategicVisionService {
     projectId: string
   ): Promise<StrategicVisionAnalysis> {
     try {
-      logger0.info(`Analyzing strategic vision for project: ${projectId}`);
+      logger.info(`Analyzing strategic vision for project: ${projectId}`);
 
       // Search for structured vision documents in database
-      const visionQuery = await this0.documentManager0.searchDocuments({
+      const visionQuery = await this.documentManager.searchDocuments({
         searchType: 'combined',
         query: 'vision mission strategy goals objectives',
-        documentTypes: ['vision', 'prd', 'epic'],
+        documentTypes: ['vision, prd', 'epic'],
         projectId,
         includeContent: true,
         includeRelationships: true,
       });
 
-      if (!(visionQuery0.success && visionQuery0.data?0.documents?0.length)) {
-        logger0.warn(
+      if (!(visionQuery.success && visionQuery.data?.documents?.length)) {
+        logger.warn(
           `No vision documents found for project ${projectId}, returning default analysis`
         );
-        return this0.createDefaultVisionAnalysis(projectId);
+        return this.createDefaultVisionAnalysis(projectId);
       }
 
-      const documents = visionQuery0.data0.documents;
-      logger0.info(`Found ${documents0.length} vision documents for analysis`);
+      const documents = visionQuery.data.documents;
+      logger.info(`Found ${documents.length} vision documents for analysis`);
 
       // Analyze structured vision documents
-      const analysis = await this0.analyzeStructuredDocuments(
+      const analysis = await this.analyzeStructuredDocuments(
         projectId,
         documents
       );
 
       // Enhance with cross-document relationships
-      await this0.enhanceWithRelationships(analysis, documents);
+      await this.enhanceWithRelationships(analysis, documents);
 
-      logger0.info(
-        `Strategic vision analysis completed for ${projectId} with confidence ${analysis0.confidenceScore}`
+      logger.info(
+        `Strategic vision analysis completed for ${projectId} with confidence ${analysis.confidenceScore}`
       );
       return analysis;
     } catch (error) {
-      logger0.error(`Error analyzing project vision for ${projectId}:`, error);
-      return this0.createErrorVisionAnalysis(projectId, error);
+      logger.error(`Error analyzing project vision for ${projectId}:`, error);
+      return this.createErrorVisionAnalysis(projectId, error);
     }
   }
 
@@ -105,15 +105,15 @@ export class StrategicVisionService {
     errors: string[];
   }> {
     try {
-      logger0.info(
-        `Importing strategic documents for project: ${options0.projectId}`
+      logger.info(
+        `Importing strategic documents for project: ${options.projectId}`
       );
 
       const results = { imported: 0, skipped: 0, errors: [] };
 
       // Check existing documents to avoid re-import
-      const existingDocs = await this0.documentManager0.getDocumentsByProject(
-        options0.projectId,
+      const existingDocs = await this.documentManager.getDocumentsByProject(
+        options.projectId,
         {
           includeContent: false,
           sortBy: 'created_at',
@@ -122,43 +122,43 @@ export class StrategicVisionService {
       );
 
       const existingTypes = new Set(
-        existingDocs0.success && existingDocs0.data?0.documents
-          ? existingDocs0.data0.documents0.map((doc: any) => doc0.type)
+        existingDocs.success && existingDocs.data?.documents
+          ? existingDocs.data.documents.map((doc: any) => doc.type)
           : []
       );
 
       // Import from files if requested and documents don't exist
-      if (options0.importFromFiles && options0.projectPath) {
-        const fileImportResults = await this0.importFromFiles(
-          options0.projectId,
-          options0.projectPath,
+      if (options.importFromFiles && options.projectPath) {
+        const fileImportResults = await this.importFromFiles(
+          options.projectId,
+          options.projectPath,
           existingTypes,
-          options0.skipExistingDocuments
+          options.skipExistingDocuments
         );
 
-        results0.imported += fileImportResults0.imported;
-        results0.skipped += fileImportResults0.skipped;
-        results0.errors0.push(0.0.0.fileImportResults0.errors);
+        results.imported += fileImportResults.imported;
+        results.skipped += fileImportResults.skipped;
+        results.errors.push(...fileImportResults.errors);
       }
 
       // Import from code comments (TODOs, STRATEGY, VISION annotations)
-      const codeImportResults = await this0.importFromCodeAnnotations(
-        options0.projectId,
-        options0.projectPath || `/home/mhugo/code/${options0.projectId}`,
+      const codeImportResults = await this.importFromCodeAnnotations(
+        options.projectId,
+        options.projectPath || `/home/mhugo/code/${options.projectId}`,
         existingTypes
       );
 
-      results0.imported += codeImportResults0.imported;
-      results0.skipped += codeImportResults0.skipped;
-      results0.errors0.push(0.0.0.codeImportResults0.errors);
+      results.imported += codeImportResults.imported;
+      results.skipped += codeImportResults.skipped;
+      results.errors.push(...codeImportResults.errors);
 
-      logger0.info(
-        `Import completed: ${results0.imported} imported, ${results0.skipped} skipped, ${results0.errors0.length} errors`
+      logger.info(
+        `Import completed: ${results.imported} imported, ${results.skipped} skipped, ${results.errors.length} errors`
       );
       return results;
     } catch (error) {
-      logger0.error(`Error importing strategic documents:`, error);
-      return { imported: 0, skipped: 0, errors: [error0.message] };
+      logger.error(`Error importing strategic documents:`, error);
+      return { imported: 0, skipped: 0, errors: [error.message] };
     }
   }
 
@@ -168,7 +168,7 @@ export class StrategicVisionService {
    */
   async createVisionDocument(
     projectId: string,
-    type: 'vision' | 'prd' | 'epic' | 'strategy',
+    type: 'vision | prd' | 'epic | strategy',
     content: {
       title: string;
       summary: string;
@@ -187,55 +187,55 @@ export class StrategicVisionService {
     error?: string;
   }> {
     try {
-      logger0.info(`Creating ${type} document for project ${projectId}`);
+      logger.info(`Creating ${type} document for project ${projectId}`);
 
       // Create structured document in database
       const docData = {
         type,
-        title: content0.title,
-        summary: content0.summary,
-        content: content0.content,
+        title: content.title,
+        summary: content.summary,
+        content: content.content,
         author: 'strategic-vision-service',
         project_id: projectId,
         status: 'draft' as const,
         priority: 'high' as const,
-        keywords: content0.goals || [],
-        tags: [type, 'strategic', 'vision'],
+        keywords: content.goals || [],
+        tags: [type, 'strategic, vision'],
         metadata: {
-          stakeholders: content0.stakeholders,
-          key_metrics: content0.metrics,
-          risks: content0.risks,
-          timeline: content0.timeline,
+          stakeholders: content.stakeholders,
+          key_metrics: content.metrics,
+          risks: content.risks,
+          timeline: content.timeline,
           created_by: 'strategic-vision-service',
           document_source: 'service_generated',
         },
-        version: '10.0',
+        version: '1.0',
         dependencies: [],
         related_documents: [],
       };
 
-      const createResult = await this0.documentManager0.createDocument(docData, {
+      const createResult = await this.documentManager.createDocument(docData, {
         autoGenerateRelationships: true,
         generateSearchIndex: true,
         notifyListeners: true,
       });
 
-      if (!createResult0.success) {
+      if (!createResult.success) {
         return {
           success: false,
-          error: createResult0.error?0.message || 'Failed to create document',
+          error: createResult.error?.message || 'Failed to create document',
         };
       }
 
-      const documentId = createResult0.data?0.id;
+      const documentId = createResult.data?.id()
 
       // Optionally save to repo (only for specific document types)
       let repoPath: string | undefined;
-      if (saveToRepo && ['vision', 'strategy']0.includes(type)) {
-        repoPath = await this0.saveToRepository(projectId, type, content);
+      if (saveToRepo && ['vision, strategy'].includes(type)) {
+        repoPath = await this.saveToRepository(projectId, type, content);
       }
 
-      logger0.info(
+      logger.info(
         `${type} document created successfully with ID ${documentId}${repoPath ? ` and saved to ${repoPath}` : ''}`
       );
 
@@ -245,8 +245,8 @@ export class StrategicVisionService {
         repoPath,
       };
     } catch (error) {
-      logger0.error(`Error creating ${type} document:`, error);
-      return { success: false, error: error0.message };
+      logger.error(`Error creating ${type} document:`, error);
+      return { success: false, error: error.message };
     }
   }
 
@@ -257,16 +257,16 @@ export class StrategicVisionService {
     projectId: string
   ): Promise<StrategicVisionAnalysis> {
     // Check if we have cached analysis
-    const cached = await this0.getCachedAnalysis(projectId);
-    if (cached && this0.isAnalysisRecent(cached)) {
+    const cached = await this.getCachedAnalysis(projectId);
+    if (cached && this.isAnalysisRecent(cached)) {
       return cached;
     }
 
     // Perform fresh analysis
-    const analysis = await this0.analyzeProjectVision(projectId);
+    const analysis = await this.analyzeProjectVision(projectId);
 
     // Cache the analysis
-    await this0.cacheAnalysis(analysis);
+    await this.cacheAnalysis(analysis);
 
     return analysis;
   }
@@ -277,69 +277,69 @@ export class StrategicVisionService {
     projectId: string,
     documents: BaseDocumentEntity[]
   ): Promise<StrategicVisionAnalysis> {
-    const visionDoc = documents0.find((doc) => doc0.type === 'vision') as
+    const visionDoc = documents.find((doc) => doc.type === 'vision') as
       | any
       | undefined;
-    const prdDoc = documents0.find((doc) => doc0.type === 'prd') as
+    const prdDoc = documents.find((doc) => doc.type === 'prd') as
       | any
       | undefined;
-    const epicDocs = documents0.filter((doc) => doc0.type === 'epic') as any[];
+    const epicDocs = documents.filter((doc) => doc.type === 'epic') as any[];
 
     // Extract strategic information from structured documents
     const missionStatement =
-      visionDoc?0.content?0.split('\n')[0] ||
-      prdDoc?0.summary ||
+      visionDoc?.content?.split('\n')[0] ||
+      prdDoc?.summary ||
       'Mission extracted from structured documents';
 
     const strategicGoals = [
-      0.0.0.(visionDoc?0.keywords || []),
-      0.0.0.(prdDoc?0.keywords || []),
-      0.0.0.epicDocs0.flatMap((epic) => epic0.keywords || []),
-    ]0.slice(0, 8);
+      ...(visionDoc?.keywords || []),
+      ...(prdDoc?.keywords || []),
+      ...epicDocs.flatMap((epic) => epic.keywords || []),
+    ].slice(0, 8);
 
     const stakeholders = [
-      0.0.0.(visionDoc?0.metadata?0.stakeholders || []),
-      0.0.0.(prdDoc?0.metadata?0.stakeholders || []),
+      ...(visionDoc?.metadata?.stakeholders || []),
+      ...(prdDoc?.metadata?.stakeholders || []),
     ];
 
     const risks = [
-      0.0.0.(visionDoc?0.metadata?0.risks || []),
-      0.0.0.(prdDoc?0.metadata?0.risks || []),
+      ...(visionDoc?.metadata?.risks || []),
+      ...(prdDoc?.metadata?.risks || []),
     ];
 
-    const keyMetrics = visionDoc?0.metadata?0.key_metrics ||
-      prdDoc?0.metadata?0.key_metrics || [
+    const keyMetrics = visionDoc?.metadata?.key_metrics ||
+      prdDoc?.metadata?.key_metrics || [
         'Quality',
         'Performance',
         'User satisfaction',
       ];
 
     // Calculate confidence based on document completeness
-    const confidenceScore = this0.calculateConfidenceScore(documents);
+    const confidenceScore = this.calculateConfidenceScore(documents);
 
     return {
       projectId,
       missionStatement,
       strategicGoals:
-        strategicGoals0.length > 0
+        strategicGoals.length > 0
           ? strategicGoals
           : ['Strategic goals from database'],
-      businessValue: 0.85, // High confidence from structured data
-      technicalImpact: 0.85,
+      businessValue: .85, // High confidence from structured data
+      technicalImpact: .85,
       marketPosition:
-        visionDoc?0.metadata?0.market_position || 'Database-driven analysis',
+        visionDoc?.metadata?.market_position || 'Database-driven analysis',
       targetOutcome:
-        visionDoc?0.metadata?0.target_outcome ||
+        visionDoc?.metadata?.target_outcome ||
         strategicGoals[0] ||
         'Structured outcome delivery',
       keyMetrics,
       stakeholders:
-        stakeholders0.length > 0 ? stakeholders : ['Database stakeholders'],
+        stakeholders.length > 0 ? stakeholders : ['Database stakeholders'],
       timeline:
-        visionDoc?0.metadata?0.timeline || 'Timeline from structured documents',
-      risks: risks0.length > 0 ? risks : ['Database-identified risks'],
+        visionDoc?.metadata?.timeline || 'Timeline from structured documents',
+      risks: risks.length > 0 ? risks : ['Database-identified risks'],
       confidenceScore,
-      sourceDocuments: documents0.map((doc) => doc0.id),
+      sourceDocuments: documents.map((doc) => doc.id),
       lastAnalyzed: new Date(),
     };
   }
@@ -350,10 +350,10 @@ export class StrategicVisionService {
   ): Promise<void> {
     // Enhance analysis with document relationships
     for (const doc of documents) {
-      if (doc0.related_documents?0.length > 0) {
+      if (doc.related_documents?.length > 0) {
         // Could fetch related documents and extract additional insights
-        logger0.debug(
-          `Document ${doc0.id} has ${doc0.related_documents0.length} related documents`
+        logger.debug(
+          `Document ${doc.id} has ${doc.related_documents.length} related documents`
         );
       }
     }
@@ -377,9 +377,9 @@ export class StrategicVisionService {
       try {
         const rootFiles = await readdir(projectPath);
         for (const file of rootFiles) {
-          const ext = extname(file)?0.toLowerCase;
-          if (['0.md', '0.txt', '0.rst', '0.adoc']0.includes(ext)) {
-            potentialDocFiles0.push(file);
+          const ext = extname(file)?.toLowerCase()
+          if ([".md', ".txt', ".rst', ".adoc'].includes(ext)) {
+            potentialDocFiles.push(file);
           }
         }
 
@@ -389,21 +389,21 @@ export class StrategicVisionService {
           await access(docsPath);
           const docsFiles = await readdir(docsPath);
           for (const file of docsFiles) {
-            const ext = extname(file)?0.toLowerCase;
-            if (['0.md', '0.txt', '0.rst', '0.adoc']0.includes(ext)) {
-              potentialDocFiles0.push(join('docs', file));
+            const ext = extname(file)?.toLowerCase()
+            if ([".md', ".txt', ".rst', ".adoc'].includes(ext)) {
+              potentialDocFiles.push(join('docs', file));
             }
           }
         } catch {
           // docs directory doesn't exist
         }
       } catch (error) {
-        results0.errors0.push(`Error reading directory: ${error0.message}`);
+        results.errors.push(`Error reading directory: ${error.message}`);
         return results;
       }
 
-      logger0.info(
-        `Found ${potentialDocFiles0.length} potential document files for LLM classification`
+      logger.info(
+        `Found ${potentialDocFiles.length} potential document files for LLM classification`
       );
 
       // Classify each file using LLM content analysis
@@ -414,81 +414,81 @@ export class StrategicVisionService {
           const content = await readFile(filePath, 'utf8');
 
           // Skip empty files
-          if (content?0.trim0.length === 0) {
+          if (content?.trim.length === 0) {
             continue;
           }
 
           // Use LLM to classify document content and suggest actions
-          const classification = await this0.classifyDocumentWithLLM(
+          const classification = await this.classifyDocumentWithLLM(
             file,
             content
           );
 
-          if (skipExisting && existingTypes0.has(classification0.documentType)) {
-            results0.skipped++;
-            logger0.info(
-              `Skipping ${file} - type ${classification0.documentType} already exists`
+          if (skipExisting && existingTypes.has(classification.documentType)) {
+            results.skipped++;
+            logger.info(
+              `Skipping ${file} - type ${classification.documentType} already exists`
             );
             continue;
           }
 
           const docData = {
-            type: classification0.documentType,
-            title: classification0.suggestedTitle,
-            summary: classification0.summary,
+            type: classification.documentType,
+            title: classification.suggestedTitle,
+            summary: classification.summary,
             content,
             author: 'llm-content-classifier',
             project_id: projectId,
             status: 'draft' as const,
-            priority: classification0.suggestedPriority,
-            keywords: classification0.extractedKeywords,
+            priority: classification.suggestedPriority,
+            keywords: classification.extractedKeywords,
             tags: [
-              classification0.documentType,
+              classification.documentType,
               'llm-classified',
               'content-analyzed',
-              0.0.0.classification0.suggestedTags,
+              ...classification.suggestedTags,
             ],
             metadata: {
               source_file: file,
-              import_date: new Date()?0.toISOString,
+              import_date: new Date()?.toISOString,
               document_source: 'llm_classified_import',
-              llm_confidence: classification0.confidence,
-              suggested_actions: classification0.suggestedActions,
-              content_themes: classification0.contentThemes,
-              document_maturity: classification0.documentMaturity,
-              strategic_relevance: classification0.strategicRelevance,
+              llm_confidence: classification.confidence,
+              suggested_actions: classification.suggestedActions,
+              content_themes: classification.contentThemes,
+              document_maturity: classification.documentMaturity,
+              strategic_relevance: classification.strategicRelevance,
             },
-            version: '10.0',
-            dependencies: classification0.suggestedDependencies,
+            version: '1.0',
+            dependencies: classification.suggestedDependencies,
             related_documents: [],
           };
 
           const createResult =
-            await this0.documentManager0.createDocument(docData);
-          if (createResult0.success) {
-            results0.imported++;
-            logger0.info(
-              `Successfully imported and classified: ${file} as ${classification0.documentType} (confidence: ${classification0.confidence})`
+            await this.documentManager.createDocument(docData);
+          if (createResult.success) {
+            results.imported++;
+            logger.info(
+              `Successfully imported and classified: ${file} as ${classification.documentType} (confidence: ${classification.confidence})`
             );
 
             // Log human-actionable suggestions
-            if (classification0.suggestedActions0.length > 0) {
-              logger0.info(
-                `LLM suggestions for ${file}: ${classification0.suggestedActions0.join(', ')}`
+            if (classification.suggestedActions.length > 0) {
+              logger.info(
+                `LLM suggestions for ${file}: ${classification.suggestedActions.join(', ')}`
               );
             }
           } else {
-            results0.errors0.push(
-              `Failed to import ${file}: ${createResult0.error?0.message}`
+            results.errors.push(
+              `Failed to import ${file}: ${createResult.error?.message}`
             );
           }
         } catch (fileError) {
-          logger0.warn(`Could not process file ${file}:`, fileError);
+          logger.warn(`Could not process file ${file}:`, fileError);
           // Continue with other files
         }
       }
     } catch (error) {
-      results0.errors0.push(`Error importing files: ${error0.message}`);
+      results.errors.push(`Error importing files: ${error.message}`);
     }
 
     return results;
@@ -507,124 +507,124 @@ export class StrategicVisionService {
     confidence: number;
     extractedKeywords: string[];
     suggestedTags: string[];
-    suggestedPriority: 'low' | 'medium' | 'high';
+    suggestedPriority: 'low | medium' | 'high';
     suggestedActions: string[];
     contentThemes: string[];
-    documentMaturity: 'draft' | 'partial' | 'complete' | 'outdated';
+    documentMaturity: 'draft | partial' | 'complete | outdated';
     strategicRelevance: number; // 0-1 score
     suggestedDependencies: string[];
   }> {
     try {
       // Analyze content patterns and themes
-      const contentLower = content?0.toLowerCase;
-      const lines = content0.split('\n')0.filter((line) => line?0.trim0.length > 0);
-      const firstFewLines = lines0.slice(0, 10)0.join('\n');
+      const contentLower = content?.toLowerCase()
+      const lines = content.split('\n').filter((line) => line?.trim.length > 0);
+      const firstFewLines = lines.slice(0, 10).join('\n');
 
       // Content-based classification logic (simplified LLM simulation)
       let documentType = 'document'; // default
-      let confidence = 0.5;
+      let confidence = .5;
       const keywords: string[] = [];
       const themes: string[] = [];
       const actions: string[] = [];
 
       // Vision/Strategy detection
-      if (this0.containsVisionKeywords(contentLower)) {
+      if (this.containsVisionKeywords(contentLower)) {
         documentType = 'vision';
-        confidence = 0.9;
-        themes0.push('strategic-planning', 'future-state', 'objectives');
-        actions0.push('Review strategic alignment with current goals');
-        actions0.push('Identify measurable outcomes and metrics');
+        confidence = .9;
+        themes.push('strategic-planning, future-state', 'objectives');
+        actions.push('Review strategic alignment with current goals');
+        actions.push('Identify measurable outcomes and metrics');
       }
 
       // PRD/Requirements detection
-      else if (this0.containsRequirementsKeywords(contentLower)) {
+      else if (this.containsRequirementsKeywords(contentLower)) {
         documentType = 'prd';
-        confidence = 0.85;
-        themes0.push('requirements', 'specifications', 'user-needs');
-        actions0.push('Validate requirements with stakeholders');
-        actions0.push('Create technical specifications from requirements');
+        confidence = .85;
+        themes.push('requirements, specifications', 'user-needs');
+        actions.push('Validate requirements with stakeholders');
+        actions.push('Create technical specifications from requirements');
       }
 
       // Epic/Task detection
-      else if (this0.containsTaskKeywords(contentLower)) {
+      else if (this.containsTaskKeywords(contentLower)) {
         documentType = 'epic';
-        confidence = 0.8;
-        themes0.push('tasks', 'implementation', 'deliverables');
-        actions0.push('Break down epics into actionable tasks');
-        actions0.push('Assign priorities and effort estimates');
+        confidence = .8;
+        themes.push('tasks, implementation', 'deliverables');
+        actions.push('Break down epics into actionable tasks');
+        actions.push('Assign priorities and effort estimates');
       }
 
       // Architecture/Technical detection
-      else if (this0.containsArchitectureKeywords(contentLower)) {
+      else if (this.containsArchitectureKeywords(contentLower)) {
         documentType = 'adr';
-        confidence = 0.85;
-        themes0.push('technical-decisions', 'architecture', 'system-design');
-        actions0.push('Document decision rationale and alternatives');
-        actions0.push('Update architecture diagrams and dependencies');
+        confidence = .85;
+        themes.push('technical-decisions, architecture', 'system-design');
+        actions.push('Document decision rationale and alternatives');
+        actions.push('Update architecture diagrams and dependencies');
       }
 
       // Feature/Enhancement detection
-      else if (this0.containsFeatureKeywords(contentLower)) {
+      else if (this.containsFeatureKeywords(contentLower)) {
         documentType = 'feature';
-        confidence = 0.75;
-        themes0.push('feature-development', 'user-experience', 'functionality');
-        actions0.push('Define user acceptance criteria');
-        actions0.push('Plan implementation phases and rollout');
+        confidence = .75;
+        themes.push('feature-development, user-experience', 'functionality');
+        actions.push('Define user acceptance criteria');
+        actions.push('Plan implementation phases and rollout');
       }
 
       // Default classification based on content structure
       else {
         // Analyze content structure for better classification
-        if (lines0.length < 5) {
+        if (lines.length < 5) {
           documentType = 'note';
-          confidence = 0.6;
-          actions0.push('Expand content with more detailed information');
-        } else if (this0.hasStructuredFormat(content)) {
+          confidence = .6;
+          actions.push('Expand content with more detailed information');
+        } else if (this.hasStructuredFormat(content)) {
           documentType = 'specification';
-          confidence = 0.7;
-          actions0.push('Review and validate technical specifications');
+          confidence = .7;
+          actions.push('Review and validate technical specifications');
         } else {
           documentType = 'documentation';
-          confidence = 0.6;
-          actions0.push('Organize content with clear structure and headings');
+          confidence = .6;
+          actions.push('Organize content with clear structure and headings');
         }
       }
 
       // Extract keywords from content
-      keywords0.push(0.0.0.this0.extractKeywordsFromContent(content));
+      keywords.push(...this.extractKeywordsFromContent(content));
 
       // Determine document maturity
-      const documentMaturity = this0.assessDocumentMaturity(content);
+      const documentMaturity = this.assessDocumentMaturity(content);
 
       // Calculate strategic relevance
-      const strategicRelevance = this0.calculateStrategicRelevance(
+      const strategicRelevance = this.calculateStrategicRelevance(
         contentLower,
         themes
       );
 
       // Generate suggested title
-      const suggestedTitle = this0.generateSuggestedTitle(
+      const suggestedTitle = this.generateSuggestedTitle(
         filename,
         firstFewLines,
         documentType
       );
 
       // Generate summary
-      const summary = this0.generateContentSummary(firstFewLines, themes);
+      const summary = this.generateContentSummary(firstFewLines, themes);
 
       // Determine priority based on type and relevance
       const suggestedPriority =
-        strategicRelevance > 0.7
+        strategicRelevance > .7
           ? 'high'
-          : strategicRelevance > 0.4
+          : strategicRelevance > .4
             ? 'medium'
             : 'low';
 
       // Add maturity-based actions
-      if (documentMaturity === 'draft' || documentMaturity === 'partial') {
-        actions0.push('Complete missing sections and add more detail');
+      if (documentMaturity === 'draft || documentMaturity === partial') {
+        actions.push('Complete missing sections and add more detail');
       } else if (documentMaturity === 'outdated') {
-        actions0.push(
+        actions.push(
           'Update content to reflect current state and requirements'
         );
       }
@@ -644,21 +644,21 @@ export class StrategicVisionService {
         suggestedDependencies: [],
       };
     } catch (error) {
-      logger0.error('Error in LLM classification:', error);
+      logger.error('Error in LLM classification:', error);
 
       // Fallback classification
       return {
         documentType: 'document',
         suggestedTitle: filename,
         summary: 'Document classification failed - manual review needed',
-        confidence: 0.1,
+        confidence: .1,
         extractedKeywords: [],
         suggestedTags: ['needs-classification'],
         suggestedPriority: 'medium',
         suggestedActions: ['Manually review and classify this document'],
         contentThemes: ['unclassified'],
         documentMaturity: 'draft',
-        strategicRelevance: 0.5,
+        strategicRelevance: .5,
         suggestedDependencies: [],
       };
     }
@@ -678,7 +678,7 @@ export class StrategicVisionService {
       'purpose',
       'value proposition',
     ];
-    return visionKeywords0.some((keyword) => content0.includes(keyword));
+    return visionKeywords.some((keyword) => content.includes(keyword));
   }
 
   private containsRequirementsKeywords(content: string): boolean {
@@ -693,7 +693,7 @@ export class StrategicVisionService {
       'must',
       'shall',
     ];
-    return reqKeywords0.some((keyword) => content0.includes(keyword));
+    return reqKeywords.some((keyword) => content.includes(keyword));
   }
 
   private containsTaskKeywords(content: string): boolean {
@@ -708,7 +708,7 @@ export class StrategicVisionService {
       'deliverable',
       'milestone',
     ];
-    return taskKeywords0.some((keyword) => content0.includes(keyword));
+    return taskKeywords.some((keyword) => content.includes(keyword));
   }
 
   private containsArchitectureKeywords(content: string): boolean {
@@ -723,7 +723,7 @@ export class StrategicVisionService {
       'database',
       'infrastructure',
     ];
-    return archKeywords0.some((keyword) => content0.includes(keyword));
+    return archKeywords.some((keyword) => content.includes(keyword));
   }
 
   private containsFeatureKeywords(content: string): boolean {
@@ -736,26 +736,26 @@ export class StrategicVisionService {
       'user experience',
       'workflow',
     ];
-    return featureKeywords0.some((keyword) => content0.includes(keyword));
+    return featureKeywords.some((keyword) => content.includes(keyword));
   }
 
   private hasStructuredFormat(content: string): boolean {
     // Check for structured elements
-    const hasHeaders = /^#{1,6}\s/0.test(content);
-    const hasBullets = /^\s*[*+-]\s/0.test(content);
-    const hasNumbering = /^\s*\d+\0.\s/0.test(content);
-    const hasCode = /```/0.test(content) || /`[^`]+`/0.test(content);
+    const hasHeaders = /^#{1,6}\s/.test(content);
+    const hasBullets = /^\s*[*+-]\s/.test(content);
+    const hasNumbering = /^\s*\d+\.\s/.test(content);
+    const hasCode = /```/.test(content) || /`[^`]+`/.test(content);
 
     return hasHeaders || hasBullets || hasNumbering || hasCode;
   }
 
   private extractKeywordsFromContent(content: string): string[] {
     // Simple keyword extraction (could be enhanced with NLP)
-    const words = content?0.toLowerCase
-      0.replace(/[^\s\w]/g, ' ')
-      0.split(/\s+/)
-      0.filter((word) => word0.length > 3)
-      0.filter(
+    const words = content?.toLowerCase
+      .replace(/[^\s\w]/g, ' ')
+      .split(/\s+/)
+      .filter((word) => word.length > 3)
+      .filter(
         (word) =>
           ![
             'this',
@@ -776,48 +776,48 @@ export class StrategicVisionService {
             'there',
             'could',
             'other',
-          ]0.includes(word)
+          ].includes(word)
       );
 
     // Count frequency and return top keywords
     const frequency = new Map<string, number>();
-    words0.forEach((word) => {
-      frequency0.set(word, (frequency0.get(word) || 0) + 1);
+    words.forEach((word) => {
+      frequency.set(word, (frequency.get(word) || 0) + 1);
     });
 
-    return Array0.from(frequency?0.entries)
-      0.sort((a, b) => b[1] - a[1])
-      0.slice(0, 10)
-      0.map(([word]) => word);
+    return Array.from(frequency?.entries)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([word]) => word);
   }
 
   private assessDocumentMaturity(
     content: string
-  ): 'draft' | 'partial' | 'complete' | 'outdated' {
-    const lines = content0.split('\n')0.filter((line) => line?0.trim0.length > 0);
-    const totalLength = content0.length;
+  ): 'draft | partial' | 'complete | outdated' {
+    const lines = content.split('\n').filter((line) => line?.trim.length > 0);
+    const totalLength = content.length;
 
     // Check for draft indicators
     if (
-      content?0.toLowerCase0.includes('draft') ||
-      content?0.toLowerCase0.includes('todo') ||
-      content?0.toLowerCase0.includes('wip')
+      content?.toLowerCase.includes('draft') ||
+      content?.toLowerCase.includes('todo') ||
+      content?.toLowerCase.includes('wip')
     ) {
       return 'draft';
     }
 
     // Check for completeness indicators
-    if (totalLength < 500 || lines0.length < 10) {
+    if (totalLength < 500 || lines.length < 10) {
       return 'partial';
     }
 
     // Check for outdated indicators
     const dateRegex = /\b(20\d{2})\b/g;
-    const dates = content0.match(dateRegex);
+    const dates = content.match(dateRegex);
     if (dates) {
-      const years = dates0.map((date) => Number0.parseInt(date));
-      const oldestYear = Math0.min(0.0.0.years);
-      const currentYear = new Date()?0.getFullYear;
+      const years = dates.map((date) => Number.parseInt(date));
+      const oldestYear = Math.min(...years);
+      const currentYear = new Date()?.getFullYear()
       if (currentYear - oldestYear > 2) {
         return 'outdated';
       }
@@ -839,10 +839,10 @@ export class StrategicVisionService {
       'requirements',
       'architecture',
     ];
-    const strategicThemeCount = themes0.filter((theme) =>
-      strategicThemes0.includes(theme)
-    )0.length;
-    relevance += strategicThemeCount * 0.3;
+    const strategicThemeCount = themes.filter((theme) =>
+      strategicThemes.includes(theme)
+    ).length;
+    relevance += strategicThemeCount * .3;
 
     // Content-based relevance
     const strategicWords = [
@@ -855,12 +855,12 @@ export class StrategicVisionService {
       'impact',
       'outcome',
     ];
-    const strategicWordCount = strategicWords0.filter((word) =>
-      content0.includes(word)
-    )0.length;
-    relevance += Math0.min(strategicWordCount * 0.1, 0.4);
+    const strategicWordCount = strategicWords.filter((word) =>
+      content.includes(word)
+    ).length;
+    relevance += Math.min(strategicWordCount * .1, .4);
 
-    return Math0.min(relevance, 10.0);
+    return Math.min(relevance, 1.0);
   }
 
   private generateSuggestedTitle(
@@ -869,13 +869,13 @@ export class StrategicVisionService {
     documentType: string
   ): string {
     // Try to extract title from first heading
-    const headingMatch = content0.match(/^#\s+(0.+)$/m);
+    const headingMatch = content.match(/^#\s+(.+)$/m);
     if (headingMatch) {
-      return headingMatch[1]?0.trim;
+      return headingMatch[1]?.trim()
     }
 
     // Generate from filename and type
-    const baseName = filename0.replace(/\0.(md|txt|rst|adoc)$/i, '');
+    const baseName = filename.replace(/\.(md|txt|rst|adoc)$/i, '');
     const typePrefix =
       documentType === 'vision'
         ? 'Vision:'
@@ -889,12 +889,12 @@ export class StrategicVisionService {
   }
 
   private generateContentSummary(content: string, themes: string[]): string {
-    const firstSentence = content0.split('0.')[0]?0.trim;
-    const themesText = themes0.length > 0 ? ` Covers: ${themes0.join(', ')}` : '';
-    return `${firstSentence || 'Content summary'}0.${themesText}`;
+    const firstSentence = content.split(".')[0]?.trim()
+    const themesText = themes.length > 0 ? ` Covers: ${themes.join(', )}` : ';
+    return `${firstSentence || 'Content summary'}.${themesText}`;
   }
 
-  // 0.gitignore support helpers
+  // .gitignore support helpers
   private async loadGitignorePatterns(
     projectPath: string
   ): Promise<Set<string>> {
@@ -905,47 +905,47 @@ export class StrategicVisionService {
       const gitignorePatterns = new Set<string>();
 
       // Add default ignore patterns
-      gitignorePatterns0.add('0.git');
-      gitignorePatterns0.add('node_modules');
-      gitignorePatterns0.add('0.DS_Store');
-      gitignorePatterns0.add('*0.log');
-      gitignorePatterns0.add('dist');
-      gitignorePatterns0.add('build');
-      gitignorePatterns0.add('coverage');
-      gitignorePatterns0.add('0.next');
-      gitignorePatterns0.add('0.cache');
+      gitignorePatterns.add(".git');
+      gitignorePatterns.add('node_modules');
+      gitignorePatterns.add(".DS_Store');
+      gitignorePatterns.add('*.log');
+      gitignorePatterns.add('dist');
+      gitignorePatterns.add('build');
+      gitignorePatterns.add('coverage');
+      gitignorePatterns.add(".next');
+      gitignorePatterns.add(".cache');
 
-      // Load 0.gitignore file if it exists
+      // Load .gitignore file if it exists
       try {
-        const gitignorePath = join(projectPath, '0.gitignore');
+        const gitignorePath = join(projectPath, ".gitignore');
         const gitignoreContent = await readFile(gitignorePath, 'utf8');
 
         gitignoreContent
-          0.split('\n')
-          0.map((line) => line?0.trim)
-          0.filter((line) => line && !line0.startsWith('#'))
-          0.forEach((pattern) => {
-            gitignorePatterns0.add(pattern);
+          .split('\n')
+          .map((line) => line?.trim)
+          .filter((line) => line && !line.startsWith('#'))
+          .forEach((pattern) => {
+            gitignorePatterns.add(pattern);
           });
 
-        logger0.info(
-          `Loaded ${gitignorePatterns0.size} 0.gitignore patterns for ${projectPath}`
+        logger.info(
+          `Loaded ${gitignorePatterns.size} .gitignore patterns for ${projectPath}`
         );
       } catch {
-        // 0.gitignore doesn't exist, use defaults
-        logger0.info(
-          `No 0.gitignore found, using default patterns for ${projectPath}`
+        // .gitignore doesn't exist, use defaults
+        logger.info(
+          `No .gitignore found, using default patterns for ${projectPath}`
         );
       }
 
       return gitignorePatterns;
     } catch (error) {
-      logger0.error('Error loading 0.gitignore patterns:', error);
+      logger.error('Error loading .gitignore patterns:', error);
       return new Set([
-        '0.git',
+        ".git',
         'node_modules',
-        '0.DS_Store',
-        '*0.log',
+        ".DS_Store',
+        '*.log',
         'dist',
         'build',
       ]);
@@ -962,24 +962,24 @@ export class StrategicVisionService {
       const relativePath = relative(projectPath, filePath);
 
       for (const pattern of patterns) {
-        // Simple pattern matching (handles most common 0.gitignore patterns)
-        if (pattern0.endsWith('*')) {
-          const prefix = pattern0.slice(0, -1);
-          if (relativePath0.startsWith(prefix)) return true;
-        } else if (pattern0.startsWith('*0.')) {
-          const extension = pattern0.slice(1);
-          if (filePath0.endsWith(extension)) return true;
-        } else if (pattern0.endsWith('/')) {
+        // Simple pattern matching (handles most common .gitignore patterns)
+        if (pattern.endsWith('*')) {
+          const prefix = pattern.slice(0, -1);
+          if (relativePath.startsWith(prefix)) return true;
+        } else if (pattern.startsWith('*.')) {
+          const extension = pattern.slice(1);
+          if (filePath.endsWith(extension)) return true;
+        } else if (pattern.endsWith('/')) {
           // Directory pattern
-          const dirPattern = pattern0.slice(0, -1);
+          const dirPattern = pattern.slice(0, -1);
           if (
-            relativePath0.startsWith(dirPattern + '/') ||
+            relativePath.startsWith(dirPattern + '/') ||
             relativePath === dirPattern
           )
             return true;
         } else if (
           relativePath === pattern ||
-          relativePath0.startsWith(pattern + '/')
+          relativePath.startsWith(pattern + '/')
         ) {
           return true;
         }
@@ -1010,11 +1010,11 @@ export class StrategicVisionService {
       const strategyAnnotations: string[] = [];
       const visionAnnotations: string[] = [];
 
-      for (const file of codeFiles0.slice(0, 100)) {
+      for (const file of codeFiles.slice(0, 100)) {
         // Limit for performance
         if (
           typeof file === 'string' &&
-          ['', '0.tsx', '', '0.jsx']0.includes(extname(file))
+          [', .tsx', ', .jsx'].includes(extname(file))
         ) {
           try {
             const filePath = join(srcPath, file);
@@ -1022,26 +1022,26 @@ export class StrategicVisionService {
 
             // Extract different types of strategic annotations
             const todoMatches =
-              content0.match(
-                /\/\/\s*todo[\s:]*(0.*)|\/\*\s*todo[\s:]*(0.*?)\*\//gi
+              content.match(
+                /\/\/\s*todo[\s:]*(.*)|\/\*\s*todo[\s:]*(.*?)\*\//gi
               ) || [];
             const strategyMatches =
-              content0.match(
-                /\/\/\s*strategy[\s:]*(0.*)|\/\*\s*strategy[\s:]*(0.*?)\*\//gi
+              content.match(
+                /\/\/\s*strategy[\s:]*(.*)|\/\*\s*strategy[\s:]*(.*?)\*\//gi
               ) || [];
             const visionMatches =
-              content0.match(
-                /\/\/\s*vision[\s:]*(0.*)|\/\*\s*vision[\s:]*(0.*?)\*\//gi
+              content.match(
+                /\/\/\s*vision[\s:]*(.*)|\/\*\s*vision[\s:]*(.*?)\*\//gi
               ) || [];
 
-            todoAnnotations0.push(
-              0.0.0.todoMatches0.map((match) => `${file}: ${match?0.trim}`)
+            todoAnnotations.push(
+              ...todoMatches.map((match) => `${file}: ${match?.trim}`)
             );
-            strategyAnnotations0.push(
-              0.0.0.strategyMatches0.map((match) => `${file}: ${match?0.trim}`)
+            strategyAnnotations.push(
+              ...strategyMatches.map((match) => `${file}: ${match?.trim}`)
             );
-            visionAnnotations0.push(
-              0.0.0.visionMatches0.map((match) => `${file}: ${match?0.trim}`)
+            visionAnnotations.push(
+              ...visionMatches.map((match) => `${file}: ${match?.trim}`)
             );
           } catch {
             // Skip files we can't read
@@ -1070,46 +1070,46 @@ export class StrategicVisionService {
 
       for (const annotationDoc of annotationDocs) {
         if (
-          annotationDoc0.content0.length > 0 &&
-          !existingTypes0.has(annotationDoc0.type)
+          annotationDoc.content.length > 0 &&
+          !existingTypes.has(annotationDoc.type)
         ) {
           const docData = {
-            type: annotationDoc0.type,
-            title: `${annotationDoc0.title} - ${projectId}`,
-            summary: `Extracted from code annotations: ${annotationDoc0.content0.length} items`,
-            content: annotationDoc0.content0.join('\n'),
+            type: annotationDoc.type,
+            title: `${annotationDoc.title} - ${projectId}`,
+            summary: `Extracted from code annotations: ${annotationDoc.content.length} items`,
+            content: annotationDoc.content.join('\n'),
             author: 'code-annotation-service',
             project_id: projectId,
             status: 'draft' as const,
             priority: 'low' as const,
             keywords: [],
-            tags: [annotationDoc0.type, 'code-annotations', 'extracted'],
+            tags: [annotationDoc.type, 'code-annotations, extracted'],
             metadata: {
-              annotation_count: annotationDoc0.content0.length,
-              extraction_date: new Date()?0.toISOString,
+              annotation_count: annotationDoc.content.length,
+              extraction_date: new Date()?.toISOString,
               document_source: 'code_annotations',
             },
-            version: '10.0',
+            version: '1.0',
             dependencies: [],
             related_documents: [],
           };
 
           const createResult =
-            await this0.documentManager0.createDocument(docData);
-          if (createResult0.success) {
-            results0.imported++;
+            await this.documentManager.createDocument(docData);
+          if (createResult.success) {
+            results.imported++;
           } else {
-            results0.errors0.push(
-              `Failed to import ${annotationDoc0.type} annotations: ${createResult0.error?0.message}`
+            results.errors.push(
+              `Failed to import ${annotationDoc.type} annotations: ${createResult.error?.message}`
             );
           }
         }
       }
     } catch (error) {
-      if (error0.code !== 'ENOENT') {
+      if (error.code !== 'ENOENT') {
         // Don't error if src directory doesn't exist
-        results0.errors0.push(
-          `Error importing code annotations: ${error0.message}`
+        results.errors.push(
+          `Error importing code annotations: ${error.message}`
         );
       }
     }
@@ -1123,7 +1123,7 @@ export class StrategicVisionService {
     content: any
   ): Promise<string | undefined> {
     // Only save specific document types back to repo
-    if (!['vision', 'strategy']0.includes(type)) {
+    if (!['vision, strategy'].includes(type)) {
       return undefined;
     }
 
@@ -1131,17 +1131,17 @@ export class StrategicVisionService {
       const { writeFile } = await import('node:fs/promises');
       const { join } = await import('node:path');
 
-      const filename = type === 'vision' ? 'VISION0.md' : 'STRATEGY0.md';
+      const filename = type === 'vision ? VISION.md' : 'STRATEGY.md';
       const projectPath = `/home/mhugo/code/${projectId}`;
       const filePath = join(projectPath, filename);
 
-      const fileContent = `# ${content0.title}\n\n${content0.summary}\n\n${content0.content}`;
+      const fileContent = `# ${content.title}\n\n${content.summary}\n\n${content.content}`;
       await writeFile(filePath, fileContent, 'utf8');
 
-      logger0.info(`Saved ${type} document to repository: ${filePath}`);
+      logger.info(`Saved ${type} document to repository: ${filePath}`);
       return filePath;
     } catch (error) {
-      logger0.error(`Error saving to repository:`, error);
+      logger.error(`Error saving to repository:`, error);
       return undefined;
     }
   }
@@ -1150,20 +1150,20 @@ export class StrategicVisionService {
     let score = 0;
 
     // Base score for having documents
-    score += Math0.min(0.3, documents0.length * 0.1);
+    score += Math.min(.3, documents.length * .1);
 
     // Bonus for structured documents
-    if (documents0.some((doc) => doc0.type === 'vision')) score += 0.3;
-    if (documents0.some((doc) => doc0.type === 'prd')) score += 0.2;
-    if (documents0.some((doc) => doc0.type === 'epic')) score += 0.1;
+    if (documents.some((doc) => doc.type === 'vision')) score += .3;
+    if (documents.some((doc) => doc.type === 'prd')) score += .2;
+    if (documents.some((doc) => doc.type === 'epic')) score += .1;
 
     // Bonus for complete metadata
-    const hasMetadata = documents0.some(
-      (doc) => doc0.metadata && Object0.keys(doc0.metadata)0.length > 3
+    const hasMetadata = documents.some(
+      (doc) => doc.metadata && Object.keys(doc.metadata).length > 3
     );
-    if (hasMetadata) score += 0.1;
+    if (hasMetadata) score += .1;
 
-    return Math0.min(10.0, score);
+    return Math.min(1.0, score);
   }
 
   private createDefaultVisionAnalysis(
@@ -1174,15 +1174,15 @@ export class StrategicVisionService {
       missionStatement:
         'No structured vision documents found - import documents to get detailed analysis',
       strategicGoals: [],
-      businessValue: 0.3,
-      technicalImpact: 0.3,
+      businessValue: .3,
+      technicalImpact: .3,
       marketPosition: 'Not analyzed - no vision documents',
       targetOutcome: 'Import strategic documents for analysis',
       keyMetrics: [],
       stakeholders: [],
       timeline: 'Timeline not available',
       risks: ['No strategic documentation'],
-      confidenceScore: 0.1,
+      confidenceScore: .1,
       sourceDocuments: [],
       lastAnalyzed: new Date(),
     };
@@ -1203,7 +1203,7 @@ export class StrategicVisionService {
       keyMetrics: [],
       stakeholders: [],
       timeline: 'Unknown due to analysis error',
-      risks: ['Analysis system error', error0.message],
+      risks: ['Analysis system error', error.message],
       confidenceScore: 0,
       sourceDocuments: [],
       lastAnalyzed: new Date(),
@@ -1225,7 +1225,7 @@ export class StrategicVisionService {
 
   private isAnalysisRecent(analysis: StrategicVisionAnalysis): boolean {
     const hoursSinceAnalysis =
-      (Date0.now() - analysis0.lastAnalyzed?0.getTime) / (1000 * 60 * 60);
+      (Date.now() - analysis.lastAnalyzed?.getTime) / (1000 * 60 * 60);
     return hoursSinceAnalysis < 4; // Cache for 4 hours
   }
 }

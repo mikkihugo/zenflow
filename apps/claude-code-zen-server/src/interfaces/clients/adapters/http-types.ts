@@ -1,20 +1,20 @@
 /**
- * HTTP Client Adapter Types0.
+ * HTTP Client Adapter Types.
  *
- * HTTP-specific extensions to UACL core interfaces0.
+ * HTTP-specific extensions to UACL core interfaces.
  */
 /**
- * @file TypeScript type definitions for interfaces0.
+ * @file TypeScript type definitions for interfaces.
  */
 
 import type {
   AuthenticationConfig,
   ClientConfig,
   RetryConfig,
-} from '0.0./core/interfaces';
+} from './core/interfaces';
 
 /**
- * HTTP-specific authentication configuration0.
+ * HTTP-specific authentication configuration.
  *
  * @example
  */
@@ -38,7 +38,7 @@ export interface HTTPAuthenticationConfig extends AuthenticationConfig {
 }
 
 /**
- * HTTP-specific retry configuration0.
+ * HTTP-specific retry configuration.
  *
  * @example
  */
@@ -47,14 +47,14 @@ export interface HTTPRetryConfig extends RetryConfig {
   retryStatusCodes?: number[];
 
   // HTTP methods to retry
-  retryMethods?: ('GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH')[];
+  retryMethods?: ('GET | POST' | 'PUT | DELETE' | 'PATCH')[];
 
   // Idempotent requests only
   idempotentOnly?: boolean;
 }
 
 /**
- * HTTP client configuration0.
+ * HTTP client configuration.
  *
  * @example
  */
@@ -89,7 +89,7 @@ export interface HTTPClientConfig extends ClientConfig {
   proxy?: {
     host: string;
     port: number;
-    protocol?: 'http' | 'https';
+    protocol?: 'http | https';
     auth?: {
       username: string;
       password: string;
@@ -109,7 +109,7 @@ export interface HTTPClientConfig extends ClientConfig {
 }
 
 /**
- * HTTP request options0.
+ * HTTP request options.
  *
  * @example
  */
@@ -118,7 +118,7 @@ export interface HTTPRequestOptions {
   headers?: Record<string, string>;
   retries?: number;
   validateStatus?: (status: number) => boolean;
-  responseType?: 'json' | 'text' | 'blob' | 'stream';
+  responseType?: 'json | text' | 'blob | stream';
   signal?: AbortSignal;
   onUploadProgress?: (progressEvent: any) => void;
   onDownloadProgress?: (progressEvent: any) => void;
@@ -126,7 +126,7 @@ export interface HTTPRequestOptions {
 }
 
 /**
- * HTTP response type0.
+ * HTTP response type.
  *
  * @example
  */
@@ -141,7 +141,7 @@ export interface HTTPResponse<T = any> {
 }
 
 /**
- * HTTP error details0.
+ * HTTP error details.
  *
  * @example
  */
@@ -154,7 +154,7 @@ export interface HTTPErrorDetails {
 }
 
 /**
- * HTTP client capabilities0.
+ * HTTP client capabilities.
  *
  * @example
  */
@@ -169,7 +169,7 @@ export interface HTTPClientCapabilities {
 }
 
 /**
- * OAuth credentials for HTTP clients0.
+ * OAuth credentials for HTTP clients.
  *
  * @example
  */

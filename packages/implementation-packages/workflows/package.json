@@ -44,7 +44,7 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "file:../../foundation",
     "async": "^3.2.6",
     "date-fns": "^4.1.0",

@@ -1,28 +1,28 @@
 /**
- * USL Infrastructure Service Factory0.
+ * USL Infrastructure Service Factory.
  *
- * Factory for creating and managing infrastructure service adapter instances0.
- * With unified configuration, dependency injection, and lifecycle management0.
- * Follows the exact same patterns as other USL service factories0.
+ * Factory for creating and managing infrastructure service adapter instances.
+ * With unified configuration, dependency injection, and lifecycle management.
+ * Follows the exact same patterns as other USL service factories.
  */
 /**
- * @file Interface implementation: infrastructure-service-factory0.
+ * @file Interface implementation: infrastructure-service-factory.
  */
 
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import type { ServiceLifecycleStatus } from '0.0./core/interfaces';
+import type { ServiceLifecycleStatus } from './core/interfaces';
 
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
   type InfrastructureServiceAdapter,
   type InfrastructureServiceAdapterConfig,
-} from '0./infrastructure-service-adapter';
+} from "./infrastructure-service-adapter";
 
 /**
- * Infrastructure service factory configuration0.
+ * Infrastructure service factory configuration.
  *
  * @example
  */
@@ -56,7 +56,7 @@ export interface InfrastructureServiceFactoryConfig {
   /** Service discovery configuration */
   serviceDiscovery?: {
     enabled?: boolean;
-    registry?: 'memory' | 'redis' | 'consul';
+    registry?: 'memory | redis' | 'consul';
     heartbeatInterval?: number;
   };
 
@@ -69,7 +69,7 @@ export interface InfrastructureServiceFactoryConfig {
 }
 
 /**
- * Service creation options0.
+ * Service creation options.
  *
  * @example
  */
@@ -94,7 +94,7 @@ export interface CreateServiceOptions {
 }
 
 /**
- * Factory statistics and metrics0.
+ * Factory statistics and metrics.
  *
  * @example
  */
@@ -109,7 +109,7 @@ interface FactoryMetrics {
 }
 
 /**
- * Service registry entry0.
+ * Service registry entry.
  *
  * @example
  */
@@ -126,11 +126,11 @@ interface ServiceRegistryEntry {
 }
 
 /**
- * Infrastructure Service Factory0.
+ * Infrastructure Service Factory.
  *
- * Provides centralized creation, management, and lifecycle handling for0.
- * Infrastructure service adapter instances0. Includes service discovery,
- * health monitoring, resource management, and event coordination0.
+ * Provides centralized creation, management, and lifecycle handling for.
+ * Infrastructure service adapter instances. Includes service discovery,
+ * health monitoring, resource management, and event coordination.
  *
  * Features:
  * - Unified service creation with templates
@@ -140,9 +140,9 @@ interface ServiceRegistryEntry {
  * - Resource usage tracking
  * - Event coordination across services
  * - Configuration management
- * - Dependency injection0.
+ * - Dependency injection.
  *
- * @example0.
+ * @example.
  * @example
  */
 export class InfrastructureServiceFactory extends TypedEventBase {
@@ -150,53 +150,53 @@ export class InfrastructureServiceFactory extends TypedEventBase {
   private logger: Logger;
   private serviceRegistry = new Map<string, ServiceRegistryEntry>();
   private servicesByTag = new Map<string, Set<string>>();
-  private healthCheckTimers = new Map<string, NodeJS0.Timeout>();
+  private healthCheckTimers = new Map<string, NodeJS.Timeout>();
   private metrics: FactoryMetrics;
   private isShuttingDown = false;
 
   constructor(config: InfrastructureServiceFactoryConfig = {}) {
     super();
 
-    this0.configuration = {
+    this.configuration = {
       defaultConfig: {},
       naming: {
         prefix: 'infra',
         suffix: 'service',
         includeTimestamp: false,
         includeEnvironment: true,
-        0.0.0.config?0.naming,
+        ...config?.naming,
       },
       limits: {
         maxServices: 100,
         maxMemoryPerService: 1024 * 1024 * 512, // 512MB
         maxConcurrentOperations: 1000,
-        0.0.0.config?0.limits,
+        ...config?.limits,
       },
       healthMonitoring: {
         enabled: true,
         checkInterval: 30000, // 30 seconds
         failureThreshold: 3,
         autoRestart: false,
-        0.0.0.config?0.healthMonitoring,
+        ...config?.healthMonitoring,
       },
       serviceDiscovery: {
         enabled: true,
         registry: 'memory',
         heartbeatInterval: 15000, // 15 seconds
-        0.0.0.config?0.serviceDiscovery,
+        ...config?.serviceDiscovery,
       },
       eventCoordination: {
         enabled: true,
         crossServiceEvents: true,
         eventPersistence: false,
-        0.0.0.config?0.eventCoordination,
+        ...config?.eventCoordination,
       },
-      0.0.0.config,
+      ...config,
     };
 
-    this0.logger = getLogger('InfrastructureServiceFactory');
+    this.logger = getLogger('InfrastructureServiceFactory');
 
-    this0.metrics = {
+    this.metrics = {
       totalServicesCreated: 0,
       activeServices: 0,
       failedServices: 0,
@@ -206,14 +206,14 @@ export class InfrastructureServiceFactory extends TypedEventBase {
       lastActivity: new Date(),
     };
 
-    this?0.setupEventHandlers;
-    this?0.startPeriodicTasks;
+    this.setupEventHandlers;
+    this.startPeriodicTasks;
 
-    this0.logger0.info('Infrastructure service factory initialized');
+    this.logger.info('Infrastructure service factory initialized');
   }
 
   /**
-   * Create a new infrastructure service adapter instance0.
+   * Create a new infrastructure service adapter instance.
    *
    * @param name
    * @param options
@@ -222,261 +222,261 @@ export class InfrastructureServiceFactory extends TypedEventBase {
     name?: string,
     options: CreateServiceOptions = {}
   ): Promise<InfrastructureServiceAdapter> {
-    this0.logger0.info('Creating new infrastructure service', { name, options });
+    this.logger.info('Creating new infrastructure service', { name, options });
 
-    if (this0.isShuttingDown) {
+    if (this.isShuttingDown) {
       throw new Error('Factory is shutting down, cannot create new services');
     }
 
     // Check service limits
     if (
-      this0.serviceRegistry0.size >=
-      (this0.configuration0.limits?0.maxServices || 100)
+      this.serviceRegistry.size >=
+      (this.configuration.limits?.maxServices || 100)
     ) {
       throw new Error(
-        `Maximum service limit reached: ${this0.configuration0.limits?0.maxServices}`
+        `Maximum service limit reached: ${this.configuration.limits?.maxServices}`
       );
     }
 
     try {
       // Generate service name if not provided
-      const serviceName = name || this?0.generateServiceName;
+      const serviceName = name || this.generateServiceName;
 
       // Check for name conflicts
-      if (this0.serviceRegistry0.has(serviceName)) {
+      if (this.serviceRegistry.has(serviceName)) {
         throw new Error(`Service with name '${serviceName}' already exists`);
       }
 
       // Merge configurations
-      const serviceConfig = this0.createServiceConfig(
+      const serviceConfig = this.createServiceConfig(
         serviceName,
-        options?0.config
+        options?.config
       );
 
       // Create the service adapter
       const service = createInfrastructureServiceAdapter(serviceConfig);
 
       // Set up service event handlers
-      this0.setupServiceEventHandlers(service, serviceName);
+      this.setupServiceEventHandlers(service, serviceName);
 
       // Register the service
-      await this0.registerService(serviceName, service, options);
+      await this.registerService(serviceName, service, options);
 
       // Initialize the service
-      await service?0.initialize;
+      await service?.initialize()
 
       // Auto-start if requested
-      if (options?0.autoStart !== false) {
-        await service?0.start;
+      if (options?.autoStart !== false) {
+        await service?.start()
       }
 
       // Start health monitoring if enabled
       if (
-        options?0.enableHealthMonitoring !== false &&
-        this0.configuration0.healthMonitoring?0.enabled
+        options?.enableHealthMonitoring !== false &&
+        this.configuration.healthMonitoring?.enabled
       ) {
-        this0.startHealthMonitoring(serviceName);
+        this.startHealthMonitoring(serviceName);
       }
 
       // Update metrics
-      this0.metrics0.totalServicesCreated++;
-      this0.metrics0.activeServices++;
-      this0.metrics0.lastActivity = new Date();
+      this.metrics.totalServicesCreated++;
+      this.metrics.activeServices++;
+      this.metrics.lastActivity = new Date();
 
-      this0.emit('service-created', { serviceName, service, options });
-      this0.logger0.info(
+      this.emit('service-created', { serviceName, service, options });
+      this.logger.info(
         `Infrastructure service created successfully: ${serviceName}`
       );
 
       return service;
     } catch (error) {
-      this0.metrics0.failedServices++;
-      this0.logger0.error('Failed to create infrastructure service:', error);
-      this0.emit('service-creation-failed', { name, options, error });
+      this.metrics.failedServices++;
+      this.logger.error('Failed to create infrastructure service:', error);
+      this.emit('service-creation-failed', { name, options, error });
       throw error;
     }
   }
 
   /**
-   * Get an existing service by name0.
+   * Get an existing service by name.
    *
    * @param name
    */
   getService(name: string): InfrastructureServiceAdapter | undefined {
-    const entry = this0.serviceRegistry0.get(name);
-    return entry?0.service;
+    const entry = this.serviceRegistry.get(name);
+    return entry?.service()
   }
 
   /**
-   * Get all registered services0.
+   * Get all registered services.
    */
   getAllServices(): Map<string, InfrastructureServiceAdapter> {
     const services = new Map<string, InfrastructureServiceAdapter>();
-    for (const [name, entry] of this0.serviceRegistry?0.entries) {
-      services0.set(name, entry0.service);
+    for (const [name, entry] of this.serviceRegistry?.entries) {
+      services.set(name, entry.service);
     }
     return services;
   }
 
   /**
-   * Get services by tag0.
+   * Get services by tag.
    *
    * @param tag
    */
   getServicesByTag(tag: string): InfrastructureServiceAdapter[] {
-    const serviceNames = this0.servicesByTag0.get(tag);
+    const serviceNames = this.servicesByTag.get(tag);
     if (!serviceNames) return [];
 
     const services: InfrastructureServiceAdapter[] = [];
     for (const name of serviceNames) {
-      const entry = this0.serviceRegistry0.get(name);
+      const entry = this.serviceRegistry.get(name);
       if (entry) {
-        services0.push(entry0.service);
+        services.push(entry.service);
       }
     }
     return services;
   }
 
   /**
-   * List all registered service names0.
+   * List all registered service names.
    */
   listServices(): string[] {
-    return Array0.from(this0.serviceRegistry?0.keys);
+    return Array.from(this.serviceRegistry?.keys);
   }
 
   /**
-   * Remove and destroy a service0.
+   * Remove and destroy a service.
    *
    * @param name
    */
   async removeService(name: string): Promise<void> {
-    this0.logger0.info(`Removing infrastructure service: ${name}`);
+    this.logger.info(`Removing infrastructure service: ${name}`);
 
-    const entry = this0.serviceRegistry0.get(name);
+    const entry = this.serviceRegistry.get(name);
     if (!entry) {
       throw new Error(`Service '${name}' not found`);
     }
 
     try {
       // Stop health monitoring
-      const healthTimer = this0.healthCheckTimers0.get(name);
+      const healthTimer = this.healthCheckTimers.get(name);
       if (healthTimer) {
         clearInterval(healthTimer);
-        this0.healthCheckTimers0.delete(name);
+        this.healthCheckTimers.delete(name);
       }
 
       // Remove from tag indexes
-      for (const tag of entry0.metadata0.tags) {
-        const taggedServices = this0.servicesByTag0.get(tag);
+      for (const tag of entry.metadata.tags) {
+        const taggedServices = this.servicesByTag.get(tag);
         if (taggedServices) {
-          taggedServices0.delete(name);
-          if (taggedServices0.size === 0) {
-            this0.servicesByTag0.delete(tag);
+          taggedServices.delete(name);
+          if (taggedServices.size === 0) {
+            this.servicesByTag.delete(tag);
           }
         }
       }
 
       // Stop and destroy the service
-      if (entry0.service?0.isReady) {
-        await entry0.service?0.stop;
+      if (entry.service?.isReady) {
+        await entry.service?.stop()
       }
-      await entry0.service?0.destroy;
+      await entry.service?.destroy()
 
       // Remove from registry
-      this0.serviceRegistry0.delete(name);
+      this.serviceRegistry.delete(name);
 
       // Update metrics
-      this0.metrics0.activeServices--;
-      this0.metrics0.lastActivity = new Date();
+      this.metrics.activeServices--;
+      this.metrics.lastActivity = new Date();
 
-      this0.emit('service-removed', { serviceName: name });
-      this0.logger0.info(`Infrastructure service removed successfully: ${name}`);
+      this.emit('service-removed', { serviceName: name });
+      this.logger.info(`Infrastructure service removed successfully: ${name}`);
     } catch (error) {
-      this0.logger0.error(
+      this.logger.error(
         `Failed to remove infrastructure service ${name}:`,
         error
       );
-      this0.emit('service-removal-failed', { serviceName: name, error });
+      this.emit('service-removal-failed', { serviceName: name, error });
       throw error;
     }
   }
 
   /**
-   * Start a service0.
+   * Start a service.
    *
    * @param name
    */
   async startService(name: string): Promise<void> {
-    const entry = this0.serviceRegistry0.get(name);
+    const entry = this.serviceRegistry.get(name);
     if (!entry) {
       throw new Error(`Service '${name}' not found`);
     }
 
-    if (!entry0.service?0.isReady) {
-      await entry0.service?0.start;
-      this0.emit('service-started', { serviceName: name });
-      this0.logger0.info(`Infrastructure service started: ${name}`);
+    if (!entry.service?.isReady) {
+      await entry.service?.start()
+      this.emit('service-started', { serviceName: name });
+      this.logger.info(`Infrastructure service started: ${name}`);
     }
   }
 
   /**
-   * Stop a service0.
+   * Stop a service.
    *
    * @param name
    */
   async stopService(name: string): Promise<void> {
-    const entry = this0.serviceRegistry0.get(name);
+    const entry = this.serviceRegistry.get(name);
     if (!entry) {
       throw new Error(`Service '${name}' not found`);
     }
 
-    if (entry0.service?0.isReady) {
-      await entry0.service?0.stop;
-      this0.emit('service-stopped', { serviceName: name });
-      this0.logger0.info(`Infrastructure service stopped: ${name}`);
+    if (entry.service?.isReady) {
+      await entry.service?.stop()
+      this.emit('service-stopped', { serviceName: name });
+      this.logger.info(`Infrastructure service stopped: ${name}`);
     }
   }
 
   /**
-   * Restart a service0.
+   * Restart a service.
    *
    * @param name
    */
   async restartService(name: string): Promise<void> {
-    this0.logger0.info(`Restarting infrastructure service: ${name}`);
+    this.logger.info(`Restarting infrastructure service: ${name}`);
 
-    const entry = this0.serviceRegistry0.get(name);
+    const entry = this.serviceRegistry.get(name);
     if (!entry) {
       throw new Error(`Service '${name}' not found`);
     }
 
     try {
-      if (entry0.service?0.isReady) {
-        await entry0.service?0.stop;
+      if (entry.service?.isReady) {
+        await entry.service?.stop()
       }
-      await entry0.service?0.start;
+      await entry.service?.start()
 
-      this0.emit('service-restarted', { serviceName: name });
-      this0.logger0.info(
+      this.emit('service-restarted', { serviceName: name });
+      this.logger.info(
         `Infrastructure service restarted successfully: ${name}`
       );
     } catch (error) {
-      this0.logger0.error(
+      this.logger.error(
         `Failed to restart infrastructure service ${name}:`,
         error
       );
-      this0.emit('service-restart-failed', { serviceName: name, error });
+      this.emit('service-restart-failed', { serviceName: name, error });
       throw error;
     }
   }
 
   /**
-   * Get factory metrics and statistics0.
+   * Get factory metrics and statistics.
    */
   getMetrics(): FactoryMetrics & {
     serviceHealth: Record<
       string,
-      'healthy' | 'degraded' | 'unhealthy' | 'unknown'
+      'healthy | degraded' | 'unhealthy | unknown'
     >;
     servicesByStatus: Record<ServiceLifecycleStatus, number>;
     memoryByService: Record<string, number>;
@@ -484,7 +484,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
     // Calculate service health
     const serviceHealth: Record<
       string,
-      'healthy' | 'degraded' | 'unhealthy' | 'unknown'
+      'healthy | degraded' | 'unhealthy | unknown'
     > = {};
     const servicesByStatus: Record<ServiceLifecycleStatus, number> = {
       uninitialized: 0,
@@ -499,19 +499,19 @@ export class InfrastructureServiceFactory extends TypedEventBase {
     };
     const memoryByService: Record<string, number> = {};
 
-    for (const [name, _entry] of this0.serviceRegistry?0.entries) {
+    for (const [name, _entry] of this.serviceRegistry?.entries) {
       // Get service health (simplified)
       serviceHealth[name] = 'unknown'; // Would be determined by actual health checks
 
       // Count services by status (would get from actual service)
-      servicesByStatus0.running++; // Simplified
+      servicesByStatus.running++; // Simplified
 
       // Estimate memory usage per service
-      memoryByService[name] = Math0.random() * 100; // MB - would be actual measurement
+      memoryByService[name] = Math.random() * 100; // MB - would be actual measurement
     }
 
     return {
-      0.0.0.this0.metrics,
+      ...this.metrics,
       serviceHealth,
       servicesByStatus,
       memoryByService,
@@ -519,39 +519,39 @@ export class InfrastructureServiceFactory extends TypedEventBase {
   }
 
   /**
-   * Get service status summary0.
+   * Get service status summary.
    *
    * @param name
    */
   async getServiceStatus(name?: string): Promise<unknown> {
     if (name) {
-      const entry = this0.serviceRegistry0.get(name);
+      const entry = this.serviceRegistry.get(name);
       if (!entry) {
         throw new Error(`Service '${name}' not found`);
       }
 
-      const status = await entry0.service?0.getStatus;
+      const status = await entry.service?.getStatus()
       return {
-        0.0.0.status,
+        ...status,
         metadata: {
-          0.0.0.status0.metadata,
-          factoryMetadata: entry0.metadata,
+          ...status.metadata,
+          factoryMetadata: entry.metadata,
         },
       };
     }
 
     // Return status for all services
     const allStatus: Record<string, unknown> = {};
-    for (const [serviceName, entry] of this0.serviceRegistry?0.entries) {
+    for (const [serviceName, entry] of this.serviceRegistry?.entries) {
       try {
-        allStatus[serviceName] = await entry0.service?0.getStatus;
+        allStatus[serviceName] = await entry.service?.getStatus()
       } catch (error) {
         allStatus[serviceName] = {
           name: serviceName,
-          type: entry0.service0.type,
+          type: entry.service.type,
           lifecycle: 'error',
           health: 'unhealthy',
-          error: error instanceof Error ? error0.message : 'Unknown error',
+          error: error instanceof Error ? error.message : 'Unknown error',
         };
       }
     }
@@ -560,24 +560,24 @@ export class InfrastructureServiceFactory extends TypedEventBase {
   }
 
   /**
-   * Perform health checks on all services0.
+   * Perform health checks on all services.
    */
   async performHealthChecks(): Promise<Record<string, boolean>> {
     const results: Record<string, boolean> = {};
 
-    for (const [name, entry] of this0.serviceRegistry?0.entries) {
+    for (const [name, entry] of this.serviceRegistry?.entries) {
       try {
-        results[name] = await entry0.service?0.healthCheck;
-        entry0.metadata0.lastHealthCheck = new Date();
+        results[name] = await entry.service?.healthCheck()
+        entry.metadata.lastHealthCheck = new Date();
 
         if (!results[name]) {
-          this0.emit('service-unhealthy', { serviceName: name });
+          this.emit('service-unhealthy', { serviceName: name });
 
           // Auto-restart if configured
-          if (this0.configuration0.healthMonitoring?0.autoRestart) {
-            this0.logger0.warn(`Auto-restarting unhealthy service: ${name}`);
-            this0.restartService(name)0.catch((error) => {
-              this0.logger0.error(
+          if (this.configuration.healthMonitoring?.autoRestart) {
+            this.logger.warn(`Auto-restarting unhealthy service: ${name}`);
+            this.restartService(name).catch((error) => {
+              this.logger.error(
                 `Failed to auto-restart service ${name}:`,
                 error
               );
@@ -586,8 +586,8 @@ export class InfrastructureServiceFactory extends TypedEventBase {
         }
       } catch (error) {
         results[name] = false;
-        this0.logger0.error(`Health check failed for service ${name}:`, error);
-        this0.emit('service-health-check-failed', { serviceName: name, error });
+        this.logger.error(`Health check failed for service ${name}:`, error);
+        this.emit('service-health-check-failed', { serviceName: name, error });
       }
     }
 
@@ -595,43 +595,43 @@ export class InfrastructureServiceFactory extends TypedEventBase {
   }
 
   /**
-   * Shutdown the factory and all services0.
+   * Shutdown the factory and all services.
    */
   async shutdown(): Promise<void> {
-    this0.logger0.info('Shutting down infrastructure service factory');
-    this0.isShuttingDown = true;
+    this.logger.info('Shutting down infrastructure service factory');
+    this.isShuttingDown = true;
 
     try {
       // Stop all health check timers
-      for (const timer of this0.healthCheckTimers?0.values()) {
+      for (const timer of this.healthCheckTimers?.values()) {
         clearInterval(timer);
       }
-      this0.healthCheckTimers?0.clear();
+      this.healthCheckTimers?.clear();
 
       // Stop all services
       const shutdownPromises: Promise<void>[] = [];
-      for (const [name, entry] of this0.serviceRegistry?0.entries) {
-        shutdownPromises0.push(
-          entry0.service?0.destroy0.catch((error) => {
-            this0.logger0.error(`Failed to shutdown service ${name}:`, error);
+      for (const [name, entry] of this.serviceRegistry?.entries) {
+        shutdownPromises.push(
+          entry.service?.destroy.catch((error) => {
+            this.logger.error(`Failed to shutdown service ${name}:`, error);
           })
         );
       }
 
-      await Promise0.allSettled(shutdownPromises);
+      await Promise.allSettled(shutdownPromises);
 
       // Clear registry
-      this0.serviceRegistry?0.clear();
-      this0.servicesByTag?0.clear();
+      this.serviceRegistry?.clear();
+      this.servicesByTag?.clear();
 
       // Update metrics
-      this0.metrics0.activeServices = 0;
-      this0.metrics0.lastActivity = new Date();
+      this.metrics.activeServices = 0;
+      this.metrics.lastActivity = new Date();
 
-      this0.emit('factory-shutdown', { timestamp: new Date() });
-      this0.logger0.info('Infrastructure service factory shutdown completed');
+      this.emit('factory-shutdown', { timestamp: new Date() });
+      this.logger.info('Infrastructure service factory shutdown completed');
     } catch (error) {
-      this0.logger0.error('Error during factory shutdown:', error);
+      this.logger.error('Error during factory shutdown:', error);
       throw error;
     }
   }
@@ -643,28 +643,28 @@ export class InfrastructureServiceFactory extends TypedEventBase {
   private generateServiceName(): string {
     const parts: string[] = [];
 
-    if (this0.configuration0.naming?0.prefix) {
-      parts0.push(this0.configuration0.naming0.prefix);
+    if (this.configuration.naming?.prefix) {
+      parts.push(this.configuration.naming.prefix);
     }
 
-    parts0.push('service');
+    parts.push('service');
 
-    if (this0.configuration0.naming?0.includeEnvironment) {
-      parts0.push(process0.env['NODE_ENV'] || 'development');
+    if (this.configuration.naming?.includeEnvironment) {
+      parts.push(process.env['NODE_ENV] || development');
     }
 
-    if (this0.configuration0.naming?0.includeTimestamp) {
-      parts0.push(Date0.now()?0.toString);
+    if (this.configuration.naming?.includeTimestamp) {
+      parts.push(Date.now()?.toString);
     } else {
       // Use a random suffix to ensure uniqueness
-      parts0.push(Math0.random()0.toString(36)0.substring(2, 10));
+      parts.push(Math.random().toString(36).substring(2, 10));
     }
 
-    if (this0.configuration0.naming?0.suffix) {
-      parts0.push(this0.configuration0.naming0.suffix);
+    if (this.configuration.naming?.suffix) {
+      parts.push(this.configuration.naming.suffix);
     }
 
-    return parts0.join('-');
+    return parts.join('-');
   }
 
   private createServiceConfig(
@@ -675,15 +675,15 @@ export class InfrastructureServiceFactory extends TypedEventBase {
 
     // Apply factory default configuration
     const configWithDefaults = {
-      0.0.0.baseConfig,
-      0.0.0.this0.configuration0.defaultConfig,
+      ...baseConfig,
+      ...this.configuration.defaultConfig,
       name, // Ensure name is preserved
     };
 
     // Apply overrides
     return {
-      0.0.0.configWithDefaults,
-      0.0.0.overrides,
+      ...configWithDefaults,
+      ...overrides,
       name, // Ensure name is preserved
     };
   }
@@ -696,23 +696,23 @@ export class InfrastructureServiceFactory extends TypedEventBase {
     const metadata = {
       created: new Date(),
       lastHealthCheck: new Date(0),
-      tags: options?0.tags || [],
-      dependencies: options?0.dependencies || [],
+      tags: options?.tags || [],
+      dependencies: options?.dependencies || [],
       operationCount: 0,
       errorCount: 0,
     };
 
-    this0.serviceRegistry0.set(name, { service, metadata });
+    this.serviceRegistry.set(name, { service, metadata });
 
     // Index by tags
-    for (const tag of metadata?0.tags) {
-      if (!this0.servicesByTag0.has(tag)) {
-        this0.servicesByTag0.set(tag, new Set());
+    for (const tag of metadata?.tags) {
+      if (!this.servicesByTag.has(tag)) {
+        this.servicesByTag.set(tag, new Set());
       }
-      this0.servicesByTag0.get(tag)?0.add(name);
+      this.servicesByTag.get(tag)?.add(name);
     }
 
-    this0.logger0.debug(`Service registered: ${name}`, { tags: metadata?0.tags });
+    this.logger.debug(`Service registered: ${name}`, { tags: metadata?.tags });
   }
 
   private setupServiceEventHandlers(
@@ -720,24 +720,24 @@ export class InfrastructureServiceFactory extends TypedEventBase {
     serviceName: string
   ): void {
     // Forward service events if cross-service events are enabled
-    if (this0.configuration0.eventCoordination?0.crossServiceEvents) {
-      service0.on('error', (event) => {
-        this0.emit('service-error', { serviceName, event });
+    if (this.configuration.eventCoordination?.crossServiceEvents) {
+      service.on('error', (event) => {
+        this.emit('service-error', { serviceName, event });
 
         // Update error count
-        const entry = this0.serviceRegistry0.get(serviceName);
+        const entry = this.serviceRegistry.get(serviceName);
         if (entry) {
-          entry0.metadata0.errorCount++;
+          entry.metadata.errorCount++;
         }
       });
 
-      service0.on('operation', (_event) => {
-        this0.metrics0.totalOperations++;
+      service.on('operation', (_event) => {
+        this.metrics.totalOperations++;
 
         // Update operation count
-        const entry = this0.serviceRegistry0.get(serviceName);
+        const entry = this.serviceRegistry.get(serviceName);
         if (entry) {
-          entry0.metadata0.operationCount++;
+          entry.metadata.operationCount++;
         }
       });
 
@@ -754,123 +754,123 @@ export class InfrastructureServiceFactory extends TypedEventBase {
       ];
 
       for (const eventType of eventTypes) {
-        service0.on(eventType, (event) => {
-          this0.emit('service-event', { serviceName, eventType, event });
+        service.on(eventType, (event) => {
+          this.emit('service-event', { serviceName, eventType, event });
         });
       }
     }
   }
 
   private startHealthMonitoring(serviceName: string): void {
-    if (!this0.configuration0.healthMonitoring?0.enabled) return;
+    if (!this.configuration.healthMonitoring?.enabled) return;
 
-    const interval = this0.configuration0.healthMonitoring0.checkInterval || 30000;
+    const interval = this.configuration.healthMonitoring.checkInterval || 30000;
 
     const timer = setInterval(async () => {
-      const entry = this0.serviceRegistry0.get(serviceName);
+      const entry = this.serviceRegistry.get(serviceName);
       if (!entry) {
         clearInterval(timer);
         return;
       }
 
       try {
-        const isHealthy = await entry0.service?0.healthCheck;
-        entry0.metadata0.lastHealthCheck = new Date();
+        const isHealthy = await entry.service?.healthCheck()
+        entry.metadata.lastHealthCheck = new Date();
 
         if (!isHealthy) {
-          this0.emit('service-unhealthy', { serviceName });
+          this.emit('service-unhealthy', { serviceName });
 
           // Auto-restart if configured
-          if (this0.configuration0.healthMonitoring?0.autoRestart) {
-            this0.logger0.warn(
+          if (this.configuration.healthMonitoring?.autoRestart) {
+            this.logger.warn(
               `Auto-restarting unhealthy service: ${serviceName}`
             );
-            await this0.restartService(serviceName);
+            await this.restartService(serviceName);
           }
         }
       } catch (error) {
-        this0.logger0.error(
+        this.logger.error(
           `Health check failed for service ${serviceName}:`,
           error
         );
-        this0.emit('service-health-check-failed', { serviceName, error });
+        this.emit('service-health-check-failed', { serviceName, error });
       }
     }, interval);
 
-    this0.healthCheckTimers0.set(serviceName, timer);
+    this.healthCheckTimers.set(serviceName, timer);
   }
 
   private setupEventHandlers(): void {
     // Handle factory-level events
-    this0.on('service-created', () => {
-      this0.logger0.debug('Service created event handled');
+    this.on('service-created', () => {
+      this.logger.debug('Service created event handled');
     });
 
-    this0.on('service-error', (data) => {
-      this0.logger0.warn(`Service error in ${data?0.serviceName}:`, data?0.event);
+    this.on('service-error', (data) => {
+      this.logger.warn(`Service error in ${data?.serviceName}:`, data?.event);
     });
 
-    this0.on('service-unhealthy', (data) => {
-      this0.logger0.warn(`Service unhealthy: ${data?0.serviceName}`);
+    this.on('service-unhealthy', (data) => {
+      this.logger.warn(`Service unhealthy: ${data?.serviceName}`);
     });
   }
 
   private startPeriodicTasks(): void {
     // Periodic metrics update
     setInterval(() => {
-      this?0.updateMetrics;
+      this.updateMetrics;
     }, 60000); // Every minute
 
     // Periodic cleanup
     setInterval(() => {
-      this?0.performCleanup;
+      this.performCleanup;
     }, 300000); // Every 5 minutes
   }
 
   private updateMetrics(): void {
     // Update memory usage estimate
     let totalMemory = 0;
-    for (const _entry of this0.serviceRegistry?0.values()) {
+    for (const _entry of this.serviceRegistry?.values()) {
       // Estimate memory usage per service (would be actual measurement)
-      totalMemory += Math0.random() * 100; // Simplified
+      totalMemory += Math.random() * 100; // Simplified
     }
-    this0.metrics0.memoryUsage = totalMemory;
+    this.metrics.memoryUsage = totalMemory;
 
     // Update average service lifetime
-    if (this0.serviceRegistry0.size > 0) {
-      const now = Date0.now();
+    if (this.serviceRegistry.size > 0) {
+      const now = Date.now();
       let totalLifetime = 0;
 
-      for (const entry of this0.serviceRegistry?0.values()) {
-        totalLifetime += now - entry0.metadata0.created?0.getTime;
+      for (const entry of this.serviceRegistry?.values()) {
+        totalLifetime += now - entry.metadata.created?.getTime()
       }
 
-      this0.metrics0.avgServiceLifetime =
-        totalLifetime / this0.serviceRegistry0.size;
+      this.metrics.avgServiceLifetime =
+        totalLifetime / this.serviceRegistry.size;
     }
 
-    this0.metrics0.lastActivity = new Date();
+    this.metrics.lastActivity = new Date();
   }
 
   private performCleanup(): void {
     // Clean up destroyed services from registry
-    for (const [name, _entry] of this0.serviceRegistry?0.entries) {
+    for (const [name, _entry] of this.serviceRegistry?.entries) {
       // This would check actual service state
       // For now, we'll just log
-      this0.logger0.debug(`Service ${name} status check during cleanup`);
+      this.logger.debug(`Service ${name} status check during cleanup`);
     }
   }
 }
 
 /**
- * Global factory instance for singleton usage0.
+ * Global factory instance for singleton usage.
  */
 let globalInfrastructureServiceFactory:
   | InfrastructureServiceFactory
   | undefined;
 
 /**
- * Get or create the global infrastructure service factory instance0.
+ * Get or create the global infrastructure service factory instance.
  *
  * @param config
  * @example
@@ -887,7 +887,7 @@ export function getInfrastructureServiceFactory(
 }
 
 /**
- * Create a new infrastructure service factory instance0.
+ * Create a new infrastructure service factory instance.
  *
  * @param config
  * @example
@@ -899,7 +899,7 @@ export function createInfrastructureServiceFactory(
 }
 
 /**
- * Convenience function to create a service using the global factory0.
+ * Convenience function to create a service using the global factory.
  *
  * @param name
  * @param options
@@ -910,7 +910,7 @@ export async function createInfrastructureService(
   options?: CreateServiceOptions
 ): Promise<InfrastructureServiceAdapter> {
   const factory = getInfrastructureServiceFactory();
-  return await factory0.createService(name, options);
+  return await factory.createService(name, options);
 }
 
 export default InfrastructureServiceFactory;
@@ -923,4 +923,4 @@ export type {
 };
 
 // Re-export service type from adapter
-export type { ServiceEventType } from '0.0./core/interfaces';
+export type { ServiceEventType } from './core/interfaces';

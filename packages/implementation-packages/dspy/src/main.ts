@@ -8,8 +8,8 @@
 // =============================================================================
 // CORE DSPY ENGINE AND UTILITIES
 // =============================================================================
-export { DSPyEngine, createDSPyEngine, dspyUtils } from './core/dspy-engine.js';
-export type { DSPyKV } from './core/dspy-engine.js';
+export { DSPyEngine, createDSPyEngine, dspyUtils } from './core/dspy-engine';
+export type { DSPyKV } from './core/dspy-engine';
 
 // =============================================================================
 // DSPY SERVICE LAYER (Foundation Integration)
@@ -18,32 +18,32 @@ export {
   DSPyService, 
   getDSPyService, 
   initializeDSPyService
-} from './core/service.js';
+} from './core/service';
 
 export type {
   SharedLLMService,
   SharedStorage,
   SharedLogger
-} from './core/service.js';
+} from './core/service';
 
 // =============================================================================
 // PRIMITIVES - Core DSPy building blocks
 // =============================================================================
-export { Example } from './primitives/example.js';
+export { Example } from './primitives/example';
 export { DSPyModule } from './primitives/module';
 export type { DSPyModule as Module } from './primitives/module';
-export type { Prediction } from './primitives/prediction.js';
-export { SeededRNG } from './primitives/seeded-rng.js';
+export type { Prediction } from './primitives/prediction';
+export { SeededRNG } from './primitives/seeded-rng';
 
 // =============================================================================
 // TELEPROMPTERS - Optimization algorithms
 // =============================================================================
-export { Ensemble } from './teleprompters/ensemble.js';
+export { Ensemble } from './teleprompters/ensemble';
 
 // =============================================================================
 // LM ADAPTERS - Language model interfaces
 // =============================================================================
-export { ChatAdapter } from './adapters/chat-adapter.js';
+export { ChatAdapter } from './adapters/chat-adapter';
 
 // =============================================================================
 // TYPE DEFINITIONS
@@ -57,7 +57,7 @@ export type {
   GenerationOptions,
   ModelInfo,
   ModelUsage
-} from './interfaces/lm.js';
+} from './interfaces/lm';
 
 // Adapter interface types
 export type {
@@ -68,7 +68,7 @@ export type {
   InferenceDataOutput,
   EvaluationDataInput,
   EvaluationDataOutput
-} from './interfaces/adapter.js';
+} from './interfaces/adapter';
 
 // Core type exports
 export type {
@@ -84,9 +84,8 @@ export type {
   OptimizationConfig,
   ModelConfig,
   CacheEntry,
-  ProgressCallback,
-  Logger
-} from './interfaces/types.js';
+  ProgressCallback
+} from './interfaces/types';
 
 // =============================================================================
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns

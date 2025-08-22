@@ -7,25 +7,25 @@
 // =============================================================================
 // CORE DSPY ENGINE AND UTILITIES
 // =============================================================================
-export { DSPyEngine, createDSPyEngine, dspyUtils } from './core/dspy-engine.js';
+export { DSPyEngine, createDSPyEngine, dspyUtils } from './core/dspy-engine';
 // =============================================================================
 // DSPY SERVICE LAYER (Foundation Integration)
 // =============================================================================
-export { DSPyService, getDSPyService, initializeDSPyService } from './core/service.js';
+export { DSPyService, getDSPyService, initializeDSPyService } from './core/service';
 // =============================================================================
 // PRIMITIVES - Core DSPy building blocks
 // =============================================================================
-export { Example } from './primitives/example.js';
+export { Example } from './primitives/example';
 export { DSPyModule } from './primitives/module';
-export { SeededRNG } from './primitives/seeded-rng.js';
+export { SeededRNG } from './primitives/seeded-rng';
 // =============================================================================
 // TELEPROMPTERS - Optimization algorithms
 // =============================================================================
-export { Ensemble } from './teleprompters/ensemble.js';
+export { Ensemble } from './teleprompters/ensemble';
 // =============================================================================
 // LM ADAPTERS - Language model interfaces
 // =============================================================================
-export { ChatAdapter } from './adapters/chat-adapter.js';
+export { ChatAdapter } from './adapters/chat-adapter';
 // =============================================================================
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================

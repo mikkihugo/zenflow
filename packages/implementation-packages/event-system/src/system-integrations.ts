@@ -1,3 +1,4 @@
+import { EventEmitter } from "@claude-zen/foundation";
 /**
  * UEL (Unified Event Layer) - System Integration Layer.
  *
@@ -771,7 +772,7 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
    * @param type
    */
   createObserver(name: string, type: string = 'custom'): EventEmitter {
-    const observer = new TypedEventBase();
+    const observer = new EventEmitter();
 
     // Wrap with UEL integration if available
     if (this.uelEventManager) {

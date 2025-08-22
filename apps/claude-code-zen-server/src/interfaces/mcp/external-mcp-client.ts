@@ -2,7 +2,7 @@
  * @fileoverview External MCP Client - Lightweight facade using @claude-zen packages
  *
  * Provides Model Context Protocol client functionality through delegation to
- * @claude-zen packages for MCP server management and tool execution0.
+ * @claude-zen packages for MCP server management and tool execution.
  *
  * REDUCTION: New lightweight implementation using @claude-zen packages
  *
@@ -11,8 +11,8 @@
  * - @claude-zen/llm-routing: LLM provider routing and management
  *
  * @author Claude Code Zen Team
- * @since 10.0.0-alpha0.44
- * @version 20.10.0
+ * @since 1"..0'-alpha.44
+ * @version 2.1.0
  */
 
 import type { Logger } from '@claude-zen/foundation';
@@ -59,10 +59,10 @@ export interface MCPToolResponse {
 }
 
 /**
- * External MCP Client - Lightweight facade for Model Context Protocol integration0.
+ * External MCP Client - Lightweight facade for Model Context Protocol integration.
  *
  * Delegates to @claude-zen packages for MCP server management, tool execution,
- * and protocol communication with intelligent connection pooling0.
+ * and protocol communication with intelligent connection pooling.
  */
 export class ExternalMCPClient {
   private logger: Logger;
@@ -71,22 +71,22 @@ export class ExternalMCPClient {
   private initialized = false;
 
   constructor(servers: MCPServerConfig[]) {
-    this0.servers = servers;
-    this0.logger = getLogger('ExternalMCPClient');
+    this.servers = servers;
+    this.logger = getLogger('ExternalMCPClient');
   }
 
   /**
    * Initialize with package delegation - LAZY LOADING
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
     try {
       // Simple MCP client initialization - no complex manager needed
       // MCP client connects to external servers, doesn't need heavy management
-      this0.mcpManager = {
+      this.mcpManager = {
         initialized: true,
-        servers: this0.servers,
+        servers: this.servers,
         async callTool(serverName: string, toolName: string, args: any) {
           // Fallback implementation for MCP tool calls
           return {
@@ -103,21 +103,21 @@ export class ExternalMCPClient {
         },
       };
 
-      this0.initialized = true;
-      this0.logger0.info(
+      this.initialized = true;
+      this.logger.info(
         'ExternalMCPClient initialized successfully with package delegation'
       );
     } catch (error) {
-      this0.logger0.error('Failed to initialize ExternalMCPClient:', error);
+      this.logger.error('Failed to initialize ExternalMCPClient:', error);
       // Fallback to minimal implementation for compatibility
-      this0.mcpManager = {
-        listTools: async () => this?0.fallbackListTools,
+      this.mcpManager = {
+        listTools: async () => this.fallbackListTools,
         executeTool: async (request: MCPToolRequest) =>
-          this0.fallbackExecuteTool(request),
-        getCapabilities: async () => this?0.fallbackGetCapabilities,
-        getServerStatus: async () => this?0.fallbackGetServerStatus,
+          this.fallbackExecuteTool(request),
+        getCapabilities: async () => this.fallbackGetCapabilities,
+        getServerStatus: async () => this.fallbackGetServerStatus,
       };
-      this0.initialized = true;
+      this.initialized = true;
     }
   }
 
@@ -125,13 +125,13 @@ export class ExternalMCPClient {
    * List available MCP tools - Delegates to specialized packages
    */
   async listTools(): Promise<MCPTool[]> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      return await this0.mcpManager?0.listTools;
+      return await this.mcpManager?.listTools()
     } catch (error) {
-      this0.logger0.error('Failed to list MCP tools:', error);
-      return this?0.fallbackListTools;
+      this.logger.error('Failed to list MCP tools:', error);
+      return this.fallbackListTools;
     }
   }
 
@@ -139,13 +139,13 @@ export class ExternalMCPClient {
    * Execute MCP tool - Delegates to specialized packages
    */
   async executeTool(request: MCPToolRequest): Promise<MCPToolResponse> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      return await this0.mcpManager0.executeTool(request);
+      return await this.mcpManager.executeTool(request);
     } catch (error) {
-      this0.logger0.error('Failed to execute MCP tool:', error);
-      return this0.fallbackExecuteTool(request);
+      this.logger.error('Failed to execute MCP tool:', error);
+      return this.fallbackExecuteTool(request);
     }
   }
 
@@ -153,13 +153,13 @@ export class ExternalMCPClient {
    * Get MCP server capabilities
    */
   async getCapabilities(): Promise<any> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      return await this0.mcpManager?0.getCapabilities;
+      return await this.mcpManager?.getCapabilities()
     } catch (error) {
-      this0.logger0.error('Failed to get MCP capabilities:', error);
-      return this?0.fallbackGetCapabilities;
+      this.logger.error('Failed to get MCP capabilities:', error);
+      return this.fallbackGetCapabilities;
     }
   }
 
@@ -167,13 +167,13 @@ export class ExternalMCPClient {
    * Get server connection status
    */
   async getServerStatus(): Promise<Record<string, boolean>> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      return await this0.mcpManager?0.getServerStatus;
+      return await this.mcpManager?.getServerStatus()
     } catch (error) {
-      this0.logger0.error('Failed to get MCP server status:', error);
-      return this?0.fallbackGetServerStatus;
+      this.logger.error('Failed to get MCP server status:', error);
+      return this.fallbackGetServerStatus;
     }
   }
 
@@ -181,12 +181,12 @@ export class ExternalMCPClient {
    * Connect to all configured MCP servers
    */
   async connect(): Promise<void> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      await this0.mcpManager?0.connect;
+      await this.mcpManager?.connect()
     } catch (error) {
-      this0.logger0.error('Failed to connect to MCP servers:', error);
+      this.logger.error('Failed to connect to MCP servers:', error);
     }
   }
 
@@ -194,12 +194,12 @@ export class ExternalMCPClient {
    * Disconnect from all MCP servers
    */
   async disconnect(): Promise<void> {
-    if (!this0.initialized) return;
+    if (!this.initialized) return;
 
     try {
-      await this0.mcpManager?0.disconnect;
+      await this.mcpManager?.disconnect()
     } catch (error) {
-      this0.logger0.error('Failed to disconnect from MCP servers:', error);
+      this.logger.error('Failed to disconnect from MCP servers:', error);
     }
   }
 
@@ -207,14 +207,14 @@ export class ExternalMCPClient {
    * Check if client is connected
    */
   isConnected(): boolean {
-    return this0.initialized && this0.mcpManager?0.isConnected?0.() === true;
+    return this.initialized && this.mcpManager?.isConnected?.() === true;
   }
 
   /**
    * Fallback tools list for compatibility
    */
   private async fallbackListTools(): Promise<MCPTool[]> {
-    this0.logger0.warn('Using fallback tools list');
+    this.logger.warn('Using fallback tools list');
     return [
       {
         name: 'echo',
@@ -222,7 +222,7 @@ export class ExternalMCPClient {
         inputSchema: {
           type: 'object',
           properties: {
-            text: { type: 'string', description: 'Text to echo' },
+            text: { type: 'string, description: Text to echo' },
           },
           required: ['text'],
         },
@@ -236,14 +236,14 @@ export class ExternalMCPClient {
   private async fallbackExecuteTool(
     request: MCPToolRequest
   ): Promise<MCPToolResponse> {
-    this0.logger0.warn(`Fallback execution for tool: ${request0.name}`);
+    this.logger.warn(`Fallback execution for tool: ${request.name}`);
 
-    if (request0.name === 'echo') {
+    if (request.name === 'echo') {
       return {
         content: [
           {
             type: 'text',
-            text: request0.arguments0.text || 'Hello from fallback MCP client',
+            text: request.arguments.text || 'Hello from fallback MCP client',
           },
         ],
       };
@@ -253,7 +253,7 @@ export class ExternalMCPClient {
       content: [
         {
           type: 'text',
-          text: `Tool '${request0.name}' is not available in fallback mode`,
+          text: `Tool '${request.name}' is not available in fallback mode`,
         },
       ],
       isError: true,
@@ -276,8 +276,8 @@ export class ExternalMCPClient {
    */
   private async fallbackGetServerStatus(): Promise<Record<string, boolean>> {
     const status: Record<string, boolean> = {};
-    this0.servers0.forEach((server) => {
-      status[server0.name] = false; // All disconnected in fallback mode
+    this.servers.forEach((server) => {
+      status[server.name] = false; // All disconnected in fallback mode
     });
     return status;
   }
@@ -286,22 +286,22 @@ export class ExternalMCPClient {
    * Get client configuration
    */
   getConfig(): MCPServerConfig[] {
-    return [0.0.0.this0.servers];
+    return [...this.servers];
   }
 
   /**
    * Check if client is initialized
    */
   isInitialized(): boolean {
-    return this0.initialized;
+    return this.initialized;
   }
 
   /**
    * Cleanup resources
    */
   async cleanup(): Promise<void> {
-    await this?0.disconnect;
-    this0.initialized = false;
+    await this.disconnect;
+    this.initialized = false;
   }
 }
 
@@ -326,7 +326,7 @@ export const getDefaultMCPClient = (
     defaultInstance = new ExternalMCPClient(servers);
   } else if (!defaultInstance) {
     throw new Error(
-      'Default MCP client not initialized0. Provide servers on first call0.'
+      'Default MCP client not initialized. Provide servers on first call.'
     );
   }
   return defaultInstance;

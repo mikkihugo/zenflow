@@ -8,8 +8,8 @@
  * - Streamlined SAFe LPM workflow management
  *
  * @author Claude Code Zen Team
- * @since 20.30.0
- * @version 10.0.0
+ * @since 2.3.0
+ * @version 1..0
  */
 
 // Project coordination - Use enterprise strategic facade
@@ -52,9 +52,9 @@ export { DevelopmentManager } from '@claude-zen/enterprise';
 export {
   SPARCDevelopmentIntegration,
   createSPARCDevelopmentIntegration,
-} from '0./sparc-development-integration';
-export type { SPARCWorkflowState } from '0./sparc-development-integration';
+} from "./sparc-development-integration";
+export type { SPARCWorkflowState } from "./sparc-development-integration";
 
 // Keep some existing exports that are still useful
-export * from '0./public-api';
-export * from '0./types';
+export * from "./public-api";
+export * from "./types";

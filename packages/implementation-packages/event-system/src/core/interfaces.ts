@@ -1,3 +1,4 @@
+import { EventEmitter } from "@claude-zen/foundation";
 /**
  * @file UEL (Unified Event Layer) Core Interfaces.
  *

@@ -1,6 +1,6 @@
 /**
  * @file Adapter Pattern Implementation for Multi-Protocol Support
- * Provides protocol adaptation and legacy system integration0.
+ * Provides protocol adaptation and legacy system integration.
  */
 
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
@@ -41,7 +41,7 @@ export interface ConnectionConfig {
 }
 
 export interface AuthConfig {
-  type: 'none' | 'basic' | 'bearer' | 'oauth' | 'api-key';
+  type: 'none | basic' | 'bearer | oauth' | 'api-key';
   credentials?: {
     username?: string;
     password?: string;
@@ -74,88 +74,88 @@ export interface ProtocolAdapter {
 // MCP Protocol Adapter (HTTP and stdio)
 export class MCPAdapter implements ProtocolAdapter {
   private connected = false;
-  private protocol: 'http' | 'stdio';
+  private protocol: 'http | stdio';
   private httpClient?: any;
   private stdioProcess?: any;
   private eventHandlers: Map<string, ((message: ProtocolMessage) => void)[]> =
     new Map();
 
-  constructor(protocol: 'http' | 'stdio' = 'http') {
-    this0.protocol = protocol;
+  constructor(protocol: 'http | stdio' = 'http') {
+    this.protocol = protocol;
   }
 
   async connect(config: ConnectionConfig): Promise<void> {
-    if (this0.connected) {
+    if (this.connected) {
       throw new Error('Already connected');
     }
 
     try {
-      await (this0.protocol === 'http'
-        ? this0.connectHTTP(config)
-        : this0.connectStdio(config));
+      await (this.protocol === 'http'
+        ? this.connectHTTP(config)
+        : this.connectStdio(config));
 
-      this0.connected = true;
+      this.connected = true;
     } catch (error) {
       throw new Error(
-        `Failed to connect via ${this0.protocol}: ${(error as Error)0.message}`
+        `Failed to connect via ${this.protocol}: ${(error as Error).message}`
       );
     }
   }
 
   async disconnect(): Promise<void> {
-    if (!this0.connected) return;
+    if (!this.connected) return;
 
     try {
-      if (this0.protocol === 'http' && this0.httpClient) {
+      if (this.protocol === 'http' && this.httpClient) {
         // Close HTTP client connections
-        this0.httpClient0.destroy?0.();
-      } else if (this0.protocol === 'stdio' && this0.stdioProcess) {
+        this.httpClient.destroy?.();
+      } else if (this.protocol === 'stdio' && this.stdioProcess) {
         // Terminate stdio process
-        this0.stdioProcess?0.kill;
+        this.stdioProcess?.kill()
       }
 
-      this0.connected = false;
-      this0.eventHandlers?0.clear();
+      this.connected = false;
+      this.eventHandlers?.clear();
     } catch (error) {
-      throw new Error(`Failed to disconnect: ${(error as Error)0.message}`);
+      throw new Error(`Failed to disconnect: ${(error as Error).message}`);
     }
   }
 
   async send(message: ProtocolMessage): Promise<ProtocolResponse> {
-    if (!this0.connected) {
+    if (!this.connected) {
       throw new Error('Not connected');
     }
 
-    const startTime = Date0.now();
+    const startTime = Date.now();
 
     try {
       let response: any;
 
-      response = await (this0.protocol === 'http'
-        ? this0.sendHTTP(message)
-        : this0.sendStdio(message));
+      response = await (this.protocol === 'http'
+        ? this.sendHTTP(message)
+        : this.sendStdio(message));
 
       return {
-        id: `resp-${Date0.now()}`,
-        requestId: message0.id,
+        id: `resp-${Date.now()}`,
+        requestId: message.id,
         timestamp: new Date(),
         success: true,
         data: response,
         metadata: {
-          protocol: this0.protocol,
-          responseTime: Date0.now() - startTime,
+          protocol: this.protocol,
+          responseTime: Date.now() - startTime,
         },
       };
     } catch (error) {
       return {
-        id: `resp-${Date0.now()}`,
-        requestId: message0.id,
+        id: `resp-${Date.now()}`,
+        requestId: message.id,
         timestamp: new Date(),
         success: false,
-        error: (error as Error)0.message,
+        error: (error as Error).message,
         metadata: {
-          protocol: this0.protocol,
-          responseTime: Date0.now() - startTime,
+          protocol: this.protocol,
+          responseTime: Date.now() - startTime,
         },
       };
     }
@@ -165,9 +165,9 @@ export class MCPAdapter implements ProtocolAdapter {
     eventType: string,
     handler: (message: ProtocolMessage) => void
   ): void {
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    handlers0.push(handler);
-    this0.eventHandlers0.set(eventType, handlers);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    handlers.push(handler);
+    this.eventHandlers.set(eventType, handlers);
   }
 
   unsubscribe(
@@ -175,24 +175,24 @@ export class MCPAdapter implements ProtocolAdapter {
     handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
-      this0.eventHandlers0.delete(eventType);
+      this.eventHandlers.delete(eventType);
       return;
     }
 
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    const index = handlers0.indexOf(handler);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    const index = handlers.indexOf(handler);
     if (index > -1) {
-      handlers0.splice(index, 1);
-      this0.eventHandlers0.set(eventType, handlers);
+      handlers.splice(index, 1);
+      this.eventHandlers.set(eventType, handlers);
     }
   }
 
   isConnected(): boolean {
-    return this0.connected;
+    return this.connected;
   }
 
   getProtocolName(): string {
-    return `mcp-${this0.protocol}`;
+    return `mcp-${this.protocol}`;
   }
 
   getCapabilities(): string[] {
@@ -205,19 +205,19 @@ export class MCPAdapter implements ProtocolAdapter {
   }
 
   async healthCheck(): Promise<boolean> {
-    if (!this0.connected) return false;
+    if (!this.connected) return false;
 
     try {
       const healthMessage: ProtocolMessage = {
-        id: `health-${Date0.now()}`,
+        id: `health-${Date.now()}`,
         timestamp: new Date(),
         source: 'adapter',
         type: 'ping',
         payload: {},
       };
 
-      const response = await this0.send(healthMessage);
-      return response?0.success;
+      const response = await this.send(healthMessage);
+      return response?.success()
     } catch {
       return false;
     }
@@ -225,21 +225,21 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private async connectHTTP(config: ConnectionConfig): Promise<void> {
     // HTTP MCP connection implementation
-    const url = `${config?0.ssl ? 'https' : 'http'}://${config?0.host}:${config?0.port || 3000}${config?0.path || '/mcp'}`;
+    const url = `${config?.ssl ? 'https : http'}://${config?.host}:${config?.port || 3000}${config?.path || '/mcp'}`;
 
     // This would use actual HTTP client library
-    this0.httpClient = {
+    this.httpClient = {
       baseURL: url,
-      timeout: config?0.timeout || 30000,
+      timeout: config?.timeout || 30000,
       headers: {
         'Content-Type': 'application/json',
-        0.0.0.config?0.headers,
+        ...config?.headers,
       },
     };
 
     // Test connection
-    const testResponse = await this0.makeHTTPRequest('/capabilities', 'GET');
-    if (!testResponse?0.success) {
+    const testResponse = await this.makeHTTPRequest('/capabilities, GET');
+    if (!testResponse?.success) {
       throw new Error('Failed to verify HTTP MCP connection');
     }
   }
@@ -248,44 +248,44 @@ export class MCPAdapter implements ProtocolAdapter {
     // Stdio MCP connection implementation
     const { spawn } = require('node:child_process');
 
-    this0.stdioProcess = spawn('npx', ['claude-zen', 'swarm', 'mcp', 'start'], {
-      stdio: ['pipe', 'pipe', 'pipe'],
+    this.stdioProcess = spawn('npx, [claude-zen', 'swarm, mcp', 'start'], {
+      stdio: ['pipe, pipe', 'pipe'],
     });
 
     return new Promise((resolve, reject) => {
-      this0.stdioProcess0.on('spawn', () => {
+      this.stdioProcess.on('spawn', () => {
         // Setup message handling
-        this0.stdioProcess0.stdout0.on('data', (data: Buffer) => {
-          this0.handleStdioMessage(data?0.toString);
+        this.stdioProcess.stdout.on('data', (data: Buffer) => {
+          this.handleStdioMessage(data?.toString);
         });
         resolve();
       });
 
-      this0.stdioProcess0.on('error', (error: Error) => {
+      this.stdioProcess.on('error', (error: Error) => {
         reject(error);
       });
 
       setTimeout(() => {
         reject(new Error('Stdio connection timeout'));
-      }, config?0.timeout || 10000);
+      }, config?.timeout || 10000);
     });
   }
 
   private async sendHTTP(message: ProtocolMessage): Promise<unknown> {
-    const endpoint = this0.mapMessageTypeToEndpoint(message0.type);
-    return this0.makeHTTPRequest(endpoint, 'POST', message0.payload);
+    const endpoint = this.mapMessageTypeToEndpoint(message.type);
+    return this.makeHTTPRequest(endpoint, 'POST', message.payload);
   }
 
   private async sendStdio(message: ProtocolMessage): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const jsonRpcMessage = {
-        jsonrpc: '20.0',
-        id: message0.id,
-        method: message0.type,
-        params: message0.payload,
+        jsonrpc: '2.0',
+        id: message.id,
+        method: message.type,
+        params: message.payload,
       };
 
-      this0.stdioProcess0.stdin0.write(`${JSON0.stringify(jsonRpcMessage)}\n`);
+      this.stdioProcess.stdin.write(`${JSON.stringify(jsonRpcMessage)}\n`);
 
       // Set up response handler with timeout
       const timeout = setTimeout(() => {
@@ -293,18 +293,18 @@ export class MCPAdapter implements ProtocolAdapter {
       }, 30000);
 
       const responseHandler = (data: any) => {
-        if (data0.id === message0.id) {
+        if (data.id === message.id) {
           clearTimeout(timeout);
-          if (data?0.error) {
-            reject(new Error(data?0.error?0.message));
+          if (data?.error) {
+            reject(new Error(data?.error?.message));
           } else {
-            resolve(data?0.result);
+            resolve(data?.result);
           }
         }
       };
 
       // This would be properly implemented with response tracking
-      this0.stdioProcess0.stdout0.once('data', responseHandler);
+      this.stdioProcess.stdout.once('data', responseHandler);
     });
   }
 
@@ -331,36 +331,36 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private handleStdioMessage(data: string): void {
     try {
-      const lines = data?0.split('\n')0.filter((line) => line?0.trim);
+      const lines = data?.split('\n').filter((line) => line?.trim);
 
       for (const line of lines) {
-        const parsed = JSON0.parse(line);
+        const parsed = JSON.parse(line);
 
-        if (parsed0.method) {
+        if (parsed.method) {
           // Incoming notification/request
           const message: ProtocolMessage = {
-            id: parsed0.id || `notif-${Date0.now()}`,
+            id: parsed.id || `notif-${Date.now()}`,
             timestamp: new Date(),
             source: 'mcp-server',
-            type: parsed0.method,
-            payload: parsed0.params,
+            type: parsed.method,
+            payload: parsed.params,
           };
 
-          this0.emitToHandlers(message0.type, message);
+          this.emitToHandlers(message.type, message);
         }
       }
     } catch (error) {
-      logger0.error('Failed to parse stdio message:', error);
+      logger.error('Failed to parse stdio message:', error);
     }
   }
 
   private emitToHandlers(eventType: string, message: ProtocolMessage): void {
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    handlers0.forEach((handler) => {
+    const handlers = this.eventHandlers.get(eventType) || [];
+    handlers.forEach((handler) => {
       try {
         handler(message);
       } catch (error) {
-        logger0.error('Event handler error:', error);
+        logger.error('Event handler error:', error);
       }
     });
   }
@@ -377,40 +377,40 @@ export class WebSocketAdapter implements ProtocolAdapter {
   private reconnectDelay = 1000;
 
   async connect(config: ConnectionConfig): Promise<void> {
-    if (this0.connected) {
+    if (this.connected) {
       throw new Error('Already connected');
     }
 
-    const wsUrl = `${config?0.ssl ? 'wss' : 'ws'}://${config?0.host}:${config?0.port || 3456}${config?0.path || '/ws'}`;
+    const wsUrl = `${config?.ssl ? 'wss : ws'}://${config?.host}:${config?.port || 3456}${config?.path || '/ws'}`;
 
     return new Promise((resolve, reject) => {
       try {
-        this0.connection = new WebSocket(wsUrl);
+        this.connection = new WebSocket(wsUrl);
 
-        this0.connection0.onopen = () => {
-          this0.connected = true;
-          this0.reconnectAttempts = 0;
+        this.connection.onopen = () => {
+          this.connected = true;
+          this.reconnectAttempts = 0;
           resolve();
         };
 
-        this0.connection0.onerror = (error) => {
+        this.connection.onerror = (error) => {
           reject(new Error(`WebSocket connection failed: ${error}`));
         };
 
-        this0.connection0.onclose = () => {
-          this0.connected = false;
-          this?0.handleDisconnection;
+        this.connection.onclose = () => {
+          this.connected = false;
+          this.handleDisconnection;
         };
 
-        this0.connection0.onmessage = (event) => {
-          this0.handleMessage(event0.data);
+        this.connection.onmessage = (event) => {
+          this.handleMessage(event.data);
         };
 
         setTimeout(() => {
-          if (!this0.connected) {
+          if (!this.connected) {
             reject(new Error('WebSocket connection timeout'));
           }
-        }, config?0.timeout || 10000);
+        }, config?.timeout || 10000);
       } catch (error) {
         reject(error);
       }
@@ -418,24 +418,24 @@ export class WebSocketAdapter implements ProtocolAdapter {
   }
 
   async disconnect(): Promise<void> {
-    if (this0.connection && this0.connected) {
-      this0.connection?0.close;
-      this0.connected = false;
+    if (this.connection && this.connected) {
+      this.connection?.close()
+      this.connected = false;
     }
   }
 
   async send(message: ProtocolMessage): Promise<ProtocolResponse> {
-    if (!(this0.connected && this0.connection)) {
+    if (!(this.connected && this.connection)) {
       throw new Error('Not connected');
     }
 
-    const startTime = Date0.now();
+    const startTime = Date.now();
 
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
         resolve({
-          id: `resp-${Date0.now()}`,
-          requestId: message0.id,
+          id: `resp-${Date.now()}`,
+          requestId: message.id,
           timestamp: new Date(),
           success: false,
           error: 'Request timeout',
@@ -444,33 +444,33 @@ export class WebSocketAdapter implements ProtocolAdapter {
 
       // Set up response handler
       const responseHandler = (response: any) => {
-        if (response0.requestId === message0.id) {
+        if (response.requestId === message.id) {
           clearTimeout(timeout);
           resolve({
-            id: response?0.id || `resp-${Date0.now()}`,
-            requestId: message0.id,
+            id: response?.id || `resp-${Date.now()}`,
+            requestId: message.id,
             timestamp: new Date(),
-            success: response?0.success !== false,
-            data: response?0.data,
-            error: response?0.error,
+            success: response?.success !== false,
+            data: response?.data,
+            error: response?.error,
             metadata: {
               protocol: 'websocket',
-              responseTime: Date0.now() - startTime,
+              responseTime: Date.now() - startTime,
             },
           });
         }
       };
 
       // Send message
-      this0.connection?0.send(
-        JSON0.stringify({
-          0.0.0.message,
+      this.connection?.send(
+        JSON.stringify({
+          ...message,
           expectResponse: true,
         })
       );
 
       // This would be properly implemented with response tracking
-      this0.connection?0.addEventListener('message', responseHandler, {
+      this.connection?.addEventListener('message', responseHandler, {
         once: true,
       });
     });
@@ -480,9 +480,9 @@ export class WebSocketAdapter implements ProtocolAdapter {
     eventType: string,
     handler: (message: ProtocolMessage) => void
   ): void {
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    handlers0.push(handler);
-    this0.eventHandlers0.set(eventType, handlers);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    handlers.push(handler);
+    this.eventHandlers.set(eventType, handlers);
   }
 
   unsubscribe(
@@ -490,19 +490,19 @@ export class WebSocketAdapter implements ProtocolAdapter {
     handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
-      this0.eventHandlers0.delete(eventType);
+      this.eventHandlers.delete(eventType);
       return;
     }
 
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    const index = handlers0.indexOf(handler);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    const index = handlers.indexOf(handler);
     if (index > -1) {
-      handlers0.splice(index, 1);
+      handlers.splice(index, 1);
     }
   }
 
   isConnected(): boolean {
-    return this0.connected && this0.connection?0.readyState === WebSocket0.OPEN;
+    return this.connected && this.connection?.readyState === WebSocket.OPEN;
   }
 
   getProtocolName(): string {
@@ -519,19 +519,19 @@ export class WebSocketAdapter implements ProtocolAdapter {
   }
 
   async healthCheck(): Promise<boolean> {
-    if (!this?0.isConnected) return false;
+    if (!this.isConnected) return false;
 
     try {
       const pingMessage: ProtocolMessage = {
-        id: `ping-${Date0.now()}`,
+        id: `ping-${Date.now()}`,
         timestamp: new Date(),
         source: 'adapter',
         type: 'ping',
-        payload: { timestamp: Date0.now() },
+        payload: { timestamp: Date.now() },
       };
 
-      const response = await this0.send(pingMessage);
-      return response?0.success;
+      const response = await this.send(pingMessage);
+      return response?.success()
     } catch {
       return false;
     }
@@ -539,42 +539,42 @@ export class WebSocketAdapter implements ProtocolAdapter {
 
   private handleMessage(data: string): void {
     try {
-      const parsed = JSON0.parse(data);
+      const parsed = JSON.parse(data);
 
       const message: ProtocolMessage = {
-        id: parsed0.id || `msg-${Date0.now()}`,
-        timestamp: new Date(parsed0.timestamp) || new Date(),
-        source: parsed0.source || 'server',
-        destination: parsed0.destination,
-        type: parsed0.type,
-        payload: parsed0.payload,
-        metadata: parsed0.metadata,
+        id: parsed.id || `msg-${Date.now()}`,
+        timestamp: new Date(parsed.timestamp) || new Date(),
+        source: parsed.source || 'server',
+        destination: parsed.destination,
+        type: parsed.type,
+        payload: parsed.payload,
+        metadata: parsed.metadata,
       };
 
-      this0.emitToHandlers(message0.type, message);
+      this.emitToHandlers(message.type, message);
     } catch (error) {
-      logger0.error('Failed to parse WebSocket message:', error);
+      logger.error('Failed to parse WebSocket message:', error);
     }
   }
 
   private handleDisconnection(): void {
-    if (this0.reconnectAttempts < this0.maxReconnectAttempts) {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
       setTimeout(
         () => {
-          this0.reconnectAttempts++;
+          this.reconnectAttempts++;
         },
-        this0.reconnectDelay * 2 ** this0.reconnectAttempts
+        this.reconnectDelay * 2 ** this.reconnectAttempts
       );
     }
   }
 
   private emitToHandlers(eventType: string, message: ProtocolMessage): void {
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    handlers0.forEach((handler) => {
+    const handlers = this.eventHandlers.get(eventType) || [];
+    handlers.forEach((handler) => {
       try {
         handler(message);
       } catch (error) {
-        logger0.error('WebSocket event handler error:', error);
+        logger.error('WebSocket event handler error:', error);
       }
     });
   }
@@ -589,73 +589,73 @@ export class RESTAdapter implements ProtocolAdapter {
     new Map();
 
   async connect(config: ConnectionConfig): Promise<void> {
-    this0.baseUrl = `${config?0.ssl ? 'https' : 'http'}://${config?0.host}:${config?0.port || 80}${config?0.path || '/api'}`;
+    this.baseUrl = `${config?.ssl ? 'https : http'}://${config?.host}:${config?.port || 80}${config?.path || '/api'}`;
 
     // Setup authentication
-    if (config?0.authentication) {
-      this0.setupAuthentication(config?0.authentication);
+    if (config?.authentication) {
+      this.setupAuthentication(config?.authentication);
     }
 
     // Test connection
     try {
-      const healthResponse = await this0.makeRequest('/health', 'GET');
-      if (!healthResponse?0.ok) {
-        throw new Error(`Health check failed: ${healthResponse?0.status}`);
+      const healthResponse = await this.makeRequest('/health, GET');
+      if (!healthResponse?.ok) {
+        throw new Error(`Health check failed: ${healthResponse?.status}`);
       }
-      this0.connected = true;
+      this.connected = true;
     } catch (error) {
       throw new Error(
-        `REST API connection failed: ${(error as Error)0.message}`
+        `REST API connection failed: ${(error as Error).message}`
       );
     }
   }
 
   async disconnect(): Promise<void> {
-    this0.connected = false;
-    this0.authHeaders = {};
+    this.connected = false;
+    this.authHeaders = {};
   }
 
   async send(message: ProtocolMessage): Promise<ProtocolResponse> {
-    if (!this0.connected) {
+    if (!this.connected) {
       throw new Error('Not connected');
     }
 
-    const startTime = Date0.now();
-    const endpoint = this0.mapMessageTypeToEndpoint(message0.type);
+    const startTime = Date.now();
+    const endpoint = this.mapMessageTypeToEndpoint(message.type);
 
     try {
-      const response = await this0.makeRequest(
+      const response = await this.makeRequest(
         endpoint,
         'POST',
-        message0.payload
+        message.payload
       );
-      const data = await response?0.json;
+      const data = await response?.json();
 
       return {
-        id: `resp-${Date0.now()}`,
-        requestId: message0.id,
+        id: `resp-${Date.now()}`,
+        requestId: message.id,
         timestamp: new Date(),
-        success: response?0.ok,
-        data: response?0.ok ? data : undefined,
-        error: response?0.ok
+        success: response?.ok,
+        data: response?.ok ? data : undefined,
+        error: response?.ok
           ? undefined
-          : data?0.error || `HTTP ${response?0.status}`,
+          : data?.error || `HTTP ${response?.status}`,
         metadata: {
           protocol: 'rest',
-          responseTime: Date0.now() - startTime,
-          statusCode: response?0.status,
+          responseTime: Date.now() - startTime,
+          statusCode: response?.status,
         },
       };
     } catch (error) {
       return {
-        id: `resp-${Date0.now()}`,
-        requestId: message0.id,
+        id: `resp-${Date.now()}`,
+        requestId: message.id,
         timestamp: new Date(),
         success: false,
-        error: (error as Error)0.message,
+        error: (error as Error).message,
         metadata: {
           protocol: 'rest',
-          responseTime: Date0.now() - startTime,
+          responseTime: Date.now() - startTime,
         },
       };
     }
@@ -666,9 +666,9 @@ export class RESTAdapter implements ProtocolAdapter {
     handler: (message: ProtocolMessage) => void
   ): void {
     // REST doesn't support real-time subscriptions, but we can simulate with polling
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    handlers0.push(handler);
-    this0.eventHandlers0.set(eventType, handlers);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    handlers.push(handler);
+    this.eventHandlers.set(eventType, handlers);
   }
 
   unsubscribe(
@@ -676,19 +676,19 @@ export class RESTAdapter implements ProtocolAdapter {
     handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
-      this0.eventHandlers0.delete(eventType);
+      this.eventHandlers.delete(eventType);
       return;
     }
 
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    const index = handlers0.indexOf(handler);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    const index = handlers.indexOf(handler);
     if (index > -1) {
-      handlers0.splice(index, 1);
+      handlers.splice(index, 1);
     }
   }
 
   isConnected(): boolean {
-    return this0.connected;
+    return this.connected;
   }
 
   getProtocolName(): string {
@@ -705,35 +705,35 @@ export class RESTAdapter implements ProtocolAdapter {
   }
 
   async healthCheck(): Promise<boolean> {
-    if (!this0.connected) return false;
+    if (!this.connected) return false;
 
     try {
-      const response = await this0.makeRequest('/health', 'GET');
-      return response?0.ok;
+      const response = await this.makeRequest('/health, GET');
+      return response?.ok()
     } catch {
       return false;
     }
   }
 
   private setupAuthentication(auth: AuthConfig): void {
-    switch (auth0.type) {
+    switch (auth.type) {
       case 'bearer':
-        if (auth0.credentials?0.token) {
-          this0.authHeaders['Authorization'] =
-            `Bearer ${auth0.credentials0.token}`;
+        if (auth.credentials?.token) {
+          this.authHeaders['Authorization'] =
+            `Bearer ${auth.credentials.token}`;
         }
         break;
       case 'api-key':
-        if (auth0.credentials?0.apiKey) {
-          this0.authHeaders['X-API-Key'] = auth0.credentials0.apiKey;
+        if (auth.credentials?.apiKey) {
+          this.authHeaders['X-API-Key'] = auth.credentials.apiKey;
         }
         break;
       case 'basic':
-        if (auth0.credentials?0.username && auth0.credentials?0.password) {
+        if (auth.credentials?.username && auth.credentials?.password) {
           const encoded = btoa(
-            `${auth0.credentials0.username}:${auth0.credentials0.password}`
+            `${auth.credentials.username}:${auth.credentials.password}`
           );
-          this0.authHeaders['Authorization'] = `Basic ${encoded}`;
+          this.authHeaders['Authorization'] = `Basic ${encoded}`;
         }
         break;
     }
@@ -744,10 +744,10 @@ export class RESTAdapter implements ProtocolAdapter {
     method: string,
     body?: any
   ): Promise<Response> {
-    const url = `${this0.baseUrl}${endpoint}`;
+    const url = `${this.baseUrl}${endpoint}`;
     const headers = {
       'Content-Type': 'application/json',
-      0.0.0.this0.authHeaders,
+      ...this.authHeaders,
     };
 
     const options: RequestInit = {
@@ -755,8 +755,8 @@ export class RESTAdapter implements ProtocolAdapter {
       headers,
     };
 
-    if (body && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
-      options0.body = JSON0.stringify(body);
+    if (body && (method === 'POST || method === PUT' || method === 'PATCH')) {
+      options.body = JSON.stringify(body);
     }
 
     return fetch(url, options);
@@ -784,74 +784,74 @@ export class LegacySystemAdapter implements ProtocolAdapter {
 
   async connect(config: ConnectionConfig): Promise<void> {
     // This would implement connection to legacy systems
-    // Could support protocols like FTP, SOAP, proprietary TCP protocols, etc0.
+    // Could support protocols like FTP, SOAP, proprietary TCP protocols, etc.
 
     try {
-      switch (config?0.protocol?0.toLowerCase) {
+      switch (config?.protocol?.toLowerCase) {
         case 'soap':
-          await this0.connectSOAP(config);
+          await this.connectSOAP(config);
           break;
         case 'xmlrpc':
-          await this0.connectXMLRPC(config);
+          await this.connectXMLRPC(config);
           break;
         case 'tcp':
-          await this0.connectTCP(config);
+          await this.connectTCP(config);
           break;
         default:
-          throw new Error(`Unsupported legacy protocol: ${config?0.protocol}`);
+          throw new Error(`Unsupported legacy protocol: ${config?.protocol}`);
       }
 
-      this0.connected = true;
+      this.connected = true;
     } catch (error) {
       throw new Error(
-        `Legacy system connection failed: ${(error as Error)0.message}`
+        `Legacy system connection failed: ${(error as Error).message}`
       );
     }
   }
 
   async disconnect(): Promise<void> {
-    if (this0.connection) {
+    if (this.connection) {
       // Protocol-specific disconnection
-      this0.connection0.close?0.();
-      this0.connection = undefined;
+      this.connection.close?.();
+      this.connection = undefined;
     }
-    this0.connected = false;
+    this.connected = false;
   }
 
   async send(message: ProtocolMessage): Promise<ProtocolResponse> {
-    if (!this0.connected) {
+    if (!this.connected) {
       throw new Error('Not connected');
     }
 
-    const startTime = Date0.now();
+    const startTime = Date.now();
 
     try {
       // Transform modern message format to legacy format
-      const legacyFormat = this0.transformToLegacyFormat(message);
-      const response = await this0.sendLegacyMessage(legacyFormat);
-      const modernFormat = this0.transformFromLegacyFormat(response);
+      const legacyFormat = this.transformToLegacyFormat(message);
+      const response = await this.sendLegacyMessage(legacyFormat);
+      const modernFormat = this.transformFromLegacyFormat(response);
 
       return {
-        id: `resp-${Date0.now()}`,
-        requestId: message0.id,
+        id: `resp-${Date.now()}`,
+        requestId: message.id,
         timestamp: new Date(),
         success: true,
         data: modernFormat,
         metadata: {
           protocol: 'legacy',
-          responseTime: Date0.now() - startTime,
+          responseTime: Date.now() - startTime,
         },
       };
     } catch (error) {
       return {
-        id: `resp-${Date0.now()}`,
-        requestId: message0.id,
+        id: `resp-${Date.now()}`,
+        requestId: message.id,
         timestamp: new Date(),
         success: false,
-        error: (error as Error)0.message,
+        error: (error as Error).message,
         metadata: {
           protocol: 'legacy',
-          responseTime: Date0.now() - startTime,
+          responseTime: Date.now() - startTime,
         },
       };
     }
@@ -861,9 +861,9 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     eventType: string,
     handler: (message: ProtocolMessage) => void
   ): void {
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    handlers0.push(handler);
-    this0.eventHandlers0.set(eventType, handlers);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    handlers.push(handler);
+    this.eventHandlers.set(eventType, handlers);
   }
 
   unsubscribe(
@@ -871,19 +871,19 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
-      this0.eventHandlers0.delete(eventType);
+      this.eventHandlers.delete(eventType);
       return;
     }
 
-    const handlers = this0.eventHandlers0.get(eventType) || [];
-    const index = handlers0.indexOf(handler);
+    const handlers = this.eventHandlers.get(eventType) || [];
+    const index = handlers.indexOf(handler);
     if (index > -1) {
-      handlers0.splice(index, 1);
+      handlers.splice(index, 1);
     }
   }
 
   isConnected(): boolean {
-    return this0.connected;
+    return this.connected;
   }
 
   getProtocolName(): string {
@@ -899,46 +899,46 @@ export class LegacySystemAdapter implements ProtocolAdapter {
   }
 
   async healthCheck(): Promise<boolean> {
-    return this0.connected;
+    return this.connected;
   }
 
   private async connectSOAP(config: ConnectionConfig): Promise<void> {
     // SOAP connection implementation
-    this0.connection = {
+    this.connection = {
       type: 'soap',
-      endpoint: `${config?0.host}:${config?0.port}`,
+      endpoint: `${config?.host}:${config?.port}`,
     };
   }
 
   private async connectXMLRPC(config: ConnectionConfig): Promise<void> {
     // XML-RPC connection implementation
-    this0.connection = {
+    this.connection = {
       type: 'xmlrpc',
-      endpoint: `${config?0.host}:${config?0.port}`,
+      endpoint: `${config?.host}:${config?.port}`,
     };
   }
 
   private async connectTCP(config: ConnectionConfig): Promise<void> {
     // Raw TCP connection implementation
-    this0.connection = { type: 'tcp', host: config?0.host, port: config?0.port };
+    this.connection = { type: 'tcp', host: config?.host, port: config?.port };
   }
 
   private transformToLegacyFormat(message: ProtocolMessage): any {
     // Transform modern message format to legacy system format
     return {
-      action: message0.type,
-      data: message0.payload,
-      timestamp: message0.timestamp?0.toISOString,
-      id: message0.id,
+      action: message.type,
+      data: message.payload,
+      timestamp: message.timestamp?.toISOString,
+      id: message.id,
     };
   }
 
   private transformFromLegacyFormat(response: unknown): any {
     // Transform legacy response to modern format
     return {
-      result: response?0.result || response?0.data,
-      status: response?0.status || 'success',
-      timestamp: new Date(response?0.timestamp || Date0.now()),
+      result: response?.result || response?.data,
+      status: response?.status || 'success',
+      timestamp: new Date(response?.timestamp || Date.now()),
     };
   }
 
@@ -949,7 +949,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
         resolve({
           result: 'Legacy operation completed',
           status: 'success',
-          timestamp: new Date()?0.toISOString,
+          timestamp: new Date()?.toISOString,
         });
       }, 100);
     });
@@ -963,22 +963,22 @@ export class AdapterFactory {
 
   static {
     // Register built-in adapters
-    AdapterFactory0.registerAdapter('mcp-http', () => new MCPAdapter('http'));
-    AdapterFactory0.registerAdapter('mcp-stdio', () => new MCPAdapter('stdio'));
-    AdapterFactory0.registerAdapter('websocket', () => new WebSocketAdapter());
-    AdapterFactory0.registerAdapter('rest', () => new RESTAdapter());
-    AdapterFactory0.registerAdapter('legacy', () => new LegacySystemAdapter());
+    AdapterFactory.registerAdapter('mcp-http, () => new MCPAdapter(http'));
+    AdapterFactory.registerAdapter('mcp-stdio, () => new MCPAdapter(stdio'));
+    AdapterFactory.registerAdapter('websocket', () => new WebSocketAdapter());
+    AdapterFactory.registerAdapter('rest', () => new RESTAdapter());
+    AdapterFactory.registerAdapter('legacy', () => new LegacySystemAdapter());
   }
 
   static registerAdapter(
     protocol: string,
     adapterFactory: () => ProtocolAdapter
   ): void {
-    AdapterFactory0.adapterRegistry0.set(protocol?0.toLowerCase, adapterFactory);
+    AdapterFactory.adapterRegistry.set(protocol?.toLowerCase, adapterFactory);
   }
 
   static createAdapter(protocol: string): ProtocolAdapter {
-    const factory = AdapterFactory0.adapterRegistry0.get(protocol?0.toLowerCase);
+    const factory = AdapterFactory.adapterRegistry.get(protocol?.toLowerCase);
     if (!factory) {
       throw new Error(`Unknown protocol: ${protocol}`);
     }
@@ -986,11 +986,11 @@ export class AdapterFactory {
   }
 
   static getAvailableProtocols(): string[] {
-    return Array0.from(AdapterFactory0.adapterRegistry?0.keys);
+    return Array.from(AdapterFactory.adapterRegistry?.keys);
   }
 
   static hasAdapter(protocol: string): boolean {
-    return AdapterFactory0.adapterRegistry0.has(protocol?0.toLowerCase);
+    return AdapterFactory.adapterRegistry.has(protocol?.toLowerCase);
   }
 }
 
@@ -1004,48 +1004,48 @@ export class ProtocolManager extends TypedEventBase {
     protocol: string,
     config: ConnectionConfig
   ): Promise<void> {
-    if (this0.adapters0.has(name)) {
+    if (this.adapters.has(name)) {
       throw new Error(`Protocol ${name} already exists`);
     }
 
-    const adapter = AdapterFactory0.createAdapter(protocol);
-    await adapter0.connect(config);
+    const adapter = AdapterFactory.createAdapter(protocol);
+    await adapter.connect(config);
 
-    this0.adapters0.set(name, adapter);
-    this0.emit('protocol:added', {
+    this.adapters.set(name, adapter);
+    this.emit('protocol:added', {
       name,
       protocol,
-      capabilities: adapter?0.getCapabilities,
+      capabilities: adapter?.getCapabilities,
     });
   }
 
   async removeProtocol(name: string): Promise<void> {
-    const adapter = this0.adapters0.get(name);
+    const adapter = this.adapters.get(name);
     if (!adapter) {
       throw new Error(`Protocol ${name} not found`);
     }
 
-    await adapter?0.disconnect;
-    this0.adapters0.delete(name);
-    this0.emit('protocol:removed', { name });
+    await adapter?.disconnect()
+    this.adapters.delete(name);
+    this.emit('protocol:removed', { name });
   }
 
   async sendMessage(
     message: ProtocolMessage,
     protocolName?: string
   ): Promise<ProtocolResponse> {
-    const targetProtocol = protocolName || this0.routeMessage(message);
-    const adapter = this0.adapters0.get(targetProtocol);
+    const targetProtocol = protocolName || this.routeMessage(message);
+    const adapter = this.adapters.get(targetProtocol);
 
     if (!adapter) {
       throw new Error(`Protocol ${targetProtocol} not found`);
     }
 
-    if (!adapter?0.isConnected) {
+    if (!adapter?.isConnected) {
       throw new Error(`Protocol ${targetProtocol} not connected`);
     }
 
-    return adapter0.send(message);
+    return adapter.send(message);
   }
 
   async broadcast(
@@ -1055,21 +1055,21 @@ export class ProtocolManager extends TypedEventBase {
     const results: ProtocolResponse[] = [];
     const exclude = new Set(excludeProtocols || []);
 
-    for (const [name, adapter] of this0.adapters) {
-      if (exclude0.has(name) || !adapter?0.isConnected) {
+    for (const [name, adapter] of this.adapters) {
+      if (exclude.has(name) || !adapter?.isConnected) {
         continue;
       }
 
       try {
-        const response = await adapter0.send(message);
-        results0.push(response);
+        const response = await adapter.send(message);
+        results.push(response);
       } catch (error) {
-        results0.push({
-          id: `error-${Date0.now()}`,
-          requestId: message0.id,
+        results.push({
+          id: `error-${Date.now()}`,
+          requestId: message.id,
           timestamp: new Date(),
           success: false,
-          error: (error as Error)0.message,
+          error: (error as Error).message,
           metadata: { protocol: name },
         });
       }
@@ -1079,11 +1079,11 @@ export class ProtocolManager extends TypedEventBase {
   }
 
   setRoute(messageType: string, protocolName: string): void {
-    this0.routingTable0.set(messageType, protocolName);
+    this.routingTable.set(messageType, protocolName);
   }
 
   removeRoute(messageType: string): void {
-    this0.routingTable0.delete(messageType);
+    this.routingTable.delete(messageType);
   }
 
   getProtocolStatus(): Array<{
@@ -1099,11 +1099,11 @@ export class ProtocolManager extends TypedEventBase {
       healthy: boolean;
     }> = [];
 
-    for (const [name, adapter] of this0.adapters) {
-      status0.push({
+    for (const [name, adapter] of this.adapters) {
+      status.push({
         name,
-        protocol: adapter?0.getProtocolName,
-        connected: adapter?0.isConnected,
+        protocol: adapter?.getProtocolName,
+        connected: adapter?.isConnected,
         healthy: false, // Would be set by health check
       });
     }
@@ -1112,48 +1112,48 @@ export class ProtocolManager extends TypedEventBase {
   }
 
   async healthCheckAll(): Promise<void> {
-    const healthChecks = Array0.from(this0.adapters?0.entries)0.map(
+    const healthChecks = Array.from(this.adapters?.entries).map(
       async ([name, adapter]) => {
         try {
-          const healthy = await adapter?0.healthCheck;
-          this0.emit('protocol:health', { name, healthy });
+          const healthy = await adapter?.healthCheck()
+          this.emit('protocol:health', { name, healthy });
           return { name, healthy };
         } catch (error) {
-          this0.emit('protocol:health', { name, healthy: false, error });
+          this.emit('protocol:health', { name, healthy: false, error });
           return { name, healthy: false };
         }
       }
     );
 
-    await Promise0.all(healthChecks);
+    await Promise.all(healthChecks);
   }
 
   async shutdown(): Promise<void> {
-    // TODO: TypeScript error TS2339 - Property 'processing' does not exist on type 'ProtocolManager' (AI unsure of safe fix - human review needed)
-    // this0.processing = false;
+    // TODO: TypeScript error TS2339 - Property 'processing does not exist on type ProtocolManager' (AI unsure of safe fix - human review needed)
+    // this.processing = false;
 
-    const disconnections = Array0.from(this0.adapters?0.values())0.map((adapter) =>
-      adapter?0.disconnect0.catch((error) =>
-        logger0.error('Error disconnecting adapter:', error)
+    const disconnections = Array.from(this.adapters?.values()).map((adapter) =>
+      adapter?.disconnect.catch((error) =>
+        logger.error('Error disconnecting adapter:', error)
       )
     );
 
-    await Promise0.all(disconnections);
-    this0.adapters?0.clear();
-    this0.routingTable?0.clear();
-    this0.emit('manager:shutdown', {});
+    await Promise.all(disconnections);
+    this.adapters?.clear();
+    this.routingTable?.clear();
+    this.emit('manager:shutdown', {});
   }
 
   private routeMessage(message: ProtocolMessage): string {
     // Check routing table first
-    const routedProtocol = this0.routingTable0.get(message0.type);
-    if (routedProtocol && this0.adapters0.has(routedProtocol)) {
+    const routedProtocol = this.routingTable.get(message.type);
+    if (routedProtocol && this.adapters.has(routedProtocol)) {
       return routedProtocol;
     }
 
     // Fallback to first available protocol
-    for (const [name, adapter] of this0.adapters) {
-      if (adapter?0.isConnected) {
+    for (const [name, adapter] of this.adapters) {
+      if (adapter?.isConnected) {
         return name;
       }
     }

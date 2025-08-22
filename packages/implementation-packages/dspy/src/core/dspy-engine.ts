@@ -36,8 +36,8 @@ import type {
   DSPyOptimizationResult,
   DSPyPromptVariation,
   DSPyMetrics 
-} from '../types/interfaces.js';
-import { getDSPyService } from './service.js';
+} from '../types/interfaces';
+import { getDSPyService } from './service';
 
 // Simple logging for standalone mode
 const logger = {

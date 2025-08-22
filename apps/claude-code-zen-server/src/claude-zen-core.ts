@@ -1,12 +1,12 @@
 /**
- * @file Claude-zen-core implementation0.
+ * @file Claude-zen-core implementation.
  */
 
 /**
- * Claude Code Zen - Main Application Entry Point0.
+ * Claude Code Zen - Main Application Entry Point.
  *
- * Demonstrates full DI integration with all coordinators and services0.
- * This is the complete "all done" implementation requested by @mikkihugo0.
+ * Demonstrates full DI integration with all coordinators and services.
+ * This is the complete "all done" implementation requested by @mikkihugo.
  */
 
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
@@ -16,9 +16,9 @@ import {
 } from '@claude-zen/infrastructure';
 import { BehavioralIntelligence } from '@claude-zen/intelligence';
 
-import { ProjectCoordinator } from '0./coordination';
-import { Orchestrator } from '0./coordination/orchestrator';
-import { MultiSystemCoordinator } from '0./integration/multi-system-coordinator';
+import { ProjectCoordinator } from './coordination';
+import { Orchestrator } from './coordination/orchestrator';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
 
 // Service tokens for dependency injection
 const TOKENS = {
@@ -34,9 +34,9 @@ const TOKENS = {
 
 // Simple EventBus interface
 interface EventBus {
-  emit(event: string | symbol, 0.0.0.args: any[]): boolean;
-  on(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
-  off(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
+  emit(event: string | symbol, args: any[]): boolean;
+  on(event: string | symbol, handler: (args: any[]) => void): this;
+  off(event: string | symbol, handler: (args: any[]) => void): this;
   publish(event: string, data: any): void;
   subscribe(event: string, handler: (data: any) => void): void;
   unsubscribe(event: string, handler: (data: any) => void): void;
@@ -49,46 +49,46 @@ const logger = getLogger('claude-zen-core');
 // Use foundation's config system directly
 
 class AppEventBus extends TypedEventBase implements EventBus {
-  emit(event: string | symbol, 0.0.0.args: any[]): boolean {
+  emit(event: string | symbol, args: any[]): boolean {
     // TypedEventBase expects exactly 2 arguments (eventName, data)
     // If more than one arg, combine them into an object
-    const data = args0.length === 1 ? args[0] : args0.length > 1 ? { args } : {};
-    return super0.emit(event as any, data);
+    const data = args.length === 1 ? args[0] : args.length > 1 ? { args } : {};
+    return super.emit(event as any, data);
   }
 
   emitSystemEvent(
-    event: import('0./coordination/core/event-bus')0.SystemEvent
+    event: import('./coordination/core/event-bus').SystemEvent
   ): boolean {
-    return super0.emit(event0.type, event);
+    return super.emit(event.type, event);
   }
 
-  on(event: string | symbol, handler: (0.0.0.args: any[]) => void): this {
-    super0.on(String(event), handler);
+  on(event: string | symbol, handler: (args: any[]) => void): this {
+    super.on(String(event), handler);
     return this;
   }
 
-  off(event: string | symbol, handler: (0.0.0.args: any[]) => void): this {
-    super0.off(String(event), handler);
+  off(event: string | symbol, handler: (args: any[]) => void): this {
+    super.off(String(event), handler);
     return this;
   }
 
   publish(event: string, data: any): void {
-    this0.emit(event, data);
+    this.emit(event, data);
   }
 
   subscribe(event: string, handler: (data: any) => void): void {
-    this0.on(event, handler);
+    this.on(event, handler);
   }
 
   unsubscribe(event: string, handler: (data: any) => void): void {
-    this0.off(event, handler);
+    this.off(event, handler);
   }
 }
 
 // Using foundation's professional storage system
 
 /**
- * Main Application class with full DI integration0.
+ * Main Application class with full DI integration.
  *
  * @example
  */
@@ -100,41 +100,41 @@ export class ClaudeZenCore {
   private multiSystemCoordinator?: MultiSystemCoordinator;
 
   constructor() {
-    this?0.initializeAsync;
+    this.initializeAsync();
   }
 
   private async initializeAsync() {
-    this0.container = await this?0.setupDependencyInjection;
+    this.container = await this.setupDependencyInjection();
   }
 
   /**
-   * Setup comprehensive DI container with all services0.
+   * Setup comprehensive DI container with all services.
    */
   private async setupDependencyInjection(): Promise<any> {
     const container = await getServiceContainer();
 
     // Register core services
-    container0.register(TOKENS0.Logger, () => getLogger('claude-zen-core'));
-    container0.register(TOKENS0.Config, () => this?0.getConfig);
-    container0.register(TOKENS0.EventBus, () => new AppEventBus());
-    container0.register(TOKENS0.Database, () => getDatabaseAccess());
+    container.register(TOKENS.Logger, () => getLogger('claude-zen-core'));
+    container.register(TOKENS.Config, () => this.getConfig());
+    container.register(TOKENS.EventBus, () => new AppEventBus());
+    container.register(TOKENS.Database, () => getDatabaseAccess());
 
     // Register coordination services
-    container0.register(TOKENS0.AgentManager, (c) => {
-      const logger = c0.resolve(TOKENS0.Logger);
-      const database = c0.resolve(TOKENS0.Database);
+    container.register(TOKENS.AgentManager, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
+      const database = c.resolve(TOKENS.Database);
       return new Orchestrator(logger, database);
     });
 
     // Register coordination manager
-    container0.register(TOKENS0.CoordinationManager, (c) => {
-      const logger = c0.resolve(TOKENS0.Logger);
-      const eventBus = c0.resolve(TOKENS0.EventBus);
+    container.register(TOKENS.CoordinationManager, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
+      const eventBus = c.resolve(TOKENS.EventBus);
 
       const coordinator = new ProjectCoordinator();
       // Add configuration properties if the instance supports them
       if (coordinator && typeof coordinator === 'object') {
-        Object0.assign(coordinator, {
+        Object.assign(coordinator, {
           logger,
           eventBus,
           config: {
@@ -149,14 +149,14 @@ export class ClaudeZenCore {
     });
 
     // Register behavioral intelligence
-    container0.register(TOKENS0.BehavioralIntelligence, () => {
+    container.register(TOKENS.BehavioralIntelligence, () => {
       // BehavioralIntelligence has optional BrainJsBridge parameter - will use mock bridge if not provided
       return new BehavioralIntelligence({});
     });
 
     // Register multi-system coordinator
-    container0.register(TOKENS0.MultiSystemCoordinator, (c) => {
-      const logger = c0.resolve(TOKENS0.Logger);
+    container.register(TOKENS.MultiSystemCoordinator, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
       return new MultiSystemCoordinator(logger, {});
     });
 
@@ -164,11 +164,11 @@ export class ClaudeZenCore {
   }
 
   /**
-   * Get configuration with proper error handling0.
+   * Get configuration with proper error handling.
    */
   private getConfig() {
     return {
-      debug: process0.env0.NODE_ENV === 'development',
+      debug: process.env.NODE_ENV === 'development',
       database: {
         type: 'sqlite',
         path: ':memory:',
@@ -181,145 +181,145 @@ export class ClaudeZenCore {
   }
 
   /**
-   * Initialize all systems with DI0.
+   * Initialize all systems with DI.
    */
   async initialize(): Promise<void> {
-    if (!this0.container) {
-      await this?0.initializeAsync;
+    if (!this.container) {
+      await this.initializeAsync();
     }
-    const logger = this0.container!0.resolve(TOKENS0.Logger) as any;
-    logger0.info('🚀 Initializing Claude Code Zen with full DI integration0.0.0.');
+    const logger = this.container!.resolve(TOKENS.Logger) as any;
+    logger.info('🚀 Initializing Claude Code Zen with full DI integration.');
 
     try {
       // Initialize core database
-      const database = this0.container!0.resolve(TOKENS0.Database) as any;
-      if (database?0.initialize) {
-        await database?0.initialize;
+      const database = this.container!.resolve(TOKENS.Database) as any;
+      if (database?.initialize) {
+        await database?.initialize();
       }
 
       // Resolve all coordinators through DI
-      this0.orchestrator = this0.container!0.resolve(
-        TOKENS0.AgentManager
+      this.orchestrator = this.container!.resolve(
+        TOKENS.AgentManager
       ) as Orchestrator;
-      this0.coordinationManager = this0.container!0.resolve(
-        TOKENS0.CoordinationManager
+      this.coordinationManager = this.container!.resolve(
+        TOKENS.CoordinationManager
       );
 
-      this0.behavioralIntelligence = this0.container!0.resolve(
-        TOKENS0.BehavioralIntelligence
+      this.behavioralIntelligence = this.container!.resolve(
+        TOKENS.BehavioralIntelligence
       );
 
-      this0.multiSystemCoordinator = this0.container!0.resolve(
-        TOKENS0.MultiSystemCoordinator
+      this.multiSystemCoordinator = this.container!.resolve(
+        TOKENS.MultiSystemCoordinator
       );
 
       // Initialize all coordinators
-      if (this0.orchestrator?0.initialize) {
-        await this0.orchestrator?0.initialize;
+      if (this.orchestrator?.initialize) {
+        await this.orchestrator?.initialize();
       }
-      if ((this0.coordinationManager as any)?0.executeCoordination) {
-        await (this0.coordinationManager as any)?0.executeCoordination;
+      if ((this.coordinationManager as any)?.executeCoordination) {
+        await (this.coordinationManager as any)?.executeCoordination();
       }
       // Note: BehavioralIntelligence and MultiSystemCoordinator start automatically in constructor
 
-      logger0.info(
+      logger.info(
         '✅ All systems initialized successfully with dependency injection!'
       );
 
       // Demonstrate the system is working
-      await this?0.demonstrateSystemIntegration;
+      await this.demonstrateSystemIntegration();
     } catch (error) {
-      logger0.error(`❌ Failed to initialize: ${error}`);
+      logger.error(`❌ Failed to initialize: ${error}`);
       throw error;
     }
   }
 
   /**
-   * Demonstrate that all DI-enhanced systems are working together0.
+   * Demonstrate that all DI-enhanced systems are working together.
    */
   private async demonstrateSystemIntegration(): Promise<void> {
-    if (!this0.container) {
-      await this?0.initializeAsync;
+    if (!this.container) {
+      await this.initializeAsync();
     }
-    const logger = this0.container!0.resolve(TOKENS0.Logger) as any;
+    const logger = this.container!.resolve(TOKENS.Logger) as any;
 
-    logger0.info('🔗 Demonstrating DI-enhanced system integration0.0.0.');
+    logger.info('🔗 Demonstrating DI-enhanced system integration.');
 
     // Example: Submit a task through the orchestrator
-    if (this0.orchestrator) {
-      logger0.info('📋 Testing Orchestrator with DI0.0.0.');
+    if (this.orchestrator) {
+      logger.info('📋 Testing Orchestrator with DI.');
       // The orchestrator now uses injected logger and database
       // This would normally submit a real task
-      await Promise?0.resolve; // Add await to satisfy require-await rule
-      logger0.info('  - Orchestrator successfully using injected dependencies');
+      await Promise.resolve(); // Add await to satisfy require-await rule
+      logger.info('  - Orchestrator successfully using injected dependencies');
     }
 
     // Example: Test coordination manager
-    if (this0.coordinationManager) {
-      logger0.info('🤝 Testing CoordinationManager with DI0.0.0.');
+    if (this.coordinationManager) {
+      logger.info('🤝 Testing CoordinationManager with DI.');
       // The coordination manager uses injected logger and event bus
-      logger0.info(
+      logger.info(
         '  - CoordinationManager successfully using injected dependencies'
       );
     }
 
     // Example: Test behavioral intelligence
-    if (this0.behavioralIntelligence) {
-      logger0.info('🧠 Testing BehavioralIntelligence with DI0.0.0.');
+    if (this.behavioralIntelligence) {
+      logger.info('🧠 Testing BehavioralIntelligence with DI.');
       // The behavioral intelligence uses injected dependencies
-      logger0.info(
+      logger.info(
         '  - BehavioralIntelligence successfully using injected dependencies'
       );
     }
 
     // Example: Test multi-system coordinator
-    if (this0.multiSystemCoordinator) {
-      logger0.info('🌐 Testing MultiSystemCoordinator with DI0.0.0.');
+    if (this.multiSystemCoordinator) {
+      logger.info('🌐 Testing MultiSystemCoordinator with DI.');
       // The multi-system coordinator uses injected logger
-      logger0.info(
+      logger.info(
         '  - MultiSystemCoordinator successfully using injected dependencies'
       );
     }
 
-    logger0.info('🎉 All DI integration demonstrations completed successfully!');
+    logger.info('🎉 All DI integration demonstrations completed successfully!');
   }
 
   /**
-   * Graceful shutdown with DI cleanup0.
+   * Graceful shutdown with DI cleanup.
    */
   async shutdown(): Promise<void> {
-    if (!this0.container) {
+    if (!this.container) {
       return;
     }
-    const logger = this0.container0.resolve(TOKENS0.Logger) as any;
-    logger0.info('🛑 Shutting down Claude Code Zen0.0.0.');
+    const logger = this.container.resolve(TOKENS.Logger) as any;
+    logger.info('🛑 Shutting down Claude Code Zen.');
 
     try {
       // Stop all coordinators
       if (
-        this0.coordinationManager &&
-        typeof this0.coordinationManager === 'object'
+        this.coordinationManager &&
+        typeof this.coordinationManager === 'object'
       ) {
         // Try different shutdown methods that might be available
-        const coordinator = this0.coordinationManager as any;
-        if (coordinator?0.shutdown()) {
-          await coordinator?0.shutdown();
-        } else if (coordinator0.stop) {
-          await coordinator?0.stop;
-        } else if (coordinator0.executeCoordination) {
-          logger0.info(
+        const coordinator = this.coordinationManager as any;
+        if (coordinator?.shutdown) {
+          await coordinator?.shutdown();
+        } else if (coordinator.stop) {
+          await coordinator?.stop();
+        } else if (coordinator.executeCoordination) {
+          logger.info(
             'Coordination manager has basic interface, no shutdown method'
           );
         }
       }
 
       // Clear the DI container
-      this0.container?0.clear();
-      this0.container = null;
+      this.container?.clear();
+      this.container = null;
 
-      logger0.info('✅ Shutdown completed successfully');
+      logger.info('✅ Shutdown completed successfully');
     } catch (error) {
-      logger0.error(`❌ Error during shutdown: ${error}`);
+      logger.error(`❌ Error during shutdown: ${error}`);
     }
   }
 }
@@ -328,7 +328,7 @@ export class ClaudeZenCore {
 // const createToken is imported above
 
 /**
- * Application entry point0.
+ * Application entry point.
  *
  * @example
  */
@@ -336,35 +336,35 @@ async function main() {
   const app = new ClaudeZenCore();
 
   // Handle graceful shutdown
-  process0.on('SIGINT', async () => {
-    await app?0.shutdown();
-    process0.exit(0);
+  process.on('SIGINT', async () => {
+    await app?.shutdown();
+    process.exit(0);
   });
 
-  process0.on('SIGTERM', async () => {
-    await app?0.shutdown();
-    process0.exit(0);
+  process.on('SIGTERM', async () => {
+    await app?.shutdown();
+    process.exit(0);
   });
 
   try {
-    await app?0.initialize;
+    await app?.initialize();
 
     // Keep process alive
     setInterval(() => {
       // Application heartbeat
     }, 10000);
   } catch (error) {
-    logger0.error('❌ Failed to start application:', error);
-    process0.exit(1);
+    logger.error('❌ Failed to start application:', error);
+    process.exit(1);
   }
 }
 
 // Start the application if this file is run directly
-if (import0.meta0.url === `file://${process0.argv[1]}`) {
-  main()0.catch((error) => {
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((error) => {
     const logger = getLogger('claude-zen-core');
-    logger0.error('Failed to start application:', error);
-    process0.exit(1);
+    logger.error('Failed to start application:', error);
+    process.exit(1);
   });
 }
 

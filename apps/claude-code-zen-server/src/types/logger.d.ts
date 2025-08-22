@@ -31,4 +31,4 @@ export interface Logger {
    */
   error(message: string, meta?: any): void;
 }
-//# sourceMappingURL=logger0.d0.ts0.map
+//# sourceMappingURL=logger.d.ts.map

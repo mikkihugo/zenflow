@@ -30,7 +30,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {

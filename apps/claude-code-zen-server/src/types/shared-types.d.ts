@@ -1,11 +1,11 @@
 /**
- * Shared Types Module0.
+ * Shared Types Module.
  *
  * Contains interfaces and types that are shared across multiple domains
- * to prevent circular dependencies and maintain clean architecture0.
+ * to prevent circular dependencies and maintain clean architecture.
  */
 /**
- * @file TypeScript type definitions0.
+ * @file TypeScript type definitions.
  */
 export interface ZenSwarm {
   id: string;
@@ -33,7 +33,7 @@ export interface SwarmConfig {
   heartbeatInterval?: number;
   timeout?: number;
 }
-export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
+export type SwarmTopology = 'mesh | hierarchical' | 'ring | star';
 export type SwarmStatus =
   | 'initializing'
   | 'active'
@@ -74,7 +74,7 @@ export type AgentType =
   | 'specialist'
   | 'observer'
   | 'manager';
-export type CoordinationStrategy = 'parallel' | 'sequential' | 'adaptive';
+export type CoordinationStrategy = 'parallel | sequential' | 'adaptive';
 export interface MemoryEntry {
   key: string;
   value: any;
@@ -105,7 +105,7 @@ export interface Message {
   type: string;
   payload: any;
   timestamp: Date;
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  priority?: 'low | medium' | 'high | urgent';
 }
 export type TaskType =
   | 'analysis'
@@ -119,14 +119,14 @@ export interface ComponentConfig {
   [key: string]: any;
 }
 export interface SystemHealth {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
   components: Record<string, ComponentHealth>;
   uptime: number;
   version: string;
   timestamp: Date;
 }
 export interface ComponentHealth {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
   message?: string;
   lastCheck: Date;
   metrics?: Record<string, number>;
@@ -155,7 +155,7 @@ export type TaskStatus =
   | 'completed'
   | 'failed'
   | 'cancelled';
-export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TaskPriority = 'low | medium' | 'high | urgent';
 export interface NeuralModel {
   id: string;
   name: string;
@@ -225,9 +225,9 @@ export interface MemoryProvider {
   clear(): Promise<void>;
 }
 export interface LoggingProvider {
-  debug(message: string, 0.0.0.args: any[]): void;
-  info(message: string, 0.0.0.args: any[]): void;
-  warn(message: string, 0.0.0.args: any[]): void;
-  error(message: string, 0.0.0.args: any[]): void;
+  debug(message: string, args: any[]): void;
+  info(message: string, args: any[]): void;
+  warn(message: string, args: any[]): void;
+  error(message: string, args: any[]): void;
 }
-//# sourceMappingURL=shared-types0.d0.ts0.map
+//# sourceMappingURL=shared-types.d.ts.map

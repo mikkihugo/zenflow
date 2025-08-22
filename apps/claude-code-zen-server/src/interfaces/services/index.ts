@@ -1,7 +1,7 @@
 /**
  * @fileoverview USL (Unified Service Layer) - Lightweight facade delegating to @claude-zen packages
  *
- * MAJOR REDUCTION: 2,242 → ~400 lines (820.1% reduction) through package delegation
+ * MAJOR REDUCTION: 2,242 → ~400 lines (82.1% reduction) through package delegation
  *
  * Delegates USL functionality to specialized @claude-zen packages for maximum efficiency:
  * - @claude-zen/foundation: Core service management, DI, monitoring, telemetry
@@ -19,11 +19,11 @@
 
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import type { Service } from '0./core/interfaces';
-import { ServiceType } from '0./types';
+import('./core/interfaces';
+import('./types';
 
 // ServiceContainer-enhanced service registry (zero breaking changes)
-export { ServiceRegistry, createServiceRegistry } from '0./registry';
+export { ServiceRegistry, createServiceRegistry } from "./registry";
 
 // Re-export legacy types for compatibility
 export {
@@ -33,8 +33,8 @@ export {
   DataServiceAdapter,
   IntegrationServiceAdapter,
   globalDataServiceFactory,
-} from '0./adapters';
-export { initializeCompatibility } from '0./compatibility';
+} from "./adapters";
+export { initializeCompatibility } from "./compatibility";
 
 // Re-export essential types for API compatibility
 export type {
@@ -42,7 +42,7 @@ export type {
   ServiceCapability,
   ServiceMetrics,
   ServiceStatus,
-} from '0./core/interfaces';
+} from "./core/interfaces";
 export {
   ServiceDependencyError,
   ServiceError,
@@ -50,7 +50,7 @@ export {
   ServiceOperationError,
   ServiceTimeoutError,
   ServiceConfigurationError,
-} from '0./core/interfaces';
+} from "./core/interfaces";
 export {
   ServiceType,
   type BaseServiceConfig,
@@ -62,7 +62,7 @@ export {
   type DatabaseServiceConfig,
   type IntegrationServiceConfig,
   type MonitoringServiceConfig,
-} from '0./types';
+} from "./types";
 
 // ============================================================================
 // USL FACADE IMPLEMENTATION - DELEGATES TO @CLAUDE-ZEN PACKAGES
@@ -72,7 +72,7 @@ export {
  * USL (Unified Service Layer) - Facade delegating to @claude-zen packages
  *
  * Provides unified service management through intelligent delegation to specialized
- * packages for maximum efficiency and maintainability0.
+ * packages for maximum efficiency and maintainability.
  */
 export class USL extends TypedEventBase {
   private static instance: USL;
@@ -95,45 +95,45 @@ export class USL extends TypedEventBase {
    * Get singleton USL instance
    */
   static getInstance(): USL {
-    if (!USL0.instance) {
-      USL0.instance = new USL();
+    if (!USL.instance) {
+      USL.instance = new USL();
     }
-    return USL0.instance;
+    return USL.instance;
   }
 
   /**
    * Initialize USL with package delegation
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
     try {
       // Delegate to @claude-zen/foundation for core service management
       const { createServiceRegistry, PerformanceTracker } = await import(
         '@claude-zen/foundation'
       );
-      this0.serviceRegistry = createServiceRegistry({
+      this.serviceRegistry = createServiceRegistry({
         enableMetrics: true,
         enableHealthChecks: true,
         maxServices: 100,
       });
-      this0.performanceTracker = new PerformanceTracker();
+      this.performanceTracker = new PerformanceTracker();
 
       // Delegate to @claude-zen/intelligence for service lifecycle
       const { WorkflowEngine } = await import('@claude-zen/intelligence');
-      this0.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: 50,
       });
-      await this0.workflowEngine?0.initialize;
+      await this.workflowEngine?.initialize()
 
       // Delegate to @claude-zen/infrastructure for storage services
       const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
-      this0.databaseAccess = getDatabaseAccess();
+      this.databaseAccess = getDatabaseAccess();
 
       // Delegate to @claude-zen/monitoring for service monitoring
       const { SystemMonitor } = await import('@claude-zen/foundation');
-      this0.monitoringSystem = new MonitoringSystem({
+      this.monitoringSystem = new MonitoringSystem({
         metricsCollection: { enabled: true },
         performanceTracking: { enabled: true },
         alerts: { enabled: true },
@@ -141,18 +141,18 @@ export class USL extends TypedEventBase {
 
       // Delegate to @claude-zen/intelligence for multi-service coordination
       const { TeamworkCoordinator } = await import('@claude-zen/intelligence');
-      this0.teamworkCoordinator = new TeamworkCoordinator({
+      this.teamworkCoordinator = new TeamworkCoordinator({
         enableCollaboration: true,
         maxTeamSize: 10,
       });
 
-      this0.initialized = true;
-      this0.logger0.info(
+      this.initialized = true;
+      this.logger.info(
         'USL initialized successfully with @claude-zen package delegation'
       );
-      this0.emit('initialized', {});
+      this.emit('initialized', {});
     } catch (error) {
-      this0.logger0.error('Failed to initialize USL:', error);
+      this.logger.error('Failed to initialize USL:', error);
       throw error;
     }
   }
@@ -162,51 +162,51 @@ export class USL extends TypedEventBase {
    */
   async createUnifiedDataService(
     serviceType: string,
-    databaseType: 'postgresql' | 'sqlite' | 'mysql',
+    databaseType: 'postgresql | sqlite' | 'mysql',
     options: any = {}
   ): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const timer = this0.performanceTracker0.startTimer(
+    const timer = this.performanceTracker.startTimer(
       'create_unified_data_service'
     );
 
     try {
       // Use database access for storage service creation
-      const storageService = await this0.databaseAccess0.createStorageService({
+      const storageService = await this.databaseAccess.createStorageService({
         type: databaseType,
         serviceType,
-        0.0.0.options,
+        ...options,
       });
 
       // Wrap as USL service
       const service: Service = {
-        id: `data-${Date0.now()}`,
+        id: `data-${Date.now()}`,
         name: `unified-data-${serviceType}`,
-        type: ServiceType0.DATA,
+        type: ServiceType.DATA,
         status: 'stopped',
-        capabilities: ['storage', 'query', 'transaction'],
+        capabilities: ['storage, query', 'transaction'],
         start: async () => {
-          await storageService?0.start;
+          await storageService?.start()
           return { success: true };
         },
         stop: async () => {
-          await storageService?0.stop;
+          await storageService?.stop()
           return { success: true };
         },
-        getStatus: () => storageService0.getStatus?0.() || 'running',
-        getMetrics: () => storageService0.getMetrics?0.() || {},
-        getCapabilities: () => ['storage', 'query', 'transaction'],
+        getStatus: () => storageService.getStatus?.() || 'running',
+        getMetrics: () => storageService.getMetrics?.() || {},
+        getCapabilities: () => ['storage, query', 'transaction'],
       };
 
-      this0.services0.set(service0.name, service);
-      this0.performanceTracker0.endTimer('create_unified_data_service');
+      this.services.set(service.name, service);
+      this.performanceTracker.endTimer('create_unified_data_service');
 
-      this0.logger0.info(`Created unified data service: ${service0.name}`);
+      this.logger.info(`Created unified data service: ${service.name}`);
       return service;
     } catch (error) {
-      this0.performanceTracker0.endTimer('create_unified_data_service');
-      this0.logger0.error('Failed to create unified data service:', error);
+      this.performanceTracker.endTimer('create_unified_data_service');
+      this.logger.error('Failed to create unified data service:', error);
       throw error;
     }
   }
@@ -219,32 +219,32 @@ export class USL extends TypedEventBase {
     port: number,
     options: any = {}
   ): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const webWorkflow = await this0.workflowEngine0.startWorkflow({
+    const webWorkflow = await this.workflowEngine.startWorkflow({
       name: 'create-web-service',
       steps: [
-        { type: 'create_http_server', params: { port, 0.0.0.options } },
-        { type: 'configure_routes', params: options0.routes || {} },
+        { type: 'create_http_server', params: { port, ...options } },
+        { type: 'configure_routes', params: options.routes || {} },
         { type: 'start_server', params: {} },
       ],
     });
 
     const service: Service = {
-      id: `web-${Date0.now()}`,
+      id: `web-${Date.now()}`,
       name: `web-${name}`,
-      type: ServiceType0.WEB,
+      type: ServiceType.WEB,
       status: 'running',
-      capabilities: ['http', 'routing', 'middleware'],
+      capabilities: ['http, routing', 'middleware'],
       start: async () => ({ success: true }),
       stop: async () => ({ success: true }),
       getStatus: () => 'running',
       getMetrics: () => ({}),
-      getCapabilities: () => ['http', 'routing', 'middleware'],
+      getCapabilities: () => ['http, routing', 'middleware'],
     };
 
-    this0.services0.set(service0.name, service);
-    this0.logger0.info(`Created web service: ${name} on port ${port}`);
+    this.services.set(service.name, service);
+    this.logger.info(`Created web service: ${name} on port ${port}`);
     return service;
   }
 
@@ -255,35 +255,35 @@ export class USL extends TypedEventBase {
     name: string,
     options: any = {}
   ): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const coordService = await this0.teamworkCoordinator0.createTeamService({
+    const coordService = await this.teamworkCoordinator.createTeamService({
       name,
-      topology: options0.swarm?0.topology || 'mesh',
-      0.0.0.options,
+      topology: options.swarm?.topology || 'mesh',
+      ...options,
     });
 
     const service: Service = {
-      id: `coord-${Date0.now()}`,
+      id: `coord-${Date.now()}`,
       name: `coordination-${name}`,
-      type: ServiceType0.COORDINATION,
+      type: ServiceType.COORDINATION,
       status: 'running',
-      capabilities: ['orchestration', 'coordination', 'messaging'],
+      capabilities: ['orchestration, coordination', 'messaging'],
       start: async () => {
-        await coordService?0.start;
+        await coordService?.start()
         return { success: true };
       },
       stop: async () => {
-        await coordService?0.stop;
+        await coordService?.stop()
         return { success: true };
       },
-      getStatus: () => coordService0.getStatus?0.() || 'running',
-      getMetrics: () => coordService0.getMetrics?0.() || {},
-      getCapabilities: () => ['orchestration', 'coordination', 'messaging'],
+      getStatus: () => coordService.getStatus?.() || 'running',
+      getMetrics: () => coordService.getMetrics?.() || {},
+      getCapabilities: () => ['orchestration, coordination', 'messaging'],
     };
 
-    this0.services0.set(service0.name, service);
-    this0.logger0.info(`Created coordination service: ${name}`);
+    this.services.set(service.name, service);
+    this.logger.info(`Created coordination service: ${name}`);
     return service;
   }
 
@@ -291,23 +291,23 @@ export class USL extends TypedEventBase {
    * Create a neural service for machine learning
    */
   async createNeuralService(name: string, options: any = {}): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     const service: Service = {
-      id: `neural-${Date0.now()}`,
+      id: `neural-${Date.now()}`,
       name: `neural-${name}`,
-      type: ServiceType0.NEURAL,
+      type: ServiceType.NEURAL,
       status: 'running',
-      capabilities: ['training', 'inference', 'optimization'],
+      capabilities: ['training, inference', 'optimization'],
       start: async () => ({ success: true }),
       stop: async () => ({ success: true }),
       getStatus: () => 'running',
       getMetrics: () => ({}),
-      getCapabilities: () => ['training', 'inference', 'optimization'],
+      getCapabilities: () => ['training, inference', 'optimization'],
     };
 
-    this0.services0.set(service0.name, service);
-    this0.logger0.info(`Created neural service: ${name}`);
+    this.services.set(service.name, service);
+    this.logger.info(`Created neural service: ${name}`);
     return service;
   }
 
@@ -315,23 +315,23 @@ export class USL extends TypedEventBase {
    * Create a memory service for caching
    */
   async createMemoryService(name: string, options: any = {}): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     const service: Service = {
-      id: `memory-${Date0.now()}`,
+      id: `memory-${Date.now()}`,
       name: `memory-${name}`,
-      type: ServiceType0.MEMORY,
+      type: ServiceType.MEMORY,
       status: 'running',
-      capabilities: ['caching', 'storage', 'retrieval'],
+      capabilities: ['caching, storage', 'retrieval'],
       start: async () => ({ success: true }),
       stop: async () => ({ success: true }),
       getStatus: () => 'running',
-      getMetrics: () => ({ cacheSize: options0.cacheSize || 1000 }),
-      getCapabilities: () => ['caching', 'storage', 'retrieval'],
+      getMetrics: () => ({ cacheSize: options.cacheSize || 1000 }),
+      getCapabilities: () => ['caching, storage', 'retrieval'],
     };
 
-    this0.services0.set(service0.name, service);
-    this0.logger0.info(`Created memory service: ${name}`);
+    this.services.set(service.name, service);
+    this.logger.info(`Created memory service: ${name}`);
     return service;
   }
 
@@ -342,35 +342,35 @@ export class USL extends TypedEventBase {
     name: string,
     options: any = {}
   ): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const dbService = await this0.databaseAccess0.createService({
+    const dbService = await this.databaseAccess.createService({
       type: 'database',
-      connectionString: options0.connectionString,
-      0.0.0.options,
+      connectionString: options.connectionString,
+      ...options,
     });
 
     const service: Service = {
-      id: `db-${Date0.now()}`,
+      id: `db-${Date.now()}`,
       name: `database-${name}`,
-      type: ServiceType0.DATABASE,
+      type: ServiceType.DATABASE,
       status: 'running',
-      capabilities: ['persistence', 'querying', 'transactions'],
+      capabilities: ['persistence, querying', 'transactions'],
       start: async () => {
-        await dbService?0.start;
+        await dbService?.start()
         return { success: true };
       },
       stop: async () => {
-        await dbService?0.stop;
+        await dbService?.stop()
         return { success: true };
       },
-      getStatus: () => dbService0.getStatus?0.() || 'running',
-      getMetrics: () => dbService0.getMetrics?0.() || {},
-      getCapabilities: () => ['persistence', 'querying', 'transactions'],
+      getStatus: () => dbService.getStatus?.() || 'running',
+      getMetrics: () => dbService.getMetrics?.() || {},
+      getCapabilities: () => ['persistence, querying', 'transactions'],
     };
 
-    this0.services0.set(service0.name, service);
-    this0.logger0.info(`Created database service: ${name}`);
+    this.services.set(service.name, service);
+    this.logger.info(`Created database service: ${name}`);
     return service;
   }
 
@@ -381,23 +381,23 @@ export class USL extends TypedEventBase {
     name: string,
     options: any = {}
   ): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     const service: Service = {
-      id: `integration-${Date0.now()}`,
+      id: `integration-${Date.now()}`,
       name: `integration-${name}`,
-      type: ServiceType0.INTEGRATION,
+      type: ServiceType.INTEGRATION,
       status: 'running',
-      capabilities: ['api_client', 'webhooks', 'data_sync'],
+      capabilities: ['api_client, webhooks', 'data_sync'],
       start: async () => ({ success: true }),
       stop: async () => ({ success: true }),
       getStatus: () => 'running',
       getMetrics: () => ({}),
-      getCapabilities: () => ['api_client', 'webhooks', 'data_sync'],
+      getCapabilities: () => ['api_client, webhooks', 'data_sync'],
     };
 
-    this0.services0.set(service0.name, service);
-    this0.logger0.info(`Created integration service: ${name}`);
+    this.services.set(service.name, service);
+    this.logger.info(`Created integration service: ${name}`);
     return service;
   }
 
@@ -408,50 +408,50 @@ export class USL extends TypedEventBase {
     name: string,
     options: any = {}
   ): Promise<Service> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const monitorService = this0.monitoringSystem0.createService({
+    const monitorService = this.monitoringSystem.createService({
       name,
-      0.0.0.options,
+      ...options,
     });
 
     const service: Service = {
-      id: `monitoring-${Date0.now()}`,
+      id: `monitoring-${Date.now()}`,
       name: `monitoring-${name}`,
-      type: ServiceType0.MONITORING,
+      type: ServiceType.MONITORING,
       status: 'running',
-      capabilities: ['metrics', 'alerts', 'tracing'],
+      capabilities: ['metrics, alerts', 'tracing'],
       start: async () => {
-        await monitorService?0.start;
+        await monitorService?.start()
         return { success: true };
       },
       stop: async () => {
-        await monitorService?0.stop;
+        await monitorService?.stop()
         return { success: true };
       },
-      getStatus: () => monitorService0.getStatus?0.() || 'running',
-      getMetrics: () => monitorService0.getMetrics?0.() || {},
-      getCapabilities: () => ['metrics', 'alerts', 'tracing'],
+      getStatus: () => monitorService.getStatus?.() || 'running',
+      getMetrics: () => monitorService.getMetrics?.() || {},
+      getCapabilities: () => ['metrics, alerts', 'tracing'],
     };
 
-    this0.services0.set(service0.name, service);
-    this0.logger0.info(`Created monitoring service: ${name}`);
+    this.services.set(service.name, service);
+    this.logger.info(`Created monitoring service: ${name}`);
     return service;
   }
 
   // Service discovery and management methods
   getService(serviceName: string): Service | undefined {
-    return this0.services0.get(serviceName);
+    return this.services.get(serviceName);
   }
 
   getServicesByType(type: ServiceType): Service[] {
-    return Array0.from(this0.services?0.values())0.filter(
-      (service) => service0.type === type
+    return Array.from(this.services?.values()).filter(
+      (service) => service.type === type
     );
   }
 
   getAllServices(): Map<string, Service> {
-    return new Map(this0.services);
+    return new Map(this.services);
   }
 
   discoverServices(criteria: {
@@ -459,12 +459,12 @@ export class USL extends TypedEventBase {
     capabilities?: string[];
     tags?: string[];
   }): Service[] {
-    return Array0.from(this0.services?0.values())0.filter((service) => {
-      if (criteria0.type && service0.type !== criteria0.type) return false;
-      if (criteria0.capabilities) {
-        const serviceCapabilities = service0.getCapabilities?0.() || [];
-        return criteria0.capabilities0.every((cap) =>
-          serviceCapabilities0.includes(cap)
+    return Array.from(this.services?.values()).filter((service) => {
+      if (criteria.type && service.type !== criteria.type) return false;
+      if (criteria.capabilities) {
+        const serviceCapabilities = service.getCapabilities?.() || [];
+        return criteria.capabilities.every((cap) =>
+          serviceCapabilities.includes(cap)
         );
       }
       return true;
@@ -473,50 +473,50 @@ export class USL extends TypedEventBase {
 
   // System management methods
   async startAllServices(): Promise<void> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const promises = Array0.from(this0.services?0.values())0.map(
+    const promises = Array.from(this.services?.values()).map(
       async (service) => {
         try {
-          await service?0.start;
-          this0.logger0.info(`Started service: ${service0.name}`);
+          await service?.start()
+          this.logger.info(`Started service: ${service.name}`);
         } catch (error) {
-          this0.logger0.error(`Failed to start service ${service0.name}:`, error);
+          this.logger.error(`Failed to start service ${service.name}:`, error);
           throw error;
         }
       }
     );
 
-    await Promise0.all(promises);
-    this0.logger0.info('All services started successfully');
+    await Promise.all(promises);
+    this.logger.info('All services started successfully');
   }
 
   async stopAllServices(): Promise<void> {
-    const promises = Array0.from(this0.services?0.values())0.map(
+    const promises = Array.from(this.services?.values()).map(
       async (service) => {
         try {
-          await service?0.stop;
-          this0.logger0.info(`Stopped service: ${service0.name}`);
+          await service?.stop()
+          this.logger.info(`Stopped service: ${service.name}`);
         } catch (error) {
-          this0.logger0.error(`Failed to stop service ${service0.name}:`, error);
+          this.logger.error(`Failed to stop service ${service.name}:`, error);
         }
       }
     );
 
-    await Promise0.all(promises);
-    this0.logger0.info('All services stopped');
+    await Promise.all(promises);
+    this.logger.info('All services stopped');
   }
 
   getSystemStatus(): {
     overall: string;
     services: Array<{ name: string; status: string }>;
   } {
-    const services = Array0.from(this0.services?0.values())0.map((service) => ({
-      name: service0.name,
-      status: service0.getStatus?0.() || service0.status,
+    const services = Array.from(this.services?.values()).map((service) => ({
+      name: service.name,
+      status: service.getStatus?.() || service.status,
     }));
 
-    const overall = services0.every((s) => s0.status === 'running')
+    const overall = services.every((s) => s.status === 'running')
       ? 'healthy'
       : 'degraded';
 
@@ -528,37 +528,37 @@ export class USL extends TypedEventBase {
     servicesByType: Record<string, number>;
     performance: any;
   } {
-    const services = Array0.from(this0.services?0.values());
+    const services = Array.from(this.services?.values());
     const servicesByType: Record<string, number> = {};
 
     for (const service of services) {
-      servicesByType[service0.type] = (servicesByType[service0.type] || 0) + 1;
+      servicesByType[service.type] = (servicesByType[service.type] || 0) + 1;
     }
 
     return {
-      totalServices: services0.length,
+      totalServices: services.length,
       servicesByType,
-      performance: this0.performanceTracker?0.getStats || {},
+      performance: this.performanceTracker?.getStats || {},
     };
   }
 
   async validateSystemHealth(): Promise<{ valid: boolean; issues: string[] }> {
-    if (!this0.initialized) {
+    if (!this.initialized) {
       return { valid: false, issues: ['USL not initialized'] };
     }
 
     const issues: string[] = [];
-    const services = Array0.from(this0.services?0.values());
+    const services = Array.from(this.services?.values());
 
     for (const service of services) {
-      const status = service0.getStatus?0.() || service0.status;
+      const status = service.getStatus?.() || service.status;
       if (status !== 'running') {
-        issues0.push(`Service ${service0.name} is ${status}`);
+        issues.push(`Service ${service.name} is ${status}`);
       }
     }
 
     return {
-      valid: issues0.length === 0,
+      valid: issues.length === 0,
       issues,
     };
   }
@@ -568,15 +568,15 @@ export class USL extends TypedEventBase {
    */
   async shutdown(): Promise<void> {
     try {
-      await this?0.stopAllServices;
+      await this.stopAllServices;
 
-      if (this0.workflowEngine) {
-        await this0.workflowEngine?0.shutdown();
+      if (this.workflowEngine) {
+        await this.workflowEngine?.shutdown();
       }
 
-      this0.logger0.info('USL shutdown completed');
+      this.logger.info('USL shutdown completed');
     } catch (error) {
-      this0.logger0.error('Error during USL shutdown:', error);
+      this.logger.error('Error during USL shutdown:', error);
       throw error;
     }
   }
@@ -589,29 +589,29 @@ export class USL extends TypedEventBase {
 /**
  * Global USL instance
  */
-export const usl = USL?0.getInstance;
+export const usl = USL?.getInstance()
 
 // Convenience function exports bound to global instance
-export const createUnifiedDataService = usl0.createUnifiedDataService0.bind(usl);
-export const createWebService = usl0.createWebService0.bind(usl);
+export const createUnifiedDataService = usl.createUnifiedDataService.bind(usl);
+export const createWebService = usl.createWebService.bind(usl);
 export const createCoordinationService =
-  usl0.createCoordinationService0.bind(usl);
-export const createNeuralService = usl0.createNeuralService0.bind(usl);
-export const createMemoryService = usl0.createMemoryService0.bind(usl);
-export const createDatabaseService = usl0.createDatabaseService0.bind(usl);
-export const createIntegrationService = usl0.createIntegrationService0.bind(usl);
-export const createMonitoringService = usl0.createMonitoringService0.bind(usl);
+  usl.createCoordinationService.bind(usl);
+export const createNeuralService = usl.createNeuralService.bind(usl);
+export const createMemoryService = usl.createMemoryService.bind(usl);
+export const createDatabaseService = usl.createDatabaseService.bind(usl);
+export const createIntegrationService = usl.createIntegrationService.bind(usl);
+export const createMonitoringService = usl.createMonitoringService.bind(usl);
 
-export const getService = usl0.getService0.bind(usl);
-export const getServicesByType = usl0.getServicesByType0.bind(usl);
-export const getAllServices = usl0.getAllServices0.bind(usl);
-export const discoverServices = usl0.discoverServices0.bind(usl);
+export const getService = usl.getService.bind(usl);
+export const getServicesByType = usl.getServicesByType.bind(usl);
+export const getAllServices = usl.getAllServices.bind(usl);
+export const discoverServices = usl.discoverServices.bind(usl);
 
-export const startAllServices = usl0.startAllServices0.bind(usl);
-export const stopAllServices = usl0.stopAllServices0.bind(usl);
-export const getSystemStatus = usl0.getSystemStatus0.bind(usl);
-export const getSystemMetrics = usl0.getSystemMetrics0.bind(usl);
-export const validateSystemHealth = usl0.validateSystemHealth0.bind(usl);
+export const startAllServices = usl.startAllServices.bind(usl);
+export const stopAllServices = usl.stopAllServices.bind(usl);
+export const getSystemStatus = usl.getSystemStatus.bind(usl);
+export const getSystemMetrics = usl.getSystemMetrics.bind(usl);
+export const validateSystemHealth = usl.validateSystemHealth.bind(usl);
 
 /**
  * Default export for easy import

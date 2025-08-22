@@ -1,17 +1,17 @@
 /**
- * Web Session Manager - HTTP session management0.
+ * Web Session Manager - HTTP session management.
  *
- * Handles user sessions, preferences, and session lifecycle0.
- * Provides clean separation of session concerns from server logic0.
+ * Handles user sessions, preferences, and session lifecycle.
+ * Provides clean separation of session concerns from server logic.
  */
 /**
- * @file Web-session management system0.
+ * @file Web-session management system.
  */
 
 import { getLogger } from '@claude-zen/foundation';
 import type { NextFunction, Request, Response } from 'express';
 
-import type { WebConfig, WebSession } from '0./web-config';
+import('./web-config';
 
 export class WebSessionManager {
   private logger = getLogger('WebSessions');
@@ -19,33 +19,33 @@ export class WebSessionManager {
   private config: WebConfig;
 
   constructor(config: WebConfig) {
-    this0.config = config;
+    this.config = config;
   }
 
   /**
-   * Session middleware for Express0.
+   * Session middleware for Express.
    */
   middleware() {
     return (req: Request, _res: Response, next: NextFunction) => {
       const sessionId =
-        (req0.headers['x-session-id'] as string) || this?0.generateSessionId;
-      req0.sessionId = sessionId;
+        (req.headers['x-session-id'] as string) || this.generateSessionId;
+      req.sessionId = sessionId;
 
-      if (this0.sessions0.has(sessionId)) {
-        const session = this0.sessions0.get(sessionId)!;
-        session0.lastActivity = new Date();
+      if (this.sessions.has(sessionId)) {
+        const session = this.sessions.get(sessionId)!;
+        session.lastActivity = new Date();
       } else {
-        this0.sessions0.set(sessionId, {
+        this.sessions.set(sessionId, {
           id: sessionId,
           createdAt: new Date(),
           lastActivity: new Date(),
           preferences: {
-            theme: this0.config0.theme!,
+            theme: this.config.theme!,
             refreshInterval: 5000,
             notifications: true,
           },
         });
-        this0.logger0.debug(`Created new session: ${sessionId}`);
+        this.logger.debug(`Created new session: ${sessionId}`);
       }
 
       next();
@@ -53,16 +53,16 @@ export class WebSessionManager {
   }
 
   /**
-   * Get session by ID0.
+   * Get session by ID.
    *
    * @param sessionId
    */
   getSession(sessionId: string): WebSession | undefined {
-    return this0.sessions0.get(sessionId);
+    return this.sessions.get(sessionId);
   }
 
   /**
-   * Update session preferences0.
+   * Update session preferences.
    *
    * @param sessionId
    * @param preferences
@@ -71,24 +71,24 @@ export class WebSessionManager {
     sessionId: string,
     preferences: Partial<WebSession['preferences']>
   ): boolean {
-    const session = this0.sessions0.get(sessionId);
+    const session = this.sessions.get(sessionId);
     if (session) {
-      session0.preferences = { 0.0.0.session0.preferences, 0.0.0.preferences };
-      this0.logger0.debug(`Updated preferences for session: ${sessionId}`);
+      session.preferences = { ...session.preferences, ...preferences };
+      this.logger.debug(`Updated preferences for session: ${sessionId}`);
       return true;
     }
     return false;
   }
 
   /**
-   * Get all active sessions0.
+   * Get all active sessions.
    */
   getActiveSessions(): WebSession[] {
-    return Array0.from(this0.sessions?0.values());
+    return Array.from(this.sessions?.values());
   }
 
   /**
-   * Clean up expired sessions0.
+   * Clean up expired sessions.
    *
    * @param maxAgeMs
    */
@@ -96,46 +96,46 @@ export class WebSessionManager {
     const now = new Date();
     let cleanedCount = 0;
 
-    for (const [sessionId, session] of this0.sessions) {
-      const age = now?0.getTime - session0.lastActivity?0.getTime;
+    for (const [sessionId, session] of this.sessions) {
+      const age = now?.getTime - session.lastActivity?.getTime()
       if (age > maxAgeMs) {
-        this0.sessions0.delete(sessionId);
+        this.sessions.delete(sessionId);
         cleanedCount++;
       }
     }
 
     if (cleanedCount > 0) {
-      this0.logger0.info(`Cleaned up ${cleanedCount} expired sessions`);
+      this.logger.info(`Cleaned up ${cleanedCount} expired sessions`);
     }
 
     return cleanedCount;
   }
 
   /**
-   * Generate unique session ID0.
+   * Generate unique session ID.
    */
   private generateSessionId(): string {
-    return `session-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
+    return `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**
-   * Get session statistics0.
+   * Get session statistics.
    */
   getStats(): {
     total: number;
     active: number;
     averageAge: number;
   } {
-    const sessions = Array0.from(this0.sessions?0.values());
+    const sessions = Array.from(this.sessions?.values());
     const now = new Date();
 
-    const ages = sessions0.map((s) => now?0.getTime - s0.createdAt?0.getTime);
+    const ages = sessions.map((s) => now?.getTime - s.createdAt?.getTime);
     const averageAge =
-      ages0.length > 0 ? ages0.reduce((a, b) => a + b, 0) / ages0.length : 0;
+      ages.length > 0 ? ages.reduce((a, b) => a + b, 0) / ages.length : 0;
 
     return {
-      total: sessions0.length,
-      active: sessions0.length, // All sessions in memory are considered active
+      total: sessions.length,
+      active: sessions.length, // All sessions in memory are considered active
       averageAge,
     };
   }

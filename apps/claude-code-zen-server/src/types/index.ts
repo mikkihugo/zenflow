@@ -1,12 +1,12 @@
 /**
- * Types Module - Barrel Export0.
+ * Types Module - Barrel Export.
  *
- * Central export point for all shared types across the system0.
+ * Central export point for all shared types across the system.
  */
 
 // Neural WASM types export for system-wide availability
 /**
- * @file Types module exports0.
+ * @file Types module exports.
  */
 
 export type {
@@ -31,7 +31,7 @@ export type {
   AgentStatus as DetailedAgentStatus,
   AgentType as DetailedAgentType,
   GlobalAgentInfo,
-} from '0./agent-types';
+} from "./agent-types";
 // Primary exports from shared-types (these are the main Agent interface)
 // Re-export shared types selectively to avoid conflicts
 export type {
@@ -42,37 +42,37 @@ export type {
   TaskStatus,
   ZenSwarm as SwarmType,
   ZenSwarm,
-} from '0./shared-types';
+} from "./shared-types";
 
 // Type guards and utilities
-export function isZenSwarm(obj: any): obj is import('0./shared-types')0.ZenSwarm {
+export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
   return (
     obj &&
-    typeof obj0.id === 'string' &&
-    typeof obj['topology'] === 'string' &&
-    Array0.isArray(obj['agents'])
+    typeof obj.id === 'string' &&
+    typeof obj['topology] === string' &&
+    Array.isArray(obj['agents'])
   );
 }
 
 export function isSwarmAgent(
   obj: any
-): obj is import('0./shared-types')0.SwarmAgent {
+): obj is import('./shared-types').SwarmAgent {
   return (
     obj &&
-    typeof obj0.id === 'string' &&
-    typeof obj0.name === 'string' &&
-    typeof obj0.type === 'string'
+    typeof obj.id === 'string' &&
+    typeof obj.name === 'string' &&
+    typeof obj.type === 'string'
   );
 }
 
 export function isSystemEvent(
   obj: any
-): obj is import('0./shared-types')0.SystemEvent {
+): obj is import('./shared-types').SystemEvent {
   return (
     obj &&
-    typeof obj0.id === 'string' &&
-    typeof obj0.type === 'string' &&
-    typeof obj['source'] === 'string'
+    typeof obj.id === 'string' &&
+    typeof obj.type === 'string' &&
+    typeof obj['source] === string'
   );
 }
 
@@ -85,12 +85,12 @@ export {
   isPositiveNumber,
   isValidNumber,
 } from '@claude-zen/foundation';
-export * from '0./client-types';
-export * from '0./events-types';
-export * from '0./knowledge-types';
+export * from "./client-types";
+export * from "./events-types";
+export * from "./knowledge-types";
 // Neural types now available via @claude-zen/intelligence package - no need to export
-export * from '0./protocol-types';
-export * from '0./services-types';
-export * from '0./singletons';
+export * from "./protocol-types";
+export * from "./services-types";
+export * from "./singletons";
 // Workflow types now available via @claude-zen/intelligence package - no need to export
-export * from '0./logger';
+export * from "./logger";

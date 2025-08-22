@@ -83,7 +83,7 @@
     "migration-helpers"
   ],
   "dependencies": {
-    "@claude-zen/brain": "link:../brain",
+    "@claude-zen/brain": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
     "eventemitter3": "^5.0.1",
     "koa-compose": "^4.1.0",

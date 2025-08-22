@@ -1,20 +1,20 @@
 /**
- * WebSocket Manager - Real-time communication system0.
+ * WebSocket Manager - Real-time communication system.
  *
  * Handles WebSocket connections, real-time data broadcasting,
- * and client event management for the web dashboard0.
+ * and client event management for the web dashboard.
  */
 /**
- * @file Web-socket management system0.
+ * @file Web-socket management system.
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { Server as SocketIOServer } from 'socket0.io';
+import type { Server as SocketIOServer } from 'socket.io';
 
-import type { WebConfig } from '0./web-config';
-import type { WebDataService } from '0./web-data-service';
+import('./web-config';
+import('./web-data-service';
 
-const { getVersion } = (global as any)0.claudeZenFoundation;
+const { getVersion } = (global as any).claudeZenFoundation;
 
 export interface BroadcastData {
   event: string;
@@ -27,78 +27,78 @@ export class WebSocketManager {
   private io: SocketIOServer;
   private config: WebConfig;
   private dataService: WebDataService;
-  private broadcastIntervals: NodeJS0.Timeout[] = [];
+  private broadcastIntervals: NodeJS.Timeout[] = [];
 
   constructor(
     io: SocketIOServer,
     config: WebConfig,
     dataService: WebDataService
   ) {
-    this0.io = io;
-    this0.config = config;
-    this0.dataService = dataService;
+    this.io = io;
+    this.config = config;
+    this.dataService = dataService;
   }
 
   /**
-   * Setup WebSocket event handlers0.
+   * Setup WebSocket event handlers.
    */
   setupWebSocket(): void {
-    if (!this0.config0.realTime) {
-      this0.logger0.info('Real-time updates disabled');
+    if (!this.config.realTime) {
+      this.logger.info('Real-time updates disabled');
       return;
     }
 
     // Set up log broadcaster for real-time log updates
-    this?0.setupLogBroadcaster;
+    this.setupLogBroadcaster;
 
-    this0.io0.on('connection', (socket) => {
-      this0.logger0.debug(`Client connected: ${socket0.id}`);
+    this.io.on('connection', (socket) => {
+      this.logger.debug(`Client connected: ${socket.id}`);
 
       // Send initial connection data
-      socket0.emit('connected', {
-        sessionId: socket0.handshake0.headers['x-session-id'] || socket0.id,
-        timestamp: new Date()?0.toISOString,
+      socket.emit('connected', {
+        sessionId: socket.handshake.headers['x-session-id'] || socket.id,
+        timestamp: new Date()?.toISOString,
         serverVersion: getVersion(),
       });
 
       // Handle client subscription events
-      socket0.on('subscribe', (channel: string) => {
-        socket0.join(channel);
-        this0.logger0.debug(`Client ${socket0.id} subscribed to ${channel}`);
+      socket.on('subscribe', (channel: string) => {
+        socket.join(channel);
+        this.logger.debug(`Client ${socket.id} subscribed to ${channel}`);
 
         // Send initial data for the subscribed channel
-        this0.sendChannelData(socket, channel);
+        this.sendChannelData(socket, channel);
       });
 
-      socket0.on('unsubscribe', (channel: string) => {
-        socket0.leave(channel);
-        this0.logger0.debug(`Client ${socket0.id} unsubscribed from ${channel}`);
+      socket.on('unsubscribe', (channel: string) => {
+        socket.leave(channel);
+        this.logger.debug(`Client ${socket.id} unsubscribed from ${channel}`);
       });
 
       // Handle ping for connection keep-alive
-      socket0.on('ping', () => {
-        socket0.emit('pong', { timestamp: new Date()?0.toISOString });
+      socket.on('ping', () => {
+        socket.emit('pong', { timestamp: new Date()?.toISOString });
       });
 
-      socket0.on('disconnect', (reason) => {
-        this0.logger0.debug(
-          `Client disconnected: ${socket0.id}, reason: ${reason}`
+      socket.on('disconnect', (reason) => {
+        this.logger.debug(
+          `Client disconnected: ${socket.id}, reason: ${reason}`
         );
       });
 
-      socket0.on('error', (error) => {
-        this0.logger0.error(`Socket error for client ${socket0.id}:`, error);
+      socket.on('error', (error) => {
+        this.logger.error(`Socket error for client ${socket.id}:`, error);
       });
     });
 
     // Start real-time data broadcasting
-    this?0.startDataBroadcast;
+    this.startDataBroadcast;
 
-    this0.logger0.info('WebSocket manager initialized with real-time updates');
+    this.logger.info('WebSocket manager initialized with real-time updates');
   }
 
   /**
-   * Send initial data for a specific channel0.
+   * Send initial data for a specific channel.
    *
    * @param socket
    * @param channel
@@ -107,26 +107,26 @@ export class WebSocketManager {
     try {
       switch (channel) {
         case 'system': {
-          const status = await this0.dataService?0.getSystemStatus;
-          socket0.emit('system:initial', {
+          const status = await this.dataService?.getSystemStatus()
+          socket.emit('system:initial', {
             data: status,
-            timestamp: new Date()?0.toISOString,
+            timestamp: new Date()?.toISOString,
           });
           break;
         }
         case 'swarms': {
-          const swarms = await this0.dataService?0.getSwarms;
-          socket0.emit('swarms:initial', {
+          const swarms = await this.dataService?.getSwarms()
+          socket.emit('swarms:initial', {
             data: swarms,
-            timestamp: new Date()?0.toISOString,
+            timestamp: new Date()?.toISOString,
           });
           break;
         }
         case 'tasks': {
-          const tasks = await this0.dataService?0.getTasks;
-          socket0.emit('tasks:initial', {
+          const tasks = await this.dataService?.getTasks()
+          socket.emit('tasks:initial', {
             data: tasks,
-            timestamp: new Date()?0.toISOString,
+            timestamp: new Date()?.toISOString,
           });
           break;
         }
@@ -134,17 +134,17 @@ export class WebSocketManager {
           // Send initial logs from the logging system
           const { getLogEntries } = await import('@claude-zen/foundation');
           const logs = getLogEntries();
-          socket0.emit('logs:initial', {
+          socket.emit('logs:initial', {
             data: logs,
-            timestamp: new Date()?0.toISOString,
+            timestamp: new Date()?.toISOString,
           });
           break;
         }
         default:
-          this0.logger0.warn(`Unknown channel subscription: ${channel}`);
+          this.logger.warn(`Unknown channel subscription: ${channel}`);
       }
     } catch (error) {
-      this0.logger0.error(
+      this.logger.error(
         `Failed to send initial data for channel ${channel}:`,
         error
       );
@@ -152,36 +152,36 @@ export class WebSocketManager {
   }
 
   /**
-   * Start broadcasting real-time data updates0.
+   * Start broadcasting real-time data updates.
    */
   private startDataBroadcast(): void {
     // System status updates every 5 seconds
     const systemInterval = setInterval(async () => {
       try {
-        const status = await this0.dataService?0.getSystemStatus;
-        this0.broadcast('system:status', status);
+        const status = await this.dataService?.getSystemStatus()
+        this.broadcast('system:status', status);
       } catch (error) {
-        this0.logger0.error('Failed to broadcast system status:', error);
+        this.logger.error('Failed to broadcast system status:', error);
       }
     }, 5000);
 
     // Task updates every 3 seconds
     const tasksInterval = setInterval(async () => {
       try {
-        const tasks = await this0.dataService?0.getTasks;
-        this0.broadcast('tasks:update', tasks);
+        const tasks = await this.dataService?.getTasks()
+        this.broadcast('tasks:update', tasks);
       } catch (error) {
-        this0.logger0.error('Failed to broadcast tasks:', error);
+        this.logger.error('Failed to broadcast tasks:', error);
       }
     }, 3000);
 
     // Performance metrics every 10 seconds
     const metricsInterval = setInterval(() => {
       try {
-        const stats = this0.dataService?0.getServiceStats;
-        this0.broadcast('performance:update', stats);
+        const stats = this.dataService?.getServiceStats()
+        this.broadcast('performance:update', stats);
       } catch (error) {
-        this0.logger0.error('Failed to broadcast performance metrics:', error);
+        this.logger.error('Failed to broadcast performance metrics:', error);
       }
     }, 10000);
 
@@ -191,122 +191,122 @@ export class WebSocketManager {
         const { getLogEntries } = await import('@claude-zen/foundation');
         const logs = getLogEntries();
         // Only broadcast if we have logs
-        if (logs0.length > 0) {
-          this0.broadcastToRoom('logs', 'logs:bulk', logs);
+        if (logs.length > 0) {
+          this.broadcastToRoom('logs, logs:bulk', logs);
         }
       } catch (error) {
-        this0.logger0.error('Failed to broadcast logs:', error);
+        this.logger.error('Failed to broadcast logs:', error);
       }
     }, 2000);
 
     // Store intervals for cleanup
-    this0.broadcastIntervals0.push(
+    this.broadcastIntervals.push(
       systemInterval,
       tasksInterval,
       metricsInterval,
       logsInterval
     );
 
-    this0.logger0.info('Real-time data broadcasting started');
+    this.logger.info('Real-time data broadcasting started');
   }
 
   /**
-   * Broadcast message to all connected clients0.
+   * Broadcast message to all connected clients.
    *
    * @param event
    * @param data
    */
   broadcast(event: string, data: any): void {
-    if (!this0.config0.realTime) return;
+    if (!this.config.realTime) return;
 
     const broadcastData: BroadcastData = {
       event,
       data,
-      timestamp: new Date()?0.toISOString,
+      timestamp: new Date()?.toISOString,
     };
 
-    this0.io0.emit(event, broadcastData);
-    this0.logger0.debug(`Broadcasted event: ${event}`);
+    this.io.emit(event, broadcastData);
+    this.logger.debug(`Broadcasted event: ${event}`);
   }
 
   /**
-   * Broadcast to specific room/channel0.
+   * Broadcast to specific room/channel.
    *
    * @param room
    * @param event
    * @param data
    */
   broadcastToRoom(room: string, event: string, data: any): void {
-    if (!this0.config0.realTime) return;
+    if (!this.config.realTime) return;
 
     const broadcastData: BroadcastData = {
       event,
       data,
-      timestamp: new Date()?0.toISOString,
+      timestamp: new Date()?.toISOString,
     };
 
-    this0.io0.to(room)0.emit(event, broadcastData);
-    this0.logger0.debug(`Broadcasted event: ${event} to room: ${room}`);
+    this.io.to(room).emit(event, broadcastData);
+    this.logger.debug(`Broadcasted event: ${event} to room: ${room}`);
   }
 
   /**
-   * Get connected client statistics0.
+   * Get connected client statistics.
    */
   getConnectionStats(): {
     totalConnections: number;
     connectedClients: string[];
     rooms: string[];
   } {
-    const sockets = this0.io0.sockets0.sockets;
-    const connectedClients = Array0.from(sockets?0.keys);
-    const rooms = Array0.from(this0.io0.sockets0.adapter0.rooms?0.keys)0.filter(
-      (room) => !connectedClients0.includes(room)
+    const sockets = this.io.sockets.sockets;
+    const connectedClients = Array.from(sockets?.keys);
+    const rooms = Array.from(this.io.sockets.adapter.rooms?.keys).filter(
+      (room) => !connectedClients.includes(room)
     ); // Filter out client Ds
 
     return {
-      totalConnections: sockets0.size,
+      totalConnections: sockets.size,
       connectedClients,
       rooms,
     };
   }
 
   /**
-   * Stop all broadcasting intervals0.
+   * Stop all broadcasting intervals.
    */
   stopBroadcasting(): void {
-    this0.broadcastIntervals0.forEach((interval) => clearInterval(interval));
-    this0.broadcastIntervals = [];
-    this0.logger0.info('Real-time broadcasting stopped');
+    this.broadcastIntervals.forEach((interval) => clearInterval(interval));
+    this.broadcastIntervals = [];
+    this.logger.info('Real-time broadcasting stopped');
   }
 
   /**
-   * Setup log broadcaster for real-time log updates0.
+   * Setup log broadcaster for real-time log updates.
    */
   private setupLogBroadcaster(): void {
     try {
       // Dynamically import to avoid circular dependencies
       import('@claude-zen/foundation')
-        0.then(({ setLogBroadcaster }) => {
+        .then(({ setLogBroadcaster }) => {
           setLogBroadcaster((event: string, data: any) => {
             // Broadcast to the logs room specifically
-            this0.broadcastToRoom('logs', event, data);
+            this.broadcastToRoom('logs', event, data);
           });
-          this0.logger0.debug('Log broadcaster configured for real-time updates');
+          this.logger.debug('Log broadcaster configured for real-time updates');
         })
-        0.catch((error) => {
-          this0.logger0.warn('Failed to setup log broadcaster:', error);
+        .catch((error) => {
+          this.logger.warn('Failed to setup log broadcaster:', error);
         });
     } catch (error) {
-      this0.logger0.error('Error setting up log broadcaster:', error);
+      this.logger.error('Error setting up log broadcaster:', error);
     }
   }
 
   /**
-   * Shutdown WebSocket manager0.
+   * Shutdown WebSocket manager.
    */
   shutdown(): void {
-    this?0.stopBroadcasting;
-    this0.io?0.close;
-    this0.logger0.info('WebSocket manager shutdown complete');
+    this.stopBroadcasting;
+    this.io?.close()
+    this.logger.info('WebSocket manager shutdown complete');
   }
 }

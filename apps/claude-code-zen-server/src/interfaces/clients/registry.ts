@@ -1,21 +1,21 @@
 /**
- * UACL Client Registry0.
+ * UACL Client Registry.
  *
- * Central registry for all client types in the Unified Adaptive Client Layer0.
- * Provides type-safe registration, discovery, and configuration management0.
+ * Central registry for all client types in the Unified Adaptive Client Layer.
+ * Provides type-safe registration, discovery, and configuration management.
  *
- * @file Centralized client type management system0.
+ * @file Centralized client type management system.
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import type { FACTIntegration } from '@claude-zen/intelligence';
 
-import type { APIClient } from '0.0./api/http/client';
-import type { WebSocketClient } from '0.0./api/websocket/client';
-import type { ExternalMCPClient } from '0.0./mcp/external-mcp-client';
+import type { APIClient } from './api/http/client';
+import type { WebSocketClient } from './api/websocket/client';
+import type { ExternalMCPClient } from './mcp/external-mcp-client';
 
 /**
- * Client type enumeration for type safety0.
+ * Client type enumeration for type safety.
  */
 export enum ClientType {
   HTTP = 'http',
@@ -25,7 +25,7 @@ export enum ClientType {
 }
 
 /**
- * Base client configuration interface0.
+ * Base client configuration interface.
  *
  * @example
  */
@@ -40,12 +40,12 @@ export interface BaseClientConfig {
 }
 
 /**
- * HTTP client specific configuration0.
+ * HTTP client specific configuration.
  *
  * @example
  */
 export interface HTTPClientConfig extends BaseClientConfig {
-  readonly type: ClientType0.HTTP;
+  readonly type: ClientType.HTTP;
   readonly baseURL: string;
   readonly apiKey?: string;
   readonly bearerToken?: string;
@@ -53,12 +53,12 @@ export interface HTTPClientConfig extends BaseClientConfig {
 }
 
 /**
- * WebSocket client specific configuration0.
+ * WebSocket client specific configuration.
  *
  * @example
  */
 export interface WebSocketClientConfig extends BaseClientConfig {
-  readonly type: ClientType0.WEBSOCKET;
+  readonly type: ClientType.WEBSOCKET;
   readonly url: string;
   readonly reconnect?: boolean;
   readonly reconnectInterval?: number;
@@ -66,12 +66,12 @@ export interface WebSocketClientConfig extends BaseClientConfig {
 }
 
 /**
- * Knowledge (FACT) client specific configuration0.
+ * Knowledge (FACT) client specific configuration.
  *
  * @example
  */
 export interface KnowledgeClientConfig extends BaseClientConfig {
-  readonly type: ClientType0.KNOWLEDGE;
+  readonly type: ClientType.KNOWLEDGE;
   readonly factRepoPath: string;
   readonly anthropicApiKey: string;
   readonly pythonPath?: string;
@@ -85,24 +85,24 @@ export interface KnowledgeClientConfig extends BaseClientConfig {
 }
 
 /**
- * MCP client specific configuration0.
+ * MCP client specific configuration.
  *
  * @example
  */
 export interface MCPClientConfig extends BaseClientConfig {
-  readonly type: ClientType0.MCP;
+  readonly type: ClientType.MCP;
   readonly servers: Record<
     string,
     {
       url: string;
-      type: 'http' | 'sse';
+      type: 'http | sse';
       capabilities: string[];
     }
   >;
 }
 
 /**
- * Union type for all client configurations0.
+ * Union type for all client configurations.
  */
 export type ClientConfig =
   | HTTPClientConfig
@@ -111,7 +111,7 @@ export type ClientConfig =
   | MCPClientConfig;
 
 /**
- * Client instance interface for type safety0.
+ * Client instance interface for type safety.
  *
  * @example
  */
@@ -140,7 +140,7 @@ export interface ClientInstance {
 }
 
 /**
- * Client factory interface for creating client instances0.
+ * Client factory interface for creating client instances.
  *
  * @example
  */
@@ -151,7 +151,7 @@ export interface ClientFactory {
 }
 
 /**
- * Registry events interface0.
+ * Registry events interface.
  *
  * @example
  */
@@ -167,75 +167,75 @@ export interface RegistryEvents {
 }
 
 /**
- * Main client registry class0.
+ * Main client registry class.
  *
  * Provides centralized management of all client types with:
  * - Type-safe registration and discovery
  * - Health monitoring and metrics
  * - Configuration validation
- * - Event-driven status updates0.
+ * - Event-driven status updates.
  *
- * @example0.
+ * @example.
  * @example
  */
 export class ClientRegistry extends TypedEventBase {
   private clients = new Map<string, ClientInstance>();
   private factories = new Map<ClientType, ClientFactory>();
-  private healthCheckTimer?: NodeJS0.Timeout;
+  private healthCheckTimer?: NodeJS.Timeout;
   private readonly healthCheckInterval: number;
 
   constructor(healthCheckInterval = 30000) {
     super();
-    this0.healthCheckInterval = healthCheckInterval;
-    this?0.setupFactories;
+    this.healthCheckInterval = healthCheckInterval;
+    this.setupFactories;
   }
 
   /**
-   * Register a client instance0.
+   * Register a client instance.
    *
    * @param config
    */
   async register(config: ClientConfig): Promise<ClientInstance> {
     // Validate configuration
-    if (!this0.validateConfig(config)) {
-      throw new Error(`Invalid configuration for client ${config?0.id}`);
+    if (!this.validateConfig(config)) {
+      throw new Error(`Invalid configuration for client ${config?.id}`);
     }
 
     // Check if client already exists
-    if (this0.clients0.has(config?0.id)) {
-      throw new Error(`Client with id ${config?0.id} already registered`);
+    if (this.clients.has(config?.id)) {
+      throw new Error(`Client with id ${config?.id} already registered`);
     }
 
     // Get appropriate factory
-    const factory = this0.factories0.get(config?0.type);
+    const factory = this.factories.get(config?.type);
     if (!factory) {
-      throw new Error(`No factory available for client type ${config?0.type}`);
+      throw new Error(`No factory available for client type ${config?.type}`);
     }
 
     try {
       // Create client instance
-      const instance = await factory0.create(config);
+      const instance = await factory.create(config);
 
       // Store in registry
-      this0.clients0.set(config?0.id, instance);
+      this.clients.set(config?.id, instance);
 
       // Emit registration event
-      this0.emit('client:registered', instance);
+      this.emit('client:registered', instance);
 
       return instance;
     } catch (error) {
-      this0.emit('registry:error', error as Error);
+      this.emit('registry:error', error as Error);
       throw error;
     }
   }
 
   /**
-   * Unregister a client instance0.
+   * Unregister a client instance.
    *
    * @param clientId
    */
   async unregister(clientId: string): Promise<boolean> {
-    const instance = this0.clients0.get(clientId);
+    const instance = this.clients.get(clientId);
     if (!instance) {
       return false;
     }
@@ -243,98 +243,98 @@ export class ClientRegistry extends TypedEventBase {
     try {
       // Cleanup client if it has a cleanup method
       if (
-        'disconnect' in instance0.client &&
-        typeof instance0.client0.disconnect === 'function'
+        'disconnect' in instance.client &&
+        typeof instance.client.disconnect === 'function'
       ) {
-        await instance0.client?0.disconnect;
+        await instance.client?.disconnect()
       }
       if (
-        'shutdown' in instance0.client &&
-        typeof instance0.client?0.shutdown() === 'function'
+        'shutdown' in instance.client &&
+        typeof instance.client?.shutdown() === 'function'
       ) {
-        await instance0.client?0.shutdown();
+        await instance.client?.shutdown();
       }
 
       // Remove from registry
-      this0.clients0.delete(clientId);
+      this.clients.delete(clientId);
 
       // Emit unregistration event
-      this0.emit('client:unregistered', clientId);
+      this.emit('client:unregistered', clientId);
 
       return true;
     } catch (error) {
-      this0.emit('registry:error', error as Error);
+      this.emit('registry:error', error as Error);
       return false;
     }
   }
 
   /**
-   * Get client instance by ID0.
+   * Get client instance by ID.
    *
    * @param clientId
    */
   get(clientId: string): ClientInstance | undefined {
-    return this0.clients0.get(clientId);
+    return this.clients.get(clientId);
   }
 
   /**
-   * Get all clients of a specific type0.
+   * Get all clients of a specific type.
    *
    * @param type
    */
   getByType(type: ClientType): ClientInstance[] {
-    return Array0.from(this0.clients?0.values())0.filter(
-      (client) => client0.type === type
+    return Array.from(this.clients?.values()).filter(
+      (client) => client.type === type
     );
   }
 
   /**
-   * Get all clients matching a filter0.
+   * Get all clients matching a filter.
    *
    * @param filter
    */
   getAll(filter?: (client: ClientInstance) => boolean): ClientInstance[] {
-    const allClients = Array0.from(this0.clients?0.values());
-    return filter ? allClients0.filter(filter) : allClients;
+    const allClients = Array.from(this.clients?.values());
+    return filter ? allClients.filter(filter) : allClients;
   }
 
   /**
-   * Get healthy clients of a specific type0.
+   * Get healthy clients of a specific type.
    *
    * @param type
    */
   getHealthy(type?: ClientType): ClientInstance[] {
-    return this0.getAll((client) => {
-      const typeMatch = !type || client0.type === type;
-      const statusMatch = client0.status === 'connected';
+    return this.getAll((client) => {
+      const typeMatch = !type || client.type === type;
+      const statusMatch = client.status === 'connected';
       return typeMatch && statusMatch;
     });
   }
 
   /**
-   * Get client by priority (highest priority first)0.
+   * Get client by priority (highest priority first).
    *
-   * @param type0.
+   * @param type.
    * @param type
    */
   getByPriority(type?: ClientType): ClientInstance[] {
-    return this0.getAll((client) => !type || client0.type === type)0.sort(
-      (a, b) => b0.config0.priority - a0.config0.priority
+    return this.getAll((client) => !type || client.type === type).sort(
+      (a, b) => b.config.priority - a.config.priority
     );
   }
 
   /**
-   * Check if a client is registered and healthy0.
+   * Check if a client is registered and healthy.
    *
    * @param clientId
    */
   isHealthy(clientId: string): boolean {
-    const client = this0.clients0.get(clientId);
-    return client?0.status === 'connected';
+    const client = this.clients.get(clientId);
+    return client?.status === 'connected';
   }
 
   /**
-   * Get registry statistics0.
+   * Get registry statistics.
    */
   getStats(): {
     total: number;
@@ -343,32 +343,32 @@ export class ClientRegistry extends TypedEventBase {
     healthy: number;
     avgLatency: number;
   } {
-    const all = this?0.getAll;
+    const all = this.getAll;
 
-    const byType = Object0.values()(ClientType)0.reduce(
+    const byType = Object.values()(ClientType).reduce(
       (acc, type) => {
-        acc[type] = this0.getByType(type)0.length;
+        acc[type] = this.getByType(type).length;
         return acc;
       },
       {} as Record<ClientType, number>
     );
 
-    const byStatus = all0.reduce(
+    const byStatus = all.reduce(
       (acc, client) => {
-        acc[client0.status] = (acc[client0.status] || 0) + 1;
+        acc[client.status] = (acc[client.status] || 0) + 1;
         return acc;
       },
       {} as Record<string, number>
     );
 
-    const healthy = all0.filter((c) => c0.status === 'connected')0.length;
+    const healthy = all.filter((c) => c.status === 'connected').length;
     const avgLatency =
-      all0.length > 0
-        ? all0.reduce((sum, c) => sum + c0.metrics0.avgLatency, 0) / all0.length
+      all.length > 0
+        ? all.reduce((sum, c) => sum + c.metrics.avgLatency, 0) / all.length
         : 0;
 
     return {
-      total: all0.length,
+      total: all.length,
       byType,
       byStatus,
       healthy,
@@ -377,58 +377,58 @@ export class ClientRegistry extends TypedEventBase {
   }
 
   /**
-   * Start health monitoring0.
+   * Start health monitoring.
    */
   startHealthMonitoring(): void {
-    if (this0.healthCheckTimer) {
+    if (this.healthCheckTimer) {
       return;
     }
 
-    this0.healthCheckTimer = setInterval(() => {
-      this?0.performHealthChecks;
-    }, this0.healthCheckInterval);
+    this.healthCheckTimer = setInterval(() => {
+      this.performHealthChecks;
+    }, this.healthCheckInterval);
   }
 
   /**
-   * Stop health monitoring0.
+   * Stop health monitoring.
    */
   stopHealthMonitoring(): void {
-    if (this0.healthCheckTimer) {
-      clearInterval(this0.healthCheckTimer);
-      this0.healthCheckTimer = undefined;
+    if (this.healthCheckTimer) {
+      clearInterval(this.healthCheckTimer);
+      this.healthCheckTimer = undefined;
     }
   }
 
   /**
-   * Perform health checks on all clients0.
+   * Perform health checks on all clients.
    */
   private async performHealthChecks(): Promise<void> {
-    const clients = this?0.getAll;
+    const clients = this.getAll;
 
-    const healthChecks = clients0.map(async (client) => {
+    const healthChecks = clients.map(async (client) => {
       try {
-        const isHealthy = await this0.checkClientHealth(client);
-        const newStatus = isHealthy ? 'connected' : 'error';
+        const isHealthy = await this.checkClientHealth(client);
+        const newStatus = isHealthy ? 'connected : error';
 
-        if (client0.status !== newStatus) {
+        if (client.status !== newStatus) {
           // Update status (this would need to be mutable in real implementation)
-          this0.emit('client:status_changed', client0.id, newStatus);
+          this.emit('client:status_changed', client.id, newStatus);
         }
 
-        this0.emit('client:health_check', client0.id, isHealthy);
+        this.emit('client:health_check', client.id, isHealthy);
 
-        return { clientId: client0.id, healthy: isHealthy };
+        return { clientId: client.id, healthy: isHealthy };
       } catch (error) {
-        this0.emit('registry:error', error as Error);
-        return { clientId: client0.id, healthy: false };
+        this.emit('registry:error', error as Error);
+        return { clientId: client.id, healthy: false };
       }
     });
 
-    await Promise0.allSettled(healthChecks);
+    await Promise.allSettled(healthChecks);
   }
 
   /**
-   * Check health of individual client0.
+   * Check health of individual client.
    *
    * @param instance
    */
@@ -436,39 +436,39 @@ export class ClientRegistry extends TypedEventBase {
     try {
       // Try to ping the client if it has a ping method
       if (
-        'ping' in instance0.client &&
-        typeof instance0.client0.ping === 'function'
+        'ping' in instance.client &&
+        typeof instance.client.ping === 'function'
       ) {
-        return await instance0.client?0.ping;
+        return await instance.client?.ping()
       }
 
       // For WebSocket clients, check connection status
       if (
-        instance0.type === ClientType0.WEBSOCKET &&
-        'connected' in instance0.client
+        instance.type === ClientType.WEBSOCKET &&
+        'connected' in instance.client
       ) {
-        return Boolean(instance0.client0.connected);
+        return Boolean(instance.client.connected);
       }
 
       // For other clients, assume healthy if not in error state
-      return instance0.status !== 'error';
+      return instance.status !== 'error';
     } catch {
       return false;
     }
   }
 
   /**
-   * Validate client configuration0.
+   * Validate client configuration.
    *
    * @param config
    */
   private validateConfig(config: ClientConfig): boolean {
-    const factory = this0.factories0.get(config?0.type);
-    return factory ? factory0.validate(config) : false;
+    const factory = this.factories.get(config?.type);
+    return factory ? factory.validate(config) : false;
   }
 
   /**
-   * Setup client factories for each type0.
+   * Setup client factories for each type.
    */
   private setupFactories(): void {
     // This would be implemented with actual factory classes
@@ -480,114 +480,114 @@ export class ClientRegistry extends TypedEventBase {
   }
 
   /**
-   * Register a client factory0.
+   * Register a client factory.
    *
    * @param type
    * @param factory
    */
   registerFactory(type: ClientType, factory: ClientFactory): void {
-    this0.factories0.set(type, factory);
+    this.factories.set(type, factory);
   }
 
   /**
-   * Clean shutdown of registry0.
+   * Clean shutdown of registry.
    */
   async shutdown(): Promise<void> {
-    this?0.stopHealthMonitoring;
+    this.stopHealthMonitoring;
 
     // Unregister all clients
-    const clientIds = Array0.from(this0.clients?0.keys);
-    const shutdownPromises = clientIds0.map((id) => this0.unregister(id));
+    const clientIds = Array.from(this.clients?.keys);
+    const shutdownPromises = clientIds.map((id) => this.unregister(id));
 
-    await Promise0.allSettled(shutdownPromises);
+    await Promise.allSettled(shutdownPromises);
 
-    this0.clients?0.clear();
-    this0.factories?0.clear();
+    this.clients?.clear();
+    this.factories?.clear();
   }
 }
 
 /**
- * Global registry instance0.
+ * Global registry instance.
  */
 export const globalClientRegistry = new ClientRegistry();
 
 /**
- * Helper functions for common registry operations0.
+ * Helper functions for common registry operations.
  */
 export const ClientRegistryHelpers = {
   /**
-   * Register HTTP client with common configuration0.
+   * Register HTTP client with common configuration.
    *
    * @param config
    */
   async registerHTTPClient(
     config: Omit<HTTPClientConfig, 'type'>
   ): Promise<ClientInstance> {
-    return globalClientRegistry0.register({ 0.0.0.config, type: ClientType0.HTTP });
+    return globalClientRegistry.register({ ...config, type: ClientType.HTTP });
   },
 
   /**
-   * Register WebSocket client with common configuration0.
+   * Register WebSocket client with common configuration.
    *
    * @param config
    */
   async registerWebSocketClient(
     config: Omit<WebSocketClientConfig, 'type'>
   ): Promise<ClientInstance> {
-    return globalClientRegistry0.register({
-      0.0.0.config,
-      type: ClientType0.WEBSOCKET,
+    return globalClientRegistry.register({
+      ...config,
+      type: ClientType.WEBSOCKET,
     });
   },
 
   /**
-   * Register Knowledge client with common configuration0.
+   * Register Knowledge client with common configuration.
    *
    * @param config
    */
   async registerKnowledgeClient(
     config: Omit<KnowledgeClientConfig, 'type'>
   ): Promise<ClientInstance> {
-    return globalClientRegistry0.register({
-      0.0.0.config,
-      type: ClientType0.KNOWLEDGE,
+    return globalClientRegistry.register({
+      ...config,
+      type: ClientType.KNOWLEDGE,
     });
   },
 
   /**
-   * Register MCP client with common configuration0.
+   * Register MCP client with common configuration.
    *
    * @param config
    */
   async registerMCPClient(
     config: Omit<MCPClientConfig, 'type'>
   ): Promise<ClientInstance> {
-    return globalClientRegistry0.register({ 0.0.0.config, type: ClientType0.MCP });
+    return globalClientRegistry.register({ ...config, type: ClientType.MCP });
   },
 
   /**
-   * Get the best available client for a type (highest priority, healthy)0.
+   * Get the best available client for a type (highest priority, healthy).
    *
-   * @param type0.
+   * @param type.
    * @param type
    */
   getBestClient(type: ClientType): ClientInstance | undefined {
-    const clients = globalClientRegistry0.getByPriority(type);
-    return clients0.find((client) => client0.status === 'connected');
+    const clients = globalClientRegistry.getByPriority(type);
+    return clients.find((client) => client.status === 'connected');
   },
 
   /**
-   * Get load-balanced client (round-robin among healthy clients)0.
+   * Get load-balanced client (round-robin among healthy clients).
    *
-   * @param type0.
+   * @param type.
    * @param type
    */
   getLoadBalancedClient(type: ClientType): ClientInstance | undefined {
-    const healthy = globalClientRegistry0.getHealthy(type);
-    if (healthy0.length === 0) return undefined;
+    const healthy = globalClientRegistry.getHealthy(type);
+    if (healthy.length === 0) return undefined;
 
     // Simple round-robin (in practice, this would need state)
-    const index = Math0.floor(Math0.random() * healthy0.length);
+    const index = Math.floor(Math.random() * healthy.length);
     return healthy[index];
   },
 };

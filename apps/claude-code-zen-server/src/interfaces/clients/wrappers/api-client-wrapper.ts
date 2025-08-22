@@ -1,14 +1,14 @@
 /**
- * API Client Wrapper0.
+ * API Client Wrapper.
  *
- * Backward compatibility wrapper that maintains the existing APIClient interface0.
- * While using the new UACL HTTP Client Adapter internally0.
+ * Backward compatibility wrapper that maintains the existing APIClient interface.
+ * While using the new UACL HTTP Client Adapter internally.
  *
- * This allows existing code to continue working without changes while gaining0.
- * UACL benefits (unified auth, retry, monitoring, health checks)0.
+ * This allows existing code to continue working without changes while gaining.
+ * UACL benefits (unified auth, retry, monitoring, health checks).
  */
 /**
- * @file Interface implementation: api-client-wrapper0.
+ * @file Interface implementation: api-client-wrapper.
  */
 
 import { getMCPServerURL } from '@claude-zen/foundation';
@@ -25,14 +25,14 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '0.0./0.0./0.0./coordination/schemas';
-import { HTTPClientAdapter } from '0.0./adapters/http-client-adapter';
-import type { HTTPClientConfig } from '0.0./adapters/http-types';
+} from './../../coordination/schemas';
+import { HTTPClientAdapter } from './adapters/http-client-adapter';
+import type { HTTPClientConfig } from './adapters/http-types';
 
 /**
- * Legacy API Client Configuration (maintained for compatibility)0.
+ * Legacy API Client Configuration (maintained for compatibility).
  *
- * @example0.
+ * @example.
  * @example
  */
 export interface APIClientConfig {
@@ -46,7 +46,7 @@ export interface APIClientConfig {
 }
 
 /**
- * Default client configuration0.
+ * Default client configuration.
  */
 export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
   baseURL: getMCPServerURL(),
@@ -56,7 +56,7 @@ export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
 } as const;
 
 /**
- * Request options for API calls0.
+ * Request options for API calls.
  *
  * @example
  */
@@ -67,7 +67,7 @@ export interface RequestOptions {
 }
 
 /**
- * Pagination parameters for list operations0.
+ * Pagination parameters for list operations.
  *
  * @example
  */
@@ -77,7 +77,7 @@ export interface PaginationOptions {
 }
 
 /**
- * API Client Wrapper maintaining backward compatibility0.
+ * API Client Wrapper maintaining backward compatibility.
  *
  * @example
  */
@@ -86,28 +86,28 @@ export class APIClient {
   private config: APIClientConfig;
 
   constructor(config: Partial<APIClientConfig> = {}) {
-    this0.config = { 0.0.0.DEFAULT_CLIENT_CONFIG, 0.0.0.config };
-    this0.httpClient = this?0.createHTTPClient;
+    this.config = { ...DEFAULT_CLIENT_CONFIG, ...config };
+    this.httpClient = this.createHTTPClient;
   }
 
   /**
-   * Create UACL HTTP client from legacy configuration0.
+   * Create UACL HTTP client from legacy configuration.
    */
   private createHTTPClient(): HTTPClientAdapter {
     // Convert legacy config to UACL config
     const uaclConfig: HTTPClientConfig = {
       name: 'api-client',
-      baseURL: this0.config0.baseURL,
-      timeout: this0.config0.timeout ?? undefined,
-      headers: this0.config0.headers ?? undefined,
+      baseURL: this.config.baseURL,
+      timeout: this.config.timeout ?? undefined,
+      headers: this.config.headers ?? undefined,
 
       // Convert authentication
-      authentication: this?0.createAuthConfig,
+      authentication: this.createAuthConfig,
 
       // Convert retry configuration
       retry: {
-        attempts: this0.config0.retryAttempts || 3,
-        delay: this0.config0.retryDelay || 1000,
+        attempts: this.config.retryAttempts || 3,
+        delay: this.config.retryDelay || 1000,
         backoff: 'exponential',
         retryStatusCodes: [408, 429, 500, 502, 503, 504],
       },
@@ -135,20 +135,20 @@ export class APIClient {
   }
 
   /**
-   * Create authentication configuration from legacy settings0.
+   * Create authentication configuration from legacy settings.
    */
   private createAuthConfig(): HTTPClientConfig['authentication'] {
-    if (this0.config0.bearerToken) {
+    if (this.config.bearerToken) {
       return {
         type: 'bearer',
-        token: this0.config0.bearerToken,
+        token: this.config.bearerToken,
       };
     }
 
-    if (this0.config0.apiKey) {
+    if (this.config.apiKey) {
       return {
         type: 'apikey',
-        apiKey: this0.config0.apiKey,
+        apiKey: this.config.apiKey,
         apiKeyHeader: 'X-API-Key',
       };
     }
@@ -157,7 +157,7 @@ export class APIClient {
   }
 
   /**
-   * Generic HTTP method wrapper with type safety (maintained interface)0.
+   * Generic HTTP method wrapper with type safety (maintained interface).
    *
    * @param method
    * @param endpoint
@@ -165,53 +165,53 @@ export class APIClient {
    * @param options
    */
   private async request<T>(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    method: 'GET | POST' | 'PUT | DELETE',
     endpoint: string,
     data?: any,
     options?: RequestOptions
   ): Promise<T> {
     const uaclOptions = {
-      timeout: options?0.timeout ?? undefined,
-      headers: options?0.headers ?? undefined,
-      retries: options?0.retries ?? undefined,
+      timeout: options?.timeout ?? undefined,
+      headers: options?.headers ?? undefined,
+      retries: options?.retries ?? undefined,
     };
 
     let response;
 
     switch (method) {
       case 'GET':
-        response = await this0.httpClient0.get(endpoint, uaclOptions);
+        response = await this.httpClient.get(endpoint, uaclOptions);
         break;
       case 'POST':
-        response = await this0.httpClient0.post(endpoint, data, uaclOptions);
+        response = await this.httpClient.post(endpoint, data, uaclOptions);
         break;
       case 'PUT':
-        response = await this0.httpClient0.put(endpoint, data, uaclOptions);
+        response = await this.httpClient.put(endpoint, data, uaclOptions);
         break;
       case 'DELETE':
-        response = await this0.httpClient0.delete(endpoint, uaclOptions);
+        response = await this.httpClient.delete(endpoint, uaclOptions);
         break;
       default:
         throw new Error(`Unsupported HTTP method: ${method}`);
     }
 
-    return response?0.data;
+    return response?.data()
   }
 
   // ===== COORDINATION API METHODS (maintained interface) =====
 
   /**
-   * Coordination API client0.
+   * Coordination API client.
    */
   public readonly coordination = {
     /**
-     * List agents with filtering and pagination0.
+     * List agents with filtering and pagination.
      *
      * @param params
-     * @param params0.status
-     * @param params0.type
-     * @param params0.limit
-     * @param params0.offset
+     * @param params.status
+     * @param params.type
+     * @param params.limit
+     * @param params.offset
      * @param options
      */
     listAgents: async (
@@ -224,12 +224,12 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?0.status) queryParams?0.set('status', params?0.status);
-      if (params?0.type) queryParams?0.set('type', params?0.type);
-      if (params?0.limit) queryParams?0.set('limit', params?0.limit?0.toString);
-      if (params?0.offset) queryParams?0.set('offset', params?0.offset?0.toString);
+      if (params?.status) queryParams?.set('status', params?.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.limit) queryParams?.set('limit', params?.limit?.toString);
+      if (params?.offset) queryParams?.set('offset', params?.offset?.toString);
 
-      return this0.request<{
+      return this.request<{
         agents: Agent[];
         total: number;
         offset: number;
@@ -243,11 +243,11 @@ export class APIClient {
     },
 
     /**
-     * Create new agent0.
+     * Create new agent.
      *
      * @param data
-     * @param data0.type
-     * @param data0.capabilities
+     * @param data.type
+     * @param data.capabilities
      * @param options
      */
     createAgent: async (
@@ -257,7 +257,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<Agent>(
+      return this.request<Agent>(
         'POST',
         '/api/v1/coordination/agents',
         data,
@@ -266,13 +266,13 @@ export class APIClient {
     },
 
     /**
-     * Get agent by ID0.
+     * Get agent by ID.
      *
      * @param agentId
      * @param options
      */
     getAgent: async (agentId: string, options?: RequestOptions) => {
-      return this0.request<Agent>(
+      return this.request<Agent>(
         'GET',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
@@ -281,13 +281,13 @@ export class APIClient {
     },
 
     /**
-     * Remove agent0.
+     * Remove agent.
      *
      * @param agentId
      * @param options
      */
     removeAgent: async (agentId: string, options?: RequestOptions) => {
-      return this0.request<void>(
+      return this.request<void>(
         'DELETE',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
@@ -296,13 +296,13 @@ export class APIClient {
     },
 
     /**
-     * Create new task0.
+     * Create new task.
      *
      * @param data
-     * @param data0.type
-     * @param data0.description
-     * @param data0.priority
-     * @param data0.deadline
+     * @param data.type
+     * @param data.description
+     * @param data.priority
+     * @param data.deadline
      * @param options
      */
     createTask: async (
@@ -314,7 +314,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<Task>(
+      return this.request<Task>(
         'POST',
         '/api/v1/coordination/tasks',
         data,
@@ -323,13 +323,13 @@ export class APIClient {
     },
 
     /**
-     * Get task by ID0.
+     * Get task by ID.
      *
      * @param taskId
      * @param options
      */
     getTask: async (taskId: string, options?: RequestOptions) => {
-      return this0.request<Task>(
+      return this.request<Task>(
         'GET',
         `/api/v1/coordination/tasks/${taskId}`,
         undefined,
@@ -338,12 +338,12 @@ export class APIClient {
     },
 
     /**
-     * Get swarm configuration0.
+     * Get swarm configuration.
      *
      * @param options
      */
     getSwarmConfig: async (options?: RequestOptions) => {
-      return this0.request<SwarmConfig>(
+      return this.request<SwarmConfig>(
         'GET',
         '/api/v1/coordination/swarm/config',
         undefined,
@@ -352,7 +352,7 @@ export class APIClient {
     },
 
     /**
-     * Update swarm configuration0.
+     * Update swarm configuration.
      *
      * @param config
      * @param options
@@ -361,7 +361,7 @@ export class APIClient {
       config: SwarmConfig,
       options?: RequestOptions
     ) => {
-      return this0.request<SwarmConfig>(
+      return this.request<SwarmConfig>(
         'PUT',
         '/api/v1/coordination/swarm/config',
         config,
@@ -370,12 +370,12 @@ export class APIClient {
     },
 
     /**
-     * Get coordination system health0.
+     * Get coordination system health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<HealthStatus>(
+      return this.request<HealthStatus>(
         'GET',
         '/api/v1/coordination/health',
         undefined,
@@ -384,17 +384,17 @@ export class APIClient {
     },
 
     /**
-     * Get performance metrics0.
+     * Get performance metrics.
      *
      * @param timeRange
      * @param options
      */
     getMetrics: async (
-      timeRange?: '1h' | '24h' | '7d' | '30d',
+      timeRange?: '1h | 24h' | '7d | 30d',
       options?: RequestOptions
     ) => {
       const queryParams = timeRange ? `?timeRange=${timeRange}` : '';
-      return this0.request<PerformanceMetrics>(
+      return this.request<PerformanceMetrics>(
         'GET',
         `/api/v1/coordination/metrics${queryParams}`,
         undefined,
@@ -406,15 +406,15 @@ export class APIClient {
   // ===== NEURAL NETWORK API METHODS (maintained interface) =====
 
   /**
-   * Neural Network API client0.
+   * Neural Network API client.
    */
   public readonly neural = {
     /**
-     * List neural networks0.
+     * List neural networks.
      *
      * @param params
-     * @param params0.type
-     * @param params0.status
+     * @param params.type
+     * @param params.status
      * @param options
      */
     listNetworks: async (
@@ -425,20 +425,20 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?0.type) queryParams?0.set('type', params?0.type);
-      if (params?0.status) queryParams?0.set('status', params?0.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.status) queryParams?.set('status', params?.status);
 
-      return this0.request<{
+      return this.request<{
         networks: NeuralNetwork[];
       }>('GET', `/api/v1/neural/networks?${queryParams}`, undefined, options);
     },
 
     /**
-     * Create neural network0.
+     * Create neural network.
      *
      * @param data
-     * @param data0.type
-     * @param data0.layers
+     * @param data.type
+     * @param data.layers
      * @param options
      */
     createNetwork: async (
@@ -448,7 +448,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<NeuralNetwork>(
+      return this.request<NeuralNetwork>(
         'POST',
         '/api/v1/neural/networks',
         data,
@@ -457,13 +457,13 @@ export class APIClient {
     },
 
     /**
-     * Get neural network by ID0.
+     * Get neural network by ID.
      *
      * @param networkId
      * @param options
      */
     getNetwork: async (networkId: string, options?: RequestOptions) => {
-      return this0.request<NeuralNetwork>(
+      return this.request<NeuralNetwork>(
         'GET',
         `/api/v1/neural/networks/${networkId}`,
         undefined,
@@ -472,7 +472,7 @@ export class APIClient {
     },
 
     /**
-     * Start training0.
+     * Start training.
      *
      * @param networkId
      * @param data
@@ -483,14 +483,14 @@ export class APIClient {
       data: TrainingRequest,
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         trainingId: string;
         status: 'started';
       }>('POST', `/api/v1/neural/networks/${networkId}/train`, data, options);
     },
 
     /**
-     * Make prediction0.
+     * Make prediction.
      *
      * @param networkId
      * @param data
@@ -501,7 +501,7 @@ export class APIClient {
       data: PredictionRequest,
       options?: RequestOptions
     ) => {
-      return this0.request<PredictionResponse>(
+      return this.request<PredictionResponse>(
         'POST',
         `/api/v1/neural/networks/${networkId}/predict`,
         data,
@@ -510,7 +510,7 @@ export class APIClient {
     },
 
     /**
-     * Get training job status0.
+     * Get training job status.
      *
      * @param networkId
      * @param trainingId
@@ -521,10 +521,10 @@ export class APIClient {
       trainingId: string,
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         id: string;
         networkId: string;
-        status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
+        status: 'pending | running' | 'completed | failed' | 'cancelled';
         progress: number;
         currentEpoch?: number;
         totalEpochs: number;
@@ -537,7 +537,7 @@ export class APIClient {
     },
 
     /**
-     * Cancel training job0.
+     * Cancel training job.
      *
      * @param networkId
      * @param trainingId
@@ -548,7 +548,7 @@ export class APIClient {
       trainingId: string,
       options?: RequestOptions
     ) => {
-      return this0.request<void>(
+      return this.request<void>(
         'DELETE',
         `/api/v1/neural/networks/${networkId}/training/${trainingId}`,
         undefined,
@@ -560,16 +560,16 @@ export class APIClient {
   // ===== MEMORY API METHODS (maintained interface) =====
 
   /**
-   * Memory API client0.
+   * Memory API client.
    */
   public readonly memory = {
     /**
-     * List memory stores0.
+     * List memory stores.
      *
      * @param options
      */
     listStores: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         stores: Array<{
           id: string;
           type: string;
@@ -579,18 +579,18 @@ export class APIClient {
           created: string;
         }>;
         total: number;
-      }>('GET', '/api/v1/memory/stores', undefined, options);
+      }>('GET, /api/v1/memory/stores', undefined, options);
     },
 
     /**
-     * Get value by key0.
+     * Get value by key.
      *
      * @param storeId
      * @param key
      * @param options
      */
     get: async (storeId: string, key: string, options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         storeId: string;
         key: string;
         value: any;
@@ -606,14 +606,14 @@ export class APIClient {
     },
 
     /**
-     * Set value by key0.
+     * Set value by key.
      *
      * @param storeId
      * @param key
      * @param data
-     * @param data0.value
-     * @param data0.ttl
-     * @param data0.metadata
+     * @param data.value
+     * @param data.ttl
+     * @param data.metadata
      * @param options
      */
     set: async (
@@ -626,7 +626,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         storeId: string;
         key: string;
         success: boolean;
@@ -636,14 +636,14 @@ export class APIClient {
     },
 
     /**
-     * Delete key0.
+     * Delete key.
      *
      * @param storeId
      * @param key
      * @param options
      */
     delete: async (storeId: string, key: string, options?: RequestOptions) => {
-      return this0.request<void>(
+      return this.request<void>(
         'DELETE',
         `/api/v1/memory/stores/${storeId}/keys/${key}`,
         undefined,
@@ -652,12 +652,12 @@ export class APIClient {
     },
 
     /**
-     * Get memory health0.
+     * Get memory health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         status: string;
         stores: Record<string, string>;
         metrics: {
@@ -665,23 +665,23 @@ export class APIClient {
           availableMemory: number;
           utilizationRate: number;
         };
-      }>('GET', '/api/v1/memory/health', undefined, options);
+      }>('GET, /api/v1/memory/health', undefined, options);
     },
   };
 
   // ===== DATABASE API METHODS (maintained interface) =====
 
   /**
-   * Database API client0.
+   * Database API client.
    */
   public readonly database = {
     /**
-     * List database connections0.
+     * List database connections.
      *
      * @param options
      */
     listConnections: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         connections: Array<{
           id: string;
           type: string;
@@ -691,17 +691,17 @@ export class APIClient {
           database: string;
         }>;
         total: number;
-      }>('GET', '/api/v1/database/connections', undefined, options);
+      }>('GET, /api/v1/database/connections', undefined, options);
     },
 
     /**
-     * Vector similarity search0.
+     * Vector similarity search.
      *
      * @param collection
      * @param data
-     * @param data0.vector
-     * @param data0.limit
-     * @param data0.filter
+     * @param data.vector
+     * @param data.limit
+     * @param data.filter
      * @param options
      */
     vectorSearch: async (
@@ -713,7 +713,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         collection: string;
         results: Array<{
           id: string;
@@ -729,11 +729,11 @@ export class APIClient {
     },
 
     /**
-     * Execute graph query0.
+     * Execute graph query.
      *
      * @param data
-     * @param data0.query
-     * @param data0.parameters
+     * @param data.query
+     * @param data.parameters
      * @param options
      */
     graphQuery: async (
@@ -743,18 +743,18 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         results: any[];
         executionTime: number;
-      }>('POST', '/api/v1/database/graph/query', data, options);
+      }>('POST, /api/v1/database/graph/query', data, options);
     },
 
     /**
-     * Execute SQL query0.
+     * Execute SQL query.
      *
      * @param data
-     * @param data0.query
-     * @param data0.parameters
+     * @param data.query
+     * @param data.parameters
      * @param options
      */
     sqlQuery: async (
@@ -764,20 +764,20 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         rows: any[];
         rowCount: number;
         executionTime: number;
-      }>('POST', '/api/v1/database/sql/query', data, options);
+      }>('POST, /api/v1/database/sql/query', data, options);
     },
 
     /**
-     * Get database health0.
+     * Get database health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         status: string;
         databases: Record<
           string,
@@ -786,23 +786,23 @@ export class APIClient {
             responseTime: number;
           }
         >;
-      }>('GET', '/api/v1/database/health', undefined, options);
+      }>('GET, /api/v1/database/health', undefined, options);
     },
   };
 
   // ===== SYSTEM API METHODS (maintained interface) =====
 
   /**
-   * System API client0.
+   * System API client.
    */
   public readonly system = {
     /**
-     * Get system health0.
+     * Get system health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         status: string;
         timestamp: string;
         services: Record<string, string>;
@@ -813,16 +813,16 @@ export class APIClient {
           heapUsed: number;
         };
         version: string;
-      }>('GET', '/api/v1/system/health', undefined, options);
+      }>('GET, /api/v1/system/health', undefined, options);
     },
 
     /**
-     * Get system metrics0.
+     * Get system metrics.
      *
      * @param options
      */
     getMetrics: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         timestamp: string;
         uptime: number;
         memory: {
@@ -834,37 +834,37 @@ export class APIClient {
           user: number;
           system: number;
         };
-      }>('GET', '/api/v1/system/metrics', undefined, options);
+      }>('GET, /api/v1/system/metrics', undefined, options);
     },
   };
 
   // ===== UTILITY METHODS (maintained interface) =====
 
   /**
-   * Update client configuration0.
+   * Update client configuration.
    *
    * @param newConfig
    */
   public updateConfig(newConfig: Partial<APIClientConfig>): void {
-    this0.config = { 0.0.0.this0.config, 0.0.0.newConfig };
-    this0.httpClient = this?0.createHTTPClient;
+    this.config = { ...this.config, ...newConfig };
+    this.httpClient = this.createHTTPClient;
   }
 
   /**
-   * Get current configuration0.
+   * Get current configuration.
    */
   public getConfig(): APIClientConfig {
-    return { 0.0.0.this0.config };
+    return { ...this.config };
   }
 
   /**
-   * Test API connectivity0.
+   * Test API connectivity.
    *
    * @param options
    */
   public async ping(options?: RequestOptions): Promise<boolean> {
     try {
-      await this0.request<{ status: string }>(
+      await this.request<{ status: string }>(
         'GET',
         '/health',
         undefined,
@@ -879,59 +879,59 @@ export class APIClient {
   // ===== UACL ENHANCEMENTS (new methods) =====
 
   /**
-   * Get UACL client status0.
+   * Get UACL client status.
    */
   public async getClientStatus() {
-    return this0.httpClient?0.healthCheck;
+    return this.httpClient?.healthCheck()
   }
 
   /**
-   * Get UACL client metrics0.
+   * Get UACL client metrics.
    */
   public async getClientMetrics() {
-    return this0.httpClient?0.getMetrics;
+    return this.httpClient?.getMetrics()
   }
 
   /**
-   * Connect to the API (UACL method)0.
+   * Connect to the API (UACL method).
    */
   public async connect(): Promise<void> {
-    return this0.httpClient?0.connect;
+    return this.httpClient?.connect()
   }
 
   /**
-   * Disconnect from the API (UACL method)0.
+   * Disconnect from the API (UACL method).
    */
   public async disconnect(): Promise<void> {
-    return this0.httpClient?0.disconnect;
+    return this.httpClient?.disconnect()
   }
 
   /**
-   * Check if client is connected (UACL method)0.
+   * Check if client is connected (UACL method).
    */
   public isConnected(): boolean {
-    return this0.httpClient?0.isConnected;
+    return this.httpClient?.isConnected()
   }
 
   /**
-   * Get underlying UACL HTTP client (for advanced use cases)0.
+   * Get underlying UACL HTTP client (for advanced use cases).
    */
   public getUACLClient(): HTTPClientAdapter {
-    return this0.httpClient;
+    return this.httpClient;
   }
 
   /**
-   * Destroy the client and cleanup resources0.
+   * Destroy the client and cleanup resources.
    */
   public async destroy(): Promise<void> {
-    return this0.httpClient?0.destroy;
+    return this.httpClient?.destroy()
   }
 }
 
 /**
- * Factory function to create API client (maintained interface)0.
+ * Factory function to create API client (maintained interface).
  *
- * @param config0.
+ * @param config.
  * @param config
  */
 export const createAPIClient = (
@@ -941,6 +941,6 @@ export const createAPIClient = (
 };
 
 /**
- * Default API client instance (maintained interface)0.
+ * Default API client instance (maintained interface).
  */
 export const apiClient = createAPIClient();

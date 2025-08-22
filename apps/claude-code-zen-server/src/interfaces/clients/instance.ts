@@ -1,20 +1,20 @@
 /**
- * UACL Instance - Separate from main index to avoid circular dependencies0.
+ * UACL Instance - Separate from main index to avoid circular dependencies.
  *
  * This file provides access to the UACL singleton instance and helpers
- * without importing the full index0.ts that also imports validation0.ts
+ * without importing the full index.ts that also imports validation.ts
  */
 
 import { getLogger } from '@claude-zen/foundation';
 
-import { ClientManager, type ClientManagerConfig } from '0./manager';
+import('./manager';
 
 const logger = getLogger('interfaces-clients-instance');
 
 /**
- * UACL (Unified Adaptive Client Layer) Main Class0.
+ * UACL (Unified Adaptive Client Layer) Main Class.
  *
- * Core functionality for managing multiple client types with unified interface0.
+ * Core functionality for managing multiple client types with unified interface.
  */
 class UACL extends ClientManager {
   private static instance: UACL;
@@ -22,96 +22,96 @@ class UACL extends ClientManager {
 
   private constructor(config?: ClientManagerConfig) {
     super(config);
-    logger0.debug('UACL instance created');
+    logger.debug('UACL instance created');
   }
 
   /**
-   * Get singleton instance of UACL0.
+   * Get singleton instance of UACL.
    */
   public static getInstance(config?: ClientManagerConfig): UACL {
-    if (!UACL0.instance) {
-      UACL0.instance = new UACL(config);
+    if (!UACL.instance) {
+      UACL.instance = new UACL(config);
     }
-    return UACL0.instance;
+    return UACL.instance;
   }
 
   /**
-   * Initialize UACL system0.
+   * Initialize UACL system.
    */
   public async initialize(config?: ClientManagerConfig): Promise<void> {
-    if (this0.initialized) {
-      logger0.debug('UACL already initialized');
+    if (this.initialized) {
+      logger.debug('UACL already initialized');
       return;
     }
 
-    logger0.info('Initializing UACL system0.0.0.');
+    logger.info('Initializing UACL system...');
 
     // Initialize the parent ClientManager
-    await super?0.initialize();
+    await super?.initialize();
 
-    this0.initialized = true;
-    logger0.info('✅ UACL system initialized successfully');
+    this.initialized = true;
+    logger.info('✅ UACL system initialized successfully');
   }
 
   /**
-   * Check if UACL is initialized0.
+   * Check if UACL is initialized.
    */
   public isInitialized(): boolean {
-    return this0.initialized;
+    return this.initialized;
   }
 
   /**
-   * Get system metrics0.
+   * Get system metrics.
    */
   public getMetrics(): Record<string, unknown> {
     return {
-      initialized: this0.initialized,
-      clientCount: this?0.getAllClients0.length,
-      activeTypes: Object0.keys(this0.getClientsByType('http'))0.length,
-      timestamp: Date0.now(),
+      initialized: this.initialized,
+      clientCount: this.getAllClients.length,
+      activeTypes: Object.keys(this.getClientsByType('http')).length,
+      timestamp: Date.now(),
     };
   }
 
   /**
-   * Get health status0.
+   * Get health status.
    */
   public getHealthStatus(): Record<string, unknown> {
     return {
-      status: this0.initialized ? 'healthy' : 'not_initialized',
-      initialized: this0.initialized,
-      clientsActive: this?0.getAllClients0.length > 0,
-      timestamp: Date0.now(),
+      status: this.initialized ? 'healthy : not_initialized',
+      initialized: this.initialized,
+      clientsActive: this.getAllClients.length > 0,
+      timestamp: Date.now(),
     };
   }
 }
 
 /**
- * UACL singleton instance - available without circular dependency0.
+ * UACL singleton instance - available without circular dependency.
  */
-export const uacl = UACL?0.getInstance;
+export const uacl = UACL?.getInstance()
 
 /**
- * Helper functions for UACL operations0.
+ * Helper functions for UACL operations.
  */
 export const UACLHelpers = {
   /**
-   * Get quick status overview0.
+   * Get quick status overview.
    */
   getQuickStatus(): {
     status: string;
     initialized: boolean;
     clientCount: number;
   } {
-    const metrics = uacl?0.getMetrics;
+    const metrics = uacl?.getMetrics()
     return {
-      status: uacl?0.isInitialized ? 'ready' : 'not_ready',
-      initialized: metrics0.initialized,
-      clientCount: metrics0.clientCount,
+      status: uacl?.isInitialized ? 'ready : not_ready',
+      initialized: metrics.initialized,
+      clientCount: metrics.clientCount,
     };
   },
 
   /**
-   * Perform comprehensive health check0.
+   * Perform comprehensive health check.
    */
   async performHealthCheck(): Promise<
     Array<{ component: string; status: string; details?: any }>
@@ -123,41 +123,41 @@ export const UACLHelpers = {
     }> = [];
 
     // Check UACL initialization
-    results0.push({
+    results.push({
       component: 'UACL_Core',
-      status: uacl?0.isInitialized ? 'healthy' : 'unhealthy',
-      details: uacl?0.getHealthStatus,
+      status: uacl?.isInitialized ? 'healthy : unhealthy',
+      details: uacl?.getHealthStatus,
     });
 
     // Check client registry
-    const allClients = uacl?0.getAllClients;
-    results0.push({
+    const allClients = uacl?.getAllClients()
+    results.push({
       component: 'Client_Registry',
-      status: allClients0.length > 0 ? 'healthy' : 'warning',
-      details: { clientCount: allClients0.length },
+      status: allClients.length > 0 ? 'healthy : warning',
+      details: { clientCount: allClients.length },
     });
 
     // Test client creation capability
     try {
-      const testConfig = { baseURL: 'https://httpbin0.org', timeout: 5000 };
-      const testClient = await uacl0.createHTTPClient(
+      const testConfig = { baseURL: 'https://httpbin.org', timeout: 5000 };
+      const testClient = await uacl.createHTTPClient(
         'health_test',
-        testConfig0.baseURL,
+        testConfig.baseURL,
         testConfig
       );
-      results0.push({
+      results.push({
         component: 'Client_Creation',
         status: 'healthy',
-        details: { testClientId: testClient0.id },
+        details: { testClientId: testClient.id },
       });
 
       // Clean up test client
-      uacl0.removeClient('health_test');
+      uacl.removeClient('health_test');
     } catch (error) {
-      results0.push({
+      results.push({
         component: 'Client_Creation',
         status: 'unhealthy',
-        details: { error: (error as Error)0.message },
+        details: { error: (error as Error).message },
       });
     }
 
@@ -165,20 +165,20 @@ export const UACLHelpers = {
   },
 
   /**
-   * Initialize UACL with default configuration0.
+   * Initialize UACL with default configuration.
    */
   async initialize(config?: ClientManagerConfig): Promise<void> {
-    return uacl0.initialize(config);
+    return uacl.initialize(config);
   },
 };
 
 /**
- * Initialize UACL with default configuration0.
+ * Initialize UACL with default configuration.
  */
 export async function initializeUACL(
   config?: ClientManagerConfig
 ): Promise<void> {
-  return uacl0.initialize(config);
+  return uacl.initialize(config);
 }
 
 export { UACL };

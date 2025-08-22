@@ -1,10 +1,10 @@
 /**
  * @file Shared Fact System - Migration Compatibility Layer
  *
- * DEPRECATED: This file now re-exports from @claude-zen/intelligence package0.
+ * DEPRECATED: This file now re-exports from @claude-zen/intelligence package.
  *
  * The shared fact system has been moved to the knowledge package as a private
- * implementation0. This file maintains backward compatibility for existing code0.
+ * implementation. This file maintains backward compatibility for existing code.
  *
  * New code should import directly from @claude-zen/intelligence:
  * ```typescript
@@ -60,18 +60,18 @@ export class SharedFactSystem {
 
   /**
    * Check if initialized (compatibility)
-   * @deprecated Use getCoordinationFactSystem()?0.isInitialized instead
+   * @deprecated Use getCoordinationFactSystem()?.isInitialized instead
    */
   isInitialized(): boolean {
-    return getCoordinationFactSystem()?0.isInitialized;
+    return getCoordinationFactSystem()?.isInitialized()
   }
 
   /**
    * Get stats (compatibility)
-   * @deprecated Use getCoordinationFactSystem()?0.getStats instead
+   * @deprecated Use getCoordinationFactSystem()?.getStats instead
    */
   getStats() {
-    return getCoordinationFactSystem()?0.getStats;
+    return getCoordinationFactSystem()?.getStats()
   }
 
   /**
@@ -89,8 +89,8 @@ export class SharedFactSystem {
 
 // Legacy shared instance
 const legacyCompatibility = {
-  isInitialized: () => getCoordinationFactSystem()?0.isInitialized,
-  getStats: () => getCoordinationFactSystem()?0.getStats,
+  isInitialized: () => getCoordinationFactSystem()?.isInitialized,
+  getStats: () => getCoordinationFactSystem()?.getStats,
 };
 
 /**

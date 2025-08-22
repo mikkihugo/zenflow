@@ -7,7 +7,6 @@
 /**
  * @file Memory management: factory.
  */
-import { BaseMemoryBackend } from './base-backend';
 // Backend registry for dynamic loading
 const backendRegistry = new Map();
 /**
@@ -205,7 +204,8 @@ export class MemoryBackendFactory {
     }
     detectOptimalBackend(config) {
         // Auto-detect optimal backend based on requirements
-        if (config?.persistent) {
+        const wantsPersistent = config?.type === 'sqlite' || config?.type === 'lancedb';
+        if (wantsPersistent) {
             return config?.maxSize && config?.maxSize > 50 * 1024 * 1024
                 ? 'sqlite'
                 : 'file';
@@ -215,64 +215,22 @@ export class MemoryBackendFactory {
         }
         return 'memory';
     }
-    // Backend loaders - now using Foundation storage
+    // Backend loaders - delegate to FoundationMemoryBackend
     async loadMemoryBackend() {
-        // In-memory backend using Foundation's KV store
-        return class extends BaseMemoryBackend {
+        const { FoundationMemoryBackend } = await import('./foundation-adapter');
+        return class extends FoundationMemoryBackend {
             constructor(config) {
                 super({
                     ...config,
                     storageType: 'kv',
-                    databaseType: 'sqlite' // Foundation handles in-memory for us
+                    databaseType: 'sqlite'
                 });
-            }
-            async ensureInitialized() {
-                await super.initialize();
-            }
-            getCapabilities() {
-                return {
-                    persistent: false,
-                    searchable: true,
-                    transactional: false,
-                    vectorized: false,
-                    distributed: false,
-                    concurrent: true,
-                    compression: false,
-                    encryption: false,
-                };
             }
         };
     }
     async loadFileBackend() {
-        // File-based backend using Foundation's database access
-        return class extends BaseMemoryBackend {
-            constructor(config) {
-                super({
-                    ...config,
-                    storageType: 'database',
-                    databaseType: 'sqlite' // SQLite file storage
-                });
-            }
-            async ensureInitialized() {
-                await super.initialize();
-            }
-            getCapabilities() {
-                return {
-                    persistent: true,
-                    searchable: true,
-                    transactional: true,
-                    vectorized: false,
-                    distributed: false,
-                    concurrent: true,
-                    compression: false,
-                    encryption: false,
-                };
-            }
-        };
-    }
-    async loadSQLiteBackend() {
-        // SQLite backend using Foundation's database access
-        return class extends BaseMemoryBackend {
+        const { FoundationMemoryBackend } = await import('./foundation-adapter');
+        return class extends FoundationMemoryBackend {
             constructor(config) {
                 super({
                     ...config,
@@ -280,47 +238,30 @@ export class MemoryBackendFactory {
                     databaseType: 'sqlite'
                 });
             }
-            async ensureInitialized() {
-                await super.initialize();
-            }
-            getCapabilities() {
-                return {
-                    persistent: true,
-                    searchable: true,
-                    transactional: true,
-                    vectorized: false,
-                    distributed: false,
-                    concurrent: true,
-                    compression: false,
-                    encryption: false,
-                };
+        };
+    }
+    async loadSQLiteBackend() {
+        const { FoundationMemoryBackend } = await import('./foundation-adapter');
+        return class extends FoundationMemoryBackend {
+            constructor(config) {
+                super({
+                    ...config,
+                    storageType: 'database',
+                    databaseType: 'sqlite'
+                });
             }
         };
     }
     async loadJSONBBackend() {
         // LanceDB backend using Foundation's database access (closest to JSONB)
-        return class extends BaseMemoryBackend {
+        const { FoundationMemoryBackend } = await import('./foundation-adapter');
+        return class extends FoundationMemoryBackend {
             constructor(config) {
                 super({
                     ...config,
                     storageType: 'database',
                     databaseType: 'lancedb'
                 });
-            }
-            async ensureInitialized() {
-                await super.initialize();
-            }
-            getCapabilities() {
-                return {
-                    persistent: true,
-                    searchable: true,
-                    transactional: true,
-                    vectorized: true, // LanceDB supports vectors
-                    distributed: false,
-                    concurrent: true,
-                    compression: false,
-                    encryption: false,
-                };
             }
         };
     }

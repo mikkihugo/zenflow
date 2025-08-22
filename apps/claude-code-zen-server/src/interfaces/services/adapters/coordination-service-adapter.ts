@@ -1,7 +1,7 @@
 /**
  * @fileoverview USL Coordination Service Adapter - Lightweight facade delegating to @claude-zen packages
  *
- * MAJOR REDUCTION: 2,166 → ~550 lines (740.6% reduction) through package delegation
+ * MAJOR REDUCTION: 2,166 → ~550 lines (74.6% reduction) through package delegation
  *
  * Delegates coordination operations to specialized @claude-zen packages:
  * - @claude-zen/intelligence: Multi-agent collaboration and conversation orchestration
@@ -11,7 +11,7 @@
  * - @claude-zen/intelligence: Neural learning and adaptive patterns via BrainCoordinator
  *
  * PERFORMANCE BENEFITS:
- * - Battle-tested multi-agent coordination patterns from Microsoft AutoGen/ag20.ai
+ * - Battle-tested multi-agent coordination patterns from Microsoft AutoGen/ag2.ai
  * - Professional conversation orchestration and consensus building
  * - Advanced team collaboration with role-based specialization
  * - Simplified maintenance through package delegation
@@ -29,10 +29,10 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '0.0./core/interfaces';
-import { ServiceOperationError } from '0.0./core/interfaces';
-import type { CoordinationServiceConfig } from '0.0./types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '0.0./types';
+} from './core/interfaces';
+import { ServiceOperationError } from './core/interfaces';
+import type { CoordinationServiceConfig } from './types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
 
 // ============================================================================
 // COORDINATION SERVICE ADAPTER CONFIGURATION - SIMPLIFIED
@@ -88,7 +88,7 @@ export interface CoordinationServiceAdapterConfig {
  * Agent coordination request for multi-agent operations
  */
 export interface AgentCoordinationRequest {
-  readonly operation: 'spawn' | 'coordinate' | 'conversation' | 'consensus';
+  readonly operation: 'spawn | coordinate' | 'conversation | consensus';
   readonly agents?: string[];
   readonly context?: Record<string, unknown>;
   readonly timeout?: number;
@@ -99,7 +99,7 @@ export interface AgentCoordinationRequest {
  * Session management request for session operations
  */
 export interface SessionRequest {
-  readonly operation: 'create' | 'restore' | 'checkpoint' | 'destroy';
+  readonly operation: 'create | restore' | 'checkpoint | destroy';
   readonly sessionId?: string;
   readonly config?: Record<string, unknown>;
   readonly data?: any;
@@ -127,7 +127,7 @@ export interface CoordinationResponse {
  * USL Coordination Service Adapter - Facade delegating to @claude-zen packages
  *
  * Provides comprehensive coordination services through intelligent delegation
- * to specialized packages for multi-agent collaboration, session management, and workflows0.
+ * to specialized packages for multi-agent collaboration, session management, and workflows.
  */
 export class CoordinationServiceAdapter
   extends TypedEventBase
@@ -159,99 +159,99 @@ export class CoordinationServiceAdapter
 
   constructor(config: CoordinationServiceAdapterConfig) {
     super();
-    this0.logger = getLogger(
-      `CoordinationServiceAdapter:${config0.name || 'default'}`
+    this.logger = getLogger(
+      `CoordinationServiceAdapter:${config.name || 'default'}`
     );
-    this0.settings = config;
+    this.settings = config;
   }
 
   /**
    * Initialize coordination service adapter with package delegation
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
     try {
-      this0._status = 'starting';
-      this0.emit('statusChanged', { status: this0._status });
+      this._status = 'starting';
+      this.emit('statusChanged', { status: this._status });
 
       // Delegate to @claude-zen/intelligence for multi-agent coordination
       const { TeamworkSystem, ConversationOrchestrator } = await import(
         '@claude-zen/intelligence'
       );
-      this0.teamworkSystem = await TeamworkSystem?0.create;
-      this0.conversationOrchestrator = this0.teamworkSystem0.orchestrator;
-      this0.logger0.info(
+      this.teamworkSystem = await TeamworkSystem?.create()
+      this.conversationOrchestrator = this.teamworkSystem.orchestrator;
+      this.logger.info(
         'Teamwork system initialized with conversation orchestration'
       );
 
       // Delegate to @claude-zen/intelligence for coordination processes
       const { WorkflowEngine } = await import('@claude-zen/intelligence');
-      this0.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine({
         name: 'coordination-service-workflows',
         persistWorkflows: true,
-        maxConcurrentWorkflows: this0.settings0.performance?0.maxConcurrency || 20,
+        maxConcurrentWorkflows: this.settings.performance?.maxConcurrency || 20,
       });
-      await this0.workflowEngine?0.initialize;
+      await this.workflowEngine?.initialize()
 
       // Delegate to @claude-zen/foundation for performance tracking
       const { PerformanceTracker, TelemetryManager } = await import(
         '@claude-zen/foundation'
       );
-      this0.performanceTracker = new PerformanceTracker();
-      this0.telemetryManager = new TelemetryManager({
+      this.performanceTracker = new PerformanceTracker();
+      this.telemetryManager = new TelemetryManager({
         serviceName: 'coordination-service-adapter',
         enableTracing: true,
         enableMetrics:
-          this0.settings0.performance?0.enableMetricsCollection !== false,
+          this.settings.performance?.enableMetricsCollection !== false,
       });
-      await this0.telemetryManager?0.initialize;
+      await this.telemetryManager?.initialize()
 
       // Delegate to @claude-zen/intelligence for service health monitoring
       const { CompleteIntelligenceSystem: AgentMonitor } = await import(
         '@claude-zen/intelligence'
       );
-      this0.monitoringSystem = await AgentMonitor0.create({
+      this.monitoringSystem = await AgentMonitor.create({
         serviceName: 'coordination-service',
         metricsCollection: {
-          enabled: this0.settings0.performance?0.enableMetricsCollection !== false,
+          enabled: this.settings.performance?.enableMetricsCollection !== false,
         },
         performanceTracking: { enabled: true },
         alerts: { enabled: true },
       });
 
-      // Delegate to @claude-zen/intelligence for neural ML capabilities (per CLAUDE0.md)
-      if (this0.settings0.performance?0.enableLearning !== false) {
+      // Delegate to @claude-zen/intelligence for neural ML capabilities (per CLAUDE.md)
+      if (this.settings.performance?.enableLearning !== false) {
         const { BrainCoordinator } = await import('@claude-zen/intelligence');
-        this0.adaptiveLearning = new BrainCoordinator({
+        this.adaptiveLearning = new BrainCoordinator({
           autonomous: {
             enabled: true,
-            learningRate: 0.1,
-            adaptationThreshold: 0.8,
+            learningRate: .1,
+            adaptationThreshold: .8,
           },
         });
-        await this0.adaptiveLearning?0.initialize;
+        await this.adaptiveLearning?.initialize()
       }
 
       // Initialize session manager if enabled
-      if (this0.settings0.sessionService?0.enabled) {
-        await this?0.initializeSessionManager;
+      if (this.settings.sessionService?.enabled) {
+        await this.initializeSessionManager;
       }
 
-      this0.initialized = true;
-      this0._status = 'running';
-      this0.logger0.info(
+      this.initialized = true;
+      this._status = 'running';
+      this.logger.info(
         'Coordination Service Adapter initialized successfully with @claude-zen package delegation'
       );
-      this0.emit('initialized', { timestamp: new Date() });
-      this0.emit('statusChanged', { status: this0._status });
+      this.emit('initialized', { timestamp: new Date() });
+      this.emit('statusChanged', { status: this._status });
     } catch (error) {
-      this0._status = 'error';
-      this0.logger0.error(
+      this._status = 'error';
+      this.logger.error(
         'Failed to initialize Coordination Service Adapter:',
         error
       );
-      this0.emit('statusChanged', { status: this0._status, error });
+      this.emit('statusChanged', { status: this._status, error });
       throw error;
     }
   }
@@ -262,72 +262,72 @@ export class CoordinationServiceAdapter
   async coordinateAgents(
     request: AgentCoordinationRequest
   ): Promise<CoordinationResponse> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const operationId = `coord-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 9)}`;
-    const timer = this0.performanceTracker0.startTimer('coordinate_agents');
+    const operationId = `coord-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const timer = this.performanceTracker.startTimer('coordinate_agents');
 
     try {
-      this0.activeOperations0.set(operationId, {
+      this.activeOperations.set(operationId, {
         type: 'agent_coordination',
         started: new Date(),
       });
 
       let result: any;
 
-      switch (request0.operation) {
+      switch (request.operation) {
         case 'conversation':
-          result = await this0.orchestrateConversation(request);
+          result = await this.orchestrateConversation(request);
           break;
 
         case 'consensus':
-          result = await this0.buildConsensus(request);
+          result = await this.buildConsensus(request);
           break;
 
         case 'coordinate':
-          result = await this0.coordinateTeamwork(request);
+          result = await this.coordinateTeamwork(request);
           break;
 
         case 'spawn':
-          result = await this0.spawnAgents(request);
+          result = await this.spawnAgents(request);
           break;
 
         default:
           throw new ServiceOperationError(
-            `Unknown coordination operation: ${request0.operation}`
+            `Unknown coordination operation: ${request.operation}`
           );
       }
 
-      const duration = this0.performanceTracker0.endTimer('coordinate_agents');
-      this0.activeOperations0.delete(operationId);
+      const duration = this.performanceTracker.endTimer('coordinate_agents');
+      this.activeOperations.delete(operationId);
 
       // Update metrics
-      this0.operationCount++;
-      this0.successCount++;
-      this0.totalDuration += duration;
+      this.operationCount++;
+      this.successCount++;
+      this.totalDuration += duration;
 
       // Record telemetry
-      this0.telemetryManager0.recordCounter(
+      this.telemetryManager.recordCounter(
         'coordination_operations_success',
         1,
         {
-          operation: request0.operation,
-          agentCount: request0.agents?0.length || 0,
+          operation: request.operation,
+          agentCount: request.agents?.length || 0,
         }
       );
 
       // Learn from successful coordination patterns
-      if (this0.adaptiveLearning) {
-        await this0.adaptiveLearning0.recordSuccess({
-          operation: request0.operation,
-          context: request0.context,
+      if (this.adaptiveLearning) {
+        await this.adaptiveLearning.recordSuccess({
+          operation: request.operation,
+          context: request.context,
           duration,
           outcome: 'success',
         });
       }
 
-      this0.logger0.info(
-        `Agent coordination completed: ${request0.operation} (${duration}ms)`
+      this.logger.info(
+        `Agent coordination completed: ${request.operation} (${duration}ms)`
       );
 
       return {
@@ -335,36 +335,36 @@ export class CoordinationServiceAdapter
         data: result,
         metrics: {
           duration,
-          agentsInvolved: request0.agents?0.length || 0,
+          agentsInvolved: request.agents?.length || 0,
           consensusReached:
-            request0.operation === 'consensus'
-              ? result0.consensusReached
+            request.operation === 'consensus'
+              ? result.consensusReached
               : undefined,
         },
       };
     } catch (error) {
-      this0.performanceTracker0.endTimer('coordinate_agents');
-      this0.activeOperations0.delete(operationId);
+      this.performanceTracker.endTimer('coordinate_agents');
+      this.activeOperations.delete(operationId);
 
       // Update error metrics
-      this0.errorCount++;
-      this0.telemetryManager0.recordCounter('coordination_operations_error', 1, {
-        operation: request0.operation,
-        error: error instanceof Error ? error0.message : 'unknown',
+      this.errorCount++;
+      this.telemetryManager.recordCounter('coordination_operations_error', 1, {
+        operation: request.operation,
+        error: error instanceof Error ? error.message : 'unknown',
       });
 
       // Learn from failures
-      if (this0.adaptiveLearning) {
-        await this0.adaptiveLearning0.recordFailure({
-          operation: request0.operation,
-          context: request0.context,
-          error: error instanceof Error ? error0.message : 'unknown',
+      if (this.adaptiveLearning) {
+        await this.adaptiveLearning.recordFailure({
+          operation: request.operation,
+          context: request.context,
+          error: error instanceof Error ? error.message : 'unknown',
           outcome: 'failure',
         });
       }
 
-      this0.logger0.error(
-        `Agent coordination failed: ${request0.operation}`,
+      this.logger.error(
+        `Agent coordination failed: ${request.operation}`,
         error
       );
 
@@ -372,7 +372,7 @@ export class CoordinationServiceAdapter
         success: false,
         error:
           error instanceof Error
-            ? error0.message
+            ? error.message
             : 'Coordination operation failed',
       };
     }
@@ -382,53 +382,53 @@ export class CoordinationServiceAdapter
    * Manage coordination sessions
    */
   async manageSession(request: SessionRequest): Promise<CoordinationResponse> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    if (!this0.settings0.sessionService?0.enabled) {
+    if (!this.settings.sessionService?.enabled) {
       throw new ServiceOperationError('Session service is not enabled');
     }
 
-    const timer = this0.performanceTracker0.startTimer('manage_session');
+    const timer = this.performanceTracker.startTimer('manage_session');
 
     try {
       let result: any;
 
-      switch (request0.operation) {
+      switch (request.operation) {
         case 'create':
-          result = await this0.sessionManager0.createSession(request0.config);
+          result = await this.sessionManager.createSession(request.config);
           break;
 
         case 'restore':
-          result = await this0.sessionManager0.restoreSession(
-            request0.sessionId!,
-            request0.data
+          result = await this.sessionManager.restoreSession(
+            request.sessionId!,
+            request.data
           );
           break;
 
         case 'checkpoint':
-          result = await this0.sessionManager0.checkpointSession(
-            request0.sessionId!,
-            request0.data
+          result = await this.sessionManager.checkpointSession(
+            request.sessionId!,
+            request.data
           );
           break;
 
         case 'destroy':
-          result = await this0.sessionManager0.destroySession(request0.sessionId!);
+          result = await this.sessionManager.destroySession(request.sessionId!);
           break;
 
         default:
           throw new ServiceOperationError(
-            `Unknown session operation: ${request0.operation}`
+            `Unknown session operation: ${request.operation}`
           );
       }
 
-      const duration = this0.performanceTracker0.endTimer('manage_session');
-      this0.telemetryManager0.recordCounter('session_operations_success', 1, {
-        operation: request0.operation,
+      const duration = this.performanceTracker.endTimer('manage_session');
+      this.telemetryManager.recordCounter('session_operations_success', 1, {
+        operation: request.operation,
       });
 
-      this0.logger0.info(
-        `Session management completed: ${request0.operation} (${duration}ms)`
+      this.logger.info(
+        `Session management completed: ${request.operation} (${duration}ms)`
       );
 
       return {
@@ -437,21 +437,21 @@ export class CoordinationServiceAdapter
         metrics: { duration, agentsInvolved: 0 },
       };
     } catch (error) {
-      this0.performanceTracker0.endTimer('manage_session');
-      this0.telemetryManager0.recordCounter('session_operations_error', 1, {
-        operation: request0.operation,
-        error: error instanceof Error ? error0.message : 'unknown',
+      this.performanceTracker.endTimer('manage_session');
+      this.telemetryManager.recordCounter('session_operations_error', 1, {
+        operation: request.operation,
+        error: error instanceof Error ? error.message : 'unknown',
       });
 
-      this0.logger0.error(
-        `Session management failed: ${request0.operation}`,
+      this.logger.error(
+        `Session management failed: ${request.operation}`,
         error
       );
 
       return {
         success: false,
         error:
-          error instanceof Error ? error0.message : 'Session operation failed',
+          error instanceof Error ? error.message : 'Session operation failed',
       };
     }
   }
@@ -461,22 +461,22 @@ export class CoordinationServiceAdapter
    */
   getCoordinationMetrics(): any {
     const averageDuration =
-      this0.operationCount > 0 ? this0.totalDuration / this0.operationCount : 0;
+      this.operationCount > 0 ? this.totalDuration / this.operationCount : 0;
     const successRate =
-      this0.operationCount > 0
-        ? (this0.successCount / this0.operationCount) * 100
+      this.operationCount > 0
+        ? (this.successCount / this.operationCount) * 100
         : 0;
 
     return {
-      totalOperations: this0.operationCount,
-      successfulOperations: this0.successCount,
-      failedOperations: this0.errorCount,
-      successRate: Math0.round(successRate * 100) / 100,
-      averageDuration: Math0.round(averageDuration),
-      activeOperations: this0.activeOperations0.size,
-      sessionsEnabled: this0.settings0.sessionService?0.enabled || false,
-      performanceMetrics: this0.performanceTracker?0.getStats || {},
-      teamworkCapabilities: this?0.getTeamworkCapabilities,
+      totalOperations: this.operationCount,
+      successfulOperations: this.successCount,
+      failedOperations: this.errorCount,
+      successRate: Math.round(successRate * 100) / 100,
+      averageDuration: Math.round(averageDuration),
+      activeOperations: this.activeOperations.size,
+      sessionsEnabled: this.settings.sessionService?.enabled || false,
+      performanceMetrics: this.performanceTracker?.getStats || {},
+      teamworkCapabilities: this.getTeamworkCapabilities,
     };
   }
 
@@ -485,96 +485,96 @@ export class CoordinationServiceAdapter
   // ============================================================================
 
   get id(): string {
-    return this0.settings0.name || 'coordination-service-adapter';
+    return this.settings.name || 'coordination-service-adapter';
   }
 
   get name(): string {
-    return this0.settings0.service0.name || 'CoordinationServiceAdapter';
+    return this.settings.service.name || 'CoordinationServiceAdapter';
   }
 
   get type(): ServiceType {
-    return ServiceType0.COORDINATION;
+    return ServiceType.COORDINATION;
   }
 
   get environment(): ServiceEnvironment {
-    return this0.settings0.service0.environment || ServiceEnvironment0.DEVELOPMENT;
+    return this.settings.service.environment || ServiceEnvironment.DEVELOPMENT;
   }
 
   get priority(): ServicePriority {
-    return this0.settings0.service0.priority || ServicePriority0.MEDIUM;
+    return this.settings.service.priority || ServicePriority.MEDIUM;
   }
 
   get version(): string {
-    return this0.settings0.service0.version || '10.0.0';
+    return this.settings.service.version || '1..0';
   }
 
   get status(): ServiceLifecycleStatus {
-    return this0._status;
+    return this._status;
   }
 
   get dependencies(): ServiceDependencyConfig[] {
-    return this0.settings0.dependencies || [];
+    return this.settings.dependencies || [];
   }
 
   async start(): Promise<void> {
-    await this?0.initialize;
+    await this.initialize;
   }
 
   async stop(): Promise<void> {
     try {
-      this0._status = 'stopping';
-      this0.emit('statusChanged', { status: this0._status });
+      this._status = 'stopping';
+      this.emit('statusChanged', { status: this._status });
 
       // Clear active operations
-      this0.activeOperations?0.clear();
+      this.activeOperations?.clear();
 
       // Shutdown package delegates
-      if (this0.workflowEngine) {
-        await this0.workflowEngine?0.shutdown();
+      if (this.workflowEngine) {
+        await this.workflowEngine?.shutdown();
       }
-      if (this0.telemetryManager) {
-        await this0.telemetryManager?0.shutdown();
+      if (this.telemetryManager) {
+        await this.telemetryManager?.shutdown();
       }
 
-      this0._status = 'stopped';
-      this0.logger0.info('Coordination Service Adapter stopped successfully');
-      this0.emit('stopped', { timestamp: new Date() });
-      this0.emit('statusChanged', { status: this0._status });
+      this._status = 'stopped';
+      this.logger.info('Coordination Service Adapter stopped successfully');
+      this.emit('stopped', { timestamp: new Date() });
+      this.emit('statusChanged', { status: this._status });
     } catch (error) {
-      this0._status = 'error';
-      this0.logger0.error('Error stopping Coordination Service Adapter:', error);
-      this0.emit('statusChanged', { status: this0._status, error });
+      this._status = 'error';
+      this.logger.error('Error stopping Coordination Service Adapter:', error);
+      this.emit('statusChanged', { status: this._status, error });
       throw error;
     }
   }
 
   async restart(): Promise<void> {
-    await this?0.stop;
-    await this?0.start;
+    await this.stop;
+    await this.start;
   }
 
   async execute(
     operation: string,
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
       let result: any;
 
       switch (operation) {
         case 'coordinate_agents':
-          result = await this0.coordinateAgents(
-            options?0.data as AgentCoordinationRequest
+          result = await this.coordinateAgents(
+            options?.data as AgentCoordinationRequest
           );
           break;
 
         case 'manage_session':
-          result = await this0.manageSession(options?0.data as SessionRequest);
+          result = await this.manageSession(options?.data as SessionRequest);
           break;
 
         case 'get_metrics':
-          result = this?0.getCoordinationMetrics;
+          result = this.getCoordinationMetrics;
           break;
 
         default:
@@ -588,44 +588,44 @@ export class CoordinationServiceAdapter
         timestamp: new Date(),
       };
     } catch (error) {
-      this0.logger0.error(`Operation failed: ${operation}`, error);
+      this.logger.error(`Operation failed: ${operation}`, error);
       throw error;
     }
   }
 
   getMetrics(): ServiceMetrics {
-    const metrics = this?0.getCoordinationMetrics;
+    const metrics = this.getCoordinationMetrics;
 
     return {
-      status: this0._status,
-      uptime: Date0.now(), // Simplified uptime
-      totalRequests: metrics0.totalOperations,
-      successRate: metrics0.successRate,
-      averageResponseTime: metrics0.averageDuration,
+      status: this._status,
+      uptime: Date.now(), // Simplified uptime
+      totalRequests: metrics.totalOperations,
+      successRate: metrics.successRate,
+      averageResponseTime: metrics.averageDuration,
       errorRate:
-        (metrics0.failedOperations / Math0.max(metrics0.totalOperations, 1)) * 100,
-      memoryUsage: process?0.memoryUsage0.heapUsed,
+        (metrics.failedOperations / Math.max(metrics.totalOperations, 1)) * 100,
+      memoryUsage: process?.memoryUsage.heapUsed,
       cpuUsage: 0, // Simplified CPU usage
       customMetrics: {
-        activeOperations: metrics0.activeOperations,
-        teamworkCapabilities: metrics0.teamworkCapabilities,
+        activeOperations: metrics.activeOperations,
+        teamworkCapabilities: metrics.teamworkCapabilities,
       },
     };
   }
 
   getStatus(): ServiceStatus {
     return {
-      id: this0.id,
-      name: this0.name,
-      status: this0._status,
-      version: this0.version,
-      uptime: Date0.now(), // Simplified uptime
-      health: this0._status === 'running' ? 'healthy' : 'unhealthy',
+      id: this.id,
+      name: this.name,
+      status: this._status,
+      version: this.version,
+      uptime: Date.now(), // Simplified uptime
+      health: this._status === 'running ? healthy' : 'unhealthy',
       lastCheck: new Date(),
-      dependencies: this0.dependencies0.map((dep) => ({
-        name: dep0.name,
+      dependencies: this.dependencies.map((dep) => ({
+        name: dep.name,
         status: 'unknown', // Simplified dependency status
-        required: dep0.required || false,
+        required: dep.required || false,
       })),
     };
   }
@@ -637,10 +637,10 @@ export class CoordinationServiceAdapter
   private async orchestrateConversation(
     request: AgentCoordinationRequest
   ): Promise<unknown> {
-    return await this0.conversationOrchestrator0.startConversation({
-      participants: request0.agents || [],
-      context: request0.context || {},
-      timeout: request0.timeout,
+    return await this.conversationOrchestrator.startConversation({
+      participants: request.agents || [],
+      context: request.context || {},
+      timeout: request.timeout,
       pattern: 'collaborative-discussion',
     });
   }
@@ -648,43 +648,43 @@ export class CoordinationServiceAdapter
   private async buildConsensus(
     request: AgentCoordinationRequest
   ): Promise<unknown> {
-    return await this0.conversationOrchestrator0.buildConsensus({
-      participants: request0.agents || [],
-      context: request0.context || {},
-      decisionCriteria: request0.context?0.criteria || [],
-      timeout: request0.timeout,
+    return await this.conversationOrchestrator.buildConsensus({
+      participants: request.agents || [],
+      context: request.context || {},
+      decisionCriteria: request.context?.criteria || [],
+      timeout: request.timeout,
     });
   }
 
   private async coordinateTeamwork(
     request: AgentCoordinationRequest
   ): Promise<unknown> {
-    return await this0.teamworkSystem0.coordinate({
-      agents: request0.agents || [],
-      context: request0.context || {},
+    return await this.teamworkSystem.coordinate({
+      agents: request.agents || [],
+      context: request.context || {},
       coordinationType: 'collaborative',
-      timeout: request0.timeout,
+      timeout: request.timeout,
     });
   }
 
   private async spawnAgents(
     request: AgentCoordinationRequest
   ): Promise<unknown> {
-    return await this0.teamworkSystem0.spawnAgents({
-      agentTypes: request0.agents || [],
-      context: request0.context || {},
-      maxAgents: this0.settings0.coordination?0.maxAgents || 10,
+    return await this.teamworkSystem.spawnAgents({
+      agentTypes: request.agents || [],
+      context: request.context || {},
+      maxAgents: this.settings.coordination?.maxAgents || 10,
     });
   }
 
   private async initializeSessionManager(): Promise<void> {
     // Simple session manager implementation
-    this0.sessionManager = {
+    this.sessionManager = {
       sessions: new Map(),
 
       async createSession(config: any) {
-        const sessionId = `session-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 9)}`;
-        this0.sessions0.set(sessionId, {
+        const sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        this.sessions.set(sessionId, {
           id: sessionId,
           config,
           created: new Date(),
@@ -694,23 +694,23 @@ export class CoordinationServiceAdapter
       },
 
       async restoreSession(sessionId: string, data: any) {
-        const session = this0.sessions0.get(sessionId);
+        const session = this.sessions.get(sessionId);
         if (!session) throw new Error(`Session not found: ${sessionId}`);
-        session0.data = data;
-        session0.restored = new Date();
+        session.data = data;
+        session.restored = new Date();
         return { sessionId, restored: true };
       },
 
       async checkpointSession(sessionId: string, data: any) {
-        const session = this0.sessions0.get(sessionId);
+        const session = this.sessions.get(sessionId);
         if (!session) throw new Error(`Session not found: ${sessionId}`);
-        session0.data = { 0.0.0.session0.data, 0.0.0.data };
-        session0.checkpointed = new Date();
+        session.data = { ...session.data, ...data };
+        session.checkpointed = new Date();
         return { sessionId, checkpointed: true };
       },
 
       async destroySession(sessionId: string) {
-        const existed = this0.sessions0.delete(sessionId);
+        const existed = this.sessions.delete(sessionId);
         return { sessionId, destroyed: existed };
       },
     };
@@ -739,10 +739,10 @@ export function createCoordinationServiceAdapter(
   const defaultConfig: CoordinationServiceAdapterConfig = {
     service: {
       name: 'CoordinationServiceAdapter',
-      type: ServiceType0.COORDINATION,
-      environment: ServiceEnvironment0.DEVELOPMENT,
-      priority: ServicePriority0.MEDIUM,
-      version: '10.0.0',
+      type: ServiceType.COORDINATION,
+      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority.MEDIUM,
+      version: '1..0',
       enabled: true,
       timeout: 30000,
       retries: 3,
@@ -771,9 +771,9 @@ export function createCoordinationServiceAdapter(
   };
 
   return new CoordinationServiceAdapter({
-    0.0.0.defaultConfig,
-    0.0.0.config,
-    service: { 0.0.0.defaultConfig0.service, 0.0.0.config?0.service },
+    ...defaultConfig,
+    ...config,
+    service: { ...defaultConfig.service, ...config?.service },
   });
 }
 

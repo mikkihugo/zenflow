@@ -1,8 +1,8 @@
 /**
  * @file API Response Types
  *
- * Common interface definitions for API response objects throughout the application0.
- * These types provide type safety for response objects with 'success' and 'data' properties0.
+ * Common interface definitions for API response objects throughout the application.
+ * These types provide type safety for response objects with 'success and data' properties.
  */
 /**
  * Base API response structure
@@ -84,4 +84,4 @@ export declare function isSuccessResponse<T>(
 export declare function isErrorResponse(
   response: BaseApiResponse
 ): response is ErrorResponse;
-//# sourceMappingURL=api-response0.d0.ts0.map
+//# sourceMappingURL=api-response.d.ts.map

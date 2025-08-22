@@ -162,8 +162,7 @@ export {
   type StepExecutionResult,
   type WorkflowData,
   type WorkflowState,
-  type WorkflowEngineConfig,
-  WORKFLOWS_INFO
+  type WorkflowEngineConfig
 } from './src/main';
 
 // Import for factory use
@@ -367,12 +366,20 @@ export const WorkflowUtils = {
    * @param workflow
    */
   validateWorkflow: (workflow: unknown): boolean => {
-    if (!(workflow.name && workflow.steps && Array.isArray(workflow.steps))) {
+    if (!workflow || typeof workflow !== 'object') {
+      return false;
+    }
+    
+    const w = workflow as any;
+    if (!(w.name && w.steps && Array.isArray(w.steps))) {
       return false;
     }
 
-    return workflow.steps.every(
-      (step: unknown) => step.type && typeof step.type === 'string'
+    return w.steps.every(
+      (step: unknown) => {
+        const s = step as any;
+        return s.type && typeof s.type === 'string';
+      }
     );
   },
 

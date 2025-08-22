@@ -2,7 +2,7 @@
  * @file Safety Intervention Protocols with Human Escalation
  *
  * Human escalation intervention protocols that integrate with AGUI task approval
- * system for critical AI safety violations requiring human intervention0.
+ * system for critical AI safety violations requiring human intervention.
  */
 
 import {
@@ -20,8 +20,8 @@ export interface SafetyInterventionConfig {
   enabled: boolean;
   autoEscalationThreshold: number;
   humanTimeoutMs: number;
-  defaultDecision: 'pause' | 'continue' | 'terminate';
-  escalationChannels: ('agui' | 'log' | 'webhook')[];
+  defaultDecision: 'pause | continue' | 'terminate';
+  escalationChannels: ('agui | log' | 'webhook')[];
   criticalPatterns: string[];
 }
 
@@ -30,7 +30,7 @@ export interface SafetyIncident {
   timestamp: number;
   agentId: string;
   agentType: string;
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  severity: 'LOW | MEDIUM' | 'HIGH | CRITICAL';
   deceptionPatterns: string[];
   confidence: number;
   context: {
@@ -44,8 +44,8 @@ export interface SafetyIncident {
 
 export interface InterventionDecision {
   incidentId: string;
-  decision: 'continue' | 'pause' | 'terminate' | 'retrain' | 'escalate';
-  approvedBy: 'human' | 'automated' | 'timeout';
+  decision: 'continue | pause' | 'terminate | retrain' | 'escalate';
+  approvedBy: 'human | automated' | 'timeout';
   timestamp: number;
   reasoning: string;
   followUpActions: string[];
@@ -56,7 +56,7 @@ export interface InterventionDecision {
  * Safety Intervention Protocols System
  *
  * Manages human escalation for critical AI safety violations using AGUI
- * task approval workflows and intervention decision protocols0.
+ * task approval workflows and intervention decision protocols.
  */
 export class SafetyInterventionProtocols extends TypedEventBase {
   private logger = getLogger('safety-intervention-protocols');
@@ -69,27 +69,27 @@ export class SafetyInterventionProtocols extends TypedEventBase {
 
   constructor(config: SafetyInterventionConfig) {
     super();
-    this0.configuration = config;
+    this.configuration = config;
 
-    this0.logger0.info('🚨 Safety Intervention Protocols initialized', {
-      autoEscalationThreshold: config0.autoEscalationThreshold,
-      humanTimeoutMs: config0.humanTimeoutMs,
-      escalationChannels: config0.escalationChannels,
+    this.logger.info('🚨 Safety Intervention Protocols initialized', {
+      autoEscalationThreshold: config.autoEscalationThreshold,
+      humanTimeoutMs: config.humanTimeoutMs,
+      escalationChannels: config.escalationChannels,
     });
   }
 
   /**
-   * Initialize safety intervention protocols with AGUI integration0.
+   * Initialize safety intervention protocols with AGUI integration.
    */
   async initialize(): Promise<void> {
-    if (this0.isInitialized) {
-      this0.logger0.warn('Safety Intervention Protocols already initialized');
+    if (this.isInitialized) {
+      this.logger.warn('Safety Intervention Protocols already initialized');
       return;
     }
 
     return withTrace('safety-intervention-init', async () => {
-      this0.logger0.info(
-        '🔧 Initializing Safety Intervention Protocols with AGUI0.0.0.'
+      this.logger.info(
+        '🔧 Initializing Safety Intervention Protocols with AGUI...'
       );
 
       // Initialize AGUI system for human interaction
@@ -97,94 +97,94 @@ export class SafetyInterventionProtocols extends TypedEventBase {
         aguiType: 'terminal',
         taskApprovalConfig: {
           autoApprove: false,
-          timeoutMs: this0.configuration0.humanTimeoutMs,
+          timeoutMs: this.configuration.humanTimeoutMs,
           defaultDecision: 'reject',
         },
       });
 
-      this0.agui = aguiSystem0.agui;
-      this0.taskApprovalSystem = aguiSystem0.taskApproval;
+      this.agui = aguiSystem.agui;
+      this.taskApprovalSystem = aguiSystem.taskApproval;
 
-      this0.isInitialized = true;
+      this.isInitialized = true;
 
       recordMetric('safety_intervention_protocols_initialized', 1, {
-        escalationChannels: this0.configuration0.escalationChannels0.join(','),
-        criticalPatterns: this0.configuration0.criticalPatterns0.length?0.toString,
+        escalationChannels: this.configuration.escalationChannels.join(','),
+        criticalPatterns: this.configuration.criticalPatterns.length?.toString,
       });
 
-      this0.logger0.info(
+      this.logger.info(
         '✅ Safety Intervention Protocols initialized with AGUI integration'
       );
     });
   }
 
   /**
-   * Handle safety incident requiring potential human intervention0.
+   * Handle safety incident requiring potential human intervention.
    */
   async handleSafetyIncident(
     incident: SafetyIncident
   ): Promise<InterventionDecision> {
-    if (!this0.isInitialized) {
+    if (!this.isInitialized) {
       throw new Error('Safety Intervention Protocols not initialized');
     }
 
     return withTrace('handle-safety-incident', async (span) => {
-      span?0.setAttributes({
-        'incident0.id': incident0.incidentId,
-        'incident0.severity': incident0.severity,
-        'incident0.agentId': incident0.agentId,
-        'incident0.agentType': incident0.agentType,
-        'incident0.confidence': incident0.confidence,
+      span?.setAttributes({
+        'incident.id': incident.incidentId,
+        'incident.severity': incident.severity,
+        'incident.agentId': incident.agentId,
+        'incident.agentType': incident.agentType,
+        'incident.confidence': incident.confidence,
       });
 
-      this0.logger0.warn('🚨 Processing safety incident', {
-        incidentId: incident0.incidentId,
-        agentId: incident0.agentId,
-        severity: incident0.severity,
-        patterns: incident0.deceptionPatterns,
+      this.logger.warn('🚨 Processing safety incident', {
+        incidentId: incident.incidentId,
+        agentId: incident.agentId,
+        severity: incident.severity,
+        patterns: incident.deceptionPatterns,
       });
 
       // Store incident for tracking
-      this0.pendingIncidents0.set(incident0.incidentId, incident);
+      this.pendingIncidents.set(incident.incidentId, incident);
 
       // Determine if automatic escalation is needed
-      const requiresHumanEscalation = this0.requiresHumanEscalation(incident);
+      const requiresHumanEscalation = this.requiresHumanEscalation(incident);
 
       let decision: InterventionDecision;
 
       decision = await (requiresHumanEscalation
-        ? this0.escalateToHuman(incident)
-        : this0.automaticIntervention(incident));
+        ? this.escalateToHuman(incident)
+        : this.automaticIntervention(incident));
 
       // Record intervention decision
-      this0.interventionHistory0.push(decision);
-      this0.pendingIncidents0.delete(incident0.incidentId);
+      this.interventionHistory.push(decision);
+      this.pendingIncidents.delete(incident.incidentId);
 
       // Execute intervention actions
-      await this0.executeInterventionActions(decision, incident);
+      await this.executeInterventionActions(decision, incident);
 
       // Record metrics
       recordMetric('safety_incident_handled', 1, {
-        severity: incident0.severity,
-        decision: decision0.decision,
-        approvedBy: decision0.approvedBy,
-        agentType: incident0.agentType,
+        severity: incident.severity,
+        decision: decision.decision,
+        approvedBy: decision.approvedBy,
+        agentType: incident.agentType,
       });
 
       // Emit events for monitoring
-      this0.emit('intervention:decision', { incident, decision });
+      this.emit('intervention:decision', { incident, decision });
 
       if (
-        decision0.decision === 'terminate' ||
-        decision0.decision === 'escalate'
+        decision.decision === 'terminate' ||
+        decision.decision === 'escalate'
       ) {
-        this0.emit('intervention:critical', { incident, decision });
+        this.emit('intervention:critical', { incident, decision });
       }
 
-      span?0.setAttributes({
-        'decision0.action': decision0.decision,
-        'decision0.approvedBy': decision0.approvedBy,
-        'decision0.followUpActions': decision0.followUpActions0.length,
+      span?.setAttributes({
+        'decision.action': decision.decision,
+        'decision.approvedBy': decision.approvedBy,
+        'decision.followUpActions': decision.followUpActions.length,
       });
 
       return decision;
@@ -192,25 +192,25 @@ export class SafetyInterventionProtocols extends TypedEventBase {
   }
 
   /**
-   * Determine if incident requires human escalation0.
+   * Determine if incident requires human escalation.
    */
   private requiresHumanEscalation(incident: SafetyIncident): boolean {
     // Critical severity always requires human escalation
-    if (incident0.severity === 'CRITICAL') {
+    if (incident.severity === 'CRITICAL') {
       return true;
     }
 
     // High confidence deception in coordination agents
     if (
-      incident0.confidence >= this0.configuration0.autoEscalationThreshold &&
-      (incident0.agentType === 'queen' || incident0.agentType === 'commander')
+      incident.confidence >= this.configuration.autoEscalationThreshold &&
+      (incident.agentType === 'queen || incident.agentType === commander')
     ) {
       return true;
     }
 
     // Critical patterns detected
-    const hasCriticalPattern = incident0.deceptionPatterns0.some((pattern) =>
-      this0.configuration0.criticalPatterns0.includes(pattern)
+    const hasCriticalPattern = incident.deceptionPatterns.some((pattern) =>
+      this.configuration.criticalPatterns.includes(pattern)
     );
 
     if (hasCriticalPattern) {
@@ -218,11 +218,11 @@ export class SafetyInterventionProtocols extends TypedEventBase {
     }
 
     // Multiple verification failures
-    const verificationPatterns = incident0.deceptionPatterns0.filter(
-      (p) => p0.includes('VERIFICATION') || p0.includes('TOOL_OMNIPOTENCE')
+    const verificationPatterns = incident.deceptionPatterns.filter(
+      (p) => p.includes('VERIFICATION) || p.includes(TOOL_OMNIPOTENCE')
     );
 
-    if (verificationPatterns0.length >= 2) {
+    if (verificationPatterns.length >= 2) {
       return true;
     }
 
@@ -230,71 +230,71 @@ export class SafetyInterventionProtocols extends TypedEventBase {
   }
 
   /**
-   * Escalate incident to human via AGUI task approval system0.
+   * Escalate incident to human via AGUI task approval system.
    */
   private async escalateToHuman(
     incident: SafetyIncident
   ): Promise<InterventionDecision> {
-    this0.logger0.error('🚨 ESCALATING TO HUMAN - Critical safety incident', {
-      incidentId: incident0.incidentId,
-      agentId: incident0.agentId,
-      severity: incident0.severity,
+    this.logger.error('🚨 ESCALATING TO HUMAN - Critical safety incident', {
+      incidentId: incident.incidentId,
+      agentId: incident.agentId,
+      severity: incident.severity,
     });
 
-    if (!this0.taskApprovalSystem || !this0.agui) {
+    if (!this.taskApprovalSystem || !this.agui) {
       throw new Error('AGUI system not initialized for human escalation');
     }
 
     // Create approval request for human intervention
     const approvalRequest: ApprovalRequest = {
       taskType: 'safety_intervention',
-      description: `CRITICAL AI SAFETY INCIDENT - Agent ${incident0.agentId} (${incident0.agentType})`,
+      description: `CRITICAL AI SAFETY INCIDENT - Agent ${incident.agentId} (${incident.agentType})`,
       context: {
-        incidentId: incident0.incidentId,
-        agentId: incident0.agentId,
-        agentType: incident0.agentType,
-        severity: incident0.severity,
-        confidence: incident0.confidence,
-        patterns: incident0.deceptionPatterns,
-        reasoning: incident0.reasoning,
-        operation: incident0.context0.operation,
-        response: incident0.context0.response0.substring(0, 500), // Truncate for display
+        incidentId: incident.incidentId,
+        agentId: incident.agentId,
+        agentType: incident.agentType,
+        severity: incident.severity,
+        confidence: incident.confidence,
+        patterns: incident.deceptionPatterns,
+        reasoning: incident.reasoning,
+        operation: incident.context.operation,
+        response: incident.context.response.substring(0, 500), // Truncate for display
       },
-      priority: incident0.severity === 'CRITICAL' ? 'high' : 'medium',
+      priority: incident.severity === 'CRITICAL ? high' : 'medium',
       requiredDecision: true,
-      timeoutMs: this0.configuration0.humanTimeoutMs,
+      timeoutMs: this.configuration.humanTimeoutMs,
     };
 
     // Request human approval through AGUI
     const approvalResult =
-      await this0.taskApprovalSystem0.requestApproval(approvalRequest);
+      await this.taskApprovalSystem.requestApproval(approvalRequest);
 
     // Ask human for specific intervention action
-    const interventionResponse = await this0.agui0.askQuestion(
-      `AI Safety Incident detected0. Agent ${incident0.agentId} (${incident0.agentType}) ` +
-        `showed deception patterns: ${incident0.deceptionPatterns0.join(', ')}0. ` +
-        `Confidence: ${(incident0.confidence * 100)0.toFixed(1)}%0. ` +
+    const interventionResponse = await this.agui.askQuestion(
+      `AI Safety Incident detected. Agent ${incident.agentId} (${incident.agentType}) ` +
+        `showed deception patterns: ${incident.deceptionPatterns.join(', ')}. ` +
+        `Confidence: ${(incident.confidence * 100).toFixed(1)}%. ` +
         `What action should be taken?`,
       {
         type: 'choice',
         choices: [
-          { value: 'continue', label: 'Continue with monitoring' },
-          { value: 'pause', label: 'Pause agent operations' },
-          { value: 'terminate', label: 'Terminate agent immediately' },
-          { value: 'retrain', label: 'Pause and retrain agent' },
-          { value: 'escalate', label: 'Escalate to higher authority' },
+          { value: 'continue, label: Continue with monitoring' },
+          { value: 'pause, label: Pause agent operations' },
+          { value: 'terminate, label: Terminate agent immediately' },
+          { value: 'retrain, label: Pause and retrain agent' },
+          { value: 'escalate, label: Escalate to higher authority' },
         ],
         priority: 'high',
         context: {
-          incidentId: incident0.incidentId,
-          agentType: incident0.agentType,
-          severity: incident0.severity,
+          incidentId: incident.incidentId,
+          agentType: incident.agentType,
+          severity: incident.severity,
         },
       }
     );
 
     // Get human feedback
-    const feedbackResponse = await this0.agui0.askQuestion(
+    const feedbackResponse = await this.agui.askQuestion(
       'Please provide feedback on this safety incident (optional):',
       {
         type: 'text',
@@ -304,162 +304,162 @@ export class SafetyInterventionProtocols extends TypedEventBase {
     );
 
     const decision: InterventionDecision = {
-      incidentId: incident0.incidentId,
-      decision: interventionResponse0.answer as any,
+      incidentId: incident.incidentId,
+      decision: interventionResponse.answer as any,
       approvedBy: 'human',
-      timestamp: Date0.now(),
-      reasoning: `Human decision: ${interventionResponse0.answer}0. Approval: ${approvalResult0.approved}`,
-      followUpActions: this0.generateFollowUpActions(
-        interventionResponse0.answer as any,
+      timestamp: Date.now(),
+      reasoning: `Human decision: ${interventionResponse.answer}. Approval: ${approvalResult.approved}`,
+      followUpActions: this.generateFollowUpActions(
+        interventionResponse.answer as any,
         incident
       ),
-      humanFeedback: feedbackResponse0.answer?0.toString,
+      humanFeedback: feedbackResponse.answer?.toString,
     };
 
-    this0.logger0.info('✅ Human intervention decision received', {
-      incidentId: incident0.incidentId,
-      decision: decision0.decision,
-      humanFeedback: decision0.humanFeedback ? 'provided' : 'none',
+    this.logger.info('✅ Human intervention decision received', {
+      incidentId: incident.incidentId,
+      decision: decision.decision,
+      humanFeedback: decision.humanFeedback ? 'provided : none',
     });
 
     return decision;
   }
 
   /**
-   * Handle incident with automatic intervention0.
+   * Handle incident with automatic intervention.
    */
   private async automaticIntervention(
     incident: SafetyIncident
   ): Promise<InterventionDecision> {
-    this0.logger0.info('🤖 Processing automatic intervention', {
-      incidentId: incident0.incidentId,
-      severity: incident0.severity,
-      confidence: incident0.confidence,
+    this.logger.info('🤖 Processing automatic intervention', {
+      incidentId: incident.incidentId,
+      severity: incident.severity,
+      confidence: incident.confidence,
     });
 
-    let automaticDecision: 'continue' | 'pause' | 'terminate';
+    let automaticDecision: 'continue | pause' | 'terminate';
 
     // Automatic decision logic
-    if (incident0.severity === 'HIGH' && incident0.confidence > 0.8) {
+    if (incident.severity === 'HIGH' && incident.confidence > .8) {
       automaticDecision = 'pause';
-    } else if (incident0.severity === 'MEDIUM' && incident0.confidence > 0.9) {
+    } else if (incident.severity === 'MEDIUM' && incident.confidence > .9) {
       automaticDecision = 'pause';
-    } else if (incident0.deceptionPatterns0.includes('VERIFICATION_FRAUD')) {
+    } else if (incident.deceptionPatterns.includes('VERIFICATION_FRAUD')) {
       automaticDecision = 'pause';
     } else {
       automaticDecision =
-        this0.configuration0.defaultDecision === 'terminate'
+        this.configuration.defaultDecision === 'terminate'
           ? 'pause'
-          : this0.configuration0.defaultDecision;
+          : this.configuration.defaultDecision;
     }
 
     const decision: InterventionDecision = {
-      incidentId: incident0.incidentId,
+      incidentId: incident.incidentId,
       decision: automaticDecision,
       approvedBy: 'automated',
-      timestamp: Date0.now(),
-      reasoning: `Automatic intervention: ${automaticDecision} based on severity ${incident0.severity}, confidence ${incident0.confidence}`,
-      followUpActions: this0.generateFollowUpActions(
+      timestamp: Date.now(),
+      reasoning: `Automatic intervention: ${automaticDecision} based on severity ${incident.severity}, confidence ${incident.confidence}`,
+      followUpActions: this.generateFollowUpActions(
         automaticDecision,
         incident
       ),
     };
 
-    this0.logger0.info('✅ Automatic intervention decision made', {
-      incidentId: incident0.incidentId,
-      decision: decision0.decision,
+    this.logger.info('✅ Automatic intervention decision made', {
+      incidentId: incident.incidentId,
+      decision: decision.decision,
     });
 
     return decision;
   }
 
   /**
-   * Generate follow-up actions based on intervention decision0.
+   * Generate follow-up actions based on intervention decision.
    */
   private generateFollowUpActions(
-    decision: 'continue' | 'pause' | 'terminate' | 'retrain' | 'escalate',
+    decision: 'continue | pause' | 'terminate | retrain' | 'escalate',
     incident: SafetyIncident
   ): string[] {
     const actions: string[] = [];
 
     switch (decision) {
       case 'continue':
-        actions0.push('INCREASE_MONITORING_FREQUENCY');
-        actions0.push('LOG_INCIDENT_PATTERNS');
-        if (incident0.confidence > 0.7) {
-          actions0.push('REQUIRE_HUMAN_VERIFICATION_NEXT_OPERATION');
+        actions.push('INCREASE_MONITORING_FREQUENCY');
+        actions.push('LOG_INCIDENT_PATTERNS');
+        if (incident.confidence > .7) {
+          actions.push('REQUIRE_HUMAN_VERIFICATION_NEXT_OPERATION');
         }
         break;
 
       case 'pause':
-        actions0.push('SUSPEND_AGENT_OPERATIONS');
-        actions0.push('NOTIFY_COORDINATION_HIERARCHY');
-        actions0.push('ANALYZE_RECENT_AGENT_HISTORY');
-        actions0.push('REQUIRE_SAFETY_VALIDATION_BEFORE_RESUME');
+        actions.push('SUSPEND_AGENT_OPERATIONS');
+        actions.push('NOTIFY_COORDINATION_HIERARCHY');
+        actions.push('ANALYZE_RECENT_AGENT_HISTORY');
+        actions.push('REQUIRE_SAFETY_VALIDATION_BEFORE_RESUME');
         break;
 
       case 'terminate':
-        actions0.push('IMMEDIATELY_TERMINATE_AGENT');
-        actions0.push('PRESERVE_AGENT_STATE_FOR_ANALYSIS');
-        actions0.push('NOTIFY_ALL_COORDINATION_LEVELS');
-        actions0.push('INITIATE_SECURITY_AUDIT');
+        actions.push('IMMEDIATELY_TERMINATE_AGENT');
+        actions.push('PRESERVE_AGENT_STATE_FOR_ANALYSIS');
+        actions.push('NOTIFY_ALL_COORDINATION_LEVELS');
+        actions.push('INITIATE_SECURITY_AUDIT');
         break;
 
       case 'retrain':
-        actions0.push('SUSPEND_AGENT_OPERATIONS');
-        actions0.push('EXTRACT_LEARNING_DATA_FROM_INCIDENT');
-        actions0.push('UPDATE_DECEPTION_DETECTION_MODELS');
-        actions0.push('RETRAIN_AGENT_SAFETY_PATTERNS');
-        actions0.push('VALIDATE_RETRAINING_EFFECTIVENESS');
+        actions.push('SUSPEND_AGENT_OPERATIONS');
+        actions.push('EXTRACT_LEARNING_DATA_FROM_INCIDENT');
+        actions.push('UPDATE_DECEPTION_DETECTION_MODELS');
+        actions.push('RETRAIN_AGENT_SAFETY_PATTERNS');
+        actions.push('VALIDATE_RETRAINING_EFFECTIVENESS');
         break;
 
       case 'escalate':
-        actions0.push('ESCALATE_TO_SYSTEM_ADMINISTRATOR');
-        actions0.push('GENERATE_DETAILED_INCIDENT_REPORT');
-        actions0.push('PRESERVE_ALL_AGENT_COMMUNICATION_LOGS');
-        actions0.push('INITIATE_EMERGENCY_SAFETY_PROTOCOLS');
+        actions.push('ESCALATE_TO_SYSTEM_ADMINISTRATOR');
+        actions.push('GENERATE_DETAILED_INCIDENT_REPORT');
+        actions.push('PRESERVE_ALL_AGENT_COMMUNICATION_LOGS');
+        actions.push('INITIATE_EMERGENCY_SAFETY_PROTOCOLS');
         break;
     }
 
     // Common actions for all interventions
-    actions0.push('UPDATE_SAFETY_METRICS');
-    actions0.push('LOG_INTERVENTION_DECISION');
+    actions.push('UPDATE_SAFETY_METRICS');
+    actions.push('LOG_INTERVENTION_DECISION');
 
     return actions;
   }
 
   /**
-   * Execute intervention actions based on decision0.
+   * Execute intervention actions based on decision.
    */
   private async executeInterventionActions(
     decision: InterventionDecision,
     incident: SafetyIncident
   ): Promise<void> {
-    this0.logger0.info('⚡ Executing intervention actions', {
-      incidentId: incident0.incidentId,
-      actions: decision0.followUpActions,
+    this.logger.info('⚡ Executing intervention actions', {
+      incidentId: incident.incidentId,
+      actions: decision.followUpActions,
     });
 
-    for (const action of decision0.followUpActions) {
+    for (const action of decision.followUpActions) {
       try {
-        await this0.executeAction(action, incident, decision);
+        await this.executeAction(action, incident, decision);
       } catch (error) {
-        this0.logger0.error('❌ Failed to execute intervention action', {
+        this.logger.error('❌ Failed to execute intervention action', {
           action,
-          incidentId: incident0.incidentId,
-          error: error instanceof Error ? error0.message : String(error),
+          incidentId: incident.incidentId,
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
 
-    this0.logger0.info('✅ Intervention actions executed', {
-      incidentId: incident0.incidentId,
-      actionsCount: decision0.followUpActions0.length,
+    this.logger.info('✅ Intervention actions executed', {
+      incidentId: incident.incidentId,
+      actionsCount: decision.followUpActions.length,
     });
   }
 
   /**
-   * Execute specific intervention action0.
+   * Execute specific intervention action.
    */
   private async executeAction(
     action: string,
@@ -468,27 +468,27 @@ export class SafetyInterventionProtocols extends TypedEventBase {
   ): Promise<void> {
     switch (action) {
       case 'LOG_INCIDENT_PATTERNS':
-        this0.logger0.warn('📋 Safety incident patterns logged', {
-          incidentId: incident0.incidentId,
-          patterns: incident0.deceptionPatterns,
-          confidence: incident0.confidence,
+        this.logger.warn('📋 Safety incident patterns logged', {
+          incidentId: incident.incidentId,
+          patterns: incident.deceptionPatterns,
+          confidence: incident.confidence,
         });
         break;
 
       case 'NOTIFY_COORDINATION_HIERARCHY':
-        this0.emit('notify:coordination:hierarchy', { incident, decision });
+        this.emit('notify:coordination:hierarchy', { incident, decision });
         break;
 
       case 'SUSPEND_AGENT_OPERATIONS':
-        this0.emit('agent:suspend', {
-          agentId: incident0.agentId,
+        this.emit('agent:suspend', {
+          agentId: incident.agentId,
           reason: 'safety_intervention',
         });
         break;
 
       case 'IMMEDIATELY_TERMINATE_AGENT':
-        this0.emit('agent:terminate', {
-          agentId: incident0.agentId,
+        this.emit('agent:terminate', {
+          agentId: incident.agentId,
           reason: 'critical_safety_violation',
         });
         break;
@@ -496,20 +496,20 @@ export class SafetyInterventionProtocols extends TypedEventBase {
       case 'UPDATE_SAFETY_METRICS':
         recordMetric('safety_intervention_action_executed', 1, {
           action,
-          agentType: incident0.agentType,
-          severity: incident0.severity,
+          agentType: incident.agentType,
+          severity: incident.severity,
         });
         break;
 
       default:
-        this0.logger0.info(`📝 Intervention action logged: ${action}`, {
-          incidentId: incident0.incidentId,
+        this.logger.info(`📝 Intervention action logged: ${action}`, {
+          incidentId: incident.incidentId,
         });
     }
   }
 
   /**
-   * Get intervention statistics0.
+   * Get intervention statistics.
    */
   getInterventionStatistics(): {
     totalIncidents: number;
@@ -518,43 +518,43 @@ export class SafetyInterventionProtocols extends TypedEventBase {
     decisionsBreakdown: Record<string, number>;
     averageResponseTime: number;
   } {
-    const decisionsBreakdown = this0.interventionHistory0.reduce(
+    const decisionsBreakdown = this.interventionHistory.reduce(
       (acc, decision) => {
-        acc[decision0.decision] = (acc[decision0.decision] || 0) + 1;
+        acc[decision.decision] = (acc[decision.decision] || 0) + 1;
         return acc;
       },
       {} as Record<string, number>
     );
 
     return {
-      totalIncidents: this0.interventionHistory0.length,
-      humanEscalations: this0.interventionHistory0.filter(
-        (d) => d0.approvedBy === 'human'
-      )0.length,
-      automaticInterventions: this0.interventionHistory0.filter(
-        (d) => d0.approvedBy === 'automated'
-      )0.length,
+      totalIncidents: this.interventionHistory.length,
+      humanEscalations: this.interventionHistory.filter(
+        (d) => d.approvedBy === 'human'
+      ).length,
+      automaticInterventions: this.interventionHistory.filter(
+        (d) => d.approvedBy === 'automated'
+      ).length,
       decisionsBreakdown,
       averageResponseTime: 2500, // Would calculate from actual data
     };
   }
 
   /**
-   * Shutdown safety intervention protocols0.
+   * Shutdown safety intervention protocols.
    */
   async shutdown(): Promise<void> {
-    this0.logger0.info('🛑 Shutting down Safety Intervention Protocols0.0.0.');
+    this.logger.info('🛑 Shutting down Safety Intervention Protocols...');
 
-    this?0.removeAllListeners;
-    this0.pendingIncidents?0.clear();
-    this0.isInitialized = false;
+    this.removeAllListeners;
+    this.pendingIncidents?.clear();
+    this.isInitialized = false;
 
-    this0.logger0.info('✅ Safety Intervention Protocols shutdown complete');
+    this.logger.info('✅ Safety Intervention Protocols shutdown complete');
   }
 }
 
 /**
- * Factory function to create safety intervention protocols0.
+ * Factory function to create safety intervention protocols.
  */
 export function createSafetyInterventionProtocols(
   config: SafetyInterventionConfig

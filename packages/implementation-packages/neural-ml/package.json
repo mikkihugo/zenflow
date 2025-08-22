@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/infrastructure": "link:../../infrastructure",
-    "@claude-zen/intelligence": "link:../../intelligence",
-    "@claude-zen/operations": "link:../../operations"
+    "@claude-zen/infrastructure": "workspace:*",
+    "@claude-zen/intelligence": "workspace:*",
+    "@claude-zen/operations": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

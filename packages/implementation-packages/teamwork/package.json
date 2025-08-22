@@ -36,7 +36,7 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/brain": "link:../brain",
+    "@claude-zen/brain": "workspace:*",
     "@claude-zen/foundation": "file:../../foundation",
     "nanoid": "^5.1.5"
   },

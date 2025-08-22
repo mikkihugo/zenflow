@@ -67,7 +67,7 @@ export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
 } as const;
 
 /**
- * Request options for API calls0.
+ * Request options for API calls.
  *
  * @example
  */
@@ -78,7 +78,7 @@ export interface RequestOptions {
 }
 
 /**
- * Pagination parameters for list operations0.
+ * Pagination parameters for list operations.
  *
  * @example
  */
@@ -192,9 +192,9 @@ export class APIClient {
           const clientError = new Error(apiError.error.message);
           clientError.name = 'APIError';
           (clientError as any).code = apiError.error.code;
-          (clientError as any)0.details = apiError0.error0.details;
-          (clientError as any)0.traceId = apiError0.error0.traceId;
-          (clientError as any)0.statusCode = error0.response0.status;
+          (clientError as any).details = apiError.error.details;
+          (clientError as any).traceId = apiError.error.traceId;
+          (clientError as any).statusCode = error.response.status;
           throw clientError;
         }
         throw error;
@@ -203,7 +203,7 @@ export class APIClient {
   }
 
   /**
-   * Generic HTTP method wrapper with type safety0.
+   * Generic HTTP method wrapper with type safety.
    *
    * @param method
    * @param endpoint
@@ -211,7 +211,7 @@ export class APIClient {
    * @param options
    */
   private async request<T>(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    method: 'GET | POST' | 'PUT | DELETE',
     endpoint: string,
     data?: any,
     options?: RequestOptions
@@ -225,7 +225,7 @@ export class APIClient {
     };
 
     const response: AxiosResponse<T> = await this.http.request(config);
-    return response?.data;
+    return response?.data()
   }
 
   // ===== COORDINATION API METHODS =====
@@ -238,10 +238,10 @@ export class APIClient {
      * List agents with filtering and pagination.
      *
      * @param params
-     * @param params0.status
-     * @param params0.type
-     * @param params0.limit
-     * @param params0.offset
+     * @param params.status
+     * @param params.type
+     * @param params.limit
+     * @param params.offset
      * @param options
      */
     listAgents: async (
@@ -254,12 +254,12 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?0.status) queryParams?0.set('status', params?0.status);
-      if (params?0.type) queryParams?0.set('type', params?0.type);
-      if (params?0.limit) queryParams?0.set('limit', params?0.limit?0.toString);
-      if (params?0.offset) queryParams?0.set('offset', params?0.offset?0.toString);
+      if (params?.status) queryParams?.set('status', params?.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.limit) queryParams?.set('limit', params?.limit?.toString);
+      if (params?.offset) queryParams?.set('offset', params?.offset?.toString);
 
-      return this0.request<{
+      return this.request<{
         agents: Agent[];
         total: number;
         offset: number;
@@ -273,11 +273,11 @@ export class APIClient {
     },
 
     /**
-     * Create new agent0.
+     * Create new agent.
      *
      * @param data
-     * @param data0.type
-     * @param data0.capabilities
+     * @param data.type
+     * @param data.capabilities
      * @param options
      */
     createAgent: async (
@@ -287,7 +287,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<Agent>(
+      return this.request<Agent>(
         'POST',
         '/api/v1/coordination/agents',
         data,
@@ -296,13 +296,13 @@ export class APIClient {
     },
 
     /**
-     * Get agent by ID0.
+     * Get agent by ID.
      *
      * @param agentId
      * @param options
      */
     getAgent: async (agentId: string, options?: RequestOptions) => {
-      return this0.request<Agent>(
+      return this.request<Agent>(
         'GET',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
@@ -311,13 +311,13 @@ export class APIClient {
     },
 
     /**
-     * Remove agent0.
+     * Remove agent.
      *
      * @param agentId
      * @param options
      */
     removeAgent: async (agentId: string, options?: RequestOptions) => {
-      return this0.request<void>(
+      return this.request<void>(
         'DELETE',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
@@ -326,13 +326,13 @@ export class APIClient {
     },
 
     /**
-     * Create new task0.
+     * Create new task.
      *
      * @param data
-     * @param data0.type
-     * @param data0.description
-     * @param data0.priority
-     * @param data0.deadline
+     * @param data.type
+     * @param data.description
+     * @param data.priority
+     * @param data.deadline
      * @param options
      */
     createTask: async (
@@ -344,7 +344,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<Task>(
+      return this.request<Task>(
         'POST',
         '/api/v1/coordination/tasks',
         data,
@@ -353,13 +353,13 @@ export class APIClient {
     },
 
     /**
-     * Get task by ID0.
+     * Get task by ID.
      *
      * @param taskId
      * @param options
      */
     getTask: async (taskId: string, options?: RequestOptions) => {
-      return this0.request<Task>(
+      return this.request<Task>(
         'GET',
         `/api/v1/coordination/tasks/${taskId}`,
         undefined,
@@ -368,12 +368,12 @@ export class APIClient {
     },
 
     /**
-     * Get swarm configuration0.
+     * Get swarm configuration.
      *
      * @param options
      */
     getSwarmConfig: async (options?: RequestOptions) => {
-      return this0.request<SwarmConfig>(
+      return this.request<SwarmConfig>(
         'GET',
         '/api/v1/coordination/swarm/config',
         undefined,
@@ -382,7 +382,7 @@ export class APIClient {
     },
 
     /**
-     * Update swarm configuration0.
+     * Update swarm configuration.
      *
      * @param config
      * @param options
@@ -391,7 +391,7 @@ export class APIClient {
       config: SwarmConfig,
       options?: RequestOptions
     ) => {
-      return this0.request<SwarmConfig>(
+      return this.request<SwarmConfig>(
         'PUT',
         '/api/v1/coordination/swarm/config',
         config,
@@ -400,12 +400,12 @@ export class APIClient {
     },
 
     /**
-     * Get coordination system health0.
+     * Get coordination system health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<HealthStatus>(
+      return this.request<HealthStatus>(
         'GET',
         '/api/v1/coordination/health',
         undefined,
@@ -414,17 +414,17 @@ export class APIClient {
     },
 
     /**
-     * Get performance metrics0.
+     * Get performance metrics.
      *
      * @param timeRange
      * @param options
      */
     getMetrics: async (
-      timeRange?: '1h' | '24h' | '7d' | '30d',
+      timeRange?: '1h | 24h' | '7d | 30d',
       options?: RequestOptions
     ) => {
       const queryParams = timeRange ? `?timeRange=${timeRange}` : '';
-      return this0.request<PerformanceMetrics>(
+      return this.request<PerformanceMetrics>(
         'GET',
         `/api/v1/coordination/metrics${queryParams}`,
         undefined,
@@ -436,15 +436,15 @@ export class APIClient {
   // ===== NEURAL NETWORK API METHODS =====
 
   /**
-   * Neural Network API client0.
+   * Neural Network API client.
    */
   public readonly neural = {
     /**
-     * List neural networks0.
+     * List neural networks.
      *
      * @param params
-     * @param params0.type
-     * @param params0.status
+     * @param params.type
+     * @param params.status
      * @param options
      */
     listNetworks: async (
@@ -455,20 +455,20 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?0.type) queryParams?0.set('type', params?0.type);
-      if (params?0.status) queryParams?0.set('status', params?0.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.status) queryParams?.set('status', params?.status);
 
-      return this0.request<{
+      return this.request<{
         networks: NeuralNetwork[];
       }>('GET', `/api/v1/neural/networks?${queryParams}`, undefined, options);
     },
 
     /**
-     * Create neural network0.
+     * Create neural network.
      *
      * @param data
-     * @param data0.type
-     * @param data0.layers
+     * @param data.type
+     * @param data.layers
      * @param options
      */
     createNetwork: async (
@@ -478,7 +478,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<NeuralNetwork>(
+      return this.request<NeuralNetwork>(
         'POST',
         '/api/v1/neural/networks',
         data,
@@ -487,13 +487,13 @@ export class APIClient {
     },
 
     /**
-     * Get neural network by ID0.
+     * Get neural network by ID.
      *
      * @param networkId
      * @param options
      */
     getNetwork: async (networkId: string, options?: RequestOptions) => {
-      return this0.request<NeuralNetwork>(
+      return this.request<NeuralNetwork>(
         'GET',
         `/api/v1/neural/networks/${networkId}`,
         undefined,
@@ -502,7 +502,7 @@ export class APIClient {
     },
 
     /**
-     * Start training0.
+     * Start training.
      *
      * @param networkId
      * @param data
@@ -513,14 +513,14 @@ export class APIClient {
       data: TrainingRequest,
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         trainingId: string;
         status: 'started';
       }>('POST', `/api/v1/neural/networks/${networkId}/train`, data, options);
     },
 
     /**
-     * Make prediction0.
+     * Make prediction.
      *
      * @param networkId
      * @param data
@@ -531,7 +531,7 @@ export class APIClient {
       data: PredictionRequest,
       options?: RequestOptions
     ) => {
-      return this0.request<PredictionResponse>(
+      return this.request<PredictionResponse>(
         'POST',
         `/api/v1/neural/networks/${networkId}/predict`,
         data,
@@ -540,7 +540,7 @@ export class APIClient {
     },
 
     /**
-     * Get training job status0.
+     * Get training job status.
      *
      * @param networkId
      * @param trainingId
@@ -551,10 +551,10 @@ export class APIClient {
       trainingId: string,
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         id: string;
         networkId: string;
-        status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
+        status: 'pending | running' | 'completed | failed' | 'cancelled';
         progress: number;
         currentEpoch?: number;
         totalEpochs: number;
@@ -567,7 +567,7 @@ export class APIClient {
     },
 
     /**
-     * Cancel training job0.
+     * Cancel training job.
      *
      * @param networkId
      * @param trainingId
@@ -578,7 +578,7 @@ export class APIClient {
       trainingId: string,
       options?: RequestOptions
     ) => {
-      return this0.request<void>(
+      return this.request<void>(
         'DELETE',
         `/api/v1/neural/networks/${networkId}/training/${trainingId}`,
         undefined,
@@ -590,16 +590,16 @@ export class APIClient {
   // ===== MEMORY API METHODS =====
 
   /**
-   * Memory API client0.
+   * Memory API client.
    */
   public readonly memory = {
     /**
-     * List memory stores0.
+     * List memory stores.
      *
      * @param options
      */
     listStores: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         stores: Array<{
           id: string;
           type: string;
@@ -609,18 +609,18 @@ export class APIClient {
           created: string;
         }>;
         total: number;
-      }>('GET', '/api/v1/memory/stores', undefined, options);
+      }>('GET, /api/v1/memory/stores', undefined, options);
     },
 
     /**
-     * Get value by key0.
+     * Get value by key.
      *
      * @param storeId
      * @param key
      * @param options
      */
     get: async (storeId: string, key: string, options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         storeId: string;
         key: string;
         value: any;
@@ -636,14 +636,14 @@ export class APIClient {
     },
 
     /**
-     * Set value by key0.
+     * Set value by key.
      *
      * @param storeId
      * @param key
      * @param data
-     * @param data0.value
-     * @param data0.ttl
-     * @param data0.metadata
+     * @param data.value
+     * @param data.ttl
+     * @param data.metadata
      * @param options
      */
     set: async (
@@ -656,7 +656,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         storeId: string;
         key: string;
         success: boolean;
@@ -666,14 +666,14 @@ export class APIClient {
     },
 
     /**
-     * Delete key0.
+     * Delete key.
      *
      * @param storeId
      * @param key
      * @param options
      */
     delete: async (storeId: string, key: string, options?: RequestOptions) => {
-      return this0.request<void>(
+      return this.request<void>(
         'DELETE',
         `/api/v1/memory/stores/${storeId}/keys/${key}`,
         undefined,
@@ -682,12 +682,12 @@ export class APIClient {
     },
 
     /**
-     * Get memory health0.
+     * Get memory health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         status: string;
         stores: Record<string, string>;
         metrics: {
@@ -695,23 +695,23 @@ export class APIClient {
           availableMemory: number;
           utilizationRate: number;
         };
-      }>('GET', '/api/v1/memory/health', undefined, options);
+      }>('GET, /api/v1/memory/health', undefined, options);
     },
   };
 
   // ===== DATABASE API METHODS =====
 
   /**
-   * Database API client0.
+   * Database API client.
    */
   public readonly database = {
     /**
-     * List database connections0.
+     * List database connections.
      *
      * @param options
      */
     listConnections: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         connections: Array<{
           id: string;
           type: string;
@@ -721,17 +721,17 @@ export class APIClient {
           database: string;
         }>;
         total: number;
-      }>('GET', '/api/v1/database/connections', undefined, options);
+      }>('GET, /api/v1/database/connections', undefined, options);
     },
 
     /**
-     * Vector similarity search0.
+     * Vector similarity search.
      *
      * @param collection
      * @param data
-     * @param data0.vector
-     * @param data0.limit
-     * @param data0.filter
+     * @param data.vector
+     * @param data.limit
+     * @param data.filter
      * @param options
      */
     vectorSearch: async (
@@ -743,7 +743,7 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         collection: string;
         results: Array<{
           id: string;
@@ -759,11 +759,11 @@ export class APIClient {
     },
 
     /**
-     * Execute graph query0.
+     * Execute graph query.
      *
      * @param data
-     * @param data0.query
-     * @param data0.parameters
+     * @param data.query
+     * @param data.parameters
      * @param options
      */
     graphQuery: async (
@@ -773,18 +773,18 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         results: any[];
         executionTime: number;
-      }>('POST', '/api/v1/database/graph/query', data, options);
+      }>('POST, /api/v1/database/graph/query', data, options);
     },
 
     /**
-     * Execute SQL query0.
+     * Execute SQL query.
      *
      * @param data
-     * @param data0.query
-     * @param data0.parameters
+     * @param data.query
+     * @param data.parameters
      * @param options
      */
     sqlQuery: async (
@@ -794,20 +794,20 @@ export class APIClient {
       },
       options?: RequestOptions
     ) => {
-      return this0.request<{
+      return this.request<{
         rows: any[];
         rowCount: number;
         executionTime: number;
-      }>('POST', '/api/v1/database/sql/query', data, options);
+      }>('POST, /api/v1/database/sql/query', data, options);
     },
 
     /**
-     * Get database health0.
+     * Get database health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         status: string;
         databases: Record<
           string,
@@ -816,23 +816,23 @@ export class APIClient {
             responseTime: number;
           }
         >;
-      }>('GET', '/api/v1/database/health', undefined, options);
+      }>('GET, /api/v1/database/health', undefined, options);
     },
   };
 
   // ===== SYSTEM API METHODS =====
 
   /**
-   * System API client0.
+   * System API client.
    */
   public readonly system = {
     /**
-     * Get system health0.
+     * Get system health.
      *
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         status: string;
         timestamp: string;
         services: Record<string, string>;
@@ -843,16 +843,16 @@ export class APIClient {
           heapUsed: number;
         };
         version: string;
-      }>('GET', '/api/v1/system/health', undefined, options);
+      }>('GET, /api/v1/system/health', undefined, options);
     },
 
     /**
-     * Get system metrics0.
+     * Get system metrics.
      *
      * @param options
      */
     getMetrics: async (options?: RequestOptions) => {
-      return this0.request<{
+      return this.request<{
         timestamp: string;
         uptime: number;
         memory: {
@@ -864,37 +864,37 @@ export class APIClient {
           user: number;
           system: number;
         };
-      }>('GET', '/api/v1/system/metrics', undefined, options);
+      }>('GET, /api/v1/system/metrics', undefined, options);
     },
   };
 
   // ===== UTILITY METHODS =====
 
   /**
-   * Update client configuration0.
+   * Update client configuration.
    *
    * @param newConfig
    */
   public updateConfig(newConfig: Partial<APIClientConfig>): void {
-    this0.config = { 0.0.0.this0.config, 0.0.0.newConfig };
-    this0.http = this?0.createHttpClient;
+    this.config = { ...this.config, ...newConfig };
+    this.http = this.createHttpClient;
   }
 
   /**
-   * Get current configuration0.
+   * Get current configuration.
    */
   public getConfig(): APIClientConfig {
-    return { 0.0.0.this0.config };
+    return { ...this.config };
   }
 
   /**
-   * Test API connectivity0.
+   * Test API connectivity.
    *
    * @param options
    */
   public async ping(options?: RequestOptions): Promise<boolean> {
     try {
-      await this0.request<{ status: string }>(
+      await this.request<{ status: string }>(
         'GET',
         '/health',
         undefined,
@@ -908,7 +908,7 @@ export class APIClient {
 }
 
 /**
- * Factory function to create API client0.
+ * Factory function to create API client.
  *
  * @param config
  */
@@ -919,8 +919,8 @@ export const createAPIClient = (
 };
 
 /**
- * Default API client instance0.
- * Pre-configured for local development0.
+ * Default API client instance.
+ * Pre-configured for local development.
  */
 export const apiClient = createAPIClient();
 

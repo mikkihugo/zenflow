@@ -1,5 +1,5 @@
 /**
- * OpenAPI 30.0 Route Documentation
+ * OpenAPI 3.0 Route Documentation
  * JSDoc comments for automatic Swagger generation
  */
 
@@ -26,14 +26,14 @@
  *               success: true
  *               data:
  *                 status: "healthy"
- *                 uptime: 3600.5
+ *                 uptime: 360.5
  *                 memory:
  *                   used: 45
  *                   total: 128
- *                 version: "10.0.0"
+ *                 version: "1..0"
  *                 environment: "development"
  *               message: "System is healthy"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -91,7 +91,7 @@
  *                     title: "Authentication System Review"
  *                     status: "pending_approval"
  *                     priority: "high"
- *                     submittedAt: "2024-01-15T10:30:00Z"
+ *                     submittedAt: "2024-01-15T1:30:00Z"
  *                     description: "Review and approve new JWT authentication implementation"
  *                 summary:
  *                   total: 15
@@ -100,7 +100,7 @@
  *                   approved: 3
  *                   rejected: 2
  *               message: "AGU workflows retrieved successfully"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       500:
@@ -174,11 +174,11 @@
  *                   rejected: 2
  *                   completedThisWeek: 8
  *                 performanceMetrics:
- *                   averageApprovalTime: "20.3 days"
+ *                   averageApprovalTime: "2.3 days"
  *                   automationRate: "73%"
  *                   successRate: "94%"
  *               message: "AGU dashboard data retrieved"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -220,14 +220,13 @@
  *                     milestones: 8
  *                     completedMilestones: 6
  *               message: "Roadmaps retrieved successfully"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
  * @swagger
- * /api/matron/consultations:
  *   get:
  *     summary: Get expert consultations
  *     description: Retrieve all expert consultations from the Matron advisory system
@@ -255,12 +254,12 @@
  *                 consultations:
  *                   - id: "cons-001"
  *                     title: "React vs Vue Performance Analysis"
- *                     expert: "Dr0. Sarah Chen - Frontend Architecture"
+ *                     expert: "Dr. Sarah Chen - Frontend Architecture"
  *                     status: "completed"
  *                     createdAt: "2024-01-10T09:00:00Z"
- *                     recommendation: "React with Next0.js recommended for this use case"
+ *                     recommendation: "React with Next.js recommended for this use case"
  *               message: "Matron consultations retrieved successfully"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -310,7 +309,7 @@
  *                       workflowId: "string"
  *                       newStatus: "string"
  *               message: "WebSocket events information"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  */
 
 /**
@@ -383,9 +382,9 @@
  *                   uptime: 86400
  *                 collective:
  *                   totalFacts: 1247
- *                   borgEfficiency: 0.94
+ *                   borgEfficiency: .94
  *               message: "Collective intelligence health status"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       503:
  *         $ref: '#/components/responses/ServiceUnavailable'
  */
@@ -441,12 +440,12 @@
  *                 components:
  *                   factSystem:
  *                     status: "active"
- *                     sources: ["context7", "deepwiki", "gitmcp", "semgrep"]
+ *                     sources: ["context7, deepwiki", "gitmcp, semgrep"]
  *                   borgArchitecture:
  *                     activeCubes: 3
- *                     consensusHealth: 0.94
+ *                     consensusHealth: .94
  *               message: "Collective intelligence detailed status"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  */
 
 /**
@@ -506,12 +505,12 @@
  *               data:
  *                 results:
  *                   - type: "npm-package"
- *                     subject: "react@180.20.0"
- *                     confidence: 0.95
+ *                     subject: "react@18.2.0"
+ *                     confidence: .95
  *                 total: 1
  *                 query: "react"
  *               message: "Found 1 facts matching query"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       503:
@@ -562,10 +561,10 @@
  *                 total: 1247
  *                 performance:
  *                   totalQueries: 8645
- *                   avgResponseTime: 230.5
- *                   cacheHitRate: "930.2%"
+ *                   avgResponseTime: 23.5
+ *                   cacheHitRate: "93.2%"
  *               message: "Collective intelligence statistics"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  */
 
 /**
@@ -588,7 +587,7 @@
  *                 type: string
  *           example:
  *             type: "npm-package"
- *             subject: "react@180.20.0"
+ *             subject: "react@18.2.0"
  *     responses:
  *       200:
  *         description: Refresh completed successfully
@@ -611,9 +610,9 @@
  *               data:
  *                 operation: "refresh"
  *                 result:
- *                   refreshed: "react@180.20.0"
- *               message: "Refreshed fact npm-package:react@180.20.0"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *                   refreshed: "react@18.2.0"
+ *               message: "Refreshed fact npm-package:react@18.2.0"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       503:
  *         $ref: '#/components/responses/ServiceUnavailable'
  */
@@ -648,7 +647,7 @@
  *                 operation: "clear-cache"
  *                 clearedItems: 256
  *               message: "Collective intelligence cache cleared"
- *               timestamp: "2024-01-15T10:30:00Z"
+ *               timestamp: "2024-01-15T1:30:00Z"
  *       503:
  *         $ref: '#/components/responses/ServiceUnavailable'
  */

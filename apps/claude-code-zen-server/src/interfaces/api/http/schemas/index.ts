@@ -1,10 +1,10 @@
 /**
- * REST API Schemas0.
+ * REST API Schemas.
  *
- * Consolidated OpenAPI 30.0 schemas from all domains0.
- * Provides single source of truth for API documentation and validation0.
+ * Consolidated OpenAPI 3.0 schemas from all domains.
+ * Provides single source of truth for API documentation and validation.
  *
- * @file REST API schemas for all domains0.
+ * @file REST API schemas for all domains.
  */
 
 // Removed broken config import - using simple fallback
@@ -19,27 +19,27 @@ export type {
   Task,
 } from '@claude-zen/enterprise';
 // Import domain-specific schemas
-export * from '0./common';
+export * from "./common";
 export * from '@claude-zen/intelligence';
 
 /**
- * Complete OpenAPI 30.0 Schema Definition
- * Combines all domain schemas into REST API specification0.
+ * Complete OpenAPI 3.0 Schema Definition
+ * Combines all domain schemas into REST API specification.
  */
 export const RestAPISchema = {
-  openapi: '30.0.0',
+  openapi: '3..0',
   info: {
     title: 'Claude Code Flow API',
-    version: '10.0.0',
+    version: '1..0',
     description:
       'Unified API for coordination, neural networks, memory, and database operations',
     contact: {
       name: 'Claude Code Flow Team',
-      url: 'https://github0.com/claude-zen-flow',
+      url: 'https://github.com/claude-zen-flow',
     },
     license: {
       name: 'MIT',
-      url: 'https://opensource0.org/licenses/MIT',
+      url: 'https://opensource.org/licenses/MIT',
     },
   },
   servers: [
@@ -48,7 +48,7 @@ export const RestAPISchema = {
       description: 'Development server',
     },
     {
-      url: 'https://api0.claude-zen-flow0.com',
+      url: 'https://api.claude-zen-flow.com',
       description: 'Production server',
     },
   ],
@@ -65,7 +65,7 @@ export const RestAPISchema = {
             name: 'status',
             schema: {
               type: 'string',
-              enum: ['idle', 'busy', 'error', 'offline'],
+              enum: ['idle, busy', 'error, offline'],
             },
             description: 'Filter agents by status',
           },
@@ -74,7 +74,7 @@ export const RestAPISchema = {
             name: 'type',
             schema: {
               type: 'string',
-              enum: ['researcher', 'coder', 'analyst', 'tester', 'coordinator'],
+              enum: ['researcher, coder', 'analyst, tester', 'coordinator'],
             },
             description: 'Filter agents by type',
           },
@@ -141,7 +141,7 @@ export const RestAPISchema = {
             'application/json': {
               schema: {
                 type: 'object',
-                required: ['type', 'capabilities'],
+                required: ['type, capabilities'],
                 properties: {
                   type: {
                     type: 'string',
@@ -209,7 +209,7 @@ export const RestAPISchema = {
             name: 'status',
             schema: {
               type: 'string',
-              enum: ['untrained', 'training', 'trained', 'deployed', 'error'],
+              enum: ['untrained, training', 'trained, deployed', 'error'],
             },
           },
         ],
@@ -242,7 +242,7 @@ export const RestAPISchema = {
             'application/json': {
               schema: {
                 type: 'object',
-                required: ['type', 'layers'],
+                required: ['type, layers'],
                 properties: {
                   type: {
                     type: 'string',
@@ -257,7 +257,7 @@ export const RestAPISchema = {
                     type: 'array',
                     items: {
                       type: 'object',
-                      required: ['type', 'size', 'activation'],
+                      required: ['type, size', 'activation'],
                       properties: {
                         type: {
                           type: 'string',
@@ -318,8 +318,8 @@ export const RestAPISchema = {
                 schema: {
                   type: 'object',
                   properties: {
-                    status: { type: 'string', example: 'healthy' },
-                    timestamp: { type: 'string', format: 'date-time' },
+                    status: { type: 'string, example: healthy' },
+                    timestamp: { type: 'string, format: date-time' },
                     version: { type: 'string' },
                     uptime: { type: 'number' },
                     environment: { type: 'string' },
@@ -346,7 +346,7 @@ export const RestAPISchema = {
                   type: 'object',
                   properties: {
                     status: { type: 'string' },
-                    timestamp: { type: 'string', format: 'date-time' },
+                    timestamp: { type: 'string, format: date-time' },
                     services: {
                       type: 'object',
                       properties: {
@@ -385,12 +385,12 @@ export const RestAPISchema = {
         properties: {
           error: {
             type: 'object',
-            required: ['code', 'message', 'timestamp', 'path', 'method'],
+            required: ['code, message', 'timestamp, path', 'method'],
             properties: {
               code: { type: 'string' },
               message: { type: 'string' },
               details: { type: 'object' },
-              timestamp: { type: 'string', format: 'date-time' },
+              timestamp: { type: 'string, format: date-time' },
               path: { type: 'string' },
               method: { type: 'string' },
               traceId: { type: 'string' },
@@ -399,7 +399,7 @@ export const RestAPISchema = {
         },
       },
 
-      // Coordination schemas (import0.*from0.*)
+      // Coordination schemas (import.*from.*)
       Agent: {
         type: 'object',
         required: [
@@ -421,12 +421,12 @@ export const RestAPISchema = {
           },
           type: {
             type: 'string',
-            enum: ['researcher', 'coder', 'analyst', 'tester', 'coordinator'],
+            enum: ['researcher, coder', 'analyst, tester', 'coordinator'],
             description: 'Agent specialization type',
           },
           status: {
             type: 'string',
-            enum: ['idle', 'busy', 'error', 'offline'],
+            enum: ['idle, busy', 'error, offline'],
             description: 'Current agent status',
           },
           capabilities: {
@@ -490,7 +490,7 @@ export const RestAPISchema = {
           },
           status: {
             type: 'string',
-            enum: ['pending', 'assigned', 'in_progress', 'completed', 'failed'],
+            enum: ['pending, assigned', 'in_progress, completed', 'failed'],
             description: 'Current task status',
           },
           priority: {
@@ -519,7 +519,7 @@ export const RestAPISchema = {
       // Neural network schemas
       NeuralNetwork: {
         type: 'object',
-        required: ['id', 'type', 'status', 'layers', 'created'],
+        required: ['id, type', 'status, layers', 'created'],
         properties: {
           id: {
             type: 'string',
@@ -528,12 +528,12 @@ export const RestAPISchema = {
           },
           type: {
             type: 'string',
-            enum: ['feedforward', 'convolutional', 'recurrent', 'transformer'],
+            enum: ['feedforward, convolutional', 'recurrent, transformer'],
             description: 'Neural network architecture type',
           },
           status: {
             type: 'string',
-            enum: ['untrained', 'training', 'trained', 'deployed', 'error'],
+            enum: ['untrained, training', 'trained, deployed', 'error'],
             description: 'Current network status',
           },
           layers: {
@@ -557,7 +557,7 @@ export const RestAPISchema = {
                 },
                 activation: {
                   type: 'string',
-                  enum: ['relu', 'sigmoid', 'tanh', 'softmax', 'linear'],
+                  enum: ['relu, sigmoid', 'tanh, softmax', 'linear'],
                 },
               },
             },
@@ -581,7 +581,7 @@ export const RestAPISchema = {
 
       TrainingRequest: {
         type: 'object',
-        required: ['networkId', 'trainingData', 'epochs'],
+        required: ['networkId, trainingData', 'epochs'],
         properties: {
           networkId: {
             type: 'string',
@@ -611,9 +611,9 @@ export const RestAPISchema = {
           },
           learningRate: {
             type: 'number',
-            minimum: 0.0001,
-            maximum: 10.0,
-            default: 0.001,
+            minimum: .0001,
+            maximum: 1.0,
+            default: .001,
           },
           batchSize: {
             type: 'integer',

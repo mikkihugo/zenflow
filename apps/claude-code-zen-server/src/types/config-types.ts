@@ -2,7 +2,7 @@
  * @fileoverview Configuration Types - Consolidated Config Exports
  *
  * Central export point for all configuration types used throughout
- * the claude-code-zen server application0.
+ * the claude-code-zen server application.
  */
 
 // Core configuration types
@@ -10,7 +10,7 @@ export type {
   ClaudeZenCoreConfig,
   RepoConfig,
   SystemConfig,
-} from '0./core-config';
+} from "./core-config";
 
 // System configuration types
 export type {
@@ -19,14 +19,14 @@ export type {
   PerformanceMetrics,
   SystemConfiguration,
   ResourceRecommendations,
-} from '0./system-config';
+} from "./system-config";
 
 // Foundation configuration types (Config is available)
 export type { Config as FoundationConfig } from '@claude-zen/foundation';
 
 // Default exports
-export { DEFAULT_CORE_CONFIG } from '0./core-config';
-export { DEFAULT_SYSTEM_CONFIG } from '0./system-config';
+export { DEFAULT_CORE_CONFIG } from "./core-config";
+export { DEFAULT_SYSTEM_CONFIG } from "./system-config";
 
 /**
  * Health Check Configuration
@@ -46,7 +46,7 @@ export interface ConfigHealthReport {
   isHealthy: boolean;
   timestamp: number;
   environment?: string;
-  status: 'healthy' | 'warning' | 'critical';
+  status: 'healthy | warning' | 'critical';
   score: number;
   details: Record<string, boolean>;
   recommendations: string[];
@@ -79,7 +79,7 @@ export interface ValidationResult {
  * Configuration Change Event
  */
 export interface ConfigChangeEvent {
-  type: 'created' | 'updated' | 'deleted';
+  type: 'created | updated' | 'deleted';
   path: string;
   oldValue?: any;
   newValue?: any;
@@ -131,7 +131,7 @@ export interface CoordinationConfig {
  * Database Configuration
  */
 export interface DatabaseConfig {
-  type: 'sqlite' | 'postgresql' | 'mysql';
+  type: 'sqlite | postgresql' | 'mysql';
   host?: string;
   port?: number;
   database: string;
@@ -154,7 +154,7 @@ export interface MemoryConfig {
  */
 export interface NeuralConfig {
   modelPath: string;
-  accelerator: 'cpu' | 'gpu' | 'tpu';
+  accelerator: 'cpu | gpu' | 'tpu';
   batchSize: number;
   learningRate: number;
 }
@@ -266,7 +266,7 @@ export interface APIConfig {
  */
 export interface StorageConfiguration {
   database: {
-    provider: 'sqlite' | 'postgresql' | 'mysql';
+    provider: 'sqlite | postgresql' | 'mysql';
     connection: string;
     pool?: {
       min: number;
@@ -274,7 +274,7 @@ export interface StorageConfiguration {
     };
   };
   cache: {
-    provider: 'memory' | 'redis';
+    provider: 'memory | redis';
     connection?: string;
     ttl: number;
   };
@@ -315,18 +315,18 @@ export const DEFAULT_HEALTH_CONFIG: HealthCheckConfig = {
   interval: 30000,
   timeout: 5000,
   retries: 3,
-  endpoints: ['/api/health', '/api/status'],
+  endpoints: ['/api/health, /api/status'],
 };
 
 export const DEFAULT_API_CONFIG: APIConfig = {
-  version: '10.0.0',
+  version: '1..0',
   prefix: '/api/v1',
   rateLimit: {
     windowMs: 900000, // 15 minutes
     max: 100,
   },
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    origin: ['http://localhost:3000, http://localhost:5173'],
     credentials: true,
   },
   swagger: {

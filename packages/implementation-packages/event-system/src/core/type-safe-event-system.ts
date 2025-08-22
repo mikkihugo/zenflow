@@ -1,3 +1,4 @@
+import { EventEmitter } from "@claude-zen/foundation";
 /**
  * @file Type-Safe Event System - Phase 0, Task 0.3 - AGUI Integration Foundation
  *

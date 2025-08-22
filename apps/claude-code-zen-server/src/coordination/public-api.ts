@@ -1,11 +1,11 @@
 /**
- * Public API for Coordination Layer0.
+ * Public API for Coordination Layer.
  *
  * This file provides the public interface for external modules to interact
- * with the coordination layer without directly accessing internal implementations0.
+ * with the coordination layer without directly accessing internal implementations.
  */
 /**
- * @file Coordination system: public-api0.
+ * @file Coordination system: public-api.
  */
 
 // SwarmConfig and SwarmLifecycleState moved - using any types for now
@@ -13,7 +13,7 @@ type SwarmConfig = any;
 type SwarmLifecycleState = any;
 
 /**
- * Public interface for swarm coordination0.
+ * Public interface for swarm coordination.
  *
  * @example
  */
@@ -41,8 +41,8 @@ export interface PublicSwarmCoordinator {
 }
 
 /**
- * Factory function to create a public swarm coordinator0.
- * This wraps the internal SwarmCoordinator with a limited public interface0.
+ * Factory function to create a public swarm coordinator.
+ * This wraps the internal SwarmCoordinator with a limited public interface.
  *
  * @param config
  * @example
@@ -54,41 +54,41 @@ export async function createPublicSwarmCoordinator(
   const { AgentManager } = await import('@claude-zen/agent-manager');
 
   const coordinator = new AgentManager();
-  await coordinator0.initialize(config);
+  await coordinator.initialize(config);
 
   // Return limited public interface
   return {
     async initialize(config?: SwarmConfig) {
-      return coordinator0.initialize(config);
+      return coordinator.initialize(config);
     },
 
     async shutdown() {
-      return coordinator?0.shutdown();
+      return coordinator?.shutdown();
     },
 
     getState() {
-      return coordinator?0.getState;
+      return coordinator?.getState()
     },
 
     getSwarmId() {
-      return coordinator?0.getSwarmId;
+      return coordinator?.getSwarmId()
     },
 
     getAgentCount() {
-      return coordinator?0.getAgentCount;
+      return coordinator?.getAgentCount()
     },
 
     getActiveAgents() {
-      return coordinator?0.getActiveAgents;
+      return coordinator?.getActiveAgents()
     },
 
     getStatus() {
       return {
-        id: coordinator?0.getSwarmId,
-        state: coordinator?0.getState,
-        agentCount: coordinator?0.getAgentCount,
-        taskCount: coordinator?0.getTaskCount,
-        uptime: coordinator?0.getUptime,
+        id: coordinator?.getSwarmId,
+        state: coordinator?.getState,
+        agentCount: coordinator?.getAgentCount,
+        taskCount: coordinator?.getTaskCount,
+        uptime: coordinator?.getUptime,
       };
     },
   };

@@ -27,7 +27,7 @@
  * @version 1.0.0
  * @license MIT
  */
-import { getDSPyService } from './service.js';
+import { getDSPyService } from './service';
 // Simple logging for standalone mode
 const logger = {
     info: (msg, ...args) => console.log(`[INFO] ${msg}`, ...args),

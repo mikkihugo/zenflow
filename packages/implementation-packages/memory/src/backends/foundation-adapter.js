@@ -1,60 +1,26 @@
 /**
- * Foundation Storage Adapter for Memory Backend
- *
- * Adapter that bridges Memory package with Foundation's storage system.
- * Leverages Foundation's database abstraction for SQLite, LanceDB, and Kuzu.
+ * Foundation Storage Adapter for Memory Backend - Simplified Implementation
  */
-import { getDatabaseAccess, getKVStore, Storage, getLogger, withRetry, recordMetric, withTrace } from '@claude-zen/foundation';
+import { getKVStore, getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { BaseMemoryBackend } from './base-backend';
 export class FoundationMemoryBackend extends BaseMemoryBackend {
     logger;
     kvStore;
-    dbAccess;
-    storage;
     initialized = false;
-    retryWithOptions;
-    circuitBreaker;
+    memoryConfig;
     constructor(config) {
         super(config);
+        this.memoryConfig = config;
         this.logger = getLogger('FoundationMemoryBackend');
-        this.storage = Storage;
-        // Setup retry logic if configured
-        if (config.retry) {
-            this.retryWithOptions = (fn) => withRetry(fn, config.retry);
-        }
-        else {
-            this.retryWithOptions = (fn) => fn();
-        }
-        // Setup circuit breaker if configured
-        if (config.circuitBreaker) {
-            // Circuit breaker needs a function to wrap - we'll set this up later when needed
-            this.circuitBreaker = null; // Will be created when first used
-        }
     }
     async initialize() {
         if (this.initialized)
             return;
-        const config = this.config;
+        const config = this.memoryConfig;
         try {
-            await withTrace('memory-backend-init', async () => {
-                switch (config.storageType) {
-                    case 'kv':
-                        this.kvStore = await getKVStore(config.databaseType || 'sqlite');
-                        break;
-                    case 'database':
-                        this.dbAccess = getDatabaseAccess();
-                        break;
-                    case 'hybrid':
-                        this.kvStore = await getKVStore(config.databaseType || 'sqlite');
-                        this.dbAccess = getDatabaseAccess();
-                        break;
-                    default:
-                        throw new Error(`Unsupported storage type: ${config.storageType}`);
-                }
-                // Initialize storage tables/collections if using database
-                if (this.dbAccess) {
-                    await this.initializeSchema();
-                }
+            withTrace('memory-backend-init', async () => {
+                // Use KV store for all storage types for now
+                this.kvStore = await getKVStore('sqlite');
                 this.initialized = true;
                 this.logger.info(`Foundation backend initialized with ${config.storageType} storage`);
                 recordMetric('memory_backend_initialized', 1, { storageType: config.storageType });
@@ -67,371 +33,95 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
         }
     }
     async store(key, value, namespace = 'default') {
-        this.validateKey(key);
         await this.ensureInitialized();
-        const operation = async () => {
-            return withTrace('memory-store', async (span) => {
-                const finalKey = `${namespace}:${key}`;
-                const now = Date.now();
-                const ttl = this.config.ttl ? now + this.config.ttl : undefined;
-                const entry = {
-                    key,
-                    value,
-                    namespace,
-                    created: now,
-                    updated: now,
-                    ttl,
-                    metadata: {
-                        size: this.calculateSize(value),
-                        backend: 'foundation'
-                    }
-                };
-                span?.setAttributes({
-                    'memory.operation': 'store',
-                    'memory.key': key,
-                    'memory.namespace': namespace,
-                    'memory.size': this.calculateSize(value)
-                });
-                if (this.kvStore) {
-                    // Use Key-Value store
-                    await this.kvStore.set(finalKey, JSON.stringify(entry));
-                }
-                else if (this.dbAccess) {
-                    // Use database access - get SQL interface
-                    const sql = await this.dbAccess.getSQL('memory');
-                    await sql.query('INSERT OR REPLACE INTO memory_entries (key, value, namespace, timestamp, metadata) VALUES (?, ?, ?, ?, ?)', [finalKey, JSON.stringify(entry), namespace || 'default', Date.now(), JSON.stringify({})]);
-                }
-                else {
-                    throw new Error('No storage backend available');
-                }
-                this.updateStats('write', this.calculateSize(value));
-                recordMetric('memory_operations_total', 1, {
-                    operation: 'store',
-                    namespace,
-                    backend: 'foundation'
-                });
-                this.logger.debug(`Stored key: ${key} in namespace: ${namespace}`);
-            });
+        const finalKey = `${namespace}:${key}`;
+        const entry = {
+            key,
+            value,
+            namespace,
+            timestamp: Date.now()
         };
-        if (this.circuitBreaker) {
-            await this.circuitBreaker.fire(operation);
+        if (this.kvStore) {
+            await this.kvStore.set(finalKey, JSON.stringify(entry));
         }
-        else {
-            await this.retryWithOptions(operation);
-        }
+        recordMetric('memory_operations_total', 1, { operation: 'store', namespace });
     }
     async set(key, value) {
         return this.store(key, value);
     }
     async retrieve(key, namespace = 'default') {
-        this.validateKey(key);
         await this.ensureInitialized();
-        const operation = async () => {
-            return withTrace('memory-retrieve', async (span) => {
-                const finalKey = `${namespace}:${key}`;
-                span?.setAttributes({
-                    'memory.operation': 'retrieve',
-                    'memory.key': key,
-                    'memory.namespace': namespace
-                });
-                let entryData = null;
-                if (this.kvStore) {
-                    // Use Key-Value store
-                    const data = await this.kvStore.get(finalKey);
-                    if (data) {
-                        entryData = JSON.parse(data);
-                    }
-                }
-                else if (this.dbAccess) {
-                    // Use database access - get SQL interface
-                    const sql = await this.dbAccess.getSQL('memory');
-                    const results = await sql.query('SELECT * FROM memory_entries WHERE key = ? AND namespace = ?', [key, namespace]);
-                    entryData = results.length > 0 ? results[0] : null;
-                }
-                else {
-                    throw new Error('No storage backend available');
-                }
-                if (!entryData) {
-                    this.updateStats('read');
-                    recordMetric('memory_operations_total', 1, {
-                        operation: 'retrieve_miss',
-                        namespace,
-                        backend: 'foundation'
-                    });
-                    return null;
-                }
-                // Check TTL
-                if (entryData.ttl && entryData.ttl <= Date.now()) {
-                    await this.delete(key, namespace);
-                    this.updateStats('read');
-                    return null;
-                }
-                this.updateStats('read');
-                recordMetric('memory_operations_total', 1, {
-                    operation: 'retrieve_hit',
-                    namespace,
-                    backend: 'foundation'
-                });
-                this.logger.debug(`Retrieved key: ${key} from namespace: ${namespace}`);
-                return entryData.value;
-            });
-        };
-        if (this.circuitBreaker) {
-            return await this.circuitBreaker.fire(operation);
+        const finalKey = `${namespace}:${key}`;
+        if (this.kvStore) {
+            const data = await this.kvStore.get(finalKey);
+            if (data) {
+                const entry = JSON.parse(data);
+                recordMetric('memory_operations_total', 1, { operation: 'retrieve_hit', namespace });
+                return entry.value;
+            }
         }
-        else {
-            return await this.retryWithOptions(operation);
-        }
+        recordMetric('memory_operations_total', 1, { operation: 'retrieve_miss', namespace });
+        return null;
     }
     async get(key) {
         return this.retrieve(key);
     }
     async delete(key, namespace = 'default') {
-        this.validateKey(key);
         await this.ensureInitialized();
-        const operation = async () => {
-            return withTrace('memory-delete', async (span) => {
-                const finalKey = `${namespace}:${key}`;
-                span?.setAttributes({
-                    'memory.operation': 'delete',
-                    'memory.key': key,
-                    'memory.namespace': namespace
-                });
-                let deleted = false;
-                if (this.kvStore) {
-                    // Use Key-Value store
-                    const existed = await this.kvStore.has(finalKey);
-                    if (existed) {
-                        await this.kvStore.delete(finalKey);
-                        deleted = true;
-                    }
-                }
-                else if (this.dbAccess) {
-                    // Use database access - get SQL interface
-                    const sql = await this.dbAccess.getSQL('memory');
-                    const result = await sql.query('DELETE FROM memory_entries WHERE key = ? AND namespace = ?', [key, namespace]);
-                    deleted = result.changes > 0;
-                }
-                else {
-                    throw new Error('No storage backend available');
-                }
-                if (deleted) {
-                    this.updateStats('delete');
-                    recordMetric('memory_operations_total', 1, {
-                        operation: 'delete',
-                        namespace,
-                        backend: 'foundation'
-                    });
-                    this.logger.debug(`Deleted key: ${key} from namespace: ${namespace}`);
-                }
-                return deleted;
-            });
-        };
-        if (this.circuitBreaker) {
-            return await this.circuitBreaker.fire(operation);
+        const finalKey = `${namespace}:${key}`;
+        let deleted = false;
+        if (this.kvStore) {
+            const existed = await this.kvStore.has(finalKey);
+            if (existed) {
+                await this.kvStore.delete(finalKey);
+                deleted = true;
+            }
         }
-        else {
-            return await this.retryWithOptions(operation);
+        if (deleted) {
+            recordMetric('memory_operations_total', 1, { operation: 'delete', namespace });
         }
+        return deleted;
     }
     async list(pattern, namespace = 'default') {
         await this.ensureInitialized();
-        const operation = async () => {
-            return withTrace('memory-list', async (span) => {
-                span?.setAttributes({
-                    'memory.operation': 'list',
-                    'memory.namespace': namespace,
-                    'memory.pattern': pattern || 'all'
-                });
-                let keys = [];
-                if (this.kvStore) {
-                    // Use Key-Value store - get all keys and filter
-                    const allKeys = await this.kvStore.keys();
-                    const namespacePrefix = `${namespace}:`;
-                    keys = allKeys
-                        .filter(key => key.startsWith(namespacePrefix))
-                        .map(key => key.substring(namespacePrefix.length))
-                        .filter(key => !pattern || this.matchesPattern(key, pattern));
-                }
-                else if (this.dbAccess) {
-                    // Use database access - get SQL interface
-                    const sql = await this.dbAccess.getSQL('memory');
-                    let query = 'SELECT key FROM memory_entries WHERE namespace = ?';
-                    const params = [namespace];
-                    if (pattern) {
-                        const sqlPattern = pattern.replace(/\*/g, '%');
-                        query += ' AND key LIKE ?';
-                        params.push(sqlPattern);
-                    }
-                    query += ' AND (ttl IS NULL OR ttl > ?)';
-                    params.push(Date.now());
-                    const results = await sql.query(query, params);
-                    keys = results.map((row) => row.key);
-                }
-                else {
-                    throw new Error('No storage backend available');
-                }
-                recordMetric('memory_operations_total', 1, {
-                    operation: 'list',
-                    namespace,
-                    backend: 'foundation',
-                    count: keys.length
-                });
-                return keys.sort();
-            });
-        };
-        if (this.circuitBreaker) {
-            return await this.circuitBreaker.fire(operation);
+        let keys = [];
+        if (this.kvStore) {
+            const allKeys = await this.kvStore.keys();
+            const namespacePrefix = `${namespace}:`;
+            keys = allKeys
+                .filter(key => key.startsWith(namespacePrefix))
+                .map(key => key.substring(namespacePrefix.length))
+                .filter(key => !pattern || key.includes(pattern));
         }
-        else {
-            return await this.retryWithOptions(operation);
-        }
-    }
-    async search(pattern, namespace = 'default') {
-        await this.ensureInitialized();
-        const operation = async () => {
-            return withTrace('memory-search', async (span) => {
-                span?.setAttributes({
-                    'memory.operation': 'search',
-                    'memory.namespace': namespace,
-                    'memory.pattern': pattern
-                });
-                const results = {};
-                if (this.kvStore) {
-                    // Use Key-Value store - get all entries and search
-                    const allKeys = await this.kvStore.keys();
-                    const namespacePrefix = `${namespace}:`;
-                    for (const fullKey of allKeys) {
-                        if (!fullKey.startsWith(namespacePrefix))
-                            continue;
-                        const key = fullKey.substring(namespacePrefix.length);
-                        const data = await this.kvStore.get(fullKey);
-                        if (data) {
-                            const entry = JSON.parse(data);
-                            // Check TTL
-                            if (entry.ttl && entry.ttl <= Date.now())
-                                continue;
-                            // Search in key or value
-                            const valueString = JSON.stringify(entry.value);
-                            if (this.matchesPattern(key, pattern) ||
-                                valueString.toLowerCase().includes(pattern.toLowerCase())) {
-                                results[key] = entry.value;
-                            }
-                        }
-                    }
-                }
-                else if (this.dbAccess) {
-                    // Use database access with SQL search
-                    const sqlPattern = `%${pattern}%`;
-                    const query = `
-            SELECT key, value FROM memory_entries 
-            WHERE namespace = ? 
-            AND (key LIKE ? OR json_extract(value, '$') LIKE ?)
-            AND (ttl IS NULL OR ttl > ?)
-          `;
-                    const sql = await this.dbAccess.getSQL('memory');
-                    const rows = await sql.query(query, [
-                        namespace,
-                        sqlPattern,
-                        sqlPattern,
-                        Date.now()
-                    ]);
-                    for (const row of rows) {
-                        results[row.key] = row.value;
-                    }
-                }
-                else {
-                    throw new Error('No storage backend available');
-                }
-                recordMetric('memory_operations_total', 1, {
-                    operation: 'search',
-                    namespace,
-                    backend: 'foundation',
-                    results: Object.keys(results).length
-                });
-                return results;
-            });
-        };
-        if (this.circuitBreaker) {
-            return await this.circuitBreaker.fire(operation);
-        }
-        else {
-            return await this.retryWithOptions(operation);
-        }
+        return keys.sort();
     }
     async clear(namespace) {
         await this.ensureInitialized();
-        const operation = async () => {
-            return withTrace('memory-clear', async (span) => {
-                span?.setAttributes({
-                    'memory.operation': 'clear',
-                    'memory.namespace': namespace || 'all'
-                });
-                if (this.kvStore) {
-                    // Use Key-Value store
-                    if (namespace) {
-                        const allKeys = await this.kvStore.keys();
-                        const namespacePrefix = `${namespace}:`;
-                        for (const key of allKeys) {
-                            if (key.startsWith(namespacePrefix)) {
-                                await this.kvStore.delete(key);
-                            }
-                        }
-                    }
-                    else {
-                        await this.kvStore.clear();
+        if (this.kvStore) {
+            if (namespace) {
+                const allKeys = await this.kvStore.keys();
+                const namespacePrefix = `${namespace}:`;
+                for (const key of allKeys) {
+                    if (key.startsWith(namespacePrefix)) {
+                        await this.kvStore.delete(key);
                     }
                 }
-                else if (this.dbAccess) {
-                    // Use database access
-                    if (namespace) {
-                        const sql = await this.dbAccess.getSQL('memory');
-                        await sql.query('DELETE FROM memory_entries WHERE namespace = ?', [namespace]);
-                    }
-                    else {
-                        const sql = await this.dbAccess.getSQL('memory');
-                        await sql.query('DELETE FROM memory_entries');
-                    }
-                }
-                else {
-                    throw new Error('No storage backend available');
-                }
-                this.stats.totalEntries = 0;
-                this.stats.totalSize = 0;
-                recordMetric('memory_operations_total', 1, {
-                    operation: 'clear',
-                    namespace: namespace || 'all',
-                    backend: 'foundation'
-                });
-                this.logger.debug(`Cleared ${namespace ? `namespace: ${namespace}` : 'all entries'}`);
-            });
-        };
-        if (this.circuitBreaker) {
-            await this.circuitBreaker.fire(operation);
+            }
+            else {
+                await this.kvStore.clear();
+            }
         }
-        else {
-            await this.retryWithOptions(operation);
-        }
+        recordMetric('memory_operations_total', 1, { operation: 'clear', namespace: namespace || 'all' });
     }
     async close() {
         if (!this.initialized)
             return;
-        try {
-            await withTrace('memory-backend-close', async () => {
-                // Foundation storage handles its own cleanup
-                // We just need to mark as not initialized
-                this.initialized = false;
-                recordMetric('memory_backend_closed', 1);
-                this.logger.info('Foundation backend closed');
-            });
-        }
-        catch (error) {
-            this.logger.error('Failed to close Foundation backend:', error);
-            throw error;
-        }
+        this.initialized = false;
+        recordMetric('memory_backend_closed', 1);
+        this.logger.info('Foundation backend closed');
     }
     getCapabilities() {
-        const config = this.config;
+        const config = this.memoryConfig;
         return {
             persistent: true,
             searchable: true,
@@ -445,124 +135,39 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     }
     async listNamespaces() {
         await this.ensureInitialized();
-        const operation = async () => {
-            if (this.kvStore) {
-                // Use Key-Value store
-                const allKeys = await this.kvStore.keys();
-                const namespaces = new Set();
-                for (const key of allKeys) {
-                    const colonIndex = key.indexOf(':');
-                    if (colonIndex > 0) {
-                        namespaces.add(key.substring(0, colonIndex));
-                    }
+        if (this.kvStore) {
+            const allKeys = await this.kvStore.keys();
+            const namespaces = new Set();
+            for (const key of allKeys) {
+                const colonIndex = key.indexOf(':');
+                if (colonIndex > 0) {
+                    namespaces.add(key.substring(0, colonIndex));
                 }
-                return Array.from(namespaces).sort();
             }
-            else if (this.dbAccess) {
-                // Use database access
-                const sql = await this.dbAccess.getSQL('memory');
-                const results = await sql.query('SELECT DISTINCT namespace FROM memory_entries ORDER BY namespace');
-                return results.map((row) => row.namespace);
-            }
-            else {
-                throw new Error('No storage backend available');
-            }
-        };
-        if (this.circuitBreaker) {
-            return await this.circuitBreaker.fire(operation);
+            return Array.from(namespaces).sort();
         }
-        else {
-            return await this.retryWithOptions(operation);
-        }
+        return [];
     }
     // Private methods
-    async initializeSchema() {
-        if (!this.dbAccess)
-            return;
-        try {
-            // Create memory_entries table if it doesn't exist
-            const sql = await this.dbAccess.getSQL('memory');
-            await sql.query(`
-        CREATE TABLE IF NOT EXISTS memory_entries (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          key TEXT NOT NULL,
-          value JSON NOT NULL,
-          namespace TEXT DEFAULT 'default',
-          created INTEGER NOT NULL,
-          updated INTEGER NOT NULL,
-          ttl INTEGER,
-          metadata JSON,
-          UNIQUE(key, namespace)
-        )
-      `);
-            // Create indexes for performance
-            await sql.query(`
-        CREATE INDEX IF NOT EXISTS idx_key_namespace ON memory_entries(key, namespace)
-      `);
-            await sql.query(`
-        CREATE INDEX IF NOT EXISTS idx_namespace ON memory_entries(namespace)
-      `);
-            await sql.query(`
-        CREATE INDEX IF NOT EXISTS idx_ttl ON memory_entries(ttl)
-      `);
-            this.logger.debug('Database schema initialized');
-        }
-        catch (error) {
-            this.logger.error('Failed to initialize database schema:', error);
-            throw error;
-        }
-    }
     async ensureInitialized() {
         if (!this.initialized) {
             await this.initialize();
         }
     }
-    async getSize() {
-        await this.ensureInitialized();
-        if (this.kvStore) {
-            const keys = await this.kvStore.keys();
-            return keys.length;
-        }
-        else if (this.dbAccess) {
-            const sql = await this.dbAccess.getSQL('memory');
-            const results = await sql.query('SELECT COUNT(*) as count FROM memory_entries');
-            return results[0]?.count || 0;
-        }
-        return 0;
+    calculateSize(value) {
+        return JSON.stringify(value).length;
     }
-    async healthCheck() {
-        const start = Date.now();
-        try {
-            // Test basic operations
-            await this.store('health_check', { timestamp: start }, 'health');
-            const result = await this.retrieve('health_check', 'health');
-            await this.delete('health_check', 'health');
-            const latency = Date.now() - start;
-            const healthy = result !== null;
-            recordMetric('memory_health_check', 1, {
-                healthy: healthy.toString(),
-                latency: latency.toString()
-            });
-            return {
-                healthy,
-                latency,
-                capabilities: this.getCapabilities(),
-                stats: this.stats
-            };
+    validateKey(key) {
+        if (!key || typeof key !== 'string') {
+            throw new Error('Key must be a non-empty string');
         }
-        catch (error) {
-            const latency = Date.now() - start;
-            recordMetric('memory_health_check', 1, {
-                healthy: 'false',
-                latency: latency.toString(),
-                error: error.message
-            });
-            return {
-                healthy: false,
-                latency,
-                capabilities: this.getCapabilities(),
-                stats: this.stats
-            };
-        }
+    }
+    updateStats(operation, size) {
+        // Placeholder for stats updates
+    }
+    matchesPattern(str, pattern) {
+        const regexPattern = pattern.replace(/\*/g, '.*');
+        const regex = new RegExp(`^${regexPattern}$`, 'i');
+        return regex.test(str);
     }
 }

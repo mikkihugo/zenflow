@@ -1,8 +1,7 @@
 /**
- * @file Shared Types for THE COLLECTIVE Coordination Layer0.
+ * @file Shared Types for THE COLLECTIVE Coordination Layer.
  *
- * Shared interfaces to prevent circular dependencies between coordination modules0.
- * Extracted from collective-fact-integration and collective-cube-sync to break circular imports0.
+ * Shared interfaces to prevent circular dependencies between coordination modules.
  */
 
 import type { TypedEventBase } from '@claude-zen/foundation';
@@ -16,11 +15,11 @@ import type {
   GlobalAgentInfo,
   GlobalResourceMetrics,
   UniversalFact,
-} from '0./collective-types';
+} from "./collective-types";
 
 /**
  * THE COLLECTIVE FACT System Interface
- * Shared interface to break circular dependency between collective modules0.
+ * Shared interface to break circular dependency between collective modules.
  *
  * @example
  */
@@ -45,7 +44,7 @@ export interface CollectiveFACTSystemInterface extends TypedEventBase {
 
 /**
  * Hive Swarm Coordinator Interface
- * Shared interface to break circular dependency between hive modules0.
+ * Shared interface to break circular dependency between hive modules.
  *
  * @example
  */

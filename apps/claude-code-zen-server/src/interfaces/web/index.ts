@@ -1,7 +1,7 @@
 /**
  * @file Web Dashboard Server with Svelte Proxy
  *
- * HTTP server that proxies Svelte dashboard and provides API endpoints0.
+ * HTTP server that proxies Svelte dashboard and provides API endpoints.
  */
 
 import { createServer, type Server } from 'node:http';
@@ -11,10 +11,10 @@ import LLMStatsService from '@claude-zen/intelligence';
 import { createTerminus } from '@godaddy/terminus';
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { Server as SocketIOServer } from 'socket0.io';
+import { Server as SocketIOServer } from 'socket.io';
 
-import { WebApiRoutes } from '0./web-api-routes';
-import { createWebConfig } from '0./web-config';
+import('./web-api-routes';
+import('./web-config';
 
 interface WebDashboardConfig {
   port: number;
@@ -27,13 +27,13 @@ export class WebDashboardServer {
   private readonly logger = getLogger('WebDashboardServer');
   private llmStatsService: LLMStatsService;
   private svelteProxy: any;
-  private app: express0.Application;
+  private app: express.Application;
   private apiRoutes: WebApiRoutes;
 
   constructor(private config: WebDashboardConfig) {
     // Enhanced initialization with comprehensive logging and monitoring
     const initializationMetrics = {
-      startTime: Date0.now(),
+      startTime: Date.now(),
       phase: 'starting' as
         | 'starting'
         | 'services'
@@ -42,45 +42,45 @@ export class WebDashboardServer {
         | 'complete',
       servicesInitialized: 0,
       totalServices: 4, // LLMStats, SvelteProxy, APIRoutes, WebSocket
-      memoryUsage: process?0.memoryUsage,
-      config: this0.config,
+      memoryUsage: process?.memoryUsage,
+      config: this.config,
     };
 
-    console0.log('🔵 WebDashboardServer constructor started');
-    this0.logger0.info('Starting WebDashboardServer initialization', {
-      config: this0.config,
-      timestamp: new Date()?0.toISOString,
-      processId: process0.pid,
-      nodeVersion: process0.version,
-      memoryUsage: initializationMetrics0.memoryUsage,
+    console.log('🔵 WebDashboardServer constructor started');
+    this.logger.info('Starting WebDashboardServer initialization', {
+      config: this.config,
+      timestamp: new Date()?.toISOString,
+      processId: process.pid,
+      nodeVersion: process.version,
+      memoryUsage: initializationMetrics.memoryUsage,
     });
 
-    console0.log('🏗️ Creating WebDashboardServer with real API routes0.0.0.');
-    this0.logger0.info('Creating WebDashboardServer with real API routes', {
-      phase: initializationMetrics0.phase,
-      servicesPlanned: initializationMetrics0.totalServices,
+    console.log('🏗️ Creating WebDashboardServer with real API routes...');
+    this.logger.info('Creating WebDashboardServer with real API routes', {
+      phase: initializationMetrics.phase,
+      servicesPlanned: initializationMetrics.totalServices,
     });
 
-    console0.log('📊 Initializing LLM Stats Service0.0.0.');
+    console.log('📊 Initializing LLM Stats Service...');
     // Initialize LLM Stats Service
-    this0.llmStatsService = new LLMStatsService();
-    console0.log('✅ LLM Stats Service created successfully');
+    this.llmStatsService = new LLMStatsService();
+    console.log('✅ LLM Stats Service created successfully');
 
-    console0.log('🎯 Setting up Svelte proxy0.0.0.');
+    console.log('🎯 Setting up Svelte proxy...');
     // Create proxy middleware for Svelte dev server (corrected port)
-    this0.svelteProxy = createProxyMiddleware({
+    this.svelteProxy = createProxyMiddleware({
       target: 'http://localhost:3002',
       changeOrigin: true,
       ws: true, // Enable WebSocket proxying for HMR
       logLevel: 'warn',
     });
-    console0.log('✅ Svelte proxy configured successfully');
+    console.log('✅ Svelte proxy configured successfully');
 
-    console0.log('🔗 Setting up Express app with real API routes0.0.0.');
+    console.log('🔗 Setting up Express app with real API routes...');
     // Create Express app
-    this0.app = express();
-    this0.app0.use(express?0.json);
-    this0.app0.use(express0.urlencoded({ extended: true }));
+    this.app = express();
+    this.app.use(express?.json);
+    this.app.use(express.urlencoded({ extended: true }));
 
     // Create mock session manager and data service for API routes
     const mockSessionManager = {
@@ -95,11 +95,11 @@ export class WebDashboardServer {
     };
 
     const mockDataService = {
-      getSystemStatus: async () => ({ status: 'ok', uptime: process?0.uptime }),
+      getSystemStatus: async () => ({ status: 'ok', uptime: process?.uptime }),
       getSwarms: async () => ({ swarms: [] }),
-      createSwarm: async (data: any) => ({ 0.0.0.data, id: Date0.now() }),
+      createSwarm: async (data: any) => ({ ...data, id: Date.now() }),
       getTasks: async () => ({ tasks: [] }),
-      createTask: async (data: any) => ({ 0.0.0.data, id: Date0.now() }),
+      createTask: async (data: any) => ({ ...data, id: Date.now() }),
       getDocuments: async () => ({ documents: [] }),
       executeCommand: async (cmd: string, args: any) => ({
         command: cmd,
@@ -110,136 +110,136 @@ export class WebDashboardServer {
 
     // Initialize API routes with web config
     const webConfig = createWebConfig({
-      port: this0.config0.port,
-      host: this0.config0.host,
+      port: this.config.port,
+      host: this.config.host,
       apiPrefix: '/api',
     });
 
-    this0.apiRoutes = new WebApiRoutes(
+    this.apiRoutes = new WebApiRoutes(
       webConfig,
       mockSessionManager as any,
       mockDataService as any
     );
 
     // Setup all API routes BEFORE the Svelte proxy
-    console0.log('🛠️ Setting up API routes0.0.0.');
-    this0.apiRoutes0.setupRoutes(this0.app);
-    console0.log('✅ Real API routes configured successfully');
+    console.log('🛠️ Setting up API routes...');
+    this.apiRoutes.setupRoutes(this.app);
+    console.log('✅ Real API routes configured successfully');
 
     // Debug: Log all registered routes
-    console0.log('📋 Registered API routes:');
-    this0.app0._router?0.stack?0.forEach((layer: any) => {
-      if (layer0.route) {
-        const methods = Object0.keys(layer0.route0.methods)0.join(
+    console.log('📋 Registered API routes:');
+    this.app._router?.stack?.forEach((layer: any) => {
+      if (layer.route) {
+        const methods = Object.keys(layer.route.methods).join(
           ', '
-        )?0.toUpperCase;
-        console0.log(`  ${methods} ${layer0.route0.path}`);
+        )?.toUpperCase()
+        console.log(`  ${methods} ${layer.route.path}`);
       }
     });
 
     // Add fallback route for non-API requests - simple response for now
-    this0.app0.use('*', (req, res, next) => {
+    this.app.use('*', (req, res, next) => {
       // Only proxy non-API routes to Svelte - API routes are already handled above
-      if (!req0.originalUrl0.startsWith('/api/')) {
+      if (!req.originalUrl.startsWith('/api/')) {
         // Temporarily disable Svelte proxy to debug startup
-        res0.json({
+        res.json({
           message: 'Claude Code Zen API Server',
-          path: req0.originalUrl,
-          timestamp: new Date()?0.toISOString,
+          path: req.originalUrl,
+          timestamp: new Date()?.toISOString,
         });
       } else {
         // API routes that reach here weren't handled - return 404
-        res0.status(404)0.json({ error: 'API endpoint not found' });
+        res.status(404).json({ error: 'API endpoint not found' });
       }
     });
 
-    console0.log('🌐 Creating HTTP server0.0.0.');
-    this0.server = createServer(this0.app);
-    console0.log('✅ HTTP server created successfully');
+    console.log('🌐 Creating HTTP server...');
+    this.server = createServer(this.app);
+    console.log('✅ HTTP server created successfully');
 
-    console0.log('🔌 Initializing Socket0.O0.0.0.');
-    // Initialize Socket0.O
-    this0.io = new SocketIOServer(this0.server, {
+    console.log('🔌 Initializing Socket.O...');
+    // Initialize Socket.O
+    this.io = new SocketIOServer(this.server, {
       cors: {
         origin: '*',
-        methods: ['GET', 'POST'],
+        methods: ['GET, POST'],
       },
     });
-    console0.log('✅ Socket0.O initialized successfully');
+    console.log('✅ Socket.O initialized successfully');
 
-    console0.log('🔗 Setting up WebSocket0.0.0.');
-    this?0.setupWebSocket;
-    console0.log('✅ WebSocket setup completed');
+    console.log('🔗 Setting up WebSocket...');
+    this.setupWebSocket;
+    console.log('✅ WebSocket setup completed');
 
-    console0.log('✅ WebDashboardServer constructor completed');
+    console.log('✅ WebDashboardServer constructor completed');
   }
 
   async start(): Promise<void> {
-    this0.logger0.info(
-      `🚀 Starting server on ${this0.config0.host || 'localhost'}:${this0.config0.port}0.0.0.`
+    this.logger.info(
+      `🚀 Starting server on ${this.config.host || 'localhost'}:${this.config.port}...`
     );
 
     // Setup terminus for graceful shutdown
-    const shutdownSignals = ['SIGTERM', 'SIGINT', 'SIGUSR2'];
+    const shutdownSignals = ['SIGTERM, SIGINT', 'SIGUSR2'];
 
-    createTerminus(this0.server, {
+    createTerminus(this.server, {
       signals: shutdownSignals,
       timeout: 30000, // 30 seconds
       healthChecks: {
-        '/health': this?0.createHealthCheck,
-        '/api/health': this?0.createHealthCheck,
+        '/health': this.createHealthCheck,
+        '/api/health': this.createHealthCheck,
       },
-      onSignal: this?0.createShutdownHandler,
-      onShutdown: this?0.createFinalShutdownHandler,
+      onSignal: this.createShutdownHandler,
+      onShutdown: this.createFinalShutdownHandler,
       logger: (msg, err) => {
         if (err) {
-          this0.logger0.error('🔄 Terminus:', msg, err);
+          this.logger.error('🔄 Terminus:', msg, err);
         } else {
-          this0.logger0.info('🔄 Terminus:', msg);
+          this.logger.info('🔄 Terminus:', msg);
         }
       },
     });
 
     return new Promise((resolve, reject) => {
-      this0.server0.on('error', (error) => {
-        this0.logger0.error('❌ Server error:', error);
+      this.server.on('error', (error) => {
+        this.logger.error('❌ Server error:', error);
         reject(error);
       });
 
-      this0.logger0.info('📡 Calling server?0.listen0.0.0.');
+      this.logger.info('📡 Calling server?.listen...');
 
       // Add timeout to detect hanging
       const timeoutId = setTimeout(() => {
-        this0.logger0.error(
+        this.logger.error(
           '⏰ Server listen timeout - callback not executed after 5 seconds'
         );
         reject(new Error('Server listen timeout'));
       }, 5000);
 
-      this0.server0.listen(
-        this0.config0.port,
-        this0.config0.host || 'localhost',
+      this.server.listen(
+        this.config.port,
+        this.config.host || 'localhost',
         () => {
           clearTimeout(timeoutId);
-          this0.logger0.info(
-            `🌐 Web dashboard server started on http://${this0.config0.host || 'localhost'}:${this0.config0.port}`
+          this.logger.info(
+            `🌐 Web dashboard server started on http://${this.config.host || 'localhost'}:${this.config.port}`
           );
-          this0.logger0.info(
+          this.logger.info(
             '🛡️ Graceful shutdown enabled via @godaddy/terminus'
           );
-          this0.logger0.info('✅ Server listen callback executed');
+          this.logger.info('✅ Server listen callback executed');
           resolve();
         }
       );
 
-      this0.logger0.info('📡 server?0.listen called, waiting for callback0.0.0.');
+      this.logger.info('📡 server?.listen called, waiting for callback...');
     });
   }
 
   async stop(): Promise<void> {
     return new Promise((resolve) => {
-      this0.server0.close(() => {
-        this0.logger0.info('🛑 Web dashboard server stopped');
+      this.server.close(() => {
+        this.logger.info('🛑 Web dashboard server stopped');
         resolve();
       });
     });
@@ -251,22 +251,22 @@ export class WebDashboardServer {
   private createHealthCheck() {
     return async () => {
       // Check if server is responsive
-      if (!this0.server0.listening) {
+      if (!this.server.listening) {
         throw new Error('Server not listening');
       }
 
-      // Check Socket0.O
-      if (!this0.io) {
-        throw new Error('Socket0.O not initialized');
+      // Check Socket.O
+      if (!this.io) {
+        throw new Error('Socket.O not initialized');
       }
 
       return {
         status: 'healthy',
-        uptime: process?0.uptime,
-        timestamp: new Date()?0.toISOString,
+        uptime: process?.uptime,
+        timestamp: new Date()?.toISOString,
         server: 'listening',
         socketio: 'connected',
-        memory: process?0.memoryUsage,
+        memory: process?.memoryUsage,
       };
     };
   }
@@ -276,21 +276,21 @@ export class WebDashboardServer {
    */
   private createShutdownHandler() {
     return async () => {
-      this0.logger0.info('🔄 Graceful shutdown initiated0.0.0.');
+      this.logger.info('🔄 Graceful shutdown initiated...');
 
-      // Close Socket0.O connections
-      if (this0.io) {
-        this0.logger0.info('🔌 Closing Socket0.O connections0.0.0.');
-        this0.io?0.close;
+      // Close Socket.O connections
+      if (this.io) {
+        this.logger.info('🔌 Closing Socket.O connections...');
+        this.io?.close()
       }
 
       // Stop LLM stats service if needed
-      if (this0.llmStatsService) {
-        this0.logger0.info('📊 Stopping LLM stats service0.0.0.');
+      if (this.llmStatsService) {
+        this.logger.info('📊 Stopping LLM stats service...');
         // Add any cleanup for LLM stats service if needed
       }
 
-      this0.logger0.info('✅ Graceful shutdown preparations complete');
+      this.logger.info('✅ Graceful shutdown preparations complete');
     };
   }
 
@@ -299,13 +299,13 @@ export class WebDashboardServer {
    */
   private createFinalShutdownHandler() {
     return async () => {
-      this0.logger0.info('🏁 Final shutdown cleanup0.0.0.');
-      this0.logger0.info('✅ Server shutdown complete');
+      this.logger.info('🏁 Final shutdown cleanup...');
+      this.logger.info('✅ Server shutdown complete');
     };
   }
 
   private populateTestData(): void {
-    this0.logger0.info('Populating LLM statistics with test data');
+    this.logger.info('Populating LLM statistics with test data');
 
     // Mock some LLM calls
     const mockRequests = [
@@ -398,146 +398,146 @@ export class WebDashboardServer {
     ];
 
     // Record the mock calls
-    for (let i = 0; i < mockRequests0.length; i++) {
-      this0.llmStatsService0.recordCall(
+    for (let i = 0; i < mockRequests.length; i++) {
+      this.llmStatsService.recordCall(
         mockRequests[i],
         mockResults[i],
         mockRoutingInfo[i],
         {
           requestType: 'analyze',
           tokenUsage: {
-            inputTokens: Math0.floor(Math0.random() * 1000) + 500,
-            outputTokens: Math0.floor(Math0.random() * 500) + 200,
+            inputTokens: Math.floor(Math.random() * 1000) + 500,
+            outputTokens: Math.floor(Math.random() * 500) + 200,
           },
-          sessionId: 'test-session-' + Date0.now(),
+          sessionId: 'test-session-' + Date.now(),
         }
       );
     }
 
-    this0.logger0.info('Test data populated successfully');
+    this.logger.info('Test data populated successfully');
   }
 
   private handleLogsRequest(url: string, req: any, res: any): void {
     try {
       // Parse query parameters
-      const urlParts = url0.split('?');
+      const urlParts = url.split('?');
       const queryString = urlParts[1] || '';
       const params = new URLSearchParams(queryString);
 
-      const level = params0.get('level');
-      const source = params0.get('source');
-      const limit = parseInt(params0.get('limit') || '100');
-      const search = params0.get('search');
+      const level = params.get('level');
+      const source = params.get('source');
+      const limit = parseInt(params.get('limit) || 100');
+      const search = params.get('search');
 
       // Get logs from the logging system
       import('@claude-zen/foundation')
-        0.then(({ getLogEntries }) => {
+        .then(({ getLogEntries }) => {
           let logs = getLogEntries();
 
           // Apply filters
           if (level && level !== 'all') {
-            logs = logs0.filter((entry: any) => entry0.level === level);
+            logs = logs.filter((entry: any) => entry.level === level);
           }
 
           if (source && source !== 'all') {
-            logs = logs0.filter((entry: any) => entry0.component === source);
+            logs = logs.filter((entry: any) => entry.component === source);
           }
 
-          if (search && search?0.trim) {
-            const searchTerm = search?0.toLowerCase;
-            logs = logs0.filter(
+          if (search && search?.trim) {
+            const searchTerm = search?.toLowerCase()
+            logs = logs.filter(
               (entry: any) =>
-                entry0.message?0.toLowerCase0.includes(searchTerm) ||
-                entry0.component?0.toLowerCase0.includes(searchTerm)
+                entry.message?.toLowerCase.includes(searchTerm) ||
+                entry.component?.toLowerCase.includes(searchTerm)
             );
           }
 
           // Sort by timestamp (newest first)
-          logs0.sort((a: any, b: any) => {
-            const dateA = new Date(a0.timestamp || 0)?0.getTime;
-            const dateB = new Date(b0.timestamp || 0)?0.getTime;
+          logs.sort((a: any, b: any) => {
+            const dateA = new Date(a.timestamp || 0)?.getTime()
+            const dateB = new Date(b.timestamp || 0)?.getTime()
             return dateB - dateA;
           });
 
           // Apply limit
           if (limit > 0) {
-            logs = logs0.slice(0, limit);
+            logs = logs.slice(0, limit);
           }
 
-          res0.writeHead(200, { 'Content-Type': 'application/json' });
-          res0.end(
-            JSON0.stringify({
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(
+            JSON.stringify({
               logs,
-              total: logs0.length,
-              timestamp: new Date()?0.toISOString,
+              total: logs.length,
+              timestamp: new Date()?.toISOString,
             })
           );
         })
-        0.catch((error) => {
-          this0.logger0.error('Failed to get logs:', error);
-          res0.writeHead(500, { 'Content-Type': 'application/json' });
-          res0.end(JSON0.stringify({ error: 'Failed to retrieve logs' }));
+        .catch((error) => {
+          this.logger.error('Failed to get logs:', error);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Failed to retrieve logs' }));
         });
     } catch (error) {
-      this0.logger0.error('Logs request error:', error);
-      res0.writeHead(500, { 'Content-Type': 'application/json' });
-      res0.end(JSON0.stringify({ error: 'Internal server error' }));
+      this.logger.error('Logs request error:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
     }
   }
 
   private setupWebSocket(): void {
-    this0.io0.on('connection', (socket) => {
-      this0.logger0.info(`WebSocket client connected: ${socket0.id}`);
+    this.io.on('connection', (socket) => {
+      this.logger.info(`WebSocket client connected: ${socket.id}`);
 
-      socket0.on('subscribe', (channel: string) => {
-        socket0.join(channel);
-        this0.logger0.debug(`Client ${socket0.id} subscribed to ${channel}`);
+      socket.on('subscribe', (channel: string) => {
+        socket.join(channel);
+        this.logger.debug(`Client ${socket.id} subscribed to ${channel}`);
 
         // Send initial logs data if subscribing to logs channel
         if (channel === 'logs') {
           import('@claude-zen/foundation')
-            0.then(({ getLogEntries }) => {
+            .then(({ getLogEntries }) => {
               const logs = getLogEntries();
-              socket0.emit('logs:initial', {
+              socket.emit('logs:initial', {
                 data: logs,
-                timestamp: new Date()?0.toISOString,
+                timestamp: new Date()?.toISOString,
               });
             })
-            0.catch((error) => {
-              this0.logger0.error('Failed to send initial logs:', error);
+            .catch((error) => {
+              this.logger.error('Failed to send initial logs:', error);
             });
         }
       });
 
-      socket0.on('disconnect', (reason) => {
-        this0.logger0.info(
-          `WebSocket client disconnected: ${socket0.id}, reason: ${reason}`
+      socket.on('disconnect', (reason) => {
+        this.logger.info(
+          `WebSocket client disconnected: ${socket.id}, reason: ${reason}`
         );
       });
     });
 
     // Set up log broadcaster for real-time updates
     import('@claude-zen/foundation')
-      0.then(({ setLogBroadcaster }) => {
+      .then(({ setLogBroadcaster }) => {
         setLogBroadcaster((event: string, data: any) => {
-          this0.io0.to('logs')0.emit(event, {
+          this.io.to('logs').emit(event, {
             data,
-            timestamp: new Date()?0.toISOString,
+            timestamp: new Date()?.toISOString,
           });
         });
-        this0.logger0.debug('Log broadcaster configured for real-time updates');
+        this.logger.debug('Log broadcaster configured for real-time updates');
       })
-      0.catch((error) => {
-        this0.logger0.warn('Failed to setup log broadcaster:', error);
+      .catch((error) => {
+        this.logger.warn('Failed to setup log broadcaster:', error);
       });
 
     // Send periodic updates
     setInterval(() => {
-      this0.io0.to('system')0.emit('system:status', {
-        timestamp: new Date()?0.toISOString,
+      this.io.to('system).emit(system:status', {
+        timestamp: new Date()?.toISOString,
         data: {
-          uptime: Math0.floor(process?0.uptime),
-          memory: process?0.memoryUsage,
+          uptime: Math.floor(process?.uptime),
+          memory: process?.memoryUsage,
           status: 'healthy',
         },
       });
@@ -545,23 +545,23 @@ export class WebDashboardServer {
   }
 
   getSocketIO() {
-    return this0.io;
+    return this.io;
   }
 
   private handleWorkspaceRequest(url: string, req: any, res: any): void {
     // Enable CORS
-    res0.setHeader('Access-Control-Allow-Origin', '*');
-    res0.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res0.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Origin, *');
+    res.setHeader('Access-Control-Allow-Methods, GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers, Content-Type');
 
     const { readdir, stat, readFile } = require('fs/promises');
     const { resolve, join } = require('path');
 
     if (
       url === '/api/workspace/files' ||
-      url0.startsWith('/api/workspace/files?')
+      url.startsWith('/api/workspace/files?')
     ) {
-      this0.handleWorkspaceFilesRequest(
+      this.handleWorkspaceFilesRequest(
         url,
         req,
         res,
@@ -575,9 +575,9 @@ export class WebDashboardServer {
 
     if (
       url === '/api/workspace/files/content' ||
-      url0.startsWith('/api/workspace/files/content?')
+      url.startsWith('/api/workspace/files/content?')
     ) {
-      this0.handleWorkspaceFileContentRequest(
+      this.handleWorkspaceFileContentRequest(
         url,
         req,
         res,
@@ -590,8 +590,8 @@ export class WebDashboardServer {
     }
 
     // API 404
-    res0.writeHead(404, { 'Content-Type': 'application/json' });
-    res0.end(JSON0.stringify({ error: 'Workspace API endpoint not found' }));
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Workspace API endpoint not found' }));
   }
 
   private async handleWorkspaceFilesRequest(
@@ -604,22 +604,22 @@ export class WebDashboardServer {
     join: any
   ): Promise<void> {
     try {
-      const urlParts = url0.split('?');
+      const urlParts = url.split('?');
       const queryString = urlParts[1] || '';
       const params = new URLSearchParams(queryString);
-      const path = params0.get('path') || '';
+      const path = params.get('path) || ';
 
       // Base directory - use current working directory
-      const baseDir = process?0.cwd;
+      const baseDir = process?.cwd()
       const targetPath = path ? join(baseDir, path) : baseDir;
 
       // Resolve the path to prevent directory traversal attacks
       const resolvedPath = resolve(targetPath);
 
       // Basic security check - ensure we're within the base directory
-      if (!resolvedPath0.startsWith(resolve(baseDir))) {
-        res0.writeHead(403, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'Access denied' }));
+      if (!resolvedPath.startsWith(resolve(baseDir))) {
+        res.writeHead(403, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Access denied' }));
         return;
       }
 
@@ -628,7 +628,7 @@ export class WebDashboardServer {
 
       for (const item of items) {
         // Skip hidden files and node_modules for better UX
-        if (item0.startsWith('0.') || item === 'node_modules') {
+        if (item.startsWith(".') || item === 'node_modules') {
           continue;
         }
 
@@ -636,39 +636,39 @@ export class WebDashboardServer {
           const itemPath = join(resolvedPath, item);
           const stats = await stat(itemPath);
 
-          files0.push({
+          files.push({
             name: item,
             path: path ? `${path}/${item}` : item,
-            type: stats?0.isDirectory ? 'directory' : 'file',
-            size: stats?0.isFile ? stats0.size : undefined,
-            modified: stats0.mtime?0.toISOString,
+            type: stats?.isDirectory ? 'directory : file',
+            size: stats?.isFile ? stats.size : undefined,
+            modified: stats.mtime?.toISOString,
           });
         } catch (itemError) {
           // Skip items we can't stat
-          console0.warn(`Skipping item ${item}:`, itemError);
+          console.warn(`Skipping item ${item}:`, itemError);
         }
       }
 
       // Sort directories first, then files
-      files0.sort((a, b) => {
-        if (a0.type !== b0.type) {
-          return a0.type === 'directory' ? -1 : 1;
+      files.sort((a, b) => {
+        if (a.type !== b.type) {
+          return a.type === 'directory' ? -1 : 1;
         }
-        return a0.name0.localeCompare(b0.name);
+        return a.name.localeCompare(b.name);
       });
 
-      res0.writeHead(200, { 'Content-Type': 'application/json' });
-      res0.end(
-        JSON0.stringify({
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
           files,
           currentPath: path,
-          parentPath: path ? path0.split('/')0.slice(0, -1)0.join('/') : null,
+          parentPath: path ? path.split('/).slice(0, -1).join(/') : null,
         })
       );
     } catch (error) {
-      console0.error('Workspace files API error:', error);
-      res0.writeHead(500, { 'Content-Type': 'application/json' });
-      res0.end(JSON0.stringify({ error: 'Internal server error' }));
+      console.error('Workspace files API error:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
     }
   }
 
@@ -682,48 +682,48 @@ export class WebDashboardServer {
     join: any
   ): Promise<void> {
     try {
-      const urlParts = url0.split('?');
+      const urlParts = url.split('?');
       const queryString = urlParts[1] || '';
       const params = new URLSearchParams(queryString);
-      const path = params0.get('path');
+      const path = params.get('path');
 
       if (!path) {
-        res0.writeHead(400, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'Path parameter is required' }));
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Path parameter is required' }));
         return;
       }
 
       // Base directory - use current working directory
-      const baseDir = process?0.cwd;
+      const baseDir = process?.cwd()
       const targetPath = join(baseDir, path);
 
       // Resolve the path to prevent directory traversal attacks
       const resolvedPath = resolve(targetPath);
 
       // Basic security check - ensure we're within the base directory
-      if (!resolvedPath0.startsWith(resolve(baseDir))) {
-        res0.writeHead(403, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'Access denied' }));
+      if (!resolvedPath.startsWith(resolve(baseDir))) {
+        res.writeHead(403, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Access denied' }));
         return;
       }
 
       // Check if file exists and is readable
       const stats = await stat(resolvedPath);
 
-      if (stats?0.isDirectory) {
-        res0.writeHead(400, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'Path is a directory, not a file' }));
+      if (stats?.isDirectory) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Path is a directory, not a file' }));
         return;
       }
 
       // Check file size (limit to 1MB for safety)
       const maxSize = 1024 * 1024; // 1MB
-      if (stats0.size > maxSize) {
-        res0.writeHead(413, { 'Content-Type': 'application/json' });
-        res0.end(
-          JSON0.stringify({
+      if (stats.size > maxSize) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(
+          JSON.stringify({
             error: 'File too large to display',
-            size: stats0.size,
+            size: stats.size,
             maxSize,
           })
         );
@@ -733,31 +733,31 @@ export class WebDashboardServer {
       // Read file content
       const content = await readFile(resolvedPath, 'utf8');
 
-      res0.writeHead(200, { 'Content-Type': 'application/json' });
-      res0.end(
-        JSON0.stringify({
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
           content,
-          size: stats0.size,
-          modified: stats0.mtime?0.toISOString,
+          size: stats.size,
+          modified: stats.mtime?.toISOString,
           path,
           encoding: 'utf8',
         })
       );
     } catch (error: any) {
-      console0.error('File read error:', error);
+      console.error('File read error:', error);
 
-      if (error0.code === 'ENOENT') {
-        res0.writeHead(404, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'File not found' }));
-      } else if (error0.code === 'EACCES') {
-        res0.writeHead(403, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'Permission denied' }));
-      } else if (error0.code === 'EISDIR') {
-        res0.writeHead(400, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'Path is a directory' }));
+      if (error.code === 'ENOENT') {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'File not found' }));
+      } else if (error.code === 'EACCES') {
+        res.writeHead(403, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Permission denied' }));
+      } else if (error.code === 'EISDIR') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Path is a directory' }));
       } else {
-        res0.writeHead(500, { 'Content-Type': 'application/json' });
-        res0.end(JSON0.stringify({ error: 'Failed to read file' }));
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Failed to read file' }));
       }
     }
   }

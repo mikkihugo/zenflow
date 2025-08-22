@@ -1,5 +1,5 @@
 /**
- * @file Interface implementation: system-metrics-dashboard0.
+ * @file Interface implementation: system-metrics-dashboard.
  */
 
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
@@ -17,13 +17,13 @@ import {
 import type { Repository } from '@claude-zen/intelligence';
 
 // Import UACL for unified client management
-import type EnhancedMemory from '0.0./0.0./memory/memory';
-import { UACLHelpers, uacl } from '0.0./clients/index';
+import type EnhancedMemory from './../memory/memory';
+import { UACLHelpers, uacl } from './clients/index';
 
 const logger = getLogger('interfaces-web-system-metrics-dashboard');
 
 // MCP performance metrics - using generic type since module doesn't exist
-// import type MCPPerformanceMetrics from '0.0./mcp/performance-metrics';
+// import type MCPPerformanceMetrics from './mcp/performance-metrics';
 type MCPPerformanceMetrics = any;
 
 interface DashboardConfig {
@@ -38,16 +38,16 @@ interface DashboardConfig {
 }
 
 interface SystemHealth {
-  overall: 'healthy' | 'warning' | 'critical';
+  overall: 'healthy | warning' | 'critical';
   components: {
-    mcp: 'healthy' | 'warning' | 'critical';
-    memory: 'healthy' | 'warning' | 'critical';
-    database: 'healthy' | 'warning' | 'critical';
-    neural: 'healthy' | 'warning' | 'critical';
-    clients: 'healthy' | 'warning' | 'critical'; // Added UACL client health
+    mcp: 'healthy | warning' | 'critical';
+    memory: 'healthy | warning' | 'critical';
+    database: 'healthy | warning' | 'critical';
+    neural: 'healthy | warning' | 'critical';
+    clients: 'healthy | warning' | 'critical'; // Added UACL client health
   };
   alerts: Array<{
-    level: 'info' | 'warning' | 'error';
+    level: 'info | warning' | 'error';
     component: string;
     message: string;
     timestamp: number;
@@ -59,7 +59,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   private enhancedMemory: EnhancedMemory;
   private vectorRepository?: Repository<any>;
   private configuration: Required<DashboardConfig>;
-  private refreshTimer?: NodeJS0.Timeout;
+  private refreshTimer?: NodeJS.Timeout;
   private isRunning = false;
 
   constructor(
@@ -69,90 +69,90 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   ) {
     super();
 
-    this0.mcpMetrics = mcpMetrics;
-    this0.enhancedMemory = enhancedMemory;
+    this.mcpMetrics = mcpMetrics;
+    this.enhancedMemory = enhancedMemory;
 
-    this0.configuration = {
-      refreshInterval: config?0.refreshInterval ?? 1000,
-      enableRealtime: config?0.enableRealtime ?? true,
-      maxDataPoints: config?0.maxDataPoints ?? 1000,
+    this.configuration = {
+      refreshInterval: config?.refreshInterval ?? 1000,
+      enableRealtime: config?.enableRealtime ?? true,
+      maxDataPoints: config?.maxDataPoints ?? 1000,
       alertThresholds: {
-        latency: config?0.alertThresholds?0.latency ?? 1000,
-        errorRate: config?0.alertThresholds?0.errorRate ?? 0.05,
-        memoryUsage: config?0.alertThresholds?0.memoryUsage ?? 100 * 1024 * 1024,
-        0.0.0.config?0.alertThresholds,
+        latency: config?.alertThresholds?.latency ?? 1000,
+        errorRate: config?.alertThresholds?.errorRate ?? .05,
+        memoryUsage: config?.alertThresholds?.memoryUsage ?? 100 * 1024 * 1024,
+        ...config?.alertThresholds,
       },
     };
   }
 
   /** Start the dashboard monitoring */
   async start(): Promise<void> {
-    if (this0.isRunning) return;
+    if (this.isRunning) return;
 
     // Initialize UACL if not already initialized
     try {
-      if (!uacl?0.isInitialized) {
-        await uacl0.initialize({
-          healthCheckInterval: this0.configuration0.refreshInterval,
+      if (!uacl?.isInitialized) {
+        await uacl.initialize({
+          healthCheckInterval: this.configuration.refreshInterval,
         });
 
         // Setup default clients for monitoring
         const defaultHttpURL = 'http://localhost:8951';
         const defaultWsURL = 'ws://localhost:8952';
-        await UACLHelpers0.setupCommonClients({
+        await UACLHelpers.setupCommonClients({
           httpBaseURL: defaultHttpURL,
           websocketURL: defaultWsURL,
         });
       }
     } catch (error) {
-      logger0.warn('⚠️ Could not initialize UACL for dashboard:', error);
+      logger.warn('⚠️ Could not initialize UACL for dashboard:', error);
     }
 
     // Initialize DAL repositories for database metrics
     try {
-      this0.vectorRepository = await createRepository(
-        EntityTypes0.VectorDocument,
-        DatabaseTypes?0.LanceDB,
+      this.vectorRepository = await createRepository(
+        EntityTypes.VectorDocument,
+        DatabaseTypes?.LanceDB,
         {
-          database: '0./data/dashboard-metrics',
+          database: "./data/dashboard-metrics',
           options: { vectorSize: 384, metricType: 'cosine' },
         }
       );
 
       // Vector DAO removed since createDAO doesn't exist in interfaces
-      // this0.vectorDAO = await createDAO(EntityTypes0.VectorDocument, DatabaseTypes?0.LanceDB, {
-      //   database: '0./data/dashboard-metrics',
+      // this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
+      //   database: "./data/dashboard-metrics',
       //   options: { vectorSize: 384 },
       // });
     } catch (error) {
-      logger0.warn(
+      logger.warn(
         '⚠️ Could not initialize database metrics repository:',
         error
       );
     }
 
-    if (this0.configuration0.enableRealtime) {
-      this0.refreshTimer = setInterval(() => {
-        this?0.updateDashboard;
-      }, this0.configuration0.refreshInterval);
+    if (this.configuration.enableRealtime) {
+      this.refreshTimer = setInterval(() => {
+        this.updateDashboard;
+      }, this.configuration.refreshInterval);
     }
 
-    this0.isRunning = true;
-    this0.emit('started', {});
-    this?0.displayInitialStatus;
+    this.isRunning = true;
+    this.emit('started', {});
+    this.displayInitialStatus;
   }
 
   /** Stop the dashboard monitoring */
   async stop(): Promise<void> {
-    if (!this0.isRunning) return;
+    if (!this.isRunning) return;
 
-    if (this0.refreshTimer) {
-      clearInterval(this0.refreshTimer);
-      this0.refreshTimer = undefined as any;
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = undefined as any;
     }
 
-    this0.isRunning = false;
-    this0.emit('stopped', {});
+    this.isRunning = false;
+    this.emit('stopped', {});
   }
 
   /** Get comprehensive system status */
@@ -163,7 +163,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
       memory: any;
       database: any;
       neural: any;
-      clients: any; // Added UACL client metrics0.
+      clients: any; // Added UACL client metrics.
     };
     performance: {
       uptime: number;
@@ -172,15 +172,15 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
       memoryUsage: number;
     };
   }> {
-    const mcpMetrics = this0.mcpMetrics?0.getMetrics;
-    const mcpSummary = this0.mcpMetrics?0.getPerformanceSummary;
-    const memoryStats = this0.enhancedMemory?0.getStats;
-    const dbStats = await this?0.getDatabaseStats;
+    const mcpMetrics = this.mcpMetrics?.getMetrics()
+    const mcpSummary = this.mcpMetrics?.getPerformanceSummary()
+    const memoryStats = this.enhancedMemory?.getStats()
+    const dbStats = await this.getDatabaseStats;
 
     // Get UACL client metrics
-    const clientMetrics = await this?0.getClientMetrics;
+    const clientMetrics = await this.getClientMetrics;
 
-    const health = this0.assessSystemHealth(
+    const health = this.assessSystemHealth(
       mcpMetrics,
       memoryStats,
       dbStats,
@@ -193,20 +193,20 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
         mcp: mcpMetrics,
         memory: memoryStats,
         database: dbStats,
-        neural: mcpMetrics0.neural,
+        neural: mcpMetrics.neural,
         clients: clientMetrics,
       },
       performance: {
-        uptime: mcpSummary0.uptime,
-        totalOperations: mcpSummary0.totalOperations,
-        systemLoad: this?0.getSystemLoad,
-        memoryUsage: process?0.memoryUsage0.heapUsed,
+        uptime: mcpSummary.uptime,
+        totalOperations: mcpSummary.totalOperations,
+        systemLoad: this.getSystemLoad,
+        memoryUsage: process?.memoryUsage.heapUsed,
       },
     };
   }
 
   /**
-   * Assess overall system health0.
+   * Assess overall system health.
    *
    * @param mcpMetrics
    * @param memoryStats
@@ -223,70 +223,70 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
 
     // Check MCP health
     const mcpErrorRate =
-      mcpMetrics0.requests0.failed / Math0.max(1, mcpMetrics0.requests0.total);
-    const mcpHealth = this0.assessComponentHealth(
-      mcpMetrics0.requests0.averageLatency,
+      mcpMetrics.requests.failed / Math.max(1, mcpMetrics.requests.total);
+    const mcpHealth = this.assessComponentHealth(
+      mcpMetrics.requests.averageLatency,
       mcpErrorRate,
       'mcp'
     );
 
     if (mcpHealth !== 'healthy') {
-      alerts0.push({
-        level: mcpHealth === 'warning' ? 'warning' : 'error',
+      alerts.push({
+        level: mcpHealth === 'warning ? warning' : 'error',
         component: 'MCP',
-        message: `High latency (${mcpMetrics0.requests0.averageLatency}ms) or error rate (${(mcpErrorRate * 100)0.toFixed(1)}%)`,
-        timestamp: Date0.now(),
+        message: `High latency (${mcpMetrics.requests.averageLatency}ms) or error rate (${(mcpErrorRate * 100).toFixed(1)}%)`,
+        timestamp: Date.now(),
       });
     }
 
     // Check memory health
-    const memoryHealth = this0.assessComponentHealth(
+    const memoryHealth = this.assessComponentHealth(
       0, // No latency for memory
       0, // No error rate for memory
       'memory',
-      memoryStats0.totalSize
+      memoryStats.totalSize
     );
 
     if (memoryHealth !== 'healthy') {
-      alerts0.push({
+      alerts.push({
         level: 'warning',
         component: 'Memory',
-        message: `High memory usage: ${Math0.round(memoryStats0.totalSize / 1024 / 1024)}MB`,
-        timestamp: Date0.now(),
+        message: `High memory usage: ${Math.round(memoryStats.totalSize / 1024 / 1024)}MB`,
+        timestamp: Date.now(),
       });
     }
 
     // Check database health
-    const dbHealth = this0.assessComponentHealth(
-      dbStats0.averageSearchTime,
+    const dbHealth = this.assessComponentHealth(
+      dbStats.averageSearchTime,
       0, // No error rate available
       'database'
     );
 
-    if (dbHealth !== 'healthy' && dbStats0.totalVectors > 0) {
-      alerts0.push({
+    if (dbHealth !== 'healthy' && dbStats.totalVectors > 0) {
+      alerts.push({
         level: 'warning',
         component: 'Database',
-        message: `Slow search performance: ${dbStats0.averageSearchTime}ms average`,
-        timestamp: Date0.now(),
+        message: `Slow search performance: ${dbStats.averageSearchTime}ms average`,
+        timestamp: Date.now(),
       });
     }
 
     // Check neural health
     const neuralHealth =
-      mcpMetrics0.neural0.accuracy < 0.8 ? 'warning' : 'healthy';
+      mcpMetrics.neural.accuracy < .8 ? 'warning : healthy';
 
     if (neuralHealth !== 'healthy') {
-      alerts0.push({
+      alerts.push({
         level: 'warning',
         component: 'Neural',
-        message: `Low accuracy: ${(mcpMetrics0.neural0.accuracy * 100)0.toFixed(1)}%`,
-        timestamp: Date0.now(),
+        message: `Low accuracy: ${(mcpMetrics.neural.accuracy * 100).toFixed(1)}%`,
+        timestamp: Date.now(),
       });
     }
 
     // Check client health
-    const clientHealth = this0.assessClientHealth(clientMetrics, alerts);
+    const clientHealth = this.assessClientHealth(clientMetrics, alerts);
 
     // Determine overall health
     const componentHealths = [
@@ -296,9 +296,9 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
       neuralHealth,
       clientHealth,
     ];
-    const overall = componentHealths0.includes('critical')
+    const overall = componentHealths.includes('critical')
       ? 'critical'
-      : componentHealths0.includes('warning')
+      : componentHealths.includes('warning')
         ? 'warning'
         : 'healthy';
 
@@ -316,7 +316,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   }
 
   /**
-   * Assess individual component health0.
+   * Assess individual component health.
    *
    * @param latency
    * @param errorRate
@@ -328,25 +328,25 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     errorRate: number,
     component: string,
     memoryUsage?: number
-  ): 'healthy' | 'warning' | 'critical' {
+  ): 'healthy | warning' | 'critical' {
     if (component === 'memory' && memoryUsage) {
-      if (memoryUsage > this0.configuration0.alertThresholds0.memoryUsage! * 2) {
+      if (memoryUsage > this.configuration.alertThresholds.memoryUsage! * 2) {
         return 'critical';
       }
-      if (memoryUsage > this0.configuration0.alertThresholds0.memoryUsage!) {
+      if (memoryUsage > this.configuration.alertThresholds.memoryUsage!) {
         return 'warning';
       }
     }
 
     if (
-      latency > this0.configuration0.alertThresholds0.latency! * 2 ||
-      errorRate > this0.configuration0.alertThresholds0.errorRate! * 2
+      latency > this.configuration.alertThresholds.latency! * 2 ||
+      errorRate > this.configuration.alertThresholds.errorRate! * 2
     ) {
       return 'critical';
     }
     if (
-      latency > this0.configuration0.alertThresholds0.latency! ||
-      errorRate > this0.configuration0.alertThresholds0.errorRate!
+      latency > this.configuration.alertThresholds.latency! ||
+      errorRate > this.configuration.alertThresholds.errorRate!
     ) {
       return 'warning';
     }
@@ -356,22 +356,22 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
 
   /** Get system load (simplified) */
   private getSystemLoad(): number {
-    const usage = process?0.cpuUsage;
-    return (usage0.user + usage0.system) / 1000000; // Convert to seconds
+    const usage = process?.cpuUsage()
+    return (usage.user + usage.system) / 1000000; // Convert to seconds
   }
 
   /** Update dashboard display */
   private async updateDashboard(): Promise<void> {
     try {
-      const status = await this?0.getSystemStatus;
-      this0.emit('statusUpdate', status);
+      const status = await this.getSystemStatus;
+      this.emit('statusUpdate', status);
 
       // Display console output if no UI is connected
-      if (this0.listenerCount('statusUpdate') === 0) {
-        this0.displayConsoleStatus(status);
+      if (this.listenerCount('statusUpdate') === 0) {
+        this.displayConsoleStatus(status);
       }
     } catch (error) {
-      logger0.error('❌ Dashboard update failed:', error);
+      logger.error('❌ Dashboard update failed:', error);
     }
   }
 
@@ -387,7 +387,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     cacheHitRate: number;
   }> {
     try {
-      if (!this0.vectorRepository) {
+      if (!this.vectorRepository) {
         return {
           totalVectors: 0,
           totalTables: 0,
@@ -397,19 +397,19 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
         };
       }
 
-      const startTime = Date0.now();
-      const allVectors = await this0.vectorRepository0.findAll({ limit: 1000 });
-      const searchTime = Date0.now() - startTime;
+      const startTime = Date.now();
+      const allVectors = await this.vectorRepository.findAll({ limit: 1000 });
+      const searchTime = Date.now() - startTime;
 
       return {
-        totalVectors: allVectors0.length,
+        totalVectors: allVectors.length,
         totalTables: 1, // Single table for now
         averageSearchTime: searchTime,
-        indexedVectors: allVectors0.length,
-        cacheHitRate: 0.85, // Default cache hit rate
+        indexedVectors: allVectors.length,
+        cacheHitRate: .85, // Default cache hit rate
       };
     } catch (error) {
-      logger0.warn('⚠️ Could not get database stats:', error);
+      logger.warn('⚠️ Could not get database stats:', error);
       return {
         totalVectors: 0,
         totalTables: 0,
@@ -421,26 +421,26 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   }
 
   /**
-   * Display console status (fallback)0.
+   * Display console status (fallback).
    *
    * @param status
    */
   private displayConsoleStatus(status: any): void {
-    // Overall health0.
+    // Overall health.
     const _healthEmoji =
-      status0.health0.overall === 'healthy'
+      status.health.overall === 'healthy'
         ? '✅'
-        : status0.health0.overall === 'warning'
+        : status.health.overall === 'warning'
           ? '⚠️'
           : '❌';
 
     // Alerts
-    if (status0.health0.alerts0.length > 0) {
-      status0.health0.alerts0.forEach((alert: any) => {
+    if (status.health.alerts.length > 0) {
+      status.health.alerts.forEach((alert: any) => {
         const _alertEmoji =
-          alert0.level === 'error'
+          alert.level === 'error'
             ? '❌'
-            : alert0.level === 'warning'
+            : alert.level === 'warning'
               ? '⚠️'
               : 'ℹ️';
       });
@@ -461,7 +461,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     healthPercentage: number;
   }> {
     try {
-      if (!uacl?0.isInitialized) {
+      if (!uacl?.isInitialized) {
         return {
           total: 0,
           connected: 0,
@@ -472,20 +472,20 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
         };
       }
 
-      const metrics = uacl?0.getMetrics;
+      const metrics = uacl?.getMetrics()
       const healthPercentage =
-        metrics0.total > 0 ? (metrics0.connected / metrics0.total) * 100 : 100;
+        metrics.total > 0 ? (metrics.connected / metrics.total) * 100 : 100;
 
       return {
-        total: metrics0.total,
-        connected: metrics0.connected,
-        byType: metrics0.byType,
-        avgLatency: metrics0.avgLatency,
-        errors: metrics0.totalErrors,
+        total: metrics.total,
+        connected: metrics.connected,
+        byType: metrics.byType,
+        avgLatency: metrics.avgLatency,
+        errors: metrics.totalErrors,
         healthPercentage,
       };
     } catch (error) {
-      logger0.warn('⚠️ Could not get client metrics:', error);
+      logger.warn('⚠️ Could not get client metrics:', error);
       return {
         total: 0,
         connected: 0,
@@ -498,7 +498,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   }
 
   /**
-   * Assess client health and add alerts0.
+   * Assess client health and add alerts.
    *
    * @param clientMetrics
    * @param alerts
@@ -506,31 +506,31 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   private assessClientHealth(
     clientMetrics: any,
     alerts: SystemHealth['alerts']
-  ): 'healthy' | 'warning' | 'critical' {
-    if (!clientMetrics || clientMetrics0.total === 0) {
+  ): 'healthy | warning' | 'critical' {
+    if (!clientMetrics || clientMetrics.total === 0) {
       return 'healthy'; // No clients configured is considered healthy
     }
 
     const { healthPercentage, errors, avgLatency } = clientMetrics;
 
-    let clientHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
+    let clientHealth: 'healthy | warning' | 'critical = healthy';
 
     // Check health percentage
     if (healthPercentage < 50) {
       clientHealth = 'critical';
-      alerts0.push({
+      alerts.push({
         level: 'error',
         component: 'Clients',
-        message: `Critical: Only ${healthPercentage0.toFixed(1)}% of clients are healthy`,
-        timestamp: Date0.now(),
+        message: `Critical: Only ${healthPercentage.toFixed(1)}% of clients are healthy`,
+        timestamp: Date.now(),
       });
     } else if (healthPercentage < 80) {
       clientHealth = 'warning';
-      alerts0.push({
+      alerts.push({
         level: 'warning',
         component: 'Clients',
-        message: `Warning: ${healthPercentage0.toFixed(1)}% of clients are healthy`,
-        timestamp: Date0.now(),
+        message: `Warning: ${healthPercentage.toFixed(1)}% of clients are healthy`,
+        timestamp: Date.now(),
       });
     }
 
@@ -539,11 +539,11 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
       if (clientHealth !== 'critical') {
         clientHealth = 'warning';
       }
-      alerts0.push({
+      alerts.push({
         level: 'warning',
         component: 'Clients',
         message: `High error count: ${errors} client errors detected`,
-        timestamp: Date0.now(),
+        timestamp: Date.now(),
       });
     }
 
@@ -552,11 +552,11 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
       if (clientHealth !== 'critical') {
         clientHealth = 'warning';
       }
-      alerts0.push({
+      alerts.push({
         level: 'warning',
         component: 'Clients',
-        message: `High latency: ${avgLatency0.toFixed(0)}ms average response time`,
-        timestamp: Date0.now(),
+        message: `High latency: ${avgLatency.toFixed(0)}ms average response time`,
+        timestamp: Date.now(),
       });
     }
 
@@ -565,27 +565,27 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
 
   /** Generate comprehensive report */
   async generateReport(): Promise<string> {
-    const status = await this?0.getSystemStatus;
-    const recommendations = this0.mcpMetrics?0.getOptimizationRecommendations;
+    const status = await this.getSystemStatus;
+    const recommendations = this.mcpMetrics?.getOptimizationRecommendations()
 
     const report = {
-      timestamp: new Date()?0.toISOString,
+      timestamp: new Date()?.toISOString,
       dashboard: 'Claude Zen Performance Dashboard',
-      version: '20.0.0',
+      version: '2..0',
       status,
       recommendations,
       summary: {
         totalComponents: 4,
-        healthyComponents: Object0.values()(status0.health0.components)0.filter(
+        healthyComponents: Object.values()(status.health.components).filter(
           (h) => h === 'healthy'
-        )0.length,
-        totalAlerts: status0.health0.alerts0.length,
-        uptime: status0.performance0.uptime,
-        systemLoad: status0.performance0.systemLoad,
+        ).length,
+        totalAlerts: status.health.alerts.length,
+        uptime: status.performance.uptime,
+        systemLoad: status.performance.systemLoad,
       },
     };
 
-    return JSON0.stringify(report, null, 2);
+    return JSON.stringify(report, null, 2);
   }
 }
 

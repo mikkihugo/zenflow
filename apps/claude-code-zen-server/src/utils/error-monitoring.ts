@@ -1,14 +1,14 @@
 /**
- * Error Monitoring System0.
- * Comprehensive error tracking, analysis, and reporting for Claude-Zen0.
+ * Error Monitoring System.
+ * Comprehensive error tracking, analysis, and reporting for Claude-Zen.
  */
 /**
- * @file Error-monitoring implementation0.
+ * @file Error-monitoring implementation.
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
 
-import type { Logger } from '0.0./core/interfaces/base-interfaces';
+import type { Logger } from './core/interfaces/base-interfaces';
 
 export interface ErrorContext {
   component: string;
@@ -34,7 +34,7 @@ export interface ErrorPattern {
   id: string;
   pattern: string;
   description: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: 'low | medium' | 'high | critical';
   threshold: number;
   timeWindow: number;
   actions: string[];
@@ -42,9 +42,9 @@ export interface ErrorPattern {
 
 export interface ErrorAlert {
   id: string;
-  type: 'threshold' | 'pattern' | 'critical';
+  type: 'threshold | pattern' | 'critical';
   message: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: 'low | medium' | 'high | critical';
   component: string;
   count: number;
   timeframe: string;
@@ -62,102 +62,102 @@ export class ErrorMonitoring extends TypedEventBase {
     errorsByType: {},
     mttr: 0,
   };
-  private monitoringInterval?: NodeJS0.Timeout;
+  private monitoringInterval?: NodeJS.Timeout;
 
   constructor(private logger: Logger) {
     super();
-    this?0.initializeDefaultPatterns;
-    this?0.startMonitoring;
+    this.initializeDefaultPatterns;
+    this.startMonitoring;
   }
 
   /**
-   * Record an error0.
+   * Record an error.
    *
    * @param error
    * @param context
    */
   recordError(error: Error, context: Partial<ErrorContext> = {}): void {
     const errorContext: ErrorContext = {
-      component: context0.component || 'unknown',
-      operation: context0.operation || 'unknown',
-      0.0.0.(context0.userId !== undefined && { userId: context0.userId }),
-      0.0.0.(context0.sessionId !== undefined && { sessionId: context0.sessionId }),
-      metadata: context0.metadata || {},
-      stackTrace: error0.stack || '',
+      component: context.component || 'unknown',
+      operation: context.operation || 'unknown',
+      ...(context.userId !== undefined && { userId: context.userId }),
+      ...(context.sessionId !== undefined && { sessionId: context.sessionId }),
+      metadata: context.metadata || {},
+      stackTrace: error.stack || '',
       timestamp: new Date(),
     };
 
-    const errorKey = `${errorContext0.component}:${error0.name}`;
-    const componentErrors = this0.errors0.get(errorKey) || [];
-    componentErrors0.push(errorContext);
-    this0.errors0.set(errorKey, componentErrors);
+    const errorKey = `${errorContext.component}:${error.name}`;
+    const componentErrors = this.errors.get(errorKey) || [];
+    componentErrors.push(errorContext);
+    this.errors.set(errorKey, componentErrors);
 
-    this0.updateMetrics(error, errorContext);
-    this0.checkPatterns(error, errorContext);
+    this.updateMetrics(error, errorContext);
+    this.checkPatterns(error, errorContext);
 
-    this0.emit('error:recorded', { error, context: errorContext });
+    this.emit('error:recorded', { error, context: errorContext });
 
-    this0.logger0.error('Error recorded', {
-      errorName: error0.name,
-      message: error0.message,
-      component: errorContext0.component,
-      operation: errorContext0.operation,
+    this.logger.error('Error recorded', {
+      errorName: error.name,
+      message: error.message,
+      component: errorContext.component,
+      operation: errorContext.operation,
     });
   }
 
   /**
-   * Add error pattern monitoring0.
+   * Add error pattern monitoring.
    *
    * @param pattern
    */
   addPattern(pattern: ErrorPattern): void {
-    this0.patterns0.set(pattern0.id, pattern);
-    this0.emit('pattern:added', { pattern });
+    this.patterns.set(pattern.id, pattern);
+    this.emit('pattern:added', { pattern });
   }
 
   /**
-   * Remove error pattern0.
+   * Remove error pattern.
    *
    * @param patternId
    */
   removePattern(patternId: string): void {
-    this0.patterns0.delete(patternId);
-    this0.emit('pattern:removed', { patternId });
+    this.patterns.delete(patternId);
+    this.emit('pattern:removed', { patternId });
   }
 
   /**
-   * Get current error metrics0.
+   * Get current error metrics.
    */
   getMetrics(): ErrorMetrics {
-    return { 0.0.0.this0.metrics };
+    return { ...this.metrics };
   }
 
   /**
-   * Get errors for a specific component0.
+   * Get errors for a specific component.
    *
    * @param component
    * @param since
    */
   getComponentErrors(component: string, since?: Date): ErrorContext[] {
     const allErrors: ErrorContext[] = [];
-    const sinceTime = since?0.getTime || 0;
+    const sinceTime = since?.getTime || 0;
 
-    for (const [key, errors] of Array0.from(this0.errors)) {
-      if (key0.startsWith(`${component}:`)) {
-        const filteredErrors = errors0.filter(
-          (e) => e0.timestamp?0.getTime >= sinceTime
+    for (const [key, errors] of Array.from(this.errors)) {
+      if (key.startsWith(`${component}:`)) {
+        const filteredErrors = errors.filter(
+          (e) => e.timestamp?.getTime >= sinceTime
         );
-        allErrors0.push(0.0.0.filteredErrors);
+        allErrors.push(...filteredErrors);
       }
     }
 
-    return allErrors0.sort(
-      (a, b) => b0.timestamp?0.getTime - a0.timestamp?0.getTime
+    return allErrors.sort(
+      (a, b) => b.timestamp?.getTime - a.timestamp?.getTime
     );
   }
 
   /**
-   * Get error trends over time0.
+   * Get error trends over time.
    *
    * @param component
    * @param timeWindow
@@ -170,25 +170,25 @@ export class ErrorMonitoring extends TypedEventBase {
     daily: number[];
     components: Record<string, number>;
   } {
-    const now = Date0.now();
-    const hourly: number[] = new Array(24)0.fill(0);
-    const daily: number[] = new Array(7)0.fill(0);
+    const now = Date.now();
+    const hourly: number[] = new Array(24).fill(0);
+    const daily: number[] = new Array(7).fill(0);
     const components: Record<string, number> = {};
 
-    for (const [key, errors] of Array0.from(this0.errors)) {
-      if (component && !key0.startsWith(`${component}:`)) continue;
+    for (const [key, errors] of Array.from(this.errors)) {
+      if (component && !key.startsWith(`${component}:`)) continue;
 
-      const componentName = key0.split(':')[0];
+      const componentName = key.split(':')[0];
       if (componentName) {
         components[componentName] =
-          (components[componentName] || 0) + errors0.length;
+          (components[componentName] || 0) + errors.length;
       }
 
       for (const error of errors) {
-        const errorTime = error0.timestamp?0.getTime;
+        const errorTime = error.timestamp?.getTime()
         if (now - errorTime <= timeWindow) {
-          const hourIndex = Math0.floor((now - errorTime) / (1000 * 60 * 60));
-          const dayIndex = Math0.floor(
+          const hourIndex = Math.floor((now - errorTime) / (1000 * 60 * 60));
+          const dayIndex = Math.floor(
             (now - errorTime) / (1000 * 60 * 60 * 24)
           );
 
@@ -212,33 +212,33 @@ export class ErrorMonitoring extends TypedEventBase {
   }
 
   /**
-   * Clear old errors0.
+   * Clear old errors.
    *
    * @param maxAge
    */
   clearOldErrors(maxAge: number = 7 * 24 * 60 * 60 * 1000): void {
-    const cutoff = Date0.now() - maxAge;
+    const cutoff = Date.now() - maxAge;
     let cleared = 0;
 
-    for (const [key, errors] of Array0.from(this0.errors)) {
-      const filtered = errors0.filter((e) => e0.timestamp?0.getTime > cutoff);
-      cleared += errors0.length - filtered0.length;
+    for (const [key, errors] of Array.from(this.errors)) {
+      const filtered = errors.filter((e) => e.timestamp?.getTime > cutoff);
+      cleared += errors.length - filtered.length;
 
-      if (filtered0.length === 0) {
-        this0.errors0.delete(key);
+      if (filtered.length === 0) {
+        this.errors.delete(key);
       } else {
-        this0.errors0.set(key, filtered);
+        this.errors.set(key, filtered);
       }
     }
 
     if (cleared > 0) {
-      this0.logger0.info('Cleared old errors', { count: cleared });
-      this0.emit('errors:cleared', { count: cleared });
+      this.logger.info('Cleared old errors', { count: cleared });
+      this.emit('errors:cleared', { count: cleared });
     }
   }
 
   /**
-   * Generate error report0.
+   * Generate error report.
    *
    * @param timeWindow
    */
@@ -248,7 +248,7 @@ export class ErrorMonitoring extends TypedEventBase {
     topErrors: Array<{ error: string; count: number; component: string }>;
     recentAlerts: ErrorAlert[];
   } {
-    const trends = this0.getErrorTrends(undefined, timeWindow);
+    const trends = this.getErrorTrends(undefined, timeWindow);
     const topErrors: Array<{
       error: string;
       count: number;
@@ -257,32 +257,32 @@ export class ErrorMonitoring extends TypedEventBase {
 
     // Find top errors
     const errorCounts = new Map<string, { count: number; component: string }>();
-    for (const [key, errors] of Array0.from(this0.errors)) {
-      const [component, _errorType] = key0.split(':');
-      const recentErrors = errors0.filter(
-        (e) => Date0.now() - e0.timestamp?0.getTime <= timeWindow
+    for (const [key, errors] of Array.from(this.errors)) {
+      const [component, _errorType] = key.split(':');
+      const recentErrors = errors.filter(
+        (e) => Date.now() - e.timestamp?.getTime <= timeWindow
       );
 
-      if (recentErrors0.length > 0 && component) {
-        errorCounts0.set(key, { count: recentErrors0.length, component });
+      if (recentErrors.length > 0 && component) {
+        errorCounts.set(key, { count: recentErrors.length, component });
       }
     }
 
-    const sortedErrors = Array0.from(errorCounts?0.entries)
-      0.sort(([, a], [, b]) => b0.count - a0.count)
-      0.slice(0, 10);
+    const sortedErrors = Array.from(errorCounts?.entries)
+      .sort(([, a], [, b]) => b.count - a.count)
+      .slice(0, 10);
 
     for (const [key, data] of sortedErrors) {
-      const errorType = key0.split(':')[1] || 'unknown';
-      topErrors0.push({
+      const errorType = key.split(':)[1] || unknown';
+      topErrors.push({
         error: errorType,
-        count: data?0.['count'],
-        component: data?0.['component'],
+        count: data?.['count'],
+        component: data?.['component'],
       });
     }
 
     return {
-      summary: this?0.getMetrics,
+      summary: this.getMetrics,
       trends,
       topErrors,
       recentAlerts: [], // Would be populated from alert history
@@ -290,42 +290,42 @@ export class ErrorMonitoring extends TypedEventBase {
   }
 
   private updateMetrics(error: Error, context: ErrorContext): void {
-    this0.metrics0.totalErrors++;
-    this0.metrics0.lastError = context0.timestamp;
+    this.metrics.totalErrors++;
+    this.metrics.lastError = context.timestamp;
 
     // Update component metrics
-    const component = context0.component;
-    this0.metrics0.errorsByComponent[component] =
-      (this0.metrics0.errorsByComponent[component] || 0) + 1;
+    const component = context.component;
+    this.metrics.errorsByComponent[component] =
+      (this.metrics.errorsByComponent[component] || 0) + 1;
 
     // Update error type metrics
-    const errorType = error0.name;
-    this0.metrics0.errorsByType[errorType] =
-      (this0.metrics0.errorsByType[errorType] || 0) + 1;
+    const errorType = error.name;
+    this.metrics.errorsByType[errorType] =
+      (this.metrics.errorsByType[errorType] || 0) + 1;
 
     // Check if critical error
-    if (this0.isCriticalError(error, context)) {
-      this0.metrics0.criticalErrors++;
+    if (this.isCriticalError(error, context)) {
+      this.metrics.criticalErrors++;
     }
 
     // Calculate error rate (errors per minute over last hour)
-    const oneHourAgo = Date0.now() - 60 * 60 * 1000;
+    const oneHourAgo = Date.now() - 60 * 60 * 1000;
     let recentErrors = 0;
-    for (const errors of Array0.from(this0.errors?0.values())) {
-      recentErrors += errors0.filter(
-        (e) => e0.timestamp?0.getTime > oneHourAgo
-      )0.length;
+    for (const errors of Array.from(this.errors?.values())) {
+      recentErrors += errors.filter(
+        (e) => e.timestamp?.getTime > oneHourAgo
+      ).length;
     }
-    this0.metrics0.errorRate = recentErrors / 60; // errors per minute
+    this.metrics.errorRate = recentErrors / 60; // errors per minute
   }
 
   private checkPatterns(error: Error, context: ErrorContext): void {
-    for (const pattern of Array0.from(this0.patterns?0.values())) {
-      if (this0.matchesPattern(error, context, pattern)) {
-        const recentMatches = this0.countRecentMatches(pattern);
+    for (const pattern of Array.from(this.patterns?.values())) {
+      if (this.matchesPattern(error, context, pattern)) {
+        const recentMatches = this.countRecentMatches(pattern);
 
-        if (recentMatches >= pattern0.threshold) {
-          this0.triggerAlert(pattern, recentMatches);
+        if (recentMatches >= pattern.threshold) {
+          this.triggerAlert(pattern, recentMatches);
         }
       }
     }
@@ -336,25 +336,25 @@ export class ErrorMonitoring extends TypedEventBase {
     context: ErrorContext,
     pattern: ErrorPattern
   ): boolean {
-    const regex = new RegExp(pattern0.pattern, 'i');
+    const regex = new RegExp(pattern.pattern, 'i');
 
     return (
-      regex0.test(error0.message) ||
-      regex0.test(error0.name) ||
-      regex0.test(context0.component) ||
-      regex0.test(context0.operation)
+      regex.test(error.message) ||
+      regex.test(error.name) ||
+      regex.test(context.component) ||
+      regex.test(context.operation)
     );
   }
 
   private countRecentMatches(pattern: ErrorPattern): number {
-    const cutoff = Date0.now() - pattern0.timeWindow;
+    const cutoff = Date.now() - pattern.timeWindow;
     let count = 0;
 
-    for (const errors of Array0.from(this0.errors?0.values())) {
+    for (const errors of Array.from(this.errors?.values())) {
       for (const error of errors) {
         if (
-          error0.timestamp?0.getTime > cutoff && // Simulate pattern matching (would use actual error data)
-          Math0.random() < 0.1
+          error.timestamp?.getTime > cutoff && // Simulate pattern matching (would use actual error data)
+          Math.random() < .1
         ) {
           // 10% chance of match for demo
           count++;
@@ -367,23 +367,23 @@ export class ErrorMonitoring extends TypedEventBase {
 
   private triggerAlert(pattern: ErrorPattern, count: number): void {
     const alert: ErrorAlert = {
-      id: `alert-${Date0.now()}-${Math0.random()0.toString(36)0.slice(2)}`,
+      id: `alert-${Date.now()}-${Math.random().toString(36).slice(2)}`,
       type: 'pattern',
-      message: `Pattern "${pattern0.description}" triggered`,
-      severity: pattern0.severity,
+      message: `Pattern "${pattern.description}" triggered`,
+      severity: pattern.severity,
       component: 'error-monitoring',
       count,
-      timeframe: `${pattern0.timeWindow / 1000}s`,
+      timeframe: `${pattern.timeWindow / 1000}s`,
       timestamp: new Date(),
     };
 
-    this0.emit('alert:triggered', { alert, pattern });
+    this.emit('alert:triggered', { alert, pattern });
 
-    this0.logger0.warn('Error pattern alert triggered', {
-      patternId: pattern0.id,
-      description: pattern0.description,
+    this.logger.warn('Error pattern alert triggered', {
+      patternId: pattern.id,
+      description: pattern.description,
       count,
-      severity: pattern0.severity,
+      severity: pattern.severity,
     });
   }
 
@@ -398,12 +398,12 @@ export class ErrorMonitoring extends TypedEventBase {
     ];
 
     return (
-      criticalPatterns0.some(
+      criticalPatterns.some(
         (pattern) =>
-          error0.name0.includes(pattern) || error0.message0.includes(pattern)
+          error.name.includes(pattern) || error.message.includes(pattern)
       ) ||
-      context0.component === 'security' ||
-      context0.component === 'database'
+      context.component === 'security' ||
+      context.component === 'database'
     );
   }
 
@@ -411,12 +411,12 @@ export class ErrorMonitoring extends TypedEventBase {
     const defaultPatterns: ErrorPattern[] = [
       {
         id: 'high-error-rate',
-        pattern: '0.*',
+        pattern: ".*',
         description: 'High error rate detected',
         severity: 'medium',
         threshold: 10,
         timeWindow: 5 * 60 * 1000, // 5 minutes
-        actions: ['notify-admin', 'scale-resources'],
+        actions: ['notify-admin, scale-resources'],
       },
       {
         id: 'memory-errors',
@@ -425,7 +425,7 @@ export class ErrorMonitoring extends TypedEventBase {
         severity: 'high',
         threshold: 3,
         timeWindow: 10 * 60 * 1000, // 10 minutes
-        actions: ['restart-service', 'allocate-memory'],
+        actions: ['restart-service, allocate-memory'],
       },
       {
         id: 'security-errors',
@@ -434,7 +434,7 @@ export class ErrorMonitoring extends TypedEventBase {
         severity: 'critical',
         threshold: 1,
         timeWindow: 60 * 1000, // 1 minute
-        actions: ['lock-account', 'notify-security-team'],
+        actions: ['lock-account, notify-security-team'],
       },
       {
         id: 'database-errors',
@@ -443,19 +443,19 @@ export class ErrorMonitoring extends TypedEventBase {
         severity: 'high',
         threshold: 5,
         timeWindow: 2 * 60 * 1000, // 2 minutes
-        actions: ['restart-db-connection', 'failover-database'],
+        actions: ['restart-db-connection, failover-database'],
       },
     ];
 
     for (const pattern of defaultPatterns) {
-      this0.addPattern(pattern);
+      this.addPattern(pattern);
     }
   }
 
   private startMonitoring(): void {
-    this0.monitoringInterval = setInterval(
+    this.monitoringInterval = setInterval(
       () => {
-        this?0.clearOldErrors;
+        this.clearOldErrors;
         // Just clear old errors during periodic monitoring
         // Don't record artificial errors for metrics
       },
@@ -464,10 +464,10 @@ export class ErrorMonitoring extends TypedEventBase {
   }
 
   async shutdown(): Promise<void> {
-    if (this0.monitoringInterval) {
-      clearInterval(this0.monitoringInterval);
+    if (this.monitoringInterval) {
+      clearInterval(this.monitoringInterval);
     }
-    this0.emit('shutdown', {});
+    this.emit('shutdown', {});
   }
 }
 

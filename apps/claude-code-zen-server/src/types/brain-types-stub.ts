@@ -1,7 +1,7 @@
 /**
  * @fileoverview Temporary stub for @claude-zen/intelligence/types
  *
- * This file provides fallback types for @claude-zen/intelligence/types submodule0.
+ * This file provides fallback types for @claude-zen/intelligence/types submodule.
  */
 
 // Brain types stub

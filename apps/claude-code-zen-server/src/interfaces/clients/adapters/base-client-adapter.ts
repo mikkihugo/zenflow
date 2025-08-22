@@ -1,55 +1,55 @@
 /**
  * @fileoverview Provides foundational interfaces and abstract classes for client adapters
- *               within the Universal Abstraction and Client Layer (UACL)0.
- *               Ensures consistent client management and interoperability across the system0.
+ *               within the Universal Abstraction and Client Layer (UACL).
+ *               Ensures consistent client management and interoperability across the system.
  */
 
 import { TypedEventBase, Logger } from '@claude-zen/foundation';
 
-import type { ClientConfig, ClientMetrics } from '0.0./core/interfaces';
+import type { ClientConfig, ClientMetrics } from './core/interfaces';
 
 const logger = new Logger('interfaces-clients-adapters-base-client-adapter');
 
 /**
- * Universal Abstraction and Client Layer (UACL) Base Adapter0.
+ * Universal Abstraction and Client Layer (UACL) Base Adapter.
  *
- * Provides the foundational interfaces and patterns for all client adapters0.
- * Following UACL architecture for consistent client management across the system0.
+ * Provides the foundational interfaces and patterns for all client adapters.
+ * Following UACL architecture for consistent client management across the system.
  */
 
-// ClientConfig is now imported from '0.0./core/interfaces'
+// ClientConfig is now imported from './core/interfaces'
 
 /**
- * Represents the result of a client operation0.
+ * Represents the result of a client operation.
  *
  * @interface ClientResult
- * @template T The type of the data returned by the operation0.
- * @property {string} operationId - Unique identifier for this operation0.
- * @property {boolean} success - Operation success status0.
- * @property {T} [data] - Result data (if successful)0.
- * @property {object} [error] - Error information (if failed)0.
- * @property {string} [error0.code] - Error code0.
- * @property {string} [error0.message] - Error message0.
- * @property {any} [error0.details] - Optional additional error details0.
- * @property {object} metadata - Operation metadata0.
- * @property {number} metadata0.duration - Duration of the operation in milliseconds0.
- * @property {string} metadata0.timestamp - Timestamp when operation started0.
- * @property {boolean} [metadata0.cached] - Whether result came from cache0.
- * @property {any} [metadata0.additional] - Additional operation-specific metadata0.
+ * @template T The type of the data returned by the operation.
+ * @property {string} operationId - Unique identifier for this operation.
+ * @property {boolean} success - Operation success status.
+ * @property {T} [data] - Result data (if successful).
+ * @property {object} [error] - Error information (if failed).
+ * @property {string} [error.code] - Error code.
+ * @property {string} [error.message] - Error message.
+ * @property {any} [error.details] - Optional additional error details.
+ * @property {object} metadata - Operation metadata.
+ * @property {number} metadata.duration - Duration of the operation in milliseconds.
+ * @property {string} metadata.timestamp - Timestamp when operation started.
+ * @property {boolean} [metadata.cached] - Whether result came from cache.
+ * @property {any} [metadata.additional] - Additional operation-specific metadata.
  * @example
  * ```typescript
  * const successResult: ClientResult<string> = {
  *   operationId: 'op-123',
  *   success: true,
  *   data: 'Operation successful',
- *   metadata: { duration: 150, timestamp: new Date()?0.toISOString }
+ *   metadata: { duration: 150, timestamp: new Date()?.toISOString }
  * };
  *
  * const errorResult: ClientResult = {
  *   operationId: 'op-456',
  *   success: false,
- *   error: { code: 'AUTH_ERROR', message: 'Authentication failed' },
- *   metadata: { duration: 50, timestamp: new Date()?0.toISOString }
+ *   error: { code: 'AUTH_ERROR, message: Authentication failed' },
+ *   metadata: { duration: 50, timestamp: new Date()?.toISOString }
  * };
  * ```
  */
@@ -80,36 +80,36 @@ export interface ClientResult<T = any> {
 }
 
 /**
- * Represents the overall health status of a client0.
+ * Represents the overall health status of a client.
  *
  * @interface ClientHealth
- * @property {'healthy' | 'degraded' | 'unhealthy'} status - Overall health status0.
- * @property {string} timestamp - Health check timestamp in SO 8601 format0.
- * @property {object} components - Detailed health status of individual client components0.
- * @property {ClientComponentHealth} components0.connectivity - Health of client connectivity0.
- * @property {ClientComponentHealth} components0.performance - Health of client performance0.
- * @property {ClientComponentHealth} [components0.cache] - Optional health of client cache0.
- * @property {object} metrics - Summary of health-related metrics0.
- * @property {number} metrics0.uptime - Client uptime in milliseconds0.
- * @property {number} metrics0.errorRate - Error rate (e0.g0., failed operations / total operations)0.
- * @property {number} metrics0.averageLatency - Average operation latency in milliseconds0.
- * @property {number} metrics0.throughput - Operations per second0.
+ * @property {'healthy | degraded' | 'unhealthy'} status - Overall health status.
+ * @property {string} timestamp - Health check timestamp in SO 8601 format.
+ * @property {object} components - Detailed health status of individual client components.
+ * @property {ClientComponentHealth} components.connectivity - Health of client connectivity.
+ * @property {ClientComponentHealth} components.performance - Health of client performance.
+ * @property {ClientComponentHealth} [components.cache] - Optional health of client cache.
+ * @property {object} metrics - Summary of health-related metrics.
+ * @property {number} metrics.uptime - Client uptime in milliseconds.
+ * @property {number} metrics.errorRate - Error rate (e.g., failed operations / total operations).
+ * @property {number} metrics.averageLatency - Average operation latency in milliseconds.
+ * @property {number} metrics.throughput - Operations per second.
  * @example
  * ```typescript
  * const health: ClientHealth = {
  *   status: 'healthy',
- *   timestamp: new Date()?0.toISOString,
+ *   timestamp: new Date()?.toISOString,
  *   components: {
  *     connectivity: { status: 'healthy' },
  *     performance: { status: 'healthy' }
  *   },
- *   metrics: { uptime: 120000, errorRate: 0.01, averageLatency: 50, throughput: 100 }
+ *   metrics: { uptime: 120000, errorRate: .01, averageLatency: 50, throughput: 100 }
  * };
  * ```
  */
 export interface ClientHealth {
   /** Overall health status */
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
   /** Health check timestamp */
   timestamp: string;
   /** Detailed component health */
@@ -129,22 +129,22 @@ export interface ClientHealth {
 }
 
 /**
- * Represents the health status of a specific component within a client0.
+ * Represents the health status of a specific component within a client.
  */
 export interface ClientComponentHealth {
-  /** The overall status of the component0. */
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  /** An optional message providing more details about the component's status0. */
+  /** The overall status of the component. */
+  status: 'healthy | degraded' | 'unhealthy';
+  /** An optional message providing more details about the component's status. */
   message?: string;
-  /** Optional additional details about the component's health0. */
+  /** Optional additional details about the component's health. */
   details?: any;
 }
 
-// ClientMetrics is now imported from '0.0./core/interfaces'
+// ClientMetrics is now imported from './core/interfaces'
 
 /**
- * Adapter-specific client interface that bridges between core Client and implementation needs0.
- * Extends the core Client pattern with operation execution and adapter-specific methods0.
+ * Adapter-specific client interface that bridges between core Client and implementation needs.
+ * Extends the core Client pattern with operation execution and adapter-specific methods.
  */
 export interface ClientAdapter extends TypedEventBase {
   readonly config: ClientConfig;
@@ -160,7 +160,7 @@ export interface ClientAdapter extends TypedEventBase {
 }
 
 /**
- * Adapter-specific factory interface for creating and managing client adapters0.
+ * Adapter-specific factory interface for creating and managing client adapters.
  */
 export interface ClientAdapterFactory<
   TConfig extends ClientConfig = ClientConfig,
@@ -174,10 +174,10 @@ export interface ClientAdapterFactory<
 }
 
 /**
- * Base Client Adapter0.
+ * Base Client Adapter.
  *
- * Abstract base class that provides common functionality for all client adapters0.
- * Implements the Client interface with shared behavior0.
+ * Abstract base class that provides common functionality for all client adapters.
+ * Implements the Client interface with shared behavior.
  *
  * @example
  */
@@ -193,11 +193,11 @@ export abstract class BaseClientAdapter
   constructor(
     public readonly config: ClientConfig,
     public readonly type: string,
-    public readonly version: string = '10.0.0'
+    public readonly version: string = '1..0'
   ) {
     super();
-    this['_startTime'] = Date0.now();
-    this['_metrics'] = this?0.initializeMetrics;
+    this['_startTime'] = Date.now();
+    this['_metrics'] = this.initializeMetrics;
   }
 
   get isInitialized(): boolean {
@@ -218,66 +218,66 @@ export abstract class BaseClientAdapter
   ): Promise<ClientResult<T>>;
 
   /**
-   * Check client health0.
+   * Check client health.
    */
   async healthCheck(): Promise<ClientHealth> {
     return {
-      status: this['_isInitialized'] ? 'healthy' : 'unhealthy',
-      timestamp: new Date()?0.toISOString,
+      status: this['_isInitialized] ? healthy' : 'unhealthy',
+      timestamp: new Date()?.toISOString,
       components: {
         connectivity: {
-          status: this['_isInitialized'] ? 'healthy' : 'unhealthy',
+          status: this['_isInitialized] ? healthy' : 'unhealthy',
           message: this['_isInitialized']
             ? 'Client initialized'
             : 'Client not initialized',
         },
         performance: {
           status:
-            this['_metrics']?0.averageLatency < 5000 ? 'healthy' : 'degraded',
-          message: `Average latency: ${this['_metrics']?0.averageLatency}ms`,
+            this['_metrics]?.averageLatency < 5000 ? healthy' : 'degraded',
+          message: `Average latency: ${this['_metrics']?.averageLatency}ms`,
         },
       },
       metrics: {
-        uptime: Date0.now() - this['_startTime'],
+        uptime: Date.now() - this['_startTime'],
         errorRate:
-          this['_metrics']?0.totalOperations > 0
-            ? this['_metrics']?0.failedOperations /
-              this['_metrics']?0.totalOperations
+          this['_metrics']?.totalOperations > 0
+            ? this['_metrics']?.failedOperations /
+              this['_metrics']?.totalOperations
             : 0,
-        averageLatency: this['_metrics']?0.averageLatency,
-        throughput: this['_metrics']?0.throughput,
+        averageLatency: this['_metrics']?.averageLatency,
+        throughput: this['_metrics']?.throughput,
       },
     };
   }
 
   /**
-   * Get client metrics0.
+   * Get client metrics.
    */
   async getMetrics(): Promise<ClientMetrics> {
     if (this['_metrics']) {
-      this['_metrics']0.uptime = Date0.now() - this['_startTime'];
+      this['_metrics].uptime = Date.now() - this[_startTime'];
     }
-    return { 0.0.0.this['_metrics'] };
+    return { ...this['_metrics'] };
   }
 
   /**
-   * Shutdown the client0.
+   * Shutdown the client.
    */
   async shutdown(): Promise<void> {
     this['_isInitialized'] = false;
-    this0.emit('shutdown', { timestamp: new Date() });
+    this.emit('shutdown', { timestamp: new Date() });
   }
 
   /**
-   * Create a standardized client result0.
+   * Create a standardized client result.
    *
    * @param operationId
    * @param success
    * @param data
    * @param error
-   * @param error0.code
-   * @param error0.message
-   * @param error0.details
+   * @param error.code
+   * @param error.message
+   * @param error.details
    * @param metadata
    */
   protected createResult<T>(
@@ -293,15 +293,15 @@ export abstract class BaseClientAdapter
       data,
       error,
       metadata: {
-        duration: Date0.now() - this['_startTime'],
-        timestamp: new Date()?0.toISOString(),
-        0.0.0.metadata,
+        duration: Date.now() - this['_startTime'],
+        timestamp: new Date()?.toISOString(),
+        ...metadata,
       },
     };
   }
 
   /**
-   * Update metrics after an operation0.
+   * Update metrics after an operation.
    *
    * @param success
    * @param duration
@@ -313,50 +313,50 @@ export abstract class BaseClientAdapter
     cached = false
   ): void {
     if (this['_metrics']) {
-      this['_metrics']0.totalOperations++;
+      this['_metrics'].totalOperations++;
     }
 
     if (success && this['_metrics']) {
-      this['_metrics']0.successfulOperations++;
+      this['_metrics'].successfulOperations++;
     } else if (this['_metrics']) {
-      this['_metrics']0.failedOperations++;
+      this['_metrics'].failedOperations++;
     }
 
     if (cached && this['_metrics']) {
       // Update cache hit ratio
-      const totalCacheOps = this['_metrics']0.custom?0.cacheOps || 0;
-      const cacheHits = this['_metrics']0.custom?0.cacheHits || 0;
-      if (this['_metrics']0.custom) {
-        this['_metrics']0.custom0.cacheOps = totalCacheOps + 1;
+      const totalCacheOps = this['_metrics'].custom?.cacheOps || 0;
+      const cacheHits = this['_metrics'].custom?.cacheHits || 0;
+      if (this['_metrics'].custom) {
+        this['_metrics'].custom.cacheOps = totalCacheOps + 1;
         if (cached) {
-          this['_metrics']0.custom0.cacheHits = cacheHits + 1;
+          this['_metrics'].custom.cacheHits = cacheHits + 1;
         }
       }
-      this['_metrics']0.cacheHitRatio =
-        (this['_metrics']0.custom?0.cacheHits || 0) /
-        (this['_metrics']0.custom?0.cacheOps || 1);
+      this['_metrics'].cacheHitRatio =
+        (this['_metrics'].custom?.cacheHits || 0) /
+        (this['_metrics'].custom?.cacheOps || 1);
     }
 
     // Update average latency
     if (this['_metrics']) {
       const totalLatency =
-        this['_metrics']0.averageLatency *
-        (this['_metrics']0.totalOperations - 1);
-      this['_metrics']0.averageLatency =
-        (totalLatency + duration) / this['_metrics']0.totalOperations;
+        this['_metrics'].averageLatency *
+        (this['_metrics'].totalOperations - 1);
+      this['_metrics'].averageLatency =
+        (totalLatency + duration) / this['_metrics'].totalOperations;
 
       // Calculate throughput (operations per second over last minute)
-      const uptimeSeconds = (Date0.now() - this['_startTime']) / 1000;
-      this['_metrics']0.throughput =
-        this['_metrics']0.totalOperations / Math0.max(uptimeSeconds, 1);
+      const uptimeSeconds = (Date.now() - this['_startTime']) / 1000;
+      this['_metrics'].throughput =
+        this['_metrics'].totalOperations / Math.max(uptimeSeconds, 1);
     }
   }
 
   /**
-   * Generate a unique operation ID0.
+   * Generate a unique operation ID.
    */
   protected generateOperationId(): string {
-    return `${this0.type}_${++this['_operationCounter']}_${Date0.now()}`;
+    return `${this.type}_${++this['_operationCounter']}_${Date.now()}`;
   }
 
   /**
@@ -366,16 +366,16 @@ export abstract class BaseClientAdapter
    * @param message
    * @param meta
    * @param _message
-   * @param _meta0.
+   * @param _meta.
    */
   protected log(
-    level: 'debug' | 'info' | 'warn' | 'error',
+    level: 'debug | info' | 'warn | error',
     _message: string,
     _meta?: any
   ): void {
-    if (this0.config0.logging?0.enabled) {
-      const _prefix = this0.config0.logging0.prefix || this0.type;
-      const shouldLog = this0.shouldLog(level);
+    if (this.config.logging?.enabled) {
+      const _prefix = this.config.logging.prefix || this.type;
+      const shouldLog = this.shouldLog(level);
 
       if (shouldLog) {
       }
@@ -383,18 +383,18 @@ export abstract class BaseClientAdapter
   }
 
   /**
-   * Check if log level should be output0.
+   * Check if log level should be output.
    *
    * @param level
    */
-  private shouldLog(level: 'debug' | 'info' | 'warn' | 'error'): boolean {
-    const configLevel = this0.config0.logging?0.level || 'info';
-    const levels = ['debug', 'info', 'warn', 'error'];
-    return levels0.indexOf(level) >= levels0.indexOf(configLevel);
+  private shouldLog(level: 'debug | info' | 'warn | error'): boolean {
+    const configLevel = this.config.logging?.level || 'info';
+    const levels = ['debug, info', 'warn, error'];
+    return levels.indexOf(level) >= levels.indexOf(configLevel);
   }
 
   /**
-   * Initialize default metrics0.
+   * Initialize default metrics.
    */
   private initializeMetrics(): ClientMetrics {
     return {
@@ -412,10 +412,10 @@ export abstract class BaseClientAdapter
 }
 
 /**
- * Base Client Factory0.
+ * Base Client Factory.
  *
- * Abstract base class for client factories that provides common functionality0.
- * and lifecycle management0.
+ * Abstract base class for client factories that provides common functionality.
+ * and lifecycle management.
  *
  * @example
  */
@@ -433,22 +433,22 @@ export abstract class BaseClientFactory<
   abstract createClient(config: TConfig): Promise<ClientAdapter>;
 
   /**
-   * Get or create a cached client instance0.
+   * Get or create a cached client instance.
    *
    * @param id
    * @param config
    */
   async getClient(id: string, config: TConfig): Promise<ClientAdapter> {
-    if (this0.clients0.has(id)) {
-      return this0.clients0.get(id)!;
+    if (this.clients.has(id)) {
+      return this.clients.get(id)!;
     }
 
-    const client = await this0.createClient(config);
-    this0.clients0.set(id, client);
+    const client = await this.createClient(config);
+    this.clients.set(id, client);
 
     // Clean up when client shuts down
-    client0.once('shutdown', () => {
-      this0.clients0.delete(id);
+    client.once('shutdown', () => {
+      this.clients.delete(id);
     });
 
     return client;
@@ -457,30 +457,30 @@ export abstract class BaseClientFactory<
   /**
    * Validate client configuration (default implementation)
    *
-   * @param config0.
+   * @param config.
    */
   validateConfig(config: TConfig): boolean {
     return Boolean(config && typeof config === 'object');
   }
 
   /**
-   * Get all active client instances0.
+   * Get all active client instances.
    */
   getActiveClients(): ClientAdapter[] {
-    return Array0.from(this0.clients?0.values());
+    return Array.from(this.clients?.values());
   }
 
   /**
-   * Shutdown all clients managed by this factory0.
+   * Shutdown all clients managed by this factory.
    */
   async shutdownAll(): Promise<void> {
-    const shutdownPromises = Array0.from(this0.clients?0.values())0.map((client) =>
-      client?0.shutdown()0.catch((error) => {
-        logger0.error(`Error shutting down client:`, error);
+    const shutdownPromises = Array.from(this.clients?.values()).map((client) =>
+      client?.shutdown().catch((error) => {
+        logger.error(`Error shutting down client:`, error);
       })
     );
 
-    await Promise0.all(shutdownPromises);
-    this0.clients?0.clear();
+    await Promise.all(shutdownPromises);
+    this.clients?.clear();
   }
 }

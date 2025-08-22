@@ -1,14 +1,14 @@
 /**
  * @file Universal Fact Mixin - Foundation Fact System Integration
  *
- * Provides a mixin that adds foundation fact system capabilities to any agent class0.
+ * Provides a mixin that adds foundation fact system capabilities to any agent class.
  * This allows agents to seamlessly integrate with both coordination facts and
- * external facts (NPM, GitHub, security, etc0.) through the foundation fact system0.
+ * external facts (NPM, GitHub, security, etc.) through the foundation fact system.
  */
 
 import { getLogger } from '@claude-zen/foundation';
 
-import type { FactEntry, FactQuery } from '0./shared-fact-system';
+import('./shared-fact-system';
 import {
   sharedFactSystem,
   storeAgentFact,
@@ -16,7 +16,7 @@ import {
   searchExternalFacts,
   getNPMPackageInfo,
   getGitHubRepoInfo,
-} from '0./shared-fact-system';
+} from "./shared-fact-system";
 
 const logger = getLogger('UniversalFactMixin');
 
@@ -49,7 +49,7 @@ export interface FactCapable {
 /**
  * Fact mixin constructor type
  */
-export type FactMixinConstructor<T = {}> = new (0.0.0.args: any[]) => T;
+export type FactMixinConstructor<T = {}> = new (args: any[]) => T;
 
 /**
  * Universal fact mixin that adds fact capabilities to any class
@@ -64,21 +64,21 @@ export function withFactCapabilities<
     async storeFact(
       type: string,
       data: any,
-      confidence = 10.0,
+      confidence = 1.0,
       tags: string[] = []
     ): Promise<string> {
       try {
         const factId = await storeAgentFact(
-          this0.agentId,
+          this.agentId,
           type,
           data,
           confidence,
           tags
         );
-        logger0.debug(`Agent ${this0.agentId} stored fact: ${factId} (${type})`);
+        logger.debug(`Agent ${this.agentId} stored fact: ${factId} (${type})`);
         return factId;
       } catch (error) {
-        logger0.error(`Failed to store fact for agent ${this0.agentId}:`, error);
+        logger.error(`Failed to store fact for agent ${this.agentId}:`, error);
         throw error;
       }
     }
@@ -88,9 +88,9 @@ export function withFactCapabilities<
      */
     async queryFacts(query: FactQuery = {}): Promise<FactEntry[]> {
       try {
-        return await sharedFactSystem0.queryFacts(query);
+        return await sharedFactSystem.queryFacts(query);
       } catch (error) {
-        logger0.error(`Failed to query facts for agent ${this0.agentId}:`, error);
+        logger.error(`Failed to query facts for agent ${this.agentId}:`, error);
         return [];
       }
     }
@@ -100,9 +100,9 @@ export function withFactCapabilities<
      */
     async getMyFacts(type?: string, limit = 100): Promise<FactEntry[]> {
       try {
-        return await queryAgentFacts(this0.agentId, type, limit);
+        return await queryAgentFacts(this.agentId, type, limit);
       } catch (error) {
-        logger0.error(`Failed to get facts for agent ${this0.agentId}:`, error);
+        logger.error(`Failed to get facts for agent ${this.agentId}:`, error);
         return [];
       }
     }
@@ -112,32 +112,32 @@ export function withFactCapabilities<
      */
     async shareFact(factId: string, targetAgentId?: string): Promise<boolean> {
       try {
-        const fact = await sharedFactSystem0.getFact(factId);
+        const fact = await sharedFactSystem.getFact(factId);
         if (!fact) {
-          logger0.warn(`Fact ${factId} not found for sharing`);
+          logger.warn(`Fact ${factId} not found for sharing`);
           return false;
         }
 
         // Create a sharing event
-        await sharedFactSystem0.storeFact({
+        await sharedFactSystem.storeFact({
           type: 'fact_sharing',
           data: {
             originalFactId: factId,
-            sharedBy: this0.agentId,
+            sharedBy: this.agentId,
             sharedWith: targetAgentId || 'all',
             originalFact: fact,
           },
-          source: `agent:${this0.agentId}`,
-          confidence: 10.0,
-          tags: ['sharing', 'collaboration'],
+          source: `agent:${this.agentId}`,
+          confidence: 1.0,
+          tags: ['sharing, collaboration'],
         });
 
-        logger0.debug(
-          `Agent ${this0.agentId} shared fact ${factId} with ${targetAgentId || 'all'}`
+        logger.debug(
+          `Agent ${this.agentId} shared fact ${factId} with ${targetAgentId || 'all'}`
         );
         return true;
       } catch (error) {
-        logger0.error(`Failed to share fact ${factId}:`, error);
+        logger.error(`Failed to share fact ${factId}:`, error);
         return false;
       }
     }
@@ -148,10 +148,10 @@ export function withFactCapabilities<
     async storeDecision(
       decision: string,
       reasoning: string,
-      confidence = 10.0,
+      confidence = 1.0,
       context?: any
     ): Promise<string> {
-      return await this0.storeFact(
+      return await this.storeFact(
         'decision',
         {
           decision,
@@ -159,7 +159,7 @@ export function withFactCapabilities<
           context,
         },
         confidence,
-        ['decision', 'reasoning']
+        ['decision, reasoning']
       );
     }
 
@@ -169,10 +169,10 @@ export function withFactCapabilities<
     async storeObservation(
       observation: string,
       category: string,
-      confidence = 10.0,
+      confidence = 1.0,
       metadata?: any
     ): Promise<string> {
-      return await this0.storeFact(
+      return await this.storeFact(
         'observation',
         {
           observation,
@@ -190,10 +190,10 @@ export function withFactCapabilities<
     async storeLearning(
       insight: string,
       evidence: any,
-      confidence = 10.0,
+      confidence = 1.0,
       applicableContexts: string[] = []
     ): Promise<string> {
-      return await this0.storeFact(
+      return await this.storeFact(
         'learning',
         {
           insight,
@@ -201,7 +201,7 @@ export function withFactCapabilities<
           applicableContexts,
         },
         confidence,
-        ['learning', 'insight', 0.0.0.applicableContexts]
+        ['learning, insight', ...applicableContexts]
       );
     }
 
@@ -209,9 +209,9 @@ export function withFactCapabilities<
      * Get recent decisions made by this agent
      */
     async getRecentDecisions(limit = 10): Promise<FactEntry[]> {
-      return await this0.queryFacts({
+      return await this.queryFacts({
         type: 'decision',
-        source: `agent:${this0.agentId}`,
+        source: `agent:${this.agentId}`,
         limit,
       });
     }
@@ -222,15 +222,15 @@ export function withFactCapabilities<
     async getObservations(category?: string, limit = 20): Promise<FactEntry[]> {
       const query: FactQuery = {
         type: 'observation',
-        source: `agent:${this0.agentId}`,
+        source: `agent:${this.agentId}`,
         limit,
       };
 
       if (category) {
-        query0.tags = ['observation', category];
+        query.tags = ['observation', category];
       }
 
-      return await this0.queryFacts(query);
+      return await this.queryFacts(query);
     }
 
     /**
@@ -239,24 +239,24 @@ export function withFactCapabilities<
     async getLearnings(context?: string, limit = 15): Promise<FactEntry[]> {
       const query: FactQuery = {
         type: 'learning',
-        source: `agent:${this0.agentId}`,
+        source: `agent:${this.agentId}`,
         limit,
       };
 
       if (context) {
-        query0.tags = ['learning', context];
+        query.tags = ['learning', context];
       }
 
-      return await this0.queryFacts(query);
+      return await this.queryFacts(query);
     }
 
     /**
      * Subscribe to new facts from other agents
      */
     onNewFacts(callback: (fact: FactEntry) => void): () => void {
-      return sharedFactSystem0.onFactAdded((fact) => {
+      return sharedFactSystem.onFactAdded((fact) => {
         // Only notify about facts from other agents
-        if (fact0.source !== `agent:${this0.agentId}`) {
+        if (fact.source !== `agent:${this.agentId}`) {
           callback(fact);
         }
       });
@@ -271,13 +271,13 @@ export function withFactCapabilities<
       limit = 10
     ): Promise<any[]> {
       try {
-        logger0.debug(
-          `Agent ${this0.agentId} searching external facts: ${query}`
+        logger.debug(
+          `Agent ${this.agentId} searching external facts: ${query}`
         );
         return await searchExternalFacts(query, sources, limit);
       } catch (error) {
-        logger0.error(
-          `Failed to search external facts for agent ${this0.agentId}:`,
+        logger.error(
+          `Failed to search external facts for agent ${this.agentId}:`,
           error
         );
         return [];
@@ -292,13 +292,13 @@ export function withFactCapabilities<
       version?: string
     ): Promise<unknown> {
       try {
-        logger0.debug(
-          `Agent ${this0.agentId} getting NPM package: ${packageName}`
+        logger.debug(
+          `Agent ${this.agentId} getting NPM package: ${packageName}`
         );
         return await getNPMPackageInfo(packageName, version);
       } catch (error) {
-        logger0.error(
-          `Failed to get NPM package info for agent ${this0.agentId}:`,
+        logger.error(
+          `Failed to get NPM package info for agent ${this.agentId}:`,
           error
         );
         return null;
@@ -310,13 +310,13 @@ export function withFactCapabilities<
      */
     async getGitHubRepoInfo(owner: string, repo: string): Promise<unknown> {
       try {
-        logger0.debug(
-          `Agent ${this0.agentId} getting GitHub repo: ${owner}/${repo}`
+        logger.debug(
+          `Agent ${this.agentId} getting GitHub repo: ${owner}/${repo}`
         );
         return await getGitHubRepoInfo(owner, repo);
       } catch (error) {
-        logger0.error(
-          `Failed to get GitHub repo info for agent ${this0.agentId}:`,
+        logger.error(
+          `Failed to get GitHub repo info for agent ${this.agentId}:`,
           error
         );
         return null;
@@ -334,18 +334,18 @@ export class FactCapableAgent implements FactCapable {
   async storeFact(
     type: string,
     data: any,
-    confidence = 10.0,
+    confidence = 1.0,
     tags: string[] = []
   ): Promise<string> {
-    return await storeAgentFact(this0.agentId, type, data, confidence, tags);
+    return await storeAgentFact(this.agentId, type, data, confidence, tags);
   }
 
   async queryFacts(query: FactQuery = {}): Promise<FactEntry[]> {
-    return await sharedFactSystem0.queryFacts(query);
+    return await sharedFactSystem.queryFacts(query);
   }
 
   async getMyFacts(type?: string, limit = 100): Promise<FactEntry[]> {
-    return await queryAgentFacts(this0.agentId, type, limit);
+    return await queryAgentFacts(this.agentId, type, limit);
   }
 
   async shareFact(factId: string, targetAgentId?: string): Promise<boolean> {
@@ -354,8 +354,8 @@ export class FactCapableAgent implements FactCapable {
         constructor(public agentId: string) {}
       }
     ) as any as any;
-    const instance = new enhanced(this0.agentId);
-    return await instance0.shareFact(factId, targetAgentId);
+    const instance = new enhanced(this.agentId);
+    return await instance.shareFact(factId, targetAgentId);
   }
 
   async searchExternalFacts(

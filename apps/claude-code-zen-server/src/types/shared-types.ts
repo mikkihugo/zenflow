@@ -1,15 +1,15 @@
 /**
- * Shared Types Module0.
+ * Shared Types Module.
  *
  * Contains interfaces and types that are shared across multiple domains
- * to prevent circular dependencies and maintain clean architecture0.
+ * to prevent circular dependencies and maintain clean architecture.
  */
 
 // ============================================
 // Core Swarm Types (moved from coordination)
 // ============================================
 /**
- * @file TypeScript type definitions0.
+ * @file TypeScript type definitions.
  */
 
 export interface ZenSwarm {
@@ -45,7 +45,7 @@ export interface SwarmConfig {
 // Enums and Unions
 // ============================================
 
-export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
+export type SwarmTopology = 'mesh | hierarchical' | 'ring | star';
 export type SwarmStatus =
   | 'initializing'
   | 'active'
@@ -86,7 +86,7 @@ export type AgentType =
   | 'specialist'
   | 'observer'
   | 'manager';
-export type CoordinationStrategy = 'parallel' | 'sequential' | 'adaptive';
+export type CoordinationStrategy = 'parallel | sequential' | 'adaptive';
 
 // ============================================
 // Memory and Storage Types
@@ -129,7 +129,7 @@ export interface Message {
   type: string;
   payload: any;
   timestamp: Date;
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  priority?: 'low | medium' | 'high | urgent';
 }
 
 // ============================================
@@ -155,7 +155,7 @@ export interface ComponentConfig {
 }
 
 export interface SystemHealth {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
   components: Record<string, ComponentHealth>;
   uptime: number;
   version: string;
@@ -163,7 +163,7 @@ export interface SystemHealth {
 }
 
 export interface ComponentHealth {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
   message?: string;
   lastCheck: Date;
   metrics?: Record<string, number>;
@@ -198,7 +198,7 @@ export type TaskStatus =
   | 'completed'
   | 'failed'
   | 'cancelled';
-export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TaskPriority = 'low | medium' | 'high | urgent';
 
 // ============================================
 // Neural Network Types
@@ -265,7 +265,7 @@ export interface APIError {
 }
 
 // ============================================
-// Utility Types0.
+// Utility Types.
 // ============================================
 
 export type DeepPartial<T> = {
@@ -296,8 +296,8 @@ export interface MemoryProvider {
 }
 
 export interface LoggingProvider {
-  debug(message: string, 0.0.0.args: any[]): void;
-  info(message: string, 0.0.0.args: any[]): void;
-  warn(message: string, 0.0.0.args: any[]): void;
-  error(message: string, 0.0.0.args: any[]): void;
+  debug(message: string, args: any[]): void;
+  info(message: string, args: any[]): void;
+  warn(message: string, args: any[]): void;
+  error(message: string, args: any[]): void;
 }

@@ -26,7 +26,7 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import { DSPyBrainMLBridge } from '../ml-bridge/dspy-brain-ml-bridge';
 /**
  * Autonomous Teleprompter Selector - Intelligent ML Selection System

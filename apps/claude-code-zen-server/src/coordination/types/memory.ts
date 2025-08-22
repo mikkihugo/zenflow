@@ -1,8 +1,8 @@
 /**
  * @file Memory Types - Coordination Memory Management
  *
- * Type definitions for memory and state management within the coordination layer0.
- * These types support persistent memory, working memory, and shared memory systems0.
+ * Type definitions for memory and state management within the coordination layer.
+ * These types support persistent memory, working memory, and shared memory systems.
  */
 
 /**
@@ -24,7 +24,7 @@ export type MemoryType =
 /**
  * Memory priority levels
  */
-export type MemoryPriority = 'low' | 'medium' | 'high' | 'critical';
+export type MemoryPriority = 'low | medium' | 'high | critical';
 
 /**
  * Memory access patterns
@@ -116,7 +116,7 @@ export interface MemoryManager {
    * Store a memory entry
    */
   store(
-    entry: Omit<MemoryEntry, 'id' | 'timestamp' | 'lastAccessed'>
+    entry: Omit<MemoryEntry, 'id | timestamp' | 'lastAccessed'>
   ): Promise<MemoryOperationResult>;
 
   /**
@@ -160,14 +160,14 @@ export interface MemoryManager {
   /**
    * Export memory data
    */
-  export(format?: 'json' | 'binary'): Promise<string | Buffer>;
+  export(format?: 'json | binary'): Promise<string | Buffer>;
 
   /**
    * Import memory data
    */
   import(
     data: string | Buffer,
-    format?: 'json' | 'binary'
+    format?: 'json | binary'
   ): Promise<MemoryOperationResult>;
 }
 
@@ -308,7 +308,7 @@ export interface MemoryBackup {
 export interface MemoryTransaction {
   id: string;
   operations: Array<{
-    type: 'store' | 'update' | 'delete';
+    type: 'store | update' | 'delete';
     key: string;
     value?: any;
     namespace?: string;
@@ -328,7 +328,7 @@ export interface MemoryTransaction {
    * Add operation to transaction
    */
   addOperation(
-    type: 'store' | 'update' | 'delete',
+    type: 'store | update' | 'delete',
     key: string,
     value?: any,
     namespace?: string

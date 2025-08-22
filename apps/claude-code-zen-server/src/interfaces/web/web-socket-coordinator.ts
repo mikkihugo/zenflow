@@ -1,15 +1,15 @@
 /**
- * WebSocket Coordinator - Real-time updates and broadcasting0.
+ * WebSocket Coordinator - Real-time updates and broadcasting.
  *
- * Handles WebSocket connections, sessions, and real-time data broadcasting0.
- * For the web dashboard interface0.
+ * Handles WebSocket connections, sessions, and real-time data broadcasting.
+ * For the web dashboard interface.
  */
 /**
- * @file Web-socket coordination system0.
+ * @file Web-socket coordination system.
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { Server as SocketIOServer } from 'socket0.io';
+import type { Server as SocketIOServer } from 'socket.io';
 
 export interface WebSession {
   id: string;
@@ -17,7 +17,7 @@ export interface WebSession {
   createdAt: Date;
   lastActivity: Date;
   preferences: {
-    theme: 'dark' | 'light';
+    theme: 'dark | light';
     refreshInterval: number;
     notifications: boolean;
   };
@@ -32,7 +32,7 @@ export interface WebSocketConfig {
 }
 
 /**
- * Manages WebSocket connections and real-time updates0.
+ * Manages WebSocket connections and real-time updates.
  *
  * @example
  */
@@ -45,20 +45,20 @@ export class WebSocketCoordinator {
     io: SocketIOServer,
     private config: WebSocketConfig = {}
   ) {
-    this0.io = io;
-    this?0.setupWebSocket;
+    this.io = io;
+    this.setupWebSocket;
   }
 
   /**
-   * Setup WebSocket connection handlers0.
+   * Setup WebSocket connection handlers.
    */
   private setupWebSocket(): void {
-    this0.io0.on('connection', (socket) => {
-      this0.logger0.info(`WebSocket client connected: ${socket0.id}`);
+    this.io.on('connection', (socket) => {
+      this.logger.info(`WebSocket client connected: ${socket.id}`);
 
       // Create session
       const session: WebSession = {
-        id: socket0.id,
+        id: socket.id,
         createdAt: new Date(),
         lastActivity: new Date(),
         preferences: {
@@ -68,99 +68,99 @@ export class WebSocketCoordinator {
         },
       };
 
-      this0.sessions0.set(socket0.id, session);
+      this.sessions.set(socket.id, session);
 
       // Handle session updates
-      socket0.on('updateSession', (data) => {
-        const session = this0.sessions0.get(socket0.id);
+      socket.on('updateSession', (data) => {
+        const session = this.sessions.get(socket.id);
         if (session) {
-          session0.preferences = { 0.0.0.session0.preferences, 0.0.0.data };
-          session0.lastActivity = new Date();
-          this0.logger0.debug(`Session updated: ${socket0.id}`, data);
+          session.preferences = { ...session.preferences, ...data };
+          session.lastActivity = new Date();
+          this.logger.debug(`Session updated: ${socket.id}`, data);
         }
       });
 
       // Handle status requests
-      socket0.on('requestStatus', () => {
-        socket0.emit('statusUpdate', {
+      socket.on('requestStatus', () => {
+        socket.emit('statusUpdate', {
           message: 'Status request received',
-          timestamp: new Date()?0.toISOString,
+          timestamp: new Date()?.toISOString,
         });
       });
 
       // Handle disconnection
-      socket0.on('disconnect', () => {
-        this0.logger0.info(`WebSocket client disconnected: ${socket0.id}`);
-        this0.sessions0.delete(socket0.id);
+      socket.on('disconnect', () => {
+        this.logger.info(`WebSocket client disconnected: ${socket.id}`);
+        this.sessions.delete(socket.id);
       });
 
       // Send initial connection acknowledgment
-      socket0.emit('connected', {
-        sessionId: socket0.id,
-        timestamp: new Date()?0.toISOString,
+      socket.emit('connected', {
+        sessionId: socket.id,
+        timestamp: new Date()?.toISOString,
       });
     });
 
-    this0.logger0.info('WebSocket coordinator initialized');
+    this.logger.info('WebSocket coordinator initialized');
   }
 
   /**
-   * Broadcast message to all connected clients0.
+   * Broadcast message to all connected clients.
    *
    * @param event
    * @param data
    */
   broadcast(event: string, data: any): void {
-    if (!this0.config0.realTime) return;
+    if (!this.config.realTime) return;
 
-    this0.io0.emit(event, {
-      0.0.0.data,
-      timestamp: new Date()?0.toISOString,
+    this.io.emit(event, {
+      ...data,
+      timestamp: new Date()?.toISOString,
     });
 
-    this0.logger0.debug(`Broadcasted event: ${event}`, data);
+    this.logger.debug(`Broadcasted event: ${event}`, data);
   }
 
   /**
-   * Send message to specific session0.
+   * Send message to specific session.
    *
    * @param sessionId
    * @param event
    * @param data
    */
   sendToSession(sessionId: string, event: string, data: any): boolean {
-    const socket = this0.io0.sockets0.sockets0.get(sessionId);
+    const socket = this.io.sockets.sockets.get(sessionId);
     if (!socket) {
-      this0.logger0.warn(`Session not found: ${sessionId}`);
+      this.logger.warn(`Session not found: ${sessionId}`);
       return false;
     }
 
-    socket0.emit(event, {
-      0.0.0.data,
-      timestamp: new Date()?0.toISOString,
+    socket.emit(event, {
+      ...data,
+      timestamp: new Date()?.toISOString,
     });
 
     return true;
   }
 
   /**
-   * Get active sessions0.
+   * Get active sessions.
    */
   getSessions(): WebSession[] {
-    return Array0.from(this0.sessions?0.values());
+    return Array.from(this.sessions?.values());
   }
 
   /**
-   * Get session by ID0.
+   * Get session by ID.
    *
    * @param sessionId
    */
   getSession(sessionId: string): WebSession | undefined {
-    return this0.sessions0.get(sessionId);
+    return this.sessions.get(sessionId);
   }
 
   /**
-   * Update session preferences0.
+   * Update session preferences.
    *
    * @param sessionId
    * @param preferences
@@ -169,20 +169,20 @@ export class WebSocketCoordinator {
     sessionId: string,
     preferences: Partial<WebSession['preferences']>
   ): boolean {
-    const session = this0.sessions0.get(sessionId);
+    const session = this.sessions.get(sessionId);
     if (!session) {
       return false;
     }
 
-    session0.preferences = { 0.0.0.session0.preferences, 0.0.0.preferences };
-    session0.lastActivity = new Date();
+    session.preferences = { ...session.preferences, ...preferences };
+    session.lastActivity = new Date();
 
-    this0.logger0.debug(`Session preferences updated: ${sessionId}`, preferences);
+    this.logger.debug(`Session preferences updated: ${sessionId}`, preferences);
     return true;
   }
 
   /**
-   * Clean up expired sessions0.
+   * Clean up expired sessions.
    *
    * @param maxAge
    */
@@ -190,23 +190,23 @@ export class WebSocketCoordinator {
     const now = new Date();
     let cleaned = 0;
 
-    for (const [sessionId, session] of this0.sessions?0.entries) {
-      const age = now?0.getTime - session0.lastActivity?0.getTime;
+    for (const [sessionId, session] of this.sessions?.entries) {
+      const age = now?.getTime - session.lastActivity?.getTime()
       if (age > maxAge) {
-        this0.sessions0.delete(sessionId);
+        this.sessions.delete(sessionId);
         cleaned++;
       }
     }
 
     if (cleaned > 0) {
-      this0.logger0.info(`Cleaned up ${cleaned} expired sessions`);
+      this.logger.info(`Cleaned up ${cleaned} expired sessions`);
     }
 
     return cleaned;
   }
 
   /**
-   * Get connection statistics0.
+   * Get connection statistics.
    */
   getStats(): {
     totalSessions: number;
@@ -214,17 +214,17 @@ export class WebSocketCoordinator {
     averageSessionAge: number;
   } {
     const now = new Date();
-    const sessions = Array0.from(this0.sessions?0.values());
-    const totalSessions = sessions0.length;
-    const activeSessions = sessions0.filter((s) => {
-      const age = now?0.getTime - s0.lastActivity?0.getTime;
+    const sessions = Array.from(this.sessions?.values());
+    const totalSessions = sessions.length;
+    const activeSessions = sessions.filter((s) => {
+      const age = now?.getTime - s.lastActivity?.getTime()
       return age < 5 * 60 * 1000; // Active within 5 minutes
-    })0.length;
+    }).length;
 
     const averageSessionAge =
       totalSessions > 0
-        ? sessions0.reduce(
-            (sum, s) => sum + (now?0.getTime - s0.createdAt?0.getTime),
+        ? sessions.reduce(
+            (sum, s) => sum + (now?.getTime - s.createdAt?.getTime),
             0
           ) / totalSessions
         : 0;

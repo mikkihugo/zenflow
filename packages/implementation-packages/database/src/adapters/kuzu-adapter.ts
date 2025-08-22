@@ -5,7 +5,8 @@
  */
 
 // Using Awilix DI - no reflect-metadata needed
-import { Database, Connection } from 'kuzu';
+// Dynamic import for optional kuzu dependency
+let Database: any, Connection: any;
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { getLogger } from '@claude-zen/foundation';
@@ -48,13 +49,24 @@ export interface GraphQueryOptions {
 }
 
 export class KuzuAdapter implements DatabaseAdapter {
-  private database: Database | null = null;
-  private connection: Connection | null = null;
+  private database: any | null = null;
+  private connection: any | null = null;
   private config: KuzuConfig;
   private connected = false;
 
   constructor(config: KuzuConfig) {
     this.config = config;
+    this.initializeKuzu();
+  }
+
+  private async initializeKuzu(): Promise<void> {
+    try {
+      const kuzu = await import('@' + 'kuzu'); // Split import to avoid TypeScript resolution
+      Database = kuzu.Database;
+      Connection = kuzu.Connection;
+    } catch (error) {
+      logger.warn('Kuzu library not available. Install kuzu package for graph database functionality.');
+    }
   }
 
   async connect(): Promise<void> {

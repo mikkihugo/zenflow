@@ -4,14 +4,14 @@
  * **SOPHISTICATED TYPE ARCHITECTURE - LAYER 3: API TYPES**
  *
  * Strategic delegation layer that maps OpenAPI-compatible types to comprehensive
- * domain types from @claude-zen packages0. This layer provides the crucial
- * translation between REST API contracts and internal domain models0.
+ * domain types from @claude-zen packages. This layer provides the crucial
+ * translation between REST API contracts and internal domain models.
  *
  * **ARCHITECTURE PATTERN: FACADE WITH STRATEGIC DELEGATION**
  *
  * This translation layer reduces API type complexity by 70%+ through strategic
- * delegation to battle-tested domain types while maintaining full OpenAPI 30.0
- * compatibility and type safety0.
+ * delegation to battle-tested domain types while maintaining full OpenAPI 3.0
+ * compatibility and type safety.
  *
  * **LAYER ARCHITECTURE:**
  * - **Layer 1**: Foundation Types (@claude-zen/foundation/types) - Shared primitives [DONE]
@@ -20,11 +20,11 @@
  * - **Layer 4**: Service Types - Service integration (pending)
  *
  * **DELEGATION STRATEGY:**
- * 10. **Direct Import**: Import comprehensive domain types from @claude-zen packages
- * 20. **Strategic Mapping**: Map domain types to OpenAPI-compatible structures
- * 30. **API Augmentation**: Add API-specific metadata (HTTP codes, headers, etc0.)
- * 40. **Type Unions**: Create API-specific unions from domain type combinations
- * 50. **OpenAPI Compliance**: Ensure all types work with OpenAPI 30.0 specification
+ * 1. **Direct Import**: Import comprehensive domain types from @claude-zen packages
+ * 2. **Strategic Mapping**: Map domain types to OpenAPI-compatible structures
+ * 3. **API Augmentation**: Add API-specific metadata (HTTP codes, headers, etc.)
+ * 4. **Type Unions**: Create API-specific unions from domain type combinations
+ * 5. **OpenAPI Compliance**: Ensure all types work with OpenAPI 3.0 specification
  *
  * **PERFORMANCE BENEFITS:**
  * - 70%+ code reduction through domain type delegation
@@ -33,28 +33,28 @@
  * - Type-safe API operations with full IntelliSense
  *
  * **MAINTAINED COMPATIBILITY:**
- * - Full OpenAPI 30.0 specification compliance
- * - Express0.js integration compatibility
+ * - Full OpenAPI 3.0 specification compliance
+ * - Express.js integration compatibility
  * - Existing API contract preservation
  * - Swagger documentation generation support
  *
  * @example API Translation Usage
  * ```typescript
- * import { ApiSwarmResponse, ApiTaskRequest } from '0./api-translation-layer';
- * import type { paths, components } from '0./api-types';
+ * import('./api-translation-layer';
+ * import('./api-types';
  *
  * // API types delegate to comprehensive domain types
  * const swarmResponse: ApiSwarmResponse = {
  *   // Uses @claude-zen/intelligence domain types internally
  *   id: 'swarm-123',
  *   status: 'active',
- *   agents: [0.0.0.] // Full domain type safety
+ *   agents: [...] // Full domain type safety
  * };
  * ```
  *
  * @author Claude Code Zen Team
- * @since 20.10.0
- * @version 20.10.0
+ * @since 2.1.0
+ * @version 2.1.0
  *
  * @requires @claude-zen/foundation - Foundation types and utilities
  * @requires @claude-zen/intelligence - Neural coordination domain types
@@ -113,7 +113,7 @@ import type {
  * Standard API Response Envelope
  *
  * Provides consistent response structure across all API endpoints
- * with comprehensive error handling and metadata support0.
+ * with comprehensive error handling and metadata support.
  */
 export interface ApiResponse<TData = unknown> {
   /** Indicates if the operation was successful */
@@ -181,7 +181,7 @@ export interface PaginatedApiResponse<TData = unknown>
  */
 export interface ApiHealthResponse {
   /** Overall system status */
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
 
   /** System uptime in milliseconds */
   uptime: number;
@@ -292,7 +292,7 @@ export interface ApiCreateSwarmRequest {
   description?: string;
 
   /** Swarm configuration (delegates to brain types) */
-  configuration: Omit<SwarmConfiguration, 'id' | 'createdAt' | 'updatedAt'>;
+  configuration: Omit<SwarmConfiguration, 'id | createdAt' | 'updatedAt'>;
 
   /** Initial agent count */
   initialAgents?: number;
@@ -373,7 +373,7 @@ export interface ApiTaskResponse extends TimestampedEntity {
   metrics: WorkflowMetrics;
 
   /** Task priority */
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: 'low | medium' | 'high | critical';
 
   /** Assigned swarm ID */
   swarmId?: string;
@@ -395,13 +395,13 @@ export interface ApiCreateTaskRequest {
   description?: string;
 
   /** Workflow definition (delegates to workflow types) */
-  workflow: Omit<WorkflowDefinition, 'id' | 'createdAt' | 'updatedAt'>;
+  workflow: Omit<WorkflowDefinition, 'id | createdAt' | 'updatedAt'>;
 
   /** Execution strategy */
   strategy?: ExecutionStrategy;
 
   /** Task priority */
-  priority?: 'low' | 'medium' | 'high' | 'critical';
+  priority?: 'low | medium' | 'high | critical';
 
   /** Target swarm ID */
   swarmId?: string;
@@ -607,7 +607,7 @@ export interface ApiSettingsResponse {
 
   /** Logging configuration */
   logging: {
-    level: 'debug' | 'info' | 'warn' | 'error';
+    level: 'debug | info' | 'warn | error';
     enableConsole: boolean;
     enableFile: boolean;
     maxFileSize: number;
@@ -784,7 +784,7 @@ export type ApiMetricsUnion =
 export function isApiSuccessResponse<T>(
   response: ApiResponse<T> | ApiErrorResponse
 ): response is ApiResponse<T> {
-  return response0.success === true;
+  return response.success === true;
 }
 
 /**
@@ -793,7 +793,7 @@ export function isApiSuccessResponse<T>(
 export function isApiErrorResponse(
   response: ApiResponseUnion
 ): response is ApiErrorResponse {
-  return response0.success === false;
+  return response.success === false;
 }
 
 /**
@@ -813,10 +813,10 @@ export function isPaginatedResponse<T>(
  * API Version Information
  */
 export const API_VERSION = {
-  version: '20.10.0',
+  version: '2.1.0',
   name: 'claude-code-zen-api',
   description: 'Sophisticated API translation layer with 70%+ code reduction',
-  openApiVersion: '30.0.0',
+  openApiVersion: '3..0',
 } as const;
 
 /**
@@ -870,8 +870,8 @@ export const DEFAULT_PAGINATION = {
  * - **@claude-zen/foundation**: Shared primitives, utilities, system configuration
  *
  * **MAINTAINED CAPABILITIES:**
- * - Full OpenAPI 30.0 specification compatibility
- * - Express0.js integration with type-safe handlers
+ * - Full OpenAPI 3.0 specification compatibility
+ * - Express.js integration with type-safe handlers
  * - Swagger documentation generation support
  * - Runtime type validation and error handling
  * - Comprehensive API response envelopes
@@ -885,10 +885,10 @@ export const DEFAULT_PAGINATION = {
  */
 export const API_TRANSLATION_INFO = {
   name: 'API Translation Layer',
-  version: '20.10.0',
+  version: '2.1.0',
   reduction: '70%+ code reduction through strategic delegation',
   architecture: 'Sophisticated 4-layer type architecture',
-  compatibility: 'Full OpenAPI 30.0 compliance',
+  compatibility: 'Full OpenAPI 3.0 compliance',
   delegation: [
     '@claude-zen/intelligence - Neural coordination domain types',
     '@claude-zen/intelligence - Process orchestration domain types',
@@ -900,7 +900,7 @@ export const API_TRANSLATION_INFO = {
     'Strategic domain type delegation',
     'Comprehensive type safety',
     'OpenAPI specification compliance',
-    'Express0.js integration support',
+    'Express.js integration support',
     'Zero runtime overhead',
     'Tree-shakable exports',
     'Enhanced developer experience',

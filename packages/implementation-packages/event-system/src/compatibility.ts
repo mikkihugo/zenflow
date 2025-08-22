@@ -1,3 +1,4 @@
+import { EventEmitter } from "@claude-zen/foundation";
 /**
  * UEL (Unified Event Layer) - Backward Compatibility Layer.
  *

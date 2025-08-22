@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@claude-zen/coordination-core": "workspace:*",
-    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
     "eventemitter3": "^5.0.1"
   },

@@ -17,10 +17,10 @@
     "docs:fix": "node scripts/fix-tsdoc.mjs"
   },
   "dependencies": {
-    "@claude-zen/brain": "link:../brain",
-    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/brain": "workspace:*",
+    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/telemetry": "link:../telemetry"
+    "@claude-zen/telemetry": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

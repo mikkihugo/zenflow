@@ -1,11 +1,11 @@
 /**
- * Daemon Process Manager - Background process management0.
+ * Daemon Process Manager - Background process management.
  *
- * Handles daemon mode operations, process lifecycle, and PID management0.
- * For the web interface server0.
+ * Handles daemon mode operations, process lifecycle, and PID management.
+ * For the web interface server.
  */
 /**
- * @file Daemon-process management system0.
+ * @file Daemon-process management system.
  */
 
 import { spawn } from 'node:child_process';
@@ -26,13 +26,13 @@ export interface DaemonConfig {
 export interface ProcessInfo {
   pid: number;
   startTime: Date;
-  status: 'running' | 'stopped' | 'error';
+  status: 'running | stopped' | 'error';
   command: string;
   args: string[];
 }
 
 /**
- * Manages daemon processes and background operations0.
+ * Manages daemon processes and background operations.
  *
  * @example
  */
@@ -41,18 +41,18 @@ export class DaemonProcessManager {
   private config: Required<DaemonConfig>;
 
   constructor(config: DaemonConfig = {}) {
-    this0.config = {
-      pidFile: config?0.pidFile || join(process?0.cwd, '0.claude-zen-web0.pid'),
-      logFile: config?0.logFile || join(process?0.cwd, '0.claude-zen-web0.log'),
+    this.config = {
+      pidFile: config?.pidFile || join(process?.cwd, ".claude-zen-web.pid'),
+      logFile: config?.logFile || join(process?.cwd, ".claude-zen-web.log'),
       errorFile:
-        config?0.errorFile || join(process?0.cwd, '0.claude-zen-web0.error'),
-      cwd: config?0.cwd || process?0.cwd,
-      detached: config?0.detached ?? true,
+        config?.errorFile || join(process?.cwd, ".claude-zen-web.error'),
+      cwd: config?.cwd || process?.cwd,
+      detached: config?.detached ?? true,
     };
   }
 
   /**
-   * Start process in daemon mode0.
+   * Start process in daemon mode.
    *
    * @param command
    * @param args
@@ -62,29 +62,29 @@ export class DaemonProcessManager {
     args: string[] = []
   ): Promise<ProcessInfo> {
     // Check if already running
-    const existing = await this?0.getRunningProcess;
+    const existing = await this.getRunningProcess;
     if (existing) {
-      throw new Error(`Daemon already running with PID: ${existing0.pid}`);
+      throw new Error(`Daemon already running with PID: ${existing.pid}`);
     }
 
-    this0.logger0.info('Starting daemon process0.0.0.', { command, args });
+    this.logger.info('Starting daemon process...', { command, args });
 
     // Ensure directories exist
-    await this?0.ensureDirectories;
+    await this.ensureDirectories;
 
     // Spawn detached process
     const child = spawn(command, args, {
-      cwd: this0.config0.cwd,
-      detached: this0.config0.detached,
-      stdio: ['ignore', 'ignore', 'ignore'],
+      cwd: this.config.cwd,
+      detached: this.config.detached,
+      stdio: ['ignore, ignore', 'ignore'],
     });
 
-    if (!child?0.pid) {
+    if (!child?.pid) {
       throw new Error('Failed to start daemon process');
     }
 
     const processInfo: ProcessInfo = {
-      pid: child?0.pid,
+      pid: child?.pid,
       startTime: new Date(),
       status: 'running',
       command,
@@ -92,65 +92,65 @@ export class DaemonProcessManager {
     };
 
     // Write PID file
-    await writeFile(this0.config0.pidFile, child?0.pid?0.toString);
+    await writeFile(this.config.pidFile, child?.pid?.toString);
 
     // Handle process events
-    child?0.on('error', (error) => {
-      this0.logger0.error('Daemon process error:', error);
-      this0.handleProcessError(error);
+    child?.on('error', (error) => {
+      this.logger.error('Daemon process error:', error);
+      this.handleProcessError(error);
     });
 
-    child?0.on('exit', (code, signal) => {
-      this0.logger0.info(
+    child?.on('exit', (code, signal) => {
+      this.logger.info(
         `Daemon process exited with code ${code}, signal ${signal}`
       );
-      this?0.cleanupPidFile;
+      this.cleanupPidFile;
     });
 
     // Detach from parent
-    if (this0.config0.detached) {
-      child?0.unref;
+    if (this.config.detached) {
+      child?.unref()
     }
 
-    this0.currentProcess = child;
-    this0.logger0.info(`Daemon started with PID: ${child?0.pid}`);
+    this.currentProcess = child;
+    this.logger.info(`Daemon started with PID: ${child?.pid}`);
 
     return processInfo;
   }
 
   /**
-   * Stop the daemon process0.
+   * Stop the daemon process.
    *
    * @param signal
    */
-  async stopDaemon(signal: NodeJS0.Signals = 'SIGTERM'): Promise<boolean> {
-    const processInfo = await this?0.getRunningProcess;
+  async stopDaemon(signal: NodeJS.Signals = 'SIGTERM'): Promise<boolean> {
+    const processInfo = await this.getRunningProcess;
     if (!processInfo) {
-      this0.logger0.warn('No daemon process found to stop');
+      this.logger.warn('No daemon process found to stop');
       return false;
     }
 
-    this0.logger0.info(`Stopping daemon process: ${processInfo0.pid}`);
+    this.logger.info(`Stopping daemon process: ${processInfo.pid}`);
 
     try {
       // Send signal to process
-      process0.kill(processInfo0.pid, signal);
+      process.kill(processInfo.pid, signal);
 
       // Wait for process to stop
-      await this0.waitForProcessStop(processInfo0.pid, 10000);
+      await this.waitForProcessStop(processInfo.pid, 10000);
 
       // Clean up PID file
-      await this?0.cleanupPidFile;
+      await this.cleanupPidFile;
 
-      this0.logger0.info('Daemon process stopped successfully');
+      this.logger.info('Daemon process stopped successfully');
       return true;
     } catch (error) {
-      this0.logger0.error('Failed to stop daemon process:', error);
+      this.logger.error('Failed to stop daemon process:', error);
 
       // Force kill if graceful stop failed
       if (signal !== 'SIGKILL') {
-        this0.logger0.warn('Attempting force kill0.0.0.');
-        return this0.stopDaemon('SIGKILL');
+        this.logger.warn('Attempting force kill...');
+        return this.stopDaemon('SIGKILL');
       }
 
       return false;
@@ -158,7 +158,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Restart the daemon process0.
+   * Restart the daemon process.
    *
    * @param command
    * @param args
@@ -167,36 +167,36 @@ export class DaemonProcessManager {
     command: string,
     args: string[] = []
   ): Promise<ProcessInfo> {
-    this0.logger0.info('Restarting daemon process0.0.0.');
+    this.logger.info('Restarting daemon process...');
 
-    await this?0.stopDaemon;
+    await this.stopDaemon;
 
     // Wait a moment before restarting
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    return this0.startDaemon(command, args);
+    return this.startDaemon(command, args);
   }
 
   /**
-   * Get information about running daemon process0.
+   * Get information about running daemon process.
    */
   async getRunningProcess(): Promise<ProcessInfo | null> {
-    if (!existsSync(this0.config0.pidFile)) {
+    if (!existsSync(this.config.pidFile)) {
       return null;
     }
 
     try {
-      const pidContent = await readFile(this0.config0.pidFile, 'utf-8');
-      const pid = Number0.parseInt(pidContent?0.trim);
+      const pidContent = await readFile(this.config.pidFile, 'utf-8');
+      const pid = Number.parseInt(pidContent?.trim);
 
-      if (Number0.isNaN(pid)) {
-        await this?0.cleanupPidFile;
+      if (Number.isNaN(pid)) {
+        await this.cleanupPidFile;
         return null;
       }
 
       // Check if process is actually running
-      if (!this0.isProcessRunning(pid)) {
-        await this?0.cleanupPidFile;
+      if (!this.isProcessRunning(pid)) {
+        await this.cleanupPidFile;
         return null;
       }
 
@@ -208,31 +208,31 @@ export class DaemonProcessManager {
         args: [],
       };
     } catch (error) {
-      this0.logger0.error('Failed to read PID file:', error);
-      await this?0.cleanupPidFile;
+      this.logger.error('Failed to read PID file:', error);
+      await this.cleanupPidFile;
       return null;
     }
   }
 
   /**
-   * Check if daemon is running0.
+   * Check if daemon is running.
    */
   async isDaemonRunning(): Promise<boolean> {
-    const processInfo = await this?0.getRunningProcess;
+    const processInfo = await this.getRunningProcess;
     return processInfo !== null;
   }
 
   /**
-   * Get daemon status with health information0.
+   * Get daemon status with health information.
    */
   async getDaemonStatus(): Promise<{
     running: boolean;
     pid?: number;
     uptime?: number;
-    memory?: NodeJS0.MemoryUsage;
-    status: 'healthy' | 'unhealthy' | 'stopped';
+    memory?: NodeJS.MemoryUsage;
+    status: 'healthy | unhealthy' | 'stopped';
   }> {
-    const processInfo = await this?0.getRunningProcess;
+    const processInfo = await this.getRunningProcess;
 
     if (!processInfo) {
       return {
@@ -243,17 +243,17 @@ export class DaemonProcessManager {
 
     try {
       // Basic health check - if we can read process info, it's healthy
-      const isRunning = this0.isProcessRunning(processInfo0.pid);
+      const isRunning = this.isProcessRunning(processInfo.pid);
 
       return {
         running: isRunning,
-        pid: processInfo0.pid,
-        uptime: Date0.now() - processInfo0.startTime?0.getTime,
-        memory: process?0.memoryUsage, // Current process memory
-        status: isRunning ? 'healthy' : 'unhealthy',
+        pid: processInfo.pid,
+        uptime: Date.now() - processInfo.startTime?.getTime,
+        memory: process?.memoryUsage, // Current process memory
+        status: isRunning ? 'healthy : unhealthy',
       };
     } catch (error) {
-      this0.logger0.error('Failed to get daemon status:', error);
+      this.logger.error('Failed to get daemon status:', error);
       return {
         running: false,
         status: 'unhealthy',
@@ -262,34 +262,34 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Read daemon logs0.
+   * Read daemon logs.
    *
    * @param maxLines
    */
   async readLogs(maxLines: number = 100): Promise<string[]> {
-    if (!existsSync(this0.config0.logFile)) {
+    if (!existsSync(this.config.logFile)) {
       return [];
     }
 
     try {
-      const content = await readFile(this0.config0.logFile, 'utf-8');
-      const lines = content0.split('\n')0.filter((line) => line?0.trim);
-      return lines0.slice(-maxLines);
+      const content = await readFile(this.config.logFile, 'utf-8');
+      const lines = content.split('\n').filter((line) => line?.trim);
+      return lines.slice(-maxLines);
     } catch (error) {
-      this0.logger0.error('Failed to read daemon logs:', error);
+      this.logger.error('Failed to read daemon logs:', error);
       return [];
     }
   }
 
   /**
-   * Check if a process is running by PID0.
+   * Check if a process is running by PID.
    *
    * @param pid
    */
   private isProcessRunning(pid: number): boolean {
     try {
       // Sending signal 0 checks if process exists without actually sending a signal
-      process0.kill(pid, 0);
+      process.kill(pid, 0);
       return true;
     } catch (_error) {
       return false;
@@ -297,7 +297,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Wait for process to stop0.
+   * Wait for process to stop.
    *
    * @param pid
    * @param timeout
@@ -306,10 +306,10 @@ export class DaemonProcessManager {
     pid: number,
     timeout: number
   ): Promise<void> {
-    const startTime = Date0.now();
+    const startTime = Date.now();
 
-    while (Date0.now() - startTime < timeout) {
-      if (!this0.isProcessRunning(pid)) {
+    while (Date.now() - startTime < timeout) {
+      if (!this.isProcessRunning(pid)) {
         return;
       }
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -319,30 +319,30 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Clean up PID file0.
+   * Clean up PID file.
    */
   private async cleanupPidFile(): Promise<void> {
     try {
-      if (existsSync(this0.config0.pidFile)) {
-        await unlink(this0.config0.pidFile);
-        this0.logger0.debug('PID file cleaned up');
+      if (existsSync(this.config.pidFile)) {
+        await unlink(this.config.pidFile);
+        this.logger.debug('PID file cleaned up');
       }
     } catch (error) {
-      this0.logger0.error('Failed to cleanup PID file:', error);
+      this.logger.error('Failed to cleanup PID file:', error);
     }
   }
 
   /**
-   * Ensure required directories exist0.
+   * Ensure required directories exist.
    */
   private async ensureDirectories(): Promise<void> {
     const dirs = [
-      this0.config0.pidFile,
-      this0.config0.logFile,
-      this0.config0.errorFile,
-    ]0.map((file) => file0.substring(0, file0.lastIndexOf('/')));
+      this.config.pidFile,
+      this.config.logFile,
+      this.config.errorFile,
+    ].map((file) => file.substring(0, file.lastIndexOf('/')));
 
-    for (const dir of [0.0.0.new Set(dirs)]) {
+    for (const dir of [...new Set(dirs)]) {
       if (dir && !existsSync(dir)) {
         await mkdir(dir, { recursive: true });
       }
@@ -350,27 +350,27 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Handle process errors0.
+   * Handle process errors.
    *
    * @param error
    */
   private async handleProcessError(error: Error): Promise<void> {
     const errorLog = {
-      timestamp: new Date()?0.toISOString,
-      error: error0.message,
-      stack: error0.stack,
+      timestamp: new Date()?.toISOString,
+      error: error.message,
+      stack: error.stack,
     };
 
     try {
       await writeFile(
-        this0.config0.errorFile,
-        `${JSON0.stringify(errorLog, null, 2)}\n`,
+        this.config.errorFile,
+        `${JSON.stringify(errorLog, null, 2)}\n`,
         {
           flag: 'a',
         }
       );
     } catch (writeError) {
-      this0.logger0.error('Failed to write error log:', writeError);
+      this.logger.error('Failed to write error log:', writeError);
     }
   }
 }

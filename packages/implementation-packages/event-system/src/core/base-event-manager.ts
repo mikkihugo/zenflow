@@ -1,3 +1,4 @@
+import { EventEmitter } from "@claude-zen/foundation";
 /**
  * @fileoverview Base Event Manager Implementation
  *

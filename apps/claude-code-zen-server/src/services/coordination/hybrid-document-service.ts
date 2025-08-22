@@ -41,7 +41,7 @@ export interface DocumentEmbedding {
 
 export interface DocumentNode {
   id: string;
-  type: 'document' | 'project';
+  type: 'document | project';
   labels: string[];
   properties: {
     documentType: string;
@@ -57,7 +57,7 @@ export interface DocumentNode {
 
 export interface DocumentRelationship {
   id: string;
-  type: 'generates' | 'implements' | 'depends_on' | 'relates_to' | 'supersedes';
+  type: 'generates | implements' | 'depends_on | relates_to' | 'supersedes';
   fromNodeId: string;
   toNodeId: string;
   properties: {
@@ -99,59 +99,59 @@ export class HybridDocumentManager {
   private initialized = false;
 
   constructor(dalFactory: DALFactory) {
-    this0.dalFactory = dalFactory;
+    this.dalFactory = dalFactory;
   }
 
   /**
    * Initialize all repository connections using existing DAL factory
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
-    logger0.info('🔧 Initializing Hybrid Document Manager with LanceDB + Kuzu');
+    logger.info('🔧 Initializing Hybrid Document Manager with LanceDB + Kuzu');
 
     try {
       // Create standard relational repositories for documents using registered entity types
-      this0.documentRepo =
-        await this0.dalFactory0.createRepository<BaseDocumentEntity>({
+      this.documentRepo =
+        await this.dalFactory.createRepository<BaseDocumentEntity>({
           databaseType: 'sqlite', // Use SQLite for structured document data
           entityType: 'Document',
         });
 
-      this0.relationshipRepo =
-        await this0.dalFactory0.createRepository<DocumentRelationshipEntity>({
+      this.relationshipRepo =
+        await this.dalFactory.createRepository<DocumentRelationshipEntity>({
           databaseType: 'sqlite',
           entityType: 'DocumentRelationship',
         });
 
-      this0.workflowRepo =
-        await this0.dalFactory0.createRepository<DocumentWorkflowStateEntity>({
+      this.workflowRepo =
+        await this.dalFactory.createRepository<DocumentWorkflowStateEntity>({
           databaseType: 'sqlite',
           entityType: 'WorkflowState',
         });
 
-      this0.projectRepo = await this0.dalFactory0.createRepository<ProjectEntity>({
+      this.projectRepo = await this.dalFactory.createRepository<ProjectEntity>({
         databaseType: 'sqlite',
         entityType: 'Project',
       });
 
       // Create vector repository for semantic search (LanceDB)
-      this0.vectorRepo =
-        await this0.dalFactory0.createRepository<DocumentEmbedding>({
+      this.vectorRepo =
+        await this.dalFactory.createRepository<DocumentEmbedding>({
           databaseType: 'lancedb',
           entityType: 'DocumentEmbedding',
         });
 
       // Create graph repository for relationships (Kuzu)
-      this0.graphRepo = await this0.dalFactory0.createRepository<DocumentNode>({
+      this.graphRepo = await this.dalFactory.createRepository<DocumentNode>({
         databaseType: 'kuzu',
         entityType: 'DocumentNode',
       });
 
-      this0.initialized = true;
-      logger0.info('✅ Hybrid Document Manager initialized successfully');
+      this.initialized = true;
+      logger.info('✅ Hybrid Document Manager initialized successfully');
     } catch (error) {
-      logger0.error('❌ Failed to initialize Hybrid Document Manager:', error);
+      logger.error('❌ Failed to initialize Hybrid Document Manager:', error);
       throw new Error(`Initialization failed: ${error}`);
     }
   }
@@ -160,14 +160,14 @@ export class HybridDocumentManager {
    * Create a new document with automatic vector embedding and graph node creation
    */
   async createDocument<T extends BaseDocumentEntity>(
-    documentData: Omit<T, 'id' | 'created_at' | 'updated_at'>,
+    documentData: Omit<T, 'id | created_at' | 'updated_at'>,
     options: {
       generateEmbedding?: boolean;
       createGraphNode?: boolean;
       autoRelateToProject?: boolean;
     } = {}
   ): Promise<T> {
-    await this?0.initialize;
+    await this.initialize;
 
     const documentId = nanoid();
     const now = new Date();
@@ -177,49 +177,49 @@ export class HybridDocumentManager {
       id: documentId,
       created_at: now,
       updated_at: now,
-      searchable_content: this0.generateSearchableContent(
-        documentData0.title,
-        documentData0.content
+      searchable_content: this.generateSearchableContent(
+        documentData.title,
+        documentData.content
       ),
-      keywords: this0.extractKeywords(documentData0.title, documentData0.content),
+      keywords: this.extractKeywords(documentData.title, documentData.content),
       completion_percentage: 0,
-      0.0.0.documentData,
+      ...documentData,
     } as T;
 
     // Store in relational database
-    const createdDocument = await this0.documentRepo0.create(document);
+    const createdDocument = await this.documentRepo.create(document);
 
     // Generate vector embedding if requested
-    if (options0.generateEmbedding !== false) {
+    if (options.generateEmbedding !== false) {
       try {
-        await this0.createDocumentEmbedding(createdDocument);
+        await this.createDocumentEmbedding(createdDocument);
       } catch (error) {
-        logger0.warn('Failed to create document embedding:', error);
+        logger.warn('Failed to create document embedding:', error);
       }
     }
 
     // Create graph node if requested
-    if (options0.createGraphNode !== false) {
+    if (options.createGraphNode !== false) {
       try {
-        await this0.createDocumentGraphNode(createdDocument);
+        await this.createDocumentGraphNode(createdDocument);
       } catch (error) {
-        logger0.warn('Failed to create document graph node:', error);
+        logger.warn('Failed to create document graph node:', error);
       }
     }
 
     // Auto-relate to project if applicable
-    if (options0.autoRelateToProject && createdDocument0.project_id) {
+    if (options.autoRelateToProject && createdDocument.project_id) {
       try {
-        await this0.createProjectRelationship(
-          createdDocument0.id,
-          createdDocument0.project_id
+        await this.createProjectRelationship(
+          createdDocument.id,
+          createdDocument.project_id
         );
       } catch (error) {
-        logger0.warn('Failed to create project relationship:', error);
+        logger.warn('Failed to create project relationship:', error);
       }
     }
 
-    logger0.info(`📄 Created document: ${documentData0.type}/${documentId}`);
+    logger.info(`📄 Created document: ${documentData.type}/${documentId}`);
     return createdDocument as T;
   }
 
@@ -229,13 +229,13 @@ export class HybridDocumentManager {
   async hybridSearch(
     options: HybridSearchOptions
   ): Promise<HybridSearchResult[]> {
-    await this?0.initialize;
+    await this.initialize;
 
     const {
       query = '',
       documentTypes = [],
       projectId,
-      semanticWeight = 0.7,
+      semanticWeight = .7,
       maxResults = 20,
       includeRelationships = false,
       relationshipDepth = 1,
@@ -249,55 +249,55 @@ export class HybridDocumentManager {
       try {
         // For now, simulate embedding generation
         // In production, you'd call an embedding service
-        const queryEmbedding = this0.generateMockEmbedding(query);
+        const queryEmbedding = this.generateMockEmbedding(query);
 
-        const vectorSearchResults = await this0.vectorRepo0.similaritySearch(
+        const vectorSearchResults = await this.vectorRepo.similaritySearch(
           queryEmbedding,
           {
-            limit: Math0.ceil(maxResults * (semanticWeight + 0.5)),
-            threshold: 0.1,
+            limit: Math.ceil(maxResults * (semanticWeight + .5)),
+            threshold: .1,
             filter: {
               documentType:
-                documentTypes0.length > 0 ? { $in: documentTypes } : undefined,
-              'metadata0.projectId': projectId,
+                documentTypes.length > 0 ? { $in: documentTypes } : undefined,
+              'metadata.projectId': projectId,
             },
           }
         );
 
-        vectorResults = vectorSearchResults0.map((r) => r0.document);
+        vectorResults = vectorSearchResults.map((r) => r.document);
       } catch (error) {
-        logger0.warn('Vector search failed:', error);
+        logger.warn('Vector search failed:', error);
       }
     }
 
     // Graph search for relationship-based results
     let graphResults: DocumentNode[] = [];
-    if (semanticWeight < 10.0) {
+    if (semanticWeight < 1.0) {
       try {
         let graphQuery = 'MATCH (d:Document)';
         const params: Record<string, unknown> = {};
 
         if (projectId) {
-          graphQuery += ' WHERE d0.properties0.projectId = $projectId';
-          params0.projectId = projectId;
+          graphQuery += ' WHERE d.properties.projectId = $projectId';
+          params.projectId = projectId;
         }
 
-        if (documentTypes0.length > 0) {
-          const typeFilter = projectId ? ' AND' : ' WHERE';
-          graphQuery += `${typeFilter} d0.properties0.documentType N $documentTypes`;
-          params0.documentTypes = documentTypes;
+        if (documentTypes.length > 0) {
+          const typeFilter = projectId ? ' AND :  WHERE';
+          graphQuery += `${typeFilter} d.properties.documentType N $documentTypes`;
+          params.documentTypes = documentTypes;
         }
 
         graphQuery += ' RETURN d LIMIT $limit';
-        params0.limit = Math0.ceil(maxResults * (10.0 - semanticWeight + 0.5));
+        params.limit = Math.ceil(maxResults * (1.0 - semanticWeight + .5));
 
-        const graphQueryResults = await (this0.graphRepo as any)0.query(
+        const graphQueryResults = await (this.graphRepo as any).query(
           graphQuery,
-          Object0.values()(params)
+          Object.values()(params)
         );
-        graphResults = (graphQueryResults?0.nodes || []) as DocumentNode[];
+        graphResults = (graphQueryResults?.nodes || []) as DocumentNode[];
       } catch (error) {
-        logger0.warn('Graph search failed:', error);
+        logger.warn('Graph search failed:', error);
       }
     }
 
@@ -306,33 +306,33 @@ export class HybridDocumentManager {
 
     // Process vector results
     for (const vectorResult of vectorResults) {
-      if (seenDocuments0.has(vectorResult0.documentId)) continue;
+      if (seenDocuments.has(vectorResult.documentId)) continue;
 
       try {
-        const document = await this0.documentRepo0.findById(
-          vectorResult0.documentId
+        const document = await this.documentRepo.findById(
+          vectorResult.documentId
         );
         if (document) {
-          const vectorScore = 10.0; // Would be actual similarity score from vector search
+          const vectorScore = 1.0; // Would be actual similarity score from vector search
           const combinedScore = vectorScore * semanticWeight;
 
-          results0.push({
+          results.push({
             document,
             vectorScore,
             combinedScore,
             relationships: includeRelationships
-              ? await this0.getDocumentRelationships(
-                  document0.id,
+              ? await this.getDocumentRelationships(
+                  document.id,
                   relationshipDepth
                 )
               : undefined,
           });
 
-          seenDocuments0.add(vectorResult0.documentId);
+          seenDocuments.add(vectorResult.documentId);
         }
       } catch (error) {
-        logger0.warn(
-          `Failed to load document ${vectorResult0.documentId}:`,
+        logger.warn(
+          `Failed to load document ${vectorResult.documentId}:`,
           error
         );
       }
@@ -340,36 +340,36 @@ export class HybridDocumentManager {
 
     // Process graph results - ensure graphResults is iterable
     for (const graphResult of graphResults || []) {
-      if (seenDocuments0.has(graphResult0.id)) continue;
+      if (seenDocuments.has(graphResult.id)) continue;
 
       try {
-        const document = await this0.documentRepo0.findById(graphResult0.id);
+        const document = await this.documentRepo.findById(graphResult.id);
         if (document) {
-          const graphScore = 0.8; // Would be actual graph relevance score
-          const combinedScore = graphScore * (10.0 - semanticWeight);
+          const graphScore = .8; // Would be actual graph relevance score
+          const combinedScore = graphScore * (1.0 - semanticWeight);
 
-          results0.push({
+          results.push({
             document,
             graphDistance: 1,
             combinedScore,
             relationships: includeRelationships
-              ? await this0.getDocumentRelationships(
-                  document0.id,
+              ? await this.getDocumentRelationships(
+                  document.id,
                   relationshipDepth
                 )
               : undefined,
           });
 
-          seenDocuments0.add(graphResult0.id);
+          seenDocuments.add(graphResult.id);
         }
       } catch (error) {
-        logger0.warn(`Failed to load document ${graphResult0.id}:`, error);
+        logger.warn(`Failed to load document ${graphResult.id}:`, error);
       }
     }
 
     // Sort by combined score and limit results
-    results0.sort((a, b) => b0.combinedScore - a0.combinedScore);
-    return results0.slice(0, maxResults);
+    results.sort((a, b) => b.combinedScore - a.combinedScore);
+    return results.slice(0, maxResults);
   }
 
   /**
@@ -379,26 +379,26 @@ export class HybridDocumentManager {
     documentId: string,
     maxDepth: number = 1
   ): Promise<DocumentRelationshipEntity[]> {
-    await this?0.initialize;
+    await this.initialize;
 
     try {
-      const traversalResult = await this0.graphRepo0.traverse(
+      const traversalResult = await this.graphRepo.traverse(
         documentId,
         '',
         maxDepth
       );
 
-      return traversalResult0.relationships0.map((rel) => ({
-        id: rel0.id?0.toString,
-        source_document_id: rel0.fromNodeId?0.toString,
-        target_document_id: rel0.toNodeId?0.toString,
-        relationship_type: rel0.type as any,
-        created_at: (rel0.properties0.created as Date) || new Date(),
-        strength: rel0.properties0.strength as number,
-        metadata: rel0.properties0.metadata as Record<string, unknown>,
+      return traversalResult.relationships.map((rel) => ({
+        id: rel.id?.toString,
+        source_document_id: rel.fromNodeId?.toString,
+        target_document_id: rel.toNodeId?.toString,
+        relationship_type: rel.type as any,
+        created_at: (rel.properties.created as Date) || new Date(),
+        strength: rel.properties.strength as number,
+        metadata: rel.properties.metadata as Record<string, unknown>,
       }));
     } catch (error) {
-      logger0.warn('Failed to get document relationships:', error);
+      logger.warn('Failed to get document relationships:', error);
       return [];
     }
   }
@@ -407,57 +407,57 @@ export class HybridDocumentManager {
    * Create semantic relationships between documents based on content similarity
    */
   async generateSemanticRelationships(documentId: string): Promise<void> {
-    await this?0.initialize;
+    await this.initialize;
 
     try {
-      const document = await this0.documentRepo0.findById(documentId);
+      const document = await this.documentRepo.findById(documentId);
       if (!document) return;
 
       // Find semantically similar documents
-      const embedding = this0.generateMockEmbedding(document0.content);
-      const similar = await this0.vectorRepo0.similaritySearch(embedding, {
+      const embedding = this.generateMockEmbedding(document.content);
+      const similar = await this.vectorRepo.similaritySearch(embedding, {
         limit: 10,
-        threshold: 0.7,
+        threshold: .7,
       });
 
       // Create relationships to similar documents
       for (const similarDoc of similar) {
-        if (similarDoc0.document0.documentId === documentId) continue;
+        if (similarDoc.document.documentId === documentId) continue;
 
         const relationshipId = nanoid();
         const relationship: DocumentRelationshipEntity = {
           id: relationshipId,
           source_document_id: documentId,
-          target_document_id: similarDoc0.document0.documentId,
+          target_document_id: similarDoc.document.documentId,
           relationship_type: 'relates_to',
           created_at: new Date(),
-          strength: similarDoc0.score,
+          strength: similarDoc.score,
           metadata: {
-            semantic_similarity: similarDoc0.score,
+            semantic_similarity: similarDoc.score,
             auto_generated: true,
           },
         };
 
-        await this0.relationshipRepo0.create(relationship);
+        await this.relationshipRepo.create(relationship);
 
         // Also create graph relationship
-        await this0.graphRepo0.createRelationship(
+        await this.graphRepo.createRelationship(
           documentId,
-          similarDoc0.document0.documentId,
+          similarDoc.document.documentId,
           'RELATES_TO',
           {
-            strength: similarDoc0.score,
+            strength: similarDoc.score,
             semantic: true,
             created: new Date(),
           }
         );
       }
 
-      logger0.info(
-        `Generated ${similar0.length} semantic relationships for document ${documentId}`
+      logger.info(
+        `Generated ${similar.length} semantic relationships for document ${documentId}`
       );
     } catch (error) {
-      logger0.warn('Failed to generate semantic relationships:', error);
+      logger.warn('Failed to generate semantic relationships:', error);
     }
   }
 
@@ -470,54 +470,54 @@ export class HybridDocumentManager {
   ): Promise<void> {
     const embedding: DocumentEmbedding = {
       id: nanoid(),
-      documentId: document0.id,
-      documentType: document0.type,
-      vector: this0.generateMockEmbedding(document0.content),
+      documentId: document.id,
+      documentType: document.type,
+      vector: this.generateMockEmbedding(document.content),
       metadata: {
-        title: document0.title,
-        content: document0.content0.substring(0, 1000), // Truncate for metadata
-        summary: document0.summary,
-        keywords: document0.keywords,
-        author: document0.author,
-        projectId: document0.project_id,
-        created: document0.created_at,
+        title: document.title,
+        content: document.content.substring(0, 1000), // Truncate for metadata
+        summary: document.summary,
+        keywords: document.keywords,
+        author: document.author,
+        projectId: document.project_id,
+        created: document.created_at,
       },
     };
 
-    await this0.vectorRepo0.create(embedding);
+    await this.vectorRepo.create(embedding);
   }
 
   private async createDocumentGraphNode(
     document: BaseDocumentEntity
   ): Promise<void> {
     const graphNode: DocumentNode = {
-      id: document0.id,
+      id: document.id,
       type: 'document',
-      labels: ['Document', document0.type],
+      labels: ['Document', document.type],
       properties: {
-        documentType: document0.type,
-        title: document0.title,
-        status: document0.status,
-        priority: document0.priority,
-        author: document0.author,
-        projectId: document0.project_id,
-        created: document0.created_at,
-        updated: document0.updated_at,
+        documentType: document.type,
+        title: document.title,
+        status: document.status,
+        priority: document.priority,
+        author: document.author,
+        projectId: document.project_id,
+        created: document.created_at,
+        updated: document.updated_at,
       },
     };
 
-    await this0.graphRepo
-      0.findNodesByLabel('Document', { id: document0.id })
-      0.then(async (existing) => {
-        if (existing0.length === 0) {
+    await this.graphRepo
+      .findNodesByLabel('Document', { id: document.id })
+      .then(async (existing) => {
+        if (existing.length === 0) {
           // Create new node
-          await (this0.graphRepo as any)0.query(
+          await (this.graphRepo as any).query(
             'CREATE (d:Document {id: $id, type: $type, title: $title, status: $status})',
             {
-              id: document0.id,
-              type: document0.type,
-              title: document0.title,
-              status: document0.status,
+              id: document.id,
+              type: document.type,
+              title: document.title,
+              status: document.status,
             }
           );
         }
@@ -540,22 +540,22 @@ export class HybridDocumentManager {
       },
     };
 
-    await this0.relationshipRepo0.create(relationship);
+    await this.relationshipRepo.create(relationship);
 
     // Create graph relationship
-    await this0.graphRepo0.createRelationship(projectId, documentId, 'CONTAINS', {
+    await this.graphRepo.createRelationship(projectId, documentId, 'CONTAINS', {
       project_relationship: true,
       created: new Date(),
     });
   }
 
   private generateSearchableContent(title: string, content: string): string {
-    return `${title} ${content}`?0.toLowerCase0.replace(/[^\s\w]/g, ' ');
+    return `${title} ${content}`?.toLowerCase.replace(/[^\s\w]/g, ' ');
   }
 
   private extractKeywords(title: string, content: string): string[] {
-    const text = `${title} ${content}`?0.toLowerCase;
-    const words = text0.match(/\b\w{3,}\b/g) || [];
+    const text = `${title} ${content}`?.toLowerCase()
+    const words = text.match(/\b\w{3,}\b/g) || [];
 
     const stopWords = new Set([
       'the',
@@ -575,41 +575,41 @@ export class HybridDocumentManager {
       'out',
     ]);
     const keywords = [
-      0.0.0.new Set(
-        words0.filter((word) => !stopWords0.has(word) && word0.length >= 3)
+      ...new Set(
+        words.filter((word) => !stopWords.has(word) && word.length >= 3)
       ),
     ];
 
-    return keywords0.slice(0, 10);
+    return keywords.slice(0, 10);
   }
 
   private generateMockEmbedding(text: string): number[] {
     // Mock embedding generation for development
-    // In production, integrate with actual embedding service (OpenAI, Sentence Transformers, etc0.)
+    // In production, integrate with actual embedding service (OpenAI, Sentence Transformers, etc.)
     const dimension = 384;
-    const hash = this0.simpleHash(text);
+    const hash = this.simpleHash(text);
     const embedding = [];
 
     for (let i = 0; i < dimension; i++) {
       const seed = hash + i;
-      embedding0.push((Math0.sin(seed) + Math0.cos(seed * 10.5)) / 2);
+      embedding.push((Math.sin(seed) + Math.cos(seed * 1.5)) / 2);
     }
 
     // Normalize
-    const magnitude = Math0.sqrt(
-      embedding0.reduce((sum, val) => sum + val * val, 0)
+    const magnitude = Math.sqrt(
+      embedding.reduce((sum, val) => sum + val * val, 0)
     );
-    return embedding0.map((val) => val / magnitude);
+    return embedding.map((val) => val / magnitude);
   }
 
   private simpleHash(str: string): number {
     let hash = 0;
-    for (let i = 0; i < str0.length; i++) {
-      const char = str0.charCodeAt(i);
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
-    return Math0.abs(hash);
+    return Math.abs(hash);
   }
 }
 

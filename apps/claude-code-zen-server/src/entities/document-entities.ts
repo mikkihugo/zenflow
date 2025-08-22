@@ -1,18 +1,18 @@
 /**
- * Database Entities for Document-Driven System0.
+ * Database Entities for Document-Driven System.
  *
  * PURE DATABASE-DRIVEN ARCHITECTURE
- * Replaces file-based document system with database entities0.
- * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage0.
+ * Replaces file-based document system with database entities.
+ * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage.
  */
 /**
- * @file Database layer: document-entities0.
+ * @file Database layer: document-entities.
  */
 
 import type { DocumentType } from '@claude-zen/enterprise';
 
 /**
- * Base document entity - all documents inherit from this0.
+ * Base document entity - all documents inherit from this.
  *
  * @example
  */
@@ -22,8 +22,8 @@ export interface BaseDocumentEntity {
   title: string;
   content: string;
   summary?: string; // Add summary property
-  status: 'draft' | 'review' | 'approved' | 'archived' | 'in_progress' | 'todo';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'draft | review' | 'approved | archived' | 'in_progress | todo';
+  priority: 'low | medium' | 'high | critical';
   author?: string;
   tags: string[];
 
@@ -51,8 +51,8 @@ export interface BaseDocumentEntity {
 }
 
 /**
- * Vision Document Entity0.
- * Strategic vision and high-level goals0.
+ * Vision Document Entity.
+ * Strategic vision and high-level goals.
  *
  * @example
  */
@@ -79,8 +79,8 @@ export interface any extends BaseDocumentEntity {
 }
 
 /**
- * Architecture Runway Entity0.
- * SAFe Architecture Runway Items - technical decisions and architectural enablers0.
+ * Architecture Runway Entity.
+ * SAFe Architecture Runway Items - technical decisions and architectural enablers.
  *
  * @example
  */
@@ -89,11 +89,11 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
 
   // Architecture Runway specific fields
   runway_number: number;
-  runway_id: string; // AR-001, AR-002, etc0.
+  runway_id: string; // AR-001, AR-002, etc.
   context: string;
   decision: string;
   consequences: string[];
-  decision_status: 'proposed' | 'accepted' | 'deprecated' | 'superseded';
+  decision_status: 'proposed | accepted' | 'deprecated | superseded';
   alternatives_considered: Array<{
     name: string;
     pros: string[];
@@ -101,7 +101,7 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
     rejected_reason: string;
   }>;
   stakeholders: string[];
-  architecture_impact: 'foundation' | 'system' | 'solution' | 'enterprise';
+  architecture_impact: 'foundation | system' | 'solution | enterprise';
   implementation_timeline: {
     start_date?: Date;
     target_date?: Date;
@@ -116,8 +116,8 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Business Epic Entity0.
- * SAFe Business Epic - high-level business initiatives that drive value0.
+ * Business Epic Entity.
+ * SAFe Business Epic - high-level business initiatives that drive value.
  *
  * @example
  */
@@ -141,7 +141,7 @@ export interface Businessany extends BaseDocumentEntity {
   definition_of_done: string[];
 
   // SAFe mode additions
-  epic_type: 'business' | 'enabler';
+  epic_type: 'business | enabler';
   epic_owner: string;
   portfolio_canvas: {
     leading_indicators: string[];
@@ -165,8 +165,8 @@ export interface Businessany extends BaseDocumentEntity {
 }
 
 /**
- * Program Epic Document Entity0.
- * SAFe Program Epic - portfolio epics broken down for ART execution0.
+ * Program Epic Document Entity.
+ * SAFe Program Epic - portfolio epics broken down for ART execution.
  *
  * @example
  */
@@ -196,7 +196,7 @@ export interface Programany extends BaseDocumentEntity {
   effort_estimation: {
     story_points?: number;
     time_estimate_weeks?: number;
-    complexity: 'low' | 'medium' | 'high' | 'very_high';
+    complexity: 'low | medium' | 'high | very_high';
   };
 
   timeline: {
@@ -214,8 +214,8 @@ export interface Programany extends BaseDocumentEntity {
 }
 
 /**
- * Feature Document Entity0.
- * Individual implementable features with SPARC methodology integration0.
+ * Feature Document Entity.
+ * Individual implementable features with SPARC methodology integration.
  *
  * @example
  */
@@ -223,7 +223,7 @@ export interface any extends BaseDocumentEntity {
   type: 'feature';
 
   // Feature-specific fields
-  feature_type: 'ui' | 'api' | 'database' | 'integration' | 'infrastructure';
+  feature_type: 'ui | api' | 'database | integration' | 'infrastructure';
   acceptance_criteria: string[];
   technical_approach: string;
 
@@ -261,31 +261,31 @@ export interface any extends BaseDocumentEntity {
     sparc_project_id?: string;
     sparc_phases: {
       specification: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[];
         completion_date?: Date;
         quality_score?: number;
       };
       pseudocode: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[];
         completion_date?: Date;
         algorithms: string[]; // Algorithm names/Ds
       };
       architecture: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[];
         completion_date?: Date;
         components: string[]; // Component names/Ds
       };
       refinement: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[];
         completion_date?: Date;
         optimizations: string[]; // Optimization strategy Ds
       };
       completion: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[];
         completion_date?: Date;
         artifacts: string[]; // Generated code/test artifact Ds
@@ -303,8 +303,8 @@ export interface any extends BaseDocumentEntity {
 }
 
 /**
- * Story Document Entity0.
- * SAFe User Stories - small, implementable pieces of functionality0.
+ * Story Document Entity.
+ * SAFe User Stories - small, implementable pieces of functionality.
  *
  * @example
  */
@@ -313,7 +313,7 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
 
   // Story specific fields
   parent_feature_id: string;
-  story_type: 'user_story' | 'enabler_story';
+  story_type: 'user_story | enabler_story';
   acceptance_criteria: string[];
   story_points?: number;
 
@@ -332,7 +332,7 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
   acceptance_criteria_detailed: Array<{
     id: string;
     description: string;
-    status: 'pending' | 'in_progress' | 'done' | 'failed';
+    status: 'pending | in_progress' | 'done | failed';
     test_scenarios: string[];
   }>;
   definition_of_done: string[];
@@ -340,8 +340,8 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Task Document Entity0.
- * Granular implementation tasks with SPARC methodology integration0.
+ * Task Document Entity.
+ * Granular implementation tasks with SPARC methodology integration.
  *
  * @example
  */
@@ -386,7 +386,7 @@ export interface any extends BaseDocumentEntity {
     test_files: Array<{
       path: string;
       content: string;
-      test_type: 'unit' | 'integration' | 'e2e';
+      test_type: 'unit | integration' | 'e2e';
     }>;
   };
 
@@ -414,8 +414,8 @@ export interface any extends BaseDocumentEntity {
       | 'production_code';
     sparc_quality_gates: {
       requirement: string;
-      status: 'pending' | 'passed' | 'failed';
-      validation_method: 'automated' | 'manual' | 'ai_assisted';
+      status: 'pending | passed' | 'failed';
+      validation_method: 'automated | manual' | 'ai_assisted';
       validation_date?: Date;
     }[];
     sparc_artifacts: {
@@ -434,14 +434,14 @@ export interface any extends BaseDocumentEntity {
       time_complexity: string;
       space_complexity: string;
       maintainability_score: number;
-      performance_impact: 'low' | 'medium' | 'high';
+      performance_impact: 'low | medium' | 'high';
     };
   };
 }
 
 /**
- * Document Relationships Entity0.
- * Tracks relationships between documents0.
+ * Document Relationships Entity.
+ * Tracks relationships between documents.
  *
  * @example
  */
@@ -461,8 +461,8 @@ export interface DocumentRelationshipEntity {
 }
 
 /**
- * Document Workflow State Entity0.
- * Tracks document workflow progression0.
+ * Document Workflow State Entity.
+ * Tracks document workflow progression.
  *
  * @example
  */
@@ -491,8 +491,8 @@ export interface DocumentWorkflowStateEntity {
 }
 
 /**
- * Project Entity0.
- * Groups related documents into projects with comprehensive SPARC integration0.
+ * Project Entity.
+ * Groups related documents into projects with comprehensive SPARC integration.
  *
  * @example
  */
@@ -501,7 +501,7 @@ export interface ProjectEntity {
   name: string;
   description: string;
   domain: string;
-  complexity: 'simple' | 'moderate' | 'complex' | 'enterprise';
+  complexity: 'simple | moderate' | 'complex | enterprise';
 
   // Timeline
   created_at: Date;
@@ -545,7 +545,7 @@ export interface ProjectEntity {
         | 'memory-systems'
         | 'interfaces'
         | 'general';
-      complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
+      complexity: 'simple | moderate' | 'high | complex' | 'enterprise';
       current_phase:
         | 'specification'
         | 'pseudocode'
@@ -569,7 +569,7 @@ export interface ProjectEntity {
 
     // Integration health and metrics
     integration_health: {
-      document_sparc_sync_status: 'synced' | 'out_of_sync' | 'error';
+      document_sparc_sync_status: 'synced | out_of_sync' | 'error';
       last_sync_date?: Date;
       sync_errors: string[];
       sparc_coverage_percentage: number; // % of features using SPARC
@@ -583,8 +583,8 @@ export interface ProjectEntity {
 }
 
 /**
- * Document Search Index Entity0.
- * Optimized search and discovery0.
+ * Document Search Index Entity.
+ * Optimized search and discovery.
  *
  * @example
  */
@@ -622,8 +622,8 @@ export interface DocumentSearchIndexEntity {
 }
 
 /**
- * Database Schema Export0.
- * Defines table structures for database creation0.
+ * Database Schema Export.
+ * Defines table structures for database creation.
  */
 export const DATABASE_SCHEMAS = {
   documents: `
@@ -640,7 +640,7 @@ export const DATABASE_SCHEMAS = {
       parent_document_id TEXT,
       dependencies TEXT, -- JSON array
       related_documents TEXT, -- JSON array
-      version TEXT DEFAULT '10.0.0',
+      version TEXT DEFAULT '1..0',
       checksum TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -770,14 +770,14 @@ export const DATABASE_SCHEMAS = {
       parent_documents TEXT, -- JSON array
       child_documents TEXT, -- JSON array
       related_documents TEXT, -- JSON array
-      search_rank REAL DEFAULT 0.0,
+      search_rank REAL DEFAULT .0,
       last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
       access_count NTEGER DEFAULT 0,
       
       -- SPARC NTEGRATION SEARCH FIELDS
       sparc_project_ids TEXT, -- JSON array of associated SPARC project Ds
       sparc_phase TEXT, -- Current SPARC phase if document uses SPARC
-      sparc_progress REAL DEFAULT 0.0, -- SPARC completion percentage
+      sparc_progress REAL DEFAULT .0, -- SPARC completion percentage
       uses_sparc_methodology BOOLEAN DEFAULT FALSE,
       
       FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
@@ -807,10 +807,10 @@ export const DATABASE_SCHEMAS = {
       sparc_domain TEXT NOT NULL,
       sparc_complexity TEXT NOT NULL,
       current_sparc_phase TEXT NOT NULL,
-      sparc_progress_percentage REAL DEFAULT 0.0,
+      sparc_progress_percentage REAL DEFAULT .0,
       
       -- Integration workflow state
-      sync_status TEXT DEFAULT 'synced', -- 'synced' | 'out_of_sync' | 'error'
+      sync_status TEXT DEFAULT 'synced, -- synced' | 'out_of_sync | error'
       last_sync_date DATETIME DEFAULT CURRENT_TIMESTAMP,
       sync_errors TEXT, -- JSON array
       
@@ -841,43 +841,43 @@ export const DATABASE_SCHEMAS = {
 } as const;
 
 /**
- * Type guards for document entities0.
+ * Type guards for document entities.
  *
  * @param doc
  * @example
  */
 export function isVisionDocument(doc: BaseDocumentEntity): doc is any {
-  return doc0.type === 'vision';
+  return doc.type === 'vision';
 }
 
 export function isArchitectureRunwayDocument(
   doc: BaseDocumentEntity
 ): doc is ArchitectureRunwayDocumentEntity {
-  return doc0.type === 'architecture_runway';
+  return doc.type === 'architecture_runway';
 }
 
 export function isBusinessEpicDocument(
   doc: BaseDocumentEntity
 ): doc is Businessany {
-  return doc0.type === 'business_epic';
+  return doc.type === 'business_epic';
 }
 
 export function isProgramEpicDocument(
   doc: BaseDocumentEntity
 ): doc is Programany {
-  return doc0.type === 'program_epic';
+  return doc.type === 'program_epic';
 }
 
 export function isStoryDocument(
   doc: BaseDocumentEntity
 ): doc is StoryDocumentEntity {
-  return doc0.type === 'story';
+  return doc.type === 'story';
 }
 
 export function isFeatureDocument(doc: BaseDocumentEntity): doc is any {
-  return doc0.type === 'feature';
+  return doc.type === 'feature';
 }
 
 export function isTaskDocument(doc: BaseDocumentEntity): doc is any {
-  return doc0.type === 'task';
+  return doc.type === 'task';
 }

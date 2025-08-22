@@ -2,8 +2,8 @@
  * @fileoverview LLM Integration Service - Foundation + Brain Package Integration
  *
  * This service provides a unified interface for LLM operations using the
- * @claude-zen/foundation and @claude-zen/intelligence packages0. Features AI-powered
- * prompt optimization, pattern recognition, and adaptive learning0.
+ * @claude-zen/foundation and @claude-zen/intelligence packages. Features AI-powered
+ * prompt optimization, pattern recognition, and adaptive learning.
  *
  * Key Features:
  * - Foundation package LLMProvider integration
@@ -15,19 +15,19 @@
  * - Session management and continuity
  *
  * @author Claude Code Zen Team
- * @version 40.0.0 - Brain Package Integration
+ * @version 4"..0' - Brain Package Integration
  * @since 2024-01-01
  *
  * @example Simple AI-Optimized Analysis
  * ```typescript
  * const llmService = new LLMIntegrationService({
- *   projectPath: process?0.cwd,
+ *   projectPath: process?.cwd,
  *   agentRole: 'coder'
  * });
  *
- * const result = await llmService0.analyze({
+ * const result = await llmService.analyze({
  *   task: 'typescript-error-analysis',
- *   context: { files: ['src/neural/gnn'], errors: [0.0.0.] },
+ *   context: { files: ['src/neural/gnn'], errors: [...] },
  *   requiresFileOperations: true
  * });
  * // Prompts are automatically optimized using Brain package
@@ -60,7 +60,7 @@ const getGlobalLLM = () => null;
 const execAsync = promisify(spawn);
 
 /**
- * Configuration options for LLM Integration Service using Foundation Package0.
+ * Configuration options for LLM Integration Service using Foundation Package.
  */
 export interface LLMIntegrationConfig {
   /** Project root path for file operations */
@@ -85,7 +85,7 @@ export interface LLMIntegrationConfig {
 }
 
 /**
- * Analysis request configuration for foundation LLM integration0.
+ * Analysis request configuration for foundation LLM integration.
  */
 export interface AnalysisRequest {
   /** Type of analysis task */
@@ -105,7 +105,7 @@ export interface AnalysisRequest {
     swarmContext?: {
       swarmId?: string;
       agentId?: string;
-      coordinationLevel?: 'high' | 'medium' | 'low';
+      coordinationLevel?: 'high | medium' | 'low';
     };
   };
   /** Custom prompt text */
@@ -117,7 +117,7 @@ export interface AnalysisRequest {
 }
 
 /**
- * Analysis result structure for foundation LLM integration0.
+ * Analysis result structure for foundation LLM integration.
  */
 export interface AnalysisResult {
   /** Whether analysis was successful */
@@ -150,11 +150,11 @@ export interface AnalysisResult {
 }
 
 /**
- * LLM Integration Service using Foundation Package0.
+ * LLM Integration Service using Foundation Package.
  *
  * This service provides a standardized interface for LLM operations using the
- * @claude-zen/foundation package0. All LLM operations are handled through the
- * foundation LLMProvider with DI container integration0.
+ * @claude-zen/foundation package. All LLM operations are handled through the
+ * foundation LLMProvider with DI container integration.
  *
  * @class LLMIntegrationService
  */
@@ -169,7 +169,7 @@ export class LLMIntegrationService {
   private brainCoordinator: BrainCoordinator;
 
   /**
-   * Creates a new LLM Integration Service using Foundation Package0.
+   * Creates a new LLM Integration Service using Foundation Package.
    *
    * @constructor
    * @param {LLMIntegrationConfig} config - Service configuration
@@ -184,43 +184,43 @@ export class LLMIntegrationService {
    * ```
    */
   constructor(config: LLMIntegrationConfig) {
-    this0.config = {
+    this.config = {
       debug: false,
-      temperature: 0.1,
+      temperature: .1,
       maxTokens: 200000,
       agentRole: 'assistant',
-      0.0.0.config,
+      ...config,
     };
 
-    this0.sessionId = config0.sessionId || uuidv4();
+    this.sessionId = config.sessionId || uuidv4();
 
     // Initialize foundation services
-    this0.diContainer = getGlobalContainer();
-    this0.logger = getLogger('coordination-services-llm-integration');
-    this0.llmProvider = getGlobalLLM();
+    this.diContainer = getGlobalContainer();
+    this.logger = getLogger('coordination-services-llm-integration');
+    this.llmProvider = getGlobalLLM();
 
     // Set the agent role for specialized behavior
-    if (this0.config0.agentRole) {
-      this0.llmProvider0.setRole(this0.config0.agentRole);
+    if (this.config.agentRole) {
+      this.llmProvider.setRole(this.config.agentRole);
     }
 
     // Initialize Brain Coordinator - Simple AI interface
-    this0.brainCoordinator = new BrainCoordinator({
-      sessionId: this0.sessionId,
+    this.brainCoordinator = new BrainCoordinator({
+      sessionId: this.sessionId,
       enableLearning: true,
       cacheOptimizations: true,
     });
 
-    this0.logger0.info(
+    this.logger.info(
       '🚀 LLM Integration Service initialized with Foundation + Brain packages'
     );
-    this0.logger0.info(
-      `Configuration: Agent Role: ${this0.config0.agentRole}, Session: ${this0.sessionId}`
+    this.logger.info(
+      `Configuration: Agent Role: ${this.config.agentRole}, Session: ${this.sessionId}`
     );
   }
 
   /**
-   * Main analysis method using Foundation LLMProvider with Dynamic Prompt Optimization0.
+   * Main analysis method using Foundation LLMProvider with Dynamic Prompt Optimization.
    *
    * @async
    * @method analyze
@@ -228,15 +228,15 @@ export class LLMIntegrationService {
    * @returns {Promise<AnalysisResult>} Analysis results
    */
   async analyze(request: AnalysisRequest): Promise<AnalysisResult> {
-    const startTime = Date0.now();
+    const startTime = Date.now();
 
     try {
-      this0.logger0.info(`Starting analysis: ${request0.task}`);
+      this.logger.info(`Starting analysis: ${request.task}`);
 
       // Build AI-optimized prompts using Brain Coordinator
-      const optimizedSystemPrompt = await this0.optimizeSystemPrompt(request);
+      const optimizedSystemPrompt = await this.optimizeSystemPrompt(request);
       const optimizedUserPrompt =
-        request0.prompt || (await this0.optimizeUserPrompt(request));
+        request.prompt || (await this.optimizeUserPrompt(request));
 
       // Build the LLM request with optimized prompts
       const llmRequest: LLMRequest = {
@@ -250,21 +250,21 @@ export class LLMIntegrationService {
             content: optimizedUserPrompt,
           },
         ],
-        temperature: this0.config0.temperature,
-        maxTokens: this0.config0.maxTokens,
+        temperature: this.config.temperature,
+        maxTokens: this.config.maxTokens,
       };
 
       // Call foundation LLM provider
-      const response = await this0.llmProvider0.analyze(llmRequest);
+      const response = await this.llmProvider.analyze(llmRequest);
 
       // Parse the response
       let parsedData: any;
       try {
-        parsedData = JSON0.parse(response0.content);
+        parsedData = JSON.parse(response.content);
       } catch {
         // If not JSON, return as structured object
         parsedData = {
-          analysis: response0.content,
+          analysis: response.content,
           note: 'Response was returned as text, not JSON',
         };
       }
@@ -272,42 +272,42 @@ export class LLMIntegrationService {
       const result: AnalysisResult = {
         success: true,
         data: parsedData,
-        executionTime: Date0.now() - startTime,
-        outputFile: request0.outputPath,
-        agentRole: this0.config0.agentRole,
-        tokenUsage: response0.usage,
+        executionTime: Date.now() - startTime,
+        outputFile: request.outputPath,
+        agentRole: this.config.agentRole,
+        tokenUsage: response.usage,
         metadata: {
-          sessionId: this0.sessionId,
-          timestamp: new Date()?0.toISOString,
-          model: response0.model,
+          sessionId: this.sessionId,
+          timestamp: new Date()?.toISOString,
+          model: response.model,
         },
       };
 
-      this0.logger0.info(
-        `Analysis completed successfully in ${result0.executionTime}ms`
+      this.logger.info(
+        `Analysis completed successfully in ${result.executionTime}ms`
       );
       return result;
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error0.message : 'Unknown error';
-      this0.logger0.error(`Analysis failed: ${errorMessage}`);
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Analysis failed: ${errorMessage}`);
 
       return {
         success: false,
         data: null,
-        executionTime: Date0.now() - startTime,
+        executionTime: Date.now() - startTime,
         error: errorMessage,
-        agentRole: this0.config0.agentRole,
+        agentRole: this.config.agentRole,
         metadata: {
-          sessionId: this0.sessionId,
-          timestamp: new Date()?0.toISOString,
+          sessionId: this.sessionId,
+          timestamp: new Date()?.toISOString,
         },
       };
     }
   }
 
   /**
-   * Optimizes system prompts using the Brain Coordinator0.
+   * Optimizes system prompts using the Brain Coordinator.
    *
    * @private
    * @param {AnalysisRequest} request - Analysis request
@@ -317,38 +317,38 @@ export class LLMIntegrationService {
     request: AnalysisRequest
   ): Promise<string> {
     try {
-      const basePrompt = this0.buildSystemPrompt(request);
+      const basePrompt = this.buildSystemPrompt(request);
 
       const optimizationRequest: PromptOptimizationRequest = {
-        task: `system-${request0.task}`,
+        task: `system-${request.task}`,
         basePrompt,
         context: {
-          agentRole: this0.config0.agentRole,
-          sessionId: this0.sessionId,
-          hasFileOperations: request0.requiresFileOperations,
+          agentRole: this.config.agentRole,
+          sessionId: this.sessionId,
+          hasFileOperations: request.requiresFileOperations,
         },
-        agentRole: this0.config0.agentRole,
+        agentRole: this.config.agentRole,
         priority: 'medium',
       };
 
       const result =
-        await this0.brainCoordinator0.optimizePrompt(optimizationRequest);
+        await this.brainCoordinator.optimizePrompt(optimizationRequest);
 
-      this0.logger0.info(
-        `🧠 Brain-optimized system prompt for ${request0.task} (${result0.method})`
+      this.logger.info(
+        `🧠 Brain-optimized system prompt for ${request.task} (${result.method})`
       );
-      return result0.optimizedPrompt;
+      return result.optimizedPrompt;
     } catch (error) {
-      this0.logger0.warn(
+      this.logger.warn(
         'Brain optimization failed, using static system prompt:',
         error
       );
-      return this0.buildSystemPrompt(request);
+      return this.buildSystemPrompt(request);
     }
   }
 
   /**
-   * Optimizes user prompts using the Brain Coordinator0.
+   * Optimizes user prompts using the Brain Coordinator.
    *
    * @private
    * @param {AnalysisRequest} request - Analysis request
@@ -356,39 +356,39 @@ export class LLMIntegrationService {
    */
   private async optimizeUserPrompt(request: AnalysisRequest): Promise<string> {
     try {
-      const basePrompt = this0.buildPrompt(request);
+      const basePrompt = this.buildPrompt(request);
 
       const optimizationRequest: PromptOptimizationRequest = {
-        task: `user-${request0.task}`,
+        task: `user-${request.task}`,
         basePrompt,
         context: {
-          agentRole: this0.config0.agentRole,
-          taskData: request0.context,
-          requiresFileOperations: request0.requiresFileOperations,
-          sessionId: this0.sessionId,
+          agentRole: this.config.agentRole,
+          taskData: request.context,
+          requiresFileOperations: request.requiresFileOperations,
+          sessionId: this.sessionId,
         },
-        agentRole: this0.config0.agentRole,
+        agentRole: this.config.agentRole,
         priority: 'medium',
       };
 
       const result =
-        await this0.brainCoordinator0.optimizePrompt(optimizationRequest);
+        await this.brainCoordinator.optimizePrompt(optimizationRequest);
 
-      this0.logger0.info(
-        `🧠 Brain-optimized user prompt for ${request0.task} (${result0.method})`
+      this.logger.info(
+        `🧠 Brain-optimized user prompt for ${request.task} (${result.method})`
       );
-      return result0.optimizedPrompt;
+      return result.optimizedPrompt;
     } catch (error) {
-      this0.logger0.warn(
+      this.logger.warn(
         'Brain optimization failed, using static user prompt:',
         error
       );
-      return this0.buildPrompt(request);
+      return this.buildPrompt(request);
     }
   }
 
   /**
-   * Builds static system prompts for the LLM based on the analysis request0.
+   * Builds static system prompts for the LLM based on the analysis request.
    *
    * @private
    * @param {AnalysisRequest} request - Analysis request
@@ -401,52 +401,52 @@ export class LLMIntegrationService {
 - Domain-driven design and software architecture
 - Code quality and performance optimization
 
-Context: You're analyzing a GNN-Kuzu integration system that combines neural networks with graph databases for intelligent code analysis0.
+Context: You're analyzing a GNN-Kuzu integration system that combines neural networks with graph databases for intelligent code analysis.
 
-IMPORTANT: Always respond in valid JSON format unless explicitly requested otherwise0. Structure your responses as:
+IMPORTANT: Always respond in valid JSON format unless explicitly requested otherwise. Structure your responses as:
 {
-  "analysis": "your main analysis here",
-  "recommendations": ["recommendation 1", "recommendation 2"],
-  "codeExamples": [{"description": "what this does", "code": "actual code"}],
-  "summary": "brief summary of findings"
+  "analysis: your main analysis here",
+  "recommendations: [recommendation 1", "recommendation 2"],
+  "codeExamples: [{description": "what this does, code": "actual code"}],
+  "summary: brief summary of findings"
 }
 
 For error analysis, use:
 {
-  "errors": [{"file": "path", "issue": "description", "fix": "solution", "code": "fixed code"}],
-  "summary": "overall assessment"
+  "errors: [{file": "path, issue": "description, fix": "solution, code": "fixed code"}],
+  "summary: overall assessment"
 }
 
-Provide detailed, actionable insights with specific code examples in the JSON structure0.`;
+Provide detailed, actionable insights with specific code examples in the JSON structure.`;
   }
 
   /**
-   * Builds appropriate prompts based on analysis task type0.
+   * Builds appropriate prompts based on analysis task type.
    *
    * @private
    * @param {AnalysisRequest} request - Analysis request
    * @returns {string} Constructed prompt
    */
   private buildPrompt(request: AnalysisRequest): string {
-    if (request0.prompt) {
-      return request0.prompt;
+    if (request.prompt) {
+      return request.prompt;
     }
 
-    const baseContext = `Project: ${path0.basename(this0.config0.projectPath)}\n`;
+    const baseContext = `Project: ${path.basename(this.config.projectPath)}\n`;
 
-    switch (request0.task) {
+    switch (request.task) {
       case 'domain-analysis':
         return (
           baseContext +
           `
 Analyze the following domain relationships using your GNN-Kuzu integration expertise:
 
-Domains: ${JSON0.stringify(request0.context0.domains, null, 2)}
-Dependencies: ${JSON0.stringify(request0.context0.dependencies, null, 2)}
+Domains: ${JSON.stringify(request.context.domains, null, 2)}
+Dependencies: ${JSON.stringify(request.context.dependencies, null, 2)}
 
-RESPOND IN JSON FORMAT with domain analysis, architecture recommendations, and summary0.
+RESPOND IN JSON FORMAT with domain analysis, architecture recommendations, and summary.
 
-${request0.outputPath ? `Write results to: ${request0.outputPath}` : ''}`
+${request.outputPath ? `Write results to: ${request.outputPath}` : ''}`
         );
 
       case 'typescript-error-analysis':
@@ -455,12 +455,12 @@ ${request0.outputPath ? `Write results to: ${request0.outputPath}` : ''}`
           `
 Analyze and fix the following TypeScript errors in the GNN-Kuzu integration system:
 
-Files: ${request0.context0.files?0.join(', ')}
-Errors: ${JSON0.stringify(request0.context0.errors, null, 2)}
+Files: ${request.context.files?.join(', ')}
+Errors: ${JSON.stringify(request.context.errors, null, 2)}
 
-RESPOND IN JSON FORMAT with error analysis, prevention strategies, and summary0.
+RESPOND IN JSON FORMAT with error analysis, prevention strategies, and summary.
 
-${request0.requiresFileOperations ? 'Apply fixes directly to the files after providing the JSON analysis0.' : ''}`
+${request.requiresFileOperations ? 'Apply fixes directly to the files after providing the JSON analysis. : '}`
         );
 
       case 'code-review':
@@ -469,20 +469,20 @@ ${request0.requiresFileOperations ? 'Apply fixes directly to the files after pro
           `
 Perform a comprehensive code review of the GNN-Kuzu integration components:
 
-Files: ${request0.context0.files?0.join(', ')}
+Files: ${request.context.files?.join(', ')}
 
-RESPOND IN JSON FORMAT with code review findings, architecture analysis, and recommendations0.`
+RESPOND IN JSON FORMAT with code review findings, architecture analysis, and recommendations.`
         );
 
       default:
         return (
           baseContext +
           `
-Perform custom analysis task: ${request0.task}
+Perform custom analysis task: ${request.task}
 
-Context: ${JSON0.stringify(request0.context, null, 2)}
+Context: ${JSON.stringify(request.context, null, 2)}
 
-RESPOND IN JSON FORMAT with analysis findings and recommendations0.`
+RESPOND IN JSON FORMAT with analysis findings and recommendations.`
         );
     }
   }
@@ -492,80 +492,80 @@ RESPOND IN JSON FORMAT with analysis findings and recommendations0.`
    */
 
   /**
-   * Creates a new session for conversation continuity0.
+   * Creates a new session for conversation continuity.
    *
    * @method createSession
    * @returns {string} New session ID
    */
   createSession(): string {
-    this0.sessionId = uuidv4();
-    this0.logger0.info(`New session created: ${this0.sessionId}`);
-    return this0.sessionId;
+    this.sessionId = uuidv4();
+    this.logger.info(`New session created: ${this.sessionId}`);
+    return this.sessionId;
   }
 
   /**
-   * Gets current session ID0.
+   * Gets current session ID.
    *
    * @method getSessionId
    * @returns {string} Current session ID
    */
   getSessionId(): string {
-    return this0.sessionId;
+    return this.sessionId;
   }
 
   /**
-   * Updates service configuration0.
+   * Updates service configuration.
    *
    * @method updateConfig
    * @param {Partial<LLMIntegrationConfig>} updates - Configuration updates
    */
   updateConfig(updates: Partial<LLMIntegrationConfig>): void {
-    this0.config = { 0.0.0.this0.config, 0.0.0.updates };
+    this.config = { ...this.config, ...updates };
 
     // Update agent role if provided
-    if (updates0.agentRole) {
-      this0.llmProvider0.setRole(updates0.agentRole);
-      this0.logger0.info(`Agent role updated to: ${updates0.agentRole}`);
+    if (updates.agentRole) {
+      this.llmProvider.setRole(updates.agentRole);
+      this.logger.info(`Agent role updated to: ${updates.agentRole}`);
     }
 
-    this0.logger0.info('Configuration updated');
+    this.logger.info('Configuration updated');
   }
 
   /**
-   * Gets comprehensive service status using Foundation + Brain packages0.
+   * Gets comprehensive service status using Foundation + Brain packages.
    *
    * @method getServiceStatus
    * @returns {object} Service health and status information
    */
   getServiceStatus() {
-    const llmStats = this0.llmProvider?0.getUsageStats;
-    const brainStats = this0.brainCoordinator?0.getStats;
+    const llmStats = this.llmProvider?.getUsageStats()
+    const brainStats = this.brainCoordinator?.getStats()
 
     return {
       status: 'operational',
-      version: '40.0.0',
+      version: '4..0',
       migration: 'foundation-brain-integrated',
       llmProvider: {
         available: true,
-        currentRole: llmStats0.currentRole || 'assistant',
-        requestCount: llmStats0.requestCount,
-        lastRequestTime: llmStats0.lastRequestTime,
+        currentRole: llmStats.currentRole || 'assistant',
+        requestCount: llmStats.requestCount,
+        lastRequestTime: llmStats.lastRequestTime,
       },
       brainCoordinator: {
-        initialized: brainStats0.initialized,
-        cacheSize: brainStats0.cacheSize,
-        cacheHits: brainStats0.cacheHits,
-        learningEnabled: brainStats0.learningEnabled,
+        initialized: brainStats.initialized,
+        cacheSize: brainStats.cacheSize,
+        cacheHits: brainStats.cacheHits,
+        learningEnabled: brainStats.learningEnabled,
       },
       session: {
-        sessionId: this0.sessionId,
-        projectPath: this0.config0.projectPath,
+        sessionId: this.sessionId,
+        projectPath: this.config.projectPath,
       },
       config: {
-        debug: this0.config0.debug,
-        temperature: this0.config0.temperature,
-        maxTokens: this0.config0.maxTokens,
-        agentRole: this0.config0.agentRole,
+        debug: this.config.debug,
+        temperature: this.config.temperature,
+        maxTokens: this.config.maxTokens,
+        agentRole: this.config.agentRole,
       },
       features: {
         foundationIntegration: true,

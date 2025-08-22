@@ -22,9 +22,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/workflows": "link:../workflows"
+    "@claude-zen/workflows": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

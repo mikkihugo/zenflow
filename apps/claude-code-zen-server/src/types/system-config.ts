@@ -2,10 +2,10 @@
  * @fileoverview System Configuration Types
  *
  * System-level configuration types for hardware detection,
- * capability assessment, and performance optimization0.
+ * capability assessment, and performance optimization.
  */
 
-import type { ClaudeZenCoreConfig } from '0./core-config';
+import('./core-config';
 
 /**
  * System Information Interface
@@ -14,8 +14,8 @@ export interface SystemInfo {
   memory: number; // Total system memory in MB
   cpus: number; // Number of CPU cores
   platform: string; // Operating system platform
-  architecture: string; // System architecture (x64, arm64, etc0.)
-  nodeVersion: string; // Node0.js version
+  architecture: string; // System architecture (x64, arm64, etc.)
+  nodeVersion: string; // Node.js version
   processes: number; // Number of running processes
 }
 
@@ -240,7 +240,7 @@ export const DEFAULT_SYSTEM_CONFIG: Partial<SystemConfiguration> = {
   optimization: {
     autoScale: true,
     maxWorkers: 4,
-    memoryThreshold: 0.8,
-    cpuThreshold: 0.7,
+    memoryThreshold: .8,
+    cpuThreshold: .7,
   },
 };

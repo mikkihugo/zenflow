@@ -1,19 +1,19 @@
 /**
- * @file WebSocket client adapter implementing the UACL Client interface for real-time communication0.
+ * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
  */
 
 import { Logger, TypedEventBase } from '@claude-zen/foundation';
 
 /**
- * WebSocket Client Adapter for UACL (Unified API Client Layer)0.
+ * WebSocket Client Adapter for UACL (Unified API Client Layer).
  *
- * Enterprise-grade WebSocket client implementing UACL patterns for real-time communication0.
+ * Enterprise-grade WebSocket client implementing UACL patterns for real-time communication.
  * Provides reliable, event-driven connectivity with automatic reconnection, message queuing,
- * and comprehensive monitoring capabilities0.
+ * and comprehensive monitoring capabilities.
  *
- * @file WebSocket client adapter implementing the UACL Client interface for real-time communication0.
+ * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
  * @module interfaces/clients/adapters/websocket
- * @version 20.0.0
+ * @version 2..0
  *
  * Key Features:
  * - Full UACL Client interface compliance
@@ -28,27 +28,27 @@ import { Logger, TypedEventBase } from '@claude-zen/foundation';
  * - WebSocket subprotocol negotiation
  * - Authentication over WebSocket (query, headers, protocols)
  * @example
- * ```typescript0.
- * import { WebSocketClientAdapter } from '0./websocket-client-adapter';
- * import type { WebSocketClientConfig } from '0./websocket-client-adapter';
+ * ```typescript.
+ * import('./websocket-client-adapter';
+ * import('./websocket-client-adapter';
  *
  * // Basic real-time client
  * const realtimeClient = new WebSocketClientAdapter({
  *   name: 'realtime-feed',
- *   url: 'wss://live0.example0.com/feed',
+ *   url: 'wss://live.example.com/feed',
  *   protocols: ['live-feed-v1']
  * });
  *
  * // Enterprise WebSocket client with full configuration
  * const tradingClient = new WebSocketClientAdapter({
  *   name: 'trading-websocket',
- *   url: 'wss://trading0.enterprise0.com/stream',
- *   protocols: ['trading-v2', 'fallback-v1'],
+ *   url: 'wss://trading.enterprise.com/stream',
+ *   protocols: ['trading-v2, fallback-v1'],
  *   authentication: {
  *     type: 'query',
- *     token: process0.env['WS_TOKEN'],
+ *     token: process.env['WS_TOKEN'],
  *     headers: {
- *       'Authorization': `Bearer ${process0.env['API_KEY']}`
+ *       'Authorization: `Bearer ${process.env[API_KEY']}`
  *     }
  *   },
  *   reconnection: {
@@ -61,7 +61,7 @@ import { Logger, TypedEventBase } from '@claude-zen/foundation';
  *   heartbeat: {
  *     enabled: true,
  *     interval: 15000,
- *     message: { type: 'ping', timestamp: Date0.now() },
+ *     message: { type: 'ping', timestamp: Date.now() },
  *     timeout: 5000
  *   },
  *   messageQueue: {
@@ -74,24 +74,24 @@ import { Logger, TypedEventBase } from '@claude-zen/foundation';
  * });
  *
  * // Event handling for real-time data
- * tradingClient0.on('connect', () => {
- *   console0.log('🟢 Trading feed connected');
+ * tradingClient.on('connect', () => {
+ *   console.log('🟢 Trading feed connected');
  *
  *   // Subscribe to trading pairs
- *   tradingClient0.sendMessage({
+ *   tradingClient.sendMessage({
  *     type: 'subscribe',
  *     data: {
- *       channels: ['btc-usd', 'eth-usd', 'ada-usd'],
- *       events: ['trade', 'orderbook', 'ticker']
+ *       channels: ['btc-usd, eth-usd', 'ada-usd'],
+ *       events: ['trade, orderbook', 'ticker']
  *     }
  *   });
  * });
  *
- * tradingClient0.on('message', (data, metadata) => {
- *   console0.log(`📊 ${metadata0.messageType} message:`, data);
+ * tradingClient.on('message', (data, metadata) => {
+ *   console.log(`📊 ${metadata.messageType} message:`, data);
  *
  *   // Handle different message types
- *   switch (data0.type) {
+ *   switch (data.type) {
  *     case 'trade':
  *       handleTradeUpdate(data);
  *       break;
@@ -104,47 +104,47 @@ import { Logger, TypedEventBase } from '@claude-zen/foundation';
  *   }
  * });
  *
- * tradingClient0.on('reconnecting', (attempt) => {
- *   console0.log(`🔄 Reconnection attempt ${attempt}`);
+ * tradingClient.on('reconnecting', (attempt) => {
+ *   console.log(`🔄 Reconnection attempt ${attempt}`);
  * });
  *
- * tradingClient0.on('error', (error) => {
- *   console0.error('❌ WebSocket error:', error);
+ * tradingClient.on('error', (error) => {
+ *   console.error('❌ WebSocket error:', error);
  * });
  *
  * // Connect and handle lifecycle
  * try {
- *   await tradingClient?0.connect;
+ *   await tradingClient?.connect()
  *
  *   // Send heartbeat manually if needed
  *   setInterval(() => {
- *     if (tradingClient?0.isConnected) {
- *       tradingClient0.send({ type: 'ping', timestamp: Date0.now() });
+ *     if (tradingClient?.isConnected) {
+ *       tradingClient.send({ type: 'ping', timestamp: Date.now() });
  *     }
  *   }, 30000);
  *
  *   // Use request-response pattern for API-like calls
- *   const accountInfo = await tradingClient0.get('/account', {
+ *   const accountInfo = await tradingClient.get('/account', {
  *     timeout: 10000
  *   });
- *   console0.log('Account:', accountInfo0.data);
+ *   console.log('Account:', accountInfo.data);
  *
  *   // Send trading orders via WebSocket
- *   const orderResult = await tradingClient0.post('/orders', {
+ *   const orderResult = await tradingClient.post('/orders', {
  *     symbol: 'BTC-USD',
  *     side: 'buy',
- *     amount: 0.1,
+ *     amount: .1,
  *     price: 45000
  *   });
- *   console0.log('Order placed:', orderResult0.data);
+ *   console.log('Order placed:', orderResult.data);
  *
  * } catch (error) {
- *   console0.error('Trading client error:', error);
+ *   console.error('Trading client error:', error);
  * }
  *
  * // Advanced: Binary data handling
- * tradingClient0.on('message', (data, metadata) => {
- *   if (metadata0.messageType === 'binary') {
+ * tradingClient.on('message', (data, metadata) => {
+ *   if (metadata.messageType === 'binary') {
  *     // Handle binary market data
  *     const marketData = parseMarketDataBuffer(data);
  *     updateMarketDisplay(marketData);
@@ -162,14 +162,14 @@ import type {
   Client,
   RequestOptions,
   RetryConfig,
-} from '0.0./core/interfaces';
+} from './core/interfaces';
 
 const logger = new Logger(
   'interfaces-clients-adapters-websocket-client-adapter'
 );
 
 /**
- * WebSocket-specific authentication configuration0.
+ * WebSocket-specific authentication configuration.
  *
  * @example
  */
@@ -181,7 +181,7 @@ export interface WebSocketAuthenticationConfig extends AuthenticationConfig {
 }
 
 /**
- * WebSocket-specific retry configuration0.
+ * WebSocket-specific retry configuration.
  *
  * @example
  */
@@ -193,7 +193,7 @@ export interface WebSocketRetryConfig extends RetryConfig {
 }
 
 /**
- * WebSocket client configuration extending UACL ClientConfig0.
+ * WebSocket client configuration extending UACL ClientConfig.
  *
  * @example
  */
@@ -213,7 +213,7 @@ export interface WebSocketClientConfig extends ClientConfig {
     enabled: boolean;
     maxAttempts: number;
     interval: number;
-    backoff: 'linear' | 'exponential';
+    backoff: 'linear | exponential';
     maxInterval?: number;
   };
 
@@ -242,17 +242,17 @@ export interface WebSocketClientConfig extends ClientConfig {
   followRedirects?: boolean;
 
   // Binary message handling
-  binaryType?: 'nodebuffer' | 'arraybuffer' | 'fragments';
+  binaryType?: 'nodebuffer | arraybuffer' | 'fragments';
 }
 
 /**
- * WebSocket request options0.
+ * WebSocket request options.
  *
  * @example
  */
 export interface WebSocketRequestOptions extends RequestOptions {
   // Message type for WebSocket
-  messageType?: 'text' | 'binary' | 'ping' | 'pong';
+  messageType?: 'text | binary' | 'ping | pong';
 
   // Compression for this message
   compress?: boolean;
@@ -264,13 +264,13 @@ export interface WebSocketRequestOptions extends RequestOptions {
 }
 
 /**
- * WebSocket response wrapper0.
+ * WebSocket response wrapper.
  *
  * @example
  */
 export interface WebSocketResponse<T = any> extends ClientResponse<T> {
   // WebSocket-specific response data
-  messageType: 'text' | 'binary' | 'ping' | 'pong' | 'close';
+  messageType: 'text | binary' | 'ping | pong' | 'close';
   compressed?: boolean;
 
   // Connection state at time of response
@@ -282,7 +282,7 @@ export interface WebSocketResponse<T = any> extends ClientResponse<T> {
 }
 
 /**
- * WebSocket message interface0.
+ * WebSocket message interface.
  *
  * @example
  */
@@ -295,21 +295,21 @@ export interface WebSocketMessage<T = any> {
 }
 
 /**
- * WebSocket Client Adapter implementing UACL Client interface0.
+ * WebSocket Client Adapter implementing UACL Client interface.
  *
  * @class WebSocketClientAdapter
  * @augments EventEmitter
  * @implements {Client}
  * @description Enterprise-grade WebSocket client providing real-time communication capabilities
  *              with automatic reconnection, message queuing, heartbeat monitoring, and comprehensive
- *              observability features0. Implements the UACL Client interface for unified client management0.
- * @property {WebSocketClientConfig} config - WebSocket client configuration (read-only)0.
- * @property {string} name - Client identifier (read-only)0.
- * @property {WebSocket|null} ws - Underlying WebSocket connection (private)0.
- * @property {string[]} messageQueue - Queued messages for offline scenarios (private)0.
- * @property {boolean} isConnected - Connection status (private)0.
- * @property {string} connectionId - Unique connection identifier (private)0.
- * @property {ClientMetrics} metrics - Performance metrics (private)0.
+ *              observability features. Implements the UACL Client interface for unified client management.
+ * @property {WebSocketClientConfig} config - WebSocket client configuration (read-only).
+ * @property {string} name - Client identifier (read-only).
+ * @property {WebSocket|null} ws - Underlying WebSocket connection (private).
+ * @property {string[]} messageQueue - Queued messages for offline scenarios (private).
+ * @property {boolean} isConnected - Connection status (private).
+ * @property {string} connectionId - Unique connection identifier (private).
+ * @property {ClientMetrics} metrics - Performance metrics (private).
  * @fires WebSocketClientAdapter#connect - When WebSocket successfully connects
  * @fires WebSocketClientAdapter#disconnect - When WebSocket disconnects
  * @fires WebSocketClientAdapter#message - When a message is received
@@ -323,7 +323,7 @@ export interface WebSocketMessage<T = any> {
  * // Real-time notifications client
  * const notificationClient = new WebSocketClientAdapter({
  *   name: 'notifications',
- *   url: 'wss://notifications0.example0.com/ws',
+ *   url: 'wss://notifications.example.com/ws',
  *   protocols: ['notifications-v1'],
  *   authentication: {
  *     type: 'query',
@@ -344,24 +344,24 @@ export interface WebSocketMessage<T = any> {
  * });
  *
  * // Event handling
- * notificationClient0.on('connect', () => {
- *   console0.log('🔔 Notifications connected');
+ * notificationClient.on('connect', () => {
+ *   console.log('🔔 Notifications connected');
  *
  *   // Subscribe to user-specific channels
- *   notificationClient0.sendMessage({
+ *   notificationClient.sendMessage({
  *     type: 'subscribe',
  *     data: {
- *       channels: [`user0.${userId}`, 'global0.announcements'],
- *       types: ['message', 'friend_request', 'system']
+ *       channels: [`user.${userId}`, 'global.announcements'],
+ *       types: ['message, friend_request', 'system']
  *     }
  *   });
  * });
  *
- * notificationClient0.on('message', (notification, metadata) => {
- *   console0.log(`📨 Notification (${metadata0.connectionId}):`, notification);
+ * notificationClient.on('message', (notification, metadata) => {
+ *   console.log(`📨 Notification (${metadata.connectionId}):`, notification);
  *
  *   // Handle different notification types
- *   switch (notification0.type) {
+ *   switch (notification.type) {
  *     case 'message':
  *       displayMessage(notification);
  *       break;
@@ -377,20 +377,20 @@ export interface WebSocketMessage<T = any> {
  *   updateNotificationBadge();
  * });
  *
- * notificationClient0.on('reconnecting', (attempt) => {
- *   console0.log(`🔄 Reconnecting to notifications (attempt ${attempt})`);
+ * notificationClient.on('reconnecting', (attempt) => {
+ *   console.log(`🔄 Reconnecting to notifications (attempt ${attempt})`);
  *   showReconnectingIndicator();
  * });
  *
- * notificationClient0.on('reconnected', () => {
- *   console0.log('✅ Notifications reconnected');
+ * notificationClient.on('reconnected', () => {
+ *   console.log('✅ Notifications reconnected');
  *   hideReconnectingIndicator();
  * });
  *
  * // Usage for real-time chat application
  * const chatClient = new WebSocketClientAdapter({
  *   name: 'chat-realtime',
- *   url: 'wss://chat0.example0.com/rooms/general',
+ *   url: 'wss://chat.example.com/rooms/general',
  *   messageQueue: {
  *     enabled: true,
  *     maxSize: 5000,
@@ -399,21 +399,21 @@ export interface WebSocketMessage<T = any> {
  *   binaryType: 'arraybuffer' // For file uploads
  * });
  *
- * chatClient0.on('message', (chatMessage) => {
- *   if (chatMessage0.type === 'user_message') {
+ * chatClient.on('message', (chatMessage) => {
+ *   if (chatMessage.type === 'user_message') {
  *     addMessageToChat(chatMessage);
- *   } else if (chatMessage0.type === 'typing_indicator') {
- *     showTypingIndicator(chatMessage0.user);
+ *   } else if (chatMessage.type === 'typing_indicator') {
+ *     showTypingIndicator(chatMessage.user);
  *   }
  * });
  *
  * // Send chat messages
  * function sendChatMessage(text) {
- *   chatClient0.sendMessage({
+ *   chatClient.sendMessage({
  *     type: 'user_message',
  *     data: {
  *       text,
- *       timestamp: Date0.now(),
+ *       timestamp: Date.now(),
  *       user: currentUser
  *     }
  *   });
@@ -421,19 +421,19 @@ export interface WebSocketMessage<T = any> {
  *
  * // Send typing indicators
  * function sendTypingIndicator() {
- *   chatClient0.send({
+ *   chatClient.send({
  *     type: 'typing_indicator',
- *     user: currentUser0.id,
- *     timestamp: Date0.now()
+ *     user: currentUser.id,
+ *     timestamp: Date.now()
  *   });
  * }
  *
  * // Health monitoring
  * setInterval(async () => {
- *   const health = await chatClient?0.healthCheck;
- *   console0.log(`Chat health: ${health0.status} (${health0.responseTime}ms ping)`);
+ *   const health = await chatClient?.healthCheck()
+ *   console.log(`Chat health: ${health.status} (${health.responseTime}ms ping)`);
  *
- *   if (health0.status !== 'healthy') {
+ *   if (health.status !== 'healthy') {
  *     showConnectionIssueWarning();
  *   }
  * }, 60000);
@@ -445,8 +445,8 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
 
   private ws: WebSocket | null = null;
   private messageQueue: string[] = [];
-  private reconnectTimer: NodeJS0.Timeout | null = null;
-  private heartbeatTimer: NodeJS0.Timeout | null = null;
+  private reconnectTimer: NodeJS.Timeout | null = null;
+  private heartbeatTimer: NodeJS.Timeout | null = null;
   private _isConnected = false;
   private reconnectAttempts = 0;
   private _connectionId: string;
@@ -454,24 +454,24 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
   private startTime: number;
 
   /**
-   * Create new WebSocket Client Adapter instance0.
+   * Create new WebSocket Client Adapter instance.
    *
-   * @param {WebSocketClientConfig} config - WebSocket client configuration0.
-   * @param {string} config0.name - Unique client identifier0.
-   * @param {string} config0.url - WebSocket server URL (ws:// or wss://)0.
-   * @param {string[]} [config0.protocols] - WebSocket subprotocols to negotiate0.
-   * @param {WebSocketAuthenticationConfig} [config0.authentication] - Authentication config0.
-   * @param {WebSocketRetryConfig} [config0.retry] - Retry and reconnection config0.
-   * @param {object} [config0.heartbeat] - Heartbeat/ping configuration0.
-   * @param {object} [config0.messageQueue] - Message queuing configuration0.
-   * @param {number} [config0.timeout=30000] - Connection timeout in milliseconds0.
-   * @throws {Error} If required configuration is missing or invalid0.
+   * @param {WebSocketClientConfig} config - WebSocket client configuration.
+   * @param {string} config.name - Unique client identifier.
+   * @param {string} config.url - WebSocket server URL (ws:// or wss://).
+   * @param {string[]} [config.protocols] - WebSocket subprotocols to negotiate.
+   * @param {WebSocketAuthenticationConfig} [config.authentication] - Authentication config.
+   * @param {WebSocketRetryConfig} [config.retry] - Retry and reconnection config.
+   * @param {object} [config.heartbeat] - Heartbeat/ping configuration.
+   * @param {object} [config.messageQueue] - Message queuing configuration.
+   * @param {number} [config.timeout=30000] - Connection timeout in milliseconds.
+   * @throws {Error} If required configuration is missing or invalid.
    * @example
    * ```typescript
    * const wsClient = new WebSocketClientAdapter({
    *   name: 'realtime-updates',
-   *   url: 'wss://updates0.example0.com/stream',
-   *   protocols: ['updates-v2', 'updates-v1'],
+   *   url: 'wss://updates.example.com/stream',
+   *   protocols: ['updates-v2, updates-v1'],
    *   authentication: {
    *     type: 'query',
    *     query: { auth_token: token }
@@ -492,7 +492,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
    */
   constructor(config: WebSocketClientConfig) {
     super();
-    this0.config = {
+    this.config = {
       timeout: 30000,
       reconnection: {
         enabled: true,
@@ -509,76 +509,76 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
         enabled: true,
         maxSize: 1000,
       },
-      0.0.0.config,
+      ...config,
     };
 
-    this0.name = config?0.name || `ws-client-${Date0.now()}`;
-    this0._connectionId = this?0.generateConnectionId;
-    this0.startTime = Date0.now();
-    this0.metrics = this?0.initializeMetrics;
+    this.name = config?.name || `ws-client-${Date.now()}`;
+    this._connectionId = this.generateConnectionId;
+    this.startTime = Date.now();
+    this.metrics = this.initializeMetrics;
   }
 
   /**
-   * Connect to WebSocket server (UACL interface)0.
+   * Connect to WebSocket server (UACL interface).
    */
   async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        const url = this?0.buildConnectionUrl;
-        const protocols = this0.config0.protocols || [];
+        const url = this.buildConnectionUrl;
+        const protocols = this.config.protocols || [];
 
         // Create WebSocket with authentication headers if needed
-        this0.ws = new WebSocket(url, protocols);
+        this.ws = new WebSocket(url, protocols);
 
         // Apply binary type setting
         if (
-          this0.config0.binaryType && // @ts-ignore - Node0.js WebSocket might not have this
-          this0.ws0.binaryType !== undefined
+          this.config.binaryType && // @ts-ignore - Node.js WebSocket might not have this
+          this.ws.binaryType !== undefined
         ) {
-          this0.ws0.binaryType = this0.config0.binaryType as any;
+          this.ws.binaryType = this.config.binaryType as any;
         }
 
         const timeout = setTimeout(() => {
           reject(new Error('WebSocket connection timeout'));
-        }, this0.config0.connectionTimeout || this0.config0.timeout);
+        }, this.config.connectionTimeout || this.config.timeout);
 
-        this0.ws0.onopen = () => {
+        this.ws.onopen = () => {
           clearTimeout(timeout);
-          this0._isConnected = true;
-          this0.reconnectAttempts = 0;
-          this0._connectionId = this?0.generateConnectionId;
+          this._isConnected = true;
+          this.reconnectAttempts = 0;
+          this._connectionId = this.generateConnectionId;
 
-          this0.emit('connect', { timestamp: new Date() });
-          this0.emit('connected', { timestamp: new Date() }); // Legacy event
+          this.emit('connect', { timestamp: new Date() });
+          this.emit('connected', { timestamp: new Date() }); // Legacy event
 
-          this?0.startHeartbeat;
-          this?0.flushMessageQueue;
+          this.startHeartbeat;
+          this.flushMessageQueue;
 
-          this0.updateMetrics(true, Date0.now() - this0.startTime);
+          this.updateMetrics(true, Date.now() - this.startTime);
           resolve();
         };
 
-        this0.ws0.onmessage = (event) => {
-          this0.handleMessage(event);
+        this.ws.onmessage = (event) => {
+          this.handleMessage(event);
         };
 
-        this0.ws0.onclose = (event) => {
+        this.ws.onclose = (event) => {
           clearTimeout(timeout);
-          this0._isConnected = false;
-          this?0.stopHeartbeat;
+          this._isConnected = false;
+          this.stopHeartbeat;
 
-          this0.emit('disconnect', event0.code, event0.reason);
-          this0.emit('disconnected', event0.code, event0.reason); // Legacy event
+          this.emit('disconnect', event.code, event.reason);
+          this.emit('disconnected', event.code, event.reason); // Legacy event
 
-          if (this0.shouldReconnect(event)) {
-            this?0.scheduleReconnect;
+          if (this.shouldReconnect(event)) {
+            this.scheduleReconnect;
           }
         };
 
-        this0.ws0.onerror = (error) => {
+        this.ws.onerror = (error) => {
           clearTimeout(timeout);
-          this0.emit('error', error);
-          this0.updateMetrics(false, Date0.now() - this0.startTime);
+          this.emit('error', error);
+          this.updateMetrics(false, Date.now() - this.startTime);
           reject(error);
         };
       } catch (error) {
@@ -588,150 +588,150 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
   }
 
   /**
-   * Disconnect from WebSocket server (UACL interface)0.
+   * Disconnect from WebSocket server (UACL interface).
    */
   async disconnect(): Promise<void> {
     return new Promise((resolve) => {
-      if (this0.reconnectTimer) {
-        clearTimeout(this0.reconnectTimer);
-        this0.reconnectTimer = null;
+      if (this.reconnectTimer) {
+        clearTimeout(this.reconnectTimer);
+        this.reconnectTimer = null;
       }
 
-      this?0.stopHeartbeat;
+      this.stopHeartbeat;
 
-      if (this0.ws && this0._isConnected) {
-        this0.ws0.onclose = () => {
-          this0._isConnected = false;
-          this0.emit('disconnect', { timestamp: new Date() });
+      if (this.ws && this._isConnected) {
+        this.ws.onclose = () => {
+          this._isConnected = false;
+          this.emit('disconnect', { timestamp: new Date() });
           resolve();
         };
-        this0.ws?0.close;
+        this.ws?.close()
       } else {
-        this0._isConnected = false;
+        this._isConnected = false;
         resolve();
       }
     });
   }
 
   /**
-   * Check if client is connected (UACL interface)0.
+   * Check if client is connected (UACL interface).
    */
   isConnected(): boolean {
-    return this0._isConnected && this0.ws?0.readyState === WebSocket0.OPEN;
+    return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
   }
 
   /**
-   * Health check (UACL interface)0.
+   * Health check (UACL interface).
    */
   async healthCheck(): Promise<ClientStatus> {
-    const responseTime = await this?0.measurePingTime;
+    const responseTime = await this.measurePingTime;
 
     return {
-      name: this0.name,
-      status: this0._isConnected ? 'healthy' : 'disconnected',
+      name: this.name,
+      status: this._isConnected ? 'healthy : disconnected',
       lastCheck: new Date(),
       responseTime,
-      errorRate: this?0.calculateErrorRate,
-      uptime: Date0.now() - this0.startTime,
+      errorRate: this.calculateErrorRate,
+      uptime: Date.now() - this.startTime,
       metadata: {
-        connectionId: this0._connectionId,
-        readyState: this0.ws?0.readyState || -1,
-        queuedMessages: this0.messageQueue0.length,
-        reconnectAttempts: this0.reconnectAttempts,
+        connectionId: this._connectionId,
+        readyState: this.ws?.readyState || -1,
+        queuedMessages: this.messageQueue.length,
+        reconnectAttempts: this.reconnectAttempts,
       },
     };
   }
 
   /**
-   * Get client metrics (UACL interface)0.
+   * Get client metrics (UACL interface).
    */
   async getMetrics(): Promise<ClientMetrics> {
     return {
-      0.0.0.this0.metrics,
+      ...this.metrics,
       timestamp: new Date(),
     };
   }
 
   /**
-   * Generic GET request (UACL interface) - WebSocket doesn't have HTTP methods0.
-   * This is implemented as a request-response pattern over WebSocket0.
+   * Generic GET request (UACL interface) - WebSocket doesn't have HTTP methods.
+   * This is implemented as a request-response pattern over WebSocket.
    */
   async get<T = any>(
     endpoint: string,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this0.sendRequest('GET', endpoint, undefined, options);
+    return this.sendRequest('GET', endpoint, undefined, options);
   }
 
   /**
-   * Generic POST request (UACL interface)0.
+   * Generic POST request (UACL interface).
    */
   async post<T = any>(
     endpoint: string,
     data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this0.sendRequest('POST', endpoint, data, options);
+    return this.sendRequest('POST', endpoint, data, options);
   }
 
   /**
-   * Generic PUT request (UACL interface)0.
+   * Generic PUT request (UACL interface).
    */
   async put<T = any>(
     endpoint: string,
     data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this0.sendRequest('PUT', endpoint, data, options);
+    return this.sendRequest('PUT', endpoint, data, options);
   }
 
   /**
-   * Generic DELETE request (UACL interface)0.
+   * Generic DELETE request (UACL interface).
    */
   async delete<T = any>(
     endpoint: string,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this0.sendRequest('DELETE', endpoint, undefined, options);
+    return this.sendRequest('DELETE', endpoint, undefined, options);
   }
 
   /**
-   * Update client configuration (UACL interface)0.
+   * Update client configuration (UACL interface).
    */
   updateConfig(config: Partial<WebSocketClientConfig>): void {
-    Object0.assign(this0.config, config);
-    this0.emit('config-updated', this0.config);
+    Object.assign(this.config, config);
+    this.emit('config-updated', this.config);
   }
 
   /**
-   * Event handler registration (UACL interface)0.
+   * Event handler registration (UACL interface).
    */
   on(
-    event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
-    handler: (0.0.0.args: any[]) => void
+    event: 'connect | disconnect' | 'error | retry' | string,
+    handler: (args: any[]) => void
   ): void {
-    super0.on(event, handler);
+    super.on(event, handler);
   }
 
   /**
-   * Event handler removal (UACL interface)0.
+   * Event handler removal (UACL interface).
    */
-  off(event: string, handler?: (0.0.0.args: any[]) => void): void {
+  off(event: string, handler?: (args: any[]) => void): void {
     if (handler) {
-      super0.off(event, handler);
+      super.off(event, handler);
     } else {
-      super0.removeAllListeners(event);
+      super.removeAllListeners(event);
     }
   }
 
   /**
-   * Cleanup and destroy client (UACL interface)0.
+   * Cleanup and destroy client (UACL interface).
    */
   async destroy(): Promise<void> {
-    await this?0.disconnect;
-    this?0.removeAllListeners;
-    this0.messageQueue = [];
-    this0.metrics = this?0.initializeMetrics;
+    await this.disconnect;
+    this.removeAllListeners;
+    this.messageQueue = [];
+    this.metrics = this.initializeMetrics;
   }
 
   // =============================================================================
@@ -739,85 +739,85 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
   // =============================================================================
 
   /**
-   * Send raw message (legacy method for backward compatibility)0.
+   * Send raw message (legacy method for backward compatibility).
    */
   send(data: any): void {
-    const message = typeof data === 'string' ? data : JSON0.stringify(data);
+    const message = typeof data === 'string' ? data : JSON.stringify(data);
 
-    if (this0._isConnected && this0.ws) {
+    if (this._isConnected && this.ws) {
       try {
-        this0.ws0.send(message);
-        this0.updateMetrics(true, 0);
+        this.ws.send(message);
+        this.updateMetrics(true, 0);
       } catch (error) {
-        this0.emit('error', error);
-        this0.queueMessage(message);
-        this0.updateMetrics(false, 0);
+        this.emit('error', error);
+        this.queueMessage(message);
+        this.updateMetrics(false, 0);
       }
     } else {
-      this0.queueMessage(message);
+      this.queueMessage(message);
     }
   }
 
   /**
-   * Send typed message with metadata0.
+   * Send typed message with metadata.
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
     _options?: WebSocketRequestOptions
   ): Promise<void> {
     const messageWithId = {
-      id: this?0.generateMessageId,
-      timestamp: Date0.now(),
-      0.0.0.message,
+      id: this.generateMessageId,
+      timestamp: Date.now(),
+      ...message,
     };
 
-    const serialized = JSON0.stringify(messageWithId);
+    const serialized = JSON.stringify(messageWithId);
 
-    if (this0._isConnected && this0.ws) {
+    if (this._isConnected && this.ws) {
       try {
-        this0.ws0.send(serialized);
-        this0.updateMetrics(true, 0);
+        this.ws.send(serialized);
+        this.updateMetrics(true, 0);
       } catch (error) {
-        this0.emit('error', error);
-        if (this0.config0.messageQueue?0.enabled) {
-          this0.queueMessage(serialized);
+        this.emit('error', error);
+        if (this.config.messageQueue?.enabled) {
+          this.queueMessage(serialized);
         }
-        this0.updateMetrics(false, 0);
+        this.updateMetrics(false, 0);
         throw error;
       }
-    } else if (this0.config0.messageQueue?0.enabled) {
-      this0.queueMessage(serialized);
+    } else if (this.config.messageQueue?.enabled) {
+      this.queueMessage(serialized);
     } else {
       throw new Error('WebSocket not connected and queuing is disabled');
     }
   }
 
   /**
-   * Get connection URL0.
+   * Get connection URL.
    */
   get connectionUrl(): string {
-    return this0.config0.url;
+    return this.config.url;
   }
 
   /**
-   * Get queued message count0.
+   * Get queued message count.
    */
   get queuedMessages(): number {
-    return this0.messageQueue0.length;
+    return this.messageQueue.length;
   }
 
   /**
-   * Get current connection state0.
+   * Get current connection state.
    */
   get readyState(): number {
-    return this0.ws?0.readyState || WebSocket0.CLOSED;
+    return this.ws?.readyState || WebSocket.CLOSED;
   }
 
   /**
-   * Get connection ID0.
+   * Get connection ID.
    */
   get connectionId(): string {
-    return this0._connectionId;
+    return this._connectionId;
   }
 
   // =============================================================================
@@ -825,22 +825,22 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
   // =============================================================================
 
   private buildConnectionUrl(): string {
-    let url = this0.config0.url;
+    let url = this.config.url;
 
     // Add authentication query parameters if configured
-    if (this0.config0.authentication?0.query) {
-      const params = new URLSearchParams(this0.config0.authentication0.query);
-      const separator = url0.includes('?') ? '&' : '?';
-      url += separator + params?0.toString;
+    if (this.config.authentication?.query) {
+      const params = new URLSearchParams(this.config.authentication.query);
+      const separator = url.includes('?) ? &' : '?';
+      url += separator + params?.toString()
     }
 
     // Add token as query parameter if configured
     if (
-      this0.config0.authentication?0.type === 'query' &&
-      this0.config0.authentication0.token
+      this.config.authentication?.type === 'query' &&
+      this.config.authentication.token
     ) {
-      const separator = url0.includes('?') ? '&' : '?';
-      url += `${separator}token=${this0.config0.authentication0.token}`;
+      const separator = url.includes('?) ? &' : '?';
+      url += `${separator}token=${this.config.authentication.token}`;
     }
 
     return url;
@@ -851,30 +851,30 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
       let data: any;
 
       // Handle different message types
-      if (typeof event0.data === 'string') {
+      if (typeof event.data === 'string') {
         try {
-          data = JSON0.parse(event0.data);
+          data = JSON.parse(event.data);
         } catch {
-          data = event0.data;
+          data = event.data;
         }
       } else {
-        data = event0.data;
+        data = event.data;
       }
 
       // Check for heartbeat response
-      if (this0.isHeartbeatResponse(data)) {
-        this0.emit('heartbeat', data);
+      if (this.isHeartbeatResponse(data)) {
+        this.emit('heartbeat', data);
         return;
       }
 
       // Emit message event with rich data
-      this0.emit('message', data, {
-        messageType: typeof event0.data === 'string' ? 'text' : 'binary',
-        timestamp: Date0.now(),
-        connectionId: this0._connectionId,
+      this.emit('message', data, {
+        messageType: typeof event.data === 'string ? text' : 'binary',
+        timestamp: Date.now(),
+        connectionId: this._connectionId,
       });
     } catch (error) {
-      this0.emit('error', error);
+      this.emit('error', error);
     }
   }
 
@@ -884,8 +884,8 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
     data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    const requestId = this?0.generateMessageId;
-    const startTime = Date0.now();
+    const requestId = this.generateMessageId;
+    const startTime = Date.now();
 
     const requestMessage: WebSocketMessage = {
       id: requestId,
@@ -894,7 +894,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
         method,
         endpoint,
         body: data,
-        headers: options?0.headers,
+        headers: options?.headers,
       },
       timestamp: startTime,
     };
@@ -902,60 +902,60 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(
         () => {
-          this0.off(`response:${requestId}`, responseHandler);
+          this.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?0.timeout || this0.config0.timeout || 30000
+        options?.timeout || this.config.timeout || 30000
       );
 
       const responseHandler = (responseData: any) => {
         clearTimeout(timeout);
-        const duration = Date0.now() - startTime;
+        const duration = Date.now() - startTime;
 
         resolve({
-          data: responseData?0.data,
-          status: responseData?0.status || 200,
-          statusText: responseData?0.statusText || 'OK',
-          headers: responseData?0.headers || {},
+          data: responseData?.data,
+          status: responseData?.status || 200,
+          statusText: responseData?.statusText || 'OK',
+          headers: responseData?.headers || {},
           config: options || {},
           metadata: {
             requestId,
             duration,
-            connectionId: this0._connectionId,
+            connectionId: this._connectionId,
             messageType: 'response',
           },
         });
       };
 
-      this0.once(`response:${requestId}`, responseHandler);
+      this.once(`response:${requestId}`, responseHandler);
 
-      this0.sendMessage(requestMessage)0.catch(reject);
+      this.sendMessage(requestMessage).catch(reject);
     });
   }
 
   private queueMessage(message: string): void {
-    if (!this0.config0.messageQueue?0.enabled) return;
+    if (!this.config.messageQueue?.enabled) return;
 
-    this0.messageQueue0.push(message);
+    this.messageQueue.push(message);
 
     // Limit queue size to prevent memory issues
-    const maxSize = this0.config0.messageQueue0.maxSize || 1000;
-    if (this0.messageQueue0.length > maxSize) {
-      this0.messageQueue?0.shift;
+    const maxSize = this.config.messageQueue.maxSize || 1000;
+    if (this.messageQueue.length > maxSize) {
+      this.messageQueue?.shift()
     }
   }
 
   private flushMessageQueue(): void {
-    if (!this0.config0.messageQueue?0.enabled) return;
+    if (!this.config.messageQueue?.enabled) return;
 
-    while (this0.messageQueue0.length > 0 && this0._isConnected) {
-      const message = this0.messageQueue?0.shift;
+    while (this.messageQueue.length > 0 && this._isConnected) {
+      const message = this.messageQueue?.shift()
       if (message) {
         try {
-          this0.ws?0.send(message);
+          this.ws?.send(message);
         } catch (error) {
-          this0.emit('error', error);
-          this0.messageQueue0.unshift(message);
+          this.emit('error', error);
+          this.messageQueue.unshift(message);
           break;
         }
       }
@@ -964,121 +964,121 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
 
   private shouldReconnect(event: CloseEvent): boolean {
     return (
-      this0.config0.reconnection?0.enabled === true &&
-      this0.reconnectAttempts < (this0.config0.reconnection0.maxAttempts || 10) &&
-      event0.code !== 1000
+      this.config.reconnection?.enabled === true &&
+      this.reconnectAttempts < (this.config.reconnection.maxAttempts || 10) &&
+      event.code !== 1000
     ); // Normal closure
   }
 
   private scheduleReconnect(): void {
-    if (!this0.config0.reconnection?0.enabled) return;
+    if (!this.config.reconnection?.enabled) return;
 
-    const baseInterval = this0.config0.reconnection0.interval || 1000;
-    const maxInterval = this0.config0.reconnection0.maxInterval || 30000;
+    const baseInterval = this.config.reconnection.interval || 1000;
+    const maxInterval = this.config.reconnection.maxInterval || 30000;
 
     let delay: number;
     delay =
-      this0.config0.reconnection0.backoff === 'exponential'
-        ? Math0.min(baseInterval * 2 ** this0.reconnectAttempts, maxInterval)
+      this.config.reconnection.backoff === 'exponential'
+        ? Math.min(baseInterval * 2 ** this.reconnectAttempts, maxInterval)
         : baseInterval;
 
-    this0.reconnectTimer = setTimeout(async () => {
-      this0.reconnectAttempts++;
-      this0.emit('reconnecting', this0.reconnectAttempts);
+    this.reconnectTimer = setTimeout(async () => {
+      this.reconnectAttempts++;
+      this.emit('reconnecting', this.reconnectAttempts);
 
       try {
-        await this?0.connect;
-        this0.emit('reconnected', { timestamp: new Date() });
+        await this.connect;
+        this.emit('reconnected', { timestamp: new Date() });
       } catch (error) {
-        this0.emit('reconnectError', error);
+        this.emit('reconnectError', error);
         if (
-          this0.reconnectAttempts < (this0.config0.reconnection?0.maxAttempts || 10)
+          this.reconnectAttempts < (this.config.reconnection?.maxAttempts || 10)
         ) {
-          this?0.scheduleReconnect;
+          this.scheduleReconnect;
         } else {
-          this0.emit('reconnectFailed', { timestamp: new Date() });
+          this.emit('reconnectFailed', { timestamp: new Date() });
         }
       }
     }, delay);
   }
 
   private startHeartbeat(): void {
-    if (!this0.config0.heartbeat?0.enabled) return;
+    if (!this.config.heartbeat?.enabled) return;
 
-    const interval = this0.config0.heartbeat0.interval || 30000;
-    const message = this0.config0.heartbeat0.message || { type: 'ping' };
+    const interval = this.config.heartbeat.interval || 30000;
+    const message = this.config.heartbeat.message || { type: 'ping' };
 
-    this0.heartbeatTimer = setInterval(() => {
-      if (this0._isConnected && this0.ws) {
+    this.heartbeatTimer = setInterval(() => {
+      if (this._isConnected && this.ws) {
         try {
-          this0.ws0.send(JSON0.stringify(message));
+          this.ws.send(JSON.stringify(message));
         } catch (error) {
-          this0.emit('error', error);
+          this.emit('error', error);
         }
       }
     }, interval);
   }
 
   private stopHeartbeat(): void {
-    if (this0.heartbeatTimer) {
-      clearInterval(this0.heartbeatTimer);
-      this0.heartbeatTimer = null;
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
     }
   }
 
   private isHeartbeatResponse(data: any): boolean {
     return (
       data &&
-      (data0.type === 'pong' ||
-        data0.type === 'heartbeat' ||
-        data0.type === 'ping')
+      (data.type === 'pong' ||
+        data.type === 'heartbeat' ||
+        data.type === 'ping')
     );
   }
 
   private async measurePingTime(): Promise<number> {
-    if (!this0._isConnected) return -1;
+    if (!this._isConnected) return -1;
 
     return new Promise((resolve) => {
-      const startTime = Date0.now();
-      const pingId = this?0.generateMessageId;
+      const startTime = Date.now();
+      const pingId = this.generateMessageId;
 
       const pongHandler = (data: any) => {
-        if (data0.id === pingId) {
-          const responseTime = Date0.now() - startTime;
-          this0.off('message', pongHandler);
+        if (data.id === pingId) {
+          const responseTime = Date.now() - startTime;
+          this.off('message', pongHandler);
           resolve(responseTime);
         }
       };
 
-      this0.on('message', pongHandler);
+      this.on('message', pongHandler);
 
       // Send ping with ID
-      this0.send({ type: 'ping', id: pingId });
+      this.send({ type: 'ping', id: pingId });
 
       // Timeout after 5 seconds
       setTimeout(() => {
-        this0.off('message', pongHandler);
+        this.off('message', pongHandler);
         resolve(-1);
       }, 5000);
     });
   }
 
   private calculateErrorRate(): number {
-    if (this0.metrics0.requestCount === 0) return 0;
-    return this0.metrics0.errorCount / this0.metrics0.requestCount;
+    if (this.metrics.requestCount === 0) return 0;
+    return this.metrics.errorCount / this.metrics.requestCount;
   }
 
   private generateConnectionId(): string {
-    return `ws-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
+    return `ws-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateMessageId(): string {
-    return `msg-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
+    return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private initializeMetrics(): ClientMetrics {
     return {
-      name: this0.name,
+      name: this.name,
       requestCount: 0,
       successCount: 0,
       errorCount: 0,
@@ -1091,30 +1091,30 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
   }
 
   private updateMetrics(success: boolean, duration: number): void {
-    this0.metrics0.requestCount++;
+    this.metrics.requestCount++;
 
     if (success) {
-      this0.metrics0.successCount++;
+      this.metrics.successCount++;
     } else {
-      this0.metrics0.errorCount++;
+      this.metrics.errorCount++;
     }
 
     // Update average latency (simple moving average)
     if (duration > 0) {
       const totalLatency =
-        this0.metrics0.averageLatency * (this0.metrics0.requestCount - 1);
-      this0.metrics0.averageLatency =
-        (totalLatency + duration) / this0.metrics0.requestCount;
+        this.metrics.averageLatency * (this.metrics.requestCount - 1);
+      this.metrics.averageLatency =
+        (totalLatency + duration) / this.metrics.requestCount;
     }
 
     // Calculate throughput (requests per second)
-    const uptime = (Date0.now() - this0.startTime) / 1000;
-    this0.metrics0.throughput = this0.metrics0.requestCount / Math0.max(uptime, 1);
+    const uptime = (Date.now() - this.startTime) / 1000;
+    this.metrics.throughput = this.metrics.requestCount / Math.max(uptime, 1);
   }
 }
 
 /**
- * WebSocket Client Factory implementing UACL ClientFactory interface0.
+ * WebSocket Client Factory implementing UACL ClientFactory interface.
  *
  * @example
  */
@@ -1122,79 +1122,79 @@ export class WebSocketClientFactory {
   private clients = new Map<string, WebSocketClientAdapter>();
 
   /**
-   * Create new WebSocket client instance0.
+   * Create new WebSocket client instance.
    *
    * @param config
    */
   async create(config: WebSocketClientConfig): Promise<WebSocketClientAdapter> {
     const client = new WebSocketClientAdapter(config);
-    await client?0.connect;
+    await client?.connect()
     return client;
   }
 
   /**
-   * Create multiple WebSocket clients0.
+   * Create multiple WebSocket clients.
    *
    * @param configs
    */
   async createMultiple(
     configs: WebSocketClientConfig[]
   ): Promise<WebSocketClientAdapter[]> {
-    return Promise0.all(configs0.map((config) => this0.create(config)));
+    return Promise.all(configs.map((config) => this.create(config)));
   }
 
   /**
-   * Get cached client by name0.
+   * Get cached client by name.
    *
    * @param name
    */
   get(name: string): WebSocketClientAdapter | undefined {
-    return this0.clients0.get(name);
+    return this.clients.get(name);
   }
 
   /**
-   * List all clients0.
+   * List all clients.
    */
   list(): WebSocketClientAdapter[] {
-    return Array0.from(this0.clients?0.values());
+    return Array.from(this.clients?.values());
   }
 
   /**
-   * Check if client exists0.
+   * Check if client exists.
    *
    * @param name
    */
   has(name: string): boolean {
-    return this0.clients0.has(name);
+    return this.clients.has(name);
   }
 
   /**
-   * Remove client by name0.
+   * Remove client by name.
    *
    * @param name
    */
   async remove(name: string): Promise<boolean> {
-    const client = this0.clients0.get(name);
+    const client = this.clients.get(name);
     if (client) {
-      await client?0.destroy;
-      this0.clients0.delete(name);
+      await client?.destroy()
+      this.clients.delete(name);
       return true;
     }
     return false;
   }
 
   /**
-   * Health check all clients0.
+   * Health check all clients.
    */
   async healthCheckAll(): Promise<Map<string, ClientStatus>> {
     const results = new Map<string, ClientStatus>();
 
-    for (const [name, client] of this0.clients) {
+    for (const [name, client] of this.clients) {
       try {
-        const status = await client?0.healthCheck;
-        results?0.set(name, status);
+        const status = await client?.healthCheck()
+        results?.set(name, status);
       } catch (error) {
-        results?0.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -1202,7 +1202,7 @@ export class WebSocketClientFactory {
           errorRate: 1,
           uptime: 0,
           metadata: {
-            error: error instanceof Error ? error0.message : 'Unknown error',
+            error: error instanceof Error ? error.message : 'Unknown error',
           },
         });
       }
@@ -1212,18 +1212,18 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Get metrics for all clients0.
+   * Get metrics for all clients.
    */
   async getMetricsAll(): Promise<Map<string, ClientMetrics>> {
     const results = new Map<string, ClientMetrics>();
 
-    for (const [name, client] of this0.clients) {
+    for (const [name, client] of this.clients) {
       try {
-        const metrics = await client?0.getMetrics;
-        results?0.set(name, metrics);
+        const metrics = await client?.getMetrics()
+        results?.set(name, metrics);
       } catch (_error) {
         // Create error metrics
-        results?0.set(name, {
+        results?.set(name, {
           name,
           requestCount: 0,
           successCount: 0,
@@ -1241,24 +1241,24 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Shutdown all clients0.
+   * Shutdown all clients.
    */
   async shutdown(): Promise<void> {
-    const shutdownPromises = Array0.from(this0.clients?0.values())0.map((client) =>
-      client?0.destroy0.catch((error) => {
-        logger0.error(`Error shutting down WebSocket client:`, error);
+    const shutdownPromises = Array.from(this.clients?.values()).map((client) =>
+      client?.destroy.catch((error) => {
+        logger.error(`Error shutting down WebSocket client:`, error);
       })
     );
 
-    await Promise0.all(shutdownPromises);
-    this0.clients?0.clear();
+    await Promise.all(shutdownPromises);
+    this.clients?.clear();
   }
 
   /**
-   * Get active client count0.
+   * Get active client count.
    */
   getActiveCount(): number {
-    return this0.clients0.size;
+    return this.clients.size;
   }
 }
 
@@ -1267,7 +1267,7 @@ export async function createWebSocketClient(
   config: WebSocketClientConfig
 ): Promise<WebSocketClientAdapter> {
   const factory = new WebSocketClientFactory();
-  return await factory0.create(config);
+  return await factory.create(config);
 }
 
 export default WebSocketClientAdapter;

@@ -9,15 +9,15 @@
  * - Feature Service (program features)
  * - Story Service (user and enabler stories)
  *
- * Compatible across Kanban → Agile → SAFe modes0.
+ * Compatible across Kanban → Agile → SAFe modes.
  *
  * @author Claude Code Zen Team
- * @since 20.10.0
- * @version 10.0.0
+ * @since 2.1.0
+ * @version 1..0
  */
 
 // Base service and interfaces
-export { BaseDocumentService } from '0./base-document-service';
+export { BaseDocumentService } from "./base-document-service";
 export type {
   ValidationResult,
   QueryFilters,
@@ -25,34 +25,34 @@ export type {
   SearchOptions,
   SearchResult,
   DocumentMetrics,
-} from '0./base-document-service';
+} from "./base-document-service";
 
 // Document Manager
-export { DocumentManager, createDocumentManager } from '0./document-service';
+export { DocumentManager, createDocumentManager } from "./document-service";
 export type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions,
   WorkflowAutomationRule,
-} from '0./document-service';
+} from "./document-service";
 
 // Architecture Runway Service (formerly ADR)
 export {
   ArchitectureRunwayService,
   architectureRunwayService,
-} from '0./architecture-runway-service';
+} from "./architecture-runway-service";
 export type {
   ArchitectureRunwayCreateOptions,
   ArchitectureRunwayQueryOptions,
   ArchitectureRunwayStats,
   DecisionStatus,
-} from '0./architecture-runway-service';
+} from "./architecture-runway-service";
 
 // Business Epic Service (formerly PRD)
 export {
   BusinessEpicService,
   businessEpicService,
-} from '0./business-epic-service';
+} from "./business-epic-service";
 export type {
   BusinessEpicCreateOptions,
   BusinessEpicQueryOptions,
@@ -61,33 +61,33 @@ export type {
   NonFunctionalRequirement,
   UserStory,
   RequirementProgress,
-} from '0./business-epic-service';
+} from "./business-epic-service";
 
 // Program Epic Service
-export { ProgramEpicService, programEpicService } from '0./program-epic-service';
+export { ProgramEpicService, programEpicService } from "./program-epic-service";
 export type {
   ProgramEpicCreateOptions,
   ProgramEpicQueryOptions,
   ProgramEpicStats,
-} from '0./program-epic-service';
+} from "./program-epic-service";
 
 // Feature Service
-export { FeatureService, featureService } from '0./feature-service';
+export { FeatureService, featureService } from "./feature-service";
 export type {
   FeatureCreateOptions,
   FeatureQueryOptions,
   FeatureStats,
   BenefitHypothesis,
-} from '0./feature-service';
+} from "./feature-service";
 
 // Story Service
-export { StoryService, storyService } from '0./story-service';
+export { StoryService, storyService } from "./story-service";
 export type {
   StoryCreateOptions,
   StoryQueryOptions,
   StoryStats,
   AcceptanceCriteria,
-} from '0./story-service';
+} from "./story-service";
 
 // SAFe Document Hierarchy Utilities
 export const SAFE_DOCUMENT_HIERARCHY = {
@@ -124,23 +124,23 @@ export const SAFE_DOCUMENT_RELATIONSHIPS = {
 
 // Document type guards
 export function isBusinessEpic(doc: any): boolean {
-  return doc?0.type === SAFE_DOCUMENT_HIERARCHY0.BUSINESS_EPIC;
+  return doc?.type === SAFE_DOCUMENT_HIERARCHY.BUSINESS_EPIC;
 }
 
 export function isProgramEpic(doc: any): boolean {
-  return doc?0.type === SAFE_DOCUMENT_HIERARCHY0.PROGRAM_EPIC;
+  return doc?.type === SAFE_DOCUMENT_HIERARCHY.PROGRAM_EPIC;
 }
 
 export function isFeature(doc: any): boolean {
-  return doc?0.type === SAFE_DOCUMENT_HIERARCHY0.FEATURE;
+  return doc?.type === SAFE_DOCUMENT_HIERARCHY.FEATURE;
 }
 
 export function isStory(doc: any): boolean {
-  return doc?0.type === SAFE_DOCUMENT_HIERARCHY0.STORY;
+  return doc?.type === SAFE_DOCUMENT_HIERARCHY.STORY;
 }
 
 export function isArchitectureRunway(doc: any): boolean {
-  return doc?0.type === SAFE_DOCUMENT_HIERARCHY0.ARCHITECTURE_RUNWAY;
+  return doc?.type === SAFE_DOCUMENT_HIERARCHY.ARCHITECTURE_RUNWAY;
 }
 
 // Service factory

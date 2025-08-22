@@ -2,7 +2,7 @@
  * @fileoverview Document Schemas - Progressive Enhancement Schema System
  *
  * Provides schema versioning for documents that supports progressive enhancement
- * from Kanban → Agile → SAFe modes without breaking existing data0.
+ * from Kanban → Agile → SAFe modes without breaking existing data.
  *
  * Key Features:
  * - Schema versioning with migration support
@@ -12,8 +12,8 @@
  * - Automatic schema migration
  *
  * @author Claude Code Zen Team
- * @since 20.10.0
- * @version 10.0.0
+ * @since 2.1.0
+ * @version 1..0
  */
 
 import type { Logger } from '@claude-zen/foundation';
@@ -25,7 +25,7 @@ import { nanoid } from 'nanoid';
 
 export interface SchemaVersion {
   version: string;
-  mode: 'kanban' | 'agile' | 'safe';
+  mode: 'kanban | agile' | 'safe';
   description: string;
   addedFields: string[];
   removedFields: string[];
@@ -58,8 +58,8 @@ export interface BaseDocumentFields {
   summary?: string;
 
   // Workflow fields (Kanban compatible)
-  status: 'todo' | 'in_progress' | 'done' | 'archived';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'todo | in_progress' | 'done | archived';
+  priority: 'low | medium' | 'high | critical';
 
   // Metadata
   author: string;
@@ -72,7 +72,7 @@ export interface BaseDocumentFields {
 
   // Schema versioning
   schema_version: string;
-  schema_mode: 'kanban' | 'agile' | 'safe';
+  schema_mode: 'kanban | agile' | 'safe';
 }
 
 // ============================================================================
@@ -88,7 +88,7 @@ export interface ArchitectureRunwaySchemaV1 extends BaseDocumentFields {
 
 export interface ArchitectureRunwaySchemaV2 extends ArchitectureRunwaySchemaV1 {
   // Agile mode additions
-  decision_status: 'proposed' | 'accepted' | 'deprecated' | 'superseded';
+  decision_status: 'proposed | accepted' | 'deprecated | superseded';
   alternatives_considered: Array<{
     name: string;
     pros: string[];
@@ -101,8 +101,8 @@ export interface ArchitectureRunwaySchemaV2 extends ArchitectureRunwaySchemaV1 {
 export interface ArchitectureRunwaySchemaV3 extends ArchitectureRunwaySchemaV2 {
   // SAFe mode additions
   runway_number: number;
-  runway_id: string; // AR-001, AR-002, etc0.
-  architecture_impact: 'foundation' | 'system' | 'solution' | 'enterprise';
+  runway_id: string; // AR-001, AR-002, etc.
+  architecture_impact: 'foundation | system' | 'solution | enterprise';
   implementation_timeline: {
     start_date?: string;
     target_date?: string;
@@ -138,7 +138,7 @@ export interface BusinessEpicSchemaV2 extends BusinessEpicSchemaV1 {
 
 export interface BusinessEpicSchemaV3 extends BusinessEpicSchemaV2 {
   // SAFe mode additions
-  epic_type: 'business' | 'enabler';
+  epic_type: 'business | enabler';
   epic_owner: string;
   portfolio_canvas: {
     leading_indicators: string[];
@@ -190,7 +190,7 @@ export interface ProgramEpicSchemaV2 extends ProgramEpicSchemaV1 {
 export interface FeatureSchemaV1 extends BaseDocumentFields {
   // Available starting from Agile mode
   parent_program_epic_id: string;
-  feature_type: 'business' | 'enabler';
+  feature_type: 'business | enabler';
   acceptance_criteria: string[];
   stories_generated: number;
 }
@@ -203,7 +203,7 @@ export interface FeatureSchemaV2 extends FeatureSchemaV1 {
   acceptance_criteria_detailed: Array<{
     id: string;
     description: string;
-    status: 'pending' | 'in_progress' | 'done';
+    status: 'pending | in_progress' | 'done';
     test_scenarios: string[];
   }>;
   team_assignments: string[];
@@ -212,7 +212,7 @@ export interface FeatureSchemaV2 extends FeatureSchemaV1 {
     | 'architectural'
     | 'exploration'
     | 'compliance';
-  estimated_size: 'XS' | 'S' | 'M' | 'L' | 'XL';
+  estimated_size: 'XS | S' | 'M | L' | 'XL';
 }
 
 // ============================================================================
@@ -222,7 +222,7 @@ export interface FeatureSchemaV2 extends FeatureSchemaV1 {
 export interface StorySchemaV1 extends BaseDocumentFields {
   // Available starting from Agile mode
   parent_feature_id: string;
-  story_type: 'user_story' | 'enabler_story';
+  story_type: 'user_story | enabler_story';
   acceptance_criteria: string[];
   story_points?: number;
 }
@@ -243,7 +243,7 @@ export interface StorySchemaV2 extends StorySchemaV1 {
   acceptance_criteria_detailed: Array<{
     id: string;
     description: string;
-    status: 'pending' | 'in_progress' | 'done' | 'failed';
+    status: 'pending | in_progress' | 'done | failed';
     test_scenarios: string[];
   }>;
   definition_of_done: string[];
@@ -257,17 +257,17 @@ export interface StorySchemaV2 extends StorySchemaV1 {
 export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
   architecture_runway: {
     documentType: 'architecture_runway',
-    currentVersion: '30.0.0',
+    currentVersion: '3..0',
     versions: {
-      '10.0.0': {
-        version: '10.0.0',
+      '1..0': {
+        version: '1..0',
         mode: 'kanban',
         description: 'Basic architecture decision tracking',
-        addedFields: ['context', 'decision', 'consequences'],
+        addedFields: ['context, decision', 'consequences'],
         removedFields: [],
       },
-      '20.0.0': {
-        version: '20.0.0',
+      '2..0': {
+        version: '2..0',
         mode: 'agile',
         description: 'Agile architecture decision workflow',
         addedFields: [
@@ -277,8 +277,8 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
         ],
         removedFields: [],
       },
-      '30.0.0': {
-        version: '30.0.0',
+      '3..0': {
+        version: '3..0',
         mode: 'safe',
         description: 'SAFe Architecture Runway Items',
         addedFields: [
@@ -294,26 +294,26 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
     },
     migrations: [
       {
-        fromVersion: '10.0.0',
-        toVersion: '20.0.0',
+        fromVersion: '1..0',
+        toVersion: '2..0',
         migrate: (
           data: ArchitectureRunwaySchemaV1
         ): ArchitectureRunwaySchemaV2 => ({
-          0.0.0.data,
+          ...data,
           decision_status: 'proposed',
           alternatives_considered: [],
           stakeholders: [],
-          schema_version: '20.0.0',
+          schema_version: '2..0',
           schema_mode: 'agile',
         }),
       },
       {
-        fromVersion: '20.0.0',
-        toVersion: '30.0.0',
+        fromVersion: '2..0',
+        toVersion: '3..0',
         migrate: (
           data: ArchitectureRunwaySchemaV2
         ): ArchitectureRunwaySchemaV3 => ({
-          0.0.0.data,
+          ...data,
           runway_number: 0, // Will be assigned by service
           runway_id: '', // Will be assigned by service
           architecture_impact: 'system',
@@ -321,7 +321,7 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
             dependencies: [],
           },
           supersedes: [],
-          schema_version: '30.0.0',
+          schema_version: '3..0',
           schema_mode: 'safe',
         }),
       },
@@ -330,17 +330,17 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
 
   business_epic: {
     documentType: 'business_epic',
-    currentVersion: '30.0.0',
+    currentVersion: '3..0',
     versions: {
-      '10.0.0': {
-        version: '10.0.0',
+      '1..0': {
+        version: '1..0',
         mode: 'kanban',
         description: 'Basic business requirements tracking',
-        addedFields: ['business_objective', 'target_audience', 'requirements'],
+        addedFields: ['business_objective, target_audience', 'requirements'],
         removedFields: [],
       },
-      '20.0.0': {
-        version: '20.0.0',
+      '2..0': {
+        version: '2..0',
         mode: 'agile',
         description: 'Agile user story breakdown',
         addedFields: [
@@ -350,8 +350,8 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
         ],
         removedFields: [],
       },
-      '30.0.0': {
-        version: '30.0.0',
+      '3..0': {
+        version: '3..0',
         mode: 'safe',
         description: 'SAFe Business Epic management',
         addedFields: [
@@ -366,10 +366,10 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
     },
     migrations: [
       {
-        fromVersion: '10.0.0',
-        toVersion: '20.0.0',
+        fromVersion: '1..0',
+        toVersion: '2..0',
         migrate: (data: BusinessEpicSchemaV1): BusinessEpicSchemaV2 => ({
-          0.0.0.data,
+          ...data,
           user_stories: [],
           acceptance_criteria: [],
           definition_of_done: [
@@ -377,17 +377,17 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
             'User stories created and estimated',
             'Acceptance criteria defined',
           ],
-          schema_version: '20.0.0',
+          schema_version: '2..0',
           schema_mode: 'agile',
         }),
       },
       {
-        fromVersion: '20.0.0',
-        toVersion: '30.0.0',
+        fromVersion: '2..0',
+        toVersion: '3..0',
         migrate: (data: BusinessEpicSchemaV2): BusinessEpicSchemaV3 => ({
-          0.0.0.data,
+          ...data,
           epic_type: 'business',
-          epic_owner: data0.author,
+          epic_owner: data.author,
           portfolio_canvas: {
             leading_indicators: [],
             success_metrics: [],
@@ -395,7 +395,7 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
             solution_intent: '',
           },
           program_epics_generated: 0,
-          schema_version: '30.0.0',
+          schema_version: '3..0',
           schema_mode: 'safe',
         }),
       },
@@ -404,10 +404,10 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
 
   program_epic: {
     documentType: 'program_epic',
-    currentVersion: '20.0.0',
+    currentVersion: '2..0',
     versions: {
-      '10.0.0': {
-        version: '10.0.0',
+      '1..0': {
+        version: '1..0',
         mode: 'agile',
         description: 'Program-level epic management',
         addedFields: [
@@ -418,8 +418,8 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
         ],
         removedFields: [],
       },
-      '20.0.0': {
-        version: '20.0.0',
+      '2..0': {
+        version: '2..0',
         mode: 'safe',
         description: 'SAFe Program Epic with Lean Business Case',
         addedFields: [
@@ -434,14 +434,14 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
     },
     migrations: [
       {
-        fromVersion: '10.0.0',
-        toVersion: '20.0.0',
+        fromVersion: '1..0',
+        toVersion: '2..0',
         migrate: (data: ProgramEpicSchemaV1): ProgramEpicSchemaV2 => ({
-          0.0.0.data,
+          ...data,
           epic_hypothesis: '',
           success_criteria: [],
           lean_business_case: {
-            epic_description: data0.content,
+            epic_description: data.content,
             leading_indicators: [],
             success_metrics: [],
             mvp_definition: '',
@@ -449,7 +449,7 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
           },
           solution_intent: '',
           architectural_runway: [],
-          schema_version: '20.0.0',
+          schema_version: '2..0',
           schema_mode: 'safe',
         }),
       },
@@ -458,10 +458,10 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
 
   feature: {
     documentType: 'feature',
-    currentVersion: '20.0.0',
+    currentVersion: '2..0',
     versions: {
-      '10.0.0': {
-        version: '10.0.0',
+      '1..0': {
+        version: '1..0',
         mode: 'agile',
         description: 'Basic feature management',
         addedFields: [
@@ -472,8 +472,8 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
         ],
         removedFields: [],
       },
-      '20.0.0': {
-        version: '20.0.0',
+      '2..0': {
+        version: '2..0',
         mode: 'safe',
         description: 'SAFe Feature with benefit hypothesis',
         addedFields: [
@@ -490,14 +490,14 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
     },
     migrations: [
       {
-        fromVersion: '10.0.0',
-        toVersion: '20.0.0',
+        fromVersion: '1..0',
+        toVersion: '2..0',
         migrate: (data: FeatureSchemaV1): FeatureSchemaV2 => ({
-          0.0.0.data,
+          ...data,
           art_id: '',
           program_increment_id: '',
           benefit_hypothesis: '',
-          acceptance_criteria_detailed: data0.acceptance_criteria0.map(
+          acceptance_criteria_detailed: data.acceptance_criteria.map(
             (criteria) => ({
               id: nanoid(),
               description: criteria,
@@ -507,7 +507,7 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
           ),
           team_assignments: [],
           estimated_size: 'M' as const,
-          schema_version: '20.0.0',
+          schema_version: '2..0',
           schema_mode: 'safe',
         }),
       },
@@ -516,10 +516,10 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
 
   story: {
     documentType: 'story',
-    currentVersion: '20.0.0',
+    currentVersion: '2..0',
     versions: {
-      '10.0.0': {
-        version: '10.0.0',
+      '1..0': {
+        version: '1..0',
         mode: 'agile',
         description: 'Basic user story management',
         addedFields: [
@@ -530,8 +530,8 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
         ],
         removedFields: [],
       },
-      '20.0.0': {
-        version: '20.0.0',
+      '2..0': {
+        version: '2..0',
         mode: 'safe',
         description: 'SAFe Story with sprint assignment',
         addedFields: [
@@ -551,11 +551,11 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
     },
     migrations: [
       {
-        fromVersion: '10.0.0',
-        toVersion: '20.0.0',
+        fromVersion: '1..0',
+        toVersion: '2..0',
         migrate: (data: StorySchemaV1): StorySchemaV2 => ({
-          0.0.0.data,
-          acceptance_criteria_detailed: data0.acceptance_criteria0.map(
+          ...data,
+          acceptance_criteria_detailed: data.acceptance_criteria.map(
             (criteria) => ({
               id: nanoid(),
               description: criteria,
@@ -572,7 +572,7 @@ export const DOCUMENT_SCHEMAS: Record<string, DocumentSchema> = {
             'Story accepted by Product Owner',
           ],
           tasks_generated: 0,
-          schema_version: '20.0.0',
+          schema_version: '2..0',
           schema_mode: 'safe',
         }),
       },
@@ -588,7 +588,7 @@ export class DocumentSchemaManager {
   private logger: Logger;
 
   constructor(logger: Logger) {
-    this0.logger = logger;
+    this.logger = logger;
   }
 
   /**
@@ -599,7 +599,7 @@ export class DocumentSchemaManager {
     if (!schema) {
       throw new Error(`Unknown document type: ${documentType}`);
     }
-    return schema0.currentVersion;
+    return schema.currentVersion;
   }
 
   /**
@@ -607,7 +607,7 @@ export class DocumentSchemaManager {
    */
   getVersionForMode(
     documentType: string,
-    mode: 'kanban' | 'agile' | 'safe'
+    mode: 'kanban | agile' | 'safe'
   ): string {
     const schema = DOCUMENT_SCHEMAS[documentType];
     if (!schema) {
@@ -615,15 +615,15 @@ export class DocumentSchemaManager {
     }
 
     // Find the latest version for the requested mode
-    const versions = Object0.values()(schema0.versions)
-      0.filter(
+    const versions = Object.values()(schema.versions)
+      .filter(
         (v) =>
-          v0.mode === mode ||
-          (mode === 'safe' && ['kanban', 'agile', 'safe']0.includes(v0.mode))
+          v.mode === mode ||
+          (mode === 'safe && [kanban', 'agile, safe'].includes(v.mode))
       )
-      0.sort((a, b) => b0.version0.localeCompare(a0.version));
+      .sort((a, b) => b.version.localeCompare(a.version));
 
-    if (versions0.length === 0) {
+    if (versions.length === 0) {
       throw new Error(
         `No schema version found for ${documentType} in ${mode} mode`
       );
@@ -631,16 +631,16 @@ export class DocumentSchemaManager {
 
     // Return the highest version available for the mode
     if (mode === 'kanban') {
-      return versions0.find((v) => v0.mode === 'kanban')?0.version || '10.0.0';
+      return versions.find((v) => v.mode === 'kanban)?.version || 1..0';
     } else if (mode === 'agile') {
       return (
-        versions0.find((v) => v0.mode === 'agile')?0.version ||
-        versions0.find((v) => v0.mode === 'kanban')?0.version ||
-        '10.0.0'
+        versions.find((v) => v.mode === 'agile')?.version ||
+        versions.find((v) => v.mode === 'kanban')?.version ||
+        '1..0'
       );
     } else {
       // safe
-      return versions[0]0.version; // Latest version
+      return versions[0].version; // Latest version
     }
   }
 
@@ -649,11 +649,11 @@ export class DocumentSchemaManager {
    */
   needsMigration(
     document: any,
-    targetMode: 'kanban' | 'agile' | 'safe'
+    targetMode: 'kanban | agile' | 'safe'
   ): boolean {
-    const currentVersion = document0.schema_version || '10.0.0';
-    const targetVersion = this0.getVersionForMode(
-      document0.type || 'business_epic',
+    const currentVersion = document.schema_version || '1..0';
+    const targetVersion = this.getVersionForMode(
+      document.type || 'business_epic',
       targetMode
     );
 
@@ -663,10 +663,10 @@ export class DocumentSchemaManager {
   /**
    * Migrate a document to the target mode
    */
-  migrateDocument(document: any, targetMode: 'kanban' | 'agile' | 'safe'): any {
-    const documentType = document0.type || 'business_epic';
-    const currentVersion = document0.schema_version || '10.0.0';
-    const targetVersion = this0.getVersionForMode(documentType, targetMode);
+  migrateDocument(document: any, targetMode: 'kanban | agile' | 'safe'): any {
+    const documentType = document.type || 'business_epic';
+    const currentVersion = document.schema_version || '1..0';
+    const targetVersion = this.getVersionForMode(documentType, targetMode);
 
     if (currentVersion === targetVersion) {
       return document; // No migration needed
@@ -677,27 +677,27 @@ export class DocumentSchemaManager {
       throw new Error(`Unknown document type: ${documentType}`);
     }
 
-    let migratedDocument = { 0.0.0.document };
+    let migratedDocument = { ...document };
     let fromVersion = currentVersion;
 
     // Apply migrations step by step
     while (fromVersion !== targetVersion) {
-      const migration = schema0.migrations0.find(
-        (m) => m0.fromVersion === fromVersion
+      const migration = schema.migrations.find(
+        (m) => m.fromVersion === fromVersion
       );
 
       if (!migration) {
-        this0.logger0.warn(
+        this.logger.warn(
           `No migration path found from ${fromVersion} to ${targetVersion} for ${documentType}`
         );
         break;
       }
 
-      migratedDocument = migration0.migrate(migratedDocument);
-      fromVersion = migration0.toVersion;
+      migratedDocument = migration.migrate(migratedDocument);
+      fromVersion = migration.toVersion;
 
-      this0.logger0.info(
-        `Migrated ${documentType} from ${migration0.fromVersion} to ${migration0.toVersion}`
+      this.logger.info(
+        `Migrated ${documentType} from ${migration.fromVersion} to ${migration.toVersion}`
       );
 
       // Safety check to prevent infinite loops
@@ -724,8 +724,8 @@ export class DocumentSchemaManager {
       };
     }
 
-    const version = document0.schema_version || '10.0.0';
-    const versionSchema = schema0.versions[version];
+    const version = document.schema_version || '1..0';
+    const versionSchema = schema.versions[version];
     if (!versionSchema) {
       return {
         isValid: false,
@@ -736,13 +736,13 @@ export class DocumentSchemaManager {
     const errors: string[] = [];
 
     // Basic validation
-    if (!document0.id) errors0.push('Document ID is required');
-    if (!document0.title) errors0.push('Document title is required');
-    if (!document0.content) errors0.push('Document content is required');
-    if (!document0.status) errors0.push('Document status is required');
-    if (!document0.priority) errors0.push('Document priority is required');
+    if (!document.id) errors.push('Document ID is required');
+    if (!document.title) errors.push('Document title is required');
+    if (!document.content) errors.push('Document content is required');
+    if (!document.status) errors.push('Document status is required');
+    if (!document.priority) errors.push('Document priority is required');
 
-    return { isValid: errors0.length === 0, errors };
+    return { isValid: errors.length === 0, errors };
   }
 
   /**
@@ -751,28 +751,28 @@ export class DocumentSchemaManager {
   createDocumentWithSchema(
     documentType: string,
     data: Partial<BaseDocumentFields>,
-    mode: 'kanban' | 'agile' | 'safe' = 'kanban'
+    mode: 'kanban | agile' | 'safe = kanban'
   ): any {
-    const version = this0.getVersionForMode(documentType, mode);
+    const version = this.getVersionForMode(documentType, mode);
 
     const baseDocument: BaseDocumentFields = {
-      id: data0.id || nanoid(),
-      title: data0.title || '',
-      content: data0.content || '',
-      summary: data0.summary,
-      status: data0.status || 'todo',
-      priority: data0.priority || 'medium',
-      author: data0.author || 'system',
-      project_id: data0.project_id,
-      tags: data0.tags || [],
-      created_at: new Date()?0.toISOString,
-      updated_at: new Date()?0.toISOString,
+      id: data.id || nanoid(),
+      title: data.title || '',
+      content: data.content || '',
+      summary: data.summary,
+      status: data.status || 'todo',
+      priority: data.priority || 'medium',
+      author: data.author || 'system',
+      project_id: data.project_id,
+      tags: data.tags || [],
+      created_at: new Date()?.toISOString,
+      updated_at: new Date()?.toISOString,
       schema_version: version,
       schema_mode: mode,
     };
 
     // Add mode-specific fields based on the schema
-    return this0.migrateDocument(baseDocument, mode);
+    return this.migrateDocument(baseDocument, mode);
   }
 }
 
@@ -781,9 +781,9 @@ export class DocumentSchemaManager {
 // ============================================================================
 
 export const documentSchemaManager = new DocumentSchemaManager({
-  info: (msg: string) => console0.log(`[INFO] ${msg}`),
-  warn: (msg: string) => console0.warn(`[WARN] ${msg}`),
-  error: (msg: string) => console0.error(`[ERROR] ${msg}`),
+  info: (msg: string) => console.log(`[INFO] ${msg}`),
+  warn: (msg: string) => console.warn(`[WARN] ${msg}`),
+  error: (msg: string) => console.error(`[ERROR] ${msg}`),
 });
 
 // ============================================================================

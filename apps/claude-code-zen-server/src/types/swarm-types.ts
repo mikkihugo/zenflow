@@ -2,13 +2,13 @@
  * @fileoverview Shared Type Definitions for Swarm Operations
  *
  * Common types used across all interfaces (stdio MCP, HTTP API, HTTP MCP)
- * to ensure consistency in swarm coordination functionality0.
+ * to ensure consistency in swarm coordination functionality.
  */
 
 export interface SwarmConfig {
-  topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  topology: 'mesh | hierarchical' | 'ring | star';
   maxAgents?: number;
-  strategy?: 'balanced' | 'specialized' | 'adaptive' | 'parallel';
+  strategy?: 'balanced | specialized' | 'adaptive | parallel';
   features?: {
     cognitive_diversity?: boolean;
     neural_networks?: boolean;
@@ -40,8 +40,8 @@ export interface AgentConfig {
 
 export interface TaskOrchestrationConfig {
   task: string;
-  strategy?: 'parallel' | 'sequential' | 'adaptive';
-  priority?: 'low' | 'medium' | 'high' | 'critical';
+  strategy?: 'parallel | sequential' | 'adaptive';
+  priority?: 'low | medium' | 'high | critical';
   maxAgents?: number;
   timeout?: number;
   requirements?: {
@@ -52,8 +52,8 @@ export interface TaskOrchestrationConfig {
   };
 }
 
-export type SwarmStatus = 'initializing' | 'active' | 'paused' | 'terminated';
-export type AgentStatus = 'idle' | 'busy' | 'error' | 'offline';
+export type SwarmStatus = 'initializing | active' | 'paused | terminated';
+export type AgentStatus = 'idle | busy' | 'error | offline';
 export type TaskStatus =
   | 'pending'
   | 'running'
@@ -62,7 +62,7 @@ export type TaskStatus =
   | 'failed';
 
 export interface MemoryConfig {
-  action: 'store' | 'retrieve' | 'list' | 'delete';
+  action: 'store | retrieve' | 'list | delete';
   key?: string;
   value?: any;
   pattern?: string;
@@ -84,7 +84,7 @@ export interface NeuralConfig {
 }
 
 export interface BenchmarkConfig {
-  type?: 'all' | 'wasm' | 'swarm' | 'agent' | 'task' | 'neural';
+  type?: 'all | wasm' | 'swarm | agent' | 'task | neural';
   iterations?: number;
   duration?: number;
   agents?: number;
@@ -157,7 +157,7 @@ export const SwarmConfigSchema = {
   properties: {
     topology: {
       type: 'string',
-      enum: ['mesh', 'hierarchical', 'ring', 'star'],
+      enum: ['mesh, hierarchical', 'ring, star'],
     },
     maxAgents: {
       type: 'number',
@@ -167,7 +167,7 @@ export const SwarmConfigSchema = {
     },
     strategy: {
       type: 'string',
-      enum: ['balanced', 'specialized', 'adaptive', 'parallel'],
+      enum: ['balanced, specialized', 'adaptive, parallel'],
       default: 'adaptive',
     },
   },
@@ -225,12 +225,12 @@ export const TaskOrchestrationSchema = {
     },
     strategy: {
       type: 'string',
-      enum: ['parallel', 'sequential', 'adaptive'],
+      enum: ['parallel, sequential', 'adaptive'],
       default: 'adaptive',
     },
     priority: {
       type: 'string',
-      enum: ['low', 'medium', 'high', 'critical'],
+      enum: ['low, medium', 'high, critical'],
       default: 'medium',
     },
     maxAgents: {

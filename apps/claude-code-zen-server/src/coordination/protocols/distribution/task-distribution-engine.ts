@@ -1,16 +1,16 @@
 /**
  * Advanced Task Distribution Engine
  * Provides intelligent task decomposition, optimal agent assignment,
- * dynamic work redistribution, and priority-based scheduling0.
+ * dynamic work redistribution, and priority-based scheduling.
  */
 /**
- * @file Task-distribution processing engine0.
+ * @file Task-distribution processing engine.
  */
 
 import type { Logger } from '@claude-zen/foundation';
 import { TypedEventBase } from '@claude-zen/foundation';
 
-import type { EventBusInterface as EventBus } from '0.0./0.0./core/event-bus';
+import type { EventBusInterface as EventBus } from './../core/event-bus';
 
 // Core types for task distribution
 export interface TaskDefinition {
@@ -32,7 +32,7 @@ export interface TaskDefinition {
 
 export interface TaskDependency {
   taskId: string;
-  type: 'blocking' | 'soft' | 'data' | 'resource';
+  type: 'blocking | soft' | 'data | resource';
   weight: number;
   condition?: string;
 }
@@ -68,11 +68,11 @@ export interface TaskConstraints {
   completeBefore?: Date;
   maxRetries: number;
   timeoutMs: number;
-  isolationLevel: 'none' | 'process' | 'container' | 'vm';
-  securityLevel: 'low' | 'medium' | 'high' | 'critical';
+  isolationLevel: 'none | process' | 'container | vm';
+  securityLevel: 'low | medium' | 'high | critical';
 }
 
-export type TaskPriority = 'low' | 'normal' | 'high' | 'urgent' | 'critical';
+export type TaskPriority = 'low | normal' | 'high | urgent' | 'critical';
 export type TaskComplexity =
   | 'trivial'
   | 'simple'
@@ -122,7 +122,7 @@ export interface SubTask {
 }
 
 export interface ExecutionPlan {
-  strategy: 'sequential' | 'parallel' | 'pipeline' | 'adaptive';
+  strategy: 'sequential | parallel' | 'pipeline | adaptive';
   phases: ExecutionPhase[];
   checkpoints: Checkpoint[];
   rollbackPlan: RollbackStep[];
@@ -146,8 +146,8 @@ export interface Checkpoint {
 
 export interface ValidationRule {
   condition: string;
-  severity: 'warning' | 'error' | 'critical';
-  action: 'continue' | 'pause' | 'rollback' | 'fail';
+  severity: 'warning | error' | 'critical';
+  action: 'continue | pause' | 'rollback | fail';
 }
 
 export interface RollbackStep {
@@ -157,11 +157,11 @@ export interface RollbackStep {
 }
 
 export interface CoordinationStrategy {
-  type: 'centralized' | 'distributed' | 'hierarchical' | 'peer-to-peer';
+  type: 'centralized | distributed' | 'hierarchical | peer-to-peer';
   coordinator?: string;
-  communicationPattern: 'broadcast' | 'multicast' | 'point-to-point' | 'gossip';
+  communicationPattern: 'broadcast | multicast' | 'point-to-point | gossip';
   syncPoints: string[];
-  conflictResolution: 'priority' | 'consensus' | 'coordinator' | 'voting';
+  conflictResolution: 'priority | consensus' | 'coordinator | voting';
 }
 
 export interface AgentCapability {
@@ -194,13 +194,13 @@ export interface PerformanceMetrics {
 
 export interface PerformanceTrend {
   metric: string;
-  direction: 'improving' | 'stable' | 'declining';
+  direction: 'improving | stable' | 'declining';
   slope: number;
   confidence: number;
 }
 
 export interface AvailabilityProfile {
-  currentStatus: 'available' | 'busy' | 'maintenance' | 'offline';
+  currentStatus: 'available | busy' | 'maintenance | offline';
   utilization: number;
   predictedAvailability: PredictedSlot[];
   workingHours?: { start: number; end: number };
@@ -217,7 +217,7 @@ export interface PredictedSlot {
 export interface TimeWindow {
   start: Date;
   end: Date;
-  recurring?: 'daily' | 'weekly' | 'monthly';
+  recurring?: 'daily | weekly' | 'monthly';
   description?: string;
 }
 
@@ -262,16 +262,16 @@ export interface AssignmentMonitoring {
 }
 
 export interface QualityCheck {
-  checkType: 'progress' | 'output' | 'resource' | 'performance';
+  checkType: 'progress | output' | 'resource | performance';
   frequency: number;
   threshold: number;
-  action: 'warn' | 'escalate' | 'reassign' | 'terminate';
+  action: 'warn | escalate' | 'reassign | terminate';
 }
 
 export interface EscalationTrigger {
   condition: string;
   threshold: number;
-  action: 'notify' | 'reassign' | 'add_agents' | 'priority_boost';
+  action: 'notify | reassign' | 'add_agents | priority_boost';
   target?: string;
 }
 
@@ -291,7 +291,7 @@ export interface DistributionMetrics {
 }
 
 /**
- * Advanced Task Distribution Engine with ML-based optimization0.
+ * Advanced Task Distribution Engine with ML-based optimization.
  *
  * @example
  */
@@ -308,7 +308,7 @@ export class TaskDistributionEngine extends TypedEventBase {
   private performancePredictor: PerformancePredictor;
   private failureHandler: FailureHandler;
   private metrics: DistributionMetrics;
-  private processingInterval?: NodeJS0.Timeout;
+  private processingInterval?: NodeJS.Timeout;
 
   constructor(
     private configuration: {
@@ -324,133 +324,133 @@ export class TaskDistributionEngine extends TypedEventBase {
   ) {
     super();
 
-    this0.queue = new TaskQueue(this0.logger);
-    // this0._scheduler = new TaskScheduler(this0.configuration, this0.logger);
-    this0.decomposer = new TaskDecomposer(this0.logger);
-    this0.assignmentOptimizer = new AssignmentOptimizer(
-      this0.configuration,
-      this0.logger
+    this.queue = new TaskQueue(this.logger);
+    // this._scheduler = new TaskScheduler(this.configuration, this.logger);
+    this.decomposer = new TaskDecomposer(this.logger);
+    this.assignmentOptimizer = new AssignmentOptimizer(
+      this.configuration,
+      this.logger
     );
-    this0.workloadBalancer = new WorkloadBalancer(
-      this0.configuration,
-      this0.logger
+    this.workloadBalancer = new WorkloadBalancer(
+      this.configuration,
+      this.logger
     );
-    this0.performancePredictor = new PerformancePredictor(this0.logger);
-    this0.failureHandler = new FailureHandler(this0.logger);
+    this.performancePredictor = new PerformancePredictor(this.logger);
+    this.failureHandler = new FailureHandler(this.logger);
 
-    this0.metrics = this?0.initializeMetrics;
-    this?0.setupEventHandlers;
-    this?0.startProcessing;
+    this.metrics = this.initializeMetrics;
+    this.setupEventHandlers;
+    this.startProcessing;
   }
 
   private setupEventHandlers(): void {
-    this0.eventBus0.on('agent:registered', (data: any) => {
-      this0.handleAgentRegistration(data);
+    this.eventBus.on('agent:registered', (data: any) => {
+      this.handleAgentRegistration(data);
     });
 
-    this0.eventBus0.on('agent:capabilities-updated', (data: any) => {
-      this0.handleAgentCapabilitiesUpdate(data);
+    this.eventBus.on('agent:capabilities-updated', (data: any) => {
+      this.handleAgentCapabilitiesUpdate(data);
     });
 
-    this0.eventBus0.on('agent:performance-update', (data: any) => {
-      this0.handleAgentPerformanceUpdate(data);
+    this.eventBus.on('agent:performance-update', (data: any) => {
+      this.handleAgentPerformanceUpdate(data);
     });
 
-    this0.eventBus0.on('task:progress-update', (data: any) => {
-      this0.handleTaskProgressUpdate(data);
+    this.eventBus.on('task:progress-update', (data: any) => {
+      this.handleTaskProgressUpdate(data);
     });
 
-    this0.eventBus0.on('task:completed', (data: any) => {
-      this0.handleTaskCompletion(data);
+    this.eventBus.on('task:completed', (data: any) => {
+      this.handleTaskCompletion(data);
     });
 
-    this0.eventBus0.on('task:failed', (data: any) => {
-      this0.handleTaskFailure(data);
+    this.eventBus.on('task:failed', (data: any) => {
+      this.handleTaskFailure(data);
     });
 
-    this0.eventBus0.on('agent:unavailable', (data: any) => {
-      this0.handleAgentUnavailable(data);
+    this.eventBus.on('agent:unavailable', (data: any) => {
+      this.handleAgentUnavailable(data);
     });
   }
 
   /**
-   * Submit a task for distribution0.
+   * Submit a task for distribution.
    *
    * @param taskDef
    */
   async submitTask(
-    taskDef: Omit<TaskDefinition, 'id' | 'created'>
+    taskDef: Omit<TaskDefinition, 'id | created'>
   ): Promise<string> {
     const task: TaskDefinition = {
-      0.0.0.taskDef,
-      id: this?0.generateTaskId,
+      ...taskDef,
+      id: this.generateTaskId,
       created: new Date(),
     };
 
-    this0.tasks0.set(task0.id, task);
-    this0.metrics0.totalTasks++;
+    this.tasks.set(task.id, task);
+    this.metrics.totalTasks++;
 
-    this0.logger0.info('Task submitted for distribution', {
-      taskId: task0.id,
-      name: task0.name,
-      priority: task0.priority,
-      complexity: task0.complexity,
+    this.logger.info('Task submitted for distribution', {
+      taskId: task.id,
+      name: task.name,
+      priority: task.priority,
+      complexity: task.complexity,
     });
 
     // Decompose complex tasks
-    if (task0.complexity === 'complex' || task0.complexity === 'expert') {
-      const decomposed = await this0.decomposer0.decompose(task);
-      this0.decomposedTasks0.set(task0.id, decomposed);
+    if (task.complexity === 'complex || task.complexity === expert') {
+      const decomposed = await this.decomposer.decompose(task);
+      this.decomposedTasks.set(task.id, decomposed);
 
       // Submit subtasks
-      for (const subtask of decomposed0.subtasks) {
-        await this0.queue0.enqueue(this0.subtaskToTask(subtask, task0.id));
+      for (const subtask of decomposed.subtasks) {
+        await this.queue.enqueue(this.subtaskToTask(subtask, task.id));
       }
     } else {
-      await this0.queue0.enqueue(task);
+      await this.queue.enqueue(task);
     }
 
-    this0.emit('task:submitted', { taskId: task0.id, task });
-    return task0.id;
+    this.emit('task:submitted', { taskId: task.id, task });
+    return task.id;
   }
 
   /**
-   * Register an agent's capabilities0.
+   * Register an agent's capabilities.
    *
    * @param agentCapability
    */
   async registerAgent(agentCapability: AgentCapability): Promise<void> {
-    this0.agentCapabilities0.set(agentCapability0.agentId, agentCapability);
+    this.agentCapabilities.set(agentCapability.agentId, agentCapability);
 
-    this0.logger0.info('Agent registered for task distribution', {
-      agentId: agentCapability0.agentId,
-      capabilities: agentCapability0.capabilities,
-      maxLoad: agentCapability0.maxLoad,
+    this.logger.info('Agent registered for task distribution', {
+      agentId: agentCapability.agentId,
+      capabilities: agentCapability.capabilities,
+      maxLoad: agentCapability.maxLoad,
     });
 
-    this0.emit('agent:registered', { agentId: agentCapability0.agentId });
+    this.emit('agent:registered', { agentId: agentCapability.agentId });
 
     // Trigger assignment optimization
-    await this?0.optimizeAssignments;
+    await this.optimizeAssignments;
   }
 
   /**
-   * Get current distribution metrics0.
+   * Get current distribution metrics.
    */
   getMetrics(): DistributionMetrics {
-    return { 0.0.0.this0.metrics };
+    return { ...this.metrics };
   }
 
   /**
-   * Get task status0.
+   * Get task status.
    *
    * @param taskId
    */
   getTaskStatus(taskId: string): TaskStatus | undefined {
-    const task = this0.tasks0.get(taskId);
+    const task = this.tasks.get(taskId);
     if (!task) return undefined;
 
-    const assignment = this0.assignments0.get(taskId);
+    const assignment = this.assignments.get(taskId);
     if (!assignment) return 'pending';
 
     // Status would be tracked through agent feedback
@@ -458,7 +458,7 @@ export class TaskDistributionEngine extends TypedEventBase {
   }
 
   /**
-   * Cancel a task0.
+   * Cancel a task.
    *
    * @param taskId
    * @param reason
@@ -467,37 +467,37 @@ export class TaskDistributionEngine extends TypedEventBase {
     taskId: string,
     reason: CancellationReason
   ): Promise<boolean> {
-    const task = this0.tasks0.get(taskId);
+    const task = this.tasks.get(taskId);
     if (!task) return false;
 
-    const assignment = this0.assignments0.get(taskId);
+    const assignment = this.assignments.get(taskId);
     if (assignment) {
       // Notify agent to cancel
-      this0.eventBus0.emit('task:cancel', {
+      this.eventBus.emit('task:cancel', {
         taskId,
-        agentId: assignment0.agentId,
+        agentId: assignment.agentId,
         reason,
         cancelledBy: 'task-distribution-engine',
         rollbackRequired: true,
         affectedDependencies: [],
         timestamp: new Date(),
         source: 'task-distribution-engine',
-        id: `task-cancel-${taskId}-${Date0.now()}`,
-        version: '10.0.0',
+        id: `task-cancel-${taskId}-${Date.now()}`,
+        version: '1..0',
       });
     }
 
-    await this0.queue0.remove(taskId);
-    this0.assignments0.delete(taskId);
+    await this.queue.remove(taskId);
+    this.assignments.delete(taskId);
 
-    this0.logger0.info('Task cancelled', { taskId, reason });
-    this0.emit('task:cancelled', { taskId, reason });
+    this.logger.info('Task cancelled', { taskId, reason });
+    this.emit('task:cancelled', { taskId, reason });
 
     return true;
   }
 
   /**
-   * Reassign a task to a different agent0.
+   * Reassign a task to a different agent.
    *
    * @param taskId
    * @param reason
@@ -506,39 +506,39 @@ export class TaskDistributionEngine extends TypedEventBase {
     taskId: string,
     reason: CancellationReason
   ): Promise<boolean> {
-    const task = this0.tasks0.get(taskId);
-    const currentAssignment = this0.assignments0.get(taskId);
+    const task = this.tasks.get(taskId);
+    const currentAssignment = this.assignments.get(taskId);
 
     if (!(task && currentAssignment)) return false;
 
     // Remove current assignment
-    this0.assignments0.delete(taskId);
+    this.assignments.delete(taskId);
 
     // Update agent availability
-    const agent = this0.agentCapabilities0.get(currentAssignment?0.agentId);
+    const agent = this.agentCapabilities.get(currentAssignment?.agentId);
     if (agent) {
-      agent0.currentLoad = Math0.max(0, agent0.currentLoad - 1);
+      agent.currentLoad = Math.max(0, agent.currentLoad - 1);
     }
 
     // Re-queue for assignment
-    await this0.queue0.enqueue(task);
+    await this.queue.enqueue(task);
 
-    this0.logger0.info('Task reassigned', {
+    this.logger.info('Task reassigned', {
       taskId,
       reason,
-      previousAgent: currentAssignment?0.agentId,
+      previousAgent: currentAssignment?.agentId,
     });
-    this0.emit('task:reassigned', {
+    this.emit('task:reassigned', {
       taskId,
       reason,
-      previousAgent: currentAssignment?0.agentId,
+      previousAgent: currentAssignment?.agentId,
     });
 
     return true;
   }
 
   /**
-   * Get queue status0.
+   * Get queue status.
    */
   getQueueStatus(): {
     pending: number;
@@ -550,18 +550,18 @@ export class TaskDistributionEngine extends TypedEventBase {
       utilization: Record<string, number>;
     };
   } {
-    const pendingTasks = this0.queue?0.size;
-    const processingTasks = this0.assignments0.size;
+    const pendingTasks = this.queue?.size()
+    const processingTasks = this.assignments.size;
 
     let availableAgents = 0;
     let busyAgents = 0;
     let offlineAgents = 0;
     const utilization: Record<string, number> = {};
 
-    for (const [agentId, agent] of this0.agentCapabilities) {
-      utilization[agentId] = agent0.currentLoad / agent0.maxLoad;
+    for (const [agentId, agent] of this.agentCapabilities) {
+      utilization[agentId] = agent.currentLoad / agent.maxLoad;
 
-      switch (agent0.availability0.currentStatus) {
+      switch (agent.availability.currentStatus) {
         case 'available':
           availableAgents++;
           break;
@@ -587,44 +587,44 @@ export class TaskDistributionEngine extends TypedEventBase {
   }
 
   private startProcessing(): void {
-    this0.processingInterval = setInterval(async () => {
-      await this?0.processQueue;
-      await this?0.updateMetrics;
-      await this?0.performHealthChecks;
+    this.processingInterval = setInterval(async () => {
+      await this.processQueue;
+      await this.updateMetrics;
+      await this.performHealthChecks;
 
-      if (this0.configuration0.enableDynamicRebalancing) {
-        await this?0.rebalanceWorkload;
+      if (this.configuration.enableDynamicRebalancing) {
+        await this.rebalanceWorkload;
       }
     }, 1000); // Process every second
   }
 
   private async processQueue(): Promise<void> {
-    const availableAgents = Array0.from(this0.agentCapabilities?0.values())0.filter(
+    const availableAgents = Array.from(this.agentCapabilities?.values()).filter(
       (agent) =>
-        agent0.availability0.currentStatus === 'available' &&
-        agent0.currentLoad < agent0.maxLoad
+        agent.availability.currentStatus === 'available' &&
+        agent.currentLoad < agent.maxLoad
     );
 
-    if (availableAgents0.length === 0) return;
+    if (availableAgents.length === 0) return;
 
-    const tasksToAssign = await this0.queue0.getNext(availableAgents0.length);
+    const tasksToAssign = await this.queue.getNext(availableAgents.length);
 
     for (const task of tasksToAssign) {
       try {
-        const assignment = await this0.findOptimalAssignment(
+        const assignment = await this.findOptimalAssignment(
           task,
           availableAgents
         );
         if (assignment) {
-          await this0.assignTask(task, assignment);
+          await this.assignTask(task, assignment);
         } else {
           // No suitable agent found, re-queue
-          await this0.queue0.enqueue(task);
+          await this.queue.enqueue(task);
         }
       } catch (error) {
-        this0.logger0.error('Failed to process task', { taskId: task0.id, error });
-        await this0.handleTaskFailure({
-          taskId: task0.id,
+        this.logger.error('Failed to process task', { taskId: task.id, error });
+        await this.handleTaskFailure({
+          taskId: task.id,
           error: error as Error,
         });
       }
@@ -636,18 +636,18 @@ export class TaskDistributionEngine extends TypedEventBase {
     availableAgents: AgentCapability[]
   ): Promise<AgentCapability | null> {
     // Filter agents by capabilities
-    const suitableAgents = availableAgents0.filter((agent) =>
-      this0.isAgentSuitable(agent, task)
+    const suitableAgents = availableAgents.filter((agent) =>
+      this.isAgentSuitable(agent, task)
     );
 
-    if (suitableAgents0.length === 0) return null;
+    if (suitableAgents.length === 0) return null;
 
     // Use ML-based assignment optimization
-    return await this0.assignmentOptimizer0.findOptimalAssignment(
+    return await this.assignmentOptimizer.findOptimalAssignment(
       task,
       suitableAgents,
-      this0.assignments,
-      this0.metrics
+      this.assignments,
+      this.metrics
     );
   }
 
@@ -656,25 +656,25 @@ export class TaskDistributionEngine extends TypedEventBase {
     task: TaskDefinition
   ): boolean {
     // Check capabilities
-    const hasRequiredCapabilities = task0.requirements0.capabilities0.every(
-      (capability) => agent0.capabilities0.includes(capability)
+    const hasRequiredCapabilities = task.requirements.capabilities.every(
+      (capability) => agent.capabilities.includes(capability)
     );
 
     if (!hasRequiredCapabilities) return false;
 
     // Check load capacity
-    if (agent0.currentLoad >= agent0.maxLoad) return false;
+    if (agent.currentLoad >= agent.maxLoad) return false;
 
     // Check exclusions
-    if (task0.requirements0.excludedAgents?0.includes(agent0.agentId)) return false;
+    if (task.requirements.excludedAgents?.includes(agent.agentId)) return false;
 
     // Check trust score
-    if (agent0.trustScore < 0.5) return false; // Minimum trust threshold
+    if (agent.trustScore < .5) return false; // Minimum trust threshold
 
     // Check resource requirements (simplified)
     return (
-      task0.requirements0.resourceRequirements0.cpu <= 10.0 && // Assume normalized values
-      task0.requirements0.resourceRequirements0.memory <= 10.0
+      task.requirements.resourceRequirements.cpu <= 1.0 && // Assume normalized values
+      task.requirements.resourceRequirements.memory <= 1.0
     );
   }
 
@@ -683,45 +683,45 @@ export class TaskDistributionEngine extends TypedEventBase {
     agent: AgentCapability
   ): Promise<void> {
     const assignment: TaskAssignment = {
-      taskId: task0.id,
-      agentId: agent0.agentId,
+      taskId: task.id,
+      agentId: agent.agentId,
       assignedAt: new Date(),
-      expectedCompletion: new Date(Date0.now() + task0.estimatedDuration),
+      expectedCompletion: new Date(Date.now() + task.estimatedDuration),
       assignment: {
-        confidence: await this0.calculateAssignmentConfidence(task, agent),
-        reasoning: await this0.generateAssignmentReasoning(task, agent),
-        alternativeAgents: await this0.findAlternativeAgents(task, agent),
-        resourceAllocation: this0.calculateResourceAllocation(task, agent),
-        qualityExpectation: this0.calculateQualityExpectation(task, agent),
+        confidence: await this.calculateAssignmentConfidence(task, agent),
+        reasoning: await this.generateAssignmentReasoning(task, agent),
+        alternativeAgents: await this.findAlternativeAgents(task, agent),
+        resourceAllocation: this.calculateResourceAllocation(task, agent),
+        qualityExpectation: this.calculateQualityExpectation(task, agent),
       },
-      monitoring: this0.createMonitoringPlan(task, agent),
+      monitoring: this.createMonitoringPlan(task, agent),
     };
 
-    this0.assignments0.set(task0.id, assignment);
-    agent0.currentLoad++;
+    this.assignments.set(task.id, assignment);
+    agent.currentLoad++;
 
-    this0.logger0.info('Task assigned to agent', {
-      taskId: task0.id,
-      agentId: agent0.agentId,
-      confidence: assignment0.assignment0.confidence,
+    this.logger.info('Task assigned to agent', {
+      taskId: task.id,
+      agentId: agent.agentId,
+      confidence: assignment.assignment.confidence,
     });
 
     // Notify agent
-    this0.eventBus0.emit('task:assign', {
-      taskId: task0.id,
-      agentId: agent0.agentId,
-      taskType: task0.type,
+    this.eventBus.emit('task:assign', {
+      taskId: task.id,
+      agentId: agent.agentId,
+      taskType: task.type,
       task: {
-        id: task0.id,
-        description: task0.description,
-        requirements: task0.requirements0.capabilities, // Convert TaskRequirements to string array
+        id: task.id,
+        description: task.description,
+        requirements: task.requirements.capabilities, // Convert TaskRequirements to string array
       },
       priority:
-        task0.priority === 'normal'
+        task.priority === 'normal'
           ? 'medium'
-          : (task0.priority as 'low' | 'medium' | 'high' | 'critical'),
+          : (task.priority as 'low | medium' | 'high | critical'),
       dependencies: [],
-      requiredCapabilities: task0.requirements0.capabilities || [],
+      requiredCapabilities: task.requirements.capabilities || [],
       resourceRequirements: {
         cpu: 1,
         memory: 512,
@@ -730,13 +730,13 @@ export class TaskDistributionEngine extends TypedEventBase {
       },
       timestamp: new Date(),
       source: 'task-distribution-engine',
-      id: `task-assign-${task0.id}-${Date0.now()}`,
-      version: '10.0.0',
+      id: `task-assign-${task.id}-${Date.now()}`,
+      version: '1..0',
     });
 
-    this0.emit('task:assigned', {
-      taskId: task0.id,
-      agentId: agent0.agentId,
+    this.emit('task:assigned', {
+      taskId: task.id,
+      agentId: agent.agentId,
       assignment,
     });
   }
@@ -746,7 +746,7 @@ export class TaskDistributionEngine extends TypedEventBase {
     agent: AgentCapability
   ): Promise<number> {
     // Use performance predictor to estimate success probability
-    return await this0.performancePredictor0.predictSuccess(task, agent);
+    return await this.performancePredictor.predictSuccess(task, agent);
   }
 
   private async generateAssignmentReasoning(
@@ -756,16 +756,16 @@ export class TaskDistributionEngine extends TypedEventBase {
     const reasons: string[] = [];
 
     // Capability match
-    const matchScore = this0.calculateCapabilityMatch(task, agent);
-    reasons0.push(`Capability match: ${(matchScore * 100)0.toFixed(1)}%`);
+    const matchScore = this.calculateCapabilityMatch(task, agent);
+    reasons.push(`Capability match: ${(matchScore * 100).toFixed(1)}%`);
 
     // Performance history
-    const performanceScore = this0.calculatePerformanceScore(task, agent);
-    reasons0.push(`Performance score: ${(performanceScore * 100)0.toFixed(1)}%`);
+    const performanceScore = this.calculatePerformanceScore(task, agent);
+    reasons.push(`Performance score: ${(performanceScore * 100).toFixed(1)}%`);
 
     // Load balance
-    const loadScore = 1 - agent0.currentLoad / agent0.maxLoad;
-    reasons0.push(`Load availability: ${(loadScore * 100)0.toFixed(1)}%`);
+    const loadScore = 1 - agent.currentLoad / agent.maxLoad;
+    reasons.push(`Load availability: ${(loadScore * 100).toFixed(1)}%`);
 
     return reasons;
   }
@@ -774,58 +774,58 @@ export class TaskDistributionEngine extends TypedEventBase {
     task: TaskDefinition,
     primaryAgent: AgentCapability
   ): Promise<string[]> {
-    return Array0.from(this0.agentCapabilities?0.values())
-      0.filter(
+    return Array.from(this.agentCapabilities?.values())
+      .filter(
         (agent) =>
-          agent0.agentId !== primaryAgent0.agentId &&
-          this0.isAgentSuitable(agent, task)
+          agent.agentId !== primaryAgent.agentId &&
+          this.isAgentSuitable(agent, task)
       )
-      0.sort((a, b) => {
-        const scoreA = this0.calculateAgentScore(task, a);
-        const scoreB = this0.calculateAgentScore(task, b);
+      .sort((a, b) => {
+        const scoreA = this.calculateAgentScore(task, a);
+        const scoreB = this.calculateAgentScore(task, b);
         return scoreB - scoreA;
       })
-      0.slice(0, 3) // Top 3 alternatives
-      0.map((agent) => agent0.agentId);
+      .slice(0, 3) // Top 3 alternatives
+      .map((agent) => agent.agentId);
   }
 
   private calculateCapabilityMatch(
     task: TaskDefinition,
     agent: AgentCapability
   ): number {
-    const requiredCaps = new Set(task0.requirements0.capabilities);
-    const agentCaps = new Set(agent0.capabilities);
+    const requiredCaps = new Set(task.requirements.capabilities);
+    const agentCaps = new Set(agent.capabilities);
     const intersection = new Set(
-      [0.0.0.requiredCaps]0.filter((x) => agentCaps0.has(x))
+      [...requiredCaps].filter((x) => agentCaps.has(x))
     );
 
-    return intersection0.size / requiredCaps0.size;
+    return intersection.size / requiredCaps.size;
   }
 
   private calculatePerformanceScore(
     task: TaskDefinition,
     agent: AgentCapability
   ): number {
-    const taskTypePerf = agent0.performance0.taskTypes[task0.type];
+    const taskTypePerf = agent.performance.taskTypes[task.type];
     return taskTypePerf
-      ? taskTypePerf0.successRate * taskTypePerf0.efficiency
-      : agent0.performance0.overall0.successRate;
+      ? taskTypePerf.successRate * taskTypePerf.efficiency
+      : agent.performance.overall.successRate;
   }
 
   private calculateAgentScore(
     task: TaskDefinition,
     agent: AgentCapability
   ): number {
-    const capabilityScore = this0.calculateCapabilityMatch(task, agent);
-    const performanceScore = this0.calculatePerformanceScore(task, agent);
-    const availabilityScore = 1 - agent0.currentLoad / agent0.maxLoad;
-    const trustScore = agent0.trustScore;
+    const capabilityScore = this.calculateCapabilityMatch(task, agent);
+    const performanceScore = this.calculatePerformanceScore(task, agent);
+    const availabilityScore = 1 - agent.currentLoad / agent.maxLoad;
+    const trustScore = agent.trustScore;
 
     return (
-      capabilityScore * 0.3 +
-      performanceScore * 0.3 +
-      availabilityScore * 0.2 +
-      trustScore * 0.2
+      capabilityScore * .3 +
+      performanceScore * .3 +
+      availabilityScore * .2 +
+      trustScore * .2
     );
   }
 
@@ -834,13 +834,13 @@ export class TaskDistributionEngine extends TypedEventBase {
     _agent: AgentCapability
   ): ResourceAllocation {
     const allocation: ResourceAllocation = {
-      cpu: Math0.min(task0.requirements0.resourceRequirements0.cpu, 10.0),
-      memory: Math0.min(task0.requirements0.resourceRequirements0.memory, 10.0),
-      network: Math0.min(task0.requirements0.resourceRequirements0.network, 10.0),
-      storage: Math0.min(task0.requirements0.resourceRequirements0.storage, 10.0),
-      priority: this0.getPriorityWeight(task0.priority),
-      0.0.0.(task0.requirements0.resourceRequirements0.gpu !== undefined
-        ? { gpu: task0.requirements0.resourceRequirements0.gpu }
+      cpu: Math.min(task.requirements.resourceRequirements.cpu, 1.0),
+      memory: Math.min(task.requirements.resourceRequirements.memory, 1.0),
+      network: Math.min(task.requirements.resourceRequirements.network, 1.0),
+      storage: Math.min(task.requirements.resourceRequirements.storage, 1.0),
+      priority: this.getPriorityWeight(task.priority),
+      ...(task.requirements.resourceRequirements.gpu !== undefined
+        ? { gpu: task.requirements.resourceRequirements.gpu }
         : {}),
     };
 
@@ -851,18 +851,18 @@ export class TaskDistributionEngine extends TypedEventBase {
     task: TaskDefinition,
     agent: AgentCapability
   ): QualityExpectation {
-    const baseQuality = agent0.performance0.overall0.qualityScore;
+    const baseQuality = agent.performance.overall.qualityScore;
     const taskTypeQuality =
-      agent0.performance0.taskTypes[task0.type]?0.qualityScore || baseQuality;
+      agent.performance.taskTypes[task.type]?.qualityScore || baseQuality;
 
     return {
-      accuracy: Math0.min(
-        task0.requirements0.qualityRequirements0.accuracy,
+      accuracy: Math.min(
+        task.requirements.qualityRequirements.accuracy,
         taskTypeQuality
       ),
-      speed: task0.requirements0.qualityRequirements0.speed,
-      completeness: task0.requirements0.qualityRequirements0.completeness,
-      confidence: 0.8, // Base confidence
+      speed: task.requirements.qualityRequirements.speed,
+      completeness: task.requirements.qualityRequirements.completeness,
+      confidence: .8, // Base confidence
     };
   }
 
@@ -871,19 +871,19 @@ export class TaskDistributionEngine extends TypedEventBase {
     _agent: AgentCapability
   ): AssignmentMonitoring {
     return {
-      checkInterval: Math0.min(task0.estimatedDuration / 10, 30000), // Check every 10% of duration or 30s max
+      checkInterval: Math.min(task.estimatedDuration / 10, 30000), // Check every 10% of duration or 30s max
       progressTracking: true,
       qualityChecks: [
         {
           checkType: 'progress',
           frequency: 60000, // Every minute
-          threshold: 0.1, // 10% progress expected per check
+          threshold: .1, // 10% progress expected per check
           action: 'warn',
         },
         {
           checkType: 'performance',
           frequency: 120000, // Every 2 minutes
-          threshold: 0.5, // 50% performance threshold
+          threshold: .5, // 50% performance threshold
           action: 'escalate',
         },
       ],
@@ -895,7 +895,7 @@ export class TaskDistributionEngine extends TypedEventBase {
         },
         {
           condition: 'quality_below_threshold',
-          threshold: 0.3,
+          threshold: .3,
           action: 'add_agents',
         },
       ],
@@ -905,42 +905,42 @@ export class TaskDistributionEngine extends TypedEventBase {
   private getPriorityWeight(priority: TaskPriority): number {
     switch (priority) {
       case 'critical':
-        return 10.0;
+        return 1.0;
       case 'urgent':
-        return 0.8;
+        return .8;
       case 'high':
-        return 0.6;
+        return .6;
       case 'normal':
-        return 0.4;
+        return .4;
       case 'low':
-        return 0.2;
+        return .2;
       default:
-        return 0.4;
+        return .4;
     }
   }
 
   private subtaskToTask(subtask: SubTask, parentId: string): TaskDefinition {
     return {
-      id: subtask0.id,
-      name: subtask0.name,
-      description: subtask0.description,
-      type: subtask0.type,
+      id: subtask.id,
+      name: subtask.name,
+      description: subtask.description,
+      type: subtask.type,
       priority: 'normal', // Inherit from parent or adjust
       complexity: 'simple', // Subtasks are typically simpler
-      requirements: subtask0.requirements,
+      requirements: subtask.requirements,
       constraints: {
         maxRetries: 3,
-        timeoutMs: subtask0.estimatedDuration * 2,
+        timeoutMs: subtask.estimatedDuration * 2,
         isolationLevel: 'process',
         securityLevel: 'medium',
       },
-      dependencies: subtask0.dependencies0.map((depId) => ({
+      dependencies: subtask.dependencies.map((depId) => ({
         taskId: depId,
         type: 'blocking' as const,
         weight: 1,
       })),
-      estimatedDuration: subtask0.estimatedDuration,
-      metadata: { parentId, order: subtask0.order },
+      estimatedDuration: subtask.estimatedDuration,
+      metadata: { parentId, order: subtask.order },
       created: new Date(),
       submittedBy: 'system',
     };
@@ -948,62 +948,62 @@ export class TaskDistributionEngine extends TypedEventBase {
 
   private async optimizeAssignments(): Promise<void> {
     // Trigger assignment optimization when new agents are available
-    const pendingTasks = await this0.queue0.peek(10); // Look at next 10 tasks
-    if (pendingTasks0.length > 0) {
+    const pendingTasks = await this.queue.peek(10); // Look at next 10 tasks
+    if (pendingTasks.length > 0) {
       // Optimization logic would go here
-      this0.logger0.debug('Assignment optimization triggered', {
-        pendingTasks: pendingTasks0.length,
+      this.logger.debug('Assignment optimization triggered', {
+        pendingTasks: pendingTasks.length,
       });
     }
   }
 
   private async updateMetrics(): Promise<void> {
-    const queuedTasks = this0.queue?0.size;
-    const runningTasks = this0.assignments0.size;
+    const queuedTasks = this.queue?.size()
+    const runningTasks = this.assignments.size;
 
     // Calculate utilization
     const agentUtilization: Record<string, number> = {};
-    for (const [agentId, agent] of this0.agentCapabilities) {
-      agentUtilization[agentId] = agent0.currentLoad / agent0.maxLoad;
+    for (const [agentId, agent] of this.agentCapabilities) {
+      agentUtilization[agentId] = agent.currentLoad / agent.maxLoad;
     }
 
-    this0.metrics = {
-      0.0.0.this0.metrics,
+    this.metrics = {
+      ...this.metrics,
       queuedTasks,
       runningTasks,
       agentUtilization,
-      loadBalance: this?0.calculateLoadBalance,
-      resourceEfficiency: this?0.calculateResourceEfficiency,
+      loadBalance: this.calculateLoadBalance,
+      resourceEfficiency: this.calculateResourceEfficiency,
     };
 
-    this0.emit('metrics:updated', { metrics: this0.metrics });
+    this.emit('metrics:updated', { metrics: this.metrics });
   }
 
   private calculateLoadBalance(): number {
-    const utilizations = Array0.from(this0.agentCapabilities?0.values())0.map(
-      (agent) => agent0.currentLoad / agent0.maxLoad
+    const utilizations = Array.from(this.agentCapabilities?.values()).map(
+      (agent) => agent.currentLoad / agent.maxLoad
     );
 
-    if (utilizations0.length === 0) return 1;
+    if (utilizations.length === 0) return 1;
 
     const avg =
-      utilizations0.reduce((sum, util) => sum + util, 0) / utilizations0.length;
+      utilizations.reduce((sum, util) => sum + util, 0) / utilizations.length;
     const variance =
-      utilizations0.reduce((sum, util) => sum + (util - avg) ** 2, 0) /
-      utilizations0.length;
+      utilizations.reduce((sum, util) => sum + (util - avg) ** 2, 0) /
+      utilizations.length;
 
-    return Math0.max(0, 1 - Math0.sqrt(variance));
+    return Math.max(0, 1 - Math.sqrt(variance));
   }
 
   private calculateResourceEfficiency(): number {
     // Simplified efficiency calculation
-    const totalCapacity = Array0.from(this0.agentCapabilities?0.values())0.reduce(
-      (sum, agent) => sum + agent0.maxLoad,
+    const totalCapacity = Array.from(this.agentCapabilities?.values()).reduce(
+      (sum, agent) => sum + agent.maxLoad,
       0
     );
 
-    const usedCapacity = Array0.from(this0.agentCapabilities?0.values())0.reduce(
-      (sum, agent) => sum + agent0.currentLoad,
+    const usedCapacity = Array.from(this.agentCapabilities?.values()).reduce(
+      (sum, agent) => sum + agent.currentLoad,
       0
     );
 
@@ -1012,28 +1012,28 @@ export class TaskDistributionEngine extends TypedEventBase {
 
   private async performHealthChecks(): Promise<void> {
     // Check for stuck assignments
-    const now = Date0.now();
-    for (const [taskId, assignment] of this0.assignments) {
-      const runtime = now - assignment0.assignedAt?0.getTime;
-      const task = this0.tasks0.get(taskId);
+    const now = Date.now();
+    for (const [taskId, assignment] of this.assignments) {
+      const runtime = now - assignment.assignedAt?.getTime()
+      const task = this.tasks.get(taskId);
 
-      if (task && runtime > task0.estimatedDuration * 2) {
-        this0.logger0.warn('Task potentially stuck', {
+      if (task && runtime > task.estimatedDuration * 2) {
+        this.logger.warn('Task potentially stuck', {
           taskId,
           runtime,
-          estimated: task0.estimatedDuration,
+          estimated: task.estimatedDuration,
         });
-        await this0.handleStuckTask(taskId);
+        await this.handleStuckTask(taskId);
       }
     }
   }
 
   private async rebalanceWorkload(): Promise<void> {
-    const imbalance = this?0.detectLoadImbalance;
-    if (imbalance0.severity > 0.3) {
-      await this0.workloadBalancer0.rebalance(
-        this0.agentCapabilities,
-        this0.assignments,
+    const imbalance = this.detectLoadImbalance;
+    if (imbalance.severity > .3) {
+      await this.workloadBalancer.rebalance(
+        this.agentCapabilities,
+        this.assignments,
         imbalance
       );
     }
@@ -1044,118 +1044,118 @@ export class TaskDistributionEngine extends TypedEventBase {
     overloaded: string[];
     underloaded: string[];
   } {
-    const utilizations = Array0.from(this0.agentCapabilities?0.entries)0.map(
+    const utilizations = Array.from(this.agentCapabilities?.entries).map(
       ([agentId, agent]) => ({
         agentId,
-        utilization: agent0.currentLoad / agent0.maxLoad,
+        utilization: agent.currentLoad / agent.maxLoad,
       })
     );
 
     const avg =
-      utilizations0.reduce((sum, { utilization }) => sum + utilization, 0) /
-      utilizations0.length;
+      utilizations.reduce((sum, { utilization }) => sum + utilization, 0) /
+      utilizations.length;
 
     const overloaded = utilizations
-      0.filter(({ utilization }) => utilization > avg + 0.3)
-      0.map(({ agentId }) => agentId);
+      .filter(({ utilization }) => utilization > avg + .3)
+      .map(({ agentId }) => agentId);
 
     const underloaded = utilizations
-      0.filter(({ utilization }) => utilization < avg - 0.3)
-      0.map(({ agentId }) => agentId);
+      .filter(({ utilization }) => utilization < avg - .3)
+      .map(({ agentId }) => agentId);
 
     const severity =
-      overloaded0.length > 0 && underloaded0.length > 0
-        ? Math0.min(overloaded0.length, underloaded0.length) / utilizations0.length
+      overloaded.length > 0 && underloaded.length > 0
+        ? Math.min(overloaded.length, underloaded.length) / utilizations.length
         : 0;
 
     return { severity, overloaded, underloaded };
   }
 
   private async handleStuckTask(taskId: string): Promise<void> {
-    this0.logger0.info('Handling stuck task', { taskId });
-    await this0.reassignTask(taskId, 'task_stuck');
+    this.logger.info('Handling stuck task', { taskId });
+    await this.reassignTask(taskId, 'task_stuck');
   }
 
   // Event handlers
   private async handleAgentRegistration(data: any): Promise<void> {
-    this0.logger0.debug('Agent registration event received', data);
+    this.logger.debug('Agent registration event received', data);
   }
 
   private async handleAgentCapabilitiesUpdate(data: any): Promise<void> {
-    const agent = this0.agentCapabilities0.get(data?0.agentId);
+    const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
-      agent0.capabilities = data?0.capabilities;
-      agent0.performance = data?0.performance || agent0.performance;
+      agent.capabilities = data?.capabilities()
+      agent.performance = data?.performance || agent.performance;
     }
   }
 
   private async handleAgentPerformanceUpdate(data: any): Promise<void> {
-    const agent = this0.agentCapabilities0.get(data?0.agentId);
+    const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
-      agent0.performance = { 0.0.0.agent0.performance, 0.0.0.data?0.performance };
+      agent.performance = { ...agent.performance, ...data?.performance };
     }
   }
 
   private async handleTaskProgressUpdate(data: any): Promise<void> {
-    this0.emit('task:progress', data);
+    this.emit('task:progress', data);
   }
 
   private async handleTaskCompletion(data: any): Promise<void> {
-    const assignment = this0.assignments0.get(data?0.taskId);
+    const assignment = this.assignments.get(data?.taskId);
     if (assignment) {
-      const agent = this0.agentCapabilities0.get(assignment0.agentId);
+      const agent = this.agentCapabilities.get(assignment.agentId);
       if (agent) {
-        agent0.currentLoad = Math0.max(0, agent0.currentLoad - 1);
+        agent.currentLoad = Math.max(0, agent.currentLoad - 1);
       }
 
-      this0.assignments0.delete(data?0.taskId);
-      this0.metrics0.completedTasks++;
+      this.assignments.delete(data?.taskId);
+      this.metrics.completedTasks++;
     }
 
-    this0.emit('task:completed', data);
+    this.emit('task:completed', data);
   }
 
   private async handleTaskFailure(data: any): Promise<void> {
-    const assignment = this0.assignments0.get(data?0.taskId);
+    const assignment = this.assignments.get(data?.taskId);
     if (assignment) {
-      const agent = this0.agentCapabilities0.get(assignment0.agentId);
+      const agent = this.agentCapabilities.get(assignment.agentId);
       if (agent) {
-        agent0.currentLoad = Math0.max(0, agent0.currentLoad - 1);
+        agent.currentLoad = Math.max(0, agent.currentLoad - 1);
       }
 
-      this0.assignments0.delete(data?0.taskId);
-      this0.metrics0.failedTasks++;
+      this.assignments.delete(data?.taskId);
+      this.metrics.failedTasks++;
 
       // Handle failure recovery
-      await this0.failureHandler0.handleFailure(
-        data?0.taskId,
-        data?0.error,
-        this0.tasks,
-        this0.queue
+      await this.failureHandler.handleFailure(
+        data?.taskId,
+        data?.error,
+        this.tasks,
+        this.queue
       );
     }
 
-    this0.emit('task:failed', data);
+    this.emit('task:failed', data);
   }
 
   private async handleAgentUnavailable(data: any): Promise<void> {
-    const agent = this0.agentCapabilities0.get(data?0.agentId);
+    const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
-      agent0.availability0.currentStatus = 'offline';
+      agent.availability.currentStatus = 'offline';
 
       // Reassign tasks from unavailable agent
-      const affectedAssignments = Array0.from(this0.assignments?0.entries)0.filter(
-        ([_, assignment]) => assignment0.agentId === data?0.agentId
+      const affectedAssignments = Array.from(this.assignments?.entries).filter(
+        ([_, assignment]) => assignment.agentId === data?.agentId
       );
 
       for (const [taskId] of affectedAssignments) {
-        await this0.reassignTask(taskId, 'agent_unavailable');
+        await this.reassignTask(taskId, 'agent_unavailable');
       }
     }
   }
 
   private generateTaskId(): string {
-    return `task-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
+    return `task-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private initializeMetrics(): DistributionMetrics {
@@ -1176,12 +1176,12 @@ export class TaskDistributionEngine extends TypedEventBase {
   }
 
   async shutdown(): Promise<void> {
-    if (this0.processingInterval) {
-      clearInterval(this0.processingInterval);
+    if (this.processingInterval) {
+      clearInterval(this.processingInterval);
     }
 
-    this0.emit('shutdown', { timestamp: new Date() });
-    this0.logger0.info('Task distribution engine shutdown');
+    this.emit('shutdown', { timestamp: new Date() });
+    this.logger.info('Task distribution engine shutdown');
   }
 }
 
@@ -1192,33 +1192,33 @@ class TaskQueue {
 
   constructor(private logger: Logger) {
     // Logger for debugging queue operations if needed
-    void this0.logger; // Mark as intentionally unused
+    void this.logger; // Mark as intentionally unused
   }
 
   async enqueue(task: TaskDefinition): Promise<void> {
-    this0.queue0.push(task);
-    this0.queue0.sort((a, b) => this0.comparePriority(a0.priority, b0.priority));
+    this.queue.push(task);
+    this.queue.sort((a, b) => this.comparePriority(a.priority, b.priority));
   }
 
   async getNext(count: number): Promise<TaskDefinition[]> {
-    return this0.queue0.splice(0, count);
+    return this.queue.splice(0, count);
   }
 
   async peek(count: number): Promise<TaskDefinition[]> {
-    return this0.queue0.slice(0, count);
+    return this.queue.slice(0, count);
   }
 
   async remove(taskId: string): Promise<boolean> {
-    const index = this0.queue0.findIndex((task) => task0.id === taskId);
+    const index = this.queue.findIndex((task) => task.id === taskId);
     if (index !== -1) {
-      this0.queue0.splice(index, 1);
+      this.queue.splice(index, 1);
       return true;
     }
     return false;
   }
 
   size(): number {
-    return this0.queue0.length;
+    return this.queue.length;
   }
 
   private comparePriority(a: TaskPriority, b: TaskPriority): number {
@@ -1230,14 +1230,14 @@ class TaskQueue {
 class TaskDecomposer {
   constructor(private logger: Logger) {
     // Logger for tracking decomposition operations
-    void this0.logger; // Mark as intentionally unused
+    void this.logger; // Mark as intentionally unused
   }
 
   async decompose(task: TaskDefinition): Promise<DecomposedTask> {
     // Task decomposition logic
     return {
-      id: `decomposed-${task0.id}`,
-      parentId: task0.id,
+      id: `decomposed-${task.id}`,
+      parentId: task.id,
       subtasks: [],
       executionPlan: {
         strategy: 'parallel',
@@ -1268,8 +1268,8 @@ class AssignmentOptimizer {
     private logger: Logger
   ) {
     // Optimizer initialization
-    void this0.configuration; // Mark as intentionally unused
-    void this0.logger; // Mark as intentionally unused
+    void this.configuration; // Mark as intentionally unused
+    void this.logger; // Mark as intentionally unused
   }
 
   async findOptimalAssignment(
@@ -1279,16 +1279,16 @@ class AssignmentOptimizer {
     _metrics: DistributionMetrics
   ): Promise<AgentCapability | null> {
     // ML-based assignment optimization
-    if (agents0.length === 0) return null;
+    if (agents.length === 0) return null;
 
     // Simple scoring for now
-    const scored = agents0.map((agent) => ({
+    const scored = agents.map((agent) => ({
       agent,
-      score: this0.calculateAssignmentScore(task, agent, _assignments),
+      score: this.calculateAssignmentScore(task, agent, _assignments),
     }));
 
-    scored0.sort((a, b) => b0.score - a0.score);
-    return scored[0]?0.agent ?? agents[0] ?? null;
+    scored.sort((a, b) => b.score - a.score);
+    return scored[0]?.agent ?? agents[0] ?? null;
   }
 
   private calculateAssignmentScore(
@@ -1297,16 +1297,16 @@ class AssignmentOptimizer {
     _assignments: Map<string, TaskAssignment>
   ): number {
     // Simplified scoring
-    const capabilityMatch = task0.requirements0.capabilities0.every((cap) =>
-      agent0.capabilities0.includes(cap)
+    const capabilityMatch = task.requirements.capabilities.every((cap) =>
+      agent.capabilities.includes(cap)
     )
       ? 1
       : 0;
 
-    const loadScore = 1 - agent0.currentLoad / agent0.maxLoad;
-    const trustScore = agent0.trustScore;
+    const loadScore = 1 - agent.currentLoad / agent.maxLoad;
+    const trustScore = agent.trustScore;
 
-    return capabilityMatch * 0.4 + loadScore * 0.3 + trustScore * 0.3;
+    return capabilityMatch * .4 + loadScore * .3 + trustScore * .3;
   }
 }
 
@@ -1323,7 +1323,7 @@ class WorkloadBalancer {
     private logger: Logger
   ) {
     // Balancer initialization
-    void this0.configuration; // Mark as intentionally unused for now
+    void this.configuration; // Mark as intentionally unused for now
   }
 
   async rebalance(
@@ -1336,14 +1336,14 @@ class WorkloadBalancer {
     }
   ): Promise<void> {
     // Workload rebalancing logic
-    this0.logger0.info('Rebalancing workload', { imbalance });
+    this.logger.info('Rebalancing workload', { imbalance });
   }
 }
 
 class PerformancePredictor {
   constructor(private logger: Logger) {
     // Logger for prediction tracking
-    void this0.logger; // Mark as intentionally unused
+    void this.logger; // Mark as intentionally unused
   }
 
   async predictSuccess(
@@ -1351,10 +1351,10 @@ class PerformancePredictor {
     agent: AgentCapability
   ): Promise<number> {
     // ML-based success prediction
-    const baseRate = agent0.performance0.overall0.successRate;
-    const taskTypePerf = agent0.performance0.taskTypes[task0.type];
+    const baseRate = agent.performance.overall.successRate;
+    const taskTypePerf = agent.performance.taskTypes[task.type];
 
-    return taskTypePerf ? taskTypePerf0.successRate : baseRate;
+    return taskTypePerf ? taskTypePerf.successRate : baseRate;
   }
 }
 
@@ -1367,21 +1367,21 @@ class FailureHandler {
     tasks: Map<string, TaskDefinition>,
     queue: TaskQueue
   ): Promise<void> {
-    const task = tasks0.get(taskId);
+    const task = tasks.get(taskId);
     if (!task) return;
 
-    // Implement retry logic, error analysis, etc0.
-    if (task0.constraints0.maxRetries > 0) {
-      task0.constraints0.maxRetries--;
-      await queue0.enqueue(task);
-      this0.logger0.info('Task re-queued after failure', {
+    // Implement retry logic, error analysis, etc.
+    if (task.constraints.maxRetries > 0) {
+      task.constraints.maxRetries--;
+      await queue.enqueue(task);
+      this.logger.info('Task re-queued after failure', {
         taskId,
-        retriesLeft: task0.constraints0.maxRetries,
+        retriesLeft: task.constraints.maxRetries,
       });
     } else {
-      this0.logger0.error('Task failed permanently', {
+      this.logger.error('Task failed permanently', {
         taskId,
-        error: error0.message,
+        error: error.message,
       });
     }
   }

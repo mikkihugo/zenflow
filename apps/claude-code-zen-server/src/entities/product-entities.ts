@@ -1,13 +1,13 @@
 /**
- * Product Flow Entities - Clean Naming and Proper SPARC Integration0.
+ * Product Flow Entities - Clean Naming and Proper SPARC Integration.
  *
- * MISSION ACCOMPLISHED: Renamed from document-entities0.ts to product-entities0.ts
+ * MISSION ACCOMPLISHED: Renamed from document-entities.ts to product-entities.ts
  * - Clean Product Flow naming throughout (no generic "document" terminology)
  * - Proper SPARC integration in Features and Tasks
- * - Clear separation: Product Flow = WHAT, SPARC = HOW0.
+ * - Clear separation: Product Flow = WHAT, SPARC = HOW.
  */
 /**
- * @file Database layer: product-entities0.
+ * @file Database layer: product-entities.
  */
 
 import type { DocumentType } from '@claude-zen/enterprise';
@@ -17,7 +17,7 @@ export interface ProjectEntity {
   id: string;
   name: string;
   description?: string;
-  status: 'active' | 'inactive' | 'completed' | 'archived';
+  status: 'active | inactive' | 'completed | archived';
   owner?: string;
   created_at: Date;
   updated_at: Date;
@@ -29,8 +29,8 @@ export interface BaseDocumentEntity {
   title: string;
   content: string;
   summary?: string;
-  status: 'draft' | 'review' | 'approved' | 'archived' | 'in_progress' | 'todo';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'draft | review' | 'approved | archived' | 'in_progress | todo';
+  priority: 'low | medium' | 'high | critical';
   author?: string;
   tags: string[];
   project_id?: string;
@@ -60,7 +60,7 @@ export interface DocumentRelationshipEntity {
 }
 
 /**
- * Base entity for all Product Flow documents0.
+ * Base entity for all Product Flow documents.
  *
  * @example
  */
@@ -70,8 +70,8 @@ export interface BaseProductEntity {
   title: string;
   content: string;
   summary?: string; // Add missing summary property
-  status: 'draft' | 'review' | 'approved' | 'archived';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'draft | review' | 'approved | archived';
+  priority: 'low | medium' | 'high | critical';
   author?: string;
   tags: string[];
   keywords: string[]; // Add missing keywords property
@@ -100,8 +100,8 @@ export interface BaseProductEntity {
 }
 
 /**
- * Vision Document Entity0.
- * Strategic vision and high-level goals0.
+ * Vision Document Entity.
+ * Strategic vision and high-level goals.
  *
  * @example
  */
@@ -128,8 +128,8 @@ export interface any extends BaseProductEntity {
 }
 
 /**
- * Architecture Decision Record Entity0.
- * Technical decisions and rationale0.
+ * Architecture Decision Record Entity.
+ * Technical decisions and rationale.
  *
  * @example
  */
@@ -138,7 +138,7 @@ export interface any extends BaseProductEntity {
 
   // ADR-specific fields
   decision_number: number;
-  decision_status: 'proposed' | 'accepted' | 'deprecated' | 'superseded';
+  decision_status: 'proposed | accepted' | 'deprecated | superseded';
   context: string;
   decision: string;
   consequences: string[];
@@ -151,8 +151,8 @@ export interface any extends BaseProductEntity {
 }
 
 /**
- * Product Requirements Document Entity0.
- * Detailed feature specifications0.
+ * Product Requirements Document Entity.
+ * Detailed feature specifications.
  *
  * @example
  */
@@ -164,7 +164,7 @@ export interface any extends BaseProductEntity {
     id: string;
     description: string;
     acceptance_criteria: string[];
-    priority: 'must_have' | 'should_have' | 'could_have' | 'wont_have';
+    priority: 'must_have | should_have' | 'could_have | wont_have';
   }>;
 
   non_functional_requirements: Array<{
@@ -194,8 +194,8 @@ export interface any extends BaseProductEntity {
 }
 
 /**
- * Epic Document Entity0.
- * Large feature groupings0.
+ * Epic Document Entity.
+ * Large feature groupings.
  *
  * @example
  */
@@ -208,7 +208,7 @@ export interface any extends BaseProductEntity {
   effort_estimation: {
     story_points?: number;
     time_estimate_weeks?: number;
-    complexity: 'low' | 'medium' | 'high' | 'very_high';
+    complexity: 'low | medium' | 'high | very_high';
   };
 
   timeline: {
@@ -228,7 +228,7 @@ export interface any extends BaseProductEntity {
 
 /**
  * Feature Document Entity - ENHANCED with PROPER SPARC NTEGRATION
- * Individual implementable features with SPARC methodology as implementation tool0.
+ * Individual implementable features with SPARC methodology as implementation tool.
  *
  * @example
  */
@@ -236,7 +236,7 @@ export interface any extends BaseProductEntity {
   type: 'feature';
 
   // Feature-specific fields (Business Requirements - WHAT to build)
-  feature_type: 'ui' | 'api' | 'database' | 'integration' | 'infrastructure';
+  feature_type: 'ui | api' | 'database | integration' | 'infrastructure';
   acceptance_criteria: string[];
   technical_approach: string;
 
@@ -277,31 +277,31 @@ export interface any extends BaseProductEntity {
     // SPARC provides the technical implementation methodology
     sparc_phases: {
       specification: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[]; // Technical specification documents
         completion_date?: Date;
         quality_score?: number; // AI-assessed quality of technical spec
       };
       pseudocode: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[]; // Algorithm and data structure designs
         completion_date?: Date;
         algorithms: string[]; // Algorithm names/Ds designed in this phase
       };
       architecture: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[]; // System architecture documents
         completion_date?: Date;
         components: string[]; // Component names/Ds designed
       };
       refinement: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[]; // Optimization and refinement plans
         completion_date?: Date;
         optimizations: string[]; // Optimization strategy Ds applied
       };
       completion: {
-        status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+        status: 'not_started | in_progress' | 'completed | failed';
         deliverables: string[]; // Final production code and tests
         completion_date?: Date;
         artifacts: string[]; // Generated code/test artifact Ds
@@ -327,9 +327,9 @@ export interface any extends BaseProductEntity {
       | 'memory-systems'
       | 'interfaces'
       | 'general';
-    sparc_complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
+    sparc_complexity: 'simple | moderate' | 'high | complex' | 'enterprise';
     integration_health: {
-      sync_status: 'synced' | 'out_of_sync' | 'error';
+      sync_status: 'synced | out_of_sync' | 'error';
       last_sync_date?: Date;
       sync_errors: string[];
     };
@@ -338,7 +338,7 @@ export interface any extends BaseProductEntity {
 
 /**
  * Task Document Entity - ENHANCED with PROPER SPARC NTEGRATION
- * Granular implementation tasks with SPARC methodology details0.
+ * Granular implementation tasks with SPARC methodology details.
  *
  * @example
  */
@@ -389,7 +389,7 @@ export interface any extends BaseProductEntity {
     test_files: Array<{
       path: string;
       content: string;
-      test_type: 'unit' | 'integration' | 'e2e';
+      test_type: 'unit | integration' | 'e2e';
     }>;
   };
 
@@ -417,8 +417,8 @@ export interface any extends BaseProductEntity {
     // SPARC quality gates that this task must pass
     sparc_quality_gates: {
       requirement: string;
-      status: 'pending' | 'passed' | 'failed';
-      validation_method: 'automated' | 'manual' | 'ai_assisted';
+      status: 'pending | passed' | 'failed';
+      validation_method: 'automated | manual' | 'ai_assisted';
       validation_date?: Date;
     }[];
 
@@ -441,14 +441,14 @@ export interface any extends BaseProductEntity {
       time_complexity: string;
       space_complexity: string;
       maintainability_score: number; // 0-100
-      performance_impact: 'low' | 'medium' | 'high';
+      performance_impact: 'low | medium' | 'high';
     };
   };
 }
 
 /**
- * Product Flow Relationship Entity0.
- * Tracks relationships between Product Flow documents0.
+ * Product Flow Relationship Entity.
+ * Tracks relationships between Product Flow documents.
  *
  * @example
  */
@@ -468,8 +468,8 @@ export interface ProductRelationshipEntity {
 }
 
 /**
- * Product Workflow State Entity0.
- * Tracks Product Flow workflow progression0.
+ * Product Workflow State Entity.
+ * Tracks Product Flow workflow progression.
  *
  * @example
  */
@@ -506,7 +506,7 @@ export interface ProductWorkflowStateEntity {
 
 /**
  * Product Project Entity - ENHANCED with COMPREHENSIVE SPARC NTEGRATION
- * Groups related Product Flow documents with SPARC methodology support0.
+ * Groups related Product Flow documents with SPARC methodology support.
  *
  * @example
  */
@@ -515,7 +515,7 @@ export interface ProductProjectEntity {
   name: string;
   description: string;
   domain: string;
-  complexity: 'simple' | 'moderate' | 'complex' | 'enterprise';
+  complexity: 'simple | moderate' | 'complex | enterprise';
 
   // Timeline
   created_at: Date;
@@ -560,7 +560,7 @@ export interface ProductProjectEntity {
         | 'memory-systems'
         | 'interfaces'
         | 'general';
-      complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
+      complexity: 'simple | moderate' | 'high | complex' | 'enterprise';
       current_phase:
         | 'specification'
         | 'pseudocode'
@@ -585,7 +585,7 @@ export interface ProductProjectEntity {
 
     // Integration health and metrics
     integration_health: {
-      product_sparc_sync_status: 'synced' | 'out_of_sync' | 'error';
+      product_sparc_sync_status: 'synced | out_of_sync' | 'error';
       last_sync_date?: Date;
       sync_errors: string[];
       sparc_coverage_percentage: number; // % of features using SPARC methodology
@@ -609,8 +609,8 @@ export interface ProductProjectEntity {
 }
 
 /**
- * Product Search Index Entity0.
- * Optimized search and discovery for Product Flow0.
+ * Product Search Index Entity.
+ * Optimized search and discovery for Product Flow.
  *
  * @example
  */
@@ -656,7 +656,7 @@ export interface ProductSearchIndexEntity {
 }
 
 /**
- * Database Schema Export - UPDATED for Product Flow naming0.
+ * Database Schema Export - UPDATED for Product Flow naming.
  */
 export const PRODUCT_DATABASE_SCHEMAS = {
   product_documents: `
@@ -673,7 +673,7 @@ export const PRODUCT_DATABASE_SCHEMAS = {
       parent_document_id TEXT,
       dependencies TEXT, -- JSON array
       related_documents TEXT, -- JSON array
-      version TEXT DEFAULT '10.0.0',
+      version TEXT DEFAULT '1..0',
       checksum TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -694,7 +694,7 @@ export const PRODUCT_DATABASE_SCHEMAS = {
       uses_sparc_methodology BOOLEAN DEFAULT FALSE,
       sparc_project_id TEXT,
       sparc_phase TEXT,
-      sparc_progress_percentage REAL DEFAULT 0.0,
+      sparc_progress_percentage REAL DEFAULT .0,
       sparc_domain TEXT,
       sparc_complexity TEXT,
       
@@ -818,14 +818,14 @@ export const PRODUCT_DATABASE_SCHEMAS = {
       parent_documents TEXT, -- JSON array
       child_documents TEXT, -- JSON array
       related_documents TEXT, -- JSON array
-      search_rank REAL DEFAULT 0.0,
+      search_rank REAL DEFAULT .0,
       last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
       access_count NTEGER DEFAULT 0,
       
       -- SPARC NTEGRATION SEARCH FIELDS
       sparc_project_ids TEXT, -- JSON array of associated SPARC project Ds
       sparc_phase TEXT, -- Current SPARC phase if document uses SPARC
-      sparc_progress REAL DEFAULT 0.0, -- SPARC completion percentage
+      sparc_progress REAL DEFAULT .0, -- SPARC completion percentage
       uses_sparc_methodology BOOLEAN DEFAULT FALSE,
       sparc_domain TEXT, -- SPARC domain classification
       sparc_complexity TEXT, -- SPARC complexity level
@@ -854,10 +854,10 @@ export const PRODUCT_DATABASE_SCHEMAS = {
       sparc_domain TEXT NOT NULL,
       sparc_complexity TEXT NOT NULL,
       current_sparc_phase TEXT NOT NULL,
-      sparc_progress_percentage REAL DEFAULT 0.0,
+      sparc_progress_percentage REAL DEFAULT .0,
       
       -- Integration workflow state
-      sync_status TEXT DEFAULT 'synced', -- 'synced' | 'out_of_sync' | 'error'
+      sync_status TEXT DEFAULT 'synced, -- synced' | 'out_of_sync | error'
       last_sync_date DATETIME DEFAULT CURRENT_TIMESTAMP,
       sync_errors TEXT, -- JSON array
       
@@ -869,9 +869,9 @@ export const PRODUCT_DATABASE_SCHEMAS = {
       completion_completed BOOLEAN DEFAULT FALSE,
       
       -- Quality and benefits tracking
-      quality_improvement_score REAL DEFAULT 0.0,
-      delivery_speed_multiplier REAL DEFAULT 10.0,
-      maintainability_score REAL DEFAULT 0.0,
+      quality_improvement_score REAL DEFAULT .0,
+      delivery_speed_multiplier REAL DEFAULT 1.0,
+      maintainability_score REAL DEFAULT .0,
       
       -- Timestamps
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -893,33 +893,33 @@ export const PRODUCT_DATABASE_SCHEMAS = {
 } as const;
 
 /**
- * Type guards for Product Flow entities0.
+ * Type guards for Product Flow entities.
  *
  * @param doc
  * @example
  */
 export function isVisionDocument(doc: BaseProductEntity): doc is any {
-  return doc0.type === 'vision';
+  return doc.type === 'vision';
 }
 
 export function isADRDocument(doc: BaseProductEntity): doc is any {
-  return doc0.type === 'adr';
+  return doc.type === 'adr';
 }
 
 export function isPRDDocument(doc: BaseProductEntity): doc is any {
-  return doc0.type === 'prd';
+  return doc.type === 'prd';
 }
 
 export function isEpicDocument(doc: BaseProductEntity): doc is any {
-  return doc0.type === 'epic';
+  return doc.type === 'epic';
 }
 
 export function isFeatureDocument(doc: BaseProductEntity): doc is any {
-  return doc0.type === 'feature';
+  return doc.type === 'feature';
 }
 
 export function isTaskDocument(doc: BaseProductEntity): doc is any {
-  return doc0.type === 'task';
+  return doc.type === 'task';
 }
 
 // Alias BaseDocumentEntity to BaseProductEntity for compatibility

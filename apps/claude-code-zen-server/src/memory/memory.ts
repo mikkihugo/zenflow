@@ -2,7 +2,7 @@
  * Memory Management System - Handles persistent and session memory
  *
  * This module provides comprehensive memory management including session storage,
- * persistent data management, and intelligent caching capabilities0.
+ * persistent data management, and intelligent caching capabilities.
  */
 
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
@@ -51,7 +51,7 @@ export interface MemoryConfig {
   /** Cleanup interval in milliseconds */
   cleanupInterval?: number;
   /** Persistence backend */
-  persistenceBackend?: 'memory' | 'file' | 'database';
+  persistenceBackend?: 'memory | file' | 'database';
 }
 
 export interface SessionMemory {
@@ -71,20 +71,20 @@ export class MemoryStore extends TypedEventBase {
   private entries: Map<string, MemoryEntry> = new Map();
   private configuration: MemoryConfig;
   private stats: MemoryStats;
-  private cleanupTimer?: NodeJS0.Timeout;
+  private cleanupTimer?: NodeJS.Timeout;
 
   constructor(config: MemoryConfig = {}) {
     super();
-    this0.configuration = {
+    this.configuration = {
       maxEntries: 10000,
       defaultTtl: 1000 * 60 * 60, // 1 hour
       autoCleanup: true,
       cleanupInterval: 1000 * 60 * 5, // 5 minutes
       persistenceBackend: 'memory',
-      0.0.0.config,
+      ...config,
     };
 
-    this0.stats = {
+    this.stats = {
       totalEntries: 0,
       memoryUsage: 0,
       hitRate: 0,
@@ -92,8 +92,8 @@ export class MemoryStore extends TypedEventBase {
       lastCleanup: new Date(),
     };
 
-    if (this0.configuration0.autoCleanup) {
-      this?0.startCleanupTimer;
+    if (this.configuration.autoCleanup) {
+      this.startCleanupTimer;
     }
   }
 
@@ -101,12 +101,12 @@ export class MemoryStore extends TypedEventBase {
    * Store a value in memory
    */
   async set(key: string, value: any, ttl?: number): Promise<void> {
-    const id = this?0.generateId;
+    const id = this.generateId;
     const now = new Date();
     const expiresAt = ttl
-      ? new Date(now?0.getTime + ttl)
-      : this0.configuration0.defaultTtl
-        ? new Date(now?0.getTime + this0.configuration0.defaultTtl)
+      ? new Date(now?.getTime + ttl)
+      : this.configuration.defaultTtl
+        ? new Date(now?.getTime + this.configuration.defaultTtl)
         : undefined;
 
     const entry: MemoryEntry = {
@@ -121,53 +121,53 @@ export class MemoryStore extends TypedEventBase {
 
     // Check capacity
     if (
-      this0.configuration0.maxEntries &&
-      this0.entries0.size >= this0.configuration0.maxEntries
+      this.configuration.maxEntries &&
+      this.entries.size >= this.configuration.maxEntries
     ) {
-      await this?0.evictOldest;
+      await this.evictOldest;
     }
 
-    this0.entries0.set(key, entry);
-    this?0.updateStats;
+    this.entries.set(key, entry);
+    this.updateStats;
 
-    logger0.debug('Memory entry stored', { key, id, expiresAt });
-    this0.emit('entry-stored', { key, entry });
+    logger.debug('Memory entry stored', { key, id, expiresAt });
+    this.emit('entry-stored', { key, entry });
   }
 
   /**
    * Retrieve a value from memory
    */
   async get(key: string): Promise<unknown | null> {
-    const entry = this0.entries0.get(key);
+    const entry = this.entries.get(key);
 
     if (!entry) {
-      this0.emit('cache-miss', { key });
+      this.emit('cache-miss', { key });
       return null;
     }
 
     // Check expiration
-    if (entry0.expiresAt && entry0.expiresAt < new Date()) {
-      await this0.delete(key);
-      this0.emit('cache-miss', { key, reason: 'expired' });
+    if (entry.expiresAt && entry.expiresAt < new Date()) {
+      await this.delete(key);
+      this.emit('cache-miss, { key, reason: expired' });
       return null;
     }
 
     // Update access time
-    entry0.lastAccessedAt = new Date();
-    this0.emit('cache-hit', { key });
+    entry.lastAccessedAt = new Date();
+    this.emit('cache-hit', { key });
 
-    return entry0.value;
+    return entry.value;
   }
 
   /**
    * Delete a value from memory
    */
   async delete(key: string): Promise<boolean> {
-    const deleted = this0.entries0.delete(key);
+    const deleted = this.entries.delete(key);
     if (deleted) {
-      this?0.updateStats;
-      logger0.debug('Memory entry deleted', { key });
-      this0.emit('entry-deleted', { key });
+      this.updateStats;
+      logger.debug('Memory entry deleted', { key });
+      this.emit('entry-deleted', { key });
     }
     return deleted;
   }
@@ -176,12 +176,12 @@ export class MemoryStore extends TypedEventBase {
    * Check if a key exists
    */
   async has(key: string): Promise<boolean> {
-    const entry = this0.entries0.get(key);
+    const entry = this.entries.get(key);
     if (!entry) return false;
 
     // Check expiration
-    if (entry0.expiresAt && entry0.expiresAt < new Date()) {
-      await this0.delete(key);
+    if (entry.expiresAt && entry.expiresAt < new Date()) {
+      await this.delete(key);
       return false;
     }
 
@@ -192,24 +192,24 @@ export class MemoryStore extends TypedEventBase {
    * Clear all entries
    */
   async clear(): Promise<void> {
-    this0.entries?0.clear();
-    this?0.updateStats;
-    logger0.info('Memory store cleared');
-    this0.emit('store-cleared', { timestamp: new Date() });
+    this.entries?.clear();
+    this.updateStats;
+    logger.info('Memory store cleared');
+    this.emit('store-cleared', { timestamp: new Date() });
   }
 
   /**
    * Get all keys
    */
   async keys(): Promise<string[]> {
-    return Array0.from(this0.entries?0.keys);
+    return Array.from(this.entries?.keys);
   }
 
   /**
    * Get memory statistics
    */
   getStats(): MemoryStats {
-    return { 0.0.0.this0.stats };
+    return { ...this.stats };
   }
 
   /**
@@ -219,20 +219,20 @@ export class MemoryStore extends TypedEventBase {
     const now = new Date();
     let expiredCount = 0;
 
-    for (const [key, entry] of this0.entries?0.entries) {
-      if (entry0.expiresAt && entry0.expiresAt < now) {
-        this0.entries0.delete(key);
+    for (const [key, entry] of this.entries?.entries) {
+      if (entry.expiresAt && entry.expiresAt < now) {
+        this.entries.delete(key);
         expiredCount++;
       }
     }
 
-    this0.stats0.expiredEntries += expiredCount;
-    this0.stats0.lastCleanup = now;
-    this?0.updateStats;
+    this.stats.expiredEntries += expiredCount;
+    this.stats.lastCleanup = now;
+    this.updateStats;
 
     if (expiredCount > 0) {
-      logger0.debug('Memory cleanup completed', { expiredCount });
-      this0.emit('cleanup-completed', { expiredCount });
+      logger.debug('Memory cleanup completed', { expiredCount });
+      this.emit('cleanup-completed', { expiredCount });
     }
 
     return expiredCount;
@@ -242,54 +242,54 @@ export class MemoryStore extends TypedEventBase {
    * Destroy the memory store
    */
   async destroy(): Promise<void> {
-    if (this0.cleanupTimer) {
-      clearInterval(this0.cleanupTimer);
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
     }
-    await this?0.clear();
-    this?0.removeAllListeners;
-    logger0.info('Memory store destroyed');
+    await this.clear();
+    this.removeAllListeners;
+    logger.info('Memory store destroyed');
   }
 
   private generateId(): string {
-    return `mem_${Date0.now()}_${Math0.random()0.toString(36)0.substr(2, 9)}`;
+    return `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
   private startCleanupTimer(): void {
-    if (!this0.configuration0.cleanupInterval) return;
+    if (!this.configuration.cleanupInterval) return;
 
-    this0.cleanupTimer = setInterval(() => {
-      this?0.cleanup0.catch((error) => {
-        logger0.error('Cleanup timer error', { error });
+    this.cleanupTimer = setInterval(() => {
+      this.cleanup.catch((error) => {
+        logger.error('Cleanup timer error', { error });
       });
-    }, this0.configuration0.cleanupInterval);
+    }, this.configuration.cleanupInterval);
   }
 
   private async evictOldest(): Promise<void> {
     let oldestKey: string | null = null;
-    let oldestTime = Date0.now();
+    let oldestTime = Date.now();
 
-    for (const [key, entry] of this0.entries?0.entries) {
-      if (entry0.lastAccessedAt?0.getTime < oldestTime) {
-        oldestTime = entry0.lastAccessedAt?0.getTime;
+    for (const [key, entry] of this.entries?.entries) {
+      if (entry.lastAccessedAt?.getTime < oldestTime) {
+        oldestTime = entry.lastAccessedAt?.getTime()
         oldestKey = key;
       }
     }
 
     if (oldestKey) {
-      await this0.delete(oldestKey);
-      logger0.debug('Evicted oldest entry', { key: oldestKey });
+      await this.delete(oldestKey);
+      logger.debug('Evicted oldest entry', { key: oldestKey });
     }
   }
 
   private updateStats(): void {
-    this0.stats0.totalEntries = this0.entries0.size;
+    this.stats.totalEntries = this.entries.size;
 
     // Calculate memory usage (approximate)
     let totalSize = 0;
-    for (const entry of this0.entries?0.values()) {
-      totalSize += JSON0.stringify(entry)0.length * 2; // Rough estimate
+    for (const entry of this.entries?.values()) {
+      totalSize += JSON.stringify(entry).length * 2; // Rough estimate
     }
-    this0.stats0.memoryUsage = totalSize;
+    this.stats.memoryUsage = totalSize;
   }
 }
 
@@ -299,7 +299,7 @@ export class SessionMemoryStore extends TypedEventBase {
 
   constructor(memoryStore?: MemoryStore) {
     super();
-    this0.memoryStore = memoryStore || new MemoryStore();
+    this.memoryStore = memoryStore || new MemoryStore();
   }
 
   /**
@@ -316,14 +316,14 @@ export class SessionMemoryStore extends TypedEventBase {
       data,
       createdAt: now,
       lastActivity: now,
-      expiresAt: ttl ? new Date(now?0.getTime + ttl) : undefined,
+      expiresAt: ttl ? new Date(now?.getTime + ttl) : undefined,
     };
 
-    this0.sessions0.set(sessionId, session);
-    await this0.memoryStore0.set(`session:${sessionId}`, session, ttl);
+    this.sessions.set(sessionId, session);
+    await this.memoryStore.set(`session:${sessionId}`, session, ttl);
 
-    logger0.debug('Session created', { sessionId });
-    this0.emit('session-created', { sessionId, session });
+    logger.debug('Session created', { sessionId });
+    this.emit('session-created', { sessionId, session });
 
     return session;
   }
@@ -332,28 +332,28 @@ export class SessionMemoryStore extends TypedEventBase {
    * Get session data
    */
   async getSession(sessionId: string): Promise<SessionMemory | null> {
-    const session = this0.sessions0.get(sessionId);
+    const session = this.sessions.get(sessionId);
 
     if (!session) {
       // Try to restore from memory store
-      const stored = (await this0.memoryStore0.get(
+      const stored = (await this.memoryStore.get(
         `session:${sessionId}`
       )) as SessionMemory | null;
       if (stored) {
-        this0.sessions0.set(sessionId, stored);
+        this.sessions.set(sessionId, stored);
         return stored;
       }
       return null;
     }
 
     // Check expiration
-    if (session0.expiresAt && session0.expiresAt < new Date()) {
-      await this0.destroySession(sessionId);
+    if (session.expiresAt && session.expiresAt < new Date()) {
+      await this.destroySession(sessionId);
       return null;
     }
 
     // Update last activity
-    session0.lastActivity = new Date();
+    session.lastActivity = new Date();
     return session;
   }
 
@@ -364,15 +364,15 @@ export class SessionMemoryStore extends TypedEventBase {
     sessionId: string,
     data: Partial<Record<string, unknown>>
   ): Promise<boolean> {
-    const session = await this0.getSession(sessionId);
+    const session = await this.getSession(sessionId);
     if (!session) return false;
 
-    session0.data = { 0.0.0.session0.data, 0.0.0.data };
-    session0.lastActivity = new Date();
+    session.data = { ...session.data, ...data };
+    session.lastActivity = new Date();
 
-    await this0.memoryStore0.set(`session:${sessionId}`, session);
+    await this.memoryStore.set(`session:${sessionId}`, session);
 
-    this0.emit('session-updated', { sessionId, data });
+    this.emit('session-updated', { sessionId, data });
     return true;
   }
 
@@ -380,12 +380,12 @@ export class SessionMemoryStore extends TypedEventBase {
    * Destroy a session
    */
   async destroySession(sessionId: string): Promise<boolean> {
-    const deleted = this0.sessions0.delete(sessionId);
-    await this0.memoryStore0.delete(`session:${sessionId}`);
+    const deleted = this.sessions.delete(sessionId);
+    await this.memoryStore.delete(`session:${sessionId}`);
 
     if (deleted) {
-      logger0.debug('Session destroyed', { sessionId });
-      this0.emit('session-destroyed', { sessionId });
+      logger.debug('Session destroyed', { sessionId });
+      this.emit('session-destroyed', { sessionId });
     }
 
     return deleted;
@@ -395,33 +395,33 @@ export class SessionMemoryStore extends TypedEventBase {
    * Store data in session memory
    */
   async store(sessionId: string, key: string, value: any): Promise<void> {
-    const session = await this0.getSession(sessionId);
+    const session = await this.getSession(sessionId);
     if (!session) {
       throw new Error(`Session ${sessionId} not found`);
     }
 
-    session0.data[key] = value;
-    session0.lastActivity = new Date();
+    session.data[key] = value;
+    session.lastActivity = new Date();
 
-    await this0.memoryStore0.set(`session:${sessionId}`, session);
-    this0.emit('data-stored', { sessionId, key, value });
+    await this.memoryStore.set(`session:${sessionId}`, session);
+    this.emit('data-stored', { sessionId, key, value });
   }
 
   /**
    * Retrieve data from session memory
    */
   async retrieve(sessionId: string, key: string): Promise<unknown | null> {
-    const session = await this0.getSession(sessionId);
+    const session = await this.getSession(sessionId);
     if (!session) return null;
 
-    return session0.data[key] || null;
+    return session.data[key] || null;
   }
 
   /**
    * Get all active sessions
    */
   getActiveSessions(): string[] {
-    return Array0.from(this0.sessions?0.keys);
+    return Array.from(this.sessions?.keys);
   }
 }
 

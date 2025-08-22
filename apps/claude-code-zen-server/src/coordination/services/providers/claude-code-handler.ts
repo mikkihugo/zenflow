@@ -1,8 +1,8 @@
 /**
  * Claude Code Handler - Programmatic Integration
  *
- * Based on Cline's ClaudeCodeHandler implementation0.
- * Uses runClaudeCode function for streaming responses and proper error handling0.
+ * Based on Cline's ClaudeCodeHandler implementation.
+ * Uses runClaudeCode function for streaming responses and proper error handling.
  */
 
 import {
@@ -14,15 +14,15 @@ import {
 
 // Simple message types - no external SDK dependency needed
 export interface MessageParam {
-  role: 'user' | 'assistant' | 'system';
+  role: 'user | assistant' | 'system';
   content: string | Array<{ type: 'text'; text: string }>;
 }
 
-// Stream types (from Cline's stream0.ts)
+// Stream types (from Cline's stream.ts)
 export type ApiStream = AsyncGenerator<ApiStreamChunk>;
 
 export interface ApiStreamChunk {
-  type: 'text' | 'reasoning' | 'usage';
+  type: 'text | reasoning' | 'usage';
 }
 
 export interface ApiStreamTextChunk extends ApiStreamChunk {
@@ -100,25 +100,25 @@ export function withRetry(config: {
   maxDelay: number;
 }) {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    const originalMethod = descriptor0.value;
+    const originalMethod = descriptor.value;
 
-    descriptor0.value = async function* (0.0.0.args: any[]) {
+    descriptor.value = async function* (args: any[]) {
       let lastError: Error | null = null;
 
-      for (let attempt = 0; attempt <= config0.maxRetries; attempt++) {
+      for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
         try {
-          yield* originalMethod0.apply(this, args);
+          yield* originalMethod.apply(this, args);
           return;
         } catch (error) {
           lastError = error as Error;
 
-          if (attempt === config0.maxRetries) {
+          if (attempt === config.maxRetries) {
             throw lastError;
           }
 
-          const delay = Math0.min(
-            config0.baseDelay * 2 ** attempt,
-            config0.maxDelay
+          const delay = Math.min(
+            config.baseDelay * 2 ** attempt,
+            config.maxDelay
           );
 
           await new Promise((resolve) => setTimeout(resolve, delay));
@@ -142,7 +142,7 @@ export class ClaudeCodeHandler implements ApiHandler {
   private logger = getLogger('ClaudeCodeHandler');
 
   constructor(options: ClaudeCodeHandlerOptions) {
-    this0.options = options;
+    this.options = options;
   }
 
   @withRetry({
@@ -152,7 +152,7 @@ export class ClaudeCodeHandler implements ApiHandler {
   })
   async *createMessage(
     systemPrompt: string,
-    messages: Anthropic0.Messages0.MessageParam[]
+    messages: Anthropic.Messages.MessageParam[]
   ): ApiStream {
     // Filter out image blocks since Claude Code doesn't support them
     const filteredMessages = filterMessagesForClaudeCode(messages);
@@ -160,26 +160,26 @@ export class ClaudeCodeHandler implements ApiHandler {
     // Create unified prompt from system prompt and messages
     const prompt = [
       systemPrompt,
-      0.0.0.filteredMessages0.map((msg) => {
-        if (typeof msg0.content === 'string') {
-          return `${msg0.role}: ${msg0.content}`;
+      ...filteredMessages.map((msg) => {
+        if (typeof msg.content === 'string') {
+          return `${msg.role}: ${msg.content}`;
         } else {
-          const textParts = msg0.content
-            0.filter((c) => c0.type === 'text')
-            0.map((c) => c0.text);
-          return `${msg0.role}: ${textParts0.join(' ')}`;
+          const textParts = msg.content
+            .filter((c) => c.type === 'text')
+            .map((c) => c.text);
+          return `${msg.role}: ${textParts.join(' ')}`;
         }
       }),
-    ]0.join('\n\n');
+    ].join('\n\n');
 
     const claudeOptions: ClaudeSDKOptions = {
-      model: this?0.getModel0.id,
+      model: this.getModel.id,
       customSystemPrompt: systemPrompt,
-      maxThinkingTokens: this0.options0.thinkingBudgetTokens,
+      maxThinkingTokens: this.options.thinkingBudgetTokens,
       // Allow tools based on configuration - swarm coordination needs full access
-      allowedTools: this0.options0.enableTools ? this0.options0.allowedTools : [],
-      disallowedTools: this0.options0.disallowedTools,
-      pathToClaudeCodeExecutable: this0.options0.claudeCodePath,
+      allowedTools: this.options.enableTools ? this.options.allowedTools : [],
+      disallowedTools: this.options.disallowedTools,
+      pathToClaudeCodeExecutable: this.options.claudeCodePath,
     };
 
     // Execute Claude task and convert results to streaming format
@@ -205,34 +205,34 @@ export class ClaudeCodeHandler implements ApiHandler {
         continue;
       }
 
-      if (chunk0.type === 'system' && chunk0.subtype === 'init') {
+      if (chunk.type === 'system && chunk.subtype === init') {
         // Based on my tests, subscription usage sets the `apiKeySource` to "none"
-        isPaidUsage = chunk0.apiKeySource !== 'none';
+        isPaidUsage = chunk.apiKeySource !== 'none';
         continue;
       }
 
-      if (chunk0.type === 'assistant' && 'message' in chunk) {
-        const message = chunk0.message;
+      if (chunk.type === 'assistant && message' in chunk) {
+        const message = chunk.message;
 
-        if (message0.stop_reason !== null) {
+        if (message.stop_reason !== null) {
           const content =
-            'text' in message0.content[0] ? message0.content[0] : undefined;
+            'text' in message.content[0] ? message.content[0] : undefined;
 
-          const isError = content && content0.text0.startsWith(`API Error`);
+          const isError = content && content.text.startsWith(`API Error`);
           if (isError) {
             // Error messages are formatted as: `API Error: <<status code>> <<json>>`
-            const errorMessageStart = content0.text0.indexOf('{');
-            const errorMessage = content0.text0.slice(errorMessageStart);
+            const errorMessageStart = content.text.indexOf('{');
+            const errorMessage = content.text.slice(errorMessageStart);
 
-            const error = this0.attemptParse(errorMessage);
+            const error = this.attemptParse(errorMessage);
             if (!error) {
-              throw new Error(content0.text);
+              throw new Error(content.text);
             }
 
-            if (error0.error0.message0.includes('Invalid model name')) {
+            if (error.error.message.includes('Invalid model name')) {
               throw new Error(
-                content0.text +
-                  `\n\nAPI keys and subscription plans allow different models0. Make sure the selected model is included in your plan0.`
+                content.text +
+                  `\n\nAPI keys and subscription plans allow different models. Make sure the selected model is included in your plan.`
               );
             }
 
@@ -240,18 +240,18 @@ export class ClaudeCodeHandler implements ApiHandler {
           }
         }
 
-        for (const content of message0.content) {
-          switch (content0.type) {
+        for (const content of message.content) {
+          switch (content.type) {
             case 'text':
               yield {
                 type: 'text',
-                text: content0.text,
+                text: content.text,
               } as ApiStreamTextChunk;
               break;
             case 'thinking':
               yield {
                 type: 'reasoning',
-                reasoning: content0.thinking || '',
+                reasoning: content.thinking || '',
               } as ApiStreamReasoningChunk;
               break;
             case 'redacted_thinking':
@@ -261,27 +261,27 @@ export class ClaudeCodeHandler implements ApiHandler {
               } as ApiStreamReasoningChunk;
               break;
             case 'tool_use':
-              this0.logger0.error(
-                `tool_use is not supported yet0. Received: ${JSON0.stringify(content)}`
+              this.logger.error(
+                `tool_use is not supported yet. Received: ${JSON.stringify(content)}`
               );
               break;
           }
         }
 
-        usage0.inputTokens += message0.usage0.input_tokens;
-        usage0.outputTokens += message0.usage0.output_tokens;
-        usage0.cacheReadTokens =
-          (usage0.cacheReadTokens || 0) +
-          (message0.usage0.cache_read_input_tokens || 0);
-        usage0.cacheWriteTokens =
-          (usage0.cacheWriteTokens || 0) +
-          (message0.usage0.cache_creation_input_tokens || 0);
+        usage.inputTokens += message.usage.input_tokens;
+        usage.outputTokens += message.usage.output_tokens;
+        usage.cacheReadTokens =
+          (usage.cacheReadTokens || 0) +
+          (message.usage.cache_read_input_tokens || 0);
+        usage.cacheWriteTokens =
+          (usage.cacheWriteTokens || 0) +
+          (message.usage.cache_creation_input_tokens || 0);
 
         continue;
       }
 
-      if (chunk0.type === 'result' && 'result' in chunk) {
-        usage0.totalCost = isPaidUsage ? chunk0.total_cost_usd : 0;
+      if (chunk.type === 'result && result' in chunk) {
+        usage.totalCost = isPaidUsage ? chunk.total_cost_usd : 0;
 
         yield usage;
       }
@@ -290,14 +290,14 @@ export class ClaudeCodeHandler implements ApiHandler {
 
   private attemptParse(str: string) {
     try {
-      return JSON0.parse(str);
+      return JSON.parse(str);
     } catch (error) {
       return null;
     }
   }
 
   getModel() {
-    const modelId = this0.options0.apiModelId;
+    const modelId = this.options.apiModelId;
     if (modelId && modelId in claudeCodeModels) {
       const id = modelId as ClaudeCodeModelId;
       return { id, info: claudeCodeModels[id] };
@@ -315,16 +315,16 @@ export class ClaudeCodeHandler implements ApiHandler {
   getModels() {
     return {
       object: 'list' as const,
-      data: Object0.entries(claudeCodeModels)0.map(([id, info]) => ({
+      data: Object.entries(claudeCodeModels).map(([id, info]) => ({
         id,
         object: 'model' as const,
-        created: Math0.floor(Date0.now() / 1000),
+        created: Math.floor(Date.now() / 1000),
         owned_by: 'anthropic',
-        name: info0.name,
-        context_window: info0.contextWindow,
-        max_tokens: info0.maxTokens,
-        supports_caching: info0.supportsCaching,
-        supports_thinking: info0.supportsThinking,
+        name: info.name,
+        context_window: info.contextWindow,
+        max_tokens: info.maxTokens,
+        supports_caching: info.supportsCaching,
+        supports_thinking: info.supportsThinking,
       })),
     };
   }

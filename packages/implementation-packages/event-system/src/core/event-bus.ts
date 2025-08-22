@@ -1,3 +1,4 @@
+import { EventEmitter } from "@claude-zen/foundation";
 /**
  * @fileoverview Event Bus - Professional Battle-Tested Architecture
  * 

@@ -1,10 +1,10 @@
 /**
- * Coordination Domain - OpenAPI 3 Schemas0.
+ * Coordination Domain - OpenAPI 3 Schemas.
  *
- * Comprehensive schema definitions for Swagger autodoc generation0.
- * Following Google API Design Guide standards0.
+ * Comprehensive schema definitions for Swagger autodoc generation.
+ * Following Google API Design Guide standards.
  *
- * @file OpenAPI 30.0 compatible schemas for coordination domain0.
+ * @file OpenAPI 3.0 compatible schemas for coordination domain.
  */
 
 /**
@@ -37,7 +37,7 @@
  *           items:
  *             type: string
  *           description: List of agent capabilities
- *           example: ["code_analysis", "test_generation", "documentation"]
+ *           example: ["code_analysis, test_generation", "documentation"]
  *         created:
  *           type: string
  *           format: date-time
@@ -218,8 +218,8 @@
 // TypeScript interfaces that match OpenAPI schemas
 export interface Agent {
   readonly id: string;
-  readonly type: 'researcher' | 'coder' | 'analyst' | 'tester' | 'coordinator';
-  status: 'idle' | 'busy' | 'error' | 'offline';
+  readonly type: 'researcher | coder' | 'analyst | tester' | 'coordinator';
+  status: 'idle | busy' | 'error | offline';
   readonly capabilities: readonly string[];
   readonly created: Date;
   lastHeartbeat: Date;
@@ -228,9 +228,9 @@ export interface Agent {
 }
 
 export interface SwarmConfig {
-  topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  topology: 'mesh | hierarchical' | 'ring | star';
   maxAgents: number;
-  strategy?: 'balanced' | 'specialized' | 'adaptive' | 'performance';
+  strategy?: 'balanced | specialized' | 'adaptive | performance';
   adaptiveThreshold?: number;
 }
 
@@ -240,7 +240,7 @@ export interface Task {
   readonly priority: number;
   readonly description: string;
   assignedAgent?: string;
-  status: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'failed';
+  status: 'pending | assigned' | 'in_progress | completed' | 'failed';
   readonly created: Date;
   deadline?: Date;
   result?: any;
@@ -262,12 +262,12 @@ export interface CoordinationError {
 }
 
 export interface HealthStatus {
-  readonly status: 'healthy' | 'degraded' | 'unhealthy';
+  readonly status: 'healthy | degraded' | 'unhealthy';
   readonly timestamp: Date;
   readonly components: {
-    readonly coordination: 'healthy' | 'degraded' | 'unhealthy';
-    readonly agents: 'healthy' | 'degraded' | 'unhealthy';
-    readonly swarm: 'healthy' | 'degraded' | 'unhealthy';
+    readonly coordination: 'healthy | degraded' | 'unhealthy';
+    readonly agents: 'healthy | degraded' | 'unhealthy';
+    readonly swarm: 'healthy | degraded' | 'unhealthy';
   };
   readonly metrics: PerformanceMetrics;
 }
@@ -284,9 +284,9 @@ export interface PerformanceMetrics {
 
 // Schema validation utilities (Google standard: explicit validation)
 export const SchemaValidators = {
-  isValidAgentId: (id: string): boolean => /^[a-z]+(?:-[\da-z]+){2}$/0.test(id),
+  isValidAgentId: (id: string): boolean => /^[a-z]+(?:-[\da-z]+){2}$/.test(id),
   isValidTaskId: (id: string): boolean =>
-    /^task-[a-z]+(?:-[\da-z]+){2}$/0.test(id),
+    /^task-[a-z]+(?:-[\da-z]+){2}$/.test(id),
   isValidPriority: (priority: number): boolean =>
     priority >= 0 && priority <= 100,
   isValidWorkload: (workload: number): boolean =>

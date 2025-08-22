@@ -13,7 +13,7 @@ import type {
   BaseApiResponse,
   NeuralConfig,
   NeuralNetworkInterface,
-} from '0./interfaces';
+} from "./interfaces";
 
 /**
  * Check if value is a valid Priority
@@ -21,7 +21,7 @@ import type {
 export function isPriority(value: any): value is Priority {
   return (
     typeof value === 'string' &&
-    ['low', 'medium', 'high', 'critical']0.includes(value)
+    ['low, medium', 'high, critical'].includes(value)
   );
 }
 
@@ -31,7 +31,7 @@ export function isPriority(value: any): value is Priority {
 export function isRiskLevel(value: any): value is RiskLevel {
   return (
     typeof value === 'string' &&
-    ['low', 'medium', 'high', 'critical']0.includes(value)
+    ['low, medium', 'high, critical'].includes(value)
   );
 }
 
@@ -42,10 +42,10 @@ export function isServerInstance(value: any): value is ServerInstance {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as ServerInstance)0.id === 'string' &&
-    typeof (value as ServerInstance)0.status === 'string' &&
-    ['starting', 'running', 'stopping', 'stopped', 'error']0.includes(
-      (value as ServerInstance)0.status
+    typeof (value as ServerInstance).id === 'string' &&
+    typeof (value as ServerInstance).status === 'string' &&
+    ['starting, running', 'stopping, stopped', 'error'].includes(
+      (value as ServerInstance).status
     )
   );
 }
@@ -57,9 +57,9 @@ export function isBaseError(value: any): value is BaseError {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as BaseError)0.code === 'string' &&
-    typeof (value as BaseError)0.message === 'string' &&
-    (value as BaseError)0.timestamp instanceof Date
+    typeof (value as BaseError).code === 'string' &&
+    typeof (value as BaseError).message === 'string' &&
+    (value as BaseError).timestamp instanceof Date
   );
 }
 
@@ -70,11 +70,11 @@ export function isTestResult(value: any): value is TestResult {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as TestResult)0.id === 'string' &&
-    typeof (value as TestResult)0.name === 'string' &&
-    typeof (value as TestResult)0.status === 'string' &&
-    ['passed', 'failed', 'skipped', 'pending']0.includes(
-      (value as TestResult)0.status
+    typeof (value as TestResult).id === 'string' &&
+    typeof (value as TestResult).name === 'string' &&
+    typeof (value as TestResult).status === 'string' &&
+    ['passed, failed', 'skipped, pending'].includes(
+      (value as TestResult).status
     )
   );
 }
@@ -86,8 +86,8 @@ export function isCommandResult(value: any): value is CommandResult {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as CommandResult)0.success === 'boolean' &&
-    (value as CommandResult)0.timestamp instanceof Date
+    typeof (value as CommandResult).success === 'boolean' &&
+    (value as CommandResult).timestamp instanceof Date
   );
 }
 
@@ -98,8 +98,8 @@ export function isBaseApiResponse(value: any): value is BaseApiResponse {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as BaseApiResponse)0.success === 'boolean' &&
-    (value as BaseApiResponse)0.timestamp instanceof Date
+    typeof (value as BaseApiResponse).success === 'boolean' &&
+    (value as BaseApiResponse).timestamp instanceof Date
   );
 }
 
@@ -110,13 +110,13 @@ export function isNeuralConfig(value: any): value is NeuralConfig {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as NeuralConfig)0.modelType === 'string' &&
-    ['feedforward', 'recurrent', 'transformer']0.includes(
-      (value as NeuralConfig)0.modelType
+    typeof (value as NeuralConfig).modelType === 'string' &&
+    ['feedforward, recurrent', 'transformer'].includes(
+      (value as NeuralConfig).modelType
     ) &&
-    Array0.isArray((value as NeuralConfig)0.layers) &&
-    Array0.isArray((value as NeuralConfig)0.activations) &&
-    typeof (value as NeuralConfig)0.learningRate === 'number'
+    Array.isArray((value as NeuralConfig).layers) &&
+    Array.isArray((value as NeuralConfig).activations) &&
+    typeof (value as NeuralConfig).learningRate === 'number'
   );
 }
 
@@ -129,14 +129,14 @@ export function isNeuralNetworkInterface(
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as NeuralNetworkInterface)0.id === 'string' &&
-    typeof (value as NeuralNetworkInterface)0.isInitialized === 'boolean' &&
-    isNeuralConfig((value as NeuralNetworkInterface)0.config) &&
-    typeof (value as NeuralNetworkInterface)0.initialize === 'function' &&
-    typeof (value as NeuralNetworkInterface)0.train === 'function' &&
-    typeof (value as NeuralNetworkInterface)0.predict === 'function' &&
-    typeof (value as NeuralNetworkInterface)0.getStatus === 'function' &&
-    typeof (value as NeuralNetworkInterface)0.destroy === 'function'
+    typeof (value as NeuralNetworkInterface).id === 'string' &&
+    typeof (value as NeuralNetworkInterface).isInitialized === 'boolean' &&
+    isNeuralConfig((value as NeuralNetworkInterface).config) &&
+    typeof (value as NeuralNetworkInterface).initialize === 'function' &&
+    typeof (value as NeuralNetworkInterface).train === 'function' &&
+    typeof (value as NeuralNetworkInterface).predict === 'function' &&
+    typeof (value as NeuralNetworkInterface).getStatus === 'function' &&
+    typeof (value as NeuralNetworkInterface).destroy === 'function'
   );
 }
 
@@ -147,6 +147,6 @@ export function hasErrorCode(value: any): value is { code: string } {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as { code: string })0.code === 'string'
+    typeof (value as { code: string }).code === 'string'
   );
 }

@@ -2,12 +2,12 @@
  * @fileoverview Shared Type Definitions for Swarm Operations
  *
  * Common types used across all interfaces (stdio MCP, HTTP API, HTTP MCP)
- * to ensure consistency in swarm coordination functionality0.
+ * to ensure consistency in swarm coordination functionality.
  */
 export interface SwarmConfig {
-  topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  topology: 'mesh | hierarchical' | 'ring | star';
   maxAgents?: number;
-  strategy?: 'balanced' | 'specialized' | 'adaptive' | 'parallel';
+  strategy?: 'balanced | specialized' | 'adaptive | parallel';
   features?: {
     cognitive_diversity?: boolean;
     neural_networks?: boolean;
@@ -37,8 +37,8 @@ export interface AgentConfig {
 }
 export interface TaskOrchestrationConfig {
   task: string;
-  strategy?: 'parallel' | 'sequential' | 'adaptive';
-  priority?: 'low' | 'medium' | 'high' | 'critical';
+  strategy?: 'parallel | sequential' | 'adaptive';
+  priority?: 'low | medium' | 'high | critical';
   maxAgents?: number;
   timeout?: number;
   requirements?: {
@@ -48,8 +48,8 @@ export interface TaskOrchestrationConfig {
     max_agents?: number;
   };
 }
-export type SwarmStatus = 'initializing' | 'active' | 'paused' | 'terminated';
-export type AgentStatus = 'idle' | 'busy' | 'error' | 'offline';
+export type SwarmStatus = 'initializing | active' | 'paused | terminated';
+export type AgentStatus = 'idle | busy' | 'error | offline';
 export type TaskStatus =
   | 'pending'
   | 'running'
@@ -57,7 +57,7 @@ export type TaskStatus =
   | 'cancelled'
   | 'failed';
 export interface MemoryConfig {
-  action: 'store' | 'retrieve' | 'list' | 'delete';
+  action: 'store | retrieve' | 'list | delete';
   key?: string;
   value?: any;
   pattern?: string;
@@ -77,7 +77,7 @@ export interface NeuralConfig {
   training_data?: any[];
 }
 export interface BenchmarkConfig {
-  type?: 'all' | 'wasm' | 'swarm' | 'agent' | 'task' | 'neural';
+  type?: 'all | wasm' | 'swarm | agent' | 'task | neural';
   iterations?: number;
   duration?: number;
   agents?: number;
@@ -137,7 +137,7 @@ export declare const SwarmConfigSchema: {
   readonly properties: {
     readonly topology: {
       readonly type: 'string';
-      readonly enum: readonly ['mesh', 'hierarchical', 'ring', 'star'];
+      readonly enum: readonly ['mesh, hierarchical', 'ring, star'];
     };
     readonly maxAgents: {
       readonly type: 'number';
@@ -210,12 +210,12 @@ export declare const TaskOrchestrationSchema: {
     };
     readonly strategy: {
       readonly type: 'string';
-      readonly enum: readonly ['parallel', 'sequential', 'adaptive'];
+      readonly enum: readonly ['parallel, sequential', 'adaptive'];
       readonly default: 'adaptive';
     };
     readonly priority: {
       readonly type: 'string';
-      readonly enum: readonly ['low', 'medium', 'high', 'critical'];
+      readonly enum: readonly ['low, medium', 'high, critical'];
       readonly default: 'medium';
     };
     readonly maxAgents: {
@@ -228,4 +228,4 @@ export declare const TaskOrchestrationSchema: {
   readonly required: readonly ['task'];
   readonly additionalProperties: false;
 };
-//# sourceMappingURL=swarm-types0.d0.ts0.map
+//# sourceMappingURL=swarm-types.d.ts.map

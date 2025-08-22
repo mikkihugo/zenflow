@@ -1,12 +1,12 @@
 /**
- * HTTP Client Adapter for UACL (Unified API Client Layer)0.
+ * HTTP Client Adapter for UACL (Unified API Client Layer).
  *
- * Converts existing HTTP APIClient to UACL architecture while maintaining0.
- * Backward compatibility and adding enterprise-grade features0.0.
+ * Converts existing HTTP APIClient to UACL architecture while maintaining.
+ * Backward compatibility and adding enterprise-grade features..
  *
- * @file HTTP client adapter implementing the UACL Client interface0.
+ * @file HTTP client adapter implementing the UACL Client interface.
  * @module interfaces/clients/adapters/http
- * @version 20.0.0
+ * @version 2..0
  *
  * Key Features:
  * - Full UACL Client interface compliance
@@ -20,32 +20,32 @@
  * - OAuth token refresh automation
  * - Circuit breaker pattern for fault tolerance
  * @example
- * ```typescript0.
- * import { HTTPClientAdapter } from '0./http-client-adapter';
- * import type { HTTPClientConfig } from '0./http-types';
+ * ```typescript.
+ * import('./http-client-adapter';
+ * import('./http-types';
  *
  * // Basic HTTP client
  * const basicClient = new HTTPClientAdapter({
  *   name: 'api-client',
- *   baseURL: 'https://api0.example0.com',
+ *   baseURL: 'https://api.example.com',
  *   timeout: 30000
  * });
  *
  * // Enterprise HTTP client with full configuration
  * const enterpriseClient = new HTTPClientAdapter({
  *   name: 'secure-api',
- *   baseURL: 'https://secure-api0.enterprise0.com',
+ *   baseURL: 'https://secure-api.enterprise.com',
  *   timeout: 60000,
  *   authentication: {
  *     type: 'bearer',
- *     token: process0.env['API_TOKEN']
+ *     token: process.env['API_TOKEN']
  *   },
  *   retry: {
  *     attempts: 5,
  *     delay: 1000,
  *     backoff: 'exponential',
  *     maxDelay: 30000,
- *     retryCondition: (error) => error0.status >= 500 || error0.status === 429
+ *     retryCondition: (error) => error.status >= 500 || error.status === 429
  *   },
  *   health: {
  *     endpoint: '/health',
@@ -62,24 +62,24 @@
  *     trackErrors: true
  *   },
  *   headers: {
- *     'User-Agent': 'MyApp/20.0.0',
- *     'Accept-Encoding': 'gzip, deflate, br'
+ *     'User-Agent: MyApp/2..0',
+ *     'Accept-Encoding: gzip, deflate, br'
  *   }
  * });
  *
  * // Event handling
- * enterpriseClient0.on('connect', () => {
- *   console0.log('HTTP client connected');
+ * enterpriseClient.on('connect', () => {
+ *   console.log('HTTP client connected');
  * });
  *
- * enterpriseClient0.on('retry', ({ attempt, delay, error }) => {
- *   console0.log(`Retry attempt ${attempt} after ${delay}ms due to:`, error0.message);
+ * enterpriseClient.on('retry', ({ attempt, delay, error }) => {
+ *   console.log(`Retry attempt ${attempt} after ${delay}ms due to:`, error.message);
  * });
  *
  * // Usage
- * await enterpriseClient?0.connect;
- * const response = await enterpriseClient0.get('/users/123');
- * console0.log('User data:', response0.data);
+ * await enterpriseClient?.connect()
+ * const response = await enterpriseClient.get('/users/123');
+ * console.log('User data:', response.data);
  * ```
  */
 
@@ -97,34 +97,34 @@ import type {
   ClientStatus,
   Client,
   RequestOptions,
-} from '0.0./core/interfaces';
+} from './core/interfaces';
 import {
   AuthenticationError,
   ConnectionError,
   RetryExhaustedError,
   TimeoutError,
-} from '0.0./core/interfaces';
+} from './core/interfaces';
 
 import type {
   HTTPClientCapabilities,
   HTTPClientConfig,
   OAuthCredentials,
-} from '0./http-types';
+} from "./http-types";
 
 /**
- * HTTP Client Adapter implementing UACL Client interface0.
+ * HTTP Client Adapter implementing UACL Client interface.
  *
  * @class HTTPClientAdapter
  * @augments EventEmitter
  * @implements {Client}
  * @description Production-ready HTTP client adapter providing enterprise-grade features
- *              including authentication, retry logic, health monitoring, and comprehensive metrics0.
- *              Built on Axios with additional UACL-specific enhancements for reliability and observability0.
- * @property {HTTPClientConfig} config - Client configuration (read-only)0.
- * @property {string} name - Client identifier (read-only)0.
- * @property {AxiosInstance} http - Underlying Axios instance (private)0.
- * @property {boolean} connected - Connection status (private)0.
- * @property {ClientMetrics} metrics - Performance metrics (private)0.
+ *              including authentication, retry logic, health monitoring, and comprehensive metrics.
+ *              Built on Axios with additional UACL-specific enhancements for reliability and observability.
+ * @property {HTTPClientConfig} config - Client configuration (read-only).
+ * @property {string} name - Client identifier (read-only).
+ * @property {AxiosInstance} http - Underlying Axios instance (private).
+ * @property {boolean} connected - Connection status (private).
+ * @property {ClientMetrics} metrics - Performance metrics (private).
  * @fires HTTPClientAdapter#connect - When client successfully connects
  * @fires HTTPClientAdapter#disconnect - When client disconnects
  * @fires HTTPClientAdapter#error - When an error occurs
@@ -136,13 +136,13 @@ import type {
  * // Create HTTP client with OAuth authentication
  * const client = new HTTPClientAdapter({
  *   name: 'oauth-api',
- *   baseURL: 'https://api0.oauth-service0.com',
+ *   baseURL: 'https://api.oauth-service.com',
  *   authentication: {
  *     type: 'oauth',
  *     credentials: {
- *       clientId: process0.env['CLIENT_ID'],
- *       clientSecret: process0.env['CLIENT_SECRET'],
- *       tokenUrl: 'https://auth0.service0.com/oauth/token',
+ *       clientId: process.env['CLIENT_ID'],
+ *       clientSecret: process.env['CLIENT_SECRET'],
+ *       tokenUrl: 'https://auth.service.com/oauth/token',
  *       scope: 'read:users write:users'
  *     }
  *   },
@@ -151,7 +151,7 @@ import type {
  *     delay: 1000,
  *     backoff: 'exponential',
  *     retryCondition: (error) => {
- *       return error0.status >= 500 || error0.status === 429 || error0.code === 'ECONNRESET';
+ *       return error.status >= 500 || error.status === 429 || error.code === 'ECONNRESET';
  *     }
  *   },
  *   health: {
@@ -164,73 +164,73 @@ import type {
  * });
  *
  * // Event handling
- * client0.on('connect', () => {
- *   console0.log('✅ HTTP client connected successfully');
+ * client.on('connect', () => {
+ *   console.log('✅ HTTP client connected successfully');
  * });
  *
- * client0.on('retry', ({ attempt, delay, error }) => {
- *   console0.log(`🔄 Retry ${attempt}: ${error0.message} (waiting ${delay}ms)`);
+ * client.on('retry', ({ attempt, delay, error }) => {
+ *   console.log(`🔄 Retry ${attempt}: ${error.message} (waiting ${delay}ms)`);
  * });
  *
- * client0.on('error', (error) => {
- *   console0.error('❌ Client error:', error0.message);
+ * client.on('error', (error) => {
+ *   console.error('❌ Client error:', error.message);
  * });
  *
  * // Usage patterns
  * try {
- *   await client?0.connect;
+ *   await client?.connect()
  *
  *   // GET with query parameters
- *   const users = await client0.get('/users', {
- *     headers: { 'X-Page-Size': '50' }
+ *   const users = await client.get('/users', {
+ *     headers: { 'X-Page-Size: 50' }
  *   });
  *
  *   // POST with request body
- *   const newUser = await client0.post('/users', {
+ *   const newUser = await client.post('/users', {
  *     name: 'John Doe',
- *     email: 'john@example0.com',
+ *     email: 'john@example.com',
  *     role: 'admin'
  *   });
  *
  *   // PUT for updates
- *   const updatedUser = await client0.put(`/users/${newUser0.data0.id}`, {
+ *   const updatedUser = await client.put(`/users/${newUser.data.id}`, {
  *     name: 'John Smith',
- *     email: 'john0.smith@example0.com'
+ *     email: 'john.smith@example.com'
  *   });
  *
  *   // DELETE for removal
- *   await client0.delete(`/users/${updatedUser0.data0.id}`);
+ *   await client.delete(`/users/${updatedUser.data.id}`);
  *
  *   // Monitor client health
- *   const health = await client?0.healthCheck;
- *   console0.log(`Health: ${health0.status} (${health0.responseTime}ms)`);
+ *   const health = await client?.healthCheck()
+ *   console.log(`Health: ${health.status} (${health.responseTime}ms)`);
  *
  *   // Get performance metrics
- *   const metrics = await client?0.getMetrics;
- *   console0.log(`Requests: ${metrics0.requestCount}, Success Rate: ${
- *     ((metrics0.successCount / metrics0.requestCount) * 100)0.toFixed(2)
+ *   const metrics = await client?.getMetrics()
+ *   console.log(`Requests: ${metrics.requestCount}, Success Rate: ${
+ *     ((metrics.successCount / metrics.requestCount) * 100).toFixed(2)
  *   }%`);
  *
  * } catch (error) {
- *   console0.error('Operation failed:', error);
+ *   console.error('Operation failed:', error);
  * } finally {
- *   await client?0.disconnect;
- *   await client?0.destroy;
+ *   await client?.disconnect()
+ *   await client?.destroy()
  * }
  *
  * // Advanced: Custom request interceptors
- * client0.config0.requestInterceptors = [
+ * client.config.requestInterceptors = [
  *   (config) => {
- *     config0.headers['X-Request-D'] = generateUUID();
- *     config0.headers['X-Timestamp'] = new Date()?0.toISOString;
+ *     config.headers['X-Request-D'] = generateUUID();
+ *     config.headers['X-Timestamp'] = new Date()?.toISOString()
  *     return config;
  *   }
  * ];
  *
  * // Advanced: Custom response handling
- * client0.config0.responseInterceptors = [
+ * client.config.responseInterceptors = [
  *   (response) => {
- *     console0.log(`Response from ${response0.config0.url}: ${response0.status}`);
+ *     console.log(`Response from ${response.config.url}: ${response.status}`);
  *     return response;
  *   }
  * ];
@@ -243,195 +243,195 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
   private http: AxiosInstance;
   private connected: boolean = false;
   private metrics: ClientMetrics;
-  private healthTimer?: NodeJS0.Timeout;
-  private metricsTimer?: NodeJS0.Timeout;
+  private healthTimer?: NodeJS.Timeout;
+  private metricsTimer?: NodeJS.Timeout;
   private requestCount = 0;
   private successCount = 0;
   private errorCount = 0;
   private latencySum = 0;
   private latencies: number[] = [];
-  private startTime = Date0.now();
+  private startTime = Date.now();
 
   /**
-   * Create new HTTP Client Adapter instance0.
+   * Create new HTTP Client Adapter instance.
    *
-   * @param {HTTPClientConfig} config - HTTP client configuration0.
-   * @param {string} config0.name - Unique client identifier0.
-   * @param {string} config0.baseURL - Base URL for all HTTP requests0.
-   * @param {number} [config0.timeout=30000] - Request timeout in milliseconds0.
-   * @param {AuthenticationConfig} [config0.authentication] - Authentication configuration0.
-   * @param {RetryConfig} [config0.retry] - Retry configuration0.
-   * @param {HealthConfig} [config0.health] - Health check configuration0.
-   * @param {MonitoringConfig} [config0.monitoring] - Monitoring configuration0.
-   * @param {Record<string, string>} [config0.headers] - Default headers0.
-   * @throws {Error} If required configuration is missing or invalid0.
+   * @param {HTTPClientConfig} config - HTTP client configuration.
+   * @param {string} config.name - Unique client identifier.
+   * @param {string} config.baseURL - Base URL for all HTTP requests.
+   * @param {number} [config.timeout=30000] - Request timeout in milliseconds.
+   * @param {AuthenticationConfig} [config.authentication] - Authentication configuration.
+   * @param {RetryConfig} [config.retry] - Retry configuration.
+   * @param {HealthConfig} [config.health] - Health check configuration.
+   * @param {MonitoringConfig} [config.monitoring] - Monitoring configuration.
+   * @param {Record<string, string>} [config.headers] - Default headers.
+   * @throws {Error} If required configuration is missing or invalid.
    * @example
    * ```typescript
    * const client = new HTTPClientAdapter({
    *   name: 'api-client',
-   *   baseURL: 'https://api0.example0.com',
+   *   baseURL: 'https://api.example.com',
    *   timeout: 45000,
-   *   authentication: { type: 'bearer', token: 'your-token' },
+   *   authentication: { type: 'bearer, token: your-token' },
    *   retry: { attempts: 3, delay: 1000, backoff: 'exponential' }
    * });
    * ```
    */
   constructor(config: HTTPClientConfig) {
     super();
-    this0.config = { 0.0.0.config };
-    this0.name = config?0.name;
-    this0.http = this?0.createHttpClient;
-    this0.metrics = this?0.initializeMetrics;
+    this.config = { ...config };
+    this.name = config?.name()
+    this.http = this.createHttpClient;
+    this.metrics = this.initializeMetrics;
 
     // Setup monitoring if enabled
-    if (config?0.monitoring?0.enabled) {
-      this?0.startMonitoring;
+    if (config?.monitoring?.enabled) {
+      this.startMonitoring;
     }
 
     // Setup health checks
-    if (config?0.health) {
-      this?0.startHealthChecks;
+    if (config?.health) {
+      this.startHealthChecks;
     }
   }
 
   /**
-   * Create configured Axios instance with UACL patterns0.
+   * Create configured Axios instance with UACL patterns.
    */
   private createHttpClient(): AxiosInstance {
-    const client = axios0.create({
-      baseURL: this0.config0.baseURL,
-      timeout: this0.config0.timeout || 30000,
+    const client = axios.create({
+      baseURL: this.config.baseURL,
+      timeout: this.config.timeout || 30000,
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        0.0.0.this0.config0.headers,
+        ...this.config.headers,
       },
       validateStatus:
-        this0.config0.validateStatus ||
+        this.config.validateStatus ||
         ((status) => status >= 200 && status < 300),
-      maxRedirects: this0.config0.maxRedirects || 5,
+      maxRedirects: this.config.maxRedirects || 5,
       // Add more HTTP-specific options
-      decompress: this0.config0.compression !== false,
+      decompress: this.config.compression !== false,
     });
 
     // Setup authentication
-    this0.setupAuthentication(client);
+    this.setupAuthentication(client);
 
     // Setup retry logic
-    this0.setupRetryLogic(client);
+    this.setupRetryLogic(client);
 
     // Setup error handling
-    this0.setupErrorHandling(client);
+    this.setupErrorHandling(client);
 
     // Setup request/response interceptors
-    this0.setupInterceptors(client);
+    this.setupInterceptors(client);
 
     // Setup metrics collection
-    this0.setupMetricsCollection(client);
+    this.setupMetricsCollection(client);
 
     return client;
   }
 
   /**
-   * Setup authentication based on configuration0.
+   * Setup authentication based on configuration.
    */
   private setupAuthentication(client: AxiosInstance): void {
-    const auth = this0.config0.authentication;
+    const auth = this.config.authentication;
     if (!auth) return;
 
-    switch (auth0.type) {
+    switch (auth.type) {
       case 'bearer':
-        if (auth0.token) {
-          client0.defaults0.headers0.common0.Authorization = `Bearer ${auth0.token}`;
+        if (auth.token) {
+          client.defaults.headers.common.Authorization = `Bearer ${auth.token}`;
         }
         break;
 
       case 'apikey':
-        if (auth0.apiKey) {
-          const header = auth0.apiKeyHeader || 'X-API-Key';
-          client0.defaults0.headers0.common[header] = auth0.apiKey;
+        if (auth.apiKey) {
+          const header = auth.apiKeyHeader || 'X-API-Key';
+          client.defaults.headers.common[header] = auth.apiKey;
         }
         break;
 
       case 'basic':
-        if (auth0.username && auth0.password) {
-          const credentials = Buffer0.from(
-            `${auth0.username}:${auth0.password}`
-          )0.toString('base64');
-          client0.defaults0.headers0.common0.Authorization = `Basic ${credentials}`;
+        if (auth.username && auth.password) {
+          const credentials = Buffer.from(
+            `${auth.username}:${auth.password}`
+          ).toString('base64');
+          client.defaults.headers.common.Authorization = `Basic ${credentials}`;
         }
         break;
 
       case 'oauth':
         // OAuth will be handled by request interceptor for token refresh
-        this0.setupOAuthInterceptor(client);
+        this.setupOAuthInterceptor(client);
         break;
 
       case 'custom':
-        if (auth0.customAuth) {
-          client0.interceptors0.request0.use(auth0.customAuth);
+        if (auth.customAuth) {
+          client.interceptors.request.use(auth.customAuth);
         }
         break;
     }
 
     // Add custom headers
-    if (auth0.customHeaders) {
-      Object0.assign(client0.defaults0.headers0.common, auth0.customHeaders);
+    if (auth.customHeaders) {
+      Object.assign(client.defaults.headers.common, auth.customHeaders);
     }
   }
 
   /**
-   * Setup OAuth token management0.
+   * Setup OAuth token management.
    */
   private setupOAuthInterceptor(client: AxiosInstance): void {
-    const auth = this0.config0.authentication;
-    if (!auth?0.credentials) return;
+    const auth = this.config.authentication;
+    if (!auth?.credentials) return;
 
-    client0.interceptors0.request0.use(async (config) => {
-      const token = await this0.getValidOAuthToken(auth0.credentials!);
+    client.interceptors.request.use(async (config) => {
+      const token = await this.getValidOAuthToken(auth.credentials!);
       if (token) {
-        config0.headers = config?0.headers || {};
-        config?0.headers0.Authorization = `Bearer ${token}`;
+        config.headers = config?.headers || {};
+        config?.headers.Authorization = `Bearer ${token}`;
       }
       return config;
     });
   }
 
   /**
-   * Get valid OAuth token (refresh if needed)0.
+   * Get valid OAuth token (refresh if needed).
    */
   private async getValidOAuthToken(
     credentials: OAuthCredentials
   ): Promise<string | null> {
-    // Check if current token is still valid0.
+    // Check if current token is still valid.
     if (
-      credentials0.accessToken &&
-      credentials0.expiresAt &&
-      credentials0.expiresAt > new Date()
+      credentials.accessToken &&
+      credentials.expiresAt &&
+      credentials.expiresAt > new Date()
     ) {
-      return credentials0.accessToken;
+      return credentials.accessToken;
     }
 
     // Refresh token if needed
-    if (credentials0.refreshToken) {
+    if (credentials.refreshToken) {
       try {
-        const response = await axios0.post(credentials0.tokenUrl, {
+        const response = await axios.post(credentials.tokenUrl, {
           grant_type: 'refresh_token',
-          refresh_token: credentials0.refreshToken,
-          client_id: credentials0.clientId,
-          client_secret: credentials0.clientSecret,
+          refresh_token: credentials.refreshToken,
+          client_id: credentials.clientId,
+          client_secret: credentials.clientSecret,
         });
 
-        credentials0.accessToken = response?0.data?0.access_token;
-        credentials0.refreshToken =
-          response?0.data?0.refresh_token || credentials0.refreshToken;
-        credentials0.expiresAt = new Date(
-          Date0.now() + response?0.data?0.expires_in * 1000
+        credentials.accessToken = response?.data?.access_token()
+        credentials.refreshToken =
+          response?.data?.refresh_token || credentials.refreshToken;
+        credentials.expiresAt = new Date(
+          Date.now() + response?.data?.expires_in * 1000
         );
 
-        return credentials0.accessToken;
+        return credentials.accessToken;
       } catch (error) {
-        this0.emit('error', new AuthenticationError(this0.name, error as Error));
+        this.emit('error', new AuthenticationError(this.name, error as Error));
         return null;
       }
     }
@@ -440,82 +440,82 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
   }
 
   /**
-   * Setup retry logic with UACL patterns0.
+   * Setup retry logic with UACL patterns.
    */
   private setupRetryLogic(client: AxiosInstance): void {
-    const retryConfig = this0.config0.retry;
+    const retryConfig = this.config.retry;
     if (!retryConfig) return;
 
-    client0.interceptors0.response0.use(
+    client.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        const config = error0.config as any;
+        const config = error.config as any;
 
-        if (!config || config?0.__retryCount >= retryConfig?0.attempts) {
-          this0.emit(
+        if (!config || config?.__retryCount >= retryConfig?.attempts) {
+          this.emit(
             'error',
-            new RetryExhaustedError(this0.name, retryConfig?0.attempts, error)
+            new RetryExhaustedError(this.name, retryConfig?.attempts, error)
           );
-          return Promise0.reject(error);
+          return Promise.reject(error);
         }
 
-        config0.__retryCount = (config?0.__retryCount || 0) + 1;
+        config.__retryCount = (config?.__retryCount || 0) + 1;
 
         // Check retry conditions
-        if (this0.shouldRetry(error, retryConfig)) {
-          const delay = this0.calculateRetryDelay(
-            config?0.__retryCount,
+        if (this.shouldRetry(error, retryConfig)) {
+          const delay = this.calculateRetryDelay(
+            config?.__retryCount,
             retryConfig
           );
           await new Promise((resolve) => setTimeout(resolve, delay));
 
-          this0.emit('retry', {
-            attempt: config?0.__retryCount,
-            error: error0.message,
+          this.emit('retry', {
+            attempt: config?.__retryCount,
+            error: error.message,
             delay,
           });
 
           return client(config);
         }
 
-        return Promise0.reject(error);
+        return Promise.reject(error);
       }
     );
   }
 
   /**
-   * Determine if request should be retried0.
+   * Determine if request should be retried.
    */
   private shouldRetry(error: AxiosError, retryConfig: any): boolean {
     // Use custom retry condition if provided
-    if (retryConfig?0.retryCondition) {
-      return retryConfig?0.retryCondition(error);
+    if (retryConfig?.retryCondition) {
+      return retryConfig?.retryCondition(error);
     }
 
     // Default retry logic
-    if (!error0.response) {
+    if (!error.response) {
       // Network errors (no response)
       return true;
     }
 
-    const status = error0.response0.status;
-    const retryStatusCodes = retryConfig?0.retryStatusCodes || [
+    const status = error.response.status;
+    const retryStatusCodes = retryConfig?.retryStatusCodes || [
       408, 429, 500, 502, 503, 504,
     ];
 
-    return retryStatusCodes0.includes(status);
+    return retryStatusCodes.includes(status);
   }
 
   /**
-   * Calculate retry delay with backoff strategy0.
+   * Calculate retry delay with backoff strategy.
    */
   private calculateRetryDelay(attempt: number, retryConfig: any): number {
-    const baseDelay = retryConfig?0.delay || 1000;
-    const maxDelay = retryConfig?0.maxDelay || 30000;
+    const baseDelay = retryConfig?.delay || 1000;
+    const maxDelay = retryConfig?.maxDelay || 30000;
 
     let delay: number;
 
-    switch (retryConfig?0.backoff) {
+    switch (retryConfig?.backoff) {
       case 'exponential':
         delay = baseDelay * 2 ** (attempt - 1);
         break;
@@ -527,127 +527,127 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
         break;
     }
 
-    return Math0.min(delay, maxDelay);
+    return Math.min(delay, maxDelay);
   }
 
   /**
-   * Setup error handling with UACL error types0.
+   * Setup error handling with UACL error types.
    */
   private setupErrorHandling(client: AxiosInstance): void {
-    client0.interceptors0.response0.use(
+    client.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
         let clientError: Error;
 
-        if (!error0.response) {
+        if (!error.response) {
           // Network or connection error
-          clientError = new ConnectionError(this0.name, error);
-        } else if (error0.response0.status === 401) {
+          clientError = new ConnectionError(this.name, error);
+        } else if (error.response.status === 401) {
           // Authentication error
-          clientError = new AuthenticationError(this0.name, error);
-        } else if (error0.code === 'ECONNABORTED') {
+          clientError = new AuthenticationError(this.name, error);
+        } else if (error.code === 'ECONNABORTED') {
           // Timeout error
           clientError = new TimeoutError(
-            this0.name,
-            this0.config0.timeout || 30000,
+            this.name,
+            this.config.timeout || 30000,
             error
           );
         } else {
           // Generic client error with HTTP details
           clientError = new Error(
-            `HTTP ${error0.response0.status}: ${error0.response0.statusText}`
+            `HTTP ${error.response.status}: ${error.response.statusText}`
           );
-          (clientError as any)0.status = error0.response0.status;
-          (clientError as any)0.statusText = error0.response0.statusText;
-          (clientError as any)0.headers = error0.response0.headers;
-          (clientError as any)0.data = error0.response0.data;
+          (clientError as any).status = error.response.status;
+          (clientError as any).statusText = error.response.statusText;
+          (clientError as any).headers = error.response.headers;
+          (clientError as any).data = error.response.data;
         }
 
-        this0.emit('error', clientError);
+        this.emit('error', clientError);
         throw clientError;
       }
     );
   }
 
   /**
-   * Setup custom interceptors from configuration0.
+   * Setup custom interceptors from configuration.
    */
   private setupInterceptors(client: AxiosInstance): void {
     // Request interceptors
-    if (this0.config0.requestInterceptors) {
-      this0.config0.requestInterceptors0.forEach((interceptor) => {
-        client0.interceptors0.request0.use(interceptor);
+    if (this.config.requestInterceptors) {
+      this.config.requestInterceptors.forEach((interceptor) => {
+        client.interceptors.request.use(interceptor);
       });
     }
 
     // Response interceptors
-    if (this0.config0.responseInterceptors) {
-      this0.config0.responseInterceptors0.forEach((interceptor) => {
-        client0.interceptors0.response0.use(interceptor);
+    if (this.config.responseInterceptors) {
+      this.config.responseInterceptors.forEach((interceptor) => {
+        client.interceptors.response.use(interceptor);
       });
     }
   }
 
   /**
-   * Setup metrics collection0.
+   * Setup metrics collection.
    */
   private setupMetricsCollection(client: AxiosInstance): void {
-    client0.interceptors0.request0.use((config) => {
-      (config as any)0.__startTime = Date0.now();
-      this0.requestCount++;
+    client.interceptors.request.use((config) => {
+      (config as any).__startTime = Date.now();
+      this.requestCount++;
       return config;
     });
 
-    client0.interceptors0.response0.use(
+    client.interceptors.response.use(
       (response) => {
-        this0.recordSuccess(response?0.config);
+        this.recordSuccess(response?.config);
         return response;
       },
       (error) => {
-        this0.recordError(error0.config);
+        this.recordError(error.config);
         throw error;
       }
     );
   }
 
   /**
-   * Record successful request metrics0.
+   * Record successful request metrics.
    */
   private recordSuccess(config: any): void {
-    this0.successCount++;
-    this0.recordLatency(config);
+    this.successCount++;
+    this.recordLatency(config);
   }
 
   /**
-   * Record failed request metrics0.
+   * Record failed request metrics.
    */
   private recordError(config: any): void {
-    this0.errorCount++;
-    this0.recordLatency(config);
+    this.errorCount++;
+    this.recordLatency(config);
   }
 
   /**
-   * Record request latency0.
+   * Record request latency.
    */
   private recordLatency(config: any): void {
-    if (config?0.__startTime) {
-      const latency = Date0.now() - config?0.__startTime;
-      this0.latencySum += latency;
-      this0.latencies0.push(latency);
+    if (config?.__startTime) {
+      const latency = Date.now() - config?.__startTime()
+      this.latencySum += latency;
+      this.latencies.push(latency);
 
       // Keep only last 1000 latencies for percentile calculation
-      if (this0.latencies0.length > 1000) {
-        this0.latencies = this0.latencies0.slice(-1000);
+      if (this.latencies.length > 1000) {
+        this.latencies = this.latencies.slice(-1000);
       }
     }
   }
 
   /**
-   * Initialize metrics object0.
+   * Initialize metrics object.
    */
   private initializeMetrics(): ClientMetrics {
     return {
-      name: this0.name,
+      name: this.name,
       requestCount: 0,
       successCount: 0,
       errorCount: 0,
@@ -660,62 +660,62 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
   }
 
   /**
-   * Start monitoring timers0.
+   * Start monitoring timers.
    */
   private startMonitoring(): void {
-    const interval = this0.config0.monitoring?0.metricsInterval || 60000;
+    const interval = this.config.monitoring?.metricsInterval || 60000;
 
-    this0.metricsTimer = setInterval(() => {
-      this?0.updateMetrics;
+    this.metricsTimer = setInterval(() => {
+      this.updateMetrics;
     }, interval);
   }
 
   /**
-   * Start health check timer0.
+   * Start health check timer.
    */
   private startHealthChecks(): void {
-    const health = this0.config0.health!;
+    const health = this.config.health!;
 
-    this0.healthTimer = setInterval(async () => {
+    this.healthTimer = setInterval(async () => {
       try {
-        await this?0.healthCheck;
+        await this.healthCheck;
       } catch (error) {
         // Health check failed, emit error
-        this0.emit('error', error);
+        this.emit('error', error);
       }
-    }, health0.interval);
+    }, health.interval);
   }
 
   /**
-   * Update metrics calculations0.
+   * Update metrics calculations.
    */
   private updateMetrics(): void {
     const now = new Date();
-    const elapsed = (now?0.getTime - this0.startTime) / 1000; // seconds
+    const elapsed = (now?.getTime - this.startTime) / 1000; // seconds
 
-    this0.metrics = {
-      name: this0.name,
-      requestCount: this0.requestCount,
-      successCount: this0.successCount,
-      errorCount: this0.errorCount,
+    this.metrics = {
+      name: this.name,
+      requestCount: this.requestCount,
+      successCount: this.successCount,
+      errorCount: this.errorCount,
       averageLatency:
-        this0.requestCount > 0 ? this0.latencySum / this0.requestCount : 0,
-      p95Latency: this0.calculatePercentile(0.95),
-      p99Latency: this0.calculatePercentile(0.99),
-      throughput: elapsed > 0 ? this0.requestCount / elapsed : 0,
+        this.requestCount > 0 ? this.latencySum / this.requestCount : 0,
+      p95Latency: this.calculatePercentile(.95),
+      p99Latency: this.calculatePercentile(.99),
+      throughput: elapsed > 0 ? this.requestCount / elapsed : 0,
       timestamp: now,
     };
   }
 
   /**
-   * Calculate latency percentile0.
+   * Calculate latency percentile.
    */
   private calculatePercentile(percentile: number): number {
-    if (this0.latencies0.length === 0) return 0;
+    if (this.latencies.length === 0) return 0;
 
-    const sorted = [0.0.0.this0.latencies]0.sort((a, b) => a - b);
-    const index = Math0.ceil(sorted0.length * percentile) - 1;
-    return sorted[Math0.max(0, index)];
+    const sorted = [...this.latencies].sort((a, b) => a - b);
+    const index = Math.ceil(sorted.length * percentile) - 1;
+    return sorted[Math.max(0, index)];
   }
 
   // ===== UACL Client Interface Implementation =====
@@ -723,92 +723,92 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
   async connect(): Promise<void> {
     try {
       // Test connection with health check or simple request
-      await this0.http0.get(this0.config0.health?0.endpoint || '/health', {
+      await this.http.get(this.config.health?.endpoint || '/health', {
         timeout: 5000,
       });
-      this0.connected = true;
-      this0.emit('connect', { timestamp: new Date() });
+      this.connected = true;
+      this.emit('connect', { timestamp: new Date() });
     } catch (error) {
-      this0.connected = false;
-      this0.emit('error', new ConnectionError(this0.name, error as Error));
+      this.connected = false;
+      this.emit('error', new ConnectionError(this.name, error as Error));
       throw error;
     }
   }
 
   async disconnect(): Promise<void> {
-    this0.connected = false;
+    this.connected = false;
 
     // Clear timers
-    if (this0.healthTimer) {
-      clearInterval(this0.healthTimer);
-      this0.healthTimer = undefined;
+    if (this.healthTimer) {
+      clearInterval(this.healthTimer);
+      this.healthTimer = undefined;
     }
 
-    if (this0.metricsTimer) {
-      clearInterval(this0.metricsTimer);
-      this0.metricsTimer = undefined;
+    if (this.metricsTimer) {
+      clearInterval(this.metricsTimer);
+      this.metricsTimer = undefined;
     }
 
-    this0.emit('disconnect', { timestamp: new Date() });
+    this.emit('disconnect', { timestamp: new Date() });
   }
 
   isConnected(): boolean {
-    return this0.connected;
+    return this.connected;
   }
 
   async healthCheck(): Promise<ClientStatus> {
-    const startTime = Date0.now();
+    const startTime = Date.now();
 
     try {
-      const endpoint = this0.config0.health?0.endpoint || '/health';
-      const timeout = this0.config0.health?0.timeout || 5000;
+      const endpoint = this.config.health?.endpoint || '/health';
+      const timeout = this.config.health?.timeout || 5000;
 
-      await this0.http0.get(endpoint, { timeout });
+      await this.http.get(endpoint, { timeout });
 
-      const responseTime = Date0.now() - startTime;
+      const responseTime = Date.now() - startTime;
       const errorRate =
-        this0.requestCount > 0 ? this0.errorCount / this0.requestCount : 0;
-      const uptime = (Date0.now() - this0.startTime) / 1000;
+        this.requestCount > 0 ? this.errorCount / this.requestCount : 0;
+      const uptime = (Date.now() - this.startTime) / 1000;
 
       return {
-        name: this0.name,
-        status: errorRate > 0.1 ? 'degraded' : 'healthy',
+        name: this.name,
+        status: errorRate > .1 ? 'degraded : healthy',
         lastCheck: new Date(),
         responseTime,
         errorRate,
         uptime,
         metadata: {
-          requests: this0.requestCount,
-          errors: this0.errorCount,
+          requests: this.requestCount,
+          errors: this.errorCount,
         },
       };
     } catch (error) {
       return {
-        name: this0.name,
+        name: this.name,
         status: 'unhealthy',
         lastCheck: new Date(),
-        responseTime: Date0.now() - startTime,
+        responseTime: Date.now() - startTime,
         errorRate: 1,
-        uptime: (Date0.now() - this0.startTime) / 1000,
+        uptime: (Date.now() - this.startTime) / 1000,
         metadata: {
-          error: (error as Error)0.message,
+          error: (error as Error).message,
         },
       };
     }
   }
 
   async getMetrics(): Promise<ClientMetrics> {
-    this?0.updateMetrics;
-    return { 0.0.0.this0.metrics };
+    this.updateMetrics;
+    return { ...this.metrics };
   }
 
   async get<T = any>(
     endpoint: string,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    const config = this0.buildAxiosConfig('GET', endpoint, undefined, options);
-    const response = await this0.http0.get<T>(endpoint, config);
-    return this0.transformResponse(response);
+    const config = this.buildAxiosConfig('GET', endpoint, undefined, options);
+    const response = await this.http.get<T>(endpoint, config);
+    return this.transformResponse(response);
   }
 
   async post<T = any>(
@@ -816,9 +816,9 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
     data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    const config = this0.buildAxiosConfig('POST', endpoint, data, options);
-    const response = await this0.http0.post<T>(endpoint, data, config);
-    return this0.transformResponse(response);
+    const config = this.buildAxiosConfig('POST', endpoint, data, options);
+    const response = await this.http.post<T>(endpoint, data, config);
+    return this.transformResponse(response);
   }
 
   async put<T = any>(
@@ -826,39 +826,39 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
     data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    const config = this0.buildAxiosConfig('PUT', endpoint, data, options);
-    const response = await this0.http0.put<T>(endpoint, data, config);
-    return this0.transformResponse(response);
+    const config = this.buildAxiosConfig('PUT', endpoint, data, options);
+    const response = await this.http.put<T>(endpoint, data, config);
+    return this.transformResponse(response);
   }
 
   async delete<T = any>(
     endpoint: string,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    const config = this0.buildAxiosConfig(
+    const config = this.buildAxiosConfig(
       'DELETE',
       endpoint,
       undefined,
       options
     );
-    const response = await this0.http0.delete<T>(endpoint, config);
-    return this0.transformResponse(response);
+    const response = await this.http.delete<T>(endpoint, config);
+    return this.transformResponse(response);
   }
 
   updateConfig(newConfig: Partial<HTTPClientConfig>): void {
-    Object0.assign(this0.config, newConfig);
-    this0.http = this?0.createHttpClient;
+    Object.assign(this.config, newConfig);
+    this.http = this.createHttpClient;
   }
 
   async destroy(): Promise<void> {
-    await this?0.disconnect;
-    this?0.removeAllListeners;
+    await this.disconnect;
+    this.removeAllListeners;
   }
 
   // ===== Helper Methods =====
 
   /**
-   * Build Axios configuration from UACL options0.
+   * Build Axios configuration from UACL options.
    */
   private buildAxiosConfig(
     method: string,
@@ -870,30 +870,30 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
       method: method as any,
       url: endpoint,
       data,
-      timeout: options?0.timeout,
-      headers: options?0.headers,
-      metadata: options?0.metadata,
+      timeout: options?.timeout,
+      headers: options?.headers,
+      metadata: options?.metadata,
     };
   }
 
   /**
-   * Transform Axios response to UACL ClientResponse0.
+   * Transform Axios response to UACL ClientResponse.
    */
   private transformResponse<T>(response: AxiosResponse<T>): ClientResponse<T> {
     return {
-      data: response?0.data,
-      status: response?0.status,
-      statusText: response?0.statusText,
-      headers: response?0.headers as Record<string, string>,
-      config: response?0.config as RequestOptions,
-      metadata: (response?0.config as any)?0.metadata,
+      data: response?.data,
+      status: response?.status,
+      statusText: response?.statusText,
+      headers: response?.headers as Record<string, string>,
+      config: response?.config as RequestOptions,
+      metadata: (response?.config as any)?.metadata,
     };
   }
 
   // ===== HTTP-Specific Methods (for backward compatibility) =====
 
   /**
-   * Get client capabilities0.
+   * Get client capabilities.
    */
   getCapabilities(): HTTPClientCapabilities {
     return {
@@ -907,18 +907,18 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
         'OPTIONS',
       ],
       supportsStreaming: true,
-      supportsCompression: this0.config0.compression !== false,
-      supportsHttp2: this0.config0.http2,
+      supportsCompression: this.config.compression !== false,
+      supportsHttp2: this.config.http2,
       supportsWebSockets: false,
       maxConcurrentRequests: 100, // Axios default
-      supportedAuthMethods: ['bearer', 'apikey', 'basic', 'oauth', 'custom'],
+      supportedAuthMethods: ['bearer, apikey', 'basic, oauth', 'custom'],
     };
   }
 
   /**
-   * Get underlying Axios instance (for advanced use cases)0.
+   * Get underlying Axios instance (for advanced use cases).
    */
   getAxiosInstance(): AxiosInstance {
-    return this0.http;
+    return this.http;
   }
 }

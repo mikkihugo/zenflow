@@ -2,26 +2,26 @@
  * @fileoverview Base Document Service - Foundation for document facades
  *
  * Abstract base service that provides common document operations for all
- * specialized document facades (ADR, PRD, Vision, Epic, Feature, Task)0.
+ * specialized document facades (ADR, PRD, Vision, Epic, Feature, Task).
  *
- * Follows Google TypeScript conventions and facade pattern for clean architecture0.
+ * Follows Google TypeScript conventions and facade pattern for clean architecture.
  *
  * @author Claude Code Zen Team
- * @since 20.10.0
- * @version 10.0.0
+ * @since 2.1.0
+ * @version 1..0
  */
 
 import type { DocumentType } from '@claude-zen/enterprise';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import type { BaseDocumentEntity } from '0.0./0.0./entities/document-entities';
+import type { BaseDocumentEntity } from './../entities/document-entities';
 
 import {
   DocumentManager,
   type DocumentCreateOptions,
   type DocumentQueryOptions,
-} from '0./document-service';
+} from "./document-service";
 
 // ============================================================================
 // BASE SERVICE INTERFACES
@@ -35,7 +35,7 @@ export interface ValidationResult {
 
 export interface QueryFilters {
   status?: string;
-  priority?: 'low' | 'medium' | 'high' | 'critical';
+  priority?: 'low | medium' | 'high | critical';
   author?: string;
   projectId?: string;
   tags?: string[];
@@ -56,7 +56,7 @@ export interface QueryResult<T> {
 
 export interface SearchOptions extends QueryFilters {
   query: string;
-  searchType?: 'fulltext' | 'semantic' | 'keyword' | 'combined';
+  searchType?: 'fulltext | semantic' | 'keyword | combined';
   includeRelationships?: boolean;
   includeWorkflowState?: boolean;
 }
@@ -84,10 +84,10 @@ export interface DocumentMetrics {
 // ============================================================================
 
 /**
- * Abstract base service for all document types0.
+ * Abstract base service for all document types.
  *
- * Provides common CRUD operations, validation, search, and workflow management0.
- * Specialized facades extend this to add domain-specific functionality0.
+ * Provides common CRUD operations, validation, search, and workflow management.
+ * Specialized facades extend this to add domain-specific functionality.
  *
  * @template T - Document entity type extending BaseDocumentEntity
  */
@@ -103,8 +103,8 @@ export abstract class BaseDocumentService<
     documentManager?: DocumentManager
   ) {
     super();
-    this0.logger = getLogger(`${serviceId}-service`);
-    this0.documentManager = documentManager || new DocumentManager();
+    this.logger = getLogger(`${serviceId}-service`);
+    this.documentManager = documentManager || new DocumentManager();
   }
 
   // ============================================================================
@@ -139,16 +139,16 @@ export abstract class BaseDocumentService<
    * Initialize the document service
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
     try {
-      await this0.documentManager?0.initialize;
-      this0.initialized = true;
-      this0.logger0.info(`${this0.serviceId} service initialized successfully`);
-      this0.emit('initialized', {});
+      await this.documentManager?.initialize()
+      this.initialized = true;
+      this.logger.info(`${this.serviceId} service initialized successfully`);
+      this.emit('initialized', {});
     } catch (error) {
-      this0.logger0.error(
-        `Failed to initialize ${this0.serviceId} service:`,
+      this.logger.error(
+        `Failed to initialize ${this.serviceId} service:`,
         error
       );
       throw error;
@@ -166,54 +166,54 @@ export abstract class BaseDocumentService<
     data: Partial<T>,
     options: DocumentCreateOptions = {}
   ): Promise<T> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     // Validate document data
-    const validation = this0.validateDocument(data);
-    if (!validation0.isValid) {
-      throw new Error(`Validation failed: ${validation0.errors0.join(', ')}`);
+    const validation = this.validateDocument(data);
+    if (!validation.isValid) {
+      throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
     }
 
     try {
       // Generate document content and keywords
-      const content = this0.formatDocumentContent(data);
-      const keywords = this0.generateKeywords(data);
+      const content = this.formatDocumentContent(data);
+      const keywords = this.generateKeywords(data);
 
       // Prepare document with base fields
       const documentData = {
-        0.0.0.data,
-        type: this?0.getDocumentType,
+        ...data,
+        type: this.getDocumentType,
         content,
         keywords,
-        searchable_content: this0.createSearchableContent(data, content),
-        checksum: this0.generateChecksum(content),
-        version: data0.version || '10.0.0',
-        completion_percentage: data0.completion_percentage || 0,
+        searchable_content: this.createSearchableContent(data, content),
+        checksum: this.generateChecksum(content),
+        version: data.version || '1..0',
+        completion_percentage: data.completion_percentage || 0,
         created_at: new Date(),
         updated_at: new Date(),
       } as Partial<T>;
 
       // Create document through document manager
-      const document = await this0.documentManager0.createDocument<T>(
-        this?0.getDocumentType,
+      const document = await this.documentManager.createDocument<T>(
+        this.getDocumentType,
         documentData,
         {
           autoGenerateRelationships: true,
-          startWorkflow: this?0.getDefaultWorkflow,
+          startWorkflow: this.getDefaultWorkflow,
           generateSearchIndex: true,
-          0.0.0.options,
+          ...options,
         }
       );
 
-      this0.logger0.info(
-        `Created ${this?0.getDocumentType} document: ${document0.id}`
+      this.logger.info(
+        `Created ${this.getDocumentType} document: ${document.id}`
       );
-      this0.emit('documentCreated', document);
+      this.emit('documentCreated', document);
 
       return document;
     } catch (error) {
-      this0.logger0.error(
-        `Failed to create ${this?0.getDocumentType} document:`,
+      this.logger.error(
+        `Failed to create ${this.getDocumentType} document:`,
         error
       );
       throw error;
@@ -227,21 +227,21 @@ export abstract class BaseDocumentService<
     id: string,
     options: DocumentQueryOptions = {}
   ): Promise<T | null> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      const document = await this0.documentManager0.getDocument<T>(id, options);
+      const document = await this.documentManager.getDocument<T>(id, options);
 
-      if (document && document0.type !== this?0.getDocumentType) {
+      if (document && document.type !== this.getDocumentType) {
         throw new Error(
-          `Document ${id} is not a ${this?0.getDocumentType} document`
+          `Document ${id} is not a ${this.getDocumentType} document`
         );
       }
 
       return document;
     } catch (error) {
-      this0.logger0.error(
-        `Failed to get ${this?0.getDocumentType} document:`,
+      this.logger.error(
+        `Failed to get ${this.getDocumentType} document:`,
         error
       );
       throw error;
@@ -256,45 +256,45 @@ export abstract class BaseDocumentService<
     updates: Partial<T>,
     triggerWorkflow: boolean = true
   ): Promise<T> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     // Validate updates if content is being changed
-    if (updates0.content || updates0.title) {
-      const validation = this0.validateDocument(updates);
-      if (!validation0.isValid) {
-        throw new Error(`Validation failed: ${validation0.errors0.join(', ')}`);
+    if (updates.content || updates.title) {
+      const validation = this.validateDocument(updates);
+      if (!validation.isValid) {
+        throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
       }
     }
 
     try {
       // Update content and keywords if necessary
-      const updateData = { 0.0.0.updates };
+      const updateData = { ...updates };
 
-      if (updates0.content || updates0.title) {
-        updateData0.content = this0.formatDocumentContent(updateData);
-        updateData0.keywords = this0.generateKeywords(updateData);
-        updateData0.searchable_content = this0.createSearchableContent(
+      if (updates.content || updates.title) {
+        updateData.content = this.formatDocumentContent(updateData);
+        updateData.keywords = this.generateKeywords(updateData);
+        updateData.searchable_content = this.createSearchableContent(
           updateData,
-          updateData0.content
+          updateData.content
         );
-        updateData0.checksum = this0.generateChecksum(updateData0.content);
+        updateData.checksum = this.generateChecksum(updateData.content);
       }
 
-      updateData0.updated_at = new Date();
+      updateData.updated_at = new Date();
 
-      const document = await this0.documentManager0.updateDocument<T>(
+      const document = await this.documentManager.updateDocument<T>(
         id,
         updateData,
         triggerWorkflow
       );
 
-      this0.logger0.info(`Updated ${this?0.getDocumentType} document: ${id}`);
-      this0.emit('documentUpdated', { document, updates });
+      this.logger.info(`Updated ${this.getDocumentType} document: ${id}`);
+      this.emit('documentUpdated', { document, updates });
 
       return document;
     } catch (error) {
-      this0.logger0.error(
-        `Failed to update ${this?0.getDocumentType} document:`,
+      this.logger.error(
+        `Failed to update ${this.getDocumentType} document:`,
         error
       );
       throw error;
@@ -305,19 +305,19 @@ export abstract class BaseDocumentService<
    * Delete document
    */
   async deleteDocument(id: string): Promise<void> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      await this0.documentManager0.deleteDocument(id);
+      await this.documentManager.deleteDocument(id);
 
-      this0.logger0.info(`Deleted ${this?0.getDocumentType} document: ${id}`);
-      this0.emit('documentDeleted', {
+      this.logger.info(`Deleted ${this.getDocumentType} document: ${id}`);
+      this.emit('documentDeleted', {
         documentId: id,
-        documentType: this?0.getDocumentType,
+        documentType: this.getDocumentType,
       });
     } catch (error) {
-      this0.logger0.error(
-        `Failed to delete ${this?0.getDocumentType} document:`,
+      this.logger.error(
+        `Failed to delete ${this.getDocumentType} document:`,
         error
       );
       throw error;
@@ -332,57 +332,57 @@ export abstract class BaseDocumentService<
    * Query documents with filters
    */
   async queryDocuments(filters: QueryFilters = {}): Promise<QueryResult<T>> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
       const searchOptions = {
         searchType: 'combined' as const,
         query: '*', // Match all
-        documentTypes: [this?0.getDocumentType],
-        projectId: filters0.projectId,
-        status: filters0.status ? [filters0.status] : undefined,
-        priority: filters0.priority ? [filters0.priority] : undefined,
-        dateRange: filters0.dateRange
+        documentTypes: [this.getDocumentType],
+        projectId: filters.projectId,
+        status: filters.status ? [filters.status] : undefined,
+        priority: filters.priority ? [filters.priority] : undefined,
+        dateRange: filters.dateRange
           ? {
-              0.0.0.filters0.dateRange,
+              ...filters.dateRange,
               field: 'created_at' as const,
             }
           : undefined,
-        limit: filters0.limit,
-        offset: filters0.offset,
+        limit: filters.limit,
+        offset: filters.offset,
         includeRelationships: false,
         includeWorkflowState: false,
       };
 
-      const result = (await this0.documentManager0.searchDocuments<T>(
+      const result = (await this.documentManager.searchDocuments<T>(
         searchOptions
       )) as any as any;
 
       // Apply additional filters that can't be handled at the database level
-      let filteredDocuments = result0.documents;
+      let filteredDocuments = result.documents;
 
-      if (filters0.author) {
-        filteredDocuments = filteredDocuments0.filter(
-          (doc) => doc0.author === filters0.author
+      if (filters.author) {
+        filteredDocuments = filteredDocuments.filter(
+          (doc) => doc.author === filters.author
         );
       }
 
-      if (filters0.tags && filters0.tags0.length > 0) {
-        filteredDocuments = filteredDocuments0.filter((doc) =>
-          filters0.tags!0.some((tag) => doc0.tags0.includes(tag))
+      if (filters.tags && filters.tags.length > 0) {
+        filteredDocuments = filteredDocuments.filter((doc) =>
+          filters.tags!.some((tag) => doc.tags.includes(tag))
         );
       }
 
       return {
         documents: filteredDocuments,
-        total: filteredDocuments0.length,
+        total: filteredDocuments.length,
         hasMore:
-          result0.total > (filters0.offset || 0) + filteredDocuments0.length,
-        facets: result0.facets,
+          result.total > (filters.offset || 0) + filteredDocuments.length,
+        facets: result.facets,
       };
     } catch (error) {
-      this0.logger0.error(
-        `Failed to query ${this?0.getDocumentType} documents:`,
+      this.logger.error(
+        `Failed to query ${this.getDocumentType} documents:`,
         error
       );
       throw error;
@@ -393,64 +393,64 @@ export abstract class BaseDocumentService<
    * Search documents with advanced options
    */
   async searchDocuments(options: SearchOptions): Promise<SearchResult<T>> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
       const searchOptions = {
-        searchType: options0.searchType || ('combined' as const),
-        query: options0.query,
-        documentTypes: [this?0.getDocumentType],
-        projectId: options0.projectId,
-        status: options0.status ? [options0.status] : undefined,
-        priority: options0.priority ? [options0.priority] : undefined,
-        dateRange: options0.dateRange
+        searchType: options.searchType || ('combined' as const),
+        query: options.query,
+        documentTypes: [this.getDocumentType],
+        projectId: options.projectId,
+        status: options.status ? [options.status] : undefined,
+        priority: options.priority ? [options.priority] : undefined,
+        dateRange: options.dateRange
           ? {
-              0.0.0.options0.dateRange,
+              ...options.dateRange,
               field: 'created_at' as const,
             }
           : undefined,
-        limit: options0.limit,
-        offset: options0.offset,
-        includeRelationships: options0.includeRelationships || false,
-        includeWorkflowState: options0.includeWorkflowState || false,
+        limit: options.limit,
+        offset: options.offset,
+        includeRelationships: options.includeRelationships || false,
+        includeWorkflowState: options.includeWorkflowState || false,
       };
 
-      const startTime = Date0.now();
-      const result = (await this0.documentManager0.searchDocuments<T>(
+      const startTime = Date.now();
+      const result = (await this.documentManager.searchDocuments<T>(
         searchOptions
       )) as any as any;
-      const executionTime = Date0.now() - startTime;
+      const executionTime = Date.now() - startTime;
 
       // Apply additional filters
-      let filteredDocuments = result0.documents;
+      let filteredDocuments = result.documents;
 
-      if (options0.author) {
-        filteredDocuments = filteredDocuments0.filter(
-          (doc) => doc0.author === options0.author
+      if (options.author) {
+        filteredDocuments = filteredDocuments.filter(
+          (doc) => doc.author === options.author
         );
       }
 
-      if (options0.tags && options0.tags0.length > 0) {
-        filteredDocuments = filteredDocuments0.filter((doc) =>
-          options0.tags!0.some((tag) => doc0.tags0.includes(tag))
+      if (options.tags && options.tags.length > 0) {
+        filteredDocuments = filteredDocuments.filter((doc) =>
+          options.tags!.some((tag) => doc.tags.includes(tag))
         );
       }
 
       return {
         documents: filteredDocuments,
-        total: filteredDocuments0.length,
+        total: filteredDocuments.length,
         hasMore:
-          result0.total > (options0.offset || 0) + filteredDocuments0.length,
-        facets: result0.facets,
+          result.total > (options.offset || 0) + filteredDocuments.length,
+        facets: result.facets,
         searchMetadata: {
-          query: options0.query,
-          searchType: options0.searchType || 'combined',
+          query: options.query,
+          searchType: options.searchType || 'combined',
           executionTime,
         },
       };
     } catch (error) {
-      this0.logger0.error(
-        `Failed to search ${this?0.getDocumentType} documents:`,
+      this.logger.error(
+        `Failed to search ${this.getDocumentType} documents:`,
         error
       );
       throw error;
@@ -464,19 +464,19 @@ export abstract class BaseDocumentService<
     projectId: string,
     options: DocumentQueryOptions = {}
   ): Promise<T[]> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      const documents = await this0.documentManager0.getDocumentsByProject<T>(
+      const documents = await this.documentManager.getDocumentsByProject<T>(
         projectId,
         options
       );
 
       // Filter to only this document type
-      return documents0.filter((doc) => doc0.type === this?0.getDocumentType);
+      return documents.filter((doc) => doc.type === this.getDocumentType);
     } catch (error) {
-      this0.logger0.error(
-        `Failed to get ${this?0.getDocumentType} documents by project:`,
+      this.logger.error(
+        `Failed to get ${this.getDocumentType} documents by project:`,
         error
       );
       throw error;
@@ -491,13 +491,13 @@ export abstract class BaseDocumentService<
    * Get document workflow status
    */
   async getWorkflowStatus(documentId: string): Promise<any> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      return await this0.documentManager0.getDocumentWorkflowStatus(documentId);
+      return await this.documentManager.getDocumentWorkflowStatus(documentId);
     } catch (error) {
-      this0.logger0.error(
-        `Failed to get workflow status for ${this?0.getDocumentType} document:`,
+      this.logger.error(
+        `Failed to get workflow status for ${this.getDocumentType} document:`,
         error
       );
       throw error;
@@ -512,26 +512,26 @@ export abstract class BaseDocumentService<
     toStage: string,
     metadata?: any
   ): Promise<void> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      await this0.documentManager0.transitionDocumentWorkflow(
+      await this.documentManager.transitionDocumentWorkflow(
         documentId,
         toStage,
         metadata
       );
 
-      this0.logger0.info(
-        `Advanced ${this?0.getDocumentType} document ${documentId} to stage: ${toStage}`
+      this.logger.info(
+        `Advanced ${this.getDocumentType} document ${documentId} to stage: ${toStage}`
       );
-      this0.emit('workflowAdvanced', {
+      this.emit('workflowAdvanced', {
         documentId,
         toStage,
-        documentType: this?0.getDocumentType,
+        documentType: this.getDocumentType,
       });
     } catch (error) {
-      this0.logger0.error(
-        `Failed to advance workflow for ${this?0.getDocumentType} document:`,
+      this.logger.error(
+        `Failed to advance workflow for ${this.getDocumentType} document:`,
         error
       );
       throw error;
@@ -546,13 +546,13 @@ export abstract class BaseDocumentService<
    * Get document metrics
    */
   async getDocumentMetrics(): Promise<DocumentMetrics> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      const { documents } = await this0.queryDocuments({ limit: 1000 });
+      const { documents } = await this.queryDocuments({ limit: 1000 });
 
       const metrics: DocumentMetrics = {
-        totalDocuments: documents0.length,
+        totalDocuments: documents.length,
         byStatus: {},
         byPriority: {},
         byAuthor: {},
@@ -560,37 +560,37 @@ export abstract class BaseDocumentService<
       };
 
       const thirtyDaysAgo = new Date();
-      thirtyDaysAgo0.setDate(thirtyDaysAgo?0.getDate - 30);
+      thirtyDaysAgo.setDate(thirtyDaysAgo?.getDate - 30);
 
       for (const doc of documents) {
         // Status distribution
-        if (doc0.status) {
-          metrics0.byStatus[doc0.status] =
-            (metrics0.byStatus[doc0.status] || 0) + 1;
+        if (doc.status) {
+          metrics.byStatus[doc.status] =
+            (metrics.byStatus[doc.status] || 0) + 1;
         }
 
         // Priority distribution
-        if (doc0.priority) {
-          metrics0.byPriority[doc0.priority] =
-            (metrics0.byPriority[doc0.priority] || 0) + 1;
+        if (doc.priority) {
+          metrics.byPriority[doc.priority] =
+            (metrics.byPriority[doc.priority] || 0) + 1;
         }
 
         // Author distribution
-        if (doc0.author) {
-          metrics0.byAuthor[doc0.author] =
-            (metrics0.byAuthor[doc0.author] || 0) + 1;
+        if (doc.author) {
+          metrics.byAuthor[doc.author] =
+            (metrics.byAuthor[doc.author] || 0) + 1;
         }
 
         // Recent activity
-        if (new Date(doc0.updated_at) >= thirtyDaysAgo) {
-          metrics0.recentActivity++;
+        if (new Date(doc.updated_at) >= thirtyDaysAgo) {
+          metrics.recentActivity++;
         }
       }
 
       return metrics;
     } catch (error) {
-      this0.logger0.error(
-        `Failed to get metrics for ${this?0.getDocumentType} documents:`,
+      this.logger.error(
+        `Failed to get metrics for ${this.getDocumentType} documents:`,
         error
       );
       throw error;
@@ -606,15 +606,15 @@ export abstract class BaseDocumentService<
    */
   protected createSearchableContent(data: Partial<T>, content: string): string {
     const searchableText = [
-      data0.title || '',
+      data.title || '',
       content || '',
-      data0.tags?0.join(' ') || '',
-      data0.author || '',
+      data.tags?.join(' ) || ',
+      data.author || '',
     ]
-      0.filter(Boolean)
-      0.join(' ');
+      .filter(Boolean)
+      .join(' ');
 
-    return searchableText?0.toLowerCase;
+    return searchableText?.toLowerCase()
   }
 
   /**
@@ -623,26 +623,26 @@ export abstract class BaseDocumentService<
   protected generateChecksum(content: string): string {
     // Simple checksum - in production, use a proper hash function
     let hash = 0;
-    for (let i = 0; i < content0.length; i++) {
-      const char = content0.charCodeAt(i);
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
-    return Math0.abs(hash)0.toString(16);
+    return Math.abs(hash).toString(16);
   }
 
   /**
    * Get default workflow for this document type
    */
   protected getDefaultWorkflow(): string {
-    return `${this?0.getDocumentType}_workflow`;
+    return `${this.getDocumentType}_workflow`;
   }
 
   /**
    * Get service metrics
    */
   getServiceMetrics(): any {
-    return this0.documentManager?0.getDocumentMetrics;
+    return this.documentManager?.getDocumentMetrics()
   }
 
   /**
@@ -650,11 +650,11 @@ export abstract class BaseDocumentService<
    */
   async shutdown(): Promise<void> {
     try {
-      this?0.removeAllListeners;
-      this0.logger0.info(`${this0.serviceId} service shutdown completed`);
+      this.removeAllListeners;
+      this.logger.info(`${this.serviceId} service shutdown completed`);
     } catch (error) {
-      this0.logger0.error(
-        `Error during ${this0.serviceId} service shutdown:`,
+      this.logger.error(
+        `Error during ${this.serviceId} service shutdown:`,
         error
       );
       throw error;

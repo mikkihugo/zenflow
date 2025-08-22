@@ -1,15 +1,15 @@
 /**
- * Shared Interface Contracts0.
+ * Shared Interface Contracts.
  *
- * Defines the contracts and abstractions that interfaces can depend on0.
- * Without creating cross-interface dependencies0.
+ * Defines the contracts and abstractions that interfaces can depend on.
+ * Without creating cross-interface dependencies.
  */
 /**
- * @file Interface implementation: contracts0.
+ * @file Interface implementation: contracts.
  */
 
-import type { CommandResult, ExecutionContext } from '0./command-interfaces';
-import type { ComponentStatus } from '0./types';
+import('./command-interfaces';
+import('./types';
 
 // Define types that are used in contracts but don't exist elsewhere
 export interface CommandContext extends ExecutionContext {
@@ -26,7 +26,7 @@ export interface ProjectConfig {
 }
 
 export interface SystemHealth {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
   uptime: number;
   memory?: number;
   cpu?: number;
@@ -34,10 +34,10 @@ export interface SystemHealth {
 }
 
 /**
- * Project Management Contract0.
+ * Project Management Contract.
  *
- * Abstract interface for project management operations that can be0.
- * Implemented by different interface layers0.0.
+ * Abstract interface for project management operations that can be.
+ * Implemented by different interface layers..
  *
  * @example
  */
@@ -57,10 +57,10 @@ export interface ProjectSummary {
 }
 
 /**
- * Command Execution Contract0.
+ * Command Execution Contract.
  *
- * Abstract interface for command execution that can be implemented0.
- * By different command engines0.0.
+ * Abstract interface for command execution that can be implemented.
+ * By different command engines..
  *
  * @example
  */
@@ -72,10 +72,10 @@ export interface CommandExecutorContract {
 }
 
 /**
- * Swarm Coordination Contract0.
+ * Swarm Coordination Contract.
  *
- * Abstract interface for swarm operations that interfaces can use0.
- * Without depending on specific swarm implementations0.0.
+ * Abstract interface for swarm operations that interfaces can use.
+ * Without depending on specific swarm implementations..
  *
  * @example
  */
@@ -87,14 +87,14 @@ export interface SwarmCoordinatorContract {
 }
 
 export interface SwarmConfig {
-  readonly topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  readonly topology: 'mesh | hierarchical' | 'ring | star';
   readonly agentCount: number;
-  readonly strategy: 'parallel' | 'sequential' | 'adaptive';
+  readonly strategy: 'parallel | sequential' | 'adaptive';
 }
 
 export interface SwarmStatus {
   readonly id: string;
-  readonly status: 'active' | 'inactive' | 'error';
+  readonly status: 'active | inactive' | 'error';
   readonly agents: number;
   readonly performance: number;
   readonly efficiency: number;
@@ -102,15 +102,15 @@ export interface SwarmStatus {
 
 export interface SwarmTask {
   readonly description: string;
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low | medium' | 'high | critical';
   readonly strategy?: string;
   readonly timeout?: number;
 }
 
 /**
- * System Monitoring Contract0.
+ * System Monitoring Contract.
  *
- * Abstract interface for system monitoring and health checks0.
+ * Abstract interface for system monitoring and health checks.
  *
  * @example
  */
@@ -138,9 +138,9 @@ export interface PerformanceMetrics {
 }
 
 /**
- * Data Service Contract0.
+ * Data Service Contract.
  *
- * Abstract interface for data operations that interfaces can use0.
+ * Abstract interface for data operations that interfaces can use.
  *
  * @example
  */
@@ -152,9 +152,9 @@ export interface DataServiceContract {
 }
 
 /**
- * Configuration Contract0.
+ * Configuration Contract.
  *
- * Abstract interface for configuration management0.
+ * Abstract interface for configuration management.
  *
  * @example
  */

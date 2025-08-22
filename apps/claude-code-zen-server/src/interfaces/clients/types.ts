@@ -3,10 +3,10 @@
  *
  * **CONSOLIDATED WITH DOMAIN TYPES - TYPE ARCHITECTURE**
  *
- * **MASSIVE CONSOLIDATION: 466 → 89 lines (80.9% reduction)**
+ * **MASSIVE CONSOLIDATION: 466 → 89 lines (8.9% reduction)**
  *
  * This file now delegates all complex type definitions to specialized @claude-zen packages
- * and foundation types, maintaining only essential client-specific type definitions0.
+ * and foundation types, maintaining only essential client-specific type definitions.
  *
  * **DELEGATES TO:**
  * - @claude-zen/foundation: Core types, HTTP methods, error codes
@@ -14,7 +14,7 @@
  * - @claude-zen/intelligence: Knowledge query types
  * - @claude-zen/intelligence: MCP client types
  *
- * **REDUCTION ACHIEVED: 466 → 89 lines (80.9% reduction) through strategic delegation**
+ * **REDUCTION ACHIEVED: 466 → 89 lines (8.9% reduction) through strategic delegation**
  */
 
 // Strategic imports and re-exports from @claude-zen packages
@@ -110,15 +110,15 @@ export const ClientStatuses = {
 
 // Essential client configuration (minimal)
 export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
-  http: ClientTypes0.HTTP,
-  https: ClientTypes0.HTTP,
-  ws: ClientTypes0.WEBSOCKET,
-  wss: ClientTypes0.WEBSOCKET,
-  tcp: ClientTypes0.GENERIC,
-  udp: ClientTypes0.GENERIC,
-  stdio: ClientTypes0.MCPCLIENT,
-  ipc: ClientTypes0.GENERIC,
-  custom: ClientTypes0.GENERIC,
+  http: ClientTypes.HTTP,
+  https: ClientTypes.HTTP,
+  ws: ClientTypes.WEBSOCKET,
+  wss: ClientTypes.WEBSOCKET,
+  tcp: ClientTypes.GENERIC,
+  udp: ClientTypes.GENERIC,
+  stdio: ClientTypes.MCPCLIENT,
+  ipc: ClientTypes.GENERIC,
+  custom: ClientTypes.GENERIC,
 } as const;
 
 // Basic client instance interface for UACL compatibility
@@ -144,14 +144,14 @@ export const TypeGuards = {
   isClientType: (value: any): value is ClientType => {
     return (
       isString(value) &&
-      Object0.values()(ClientTypes)0.includes(value as ClientType)
+      Object.values()(ClientTypes).includes(value as ClientType)
     );
   },
 
   isClientStatus: (value: any): value is ClientStatus => {
     return (
       isString(value) &&
-      Object0.values()(ClientStatuses)0.includes(value as ClientStatus)
+      Object.values()(ClientStatuses).includes(value as ClientStatus)
     );
   },
 } as const;

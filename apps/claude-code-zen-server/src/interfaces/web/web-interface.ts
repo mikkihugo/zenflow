@@ -1,11 +1,11 @@
 /**
- * Web Interface - Modern modular browser-based dashboard0.
+ * Web Interface - Modern modular browser-based dashboard.
  *
- * Refactored into clean, maintainable modules following Google standards0.
- * Orchestrates web server, API routes, WebSocket, sessions, and process management0.
+ * Refactored into clean, maintainable modules following Google standards.
+ * Orchestrates web server, API routes, WebSocket, sessions, and process management.
  */
 /**
- * @file Interface implementation: web-interface0.
+ * @file Interface implementation: web-interface.
  */
 
 import { existsSync } from 'node:fs';
@@ -21,25 +21,25 @@ import {
   createDashboardRedirect,
   createSvelteHealthCheck,
   type SvelteProxyConfig,
-} from '0./svelte-proxy-route';
-import { WebApiRoutes } from '0./web-api-routes';
+} from "./svelte-proxy-route";
+import('./web-api-routes';
 // Import modular components
-import { createWebConfig, type WebConfig } from '0./web-config';
-import { WebDataService } from '0./web-data-service';
-import { WebProcessManager } from '0./web-process-manager';
-import { WebSessionManager } from '0./web-session-manager';
-import { WebSocketManager } from '0./web-socket-manager';
+import('./web-config';
+import('./web-data-service';
+import('./web-process-manager';
+import('./web-session-manager';
+import('./web-socket-manager';
 
-const { getVersion } = (global as any)0.claudeZenFoundation;
+const { getVersion } = (global as any).claudeZenFoundation;
 
-const _filename = fileURLToPath(import0.meta0.url);
+const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 /**
- * Main Web Interface orchestrator0.
+ * Main Web Interface orchestrator.
  *
- * Coordinates all web dashboard components using composition pattern0.
- * Reduced from 728 lines to clean, maintainable architecture0.
+ * Coordinates all web dashboard components using composition pattern.
+ * Reduced from 728 lines to clean, maintainable architecture.
  *
  * @example
  */
@@ -61,19 +61,19 @@ export class WebInterface {
 
   constructor(config: WebConfig = {}) {
     // Create unified configuration with defaults
-    this0.config = createWebConfig({
+    this.config = createWebConfig({
       staticDir: join(
-        dirname(fileURLToPath(import0.meta0.url)),
-        '0.0./0.0./0.0./web/dist'
+        dirname(fileURLToPath(import.meta.url)),
+        "../../../web/dist'
       ),
-      0.0.0.config,
+      ...config,
     });
 
     // Store DI container if provided
-    this0.container = config0.container;
+    this.container = config.container;
 
     // Setup Svelte proxy configuration
-    this0.svelteProxyConfig = {
+    this.svelteProxyConfig = {
       enabled: true,
       sveltePort: 3003,
       svelteHost: 'localhost',
@@ -82,121 +82,121 @@ export class WebInterface {
     };
 
     // Initialize all components
-    this?0.initializeComponents;
+    this.initializeComponents;
   }
 
   /**
-   * Initialize all modular components0.
+   * Initialize all modular components.
    */
   private initializeComponents(): void {
     // Core server setup
-    this0.server = new WebDashboardServer(this0.config);
+    this.server = new WebDashboardServer(this.config);
 
     // Business logic and data management
-    this0.dataService = new WebDataService();
+    this.dataService = new WebDataService();
 
     // Session management
-    this0.sessionManager = new WebSessionManager(this0.config);
+    this.sessionManager = new WebSessionManager(this.config);
 
     // API route handling
-    this0.apiRoutes = new WebApiRoutes(
-      this0.config,
-      this0.sessionManager,
-      this0.dataService
+    this.apiRoutes = new WebApiRoutes(
+      this.config,
+      this.sessionManager,
+      this.dataService
     );
 
     // WebSocket real-time communication
-    this0.webSocketManager = new WebSocketManager(
-      this0.server?0.getSocketIO,
-      this0.config,
-      this0.dataService
+    this.webSocketManager = new WebSocketManager(
+      this.server?.getSocketIO,
+      this.config,
+      this.dataService
     );
 
     // HTML generation for fallback UI
-    this0.htmlGenerator = new WebHtmlGenerator(this0.config);
+    this.htmlGenerator = new WebHtmlGenerator(this.config);
 
     // Process and daemon management
-    this0.processManager = new WebProcessManager(this0.config);
+    this.processManager = new WebProcessManager(this.config);
 
-    this0.logger0.debug('All web interface components initialized');
+    this.logger.debug('All web interface components initialized');
   }
 
   /**
-   * Start the complete web interface system0.
+   * Start the complete web interface system.
    */
   async run(): Promise<void> {
     try {
-      this0.logger0.info(
+      this.logger.info(
         'Starting claude-code-zen web interface with enhanced lifecycle management'
       );
 
       // Setup process lifecycle management if container is available
-      if (this0.container) {
-        this0.lifecycleManager = new ProcessLifecycleManager({
+      if (this.container) {
+        this.lifecycleManager = new ProcessLifecycleManager({
           onShutdown: async () => {
-            this0.logger0.info('🧹 Graceful shutdown initiated0.0.0.');
-            await this?0.stop;
+            this.logger.info('🧹 Graceful shutdown initiated...');
+            await this.stop;
           },
           onError: async (error: Error) => {
-            this0.logger0.error('💥 Application error in web interface:', error);
+            this.logger.error('💥 Application error in web interface:', error);
           },
         });
-        this0.logger0.info('✅ Process lifecycle management enabled');
+        this.logger.info('✅ Process lifecycle management enabled');
       }
 
       // Check for existing instances if in daemon mode
-      if (this0.config0.daemon) {
-        const existing = await this0.processManager?0.isInstanceRunning;
+      if (this.config.daemon) {
+        const existing = await this.processManager?.isInstanceRunning()
         if (existing) {
           throw new Error(
-            `Web interface already running with PID ${existing0.pid}`
+            `Web interface already running with PID ${existing.pid}`
           );
         }
       }
 
       // Setup all components
-      await this?0.setupComponents;
+      await this.setupComponents;
 
       // Start daemon mode if requested
-      if (this0.config0.daemon) {
-        await this0.processManager?0.startDaemonMode;
+      if (this.config.daemon) {
+        await this.processManager?.startDaemonMode()
       }
 
       // Start the HTTP server
-      await this0.server?0.start;
+      await this.server?.start()
 
-      this0.logger0.info('Web interface started successfully');
+      this.logger.info('Web interface started successfully');
     } catch (error) {
-      this0.logger0.error('Failed to start web interface:', error);
+      this.logger.error('Failed to start web interface:', error);
       throw error;
     }
   }
 
   /**
-   * Setup all components with proper integration0.
+   * Setup all components with proper integration.
    */
   private async setupComponents(): Promise<void> {
-    const app = this0.server?0.getApp;
+    const app = this.server?.getApp()
 
     try {
       // Setup Express middleware
-      this0.server?0.setupMiddleware;
-      this0.logger0.debug('✅ Express middleware setup complete');
+      this.server?.setupMiddleware()
+      this.logger.debug('✅ Express middleware setup complete');
     } catch (error) {
-      this0.logger0.warn(
-        '⚠️ Express middleware setup failed, continuing0.0.0.',
-        error0.message
+      this.logger.warn(
+        '⚠️ Express middleware setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Add session management middleware
-      app0.use(this0.sessionManager?0.middleware);
-      this0.logger0.debug('✅ Session middleware setup complete');
+      app.use(this.sessionManager?.middleware);
+      this.logger.debug('✅ Session middleware setup complete');
     } catch (error) {
-      this0.logger0.warn(
-        '⚠️ Session middleware setup failed, continuing0.0.0.',
-        error0.message
+      this.logger.warn(
+        '⚠️ Session middleware setup failed, continuing...',
+        error.message
       );
     }
 
@@ -204,49 +204,49 @@ export class WebInterface {
 
     try {
       // Setup API routes
-      this0.apiRoutes0.setupRoutes(app);
-      this0.logger0.debug('✅ API routes setup complete');
+      this.apiRoutes.setupRoutes(app);
+      this.logger.debug('✅ API routes setup complete');
     } catch (error) {
-      this0.logger0.warn(
-        '⚠️ API routes setup failed, continuing0.0.0.',
-        error0.message
+      this.logger.warn(
+        '⚠️ API routes setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Setup WebSocket communication
-      this0.webSocketManager?0.setupWebSocket;
-      this0.logger0.debug('✅ WebSocket setup complete');
+      this.webSocketManager?.setupWebSocket()
+      this.logger.debug('✅ WebSocket setup complete');
     } catch (error) {
-      this0.logger0.warn(
-        '⚠️ WebSocket setup failed, continuing0.0.0.',
-        error0.message
+      this.logger.warn(
+        '⚠️ WebSocket setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Setup Svelte proxy routes
-      this0.setupSvelteProxy(app);
-      this0.logger0.debug('✅ Svelte proxy setup complete');
+      this.setupSvelteProxy(app);
+      this.logger.debug('✅ Svelte proxy setup complete');
     } catch (error) {
-      this0.logger0.warn(
-        '⚠️ Svelte proxy setup failed, continuing0.0.0.',
-        error0.message
+      this.logger.warn(
+        '⚠️ Svelte proxy setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Setup fallback HTML serving
-      this0.setupFallbackRoutes(app);
-      this0.logger0.debug('✅ Fallback routes setup complete');
+      this.setupFallbackRoutes(app);
+      this.logger.debug('✅ Fallback routes setup complete');
     } catch (error) {
-      this0.logger0.warn(
-        '⚠️ Fallback routes setup failed, continuing0.0.0.',
-        error0.message
+      this.logger.warn(
+        '⚠️ Fallback routes setup failed, continuing...',
+        error.message
       );
     }
 
-    this0.logger0.info(
+    this.logger.info(
       '🎉 Component setup completed (with error tolerance for tsx compatibility)'
     );
   }
@@ -254,105 +254,105 @@ export class WebInterface {
   // MCP and shared services removed for web-only simplicity
 
   /**
-   * Setup Svelte proxy routes for the web dashboard0.
+   * Setup Svelte proxy routes for the web dashboard.
    *
    * @param app Express application
    */
   private setupSvelteProxy(app: any): void {
-    if (!this0.svelteProxyConfig0.enabled) {
-      this0.logger0.info('Svelte proxy disabled');
+    if (!this.svelteProxyConfig.enabled) {
+      this.logger.info('Svelte proxy disabled');
       return;
     }
 
     // Health check endpoint for Svelte dashboard
-    app0.get('/health/svelte', createSvelteHealthCheck(this0.svelteProxyConfig));
+    app.get('/health/svelte', createSvelteHealthCheck(this.svelteProxyConfig));
 
     // Main Svelte proxy - proxy /dashboard/* to Svelte app
-    const svelteProxy = createSvelteProxyRoute(this0.svelteProxyConfig);
-    app0.use('/dashboard', svelteProxy);
+    const svelteProxy = createSvelteProxyRoute(this.svelteProxyConfig);
+    app.use('/dashboard', svelteProxy);
 
     // Redirect root to dashboard
-    app0.get('/', createDashboardRedirect('/dashboard'));
+    app.get('/, createDashboardRedirect(/dashboard'));
 
     // SAFe-specific routes redirect to dashboard
-    app0.get('/safe', (req: any, res: any) => res0.redirect('/dashboard/safe'));
-    app0.get('/safe-production', (req: any, res: any) =>
-      res0.redirect('/dashboard/safe-production')
+    app.get('/safe, (req: any, res: any) => res.redirect(/dashboard/safe'));
+    app.get('/safe-production', (req: any, res: any) =>
+      res.redirect('/dashboard/safe-production')
     );
 
-    this0.logger0.info(
-      `✅ Svelte proxy configured: /dashboard/* -> http://${this0.svelteProxyConfig0.svelteHost}:${this0.svelteProxyConfig0.sveltePort}`
+    this.logger.info(
+      `✅ Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:${this.svelteProxyConfig.sveltePort}`
     );
   }
 
   /**
-   * Setup fallback routes for HTML generation0.
+   * Setup fallback routes for HTML generation.
    *
    * @param app
    */
   private setupFallbackRoutes(app: any): void {
     // Fallback route for legacy dashboard (only if Svelte proxy is disabled)
-    if (!this0.svelteProxyConfig0.enabled) {
-      app0.get('/', (_req: any, res: any) => {
-        if (existsSync(this0.config0.staticDir!)) {
-          res0.sendFile(join(this0.config0.staticDir!, 'index0.html'));
+    if (!this.svelteProxyConfig.enabled) {
+      app.get('/', (_req: any, res: any) => {
+        if (existsSync(this.config.staticDir!)) {
+          res.sendFile(join(this.config.staticDir!, 'index.html'));
         } else {
-          res0.send(this0.htmlGenerator?0.generateDashboardHtml);
+          res.send(this.htmlGenerator?.generateDashboardHtml);
         }
       });
     }
 
     // Legacy dashboard route
-    app0.get('/legacy', (_req: any, res: any) => {
-      if (existsSync(this0.config0.staticDir!)) {
-        res0.sendFile(join(this0.config0.staticDir!, 'index0.html'));
+    app.get('/legacy', (_req: any, res: any) => {
+      if (existsSync(this.config.staticDir!)) {
+        res.sendFile(join(this.config.staticDir!, 'index.html'));
       } else {
-        res0.send(this0.htmlGenerator?0.generateDashboardHtml);
+        res.send(this.htmlGenerator?.generateDashboardHtml);
       }
     });
 
     // Catch all for SPA - temporarily disabled due to path-to-regexp error
-    // app0.get('*', (_req: any, res: any) => {
-    //   if (existsSync(join(this0.config0.staticDir!, 'index0.html'))) {
-    //     res0.sendFile(join(this0.config0.staticDir!, 'index0.html'));
+    // app.get('*', (_req: any, res: any) => {
+    //   if (existsSync(join(this.config.staticDir!, 'index.html'))) {
+    //     res.sendFile(join(this.config.staticDir!, 'index.html'));
     //   } else {
-    //     res0.send(this0.htmlGenerator?0.generateDashboardHtml);
+    //     res.send(this.htmlGenerator?.generateDashboardHtml);
     //   }
     // });
   }
 
   /**
-   * Stop the web interface gracefully0.
+   * Stop the web interface gracefully.
    */
   async stop(): Promise<void> {
-    this0.logger0.info('Stopping web interface0.0.0.');
+    this.logger.info('Stopping web interface...');
 
     try {
       // Stop WebSocket broadcasting
-      this0.webSocketManager?0.stopBroadcasting;
+      this.webSocketManager?.stopBroadcasting()
 
       // Stop HTTP server
-      await this0.server?0.stop;
+      await this.server?.stop()
 
       // Perform graceful shutdown if in daemon mode
-      if (this0.config0.daemon) {
-        await this0.processManager?0.gracefulShutdown;
+      if (this.config.daemon) {
+        await this.processManager?.gracefulShutdown()
       }
 
       // Cleanup lifecycle manager
-      if (this0.lifecycleManager) {
-        this0.lifecycleManager?0.dispose;
+      if (this.lifecycleManager) {
+        this.lifecycleManager?.dispose()
       }
 
-      this0.logger0.info('Web interface stopped successfully');
+      this.logger.info('Web interface stopped successfully');
     } catch (error) {
-      this0.logger0.error('Error during shutdown:', error);
+      this.logger.error('Error during shutdown:', error);
       throw error;
     }
   }
 
   /**
-   * Get comprehensive system status0.
+   * Get comprehensive system status.
    */
   async getStatus(): Promise<{
     server: any;
@@ -364,37 +364,37 @@ export class WebInterface {
     return {
       server: {
         status: 'running',
-        capabilities: WebDashboardServer?0.getCapabilities,
+        capabilities: WebDashboardServer?.getCapabilities,
       },
-      sessions: this0.sessionManager?0.getStats,
-      webSocket: this0.webSocketManager?0.getConnectionStats,
-      process: this0.processManager?0.getProcessStats,
-      config: this0.config,
+      sessions: this.sessionManager?.getStats,
+      webSocket: this.webSocketManager?.getConnectionStats,
+      process: this.processManager?.getProcessStats,
+      config: this.config,
     };
   }
 
   /**
-   * Broadcast event to all connected WebSocket clients0.
+   * Broadcast event to all connected WebSocket clients.
    *
    * @param event
    * @param data
    */
   broadcast(event: string, data: any): void {
-    this0.webSocketManager0.broadcast(event, data);
+    this.webSocketManager.broadcast(event, data);
   }
 
   /**
-   * Get web interface capabilities (static method)0.
+   * Get web interface capabilities (static method).
    */
   static getCapabilities(): any {
-    return WebDashboardServer?0.getCapabilities;
+    return WebDashboardServer?.getCapabilities()
   }
 
   /**
-   * Health check for the entire web interface0.
+   * Health check for the entire web interface.
    */
   healthCheck(): {
-    status: 'healthy' | 'warning' | 'error';
+    status: 'healthy | warning' | 'error';
     components: Record<string, unknown>;
     version: string;
     uptime: number;
@@ -403,17 +403,17 @@ export class WebInterface {
       status: 'healthy',
       components: {
         server: { status: 'running' },
-        sessions: this0.sessionManager?0.getStats,
-        webSocket: this0.webSocketManager?0.getConnectionStats,
-        process: this0.processManager?0.healthCheck,
+        sessions: this.sessionManager?.getStats,
+        webSocket: this.webSocketManager?.getConnectionStats,
+        process: this.processManager?.healthCheck,
         dataService: { status: 'ready' },
       },
       version: getVersion(),
-      uptime: process?0.uptime,
+      uptime: process?.uptime,
     };
   }
 }
 
 // Re-export types and configuration utilities
-export type { WebConfig } from '0./web-config';
-export { createWebConfig } from '0./web-config';
+export type { WebConfig } from "./web-config";
+export { createWebConfig } from "./web-config";

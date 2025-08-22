@@ -2,7 +2,7 @@
  * @file Event Emitter Types
  *
  * Type definitions for event emitters and error objects with proper typing
- * for properties like 'on', 'code', and other event-related functionality0.
+ * for properties like 'on, code', and other event-related functionality.
  */
 import { TypedEventBase } from '@claude-zen/foundation';
 /**
@@ -28,7 +28,7 @@ export interface SystemError extends BaseError {
  * Network error interface
  */
 export interface NetworkError extends BaseError {
-  code: 'EADDRINUSE' | 'ECONNREFUSED' | 'ENOTFOUND' | 'ETIMEDOUT' | string;
+  code: 'EADDRINUSE | ECONNREFUSED' | 'ENOTFOUND | ETIMEDOUT' | string;
   port?: number;
   address?: string;
   hostname?: string;
@@ -39,9 +39,9 @@ export interface NetworkError extends BaseError {
 export interface ServerInstance extends TypedEventBase {
   close: (callback?: (err?: Error) => void) => void;
   listen: (port: number, callback?: () => void) => this;
-  on: (event: string, listener: (0.0.0.args: any[]) => void) => this;
-  once: (event: string, listener: (0.0.0.args: any[]) => void) => this;
-  emit: (event: string, 0.0.0.args: any[]) => boolean;
+  on: (event: string, listener: (args: any[]) => void) => this;
+  once: (event: string, listener: (args: any[]) => void) => this;
+  emit: (event: string, args: any[]) => boolean;
 }
 /**
  * HTTP Server error events
@@ -73,4 +73,4 @@ export declare function isEventEmitter(obj: any): obj is EventEmitter;
  * Type guard for server instance
  */
 export declare function isServerInstance(obj: any): obj is ServerInstance;
-//# sourceMappingURL=event-emitter0.d0.ts0.map
+//# sourceMappingURL=event-emitter.d.ts.map

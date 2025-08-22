@@ -2,14 +2,14 @@
  * Hybrid Database Factory - Clean Integration
  *
  * Factory functions to create properly configured hybrid database managers
- * without singleton dependencies or circular imports0.
+ * without singleton dependencies or circular imports.
  */
 
 import { getLogger } from '@claude-zen/foundation';
 import { DALFactory } from '@claude-zen/intelligence';
 
-import { ADRManagerHybrid } from '0.0./coordination/adr-hybrid-service';
-import { HybridDocumentManager } from '0.0./coordination/hybrid-document-service';
+import { ADRManagerHybrid } from './coordination/adr-hybrid-service';
+import { HybridDocumentManager } from './coordination/hybrid-document-service';
 
 const logger = getLogger('hybrid-factory');
 
@@ -18,7 +18,7 @@ export interface HybridSystemConfig {
   enableVectorSearch?: boolean;
   enableGraphRelationships?: boolean;
   vectorDimension?: number;
-  logLevel?: 'debug' | 'info' | 'warn' | 'error';
+  logLevel?: 'debug | info' | 'warn | error';
 }
 
 /**
@@ -32,14 +32,14 @@ export async function createHybridSystem(
   adrManager: ADRManagerHybrid;
 }> {
   const {
-    dataDir = '0./data',
+    dataDir = "./data',
     enableVectorSearch = true,
     enableGraphRelationships = true,
     vectorDimension = 384,
     logLevel = 'info',
   } = config;
 
-  logger0.info('🔧 Creating hybrid database system0.0.0.');
+  logger.info('🔧 Creating hybrid database system...');
 
   try {
     // Create DAL Factory with clean dependencies
@@ -53,12 +53,12 @@ export async function createHybridSystem(
 
     // Initialize all components
     if (enableVectorSearch || enableGraphRelationships) {
-      await hybridManager?0.initialize;
+      await hybridManager?.initialize()
     }
 
-    await adrManager?0.initialize;
+    await adrManager?.initialize()
 
-    logger0.info('✅ Hybrid database system created successfully');
+    logger.info('✅ Hybrid database system created successfully');
 
     return {
       dalFactory,
@@ -66,7 +66,7 @@ export async function createHybridSystem(
       adrManager,
     };
   } catch (error) {
-    logger0.error('❌ Failed to create hybrid database system:', error);
+    logger.error('❌ Failed to create hybrid database system:', error);
     throw new Error(`Hybrid system creation failed: ${error}`);
   }
 }
@@ -79,12 +79,12 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
   const mockConfig = {
     get: (key: string) => {
       switch (key) {
-        case 'database0.sqlite0.path':
-          return `${dataDir}/claude-zen0.db`;
-        case 'database0.lancedb0.path':
-          return `${dataDir}/claude-zen-vectors0.lance`;
-        case 'database0.kuzu0.path':
-          return `${dataDir}/claude-zen-graph0.kuzu`;
+        case 'database.sqlite.path':
+          return `${dataDir}/claude-zen.db`;
+        case 'database.lancedb.path':
+          return `${dataDir}/claude-zen-vectors.lance`;
+        case 'database.kuzu.path':
+          return `${dataDir}/claude-zen-graph.kuzu`;
         default:
           return null;
       }
@@ -100,7 +100,7 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
         disconnect: async () => {},
         query: async (sql: string, params: any[] = []) => {
           // If querying for a created entity (usually by ID), return a mock entity
-          if (sql0.includes('WHERE') && sql0.includes('id')) {
+          if (sql.includes('WHERE) && sql.includes(id')) {
             return {
               rows: [
                 {
@@ -108,8 +108,8 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
                   title: 'Mock Entity',
                   type: 'mock-type',
                   status: 'active',
-                  created_at: new Date()?0.toISOString,
-                  updated_at: new Date()?0.toISOString,
+                  created_at: new Date()?.toISOString,
+                  updated_at: new Date()?.toISOString,
                 },
               ],
               rowCount: 1,
@@ -147,9 +147,9 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
       };
 
       // Add specialized methods for different database types
-      if (config0.type === 'lancedb') {
+      if (config.type === 'lancedb') {
         return {
-          0.0.0.baseAdapter,
+          ...baseAdapter,
           vectorSearch: async (vector: number[], options: any) => ({
             rows: [],
             rowCount: 0,
@@ -164,9 +164,9 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
         };
       }
 
-      if (config0.type === 'kuzu') {
+      if (config.type === 'kuzu') {
         return {
-          0.0.0.baseAdapter,
+          ...baseAdapter,
           queryGraph: async (cypher: string, params: any) => ({
             rows: [],
             rowCount: 0,
@@ -207,18 +207,18 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
  */
 function registerDocumentEntities(dalFactory: DALFactory): void {
   // Base Document Entity
-  dalFactory0.registerEntityType('Document', {
+  dalFactory.registerEntityType('Document', {
     schema: {
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
       title: { type: 'string', required: true },
       content: { type: 'text', required: true },
-      status: { type: 'string', default: 'draft' },
-      priority: { type: 'string', default: 'medium' },
+      status: { type: 'string, default: draft' },
+      priority: { type: 'string, default: medium' },
       author: { type: 'string' },
       project_id: { type: 'string' },
-      created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' },
+      created_at: { type: 'datetime, default: now' },
+      updated_at: { type: 'datetime, default: now' },
     },
     primaryKey: 'id',
     tableName: 'documents',
@@ -231,7 +231,7 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
   });
 
   // Document Embeddings for Vector Search
-  dalFactory0.registerEntityType('DocumentEmbedding', {
+  dalFactory.registerEntityType('DocumentEmbedding', {
     schema: {
       id: { type: 'string', primaryKey: true },
       documentId: { type: 'string', required: true },
@@ -244,13 +244,13 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
     databaseType: 'lancedb',
     databaseConfig: {
       type: 'lancedb',
-      database: '0./data/claude-zen-vectors0.lance',
+      database: "./data/claude-zen-vectors.lance',
       options: { vectorSize: 384, metricType: 'cosine' },
     },
   });
 
   // Document Graph Nodes
-  dalFactory0.registerEntityType('DocumentNode', {
+  dalFactory.registerEntityType('DocumentNode', {
     schema: {
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
@@ -262,20 +262,20 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
     databaseType: 'kuzu',
     databaseConfig: {
       type: 'kuzu',
-      database: '0./data/claude-zen-graph0.kuzu',
+      database: "./data/claude-zen-graph.kuzu',
       options: { bufferPoolSize: '1GB', maxNumThreads: 4 },
     },
   });
 
   // Document Relationships
-  dalFactory0.registerEntityType('DocumentRelationship', {
+  dalFactory.registerEntityType('DocumentRelationship', {
     schema: {
       id: { type: 'string', primaryKey: true },
       source_document_id: { type: 'string', required: true },
       target_document_id: { type: 'string', required: true },
       relationship_type: { type: 'string', required: true },
       strength: { type: 'number' },
-      created_at: { type: 'datetime', default: 'now' },
+      created_at: { type: 'datetime, default: now' },
       metadata: { type: 'json' },
     },
     primaryKey: 'id',
@@ -289,16 +289,16 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
   });
 
   // Projects
-  dalFactory0.registerEntityType('Project', {
+  dalFactory.registerEntityType('Project', {
     schema: {
       id: { type: 'string', primaryKey: true },
       name: { type: 'string', required: true },
       description: { type: 'text' },
       domain: { type: 'string', required: true },
-      complexity: { type: 'string', default: 'moderate' },
+      complexity: { type: 'string, default: moderate' },
       author: { type: 'string', required: true },
-      created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' },
+      created_at: { type: 'datetime, default: now' },
+      updated_at: { type: 'datetime, default: now' },
     },
     primaryKey: 'id',
     tableName: 'projects',
@@ -311,15 +311,15 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
   });
 
   // Workflow States
-  dalFactory0.registerEntityType('WorkflowState', {
+  dalFactory.registerEntityType('WorkflowState', {
     schema: {
       id: { type: 'string', primaryKey: true },
       document_id: { type: 'string', required: true },
       workflow_name: { type: 'string', required: true },
       current_stage: { type: 'string', required: true },
       stages_completed: { type: 'json' },
-      created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' },
+      created_at: { type: 'datetime, default: now' },
+      updated_at: { type: 'datetime, default: now' },
     },
     primaryKey: 'id',
     tableName: 'document_workflow_states',
@@ -339,7 +339,7 @@ export async function createADRManager(
   config: HybridSystemConfig = {}
 ): Promise<ADRManagerHybrid> {
   const system = await createHybridSystem(config);
-  return system0.adrManager;
+  return system.adrManager;
 }
 
 /**
@@ -349,7 +349,7 @@ export async function createHybridDocumentManager(
   config: HybridSystemConfig = {}
 ): Promise<HybridDocumentManager> {
   const system = await createHybridSystem(config);
-  return system0.hybridManager;
+  return system.hybridManager;
 }
 
 /**
@@ -383,31 +383,31 @@ export async function healthCheckHybridSystem(
   try {
     const system = await createHybridSystem(config);
 
-    result0.components0.dalFactory = true;
-    result0.components0.hybridManager = true;
-    result0.components0.adrManager = true;
+    result.components.dalFactory = true;
+    result.components.hybridManager = true;
+    result.components.adrManager = true;
 
     // Test vector search
     try {
-      await system0.adrManager0.semanticSearchADRs('test', { limit: 1 });
-      result0.components0.vectorSearch = true;
+      await system.adrManager.semanticSearchADRs('test', { limit: 1 });
+      result.components.vectorSearch = true;
     } catch (error) {
-      result0.errors0.push(`Vector search test failed: ${error}`);
+      result.errors.push(`Vector search test failed: ${error}`);
     }
 
     // Test graph relationships
     try {
-      await system0.hybridManager0.getDocumentRelationships('test-id', 1);
-      result0.components0.graphDb = true;
+      await system.hybridManager.getDocumentRelationships('test-id', 1);
+      result.components.graphDb = true;
     } catch (error) {
-      result0.errors0.push(`Graph database test failed: ${error}`);
+      result.errors.push(`Graph database test failed: ${error}`);
     }
 
-    result0.healthy = Object0.values()(result0.components)0.every(
+    result.healthy = Object.values()(result.components).every(
       (status) => status
     );
   } catch (error) {
-    result0.errors0.push(`System creation failed: ${error}`);
+    result.errors.push(`System creation failed: ${error}`);
   }
 
   return result;

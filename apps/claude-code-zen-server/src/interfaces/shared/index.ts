@@ -1,18 +1,18 @@
 /**
- * Shared Interface Abstractions0.
+ * Shared Interface Abstractions.
  *
- * This module provides shared types, contracts, and configurations0.
- * That interfaces can depend on without creating cross-interface dependencies0.
+ * This module provides shared types, contracts, and configurations.
+ * That interfaces can depend on without creating cross-interface dependencies.
  *
  * Usage:
  * - Interfaces import from here instead of each other
  * - Provides common abstractions and contracts
- * - Maintains interface isolation0.
+ * - Maintains interface isolation.
  */
 
 // Export configuration utilities
 /**
- * @file Shared module exports0.
+ * @file Shared module exports.
  */
 
 // Re-export config types
@@ -21,8 +21,8 @@ export type { InterfaceConfig } from '@claude-zen/intelligence';
 // Re-export types from CLI advanced types
 export type { ComplexityLevel, ProjectType } from '@claude-zen/foundation';
 // Re-export command types from command-interfaces
-export type { CommandResult } from '0./command-interfaces';
-export * from '0./config';
+export type { CommandResult } from "./command-interfaces";
+export * from "./config";
 export type {
   // Export the types defined in contracts
   CommandContext,
@@ -34,11 +34,11 @@ export type {
   SwarmCoordinatorContract,
   SystemHealth,
   SystemMonitorContract,
-} from '0./contracts';
+} from "./contracts";
 // Export all contracts
-export * from '0./contracts';
+export * from "./contracts";
 // Re-export key types for convenience - only the ones that actually exist
-export type { ComponentStatus } from '0./types';
+export type { ComponentStatus } from "./types";
 
 // Export all shared types
-export * from '0./types';
+export * from "./types";

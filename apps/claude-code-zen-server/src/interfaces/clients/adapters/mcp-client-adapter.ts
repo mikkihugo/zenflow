@@ -1,12 +1,12 @@
 /**
- * UACL MCP Client Adapter - Model Context Protocol Integration0.
+ * UACL MCP Client Adapter - Model Context Protocol Integration.
  *
  * Provides standardized access to external MCP servers like Context7, Deepwiki,
- * Semgrep, and GitMCP through the Unified API Client Layer architecture0.
+ * Semgrep, and GitMCP through the Unified API Client Layer architecture.
  *
  * Features:
  * - Support for HTTP/HTTPS and SSE transports
- * - Connection to external MCP servers (Context7, etc0.)
+ * - Connection to external MCP servers (Context7, etc.)
  * - Standardized UACL interface implementation
  * - Tool execution and resource management
  * - Monitoring and metrics capabilities
@@ -23,12 +23,12 @@ import type {
   Client,
   ClientFactory,
   McpClient,
-} from '0.0./interfaces';
-import type { ProtocolType } from '0.0./types';
-import { ClientStatuses, ProtocolTypes } from '0.0./types';
+} from './interfaces';
+import type { ProtocolType } from './types';
+import { ClientStatuses, ProtocolTypes } from './types';
 
 /**
- * Extended client configuration for MCP clients0.
+ * Extended client configuration for MCP clients.
  */
 export interface McpClientConfig extends ClientConfig {
   /** Client name for MCP handshake */
@@ -60,10 +60,10 @@ export interface McpClientConfig extends ClientConfig {
 }
 
 /**
- * MCP request types for tool calls and resource access0.
+ * MCP request types for tool calls and resource access.
  */
 export interface McpRequest {
-  type: 'tool_call' | 'resource_read' | 'resource_list' | 'tool_list';
+  type: 'tool_call | resource_read' | 'resource_list | tool_list';
   data: {
     toolName?: string;
     arguments?: Record<string, unknown>;
@@ -75,7 +75,7 @@ export interface McpRequest {
 }
 
 /**
- * MCP response format0.
+ * MCP response format.
  */
 export interface McpResponse {
   success: boolean;
@@ -102,8 +102,8 @@ export interface McpResponse {
 }
 
 /**
- * UACL MCP Client Adapter0.
- * Wraps the mcp-client library with standardized UACL interface0.
+ * UACL MCP Client Adapter.
+ * Wraps the mcp-client library with standardized UACL interface.
  */
 export class McpClientAdapter
   extends TypedEventBase
@@ -111,7 +111,7 @@ export class McpClientAdapter
 {
   private mcpClient: MCPClient;
   private _connected = false;
-  private _status: string = ClientStatuses0.DISCONNECTED;
+  private _status: string = ClientStatuses.DISCONNECTED;
   private metrics: ClientMetrics;
   private startTime: Date;
   private connectionRetries = 0;
@@ -119,70 +119,70 @@ export class McpClientAdapter
   constructor(private configuration: McpClientConfig) {
     super();
 
-    this0.startTime = new Date();
-    this0.metrics = this?0.initializeMetrics;
+    this.startTime = new Date();
+    this.metrics = this.initializeMetrics;
 
     // Initialize MCP client
-    this0.mcpClient = new MCPClient({
-      name: this0.configuration0.clientName || 'claude-zen-client',
-      version: this0.configuration0.clientVersion || '10.0.0',
+    this.mcpClient = new MCPClient({
+      name: this.configuration.clientName || 'claude-zen-client',
+      version: this.configuration.clientVersion || '1..0',
     });
 
     // Setup event forwarding
-    this?0.setupEventForwarding;
+    this.setupEventForwarding;
   }
 
   /**
-   * Get client configuration0.
+   * Get client configuration.
    */
   getConfig(): ClientConfig {
-    return this0.configuration;
+    return this.configuration;
   }
 
   /**
-   * Check if client is connected0.
+   * Check if client is connected.
    */
   isConnected(): boolean {
-    return this0._connected;
+    return this._connected;
   }
 
   /**
-   * Connect to the MCP server0.
+   * Connect to the MCP server.
    */
   async connect(): Promise<void> {
-    if (this0._connected) {
+    if (this._connected) {
       return;
     }
 
     try {
-      this0._status = ClientStatuses0.CONNECTING;
-      this0.emit('connecting', { timestamp: new Date() });
+      this._status = ClientStatuses.CONNECTING;
+      this.emit('connecting', { timestamp: new Date() });
 
       // Determine connection type based on URL and protocol
-      const connectionConfig = this?0.getConnectionConfig;
+      const connectionConfig = this.getConnectionConfig;
 
-      await this0.mcpClient0.connect(connectionConfig);
+      await this.mcpClient.connect(connectionConfig);
 
-      this0._connected = true;
-      this0._status = ClientStatuses0.CONNECTED;
-      this0.connectionRetries = 0;
+      this._connected = true;
+      this._status = ClientStatuses.CONNECTED;
+      this.connectionRetries = 0;
 
-      this0.emit('connect', { timestamp: new Date() });
+      this.emit('connect', { timestamp: new Date() });
     } catch (error) {
-      this0._status = ClientStatuses0.ERROR;
-      this0.connectionRetries++;
+      this._status = ClientStatuses.ERROR;
+      this.connectionRetries++;
 
-      this0.emit('error', error);
+      this.emit('error', error);
 
       // Auto-reconnect if enabled
       if (
-        this0.configuration0.connection?0.autoReconnect &&
-        this0.connectionRetries <
-          (this0.configuration0.connection?0.maxReconnectAttempts || 3)
+        this.configuration.connection?.autoReconnect &&
+        this.connectionRetries <
+          (this.configuration.connection?.maxReconnectAttempts || 3)
       ) {
         setTimeout(
-          () => this?0.connect,
-          this0.configuration0.connection?0.reconnectDelay || 5000
+          () => this.connect,
+          this.configuration.connection?.reconnectDelay || 5000
         );
       } else {
         throw error;
@@ -191,104 +191,104 @@ export class McpClientAdapter
   }
 
   /**
-   * Disconnect from the MCP server0.
+   * Disconnect from the MCP server.
    */
   async disconnect(): Promise<void> {
-    if (!this0._connected) {
+    if (!this._connected) {
       return;
     }
 
     try {
-      await this0.mcpClient?0.disconnect;
-      this0._connected = false;
-      this0._status = ClientStatuses0.DISCONNECTED;
-      this0.emit('disconnect', { timestamp: new Date() });
+      await this.mcpClient?.disconnect()
+      this._connected = false;
+      this._status = ClientStatuses.DISCONNECTED;
+      this.emit('disconnect', { timestamp: new Date() });
     } catch (error) {
-      this0._status = ClientStatuses0.ERROR;
-      this0.emit('error', error);
+      this._status = ClientStatuses.ERROR;
+      this.emit('error', error);
       throw error;
     }
   }
 
   /**
-   * Send MCP request and receive response0.
+   * Send MCP request and receive response.
    */
   async send<R = McpResponse>(data: McpRequest): Promise<R> {
-    if (!this0._connected) {
-      await this?0.connect;
+    if (!this._connected) {
+      await this.connect;
     }
 
-    const startTime = Date0.now();
-    this0.metrics0.totalRequests++;
+    const startTime = Date.now();
+    this.metrics.totalRequests++;
 
     try {
       let result: any;
 
-      switch (data0.type) {
+      switch (data.type) {
         case 'tool_call': {
-          if (!data0.data0.toolName) {
+          if (!data.data.toolName) {
             throw new Error('Tool name is required for tool calls');
           }
-          result = await this0.mcpClient0.callTool({
-            name: data0.data0.toolName,
-            arguments: data0.data0.arguments || {},
+          result = await this.mcpClient.callTool({
+            name: data.data.toolName,
+            arguments: data.data.arguments || {},
           });
           break;
         }
 
         case 'tool_list': {
-          const tools = await this0.mcpClient?0.getAllTools;
+          const tools = await this.mcpClient?.getAllTools()
           result = { success: true, tools };
           break;
         }
 
         case 'resource_read': {
-          if (!data0.data0.resourceUri) {
+          if (!data.data.resourceUri) {
             throw new Error('Resource URI is required for resource reads');
           }
-          const resource = (await this0.mcpClient0.getResource(
-            data0.data0.resourceUri
+          const resource = (await this.mcpClient.getResource(
+            data.data.resourceUri
           )) as any as any;
           result = { success: true, content: resource };
           break;
         }
 
         case 'resource_list': {
-          const resources = await this0.mcpClient?0.getAllResources;
+          const resources = await this.mcpClient?.getAllResources()
           result = { success: true, resources };
           break;
         }
 
         default:
-          throw new Error(`Unsupported MCP request type: ${data0.type}`);
+          throw new Error(`Unsupported MCP request type: ${data.type}`);
       }
 
       // Update metrics
-      const responseTime = Date0.now() - startTime;
-      this0.updateMetrics(responseTime, true);
+      const responseTime = Date.now() - startTime;
+      this.updateMetrics(responseTime, true);
 
       return result as R;
     } catch (error) {
-      const responseTime = Date0.now() - startTime;
-      this0.updateMetrics(responseTime, false);
-      this0.metrics0.failedRequests++;
+      const responseTime = Date.now() - startTime;
+      this.updateMetrics(responseTime, false);
+      this.metrics.failedRequests++;
 
-      this0.emit('error', error);
+      this.emit('error', error);
       throw error;
     }
   }
 
   /**
-   * Health check for MCP server connection0.
+   * Health check for MCP server connection.
    */
   async health(): Promise<boolean> {
     try {
-      if (!this0._connected) {
+      if (!this._connected) {
         return false;
       }
 
       // Try to list tools as a simple health check
-      await this0.mcpClient?0.getAllTools;
+      await this.mcpClient?.getAllTools()
       return true;
     } catch (_error) {
       return false;
@@ -296,12 +296,12 @@ export class McpClientAdapter
   }
 
   /**
-   * Get client metadata0.
+   * Get client metadata.
    */
   async getMetadata(): Promise<ClientMetadata> {
     return {
-      protocol: this0.configuration0.protocol,
-      version: this0.configuration0.clientVersion || '10.0.0',
+      protocol: this.configuration.protocol,
+      version: this.configuration.clientVersion || '1..0',
       features: [
         'mcp-protocol',
         'tool-execution',
@@ -310,17 +310,17 @@ export class McpClientAdapter
         'health-monitoring',
       ],
       connection: {
-        url: this0.configuration0.url,
-        connected: this0._connected,
-        lastConnected: this0.startTime,
-        connectionDuration: Date0.now() - this0.startTime?0.getTime,
+        url: this.configuration.url,
+        connected: this._connected,
+        lastConnected: this.startTime,
+        connectionDuration: Date.now() - this.startTime?.getTime,
       },
-      metrics: this0.metrics,
+      metrics: this.metrics,
       custom: {
-        clientName: this0.configuration0.clientName,
-        protocolVersion: this0.configuration0.protocolVersion,
-        capabilities: this0.configuration0.capabilities,
-        connectionRetries: this0.connectionRetries,
+        clientName: this.configuration.clientName,
+        protocolVersion: this.configuration.protocolVersion,
+        capabilities: this.configuration.capabilities,
+        connectionRetries: this.connectionRetries,
       },
     };
   }
@@ -328,7 +328,7 @@ export class McpClientAdapter
   // McpClient interface implementation
 
   /**
-   * Execute tool on MCP server0.
+   * Execute tool on MCP server.
    */
   async callTool<R = unknown>(
     toolName: string,
@@ -342,12 +342,12 @@ export class McpClientAdapter
       },
     };
 
-    const response = await this0.send<McpResponse>(request);
-    return (response0.result || response0.data) as R;
+    const response = await this.send<McpResponse>(request);
+    return (response.result || response.data) as R;
   }
 
   /**
-   * List available tools0.
+   * List available tools.
    */
   async listTools(): Promise<
     Array<{
@@ -361,12 +361,12 @@ export class McpClientAdapter
       data: {},
     };
 
-    const response = await this0.send<McpResponse>(request);
-    return response0.tools || [];
+    const response = await this.send<McpResponse>(request);
+    return response.tools || [];
   }
 
   /**
-   * Read resource from MCP server0.
+   * Read resource from MCP server.
    */
   async readResource<R = unknown>(uri: string): Promise<R> {
     const request: McpRequest = {
@@ -376,12 +376,12 @@ export class McpClientAdapter
       },
     };
 
-    const response = await this0.send<McpResponse>(request);
-    return response0.content as R;
+    const response = await this.send<McpResponse>(request);
+    return response.content as R;
   }
 
   /**
-   * List available resources0.
+   * List available resources.
    */
   async listResources(): Promise<
     Array<{
@@ -396,36 +396,36 @@ export class McpClientAdapter
       data: {},
     };
 
-    const response = await this0.send<McpResponse>(request);
-    return response0.resources || [];
+    const response = await this.send<McpResponse>(request);
+    return response.resources || [];
   }
 
   // Helper methods
 
   /**
-   * Get connection configuration based on URL and protocol0.
+   * Get connection configuration based on URL and protocol.
    */
   private getConnectionConfig(): {
-    type: 'httpStream' | 'sse' | 'stdio';
+    type: 'httpStream | sse' | 'stdio';
     url?: string;
     command?: string;
     args?: string[];
     env?: Record<string, string>;
   } {
-    const { url, protocol } = this0.configuration;
+    const { url, protocol } = this.configuration;
 
-    if (protocol === ProtocolTypes0.STDIO || url0.startsWith('stdio://')) {
+    if (protocol === ProtocolTypes.STDIO || url.startsWith('stdio://')) {
       // For stdio connections (local development)
-      const command = url0.replace('stdio://', '');
+      const command = url.replace('stdio://, ');
       return {
         type: 'stdio',
         command: command || 'npx',
         args: [],
-        env: process0.env,
+        env: process.env,
       };
     }
 
-    if (url0.includes('/sse') || url0.includes('sse')) {
+    if (url.includes('/sse) || url.includes(sse')) {
       // SSE transport for servers that support it
       return {
         type: 'sse',
@@ -441,28 +441,28 @@ export class McpClientAdapter
   }
 
   /**
-   * Setup event forwarding from MCP client to UACL events0.
+   * Setup event forwarding from MCP client to UACL events.
    */
   private setupEventForwarding(): void {
     // Note: mcp-client may not expose all these events
     // This is a placeholder for future event handling
 
     // Forward connection events
-    this0.mcpClient0.on?0.('connect', () => {
-      this0.emit('connect', { timestamp: new Date() });
+    this.mcpClient.on?.('connect', () => {
+      this.emit('connect', { timestamp: new Date() });
     });
 
-    this0.mcpClient0.on?0.('disconnect', () => {
-      this0.emit('disconnect', { timestamp: new Date() });
+    this.mcpClient.on?.('disconnect', () => {
+      this.emit('disconnect', { timestamp: new Date() });
     });
 
-    this0.mcpClient0.on?0.('error', (error: any) => {
-      this0.emit('error', error);
+    this.mcpClient.on?.('error', (error: any) => {
+      this.emit('error', error);
     });
   }
 
   /**
-   * Initialize metrics tracking0.
+   * Initialize metrics tracking.
    */
   private initializeMetrics(): ClientMetrics {
     return {
@@ -478,28 +478,28 @@ export class McpClientAdapter
   }
 
   /**
-   * Update metrics after request0.
+   * Update metrics after request.
    */
   private updateMetrics(responseTime: number, success: boolean): void {
     if (success) {
-      this0.metrics0.successfulRequests++;
+      this.metrics.successfulRequests++;
     }
 
     // Update average response time
     const totalResponseTime =
-      this0.metrics0.averageResponseTime * (this0.metrics0.totalRequests - 1) +
+      this.metrics.averageResponseTime * (this.metrics.totalRequests - 1) +
       responseTime;
-    this0.metrics0.averageResponseTime =
-      totalResponseTime / this0.metrics0.totalRequests;
+    this.metrics.averageResponseTime =
+      totalResponseTime / this.metrics.totalRequests;
 
-    this0.metrics0.lastRequestTime = new Date();
-    this0.metrics0.uptime = Date0.now() - this0.startTime?0.getTime;
+    this.metrics.lastRequestTime = new Date();
+    this.metrics.uptime = Date.now() - this.startTime?.getTime()
   }
 }
 
 /**
- * MCP Client Factory0.
- * Creates and manages MCP client instances0.
+ * MCP Client Factory.
+ * Creates and manages MCP client instances.
  */
 export class McpClientFactory implements ClientFactory {
   constructor(
@@ -512,13 +512,13 @@ export class McpClientFactory implements ClientFactory {
   ) {}
 
   /**
-   * Create an MCP client instance0.
+   * Create an MCP client instance.
    */
   async create(protocol: ProtocolType, config: ClientConfig): Promise<Client> {
-    this0.logger?0.info(`Creating MCP client with protocol: ${protocol}`);
+    this.logger?.info(`Creating MCP client with protocol: ${protocol}`);
 
     // Validate configuration
-    if (!this0.validateConfig(protocol, config)) {
+    if (!this.validateConfig(protocol, config)) {
       throw new Error(
         `Invalid configuration for MCP client with protocol: ${protocol}`
       );
@@ -527,75 +527,75 @@ export class McpClientFactory implements ClientFactory {
     const mcpConfig = config as McpClientConfig;
 
     // Set default values
-    if (!mcpConfig0.clientName) {
-      mcpConfig0.clientName = 'claude-zen-client';
+    if (!mcpConfig.clientName) {
+      mcpConfig.clientName = 'claude-zen-client';
     }
-    if (!mcpConfig0.clientVersion) {
-      mcpConfig0.clientVersion = '10.0.0';
+    if (!mcpConfig.clientVersion) {
+      mcpConfig.clientVersion = '1..0';
     }
-    if (!mcpConfig0.protocolVersion) {
-      mcpConfig0.protocolVersion = '2024-11-05';
+    if (!mcpConfig.protocolVersion) {
+      mcpConfig.protocolVersion = '2024-11-05';
     }
 
     // Create and return MCP client adapter
     const client = new McpClientAdapter(mcpConfig);
 
-    this0.logger?0.info(`Successfully created MCP client for ${config0.url}`);
+    this.logger?.info(`Successfully created MCP client for ${config.url}`);
     return client;
   }
 
   /**
-   * Check if factory supports a protocol0.
+   * Check if factory supports a protocol.
    */
   supports(protocol: ProtocolType): boolean {
     return [
-      ProtocolTypes0.HTTP as ProtocolType,
-      ProtocolTypes0.HTTPS as ProtocolType,
-      ProtocolTypes0.STDIO as ProtocolType,
-      ProtocolTypes0.CUSTOM as ProtocolType,
-    ]0.includes(protocol);
+      ProtocolTypes.HTTP as ProtocolType,
+      ProtocolTypes.HTTPS as ProtocolType,
+      ProtocolTypes.STDIO as ProtocolType,
+      ProtocolTypes.CUSTOM as ProtocolType,
+    ].includes(protocol);
   }
 
   /**
-   * Get supported protocols0.
+   * Get supported protocols.
    */
   getSupportedProtocols(): ProtocolType[] {
     return [
-      ProtocolTypes0.HTTP,
-      ProtocolTypes0.HTTPS,
-      ProtocolTypes0.STDIO,
-      ProtocolTypes0.CUSTOM,
+      ProtocolTypes.HTTP,
+      ProtocolTypes.HTTPS,
+      ProtocolTypes.STDIO,
+      ProtocolTypes.CUSTOM,
     ];
   }
 
   /**
-   * Validate configuration for a protocol0.
+   * Validate configuration for a protocol.
    */
   validateConfig(protocol: ProtocolType, config: ClientConfig): boolean {
-    if (!this0.supports(protocol)) {
+    if (!this.supports(protocol)) {
       return false;
     }
 
     const mcpConfig = config as McpClientConfig;
 
     // Validate required fields
-    if (!mcpConfig0.url) {
+    if (!mcpConfig.url) {
       return false;
     }
 
     // Validate URL format based on protocol
-    if (protocol === ProtocolTypes0.STDIO) {
+    if (protocol === ProtocolTypes.STDIO) {
       return (
-        mcpConfig0.url0.startsWith('stdio://') || mcpConfig0.url0.includes('npx')
+        mcpConfig.url.startsWith('stdio://) || mcpConfig.url.includes(npx')
       );
     }
 
-    if (protocol === ProtocolTypes0.HTTPS) {
-      return mcpConfig0.url0.startsWith('https://');
+    if (protocol === ProtocolTypes.HTTPS) {
+      return mcpConfig.url.startsWith('https://');
     }
 
-    if (protocol === ProtocolTypes0.HTTP) {
-      return mcpConfig0.url0.startsWith('http://');
+    if (protocol === ProtocolTypes.HTTP) {
+      return mcpConfig.url.startsWith('http://');
     }
 
     return true;
@@ -603,18 +603,18 @@ export class McpClientFactory implements ClientFactory {
 }
 
 /**
- * Convenience functions for creating MCP clients0.
+ * Convenience functions for creating MCP clients.
  */
 
 /**
- * Create MCP client for Context70.
+ * Create MCP client for Context7.
  */
 export async function createContext7Client(): Promise<McpClientAdapter> {
   const config: McpClientConfig = {
-    protocol: ProtocolTypes0.HTTPS,
-    url: 'https://mcp0.context70.com/mcp',
+    protocol: ProtocolTypes.HTTPS,
+    url: 'https://mcp.context7.com/mcp',
     clientName: 'claude-zen-context7',
-    clientVersion: '10.0.0',
+    clientVersion: '1..0',
     timeout: 30000,
     capabilities: {
       tools: { enabled: true },
@@ -631,14 +631,14 @@ export async function createContext7Client(): Promise<McpClientAdapter> {
 }
 
 /**
- * Create MCP client for Deepwiki (SSE)0.
+ * Create MCP client for Deepwiki (SSE).
  */
 export async function createDeepwikiClient(): Promise<McpClientAdapter> {
   const config: McpClientConfig = {
-    protocol: ProtocolTypes0.HTTPS,
-    url: 'https://mcp0.deepwiki0.com/sse',
+    protocol: ProtocolTypes.HTTPS,
+    url: 'https://mcp.deepwiki.com/sse',
     clientName: 'claude-zen-deepwiki',
-    clientVersion: '10.0.0',
+    clientVersion: '1..0',
     timeout: 30000,
     capabilities: {
       tools: { enabled: true },
@@ -655,14 +655,14 @@ export async function createDeepwikiClient(): Promise<McpClientAdapter> {
 }
 
 /**
- * Create MCP client for Semgrep (SSE)0.
+ * Create MCP client for Semgrep (SSE).
  */
 export async function createSemgrepClient(): Promise<McpClientAdapter> {
   const config: McpClientConfig = {
-    protocol: ProtocolTypes0.HTTPS,
-    url: 'https://mcp0.semgrep0.ai/sse',
+    protocol: ProtocolTypes.HTTPS,
+    url: 'https://mcp.semgrep.ai/sse',
     clientName: 'claude-zen-semgrep',
-    clientVersion: '10.0.0',
+    clientVersion: '1..0',
     timeout: 30000,
     capabilities: {
       tools: { enabled: true },
@@ -679,14 +679,14 @@ export async function createSemgrepClient(): Promise<McpClientAdapter> {
 }
 
 /**
- * Create MCP client for GitMCP0.
+ * Create MCP client for GitMCP.
  */
 export async function createGitMcpClient(): Promise<McpClientAdapter> {
   const config: McpClientConfig = {
-    protocol: ProtocolTypes0.HTTPS,
-    url: 'https://gitmcp0.io/docs',
+    protocol: ProtocolTypes.HTTPS,
+    url: 'https://gitmcp.io/docs',
     clientName: 'claude-zen-gitmcp',
-    clientVersion: '10.0.0',
+    clientVersion: '1..0',
     timeout: 30000,
     capabilities: {
       tools: { enabled: true },

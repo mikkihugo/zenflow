@@ -65,7 +65,7 @@
     "zod": "^4.0.17"
   },
   "optionalDependencies": {
-    "@claude-zen/neural-ml": "link:../neural-ml",
+    "@claude-zen/neural-ml": "workspace:*",
     "openai": "^5.13.1"
   },
   "_comment_neural_ml": "neural-ml is a private implementation detail - only brain package should access it",

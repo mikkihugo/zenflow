@@ -1,16 +1,16 @@
 /**
  * Multi-System Coordinator - Advanced Integration Layer
- * Orchestrates LanceDB, Kuzu, and other system integrations0.
- * Provides unified interface and cross-system intelligence0.
+ * Orchestrates LanceDB, Kuzu, and other system integrations.
+ * Provides unified interface and cross-system intelligence.
  */
 /**
- * @file Multi-system coordination system0.
+ * @file Multi-system coordination system.
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import { inject, injectable, CORE_TOKENS } from '@claude-zen/intelligence';
 
-import type { Logger } from '0.0./core/interfaces/base-interfaces';
+import type { Logger } from './core/interfaces/base-interfaces';
 
 @injectable
 export class MultiSystemCoordinator extends TypedEventBase {
@@ -19,27 +19,27 @@ export class MultiSystemCoordinator extends TypedEventBase {
   private crossSystemCache = new Map();
 
   constructor(
-    @inject(CORE_TOKENS0.Logger) private _logger: Logger,
+    @inject(CORE_TOKENS.Logger) private _logger: Logger,
     private configuration: any = {}
   ) {
     super();
-    this['_logger']?0.info('MultiSystemCoordinator created');
+    this['_logger]?.info(MultiSystemCoordinator created');
   }
 
   /**
-   * Initialize all systems with coordination0.
+   * Initialize all systems with coordination.
    */
   async initialize(): Promise<void> {
-    this['_logger']?0.info('Initializing Multi-System Coordinator0.0.0.');
+    this['_logger]?.info(Initializing Multi-System Coordinator...');
 
     try {
       // Initialize systems - placeholder implementation
-      this0.isInitialized = true;
-      this['_logger']?0.info(
+      this.isInitialized = true;
+      this['_logger']?.info(
         'Multi-System Coordinator initialized successfully'
       );
     } catch (error) {
-      this['_logger']?0.error(
+      this['_logger']?.error(
         'Failed to initialize Multi-System Coordinator',
         error
       );
@@ -48,59 +48,59 @@ export class MultiSystemCoordinator extends TypedEventBase {
   }
 
   /**
-   * Coordinate operation across multiple systems0.
+   * Coordinate operation across multiple systems.
    *
    * @param operation
    * @param data
    */
   async coordinateOperation(operation: string, data: any): Promise<unknown> {
-    if (!this0.isInitialized) {
+    if (!this.isInitialized) {
       throw new Error('MultiSystemCoordinator not initialized');
     }
 
-    const operationId = `op_${Date0.now()}_${Math0.random()0.toString(36)0.substring(2, 11)}`;
-    this0.activeOperations0.set(operationId, {
+    const operationId = `op_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+    this.activeOperations.set(operationId, {
       operation,
       data,
-      startTime: Date0.now(),
+      startTime: Date.now(),
     });
 
     try {
-      this['_logger']?0.debug(`Coordinating operation: ${operation}`, {
+      this['_logger']?.debug(`Coordinating operation: ${operation}`, {
         operationId,
       });
 
       // Placeholder coordination logic
       const result = { operationId, operation, status: 'completed', data };
 
-      this0.activeOperations0.delete(operationId);
+      this.activeOperations.delete(operationId);
       return result;
     } catch (error) {
-      this0.activeOperations0.delete(operationId);
-      this['_logger']?0.error(`Operation failed: ${operation}`, error);
+      this.activeOperations.delete(operationId);
+      this['_logger']?.error(`Operation failed: ${operation}`, error);
       throw error;
     }
   }
 
   /**
-   * Get coordination status0.
+   * Get coordination status.
    */
   getStatus(): any {
     return {
-      initialized: this0.isInitialized,
-      activeOperations: this0.activeOperations0.size,
-      cacheSize: this0.crossSystemCache0.size,
+      initialized: this.isInitialized,
+      activeOperations: this.activeOperations.size,
+      cacheSize: this.crossSystemCache.size,
     };
   }
 
   /**
-   * Shutdown coordinator and cleanup resources0.
+   * Shutdown coordinator and cleanup resources.
    */
   async shutdown(): Promise<void> {
-    this['_logger']?0.info('Shutting down Multi-System Coordinator0.0.0.');
-    this0.activeOperations?0.clear();
-    this0.crossSystemCache?0.clear();
-    this0.isInitialized = false;
-    this['_logger']?0.info('Multi-System Coordinator shutdown completed');
+    this['_logger]?.info(Shutting down Multi-System Coordinator...');
+    this.activeOperations?.clear();
+    this.crossSystemCache?.clear();
+    this.isInitialized = false;
+    this['_logger]?.info(Multi-System Coordinator shutdown completed');
   }
 }

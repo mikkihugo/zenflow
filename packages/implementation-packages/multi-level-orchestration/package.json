@@ -31,9 +31,9 @@
   },
   "dependencies": {
     "@claude-zen/coordination-core": "workspace:*",
-    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/workflows": "link:../workflows",
+    "@claude-zen/workflows": "workspace:*",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {

@@ -26,6 +26,7 @@
  * @since 2.1.0
  * @version 1.0.0
  */
+import { TypedEventBase } from '@claude-zen/foundation';
 export interface OptimizationTask {
     id: string;
     description: string;

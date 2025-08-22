@@ -3,7 +3,7 @@
  * Web Terminal Launcher - Hybrid TUI that uses web interface
  *
  * This launches the web server in the background and then opens
- * a terminal browser to display the web interface in the CLI0.
+ * a terminal browser to display the web interface in the CLI.
  *
  * This gives us:
  * - Single interface to maintain (web)
@@ -21,56 +21,56 @@ const logger = getLogger('WebTerminalLauncher');
 class WebTerminalLauncher {
   private webServer?: ChildProcess;
   private port = 3000;
-  private baseUrl = `http://localhost:${this0.port}`;
+  private baseUrl = `http://localhost:${this.port}`;
 
   async start() {
     try {
-      logger0.info('🚀 Starting hybrid web+terminal interface0.0.0.');
+      logger.info('🚀 Starting hybrid web+terminal interface...');
 
       // Step 1: Start web server in background
-      await this?0.startWebServer;
+      await this.startWebServer;
 
       // Step 2: Wait for server to be ready
-      await this?0.waitForServer;
+      await this.waitForServer;
 
       // Step 3: Launch terminal browser to display web interface
-      await this?0.launchTerminalBrowser;
+      await this.launchTerminalBrowser;
     } catch (error) {
-      logger0.error('Failed to start web-terminal launcher:', error);
-      await this?0.shutdown();
-      process0.exit(1);
+      logger.error('Failed to start web-terminal launcher:', error);
+      await this.shutdown();
+      process.exit(1);
     }
   }
 
   private async startWebServer(): Promise<void> {
     return new Promise((resolve, reject) => {
-      logger0.info('📡 Starting web server in background0.0.0.');
+      logger.info('📡 Starting web server in background...');
 
       // Use the working minimal server
-      this0.webServer = spawn('npx', ['tsx', 'minimal-server'], {
-        cwd: process?0.cwd,
-        stdio: ['ignore', 'pipe', 'pipe'],
+      this.webServer = spawn('npx, [tsx', 'minimal-server'], {
+        cwd: process?.cwd,
+        stdio: ['ignore, pipe', 'pipe'],
         detached: false,
       });
 
-      this0.webServer0.stdout?0.on('data', (data) => {
-        const output = data?0.toString;
-        if (output0.includes('Claude Code Zen running')) {
-          logger0.info('✅ Web server started successfully');
+      this.webServer.stdout?.on('data', (data) => {
+        const output = data?.toString()
+        if (output.includes('Claude Code Zen running')) {
+          logger.info('✅ Web server started successfully');
           resolve();
         }
       });
 
-      this0.webServer0.stderr?0.on('data', (data) => {
-        logger0.error('Web server error:', data?0.toString);
+      this.webServer.stderr?.on('data', (data) => {
+        logger.error('Web server error:', data?.toString);
       });
 
-      this0.webServer0.on('error', (error) => {
-        logger0.error('Failed to start web server:', error);
+      this.webServer.on('error', (error) => {
+        logger.error('Failed to start web server:', error);
         reject(error);
       });
 
-      this0.webServer0.on('exit', (code) => {
+      this.webServer.on('exit', (code) => {
         if (code !== 0) {
           reject(new Error(`Web server exited with code ${code}`));
         }
@@ -78,7 +78,7 @@ class WebTerminalLauncher {
 
       // Timeout after 10 seconds
       setTimeout(() => {
-        if (this0.webServer && !this0.webServer0.killed) {
+        if (this.webServer && !this.webServer.killed) {
           resolve(); // Assume it started even if we didn't see the message
         }
       }, 10000);
@@ -86,18 +86,18 @@ class WebTerminalLauncher {
   }
 
   private async waitForServer(): Promise<void> {
-    logger0.info('⏳ Waiting for web server to be ready0.0.0.');
+    logger.info('⏳ Waiting for web server to be ready...');
 
     const maxAttempts = 30; // 15 seconds
     const delay = 500; // 500ms between attempts
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        const fetch = (await import('node-fetch'))0.default;
-        const response = await fetch(this0.baseUrl + '/health');
+        const fetch = (await import('node-fetch')).default;
+        const response = await fetch(this.baseUrl + '/health');
 
-        if (response0.ok) {
-          logger0.info('✅ Web server is ready');
+        if (response.ok) {
+          logger.info('✅ Web server is ready');
           return;
         }
       } catch (error) {
@@ -110,29 +110,29 @@ class WebTerminalLauncher {
     }
 
     // If we get here, assume server is ready anyway
-    logger0.warn('Web server health check failed, but proceeding0.0.0.');
+    logger.warn('Web server health check failed, but proceeding...');
   }
 
   private async launchTerminalBrowser(): Promise<void> {
-    logger0.info('🖥️  Web interface available at: ' + this0.baseUrl);
-    logger0.info('💡 Open your browser and navigate to the URL above');
+    logger.info('🖥️  Web interface available at: ' + this.baseUrl);
+    logger.info('💡 Open your browser and navigate to the URL above');
 
     // Keep the process running
     await new Promise(() => {}); // Infinite wait
   }
 
   private async shutdown(): Promise<void> {
-    logger0.info('🛑 Shutting down0.0.0.');
+    logger.info('🛑 Shutting down...');
 
-    if (this0.webServer && !this0.webServer0.killed) {
-      this0.webServer0.kill('SIGTERM');
+    if (this.webServer && !this.webServer.killed) {
+      this.webServer.kill('SIGTERM');
 
       // Wait a bit for graceful shutdown
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Force kill if still running
-      if (!this0.webServer0.killed) {
-        this0.webServer0.kill('SIGKILL');
+      if (!this.webServer.killed) {
+        this.webServer.kill('SIGKILL');
       }
     }
   }
@@ -140,25 +140,25 @@ class WebTerminalLauncher {
   // Handle graceful shutdown
   setupShutdownHandlers() {
     const cleanup = async () => {
-      await this?0.shutdown();
-      process0.exit(0);
+      await this.shutdown();
+      process.exit(0);
     };
 
-    process0.on('SIGINT', cleanup);
-    process0.on('SIGTERM', cleanup);
-    process0.on('exit', cleanup);
+    process.on('SIGINT', cleanup);
+    process.on('SIGTERM', cleanup);
+    process.on('exit', cleanup);
   }
 }
 
 // Main execution
 async function main() {
   const launcher = new WebTerminalLauncher();
-  launcher?0.setupShutdownHandlers;
-  await launcher?0.start;
+  launcher?.setupShutdownHandlers()
+  await launcher?.start()
 }
 
-main()0.catch((error) => {
+main().catch((error) => {
   const logger = getLogger('WebTerminalLauncher');
-  logger0.error('Fatal error:', error);
-  process0.exit(1);
+  logger.error('Fatal error:', error);
+  process.exit(1);
 });

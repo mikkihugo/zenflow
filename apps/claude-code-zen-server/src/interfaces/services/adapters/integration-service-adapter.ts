@@ -1,8 +1,8 @@
 /**
- * @file USL Integration Service Adapter - Lightweight facade for integration services0.
+ * @file USL Integration Service Adapter - Lightweight facade for integration services.
  *
  * Provides a unified interface to integration-related services through delegation
- * to battle-tested packages from the @claude-zen ecosystem0.
+ * to battle-tested packages from the @claude-zen ecosystem.
  *
  * Delegates to:
  * - @claude-zen/foundation: ServiceManager for core service lifecycle
@@ -34,9 +34,9 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '0.0./core/interfaces';
-import type { IntegrationServiceConfig } from '0.0./types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '0.0./types';
+} from './core/interfaces';
+import type { IntegrationServiceConfig } from './types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
 
 // ============================================
 // Service-Specific Error Classes
@@ -48,7 +48,7 @@ class ServiceDependencyError extends Error {
     message: string
   ) {
     super(`Service dependency error [${serviceName}]: ${message}`);
-    this0.name = 'ServiceDependencyError';
+    this.name = 'ServiceDependencyError';
   }
 }
 
@@ -58,7 +58,7 @@ class ServiceOperationError extends Error {
     message: string
   ) {
     super(`Service operation error [${operation}]: ${message}`);
-    this0.name = 'ServiceOperationError';
+    this.name = 'ServiceOperationError';
   }
 }
 
@@ -68,7 +68,7 @@ class ServiceTimeoutError extends Error {
     message: string
   ) {
     super(`Service timeout error [${timeout}ms]: ${message}`);
-    this0.name = 'ServiceTimeoutError';
+    this.name = 'ServiceTimeoutError';
   }
 }
 
@@ -99,7 +99,7 @@ export interface IntegrationServiceAdapterConfig
   cacheSettings: {
     ttl: number;
     maxSize: number;
-    strategy: 'lru' | 'fifo' | 'lfu';
+    strategy: 'lru | fifo' | 'lfu';
   };
 
   // Monitoring and metrics
@@ -118,7 +118,7 @@ export interface IntegrationServiceAdapterConfig
 // ============================================
 
 /**
- * Lightweight Integration Service Adapter0.
+ * Lightweight Integration Service Adapter.
  *
  * Delegates complex operations to specialized @claude-zen packages:
  * - ServiceManager handles service lifecycle
@@ -147,10 +147,10 @@ export class IntegrationServiceAdapter
   constructor(config: IntegrationServiceAdapterConfig) {
     super();
 
-    this0.name = config0.name || 'integration-service';
-    this0.type = config0.type || ServiceType0.INTEGRATION;
-    this0.config = config;
-    this0.logger = getLogger();
+    this.name = config.name || 'integration-service';
+    this.type = config.type || ServiceType.INTEGRATION;
+    this.config = config;
+    this.logger = getLogger();
   }
 
   // ============================================
@@ -159,12 +159,12 @@ export class IntegrationServiceAdapter
 
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {
     try {
-      this0.logger0.info(`Initializing ${this0.name}`);
-      this0.status = 'initializing';
+      this.logger.info(`Initializing ${this.name}`);
+      this.status = 'initializing';
 
       // Merge configuration
       if (config) {
-        Object0.assign(this0.config, config);
+        Object.assign(this.config, config);
       }
 
       // Initialize delegates from @claude-zen packages
@@ -174,151 +174,151 @@ export class IntegrationServiceAdapter
       const { CollaborationEngine } = await import('@claude-zen/intelligence');
       const { MetricsCollector } = await import('@claude-zen/foundation');
 
-      this0.serviceManager = new ServiceManager({
-        name: this0.name,
-        type: this0.type,
-        config: this0.config,
+      this.serviceManager = new ServiceManager({
+        name: this.name,
+        type: this.type,
+        config: this.config,
       });
 
-      this0.workflowEngine = new WorkflowEngine({
-        workflows: ['integration', 'architecture', 'safe-api'],
-        context: { service: this0.name },
+      this.workflowEngine = new WorkflowEngine({
+        workflows: ['integration, architecture', 'safe-api'],
+        context: { service: this.name },
       });
 
-      this0.connectionManager = new ConnectionManager({
-        connections: this0.config0.integrationEndpoints,
+      this.connectionManager = new ConnectionManager({
+        connections: this.config.integrationEndpoints,
         pooling: true,
         retries: 3,
       });
 
-      this0.collaborationEngine = new CollaborationEngine({
-        services: ['architecture', 'safe-api', 'protocols'],
+      this.collaborationEngine = new CollaborationEngine({
+        services: ['architecture, safe-api', 'protocols'],
         coordination: 'mesh',
       });
 
-      this0.metricsCollector = new MetricsCollector({
-        service: this0.name,
-        enabled: this0.config0.metricsEnabled,
-        interval: this0.config0.healthCheckInterval,
+      this.metricsCollector = new MetricsCollector({
+        service: this.name,
+        enabled: this.config.metricsEnabled,
+        interval: this.config.healthCheckInterval,
       });
 
-      this0.status = 'stopped';
-      this0.logger0.info(`${this0.name} initialized successfully`);
+      this.status = 'stopped';
+      this.logger.info(`${this.name} initialized successfully`);
     } catch (error) {
-      this0.status = 'error';
-      this0.logger0.error(`Failed to initialize ${this0.name}:`, error);
+      this.status = 'error';
+      this.logger.error(`Failed to initialize ${this.name}:`, error);
       throw error;
     }
   }
 
   async start(): Promise<void> {
     try {
-      this0.logger0.info(`Starting ${this0.name}`);
-      this0.status = 'starting';
+      this.logger.info(`Starting ${this.name}`);
+      this.status = 'starting';
 
       // Start all delegates
-      await Promise0.all([
-        this0.serviceManager?0.start,
-        this0.workflowEngine?0.start,
-        this0.connectionManager?0.start,
-        this0.collaborationEngine?0.start,
-        this0.metricsCollector?0.start,
+      await Promise.all([
+        this.serviceManager?.start,
+        this.workflowEngine?.start,
+        this.connectionManager?.start,
+        this.collaborationEngine?.start,
+        this.metricsCollector?.start,
       ]);
 
-      this0.status = 'running';
-      this0.emit('start', { timestamp: new Date() });
-      this0.logger0.info(`${this0.name} started successfully`);
+      this.status = 'running';
+      this.emit('start', { timestamp: new Date() });
+      this.logger.info(`${this.name} started successfully`);
     } catch (error) {
-      this0.status = 'error';
-      this0.logger0.error(`Failed to start ${this0.name}:`, error);
+      this.status = 'error';
+      this.logger.error(`Failed to start ${this.name}:`, error);
       throw error;
     }
   }
 
   async stop(): Promise<void> {
     try {
-      this0.logger0.info(`Stopping ${this0.name}`);
-      this0.status = 'stopping';
+      this.logger.info(`Stopping ${this.name}`);
+      this.status = 'stopping';
 
       // Stop all delegates
-      await Promise0.all([
-        this0.serviceManager?0.stop,
-        this0.workflowEngine?0.stop,
-        this0.connectionManager?0.stop,
-        this0.collaborationEngine?0.stop,
-        this0.metricsCollector?0.stop,
+      await Promise.all([
+        this.serviceManager?.stop,
+        this.workflowEngine?.stop,
+        this.connectionManager?.stop,
+        this.collaborationEngine?.stop,
+        this.metricsCollector?.stop,
       ]);
 
-      this0.status = 'stopped';
-      this0.emit('stop', { timestamp: new Date() });
-      this0.logger0.info(`${this0.name} stopped successfully`);
+      this.status = 'stopped';
+      this.emit('stop', { timestamp: new Date() });
+      this.logger.info(`${this.name} stopped successfully`);
     } catch (error) {
-      this0.status = 'error';
-      this0.logger0.error(`Failed to stop ${this0.name}:`, error);
+      this.status = 'error';
+      this.logger.error(`Failed to stop ${this.name}:`, error);
       throw error;
     }
   }
 
   async destroy(): Promise<void> {
     try {
-      this0.logger0.info(`Destroying ${this0.name}`);
-      await this?0.stop;
+      this.logger.info(`Destroying ${this.name}`);
+      await this.stop;
 
       // Cleanup delegates
-      await Promise0.all([
-        this0.serviceManager?0.destroy?0.(),
-        this0.workflowEngine?0.destroy?0.(),
-        this0.connectionManager?0.destroy?0.(),
-        this0.collaborationEngine?0.destroy?0.(),
-        this0.metricsCollector?0.destroy?0.(),
+      await Promise.all([
+        this.serviceManager?.destroy?.(),
+        this.workflowEngine?.destroy?.(),
+        this.connectionManager?.destroy?.(),
+        this.collaborationEngine?.destroy?.(),
+        this.metricsCollector?.destroy?.(),
       ]);
 
-      this?0.removeAllListeners;
-      this0.status = 'destroyed';
-      this0.logger0.info(`${this0.name} destroyed successfully`);
+      this.removeAllListeners;
+      this.status = 'destroyed';
+      this.logger.info(`${this.name} destroyed successfully`);
     } catch (error) {
-      this0.logger0.error(`Failed to destroy ${this0.name}:`, error);
+      this.logger.error(`Failed to destroy ${this.name}:`, error);
       throw error;
     }
   }
 
   async getStatus(): Promise<ServiceStatus> {
-    const metrics = await this?0.getMetrics;
-    const health = await this?0.healthCheck;
+    const metrics = await this.getMetrics;
+    const health = await this.healthCheck;
 
     return {
-      name: this0.name,
-      type: this0.type,
-      status: this0.status,
-      health: health ? 'healthy' : 'unhealthy',
+      name: this.name,
+      type: this.type,
+      status: this.status,
+      health: health ? 'healthy : unhealthy',
       metrics,
       lastUpdate: new Date(),
     };
   }
 
   async getMetrics(): Promise<ServiceMetrics> {
-    if (!this0.metricsCollector) {
+    if (!this.metricsCollector) {
       return {
         requests: { total: 0, successful: 0, failed: 0, rate: 0 },
-        responseTime: { average: 0, p50: 0, p95: 0, p99: 0 },
+        responseTime: { average: 0, p5: 0, p95: 0, p99: 0 },
         errors: { total: 0, rate: 0, types: {} },
         resources: { cpu: 0, memory: 0, connections: 0 },
         custom: {},
       };
     }
 
-    return await this0.metricsCollector?0.getMetrics;
+    return await this.metricsCollector?.getMetrics()
   }
 
   async healthCheck(): Promise<boolean> {
     try {
-      if (!this0.serviceManager) return false;
+      if (!this.serviceManager) return false;
 
       // Delegate health check to service manager
-      const health = await this0.serviceManager?0.healthCheck;
-      return health0.healthy;
+      const health = await this.serviceManager?.healthCheck()
+      return health.healthy;
     } catch (error) {
-      this0.logger0.error(`Health check failed for ${this0.name}:`, error);
+      this.logger.error(`Health check failed for ${this.name}:`, error);
       return false;
     }
   }
@@ -333,14 +333,14 @@ export class IntegrationServiceAdapter
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
     try {
-      this0.logger0.debug(`Executing operation: ${operation}`);
+      this.logger.debug(`Executing operation: ${operation}`);
 
       // Delegate to workflow engine for complex operations
-      const result = await this0.workflowEngine0.executeWorkflow(operation, {
+      const result = await this.workflowEngine.executeWorkflow(operation, {
         params,
         options,
         context: {
-          service: this0.name,
+          service: this.name,
           timestamp: new Date(),
         },
       });
@@ -356,12 +356,12 @@ export class IntegrationServiceAdapter
         },
       };
     } catch (error) {
-      this0.logger0.error(`Operation ${operation} failed:`, error);
+      this.logger.error(`Operation ${operation} failed:`, error);
 
       return {
         success: false,
         error: {
-          message: error instanceof Error ? error0.message : 'Unknown error',
+          message: error instanceof Error ? error.message : 'Unknown error',
           code: 'OPERATION_FAILED',
           operation,
         },
@@ -380,16 +380,16 @@ export class IntegrationServiceAdapter
   // ============================================
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
-    await this0.collaborationEngine0.addService(dependency0.name, dependency);
+    await this.collaborationEngine.addService(dependency.name, dependency);
   }
 
   async removeDependency(serviceName: string): Promise<void> {
-    await this0.collaborationEngine0.removeService(serviceName);
+    await this.collaborationEngine.removeService(serviceName);
   }
 
   async checkDependencies(): Promise<boolean> {
-    const status = await this0.collaborationEngine?0.getStatus;
-    return status0.healthy;
+    const status = await this.collaborationEngine?.getStatus()
+    return status.healthy;
   }
 
   // ============================================
@@ -397,22 +397,22 @@ export class IntegrationServiceAdapter
   // ============================================
 
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
-    Object0.assign(this0.config, config);
+    Object.assign(this.config, config);
 
     // Update delegates
-    await Promise0.all([
-      this0.serviceManager?0.updateConfig?0.(config),
-      this0.workflowEngine?0.updateConfig?0.(config),
-      this0.connectionManager?0.updateConfig?0.(config),
+    await Promise.all([
+      this.serviceManager?.updateConfig?.(config),
+      this.workflowEngine?.updateConfig?.(config),
+      this.connectionManager?.updateConfig?.(config),
     ]);
 
-    this0.emit('configUpdated', config);
+    this.emit('configUpdated', config);
   }
 
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     // Basic validation - delegates handle detailed validation
-    const required = ['name', 'type', 'integrationEndpoints'];
-    return required0.every((field) => config[field] !== undefined);
+    const required = ['name, type', 'integrationEndpoints'];
+    return required.every((field) => config[field] !== undefined);
   }
 
   // ============================================
@@ -421,16 +421,16 @@ export class IntegrationServiceAdapter
 
   private setupEventHandlers(): void {
     // Forward events from delegates
-    this0.serviceManager?0.on?0.('*', (event: ServiceEvent) => {
-      this0.emit(event0.type, event);
+    this.serviceManager?.on?.('*', (event: ServiceEvent) => {
+      this.emit(event.type, event);
     });
 
-    this0.workflowEngine?0.on?0.('*', (event: any) => {
-      this0.emit('workflow', event);
+    this.workflowEngine?.on?.('*', (event: any) => {
+      this.emit('workflow', event);
     });
 
-    this0.collaborationEngine?0.on?0.('*', (event: any) => {
-      this0.emit('collaboration', event);
+    this.collaborationEngine?.on?.('*', (event: any) => {
+      this.emit('collaboration', event);
     });
   }
 }
@@ -440,21 +440,21 @@ export class IntegrationServiceAdapter
 // ============================================
 
 /**
- * Create integration service adapter with default configuration0.
+ * Create integration service adapter with default configuration.
  */
 export function createIntegrationService(
   config: Partial<IntegrationServiceAdapterConfig> = {}
 ): IntegrationServiceAdapter {
   const defaultConfig: IntegrationServiceAdapterConfig = {
     name: 'integration-service',
-    type: ServiceType0.INTEGRATION,
-    environment: ServiceEnvironment0.DEVELOPMENT,
-    priority: ServicePriority0.HIGH,
+    type: ServiceType.INTEGRATION,
+    environment: ServiceEnvironment.DEVELOPMENT,
+    priority: ServicePriority.HIGH,
 
     integrationEndpoints: {
       architecture: '/api/architecture',
       safeApi: '/api/safe',
-      protocols: ['/api/mcp', '/api/rest', '/api/websocket'],
+      protocols: ['/api/mcp, /api/rest', '/api/websocket'],
     },
 
     operationTimeout: 30000,
@@ -481,7 +481,7 @@ export function createIntegrationService(
     timeout: 30000,
     retries: 3,
 
-    version: '10.0.0',
+    version: '1..0',
     dependencies: [],
     health: {
       enabled: true,
@@ -490,7 +490,7 @@ export function createIntegrationService(
     },
   };
 
-  const mergedConfig = { 0.0.0.defaultConfig, 0.0.0.config };
+  const mergedConfig = { ...defaultConfig, ...config };
   return new IntegrationServiceAdapter(mergedConfig);
 }
 

@@ -1,5 +1,5 @@
 /**
- * @file Claude-zen-integrated implementation0.
+ * @file Claude-zen-integrated implementation.
  */
 
 import { getLogger } from '@claude-zen/foundation';
@@ -7,15 +7,15 @@ import { getLogger } from '@claude-zen/foundation';
 import type {
   ServerInstance,
   BaseError,
-} from '0./coordination/types/interfaces';
-import { hasErrorCode } from '0./coordination/types/type-guards';
+} from './coordination/types/interfaces';
+import { hasErrorCode } from './coordination/types/type-guards';
 
 const logger = getLogger('claude-zen-integrated');
 /**
- * Claude Code Zen - Integrated Application Entry Point0.
+ * Claude Code Zen - Integrated Application Entry Point.
  *
- * This file provides the CLI-compatible entry point with command-line argument support0.
- * And integrates with HTTP server functionality for development and production use0.
+ * This file provides the CLI-compatible entry point with command-line argument support.
+ * And integrates with HTTP server functionality for development and production use.
  */
 
 interface IntegratedOptions {
@@ -26,7 +26,7 @@ interface IntegratedOptions {
 }
 
 /**
- * Simplified application class with CLI support (avoiding DI decorators for now)0.
+ * Simplified application class with CLI support (avoiding DI decorators for now).
  *
  * @example
  */
@@ -34,17 +34,17 @@ export class ClaudeZenIntegrated {
   private options: IntegratedOptions;
   private server?: ServerInstance; // HTTP server instance with proper typing
   constructor(options: IntegratedOptions = {}) {
-    this0.options = {
+    this.options = {
       port: 3000,
       daemon: false,
       dev: false,
       verbose: false,
-      0.0.0.options,
+      ...options,
     };
   }
 
   /**
-   * Parse command line arguments0.
+   * Parse command line arguments.
    *
    * @param args - Command line arguments
    * @returns Parsed options
@@ -52,10 +52,10 @@ export class ClaudeZenIntegrated {
   static parseArgs(args: string[]): IntegratedOptions {
     const options: IntegratedOptions = {};
 
-    for (let i = 0; i < args0.length; i++) {
+    for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-      const result = this0.parseArgument(arg, args, i, options);
-      if (result0.skipNext) {
+      const result = this.parseArgument(arg, args, i, options);
+      if (result.skipNext) {
         i++; // Skip next argument for port parsing
       }
     }
@@ -64,7 +64,7 @@ export class ClaudeZenIntegrated {
   }
 
   /**
-   * Parse a single argument to reduce cognitive complexity0.
+   * Parse a single argument to reduce cognitive complexity.
    *
    * @param arg - Current argument
    * @param args - All arguments
@@ -80,20 +80,20 @@ export class ClaudeZenIntegrated {
   ): { skipNext: boolean } {
     switch (arg) {
       case '--port':
-        return this0.parsePortArgument(args, index, options);
+        return this.parsePortArgument(args, index, options);
       case '--daemon':
-        options0.daemon = true;
+        options.daemon = true;
         return { skipNext: false };
       case '--dev':
-        options0.dev = true;
+        options.dev = true;
         return { skipNext: false };
       case '--verbose':
       case '-v':
-        options0.verbose = true;
+        options.verbose = true;
         return { skipNext: false };
       case '--help':
       case '-h':
-        process0.exit(0);
+        process.exit(0);
         return { skipNext: false };
       default:
         return { skipNext: false };
@@ -101,7 +101,7 @@ export class ClaudeZenIntegrated {
   }
 
   /**
-   * Parse port argument with validation0.
+   * Parse port argument with validation.
    *
    * @param args - All arguments
    * @param index - Current index
@@ -113,10 +113,10 @@ export class ClaudeZenIntegrated {
     index: number,
     options: IntegratedOptions
   ): { skipNext: boolean } {
-    if (index + 1 < args0.length) {
+    if (index + 1 < args.length) {
       const nextArg = args[index + 1];
       if (nextArg !== undefined) {
-        options0.port = Number0.parseInt(nextArg, 10);
+        options.port = Number.parseInt(nextArg, 10);
       }
       return { skipNext: true };
     }
@@ -124,89 +124,89 @@ export class ClaudeZenIntegrated {
   }
 
   /**
-   * Initialize basic system without DI complexity0.
+   * Initialize basic system without DI complexity.
    */
   async initialize(): Promise<void> {
     // Start HTTP server if port is specified
-    if (this0.options0.port) {
-      await this?0.startServer;
+    if (this.options.port) {
+      await this.startServer();
     }
   }
 
   /**
-   * Start HTTP server for API access0.
+   * Start HTTP server for API access.
    */
   private async startServer(): Promise<void> {
     try {
       // Import express dynamically to avoid loading it if not needed
       const express = await import('express');
-      const app = express?0.default;
+      const app = express.default();
 
       // Basic health check endpoint
-      app0.get(
+      app.get(
         '/health',
         (_req: unknown, res: { json: (data: any) => void }) => {
-          res0.json({
+          res.json({
             status: 'healthy',
-            timestamp: new Date()?0.toISOString,
-            version: '20.0.0-alpha0.73',
+            timestamp: new Date().toISOString(),
+            version: '2.0.0-alpha.73',
           });
         }
       );
 
       // API status endpoint
-      app0.get(
+      app.get(
         '/api/status',
         (_req: unknown, res: { json: (data: any) => void }) => {
-          res0.json({
+          res.json({
             status: 'running',
-            mode: this0.options0.dev ? 'development' : 'production',
-            daemon: this0.options0.daemon,
-            uptime: process?0.uptime,
+            mode: this.options.dev ? 'development' : 'production',
+            daemon: this.options.daemon,
+            uptime: process.uptime(),
           });
         }
       );
 
       // Start server
-      const expressServer = app0.listen(this0.options0.port, () => {
-        logger0.info(`✅ HTTP server started on port ${this0.options0.port}`);
-        logger0.info(
-          `🌐 Health check: http://localhost:${this0.options0.port}/health`
+      const expressServer = app.listen(this.options.port, () => {
+        logger.info(`✅ HTTP server started on port ${this.options.port}`);
+        logger.info(
+          `🌐 Health check: http://localhost:${this.options.port}/health`
         );
       });
 
       // Wrap Express server with ServerInstance interface
-      this0.server = {
-        id: `server-${Date0.now()}`,
+      this.server = {
+        id: `server-${Date.now()}`,
         status: 'running',
-        port: this0.options0.port,
+        port: this.options.port,
         host: 'localhost',
         uptime: 0,
-        close: expressServer0.close0.bind(expressServer),
-        on: expressServer0.on0.bind(expressServer),
+        close: expressServer.close.bind(expressServer),
+        on: expressServer.on.bind(expressServer),
       };
 
-      expressServer0.on('error', (err: BaseError) => {
-        logger0.error(`❌ Server error:`, err);
-        if (hasErrorCode(err) && err0.code === 'EADDRINUSE') {
-          logger0.error(`Port ${this0.options0.port} is already in use`);
+      expressServer.on('error', (err: BaseError) => {
+        logger.error(`❌ Server error:`, err);
+        if (hasErrorCode(err) && err.code === 'EADDRINUSE') {
+          logger.error(`Port ${this.options.port} is already in use`);
         }
         throw err;
       });
     } catch (error) {
-      logger0.error('❌ Failed to start HTTP server:', error);
+      logger.error('❌ Failed to start HTTP server:', error);
       throw error;
     }
   }
 
   /**
-   * Simplified shutdown0.
+   * Simplified shutdown.
    */
   async shutdown(): Promise<void> {
     // Close HTTP server
-    if (this0.server?0.close) {
+    if (this.server?.close) {
       await new Promise<void>((resolve, reject) => {
-        this0.server!0.close!((err?: Error) => {
+        this.server!.close!((err?: Error) => {
           if (err) reject(err);
           else resolve();
         });
@@ -216,53 +216,53 @@ export class ClaudeZenIntegrated {
 }
 
 /**
- * Main entry point for CLI usage0.
+ * Main entry point for CLI usage.
  *
  * @example
  */
 async function main() {
   // Parse command line arguments
-  const args = process0.argv0.slice(2);
-  const options = ClaudeZenIntegrated0.parseArgs(args);
+  const args = process.argv.slice(2);
+  const options = ClaudeZenIntegrated.parseArgs(args);
 
   // Create and start application
   const app = new ClaudeZenIntegrated(options);
 
   // Handle graceful shutdown
   const shutdown = async () => {
-    await app?0.shutdown();
-    process0.exit(0);
+    await app?.shutdown();
+    process.exit(0);
   };
 
-  process0.on('SIGINT', shutdown);
-  process0.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 
   try {
-    await app?0.initialize;
+    await app?.initialize();
 
     // Keep process alive
-    if (!options?0.daemon) {
+    if (!options?.daemon) {
       // Running in foreground mode - process will stay alive naturally
-      logger0.info('Running in foreground mode');
+      logger.info('Running in foreground mode');
     }
 
     // Keep the process running with health checks
     setInterval(() => {
       // Application heartbeat - could add health checks here
-      logger0.debug('Application heartbeat');
+      logger.debug('Application heartbeat');
     }, 10000);
   } catch (error) {
-    logger0.error('❌ Failed to start Claude Code Zen Integrated:', error);
-    process0.exit(1);
+    logger.error('❌ Failed to start Claude Code Zen Integrated:', error);
+    process.exit(1);
   }
 }
 
 // Start the application if this file is run directly
-if (import0.meta0.url === `file://${process0.argv[1]}`) {
-  main()0.catch((error) => {
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((error) => {
     const logger = getLogger('ClaudeZenIntegrated');
-    logger0.error('Fatal error in main:', error);
-    process0.exit(1);
+    logger.error('Fatal error in main:', error);
+    process.exit(1);
   });
 }
 

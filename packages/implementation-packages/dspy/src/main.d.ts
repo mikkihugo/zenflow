@@ -4,20 +4,20 @@
  * Central export point for all Stanford DSPy functionality including
  * optimization algorithms, few-shot learning, and teleprompter techniques.
  */
-export { DSPyEngine, createDSPyEngine, dspyUtils } from './core/dspy-engine.js';
-export type { DSPyKV } from './core/dspy-engine.js';
-export { DSPyService, getDSPyService, initializeDSPyService } from './core/service.js';
-export type { SharedLLMService, SharedStorage, SharedLogger } from './core/service.js';
-export { Example } from './primitives/example.js';
+export { DSPyEngine, createDSPyEngine, dspyUtils } from './core/dspy-engine';
+export type { DSPyKV } from './core/dspy-engine';
+export { DSPyService, getDSPyService, initializeDSPyService } from './core/service';
+export type { SharedLLMService, SharedStorage, SharedLogger } from './core/service';
+export { Example } from './primitives/example';
 export { DSPyModule } from './primitives/module';
 export type { DSPyModule as Module } from './primitives/module';
-export type { Prediction } from './primitives/prediction.js';
-export { SeededRNG } from './primitives/seeded-rng.js';
-export { Ensemble } from './teleprompters/ensemble.js';
-export { ChatAdapter } from './adapters/chat-adapter.js';
-export type { LMInterface, GenerationOptions, ModelInfo, ModelUsage } from './interfaces/lm.js';
-export type { Adapter, FinetuneDataInput, FinetuneDataOutput, InferenceDataInput, InferenceDataOutput, EvaluationDataInput, EvaluationDataOutput } from './interfaces/adapter.js';
-export type { MetricFunction, CompileOptions, PredictorSignature, FieldSpec, Predictor, TrainingData, EvaluationResult, OptimizationCandidate, Hyperparameter, OptimizationConfig, ModelConfig, CacheEntry, ProgressCallback, Logger } from './interfaces/types.js';
+export type { Prediction } from './primitives/prediction';
+export { SeededRNG } from './primitives/seeded-rng';
+export { Ensemble } from './teleprompters/ensemble';
+export { ChatAdapter } from './adapters/chat-adapter';
+export type { LMInterface, GenerationOptions, ModelInfo, ModelUsage } from './interfaces/lm';
+export type { Adapter, FinetuneDataInput, FinetuneDataOutput, InferenceDataInput, InferenceDataOutput, EvaluationDataInput, EvaluationDataOutput } from './interfaces/adapter';
+export type { MetricFunction, CompileOptions, PredictorSignature, FieldSpec, Predictor, TrainingData, EvaluationResult, OptimizationCandidate, Hyperparameter, OptimizationConfig, ModelConfig, CacheEntry, ProgressCallback } from './interfaces/types';
 export declare function getDSPySystemAccess(config?: any): Promise<any>;
 export declare function getDSPyEngineAccess(config?: any): Promise<any>;
 export declare function getDSPyOptimization(config?: any): Promise<any>;

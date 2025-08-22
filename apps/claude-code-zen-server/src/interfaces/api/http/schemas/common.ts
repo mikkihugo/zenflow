@@ -1,15 +1,15 @@
 /**
- * Common API Schemas0.
+ * Common API Schemas.
  *
- * Shared schemas used across multiple API domains0.
- * Following OpenAPI 30.0 standards for consistency0.
+ * Shared schemas used across multiple API domains.
+ * Following OpenAPI 3.0 standards for consistency.
  *
- * @file Common schemas for API responses and requests0.
+ * @file Common schemas for API responses and requests.
  */
 
 /**
- * Common pagination parameters0.
- * Standard across all list endpoints0.
+ * Common pagination parameters.
+ * Standard across all list endpoints.
  *
  * @example
  */
@@ -19,8 +19,8 @@ export interface PaginationParams {
 }
 
 /**
- * Standard pagination response0.
- * Consistent pagination metadata across all endpoints0.
+ * Standard pagination response.
+ * Consistent pagination metadata across all endpoints.
  *
  * @example
  */
@@ -32,8 +32,8 @@ export interface PaginationResponse {
 }
 
 /**
- * Standard list response wrapper0.
- * Generic container for paginated list responses0.
+ * Standard list response wrapper.
+ * Generic container for paginated list responses.
  *
  * @example
  */
@@ -43,8 +43,8 @@ export interface ListResponse<T> extends PaginationResponse {
 }
 
 /**
- * Standard API error response0.
- * Following Google API Design Guide error format0.
+ * Standard API error response.
+ * Following Google API Design Guide error format.
  *
  * @example
  */
@@ -61,8 +61,8 @@ export interface APIError {
 }
 
 /**
- * Standard success response wrapper0.
- * Generic container for successful API responses0.
+ * Standard success response wrapper.
+ * Generic container for successful API responses.
  *
  * @example
  */
@@ -74,29 +74,29 @@ export interface SuccessResponse<T = unknown> {
 }
 
 /**
- * Standard health check response0.
- * Consistent health check format across all services0.
+ * Standard health check response.
+ * Consistent health check format across all services.
  *
  * @example
  */
 export interface HealthResponse {
-  readonly status: 'healthy' | 'unhealthy' | 'degraded';
+  readonly status: 'healthy | unhealthy' | 'degraded';
   readonly timestamp: string;
   readonly version: string;
   readonly uptime: number;
-  readonly environment: 'development' | 'production' | 'test';
-  readonly services?: Record<string, 'healthy' | 'unhealthy' | 'degraded'>;
+  readonly environment: 'development | production' | 'test';
+  readonly services?: Record<string, 'healthy | unhealthy' | 'degraded'>;
   readonly checks?: readonly {
     readonly name: string;
-    readonly status: 'healthy' | 'unhealthy';
+    readonly status: 'healthy | unhealthy';
     readonly message?: string;
     readonly duration?: number;
   }[];
 }
 
 /**
- * Standard metrics response0.
- * Performance and operational metrics0.
+ * Standard metrics response.
+ * Performance and operational metrics.
  *
  * @example
  */
@@ -124,19 +124,19 @@ export interface MetricsResponse {
 }
 
 /**
- * Standard sort parameters0.
- * Consistent sorting across list endpoints0.
+ * Standard sort parameters.
+ * Consistent sorting across list endpoints.
  *
  * @example
  */
 export interface SortParams {
   readonly sortBy?: string; // Field to sort by
-  readonly sortOrder?: 'asc' | 'desc'; // Sort direction
+  readonly sortOrder?: 'asc | desc'; // Sort direction
 }
 
 /**
- * Standard filter parameters0.
- * Common filtering patterns0.
+ * Standard filter parameters.
+ * Common filtering patterns.
  *
  * @example
  */
@@ -149,8 +149,8 @@ export interface FilterParams {
 }
 
 /**
- * Standard timestamp fields0.
- * Common timestamp properties for entities0.
+ * Standard timestamp fields.
+ * Common timestamp properties for entities.
  *
  * @example
  */
@@ -160,8 +160,8 @@ export interface TimestampFields {
 }
 
 /**
- * Standard identification fields0.
- * Common ID and metadata for entities0.
+ * Standard identification fields.
+ * Common ID and metadata for entities.
  *
  * @example
  */
@@ -172,8 +172,8 @@ export interface EntityFields {
 }
 
 /**
- * Standard audit fields0.
- * Audit trail information0.
+ * Standard audit fields.
+ * Audit trail information.
  *
  * @example
  */
@@ -185,20 +185,20 @@ export interface AuditFields extends TimestampFields {
 }
 
 /**
- * Standard resource state0.
- * Common state management for resources0.
+ * Standard resource state.
+ * Common state management for resources.
  *
  * @example
  */
 export interface ResourceState {
-  readonly status: 'active' | 'inactive' | 'pending' | 'error' | 'deleted';
+  readonly status: 'active | inactive' | 'pending | error' | 'deleted';
   readonly statusMessage?: string;
   readonly statusUpdated?: Date;
 }
 
 /**
- * Standard configuration fields0.
- * Common configuration properties0.
+ * Standard configuration fields.
+ * Common configuration properties.
  *
  * @example
  */
@@ -210,8 +210,8 @@ export interface ConfigurationFields {
 }
 
 /**
- * Standard validation error detail0.
- * Detailed validation error information0.
+ * Standard validation error detail.
+ * Detailed validation error information.
  *
  * @example
  */
@@ -224,8 +224,8 @@ export interface ValidationError {
 }
 
 /**
- * Batch operation request0.
- * Standard format for batch operations0.
+ * Batch operation request.
+ * Standard format for batch operations.
  *
  * @example
  */
@@ -239,8 +239,8 @@ export interface BatchRequest<T> {
 }
 
 /**
- * Batch operation response0.
- * Standard format for batch operation results0.
+ * Batch operation response.
+ * Standard format for batch operation results.
  *
  * @example
  */
@@ -261,14 +261,14 @@ export interface BatchResponse<T> {
 }
 
 /**
- * Standard async operation response0.
- * For long-running operations0.
+ * Standard async operation response.
+ * For long-running operations.
  *
  * @example
  */
 export interface AsyncOperationResponse {
   readonly operationId: string;
-  readonly status: 'pending' | 'running' | 'completed' | 'failed';
+  readonly status: 'pending | running' | 'completed | failed';
   readonly progress?: number; // 0-100
   readonly message?: string;
   readonly estimatedCompletion?: string; // SO timestamp
@@ -279,8 +279,8 @@ export interface AsyncOperationResponse {
 }
 
 /**
- * Standard file upload response0.
- * For file upload operations0.
+ * Standard file upload response.
+ * For file upload operations.
  *
  * @example
  */
@@ -296,8 +296,8 @@ export interface FileUploadResponse {
 }
 
 /**
- * Standard rate limit information0.
- * Rate limiting metadata in response headers0.
+ * Standard rate limit information.
+ * Rate limiting metadata in response headers.
  *
  * @example
  */
@@ -308,7 +308,7 @@ export interface RateLimitInfo {
   readonly window: number; // Window size in seconds
 }
 
-// OpenAPI 30.0 Schema definitions for common types
+// OpenAPI 3.0 Schema definitions for common types
 export const Schemas = {
   PaginationParams: {
     type: 'object',
@@ -338,7 +338,7 @@ export const Schemas = {
       },
       sortOrder: {
         type: 'string',
-        enum: ['asc', 'desc'],
+        enum: ['asc, desc'],
         default: 'asc',
         description: 'Sort direction',
       },
@@ -351,7 +351,7 @@ export const Schemas = {
     properties: {
       error: {
         type: 'object',
-        required: ['code', 'message', 'timestamp', 'path', 'method'],
+        required: ['code, message', 'timestamp, path', 'method'],
         properties: {
           code: {
             type: 'string',
@@ -389,11 +389,11 @@ export const Schemas = {
 
   HealthResponse: {
     type: 'object',
-    required: ['status', 'timestamp', 'version', 'uptime', 'environment'],
+    required: ['status, timestamp', 'version, uptime', 'environment'],
     properties: {
       status: {
         type: 'string',
-        enum: ['healthy', 'unhealthy', 'degraded'],
+        enum: ['healthy, unhealthy', 'degraded'],
         description: 'Overall system health status',
       },
       timestamp: {
@@ -411,14 +411,14 @@ export const Schemas = {
       },
       environment: {
         type: 'string',
-        enum: ['development', 'production', 'test'],
+        enum: ['development, production', 'test'],
         description: 'Runtime environment',
       },
       services: {
         type: 'object',
         additionalProperties: {
           type: 'string',
-          enum: ['healthy', 'unhealthy', 'degraded'],
+          enum: ['healthy, unhealthy', 'degraded'],
         },
         description: 'Health status of individual services',
       },
@@ -427,7 +427,7 @@ export const Schemas = {
 
   MetricsResponse: {
     type: 'object',
-    required: ['timestamp', 'uptime', 'memory', 'cpu', 'process'],
+    required: ['timestamp, uptime', 'memory, cpu', 'process'],
     properties: {
       timestamp: {
         type: 'string',

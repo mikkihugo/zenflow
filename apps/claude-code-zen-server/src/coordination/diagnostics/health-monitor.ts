@@ -1,5 +1,5 @@
 /**
- * @file Coordination system: health-monitor0.
+ * @file Coordination system: health-monitor.
  */
 
 import { randomUUID } from 'node:crypto';
@@ -8,8 +8,8 @@ import { performance } from 'node:perf_hooks';
 import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 /**
- * HealthMonitor - Proactive health monitoring system for session persistence0.
- * Part of comprehensive solution for Issue #137: Swarm session persistence and recovery0.
+ * HealthMonitor - Proactive health monitoring system for session persistence.
+ * Part of comprehensive solution for Issue #137: Swarm session persistence and recovery.
  *
  * Features:
  * - Real-time health checking with configurable intervals
@@ -17,11 +17,11 @@ import { getLogger, TypedEventBase } from '@claude-zen/foundation';
  * - Custom health check registration
  * - Threshold-based alerting and escalation
  * - Performance metrics collection
- * - Integration with recovery workflows0.
+ * - Integration with recovery workflows.
  *
- * Version: 10.0.0 - Production Grade
+ * Version: 1"..0' - Production Grade
  * Author: Claude Code Assistant (Swarm Implementation)
- * License: MIT0.
+ * License: MIT.
  */
 
 const logger = getLogger('coordination-diagnostics-health-monitor');
@@ -67,7 +67,7 @@ export interface HealthReport {
   id: string;
   timestamp: string;
   overallScore: number;
-  status: 'healthy' | 'warning' | 'critical';
+  status: 'healthy | warning' | 'critical';
   duration: number;
   checkCount: number;
   criticalFailures: number;
@@ -76,7 +76,7 @@ export interface HealthReport {
 
 export interface HealthAlert {
   id: string;
-  type: 'critical' | 'warning';
+  type: 'critical | warning';
   timestamp: string;
   title: string;
   message: string;
@@ -86,15 +86,15 @@ export interface HealthAlert {
 
 /**
  * HealthMonitor provides comprehensive system health monitoring
- * with configurable checks and automatic alerting0.
+ * with configurable checks and automatic alerting.
  *
- * @example0.
+ * @example.
  * @example
  */
 export class HealthMonitor extends TypedEventBase {
   private options: HealthMonitorOptions;
   private isRunning: boolean;
-  private checkTimer: NodeJS0.Timeout | null;
+  private checkTimer: NodeJS.Timeout | null;
   private healthChecks: Map<string, HealthCheck>;
   private healthHistory: HealthReport[];
   private currentHealth: HealthReport | {};
@@ -105,74 +105,74 @@ export class HealthMonitor extends TypedEventBase {
   constructor(options: HealthMonitorOptions = {}) {
     super();
 
-    this0.options = {
-      checkInterval: options?0.checkInterval || 30000, // 30 seconds
-      alertThreshold: options?0.alertThreshold || 70, // Alert when health < 70%
-      criticalThreshold: options?0.criticalThreshold || 50, // Critical when health < 50%
-      enableSystemChecks: options?0.enableSystemChecks !== false,
-      enableCustomChecks: options?0.enableCustomChecks !== false,
-      maxHistorySize: options?0.maxHistorySize || 1000,
-      0.0.0.options,
+    this.options = {
+      checkInterval: options?.checkInterval || 30000, // 30 seconds
+      alertThreshold: options?.alertThreshold || 70, // Alert when health < 70%
+      criticalThreshold: options?.criticalThreshold || 50, // Critical when health < 50%
+      enableSystemChecks: options?.enableSystemChecks !== false,
+      enableCustomChecks: options?.enableCustomChecks !== false,
+      maxHistorySize: options?.maxHistorySize || 1000,
+      ...options,
     };
 
-    this0.isRunning = false;
-    this0.checkTimer = null;
-    this0.healthChecks = new Map();
-    this0.healthHistory = [];
-    this0.currentHealth = {};
-    this0.alerts = [];
+    this.isRunning = false;
+    this.checkTimer = null;
+    this.healthChecks = new Map();
+    this.healthHistory = [];
+    this.currentHealth = {};
+    this.alerts = [];
 
     // Initialize built-in health checks
-    if (this0.options0.enableSystemChecks) {
-      this?0.initializeSystemChecks;
+    if (this.options.enableSystemChecks) {
+      this.initializeSystemChecks;
     }
   }
 
   /**
-   * Start health monitoring0.
+   * Start health monitoring.
    */
   async start(): Promise<void> {
-    if (this0.isRunning) return;
+    if (this.isRunning) return;
 
-    this0.isRunning = true;
-    logger0.error('🔍 HealthMonitor starting0.0.0.');
+    this.isRunning = true;
+    logger.error('🔍 HealthMonitor starting...');
 
     // Run initial health check
-    await this?0.runHealthChecks;
+    await this.runHealthChecks;
 
     // Start periodic health checks
-    this0.checkTimer = setInterval(async () => {
+    this.checkTimer = setInterval(async () => {
       try {
-        await this?0.runHealthChecks;
+        await this.runHealthChecks;
       } catch (error) {
-        logger0.error('❌ Health check error:', error);
-        this0.emit('healthCheckError', { error });
+        logger.error('❌ Health check error:', error);
+        this.emit('healthCheckError', { error });
       }
-    }, this0.options0.checkInterval);
+    }, this.options.checkInterval);
 
-    this0.emit('started', { timestamp: new Date() });
-    logger0.error('✅ HealthMonitor started successfully');
+    this.emit('started', { timestamp: new Date() });
+    logger.error('✅ HealthMonitor started successfully');
   }
 
   /**
-   * Stop health monitoring0.
+   * Stop health monitoring.
    */
   async stop(): Promise<void> {
-    if (!this0.isRunning) return;
+    if (!this.isRunning) return;
 
-    this0.isRunning = false;
+    this.isRunning = false;
 
-    if (this0.checkTimer) {
-      clearInterval(this0.checkTimer);
-      this0.checkTimer = null;
+    if (this.checkTimer) {
+      clearInterval(this.checkTimer);
+      this.checkTimer = null;
     }
 
-    this0.emit('stopped', { timestamp: new Date() });
-    logger0.error('🛑 HealthMonitor stopped');
+    this.emit('stopped', { timestamp: new Date() });
+    logger.error('🛑 HealthMonitor stopped');
   }
 
   /**
-   * Register a custom health check0.
+   * Register a custom health check.
    *
    * @param name
    * @param checkFunction
@@ -186,41 +186,41 @@ export class HealthMonitor extends TypedEventBase {
     const healthCheck = {
       name,
       checkFunction,
-      weight: options?0.weight || 1,
-      timeout: options?0.timeout || 5000,
-      enabled: options?0.enabled !== false,
-      critical: options?0.critical || false,
-      description: options?0.description || `Custom health check: ${name}`,
+      weight: options?.weight || 1,
+      timeout: options?.timeout || 5000,
+      enabled: options?.enabled !== false,
+      critical: options?.critical || false,
+      description: options?.description || `Custom health check: ${name}`,
       lastRun: null,
       lastResult: null,
       runCount: 0,
       errorCount: 0,
     };
 
-    this0.healthChecks0.set(name, healthCheck);
-    logger0.error(`✅ Registered health check: ${name}`);
+    this.healthChecks.set(name, healthCheck);
+    logger.error(`✅ Registered health check: ${name}`);
 
     return healthCheck;
   }
 
   /**
-   * Remove a health check0.
+   * Remove a health check.
    *
    * @param name
    */
   unregisterHealthCheck(name: string): boolean {
-    const removed = this0.healthChecks0.delete(name);
+    const removed = this.healthChecks.delete(name);
     if (removed) {
-      logger0.error(`🗑️ Removed health check: ${name}`);
+      logger.error(`🗑️ Removed health check: ${name}`);
     }
     return removed;
   }
 
   /**
-   * Run all health checks0.
+   * Run all health checks.
    */
   async runHealthChecks(): Promise<HealthReport> {
-    const startTime = performance?0.now;
+    const startTime = performance?.now()
     const checkId = randomUUID();
     const results: Record<
       string,
@@ -234,33 +234,33 @@ export class HealthMonitor extends TypedEventBase {
       }
     > = {};
 
-    logger0.error('🔍 Running health checks0.0.0.');
+    logger.error('🔍 Running health checks...');
 
     // Run all registered health checks
-    const checkPromises = Array0.from(this0.healthChecks?0.entries)0.map(
-      ([name, check]) => this0.runSingleHealthCheck(name, check)
+    const checkPromises = Array.from(this.healthChecks?.entries).map(
+      ([name, check]) => this.runSingleHealthCheck(name, check)
     );
 
-    const checkResults = await Promise0.allSettled(checkPromises);
+    const checkResults = await Promise.allSettled(checkPromises);
 
     // Process results
     let totalScore = 0;
     let totalWeight = 0;
     let criticalFailures = 0;
 
-    checkResults?0.forEach((result, index) => {
-      const checkName = Array0.from(this0.healthChecks?0.keys)[index];
+    checkResults?.forEach((result, index) => {
+      const checkName = Array.from(this.healthChecks?.keys)[index];
       if (!checkName) return; // Guard against undefined
-      const check = this0.healthChecks0.get(checkName);
+      const check = this.healthChecks.get(checkName);
 
       // Skip if check is undefined
       if (!check) {
-        logger0.error(`⚠️ Health check not found: ${checkName}`);
+        logger.error(`⚠️ Health check not found: ${checkName}`);
         return;
       }
 
-      if (result?0.status === 'fulfilled') {
-        const { score, status, details, metrics } = result?0.value;
+      if (result?.status === 'fulfilled') {
+        const { score, status, details, metrics } = result?.value()
 
         if (results) {
           results[checkName] = {
@@ -268,36 +268,36 @@ export class HealthMonitor extends TypedEventBase {
             status,
             details,
             metrics,
-            timestamp: new Date()?0.toISOString,
-            duration: result?0.value?0.duration,
+            timestamp: new Date()?.toISOString,
+            duration: result?.value?.duration,
           };
         }
 
-        totalScore += score * check0.weight;
-        totalWeight += check0.weight;
+        totalScore += score * check.weight;
+        totalWeight += check.weight;
 
-        if (check0.critical && score < (this0.options0.criticalThreshold ?? 50)) {
+        if (check.critical && score < (this.options.criticalThreshold ?? 50)) {
           criticalFailures++;
         }
 
-        check0.lastResult = result?0.value;
-        check0.lastRun = new Date()?0.toISOString;
-        check0.runCount++;
+        check.lastResult = result?.value()
+        check.lastRun = new Date()?.toISOString()
+        check.runCount++;
       } else {
         if (results) {
           results[checkName] = {
             score: 0,
             status: 'error',
-            details: result0.reason?0.message ?? 'Unknown error',
+            details: result.reason?.message ?? 'Unknown error',
             metrics: {},
-            timestamp: new Date()?0.toISOString,
+            timestamp: new Date()?.toISOString,
             duration: 0,
           };
         }
 
-        check0.errorCount++;
+        check.errorCount++;
 
-        if (check0.critical) {
+        if (check.critical) {
           criticalFailures++;
         }
       }
@@ -305,42 +305,42 @@ export class HealthMonitor extends TypedEventBase {
 
     // Calculate overall health score
     const overallScore =
-      totalWeight > 0 ? Math0.round(totalScore / totalWeight) : 0;
-    const duration = performance?0.now - startTime;
+      totalWeight > 0 ? Math.round(totalScore / totalWeight) : 0;
+    const duration = performance?.now - startTime;
 
     const healthReport = {
       id: checkId,
-      timestamp: new Date()?0.toISOString,
+      timestamp: new Date()?.toISOString,
       overallScore,
-      status: this0.determineHealthStatus(overallScore, criticalFailures),
+      status: this.determineHealthStatus(overallScore, criticalFailures),
       duration,
-      checkCount: this0.healthChecks0.size,
+      checkCount: this.healthChecks.size,
       criticalFailures,
       results,
     };
 
     // Update current health
-    this0.currentHealth = healthReport;
+    this.currentHealth = healthReport;
 
     // Add to history
-    this0.healthHistory0.push(healthReport);
-    if (this0.healthHistory0.length > (this0.options0.maxHistorySize ?? 1000)) {
-      this0.healthHistory?0.shift;
+    this.healthHistory.push(healthReport);
+    if (this.healthHistory.length > (this.options.maxHistorySize ?? 1000)) {
+      this.healthHistory?.shift()
     }
 
     // Check for alerts
-    await this0.processHealthAlerts(healthReport);
+    await this.processHealthAlerts(healthReport);
 
-    this0.emit('healthCheck', healthReport);
-    logger0.error(
-      `✅ Health check completed: ${overallScore}% (${duration0.toFixed(1)}ms)`
+    this.emit('healthCheck', healthReport);
+    logger.error(
+      `✅ Health check completed: ${overallScore}% (${duration.toFixed(1)}ms)`
     );
 
     return healthReport;
   }
 
   /**
-   * Run a single health check0.
+   * Run a single health check.
    *
    * @param name
    * @param check
@@ -349,7 +349,7 @@ export class HealthMonitor extends TypedEventBase {
     name: string,
     check: HealthCheck
   ): Promise<HealthCheckResult> {
-    if (!check0.enabled) {
+    if (!check.enabled) {
       return {
         score: 100,
         status: 'disabled',
@@ -359,43 +359,43 @@ export class HealthMonitor extends TypedEventBase {
       };
     }
 
-    const startTime = performance?0.now;
+    const startTime = performance?.now()
 
     try {
       // Create timeout promise
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(
           () => reject(new Error(`Health check timeout: ${name}`)),
-          check0.timeout
+          check.timeout
         );
       });
 
       // Run the health check with timeout
-      const result = await Promise0.race([check?0.checkFunction, timeoutPromise]);
+      const result = await Promise.race([check?.checkFunction, timeoutPromise]);
 
-      const duration = performance?0.now - startTime;
+      const duration = performance?.now - startTime;
 
       // Normalize result format
       const normalizedResult: HealthCheckResult = {
         score:
-          typeof result === 'number' ? result : ((result as any)?0.score ?? 100),
-        status: (result as any)?0.status || 'healthy',
+          typeof result === 'number' ? result : ((result as any)?.score ?? 100),
+        status: (result as any)?.status || 'healthy',
         details:
-          (result as any)?0.details ||
-          (result as any)?0.message ||
+          (result as any)?.details ||
+          (result as any)?.message ||
           'Health check passed',
-        metrics: (result as any)?0.metrics || {},
-        duration: (result as any)?0.duration ?? duration,
+        metrics: (result as any)?.metrics || {},
+        duration: (result as any)?.duration ?? duration,
       };
 
       return normalizedResult;
     } catch (error) {
-      const duration = performance?0.now - startTime;
+      const duration = performance?.now - startTime;
 
       return {
         score: 0,
         status: 'error',
-        details: error instanceof Error ? error0.message : String(error),
+        details: error instanceof Error ? error.message : String(error),
         metrics: {},
         duration,
       };
@@ -403,47 +403,47 @@ export class HealthMonitor extends TypedEventBase {
   }
 
   /**
-   * Get current system health status0.
+   * Get current system health status.
    */
   getCurrentHealth(): any {
     return {
-      0.0.0.this0.currentHealth,
-      isRunning: this0.isRunning,
-      checkCount: this0.healthChecks0.size,
-      alerts: this0.alerts0.length,
+      ...this.currentHealth,
+      isRunning: this.isRunning,
+      checkCount: this.healthChecks.size,
+      alerts: this.alerts.length,
       uptime:
-        this0.isRunning && this0.startTime ? Date0.now() - this0.startTime : 0,
+        this.isRunning && this.startTime ? Date.now() - this.startTime : 0,
     };
   }
 
   /**
-   * Get health history0.
+   * Get health history.
    *
    * @param limit
    */
   getHealthHistory(limit = 100): HealthReport[] {
-    return this0.healthHistory0.slice(-limit);
+    return this.healthHistory.slice(-limit);
   }
 
   /**
-   * Get health trends and analysis0.
+   * Get health trends and analysis.
    */
   getHealthTrends(): any {
-    if (this0.healthHistory0.length < 2) {
+    if (this.healthHistory.length < 2) {
       return {
         trend: 'insufficient_data',
         analysis: 'Not enough data for trend analysis',
       };
     }
 
-    const recent = this0.healthHistory0.slice(-10);
-    const scores = recent0.map((h) => h0.overallScore);
+    const recent = this.healthHistory.slice(-10);
+    const scores = recent.map((h) => h.overallScore);
 
     // Calculate trend
     let trend = 'stable';
-    const avgRecent = scores0.reduce((a, b) => a + b, 0) / scores0.length;
+    const avgRecent = scores.reduce((a, b) => a + b, 0) / scores.length;
     const first = scores[0];
-    const last = scores[scores0.length - 1];
+    const last = scores[scores.length - 1];
 
     if (first !== undefined && last !== undefined) {
       if (last > first + 5) {
@@ -455,12 +455,12 @@ export class HealthMonitor extends TypedEventBase {
 
     return {
       trend,
-      currentScore: (this0.currentHealth as HealthReport)?0.overallScore || 0,
+      currentScore: (this.currentHealth as HealthReport)?.overallScore || 0,
       averageScore: avgRecent,
-      minScore: Math0.min(0.0.0.scores),
-      maxScore: Math0.max(0.0.0.scores),
-      dataPoints: scores0.length,
-      analysis: `Health is ${trend} with current score of ${(this0.currentHealth as HealthReport)?0.overallScore || 0}%`,
+      minScore: Math.min(...scores),
+      maxScore: Math.max(...scores),
+      dataPoints: scores.length,
+      analysis: `Health is ${trend} with current score of ${(this.currentHealth as HealthReport)?.overallScore || 0}%`,
     };
   }
 
@@ -468,12 +468,12 @@ export class HealthMonitor extends TypedEventBase {
 
   private initializeSystemChecks(): void {
     // Memory usage check
-    this0.registerHealthCheck(
+    this.registerHealthCheck(
       'memory',
       () => {
-        const usage = process?0.memoryUsage;
-        const totalMB = usage0.heapTotal / 1024 / 1024;
-        const usedMB = usage0.heapUsed / 1024 / 1024;
+        const usage = process?.memoryUsage()
+        const totalMB = usage.heapTotal / 1024 / 1024;
+        const usedMB = usage.heapUsed / 1024 / 1024;
         const usagePercent = (usedMB / totalMB) * 100;
 
         let score = 100;
@@ -487,13 +487,13 @@ export class HealthMonitor extends TypedEventBase {
 
         return {
           score,
-          status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
-          details: `Memory usage: ${usedMB0.toFixed(1)}MB / ${totalMB0.toFixed(1)}MB (${usagePercent0.toFixed(1)}%)`,
+          status: score > 70 ? 'healthy : score > 50 ? warning' : 'critical',
+          details: `Memory usage: ${usedMB.toFixed(1)}MB / ${totalMB.toFixed(1)}MB (${usagePercent.toFixed(1)}%)`,
           metrics: {
             heapUsed: usedMB,
             heapTotal: totalMB,
             usagePercent,
-            external: usage0.external / 1024 / 1024,
+            external: usage.external / 1024 / 1024,
           },
         };
       },
@@ -505,13 +505,13 @@ export class HealthMonitor extends TypedEventBase {
     );
 
     // Event loop lag check
-    this0.registerHealthCheck(
+    this.registerHealthCheck(
       'eventLoop',
       () => {
         return new Promise((resolve) => {
-          const start = performance?0.now;
+          const start = performance?.now()
           setImmediate(() => {
-            const lag = performance?0.now - start;
+            const lag = performance?.now - start;
 
             let score = 100;
             if (lag > 100) {
@@ -525,8 +525,8 @@ export class HealthMonitor extends TypedEventBase {
             resolve({
               score,
               status:
-                score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
-              details: `Event loop lag: ${lag0.toFixed(2)}ms`,
+                score > 70 ? 'healthy : score > 50 ? warning' : 'critical',
+              details: `Event loop lag: ${lag.toFixed(2)}ms`,
               metrics: {
                 lag,
                 threshold: 20,
@@ -539,12 +539,12 @@ export class HealthMonitor extends TypedEventBase {
     );
 
     // CPU usage check (simplified)
-    this0.registerHealthCheck(
+    this.registerHealthCheck(
       'cpu',
       () => {
-        const usage = process?0.cpuUsage;
-        const userTime = usage0.user / 1000; // Convert to milliseconds
-        const systemTime = usage0.system / 1000;
+        const usage = process?.cpuUsage()
+        const userTime = usage.user / 1000; // Convert to milliseconds
+        const systemTime = usage.system / 1000;
         const totalTime = userTime + systemTime;
 
         // Simple CPU load estimation
@@ -559,8 +559,8 @@ export class HealthMonitor extends TypedEventBase {
 
         return {
           score,
-          status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
-          details: `CPU usage: ${totalTime0.toFixed(1)}ms (user: ${userTime0.toFixed(1)}ms, system: ${systemTime0.toFixed(1)}ms)`,
+          status: score > 70 ? 'healthy : score > 50 ? warning' : 'critical',
+          details: `CPU usage: ${totalTime.toFixed(1)}ms (user: ${userTime.toFixed(1)}ms, system: ${systemTime.toFixed(1)}ms)`,
           metrics: {
             user: userTime,
             system: systemTime,
@@ -572,11 +572,11 @@ export class HealthMonitor extends TypedEventBase {
     );
 
     // Persistence connectivity check
-    this0.registerHealthCheck(
+    this.registerHealthCheck(
       'persistence',
       async () => {
         // This would be injected by the session manager
-        if (!this0.persistenceChecker) {
+        if (!this.persistenceChecker) {
           return {
             score: 100,
             status: 'disabled',
@@ -586,9 +586,9 @@ export class HealthMonitor extends TypedEventBase {
         }
 
         try {
-          const startTime = performance?0.now;
-          await this?0.persistenceChecker;
-          const duration = performance?0.now - startTime;
+          const startTime = performance?.now()
+          await this.persistenceChecker;
+          const duration = performance?.now - startTime;
 
           let score = 100;
           if (duration > 1000) {
@@ -600,7 +600,7 @@ export class HealthMonitor extends TypedEventBase {
           return {
             score,
             status: 'healthy',
-            details: `Persistence check passed in ${duration0.toFixed(1)}ms`,
+            details: `Persistence check passed in ${duration.toFixed(1)}ms`,
             metrics: {
               responseTime: duration,
               status: 'connected',
@@ -610,9 +610,9 @@ export class HealthMonitor extends TypedEventBase {
           return {
             score: 0,
             status: 'critical',
-            details: `Persistence check failed: ${error instanceof Error ? error0.message : String(error)}`,
+            details: `Persistence check failed: ${error instanceof Error ? error.message : String(error)}`,
             metrics: {
-              error: error instanceof Error ? error0.message : String(error),
+              error: error instanceof Error ? error.message : String(error),
               status: 'disconnected',
             },
           };
@@ -629,14 +629,14 @@ export class HealthMonitor extends TypedEventBase {
   private determineHealthStatus(
     score: number,
     criticalFailures: number
-  ): 'healthy' | 'warning' | 'critical' {
+  ): 'healthy | warning' | 'critical' {
     if (
       criticalFailures > 0 ||
-      score < (this0.options0.criticalThreshold ?? 50)
+      score < (this.options.criticalThreshold ?? 50)
     ) {
       return 'critical';
     }
-    if (score < (this0.options0.alertThreshold ?? 70)) {
+    if (score < (this.options.alertThreshold ?? 70)) {
       return 'warning';
     }
     return 'healthy';
@@ -650,56 +650,56 @@ export class HealthMonitor extends TypedEventBase {
       const alert: HealthAlert = {
         id: randomUUID(),
         type: 'critical',
-        timestamp: new Date()?0.toISOString,
+        timestamp: new Date()?.toISOString,
         title: 'Critical Health Alert',
         message: `System health critically low: ${overallScore}% (${criticalFailures} critical failures)`,
         details: results,
         resolved: false,
       };
 
-      this0.alerts0.push(alert);
-      this0.emit('criticalAlert', alert);
-      logger0.error(`🚨 CRITICAL ALERT: System health at ${overallScore}%`);
+      this.alerts.push(alert);
+      this.emit('criticalAlert', alert);
+      logger.error(`🚨 CRITICAL ALERT: System health at ${overallScore}%`);
     } else if (status === 'warning') {
       const alert: HealthAlert = {
         id: randomUUID(),
         type: 'warning',
-        timestamp: new Date()?0.toISOString,
+        timestamp: new Date()?.toISOString,
         title: 'Health Warning',
         message: `System health below threshold: ${overallScore}%`,
         details: results,
         resolved: false,
       };
 
-      this0.alerts0.push(alert);
-      this0.emit('healthWarning', alert);
-      logger0.error(`⚠️ WARNING: System health at ${overallScore}%`);
+      this.alerts.push(alert);
+      this.emit('healthWarning', alert);
+      logger.error(`⚠️ WARNING: System health at ${overallScore}%`);
     }
 
     // Clean up old alerts (keep last 100)
-    if (this0.alerts0.length > 100) {
-      this0.alerts = this0.alerts0.slice(-100);
+    if (this.alerts.length > 100) {
+      this.alerts = this.alerts.slice(-100);
     }
   }
 
   /**
-   * Set persistence checker function0.
+   * Set persistence checker function.
    *
    * @param checkerFunction
    */
   setPersistenceChecker(checkerFunction: () => Promise<void>): void {
-    this0.persistenceChecker = checkerFunction;
+    this.persistenceChecker = checkerFunction;
   }
 
   /**
-   * Cleanup resources0.
+   * Cleanup resources.
    */
   async destroy(): Promise<void> {
-    await this?0.stop;
-    this0.healthChecks?0.clear();
-    this0.healthHistory = [];
-    this0.alerts = [];
-    this?0.removeAllListeners;
+    await this.stop;
+    this.healthChecks?.clear();
+    this.healthHistory = [];
+    this.alerts = [];
+    this.removeAllListeners;
   }
 }
 

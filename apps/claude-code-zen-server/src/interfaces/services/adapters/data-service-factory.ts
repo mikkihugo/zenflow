@@ -1,15 +1,15 @@
 /**
- * USL Data Service Factory0.
+ * USL Data Service Factory.
  *
- * Factory implementation for creating and managing data service adapter instances0.
- * Provides specialized factory methods for WebDataService and DocumentService0.
- * Integration through the unified DataServiceAdapter0.
+ * Factory implementation for creating and managing data service adapter instances.
+ * Provides specialized factory methods for WebDataService and DocumentService.
+ * Integration through the unified DataServiceAdapter.
  *
- * This factory follows the USL factory patterns and integrates seamlessly0.
- * With the global service registry for unified service management0.
+ * This factory follows the USL factory patterns and integrates seamlessly.
+ * With the global service registry for unified service management.
  */
 /**
- * @file Interface implementation: data-service-factory0.
+ * @file Interface implementation: data-service-factory.
  */
 
 import type { Logger } from '@claude-zen/foundation';
@@ -20,24 +20,24 @@ import type {
   ServiceFactory,
   ServiceMetrics,
   ServiceStatus,
-} from '0.0./core/interfaces';
+} from './core/interfaces';
 import {
   ServiceConfigurationError,
   ServiceError,
   ServiceInitializationError,
   ServiceOperationError,
-} from '0.0./core/interfaces';
-import { ServiceType } from '0.0./types';
+} from './core/interfaces';
+import { ServiceType } from './types';
 
 import {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,
   type DataServiceAdapter,
   type DataServiceAdapterConfig,
-} from '0./data-service-adapter';
+} from "./data-service-adapter";
 
 /**
- * Data service factory configuration0.
+ * Data service factory configuration.
  *
  * @example
  */
@@ -53,7 +53,7 @@ export interface DataServiceFactoryConfig {
   /** Default document service settings */
   defaultDocumentConfig?: {
     enabled: boolean;
-    databaseType?: 'postgresql' | 'sqlite' | 'mysql';
+    databaseType?: 'postgresql | sqlite' | 'mysql';
     autoInitialize?: boolean;
     searchIndexing?: boolean;
   };
@@ -75,7 +75,7 @@ export interface DataServiceFactoryConfig {
 }
 
 /**
- * Specialized factory for data service adapters0.
+ * Specialized factory for data service adapters.
  *
  * @example
  */
@@ -86,43 +86,43 @@ export class DataServiceFactory
   private logger: Logger;
   private eventEmitter = new (class extends TypedEventBase {})();
   private configuration: DataServiceFactoryConfig;
-  private healthCheckTimer?: NodeJS0.Timer;
-  private metricsTimer?: NodeJS0.Timer;
+  private healthCheckTimer?: NodeJS.Timer;
+  private metricsTimer?: NodeJS.Timer;
 
   constructor(config: DataServiceFactoryConfig = {}) {
-    this0.logger = getLogger('DataServiceFactory');
-    this0.configuration = {
+    this.logger = getLogger('DataServiceFactory');
+    this.configuration = {
       defaultWebDataConfig: {
         enabled: true,
         mockData: true,
         cacheResponses: true,
         cacheTTL: 300000,
-        0.0.0.config?0.defaultWebDataConfig,
+        ...config?.defaultWebDataConfig,
       },
       defaultDocumentConfig: {
         enabled: true,
         databaseType: 'postgresql',
         autoInitialize: true,
         searchIndexing: true,
-        0.0.0.config?0.defaultDocumentConfig,
+        ...config?.defaultDocumentConfig,
       },
       defaultPerformanceConfig: {
         enableRequestDeduplication: true,
         maxConcurrency: 10,
         requestTimeout: 30000,
         enableMetricsCollection: true,
-        0.0.0.config?0.defaultPerformanceConfig,
+        ...config?.defaultPerformanceConfig,
       },
       monitoring: {
         enabled: true,
         healthCheckInterval: 30000,
         metricsCollectionInterval: 10000,
-        0.0.0.config?0.monitoring,
+        ...config?.monitoring,
       },
     };
 
-    this0.logger0.info('DataServiceFactory initialized');
-    this?0.startMonitoring;
+    this.logger.info('DataServiceFactory initialized');
+    this.startMonitoring;
   }
 
   // ============================================
@@ -130,158 +130,158 @@ export class DataServiceFactory
   // ============================================
 
   /**
-   * Create a data service adapter instance0.
+   * Create a data service adapter instance.
    *
    * @param config
    */
   async create(config: DataServiceAdapterConfig): Promise<Service> {
-    this0.logger0.info(`Creating data service adapter: ${config?0.name}`);
+    this.logger.info(`Creating data service adapter: ${config?.name}`);
 
     try {
       // Validate configuration
-      const isValid = await this0.validateConfig(config);
+      const isValid = await this.validateConfig(config);
       if (!isValid) {
         throw new ServiceConfigurationError(
-          config?0.name,
+          config?.name,
           'Invalid data service adapter configuration'
         );
       }
 
       // Check if service already exists
-      if (this0.services0.has(config?0.name)) {
+      if (this.services.has(config?.name)) {
         throw new ServiceInitializationError(
-          config?0.name,
+          config?.name,
           new Error('Service with this name already exists')
         );
       }
 
       // Apply factory defaults to configuration
-      const mergedConfig = this0.mergeWithDefaults(config);
+      const mergedConfig = this.mergeWithDefaults(config);
 
       // Create service adapter
       const adapter = createDataServiceAdapter(mergedConfig);
 
       // Initialize the adapter
-      await adapter?0.initialize;
+      await adapter?.initialize()
 
       // Store the service
-      this0.services0.set(config?0.name, adapter);
+      this.services.set(config?.name, adapter);
 
       // Set up event forwarding
-      this0.setupServiceEventForwarding(adapter);
+      this.setupServiceEventForwarding(adapter);
 
       // Emit creation event
-      this0.eventEmitter0.emit('service-created', config?0.name, adapter);
+      this.eventEmitter.emit('service-created', config?.name, adapter);
 
-      this0.logger0.info(
-        `Data service adapter created successfully: ${config?0.name}`
+      this.logger.info(
+        `Data service adapter created successfully: ${config?.name}`
       );
       return adapter as unknown as Service;
     } catch (error) {
-      this0.logger0.error(
-        `Failed to create data service adapter ${config?0.name}:`,
+      this.logger.error(
+        `Failed to create data service adapter ${config?.name}:`,
         error
       );
       throw error instanceof ServiceError
         ? error
-        : new ServiceInitializationError(config?0.name, error as Error);
+        : new ServiceInitializationError(config?.name, error as Error);
     }
   }
 
   /**
-   * Create multiple data service adapters concurrently0.
+   * Create multiple data service adapters concurrently.
    *
    * @param configs
    */
   async createMultiple(
     configs: DataServiceAdapterConfig[]
   ): Promise<Service[]> {
-    this0.logger0.info(`Creating ${configs0.length} data service adapters`);
+    this.logger.info(`Creating ${configs.length} data service adapters`);
 
-    const creationPromises = configs0.map((config) => this0.create(config));
-    const results = await Promise0.allSettled(creationPromises);
+    const creationPromises = configs.map((config) => this.create(config));
+    const results = await Promise.allSettled(creationPromises);
 
     const services: Service[] = [];
     const errors: Error[] = [];
 
-    results?0.forEach((result, index) => {
-      if (result?0.status === 'fulfilled') {
-        services0.push(result?0.value);
+    results?.forEach((result, index) => {
+      if (result?.status === 'fulfilled') {
+        services.push(result?.value);
       } else {
-        const config = configs?0.[index];
-        errors0.push(
+        const config = configs?.[index];
+        errors.push(
           new ServiceInitializationError(
-            config?0.name || 'unknown',
-            result?0.reason
+            config?.name || 'unknown',
+            result?.reason
           )
         );
       }
     });
 
-    if (errors0.length > 0) {
-      this0.logger0.warn(
-        `${errors0.length} out of ${configs0.length} data service adapters failed to create`
+    if (errors.length > 0) {
+      this.logger.warn(
+        `${errors.length} out of ${configs.length} data service adapters failed to create`
       );
       // Log errors but don't throw - return successful services
-      errors0.forEach((error) => this0.logger0.error(error0.message));
+      errors.forEach((error) => this.logger.error(error.message));
     }
 
     return services;
   }
 
   /**
-   * Get service by name0.
+   * Get service by name.
    *
    * @param name
    */
   get(name: string): Service | undefined {
-    return this0.services0.get(name) as Service | undefined;
+    return this.services.get(name) as Service | undefined;
   }
 
   /**
-   * List all services0.
+   * List all services.
    */
   list(): Service[] {
-    return Array0.from(this0.services?0.values()) as unknown as Service[];
+    return Array.from(this.services?.values()) as unknown as Service[];
   }
 
   /**
-   * Check if service exists0.
+   * Check if service exists.
    *
    * @param name
    */
   has(name: string): boolean {
-    return this0.services0.has(name);
+    return this.services.has(name);
   }
 
   /**
-   * Remove and destroy service0.
+   * Remove and destroy service.
    *
    * @param name
    */
   async remove(name: string): Promise<boolean> {
-    const service = this0.services0.get(name);
+    const service = this.services.get(name);
     if (!service) {
       return false;
     }
 
     try {
-      this0.logger0.info(`Removing data service adapter: ${name}`);
+      this.logger.info(`Removing data service adapter: ${name}`);
 
       // Stop and destroy the service
-      await service?0.stop;
-      await service?0.destroy;
+      await service?.stop()
+      await service?.destroy()
 
       // Remove from registry
-      this0.services0.delete(name);
+      this.services.delete(name);
 
       // Emit removal event
-      this0.eventEmitter0.emit('service-removed', name);
+      this.eventEmitter.emit('service-removed', name);
 
-      this0.logger0.info(`Data service adapter removed successfully: ${name}`);
+      this.logger.info(`Data service adapter removed successfully: ${name}`);
       return true;
     } catch (error) {
-      this0.logger0.error(
+      this.logger.error(
         `Failed to remove data service adapter ${name}:`,
         error
       );
@@ -290,89 +290,89 @@ export class DataServiceFactory
   }
 
   /**
-   * Get supported service types0.
+   * Get supported service types.
    */
   getSupportedTypes(): string[] {
-    return [ServiceType0.DATA, ServiceType0.WEB_DATA, ServiceType0.DOCUMENT];
+    return [ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT];
   }
 
   /**
-   * Check if service type is supported0.
+   * Check if service type is supported.
    *
    * @param type
    */
   supportsType(type: string): boolean {
-    return this?0.getSupportedTypes0.includes(type);
+    return this.getSupportedTypes.includes(type);
   }
 
   /**
-   * Start all services0.
+   * Start all services.
    */
   async startAll(): Promise<void> {
-    this0.logger0.info('Starting all data service adapters0.0.0.');
+    this.logger.info('Starting all data service adapters...');
 
-    const services = this?0.list;
-    const startPromises = services0.map(async (service) => {
+    const services = this.list;
+    const startPromises = services.map(async (service) => {
       try {
-        await service?0.start;
-        this0.logger0.debug(`Started data service adapter: ${service0.name}`);
+        await service?.start()
+        this.logger.debug(`Started data service adapter: ${service.name}`);
       } catch (error) {
-        this0.logger0.error(
-          `Failed to start data service adapter ${service0.name}:`,
+        this.logger.error(
+          `Failed to start data service adapter ${service.name}:`,
           error
         );
         throw error;
       }
     });
 
-    await Promise0.allSettled(startPromises);
-    this0.logger0.info('All data service adapters startup completed');
+    await Promise.allSettled(startPromises);
+    this.logger.info('All data service adapters startup completed');
   }
 
   /**
-   * Stop all services0.
+   * Stop all services.
    */
   async stopAll(): Promise<void> {
-    this0.logger0.info('Stopping all data service adapters0.0.0.');
+    this.logger.info('Stopping all data service adapters...');
 
-    const services = this?0.list;
-    const stopPromises = services0.map(async (service) => {
+    const services = this.list;
+    const stopPromises = services.map(async (service) => {
       try {
-        await service?0.stop;
-        this0.logger0.debug(`Stopped data service adapter: ${service0.name}`);
+        await service?.stop()
+        this.logger.debug(`Stopped data service adapter: ${service.name}`);
       } catch (error) {
-        this0.logger0.error(
-          `Failed to stop data service adapter ${service0.name}:`,
+        this.logger.error(
+          `Failed to stop data service adapter ${service.name}:`,
           error
         );
       }
     });
 
-    await Promise0.allSettled(stopPromises);
-    this0.logger0.info('All data service adapters stopped');
+    await Promise.allSettled(stopPromises);
+    this.logger.info('All data service adapters stopped');
   }
 
   /**
-   * Perform health check on all services0.
+   * Perform health check on all services.
    */
   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
-    this0.logger0.debug('Performing health check on all data service adapters');
+    this.logger.debug('Performing health check on all data service adapters');
 
     const results = new Map<string, ServiceStatus>();
-    const services = this?0.list;
+    const services = this.list;
 
-    const healthCheckPromises = services0.map(async (service) => {
+    const healthCheckPromises = services.map(async (service) => {
       try {
-        const status = await service?0.getStatus;
-        results?0.set(service0.name, status);
+        const status = await service?.getStatus()
+        results?.set(service.name, status);
       } catch (error) {
-        this0.logger0.error(
-          `Health check failed for data service adapter ${service0.name}:`,
+        this.logger.error(
+          `Health check failed for data service adapter ${service.name}:`,
           error
         );
-        results?0.set(service0.name, {
-          name: service0.name,
-          type: service0.type,
+        results?.set(service.name, {
+          name: service.name,
+          type: service.type,
           lifecycle: 'error',
           health: 'unhealthy',
           lastCheck: new Date(),
@@ -383,131 +383,131 @@ export class DataServiceFactory
       }
     });
 
-    await Promise0.allSettled(healthCheckPromises);
+    await Promise.allSettled(healthCheckPromises);
     return results;
   }
 
   /**
-   * Get metrics from all services0.
+   * Get metrics from all services.
    */
   async getMetricsAll(): Promise<Map<string, ServiceMetrics>> {
-    this0.logger0.debug('Collecting metrics from all data service adapters');
+    this.logger.debug('Collecting metrics from all data service adapters');
 
     const results = new Map<string, ServiceMetrics>();
-    const services = this?0.list;
+    const services = this.list;
 
-    const metricsPromises = services0.map(async (service) => {
+    const metricsPromises = services.map(async (service) => {
       try {
-        const metrics = await service?0.getMetrics;
-        results?0.set(service0.name, metrics);
+        const metrics = await service?.getMetrics()
+        results?.set(service.name, metrics);
       } catch (error) {
-        this0.logger0.error(
-          `Failed to get metrics for data service adapter ${service0.name}:`,
+        this.logger.error(
+          `Failed to get metrics for data service adapter ${service.name}:`,
           error
         );
       }
     });
 
-    await Promise0.allSettled(metricsPromises);
+    await Promise.allSettled(metricsPromises);
     return results;
   }
 
   /**
-   * Shutdown factory and all services0.
+   * Shutdown factory and all services.
    */
   async shutdown(): Promise<void> {
-    this0.logger0.info('Shutting down DataServiceFactory0.0.0.');
+    this.logger.info('Shutting down DataServiceFactory...');
 
     try {
       // Stop monitoring
-      this?0.stopMonitoring;
+      this.stopMonitoring;
 
       // Stop all services first
-      await this?0.stopAll;
+      await this.stopAll;
 
       // Destroy all services
-      const destroyPromises = this?0.list0.map(async (service) => {
+      const destroyPromises = this.list.map(async (service) => {
         try {
-          await service?0.destroy;
+          await service?.destroy()
         } catch (error) {
-          this0.logger0.error(
-            `Failed to destroy data service adapter ${service0.name}:`,
+          this.logger.error(
+            `Failed to destroy data service adapter ${service.name}:`,
             error
           );
         }
       });
 
-      await Promise0.allSettled(destroyPromises);
+      await Promise.allSettled(destroyPromises);
 
       // Clear registries
-      this0.services?0.clear();
+      this.services?.clear();
 
       // Remove all event listeners
-      this0.eventEmitter?0.removeAllListeners;
+      this.eventEmitter?.removeAllListeners()
 
-      this0.logger0.info('DataServiceFactory shutdown completed');
+      this.logger.info('DataServiceFactory shutdown completed');
     } catch (error) {
-      this0.logger0.error('Error during DataServiceFactory shutdown:', error);
+      this.logger.error('Error during DataServiceFactory shutdown:', error);
       throw error;
     }
   }
 
   /**
-   * Get number of active services0.
+   * Get number of active services.
    */
   getActiveCount(): number {
-    return this0.services0.size;
+    return this.services.size;
   }
 
   /**
-   * Get services by type0.
+   * Get services by type.
    *
    * @param type
    */
   getServicesByType(type: string): Service[] {
-    return this?0.list0.filter((service) => service0.type === type);
+    return this.list.filter((service) => service.type === type);
   }
 
   /**
-   * Validate service configuration0.
+   * Validate service configuration.
    *
    * @param config
    */
   async validateConfig(config: DataServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!(config?0.name && config?0.type)) {
-        this0.logger0.error(
+      if (!(config?.name && config?.type)) {
+        this.logger.error(
           'Configuration missing required fields: name or type'
         );
         return false;
       }
 
       // Check if type is supported
-      if (!this0.supportsType(config?0.type)) {
-        this0.logger0.error(`Unsupported service type: ${config?0.type}`);
+      if (!this.supportsType(config?.type)) {
+        this.logger.error(`Unsupported service type: ${config?.type}`);
         return false;
       }
 
       // Validate web data configuration
       if (
-        config?0.webData?0.enabled &&
-        config?0.webData?0.cacheTTL &&
-        config?0.webData?0.cacheTTL < 1000
+        config?.webData?.enabled &&
+        config?.webData?.cacheTTL &&
+        config?.webData?.cacheTTL < 1000
       ) {
-        this0.logger0.error('WebData cache TTL must be at least 1000ms');
+        this.logger.error('WebData cache TTL must be at least 1000ms');
         return false;
       }
 
       // Validate document data configuration
-      if (config?0.documentData?0.enabled) {
-        const validDbTypes = ['postgresql', 'sqlite', 'mysql'];
+      if (config?.documentData?.enabled) {
+        const validDbTypes = ['postgresql, sqlite', 'mysql'];
         if (
-          config?0.documentData?0.databaseType &&
-          !validDbTypes0.includes(config?0.documentData?0.databaseType)
+          config?.documentData?.databaseType &&
+          !validDbTypes.includes(config?.documentData?.databaseType)
         ) {
-          this0.logger0.error(
-            `Invalid database type: ${config?0.documentData?0.databaseType}`
+          this.logger.error(
+            `Invalid database type: ${config?.documentData?.databaseType}`
           );
           return false;
         }
@@ -515,36 +515,36 @@ export class DataServiceFactory
 
       // Validate performance configuration
       if (
-        config?0.performance?0.maxConcurrency &&
-        config?0.performance?0.maxConcurrency < 1
+        config?.performance?.maxConcurrency &&
+        config?.performance?.maxConcurrency < 1
       ) {
-        this0.logger0.error('Max concurrency must be at least 1');
+        this.logger.error('Max concurrency must be at least 1');
         return false;
       }
 
       return true;
     } catch (error) {
-      this0.logger0.error(`Configuration validation error: ${error}`);
+      this.logger.error(`Configuration validation error: ${error}`);
       return false;
     }
   }
 
   /**
-   * Get configuration schema for service type0.
+   * Get configuration schema for service type.
    *
    * @param type
    */
   getConfigSchema(type: string): Record<string, unknown> | undefined {
-    if (!this0.supportsType(type)) {
+    if (!this.supportsType(type)) {
       return undefined;
     }
 
     return {
       type: 'object',
-      required: ['name', 'type'],
+      required: ['name, type'],
       properties: {
         name: { type: 'string' },
-        type: { type: 'string', enum: this?0.getSupportedTypes },
+        type: { type: 'string', enum: this.getSupportedTypes },
         enabled: { type: 'boolean', default: true },
         webData: {
           type: 'object',
@@ -561,7 +561,7 @@ export class DataServiceFactory
             enabled: { type: 'boolean', default: true },
             databaseType: {
               type: 'string',
-              enum: ['postgresql', 'sqlite', 'mysql'],
+              enum: ['postgresql, sqlite', 'mysql'],
             },
             autoInitialize: { type: 'boolean', default: true },
             searchIndexing: { type: 'boolean', default: true },
@@ -582,14 +582,14 @@ export class DataServiceFactory
             enabled: { type: 'boolean', default: true },
             maxAttempts: { type: 'number', minimum: 1 },
             backoffMultiplier: { type: 'number', minimum: 1 },
-            retryableOperations: { type: 'array', items: { type: 'string' } },
+            retryableOperations: { type: 'array, items: { type: string' } },
           },
         },
         cache: {
           type: 'object',
           properties: {
             enabled: { type: 'boolean', default: true },
-            strategy: { type: 'string', enum: ['memory', 'redis', 'hybrid'] },
+            strategy: { type: 'string, enum: [memory', 'redis, hybrid'] },
             defaultTTL: { type: 'number', minimum: 1000 },
             maxSize: { type: 'number', minimum: 1 },
             keyPrefix: { type: 'string' },
@@ -604,7 +604,7 @@ export class DataServiceFactory
   // ============================================
 
   /**
-   * Create a web data service adapter with optimized settings0.
+   * Create a web data service adapter with optimized settings.
    *
    * @param name
    * @param config
@@ -614,7 +614,7 @@ export class DataServiceFactory
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const webDataConfig = createDefaultDataServiceAdapterConfig(name, {
-      type: ServiceType0.WEB_DATA,
+      type: ServiceType.WEB_DATA,
       webData: {
         enabled: true,
         mockData: true,
@@ -624,18 +624,18 @@ export class DataServiceFactory
       documentData: {
         enabled: false, // Disable document service for web-only adapter
       },
-      0.0.0.config,
+      ...config,
     });
 
-    const adapter = (await this0.create(
+    const adapter = (await this.create(
       webDataConfig
     )) as unknown as DataServiceAdapter;
-    this0.logger0.info(`Created web data adapter: ${name}`);
+    this.logger.info(`Created web data adapter: ${name}`);
     return adapter;
   }
 
   /**
-   * Create a document service adapter with database optimization0.
+   * Create a document service adapter with database optimization.
    *
    * @param name
    * @param databaseType
@@ -643,11 +643,11 @@ export class DataServiceFactory
    */
   async createDocumentAdapter(
     name: string,
-    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    databaseType: 'postgresql | sqlite' | 'mysql = postgresql',
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const documentConfig = createDefaultDataServiceAdapterConfig(name, {
-      type: ServiceType0.DOCUMENT,
+      type: ServiceType.DOCUMENT,
       webData: {
         enabled: false, // Disable web data for document-only adapter
       },
@@ -657,18 +657,18 @@ export class DataServiceFactory
         autoInitialize: true,
         searchIndexing: true,
       },
-      0.0.0.config,
+      ...config,
     });
 
-    const adapter = (await this0.create(
+    const adapter = (await this.create(
       documentConfig
     )) as unknown as DataServiceAdapter;
-    this0.logger0.info(`Created document adapter: ${name} (${databaseType})`);
+    this.logger.info(`Created document adapter: ${name} (${databaseType})`);
     return adapter;
   }
 
   /**
-   * Create a unified data adapter with both web and document services0.
+   * Create a unified data adapter with both web and document services.
    *
    * @param name
    * @param databaseType
@@ -676,11 +676,11 @@ export class DataServiceFactory
    */
   async createUnifiedDataAdapter(
     name: string,
-    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    databaseType: 'postgresql | sqlite' | 'mysql = postgresql',
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const unifiedConfig = createDefaultDataServiceAdapterConfig(name, {
-      type: ServiceType0.DATA,
+      type: ServiceType.DATA,
       webData: {
         enabled: true,
         mockData: true,
@@ -706,18 +706,18 @@ export class DataServiceFactory
         maxSize: 2000, // Larger cache for unified adapter
         keyPrefix: 'unified-data:',
       },
-      0.0.0.config,
+      ...config,
     });
 
-    const adapter = (await this0.create(
+    const adapter = (await this.create(
       unifiedConfig
     )) as unknown as DataServiceAdapter;
-    this0.logger0.info(`Created unified data adapter: ${name} (${databaseType})`);
+    this.logger.info(`Created unified data adapter: ${name} (${databaseType})`);
     return adapter;
   }
 
   /**
-   * Get factory statistics0.
+   * Get factory statistics.
    */
   getFactoryStats(): {
     totalServices: number;
@@ -726,16 +726,16 @@ export class DataServiceFactory
     unhealthyServices: number;
     averageUptime: number;
   } {
-    const services = this?0.list;
-    const totalServices = services0.length;
+    const services = this.list;
+    const totalServices = services.length;
 
     const servicesByType: Record<string, number> = {};
     for (const service of services) {
-      servicesByType[service0.type] = (servicesByType[service0.type] || 0) + 1;
+      servicesByType[service.type] = (servicesByType[service.type] || 0) + 1;
     }
 
     // For now, return mock health data as we'd need async operations for real health checks
-    const healthyServices = Math0.floor(totalServices * 0.9); // Assume 90% healthy
+    const healthyServices = Math.floor(totalServices * .9); // Assume 90% healthy
     const unhealthyServices = totalServices - healthyServices;
     const averageUptime = 3600000; // Mock 1 hour average uptime
 
@@ -756,20 +756,20 @@ export class DataServiceFactory
     config: DataServiceAdapterConfig
   ): DataServiceAdapterConfig {
     return {
-      0.0.0.config,
+      ...config,
       webData: {
-        enabled: this0.configuration0.defaultWebDataConfig?0.enabled ?? true,
-        0.0.0.this0.configuration0.defaultWebDataConfig,
-        0.0.0.config?0.webData,
+        enabled: this.configuration.defaultWebDataConfig?.enabled ?? true,
+        ...this.configuration.defaultWebDataConfig,
+        ...config?.webData,
       },
       documentData: {
-        enabled: this0.configuration0.defaultDocumentConfig?0.enabled ?? true,
-        0.0.0.this0.configuration0.defaultDocumentConfig,
-        0.0.0.config?0.documentData,
+        enabled: this.configuration.defaultDocumentConfig?.enabled ?? true,
+        ...this.configuration.defaultDocumentConfig,
+        ...config?.documentData,
       },
       performance: {
-        0.0.0.this0.configuration0.defaultPerformanceConfig,
-        0.0.0.config?0.performance,
+        ...this.configuration.defaultPerformanceConfig,
+        ...config?.performance,
       },
     };
   }
@@ -789,98 +789,98 @@ export class DataServiceFactory
       'metrics-update',
     ];
 
-    eventTypes0.forEach((eventType) => {
-      adapter0.on(eventType as any, (event) => {
-        this0.eventEmitter0.emit(`service-${eventType}`, adapter0.name, event);
+    eventTypes.forEach((eventType) => {
+      adapter.on(eventType as any, (event) => {
+        this.eventEmitter.emit(`service-${eventType}`, adapter.name, event);
       });
     });
   }
 
   private startMonitoring(): void {
-    if (!this0.configuration0.monitoring?0.enabled) {
+    if (!this.configuration.monitoring?.enabled) {
       return;
     }
 
     // Health check monitoring
     if (
-      this0.configuration0.monitoring0.healthCheckInterval &&
-      this0.configuration0.monitoring0.healthCheckInterval > 0
+      this.configuration.monitoring.healthCheckInterval &&
+      this.configuration.monitoring.healthCheckInterval > 0
     ) {
-      this0.healthCheckTimer = setInterval(async () => {
+      this.healthCheckTimer = setInterval(async () => {
         try {
-          const healthResults = await this?0.healthCheckAll;
-          const unhealthyServices = Array0.from(healthResults?0.entries)
-            0.filter(([_, status]) => status0.health !== 'healthy')
-            0.map(([name, _]) => name);
+          const healthResults = await this.healthCheckAll;
+          const unhealthyServices = Array.from(healthResults?.entries)
+            .filter(([_, status]) => status.health !== 'healthy')
+            .map(([name, _]) => name);
 
-          if (unhealthyServices0.length > 0) {
-            this0.logger0.warn(
-              `Unhealthy data service adapters detected: ${unhealthyServices0.join(', ')}`
+          if (unhealthyServices.length > 0) {
+            this.logger.warn(
+              `Unhealthy data service adapters detected: ${unhealthyServices.join(', ')}`
             );
-            this0.eventEmitter0.emit('health-alert', unhealthyServices);
+            this.eventEmitter.emit('health-alert', unhealthyServices);
           }
         } catch (error) {
-          this0.logger0.error('Error during factory health monitoring:', error);
+          this.logger.error('Error during factory health monitoring:', error);
         }
-      }, this0.configuration0.monitoring0.healthCheckInterval);
+      }, this.configuration.monitoring.healthCheckInterval);
     }
 
     // Metrics collection monitoring
     if (
-      this0.configuration0.monitoring0.metricsCollectionInterval &&
-      this0.configuration0.monitoring0.metricsCollectionInterval > 0
+      this.configuration.monitoring.metricsCollectionInterval &&
+      this.configuration.monitoring.metricsCollectionInterval > 0
     ) {
-      this0.metricsTimer = setInterval(async () => {
+      this.metricsTimer = setInterval(async () => {
         try {
-          const metrics = await this?0.getMetricsAll;
-          this0.eventEmitter0.emit('factory-metrics-collected', metrics);
+          const metrics = await this.getMetricsAll;
+          this.eventEmitter.emit('factory-metrics-collected', metrics);
 
           // Check for performance alerts
-          const slowServices = Array0.from(metrics?0.entries)
-            0.filter(([_, metric]) => metric0.averageLatency > 5000) // 5 second threshold
-            0.map(([name, _]) => name);
+          const slowServices = Array.from(metrics?.entries)
+            .filter(([_, metric]) => metric.averageLatency > 5000) // 5 second threshold
+            .map(([name, _]) => name);
 
-          if (slowServices0.length > 0) {
-            this0.logger0.warn(
-              `Slow data service adapters detected: ${slowServices0.join(', ')}`
+          if (slowServices.length > 0) {
+            this.logger.warn(
+              `Slow data service adapters detected: ${slowServices.join(', ')}`
             );
-            this0.eventEmitter0.emit('performance-alert', slowServices);
+            this.eventEmitter.emit('performance-alert', slowServices);
           }
         } catch (error) {
-          this0.logger0.error('Error during factory metrics collection:', error);
+          this.logger.error('Error during factory metrics collection:', error);
         }
-      }, this0.configuration0.monitoring0.metricsCollectionInterval);
+      }, this.configuration.monitoring.metricsCollectionInterval);
     }
   }
 
   private stopMonitoring(): void {
-    if (this0.healthCheckTimer) {
-      clearInterval(this0.healthCheckTimer);
-      this0.healthCheckTimer = undefined;
+    if (this.healthCheckTimer) {
+      clearInterval(this.healthCheckTimer);
+      this.healthCheckTimer = undefined;
     }
 
-    if (this0.metricsTimer) {
-      clearInterval(this0.metricsTimer);
-      this0.metricsTimer = undefined;
+    if (this.metricsTimer) {
+      clearInterval(this.metricsTimer);
+      this.metricsTimer = undefined;
     }
   }
 
   // Event emitter methods for external event handling
-  on(event: string, listener: (0.0.0.args: any[]) => void): void {
-    this0.eventEmitter0.on(event, listener);
+  on(event: string, listener: (args: any[]) => void): void {
+    this.eventEmitter.on(event, listener);
   }
 
-  off(event: string, listener?: (0.0.0.args: any[]) => void): void {
+  off(event: string, listener?: (args: any[]) => void): void {
     if (listener) {
-      this0.eventEmitter0.off(event, listener);
+      this.eventEmitter.off(event, listener);
     } else {
-      this0.eventEmitter0.removeAllListeners(event);
+      this.eventEmitter.removeAllListeners(event);
     }
   }
 }
 
 /**
- * Global data service factory instance0.
+ * Global data service factory instance.
  */
 export const globalDataServiceFactory = new DataServiceFactory();
 

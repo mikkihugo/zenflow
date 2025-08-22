@@ -478,11 +478,24 @@ export const getKVStore = async () => {
   };
 };
 
-export const getGlobalLLM = async () => {
+// LLMProvider interface for packages that need it
+export interface LLMProvider {
+  generate(prompt: string, options?: any): Promise<{ text: string }>;
+  complete(prompt: string, options?: any): Promise<string>;
+  chat(messages: any[], options?: any): Promise<{ response: string }>;
+  setRole?(role: string): void;
+}
+
+// Export LLMProvider as a type export too
+export type { LLMProvider as LLMProviderType };
+
+export const getGlobalLLM = (): LLMProvider => {
   console.warn('getGlobalLLM: Use @claude-zen/intelligence for production LLM access');
   return {
     generate: async () => ({ text: '' }),
+    complete: async () => '',
     chat: async () => ({ response: '' }),
+    setRole: () => {}
   };
 };
 
@@ -494,6 +507,19 @@ export const singleton = () => (target: any) => {
 // Telemetry stub functions - moved to @claude-zen/operations
 export const recordMetric = (_name: string, _value: number = 1, _attributes?: Record<string, unknown>) => {
   console.warn('recordMetric: Use @claude-zen/operations for production telemetry');
+};
+
+export const recordHistogram = (_name: string, _value: number, _attributes?: Record<string, unknown>) => {
+  console.warn('recordHistogram: Use @claude-zen/operations for production telemetry');
+};
+
+export const startTrace = (_name: string, _attributes?: Record<string, unknown>) => {
+  console.warn('startTrace: Use @claude-zen/operations for production telemetry');
+  return {
+    end: () => console.warn('trace.end: Use @claude-zen/operations for production telemetry'),
+    addAttribute: (_key: string, _value: unknown) => console.warn('trace.addAttribute: Use @claude-zen/operations'),
+    setStatus: (_status: string) => console.warn('trace.setStatus: Use @claude-zen/operations')
+  };
 };
 
 export const withTrace = <T>(nameOrFn: string | (() => T), fn?: () => T): T => {
@@ -530,12 +556,175 @@ export const TOKENS = {
   Database: 'database',
 };
 
-export const getDatabaseAccess = async () => {
+// DatabaseAccess interface for packages that need it
+export interface DatabaseAccess {
+  query(sql: string, params?: any[]): Promise<{ rows: any[] }>;
+  execute(sql: string, params?: any[]): Promise<{ changes: number }>;
+  getKV(namespace: string): Promise<any>;
+}
+
+// Export DatabaseAccess as a type export too
+export type { DatabaseAccess as DatabaseAccessType };
+
+export const getDatabaseAccess = (): DatabaseAccess => {
   console.warn('getDatabaseAccess: Use @claude-zen/infrastructure for production database access');
   return {
     query: async () => ({ rows: [] }),
     execute: async () => ({ changes: 0 }),
+    getKV: async () => ({
+      set: async () => {},
+      get: async () => null,
+      delete: async () => false,
+      clear: async () => {}
+    })
   };
+};
+
+// DI Container and Service implementations
+export interface ServiceContainer {
+  register<T>(token: string, implementation: new (...args: any[]) => T): void;
+  resolve<T>(token: string): T;
+  has(token: string): boolean;
+}
+
+export const createServiceContainer = (): ServiceContainer => {
+  const services = new Map<string, any>();
+  
+  return {
+    register<T>(token: string, implementation: new (...args: any[]) => T): void {
+      services.set(token, implementation);
+    },
+    resolve<T>(token: string): T {
+      const Service = services.get(token);
+      if (!Service) {
+        throw new Error(`Service not found for token: ${token}`);
+      }
+      return new Service();
+    },
+    has(token: string): boolean {
+      return services.has(token);
+    }
+  };
+};
+
+export enum Lifetime {
+  Singleton = 'singleton',
+  Transient = 'transient',
+  Scoped = 'scoped'
+}
+
+// EventEmitter implementation for packages that need it
+export class EventEmitter {
+  private events: Map<string, Function[]> = new Map();
+
+  on(event: string, listener: Function): this {
+    if (!this.events.has(event)) {
+      this.events.set(event, []);
+    }
+    this.events.get(event)!.push(listener);
+    return this;
+  }
+
+  emit(event: string, ...args: any[]): boolean {
+    const listeners = this.events.get(event);
+    if (!listeners) return false;
+    
+    listeners.forEach(listener => listener(...args));
+    return true;
+  }
+
+  off(event: string, listener: Function): this {
+    const listeners = this.events.get(event);
+    if (listeners) {
+      const index = listeners.indexOf(listener);
+      if (index > -1) {
+        listeners.splice(index, 1);
+      }
+    }
+    return this;
+  }
+
+  removeAllListeners(event?: string): this {
+    if (event) {
+      this.events.delete(event);
+    } else {
+      this.events.clear();
+    }
+    return this;
+  }
+
+  once(event: string, listener: Function): this {
+    const onceWrapper = (...args: any[]) => {
+      this.off(event, onceWrapper);
+      listener(...args);
+    };
+    this.on(event, onceWrapper);
+    return this;
+  }
+}
+
+// KeyValueStore interface for memory backends
+export interface KeyValueStore {
+  get(key: string): Promise<string | null>;
+  set(key: string, value: string): Promise<void>;
+  has(key: string): Promise<boolean>;
+  delete(key: string): Promise<boolean>;
+  clear(): Promise<void>;
+  keys(): Promise<string[]>;
+}
+
+// Memory configuration interfaces  
+export interface MemoryConfig {
+  type?: 'sqlite' | 'lancedb' | 'json' | 'memory';
+  path?: string;
+  maxSize?: number;
+  ttl?: number;
+  compression?: boolean;
+  persistent?: boolean;
+}
+
+// Database configuration and factory types
+export interface DatabaseConfig {
+  type: 'sqlite' | 'lancedb' | 'kuzu' | 'postgresql' | 'mysql';
+  path?: string;
+  connectionString?: string;
+  host?: string;
+  port?: number;
+  database?: string;
+  username?: string;
+  password?: string;
+}
+
+export interface DatabaseFactory {
+  create(config: DatabaseConfig): Promise<DatabaseAccess>;
+}
+
+export interface TransactionOperation {
+  execute(): Promise<any>;
+}
+
+export interface VectorDocument {
+  id: string;
+  embedding: number[];
+  metadata?: Record<string, any>;
+}
+
+// Create functions for database/memory packages
+export const createDao = (type: string, config: any) => {
+  console.warn(`createDao: Package-specific implementation required for type ${type}`);
+  return {
+    find: () => Promise.resolve([]),
+    create: () => Promise.resolve({}),
+    update: () => Promise.resolve({}),
+    delete: () => Promise.resolve(true)
+  };
+};
+
+export const createMultiDatabaseSetup = (config: DatabaseConfig[]) => {
+  console.warn('createMultiDatabaseSetup: Package-specific implementation required');
+  return Promise.resolve({
+    databases: config.map(c => ({ type: c.type, status: 'ready' }))
+  });
 };
 
 // System monitoring stubs - moved to @claude-zen/operations

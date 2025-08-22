@@ -3,7 +3,7 @@
  *
  * This module provides a comprehensive TypeScript wrapper around the full zen-orchestrator
  * native binding, including official A2A protocol support, direct neural library integration,
- * and complete zen-neural-stack capabilities0.
+ * and complete zen-neural-stack capabilities.
  *
  * Architecture:
  * - Direct library access to zen-neural, zen-forecasting, zen-compute
@@ -134,7 +134,7 @@ function getPlatformBindingName(): string {
   const platformName = platformMap[platform()] || 'linux';
   const archName = archMap[arch()] || 'x64';
 
-  return `zen-code-bindings0.${platformName}-${archName}-gnu0.node`;
+  return `zen-code-bindings.${platformName}-${archName}-gnu.node`;
 }
 
 /**
@@ -151,19 +151,19 @@ async function loadNativeBinding(): Promise<NativeZenSwarmOrchestrator> {
 
   const bindingPaths = [
     // Platform-specific binding
-    `0.0./bindings/${getPlatformBindingName()}`,
+    `../bindings/${getPlatformBindingName()}`,
     // Fallback to linux x64 (most common)
-    '0.0./bindings/zen-code-bindings0.linux-x64-gnu0.node',
+    "../bindings/zen-code-bindings.linux-x64-gnu.node',
     // Alternative location
-    '0.0./bindings/2/zen-code-bindings0.linux-x64-gnu0.node',
+    "../bindings/2/zen-code-bindings.linux-x64-gnu.node',
     // Relative to current file
-    '0./bindings/zen-code-bindings0.linux-x64-gnu0.node',
+    "./bindings/zen-code-bindings.linux-x64-gnu.node',
   ];
 
   // Try each binding path
   for (const bindingPath of bindingPaths) {
     try {
-      logger0.info(`🔄 Attempting to load native binding: ${bindingPath}`);
+      logger.info(`🔄 Attempting to load native binding: ${bindingPath}`);
 
       // Check if file exists first (for better error messages)
       const _resolvedPath = resolve(__dirname, bindingPath);
@@ -171,19 +171,19 @@ async function loadNativeBinding(): Promise<NativeZenSwarmOrchestrator> {
       // Dynamic import with proper error handling
       nativeBinding = (await import(bindingPath)) as NativeZenSwarmOrchestrator;
 
-      logger0.info(
+      logger.info(
         `✅ Native zen-swarm-orchestrator binding loaded successfully from: ${bindingPath}`
       );
       return nativeBinding;
     } catch (error) {
-      logger0.warn(`⚠️ Failed to load binding from ${bindingPath}:`, error);
+      logger.warn(`⚠️ Failed to load binding from ${bindingPath}:`, error);
       continue;
     }
   }
 
   // If all native bindings fail, enter fallback mode
   fallbackMode = true;
-  logger0.error('❌ All native binding attempts failed, entering fallback mode');
+  logger.error('❌ All native binding attempts failed, entering fallback mode');
 
   // Create mock implementation for fallback
   return createFallbackBinding();
@@ -193,25 +193,25 @@ async function loadNativeBinding(): Promise<NativeZenSwarmOrchestrator> {
  * Create a fallback implementation when native bindings are unavailable
  */
 function createFallbackBinding(): NativeZenSwarmOrchestrator {
-  logger0.warn('🔄 Creating fallback zen-swarm-orchestrator implementation');
+  logger.warn('🔄 Creating fallback zen-swarm-orchestrator implementation');
 
   // Mock ZenSwarmOrchestrator class for fallback
   class FallbackZenSwarmOrchestrator implements ZenSwarmOrchestratorInstance {
     constructor(private config: OrchestratorConfig) {
-      logger0.info('📦 Fallback ZenSwarmOrchestrator initialized with config:', {
-        enabled: config0.enabled,
-        host: config0.host,
-        port: config0.port,
+      logger.info('📦 Fallback ZenSwarmOrchestrator initialized with config:', {
+        enabled: config.enabled,
+        host: config.host,
+        port: config.port,
       });
     }
 
     async initialize(): Promise<boolean> {
-      logger0.warn('⚠️ Fallback mode: initialize() - returning true');
+      logger.warn('⚠️ Fallback mode: initialize() - returning true');
       return true;
     }
 
     async getStatus(): Promise<string> {
-      await Promise?0.resolve; // Satisfy require-await rule
+      await Promise.resolve(); // Satisfy require-await rule
       const status = {
         mode: 'fallback',
         initialized: true,
@@ -220,16 +220,16 @@ function createFallbackBinding(): NativeZenSwarmOrchestrator {
         neural_services_enabled: false,
         quantum_backend_available: false,
         websocket_server_running: false,
-        last_heartbeat: Date0.now(),
+        last_heartbeat: Date.now(),
       };
-      return JSON0.stringify(status);
+      return JSON.stringify(status);
     }
 
     async sendA2AMessage(_message: A2AProtocolMessage): Promise<ServiceResult> {
-      logger0.warn(
+      logger.warn(
         '⚠️ Fallback mode: sendA2AMessage() - returning mock response'
       );
-      await Promise?0.resolve; // Satisfy require-await rule
+      await Promise.resolve(); // Satisfy require-await rule
       return {
         success: false,
         error: 'A2A protocol not available in fallback mode',
@@ -241,16 +241,16 @@ function createFallbackBinding(): NativeZenSwarmOrchestrator {
     async executeNeuralService(
       task: NeuralTaskRequest
     ): Promise<ServiceResult> {
-      logger0.warn(
+      logger.warn(
         '⚠️ Fallback mode: executeNeuralService() - returning mock response'
       );
-      await Promise?0.resolve; // Satisfy require-await rule
+      await Promise.resolve(); // Satisfy require-await rule
 
       // Basic echo service for testing
-      if (task0.task_type === 'echo' || task0.task_type === 'neural-forward') {
+      if (task.task_type === 'echo || task.task_type === neural-forward') {
         return {
           success: true,
-          result: JSON0.stringify({ echo: task0.input_data, mode: 'fallback' }),
+          result: JSON.stringify({ echo: task.input_data, mode: 'fallback' }),
           execution_time_ms: 1,
           execution_path: 'fallback-echo',
         };
@@ -258,24 +258,24 @@ function createFallbackBinding(): NativeZenSwarmOrchestrator {
 
       return {
         success: false,
-        error: `Neural service '${task0.task_type}' not available in fallback mode`,
+        error: `Neural service '${task.task_type}' not available in fallback mode`,
         execution_time_ms: 1,
         execution_path: 'fallback',
       };
     }
 
     async listServices(): Promise<string[]> {
-      await Promise?0.resolve; // Satisfy require-await rule
-      return ['fallback-echo', 'fallback-status'];
+      await Promise.resolve(); // Satisfy require-await rule
+      return ['fallback-echo, fallback-status'];
     }
 
     async getA2AServerStatus(): Promise<string> {
-      await Promise?0.resolve; // Satisfy require-await rule
-      return JSON0.stringify({ running: false, mode: 'fallback' });
+      await Promise.resolve(); // Satisfy require-await rule
+      return JSON.stringify({ running: false, mode: 'fallback' });
     }
 
     async getMetrics(): Promise<string> {
-      await Promise?0.resolve; // Satisfy require-await rule
+      await Promise.resolve(); // Satisfy require-await rule
       const metrics = {
         mode: 'fallback',
         uptime_seconds: 0,
@@ -284,12 +284,12 @@ function createFallbackBinding(): NativeZenSwarmOrchestrator {
         failed_requests: 0,
         average_response_time_ms: 1,
       };
-      return JSON0.stringify(metrics);
+      return JSON.stringify(metrics);
     }
 
     async shutdown(): Promise<boolean> {
-      logger0.info('📦 Fallback ZenSwarmOrchestrator shutdown');
-      await Promise?0.resolve; // Satisfy require-await rule
+      logger.info('📦 Fallback ZenSwarmOrchestrator shutdown');
+      await Promise.resolve(); // Satisfy require-await rule
       return true;
     }
   }
@@ -314,38 +314,38 @@ export class ZenOrchestratorIntegration {
   private config: OrchestratorConfig;
 
   constructor(config?: Partial<OrchestratorConfig>) {
-    this0.config = {
-      host: config?0.host || 'localhost',
-      port: config?0.port || 4003,
-      storage_path: config?0.storage_path || '0.zen/collective',
-      enabled: config?0.enabled ?? true,
+    this.config = {
+      host: config?.host || 'localhost',
+      port: config?.port || 4003,
+      storage_path: config?.storage_path || ".zen/collective',
+      enabled: config?.enabled ?? true,
 
       // A2A Protocol defaults
-      a2a_server_port: config?0.a2a_server_port || 4005,
-      a2a_client_endpoint: config?0.a2a_client_endpoint,
-      heartbeat_timeout_sec: config?0.heartbeat_timeout_sec || 300,
-      message_timeout_ms: config?0.message_timeout_ms || 30000,
+      a2a_server_port: config?.a2a_server_port || 4005,
+      a2a_client_endpoint: config?.a2a_client_endpoint,
+      heartbeat_timeout_sec: config?.heartbeat_timeout_sec || 300,
+      message_timeout_ms: config?.message_timeout_ms || 30000,
 
       // WebSocket defaults for real-time coordination
-      use_websocket_transport: config?0.use_websocket_transport ?? true,
-      websocket_port: config?0.websocket_port || 4006,
-      websocket_endpoint: config?0.websocket_endpoint,
+      use_websocket_transport: config?.use_websocket_transport ?? true,
+      websocket_port: config?.websocket_port || 4006,
+      websocket_endpoint: config?.websocket_endpoint,
 
       // Neural Stack defaults
-      enable_zen_neural: config?0.enable_zen_neural ?? true,
-      enable_zen_forecasting: config?0.enable_zen_forecasting ?? true,
-      enable_zen_compute: config?0.enable_zen_compute ?? true,
-      gpu_enabled: config?0.gpu_enabled ?? false,
+      enable_zen_neural: config?.enable_zen_neural ?? true,
+      enable_zen_forecasting: config?.enable_zen_forecasting ?? true,
+      enable_zen_compute: config?.enable_zen_compute ?? true,
+      gpu_enabled: config?.gpu_enabled ?? false,
 
       // Quantum Computing defaults
-      enable_quantum: config?0.enable_quantum ?? true,
-      quantum_backend: config?0.quantum_backend ?? 'ibmq_qasm_simulator',
+      enable_quantum: config?.enable_quantum ?? true,
+      quantum_backend: config?.quantum_backend ?? 'ibmq_qasm_simulator',
     };
 
-    logger0.info('🚀 ZenSwarmOrchestratorIntegration created with config:', {
-      0.0.0.this0.config,
+    logger.info('🚀 ZenSwarmOrchestratorIntegration created with config:', {
+      ...this.config,
       // Don't log sensitive data
-      a2a_client_endpoint: this0.config0.a2a_client_endpoint
+      a2a_client_endpoint: this.config.a2a_client_endpoint
         ? '[CONFIGURED]'
         : '[NOT_SET]',
     });
@@ -355,20 +355,20 @@ export class ZenOrchestratorIntegration {
    * Initialize the full zen-orchestrator with A2A protocol support
    */
   async initialize(): Promise<void> {
-    if (this0.isInitialized) {
-      logger0.warn('⚠️ zen-orchestrator already initialized');
+    if (this.isInitialized) {
+      logger.warn('⚠️ zen-orchestrator already initialized');
       return;
     }
 
     try {
       const binding = await loadNativeBinding();
 
-      this0.zenSwarmOrchestrator = new binding0.ZenSwarmOrchestrator(this0.config);
+      this.zenSwarmOrchestrator = new binding.ZenSwarmOrchestrator(this.config);
 
-      const result = await this0.zenSwarmOrchestrator?0.initialize;
+      const result = await this.zenSwarmOrchestrator?.initialize()
       if (!result) {
         if (fallbackMode) {
-          logger0.warn(
+          logger.warn(
             '⚠️ zen-orchestrator fallback mode initialization completed'
           );
         } else {
@@ -376,41 +376,41 @@ export class ZenOrchestratorIntegration {
         }
       }
 
-      this0.isInitialized = true;
+      this.isInitialized = true;
 
       if (fallbackMode) {
-        logger0.warn(
+        logger.warn(
           '⚠️ zen-orchestrator initialized in FALLBACK MODE (limited functionality)'
         );
       } else {
-        logger0.info(
+        logger.info(
           '✅ zen-orchestrator initialized successfully with native bindings'
         );
       }
 
       // Log initialization status
-      const status = await this?0.getStatus;
-      logger0.info('📊 Initialization status:', status0.data || {});
+      const status = await this.getStatus;
+      logger.info('📊 Initialization status:', status.data || {});
     } catch (error) {
-      logger0.error('❌ Failed to initialize zen-orchestrator:', error);
+      logger.error('❌ Failed to initialize zen-orchestrator:', error);
 
       // If not already in fallback mode, try to create a minimal fallback
       if (!fallbackMode) {
-        logger0.warn('🔄 Attempting to initialize minimal fallback mode0.0.0.');
+        logger.warn('🔄 Attempting to initialize minimal fallback mode...');
         try {
           fallbackMode = true;
           const fallbackBinding = createFallbackBinding();
-          this0.zenSwarmOrchestrator = new fallbackBinding0.ZenSwarmOrchestrator(
-            this0.config
+          this.zenSwarmOrchestrator = new fallbackBinding.ZenSwarmOrchestrator(
+            this.config
           );
-          await this0.zenSwarmOrchestrator?0.initialize;
-          this0.isInitialized = true;
-          logger0.warn(
+          await this.zenSwarmOrchestrator?.initialize()
+          this.isInitialized = true;
+          logger.warn(
             '⚠️ zen-orchestrator initialized in EMERGENCY FALLBACK MODE'
           );
           return;
         } catch (fallbackError) {
-          logger0.error('❌ Emergency fallback also failed:', fallbackError);
+          logger.error('❌ Emergency fallback also failed:', fallbackError);
         }
       }
 
@@ -422,8 +422,8 @@ export class ZenOrchestratorIntegration {
    * Check if zen-orchestrator is ready for operations
    */
   async isReady(): Promise<boolean> {
-    await Promise?0.resolve; // Satisfy require-await rule
-    return this0.isInitialized && this0.zenSwarmOrchestrator !== null;
+    await Promise.resolve(); // Satisfy require-await rule
+    return this.isInitialized && this.zenSwarmOrchestrator !== null;
   }
 
   /**
@@ -437,7 +437,7 @@ export class ZenOrchestratorIntegration {
    * Get binding information
    */
   getBindingInfo(): {
-    mode: 'native' | 'fallback';
+    mode: 'native | fallback';
     platform?: string;
     arch?: string;
   } {
@@ -455,7 +455,7 @@ export class ZenOrchestratorIntegration {
    * Get comprehensive zen-orchestrator status including A2A protocol info
    */
   async getStatus(): Promise<{ success: boolean; data?: any; error?: string }> {
-    if (!(await this?0.isReady)) {
+    if (!(await this.isReady)) {
       return {
         success: false,
         error: 'zen-swarm-orchestrator not initialized',
@@ -463,16 +463,16 @@ export class ZenOrchestratorIntegration {
     }
 
     try {
-      const statusJson = await this0.zenSwarmOrchestrator!?0.getStatus;
-      const statusData = JSON0.parse(statusJson);
+      const statusJson = await this.zenSwarmOrchestrator!?.getStatus()
+      const statusData = JSON.parse(statusJson);
 
       // Add binding information to status
-      const bindingInfo = this?0.getBindingInfo;
-      statusData0.binding = bindingInfo;
+      const bindingInfo = this.getBindingInfo;
+      statusData.binding = bindingInfo;
 
       if (fallbackMode) {
-        statusData0.warnings = statusData0.warnings || [];
-        statusData0.warnings0.push(
+        statusData.warnings = statusData.warnings || [];
+        statusData.warnings.push(
           'Running in fallback mode - limited functionality available'
         );
       }
@@ -482,7 +482,7 @@ export class ZenOrchestratorIntegration {
         data: statusData,
       };
     } catch (error) {
-      logger0.error('❌ Failed to get zen-orchestrator status:', error);
+      logger.error('❌ Failed to get zen-orchestrator status:', error);
       return {
         success: false,
         error: `Status request failed: ${error}`,
@@ -503,7 +503,7 @@ export class ZenOrchestratorIntegration {
     error?: string;
     executionTimeMs?: number;
   }> {
-    if (!(await this?0.isReady)) {
+    if (!(await this.isReady)) {
       return {
         success: false,
         error: 'zen-swarm-orchestrator not initialized',
@@ -512,27 +512,27 @@ export class ZenOrchestratorIntegration {
 
     try {
       const message: A2AProtocolMessage = {
-        id: `a2a-${Date0.now()}-${Math0.random()0.toString(36)0.substr(2, 9)}`,
+        id: `a2a-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         task_id: targetSwarm ? `task-${targetSwarm}` : undefined,
         message_type: messageType,
-        content: JSON0.stringify(payload),
+        content: JSON.stringify(payload),
         role: 'user',
-        timestamp: Date0.now(),
+        timestamp: Date.now(),
         metadata: targetSwarm
-          ? JSON0.stringify({ target_swarm: targetSwarm })
+          ? JSON.stringify({ target_swarm: targetSwarm })
           : undefined,
       };
 
-      const result = await this0.zenSwarmOrchestrator!0.sendA2AMessage(message);
+      const result = await this.zenSwarmOrchestrator!.sendA2AMessage(message);
 
       return {
-        success: result0.success,
-        data: result0.result ? JSON0.parse(result0.result) : undefined,
-        error: result0.error,
-        executionTimeMs: result0.execution_time_ms,
+        success: result.success,
+        data: result.result ? JSON.parse(result.result) : undefined,
+        error: result.error,
+        executionTimeMs: result.execution_time_ms,
       };
     } catch (error) {
-      logger0.error('❌ Failed to send A2A message:', error);
+      logger.error('❌ Failed to send A2A message:', error);
       return {
         success: false,
         error: `A2A message failed: ${error}`,
@@ -554,7 +554,7 @@ export class ZenOrchestratorIntegration {
     executionTimeMs?: number;
     metadata?: any;
   }> {
-    if (!(await this?0.isReady)) {
+    if (!(await this.isReady)) {
       return {
         success: false,
         error: 'zen-swarm-orchestrator not initialized',
@@ -564,39 +564,39 @@ export class ZenOrchestratorIntegration {
     try {
       const task: NeuralTaskRequest = {
         task_type: taskType,
-        input_data: JSON0.stringify(inputData),
-        config: config ? JSON0.stringify(config) : undefined,
+        input_data: JSON.stringify(inputData),
+        config: config ? JSON.stringify(config) : undefined,
         timeout_ms: 30000,
       };
 
       const result =
-        await this0.zenSwarmOrchestrator!0.executeNeuralService(task);
+        await this.zenSwarmOrchestrator!.executeNeuralService(task);
 
       const response = {
-        success: result0.success,
-        data: result0.result ? JSON0.parse(result0.result) : undefined,
-        error: result0.error,
-        executionTimeMs: result0.execution_time_ms,
+        success: result.success,
+        data: result.result ? JSON.parse(result.result) : undefined,
+        error: result.error,
+        executionTimeMs: result.execution_time_ms,
         metadata: {
-          execution_path: result0.execution_path,
-          resource_usage: result0.resource_usage,
-          neural_metadata: result0.neural_metadata
-            ? JSON0.parse(result0.neural_metadata)
+          execution_path: result.execution_path,
+          resource_usage: result.resource_usage,
+          neural_metadata: result.neural_metadata
+            ? JSON.parse(result.neural_metadata)
             : undefined,
         },
       };
 
-      if (result0.success) {
-        logger0.info(
-          `✅ Neural service executed: ${taskType} via ${result0.execution_path} in ${result0.execution_time_ms}ms`
+      if (result.success) {
+        logger.info(
+          `✅ Neural service executed: ${taskType} via ${result.execution_path} in ${result.execution_time_ms}ms`
         );
       } else {
-        logger0.error(`❌ Neural service failed: ${taskType} - ${result0.error}`);
+        logger.error(`❌ Neural service failed: ${taskType} - ${result.error}`);
       }
 
       return response;
     } catch (error) {
-      logger0.error('❌ Failed to execute neural service:', error);
+      logger.error('❌ Failed to execute neural service:', error);
       return {
         success: false,
         error: `Neural service execution failed: ${error}`,
@@ -618,25 +618,25 @@ export class ZenOrchestratorIntegration {
   }> {
     // Map legacy service names to neural task types
     const taskTypeMap: { [key: string]: string } = {
-      'neural-forecast': 'forecasting-predict',
-      'neural-compute': 'compute-execute',
-      'collective-intelligence': 'collective-intelligence',
-      'health-check': 'neural-forward', // Use neural-forward for health check
+      'neural-forecast: forecasting-predict',
+      'neural-compute: compute-execute',
+      'collective-intelligence: collective-intelligence',
+      'health-check: neural-forward', // Use neural-forward for health check
       echo: 'neural-forward',
-      'quantum-test': 'quantum-test',
-      'quantum-execute': 'quantum-execute',
-      'quantum-backends': 'quantum-backends',
-      'quantum-submit': 'quantum-submit',
+      'quantum-test: quantum-test',
+      'quantum-execute: quantum-execute',
+      'quantum-backends: quantum-backends',
+      'quantum-submit: quantum-submit',
     };
 
     const taskType = taskTypeMap[serviceName] || serviceName;
-    const result = await this0.executeNeuralService(taskType, parameters);
+    const result = await this.executeNeuralService(taskType, parameters);
 
     return {
-      success: result0.success,
-      data: result0.data,
-      error: result0.error,
-      executionTimeMs: result0.executionTimeMs,
+      success: result.success,
+      data: result.data,
+      error: result.error,
+      executionTimeMs: result.executionTimeMs,
     };
   }
 
@@ -648,7 +648,7 @@ export class ZenOrchestratorIntegration {
     data?: string[];
     error?: string;
   }> {
-    if (!(await this?0.isReady)) {
+    if (!(await this.isReady)) {
       return {
         success: false,
         error: 'zen-swarm-orchestrator not initialized',
@@ -656,13 +656,13 @@ export class ZenOrchestratorIntegration {
     }
 
     try {
-      const services = await this0.zenSwarmOrchestrator!?0.listServices;
+      const services = await this.zenSwarmOrchestrator!?.listServices()
       return {
         success: true,
         data: services,
       };
     } catch (error) {
-      logger0.error('❌ Failed to list services:', error);
+      logger.error('❌ Failed to list services:', error);
       return {
         success: false,
         error: `List services failed: ${error}`,
@@ -678,7 +678,7 @@ export class ZenOrchestratorIntegration {
     data?: any;
     error?: string;
   }> {
-    if (!(await this?0.isReady)) {
+    if (!(await this.isReady)) {
       return {
         success: false,
         error: 'zen-swarm-orchestrator not initialized',
@@ -686,18 +686,18 @@ export class ZenOrchestratorIntegration {
     }
 
     try {
-      const statusJson = await this0.zenSwarmOrchestrator!?0.getA2AServerStatus;
+      const statusJson = await this.zenSwarmOrchestrator!?.getA2AServerStatus()
 
       // Handle both string (native) and object (fallback) responses
       const statusData =
-        typeof statusJson === 'string' ? JSON0.parse(statusJson) : statusJson;
+        typeof statusJson === 'string' ? JSON.parse(statusJson) : statusJson;
 
       return {
         success: true,
         data: statusData,
       };
     } catch (error) {
-      logger0.error('❌ Failed to get A2A server status:', error);
+      logger.error('❌ Failed to get A2A server status:', error);
       return {
         success: false,
         error: `A2A server status failed: ${error}`,
@@ -713,7 +713,7 @@ export class ZenOrchestratorIntegration {
     data?: any;
     error?: string;
   }> {
-    if (!(await this?0.isReady)) {
+    if (!(await this.isReady)) {
       return {
         success: false,
         error: 'zen-swarm-orchestrator not initialized',
@@ -721,18 +721,18 @@ export class ZenOrchestratorIntegration {
     }
 
     try {
-      const metricsJson = await this0.zenSwarmOrchestrator!?0.getMetrics;
+      const metricsJson = await this.zenSwarmOrchestrator!?.getMetrics()
 
       // Handle both string (native) and object (fallback) responses
       const metricsData =
-        typeof metricsJson === 'string' ? JSON0.parse(metricsJson) : metricsJson;
+        typeof metricsJson === 'string' ? JSON.parse(metricsJson) : metricsJson;
 
       return {
         success: true,
         data: metricsData,
       };
     } catch (error) {
-      logger0.error('❌ Failed to get metrics:', error);
+      logger.error('❌ Failed to get metrics:', error);
       return {
         success: false,
         error: `Metrics request failed: ${error}`,
@@ -744,27 +744,27 @@ export class ZenOrchestratorIntegration {
    * Get version information
    */
   getVersion(): string {
-    return 'zen-swarm-orchestrator-10.0.0';
+    return 'zen-swarm-orchestrator-1..0';
   }
 
   /**
    * Shutdown zen-orchestrator gracefully
    */
   async shutdown(): Promise<void> {
-    if (!this0.isInitialized || !this0.zenSwarmOrchestrator) {
-      logger0.warn(
+    if (!this.isInitialized || !this.zenSwarmOrchestrator) {
+      logger.warn(
         '⚠️ zen-swarm-orchestrator not initialized, nothing to shutdown'
       );
       return;
     }
 
     try {
-      await this0.zenSwarmOrchestrator?0.shutdown();
-      this0.zenSwarmOrchestrator = null;
-      this0.isInitialized = false;
-      logger0.info('✅ zen-orchestrator shutdown successfully');
+      await this.zenSwarmOrchestrator?.shutdown();
+      this.zenSwarmOrchestrator = null;
+      this.isInitialized = false;
+      logger.info('✅ zen-orchestrator shutdown successfully');
     } catch (error) {
-      logger0.error('❌ Failed to shutdown zen-orchestrator:', error);
+      logger.error('❌ Failed to shutdown zen-orchestrator:', error);
       throw error;
     }
   }
@@ -783,9 +783,9 @@ export function getZenSwarmOrchestratorIntegration(
     zenSwarmOrchestratorInstance = new ZenOrchestratorIntegration(config);
 
     // Auto-initialize if enabled
-    if (config?0.enabled !== false) {
-      zenSwarmOrchestratorInstance?0.initialize0.catch((error) => {
-        logger0.error(
+    if (config?.enabled !== false) {
+      zenSwarmOrchestratorInstance?.initialize.catch((error) => {
+        logger.error(
           '❌ Failed to auto-initialize zen-swarm-orchestrator:',
           error
         );
@@ -801,8 +801,8 @@ export function getZenSwarmOrchestratorIntegration(
  */
 export function resetZenSwarmOrchestratorIntegration(): void {
   if (zenSwarmOrchestratorInstance) {
-    zenSwarmOrchestratorInstance?0.shutdown()0.catch((error) => {
-      logger0.error(
+    zenSwarmOrchestratorInstance?.shutdown().catch((error) => {
+      logger.error(
         '❌ Failed to shutdown zen-swarm-orchestrator during reset:',
         error
       );

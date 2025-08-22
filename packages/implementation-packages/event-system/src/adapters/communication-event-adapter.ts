@@ -11,7 +11,7 @@
  * management for communication events across Claude-Zen.
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation';
+import { getLogger, type Logger, EventEmitter } from '@claude-zen/foundation';
 
 const logger = getLogger(
   'interfaces-events-adapters-communication-event-adapter'
@@ -321,7 +321,7 @@ export class CommunicationEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new TypedEventBase();
+  private eventEmitter = new EventEmitter();
   private logger: Logger;
   private startTime?: Date;
   private eventCount = 0;
@@ -1457,7 +1457,7 @@ export class CommunicationEventAdapter implements EventManager {
     const clients = this.config.websocketCommunication?.clients || ['default'];
 
     for (const clientName of clients) {
-      const wrapper = new TypedEventBase();
+      const wrapper = new EventEmitter();
       const wrappedComponent: WrappedCommunicationComponent = {
         component: null, // Would be actual WebSocketClientAdapter instance
         componentType: 'websocket',
@@ -1534,7 +1534,7 @@ export class CommunicationEventAdapter implements EventManager {
     const servers = this.config.rpcProtocol?.servers || ['http-rpc-server'];
 
     for (const serverName of servers) {
-      const wrapper = new TypedEventBase();
+      const wrapper = new EventEmitter();
       const wrappedComponent: WrappedCommunicationComponent = {
         component: null, // Would be actual HTTPRPCServer instance
         componentType: 'rpc-server',
@@ -1609,7 +1609,7 @@ export class CommunicationEventAdapter implements EventManager {
     const clients = this.config.rpcProtocol?.clients || ['default-rpc-client'];
 
     for (const clientName of clients) {
-      const wrapper = new TypedEventBase();
+      const wrapper = new EventEmitter();
       const wrappedComponent: WrappedCommunicationComponent = {
         component: null, // Would be actual RPC Client instance
         componentType: 'rpc-client',
@@ -1677,7 +1677,7 @@ export class CommunicationEventAdapter implements EventManager {
    * Wrap HTTP communication events with UEL integration.
    */
   private async wrapHTTPCommunication(): Promise<void> {
-    const wrapper = new TypedEventBase();
+    const wrapper = new EventEmitter();
     const wrappedComponent: WrappedCommunicationComponent = {
       component: null, // Would be actual HTTP client/server instance
       componentType: 'http',
@@ -1753,7 +1753,7 @@ export class CommunicationEventAdapter implements EventManager {
     ];
 
     for (const protocolType of protocols) {
-      const wrapper = new TypedEventBase();
+      const wrapper = new EventEmitter();
       const wrappedComponent: WrappedCommunicationComponent = {
         component: null, // Would be actual protocol manager instance
         componentType: 'protocol',

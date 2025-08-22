@@ -1,7 +1,7 @@
 /**
  * @fileoverview Document Service - Lightweight facade delegating to @claude-zen packages
  *
- * MAJOR REDUCTION: 2,236 → ~500 lines (770.6% reduction) through package delegation
+ * MAJOR REDUCTION: 2,236 → ~500 lines (77.6% reduction) through package delegation
  *
  * Delegates document management functionality to specialized @claude-zen packages:
  * - @claude-zen/foundation: Multi-database document storage and repository management
@@ -47,11 +47,11 @@ export interface DocumentQueryOptions {
     | 'title'
     | 'priority'
     | 'completion_percentage';
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: 'asc | desc';
 }
 
 export interface DocumentSearchOptions extends DocumentQueryOptions {
-  searchType: 'fulltext' | 'semantic' | 'keyword' | 'combined';
+  searchType: 'fulltext | semantic' | 'keyword | combined';
   query: string;
   documentTypes?: DocumentType[];
   projectId?: string;
@@ -60,7 +60,7 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
   dateRange?: {
     start: Date;
     end: Date;
-    field: 'created_at' | 'updated_at';
+    field: 'created_at | updated_at';
   };
 }
 
@@ -78,7 +78,7 @@ export interface WorkflowAutomationRule {
  * Document Manager - Facade delegating to @claude-zen packages
  *
  * Provides comprehensive document management through intelligent delegation to
- * specialized packages for database operations, workflow orchestration, and search0.
+ * specialized packages for database operations, workflow orchestration, and search.
  */
 export class DocumentManager extends TypedEventBase {
   // Package delegation instances
@@ -95,59 +95,59 @@ export class DocumentManager extends TypedEventBase {
   private workflowRepository: any;
 
   private initialized = false;
-  private databaseType: 'postgresql' | 'sqlite' | 'mysql';
+  private databaseType: 'postgresql | sqlite' | 'mysql';
 
-  constructor(databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {
+  constructor(databaseType: 'postgresql | sqlite' | 'mysql = postgresql') {
     super();
-    this0.databaseType = databaseType;
+    this.databaseType = databaseType;
   }
 
   /**
    * Initialize document manager with package delegation
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
     try {
       // Delegate to @claude-zen/infrastructure for document storage
       const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
-      this0.databaseAccess = getDatabaseAccess();
+      this.databaseAccess = getDatabaseAccess();
 
       // Create repository facades
-      this0.documentRepository = await createRepository(
+      this.documentRepository = await createRepository(
         'BaseDocument',
-        this0.databaseType
+        this.databaseType
       );
-      this0.projectRepository = await createRepository(
+      this.projectRepository = await createRepository(
         'Project',
-        this0.databaseType
+        this.databaseType
       );
-      this0.relationshipRepository = await createRepository(
+      this.relationshipRepository = await createRepository(
         'DocumentRelationship',
-        this0.databaseType
+        this.databaseType
       );
-      this0.workflowRepository = await createRepository(
+      this.workflowRepository = await createRepository(
         'DocumentWorkflowState',
-        this0.databaseType
+        this.databaseType
       );
 
       // Delegate to @claude-zen/intelligence for document workflows
       const { WorkflowEngine } = await import('@claude-zen/intelligence');
-      this0.workflowEngine = new WorkflowEngine({
+      this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: 100,
         enableVisualization: true,
       });
-      await this0.workflowEngine?0.initialize;
-      await this0.workflowEngine?0.registerDocumentWorkflows;
+      await this.workflowEngine?.initialize()
+      await this.workflowEngine?.registerDocumentWorkflows()
 
       // Delegate to @claude-zen/foundation for performance tracking
       const { PerformanceTracker } = await import('@claude-zen/foundation');
-      this0.performanceTracker = new PerformanceTracker();
+      this.performanceTracker = new PerformanceTracker();
 
       // Delegate to @claude-zen/monitoring for service observability
       const { SystemMonitor } = await import('@claude-zen/foundation');
-      this0.monitoringSystem = new SystemMonitor({
+      this.monitoringSystem = new SystemMonitor({
         serviceName: 'document-service',
         metricsCollection: { enabled: true },
         performanceTracking: { enabled: true },
@@ -155,19 +155,19 @@ export class DocumentManager extends TypedEventBase {
 
       // Delegate to @claude-zen/intelligence for document search and indexing
       const { KnowledgeManager } = await import('@claude-zen/intelligence');
-      this0.knowledgeManager = new KnowledgeManager({
+      this.knowledgeManager = new KnowledgeManager({
         enableSemantic: true,
         enableGraph: true,
         domain: 'document-management',
       });
 
-      this0.initialized = true;
-      logger0.info(
+      this.initialized = true;
+      logger.info(
         'Document Manager initialized successfully with @claude-zen package delegation'
       );
-      this0.emit('initialized', {});
+      this.emit('initialized', {});
     } catch (error) {
-      logger0.error('Failed to initialize Document Manager:', error);
+      logger.error('Failed to initialize Document Manager:', error);
       throw error;
     }
   }
@@ -180,9 +180,9 @@ export class DocumentManager extends TypedEventBase {
     data: Partial<T>,
     options: DocumentCreateOptions = {}
   ): Promise<T> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const timer = this0.performanceTracker0.startTimer('create_document');
+    const timer = this.performanceTracker.startTimer('create_document');
 
     try {
       // Generate document ID
@@ -190,20 +190,20 @@ export class DocumentManager extends TypedEventBase {
 
       // Prepare document data with workflow delegation
       const documentData = {
-        0.0.0.data,
+        ...data,
         id: documentId,
         document_type: documentType,
         created_at: new Date(),
         updated_at: new Date(),
-        status: data0.status || 'draft',
+        status: data.status || 'draft',
       };
 
       // Use database repository for creation
-      const document = await this0.documentRepository0.create(documentData);
+      const document = await this.documentRepository.create(documentData);
 
       // Start workflow using workflow engine
-      if (options0.startWorkflow) {
-        await this0.workflowEngine0.startWorkflow(options0.startWorkflow, {
+      if (options.startWorkflow) {
+        await this.workflowEngine.startWorkflow(options.startWorkflow, {
           documentId,
           documentType,
           documentData,
@@ -211,36 +211,36 @@ export class DocumentManager extends TypedEventBase {
       }
 
       // Generate search index using knowledge manager
-      if (options0.generateSearchIndex) {
-        await this0.knowledgeManager0.indexDocument({
+      if (options.generateSearchIndex) {
+        await this.knowledgeManager.indexDocument({
           id: documentId,
           type: documentType,
           content: documentData,
-          metadata: { createdAt: documentData0.created_at },
+          metadata: { createdAt: documentData.created_at },
         });
       }
 
       // Generate relationships if requested
-      if (options0.autoGenerateRelationships) {
-        await this0.generateDocumentRelationships(
+      if (options.autoGenerateRelationships) {
+        await this.generateDocumentRelationships(
           documentId,
           documentType,
           documentData
         );
       }
 
-      this0.performanceTracker0.endTimer('create_document');
-      this0.monitoringSystem0.recordMetric('documents_created', 1, {
+      this.performanceTracker.endTimer('create_document');
+      this.monitoringSystem.recordMetric('documents_created', 1, {
         type: documentType,
       });
 
-      logger0.info(`Created ${documentType} document: ${documentId}`);
-      this0.emit('documentCreated', { document, documentType });
+      logger.info(`Created ${documentType} document: ${documentId}`);
+      this.emit('documentCreated', { document, documentType });
 
       return document;
     } catch (error) {
-      this0.performanceTracker0.endTimer('create_document');
-      logger0.error('Failed to create document:', error);
+      this.performanceTracker.endTimer('create_document');
+      logger.error('Failed to create document:', error);
       throw error;
     }
   }
@@ -252,40 +252,40 @@ export class DocumentManager extends TypedEventBase {
     id: string,
     options: DocumentQueryOptions = {}
   ): Promise<T | null> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const timer = this0.performanceTracker0.startTimer('get_document');
+    const timer = this.performanceTracker.startTimer('get_document');
 
     try {
       // Get document from repository
-      const document = await this0.documentRepository0.findById(id);
+      const document = await this.documentRepository.findById(id);
 
       if (!document) {
-        this0.performanceTracker0.endTimer('get_document');
+        this.performanceTracker.endTimer('get_document');
         return null;
       }
 
       // Include relationships if requested
-      if (options0.includeRelationships) {
-        const relationships = await this0.relationshipRepository0.findMany({
+      if (options.includeRelationships) {
+        const relationships = await this.relationshipRepository.findMany({
           where: { source_document_id: id },
         });
-        document0.relationships = relationships;
+        document.relationships = relationships;
       }
 
       // Include workflow state if requested
-      if (options0.includeWorkflowState) {
-        const workflowState = await this0.workflowRepository0.findOne({
+      if (options.includeWorkflowState) {
+        const workflowState = await this.workflowRepository.findOne({
           where: { document_id: id },
         });
-        document0.workflowState = workflowState;
+        document.workflowState = workflowState;
       }
 
-      this0.performanceTracker0.endTimer('get_document');
+      this.performanceTracker.endTimer('get_document');
       return document;
     } catch (error) {
-      this0.performanceTracker0.endTimer('get_document');
-      logger0.error('Failed to get document:', error);
+      this.performanceTracker.endTimer('get_document');
+      logger.error('Failed to get document:', error);
       throw error;
     }
   }
@@ -298,45 +298,45 @@ export class DocumentManager extends TypedEventBase {
     updates: Partial<T>,
     triggerWorkflow: boolean = true
   ): Promise<T> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const timer = this0.performanceTracker0.startTimer('update_document');
+    const timer = this.performanceTracker.startTimer('update_document');
 
     try {
       // Update document in repository
       const updatedData = {
-        0.0.0.updates,
+        ...updates,
         updated_at: new Date(),
       };
 
-      const document = await this0.documentRepository0.update(id, updatedData);
+      const document = await this.documentRepository.update(id, updatedData);
 
       // Trigger workflow if status changed and workflows enabled
-      if (triggerWorkflow && updates0.status) {
-        await this0.workflowEngine0.processDocumentEvent('status_change', {
+      if (triggerWorkflow && updates.status) {
+        await this.workflowEngine.processDocumentEvent('status_change', {
           documentId: id,
-          oldStatus: document0.status,
-          newStatus: updates0.status,
+          oldStatus: document.status,
+          newStatus: updates.status,
           documentData: document,
         });
       }
 
       // Update search index
-      await this0.knowledgeManager0.updateIndex(id, {
+      await this.knowledgeManager.updateIndex(id, {
         content: document,
-        metadata: { updatedAt: document0.updated_at },
+        metadata: { updatedAt: document.updated_at },
       });
 
-      this0.performanceTracker0.endTimer('update_document');
-      this0.monitoringSystem0.recordMetric('documents_updated', 1);
+      this.performanceTracker.endTimer('update_document');
+      this.monitoringSystem.recordMetric('documents_updated', 1);
 
-      logger0.info(`Updated document: ${id}`);
-      this0.emit('documentUpdated', { document, updates });
+      logger.info(`Updated document: ${id}`);
+      this.emit('documentUpdated', { document, updates });
 
       return document;
     } catch (error) {
-      this0.performanceTracker0.endTimer('update_document');
-      logger0.error('Failed to update document:', error);
+      this.performanceTracker.endTimer('update_document');
+      logger.error('Failed to update document:', error);
       throw error;
     }
   }
@@ -347,52 +347,52 @@ export class DocumentManager extends TypedEventBase {
   async searchDocuments<T extends BaseDocumentEntity>(
     options: DocumentSearchOptions
   ): Promise<{ documents: T[]; total: number; facets?: any }> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const timer = this0.performanceTracker0.startTimer('search_documents');
+    const timer = this.performanceTracker.startTimer('search_documents');
 
     try {
       // Use knowledge manager for advanced search
-      const searchResults = await this0.knowledgeManager0.search({
-        query: options0.query,
-        searchType: options0.searchType,
+      const searchResults = await this.knowledgeManager.search({
+        query: options.query,
+        searchType: options.searchType,
         filters: {
-          documentTypes: options0.documentTypes,
-          projectId: options0.projectId,
-          status: options0.status,
-          priority: options0.priority,
-          dateRange: options0.dateRange,
+          documentTypes: options.documentTypes,
+          projectId: options.projectId,
+          status: options.status,
+          priority: options.priority,
+          dateRange: options.dateRange,
         },
-        limit: options0.limit,
-        offset: options0.offset,
-        sortBy: options0.sortBy,
-        sortOrder: options0.sortOrder,
+        limit: options.limit,
+        offset: options.offset,
+        sortBy: options.sortBy,
+        sortOrder: options.sortOrder,
       });
 
       // Enrich results with additional data if requested
-      const documents = await Promise0.all(
-        searchResults0.documents0.map(async (doc: any) => {
-          if (options0.includeRelationships || options0.includeWorkflowState) {
-            return await this0.getDocument(doc0.id, options);
+      const documents = await Promise.all(
+        searchResults.documents.map(async (doc: any) => {
+          if (options.includeRelationships || options.includeWorkflowState) {
+            return await this.getDocument(doc.id, options);
           }
           return doc;
         })
       );
 
-      this0.performanceTracker0.endTimer('search_documents');
-      this0.monitoringSystem0.recordMetric('document_searches', 1, {
-        searchType: options0.searchType,
-        resultCount: documents0.length,
+      this.performanceTracker.endTimer('search_documents');
+      this.monitoringSystem.recordMetric('document_searches', 1, {
+        searchType: options.searchType,
+        resultCount: documents.length,
       });
 
       return {
         documents,
-        total: searchResults0.total,
-        facets: searchResults0.facets,
+        total: searchResults.total,
+        facets: searchResults.facets,
       };
     } catch (error) {
-      this0.performanceTracker0.endTimer('search_documents');
-      logger0.error('Failed to search documents:', error);
+      this.performanceTracker.endTimer('search_documents');
+      logger.error('Failed to search documents:', error);
       throw error;
     }
   }
@@ -401,47 +401,47 @@ export class DocumentManager extends TypedEventBase {
    * Delete document with cleanup
    */
   async deleteDocument(id: string): Promise<void> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
-    const timer = this0.performanceTracker0.startTimer('delete_document');
+    const timer = this.performanceTracker.startTimer('delete_document');
 
     try {
       // Get document before deletion for cleanup
-      const document = await this0.documentRepository0.findById(id);
+      const document = await this.documentRepository.findById(id);
 
       if (!document) {
         throw new Error(`Document not found: ${id}`);
       }
 
       // Delete relationships
-      await this0.relationshipRepository0.deleteMany({
+      await this.relationshipRepository.deleteMany({
         where: {
           $or: [{ source_document_id: id }, { target_document_id: id }],
         },
       });
 
       // Delete workflow state
-      await this0.workflowRepository0.deleteMany({
+      await this.workflowRepository.deleteMany({
         where: { document_id: id },
       });
 
       // Remove from search index
-      await this0.knowledgeManager0.removeFromIndex(id);
+      await this.knowledgeManager.removeFromIndex(id);
 
       // Delete the document
-      await this0.documentRepository0.delete(id);
+      await this.documentRepository.delete(id);
 
-      this0.performanceTracker0.endTimer('delete_document');
-      this0.monitoringSystem0.recordMetric('documents_deleted', 1);
+      this.performanceTracker.endTimer('delete_document');
+      this.monitoringSystem.recordMetric('documents_deleted', 1);
 
-      logger0.info(`Deleted document: ${id}`);
-      this0.emit('documentDeleted', {
+      logger.info(`Deleted document: ${id}`);
+      this.emit('documentDeleted', {
         documentId: id,
-        documentType: document0.document_type,
+        documentType: document.document_type,
       });
     } catch (error) {
-      this0.performanceTracker0.endTimer('delete_document');
-      logger0.error('Failed to delete document:', error);
+      this.performanceTracker.endTimer('delete_document');
+      logger.error('Failed to delete document:', error);
       throw error;
     }
   }
@@ -453,30 +453,30 @@ export class DocumentManager extends TypedEventBase {
     projectId: string,
     options: DocumentQueryOptions = {}
   ): Promise<T[]> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      const documents = await this0.documentRepository0.findMany({
+      const documents = await this.documentRepository.findMany({
         where: { project_id: projectId },
-        limit: options0.limit,
-        offset: options0.offset,
-        orderBy: options0.sortBy
-          ? { [options0.sortBy]: options0.sortOrder || 'desc' }
+        limit: options.limit,
+        offset: options.offset,
+        orderBy: options.sortBy
+          ? { [options.sortBy]: options.sortOrder || 'desc' }
           : undefined,
       });
 
       // Enrich with additional data if requested
-      if (options0.includeRelationships || options0.includeWorkflowState) {
-        return await Promise0.all(
-          documents0.map(
-            async (doc: any) => await this0.getDocument(doc0.id, options)
+      if (options.includeRelationships || options.includeWorkflowState) {
+        return await Promise.all(
+          documents.map(
+            async (doc: any) => await this.getDocument(doc.id, options)
           )
         );
       }
 
       return documents;
     } catch (error) {
-      logger0.error('Failed to get documents by project:', error);
+      logger.error('Failed to get documents by project:', error);
       throw error;
     }
   }
@@ -485,31 +485,31 @@ export class DocumentManager extends TypedEventBase {
    * Get workflow status for document
    */
   async getDocumentWorkflowStatus(documentId: string): Promise<any> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      const workflowState = await this0.workflowRepository0.findOne({
+      const workflowState = await this.workflowRepository.findOne({
         where: { document_id: documentId },
       });
 
       if (!workflowState) {
-        return { status: 'none', stage: 'draft', canTransition: true };
+        return { status: 'none, stage: draft', canTransition: true };
       }
 
       // Get workflow details from workflow engine
-      const workflowStatus = await this0.workflowEngine0.getWorkflowStatus(
-        workflowState0.workflow_id
+      const workflowStatus = await this.workflowEngine.getWorkflowStatus(
+        workflowState.workflow_id
       );
 
       return {
-        status: workflowStatus?0.status || 'unknown',
-        stage: workflowState0.current_stage,
-        canTransition: workflowStatus?0.status === 'running',
-        nextStages: await this0.getNextStages(workflowState0.current_stage),
-        workflowId: workflowState0.workflow_id,
+        status: workflowStatus?.status || 'unknown',
+        stage: workflowState.current_stage,
+        canTransition: workflowStatus?.status === 'running',
+        nextStages: await this.getNextStages(workflowState.current_stage),
+        workflowId: workflowState.workflow_id,
       };
     } catch (error) {
-      logger0.error('Failed to get document workflow status:', error);
+      logger.error('Failed to get document workflow status:', error);
       throw error;
     }
   }
@@ -522,10 +522,10 @@ export class DocumentManager extends TypedEventBase {
     toStage: string,
     metadata?: any
   ): Promise<void> {
-    if (!this0.initialized) await this?0.initialize;
+    if (!this.initialized) await this.initialize;
 
     try {
-      const workflowState = await this0.workflowRepository0.findOne({
+      const workflowState = await this.workflowRepository.findOne({
         where: { document_id: documentId },
       });
 
@@ -534,30 +534,30 @@ export class DocumentManager extends TypedEventBase {
       }
 
       // Process workflow transition through workflow engine
-      await this0.workflowEngine0.processDocumentEvent('stage_transition', {
+      await this.workflowEngine.processDocumentEvent('stage_transition', {
         documentId,
-        fromStage: workflowState0.current_stage,
+        fromStage: workflowState.current_stage,
         toStage,
         metadata,
       });
 
       // Update workflow state
-      await this0.workflowRepository0.update(workflowState0.id, {
+      await this.workflowRepository.update(workflowState.id, {
         current_stage: toStage,
         updated_at: new Date(),
-        metadata: { 0.0.0.workflowState0.metadata, 0.0.0.metadata },
+        metadata: { ...workflowState.metadata, ...metadata },
       });
 
-      logger0.info(
-        `Transitioned document ${documentId} from ${workflowState0.current_stage} to ${toStage}`
+      logger.info(
+        `Transitioned document ${documentId} from ${workflowState.current_stage} to ${toStage}`
       );
-      this0.emit('workflowTransitioned', {
+      this.emit('workflowTransitioned', {
         documentId,
-        fromStage: workflowState0.current_stage,
+        fromStage: workflowState.current_stage,
         toStage,
       });
     } catch (error) {
-      logger0.error('Failed to transition document workflow:', error);
+      logger.error('Failed to transition document workflow:', error);
       throw error;
     }
   }
@@ -567,9 +567,9 @@ export class DocumentManager extends TypedEventBase {
    */
   getDocumentMetrics(): any {
     return {
-      performance: this0.performanceTracker?0.getStats || {},
-      monitoring: this0.monitoringSystem?0.getMetrics || {},
-      totalOperations: this0.performanceTracker?0.getStats?0.totalOperations || 0,
+      performance: this.performanceTracker?.getStats || {},
+      monitoring: this.monitoringSystem?.getMetrics || {},
+      totalOperations: this.performanceTracker?.getStats?.totalOperations || 0,
     };
   }
 
@@ -583,7 +583,7 @@ export class DocumentManager extends TypedEventBase {
   ): Promise<void> {
     try {
       // Use knowledge manager to find related documents
-      const relatedDocuments = await this0.knowledgeManager0.findRelated({
+      const relatedDocuments = await this.knowledgeManager.findRelated({
         documentId,
         documentType,
         content: documentData,
@@ -592,21 +592,21 @@ export class DocumentManager extends TypedEventBase {
 
       // Create relationship entities
       for (const related of relatedDocuments) {
-        await this0.relationshipRepository0.create({
+        await this.relationshipRepository.create({
           id: nanoid(),
           source_document_id: documentId,
-          target_document_id: related0.id,
-          relationship_type: related0.relationshipType || 'related',
-          strength: related0.strength || 0.5,
+          target_document_id: related.id,
+          relationship_type: related.relationshipType || 'related',
+          strength: related.strength || .5,
           created_at: new Date(),
         });
       }
 
-      logger0.info(
-        `Generated ${relatedDocuments0.length} relationships for document: ${documentId}`
+      logger.info(
+        `Generated ${relatedDocuments.length} relationships for document: ${documentId}`
       );
     } catch (error) {
-      logger0.error('Failed to generate document relationships:', error);
+      logger.error('Failed to generate document relationships:', error);
       // Don't throw - relationships are optional
     }
   }
@@ -618,18 +618,18 @@ export class DocumentManager extends TypedEventBase {
     try {
       // This would be handled by workflow definitions in the workflow engine
       const stageMap: Record<string, string[]> = {
-        draft: ['review', 'approved'],
-        review: ['approved', 'draft'],
-        approved: ['implementation', 'active'],
-        implementation: ['testing', 'completed'],
-        testing: ['completed', 'implementation'],
+        draft: ['review, approved'],
+        review: ['approved, draft'],
+        approved: ['implementation, active'],
+        implementation: ['testing, completed'],
+        testing: ['completed, implementation'],
         completed: [],
         active: [],
       };
 
       return stageMap[currentStage] || [];
     } catch (error) {
-      logger0.error('Failed to get next stages:', error);
+      logger.error('Failed to get next stages:', error);
       return [];
     }
   }
@@ -639,13 +639,13 @@ export class DocumentManager extends TypedEventBase {
    */
   async shutdown(): Promise<void> {
     try {
-      if (this0.workflowEngine) {
-        await this0.workflowEngine?0.shutdown();
+      if (this.workflowEngine) {
+        await this.workflowEngine?.shutdown();
       }
 
-      logger0.info('Document Manager shutdown completed');
+      logger.info('Document Manager shutdown completed');
     } catch (error) {
-      logger0.error('Error during Document Manager shutdown:', error);
+      logger.error('Error during Document Manager shutdown:', error);
       throw error;
     }
   }
@@ -655,7 +655,7 @@ export class DocumentManager extends TypedEventBase {
  * Create a Document Manager with default configuration
  */
 export function createDocumentManager(
-  databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
+  databaseType: 'postgresql | sqlite' | 'mysql = postgresql'
 ): DocumentManager {
   return new DocumentManager(databaseType);
 }

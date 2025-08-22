@@ -23,11 +23,11 @@ export type {
 
 /**
  * DEPRECATION NOTICE:
- * This file should be removed once all imports are updated to use foundation packages directly0.
+ * This file should be removed once all imports are updated to use foundation packages directly.
  *
  * **Migration Path:**
  * ```typescript
- * // Old: import { WebConfig } from '0.0./interfaces/shared/types';
+ * // Old: import { WebConfig } from './interfaces/shared/types';
  * // New: import { WebConfig } from '@claude-zen/foundation';
  * ```
  */

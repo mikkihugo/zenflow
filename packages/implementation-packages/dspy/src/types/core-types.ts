@@ -125,20 +125,14 @@ import {
   getLogger as getFoundationLogger 
 } from '@claude-zen/foundation';
 
-// LLM access from intelligence facade  
-import { 
-  getLLMProvider       // Use intelligence facade for LLM access
-} from '@claude-zen/intelligence';
-
-// Database access from infrastructure facade
-import { 
-  getDatabaseSystem    // Use infrastructure facade for database access
-} from '@claude-zen/infrastructure';
+// Foundation imports for standalone operation
+import type { LLMProvider, DatabaseAccess } from '@claude-zen/foundation';
+import { getGlobalLLM, getDatabaseAccess } from '@claude-zen/foundation';
 
 export class FoundationLLMIntegrationService implements LLMIntegrationService {
   async analyze(request: LLMAnalysisRequest): Promise<LLMAnalysisResponse> {
     try {
-      const llm = await getLLMProvider();
+      const llm = getGlobalLLM();
       // Configure LLM for analysis role
       
       const prompt = `Analyze the following task and provide insights:

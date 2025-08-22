@@ -63,7 +63,11 @@ export class CoordinationDao<T>
   extends BaseDao<T>
   implements CoordinationRepository<T>, DataAccessObject<T>
 {
-  private eventEmitter = new TypedEventBase();
+  private eventEmitter = new (class extends TypedEventBase {
+    public override emit(event: string, data: any): boolean {
+      return super.emit(event, data);
+    }
+  })();
   private locks = new Map<string, LockInfo>();
   private subscriptions = new Map<string, Subscription>();
   private publishedMessages = 0 as number;

@@ -1,15 +1,15 @@
 /**
  * @fileoverview Global type declarations for claude-code-zen server
  *
- * Provides global type definitions that are not available in older Node0.js versions
- * or need to be extended for the application0.
+ * Provides global type definitions that are not available in older Node.js versions
+ * or need to be extended for the application.
  */
 
-// ErrorOptions is available in Node0.js 160.90.0+ but may not be in type definitions
+// ErrorOptions is available in Node.js 16.9.0+ but may not be in type definitions
 declare global {
   /**
-   * Error options for Node0.js Error constructor0.
-   * Available in Node0.js 160.90.0+
+   * Error options for Node.js Error constructor.
+   * Available in Node.js 16.9.0+
    */
   interface ErrorOptions {
     cause?: any;

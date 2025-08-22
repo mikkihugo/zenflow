@@ -419,8 +419,8 @@ export class LoadBalancer extends TypedEventBase {
 
     this.emergencyHandler.on(
       'emergency:activated',
-      (type: string, severity: string) => {
-        this.emit('emergency', { type, severity, timestamp: new Date() });
+      (data: any) => {
+        this.emit('emergency', { type: data.type, severity: data.severity, timestamp: new Date() });
       }
     );
   }
@@ -517,12 +517,15 @@ export class LoadBalancer extends TypedEventBase {
         startupTime
       });
       
+      const errorInfo = result && typeof result === 'object' && 'error' in result 
+        ? result.error 
+        : new Error('Unknown error');
       throw new ContextError('Failed to start load balancing system', {
-        cause: result && typeof result === 'object' && 'error' in result ? result.error : new Error('Unknown error'),
         context: { 
           agentCount: this.agents.size,
           startupTime,
-          algorithm: this.loadBalancingConfig.algorithm
+          algorithm: this.loadBalancingConfig.algorithm,
+          error: errorInfo instanceof Error ? errorInfo.message : String(errorInfo)
         }
       });
     }
@@ -705,7 +708,6 @@ export class LoadBalancer extends TypedEventBase {
         error: result && typeof result === 'object' && 'error' in result ? result.error : 'Unknown error'
       });
       throw new ContextError('Failed to add agent to load balancing pool', {
-        cause: result && typeof result === 'object' && 'error' in result ? result.error : new Error('Unknown error'),
         context: { agentId: agent.id }
       });
     }
@@ -1114,7 +1116,7 @@ export class LoadBalancer extends TypedEventBase {
   public async updateConfiguration(
     newConfig: Partial<LoadBalancingConfig>
   ): Promise<void> {
-    this.config = { ...this.config, ...newConfig };
+    this.loadBalancingConfig = { ...this.loadBalancingConfig, ...newConfig };
 
     // Update algorithm if changed
     if (

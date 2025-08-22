@@ -1,14 +1,14 @@
 /**
- * OpenAPI 30.0 + Swagger Configuration
+ * OpenAPI 3.0 + Swagger Configuration
  * Complete API documentation for Claude Code Zen
  */
 
 export const swaggerOptions = {
   definition: {
-    openapi: '30.0.0',
+    openapi: '3..0',
     info: {
       title: 'Claude Code Zen API',
-      version: '10.0.0',
+      version: '1..0',
       description: `
 # Claude Code Zen API
 
@@ -25,10 +25,10 @@ Comprehensive API for the Claude Code Zen platform, providing:
 - ✅ Comprehensive error handling
 - ✅ Rate limiting & security
 - ✅ Request validation
-- ✅ OpenAPI 30.0 documentation
+- ✅ OpenAPI 3.0 documentation
 
 ## Authentication
-Currently using development mode0. Production will implement JWT authentication0.
+Currently using development mode. Production will implement JWT authentication.
 
 ## Rate Limiting
 - 100 requests per minute per P
@@ -39,19 +39,19 @@ All errors follow consistent format:
 \`\`\`json
 {
   "success": false,
-  "error": "Error Type",
-  "message": "Detailed error message",
-  "timestamp": "2024-01-15T10:30:00Z"
+  "error: Error Type",
+  "message: Detailed error message",
+  "timestamp: 2024-01-15T1:30:00Z"
 }
 \`\`\`
       `,
       contact: {
         name: 'Claude Code Zen Team',
-        url: 'https://github0.com/zen-neural/claude-code-zen',
+        url: 'https://github.com/zen-neural/claude-code-zen',
       },
       license: {
         name: 'MIT',
-        url: 'https://opensource0.org/licenses/MIT',
+        url: 'https://opensource.org/licenses/MIT',
       },
     },
     servers: [
@@ -60,7 +60,7 @@ All errors follow consistent format:
         description: 'Development server',
       },
       {
-        url: 'https://api0.claudecodezen0.com/api',
+        url: 'https://api.claudecodezen.com/api',
         description: 'Production server',
       },
     ],
@@ -91,14 +91,14 @@ All errors follow consistent format:
               description: 'SO timestamp of response',
             },
           },
-          required: ['success', 'timestamp'],
+          required: ['success, timestamp'],
         },
         HealthCheck: {
           type: 'object',
           properties: {
             status: {
               type: 'string',
-              enum: ['healthy', 'degraded', 'unhealthy'],
+              enum: ['healthy, degraded', 'unhealthy'],
               description: 'Overall system health status',
             },
             uptime: {
@@ -108,8 +108,8 @@ All errors follow consistent format:
             memory: {
               type: 'object',
               properties: {
-                used: { type: 'number', description: 'Used memory in MB' },
-                total: { type: 'number', description: 'Total memory in MB' },
+                used: { type: 'number, description: Used memory in MB' },
+                total: { type: 'number, description: Total memory in MB' },
               },
             },
             version: {
@@ -118,11 +118,11 @@ All errors follow consistent format:
             },
             environment: {
               type: 'string',
-              enum: ['development', 'staging', 'production'],
+              enum: ['development, staging', 'production'],
               description: 'Current environment',
             },
           },
-          required: ['status', 'uptime', 'version'],
+          required: ['status, uptime', 'version'],
         },
         Workflow: {
           type: 'object',
@@ -154,7 +154,7 @@ All errors follow consistent format:
             },
             priority: {
               type: 'string',
-              enum: ['low', 'medium', 'high', 'critical'],
+              enum: ['low, medium', 'high, critical'],
               description: 'Workflow priority level',
             },
             submittedAt: {
@@ -173,7 +173,7 @@ All errors follow consistent format:
             },
             riskLevel: {
               type: 'string',
-              enum: ['low', 'medium', 'high'],
+              enum: ['low, medium', 'high'],
               description: 'Associated risk level',
             },
             dependencies: {
@@ -182,7 +182,7 @@ All errors follow consistent format:
               description: 'List of dependencies',
             },
           },
-          required: ['id', 'title', 'status', 'priority', 'submittedAt'],
+          required: ['id, title', 'status, priority', 'submittedAt'],
         },
         Roadmap: {
           type: 'object',
@@ -202,7 +202,7 @@ All errors follow consistent format:
             },
             status: {
               type: 'string',
-              enum: ['planning', 'active', 'on_hold', 'completed', 'cancelled'],
+              enum: ['planning, active', 'on_hold, completed', 'cancelled'],
               description: 'Current roadmap status',
             },
             progress: {
@@ -234,7 +234,7 @@ All errors follow consistent format:
               description: 'Number of completed milestones',
             },
           },
-          required: ['id', 'title', 'status', 'progress'],
+          required: ['id, title', 'status, progress'],
         },
         Consultation: {
           type: 'object',
@@ -263,7 +263,7 @@ All errors follow consistent format:
             },
             status: {
               type: 'string',
-              enum: ['pending', 'in_progress', 'completed', 'cancelled'],
+              enum: ['pending, in_progress', 'completed, cancelled'],
               description: 'Consultation status',
             },
             createdAt: {
@@ -283,7 +283,7 @@ All errors follow consistent format:
             },
             confidence: {
               type: 'string',
-              enum: ['low', 'medium', 'high'],
+              enum: ['low, medium', 'high'],
               nullable: true,
               description: 'Confidence level in recommendation',
             },
@@ -292,7 +292,7 @@ All errors follow consistent format:
               description: 'Whether follow-up is needed',
             },
           },
-          required: ['id', 'title', 'expert', 'status', 'createdAt'],
+          required: ['id, title', 'expert, status', 'createdAt'],
         },
         Error: {
           type: 'object',
@@ -321,7 +321,7 @@ All errors follow consistent format:
               additionalProperties: true,
             },
           },
-          required: ['success', 'error', 'message', 'timestamp'],
+          required: ['success, error', 'message, timestamp'],
         },
       },
       responses: {
@@ -342,7 +342,7 @@ All errors follow consistent format:
                 success: false,
                 error: 'Not Found',
                 message: 'The requested resource was not found',
-                timestamp: '2024-01-15T10:30:00Z',
+                timestamp: '2024-01-15T1:30:00Z',
               },
             },
           },
@@ -356,7 +356,7 @@ All errors follow consistent format:
                 success: false,
                 error: 'Validation Error',
                 message: 'Invalid request parameters',
-                timestamp: '2024-01-15T10:30:00Z',
+                timestamp: '2024-01-15T1:30:00Z',
               },
             },
           },
@@ -369,8 +369,8 @@ All errors follow consistent format:
               example: {
                 success: false,
                 error: 'Too Many Requests',
-                message: 'Rate limit exceeded0. Please try again later0.',
-                timestamp: '2024-01-15T10:30:00Z',
+                message: 'Rate limit exceeded. Please try again later.',
+                timestamp: '2024-01-15T1:30:00Z',
               },
             },
           },
@@ -384,7 +384,7 @@ All errors follow consistent format:
                 success: false,
                 error: 'Internal Server Error',
                 message: 'Something went wrong',
-                timestamp: '2024-01-15T10:30:00Z',
+                timestamp: '2024-01-15T1:30:00Z',
               },
             },
           },
@@ -414,7 +414,7 @@ All errors follow consistent format:
           required: false,
           schema: {
             type: 'string',
-            enum: ['low', 'medium', 'high', 'critical'],
+            enum: ['low, medium', 'high, critical'],
           },
         },
       },
@@ -443,18 +443,18 @@ All errors follow consistent format:
     ],
   },
   apis: [
-    '0./src/interfaces/web/web-api-routes',
-    '0./src/interfaces/web/swagger-docs',
+    "./src/interfaces/web/web-api-routes',
+    "./src/interfaces/web/swagger-docs',
   ],
 };
 
 export const swaggerUiOptions = {
   customSiteTitle: 'Claude Code Zen API Documentation',
-  customfavIcon: '/favicon0.ico',
+  customfavIcon: '/favicon.ico',
   customCss: `
-    0.swagger-ui 0.topbar { display: none }
-    0.swagger-ui 0.info 0.title { color: #2c3e50; }
-    0.swagger-ui 0.scheme-container { background: #f8f9fa; padding: 10px; border-radius: 5px; }
+    .swagger-ui .topbar { display: none }
+    .swagger-ui .info .title { color: #2c3e50; }
+    .swagger-ui .scheme-container { background: #f8f9fa; padding: 10px; border-radius: 5px; }
   `,
   swaggerOptions: {
     persistAuthorization: true,

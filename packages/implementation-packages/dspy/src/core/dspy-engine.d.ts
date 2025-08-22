@@ -27,7 +27,7 @@
  * @version 1.0.0
  * @license MIT
  */
-import type { DSPyConfig, DSPyExample, DSPyOptimizationResult } from '../types/interfaces.js';
+import type { DSPyConfig, DSPyExample, DSPyOptimizationResult } from '../types/interfaces';
 /**
  * Simple KV storage interface for DSPy persistence
  */

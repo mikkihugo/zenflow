@@ -253,6 +253,19 @@
  * @license MIT
  */
 
+// Import types and functions from foundation
+import type { 
+  DatabaseConfig, 
+  DatabaseFactory, 
+  TransactionOperation, 
+  VectorDocument
+} from '@claude-zen/foundation';
+
+import { 
+  createDao,
+  createMultiDatabaseSetup
+} from '@claude-zen/foundation';
+
 // =============================================================================
 // DATABASE ADAPTERS - Core infrastructure
 // =============================================================================

@@ -1,37 +1,37 @@
 /**
- * USL (Unified Service Layer) Factory Implementation0.
+ * USL (Unified Service Layer) Factory Implementation.
  *
  * @file Central factory system for creating, managing, and orchestrating service instances
- * across the Claude-Zen ecosystem0. Provides dependency injection, service discovery,
- * and lifecycle management following the same successful patterns as DAL and UACL0.
+ * across the Claude-Zen ecosystem. Provides dependency injection, service discovery,
+ * and lifecycle management following the same successful patterns as DAL and UACL.
  * @description The USL Factory system implements the Factory pattern with enhanced capabilities:
  * - Automatic dependency resolution and injection
  * - Service lifecycle management (initialize, start, stop, destroy)
  * - Health monitoring and auto-recovery mechanisms
  * - Service discovery and registration
  * - Metrics collection and performance monitoring
- * - Event-driven service coordination0.
+ * - Event-driven service coordination.
  * @example
  * ```typescript
  * import { USLFactory, globalUSLFactory } from '@claude-zen/usl';
  *
  * // Configure and use the global factory
- * await globalUSLFactory0.initialize({
+ * await globalUSLFactory.initialize({
  *   maxConcurrentInits: 5,
  *   enableDependencyResolution: true,
  *   healthMonitoring: { enabled: true, interval: 30000 }
  * });
  *
  * // Create services with automatic dependency resolution
- * const webService = await globalUSLFactory0.create({
+ * const webService = await globalUSLFactory.create({
  *   name: 'api-server',
- *   type: ServiceType0.WEB,
+ *   type: ServiceType.WEB,
  *   dependencies: [{ serviceName: 'database', required: true }]
  * });
  *
  * // Factory handles initialization, dependency injection, and lifecycle
- * const status = await webService?0.getStatus;
- * console0.log(`Service ${webService0.name} is ${status0.lifecycle}`);
+ * const status = await webService?.getStatus()
+ * console.log(`Service ${webService.name} is ${status.lifecycle}`);
  * ```
  */
 
@@ -51,12 +51,12 @@ import type {
   ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceStatus,
-} from '0./core/interfaces';
+} from "./core/interfaces";
 import {
   ServiceConfigurationError,
   ServiceInitializationError,
   ServiceOperationError,
-} from '0./core/interfaces';
+} from "./core/interfaces";
 import {
   type CoordinationServiceConfig,
   type DatabaseServiceConfig,
@@ -68,14 +68,14 @@ import {
   ServicePriority,
   ServiceType,
   type WebServiceConfig,
-} from '0./types';
+} from "./types";
 
 /**
- * Configuration for the USL Factory system0.
+ * Configuration for the USL Factory system.
  *
  * @interface USLFactoryConfig
  * @description Comprehensive configuration options for the USL Factory system,
- * controlling service creation, monitoring, discovery, and lifecycle management0.
+ * controlling service creation, monitoring, discovery, and lifecycle management.
  * @example
  * ```typescript
  * const factoryConfig: USLFactoryConfig = {
@@ -91,7 +91,7 @@ import {
  *     enabled: true,
  *     interval: 30000,
  *     alertThresholds: {
- *       errorRate: 50.0,  // 5% error rate threshold
+ *       errorRate: 5.0,  // 5% error rate threshold
  *       responseTime: 1000  // 1 second response time threshold
  *     }
  *   },
@@ -102,7 +102,7 @@ import {
  *   }
  * };
  *
- * await globalUSLFactory0.initialize(factoryConfig);
+ * await globalUSLFactory.initialize(factoryConfig);
  * ```
  */
 export interface USLFactoryConfig {
@@ -133,7 +133,7 @@ export interface USLFactoryConfig {
     interval?: number;
     /** Alert thresholds for automated notifications */
     alertThresholds?: {
-      /** Error rate percentage threshold for alerts (e0.g0., 50.0 for 5%) */
+      /** Error rate percentage threshold for alerts (e.g., 5.0 for 5%) */
       errorRate: number;
       /** Response time threshold in milliseconds for alerts */
       responseTime: number;
@@ -162,7 +162,7 @@ export interface USLFactoryConfig {
 }
 
 /**
- * Main USL Factory class for creating and managing service instances0.
+ * Main USL Factory class for creating and managing service instances.
  *
  * @example
  */
@@ -175,130 +175,130 @@ export class USLFactory implements ServiceFactory {
   private configuration: Required<USLFactoryConfig>;
 
   constructor(config: USLFactoryConfig = {}) {
-    this0.logger = getLogger('USLFactory');
-    this0.configuration = {
-      maxConcurrentInits: config?0.maxConcurrentInits ?? 5,
-      defaultTimeout: config?0.defaultTimeout ?? 30000,
-      enableDependencyResolution: config?0.enableDependencyResolution ?? true,
+    this.logger = getLogger('USLFactory');
+    this.configuration = {
+      maxConcurrentInits: config?.maxConcurrentInits ?? 5,
+      defaultTimeout: config?.defaultTimeout ?? 30000,
+      enableDependencyResolution: config?.enableDependencyResolution ?? true,
       discovery: {
-        enabled: config?0.discovery?0.enabled ?? true,
+        enabled: config?.discovery?.enabled ?? true,
         advertisementInterval:
-          config?0.discovery?0.advertisementInterval ?? 30000,
-        heartbeatInterval: config?0.discovery?0.heartbeatInterval ?? 10000,
+          config?.discovery?.advertisementInterval ?? 30000,
+        heartbeatInterval: config?.discovery?.heartbeatInterval ?? 10000,
       },
       healthMonitoring: {
-        enabled: config?0.healthMonitoring?0.enabled ?? true,
-        interval: config?0.healthMonitoring?0.interval ?? 30000,
+        enabled: config?.healthMonitoring?.enabled ?? true,
+        interval: config?.healthMonitoring?.interval ?? 30000,
         alertThresholds: {
-          errorRate: config?0.healthMonitoring?0.alertThresholds?0.errorRate ?? 5,
+          errorRate: config?.healthMonitoring?.alertThresholds?.errorRate ?? 5,
           responseTime:
-            config?0.healthMonitoring?0.alertThresholds?0.responseTime ?? 1000,
+            config?.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
         },
       },
       metricsCollection: {
-        enabled: config?0.metricsCollection?0.enabled ?? true,
-        interval: config?0.metricsCollection?0.interval ?? 10000,
-        retention: config?0.metricsCollection?0.retention ?? 86400000, // 24 hours
+        enabled: config?.metricsCollection?.enabled ?? true,
+        interval: config?.metricsCollection?.interval ?? 10000,
+        retention: config?.metricsCollection?.retention ?? 86400000, // 24 hours
       },
       autoRecovery: {
-        enabled: config?0.autoRecovery?0.enabled ?? true,
-        maxRetries: config?0.autoRecovery?0.maxRetries ?? 3,
-        backoffMultiplier: config?0.autoRecovery?0.backoffMultiplier ?? 2,
+        enabled: config?.autoRecovery?.enabled ?? true,
+        maxRetries: config?.autoRecovery?.maxRetries ?? 3,
+        backoffMultiplier: config?.autoRecovery?.backoffMultiplier ?? 2,
       },
     };
 
-    this?0.initializeSystemServices;
+    this.initializeSystemServices;
   }
 
   /**
-   * Create a service instance based on configuration0.
+   * Create a service instance based on configuration.
    *
    * @param config
    */
   async create<T extends ServiceConfig = ServiceConfig>(
     config: T
   ): Promise<Service> {
-    this0.logger0.info(`Creating service: ${config?0.name} (${config?0.type})`);
+    this.logger.info(`Creating service: ${config?.name} (${config?.type})`);
 
     // Validate configuration
-    const isValid = await this0.validateConfig(config);
+    const isValid = await this.validateConfig(config);
     if (!isValid) {
       throw new ServiceConfigurationError(
-        config?0.name,
+        config?.name,
         'Invalid service configuration'
       );
     }
 
     // Check if service already exists
-    if (this0.services0.has(config?0.name)) {
-      this0.logger0.warn(
-        `Service ${config?0.name} already exists, returning existing instance`
+    if (this.services.has(config?.name)) {
+      this.logger.warn(
+        `Service ${config?.name} already exists, returning existing instance`
       );
-      return this0.services0.get(config?0.name)!;
+      return this.services.get(config?.name)!;
     }
 
     // Check if service is already being initialized
-    if (this0.initializationQueue0.has(config?0.name)) {
-      this0.logger0.debug(
-        `Service ${config?0.name} is already being initialized, waiting0.0.0.`
+    if (this.initializationQueue.has(config?.name)) {
+      this.logger.debug(
+        `Service ${config?.name} is already being initialized, waiting...`
       );
-      return await this0.initializationQueue0.get(config?0.name)!;
+      return await this.initializationQueue.get(config?.name)!;
     }
 
     // Create initialization promise
-    const initPromise = this0.createServiceInstance(config);
-    this0.initializationQueue0.set(config?0.name, initPromise);
+    const initPromise = this.createServiceInstance(config);
+    this.initializationQueue.set(config?.name, initPromise);
 
     try {
       const service = await initPromise;
-      this0.services0.set(config?0.name, service);
-      this0.initializationQueue0.delete(config?0.name);
+      this.services.set(config?.name, service);
+      this.initializationQueue.delete(config?.name);
 
       // Set up service event handling
-      this0.setupServiceEventHandling(service);
+      this.setupServiceEventHandling(service);
 
       // Emit service creation event
-      this0.eventEmitter0.emit('service-created', config?0.name, service);
+      this.eventEmitter.emit('service-created', config?.name, service);
 
-      this0.logger0.info(`Service created successfully: ${config?0.name}`);
+      this.logger.info(`Service created successfully: ${config?.name}`);
       return service;
     } catch (error) {
-      this0.initializationQueue0.delete(config?0.name);
-      this0.logger0.error(`Failed to create service ${config?0.name}:`, error);
-      throw new ServiceInitializationError(config?0.name, error as Error);
+      this.initializationQueue.delete(config?.name);
+      this.logger.error(`Failed to create service ${config?.name}:`, error);
+      throw new ServiceInitializationError(config?.name, error as Error);
     }
   }
 
   /**
-   * Create multiple services concurrently0.
+   * Create multiple services concurrently.
    *
    * @param configs
    */
   async createMultiple<T extends ServiceConfig = ServiceConfig>(
     configs: T[]
   ): Promise<Service[]> {
-    this0.logger0.info(`Creating ${configs0.length} services concurrently`);
+    this.logger.info(`Creating ${configs.length} services concurrently`);
 
     // Sort by priority for initialization order
-    const sortedConfigs = [0.0.0.configs]0.sort((a, b) => {
-      const priorityA = (a as any)0.priority ?? ServicePriority0.NORMAL;
-      const priorityB = (b as any)0.priority ?? ServicePriority0.NORMAL;
+    const sortedConfigs = [...configs].sort((a, b) => {
+      const priorityA = (a as any).priority ?? ServicePriority.NORMAL;
+      const priorityB = (b as any).priority ?? ServicePriority.NORMAL;
       return priorityA - priorityB;
     });
 
     // Create services in batches based on maxConcurrentInits
     const results: Service[] = [];
-    const batchSize = this0.configuration0.maxConcurrentInits;
+    const batchSize = this.configuration.maxConcurrentInits;
 
-    for (let i = 0; i < sortedConfigs0.length; i += batchSize) {
-      const batch = sortedConfigs0.slice(i, i + batchSize);
-      const batchPromises = batch0.map((config) => this0.create(config));
+    for (let i = 0; i < sortedConfigs.length; i += batchSize) {
+      const batch = sortedConfigs.slice(i, i + batchSize);
+      const batchPromises = batch.map((config) => this.create(config));
 
       try {
-        const batchResults = await Promise0.all(batchPromises);
-        results0.push(0.0.0.batchResults);
+        const batchResults = await Promise.all(batchPromises);
+        results.push(...batchResults);
       } catch (error) {
-        this0.logger0.error(
+        this.logger.error(
           `Failed to create service batch starting at index ${i}:`,
           error
         );
@@ -310,184 +310,184 @@ export class USLFactory implements ServiceFactory {
   }
 
   /**
-   * Get service by name0.
+   * Get service by name.
    *
    * @param name
    */
   get(name: string): Service | undefined {
-    return this0.services0.get(name);
+    return this.services.get(name);
   }
 
   /**
-   * List all services0.
+   * List all services.
    */
   list(): Service[] {
-    return Array0.from(this0.services?0.values());
+    return Array.from(this.services?.values());
   }
 
   /**
-   * Check if service exists0.
+   * Check if service exists.
    *
    * @param name
    */
   has(name: string): boolean {
-    return this0.services0.has(name);
+    return this.services.has(name);
   }
 
   /**
-   * Remove and destroy service0.
+   * Remove and destroy service.
    *
    * @param name
    */
   async remove(name: string): Promise<boolean> {
-    const service = this0.services0.get(name);
+    const service = this.services.get(name);
     if (!service) {
       return false;
     }
 
     try {
-      this0.logger0.info(`Removing service: ${name}`);
+      this.logger.info(`Removing service: ${name}`);
 
       // Stop and destroy the service
-      await service?0.stop;
-      await service?0.destroy;
+      await service?.stop()
+      await service?.destroy()
 
       // Remove from registry
-      this0.services0.delete(name);
+      this.services.delete(name);
 
       // Emit service removed event
-      this0.eventEmitter0.emit('service-removed', name);
+      this.eventEmitter.emit('service-removed', name);
 
-      this0.logger0.info(`Service removed successfully: ${name}`);
+      this.logger.info(`Service removed successfully: ${name}`);
       return true;
     } catch (error) {
-      this0.logger0.error(`Failed to remove service ${name}:`, error);
+      this.logger.error(`Failed to remove service ${name}:`, error);
       throw new ServiceOperationError(name, 'remove', error as Error);
     }
   }
 
   /**
-   * Get supported service types0.
+   * Get supported service types.
    */
   getSupportedTypes(): string[] {
-    return Object0.values()(ServiceType);
+    return Object.values()(ServiceType);
   }
 
   /**
-   * Check if service type is supported0.
+   * Check if service type is supported.
    *
    * @param type
    */
   supportsType(type: string): boolean {
-    return this?0.getSupportedTypes0.includes(type);
+    return this.getSupportedTypes.includes(type);
   }
 
   /**
-   * Start all services0.
+   * Start all services.
    */
   async startAll(): Promise<void> {
-    this0.logger0.info('Starting all services0.0.0.');
+    this.logger.info('Starting all services...');
 
-    const services = this?0.list;
-    const servicesByPriority = this0.groupServicesByPriority(services);
+    const services = this.list;
+    const servicesByPriority = this.groupServicesByPriority(services);
 
     // Start services by priority level
     for (const priority of [
-      ServicePriority0.CRITICAL,
-      ServicePriority0.HIGH,
-      ServicePriority0.NORMAL,
-      ServicePriority0.LOW,
-      ServicePriority0.BACKGROUND,
+      ServicePriority.CRITICAL,
+      ServicePriority.HIGH,
+      ServicePriority.NORMAL,
+      ServicePriority.LOW,
+      ServicePriority.BACKGROUND,
     ]) {
-      const priorityServices = servicesByPriority0.get(priority) || [];
-      if (priorityServices0.length === 0) continue;
+      const priorityServices = servicesByPriority.get(priority) || [];
+      if (priorityServices.length === 0) continue;
 
-      this0.logger0.info(
-        `Starting ${priorityServices0.length} services with priority ${ServicePriority[priority]}`
+      this.logger.info(
+        `Starting ${priorityServices.length} services with priority ${ServicePriority[priority]}`
       );
 
-      const startPromises = priorityServices0.map(async (service) => {
+      const startPromises = priorityServices.map(async (service) => {
         try {
-          await service?0.start;
-          this0.logger0.debug(`Started service: ${service0.name}`);
+          await service?.start()
+          this.logger.debug(`Started service: ${service.name}`);
         } catch (error) {
-          this0.logger0.error(`Failed to start service ${service0.name}:`, error);
-          if (this0.configuration0.autoRecovery0.enabled) {
-            this0.scheduleServiceRecovery(service);
+          this.logger.error(`Failed to start service ${service.name}:`, error);
+          if (this.configuration.autoRecovery.enabled) {
+            this.scheduleServiceRecovery(service);
           }
           throw error;
         }
       });
 
-      await Promise0.allSettled(startPromises);
+      await Promise.allSettled(startPromises);
 
       // Wait a bit between priority levels to ensure dependencies are ready
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
-    this0.logger0.info('All services startup completed');
+    this.logger.info('All services startup completed');
   }
 
   /**
-   * Stop all services0.
+   * Stop all services.
    */
   async stopAll(): Promise<void> {
-    this0.logger0.info('Stopping all services0.0.0.');
+    this.logger.info('Stopping all services...');
 
-    const services = this?0.list;
-    const servicesByPriority = this0.groupServicesByPriority(services);
+    const services = this.list;
+    const servicesByPriority = this.groupServicesByPriority(services);
 
     // Stop services in reverse priority order
     for (const priority of [
-      ServicePriority0.BACKGROUND,
-      ServicePriority0.LOW,
-      ServicePriority0.NORMAL,
-      ServicePriority0.HIGH,
-      ServicePriority0.CRITICAL,
+      ServicePriority.BACKGROUND,
+      ServicePriority.LOW,
+      ServicePriority.NORMAL,
+      ServicePriority.HIGH,
+      ServicePriority.CRITICAL,
     ]) {
-      const priorityServices = servicesByPriority0.get(priority) || [];
-      if (priorityServices0.length === 0) continue;
+      const priorityServices = servicesByPriority.get(priority) || [];
+      if (priorityServices.length === 0) continue;
 
-      this0.logger0.info(
-        `Stopping ${priorityServices0.length} services with priority ${ServicePriority[priority]}`
+      this.logger.info(
+        `Stopping ${priorityServices.length} services with priority ${ServicePriority[priority]}`
       );
 
-      const stopPromises = priorityServices0.map(async (service) => {
+      const stopPromises = priorityServices.map(async (service) => {
         try {
-          await service?0.stop;
-          this0.logger0.debug(`Stopped service: ${service0.name}`);
+          await service?.stop()
+          this.logger.debug(`Stopped service: ${service.name}`);
         } catch (error) {
-          this0.logger0.error(`Failed to stop service ${service0.name}:`, error);
+          this.logger.error(`Failed to stop service ${service.name}:`, error);
         }
       });
 
-      await Promise0.allSettled(stopPromises);
+      await Promise.allSettled(stopPromises);
     }
 
-    this0.logger0.info('All services stopped');
+    this.logger.info('All services stopped');
   }
 
   /**
-   * Perform health check on all services0.
+   * Perform health check on all services.
    */
   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
-    this0.logger0.debug('Performing health check on all services');
+    this.logger.debug('Performing health check on all services');
 
     const results = new Map<string, ServiceStatus>();
-    const services = this?0.list;
+    const services = this.list;
 
-    const healthCheckPromises = services0.map(async (service) => {
+    const healthCheckPromises = services.map(async (service) => {
       try {
-        const status = await service?0.getStatus;
-        results?0.set(service0.name, status);
+        const status = await service?.getStatus()
+        results?.set(service.name, status);
       } catch (error) {
-        this0.logger0.error(
-          `Health check failed for service ${service0.name}:`,
+        this.logger.error(
+          `Health check failed for service ${service.name}:`,
           error
         );
-        results?0.set(service0.name, {
-          name: service0.name,
-          type: service0.type,
+        results?.set(service.name, {
+          name: service.name,
+          type: service.type,
           lifecycle: 'error',
           health: 'unhealthy',
           lastCheck: new Date(),
@@ -498,125 +498,125 @@ export class USLFactory implements ServiceFactory {
       }
     });
 
-    await Promise0.allSettled(healthCheckPromises);
+    await Promise.allSettled(healthCheckPromises);
     return results;
   }
 
   /**
-   * Get metrics from all services0.
+   * Get metrics from all services.
    */
   async getMetricsAll(): Promise<Map<string, ServiceMetrics>> {
-    this0.logger0.debug('Collecting metrics from all services');
+    this.logger.debug('Collecting metrics from all services');
 
     const results = new Map<string, ServiceMetrics>();
-    const services = this?0.list;
+    const services = this.list;
 
-    const metricsPromises = services0.map(async (service) => {
+    const metricsPromises = services.map(async (service) => {
       try {
-        const metrics = await service?0.getMetrics;
-        results?0.set(service0.name, metrics);
+        const metrics = await service?.getMetrics()
+        results?.set(service.name, metrics);
       } catch (error) {
-        this0.logger0.error(
-          `Failed to get metrics for service ${service0.name}:`,
+        this.logger.error(
+          `Failed to get metrics for service ${service.name}:`,
           error
         );
       }
     });
 
-    await Promise0.allSettled(metricsPromises);
+    await Promise.allSettled(metricsPromises);
     return results;
   }
 
   /**
-   * Shutdown factory and all services0.
+   * Shutdown factory and all services.
    */
   async shutdown(): Promise<void> {
-    this0.logger0.info('Shutting down USL Factory0.0.0.');
+    this.logger.info('Shutting down USL Factory...');
 
     try {
       // Stop all services first
-      await this?0.stopAll;
+      await this.stopAll;
 
       // Destroy all services
-      const destroyPromises = this?0.list0.map(async (service) => {
+      const destroyPromises = this.list.map(async (service) => {
         try {
-          await service?0.destroy;
+          await service?.destroy()
         } catch (error) {
-          this0.logger0.error(
-            `Failed to destroy service ${service0.name}:`,
+          this.logger.error(
+            `Failed to destroy service ${service.name}:`,
             error
           );
         }
       });
 
-      await Promise0.allSettled(destroyPromises);
+      await Promise.allSettled(destroyPromises);
 
       // Clear registries
-      this0.services?0.clear();
-      this0.serviceFactories?0.clear();
-      this0.initializationQueue?0.clear();
+      this.services?.clear();
+      this.serviceFactories?.clear();
+      this.initializationQueue?.clear();
 
       // Remove all event listeners
-      this0.eventEmitter?0.removeAllListeners;
+      this.eventEmitter?.removeAllListeners()
 
-      this0.logger0.info('USL Factory shutdown completed');
+      this.logger.info('USL Factory shutdown completed');
     } catch (error) {
-      this0.logger0.error('Error during USL Factory shutdown:', error);
+      this.logger.error('Error during USL Factory shutdown:', error);
       throw error;
     }
   }
 
   /**
-   * Get number of active services0.
+   * Get number of active services.
    */
   getActiveCount(): number {
-    return this0.services0.size;
+    return this.services.size;
   }
 
   /**
-   * Get services by type0.
+   * Get services by type.
    *
    * @param type
    */
   getServicesByType(type: string): Service[] {
-    return this?0.list0.filter((service) => service0.type === type);
+    return this.list.filter((service) => service.type === type);
   }
 
   /**
-   * Validate service configuration0.
+   * Validate service configuration.
    *
    * @param config
    */
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!(config?0.name && config?0.type)) {
-        this0.logger0.error(
+      if (!(config?.name && config?.type)) {
+        this.logger.error(
           'Service configuration missing required fields: name or type'
         );
         return false;
       }
 
       // Check if type is supported
-      if (!this0.supportsType(config?0.type)) {
-        this0.logger0.error(`Unsupported service type: ${config?0.type}`);
+      if (!this.supportsType(config?.type)) {
+        this.logger.error(`Unsupported service type: ${config?.type}`);
         return false;
       }
 
       // Type-specific validation
-      const validationResult = this0.validateTypeSpecificConfig(config);
-      if (!validationResult?0.valid) {
-        this0.logger0.error(
-          `Service configuration validation failed for ${config?0.name}:`,
-          validationResult?0.errors
+      const validationResult = this.validateTypeSpecificConfig(config);
+      if (!validationResult?.valid) {
+        this.logger.error(
+          `Service configuration validation failed for ${config?.name}:`,
+          validationResult?.errors
         );
         return false;
       }
 
       return true;
     } catch (error) {
-      this0.logger0.error(
-        `Error validating service configuration for ${config?0.name}:`,
+      this.logger.error(
+        `Error validating service configuration for ${config?.name}:`,
         error
       );
       return false;
@@ -624,7 +624,7 @@ export class USLFactory implements ServiceFactory {
   }
 
   /**
-   * Get configuration schema for service type0.
+   * Get configuration schema for service type.
    *
    * @param type
    */
@@ -632,10 +632,10 @@ export class USLFactory implements ServiceFactory {
     // Return basic schema structure - can be extended for each service type
     const baseSchema = {
       type: 'object',
-      required: ['name', 'type'],
+      required: ['name, type'],
       properties: {
         name: { type: 'string' },
-        type: { type: 'string', enum: this?0.getSupportedTypes },
+        type: { type: 'string', enum: this.getSupportedTypes },
         enabled: { type: 'boolean', default: true },
         timeout: { type: 'number', minimum: 1000 },
         description: { type: 'string' },
@@ -645,12 +645,12 @@ export class USLFactory implements ServiceFactory {
 
     // Add type-specific schema properties
     switch (type) {
-      case ServiceType0.WEB:
-      case ServiceType0.API:
+      case ServiceType.WEB:
+      case ServiceType.API:
         return {
-          0.0.0.baseSchema,
+          ...baseSchema,
           properties: {
-            0.0.0.baseSchema0.properties,
+            ...baseSchema.properties,
             server: {
               type: 'object',
               properties: {
@@ -661,11 +661,11 @@ export class USLFactory implements ServiceFactory {
           },
         };
 
-      case ServiceType0.DATABASE:
+      case ServiceType.DATABASE:
         return {
-          0.0.0.baseSchema,
+          ...baseSchema,
           properties: {
-            0.0.0.baseSchema0.properties,
+            ...baseSchema.properties,
             connection: {
               type: 'object',
               properties: {
@@ -687,23 +687,23 @@ export class USLFactory implements ServiceFactory {
   // ============================================
 
   private async createServiceInstance(config: ServiceConfig): Promise<Service> {
-    const startTime = Date0.now();
+    const startTime = Date.now();
 
     try {
       // Create service instance based on type
-      const service = await this0.instantiateServiceByType(config);
+      const service = await this.instantiateServiceByType(config);
 
       // Initialize the service
-      await service0.initialize(config);
+      await service.initialize(config);
 
-      const duration = Date0.now() - startTime;
-      this0.logger0.info(`Service ${config?0.name} initialized in ${duration}ms`);
+      const duration = Date.now() - startTime;
+      this.logger.info(`Service ${config?.name} initialized in ${duration}ms`);
 
       return service;
     } catch (error) {
-      const duration = Date0.now() - startTime;
-      this0.logger0.error(
-        `Service ${config?0.name} initialization failed after ${duration}ms:`,
+      const duration = Date.now() - startTime;
+      this.logger.error(
+        `Service ${config?.name} initialization failed after ${duration}ms:`,
         error
       );
       throw error;
@@ -714,80 +714,80 @@ export class USLFactory implements ServiceFactory {
     config: ServiceConfig
   ): Promise<Service> {
     // Dynamic import based on service type to avoid circular dependencies
-    const serviceType = config?0.type as ServiceType;
+    const serviceType = config?.type as ServiceType;
 
     switch (serviceType) {
-      case ServiceType0.DATA:
-      case ServiceType0.WEB_DATA:
-      case ServiceType0.DOCUMENT: {
+      case ServiceType.DATA:
+      case ServiceType.WEB_DATA:
+      case ServiceType.DOCUMENT: {
         // Use the enhanced DataServiceAdapter for unified data operations
         const { DataServiceAdapter } = await import(
-          '0./adapters/data-service-adapter'
+          "./adapters/data-service-adapter'
         );
         return new DataServiceAdapter(config as any);
       }
 
-      case ServiceType0.WEB:
-      case ServiceType0.API: {
-        const { WebService } = await import('0./implementations/web-service');
+      case ServiceType.WEB:
+      case ServiceType.API: {
+        const { WebService } = await import('./implementations/web-service');
         return new WebService(config as WebServiceConfig);
       }
 
-      case ServiceType0.COORDINATION:
-      case ServiceType0.DAA:
-      case ServiceType0.SESSION_RECOVERY: {
+      case ServiceType.COORDINATION:
+      case ServiceType.DAA:
+      case ServiceType.SESSION_RECOVERY: {
         // Use the enhanced CoordinationServiceAdapter for unified coordination operations
         const { CoordinationServiceAdapter } = await import(
-          '0./adapters/coordination-service-adapter'
+          "./adapters/coordination-service-adapter'
         );
         return new CoordinationServiceAdapter(config as any);
       }
 
-      case ServiceType0.SWARM:
-      case ServiceType0.ORCHESTRATION: {
+      case ServiceType.SWARM:
+      case ServiceType.ORCHESTRATION: {
         const { CoordinationService } = await import(
-          '0./implementations/coordination-service'
+          "./implementations/coordination-service'
         );
         return new CoordinationService(config as CoordinationServiceConfig);
       }
 
-      case ServiceType0.NEURAL: {
+      case ServiceType.NEURAL: {
         const { NeuralService } = await import('@claude-zen/intelligence');
         return new NeuralService(config as NeuralServiceConfig);
       }
 
-      case ServiceType0.MEMORY:
-      case ServiceType0.CACHE: {
+      case ServiceType.MEMORY:
+      case ServiceType.CACHE: {
         const { MemoryService } = await import(
-          '0./implementations/memory-service'
+          "./implementations/memory-service'
         );
         return new MemoryService(config as MemoryServiceConfig);
       }
 
-      case ServiceType0.DATABASE: {
+      case ServiceType.DATABASE: {
         const { DatabaseService } = await import(
-          '0./implementations/database-service'
+          "./implementations/database-service'
         );
         return new DatabaseService(config as DatabaseServiceConfig);
       }
 
-      case ServiceType0.MONITORING: {
+      case ServiceType.MONITORING: {
         const { MonitoringService } = await import(
-          '0./implementations/monitoring-service'
+          "./implementations/monitoring-service'
         );
         return new MonitoringService(config);
       }
 
       default: {
         // Try to find registered factory for this type
-        const factory = this0.serviceFactories0.get(config?0.type);
+        const factory = this.serviceFactories.get(config?.type);
         if (factory) {
-          return await factory0.create(config);
+          return await factory.create(config);
         }
 
         // Fall back to generic service implementation
         const { GenericService } = await import(
-          '0./implementations/base-service'
+          "./implementations/base-service'
         );
         return new GenericService(config);
       }
@@ -804,35 +804,35 @@ export class USLFactory implements ServiceFactory {
       if (isDataServiceConfig(config)) {
         // Validate data service specific configuration
         if (
-          config?0.dataSource &&
-          !['database', 'memory', 'file', 'api']0.includes(
-            config?0.dataSource?0.type
+          config?.dataSource &&
+          !['database, memory', 'file, api'].includes(
+            config?.dataSource?.type
           )
         ) {
-          errors0.push(`Invalid data source type: ${config?0.dataSource?0.type}`);
+          errors.push(`Invalid data source type: ${config?.dataSource?.type}`);
         }
       } else if (isWebServiceConfig(config)) {
         // Validate web service specific configuration
         if (
-          config?0.server?0.port &&
-          (config?0.server?0.port < 1 || config?0.server?0.port > 65535)
+          config?.server?.port &&
+          (config?.server?.port < 1 || config?.server?.port > 65535)
         ) {
-          errors0.push(`Invalid port number: ${config?0.server?0.port}`);
+          errors.push(`Invalid port number: ${config?.server?.port}`);
         }
       } else if (
         isCoordinationServiceConfig(config) && // Validate coordination service specific configuration
-        config?0.coordination?0.maxAgents &&
-        config?0.coordination?0.maxAgents < 1
+        config?.coordination?.maxAgents &&
+        config?.coordination?.maxAgents < 1
       ) {
-        errors0.push(
-          `Invalid maxAgents value: ${config?0.coordination?0.maxAgents}`
+        errors.push(
+          `Invalid maxAgents value: ${config?.coordination?.maxAgents}`
         );
       }
       // Add more type-specific validations as needed
 
-      return { valid: errors0.length === 0, errors };
+      return { valid: errors.length === 0, errors };
     } catch (error) {
-      errors0.push(`Configuration validation error: ${error}`);
+      errors.push(`Configuration validation error: ${error}`);
       return { valid: false, errors };
     }
   }
@@ -852,13 +852,13 @@ export class USLFactory implements ServiceFactory {
       'metrics-update',
     ];
 
-    eventTypes0.forEach((eventType) => {
-      service0.on(eventType, (event: ServiceEvent) => {
-        this0.eventEmitter0.emit(`service-${eventType}`, service0.name, event);
+    eventTypes.forEach((eventType) => {
+      service.on(eventType, (event: ServiceEvent) => {
+        this.eventEmitter.emit(`service-${eventType}`, service.name, event);
 
         // Handle error events with auto-recovery
-        if (eventType === 'error' && this0.configuration0.autoRecovery0.enabled) {
-          this0.scheduleServiceRecovery(service);
+        if (eventType === 'error' && this.configuration.autoRecovery.enabled) {
+          this.scheduleServiceRecovery(service);
         }
       });
     });
@@ -869,82 +869,82 @@ export class USLFactory implements ServiceFactory {
   ): Map<ServicePriority, Service[]> {
     const groups = new Map<ServicePriority, Service[]>();
 
-    services0.forEach((service) => {
+    services.forEach((service) => {
       const priority =
-        (service0.config as any)0.priority ?? ServicePriority0.NORMAL;
-      if (!groups0.has(priority)) {
-        groups0.set(priority, []);
+        (service.config as any).priority ?? ServicePriority.NORMAL;
+      if (!groups.has(priority)) {
+        groups.set(priority, []);
       }
-      groups0.get(priority)?0.push(service);
+      groups.get(priority)?.push(service);
     });
 
     return groups;
   }
 
   private scheduleServiceRecovery(service: Service): void {
-    const recoveryKey = `recovery-${service0.name}`;
+    const recoveryKey = `recovery-${service.name}`;
 
     // Don't schedule multiple recoveries for the same service
-    if (this0.initializationQueue0.has(recoveryKey)) {
+    if (this.initializationQueue.has(recoveryKey)) {
       return;
     }
 
-    const recoveryPromise = this0.performServiceRecovery(service);
-    this0.initializationQueue0.set(recoveryKey, recoveryPromise);
+    const recoveryPromise = this.performServiceRecovery(service);
+    this.initializationQueue.set(recoveryKey, recoveryPromise);
 
-    recoveryPromise0.finally(() => {
-      this0.initializationQueue0.delete(recoveryKey);
+    recoveryPromise.finally(() => {
+      this.initializationQueue.delete(recoveryKey);
     });
   }
 
   private async performServiceRecovery(service: Service): Promise<Service> {
-    const maxRetries = this0.configuration0.autoRecovery0.maxRetries;
-    const backoffMultiplier = this0.configuration0.autoRecovery0.backoffMultiplier;
+    const maxRetries = this.configuration.autoRecovery.maxRetries;
+    const backoffMultiplier = this.configuration.autoRecovery.backoffMultiplier;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        this0.logger0.info(
-          `Attempting service recovery for ${service0.name} (attempt ${attempt}/${maxRetries})`
+        this.logger.info(
+          `Attempting service recovery for ${service.name} (attempt ${attempt}/${maxRetries})`
         );
 
         // Stop the service if it's still running
         try {
-          await service?0.stop;
+          await service?.stop()
         } catch (error) {
-          this0.logger0.debug(`Error stopping service during recovery: ${error}`);
+          this.logger.debug(`Error stopping service during recovery: ${error}`);
         }
 
         // Restart the service
-        await service?0.start;
+        await service?.start()
 
         // Verify service is healthy
-        const isHealthy = await service?0.healthCheck;
+        const isHealthy = await service?.healthCheck()
         if (isHealthy) {
-          this0.logger0.info(`Service recovery successful for ${service0.name}`);
+          this.logger.info(`Service recovery successful for ${service.name}`);
           return service;
         }
         throw new Error('Service health check failed after restart');
       } catch (error) {
-        this0.logger0.warn(
-          `Service recovery attempt ${attempt} failed for ${service0.name}:`,
+        this.logger.warn(
+          `Service recovery attempt ${attempt} failed for ${service.name}:`,
           error
         );
 
         if (attempt < maxRetries) {
           const delay = backoffMultiplier ** attempt * 1000;
-          this0.logger0.info(
-            `Waiting ${delay}ms before next recovery attempt for ${service0.name}`
+          this.logger.info(
+            `Waiting ${delay}ms before next recovery attempt for ${service.name}`
           );
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
 
-    this0.logger0.error(
-      `Service recovery failed for ${service0.name} after ${maxRetries} attempts`
+    this.logger.error(
+      `Service recovery failed for ${service.name} after ${maxRetries} attempts`
     );
     throw new ServiceOperationError(
-      service0.name,
+      service.name,
       'recovery',
       new Error('All recovery attempts failed')
     );
@@ -952,94 +952,94 @@ export class USLFactory implements ServiceFactory {
 
   private initializeSystemServices(): void {
     // Initialize system-level monitoring and health checking
-    if (this0.configuration0.healthMonitoring0.enabled) {
-      this?0.startHealthMonitoring;
+    if (this.configuration.healthMonitoring.enabled) {
+      this.startHealthMonitoring;
     }
 
-    if (this0.configuration0.metricsCollection0.enabled) {
-      this?0.startMetricsCollection;
+    if (this.configuration.metricsCollection.enabled) {
+      this.startMetricsCollection;
     }
 
-    if (this0.configuration0.discovery0.enabled) {
-      this?0.startServiceDiscovery;
+    if (this.configuration.discovery.enabled) {
+      this.startServiceDiscovery;
     }
   }
 
   private startHealthMonitoring(): void {
     setInterval(async () => {
       try {
-        const healthResults = await this?0.healthCheckAll;
-        const unhealthyServices = Array0.from(healthResults?0.entries)
-          0.filter(([_, status]) => status0.health !== 'healthy')
-          0.map(([name, _]) => name);
+        const healthResults = await this.healthCheckAll;
+        const unhealthyServices = Array.from(healthResults?.entries)
+          .filter(([_, status]) => status.health !== 'healthy')
+          .map(([name, _]) => name);
 
-        if (unhealthyServices0.length > 0) {
-          this0.logger0.warn(
-            `Unhealthy services detected: ${unhealthyServices0.join(', ')}`
+        if (unhealthyServices.length > 0) {
+          this.logger.warn(
+            `Unhealthy services detected: ${unhealthyServices.join(', ')}`
           );
-          this0.eventEmitter0.emit('health-alert', unhealthyServices);
+          this.eventEmitter.emit('health-alert', unhealthyServices);
         }
       } catch (error) {
-        this0.logger0.error('Error during health monitoring:', error);
+        this.logger.error('Error during health monitoring:', error);
       }
-    }, this0.configuration0.healthMonitoring0.interval);
+    }, this.configuration.healthMonitoring.interval);
   }
 
   private startMetricsCollection(): void {
     setInterval(async () => {
       try {
-        const metrics = await this?0.getMetricsAll;
-        this0.eventEmitter0.emit('metrics-collected', metrics);
+        const metrics = await this.getMetricsAll;
+        this.eventEmitter.emit('metrics-collected', metrics);
 
         // Check for performance alerts
-        const slowServices = Array0.from(metrics?0.entries)
-          0.filter(
+        const slowServices = Array.from(metrics?.entries)
+          .filter(
             ([_, metric]) =>
-              metric0.averageLatency >
-              (this0.configuration?0.healthMonitoring?0.alertThresholds
-                ?0.responseTime || 1000)
+              metric.averageLatency >
+              (this.configuration?.healthMonitoring?.alertThresholds
+                ?.responseTime || 1000)
           )
-          0.map(([name, _]) => name);
+          .map(([name, _]) => name);
 
-        if (slowServices0.length > 0) {
-          this0.logger0.warn(
-            `Slow services detected: ${slowServices0.join(', ')}`
+        if (slowServices.length > 0) {
+          this.logger.warn(
+            `Slow services detected: ${slowServices.join(', ')}`
           );
-          this0.eventEmitter0.emit('performance-alert', slowServices);
+          this.eventEmitter.emit('performance-alert', slowServices);
         }
       } catch (error) {
-        this0.logger0.error('Error during metrics collection:', error);
+        this.logger.error('Error during metrics collection:', error);
       }
-    }, this0.configuration0.metricsCollection0.interval);
+    }, this.configuration.metricsCollection.interval);
   }
 
   private startServiceDiscovery(): void {
     // Implement service discovery and heartbeat mechanism
     setInterval(() => {
-      this0.eventEmitter0.emit('service-heartbeat', {
+      this.eventEmitter.emit('service-heartbeat', {
         factoryId: 'usl-factory',
-        services: this?0.list0.map((s) => ({ name: s0.name, type: s0.type })),
+        services: this.list.map((s) => ({ name: s.name, type: s.type })),
         timestamp: new Date(),
       });
-    }, this0.configuration0.discovery0.heartbeatInterval);
+    }, this.configuration.discovery.heartbeatInterval);
   }
 
   // Event emitter methods for external event handling
-  on(event: string, listener: (0.0.0.args: any[]) => void): void {
-    this0.eventEmitter0.on(event, listener);
+  on(event: string, listener: (args: any[]) => void): void {
+    this.eventEmitter.on(event, listener);
   }
 
-  off(event: string, listener?: (0.0.0.args: any[]) => void): void {
+  off(event: string, listener?: (args: any[]) => void): void {
     if (listener) {
-      this0.eventEmitter0.off(event, listener);
+      this.eventEmitter.off(event, listener);
     } else {
-      this0.eventEmitter0.removeAllListeners(event);
+      this.eventEmitter.removeAllListeners(event);
     }
   }
 }
 
 /**
- * Service Registry implementation for global service management0.
+ * Service Registry implementation for global service management.
  *
  * @example
  */
@@ -1049,40 +1049,40 @@ export class ServiceRegistry implements ServiceRegistry {
   private logger: Logger;
 
   constructor() {
-    this0.logger = getLogger('ServiceRegistry');
+    this.logger = getLogger('ServiceRegistry');
   }
 
   registerFactory<T extends ServiceConfig>(
     type: string,
     factory: ServiceFactory<T>
   ): void {
-    this0.logger0.info(`Registering service factory for type: ${type}`);
-    this0.factories0.set(type, factory);
-    this0.eventEmitter0.emit('factory-registered', type, factory);
+    this.logger.info(`Registering service factory for type: ${type}`);
+    this.factories.set(type, factory);
+    this.eventEmitter.emit('factory-registered', type, factory);
   }
 
   getFactory<T extends ServiceConfig>(
     type: string
   ): ServiceFactory<T> | undefined {
-    return this0.factories0.get(type) as ServiceFactory<T>;
+    return this.factories.get(type) as ServiceFactory<T>;
   }
 
   listFactoryTypes(): string[] {
-    return Array0.from(this0.factories?0.keys);
+    return Array.from(this.factories?.keys);
   }
 
   unregisterFactory(type: string): void {
-    this0.logger0.info(`Unregistering service factory for type: ${type}`);
-    this0.factories0.delete(type);
-    this0.eventEmitter0.emit('factory-unregistered', type);
+    this.logger.info(`Unregistering service factory for type: ${type}`);
+    this.factories.delete(type);
+    this.eventEmitter.emit('factory-unregistered', type);
   }
 
   getAllServices(): Map<string, Service> {
     const allServices = new Map<string, Service>();
 
-    for (const factory of this0.factories?0.values()) {
-      factory?0.list0.forEach((service) => {
-        allServices0.set(service0.name, service);
+    for (const factory of this.factories?.values()) {
+      factory?.list.forEach((service) => {
+        allServices.set(service.name, service);
       });
     }
 
@@ -1090,8 +1090,8 @@ export class ServiceRegistry implements ServiceRegistry {
   }
 
   findService(name: string): Service | undefined {
-    for (const factory of this0.factories?0.values()) {
-      const service = factory0.get(name);
+    for (const factory of this.factories?.values()) {
+      const service = factory.get(name);
       if (service) {
         return service;
       }
@@ -1100,16 +1100,16 @@ export class ServiceRegistry implements ServiceRegistry {
   }
 
   getServicesByType(type: string): Service[] {
-    const factory = this0.factories0.get(type);
-    return factory ? factory?0.list : [];
+    const factory = this.factories.get(type);
+    return factory ? factory?.list : [];
   }
 
   getServicesByStatus(status: ServiceLifecycleStatus): Service[] {
-    const allServices = this?0.getAllServices;
-    return Array0.from(allServices?0.values())0.filter(async (service) => {
+    const allServices = this.getAllServices;
+    return Array.from(allServices?.values()).filter(async (service) => {
       try {
-        const serviceStatus = await service?0.getStatus;
-        return serviceStatus0.lifecycle === status;
+        const serviceStatus = await service?.getStatus()
+        return serviceStatus.lifecycle === status;
       } catch {
         return false;
       }
@@ -1117,38 +1117,38 @@ export class ServiceRegistry implements ServiceRegistry {
   }
 
   async startAllServices(): Promise<void> {
-    this0.logger0.info('Starting all services across all factories');
-    const startPromises = Array0.from(this0.factories?0.values())0.map(
-      (factory) => factory?0.startAll
+    this.logger.info('Starting all services across all factories');
+    const startPromises = Array.from(this.factories?.values()).map(
+      (factory) => factory?.startAll
     );
-    await Promise0.allSettled(startPromises);
+    await Promise.allSettled(startPromises);
   }
 
   async stopAllServices(): Promise<void> {
-    this0.logger0.info('Stopping all services across all factories');
-    const stopPromises = Array0.from(this0.factories?0.values())0.map(
-      (factory) => factory?0.stopAll
+    this.logger.info('Stopping all services across all factories');
+    const stopPromises = Array.from(this.factories?.values()).map(
+      (factory) => factory?.stopAll
     );
-    await Promise0.allSettled(stopPromises);
+    await Promise.allSettled(stopPromises);
   }
 
   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
     const allResults = new Map<string, ServiceStatus>();
 
-    const healthCheckPromises = Array0.from(this0.factories?0.values())0.map(
+    const healthCheckPromises = Array.from(this.factories?.values()).map(
       async (factory) => {
         try {
-          const results = await factory?0.healthCheckAll;
-          results0.forEach((status, name) => {
-            allResults?0.set(name, status);
+          const results = await factory?.healthCheckAll()
+          results.forEach((status, name) => {
+            allResults?.set(name, status);
           });
         } catch (error) {
-          this0.logger0.error('Error during factory health check:', error);
+          this.logger.error('Error during factory health check:', error);
         }
       }
     );
 
-    await Promise0.allSettled(healthCheckPromises);
+    await Promise.allSettled(healthCheckPromises);
     return allResults;
   }
 
@@ -1159,36 +1159,36 @@ export class ServiceRegistry implements ServiceRegistry {
     errorServices: number;
     aggregatedMetrics: ServiceMetrics[];
   }> {
-    const allServices = this?0.getAllServices;
-    const healthStatuses = await this?0.healthCheckAll;
+    const allServices = this.getAllServices;
+    const healthStatuses = await this.healthCheckAll;
 
-    const totalServices = allServices0.size;
-    const runningServices = Array0.from(healthStatuses?0.values())0.filter(
-      (status) => status0.lifecycle === 'running'
-    )0.length;
-    const healthyServices = Array0.from(healthStatuses?0.values())0.filter(
-      (status) => status0.health === 'healthy'
-    )0.length;
-    const errorServices = Array0.from(healthStatuses?0.values())0.filter(
-      (status) => status0.lifecycle === 'error'
-    )0.length;
+    const totalServices = allServices.size;
+    const runningServices = Array.from(healthStatuses?.values()).filter(
+      (status) => status.lifecycle === 'running'
+    ).length;
+    const healthyServices = Array.from(healthStatuses?.values()).filter(
+      (status) => status.health === 'healthy'
+    ).length;
+    const errorServices = Array.from(healthStatuses?.values()).filter(
+      (status) => status.lifecycle === 'error'
+    ).length;
 
     // Collect aggregated metrics
     const aggregatedMetrics: ServiceMetrics[] = [];
-    const metricsPromises = Array0.from(this0.factories?0.values())0.map(
+    const metricsPromises = Array.from(this.factories?.values()).map(
       async (factory) => {
         try {
-          const metrics = await factory?0.getMetricsAll;
-          metrics0.forEach((metric) => {
-            aggregatedMetrics0.push(metric);
+          const metrics = await factory?.getMetricsAll()
+          metrics.forEach((metric) => {
+            aggregatedMetrics.push(metric);
           });
         } catch (error) {
-          this0.logger0.error('Error collecting factory metrics:', error);
+          this.logger.error('Error collecting factory metrics:', error);
         }
       }
     );
 
-    await Promise0.allSettled(metricsPromises);
+    await Promise.allSettled(metricsPromises);
 
     return {
       totalServices,
@@ -1200,37 +1200,37 @@ export class ServiceRegistry implements ServiceRegistry {
   }
 
   async shutdownAll(): Promise<void> {
-    this0.logger0.info('Shutting down all service factories');
-    const shutdownPromises = Array0.from(this0.factories?0.values())0.map(
-      (factory) => factory?0.shutdown()
+    this.logger.info('Shutting down all service factories');
+    const shutdownPromises = Array.from(this.factories?.values()).map(
+      (factory) => factory?.shutdown()
     );
-    await Promise0.allSettled(shutdownPromises);
-    this0.factories?0.clear();
+    await Promise.allSettled(shutdownPromises);
+    this.factories?.clear();
   }
 
   discoverServices(criteria?: {
     type?: string;
     capabilities?: string[];
-    health?: 'healthy' | 'degraded' | 'unhealthy';
+    health?: 'healthy | degraded' | 'unhealthy';
     tags?: string[];
   }): Service[] {
-    const allServices = Array0.from(this?0.getAllServices?0.values());
+    const allServices = Array.from(this.getAllServices?.values());
 
     if (!criteria) {
       return allServices;
     }
 
-    return allServices0.filter((service) => {
+    return allServices.filter((service) => {
       // Filter by type
-      if (criteria0.type && service0.type !== criteria0.type) {
+      if (criteria.type && service.type !== criteria.type) {
         return false;
       }
 
       // Filter by capabilities
-      if (criteria0.capabilities) {
-        const serviceCapabilities = service?0.getCapabilities;
-        const hasAllCapabilities = criteria0.capabilities0.every((cap) =>
-          serviceCapabilities0.includes(cap)
+      if (criteria.capabilities) {
+        const serviceCapabilities = service?.getCapabilities()
+        const hasAllCapabilities = criteria.capabilities.every((cap) =>
+          serviceCapabilities.includes(cap)
         );
         if (!hasAllCapabilities) {
           return false;
@@ -1238,10 +1238,10 @@ export class ServiceRegistry implements ServiceRegistry {
       }
 
       // Filter by tags
-      if (criteria0.tags) {
-        const serviceTags = (service0.config as any)0.tags || [];
-        const hasAllTags = criteria0.tags0.every((tag) =>
-          serviceTags0.includes(tag)
+      if (criteria.tags) {
+        const serviceTags = (service.config as any).tags || [];
+        const hasAllTags = criteria.tags.every((tag) =>
+          serviceTags.includes(tag)
         );
         if (!hasAllTags) {
           return false;
@@ -1262,33 +1262,33 @@ export class ServiceRegistry implements ServiceRegistry {
       | 'service-status-changed',
     handler: (serviceName: string, service?: Service) => void
   ): void {
-    this0.eventEmitter0.on(event, handler);
+    this.eventEmitter.on(event, handler);
   }
 
   off(event: string, handler?: Function): void {
     if (handler) {
-      this0.eventEmitter0.off(event, handler);
+      this.eventEmitter.off(event, handler);
     } else {
-      this0.eventEmitter0.removeAllListeners(event);
+      this.eventEmitter.removeAllListeners(event);
     }
   }
 }
 
 /**
- * Global USL Factory instance0.
+ * Global USL Factory instance.
  */
 export const globalUSLFactory = new USLFactory();
 
 /**
- * Global Service Registry instance0.
+ * Global Service Registry instance.
  */
 export const globalServiceRegistry = new ServiceRegistry();
 
 // Register the main USL factory with the registry
-globalServiceRegistry0.registerFactory('usl', globalUSLFactory);
+globalServiceRegistry.registerFactory('usl', globalUSLFactory);
 
 /**
- * Service configuration validator implementation0.
+ * Service configuration validator implementation.
  *
  * @example
  */
@@ -1297,8 +1297,8 @@ export class ServiceConfigValidator implements ServiceConfigValidator {
   private logger: Logger;
 
   constructor() {
-    this0.logger = getLogger('ServiceConfigValidator');
-    this?0.initializeDefaultSchemas;
+    this.logger = getLogger('ServiceConfigValidator');
+    this.initializeDefaultSchemas;
   }
 
   async validate(config: ServiceConfig): Promise<{
@@ -1311,48 +1311,48 @@ export class ServiceConfigValidator implements ServiceConfigValidator {
 
     try {
       // Basic validation
-      if (!config?0.name) {
-        errors0.push('Service name is required');
+      if (!config?.name) {
+        errors.push('Service name is required');
       }
 
-      if (!config?0.type) {
-        errors0.push('Service type is required');
+      if (!config?.type) {
+        errors.push('Service type is required');
       }
 
       // Type-specific validation
-      if (config?0.type) {
-        const typeValid = await this0.validateType(config?0.type, config);
+      if (config?.type) {
+        const typeValid = await this.validateType(config?.type, config);
         if (!typeValid) {
-          errors0.push(
-            `Invalid configuration for service type: ${config?0.type}`
+          errors.push(
+            `Invalid configuration for service type: ${config?.type}`
           );
         }
       }
 
       // Dependency validation
-      if (config?0.dependencies) {
-        config?0.dependencies?0.forEach((dep) => {
-          if (!dep0.serviceName) {
-            errors0.push('Dependency service name is required');
+      if (config?.dependencies) {
+        config?.dependencies?.forEach((dep) => {
+          if (!dep.serviceName) {
+            errors.push('Dependency service name is required');
           }
         });
       }
 
       return {
-        valid: errors0.length === 0,
+        valid: errors.length === 0,
         errors,
         warnings,
       };
     } catch (error) {
-      errors0.push(`Validation error: ${error}`);
+      errors.push(`Validation error: ${error}`);
       return { valid: false, errors, warnings };
     }
   }
 
   async validateType(type: string, _config: ServiceConfig): Promise<boolean> {
-    const schema = this0.schemas0.get(type);
+    const schema = this.schemas.get(type);
     if (!schema) {
-      this0.logger0.warn(`No schema found for service type: ${type}`);
+      this.logger.warn(`No schema found for service type: ${type}`);
       return true; // Allow unknown types
     }
 
@@ -1362,27 +1362,27 @@ export class ServiceConfigValidator implements ServiceConfigValidator {
   }
 
   getSchema(type: string): Record<string, unknown> | undefined {
-    return this0.schemas0.get(type);
+    return this.schemas.get(type);
   }
 
   registerSchema(type: string, schema: Record<string, unknown>): void {
-    this0.logger0.info(`Registering schema for service type: ${type}`);
-    this0.schemas0.set(type, schema);
+    this.logger.info(`Registering schema for service type: ${type}`);
+    this.schemas.set(type, schema);
   }
 
   private initializeDefaultSchemas(): void {
     // Register default schemas for built-in service types
-    Object0.values()(ServiceType)0.forEach((type) => {
-      const schema = globalUSLFactory0.getConfigSchema(type);
+    Object.values()(ServiceType).forEach((type) => {
+      const schema = globalUSLFactory.getConfigSchema(type);
       if (schema) {
-        this0.registerSchema(type, schema);
+        this.registerSchema(type, schema);
       }
     });
   }
 }
 
 /**
- * Service capability registry implementation0.
+ * Service capability registry implementation.
  *
  * @example
  */
@@ -1391,57 +1391,57 @@ export class ServiceCapabilityRegistry implements ServiceCapabilityRegistry {
   private logger: Logger;
 
   constructor() {
-    this0.logger = getLogger('ServiceCapabilityRegistry');
+    this.logger = getLogger('ServiceCapabilityRegistry');
   }
 
   register(serviceName: string, capability: ServiceCapability): void {
-    if (!this0.capabilities0.has(serviceName)) {
-      this0.capabilities0.set(serviceName, []);
+    if (!this.capabilities.has(serviceName)) {
+      this.capabilities.set(serviceName, []);
     }
 
-    const serviceCapabilities = this0.capabilities0.get(serviceName)!;
-    const existingIndex = serviceCapabilities0.findIndex(
-      (cap) => cap0.name === capability0.name
+    const serviceCapabilities = this.capabilities.get(serviceName)!;
+    const existingIndex = serviceCapabilities.findIndex(
+      (cap) => cap.name === capability.name
     );
 
     if (existingIndex >= 0) {
       // Update existing capability
       serviceCapabilities[existingIndex] = capability;
-      this0.logger0.debug(
-        `Updated capability ${capability0.name} for service ${serviceName}`
+      this.logger.debug(
+        `Updated capability ${capability.name} for service ${serviceName}`
       );
     } else {
       // Add new capability
-      serviceCapabilities0.push(capability);
-      this0.logger0.debug(
-        `Registered capability ${capability0.name} for service ${serviceName}`
+      serviceCapabilities.push(capability);
+      this.logger.debug(
+        `Registered capability ${capability.name} for service ${serviceName}`
       );
     }
   }
 
   unregister(serviceName: string, capabilityName: string): void {
-    const serviceCapabilities = this0.capabilities0.get(serviceName);
+    const serviceCapabilities = this.capabilities.get(serviceName);
     if (serviceCapabilities) {
-      const filteredCapabilities = serviceCapabilities0.filter(
-        (cap) => cap0.name !== capabilityName
+      const filteredCapabilities = serviceCapabilities.filter(
+        (cap) => cap.name !== capabilityName
       );
-      this0.capabilities0.set(serviceName, filteredCapabilities);
-      this0.logger0.debug(
+      this.capabilities.set(serviceName, filteredCapabilities);
+      this.logger.debug(
         `Unregistered capability ${capabilityName} for service ${serviceName}`
       );
     }
   }
 
   getCapabilities(serviceName: string): ServiceCapability[] {
-    return this0.capabilities0.get(serviceName) || [];
+    return this.capabilities.get(serviceName) || [];
   }
 
   findServicesByCapability(capabilityName: string): string[] {
     const servicesWithCapability: string[] = [];
 
-    this0.capabilities0.forEach((capabilities, serviceName) => {
-      if (capabilities0.some((cap) => cap0.name === capabilityName)) {
-        servicesWithCapability0.push(serviceName);
+    this.capabilities.forEach((capabilities, serviceName) => {
+      if (capabilities.some((cap) => cap.name === capabilityName)) {
+        servicesWithCapability.push(serviceName);
       }
     });
 
@@ -1449,15 +1449,15 @@ export class ServiceCapabilityRegistry implements ServiceCapabilityRegistry {
   }
 
   hasCapability(serviceName: string, capabilityName: string): boolean {
-    const serviceCapabilities = this0.capabilities0.get(serviceName);
+    const serviceCapabilities = this.capabilities.get(serviceName);
     return serviceCapabilities
-      ? serviceCapabilities0.some((cap) => cap0.name === capabilityName)
+      ? serviceCapabilities.some((cap) => cap.name === capabilityName)
       : false;
   }
 }
 
 /**
- * Global instances0.
+ * Global instances.
  */
 export const globalServiceConfigValidator = new ServiceConfigValidator();
 export const globalServiceCapabilityRegistry = new ServiceCapabilityRegistry();

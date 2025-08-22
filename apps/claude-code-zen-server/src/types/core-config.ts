@@ -1,8 +1,8 @@
 /**
  * @fileoverview Core Configuration Types - Main App Configuration
  *
- * Central configuration type definitions that integrate with foundation package0.
- * Uses foundation SharedConfig as the base and extends with app-specific config0.
+ * Central configuration type definitions that integrate with foundation package.
+ * Uses foundation SharedConfig as the base and extends with app-specific config.
  */
 
 /**
@@ -39,7 +39,7 @@ export interface ClaudeZenCoreConfig {
   flowTopology?: string;
 
   // Logging configuration
-  logLevel?: 'debug' | 'info' | 'warn' | 'error';
+  logLevel?: 'debug | info' | 'warn | error';
 }
 
 /**

@@ -1,13 +1,13 @@
 /**
- * Core Module - Clean Architecture Exports0.
+ * Core Module - Clean Architecture Exports.
  *
- * Central export point for core system functionality with clean, focused architecture0.
- * Replaces bloated "Unified" systems with single-responsibility components0.
+ * Central export point for core system functionality with clean, focused architecture.
+ * Replaces bloated "Unified" systems with single-responsibility components.
  */
 
 // ==================== CLEAN ARCHITECTURE SYSTEMS ====================
 /**
- * @file Core module exports0.
+ * @file Core module exports.
  */
 
 export type {
@@ -18,9 +18,9 @@ export type {
 export type {
   SystemConfig as CoreSystemConfig,
   SystemStatus,
-} from '0./core-system';
+} from "./core-system";
 // Main system coordinator
-export { System as CoreSystem } from '0./core-system';
+export { System as CoreSystem } from "./core-system";
 export type {
   Document,
   DocumentMetadata,
@@ -55,10 +55,10 @@ export { WorkflowEngine } from '@claude-zen/enterprise';
 
 // ==================== LEGACY COMPATIBILITY ====================
 
-export { ApplicationCoordinator } from '0./application-coordinator'; // Legacy - use CoreSystem
+export { ApplicationCoordinator } from "./application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
 export { DocumentDrivenSystem } from '@claude-zen/document-processing'; // Moved to package - legacy compatibility
-// export { MemoryCoordinator } from '0./memory-coordinator'; // Module not found - use BrainCoordinator
+// export { MemoryCoordinator } from "./memory-coordinator'; // Module not found - use BrainCoordinator
 
 // ==================== SHARED UTILITIES ====================
 
@@ -98,7 +98,7 @@ export type {
 // Logging system
 export { createLogger, Logger } from '@claude-zen/foundation/logger';
 export type { LogMeta } from '@claude-zen/foundation';
-export { Orchestrator } from '0./orchestrator';
+export { Orchestrator } from "./orchestrator";
 export * from '@claude-zen/foundation/orchestrator-provider';
 // External systems
 export { ProductFlowSystem } from '@claude-zen/document-processing';

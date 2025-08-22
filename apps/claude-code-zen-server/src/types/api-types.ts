@@ -1,19 +1,19 @@
 /**
- * @fileoverview OpenAPI 30.0 Type Definitions - Strategic Domain Type Integration
+ * @fileoverview OpenAPI 3.0 Type Definitions - Strategic Domain Type Integration
  *
  * **SOPHISTICATED TYPE ARCHITECTURE - LAYER 3: API TYPES (OPTIMIZED)**
  *
- * **MASSIVE CODE REDUCTION ACHIEVED: 2,853 → 849 lines (70.2% reduction)**
+ * **MASSIVE CODE REDUCTION ACHIEVED: 2,853 → 849 lines (7.2% reduction)**
  *
- * This file serves as a lightweight OpenAPI 30.0 facade that delegates to the
- * comprehensive API translation layer, which leverages battle-tested domain types0.
+ * This file serves as a lightweight OpenAPI 3.0 facade that delegates to the
+ * comprehensive API translation layer, which leverages battle-tested domain types.
  *
  * **ARCHITECTURE PATTERN: STRATEGIC DELEGATION CASCADE**
  *
- * 10. **OpenAPI Types** (this file) → API Translation Layer → Domain Types
- * 20. **Perfect OpenAPI Compliance** with sophisticated type delegation
- * 30. **70%+ Code Reduction** through strategic domain type reuse
- * 40. **Zero Breaking Changes** - Full API contract preservation
+ * 1. **OpenAPI Types** (this file) → API Translation Layer → Domain Types
+ * 2. **Perfect OpenAPI Compliance** with sophisticated type delegation
+ * 3. **70%+ Code Reduction** through strategic domain type reuse
+ * 4. **Zero Breaking Changes** - Full API contract preservation
  *
  * **LAYER ARCHITECTURE COMPLETED:**
  * - **Layer 1**: Foundation Types (@claude-zen/foundation/types) - Shared primitives ✅
@@ -23,13 +23,13 @@
  *
  * **DELEGATION HIERARCHY:**
  * ```
- * OpenAPI 30.0 Spec ↔ api-types0.ts ↔ api-translation-layer0.ts ↔ @claude-zen/package-types
+ * OpenAPI 3.0 Spec ↔ api-types.ts ↔ api-translation-layer.ts ↔ @claude-zen/package-types
  *     (External)      (This File)    (Translation Layer)        (Domain Types)
  * ```
  *
  * @author Claude Code Zen Team
- * @since 20.10.0
- * @version 20.10.0
+ * @since 2.1.0
+ * @version 2.1.0
  */
 
 // =============================================================================
@@ -70,7 +70,7 @@ import type {
 
   // LLM analytics
   ApiLLMAnalyticsResponse,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // =============================================================================
 // OPENAPI PATHS INTERFACE - Strategic Delegation to Translation Layer
@@ -82,10 +82,10 @@ import type {
  * **ARCHITECTURE: STRATEGIC DELEGATION CASCADE**
  * - OpenAPI Paths → Operations → Translation Layer → Domain Types
  * - **70%+ Code Reduction** through sophisticated type delegation
- * - **Full OpenAPI 30.0 Compliance** maintained through translation layer
+ * - **Full OpenAPI 3.0 Compliance** maintained through translation layer
  *
  * All endpoint definitions delegate to the comprehensive API translation layer
- * which provides rich type safety through @claude-zen domain type integration0.
+ * which provides rich type safety through @claude-zen domain type integration.
  */
 export interface paths {
   // Health and system endpoints - Foundation domain types
@@ -165,7 +165,7 @@ export interface paths {
  * **MASSIVE REDUCTION ACHIEVED: Complex operation definitions → Lightweight translation**
  *
  * All operations now delegate to the comprehensive API translation layer types
- * which provide rich domain type integration and sophisticated type safety0.
+ * which provide rich domain type integration and sophisticated type safety.
  *
  * **ARCHITECTURE: DELEGATION CASCADE**
  * - Operation Definitions → Translation Layer Types → Domain Types
@@ -653,7 +653,7 @@ export interface operations {
   getLLMAnalytics: {
     parameters: {
       query?: {
-        timeRange?: '1h' | '24h' | '7d' | '30d';
+        timeRange?: '1h | 24h' | '7d | 30d';
         provider?: string;
       };
     };
@@ -709,7 +709,7 @@ export interface operations {
  * **ARCHITECTURE: COMPREHENSIVE TYPE DELEGATION**
  * - All schemas delegate to API translation layer types
  * - **Maximum Code Reduction** through domain type reuse
- * - **Full OpenAPI 30.0 Schema Compliance** maintained
+ * - **Full OpenAPI 3.0 Schema Compliance** maintained
  */
 export interface components {
   schemas: {
@@ -757,7 +757,7 @@ export interface components {
  * Strategic Type Exports - Maximum Delegation Benefits
  *
  * All exported types delegate to the comprehensive API translation layer
- * providing battle-tested domain type integration with sophisticated type safety0.
+ * providing battle-tested domain type integration with sophisticated type safety.
  */
 
 // Core API types
@@ -769,55 +769,55 @@ export type {
   ApiRequestUnion,
   ApiEntityStatus,
   ApiMetricsUnion,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // Health and system types
 export type {
   ApiHealthResponse,
   ApiSystemStatusResponse,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // Swarm management types (Brain domain delegation)
 export type {
   ApiSwarmResponse,
   ApiCreateSwarmRequest,
   ApiSwarmMetricsResponse,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // Task management types (Workflow domain delegation)
 export type {
   ApiTaskResponse,
   ApiCreateTaskRequest,
   ApiTaskExecutionResponse,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // Document management types (Database domain delegation)
 export type {
   ApiDocumentResponse,
   ApiFileContentResponse,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // Command execution types
 export type {
   ApiExecuteCommandRequest,
   ApiCommandResult,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // Settings types (Foundation domain delegation)
 export type {
   ApiSettingsResponse,
   ApiUpdateSettingsRequest,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // Analytics types
-export type { ApiLLMAnalyticsResponse } from '0./api-translation-layer';
+export type { ApiLLMAnalyticsResponse } from "./api-translation-layer";
 
 // Constants and utilities
 export {
   API_VERSION,
   HTTP_STATUS,
   DEFAULT_PAGINATION,
-} from '0./api-translation-layer';
+} from "./api-translation-layer";
 
 // =============================================================================
 // ACHIEVEMENT SUMMARY - Sophisticated Type Architecture Benefits
@@ -829,11 +829,11 @@ export {
  * **MASSIVE CODE REDUCTION ACHIEVED:**
  * - **Original File**: 2,853 lines of complex API type definitions
  * - **Optimized File**: 849 lines through strategic delegation
- * - **Reduction**: 70.2% code reduction through domain type integration
+ * - **Reduction**: 7.2% code reduction through domain type integration
  *
  * **ARCHITECTURE BENEFITS:**
  * - **Strategic Delegation**: All types delegate to comprehensive @claude-zen domain types
- * - **OpenAPI Compliance**: Full OpenAPI 30.0 specification compatibility maintained
+ * - **OpenAPI Compliance**: Full OpenAPI 3.0 specification compatibility maintained
  * - **Type Safety**: Enhanced IntelliSense with rich domain type information
  * - **Zero Runtime Cost**: Compile-time type mapping with no performance impact
  * - **Maintainability**: Single source of truth through domain type delegation
@@ -841,11 +841,11 @@ export {
  *
  * **DELEGATION HIERARCHY COMPLETED:**
  * ```
- * OpenAPI 30.0 Specification
+ * OpenAPI 3.0 Specification
  *           ↓
- * api-types-optimized0.ts (this file) - 70% reduction ✅
+ * api-types-optimized.ts (this file) - 70% reduction ✅
  *           ↓
- * api-translation-layer0.ts - Strategic domain type delegation ✅
+ * api-translation-layer.ts - Strategic domain type delegation ✅
  *           ↓
  * @claude-zen/package-types - Battle-tested domain types ✅
  * ```

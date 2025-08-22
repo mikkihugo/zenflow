@@ -1,7 +1,7 @@
 /**
  * @fileoverview Temporary stub for @claude-zen/intelligence/types
  *
- * This file provides fallback types for @claude-zen/intelligence/types submodule0.
+ * This file provides fallback types for @claude-zen/intelligence/types submodule.
  */
 
 // Workflow types stub
@@ -23,7 +23,7 @@ export interface WorkflowMetadata {
   workflowId: string;
   name: string;
   version: string;
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'paused';
+  status: 'pending | running' | 'completed | failed' | 'paused';
 }
 
 export interface WorkflowConfig {

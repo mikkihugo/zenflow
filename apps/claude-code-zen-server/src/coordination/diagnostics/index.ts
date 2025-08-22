@@ -1,13 +1,13 @@
 /**
- * Diagnostics Module - Barrel Export0.
+ * Diagnostics Module - Barrel Export.
  *
- * Central export point for diagnostics functionality0.
+ * Central export point for diagnostics functionality.
  */
 /**
- * @file Diagnostics module exports0.
+ * @file Diagnostics module exports.
  */
 
-export * from '0./cli-diagnostics';
-export * from '0./diagnostics';
-export * from '0./health-monitor';
+export * from "./cli-diagnostics";
+export * from "./diagnostics";
+export * from "./health-monitor";
 // Note: logging-config is internal configuration, not exported

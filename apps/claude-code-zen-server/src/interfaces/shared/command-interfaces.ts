@@ -1,8 +1,8 @@
 /**
- * @file Shared Command Interfaces0.
+ * @file Shared Command Interfaces.
  *
- * Shared interfaces to prevent circular dependencies between CLI and Terminal interfaces0.
- * Following dependency injection principles and interface segregation0.
+ * Shared interfaces to prevent circular dependencies between CLI and Terminal interfaces.
+ * Following dependency injection principles and interface segregation.
  */
 
 export interface CommandResult {
@@ -34,7 +34,7 @@ export interface CommandDefinition {
 }
 
 /**
- * Mode detection interface - shared between CLI and Terminal0.
+ * Mode detection interface - shared between CLI and Terminal.
  */
 export type TerminalMode =
   | 'interactive'
@@ -51,22 +51,22 @@ export interface ModeDetectionResult {
 }
 
 /**
- * Command execution renderer interface - shared abstraction0.
+ * Command execution renderer interface - shared abstraction.
  *
  * @example
  */
 export interface CommandRenderer {
-  renderResult(result: CommandResult): React0.ReactElement | null;
+  renderResult(result: CommandResult): React.ReactElement | null;
   renderProgress(progress: {
     current: number;
     total: number;
     message?: string;
-  }): React0.ReactElement | null;
-  renderError(error: Error): React0.ReactElement | null;
+  }): React.ReactElement | null;
+  renderError(error: Error): React.ReactElement | null;
 }
 
 /**
- * Terminal application interface - shared abstraction0.
+ * Terminal application interface - shared abstraction.
  *
  * @example
  */
@@ -81,7 +81,7 @@ export interface TerminalApplication {
 }
 
 /**
- * Discover command interface - shared to avoid CLI->Terminal dependency0.
+ * Discover command interface - shared to avoid CLI->Terminal dependency.
  *
  * @example
  */

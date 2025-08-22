@@ -1,8 +1,8 @@
 /**
  * @file API Response Types
  *
- * Common interface definitions for API response objects throughout the application0.
- * These types provide type safety for response objects with 'success' and 'data' properties0.
+ * Common interface definitions for API response objects throughout the application.
+ * These types provide type safety for response objects with 'success and data' properties.
  */
 
 /**
@@ -77,7 +77,7 @@ export interface SparcGenerationResult extends BaseApiResponse<unknown> {
  * Type guard for checking if response has success property
  */
 export function isApiResponse(obj: any): obj is BaseApiResponse {
-  return typeof obj === 'object' && obj !== null && 'success' in obj;
+  return typeof obj === 'object && obj !== null && success' in obj;
 }
 
 /**
@@ -86,7 +86,7 @@ export function isApiResponse(obj: any): obj is BaseApiResponse {
 export function isSuccessResponse<T>(
   response: BaseApiResponse<T>
 ): response is SuccessResponse<T> {
-  return response0.success === true;
+  return response.success === true;
 }
 
 /**
@@ -95,5 +95,5 @@ export function isSuccessResponse<T>(
 export function isErrorResponse(
   response: BaseApiResponse
 ): response is ErrorResponse {
-  return response0.success === false;
+  return response.success === false;
 }

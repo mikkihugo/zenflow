@@ -270,7 +270,8 @@ export class MemoryBackendFactory {
     config: Partial<MemoryConfig>
   ): MemoryBackendType {
     // Auto-detect optimal backend based on requirements
-    if (config?.persistent) {
+    const wantsPersistent = config?.type === 'sqlite' || config?.type === 'lancedb';
+    if (wantsPersistent) {
       return config?.maxSize && config?.maxSize > 50 * 1024 * 1024
         ? 'sqlite'
         : 'file';
@@ -283,70 +284,25 @@ export class MemoryBackendFactory {
     return 'memory';
   }
 
-  // Backend loaders - now using Foundation storage
+  // Backend loaders - delegate to FoundationMemoryBackend
   private async loadMemoryBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
-    // In-memory backend using Foundation's KV store
-    return class extends BaseMemoryBackend {
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
+    
+    return class extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
           storageType: 'kv',
-          databaseType: 'sqlite' // Foundation handles in-memory for us
+          databaseType: 'sqlite'
         } as any);
-      }
-
-      protected async ensureInitialized(): Promise<void> {
-        await super.initialize();
-      }
-
-      override getCapabilities(): BackendCapabilities {
-        return {
-          persistent: false,
-          searchable: true,
-          transactional: false,
-          vectorized: false,
-          distributed: false,
-          concurrent: true,
-          compression: false,
-          encryption: false,
-        };
       }
     };
   }
 
   private async loadFileBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
-    // File-based backend using Foundation's database access
-    return class extends BaseMemoryBackend {
-      public constructor(config: MemoryConfig) {
-        super({
-          ...config,
-          storageType: 'database',
-          databaseType: 'sqlite' // SQLite file storage
-        } as any);
-      }
-
-      protected async ensureInitialized(): Promise<void> {
-        await super.initialize();
-      }
-
-      override getCapabilities(): BackendCapabilities {
-        return {
-          persistent: true,
-          searchable: true,
-          transactional: true,
-          vectorized: false,
-          distributed: false,
-          concurrent: true,
-          compression: false,
-          encryption: false,
-        };
-      }
-    };
-  }
-
-  private async loadSQLiteBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
-    // SQLite backend using Foundation's database access
-    return class extends BaseMemoryBackend {
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
+    
+    return class extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
@@ -354,52 +310,34 @@ export class MemoryBackendFactory {
           databaseType: 'sqlite'
         } as any);
       }
+    };
+  }
 
-      protected async ensureInitialized(): Promise<void> {
-        await super.initialize();
-      }
-
-      override getCapabilities(): BackendCapabilities {
-        return {
-          persistent: true,
-          searchable: true,
-          transactional: true,
-          vectorized: false,
-          distributed: false,
-          concurrent: true,
-          compression: false,
-          encryption: false,
-        };
+  private async loadSQLiteBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
+    
+    return class extends FoundationMemoryBackend {
+      public constructor(config: MemoryConfig) {
+        super({
+          ...config,
+          storageType: 'database',
+          databaseType: 'sqlite'
+        } as any);
       }
     };
   }
 
   private async loadJSONBBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
     // LanceDB backend using Foundation's database access (closest to JSONB)
-    return class extends BaseMemoryBackend {
+    const { FoundationMemoryBackend } = await import('./foundation-adapter');
+    
+    return class extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
           storageType: 'database',
           databaseType: 'lancedb'
         } as any);
-      }
-
-      protected async ensureInitialized(): Promise<void> {
-        await super.initialize();
-      }
-
-      override getCapabilities(): BackendCapabilities {
-        return {
-          persistent: true,
-          searchable: true,
-          transactional: true,
-          vectorized: true, // LanceDB supports vectors
-          distributed: false,
-          concurrent: true,
-          compression: false,
-          encryption: false,
-        };
       }
     };
   }

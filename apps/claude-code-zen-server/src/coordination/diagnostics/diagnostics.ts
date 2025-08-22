@@ -1,24 +1,24 @@
 /**
- * Diagnostic utilities for ruv-swarm0.
- * Helps debug connection issues and performance problems0.
+ * Diagnostic utilities for ruv-swarm.
+ * Helps debug connection issues and performance problems.
  */
 /**
- * @file Coordination system: diagnostics0.
+ * @file Coordination system: diagnostics.
  */
 
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
 
-import { type LoggerInterface, loggingConfig } from '0./logging-config';
+import { type LoggerInterface, loggingConfig } from './logging-config';
 
 export interface ConnectionEvent {
   connectionId: string;
   event: string;
   timestamp: string;
   details: Record<string, unknown>;
-  memoryUsage: NodeJS0.MemoryUsage;
-  cpuUsage: NodeJS0.CpuUsage;
+  memoryUsage: NodeJS.MemoryUsage;
+  cpuUsage: NodeJS.CpuUsage;
   duration?: number;
 }
 
@@ -54,8 +54,8 @@ export interface DiagnosticReport {
     platform: string;
     nodeVersion: string;
     uptime: number;
-    memoryUsage: NodeJS0.MemoryUsage;
-    cpuUsage: NodeJS0.CpuUsage;
+    memoryUsage: NodeJS.MemoryUsage;
+    cpuUsage: NodeJS.CpuUsage;
   };
   connections: ConnectionSummary;
   patterns: PatternAnalysis;
@@ -63,7 +63,7 @@ export interface DiagnosticReport {
 }
 
 /**
- * Connection diagnostics0.
+ * Connection diagnostics.
  *
  * @example
  */
@@ -77,15 +77,15 @@ export class ConnectionDiagnostics {
   >;
 
   constructor(logger?: LoggerInterface | null) {
-    this0.logger =
-      logger || loggingConfig?0.getLogger('diagnostics', { level: 'DEBUG' });
-    this0.connectionHistory = [];
-    this0.maxHistorySize = 100;
-    this0.activeConnections = new Map();
+    this.logger =
+      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+    this.connectionHistory = [];
+    this.maxHistorySize = 100;
+    this.activeConnections = new Map();
   }
 
   /**
-   * Record connection event0.
+   * Record connection event.
    *
    * @param connectionId
    * @param event
@@ -96,77 +96,77 @@ export class ConnectionDiagnostics {
     event: string,
     details: Record<string, unknown> = {}
   ): ConnectionEvent {
-    const timestamp = new Date()?0.toISOString;
+    const timestamp = new Date().toISOString();
     const entry = {
       connectionId,
       event,
       timestamp,
       details,
-      memoryUsage: process?0.memoryUsage,
-      cpuUsage: process?0.cpuUsage,
+      memoryUsage: process.memoryUsage(),
+      cpuUsage: process.cpuUsage(),
     };
 
-    this0.connectionHistory0.push(entry);
-    if (this0.connectionHistory0.length > this0.maxHistorySize) {
-      this0.connectionHistory?0.shift;
+    this.connectionHistory.push(entry);
+    if (this.connectionHistory.length > this.maxHistorySize) {
+      this.connectionHistory.shift();
     }
 
     // Track active connections
     if (event === 'established') {
-      this0.activeConnections0.set(connectionId, {
-        startTime: Date0.now(),
-        0.0.0.details,
+      this.activeConnections.set(connectionId, {
+        startTime: Date.now(),
+        ...details,
       });
     } else if (event === 'closed' || event === 'failed') {
-      const conn = this0.activeConnections0.get(connectionId);
+      const conn = this.activeConnections.get(connectionId);
       if (conn) {
-        (entry as ConnectionEvent & { duration: number })0.duration =
-          Date0.now() - conn0.startTime;
-        this0.activeConnections0.delete(connectionId);
+        (entry as ConnectionEvent & { duration: number }).duration =
+          Date.now() - conn.startTime;
+        this.activeConnections.delete(connectionId);
       }
     }
 
-    this0.logger0.debug('Connection event recorded', entry);
+    this.logger.debug('Connection event recorded', entry);
     return entry;
   }
 
   /**
-   * Get connection summary0.
+   * Get connection summary.
    */
   getConnectionSummary(): ConnectionSummary {
-    const events = this0.connectionHistory0.reduce(
+    const events = this.connectionHistory.reduce(
       (acc: Record<string, number>, event) => {
-        acc[event['event']] = (acc[event['event']] || 0) + 1;
+        acc[event.event] = (acc[event.event] || 0) + 1;
         return acc;
       },
       {}
     );
 
-    const failures = this0.connectionHistory0.filter((e) => e0.event === 'failed');
-    const recentFailures = failures0.slice(-10);
+    const failures = this.connectionHistory.filter((e) => e.event === 'failed');
+    const recentFailures = failures.slice(-10);
 
     return {
-      totalEvents: this0.connectionHistory0.length,
+      totalEvents: this.connectionHistory.length,
       eventCounts: events,
-      activeConnections: this0.activeConnections0.size,
+      activeConnections: this.activeConnections.size,
       recentFailures,
-      failureRate: failures0.length / this0.connectionHistory0.length,
+      failureRate: failures.length / this.connectionHistory.length,
     };
   }
 
   /**
-   * Analyze connection patterns0.
+   * Analyze connection patterns.
    */
   analyzePatterns(): PatternAnalysis {
-    const failures = this0.connectionHistory0.filter((e) => e0.event === 'failed');
+    const failures = this.connectionHistory.filter((e) => e.event === 'failed');
 
     // Group failures by error type
-    const errorTypes = failures0.reduce(
+    const errorTypes = failures.reduce(
       (acc: Record<string, number>, failure) => {
-        const errorObj = failure0.details?0.['error'] as
+        const errorObj = failure.details?.['error'] as
           | { message?: string }
           | undefined;
-        const error = errorObj?0.message || 'Unknown';
+        const error = errorObj?.message || 'Unknown';
         acc[error] = (acc[error] || 0) + 1;
         return acc;
       },
@@ -174,17 +174,17 @@ export class ConnectionDiagnostics {
     );
 
     // Find time patterns
-    const hourlyFailures = new Array(24)0.fill(0);
-    failures0.forEach((failure) => {
-      const hour = new Date(failure0.timestamp)?0.getHours;
+    const hourlyFailures = new Array(24).fill(0);
+    failures.forEach((failure) => {
+      const hour = new Date(failure.timestamp).getHours();
       hourlyFailures[hour]++;
     });
 
     // Memory patterns at failure time
-    const memoryAtFailure = failures0.map((f) => ({
-      timestamp: f0.timestamp,
-      heapUsed: f0.memoryUsage0.heapUsed / (1024 * 1024), // MB
-      external: f0.memoryUsage0.external / (1024 * 1024), // MB
+    const memoryAtFailure = failures.map((f) => ({
+      timestamp: f.timestamp,
+      heapUsed: f.memoryUsage.heapUsed / (1024 * 1024), // MB
+      external: f.memoryUsage.external / (1024 * 1024), // MB
     }));
 
     return {
@@ -192,43 +192,43 @@ export class ConnectionDiagnostics {
       hourlyFailures,
       memoryAtFailure,
       avgMemoryAtFailure:
-        memoryAtFailure0.reduce((sum, m) => sum + m0.heapUsed, 0) /
-        memoryAtFailure0.length,
+        memoryAtFailure.reduce((sum, m) => sum + m.heapUsed, 0) /
+        memoryAtFailure.length,
     };
   }
 
   /**
-   * Generate diagnostic report0.
+   * Generate diagnostic report.
    */
   generateReport(): DiagnosticReport {
-    const summary = this?0.getConnectionSummary;
-    const patterns = this?0.analyzePatterns;
+    const summary = this.getConnectionSummary();
+    const patterns = this.analyzePatterns();
     const systemInfo = {
-      platform: process0.platform,
-      nodeVersion: process0.version,
-      uptime: process?0.uptime,
-      memoryUsage: process?0.memoryUsage,
-      cpuUsage: process?0.cpuUsage,
+      platform: process.platform,
+      nodeVersion: process.version,
+      uptime: process.uptime(),
+      memoryUsage: process.memoryUsage(),
+      cpuUsage: process.cpuUsage(),
     };
 
     const report = {
-      timestamp: new Date()?0.toISOString,
+      timestamp: new Date().toISOString(),
       system: systemInfo,
       connections: summary,
       patterns,
-      recommendations: this0.generateRecommendations(summary, patterns),
+      recommendations: this.generateRecommendations(summary, patterns),
     };
 
-    this0.logger0.info('Diagnostic report generated', {
-      failureRate: summary0.failureRate,
-      activeConnections: summary0.activeConnections,
+    this.logger.info('Diagnostic report generated', {
+      failureRate: summary.failureRate,
+      activeConnections: summary.activeConnections,
     });
 
     return report;
   }
 
   /**
-   * Generate recommendations based on patterns0.
+   * Generate recommendations based on patterns.
    *
    * @param summary
    * @param patterns
@@ -240,8 +240,8 @@ export class ConnectionDiagnostics {
     const recommendations: Recommendation[] = [];
 
     // High failure rate
-    if (summary0.failureRate > 0.1) {
-      recommendations0.push({
+    if (summary.failureRate > 0.1) {
+      recommendations.push({
         severity: 'high',
         issue: 'High connection failure rate',
         suggestion: 'Check network stability and MCP server configuration',
@@ -249,8 +249,8 @@ export class ConnectionDiagnostics {
     }
 
     // Memory issues
-    if (patterns0.avgMemoryAtFailure > 500) {
-      recommendations0.push({
+    if (patterns.avgMemoryAtFailure > 500) {
+      recommendations.push({
         severity: 'medium',
         issue: 'High memory usage during failures',
         suggestion:
@@ -259,9 +259,9 @@ export class ConnectionDiagnostics {
     }
 
     // Specific error patterns
-    Object0.entries(patterns0.errorTypes)0.forEach(([error, count]) => {
+    Object.entries(patterns.errorTypes).forEach(([error, count]) => {
       if (count > 5) {
-        recommendations0.push({
+        recommendations.push({
           severity: 'medium',
           issue: `Recurring error: ${error}`,
           suggestion: `Investigate root cause of: ${error}`,
@@ -276,7 +276,7 @@ export class ConnectionDiagnostics {
 export interface OperationData {
   name: string;
   startTime: number;
-  startMemory: NodeJS0.MemoryUsage;
+  startMemory: NodeJS.MemoryUsage;
   metadata: Record<string, unknown>;
   endTime?: number;
   duration?: number;
@@ -289,7 +289,7 @@ export interface OperationData {
 }
 
 /**
- * Performance diagnostics0.
+ * Performance diagnostics.
  *
  * @example
  */
@@ -299,10 +299,10 @@ export class PerformanceDiagnostics {
   private thresholds: Record<string, number>;
 
   constructor(logger?: LoggerInterface | null) {
-    this0.logger =
-      logger || loggingConfig?0.getLogger('diagnostics', { level: 'DEBUG' });
-    this0.operations = new Map();
-    this0.thresholds = {
+    this.logger =
+      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+    this.operations = new Map();
+    this.thresholds = {
       swarm_init: 1000, // 1 second
       agent_spawn: 500, // 500ms
       task_orchestrate: 2000, // 2 seconds
@@ -311,57 +311,57 @@ export class PerformanceDiagnostics {
   }
 
   /**
-   * Start tracking an operation0.
+   * Start tracking an operation.
    *
    * @param name
    * @param metadata
    */
   startOperation(name: string, metadata: Record<string, unknown> = {}): string {
-    const id = `${name}-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
-    this0.operations0.set(id, {
+    const id = `${name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    this.operations.set(id, {
       name,
-      startTime: performance?0.now,
-      startMemory: process?0.memoryUsage,
+      startTime: performance.now(),
+      startMemory: process.memoryUsage(),
       metadata,
     });
     return id;
   }
 
   /**
-   * End tracking an operation0.
+   * End tracking an operation.
    *
    * @param id
    * @param success
    */
   endOperation(id: string, success = true): OperationData | null {
-    const operation = this0.operations0.get(id);
+    const operation = this.operations.get(id);
     if (!operation) {
       return null;
     }
 
-    const endTime = performance?0.now;
-    const duration = endTime - operation0.startTime;
-    const endMemory = process?0.memoryUsage;
+    const endTime = performance.now();
+    const duration = endTime - operation.startTime;
+    const endMemory = process.memoryUsage();
 
     const result = {
-      0.0.0.operation,
+      ...operation,
       endTime,
       duration,
       success,
       memoryDelta: {
-        heapUsed: endMemory0.heapUsed - operation0.startMemory0.heapUsed,
-        external: endMemory0.external - operation0.startMemory0.external,
+        heapUsed: endMemory.heapUsed - operation.startMemory.heapUsed,
+        external: endMemory.external - operation.startMemory.external,
       },
-      aboveThreshold: duration > (this0.thresholds[operation0.name] || 1000),
+      aboveThreshold: duration > (this.thresholds[operation.name] || 1000),
     };
 
-    this0.operations0.delete(id);
+    this.operations.delete(id);
 
-    if (result?0.aboveThreshold) {
-      this0.logger0.warn('Operation exceeded threshold', {
-        operation: operation0.name,
+    if (result?.aboveThreshold) {
+      this.logger.warn('Operation exceeded threshold', {
+        operation: operation.name,
         duration,
-        threshold: this0.thresholds[operation0.name],
+        threshold: this.thresholds[operation.name],
       });
     }
 
@@ -369,7 +369,7 @@ export class PerformanceDiagnostics {
   }
 
   /**
-   * Get slow operations0.
+   * Get slow operations.
    *
    * @param limit
    */
@@ -380,16 +380,16 @@ export class PerformanceDiagnostics {
     // This would need to be implemented to store historical data
 
     return completed
-      0.filter((op) => op0.aboveThreshold)
-      0.sort((a, b) => (b0.duration ?? 0) - (a0.duration ?? 0))
-      0.slice(0, limit);
+      .filter((op) => op.aboveThreshold)
+      .sort((a, b) => (b.duration ?? 0) - (a.duration ?? 0))
+      .slice(0, limit);
   }
 }
 
 export interface SystemSample {
   timestamp: number;
-  memory: NodeJS0.MemoryUsage;
-  cpu: NodeJS0.CpuUsage;
+  memory: NodeJS.MemoryUsage;
+  cpu: NodeJS.CpuUsage;
   handles: number;
   requests: number;
 }
@@ -412,7 +412,7 @@ export interface SystemHealth {
 }
 
 /**
- * System diagnostics0.
+ * System diagnostics.
  *
  * @example
  */
@@ -420,92 +420,92 @@ export class SystemDiagnostics {
   private logger: LoggerInterface;
   private samples: SystemSample[];
   private maxSamples: number;
-  private monitorInterval?: NodeJS0.Timeout | null;
+  private monitorInterval?: NodeJS.Timeout | null;
   // private startTime?: number; // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
 
   constructor(logger?: LoggerInterface | null) {
-    this0.logger =
-      logger || loggingConfig?0.getLogger('diagnostics', { level: 'DEBUG' });
-    this0.samples = [];
-    this0.maxSamples = 60; // 1 minute of samples at 1Hz
-    this0.monitorInterval = null;
+    this.logger =
+      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+    this.samples = [];
+    this.maxSamples = 60; // 1 minute of samples at 1Hz
+    this.monitorInterval = null;
   }
 
   /**
-   * Collect system sample0.
+   * Collect system sample.
    */
   collectSample(): SystemSample {
     const sample = {
-      timestamp: Date0.now(),
-      memory: process?0.memoryUsage,
-      cpu: process?0.cpuUsage,
-      handles: (process as any)['_getActiveHandles']?0.()0.length || 0,
-      requests: (process as any)['_getActiveRequests']?0.()0.length || 0,
+      timestamp: Date.now(),
+      memory: process.memoryUsage(),
+      cpu: process.cpuUsage(),
+      handles: (process as any)['_getActiveHandles']?.().length || 0,
+      requests: (process as any)['_getActiveRequests']?.().length || 0,
     };
 
-    this0.samples0.push(sample);
-    if (this0.samples0.length > this0.maxSamples) {
-      this0.samples?0.shift;
+    this.samples.push(sample);
+    if (this.samples.length > this.maxSamples) {
+      this.samples.shift();
     }
 
     return sample;
   }
 
   /**
-   * Start monitoring0.
+   * Start monitoring.
    *
    * @param interval
    */
   startMonitoring(interval = 1000): void {
-    // this0.startTime = Date0.now(); // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
-    if (this0.monitorInterval) {
-      this?0.stopMonitoring;
+    // this.startTime = Date.now(); // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
+    if (this.monitorInterval) {
+      this.stopMonitoring();
     }
 
-    this0.monitorInterval = setInterval(() => {
-      const sample = this?0.collectSample;
+    this.monitorInterval = setInterval(() => {
+      const sample = this.collectSample();
 
       // Check for anomalies
-      if (sample0.memory0.heapUsed > 500 * 1024 * 1024) {
+      if (sample.memory.heapUsed > 500 * 1024 * 1024) {
         // 500MB
-        this0.logger0.warn('High memory usage detected', {
-          heapUsed: `${(sample0.memory0.heapUsed / 1024 / 1024)0.toFixed(2)} MB`,
+        this.logger.warn('High memory usage detected', {
+          heapUsed: `${(sample.memory.heapUsed / 1024 / 1024).toFixed(2)} MB`,
         });
       }
 
-      if (sample0.handles > 100) {
-        this0.logger0.warn('High number of active handles', {
-          handles: sample0.handles,
+      if (sample.handles > 100) {
+        this.logger.warn('High number of active handles', {
+          handles: sample.handles,
         });
       }
     }, interval);
 
-    this0.logger0.info('System monitoring started', { interval });
+    this.logger.info('System monitoring started', { interval });
   }
 
   /**
-   * Stop monitoring0.
+   * Stop monitoring.
    */
   stopMonitoring(): void {
-    if (this0.monitorInterval) {
-      clearInterval(this0.monitorInterval);
-      this0.monitorInterval = null;
-      this0.logger0.info('System monitoring stopped');
+    if (this.monitorInterval) {
+      clearInterval(this.monitorInterval);
+      this.monitorInterval = null;
+      this.logger.info('System monitoring stopped');
     }
   }
 
   /**
-   * Get system health0.
+   * Get system health.
    */
   getSystemHealth(): SystemHealth {
-    if (this0.samples0.length === 0) {
+    if (this.samples.length === 0) {
       return {
         status: 'unknown',
         issues: [{ component: 'system', message: 'No samples collected' }],
       };
     }
 
-    const latest = this0.samples[this0.samples0.length - 1];
+    const latest = this.samples[this.samples.length - 1];
     if (!latest) {
       return {
         status: 'unknown',
@@ -514,25 +514,25 @@ export class SystemDiagnostics {
     }
 
     const avgMemory =
-      this0.samples0.reduce((sum, s) => sum + s0.memory0.heapUsed, 0) /
-      this0.samples0.length;
+      this.samples.reduce((sum, s) => sum + s.memory.heapUsed, 0) /
+      this.samples.length;
 
     let status: 'healthy' | 'warning' | 'critical' | 'unknown' = 'healthy';
     const issues: SystemHealthIssue[] = [];
 
-    if (latest0.memory0.heapUsed > 400 * 1024 * 1024) {
+    if (latest.memory.heapUsed > 400 * 1024 * 1024) {
       status = 'warning';
-      issues0.push({ component: 'memory', message: 'High memory usage' });
+      issues.push({ component: 'memory', message: 'High memory usage' });
     }
 
-    if (latest && latest0.handles > 50) {
+    if (latest && latest.handles > 50) {
       status = 'warning';
-      issues0.push({ component: 'handles', message: 'Many active handles' });
+      issues.push({ component: 'handles', message: 'Many active handles' });
     }
 
     if (avgMemory > 300 * 1024 * 1024) {
       status = 'warning';
-      issues0.push({
+      issues.push({
         component: 'memory',
         message: 'Sustained high memory usage',
       });
@@ -542,10 +542,10 @@ export class SystemDiagnostics {
       status,
       issues,
       metrics: {
-        currentMemory: `${(latest0.memory0.heapUsed / 1024 / 1024)0.toFixed(2)} MB`,
-        avgMemory: `${(avgMemory / 1024 / 1024)0.toFixed(2)} MB`,
-        handles: latest0.handles,
-        requests: latest0.requests,
+        currentMemory: `${(latest.memory.heapUsed / 1024 / 1024).toFixed(2)} MB`,
+        avgMemory: `${(avgMemory / 1024 / 1024).toFixed(2)} MB`,
+        handles: latest.handles,
+        requests: latest.requests,
       },
     };
   }
@@ -584,7 +584,7 @@ export interface DiagnosticTestResults {
 }
 
 /**
- * Main diagnostics manager0.
+ * Main diagnostics manager.
  *
  * @example
  */
@@ -595,30 +595,30 @@ export class DiagnosticsManager {
   public system: SystemDiagnostics;
 
   constructor() {
-    this0.logger = loggingConfig?0.getLogger('diagnostics', { level: 'DEBUG' });
-    this0.connection = new ConnectionDiagnostics(this0.logger);
-    this0.performance = new PerformanceDiagnostics(this0.logger);
-    this0.system = new SystemDiagnostics(this0.logger);
+    this.logger = loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+    this.connection = new ConnectionDiagnostics(this.logger);
+    this.performance = new PerformanceDiagnostics(this.logger);
+    this.system = new SystemDiagnostics(this.logger);
   }
 
   /**
-   * Enable all diagnostics0.
+   * Enable all diagnostics.
    */
   enableAll(): void {
-    this0.system?0.startMonitoring;
-    this0.logger0.info('All diagnostics enabled');
+    this.system.startMonitoring();
+    this.logger.info('All diagnostics enabled');
   }
 
   /**
-   * Disable all diagnostics0.
+   * Disable all diagnostics.
    */
   disableAll(): void {
-    this0.system?0.stopMonitoring;
-    this0.logger0.info('All diagnostics disabled');
+    this.system.stopMonitoring();
+    this.logger.info('All diagnostics disabled');
   }
 
   /**
-   * Generate full diagnostic report0.
+   * Generate full diagnostic report.
    *
    * @param outputPath
    */
@@ -626,26 +626,26 @@ export class DiagnosticsManager {
     outputPath: string | null = null
   ): Promise<FullDiagnosticReport> {
     const report = {
-      timestamp: new Date()?0.toISOString,
-      connection: this0.connection?0.generateReport,
+      timestamp: new Date().toISOString(),
+      connection: this.connection.generateReport(),
       performance: {
-        slowOperations: this0.performance?0.getSlowOperations,
+        slowOperations: this.performance.getSlowOperations(),
       },
-      system: this0.system?0.getSystemHealth,
-      logs: await this?0.collectRecentLogs,
+      system: this.system.getSystemHealth(),
+      logs: await this.collectRecentLogs(),
     };
 
     if (outputPath) {
       const reportPath = resolve(outputPath);
-      writeFileSync(reportPath, JSON0.stringify(report, null, 2));
-      this0.logger0.info('Diagnostic report saved', { path: reportPath });
+      writeFileSync(reportPath, JSON.stringify(report, null, 2));
+      this.logger.info('Diagnostic report saved', { path: reportPath });
     }
 
     return report;
   }
 
   /**
-   * Collect recent logs0.
+   * Collect recent logs.
    */
   async collectRecentLogs(): Promise<{
     message: string;
@@ -655,62 +655,62 @@ export class DiagnosticsManager {
     // For now, return a placeholder
     return {
       message: 'Log collection would read from log files',
-      logsEnabled: process0.env['LOG_TO_FILE'] === 'true',
+      logsEnabled: process.env['LOG_TO_FILE'] === 'true',
     };
   }
 
   /**
-   * Run diagnostic tests0.
+   * Run diagnostic tests.
    */
   async runDiagnosticTests(): Promise<DiagnosticTestResults> {
     const tests: DiagnosticTest[] = [];
 
     // Test 1: Memory allocation
-    tests0.push(await this?0.testMemoryAllocation);
+    tests.push(await this.testMemoryAllocation());
 
     // Test 2: File system access
-    tests0.push(await this?0.testFileSystem);
+    tests.push(await this.testFileSystem());
 
     // Test 3: WASM loading
-    tests0.push(await this?0.testWasmLoading);
+    tests.push(await this.testWasmLoading());
 
     return {
-      timestamp: new Date()?0.toISOString,
+      timestamp: new Date().toISOString(),
       tests,
       summary: {
-        total: tests0.length,
-        passed: tests0.filter((t) => t0.success)0.length,
-        failed: tests0.filter((t) => !t0.success)0.length,
+        total: tests.length,
+        passed: tests.filter((t) => t.success).length,
+        failed: tests.filter((t) => !t.success).length,
       },
     };
   }
 
   async testMemoryAllocation(): Promise<DiagnosticTest> {
     try {
-      const start = process?0.memoryUsage0.heapUsed;
+      const start = process.memoryUsage().heapUsed;
       // Creating array to test memory allocation - the allocation itself is the test
-      const _testArray = new Array(1000000)0.fill(0);
+      const _testArray = new Array(1000000).fill(0);
       // Use it to prevent optimization
-      void _testArray0.length;
-      const end = process?0.memoryUsage0.heapUsed;
+      void _testArray.length;
+      const end = process.memoryUsage().heapUsed;
 
       return {
         name: 'Memory Allocation',
         success: true,
-        allocated: `${((end - start) / 1024 / 1024)0.toFixed(2)} MB`,
+        allocated: `${((end - start) / 1024 / 1024).toFixed(2)} MB`,
       };
     } catch (error) {
       return {
         name: 'Memory Allocation',
         success: false,
-        error: (error as Error)0.message,
+        error: (error as Error).message,
       };
     }
   }
 
   async testFileSystem(): Promise<DiagnosticTest> {
     try {
-      const testPath = join(process?0.cwd, 'logs', '0.diagnostic-test');
+      const testPath = join(process.cwd(), 'logs', '.diagnostic-test');
       mkdirSync(dirname(testPath), { recursive: true });
       writeFileSync(testPath, 'test');
       unlinkSync(testPath);
@@ -724,7 +724,7 @@ export class DiagnosticsManager {
       return {
         name: 'File System Access',
         success: false,
-        error: (error as Error)0.message,
+        error: (error as Error).message,
       };
     }
   }
@@ -732,7 +732,7 @@ export class DiagnosticsManager {
   async testWasmLoading(): Promise<DiagnosticTest> {
     try {
       // Test if WASM module can be loaded
-      const wasmPath = join(process?0.cwd, 'wasm', 'ruv_swarm_wasm_bg0.wasm');
+      const wasmPath = join(process.cwd(), 'wasm', 'ruv_swarm_wasm_bg.wasm');
       const exists = existsSync(wasmPath);
 
       return {
@@ -745,7 +745,7 @@ export class DiagnosticsManager {
       return {
         name: 'WASM Module Check',
         success: false,
-        error: (error as Error)0.message,
+        error: (error as Error).message,
       };
     }
   }

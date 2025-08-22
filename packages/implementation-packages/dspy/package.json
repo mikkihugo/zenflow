@@ -31,7 +31,7 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/neural-ml": "link:../neural-ml",
+    "@claude-zen/neural-ml": "workspace:*",
     "seedrandom": "^3.0.5",
     "zod": "^4.0.17"
   },

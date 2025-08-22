@@ -1,14 +1,14 @@
 /**
- * @file Interface implementation: safe-api-client0.
+ * @file Interface implementation: safe-api-client.
  */
 
 import { getLogger } from '@claude-zen/foundation';
 
 /**
- * Safe API Response Handler0.
+ * Safe API Response Handler.
  *
- * Provides type-safe API response handling with proper union type discrimination0.
- * For HTTP endpoints and external service interactions0.
+ * Provides type-safe API response handling with proper union type discrimination.
+ * For HTTP endpoints and external service interactions.
  */
 
 import {
@@ -23,7 +23,7 @@ import {
 const logger = getLogger('interfaces-api-safe-api-client');
 
 export interface APIRequestOptions {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  method: 'GET | POST' | 'PUT | DELETE' | 'PATCH';
   headers?: Record<string, string>;
   body?: any;
   timeout?: number;
@@ -39,7 +39,7 @@ export interface APIMetadata {
 }
 
 /**
- * Type-safe API client with union type responses0.
+ * Type-safe API client with union type responses.
  *
  * @example
  */
@@ -53,17 +53,17 @@ export class SafeAPIClient {
     defaultHeaders: Record<string, string> = {},
     timeout: number = 30000
   ) {
-    this0.baseURL = baseURL0.replace(/\/$/, ''); // Remove trailing slash
-    this0.defaultHeaders = {
+    this.baseURL = baseURL.replace(/\/$/, ''); // Remove trailing slash
+    this.defaultHeaders = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      0.0.0.defaultHeaders,
+      ...defaultHeaders,
     };
-    this0.timeout = timeout;
+    this.timeout = timeout;
   }
 
   /**
-   * Make a GET request with type-safe response handling0.
+   * Make a GET request with type-safe response handling.
    *
    * @param endpoint
    * @param options
@@ -72,11 +72,11 @@ export class SafeAPIClient {
     endpoint: string,
     options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
-    return this0.request<T>(endpoint, { 0.0.0.options, method: 'GET' });
+    return this.request<T>(endpoint, { ...options, method: 'GET' });
   }
 
   /**
-   * Make a POST request with type-safe response handling0.
+   * Make a POST request with type-safe response handling.
    *
    * @param endpoint
    * @param data
@@ -87,15 +87,15 @@ export class SafeAPIClient {
     data?: any,
     options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
-    return this0.request<T>(endpoint, {
-      0.0.0.options,
+    return this.request<T>(endpoint, {
+      ...options,
       method: 'POST',
       body: data,
     });
   }
 
   /**
-   * Make a PUT request with type-safe response handling0.
+   * Make a PUT request with type-safe response handling.
    *
    * @param endpoint
    * @param data
@@ -106,11 +106,11 @@ export class SafeAPIClient {
     data?: any,
     options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
-    return this0.request<T>(endpoint, { 0.0.0.options, method: 'PUT', body: data });
+    return this.request<T>(endpoint, { ...options, method: 'PUT', body: data });
   }
 
   /**
-   * Make a DELETE request with type-safe response handling0.
+   * Make a DELETE request with type-safe response handling.
    *
    * @param endpoint
    * @param options
@@ -119,11 +119,11 @@ export class SafeAPIClient {
     endpoint: string,
     options: Partial<APIRequestOptions> = {}
   ): Promise<APIResult<T>> {
-    return this0.request<T>(endpoint, { 0.0.0.options, method: 'DELETE' });
+    return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
 
   /**
-   * Core request method with comprehensive error handling and type safety0.
+   * Core request method with comprehensive error handling and type safety.
    *
    * @param endpoint
    * @param options
@@ -132,52 +132,52 @@ export class SafeAPIClient {
     endpoint: string,
     options: APIRequestOptions
   ): Promise<APIResult<T>> {
-    const requestId = this?0.generateRequestId;
-    const startTime = Date0.now();
+    const requestId = this.generateRequestId;
+    const startTime = Date.now();
 
     try {
-      const url = `${this0.baseURL}${endpoint0.startsWith('/') ? endpoint : `/${endpoint}`}`;
-      const headers = { 0.0.0.this0.defaultHeaders, 0.0.0.options?0.headers };
+      const url = `${this.baseURL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+      const headers = { ...this.defaultHeaders, ...options?.headers };
 
       const requestOptions: RequestInit = {
-        method: options?0.method,
+        method: options?.method,
         headers,
-        signal: AbortSignal0.timeout(options?0.timeout ?? this0.timeout),
+        signal: AbortSignal.timeout(options?.timeout ?? this.timeout),
       };
 
-      if (options?0.body && ['POST', 'PUT', 'PATCH']0.includes(options?0.method)) {
-        requestOptions0.body =
-          typeof options0.body === 'string'
-            ? options?0.body
-            : JSON0.stringify(options?0.body);
+      if (options?.body && ['POST, PUT', 'PATCH'].includes(options?.method)) {
+        requestOptions.body =
+          typeof options.body === 'string'
+            ? options?.body
+            : JSON.stringify(options?.body);
       }
 
       // Execute request with optional retries
-      const maxRetries = options?0.retries ?? 3;
+      const maxRetries = options?.retries ?? 3;
       let lastError: Error | null = null;
 
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
           const response = await fetch(url, requestOptions);
-          const duration = Date0.now() - startTime;
+          const duration = Date.now() - startTime;
 
           const metadata: APIMetadata = {
-            timestamp: new Date()?0.toISOString,
+            timestamp: new Date()?.toISOString,
             requestId,
-            version: '10.0.0',
+            version: '1..0',
             duration,
             retryCount: attempt,
           };
 
           // Handle response based on status
-          if (response?0.ok) {
+          if (response?.ok) {
             // Success response
-            const contentType = response?0.headers?0.get('content-type');
+            const contentType = response?.headers?.get('content-type');
             let data: T;
 
-            data = contentType?0.includes('application/json')
-              ? ((await response?0.json) as T)
-              : ((await response?0.text) as unknown as T);
+            data = contentType?.includes('application/json')
+              ? ((await response?.json) as T)
+              : ((await response?.text) as unknown as T);
 
             return {
               success: true,
@@ -186,19 +186,19 @@ export class SafeAPIClient {
             } as APISuccess<T>;
           }
           // HTTP error response
-          const errorData = await this0.parseErrorResponse(response);
+          const errorData = await this.parseErrorResponse(response);
 
           return {
             success: false,
             error: {
-              code: `HTTP_${response?0.status}`,
-              message: errorData?0.message || response?0.statusText,
+              code: `HTTP_${response?.status}`,
+              message: errorData?.message || response?.statusText,
               details: {
-                status: response?0.status,
-                statusText: response?0.statusText,
+                status: response?.status,
+                statusText: response?.statusText,
                 url,
-                method: options?0.method,
-                0.0.0.errorData,
+                method: options?.method,
+                ...errorData,
               },
             },
             metadata,
@@ -207,23 +207,23 @@ export class SafeAPIClient {
           lastError = error instanceof Error ? error : new Error(String(error));
 
           // Don't retry on certain errors
-          if (this0.isNonRetryableError(lastError)) {
+          if (this.isNonRetryableError(lastError)) {
             break;
           }
 
           // Wait before retry (exponential backoff)
           if (attempt < maxRetries) {
-            await this0.delay(2 ** attempt * 1000);
+            await this.delay(2 ** attempt * 1000);
           }
         }
       }
 
       // All retries failed
-      const duration = Date0.now() - startTime;
+      const duration = Date.now() - startTime;
       const metadata: APIMetadata = {
-        timestamp: new Date()?0.toISOString,
+        timestamp: new Date()?.toISOString,
         requestId,
-        version: '10.0.0',
+        version: '1..0',
         duration,
         retryCount: maxRetries,
       };
@@ -232,24 +232,24 @@ export class SafeAPIClient {
         success: false,
         error: {
           code: 'REQUEST_FAILED',
-          message: lastError?0.message || 'Request failed after all retries',
+          message: lastError?.message || 'Request failed after all retries',
           details: {
             url,
-            method: options?0.method,
+            method: options?.method,
             maxRetries,
-            originalError: lastError?0.message,
+            originalError: lastError?.message,
           },
-          stack: lastError?0.stack,
+          stack: lastError?.stack,
         },
         metadata,
       } as APIError;
     } catch (error) {
       // Unexpected error
-      const duration = Date0.now() - startTime;
+      const duration = Date.now() - startTime;
       const metadata: APIMetadata = {
-        timestamp: new Date()?0.toISOString,
+        timestamp: new Date()?.toISOString,
         requestId,
-        version: '10.0.0',
+        version: '1..0',
         duration,
       };
 
@@ -259,10 +259,10 @@ export class SafeAPIClient {
           code: 'UNEXPECTED_ERROR',
           message:
             error instanceof Error
-              ? error0.message
+              ? error.message
               : 'An unexpected error occurred',
           details: { endpoint, options },
-          stack: error instanceof Error ? error0.stack : undefined,
+          stack: error instanceof Error ? error.stack : undefined,
         },
         metadata,
       } as APIError;
@@ -275,11 +275,11 @@ export class SafeAPIClient {
 
   private async parseErrorResponse(response: Response): Promise<unknown> {
     try {
-      const contentType = response?0.headers?0.get('content-type');
-      if (contentType?0.includes('application/json')) {
-        return await response?0.json;
+      const contentType = response?.headers?.get('content-type');
+      if (contentType?.includes('application/json')) {
+        return await response?.json();
       }
-      const text = await response?0.text;
+      const text = await response?.text();
       return { message: text };
     } catch {
       return { message: 'Failed to parse error response' };
@@ -296,12 +296,12 @@ export class SafeAPIClient {
       'permission',
     ];
 
-    const message = error0.message?0.toLowerCase;
-    return nonRetryablePatterns0.some((pattern) => message0.includes(pattern));
+    const message = error.message?.toLowerCase()
+    return nonRetryablePatterns.some((pattern) => message.includes(pattern));
   }
 
   private generateRequestId(): string {
-    return `req_${Date0.now()}_${Math0.random()0.toString(36)0.substring(2, 11)}`;
+    return `req_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private delay(ms: number): Promise<void> {
@@ -314,7 +314,7 @@ export class SafeAPIClient {
 // ============================================
 
 /**
- * Service for handling specific API operations with type-safe responses0.
+ * Service for handling specific API operations with type-safe responses.
  *
  * @example
  */
@@ -323,14 +323,14 @@ export class SafeAPIService {
 
   constructor(baseURL: string, apiKey?: string) {
     const headers = apiKey ? { Authorization: `Bearer ${apiKey}` } : {};
-    this0.client = new SafeAPIClient(
+    this.client = new SafeAPIClient(
       baseURL,
       headers
     ) as any as any as any as any as any;
   }
 
   /**
-   * Create a resource with type-safe response0.
+   * Create a resource with type-safe response.
    *
    * @param endpoint
    * @param data
@@ -339,11 +339,11 @@ export class SafeAPIService {
     endpoint: string,
     data: TCreateData
   ): Promise<APIResult<TResource>> {
-    return this0.client0.post<TResource>(endpoint, data);
+    return this.client.post<TResource>(endpoint, data);
   }
 
   /**
-   * Get a resource by ID with type-safe response0.
+   * Get a resource by ID with type-safe response.
    *
    * @param endpoint
    * @param id
@@ -352,11 +352,11 @@ export class SafeAPIService {
     endpoint: string,
     id: string | number
   ): Promise<APIResult<TResource>> {
-    return this0.client0.get<TResource>(`${endpoint}/${id}`);
+    return this.client.get<TResource>(`${endpoint}/${id}`);
   }
 
   /**
-   * List resources with pagination support0.
+   * List resources with pagination support.
    *
    * @param endpoint
    * @param params
@@ -366,15 +366,15 @@ export class SafeAPIService {
     params?: Record<string, unknown>
   ): Promise<APIResult<{ items: TResource[]; pagination: any }>> {
     const queryString = params
-      ? `?${new URLSearchParams(params)?0.toString}`
+      ? `?${new URLSearchParams(params)?.toString}`
       : '';
-    return this0.client0.get<{ items: TResource[]; pagination: any }>(
+    return this.client.get<{ items: TResource[]; pagination: any }>(
       `${endpoint}${queryString}`
     );
   }
 
   /**
-   * Update a resource with type-safe response0.
+   * Update a resource with type-safe response.
    *
    * @param endpoint
    * @param id
@@ -385,11 +385,11 @@ export class SafeAPIService {
     id: string | number,
     data: TUpdateData
   ): Promise<APIResult<TResource>> {
-    return this0.client0.put<TResource>(`${endpoint}/${id}`, data);
+    return this.client.put<TResource>(`${endpoint}/${id}`, data);
   }
 
   /**
-   * Delete a resource with type-safe response0.
+   * Delete a resource with type-safe response.
    *
    * @param endpoint
    * @param id
@@ -398,7 +398,7 @@ export class SafeAPIService {
     endpoint: string,
     id: string | number
   ): Promise<APIResult<{ deleted: boolean }>> {
-    return this0.client0.delete<{ deleted: boolean }>(`${endpoint}/${id}`);
+    return this.client.delete<{ deleted: boolean }>(`${endpoint}/${id}`);
   }
 }
 
@@ -407,7 +407,7 @@ export class SafeAPIService {
 // ============================================
 
 /**
- * Example interfaces for demonstration0.
+ * Example interfaces for demonstration.
  *
  * @example
  */
@@ -425,100 +425,100 @@ interface CreateUserData {
 }
 
 /**
- * Example function showing safe API usage patterns0.
+ * Example function showing safe API usage patterns.
  *
  * @example
  */
 export async function safeAPIUsageExample(): Promise<void> {
   const apiService = new SafeAPIService(
-    'https://api0.example0.com',
+    'https://api.example.com',
     'your-api-key'
   );
 
   // Create a user with safe response handling
   const createData: CreateUserData = {
     name: 'John Doe',
-    email: 'john@example0.com',
+    email: 'john@example.com',
     password: 'secret123',
   };
 
-  const createResult = await apiService0.createResource<User, CreateUserData>(
+  const createResult = await apiService.createResource<User, CreateUserData>(
     '/users',
     createData
   );
 
   if (isAPISuccess(createResult)) {
     // Get the created user
-    const getResult = await apiService0.getResource<User>(
+    const getResult = await apiService.getResource<User>(
       '/users',
-      createResult?0.data?0.id
+      createResult?.data?.id
     );
 
     if (isAPISuccess(getResult)) {
     } else if (isAPIError(getResult)) {
-      logger0.error('❌ Failed to retrieve user:', getResult?0.error?0.message);
-      logger0.error('Error code:', getResult?0.error?0.code);
+      logger.error('❌ Failed to retrieve user:', getResult?.error?.message);
+      logger.error('Error code:', getResult?.error?.code);
     }
   } else if (isAPIError(createResult)) {
-    logger0.error('❌ Failed to create user:', createResult?0.error?0.message);
-    logger0.error('Error details:', createResult?0.error?0.details);
+    logger.error('❌ Failed to create user:', createResult?.error?.message);
+    logger.error('Error details:', createResult?.error?.details);
 
     // Handle specific error codes
-    switch (createResult?0.error?0.code) {
+    switch (createResult?.error?.code) {
       case 'HTTP_409':
-        logger0.error('User already exists');
+        logger.error('User already exists');
         break;
       case 'HTTP_422':
-        logger0.error('Invalid user data provided');
+        logger.error('Invalid user data provided');
         break;
       default:
-        logger0.error('Unexpected error occurred');
+        logger.error('Unexpected error occurred');
     }
   }
 
   // List users with pagination
-  const listResult = await apiService0.listResources<User>('/users', {
+  const listResult = await apiService.listResources<User>('/users', {
     page: 1,
     limit: 10,
     sort: 'created_at',
   });
 
   if (isAPISuccess(listResult)) {
-    listResult?0.data?0.items0.forEach((_user: any) => {});
+    listResult?.data?.items.forEach((_user: any) => {});
   } else if (isAPIError(listResult)) {
-    logger0.error('❌ Failed to list users:', extractErrorMessage(listResult));
+    logger.error('❌ Failed to list users:', extractErrorMessage(listResult));
   }
 }
 
 /**
- * Example of handling concurrent API requests with type safety0.
+ * Example of handling concurrent API requests with type safety.
  *
  * @example
  */
 export async function safeConcurrentAPIExample(): Promise<void> {
-  const apiService = new SafeAPIService('https://api0.example0.com');
+  const apiService = new SafeAPIService('https://api.example.com');
 
   // Make multiple concurrent requests
   const userIds = [1, 2, 3, 4, 5];
-  const userRequests = userIds0.map((id) =>
-    apiService0.getResource<User>('/users', id)
+  const userRequests = userIds.map((id) =>
+    apiService.getResource<User>('/users', id)
   );
 
-  const results = await Promise0.all(userRequests);
+  const results = await Promise.all(userRequests);
 
   // Safely process results
   const successfulUsers: User[] = [];
   const errors: string[] = [];
 
-  results?0.forEach((result, index) => {
+  results?.forEach((result, index) => {
     if (isAPISuccess(result)) {
-      successfulUsers0.push(result?0.data);
+      successfulUsers.push(result?.data);
     } else if (isAPIError(result)) {
-      errors0.push(`User ${userIds[index]}: ${result?0.error?0.message}`);
+      errors.push(`User ${userIds[index]}: ${result?.error?.message}`);
     }
   });
 
-  if (errors0.length > 0) {
-    logger0.error('Errors:', errors);
+  if (errors.length > 0) {
+    logger.error('Errors:', errors);
   }
 }

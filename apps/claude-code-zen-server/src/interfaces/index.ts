@@ -1,17 +1,17 @@
 /**
- * Interfaces Module - Enhanced with Advanced CLI0.
+ * Interfaces Module - Enhanced with Advanced CLI.
  *
  * Unified export for all interface types:
- * - Terminal: Unified CLI/TUI interface (React/Ink based)
+ * - Terminal: Unified CLI/ interface (React/Ink based)
  * - CLI: Advanced AI-powered CLI with intelligent project management
  * - Web: Web dashboard components
  * - MCP: Claude Desktop remote interface components
- * - API: REST API interface0.
+ * - API: REST API interface.
  */
 
 // All Interface Exports
 /**
- * @file Interfaces module exports0.
+ * @file Interfaces module exports.
  */
 
 // Advanced CLI System (Revolutionary AI-powered capabilities)
@@ -19,12 +19,12 @@ export * from '@claude-zen/foundation';
 
 // Enhanced Interface types
 export interface InterfaceConfig {
-  mode: 'terminal' | 'web' | 'mcp' | 'api' | 'advanced-cli';
-  theme?: 'dark' | 'light';
+  mode: 'terminal | web' | 'mcp | api' | 'advanced-cli';
+  theme?: 'dark | light';
   verbose?: boolean;
   port?: number; // For web interface
   serverUrl?: string; // For MCP interface
-  terminalMode?: 'cli' | 'tui' | 'advanced'; // For terminal interface sub-mode
+  terminalMode?: '' | 'advanced'; // For terminal interface sub-mode
   aiAssistance?: boolean; // Enable AI assistance
   realTimeMonitoring?: boolean; // Enable real-time monitoring
   intelligentScaffolding?: boolean; // Enable intelligent project scaffolding
@@ -32,14 +32,14 @@ export interface InterfaceConfig {
 
 // Enhanced Interface launcher utilities
 export const InterfaceUtils = {
-  detectMode(): 'terminal' | 'web' | 'mcp' | 'api' | 'advanced-cli' {
+  detectMode(): 'terminal | web' | 'mcp | api' | 'advanced-cli' {
     // Auto-detect interface mode based on environment and commands
-    if (process0.env['CLAUDE_CODE_MCP']) return 'mcp';
-    if (process0.env['CLAUDE_FLOW_WEB']) return 'web';
-    if (process0.env['CLAUDE_FLOW_API']) return 'api';
+    if (process.env['CLAUDE_CODE_MCP]) return mcp';
+    if (process.env['CLAUDE_FLOW_WEB]) return web';
+    if (process.env['CLAUDE_FLOW_API]) return api';
 
     // Check for advanced CLI indicators
-    const args = process0.argv0.slice(2);
+    const args = process.argv.slice(2);
     const advancedCommands = [
       'create',
       'optimize',
@@ -55,19 +55,19 @@ export const InterfaceUtils = {
       '--swarm',
     ];
 
-    const hasAdvancedCommand = args0.some((arg) =>
-      advancedCommands0.includes(arg)
+    const hasAdvancedCommand = args.some((arg) =>
+      advancedCommands.includes(arg)
     );
-    const hasAIFlag = args0.some((arg) => aiFlags0.includes(arg));
+    const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
     if (hasAdvancedCommand || hasAIFlag) return 'advanced-cli';
 
     return 'terminal'; // Default to unified terminal interface
   },
 
-  detectTerminalMode(): 'cli' | 'tui' | 'advanced' {
+  detectTerminalMode(): '' | 'advanced' {
     // Auto-detect terminal sub-mode with advanced CLI support
-    const args = process0.argv0.slice(2);
+    const args = process.argv.slice(2);
 
     // Check for advanced CLI indicators
     const advancedCommands = [
@@ -85,35 +85,35 @@ export const InterfaceUtils = {
       '--swarm',
     ];
 
-    const hasAdvancedCommand = args0.some((arg) =>
-      advancedCommands0.includes(arg)
+    const hasAdvancedCommand = args.some((arg) =>
+      advancedCommands.includes(arg)
     );
-    const hasAIFlag = args0.some((arg) => aiFlags0.includes(arg));
+    const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
     if (hasAdvancedCommand || hasAIFlag) return 'advanced';
 
-    if (process0.argv0.includes('--ui') || process0.argv0.includes('--tui'))
-      return 'tui';
-    if (process0.argv0.includes('--interactive') || process0.argv0.includes('-i'))
-      return 'tui';
+    if (process.argv.includes('--ui') || process.argv.includes('--interactive'))
+      return 'advanced';
+    if (process.argv.includes('--interactive') || process.argv.includes('-i'))
+      return 'advanced';
     if (
-      process0.argv0.length > 2 &&
-      !process0.argv0.slice(2)0.some((arg) => arg0.startsWith('-'))
+      process.argv.length > 2 &&
+      !process.argv.slice(2).some((arg) => arg.startsWith('-'))
     )
       return 'cli';
-    if (process0.stdout0.isTTY) return 'tui';
+    if (process.stdout.isTTY) return '';
     return 'cli';
   },
 
   validateConfig(config: InterfaceConfig): boolean {
-    return ['terminal', 'web', 'mcp', 'api', 'advanced-cli']0.includes(
-      config?0.['mode']
+    return ['terminal, web', 'mcp, api', 'advanced-cli'].includes(
+      config?.['mode']
     );
   },
 
   isAdvancedCLIEnabled(): boolean {
-    const args = process0.argv0.slice(2);
-    const flags = process0.env;
+    const args = process.argv.slice(2);
+    const flags = process.env;
 
     // Check for advanced CLI indicators
     const advancedCommands = [
@@ -131,13 +131,13 @@ export const InterfaceUtils = {
       '--swarm',
     ];
 
-    const hasAdvancedCommand = args0.some((arg) =>
-      advancedCommands0.includes(arg)
+    const hasAdvancedCommand = args.some((arg) =>
+      advancedCommands.includes(arg)
     );
-    const hasAIFlag = args0.some((arg) => aiFlags0.includes(arg));
+    const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
     return (
-      hasAdvancedCommand || hasAIFlag || flags['CLAUDE_ADVANCED_CLI'] === 'true'
+      hasAdvancedCommand || hasAIFlag || flags['CLAUDE_ADVANCED_CLI] === true'
     );
   },
 };

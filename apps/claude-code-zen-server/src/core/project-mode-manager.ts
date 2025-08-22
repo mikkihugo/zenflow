@@ -6,23 +6,23 @@
  * - Future: Agile and SAFe modes to be added later when packages are ready
  *
  * This implementation provides Kanban mode that can be progressively
- * enhanced with additional features and improved schema versions0.
+ * enhanced with additional features and improved schema versions.
  *
  * @author Claude Code Zen Team
- * @since 20.10.0
- * @version 20.30.0
+ * @since 2.1.0
+ * @version 2.3.0
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
 
 // Use simple console logging for now instead of complex logger dependencies
 const logger = {
-  info: (msg: string, 0.0.0.args: any[]) =>
-    console0.log(`[ProjectModeManager] ${msg}`, 0.0.0.args),
-  error: (msg: string, 0.0.0.args: any[]) =>
-    console0.error(`[ProjectModeManager] ${msg}`, 0.0.0.args),
-  debug: (msg: string, 0.0.0.args: any[]) =>
-    console0.debug(`[ProjectModeManager] ${msg}`, 0.0.0.args),
+  info: (msg: string, args: any[]) =>
+    console.log(`[ProjectModeManager] ${msg}`, args),
+  error: (msg: string, args: any[]) =>
+    console.error(`[ProjectModeManager] ${msg}`, args),
+  debug: (msg: string, args: any[]) =>
+    console.debug(`[ProjectModeManager] ${msg}`, args),
 };
 
 /**
@@ -103,14 +103,14 @@ export interface ProjectModeConfig {
     // sprintLength?: number;        // weeks (default 2)
     // velocityTracking?: boolean;
     // burndownCharts?: boolean;
-    // backlogPrioritization?: string; // 'story_points' | 'business_value'
+    // backlogPrioritization?: string; // 'story_points | business_value'
 
     // TODO: Add when SAFe mode is implemented
     // piLength?: number;            // weeks (default 10)
     // iterationLength?: number;     // weeks (default 2)
     // maxARTsPerValueStream?: number;
     // maxTeamsPerART?: number;
-    // systemDemoFrequency?: string; // 'end_of_iteration' | 'mid_pi'
+    // systemDemoFrequency?: string; // 'end_of_iteration | mid_pi'
   };
 
   migration: {
@@ -153,9 +153,9 @@ export class ProjectModeManager extends TypedEventBase {
 
   constructor() {
     super();
-    this?0.initializeModeConfigs;
-    this?0.initializeSchemaVersions;
-    logger0.info(
+    this.initializeModeConfigs;
+    this.initializeSchemaVersions;
+    logger.info(
       'ProjectModeManager initialized with Kanban support and schema versioning'
     );
   }
@@ -164,11 +164,11 @@ export class ProjectModeManager extends TypedEventBase {
    * Simple initialization - no external packages needed for now
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
     // Just mark as initialized - no external dependencies
-    this0.initialized = true;
-    logger0.info('ProjectModeManager initialized successfully (Kanban mode)');
+    this.initialized = true;
+    logger.info('ProjectModeManager initialized successfully (Kanban mode)');
   }
 
   /**
@@ -176,9 +176,9 @@ export class ProjectModeManager extends TypedEventBase {
    */
   private initializeModeConfigs(): void {
     // Kanban Mode
-    this0.modeConfigs0.set(ProjectMode0.KANBAN, {
-      mode: ProjectMode0.KANBAN,
-      schemaVersion: '10.0.0',
+    this.modeConfigs.set(ProjectMode.KANBAN, {
+      mode: ProjectMode.KANBAN,
+      schemaVersion: '1..0',
       capabilities: {
         tasks: true,
         projects: true,
@@ -191,7 +191,7 @@ export class ProjectModeManager extends TypedEventBase {
       settings: {
         defaultWipLimit: 3,
         flowMetricsEnabled: true,
-        boardColumns: ['Backlog', 'In Progress', 'Review', 'Done'],
+        boardColumns: ['Backlog, In Progress', 'Review, Done'],
       },
       migration: {
         upgradeableTo: [], // Future: add when other modes are available
@@ -205,10 +205,10 @@ export class ProjectModeManager extends TypedEventBase {
    * Initialize schema versions for Kanban mode
    */
   private initializeSchemaVersions(): void {
-    // Kanban Schema v10.0.0
-    this0.schemaVersions0.set('10.0.0', {
-      version: '10.0.0',
-      mode: ProjectMode0.KANBAN,
+    // Kanban Schema v1..0
+    this.schemaVersions.set('1..0', {
+      version: '1..0',
+      mode: ProjectMode.KANBAN,
       description: 'Initial Kanban implementation',
       changes: [
         'Kanban boards with configurable columns',
@@ -220,9 +220,9 @@ export class ProjectModeManager extends TypedEventBase {
     });
 
     // TODO: Future Kanban schema versions for enhanced Kanban features
-    // this0.schemaVersions0.set('10.10.0', {
-    //   version: '10.10.0',
-    //   mode: ProjectMode0.KANBAN,
+    // this.schemaVersions.set('1.1.0', {
+    //   version: '1.1.0',
+    //   mode: ProjectMode.KANBAN,
     //   description: 'Enhanced Kanban with advanced flow metrics',
     //   changes: [
     //     'Cycle time analytics',
@@ -231,12 +231,12 @@ export class ProjectModeManager extends TypedEventBase {
     //     'Throughput metrics'
     //   ],
     //   migrationRequired: true,
-    //   migrationScript: 'migrations/safe-10.0.0-to-10.10.0.js'
+    //   migrationScript: 'migrations/safe-1..0-to-1.1..js'
     // });
 
-    // this0.schemaVersions0.set('10.20.0', {
-    //   version: '10.20.0',
-    //   mode: ProjectMode0.KANBAN,
+    // this.schemaVersions.set('1.2.0', {
+    //   version: '1.2.0',
+    //   mode: ProjectMode.KANBAN,
     //   description: 'Enhanced Kanban with workflow optimization',
     //   changes: [
     //     'Custom card types and templates',
@@ -245,12 +245,12 @@ export class ProjectModeManager extends TypedEventBase {
     //     'Service level expectations (SLE)'
     //   ],
     //   migrationRequired: true,
-    //   migrationScript: 'migrations/safe-10.10.0-to-10.20.0.js'
+    //   migrationScript: 'migrations/safe-1.1.0-to-1.2..js'
     // });
 
-    // this0.schemaVersions0.set('10.30.0', {
-    //   version: '10.30.0',
-    //   mode: ProjectMode0.KANBAN,
+    // this.schemaVersions.set('1.3.0', {
+    //   version: '1.3.0',
+    //   mode: ProjectMode.KANBAN,
     //   description: 'Advanced Kanban with team collaboration features',
     //   changes: [
     //     'Team capacity planning',
@@ -259,7 +259,7 @@ export class ProjectModeManager extends TypedEventBase {
     //     'Real-time collaboration features'
     //   ],
     //   migrationRequired: true,
-    //   migrationScript: 'migrations/safe-10.20.0-to-10.30.0.js'
+    //   migrationScript: 'migrations/safe-1.2.0-to-1.3..js'
     // });
   }
 
@@ -270,7 +270,7 @@ export class ProjectModeManager extends TypedEventBase {
    * Currently only Kanban is supported
    */
   getAvailableModes(currentMode: ProjectMode): ProjectMode[] {
-    return [ProjectMode0.KANBAN];
+    return [ProjectMode.KANBAN];
   }
 
   /**
@@ -285,15 +285,15 @@ export class ProjectModeManager extends TypedEventBase {
    * Get mode capabilities
    */
   getModeCapabilities(mode: ProjectMode): ModeCapabilities | null {
-    const config = this0.modeConfigs0.get(mode);
-    return config?0.capabilities || null;
+    const config = this.modeConfigs.get(mode);
+    return config?.capabilities || null;
   }
 
   /**
    * Get mode configuration
    */
   getModeConfig(mode: ProjectMode): ProjectModeConfig | null {
-    return this0.modeConfigs0.get(mode) || null;
+    return this.modeConfigs.get(mode) || null;
   }
 
   /**
@@ -344,15 +344,15 @@ export class ProjectModeManager extends TypedEventBase {
    * Enables progressive enhancement within basic mode
    */
   getSchemaMigrationPath(fromVersion: string, toVersion: string): string[] {
-    // For now, only support Kanban 10.0.0 schema
-    if (fromVersion === '10.0.0' && toVersion === '10.0.0') {
+    // For now, only support Kanban 1"..0' schema
+    if (fromVersion === '1..0 && toVersion === 1..0') {
       return []; // No migration needed for same version
     }
 
     // TODO: Add migration paths when Kanban schema upgrades are available
     // Example for future use:
-    // if (fromVersion === '10.0.0' && toVersion === '10.10.0') {
-    //   return ['safe-10.0.0-to-10.10.0'];
+    // if (fromVersion === '1..0 && toVersion === 1.1.0') {
+    //   return ['safe-1..0-to-1.1.0'];
     // }
 
     return []; // No migration paths available yet
@@ -362,8 +362,8 @@ export class ProjectModeManager extends TypedEventBase {
    * Get available schema versions for a mode
    */
   getAvailableSchemaVersions(mode: ProjectMode): SchemaVersion[] {
-    return Array0.from(this0.schemaVersions?0.values())0.filter(
-      (schema) => schema0.mode === mode
+    return Array.from(this.schemaVersions?.values()).filter(
+      (schema) => schema.mode === mode
     );
   }
 
@@ -371,7 +371,7 @@ export class ProjectModeManager extends TypedEventBase {
    * Get schema version details
    */
   getSchemaVersion(version: string): SchemaVersion | null {
-    return this0.schemaVersions0.get(version) || null;
+    return this.schemaVersions.get(version) || null;
   }
 
   // TODO: AGI enhancement methods - will be added when @claude-zen/intelligence is available
@@ -395,8 +395,8 @@ export class ProjectModeManager extends TypedEventBase {
    */
   getModeArchitectureDescription(mode: ProjectMode): string {
     switch (mode) {
-      case ProjectMode0.SAFE:
-        return 'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services0.';
+      case ProjectMode.SAFE:
+        return 'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services.';
       default:
         return 'Unknown project mode';
     }

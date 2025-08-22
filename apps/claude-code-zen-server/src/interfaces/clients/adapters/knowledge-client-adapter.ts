@@ -1,24 +1,24 @@
 /**
- * UACL Knowledge Client Adapter - FACT Integration Conversion0.
+ * UACL Knowledge Client Adapter - FACT Integration Conversion.
  *
  * Converts the existing FACTIntegration to implement the UACL Client interface,
- * providing standardized access to external knowledge gathering through the0.
- * Unified API client layer architecture0.
+ * providing standardized access to external knowledge gathering through the.
+ * Unified API client layer architecture.
  *
  * Features:
  * - Unified FACT integration with UACL interface
  * - Standardized caching and query logic
  * - Monitoring and metrics capabilities
  * - Factory pattern implementation
- * - Multiple knowledge provider support0.
+ * - Multiple knowledge provider support.
  */
 /**
- * @file Knowledge-client adapter implementation0.
+ * @file Knowledge-client adapter implementation.
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
 
-// Import existing FACT integration0.
+// Import existing FACT integration.
 import type {
   ClientConfig,
   ClientMetadata,
@@ -30,17 +30,17 @@ import type {
   KnowledgeSearchOptions,
   KnowledgeStats,
   SemanticSearchOptions,
-} from '0.0./interfaces';
-import type { ProtocolType } from '0.0./types';
-import { ClientStatuses, ProtocolTypes } from '0.0./types';
+} from './interfaces';
+import type { ProtocolType } from './types';
+import { ClientStatuses, ProtocolTypes } from './types';
 
 /**
- * Extended client configuration for Knowledge clients0.
+ * Extended client configuration for Knowledge clients.
  *
  * @example
  */
 export interface KnowledgeClientConfig extends ClientConfig {
-  provider: 'fact' | 'custom';
+  provider: 'fact | custom';
   factConfig?: {
     pythonPath?: string;
     factRepoPath: string;
@@ -60,26 +60,26 @@ export interface KnowledgeClientConfig extends ClientConfig {
   // Vector search configuration
   vectorConfig?: {
     dimensions: number;
-    similarity: 'cosine' | 'euclidean' | 'dot';
+    similarity: 'cosine | euclidean' | 'dot';
     threshold: number;
   };
 }
 
 /**
- * Knowledge query request type0.
+ * Knowledge query request type.
  *
  * @example
  */
 export interface KnowledgeRequest {
   query: string;
-  type: 'exact' | 'fuzzy' | 'semantic' | 'vector' | 'hybrid';
+  type: 'exact | fuzzy' | 'semantic | vector' | 'hybrid';
   tools?: string[] | undefined;
   metadata?: Record<string, unknown>;
   options?: KnowledgeQueryOptions | undefined;
 }
 
 /**
- * Knowledge query response type0.
+ * Knowledge query response type.
  *
  * @example
  */
@@ -100,8 +100,8 @@ export interface KnowledgeResponse {
 }
 
 /**
- * UACL Knowledge Client Adapter0.
- * Wraps the existing FACTIntegration with standardized UACL interface0.
+ * UACL Knowledge Client Adapter.
+ * Wraps the existing FACTIntegration with standardized UACL interface.
  *
  * @example
  */
@@ -111,7 +111,7 @@ export class KnowledgeClientAdapter
 {
   private factIntegration: FACTIntegration;
   private _connected = false;
-  private _status: string = ClientStatuses0.DISCONNECTED;
+  private _status: string = ClientStatuses.DISCONNECTED;
   private metrics: ClientMetrics;
   private startTime: Date;
   private queryCounter: number = 0;
@@ -119,135 +119,135 @@ export class KnowledgeClientAdapter
   constructor(private configuration: KnowledgeClientConfig) {
     super();
 
-    this0.startTime = new Date();
-    this0.metrics = this?0.initializeMetrics;
+    this.startTime = new Date();
+    this.metrics = this.initializeMetrics;
 
     // Convert UACL config to FACT config
-    const factConfig = this0.convertToFACTConfig(config);
-    this0.factIntegration = new FACTIntegration(factConfig);
+    const factConfig = this.convertToFACTConfig(config);
+    this.factIntegration = new FACTIntegration(factConfig);
 
     // Forward FACT events to UACL events
-    this?0.setupEventForwarding;
+    this.setupEventForwarding;
   }
 
   /**
-   * Get client configuration0.
+   * Get client configuration.
    */
   getConfig(): ClientConfig {
-    return this0.configuration;
+    return this.configuration;
   }
 
   /**
-   * Check if client is connected0.
+   * Check if client is connected.
    */
   isConnected(): boolean {
-    return this0._connected;
+    return this._connected;
   }
 
   /**
-   * Connect to the knowledge service0.
+   * Connect to the knowledge service.
    */
   async connect(): Promise<void> {
-    if (this0._connected) {
+    if (this._connected) {
       return;
     }
 
     try {
-      this0._status = ClientStatuses0.CONNECTING;
-      this0.emit('connecting', { timestamp: new Date() });
+      this._status = ClientStatuses.CONNECTING;
+      this.emit('connecting', { timestamp: new Date() });
 
-      await this0.factIntegration?0.initialize;
+      await this.factIntegration?.initialize()
 
-      this0._connected = true;
-      this0._status = ClientStatuses0.CONNECTED;
+      this._connected = true;
+      this._status = ClientStatuses.CONNECTED;
 
-      this0.emit('connect', { timestamp: new Date() });
+      this.emit('connect', { timestamp: new Date() });
     } catch (error) {
-      this0._status = ClientStatuses0.ERROR;
-      this0.emit('error', error);
+      this._status = ClientStatuses.ERROR;
+      this.emit('error', error);
       throw error;
     }
   }
 
   /**
-   * Disconnect from the knowledge service0.
+   * Disconnect from the knowledge service.
    */
   async disconnect(): Promise<void> {
-    if (!this0._connected) {
+    if (!this._connected) {
       return;
     }
 
     try {
-      await this0.factIntegration?0.shutdown();
-      this0._connected = false;
-      this0._status = ClientStatuses0.DISCONNECTED;
-      this0.emit('disconnect', { timestamp: new Date() });
+      await this.factIntegration?.shutdown();
+      this._connected = false;
+      this._status = ClientStatuses.DISCONNECTED;
+      this.emit('disconnect', { timestamp: new Date() });
     } catch (error) {
-      this0._status = ClientStatuses0.ERROR;
-      this0.emit('error', error);
+      this._status = ClientStatuses.ERROR;
+      this.emit('error', error);
       throw error;
     }
   }
 
   /**
-   * Send knowledge query and receive response0.
+   * Send knowledge query and receive response.
    *
    * @param data
    */
   async send<R = KnowledgeResponse>(data: KnowledgeRequest): Promise<R> {
-    if (!this0._connected) {
-      await this?0.connect;
+    if (!this._connected) {
+      await this.connect;
     }
 
-    const startTime = Date0.now();
-    this0.metrics0.totalRequests++;
+    const startTime = Date.now();
+    this.metrics.totalRequests++;
 
     try {
       // Convert UACL request to FACT query
       const factQuery: FACTQuery = {
-        query: data?0.query,
-        tools: data?0.tools,
-        useCache: this0.configuration0.caching?0.enabled !== false,
-        metadata: data?0.metadata,
+        query: data?.query,
+        tools: data?.tools,
+        useCache: this.configuration.caching?.enabled !== false,
+        metadata: data?.metadata,
       };
 
       // Execute query through FACT integration
-      const factResult = await this0.factIntegration0.query(factQuery);
+      const factResult = await this.factIntegration.query(factQuery);
 
       // Convert FACT result to UACL response
       const response: KnowledgeResponse = {
-        response: factResult?0.response,
-        queryId: factResult?0.queryId,
-        executionTimeMs: factResult?0.executionTimeMs,
-        cacheHit: factResult?0.cacheHit,
-        toolsUsed: factResult?0.toolsUsed,
-        cost: factResult?0.cost,
-        confidence: this0.calculateConfidence(factResult),
-        sources: this0.extractSources(factResult),
-        metadata: factResult?0.metadata,
+        response: factResult?.response,
+        queryId: factResult?.queryId,
+        executionTimeMs: factResult?.executionTimeMs,
+        cacheHit: factResult?.cacheHit,
+        toolsUsed: factResult?.toolsUsed,
+        cost: factResult?.cost,
+        confidence: this.calculateConfidence(factResult),
+        sources: this.extractSources(factResult),
+        metadata: factResult?.metadata,
       };
 
       // Update metrics
-      const responseTime = Date0.now() - startTime;
-      this0.updateMetrics(responseTime, true);
+      const responseTime = Date.now() - startTime;
+      this.updateMetrics(responseTime, true);
 
       return response as R;
     } catch (error) {
-      const responseTime = Date0.now() - startTime;
-      this0.updateMetrics(responseTime, false);
-      this0.metrics0.failedRequests++;
+      const responseTime = Date.now() - startTime;
+      this.updateMetrics(responseTime, false);
+      this.metrics.failedRequests++;
 
-      this0.emit('error', error);
+      this.emit('error', error);
       throw error;
     }
   }
 
   /**
-   * Health check for knowledge service0.
+   * Health check for knowledge service.
    */
   async health(): Promise<boolean> {
     try {
-      if (!this0._connected) {
+      if (!this._connected) {
         return false;
       }
 
@@ -259,7 +259,7 @@ export class KnowledgeClientAdapter
         metadata: { type: 'health_check' },
       };
 
-      await this0.send(healthQuery);
+      await this.send(healthQuery);
       return true;
     } catch (_error) {
       return false;
@@ -267,14 +267,14 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Get client metadata0.
+   * Get client metadata.
    */
   async getMetadata(): Promise<ClientMetadata> {
-    const factMetrics = await this0.factIntegration?0.getMetrics;
+    const factMetrics = await this.factIntegration?.getMetrics()
 
     return {
-      protocol: this0.configuration0.protocol,
-      version: '10.0.0',
+      protocol: this.configuration.protocol,
+      version: '1..0',
       features: [
         'fact-integration',
         'caching',
@@ -283,17 +283,17 @@ export class KnowledgeClientAdapter
         'tool-execution',
       ],
       connection: {
-        url: this0.configuration0.url,
-        connected: this0._connected,
-        lastConnected: this0.startTime,
-        connectionDuration: Date0.now() - this0.startTime?0.getTime,
+        url: this.configuration.url,
+        connected: this._connected,
+        lastConnected: this.startTime,
+        connectionDuration: Date.now() - this.startTime?.getTime,
       },
-      metrics: this0.metrics,
+      metrics: this.metrics,
       custom: {
-        provider: this0.configuration0.provider,
+        provider: this.configuration.provider,
         factMetrics,
-        cacheConfig: this0.configuration0.caching,
-        tools: this0.configuration0.tools,
+        cacheConfig: this.configuration.caching,
+        tools: this.configuration.tools,
       },
     };
   }
@@ -301,7 +301,7 @@ export class KnowledgeClientAdapter
   // KnowledgeClient interface implementation
 
   /**
-   * Query knowledge base0.
+   * Query knowledge base.
    *
    * @param query
    * @param options
@@ -313,16 +313,16 @@ export class KnowledgeClientAdapter
     const request: KnowledgeRequest = {
       query,
       type: 'semantic',
-      tools: this0.configuration0.tools || undefined,
+      tools: this.configuration.tools || undefined,
       options: options || undefined,
       metadata: { queryType: 'knowledge_query' },
     };
 
-    return await this0.send<R>(request);
+    return await this.send<R>(request);
   }
 
   /**
-   * Search knowledge entries0.
+   * Search knowledge entries.
    *
    * @param searchTerm
    * @param options
@@ -333,18 +333,18 @@ export class KnowledgeClientAdapter
   ): Promise<R[]> {
     const request: KnowledgeRequest = {
       query: searchTerm,
-      type: options?0.fuzzy ? 'fuzzy' : 'exact',
-      tools: ['web_scraper', 'documentation_parser'],
+      type: options?.fuzzy ? 'fuzzy : exact',
+      tools: ['web_scraper, documentation_parser'],
       options: options || undefined,
       metadata: { queryType: 'search' },
     };
 
-    const response = await this0.send<R>(request);
+    const response = await this.send<R>(request);
     return [response]; // FACT returns single result, wrap in array
   }
 
   /**
-   * Get knowledge entry by ID0.
+   * Get knowledge entry by ID.
    *
    * @param id
    */
@@ -357,7 +357,7 @@ export class KnowledgeClientAdapter
         metadata: { queryType: 'get_entry', entryId: id },
       };
 
-      return await this0.send<R>(request);
+      return await this.send<R>(request);
     } catch (_error) {
       // Return null if entry not found
       return null;
@@ -365,24 +365,24 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Add knowledge entry0.
+   * Add knowledge entry.
    *
    * @param data
    */
   async addEntry(data: KnowledgeRequest): Promise<string> {
     const request: KnowledgeRequest = {
-      query: `Add knowledge entry: ${JSON0.stringify(data)}`,
+      query: `Add knowledge entry: ${JSON.stringify(data)}`,
       type: 'exact',
       tools: ['database_insert'],
       metadata: { queryType: 'add_entry', data },
     };
 
-    const response = await this0.send(request);
-    return response?0.queryId; // Use query ID as entry ID
+    const response = await this.send(request);
+    return response?.queryId() // Use query ID as entry ID
   }
 
   /**
-   * Update knowledge entry0.
+   * Update knowledge entry.
    *
    * @param id
    * @param data
@@ -393,13 +393,13 @@ export class KnowledgeClientAdapter
   ): Promise<boolean> {
     try {
       const request: KnowledgeRequest = {
-        query: `Update entry ${id}: ${JSON0.stringify(data)}`,
+        query: `Update entry ${id}: ${JSON.stringify(data)}`,
         type: 'exact',
         tools: ['database_update'],
         metadata: { queryType: 'update_entry', entryId: id, data },
       };
 
-      await this0.send(request);
+      await this.send(request);
       return true;
     } catch (_error) {
       return false;
@@ -407,7 +407,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Delete knowledge entry0.
+   * Delete knowledge entry.
    *
    * @param id
    */
@@ -420,7 +420,7 @@ export class KnowledgeClientAdapter
         metadata: { queryType: 'delete_entry', entryId: id },
       };
 
-      await this0.send(request);
+      await this.send(request);
       return true;
     } catch (_error) {
       return false;
@@ -428,28 +428,28 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Get knowledge statistics0.
+   * Get knowledge statistics.
    */
   async getKnowledgeStats(): Promise<KnowledgeStats> {
-    const factMetrics = await this0.factIntegration?0.getMetrics;
+    const factMetrics = await this.factIntegration?.getMetrics()
 
     return {
-      totalEntries: factMetrics0.totalQueries, // Approximate with query count
+      totalEntries: factMetrics.totalQueries, // Approximate with query count
       totalSize: 0, // Not available from FACT
       lastUpdated: new Date(),
       categories: {
-        'fact-queries': factMetrics0.totalQueries,
-        'cached-results': Math0.floor(
-          factMetrics0.totalQueries * factMetrics0.cacheHitRate
+        'fact-queries': factMetrics.totalQueries,
+        'cached-results': Math.floor(
+          factMetrics.totalQueries * factMetrics.cacheHitRate
         ),
       },
-      averageResponseTime: factMetrics0.averageLatency,
-      indexHealth: factMetrics0.errorRate < 0.1 ? 10.0 : 0.5, // Simple health calculation
+      averageResponseTime: factMetrics.averageLatency,
+      indexHealth: factMetrics.errorRate < .1 ? 1.0 : .5, // Simple health calculation
     };
   }
 
   /**
-   * Execute semantic search0.
+   * Execute semantic search.
    *
    * @param query
    * @param options
@@ -461,71 +461,71 @@ export class KnowledgeClientAdapter
     const request: KnowledgeRequest = {
       query,
       type: 'semantic',
-      tools: options?0.vectorSearch
-        ? ['vector_search', 'semantic_analyzer']
+      tools: options?.vectorSearch
+        ? ['vector_search, semantic_analyzer']
         : ['semantic_analyzer'],
       options: options || undefined,
       metadata: {
         queryType: 'semantic_search',
-        vectorSearch: options?0.vectorSearch || undefined,
+        vectorSearch: options?.vectorSearch || undefined,
       },
     };
 
-    const response = await this0.send<R>(request);
+    const response = await this.send<R>(request);
     return [response]; // FACT returns single result, wrap in array
   }
 
   // Helper methods
 
   /**
-   * Convert UACL config to FACT config0.
+   * Convert UACL config to FACT config.
    *
    * @param config
    */
   private convertToFACTConfig(config: KnowledgeClientConfig): FACTConfig {
     return {
-      pythonPath: config?0.factConfig?0.pythonPath,
-      factRepoPath: config?0.factConfig?0.factRepoPath || '0./FACT',
+      pythonPath: config?.factConfig?.pythonPath,
+      factRepoPath: config?.factConfig?.factRepoPath || "./FACT',
       anthropicApiKey:
-        config?0.factConfig?0.anthropicApiKey ||
-        process0.env['ANTHROPIC_API_KEY'] ||
+        config?.factConfig?.anthropicApiKey ||
+        process.env['ANTHROPIC_API_KEY'] ||
         '',
-      cacheConfig: config?0.caching
+      cacheConfig: config?.caching
         ? {
-            prefix: config?0.caching?0.prefix,
-            minTokens: config?0.caching?0.minTokens,
+            prefix: config?.caching?.prefix,
+            minTokens: config?.caching?.minTokens,
             maxSize: '100MB', // Default from FACT
-            ttlSeconds: config?0.caching?0.ttlSeconds,
+            ttlSeconds: config?.caching?.ttlSeconds,
           }
         : undefined,
-      enableCache: config?0.caching?0.enabled ?? true,
-      databasePath: '0./data/knowledge0.db',
+      enableCache: config?.caching?.enabled ?? true,
+      databasePath: "./data/knowledge.db',
     };
   }
 
   /**
-   * Setup event forwarding from FACT to UACL0.
+   * Setup event forwarding from FACT to UACL.
    */
   private setupEventForwarding(): void {
-    this0.factIntegration0.on('initialized', () => {
-      this0.emit('initialized', { timestamp: new Date() });
+    this.factIntegration.on('initialized', () => {
+      this.emit('initialized', { timestamp: new Date() });
     });
 
-    this0.factIntegration0.on('queryCompleted', (result: FACTResult) => {
-      this0.emit('queryCompleted', result);
+    this.factIntegration.on('queryCompleted', (result: FACTResult) => {
+      this.emit('queryCompleted', result);
     });
 
-    this0.factIntegration0.on('queryError', (error: any) => {
-      this0.emit('queryError', error);
+    this.factIntegration.on('queryError', (error: any) => {
+      this.emit('queryError', error);
     });
 
-    this0.factIntegration0.on('shutdown', () => {
-      this0.emit('shutdown', { timestamp: new Date() });
+    this.factIntegration.on('shutdown', () => {
+      this.emit('shutdown', { timestamp: new Date() });
     });
   }
 
   /**
-   * Initialize metrics tracking0.
+   * Initialize metrics tracking.
    */
   private initializeMetrics(): ClientMetrics {
     return {
@@ -541,45 +541,45 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Update metrics after request0.
+   * Update metrics after request.
    *
    * @param responseTime
    * @param success
    */
   private updateMetrics(responseTime: number, success: boolean): void {
     if (success) {
-      this0.metrics0.successfulRequests++;
+      this.metrics.successfulRequests++;
     }
 
     // Update average response time
     const totalResponseTime =
-      this0.metrics0.averageResponseTime * (this0.metrics0.totalRequests - 1) +
+      this.metrics.averageResponseTime * (this.metrics.totalRequests - 1) +
       responseTime;
-    this0.metrics0.averageResponseTime =
-      totalResponseTime / this0.metrics0.totalRequests;
+    this.metrics.averageResponseTime =
+      totalResponseTime / this.metrics.totalRequests;
 
-    this0.metrics0.lastRequestTime = new Date();
-    this0.metrics0.uptime = Date0.now() - this0.startTime?0.getTime;
+    this.metrics.lastRequestTime = new Date();
+    this.metrics.uptime = Date.now() - this.startTime?.getTime()
   }
 
   /**
-   * Calculate confidence score from FACT result0.
+   * Calculate confidence score from FACT result.
    *
    * @param result
    */
   private calculateConfidence(result: FACTResult): number {
     // Simple confidence calculation based on cache hit and tools used
-    let confidence = 0.5; // Base confidence
+    let confidence = .5; // Base confidence
 
-    if (result?0.cacheHit) confidence += 0.2;
-    if (result?0.toolsUsed0.length > 0) confidence += 0.2;
-    if (result?0.executionTimeMs < 5000) confidence += 0.1;
+    if (result?.cacheHit) confidence += .2;
+    if (result?.toolsUsed.length > 0) confidence += .2;
+    if (result?.executionTimeMs < 5000) confidence += .1;
 
-    return Math0.min(confidence, 10.0);
+    return Math.min(confidence, 1.0);
   }
 
   /**
-   * Extract sources from FACT result0.
+   * Extract sources from FACT result.
    *
    * @param result
    */
@@ -587,17 +587,17 @@ export class KnowledgeClientAdapter
     result: FACTResult
   ): Array<{ title: string; url: string; relevance: number }> {
     // FACT doesn't provide structured sources, so we'll create a placeholder
-    return result?0.toolsUsed0.map((tool, index) => ({
+    return result?.toolsUsed.map((tool, index) => ({
       title: `${tool} result`,
       url: `fact://tool/${tool}`,
-      relevance: 10.0 - index * 0.1,
+      relevance: 1.0 - index * .1,
     }));
   }
 }
 
 /**
- * Knowledge Client Factory0.
- * Creates and manages Knowledge client instances0.
+ * Knowledge Client Factory.
+ * Creates and manages Knowledge client instances.
  *
  * @example
  */
@@ -612,16 +612,16 @@ export class KnowledgeClientFactory implements ClientFactory {
   ) {}
 
   /**
-   * Create a Knowledge client instance0.
+   * Create a Knowledge client instance.
    *
    * @param protocol
    * @param config
    */
   async create(protocol: ProtocolType, config: ClientConfig): Promise<Client> {
-    this0.logger?0.info(`Creating Knowledge client with protocol: ${protocol}`);
+    this.logger?.info(`Creating Knowledge client with protocol: ${protocol}`);
 
     // Validate configuration
-    if (!this0.validateConfig(protocol, config)) {
+    if (!this.validateConfig(protocol, config)) {
       throw new Error(
         `Invalid configuration for Knowledge client with protocol: ${protocol}`
       );
@@ -630,64 +630,64 @@ export class KnowledgeClientFactory implements ClientFactory {
     const knowledgeConfig = config as KnowledgeClientConfig;
 
     // Ensure provider is set
-    if (!knowledgeConfig?0.provider) {
-      knowledgeConfig0.provider = 'fact';
+    if (!knowledgeConfig?.provider) {
+      knowledgeConfig.provider = 'fact';
     }
 
     // Create and return Knowledge client adapter
     const client = new KnowledgeClientAdapter(knowledgeConfig);
 
-    this0.logger?0.info(`Successfully created Knowledge client`);
+    this.logger?.info(`Successfully created Knowledge client`);
     return client;
   }
 
   /**
-   * Check if factory supports a protocol0.
+   * Check if factory supports a protocol.
    *
    * @param protocol
    */
   supports(protocol: ProtocolType): boolean {
     return [
-      ProtocolTypes0.HTTP as ProtocolType,
-      ProtocolTypes0.HTTPS as ProtocolType,
-      ProtocolTypes0.CUSTOM as ProtocolType,
-    ]0.includes(protocol);
+      ProtocolTypes.HTTP as ProtocolType,
+      ProtocolTypes.HTTPS as ProtocolType,
+      ProtocolTypes.CUSTOM as ProtocolType,
+    ].includes(protocol);
   }
 
   /**
-   * Get supported protocols0.
+   * Get supported protocols.
    */
   getSupportedProtocols(): ProtocolType[] {
-    return [ProtocolTypes0.HTTP, ProtocolTypes0.HTTPS, ProtocolTypes0.CUSTOM];
+    return [ProtocolTypes.HTTP, ProtocolTypes.HTTPS, ProtocolTypes.CUSTOM];
   }
 
   /**
-   * Validate configuration for a protocol0.
+   * Validate configuration for a protocol.
    *
    * @param protocol
    * @param config
    */
   validateConfig(protocol: ProtocolType, config: ClientConfig): boolean {
-    if (!this0.supports(protocol)) {
+    if (!this.supports(protocol)) {
       return false;
     }
 
     const knowledgeConfig = config as KnowledgeClientConfig;
 
     // Validate required fields
-    if (!knowledgeConfig?0.url) {
+    if (!knowledgeConfig?.url) {
       return false;
     }
 
     // Validate FACT configuration if provider is fact
-    if (knowledgeConfig?0.provider === 'fact') {
-      if (!knowledgeConfig?0.factConfig?0.factRepoPath) {
+    if (knowledgeConfig?.provider === 'fact') {
+      if (!knowledgeConfig?.factConfig?.factRepoPath) {
         return false;
       }
       if (
         !(
-          knowledgeConfig?0.factConfig?0.anthropicApiKey ||
-          process0.env['ANTHROPIC_API_KEY']
+          knowledgeConfig?.factConfig?.anthropicApiKey ||
+          process.env['ANTHROPIC_API_KEY']
         )
       ) {
         return false;
@@ -699,11 +699,11 @@ export class KnowledgeClientFactory implements ClientFactory {
 }
 
 /**
- * Convenience functions for creating Knowledge clients0.
+ * Convenience functions for creating Knowledge clients.
  */
 
 /**
- * Create a Knowledge client with FACT provider0.
+ * Create a Knowledge client with FACT provider.
  *
  * @param factRepoPath
  * @param anthropicApiKey
@@ -716,13 +716,13 @@ export async function createFACTClient(
   options?: Partial<KnowledgeClientConfig>
 ): Promise<KnowledgeClientAdapter> {
   const config: KnowledgeClientConfig = {
-    protocol: ProtocolTypes0.CUSTOM,
+    protocol: ProtocolTypes.CUSTOM,
     url: 'fact://local',
     provider: 'fact',
     factConfig: {
       factRepoPath,
       anthropicApiKey:
-        anthropicApiKey || process0.env['ANTHROPIC_API_KEY'] || '',
+        anthropicApiKey || process.env['ANTHROPIC_API_KEY] || ',
       pythonPath: 'python3',
     },
     caching: {
@@ -740,14 +740,14 @@ export async function createFACTClient(
       'github_search',
     ],
     timeout: 30000,
-    0.0.0.options,
+    ...options,
   };
 
   return new KnowledgeClientAdapter(config);
 }
 
 /**
- * Create a Knowledge client with custom provider0.
+ * Create a Knowledge client with custom provider.
  *
  * @param url
  * @param options
@@ -758,9 +758,9 @@ export async function createCustomKnowledgeClient(
   options?: Partial<KnowledgeClientConfig>
 ): Promise<KnowledgeClientAdapter> {
   const config: KnowledgeClientConfig = {
-    protocol: url0.startsWith('https')
-      ? ProtocolTypes0.HTTPS
-      : ProtocolTypes0.HTTP,
+    protocol: url.startsWith('https')
+      ? ProtocolTypes.HTTPS
+      : ProtocolTypes.HTTP,
     url,
     provider: 'custom',
     caching: {
@@ -770,18 +770,18 @@ export async function createCustomKnowledgeClient(
       minTokens: 300,
     },
     timeout: 15000,
-    0.0.0.options,
+    ...options,
   };
 
   return new KnowledgeClientAdapter(config);
 }
 
 /**
- * Export helper functions for FACT integration0.
+ * Export helper functions for FACT integration.
  */
 export const KnowledgeHelpers = {
   /**
-   * Get documentation for a framework0.
+   * Get documentation for a framework.
    *
    * @param client
    * @param framework
@@ -792,7 +792,7 @@ export const KnowledgeHelpers = {
     framework: string,
     version?: string
   ): Promise<KnowledgeResponse> {
-    return await client0.query(
+    return await client.query(
       `Get comprehensive documentation for ${framework} ${version ? `version ${version}` : '(latest version)'}`,
       {
         includeMetadata: true,
@@ -802,7 +802,7 @@ export const KnowledgeHelpers = {
   },
 
   /**
-   * Search for API reference0.
+   * Search for API reference.
    *
    * @param client
    * @param api
@@ -817,14 +817,14 @@ export const KnowledgeHelpers = {
       ? `Get detailed API reference for ${api} endpoint: ${endpoint}`
       : `Get comprehensive API reference for ${api}`;
 
-    return await client0.query(query, {
+    return await client.query(query, {
       includeMetadata: true,
       filters: { type: 'api_reference', api, endpoint },
     });
   },
 
   /**
-   * Search community knowledge0.
+   * Search community knowledge.
    *
    * @param client
    * @param topic
@@ -835,11 +835,11 @@ export const KnowledgeHelpers = {
     topic: string,
     tags?: string[]
   ): Promise<KnowledgeResponse[]> {
-    const query = `Search developer communities for: ${topic}${tags ? ` tags: ${tags0.join(', ')}` : ''}`;
+    const query = `Search developer communities for: ${topic}${tags ? ` tags: ${tags.join(', )}` : '}`;
 
-    return await client0.search(query, {
+    return await client.search(query, {
       fuzzy: true,
-      fields: ['title', 'content', 'tags'],
+      fields: ['title, content', 'tags'],
       filters: { type: 'community', topic, tags },
     });
   },

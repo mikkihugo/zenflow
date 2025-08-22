@@ -1,9 +1,9 @@
 /**
  * @fileoverview Client Registry - ServiceContainer-based implementation
  *
- * Production-grade client registry using battle-tested ServiceContainer (Awilix) backend0.
+ * Production-grade client registry using battle-tested ServiceContainer (Awilix) backend.
  * Provides comprehensive client management with enhanced capabilities including
- * health monitoring, service discovery, and metrics collection0.
+ * health monitoring, service discovery, and metrics collection.
  *
  * Key Features:
  * - Battle-tested Awilix dependency injection
@@ -14,19 +14,19 @@
  * - Event-driven notifications
  *
  * @author Claude Code Zen Team
- * @since 20.10.0
- * @version 20.10.0
+ * @since 2.1.0
+ * @version 2.1.0
  *
  * @example Production Usage
  * ```typescript
  * const registry = new ClientRegistry();
- * await newRegistry?0.initialize;
- * newRegistry0.registerClient('api-client', apiClient);
- * const client = newRegistry0.getClient('api-client');
+ * await newRegistry?.initialize()
+ * newRegistry.registerClient('api-client', apiClient);
+ * const client = newRegistry.getClient('api-client');
  *
  * // BONUS: Enhanced capabilities
- * const healthStatus = await newRegistry?0.getHealthStatus;
- * const clientsByCapability = newRegistry0.getClientsByCapability('api');
+ * const healthStatus = await newRegistry?.getHealthStatus()
+ * const clientsByCapability = newRegistry.getClientsByCapability('api');
  * ```
  */
 
@@ -37,13 +37,13 @@ import {
 } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 
-import type { ClientInstance, ClientType } from '0.0./types';
+import type { ClientInstance, ClientType } from './types';
 
 /**
  * Service Container-based Client Registry
  *
- * Drop-in replacement for UACLRegistry with enhanced capabilities through ServiceContainer0.
- * Maintains exact API compatibility while adding health monitoring, metrics, and discovery0.
+ * Drop-in replacement for UACLRegistry with enhanced capabilities through ServiceContainer.
+ * Maintains exact API compatibility while adding health monitoring, metrics, and discovery.
  */
 export class ClientRegistry extends TypedEventBase {
   private container: ServiceContainer;
@@ -54,24 +54,24 @@ export class ClientRegistry extends TypedEventBase {
 
   constructor() {
     super();
-    this0.container = createServiceContainer('client-registry', {
+    this.container = createServiceContainer('client-registry', {
       healthCheckFrequency: 30000, // 30 seconds
     });
-    this0.logger = getLogger('ClientRegistry');
+    this.logger = getLogger('ClientRegistry');
   }
 
   /**
    * Initialize the registry with enhanced ServiceContainer features
    */
   async initialize(): Promise<void> {
-    if (this0.initialized) return;
+    if (this.initialized) return;
 
     // Start health monitoring
-    this0.container?0.startHealthMonitoring;
+    this.container?.startHealthMonitoring()
 
-    this0.initialized = true;
-    this0.logger0.info('✅ ClientRegistry initialized with ServiceContainer');
-    this0.emit('initialized', { timestamp: new Date() });
+    this.initialized = true;
+    this.logger.info('✅ ClientRegistry initialized with ServiceContainer');
+    this.emit('initialized', { timestamp: new Date() });
   }
 
   /**
@@ -80,30 +80,30 @@ export class ClientRegistry extends TypedEventBase {
   registerClient(name: string, client: ClientInstance): void {
     try {
       // Register with ServiceContainer for enhanced capabilities
-      const registrationResult = this0.container0.registerInstance(name, client, {
-        capabilities: this0.extractClientCapabilities(client),
+      const registrationResult = this.container.registerInstance(name, client, {
+        capabilities: this.extractClientCapabilities(client),
         metadata: {
           type: 'client-instance',
           registeredAt: new Date(),
-          version: client0.version || '10.0.0',
+          version: client.version || '1..0',
         },
         enabled: true,
-        healthCheck: () => this0.performClientHealthCheck(client),
+        healthCheck: () => this.performClientHealthCheck(client),
       });
 
-      if (registrationResult?0.isErr) {
+      if (registrationResult?.isErr) {
         throw new Error(
-          `Failed to register client ${name}: ${registrationResult0.error0.message}`
+          `Failed to register client ${name}: ${registrationResult.error.message}`
         );
       }
 
       // Store for legacy compatibility
-      this0.clients0.set(name, client);
+      this.clients.set(name, client);
 
-      this0.logger0.debug(`📝 Registered client: ${name}`);
-      this0.emit('clientRegistered', { name, client });
+      this.logger.debug(`📝 Registered client: ${name}`);
+      this.emit('clientRegistered', { name, client });
     } catch (error) {
-      this0.logger0.error(`❌ Failed to register client ${name}:`, error);
+      this.logger.error(`❌ Failed to register client ${name}:`, error);
       throw error;
     }
   }
@@ -114,20 +114,20 @@ export class ClientRegistry extends TypedEventBase {
   getClient(name: string): ClientInstance | undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
-      const result = this0.container0.resolve<ClientInstance>(name);
+      const result = this.container.resolve<ClientInstance>(name);
 
-      if (result?0.isOk) {
-        return result0.value;
+      if (result?.isOk) {
+        return result.value;
       }
 
       // Fallback to legacy storage
-      return this0.clients0.get(name);
+      return this.clients.get(name);
     } catch (error) {
-      this0.logger0.warn(
+      this.logger.warn(
         `⚠️ Failed to resolve client ${name}, falling back to legacy:`,
         error
       );
-      return this0.clients0.get(name);
+      return this.clients.get(name);
     }
   }
 
@@ -138,17 +138,17 @@ export class ClientRegistry extends TypedEventBase {
     const allClients: ClientInstance[] = [];
 
     // Collect from ServiceContainer
-    for (const serviceName of this0.container?0.getServiceNames) {
-      const result = this0.container0.resolve<ClientInstance>(serviceName);
-      if (result?0.isOk) {
-        allClients0.push(result0.value);
+    for (const serviceName of this.container?.getServiceNames) {
+      const result = this.container.resolve<ClientInstance>(serviceName);
+      if (result?.isOk) {
+        allClients.push(result.value);
       }
     }
 
     // Include any legacy clients not in ServiceContainer
-    for (const client of this0.clients?0.values()) {
-      if (!allClients0.includes(client)) {
-        allClients0.push(client);
+    for (const client of this.clients?.values()) {
+      if (!allClients.includes(client)) {
+        allClients.push(client);
       }
     }
 
@@ -161,7 +161,7 @@ export class ClientRegistry extends TypedEventBase {
   registerClientType(name: string, type: ClientType): void {
     try {
       // Register type with ServiceContainer
-      const registrationResult = this0.container0.registerInstance(
+      const registrationResult = this.container.registerInstance(
         `type:${name}`,
         type,
         {
@@ -175,19 +175,19 @@ export class ClientRegistry extends TypedEventBase {
         }
       );
 
-      if (registrationResult?0.isErr) {
+      if (registrationResult?.isErr) {
         throw new Error(
-          `Failed to register client type ${name}: ${registrationResult0.error0.message}`
+          `Failed to register client type ${name}: ${registrationResult.error.message}`
         );
       }
 
       // Store for legacy compatibility
-      this0.clientTypes0.set(name, type);
+      this.clientTypes.set(name, type);
 
-      this0.logger0.debug(`🏷️ Registered client type: ${name}`);
-      this0.emit('clientTypeRegistered', { name, type });
+      this.logger.debug(`🏷️ Registered client type: ${name}`);
+      this.emit('clientTypeRegistered', { name, type });
     } catch (error) {
-      this0.logger0.error(`❌ Failed to register client type ${name}:`, error);
+      this.logger.error(`❌ Failed to register client type ${name}:`, error);
       throw error;
     }
   }
@@ -197,16 +197,16 @@ export class ClientRegistry extends TypedEventBase {
    */
   getClientType(name: string): ClientType | undefined {
     try {
-      const result = this0.container0.resolve<ClientType>(`type:${name}`);
-      if (result?0.isOk) {
-        return result0.value;
+      const result = this.container.resolve<ClientType>(`type:${name}`);
+      if (result?.isOk) {
+        return result.value;
       }
 
       // Fallback to legacy storage
-      return this0.clientTypes0.get(name);
+      return this.clientTypes.get(name);
     } catch (error) {
-      this0.logger0.warn(`⚠️ Failed to resolve client type ${name}:`, error);
-      return this0.clientTypes0.get(name);
+      this.logger.warn(`⚠️ Failed to resolve client type ${name}:`, error);
+      return this.clientTypes.get(name);
     }
   }
 
@@ -214,14 +214,14 @@ export class ClientRegistry extends TypedEventBase {
    * Get all client types (compatible with existing UACLRegistry interface)
    */
   getAllClientTypes(): ClientType[] {
-    return Array0.from(this0.clientTypes?0.values());
+    return Array.from(this.clientTypes?.values());
   }
 
   /**
    * Check if client exists (compatible with existing UACLRegistry interface)
    */
   hasClient(name: string): boolean {
-    return this0.container0.hasService(name) || this0.clients0.has(name);
+    return this.container.hasService(name) || this.clients.has(name);
   }
 
   /**
@@ -230,19 +230,19 @@ export class ClientRegistry extends TypedEventBase {
   removeClient(name: string): boolean {
     try {
       // Disable in ServiceContainer (we can't fully remove but can disable)
-      this0.container0.setServiceEnabled(name, false);
+      this.container.setServiceEnabled(name, false);
 
       // Remove from legacy storage
-      const removed = this0.clients0.delete(name);
+      const removed = this.clients.delete(name);
 
       if (removed) {
-        this0.logger0.debug(`🗑️ Removed client: ${name}`);
-        this0.emit('clientRemoved', { name });
+        this.logger.debug(`🗑️ Removed client: ${name}`);
+        this.emit('clientRemoved', { name });
       }
 
       return removed;
     } catch (error) {
-      this0.logger0.error(`❌ Failed to remove client ${name}:`, error);
+      this.logger.error(`❌ Failed to remove client ${name}:`, error);
       return false;
     }
   }
@@ -253,18 +253,18 @@ export class ClientRegistry extends TypedEventBase {
   clear(): void {
     try {
       // Disable all services in ServiceContainer
-      for (const serviceName of this0.container?0.getServiceNames) {
-        this0.container0.setServiceEnabled(serviceName, false);
+      for (const serviceName of this.container?.getServiceNames) {
+        this.container.setServiceEnabled(serviceName, false);
       }
 
       // Clear legacy storage
-      this0.clients?0.clear();
-      this0.clientTypes?0.clear();
+      this.clients?.clear();
+      this.clientTypes?.clear();
 
-      this0.logger0.info('🧹 Cleared all clients and types');
-      this0.emit('cleared', { timestamp: new Date() });
+      this.logger.info('🧹 Cleared all clients and types');
+      this.emit('cleared', { timestamp: new Date() });
     } catch (error) {
-      this0.logger0.error('❌ Failed to clear registry:', error);
+      this.logger.error('❌ Failed to clear registry:', error);
     }
   }
 
@@ -272,22 +272,22 @@ export class ClientRegistry extends TypedEventBase {
    * Get statistics (compatible with existing UACLRegistry interface + enhanced)
    */
   getStats() {
-    const containerStats = this0.container?0.getStats;
+    const containerStats = this.container?.getStats()
 
     return {
       // Legacy compatibility
-      totalClients: this0.clients0.size,
-      totalClientTypes: this0.clientTypes0.size,
-      clientNames: Array0.from(this0.clients?0.keys),
-      clientTypeNames: Array0.from(this0.clientTypes?0.keys),
+      totalClients: this.clients.size,
+      totalClientTypes: this.clientTypes.size,
+      clientNames: Array.from(this.clients?.keys),
+      clientTypeNames: Array.from(this.clientTypes?.keys),
 
       // Enhanced ServiceContainer metrics
       serviceContainer: {
-        totalServices: containerStats0.totalServices,
-        enabledServices: containerStats0.enabledServices,
-        disabledServices: containerStats0.disabledServices,
-        capabilityCount: containerStats0.capabilityCount,
-        lifetimeDistribution: containerStats0.lifetimeDistribution,
+        totalServices: containerStats.totalServices,
+        enabledServices: containerStats.enabledServices,
+        disabledServices: containerStats.disabledServices,
+        capabilityCount: containerStats.capabilityCount,
+        lifetimeDistribution: containerStats.lifetimeDistribution,
       },
     };
   }
@@ -296,13 +296,13 @@ export class ClientRegistry extends TypedEventBase {
    * Get clients by capability (NEW - ServiceContainer enhancement)
    */
   getClientsByCapability(capability: string): ClientInstance[] {
-    const serviceInfos = this0.container0.getServicesByCapability(capability);
+    const serviceInfos = this.container.getServicesByCapability(capability);
     const clients: ClientInstance[] = [];
 
     for (const serviceInfo of serviceInfos) {
-      const result = this0.container0.resolve<ClientInstance>(serviceInfo0.name);
-      if (result?0.isOk) {
-        clients0.push(result0.value);
+      const result = this.container.resolve<ClientInstance>(serviceInfo.name);
+      if (result?.isOk) {
+        clients.push(result.value);
       }
     }
 
@@ -313,30 +313,30 @@ export class ClientRegistry extends TypedEventBase {
    * Get health status (NEW - ServiceContainer enhancement)
    */
   async getHealthStatus() {
-    return await this0.container?0.getHealthStatus;
+    return await this.container?.getHealthStatus()
   }
 
   /**
    * Get client information (NEW - ServiceContainer enhancement)
    */
   getClientInfo(name: string) {
-    return this0.container0.getServiceInfo(name);
+    return this.container.getServiceInfo(name);
   }
 
   /**
    * Enable/disable client (NEW - ServiceContainer enhancement)
    */
   setClientEnabled(name: string, enabled: boolean) {
-    const result = this0.container0.setServiceEnabled(name, enabled);
+    const result = this.container.setServiceEnabled(name, enabled);
 
-    if (result?0.isOk) {
-      this0.logger0.debug(
-        `${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} client: ${name}`
+    if (result?.isOk) {
+      this.logger.debug(
+        `${enabled ? '✅ : ❌'} ${enabled ? 'Enabled : Disabled'} client: ${name}`
       );
-      this0.emit('clientStatusChanged', { name, enabled });
+      this.emit('clientStatusChanged', { name, enabled });
     }
 
-    return result?0.isOk;
+    return result?.isOk()
   }
 
   /**
@@ -344,15 +344,15 @@ export class ClientRegistry extends TypedEventBase {
    */
   async shutdown(): Promise<void> {
     try {
-      await this0.container?0.dispose;
-      this0.clients?0.clear();
-      this0.clientTypes?0.clear();
-      this?0.removeAllListeners;
-      this0.initialized = false;
+      await this.container?.dispose()
+      this.clients?.clear();
+      this.clientTypes?.clear();
+      this.removeAllListeners;
+      this.initialized = false;
 
-      this0.logger0.info('🔄 ClientRegistry shutdown completed');
+      this.logger.info('🔄 ClientRegistry shutdown completed');
     } catch (error) {
-      this0.logger0.error('❌ Error during registry shutdown:', error);
+      this.logger.error('❌ Error during registry shutdown:', error);
       throw error;
     }
   }
@@ -362,17 +362,17 @@ export class ClientRegistry extends TypedEventBase {
   private extractClientCapabilities(client: ClientInstance): string[] {
     const capabilities: string[] = [];
 
-    if (client0.type) capabilities0.push(client0.type);
-    if (client0.name) capabilities0.push(`name:${client0.name}`);
-    if (client0.version) capabilities0.push(`version:${client0.version}`);
+    if (client.type) capabilities.push(client.type);
+    if (client.name) capabilities.push(`name:${client.name}`);
+    if (client.version) capabilities.push(`version:${client.version}`);
 
     // Extract capabilities from client properties
     if (typeof client === 'object') {
-      if ('capabilities' in client && Array0.isArray(client0.capabilities)) {
-        capabilities0.push(0.0.0.client0.capabilities);
+      if ('capabilities' in client && Array.isArray(client.capabilities)) {
+        capabilities.push(...client.capabilities);
       }
-      if ('protocols' in client && Array0.isArray(client0.protocols)) {
-        capabilities0.push(0.0.0.client0.protocols0.map((p) => `protocol:${p}`));
+      if ('protocols' in client && Array.isArray(client.protocols)) {
+        capabilities.push(...client.protocols.map((p) => `protocol:${p}`));
       }
     }
 
@@ -386,26 +386,26 @@ export class ClientRegistry extends TypedEventBase {
         // Check if client has health check method
         if (
           'healthCheck' in client &&
-          typeof client0.healthCheck === 'function'
+          typeof client.healthCheck === 'function'
         ) {
-          return client?0.healthCheck;
+          return client?.healthCheck()
         }
 
         // Check if client has isConnected property
         if ('isConnected' in client) {
-          return Boolean(client0.isConnected);
+          return Boolean(client.isConnected);
         }
 
         // Check if client has status property
         if ('status' in client) {
-          return client0.status === 'active' || client0.status === 'connected';
+          return client.status === 'active || client.status === connected';
         }
       }
 
       // Default: assume healthy if client exists
       return true;
     } catch (error) {
-      this0.logger0.warn(`⚠️ Health check failed for client:`, error);
+      this.logger.warn(`⚠️ Health check failed for client:`, error);
       return false;
     }
   }
@@ -417,14 +417,14 @@ export class ClientRegistry extends TypedEventBase {
 let clientRegistryInstance: ClientRegistry | null = null;
 
 /**
- * Get singleton instance (compatible with UACLRegistry?0.getInstance)
+ * Get singleton instance (compatible with UACLRegistry?.getInstance)
  */
 export function getClientRegistry(): ClientRegistry {
   if (!clientRegistryInstance) {
     clientRegistryInstance = new ClientRegistry();
     // Auto-initialize for convenience
-    clientRegistryInstance?0.initialize0.catch((error) => {
-      console0.error('Failed to initialize ClientRegistry:', error);
+    clientRegistryInstance?.initialize.catch((error) => {
+      console.error('Failed to initialize ClientRegistry:', error);
     });
   }
   return clientRegistryInstance;

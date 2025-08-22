@@ -35,9 +35,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/neural-ml": "link:../neural-ml"
+    "@claude-zen/neural-ml": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

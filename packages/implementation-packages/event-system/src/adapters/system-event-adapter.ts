@@ -1,3 +1,4 @@
+import { EventEmitter } from "@claude-zen/foundation";
 /**
  * @file UEL System Event Adapter.
  *
@@ -194,7 +195,7 @@ export class SystemEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new TypedEventBase();
+  private eventEmitter = new EventEmitter();
   private logger: Logger;
   private startTime?: Date;
   private eventCount = 0;
@@ -1107,7 +1108,7 @@ export class SystemEventAdapter implements EventManager {
     // Note: In a real implementation, we would get a reference to the actual CoreSystem instance
     // For now, we'll create a mock wrapper to demonstrate the pattern
 
-    const wrapper = new TypedEventBase();
+    const wrapper = new EventEmitter();
     const wrappedComponent: WrappedSystemComponent = {
       component: null, // Would be actual CoreSystem instance
       wrapper,
@@ -1156,7 +1157,7 @@ export class SystemEventAdapter implements EventManager {
    * Wrap ApplicationCoordinator events with UEL integration.
    */
   private async wrapApplicationCoordinator(): Promise<void> {
-    const wrapper = new TypedEventBase();
+    const wrapper = new EventEmitter();
     const wrappedComponent: WrappedSystemComponent = {
       component: null, // Would be actual ApplicationCoordinator instance
       wrapper,
@@ -1205,7 +1206,7 @@ export class SystemEventAdapter implements EventManager {
    * Wrap ErrorRecoverySystem events with UEL integration.
    */
   private async wrapErrorRecoverySystem(): Promise<void> {
-    const wrapper = new TypedEventBase();
+    const wrapper = new EventEmitter();
     const wrappedComponent: WrappedSystemComponent = {
       component: null, // Would be actual ErrorRecoverySystem instance
       wrapper,

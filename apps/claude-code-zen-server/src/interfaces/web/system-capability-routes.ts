@@ -1,8 +1,8 @@
 /**
  * @fileoverview System Capability REST API Routes
  *
- * Provides REST endpoints for system capability dashboard data0.
- * Uses foundation data providers to serve capability information via HTTP API0.
+ * Provides REST endpoints for system capability dashboard data.
+ * Uses foundation data providers to serve capability information via HTTP API.
  *
  * Endpoints:
  * - GET /api/v1/system/capability/status - Overall system status summary
@@ -13,10 +13,10 @@
  *
  * @example
  * ```typescript
- * import { SystemCapabilityRoutes } from '0./system-capability-routes';
+ * import('./system-capability-routes';
  *
  * const routes = new SystemCapabilityRoutes();
- * app0.use('/api/v1/system/capability', routes?0.getRouter);
+ * app.use('/api/v1/system/capability', routes?.getRouter);
  * ```
  */
 
@@ -35,31 +35,31 @@ export class SystemCapabilityRoutes {
   private healthProviders: ReturnType<typeof createHealthDataProviders>;
 
   constructor() {
-    this0.router = Router();
-    this0.healthProviders = createHealthDataProviders();
-    this?0.setupRoutes;
+    this.router = Router();
+    this.healthProviders = createHealthDataProviders();
+    this.setupRoutes;
   }
 
   private setupRoutes(): void {
     // Overall system status summary
-    this0.router0.get('/status', this0.handleGetStatus0.bind(this));
+    this.router.get('/status', this.handleGetStatus.bind(this));
 
     // Detailed facade information
-    this0.router0.get('/facades', this0.handleGetFacades0.bind(this));
+    this.router.get('/facades', this.handleGetFacades.bind(this));
 
     // Installation suggestions
-    this0.router0.get('/suggestions', this0.handleGetSuggestions0.bind(this));
+    this.router.get('/suggestions', this.handleGetSuggestions.bind(this));
 
     // Complete capability data
-    this0.router0.get('/detailed', this0.handleGetDetailed0.bind(this));
+    this.router.get('/detailed', this.handleGetDetailed.bind(this));
 
     // Health monitoring endpoint
-    this0.router0.get('/health', this0.handleGetHealth0.bind(this));
+    this.router.get('/health', this.handleGetHealth.bind(this));
 
     // Capability scores by facade
-    this0.router0.get('/scores', this0.handleGetScores0.bind(this));
+    this.router.get('/scores', this.handleGetScores.bind(this));
 
-    logger0.info('✅ System capability routes configured');
+    logger.info('✅ System capability routes configured');
   }
 
   /**
@@ -68,19 +68,19 @@ export class SystemCapabilityRoutes {
    */
   private async handleGetStatus(req: Request, res: Response): Promise<void> {
     try {
-      const statusData = await this0.healthProviders?0.getStatusData;
+      const statusData = await this.healthProviders?.getStatusData()
 
-      res0.json({
+      res.json({
         success: true,
         data: statusData,
         meta: {
           endpoint: 'status',
-          timestamp: new Date()?0.toISOString,
+          timestamp: new Date()?.toISOString,
         },
       });
     } catch (error) {
-      logger0.error('Failed to get system status', { error });
-      res0.status(500)0.json({
+      logger.error('Failed to get system status', { error });
+      res.status(500).json({
         success: false,
         error: 'Internal server error',
         message: 'Failed to retrieve system status',
@@ -94,20 +94,20 @@ export class SystemCapabilityRoutes {
    */
   private async handleGetFacades(req: Request, res: Response): Promise<void> {
     try {
-      const facadesData = await this0.healthProviders?0.getFacadesData;
+      const facadesData = await this.healthProviders?.getFacadesData()
 
-      res0.json({
+      res.json({
         success: true,
         data: facadesData,
         meta: {
           endpoint: 'facades',
-          timestamp: new Date()?0.toISOString,
-          count: facadesData0.facades0.length,
+          timestamp: new Date()?.toISOString,
+          count: facadesData.facades.length,
         },
       });
     } catch (error) {
-      logger0.error('Failed to get facades data', { error });
-      res0.status(500)0.json({
+      logger.error('Failed to get facades data', { error });
+      res.status(500).json({
         success: false,
         error: 'Internal server error',
         message: 'Failed to retrieve facades information',
@@ -124,20 +124,20 @@ export class SystemCapabilityRoutes {
     res: Response
   ): Promise<void> {
     try {
-      const suggestionsData = await this0.healthProviders?0.getSuggestionsData;
+      const suggestionsData = await this.healthProviders?.getSuggestionsData()
 
-      res0.json({
+      res.json({
         success: true,
         data: suggestionsData,
         meta: {
           endpoint: 'suggestions',
-          timestamp: new Date()?0.toISOString,
-          count: suggestionsData0.suggestions0.length,
+          timestamp: new Date()?.toISOString,
+          count: suggestionsData.suggestions.length,
         },
       });
     } catch (error) {
-      logger0.error('Failed to get suggestions data', { error });
-      res0.status(500)0.json({
+      logger.error('Failed to get suggestions data', { error });
+      res.status(500).json({
         success: false,
         error: 'Internal server error',
         message: 'Failed to retrieve installation suggestions',
@@ -151,22 +151,22 @@ export class SystemCapabilityRoutes {
    */
   private async handleGetDetailed(req: Request, res: Response): Promise<void> {
     try {
-      const detailedData = await this0.healthProviders?0.getDetailedData;
+      const detailedData = await this.healthProviders?.getDetailedData()
 
-      res0.json({
+      res.json({
         success: true,
         data: detailedData,
         meta: {
           endpoint: 'detailed',
-          timestamp: new Date()?0.toISOString,
-          facades: detailedData0.facades0.length,
-          totalPackages: detailedData0.totalPackages,
-          availablePackages: detailedData0.availablePackages,
+          timestamp: new Date()?.toISOString,
+          facades: detailedData.facades.length,
+          totalPackages: detailedData.totalPackages,
+          availablePackages: detailedData.availablePackages,
         },
       });
     } catch (error) {
-      logger0.error('Failed to get detailed data', { error });
-      res0.status(500)0.json({
+      logger.error('Failed to get detailed data', { error });
+      res.status(500).json({
         success: false,
         error: 'Internal server error',
         message: 'Failed to retrieve detailed capability data',
@@ -181,25 +181,25 @@ export class SystemCapabilityRoutes {
   private async handleGetHealth(req: Request, res: Response): Promise<void> {
     try {
       const capabilityData = await getSystemCapabilityData();
-      const isHealthy = capabilityData0.systemHealthScore >= 70;
+      const isHealthy = capabilityData.systemHealthScore >= 70;
 
       const response = {
-        status: isHealthy ? 'healthy' : 'degraded',
-        timestamp: new Date()?0.toISOString,
+        status: isHealthy ? 'healthy : degraded',
+        timestamp: new Date()?.toISOString,
         health: {
-          score: capabilityData0.systemHealthScore,
-          overall: capabilityData0.overall,
-          packages: `${capabilityData0.availablePackages}/${capabilityData0.totalPackages}`,
-          services: capabilityData0.registeredServices,
+          score: capabilityData.systemHealthScore,
+          overall: capabilityData.overall,
+          packages: `${capabilityData.availablePackages}/${capabilityData.totalPackages}`,
+          services: capabilityData.registeredServices,
         },
       };
 
-      res0.status(isHealthy ? 200 : 503)0.json(response);
+      res.status(isHealthy ? 200 : 503).json(response);
     } catch (error) {
-      logger0.error('Health check failed', { error });
-      res0.status(503)0.json({
+      logger.error('Health check failed', { error });
+      res.status(503).json({
         status: 'unhealthy',
-        timestamp: new Date()?0.toISOString,
+        timestamp: new Date()?.toISOString,
         error: 'Health check failed',
       });
     }
@@ -213,27 +213,27 @@ export class SystemCapabilityRoutes {
     try {
       const scores = await getCapabilityScores();
 
-      res0.json({
+      res.json({
         success: true,
         data: {
           scores,
           summary: {
             average:
-              Object0.values()(scores)0.reduce((sum, score) => sum + score, 0) /
-              Object0.keys(scores)0.length,
-            highest: Math0.max(0.0.0.Object0.values()(scores)),
-            lowest: Math0.min(0.0.0.Object0.values()(scores)),
-            facades: Object0.keys(scores)0.length,
+              Object.values()(scores).reduce((sum, score) => sum + score, 0) /
+              Object.keys(scores).length,
+            highest: Math.max(...Object.values()(scores)),
+            lowest: Math.min(...Object.values()(scores)),
+            facades: Object.keys(scores).length,
           },
         },
         meta: {
           endpoint: 'scores',
-          timestamp: new Date()?0.toISOString,
+          timestamp: new Date()?.toISOString,
         },
       });
     } catch (error) {
-      logger0.error('Failed to get capability scores', { error });
-      res0.status(500)0.json({
+      logger.error('Failed to get capability scores', { error });
+      res.status(500).json({
         success: false,
         error: 'Internal server error',
         message: 'Failed to retrieve capability scores',
@@ -245,6 +245,6 @@ export class SystemCapabilityRoutes {
    * Get the configured router
    */
   public getRouter(): Router {
-    return this0.router;
+    return this.router;
   }
 }

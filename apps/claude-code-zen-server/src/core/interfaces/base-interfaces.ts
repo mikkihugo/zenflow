@@ -1,8 +1,8 @@
 /**
  * @fileoverview Core Base Interfaces
  *
- * Essential type definitions and interfaces used throughout the coordination system0.
- * Provides consistent type contracts for the coordination infrastructure0.
+ * Essential type definitions and interfaces used throughout the coordination system.
+ * Provides consistent type contracts for the coordination infrastructure.
  */
 
 // =============================================================================
@@ -13,7 +13,7 @@ export interface CoordinationRequest {
   readonly id: string;
   readonly type: string;
   readonly payload: any;
-  readonly priority?: 'low' | 'medium' | 'high';
+  readonly priority?: 'low | medium' | 'high';
   readonly timeout?: number;
   readonly timestamp: number;
 }
@@ -49,7 +49,7 @@ export interface AgentCapability {
 export interface AgentStatus {
   readonly id: string;
   readonly name: string;
-  readonly status: 'active' | 'idle' | 'busy' | 'error' | 'offline';
+  readonly status: 'active | idle' | 'busy | error' | 'offline';
   readonly load: number;
   readonly capabilities: readonly AgentCapability[];
   readonly lastUpdate: string;
@@ -76,7 +76,7 @@ export interface Task {
   readonly description: string;
   readonly payload: any;
   readonly requirements: readonly string[];
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low | medium' | 'high | critical';
   readonly estimatedDuration?: number;
   readonly dependencies?: readonly string[];
   readonly createdAt: string;
@@ -97,7 +97,7 @@ export interface TaskResult {
 export interface TaskExecution {
   readonly task: Task;
   readonly agent: AgentStatus;
-  readonly status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
+  readonly status: 'pending | running' | 'completed | failed' | 'cancelled';
   readonly progress?: number;
   readonly estimatedCompletion?: string;
 }
@@ -107,7 +107,7 @@ export interface TaskExecution {
 // =============================================================================
 
 export interface SystemHealth {
-  readonly status: 'healthy' | 'degraded' | 'unhealthy';
+  readonly status: 'healthy | degraded' | 'unhealthy';
   readonly uptime: number;
   readonly version: string;
   readonly timestamp: string;
@@ -116,7 +116,7 @@ export interface SystemHealth {
 
 export interface ComponentHealth {
   readonly name: string;
-  readonly status: 'healthy' | 'degraded' | 'unhealthy';
+  readonly status: 'healthy | degraded' | 'unhealthy';
   readonly message?: string;
   readonly lastCheck: string;
   readonly metrics?: Record<string, number>;
@@ -154,7 +154,7 @@ export interface SystemEvent {
   readonly target?: string;
   readonly payload: any;
   readonly timestamp: string;
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low | medium' | 'high | critical';
 }
 
 export interface EventHandler<T = unknown> {
@@ -169,10 +169,10 @@ export interface EventSubscription {
 }
 
 export interface EventBus {
-  emit(event: string | symbol, 0.0.0.args: any[]): boolean;
-  on(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
-  off(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
-  once(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
+  emit(event: string | symbol, args: any[]): boolean;
+  on(event: string | symbol, handler: (args: any[]) => void): this;
+  off(event: string | symbol, handler: (args: any[]) => void): this;
+  once(event: string | symbol, handler: (args: any[]) => void): this;
   removeAllListeners(event?: string | symbol): this;
   publish(event: string, data: any): void;
   subscribe(event: string, handler: (data: any) => void): void;
@@ -188,11 +188,11 @@ export interface BaseConfig {
   readonly timeout?: number;
   readonly retryCount?: number;
   readonly enableLogging?: boolean;
-  readonly logLevel?: 'debug' | 'info' | 'warn' | 'error';
+  readonly logLevel?: 'debug | info' | 'warn | error';
 }
 
 export interface DatabaseConfig extends BaseConfig {
-  readonly type: 'sqlite' | 'postgres' | 'mysql' | 'memory';
+  readonly type: 'sqlite | postgres' | 'mysql | memory';
   readonly connectionString?: string;
   readonly poolSize?: number;
   readonly ssl?: boolean;
@@ -201,7 +201,7 @@ export interface DatabaseConfig extends BaseConfig {
 export interface NetworkConfig extends BaseConfig {
   readonly host: string;
   readonly port: number;
-  readonly protocol: 'http' | 'https' | 'ws' | 'wss';
+  readonly protocol: 'http | https' | 'ws | wss';
   readonly maxConnections?: number;
   readonly keepAlive?: boolean;
 }
@@ -243,11 +243,11 @@ export interface Registry<T> {
 }
 
 export interface Logger {
-  debug(message: string, 0.0.0.args: any[]): void;
-  info(message: string, 0.0.0.args: any[]): void;
-  warn(message: string, 0.0.0.args: any[]): void;
-  error(message: string, 0.0.0.args: any[]): void;
-  trace(message: string, 0.0.0.args: any[]): void;
+  debug(message: string, args: any[]): void;
+  info(message: string, args: any[]): void;
+  warn(message: string, args: any[]): void;
+  error(message: string, args: any[]): void;
+  trace(message: string, args: any[]): void;
 }
 
 export interface KeyValueStore {

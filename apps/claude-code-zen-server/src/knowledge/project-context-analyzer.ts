@@ -2,7 +2,7 @@
  * Project Context Analyzer - Analyzes project structure and provides context
  *
  * This module provides comprehensive project analysis capabilities including
- * monorepo detection, dependency analysis, and architectural insights0.
+ * monorepo detection, dependency analysis, and architectural insights.
  */
 
 import { existsSync, readFileSync, statSync } from 'node:fs';
@@ -16,11 +16,11 @@ export interface MonorepoInfo {
   /** Root directory of the monorepo */
   rootPath: string;
   /** Package manager used (npm, yarn, pnpm) */
-  packageManager: 'npm' | 'yarn' | 'pnpm' | 'unknown';
+  packageManager: 'npm | yarn' | 'pnpm | unknown';
   /** List of workspace packages */
   workspaces: string[];
   /** Build tool configuration */
-  buildTool?: 'webpack' | 'vite' | 'rollup' | 'esbuild' | 'unknown';
+  buildTool?: 'webpack | vite' | 'rollup | esbuild' | 'unknown';
   /** Framework detection */
   frameworks: string[];
   /** Language configuration */
@@ -29,15 +29,15 @@ export interface MonorepoInfo {
   packageCount: number;
   /** Dependency graph structure */
   dependencyGraph?: Record<string, string[]>;
-  /** Whether monorepo has a root package0.json */
+  /** Whether monorepo has a root package.json */
   hasRootPackageJson: boolean;
   /** Type of monorepo structure */
-  type: 'lerna' | 'nx' | 'rush' | 'pnpm' | 'yarn' | 'standard';
+  type: 'lerna | nx' | 'rush | pnpm' | 'yarn | standard';
 }
 
 export interface ProjectStructure {
   /** Project type classification */
-  type: 'monorepo' | 'single-package' | 'library' | 'application';
+  type: 'monorepo | single-package' | 'library | application';
   /** Source directories */
   sourceDirs: string[];
   /** Test directories */
@@ -52,13 +52,13 @@ export interface ProjectStructure {
 
 export interface ArchitecturalInsight {
   /** Insight category */
-  category: 'architecture' | 'performance' | 'maintainability' | 'security';
+  category: 'architecture | performance' | 'maintainability | security';
   /** Insight title */
   title: string;
   /** Detailed description */
   description: string;
   /** Severity level */
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: 'low | medium' | 'high | critical';
   /** Suggested actions */
   suggestions: string[];
   /** Confidence score (0-1) */
@@ -91,33 +91,33 @@ export class ProjectContextAnalyzer extends TypedEventBase {
 
   constructor(rootPath: string) {
     super();
-    this0.rootPath = rootPath;
+    this.rootPath = rootPath;
   }
 
   /**
    * Initialize the analyzer and perform initial project scan
    */
   async initialize(): Promise<void> {
-    logger0.info('Initializing project context analyzer', {
-      rootPath: this0.rootPath,
+    logger.info('Initializing project context analyzer', {
+      rootPath: this.rootPath,
     });
 
     try {
-      await this?0.analyzeProjectStructure;
-      await this?0.detectMonorepoInfo;
-      await this?0.calculateMetrics;
-      await this?0.generateInsights;
+      await this.analyzeProjectStructure;
+      await this.detectMonorepoInfo;
+      await this.calculateMetrics;
+      await this.generateInsights;
 
-      this0.emit('initialized', {
-        structure: this0.projectStructure,
-        monorepo: this0.monorepoInfo,
-        metrics: this0.metrics,
+      this.emit('initialized', {
+        structure: this.projectStructure,
+        monorepo: this.monorepoInfo,
+        metrics: this.metrics,
       });
 
-      logger0.info('Project context analysis completed');
+      logger.info('Project context analysis completed');
     } catch (error) {
-      logger0.error('Failed to initialize project context analyzer', { error });
-      this0.emit('error', error);
+      logger.error('Failed to initialize project context analyzer', { error });
+      this.emit('error', error);
       throw error;
     }
   }
@@ -126,28 +126,28 @@ export class ProjectContextAnalyzer extends TypedEventBase {
    * Get monorepo information
    */
   getMonorepoInfo(): MonorepoInfo | null {
-    return this0.monorepoInfo;
+    return this.monorepoInfo;
   }
 
   /**
    * Get project structure information
    */
   getProjectStructure(): ProjectStructure | null {
-    return this0.projectStructure;
+    return this.projectStructure;
   }
 
   /**
    * Get architectural insights
    */
   getInsights(): ArchitecturalInsight[] {
-    return [0.0.0.this0.insights];
+    return [...this.insights];
   }
 
   /**
    * Get project metrics
    */
   getMetrics(): ProjectMetrics | null {
-    return this0.metrics;
+    return this.metrics;
   }
 
   /**
@@ -159,18 +159,18 @@ export class ProjectContextAnalyzer extends TypedEventBase {
     relationships: string[];
     confidence: number;
   }> {
-    logger0.debug('Analyzing domain', { domainName });
+    logger.debug('Analyzing domain', { domainName });
 
     // Simulate domain analysis
-    const relevantFiles = this0.findFilesRelatedToDomain(domainName);
-    const concepts = this0.extractDomainConcepts(domainName, relevantFiles);
-    const relationships = this0.analyzeRelationships(relevantFiles);
+    const relevantFiles = this.findFilesRelatedToDomain(domainName);
+    const concepts = this.extractDomainConcepts(domainName, relevantFiles);
+    const relationships = this.analyzeRelationships(relevantFiles);
 
     return {
       relevantFiles,
       concepts,
       relationships,
-      confidence: Math0.random() * 0.5 + 0.5, // 0.5-10.0
+      confidence: Math.random() * .5 + .5, // .5-1.0
     };
   }
 
@@ -178,8 +178,8 @@ export class ProjectContextAnalyzer extends TypedEventBase {
    * Refresh analysis
    */
   async refresh(): Promise<void> {
-    logger0.info('Refreshing project context analysis');
-    await this?0.initialize;
+    logger.info('Refreshing project context analysis');
+    await this.initialize;
   }
 
   private async analyzeProjectStructure(): Promise<void> {
@@ -192,66 +192,66 @@ export class ProjectContextAnalyzer extends TypedEventBase {
       buildDirs: [],
     };
 
-    if (existsSync(this0.rootPath)) {
-      structure0.sourceDirs = this0.findDirectories(['src', 'lib', 'source']);
-      structure0.testDirs = this0.findDirectories([
+    if (existsSync(this.rootPath)) {
+      structure.sourceDirs = this.findDirectories(['src, lib', 'source']);
+      structure.testDirs = this.findDirectories([
         'test',
         'tests',
         '__tests__',
         'spec',
       ]);
-      structure0.configFiles = this0.findFiles([
-        'package0.json',
-        'tsconfig0.json',
-        'babel0.config0.js',
-        'webpack0.config0.js',
-        'vite0.config0.js',
-        '0.eslintrc0.js',
+      structure.configFiles = this.findFiles([
+        'package.json',
+        'tsconfig.json',
+        'babel.config.js',
+        'webpack.config.js',
+        'vite.config.js',
+        ".eslintrc.js',
       ]);
-      structure0.docFiles = this0.findFiles([
-        'README0.md',
-        'CHANGELOG0.md',
-        'CONTRIBUTING0.md',
+      structure.docFiles = this.findFiles([
+        'README.md',
+        'CHANGELOG.md',
+        'CONTRIBUTING.md',
         'docs',
       ]);
-      structure0.buildDirs = this0.findDirectories(['dist', 'build', 'out']);
+      structure.buildDirs = this.findDirectories(['dist, build', 'out']);
 
       // Detect project type
-      if (this?0.hasWorkspaces) {
-        structure0.type = 'monorepo';
-      } else if (structure0.sourceDirs0.length > 0) {
-        structure0.type = this?0.isLibrary ? 'library' : 'application';
+      if (this.hasWorkspaces) {
+        structure.type = 'monorepo';
+      } else if (structure.sourceDirs.length > 0) {
+        structure.type = this.isLibrary ? 'library : application';
       }
     }
 
-    this0.projectStructure = structure;
+    this.projectStructure = structure;
   }
 
   private async detectMonorepoInfo(): Promise<void> {
-    if (!this?0.hasWorkspaces) {
+    if (!this.hasWorkspaces) {
       return;
     }
 
-    const packageJsonPath = join(this0.rootPath, 'package0.json');
+    const packageJsonPath = join(this.rootPath, 'package.json');
     let packageJson: any = {};
 
     try {
-      packageJson = JSON0.parse(readFileSync(packageJsonPath, 'utf8'));
+      packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
     } catch (error) {
-      logger0.warn('Could not read package0.json', { error });
+      logger.warn('Could not read package.json', { error });
     }
 
     const info: MonorepoInfo = {
-      rootPath: this0.rootPath,
-      packageManager: this?0.detectPackageManager,
-      workspaces: this0.getWorkspaces(packageJson),
-      frameworks: this?0.detectFrameworks,
-      languages: this?0.detectLanguages,
+      rootPath: this.rootPath,
+      packageManager: this.detectPackageManager,
+      workspaces: this.getWorkspaces(packageJson),
+      frameworks: this.detectFrameworks,
+      languages: this.detectLanguages,
       packageCount: 0,
     };
 
-    info0.packageCount = info0.workspaces0.length;
-    this0.monorepoInfo = info;
+    info.packageCount = info.workspaces.length;
+    this.monorepoInfo = info;
   }
 
   private async calculateMetrics(): Promise<void> {
@@ -267,19 +267,19 @@ export class ProjectContextAnalyzer extends TypedEventBase {
     };
 
     // Calculate basic metrics
-    metrics0.fileCount = this?0.countFilesByExtension;
-    metrics0.linesOfCode = this?0.calculateLinesOfCode;
-    metrics0.dependencyCount = this?0.countDependencies;
+    metrics.fileCount = this.countFilesByExtension;
+    metrics.linesOfCode = this.calculateLinesOfCode;
+    metrics.dependencyCount = this.countDependencies;
 
-    this0.metrics = metrics;
+    this.metrics = metrics;
   }
 
   private async generateInsights(): Promise<void> {
-    this0.insights = [];
+    this.insights = [];
 
     // Add architectural insights based on analysis
-    if (this0.monorepoInfo && this0.monorepoInfo0.packageCount > 10) {
-      this0.insights0.push({
+    if (this.monorepoInfo && this.monorepoInfo.packageCount > 10) {
+      this.insights.push({
         category: 'architecture',
         title: 'Large Monorepo Detected',
         description:
@@ -290,12 +290,12 @@ export class ProjectContextAnalyzer extends TypedEventBase {
           'Use dependency analysis to identify potential package splits',
           'Implement build optimization strategies',
         ],
-        confidence: 0.8,
+        confidence: .8,
       });
     }
 
-    if (this0.metrics && this0.metrics0.dependencyCount > 100) {
-      this0.insights0.push({
+    if (this.metrics && this.metrics.dependencyCount > 100) {
+      this.insights.push({
         category: 'maintainability',
         title: 'High Dependency Count',
         description:
@@ -306,7 +306,7 @@ export class ProjectContextAnalyzer extends TypedEventBase {
           'Consider bundling strategies to reduce runtime dependencies',
           'Implement dependency update automation',
         ],
-        confidence: 0.7,
+        confidence: .7,
       });
     }
   }
@@ -314,9 +314,9 @@ export class ProjectContextAnalyzer extends TypedEventBase {
   private findDirectories(names: string[]): string[] {
     const found: string[] = [];
     for (const name of names) {
-      const path = join(this0.rootPath, name);
-      if (existsSync(path) && statSync(path)?0.isDirectory) {
-        found0.push(path);
+      const path = join(this.rootPath, name);
+      if (existsSync(path) && statSync(path)?.isDirectory) {
+        found.push(path);
       }
     }
     return found;
@@ -325,58 +325,58 @@ export class ProjectContextAnalyzer extends TypedEventBase {
   private findFiles(names: string[]): string[] {
     const found: string[] = [];
     for (const name of names) {
-      const path = join(this0.rootPath, name);
+      const path = join(this.rootPath, name);
       if (existsSync(path)) {
-        found0.push(path);
+        found.push(path);
       }
     }
     return found;
   }
 
   private hasWorkspaces(): boolean {
-    const packageJsonPath = join(this0.rootPath, 'package0.json');
+    const packageJsonPath = join(this.rootPath, 'package.json');
     if (!existsSync(packageJsonPath)) return false;
 
     try {
-      const packageJson = JSON0.parse(readFileSync(packageJsonPath, 'utf8'));
-      return !!(packageJson0.workspaces || packageJson0.pnpm?0.packages);
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+      return !!(packageJson.workspaces || packageJson.pnpm?.packages);
     } catch {
       return false;
     }
   }
 
-  private detectPackageManager(): 'npm' | 'yarn' | 'pnpm' | 'unknown' {
-    if (existsSync(join(this0.rootPath, 'pnpm-lock0.yaml'))) return 'pnpm';
-    if (existsSync(join(this0.rootPath, 'yarn0.lock'))) return 'yarn';
-    if (existsSync(join(this0.rootPath, 'package-lock0.json'))) return 'npm';
+  private detectPackageManager(): 'npm | yarn' | 'pnpm | unknown' {
+    if (existsSync(join(this.rootPath, 'pnpm-lock.yaml))) return pnpm';
+    if (existsSync(join(this.rootPath, 'yarn.lock))) return yarn';
+    if (existsSync(join(this.rootPath, 'package-lock.json))) return npm';
     return 'unknown';
   }
 
   private getWorkspaces(packageJson: any): string[] {
     const workspaces =
-      packageJson0.workspaces || packageJson0.pnpm?0.packages || [];
-    if (Array0.isArray(workspaces)) return workspaces;
-    if (workspaces0.packages) return workspaces0.packages;
+      packageJson.workspaces || packageJson.pnpm?.packages || [];
+    if (Array.isArray(workspaces)) return workspaces;
+    if (workspaces.packages) return workspaces.packages;
     return [];
   }
 
   private detectFrameworks(): string[] {
     const frameworks: string[] = [];
-    const packageJsonPath = join(this0.rootPath, 'package0.json');
+    const packageJsonPath = join(this.rootPath, 'package.json');
 
     try {
-      const packageJson = JSON0.parse(readFileSync(packageJsonPath, 'utf8'));
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
       const deps = {
-        0.0.0.packageJson0.dependencies,
-        0.0.0.packageJson0.devDependencies,
+        ...packageJson.dependencies,
+        ...packageJson.devDependencies,
       };
 
-      if (deps0.react) frameworks0.push('React');
-      if (deps0.vue) frameworks0.push('Vue');
-      if (deps0.angular) frameworks0.push('Angular');
-      if (deps0.svelte) frameworks0.push('Svelte');
-      if (deps0.next) frameworks0.push('Next0.js');
-      if (deps0.nuxt) frameworks0.push('Nuxt0.js');
+      if (deps.react) frameworks.push('React');
+      if (deps.vue) frameworks.push('Vue');
+      if (deps.angular) frameworks.push('Angular');
+      if (deps.svelte) frameworks.push('Svelte');
+      if (deps.next) frameworks.push('Next.js');
+      if (deps.nuxt) frameworks.push('Nuxt.js');
     } catch {
       // Ignore errors
     }
@@ -387,21 +387,21 @@ export class ProjectContextAnalyzer extends TypedEventBase {
   private detectLanguages(): string[] {
     const languages: string[] = [];
 
-    if (existsSync(join(this0.rootPath, 'tsconfig0.json')))
-      languages0.push('TypeScript');
-    if (this0.findFiles(['*0.js'])0.length > 0) languages0.push('JavaScript');
-    if (this0.findFiles(['*0.py'])0.length > 0) languages0.push('Python');
-    if (this0.findFiles(['*0.rs'])0.length > 0) languages0.push('Rust');
-    if (this0.findFiles(['*0.go'])0.length > 0) languages0.push('Go');
+    if (existsSync(join(this.rootPath, 'tsconfig.json')))
+      languages.push('TypeScript');
+    if (this.findFiles(['*.js]).length > 0) languages.push(JavaScript');
+    if (this.findFiles(['*.py]).length > 0) languages.push(Python');
+    if (this.findFiles(['*.rs]).length > 0) languages.push(Rust');
+    if (this.findFiles(['*.go]).length > 0) languages.push(Go');
 
     return languages;
   }
 
   private isLibrary(): boolean {
-    const packageJsonPath = join(this0.rootPath, 'package0.json');
+    const packageJsonPath = join(this.rootPath, 'package.json');
     try {
-      const packageJson = JSON0.parse(readFileSync(packageJsonPath, 'utf8'));
-      return !!(packageJson0.main || packageJson0.module || packageJson0.exports);
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+      return !!(packageJson.main || packageJson.module || packageJson.exports);
     } catch {
       return false;
     }
@@ -410,27 +410,27 @@ export class ProjectContextAnalyzer extends TypedEventBase {
   private countFilesByExtension(): Record<string, number> {
     const counts: Record<string, number> = {};
     // Simplified implementation
-    counts['0.ts'] = 10;
-    counts['0.js'] = 5;
-    counts['0.json'] = 3;
+    counts[".ts'] = 10;
+    counts[".js'] = 5;
+    counts[".json'] = 3;
     return counts;
   }
 
   private calculateLinesOfCode(): Record<string, number> {
     const lines: Record<string, number> = {};
     // Simplified implementation
-    lines0.TypeScript = 1000;
-    lines0.JavaScript = 500;
+    lines.TypeScript = 1000;
+    lines.JavaScript = 500;
     return lines;
   }
 
   private countDependencies(): number {
-    const packageJsonPath = join(this0.rootPath, 'package0.json');
+    const packageJsonPath = join(this.rootPath, 'package.json');
     try {
-      const packageJson = JSON0.parse(readFileSync(packageJsonPath, 'utf8'));
-      const deps = Object0.keys(packageJson0.dependencies || {});
-      const devDeps = Object0.keys(packageJson0.devDependencies || {});
-      return deps0.length + devDeps0.length;
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+      const deps = Object.keys(packageJson.dependencies || {});
+      const devDeps = Object.keys(packageJson.devDependencies || {});
+      return deps.length + devDeps.length;
     } catch {
       return 0;
     }
@@ -448,7 +448,7 @@ export class ProjectContextAnalyzer extends TypedEventBase {
 
   private analyzeRelationships(files: string[]): string[] {
     // Simplified relationship analysis
-    return ['depends-on', 'implements', 'extends'];
+    return ['depends-on, implements', 'extends'];
   }
 }
 

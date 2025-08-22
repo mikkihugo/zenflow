@@ -39,11 +39,11 @@ export type { EventData } from '@claude-zen/intelligence';
 
 /**
  * DEPRECATION NOTICE:
- * This file should be removed once all imports are updated to use foundation packages directly0.
+ * This file should be removed once all imports are updated to use foundation packages directly.
  *
  * **Migration Path:**
  * ```typescript
- * // Old: import { Result } from '0.0./utils/types';
+ * // Old: import { Result } from './utils/types';
  * // New: import { Result } from '@claude-zen/foundation';
  * ```
  */

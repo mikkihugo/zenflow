@@ -10,8 +10,8 @@
 // Direct foundation imports for proper integration
 import { getGlobalLLM, // Re-enabled in foundation
 getLogger, getConfig } from '@claude-zen/foundation';
-// Database access from infrastructure facade
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
+// Database access from foundation (fallback)
+import { getDatabaseAccess } from '@claude-zen/foundation';
 // Types exported at end of file
 /**
  * DSPy Service - Central coordinator for @claude-zen/foundation integration
@@ -68,7 +68,9 @@ export class DSPyService {
         // DSPy should use 'analyst' role by default (not 'coder' which is for tool access)
         // DSPy is pure LLM operations for prompt optimization, no tool access needed
         const dspyRole = options.role || 'analyst';
-        llm.setRole(dspyRole);
+        if (llm.setRole) {
+            llm.setRole(dspyRole);
+        }
         this.logger.debug('Executing DSPy prompt via foundation LLM', {
             promptLength: prompt.length,
             role: dspyRole,

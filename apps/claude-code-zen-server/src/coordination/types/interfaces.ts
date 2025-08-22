@@ -6,25 +6,25 @@
 /**
  * Priority levels for tasks and operations
  */
-export type Priority = 'low' | 'medium' | 'high' | 'critical';
+export type Priority = 'low | medium' | 'high | critical';
 
 /**
  * Risk level assessment
  */
-export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+export type RiskLevel = 'low | medium' | 'high | critical';
 
 /**
- * Server instance interface - wraps Express0.Server with additional metadata
+ * Server instance interface - wraps Express.Server with additional metadata
  */
 export interface ServerInstance {
   id: string;
-  status: 'starting' | 'running' | 'stopping' | 'stopped' | 'error';
+  status: 'starting | running' | 'stopping | stopped' | 'error';
   port?: number;
   host?: string;
   uptime?: number;
   // Express server instance methods
   close?: (callback?: (err?: Error) => void) => void;
-  on?: (event: string, listener: (0.0.0.args: any[]) => void) => void;
+  on?: (event: string, listener: (args: any[]) => void) => void;
 }
 
 /**
@@ -43,7 +43,7 @@ export interface BaseError {
 export interface TestResult {
   id?: string;
   name?: string;
-  status?: 'passed' | 'failed' | 'skipped' | 'pending';
+  status?: 'passed | failed' | 'skipped | pending';
   success: boolean;
   duration?: number;
   error?: BaseError | string;
@@ -81,7 +81,7 @@ export interface BaseApiResponse {
  * Basic neural configuration for coordination components
  */
 export interface NeuralConfig {
-  modelType: 'feedforward' | 'recurrent' | 'transformer';
+  modelType: 'feedforward | recurrent' | 'transformer';
   layers: number[];
   activations: string[];
   learningRate: number;
@@ -172,7 +172,7 @@ export interface WasmNeuralBinding {
   /**
    * Load WASM module
    */
-  loadWasm(): Promise<WebAssembly0.Module | Record<string, unknown>>;
+  loadWasm(): Promise<WebAssembly.Module | Record<string, unknown>>;
 
   /**
    * Check if WASM is available
@@ -198,8 +198,6 @@ export type AgentType =
   // Core hierarchy types
   | 'queen'
   | 'commander'
-  | 'cube'
-  | 'matron'
   | 'drone'
   | 'worker'
   // Queen types
@@ -367,7 +365,7 @@ export interface QueenPool {
 }
 
 export interface QueenHealth {
-  status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
+  status: 'healthy | degraded' | 'critical | unhealthy';
   lastCheck: Date;
   issues: string[];
   queenId?: string; // Queen ID for queen-coordinator
@@ -375,18 +373,18 @@ export interface QueenHealth {
   components?: Record<
     string,
     {
-      status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
+      status: 'healthy | degraded' | 'critical | unhealthy';
       lastCheck?: Date;
       metrics?: Record<string, unknown>;
     }
   >; // Optional components used by queen-coordinator
   overall?: {
-    status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
+    status: 'healthy | degraded' | 'critical | unhealthy';
     score: number;
   }; // Optional overall health used by queen-coordinator
 }
 
-export type QueenType = 'primary' | 'secondary' | 'backup';
+export type QueenType = 'primary | secondary' | 'backup';
 
 export interface QueenCapabilities extends AgentCapabilities {
   canManageSwarms: boolean;
@@ -555,16 +553,16 @@ export type { SystemEvent } from '@claude-zen/intelligence';
 
 // Use the comprehensive EventBus from event-system package instead of basic interface
 export interface EventBus {
-  emit(event: string | symbol, 0.0.0.args: any[]): boolean;
-  on(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
-  off(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
+  emit(event: string | symbol, args: any[]): boolean;
+  on(event: string | symbol, handler: (args: any[]) => void): this;
+  off(event: string | symbol, handler: (args: any[]) => void): this;
   // Add the missing emitSystemEvent method
   emitSystemEvent(event: SystemEvent): boolean;
 }
 
 export interface Logger {
-  debug(message: string, 0.0.0.args: any[]): void;
-  info(message: string, 0.0.0.args: any[]): void;
-  warn(message: string, 0.0.0.args: any[]): void;
-  error(message: string, 0.0.0.args: any[]): void;
+  debug(message: string, args: any[]): void;
+  info(message: string, args: any[]): void;
+  warn(message: string, args: any[]): void;
+  error(message: string, args: any[]): void;
 }

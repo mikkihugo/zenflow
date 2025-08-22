@@ -1,10 +1,10 @@
 /**
- * Types Module - Barrel Export0.
+ * Types Module - Barrel Export.
  *
- * Central export point for all shared types across the system0.
+ * Central export point for all shared types across the system.
  */
 /**
- * @file Types module exports0.
+ * @file Types module exports.
  */
 export type {
   ActivationFunction,
@@ -15,7 +15,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from '0.0./neural/types/wasm-types';
+} from './neural/types/wasm-types';
 export type {
   AgentCapabilities,
   AgentConfig,
@@ -27,7 +27,7 @@ export type {
   AgentStatus as DetailedAgentStatus,
   AgentType as DetailedAgentType,
   GlobalAgentInfo,
-} from '0./agent-types';
+} from "./agent-types";
 export type {
   SwarmAgent as Agent,
   SwarmAgent,
@@ -36,16 +36,16 @@ export type {
   TaskStatus,
   ZenSwarm as SwarmType,
   ZenSwarm,
-} from '0./shared-types';
+} from "./shared-types";
 export declare function isZenSwarm(
   obj: any
-): obj is import('0./shared-types')0.ZenSwarm;
+): obj is import('./shared-types').ZenSwarm;
 export declare function isSwarmAgent(
   obj: any
-): obj is import('0./shared-types')0.SwarmAgent;
+): obj is import('./shared-types').SwarmAgent;
 export declare function isSystemEvent(
   obj: any
-): obj is import('0./shared-types')0.SystemEvent;
+): obj is import('./shared-types').SystemEvent;
 export {
   isActivationFunction,
   isNeuralNetworkConfig,
@@ -54,13 +54,13 @@ export {
   isPositiveNumber,
   isValidNumber,
 } from '@claude-zen/foundation';
-export * from '0./client-types';
-export * from '0./events-types';
-export * from '0./knowledge-types';
-export * from '0./neural-types';
-export * from '0./protocol-types';
-export * from '0./services-types';
-export * from '0./singletons';
-export * from '0./workflow-types';
-export * from '0./logger';
-//# sourceMappingURL=index0.d0.ts0.map
+export * from "./client-types";
+export * from "./events-types";
+export * from "./knowledge-types";
+export * from "./neural-types";
+export * from "./protocol-types";
+export * from "./services-types";
+export * from "./singletons";
+export * from "./workflow-types";
+export * from "./logger";
+//# sourceMappingURL=index.d.ts.map

@@ -1,5 +1,5 @@
 /**
- * @file Main utilities module that re-exports system utility functions including logging, error handling, type guards, and various helper utilities0.
+ * @file Main utilities module that re-exports system utility functions including logging, error handling, type guards, and various helper utilities.
  */
 
 // Use foundation logging and error handling instead of custom implementations
@@ -72,4 +72,4 @@ export {
 } from '@claude-zen/foundation';
 
 // Agent analysis utilities (excluded from build due to tsconfig exclude)
-// export * from '0./agent-gap-analysis';
+// export * from "./agent-gap-analysis";

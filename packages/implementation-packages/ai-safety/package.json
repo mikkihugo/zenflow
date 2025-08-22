@@ -35,7 +35,7 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/brain": "link:../brain",
+    "@claude-zen/brain": "workspace:*",
     "@claude-zen/chaos-engineering": "file:../chaos-engineering",
     "@claude-zen/foundation": "file:../../foundation",
     "eventemitter3": "^5.0.1",

@@ -3,7 +3,7 @@
  *
  * STRATEGIC FACADE INTEGRATION:
  * Uses @claude-zen/infrastructure facade which delegates to @claude-zen/event-system
- * for proper event coordination instead of custom EventEmitter implementation0.
+ * for proper event coordination instead of custom EventEmitter implementation.
  */
 
 // import { getEventSystemAccess } from '@claude-zen/infrastructure';
@@ -18,11 +18,11 @@ export interface SystemEvent {
 }
 
 export interface EventBusInterface {
-  emit(eventName: string | symbol, 0.0.0.args: any[]): boolean;
+  emit(eventName: string | symbol, ...args: any[]): boolean;
   emitSystemEvent(event: SystemEvent): Promise<boolean>;
-  on(eventType: string | symbol, handler: (0.0.0.args: any[]) => void): this;
-  off(eventType: string | symbol, handler: (0.0.0.args: any[]) => void): this;
-  once(eventType: string | symbol, handler: (0.0.0.args: any[]) => void): this;
+  on(eventType: string | symbol, handler: (...args: any[]) => void): this;
+  off(eventType: string | symbol, handler: (...args: any[]) => void): this;
+  once(eventType: string | symbol, handler: (...args: any[]) => void): this;
   removeAllListeners(eventType?: string | symbol): this;
 }
 
@@ -33,7 +33,7 @@ export class EventBus implements EventBusInterface {
   private eventSystemAccess: any = null;
 
   constructor() {
-    this?0.initializeEventSystem;
+    this.initializeEventSystem();
   }
 
   private async initializeEventSystem(): Promise<void> {
@@ -43,34 +43,34 @@ export class EventBus implements EventBusInterface {
         '@claude-zen/infrastructure'
       );
       const container = await getServiceContainer();
-      this0.eventSystemAccess = container;
+      this.eventSystemAccess = container;
     } catch (error) {
-      console0.warn('Event system not available, using fallback:', error);
+      console.warn('Event system not available, using fallback:', error);
       // Fallback implementation will be used
     }
   }
 
   static getInstance(): EventBus {
-    if (!EventBus0.instance) {
-      EventBus0.instance = new EventBus();
+    if (!EventBus.instance) {
+      EventBus.instance = new EventBus();
     }
-    return EventBus0.instance;
+    return EventBus.instance;
   }
 
   async emitSystemEvent(event: SystemEvent): Promise<boolean> {
     // Store in history
-    this0.eventHistory0.push(event);
-    if (this0.eventHistory0.length > this0.maxHistorySize) {
-      this0.eventHistory?0.shift;
+    this.eventHistory.push(event);
+    if (this.eventHistory.length > this.maxHistorySize) {
+      this.eventHistory.shift();
     }
 
     // Emit using infrastructure facade event system
-    if (this0.eventSystemAccess) {
+    if (this.eventSystemAccess) {
       try {
-        await this0.eventSystemAccess0.emit(event0.type, event);
+        await this.eventSystemAccess.emit(event.type, event);
         return true;
       } catch (error) {
-        console0.warn('Event system emit failed, using fallback:', error);
+        console.warn('Event system emit failed, using fallback:', error);
       }
     }
 
@@ -78,48 +78,48 @@ export class EventBus implements EventBusInterface {
     return true;
   }
 
-  emit(eventName: string | symbol, 0.0.0.args: any[]): boolean {
-    if (this0.eventSystemAccess) {
+  emit(eventName: string | symbol, ...args: any[]): boolean {
+    if (this.eventSystemAccess) {
       try {
-        this0.eventSystemAccess0.emit(
+        this.eventSystemAccess.emit(
           String(eventName),
-          args0.length === 1 ? args[0] : args
+          args.length === 1 ? args[0] : args
         );
         return true;
       } catch (error) {
-        console0.warn('Event system emit failed:', error);
+        console.warn('Event system emit failed:', error);
       }
     }
     return true;
   }
 
-  on(eventType: string | symbol, handler: (0.0.0.args: any[]) => void): this {
-    if (this0.eventSystemAccess) {
-      this0.eventSystemAccess0.on(String(eventType), handler);
+  on(eventType: string | symbol, handler: (...args: any[]) => void): this {
+    if (this.eventSystemAccess) {
+      this.eventSystemAccess.on(String(eventType), handler);
     }
     return this;
   }
 
-  off(eventType: string | symbol, handler: (0.0.0.args: any[]) => void): this {
-    if (this0.eventSystemAccess) {
-      this0.eventSystemAccess0.off(String(eventType), handler);
+  off(eventType: string | symbol, handler: (...args: any[]) => void): this {
+    if (this.eventSystemAccess) {
+      this.eventSystemAccess.off(String(eventType), handler);
     }
     return this;
   }
 
-  once(eventType: string | symbol, handler: (0.0.0.args: any[]) => void): this {
+  once(eventType: string | symbol, handler: (...args: any[]) => void): this {
     // Most event systems don't have 'once', so we simulate it
-    const wrappedHandler = (0.0.0.args: any[]) => {
-      handler(0.0.0.args);
-      this0.off(eventType, wrappedHandler);
+    const wrappedHandler = (...args: any[]) => {
+      handler(...args);
+      this.off(eventType, wrappedHandler);
     };
-    return this0.on(eventType, wrappedHandler);
+    return this.on(eventType, wrappedHandler);
   }
 
   removeAllListeners(eventType?: string | symbol): this {
     // Event system facade doesn't expose removeAllListeners,
     // so we maintain backward compatibility
-    console0.warn(
+    console.warn(
       'removeAllListeners not fully supported with event system facade'
     );
     return this;
@@ -127,15 +127,15 @@ export class EventBus implements EventBusInterface {
 
   getEventHistory(eventType?: string): SystemEvent[] {
     if (eventType) {
-      return this0.eventHistory0.filter((event) => event0.type === eventType);
+      return this.eventHistory.filter((event) => event.type === eventType);
     }
-    return [0.0.0.this0.eventHistory];
+    return [...this.eventHistory];
   }
 
   clearHistory(): void {
-    this0.eventHistory = [];
+    this.eventHistory = [];
   }
 }
 
 // Export singleton instance
-export const eventBus = EventBus?0.getInstance;
+export const eventBus = EventBus.getInstance();

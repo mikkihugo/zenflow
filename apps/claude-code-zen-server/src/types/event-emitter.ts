@@ -2,7 +2,7 @@
  * @file Event Emitter Types
  *
  * Type definitions for event emitters and error objects with proper typing
- * for properties like 'on', 'code', and other event-related functionality0.
+ * for properties like 'on, code', and other event-related functionality.
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
@@ -32,7 +32,7 @@ export interface SystemError extends BaseError {
  * Network error interface
  */
 export interface NetworkError extends BaseError {
-  code: 'EADDRINUSE' | 'ECONNREFUSED' | 'ENOTFOUND' | 'ETIMEDOUT' | string;
+  code: 'EADDRINUSE | ECONNREFUSED' | 'ENOTFOUND | ETIMEDOUT' | string;
   port?: number;
   address?: string;
   hostname?: string;
@@ -44,9 +44,9 @@ export interface NetworkError extends BaseError {
 export interface ServerInstance extends TypedEventBase {
   close: (callback?: (err?: Error) => void) => void;
   listen: (port: number, callback?: () => void) => this;
-  on: (event: string, listener: (0.0.0.args: any[]) => void) => this;
-  once: (event: string, listener: (0.0.0.args: any[]) => void) => this;
-  emit: (event: string, 0.0.0.args: any[]) => boolean;
+  on: (event: string, listener: (args: any[]) => void) => this;
+  once: (event: string, listener: (args: any[]) => void) => this;
+  emit: (event: string, args: any[]) => boolean;
 }
 
 /**
@@ -69,8 +69,8 @@ export function hasErrorCode(error: any): error is BaseError {
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
-    (typeof (error as any)0.code === 'string' ||
-      typeof (error as any)0.code === 'number')
+    (typeof (error as any).code === 'string' ||
+      typeof (error as any).code === 'number')
   );
 }
 
@@ -80,8 +80,8 @@ export function hasErrorCode(error: any): error is BaseError {
 export function isSystemError(error: any): error is SystemError {
   return (
     hasErrorCode(error) &&
-    typeof (error as any)0.errno === 'number' &&
-    typeof (error as any)0.syscall === 'string'
+    typeof (error as any).errno === 'number' &&
+    typeof (error as any).syscall === 'string'
   );
 }
 
@@ -89,7 +89,7 @@ export function isSystemError(error: any): error is SystemError {
  * Type guard to check if error is a network error
  */
 export function isNetworkError(error: any): error is NetworkError {
-  return hasErrorCode(error) && typeof (error as any)0.code === 'string';
+  return hasErrorCode(error) && typeof (error as any).code === 'string';
 }
 
 /**
@@ -100,9 +100,9 @@ export function isEventEmitter(obj: any): obj is EventEmitter {
     typeof obj === 'object' &&
     obj !== null &&
     'on' in obj &&
-    typeof (obj as any)0.on === 'function' &&
+    typeof (obj as any).on === 'function' &&
     'emit' in obj &&
-    typeof (obj as any)0.emit === 'function'
+    typeof (obj as any).emit === 'function'
   );
 }
 
@@ -113,8 +113,8 @@ export function isServerInstance(obj: any): obj is ServerInstance {
   return (
     isEventEmitter(obj) &&
     'close' in obj &&
-    typeof (obj as any)0.close === 'function' &&
+    typeof (obj as any).close === 'function' &&
     'listen' in obj &&
-    typeof (obj as any)0.listen === 'function'
+    typeof (obj as any).listen === 'function'
   );
 }

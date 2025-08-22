@@ -195,4 +195,4 @@ export type {
   TaskAssignment,
   AgentPool,
 };
-//# sourceMappingURL=agent-types0.d0.ts0.map
+//# sourceMappingURL=agent-types.d.ts.map

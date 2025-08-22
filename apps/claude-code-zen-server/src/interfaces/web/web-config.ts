@@ -1,11 +1,11 @@
 /**
- * Web Configuration - Centralized web interface configuration0.
+ * Web Configuration - Centralized web interface configuration.
  *
- * Type definitions and configuration management for the web dashboard0.
- * Follows Google TypeScript standards for clear interface design0.
+ * Type definitions and configuration management for the web dashboard.
+ * Follows Google TypeScript standards for clear interface design.
  */
 /**
- * @file Interface implementation: web-config0.
+ * @file Interface implementation: web-config.
  */
 
 import type { DIContainer } from '@claude-zen/intelligence';
@@ -21,7 +21,7 @@ export interface WebConfig {
     enabled: boolean;
     secret?: string;
   };
-  theme?: 'dark' | 'light';
+  theme?: 'dark | light';
   realTime?: boolean;
   coreSystem?: any; // Reference to core system/orchestrator
   container?: DIContainer; // DI container for enhanced architecture
@@ -33,23 +33,23 @@ export interface WebSession {
   createdAt: Date;
   lastActivity: Date;
   preferences: {
-    theme: 'dark' | 'light';
+    theme: 'dark | light';
     refreshInterval: number;
     notifications: boolean;
   };
 }
 
 /**
- * Default web configuration0.
+ * Default web configuration.
  */
 export const DEFAULT_WEB_CONFIG: Required<
-  Omit<WebConfig, 'auth' | 'coreSystem'>
+  Omit<WebConfig, 'auth | coreSystem'>
 > & {
   auth: WebConfig['auth'];
   coreSystem?: any;
 } = {
   port: 3456,
-  host: '0.0.0.0',
+  host: "...0',
   daemon: false,
   staticDir: '',
   apiPrefix: '/api',
@@ -61,20 +61,20 @@ export const DEFAULT_WEB_CONFIG: Required<
 };
 
 /**
- * Create web configuration with defaults0.
+ * Create web configuration with defaults.
  *
  * @param config
  * @example
  */
 export function createWebConfig(config: WebConfig = {}): Required<
-  Omit<WebConfig, 'auth' | 'coreSystem'>
+  Omit<WebConfig, 'auth | coreSystem'>
 > & {
   auth: WebConfig['auth'];
   coreSystem?: any;
 } {
   return {
-    0.0.0.DEFAULT_WEB_CONFIG,
-    0.0.0.config,
-    auth: { 0.0.0.DEFAULT_WEB_CONFIG?0.auth, 0.0.0.config?0.auth },
+    ...DEFAULT_WEB_CONFIG,
+    ...config,
+    auth: { ...DEFAULT_WEB_CONFIG?.auth, ...config?.auth },
   };
 }
