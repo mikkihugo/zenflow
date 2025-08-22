@@ -5,9 +5,9 @@
  * to ensure consistency in swarm coordination functionality.
  */
 export interface SwarmConfig {
-  topology: 'mesh | hierarchical' | 'ring | star');
+  topology: 'mesh'' | ''hierarchical'' | ''ring'' | ''star');
   maxAgents?: number;
-  strategy?: 'balanced | specialized' | 'adaptive | parallel');
+  strategy?: 'balanced'' | ''specialized'' | ''adaptive'' | ''parallel');
   features?: {
     cognitive_diversity?: boolean;
     neural_networks?: boolean;
@@ -16,29 +16,17 @@ export interface SwarmConfig {
   };
 }
 export interface AgentConfig {
-  type:
-    | 'researcher'
-    | 'coder'
-    | 'analyst'
-    | 'optimizer'
-    | 'coordinator'
-    | 'tester');
+  type:' | ''researcher | coder' | 'analyst''' | '''optimizer | coordinator' | 'tester');
   name?: string;
   capabilities?: string[];
-  cognitive_pattern?:
-    | 'convergent'
-    | 'divergent'
-    | 'lateral'
-    | 'systems'
-    | 'critical'
-    | 'adaptive');
+  cognitive_pattern?:'' | '''convergent | divergent' | 'lateral''' | '''systems | critical' | 'adaptive');
   learning_rate?: number;
   enable_memory?: boolean;
 }
 export interface TaskOrchestrationConfig {
   task: string;
-  strategy?: 'parallel | sequential' | 'adaptive');
-  priority?: 'low | medium' | 'high | critical');
+  strategy?: 'parallel'' | ''sequential'' | ''adaptive');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   maxAgents?: number;
   timeout?: number;
   requirements?: {
@@ -48,16 +36,11 @@ export interface TaskOrchestrationConfig {
     max_agents?: number;
   };
 }
-export type SwarmStatus = 'initializing | active' | 'paused | terminated');
-export type AgentStatus = 'idle | busy' | 'error | offline');
-export type TaskStatus =
-  | 'pending'
-  | 'running'
-  | 'completed'
-  | 'cancelled'
-  | 'failed');
+export type SwarmStatus = 'initializing'' | ''active'' | ''paused'' | ''terminated');
+export type AgentStatus = 'idle'' | ''busy'' | ''error'' | ''offline');
+export type TaskStatus =' | ''pending | running' | 'completed' | 'cancelled' | 'failed');
 export interface MemoryConfig {
-  action: 'store | retrieve' | 'list | delete');
+  action: 'store'' | ''retrieve'' | ''list'' | ''delete');
   key?: string;
   value?: any;
   pattern?: string;
@@ -65,19 +48,12 @@ export interface MemoryConfig {
 }
 export interface NeuralConfig {
   agent_id?: string;
-  pattern?:
-    | 'convergent'
-    | 'divergent'
-    | 'lateral'
-    | 'systems'
-    | 'critical'
-    | 'adaptive'
-    | 'all');
+  pattern?:' | ''convergent | divergent' | 'lateral''' | '''systems | critical' | 'adaptive''' | '''all');
   iterations?: number;
   training_data?: any[];
 }
 export interface BenchmarkConfig {
-  type?: 'all | wasm' | 'swarm | agent' | 'task | neural');
+  type?: 'all'' | ''wasm'' | ''swarm'' | ''agent'' | ''task'' | ''neural');
   iterations?: number;
   duration?: number;
   agents?: number;

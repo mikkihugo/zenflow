@@ -1,9 +1,9 @@
 /**
  * @fileoverview DSPy Type Definitions - Standalone Implementation
- * 
+ *
  * Type definitions for the lightweight DSPy engine with @claude-zen/foundation integration.
  * Designed for prompt optimization, few-shot learning, and pattern recognition.
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0
  * @license MIT
@@ -41,7 +41,7 @@ export interface DSPyExample {
   metadata?: {
     createdAt: Date;
     source?: string;
-    difficulty?: 'easy' | 'medium' | 'hard';
+    difficulty?: 'easy | medium' | 'hard';
     tags?: string[];
   };
 }
@@ -89,7 +89,7 @@ export interface DSPyPromptVariation {
   /** The prompt text */
   prompt: string;
   /** Optimization strategy used */
-  strategy: 'few-shot-optimization' | 'fallback' | 'manual';
+  strategy: 'few-shot-optimization''' | '''fallback''' | '''manual';
   /** Iteration number */
   iteration: number;
   /** Evaluation score */
@@ -128,11 +128,7 @@ export interface DSPyOptimizationResult {
 /**
  * DSPy Optimization Strategy
  */
-export type DSPyOptimizationStrategy = 
-  | 'few-shot-optimization'  // Use few-shot examples for improvement
-  | 'iterative-refinement'   // Iterative prompt refinement
-  | 'pattern-matching'       // Match successful patterns
-  | 'fallback';              // Simple fallback strategy
+export type DSPyOptimizationStrategy ='' | '''few-shot-optimization'// Use few-shot examples for improvement'' | '''iterative-refinement'// Iterative prompt refinement'' | '''pattern-matching'// Match successful patterns'' | '''fallback'; // Simple fallback strategy
 
 /**
  * DSPy Pattern for Learning
@@ -141,7 +137,7 @@ export interface DSPyPattern {
   /** Pattern identifier */
   id: string;
   /** Pattern type */
-  type: 'prompt-template' | 'example-structure' | 'optimization-strategy';
+  type: 'prompt-template''' | '''example-structure''' | '''optimization-strategy';
   /** Pattern content */
   pattern: string;
   /** Effectiveness score */
@@ -237,11 +233,18 @@ export interface DSPyConfigValidator {
  */
 export namespace DSPyUtils {
   /** Create examples from raw data */
-  export type CreateExamples = (data: Array<{input: string; output: string}>) => DSPyExample[];
-  
+  export type CreateExamples = (
+    data: Array<{ input: string; output: string }>
+  ) => DSPyExample[];
+
   /** Validate configuration */
-  export type ValidateConfig = (config: any) => { valid: boolean; errors: string[] };
-  
+  export type ValidateConfig = (config: any) => {
+    valid: boolean;
+    errors: string[];
+  };
+
   /** Extract patterns from results */
-  export type ExtractPatterns = (results: DSPyOptimizationResult[]) => DSPyPattern[];
+  export type ExtractPatterns = (
+    results: DSPyOptimizationResult[]
+  ) => DSPyPattern[];
 }

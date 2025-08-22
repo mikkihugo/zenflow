@@ -18,8 +18,8 @@
  * - Enhanced performance monitoring and optimization
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   Service,
@@ -29,10 +29,10 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces');
-import { ServiceOperationError } from './core/interfaces');
-import type { CoordinationServiceConfig } from './types');
-import { ServiceEnvironment, ServicePriority, ServiceType } from './types');
+} from './core/interfaces';
+import { ServiceOperationError } from './core/interfaces';
+import type { CoordinationServiceConfig } from './types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
 
 // ============================================================================
 // COORDINATION SERVICE ADAPTER CONFIGURATION - SIMPLIFIED
@@ -88,7 +88,7 @@ export interface CoordinationServiceAdapterConfig {
  * Agent coordination request for multi-agent operations
  */
 export interface AgentCoordinationRequest {
-  readonly operation: 'spawn | coordinate' | 'conversation | consensus');
+  readonly operation:'spawn | coordinate'' | ''conversation | consensus');
   readonly agents?: string[];
   readonly context?: Record<string, unknown>;
   readonly timeout?: number;
@@ -99,7 +99,7 @@ export interface AgentCoordinationRequest {
  * Session management request for session operations
  */
 export interface SessionRequest {
-  readonly operation: 'create | restore' | 'checkpoint | destroy');
+  readonly operation: 'create | restore | checkpoint | destroy');
   readonly sessionId?: string;
   readonly config?: Record<string, unknown>;
   readonly data?: any;
@@ -195,8 +195,7 @@ export class CoordinationServiceAdapter
       await this.workflowEngine?.initialize()
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import(
-        '@claude-zen/foundation'
+      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation'
       );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -322,7 +321,7 @@ export class CoordinationServiceAdapter
           operation: request.operation,
           context: request.context,
           duration,
-          outcome: 'success',
+          outcome:'success',
         });
       }
 
@@ -337,7 +336,7 @@ export class CoordinationServiceAdapter
           duration,
           agentsInvolved: request.agents?.length || 0,
           consensusReached:
-            request.operation === 'consensus'
+            request.operation ==='consensus'
               ? result.consensusReached
               : undefined,
         },
@@ -522,7 +521,7 @@ export class CoordinationServiceAdapter
 
   async stop(): Promise<void> {
     try {
-      this._status = 'stopping');
+      this._status ='stopping');
       this.emit('statusChanged', { status: this._status });
 
       // Clear active operations
@@ -641,7 +640,7 @@ export class CoordinationServiceAdapter
       participants: request.agents || [],
       context: request.context || {},
       timeout: request.timeout,
-      pattern: 'collaborative-discussion',
+      pattern:'collaborative-discussion',
     });
   }
 
@@ -662,7 +661,7 @@ export class CoordinationServiceAdapter
     return await this.teamworkSystem.coordinate({
       agents: request.agents || [],
       context: request.context || {},
-      coordinationType: 'collaborative',
+      coordinationType:'collaborative',
       timeout: request.timeout,
     });
   }
@@ -717,8 +716,7 @@ export class CoordinationServiceAdapter
   }
 
   private getTeamworkCapabilities(): string[] {
-    return [
-      'multi-agent-conversations',
+    return ['multi-agent-conversations',
       'consensus-building',
       'collaborative-coordination',
       'agent-spawning',

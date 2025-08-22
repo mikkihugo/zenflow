@@ -49,13 +49,7 @@ import type { WorkflowGateRequest } from './workflows/workflow-gate-request';
 // Import WorkflowStep from workflow-types
 
 // Define missing types locally
-type WorkflowStatus =
-  | 'pending'
-  | 'running'
-  | 'paused'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+type WorkflowStatus ='' | '''pending | running' | 'paused''' | '''completed | failed' | 'cancelled';
 
 interface CompletedStepInfo {
   index: number;
@@ -98,24 +92,18 @@ interface WorkflowMetrics {
   throughput: number;
 }
 
-type WorkflowStepResults = Record<string, any | any>;
+type WorkflowStepResults = Record<string, any'' | ''any>;
 
 interface WorkflowStepState {
   step: WorkflowStep;
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'skipped';
+  status:'pending | running' | 'completed' | 'failed' | 'skipped';
   attempts: number;
 }
 
 /**
  * Product Flow Step Types (Business Flow).
  */
-export type ProductFlowStep =
-  | 'vision-analysis'
-  | 'prd-creation'
-  | 'epic-breakdown'
-  | 'feature-definition'
-  | 'task-creation'
-  | 'sparc-integration';
+export type ProductFlowStep ='' | '''vision-analysis''' | '''prd-creation''' | '''epic-breakdown''' | '''feature-definition''' | '''task-creation''' | '''sparc-integration';
 
 /**
  * Mutable workflow state interface for runtime modifications.
@@ -332,10 +320,10 @@ export class ProductWorkflowEngine extends TypedEventBase {
       const result = await this.workflowEngine.startWorkflow({
         name: workflowName,
         context: {
-          workspaceId: context.workspaceId || 'default',
+          workspaceId: context.workspaceId'' | '''' | '''default',
           sessionId: workflowId,
-          documents: context.documents || {},
-          variables: context.variables || {},
+          documents: context.documents'' | '''' | ''{},
+          variables: context.variables'' | '''' | ''{},
           ...context,
         },
         options,
@@ -417,11 +405,11 @@ export class ProductWorkflowEngine extends TypedEventBase {
       // Delegate approval request to @claude-zen/enterprise
       const approval = await this.taskApprovalSystem.requestApproval({
         id: gateId,
-        title: context.title || 'Product Workflow Approval',
+        title: context.title'' | '''' | '''Product Workflow Approval',
         description:
-          context.description || 'Approval required for workflow progression',
+          context.description'' | '''' | '''Approval required for workflow progression',
         priority,
-        context: context.data || {},
+        context: context.data'' | '''' | ''{},
       });
 
       this.performanceTracker.endTimer('request_approval');
@@ -441,7 +429,7 @@ export class ProductWorkflowEngine extends TypedEventBase {
    */
   async getWorkflowStatus(
     workflowId: string
-  ): Promise<ProductWorkflowState | undefined> {
+  ): Promise<ProductWorkflowState'' | ''undefined> {
     if (!this.initialized) await this.initialize;
 
     try {
@@ -452,10 +440,10 @@ export class ProductWorkflowEngine extends TypedEventBase {
       // Enhance with cached product flow state
       const productWorkflow = this.activeWorkflows.get(workflowId);
       return (
-        productWorkflow || {
+        productWorkflow'' | '''' | ''{
           ...status,
           productFlow: {
-            currentStep: 'vision-analysis',
+            currentStep:'vision-analysis',
             completedSteps: [],
             documents: {
               adrs: [],
@@ -549,24 +537,17 @@ export class ProductWorkflowEngine extends TypedEventBase {
         active: this.activeWorkflows.size,
         total:
           (await this.telemetryManager.getCounterValue(
-            'product_workflows_started'
-          )) || 0,
+            'product_workflows_started'))'' | '''' | ''0,
         cancelled:
-          (await this.telemetryManager.getCounterValue(
-            'product_workflows_cancelled'
-          )) || 0,
+          (await this.telemetryManager.getCounterValue('product_workflows_cancelled'))'' | '''' | ''0,
       },
       sparc: {
         integrations:
-          (await this.telemetryManager.getCounterValue(
-            'sparc_integrations_executed'
-          )) || 0,
+          (await this.telemetryManager.getCounterValue('sparc_integrations_executed'))'' | '''' | ''0,
       },
       approvals: {
         requested:
-          (await this.telemetryManager.getCounterValue(
-            'approvals_requested'
-          )) || 0,
+          (await this.telemetryManager.getCounterValue('approvals_requested'))'' | '''' | ''0,
       },
       performance: this.performanceTracker?.getMetrics,
     };

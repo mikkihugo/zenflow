@@ -9,7 +9,7 @@ import {
   ok,
   err,
   safeAsync,
-  type Logger
+  type Logger,
 } from '@claude-zen/foundation';
 
 import type {
@@ -39,7 +39,9 @@ export class ResultParser {
   /**
    * Parse SARIF results into CodeQL findings
    */
-  async parseSARIFToFindings(sarifResult: SARIFResult): Promise<CodeQLFinding[]> {
+  async parseSARIFToFindings(
+    sarifResult: SARIFResult
+  ): Promise<CodeQLFinding[]> {
     const findings: CodeQLFinding[] = [];
 
     for (const run of sarifResult.runs) {
@@ -74,8 +76,8 @@ export class ResultParser {
   private async parseAnalysisResult(
     result: SARIFAnalysisResult,
     run: any
-  ): Promise<CodeQLFinding | null> {
-    if (!result.locations || result.locations.length === 0) {
+  ): Promise<CodeQLFinding'' | ''null> {
+    if (!result.locations'' | '''' | ''result.locations.length === 0) {
       return null;
     }
 
@@ -85,30 +87,35 @@ export class ResultParser {
     }
 
     // Parse related locations
-    const relatedLocations = result.relatedLocations
-      ?.map(loc => this.parseLocation(loc))
-      .filter((loc): loc is SourceLocation => loc !== null) || [];
+    const relatedLocations =
+      result.relatedLocations
+        ?.map((loc) => this.parseLocation(loc))
+        .filter((loc): loc is SourceLocation => loc !== null)'' | '''' | ''[];
 
     // Parse data flow if present
-    const dataFlow = result.codeFlows && result.codeFlows.length > 0
-      ? this.parseDataFlow(result.codeFlows[0])
-      : undefined;
+    const dataFlow =
+      result.codeFlows && result.codeFlows.length > 0
+        ? this.parseDataFlow(result.codeFlows[0])
+        : undefined;
 
     // Get rule information
     const rule = this.findRule(result.ruleId, run);
-    const ruleName = rule?.name || result.ruleId;
+    const ruleName = rule?.name'' | '''' | ''result.ruleId;
 
     // Generate security classification
     const security = this.generateSecurityClassification(result.ruleId, rule);
 
     // Generate fix suggestions
-    const fixSuggestions = await this.generateFixSuggestions(result, primaryLocation);
+    const fixSuggestions = await this.generateFixSuggestions(
+      result,
+      primaryLocation
+    );
 
     const finding: CodeQLFinding = {
       id: `finding_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       ruleId: result.ruleId,
       ruleName,
-      severity: this.mapSeverity(result.level || 'warning'),
+      severity: this.mapSeverity(result.level'' | '''' | '''warning'),
       filePath: primaryLocation.filePath,
       location: primaryLocation,
       relatedLocations,
@@ -132,7 +139,7 @@ export class ResultParser {
   /**
    * Parse SARIF location to source location
    */
-  private parseLocation(sarifLocation: SARIFLocation): SourceLocation | null {
+  private parseLocation(sarifLocation: SARIFLocation): SourceLocation'' | ''null {
     const physicalLocation = sarifLocation.physicalLocation;
     if (!physicalLocation) {
       return null;
@@ -156,24 +163,24 @@ export class ResultParser {
   /**
    * Parse CodeQL data flow from SARIF code flows
    */
-  private parseDataFlow(codeFlow: any): DataFlowPath | undefined {
-    if (!codeFlow.threadFlows || codeFlow.threadFlows.length === 0) {
+  private parseDataFlow(codeFlow: any): DataFlowPath'' | ''undefined {
+    if (!codeFlow.threadFlows'' | '''' | ''codeFlow.threadFlows.length === 0) {
       return undefined;
     }
 
     const threadFlow = codeFlow.threadFlows[0];
-    if (!threadFlow.locations || threadFlow.locations.length < 2) {
+    if (!threadFlow.locations'' | '''' | ''threadFlow.locations.length < 2) {
       return undefined;
     }
 
     const steps: DataFlowStep[] = [];
-    let source: SourceLocation | null = null;
-    let sink: SourceLocation | null = null;
+    let source: SourceLocation'' | ''null = null;
+    let sink: SourceLocation'' | ''null = null;
 
     for (let i = 0; i < threadFlow.locations.length; i++) {
       const flowLocation = threadFlow.locations[i];
       const location = this.parseLocation(flowLocation.location);
-      
+
       if (!location) continue;
 
       if (i === 0) {
@@ -185,13 +192,13 @@ export class ResultParser {
 
       steps.push({
         location,
-        description: flowLocation.location.message?.text || `Step ${i + 1}`,
+        description: flowLocation.location.message?.text'' | '''' | ''`Step ${i + 1}`,
         stepNumber: i + 1,
-        isSanitizer: flowLocation.importance === 'unimportant', // Heuristic
+        isSanitizer: flowLocation.importance ==='unimportant', // Heuristic
       });
     }
 
-    if (!source || !sink) {
+    if (!source'' | '''' | ''!sink) {
       return undefined;
     }
 
@@ -199,7 +206,7 @@ export class ResultParser {
       steps,
       source,
       sink,
-      type: 'taint', // Default to taint flow
+      type:'taint', // Default to taint flow
     };
   }
 
@@ -217,10 +224,12 @@ export class ResultParser {
   /**
    * Generate security classification for finding
    */
-  private generateSecurityClassification(ruleId: string, rule: any): SecurityClassification | undefined {
+  private generateSecurityClassification(
+    ruleId: string,
+    rule: any
+  ): SecurityClassification'' | ''undefined {
     // Map common CodeQL security rules to classifications
-    const securityMappings: Record<string, Partial<SecurityClassification>> = {
-      'js/sql-injection': {
+    const securityMappings: Record<string, Partial<SecurityClassification>> = {'js/sql-injection': {
         cweId: 89,
         owaspCategory: 'A03:2021 – Injection',
         securitySeverity: 'high',
@@ -260,11 +269,8 @@ export class ResultParser {
     const mapping = securityMappings[ruleId];
     if (!mapping) {
       // Check if rule appears to be security-related
-      const isSecurityRule = ruleId.includes('security') || 
-                           ruleId.includes('injection') || 
-                           ruleId.includes('xss') || 
-                           ruleId.includes('csrf') ||
-                           ruleId.includes('auth');
+      const isSecurityRule =
+        ruleId.includes('security')'' | '''' | ''ruleId.includes('injection')'' | '''' | ''ruleId.includes('xss')'' | '''' | ''ruleId.includes('csrf')'' | '''' | ''ruleId.includes('auth');
 
       if (!isSecurityRule) {
         return undefined;
@@ -297,11 +303,14 @@ export class ResultParser {
 
     // Common fix patterns based on rule types
     const fixPatterns: Record<string, string> = {
-      'js/sql-injection': 'Use parameterized queries instead of string concatenation',
+      'js/sql-injection':
+        'Use parameterized queries instead of string concatenation',
       'js/xss': 'Sanitize user input before rendering in HTML',
       'js/path-injection': 'Validate and sanitize file paths',
-      'js/unsafe-deserialization': 'Use safe deserialization methods or validate input',
-      'js/hardcoded-credentials': 'Move credentials to environment variables or secure storage',
+      'js/unsafe-deserialization':
+        'Use safe deserialization methods or validate input',
+      'js/hardcoded-credentials':
+        'Move credentials to environment variables or secure storage',
     };
 
     const fixDescription = fixPatterns[result.ruleId];
@@ -320,14 +329,19 @@ export class ResultParser {
   /**
    * Extract code snippet from location
    */
-  private async extractCodeSnippet(location: SourceLocation): Promise<string | undefined> {
+  private async extractCodeSnippet(
+    location: SourceLocation
+  ): Promise<string'' | ''undefined> {
     try {
-      const content = await fs.readFile(location.filePath, 'utf-8');
+      const content = await fs.readFile(location.filePath,'utf-8');
       const lines = content.split('\n');
-      
+
       const startLine = Math.max(0, location.startLine - 1);
-      const endLine = Math.min(lines.length, location.endLine || location.startLine);
-      
+      const endLine = Math.min(
+        lines.length,
+        location.endLine'' | '''' | ''location.startLine
+      );
+
       return lines.slice(startLine, endLine).join('\n');
     } catch {
       return undefined;
@@ -337,13 +351,20 @@ export class ResultParser {
   /**
    * Map SARIF severity to standard severity levels
    */
-  private mapSeverity(sarifLevel: string): 'error' | 'warning' | 'note' | 'info' {
+  private mapSeverity(
+    sarifLevel: string
+  ): 'error | warning' | 'note''' | '''info' {
     switch (sarifLevel.toLowerCase()) {
-      case 'error': return 'error';
-      case 'warning': return 'warning';
-      case 'note': return 'note';
-      case 'info': return 'info';
-      default: return 'warning';
+      case 'error':
+        return 'error';
+      case 'warning':
+        return 'warning';
+      case 'note':
+        return 'note';
+      case 'info':
+        return 'info';
+      default:
+        return 'warning';
     }
   }
 
@@ -355,12 +376,16 @@ export class ResultParser {
 
     // Adjust based on rule quality
     if (rule?.defaultConfiguration?.rank) {
-      confidence = Math.min(0.95, confidence + (rule.defaultConfiguration.rank / 100));
+      confidence = Math.min(
+        0.95,
+        confidence + rule.defaultConfiguration.rank / 100
+      );
     }
 
     // Adjust based on data flow complexity
     if (result.codeFlows && result.codeFlows.length > 0) {
-      const flowLength = result.codeFlows[0].threadFlows?.[0]?.locations?.length || 0;
+      const flowLength =
+        result.codeFlows[0].threadFlows?.[0]?.locations?.length'' | '''' | ''0;
       if (flowLength > 5) {
         confidence = Math.max(0.6, confidence - 0.1); // Complex flows are less certain
       }

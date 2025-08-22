@@ -60,12 +60,11 @@ export interface AIRuleGeneratorConfig {
 /**
  * Rule generation strategies
  */
-export type RuleGenerationStrategy =
-  | 'pattern-based' // Generate rules from detected patterns
-  | 'statistical' // Generate rules from codebase statistics
-  | 'context-aware' // Generate rules based on project context
-  | 'collaborative' // Generate rules from team feedback
-  | 'evolutionary' // Evolve existing rules based on effectiveness
+export type RuleGenerationStrategy = 'pattern-based' //  Generate rules from detected patterns
+  | 'statistical' //  Generate rules from codebase statistics
+  | 'context-aware' //  Generate rules based on project context
+  | 'collaborative' //  Generate rules from team feedback
+  | 'evolutionary' //  Evolve existing rules based on effectiveness
   | 'creative'; // Generate innovative rules via AI creativity
 
 /**
@@ -247,7 +246,7 @@ export class AIRuleGenerator {
    */
   async generateRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     this.logger.info(
       `Generating AI rules from ${analysisResults.length} analysis results`
@@ -303,7 +302,7 @@ export class AIRuleGenerator {
   private async applyGenerationStrategy(
     strategy: RuleGenerationStrategy,
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     this.logger.debug(`Applying ${strategy} generation strategy`);
 
@@ -337,7 +336,7 @@ export class AIRuleGenerator {
    */
   private async generatePatternBasedRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -375,7 +374,7 @@ export class AIRuleGenerator {
   // eslint-disable-next-line require-await -- Future implementation will use async Claude analysis
   private async generateStatisticalRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -384,21 +383,15 @@ export class AIRuleGenerator {
 
     // Generate rules for outliers and anomalies
     if (stats.averageComplexity > 15) {
-      rules.push(
-        this.createComplexityRule(stats.averageComplexity * 0.8)
-      );
+      rules.push(this.createComplexityRule(stats.averageComplexity * 0.8));
     }
 
     if (stats.typeAnnotationCoverage < 0.7) {
-      rules.push(
-        this.createTypeAnnotationRule(stats.typeAnnotationCoverage)
-      );
+      rules.push(this.createTypeAnnotationRule(stats.typeAnnotationCoverage));
     }
 
     if (stats.duplicatedCodePercentage > 0.1) {
-      rules.push(
-        this.createDuplicationRule(stats.duplicatedCodePercentage)
-      );
+      rules.push(this.createDuplicationRule(stats.duplicatedCodePercentage));
     }
 
     return rules;
@@ -409,7 +402,7 @@ export class AIRuleGenerator {
    */
   private async generateContextAwareRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
     const { projectMetadata, teamPreferences } = context;
@@ -446,8 +439,8 @@ export class AIRuleGenerator {
    * Generate rules based on team collaboration and feedback
    */
   private async generateCollaborativeRules(
-    analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _analysisResults: AIAnalysisResult[],
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
     const { teamPreferences } = context;
@@ -489,8 +482,8 @@ export class AIRuleGenerator {
    * Evolve existing rules based on effectiveness data
    */
   private async generateEvolutionaryRules(
-    analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _analysisResults: AIAnalysisResult[],
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -529,7 +522,7 @@ export class AIRuleGenerator {
    */
   private async generateCreativeRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -596,13 +589,13 @@ export class AIRuleGenerator {
   private async generateRuleFromPatterns(
     patternType: string,
     patterns: CodePattern[],
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     // This would use Claude to analyze patterns and generate a custom rule
     // Placeholder implementation
     return {
       name: `ai-${patternType}-rule`,
-      category: 'complexity',
+      category:'complexity',
       level: 'warn',
       options: {
         threshold: patterns.length > 5 ? 'strict' : 'moderate',
@@ -712,72 +705,72 @@ export class AIRuleGenerator {
   // Placeholder methods for advanced functionality
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateLibrarySpecificRules(
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateWebAppRules(
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateAPIRules(
-    context: RuleGenerationContext
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateCategorySpecificRules(
-    category: LintingCategory,
-    analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _category: LintingCategory,
+    _analysisResults: AIAnalysisResult[],
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async improveRule(
-    ruleName: string,
-    feedback: RuleFeedback,
-    context: RuleGenerationContext
+    _ruleName: string,
+    _feedback: RuleFeedback,
+    _context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateRuleFromSuggestion(
-    suggestion: string,
-    context: RuleGenerationContext
+    _suggestion: string,
+    _context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async evolveRule(
-    ruleName: string,
-    effectiveness: RuleEffectiveness,
-    context: RuleGenerationContext
+    _ruleName: string,
+    _effectiveness: RuleEffectiveness,
+    _context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateRuleVariants(
-    ruleName: string,
-    effectiveness: RuleEffectiveness,
-    context: RuleGenerationContext
+    _ruleName: string,
+    _effectiveness: RuleEffectiveness,
+    _context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async requestCreativeRules(
-    analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext
+    _analysisResults: AIAnalysisResult[],
+    _context: RuleGenerationContext
   ): Promise<string[]> {
     return [];
   }
   // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async implementCreativeRule(
-    suggestion: string,
-    context: RuleGenerationContext
+    _suggestion: string,
+    _context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }

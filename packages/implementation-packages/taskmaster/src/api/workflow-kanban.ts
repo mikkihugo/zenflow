@@ -36,7 +36,8 @@ interface Logger {
 
 // Logger implementation following Google TS standards
 const getLogger = (name: string): Logger => ({
-  info: (message: string, ...args: any[]): void => console.log(`[INFO] ${name}:`, message, ...args),
+  info: (message: string, ...args: any[]): void =>
+    console.log(`[INFO] ${name}:`, message, ...args),
   warn: (message: string, ...args: any[]): void =>
     console.warn(`[WARN] ${name}:`, message, ...args),
   error: (message: string, ...args: any[]): void =>
@@ -170,7 +171,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   private readonly config: WorkflowKanbanConfig;
   private readonly eventBus?: TypeSafeEventBus;
 
-  private workflowMachine: ActorRef<any, any> | null = null;
+  private workflowMachine: ActorRef<any, any>'' | ''null = null;
   private machine: ReturnType<typeof createWorkflowMachine>;
   private initialized = false;
   private readonly taskIndex = new Map<string, WorkflowTask>();
@@ -182,7 +183,10 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     lastOperationTime: Date.now(),
   };
 
-  constructor(config: Partial<WorkflowKanbanConfig> = {}, eventBus?: TypeSafeEventBus) {
+  constructor(
+    config: Partial<WorkflowKanbanConfig> = {},
+    eventBus?: TypeSafeEventBus
+  ) {
     super();
 
     this.logger = getLogger('WorkflowKanban');
@@ -279,7 +283,7 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   async createTask(taskData: {
     title: string;
     description?: string;
-    priority: 'critical' | 'high' | 'medium' | 'low';
+    priority: 'critical | high' | 'medium''' | '''low';
     estimatedEffort: number;
     assignedAgent?: string;
     dependencies?: string[];
@@ -374,7 +378,12 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
           `WIP limit exceeded for ${toState}: ${wipCheck.currentCount}/${wipCheck.limit}`
         );
 
-        this.emit('wip:exceeded', toState, wipCheck.currentCount, wipCheck.limit);
+        this.emit(
+          'wip:exceeded',
+          toState,
+          wipCheck.currentCount,
+          wipCheck.limit
+        );
 
         return {
           success: false,
@@ -392,32 +401,38 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       });
 
       // Update local index using Immer for safe state mutations
-      const updatedTask = ImmutableTaskUtils.updateTask([task], taskId, (draft) => {
-        draft.state = toState;
-        draft.updatedAt = new Date();
+      const updatedTask = ImmutableTaskUtils.updateTask(
+        [task],
+        taskId,
+        (draft) => {
+          draft.state = toState;
+          draft.updatedAt = new Date();
 
-        if (toState === 'development' && !draft.startedAt) {
-          draft.startedAt = new Date();
+          if (toState === 'development' && !draft.startedAt) {
+            draft.startedAt = new Date();
+          }
+          if (toState === 'done') {
+            draft.completedAt = new Date();
+          }
+          if (toState === 'blocked') {
+            draft.blockedAt = new Date();
+            draft.blockingReason = reason;
+          }
         }
-        if (toState === 'done') {
-          draft.completedAt = new Date();
-        }
-        if (toState === 'blocked') {
-          draft.blockedAt = new Date();
-          draft.blockingReason = reason;
-        }
-      })[0];
+      )[0];
 
       this.taskIndex.set(taskId, updatedTask);
 
       // Calculate duration if completing
       const duration =
-        toState === 'done' && task.startedAt ? Date.now() - task.startedAt.getTime() : undefined;
+        toState === 'done' && task.startedAt
+          ? Date.now() - task.startedAt.getTime()
+          : undefined;
 
       // Emit events
       this.emit('task:moved', taskId, fromState, toState);
       if (toState === 'blocked') {
-        this.emit('task:blocked', taskId, reason || 'Unknown reason');
+        this.emit('task:blocked', taskId, reason'' | '''' | '''Unknown reason');
       }
       if (toState === 'done' && duration) {
         this.emit('task:completed', taskId, duration);
@@ -455,9 +470,9 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   /**
    * Get task by ID
    */
-  async getTask(taskId: string): Promise<WorkflowTask | null> {
+  async getTask(taskId: string): Promise<WorkflowTask'' | ''null> {
     this.ensureInitialized();
-    return this.taskIndex.get(taskId) || null;
+    return this.taskIndex.get(taskId)'' | '''' | ''null;
   }
 
   /**
@@ -550,12 +565,12 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   /**
    * Get current flow metrics using Immer for safe calculations
    */
-  async getFlowMetrics(): Promise<FlowMetrics | null> {
+  async getFlowMetrics(): Promise<FlowMetrics'' | ''null> {
     this.ensureInitialized();
 
     // Get current tasks and calculate metrics using Immer utilities
-    const allTasks = Array.from(this.taskIndex.values());
-    const completedTasks = allTasks.filter((t) => t.state === 'done');
+    const allTasks = Array.from(this.taskIndex.values())();
+    const completedTasks = allTasks.filter((t) => t.state ==='done');
     const blockedTasks = allTasks.filter((t) => t.state === 'blocked');
 
     if (completedTasks.length === 0) return null;
@@ -579,11 +594,13 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
   /**
    * Get workflow statistics
    */
-  async getWorkflowStatistics(timeRange?: TimeRange): Promise<WorkflowStatistics> {
+  async getWorkflowStatistics(
+    timeRange?: TimeRange
+  ): Promise<WorkflowStatistics> {
     this.ensureInitialized();
 
-    const allTasks = Array.from(this.taskIndex.values());
-    const range = timeRange || {
+    const allTasks = Array.from(this.taskIndex.values())();
+    const range = timeRange'' | '''' | ''{
       start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
       end: new Date(),
     };
@@ -592,26 +609,38 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       (t) => t.createdAt >= range.start && t.createdAt <= range.end
     );
 
-    const completedTasks = tasksInRange.filter((t) => t.state === 'done');
+    const completedTasks = tasksInRange.filter((t) => t.state ==='done');
     const blockedTasks = tasksInRange.filter((t) => t.state === 'blocked');
 
     // Calculate averages
     const cycleTimes = completedTasks
       .filter((t) => t.startedAt && t.completedAt)
-      .map((t) => ((t.completedAt?.getTime() || 0) - (t.startedAt?.getTime() || 0)) / (1000 * 60 * 60));
+      .map(
+        (t) =>
+          ((t.completedAt?.getTime()'' | '''' | ''0) - (t.startedAt?.getTime()'' | '''' | ''0)) /
+          (1000 * 60 * 60)
+      );
 
     const leadTimes = completedTasks.map(
-      (t) => ((t.completedAt?.getTime() || 0) - t.createdAt.getTime()) / (1000 * 60 * 60)
+      (t) =>
+        ((t.completedAt?.getTime()'' | '''' | ''0) - t.createdAt.getTime()) /
+        (1000 * 60 * 60)
     );
 
     const averageCycleTime =
-      cycleTimes.length > 0 ? cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length : 0;
+      cycleTimes.length > 0
+        ? cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length
+        : 0;
 
     const averageLeadTime =
-      leadTimes.length > 0 ? leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length : 0;
+      leadTimes.length > 0
+        ? leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length
+        : 0;
 
-    const rangeHours = (range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60);
-    const throughput = rangeHours > 0 ? (completedTasks.length / rangeHours) * 24 : 0; // tasks per day
+    const rangeHours =
+      (range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60);
+    const throughput =
+      rangeHours > 0 ? (completedTasks.length / rangeHours) * 24 : 0; // tasks per day
 
     return {
       totalTasks: tasksInRange.length,
@@ -639,7 +668,12 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     const timestamp = new Date();
 
     // Analyze each workflow state for bottlenecks
-    const states: TaskState[] = ['analysis', 'development', 'testing', 'review', 'deployment'];
+    const states: TaskState[] = ['analysis',
+      'development',
+      'testing',
+      'review',
+      'deployment',
+    ];
 
     for (const state of states) {
       const tasks = await this.getTasksByState(state);
@@ -667,7 +701,8 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
       // Long-dwelling tasks (potential skill/process bottlenecks)
       const oldTasks = tasks.filter((t) => {
-        const hoursInState = (Date.now() - t.updatedAt.getTime()) / (1000 * 60 * 60);
+        const hoursInState =
+          (Date.now() - t.updatedAt.getTime()) / (1000 * 60 * 60);
         return hoursInState > 48; // Tasks stuck for more than 2 days
       });
 
@@ -686,7 +721,10 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
             oldTaskCount: oldTasks.length,
             totalTasks: tasks.length,
             averageAge:
-              oldTasks.reduce((acc, t) => acc + (Date.now() - t.updatedAt.getTime()), 0) /
+              oldTasks.reduce(
+                (acc, t) => acc + (Date.now() - t.updatedAt.getTime()),
+                0
+              ) /
               oldTasks.length /
               (1000 * 60 * 60),
           },
@@ -726,7 +764,9 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
       trends: [], // TODO: Implement trend analysis
     };
 
-    this.logger.info(`Bottleneck detection complete: ${bottlenecks.length} bottlenecks found`);
+    this.logger.info(
+      `Bottleneck detection complete: ${bottlenecks.length} bottlenecks found`
+    );
 
     return report;
   }
@@ -746,11 +786,14 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
     // Calculate component health
     const wipHealth = this.calculateWIPHealth();
-    const bottleneckHealth = 1 - Math.min(1, bottleneckReport.bottlenecks.length * 0.2);
+    const bottleneckHealth =
+      1 - Math.min(1, bottleneckReport.bottlenecks.length * 0.2);
     const flowHealth = metrics ? Math.min(1, metrics.flowEfficiency) : 1;
-    const coordinationHealth = this.performanceMetrics.operationsPerSecond > 0 ? 1 : 0.5;
+    const coordinationHealth =
+      this.performanceMetrics.operationsPerSecond > 0 ? 1 : 0.5;
 
-    const overallHealth = (wipHealth + bottleneckHealth + flowHealth + coordinationHealth) / 4;
+    const overallHealth =
+      (wipHealth + bottleneckHealth + flowHealth + coordinationHealth) / 4;
 
     // Check for critical health
     if (overallHealth < 0.3) {
@@ -772,7 +815,9 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
           ? ['System health is degraded - consider immediate optimization']
           : []),
         ...(wipHealth < 0.7 ? ['WIP limits may need adjustment'] : []),
-        ...(bottleneckHealth < 0.7 ? ['Active bottlenecks require attention'] : []),
+        ...(bottleneckHealth < 0.7
+          ? ['Active bottlenecks require attention']
+          : []),
         ...(flowHealth < 0.7 ? ['Flow efficiency is below optimal'] : []),
       ],
     };
@@ -784,7 +829,9 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
   private ensureInitialized(): void {
     if (!this.initialized) {
-      throw new Error('WorkflowKanban not initialized - call initialize() first');
+      throw new Error(
+        'WorkflowKanban not initialized - call initialize() first'
+      );
     }
   }
 
@@ -802,7 +849,8 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
     if (timeSinceLastOp > 0) {
       this.performanceMetrics.operationsPerSecond =
-        (this.performanceMetrics.operationsPerSecond + 1000 / timeSinceLastOp) / 2;
+        (this.performanceMetrics.operationsPerSecond + 1000 / timeSinceLastOp) /
+        2;
     }
 
     this.performanceMetrics.lastOperationTime = now;
@@ -812,11 +860,19 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     let totalUtilization = 0;
     let stateCount = 0;
 
-    const states: TaskState[] = ['analysis', 'development', 'testing', 'review', 'deployment'];
+    const states: TaskState[] = [
+      'analysis',
+      'development',
+      'testing',
+      'review',
+      'deployment',
+    ];
 
     for (const state of states) {
       const limit = this.config.defaultWIPLimits[state];
-      const tasks = Array.from(this.taskIndex.values()).filter((t) => t.state === state);
+      const tasks = Array.from(this.taskIndex.values()).filter(
+        (t) => t.state === state
+      );
       const utilization = limit > 0 ? tasks.length / limit : 0;
 
       totalUtilization += Math.min(1, utilization);
@@ -831,7 +887,8 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
 
     const mean = cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length;
     const variance =
-      cycleTimes.reduce((acc, time) => acc + (time - mean) ** 2, 0) / cycleTimes.length;
+      cycleTimes.reduce((acc, time) => acc + (time - mean) ** 2, 0) /
+      cycleTimes.length;
     const stdDev = Math.sqrt(variance);
 
     // Lower coefficient of variation = higher predictability
@@ -839,28 +896,43 @@ export class WorkflowKanban extends TypedEventBase<WorkflowKanbanEvents> {
     return Math.max(0, 1 - Math.min(1, coefficientOfVariation));
   }
 
-  private calculateQualityIndex(completedTasks: WorkflowTask[] | any[]): number {
+  private calculateQualityIndex(
+    completedTasks: WorkflowTask[]'' | ''any[]
+  ): number {
     // Simple quality metric based on tasks not being blocked
     const totalTasks = completedTasks.length;
     const blockedTasks = Array.from(this.taskIndex.values()).filter(
-      (t) => t.state === 'blocked'
+      (t) => t.state ==='blocked'
     ).length;
 
-    return totalTasks > 0 ? Math.max(0, 1 - blockedTasks / (totalTasks + blockedTasks)) : 1;
+    return totalTasks > 0
+      ? Math.max(0, 1 - blockedTasks / (totalTasks + blockedTasks))
+      : 1;
   }
 
   private calculateSystemHealth(bottlenecks: WorkflowBottleneck[]): number {
-    const criticalCount = bottlenecks.filter((b) => b.severity === 'critical').length;
+    const criticalCount = bottlenecks.filter(
+      (b) => b.severity === 'critical'
+    ).length;
     const highCount = bottlenecks.filter((b) => b.severity === 'high').length;
-    const mediumCount = bottlenecks.filter((b) => b.severity === 'medium').length;
+    const mediumCount = bottlenecks.filter(
+      (b) => b.severity === 'medium'
+    ).length;
 
-    const healthImpact = criticalCount * 0.3 + highCount * 0.2 + mediumCount * 0.1;
+    const healthImpact =
+      criticalCount * 0.3 + highCount * 0.2 + mediumCount * 0.1;
     return Math.max(0, 1 - Math.min(1, healthImpact));
   }
 
   private calculateWIPHealth(): number {
     let overutilizedStates = 0;
-    const states: TaskState[] = ['analysis', 'development', 'testing', 'review', 'deployment'];
+    const states: TaskState[] = [
+      'analysis',
+      'development',
+      'testing',
+      'review',
+      'deployment',
+    ];
 
     for (const state of states) {
       const limit = this.config.defaultWIPLimits[state];
@@ -951,7 +1023,9 @@ export const createWorkflowKanban = (
 /**
  * Create workflow kanban optimized for high-throughput scenarios
  */
-export const createHighThroughputWorkflowKanban = (eventBus?: TypeSafeEventBus): WorkflowKanban => {
+export const createHighThroughputWorkflowKanban = (
+  eventBus?: TypeSafeEventBus
+): WorkflowKanban => {
   const config: Partial<WorkflowKanbanConfig> = {
     enableIntelligentWIP: true,
     enableBottleneckDetection: true,

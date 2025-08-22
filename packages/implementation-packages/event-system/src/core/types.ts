@@ -1,6 +1,6 @@
 /**
  * @file Core Types for Event System
- * 
+ *
  * Standalone type definitions that don't depend on external modules
  */
 
@@ -17,7 +17,7 @@ export enum Domain {
   DATABASE = 'database',
   KNOWLEDGE = 'knowledge',
   CORE = 'core',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'unknown',
 }
 
 /**
@@ -111,14 +111,20 @@ export interface WorkflowEvent {
  * Error classes
  */
 export class DomainValidationError extends Error {
-  constructor(message: string, public domain: Domain) {
+  constructor(
+    message: string,
+    public domain: Domain
+  ) {
     super(message);
     this.name = 'DomainValidationError';
   }
 }
 
 export class ContractViolationError extends Error {
-  constructor(message: string, public contract: string) {
+  constructor(
+    message: string,
+    public contract: string
+  ) {
     super(message);
     this.name = 'ContractViolationError';
   }

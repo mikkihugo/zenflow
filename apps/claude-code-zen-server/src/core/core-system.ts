@@ -129,7 +129,7 @@
  * The API maintains compatibility while providing a much cleaner internal architecture?.
  */
 
-import { WorkflowEngine } from '@claude-zen/enterprise');
+import { WorkflowEngine } from '@claude-zen/enterprise';
 import {
   getLogger,
   createCircuitBreaker,
@@ -137,7 +137,7 @@ import {
   DocumentationManager,
   ExportSystem as ExportManager,
   InterfaceManager,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 import {
   TypedEventBus,
   createEventBus,
@@ -145,8 +145,8 @@ import {
   NeuralML,
   initializeCoordinationFactSystem,
   storeCoordinationFact,
-} from '@claude-zen/intelligence');
-import { AgentMonitoring, getChaosEngine } from '@claude-zen/operations');
+} from '@claude-zen/intelligence';
+import { AgentMonitoring, getChaosEngine } from '@claude-zen/operations';
 
 // 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration
 
@@ -235,7 +235,7 @@ const logger = getLogger('CoreSystem');
 export interface SystemConfig {
   // Memory configuration
   memory?: {
-    backend?: 'lancedb | sqlite' | 'json');
+    backend?: 'lancedb'' | ''sqlite'' | ''json');
     directory?: string;
     namespace?: string;
   };
@@ -248,7 +248,7 @@ export interface SystemConfig {
 
   // Interface configuration
   interface?: {
-    defaultMode?: 'auto | cli' | ' | web');
+    defaultMode?: 'auto'' | ''cli'' | '''' | ''web');
     webPort?: number;
   };
 
@@ -279,7 +279,7 @@ export interface SystemConfig {
  *
  * @interface SystemStatus
  *
- * @property {'initializing | ready' | 'error | shutdown'} status - Overall system operational state
+ * @property {'initializing'' | ''ready'' | ''error'' | ''shutdown'} status - Overall system operational state
  * @property {string} version - Current system version identifier
  * @property {object} components - Status of all core system components
  * @property {number} uptime - System uptime in milliseconds
@@ -314,7 +314,7 @@ export interface SystemConfig {
  * ```
  */
 export interface SystemStatus {
-  status: 'initializing | ready' | 'error | shutdown');
+  status: 'initializing'' | ''ready'' | ''error'' | ''shutdown');
   version: string;
   components: {
     memory: { status: string; entries: number };
@@ -479,15 +479,15 @@ export class System extends TypedEventBase {
   private initializeComponents(): void {
     // Memory system - foundation component
     this.memorySystem = new BrainCoordinator({
-      backend: this.configuration?.memory?.backend || 'json',
-      path: this.configuration?.memory?.directory || '?./data/memory',
+      backend: this.configuration?.memory?.backend'' | '''' | '''json',
+      path: this.configuration?.memory?.directory'' | '''' | '''?./data/memory',
     });
 
     // Workflow engine - depends on memory
     this.workflowEngine = new WorkflowEngine(this.memorySystem, {
       maxConcurrentWorkflows:
-        this.configuration?.workflow?.maxConcurrentWorkflows || 10,
-      workspaceRoot: '?./',
+        this.configuration?.workflow?.maxConcurrentWorkflows'' | '''' | ''10,
+      workspaceRoot:'?./',
       templatesPath: '?./templates',
       outputPath: '?./output',
       defaultTimeout: 300000,
@@ -513,24 +513,22 @@ export class System extends TypedEventBase {
     // Documentation manager - depends on memory
     this.documentationManager = new DocumentationManager(this.memorySystem, {
       autoLink: this.configuration?.documentation?.autoLink !== false,
-      scanPaths: this.configuration?.documentation?.scanPaths || [
-        '?./docs',
+      scanPaths: this.configuration?.documentation?.scanPaths'' | '''' | ''['?./docs',
         '?./src',
       ],
     });
 
     // Interface manager - coordinates with all systems
     this.interfaceManager = new InterfaceManager({
-      defaultMode: this.configuration?.interface?.defaultMode || 'auto',
-      webPort: this.configuration?.interface?.webPort || 3456,
+      defaultMode: this.configuration?.interface?.defaultMode'' | '''' | '''auto',
+      webPort: this.configuration?.interface?.webPort'' | '''' | ''3456,
       coreSystem: this, // Provide access to all systems
     });
 
     // 🧠 AI-POWERED ENHANCEMENTS: Initialize advanced coordination systems
     this.initializeAIEnhancements;
 
-    logger?.info(
-      'Core components initialized with clean architecture and AI enhancements'
+    logger?.info('Core components initialized with clean architecture and AI enhancements'
     );
   }
 
@@ -697,23 +695,23 @@ export class System extends TypedEventBase {
         },
         workflow: {
           status: 'ready',
-          active: workflowMetrics?.running || 0,
+          active: workflowMetrics?.running'' | '''' | ''0,
         },
         documents: {
-          status: 'ready',
-          loaded: documentStats?.totalDocuments || 0,
+          status:'ready',
+          loaded: documentStats?.totalDocuments'' | '''' | ''0,
         },
         export: {
-          status: 'ready',
+          status:'ready',
           formats: this.exportManager?.getAvailableFormats?.length,
         },
         documentation: {
           status: 'ready',
-          indexed: docStats?.indexedDocuments || 0,
+          indexed: docStats?.indexedDocuments'' | '''' | ''0,
         },
         interface: {
-          status: 'ready',
-          mode: interfaceStats?.currentMode || 'auto',
+          status:'ready',
+          mode: interfaceStats?.currentMode'' | '''' | '''auto',
         },
       },
       uptime: Date?.now() - this.startTime,
@@ -966,18 +964,18 @@ export class System extends TypedEventBase {
       const shutdownPromises: Promise<void>[] = [];
 
       if (this.agentMonitoring) {
-        shutdownPromises?.push(this.agentMonitoring?.shutdown());
+        shutdownPromises?.push(this.agentMonitoring?.shutdown())();
       }
 
       if (this.neuralML) {
-        shutdownPromises?.push(this.neuralML?.shutdown());
+        shutdownPromises?.push(this.neuralML?.shutdown())();
       }
 
       // Knowledge system handles shutdown automatically
 
       if (this.chaosEngineering) {
         try {
-          shutdownPromises?.push(this.chaosEngineering?.shutdown());
+          shutdownPromises?.push(this.chaosEngineering?.shutdown())();
         } catch (error) {
           this.logger?.warn('Chaos engineering shutdown failed', error);
         }
@@ -1040,7 +1038,7 @@ export class System extends TypedEventBase {
     factSystem: boolean;
     neuralML: boolean;
     agentMonitoring: boolean;
-    overallHealth: 'healthy | degraded' | 'unavailable');
+    overallHealth: 'healthy'' | ''degraded'' | ''unavailable');
   }> {
     const status = {
       chaosEngineering: !!this.chaosEngineering,

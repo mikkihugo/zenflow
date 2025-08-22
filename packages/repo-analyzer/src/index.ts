@@ -1,6 +1,6 @@
 /**
  * @fileoverview @claude-zen/repo-analyzer - Battle-hardened repository analysis toolkit
- * 
+ *
  * Professional-grade repository analysis with comprehensive metrics:
  * - Code complexity analysis using multiple battle-tested NPM tools
  * - Dependency analysis with circular dependency detection
@@ -38,7 +38,7 @@ export type {
   ComplexityMetrics,
   DependencyMetrics,
   GitMetrics,
-  ExportFormat
+  ExportFormat,
 } from './types/index.js';
 
 export { RepositoryAnalyzer } from './repository-analyzer.js';
@@ -47,7 +47,7 @@ export { RepositoryAnalyzer } from './repository-analyzer.js';
  * Quick analysis function for simple use cases
  */
 export async function analyzeRepository(
-  repositoryPath: string, 
+  repositoryPath: string,
   options?: import('./types/index.js').AnalysisOptions
 ): Promise<import('./types/index.js').AnalysisResult> {
   const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
@@ -74,7 +74,9 @@ export async function getRepositoryHealthScore(
 /**
  * Factory function for creating repository analyzer
  */
-export async function createRepositoryAnalyzer(repositoryPath: string): Promise<import('./repository-analyzer.js').RepositoryAnalyzer> {
+export async function createRepositoryAnalyzer(
+  repositoryPath: string
+): Promise<import('./repository-analyzer.js').RepositoryAnalyzer> {
   const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
   return new RepositoryAnalyzer(repositoryPath);
 }
@@ -87,24 +89,25 @@ export const VERSION = '1.0.0';
 /**
  * Default analysis options
  */
-export const DEFAULT_ANALYSIS_OPTIONS: import('./types/index.js').AnalysisOptions = {
-  includeTests: false,
-  includeNodeModules: false,
-  includeDotFiles: false,
-  analysisDepth: 'moderate',
-  enableGitAnalysis: true,
-  enableComplexityAnalysis: true,
-  enableDependencyAnalysis: true,
-  enableDomainAnalysis: true,
-  performanceMode: 'balanced',
-  complexityThresholds: {
-    cyclomaticComplexity: 10,
-    maintainabilityIndex: 20,
-    linesOfCode: 300,
-    parameters: 7,
-    nestingDepth: 4
-  }
-};
+export const DEFAULT_ANALYSIS_OPTIONS: import('./types/index.js').AnalysisOptions =
+  {
+    includeTests: false,
+    includeNodeModules: false,
+    includeDotFiles: false,
+    analysisDepth: 'moderate',
+    enableGitAnalysis: true,
+    enableComplexityAnalysis: true,
+    enableDependencyAnalysis: true,
+    enableDomainAnalysis: true,
+    performanceMode: 'balanced',
+    complexityThresholds: {
+      cyclomaticComplexity: 10,
+      maintainabilityIndex: 20,
+      linesOfCode: 300,
+      parameters: 7,
+      nestingDepth: 4,
+    },
+  };
 
 // Export default analyzer class
 export default RepositoryAnalyzer;

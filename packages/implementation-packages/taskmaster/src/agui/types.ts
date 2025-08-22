@@ -1,6 +1,6 @@
 /**
  * @file Core AGUI types and interfaces
- * 
+ *
  * Defines the fundamental types for the Autonomous Graphical User Interface library.
  * These types support rich human-in-the-loop interactions for autonomous systems.
  */
@@ -8,38 +8,24 @@
 /**
  * Priority levels for questions and interactions
  */
-export type Priority = 'critical' | 'high' | 'medium' | 'low';
+export type Priority = 'critical | high' | 'medium''' | '''low';
 
 /**
  * Message types for display formatting
  */
-export type MessageType = 'info' | 'warning' | 'error' | 'success' | 'debug';
+export type MessageType = 'info | warning' | 'error' | 'success' | 'debug';
 
 /**
  * Question types for different interaction patterns
  */
-export type QuestionType = 
-  | 'approval'       // Yes/No approval questions
-  | 'choice'         // Multiple choice selection
-  | 'input'          // Free text input
-  | 'confirmation'   // Confirmation dialogs
-  | 'review'         // Review and feedback
-  | 'validation'     // Data validation
-  | 'checkpoint'     // Workflow checkpoints
-  | 'emergency'      // Emergency escalation
-  | 'custom'         // Custom question types
-  | 'relevance'      // Relevance validation
-  | 'boundary'       // Boundary validation
-  | 'relationship'   // Relationship validation
-  | 'naming'         // Naming validation
-  | 'priority';      // Priority validation
+export type QuestionType ='' | '''approval'// Yes/No approval questions'' | '''choice'// Multiple choice selection'' | '''input'// Free text input'' | '''confirmation'// Confirmation dialogs'' | '''review'// Review and feedback'' | '''validation'// Data validation'' | '''checkpoint'// Workflow checkpoints'' | '''emergency'// Emergency escalation'' | '''custom'// Custom question types'' | '''relevance'// Relevance validation'' | '''boundary'// Boundary validation'' | '''relationship'// Relationship validation'' | '''naming'// Naming validation'' | '''priority'; // Priority validation
 
 /**
  * AGUI adapter types
  */
 export enum AGUIType {
   WEB = 'web',
-  HEADLESS = 'headless'
+  HEADLESS = 'headless',
 }
 
 /**
@@ -48,26 +34,26 @@ export enum AGUIType {
 export interface QuestionContext {
   /** Unique identifier for correlation */
   correlationId?: string;
-  
+
   /** Source system or component */
   source?: string;
-  
+
   /** Business impact level */
-  businessImpact?: 'low' | 'medium' | 'high' | 'critical';
-  
+  businessImpact?: 'low | medium' | 'high''' | '''critical';
+
   /** Stakeholders involved */
   stakeholders?: string[];
-  
+
   /** Dependencies or related items */
   dependencies?: Array<{
     id: string;
     type: string;
     description: string;
   }>;
-  
+
   /** Deadline information */
   deadline?: Date;
-  
+
   /** Additional metadata */
   metadata?: Record<string, unknown>;
 }
@@ -78,45 +64,45 @@ export interface QuestionContext {
 export interface ValidationQuestion {
   /** Unique identifier for the question */
   id: string;
-  
+
   /** Type of question for appropriate handling */
   type: QuestionType;
-  
+
   /** The actual question text */
   question: string;
-  
+
   /** Rich context information */
   context?: QuestionContext;
-  
+
   /** Available options for choice questions */
   options?: string[];
-  
+
   /** Allow custom/free-form input */
   allowCustom?: boolean;
-  
+
   /** Default value or pre-selected option */
   defaultValue?: string;
-  
+
   /** Confidence level in the question (0-1) */
   confidence: number;
-  
+
   /** Priority level for handling */
   priority?: Priority;
-  
+
   /** Validation reason or explanation */
   validationReason?: string;
-  
+
   /** Expected impact of the decision */
   expectedImpact?: number;
-  
+
   /** Timeout in milliseconds */
   timeout?: number;
-  
+
   /** Help text or additional information */
   helpText?: string;
-  
+
   /** Validation function for input */
-  validator?: (input: string) => boolean | string;
+  validator?: (input: string) => boolean'' | ''string;
 }
 
 /**
@@ -125,22 +111,22 @@ export interface ValidationQuestion {
 export interface ProgressInfo {
   /** Current step or operation */
   current: number;
-  
+
   /** Total steps or operations */
   total: number;
-  
+
   /** Progress percentage (0-100) */
   percentage: number;
-  
+
   /** Current operation description */
   description: string;
-  
+
   /** Estimated time remaining (ms) */
   estimatedRemaining?: number;
-  
+
   /** Additional status information */
   status?: string;
-  
+
   /** Metadata for rich progress display */
   metadata?: Record<string, unknown>;
 }
@@ -151,16 +137,16 @@ export interface ProgressInfo {
 export interface AGUIResponse {
   /** The user's response */
   response: string;
-  
+
   /** Response timestamp */
   timestamp: Date;
-  
+
   /** Time taken to respond (ms) */
   responseTime: number;
-  
+
   /** Source of the response */
-  source: 'user' | 'system' | 'timeout' | 'default';
-  
+  source: 'user | system' | 'timeout''' | '''default';
+
   /** Additional metadata */
   metadata?: Record<string, unknown>;
 }
@@ -171,16 +157,16 @@ export interface AGUIResponse {
 export interface BatchQuestionResult {
   /** Question ID */
   questionId: string;
-  
+
   /** Response to the question */
   response: string;
-  
+
   /** Success status */
   success: boolean;
-  
+
   /** Error if failed */
   error?: Error;
-  
+
   /** Response time */
   responseTime: number;
 }
@@ -191,25 +177,25 @@ export interface BatchQuestionResult {
 export interface AGUIConfig {
   /** Enable rich formatting and colors */
   enableRichFormatting?: boolean;
-  
+
   /** Enable progress indicators */
   enableProgress?: boolean;
-  
+
   /** Enable context display */
   enableContextDisplay?: boolean;
-  
+
   /** Default timeout for questions (ms) */
   defaultTimeout?: number;
-  
+
   /** Enable logging */
   enableLogging?: boolean;
-  
+
   /** Logger instance */
   logger?: any;
-  
+
   /** Custom theme or styling */
   theme?: Record<string, unknown>;
-  
+
   /** Adapter-specific configuration */
   adapterConfig?: Record<string, unknown>;
 }
@@ -222,42 +208,42 @@ export interface AGUIInterface {
    * Ask a single question and get response
    */
   askQuestion(question: ValidationQuestion): Promise<string>;
-  
+
   /**
    * Ask multiple questions in batch
    */
   askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
-  
+
   /**
    * Show progress information
    */
   showProgress(progress: ProgressInfo): Promise<void>;
-  
+
   /**
    * Display a message to the user
    */
   showMessage(message: string, type?: MessageType): Promise<void>;
-  
+
   /**
    * Show structured information
    */
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
-  
+
   /**
    * Clear the display/interface
    */
   clear?(): Promise<void>;
-  
+
   /**
    * Close/cleanup the interface
    */
   close?(): Promise<void>;
-  
+
   /**
    * Get configuration
    */
   getConfig?(): AGUIConfig;
-  
+
   /**
    * Update configuration
    */
@@ -270,10 +256,10 @@ export interface AGUIInterface {
 export interface EventHandlerConfig {
   /** Enable event emission */
   enableEvents?: boolean;
-  
+
   /** Event emitter instance */
   eventEmitter?: any;
-  
+
   /** Event prefix for namespacing */
   eventPrefix?: string;
 }
@@ -283,7 +269,7 @@ export interface EventHandlerConfig {
  */
 export type AGUIFactory<T extends AGUIInterface = AGUIInterface> = (
   config?: AGUIConfig
-) => T | Promise<T>;
+) => T'' | ''Promise<T>;
 
 /**
  * Registry of AGUI factories
@@ -293,12 +279,12 @@ export interface AGUIRegistry {
     type: string,
     factory: AGUIFactory<T>
   ): void;
-  
+
   create<T extends AGUIInterface>(
     type: string,
     config?: AGUIConfig
-  ): T | Promise<T>;
-  
+  ): T'' | ''Promise<T>;
+
   getAvailableTypes(): string[];
 }
 
@@ -312,17 +298,17 @@ export class AGUIError extends Error {
     public readonly context?: Record<string, unknown>
   ) {
     super(message);
-    this.name = 'AGUIError';
+    this.name ='AGUIError';
   }
 }
 
 /**
  * Specialized error class for timeout-related failures in AGUI operations.
- * 
+ *
  * This error is thrown when an AGUI operation exceeds its configured timeout period,
  * such as when waiting for user input or response. It extends the base AGUIError
  * with timeout-specific information.
- * 
+ *
  * @example
  * ```typescript
  * try {
@@ -339,7 +325,7 @@ export class AGUIError extends Error {
  *   }
  * }
  * ```
- * 
+ *
  * @public
  * @extends AGUIError
  */
@@ -356,12 +342,12 @@ export class AGUITimeoutError extends AGUIError {
 
 /**
  * Specialized error class for input validation failures in AGUI operations.
- * 
+ *
  * This error is thrown when user input fails validation checks, such as when
  * the input doesn't match expected patterns, contains invalid characters, or
  * fails custom validation logic. It extends the base AGUIError with validation-specific
  * information, including the invalid input that caused the error.
- * 
+ *
  * @example
  * ```typescript
  * const emailValidator = (input: string) => {
@@ -375,7 +361,7 @@ export class AGUITimeoutError extends AGUIError {
  *   }
  *   return true;
  * };
- * 
+ *
  * try {
  *   await agui.askQuestion({
  *     id: 'email',
@@ -390,7 +376,7 @@ export class AGUITimeoutError extends AGUIError {
  *   }
  * }
  * ```
- * 
+ *
  * @public
  * @extends AGUIError
  */

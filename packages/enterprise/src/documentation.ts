@@ -15,7 +15,7 @@ async function loadDocumentationModule() {
       // Use dynamic import with string to avoid TypeScript compile-time checking
       const packageName = '@claude-zen/documentation';
       documentationModuleCache = await import(packageName);
-    } catch (error) {
+    } catch {
       // Fallback implementation when documentation package isn't available
       documentationModuleCache = {
         DocumentationLinker: class {
@@ -51,8 +51,8 @@ async function loadDocumentationModule() {
 function createFallbackLinker() {
   return {
     linkDocuments: async (documents: any) => ({
-      result: `fallback-linker-for-${documents?.length || 0}-documents`,
-      status: 'linked',
+      result: `fallback-linker-for-${documents?.length'' | '''' | ''0}-documents`,
+      status:'linked',
       timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
@@ -64,7 +64,7 @@ function createFallbackLinker() {
 function createFallbackManager() {
   return {
     manageDocumentation: async (docs: any) => ({
-      result: `fallback-manager-for-${docs?.type || 'unknown'}`,
+      result: `fallback-manager-for-${docs?.type'' | '''' | '''unknown'}`,
       status: 'managed',
       timestamp: Date.now(),
     }),
@@ -77,12 +77,12 @@ function createFallbackManager() {
 // Professional naming patterns - delegate to documentation implementation or fallback
 export const getDocumentationLinker = async () => {
   const docModule = await loadDocumentationModule();
-  return docModule.createDocumentationLinker?.() || createFallbackLinker();
+  return docModule.createDocumentationLinker?.()'' | '''' | ''createFallbackLinker();
 };
 
 export const getDocumentationManager = async () => {
   const docModule = await loadDocumentationModule();
-  return docModule.createDocumentationManager?.() || createFallbackManager();
+  return docModule.createDocumentationManager?.()'' | '''' | ''createFallbackManager();
 };
 
 // Export main classes with delegation
@@ -93,7 +93,7 @@ export class DocumentationLinker {
     const docModule = await loadDocumentationModule();
     if (docModule.DocumentationLinker) {
       this.instance = new docModule.DocumentationLinker();
-      return this.instance.initialize?.(config) || Promise.resolve();
+      return this.instance.initialize?.(config)'' | '''' | ''Promise.resolve();
     }
     this.instance = new docModule.DocumentationLinker(config);
     return Promise.resolve();
@@ -108,7 +108,7 @@ export class DocumentationLinker {
 
   getStatus() {
     if (!this.instance) {
-      return { status: 'not-initialized' };
+      return { status:'not-initialized'};
     }
     return this.instance.getStatus();
   }
@@ -128,7 +128,7 @@ export class DocumentationManager {
     const docModule = await loadDocumentationModule();
     if (docModule.DocumentationManager) {
       this.instance = new docModule.DocumentationManager();
-      return this.instance.initialize?.(config) || Promise.resolve();
+      return this.instance.initialize?.(config)'' | '''' | ''Promise.resolve();
     }
     this.instance = new docModule.DocumentationManager(config);
     return Promise.resolve();
@@ -143,7 +143,7 @@ export class DocumentationManager {
 
   getStatus() {
     if (!this.instance) {
-      return { status: 'not-initialized' };
+      return { status:'not-initialized' };
     }
     return this.instance.getStatus();
   }

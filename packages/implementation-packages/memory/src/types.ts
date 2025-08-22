@@ -5,7 +5,7 @@
  * Following Google TypeScript style guide and domain architecture standard.
  */
 
-// Re-export memory backend types  
+// Re-export memory backend types
 export type { BackendInterface, JSONValue } from './core/memory-system';
 
 // Define core memory interfaces here (instead of importing from non-existent path)
@@ -13,7 +13,7 @@ export interface StoreOptions {
   readonly ttl?: number;
   readonly compress?: boolean;
   readonly encrypt?: boolean;
-  readonly priority?: 'low' | 'medium' | 'high';
+  readonly priority?: 'low | medium' | 'high';
   readonly metadata?: Record<string, unknown>;
   readonly namespace?: string;
   readonly tags?: string[];
@@ -22,7 +22,7 @@ export interface StoreOptions {
 
 export interface MemoryStore {
   store(key: string, value: unknown, options?: StoreOptions): Promise<void>;
-  retrieve<T = unknown>(key: string): Promise<T | null>;
+  retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   size(): Promise<number>;
@@ -46,7 +46,7 @@ export interface MemoryStats {
 
 // Memory configuration types
 export interface MemoryConfig {
-  readonly type: 'sqlite' | 'json' | 'lancedb' | 'memory';
+  readonly type:'sqlite | json' | 'lancedb''' | '''memory';
   readonly path?: string;
   readonly maxSize?: number;
   readonly ttl?: number;
@@ -69,7 +69,7 @@ export interface SessionState {
     accessed: number;
     size: number;
     tags?: string[];
-    priority?: 'low' | 'medium' | 'high';
+    priority?: 'low | medium' | 'high';
     ttl?: number;
   };
   vectors?: Map<string, number[]>;
@@ -99,7 +99,7 @@ export interface CacheEntry {
 export interface CacheOptions {
   readonly ttl?: number;
   readonly maxSize?: number;
-  readonly evictionPolicy?: 'lru' | 'lfu' | 'fifo' | 'ttl';
+  readonly evictionPolicy?: 'lru | lfu' | 'fifo''' | '''ttl';
   readonly compress?: boolean;
   readonly metadata?: Record<string, unknown>;
 }
@@ -160,7 +160,7 @@ export interface VectorSearchResult {
 
 // Memory operation types
 export interface MemoryOperation {
-  readonly type: 'store' | 'retrieve' | 'delete' | 'clear';
+  readonly type: 'store | retrieve' | 'delete''' | '''clear';
   readonly key: string;
   readonly value?: unknown;
   readonly options?: StoreOptions;
@@ -232,7 +232,7 @@ export interface MemoryResponse<T = unknown> {
 
 export interface MemoryBatchRequest {
   readonly operations: readonly {
-    readonly type: 'store' | 'retrieve' | 'delete';
+    readonly type: 'store | retrieve' | 'delete';
     readonly key: string;
     readonly value?: unknown;
     readonly options?: MemoryRequest['options'];
@@ -243,7 +243,7 @@ export interface MemoryBatchRequest {
 export interface MemoryStatusResponse {
   readonly success: boolean;
   readonly data: {
-    readonly status: 'healthy' | 'degraded' | 'unhealthy';
+    readonly status: 'healthy | degraded' | 'unhealthy';
     readonly totalKeys: number;
     readonly backend: string;
     readonly uptime: number;
@@ -274,7 +274,7 @@ export interface MemoryAnalyticsResponse {
       readonly utilizationPercent: number;
     };
     readonly health: {
-      readonly status: 'healthy' | 'degraded' | 'unhealthy';
+      readonly status: 'healthy | degraded' | 'unhealthy';
       readonly uptime: number;
       readonly lastHealthCheck: number;
     };
@@ -311,7 +311,7 @@ export interface MemoryMetrics {
 
 // Memory health monitoring
 export interface MemoryHealthCheck {
-  readonly status: 'healthy' | 'degraded' | 'unhealthy';
+  readonly status: 'healthy | degraded' | 'unhealthy';
   readonly checks: {
     readonly connection: boolean;
     readonly latency: number;
@@ -338,7 +338,7 @@ export {
   safe,
   withRetry,
   withTimeout,
-  withContext
+  withContext,
 } from '@claude-zen/foundation';
 
 import { ContextError } from '@claude-zen/foundation';
@@ -367,10 +367,7 @@ export class MemoryConnectionError extends MemoryError {
 }
 
 export class MemoryStorageError extends MemoryError {
-  constructor(
-    message: string,
-    context: Record<string, any> = {}
-  ) {
+  constructor(message: string, context: Record<string, any> = {}) {
     super(message, context, 'MEMORY_STORAGE_ERROR');
     this.name = 'MemoryStorageError';
   }
@@ -383,7 +380,11 @@ export class MemoryCapacityError extends MemoryError {
     maxSize: number,
     context: Record<string, any> = {}
   ) {
-    super(message, { ...context, currentSize, maxSize }, 'MEMORY_CAPACITY_ERROR');
+    super(
+      message,
+      { ...context, currentSize, maxSize },
+      'MEMORY_CAPACITY_ERROR'
+    );
     this.name = 'MemoryCapacityError';
   }
 }
@@ -410,7 +411,7 @@ export interface MemorySystemFactory {
 
 // Additional specialized store interfaces
 export interface SessionMemoryStore extends MemoryStore {
-  getSession(sessionId: string): Promise<SessionState | null>;
+  getSession(sessionId: string): Promise<SessionState'' | ''null>;
   updateSession(
     sessionId: string,
     updates: Partial<SessionState['data']>
@@ -429,12 +430,12 @@ export interface VectorMemoryStore {
   ): Promise<readonly VectorSearchResult[]>;
   deleteVector(id: string): Promise<boolean>;
   updateVector(id: string, updates: Partial<VectorData>): Promise<void>;
-  getVector(id: string): Promise<VectorData | null>;
+  getVector(id: string): Promise<VectorData'' | ''null>;
 }
 
 // Event types for memory operations
 export interface MemoryEvent {
-  readonly type: 'stored' | 'retrieved' | 'deleted' | 'cleared' | 'error';
+  readonly type:'stored | retrieved' | 'deleted' | 'cleared' | 'error';
   readonly key?: string;
   readonly backend: string;
   readonly timestamp: number;

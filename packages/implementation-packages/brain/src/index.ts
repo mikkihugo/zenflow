@@ -1,19 +1,19 @@
 /**
  * @fileoverview Brain Package - Autonomous AI Decision-Making System with Neural Intelligence
- * 
+ *
  * **ENTERPRISE-GRADE AUTONOMOUS AI COORDINATION PLATFORM**
- * 
+ *
  * Advanced autonomous AI coordination system that automatically makes intelligent decisions
  * about optimization strategies, resource allocation, and system management with continuous
  * learning and adaptation capabilities. Built with Rust/WASM acceleration for maximum
  * performance and enterprise-scale neural coordination.
- * 
+ *
  * **⚠️ RECOMMENDED USAGE: Access via @claude-zen/foundation Package**
- * 
+ *
  * While this package can be used directly, it is recommended to access brain
  * functionality through `@claude-zen/foundation` which provides integrated neural
  * coordination with telemetry, logging, and configuration management.
- * 
+ *
  * **CORE AUTONOMOUS CAPABILITIES:**
  * - 🤖 **Autonomous Decision-Making**: Intelligent choice between DSPy, ML, and hybrid strategies
  * - 🎯 **Task Complexity Estimation**: ML-powered complexity analysis and optimization selection
@@ -23,7 +23,7 @@
  * - 🔄 **Method Selection**: Automatic optimization based on performance history
  * - 🚀 **Rust/WASM Integration**: High-performance neural computation with FANN
  * - 🔧 **Foundation Integration**: Complete @claude-zen/foundation support
- * 
+ *
  * **NEURAL COMPUTATION FEATURES:**
  * - FANN (Fast Artificial Neural Network) integration with Rust/WASM acceleration
  * - GPU acceleration support for large-scale neural computations
@@ -33,7 +33,7 @@
  * - Neural network ensemble methods and model combination
  * - Transfer learning and fine-tuning capabilities
  * - Real-time neural network monitoring and performance optimization
- * 
+ *
  * **ENTERPRISE AUTONOMOUS FEATURES:**
  * - Multi-horizon predictive modeling with confidence intervals
  * - Cross-agent performance correlation and dependency analysis
@@ -45,14 +45,14 @@
  * - Enterprise-grade security with encrypted neural models
  * - Multi-tenant AI isolation and governance
  * - Audit trails for AI decision-making and compliance
- * 
+ *
  * @example Recommended Usage via Foundation
  * ```typescript
  * import { getNeuralAccess, AI } from '@claude-zen/foundation';
- * 
+ *
  * // Get integrated neural access with telemetry
  * const neural = await getNeuralAccess();
- * 
+ *
  * // Use the AI interface for autonomous decisions
  * const aiSystem = AI;
  * const decision = await aiSystem.makeAutonomousDecision({
@@ -60,7 +60,7 @@
  *   constraints: { timeLimit: 30000, quality: 'high' },
  *   learningEnabled: true
  * });
- * 
+ *
  * console.log('AI Decision:', {
  *   strategy: decision.selectedStrategy,
  *   confidence: decision.confidence,
@@ -68,15 +68,15 @@
  *   expectedOutcome: decision.prediction
  * });
  * ```
- * 
+ *
  * @example Direct Advanced Neural Coordination
  * ```typescript
- * import { 
- *   BrainCoordinator, 
+ * import {
+ *   BrainCoordinator,
  *   AutonomousOptimizationEngine,
- *   NeuralBridge 
+ *   NeuralBridge
  * } from '@claude-zen/brain';
- * 
+ *
  * // Create enterprise-grade autonomous brain coordinator
  * const brain = new BrainCoordinator({
  *   autonomous: {
@@ -103,9 +103,9 @@
  *     governanceCompliance: 'soc2'
  *   }
  * });
- * 
+ *
  * await brain.initialize();
- * 
+ *
  * // Autonomous optimization with full enterprise features
  * const result = await brain.optimizePrompt({
  *   task: 'complex neural network design',
@@ -119,7 +119,7 @@
  *   priority: 'high',
  *   enableLearning: true
  * });
- * 
+ *
  * console.log('Autonomous Optimization Result:', {
  *   selectedStrategy: result.strategy,
  *   optimizedPrompt: result.prompt,
@@ -128,7 +128,7 @@
  *   resourceAllocation: result.recommendedResources,
  *   estimatedCompletion: result.timeEstimate
  * });
- * 
+ *
  * // Brain learns from results to improve future decisions
  * await brain.learnFromResult(result, true, {
  *   actualPerformance: 0.995,
@@ -136,16 +136,16 @@
  *   feedback: 'Exceeded expectations, excellent architecture selection'
  * });
  * ```
- * 
+ *
  * @example Enterprise Neural Network Training
  * ```typescript
- * import { 
- *   NeuralBridge, 
+ * import {
+ *   NeuralBridge,
  *   createNeuralNetwork,
  *   trainNeuralNetwork,
- *   NeuralModelPresets 
+ *   NeuralModelPresets
  * } from '@claude-zen/brain';
- * 
+ *
  * // Create high-performance neural bridge with enterprise features
  * const neuralBridge = new NeuralBridge({
  *   backend: 'rust-fann',
@@ -166,7 +166,7 @@
  *     accessControl: 'rbac'
  *   }
  * });
- * 
+ *
  * // Create advanced neural network with custom architecture
  * const network = await createNeuralNetwork({
  *   architecture: {
@@ -193,7 +193,7 @@
  *     gradientAccumulation: 4
  *   }
  * });
- * 
+ *
  * // Train with enterprise-grade monitoring
  * const trainingResult = await trainNeuralNetwork(network, {
  *   trainingData: await loadLargeDataset('training.parquet'),
@@ -218,7 +218,7 @@
  *     distributedTraining: { nodes: 4, gpusPerNode: 8 }
  *   }
  * });
- * 
+ *
  * console.log('Training Results:', {
  *   finalLoss: trainingResult.finalLoss,
  *   bestValidationAccuracy: trainingResult.bestValidationAccuracy,
@@ -227,15 +227,15 @@
  *   checkpoints: trainingResult.savedCheckpoints.length
  * });
  * ```
- * 
+ *
  * @example Autonomous Task Complexity Analysis
  * ```typescript
- * import { 
+ * import {
  *   TaskComplexityEstimator,
  *   AutonomousOptimizationEngine,
- *   SmartPromptOptimizer 
+ *   SmartPromptOptimizer
  * } from '@claude-zen/brain';
- * 
+ *
  * // Create ML-powered complexity estimator
  * const complexityEstimator = new TaskComplexityEstimator({
  *   models: {
@@ -256,11 +256,11 @@
  *     feedbackIntegration: true
  *   }
  * });
- * 
+ *
  * // Analyze complex enterprise task
  * const complexityAnalysis = await complexityEstimator.estimateComplexity({
  *   task: 'microservices-architecture-design',
- *   prompt: `Design a fault-tolerant microservices architecture for a global 
+ *   prompt: `Design a fault-tolerant microservices architecture for a global
  *            e-commerce platform handling 100M+ users with real-time inventory,
  *            payment processing, recommendation engine, and fraud detection`,
  *   context: {
@@ -281,7 +281,7 @@
  *   },
  *   expertise: 'senior-architect'
  * });
- * 
+ *
  * console.log('Complexity Analysis:', {
  *   overallComplexity: complexityAnalysis.score, // 0-1 scale
  *   dimensions: {
@@ -297,7 +297,7 @@
  *     riskFactors: complexityAnalysis.risks
  *   }
  * });
- * 
+ *
  * // Use autonomous optimization engine for strategy selection
  * const optimizer = new AutonomousOptimizationEngine({
  *   strategies: {
@@ -317,7 +317,7 @@
  *     confidenceThreshold: 0.8
  *   }
  * });
- * 
+ *
  * const optimizationDecision = await optimizer.selectOptimalStrategy({
  *   complexityAnalysis,
  *   historicalPerformance: await optimizer.getHistoricalData(),
@@ -327,7 +327,7 @@
  *     resourceBudget: 'high'
  *   }
  * });
- * 
+ *
  * console.log('Autonomous Strategy Selection:', {
  *   selectedStrategy: optimizationDecision.strategy,
  *   confidence: optimizationDecision.confidence,
@@ -336,15 +336,15 @@
  *   alternativeStrategies: optimizationDecision.alternatives
  * });
  * ```
- * 
+ *
  * @example Behavioral Intelligence and Agent Performance Prediction
  * ```typescript
- * import { 
+ * import {
  *   BehavioralIntelligence,
  *   AgentPerformancePredictor,
- *   demoBehavioralIntelligence 
+ *   demoBehavioralIntelligence
  * } from '@claude-zen/brain';
- * 
+ *
  * // Create comprehensive behavioral intelligence system
  * const behavioral = new BehavioralIntelligence({
  *   models: {
@@ -371,7 +371,7 @@
  *     fairnessMonitoring: true
  *   }
  * });
- * 
+ *
  * // Track comprehensive agent execution data
  * const executionData = {
  *   agentId: 'senior-architect-001',
@@ -398,10 +398,10 @@
  *     maintainabilityScore: 0.93
  *   }
  * };
- * 
+ *
  * // Learn from execution to improve future predictions
  * await behavioral.learnFromExecution(executionData);
- * 
+ *
  * // Predict future performance with confidence intervals
  * const performancePrediction = await behavioral.predictAgentPerformance({
  *   agentId: 'senior-architect-001',
@@ -415,7 +415,7 @@
  *   },
  *   horizons: ['1h', '4h', '1d']
  * });
- * 
+ *
  * console.log('Performance Prediction:', {
  *   shortTerm: {
  *     expectedQuality: performancePrediction.oneHour.quality,
@@ -434,7 +434,7 @@
  *   },
  *   recommendations: performancePrediction.optimizationRecommendations
  * });
- * 
+ *
  * // Demo behavioral intelligence capabilities
  * const demoResults = await demoBehavioralIntelligence({
  *   agentCount: 50,
@@ -442,7 +442,7 @@
  *   simulationDuration: '30d',
  *   learningEnabled: true
  * });
- * 
+ *
  * console.log('Behavioral Intelligence Demo:', {
  *   totalAgents: demoResults.agents.length,
  *   averageAccuracy: demoResults.predictionAccuracy,
@@ -450,16 +450,16 @@
  *   insights: demoResults.keyInsights
  * });
  * ```
- * 
+ *
  * @example GPU-Accelerated Neural Computation
  * ```typescript
- * import { 
+ * import {
  *   GPUSupport,
  *   detectGPUCapabilities,
  *   initializeGPUAcceleration,
- *   optimizeForGPU 
+ *   optimizeForGPU
  * } from '@claude-zen/brain';
- * 
+ *
  * // Detect and initialize GPU capabilities
  * const gpuCapabilities = await detectGPUCapabilities();
  * console.log('GPU Capabilities:', {
@@ -469,7 +469,7 @@
  *   computeCapability: gpuCapabilities.computeCapability,
  *   multiProcessors: gpuCapabilities.multiProcessors
  * });
- * 
+ *
  * if (gpuCapabilities.available) {
  *   // Initialize GPU acceleration
  *   const gpuSupport = await initializeGPUAcceleration({
@@ -482,7 +482,7 @@
  *       tensorrt: true
  *     }
  *   });
- * 
+ *
  *   // Create GPU-optimized neural computation
  *   const gpuOptimizedBrain = new BrainCoordinator({
  *     neural: {
@@ -497,7 +497,7 @@
  *       pipelineParallelism: true
  *     }
  *   });
- * 
+ *
  *   // Optimize neural networks for GPU execution
  *   const optimizedNetwork = await optimizeForGPU({
  *     network: neuralNetwork,
@@ -509,7 +509,7 @@
  *       kernelFusion: true
  *     }
  *   });
- * 
+ *
  *   console.log('GPU Optimization Results:', {
  *     originalSize: optimizedNetwork.originalSize,
  *     optimizedSize: optimizedNetwork.optimizedSize,
@@ -519,15 +519,15 @@
  *   });
  * }
  * ```
- * 
+ *
  * @example Enterprise Multi-Tenant Neural System
  * ```typescript
- * import { 
+ * import {
  *   BrainCoordinator,
  *   AutonomousCoordinator,
- *   createEnterpriseNeuralSystem 
+ *   createEnterpriseNeuralSystem
  * } from '@claude-zen/brain';
- * 
+ *
  * // Create enterprise multi-tenant neural system
  * const enterpriseNeuralSystem = await createEnterpriseNeuralSystem({
  *   multiTenant: {
@@ -565,7 +565,7 @@
  *     tracing: 'distributed'
  *   }
  * });
- * 
+ *
  * // Autonomous coordinator for system-wide management
  * const autonomousCoordinator = new AutonomousCoordinator({
  *   scope: 'enterprise-system',
@@ -588,7 +588,7 @@
  *     privacyPreservation: 'differential-privacy'
  *   }
  * });
- * 
+ *
  * // Register tenants with custom configurations
  * await enterpriseNeuralSystem.registerTenant('acme-corp', {
  *   brainConfig: {
@@ -608,7 +608,7 @@
  *     privacyLevel: 'high'
  *   }
  * });
- * 
+ *
  * // Autonomous system-wide optimization
  * const systemOptimization = await autonomousCoordinator.optimizeSystem({
  *   objectives: {
@@ -624,7 +624,7 @@
  *     tenantSLAs: 'must-meet'
  *   }
  * });
- * 
+ *
  * console.log('System Optimization Results:', {
  *   decisions: systemOptimization.decisions,
  *   expectedImpact: systemOptimization.impact,
@@ -633,7 +633,7 @@
  *   rollbackStrategy: systemOptimization.rollback
  * });
  * ```
- * 
+ *
  * @example Using separate entry points (optimal tree-shaking)
  * ```typescript
  * // Optimal imports for tree-shaking
@@ -643,7 +643,7 @@
  * import { BehavioralIntelligence } from '@claude-zen/brain/behavioral';
  * import { GPUSupport } from '@claude-zen/brain/gpu';
  * ```
- * 
+ *
  * **Performance Characteristics:**
  * - **Decision Latency**: <5ms for cached decisions, <50ms for complex analysis
  * - **Throughput**: 10,000+ autonomous decisions/second with horizontal scaling
@@ -652,7 +652,7 @@
  * - **Learning Speed**: Continuous adaptation with 90%+ accuracy after 100 examples
  * - **GPU Acceleration**: 10-100x speedup for neural computations
  * - **Scalability**: Horizontally scalable with distributed neural processing
- * 
+ *
  * **Enterprise Scalability:**
  * - Multi-tenant isolation with strict security boundaries
  * - Auto-scaling based on computational demand and performance metrics
@@ -660,7 +660,7 @@
  * - Enterprise-grade security with model encryption and audit trails
  * - Compliance support for SOC2, ISO27001, GDPR, and industry standards
  * - Cost optimization with intelligent resource allocation and scheduling
- * 
+ *
  * **Neural Architecture Support:**
  * - Traditional neural networks (feedforward, CNN, RNN, LSTM)
  * - Modern architectures (Transformer, BERT, GPT, Vision Transformer)
@@ -668,7 +668,7 @@
  * - Reinforcement learning (DQN, A3C, PPO, SAC)
  * - Custom architectures with flexible layer composition
  * - Ensemble methods and model combination strategies
- * 
+ *
  * **AI/ML Integration Ecosystem:**
  * - Native integration with @claude-zen/foundation for telemetry
  * - DSPy Stanford integration for neural program optimization
@@ -676,19 +676,19 @@
  * - Hugging Face Transformers integration for pre-trained models
  * - ONNX support for cross-platform neural network deployment
  * - Custom GPU kernels for specialized neural operations
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 2.0.0
- * 
+ *
  * @see {@link https://github.com/zen-neural/claude-code-zen} Claude Code Zen Documentation
  * @see {@link ./main} Main Implementation
- * 
+ *
  * @requires @claude-zen/foundation - Core utilities and infrastructure
  * @requires @claude-zen/dspy - DSPy Stanford integration for neural programming
  * @requires fann-wasm - FANN neural network library with WebAssembly
  * @requires brain.js - Neural networks in JavaScript (fallback)
- * 
+ *
  * @packageDocumentation
  */
 
@@ -703,7 +703,11 @@ export { BrainCoordinator as default } from './main';
 // NEURAL BRIDGE AND NETWORK OPERATIONS
 // =============================================================================
 export { NeuralBridge } from './main';
-export { createNeuralNetwork, trainNeuralNetwork, predictWithNetwork } from './main';
+export {
+  createNeuralNetwork,
+  trainNeuralNetwork,
+  predictWithNetwork,
+} from './main';
 
 // =============================================================================
 // SMART NEURAL COORDINATION SYSTEM - Intelligent Neural Backend
@@ -714,15 +718,15 @@ export type {
   NeuralEmbeddingRequest,
   NeuralEmbeddingResult,
   CacheEntry,
-  ModelStatus
+  ModelStatus,
 } from './smart-neural-coordinator';
 
 // =============================================================================
 // GPU ACCELERATION AND COORDINATION SYSTEMS
 // =============================================================================
-export { 
+export {
   detectGPUCapabilities,
-  initializeGPUAcceleration
+  initializeGPUAcceleration,
   // Note: GPUSupport and optimizeForGPU commented out to fix compilation
   // DSPyLLMBridge, // Exported separately below to avoid duplicates
   // RetrainingMonitor // Exported separately below to avoid duplicates
@@ -732,12 +736,10 @@ export {
 // ADDITIONAL BRAIN SYSTEMS - Extended functionality
 // =============================================================================
 // Note: BrainJs functionality moved to neural-ml package
-export { 
-  BehavioralIntelligence
-} from './main';
+export { BehavioralIntelligence } from './main';
 
 // Note: BrainJs functionality moved to neural-ml package
-// export { 
+// export {
 //   BrainJsBridge,
 //   createBrainJsNetwork,
 //   trainBrainJsNetwork,
@@ -751,13 +753,13 @@ export {
 
 /**
  * 🤖 AutonomousOptimizationEngine - Intelligently chooses optimization methods
- * 
+ *
  * Automatically decides between DSPy, ML, and hybrid optimization based on:
  * - Task complexity analysis
  * - Historical performance data
  * - Time constraints and priorities
  * - Continuous learning from outcomes
- * 
+ *
  * Features:
  * - Autonomous method selection (DSPy/ML/hybrid)
  * - Performance-driven decision making
@@ -768,13 +770,13 @@ export { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
 
 /**
  * 🎯 TaskComplexityEstimator - ML-based automatic task complexity analysis
- * 
+ *
  * Uses machine learning to estimate task complexity and suggest optimal approaches:
  * - Natural language analysis of prompts
  * - Context complexity scoring
  * - Historical pattern matching
  * - Continuous learning from actual outcomes
- * 
+ *
  * Features:
  * - Automatic complexity estimation (0-1 scale)
  * - Method recommendations (DSPy/ML/hybrid)
@@ -785,7 +787,7 @@ export { TaskComplexityEstimator } from './task-complexity-estimator';
 
 /**
  * 🧠 SmartPromptOptimizer - ML-powered prompt enhancement
- * 
+ *
  * Advanced prompt optimization using machine learning algorithms:
  * - Pattern recognition and template matching
  * - Statistical analysis and regression models
@@ -796,7 +798,7 @@ export { SmartPromptOptimizer } from './smart-prompt-optimizer';
 
 /**
  * 📊 AgentPerformancePredictor - Behavioral prediction and optimization
- * 
+ *
  * Predicts agent performance using time series analysis and clustering:
  * - Performance trend prediction
  * - Behavioral pattern recognition
@@ -807,13 +809,13 @@ export { AgentPerformancePredictor } from './agent-performance-predictor';
 
 /**
  * 🏛️ AutonomousCoordinator - Self-governing system management
- * 
+ *
  * Comprehensive autonomous system coordination and resource management:
  * - Automatic resource allocation
  * - Dynamic scaling decisions
  * - Performance optimization
  * - System health monitoring
- * 
+ *
  * Note: Advanced system coordination - use with caution in production
  */
 export { AutonomousCoordinator } from './autonomous-coordinator';
@@ -827,7 +829,12 @@ export { RetrainingMonitor } from './coordination/retraining-monitor';
 // =============================================================================
 // NEURAL MODELS - Pre-built neural network models
 // =============================================================================
-export { NeuralModelPresets, AutoencoderPreset, CNNPreset, LSTMPreset } from './models-dir';
+export {
+  NeuralModelPresets,
+  AutoencoderPreset,
+  CNNPreset,
+  LSTMPreset,
+} from './models-dir';
 export { GraphNeuralNetwork, TransformerModel, VAEModel } from './models-dir';
 
 // =============================================================================
@@ -836,7 +843,7 @@ export { GraphNeuralNetwork, TransformerModel, VAEModel } from './models-dir';
 export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
 
 // ===== MEETING INTELLIGENCE - Neural-Powered Collaborative Decision Making =====
-export { 
+export {
   MeetingIntelligence,
   createMeetingIntelligence,
   type NeuralParticipantProfile,
@@ -844,26 +851,26 @@ export {
   type MeetingStructureRecommendation,
   type ParticipantSelectionRequest,
   type ParticipantSelectionRecommendation,
-  type MeetingLearningOutcome
+  type MeetingLearningOutcome,
 } from './meeting-intelligence';
 
 // =============================================================================
 // TYPE DEFINITIONS - Interfaces and types (tree-shakable)
 // =============================================================================
-export type { 
-  BrainConfig, 
-  PromptOptimizationRequest, 
+export type {
+  BrainConfig,
+  PromptOptimizationRequest,
   PromptOptimizationResult,
   BrainMetrics,
   BrainStatus,
-  OptimizationStrategy
+  OptimizationStrategy,
 } from './brain-coordinator';
 
 export type {
   NeuralConfig,
   NeuralNetwork,
   TrainingData,
-  PredictionResult
+  PredictionResult,
 } from './neural-bridge';
 
 export type {
@@ -872,14 +879,14 @@ export type {
   BrainJsTrainingData,
   BrainJsTrainingOptions,
   BrainJsPredictionResult,
-  BrainJsNetworkInstance
+  BrainJsNetworkInstance,
 } from './brain-js-bridge';
 
 export type {
   AgentExecutionData,
   BehavioralPrediction,
   TaskComplexityAnalysis,
-  AgentBehavioralProfile
+  AgentBehavioralProfile,
 } from './behavioral-intelligence';
 
 // =============================================================================
@@ -887,11 +894,11 @@ export type {
 // =============================================================================
 /**
  * The Brain Package implements a comprehensive autonomous decision-making pipeline:
- * 
+ *
  * 1. 🎯 TASK ANALYSIS
  *    TaskComplexityEstimator → Automatic complexity analysis using ML
  *    ↓
- * 2. 🤖 METHOD SELECTION  
+ * 2. 🤖 METHOD SELECTION
  *    AutonomousOptimizationEngine → Intelligent DSPy/ML/hybrid selection
  *    ↓
  * 3. 🧠 OPTIMIZATION EXECUTION
@@ -905,7 +912,7 @@ export type {
  *    ↓
  * 6. 🔄 CONTINUOUS LEARNING
  *    BehavioralIntelligence → Learning from outcomes and adaptation
- * 
+ *
  * This creates a fully autonomous system that "auto makes the best decisions
  * over time" through continuous learning and intelligent adaptation.
  */
@@ -915,18 +922,18 @@ export type {
 // =============================================================================
 // Advanced ML capabilities are now integrated into BehavioralIntelligence
 
-export type { 
-  RetrainingConfig, 
-  RetrainingTrigger, 
+export type {
+  RetrainingConfig,
+  RetrainingTrigger,
   RetrainingResult,
-  MonitoringMetrics
+  MonitoringMetrics,
 } from './coordination/retraining-monitor';
 
 export type {
   CoordinationTask,
   CoordinationResult,
   DSPyLLMConfig,
-  LLMBridgeOptions
+  LLMBridgeOptions,
 } from './coordination/dspy-llm-bridge';
 
 // =============================================================================
@@ -944,7 +951,7 @@ export type {
   LayerConfig,
   TrainingConfiguration,
   OptimizationConfig,
-  
+
   // Neural agent types
   NeuralAgent,
   AgentType,
@@ -954,13 +961,13 @@ export type {
   AgentCapabilities,
   SkillType,
   LearningAbility,
-  
+
   // Learning and adaptation types
   LearningConfiguration,
   LearningStrategy,
   AgentPerformance,
   MetricType,
-  
+
   // Coordination and communication types
   BrainCoordinationConfig,
   CoordinationTopology,
@@ -968,33 +975,33 @@ export type {
   AgentMessage,
   MessageType,
   MessagePayload,
-  
+
   // Utility types
   AgentState,
   AgentStatus,
   HealthStatus,
   ResourceUsage,
-  
+
   // Training and dataset types
   TrainingDataset,
   DatasetType,
   DataFormat,
-  
+
   // Error types for brain domain
   NeuralError,
   TrainingError,
   CoordinationError,
-  
+
   // Type guards and result types
   NeuralAgentResult,
-  TrainingResult
+  TrainingResult,
 } from './types/index';
 
 // Type guards for runtime type checking
 export {
   isNeuralAgent,
   isNeuralNetworkConfig,
-  isAgentMessage
+  isAgentMessage,
 } from './types/index';
 
 // =============================================================================
@@ -1006,7 +1013,7 @@ export {
  */
 export type {
   OptimizationContext,
-  OptimizationFeedback
+  OptimizationFeedback,
 } from './autonomous-optimization-engine';
 
 /**
@@ -1015,7 +1022,7 @@ export type {
 export type {
   TaskComplexityData,
   ComplexityEstimate,
-  ComplexityPattern
+  ComplexityPattern,
 } from './task-complexity-estimator';
 
 /**
@@ -1023,7 +1030,7 @@ export type {
  */
 export type {
   SystemMetrics,
-  AutonomousDecision
+  AutonomousDecision,
 } from './autonomous-coordinator';
 
 /**
@@ -1031,15 +1038,13 @@ export type {
  */
 export type {
   SmartOptimizationResult,
-  OptimizationPattern
+  OptimizationPattern,
 } from './smart-prompt-optimizer';
 
 /**
  * Types for AgentPerformancePredictor - Behavioral prediction system
  */
-export type {
-  PerformancePrediction
-} from './agent-performance-predictor';
+export type { PerformancePrediction } from './agent-performance-predictor';
 
 // =============================================================================
 // METADATA - Package information
@@ -1047,14 +1052,15 @@ export type {
 
 /**
  * Brain Package Information
- * 
+ *
  * Comprehensive metadata about the brain package including
  * version details, capabilities, and neural features.
  */
 export const BRAIN_INFO = {
   version: '2.0.0',
   name: '@claude-zen/brain',
-  description: 'Autonomous AI decision-making system with neural intelligence and Rust/WASM acceleration',
+  description:
+    'Autonomous AI decision-making system with neural intelligence and Rust/WASM acceleration',
   capabilities: [
     'Autonomous decision-making and strategy selection',
     'Task complexity estimation with ML models',
@@ -1063,7 +1069,7 @@ export const BRAIN_INFO = {
     'Behavioral intelligence and performance prediction',
     'Real-time adaptation and continuous learning',
     'Enterprise-grade security and multi-tenant isolation',
-    'Foundation telemetry integration'
+    'Foundation telemetry integration',
   ],
   neuralArchitectures: [
     'Feedforward Neural Networks',
@@ -1073,27 +1079,27 @@ export const BRAIN_INFO = {
     'Variational Autoencoders (VAE)',
     'Generative Adversarial Networks (GAN)',
     'Reinforcement Learning models',
-    'Custom neural architectures'
+    'Custom neural architectures',
   ],
   acceleration: {
     rust: 'High-performance Rust backend with WASM bindings',
     gpu: 'CUDA, OpenCL, Metal, and WebGL support',
     cpu: 'Multi-threaded processing with SIMD optimization',
-    distributed: 'Horizontal scaling across multiple nodes'
-  }
+    distributed: 'Horizontal scaling across multiple nodes',
+  },
 } as const;
 
 /**
  * Brain Package Documentation
- * 
+ *
  * ## Overview
- * 
+ *
  * The Brain package provides an autonomous AI coordination system that
  * automatically makes intelligent decisions about optimization strategies,
  * resource allocation, and system management with continuous learning.
- * 
+ *
  * ## Architecture
- * 
+ *
  * ```
  * ┌─────────────────────────────────────────────────────┐
  * │              Application Layer                      │
@@ -1123,101 +1129,93 @@ export const BRAIN_INFO = {
  * │  └─ Brain.js Integration                           │
  * └─────────────────────────────────────────────────────┘
  * ```
- * 
+ *
  * ## Autonomous Decision Pipeline
- * 
- * | Stage | Component | Function |
- * |-------|-----------|----------|
- * | 1. Analysis | TaskComplexityEstimator | ML-powered complexity analysis |
- * | 2. Strategy | AutonomousOptimizationEngine | Intelligent method selection |
- * | 3. Execution | SmartPromptOptimizer + DSPy | Advanced optimization |
- * | 4. Monitoring | AgentPerformancePredictor | Behavioral analysis |
- * | 5. Coordination | AutonomousCoordinator | Resource allocation |
- * | 6. Learning | BehavioralIntelligence | Continuous improvement |
- * 
+ *
+ *'' | ''Stage'' | ''Component'' | ''Function'' | ''*'' | ''-------'' | ''-----------'' | ''----------'' | ''*'' | ''1. Analysis'' | ''TaskComplexityEstimator'' | ''ML-powered complexity analysis'' | ''*'' | ''2. Strategy'' | ''AutonomousOptimizationEngine'' | ''Intelligent method selection'' | ''*'' | ''3. Execution'' | ''SmartPromptOptimizer + DSPy'' | ''Advanced optimization'' | ''*'' | ''4. Monitoring'' | ''AgentPerformancePredictor'' | ''Behavioral analysis'' | ''*'' | ''5. Coordination'' | ''AutonomousCoordinator'' | ''Resource allocation'' | ''*'' | ''6. Learning'' | ''BehavioralIntelligence'' | ''Continuous improvement'' | ''*
  * ## Neural Network Features
- * 
+ *
  * - **FANN Integration**: Fast Artificial Neural Network library with Rust/WASM
  * - **GPU Acceleration**: CUDA, OpenCL, Metal support for high-performance computing
  * - **Custom Architectures**: Flexible layer composition for specialized models
  * - **Transfer Learning**: Fine-tuning and domain adaptation capabilities
  * - **Ensemble Methods**: Model combination and voting strategies
  * - **Real-time Training**: Online learning and model updates
- * 
+ *
  * ## Performance Characteristics
- * 
+ *
  * - **Decision Latency**: <5ms for cached decisions, <50ms for complex analysis
  * - **Neural Throughput**: 1M+ inferences/second with GPU acceleration
  * - **Memory Efficiency**: <2GB for full coordination system
  * - **Learning Speed**: 90%+ accuracy after 100 training examples
  * - **Scalability**: Horizontally scalable with distributed processing
  * - **GPU Speedup**: 10-100x performance improvement for neural operations
- * 
+ *
  * ## Enterprise Features
- * 
+ *
  * **Security & Compliance:**
  * - Model encryption and secure storage
  * - Audit trails for AI decision-making
  * - Multi-tenant isolation and governance
  * - RBAC and ABAC access control
  * - SOC2, ISO27001, GDPR compliance support
- * 
+ *
  * **Scalability & Reliability:**
  * - Auto-scaling based on computational demand
  * - Distributed neural processing across multiple nodes
  * - Circuit breaker protection and graceful degradation
  * - High availability with backup coordination instances
  * - Cost optimization through intelligent resource allocation
- * 
+ *
  * **Monitoring & Observability:**
  * - Real-time performance metrics and dashboards
  * - Comprehensive logging and distributed tracing
  * - Integration with Prometheus, Grafana, DataDog
  * - Custom alerting and notification systems
  * - Performance profiling and optimization insights
- * 
+ *
  * ## Integration Ecosystem
- * 
+ *
  * **Core Dependencies:**
  * - @claude-zen/foundation for utilities and telemetry
  * - @claude-zen/dspy for neural program optimization
  * - fann-wasm for high-performance neural networks
  * - brain.js for JavaScript neural network fallback
- * 
+ *
  * **External Integrations:**
  * - TensorFlow and PyTorch model import/export
  * - Hugging Face Transformers for pre-trained models
  * - ONNX support for cross-platform deployment
  * - MLflow for experiment tracking and model management
  * - OpenTelemetry for distributed tracing and metrics
- * 
+ *
  * ## Getting Started
- * 
+ *
  * ```bash
  * # Install core brain package
  * npm install @claude-zen/brain @claude-zen/foundation @claude-zen/dspy
- * 
+ *
  * # Install neural network dependencies
  * npm install fann-wasm brain.js
- * 
+ *
  * # Optional: Install GPU acceleration support
  * npm install @tensorflow/tfjs-node-gpu
  * ```
- * 
+ *
  * See the comprehensive examples above for detailed usage patterns and enterprise features.
  */
 
 // Export neural orchestrator for brain-as-coordinator architecture
-export { 
+export {
   NeuralOrchestrator,
   TaskComplexity,
-  StorageStrategy
-} from './neural-orchestrator';
+  StorageStrategy,
+} from'./neural-orchestrator';
 
 export type {
   NeuralTask,
-  NeuralResult, 
-  NeuralData
+  NeuralResult,
+  NeuralData,
 } from './neural-orchestrator';
 
 // =============================================================================
@@ -1226,7 +1224,7 @@ export type {
 
 /**
  * Professional Brain System Access - Matches storage/telemetry patterns
- * 
+ *
  * These functions provide professional enterprise naming patterns for brain system access
  * so strategic facades don't need to translate function names.
  */
@@ -1238,7 +1236,11 @@ export async function getBrainSystemAccess(): Promise<any> {
   if (!brainSystemInstance) {
     const { BrainCoordinator } = await import('./main');
     brainSystemInstance = new BrainCoordinator({
-      autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
+      autonomous: {
+        enabled: true,
+        learningRate: 0.1,
+        adaptationThreshold: 0.7,
+      },
     });
     await brainSystemInstance.initialize();
   }
@@ -1266,7 +1268,9 @@ export async function getTaskComplexityEstimator(config?: any): Promise<any> {
 }
 
 export async function getAutonomousOptimizer(config?: any): Promise<any> {
-  const { AutonomousOptimizationEngine } = await import('./autonomous-optimization-engine');
+  const { AutonomousOptimizationEngine } = await import(
+    './autonomous-optimization-engine'
+  );
   return new AutonomousOptimizationEngine();
 }
 
@@ -1289,7 +1293,7 @@ export const brainSystem = {
   getComplexityEstimator: getTaskComplexityEstimator,
   getAutonomousOptimizer: getAutonomousOptimizer,
   getBehavioralIntelligence: getBehavioralIntelligence,
-  getNeuralBridge: getNeuralBridge
+  getNeuralBridge: getNeuralBridge,
 };
 
 // Type definitions for external consumers
@@ -1317,12 +1321,10 @@ export {
   SimpleTaskPredictor,
   createTaskPredictor,
   isHighConfidencePrediction,
-  getPredictionSummary
+  getPredictionSummary,
 } from './monitoring/main';
 
-export type {
-  TaskPredictor
-} from './monitoring/task-predictor';
+export type { TaskPredictor } from './monitoring/task-predictor';
 
 // export type {
 //   IntelligenceSystemConfig,

@@ -265,7 +265,7 @@ var CodingPrinciplesResearcher = /** @class */ (function () {
                         return [3 /*break*/, 6];
                     case 6: return [3 /*break*/, 1];
                     case 7:
-                        if (!!bestPrinciples) return [3 /*break*/, 9];
+                        if (bestPrinciples) return [3 /*break*/, 9];
                         return [4 /*yield*/, this.researchPrinciples(config)];
                     case 8: 
                     // Fallback to basic research if all attempts failed

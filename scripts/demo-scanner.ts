@@ -18,11 +18,11 @@ interface FoundDocument {
 }
 
 interface DocumentAnalysis {
-  category: 'vision' | 'roadmap' | 'epic' | 'prd' | 'adr' | 'other';
+  category: 'vision | roadmap' | 'epic''' | '''prd | adr' | 'other';
   confidence: number;
   title: string;
   summary: string;
-  relevance: 'high' | 'medium' | 'low';
+  relevance: 'high | medium' | 'low';
   extractedData: {
     businessObjectives?: string[];
     features?: string[];
@@ -41,8 +41,7 @@ interface DocumentAnalysis {
 function scanForMarkdownFiles(rootDir: string, excludeDirs: string[] = []): string[] {
   const defaultExcludes = [
     'node_modules', '.git', 'dist', 'build', 'target', 
-    '.svelte-kit', 'coverage', '.next', '.nuxt'
-  ];
+    '.svelte-kit', 'coverage', '.next', '.nuxt'];
   const allExcludes = [...defaultExcludes, ...excludeDirs];
   
   const markdownFiles: string[] = [];
@@ -57,10 +56,10 @@ function scanForMarkdownFiles(rootDir: string, excludeDirs: string[] = []): stri
         
         if (stat.isDirectory()) {
           // Skip excluded directories
-          if (!allExcludes.some(exclude => item === exclude || fullPath.includes(exclude))) {
+          if (!allExcludes.some(exclude => item === exclude'' | '''' | ''fullPath.includes(exclude))) {
             scanDirectory(fullPath);
           }
-        } else if (stat.isFile() && extname(item).toLowerCase() === '.md') {
+        } else if (stat.isFile() && extname(item).toLowerCase() ==='.md') {
           markdownFiles.push(fullPath);
         }
       }
@@ -88,7 +87,7 @@ function analyzeDocument(filePath: string, content: string): DocumentAnalysis {
     }
   }
   if (!title) {
-    title = filePath.split('/').pop()?.replace('.md', '') || 'Untitled';
+    title = filePath.split('/').pop()?.replace('.md', '')'' | '''' | '''Untitled';
   }
   
   // Simple keyword-based categorization
@@ -176,13 +175,13 @@ function extractStructuredData(content: string, category: string): DocumentAnaly
     const trimmed = line.trim();
     
     // Extract bullet points
-    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+    if (trimmed.startsWith('- ')'' | '''' | ''trimmed.startsWith('* ')) {
       const item = trimmed.replace(/^[*-]\s*/, '').trim();
       if (item.length > 3) {
         bulletPoints.push(item);
         
         // Detect features
-        if (trimmed.includes('**') || item.toLowerCase().includes('feature')) {
+        if (trimmed.includes('**')'' | '''' | ''item.toLowerCase().includes('feature')) {
           features.push(item);
         }
       }
@@ -192,7 +191,7 @@ function extractStructuredData(content: string, category: string): DocumentAnaly
   if (category === 'vision') {
     data.businessObjectives = bulletPoints.slice(0, 8);
     data.stakeholders = ['developers', 'product-team', 'stakeholders'];
-  } else if (category === 'epic' || category === 'prd') {
+  } else if (category === 'epic''' | '''' | ''category ==='prd') {
     data.features = features.length > 0 ? features : bulletPoints.slice(0, 6);
     data.requirements = bulletPoints.slice(0, 10);
   }
@@ -258,7 +257,7 @@ function generateRecommendations(category: string, confidence: number, relevance
  * Present document for approval
  */
 async function presentForApproval(doc: FoundDocument): Promise<{
-  action: 'import' | 'skip' | 'modify' | 'quit';
+  action: 'import | skip' | 'modify''' | '''quit';
   category?: string;
   comments?: string;
 }> {
@@ -310,21 +309,21 @@ async function presentForApproval(doc: FoundDocument): Promise<{
     return { 
       action: 'modify', 
       category: newCategory.toLowerCase(),
-      comments: comments || undefined
+      comments: comments'' | '''' | ''undefined
     };
   }
   
-  if (action.toLowerCase() === 'i') {
+  if (action.toLowerCase() ==='i') {
     const comments = await question('Import comments (optional): ');
     rl.close();
     return { 
       action: 'import',
-      comments: comments || undefined
+      comments: comments'' | '''' | ''undefined
     };
   }
   
   rl.close();
-  return { action: 'skip' };
+  return { action:'skip' };
 }
 
 /**
@@ -362,7 +361,7 @@ async function demoScanner(rootDir: string = process.cwd()): Promise<void> {
         const analysis = analyzeDocument(filePath, content);
         
         // Only include relevant documents
-        if (analysis.category !== 'other' || analysis.relevance !== 'low') {
+        if (analysis.category !== 'other''' | '''' | ''analysis.relevance !=='low') {
           documents.push({
             filePath,
             relativePath,
@@ -409,8 +408,8 @@ async function demoScanner(rootDir: string = process.cwd()): Promise<void> {
         break;
       }
       
-      if (approval.action === 'import' || approval.action === 'modify') {
-        const category = approval.category || doc.analysis.category;
+      if (approval.action === 'import''' | '''' | ''approval.action ==='modify') {
+        const category = approval.category'' | '''' | ''doc.analysis.category;
         
         if (['vision', 'epic', 'prd'].includes(category)) {
           console.log(`✅ DEMO: Would import as ${category} document`);
@@ -446,9 +445,9 @@ async function demoScanner(rootDir: string = process.cwd()): Promise<void> {
  */
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  const rootDir = args[0] || process.cwd();
+  const rootDir = args[0]'' | '''' | ''process.cwd();
   
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.includes('--help')'' | '''' | ''args.includes('-h')) {
     console.log(`
 🔍 Intelligent Document Scanner - DEMO VERSION
 

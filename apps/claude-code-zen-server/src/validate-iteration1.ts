@@ -12,7 +12,7 @@
  * ```
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 async function validateIteration1(): Promise<void> {
   console.log('🔍 ITERATION 1 VALIDATION');
@@ -20,7 +20,7 @@ async function validateIteration1(): Promise<void> {
 
   const results: Array<{
     check: string;
-    status: 'pass | fail');
+    status: 'pass'' | ''fail');
     details?: string;
   }> = [];
 

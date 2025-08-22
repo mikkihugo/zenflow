@@ -3,7 +3,7 @@
  * Provides no-op authentication for development with structure for future implementation.
  */
 
-import type { NextFunction, Request, Response } from 'express');
+import type { NextFunction, Request, Response } from 'express';
 
 import('/logging');
 
@@ -110,14 +110,14 @@ export const optionalAuthMiddleware = (
     // Some auth provided - could be validated here in future
     authContext = {
       user: {
-        id: 'anonymous',
+        id:'anonymous',
         name: 'Anonymous User',
         roles: ['public'],
         permissions: ['read, write'],
         isAuthenticated: false, // Still false since we're not actually validating
       },
       token: authHeader?.replace('Bearer , ') || apiKey,
-      tokenType: authHeader ? 'bearer : api_key',
+      tokenType: authHeader ?'bearer : api_key',
       isAuthenticated: false,
     };
 
@@ -171,8 +171,7 @@ export const hasPermission = (
   }
 
   return (
-    authContext.user.permissions.includes(permission) ||
-    authContext.user.permissions.includes('admin');
+    authContext.user.permissions.includes(permission) || authContext.user.permissions.includes('admin');
   );
 };
 
@@ -196,8 +195,7 @@ export const hasRole = (
   }
 
   return (
-    authContext.user.roles.includes(role) ||
-    authContext.user.roles.includes('admin');
+    authContext.user.roles.includes(role) || authContext.user.roles.includes('admin');
   );
 };
 

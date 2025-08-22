@@ -41,7 +41,11 @@ export const wouldExceedWIPLimit = ({
 /**
  * Check if any WIP limits are currently violated
  */
-export const hasWIPViolations = ({ context }: { context: WorkflowMachineContext }): boolean => {
+export const hasWIPViolations = ({
+  context,
+}: {
+  context: WorkflowMachineContext;
+}): boolean => {
   return context.wipViolations.length > 0;
 };
 
@@ -53,7 +57,13 @@ export const hasHighWIPUtilization = ({
 }: {
   context: WorkflowMachineContext;
 }): boolean => {
-  const workStates = ['analysis', 'development', 'testing', 'review', 'deployment'] as const;
+  const workStates = [
+    'analysis',
+    'development',
+    'testing',
+    'review',
+    'deployment',
+  ] as const;
 
   let highUtilizationStates = 0;
 
@@ -110,7 +120,11 @@ export const isSystemHealthImproving = ({
   const current = recent[1];
 
   // Consider health improving if it increased by more than 0.1
-  return (current.metrics.flowEfficiency || 0) - (previous.metrics.flowEfficiency || 0) > 0.1;
+  return (
+    (current.metrics.flowEfficiency || 0) -
+      (previous.metrics.flowEfficiency || 0) >
+    0.1
+  );
 };
 
 // =============================================================================
@@ -120,7 +134,11 @@ export const isSystemHealthImproving = ({
 /**
  * Check if there are active bottlenecks
  */
-export const hasActiveBottlenecks = ({ context }: { context: WorkflowMachineContext }): boolean => {
+export const hasActiveBottlenecks = ({
+  context,
+}: {
+  context: WorkflowMachineContext;
+}): boolean => {
   return context.activeBottlenecks.length > 0;
 };
 
@@ -132,7 +150,7 @@ export const hasCriticalBottlenecks = ({
 }: {
   context: WorkflowMachineContext;
 }): boolean => {
-  return context.activeBottlenecks.some((b) => b.severity === 'critical');
+  return context.activeBottlenecks.some((b) => b.severity ==='critical');
 };
 
 /**
@@ -154,7 +172,11 @@ export const isBottleneckCountIncreasing = ({
 /**
  * Check if system needs optimization
  */
-export const needsOptimization = ({ context }: { context: WorkflowMachineContext }): boolean => {
+export const needsOptimization = ({
+  context,
+}: {
+  context: WorkflowMachineContext;
+}): boolean => {
   const hasBottlenecks = context.activeBottlenecks.length > 0;
   const hasWIPIssues = context.wipViolations.length > 0;
   const lowHealth = context.systemHealth < 0.7;
@@ -165,7 +187,11 @@ export const needsOptimization = ({ context }: { context: WorkflowMachineContext
 /**
  * Check if optimization was recent (avoid over-optimization)
  */
-export const wasRecentlyOptimized = ({ context }: { context: WorkflowMachineContext }): boolean => {
+export const wasRecentlyOptimized = ({
+  context,
+}: {
+  context: WorkflowMachineContext;
+}): boolean => {
   if (!context.lastOptimization) return false;
 
   const hoursSinceOptimization =
@@ -185,8 +211,10 @@ export const needsEmergencyOptimization = ({
 }): boolean => {
   const criticalHealth = context.systemHealth < 0.2;
   const multipleCriticalBottlenecks =
-    context.activeBottlenecks.filter((b) => b.severity === 'critical').length > 1;
-  const systemOverloaded = WorkflowContextUtils.calculateSystemUtilization(context) > 0.95;
+    context.activeBottlenecks.filter((b) => b.severity ==='critical').length >
+    1;
+  const systemOverloaded =
+    WorkflowContextUtils.calculateSystemUtilization(context) > 0.95;
 
   return criticalHealth || multipleCriticalBottlenecks || systemOverloaded;
 };
@@ -253,17 +281,18 @@ export const isValidWorkflowProgression = ({
   context: WorkflowMachineContext;
   event: WorkflowEvent;
 }): boolean => {
-  if (event.type !== 'TASK_MOVED') return false;
+  if (event.type !=='TASK_MOVED') return false;
 
   // Special states can transition to/from any state
   const specialStates = ['blocked', 'expedite'];
-  if (specialStates.includes(event.fromState) || specialStates.includes(event.toState)) {
+  if (
+    specialStates.includes(event.fromState) || specialStates.includes(event.toState)
+  ) {
     return true;
   }
 
   // Define valid workflow progression
-  const workflowOrder = [
-    'backlog',
+  const workflowOrder = ['backlog',
     'analysis',
     'development',
     'testing',
@@ -293,17 +322,17 @@ export const hasUnresolvedDependencies = ({
   context: WorkflowMachineContext;
   event: WorkflowEvent;
 }): boolean => {
-  if (event.type !== 'TASK_MOVED') return false;
+  if (event.type !=='TASK_MOVED') return false;
 
   const task = context.tasks[event.taskId];
   if (!task || !task.dependencies || task.dependencies.length === 0) {
     return false;
   }
 
-  // Check if any dependencies are not in 'done' state
+  // Check if any dependencies are not in'done'state
   return task.dependencies.some((depId) => {
     const depTask = context.tasks[depId];
-    return !depTask || depTask.state !== 'done';
+    return !depTask || depTask.state !=='done';
   });
 };
 
@@ -321,7 +350,8 @@ export const isTimeForPeriodicAnalysis = ({
 }): boolean => {
   if (!context.currentMetrics) return true; // First analysis
 
-  const lastAnalysis = context.metricsHistory[context.metricsHistory.length - 1];
+  const lastAnalysis =
+    context.metricsHistory[context.metricsHistory.length - 1];
   if (!lastAnalysis) return true;
 
   const timeSinceLastAnalysis = Date.now() - lastAnalysis.timestamp.getTime();

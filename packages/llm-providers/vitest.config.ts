@@ -8,8 +8,8 @@ export default defineConfig({
     pool: 'forks',
     poolOptions: {
       forks: {
-        singleFork: true
-      }
+        singleFork: true,
+      },
     },
     setupFiles: ['./tests/setup.ts'],
     coverage: {
@@ -21,37 +21,34 @@ export default defineConfig({
         '**/*.d.ts',
         'tests/**',
         'coverage/**',
-        'vitest.config.ts'
+        'vitest.config.ts',
       ],
       thresholds: {
         global: {
           branches: 75,
           functions: 75,
           lines: 75,
-          statements: 75
-        }
-      }
+          statements: 75,
+        },
+      },
     },
-    include: [
-      'tests/**/*.{test,spec}.{js,ts}',
-      'src/**/*.{test,spec}.{js,ts}'
-    ],
+    include: ['tests/**/*.{test,spec}.{js,ts}', 'src/**/*.{test,spec}.{js,ts}'],
     exclude: [
       'node_modules/**',
       'dist/**',
-      'tests/integration/**' // Skip integration tests by default
+      'tests/integration/**', // Skip integration tests by default
     ],
     testTimeout: 5000,
     hookTimeout: 5000,
     env: {
       NODE_ENV: 'test',
-      LOG_LEVEL: 'silent'
-    }
+      LOG_LEVEL: 'silent',
+    },
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@tests': resolve(__dirname, './tests')
-    }
-  }
+      '@tests': resolve(__dirname, './tests'),
+    },
+  },
 });

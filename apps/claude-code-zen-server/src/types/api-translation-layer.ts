@@ -76,7 +76,7 @@ import type {
   StepStatus,
   WorkflowMetrics,
   ExecutionResult,
-} from '@claude-zen/enterprise');
+} from '@claude-zen/enterprise';
 import type {
   BaseEntity,
   EntityStatus,
@@ -87,7 +87,7 @@ import type {
   DatabaseConfig,
   DatabaseStats,
   HealthCheck as DatabaseHealthCheck,
-} from '@claude-zen/foundation/types');
+} from '@claude-zen/foundation/types';
 import type {
   SwarmConfiguration,
   SwarmStatus,
@@ -95,7 +95,7 @@ import type {
   AgentCapability,
   BrainMetrics,
   SwarmIntelligence,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Brain domain types - Neural coordination and intelligence
 
@@ -181,7 +181,7 @@ export interface PaginatedApiResponse<TData = unknown>
  */
 export interface ApiHealthResponse {
   /** Overall system status */
-  status: 'healthy | degraded' | 'unhealthy');
+  status: 'healthy'' | ''degraded'' | ''unhealthy');
 
   /** System uptime in milliseconds */
   uptime: number;
@@ -292,7 +292,7 @@ export interface ApiCreateSwarmRequest {
   description?: string;
 
   /** Swarm configuration (delegates to brain types) */
-  configuration: Omit<SwarmConfiguration, 'id | createdAt' | 'updatedAt'>;
+  configuration: Omit<SwarmConfiguration, 'id'' | ''createdAt'' | ''updatedAt'>;
 
   /** Initial agent count */
   initialAgents?: number;
@@ -373,7 +373,7 @@ export interface ApiTaskResponse extends TimestampedEntity {
   metrics: WorkflowMetrics;
 
   /** Task priority */
-  priority: 'low | medium' | 'high | critical');
+  priority: 'low'' | ''medium'' | ''high'' | ''critical');
 
   /** Assigned swarm ID */
   swarmId?: string;
@@ -395,13 +395,13 @@ export interface ApiCreateTaskRequest {
   description?: string;
 
   /** Workflow definition (delegates to workflow types) */
-  workflow: Omit<WorkflowDefinition, 'id | createdAt' | 'updatedAt'>;
+  workflow: Omit<WorkflowDefinition, 'id'' | ''createdAt'' | ''updatedAt'>;
 
   /** Execution strategy */
   strategy?: ExecutionStrategy;
 
   /** Task priority */
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
 
   /** Target swarm ID */
   swarmId?: string;
@@ -607,7 +607,7 @@ export interface ApiSettingsResponse {
 
   /** Logging configuration */
   logging: {
-    level: 'debug | info' | 'warn | error');
+    level: 'debug'' | ''info'' | ''warn'' | ''error');
     enableConsole: boolean;
     enableFile: boolean;
     maxFileSize: number;
@@ -740,25 +740,12 @@ export interface ApiErrorResponse {
 /**
  * All possible API response types
  */
-export type ApiResponseUnion =
-  | ApiResponse<ApiHealthResponse>
-  | ApiResponse<ApiSystemStatusResponse>
-  | ApiResponse<ApiSwarmResponse>
-  | ApiResponse<ApiTaskResponse>
-  | ApiResponse<ApiDocumentResponse>
-  | ApiResponse<ApiCommandResult>
-  | ApiResponse<ApiSettingsResponse>
-  | ApiResponse<ApiLLMAnalyticsResponse>
-  | ApiErrorResponse;
+export type ApiResponseUnion =' | 'ApiResponse<ApiHealthResponse>' | 'ApiResponse<ApiSystemStatusResponse>' | 'ApiResponse<ApiSwarmResponse>' | 'ApiResponse<ApiTaskResponse>' | 'ApiResponse<ApiDocumentResponse>' | 'ApiResponse<ApiCommandResult>' | 'ApiResponse<ApiSettingsResponse>' | 'ApiResponse<ApiLLMAnalyticsResponse>' | 'ApiErrorResponse;
 
 /**
  * API Request types union
  */
-export type ApiRequestUnion =
-  | ApiCreateSwarmRequest
-  | ApiCreateTaskRequest
-  | ApiExecuteCommandRequest
-  | ApiUpdateSettingsRequest;
+export type ApiRequestUnion =' | 'ApiCreateSwarmRequest | ApiCreateTaskRequest | ApiExecuteCommandRequest | ApiUpdateSettingsRequest;
 
 /**
  * Entity status types used across API
@@ -768,11 +755,7 @@ export type ApiEntityStatus = EntityStatus | SwarmStatus | WorkflowStatus;
 /**
  * API Metrics union - All metrics types
  */
-export type ApiMetricsUnion =
-  | Metrics
-  | BrainMetrics
-  | WorkflowMetrics
-  | ResourceUsage;
+export type ApiMetricsUnion =' | 'Metrics | BrainMetrics | WorkflowMetrics | ResourceUsage;
 
 // =============================================================================
 // TYPE GUARDS - Runtime type checking
@@ -782,7 +765,7 @@ export type ApiMetricsUnion =
  * Type guard for API success responses
  */
 export function isApiSuccessResponse<T>(
-  response: ApiResponse<T> | ApiErrorResponse
+  response: ApiResponse<T>' | 'ApiErrorResponse
 ): response is ApiResponse<T> {
   return response.success === true;
 }
@@ -800,9 +783,9 @@ export function isApiErrorResponse(
  * Type guard for paginated responses
  */
 export function isPaginatedResponse<T>(
-  response: ApiResponse<T> | PaginatedApiResponse<T>
+  response: ApiResponse<T>' | 'PaginatedApiResponse<T>
 ): response is PaginatedApiResponse<T> {
-  return 'pagination' in response;
+  return'pagination' in response;
 }
 
 // =============================================================================

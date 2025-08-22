@@ -1,13 +1,13 @@
 /**
  * @file Event bus for coordinating system-wide events and messaging
  *
- * STRATEGIC FACADE INTEGRATION:
- * Uses @claude-zen/infrastructure facade which delegates to @claude-zen/event-system
- * for proper event coordination instead of custom EventEmitter implementation.
+ * TYPED EVENT SYSTEM:
+ * Uses our own TypedEventBase from @claude-zen/foundation for type-safe event coordination.
+ * This provides a robust event system for internal coordination without external dependencies.
  */
 
-// import { getEventSystemAccess } from '@claude-zen/infrastructure');
-// Temporarily comment out until infrastructure facade is available
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
 export interface SystemEvent {
   id: string;
@@ -26,28 +26,22 @@ export interface EventBusInterface {
   removeAllListeners(eventType?: string | symbol): this;
 }
 
-export class EventBus implements EventBusInterface {
+export class EventBus extends TypedEventBase implements EventBusInterface {
   private static instance: EventBus;
   private eventHistory: SystemEvent[] = [];
   private maxHistorySize = 1000;
-  private eventSystemAccess: any = null;
+  private logger: Logger;
 
   constructor() {
-    this.initializeEventSystem();
+    super();
+    this.logger = getLogger('EventBus', { level: 'INFO' });
   }
 
-  private async initializeEventSystem(): Promise<void> {
-    try {
-      // Use infrastructure facade access
-      const { getServiceContainer } = await import(
-        '@claude-zen/infrastructure'
-      );
-      const container = await getServiceContainer();
-      this.eventSystemAccess = container;
-    } catch (error) {
-      console.warn('Event system not available, using fallback:', error);
-      // Fallback implementation will be used
-    }
+  /**
+   * Generate unique event ID
+   */
+  private generateEventId(): string {
+    return `evt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
   static getInstance(): EventBus {
@@ -58,82 +52,94 @@ export class EventBus implements EventBusInterface {
   }
 
   async emitSystemEvent(event: SystemEvent): Promise<boolean> {
-    // Store in history
-    this.eventHistory.push(event);
-    if (this.eventHistory.length > this.maxHistorySize) {
-      this.eventHistory.shift();
-    }
-
-    // Emit using infrastructure facade event system
-    if (this.eventSystemAccess) {
-      try {
-        await this.eventSystemAccess.emit(event.type, event);
-        return true;
-      } catch (error) {
-        console.warn('Event system emit failed, using fallback:', error);
+    try {
+      // Store in history
+      this.eventHistory.push(event);
+      if (this.eventHistory.length > this.maxHistorySize) {
+        this.eventHistory.shift();
       }
-    }
 
-    // Fallback for backward compatibility
-    return true;
+      // Emit using our TypedEventBase system
+      this.emit(event.type, event);
+      
+      this.logger.debug('System event emitted', {
+        eventId: event.id,
+        type: event.type,
+        source: event.source
+      });
+      
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to emit system event', { error, event });
+      return false;
+    }
   }
 
   emit(eventName: string | symbol, ...args: any[]): boolean {
-    if (this.eventSystemAccess) {
-      try {
-        this.eventSystemAccess.emit(
-          String(eventName),
-          args.length === 1 ? args[0] : args
-        );
-        return true;
-      } catch (error) {
-        console.warn('Event system emit failed:', error);
-      }
+    try {
+      // Use TypedEventBase emit method
+      super.emit(eventName, ...args);
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to emit event', { eventName, error });
+      return false;
     }
-    return true;
   }
 
   on(eventType: string | symbol, handler: (...args: any[]) => void): this {
-    if (this.eventSystemAccess) {
-      this.eventSystemAccess.on(String(eventType), handler);
-    }
+    super.on(eventType, handler);
     return this;
   }
 
   off(eventType: string | symbol, handler: (...args: any[]) => void): this {
-    if (this.eventSystemAccess) {
-      this.eventSystemAccess.off(String(eventType), handler);
-    }
+    super.off(eventType, handler);
     return this;
   }
 
   once(eventType: string | symbol, handler: (...args: any[]) => void): this {
-    // Most event systems don't have 'once', so we simulate it
-    const wrappedHandler = (...args: any[]) => {
-      handler(...args);
-      this.off(eventType, wrappedHandler);
-    };
-    return this.on(eventType, wrappedHandler);
-  }
-
-  removeAllListeners(eventType?: string | symbol): this {
-    // Event system facade doesn't expose removeAllListeners,
-    // so we maintain backward compatibility
-    console.warn(
-      'removeAllListeners not fully supported with event system facade'
-    );
+    super.once(eventType, handler);
     return this;
   }
 
-  getEventHistory(eventType?: string): SystemEvent[] {
-    if (eventType) {
-      return this.eventHistory.filter((event) => event.type === eventType);
-    }
-    return [...this.eventHistory];
+  removeAllListeners(eventType?: string | symbol): this {
+    super.removeAllListeners(eventType);
+    return this;
   }
 
+  /**
+   * Create a system event with proper metadata
+   */
+  createSystemEvent(
+    type: string,
+    payload: Record<string, unknown>,
+    source: string = 'coordination-system'
+  ): SystemEvent {
+    return {
+      id: this.generateEventId(),
+      type,
+      payload,
+      timestamp: new Date(),
+      source
+    };
+  }
+
+  /**
+   * Get event history for debugging/monitoring
+   */
+  getEventHistory(eventType?: string, limit?: number): SystemEvent[] {
+    let events = eventType 
+      ? this.eventHistory.filter((event) => event.type === eventType)
+      : [...this.eventHistory];
+    
+    return limit ? events.slice(-limit) : events;
+  }
+
+  /**
+   * Clear event history
+   */
   clearHistory(): void {
     this.eventHistory = [];
+    this.logger.info('Event history cleared');
   }
 }
 

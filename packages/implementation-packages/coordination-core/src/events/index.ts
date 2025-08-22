@@ -1,6 +1,6 @@
 /**
  * @fileoverview Coordination Events
- * 
+ *
  * Event system integration for coordination agents.
  */
 
@@ -24,7 +24,7 @@ export type {
   ObjectiveCompletedEvent,
   CoordinationSystemStartedEvent,
   CoordinationSystemShutdownEvent,
-  PerformanceMetricsEvent
+  PerformanceMetricsEvent,
 } from './coordination-events';
 
 // Event bus

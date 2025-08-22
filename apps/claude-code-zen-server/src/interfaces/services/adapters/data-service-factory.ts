@@ -12,22 +12,22 @@
  * @file Interface implementation: data-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   Service,
   ServiceFactory,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces');
+} from './core/interfaces';
 import {
   ServiceConfigurationError,
   ServiceError,
   ServiceInitializationError,
   ServiceOperationError,
-} from './core/interfaces');
-import { ServiceType } from './types');
+} from './core/interfaces';
+import { ServiceType } from './types';
 
 import {
   createDataServiceAdapter,
@@ -53,7 +53,7 @@ export interface DataServiceFactoryConfig {
   /** Default document service settings */
   defaultDocumentConfig?: {
     enabled: boolean;
-    databaseType?: 'postgresql | sqlite' | 'mysql');
+    databaseType?: 'postgresql | sqlite | mysql');
     autoInitialize?: boolean;
     searchIndexing?: boolean;
   };
@@ -534,13 +534,13 @@ export class DataServiceFactory
    *
    * @param type
    */
-  getConfigSchema(type: string): Record<string, unknown> | undefined {
+  getConfigSchema(type: string): Record<string, unknown>' | 'undefined {
     if (!this.supportsType(type)) {
       return undefined;
     }
 
     return {
-      type: 'object',
+      type:'object',
       required: ['name, type'],
       properties: {
         name: { type: 'string' },
@@ -643,7 +643,7 @@ export class DataServiceFactory
    */
   async createDocumentAdapter(
     name: string,
-    databaseType: 'postgresql | sqlite' | 'mysql = postgresql',
+    databaseType: 'postgresql | sqlite | mysql = postgresql',
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const documentConfig = createDefaultDataServiceAdapterConfig(name, {
@@ -676,7 +676,7 @@ export class DataServiceFactory
    */
   async createUnifiedDataAdapter(
     name: string,
-    databaseType: 'postgresql | sqlite' | 'mysql = postgresql',
+    databaseType: 'postgresql | sqlite | mysql = postgresql',
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const unifiedConfig = createDefaultDataServiceAdapterConfig(name, {

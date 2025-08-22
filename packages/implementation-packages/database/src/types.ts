@@ -25,10 +25,10 @@ export interface VectorDocument {
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  metric?: 'cosine' | 'l2' | 'dot';
+  metric?: 'cosine | l2' | 'dot';
 }
 
-// Graph database types  
+// Graph database types
 export interface GraphNode {
   id: string;
   label: string;
@@ -51,7 +51,7 @@ export interface GraphPath {
 
 // Health and performance types
 export interface HealthStatus {
-  status: 'healthy' | 'unhealthy' | 'degraded';
+  status: 'healthy | unhealthy' | 'degraded';
   uptime?: number;
   lastCheck?: Date;
   details?: Record<string, any>;
@@ -67,7 +67,7 @@ export interface PerformanceMetrics {
 
 // Re-export database configuration types
 export interface DatabaseConfig {
-  readonly type: 'sqlite' | 'postgresql' | 'mysql';
+  readonly type: 'sqlite | postgresql' | 'mysql';
   readonly host?: string;
   readonly port?: number;
   readonly database: string;
@@ -118,8 +118,8 @@ export interface DocumentSearchOptions {
   readonly tags?: readonly string[];
   readonly limit?: number;
   readonly offset?: number;
-  readonly sortBy?: 'created_at' | 'updated_at' | 'title' | 'type';
-  readonly sortOrder?: 'asc' | 'desc';
+  readonly sortBy?: 'created_at | updated_at' | 'title''' | '''type';
+  readonly sortOrder?: 'asc''' | '''desc';
 }
 
 export interface DocumentSearchResult<T = BaseEntity> {
@@ -150,7 +150,7 @@ export interface BulkOperationResult<T = unknown> {
 
 // Database health and monitoring
 export interface DatabaseHealthStatus {
-  readonly status: 'healthy' | 'degraded' | 'unhealthy';
+  readonly status: 'healthy | degraded' | 'unhealthy';
   readonly connection: boolean;
   readonly latency: number;
   readonly activeConnections: number;
@@ -197,16 +197,7 @@ export interface MigrationStatus {
 }
 
 // Query builder types
-export type QueryOperator =
-  | '='
-  | '!='
-  | '>'
-  | '<'
-  | '>='
-  | '<='
-  | 'LIKE'
-  | 'N'
-  | 'NOT N';
+export type QueryOperator ='' | '''=''' | '''!=''' | '''>''' | '''<''' | '''>=''' | '''<=''' | '''LIKE''' | '''N''' | '''NOT N';
 
 export interface QueryCondition {
   readonly field: string;
@@ -217,13 +208,13 @@ export interface QueryCondition {
 export interface QueryOptions {
   readonly select?: readonly string[];
   readonly where?: readonly QueryCondition[];
-  readonly orderBy?: readonly { field: string; direction: 'ASC' | 'DESC' }[];
+  readonly orderBy?: readonly { field: string; direction: 'ASC''' | '''DESC' }[];
   readonly limit?: number;
   readonly offset?: number;
   readonly joins?: readonly {
     table: string;
     on: string;
-    type?: 'NNER' | 'LEFT' | 'RIGHT' | 'FULL';
+    type?: 'NNER | LEFT' | 'RIGHT''' | '''FULL';
   }[];
 }
 
@@ -231,11 +222,7 @@ export interface QueryOptions {
 export interface TransactionContext {
   readonly id: string;
   readonly startTime: string;
-  readonly isolation:
-    | 'READ_UNCOMMITTED'
-    | 'READ_COMMITTED'
-    | 'REPEATABLE_READ'
-    | 'SERIALIZABLE';
+  readonly isolation:'' | '''READ_UNCOMMITTED | READ_COMMITTED' | 'REPEATABLE_READ''' | '''SERIALIZABLE';
   commit(): Promise<void>;
   rollback(): Promise<void>;
 }
@@ -284,42 +271,15 @@ export class QueryError extends DatabaseError {
 }
 
 // Utility types
-export type EntityType =
-  | 'vision'
-  | 'prd'
-  | 'epic'
-  | 'feature'
-  | 'task'
-  | 'adr'
-  | 'user-story'
-  | 'test-case'
-  | 'code-snippet'
-  | 'workflow-run'
-  | 'workflow-step'
-  | 'swot-analysis'
-  | 'stakeholder'
-  | 'risk-assessment'
-  | 'project-template'
-  | 'competitor-analysis';
+export type EntityType ='' | '''vision | prd' | 'epic''' | '''feature | task' | 'adr''' | '''user-story''' | '''test-case''' | '''code-snippet''' | '''workflow-run''' | '''workflow-step''' | '''swot-analysis''' | '''stakeholder''' | '''risk-assessment''' | '''project-template''' | '''competitor-analysis';
 
-export type EntityStatus =
-  | 'draft'
-  | 'active'
-  | 'completed'
-  | 'archived'
-  | 'deprecated';
+export type EntityStatus ='' | '''draft | active' | 'completed' | 'archived' | 'deprecated';
 
-export type EntityPriority = 'low' | 'medium' | 'high' | 'critical';
+export type EntityPriority = 'low | medium' | 'high''' | '''critical';
 
 // Event types for database operations
 export interface DatabaseEvent {
-  readonly type:
-    | 'created'
-    | 'updated'
-    | 'deleted'
-    | 'migrated'
-    | 'connected'
-    | 'disconnected';
+  readonly type:'' | '''created | updated' | 'deleted''' | '''migrated | connected' | 'disconnected';
   readonly entityType?: EntityType;
   readonly entityId?: string;
   readonly timestamp: string;
@@ -331,7 +291,7 @@ export interface BackupOptions {
   readonly path: string;
   readonly includeData?: boolean;
   readonly includeSchema?: boolean;
-  readonly compression?: 'none' | 'gzip' | 'lz4';
+  readonly compression?: 'none | gzip' | 'lz4';
   readonly encryption?: boolean;
   readonly metadata?: Record<string, unknown>;
 }

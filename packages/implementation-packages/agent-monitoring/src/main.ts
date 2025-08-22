@@ -32,7 +32,7 @@ export { CompleteIntelligenceSystem } from './intelligence-system';
 export {
   createIntelligenceSystem,
   createBasicIntelligenceSystem,
-  createProductionIntelligenceSystem
+  createProductionIntelligenceSystem,
 } from './intelligence-factory';
 
 // =============================================================================
@@ -45,9 +45,7 @@ export {
   getPredictionSummary,
 } from './task-predictor';
 
-export type {
-  TaskPredictor,
-} from './task-predictor';
+export type { TaskPredictor } from './task-predictor';
 
 // =============================================================================
 // PERFORMANCE TRACKING - Replaces Hook System Performance Tracking
@@ -57,7 +55,7 @@ export {
   createPerformanceTracker,
   getGlobalPerformanceTracker,
   withPerformanceTracking,
-  DEFAULT_PERFORMANCE_CONFIG
+  DEFAULT_PERFORMANCE_CONFIG,
 } from './performance-tracker';
 
 export type {
@@ -134,7 +132,7 @@ export type {
   IntelligenceSystemConfig as Config,
   TaskPrediction as Prediction,
   AgentHealth as Health,
-  SystemHealthSummary as SystemHealth
+  SystemHealthSummary as SystemHealth,
 } from './types';
 
 // =============================================================================
@@ -146,61 +144,83 @@ export type {
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getAgentMonitoringSystemAccess(config?: IntelligenceSystemConfig): Promise<any> {
+export async function getAgentMonitoringSystemAccess(
+  config?: IntelligenceSystemConfig
+): Promise<any> {
   const intelligenceSystem = new CompleteIntelligenceSystem(config);
   await intelligenceSystem.initialize();
   return {
-    createIntelligenceSystem: (systemConfig?: IntelligenceSystemConfig) => createIntelligenceSystem(systemConfig),
-    createBasicSystem: (systemConfig?: IntelligenceSystemConfig) => createBasicIntelligenceSystem(systemConfig),
-    createProductionSystem: (systemConfig?: IntelligenceSystemConfig) => createProductionIntelligenceSystem(systemConfig),
-    createTaskPredictor: (predictorConfig?: TaskPredictorConfig) => createTaskPredictor(predictorConfig),
-    createPerformanceTracker: (trackerConfig?: PerformanceTrackerConfig) => createPerformanceTracker(trackerConfig),
+    createIntelligenceSystem: (systemConfig?: IntelligenceSystemConfig) =>
+      createIntelligenceSystem(systemConfig),
+    createBasicSystem: (systemConfig?: IntelligenceSystemConfig) =>
+      createBasicIntelligenceSystem(systemConfig),
+    createProductionSystem: (systemConfig?: IntelligenceSystemConfig) =>
+      createProductionIntelligenceSystem(systemConfig),
+    createTaskPredictor: (predictorConfig?: TaskPredictorConfig) =>
+      createTaskPredictor(predictorConfig),
+    createPerformanceTracker: (trackerConfig?: PerformanceTrackerConfig) =>
+      createPerformanceTracker(trackerConfig),
     getGlobalPerformanceTracker: () => getGlobalPerformanceTracker(),
     withPerformanceTracking: <T>(fn: () => T) => withPerformanceTracking(fn),
-    predict: (request: PredictionRequest) => intelligenceSystem.predict(request),
+    predict: (request: PredictionRequest) =>
+      intelligenceSystem.predict(request),
     getHealth: (agentId: AgentId) => intelligenceSystem.getAgentHealth(agentId),
-    updateHealth: (agentId: AgentId, health: AgentHealth) => intelligenceSystem.updateAgentHealth(agentId, health),
+    updateHealth: (agentId: AgentId, health: AgentHealth) =>
+      intelligenceSystem.updateAgentHealth(agentId, health),
     getMetrics: () => intelligenceSystem.getIntelligenceMetrics(),
-    shutdown: () => intelligenceSystem.shutdown()
+    shutdown: () => intelligenceSystem.shutdown(),
   };
 }
 
-export async function getIntelligenceSystemInstance(config?: IntelligenceSystemConfig): Promise<CompleteIntelligenceSystem> {
+export async function getIntelligenceSystemInstance(
+  config?: IntelligenceSystemConfig
+): Promise<CompleteIntelligenceSystem> {
   const system = new CompleteIntelligenceSystem(config);
   await system.initialize();
   return system;
 }
 
-export async function getTaskPredictionAccess(config?: TaskPredictorConfig): Promise<any> {
+export async function getTaskPredictionAccess(
+  config?: TaskPredictorConfig
+): Promise<any> {
   const predictor = createTaskPredictor(config);
   return {
     predict: (request: PredictionRequest) => predictor.predict(request),
-    isHighConfidence: (prediction: TaskPrediction) => isHighConfidencePrediction(prediction),
-    getSummary: (predictions: TaskPrediction[]) => getPredictionSummary(predictions),
-    updateLearning: (record: TaskCompletionRecord) => predictor.updateLearning?.(record)
+    isHighConfidence: (prediction: TaskPrediction) =>
+      isHighConfidencePrediction(prediction),
+    getSummary: (predictions: TaskPrediction[]) =>
+      getPredictionSummary(predictions),
+    updateLearning: (record: TaskCompletionRecord) =>
+      predictor.updateLearning?.(record),
   };
 }
 
-export async function getPerformanceMonitoring(config?: PerformanceTrackerConfig): Promise<any> {
+export async function getPerformanceMonitoring(
+  config?: PerformanceTrackerConfig
+): Promise<any> {
   const tracker = createPerformanceTracker(config);
   return {
     track: <T>(fn: () => T) => withPerformanceTracking(fn),
     snapshot: () => tracker.getSnapshot(),
     getStats: () => tracker.getStats(),
-    reset: () => tracker.reset?.()
+    reset: () => tracker.reset?.(),
   };
 }
 
-export async function getAgentHealthMonitoring(config?: IntelligenceSystemConfig): Promise<any> {
+export async function getAgentHealthMonitoring(
+  config?: IntelligenceSystemConfig
+): Promise<any> {
   const system = await getAgentMonitoringSystemAccess(config);
   return {
     checkHealth: (agentId: AgentId) => system.getHealth(agentId),
-    updateHealth: (agentId: AgentId, health: AgentHealth) => system.updateHealth(agentId, health),
+    updateHealth: (agentId: AgentId, health: AgentHealth) =>
+      system.updateHealth(agentId, health),
     getSystemHealth: () => system.getMetrics(),
     monitorAgent: (agentId: AgentId) => ({
       getHealth: () => system.getHealth(agentId),
-      updateHealth: (health: AgentHealth) => system.updateHealth(agentId, health)
-    })
+      updateHealth: (health: AgentHealth) =>
+        system.updateHealth(agentId, health),
+    }),
   };
 }
 
@@ -213,7 +233,7 @@ export const agentMonitoringSystem = {
   getHealthMonitoring: getAgentHealthMonitoring,
   createSystem: createIntelligenceSystem,
   createBasic: createBasicIntelligenceSystem,
-  createProduction: createProductionIntelligenceSystem
+  createProduction: createProductionIntelligenceSystem,
 };
 
 /**
@@ -225,9 +245,9 @@ export const PACKAGE_INFO = {
   description: 'Core agent monitoring primitives for Claude Code Zen',
   features: [
     'Basic task prediction interfaces',
-    'Simple intelligence system implementations', 
+    'Simple intelligence system implementations',
     'Core monitoring types and configurations',
     'Foundation logging and storage integration',
-    'Tree-shakable exports for optimal bundles'
-  ]
+    'Tree-shakable exports for optimal bundles',
+  ],
 } as const;

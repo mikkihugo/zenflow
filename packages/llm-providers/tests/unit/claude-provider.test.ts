@@ -1,28 +1,35 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { 
-  executeClaudeTask, 
+import {
+  executeClaudeTask,
   executeSwarmCoordinationTask,
   ClaudeTaskManager,
   getGlobalClaudeTaskManager,
   streamClaudeTask,
   executeParallelClaudeTasks,
   filterMessagesForClaudeCode,
-  cleanupGlobalInstances
+  cleanupGlobalInstances,
 } from '../../src/claude/claude-sdk';
-import { mockClaudeSDK, mockTaskManager, mockMessageProcessor, mockPermissionHandler } from '../mocks/llm-mocks';
+import {
+  mockClaudeSDK,
+  mockTaskManager,
+  mockMessageProcessor,
+  mockPermissionHandler,
+} from '../mocks/llm-mocks';
 
-// Mock the Claude Code SDK  
+// Mock the Claude Code SDK
 vi.mock('@anthropic-ai/claude-code', () => ({
   ClaudeCodeSDK: vi.fn(() => mockClaudeSDK),
-  default: mockClaudeSDK
+  default: mockClaudeSDK,
 }));
 
 // Mock the Claude Code SDK query function
 vi.mock('@anthropic-ai/claude-code/sdk.mjs', () => ({
   query: vi.fn().mockResolvedValue({
-    choices: [{ message: { content: 'Mocked Claude response', role: 'assistant' } }],
-    usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 }
-  })
+    choices: [
+      { message: { content: 'Mocked Claude response', role: 'assistant' } },
+    ],
+    usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 },
+  }),
 }));
 
 describe('Claude Provider', () => {
@@ -39,19 +46,19 @@ describe('Claude Provider', () => {
     it('should execute simple tasks successfully', async () => {
       const mockMessages = [
         { role: 'user', content: 'Hello' },
-        { role: 'assistant', content: 'Hello! How can I help you today?' }
+        { role: 'assistant', content: 'Hello! How can I help you today?' },
       ];
-      
+
       mockClaudeSDK.sendMessage.mockResolvedValue({
         id: 'msg-123',
         content: 'Hello! How can I help you today?',
-        role: 'assistant'
+        role: 'assistant',
       });
 
       const result = await executeClaudeTask('Hello', {
         maxTurns: 1,
         allowedTools: [],
-        timeoutMs: 5000
+        timeoutMs: 5000,
       });
 
       expect(result).toBeDefined();
@@ -64,7 +71,7 @@ describe('Claude Provider', () => {
         allowedTools: ['read', 'write', 'bash'],
         timeoutMs: 30000,
         temperature: 0.7,
-        maxTokens: 4000
+        maxTokens: 4000,
       };
 
       await executeClaudeTask('Complex task', options);
@@ -74,27 +81,33 @@ describe('Claude Provider', () => {
     });
 
     it('should handle errors gracefully', async () => {
-      mockClaudeSDK.sendMessage.mockRejectedValue(new Error('Claude API error'));
+      mockClaudeSDK.sendMessage.mockRejectedValue(
+        new Error('Claude API error')
+      );
 
-      await expect(executeClaudeTask('failing task')).rejects.toThrow('Claude API error');
+      await expect(executeClaudeTask('failing task')).rejects.toThrow(
+        'Claude API error'
+      );
     });
 
     it('should respect timeout settings', async () => {
-      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      const delay = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
       mockClaudeSDK.sendMessage.mockImplementation(() => delay(10000));
 
-      await expect(executeClaudeTask('slow task', { timeoutMs: 100 }))
-        .rejects.toThrow();
+      await expect(
+        executeClaudeTask('slow task', { timeoutMs: 100 })
+      ).rejects.toThrow();
     }, 1000);
 
     it('should handle permission checks', async () => {
-      mockPermissionHandler.checkPermission.mockResolvedValue({ 
-        allowed: false, 
-        reason: 'Tool not permitted' 
+      mockPermissionHandler.checkPermission.mockResolvedValue({
+        allowed: false,
+        reason: 'Tool not permitted',
       });
 
       const result = await executeClaudeTask('task requiring permissions', {
-        allowedTools: ['bash']
+        allowedTools: ['bash'],
       });
 
       expect(mockPermissionHandler.checkPermission).toHaveBeenCalled();
@@ -106,12 +119,12 @@ describe('Claude Provider', () => {
       const coordinationTask = {
         type: 'swarm-coordination',
         agents: ['agent1', 'agent2'],
-        objective: 'Coordinate file analysis'
+        objective: 'Coordinate file analysis',
       };
 
       mockClaudeSDK.sendMessage.mockResolvedValue({
         content: 'Swarm coordination initiated',
-        metadata: { agents: coordinationTask.agents }
+        metadata: { agents: coordinationTask.agents },
       });
 
       const result = await executeSwarmCoordinationTask(coordinationTask);
@@ -126,12 +139,12 @@ describe('Claude Provider', () => {
         agents: ['researcher', 'analyzer', 'coordinator'],
         objective: 'Multi-agent analysis',
         parallelExecution: true,
-        maxConcurrency: 3
+        maxConcurrency: 3,
       };
 
       await executeSwarmCoordinationTask(coordinationTask, {
         enableMemory: true,
-        memoryScope: 'swarm-session'
+        memoryScope: 'swarm-session',
       });
 
       expect(mockClaudeSDK.sendMessage).toHaveBeenCalled();
@@ -153,7 +166,7 @@ describe('Claude Provider', () => {
     it('should execute tasks through manager', async () => {
       const taskId = await taskManager.executeTask('manager task', {
         priority: 'high',
-        category: 'analysis'
+        category: 'analysis',
       });
 
       expect(taskId).toBeDefined();
@@ -189,7 +202,7 @@ describe('Claude Provider', () => {
       const denials = taskManager.getPermissionDenials();
 
       expect(Array.isArray(denials)).toBe(true);
-      
+
       taskManager.clearPermissionDenials();
       const afterClear = taskManager.getPermissionDenials();
       expect(afterClear).toHaveLength(0);
@@ -226,7 +239,7 @@ describe('Claude Provider', () => {
         yield { type: 'complete', result: 'Streaming Claude response' };
       };
 
-      mockClaudeSDK.streamMessage.mockReturnValue(mockStream());
+      mockClaudeSDK.streamMessage.mockReturnValue(mockStream())();
 
       const stream = streamClaudeTask('stream test', { enableStreaming: true });
       const chunks = [];
@@ -246,10 +259,10 @@ describe('Claude Provider', () => {
         throw new Error('Stream interrupted');
       };
 
-      mockClaudeSDK.streamMessage.mockReturnValue(mockStream());
+      mockClaudeSDK.streamMessage.mockReturnValue(mockStream())();
 
       const stream = streamClaudeTask('error stream');
-      
+
       try {
         const chunks = [];
         for await (const chunk of stream) {
@@ -267,7 +280,7 @@ describe('Claude Provider', () => {
       const tasks = [
         { content: 'Task 1', options: { category: 'analysis' } },
         { content: 'Task 2', options: { category: 'generation' } },
-        { content: 'Task 3', options: { category: 'review' } }
+        { content: 'Task 3', options: { category: 'review' } },
       ];
 
       mockClaudeSDK.sendMessage
@@ -277,11 +290,11 @@ describe('Claude Provider', () => {
 
       const results = await executeParallelClaudeTasks(tasks, {
         maxConcurrency: 3,
-        failFast: false
+        failFast: false,
       });
 
       expect(results).toHaveLength(3);
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(mockClaudeSDK.sendMessage).toHaveBeenCalledTimes(3);
     });
 
@@ -289,7 +302,7 @@ describe('Claude Provider', () => {
       const tasks = [
         { content: 'Success task' },
         { content: 'Failing task' },
-        { content: 'Another success task' }
+        { content: 'Another success task' },
       ];
 
       mockClaudeSDK.sendMessage
@@ -298,7 +311,7 @@ describe('Claude Provider', () => {
         .mockResolvedValueOnce({ content: 'Success 2' });
 
       const results = await executeParallelClaudeTasks(tasks, {
-        failFast: false
+        failFast: false,
       });
 
       expect(results).toHaveLength(3);
@@ -308,8 +321,8 @@ describe('Claude Provider', () => {
     });
 
     it('should respect concurrency limits', async () => {
-      const tasks = Array.from({ length: 10 }, (_, i) => ({ 
-        content: `Task ${i + 1}` 
+      const tasks = Array.from({ length: 10 }, (_, i) => ({
+        content: `Task ${i + 1}`,
       }));
 
       let concurrentCount = 0;
@@ -318,9 +331,9 @@ describe('Claude Provider', () => {
       mockClaudeSDK.sendMessage.mockImplementation(async () => {
         concurrentCount++;
         maxConcurrent = Math.max(maxConcurrent, concurrentCount);
-        
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
+
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
         concurrentCount--;
         return { content: 'Task completed' };
       });
@@ -338,16 +351,16 @@ describe('Claude Provider', () => {
         { role: 'assistant', content: 'Hi there!' },
         { role: 'system', content: 'System message' },
         { role: 'tool', content: 'Tool output', tool_call_id: '123' },
-        { role: 'user', content: 'Follow up question' }
+        { role: 'user', content: 'Follow up question' },
       ];
 
       const filtered = filterMessagesForClaudeCode(messages);
 
       expect(Array.isArray(filtered)).toBe(true);
       expect(filtered.length).toBeLessThanOrEqual(messages.length);
-      
+
       // Should contain valid Claude Code message types
-      filtered.forEach(msg => {
+      filtered.forEach((msg) => {
         expect(['user', 'assistant', 'system']).toContain(msg.role);
         expect(msg.content).toBeDefined();
       });
@@ -357,7 +370,7 @@ describe('Claude Provider', () => {
       const messages = [
         { role: 'user', content: 'First' },
         { role: 'assistant', content: 'Second' },
-        { role: 'user', content: 'Third' }
+        { role: 'user', content: 'Third' },
       ];
 
       const filtered = filterMessagesForClaudeCode(messages);
@@ -378,7 +391,7 @@ describe('Claude Provider', () => {
         { role: 'invalid' }, // Missing content
         null, // Null message
         { content: 'Missing role' }, // Missing role
-        { role: 'user', content: 'Another valid message' }
+        { role: 'user', content: 'Another valid message' },
       ];
 
       const filtered = filterMessagesForClaudeCode(messages as any);
@@ -393,7 +406,7 @@ describe('Claude Provider', () => {
     it('should cleanup global instances', () => {
       // Create some global state
       getGlobalClaudeTaskManager();
-      
+
       expect(() => cleanupGlobalInstances()).not.toThrow();
     });
 
@@ -418,22 +431,28 @@ describe('Claude Provider', () => {
     });
 
     it('should handle network timeouts', async () => {
-      mockClaudeSDK.sendMessage.mockImplementation(() => 
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Request timeout')), 100)
-        )
+      mockClaudeSDK.sendMessage.mockImplementation(
+        () =>
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Request timeout')), 100)
+          )
       );
 
-      await expect(executeClaudeTask('test', { timeoutMs: 50 }))
-        .rejects.toThrow();
+      await expect(
+        executeClaudeTask('test', { timeoutMs: 50 })
+      ).rejects.toThrow();
     });
 
     it('should handle rate limiting', async () => {
       mockClaudeSDK.sendMessage.mockRejectedValue(
-        Object.assign(new Error('Rate limit exceeded'), { code: 'RATE_LIMITED' })
+        Object.assign(new Error('Rate limit exceeded'), {
+          code: 'RATE_LIMITED',
+        })
       );
 
-      await expect(executeClaudeTask('test')).rejects.toThrow('Rate limit exceeded');
+      await expect(executeClaudeTask('test')).rejects.toThrow(
+        'Rate limit exceeded'
+      );
     });
 
     it('should handle malformed responses', async () => {
@@ -447,7 +466,7 @@ describe('Claude Provider', () => {
   describe('Performance and Optimization', () => {
     it('should handle large message contexts efficiently', async () => {
       const largeContent = 'x'.repeat(100000); // 100KB message
-      
+
       const startTime = Date.now();
       await executeClaudeTask(largeContent);
       const endTime = Date.now();

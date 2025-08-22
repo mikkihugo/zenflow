@@ -15,8 +15,8 @@
  * @version 2.1.0
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 /**
  * MCP Server Configuration
@@ -243,7 +243,7 @@ export class ExternalMCPClient {
         content: [
           {
             type: 'text',
-            text: request.arguments.text || 'Hello from fallback MCP client',
+            text: request.arguments.text'' | '''' | '''Hello from fallback MCP client',
           },
         ],
       };
@@ -253,7 +253,7 @@ export class ExternalMCPClient {
       content: [
         {
           type: 'text',
-          text: `Tool '${request.name}' is not available in fallback mode`,
+          text: `Tool '${request.name}'is not available in fallback mode`,
         },
       ],
       isError: true,
@@ -317,7 +317,7 @@ export const createExternalMCPClient = (
 /**
  * Default MCP client instance (lazy-initialized)
  */
-let defaultInstance: ExternalMCPClient | null = null;
+let defaultInstance: ExternalMCPClient'' | ''null = null;
 
 export const getDefaultMCPClient = (
   servers?: MCPServerConfig[]
@@ -325,8 +325,7 @@ export const getDefaultMCPClient = (
   if (!defaultInstance && servers) {
     defaultInstance = new ExternalMCPClient(servers);
   } else if (!defaultInstance) {
-    throw new Error(
-      'Default MCP client not initialized. Provide servers on first call.'
+    throw new Error('Default MCP client not initialized. Provide servers on first call.'
     );
   }
   return defaultInstance;

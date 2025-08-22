@@ -10,7 +10,7 @@ export interface IntegrationBridgeConfig {
 export interface SafeFrameworkIntegration {
   id: string;
   type: string;
-  status: 'active | inactive' | 'error');
+  status: 'active'' | ''inactive'' | ''error');
   config: IntegrationBridgeConfig;
 }
 
@@ -25,14 +25,14 @@ export interface IntegratedAgentProfile {
   id: string;
   name: string;
   capabilities: string[];
-  status: 'active | inactive');
+  status: 'active'' | ''inactive');
 }
 
 export interface IntegratedWorkflow {
   id: string;
   name: string;
   steps: string[];
-  status: 'running | completed' | 'failed');
+  status: 'running'' | ''completed'' | ''failed');
 }
 
 export interface IntegrationConfiguration {
@@ -45,7 +45,7 @@ export interface QualityGate {
   id: string;
   criteria: string[];
   threshold: number;
-  status: 'passed | failed' | 'pending');
+  status: 'passed'' | ''failed'' | ''pending');
 }
 
 export interface IntegratedMetrics {

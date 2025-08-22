@@ -26,16 +26,13 @@ import type { UnknownRecord } from './types/primitives';
 /**
  * Modern injection token type (compatible with both awilix and legacy APIs)
  */
-export type InjectionToken<T> =
-  | string
-  | symbol
-  | (new (...args: unknown[]) => T);
+export type InjectionToken<T> ='' | ''string'' | ''symbol'' | ''(new (...args: unknown[]) => T);
 
 /**
  * Lifecycle options for compatibility with legacy APIs
  */
 export enum LifecycleCompat {
-  Transient = 'TRANSIENT',
+  Transient ='TRANSIENT',
   Singleton = 'SINGLETON',
   ContainerScoped = 'SCOPED',
   ResolutionScoped = 'SCOPED',
@@ -47,7 +44,7 @@ export enum LifecycleCompat {
 export interface DIContainer {
   register<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T) | (() => T) | T,
+    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
     options?: {
       lifecycle?: LifecycleCompat;
     }
@@ -55,7 +52,7 @@ export interface DIContainer {
 
   registerSingleton<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T) | (() => T) | T
+    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T
   ): this;
   registerInstance<T>(token: InjectionToken<T>, instance: T): this;
   registerFactory<T>(
@@ -79,7 +76,7 @@ export interface DIContainer {
 export class DependencyResolutionError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options);
-    this.name = 'DependencyResolutionError';
+    this.name ='DependencyResolutionError';
   }
 }
 
@@ -126,11 +123,15 @@ export const TOKENS = FOUNDATION_TOKENS;
  * Simple inject function for constructor parameter decoration
  * This is a lightweight replacement for @injectable decorator
  */
-export function inject<T>(token: InjectionToken<T>) {
-  return function (target: unknown, propertyKey: string | symbol | undefined, parameterIndex: number) {
+export function inject<T>(_token: InjectionToken<T>) {
+  return function (
+    _target: unknown,
+    _propertyKey: string'' | ''symbol'' | ''undefined,
+    _parameterIndex: number
+  ) {
     // Simple marker for dependency injection
     // In a real implementation, this would store metadata
-    console.debug(`Injecting ${String(token)} into parameter ${parameterIndex} of ${String(propertyKey)}`);
+    // Note: Injecting dependency token into parameter
     return target;
   };
 }
@@ -139,9 +140,11 @@ export function inject<T>(token: InjectionToken<T>) {
  * Simple injectable decorator replacement
  */
 export function injectable() {
-  return function <T extends new (...args: unknown[]) => unknown>(target: T): T {
+  return function <T extends new (...args: unknown[]) => unknown>(
+    target: T
+  ): T {
     // Simple marker for injectable classes
-    console.debug(`Marking class ${target.name} as injectable`);
+    // Note: Marking class as injectable
     return target;
   };
 }
@@ -154,12 +157,12 @@ export interface DIContainerFactory {
   createContainer(name?: string, parent?: DIContainer): DIContainer;
   registerGlobal<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T) | (() => T) | T,
+    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
     options?: { lifecycle?: LifecycleCompat }
   ): void;
   registerGlobalSingleton<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T) | (() => T) | T
+    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T
   ): void;
   registerGlobalInstance<T>(token: InjectionToken<T>, instance: T): void;
   resolveGlobal<T>(token: InjectionToken<T>): T;
@@ -175,19 +178,19 @@ export class SimpleDIContainer implements DIContainer {
   private services = new Map<string, unknown>();
   private name: string;
 
-  constructor(name = 'default-container') {
+  constructor(name ='default-container') {
     this.name = name;
   }
 
   register<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T) | (() => T) | T,
-    options?: { lifecycle?: LifecycleCompat },
+    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
+    _options?: { lifecycle?: LifecycleCompat }
   ): this {
     const key = this.getTokenKey(token);
-    console.debug(`Registering service '${key}' in container '${this.name}' with lifecycle '${options?.lifecycle || 'default'}'`);
+    // Note: Registering service in container
 
-    if (typeof target === 'function') {
+    if (typeof target ==='function') {
       this.services.set(key, target);
     } else {
       this.services.set(key, target);
@@ -197,9 +200,11 @@ export class SimpleDIContainer implements DIContainer {
 
   registerSingleton<T>(
     token: InjectionToken<T>,
-    target: (new (...args: unknown[]) => T) | (() => T) | T,
+    target: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T
   ): this {
-    return this.register(token, target, { lifecycle: LifecycleCompat.Singleton });
+    return this.register(token, target, {
+      lifecycle: LifecycleCompat.Singleton,
+    });
   }
 
   registerInstance<T>(token: InjectionToken<T>, instance: T): this {
@@ -211,10 +216,10 @@ export class SimpleDIContainer implements DIContainer {
   registerFactory<T>(
     token: InjectionToken<T>,
     factory: (container: unknown) => T,
-    options?: { lifecycle?: LifecycleCompat },
+    _options?: { lifecycle?: LifecycleCompat }
   ): this {
     const key = this.getTokenKey(token);
-    console.debug(`Registering factory for '${key}' with lifecycle '${options?.lifecycle || 'default'}'`);
+    // Note: Registering factory for dependency
     this.services.set(key, factory);
     return this;
   }
@@ -224,14 +229,16 @@ export class SimpleDIContainer implements DIContainer {
     const service = this.services.get(key);
 
     if (service === undefined) {
-      throw new DependencyResolutionError(`Service '${key}' not found in container '${this.name}'`);
+      throw new DependencyResolutionError(
+        `Service'${key}' not found in container '${this.name}'`
+      );
     }
 
     if (typeof service === 'function') {
       const container = {
         resolve: (k: string) => {
           const f = this.services.get(k);
-          return f ? (typeof f === 'function' ? f() : f) : null;
+          return f ? (typeof f === 'function'? f() : f) : null;
         },
       };
       return (service as (container: unknown) => T)(container);
@@ -250,7 +257,7 @@ export class SimpleDIContainer implements DIContainer {
   }
 
   createChild(name?: string): DIContainer {
-    return new SimpleDIContainer(name || `${this.name}-child`);
+    return new SimpleDIContainer(name'' | '''' | ''`${this.name}-child`);
   }
 
   getRawContainer(): unknown {
@@ -266,14 +273,14 @@ export class SimpleDIContainer implements DIContainer {
   }
 
   private getTokenKey<T>(token: InjectionToken<T>): string {
-    if (typeof token === 'string') {
+    if (typeof token ==='string') {
       return token;
     }
     if (typeof token === 'symbol') {
       return token.toString();
     }
     if (typeof token === 'function') {
-      return token.name || 'anonymous';
+      return token.name'' | '''' | '''anonymous';
     }
     return String(token);
   }
@@ -282,7 +289,7 @@ export class SimpleDIContainer implements DIContainer {
 /**
  * Global container instance
  */
-let globalContainer: DIContainer | null = null;
+let globalContainer: DIContainer'' | ''null = null;
 
 /**
  * Service container factory implementation
@@ -311,7 +318,7 @@ export function createServiceContainer(name?: string): Promise<{
   return Promise.resolve({
     name: container.getName(),
     register: (key: string, factory: (container: unknown) => unknown) => {
-      console.debug(`Registering service '${key}' in container '${container.getName()}'`);
+      // Note: Registering service in container
       services.set(key, factory);
     },
     resolve: (key: string) => {
@@ -320,7 +327,7 @@ export function createServiceContainer(name?: string): Promise<{
         const containerContext = {
           resolve: (k: string) => {
             const f = services.get(k);
-            return f ? (typeof f === 'function' ? f({}) : f) : null;
+            return f ? (typeof f === 'function'? f({}) : f) : null;
           },
         };
         return factory(containerContext);
@@ -336,25 +343,25 @@ export function createServiceContainer(name?: string): Promise<{
  * Storage adapter interface - allows different storage backends
  */
 export interface RegistryStorage<T> {
-  get(id: string): Promise<T | null>;
-  set(id: string, entity: T): Promise<void>;
-  delete(id: string): Promise<boolean>;
-  getAll(): Promise<T[]>;
-  clear(): Promise<void>;
-  has(id: string): Promise<boolean>;
+  get(id: string): T'' | ''null;
+  set(id: string, entity: T): void;
+  delete(id: string): boolean;
+  getAll(): T[];
+  clear(): void;
+  has(id: string): boolean;
 }
 
 /**
  * Generic registry interface for managing entities - storage agnostic
  */
 export interface RegistryInterface<T> {
-  register(entity: T): Promise<{ id: string; registered: boolean }>;
-  unregister(id: string): Promise<{ id: string; unregistered: boolean }>;
-  findById(id: string): Promise<T | null>;
-  findByCapability?(capability: string): Promise<T[]>;
-  getAll(): Promise<T[]>;
-  getStatus(): Promise<{ healthy: boolean; count: number }>;
-  clear(): Promise<void>;
+  register(entity: T): { id: string; registered: boolean };
+  unregister(id: string): { id: string; unregistered: boolean };
+  findById(id: string): T'' | ''null;
+  findByCapability?(capability: string): T[];
+  getAll(): T[];
+  getStatus(): { healthy: boolean; count: number };
+  clear(): void;
   setStorage(storage: RegistryStorage<T>): void;
 }
 
@@ -364,27 +371,27 @@ export interface RegistryInterface<T> {
 export class InMemoryStorage<T> implements RegistryStorage<T> {
   private entities = new Map<string, T>();
 
-  async get(id: string): Promise<T | null> {
-    return this.entities.get(id) || null;
+  get(id: string): T'' | ''null {
+    return this.entities.get(id)'' | '''' | ''null;
   }
 
-  async set(id: string, entity: T): Promise<void> {
+  set(id: string, entity: T): void {
     this.entities.set(id, entity);
   }
 
-  async delete(id: string): Promise<boolean> {
+  delete(id: string): boolean {
     return this.entities.delete(id);
   }
 
-  async getAll(): Promise<T[]> {
-    return Array.from(this.entities.values());
+  getAll(): T[] {
+    return Array.from(this.entities.values())();
   }
 
-  async clear(): Promise<void> {
+  clear(): void {
     this.entities.clear();
   }
 
-  async has(id: string): Promise<boolean> {
+  has(id: string): boolean {
     return this.entities.has(id);
   }
 }
@@ -392,63 +399,74 @@ export class InMemoryStorage<T> implements RegistryStorage<T> {
 /**
  * Base registry implementation - storage agnostic
  */
-export class BaseRegistry<T extends { id?: string }> implements RegistryInterface<T> {
+export class BaseRegistry<T extends { id?: string }>
+  implements RegistryInterface<T>
+{
   protected storage: RegistryStorage<T>;
   protected name: string;
 
-  constructor(name = 'default-registry', storage?: RegistryStorage<T>) {
+  constructor(name ='default-registry', storage?: RegistryStorage<T>) {
     this.name = name;
-    this.storage = storage || new InMemoryStorage<T>();
+    this.storage = storage'' | '''' | ''new InMemoryStorage<T>();
   }
 
   setStorage(storage: RegistryStorage<T>): void {
     this.storage = storage;
   }
 
-  async register(entity: T): Promise<{ id: string; registered: boolean }> {
-    const id = entity.id || `entity-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  register(entity: T): { id: string; registered: boolean } {
+    const id =
+      entity.id'' | '''' | ''`entity-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const entityWithId = { ...entity, id } as T & { id: string };
-    await this.storage.set(id, entityWithId);
-    console.debug(`Registered entity '${id}' in registry '${this.name}'`);
+    this.storage.set(id, entityWithId);
+    // Note: Registered entity in registry
     return { id, registered: true };
   }
 
-  async unregister(id: string): Promise<{ id: string; unregistered: boolean }> {
-    const existed = await this.storage.delete(id);
-    console.debug(`Unregistered entity '${id}' from registry '${this.name}' (existed: ${existed})`);
+  unregister(id: string): { id: string; unregistered: boolean } {
+    const existed = this.storage.delete(id);
+    // Note: Unregistered entity from registry
     return { id, unregistered: existed };
   }
 
-  async findById(id: string): Promise<T | null> {
+  findById(id: string): T'' | ''null {
     return this.storage.get(id);
   }
 
-  async findByCapability(capability: string): Promise<T[]> {
-    console.debug(`Finding entities with capability '${capability}' in registry '${this.name}'`);
-    const entities = await this.storage.getAll();
+  findByCapability(capability: string): T[] {
+    // Note: Finding entities with capability in registry
+    const entities = this.storage.getAll();
     return entities.filter((entity: T) => {
-      const hasCapabilities = 'capabilities' in entity && Array.isArray((entity as { capabilities?: string[] }).capabilities);
-      const hasCapability = 'capability' in entity && typeof (entity as { capability?: string }).capability === 'string';
-      return (hasCapabilities && (entity as { capabilities: string[] }).capabilities.includes(capability)) ||
-             (hasCapability && (entity as { capability: string }).capability === capability);
+      const hasCapabilities ='capabilities' in entity &&
+        Array.isArray((entity as { capabilities?: string[] }).capabilities);
+      const hasCapability =
+        'capability' in entity &&
+        typeof (entity as { capability?: string }).capability === 'string';
+      return (
+        (hasCapabilities &&
+          (entity as { capabilities: string[] }).capabilities.includes(
+            capability
+          ))'' | '''' | ''(hasCapability &&
+          (entity as { capability: string }).capability === capability)
+      );
     });
   }
 
-  async getAll(): Promise<T[]> {
+  getAll(): T[] {
     return this.storage.getAll();
   }
 
-  async getStatus(): Promise<{ healthy: boolean; count: number }> {
-    const entities = await this.storage.getAll();
+  getStatus(): { healthy: boolean; count: number } {
+    const entities = this.storage.getAll();
     return {
       healthy: true,
       count: entities.length,
     };
   }
 
-  async clear(): Promise<void> {
-    await this.storage.clear();
-    console.debug(`Cleared all entities from registry '${this.name}'`);
+  clear(): void {
+    this.storage.clear();
+    // Note: Cleared all entities from registry
   }
 
   getName(): string {
@@ -460,8 +478,8 @@ export class BaseRegistry<T extends { id?: string }> implements RegistryInterfac
  * Registry implementation - uses configurable storage
  */
 export class Registry<T extends { id?: string }> extends BaseRegistry<T> {
-  constructor(name = 'default-registry', storage?: RegistryStorage<T>) {
-    super(name, storage || new InMemoryStorage<T>());
+  constructor(name ='default-registry', storage?: RegistryStorage<T>) {
+    super(name, storage'' | '''' | ''new InMemoryStorage<T>());
   }
 }
 
@@ -475,7 +493,7 @@ export interface Agent {
   name?: string;
   capability?: string;
   capabilities?: string[];
-  status?: 'active' | 'inactive' | 'error' | 'busy';
+  status?:'active | inactive' | 'error''' | '''busy';
   type?: string;
   metadata?: Record<string, unknown>;
   [key: string]: unknown;
@@ -485,9 +503,9 @@ export interface Agent {
 export interface Service {
   id?: string;
   name: string;
-  type: 'api' | 'worker' | 'database' | 'queue' | 'storage' | 'other';
+  type: 'api | worker' | 'database''' | '''queue | storage' | 'other';
   url?: string;
-  status?: 'running' | 'stopped' | 'error' | 'starting';
+  status?: 'running | stopped' | 'error''' | '''starting';
   version?: string;
   capabilities?: string[];
   config?: Record<string, unknown>;
@@ -499,8 +517,8 @@ export interface Task {
   id?: string;
   title: string;
   description?: string;
-  status?: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  status?: 'pending | running' | 'completed' | 'failed' | 'cancelled';
+  priority?: 'low | medium' | 'high''' | '''urgent';
   assignedTo?: string;
   createdAt?: number;
   updatedAt?: number;
@@ -512,9 +530,9 @@ export interface Task {
 export interface Resource {
   id?: string;
   name: string;
-  type: 'file' | 'database' | 'api' | 'cache' | 'queue' | 'storage' | 'other';
+  type: 'file | database' | 'api''' | '''cache | queue' | 'storage''' | '''other';
   url?: string;
-  status?: 'available' | 'unavailable' | 'error' | 'maintenance';
+  status?: 'available | unavailable' | 'error''' | '''maintenance';
   capabilities?: string[];
   config?: Record<string, unknown>;
   [key: string]: unknown;
@@ -531,14 +549,14 @@ export class AgentRegistry extends Registry<Agent> {
     super('agent-registry', storage);
   }
 
-  override async findById(id: string): Promise<Agent | null> {
-    const agent = await super.findById(id);
-    return agent ? { ...agent, status: agent.status || 'active' } : null;
+  override findById(id: string): Agent'' | ''null {
+    const agent = super.findById(id);
+    return agent ? { ...agent, status: agent.status'' | '''' | '''active' } : null;
   }
 
-  async findByStatus(status: Agent['status']): Promise<Agent[]> {
-    const agents = await this.getAll();
-    return agents.filter(agent => agent.status === status);
+  findByStatus(status: Agent['status']): Agent[] {
+    const agents = this.getAll();
+    return agents.filter((agent) => agent.status === status);
   }
 }
 
@@ -550,17 +568,21 @@ export class ServiceRegistry extends Registry<Service> {
 
   async findByType(type: Service['type']): Promise<Service[]> {
     const services = await this.getAll();
-    return services.filter(service => service.type === type);
+    return services.filter((service) => service.type === type);
   }
 
-  async findByStatus(status: Service['status']): Promise<Service[]> {
-    const services = await this.getAll();
-    return services.filter(service => service.status === status);
+  findByStatus(status: Service['status']): Service[] {
+    const services = this.getAll();
+    return services.filter((service) => service.status === status);
   }
 
-  async getHealthStatus(): Promise<{ healthy: number; total: number; percentage: number }> {
+  async getHealthStatus(): Promise<{
+    healthy: number;
+    total: number;
+    percentage: number;
+  }> {
     const services = await this.getAll();
-    const healthy = services.filter(s => s.status === 'running').length;
+    const healthy = services.filter((s) => s.status === 'running').length;
     const total = services.length;
     return {
       healthy,
@@ -576,24 +598,28 @@ export class TaskRegistry extends Registry<Task> {
     super('task-registry', storage);
   }
 
-  async findByStatus(status: Task['status']): Promise<Task[]> {
-    const tasks = await this.getAll();
-    return tasks.filter(task => task.status === status);
+  findByStatus(status: Task['status']): Task[] {
+    const tasks = this.getAll();
+    return tasks.filter((task) => task.status === status);
   }
 
   async findByPriority(priority: Task['priority']): Promise<Task[]> {
     const tasks = await this.getAll();
-    return tasks.filter(task => task.priority === priority);
+    return tasks.filter((task) => task.priority === priority);
   }
 
   async findByAssignee(assignedTo: string): Promise<Task[]> {
     const tasks = await this.getAll();
-    return tasks.filter(task => task.assignedTo === assignedTo);
+    return tasks.filter((task) => task.assignedTo === assignedTo);
   }
 
-  async getProgress(): Promise<{ completed: number; total: number; percentage: number }> {
+  async getProgress(): Promise<{
+    completed: number;
+    total: number;
+    percentage: number;
+  }> {
     const tasks = await this.getAll();
-    const completed = tasks.filter(t => t.status === 'completed').length;
+    const completed = tasks.filter((t) => t.status === 'completed').length;
     const total = tasks.length;
     return {
       completed,
@@ -611,17 +637,21 @@ export class ResourceRegistry extends Registry<Resource> {
 
   async findByType(type: Resource['type']): Promise<Resource[]> {
     const resources = await this.getAll();
-    return resources.filter(resource => resource.type === type);
+    return resources.filter((resource) => resource.type === type);
   }
 
-  async findByStatus(status: Resource['status']): Promise<Resource[]> {
-    const resources = await this.getAll();
-    return resources.filter(resource => resource.status === status);
+  findByStatus(status: Resource['status']): Resource[] {
+    const resources = this.getAll();
+    return resources.filter((resource) => resource.status === status);
   }
 
-  async getAvailabilityStatus(): Promise<{ available: number; total: number; percentage: number }> {
+  async getAvailabilityStatus(): Promise<{
+    available: number;
+    total: number;
+    percentage: number;
+  }> {
     const resources = await this.getAll();
-    const available = resources.filter(r => r.status === 'available').length;
+    const available = resources.filter((r) => r.status === 'available').length;
     const total = resources.length;
     return {
       available,
@@ -640,16 +670,19 @@ export class CustomRegistry<T extends { id?: string }> extends Registry<T> {
   }
 
   // Add query methods for custom entity types
-  async findByProperty<K extends keyof T>(property: K, value: T[K]): Promise<T[]> {
+  async findByProperty<K extends keyof T>(
+    property: K,
+    value: T[K]
+  ): Promise<T[]> {
     const entities = await this.getAll();
-    return entities.filter(entity => entity[property] === value);
+    return entities.filter((entity) => entity[property] === value);
   }
 
   async findByProperties(criteria: Partial<T>): Promise<T[]> {
     const entities = await this.getAll();
-    return entities.filter(entity => {
-      return Object.entries(criteria).every(([key, value]) =>
-        entity[key as keyof T] === value,
+    return entities.filter((entity) => {
+      return Object.entries(criteria).every(
+        ([key, value]) => entity[key as keyof T] === value
       );
     });
   }
@@ -665,7 +698,9 @@ export class CustomRegistry<T extends { id?: string }> extends Registry<T> {
  */
 
 // Generic registry factory
-export function createRegistry<T extends { id?: string }>(name?: string): RegistryInterface<T> {
+export function createRegistry<T extends { id?: string }>(
+  name?: string
+): RegistryInterface<T> {
   return new Registry<T>(name);
 }
 
@@ -687,7 +722,9 @@ export function createResourceRegistry(): ResourceRegistry {
 }
 
 // Custom registry factory for typed registries
-export function createCustomRegistry<T extends { id?: string }>(name: string): CustomRegistry<T> {
+export function createCustomRegistry<T extends { id?: string }>(
+  name: string
+): CustomRegistry<T> {
   return new CustomRegistry<T>(name);
 }
 
@@ -731,17 +768,19 @@ export function createNewAgentRegistry(): AgentRegistry {
   return new AgentRegistry();
 }
 
-export async function registerAgent(agent: Agent) {
+export function registerAgent(agent: Agent) {
   const registry = getAgentRegistry();
   return registry.register(agent);
 }
 
-export async function getAllAgents(): Promise<Agent[]> {
+export function getAllAgents(): Agent[] {
   const registry = getAgentRegistry();
   return registry.getAll();
 }
 
-export async function findAgentsByCapability(capability: string): Promise<Agent[]> {
+export function findAgentsByCapability(
+  capability: string
+): Agent[] {
   const registry = getAgentRegistry();
   return registry.findByCapability(capability);
 }

@@ -9,10 +9,10 @@
  * @file Interface implementation: infrastructure-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import type { ServiceLifecycleStatus } from './core/interfaces');
+import type { ServiceLifecycleStatus } from './core/interfaces';
 
 import {
   createDefaultInfrastructureServiceAdapterConfig,
@@ -56,7 +56,7 @@ export interface InfrastructureServiceFactoryConfig {
   /** Service discovery configuration */
   serviceDiscovery?: {
     enabled?: boolean;
-    registry?: 'memory | redis' | 'consul');
+    registry?: 'memory | redis | consul');
     heartbeatInterval?: number;
   };
 
@@ -244,7 +244,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
 
       // Check for name conflicts
       if (this.serviceRegistry.has(serviceName)) {
-        throw new Error(`Service with name '${serviceName}' already exists`);
+        throw new Error(`Service with name'${serviceName}' already exists`);
       }
 
       // Merge configurations
@@ -354,7 +354,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
 
     const entry = this.serviceRegistry.get(name);
     if (!entry) {
-      throw new Error(`Service '${name}' not found`);
+      throw new Error(`Service'${name}' not found`);
     }
 
     try {
@@ -476,7 +476,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
   getMetrics(): FactoryMetrics & {
     serviceHealth: Record<
       string,
-      'healthy | degraded' | 'unhealthy | unknown'
+      'healthy | degraded | unhealthy | unknown'
     >;
     servicesByStatus: Record<ServiceLifecycleStatus, number>;
     memoryByService: Record<string, number>;
@@ -484,7 +484,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
     // Calculate service health
     const serviceHealth: Record<
       string,
-      'healthy | degraded' | 'unhealthy | unknown'
+      'healthy | degraded | unhealthy | unknown'
     > = {};
     const servicesByStatus: Record<ServiceLifecycleStatus, number> = {
       uninitialized: 0,
@@ -707,7 +707,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
     // Index by tags
     for (const tag of metadata?.tags) {
       if (!this.servicesByTag.has(tag)) {
-        this.servicesByTag.set(tag, new Set());
+        this.servicesByTag.set(tag, new Set())();
       }
       this.servicesByTag.get(tag)?.add(name);
     }
@@ -865,9 +865,7 @@ export class InfrastructureServiceFactory extends TypedEventBase {
 /**
  * Global factory instance for singleton usage.
  */
-let globalInfrastructureServiceFactory:
-  | InfrastructureServiceFactory
-  | undefined;
+let globalInfrastructureServiceFactory:' | 'InfrastructureServiceFactory | undefined;
 
 /**
  * Get or create the global infrastructure service factory instance.
@@ -923,4 +921,4 @@ export type {
 };
 
 // Re-export service type from adapter
-export type { ServiceEventType } from './core/interfaces');
+export type { ServiceEventType } from'./core/interfaces');

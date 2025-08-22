@@ -8,7 +8,7 @@
  * @file Interface implementation: web-config.
  */
 
-import type { DIContainer } from '@claude-zen/intelligence');
+import type { DIContainer } from '@claude-zen/intelligence';
 
 export interface WebConfig {
   port?: number;
@@ -21,7 +21,7 @@ export interface WebConfig {
     enabled: boolean;
     secret?: string;
   };
-  theme?: 'dark | light');
+  theme?: 'dark'' | ''light');
   realTime?: boolean;
   coreSystem?: any; // Reference to core system/orchestrator
   container?: DIContainer; // DI container for enhanced architecture
@@ -33,7 +33,7 @@ export interface WebSession {
   createdAt: Date;
   lastActivity: Date;
   preferences: {
-    theme: 'dark | light');
+    theme: 'dark'' | ''light');
     refreshInterval: number;
     notifications: boolean;
   };
@@ -43,7 +43,7 @@ export interface WebSession {
  * Default web configuration.
  */
 export const DEFAULT_WEB_CONFIG: Required<
-  Omit<WebConfig, 'auth | coreSystem'>
+  Omit<WebConfig, 'auth'' | ''coreSystem'>
 > & {
   auth: WebConfig['auth'];
   coreSystem?: any;
@@ -67,7 +67,7 @@ export const DEFAULT_WEB_CONFIG: Required<
  * @example
  */
 export function createWebConfig(config: WebConfig = {}): Required<
-  Omit<WebConfig, 'auth | coreSystem'>
+  Omit<WebConfig, 'auth'' | ''coreSystem'>
 > & {
   auth: WebConfig['auth'];
   coreSystem?: any;

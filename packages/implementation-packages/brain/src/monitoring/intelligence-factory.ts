@@ -1,6 +1,6 @@
 /**
  * @fileoverview Intelligence System Factory Functions
- * 
+ *
  * Factory functions for creating different intelligence system configurations
  */
 

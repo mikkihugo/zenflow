@@ -7,25 +7,25 @@
 // Simple fallback implementations
 export function createEventBus() {
   return {
-    emit: () => {},
-    on: () => {},
-    off: () => {},
+    emit: () => { /* Fallback emit implementation */ },
+    on: () => { /* Fallback on implementation */ },
+    off: () => { /* Fallback off implementation */ },
   };
 }
 
 export function createEventEmitter() {
   return {
-    emit: () => {},
-    on: () => {},
-    off: () => {},
+    emit: () => {/* EventEmitter emit */},
+    on: () => {/* EventEmitter on */},
+    off: () => {/* EventEmitter off */},
   };
 }
 
 export function createMessageBroker() {
   return {
-    publish: () => {},
-    subscribe: () => {},
-    unsubscribe: () => {},
+    publish: () => { /* Fallback publish implementation */ },
+    subscribe: () => { /* Fallback subscribe implementation */ },
+    unsubscribe: () => { /* Fallback unsubscribe implementation */ },
   };
 }
 

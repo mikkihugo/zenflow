@@ -163,7 +163,7 @@ export interface SystemStartedPayload extends anyPayload {
 }
 
 export interface SystemStoppedPayload extends anyPayload {
-  readonly reason: 'shutdown | error' | 'restart');
+  readonly reason: 'shutdown'' | ''error'' | ''restart');
   readonly uptime: number;
 }
 
@@ -335,7 +335,7 @@ export interface AgentCreatedPayload extends anyPayload {
 
 export interface AgentDestroyedPayload extends anyPayload {
   readonly agentId: string;
-  readonly reason: 'shutdown | error' | 'timeout');
+  readonly reason: 'shutdown'' | ''error'' | ''timeout');
   readonly uptime: number;
 }
 
@@ -432,7 +432,7 @@ export interface HiveTaskAssignedPayload extends anyPayload {
   readonly task: {
     readonly id: string;
     readonly type: string;
-    readonly priority: 'low | medium' | 'high | critical');
+    readonly priority: 'low'' | ''medium'' | ''high'' | ''critical');
     readonly requiredCapabilities?: readonly string[];
   };
 }
@@ -517,7 +517,7 @@ export interface AgentRegisterPayload extends anyPayload {
     readonly currentWorkload: number;
   };
   readonly availability?: {
-    readonly status: 'available | busy' | 'offline');
+    readonly status: 'available'' | ''busy'' | ''offline');
     readonly currentTasks: number;
     readonly maxConcurrentTasks: number;
   };
@@ -544,12 +544,7 @@ export interface SwarmDisconnectPayload extends anyPayload {
 export interface SwarmFactRequestPayload extends anyPayload {
   readonly requestId: string;
   readonly swarmId: string;
-  readonly factType:
-    | 'npm-package'
-    | 'github-repo'
-    | 'api-docs'
-    | 'security-advisory'
-    | 'general');
+  readonly factType:'' | '''npm-package''' | '''github-repo''' | '''api-docs''' | '''security-advisory''' | '''general');
   readonly subject: string;
 }
 
@@ -595,12 +590,7 @@ export interface AgentPerformanceUpdatePayload extends anyPayload {
 
 export interface AgentUnavailablePayload extends anyPayload {
   readonly agentId: string;
-  readonly reason:
-    | 'overloaded'
-    | 'error'
-    | 'maintenance'
-    | 'timeout'
-    | 'resource-exhaustion');
+  readonly reason:'' | '''overloaded | error' | 'maintenance''' | '''timeout''' | '''resource-exhaustion');
   readonly expectedRecoveryTime?: Date;
   readonly alternativeAgents?: readonly string[];
 }
@@ -625,17 +615,13 @@ export interface AgentTaskFailedPayload extends anyPayload {
   readonly taskType: string;
   readonly error: TaskEventError;
   readonly retryCount: number;
-  readonly failureStage:
-    | 'initialization'
-    | 'execution'
-    | 'completion'
-    | 'cleanup');
+  readonly failureStage:'' | '''initialization | execution' | 'completion''' | '''cleanup');
   readonly diagnostics?: Record<string, unknown>;
 }
 
 export interface AgentErrorPayload extends anyPayload {
   readonly agentId: string;
-  readonly errorType: 'fatal | recoverable' | 'warning');
+  readonly errorType: 'fatal'' | ''recoverable'' | ''warning');
   readonly error: {
     readonly code: string;
     readonly message: string;
@@ -670,16 +656,7 @@ export interface TaskProgressUpdatePayload extends anyPayload {
 export interface TaskCancelPayload extends anyPayload {
   readonly taskId: string;
   readonly agentId?: string;
-  readonly reason:
-    | 'user-request'
-    | 'timeout'
-    | 'resource-unavailable'
-    | 'dependency-failure'
-    | 'priority-override'
-    | 'system-shutdown'
-    | 'agent-failure'
-    | 'task_stuck'
-    | 'agent_unavailable');
+  readonly reason:'' | '''user-request''' | '''timeout''' | '''resource-unavailable''' | '''dependency-failure''' | '''priority-override''' | '''system-shutdown''' | '''agent-failure''' | '''task_stuck''' | '''agent_unavailable');
   readonly cancelledBy: string;
   readonly rollbackRequired: boolean;
   readonly affectedDependencies: readonly string[];
@@ -694,7 +671,7 @@ export interface TaskAssignPayload extends anyPayload {
     readonly description: string;
     readonly requirements?: readonly string[];
   };
-  readonly priority: 'low | medium' | 'high | critical');
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical');
   readonly deadline?: Date;
   readonly dependencies: readonly string[];
   readonly requiredCapabilities: readonly string[];
@@ -716,8 +693,8 @@ export interface SwarmCreatedPayload extends anyPayload {
   readonly createdBy: string;
   readonly agentTypes?: readonly AgentType[]; // Added missing agentTypes property
   readonly configuration: {
-    readonly coordinationStrategy: 'centralized | distributed' | 'hybrid');
-    readonly failoverPolicy: 'immediate | graceful' | 'manual');
+    readonly coordinationStrategy: 'centralized'' | ''distributed'' | ''hybrid');
+    readonly failoverPolicy: 'immediate'' | ''graceful'' | ''manual');
     readonly loadBalancing: boolean;
     readonly healthChecking: boolean;
   };
@@ -728,7 +705,7 @@ export interface SwarmCompletedPayload extends anyPayload {
   readonly duration: number;
   readonly tasksCompleted: number;
   readonly tasksFailed: number;
-  readonly finalState: 'success | partial-success' | 'failure');
+  readonly finalState: 'success'' | ''partial-success'' | ''failure');
   readonly results?: readonly unknown[]; // Added missing results property
   readonly performance: {
     readonly averageResponseTime: number;
@@ -745,12 +722,7 @@ export interface SwarmCompletedPayload extends anyPayload {
 
 export interface SwarmKnowledgeInjectPayload extends anyPayload {
   readonly swarmId: string;
-  readonly knowledgeType:
-    | 'facts'
-    | 'patterns'
-    | 'procedures'
-    | 'constraints'
-    | 'preferences');
+  readonly knowledgeType:'' | '''facts | patterns' | 'procedures' | 'constraints' | 'preferences');
   readonly knowledge: {
     readonly content: any;
     readonly metadata: {
@@ -760,11 +732,7 @@ export interface SwarmKnowledgeInjectPayload extends anyPayload {
       readonly tags: readonly string[];
     };
   };
-  readonly distributionScope:
-    | 'all-agents'
-    | 'specific-agents'
-    | 'agent-type'
-    | 'swarm-local');
+  readonly distributionScope:'' | '''all-agents''' | '''specific-agents''' | '''agent-type''' | '''swarm-local');
   readonly targetAgents?: readonly string[];
   readonly persistenceRequested?: boolean;
 }
@@ -772,7 +740,7 @@ export interface SwarmKnowledgeInjectPayload extends anyPayload {
 // Network and node event payloads
 export interface NodeConnectedPayload extends anyPayload {
   readonly nodeId: string;
-  readonly nodeType: 'agent | coordinator' | 'storage | compute');
+  readonly nodeType: 'agent'' | ''coordinator'' | ''storage'' | ''compute');
   readonly endpoint: string;
   readonly capabilities: readonly string[];
   readonly networkLatency: number;
@@ -785,12 +753,7 @@ export interface NodeConnectedPayload extends anyPayload {
 
 export interface NodeDisconnectedPayload extends anyPayload {
   readonly nodeId: string;
-  readonly reason:
-    | 'clean-shutdown'
-    | 'timeout'
-    | 'error'
-    | 'network-failure'
-    | 'resource-exhaustion');
+  readonly reason:' | ''clean-shutdown''' | '''timeout''' | '''error''' | '''network-failure''' | '''resource-exhaustion');
   readonly lastSeen: Date;
   readonly connectionDuration: number;
   readonly gracefulShutdown: boolean;
@@ -802,41 +765,35 @@ export interface MessageReceivedPayload extends anyPayload {
   readonly messageId: string;
   readonly fromNodeId: string;
   readonly toNodeId: string;
-  readonly messageType: 'command | response' | 'event | heartbeat' | 'data');
+  readonly messageType: 'command'' | ''response'' | ''event'' | ''heartbeat'' | ''data');
   readonly size: number;
   readonly processingTime: number;
-  readonly priority: 'low | medium' | 'high | critical');
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical');
   readonly encrypted: boolean;
-  readonly deliveryGuarantee: 'at-most-once | at-least-once' | 'exactly-once');
+  readonly deliveryGuarantee: 'at-most-once'' | ''at-least-once'' | ''exactly-once');
 }
 
 export interface NetworkPartitionPayload extends anyPayload {
   readonly partitionId: string;
   readonly affectedNodes: readonly string[];
   readonly isolatedNodes: readonly string[];
-  readonly partitionType: 'split-brain | island' | 'cascade-failure');
+  readonly partitionType: 'split-brain'' | ''island'' | ''cascade-failure');
   readonly detectionTime: Date;
   readonly estimatedDuration?: number;
-  readonly recoveryStrategy: 'wait | failover' | 'merge | restart');
-  readonly dataConsistencyImpact: 'none | eventual' | 'strong | unknown');
+  readonly recoveryStrategy: 'wait'' | ''failover'' | ''merge'' | ''restart');
+  readonly dataConsistencyImpact: 'none'' | ''eventual'' | ''strong'' | ''unknown');
 }
 
 // Additional system event payloads
 export interface SystemResourcePressurePayload extends anyPayload {
-  readonly resourceType:
-    | 'cpu'
-    | 'memory'
-    | 'disk'
-    | 'network'
-    | 'file-descriptors'
-    | 'connections');
+  readonly resourceType:' | ''cpu | memory' | 'disk''' | '''network''' | '''file-descriptors''' | '''connections');
   readonly currentUsage: number;
   readonly threshold: number;
-  readonly severity: 'warning | critical' | 'emergency');
+  readonly severity: 'warning'' | ''critical'' | ''emergency');
   readonly trends: {
-    readonly short: 'increasing | decreasing' | 'stable');
-    readonly medium: 'increasing | decreasing' | 'stable');
-    readonly long: 'increasing | decreasing' | 'stable');
+    readonly short: 'increasing'' | ''decreasing'' | ''stable');
+    readonly medium: 'increasing'' | ''decreasing'' | ''stable');
+    readonly long: 'increasing'' | ''decreasing'' | ''stable');
   };
   readonly affectedServices: readonly string[];
   readonly recommendedActions: readonly string[];
@@ -845,37 +802,24 @@ export interface SystemResourcePressurePayload extends anyPayload {
 
 // Load balancing and workload event payloads
 export interface WorkloadDemandChangePayload extends anyPayload {
-  readonly resourceType: 'cpu | memory' | 'network | agents' | 'tasks');
+  readonly resourceType: 'cpu'' | ''memory'' | ''network'' | ''agents'' | ''tasks');
   readonly previousDemand: number;
   readonly currentDemand: number;
   readonly changePercentage: number;
-  readonly trend: 'increasing | decreasing' | 'stable');
-  readonly triggerReason:
-    | 'traffic-spike'
-    | 'resource-constraint'
-    | 'scaling-event'
-    | 'load-balancing');
+  readonly trend: 'increasing'' | ''decreasing'' | ''stable');
+  readonly triggerReason:'' | '''traffic-spike''' | '''resource-constraint''' | '''scaling-event''' | '''load-balancing');
   readonly affectedNodes: readonly string[];
-  readonly recommendedAction:
-    | 'scale-up'
-    | 'scale-down'
-    | 'redistribute'
-    | 'optimize');
+  readonly recommendedAction:'' | '''scale-up''' | '''scale-down''' | '''redistribute''' | '''optimize');
 }
 
 export interface LoadSpikePayload extends anyPayload {
-  readonly resourceType:
-    | 'cpu'
-    | 'memory'
-    | 'network'
-    | 'connections'
-    | 'requests');
+  readonly resourceType:'' | '''cpu | memory' | 'network' | 'connections' | 'requests');
   readonly baselineLoad: number;
   readonly currentLoad: number;
   readonly peakLoad: number;
   readonly spikeMultiplier: number;
   readonly duration: number;
-  readonly severity: 'minor | moderate' | 'severe | critical');
+  readonly severity: 'minor'' | ''moderate'' | ''severe'' | ''critical');
   readonly affectedServices: readonly string[];
   readonly autoScalingTriggered: boolean;
   readonly mitigationActions: readonly string[];
@@ -883,17 +827,11 @@ export interface LoadSpikePayload extends anyPayload {
 
 // Additional resource pressure event (more specific than system:resource-pressure)
 export interface ResourcePressurePayload extends anyPayload {
-  readonly resourceType:
-    | 'cpu'
-    | 'memory'
-    | 'disk'
-    | 'network'
-    | 'file-descriptors'
-    | 'database-connections');
+  readonly resourceType:' | ''cpu | memory' | 'disk''' | '''network''' | '''file-descriptors''' | '''database-connections');
   readonly currentUsage: number;
   readonly capacity: number;
   readonly utilizationPercentage: number;
-  readonly pressureLevel: 'low | medium' | 'high | critical');
+  readonly pressureLevel: 'low'' | ''medium'' | ''high'' | ''critical');
   readonly timeToExhaustion?: number;
   readonly growthRate: number;
   readonly impactedOperations: readonly string[];
@@ -903,12 +841,7 @@ export interface ResourcePressurePayload extends anyPayload {
 // Node lifecycle event payloads
 export interface NodeJoinedPayload extends anyPayload {
   readonly nodeId: string;
-  readonly nodeType:
-    | 'agent'
-    | 'coordinator'
-    | 'storage'
-    | 'compute'
-    | 'load-balancer');
+  readonly nodeType:' | ''agent | coordinator' | 'storage''' | '''compute''' | '''load-balancer');
   readonly capabilities: readonly string[];
   readonly resources: {
     readonly cpu: number;
@@ -922,23 +855,13 @@ export interface NodeJoinedPayload extends anyPayload {
     readonly datacenter?: string;
   };
   readonly metadata: Record<string, unknown>;
-  readonly joinReason: 'startup | scaling' | 'recovery | migration');
+  readonly joinReason: 'startup'' | ''scaling'' | ''recovery'' | ''migration');
 }
 
 export interface NodeLeftPayload extends anyPayload {
   readonly nodeId: string;
-  readonly nodeType:
-    | 'agent'
-    | 'coordinator'
-    | 'storage'
-    | 'compute'
-    | 'load-balancer');
-  readonly leaveReason:
-    | 'shutdown'
-    | 'scaling-down'
-    | 'failure'
-    | 'maintenance'
-    | 'eviction');
+  readonly nodeType:' | ''agent | coordinator' | 'storage''' | '''compute''' | '''load-balancer');
+  readonly leaveReason:'' | '''shutdown''' | '''scaling-down''' | '''failure | maintenance' | 'eviction');
   readonly gracefulShutdown: boolean;
   readonly connectionDuration: number;
   readonly tasksRelocated: number;
@@ -994,11 +917,11 @@ export interface HeartbeatSentPayload extends anyPayload {
   readonly to?: string; // Added missing 'to' property
   readonly term?: number; // Added missing 'term' property for leadership coordination
   readonly toNodeId?: string; // undefined for broadcast heartbeats
-  readonly heartbeatType: 'node | agent' | 'swarm | service' | 'cluster');
+  readonly heartbeatType: 'node'' | ''agent'' | ''swarm'' | ''service'' | ''cluster');
   readonly sequenceNumber: number;
   readonly interval: number;
   readonly payload: {
-    readonly status: 'healthy | degraded' | 'unhealthy');
+    readonly status: 'healthy'' | ''degraded'' | ''unhealthy');
     readonly load: number;
     readonly responseTime: number;
     readonly lastActivity: Date;
@@ -1011,8 +934,8 @@ export interface HeartbeatSentPayload extends anyPayload {
 // Connection and network event payloads
 export interface ConnectionQualityChangedPayload extends anyPayload {
   readonly connectionId: string;
-  readonly previousQuality: 'excellent | good' | 'fair | poor' | 'critical');
-  readonly currentQuality: 'excellent | good' | 'fair | poor' | 'critical');
+  readonly previousQuality: 'excellent'' | ''good'' | ''fair'' | ''poor'' | ''critical');
+  readonly currentQuality: 'excellent'' | ''good'' | ''fair'' | ''poor'' | ''critical');
   readonly metrics: {
     readonly latency: number;
     readonly packetLoss: number;
@@ -1023,13 +946,8 @@ export interface ConnectionQualityChangedPayload extends anyPayload {
 }
 
 export interface NetworkFaultDetectedPayload extends anyPayload {
-  readonly faultType:
-    | 'connection-loss'
-    | 'high-latency'
-    | 'packet-loss'
-    | 'bandwidth-degradation'
-    | 'routing-issue');
-  readonly severity: 'minor | moderate' | 'severe | critical');
+  readonly faultType:'' | '''connection-loss''' | '''high-latency''' | '''packet-loss''' | '''bandwidth-degradation''' | '''routing-issue');
+  readonly severity: 'minor'' | ''moderate'' | ''severe'' | ''critical');
   readonly affectedNodes: readonly string[];
   readonly detectionTime: Date;
   readonly estimatedImpact: {
@@ -1037,23 +955,19 @@ export interface NetworkFaultDetectedPayload extends anyPayload {
     readonly estimatedDowntime?: number;
     readonly impactedOperations: readonly string[];
   };
-  readonly mitigationStatus: 'none | in-progress' | 'completed');
+  readonly mitigationStatus: 'none'' | ''in-progress'' | ''completed');
 }
 
 // Workload pattern event payloads
 export interface WorkloadPatternChangedPayload extends anyPayload {
-  readonly patternType:
-    | 'load-distribution'
-    | 'task-frequency'
-    | 'resource-usage'
-    | 'communication-pattern');
+  readonly patternType:'' | '''load-distribution''' | '''task-frequency''' | '''resource-usage''' | '''communication-pattern');
   readonly previousPattern: string;
   readonly currentPattern: string;
   readonly confidence: number;
   readonly detectionAlgorithm: string;
   readonly implications: readonly {
-    readonly category: 'performance | resource' | 'scaling | coordination');
-    readonly impact: 'positive | negative' | 'neutral');
+    readonly category: 'performance'' | ''resource'' | ''scaling'' | ''coordination');
+    readonly impact: 'positive'' | ''negative'' | ''neutral');
     readonly description: string;
   }[];
   readonly recommendedActions: readonly string[];
@@ -1064,11 +978,8 @@ export interface SwarmSyncBroadcastPayload extends anyPayload {
   readonly swarmId: string;
   readonly sourceSwarmId?: string; // Source swarm identifier for sync operations
   readonly syncId: string;
-  readonly syncType: 'state | config' | 'knowledge | health');
-  readonly broadcastScope:
-    | 'all-agents'
-    | 'specific-agents'
-    | 'coordinator-only');
+  readonly syncType: 'state'' | ''config'' | ''knowledge'' | ''health');
+  readonly broadcastScope:' | ''all-agents''' | '''specific-agents''' | '''coordinator-only');
   readonly targetAgents?: readonly string[];
   readonly payload?: {
     // Made optional since some usages don't include this
@@ -1077,7 +988,7 @@ export interface SwarmSyncBroadcastPayload extends anyPayload {
     readonly checksum: string;
   };
   readonly state?: any; // Added for sync state data
-  readonly priority?: 'low | medium' | 'high | critical'); // Made optional
+  readonly priority?: 'low'' | ''medium'' | ''high'' | ''critical'); // Made optional
   readonly acknowledgeRequired?: boolean; // Made optional
 }
 
@@ -1085,7 +996,7 @@ export interface SwarmSyncResponsePayload extends anyPayload {
   readonly swarmId: string;
   readonly syncId: string;
   readonly respondingAgentId: string;
-  readonly responseType: 'ack | nack' | 'partial | error');
+  readonly responseType: 'ack'' | ''nack'' | ''partial'' | ''error');
   readonly responseData?: any;
   readonly processingTime: number;
   readonly sourceSwarmId?: string; // Added to match usage in swarm-synchronization.ts
@@ -1106,10 +1017,10 @@ export interface AgentStateUpdatedPayload extends anyPayload {
     {
       readonly previous: any;
       readonly current: any;
-      readonly changeType: 'created | updated' | 'deleted');
+      readonly changeType: 'created'' | ''updated'' | ''deleted');
     }
   >;
-  readonly updateTrigger: 'external | internal' | 'system | user');
+  readonly updateTrigger: 'external'' | ''internal'' | ''system'' | ''user');
   readonly updateSource: string;
   readonly validationPassed: boolean;
   readonly propagationRequired: boolean;
@@ -1207,7 +1118,7 @@ export interface MemoryKeyDeletedPayload extends anyPayload {
 
 export interface MemorySyncStartedPayload extends anyPayload {
   readonly storeId: string;
-  readonly syncType: 'full | incremental');
+  readonly syncType: 'full'' | ''incremental');
   readonly targetNodes: readonly string[];
 }
 
@@ -1268,7 +1179,7 @@ export interface SystemErrorContext {
   readonly [key: string]: any;
 }
 
-export type HealthState = 'healthy | degraded' | 'unhealthy');
+export type HealthState ='healthy'' | ''degraded'' | ''unhealthy');
 
 export interface ServiceHealthMap {
   readonly [serviceName: string]: HealthState;
@@ -1292,14 +1203,9 @@ export interface StepEventResult {
   readonly [key: string]: any;
 }
 
-export type AgentType =
-  | 'researcher'
-  | 'coder'
-  | 'analyst'
-  | 'tester'
-  | 'coordinator');
-export type AgentStatus = 'idle | busy' | 'error | offline');
-export type SwarmTopology = 'mesh | hierarchical' | 'ring | star');
+export type AgentType ='' | '''researcher | coder' | 'analyst' | 'tester' | 'coordinator');
+export type AgentStatus = 'idle'' | ''busy'' | ''error'' | ''offline');
+export type SwarmTopology = 'mesh'' | ''hierarchical'' | ''ring'' | ''star');
 
 export interface TaskEventResult {
   readonly [key: string]: any;
@@ -1311,11 +1217,7 @@ export interface TaskEventError {
   readonly details?: any;
 }
 
-export type NeuralNetworkType =
-  | 'feedforward'
-  | 'convolutional'
-  | 'recurrent'
-  | 'transformer');
+export type NeuralNetworkType =' | ''feedforward | convolutional' | 'recurrent''' | '''transformer');
 
 export interface NeuralEventError {
   readonly code: string;
@@ -1323,7 +1225,7 @@ export interface NeuralEventError {
   readonly details?: any;
 }
 
-export type MemoryStoreType = 'local | distributed' | 'cache');
+export type MemoryStoreType = 'local'' | ''distributed'' | ''cache');
 
 export interface MemoryStoreConfig {
   readonly [key: string]: any;
@@ -1339,7 +1241,7 @@ export interface EventBusConfig {
   readonly enableMiddleware: boolean;
   readonly enableMetrics: boolean;
   readonly enableLogging: boolean;
-  readonly logLevel: 'debug | info' | 'warn | error');
+  readonly logLevel: 'debug'' | ''info'' | ''warn'' | ''error');
 }
 
 /**

@@ -48,43 +48,43 @@
  * **REDUCTION ACHIEVED: 1,788 → 350 lines (80?.4% reduction) through strategic delegation**
  */
 
-import type { AgentManager } from '@claude-zen/enterprise');
+import type { AgentManager } from '@claude-zen/enterprise';
 import type {
   Logger,
   HealthMonitor,
   PerformanceTracker,
   ServiceMetrics,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 import {
   getLogger,
   assertDefined,
   getErrorMessage,
   TypedEventBase,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 
 // Strategic imports from @claude-zen packages
 
 import type {
   LoadBalancer,
   ServiceCoordinator,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Foundation utilities
-import type { WorkflowEngine } from '@claude-zen/intelligence');
+import type { WorkflowEngine } from '@claude-zen/intelligence';
 
 // =============================================================================
 // TYPES AND INTERFACES - Service Integration Layer
 // =============================================================================
 
 // Import types from centralized types file
-import type { ServiceMetrics } from '?./core/interfaces');
+import type { ServiceMetrics } from '?./core/interfaces';
 import type {
   ServiceManagerConfig,
   Service,
   ServiceRequest,
   ServiceHealth,
   BatchServiceRequest,
-} from '?./types');
+} from '?./types';
 
 // =============================================================================
 // SERVICE MANAGER - Strategic Package Delegation
@@ -112,12 +112,12 @@ export class ServiceManager extends TypedEventBase {
   private readonly settings: ServiceManagerConfig;
 
   // Strategic delegation instances
-  private workflowEngine: WorkflowEngine | null = null;
-  private agentManager: AgentManager | null = null;
-  private healthMonitor: HealthMonitor | null = null;
-  private loadBalancer: LoadBalancer | null = null;
-  private serviceCoordinator: ServiceCoordinator | null = null;
-  private performanceTracker: PerformanceTracker | null = null;
+  private workflowEngine: WorkflowEngine'' | ''null = null;
+  private agentManager: AgentManager'' | ''null = null;
+  private healthMonitor: HealthMonitor'' | ''null = null;
+  private loadBalancer: LoadBalancer'' | ''null = null;
+  private serviceCoordinator: ServiceCoordinator'' | ''null = null;
+  private performanceTracker: PerformanceTracker'' | ''null = null;
 
   private initialized = false;
   private services = new Map<string, Service>();
@@ -206,7 +206,7 @@ export class ServiceManager extends TypedEventBase {
         name: request?.name,
         type: request?.type,
         config: request?.config,
-        dependencies: request?.dependencies || [],
+        dependencies: request?.dependencies'' | '''' | ''[],
       });
 
       // Register service with workflow engine for orchestration
@@ -257,7 +257,7 @@ export class ServiceManager extends TypedEventBase {
         createdServices =
           (await this.workflowEngine?.createServicesParallel(
             request?.services
-          )) || [];
+          ))'' | '''' | ''[];
       } else {
         // Sequential creation with error handling
         createdServices = [];
@@ -287,8 +287,7 @@ export class ServiceManager extends TypedEventBase {
       );
       return createdServices;
     } catch (error) {
-      this.logger?.error(
-        'Failed to create service batch:',
+      this.logger?.error('Failed to create service batch:',
         getErrorMessage(error)
       );
       throw error;
@@ -335,7 +334,7 @@ export class ServiceManager extends TypedEventBase {
   /**
    * Get service by name
    */
-  getService(name: string): Service | undefined {
+  getService(name: string): Service'' | ''undefined {
     return this.services?.get(name);
   }
 
@@ -343,7 +342,7 @@ export class ServiceManager extends TypedEventBase {
    * Get all services
    */
   getAllServices(): Service[] {
-    return Array?.from(this.services?.values());
+    return Array?.from(this.services?.values())();
   }
 
   /**
@@ -459,7 +458,7 @@ export type {
   ServiceHealth,
   BatchServiceRequest,
   ServiceMetrics,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 
 /**
  * SOPHISTICATED TYPE ARCHITECTURE DEMONSTRATION

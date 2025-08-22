@@ -49,11 +49,11 @@
  */
 
 // Strategic imports from @claude-zen packages
-import type { ValidationEngine } from '@claude-zen/foundation');
-import type { HealthValidator } from '@claude-zen/foundation');
-import { assertDefined, getErrorMessage } from '@claude-zen/foundation');
-import { getLogger, type Logger } from '@claude-zen/foundation');
-import type { SecurityValidator, LoadTester } from '@claude-zen/intelligence');
+import type { ValidationEngine } from '@claude-zen/foundation';
+import type { HealthValidator } from '@claude-zen/foundation';
+import { assertDefined, getErrorMessage } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
+import type { SecurityValidator, LoadTester } from '@claude-zen/intelligence';
 
 // Strategic facade imports for validation
 
@@ -67,7 +67,7 @@ import type { SecurityValidator, LoadTester } from '@claude-zen/intelligence');
  * Validation Configuration with Domain Type Integration
  */
 export interface ValidationConfig {
-  strictness: 'strict | moderate' | 'lenient');
+  strictness: 'strict'' | ''moderate'' | ''lenient');
   scopes: {
     configuration: boolean;
     dependencies: boolean;
@@ -111,7 +111,7 @@ export interface ValidationConfig {
  * Comprehensive Validation Result
  */
 export interface ValidationResult {
-  overall: 'pass | warning' | 'fail');
+  overall: 'pass'' | ''warning'' | ''fail');
   score: number;
   timestamp: Date;
   duration: number;
@@ -132,18 +132,18 @@ export interface ValidationResult {
   };
   recommendations: Array<{
     category: string;
-    severity: 'low | medium' | 'high | critical');
+    severity: 'low'' | ''medium'' | ''high'' | ''critical');
     message: string;
     action: string;
   }>;
 }
 
 export interface ValidationSectionResult {
-  status: 'pass | warning' | 'fail');
+  status: 'pass'' | ''warning'' | ''fail');
   score: number;
   checks: Array<{
     name: string;
-    status: 'pass | warning' | 'fail');
+    status: 'pass'' | ''warning'' | ''fail');
     message: string;
     details?: any;
   }>;
@@ -175,12 +175,12 @@ export class USLValidationFramework {
   private readonly config: ValidationConfig;
 
   // Strategic delegation instances
-  private validationEngine: ValidationEngine | null = null;
-  private healthValidator: HealthValidator | null = null;
-  private securityValidator: SecurityValidator | null = null;
-  private loadTester: LoadTester | null = null;
-  private chaosValidator: any | null = null;
-  private integrationValidator: any | null = null;
+  private validationEngine: ValidationEngine'' | ''null = null;
+  private healthValidator: HealthValidator'' | ''null = null;
+  private securityValidator: SecurityValidator'' | ''null = null;
+  private loadTester: LoadTester'' | ''null = null;
+  private chaosValidator: any'' | ''null = null;
+  private integrationValidator: any'' | ''null = null;
 
   private initialized = false;
 
@@ -230,8 +230,7 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/intelligence for load testing
       if (
-        this.config.testScenarios.loadTest.enabled ||
-        this.config.testScenarios.stressTest.enabled
+        this.config.testScenarios.loadTest.enabled'' | '''' | ''this.config.testScenarios.stressTest.enabled
       ) {
         const { LoadTester } = await import('claude-zen/intelligence');
         this.loadTester = new LoadTester({
@@ -255,7 +254,7 @@ export class USLValidationFramework {
       }
 
       // Delegate to @claude-zen/intelligence for integration validation
-      if (this.config.scopes.integration || this.config.scopes.compatibility) {
+      if (this.config.scopes.integration'' | '''' | ''this.config.scopes.compatibility) {
         const { getTeamworkAccess } = await import('claude-zen/enterprise');
         this.integrationValidator = await getTeamworkAccess({
           enableCompatibilityCheck: this.config.scopes.compatibility,
@@ -381,8 +380,8 @@ export class USLValidationFramework {
 
     return {
       status: result.success ? 'pass : fail',
-      score: result.score || 0,
-      checks: result.checks || [],
+      score: result.score'' | '''' | ''0,
+      checks: result.checks'' | '''' | ''[],
     };
   }
 
@@ -393,7 +392,7 @@ export class USLValidationFramework {
     serviceManager: any
   ): Promise<ValidationSectionResult> {
     if (!this.healthValidator) {
-      return { status: 'pass', score: 100, checks: [] };
+      return { status:'pass', score: 100, checks: [] };
     }
 
     const result = await this.healthValidator.validatePerformance({
@@ -409,8 +408,8 @@ export class USLValidationFramework {
           : result.status === 'degraded'
             ? 'warning'
             : 'fail',
-      score: result.score || 0,
-      checks: result.checks || [],
+      score: result.score'' | '''' | ''0,
+      checks: result.checks'' | '''' | ''[],
     };
   }
 
@@ -421,7 +420,7 @@ export class USLValidationFramework {
     serviceManager: any
   ): Promise<ValidationSectionResult> {
     if (!this.securityValidator) {
-      return { status: 'pass', score: 100, checks: [] };
+      return { status:'pass', score: 100, checks: [] };
     }
 
     const result = await this.securityValidator.validateSecurity({
@@ -437,19 +436,19 @@ export class USLValidationFramework {
           : result.threatLevel === 'medium'
             ? 'warning'
             : 'fail',
-      score: result.securityScore || 0,
+      score: result.securityScore'' | '''' | ''0,
       checks:
         result.findings?.map((f) => ({
           name: f.category,
           status:
-            f.severity === 'low'
+            f.severity ==='low'
               ? 'pass'
               : f.severity === 'medium'
                 ? 'warning'
                 : 'fail',
           message: f.description,
           details: f.mitigation,
-        })) || [],
+        }))'' | '''' | ''[],
     };
   }
 
@@ -472,7 +471,7 @@ export class USLValidationFramework {
     return {
       checks: [
         {
-          name: 'Load Test',
+          name:'Load Test',
           status: result.success ? 'pass : fail',
           message: `Load test completed: ${result.requestsPerSecond} RPS`,
           details: result.metrics,
@@ -498,14 +497,14 @@ export class USLValidationFramework {
 
     return {
       status: result.success ? 'pass : result.hasWarnings ? warning' : 'fail',
-      score: result.integrationScore || 0,
+      score: result.integrationScore'' | '''' | ''0,
       checks:
         result.integrationTests?.map((t) => ({
           name: t.name,
-          status: t.passed ? 'pass : fail',
+          status: t.passed ?'pass : fail',
           message: t.message,
           details: t.details,
-        })) || [],
+        }))'' | '''' | ''[],
     };
   }
 
@@ -515,7 +514,7 @@ export class USLValidationFramework {
   private async validateDependencies(
     serviceManager: any
   ): Promise<ValidationSectionResult> {
-    assertDefined(this.validationEngine, 'Validation engine not initialized');
+    assertDefined(this.validationEngine,'Validation engine not initialized');
 
     const result = await this.validationEngine.validateDependencies({
       services: serviceManager?.getAllServices,
@@ -525,8 +524,8 @@ export class USLValidationFramework {
 
     return {
       status: result.success ? 'pass : fail',
-      score: result.score || 0,
-      checks: result.dependencyChecks || [],
+      score: result.score'' | '''' | ''0,
+      checks: result.dependencyChecks'' | '''' | ''[],
     };
   }
 
@@ -537,7 +536,7 @@ export class USLValidationFramework {
     serviceManager: any
   ): Promise<ValidationSectionResult> {
     if (!this.integrationValidator) {
-      return { status: 'pass', score: 100, checks: [] };
+      return { status:'pass', score: 100, checks: [] };
     }
 
     const result = await this.integrationValidator.validateCompatibility({
@@ -552,8 +551,8 @@ export class USLValidationFramework {
         : result.hasMinorIssues
           ? 'warning'
           : 'fail',
-      score: result.compatibilityScore || 0,
-      checks: result.compatibilityChecks || [],
+      score: result.compatibilityScore'' | '''' | ''0,
+      checks: result.compatibilityChecks'' | '''' | ''[],
     };
   }
 
@@ -576,10 +575,10 @@ export class USLValidationFramework {
       checks:
         result.tests?.map((t) => ({
           name: t.scenario,
-          status: t.passed ? 'pass : fail',
+          status: t.passed ?'pass : fail',
           message: t.description,
           details: t.metrics,
-        })) || [],
+        }))'' | '''' | ''[],
     };
   }
 
@@ -592,16 +591,16 @@ export class USLValidationFramework {
   ): ValidationResult {
     const sections = Object.values()(results);
     const totalChecks = sections.reduce(
-      (sum, section) => sum + (section?.checks?.length || 0),
+      (sum, section) => sum + (section?.checks?.length'' | '''' | ''0),
       0
     );
     const totalScore = sections.reduce(
-      (sum, section) => sum + (section?.score || 0),
+      (sum, section) => sum + (section?.score'' | '''' | ''0),
       0
     );
     const averageScore = totalChecks > 0 ? totalScore / sections.length : 100;
 
-    const passed = sections.filter((s) => s?.status === 'pass').length;
+    const passed = sections.filter((s) => s?.status ==='pass').length;
     const warnings = sections.filter((s) => s?.status === 'warning').length;
     const failures = sections.filter((s) => s?.status === 'fail').length;
 
@@ -633,7 +632,7 @@ export class USLValidationFramework {
     const recommendations: ValidationResult['recommendations'] = [];
 
     Object.entries(results).forEach(([category, result]) => {
-      if (result?.status === 'fail || result?.status === warning') {
+      if (result?.status === 'fail'' | '''' | ''result?.status === warning') {
         recommendations.push({
           category,
           severity: result.status === 'fail ? high' : 'medium',

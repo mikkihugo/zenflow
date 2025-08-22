@@ -47,31 +47,69 @@
  * ```
  */
 export { WorkflowEngine as default, WorkflowEngine } from './engine';
-export type { WorkflowStep, WorkflowDefinition, WorkflowContext, DocumentContent, StepExecutionResult, WorkflowData, WorkflowState, WorkflowEngineConfig } from './engine';
-export declare function getWorkflowSystemAccess(config?: WorkflowEngineConfig): Promise<any>;
-export declare function getWorkflowEngine(config?: WorkflowEngineConfig): Promise<WorkflowEngine>;
-export declare function getWorkflowOrchestration(config?: WorkflowEngineConfig): Promise<any>;
-export declare function getWorkflowManagement(config?: WorkflowEngineConfig): Promise<any>;
-export declare function getWorkflowVisualization(config?: WorkflowEngineConfig): Promise<any>;
+export type {
+  WorkflowStep,
+  WorkflowDefinition,
+  WorkflowContext,
+  DocumentContent,
+  StepExecutionResult,
+  WorkflowData,
+  WorkflowState,
+  WorkflowEngineConfig,
+} from './engine';
+export declare function getWorkflowSystemAccess(
+  config?: WorkflowEngineConfig
+): Promise<any>;
+export declare function getWorkflowEngine(
+  config?: WorkflowEngineConfig
+): Promise<WorkflowEngine>;
+export declare function getWorkflowOrchestration(
+  config?: WorkflowEngineConfig
+): Promise<any>;
+export declare function getWorkflowManagement(
+  config?: WorkflowEngineConfig
+): Promise<any>;
+export declare function getWorkflowVisualization(
+  config?: WorkflowEngineConfig
+): Promise<any>;
 export declare const workflowSystem: {
-    getAccess: typeof getWorkflowSystemAccess;
-    getEngine: typeof getWorkflowEngine;
-    getOrchestration: typeof getWorkflowOrchestration;
-    getManagement: typeof getWorkflowManagement;
-    getVisualization: typeof getWorkflowVisualization;
-    createEngine: (config?: WorkflowEngineConfig) => any;
+  getAccess: typeof getWorkflowSystemAccess;
+  getEngine: typeof getWorkflowEngine;
+  getOrchestration: typeof getWorkflowOrchestration;
+  getManagement: typeof getWorkflowManagement;
+  getVisualization: typeof getWorkflowVisualization;
+  createEngine: (config?: WorkflowEngineConfig) => any;
 };
 export declare const WORKFLOWS_INFO: {
-    readonly version: "1.0.0";
-    readonly name: "@claude-zen/workflows";
-    readonly description: "Production-ready workflow engine with battle-tested npm dependencies";
-    readonly battleTestedDependencies: readonly ["expr-eval: Safe expression evaluation", "async: Professional async utilities", "p-limit: Controlled concurrency", "eventemitter3: High-performance events", "xstate: Robust state management", "mermaid: Professional visualization", "node-cron: Production scheduling", "foundation: Battle-tested storage"];
-    readonly capabilities: readonly ["Secure workflow orchestration (no arbitrary code execution)", "Foundation storage integration", "XState-powered state management", "Professional async utilities", "Controlled concurrency with p-limit", "High-performance eventemitter3 events", "Mermaid workflow visualization", "Production cron scheduling", "Battle-tested persistence layer"];
-    readonly security: {
-        readonly safeExpressionEvaluation: true;
-        readonly noArbitraryCodeExecution: true;
-        readonly foundationStorageIntegration: true;
-        readonly productionReady: true;
-    };
+  readonly version: '1.0.0';
+  readonly name: '@claude-zen/workflows';
+  readonly description: 'Production-ready workflow engine with battle-tested npm dependencies';
+  readonly battleTestedDependencies: readonly [
+    'expr-eval: Safe expression evaluation',
+    'async: Professional async utilities',
+    'p-limit: Controlled concurrency',
+    'eventemitter3: High-performance events',
+    'xstate: Robust state management',
+    'mermaid: Professional visualization',
+    'node-cron: Production scheduling',
+    'foundation: Battle-tested storage',
+  ];
+  readonly capabilities: readonly [
+    'Secure workflow orchestration (no arbitrary code execution)',
+    'Foundation storage integration',
+    'XState-powered state management',
+    'Professional async utilities',
+    'Controlled concurrency with p-limit',
+    'High-performance eventemitter3 events',
+    'Mermaid workflow visualization',
+    'Production cron scheduling',
+    'Battle-tested persistence layer',
+  ];
+  readonly security: {
+    readonly safeExpressionEvaluation: true;
+    readonly noArbitraryCodeExecution: true;
+    readonly foundationStorageIntegration: true;
+    readonly productionReady: true;
+  };
 };
 //# sourceMappingURL=main.d.ts.map

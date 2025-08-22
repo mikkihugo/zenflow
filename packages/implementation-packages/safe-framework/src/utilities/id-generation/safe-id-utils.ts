@@ -1,12 +1,12 @@
 /**
  * @fileoverview SAFe ID Generation - Secure ID Utilities
- * 
+ *
  * ID generation utilities using nanoid for SAFe framework operations.
  * Provides consistent, secure, URL-safe identifiers.
- * 
+ *
  * SINGLE RESPONSIBILITY: ID generation for SAFe framework
  * FOCUSES ON: Epic IDs, Feature IDs, PI IDs, ART IDs
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -119,7 +119,7 @@ export const SAFE_ID_PREFIXES = {
   TEAM: 'team',
   DEPENDENCY: 'dep',
   RISK: 'risk',
-  OBJECTIVE: 'obj'
+  OBJECTIVE: 'obj',
 } as const;
 
 /**
@@ -144,20 +144,21 @@ export class SafeIdValidator {
    * Check if ID matches PI format
    */
   static isValidPIId(id: string): boolean {
-    return /^PI\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id) ||
-           /^PI-\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id);
+    return (
+      /^PI\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id) || /^PI-\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id)
+    );
   }
 
   /**
    * Extract year and quarter from PI ID
    */
-  static parsePIId(piId: string): { year: number; quarter: string } | null {
+  static parsePIId(piId: string): { year: number; quarter: string }' | 'null {
     const match = piId.match(/PI-?(\d{4})(Q[1-4])/);
     if (!match) return null;
-    
+
     return {
       year: parseInt(match[1], 10),
-      quarter: match[2]
+      quarter: match[2],
     };
   }
 

@@ -1,14 +1,15 @@
 /**
  * @fileoverview GitHub Models Database Integration
- * 
+ *
  * Stores GitHub Models metadata with context sizes and capabilities
  * Updates models hourly from GitHub CLI and API
  */
 
-import { getLogger } from '@claude-zen/foundation/logging';
-import { Result, ok, err } from '@claude-zen/foundation';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+
+import { Result, ok, err } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation/logging';
 
 const logger = getLogger('GitHubModelsDB');
 const execAsync = promisify(exec);
@@ -19,7 +20,7 @@ export interface GitHubModelMetadata {
   provider: string;
   contextWindow: number;
   maxOutputTokens: number;
-  category: 'low' | 'medium' | 'high' | 'embedding';
+  category: 'low | medium' | 'high''' | '''embedding';
   supportsVision: boolean;
   supportsMultimodal: boolean;
   rateLimits: {
@@ -42,7 +43,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'openai/gpt-4.1-mini': {
     contextWindow: 8000,
@@ -50,7 +55,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'openai/gpt-4.1-nano': {
     contextWindow: 8000,
@@ -58,7 +67,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'openai/gpt-4o': {
     contextWindow: 8000,
@@ -66,7 +79,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: true,
     supportsMultimodal: true,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'openai/gpt-4o-mini': {
     contextWindow: 8000,
@@ -74,7 +91,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: true,
     supportsMultimodal: true,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'openai/gpt-5': {
     contextWindow: 8000,
@@ -82,7 +103,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'openai/gpt-5-chat': {
     contextWindow: 8000,
@@ -90,7 +115,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'openai/gpt-5-mini': {
     contextWindow: 8000,
@@ -98,7 +127,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'openai/gpt-5-nano': {
     contextWindow: 8000,
@@ -106,7 +139,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'openai/o1': {
     contextWindow: 8000,
@@ -114,7 +151,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'openai/o1-mini': {
     contextWindow: 8000,
@@ -122,7 +163,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'openai/o1-preview': {
     contextWindow: 8000,
@@ -130,7 +175,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
 
   // Meta Llama Models
@@ -140,7 +189,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: true,
     supportsMultimodal: true,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'meta/llama-3.2-90b-vision-instruct': {
     contextWindow: 8000,
@@ -148,7 +201,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: true,
     supportsMultimodal: true,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'meta/llama-3.3-70b-instruct': {
     contextWindow: 8000,
@@ -156,7 +213,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'meta/llama-4-maverick-17b-128e-instruct-fp8': {
     contextWindow: 8000,
@@ -164,7 +225,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'meta/llama-4-scout-17b-16e-instruct': {
     contextWindow: 8000,
@@ -172,7 +237,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'meta/meta-llama-3-70b-instruct': {
     contextWindow: 8000,
@@ -180,7 +249,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'meta/meta-llama-3-8b-instruct': {
     contextWindow: 8000,
@@ -188,7 +261,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'meta/meta-llama-3.1-405b-instruct': {
     contextWindow: 8000,
@@ -196,7 +273,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'meta/meta-llama-3.1-70b-instruct': {
     contextWindow: 8000,
@@ -204,7 +285,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'meta/meta-llama-3.1-8b-instruct': {
     contextWindow: 8000,
@@ -212,7 +297,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
 
   // Mistral Models
@@ -222,7 +311,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'mistral-ai/ministral-3b': {
     contextWindow: 8000,
@@ -230,7 +323,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'mistral-ai/mistral-large-2407': {
     contextWindow: 8000,
@@ -238,7 +335,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'mistral-ai/mistral-large-2411': {
     contextWindow: 8000,
@@ -246,7 +347,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'mistral-ai/mistral-medium-2505': {
     contextWindow: 8000,
@@ -254,7 +359,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'mistral-ai/mistral-nemo': {
     contextWindow: 8000,
@@ -262,7 +371,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'mistral-ai/mistral-small': {
     contextWindow: 8000,
@@ -270,7 +383,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'mistral-ai/mistral-small-2503': {
     contextWindow: 8000,
@@ -278,7 +395,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
 
   // DeepSeek Models
@@ -288,7 +409,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'deepseek/deepseek-r1-0528': {
     contextWindow: 8000,
@@ -296,7 +421,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'deepseek/deepseek-v3': {
     contextWindow: 8000,
@@ -304,7 +433,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'deepseek/deepseek-v3-0324': {
     contextWindow: 8000,
@@ -312,7 +445,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
 
   // XAI Grok Models
@@ -322,7 +459,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'xai/grok-3-mini': {
     contextWindow: 8000,
@@ -330,7 +471,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
 
   // Cohere Models
@@ -340,7 +485,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'cohere/cohere-command-r': {
     contextWindow: 8000,
@@ -348,7 +497,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'cohere/cohere-command-r-08-2024': {
     contextWindow: 8000,
@@ -356,7 +509,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'cohere/cohere-command-r-plus': {
     contextWindow: 8000,
@@ -364,7 +521,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'cohere/cohere-command-r-plus-08-2024': {
     contextWindow: 8000,
@@ -372,7 +533,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
 
   // AI21 Models
@@ -382,7 +547,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
   },
   'ai21-labs/ai21-jamba-1.5-mini': {
     contextWindow: 8000,
@@ -390,7 +559,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'low',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
 
   // Other Models
@@ -400,7 +573,11 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'medium',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 15, requestsPerDay: 150, concurrentRequests: 5 }
+    rateLimits: {
+      requestsPerMinute: 15,
+      requestsPerDay: 150,
+      concurrentRequests: 5,
+    },
   },
   'microsoft/mai-ds-r1': {
     contextWindow: 8000,
@@ -408,32 +585,41 @@ const MODEL_CONTEXT_SIZES: Record<string, Partial<GitHubModelMetadata>> = {
     category: 'high',
     supportsVision: false,
     supportsMultimodal: false,
-    rateLimits: { requestsPerMinute: 10, requestsPerDay: 50, concurrentRequests: 3 }
-  }
+    rateLimits: {
+      requestsPerMinute: 10,
+      requestsPerDay: 50,
+      concurrentRequests: 3,
+    },
+  },
 };
 
 class GitHubModelsDatabase {
   private models: Map<string, GitHubModelMetadata> = new Map();
   private lastUpdate: Date = new Date(0);
-  private updateInterval: NodeJS.Timeout | null = null;
+  private updateInterval: NodeJS.Timeout'' | ''null = null;
 
   /**
    * Initialize the database and start hourly updates
    */
   async initialize(): Promise<void> {
     logger.info('🚀 Initializing GitHub Models Database');
-    
+
     // Load initial models
     await this.updateModels();
-    
+
     // Set up hourly updates
-    this.updateInterval = setInterval(() => {
-      this.updateModels().catch(error => {
-        logger.error('❌ Failed to update models:', error);
-      });
-    }, 60 * 60 * 1000); // 1 hour
-    
-    logger.info(`✅ GitHub Models Database initialized with ${this.models.size} models`);
+    this.updateInterval = setInterval(
+      () => {
+        this.updateModels().catch((error) => {
+          logger.error('❌ Failed to update models:', error);
+        });
+      },
+      60 * 60 * 1000
+    ); // 1 hour
+
+    logger.info(
+      `✅ GitHub Models Database initialized with ${this.models.size} models`
+    );
   }
 
   /**
@@ -442,51 +628,52 @@ class GitHubModelsDatabase {
   async updateModels(): Promise<Result<void, Error>> {
     try {
       logger.info('🔄 Updating GitHub Models from CLI...');
-      
+
       // Get models from GitHub CLI
       const { stdout } = await execAsync('gh models list');
       const lines = stdout.trim().split('\n');
-      
+
       const updatedModels = new Map<string, GitHubModelMetadata>();
-      
+
       for (const line of lines) {
         const [id, name] = line.split('\t');
-        if (!id || !name) continue;
-        
+        if (!id'' | '''' | ''!name) continue;
+
         const provider = id.split('/')[0];
         const metadata = MODEL_CONTEXT_SIZES[id];
-        
+
         const model: GitHubModelMetadata = {
           id,
           name,
           provider,
-          contextWindow: metadata?.contextWindow || 8000, // GitHub default is 8k
-          maxOutputTokens: metadata?.maxOutputTokens || 4000, // GitHub default is 4k
-          category: metadata?.category || 'medium',
-          supportsVision: metadata?.supportsVision || false,
-          supportsMultimodal: metadata?.supportsMultimodal || false,
-          rateLimits: metadata?.rateLimits || {
+          contextWindow: metadata?.contextWindow'' | '''' | ''8000, // GitHub default is 8k
+          maxOutputTokens: metadata?.maxOutputTokens'' | '''' | ''4000, // GitHub default is 4k
+          category: metadata?.category'' | '''' | '''medium',
+          supportsVision: metadata?.supportsVision'' | '''' | ''false,
+          supportsMultimodal: metadata?.supportsMultimodal'' | '''' | ''false,
+          rateLimits: metadata?.rateLimits'' | '''' | ''{
             requestsPerMinute: 15,
             requestsPerDay: 150,
-            concurrentRequests: 5
+            concurrentRequests: 5,
           },
-          lastUpdated: new Date()
+          lastUpdated: new Date(),
         };
-        
+
         updatedModels.set(id, model);
       }
-      
+
       this.models = updatedModels;
       this.lastUpdate = new Date();
-      
+
       logger.info(`✅ Updated ${this.models.size} GitHub Models`);
       logger.info(`📊 Models by provider: ${this.getProviderStats()}`);
-      
+
       return ok(void 0);
-      
     } catch (error) {
       logger.error('❌ Failed to update GitHub Models:', error);
-      return err(error instanceof Error ? error : new Error('Failed to update models'));
+      return err(
+        error instanceof Error ? error : new Error('Failed to update models')
+      );
     }
   }
 
@@ -494,13 +681,13 @@ class GitHubModelsDatabase {
    * Get all models
    */
   getAllModels(): GitHubModelMetadata[] {
-    return Array.from(this.models.values());
+    return Array.from(this.models.values())();
   }
 
   /**
    * Get model by ID
    */
-  getModel(id: string): GitHubModelMetadata | undefined {
+  getModel(id: string): GitHubModelMetadata'' | ''undefined {
     return this.models.get(id);
   }
 
@@ -508,21 +695,28 @@ class GitHubModelsDatabase {
    * Get models by provider
    */
   getModelsByProvider(provider: string): GitHubModelMetadata[] {
-    return Array.from(this.models.values()).filter(model => model.provider === provider);
+    return Array.from(this.models.values()).filter(
+      (model) => model.provider === provider
+    );
   }
 
   /**
    * Get models by category
    */
-  getModelsByCategory(category: 'low' | 'medium' | 'high' | 'embedding'): GitHubModelMetadata[] {
-    return Array.from(this.models.values()).filter(model => model.category === category);
+  getModelsByCategory(
+    category:'low | medium' | 'high''' | '''embedding'): GitHubModelMetadata[] {
+    return Array.from(this.models.values()).filter(
+      (model) => model.category === category
+    );
   }
 
   /**
    * Get models with multimodal support
    */
   getMultimodalModels(): GitHubModelMetadata[] {
-    return Array.from(this.models.values()).filter(model => model.supportsMultimodal);
+    return Array.from(this.models.values()).filter(
+      (model) => model.supportsMultimodal
+    );
   }
 
   /**
@@ -531,7 +725,7 @@ class GitHubModelsDatabase {
   getProviderStats(): string {
     const stats = new Map<string, number>();
     for (const model of this.models.values()) {
-      stats.set(model.provider, (stats.get(model.provider) || 0) + 1);
+      stats.set(model.provider, (stats.get(model.provider)'' | '''' | ''0) + 1);
     }
     return Array.from(stats.entries())
       .map(([provider, count]) => `${provider}:${count}`)
@@ -547,16 +741,18 @@ class GitHubModelsDatabase {
       low: this.getModelsByCategory('low').length,
       medium: this.getModelsByCategory('medium').length,
       high: this.getModelsByCategory('high').length,
-      embedding: this.getModelsByCategory('embedding').length
+      embedding: this.getModelsByCategory('embedding').length,
     };
     const multimodal = this.getMultimodalModels().length;
-    
+
     return {
       total,
       byCategory,
       multimodal,
       lastUpdate: this.lastUpdate,
-      providers: Array.from(new Set(Array.from(this.models.values()).map(m => m.provider)))
+      providers: Array.from(
+        new Set(Array.from(this.models.values()).map((m) => m.provider))
+      ),
     };
   }
 

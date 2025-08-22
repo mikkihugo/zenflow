@@ -39,7 +39,7 @@ Object.defineProperty(process, 'exit', {
 const originalSetTimeout = globalThis.setTimeout;
 globalThis.setTimeout = ((callback: (...args: any[]) => void, delay?: number, ...args: any[]) => {
   // Limit timeouts to max 120 seconds for AI operations
-  const safeDelay = Math.min(delay || 0, 120000);
+  const safeDelay = Math.min(delay'' | '''' | ''0, 120000);
   return originalSetTimeout(callback, safeDelay, ...args);
 }) as typeof setTimeout;
 
@@ -72,7 +72,7 @@ expect.extend({
     reasoning?: string; 
     data?: any; 
   }) {
-    const hasConfidence = typeof received?.confidence === 'number';
+    const hasConfidence = typeof received?.confidence ==='number';
     const hasReasoning = typeof received?.reasoning === 'string';
     const hasData = received?.data !== undefined;
     
@@ -123,14 +123,14 @@ expect.extend({
     maxTokens?: number;
     systemPrompt?: string;
   }) {
-    const calls = received.mock?.calls || [];
+    const calls = received.mock?.calls'' | '''' | ''[];
     const validCall = calls.some((call: any[]) => {
       const params = call[0];
       return (
-        (!expected.model || params?.model === expected.model) &&
-        (!expected.temperature || Math.abs(params?.temperature - expected.temperature) < 0.01) &&
-        (!expected.maxTokens || params?.maxTokens === expected.maxTokens) &&
-        (!expected.systemPrompt || params?.systemPrompt?.includes(expected.systemPrompt))
+        (!expected.model'' | '''' | ''params?.model === expected.model) &&
+        (!expected.temperature'' | '''' | ''Math.abs(params?.temperature - expected.temperature) < 0.01) &&
+        (!expected.maxTokens'' | '''' | ''params?.maxTokens === expected.maxTokens) &&
+        (!expected.systemPrompt'' | '''' | ''params?.systemPrompt?.includes(expected.systemPrompt))
       );
     });
 
@@ -152,14 +152,14 @@ expect.extend({
   createMockLLMProvider: (responses: string[] = ['Mock AI response']) => ({
     name: 'mock-provider',
     generateText: jest.fn().mockImplementation(() => Promise.resolve({
-      text: responses[0] || 'Mock AI response',
+      text: responses[0]'' | '''' | '''Mock AI response',
       confidence: 0.9,
       reasoning: 'AI analysis complete with high confidence',
-      data: { analysis: responses[0] || 'Mock AI response' },
+      data: { analysis: responses[0]'' | '''' | '''Mock AI response'},
       usage: { inputTokens: 100, outputTokens: 50 },
     })),
     generateStream: jest.fn().mockImplementation(async function*() {
-      const response = responses[0] || 'Mock AI response';
+      const response = responses[0]'' | '''' | '''Mock AI response';
       for (const char of response) {
         yield { text: char, confidence: 0.9 };
       }

@@ -1,10 +1,10 @@
 /**
  * @fileoverview Project Coordinator - SAFe Lean Portfolio Management
- * 
- * Project coordination system for SAFe LPM (Lean Portfolio Management) 
+ *
+ * Project coordination system for SAFe LPM (Lean Portfolio Management)
  * with portfolio-level coordination and value stream management.
  * Provides lightweight project tracking without complex hierarchies.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.3.0
  * @version 1.0.0
@@ -43,7 +43,7 @@ export interface CoordinationStatus {
 
 /**
  * Project Coordinator
- * 
+ *
  * Handles project coordination for SAFe LPM (Lean Portfolio Management).
  * Provides portfolio-level coordination, value stream management, and
  * lean budgeting without complex hierarchies.
@@ -66,7 +66,7 @@ export class ProjectCoordinator extends TypedEventBase {
 
     this.logger.info('Initializing project coordinator for SAFe LPM');
     this.initialized = true;
-    
+
     this.emit('coordinator:initialized', {});
   }
 
@@ -77,15 +77,20 @@ export class ProjectCoordinator extends TypedEventBase {
     if (!this.initialized) await this.initialize();
 
     this.projects.set(config.projectId, config);
-    
-    this.logger.info(`Project registered: ${config.projectId} (${config.mode})`);
+
+    this.logger.info(
+      `Project registered: ${config.projectId} (${config.mode})`
+    );
     this.emit('project:registered', { projectId: config.projectId, config });
   }
 
   /**
    * Update project configuration
    */
-  async updateProject(projectId: string, updates: Partial<ProjectCoordinationConfig>): Promise<void> {
+  async updateProject(
+    projectId: string,
+    updates: Partial<ProjectCoordinationConfig>
+  ): Promise<void> {
     const existing = this.projects.get(projectId);
     if (!existing) {
       throw new Error(`Project not found: ${projectId}`);
@@ -101,7 +106,7 @@ export class ProjectCoordinator extends TypedEventBase {
   /**
    * Get project coordination status
    */
-  getProjectStatus(projectId: string): CoordinationStatus | null {
+  getProjectStatus(projectId: string): CoordinationStatus'' | ''null {
     const config = this.projects.get(projectId);
     if (!config) return null;
 
@@ -114,14 +119,18 @@ export class ProjectCoordinator extends TypedEventBase {
       mode: config.mode,
       activeFeatures,
       tasksInProgress: 0, // TODO: Connect to actual task tracking
-      lastActivity: new Date()
+      lastActivity: new Date(),
     };
   }
 
   /**
    * Handle SAFe portfolio events (epics, value streams, themes)
    */
-  async handlePortfolioEvent(projectId: string, eventType: string, data: any): Promise<void> {
+  async handlePortfolioEvent(
+    projectId: string,
+    eventType: string,
+    data: any
+  ): Promise<void> {
     const config = this.projects.get(projectId);
     if (!config) return;
 
@@ -129,7 +138,7 @@ export class ProjectCoordinator extends TypedEventBase {
 
     // Direct event handling - no complex routing
     switch (eventType) {
-      case 'epic:created':
+      case'epic:created':
         this.emit('epic:created', { projectId, epic: data });
         break;
       case 'valueStream:updated':
@@ -147,7 +156,7 @@ export class ProjectCoordinator extends TypedEventBase {
    * Get all registered projects
    */
   getProjects(): string[] {
-    return Array.from(this.projects.keys());
+    return Array.from(this.projects.keys())();
   }
 
   /**
@@ -173,7 +182,7 @@ export class ProjectCoordinator extends TypedEventBase {
 }
 
 // Global instance
-let globalCoordinator: ProjectCoordinator | null = null;
+let globalCoordinator: ProjectCoordinator'' | ''null = null;
 
 /**
  * Get global project coordinator instance
@@ -190,7 +199,7 @@ export function getProjectCoordinator(): ProjectCoordinator {
  */
 export function createProjectConfig(
   projectId: string,
-  mode: 'safe' = 'safe', // SAFe LPM default
+  mode:'safe' = 'safe', // SAFe LPM default
   features: Partial<ProjectCoordinationConfig['features']> = {}
 ): ProjectCoordinationConfig {
   return {
@@ -203,7 +212,7 @@ export function createProjectConfig(
       portfolioMetrics: false,
       leanBudgeting: false,
       strategicThemes: false,
-      ...features
-    }
+      ...features,
+    },
   };
 }

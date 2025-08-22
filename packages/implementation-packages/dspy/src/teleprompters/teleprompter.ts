@@ -1,9 +1,9 @@
 /**
  * @fileoverview Base Teleprompter Class - 100% Stanford DSPy API Compatible
- * 
+ *
  * Abstract base class for all DSPy teleprompters.
  * Provides the foundation for program optimization and improvement.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  */
@@ -19,7 +19,7 @@ export interface CompileOptions {
   /** Validation dataset (optional) */
   valset?: Example[];
   /** Teacher program (optional) */
-  teacher?: DSPyModule | DSPyModule[];
+  teacher?: DSPyModule'' | ''DSPyModule[];
   /** Additional compilation parameters */
   [key: string]: any;
 }
@@ -52,24 +52,24 @@ export interface OptimizationResult {
 
 /**
  * Abstract base class for all DSPy teleprompters
- * 
+ *
  * This class provides the interface that all teleprompters must implement.
  * It follows the exact API design of Stanford DSPy's Teleprompter class.
- * 
+ *
  * EXACT Stanford DSPy API:
- * def compile(self, student: Module, *, trainset: list[Example], teacher: Module | None = None, valset: list[Example] | None = None, **kwargs) -> Module:
- * 
+ * def compile(self, student: Module, *, trainset: list[Example], teacher: Module | None = None, valset: list[Example]' | 'None = None, **kwargs) -> Module:
+ *
  * @abstract
  */
 export abstract class Teleprompter {
   /**
    * Compile and optimize a DSPy program
-   * 
+   *
    * This method implements the exact Stanford DSPy Teleprompter API signature:
    * compile(student, *, trainset, teacher=None, valset=None, **kwargs) -> Module
-   * 
+   *
    * In TypeScript, we simulate keyword-only args using a required config object after student.
-   * 
+   *
    * @param student The student program to optimize (required positional)
    * @param config Required configuration object with trainset and optional parameters
    * @param config.trainset Training dataset (required)
@@ -83,7 +83,7 @@ export abstract class Teleprompter {
     config: {
       trainset: Example[];
       teacher?: DSPyModule | null;
-      valset?: Example[] | null;
+      valset?: Example[]' | 'null;
       [key: string]: any;
     }
   ): Promise<DSPyModule>;
@@ -96,7 +96,7 @@ export abstract class Teleprompter {
     // Return all enumerable properties (matches Python __dict__)
     const params: Record<string, any> = {};
     for (const key in this) {
-      if (this.hasOwnProperty(key) && typeof this[key] !== 'function') {
+      if (this.hasOwnProperty(key) && typeof this[key] !=='function') {
         params[key] = this[key];
       }
     }

@@ -1,22 +1,22 @@
 /**
  * @fileoverview Task Flow Controller - Main API for Task Flow Management
- * 
+ *
  * Unified task flow control system combining Kanban WIP limits with AGUI approval gates.
  * Provides capacity management, bottleneck detection, and human-in-the-loop decision points.
- * 
+ *
  * **PURPOSE: Task Flow Management (NOT Project Management)**
  * - Controls how individual tasks move through development pipeline
- * - Manages capacity and prevents human overwhelm  
+ * - Manages capacity and prevents human overwhelm
  * - Provides approval gates for quality control
  * - Monitors flow health and bottlenecks
- * 
+ *
  * **DOMAIN FOCUS:**
  * - Task state transitions and approval workflows
  * - WIP limit enforcement and capacity protection
  * - Flow optimization and bottleneck resolution
  * - Human approval gates with auto-approval thresholds
  * - System capacity monitoring and protection
- * 
+ *
  * @author Claude-Zen Team
  * @since 2.0.0
  * @version 2.0.0 - Task Flow Management System
@@ -36,13 +36,7 @@ import { getLogger } from '@claude-zen/foundation';
 /**
  * Task flow states for development pipeline
  */
-export type TaskFlowState = 
-  | 'backlog'
-  | 'analysis'  
-  | 'development'
-  | 'testing'
-  | 'deployment'
-  | 'done';
+export type TaskFlowState ='' | '''backlog | analysis' | 'development''' | '''testing | deployment' | 'done';
 
 /**
  * Approval gate configuration for task flow control
@@ -50,19 +44,19 @@ export type TaskFlowState =
 export interface TaskFlowGate {
   /** Whether this gate requires approval */
   enabled: boolean;
-  
+
   /** Auto-approve if confidence above this threshold (0.0-1.0) */
   autoApproveThreshold: number;
-  
+
   /** Maximum items waiting in approval queue */
   maxQueueDepth: number;
-  
+
   /** Behavior when queue is full */
-  onQueueFull: 'halt' | 'spillover' | 'escalate' | 'auto-approve';
-  
+  onQueueFull: 'halt | spillover' | 'escalate''' | '''auto-approve';
+
   /** Target state for spillover */
   spilloverTarget?: TaskFlowState;
-  
+
   /** Human-readable question for approval */
   approvalQuestion: string;
 }
@@ -73,30 +67,30 @@ export interface TaskFlowGate {
 export interface TaskFlowConfig {
   /** WIP limits for each state */
   wipLimits: Record<TaskFlowState, number>;
-  
+
   /** Approval gates configuration */
   gates: Partial<Record<TaskFlowState, TaskFlowGate>>;
-  
+
   /** Global system limits */
   systemLimits: {
     /** Maximum total pending approvals across all gates */
     maxTotalPending: number;
-    
+
     /** Maximum items waiting at any single gate */
     maxPerGate: number;
-    
+
     /** System halt threshold (0.0-1.0) */
     systemCapacityThreshold: number;
   };
-  
+
   /** Flow optimization settings */
   optimization: {
     /** Enable automatic bottleneck detection */
     enableBottleneckDetection: boolean;
-    
+
     /** Enable adaptive WIP limit adjustments */
     enableAdaptiveWIP: boolean;
-    
+
     /** Enable flow metrics collection */
     enableFlowMetrics: boolean;
   };
@@ -107,22 +101,25 @@ export interface TaskFlowConfig {
  */
 export interface TaskFlowStatus {
   /** Current WIP usage per state */
-  wipUsage: Record<TaskFlowState, { current: number; limit: number; utilization: number }>;
-  
+  wipUsage: Record<
+    TaskFlowState,
+    { current: number; limit: number; utilization: number }
+  >;
+
   /** Approval queue status */
   approvalQueues: Record<string, { pending: number; avgWaitTime: number }>;
-  
+
   /** System capacity status */
   systemCapacity: {
     totalPending: number;
     maxPending: number;
     utilizationPercent: number;
-    status: 'healthy' | 'warning' | 'critical' | 'halted';
+    status: 'healthy | warning' | 'critical''' | '''halted';
   };
-  
+
   /** Detected bottlenecks */
   bottlenecks: TaskFlowState[];
-  
+
   /** Flow health recommendations */
   recommendations: string[];
 }
@@ -133,13 +130,13 @@ export interface TaskFlowStatus {
 
 /**
  * Main Task Flow Controller combining Kanban and AGUI capabilities
- * 
+ *
  * Provides unified API for task flow management with:
  * - WIP limit enforcement (from Kanban)
- * - Human approval gates (from AGUI)  
+ * - Human approval gates (from AGUI)
  * - Capacity protection and monitoring
  * - Flow optimization and bottleneck detection
- * 
+ *
  * @example Basic usage
  * ```typescript
  * const taskFlow = new TaskFlowController({
@@ -163,7 +160,7 @@ export interface TaskFlowStatus {
  *     systemCapacityThreshold: 0.9
  *   }
  * });
- * 
+ *
  * // Move task with automatic gate checking
  * const moved = await taskFlow.moveTask('TASK-123', 'testing');
  * ```
@@ -180,39 +177,45 @@ export class TaskFlowController extends TypedEventBase {
     super();
     this.logger = getLogger('TaskFlowController');
     this.config = config;
-    
+
     // Initialize Kanban workflow engine
     this.kanban = new WorkflowKanban({
       states: Object.keys(config.wipLimits) as TaskFlowState[],
       wipLimits: config.wipLimits,
-      bottleneckThreshold: config.optimization.enableBottleneckDetection ? 0.8 : 1.0
+      bottleneckThreshold: config.optimization.enableBottleneckDetection
+        ? 0.8
+        : 1.0,
     });
-    
+
     // Initialize AGUI approval system
     this.agui = new AGUISystem({
       type: 'terminal',
       enableBatchMode: true,
-      batchSize: 5
+      batchSize: 5,
     });
-    
+
     this.approvalSystem = new TaskApprovalSystem({
       enableBatchMode: true,
       batchSize: 3,
-      autoApproveThreshold: 0.8
+      autoApproveThreshold: 0.8,
     });
-    
+
     this.setupEventHandlers();
     this.logger.info('TaskFlowController initialized', {
       wipLimits: config.wipLimits,
       gatesEnabled: Object.keys(config.gates).length,
-      systemLimits: config.systemLimits
+      systemLimits: config.systemLimits,
     });
   }
 
   /**
    * Move a task to a new state with approval gate checking
    */
-  async moveTask(taskId: string, toState: TaskFlowState, confidence: number = 0.5): Promise<boolean> {
+  async moveTask(
+    taskId: string,
+    toState: TaskFlowState,
+    confidence: number = 0.5
+  ): Promise<boolean> {
     if (this.isHalted) {
       throw new Error('Task flow is halted - cannot move tasks');
     }
@@ -221,11 +224,14 @@ export class TaskFlowController extends TypedEventBase {
       // 1. Check system capacity first
       const systemStatus = await this.getSystemStatus();
       if (systemStatus.systemCapacity.status === 'critical') {
-        this.logger.warn('System at critical capacity - halting task movement', {
-          taskId,
-          toState,
-          systemCapacity: systemStatus.systemCapacity
-        });
+        this.logger.warn(
+          'System at critical capacity - halting task movement',
+          {
+            taskId,
+            toState,
+            systemCapacity: systemStatus.systemCapacity,
+          }
+        );
         return false;
       }
 
@@ -237,12 +243,17 @@ export class TaskFlowController extends TypedEventBase {
       // 3. Check approval gate requirements
       const gate = this.config.gates[toState];
       if (gate?.enabled) {
-        const approved = await this.processApprovalGate(taskId, toState, confidence, gate);
+        const approved = await this.processApprovalGate(
+          taskId,
+          toState,
+          confidence,
+          gate
+        );
         if (!approved) {
           this.logger.info('Task movement rejected by approval gate', {
             taskId,
             toState,
-            confidence
+            confidence,
           });
           return false;
         }
@@ -250,11 +261,11 @@ export class TaskFlowController extends TypedEventBase {
 
       // 4. Execute movement through Kanban
       const moved = await this.kanban.moveTask(taskId, toState);
-      
+
       if (moved) {
         this.emit('taskMoved', { taskId, toState, timestamp: Date.now() });
         this.logger.info('Task moved successfully', { taskId, toState });
-        
+
         // Check for bottlenecks after movement
         if (this.config.optimization.enableBottleneckDetection) {
           await this.checkForBottlenecks();
@@ -273,14 +284,14 @@ export class TaskFlowController extends TypedEventBase {
    */
   async getSystemStatus(): Promise<TaskFlowStatus> {
     const wipUsage: Record<TaskFlowState, any> = {};
-    
+
     // Calculate WIP usage for each state
     for (const [state, limit] of Object.entries(this.config.wipLimits)) {
       const current = this.kanban.getStateTaskCount(state as TaskFlowState);
       wipUsage[state as TaskFlowState] = {
         current,
         limit,
-        utilization: current / limit
+        utilization: current / limit,
       };
     }
 
@@ -291,17 +302,20 @@ export class TaskFlowController extends TypedEventBase {
         const pending = await this.getGateQueueDepth(state as TaskFlowState);
         approvalQueues[`${state}-gate`] = {
           pending,
-          avgWaitTime: await this.getAverageWaitTime(state as TaskFlowState)
+          avgWaitTime: await this.getAverageWaitTime(state as TaskFlowState),
         };
       }
     }
 
     // Calculate system capacity
-    const totalPending = Object.values(approvalQueues).reduce((sum, queue) => sum + queue.pending, 0);
+    const totalPending = Object.values(approvalQueues).reduce(
+      (sum, queue) => sum + queue.pending,
+      0
+    );
     const maxPending = this.config.systemLimits.maxTotalPending;
     const utilizationPercent = (totalPending / maxPending) * 100;
-    
-    let status: 'healthy' | 'warning' | 'critical' | 'halted' = 'healthy';
+
+    let status: 'healthy | warning' | 'critical''' | '''halted' = 'healthy';
     if (this.isHalted) status = 'halted';
     else if (utilizationPercent > 90) status = 'critical';
     else if (utilizationPercent > 70) status = 'warning';
@@ -314,10 +328,14 @@ export class TaskFlowController extends TypedEventBase {
     // Generate recommendations
     const recommendations: string[] = [];
     if (totalPending > maxPending * 0.8) {
-      recommendations.push('Consider pausing task intake - approaching capacity limits');
+      recommendations.push(
+        'Consider pausing task intake - approaching capacity limits'
+      );
     }
     for (const bottleneck of bottlenecks) {
-      recommendations.push(`Bottleneck detected in ${bottleneck} - consider increasing WIP limit`);
+      recommendations.push(
+        `Bottleneck detected in ${bottleneck} - consider increasing WIP limit`
+      );
     }
 
     return {
@@ -327,10 +345,10 @@ export class TaskFlowController extends TypedEventBase {
         totalPending,
         maxPending,
         utilizationPercent,
-        status
+        status,
       },
       bottlenecks,
-      recommendations
+      recommendations,
     };
   }
 
@@ -370,8 +388,8 @@ export class TaskFlowController extends TypedEventBase {
   }
 
   private async processApprovalGate(
-    taskId: string, 
-    toState: TaskFlowState, 
+    taskId: string,
+    toState: TaskFlowState,
     confidence: number,
     gate: TaskFlowGate
   ): Promise<boolean> {
@@ -381,7 +399,7 @@ export class TaskFlowController extends TypedEventBase {
         taskId,
         toState,
         confidence,
-        threshold: gate.autoApproveThreshold
+        threshold: gate.autoApproveThreshold,
       });
       return true;
     }
@@ -402,27 +420,36 @@ export class TaskFlowController extends TypedEventBase {
           taskId,
           toState,
           confidence,
-          queueDepth
+          queueDepth,
         },
         confidence,
-        priority: confidence > 0.7 ? 'high' : 'medium'
+        priority: confidence > 0.7 ? 'high' : 'medium',
       });
 
-      return response.toLowerCase().includes('yes') || response.toLowerCase().includes('approve');
+      return (
+        response.toLowerCase().includes('yes')'' | '''' | ''response.toLowerCase().includes('approve')
+      );
     } catch (error) {
-      this.logger.error('Error processing approval gate', { taskId, toState, error });
+      this.logger.error('Error processing approval gate', {
+        taskId,
+        toState,
+        error,
+      });
       return false;
     }
   }
 
-  private async handleWIPLimitReached(taskId: string, toState: TaskFlowState): Promise<boolean> {
+  private async handleWIPLimitReached(
+    taskId: string,
+    toState: TaskFlowState
+  ): Promise<boolean> {
     const gate = this.config.gates[toState];
-    
+
     if (gate?.onQueueFull === 'spillover' && gate.spilloverTarget) {
       this.logger.info('WIP limit reached - redirecting to spillover state', {
         taskId,
         originalState: toState,
-        spilloverState: gate.spilloverTarget
+        spilloverState: gate.spilloverTarget,
       });
       return this.moveTask(taskId, gate.spilloverTarget);
     }
@@ -436,45 +463,51 @@ export class TaskFlowController extends TypedEventBase {
       taskId,
       toState,
       currentCount: this.kanban.getStateTaskCount(toState),
-      wipLimit: this.config.wipLimits[toState]
+      wipLimit: this.config.wipLimits[toState],
     });
     return false;
   }
 
   private async handleQueueOverflow(
-    taskId: string, 
-    toState: TaskFlowState, 
+    taskId: string,
+    toState: TaskFlowState,
     gate: TaskFlowGate
   ): Promise<boolean> {
     switch (gate.onQueueFull) {
       case 'auto-approve':
-        this.logger.warn('Queue overflow - auto-approving task', { taskId, toState });
+        this.logger.warn('Queue overflow - auto-approving task', {
+          taskId,
+          toState,
+        });
         return true;
-        
+
       case 'spillover':
         if (gate.spilloverTarget) {
           return this.moveTask(taskId, gate.spilloverTarget);
         }
         break;
-        
+
       case 'escalate':
         return this.escalateQueueDecision(taskId, toState);
-        
+
       default:
         // halt
         this.logger.warn('Approval queue at capacity - halting task movement', {
           taskId,
           toState,
           queueDepth: await this.getGateQueueDepth(toState),
-          maxDepth: gate.maxQueueDepth
+          maxDepth: gate.maxQueueDepth,
         });
         return false;
     }
-    
+
     return false;
   }
 
-  private async escalateCapacityDecision(taskId: string, toState: TaskFlowState): Promise<boolean> {
+  private async escalateCapacityDecision(
+    taskId: string,
+    toState: TaskFlowState
+  ): Promise<boolean> {
     // Human decision on capacity management
     try {
       const response = await this.agui.askQuestion({
@@ -485,38 +518,53 @@ export class TaskFlowController extends TypedEventBase {
           taskId,
           toState,
           currentCount: this.kanban.getStateTaskCount(toState),
-          wipLimit: this.config.wipLimits[toState]
+          wipLimit: this.config.wipLimits[toState],
         },
         confidence: 0.5,
-        priority: 'high'
+        priority: 'high',
       });
 
-      return response.toLowerCase().includes('yes') || response.toLowerCase().includes('override');
+      return (
+        response.toLowerCase().includes('yes')'' | '''' | ''response.toLowerCase().includes('override')
+      );
     } catch (error) {
-      this.logger.error('Error escalating capacity decision', { taskId, toState, error });
+      this.logger.error('Error escalating capacity decision', {
+        taskId,
+        toState,
+        error,
+      });
       return false;
     }
   }
 
-  private async escalateQueueDecision(taskId: string, toState: TaskFlowState): Promise<boolean> {
+  private async escalateQueueDecision(
+    taskId: string,
+    toState: TaskFlowState
+  ): Promise<boolean> {
     // Human decision on queue management
     try {
       const response = await this.agui.askQuestion({
         id: `queue-escalation-${taskId}`,
-        type: 'escalation', 
+        type: 'escalation',
         question: `Approval queue full for ${toState}. Add task ${taskId} to queue anyway?`,
         context: {
           taskId,
           toState,
-          queueDepth: await this.getGateQueueDepth(toState)
+          queueDepth: await this.getGateQueueDepth(toState),
         },
         confidence: 0.5,
-        priority: 'high'
+        priority: 'high',
       });
 
-      return response.toLowerCase().includes('yes') || response.toLowerCase().includes('add');
+      return (
+        response.toLowerCase().includes('yes')'' | '''' | ''response.toLowerCase().includes('add')
+      );
     } catch (error) {
-      this.logger.error('Error escalating queue decision', { taskId, toState, error });
+      this.logger.error('Error escalating queue decision', {
+        taskId,
+        toState,
+        error,
+      });
       return false;
     }
   }
@@ -535,12 +583,12 @@ export class TaskFlowController extends TypedEventBase {
 
   private async checkForBottlenecks(): Promise<void> {
     const status = await this.getSystemStatus();
-    
+
     for (const bottleneck of status.bottlenecks) {
       this.emit('bottleneckDetected', {
         state: bottleneck,
         utilization: status.wipUsage[bottleneck].utilization,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
   }
@@ -553,7 +601,9 @@ export class TaskFlowController extends TypedEventBase {
 /**
  * Create a new Task Flow Controller with the specified configuration
  */
-export function createTaskFlowController(config: TaskFlowConfig): TaskFlowController {
+export function createTaskFlowController(
+  config: TaskFlowConfig
+): TaskFlowController {
   return new TaskFlowController(config);
 }
 
@@ -561,9 +611,4 @@ export function createTaskFlowController(config: TaskFlowConfig): TaskFlowContro
 // EXPORTS
 // =============================================================================
 
-export type {
-  TaskFlowState,
-  TaskFlowGate,
-  TaskFlowConfig,
-  TaskFlowStatus
-};
+export type { TaskFlowState, TaskFlowGate, TaskFlowConfig, TaskFlowStatus };

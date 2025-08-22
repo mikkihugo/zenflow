@@ -8,8 +8,8 @@
  * @file Web-session management system.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { NextFunction, Request, Response } from 'express');
+import { getLogger } from '@claude-zen/foundation';
+import type { NextFunction, Request, Response } from 'express';
 
 import('/web-config');
 
@@ -28,7 +28,7 @@ export class WebSessionManager {
   middleware() {
     return (req: Request, _res: Response, next: NextFunction) => {
       const sessionId =
-        (req.headers['x-session-id'] as string) || this.generateSessionId;
+        (req.headers['x-session-id'] as string)'' | '''' | ''this.generateSessionId;
       req.sessionId = sessionId;
 
       if (this.sessions.has(sessionId)) {
@@ -57,7 +57,7 @@ export class WebSessionManager {
    *
    * @param sessionId
    */
-  getSession(sessionId: string): WebSession | undefined {
+  getSession(sessionId: string): WebSession'' | ''undefined {
     return this.sessions.get(sessionId);
   }
 
@@ -84,7 +84,7 @@ export class WebSessionManager {
    * Get all active sessions.
    */
   getActiveSessions(): WebSession[] {
-    return Array.from(this.sessions?.values());
+    return Array.from(this.sessions?.values())();
   }
 
   /**
@@ -126,7 +126,7 @@ export class WebSessionManager {
     active: number;
     averageAge: number;
   } {
-    const sessions = Array.from(this.sessions?.values());
+    const sessions = Array.from(this.sessions?.values())();
     const now = new Date();
 
     const ages = sessions.map((s) => now?.getTime - s.createdAt?.getTime);

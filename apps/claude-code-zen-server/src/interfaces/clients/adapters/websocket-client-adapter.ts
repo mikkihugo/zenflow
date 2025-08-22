@@ -2,7 +2,7 @@
  * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
  */
 
-import { Logger, TypedEventBase } from '@claude-zen/foundation');
+import { Logger, TypedEventBase } from '@claude-zen/foundation';
 
 /**
  * WebSocket Client Adapter for UACL (Unified API Client Layer).
@@ -162,7 +162,7 @@ import type {
   Client,
   RequestOptions,
   RetryConfig,
-} from './core/interfaces');
+} from './core/interfaces';
 
 const logger = new Logger(
   'interfaces-clients-adapters-websocket-client-adapter'
@@ -242,7 +242,7 @@ export interface WebSocketClientConfig extends ClientConfig {
   followRedirects?: boolean;
 
   // Binary message handling
-  binaryType?: 'nodebuffer | arraybuffer' | 'fragments');
+  binaryType?: 'nodebuffer | arraybuffer | fragments');
 }
 
 /**
@@ -252,7 +252,7 @@ export interface WebSocketClientConfig extends ClientConfig {
  */
 export interface WebSocketRequestOptions extends RequestOptions {
   // Message type for WebSocket
-  messageType?: 'text | binary' | 'ping | pong');
+  messageType?: 'text | binary | ping | pong');
 
   // Compression for this message
   compress?: boolean;
@@ -270,7 +270,7 @@ export interface WebSocketRequestOptions extends RequestOptions {
  */
 export interface WebSocketResponse<T = any> extends ClientResponse<T> {
   // WebSocket-specific response data
-  messageType: 'text | binary' | 'ping | pong' | 'close');
+  messageType: 'text | binary | ping | pong | close');
   compressed?: boolean;
 
   // Connection state at time of response
@@ -305,7 +305,7 @@ export interface WebSocketMessage<T = any> {
  *              observability features. Implements the UACL Client interface for unified client management.
  * @property {WebSocketClientConfig} config - WebSocket client configuration (read-only).
  * @property {string} name - Client identifier (read-only).
- * @property {WebSocket|null} ws - Underlying WebSocket connection (private).
+ * @property {WebSocket | null} ws - Underlying WebSocket connection (private).
  * @property {string[]} messageQueue - Queued messages for offline scenarios (private).
  * @property {boolean} isConnected - Connection status (private).
  * @property {string} connectionId - Unique connection identifier (private).
@@ -322,7 +322,7 @@ export interface WebSocketMessage<T = any> {
  * ```typescript
  * // Real-time notifications client
  * const notificationClient = new WebSocketClientAdapter({
- *   name: 'notifications',
+ *   name:'notifications',
  *   url: 'wss://notifications.example.com/ws',
  *   protocols: ['notifications-v1'],
  *   authentication: {
@@ -469,7 +469,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
    * @example
    * ```typescript
    * const wsClient = new WebSocketClientAdapter({
-   *   name: 'realtime-updates',
+   *   name:'realtime-updates',
    *   url: 'wss://updates.example.com/stream',
    *   protocols: ['updates-v2, updates-v1'],
    *   authentication: {
@@ -503,7 +503,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
       heartbeat: {
         enabled: true,
         interval: 30000,
-        message: { type: 'ping' },
+        message: { type: 'ping'},
       },
       messageQueue: {
         enabled: true,
@@ -707,7 +707,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
    * Event handler registration (UACL interface).
    */
   on(
-    event: 'connect | disconnect' | 'error | retry' | string,
+    event: 'connect | disconnect | error | retry' | string,
     handler: (args: any[]) => void
   ): void {
     super.on(event, handler);
@@ -922,7 +922,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
             requestId,
             duration,
             connectionId: this._connectionId,
-            messageType: 'response',
+            messageType:'response',
           },
         });
       };
@@ -978,7 +978,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
 
     let delay: number;
     delay =
-      this.config.reconnection.backoff === 'exponential'
+      this.config.reconnection.backoff ==='exponential'
         ? Math.min(baseInterval * 2 ** this.reconnectAttempts, maxInterval)
         : baseInterval;
 
@@ -1006,7 +1006,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
     if (!this.config.heartbeat?.enabled) return;
 
     const interval = this.config.heartbeat.interval || 30000;
-    const message = this.config.heartbeat.message || { type: 'ping' };
+    const message = this.config.heartbeat.message || { type:'ping' };
 
     this.heartbeatTimer = setInterval(() => {
       if (this._isConnected && this.ws) {
@@ -1029,9 +1029,7 @@ export class WebSocketClientAdapter extends TypedEventBase implements Client {
   private isHeartbeatResponse(data: any): boolean {
     return (
       data &&
-      (data.type === 'pong' ||
-        data.type === 'heartbeat' ||
-        data.type === 'ping');
+      (data.type === 'pong' || data.type ==='heartbeat' || data.type ==='ping');
     );
   }
 
@@ -1156,7 +1154,7 @@ export class WebSocketClientFactory {
    * List all clients.
    */
   list(): WebSocketClientAdapter[] {
-    return Array.from(this.clients?.values());
+    return Array.from(this.clients?.values())();
   }
 
   /**
@@ -1196,7 +1194,7 @@ export class WebSocketClientFactory {
       } catch (error) {
         results?.set(name, {
           name,
-          status: 'unhealthy',
+          status:'unhealthy',
           lastCheck: new Date(),
           responseTime: -1,
           errorRate: 1,

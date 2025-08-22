@@ -33,7 +33,7 @@ import type { MonitoringEvent } from './types';
  * @example
  * ```typescript
  * const workflowManager = await createWorkflowEventManager('task-orchestrator');
- * 
+ *
  * // Process a workflow step
  * await workflowManager.processWorkflowStep('step-1', {
  *   action: 'validate',
@@ -356,8 +356,7 @@ export interface SystemEventManager extends EventManager {
  * const message = await commManager.receiveMessage('status-updates');
  * ```
  */
-export interface CommunicationEventManager
-  extends EventManager {
+export interface CommunicationEventManager extends EventManager {
   /**
    * Send a message through a communication channel.
    *
@@ -410,8 +409,7 @@ export interface CommunicationEventManager
  * const status = await coordManager.getCoordinationStatus();
  * ```
  */
-export interface CoordinationEventManager
-  extends EventManager {
+export interface CoordinationEventManager extends EventManager {
   /**
    * Coordinate task execution across multiple agents.
    *

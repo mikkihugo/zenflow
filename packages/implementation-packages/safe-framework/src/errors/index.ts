@@ -1,9 +1,9 @@
 /**
  * @fileoverview SAFe Framework Errors - Minimal Extensions of @claude-zen Packages
- * 
+ *
  * Uses existing error handling, telemetry, and monitoring from claude-zen packages.
  * Only adds SAFe-specific context where needed.
- * 
+ *
  * @author Claude-Zen Team
  * @since 2.0.0
  * @version 2.0.0
@@ -12,16 +12,19 @@
 // Re-export all error handling from @claude-zen/foundation
 export * from '@claude-zen/foundation';
 
-// Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)  
+// Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
 export { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
 
 // Re-export safety monitoring from @claude-zen/ai-safety
 export { AIDeceptionDetector } from '@claude-zen/ai-safety';
 
 // SAFe-specific error types (minimal extensions)
-import { createValidationError, createSystemError } from '@claude-zen/foundation';
+import {
+  createValidationError,
+  createSystemError,
+} from '@claude-zen/foundation';
 // Define error types locally since not exported from foundation
-type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical';
+type ErrorSeverity = 'low | medium' | 'high''' | '''critical';
 
 /**
  * Epic lifecycle error (using foundation error patterns)
@@ -30,7 +33,12 @@ export class EpicLifecycleError extends Error {
   public readonly epicId: string;
   public readonly currentState: string;
 
-  constructor(message: string, epicId: string, currentState: string, cause?: Error) {
+  constructor(
+    message: string,
+    epicId: string,
+    currentState: string,
+    cause?: Error
+  ) {
     super(message);
     this.name = 'EpicLifecycleError';
     this.epicId = epicId;
@@ -60,7 +68,12 @@ export class KanbanTransitionError extends Error {
   public readonly fromState: string;
   public readonly toState: string;
 
-  constructor(message: string, fromState: string, toState: string, cause?: Error) {
+  constructor(
+    message: string,
+    fromState: string,
+    toState: string,
+    cause?: Error
+  ) {
     super(message);
     this.name = 'KanbanTransitionError';
     this.fromState = fromState;
@@ -73,12 +86,37 @@ export class KanbanTransitionError extends Error {
  * Simple error creation utilities using foundation patterns
  */
 export const createSAFeError = {
-  epicLifecycle: (epicId: string, currentState: string, operation: string, cause?: Error) =>
-    new EpicLifecycleError(`Epic ${operation} failed`, epicId, currentState, cause),
+  epicLifecycle: (
+    epicId: string,
+    currentState: string,
+    operation: string,
+    cause?: Error
+  ) =>
+    new EpicLifecycleError(
+      `Epic ${operation} failed`,
+      epicId,
+      currentState,
+      cause
+    ),
 
   businessCase: (businessCaseId: string, reason: string, cause?: Error) =>
-    new BusinessCaseError(`Business case validation failed: ${reason}`, businessCaseId, cause),
+    new BusinessCaseError(
+      `Business case validation failed: ${reason}`,
+      businessCaseId,
+      cause
+    ),
 
-  kanbanTransition: (epicId: string, fromState: string, toState: string, reason: string, cause?: Error) =>
-    new KanbanTransitionError(`Invalid transition for epic ${epicId}: ${reason}`, fromState, toState, cause)
+  kanbanTransition: (
+    epicId: string,
+    fromState: string,
+    toState: string,
+    reason: string,
+    cause?: Error
+  ) =>
+    new KanbanTransitionError(
+      `Invalid transition for epic ${epicId}: ${reason}`,
+      fromState,
+      toState,
+      cause
+    ),
 };

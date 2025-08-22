@@ -50,7 +50,7 @@ interface ProtocolResponse {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const __protocolTypesIdentity = <T>(v: T) => v;
 __protocolTypesIdentity<
-  ProtocolMessage | ProtocolResponse | ExpectedCall | undefined
+  ProtocolMessage'' | ''ProtocolResponse'' | ''ExpectedCall'' | ''undefined
 >(undefined);
 
 // Enhanced mock configuration for London TDD
@@ -75,7 +75,7 @@ afterEach(() => {
  */
 function setupDefaultMocks(): void {
   // Mock console methods to reduce noise in tests
-  vi.spyOn(console, 'log').mockImplementation(() => {});
+  vi.spyOn(console,'log').mockImplementation(() => {});
   vi.spyOn(console, 'warn').mockImplementation(() => {});
   vi.spyOn(console, 'error').mockImplementation(() => {});
 

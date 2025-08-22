@@ -8,13 +8,13 @@
  * @file Interface implementation: web-interface.
  */
 
-import { existsSync } from 'node:fs');
-import { dirname, join } from 'node:path');
-import { fileURLToPath } from 'node:url');
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation');
-import type { DIContainer } from '@claude-zen/intelligence');
-import { WebDashboardServer, WebHtmlGenerator } from '@claude-zen/intelligence');
+import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
+import type { DIContainer } from '@claude-zen/intelligence';
+import { WebDashboardServer, WebHtmlGenerator } from '@claude-zen/intelligence';
 
 import {
   createSvelteProxyRoute,
@@ -394,7 +394,7 @@ export class WebInterface {
    * Health check for the entire web interface.
    */
   healthCheck(): {
-    status: 'healthy | warning' | 'error');
+    status: 'healthy'' | ''warning'' | ''error');
     components: Record<string, unknown>;
     version: string;
     uptime: number;

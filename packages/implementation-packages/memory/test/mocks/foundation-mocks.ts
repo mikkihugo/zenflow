@@ -6,14 +6,14 @@ export const mockLogger = {
   error: vi.fn(),
   debug: vi.fn(),
   trace: vi.fn(),
-  log: vi.fn()
+  log: vi.fn(),
 };
 
 export const mockConfig = {
   get: vi.fn(),
   set: vi.fn(),
   has: vi.fn(),
-  toObject: vi.fn(() => ({}))
+  toObject: vi.fn(() => ({})),
 };
 
 export const mockDIContainer = {
@@ -23,7 +23,7 @@ export const mockDIContainer = {
   clear: vi.fn(),
   bind: vi.fn(),
   unbind: vi.fn(),
-  get: vi.fn()
+  get: vi.fn(),
 };
 
 export const mockEventBus = {
@@ -33,7 +33,7 @@ export const mockEventBus = {
   publish: vi.fn(),
   subscribe: vi.fn(),
   unsubscribe: vi.fn(),
-  removeAllListeners: vi.fn()
+  removeAllListeners: vi.fn(),
 };
 
 export const createMockMemoryConfig = () => ({
@@ -41,7 +41,7 @@ export const createMockMemoryConfig = () => ({
   maxSize: 1000,
   ttl: 300000,
   compression: false,
-  path: ':memory:'
+  path: ':memory:',
 });
 
 export const createMockMemoryBackend = () => ({
@@ -52,10 +52,18 @@ export const createMockMemoryBackend = () => ({
   size: vi.fn().mockResolvedValue(0),
   health: vi.fn().mockResolvedValue(true),
   init: vi.fn().mockResolvedValue(undefined),
-  destroy: vi.fn().mockResolvedValue(undefined)
+  destroy: vi.fn().mockResolvedValue(undefined),
 });
 
 export const createMockResult = {
-  ok: (value: any) => ({ isOk: () => true, isErr: () => false, _unsafeUnwrap: () => value }),
-  err: (error: any) => ({ isOk: () => false, isErr: () => true, _unsafeUnwrapErr: () => error })
+  ok: (value: any) => ({
+    isOk: () => true,
+    isErr: () => false,
+    _unsafeUnwrap: () => value,
+  }),
+  err: (error: any) => ({
+    isOk: () => false,
+    isErr: () => true,
+    _unsafeUnwrapErr: () => error,
+  }),
 };

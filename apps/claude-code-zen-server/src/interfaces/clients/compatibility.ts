@@ -5,13 +5,13 @@
  * Ensures zero breaking changes when transitioning to UACL architecture.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 // Removed broken import - using simple fallback for MCP server URL
-import { FACTIntegration } from './../knowledge/knowledge-client');
-import { type APIClient, createAPIClient } from './api/http/client');
-import { WebSocketClient } from './api/websocket/client');
-import { ExternalMCPClient } from './mcp/external-mcp-client');
+import { FACTIntegration } from './../knowledge/knowledge-client';
+import { type APIClient, createAPIClient } from './api/http/client';
+import { WebSocketClient } from './api/websocket/client';
+import { ExternalMCPClient } from './mcp/external-mcp-client';
 
 import('/types');
 import('/types');
@@ -47,7 +47,7 @@ export const createManagedAPIClient = async (
   const { uacl } = await import('/instance');
   const instance = await uacl.createHTTPClient(
     id,
-    config?.baseURL || 'http://localhost:3000',
+    config?.baseURL'' | '''' | '''http://localhost:3000',
     {
       enabled: true,
       priority: 5,
@@ -207,7 +207,7 @@ export class UACLMigrationHelper {
    */
   static trackLegacyUsage(clientType: string, location: string): void {
     const key = `${clientType}:${location}`;
-    const current = UACLMigrationHelper.migrationTracking.get(key) || {
+    const current = UACLMigrationHelper.migrationTracking.get(key)'' | '''' | ''{
       lastAccess: new Date(),
       accessCount: 0,
       migrated: false,
@@ -231,7 +231,7 @@ export class UACLMigrationHelper {
    */
   static markAsMigrated(clientType: string, location: string): void {
     const key = `${clientType}:${location}`;
-    const current = UACLMigrationHelper.migrationTracking.get(key) || {
+    const current = UACLMigrationHelper.migrationTracking.get(key)'' | '''' | ''{
       lastAccess: new Date(),
       accessCount: 0,
       migrated: false,
@@ -295,7 +295,7 @@ export class UACLMigrationHelper {
     clientType: string,
     id: string,
     config: any
-  ): Promise<ClientInstance | null> {
+  ): Promise<ClientInstance'' | ''null> {
     try {
       // Dynamic import to avoid circular dependency
       const { uacl } = await import('/instance');

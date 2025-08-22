@@ -7,7 +7,7 @@
  * @file Database-specific rate limiting middleware.
  */
 
-import type { NextFunction, Request, Response } from 'express');
+import type { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit');
 
 import('/auth');
@@ -201,9 +201,7 @@ export const dynamicDatabaseRateLimiter = (
   let limiter: ReturnType<typeof rateLimit>;
 
   if (
-    path.includes('/status') ||
-    path.includes('/schema') ||
-    path.includes('/analytics');
+    path.includes('/status') || path.includes('/schema') || path.includes('/analytics');
   ) {
     // Light operations
     limiter = lightOperationsLimiter;
@@ -278,9 +276,7 @@ export const authAwareDatabaseRateLimiter = (
   let baseConfig: RateLimitConfig;
 
   if (
-    path.includes('/status') ||
-    path.includes('/schema') ||
-    path.includes('/analytics');
+    path.includes('/status') || path.includes('/schema') || path.includes('/analytics');
   ) {
     baseConfig = DATABASE_RATE_LIMITS?.light()
   } else if (path.includes('/migrate') && req.body?.dryRun !== true) {

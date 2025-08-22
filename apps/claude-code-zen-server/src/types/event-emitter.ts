@@ -5,13 +5,13 @@
  * for properties like 'on, code', and other event-related functionality.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
 /**
  * Base error interface with common error properties
  */
 export interface BaseError extends Error {
-  code?: string | number;
+  code?: string'' | ''number;
   errno?: number;
   path?: string;
   syscall?: string;
@@ -32,7 +32,7 @@ export interface SystemError extends BaseError {
  * Network error interface
  */
 export interface NetworkError extends BaseError {
-  code: 'EADDRINUSE | ECONNREFUSED' | 'ENOTFOUND | ETIMEDOUT' | string;
+  code:'EADDRINUSE | ECONNREFUSED''' | '''ENOTFOUND | ETIMEDOUT''' | ''string;
   port?: number;
   address?: string;
   hostname?: string;
@@ -66,11 +66,10 @@ export type ServerErrorListener = (error: BaseError) => void;
  */
 export function hasErrorCode(error: any): error is BaseError {
   return (
-    typeof error === 'object' &&
+    typeof error ==='object' &&
     error !== null &&
     'code' in error &&
-    (typeof (error as any).code === 'string' ||
-      typeof (error as any).code === 'number');
+    (typeof (error as any).code === 'string''' | '''' | ''typeof (error as any).code ==='number');
   );
 }
 

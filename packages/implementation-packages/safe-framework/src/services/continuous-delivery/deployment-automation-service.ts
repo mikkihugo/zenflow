@@ -1,15 +1,15 @@
 /**
  * @fileoverview Deployment Automation Service - Automated deployment and release management.
- * 
+ *
  * Provides specialized deployment automation with intelligent release strategies,
  * rollback capabilities, environment management, and comprehensive deployment monitoring.
- * 
+ *
  * Integrates with:
  * - @claude-zen/brain: LoadBalancer for intelligent deployment strategies
  * - @claude-zen/brain: BrainCoordinator for deployment decision making
  * - @claude-zen/foundation: Performance tracking and telemetry
  * - @claude-zen/agui: Human-in-loop approvals for production deployments
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -23,7 +23,7 @@ export type {
   PipelineArtifact,
   AutomationResult,
   RetryPolicy,
-  RollbackPolicy
+  RollbackPolicy,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -38,7 +38,7 @@ export enum DeploymentStrategy {
   CANARY = 'canary',
   ROLLING = 'rolling',
   RECREATE = 'recreate',
-  A_B_TESTING = 'a_b_testing'
+  A_B_TESTING = 'a_b_testing',
 }
 
 /**
@@ -47,7 +47,7 @@ export enum DeploymentStrategy {
 export interface DeploymentEnvironment {
   readonly id: string;
   readonly name: string;
-  readonly type: 'development' | 'staging' | 'production';
+  readonly type: 'development'' | ''staging'' | ''production';
   readonly region: string;
   readonly infrastructure: InfrastructureConfig;
   readonly securityConfig: SecurityConfig;
@@ -61,7 +61,7 @@ export interface DeploymentEnvironment {
  * Infrastructure configuration
  */
 export interface InfrastructureConfig {
-  readonly provider: 'aws' | 'gcp' | 'azure' | 'kubernetes' | 'docker';
+  readonly provider: 'aws'' | ''gcp'' | ''azure'' | ''kubernetes'' | ''docker';
   readonly region: string;
   readonly availabilityZones: string[];
   readonly instanceTypes: string[];
@@ -141,7 +141,7 @@ export interface DeploymentArtifact {
   readonly id: string;
   readonly name: string;
   readonly version: string;
-  readonly type: 'application' | 'configuration' | 'database' | 'infrastructure';
+  readonly type:' | ''application'' | ''configuration'' | ''database'' | ''infrastructure';
   readonly location: string;
   readonly size: number;
   readonly checksum: string;
@@ -156,7 +156,7 @@ export interface DeploymentPhase {
   readonly id: string;
   readonly name: string;
   readonly order: number;
-  readonly type: 'pre-deployment' | 'deployment' | 'post-deployment' | 'validation';
+  readonly type:' | ''pre-deployment'' | ''deployment'' | ''post-deployment'' | ''validation';
   readonly actions: DeploymentAction[];
   readonly conditions: DeploymentCondition[];
   readonly timeout: number;
@@ -169,7 +169,7 @@ export interface DeploymentPhase {
  */
 export interface DeploymentAction {
   readonly id: string;
-  readonly type: 'script' | 'api_call' | 'infrastructure' | 'configuration' | 'validation';
+  readonly type:' | ''script'' | ''api_call'' | ''infrastructure'' | ''configuration'' | ''validation';
   readonly name: string;
   readonly command?: string;
   readonly parameters: Record<string, unknown>;
@@ -183,7 +183,7 @@ export interface DeploymentAction {
  */
 export interface DeploymentCondition {
   readonly id: string;
-  readonly type: 'health_check' | 'metric_threshold' | 'manual_approval' | 'time_gate';
+  readonly type:' | ''health_check'' | ''metric_threshold'' | ''manual_approval'' | ''time_gate';
   readonly description: string;
   readonly parameters: Record<string, unknown>;
   readonly timeout: number;
@@ -215,7 +215,7 @@ export enum DeploymentStatus {
   SUCCESS = 'success',
   FAILED = 'failed',
   ROLLED_BACK = 'rolled_back',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 /**
@@ -249,7 +249,7 @@ export interface ActionExecution {
  */
 export interface ConditionExecution {
   readonly conditionId: string;
-  readonly status: 'met' | 'not_met' | 'timeout';
+  readonly status: 'met'' | ''not_met'' | ''timeout';
   readonly result: unknown;
   readonly message: string;
   readonly evaluatedAt: Date;
@@ -308,7 +308,7 @@ export interface RollbackPlan {
  */
 export interface RollbackTrigger {
   readonly id: string;
-  readonly type: 'health_check_failure' | 'metric_threshold' | 'error_rate' | 'manual';
+  readonly type:' | ''health_check_failure'' | ''metric_threshold'' | ''error_rate'' | ''manual';
   readonly description: string;
   readonly conditions: Record<string, unknown>;
   readonly delay: number;
@@ -331,7 +331,7 @@ export interface ValidationPlan {
 export interface HealthCheck {
   readonly id: string;
   readonly name: string;
-  readonly type: 'http' | 'tcp' | 'database' | 'custom';
+  readonly type: 'http'' | ''tcp'' | ''database'' | ''custom';
   readonly endpoint: string;
   readonly expectedResponse: unknown;
   readonly timeout: number;
@@ -345,7 +345,7 @@ export interface HealthCheck {
 export interface PerformanceTest {
   readonly id: string;
   readonly name: string;
-  readonly type: 'load' | 'stress' | 'spike' | 'volume';
+  readonly type: 'load'' | ''stress'' | ''spike'' | ''volume';
   readonly configuration: Record<string, unknown>;
   readonly thresholds: PerformanceThreshold[];
   readonly duration: number;
@@ -356,7 +356,7 @@ export interface PerformanceTest {
  */
 export interface PerformanceThreshold {
   readonly metric: string;
-  readonly operator: 'lt' | 'lte' | 'gt' | 'gte';
+  readonly operator: 'lt'' | ''lte'' | ''gt'' | ''gte';
   readonly value: number;
   readonly percentile?: number;
 }
@@ -367,9 +367,9 @@ export interface PerformanceThreshold {
 export interface SecurityTest {
   readonly id: string;
   readonly name: string;
-  readonly type: 'vulnerability_scan' | 'penetration_test' | 'compliance_check';
+  readonly type: 'vulnerability_scan'' | ''penetration_test'' | ''compliance_check';
   readonly configuration: Record<string, unknown>;
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
 }
 
 /**
@@ -378,7 +378,7 @@ export interface SecurityTest {
 export interface BusinessValidation {
   readonly id: string;
   readonly name: string;
-  readonly type: 'feature_toggle' | 'a_b_test' | 'canary_metrics' | 'user_acceptance';
+  readonly type:' | ''feature_toggle'' | ''a_b_test'' | ''canary_metrics'' | ''user_acceptance';
   readonly criteria: BusinessCriteria[];
   readonly timeout: number;
 }
@@ -397,7 +397,7 @@ export interface BusinessCriteria {
  * Rollout validation
  */
 export interface RolloutValidation {
-  readonly strategy: 'immediate' | 'gradual' | 'scheduled';
+  readonly strategy: 'immediate'' | ''gradual'' | ''scheduled';
   readonly phases: RolloutPhase[];
   readonly approvals: ApprovalGate[];
   readonly monitoringPeriod: number;
@@ -419,7 +419,7 @@ export interface RolloutPhase {
 export interface RolloutCriteria {
   readonly metric: string;
   readonly threshold: number;
-  readonly operator: 'lt' | 'lte' | 'gt' | 'gte';
+  readonly operator: 'lt'' | ''lte'' | ''gt'' | ''gte';
   readonly required: boolean;
 }
 
@@ -439,35 +439,35 @@ export interface ApprovalGate {
  * Supporting interfaces
  */
 export interface StorageConfig {
-  readonly type: 'ebs' | 'efs' | 'gcs' | 'azure_disk';
+  readonly type: 'ebs'' | ''efs'' | ''gcs'' | ''azure_disk';
   readonly size: number;
   readonly iops?: number;
   readonly encrypted: boolean;
 }
 
 export interface LoadBalancerConfig {
-  readonly type: 'application' | 'network' | 'classic';
-  readonly scheme: 'internet-facing' | 'internal';
+  readonly type: 'application'' | ''network'' | ''classic';
+  readonly scheme: 'internet-facing'' | ''internal';
   readonly targetGroups: TargetGroup[];
 }
 
 export interface TargetGroup {
   readonly name: string;
   readonly port: number;
-  readonly protocol: 'HTTP' | 'HTTPS' | 'TCP' | 'TLS';
+  readonly protocol: 'HTTP'' | ''HTTPS'' | ''TCP'' | ''TLS';
   readonly healthCheck: HealthCheck;
 }
 
 export interface IngressRule {
   readonly port: number;
-  readonly protocol: 'tcp' | 'udp' | 'icmp';
+  readonly protocol: 'tcp'' | ''udp'' | ''icmp';
   readonly source: string;
   readonly description?: string;
 }
 
 export interface EgressRule {
   readonly port: number;
-  readonly protocol: 'tcp' | 'udp' | 'icmp';
+  readonly protocol: 'tcp'' | ''udp'' | ''icmp';
   readonly destination: string;
   readonly description?: string;
 }
@@ -478,8 +478,8 @@ export interface NetworkPolicy {
 }
 
 export interface PolicyRule {
-  readonly action: 'allow' | 'deny';
-  readonly protocol: 'tcp' | 'udp' | 'icmp';
+  readonly action: 'allow'' | ''deny';
+  readonly protocol: 'tcp'' | ''udp'' | ''icmp';
   readonly port?: number;
   readonly source?: string;
   readonly destination?: string;
@@ -492,13 +492,13 @@ export interface NotificationPlan {
 }
 
 export interface NotificationChannel {
-  readonly type: 'email' | 'slack' | 'teams' | 'webhook';
+  readonly type: 'email'' | ''slack'' | ''teams'' | ''webhook';
   readonly configuration: Record<string, unknown>;
   readonly recipients: string[];
 }
 
 export interface NotificationTrigger {
-  readonly event: 'deployment_start' | 'deployment_success' | 'deployment_failure' | 'rollback';
+  readonly event:' | ''deployment_start'' | ''deployment_success'' | ''deployment_failure'' | ''rollback';
   readonly channels: string[];
   readonly conditions?: Record<string, unknown>;
 }
@@ -508,12 +508,12 @@ export interface NotificationTemplate {
   readonly name: string;
   readonly subject: string;
   readonly body: string;
-  readonly format: 'text' | 'html' | 'markdown';
+  readonly format: 'text'' | ''html'' | ''markdown';
 }
 
 export interface DeploymentLog {
   readonly timestamp: Date;
-  readonly level: 'debug' | 'info' | 'warn' | 'error';
+  readonly level: 'debug'' | ''info'' | ''warn'' | ''error';
   readonly message: string;
   readonly source: string;
   readonly metadata?: Record<string, unknown>;
@@ -523,7 +523,7 @@ export interface DeploymentError {
   readonly timestamp: Date;
   readonly phase: string;
   readonly action?: string;
-  readonly type: 'validation' | 'execution' | 'timeout' | 'system';
+  readonly type: 'validation'' | ''execution'' | ''timeout'' | ''system';
   readonly message: string;
   readonly details: unknown;
   readonly recoverable: boolean;
@@ -536,7 +536,7 @@ import type {
   PipelineArtifact,
   AutomationResult,
   RetryPolicy,
-  RollbackPolicy
+  RollbackPolicy,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -545,7 +545,7 @@ import type {
 
 /**
  * Deployment Automation Service - Automated deployment and release management
- * 
+ *
  * Provides comprehensive deployment automation with intelligent strategies, rollback capabilities,
  * environment management, and AI-powered deployment optimization.
  */
@@ -580,14 +580,18 @@ export class DeploymentAutomationService {
         strategy: 'intelligent',
         enableHealthChecks: true,
         healthCheckInterval: 30000,
-        failoverTimeout: 5000
+        failoverTimeout: 5000,
       });
       await this.loadBalancer.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent deployment decisions
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
-        autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
+        autonomous: {
+          enabled: true,
+          learningRate: 0.1,
+          adaptationThreshold: 0.7,
+        },
       });
       await this.brainCoordinator.initialize();
 
@@ -602,8 +606,8 @@ export class DeploymentAutomationService {
         taskApprovalConfig: {
           enableRichDisplay: true,
           enableBatchMode: false,
-          requireRationale: true
-        }
+          requireRationale: true,
+        },
       });
       this.aguiService = aguiResult.agui;
 
@@ -614,10 +618,14 @@ export class DeploymentAutomationService {
       this.initializeDefaultEnvironments();
 
       this.initialized = true;
-      this.logger.info('Deployment Automation Service initialized successfully');
-
+      this.logger.info(
+        'Deployment Automation Service initialized successfully'
+      );
     } catch (error) {
-      this.logger.error('Failed to initialize Deployment Automation Service:', error);
+      this.logger.error(
+        'Failed to initialize Deployment Automation Service:',
+        error
+      );
       throw error;
     }
   }
@@ -635,11 +643,14 @@ export class DeploymentAutomationService {
     const timer = this.performanceTracker.startTimer('deployment_execution');
 
     try {
-      this.logger.info('Executing deployment automation with intelligent optimization', {
-        pipelineId,
-        environment,
-        artifactCount: artifacts.length,
-      });
+      this.logger.info(
+        'Executing deployment automation with intelligent optimization',
+        {
+          pipelineId,
+          environment,
+          artifactCount: artifacts.length,
+        }
+      );
 
       const deploymentEnv = this.environments.get(environment);
       if (!deploymentEnv) {
@@ -647,14 +658,16 @@ export class DeploymentAutomationService {
       }
 
       // Use brain coordinator for intelligent strategy selection
-      const strategyRecommendation = await this.brainCoordinator.recommendDeploymentStrategy({
-        environment: deploymentEnv,
-        artifacts,
-        historicalData: this.getDeploymentHistory(environment),
-        riskTolerance: this.calculateRiskTolerance(deploymentEnv)
-      });
+      const strategyRecommendation =
+        await this.brainCoordinator.recommendDeploymentStrategy({
+          environment: deploymentEnv,
+          artifacts,
+          historicalData: this.getDeploymentHistory(environment),
+          riskTolerance: this.calculateRiskTolerance(deploymentEnv),
+        });
 
-      const strategy = strategyRecommendation.strategy || DeploymentStrategy.ROLLING;
+      const strategy =
+        strategyRecommendation.strategy || DeploymentStrategy.ROLLING;
 
       // Create deployment plan with AI optimization
       const deploymentPlan = this.createDeploymentPlan(
@@ -687,9 +700,8 @@ export class DeploymentAutomationService {
         environment,
         strategy,
         duration: execution.duration,
-        healthScore: execution.metrics.healthScore
+        healthScore: execution.metrics.healthScore,
       });
-
     } catch (error) {
       this.performanceTracker.endTimer('deployment_execution');
       this.logger.error('Deployment automation failed:', error);
@@ -708,7 +720,7 @@ export class DeploymentAutomationService {
     try {
       this.logger.info('Validating deployment readiness with AI analysis', {
         planId: plan.id,
-        environment: plan.environment.name
+        environment: plan.environment.name,
       });
 
       // Artifact validation
@@ -724,24 +736,26 @@ export class DeploymentAutomationService {
       this.validateSecurityCompliance(plan.environment, plan.artifacts);
 
       // Use brain coordinator for readiness assessment
-      const readinessAssessment = await this.brainCoordinator.assessDeploymentReadiness({
-        plan,
-        environmentHealth: true, // Results from above validations
-        artifactValidation: true,
-        securityCompliance: true
-      });
+      const readinessAssessment =
+        await this.brainCoordinator.assessDeploymentReadiness({
+          plan,
+          environmentHealth: true, // Results from above validations
+          artifactValidation: true,
+          securityCompliance: true,
+        });
 
       if (!readinessAssessment.ready) {
-        throw new Error(`Deployment not ready: ${readinessAssessment.reasons.join(', ')}`);
+        throw new Error(
+          `Deployment not ready: ${readinessAssessment.reasons.join(', ')}`
+        );
       }
 
       this.performanceTracker.endTimer('deployment_validation');
 
       this.logger.info('Deployment readiness validation completed', {
         planId: plan.id,
-        readinessScore: readinessAssessment.score || 1.0
+        readinessScore: readinessAssessment.score || 1.0,
       });
-
     } catch (error) {
       this.performanceTracker.endTimer('deployment_validation');
       this.logger.error('Deployment readiness validation failed:', error);
@@ -752,10 +766,7 @@ export class DeploymentAutomationService {
   /**
    * Execute rollback with intelligent recovery strategy
    */
-  async executeRollback(
-    executionId: string,
-    reason: string
-  ): Promise<void> {
+  async executeRollback(executionId: string, reason: string): Promise<void> {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer('deployment_rollback');
@@ -768,15 +779,17 @@ export class DeploymentAutomationService {
 
       this.logger.info('Executing intelligent rollback strategy', {
         executionId,
-        reason
+        reason,
       });
 
       // Use brain coordinator for rollback strategy
-      const rollbackStrategy = await this.brainCoordinator.planRollbackStrategy({
-        execution,
-        reason,
-        environmentType: execution.planId // Simplified
-      });
+      const rollbackStrategy = await this.brainCoordinator.planRollbackStrategy(
+        {
+          execution,
+          reason,
+          environmentType: execution.planId, // Simplified
+        }
+      );
 
       // Execute rollback phases
       this.executeRollbackPhases(execution, rollbackStrategy);
@@ -785,16 +798,18 @@ export class DeploymentAutomationService {
       this.verifyRollbackSuccess(execution);
 
       // Update deployment status
-      const updatedExecution = { ...execution, status: DeploymentStatus.ROLLED_BACK };
+      const updatedExecution = {
+        ...execution,
+        status: DeploymentStatus.ROLLED_BACK,
+      };
       this.activeDeployments.set(executionId, updatedExecution);
 
       this.performanceTracker.endTimer('deployment_rollback');
 
       this.logger.info('Rollback completed successfully', {
         executionId,
-        rollbackTime: rollbackStrategy.estimatedTime || 0
+        rollbackTime: rollbackStrategy.estimatedTime || 0,
       });
-
     } catch (error) {
       this.performanceTracker.endTimer('deployment_rollback');
       this.logger.error('Rollback execution failed:', error);
@@ -819,21 +834,23 @@ export class DeploymentAutomationService {
 
     try {
       const history = this.deploymentHistory.get(environment) || [];
-      
+
       // Use brain coordinator for intelligent analysis
       const insights = await this.brainCoordinator.analyzeDeploymentInsights({
         environment,
         deploymentHistory: history,
-        analysisDepth: 'comprehensive'
+        analysisDepth:'comprehensive',
       });
 
       const result = {
         successRate: insights.successRate || this.calculateSuccessRate(history),
-        averageDeploymentTime: insights.averageTime || this.calculateAverageTime(history),
-        recommendedStrategy: insights.recommendedStrategy || DeploymentStrategy.ROLLING,
+        averageDeploymentTime:
+          insights.averageTime || this.calculateAverageTime(history),
+        recommendedStrategy:
+          insights.recommendedStrategy || DeploymentStrategy.ROLLING,
         riskFactors: insights.riskFactors || [],
         optimizationRecommendations: insights.recommendations || [],
-        trendsAnalysis: insights.trends || {}
+        trendsAnalysis: insights.trends || {},
       };
 
       this.performanceTracker.endTimer('deployment_insights');
@@ -841,11 +858,10 @@ export class DeploymentAutomationService {
       this.logger.info('Deployment insights generated', {
         environment,
         successRate: result.successRate,
-        historyCount: history.length
+        historyCount: history.length,
       });
 
       return result;
-
     } catch (error) {
       this.performanceTracker.endTimer('deployment_insights');
       this.logger.error('Failed to generate deployment insights:', error);
@@ -880,21 +896,21 @@ export class DeploymentAutomationService {
       name: 'Blue-Green Deployment',
       riskLevel: 'low',
       rollbackTime: 'immediate',
-      resourceRequirement: 'high'
+      resourceRequirement: 'high',
     });
 
     this.strategies.set(DeploymentStrategy.CANARY, {
       name: 'Canary Deployment',
       riskLevel: 'medium',
       rollbackTime: 'fast',
-      resourceRequirement: 'medium'
+      resourceRequirement: 'medium',
     });
 
     this.strategies.set(DeploymentStrategy.ROLLING, {
       name: 'Rolling Deployment',
       riskLevel: 'medium',
       rollbackTime: 'moderate',
-      resourceRequirement: 'low'
+      resourceRequirement: 'low',
     });
   }
 
@@ -910,7 +926,7 @@ export class DeploymentAutomationService {
       monitoringConfig: {} as MonitoringConfig,
       scalingConfig: {} as ScalingConfig,
       approvalRequired: false,
-      rollbackEnabled: true
+      rollbackEnabled: true,
     };
 
     this.environments.set('development', developmentEnv);
@@ -924,17 +940,19 @@ export class DeploymentAutomationService {
     strategyRecommendation: any
   ): DeploymentPlan {
     // Convert PipelineArtifact to DeploymentArtifact
-    const deploymentArtifacts: DeploymentArtifact[] = artifacts.map(artifact => ({
-      id: artifact.id,
-      name: artifact.name,
-      version: '1.0.0', // Default version
-      type: 'application' as const,
-      location: artifact.location,
-      size: artifact.size,
-      checksum: artifact.checksum,
-      dependencies: [],
-      metadata: artifact.metadata
-    }));
+    const deploymentArtifacts: DeploymentArtifact[] = artifacts.map(
+      (artifact) => ({
+        id: artifact.id,
+        name: artifact.name,
+        version: '1.0.0', // Default version
+        type: 'application' as const,
+        location: artifact.location,
+        size: artifact.size,
+        checksum: artifact.checksum,
+        dependencies: [],
+        metadata: artifact.metadata,
+      })
+    );
 
     const plan: DeploymentPlan = {
       id: `deploy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -942,11 +960,15 @@ export class DeploymentAutomationService {
       strategy,
       environment,
       artifacts: deploymentArtifacts,
-      phases: this.createDeploymentPhases(strategy, environment, deploymentArtifacts),
+      phases: this.createDeploymentPhases(
+        strategy,
+        environment,
+        deploymentArtifacts
+      ),
       rollbackPlan: this.createRollbackPlan(strategy, environment),
       validation: this.createValidationPlan(environment),
       notifications: this.createNotificationPlan(environment),
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     return plan;
@@ -969,11 +991,17 @@ export class DeploymentAutomationService {
       actions: [],
       conditions: [],
       timeout: 600000, // 10 minutes
-      retryPolicy: { enabled: true, maxAttempts: 3, backoffStrategy: 'exponential', baseDelay: 30000, maxDelay: 300000 },
-      rollbackTriggers: ['setup_failure']
+      retryPolicy: {
+        enabled: true,
+        maxAttempts: 3,
+        backoffStrategy: 'exponential',
+        baseDelay: 30000,
+        maxDelay: 300000,
+      },
+      rollbackTriggers: ['setup_failure'],
     });
 
-    // Main deployment phase  
+    // Main deployment phase
     phases.push({
       id: 'deployment',
       name: 'Main Deployment',
@@ -982,8 +1010,14 @@ export class DeploymentAutomationService {
       actions: [],
       conditions: [],
       timeout: 1800000, // 30 minutes
-      retryPolicy: { enabled: true, maxAttempts: 2, backoffStrategy: 'linear', baseDelay: 120000, maxDelay: 300000 },
-      rollbackTriggers: ['deployment_failure', 'health_check_failure']
+      retryPolicy: {
+        enabled: true,
+        maxAttempts: 2,
+        backoffStrategy: 'linear',
+        baseDelay: 120000,
+        maxDelay: 300000,
+      },
+      rollbackTriggers: ['deployment_failure', 'health_check_failure'],
     });
 
     // Post-deployment phase
@@ -995,8 +1029,14 @@ export class DeploymentAutomationService {
       actions: [],
       conditions: [],
       timeout: 900000, // 15 minutes
-      retryPolicy: { enabled: true, maxAttempts: 3, backoffStrategy: 'fixed', baseDelay: 60000, maxDelay: 180000 },
-      rollbackTriggers: ['validation_failure']
+      retryPolicy: {
+        enabled: true,
+        maxAttempts: 3,
+        backoffStrategy: 'fixed',
+        baseDelay: 60000,
+        maxDelay: 180000,
+      },
+      rollbackTriggers: ['validation_failure'],
     });
 
     return phases;
@@ -1012,11 +1052,13 @@ export class DeploymentAutomationService {
       triggers: [],
       actions: [],
       timeout: 600000, // 10 minutes
-      healthCheckRequired: true
+      healthCheckRequired: true,
     };
   }
 
-  private createValidationPlan(environment: DeploymentEnvironment): ValidationPlan {
+  private createValidationPlan(
+    environment: DeploymentEnvironment
+  ): ValidationPlan {
     return {
       healthChecks: [],
       performanceTests: [],
@@ -1026,16 +1068,18 @@ export class DeploymentAutomationService {
         strategy: 'gradual',
         phases: [],
         approvals: [],
-        monitoringPeriod: 3600000 // 1 hour
-      }
+        monitoringPeriod: 3600000, // 1 hour
+      },
     };
   }
 
-  private createNotificationPlan(environment: DeploymentEnvironment): NotificationPlan {
+  private createNotificationPlan(
+    environment: DeploymentEnvironment
+  ): NotificationPlan {
     return {
       channels: [],
       triggers: [],
-      templates: []
+      templates: [],
     };
   }
 
@@ -1043,14 +1087,14 @@ export class DeploymentAutomationService {
     const execution: DeploymentExecution = {
       planId: plan.id,
       status: DeploymentStatus.RUNNING,
-      phases: plan.phases.map(phase => ({
+      phases: plan.phases.map((phase) => ({
         phaseId: phase.id,
         status: DeploymentStatus.PENDING,
         actions: [],
         conditions: [],
         startTime: undefined,
         endTime: undefined,
-        duration: undefined
+        duration: undefined,
       })),
       metrics: {
         deploymentTime: 0,
@@ -1063,19 +1107,19 @@ export class DeploymentAutomationService {
           memory: 0,
           disk: 0,
           network: 0,
-          cost: 0
+          cost: 0,
         },
         userImpactMetrics: {
           responseTime: 0,
           availability: 100,
           errorCount: 0,
           userSessions: 0,
-          businessMetrics: {}
-        }
+          businessMetrics: {},
+        },
       },
       logs: [],
       errors: [],
-      startTime: new Date()
+      startTime: new Date(),
     };
 
     this.activeDeployments.set(plan.id, execution);
@@ -1085,7 +1129,7 @@ export class DeploymentAutomationService {
   private monitorDeploymentExecution(execution: DeploymentExecution): void {
     // Monitor deployment progress with load balancer integration
     this.logger.info('Monitoring deployment execution', {
-      planId: execution.planId
+      planId: execution.planId,
     });
   }
 
@@ -1095,18 +1139,22 @@ export class DeploymentAutomationService {
   ): void {
     // Perform comprehensive post-deployment validation
     this.logger.info('Performing post-deployment validation', {
-      planId: plan.id
+      planId: plan.id,
     });
   }
 
   private validateArtifacts(artifacts: DeploymentArtifact[]): void {
     // Validate deployment artifacts
-    this.logger.debug('Validating deployment artifacts', { count: artifacts.length });
+    this.logger.debug('Validating deployment artifacts', {
+      count: artifacts.length,
+    });
   }
 
   private validateEnvironmentHealth(environment: DeploymentEnvironment): void {
     // Validate environment health
-    this.logger.debug('Validating environment health', { environment: environment.name });
+    this.logger.debug('Validating environment health', {
+      environment: environment.name,
+    });
   }
 
   private validateInfrastructureCapacity(
@@ -1135,7 +1183,9 @@ export class DeploymentAutomationService {
 
   private verifyRollbackSuccess(execution: DeploymentExecution): void {
     // Verify rollback success
-    this.logger.info('Verifying rollback success', { planId: execution.planId });
+    this.logger.info('Verifying rollback success', {
+      planId: execution.planId,
+    });
   }
 
   private calculateRiskTolerance(environment: DeploymentEnvironment): string {
@@ -1157,13 +1207,18 @@ export class DeploymentAutomationService {
 
   private calculateSuccessRate(history: DeploymentExecution[]): number {
     if (history.length === 0) return 1.0;
-    const successful = history.filter(exec => exec.status === DeploymentStatus.SUCCESS).length;
+    const successful = history.filter(
+      (exec) => exec.status === DeploymentStatus.SUCCESS
+    ).length;
     return successful / history.length;
   }
 
   private calculateAverageTime(history: DeploymentExecution[]): number {
     if (history.length === 0) return 0;
-    const totalTime = history.reduce((acc, exec) => acc + (exec.duration || 0), 0);
+    const totalTime = history.reduce(
+      (acc, exec) => acc + (exec.duration || 0),
+      0
+    );
     return totalTime / history.length;
   }
 }

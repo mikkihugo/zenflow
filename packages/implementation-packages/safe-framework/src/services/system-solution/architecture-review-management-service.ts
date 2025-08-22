@@ -1,16 +1,16 @@
 /**
  * @fileoverview Architecture Review Management Service - Architecture review workflows and coordination.
- * 
+ *
  * Provides specialized architecture review management with AI-powered review analysis,
  * automated workflow orchestration, and intelligent review coordination.
- * 
+ *
  * Integrates with:
  * - @claude-zen/agui: Human-in-loop approvals for architecture reviews and approval workflows
  * - @claude-zen/brain: BrainCoordinator for intelligent review analysis and recommendation
  * - @claude-zen/foundation: Performance tracking and telemetry
  * - @claude-zen/workflows: WorkflowEngine for review workflow orchestration
  * - @claude-zen/teamwork: ConversationOrchestrator for stakeholder collaboration
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -22,13 +22,13 @@ import type { Logger } from '@claude-zen/foundation';
 export type {
   ArchitectureReview,
   ReviewFinding,
-  SystemDesign
+  SystemDesign,
 } from '../../managers/system-solution-architecture-manager';
 
 import type {
   ArchitectureReview,
   ReviewFinding,
-  SystemDesign
+  SystemDesign,
 } from '../../managers/system-solution-architecture-manager';
 
 /**
@@ -49,9 +49,9 @@ export interface ArchitectureReviewConfig {
  */
 export interface ReviewWorkflowRequest {
   readonly systemDesignId: string;
-  readonly reviewType: 'peer' | 'formal' | 'compliance' | 'security';
+  readonly reviewType: 'peer'' | ''formal'' | ''compliance'' | ''security';
   readonly reviewerId: string;
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly deadline?: Date;
   readonly context?: any;
 }
@@ -95,7 +95,7 @@ export interface ReviewEffectiveness {
 
 /**
  * Architecture Review Management Service - Architecture review workflows and coordination
- * 
+ *
  * Provides comprehensive architecture review management with AI-powered analysis,
  * automated workflow orchestration, and intelligent review coordination.
  */
@@ -124,7 +124,7 @@ export class ArchitectureReviewManagementService {
       enableStakeholderNotifications: true,
       criticalReviewThreshold: 8.0, // complexity score
       autoApprovalThreshold: 90.0, // quality score
-      ...config
+      ...config,
     };
   }
 
@@ -143,17 +143,23 @@ export class ArchitectureReviewManagementService {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent review analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
-        autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
+        autonomous: {
+          enabled: true,
+          learningRate: 0.1,
+          adaptationThreshold: 0.7,
+        },
       });
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
+      const { PerformanceTracker, TelemetryManager } = await import(
+        '@claude-zen/foundation'
+      );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
         serviceName: 'architecture-review-management',
         enableTracing: true,
-        enableMetrics: true
+        enableMetrics: true,
       });
       await this.telemetryManager.initialize();
 
@@ -161,7 +167,7 @@ export class ArchitectureReviewManagementService {
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 5,
-        enableVisualization: true
+        enableVisualization: true,
       });
       await this.workflowEngine.initialize();
 
@@ -171,10 +177,14 @@ export class ArchitectureReviewManagementService {
       await this.conversationOrchestrator.initialize();
 
       this.initialized = true;
-      this.logger.info('Architecture Review Management Service initialized successfully');
-
+      this.logger.info(
+        'Architecture Review Management Service initialized successfully'
+      );
     } catch (error) {
-      this.logger.error('Failed to initialize Architecture Review Management Service:', error);
+      this.logger.error(
+        'Failed to initialize Architecture Review Management Service:',
+        error
+      );
       throw error;
     }
   }
@@ -188,12 +198,14 @@ export class ArchitectureReviewManagementService {
   ): Promise<ArchitectureReview> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('initiate_architecture_review');
+    const timer = this.performanceTracker.startTimer(
+      'initiate_architecture_review'
+    );
 
     try {
       this.logger.info('Initiating architecture review', {
         systemDesignId: request.systemDesignId,
-        reviewType: request.reviewType
+        reviewType: request.reviewType,
       });
 
       // Check concurrent review limits
@@ -202,11 +214,12 @@ export class ArchitectureReviewManagementService {
       }
 
       // Use brain coordinator for intelligent review analysis
-      const reviewAnalysis = await this.brainCoordinator.analyzeReviewRequirement({
-        request,
-        systemDesign,
-        existingReviews: Array.from(this.activeReviews.values())
-      });
+      const reviewAnalysis =
+        await this.brainCoordinator.analyzeReviewRequirement({
+          request,
+          systemDesign,
+          existingReviews: Array.from(this.activeReviews.values()),
+        });
 
       // Create AGUI approval workflow for the review
       const approvalWorkflow = await this.aguiService.createApprovalTask({
@@ -218,27 +231,28 @@ export class ArchitectureReviewManagementService {
           systemDesign: {
             name: systemDesign.name,
             type: systemDesign.type,
-            pattern: systemDesign.pattern
+            pattern: systemDesign.pattern,
           },
-          analysisInsights: reviewAnalysis
+          analysisInsights: reviewAnalysis,
         },
         approvers: [request.reviewerId],
-        timeout: (request.deadline ? 
-          request.deadline.getTime() - Date.now() : 
-          this.config.defaultReviewTimeout * 60000),
-        collaborationMode: true
+        timeout: request.deadline
+          ? request.deadline.getTime() - Date.now()
+          : this.config.defaultReviewTimeout * 60000,
+        collaborationMode: true,
       });
 
       // Create architecture review record
       const review: ArchitectureReview = {
-        id: approvalWorkflow.taskId || `review-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id:
+          approvalWorkflow.taskId || `review-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         reviewerId: request.reviewerId,
         reviewType: request.reviewType,
-        status: 'pending',
+        status:'pending',
         findings: reviewAnalysis.anticipatedFindings || [],
         recommendations: reviewAnalysis.recommendations || [],
-        decision: '',
-        createdAt: new Date()
+        decision:'',
+        createdAt: new Date(),
       };
 
       // Store active review
@@ -250,19 +264,18 @@ export class ArchitectureReviewManagementService {
       }
 
       this.performanceTracker.endTimer('initiate_architecture_review');
-      this.telemetryManager.recordCounter('architecture_reviews_initiated', 1, { 
+      this.telemetryManager.recordCounter('architecture_reviews_initiated', 1, {
         reviewType: request.reviewType,
-        priority: request.priority
+        priority: request.priority,
       });
 
       this.logger.info('Architecture review initiated successfully', {
         reviewId: review.id,
         systemDesignId: request.systemDesignId,
-        reviewType: request.reviewType
+        reviewType: request.reviewType,
       });
 
       return review;
-
     } catch (error) {
       this.performanceTracker.endTimer('initiate_architecture_review');
       this.logger.error('Failed to initiate architecture review:', error);
@@ -275,13 +288,14 @@ export class ArchitectureReviewManagementService {
    */
   async completeArchitectureReview(
     reviewId: string,
-    decision: 'approved' | 'rejected' | 'conditionally_approved',
+    decision: 'approved'' | ''rejected'' | ''conditionally_approved',
     findings: ReviewFinding[],
     comments?: string
   ): Promise<ArchitectureReview> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('complete_architecture_review');
+    const timer = this.performanceTracker.startTimer(
+      'complete_architecture_review');
 
     try {
       const review = this.activeReviews.get(reviewId);
@@ -290,21 +304,26 @@ export class ArchitectureReviewManagementService {
       }
 
       // Use brain coordinator for findings analysis and quality assessment
-      const findingsAnalysis = await this.brainCoordinator.analyzeFindingsQuality({
-        review,
-        findings,
-        decision,
-        comments
-      });
+      const findingsAnalysis =
+        await this.brainCoordinator.analyzeFindingsQuality({
+          review,
+          findings,
+          decision,
+          comments,
+        });
 
       // Complete the review
       const completedReview: ArchitectureReview = {
         ...review,
         status: decision,
         findings,
-        recommendations: [...review.recommendations, ...findingsAnalysis.additionalRecommendations],
-        decision: comments || `Review ${decision} with ${findings.length} findings`,
-        completedAt: new Date()
+        recommendations: [
+          ...review.recommendations,
+          ...findingsAnalysis.additionalRecommendations,
+        ],
+        decision:
+          comments || `Review ${decision} with ${findings.length} findings`,
+        completedAt: new Date(),
       };
 
       // Move from active to completed
@@ -312,20 +331,19 @@ export class ArchitectureReviewManagementService {
       this.completedReviews.set(reviewId, completedReview);
 
       this.performanceTracker.endTimer('complete_architecture_review');
-      this.telemetryManager.recordCounter('architecture_reviews_completed', 1, { 
+      this.telemetryManager.recordCounter('architecture_reviews_completed', 1, {
         decision,
-        findingsCount: findings.length
+        findingsCount: findings.length,
       });
 
       this.logger.info('Architecture review completed', {
         reviewId,
         decision,
         findingsCount: findings.length,
-        qualityScore: findingsAnalysis.qualityScore
+        qualityScore: findingsAnalysis.qualityScore,
       });
 
       return completedReview;
-
     } catch (error) {
       this.performanceTracker.endTimer('complete_architecture_review');
       this.logger.error('Failed to complete architecture review:', error);
@@ -339,19 +357,21 @@ export class ArchitectureReviewManagementService {
   async getArchitectureReviewDashboard(): Promise<ArchitectureReviewDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('generate_review_dashboard');
+    const timer = this.performanceTracker.startTimer(
+      'generate_review_dashboard');
 
     try {
-      const activeReviews = Array.from(this.activeReviews.values());
-      const completedReviews = Array.from(this.completedReviews.values());
+      const activeReviews = Array.from(this.activeReviews.values())();
+      const completedReviews = Array.from(this.completedReviews.values())();
       const allReviews = [...activeReviews, ...completedReviews];
 
       // Use brain coordinator for intelligent dashboard insights
-      const dashboardInsights = await this.brainCoordinator.generateReviewDashboardInsights({
-        activeReviews,
-        completedReviews,
-        config: this.config
-      });
+      const dashboardInsights =
+        await this.brainCoordinator.generateReviewDashboardInsights({
+          activeReviews,
+          completedReviews,
+          config: this.config,
+        });
 
       const dashboard: ArchitectureReviewDashboard = {
         totalReviews: allReviews.length,
@@ -364,12 +384,15 @@ export class ArchitectureReviewManagementService {
           findingsAccuracy: 90.0,
           stakeholderSatisfaction: 80.0,
           processEfficiency: 75.0,
-          qualityImprovement: 85.0
+          qualityImprovement: 85.0,
         },
         pendingReviews: activeReviews.slice(0, 10),
         recentCompletions: completedReviews
-          .sort((a, b) => (b.completedAt?.getTime() || 0) - (a.completedAt?.getTime() || 0))
-          .slice(0, 10)
+          .sort(
+            (a, b) =>
+              (b.completedAt?.getTime() || 0) - (a.completedAt?.getTime() || 0)
+          )
+          .slice(0, 10),
       };
 
       this.performanceTracker.endTimer('generate_review_dashboard');
@@ -377,14 +400,16 @@ export class ArchitectureReviewManagementService {
       this.logger.info('Architecture review dashboard generated', {
         totalReviews: dashboard.totalReviews,
         activeReviews: activeReviews.length,
-        effectivenessScore: dashboard.reviewEffectiveness.overallEffectiveness
+        effectivenessScore: dashboard.reviewEffectiveness.overallEffectiveness,
       });
 
       return dashboard;
-
     } catch (error) {
       this.performanceTracker.endTimer('generate_review_dashboard');
-      this.logger.error('Failed to generate architecture review dashboard:', error);
+      this.logger.error(
+        'Failed to generate architecture review dashboard:',
+        error
+      );
       throw error;
     }
   }
@@ -393,14 +418,16 @@ export class ArchitectureReviewManagementService {
    * Get all active architecture reviews
    */
   getActiveReviews(): ArchitectureReview[] {
-    return Array.from(this.activeReviews.values());
+    return Array.from(this.activeReviews.values())();
   }
 
   /**
    * Get architecture review by ID
    */
   getArchitectureReview(reviewId: string): ArchitectureReview | undefined {
-    return this.activeReviews.get(reviewId) || this.completedReviews.get(reviewId);
+    return (
+      this.activeReviews.get(reviewId) || this.completedReviews.get(reviewId)
+    );
   }
 
   /**
@@ -423,7 +450,8 @@ export class ArchitectureReviewManagementService {
       await this.telemetryManager.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Architecture Review Management Service shutdown complete');
+    this.logger.info('Architecture Review Management Service shutdown complete'
+    );
   }
 
   // ============================================================================
@@ -437,37 +465,53 @@ export class ArchitectureReviewManagementService {
     try {
       await this.conversationOrchestrator.startConversation({
         conversationId: `review-collaboration-${review.id}`,
-        participants: [review.reviewerId, ...systemDesign.stakeholders.map(s => s.id)],
+        participants: [
+          review.reviewerId,
+          ...systemDesign.stakeholders.map((s) => s.id),
+        ],
         topic: `Architecture Review: ${systemDesign.name}`,
         context: { review, systemDesign },
-        timeout: this.config.defaultReviewTimeout * 60000 // convert to ms
+        timeout: this.config.defaultReviewTimeout * 60000, // convert to ms
       });
     } catch (error) {
       this.logger.error('Failed to initiate stakeholder collaboration:', error);
     }
   }
 
-  private groupReviewsByType(reviews: ArchitectureReview[]): Record<string, number> {
-    return reviews.reduce((groups, review) => {
-      groups[review.reviewType] = (groups[review.reviewType] || 0) + 1;
-      return groups;
-    }, {} as Record<string, number>);
+  private groupReviewsByType(
+    reviews: ArchitectureReview[]
+  ): Record<string, number> {
+    return reviews.reduce(
+      (groups, review) => {
+        groups[review.reviewType] = (groups[review.reviewType] || 0) + 1;
+        return groups;
+      },
+      {} as Record<string, number>
+    );
   }
 
-  private groupReviewsByStatus(reviews: ArchitectureReview[]): Record<string, number> {
-    return reviews.reduce((groups, review) => {
-      groups[review.status] = (groups[review.status] || 0) + 1;
-      return groups;
-    }, {} as Record<string, number>);
+  private groupReviewsByStatus(
+    reviews: ArchitectureReview[]
+  ): Record<string, number> {
+    return reviews.reduce(
+      (groups, review) => {
+        groups[review.status] = (groups[review.status] || 0) + 1;
+        return groups;
+      },
+      {} as Record<string, number>
+    );
   }
 
-  private calculateAverageReviewTime(completedReviews: ArchitectureReview[]): number {
+  private calculateAverageReviewTime(
+    completedReviews: ArchitectureReview[]
+  ): number {
     if (completedReviews.length === 0) return 0;
 
     const totalTime = completedReviews.reduce((sum, review) => {
       if (!review.completedAt) return sum;
-      const duration = review.completedAt.getTime() - review.createdAt.getTime();
-      return sum + (duration / (60 * 60 * 1000)); // Convert to hours
+      const duration =
+        review.completedAt.getTime() - review.createdAt.getTime();
+      return sum + duration / (60 * 60 * 1000); // Convert to hours
     }, 0);
 
     return totalTime / completedReviews.length;

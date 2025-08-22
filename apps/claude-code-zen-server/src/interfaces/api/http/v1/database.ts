@@ -13,30 +13,30 @@ import {
   type Request,
   type Response,
   Router,
-} from 'express');
+} from 'express';
 
 import {
   checkDatabaseContainerHealth,
   getDatabaseController,
-} from './di/database-container');
+} from './di/database-container';
 import {
   authMiddleware,
   hasPermission,
   optionalAuthMiddleware,
-} from './middleware/auth');
+} from './middleware/auth';
 import {
   asyncHandler,
   createInternalError,
   createValidationError,
-} from './middleware/errors');
-import { LogLevel, log, logPerformance } from './middleware/logging');
+} from './middleware/errors';
+import { LogLevel, log, logPerformance } from './middleware/logging';
 import {
   adminOperationsLimiter,
   heavyOperationsLimiter,
   lightOperationsLimiter,
   mediumOperationsLimiter,
   rateLimitInfoMiddleware,
-} from './middleware/rate-limit');
+} from './middleware/rate-limit';
 
 // Type definitions for request/response interfaces
 interface QueryRequest {
@@ -109,8 +109,7 @@ function validateQueryRequest(req: Request): QueryRequest {
     throw createValidationError(
       'sql',
       sql,
-      'SQL query is required and must be a string'
-    );
+      'SQL query is required and must be a string');
   }
 
   return {
@@ -123,12 +122,11 @@ function validateQueryRequest(req: Request): QueryRequest {
 function validateCommandRequest(req: Request): CommandRequest {
   const { sql, params, options } = req.body;
 
-  if (!sql || typeof sql !== 'string') {
+  if (!sql || typeof sql !=='string') {
     throw createValidationError(
       'sql',
       sql,
-      'SQL command is required and must be a string'
-    );
+      'SQL command is required and must be a string');
   }
 
   return {
@@ -142,8 +140,7 @@ function validateBatchRequest(req: Request): BatchRequest {
   const { operations, useTransaction, continueOnError } = req.body;
 
   if (!Array.isArray(operations) || operations.length === 0) {
-    throw createValidationError(
-      'operations',
+    throw createValidationError('operations',
       operations,
       'Operations array is required and must not be empty'
     );
@@ -159,12 +156,11 @@ function validateBatchRequest(req: Request): BatchRequest {
         "Type must be 'query or execute'"
       );
     }
-    if (!operation.sql || typeof operation.sql !== 'string') {
+    if (!operation.sql || typeof operation.sql !=='string') {
       throw createValidationError(
         `operations[${index}].sql`,
         operation.sql,
-        'SQL is required and must be a string'
-      );
+        'SQL is required and must be a string');
     }
   }
 
@@ -179,14 +175,12 @@ function validateMigrationRequest(req: Request): MigrationRequest {
   const { statements, version, description, dryRun } = req.body;
 
   if (!Array.isArray(statements) || statements.length === 0) {
-    throw createValidationError(
-      'statements',
+    throw createValidationError('statements',
       statements,
-      'Statements array is required and must not be empty'
-    );
+      'Statements array is required and must not be empty');
   }
 
-  if (!version || typeof version !== 'string') {
+  if (!version || typeof version !=='string') {
     throw createValidationError(
       'version',
       version,
@@ -211,7 +205,7 @@ function validateMigrationRequest(req: Request): MigrationRequest {
  */
 function checkDatabasePermission(
   req: Request,
-  operation: 'read | write' | 'admin'
+  operation: 'read | write | admin'
 ): void {
   const permissionMap = {
     read: 'database:read',

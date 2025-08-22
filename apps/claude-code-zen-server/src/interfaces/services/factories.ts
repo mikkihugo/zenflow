@@ -13,7 +13,7 @@
  * - Event-driven service coordination.
  * @example
  * ```typescript
- * import { USLFactory, globalUSLFactory } from '@claude-zen/usl');
+ * import { USLFactory, globalUSLFactory } from '@claude-zen/usl';
  *
  * // Configure and use the global factory
  * await globalUSLFactory.initialize({
@@ -35,8 +35,8 @@
  * ```
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation');
-import { TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, type Logger } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   Service,
@@ -314,7 +314,7 @@ export class USLFactory implements ServiceFactory {
    *
    * @param name
    */
-  get(name: string): Service | undefined {
+  get(name: string): Service'' | ''undefined {
     return this.services.get(name);
   }
 
@@ -322,7 +322,7 @@ export class USLFactory implements ServiceFactory {
    * List all services.
    */
   list(): Service[] {
-    return Array.from(this.services?.values());
+    return Array.from(this.services?.values())();
   }
 
   /**
@@ -399,7 +399,7 @@ export class USLFactory implements ServiceFactory {
       ServicePriority.LOW,
       ServicePriority.BACKGROUND,
     ]) {
-      const priorityServices = servicesByPriority.get(priority) || [];
+      const priorityServices = servicesByPriority.get(priority)'' | '''' | ''[];
       if (priorityServices.length === 0) continue;
 
       this.logger.info(
@@ -445,7 +445,7 @@ export class USLFactory implements ServiceFactory {
       ServicePriority.HIGH,
       ServicePriority.CRITICAL,
     ]) {
-      const priorityServices = servicesByPriority.get(priority) || [];
+      const priorityServices = servicesByPriority.get(priority)'' | '''' | ''[];
       if (priorityServices.length === 0) continue;
 
       this.logger.info(
@@ -592,8 +592,7 @@ export class USLFactory implements ServiceFactory {
       // Basic validation
       if (!(config?.name && config?.type)) {
         this.logger.error(
-          'Service configuration missing required fields: name or type'
-        );
+          'Service configuration missing required fields: name or type');
         return false;
       }
 
@@ -628,10 +627,10 @@ export class USLFactory implements ServiceFactory {
    *
    * @param type
    */
-  getConfigSchema(type: string): Record<string, unknown> | undefined {
+  getConfigSchema(type: string): Record<string, unknown>'' | ''undefined {
     // Return basic schema structure - can be extended for each service type
     const baseSchema = {
-      type: 'object',
+      type:'object',
       required: ['name, type'],
       properties: {
         name: { type: 'string' },
@@ -815,7 +814,7 @@ export class USLFactory implements ServiceFactory {
         // Validate web service specific configuration
         if (
           config?.server?.port &&
-          (config?.server?.port < 1 || config?.server?.port > 65535)
+          (config?.server?.port < 1'' | '''' | ''config?.server?.port > 65535)
         ) {
           errors.push(`Invalid port number: ${config?.server?.port}`);
         }
@@ -839,8 +838,7 @@ export class USLFactory implements ServiceFactory {
 
   private setupServiceEventHandling(service: Service): void {
     // Forward service events to factory event emitter
-    const eventTypes: ServiceEventType[] = [
-      'initializing',
+    const eventTypes: ServiceEventType[] = ['initializing',
       'initialized',
       'starting',
       'started',
@@ -997,7 +995,7 @@ export class USLFactory implements ServiceFactory {
             ([_, metric]) =>
               metric.averageLatency >
               (this.configuration?.healthMonitoring?.alertThresholds
-                ?.responseTime || 1000)
+                ?.responseTime'' | '''' | ''1000)
           )
           .map(([name, _]) => name);
 
@@ -1063,7 +1061,7 @@ export class ServiceRegistry implements ServiceRegistry {
 
   getFactory<T extends ServiceConfig>(
     type: string
-  ): ServiceFactory<T> | undefined {
+  ): ServiceFactory<T>'' | ''undefined {
     return this.factories.get(type) as ServiceFactory<T>;
   }
 
@@ -1089,7 +1087,7 @@ export class ServiceRegistry implements ServiceRegistry {
     return allServices;
   }
 
-  findService(name: string): Service | undefined {
+  findService(name: string): Service'' | ''undefined {
     for (const factory of this.factories?.values()) {
       const service = factory.get(name);
       if (service) {
@@ -1211,10 +1209,10 @@ export class ServiceRegistry implements ServiceRegistry {
   discoverServices(criteria?: {
     type?: string;
     capabilities?: string[];
-    health?: 'healthy | degraded' | 'unhealthy');
+    health?: 'healthy'' | ''degraded'' | ''unhealthy');
     tags?: string[];
   }): Service[] {
-    const allServices = Array.from(this.getAllServices?.values());
+    const allServices = Array.from(this.getAllServices?.values())();
 
     if (!criteria) {
       return allServices;
@@ -1239,7 +1237,7 @@ export class ServiceRegistry implements ServiceRegistry {
 
       // Filter by tags
       if (criteria.tags) {
-        const serviceTags = (service.config as any).tags || [];
+        const serviceTags = (service.config as any).tags'' | '''' | ''[];
         const hasAllTags = criteria.tags.every((tag) =>
           serviceTags.includes(tag)
         );
@@ -1256,10 +1254,7 @@ export class ServiceRegistry implements ServiceRegistry {
   }
 
   on(
-    event:
-      | 'service-registered'
-      | 'service-unregistered'
-      | 'service-status-changed',
+    event:' | ''service-registered''' | '''service-unregistered''' | '''service-status-changed',
     handler: (serviceName: string, service?: Service) => void
   ): void {
     this.eventEmitter.on(event, handler);
@@ -1361,7 +1356,7 @@ export class ServiceConfigValidator implements ServiceConfigValidator {
     return true;
   }
 
-  getSchema(type: string): Record<string, unknown> | undefined {
+  getSchema(type: string): Record<string, unknown>'' | ''undefined {
     return this.schemas.get(type);
   }
 

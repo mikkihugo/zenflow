@@ -36,10 +36,7 @@ export interface HealthMonitorOptions {
   [key: string]: any;
 }
 
-export type HealthCheckFunction = () =>
-  | Promise<HealthCheckResult | Partial<HealthCheckResult>>
-  | HealthCheckResult
-  | Partial<HealthCheckResult>;
+export type HealthCheckFunction = () => Promise<HealthCheckResult | Partial<HealthCheckResult>> | HealthCheckResult | Partial<HealthCheckResult>;
 
 export interface HealthCheck {
   name: string;
@@ -124,7 +121,7 @@ export class HealthMonitor extends TypedEventBase {
 
     // Initialize built-in health checks
     if (this.options.enableSystemChecks) {
-      this.initializeSystemChecks;
+      this.initializeSystemChecks();
     }
   }
 
@@ -138,12 +135,12 @@ export class HealthMonitor extends TypedEventBase {
     logger.error('🔍 HealthMonitor starting...');
 
     // Run initial health check
-    await this.runHealthChecks;
+    await this.runHealthChecks();
 
     // Start periodic health checks
     this.checkTimer = setInterval(async () => {
       try {
-        await this.runHealthChecks;
+        await this.runHealthChecks();
       } catch (error) {
         logger.error('❌ Health check error:', error);
         this.emit('healthCheckError', { error });
@@ -237,7 +234,7 @@ export class HealthMonitor extends TypedEventBase {
     logger.error('🔍 Running health checks...');
 
     // Run all registered health checks
-    const checkPromises = Array.from(this.healthChecks?.entries).map(
+    const checkPromises = Array.from(this.healthChecks?.entries()).map(
       ([name, check]) => this.runSingleHealthCheck(name, check)
     );
 
@@ -249,7 +246,7 @@ export class HealthMonitor extends TypedEventBase {
     let criticalFailures = 0;
 
     checkResults?.forEach((result, index) => {
-      const checkName = Array.from(this.healthChecks?.keys)[index];
+      const checkName = Array.from(this.healthChecks?.keys())[index];
       if (!checkName) return; // Guard against undefined
       const check = this.healthChecks.get(checkName);
 
@@ -260,7 +257,7 @@ export class HealthMonitor extends TypedEventBase {
       }
 
       if (result?.status === 'fulfilled') {
-        const { score, status, details, metrics } = result?.value()
+        const { score, status, details, metrics } = result?.value
 
         if (results) {
           results[checkName] = {
@@ -268,7 +265,7 @@ export class HealthMonitor extends TypedEventBase {
             status,
             details,
             metrics,
-            timestamp: new Date()?.toISOString,
+            timestamp: new Date()?.toISOString(),
             duration: result?.value?.duration,
           };
         }
@@ -280,7 +277,7 @@ export class HealthMonitor extends TypedEventBase {
           criticalFailures++;
         }
 
-        check.lastResult = result?.value()
+        check.lastResult = result?.value
         check.lastRun = new Date()?.toISOString()
         check.runCount++;
       } else {
@@ -290,7 +287,7 @@ export class HealthMonitor extends TypedEventBase {
             status: 'error',
             details: result.reason?.message ?? 'Unknown error',
             metrics: {},
-            timestamp: new Date()?.toISOString,
+            timestamp: new Date()?.toISOString(),
             duration: 0,
           };
         }
@@ -306,11 +303,11 @@ export class HealthMonitor extends TypedEventBase {
     // Calculate overall health score
     const overallScore =
       totalWeight > 0 ? Math.round(totalScore / totalWeight) : 0;
-    const duration = performance?.now - startTime;
+    const duration = performance?.now() - startTime;
 
     const healthReport = {
       id: checkId,
-      timestamp: new Date()?.toISOString,
+      timestamp: new Date()?.toISOString(),
       overallScore,
       status: this.determineHealthStatus(overallScore, criticalFailures),
       duration,
@@ -325,7 +322,7 @@ export class HealthMonitor extends TypedEventBase {
     // Add to history
     this.healthHistory.push(healthReport);
     if (this.healthHistory.length > (this.options.maxHistorySize ?? 1000)) {
-      this.healthHistory?.shift()
+      this.healthHistory.shift()
     }
 
     // Check for alerts
@@ -371,9 +368,9 @@ export class HealthMonitor extends TypedEventBase {
       });
 
       // Run the health check with timeout
-      const result = await Promise.race([check?.checkFunction, timeoutPromise]);
+      const result = await Promise.race([check?.checkFunction(), timeoutPromise]);
 
-      const duration = performance?.now - startTime;
+      const duration = performance?.now() - startTime;
 
       // Normalize result format
       const normalizedResult: HealthCheckResult = {
@@ -381,20 +378,18 @@ export class HealthMonitor extends TypedEventBase {
           typeof result === 'number' ? result : ((result as any)?.score ?? 100),
         status: (result as any)?.status || 'healthy',
         details:
-          (result as any)?.details ||
-          (result as any)?.message ||
-          'Health check passed',
+          (result as any)?.details || (result as any)?.message || 'Health check passed',
         metrics: (result as any)?.metrics || {},
         duration: (result as any)?.duration ?? duration,
       };
 
       return normalizedResult;
     } catch (error) {
-      const duration = performance?.now - startTime;
+      const duration = performance?.now() - startTime;
 
       return {
         score: 0,
-        status: 'error',
+        status:'error',
         details: error instanceof Error ? error.message : String(error),
         metrics: {},
         duration,
@@ -468,8 +463,7 @@ export class HealthMonitor extends TypedEventBase {
 
   private initializeSystemChecks(): void {
     // Memory usage check
-    this.registerHealthCheck(
-      'memory',
+    this.registerHealthCheck('memory',
       () => {
         const usage = process?.memoryUsage()
         const totalMB = usage.heapTotal / 1024 / 1024;
@@ -487,7 +481,7 @@ export class HealthMonitor extends TypedEventBase {
 
         return {
           score,
-          status: score > 70 ? 'healthy : score > 50 ? warning' : 'critical',
+          status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
           details: `Memory usage: ${usedMB.toFixed(1)}MB / ${totalMB.toFixed(1)}MB (${usagePercent.toFixed(1)}%)`,
           metrics: {
             heapUsed: usedMB,
@@ -511,7 +505,7 @@ export class HealthMonitor extends TypedEventBase {
         return new Promise((resolve) => {
           const start = performance?.now()
           setImmediate(() => {
-            const lag = performance?.now - start;
+            const lag = performance?.now() - start;
 
             let score = 100;
             if (lag > 100) {
@@ -525,7 +519,7 @@ export class HealthMonitor extends TypedEventBase {
             resolve({
               score,
               status:
-                score > 70 ? 'healthy : score > 50 ? warning' : 'critical',
+                score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
               details: `Event loop lag: ${lag.toFixed(2)}ms`,
               metrics: {
                 lag,
@@ -559,7 +553,7 @@ export class HealthMonitor extends TypedEventBase {
 
         return {
           score,
-          status: score > 70 ? 'healthy : score > 50 ? warning' : 'critical',
+          status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
           details: `CPU usage: ${totalTime.toFixed(1)}ms (user: ${userTime.toFixed(1)}ms, system: ${systemTime.toFixed(1)}ms)`,
           metrics: {
             user: userTime,
@@ -587,8 +581,8 @@ export class HealthMonitor extends TypedEventBase {
 
         try {
           const startTime = performance?.now()
-          await this.persistenceChecker;
-          const duration = performance?.now - startTime;
+          await this.persistenceChecker();
+          const duration = performance?.now() - startTime;
 
           let score = 100;
           if (duration > 1000) {
@@ -629,10 +623,9 @@ export class HealthMonitor extends TypedEventBase {
   private determineHealthStatus(
     score: number,
     criticalFailures: number
-  ): 'healthy | warning' | 'critical' {
+  ): 'healthy' | 'warning' | 'critical' {
     if (
-      criticalFailures > 0 ||
-      score < (this.options.criticalThreshold ?? 50)
+      criticalFailures > 0 || score < (this.options.criticalThreshold ?? 50)
     ) {
       return 'critical';
     }
@@ -650,7 +643,7 @@ export class HealthMonitor extends TypedEventBase {
       const alert: HealthAlert = {
         id: randomUUID(),
         type: 'critical',
-        timestamp: new Date()?.toISOString,
+        timestamp: new Date()?.toISOString(),
         title: 'Critical Health Alert',
         message: `System health critically low: ${overallScore}% (${criticalFailures} critical failures)`,
         details: results,
@@ -664,7 +657,7 @@ export class HealthMonitor extends TypedEventBase {
       const alert: HealthAlert = {
         id: randomUUID(),
         type: 'warning',
-        timestamp: new Date()?.toISOString,
+        timestamp: new Date()?.toISOString(),
         title: 'Health Warning',
         message: `System health below threshold: ${overallScore}%`,
         details: results,
@@ -695,11 +688,11 @@ export class HealthMonitor extends TypedEventBase {
    * Cleanup resources.
    */
   async destroy(): Promise<void> {
-    await this.stop;
+    await this.stop();
     this.healthChecks?.clear();
     this.healthHistory = [];
     this.alerts = [];
-    this.removeAllListeners;
+    this.removeAllListeners();
   }
 }
 

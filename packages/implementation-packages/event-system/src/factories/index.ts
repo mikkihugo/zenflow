@@ -1,6 +1,6 @@
 /**
  * @fileoverview Event Manager Factory Exports
- * 
+ *
  * Re-exports all event manager factories from the adapters directory
  * for convenient access and consistent API.
  */

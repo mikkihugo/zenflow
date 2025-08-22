@@ -98,7 +98,7 @@ export interface OperationsSystemStatus {
     activeMonitors: number;
     intelligenceSystemsRunning: number;
     performanceMetricsCollected: number;
-    healthStatus: 'healthy' | 'warning' | 'critical';
+    healthStatus: 'healthy | warning' | 'critical';
   };
 
   chaosEngineering: {

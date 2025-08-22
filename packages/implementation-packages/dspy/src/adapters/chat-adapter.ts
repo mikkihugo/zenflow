@@ -1,14 +1,18 @@
 /**
  * @fileoverview Chat Adapter - Production Grade
- * 
+ *
  * Chat-based adapter for formatting DSPy data for chat-based language models.
  * 100% compatible with Stanford DSPy's chat formatting system.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  */
 
-import { BaseAdapter, type FinetuneDataInput, type FinetuneDataOutput } from '../interfaces/adapter';
+import {
+  BaseAdapter,
+  type FinetuneDataInput,
+  type FinetuneDataOutput,
+} from '../interfaces/adapter';
 // import type { Example } from '../primitives/example'; // Unused import
 import type { Prediction } from '../primitives/prediction';
 
@@ -34,7 +38,7 @@ export interface ChatAdapterConfig {
  * Chat message interface
  */
 export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: 'system | user' | 'assistant';
   content: string;
   metadata?: Record<string, any>;
 }
@@ -48,7 +52,7 @@ export class ChatAdapter extends BaseAdapter {
 
   constructor(config: ChatAdapterConfig = {}) {
     super(config);
-    
+
     this.chatConfig = {
       include_system: config.include_system ?? true,
       include_demos: config.include_demos ?? true,
@@ -57,8 +61,8 @@ export class ChatAdapter extends BaseAdapter {
         system: 'system',
         user: 'user',
         assistant: 'assistant',
-        ...config.role_mapping
-      }
+        ...config.role_mapping,
+      },
     };
   }
 
@@ -74,7 +78,7 @@ export class ChatAdapter extends BaseAdapter {
     if (this.chatConfig.include_system && data.signature.instructions) {
       messages.push({
         role: this.chatConfig.role_mapping.system as 'system',
-        content: this.createSystemMessage(data.signature)
+        content: this.createSystemMessage(data.signature),
       });
     }
 
@@ -91,14 +95,14 @@ export class ChatAdapter extends BaseAdapter {
         messages.push({
           role: this.chatConfig.role_mapping.user as 'user',
           content: this.formatInputsAsUserMessage(demoInputs),
-          metadata: { type: 'demonstration', demo_id: demo.get('id') }
+          metadata: { type: 'demonstration', demo_id: demo.get('id') },
         });
 
         // Assistant message with demo outputs
         messages.push({
           role: this.chatConfig.role_mapping.assistant as 'assistant',
           content: this.formatOutputsAsAssistantMessage(demoOutputs),
-          metadata: { type: 'demonstration', demo_id: demo.get('id') }
+          metadata: { type: 'demonstration', demo_id: demo.get('id') },
         });
       }
     }
@@ -107,7 +111,7 @@ export class ChatAdapter extends BaseAdapter {
     messages.push({
       role: this.chatConfig.role_mapping.user as 'user',
       content: this.formatInputsAsUserMessage(data.inputs),
-      metadata: { type: 'current_input' }
+      metadata: { type: 'current_input' },
     });
 
     // Add the expected output as assistant message
@@ -115,17 +119,19 @@ export class ChatAdapter extends BaseAdapter {
     messages.push({
       role: this.chatConfig.role_mapping.assistant as 'assistant',
       content: outputContent,
-      metadata: { type: 'expected_output' }
+      metadata: { type: 'expected_output' },
     });
 
     return {
       messages,
       metadata: {
         adapter_type: 'chat',
-        num_demos: this.chatConfig.include_demos ? Math.min(data.demos.length, this.chatConfig.max_demos) : 0,
+        num_demos: this.chatConfig.include_demos
+          ? Math.min(data.demos.length, this.chatConfig.max_demos)
+          : 0,
         include_system: this.chatConfig.include_system,
-        format_version: '1.0'
-      }
+        format_version: '1.0',
+      },
     };
   }
 
@@ -134,7 +140,7 @@ export class ChatAdapter extends BaseAdapter {
    */
   private formatInputsAsUserMessage(inputs: Record<string, any>): string {
     const inputPairs = Object.entries(inputs);
-    
+
     if (inputPairs.length === 0) {
       return '';
     }
@@ -144,7 +150,9 @@ export class ChatAdapter extends BaseAdapter {
       if (pair) {
         const [key, value] = pair;
         // For single inputs, often just the value is sufficient
-        if (key === 'question' || key === 'query' || key === 'input' || key === 'prompt') {
+        if (
+          key === 'question''' | '''' | ''key ==='query''' | '''' | ''key ==='input''' | '''' | ''key ==='prompt'
+        ) {
           return String(value);
         }
       }
@@ -159,9 +167,13 @@ export class ChatAdapter extends BaseAdapter {
   /**
    * Format outputs as assistant message content
    */
-  private formatOutputsAsAssistantMessage(outputs: Record<string, any>): string {
-    const outputPairs = Object.entries(outputs).filter(([_, value]) => value !== undefined);
-    
+  private formatOutputsAsAssistantMessage(
+    outputs: Record<string, any>
+  ): string {
+    const outputPairs = Object.entries(outputs).filter(
+      ([_, value]) => value !== undefined
+    );
+
     if (outputPairs.length === 0) {
       return '';
     }
@@ -171,7 +183,9 @@ export class ChatAdapter extends BaseAdapter {
       if (pair) {
         const [key, value] = pair;
         // For single outputs, often just the value is sufficient
-        if (key === 'answer' || key === 'response' || key === 'output' || key === 'completion') {
+        if (
+          key === 'answer''' | '''' | ''key ==='response''' | '''' | ''key ==='output''' | '''' | ''key ==='completion'
+        ) {
           return String(value);
         }
       }
@@ -186,7 +200,9 @@ export class ChatAdapter extends BaseAdapter {
   /**
    * Format prediction as assistant message content
    */
-  private formatPredictionAsAssistantMessage(outputs: Prediction | Record<string, any>): string {
+  private formatPredictionAsAssistantMessage(
+    outputs: Prediction'' | ''Record<string, any>
+  ): string {
     // Handle Prediction objects
     if ('data' in outputs && outputs.data) {
       return this.formatOutputsAsAssistantMessage(outputs.data);
@@ -206,10 +222,12 @@ export class ChatAdapter extends BaseAdapter {
   /**
    * Convert chat messages to OpenAI format
    */
-  toOpenAIFormat(messages: ChatMessage[]): Array<{ role: string; content: string }> {
-    return messages.map(msg => ({
+  toOpenAIFormat(
+    messages: ChatMessage[]
+  ): Array<{ role: string; content: string }> {
+    return messages.map((msg) => ({
       role: msg.role,
-      content: msg.content
+      content: msg.content,
     }));
   }
 
@@ -218,23 +236,23 @@ export class ChatAdapter extends BaseAdapter {
    */
   toAnthropicFormat(messages: ChatMessage[]): {
     system?: string;
-    messages: Array<{ role: 'user' | 'assistant'; content: string }>;
+    messages: Array<{ role: 'user''' | '''assistant'; content: string }>;
   } {
-    const systemMessages = messages.filter(m => m.role === 'system');
-    const conversationMessages = messages.filter(m => m.role !== 'system');
+    const systemMessages = messages.filter((m) => m.role === 'system');
+    const conversationMessages = messages.filter((m) => m.role !== 'system');
 
     const result: {
       system?: string;
-      messages: Array<{ role: 'user' | 'assistant'; content: string }>;
+      messages: Array<{ role: 'user''' | '''assistant'; content: string }>;
     } = {
-      messages: conversationMessages.map(msg => ({
-        role: msg.role as 'user' | 'assistant',
-        content: msg.content
-      }))
+      messages: conversationMessages.map((msg) => ({
+        role: msg.role as 'user''' | '''assistant',
+        content: msg.content,
+      })),
     };
 
     if (systemMessages.length > 0) {
-      result.system = systemMessages.map(m => m.content).join('\n\n');
+      result.system = systemMessages.map((m) => m.content).join('\n\n');
     }
 
     return result;
@@ -244,22 +262,26 @@ export class ChatAdapter extends BaseAdapter {
    * Convert chat messages to plain text format
    */
   toTextFormat(messages: ChatMessage[]): string {
-    return messages.map(msg => {
-      const roleLabel = msg.role.toUpperCase();
-      return `${roleLabel}: ${msg.content}`;
-    }).join('\n\n');
+    return messages
+      .map((msg) => {
+        const roleLabel = msg.role.toUpperCase();
+        return `${roleLabel}: ${msg.content}`;
+      })
+      .join('\n\n');
   }
 
   /**
    * Validate chat message format
    */
   validateMessages(messages: ChatMessage[]): boolean {
-    if (!Array.isArray(messages) || messages.length === 0) {
+    if (!Array.isArray(messages)'' | '''' | ''messages.length === 0) {
       return false;
     }
 
     for (const message of messages) {
-      if (!message.role || !['system', 'user', 'assistant'].includes(message.role)) {
+      if (
+        !message.role'' | '''' | ''!['system', 'user', 'assistant'].includes(message.role)
+      ) {
         return false;
       }
       if (typeof message.content !== 'string') {
@@ -286,8 +308,8 @@ export class ChatAdapter extends BaseAdapter {
       ...config,
       role_mapping: {
         ...this.chatConfig.role_mapping,
-        ...config.role_mapping
-      }
+        ...config.role_mapping,
+      },
     };
   }
 }

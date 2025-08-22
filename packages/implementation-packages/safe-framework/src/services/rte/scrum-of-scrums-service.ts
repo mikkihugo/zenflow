@@ -1,12 +1,12 @@
 /**
  * @fileoverview Scrum of Scrums Coordination Service
- * 
+ *
  * Service for coordinating Scrum of Scrums meetings and cross-team collaboration.
  * Handles impediment tracking, dependency coordination, and team synchronization.
- * 
+ *
  * SINGLE RESPONSIBILITY: Scrum of Scrums coordination and impediment management
  * FOCUSES ON: Cross-team synchronization, impediment removal, dependency coordination
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,21 +15,16 @@
 import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
-  countBy 
+  countBy,
 } from 'lodash-es';
-import type {
-  ARTTeam,
-  Dependency,
-  Risk,
-  Logger
-} from '../../types';
+import type { ARTTeam, Dependency, Risk, Logger } from '../../types';
 
 /**
  * Scrum of Scrums meeting configuration
@@ -37,7 +32,7 @@ import type {
 export interface ScrumOfScrumsConfig {
   readonly id: string;
   readonly artId: string;
-  readonly frequency: 'daily' | 'twice-weekly' | 'weekly';
+  readonly frequency: 'daily'' | ''twice-weekly'' | ''weekly';
   readonly duration: number; // minutes
   readonly participants: ScrumOfScrumsParticipant[];
   readonly agenda: ScrumOfScrumsAgenda;
@@ -53,7 +48,7 @@ export interface ScrumOfScrumsParticipant {
   readonly teamId: string;
   readonly teamName: string;
   readonly representative: string;
-  readonly role: 'scrum-master' | 'product-owner' | 'team-lead';
+  readonly role: 'scrum-master'' | ''product-owner'' | ''team-lead';
   readonly backupRepresentative?: string;
   readonly participationHistory: ParticipationRecord[];
 }
@@ -90,7 +85,7 @@ export interface ScrumOfScrumsQuestion {
   readonly question: string;
   readonly purpose: string;
   readonly timeAllocation: number; // minutes
-  readonly facilitation: 'round-robin' | 'open-discussion' | 'focused';
+  readonly facilitation: 'round-robin'' | ''open-discussion'' | ''focused';
 }
 
 /**
@@ -100,7 +95,7 @@ export interface AgendaCustomItem {
   readonly item: string;
   readonly owner: string;
   readonly duration: number;
-  readonly frequency: 'weekly' | 'bi-weekly' | 'monthly';
+  readonly frequency: 'weekly'' | ''bi-weekly'' | ''monthly';
 }
 
 /**
@@ -133,7 +128,7 @@ export enum ImpedimentCategory {
   RESOURCE = 'resource',
   DEPENDENCY = 'dependency',
   EXTERNAL = 'external',
-  ORGANIZATIONAL = 'organizational'
+  ORGANIZATIONAL = 'organizational',
 }
 
 /**
@@ -143,7 +138,7 @@ export enum ImpedimentSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -154,7 +149,7 @@ export enum ImpedimentStatus {
   IN_PROGRESS = 'in_progress',
   ESCALATED = 'escalated',
   RESOLVED = 'resolved',
-  CLOSED = 'closed'
+  CLOSED = 'closed',
 }
 
 /**
@@ -164,7 +159,7 @@ export enum ImpedimentEscalationLevel {
   TEAM = 'team',
   ART = 'art',
   PROGRAM = 'program',
-  PORTFOLIO = 'portfolio'
+  PORTFOLIO = 'portfolio',
 }
 
 /**
@@ -202,7 +197,7 @@ export interface AttendanceRecord {
   readonly attended: boolean;
   readonly late: boolean;
   readonly earlyLeave: boolean;
-  readonly contributionLevel: 'high' | 'medium' | 'low';
+  readonly contributionLevel: 'high'' | ''medium'' | ''low';
 }
 
 /**
@@ -213,8 +208,8 @@ export interface ScrumActionItem {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high' | 'medium' | 'low';
-  readonly status: 'open' | 'in_progress' | 'completed';
+  readonly priority: 'high'' | ''medium'' | ''low';
+  readonly status: 'open'' | ''in_progress'' | ''completed';
   readonly relatedImpediment?: string;
 }
 
@@ -246,12 +241,18 @@ export class ScrumOfScrumsService {
   /**
    * Configure Scrum of Scrums for ART
    */
-  async configureScrumsOfScrums(artId: string, config: {
-    frequency: 'daily' | 'twice-weekly' | 'weekly';
-    duration: number;
-    teams: ARTTeam[];
-  }): Promise<ScrumOfScrumsConfig> {
-    this.logger.info('Configuring Scrum of Scrums', { artId, frequency: config.frequency });
+  async configureScrumsOfScrums(
+    artId: string,
+    config: {
+      frequency: 'daily'' | ''twice-weekly'' | ''weekly';
+      duration: number;
+      teams: ARTTeam[];
+    }
+  ): Promise<ScrumOfScrumsConfig> {
+    this.logger.info('Configuring Scrum of Scrums', {
+      artId,
+      frequency: config.frequency,
+    });
 
     const participants = this.generateParticipants(config.teams);
     const agenda = this.generateStandardAgenda();
@@ -265,14 +266,14 @@ export class ScrumOfScrumsService {
       agenda,
       impedimentTracking: true,
       dependencyCoordination: true,
-      riskEscalation: true
+      riskEscalation: true,
     };
 
     this.configurations.set(artId, scrumConfig);
 
     this.logger.info('Scrum of Scrums configured', {
       configId: scrumConfig.id,
-      participantCount: participants.length
+      participantCount: participants.length,
     });
 
     return scrumConfig;
@@ -291,7 +292,7 @@ export class ScrumOfScrumsService {
 
     const meetingId = `sos-meeting-${nanoid(12)}`;
     const attendance = this.generateAttendance(config.participants);
-    
+
     const result: ScrumOfScrumsResult = {
       meetingId,
       date: new Date(),
@@ -304,8 +305,8 @@ export class ScrumOfScrumsService {
       outcomes: [
         'Team synchronization achieved',
         'Impediments identified',
-        'Dependencies coordinated'
-      ]
+        'Dependencies coordinated',
+      ],
     };
 
     this.meetingResults.set(meetingId, result);
@@ -313,7 +314,7 @@ export class ScrumOfScrumsService {
     this.logger.info('Scrum of Scrums meeting completed', {
       meetingId,
       impedimentsDiscussed: result.impedimentsDiscussed.length,
-      effectiveness: result.meetingEffectiveness.overallEffectiveness
+      effectiveness: result.meetingEffectiveness.overallEffectiveness,
     });
 
     return result;
@@ -332,7 +333,7 @@ export class ScrumOfScrumsService {
     impact: string;
   }): Promise<ProgramImpediment> {
     const impedimentId = `imp-${nanoid(12)}`;
-    
+
     const programImpediment: ProgramImpediment = {
       id: impedimentId,
       title: impediment.title,
@@ -344,7 +345,7 @@ export class ScrumOfScrumsService {
       status: ImpedimentStatus.OPEN,
       affectedTeams: impediment.affectedTeams,
       impact: impediment.impact,
-      escalationLevel: this.determineEscalationLevel(impediment.severity)
+      escalationLevel: this.determineEscalationLevel(impediment.severity),
     };
 
     this.impediments.set(impedimentId, programImpediment);
@@ -352,7 +353,7 @@ export class ScrumOfScrumsService {
     this.logger.info('Program impediment tracked', {
       impedimentId,
       severity: impediment.severity,
-      affectedTeams: impediment.affectedTeams.length
+      affectedTeams: impediment.affectedTeams.length,
     });
 
     return programImpediment;
@@ -361,7 +362,10 @@ export class ScrumOfScrumsService {
   /**
    * Escalate impediment
    */
-  async escalateImpediment(impedimentId: string, escalationLevel: ImpedimentEscalationLevel): Promise<void> {
+  async escalateImpediment(
+    impedimentId: string,
+    escalationLevel: ImpedimentEscalationLevel
+  ): Promise<void> {
     const impediment = this.impediments.get(impedimentId);
     if (!impediment) {
       throw new Error(`Impediment not found: ${impedimentId}`);
@@ -370,7 +374,7 @@ export class ScrumOfScrumsService {
     const escalatedImpediment = {
       ...impediment,
       escalationLevel,
-      status: ImpedimentStatus.ESCALATED
+      status: ImpedimentStatus.ESCALATED,
     };
 
     this.impediments.set(impedimentId, escalatedImpediment);
@@ -378,14 +382,17 @@ export class ScrumOfScrumsService {
     this.logger.info('Impediment escalated', {
       impedimentId,
       newLevel: escalationLevel,
-      severity: impediment.severity
+      severity: impediment.severity,
     });
   }
 
   /**
    * Resolve impediment
    */
-  async resolveImpediment(impedimentId: string, resolution: ImpedimentResolution): Promise<void> {
+  async resolveImpediment(
+    impedimentId: string,
+    resolution: ImpedimentResolution
+  ): Promise<void> {
     const impediment = this.impediments.get(impedimentId);
     if (!impediment) {
       throw new Error(`Impediment not found: ${impedimentId}`);
@@ -395,7 +402,7 @@ export class ScrumOfScrumsService {
       ...impediment,
       status: ImpedimentStatus.RESOLVED,
       resolution,
-      actualResolutionDate: new Date()
+      actualResolutionDate: new Date(),
     };
 
     this.impediments.set(impedimentId, resolvedImpediment);
@@ -403,7 +410,7 @@ export class ScrumOfScrumsService {
     this.logger.info('Impediment resolved', {
       impedimentId,
       resolutionDate: resolution.resolutionDate,
-      resolvedBy: resolution.resolvedBy
+      resolvedBy: resolution.resolvedBy,
     });
   }
 
@@ -411,12 +418,12 @@ export class ScrumOfScrumsService {
    * Generate participants from teams
    */
   private generateParticipants(teams: ARTTeam[]): ScrumOfScrumsParticipant[] {
-    return map(teams, team => ({
+    return map(teams, (team) => ({
       teamId: team.id,
       teamName: team.name,
       representative: 'Scrum Master', // Simplified
       role: 'scrum-master' as const,
-      participationHistory: []
+      participationHistory: [],
     }));
   }
 
@@ -429,26 +436,26 @@ export class ScrumOfScrumsService {
         question: 'What has your team accomplished since last meeting?',
         purpose: 'Share progress and achievements',
         timeAllocation: 2,
-        facilitation: 'round-robin'
+        facilitation: 'round-robin',
       },
       {
         question: 'What will your team accomplish before next meeting?',
         purpose: 'Share upcoming work and commitments',
         timeAllocation: 2,
-        facilitation: 'round-robin'
+        facilitation: 'round-robin',
       },
       {
         question: 'What impediments or blockers is your team facing?',
         purpose: 'Identify and address obstacles',
         timeAllocation: 3,
-        facilitation: 'focused'
+        facilitation: 'focused',
       },
       {
         question: 'What work might impact or depend on other teams?',
         purpose: 'Coordinate dependencies and integration',
         timeAllocation: 3,
-        facilitation: 'open-discussion'
-      }
+        facilitation: 'open-discussion',
+      },
     ];
 
     return {
@@ -458,7 +465,7 @@ export class ScrumOfScrumsService {
       riskDiscussion: true,
       programUpdates: true,
       actionItemReview: true,
-      customItems: []
+      customItems: [],
     };
   }
 
@@ -466,9 +473,10 @@ export class ScrumOfScrumsService {
    * Get active impediments for ART
    */
   private getActiveImpediments(artId: string): ProgramImpediment[] {
-    return filter(Array.from(this.impediments.values()), imp => 
-      imp.status === ImpedimentStatus.OPEN || 
-      imp.status === ImpedimentStatus.IN_PROGRESS
+    return filter(
+      Array.from(this.impediments.values()),
+      (imp) =>
+        imp.status === ImpedimentStatus.OPEN || imp.status === ImpedimentStatus.IN_PROGRESS
     );
   }
 
@@ -479,23 +487,29 @@ export class ScrumOfScrumsService {
     return [
       {
         id: `action-${nanoid(8)}`,
-        description: 'Follow up on team dependencies',
+        description:'Follow up on team dependencies',
         owner: 'RTE',
         dueDate: addDays(new Date(), 2),
         priority: 'high',
-        status: 'open'
-      }
+        status: 'open',
+      },
     ];
   }
 
   /**
    * Calculate meeting effectiveness
    */
-  private calculateEffectiveness(attendance: AttendanceRecord[]): MeetingEffectiveness {
-    const attendanceRate = (filter(attendance, a => a.attended).length / attendance.length) * 100;
-    const participationLevel = meanBy(attendance, a => 
-      a.contributionLevel === 'high' ? 100 : 
-      a.contributionLevel === 'medium' ? 60 : 30
+  private calculateEffectiveness(
+    attendance: AttendanceRecord[]
+  ): MeetingEffectiveness {
+    const attendanceRate =
+      (filter(attendance, (a) => a.attended).length / attendance.length) * 100;
+    const participationLevel = meanBy(attendance, (a) =>
+      a.contributionLevel === 'high'
+        ? 100
+        : a.contributionLevel === 'medium'
+          ? 60
+          : 30
     );
 
     return {
@@ -504,27 +518,31 @@ export class ScrumOfScrumsService {
       actionItemsGenerated: 3,
       impedimentsProgressed: 2,
       dependenciesResolved: 1,
-      overallEffectiveness: (attendanceRate + participationLevel) / 2
+      overallEffectiveness: (attendanceRate + participationLevel) / 2,
     };
   }
 
   /**
    * Generate attendance records
    */
-  private generateAttendance(participants: ScrumOfScrumsParticipant[]): AttendanceRecord[] {
-    return map(participants, p => ({
+  private generateAttendance(
+    participants: ScrumOfScrumsParticipant[]
+  ): AttendanceRecord[] {
+    return map(participants, (p) => ({
       participantId: p.teamId,
       attended: true,
       late: false,
       earlyLeave: false,
-      contributionLevel: 'medium' as const
+      contributionLevel: 'medium' as const,
     }));
   }
 
   /**
    * Determine escalation level based on severity
    */
-  private determineEscalationLevel(severity: ImpedimentSeverity): ImpedimentEscalationLevel {
+  private determineEscalationLevel(
+    severity: ImpedimentSeverity
+  ): ImpedimentEscalationLevel {
     switch (severity) {
       case ImpedimentSeverity.CRITICAL:
         return ImpedimentEscalationLevel.PROGRAM;
@@ -553,6 +571,6 @@ export class ScrumOfScrumsService {
    * Get all impediments for ART
    */
   getARTImpediments(artId: string): ProgramImpediment[] {
-    return Array.from(this.impediments.values());
+    return Array.from(this.impediments.values())();
   }
 }

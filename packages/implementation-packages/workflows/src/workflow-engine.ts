@@ -12,8 +12,8 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { 
-  getLogger, 
+import {
+  getLogger,
   type Logger,
   EnhancedError,
   withRetry,
@@ -44,13 +44,13 @@ import {
   safeAsync,
   Result,
   ok,
-  err
+  err,
 } from '@claude-zen/foundation';
 
 // Import types from workflow-base-types
-import type { 
-  WorkflowGateRequest, 
-  WorkflowGateResult 
+import type {
+  WorkflowGateRequest,
+  WorkflowGateResult,
 } from './workflow-base-types';
 
 // Define workflow-specific types locally
@@ -136,12 +136,12 @@ export class WorkflowEngine extends TypedEventBase {
   private performanceTracker: PerformanceTracker;
   private agentMonitor: AgentMonitor;
   private mlMonitor: MLMonitor;
-  
+
   // 🛡️ Circuit Breaker Protection
   private workflowExecutionCircuitBreaker: any;
   private stepExecutionCircuitBreaker: any;
   private documentProcessingCircuitBreaker: any;
-  
+
   // 📊 Workflow Analytics
   private workflowMetrics = new Map<string, any>();
   private executionCache = new Map<string, any>();
@@ -176,45 +176,54 @@ export class WorkflowEngine extends TypedEventBase {
     this.documentManager = documentManager;
     this.memory = memoryFactory;
     this.gatesManager = gatesManager;
-    
+
     // 🔬 Initialize comprehensive Foundation monitoring
-    this.systemMonitor = createSystemMonitor({ 
-      intervalMs: 15000 // 15-second system monitoring intervals
+    this.systemMonitor = createSystemMonitor({
+      intervalMs: 15000, // 15-second system monitoring intervals
     });
     this.performanceTracker = createPerformanceTracker();
     this.agentMonitor = createAgentMonitor();
     this.mlMonitor = createMLMonitor();
-    
+
     // 🛡️ Initialize circuit breakers for workflow protection
     this.workflowExecutionCircuitBreaker = createCircuitBreaker(
-      async () => { throw new Error('Workflow execution failed'); },
+      async () => {
+        throw new Error('Workflow execution failed');
+      },
       { errorThresholdPercentage: 50, resetTimeout: 30000 },
       'workflow-execution'
     );
-    
+
     this.stepExecutionCircuitBreaker = createCircuitBreaker(
-      async () => { throw new Error('Step execution failed'); },
+      async () => {
+        throw new Error('Step execution failed');
+      },
       { errorThresholdPercentage: 50, resetTimeout: 15000 },
       'step-execution'
     );
-    
+
     this.documentProcessingCircuitBreaker = createCircuitBreaker(
-      async () => { throw new Error('Document processing failed'); },
+      async () => {
+        throw new Error('Document processing failed');
+      },
       { errorThresholdPercentage: 50, resetTimeout: 20000 },
       'document-processing'
     );
-    
+
     // 📊 Initialize metrics recording
     recordMetric('workflow_engine_initialized', 1, { timestamp: Date.now() });
     recordGauge('workflow_engine_startup_time', this.startupTime);
-    
-    logger.info('WorkflowEngine constructor completed with Foundation integration', {
-      config: this.config,
-      hasDocumentManager: !!documentManager,
-      hasMemoryFactory: !!memoryFactory,
-      hasGatesManager: !!gatesManager,
-      foundationIntegration: 'comprehensive'
-    });
+
+    logger.info(
+      'WorkflowEngine constructor completed with Foundation integration',
+      {
+        config: this.config,
+        hasDocumentManager: !!documentManager,
+        hasMemoryFactory: !!memoryFactory,
+        hasGatesManager: !!gatesManager,
+        foundationIntegration: 'comprehensive',
+      }
+    );
   }
 
   // --------------------------------------------------------------------------
@@ -225,7 +234,9 @@ export class WorkflowEngine extends TypedEventBase {
   @metered('workflow_engine_initialization')
   async initialize(): Promise<void> {
     if (this.isInitialized) {
-      recordEvent('workflow_engine_already_initialized', { timestamp: Date.now() });
+      recordEvent('workflow_engine_already_initialized', {
+        timestamp: Date.now(),
+      });
       return;
     }
 
@@ -234,59 +245,79 @@ export class WorkflowEngine extends TypedEventBase {
         'workflow.engine.config': JSON.stringify(this.config),
         'workflow.engine.has_document_manager': !!this.documentManager,
         'workflow.engine.has_memory_factory': !!this.memory,
-        'workflow.engine.has_gates_manager': !!this.gatesManager
+        'workflow.engine.has_gates_manager': !!this.gatesManager,
       });
 
       const initStartTime = Date.now();
-      
+
       try {
         // 🔧 Register default step handlers with telemetry
-        recordEvent('workflow_step_handlers_registration_started', { timestamp: Date.now() });
+        recordEvent('workflow_step_handlers_registration_started', {
+          timestamp: Date.now(),
+        });
         this.registerDefaultStepHandlers();
-        recordEvent('workflow_step_handlers_registration_completed', { timestamp: Date.now() });
-        
+        recordEvent('workflow_step_handlers_registration_completed', {
+          timestamp: Date.now(),
+        });
+
         // 📄 Register document workflows with telemetry
-        recordEvent('workflow_document_workflows_registration_started', { timestamp: Date.now() });
+        recordEvent('workflow_document_workflows_registration_started', {
+          timestamp: Date.now(),
+        });
         await this.registerDocumentWorkflows();
-        recordEvent('workflow_document_workflows_registration_completed', { timestamp: Date.now() });
+        recordEvent('workflow_document_workflows_registration_completed', {
+          timestamp: Date.now(),
+        });
 
         // 🏥 Start monitoring systems
-        recordEvent('workflow_monitoring_systems_started', { timestamp: Date.now() });
+        recordEvent('workflow_monitoring_systems_started', {
+          timestamp: Date.now(),
+        });
         await this.systemMonitor.start();
-        
+
         this.isInitialized = true;
         const initDuration = Date.now() - initStartTime;
-        
+
         // 📊 Record initialization metrics
-        recordHistogram('workflow_engine_initialization_duration', initDuration);
-        recordGauge('workflow_engine_initialized_timestamp', Date.now());
+        recordHistogram(
+          'workflow_engine_initialization_duration',
+          initDuration
+        );
+        recordGauge('workflow_engine_initialized_timestamp', Date.now())();
         recordMetric('workflow_engine_initialized_successfully', 1);
-        
+
         this.emit('initialized', { timestamp: new Date() });
-        
+
         setTraceAttributes({
           'workflow.engine.initialized': true,
           'workflow.engine.initialization_duration_ms': initDuration,
           'workflow.engine.step_handlers_count': this.stepHandlers.size,
-          'workflow.engine.workflow_definitions_count': this.workflowDefinitions.size
+          'workflow.engine.workflow_definitions_count':
+            this.workflowDefinitions.size,
         });
-        
-        logger.info('WorkflowEngine initialized successfully with Foundation monitoring', {
-          initializationDuration: initDuration,
-          stepHandlersCount: this.stepHandlers.size,
-          workflowDefinitionsCount: this.workflowDefinitions.size,
-          foundationIntegration: 'active'
-        });
+
+        logger.info(
+          'WorkflowEngine initialized successfully with Foundation monitoring',
+          {
+            initializationDuration: initDuration,
+            stepHandlersCount: this.stepHandlers.size,
+            workflowDefinitionsCount: this.workflowDefinitions.size,
+            foundationIntegration: 'active',
+          }
+        );
       } catch (error) {
         const initDuration = Date.now() - initStartTime;
         recordMetric('workflow_engine_initialization_failed', 1);
-        recordHistogram('workflow_engine_initialization_error_duration', initDuration);
-        
-        logger.error('WorkflowEngine initialization failed', { 
+        recordHistogram(
+          'workflow_engine_initialization_error_duration',
+          initDuration
+        );
+
+        logger.error('WorkflowEngine initialization failed', {
           error: error instanceof Error ? error.message : String(error),
-          initializationDuration: initDuration
+          initializationDuration: initDuration,
         });
-        
+
         throw new EnhancedError(
           'Failed to initialize WorkflowEngine',
           { cause: error, duration: initDuration },
@@ -301,33 +332,42 @@ export class WorkflowEngine extends TypedEventBase {
   async shutdown(): Promise<void> {
     return withAsyncTrace('workflow-engine-shutdown', async (span) => {
       const shutdownStartTime = Date.now();
-      logger.info('Shutting down WorkflowEngine with comprehensive Foundation cleanup');
-      
+      logger.info(
+        'Shutting down WorkflowEngine with comprehensive Foundation cleanup'
+      );
+
       try {
         setTraceAttributes({
           'workflow.engine.active_workflows_count': this.activeWorkflows.size,
-          'workflow.engine.workflow_definitions_count': this.workflowDefinitions.size,
+          'workflow.engine.workflow_definitions_count':
+            this.workflowDefinitions.size,
           'workflow.engine.step_handlers_count': this.stepHandlers.size,
-          'workflow.engine.shutdown_started': true
+          'workflow.engine.shutdown_started': true,
         });
 
         // 🚨 Cancel all active workflows with telemetry
-        recordEvent('workflow_engine_cancelling_active_workflows', { 
-          activeWorkflowsCount: this.activeWorkflows.size 
+        recordEvent('workflow_engine_cancelling_active_workflows', {
+          activeWorkflowsCount: this.activeWorkflows.size,
         });
-        
-        const cancelPromises = Array.from(this.activeWorkflows.keys()).map(async (id) => {
-          try {
-            recordEvent('workflow_cancellation_started', { workflowId: id });
-            this.cancelWorkflow(id);
-            recordEvent('workflow_cancellation_completed', { workflowId: id });
-            return Promise.resolve();
-          } catch (err) {
-            recordMetric('workflow_cancellation_failed', 1, { workflowId: id });
-            logger.error(`Error cancelling workflow ${id}:`, err);
-            return Promise.resolve();
+
+        const cancelPromises = Array.from(this.activeWorkflows.keys()).map(
+          async (id) => {
+            try {
+              recordEvent('workflow_cancellation_started', { workflowId: id });
+              this.cancelWorkflow(id);
+              recordEvent('workflow_cancellation_completed', {
+                workflowId: id,
+              });
+              return Promise.resolve();
+            } catch (err) {
+              recordMetric('workflow_cancellation_failed', 1, {
+                workflowId: id,
+              });
+              logger.error(`Error cancelling workflow ${id}:`, err);
+              return Promise.resolve();
+            }
           }
-        });
+        );
 
         await Promise.all(cancelPromises);
         recordEvent('workflow_engine_all_workflows_cancelled');
@@ -343,8 +383,11 @@ export class WorkflowEngine extends TypedEventBase {
           recordEvent('workflow_engine_monitoring_shutdown_completed');
         } catch (monitoringError) {
           recordMetric('workflow_engine_monitoring_shutdown_failed', 1);
-          logger.warn('Error during monitoring systems shutdown', { 
-            error: monitoringError instanceof Error ? monitoringError.message : String(monitoringError)
+          logger.warn('Error during monitoring systems shutdown', {
+            error:
+              monitoringError instanceof Error
+                ? monitoringError.message
+                : String(monitoringError),
           });
         }
 
@@ -356,8 +399,11 @@ export class WorkflowEngine extends TypedEventBase {
           this.documentProcessingCircuitBreaker.close?.();
           recordEvent('workflow_engine_circuit_breakers_closed');
         } catch (circuitError) {
-          logger.warn('Error closing circuit breakers', { 
-            error: circuitError instanceof Error ? circuitError.message : String(circuitError)
+          logger.warn('Error closing circuit breakers', {
+            error:
+              circuitError instanceof Error
+                ? circuitError.message
+                : String(circuitError),
           });
         }
 
@@ -372,36 +418,42 @@ export class WorkflowEngine extends TypedEventBase {
 
         this.isInitialized = false;
         const shutdownDuration = Date.now() - shutdownStartTime;
-        
+
         // 📊 Record shutdown metrics
         recordHistogram('workflow_engine_shutdown_duration', shutdownDuration);
-        recordGauge('workflow_engine_shutdown_timestamp', Date.now());
+        recordGauge('workflow_engine_shutdown_timestamp', Date.now())();
         recordMetric('workflow_engine_shutdown_completed', 1);
-        
+
         setTraceAttributes({
           'workflow.engine.shutdown_completed': true,
           'workflow.engine.shutdown_duration_ms': shutdownDuration,
-          'workflow.engine.final_state': 'clean'
+          'workflow.engine.final_state': 'clean',
         });
-        
-        logger.info('WorkflowEngine shutdown completed successfully with Foundation cleanup', {
-          shutdownDuration,
-          finalState: 'clean',
-          foundationCleanup: 'comprehensive'
-        });
+
+        logger.info(
+          'WorkflowEngine shutdown completed successfully with Foundation cleanup',
+          {
+            shutdownDuration,
+            finalState: 'clean',
+            foundationCleanup: 'comprehensive',
+          }
+        );
       } catch (error) {
         const shutdownDuration = Date.now() - shutdownStartTime;
         recordMetric('workflow_engine_shutdown_failed', 1);
-        recordHistogram('workflow_engine_shutdown_error_duration', shutdownDuration);
-        
-        logger.error('WorkflowEngine shutdown encountered errors', { 
-          error: error instanceof Error ? error.message : String(error),
+        recordHistogram(
+          'workflow_engine_shutdown_error_duration',
           shutdownDuration
+        );
+
+        logger.error('WorkflowEngine shutdown encountered errors', {
+          error: error instanceof Error ? error.message : String(error),
+          shutdownDuration,
         });
-        
+
         // Continue with shutdown even if there were errors
         this.isInitialized = false;
-        
+
         throw new EnhancedError(
           'WorkflowEngine shutdown completed with errors',
           { cause: error, duration: shutdownDuration },
@@ -418,19 +470,21 @@ export class WorkflowEngine extends TypedEventBase {
   @tracedAsync('workflow-start')
   @metered('workflow_start_operation')
   async startWorkflow(
-    definitionOrName: string | WorkflowDefinition,
+    definitionOrName: string'' | ''WorkflowDefinition,
     context: WorkflowContext = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     return withAsyncTrace('workflow-start', async (span) => {
       const startTime = Date.now();
-      
+
       try {
         await this.ensureInitialized();
 
         const definition = this.resolveDefinition(definitionOrName);
         if (!definition) {
           recordMetric('workflow_start_definition_not_found', 1);
-          recordEvent('workflow_start_failed', { reason: 'definition_not_found' });
+          recordEvent('workflow_start_failed', {
+            reason: 'definition_not_found',
+          });
           return { success: false, error: 'Workflow definition not found' };
         }
 
@@ -438,20 +492,26 @@ export class WorkflowEngine extends TypedEventBase {
           'workflow.definition.name': definition.name,
           'workflow.definition.version': definition.version,
           'workflow.definition.steps_count': definition.steps.length,
-          'workflow.context.keys': Object.keys(context).join(',')
+          'workflow.context.keys': Object.keys(context).join(','),
         });
 
         // 🚦 Check capacity with circuit breaker protection
         return this.workflowExecutionCircuitBreaker.execute(async () => {
           if (this.activeWorkflows.size >= this.config.maxConcurrentWorkflows) {
             recordMetric('workflow_start_capacity_exceeded', 1);
-            recordGauge('workflow_active_count_at_capacity', this.activeWorkflows.size);
-            recordEvent('workflow_start_failed', { 
+            recordGauge(
+              'workflow_active_count_at_capacity',
+              this.activeWorkflows.size
+            );
+            recordEvent('workflow_start_failed', {
               reason: 'capacity_exceeded',
               activeWorkflows: this.activeWorkflows.size,
-              maxConcurrent: this.config.maxConcurrentWorkflows
+              maxConcurrent: this.config.maxConcurrentWorkflows,
             });
-            return { success: false, error: 'Maximum concurrent workflows reached' };
+            return {
+              success: false,
+              error: 'Maximum concurrent workflows reached',
+            };
           }
 
           const workflowId = this.generateWorkflowId();
@@ -471,37 +531,42 @@ export class WorkflowEngine extends TypedEventBase {
             startTime: Date.now(),
             definition: definition.name,
             stepsTotal: definition.steps.length,
-            stepsCompleted: 0
+            stepsCompleted: 0,
           });
-          
+
           // 📈 Record metrics
-          recordMetric('workflow_started', 1, { 
+          recordMetric('workflow_started', 1, {
             workflowType: definition.name,
-            stepsCount: definition.steps.length 
+            stepsCount: definition.steps.length,
           });
           recordGauge('workflow_active_count', this.activeWorkflows.size);
           recordHistogram('workflow_start_duration', Date.now() - startTime);
-          
+
           setTraceAttributes({
             'workflow.id': workflowId,
             'workflow.status': 'started',
-            'workflow.active_count': this.activeWorkflows.size
+            'workflow.active_count': this.activeWorkflows.size,
           });
 
-          this.emit('workflow:started', { workflowId, definition: definition.name });
-          recordEvent('workflow_started_successfully', { 
-            workflowId, 
+          this.emit('workflow:started', {
+            workflowId,
+            definition: definition.name,
+          });
+          recordEvent('workflow_started_successfully', {
+            workflowId,
             workflowType: definition.name,
-            activeWorkflows: this.activeWorkflows.size
+            activeWorkflows: this.activeWorkflows.size,
           });
 
           // 🚀 Start execution in background with enhanced error handling
           this.executeWorkflowAsync(workflow).catch((error) => {
-            recordMetric('workflow_execution_background_error', 1, { workflowId });
-            logger.error(`Workflow ${workflowId} execution failed:`, { 
+            recordMetric('workflow_execution_background_error', 1, {
+              workflowId,
+            });
+            logger.error(`Workflow ${workflowId} execution failed:`, {
               error: error instanceof Error ? error.message : String(error),
               workflowType: definition.name,
-              workflowId
+              workflowId,
             });
           });
 
@@ -511,15 +576,18 @@ export class WorkflowEngine extends TypedEventBase {
         const duration = Date.now() - startTime;
         recordMetric('workflow_start_circuit_breaker_failure', 1);
         recordHistogram('workflow_start_error_duration', duration);
-        
+
         logger.error('Workflow start failed with circuit breaker protection', {
           error: error instanceof Error ? error.message : String(error),
-          duration
+          duration,
         });
-        
-        return { 
-          success: false, 
-          error: error instanceof Error ? error.message : 'Unknown error during workflow start'
+
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Unknown error during workflow start',
         };
       }
     });
@@ -538,7 +606,7 @@ export class WorkflowEngine extends TypedEventBase {
     return true;
   }
 
-  getWorkflowStatus(workflowId: string): WorkflowState | null {
+  getWorkflowStatus(workflowId: string): WorkflowState'' | ''null {
     return this.activeWorkflows.get(workflowId) ?? null;
   }
 
@@ -566,7 +634,7 @@ export class WorkflowEngine extends TypedEventBase {
   async registerDocumentWorkflows(): Promise<void> {
     const documentWorkflows: WorkflowDefinition[] = [
       {
-        name: 'vision-to-prds',
+        name:'vision-to-prds',
         description: 'Process vision documents into PRDs',
         version: '1.0.0',
         steps: [
@@ -604,149 +672,176 @@ export class WorkflowEngine extends TypedEventBase {
     return withAsyncTrace('document-event-processing', async (span) => {
       const processingStartTime = Date.now();
       const docData = documentData as { type?: string; id?: string };
-      
+
       setTraceAttributes({
         'document.event.type': eventType,
-        'document.data.type': docData.type || 'unknown',
-        'document.data.id': docData.id || 'unknown'
+        'document.data.type': docData.type'' | '''' | '''unknown',
+        'document.data.id': docData.id'' | '''' | '''unknown',
       });
 
-      recordEvent('document_event_processing_started', { 
-        eventType, 
+      recordEvent('document_event_processing_started', {
+        eventType,
         documentType: docData.type,
-        documentId: docData.id
+        documentId: docData.id,
       });
 
       try {
         // 🛡️ Use circuit breaker protection for document processing
         return this.documentProcessingCircuitBreaker.execute(async () => {
-          const triggerWorkflows = this.getWorkflowsForDocumentType(docData.type);
+          const triggerWorkflows = this.getWorkflowsForDocumentType(
+            docData.type
+          );
 
           if (triggerWorkflows.length === 0) {
-            recordEvent('document_event_no_workflows_found', { 
-              eventType, 
-              documentType: docData.type 
+            recordEvent('document_event_no_workflows_found', {
+              eventType,
+              documentType: docData.type,
             });
             recordMetric('document_event_no_workflows', 1, {
               eventType,
-              documentType: docData.type || 'unknown'
+              documentType: docData.type'' | '''' | '''unknown',
             });
-            
+
             logger.debug(`No workflows for document type: ${docData.type}`, {
               eventType,
               documentType: docData.type,
-              documentId: docData.id
+              documentId: docData.id,
             });
             return;
           }
 
           setTraceAttributes({
             'document.workflows.triggered_count': triggerWorkflows.length,
-            'document.workflows.names': triggerWorkflows.join(',')
+            'document.workflows.names': triggerWorkflows.join(','),
           });
 
-          recordEvent('document_event_triggering_workflows', { 
-            eventType, 
+          recordEvent('document_event_triggering_workflows', {
+            eventType,
             documentType: docData.type,
             workflowsCount: triggerWorkflows.length,
-            workflows: triggerWorkflows
+            workflows: triggerWorkflows,
           });
 
           // 🚀 Start all triggered workflows in parallel with comprehensive tracking
-          const triggerPromises = triggerWorkflows.map(async (workflowName, index) => {
-            const workflowStartTime = Date.now();
-            
-            try {
-              recordEvent('document_workflow_trigger_started', { 
-                workflowName, 
-                eventType, 
-                documentType: docData.type 
-              });
-              
-              const result = await this.startWorkflow(workflowName, { 
-                documentData, 
-                eventType,
-                triggerIndex: index,
-                triggerTimestamp: Date.now()
-              });
-              
-              const workflowTriggerDuration = Date.now() - workflowStartTime;
-              recordHistogram('document_workflow_trigger_duration', workflowTriggerDuration, {
-                workflowName,
-                eventType,
-                documentType: docData.type || 'unknown'
-              });
-              
-              if (result.success) {
-                recordEvent('document_workflow_trigger_succeeded', { 
-                  workflowName, 
-                  workflowId: result.workflowId,
-                  duration: workflowTriggerDuration
-                });
-                recordMetric('document_workflow_triggered_successfully', 1, {
+          const triggerPromises = triggerWorkflows.map(
+            async (workflowName, index) => {
+              const workflowStartTime = Date.now();
+
+              try {
+                recordEvent('document_workflow_trigger_started', {
                   workflowName,
-                  eventType
+                  eventType,
+                  documentType: docData.type,
                 });
-              } else {
-                recordEvent('document_workflow_trigger_failed', { 
-                  workflowName, 
-                  error: result.error,
-                  duration: workflowTriggerDuration
+
+                const result = await this.startWorkflow(workflowName, {
+                  documentData,
+                  eventType,
+                  triggerIndex: index,
+                  triggerTimestamp: Date.now(),
                 });
-                recordMetric('document_workflow_trigger_failed', 1, {
+
+                const workflowTriggerDuration = Date.now() - workflowStartTime;
+                recordHistogram(
+                  'document_workflow_trigger_duration',
+                  workflowTriggerDuration,
+                  {
+                    workflowName,
+                    eventType,
+                    documentType: docData.type'' | '''' | '''unknown',
+                  }
+                );
+
+                if (result.success) {
+                  recordEvent('document_workflow_trigger_succeeded', {
+                    workflowName,
+                    workflowId: result.workflowId,
+                    duration: workflowTriggerDuration,
+                  });
+                  recordMetric('document_workflow_triggered_successfully', 1, {
+                    workflowName,
+                    eventType,
+                  });
+                } else {
+                  recordEvent('document_workflow_trigger_failed', {
+                    workflowName,
+                    error: result.error,
+                    duration: workflowTriggerDuration,
+                  });
+                  recordMetric('document_workflow_trigger_failed', 1, {
+                    workflowName,
+                    eventType,
+                  });
+                }
+
+                return {
                   workflowName,
-                  eventType
+                  result,
+                  duration: workflowTriggerDuration,
+                };
+              } catch (error) {
+                const workflowTriggerDuration = Date.now() - workflowStartTime;
+                recordMetric('document_workflow_trigger_exception', 1, {
+                  workflowName,
+                  eventType,
                 });
+                recordEvent('document_workflow_trigger_exception', {
+                  workflowName,
+                  error: error instanceof Error ? error.message : String(error),
+                  duration: workflowTriggerDuration,
+                });
+
+                return {
+                  workflowName,
+                  result: {
+                    success: false,
+                    error:
+                      error instanceof Error ? error.message : String(error),
+                  },
+                  duration: workflowTriggerDuration,
+                };
               }
-              
-              return { workflowName, result, duration: workflowTriggerDuration };
-            } catch (error) {
-              const workflowTriggerDuration = Date.now() - workflowStartTime;
-              recordMetric('document_workflow_trigger_exception', 1, {
-                workflowName,
-                eventType
-              });
-              recordEvent('document_workflow_trigger_exception', { 
-                workflowName, 
-                error: error instanceof Error ? error.message : String(error),
-                duration: workflowTriggerDuration
-              });
-              
-              return { 
-                workflowName, 
-                result: { success: false, error: error instanceof Error ? error.message : String(error) },
-                duration: workflowTriggerDuration
-              };
             }
-          });
+          );
 
           const results = await Promise.all(triggerPromises);
           const totalProcessingDuration = Date.now() - processingStartTime;
 
           // 📊 Analyze and record results
-          const successfulWorkflows = results.filter(r => r.result.success);
-          const failedWorkflows = results.filter(r => !r.result.success);
+          const successfulWorkflows = results.filter((r) => r.result.success);
+          const failedWorkflows = results.filter((r) => !r.result.success);
 
-          recordHistogram('document_event_total_processing_duration', totalProcessingDuration, {
-            eventType,
-            documentType: docData.type || 'unknown'
-          });
+          recordHistogram(
+            'document_event_total_processing_duration',
+            totalProcessingDuration,
+            {
+              eventType,
+              documentType: docData.type'' | '''' | '''unknown',
+            }
+          );
           recordGauge('document_event_workflows_triggered', results.length);
-          recordGauge('document_event_workflows_successful', successfulWorkflows.length);
-          recordGauge('document_event_workflows_failed', failedWorkflows.length);
+          recordGauge(
+            'document_event_workflows_successful',
+            successfulWorkflows.length
+          );
+          recordGauge(
+            'document_event_workflows_failed',
+            failedWorkflows.length
+          );
 
           setTraceAttributes({
             'document.processing.duration_ms': totalProcessingDuration,
             'document.workflows.successful_count': successfulWorkflows.length,
             'document.workflows.failed_count': failedWorkflows.length,
-            'document.processing.success_rate': successfulWorkflows.length / results.length
+            'document.processing.success_rate':
+              successfulWorkflows.length / results.length,
           });
 
           // 📝 Log detailed results
           results.forEach(({ workflowName, result, duration }) => {
             const logLevel = result.success ? 'info' : 'warn';
             const status = result.success ? 'SUCCESS' : 'FAILED';
-            
+
             logger[logLevel](`Document workflow ${workflowName}: ${status}`, {
               workflowName,
               status,
@@ -755,17 +850,17 @@ export class WorkflowEngine extends TypedEventBase {
               error: result.error,
               eventType,
               documentType: docData.type,
-              documentId: docData.id
+              documentId: docData.id,
             });
           });
 
-          recordEvent('document_event_processing_completed', { 
-            eventType, 
+          recordEvent('document_event_processing_completed', {
+            eventType,
             documentType: docData.type,
             totalDuration: totalProcessingDuration,
             workflowsTriggered: results.length,
             workflowsSuccessful: successfulWorkflows.length,
-            workflowsFailed: failedWorkflows.length
+            workflowsFailed: failedWorkflows.length,
           });
 
           logger.info('Document event processing completed', {
@@ -776,31 +871,34 @@ export class WorkflowEngine extends TypedEventBase {
             workflowsTriggered: results.length,
             workflowsSuccessful: successfulWorkflows.length,
             workflowsFailed: failedWorkflows.length,
-            successRate: `${Math.round((successfulWorkflows.length / results.length) * 100)}%`
+            successRate: `${Math.round((successfulWorkflows.length / results.length) * 100)}%`,
           });
         });
       } catch (error) {
         const processingDuration = Date.now() - processingStartTime;
         recordMetric('document_event_processing_circuit_breaker_failure', 1);
-        recordHistogram('document_event_processing_error_duration', processingDuration);
-        
-        logger.error('Document event processing failed with circuit breaker protection', {
-          eventType,
-          documentType: docData.type,
-          documentId: docData.id,
-          error: error instanceof Error ? error.message : String(error),
-          duration: processingDuration
-        });
-        
-        throw new EnhancedError(
-          'Document event processing failed',
-          { 
-            cause: error, 
-            eventType, 
+        recordHistogram(
+          'document_event_processing_error_duration',
+          processingDuration
+        );
+
+        logger.error(
+          'Document event processing failed with circuit breaker protection',
+          {
+            eventType,
             documentType: docData.type,
-            duration: processingDuration
+            documentId: docData.id,
+            error: error instanceof Error ? error.message : String(error),
+            duration: processingDuration,
           }
         );
+
+        throw new EnhancedError('Document event processing failed', {
+          cause: error,
+          eventType,
+          documentType: docData.type,
+          duration: processingDuration,
+        });
       }
     });
   }
@@ -809,8 +907,8 @@ export class WorkflowEngine extends TypedEventBase {
     return {
       id: entity.id,
       type: entity.type,
-      title: entity.title || `${entity.type} Document`,
-      content: entity.content || '',
+      title: entity.title'' | '''' | ''`${entity.type} Document`,
+      content: entity.content'' | '''' | '''',
       metadata: {
         entityId: entity.id,
         createdAt: entity.created_at,
@@ -825,7 +923,7 @@ export class WorkflowEngine extends TypedEventBase {
   // DATA ACCESS METHODS
   // --------------------------------------------------------------------------
 
-  getWorkflowData(workflowId: string): WorkflowData | null {
+  getWorkflowData(workflowId: string): WorkflowData'' | ''null {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) return null;
 
@@ -881,48 +979,48 @@ export class WorkflowEngine extends TypedEventBase {
   private async executeWorkflowAsync(workflow: WorkflowState): Promise<void> {
     return withAsyncTrace('workflow-execution', async (span) => {
       const executionStartTime = Date.now();
-      
+
       setTraceAttributes({
         'workflow.id': workflow.id,
         'workflow.definition.name': workflow.definition.name,
         'workflow.definition.steps_count': workflow.definition.steps.length,
-        'workflow.execution.started': true
+        'workflow.execution.started': true,
       });
 
       workflow.status = 'running';
-      recordEvent('workflow_execution_started', { 
-        workflowId: workflow.id, 
+      recordEvent('workflow_execution_started', {
+        workflowId: workflow.id,
         workflowType: workflow.definition.name,
-        stepsCount: workflow.definition.steps.length
+        stepsCount: workflow.definition.steps.length,
       });
 
       try {
         // 🔄 Execute each step with comprehensive telemetry
         for (let i = 0; i < workflow.definition.steps.length; i++) {
           if (workflow.status !== 'running') {
-            recordEvent('workflow_execution_interrupted', { 
-              workflowId: workflow.id, 
+            recordEvent('workflow_execution_interrupted', {
+              workflowId: workflow.id,
               currentStep: i,
-              status: workflow.status
+              status: workflow.status,
             });
             break;
           }
 
           workflow.currentStep = i;
           const step = workflow.definition.steps[i]!;
-          
+
           // 📊 Record step execution metrics
-          recordEvent('workflow_step_execution_started', { 
+          recordEvent('workflow_step_execution_started', {
             workflowId: workflow.id,
             stepIndex: i,
             stepType: step.type,
-            stepName: step.name
+            stepName: step.name,
           });
-          
+
           const stepStartTime = Date.now();
           const result = await this.executeStep(step, workflow);
           const stepDuration = Date.now() - stepStartTime;
-          
+
           // 📈 Update workflow progress metrics
           const workflowMetric = this.workflowMetrics.get(workflow.id);
           if (workflowMetric) {
@@ -933,133 +1031,140 @@ export class WorkflowEngine extends TypedEventBase {
           recordHistogram('workflow_step_execution_duration', stepDuration, {
             workflowId: workflow.id,
             stepType: step.type,
-            stepIndex: i.toString()
+            stepIndex: i.toString(),
           });
 
           if (!result.success) {
             workflow.status = 'failed';
             workflow.error = result.error;
-            
+
             recordMetric('workflow_step_execution_failed', 1, {
               workflowId: workflow.id,
               stepType: step.type,
-              stepIndex: i.toString()
+              stepIndex: i.toString(),
             });
-            recordEvent('workflow_execution_failed', { 
+            recordEvent('workflow_execution_failed', {
               workflowId: workflow.id,
               failedStep: i,
               stepType: step.type,
-              error: result.error
+              error: result.error,
             });
-            
+
             setTraceAttributes({
               'workflow.execution.failed': true,
               'workflow.execution.failed_step': i,
-              'workflow.execution.error': result.error
+              'workflow.execution.error': result.error,
             });
-            
+
             break;
           }
 
           workflow.stepResults[i] = result.output;
-          recordEvent('workflow_step_execution_completed', { 
+          recordEvent('workflow_step_execution_completed', {
             workflowId: workflow.id,
             stepIndex: i,
             stepType: step.type,
-            duration: stepDuration
+            duration: stepDuration,
           });
         }
 
         // 🎯 Determine final workflow status
         if (workflow.status === 'running') {
           workflow.status = 'completed';
-          recordEvent('workflow_execution_completed_successfully', { 
+          recordEvent('workflow_execution_completed_successfully', {
             workflowId: workflow.id,
             totalSteps: workflow.definition.steps.length,
-            executionDuration: Date.now() - executionStartTime
+            executionDuration: Date.now() - executionStartTime,
           });
-          
+
           setTraceAttributes({
             'workflow.execution.completed': true,
-            'workflow.execution.steps_completed': workflow.definition.steps.length
+            'workflow.execution.steps_completed':
+              workflow.definition.steps.length,
           });
         }
-        
       } catch (error) {
         workflow.status = 'failed';
-        workflow.error = error instanceof Error ? error.message : 'Unknown error';
-        
-        recordMetric('workflow_execution_exception', 1, { workflowId: workflow.id });
-        recordEvent('workflow_execution_failed_with_exception', { 
+        workflow.error =
+          error instanceof Error ? error.message : 'Unknown error';
+
+        recordMetric('workflow_execution_exception', 1, {
+          workflowId: workflow.id,
+        });
+        recordEvent('workflow_execution_failed_with_exception', {
           workflowId: workflow.id,
           error: workflow.error,
-          currentStep: workflow.currentStep
+          currentStep: workflow.currentStep,
         });
-        
+
         setTraceAttributes({
           'workflow.execution.failed': true,
           'workflow.execution.exception': true,
-          'workflow.execution.error': workflow.error
+          'workflow.execution.error': workflow.error,
         });
-        
+
         logger.error('Workflow execution failed with exception', {
           workflowId: workflow.id,
           workflowType: workflow.definition.name,
           currentStep: workflow.currentStep,
-          error: workflow.error
+          error: workflow.error,
         });
       } finally {
         // 🏁 Finalize workflow execution with comprehensive metrics
         workflow.endTime = new Date().toISOString();
         const totalExecutionDuration = Date.now() - executionStartTime;
-        
+
         // 📊 Record final execution metrics
-        recordHistogram('workflow_total_execution_duration', totalExecutionDuration, {
-          workflowId: workflow.id,
-          workflowType: workflow.definition.name,
-          status: workflow.status
-        });
+        recordHistogram(
+          'workflow_total_execution_duration',
+          totalExecutionDuration,
+          {
+            workflowId: workflow.id,
+            workflowType: workflow.definition.name,
+            status: workflow.status,
+          }
+        );
         recordGauge('workflow_steps_completed', workflow.currentStep, {
-          workflowId: workflow.id
+          workflowId: workflow.id,
         });
         recordMetric(`workflow_${workflow.status}`, 1, {
-          workflowType: workflow.definition.name
+          workflowType: workflow.definition.name,
         });
-        
+
         // 🧹 Cleanup workflow state
         this.activeWorkflows.delete(workflow.id);
         this.workflowMetrics.delete(workflow.id);
         recordGauge('workflow_active_count', this.activeWorkflows.size);
-        
+
         setTraceAttributes({
           'workflow.execution.final_status': workflow.status,
           'workflow.execution.duration_ms': totalExecutionDuration,
           'workflow.execution.steps_completed': workflow.currentStep,
-          'workflow.execution.finalized': true
+          'workflow.execution.finalized': true,
         });
-        
+
         this.emit('workflow:completed', {
           workflowId: workflow.id,
           status: workflow.status,
           duration: totalExecutionDuration,
-          stepsCompleted: workflow.currentStep
+          stepsCompleted: workflow.currentStep,
         });
-        
-        recordEvent('workflow_execution_finalized', { 
+
+        recordEvent('workflow_execution_finalized', {
           workflowId: workflow.id,
           status: workflow.status,
           duration: totalExecutionDuration,
           stepsCompleted: workflow.currentStep,
-          activeWorkflows: this.activeWorkflows.size
+          activeWorkflows: this.activeWorkflows.size,
         });
-        
+
         logger.info('Workflow execution finalized', {
           workflowId: workflow.id,
           workflowType: workflow.definition.name,
           status: workflow.status,
           duration: totalExecutionDuration,
           stepsCompleted: workflow.currentStep,
-          activeWorkflows: this.activeWorkflows.size
+          activeWorkflows: this.activeWorkflows.size,
         });
       }
     });
@@ -1077,7 +1182,7 @@ export class WorkflowEngine extends TypedEventBase {
       if (!gateResult.success) {
         return {
           success: false,
-          error: gateResult.error?.message || 'Gate approval failed',
+          error: gateResult.error?.message'' | '''' | '''Gate approval failed',
           duration: Date.now() - startTime,
         };
       }
@@ -1093,7 +1198,7 @@ export class WorkflowEngine extends TypedEventBase {
 
         return {
           success: true,
-          output: { gateId: gateResult.gateId, status: 'pending_approval' },
+          output: { gateId: gateResult.gateId, status: 'pending_approval'},
           duration: Date.now() - startTime,
         };
       }
@@ -1111,8 +1216,8 @@ export class WorkflowEngine extends TypedEventBase {
 
     try {
       const output = await Promise.race([
-        handler(workflow.context, step.params || {}),
-        this.createTimeoutPromise(step.timeout || this.config.stepTimeout),
+        handler(workflow.context, step.params'' | '''' | ''{}),
+        this.createTimeoutPromise(step.timeout'' | '''' | ''this.config.stepTimeout),
       ]);
 
       return {
@@ -1123,7 +1228,7 @@ export class WorkflowEngine extends TypedEventBase {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message :'Unknown error',
         duration: Date.now() - startTime,
       };
     }
@@ -1132,14 +1237,14 @@ export class WorkflowEngine extends TypedEventBase {
   private registerDefaultStepHandlers(): void {
     // Default step handlers
     this.registerStepHandler('delay', async (context, params) => {
-      const duration = (params as { duration?: number }).duration || 1000;
+      const duration = (params as { duration?: number }).duration'' | '''' | ''1000;
       await new Promise((resolve) => setTimeout(resolve, duration));
       return { delayed: duration };
     });
 
     this.registerStepHandler('log', (context, params) => {
       const message =
-        (params as { message?: string }).message || 'Step executed';
+        (params as { message?: string }).message'' | '''' | '''Step executed';
       logger.info(message);
       return Promise.resolve({ logged: message });
     });
@@ -1149,7 +1254,7 @@ export class WorkflowEngine extends TypedEventBase {
         input?: string;
         transformation?: unknown;
       };
-      const inputValue = this.getNestedValue(context, input || '');
+      const inputValue = this.getNestedValue(context, input'' | '''' | '''');
       return Promise.resolve({
         transformed: this.applyTransformation(inputValue, transformation),
       });
@@ -1157,10 +1262,10 @@ export class WorkflowEngine extends TypedEventBase {
   }
 
   private resolveDefinition(
-    definitionOrName: string | WorkflowDefinition
-  ): WorkflowDefinition | null {
-    if (typeof definitionOrName === 'string') {
-      return this.workflowDefinitions.get(definitionOrName) || null;
+    definitionOrName: string'' | ''WorkflowDefinition
+  ): WorkflowDefinition'' | ''null {
+    if (typeof definitionOrName ==='string') {
+      return this.workflowDefinitions.get(definitionOrName)'' | '''' | ''null;
     }
     return definitionOrName;
   }
@@ -1175,7 +1280,7 @@ export class WorkflowEngine extends TypedEventBase {
       prd: ['prd-to-epics'],
       epic: ['epic-to-features'],
     };
-    return typeWorkflowMap[documentType || ''] || [];
+    return typeWorkflowMap[documentType'' | '''' | '''']'' | '''' | ''[];
   }
 
   private async ensureInitialized(): Promise<void> {
@@ -1240,32 +1345,32 @@ export class WorkflowEngine extends TypedEventBase {
         // ValidationQuestion base properties
         id: gateId,
         type: 'checkpoint',
-        question: `Approve execution of step: ${step.name || step.type}?`,
+        question: `Approve execution of step: ${step.name'' | '''' | ''step.type}?`,
         context: {
           workflowId: workflow.id,
-          stepName: step.name || step.type,
+          stepName: step.name'' | '''' | ''step.type,
           stepType: step.type,
-          stepParams: step.params || {},
+          stepParams: step.params'' | '''' | ''{},
         },
         confidence: 0.8,
         priority:
-          step.gateConfig.businessImpact === 'critical' ? 'critical' : 'medium',
-        validationReason: `Workflow step gate: ${step.name || step.type}`,
-        expectedImpact: step.gateConfig.businessImpact === 'high' ? 0.7 : 0.4,
+          step.gateConfig.businessImpact ==='critical' ? 'critical' : 'medium',
+        validationReason: `Workflow step gate: ${step.name'' | '''' | ''step.type}`,
+        expectedImpact: step.gateConfig.businessImpact ==='high'? 0.7 : 0.4,
 
         // WorkflowGateRequest specific properties
         workflowContext: {
           workflowId: workflow.id,
-          stepName: step.name || step.type,
-          businessImpact: step.gateConfig.businessImpact || 'medium',
+          stepName: step.name'' | '''' | ''step.type,
+          businessImpact: step.gateConfig.businessImpact'' | '''' | '''medium',
           decisionScope: 'task',
-          stakeholders: step.gateConfig.stakeholders || ['workflow-manager'],
+          stakeholders: step.gateConfig.stakeholders'' | '''' | ''['workflow-manager'],
           dependencies: [],
           riskFactors: [],
         },
-        gateType: step.gateConfig.gateType || 'checkpoint',
+        gateType: step.gateConfig.gateType'' | '''' | '''checkpoint',
         timeoutConfig: {
-          initialTimeout: step.timeout || 300000, // 5 minutes
+          initialTimeout: step.timeout'' | '''' | ''300000, // 5 minutes
           escalationTimeouts: [600000, 1200000], // 10, 20 minutes
           maxTotalTimeout: 1800000, // 30 minutes
         },
@@ -1290,8 +1395,8 @@ export class WorkflowEngine extends TypedEventBase {
           approved: true,
           processingTime: 10,
           escalationLevel: 0,
-          decisionMaker: 'auto-approval',
-          correlationId: gateRequest.integrationConfig?.correlationId || '',
+          decisionMaker:'auto-approval',
+          correlationId: gateRequest.integrationConfig?.correlationId'' | '''' | '''',
         };
       }
 
@@ -1305,7 +1410,7 @@ export class WorkflowEngine extends TypedEventBase {
         processingTime: 100,
         escalationLevel: 0,
         decisionMaker: approved ? 'stakeholder' : 'rejected',
-        correlationId: gateRequest.integrationConfig?.correlationId || '',
+        correlationId: gateRequest.integrationConfig?.correlationId'' | '''' | '''',
       };
     } catch (error) {
       return {
@@ -1327,8 +1432,8 @@ export class WorkflowEngine extends TypedEventBase {
     step: WorkflowStep,
     workflow: WorkflowState
   ): boolean {
-    const businessImpact = step.gateConfig?.businessImpact || 'medium';
-    const stakeholders = step.gateConfig?.stakeholders || [];
+    const businessImpact = step.gateConfig?.businessImpact'' | '''' | '''medium';
+    const stakeholders = step.gateConfig?.stakeholders'' | '''' | ''[];
 
     // Auto-approve if configured
     if (step.gateConfig?.autoApproval) {
@@ -1345,7 +1450,7 @@ export class WorkflowEngine extends TypedEventBase {
 
     // Business impact weighting
     switch (businessImpact) {
-      case 'critical':
+      case'critical':
         approvalScore = hasRequiredStakeholders ? 0.9 : 0.3; // Require stakeholders
         break;
       case 'high':
@@ -1393,11 +1498,11 @@ export class WorkflowEngine extends TypedEventBase {
   ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
-      return { success: false, error: 'Workflow not found' };
+      return { success: false, error: 'Workflow not found'};
     }
 
-    if (!workflow.pausedForGate || workflow.pausedForGate.gateId !== gateId) {
-      return { success: false, error: 'Workflow not paused for this gate' };
+    if (!workflow.pausedForGate'' | '''' | ''workflow.pausedForGate.gateId !== gateId) {
+      return { success: false, error:'Workflow not paused for this gate' };
     }
 
     // Initialize gate results map if not exists

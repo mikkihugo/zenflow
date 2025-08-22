@@ -2,13 +2,13 @@
  * @file Task coordination system.
  */
 
-import type { DatabaseSPARCBridge } from '@claude-zen/enterprise');
+import type { DatabaseSPARCBridge } from '@claude-zen/enterprise';
 
 import {
   generateSubAgentConfig,
   mapToClaudeSubAgent,
 } from "./sub-agent-generator";
-import type { AgentType } from './types/agent-types');
+import type { AgentType } from './types/agent-types';
 
 // Note: SPARC coordination is now handled via enterprise strategic facade
 
@@ -21,7 +21,7 @@ export interface TaskConfig {
   domain_context?: string;
   expected_output?: string;
   tools_required?: string[];
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   dependencies?: string[];
   timeout_minutes?: number;
   // NEW: Database document reference
@@ -36,7 +36,7 @@ export interface TaskResult {
   tools_used: string[];
   sparc_task_id?: string; // NEW: Reference to SPARC task if methodology was used
   implementation_artifacts?: string[]; // NEW: Generated artifacts
-  methodology_applied?: 'direct | sparc'); // NEW: Track methodology used
+  methodology_applied?:'direct'' | ''sparc'); // NEW: Track methodology used
   error?: string;
 }
 
@@ -202,12 +202,8 @@ export class TaskCoordinator {
     // Use SPARC for complex, high-priority tasks or when explicitly requested
     return (
       // Long descriptions indicate complexity
-      config.use_sparc_methodology === true ||
-      config.priority === 'high' ||
-      config.priority === 'critical' ||
-      (config?.source_document &&
-        this.isComplexDocument(config?.source_document)) ||
-      config?.description.length > 200
+      config.use_sparc_methodology === true'' | '''' | ''config.priority ==='high''' | '''' | ''config.priority ==='critical''' | '''' | ''(config?.source_document &&
+        this.isComplexDocument(config?.source_document))'' | '''' | ''config?.description.length > 200
     );
   }
 
@@ -216,13 +212,10 @@ export class TaskCoordinator {
    *
    * @param document
    */
-  private isComplexDocument(document: any | any): boolean {
+  private isComplexDocument(document: any'' | ''any): boolean {
     return (
-      ('acceptance_criteria' in document &&
-        (document as any).acceptance_criteria?.length > 3) ||
-      document.tags?.includes('complex') ||
-      document.tags?.includes('architecture') ||
-      ('technical_approach' in document &&
+      ('acceptance_criteria'in document &&
+        (document as any).acceptance_criteria?.length > 3)'' | '''' | ''document.tags?.includes('complex')'' | '''' | ''document.tags?.includes('architecture')'' | '''' | ''('technical_approach' in document &&
         (document as any).technical_approach?.includes('architecture'))
     );
   }
@@ -239,13 +232,13 @@ export class TaskCoordinator {
       title: config?.description.substring(0, 100),
       content: config?.prompt,
       status: 'draft',
-      priority: config?.priority || 'medium',
+      priority: config?.priority'' | '''' | '''medium',
       author: 'task-coordinator',
       tags: ['sparc-generated, temporary'],
       project_id: 'temp-project',
-      dependencies: config?.dependencies || [],
+      dependencies: config?.dependencies'' | '''' | ''[],
       related_documents: [],
-      version: '1..0',
+      version:'1..0',
       searchable_content: config?.description,
       keywords: [],
       workflow_stage: 'sparc-ready',
@@ -265,12 +258,12 @@ export class TaskCoordinator {
         documentation_updates: [],
       },
       technical_specifications: {
-        component: config?.domain_context || 'general',
+        component: config?.domain_context'' | '''' | '''general',
         module: 'task-coordinator',
         functions: [],
-        dependencies: config?.tools_required || [],
+        dependencies: config?.tools_required'' | '''' | ''[],
       },
-      completion_status: 'todo',
+      completion_status:'todo',
     };
   }
 
@@ -323,7 +316,7 @@ export class TaskCoordinator {
       agent_type: config?.subagent_type,
       agent_name: useClaudeSubAgent ? claudeSubAgent : config?.subagent_type,
       use_claude_subagent: useClaudeSubAgent,
-      tools: config?.tools_required || subAgentConfig?.tools,
+      tools: config?.tools_required'' | '''' | ''subAgentConfig?.tools,
       capabilities: subAgentConfig?.capabilities,
       system_prompt: subAgentConfig?.systemPrompt,
     };
@@ -336,7 +329,7 @@ export class TaskCoordinator {
    */
   private isClaudeSubAgentOptimal(config: TaskConfig): boolean {
     // High-priority tasks benefit from specialized sub-agents
-    if (config.priority === 'high || config.priority === critical') {
+    if (config.priority ==='high || config.priority === critical') {
       return true;
     }
 
@@ -393,8 +386,8 @@ export class TaskCoordinator {
       description: config?.description,
       prompt: enhancedPrompt,
       agent_strategy: strategy,
-      timeout_ms: (config?.timeout_minutes || 10) * 60 * 1000,
-      priority: config?.priority || 'medium',
+      timeout_ms: (config?.timeout_minutes'' | '''' | ''10) * 60 * 1000,
+      priority: config?.priority'' | '''' | '''medium',
     };
   }
 
@@ -463,7 +456,7 @@ export class TaskCoordinator {
    * Get performance metrics.
    */
   getPerformanceMetrics(): TaskPerformanceMetrics {
-    const tasks = Array.from(this.taskHistory?.values());
+    const tasks = Array.from(this.taskHistory?.values())();
     const successful = tasks.filter((t) => t.success);
     const failed = tasks.filter((t) => !t.success);
 
@@ -485,7 +478,7 @@ export class TaskCoordinator {
   private getMostUsedAgents(tasks: TaskResult[]): Record<string, number> {
     const agentCounts: Record<string, number> = {};
     tasks.forEach((task) => {
-      agentCounts[task.agent_used] = (agentCounts[task.agent_used] || 0) + 1;
+      agentCounts[task.agent_used] = (agentCounts[task.agent_used]'' | '''' | ''0) + 1;
     });
     return agentCounts;
   }
@@ -494,7 +487,7 @@ export class TaskCoordinator {
     const toolCounts: Record<string, number> = {};
     tasks.forEach((task) => {
       task.tools_used.forEach((tool) => {
-        toolCounts[tool] = (toolCounts[tool] || 0) + 1;
+        toolCounts[tool] = (toolCounts[tool]'' | '''' | ''0) + 1;
       });
     });
     return toolCounts;
@@ -517,7 +510,7 @@ interface ExecutionContext {
   prompt: string;
   agent_strategy: AgentStrategy;
   timeout_ms: number;
-  priority: 'low | medium' | 'high | critical');
+  priority:'low | medium''' | '''high | critical');
 }
 
 interface TaskPerformanceMetrics {

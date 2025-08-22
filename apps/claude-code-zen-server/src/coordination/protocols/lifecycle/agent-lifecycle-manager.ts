@@ -117,18 +117,7 @@ export interface AgentInstance {
   metadata: Record<string, unknown>;
 }
 
-export type AgentStatus =
-  | 'spawning'
-  | 'initializing'
-  | 'ready'
-  | 'active'
-  | 'idle'
-  | 'busy'
-  | 'degraded'
-  | 'unhealthy'
-  | 'terminating'
-  | 'terminated'
-  | 'failed';
+export type AgentStatus = 'spawning' | 'initializing' | 'ready' | 'active' | 'idle' | 'busy' | 'degraded' | 'unhealthy' | 'terminating' | 'terminated' | 'failed';
 
 export interface HealthStatus {
   overall: number; // 0-1
@@ -145,12 +134,7 @@ export interface HealthStatus {
 }
 
 export interface HealthIssue {
-  type:
-    | 'performance'
-    | 'reliability'
-    | 'resource'
-    | 'connectivity'
-    | 'security';
+  type: 'performance' | 'reliability' | 'resource' | 'connectivity' | 'security';
   severity: 'low' | 'medium' | 'high' | 'critical';
   message: string;
   timestamp: Date;
@@ -213,13 +197,7 @@ export interface TaskAssignment {
 
 export interface AgentError {
   timestamp: Date;
-  type:
-    | 'startup'
-    | 'runtime'
-    | 'communication'
-    | 'resource'
-    | 'task'
-    | 'shutdown';
+  type: 'startup' | 'runtime' | 'communication' | 'resource' | 'task' | 'shutdown';
   severity: 'low' | 'medium' | 'high' | 'critical';
   message: string;
   stack?: string;
@@ -320,9 +298,9 @@ export class AgentLifecycleManager extends TypedEventBase {
     this.scalingEngine = new ScalingEngine(this.configuration, this.logger);
     this.recoveryEngine = new RecoveryEngine(this.configuration, this.logger);
 
-    this.metrics = this.initializeMetrics;
-    this.setupEventHandlers;
-    this.startProcessing;
+    this.metrics = this.initializeMetrics();
+    this.setupEventHandlers();
+    this.startProcessing();
   }
 
   private setupEventHandlers(): void {
@@ -492,7 +470,7 @@ export class AgentLifecycleManager extends TypedEventBase {
    * Get all agents.
    */
   getAllAgents(): AgentInstance[] {
-    return Array.from(this.agents?.values());
+    return Array.from(this.agents?.values())();
   }
 
   /**
@@ -521,7 +499,7 @@ export class AgentLifecycleManager extends TypedEventBase {
    * Get lifecycle metrics.
    */
   getMetrics(): LifecycleMetrics {
-    this.updateMetrics;
+    this.updateMetrics();
     return { ...this.metrics };
   }
 
@@ -555,7 +533,7 @@ export class AgentLifecycleManager extends TypedEventBase {
         templateId,
         count: targetCount - currentCount,
         priority: 1,
-        requester: 'manual',
+        requester:'manual',
         reason: 'manual_scaling',
       });
     } else if (targetCount < currentCount) {
@@ -594,7 +572,7 @@ export class AgentLifecycleManager extends TypedEventBase {
   getPerformanceRanking(
     type?: string
   ): Array<{ agentId: string; score: number; rank: number }> {
-    let agents = Array.from(this.agents?.values());
+    let agents = Array.from(this.agents?.values())();
 
     if (type) {
       agents = agents.filter((agent) => agent.type === type);
@@ -689,7 +667,7 @@ export class AgentLifecycleManager extends TypedEventBase {
       throw new Error(`Agent ${agentId} not found`);
     }
 
-    if (agent.status === 'terminated || agent.status === terminating') {
+    if (agent.status === 'terminated' || agent.status === 'terminating') {
       return; // Already terminated or terminating
     }
 
@@ -749,7 +727,7 @@ export class AgentLifecycleManager extends TypedEventBase {
 
     const options: SpawnOptions = {
       env,
-      stdio: ['pipe, pipe', 'pipe'],
+      stdio: ['pipe', 'pipe', 'pipe'],
       detached: false,
     };
 
@@ -765,11 +743,11 @@ export class AgentLifecycleManager extends TypedEventBase {
     });
 
     childProcess?.stdout?.on('data', (data) => {
-      this.handleProcessOutput(agent, data?.toString, 'stdout');
+      this.handleProcessOutput(agent, data?.toString(), 'stdout');
     });
 
     childProcess?.stderr?.on('data', (data) => {
-      this.handleProcessOutput(agent, data?.toString, 'stderr');
+      this.handleProcessOutput(agent, data?.toString(), 'stderr');
     });
 
     return childProcess;
@@ -835,21 +813,21 @@ export class AgentLifecycleManager extends TypedEventBase {
   private startProcessing(): void {
     // Main processing loop
     this.processingInterval = setInterval(async () => {
-      await this.processSpawnQueue;
-      await this.processTerminationQueue;
-      await this.updateMetrics;
+      await this.processSpawnQueue();
+      await this.processTerminationQueue();
+      await this.updateMetrics();
     }, 1000);
 
     // Health monitoring loop
     this.healthInterval = setInterval(async () => {
-      await this.performHealthChecks;
-      await this.detectUnhealthyAgents;
+      await this.performHealthChecks();
+      await this.detectUnhealthyAgents();
     }, this.configuration.healthCheckInterval);
 
     // Scaling loop
     this.scalingInterval = setInterval(async () => {
       if (this.configuration.autoScale) {
-        await this.performAutoScaling;
+        await this.performAutoScaling();
       }
     }, 30000); // Every 30 seconds
   }
@@ -874,7 +852,7 @@ export class AgentLifecycleManager extends TypedEventBase {
     const healthPromises = Array.from(this.agents?.values())
       .filter(
         (agent) =>
-          agent.status !== 'terminated && agent.status !== terminating'
+          agent.status !== 'terminated' && agent.status !== 'terminating'
       )
       .map((agent) => this.healthMonitor.checkHealth(agent));
 
@@ -883,7 +861,7 @@ export class AgentLifecycleManager extends TypedEventBase {
 
   private async detectUnhealthyAgents(): Promise<void> {
     for (const agent of this.agents?.values()) {
-      if (agent.health.overall < .3 && agent.status !== 'terminated') {
+      if (agent.health.overall < 0.3 && agent.status !== 'terminated') {
         await this.handleUnhealthyAgent(agent);
       }
     }
@@ -921,7 +899,7 @@ export class AgentLifecycleManager extends TypedEventBase {
         this.metrics
       );
 
-      if (decision.action !== 'no_action' && decision.confidence > .7) {
+      if (decision.action !== 'no_action' && decision.confidence > 0.7) {
         this.logger.info('Auto-scaling triggered', {
           templateId: template.id,
           action: decision.action,
@@ -985,8 +963,7 @@ export class AgentLifecycleManager extends TypedEventBase {
     const agents = this.getAgentsByType(template.type)
       .filter(
         (agent) =>
-          agent.status !== 'terminated && agent.status !== terminating'
-      )
+          agent.status !== 'terminated' && agent.status !== 'terminating')
       .sort(
         (a, b) =>
           this.calculatePerformanceScore(a) - this.calculatePerformanceScore(b)
@@ -1000,11 +977,11 @@ export class AgentLifecycleManager extends TypedEventBase {
     const metrics = agent.performance;
 
     // Weighted performance score
-    const successRateWeight = .3;
-    const responseTimeWeight = .2;
-    const throughputWeight = .2;
-    const reliabilityWeight = .15;
-    const efficiencyWeight = .15;
+    const successRateWeight = 0.3;
+    const responseTimeWeight = 0.2;
+    const throughputWeight = 0.2;
+    const reliabilityWeight = 0.15;
+    const efficiencyWeight = 0.15;
 
     const score =
       metrics.successRate * successRateWeight +
@@ -1018,7 +995,7 @@ export class AgentLifecycleManager extends TypedEventBase {
   }
 
   private updateMetrics(): void {
-    const agents = Array.from(this.agents?.values());
+    const agents = Array.from(this.agents?.values())();
 
     // Count by status
     const agentsByStatus: Record<AgentStatus, number> = {
@@ -1045,7 +1022,7 @@ export class AgentLifecycleManager extends TypedEventBase {
       agentsByStatus[agent.status]++;
       agentsByType[agent.type] = (agentsByType[agent.type] || 0) + 1;
 
-      if (agent.status !== 'terminated && agent.status !== failed') {
+      if (agent.status !== 'terminated' && agent.status !== 'failed') {
         totalHealth += agent.health.overall;
         healthyAgents++;
       }
@@ -1097,7 +1074,7 @@ export class AgentLifecycleManager extends TypedEventBase {
     );
 
     if (agents.length === 0) {
-      return this.initializeResourceUsage;
+      return this.initializeResourceUsage();
     }
 
     const totalResources = agents.reduce(
@@ -1128,7 +1105,7 @@ export class AgentLifecycleManager extends TypedEventBase {
 
   private calculateRecoveryRate(): number {
     // Would track recovery attempts and successes
-    return .8; // Placeholder
+    return 0.8; // Placeholder
   }
 
   // Event handlers
@@ -1152,7 +1129,7 @@ export class AgentLifecycleManager extends TypedEventBase {
         (a) => a.taskId === data?.taskId
       );
       if (assignment) {
-        assignment.status = 'completed');
+        assignment.status = 'completed';
         assignment.progress = 100;
         assignment.quality = data?.quality || 1.0;
       }
@@ -1171,7 +1148,7 @@ export class AgentLifecycleManager extends TypedEventBase {
         (a) => a.taskId === data?.taskId
       );
       if (assignment) {
-        assignment.status = 'failed');
+        assignment.status ='failed';
       }
 
       this.addAgentError(agent, {
@@ -1191,7 +1168,7 @@ export class AgentLifecycleManager extends TypedEventBase {
       this.addAgentError(agent, data?.error);
 
       if (data?.error?.severity === 'critical') {
-        agent.status = 'unhealthy');
+        agent.status = 'unhealthy';
       }
     }
   }
@@ -1249,7 +1226,7 @@ export class AgentLifecycleManager extends TypedEventBase {
       error: error.message,
     });
 
-    agent.status = 'failed');
+    agent.status = 'failed';
     this.addAgentError(agent, {
       timestamp: new Date(),
       type: 'runtime',
@@ -1264,12 +1241,12 @@ export class AgentLifecycleManager extends TypedEventBase {
   private handleProcessOutput(
     agent: AgentInstance,
     data: string,
-    stream: 'stdout | stderr'
+    stream: 'stdout' | 'stderr'
   ): void {
     // Log agent output
     this.logger.debug(`Agent ${stream}`, {
       agentId: agent.id,
-      data: data?.trim,
+      data: data?.trim(),
     });
 
     // Could parse output for health indicators, capability discovery, etc.
@@ -1386,7 +1363,7 @@ export class AgentLifecycleManager extends TypedEventBase {
     const activeAgents = Array.from(this.agents?.values())
       .filter(
         (agent) =>
-          agent.status !== 'terminated && agent.status !== terminating'
+          agent.status !== 'terminated' && agent.status !== 'terminating'
       )
       .map((agent) => agent.id);
 
@@ -1440,7 +1417,7 @@ class HealthMonitor {
     const timeSinceLastSeen = now - agent.lastSeen?.getTime()
 
     if (timeSinceLastSeen > 60000) return 0; // No activity in 1 minute
-    if (timeSinceLastSeen > 30000) return .5; // No activity in 30 seconds
+    if (timeSinceLastSeen > 30000) return 0.5; // No activity in 30 seconds
     return 1.0;
   }
 
@@ -1461,7 +1438,7 @@ class HealthMonitor {
 
   private checkConnectivity(agent: AgentInstance): number {
     // Simplified connectivity check
-    return agent.process && !agent.process.killed ? 1.0 : .0;
+    return agent.process && !agent.process.killed ? 1.0 : 0.0;
   }
 }
 
@@ -1529,7 +1506,7 @@ class CapabilityDiscovery {
   processOutput(
     _agent: AgentInstance,
     _data: string,
-    _stream: 'stdout | stderr'
+    _stream: 'stdout' | 'stderr'
   ): void {
     // Process agent output for capability discovery
     // This could parse structured output indicating capabilities
@@ -1551,23 +1528,23 @@ class ScalingEngine {
     const totalAgents = metrics.totalAgents;
     const utilization = this.calculateUtilization(agents);
 
-    if (utilization > .8 && totalAgents < this.configuration.maxAgents) {
+    if (utilization > 0.8 && totalAgents < this.configuration.maxAgents) {
       return {
         action: 'scale_up',
         targetCount: Math.min(totalAgents + 2, this.configuration.maxAgents),
         currentCount: totalAgents,
         reasoning: ['High utilization detected'],
-        confidence: .8,
+        confidence: 0.8,
         urgency: 'medium',
       };
     }
-    if (utilization < .3 && totalAgents > this.configuration.minAgents) {
+    if (utilization < 0.3 && totalAgents > this.configuration.minAgents) {
       return {
         action: 'scale_down',
         targetCount: Math.max(totalAgents - 1, this.configuration.minAgents),
         currentCount: totalAgents,
         reasoning: ['Low utilization detected'],
-        confidence: .7,
+        confidence: 0.7,
         urgency: 'low',
       };
     }
@@ -1577,18 +1554,18 @@ class ScalingEngine {
       targetCount: totalAgents,
       currentCount: totalAgents,
       reasoning: ['Utilization within target range'],
-      confidence: .9,
+      confidence: 0.9,
       urgency: 'low',
     };
   }
 
   private calculateUtilization(agents: Map<string, AgentInstance>): number {
     const activeAgents = Array.from(agents?.values()).filter(
-      (agent) => agent.status === 'busy || agent.status === active'
+      (agent) => agent.status === 'busy' || agent.status === 'active'
     );
 
     const totalAgents = Array.from(agents?.values()).filter(
-      (agent) => agent.status !== 'terminated && agent.status !== failed'
+      (agent) => agent.status !== 'terminated' && agent.status !== 'failed'
     );
 
     return totalAgents.length > 0
@@ -1611,8 +1588,8 @@ class RecoveryEngine {
     this.logger.info('Attempting agent recovery', { agentId: agent.id });
 
     // For now, just mark as recovered (actual implementation would restart the agent)
-    agent.health.overall = .8;
-    agent.status = 'idle');
+    agent.health.overall = 0.8;
+    agent.status = 'idle';
   }
 }
 

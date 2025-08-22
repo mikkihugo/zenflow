@@ -28,7 +28,7 @@
 export interface GlobalAgentInfo {
   id: string;
   type: string;
-  status: 'active | inactive' | 'error');
+  status: 'active'' | ''inactive'' | ''error');
   capabilities: string[];
   metrics: {
     tasksCompleted: number;
@@ -38,140 +38,9 @@ export interface GlobalAgentInfo {
 }
 
 // Agent type definitions
-export type AgentType =
-  | 'researcher'
-  | 'coder'
-  | 'analyst'
-  | 'requirements-engineer'
-  | 'design-architect'
-  | 'task-planner'
-  | 'developer'
-  | 'system-architect'
-  | 'tester'
-  | 'reviewer'
-  | 'steering-author'
-  | 'frontend-dev'
-  | 'ui-designer'
-  | 'ux-designer'
-  | 'accessibility-specialist'
-  | 'fullstack-dev'
-  | 'dev-backend-api'
-  | 'ai-ml-specialist'
-  | 'data-ml-model'
-  | 'performance-analyzer'
-  | 'database-architect'
-  | 'coordinator'
-  | 'manager'
-  // Data and ETL specialists
-  | 'etl-specialist'
-  // DevOps and Infrastructure
-  | 'ops-cicd-github'
-  | 'infrastructure-ops'
-  | 'deployment-ops'
-  | 'cloud-architect'
-  // Documentation specialists
-  | 'technical-writer'
-  | 'readme-writer'
-  | 'user-guide-writer'
-  // Performance specialists
-  | 'bottleneck-analyzer'
-  | 'latency-optimizer'
-  | 'embedded-specialist'
-  | 'memory-optimizer'
-  | 'cache-optimizer'
-  | 'performance-benchmarker'
-  | 'load-balancer'
-  | 'topology-optimizer'
-  // Migration specialists
-  | 'legacy-analyzer'
-  | 'modernization-agent'
-  | 'migration-coordinator'
-  | 'migration-plan'
-  // Testing specialists
-  | 'unit-tester'
-  | 'integration-tester'
-  | 'e2e-tester'
-  | 'performance-tester'
-  | 'tdd-london-swarm'
-  | 'production-validator'
-  // Development specialists
-  | 'api-dev'
-  // Analysis specialists
-  | 'analyze-code-quality'
-  | 'security-analyzer'
-  | 'refactoring-analyzer'
-  | 'architect'
-  | 'debug'
-  | 'queen'
-  | 'specialist'
-  | 'optimizer'
-  | 'documenter'
-  | 'monitor'
-  | 'planner'
-  | 'arch-system-design'
-  | 'security-architect'
-  | 'monitoring-ops'
-  | 'docs-api-openapi'
-  | 'analytics-specialist'
-  | 'visualization-specialist'
-  | 'spec-mobile-react-native'
-  | 'blockchain-specialist'
-  | 'code-review-swarm'
-  | 'github-modes'
-  | 'issue-tracker'
-  | 'multi-repo-swarm'
-  | 'pr-manager'
-  | 'project-board-sync'
-  | 'release-manager'
-  | 'release-swarm'
-  | 'repo-architect'
-  | 'swarm-issue'
-  | 'swarm-pr'
-  | 'sync-coordinator'
-  | 'workflow-automation'
-  | 'github-pr-manager'
-  | 'adaptive-coordinator'
-  | 'hierarchical-coordinator'
-  | 'mesh-coordinator'
-  | 'coordinator-swarm-init'
-  | 'orchestrator-task'
-  | 'memory-coordinator'
-  | 'swarm-memory-manager'
-  | 'collective-intelligence-coordinator'
-  | 'byzantine-coordinator'
-  | 'consensus-builder'
-  | 'crdt-synchronizer'
-  | 'gossip-coordinator'
-  | 'quorum-manager'
-  | 'raft-manager'
-  | 'security-manager'
-  | 'benchmark-suite'
-  | 'performance-monitor'
-  | 'resource-allocator'
-  | 'specification'
-  | 'architecture'
-  | 'refinement'
-  | 'pseudocode'
-  | 'sparc-coordinator'
-  | 'implementer-sparc-coder'
-  | 'quality-gate-agent'
-  | 'validation-specialist'
-  | 'automation-smart-agent'
-  | 'base-template-generator'
-  | 'requirements_analyst'
-  | 'design_architect'
-  | 'task_planner'
-  | 'implementation_coder'
-  | 'quality_reviewer'
-  | 'steering_documenter');
+export type AgentType ='' | '''researcher | coder' | 'analyst''' | '''requirements-engineer''' | '''design-architect''' | '''task-planner''' | '''developer''' | '''system-architect''' | '''tester''' | '''reviewer''' | '''steering-author''' | '''frontend-dev''' | '''ui-designer''' | '''ux-designer''' | '''accessibility-specialist''' | '''fullstack-dev''' | '''dev-backend-api''' | '''ai-ml-specialist''' | '''data-ml-model''' | '''performance-analyzer''' | '''database-architect''' | '''coordinator''' | '''manager'// Data and ETL specialists'' | '''etl-specialist'// DevOps and Infrastructure'' | '''ops-cicd-github''' | '''infrastructure-ops''' | '''deployment-ops''' | '''cloud-architect'// Documentation specialists'' | '''technical-writer''' | '''readme-writer''' | '''user-guide-writer'// Performance specialists'' | '''bottleneck-analyzer''' | '''latency-optimizer''' | '''embedded-specialist''' | '''memory-optimizer''' | '''cache-optimizer''' | '''performance-benchmarker''' | '''load-balancer''' | '''topology-optimizer'// Migration specialists'' | '''legacy-analyzer''' | '''modernization-agent''' | '''migration-coordinator''' | '''migration-plan'// Testing specialists'' | '''unit-tester''' | '''integration-tester''' | '''e2e-tester''' | '''performance-tester''' | '''tdd-london-swarm''' | '''production-validator'// Development specialists'' | '''api-dev'// Analysis specialists'' | '''analyze-code-quality''' | '''security-analyzer''' | '''refactoring-analyzer''' | '''architect | debug' | 'queen''' | '''specialist | optimizer' | 'documenter' | 'monitor' | 'planner''' | '''arch-system-design''' | '''security-architect''' | '''monitoring-ops''' | '''docs-api-openapi''' | '''analytics-specialist''' | '''visualization-specialist''' | '''spec-mobile-react-native''' | '''blockchain-specialist''' | '''code-review-swarm''' | '''github-modes''' | '''issue-tracker''' | '''multi-repo-swarm''' | '''pr-manager''' | '''project-board-sync''' | '''release-manager''' | '''release-swarm''' | '''repo-architect''' | '''swarm-issue''' | '''swarm-pr''' | '''sync-coordinator''' | '''workflow-automation''' | '''github-pr-manager''' | '''adaptive-coordinator''' | '''hierarchical-coordinator''' | '''mesh-coordinator''' | '''coordinator-swarm-init''' | '''orchestrator-task''' | '''memory-coordinator''' | '''swarm-memory-manager''' | '''collective-intelligence-coordinator''' | '''byzantine-coordinator''' | '''consensus-builder''' | '''crdt-synchronizer''' | '''gossip-coordinator''' | '''quorum-manager''' | '''raft-manager''' | '''security-manager''' | '''benchmark-suite''' | '''performance-monitor''' | '''resource-allocator''' | '''specification | architecture' | 'refinement''' | '''pseudocode''' | '''sparc-coordinator''' | '''implementer-sparc-coder''' | '''quality-gate-agent''' | '''validation-specialist''' | '''automation-smart-agent''' | '''base-template-generator''' | '''requirements_analyst | design_architect' | 'task_planner''' | '''implementation_coder | quality_reviewer' | 'steering_documenter');
 
-export type AgentStatus =
-  | 'initializing'
-  | 'idle'
-  | 'busy'
-  | 'error'
-  | 'offline'
-  | 'terminated');
+export type AgentStatus ='' | '''initializing | idle' | 'busy''' | '''error | offline' | 'terminated');
 
 export interface AgentId {
   id: string;
@@ -229,7 +98,7 @@ export interface AgentConfig {
 }
 
 export interface AgentEnvironment {
-  runtime: 'deno | node' | 'claude | browser');
+  runtime: 'deno'' | ''node'' | ''claude'' | ''browser');
   version: string;
   workingDirectory: string;
   tempDirectory: string;
@@ -265,15 +134,9 @@ export interface AgentMetrics {
   };
 }
 
-export type AgentHealth = 'healthy | degraded' | 'unhealthy');
+export type AgentHealth = 'healthy'' | ''degraded'' | ''unhealthy');
 
-export type AgentStatus =
-  | 'initializing'
-  | 'idle'
-  | 'busy'
-  | 'error'
-  | 'offline'
-  | 'terminated');
+export type AgentStatus ='' | '''initializing | idle' | 'busy''' | '''error | offline' | 'terminated');
 
 export interface AgentError {
   code: string;
@@ -281,7 +144,7 @@ export interface AgentError {
   type: string;
   message: string;
   context: Record<string, unknown>;
-  severity: 'low | medium' | 'high | critical');
+  severity: 'low'' | ''medium'' | ''high'' | ''critical');
   resolved: boolean;
 }
 
@@ -318,11 +181,11 @@ export interface Task {
   id: string;
   type: string;
   description: string;
-  priority: 'low | medium' | 'high | critical');
+  priority:'low'' | ''medium'' | ''high'' | ''critical');
   assignedTo?: string;
   createdAt: Date;
   deadline?: Date;
-  status: 'pending | in-progress' | 'completed | failed');
+  status: 'pending'' | ''in-progress'' | ''completed'' | ''failed');
   payload?: any;
   metadata?: Record<string, unknown>;
 }
@@ -335,14 +198,7 @@ export interface ExecutionResult {
   metadata?: Record<string, unknown>;
 }
 
-export type MessageType =
-  | 'task_assignment'
-  | 'coordination'
-  | 'knowledge_share'
-  | 'status_update'
-  | 'result'
-  | 'error'
-  | 'heartbeat');
+export type MessageType =' | ''task_assignment | coordination' | 'knowledge_share''' | '''status_update | result' | 'error''' | '''heartbeat');
 
 export interface Message {
   id: string;

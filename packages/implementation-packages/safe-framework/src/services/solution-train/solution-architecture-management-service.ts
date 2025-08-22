@@ -1,12 +1,12 @@
 /**
  * @fileoverview Solution Architecture Management Service
- * 
+ *
  * Service for solution-level architecture management and governance.
  * Handles architectural runway management, technology standards, and cross-ART architectural alignment.
- * 
+ *
  * SINGLE RESPONSIBILITY: Solution architecture management and governance
  * FOCUSES ON: Architectural runway, technology governance, cross-ART alignment
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,15 +15,15 @@
 import { format, addMonths, addWeeks, addDays } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   uniqBy,
   countBy,
-  flatten
+  flatten,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -74,7 +74,7 @@ export enum PrincipleCategory {
   APPLICATION = 'application',
   TECHNOLOGY = 'technology',
   SECURITY = 'security',
-  INTEGRATION = 'integration'
+  INTEGRATION = 'integration',
 }
 
 /**
@@ -127,7 +127,7 @@ export enum AttributePriority {
   CRITICAL = 'critical',
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -151,7 +151,7 @@ export enum ConstraintType {
   ORGANIZATIONAL = 'organizational',
   BUDGET = 'budget',
   TIME = 'time',
-  LEGACY = 'legacy'
+  LEGACY = 'legacy',
 }
 
 /**
@@ -160,7 +160,7 @@ export enum ConstraintType {
 export enum ConstraintImpact {
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -215,7 +215,7 @@ export enum TransitionApproach {
   BIG_BANG = 'big_bang',
   PHASED = 'phased',
   PARALLEL = 'parallel',
-  PILOT = 'pilot'
+  PILOT = 'pilot',
 }
 
 /**
@@ -245,7 +245,7 @@ export enum StandardCategory {
   SECURITY = 'security',
   MONITORING = 'monitoring',
   DEPLOYMENT = 'deployment',
-  INTEGRATION = 'integration'
+  INTEGRATION = 'integration',
 }
 
 /**
@@ -256,7 +256,7 @@ export enum StandardScope {
   RECOMMENDED = 'recommended',
   APPROVED = 'approved',
   RESTRICTED = 'restricted',
-  DEPRECATED = 'deprecated'
+  DEPRECATED = 'deprecated',
 }
 
 /**
@@ -265,7 +265,7 @@ export enum StandardScope {
 export enum ComplianceLevel {
   STRICT = 'strict',
   FLEXIBLE = 'flexible',
-  ADVISORY = 'advisory'
+  ADVISORY = 'advisory',
 }
 
 /**
@@ -288,7 +288,7 @@ export enum LifecycleStatus {
   TRIAL = 'trial',
   ADOPT = 'adopt',
   HOLD = 'hold',
-  DEPRECATED = 'deprecated'
+  DEPRECATED = 'deprecated',
 }
 
 /**
@@ -321,7 +321,7 @@ export enum GovernanceFramework {
   CENTRALIZED = 'centralized',
   FEDERATED = 'federated',
   DECENTRALIZED = 'decentralized',
-  HYBRID = 'hybrid'
+  HYBRID = 'hybrid',
 }
 
 /**
@@ -343,14 +343,14 @@ export enum DecisionType {
   ARCHITECTURAL_CHANGE = 'architectural_change',
   STANDARD_EXCEPTION = 'standard_exception',
   PATTERN_APPROVAL = 'pattern_approval',
-  DESIGN_REVIEW = 'design_review'
+  DESIGN_REVIEW = 'design_review',
 }
 
 /**
  * Approval threshold
  */
 export interface ApprovalThreshold {
-  readonly type: 'unanimous' | 'majority' | 'single';
+  readonly type: 'unanimous'' | ''majority'' | ''single';
   readonly percentage?: number;
   readonly minimumCount?: number;
 }
@@ -374,7 +374,7 @@ export enum ReviewTrigger {
   MILESTONE = 'milestone',
   TIME_BASED = 'time_based',
   CHANGE_DRIVEN = 'change_driven',
-  EXCEPTION_REQUEST = 'exception_request'
+  EXCEPTION_REQUEST = 'exception_request',
 }
 
 /**
@@ -419,7 +419,7 @@ export enum CriteriaCategory {
   QUALITY = 'quality',
   FEASIBILITY = 'feasibility',
   RISK = 'risk',
-  PERFORMANCE = 'performance'
+  PERFORMANCE = 'performance',
 }
 
 /**
@@ -461,7 +461,7 @@ export enum MeasurementFrequency {
   DAILY = 'daily',
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly'
+  QUARTERLY = 'quarterly',
 }
 
 /**
@@ -491,7 +491,7 @@ export interface RunwayStrategy {
 export enum RunwayApproach {
   CONTINUOUS = 'continuous',
   BATCH = 'batch',
-  HYBRID = 'hybrid'
+  HYBRID = 'hybrid',
 }
 
 /**
@@ -513,7 +513,7 @@ export enum RunwayCategory {
   INTEGRATION = 'integration',
   SECURITY = 'security',
   COMPLIANCE = 'compliance',
-  PERFORMANCE = 'performance'
+  PERFORMANCE = 'performance',
 }
 
 /**
@@ -540,7 +540,7 @@ export enum ComponentType {
   SERVICE = 'service',
   TOOL = 'tool',
   PATTERN = 'pattern',
-  STANDARD = 'standard'
+  STANDARD = 'standard',
 }
 
 /**
@@ -551,7 +551,7 @@ export enum ComponentStatus {
   IN_DEVELOPMENT = 'in_development',
   AVAILABLE = 'available',
   DEPRECATED = 'deprecated',
-  RETIRED = 'retired'
+  RETIRED = 'retired',
 }
 
 /**
@@ -582,11 +582,13 @@ export class SolutionArchitectureManagementService {
   /**
    * Configure solution architecture management
    */
-  async configureArchitecture(config: SolutionArchitectureConfig): Promise<void> {
+  async configureArchitecture(
+    config: SolutionArchitectureConfig
+  ): Promise<void> {
     this.logger.info('Configuring solution architecture management', {
       configId: config.configId,
       solutionId: config.solutionId,
-      standardsCount: config.technologyStandards.length
+      standardsCount: config.technologyStandards.length,
     });
 
     // Validate configuration
@@ -601,7 +603,7 @@ export class SolutionArchitectureManagementService {
     }
 
     this.logger.info('Solution architecture management configured', {
-      configId: config.configId
+      configId: config.configId,
     });
   }
 
@@ -621,11 +623,14 @@ export class SolutionArchitectureManagementService {
     this.logger.info('Making architectural decision', {
       decisionId,
       title: decision.title,
-      alternativeCount: decision.alternatives.length
+      alternativeCount: decision.alternatives.length,
     });
 
     // Evaluate alternatives
-    const evaluation = await this.evaluateAlternatives(decision.alternatives, decision.criteria);
+    const evaluation = await this.evaluateAlternatives(
+      decision.alternatives,
+      decision.criteria
+    );
 
     // Select best alternative
     const selectedAlternative = this.selectBestAlternative(evaluation);
@@ -643,7 +648,7 @@ export class SolutionArchitectureManagementService {
       status: DecisionStatus.APPROVED,
       decisionDate: new Date(),
       reviewDate: addMonths(new Date(), 6),
-      urgency: decision.urgency
+      urgency: decision.urgency,
     };
 
     this.architecturalDecisions.set(decisionId, architecturalDecision);
@@ -651,7 +656,7 @@ export class SolutionArchitectureManagementService {
     this.logger.info('Architectural decision made', {
       decisionId,
       selectedAlternative: selectedAlternative.name,
-      status: architecturalDecision.status
+      status: architecturalDecision.status,
     });
 
     return architecturalDecision;
@@ -660,7 +665,9 @@ export class SolutionArchitectureManagementService {
   /**
    * Assess architectural compliance
    */
-  async assessCompliance(configId: string): Promise<ArchitecturalComplianceReport> {
+  async assessCompliance(
+    configId: string
+  ): Promise<ArchitecturalComplianceReport> {
     const config = this.configurations.get(configId);
     if (!config) {
       throw new Error(`Configuration not found: ${configId}`);
@@ -671,13 +678,19 @@ export class SolutionArchitectureManagementService {
     const reportId = `compliance-${nanoid(12)}`;
 
     // Assess technology standards compliance
-    const standardsCompliance = await this.assessStandardsCompliance(config.technologyStandards);
+    const standardsCompliance = await this.assessStandardsCompliance(
+      config.technologyStandards
+    );
 
     // Assess principle adherence
-    const principleCompliance = await this.assessPrincipleCompliance(config.architecturalVision.principles);
+    const principleCompliance = await this.assessPrincipleCompliance(
+      config.architecturalVision.principles
+    );
 
     // Assess quality attributes
-    const qualityCompliance = await this.assessQualityCompliance(config.architecturalVision.qualityAttributes);
+    const qualityCompliance = await this.assessQualityCompliance(
+      config.architecturalVision.qualityAttributes
+    );
 
     // Calculate overall compliance
     const overallCompliance = this.calculateOverallCompliance(
@@ -694,8 +707,13 @@ export class SolutionArchitectureManagementService {
       standardsCompliance,
       principleCompliance,
       qualityCompliance,
-      violations: this.identifyViolations(standardsCompliance, principleCompliance, qualityCompliance),
-      recommendations: this.generateComplianceRecommendations(overallCompliance)
+      violations: this.identifyViolations(
+        standardsCompliance,
+        principleCompliance,
+        qualityCompliance
+      ),
+      recommendations:
+        this.generateComplianceRecommendations(overallCompliance),
     };
 
     this.complianceReports.set(reportId, report);
@@ -703,7 +721,7 @@ export class SolutionArchitectureManagementService {
     this.logger.info('Compliance assessment completed', {
       reportId,
       overallCompliance: Math.round(overallCompliance),
-      violationCount: report.violations.length
+      violationCount: report.violations.length,
     });
 
     return report;
@@ -725,7 +743,7 @@ export class SolutionArchitectureManagementService {
     this.logger.info('Managing runway component', {
       componentId,
       operation,
-      currentStatus: component.status
+      currentStatus: component.status,
     });
 
     let updatedComponent: RunwayComponent;
@@ -737,8 +755,11 @@ export class SolutionArchitectureManagementService {
           status: this.getNextStatus(component.status),
           lifecycle: {
             ...component.lifecycle,
-            availableDate: component.status === ComponentStatus.IN_DEVELOPMENT ? new Date() : component.lifecycle.availableDate
-          }
+            availableDate:
+              component.status === ComponentStatus.IN_DEVELOPMENT
+                ? new Date()
+                : component.lifecycle.availableDate,
+          },
         };
         break;
 
@@ -748,8 +769,8 @@ export class SolutionArchitectureManagementService {
           status: ComponentStatus.DEPRECATED,
           lifecycle: {
             ...component.lifecycle,
-            deprecationDate: new Date()
-          }
+            deprecationDate: new Date(),
+          },
         };
         break;
 
@@ -759,8 +780,8 @@ export class SolutionArchitectureManagementService {
           status: ComponentStatus.RETIRED,
           lifecycle: {
             ...component.lifecycle,
-            retirementDate: new Date()
-          }
+            retirementDate: new Date(),
+          },
         };
         break;
 
@@ -772,7 +793,7 @@ export class SolutionArchitectureManagementService {
 
     this.logger.info('Runway component updated', {
       componentId,
-      newStatus: updatedComponent.status
+      newStatus: updatedComponent.status,
     });
 
     return updatedComponent;
@@ -782,11 +803,11 @@ export class SolutionArchitectureManagementService {
    * Private helper methods
    */
   private validateArchitectureConfig(config: SolutionArchitectureConfig): void {
-    if (!config.configId || config.configId.trim() === '') {
+    if (!config.configId || config.configId.trim() ==='') {
       throw new Error('Configuration ID is required');
     }
 
-    if (!config.solutionId || config.solutionId.trim() === '') {
+    if (!config.solutionId || config.solutionId.trim() ==='') {
       throw new Error('Solution ID is required');
     }
   }
@@ -795,44 +816,58 @@ export class SolutionArchitectureManagementService {
     alternatives: Alternative[],
     criteria: DecisionCriteria[]
   ): Promise<AlternativeEvaluation[]> {
-    return alternatives.map(alternative => ({
+    return alternatives.map((alternative) => ({
       alternative,
-      scores: criteria.map(criterion => ({
+      scores: criteria.map((criterion) => ({
         criterion: criterion.name,
         score: this.scoreAlternative(alternative, criterion),
-        weight: criterion.weight
+        weight: criterion.weight,
       })),
-      totalScore: this.calculateTotalScore(alternative, criteria)
+      totalScore: this.calculateTotalScore(alternative, criteria),
     }));
   }
 
-  private scoreAlternative(alternative: Alternative, criterion: DecisionCriteria): number {
+  private scoreAlternative(
+    alternative: Alternative,
+    criterion: DecisionCriteria
+  ): number {
     // Simplified scoring logic
     return Math.random() * 100;
   }
 
-  private calculateTotalScore(alternative: Alternative, criteria: DecisionCriteria[]): number {
+  private calculateTotalScore(
+    alternative: Alternative,
+    criteria: DecisionCriteria[]
+  ): number {
     return criteria.reduce((total, criterion) => {
       const score = this.scoreAlternative(alternative, criterion);
-      return total + (score * criterion.weight / 100);
+      return total + (score * criterion.weight) / 100;
     }, 0);
   }
 
-  private selectBestAlternative(evaluations: AlternativeEvaluation[]): Alternative {
+  private selectBestAlternative(
+    evaluations: AlternativeEvaluation[]
+  ): Alternative {
     return orderBy(evaluations, 'totalScore', 'desc')[0].alternative;
   }
 
-  private async assessStandardsCompliance(standards: TechnologyStandard[]): Promise<number> {
+  private async assessStandardsCompliance(
+    standards: TechnologyStandard[]
+  ): Promise<number> {
     // Simulate standards compliance assessment
     return Math.random() * 20 + 75; // 75-95% compliance
   }
 
-  private async assessPrincipleCompliance(principles: ArchitecturalPrinciple[]): Promise<number> {
+  private async assessPrincipleCompliance(
+    principles: ArchitecturalPrinciple[]
+  ): Promise<number> {
     // Simulate principle compliance assessment
     return Math.random() * 25 + 70; // 70-95% compliance
   }
 
-  private async assessQualityCompliance(attributes: QualityAttribute[]): Promise<number> {
+  private async assessQualityCompliance(
+    attributes: QualityAttribute[]
+  ): Promise<number> {
     // Simulate quality attributes compliance assessment
     return Math.random() * 30 + 65; // 65-95% compliance
   }
@@ -842,7 +877,7 @@ export class SolutionArchitectureManagementService {
     principles: number,
     quality: number
   ): number {
-    return (standards * 0.4) + (principles * 0.3) + (quality * 0.3);
+    return standards * 0.4 + principles * 0.3 + quality * 0.3;
   }
 
   private identifyViolations(
@@ -858,7 +893,7 @@ export class SolutionArchitectureManagementService {
         type: 'standards',
         severity: 'medium',
         description: 'Technology standards compliance below threshold',
-        recommendation: 'Review and align with approved technology standards'
+        recommendation: 'Review and align with approved technology standards',
       });
     }
 
@@ -868,7 +903,7 @@ export class SolutionArchitectureManagementService {
         type: 'principles',
         severity: 'high',
         description: 'Architectural principles adherence below threshold',
-        recommendation: 'Align implementation with architectural principles'
+        recommendation: 'Align implementation with architectural principles',
       });
     }
 
@@ -903,7 +938,9 @@ export class SolutionArchitectureManagementService {
   /**
    * Getter methods
    */
-  getArchitecturalDecision(decisionId: string): ArchitecturalDecision | undefined {
+  getArchitecturalDecision(
+    decisionId: string
+  ): ArchitecturalDecision | undefined {
     return this.architecturalDecisions.get(decisionId);
   }
 
@@ -911,21 +948,25 @@ export class SolutionArchitectureManagementService {
     return this.runwayComponents.get(componentId);
   }
 
-  getComplianceReport(reportId: string): ArchitecturalComplianceReport | undefined {
+  getComplianceReport(
+    reportId: string
+  ): ArchitecturalComplianceReport | undefined {
     return this.complianceReports.get(reportId);
   }
 
   getAllArchitecturalDecisions(): ArchitecturalDecision[] {
-    return Array.from(this.architecturalDecisions.values());
+    return Array.from(this.architecturalDecisions.values())();
   }
 
   getAllRunwayComponents(): RunwayComponent[] {
-    return Array.from(this.runwayComponents.values());
+    return Array.from(this.runwayComponents.values())();
   }
 
   getAvailableComponents(): RunwayComponent[] {
-    return filter(Array.from(this.runwayComponents.values()), 
-      component => component.status === ComponentStatus.AVAILABLE);
+    return filter(
+      Array.from(this.runwayComponents.values()),
+      (component) => component.status === ComponentStatus.AVAILABLE
+    );
   }
 }
 
@@ -950,10 +991,10 @@ interface DecisionCriteria {
 }
 
 enum DecisionUrgency {
-  LOW = 'low',
+  LOW ='low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 interface ArchitecturalDecision {
@@ -977,7 +1018,7 @@ enum DecisionStatus {
   UNDER_REVIEW = 'under_review',
   APPROVED = 'approved',
   REJECTED = 'rejected',
-  SUPERSEDED = 'superseded'
+  SUPERSEDED = 'superseded',
 }
 
 interface AlternativeEvaluation {
@@ -1007,7 +1048,7 @@ interface ArchitecturalComplianceReport {
 interface ComplianceViolation {
   readonly violationId: string;
   readonly type: string;
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly description: string;
   readonly recommendation: string;
 }
@@ -1016,7 +1057,7 @@ enum ComponentOperation {
   PROMOTE = 'promote',
   DEPRECATE = 'deprecate',
   RETIRE = 'retire',
-  UPDATE = 'update'
+  UPDATE = 'update',
 }
 
 interface InvestmentPlan {
@@ -1055,8 +1096,8 @@ interface RunwayTimebox {
 interface RunwayRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly probability: 'low' | 'medium' | 'high';
-  readonly impact: 'low' | 'medium' | 'high';
+  readonly probability: 'low'' | ''medium'' | ''high';
+  readonly impact: 'low'' | ''medium'' | ''high';
   readonly mitigation: string;
 }
 

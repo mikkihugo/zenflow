@@ -14,12 +14,12 @@
  * For Svelte web dashboard - complete system control without passwords.
  */
 
-import type { Server } from 'http');
+import type { Server } from 'http';
 
-import { getLogger } from '@claude-zen/foundation');
-import { getTelemetry, getDatabaseAccess } from '@claude-zen/infrastructure');
-import type { Express, Request, Response } from 'express');
-import { WebSocketServer } from 'ws');
+import { getLogger } from '@claude-zen/foundation';
+import { getTelemetry, getDatabaseAccess } from '@claude-zen/infrastructure';
+import type { Express, Request, Response } from 'express';
+import { WebSocketServer } from 'ws';
 
 export class ControlApiRoutes {
   private logger = getLogger('ControlAPI');
@@ -237,7 +237,7 @@ export class ControlApiRoutes {
         }
 
         const totalResult = await this.database.query(countQuery, countParams);
-        const total = totalResult[0]?.total || 0;
+        const total = totalResult[0]?.total'' | '''' | ''0;
 
         // Log log retrieval to syslog for audit trail
         syslogBridge.info('control-api, Centralized logs retrieved', {
@@ -278,9 +278,8 @@ export class ControlApiRoutes {
       try {
         // Get total logs count
         const totalResult = await this.database.query(
-          'SELECT COUNT(*) as total FROM system_logs'
-        );
-        const totalLogs = totalResult[0]?.total || 0;
+          'SELECT COUNT(*) as total FROM system_logs');
+        const totalLogs = totalResult[0]?.total'' | '''' | ''0;
 
         // Get logs by level
         const levelStatsResult = await this.database.query(`
@@ -311,7 +310,7 @@ export class ControlApiRoutes {
         const recentErrorsResult = await this.database.query(`
           SELECT timestamp, component, message 
           FROM system_logs 
-          WHERE level = 'error' 
+          WHERE level ='error' 
           ORDER BY timestamp DESC 
           LIMIT 10
         `);
@@ -334,15 +333,15 @@ export class ControlApiRoutes {
           logsByComponent,
           recentErrors: recentErrorsResult,
           logRate: {
-            last5min: last5minResult[0]?.count || 0,
-            last1hour: last1hourResult[0]?.count || 0,
+            last5min: last5minResult[0]?.count'' | '''' | ''0,
+            last1hour: last1hourResult[0]?.count'' | '''' | ''0,
           },
         };
 
         res.json({
           success: true,
           data: stats,
-          message: 'Log statistics from database',
+          message:'Log statistics from database',
           timestamp: new Date()?.toISOString,
         });
       } catch (error) {
@@ -357,9 +356,8 @@ export class ControlApiRoutes {
     app.delete(`${api}/logs`, async (req: Request, res: Response) => {
       try {
         const beforeCountResult = await this.database.query(
-          'SELECT COUNT(*) as total FROM system_logs'
-        );
-        const beforeCount = beforeCountResult[0]?.total || 0;
+          'SELECT COUNT(*) as total FROM system_logs');
+        const beforeCount = beforeCountResult[0]?.total'' | '''' | ''0;
 
         await this.database.execute('DELETE FROM system_logs');
 
@@ -371,25 +369,25 @@ export class ControlApiRoutes {
         });
       } catch (error) {
         this.logger.error('Failed to clear logs from database:', error);
-        res.status(500).json({ error: 'Failed to clear logs from database' });
+        res.status(500).json({ error: 'Failed to clear logs from database'});
       }
     });
 
     // Export logs from database
     app.get(`${api}/logs/export`, async (req: Request, res: Response) => {
       try {
-        const format = req.query.format || 'json');
+        const format = req.query.format'' | '''' | '''json');
         const logs = await this.database.query(
           'SELECT * FROM system_logs ORDER BY timestamp DESC'
         );
 
         if (format === 'csv') {
           const csv =
-            'timestamp,level,component,message,meta\n' +
+            'timestamp,level,component,message,meta\n'+
             logs
               .map(
                 (log: any) =>
-                  `${log.timestamp},${log.level},${log.component},"${log.message.replace(//g, "")},"${(log.meta || ').replace(//g, '")}"`
+                  `${log.timestamp},${log.level},${log.component},"${log.message.replace(//g, "")},"${(log.meta'' | '''' | ''').replace(//g, '")}"`
               )
               .join('\n');
 
@@ -443,45 +441,45 @@ export class ControlApiRoutes {
           },
           performance: {
             eventLoopLag: await this.getEventLoopLag,
-            requestsPerSecond: this.telemetryData.get('rps') || 0,
-            averageResponseTime: this.telemetryData.get('avgResponseTime') || 0,
-            errorRate: this.telemetryData.get('errorRate') || 0,
+            requestsPerSecond: this.telemetryData.get('rps')'' | '''' | ''0,
+            averageResponseTime: this.telemetryData.get('avgResponseTime')'' | '''' | ''0,
+            errorRate: this.telemetryData.get('errorRate')'' | '''' | ''0,
           },
           agents: {
             totalAgents:
               (
                 global as any
-              ).claudeZenSwarm?.swarmCommander?.getAgentCount?.() || 0,
-            activeAgents: this.telemetryData.get('activeAgents') || 0,
-            busyAgents: this.telemetryData.get('busyAgents') || 0,
-            idleAgents: this.telemetryData.get('idleAgents') || 0,
+              ).claudeZenSwarm?.swarmCommander?.getAgentCount?.()'' | '''' | ''0,
+            activeAgents: this.telemetryData.get('activeAgents')'' | '''' | ''0,
+            busyAgents: this.telemetryData.get('busyAgents')'' | '''' | ''0,
+            idleAgents: this.telemetryData.get('idleAgents')'' | '''' | ''0,
           },
           brain: {
             neuralNetworkStatus:
               this.telemetryData.get('neuralStatus) || unknown',
-            learningRate: this.telemetryData.get('learningRate') || 0,
+            learningRate: this.telemetryData.get('learningRate')'' | '''' | ''0,
             predictionAccuracy:
-              this.telemetryData.get('predictionAccuracy') || 0,
+              this.telemetryData.get('predictionAccuracy')'' | '''' | ''0,
             trainingIterations:
-              this.telemetryData.get('trainingIterations') || 0,
+              this.telemetryData.get('trainingIterations')'' | '''' | ''0,
           },
           coordination: {
-            swarmCount: this.telemetryData.get('swarmCount') || 0,
-            taskQueue: this.telemetryData.get('taskQueue') || 0,
+            swarmCount: this.telemetryData.get('swarmCount')'' | '''' | ''0,
+            taskQueue: this.telemetryData.get('taskQueue')'' | '''' | ''0,
             coordinationEfficiency:
-              this.telemetryData.get('coordinationEfficiency') || 0,
+              this.telemetryData.get('coordinationEfficiency')'' | '''' | ''0,
           },
         };
 
         res.json({
           success: true,
           data: metrics,
-          message: 'Current system metrics',
+          message:'Current system metrics',
           timestamp: new Date()?.toISOString,
         });
       } catch (error) {
         this.logger.error('Failed to get metrics:', error);
-        res.status(500).json({ error: 'Failed to get metrics' });
+        res.status(500).json({ error: 'Failed to get metrics'});
       }
     });
 
@@ -496,11 +494,11 @@ export class ControlApiRoutes {
           (_, i) => ({
             traceId: `trace-${Date.now()}-${i}`,
             spanId: `span-${Date.now()}-${i}`,
-            operation: operation || `operation-${i % 5}`,
+            operation: operation'' | '''' | ''`operation-${i % 5}`,
             duration: Math.random() * 1000 + 10,
             timestamp: new Date(Date.now() - Math.random() * 3600000)
               ?.toISOString,
-            status: Math.random() > .1 ? 'success : error',
+            status: Math.random() > .1 ?'success : error',
             tags: {
               component: ['brain, swarm', 'coordination, agent'][i % 4],
               environment: 'development',
@@ -533,14 +531,14 @@ export class ControlApiRoutes {
           requestType: 'metric-recording',
           metricName: name,
           metricValue: value,
-          tags: tags || {},
+          tags: tags'' | '''' | ''{},
           requestIp: req.ip,
         });
 
         res.json({
           success: true,
           data: { recorded: { name, value, tags } },
-          message: 'Metric recorded',
+          message:'Metric recorded',
           timestamp: new Date()?.toISOString,
         });
       } catch (error) {
@@ -611,8 +609,8 @@ export class ControlApiRoutes {
         const status = {
           websocketServer: {
             running: !!this.wsServer,
-            clients: this.wsServer?.clients.size || 0,
-            path: '/api/v1/control/realtime',
+            clients: this.wsServer?.clients.size'' | '''' | ''0,
+            path:'/api/v1/control/realtime',
           },
           broadcasting: {
             interval: 5000, // 5 seconds
@@ -657,18 +655,18 @@ export class ControlApiRoutes {
           },
           neuralBridge: {
             active: !!neuralBridge,
-            wasmEnabled: neuralBridge?.isWasmEnabled?.() || false,
+            wasmEnabled: neuralBridge?.isWasmEnabled?.()'' | '''' | ''false,
             gpuAcceleration: false, // As configured in main.ts
           },
           behavioralIntelligence: {
             active: !!behavioralIntelligence,
-            learningRate: behavioralIntelligence?.getLearningRate?.() || .3,
-            trainedModels: behavioralIntelligence?.getModelCount?.() || 0,
-            predictionAccuracy: behavioralIntelligence?.getAccuracy?.() || 0,
+            learningRate: behavioralIntelligence?.getLearningRate?.()'' | '''' | ''.3,
+            trainedModels: behavioralIntelligence?.getModelCount?.()'' | '''' | ''0,
+            predictionAccuracy: behavioralIntelligence?.getAccuracy?.()'' | '''' | ''0,
           },
           dspyIntegration: {
             active: !!(global as any).claudeZenSwarm?.dspyBridge,
-            teleprompter: 'MIPROv2',
+            teleprompter:'MIPROv2',
             optimizationSteps: 10,
           },
         };
@@ -760,14 +758,14 @@ export class ControlApiRoutes {
         if (!behavioralIntelligence) {
           return res
             .status(503)
-            .json({ error: 'Behavioral intelligence not available' });
+            .json({ error: 'Behavioral intelligence not available'});
         }
 
         // Make prediction (mock implementation)
         const prediction = {
           result: Math.random() * .8 + .1, // .1 to .9
           confidence: Math.random() * .3 + .7, // .7 to 1.0
-          model: model || 'default',
+          model: model'' | '''' | '''default',
           processingTime: Math.random() * 50 + 10, // 10-60ms
           features: input,
         };
@@ -969,7 +967,7 @@ export class ControlApiRoutes {
         });
       } catch (error) {
         this.logger.error('Failed to get Git status:', error);
-        res.status(500).json({ error: 'Failed to get Git status' });
+        res.status(500).json({ error: 'Failed to get Git status'});
       }
     });
 
@@ -983,7 +981,7 @@ export class ControlApiRoutes {
           // Mock sandbox creation
           const sandbox = {
             id: `sandbox-${Date.now()}`,
-            branch: branch || 'main',
+            branch: branch'' | '''' | '''main',
             path: `/tmp/claude-zen-sandbox-${Date.now()}`,
             description,
             created: new Date()?.toISOString,
@@ -1066,9 +1064,9 @@ export class ControlApiRoutes {
       try {
         const config = {
           system: {
-            logLevel: process.env.LOG_LEVEL || 'info',
-            nodeEnv: process.env.NODE_ENV || 'development',
-            port: process.env.PORT || '3000',
+            logLevel: process.env.LOG_LEVEL'' | '''' | '''info',
+            nodeEnv: process.env.NODE_ENV'' | '''' | '''development',
+            port: process.env.PORT'' | '''' | '''3000',
           },
           swarm: {
             maxAgents: 50,
@@ -1155,10 +1153,10 @@ export class ControlApiRoutes {
             agents:
               (
                 global as any
-              ).claudeZenSwarm?.swarmCommander?.getAgentCount?.() || 0,
+              ).claudeZenSwarm?.swarmCommander?.getAgentCount?.()'' | '''' | ''0,
           },
           safety: {
-            name: 'AI Safety',
+            name:'AI Safety',
             status: (global as any).claudeZenSwarm?.aiSafetyOrchestrator
               ? 'running'
               : 'stopped',
@@ -1542,7 +1540,7 @@ export class ControlApiRoutes {
     try {
       const entry = {
         ...logEntry,
-        timestamp: logEntry.timestamp || new Date()?.toISOString,
+        timestamp: logEntry.timestamp'' | '''' | ''new Date()?.toISOString,
       };
 
       // Store in database
@@ -1553,12 +1551,12 @@ export class ControlApiRoutes {
       `,
         [
           entry.timestamp,
-          entry.level || 'info',
-          entry.component || 'unknown',
-          entry.message || '',
+          entry.level'' | '''' | '''info',
+          entry.component'' | '''' | '''unknown',
+          entry.message'' | '''' | '''',
           entry.meta ? JSON.stringify(entry.meta) : null,
-          entry.sessionId || null,
-          entry.traceId || null,
+          entry.sessionId'' | '''' | ''null,
+          entry.traceId'' | '''' | ''null,
         ]
       );
 
@@ -1583,9 +1581,8 @@ export class ControlApiRoutes {
     try {
       const keepCount = 10000;
       const totalResult = await this.database.query(
-        'SELECT COUNT(*) as total FROM system_logs'
-      );
-      const total = totalResult[0]?.total || 0;
+        'SELECT COUNT(*) as total FROM system_logs');
+      const total = totalResult[0]?.total'' | '''' | ''0;
 
       if (total > keepCount) {
         await this.database.execute(
@@ -1630,7 +1627,7 @@ export class ControlApiRoutes {
    */
   private startRealTimeBroadcast(): void {
     setInterval(() => {
-      if (!this.wsServer || this.wsServer.clients.size === 0) return;
+      if (!this.wsServer'' | '''' | ''this.wsServer.clients.size === 0) return;
 
       const data = {
         system: {
@@ -1639,8 +1636,8 @@ export class ControlApiRoutes {
           timestamp: new Date()?.toISOString,
         },
         agents: {
-          total: this.telemetryData.get('totalAgents') || 0,
-          active: this.telemetryData.get('activeAgents') || 0,
+          total: this.telemetryData.get('totalAgents')'' | '''' | ''0,
+          active: this.telemetryData.get('activeAgents')'' | '''' | ''0,
         },
       };
 
@@ -1692,6 +1689,6 @@ export class ControlApiRoutes {
       'completion',
     ];
     const currentIndex = phases.indexOf(currentPhase);
-    return phases[currentIndex + 1] || 'completion');
+    return phases[currentIndex + 1]'' | '''' | '''completion');
   }
 }

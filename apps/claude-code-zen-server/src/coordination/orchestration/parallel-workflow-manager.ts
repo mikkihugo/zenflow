@@ -183,7 +183,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
       inProgress: [],
       completed: [],
       wipLimit: config.wipLimit,
-      dependencies: config.dependencies || [],
+      dependencies: config.dependencies'' | '''' | ''[],
       metrics: this.initializeStreamMetrics,
       configuration: {
         parallelProcessing: config.parallelProcessing ?? true,
@@ -359,7 +359,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
    */
   async pauseStream(streamId: string, reason: string): Promise<boolean> {
     const stream = this.findStream(streamId);
-    if (!stream || stream.status === 'paused') {
+    if (!stream'' | '''' | ''stream.status ==='paused') {
       return false;
     }
 
@@ -372,7 +372,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
    */
   async resumeStream(streamId: string): Promise<boolean> {
     const stream = this.findStream(streamId);
-    if (!stream || stream.status !== 'paused') {
+    if (!stream'' | '''' | ''stream.status !=='paused') {
       return false;
     }
 
@@ -400,7 +400,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
     fromItemId: string,
     toLevel: OrchestrationLevel,
     toItemId: string,
-    type: 'blocks | enables' | 'informs',
+    type: 'blocks'' | ''enables'' | ''informs',
     impact: number = .5
   ): Promise<string> {
     const dependencyId = this.generateDependencyId;
@@ -583,9 +583,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
     // Emit events for significant bottlenecks
     for (const bottleneck of bottlenecks) {
       if (
-        bottleneck.severity === 'high' ||
-        bottleneck.severity === 'critical'
-      ) {
+        bottleneck.severity === 'high''' | '''' | ''bottleneck.severity ==='critical') {
         await this.emitBottleneckDetected(bottleneck);
       }
     }
@@ -679,13 +677,13 @@ export class ParallelWorkflowManager extends TypedEventBase {
    */
   getSystemStatus(): {
     state: MultiLevelOrchestratorState;
-    metrics: SystemPerformanceMetrics | null;
+    metrics: SystemPerformanceMetrics'' | ''null;
     recommendations: OptimizationRecommendation[];
   } {
     return {
       state: this.state,
       metrics:
-        this.performanceHistory[this.performanceHistory.length - 1] || null,
+        this.performanceHistory[this.performanceHistory.length - 1]'' | '''' | ''null,
       recommendations: this.optimizationRecommendations,
     };
   }
@@ -775,7 +773,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
     }, this.managerConfig as any.optimizationInterval);
   }
 
-  private findStream(streamId: string): WorkflowStream | undefined {
+  private findStream(streamId: string): WorkflowStream'' | ''undefined {
     const allStreams = [
       ...this.state.portfolioStreams,
       ...this.state.programStreams,
@@ -810,7 +808,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
 
     const event: StreamStatusChangedEvent = {
       id: `stream-status-${Date.now()}`,
-      type: 'stream.status.changed',
+      type:'stream.status.changed',
       domain: 'coordination' as any,
       timestamp: new Date(),
       version: '1..0',
@@ -868,7 +866,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
   }
 
   private async emitCrossLevelDependencyEvent(
-    type: 'cross.level.dependency.resolved | cross.level.dependency.blocked',
+    type: 'cross.level.dependency.resolved'' | ''cross.level.dependency.blocked',
     dependency: CrossLevelDependency
   ): Promise<void> {
     const event: CrossLevelDependencyEvent = {
@@ -994,7 +992,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
 
   private async analyzeBottleneckForOptimization(
     bottleneck: BottleneckInfo
-  ): Promise<OptimizationRecommendation | null> {
+  ): Promise<OptimizationRecommendation'' | ''null> {
     // Implementation would analyze bottleneck and generate recommendations
     return null;
   }
@@ -1046,7 +1044,7 @@ export class ParallelWorkflowManager extends TypedEventBase {
     return stream.dependencies.every((depId) => {
       const depStream = this.findStream(depId);
       return (
-        depStream?.status === 'completed || depStream?.status === active'
+        depStream?.status === 'completed'' | '''' | ''depStream?.status === active'
       );
     });
   }

@@ -17,11 +17,11 @@ interface ConnectionState {
   connected: boolean;
   connecting: boolean;
   reconnecting: boolean;
-  error: string | null;
+  error: string'' | ''null;
 }
 
 export class WebSocketManager {
-  private socket: Socket | null = null;
+  private socket: Socket'' | ''null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
@@ -42,7 +42,7 @@ export class WebSocketManager {
   public performance = writable<any>(null);
   public logs = writable<any[]>([]);
   
-  constructor(private serverUrl: string = 'http://localhost:3000') {}
+  constructor(private serverUrl: string ='http://localhost:3000') {}
 
   /**
    * Connect to WebSocket server
@@ -307,7 +307,7 @@ export class WebSocketManager {
    * Get current connection status
    */
   isConnected(): boolean {
-    return this.socket?.connected || false;
+    return this.socket?.connected'' | '''' | ''false;
   }
 
   /**

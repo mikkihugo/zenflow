@@ -161,7 +161,12 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         fromAgent: sampleAgents[0]!,
         toAgent: undefined,
         timestamp: new Date(),
-        content: { text: 'Hello, world!', code: undefined, data: undefined, attachments: undefined },
+        content: {
+          text: 'Hello, world!',
+          code: undefined,
+          data: undefined,
+          attachments: undefined,
+        },
         messageType: 'question',
         metadata: {
           priority: 'medium',
@@ -211,7 +216,12 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         fromAgent: nonParticipant,
         toAgent: undefined,
         timestamp: new Date(),
-        content: { text: 'Trying to join uninvited', code: undefined, data: undefined, attachments: undefined },
+        content: {
+          text: 'Trying to join uninvited',
+          code: undefined,
+          data: undefined,
+          attachments: undefined,
+        },
         messageType: 'system_notification',
         metadata: {
           priority: 'high',
@@ -246,7 +256,7 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       };
 
       const session = await orchestrator.createConversation(config);
-      
+
       // Send a decision message to generate outcomes
       const message: ConversationMessage = {
         id: 'msg-1',
@@ -254,7 +264,12 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         fromAgent: sampleAgents[0]!,
         toAgent: undefined,
         timestamp: new Date(),
-        content: { text: 'Code looks good', code: undefined, data: undefined, attachments: undefined },
+        content: {
+          text: 'Code looks good',
+          code: undefined,
+          data: undefined,
+          attachments: undefined,
+        },
         messageType: 'decision',
         metadata: {
           priority: 'medium',
@@ -279,7 +294,7 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         type: 'decision',
         content: { text: 'Code looks good' },
       });
-      
+
       // Verify session is no longer active
       const finalSession = orchestrator.getSession(session.id);
       expect(finalSession).toBeUndefined();
@@ -309,7 +324,12 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         fromAgent: sampleAgents[0]!,
         toAgent: undefined,
         timestamp: new Date(),
-        content: { text: 'First message', code: undefined, data: undefined, attachments: undefined },
+        content: {
+          text: 'First message',
+          code: undefined,
+          data: undefined,
+          attachments: undefined,
+        },
         messageType: 'question',
         metadata: {
           priority: 'medium',
@@ -360,12 +380,12 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
       // Assert
       const activeSessions = orchestrator.getActiveSessions();
       expect(activeSessions).toHaveLength(2);
-      expect(activeSessions.map(s => s.title)).toContain('Session 1');
-      expect(activeSessions.map(s => s.title)).toContain('Session 2');
+      expect(activeSessions.map((s) => s.title)).toContain('Session 1');
+      expect(activeSessions.map((s) => s.title)).toContain('Session 2');
 
       // Terminate one session
       await orchestrator.terminateConversation(session1.id, 'Test complete');
-      
+
       const remainingSessions = orchestrator.getActiveSessions();
       expect(remainingSessions).toHaveLength(1);
       expect(remainingSessions[0]?.title).toBe('Session 2');

@@ -17,7 +17,7 @@ export type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '@claude-zen/enterprise');
+} from '@claude-zen/enterprise';
 // Import domain-specific schemas
 export * from "./common";
 export * from '@claude-zen/intelligence');

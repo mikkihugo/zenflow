@@ -61,10 +61,7 @@
  * @since 1.0.0
  */
 
-import type {
-  Config,
-  Logger,
-} from '@claude-zen/foundation';
+import type { Config, Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
@@ -98,10 +95,7 @@ import type { NeuralEvent } from '../types';
  * - **Resource Monitoring**: GPU/CPU utilization and memory tracking
  * - **Model Metrics**: Training loss, accuracy, validation scores
  */
-class NeuralEventManager
-  extends BaseEventManager
-  implements EventManager
-{
+class NeuralEventManager extends BaseEventManager implements EventManager {
   private neuralMetrics = {
     trainingJobs: 0,
     inferenceRequests: 0,
@@ -138,7 +132,7 @@ class NeuralEventManager
   }
 
   /** Override type property to be neural type */
-  public readonly type: EventManagerType = 'neural' as EventManagerType;
+  public readonly type: EventManagerType = 'neural'as EventManagerType;
 
   /**
    * Emit neural-specific event with ML context.
@@ -155,8 +149,8 @@ class NeuralEventManager
           ...event.metadata,
           timestamp: new Date(),
           processingTime: Date.now(),
-          modelVersion: (event.details as any)?.modelVersion || 'unknown',
-          computeResource: (event.details as any)?.computeResource || 'cpu',
+          modelVersion: (event.details as any)?.modelVersion'' | '''' | '''unknown',
+          computeResource: (event.details as any)?.computeResource'' | '''' | '''cpu',
         },
       };
 
@@ -353,16 +347,28 @@ class NeuralEventManager
 
       switch (operationType) {
         case 'training':
-          await this.notifyNeuralSubscribers(this.subscriptions.training, neuralEvent);
+          await this.notifyNeuralSubscribers(
+            this.subscriptions.training,
+            neuralEvent
+          );
           break;
         case 'inference':
-          await this.notifyNeuralSubscribers(this.subscriptions.inference, neuralEvent);
+          await this.notifyNeuralSubscribers(
+            this.subscriptions.inference,
+            neuralEvent
+          );
           break;
         case 'optimization':
-          await this.notifyNeuralSubscribers(this.subscriptions.model, neuralEvent);
+          await this.notifyNeuralSubscribers(
+            this.subscriptions.model,
+            neuralEvent
+          );
           break;
         case 'evaluation':
-          await this.notifyNeuralSubscribers(this.subscriptions.performance, neuralEvent);
+          await this.notifyNeuralSubscribers(
+            this.subscriptions.performance,
+            neuralEvent
+          );
           break;
         default:
           this.logger.warn(`Unknown neural operation type: ${operationType}`);
@@ -408,12 +414,10 @@ class NeuralEventManager
         this.logger.info(`Model saved: ${event.modelId}`);
         break;
       case 'predict':
-        this.logger.debug(
-          `Inference completed for model: ${event.modelId}`
-        );
-        this.processingStats.batchesProcessed += event.details?.batchSize || 1;
+        this.logger.debug(`Inference completed for model: ${event.modelId}`);
+        this.processingStats.batchesProcessed += event.details?.batchSize'' | '''' | ''1;
         break;
-      case 'optimize':
+      case'optimize':
         this.logger.info(`Optimization completed for model: ${event.modelId}`);
         break;
       case 'export':
@@ -570,8 +574,7 @@ export class NeuralEventManagerFactory
 
     if (config.maxListeners && config.maxListeners < 50) {
       this.logger.warn(
-        'Neural managers should support at least 50 listeners for ML workflows'
-      );
+        'Neural managers should support at least 50 listeners for ML workflows');
     }
   }
 
@@ -581,11 +584,11 @@ export class NeuralEventManagerFactory
   private applyNeuralDefaults(config: EventManagerConfig): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners || 200,
+      maxListeners: config.maxListeners'' | '''' | ''200,
       processing: {
         batchSize: 50, // Efficient batch processing
         ...config.processing,
-        strategy: 'queued', // ML operations benefit from queuing (override)
+        strategy:'queued', // ML operations benefit from queuing (override)
       } as any, // Type assertion for neural-specific properties
       // persistence configuration removed - not part of base interface
       monitoring: {

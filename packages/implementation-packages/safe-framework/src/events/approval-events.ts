@@ -1,11 +1,11 @@
 /**
  * @fileoverview Event-Driven Approval System for SAFe Framework
- * 
+ *
  * Provides clean event-driven architecture for approval workflows using
  * @claude-zen/event-system for type-safe event handling.
  * Business logic emits approval events, UI layer handles presentation.
  * This maintains proper separation of concerns between business and presentation layers.
- * 
+ *
  * @author Claude-Zen Team
  * @since 2.0.0
  * @version 2.0.0
@@ -19,10 +19,10 @@ import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
  */
 export interface ApprovalRequestEvent {
   readonly requestId: string;
-  readonly type: 'epic' | 'feature' | 'architecture' | 'business-case' | 'resource' | 'process';
+  readonly type:'' | '''epic | feature' | 'architecture''' | '''business-case''' | '''resource''' | '''process';
   readonly title: string;
   readonly description: string;
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low | medium' | 'high''' | '''critical';
   readonly requestedBy: string;
   readonly approvers: string[];
   readonly deadline?: Date;
@@ -31,7 +31,7 @@ export interface ApprovalRequestEvent {
 }
 
 /**
- * Approval response event data  
+ * Approval response event data
  */
 export interface ApprovalResponseEvent {
   readonly requestId: string;
@@ -57,9 +57,9 @@ export interface ApprovalTimeoutEvent {
  */
 export const APPROVAL_EVENTS = {
   REQUEST_APPROVAL: 'approval:request',
-  APPROVAL_RECEIVED: 'approval:response', 
+  APPROVAL_RECEIVED: 'approval:response',
   APPROVAL_TIMEOUT: 'approval:timeout',
-  APPROVAL_CANCELLED: 'approval:cancelled'
+  APPROVAL_CANCELLED: 'approval:cancelled',
 } as const;
 
 /**
@@ -80,12 +80,12 @@ export function createApprovalRequest(params: {
     type: params.type,
     title: params.title,
     description: params.description,
-    priority: params.priority || 'medium',
+    priority: params.priority'' | '''' | '''medium',
     requestedBy: params.requestedBy,
     approvers: params.approvers,
     deadline: params.deadline,
     context: params.context || {},
-    timestamp: new Date()
+    timestamp: new Date(),
   };
 }
 
@@ -105,7 +105,7 @@ export function createApprovalResponse(
     approvedBy,
     comments,
     conditions,
-    timestamp: new Date()
+    timestamp: new Date(),
   };
 }
 
@@ -121,7 +121,7 @@ export function createApprovalTimeout(
     requestId,
     originalDeadline,
     escalatedTo,
-    timestamp: new Date()
+    timestamp: new Date(),
   };
 }
 
@@ -137,13 +137,13 @@ export class ApprovalWorkflowManager {
    */
   trackApprovalRequest(request: ApprovalRequestEvent): void {
     this.pendingApprovals.set(request.requestId, request);
-    
+
     // Set timeout if deadline specified
     if (request.deadline) {
       const timeout = setTimeout(() => {
         this.handleApprovalTimeout(request.requestId);
-      }, request.deadline.getTime() - Date.now());
-      
+      }, request.deadline.getTime() - Date.now())();
+
       this.approvalTimeouts.set(request.requestId, timeout);
     }
   }
@@ -151,7 +151,9 @@ export class ApprovalWorkflowManager {
   /**
    * Process approval response
    */
-  processApprovalResponse(response: ApprovalResponseEvent): ApprovalRequestEvent | null {
+  processApprovalResponse(
+    response: ApprovalResponseEvent
+  ): ApprovalRequestEvent | null {
     const request = this.pendingApprovals.get(response.requestId);
     if (!request) {
       return null;
@@ -160,7 +162,7 @@ export class ApprovalWorkflowManager {
     // Clear timeout and remove from pending
     this.clearApprovalTimeout(response.requestId);
     this.pendingApprovals.delete(response.requestId);
-    
+
     return request;
   }
 
@@ -181,7 +183,7 @@ export class ApprovalWorkflowManager {
    * Get pending approval requests
    */
   getPendingApprovals(): ApprovalRequestEvent[] {
-    return Array.from(this.pendingApprovals.values());
+    return Array.from(this.pendingApprovals.values())();
   }
 
   /**

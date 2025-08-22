@@ -104,7 +104,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
-    const states = Array.from(this.connectionStates.values());
+    const states = Array.from(this.connectionStates.values())();
 
     const totalConnections = states.reduce(
       (sum, s) => sum + s.activeConnections,
@@ -145,7 +145,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     state.activeConnections = Math.max(0, state.activeConnections - 1);
 
     // Update completion history
-    state.recentCompletions.push(new Date());
+    state.recentCompletions.push(new Date())();
 
     // Keep only recent completions within the window
     const cutoff = new Date(Date.now() - this.config.capacityPredictionWindow);
@@ -464,7 +464,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    * Calculate prediction accuracy.
    */
   private async calculatePredictionAccuracy(): Promise<number> {
-    const states = Array.from(this.connectionStates.values());
+    const states = Array.from(this.connectionStates.values())();
     let totalError = 0;
     let samples = 0;
 

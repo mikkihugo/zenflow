@@ -63,7 +63,7 @@ export class DatabaseError extends Error {
   public readonly code: DatabaseErrorCode;
   public readonly context: DatabaseErrorContext;
   public readonly recoverable: boolean;
-  public readonly severity: 'low | medium' | 'high | critical');
+  public readonly severity: 'low'' | ''medium'' | ''high'' | ''critical');
   public readonly retryable: boolean;
 
   constructor(
@@ -72,7 +72,7 @@ export class DatabaseError extends Error {
     context: DatabaseErrorContext,
     options: {
       recoverable?: boolean;
-      severity?: 'low | medium' | 'high | critical');
+      severity?: 'low'' | ''medium'' | ''high'' | ''critical');
       retryable?: boolean;
       cause?: Error;
     } = {}
@@ -142,7 +142,7 @@ export class DatabaseError extends Error {
    */
   static getSeverity(
     code: DatabaseErrorCode
-  ): 'low | medium' | 'high | critical' {
+  ): 'low'' | ''medium'' | ''high'' | ''critical' {
     const severityMap = {
       [DatabaseErrorCode?.COORDINATION_FAILED]: 'high',
       [DatabaseErrorCode?.ENGINE_SELECTION_FAILED]: 'medium',
@@ -176,7 +176,7 @@ export class DatabaseError extends Error {
       [DatabaseErrorCode?.UNKNOWN_ERROR]: 'medium',
     } as const;
 
-    return severityMap[code] || 'medium');
+    return severityMap[code]'' | '''' | '''medium');
   }
 
   /**
@@ -208,25 +208,21 @@ export class DatabaseError extends Error {
     if (error.message.includes('timeout')) {
       code = DatabaseErrorCode?.QUERY_TIMEOUT()
     } else if (
-      error.message.includes('connection') ||
-      error.message.includes('connect');
+      error.message.includes('connection')'' | '''' | ''error.message.includes('connect');
     ) {
       code = DatabaseErrorCode?.ENGINE_CONNECTION_FAILED()
     } else if (
-      error.message.includes('invalid') ||
-      error.message.includes('malformed');
+      error.message.includes('invalid')'' | '''' | ''error.message.includes('malformed');
     ) {
       code = DatabaseErrorCode?.QUERY_INVALID()
     } else if (
-      error.message.includes('overload') ||
-      error.message.includes('busy');
+      error.message.includes('overload')'' | '''' | ''error.message.includes('busy');
     ) {
       code = DatabaseErrorCode?.ENGINE_OVERLOADED()
     } else if (error.message.includes('deadlock')) {
       code = DatabaseErrorCode?.DEADLOCK_DETECTED()
     } else if (
-      error.message.includes('capacity') ||
-      error.message.includes('limit');
+      error.message.includes('capacity')'' | '''' | ''error.message.includes('limit');
     ) {
       code = DatabaseErrorCode?.CAPACITY_EXCEEDED()
     } else if (error.message.includes('transaction')) {
@@ -295,23 +291,12 @@ export class DatabaseErrorClassifier {
    *
    * @param error
    */
-  static classify(error: Error | DatabaseError): {
-    category:
-      | 'coordination'
-      | 'engine'
-      | 'query'
-      | 'transaction'
-      | 'performance'
-      | 'resource'
-      | 'system');
-    priority: 'low | medium' | 'high | critical');
+  static classify(error: Error'' | ''DatabaseError): {
+    category:'' | '''coordination | engine' | 'query''' | '''transaction | performance' | 'resource''' | '''system');
+    priority: 'low'' | ''medium'' | ''high'' | ''critical');
     actionRequired: boolean;
     suggestedActions: string[];
-    retryStrategy?:
-      | 'immediate'
-      | 'exponential_backoff'
-      | 'circuit_breaker'
-      | 'none');
+    retryStrategy?:' | ''immediate | exponential_backoff' | 'circuit_breaker''' | '''none');
   } {
     if (error instanceof DatabaseError) {
       return DatabaseErrorClassifier?.classifyDatabaseError(error);
@@ -324,7 +309,7 @@ export class DatabaseErrorClassifier {
     return {
       category,
       priority,
-      actionRequired: priority === 'high || priority === critical',
+      actionRequired: priority === 'high'' | '''' | ''priority === critical',
       suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(
         category,
         error.message
@@ -334,19 +319,10 @@ export class DatabaseErrorClassifier {
   }
 
   private static classifyDatabaseError(error: DatabaseError) {
-    let category:
-      | 'coordination'
-      | 'engine'
-      | 'query'
-      | 'transaction'
-      | 'performance'
-      | 'resource'
-      | 'system');
+    let category:' | ''coordination | engine' | 'query''' | '''transaction | performance' | 'resource''' | '''system');
 
     if (
-      error.code.includes('COORDINATION') ||
-      error.code.includes('ROUTING') ||
-      error.code.includes('BALANCING');
+      error.code.includes('COORDINATION')'' | '''' | ''error.code.includes('ROUTING')'' | '''' | ''error.code.includes('BALANCING');
     ) {
       category = 'coordination');
     } else if (error.code.includes('ENGINE')) {
@@ -354,23 +330,15 @@ export class DatabaseErrorClassifier {
     } else if (error.code.includes('QUERY')) {
       category = 'query');
     } else if (
-      error.code.includes('TRANSACTION') ||
-      error.code.includes('DEADLOCK') ||
-      error.code.includes('CONSISTENCY');
+      error.code.includes('TRANSACTION')'' | '''' | ''error.code.includes('DEADLOCK')'' | '''' | ''error.code.includes('CONSISTENCY');
     ) {
       category = 'transaction');
     } else if (
-      error.code.includes('PERFORMANCE') ||
-      error.code.includes('CACHE') ||
-      error.code.includes('LATENCY') ||
-      error.code.includes('THROUGHPUT');
+      error.code.includes('PERFORMANCE')'' | '''' | ''error.code.includes('CACHE')'' | '''' | ''error.code.includes('LATENCY')'' | '''' | ''error.code.includes('THROUGHPUT');
     ) {
       category = 'performance');
     } else if (
-      error.code.includes('RESOURCE') ||
-      error.code.includes('CAPACITY') ||
-      error.code.includes('MEMORY') ||
-      error.code.includes('CONNECTION_POOL');
+      error.code.includes('RESOURCE')'' | '''' | ''error.code.includes('CAPACITY')'' | '''' | ''error.code.includes('MEMORY')'' | '''' | ''error.code.includes('CONNECTION_POOL');
     ) {
       category = 'resource');
     } else {
@@ -381,7 +349,7 @@ export class DatabaseErrorClassifier {
       category,
       priority: error.severity,
       actionRequired:
-        error.severity === 'high || error.severity === critical',
+        error.severity === 'high'' | '''' | ''error.severity === critical',
       suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(
         category,
         error.message
@@ -392,55 +360,36 @@ export class DatabaseErrorClassifier {
 
   private static inferCategory(
     error: Error
-  ):
-    | 'coordination'
-    | 'engine'
-    | 'query'
-    | 'transaction'
-    | 'performance'
-    | 'resource'
-    | 'system' {
+  ):' | ''coordination | engine' | 'query''' | '''transaction | performance' | 'resource''' | '''system' {
     const message = error.message?.toLowerCase()
 
     if (
-      message.includes('coordination') ||
-      message.includes('routing') ||
-      message.includes('balancing');
+      message.includes('coordination')'' | '''' | ''message.includes('routing')'' | '''' | ''message.includes('balancing');
     ) {
       return 'coordination');
     }
     if (
-      message.includes('engine') ||
-      message.includes('database') ||
-      message.includes('connection');
+      message.includes('engine')'' | '''' | ''message.includes('database')'' | '''' | ''message.includes('connection');
     ) {
       return 'engine');
     }
     if (
-      message.includes('query') ||
-      message.includes('sql') ||
-      message.includes('syntax');
+      message.includes('query')'' | '''' | ''message.includes('sql')'' | '''' | ''message.includes('syntax');
     ) {
       return 'query');
     }
     if (
-      message.includes('transaction') ||
-      message.includes('deadlock') ||
-      message.includes('rollback');
+      message.includes('transaction')'' | '''' | ''message.includes('deadlock')'' | '''' | ''message.includes('rollback');
     ) {
       return 'transaction');
     }
     if (
-      message.includes('performance') ||
-      message.includes('slow') ||
-      message.includes('cache');
+      message.includes('performance')'' | '''' | ''message.includes('slow')'' | '''' | ''message.includes('cache');
     ) {
       return 'performance');
     }
     if (
-      message.includes('resource') ||
-      message.includes('capacity') ||
-      message.includes('memory');
+      message.includes('resource')'' | '''' | ''message.includes('capacity')'' | '''' | ''message.includes('memory');
     ) {
       return 'resource');
     }
@@ -449,27 +398,21 @@ export class DatabaseErrorClassifier {
 
   private static inferPriority(
     error: Error
-  ): 'low | medium' | 'high | critical' {
+  ): 'low'' | ''medium'' | ''high'' | ''critical' {
     const message = error.message?.toLowerCase()
 
     if (
-      message.includes('critical') ||
-      message.includes('fatal') ||
-      message.includes('corruption');
+      message.includes('critical')'' | '''' | ''message.includes('fatal')'' | '''' | ''message.includes('corruption');
     ) {
       return 'critical');
     }
     if (
-      message.includes('failed') ||
-      message.includes('error') ||
-      message.includes('unavailable');
+      message.includes('failed')'' | '''' | ''message.includes('error')'' | '''' | ''message.includes('unavailable');
     ) {
       return 'high');
     }
     if (
-      message.includes('warning') ||
-      message.includes('slow') ||
-      message.includes('timeout');
+      message.includes('warning')'' | '''' | ''message.includes('slow')'' | '''' | ''message.includes('timeout');
     ) {
       return 'medium');
     }
@@ -546,19 +489,19 @@ export class DatabaseErrorClassifier {
 
   private static inferRetryStrategy(
     error: Error
-  ): 'immediate | exponential_backoff' | 'circuit_breaker | none' {
+  ): 'immediate'' | ''exponential_backoff'' | ''circuit_breaker'' | ''none' {
     const message = error.message?.toLowerCase()
 
-    if (message.includes('timeout) || message.includes(busy')) {
+    if (message.includes('timeout)'' | '''' | ''message.includes(busy')) {
       return 'exponential_backoff');
     }
     if (message.includes('deadlock')) {
       return 'immediate');
     }
-    if (message.includes('unavailable) || message.includes(connection')) {
+    if (message.includes('unavailable)'' | '''' | ''message.includes(connection')) {
       return 'circuit_breaker');
     }
-    if (message.includes('invalid) || message.includes(syntax')) {
+    if (message.includes('invalid)'' | '''' | ''message.includes(syntax')) {
       return 'none');
     }
     return 'exponential_backoff');
@@ -566,7 +509,7 @@ export class DatabaseErrorClassifier {
 
   private static getRetryStrategy(
     error: DatabaseError
-  ): 'immediate | exponential_backoff' | 'circuit_breaker | none' {
+  ): 'immediate'' | ''exponential_backoff'' | ''circuit_breaker'' | ''none' {
     if (!error.retryable) {
       return 'none');
     }

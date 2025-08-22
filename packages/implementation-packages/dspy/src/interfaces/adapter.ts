@@ -1,9 +1,9 @@
 /**
  * @fileoverview DSPy Adapter Interface - Production Grade
- * 
+ *
  * Core adapter interface for formatting data for different use cases.
  * 100% compatible with Stanford DSPy's adapter system.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  */
@@ -20,17 +20,17 @@ export interface Adapter {
    * Format data for fine-tuning
    */
   formatFinetuneData(data: FinetuneDataInput): FinetuneDataOutput;
-  
+
   /**
    * Format data for inference
    */
   formatInferenceData?(data: InferenceDataInput): InferenceDataOutput;
-  
+
   /**
    * Format data for evaluation
    */
   formatEvaluationData?(data: EvaluationDataInput): EvaluationDataOutput;
-  
+
   /**
    * Get adapter configuration
    */
@@ -48,7 +48,7 @@ export interface FinetuneDataInput {
   /** Input data */
   inputs: Record<string, any>;
   /** Output data */
-  outputs: Prediction | Record<string, any>;
+  outputs: Prediction'' | ''Record<string, any>;
   /** Additional metadata */
   metadata?: Record<string, any>;
 }
@@ -59,7 +59,7 @@ export interface FinetuneDataInput {
 export interface FinetuneDataOutput {
   /** Formatted messages for training */
   messages: Array<{
-    role: 'system' | 'user' | 'assistant';
+    role:'system | user' | 'assistant';
     content: string;
     metadata?: Record<string, any>;
   }>;
@@ -137,17 +137,22 @@ export abstract class BaseAdapter implements Adapter {
   /**
    * Format demonstration examples into text
    */
-  protected formatDemos(demos: Example[], signature: PredictorSignature): string {
-    if (!demos || demos.length === 0) {
-      return '';
+  protected formatDemos(
+    demos: Example[],
+    signature: PredictorSignature
+  ): string {
+    if (!demos'' | '''' | ''demos.length === 0) {
+      return'';
     }
 
-    const formattedDemos = demos.map(demo => {
-      const inputs = this.extractInputs(demo, signature);
-      const outputs = this.extractOutputs(demo, signature);
-      
-      return this.formatExample(inputs, outputs);
-    }).join('\n\n');
+    const formattedDemos = demos
+      .map((demo) => {
+        const inputs = this.extractInputs(demo, signature);
+        const outputs = this.extractOutputs(demo, signature);
+
+        return this.formatExample(inputs, outputs);
+      })
+      .join('\n\n');
 
     return formattedDemos;
   }
@@ -155,9 +160,12 @@ export abstract class BaseAdapter implements Adapter {
   /**
    * Extract input fields from example based on signature
    */
-  protected extractInputs(example: Example, signature: PredictorSignature): Record<string, any> {
+  protected extractInputs(
+    example: Example,
+    signature: PredictorSignature
+  ): Record<string, any> {
     const inputs: Record<string, any> = {};
-    
+
     if (signature.inputs) {
       for (const [key, _spec] of Object.entries(signature.inputs)) {
         if (example.has(key)) {
@@ -180,9 +188,12 @@ export abstract class BaseAdapter implements Adapter {
   /**
    * Extract output fields from example based on signature
    */
-  protected extractOutputs(example: Example, signature: PredictorSignature): Record<string, any> {
+  protected extractOutputs(
+    example: Example,
+    signature: PredictorSignature
+  ): Record<string, any> {
     const outputs: Record<string, any> = {};
-    
+
     if (signature.outputs) {
       for (const [key, _spec] of Object.entries(signature.outputs)) {
         if (example.has(key)) {
@@ -191,7 +202,13 @@ export abstract class BaseAdapter implements Adapter {
       }
     } else {
       // If no output specification, try common output fields
-      const commonOutputs = ['answer', 'response', 'output', 'result', 'completion'];
+      const commonOutputs = [
+        'answer',
+        'response',
+        'output',
+        'result',
+        'completion',
+      ];
       for (const field of commonOutputs) {
         if (example.has(field)) {
           outputs[field] = example.get(field);
@@ -205,10 +222,17 @@ export abstract class BaseAdapter implements Adapter {
   /**
    * Format a single example (input/output pair)
    */
-  protected formatExample(inputs: Record<string, any>, outputs: Record<string, any>): string {
-    const inputParts = Object.entries(inputs).map(([key, value]) => `${key}: ${value}`);
-    const outputParts = Object.entries(outputs).map(([key, value]) => `${key}: ${value}`);
-    
+  protected formatExample(
+    inputs: Record<string, any>,
+    outputs: Record<string, any>
+  ): string {
+    const inputParts = Object.entries(inputs).map(
+      ([key, value]) => `${key}: ${value}`
+    );
+    const outputParts = Object.entries(outputs).map(
+      ([key, value]) => `${key}: ${value}`
+    );
+
     return `Input: ${inputParts.join(', ')}\nOutput: ${outputParts.join(', ')}`;
   }
 
@@ -216,29 +240,30 @@ export abstract class BaseAdapter implements Adapter {
    * Create system message from signature instructions
    */
   protected createSystemMessage(signature: PredictorSignature): string {
-    const instructions = signature.instructions || 'Follow the examples and complete the task.';
-    
+    const instructions =
+      signature.instructions'' | '''' | '''Follow the examples and complete the task.';
+
     let message = instructions;
-    
+
     // Add input/output field descriptions if available
-    if (signature.inputs || signature.outputs) {
-      message += '\n\nFields:';
-      
+    if (signature.inputs'' | '''' | ''signature.outputs) {
+      message +='\n\nFields:';
+
       if (signature.inputs) {
         message += '\nInputs:';
         for (const [key, _spec] of Object.entries(signature.inputs)) {
-          message += `\n- ${key}: ${_spec.description || 'No description'}`;
+          message += `\n- ${key}: ${_spec.description'' | '''' | '''No description'}`;
         }
       }
-      
+
       if (signature.outputs) {
         message += '\nOutputs:';
         for (const [key, spec] of Object.entries(signature.outputs)) {
-          message += `\n- ${key}: ${spec.description || 'No description'}`;
+          message += `\n- ${key}: ${spec.description'' | '''' | '''No description'}`;
         }
       }
     }
-    
+
     return message;
   }
 

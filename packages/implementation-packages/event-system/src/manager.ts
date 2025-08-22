@@ -8,9 +8,9 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import { 
-  inject, 
-  injectable, 
+import {
+  inject,
+  injectable,
   TOKENS,
   withRetry,
   safeAsync,
@@ -18,7 +18,7 @@ import {
   Storage,
   getDatabaseAccess,
   createCircuitBreaker,
-  CircuitBreakerWithMonitoring
+  CircuitBreakerWithMonitoring,
 } from '@claude-zen/foundation';
 import type {
   EventManagerConfig,
@@ -218,7 +218,7 @@ export class EventManager implements CoreEventManager {
   readonly config: EventManagerConfig;
   readonly name: string;
   readonly type: EventManagerType;
-  
+
   private registry: EventRegistry;
   private activeManagers = new Map<string, EventManager>();
   private factoryCache = new Map<EventManagerType, EventManagerFactory>();
@@ -226,13 +226,13 @@ export class EventManager implements CoreEventManager {
   private coordinationSettings: CoordinationSettings;
   private statistics: ManagerStatistics;
   private initialized = false;
-  private healthCheckInterval?: NodeJS.Timeout | undefined;
+  private healthCheckInterval?: NodeJS.Timeout'' | ''undefined;
   private recoveryAttempts = new Map<string, number>();
   private storage = Storage;
   private database = getDatabaseAccess();
-  private circuitBreaker = createCircuitBreaker(
-    async () => { /* Default function for circuit breaker */ }
-  );
+  private circuitBreaker = createCircuitBreaker(async () => {
+    /* Default function for circuit breaker */
+  });
 
   constructor(
     @inject(TOKENS.Logger) private _logger: Logger,
@@ -240,41 +240,41 @@ export class EventManager implements CoreEventManager {
   ) {
     // Initialize required interface properties
     this.config = {
-      name: 'uel-event-manager',
+      name:'uel-event-manager',
       type: EventManagerTypes.SYSTEM,
       processing: {
         strategy: 'queued',
-        queueSize: 10000
-      }
+        queueSize: 10000,
+      },
     };
     this.name = this.config.name;
     this.type = this.config.type;
-    
+
     this.registry = new EventRegistry(this._logger);
-    
+
     this.connectionManager = {
       connections: new Map(),
       health: new Map(),
       autoReconnect: true,
       maxReconnectAttempts: 5,
-      connectionTimeout: 30000
+      connectionTimeout: 30000,
     };
-    
+
     this.coordinationSettings = {
       crossManagerRouting: true,
       eventDeduplication: true,
       batchProcessing: {
         enabled: true,
         batchSize: 100,
-        flushInterval: 5000
+        flushInterval: 5000,
       },
       priorityQueue: {
         enabled: true,
         maxSize: 10000,
-        processingDelay: 10
-      }
+        processingDelay: 10,
+      },
     };
-    
+
     this.statistics = {
       totalCreated: 0,
       activeManagers: 0,
@@ -284,12 +284,12 @@ export class EventManager implements CoreEventManager {
       averageStartupTime: 0,
       totalEventsProcessed: 0,
       eventsPerSecond: 0,
-      averageLatency: 0
+      averageLatency: 0,
     };
 
     // Initialize connection maps for all manager types
-    Object.values(EventManagerTypes).forEach(type => {
-      this.connectionManager.connections.set(type, new Set());
+    Object.values(EventManagerTypes).forEach((type) => {
+      this.connectionManager.connections.set(type, new Set())();
     });
   }
 
@@ -333,11 +333,17 @@ export class EventManager implements CoreEventManager {
 
     // Apply configuration overrides
     if (options?.coordination) {
-      this.coordinationSettings = { ...this.coordinationSettings, ...options?.coordination };
+      this.coordinationSettings = {
+        ...this.coordinationSettings,
+        ...options?.coordination,
+      };
     }
 
     if (options?.connection) {
-      this.connectionManager = { ...this.connectionManager, ...options?.connection };
+      this.connectionManager = {
+        ...this.connectionManager,
+        ...options?.connection,
+      };
     }
 
     // Register default factories
@@ -384,7 +390,9 @@ export class EventManager implements CoreEventManager {
     const startTime = Date.now();
 
     try {
-      this._logger.info(`🏗️ Creating event manager: ${options?.name} (${options?.type})`);
+      this._logger.info(
+        `🏗️ Creating event manager: ${options?.name} (${options?.type})`
+      );
 
       // Get or create factory
       const factory = await this.getOrCreateFactory(options?.type);
@@ -402,7 +410,9 @@ export class EventManager implements CoreEventManager {
       this.activeManagers.set(options?.name, manager as any);
 
       // Update connection tracking
-      this.connectionManager.connections.get(options?.type)?.add(manager as any);
+      this.connectionManager.connections
+        .get(options?.type)
+        ?.add(manager as any);
       this.connectionManager.health.set(options?.name, {
         healthy: true,
         lastCheck: new Date(),
@@ -419,14 +429,21 @@ export class EventManager implements CoreEventManager {
       this.statistics.activeManagers++;
       const duration = Date.now() - startTime;
       this.statistics.averageStartupTime =
-        (this.statistics.averageStartupTime * (this.statistics.totalCreated - 1) + duration) /
+        (this.statistics.averageStartupTime *
+          (this.statistics.totalCreated - 1) +
+          duration) /
         this.statistics.totalCreated;
 
-      this._logger.info(`✅ Event manager created successfully: ${options?.name} (${duration}ms)`);
+      this._logger.info(
+        `✅ Event manager created successfully: ${options?.name} (${duration}ms)`
+      );
       return manager as any;
     } catch (error) {
       this.statistics.failedManagers++;
-      this._logger.error(`❌ Failed to create event manager ${options?.name}:`, error);
+      this._logger.error(
+        `❌ Failed to create event manager ${options?.name}:`,
+        error
+      );
       throw new Error(
         `Event manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -446,8 +463,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.SYSTEM,
       name,
-      config: config || undefined,
-      preset: 'REAL_TIME',
+      config: config'' | '''' | ''undefined,
+      preset:'REAL_TIME',
     });
 
     return manager as unknown as SystemEventManager;
@@ -466,8 +483,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.COORDINATION,
       name,
-      config: config || undefined,
-      preset: 'HIGH_THROUGHPUT',
+      config: config'' | '''' | ''undefined,
+      preset:'HIGH_THROUGHPUT',
     });
 
     return manager as unknown as CoordinationEventManager;
@@ -486,8 +503,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.COMMUNICATION,
       name,
-      config: config || undefined,
-      preset: 'REAL_TIME',
+      config: config'' | '''' | ''undefined,
+      preset:'REAL_TIME',
     });
 
     return manager as unknown as CommunicationEventManager;
@@ -506,8 +523,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.MONITORING,
       name,
-      config: config || undefined,
-      preset: 'BATCH_PROCESSING',
+      config: config'' | '''' | ''undefined,
+      preset:'BATCH_PROCESSING',
     });
 
     return manager as unknown as MonitoringEventManager;
@@ -526,8 +543,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.INTERFACE,
       name,
-      config: config || undefined,
-      preset: 'REAL_TIME',
+      config: config'' | '''' | ''undefined,
+      preset:'REAL_TIME',
     });
 
     return manager as unknown as InterfaceEventManager;
@@ -546,8 +563,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.NEURAL,
       name,
-      config: config || undefined,
-      preset: 'RELIABLE',
+      config: config'' | '''' | ''undefined,
+      preset:'RELIABLE',
     });
 
     return manager as unknown as NeuralEventManager;
@@ -566,8 +583,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.DATABASE,
       name,
-      config: config || undefined,
-      preset: 'BATCH_PROCESSING',
+      config: config'' | '''' | ''undefined,
+      preset:'BATCH_PROCESSING',
     });
 
     return manager as unknown as DatabaseEventManager;
@@ -586,7 +603,7 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.MEMORY,
       name,
-      config: config || undefined,
+      config: config'' | '''' | ''undefined,
     });
 
     return manager as unknown as MemoryEventManager;
@@ -605,8 +622,8 @@ export class EventManager implements CoreEventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.WORKFLOW,
       name,
-      config: config || undefined,
-      preset: 'RELIABLE',
+      config: config'' | '''' | ''undefined,
+      preset:'RELIABLE',
     });
 
     return manager as unknown as WorkflowEventManager;
@@ -617,8 +634,10 @@ export class EventManager implements CoreEventManager {
    *
    * @param name
    */
-  getEventManager(name: string): EventManager | undefined {
-    return this.activeManagers.get(name) || (this.registry.findEventManager(name) as any);
+  getEventManager(name: string): EventManager'' | ''undefined {
+    return (
+      this.activeManagers.get(name)'' | '''' | ''(this.registry.findEventManager(name) as any)
+    );
   }
 
   /**
@@ -680,12 +699,14 @@ export class EventManager implements CoreEventManager {
       throw new Error(`Event manager not found: ${name}`);
     }
 
-    const attempts = this.recoveryAttempts.get(name) || 0;
+    const attempts = this.recoveryAttempts.get(name)'' | '''' | ''0;
     this.recoveryAttempts.set(name, attempts + 1);
     this.statistics.recoveryAttempts++;
 
     try {
-      this._logger.info(`🔄 Restarting event manager: ${name} (attempt ${attempts + 1})`);
+      this._logger.info(
+        `🔄 Restarting event manager: ${name} (attempt ${attempts + 1})`
+      );
 
       await manager.stop();
       await manager.start();
@@ -740,7 +761,8 @@ export class EventManager implements CoreEventManager {
     const connectionsByType: Record<EventManagerType, number> = {} as any;
 
     Object.values(EventManagerTypes).forEach((type) => {
-      const connections = this.connectionManager.connections.get(type)?.size || 0;
+      const connections =
+        this.connectionManager.connections.get(type)?.size'' | '''' | ''0;
       connectionsByType[type] = connections;
       totalConnections += connections;
     });
@@ -810,7 +832,7 @@ export class EventManager implements CoreEventManager {
     totalManagers: number;
     healthyManagers: number;
     healthPercentage: number;
-    status: 'healthy' | 'warning' | 'critical';
+    status:'healthy | warning' | 'critical';
     registry: ReturnType<EventRegistry['getRegistryStats']>;
     statistics: ManagerStatistics;
     uptime: number;
@@ -820,10 +842,15 @@ export class EventManager implements CoreEventManager {
       (status) => status.status === 'healthy'
     ).length;
     const totalManagers = healthStatus.size;
-    const healthPercentage = totalManagers > 0 ? (healthyManagers / totalManagers) * 100 : 100;
+    const healthPercentage =
+      totalManagers > 0 ? (healthyManagers / totalManagers) * 100 : 100;
 
     const status =
-      healthPercentage >= 80 ? 'healthy' : healthPercentage >= 50 ? 'warning' : 'critical';
+      healthPercentage >= 80
+        ? 'healthy'
+        : healthPercentage >= 50
+          ? 'warning'
+          : 'critical';
 
     const registryStats = this.registry.getRegistryStats();
 
@@ -880,7 +907,9 @@ export class EventManager implements CoreEventManager {
    * Private methods for internal operations.
    */
 
-  private async getOrCreateFactory(type: EventManagerType): Promise<EventManagerFactory> {
+  private async getOrCreateFactory(
+    type: EventManagerType
+  ): Promise<EventManagerFactory> {
     // Check cache first
     const cached = this.factoryCache.get(type);
     if (cached) {
@@ -900,7 +929,9 @@ export class EventManager implements CoreEventManager {
     try {
       switch (type) {
         case EventManagerTypes.SYSTEM: {
-          const { SystemEventManagerFactory } = await import('./adapters/system-event-factory');
+          const { SystemEventManagerFactory } = await import(
+            './adapters/system-event-factory'
+          );
           FactoryClass = SystemEventManagerFactory as any;
           break;
         }
@@ -922,31 +953,60 @@ export class EventManager implements CoreEventManager {
         }
 
         case EventManagerTypes.MONITORING: {
-          const { MonitoringEventFactory } = await import('./adapters/monitoring-event-factory');
+          const { MonitoringEventFactory } = await import(
+            './adapters/monitoring-event-factory');
           // MonitoringEventFactory is static, wrap it in a compatible interface
           FactoryClass = class implements EventManagerFactory {
             async create(config: EventManagerConfig) {
-              const adapter = MonitoringEventFactory.create(config.name, config as any);
+              const adapter = MonitoringEventFactory.create(
+                config.name,
+                config as any
+              );
               return adapter as unknown as EventManager;
             }
-            async createMultiple() { return []; }
-            get() { return undefined; }
-            list() { return []; }
-            has() { return false; }
-            async remove() { return false; }
-            async healthCheckAll() { return new Map(); }
-            async getMetricsAll() { return new Map(); }
+            async createMultiple() {
+              return [];
+            }
+            get() {
+              return undefined;
+            }
+            list() {
+              return [];
+            }
+            has() {
+              return false;
+            }
+            async remove() {
+              return false;
+            }
+            async healthCheckAll() {
+              return new Map();
+            }
+            async getMetricsAll() {
+              return new Map();
+            }
             async startAll() {}
             async stopAll() {}
             async shutdown() {}
-            getActiveCount() { return 0; }
-            getFactoryMetrics() { return { totalManagers: 0, runningManagers: 0, errorCount: 0, uptime: 0 }; }
+            getActiveCount() {
+              return 0;
+            }
+            getFactoryMetrics() {
+              return {
+                totalManagers: 0,
+                runningManagers: 0,
+                errorCount: 0,
+                uptime: 0,
+              };
+            }
           };
           break;
         }
 
         default:
-          throw new Error(`No factory available for event manager type: ${type}`);
+          throw new Error(
+            `No factory available for event manager type: ${type}`
+          );
       }
 
       // Try different constructor signatures based on factory type
@@ -968,11 +1028,14 @@ export class EventManager implements CoreEventManager {
     }
   }
 
-  private mergeConfiguration(options: EventManagerCreationOptions): EventManagerConfig {
+  private mergeConfiguration(
+    options: EventManagerCreationOptions
+  ): EventManagerConfig {
     const defaults =
-      (DefaultEventManagerConfigs as any)?.[options?.type] ||
-      (DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
-    const presetConfig = options?.preset ? EventManagerPresets[options?.preset] : {};
+      (DefaultEventManagerConfigs as any)?.[options?.type]'' | '''' | ''(DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
+    const presetConfig = options?.preset
+      ? EventManagerPresets[options?.preset]
+      : {};
 
     return {
       ...defaults,
@@ -986,7 +1049,10 @@ export class EventManager implements CoreEventManager {
 
   private async registerDefaultFactories(): Promise<void> {
     // Register available factories
-    const factoryTypes = [EventManagerTypes.SYSTEM, EventManagerTypes.COORDINATION];
+    const factoryTypes = [
+      EventManagerTypes.SYSTEM,
+      EventManagerTypes.COORDINATION,
+    ];
 
     for (const type of factoryTypes) {
       try {
@@ -1011,14 +1077,16 @@ export class EventManager implements CoreEventManager {
           const health = this.connectionManager.health.get(name);
 
           if (
-            status.status !== 'healthy' &&
+            status.status !=='healthy'&&
             health?.healthy &&
             this.connectionManager.autoReconnect
           ) {
-            const attempts = this.recoveryAttempts.get(name) || 0;
+            const attempts = this.recoveryAttempts.get(name)'' | '''' | ''0;
 
             if (attempts < this.connectionManager.maxReconnectAttempts) {
-              this._logger.warn(`⚠️ Manager ${name} unhealthy, attempting recovery...`);
+              this._logger.warn(
+                `⚠️ Manager ${name} unhealthy, attempting recovery...`
+              );
               try {
                 await this.restartEventManager(name);
               } catch (error) {
@@ -1089,8 +1157,8 @@ export class EventManager implements CoreEventManager {
   }
 
   subscribe<T extends SystemEvent>(
-    eventTypes: string | string[],
-    listener: (event: T) => void | Promise<void>,
+    eventTypes: string'' | ''string[],
+    listener: (event: T) => void'' | ''Promise<void>,
     options?: any
   ): string {
     // Basic subscription implementation
@@ -1131,7 +1199,10 @@ export class EventManager implements CoreEventManager {
     return [];
   }
 
-  async getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]> {
+  async getEventHistory(
+    eventType: string,
+    limit?: number
+  ): Promise<SystemEvent[]> {
     return [];
   }
 
@@ -1139,9 +1210,9 @@ export class EventManager implements CoreEventManager {
     const status = await this.performHealthCheck();
     const totalManagers = status.size;
     const healthyManagers = Array.from(status.values()).filter(
-      (s) => s.status === 'healthy'
+      (s) => s.status ==='healthy'
     ).length;
-    
+
     return {
       name: this.name,
       type: this.type,
@@ -1150,7 +1221,7 @@ export class EventManager implements CoreEventManager {
       subscriptions: 0,
       queueSize: 0,
       errorRate: 0,
-      uptime: 0
+      uptime: 0,
     };
   }
 
@@ -1168,7 +1239,7 @@ export class EventManager implements CoreEventManager {
       subscriptionCount: 0,
       queueSize: 0,
       memoryUsage: 0,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 

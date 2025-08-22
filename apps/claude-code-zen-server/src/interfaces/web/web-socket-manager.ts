@@ -8,8 +8,8 @@
  * @file Web-socket management system.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { Server as SocketIOServer } from 'socket.io');
+import { getLogger } from '@claude-zen/foundation';
+import type { Server as SocketIOServer } from 'socket.io';
 
 import('/web-config');
 import('/web-data-service');
@@ -56,7 +56,7 @@ export class WebSocketManager {
 
       // Send initial connection data
       socket.emit('connected', {
-        sessionId: socket.handshake.headers['x-session-id'] || socket.id,
+        sessionId: socket.handshake.headers['x-session-id']'' | '''' | ''socket.id,
         timestamp: new Date()?.toISOString,
         serverVersion: getVersion(),
       });

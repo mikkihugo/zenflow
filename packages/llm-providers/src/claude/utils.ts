@@ -7,8 +7,10 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import validator from 'validator';
+
 import { getLogger } from '@claude-zen/foundation/logging';
+import validator from 'validator';
+
 import type { ClaudeSDKOptions } from './types';
 
 const logger = getLogger('claude-sdk-utils');
@@ -20,13 +22,12 @@ const logger = getLogger('claude-sdk-utils');
 /**
  * Find workspace root by looking for workspace configuration files
  */
-export function findWorkspaceRoot(startPath: string): string | null {
+export function findWorkspaceRoot(startPath: string): string'' | ''null {
   let currentPath = startPath;
 
   while (currentPath !== path.dirname(currentPath)) {
     // Check for workspace configuration files
-    const workspaceConfigs = [
-      'pnpm-workspace.yaml',
+    const workspaceConfigs = ['pnpm-workspace.yaml',
       'lerna.json',
       'rush.json',
       'nx.json',
@@ -51,13 +52,14 @@ export function findWorkspaceRoot(startPath: string): string | null {
 /**
  * Find project root by looking for common project indicators
  */
-export function findProjectRoot(startPath: string = process.cwd()): string | null {
+export function findProjectRoot(
+  startPath: string = process.cwd()
+): string'' | ''null {
   let currentPath = startPath;
 
   while (currentPath !== path.dirname(currentPath)) {
     // Check for project root indicators
-    const projectFiles = [
-      'package.json',
+    const projectFiles = ['package.json',
       'tsconfig.json',
       'pyproject.toml',
       'Cargo.toml',
@@ -87,8 +89,11 @@ export function findProjectRoot(startPath: string = process.cwd()): string | nul
 /**
  * Validate task inputs before execution
  */
-export function validateTaskInputs(prompt: string, options: ClaudeSDKOptions = {}): void {
-  if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
+export function validateTaskInputs(
+  prompt: string,
+  options: ClaudeSDKOptions = {}
+): void {
+  if (!prompt'' | '''' | ''typeof prompt !=='string''' | '''' | ''prompt.trim().length === 0) {
     throw new Error('Prompt must be a non-empty string');
   }
 
@@ -96,15 +101,21 @@ export function validateTaskInputs(prompt: string, options: ClaudeSDKOptions = {
     logger.warn('Prompt is very long (>100k chars), may hit token limits');
   }
 
-  if (options.maxTokens && (options.maxTokens < 1 || options.maxTokens > 200000)) {
+  if (
+    options.maxTokens &&
+    (options.maxTokens < 1'' | '''' | ''options.maxTokens > 200000)
+  ) {
     throw new Error('maxTokens must be between 1 and 200000');
   }
 
-  if (options.temperature && (options.temperature < 0 || options.temperature > 2)) {
+  if (
+    options.temperature &&
+    (options.temperature < 0'' | '''' | ''options.temperature > 2)
+  ) {
     throw new Error('temperature must be between 0 and 2');
   }
 
-  if (options.topP && (options.topP < 0 || options.topP > 1)) {
+  if (options.topP && (options.topP < 0'' | '''' | ''options.topP > 1)) {
     throw new Error('topP must be between 0 and 1');
   }
 
@@ -130,13 +141,17 @@ export function resolveWorkingDirectory(workingDirectory?: string): string {
   const resolved = path.resolve(workingDirectory);
 
   if (!fs.existsSync(resolved)) {
-    logger.warn(`Working directory ${resolved} does not exist, using current directory`);
+    logger.warn(
+      `Working directory ${resolved} does not exist, using current directory`
+    );
     return process.cwd();
   }
 
   const stats = fs.statSync(resolved);
   if (!stats.isDirectory()) {
-    logger.warn(`Working directory ${resolved} is not a directory, using current directory`);
+    logger.warn(
+      `Working directory ${resolved} is not a directory, using current directory`
+    );
     return process.cwd();
   }
 
@@ -198,7 +213,7 @@ export function sanitizeString(str: string): string {
     .replace(/javascript:/gi, '')
     .replace(/vbscript:/gi, '')
     .replace(/data:/gi, '')
-    .replace(/[;&|`$]/g, ''); // Command injection chars
+    .replace(/[$&;`'' | '']/g,''); // Command injection chars
 
   return sanitized;
 }
@@ -215,7 +230,7 @@ export function sanitizeFilePath(filePath: string): string {
   const normalized = path.normalize(filePath);
 
   // Ensure no path traversal
-  if (normalized.includes('..') || normalized.includes('~')) {
+  if (normalized.includes('..')'' | '''' | ''normalized.includes('~')) {
     throw new Error('Path traversal detected');
   }
 
@@ -224,7 +239,9 @@ export function sanitizeFilePath(filePath: string): string {
   const resolvedPath = path.resolve(normalized);
 
   for (const dangerousPath of dangerousPaths) {
-    if (resolvedPath.startsWith(dangerousPath + '/') || resolvedPath === dangerousPath) {
+    if (
+      resolvedPath.startsWith(dangerousPath + '/')'' | '''' | ''resolvedPath === dangerousPath
+    ) {
       throw new Error(`Access to ${dangerousPath} is not allowed`);
     }
   }
@@ -236,25 +253,42 @@ export function sanitizeFilePath(filePath: string): string {
  * Battle-tested command validation
  */
 export function validateCommand(command: string): boolean {
-  if (typeof command !== 'string') {
+  if (typeof command !=='string') {
     return false;
   }
 
   // Allowlist approach - only allow specific safe commands
   const allowedCommands = [
-    'ls', 'dir', 'pwd', 'echo', 'cat', 'head', 'tail',
-    'grep', 'find', 'wc', 'sort', 'uniq', 'cut',
-    'node', 'npm', 'pnpm', 'yarn', 'git', 'tsc', 'eslint',
+    'ls',
+    'dir',
+    'pwd',
+    'echo',
+    'cat',
+    'head',
+    'tail',
+    'grep',
+    'find',
+    'wc',
+    'sort',
+    'uniq',
+    'cut',
+    'node',
+    'npm',
+    'pnpm',
+    'yarn',
+    'git',
+    'tsc',
+    'eslint',
   ];
 
   const firstWord = command.trim().split(/\s+/)[0];
-  if (!firstWord || !allowedCommands.includes(firstWord)) {
-    logger.warn(`Command '${firstWord || 'empty'}' is not in allowlist`);
+  if (!firstWord'' | '''' | ''!allowedCommands.includes(firstWord)) {
+    logger.warn(`Command'${firstWord || 'empty'}'is not in allowlist`);
     return false;
   }
 
   // Check for dangerous patterns
-  if (/[;&|`$><]/.test(command)) {
+  if (/[$&;<>`'' | '']/.test(command)) {
     logger.warn('Command contains dangerous characters');
     return false;
   }

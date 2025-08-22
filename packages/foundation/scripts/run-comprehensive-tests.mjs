@@ -21,7 +21,6 @@
  */
 
 import { spawn } from 'child_process';
-import * as path from 'path';
 import * as fs from 'fs';
 
 const colors = {
@@ -188,20 +187,20 @@ function runVitest(testFiles, description, additionalOptions = []) {
   });
 }
 
-function parseTestResults(stdout) {
-  try {
-    // Extract test results from stdout
-    const lines = stdout.split('\n');
-    const testLine = lines.find(line => line.includes('Test Files'));
-    if (testLine) {
-      const match = testLine.match(/(\d+)\s+passed/);
-      return match ? parseInt(match[1]) : 0;
-    }
-    return 0;
-  } catch (error) {
-    return 0;
-  }
-}
+// function parseTestResults(stdout) {
+//   try {
+//     // Extract test results from stdout
+//     const lines = stdout.split('\n');
+//     const testLine = lines.find(line => line.includes('Test Files'));
+//     if (testLine) {
+//       const match = testLine.match(/(\d+)\s+passed/);
+//       return match ? parseInt(match[1]) : 0;
+//     }
+//     return 0;
+//   } catch {
+//     return 0;
+//   }
+// }
 
 async function runTestSuite() {
   log('🧪 Foundation SDK Comprehensive Test Suite', 'bright');
@@ -270,7 +269,7 @@ async function runTestSuite() {
       else totalFailed++;
     }
     
-  } catch (error) {
+  } catch {
     log(`❌ Test execution error: ${error.message}`, 'red');
     totalFailed++;
   }
@@ -303,7 +302,7 @@ async function runTestSuite() {
       if (testResults.testResults) {
         log(`📄 Detailed results saved to: test-results.json`, 'blue');
       }
-    } catch (error) {
+    } catch {
       log(`⚠️ Could not parse test results file: ${error.message}`, 'yellow');
     }
   }
@@ -340,7 +339,7 @@ async function runTestSuite() {
 }
 
 // Handle unhandled promises
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason) => {
   log(`❌ Unhandled promise rejection: ${reason}`, 'red');
   process.exit(1);
 });
@@ -357,7 +356,7 @@ process.on('SIGTERM', () => {
 });
 
 // Run the test suite
-runTestSuite().catch((error) => {
+runTestSuite().catch(() => {
   log(`❌ Fatal error: ${error.message}`, 'red');
   process.exit(1);
 });

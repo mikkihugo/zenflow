@@ -16,10 +16,10 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise');
-import { nanoid } from 'nanoid');
+import type { DocumentType } from '@claude-zen/enterprise';
+import { nanoid } from 'nanoid';
 
-import type { StoryEntity, TaskEntity } from './../entities/document-entities');
+import type { StoryEntity, TaskEntity } from './../entities/document-entities';
 
 import {
   BaseDocumentService,
@@ -37,11 +37,11 @@ export interface StoryCreateOptions {
   title: string;
   description: string;
   acceptanceCriteria: string[];
-  storyType: 'user_story | enabler_story');
+  storyType: 'user_story'' | ''enabler_story');
   parentFeatureId?: string;
   sprintId?: string;
   iterationId?: string;
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   storyPoints?: number;
   businessValue?: number;
   assignedTeamId?: string;
@@ -50,16 +50,12 @@ export interface StoryCreateOptions {
   author?: string;
   projectId?: string;
   persona?: string; // For user stories
-  enablerType?:
-    | 'infrastructure'
-    | 'architectural'
-    | 'exploration'
-    | 'compliance'); // For enabler stories
+  enablerType?:' | ''infrastructure | architectural' | 'exploration''' | '''compliance'); // For enabler stories
   metadata?: Record<string, unknown>;
 }
 
 export interface StoryQueryOptions extends QueryFilters {
-  storyType?: 'user_story | enabler_story');
+  storyType?: 'user_story'' | ''enabler_story');
   sprintId?: string;
   iterationId?: string;
   parentFeatureId?: string;
@@ -67,7 +63,7 @@ export interface StoryQueryOptions extends QueryFilters {
   assignedUserId?: string;
   storyPointsRange?: { min?: number; max?: number };
   hasTasks?: boolean;
-  implementationStatus?: 'todo | in_progress' | 'done | accepted');
+  implementationStatus?: 'todo'' | ''in_progress'' | ''done'' | ''accepted');
 }
 
 export interface StoryStats {
@@ -92,7 +88,7 @@ export interface StoryStats {
 export interface AcceptanceCriteria {
   id: string;
   description: string;
-  status: 'pending | in_progress' | 'done | failed');
+  status: 'pending'' | ''in_progress'' | ''done'' | ''failed');
   testScenarios?: string[];
 }
 
@@ -138,8 +134,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     }
 
     if (
-      !data.metadata?.acceptanceCriteria ||
-      (data.metadata.acceptanceCriteria as string[])?.length === 0
+      !data.metadata?.acceptanceCriteria'' | '''' | ''(data.metadata.acceptanceCriteria as string[])?.length === 0
     ) {
       errors.push('At least one acceptance criteria is required');
     }
@@ -196,11 +191,11 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
         content += `**As a** ${data.metadata.persona}, **I want** ${data.title?.toLowerCase} **so that** [benefit]\n\n`;
       }
     } else if (data.metadata?.storyType === 'enabler_story') {
-      content += `*Enabler Story - ${data.metadata?.enablerType || 'Technical'}*\n\n`;
+      content += `*Enabler Story - ${data.metadata?.enablerType'' | '''' | '''Technical'}*\n\n`;
     }
 
     // Description
-    content += `## Description\n${data.content || ''}\n\n`;
+    content += `## Description\n${data.content'' | '''' | ''''}\n\n`;
 
     // Acceptance criteria
     if (
@@ -237,7 +232,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     // Metadata section
     content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
-    content += `**Author**: ${data.author || 'development-team'}\n`;
+    content += `**Author**: ${data.author'' | '''' | '''development-team'}\n`;
 
     if (data.metadata?.storyPoints) {
       content += `**Story Points**: ${data.metadata.storyPoints}\n`;
@@ -260,18 +255,17 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
 
   protected generateKeywords(data: Partial<StoryEntity>): string[] {
     const textSources = [
-      data.title || '',
-      data.content || '',
-      data.metadata?.persona || '',
-      ...(data.metadata?.acceptanceCriteria || []),
+      data.title'' | '''' | '''',
+      data.content'' | '''' | '''',
+      data.metadata?.persona'' | '''' | '''',
+      ...(data.metadata?.acceptanceCriteria'' | '''' | ''[]),
     ];
 
     const text = textSources.join(' ')?.toLowerCase()
-    const words = text.match(/\b\w{3,}\b/g) || [];
+    const words = text.match(/\b\w{3,}\b/g)'' | '''' | ''[];
 
     // Common stop words to filter out
-    const stopWords = new Set([
-      'the',
+    const stopWords = new Set(['the',
       'and',
       'for',
       'are',
@@ -368,12 +362,12 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
         title: options.title,
         content: options.description,
         summary: `${options.storyType === 'user_story ? User' : 'Enabler'} story: ${options.title}`,
-        author: options.author || 'development-team',
+        author: options.author'' | '''' | '''development-team',
         project_id: options.projectId,
         status: 'draft',
-        priority: options.priority || 'medium',
+        priority: options.priority'' | '''' | '''medium',
         tags: ['story, safe', options.storyType],
-        dependencies: options.dependencies || [],
+        dependencies: options.dependencies'' | '''' | ''[],
         related_documents: [],
 
         metadata: {
@@ -388,7 +382,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
           assignedUserId: options.assignedUserId,
           persona: options.persona,
           enablerType: options.enablerType,
-          implementationStatus: 'todo',
+          implementationStatus:'todo',
           tasksGenerated: 0,
           completedCriteria: 0,
           ...options.metadata,
@@ -459,7 +453,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
 
     try {
       const acceptanceCriteria =
-        (story.metadata?.acceptanceCriteria as AcceptanceCriteria[]) || [];
+        (story.metadata?.acceptanceCriteria as AcceptanceCriteria[])'' | '''' | ''[];
       const criteriaIndex = acceptanceCriteria.findIndex(
         (c) => c.id === criteriaId
       );
@@ -471,7 +465,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
       acceptanceCriteria[criteriaIndex].status = status;
 
       const completedCriteria = acceptanceCriteria.filter(
-        (c) => c.status === 'done'
+        (c) => c.status ==='done'
       ).length;
 
       const updatedStory = await this.updateDocument(storyId, {
@@ -575,7 +569,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
         if (!storyPoints) return false;
 
         const { min, max } = options.storyPointsRange!;
-        return (!min || storyPoints >= min) && (!max || storyPoints <= max);
+        return (!min'' | '''' | ''storyPoints >= min) && (!max'' | '''' | ''storyPoints <= max);
       });
     }
 
@@ -623,7 +617,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
 
       for (const story of stories) {
         // Story type counting
-        if (story.metadata?.storyType === 'user_story') {
+        if (story.metadata?.storyType ==='user_story') {
           stats.userStories++;
         } else if (story.metadata?.storyType === 'enabler_story') {
           stats.enablerStories++;
@@ -632,19 +626,19 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
         // Status distribution
         if (story.status) {
           stats.byStatus[story.status] =
-            (stats.byStatus[story.status] || 0) + 1;
+            (stats.byStatus[story.status]'' | '''' | ''0) + 1;
         }
 
         // Priority distribution
         if (story.priority) {
           stats.byPriority[story.priority] =
-            (stats.byPriority[story.priority] || 0) + 1;
+            (stats.byPriority[story.priority]'' | '''' | ''0) + 1;
         }
 
         // Story points distribution
         if (story.metadata?.storyPoints) {
           const points = story.metadata.storyPoints as number;
-          stats.byStoryPoints[points] = (stats.byStoryPoints[points] || 0) + 1;
+          stats.byStoryPoints[points] = (stats.byStoryPoints[points]'' | '''' | ''0) + 1;
           totalStoryPoints += points;
           storiesWithPoints++;
         }
@@ -652,11 +646,11 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
         // Team distribution
         if (story.metadata?.assignedTeamId) {
           const teamId = story.metadata.assignedTeamId as string;
-          stats.byTeam[teamId] = (stats.byTeam[teamId] || 0) + 1;
+          stats.byTeam[teamId] = (stats.byTeam[teamId]'' | '''' | ''0) + 1;
         }
 
         // Tasks counting
-        const storyTasks = story.metadata?.tasksGenerated || 0;
+        const storyTasks = story.metadata?.tasksGenerated'' | '''' | ''0;
         stats.totalTasks += storyTasks as number;
 
         // Recent activity

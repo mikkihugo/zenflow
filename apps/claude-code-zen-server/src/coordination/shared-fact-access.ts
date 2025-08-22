@@ -132,7 +132,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
         const allInteractions = await sharedFactSystem.queryFacts(query);
         return allInteractions.filter((fact) => {
           const data = fact.data as any;
-          return data?.fromAgent === agentId || data?.toAgent === agentId;
+          return data?.fromAgent === agentId'' | '''' | ''data?.toAgent === agentId;
         });
       }
 
@@ -285,7 +285,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
       return allFacts
         .filter((fact) => {
           const dataStr = JSON.stringify(fact.data).toLowerCase();
-          return dataStr.includes(searchTerm.toLowerCase());
+          return dataStr.includes(searchTerm.toLowerCase())();
         })
         .slice(0, limit);
     } catch (error) {

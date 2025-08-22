@@ -2,7 +2,7 @@
  * @fileoverview Interface implementation: enhanced-websocket-client.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   ClientMetrics,
@@ -10,7 +10,7 @@ import type {
   ClientStatus,
   Client,
   RequestOptions,
-} from './core/interfaces');
+} from './core/interfaces';
 
 import type {
   WebSocketClientConfig,
@@ -73,7 +73,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
     super();
 
     // Handle both legacy and new construction patterns
-    if (typeof urlOrConfig === 'string') {
+    if (typeof urlOrConfig ==='string') {
       // Legacy constructor: new EnhancedWebSocketClient(url, options)
       this.url = urlOrConfig;
       this.options = {
@@ -101,7 +101,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
         heartbeat: {
           enabled: true,
           interval: 30000,
-          message: { type: 'ping' },
+          message: { type: 'ping'},
         },
         messageQueue: {
           enabled: true,
@@ -345,7 +345,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
    * @param handler
    */
   override on(
-    event: 'connect | disconnect' | 'error | retry' | string,
+    event: 'connect | disconnect | error | retry' | string,
     handler: (args: any[]) => void
   ): this {
     return super.on(event, handler);
@@ -543,7 +543,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
       let data: any;
 
       // Handle different message types
-      if (typeof event.data === 'string') {
+      if (typeof event.data ==='string') {
         try {
           data = JSON.parse(event.data);
         } catch {
@@ -623,7 +623,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
             requestId,
             duration,
             connectionId: this.connectionId,
-            messageType: 'response',
+            messageType:'response',
           },
         } as ClientResponse<T>);
       };
@@ -681,7 +681,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
 
   private startHeartbeat(): void {
     const interval = this.config.heartbeat?.interval || 30000;
-    const message = this.config.heartbeat?.message || { type: 'ping' };
+    const message = this.config.heartbeat?.message || { type:'ping' };
 
     this.heartbeatTimer = setInterval(() => {
       if (this._isConnected && this.ws) {
@@ -704,9 +704,7 @@ export class EnhancedWebSocketClient extends TypedEventBase implements Client {
   private isHeartbeatResponse(data: any): boolean {
     return (
       data &&
-      (data.type === 'pong' ||
-        data.type === 'heartbeat' ||
-        data.type === 'ping');
+      (data.type === 'pong' || data.type ==='heartbeat' || data.type ==='ping');
     );
   }
 

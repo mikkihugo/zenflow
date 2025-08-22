@@ -39,7 +39,7 @@ export interface ClaudeZenCoreConfig {
   flowTopology?: string;
 
   // Logging configuration
-  logLevel?: 'debug | info' | 'warn | error');
+  logLevel?: 'debug'' | ''info'' | ''warn'' | ''error');
 }
 
 /**

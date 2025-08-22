@@ -1,6 +1,6 @@
 /**
  * @fileoverview Conversation Manager
- * 
+ *
  * Basic conversation management utilities and helpers.
  */
 
@@ -19,7 +19,13 @@ export class ConversationManager {
       title: `Conversation ${id}`,
       description: undefined,
       participants,
-      initiator: participants[0] || { id: '', swarmId: '', type: 'researcher' as const, instance: 0 } as AgentId,
+      initiator:
+        participants[0]'' | '''' | ''({
+          id:'',
+          swarmId: '',
+          type: 'researcher' as const,
+          instance: 0,
+        } as AgentId),
       orchestrator: undefined,
       startTime: new Date(),
       endTime: undefined,
@@ -37,7 +43,9 @@ export class ConversationManager {
       outcomes: [],
       metrics: {
         messageCount: 0,
-        participationByAgent: Object.fromEntries(participants.map(p => [p.id, 0])),
+        participationByAgent: Object.fromEntries(
+          participants.map((p) => [p.id, 0])
+        ),
         averageResponseTime: 0,
         resolutionTime: 0,
         consensusScore: 0,
@@ -50,7 +58,7 @@ export class ConversationManager {
    * Add participant to conversation
    */
   addParticipant(session: ConversationSession, agent: AgentId): void {
-    if (!session.participants.some(p => p.id === agent.id)) {
+    if (!session.participants.some((p) => p.id === agent.id)) {
       session.participants.push(agent);
       session.metrics.participationByAgent[agent.id] = 0;
     }
@@ -60,7 +68,7 @@ export class ConversationManager {
    * Remove participant from conversation
    */
   removeParticipant(session: ConversationSession, agentId: string): void {
-    session.participants = session.participants.filter(p => p.id !== agentId);
+    session.participants = session.participants.filter((p) => p.id !== agentId);
     delete session.metrics.participationByAgent[agentId];
   }
 }

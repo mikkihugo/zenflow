@@ -17,10 +17,10 @@
  * - Advanced search and indexing capabilities
  */
 
-import type { DocumentType } from '@claude-zen/enterprise');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
-import type { BaseDocumentEntity } from '@claude-zen/intelligence');
-import { nanoid } from 'nanoid');
+import type { DocumentType } from '@claude-zen/enterprise';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { BaseDocumentEntity } from '@claude-zen/intelligence';
+import { nanoid } from 'nanoid';
 
 const logger = getLogger('services-document-service');
 
@@ -41,17 +41,12 @@ export interface DocumentQueryOptions {
   includeWorkflowState?: boolean;
   limit?: number;
   offset?: number;
-  sortBy?:
-    | 'created_at'
-    | 'updated_at'
-    | 'title'
-    | 'priority'
-    | 'completion_percentage');
-  sortOrder?: 'asc | desc');
+  sortBy?:'' | '''created_at | updated_at' | 'title' | 'priority' | 'completion_percentage');
+  sortOrder?: 'asc'' | ''desc');
 }
 
 export interface DocumentSearchOptions extends DocumentQueryOptions {
-  searchType: 'fulltext | semantic' | 'keyword | combined');
+  searchType: 'fulltext'' | ''semantic'' | ''keyword'' | ''combined');
   query: string;
   documentTypes?: DocumentType[];
   projectId?: string;
@@ -60,7 +55,7 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
   dateRange?: {
     start: Date;
     end: Date;
-    field: 'created_at | updated_at');
+    field: 'created_at'' | ''updated_at');
   };
 }
 
@@ -95,9 +90,9 @@ export class DocumentManager extends TypedEventBase {
   private workflowRepository: any;
 
   private initialized = false;
-  private databaseType: 'postgresql | sqlite' | 'mysql');
+  private databaseType: 'postgresql'' | ''sqlite'' | ''mysql');
 
-  constructor(databaseType: 'postgresql | sqlite' | 'mysql = postgresql') {
+  constructor(databaseType: 'postgresql'' | ''sqlite'' | ''mysql = postgresql') {
     super();
     this.databaseType = databaseType;
   }
@@ -195,7 +190,7 @@ export class DocumentManager extends TypedEventBase {
         document_type: documentType,
         created_at: new Date(),
         updated_at: new Date(),
-        status: data.status || 'draft',
+        status: data.status'' | '''' | '''draft',
       };
 
       // Use database repository for creation
@@ -251,7 +246,7 @@ export class DocumentManager extends TypedEventBase {
   async getDocument<T extends BaseDocumentEntity>(
     id: string,
     options: DocumentQueryOptions = {}
-  ): Promise<T | null> {
+  ): Promise<T'' | ''null> {
     if (!this.initialized) await this.initialize;
 
     const timer = this.performanceTracker.startTimer('get_document');
@@ -372,7 +367,7 @@ export class DocumentManager extends TypedEventBase {
       // Enrich results with additional data if requested
       const documents = await Promise.all(
         searchResults.documents.map(async (doc: any) => {
-          if (options.includeRelationships || options.includeWorkflowState) {
+          if (options.includeRelationships'' | '''' | ''options.includeWorkflowState) {
             return await this.getDocument(doc.id, options);
           }
           return doc;
@@ -461,12 +456,12 @@ export class DocumentManager extends TypedEventBase {
         limit: options.limit,
         offset: options.offset,
         orderBy: options.sortBy
-          ? { [options.sortBy]: options.sortOrder || 'desc' }
+          ? { [options.sortBy]: options.sortOrder'' | '''' | '''desc'}
           : undefined,
       });
 
       // Enrich with additional data if requested
-      if (options.includeRelationships || options.includeWorkflowState) {
+      if (options.includeRelationships'' | '''' | ''options.includeWorkflowState) {
         return await Promise.all(
           documents.map(
             async (doc: any) => await this.getDocument(doc.id, options)
@@ -502,7 +497,7 @@ export class DocumentManager extends TypedEventBase {
       );
 
       return {
-        status: workflowStatus?.status || 'unknown',
+        status: workflowStatus?.status'' | '''' | '''unknown',
         stage: workflowState.current_stage,
         canTransition: workflowStatus?.status === 'running',
         nextStages: await this.getNextStages(workflowState.current_stage),
@@ -567,9 +562,9 @@ export class DocumentManager extends TypedEventBase {
    */
   getDocumentMetrics(): any {
     return {
-      performance: this.performanceTracker?.getStats || {},
-      monitoring: this.monitoringSystem?.getMetrics || {},
-      totalOperations: this.performanceTracker?.getStats?.totalOperations || 0,
+      performance: this.performanceTracker?.getStats'' | '''' | ''{},
+      monitoring: this.monitoringSystem?.getMetrics'' | '''' | ''{},
+      totalOperations: this.performanceTracker?.getStats?.totalOperations'' | '''' | ''0,
     };
   }
 
@@ -596,8 +591,8 @@ export class DocumentManager extends TypedEventBase {
           id: nanoid(),
           source_document_id: documentId,
           target_document_id: related.id,
-          relationship_type: related.relationshipType || 'related',
-          strength: related.strength || .5,
+          relationship_type: related.relationshipType'' | '''' | '''related',
+          strength: related.strength'' | '''' | ''.5,
           created_at: new Date(),
         });
       }
@@ -627,7 +622,7 @@ export class DocumentManager extends TypedEventBase {
         active: [],
       };
 
-      return stageMap[currentStage] || [];
+      return stageMap[currentStage]'' | '''' | ''[];
     } catch (error) {
       logger.error('Failed to get next stages:', error);
       return [];
@@ -655,7 +650,7 @@ export class DocumentManager extends TypedEventBase {
  * Create a Document Manager with default configuration
  */
 export function createDocumentManager(
-  databaseType: 'postgresql | sqlite' | 'mysql = postgresql'
+  databaseType: 'postgresql'' | ''sqlite'' | ''mysql = postgresql'
 ): DocumentManager {
   return new DocumentManager(databaseType);
 }

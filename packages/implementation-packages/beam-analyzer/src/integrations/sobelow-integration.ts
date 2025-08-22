@@ -17,7 +17,7 @@ import type {
   ConfigSecurityIssue,
   BeamLocation,
   BeamAnalysisError,
-  BeamSeverity
+  BeamSeverity,
 } from '../types/beam-types';
 
 export class SobelowIntegration {
@@ -30,8 +30,8 @@ export class SobelowIntegration {
     project: BeamProject,
     context: BeamAnalysisContext,
     options: {
-      format?: 'json' | 'txt' | 'compact';
-      confidence?: 'high' | 'medium' | 'low';
+      format?: 'json | txt' | 'compact';
+      confidence?: 'high | medium' | 'low';
       skipFiles?: string[];
       configFile?: string;
       verbose?: boolean;
@@ -42,31 +42,39 @@ export class SobelowIntegration {
         return err({
           code: 'CONFIGURATION_ERROR',
           message: 'Sobelow can only analyze Elixir projects',
-          tool: 'sobelow'
+          tool: 'sobelow',
         });
       }
 
       this.logger.info('Running Sobelow security analysis...');
 
       // Run Sobelow analysis
-      const analysisResult = await this.runSobelowAnalysis(project, context, options);
+      const analysisResult = await this.runSobelowAnalysis(
+        project,
+        context,
+        options
+      );
       if (!analysisResult.isOk()) {
         return err(analysisResult.error);
       }
 
       // Parse results
-      const result = this.parseSobelowOutput(analysisResult.value, options.format || 'json');
+      const result = this.parseSobelowOutput(
+        analysisResult.value,
+        options.format'' | '''' | '''json'
+      );
 
-      this.logger.info(`Sobelow analysis completed: ${result.findings.length} security findings`);
+      this.logger.info(
+        `Sobelow analysis completed: ${result.findings.length} security findings`
+      );
       return ok(result);
-
     } catch (error) {
       this.logger.error('Sobelow analysis failed:', error);
       return err({
         code: 'ANALYSIS_FAILED',
         message: `Sobelow analysis failed: ${error instanceof Error ? error.message : String(error)}`,
         tool: 'sobelow',
-        originalError: error instanceof Error ? error : undefined
+        originalError: error instanceof Error ? error : undefined,
       });
     }
   }
@@ -130,11 +138,13 @@ export class SobelowIntegration {
       // Add project root
       args.push('.');
 
-      this.logger.debug(`Running Sobelow with command: sobelow ${args.join(' ')}`);
+      this.logger.debug(
+        `Running Sobelow with command: sobelow ${args.join(' ')}`
+      );
 
       const child = spawn('sobelow', args, {
         cwd: context.workingDirectory,
-        stdio: ['ignore', 'pipe', 'pipe']
+        stdio: ['ignore', 'pipe', 'pipe'],
       });
 
       let stdout = '';
@@ -150,25 +160,29 @@ export class SobelowIntegration {
 
       child.on('close', (code) => {
         // Sobelow returns non-zero when vulnerabilities are found
-        if (code === 0 || code === 1) {
+        if (code === 0'' | '''' | ''code === 1) {
           resolve(ok(stdout));
         } else {
           this.logger.error(`Sobelow failed with code ${code}: ${stderr}`);
-          resolve(err({
-            code: 'ANALYSIS_FAILED',
-            message: `Sobelow analysis failed: ${stderr}`,
-            tool: 'sobelow'
-          }));
+          resolve(
+            err({
+              code:'ANALYSIS_FAILED',
+              message: `Sobelow analysis failed: ${stderr}`,
+              tool: 'sobelow',
+            })
+          );
         }
       });
 
       child.on('error', (error) => {
-        resolve(err({
-          code: 'TOOL_NOT_FOUND',
-          message: `Failed to spawn sobelow: ${error.message}`,
-          tool: 'sobelow',
-          originalError: error
-        }));
+        resolve(
+          err({
+            code: 'TOOL_NOT_FOUND',
+            message: `Failed to spawn sobelow: ${error.message}`,
+            tool: 'sobelow',
+            originalError: error,
+          })
+        );
       });
     });
   }
@@ -180,7 +194,7 @@ export class SobelowIntegration {
     const result: SobelowResult = {
       findings: [],
       phoenixIssues: [],
-      configIssues: []
+      configIssues: [],
     };
 
     try {
@@ -194,7 +208,8 @@ export class SobelowIntegration {
         result.findings = this.parseTextFindings(output);
       }
     } catch (error) {
-      this.logger.warn('Failed to parse Sobelow output as JSON, attempting text parsing');
+      this.logger.warn(
+        'Failed to parse Sobelow output as JSON, attempting text parsing');
       result.findings = this.parseTextFindings(output);
     }
 
@@ -214,16 +229,16 @@ export class SobelowIntegration {
     for (const finding of jsonData.findings) {
       const sobelowFinding: SobelowFinding = {
         category: this.mapSobelowCategory(finding.type),
-        confidence: finding.confidence || 'medium',
-        details: finding.details || finding.message || '',
+        confidence: finding.confidence'' | '''' | '''medium',
+        details: finding.details'' | '''' | ''finding.message'' | '''' | '''',
         location: {
-          file: finding.file || '',
-          line: finding.line || 1,
+          file: finding.file'' | '''' | '''',
+          line: finding.line'' | '''' | ''1,
           column: finding.column,
-          context: finding.fun || finding.variable || finding.module
+          context: finding.fun'' | '''' | ''finding.variable'' | '''' | ''finding.module,
         },
         owasp: finding.owasp,
-        cwe: finding.cwe ? parseInt(finding.cwe, 10) : undefined
+        cwe: finding.cwe ? parseInt(finding.cwe, 10) : undefined,
       };
 
       findings.push(sobelowFinding);
@@ -239,12 +254,12 @@ export class SobelowIntegration {
     const findings: SobelowFinding[] = [];
     const lines = output.split('\n');
 
-    let currentFinding: Partial<SobelowFinding> | null = null;
-    
+    let currentFinding: Partial<SobelowFinding>'' | ''null = null;
+
     for (const line of lines) {
       const trimmed = line.trim();
-      
-      if (trimmed === '') {
+
+      if (trimmed ==='') {
         if (currentFinding) {
           findings.push(currentFinding as SobelowFinding);
           currentFinding = null;
@@ -258,15 +273,15 @@ export class SobelowIntegration {
         if (currentFinding) {
           findings.push(currentFinding as SobelowFinding);
         }
-        
+
         currentFinding = {
           category: this.mapSobelowCategoryFromText(headerMatch[1]),
-          confidence: headerMatch[2].toLowerCase() as 'high' | 'medium' | 'low',
+          confidence: headerMatch[2].toLowerCase() as 'high | medium' | 'low',
           details: headerMatch[1],
           location: {
             file: '',
-            line: 1
-          }
+            line: 1,
+          },
         };
         continue;
       }
@@ -276,7 +291,7 @@ export class SobelowIntegration {
       if (fileMatch && currentFinding) {
         currentFinding.location = {
           file: fileMatch[1],
-          line: parseInt(fileMatch[2], 10)
+          line: parseInt(fileMatch[2], 10),
         };
         continue;
       }
@@ -308,9 +323,11 @@ export class SobelowIntegration {
     for (const issue of jsonData.phoenix) {
       issues.push({
         type: issue.type,
-        component: issue.component || issue.controller || issue.view || 'unknown',
-        risk: this.mapSeverity(issue.severity || 'medium'),
-        mitigation: issue.mitigation || 'Review and apply security best practices'
+        component:
+          issue.component'' | '''' | ''issue.controller'' | '''' | ''issue.view'' | '''' | '''unknown',
+        risk: this.mapSeverity(issue.severity'' | '''' | '''medium'),
+        mitigation:
+          issue.mitigation'' | '''' | '''Review and apply security best practices',
       });
     }
 
@@ -329,10 +346,10 @@ export class SobelowIntegration {
 
     for (const issue of jsonData.config) {
       issues.push({
-        file: issue.file || 'config/config.exs',
-        setting: issue.setting || 'unknown',
-        issue: issue.issue || issue.message || '',
-        recommendation: issue.recommendation || 'Apply security best practices'
+        file: issue.file'' | '''' | '''config/config.exs',
+        setting: issue.setting'' | '''' | '''unknown',
+        issue: issue.issue'' | '''' | ''issue.message'' | '''' | '''',
+        recommendation: issue.recommendation'' | '''' | '''Apply security best practices',
       });
     }
 
@@ -385,18 +402,21 @@ export class SobelowIntegration {
    */
   private mapSobelowCategoryFromText(text: string): SobelowCategory {
     const lowerText = text.toLowerCase();
-    
+
     if (lowerText.includes('sql')) return 'sql_injection';
-    if (lowerText.includes('xss') || lowerText.includes('cross-site scripting')) return 'xss';
-    if (lowerText.includes('csrf') || lowerText.includes('cross-site request')) return 'csrf';
-    if (lowerText.includes('directory') || lowerText.includes('path')) return 'directory_traversal';
+    if (lowerText.includes('xss')'' | '''' | ''lowerText.includes('cross-site scripting'))
+      return 'xss';
+    if (lowerText.includes('csrf')'' | '''' | ''lowerText.includes('cross-site request'))
+      return 'csrf';
+    if (lowerText.includes('directory')'' | '''' | ''lowerText.includes('path'))
+      return 'directory_traversal';
     if (lowerText.includes('command')) return 'command_injection';
     if (lowerText.includes('code injection')) return 'code_injection';
     if (lowerText.includes('redirect')) return 'redirect';
     if (lowerText.includes('traversal')) return 'traversal';
     if (lowerText.includes('execution')) return 'rce';
-    if (lowerText.includes('dos') || lowerText.includes('denial')) return 'dos';
-    
+    if (lowerText.includes('dos')'' | '''' | ''lowerText.includes('denial')) return 'dos';
+
     return 'misc';
   }
 
@@ -424,7 +444,7 @@ export class SobelowIntegration {
   async checkAvailability(): Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
       const child = spawn('sobelow', ['--version'], {
-        stdio: ['ignore', 'pipe', 'pipe']
+        stdio: ['ignore', 'pipe', 'pipe'],
       });
 
       let stdout = '';
@@ -440,24 +460,28 @@ export class SobelowIntegration {
 
       child.on('close', (code) => {
         if (code === 0) {
-          const version = stdout.trim().split('\n')[0] || 'unknown';
+          const version = stdout.trim().split('\n')[0]'' | '''' | '''unknown';
           resolve(ok(version));
         } else {
-          resolve(err({
-            code: 'TOOL_NOT_FOUND',
-            message: 'Sobelow not found or not working',
-            tool: 'sobelow'
-          }));
+          resolve(
+            err({
+              code: 'TOOL_NOT_FOUND',
+              message: 'Sobelow not found or not working',
+              tool: 'sobelow',
+            })
+          );
         }
       });
 
       child.on('error', (error) => {
-        resolve(err({
-          code: 'TOOL_NOT_FOUND',
-          message: `Sobelow not available: ${error.message}`,
-          tool: 'sobelow',
-          originalError: error
-        }));
+        resolve(
+          err({
+            code: 'TOOL_NOT_FOUND',
+            message: `Sobelow not available: ${error.message}`,
+            tool: 'sobelow',
+            originalError: error,
+          })
+        );
       });
     });
   }

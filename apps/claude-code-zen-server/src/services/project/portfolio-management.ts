@@ -12,10 +12,10 @@ import type {
   WorkflowKanban,
   WorkflowTask,
   TaskState,
-} from '@claude-zen/enterprise');
-import { createWorkflowKanban } from '@claude-zen/enterprise');
-import { TypedEventBase, getLogger } from '@claude-zen/foundation');
-import type { Logger } from '@claude-zen/foundation');
+} from '@claude-zen/enterprise';
+import { createWorkflowKanban } from '@claude-zen/enterprise';
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
 /**
  * User story for MVP kanban
@@ -24,8 +24,8 @@ export interface UserStory {
   id: string;
   title: string;
   description?: string;
-  status: 'backlog | todo' | 'doing | review' | 'done');
-  priority: 'low | medium' | 'high | urgent');
+  status: 'backlog'' | ''todo'' | ''doing'' | ''review'' | ''done');
+  priority: 'low'' | ''medium'' | ''high'' | ''urgent');
   assignedTo?: string;
   storyPoints?: number; // Estimation in story points
   tags: string[]; // Labels/tags for categorization
@@ -88,26 +88,26 @@ export class SimpleKanban extends TypedEventBase {
     try {
       // Create the underlying workflow kanban with minimal configuration
       this.workflowKanban = createWorkflowKanban({
-        enableIntelligentWIP: this.configuration.enableAI || false,
-        enableBottleneckDetection: this.configuration.enableAI || false,
-        enableFlowOptimization: this.configuration.enableAI || false,
+        enableIntelligentWIP: this.configuration.enableAI'' | '''' | ''false,
+        enableBottleneckDetection: this.configuration.enableAI'' | '''' | ''false,
+        enableFlowOptimization: this.configuration.enableAI'' | '''' | ''false,
         enablePredictiveAnalytics: false,
         enableRealTimeMonitoring: false,
         defaultWIPLimits: {
-          backlog: this.configuration.maxBacklog || 100,
-          analysis: this.configuration.maxTodo || 20,
-          development: this.configuration.maxDoing || 5,
-          testing: this.configuration.maxReview || 10,
+          backlog: this.configuration.maxBacklog'' | '''' | ''100,
+          analysis: this.configuration.maxTodo'' | '''' | ''20,
+          development: this.configuration.maxDoing'' | '''' | ''5,
+          testing: this.configuration.maxReview'' | '''' | ''10,
           review: 0,
           deployment: 0,
           done: 1000,
           blocked: 0,
           expedite: 0,
           total:
-            (this.configuration.maxBacklog || 100) +
-            (this.configuration.maxTodo || 20) +
-            (this.configuration.maxDoing || 5) +
-            (this.configuration.maxReview || 10) +
+            (this.configuration.maxBacklog'' | '''' | ''100) +
+            (this.configuration.maxTodo'' | '''' | ''20) +
+            (this.configuration.maxDoing'' | '''' | ''5) +
+            (this.configuration.maxReview'' | '''' | ''10) +
             1000,
         },
         performanceThresholds: [],
@@ -150,8 +150,7 @@ export class SimpleKanban extends TypedEventBase {
   async createStory(
     story: Omit<
       UserStory,
-      'id | createdAt' | 'updatedAt | startedAt' | 'completedAt'
-    >
+      'id'' | ''createdAt'' | ''updatedAt'' | ''startedAt'' | ''completedAt'>
   ): Promise<UserStory> {
     if (!this.initialized) await this.initialize;
 
@@ -159,19 +158,19 @@ export class SimpleKanban extends TypedEventBase {
       title: story.title,
       description: story.description,
       priority: this.mapPriorityToWorkflow(story.priority),
-      estimatedEffort: story.storyPoints || 1,
+      estimatedEffort: story.storyPoints'' | '''' | ''1,
       assignedAgent: story.assignedTo,
-      tags: story.tags || [],
+      tags: story.tags'' | '''' | ''[],
       metadata: {
-        acceptanceCriteria: story.acceptanceCriteria || [],
+        acceptanceCriteria: story.acceptanceCriteria'' | '''' | ''[],
         dueDate: story.dueDate,
         projectId: story.projectId,
         createdBy: story.createdBy,
       },
     });
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to create story');
+    if (!result.success'' | '''' | ''!result.data) {
+      throw new Error(result.error'' | '''' | '''Failed to create story');
     }
 
     return this.convertToUserStory(result.data);
@@ -181,10 +180,10 @@ export class SimpleKanban extends TypedEventBase {
    * Get stories with filtering options
    */
   async getStories(filters?: {
-    status?: 'backlog | todo' | 'doing | review' | 'done');
+    status?: 'backlog'' | ''todo'' | ''doing'' | ''review'' | ''done');
     assignedTo?: string;
     projectId?: string;
-    priority?: 'low | medium' | 'high | urgent');
+    priority?: 'low'' | ''medium'' | ''high'' | ''urgent');
     tags?: string[];
     dueBefore?: Date;
   }): Promise<UserStory[]> {
@@ -259,7 +258,7 @@ export class SimpleKanban extends TypedEventBase {
    */
   async moveStory(
     storyId: string,
-    status: 'backlog | todo' | 'doing | review' | 'done',
+    status: 'backlog'' | ''todo'' | ''doing'' | ''review'' | ''done',
     reason?: string
   ): Promise<UserStory> {
     if (!this.initialized) await this.initialize;
@@ -278,7 +277,7 @@ export class SimpleKanban extends TypedEventBase {
     );
 
     if (!result.success) {
-      throw new Error(result.error || 'Failed to move story');
+      throw new Error(result.error'' | '''' | '''Failed to move story');
     }
 
     const updatedTask = await this.workflowKanban!.getTask(storyId);
@@ -310,7 +309,7 @@ export class SimpleKanban extends TypedEventBase {
    */
   async updateStory(
     storyId: string,
-    updates: Partial<Omit<UserStory, 'id | createdAt'>>
+    updates: Partial<Omit<UserStory, 'id'' | ''createdAt'>>
   ): Promise<UserStory> {
     if (!this.initialized) await this.initialize;
 
@@ -323,13 +322,13 @@ export class SimpleKanban extends TypedEventBase {
     // Create updated task data
     const updatedTask = {
       ...currentTask.data,
-      title: updates.title || currentTask.data.title,
+      title: updates.title'' | '''' | ''currentTask.data.title,
       description:
         updates.description !== undefined
           ? updates.description
           : currentTask.data.description,
       priority: updates.priority
-        ? updates.priority === 'low'
+        ? updates.priority ==='low'
           ? 'low'
           : updates.priority === 'high'
             ? 'high'
@@ -346,8 +345,8 @@ export class SimpleKanban extends TypedEventBase {
     // In a more sophisticated implementation, we'd have an update method
     const result = await this.workflowKanban!.createTask(updatedTask);
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to update story');
+    if (!result.success'' | '''' | ''!result.data) {
+      throw new Error(result.error'' | '''' | '''Failed to update story');
     }
 
     return this.convertToUserStory(result.data);
@@ -420,7 +419,7 @@ export class SimpleKanban extends TypedEventBase {
       description: task.description,
       status: this.mapStatus(task.state),
       priority:
-        task.priority === 'critical || task.priority === high'
+        task.priority === 'critical'' | '''' | ''task.priority === high'
           ? 'high'
           : task.priority === 'low'
             ? 'low'
@@ -434,7 +433,7 @@ export class SimpleKanban extends TypedEventBase {
   /**
    * Map workflow states to simple statuses
    */
-  private mapStatus(state: TaskState): 'todo | doing' | 'done' {
+  private mapStatus(state: TaskState): 'todo'' | ''doing'' | ''done' {
     switch (state) {
       case 'backlog':
       case 'analysis':
@@ -458,7 +457,7 @@ export class SimpleKanban extends TypedEventBase {
    * Map simple statuses to workflow states
    */
   private mapStatusToWorkflowState(
-    status: 'todo | doing' | 'done'
+    status: 'todo'' | ''doing'' | ''done'
   ): TaskState {
     switch (status) {
       case 'todo':

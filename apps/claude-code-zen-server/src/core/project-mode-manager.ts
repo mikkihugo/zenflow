@@ -13,7 +13,7 @@
  * @version 2.3.0
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Use simple console logging for now instead of complex logger dependencies
 const logger = {
@@ -103,14 +103,14 @@ export interface ProjectModeConfig {
     // sprintLength?: number;        // weeks (default 2)
     // velocityTracking?: boolean;
     // burndownCharts?: boolean;
-    // backlogPrioritization?: string; // 'story_points | business_value'
+    // backlogPrioritization?: string; // 'story_points'' | ''business_value'
 
     // TODO: Add when SAFe mode is implemented
     // piLength?: number;            // weeks (default 10)
     // iterationLength?: number;     // weeks (default 2)
     // maxARTsPerValueStream?: number;
     // maxTeamsPerART?: number;
-    // systemDemoFrequency?: string; // 'end_of_iteration | mid_pi'
+    // systemDemoFrequency?: string; // 'end_of_iteration'' | ''mid_pi'
   };
 
   migration: {
@@ -259,8 +259,7 @@ export class ProjectModeManager extends TypedEventBase {
     //     'Real-time collaboration features'
     //   ],
     //   migrationRequired: true,
-    //   migrationScript: 'migrations/safe-1.2.0-to-1.3..js'
-    // });
+    //   migrationScript: 'migrations/safe-1.2.0-to-1.3..js'// });
   }
 
   // Schema management removed for simplicity
@@ -284,16 +283,16 @@ export class ProjectModeManager extends TypedEventBase {
   /**
    * Get mode capabilities
    */
-  getModeCapabilities(mode: ProjectMode): ModeCapabilities | null {
+  getModeCapabilities(mode: ProjectMode): ModeCapabilities'' | ''null {
     const config = this.modeConfigs.get(mode);
-    return config?.capabilities || null;
+    return config?.capabilities'' | '''' | ''null;
   }
 
   /**
    * Get mode configuration
    */
-  getModeConfig(mode: ProjectMode): ProjectModeConfig | null {
-    return this.modeConfigs.get(mode) || null;
+  getModeConfig(mode: ProjectMode): ProjectModeConfig'' | ''null {
+    return this.modeConfigs.get(mode)'' | '''' | ''null;
   }
 
   /**
@@ -316,8 +315,7 @@ export class ProjectModeManager extends TypedEventBase {
     // Currently no upgrades available - only Kanban mode exists
     return {
       success: false,
-      migrationLog: [
-        'No upgrade paths available - only Kanban mode is currently supported',
+      migrationLog: ['No upgrade paths available - only Kanban mode is currently supported',
       ],
       warnings: [
         'Mode upgrades will be available when Agile and SAFe modes are implemented',
@@ -370,8 +368,8 @@ export class ProjectModeManager extends TypedEventBase {
   /**
    * Get schema version details
    */
-  getSchemaVersion(version: string): SchemaVersion | null {
-    return this.schemaVersions.get(version) || null;
+  getSchemaVersion(version: string): SchemaVersion'' | ''null {
+    return this.schemaVersions.get(version)'' | '''' | ''null;
   }
 
   // TODO: AGI enhancement methods - will be added when @claude-zen/intelligence is available
@@ -396,7 +394,7 @@ export class ProjectModeManager extends TypedEventBase {
   getModeArchitectureDescription(mode: ProjectMode): string {
     switch (mode) {
       case ProjectMode.SAFE:
-        return 'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services.');
+        return'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services.');
       default:
         return 'Unknown project mode');
     }

@@ -13,12 +13,12 @@ import type { MemoryConfig } from '../types';
 import { type BackendCapabilities, BaseMemoryBackend } from './base-backend';
 
 // Additional types needed for factory
-export type MemoryBackendType = 'memory' | 'file' | 'sqlite' | 'jsonb';
+export type MemoryBackendType = 'memory | file' | 'sqlite''' | '''jsonb';
 
 // Backend registry for dynamic loading
 const backendRegistry = new Map<
   MemoryBackendType,
-  () => Promise<new(config: MemoryConfig) => BaseMemoryBackend>
+  () => Promise<new (config: MemoryConfig) => BaseMemoryBackend>
 >();
 
 /**
@@ -65,7 +65,7 @@ export class MemoryBackendFactory {
     instanceId?: string
   ): Promise<BaseMemoryBackend & BackendInterface> {
     const fullConfig = this.mergeConfig(config);
-    const id = instanceId || `${type}-${Date.now()}`;
+    const id = instanceId'' | '''' | ''`${type}-${Date.now()}`;
 
     // Check if backend is already created
     if (this.backends.has(id)) {
@@ -98,8 +98,8 @@ export class MemoryBackendFactory {
    *
    * @param instanceId
    */
-  public getBackend(instanceId: string): BaseMemoryBackend | null {
-    return this.backends.get(instanceId) || null;
+  public getBackend(instanceId: string): BaseMemoryBackend'' | ''null {
+    return this.backends.get(instanceId)'' | '''' | ''null;
   }
 
   /**
@@ -164,7 +164,7 @@ export class MemoryBackendFactory {
    */
   public registerBackend(
     type: MemoryBackendType,
-    loader: () => Promise<new(config: MemoryConfig) => BaseMemoryBackend>
+    loader: () => Promise<new (config: MemoryConfig) => BaseMemoryBackend>
   ): void {
     backendRegistry.set(type, loader);
   }
@@ -182,7 +182,7 @@ export class MemoryBackendFactory {
    * Get all supported backend types.
    */
   public getSupportedBackends(): MemoryBackendType[] {
-    return Array.from(backendRegistry.keys());
+    return Array.from(backendRegistry.keys())();
   }
 
   /**
@@ -235,15 +235,15 @@ export class MemoryBackendFactory {
 
   private registerDefaultBackends(): void {
     // Register built-in backends with lazy loading
-    backendRegistry.set('memory', () => this.loadMemoryBackend());
-    backendRegistry.set('file', () => this.loadFileBackend());
-    backendRegistry.set('sqlite', () => this.loadSQLiteBackend());
-    backendRegistry.set('jsonb', () => this.loadJSONBBackend());
+    backendRegistry.set('memory', () => this.loadMemoryBackend())();
+    backendRegistry.set('file', () => this.loadFileBackend())();
+    backendRegistry.set('sqlite', () => this.loadSQLiteBackend())();
+    backendRegistry.set('jsonb', () => this.loadJSONBBackend())();
   }
 
   private async getBackendClass(
     type: MemoryBackendType
-  ): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
+  ): Promise<new (config: MemoryConfig) => BaseMemoryBackend> {
     const loader = backendRegistry.get(type);
     if (!loader) {
       throw new Error(`Unsupported backend type: ${type}`);
@@ -262,7 +262,7 @@ export class MemoryBackendFactory {
     return {
       ...this.defaultConfig,
       ...config,
-      type: config?.type || 'memory',
+      type: config?.type'' | '''' | '''memory',
     } as MemoryConfig;
   }
 
@@ -270,7 +270,8 @@ export class MemoryBackendFactory {
     config: Partial<MemoryConfig>
   ): MemoryBackendType {
     // Auto-detect optimal backend based on requirements
-    const wantsPersistent = config?.type === 'sqlite' || config?.type === 'lancedb';
+    const wantsPersistent =
+      config?.type === 'sqlite''' | '''' | ''config?.type ==='lancedb';
     if (wantsPersistent) {
       return config?.maxSize && config?.maxSize > 50 * 1024 * 1024
         ? 'sqlite'
@@ -285,58 +286,66 @@ export class MemoryBackendFactory {
   }
 
   // Backend loaders - delegate to FoundationMemoryBackend
-  private async loadMemoryBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
+  private async loadMemoryBackend(): Promise<
+    new (config: MemoryConfig) => BaseMemoryBackend
+  > {
     const { FoundationMemoryBackend } = await import('./foundation-adapter');
-    
+
     return class extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
           storageType: 'kv',
-          databaseType: 'sqlite'
+          databaseType: 'sqlite',
         } as any);
       }
     };
   }
 
-  private async loadFileBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
+  private async loadFileBackend(): Promise<
+    new (config: MemoryConfig) => BaseMemoryBackend
+  > {
     const { FoundationMemoryBackend } = await import('./foundation-adapter');
-    
+
     return class extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
           storageType: 'database',
-          databaseType: 'sqlite'
+          databaseType: 'sqlite',
         } as any);
       }
     };
   }
 
-  private async loadSQLiteBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
+  private async loadSQLiteBackend(): Promise<
+    new (config: MemoryConfig) => BaseMemoryBackend
+  > {
     const { FoundationMemoryBackend } = await import('./foundation-adapter');
-    
+
     return class extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
           storageType: 'database',
-          databaseType: 'sqlite'
+          databaseType: 'sqlite',
         } as any);
       }
     };
   }
 
-  private async loadJSONBBackend(): Promise<new(config: MemoryConfig) => BaseMemoryBackend> {
+  private async loadJSONBBackend(): Promise<
+    new (config: MemoryConfig) => BaseMemoryBackend
+  > {
     // LanceDB backend using Foundation's database access (closest to JSONB)
     const { FoundationMemoryBackend } = await import('./foundation-adapter');
-    
+
     return class extends FoundationMemoryBackend {
       public constructor(config: MemoryConfig) {
         super({
           ...config,
           storageType: 'database',
-          databaseType: 'lancedb'
+          databaseType: 'lancedb',
         } as any);
       }
     };

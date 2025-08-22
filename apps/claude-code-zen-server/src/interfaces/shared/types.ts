@@ -13,13 +13,13 @@
  */
 
 // Re-export types from foundation packages
-export type { PerformanceMetrics } from '@claude-zen/foundation');
+export type { PerformanceMetrics } from '@claude-zen/foundation';
 
 export type {
   WebServerConfig,
   SessionConfig,
   WebConfig,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 
 /**
  * DEPRECATION NOTICE:
@@ -27,7 +27,7 @@ export type {
  *
  * **Migration Path:**
  * ```typescript
- * // Old: import { WebConfig } from './interfaces/shared/types');
- * // New: import { WebConfig } from '@claude-zen/foundation');
+ * // Old: import { WebConfig } from './interfaces/shared/types';
+ * // New: import { WebConfig } from '@claude-zen/foundation';
  * ```
  */

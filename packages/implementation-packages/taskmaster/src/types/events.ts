@@ -14,21 +14,9 @@
 
 // Local type definitions to avoid circular dependency
 export type TaskState =
-  | 'backlog'
-  | 'analysis'
-  | 'development'
-  | 'testing'
-  | 'review'
-  | 'done'
-  | 'blocked';
+  | 'backlog | analysis' | 'development''' | '''testing | review' | 'done''' | '''blocked';
 
-export type OptimizationStrategy =
-  | 'wip_reduction'
-  | 'bottleneck_removal'
-  | 'parallel_processing'
-  | 'load_balancing'
-  | 'priority_queue'
-  | 'resource_allocation';
+export type OptimizationStrategy ='' | '''wip_reduction | bottleneck_removal' | 'parallel_processing''' | '''load_balancing | priority_queue' | 'resource_allocation';
 
 export interface WorkflowTask {
   id: string;
@@ -58,7 +46,7 @@ export interface WIPLimits {
 export interface WorkflowBottleneck {
   state: TaskState;
   count: number;
-  severity: 'low' | 'medium' | 'high';
+  severity: 'low | medium' | 'high';
 }
 
 export interface WorkflowKanbanConfig {
@@ -182,7 +170,7 @@ export interface FlowAnalysisCompleteEvent {
 export interface OptimizationTriggeredEvent {
   type: 'OPTIMIZATION_TRIGGERED';
   strategy: OptimizationStrategy;
-  triggeredBy: 'manual' | 'automatic' | 'emergency';
+  triggeredBy: 'manual | automatic' | 'emergency';
   timestamp: Date;
 }
 
@@ -234,7 +222,7 @@ export interface ErrorOccurredEvent {
   error: string;
   errorContext: string;
   timestamp: Date;
-  severity?: 'low' | 'medium' | 'high' | 'critical';
+  severity?: 'low | medium' | 'high''' | '''critical';
 }
 
 // =============================================================================
@@ -307,42 +295,21 @@ export interface RetryOperationEvent {
  * and provides comprehensive event payload validation.
  */
 export type WorkflowEvent =
-  // Task management
-  | TaskCreatedEvent
-  | TaskMovedEvent
-  | TaskUpdatedEvent
-  | TaskCompletedEvent
-  | TaskBlockedEvent
+  // Task management'' | ''TaskCreatedEvent'' | ''TaskMovedEvent'' | ''TaskUpdatedEvent'' | ''TaskCompletedEvent'' | ''TaskBlockedEvent
 
-  // WIP management
-  | WIPLimitExceededEvent
-  | WIPLimitsUpdatedEvent
+  // WIP management'' | ''WIPLimitExceededEvent'' | ''WIPLimitsUpdatedEvent
 
-  // Bottleneck management
-  | BottleneckDetectedEvent
-  | BottleneckResolvedEvent
+  // Bottleneck management'' | ''BottleneckDetectedEvent'' | ''BottleneckResolvedEvent
 
-  // Flow analysis
-  | FlowAnalysisCompleteEvent
-  | OptimizationTriggeredEvent
+  // Flow analysis'' | ''FlowAnalysisCompleteEvent'' | ''OptimizationTriggeredEvent
 
-  // System health
-  | SystemHealthUpdatedEvent
-  | SystemHealthCheckEvent
+  // System health'' | ''SystemHealthUpdatedEvent'' | ''SystemHealthCheckEvent
 
-  // Configuration
-  | ConfigurationUpdatedEvent
+  // Configuration'' | ''ConfigurationUpdatedEvent
 
-  // Error handling
-  | ErrorOccurredEvent
+  // Error handling'' | ''ErrorOccurredEvent
 
-  // System lifecycle
-  | RestartSystemEvent
-  | EnterMaintenanceEvent
-  | ResumeOperationEvent
-  | PauseOperationEvent
-  | OptimizationCompleteEvent
-  | RetryOperationEvent;
+  // System lifecycle'' | ''RestartSystemEvent'' | ''EnterMaintenanceEvent'' | ''ResumeOperationEvent'' | ''PauseOperationEvent'' | ''OptimizationCompleteEvent'' | ''RetryOperationEvent;
 
 // =============================================================================
 // EVENT UTILITIES
@@ -357,7 +324,7 @@ export class WorkflowEventUtils {
    */
   static createTaskCreated(task: WorkflowTask): TaskCreatedEvent {
     return {
-      type: 'TASK_CREATED',
+      type:'TASK_CREATED',
       task,
     };
   }
@@ -383,7 +350,9 @@ export class WorkflowEventUtils {
   /**
    * Create bottleneck detected event
    */
-  static createBottleneckDetected(bottleneck: WorkflowBottleneck): BottleneckDetectedEvent {
+  static createBottleneckDetected(
+    bottleneck: WorkflowBottleneck
+  ): BottleneckDetectedEvent {
     return {
       type: 'BOTTLENECK_DETECTED',
       bottleneck,
@@ -411,7 +380,7 @@ export class WorkflowEventUtils {
   static createErrorOccurred(
     error: string,
     errorContext: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low | medium' | 'high''' | '''critical' = 'medium'
   ): ErrorOccurredEvent {
     return {
       type: 'ERROR_OCCURRED',

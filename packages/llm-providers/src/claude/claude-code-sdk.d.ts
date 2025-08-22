@@ -7,7 +7,7 @@
 
 declare module '@anthropic-ai/claude-code/sdk.mjs' {
   export interface ClaudeCodeMessage {
-    role: 'user' | 'assistant' | 'system';
+    role: 'user | assistant' | 'system';
     content: string;
   }
 
@@ -20,7 +20,10 @@ declare module '@anthropic-ai/claude-code/sdk.mjs' {
     workingDirectory?: string;
     systemPrompt?: string;
     signal?: AbortSignal;
-    canUseTool?: (toolName: string, params: Record<string, unknown>) => Promise<{ allowed: boolean; reason?: string }>;
+    canUseTool?: (
+      toolName: string,
+      params: Record<string, unknown>
+    ) => Promise<{ allowed: boolean; reason?: string }>;
   }
 
   export interface ClaudeCodeResponse {

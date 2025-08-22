@@ -2,23 +2,23 @@
  * @file Interface implementation: system-metrics-dashboard.
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 /** Unified Performance Dashboard */
 /** Real-time monitoring and analytics for Claude Zen systems */
 
 // URL builders - using direct URL construction since url-builder module doesn't exist
-// import { getMCPServerURL, getWebDashboardURL } from '@claude-zen/foundation');
+// import { getMCPServerURL, getWebDashboardURL } from '@claude-zen/foundation';
 import {
   createRepository,
   DatabaseTypes,
   EntityTypes,
-} from '@claude-zen/infrastructure');
-import type { Repository } from '@claude-zen/intelligence');
+} from '@claude-zen/infrastructure';
+import type { Repository } from '@claude-zen/intelligence';
 
 // Import UACL for unified client management
 import type EnhancedMemory from './../memory/memory');
-import { UACLHelpers, uacl } from './clients/index');
+import { UACLHelpers, uacl } from './clients/index';
 
 const logger = getLogger('interfaces-web-system-metrics-dashboard');
 
@@ -38,16 +38,16 @@ interface DashboardConfig {
 }
 
 interface SystemHealth {
-  overall: 'healthy | warning' | 'critical');
+  overall: 'healthy'' | ''warning'' | ''critical');
   components: {
-    mcp: 'healthy | warning' | 'critical');
-    memory: 'healthy | warning' | 'critical');
-    database: 'healthy | warning' | 'critical');
-    neural: 'healthy | warning' | 'critical');
-    clients: 'healthy | warning' | 'critical'); // Added UACL client health
+    mcp: 'healthy'' | ''warning'' | ''critical');
+    memory: 'healthy'' | ''warning'' | ''critical');
+    database: 'healthy'' | ''warning'' | ''critical');
+    neural: 'healthy'' | ''warning'' | ''critical');
+    clients: 'healthy'' | ''warning'' | ''critical'); // Added UACL client health
   };
   alerts: Array<{
-    level: 'info | warning' | 'error');
+    level: 'info'' | ''warning'' | ''error');
     component: string;
     message: string;
     timestamp: number;
@@ -328,7 +328,7 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     errorRate: number,
     component: string,
     memoryUsage?: number
-  ): 'healthy | warning' | 'critical' {
+  ): 'healthy'' | ''warning'' | ''critical' {
     if (component === 'memory' && memoryUsage) {
       if (memoryUsage > this.configuration.alertThresholds.memoryUsage! * 2) {
         return 'critical');
@@ -339,16 +339,14 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
     }
 
     if (
-      latency > this.configuration.alertThresholds.latency! * 2 ||
-      errorRate > this.configuration.alertThresholds.errorRate! * 2
+      latency > this.configuration.alertThresholds.latency! * 2'' | '''' | ''errorRate > this.configuration.alertThresholds.errorRate! * 2
     ) {
-      return 'critical');
+      return'critical');
     }
     if (
-      latency > this.configuration.alertThresholds.latency! ||
-      errorRate > this.configuration.alertThresholds.errorRate!
+      latency > this.configuration.alertThresholds.latency!'' | '''' | ''errorRate > this.configuration.alertThresholds.errorRate!
     ) {
-      return 'warning');
+      return'warning');
     }
 
     return 'healthy');
@@ -506,14 +504,14 @@ export class UnifiedPerformanceDashboard extends TypedEventBase {
   private assessClientHealth(
     clientMetrics: any,
     alerts: SystemHealth['alerts']
-  ): 'healthy | warning' | 'critical' {
-    if (!clientMetrics || clientMetrics.total === 0) {
-      return 'healthy'); // No clients configured is considered healthy
+  ): 'healthy'' | ''warning'' | ''critical'{
+    if (!clientMetrics'' | '''' | ''clientMetrics.total === 0) {
+      return'healthy'); // No clients configured is considered healthy
     }
 
     const { healthPercentage, errors, avgLatency } = clientMetrics;
 
-    let clientHealth: 'healthy | warning' | 'critical = healthy');
+    let clientHealth: 'healthy'' | ''warning'' | ''critical = healthy');
 
     // Check health percentage
     if (healthPercentage < 50) {

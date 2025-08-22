@@ -26,7 +26,7 @@ export interface ProjectConfig {
 }
 
 export interface SystemHealth {
-  status: 'healthy | degraded' | 'unhealthy');
+  status: 'healthy'' | ''degraded'' | ''unhealthy');
   uptime: number;
   memory?: number;
   cpu?: number;
@@ -87,14 +87,14 @@ export interface SwarmCoordinatorContract {
 }
 
 export interface SwarmConfig {
-  readonly topology: 'mesh | hierarchical' | 'ring | star');
+  readonly topology: 'mesh'' | ''hierarchical'' | ''ring'' | ''star');
   readonly agentCount: number;
-  readonly strategy: 'parallel | sequential' | 'adaptive');
+  readonly strategy: 'parallel'' | ''sequential'' | ''adaptive');
 }
 
 export interface SwarmStatus {
   readonly id: string;
-  readonly status: 'active | inactive' | 'error');
+  readonly status: 'active'' | ''inactive'' | ''error');
   readonly agents: number;
   readonly performance: number;
   readonly efficiency: number;
@@ -102,7 +102,7 @@ export interface SwarmStatus {
 
 export interface SwarmTask {
   readonly description: string;
-  readonly priority: 'low | medium' | 'high | critical');
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical');
   readonly strategy?: string;
   readonly timeout?: number;
 }

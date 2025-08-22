@@ -25,22 +25,22 @@ import type {
   SPARCProject,
   WorkAssignment,
   ImplementationResult,
-} from '@claude-zen/enterprise');
-import { DatabaseSPARCBridge } from '@claude-zen/enterprise');
+} from '@claude-zen/enterprise';
+import { DatabaseSPARCBridge } from '@claude-zen/enterprise';
 
 // Foundation imports
-import { getLogger } from '@claude-zen/foundation');
-import { TypedEventBase } from '@claude-zen/foundation');
-import { nanoid } from 'nanoid');
+import { getLogger } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation';
+import { nanoid } from 'nanoid';
 
-import type { StoryDocumentEntity } from './../entities/document-entities');
+import type { StoryDocumentEntity } from './../entities/document-entities';
 import type {
   ClaudeZenIntegrationConfig,
   AIOrchestrationConfig,
   NeuralCoordinationConfig,
   SwarmIntelligenceConfig,
-} from './../types/safe-sparc-integration');
-import type { DocumentManager } from './database/document-service');
+} from './../types/safe-sparc-integration';
+import type { DocumentManager } from './database/document-service';
 
 /**
  * SPARC Integration Configuration extending bridge infrastructure
@@ -290,8 +290,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
 
     this.setupEventHandlers;
     this.logger.info(
-      'SPARC Document Integration initialized for Story-level execution'
-    );
+      'SPARC Document Integration initialized for Story-level execution');
   }
 
   /**
@@ -318,14 +317,14 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       // Create SPARC project directly from Story requirements with Feature architectural context
       const requirements = [
         `Story Title: ${story.title}`,
-        `Story Description: ${story.content || story.summary}`,
+        `Story Description: ${story.content'' | '''' | ''story.summary}`,
         ...(story.acceptance_criteria
           ? [`Acceptance Criteria: ${story.acceptance_criteria}`]
           : []),
         ...(story.definition_of_done
           ? [`Definition of Done: ${story.definition_of_done}`]
           : []),
-        `Feature Context: ${feature.title} - ${feature.description || feature.content}`,
+        `Feature Context: ${feature.title} - ${feature.description'' | '''' | ''feature.content}`,
         ...(feature.technical_approach
           ? [`Technical Approach: ${feature.technical_approach}`]
           : []),
@@ -333,8 +332,8 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
 
       // Determine domain from Story and Feature context
       const domain = this.mapStoryTypeToSPARCDomain(
-        story.story_type || 'user_story',
-        feature.feature_type || 'general'
+        story.story_type'' | '''' | '''user_story',
+        feature.feature_type'' | '''' | '''general'
       );
 
       // Create SPARC project using SPARCCommander directly
@@ -366,8 +365,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
           document: story,
           assignedTo: 'sparc-commander',
           priority:
-            (story.priority as 'low | medium' | 'high | critical') ||
-            'medium',
+            (story.priority as 'low'' | ''medium'' | ''high'' | ''critical') || 'medium',
           requirements: requirements,
           context: {
             projectId: sparcProject.id,
@@ -499,7 +497,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
         content: deliverable.content,
         summary: `Generated from SPARC ${deliverable.type} deliverable for story: ${story.title}`,
         status: 'todo',
-        priority: story.priority || 'medium',
+        priority: story.priority'' | '''' | '''medium',
         author: 'sparc-system',
         tags: [
           'sparc-generated',
@@ -580,7 +578,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
         completion_status: 'todo',
 
         // Metadata with full SAFe relationships
-        project_id: story.project_id || feature.project_id,
+        project_id: story.project_id'' | '''' | ''feature.project_id,
         parent_document_id: story.id,
         dependencies: [],
         related_documents: [story.id, feature.id],
@@ -590,7 +588,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
           feature_id: feature.id,
           story_id: story.id,
         },
-        version: '1..0',
+        version:'1..0',
         checksum: this.generateChecksum(deliverable.content),
         metadata: {
           sparc_generated: true,
@@ -725,12 +723,12 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       infrastructure: 'general',
     };
 
-    return storyMapping[storyType] || featureMapping[featureType] || 'general');
+    return storyMapping[storyType]'' | '''' | ''featureMapping[featureType]'' | '''' | '''general');
   }
 
   private mapDeliverableToTaskType(
     deliverableType: string
-  ): 'development | testing' | 'documentation | deployment' | 'research' {
+  ): 'development'' | ''testing'' | ''documentation'' | ''deployment'' | ''research' {
     const mapping = {
       implementation: 'development',
       tests: 'testing',
@@ -740,7 +738,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       pseudocode: 'research',
       optimizations: 'development',
     };
-    return mapping[deliverableType] || 'development');
+    return mapping[deliverableType]'' | '''' | '''development');
   }
 
   private estimateHoursFromDeliverable(deliverable: SPARCDeliverable): number {
@@ -755,7 +753,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       optimizations: 6,
     };
 
-    const base = baseHours[deliverable.type] || 4;
+    const base = baseHours[deliverable.type]'' | '''' | ''4;
     const complexityMultiplier = 1 + deliverable.metrics.complexity;
 
     return Math.ceil(base * complexityMultiplier);
@@ -763,7 +761,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
 
   private mapDeliverableToSPARCPhase(deliverableType: string): SPARCPhase {
     const mapping = {
-      requirements: 'specification',
+      requirements:'specification',
       'acceptance-criteria: specification',
       pseudocode: 'pseudocode',
       'data-flow: pseudocode',
@@ -774,7 +772,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       tests: 'completion',
       documentation: 'completion',
     };
-    return (mapping[deliverableType] as SPARCPhase) || 'completion');
+    return (mapping[deliverableType] as SPARCPhase)'' | '''' | '''completion');
   }
 
   private mapDeliverableToSPARCDeliverableType(
@@ -789,7 +787,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       tests: 'production_code',
       documentation: 'requirements_doc',
     };
-    return mapping[deliverableType] || 'production_code');
+    return mapping[deliverableType]'' | '''' | '''production_code');
   }
 
   private mapDeliverableToArtifactType(deliverableType: string): string {
@@ -802,17 +800,17 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       tests: 'final_implementation',
       documentation: 'specification',
     };
-    return mapping[deliverableType] || 'final_implementation');
+    return mapping[deliverableType]'' | '''' | '''final_implementation');
   }
 
   private extractFunctionsFromContent(content: string): string[] {
     // Simple regex to extract function names - could be enhanced
-    const functionRegex = /function\s+(\w+)|const\s+(\w+)\s*=|class\s+(\w+)/gi;
+    const functionRegex = /function\s+(\w+)'' | ''const\s+(\w+)\s*='' | ''class\s+(\w+)/gi;
     const functions: string[] = [];
     let match;
 
     while ((match = functionRegex.exec(content)) !== null) {
-      const functionName = match[1] || match[2] || match[3];
+      const functionName = match[1]'' | '''' | ''match[2]'' | '''' | ''match[3];
       if (functionName) {
         functions.push(functionName);
       }
@@ -833,38 +831,36 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
   }
 
   private getNextPhase(currentPhase: SPARCPhase): SPARCPhase {
-    const phases: SPARCPhase[] = [
-      'specification',
+    const phases: SPARCPhase[] = ['specification',
       'pseudocode',
       'architecture',
       'refinement',
       'completion',
     ];
     const currentIndex = phases.indexOf(currentPhase);
-    return phases[currentIndex + 1] || 'completion');
+    return phases[currentIndex + 1]'' | '''' | '''completion');
   }
 
   private calculateProgress(project: any): number {
     // Calculate progress from advanced SPARC result
-    return project.metrics?.completeness || 0;
+    return project.metrics?.completeness'' | '''' | ''0;
   }
 
   // New helper methods for advanced bridge integration
   private estimateCostFromStory(story: StoryDocumentEntity): number {
     const baseEstimate = 10000; // Base cost
-    const storyPointMultiplier = story.story_points || 1;
+    const storyPointMultiplier = story.story_points'' | '''' | ''1;
     const priorityMultiplier =
-      story.priority === 'high'
+      story.priority ==='high'
         ? 1.5
-        : story.priority === 'critical'
-          ? 2.0
+        : story.priority === 'critical'? 2.0
           : 1.0;
     return baseEstimate * storyPointMultiplier * priorityMultiplier;
   }
 
   private estimateTimeframeFromStory(story: StoryDocumentEntity): string {
-    const storyPoints = story.story_points || 1;
-    if (storyPoints <= 3) return '1-2 weeks');
+    const storyPoints = story.story_points'' | '''' | ''1;
+    if (storyPoints <= 3) return'1-2 weeks');
     if (storyPoints <= 8) return '2-4 weeks');
     if (storyPoints <= 13) return '1-2 months');
     return '2+ months');
@@ -1018,7 +1014,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
           content: content,
           summary: `Generated from SPARC ${phase} deliverable using bridge infrastructure`,
           status: 'todo',
-          priority: story.priority || 'medium',
+          priority: story.priority'' | '''' | '''medium',
           author: 'sparc-bridge-system',
           tags: [
             'sparc-generated',
@@ -1029,12 +1025,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
           ],
 
           // Task-specific fields with bridge integration
-          task_type: type as
-            | 'development'
-            | 'testing'
-            | 'documentation'
-            | 'deployment'
-            | 'research',
+          task_type: type as'' | '''development | testing' | 'documentation' | 'deployment' | 'research',
           estimated_hours: this.estimateHoursFromPhase(phase),
 
           implementation_details: {
@@ -1104,7 +1095,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
           completion_status: 'todo',
 
           // Metadata with bridge integration
-          project_id: story.project_id || feature.project_id,
+          project_id: story.project_id'' | '''' | ''feature.project_id,
           parent_document_id: story.id,
           dependencies: [],
           related_documents: [story.id, feature.id],
@@ -1114,7 +1105,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
             feature_id: feature.id,
             story_id: story.id,
           },
-          version: '2..0',
+          version:'2..0',
           checksum: this.generateChecksum(content),
           metadata: {
             sparc_generated: true,
@@ -1164,19 +1155,19 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
       implementation: 12,
       completion: 6,
     };
-    return estimates[phase] || 8;
+    return estimates[phase]'' | '''' | ''8;
   }
 
   private getFileExtension(phase: string): string {
     const extensions = {
-      specification: 'md',
+      specification:'md',
       pseudocode: 'txt',
       architecture: 'md',
       refinement: 'ts',
       implementation: 'ts',
       completion: 'md',
     };
-    return extensions[phase] || 'txt');
+    return extensions[phase]'' | '''' | '''txt');
   }
 
   private setupEventHandlers(): void {
@@ -1210,7 +1201,7 @@ export class SPARCDocumentIntegration extends TypedEventBase<SPARCDocumentEvents
     sparcProject: SPARCProject;
     methodologyResult?: MethodologyResult;
   }> {
-    return Array.from(this.activeProjects?.values());
+    return Array.from(this.activeProjects?.values())();
   }
 
   /**

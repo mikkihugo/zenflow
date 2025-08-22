@@ -10,7 +10,7 @@
  * a higher-level abstraction over the core adapter functionality.
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation');
+import { getLogger, type Logger } from '@claude-zen/foundation';
 
 import('/data-service-adapter');
 
@@ -25,7 +25,7 @@ export interface BaseDocumentEntity {
 }
 
 export interface DocumentSearchOptions {
-  searchType?: 'fulltext | semantic' | 'keyword | combined' | undefined;
+  searchType?: 'fulltext | semantic | keyword | combined' | undefined;
   query: string;
   documentTypes?: DocumentType[] | undefined;
   projectId?: string | undefined;
@@ -33,7 +33,7 @@ export interface DocumentSearchOptions {
   includeContent?: boolean | undefined;
 }
 
-export type DocumentType = 'document | note' | 'file | resource');
+export type DocumentType = 'document | note | file | resource');
 
 export interface SwarmData {
   id: string;
@@ -124,7 +124,7 @@ export interface EnhancedSearchOptions {
     offset: number;
   };
   includeMetadata?: boolean;
-  searchType?: 'fulltext | semantic' | 'keyword | combined');
+  searchType?: 'fulltext | semantic | keyword | combined');
 }
 
 /**
@@ -136,7 +136,7 @@ export interface DataAggregationOptions {
   groupBy?: string | string[];
   aggregations?: Array<{
     field: string;
-    operation: 'count | sum' | 'avg | min' | 'max');
+    operation: 'count | sum | avg | min | max');
     alias?: string;
   }>;
   having?: Record<string, unknown>;
@@ -148,7 +148,7 @@ export interface DataAggregationOptions {
  * @example
  */
 export interface TransformationStep {
-  type: 'filter | map' | 'reduce | sort' | 'group | validate');
+  type: 'filter | map | reduce | sort | group | validate');
   config: Record<string, unknown>;
 }
 
@@ -207,7 +207,7 @@ export class DataServiceHelper {
    */
   async getSystemHealthSummary(): Promise<
     DataOperationResult<{
-      overall: 'healthy | degraded' | 'unhealthy');
+      overall: 'healthy | degraded | unhealthy');
       components: Array<{
         name: string;
         status: string;
@@ -230,7 +230,7 @@ export class DataServiceHelper {
       ]);
 
       const healthData = {
-        overall: adapterStatus.health as 'healthy | degraded' | 'unhealthy',
+        overall: adapterStatus.health as 'healthy | degraded | unhealthy',
         components: [
           {
             name: 'web-data-service',
@@ -254,7 +254,7 @@ export class DataServiceHelper {
         success: true,
         data: healthData,
         metadata: {
-          operation: 'system-health-summary',
+          operation:'system-health-summary',
           timestamp: new Date(),
           duration: Date.now() - startTime,
           cached: false,
@@ -263,7 +263,7 @@ export class DataServiceHelper {
       };
     } catch (error) {
       return this.createErrorResult<{
-        overall: 'healthy | degraded' | 'unhealthy');
+        overall: 'healthy | degraded | unhealthy');
         components: Array<{
           name: string;
           status: string;
@@ -424,7 +424,7 @@ export class DataServiceHelper {
 
       const analytics = {
         totalSwarms: swarms.length,
-        activeSwarms: swarms.filter((s) => s.status === 'active').length,
+        activeSwarms: swarms.filter((s) => s.status ==='active').length,
         averageAgents:
           swarms.length > 0
             ? swarms.reduce((sum, s) => sum + s.agents, 0) / swarms.length
@@ -548,7 +548,7 @@ export class DataServiceHelper {
     title: string;
     description?: string;
     assignedAgents?: string[];
-    priority?: 'low | medium' | 'high');
+    priority?: 'low | medium | high');
     eta?: string;
     dependencies?: string[];
   }): Promise<DataOperationResult<TaskData>> {
@@ -599,7 +599,7 @@ export class DataServiceHelper {
   async searchDocuments<T extends BaseDocumentEntity>(
     query: string,
     options?: {
-      searchType?: 'fulltext | semantic' | 'keyword | combined');
+      searchType?: 'fulltext | semantic | keyword | combined');
       documentTypes?: DocumentType[];
       projectId?: string;
       limit?: number;
@@ -658,7 +658,7 @@ export class DataServiceHelper {
    */
   async bulkDocumentOperations(
     operations: Array<{
-      action: 'create | update' | 'delete');
+      action: 'create | update | delete');
       documentId?: string;
       document?: Record<string, unknown>;
       updates?: Record<string, unknown>;
@@ -776,7 +776,7 @@ export class DataServiceHelper {
         const batchResults = await Promise.allSettled(batchPromises);
 
         for (const result of batchResults) {
-          if (result?.status === 'fulfilled') {
+          if (result?.status ==='fulfilled') {
             results[result?.value?.index] = result?.value?.result()
           } else if (config?.failFast) {
             throw new Error(result?.reason);
@@ -844,7 +844,7 @@ export class DataServiceHelper {
             result = this.sortData(
               result,
               step.config['field'],
-              step.config['direction] as asc' | 'desc'
+              step.config['direction] as asc'' | ''desc'
             );
           }
           break;
@@ -927,7 +927,7 @@ export class DataServiceHelper {
    */
   exportData(
     data: Record<string, unknown>[],
-    format: 'json | csv' | 'xml = json'
+    format: 'json | csv | xml = json'
   ): string {
     switch (format) {
       case 'json':
@@ -1000,8 +1000,7 @@ export class DataServiceHelper {
 
     if (
       config['assignedAgents'] &&
-      (!Array.isArray(config['assignedAgents']) ||
-        (config['assignedAgents'] as unknown[]).length === 0)
+      (!Array.isArray(config['assignedAgents']) || (config['assignedAgents'] as unknown[]).length === 0)
     ) {
       warnings.push('No agents assigned to task');
     }
@@ -1062,7 +1061,7 @@ export class DataServiceHelper {
         if (Array.isArray(value)) {
           return value.includes(typedItem[key]);
         }
-        if (typeof value === 'object' && value !== null) {
+        if (typeof value === 'object'&& value !== null) {
           const rangeValue = value as { min?: number; max?: number };
           // Handle range filters, etc.
           if (
@@ -1086,8 +1085,7 @@ export class DataServiceHelper {
     const lowercaseQuery = query?.toLowerCase()
     return tasks.filter(
       (task) =>
-        task.title?.toLowerCase.includes(lowercaseQuery) ||
-        task.assignedAgents.some((agent) =>
+        task.title?.toLowerCase.includes(lowercaseQuery) || task.assignedAgents.some((agent) =>
           agent?.toLowerCase.includes(lowercaseQuery)
         )
     );
@@ -1096,14 +1094,14 @@ export class DataServiceHelper {
   private sortData(
     data: any[],
     field: string,
-    direction: 'asc | desc'
+    direction:'asc | desc'
   ): any[] {
     return [...data].sort((a, b) => {
       const aVal = a[field];
       const bVal = b[field];
 
       if (aVal < bVal) return direction === 'asc' ? -1 : 1;
-      if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+      if (aVal > bVal) return direction === 'asc'? 1 : -1;
       return 0;
     });
   }
@@ -1168,11 +1166,11 @@ export class DataServiceHelper {
         const items = (group['items'] as Record<string, unknown>[]) || [];
         const values = items
           .map((item) => item[agg.field])
-          .filter((v) => v !== undefined && typeof v === 'number');
+          .filter((v) => v !== undefined && typeof v ==='number');
         const alias = agg.alias || `${agg.operation}_${agg.field}`;
 
         switch (agg.operation) {
-          case 'count':
+          case'count':
             aggregated[alias] = values.length;
             break;
           case 'sum':
@@ -1189,10 +1187,10 @@ export class DataServiceHelper {
                 : 0;
             break;
           case 'min':
-            aggregated[alias] = Math.min(...values());
+            aggregated[alias] = Math.min(...values())();
             break;
           case 'max':
-            aggregated[alias] = Math.max(...values());
+            aggregated[alias] = Math.max(...values())();
             break;
         }
       }
@@ -1216,7 +1214,7 @@ export class DataServiceHelper {
   }
 
   private convertToCSV(data: Record<string, unknown>[]): string {
-    if (data.length === 0) return '');
+    if (data.length === 0) return'');
 
     const headers = Object.keys(data[0]);
     const csvRows = [

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Test LLM Provider Integration through Intelligence Facade
- * 
+ *
  * Test the intelligence facade's LLM provider capabilities by asking
  * a simple question to verify the integration is working.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.0.0
  */
@@ -14,12 +14,26 @@ import { getLogger } from '@claude-zen/foundation';
 
 // Add temporary stubs for missing functions
 const listLLMProviders = () => [];
-const createLLMProvider = (provider: string) => ({ provider, initialized: true, execute: async (request?: any) => ({ success: true, content: 'Analysis complete', error: null }) });
-const getLLMProvider = (provider?: any) => ({ 
+const createLLMProvider = (provider: string) => ({
+  provider,
   initialized: true,
-  execute: async (request: any) => ({ success: true, content: 'Analysis complete', error: null })
+  execute: async (request?: any) => ({
+    success: true,
+    content: 'Analysis complete',
+    error: null,
+  }),
 });
-const executeClaudeTask = async (prompt?: any, options?: any) => ({ content: 'Analysis complete' });
+const getLLMProvider = (provider?: any) => ({
+  initialized: true,
+  execute: async (request: any) => ({
+    success: true,
+    content: 'Analysis complete',
+    error: null,
+  }),
+});
+const executeClaudeTask = async (prompt?: any, options?: any) => ({
+  content: 'Analysis complete',
+});
 
 // Types temporarily inlined
 type CLIRequest = any;
@@ -33,14 +47,16 @@ const logger = getLogger('llm-provider-test');
  */
 export async function testLLMProviderGPT5Question(): Promise<void> {
   logger.info('🤖 Testing LLM Provider Integration...');
-  
+
   try {
     // List available providers first
     logger.info('📋 Listing available LLM providers...');
     const providers = listLLMProviders();
     logger.info(`Found ${providers.length} providers:`);
     providers.forEach((provider: LLMProviderInfo) => {
-      logger.info(`  - ${provider.name} (${provider.type}): ${provider.available ? '✅' : '❌'}`);
+      logger.info(
+        `  - ${provider.name} (${provider.type}): ${provider.available ? '✅' : '❌'}`
+      );
     });
 
     // Get a provider for inference/chat
@@ -53,16 +69,18 @@ export async function testLLMProviderGPT5Question(): Promise<void> {
       messages: [
         {
           role: 'system',
-          content: 'You are a helpful AI assistant. Answer questions directly and concisely.'
+          content:
+            'You are a helpful AI assistant. Answer questions directly and concisely.',
         },
         {
           role: 'user',
-          content: 'Are you ChatGPT-5? Please tell me what model you are and your capabilities.'
-        }
+          content:
+            'Are you ChatGPT-5? Please tell me what model you are and your capabilities.',
+        },
       ],
       model: 'default',
       temperature: 0.7,
-      maxTokens: 500
+      maxTokens: 500,
     };
 
     logger.info('💬 Asking LLM provider about GPT-5...');
@@ -72,7 +90,7 @@ export async function testLLMProviderGPT5Question(): Promise<void> {
       logger.info('✅ LLM Provider Response received!');
       logger.info('📝 Response content:');
       logger.info(`${response.content}`);
-      
+
       if (response.metadata) {
         logger.info('🔍 Response metadata:');
         logger.info(JSON.stringify(response.metadata, null, 2));
@@ -84,13 +102,17 @@ export async function testLLMProviderGPT5Question(): Promise<void> {
     // Test executeClaudeTask function as well
     logger.info('🚀 Testing executeClaudeTask function...');
     try {
-      const claudeResponse = await executeClaudeTask('What AI model are you? Are you GPT-5?');
+      const claudeResponse = await executeClaudeTask(
+        'What AI model are you? Are you GPT-5?'
+      );
       logger.info('✅ executeClaudeTask Response:');
       logger.info(`${claudeResponse}`);
     } catch (claudeError) {
-      logger.warn('⚠️ executeClaudeTask failed (may be expected):', claudeError);
+      logger.warn(
+        '⚠️ executeClaudeTask failed (may be expected):',
+        claudeError
+      );
     }
-
   } catch (error) {
     logger.error('❌ LLM Provider test failed:', error);
     throw error;
@@ -102,37 +124,38 @@ export async function testLLMProviderGPT5Question(): Promise<void> {
  */
 export async function testSpecificProviders(): Promise<void> {
   logger.info('🔧 Testing specific provider creation...');
-  
+
   const providerTypes = [
     'claude-code',
-    'github-models-api', 
+    'github-models-api',
     'anthropic-api',
-    'openai-api'
+    'openai-api',
   ];
 
   for (const providerType of providerTypes) {
     try {
       logger.info(`Testing ${providerType}...`);
       const provider = createLLMProvider(providerType as any);
-      
+
       const testRequest: CLIRequest = {
         messages: [
           {
             role: 'user',
-            content: 'Hello! What model are you?'
-          }
+            content: 'Hello! What model are you?',
+          },
         ],
-        maxTokens: 100
+        maxTokens: 100,
       };
 
       const response = await provider.execute(testRequest);
-      
+
       if (response.success) {
-        logger.info(`✅ ${providerType}: ${response.content.substring(0, 100)}...`);
+        logger.info(
+          `✅ ${providerType}: ${response.content.substring(0, 100)}...`
+        );
       } else {
         logger.warn(`⚠️ ${providerType}: ${response.error}`);
       }
-      
     } catch (error) {
       logger.warn(`❌ ${providerType} failed:`, error);
     }

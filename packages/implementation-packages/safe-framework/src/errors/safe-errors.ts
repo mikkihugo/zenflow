@@ -1,14 +1,14 @@
 /**
  * @fileoverview SAFe Framework Error Handling - Uses @claude-zen Packages
- * 
+ *
  * SAFe-specific error extensions using existing claude-zen error handling infrastructure:
  * - @claude-zen/foundation: Core error types and logging
- * - @claude-zen/ai-safety: Deception detection and safety protocols  
+ * - @claude-zen/ai-safety: Deception detection and safety protocols
  * - @claude-zen/agent-monitoring: Error tracking and metrics
- * 
+ *
  * This file only adds SAFe-specific context to proven error handling patterns.
- * 
- * @author Claude-Zen Team  
+ *
+ * @author Claude-Zen Team
  * @since 2.0.0
  * @version 2.0.0
  */
@@ -21,10 +21,10 @@ enum ErrorCategory {
   VALIDATION = 'validation',
   INTEGRATION = 'integration',
   PERFORMANCE = 'performance',
-  SECURITY = 'security'
+  SECURITY = 'security',
 }
 
-type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical';
+type ErrorSeverity = 'low | medium' | 'high''' | '''critical';
 import type { LogLevel } from '@claude-zen/foundation';
 import { AIDeceptionDetector } from '@claude-zen/ai-safety';
 // Import infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
@@ -39,7 +39,7 @@ export const SAFE_ERROR_CATEGORIES = {
   TEAM: ErrorCategory.BUSINESS,
   ARCHITECTURE: ErrorCategory.SYSTEM,
   DEVSECOPS: ErrorCategory.SYSTEM,
-  SYSTEM: ErrorCategory.SYSTEM
+  SYSTEM: ErrorCategory.SYSTEM,
 } as const;
 
 /**
@@ -48,7 +48,7 @@ export const SAFE_ERROR_CATEGORIES = {
 export abstract class SAFeError extends Error implements BaseError {
   public readonly safeCategory: keyof typeof SAFE_ERROR_CATEGORIES;
   public readonly suggestedActions: string[];
-  
+
   // BaseError required properties
   public readonly type: string;
   public readonly code: string;
@@ -59,7 +59,7 @@ export abstract class SAFeError extends Error implements BaseError {
   public readonly cause?: Error;
   public readonly retryable: boolean;
   public readonly logLevel: LogLevel;
-  
+
   // Additional SAFe properties
   public readonly severity: ErrorSeverity;
   public readonly category: ErrorCategory;
@@ -77,7 +77,7 @@ export abstract class SAFeError extends Error implements BaseError {
     }
   ) {
     super(message);
-    
+
     this.message = message;
     this.type = this.constructor.name;
     this.code = `SAFE_${params.safeCategory}_ERROR`;
@@ -86,23 +86,23 @@ export abstract class SAFeError extends Error implements BaseError {
     this.context = params.context;
     this.cause = params.cause;
     this.retryable = params.recoverable ?? true;
-    this.logLevel = 'error' as LogLevel;
-    
+    this.logLevel = 'error'as LogLevel;
+
     this.severity = params.severity;
     this.category = SAFE_ERROR_CATEGORIES[params.safeCategory];
     this.recoverable = params.recoverable ?? true;
     this.safeCategory = params.safeCategory;
-    this.suggestedActions = params.suggestedActions || [];
+    this.suggestedActions = params.suggestedActions'' | '''' | ''[];
   }
-  
+
   // Helper methods for BaseError compatibility
   getContext(): Record<string, unknown> {
-    return this.context || {};
+    return this.context'' | '''' | ''{};
   }
 }
 
 /**
- * Portfolio-level SAFe errors  
+ * Portfolio-level SAFe errors
  */
 export class PortfolioError extends SAFeError {
   constructor(
@@ -116,8 +116,8 @@ export class PortfolioError extends SAFeError {
     }
   ) {
     super(message, {
-      safeCategory: 'PORTFOLIO',
-      ...params
+      safeCategory:'PORTFOLIO',
+      ...params,
     });
   }
 }
@@ -168,7 +168,7 @@ export class BusinessCaseError extends PortfolioError {
   ) {
     super(message, params);
     this.businessCaseId = params.businessCaseId;
-    this.validationFailures = params.validationFailures || [];
+    this.validationFailures = params.validationFailures'' | '''' | ''[];
   }
 }
 
@@ -188,7 +188,7 @@ export class ProgramError extends SAFeError {
   ) {
     super(message, {
       safeCategory: 'PROGRAM',
-      ...params
+      ...params,
     });
   }
 }
@@ -223,7 +223,7 @@ export class ProgramIncrementError extends ProgramError {
  */
 export class ArchitectureError extends SAFeError {
   public readonly componentId?: string;
-  public readonly architectureType: 'runway' | 'enabler' | 'decision' | 'debt';
+  public readonly architectureType: 'runway | enabler' | 'decision''' | '''debt';
 
   constructor(
     message: string,
@@ -239,7 +239,7 @@ export class ArchitectureError extends SAFeError {
   ) {
     super(message, {
       safeCategory: 'ARCHITECTURE',
-      ...params
+      ...params,
     });
     this.componentId = params.componentId;
     this.architectureType = params.architectureType;
@@ -251,7 +251,7 @@ export class ArchitectureError extends SAFeError {
  */
 export class DevSecOpsError extends SAFeError {
   public readonly pipelineId?: string;
-  public readonly securityLevel: 'scan' | 'compliance' | 'incident' | 'vulnerability';
+  public readonly securityLevel:'' | '''scan | compliance' | 'incident''' | '''vulnerability';
 
   constructor(
     message: string,
@@ -267,7 +267,7 @@ export class DevSecOpsError extends SAFeError {
   ) {
     super(message, {
       safeCategory: 'DEVSECOPS',
-      ...params
+      ...params,
     });
     this.pipelineId = params.pipelineId;
     this.securityLevel = params.securityLevel;
@@ -295,10 +295,10 @@ export class SolutionTrainError extends SAFeError {
   ) {
     super(message, {
       safeCategory: 'SYSTEM',
-      ...params
+      ...params,
     });
     this.solutionId = params.solutionId;
-    this.affectedARTs = params.affectedARTs || [];
+    this.affectedARTs = params.affectedARTs'' | '''' | ''[];
   }
 }
 
@@ -306,7 +306,7 @@ export class SolutionTrainError extends SAFeError {
  * Validation errors with detailed feedback
  */
 export class ValidationError extends SAFeError {
-  public readonly validationType: 'wsjf' | 'business-case' | 'epic' | 'feature' | 'story' | 'architecture';
+  public readonly validationType:'' | '''wsjf''' | '''business-case''' | '''epic | feature' | 'story''' | '''architecture';
   public readonly validationErrors: Array<{
     field: string;
     message: string;
@@ -329,9 +329,9 @@ export class ValidationError extends SAFeError {
       suggestedActions: [
         'Review validation errors and correct input data',
         'Ensure all required fields are provided',
-        'Verify data types and constraints'
+        'Verify data types and constraints',
       ],
-      ...params
+      ...params,
     });
     this.validationType = params.validationType;
     this.validationErrors = params.validationErrors;
@@ -355,14 +355,14 @@ export class ConfigurationError extends SAFeError {
   ) {
     super(message, {
       safeCategory: 'SYSTEM',
-      severity: params.severity || 'high',
+      severity: params.severity'' | '''' | '''high',
       recoverable: true,
       suggestedActions: [
         'Review configuration settings',
         'Check environment variables and config files',
-        'Validate dependency injection setup'
+        'Validate dependency injection setup',
       ],
-      ...params
+      ...params,
     });
     this.configurationKey = params.configurationKey;
   }
@@ -418,7 +418,7 @@ export class SAFeErrorHandler implements ErrorHandler {
           category: error.category,
           severity: error.severity,
           error_type: error.constructor.name,
-          recoverable: error.recoverable.toString()
+          recoverable: error.recoverable.toString(),
         });
 
         // Create error span for tracing
@@ -426,7 +426,7 @@ export class SAFeErrorHandler implements ErrorHandler {
         this.telemetryManager.finishSpan(span, {
           error_id: error.errorId,
           error_category: error.category,
-          error_severity: error.severity
+          error_severity: error.severity,
         });
       } catch (telemetryError) {
         this.logger.warn('Failed to send error telemetry:', telemetryError);
@@ -436,7 +436,7 @@ export class SAFeErrorHandler implements ErrorHandler {
     // Log recovery suggestions
     if (error.suggestedActions.length > 0) {
       this.logger.info(`Recovery suggestions for ${error.errorId}:`, {
-        suggestions: error.suggestedActions
+        suggestions: error.suggestedActions,
       });
     }
   }
@@ -456,7 +456,10 @@ export class ErrorRecovery {
   /**
    * Attempt to recover from recoverable errors
    */
-  static async attemptRecovery(error: SAFeError, retryCallback?: () => Promise<any>): Promise<{
+  static async attemptRecovery(
+    error: SAFeError,
+    retryCallback?: () => Promise<any>
+  ): Promise<{
     recovered: boolean;
     result?: any;
     recoveryStrategy?: string;
@@ -476,8 +479,8 @@ export class ErrorRecovery {
         recoveryStrategy,
         result: {
           validationErrors: error.validationErrors,
-          suggestedActions: error.suggestedActions
-        }
+          suggestedActions: error.suggestedActions,
+        },
       };
     }
 
@@ -486,7 +489,7 @@ export class ErrorRecovery {
       // Could implement fallback configuration logic
       return {
         recovered: false,
-        recoveryStrategy
+        recoveryStrategy,
       };
     }
 
@@ -495,7 +498,7 @@ export class ErrorRecovery {
       // Could implement state rollback logic
       return {
         recovered: false,
-        recoveryStrategy
+        recoveryStrategy,
       };
     }
 
@@ -507,12 +510,12 @@ export class ErrorRecovery {
         return {
           recovered: true,
           result,
-          recoveryStrategy
+          recoveryStrategy,
         };
       } catch (retryError) {
         return {
           recovered: false,
-          recoveryStrategy
+          recoveryStrategy,
         };
       }
     }
@@ -528,12 +531,16 @@ export const createSAFeErrors = {
   /**
    * Create epic validation error
    */
-  epicValidation: (epicId: string, validationErrors: ValidationError['validationErrors'], cause?: Error) =>
+  epicValidation: (
+    epicId: string,
+    validationErrors: ValidationError['validationErrors'],
+    cause?: Error
+  ) =>
     new ValidationError(`Epic validation failed for ${epicId}`, {
       validationType: 'epic',
       validationErrors,
       context: { epicId },
-      cause
+      cause,
     }),
 
   /**
@@ -548,15 +555,20 @@ export const createSAFeErrors = {
       suggestedActions: [
         'Review financial projections and assumptions',
         'Validate market analysis data',
-        'Ensure ROI calculations are correct'
+        'Ensure ROI calculations are correct',
       ],
-      cause
+      cause,
     }),
 
   /**
    * Create epic lifecycle error
    */
-  epicLifecycle: (epicId: string, currentState: string, operation: string, cause?: Error) =>
+  epicLifecycle: (
+    epicId: string,
+    currentState: string,
+    operation: string,
+    cause?: Error
+  ) =>
     new EpicLifecycleError(`Epic lifecycle operation failed: ${operation}`, {
       epicId,
       currentState,
@@ -565,10 +577,10 @@ export const createSAFeErrors = {
       suggestedActions: [
         'Check epic state transition rules',
         'Verify required evidence is provided',
-        'Ensure portfolio kanban gates are satisfied'
+        'Ensure portfolio kanban gates are satisfied',
       ],
       context: { operation },
-      cause
+      cause,
     }),
 
   /**
@@ -578,6 +590,6 @@ export const createSAFeErrors = {
     new ConfigurationError(`Configuration error for ${key}: ${message}`, {
       configurationKey: key,
       severity: 'high',
-      cause
-    })
+      cause,
+    }),
 };

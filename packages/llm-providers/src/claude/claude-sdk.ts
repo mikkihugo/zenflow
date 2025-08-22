@@ -13,30 +13,21 @@
  */
 
 import { query } from '@anthropic-ai/claude-code/sdk.mjs';
-import { 
-  getLogger,
-  Result, 
-  ok, 
-  err,
-  withTimeout,
-  withRetry,
-  validateInput,
-  z
-} from '@claude-zen/foundation';
+import { getLogger, withTimeout, withRetry } from '@claude-zen/foundation';
 
 // Import from focused modules
-import type {
-  ClaudeSDKOptions,
-  ClaudeMessage,
-} from './types';
+import {
+  processClaudeMessage,
+  validateProcessedMessage,
+} from './message-processor';
+import { createPermissionHandler } from './permission-handler';
+import type { ClaudeSDKOptions, ClaudeMessage } from './types';
 import { DEFAULT_SDK_OPTIONS } from './types';
 import {
   validateTaskInputs,
   resolveWorkingDirectory,
   generateSessionId,
 } from './utils';
-import { createPermissionHandler } from './permission-handler';
-import { processClaudeMessage, validateProcessedMessage } from './message-processor';
 
 // Re-export types for consumers
 export type * from './types';
@@ -50,7 +41,7 @@ const logger = getLogger('claude-sdk');
 // Global State Management (Simplified)
 // =============================================================================
 
-let globalTaskManager: ClaudeTaskManager | null = null;
+let globalTaskManager: ClaudeTaskManager'' | ''null = null;
 
 // =============================================================================
 // Main SDK Functions
@@ -61,7 +52,7 @@ let globalTaskManager: ClaudeTaskManager | null = null;
  */
 export async function executeClaudeTask(
   prompt: string,
-  options: ClaudeSDKOptions = {},
+  options: ClaudeSDKOptions = {}
 ): Promise<ClaudeMessage[]> {
   // Validate inputs
   validateTaskInputs(prompt, options);
@@ -75,7 +66,7 @@ export async function executeClaudeTask(
   // Create permission handler
   const permissionHandler = await createPermissionHandler(
     config.permissionMode,
-    config.customPermissionHandler,
+    config.customPermissionHandler
   );
 
   // Setup cancellation
@@ -110,28 +101,35 @@ export async function executeClaudeTask(
       maxDelay: config.retryDelay * 8,
       shouldRetry: (error: Error) => {
         const message = error.message.toLowerCase();
-        return message.includes('timeout') || 
-               message.includes('network') || 
-               message.includes('connection') ||
-               message.includes('econnreset') ||
-               message.includes('rate limit');
-      }
+        return (
+          message.includes('timeout')'' | '''' | ''message.includes('network')'' | '''' | ''message.includes('connection')'' | '''' | ''message.includes('econnreset')'' | '''' | ''message.includes('rate limit')
+        );
+      },
     };
 
     const executeWithRetry = async () => {
       return await withRetry(
-        async () => await query([{ role: 'user', content: prompt }], sdkOptions),
+        async () =>
+          await query([{ role: 'user', content: prompt }], sdkOptions),
         retryOptions
       );
     };
 
     // Use foundation's timeout protection
     const retryResult = await executeWithRetry();
-    if (retryResult && typeof retryResult === 'object' && 'isErr' in retryResult && retryResult.isErr()) {
+    if (
+      retryResult &&
+      typeof retryResult === 'object' &&
+      'isErr' in retryResult &&
+      retryResult.isErr()
+    ) {
       throw retryResult.error;
     }
-    
-    const resultValue = retryResult && typeof retryResult === 'object' && 'value' in retryResult ? retryResult.value : retryResult;
+
+    const resultValue =
+      retryResult && typeof retryResult === 'object' && 'value' in retryResult
+        ? retryResult.value
+        : retryResult;
     const result = await withTimeout(
       () => Promise.resolve(resultValue),
       config.timeout,
@@ -152,9 +150,11 @@ export async function executeClaudeTask(
     }
 
     // Process messages
-    const messages = Array.isArray(actualResult) ? actualResult : [actualResult];
+    const messages = Array.isArray(actualResult)
+      ? actualResult
+      : [actualResult];
     const processedMessages = messages.map((msg: unknown, index: number) =>
-      processClaudeMessage(msg, index),
+      processClaudeMessage(msg, index)
     );
 
     // Validate all messages
@@ -164,12 +164,15 @@ export async function executeClaudeTask(
       throw new Error('No valid messages returned from Claude SDK');
     }
 
-    logger.info(`Task completed successfully, returned ${validMessages.length} messages`);
+    logger.info(
+      `Task completed successfully, returned ${validMessages.length} messages`
+    );
     return validMessages;
-
   } catch (error) {
     logger.error('Claude task execution failed:', error);
-    throw new Error(`Claude task failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Claude task failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   } finally {
     clearTimeout(timeoutId);
   }
@@ -180,14 +183,15 @@ export async function executeClaudeTask(
  */
 export async function executeSwarmCoordinationTask(
   prompt: string,
-  options: ClaudeSDKOptions = {},
+  options: ClaudeSDKOptions = {}
 ): Promise<ClaudeMessage[]> {
   logger.info('Executing swarm coordination task');
 
   // Add swarm-specific system prompt
   const swarmOptions = {
     ...options,
-    systemPrompt: `${options.systemPrompt || ''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`.trim(),
+    systemPrompt:
+      `${options.systemPrompt'' | '''' | ''''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`.trim(),
   };
 
   return executeClaudeTask(prompt, swarmOptions);
@@ -199,7 +203,7 @@ export async function executeSwarmCoordinationTask(
 export async function streamClaudeTask(
   prompt: string,
   options: ClaudeSDKOptions = {},
-  onMessage?: (message: ClaudeMessage) => void,
+  onMessage?: (message: ClaudeMessage) => void
 ): Promise<ClaudeMessage[]> {
   logger.info('Starting Claude task streaming');
 
@@ -224,7 +228,7 @@ export async function streamClaudeTask(
  */
 export async function executeParallelClaudeTasks(
   tasks: Array<{ prompt: string; options?: ClaudeSDKOptions }>,
-  globalOptions: ClaudeSDKOptions = {},
+  globalOptions: ClaudeSDKOptions = {}
 ): Promise<ClaudeMessage[][]> {
   logger.info(`Executing ${tasks.length} Claude tasks in parallel`);
 
@@ -245,16 +249,18 @@ export async function executeParallelClaudeTasks(
     } catch (error) {
       logger.error(`Parallel task ${index + 1} failed:`, error);
       // Return error message instead of throwing
-      return [{
-        type: 'system' as const,
-        content: `Task failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        timestamp: Date.now(),
-        metadata: {
-          level: 'error' as const,
-          source: 'parallel-execution',
-          taskIndex: index,
+      return [
+        {
+          type: 'system' as const,
+          content: `Task failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          timestamp: Date.now(),
+          metadata: {
+            level: 'error' as const,
+            source: 'parallel-execution',
+            taskIndex: index,
+          },
         },
-      }];
+      ];
     }
   });
 
@@ -273,11 +279,14 @@ export class ClaudeTaskManager {
   private history: ClaudeMessage[] = [];
 
   constructor(options: ClaudeSDKOptions = {}) {
-    this.sessionId = options.sessionId || generateSessionId();
+    this.sessionId = options.sessionId'' | '''' | ''generateSessionId();
     logger.debug(`Created task manager with session: ${this.sessionId}`);
   }
 
-  async executeTask(prompt: string, options: ClaudeSDKOptions = {}): Promise<ClaudeMessage[]> {
+  async executeTask(
+    prompt: string,
+    options: ClaudeSDKOptions = {}
+  ): Promise<ClaudeMessage[]> {
     const taskOptions = {
       ...options,
       sessionId: this.sessionId,
@@ -324,15 +333,17 @@ export function getGlobalClaudeTaskManager(): ClaudeTaskManager {
 /**
  * Filter messages for Claude Code compatibility
  */
-export function filterMessagesForClaudeCode(messages: ClaudeMessage[]): ClaudeMessage[] {
-  return messages.filter(msg => {
+export function filterMessagesForClaudeCode(
+  messages: ClaudeMessage[]
+): ClaudeMessage[] {
+  return messages.filter((msg) => {
     // Filter out system messages that might confuse Claude Code
     if (msg.type === 'system' && msg.metadata?.source === 'internal') {
       return false;
     }
 
     // Ensure content is not empty
-    if (!msg.content || msg.content.trim().length === 0) {
+    if (!msg.content'' | '''' | ''msg.content.trim().length === 0) {
       return false;
     }
 

@@ -5,12 +5,12 @@
 
 import { toast } from '@zerodevx/svelte-toast';
 
-export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+export type NotificationType = 'success | error' | 'warning''' | '''info';
 
 export interface NotificationOptions {
   duration?: number;
   dismissible?: boolean;
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  position?: 'top-right''' | '''top-left''' | '''bottom-right''' | '''bottom-left';
   id?: string;
 }
 
@@ -47,8 +47,7 @@ const icons = {
   success: '✅',
   error: '❌',
   warning: '⚠️',
-  info: 'ℹ️'
-};
+  info: 'ℹ️'};
 
 /**
  * Show success notification
@@ -59,7 +58,7 @@ export function notifySuccess(
 ): number {
   return toast.push(`${icons.success} ${message}`, {
     theme: themes.success,
-    duration: options.duration || 4000,
+    duration: options.duration'' | '''' | ''4000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -74,7 +73,7 @@ export function notifyError(
 ): number {
   return toast.push(`${icons.error} ${message}`, {
     theme: themes.error,
-    duration: options.duration || 6000,
+    duration: options.duration'' | '''' | ''6000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -89,7 +88,7 @@ export function notifyWarning(
 ): number {
   return toast.push(`${icons.warning} ${message}`, {
     theme: themes.warning,
-    duration: options.duration || 5000,
+    duration: options.duration'' | '''' | ''5000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -104,7 +103,7 @@ export function notifyInfo(
 ): number {
   return toast.push(`${icons.info} ${message}`, {
     theme: themes.info,
-    duration: options.duration || 4000,
+    duration: options.duration'' | '''' | ''4000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -115,7 +114,7 @@ export function notifyInfo(
  */
 export function notify(
   message: string,
-  type: NotificationType = 'info',
+  type: NotificationType ='info',
   options: NotificationOptions = {}
 ): number {
   const icon = icons[type];
@@ -123,7 +122,7 @@ export function notify(
   
   return toast.push(`${icon} ${message}`, {
     theme,
-    duration: options.duration || 4000,
+    duration: options.duration'' | '''' | ''4000,
     dismissible: options.dismissible ?? true,
     ...options
   });
@@ -137,8 +136,7 @@ export function notifyLoading(
   options: NotificationOptions = {}
 ): number {
   return toast.push(`⏳ ${message}`, {
-    theme: {
-      '--toastBackground': '#64748b',
+    theme: {'--toastBackground': '#64748b',
       '--toastColor': 'white',
       '--toastBarBackground': '#475569'
     },

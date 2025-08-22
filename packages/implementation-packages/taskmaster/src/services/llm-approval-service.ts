@@ -1,20 +1,20 @@
 /**
  * @fileoverview LLM Approval Service
- * 
+ *
  * Intelligent auto-approval system using claude-zen intelligence facade
  */
 
 import { getLogger } from '@claude-zen/foundation';
 import { getBrainSystem } from '@claude-zen/intelligence';
-import { 
-  LLMApprovalConfig, 
-  LLMApprovalDecision, 
+import {
+  LLMApprovalConfig,
+  LLMApprovalDecision,
   LLMApprovalContext,
   LLMApprovalResult,
   AutoApprovalRule,
   ApprovalLearning,
   LLMApprovalMetrics,
-  HumanOverride
+  HumanOverride,
 } from '../types/llm-approval.js';
 
 export class LLMApprovalService {
@@ -39,10 +39,10 @@ export class LLMApprovalService {
     const gateId = `gate_${context.task.id}_${Date.now()}`;
 
     try {
-      this.logger.info('Starting LLM approval evaluation', { 
-        taskId: context.task.id, 
+      this.logger.info('Starting LLM approval evaluation', {
+        taskId: context.task.id,
         gateId,
-        model: config.model 
+        model: config.model,
       });
 
       // Check auto-approval rules first (fast path)
@@ -61,14 +61,14 @@ export class LLMApprovalService {
               model: 'rule-based',
               processingTime: Date.now() - startTime,
               tokenUsage: 0,
-              version: '1.0.0'
-            }
+              version: '1.0.0',
+            },
           },
           autoApproved: true,
           escalatedToHuman: false,
           rule: ruleResult.rule,
           processingTime: Date.now() - startTime,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
       }
 
@@ -76,22 +76,23 @@ export class LLMApprovalService {
       const llmDecision = await this.getLLMDecision(context, config);
 
       // Determine if auto-approval threshold is met
-      const autoApproved = llmDecision.approved && 
-                          llmDecision.confidence >= config.confidenceThreshold;
-      
-      const escalatedToHuman = !autoApproved || llmDecision.concerns.length > 0;
+      const autoApproved =
+        llmDecision.approved &&
+        llmDecision.confidence >= config.confidenceThreshold;
+
+      const escalatedToHuman = !autoApproved'' | '''' | ''llmDecision.concerns.length > 0;
 
       if (autoApproved) {
         this.logger.info('LLM auto-approved task', {
           taskId: context.task.id,
           confidence: llmDecision.confidence,
-          reasoning: llmDecision.reasoning
+          reasoning: llmDecision.reasoning,
         });
       } else {
         this.logger.info('LLM escalated task to human review', {
           taskId: context.task.id,
           confidence: llmDecision.confidence,
-          concerns: llmDecision.concerns
+          concerns: llmDecision.concerns,
         });
       }
 
@@ -102,13 +103,12 @@ export class LLMApprovalService {
         autoApproved,
         escalatedToHuman,
         processingTime: Date.now() - startTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-
     } catch (error) {
-      this.logger.error('LLM approval evaluation failed', error, { 
+      this.logger.error('LLM approval evaluation failed', error, {
         taskId: context.task.id,
-        gateId 
+        gateId,
       });
 
       // Fail safe: escalate to human on any error
@@ -120,18 +120,21 @@ export class LLMApprovalService {
           confidence: 0.0,
           reasoning: 'LLM evaluation failed - escalated to human review',
           concerns: ['llm_error', 'requires_human_review'],
-          suggestedActions: ['Review task manually', 'Check LLM service status'],
+          suggestedActions: [
+            'Review task manually',
+            'Check LLM service status',
+          ],
           metadata: {
             model: config.model,
             processingTime: Date.now() - startTime,
             tokenUsage: 0,
-            version: '1.0.0'
-          }
+            version: '1.0.0',
+          },
         },
         autoApproved: false,
         escalatedToHuman: true,
         processingTime: Date.now() - startTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -143,15 +146,14 @@ export class LLMApprovalService {
     context: LLMApprovalContext,
     config: LLMApprovalConfig
   ): Promise<LLMApprovalDecision> {
-    
     const prompt = this.buildApprovalPrompt(context, config);
-    
+
     const response = await this.brainSystem.query({
       prompt,
       model: config.model,
       maxTokens: 1000,
       temperature: 0.1, // Low temperature for consistent decisions
-      timeout: config.timeout
+      timeout: config.timeout,
     });
 
     // Parse LLM response
@@ -161,7 +163,10 @@ export class LLMApprovalService {
   /**
    * Build comprehensive approval prompt
    */
-  private buildApprovalPrompt(context: LLMApprovalContext, config: LLMApprovalConfig): string {
+  private buildApprovalPrompt(
+    context: LLMApprovalContext,
+    config: LLMApprovalConfig
+  ): string {
     const { task, workflow, history, security, codeAnalysis } = context;
 
     return `You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria.
@@ -169,7 +174,7 @@ export class LLMApprovalService {
 TASK DETAILS:
 - ID: ${task.id}
 - Title: ${task.title}
-- Description: ${task.description || 'None'}
+- Description: ${task.description'' | '''' | '''None'}
 - Type: ${task.type}
 - Complexity: ${task.complexity}
 - Priority: ${task.priority}
@@ -187,19 +192,23 @@ SECURITY ANALYSIS:
 - Affected Systems: ${security.affectedSystems.join(', ')}
 - Compliance Flags: ${security.complianceFlags.join(', ')}
 
-${codeAnalysis ? `
+${
+  codeAnalysis
+    ? `
 CODE ANALYSIS:
 - Files Changed: ${codeAnalysis.changedFiles.length}
 - Lines Added: ${codeAnalysis.linesAdded}
 - Lines Deleted: ${codeAnalysis.linesDeleted}
 - Test Coverage: ${codeAnalysis.testCoverage}%
-` : ''}
+`
+    : ''
+}
 
 APPROVAL CRITERIA:
-${config.criteria.map(criterion => `- ${criterion}`).join('\n')}
+${config.criteria.map((criterion) => `- ${criterion}`).join('\n')}
 
 HISTORICAL CONTEXT:
-Similar tasks: ${history.similarTasks.length} (${history.similarTasks.filter(t => t.decision === 'approved').length} approved)
+Similar tasks: ${history.similarTasks.length} (${history.similarTasks.filter((t) => t.decision === 'approved').length} approved)
 
 INSTRUCTIONS:
 1. Analyze the task against the approval criteria
@@ -230,26 +239,32 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Parse and validate LLM response
    */
-  private parseLLMResponse(response: any, config: LLMApprovalConfig): LLMApprovalDecision {
+  private parseLLMResponse(
+    response: any,
+    config: LLMApprovalConfig
+  ): LLMApprovalDecision {
     try {
-      const parsed = typeof response === 'string' ? JSON.parse(response) : response;
-      
+      const parsed =
+        typeof response === 'string'? JSON.parse(response) : response;
+
       return {
         approved: Boolean(parsed.approved),
-        confidence: Math.max(0, Math.min(1, Number(parsed.confidence) || 0)),
-        reasoning: String(parsed.reasoning || 'No reasoning provided'),
+        confidence: Math.max(0, Math.min(1, Number(parsed.confidence)'' | '''' | ''0)),
+        reasoning: String(parsed.reasoning'' | '''' | '''No reasoning provided'),
         concerns: Array.isArray(parsed.concerns) ? parsed.concerns : [],
-        suggestedActions: Array.isArray(parsed.suggestedActions) ? parsed.suggestedActions : [],
+        suggestedActions: Array.isArray(parsed.suggestedActions)
+          ? parsed.suggestedActions
+          : [],
         metadata: {
           model: config.model,
           processingTime: 0, // Will be filled by caller
-          tokenUsage: response.tokenUsage || 0,
-          version: '1.0.0'
-        }
+          tokenUsage: response.tokenUsage'' | '''' | ''0,
+          version:'1.0.0',
+        },
       };
     } catch (error) {
       this.logger.error('Failed to parse LLM response', error);
-      
+
       // Return safe default
       return {
         approved: false,
@@ -261,8 +276,8 @@ Be conservative: when in doubt, escalate to human review.`;
           model: config.model,
           processingTime: 0,
           tokenUsage: 0,
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       };
     }
   }
@@ -274,10 +289,9 @@ Be conservative: when in doubt, escalate to human review.`;
     context: LLMApprovalContext,
     rules: AutoApprovalRule[]
   ): { autoApprove: boolean; rule?: AutoApprovalRule } {
-    
     // Sort by priority (higher first)
     const sortedRules = rules
-      .filter(rule => rule.enabled)
+      .filter((rule) => rule.enabled)
       .sort((a, b) => b.priority - a.priority);
 
     for (const rule of sortedRules) {
@@ -286,35 +300,38 @@ Be conservative: when in doubt, escalate to human review.`;
           task: context.task,
           workflow: context.workflow,
           security: context.security,
-          codeAnalysis: context.codeAnalysis
+          codeAnalysis: context.codeAnalysis,
         };
 
         // Evaluate all conditions for this rule
-        const allConditionsMet = rule.conditions.every(condition => {
+        const allConditionsMet = rule.conditions.every((condition) => {
           try {
             // Create a safe evaluation context
-            const evalFunc = new Function('context', `
+            const evalFunc = new Function(
+              'context',
+              `
               const { task, workflow, security, codeAnalysis } = context;
               return ${condition};
-            `);
-            
+            `
+            );
+
             return evalFunc(ruleContext);
           } catch (error) {
-            this.logger.warn('Rule condition evaluation failed', { 
-              rule: rule.name, 
-              condition, 
-              error 
+            this.logger.warn('Rule condition evaluation failed', {
+              rule: rule.name,
+              condition,
+              error,
             });
             return false;
           }
         });
 
         if (allConditionsMet) {
-          this.logger.info('Auto-approval rule matched', { 
+          this.logger.info('Auto-approval rule matched', {
             taskId: context.task.id,
-            rule: rule.name 
+            rule: rule.name,
           });
-          
+
           return { autoApprove: true, rule };
         }
       } catch (error) {
@@ -339,19 +356,19 @@ Be conservative: when in doubt, escalate to human review.`;
       humanDecision: {
         approved: humanOverride.action === 'approve',
         reasoning: humanOverride.reason,
-        userId: humanOverride.userId
+        userId: humanOverride.userId,
       },
       feedback: this.determineFeedbackType(llmDecision, humanOverride),
       learningWeight: this.calculateLearningWeight(humanOverride),
-      patterns: this.extractLearningPatterns(llmDecision, humanOverride)
+      patterns: this.extractLearningPatterns(llmDecision, humanOverride),
     };
 
     this.learningData.push(learning);
-    
+
     this.logger.info('Learning from human feedback', {
       taskId,
       feedback: learning.feedback,
-      patterns: learning.patterns
+      patterns: learning.patterns,
     });
 
     // TODO: Update ML model weights based on feedback
@@ -373,15 +390,15 @@ Be conservative: when in doubt, escalate to human review.`;
       commonReasons: [],
       improvementTrends: {
         accuracyOverTime: [],
-        confidenceOverTime: []
-      }
+        confidenceOverTime: [],
+      },
     };
   }
 
   private determineFeedbackType(
     llmDecision: LLMApprovalDecision,
     humanOverride: HumanOverride
-  ): 'correct' | 'incorrect' | 'partially_correct' {
+  ): 'correct | incorrect' | 'partially_correct' {
     const llmApproved = llmDecision.approved;
     const humanApproved = humanOverride.action === 'approve';
 
@@ -402,7 +419,7 @@ Be conservative: when in doubt, escalate to human review.`;
     humanOverride: HumanOverride
   ): string[] {
     const patterns: string[] = [];
-    
+
     // Extract patterns from reasoning differences
     if (llmDecision.reasoning && humanOverride.reason) {
       // TODO: Implement pattern extraction logic

@@ -3,7 +3,7 @@
  *
  * Tests for conversation memory using Classical School TDD (state-based testing)
  * Focus on actual storage and retrieval behavior
- * 
+ *
  * CONVERTED FROM VITEST: Uses Jest mocking and assertions
  */
 
@@ -17,10 +17,22 @@ import type {
 
 // Since we're testing logic that may not exist yet, create a simplified memory interface
 interface MockMemoryBackend {
-  store: jest.MockedFunction<(key: string, value: unknown, namespace?: string) => Promise<{ id: string; timestamp: number; status: string }>>;
-  retrieve: jest.MockedFunction<(key: string, namespace?: string) => Promise<unknown>>;
-  delete: jest.MockedFunction<(key: string, namespace?: string) => Promise<boolean>>;
-  search: jest.MockedFunction<(pattern: string, namespace?: string) => Promise<Record<string, unknown>>>;
+  store: jest.MockedFunction<
+    (
+      key: string,
+      value: unknown,
+      namespace?: string
+    ) => Promise<{ id: string; timestamp: number; status: string }>
+  >;
+  retrieve: jest.MockedFunction<
+    (key: string, namespace?: string) => Promise<unknown>
+  >;
+  delete: jest.MockedFunction<
+    (key: string, namespace?: string) => Promise<boolean>
+  >;
+  search: jest.MockedFunction<
+    (pattern: string, namespace?: string) => Promise<Record<string, unknown>>
+  >;
   initialize?: jest.MockedFunction<() => Promise<void>>;
   cleanup?: jest.MockedFunction<() => Promise<void>>;
 }
@@ -28,57 +40,67 @@ interface MockMemoryBackend {
 // Simplified conversation memory implementation for testing
 class ConversationMemoryImpl {
   constructor(private backend: MockMemoryBackend) {}
-  
+
   async storeConversation(conversation: ConversationSession): Promise<void> {
     await this.backend.store(`conversation:${conversation.id}`, conversation);
   }
-  
-  async getConversation(id: string): Promise<ConversationSession | null> {
+
+  async getConversation(id: string): Promise<ConversationSession'' | ''null> {
     const result = await this.backend.retrieve(`conversation:${id}`);
     if (!result) return null;
-    
+
     // Handle date deserialization
     const conversation = result as ConversationSession;
-    if (conversation.startTime && typeof conversation.startTime === 'string') {
+    if (conversation.startTime && typeof conversation.startTime ==='string') {
       conversation.startTime = new Date(conversation.startTime);
     }
     if (conversation.endTime && typeof conversation.endTime === 'string') {
       conversation.endTime = new Date(conversation.endTime);
     }
-    
+
     return conversation;
   }
-  
-  async searchConversations(criteria: { agentId?: string; pattern?: string; limit?: number; offset?: number }): Promise<ConversationSession[]> {
-    const searchTerm = criteria.agentId || criteria.pattern || '';
+
+  async searchConversations(criteria: {
+    agentId?: string;
+    pattern?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<ConversationSession[]> {
+    const searchTerm = criteria.agentId'' | '''' | ''criteria.pattern'' | '''' | '''';
     const results = await this.backend.search(searchTerm);
     const conversations = Object.values(results) as ConversationSession[];
-    
-    // Apply client-side filtering 
+
+    // Apply client-side filtering
     let filteredConversations = conversations;
-    
+
     // Filter by agentId if specified
     if (criteria.agentId) {
-      filteredConversations = filteredConversations.filter(conv => 
-        conv.participants.some(agent => agent.id === criteria.agentId)
+      filteredConversations = filteredConversations.filter((conv) =>
+        conv.participants.some((agent) => agent.id === criteria.agentId)
       );
     }
-    
+
     // Filter by pattern if specified (check domain and title)
     if (criteria.pattern) {
-      filteredConversations = filteredConversations.filter(conv => 
-        conv.context.domain.includes(criteria.pattern) || 
-        conv.title.toLowerCase().includes(criteria.pattern.toLowerCase())
+      filteredConversations = filteredConversations.filter(
+        (conv) =>
+          conv.context.domain.includes(criteria.pattern)'' | '''' | ''conv.title.toLowerCase().includes(criteria.pattern.toLowerCase())
       );
     }
-    
+
     // Apply pagination
-    const start = criteria.offset || 0;
+    const start = criteria.offset'' | '''' | ''0;
     const end = criteria.limit ? start + criteria.limit : undefined;
-    return end ? filteredConversations.slice(start, end) : filteredConversations.slice(start);
+    return end
+      ? filteredConversations.slice(start, end)
+      : filteredConversations.slice(start);
   }
-  
-  async updateConversation(id: string, updates: Partial<ConversationSession>): Promise<void> {
+
+  async updateConversation(
+    id: string,
+    updates: Partial<ConversationSession>
+  ): Promise<void> {
     const existing = await this.getConversation(id);
     if (!existing) {
       throw new Error(`Conversation ${id} not found`);
@@ -86,7 +108,7 @@ class ConversationMemoryImpl {
     const updated = { ...existing, ...updates };
     await this.storeConversation(updated);
   }
-  
+
   async deleteConversation(id: string): Promise<void> {
     await this.backend.delete(`conversation:${id}`);
   }
@@ -134,7 +156,7 @@ describe('ConversationMemoryImpl - Classical TDD (Jest)', () => {
         .mockImplementation(async (pattern: string, namespace?: string) => {
           const results: Record<string, unknown> = {};
           const prefix = namespace ? `${namespace}:` : '';
-          
+
           // Return all stored conversations for searching
           for (const [key, value] of storage.entries()) {
             if (key.startsWith('conversation:')) {

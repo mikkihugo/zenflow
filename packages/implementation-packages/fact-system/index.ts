@@ -1,12 +1,12 @@
 /**
  * @fileoverview FACT System Package - Fast Augmented Context Tools with Rust Engine
- * 
+ *
  * **HIGH-PERFORMANCE KNOWLEDGE GATHERING & PROCESSING SYSTEM**
- * 
+ *
  * Advanced FACT (Fast Augmented Context Tools) system combining TypeScript coordination
  * with high-performance Rust processing engine for external knowledge gathering,
  * multi-source data integration, and intelligent context augmentation.
- * 
+ *
  * **CORE FACT CAPABILITIES:**
  * - 🚀 **Rust Engine Integration**: High-performance processing with WASM/native bindings
  * - 🔍 **Multi-Source Search**: GitHub, NPM, Documentation, and API integration
@@ -16,7 +16,7 @@
  * - 🔧 **Foundation Integration**: Complete @claude-zen/foundation support
  * - 🌐 **Live Data Connectors**: Real-time API and documentation scraping
  * - 📈 **Performance Analytics**: Comprehensive metrics and monitoring
- * 
+ *
  * **Enterprise Features:**
  * - Multi-database backend support (SQLite, LanceDB, Kuzu graph database)
  * - Distributed fact gathering with parallel processing capabilities
@@ -26,11 +26,11 @@
  * - Custom fact processors for domain-specific knowledge extraction
  * - Integration with external knowledge bases and APIs
  * - Command-line interface for batch processing and automation
- * 
+ *
  * @example Basic FACT System Setup
  * ```typescript
  * import { FactSystem } from '@claude-zen/fact-system';
- * 
+ *
  * // Quick setup with SQLite backend
  * const factSystem = await FactSystem.createSQLite({
  *   useRustEngine: true,
@@ -39,7 +39,7 @@
  *   cacheTTL: 3600000, // 1 hour
  *   logging: true
  * });
- * 
+ *
  * // Search across multiple knowledge sources
  * const facts = await factSystem.search({
  *   query: 'react hooks best practices performance optimization',
@@ -49,13 +49,13 @@
  *   includeExamples: true,
  *   semanticSearch: true
  * });
- * 
+ *
  * console.log('Found Facts:', {
  *   total: facts.length,
  *   sources: facts.map(f => f.source).filter((s, i, arr) => arr.indexOf(s) === i),
  *   relevanceScores: facts.map(f => f.relevanceScore)
  * });
- * 
+ *
  * // Process facts with intelligent filtering
  * const processedFacts = await factSystem.processResults(facts, {
  *   deduplicate: true,
@@ -64,16 +64,16 @@
  *   enhanceWithContext: true
  * });
  * ```
- * 
+ *
  * @example Advanced Multi-Source Configuration
  * ```typescript
- * import { 
- *   FactSystem, 
+ * import {
+ *   FactSystem,
  *   createLanceDBFactClient,
  *   LiveAPIConnector,
- *   DocumentationProcessor 
+ *   DocumentationProcessor
  * } from '@claude-zen/fact-system';
- * 
+ *
  * // Advanced setup with vector search and multiple backends
  * const factSystem = await createLanceDBFactClient({
  *   database: {
@@ -114,7 +114,7 @@
  *     persistToDisk: true
  *   }
  * });
- * 
+ *
  * // Perform complex multi-source fact gathering
  * const comprehensiveFacts = await factSystem.gatherComprehensiveFacts({
  *   topic: 'typescript performance optimization',
@@ -128,7 +128,7 @@
  *     docs: { authoritative: true, upToDate: true }
  *   }
  * });
- * 
+ *
  * console.log('Comprehensive Analysis:', {
  *   totalFacts: comprehensiveFacts.length,
  *   qualityScore: comprehensiveFacts.averageQuality,
@@ -136,15 +136,15 @@
  *   topicCoverage: comprehensiveFacts.coverageMetrics
  * });
  * ```
- * 
+ *
  * @example Natural Language Query Processing
  * ```typescript
- * import { 
- *   FactSystem, 
+ * import {
+ *   FactSystem,
  *   NaturalLanguageQuery,
- *   IntelligentCache 
+ *   IntelligentCache
  * } from '@claude-zen/fact-system';
- * 
+ *
  * // Setup with natural language processing
  * const factSystem = await FactSystem.create({
  *   naturalLanguage: {
@@ -159,14 +159,14 @@
  *     contextAwareness: true
  *   }
  * });
- * 
+ *
  * // Natural language queries with intelligent processing
  * const nlQuery = new NaturalLanguageQuery({
  *   factSystem,
  *   contextWindow: 5000,
  *   intentClassification: true
  * });
- * 
+ *
  * // Ask complex questions in natural language
  * const answers = await nlQuery.ask([
  *   "What are the latest React performance patterns for large applications?",
@@ -174,7 +174,7 @@
  *   "What security vulnerabilities should I watch for in Node.js apps?",
  *   "How do top repositories handle error boundary implementations?"
  * ]);
- * 
+ *
  * for (const answer of answers) {
  *   console.log('Question:', answer.question);
  *   console.log('Intent:', answer.detectedIntent);
@@ -185,15 +185,15 @@
  *   console.log('---');
  * }
  * ```
- * 
+ *
  * @example Real-Time Documentation Monitoring
  * ```typescript
- * import { 
- *   FactSystem, 
+ * import {
+ *   FactSystem,
  *   DocumentationProcessor,
- *   LiveAPIConnector 
+ *   LiveAPIConnector
  * } from '@claude-zen/fact-system';
- * 
+ *
  * // Setup real-time documentation monitoring
  * const docProcessor = new DocumentationProcessor({
  *   sources: [
@@ -214,7 +214,7 @@
  *     trackVersionHistory: true
  *   }
  * });
- * 
+ *
  * // Monitor for documentation changes
  * docProcessor.on('documentationChanged', async (change) => {
  *   console.log('Documentation Update Detected:', {
@@ -224,16 +224,16 @@
  *     importance: change.importance,
  *     affectedAPIs: change.affectedAPIs
  *   });
- *   
+ *
  *   // Automatically update fact database
  *   await factSystem.updateFromDocumentationChange(change);
- *   
+ *
  *   // Notify relevant stakeholders
  *   if (change.importance === 'high') {
  *     await factSystem.notifyStakeholders(change);
  *   }
  * });
- * 
+ *
  * // Live API connector for real-time data
  * const liveConnector = new LiveAPIConnector({
  *   endpoints: [
@@ -245,18 +245,18 @@
  *   rateLimiting: true,
  *   caching: true
  * });
- * 
+ *
  * // Stream live updates
  * for await (const update of liveConnector.streamUpdates()) {
  *   await factSystem.ingestLiveUpdate(update);
  *   console.log('Live update processed:', update.source);
  * }
  * ```
- * 
+ *
  * @example Security and Vulnerability Analysis
  * ```typescript
  * import { FactSystem, createKuzuFactClient } from '@claude-zen/fact-system';
- * 
+ *
  * // Setup with graph database for security analysis
  * const securityFactSystem = await createKuzuFactClient({
  *   focus: 'security-analysis',
@@ -271,7 +271,7 @@
  *     npm: { auditData: true, malwareDetection: true }
  *   }
  * });
- * 
+ *
  * // Comprehensive security analysis
  * const securityReport = await securityFactSystem.analyzeSecurityPosture({
  *   target: {
@@ -289,7 +289,7 @@
  *   },
  *   depth: 'comprehensive'
  * });
- * 
+ *
  * console.log('Security Analysis:', {
  *   riskLevel: securityReport.overallRisk,
  *   vulnerabilities: securityReport.vulnerabilities.length,
@@ -299,15 +299,15 @@
  *   complianceStatus: securityReport.licenseCompliance
  * });
  * ```
- * 
+ *
  * @example Custom Fact Processors and Extensions
  * ```typescript
  * import { FactBridge, IntelligentCache } from '@claude-zen/fact-system';
- * 
+ *
  * // Create custom domain-specific fact processor
  * class BlockchainFactProcessor {
  *   constructor(private bridge: FactBridge) {}
- * 
+ *
  *   async processBlockchainData(query: string) {
  *     // Custom processing logic for blockchain/crypto data
  *     const rawData = await this.bridge.gatherFromSources({
@@ -318,11 +318,11 @@
  *         topics: ['defi', 'smart-contracts', 'consensus']
  *       }
  *     });
- * 
+ *
  *     // Custom processing with domain expertise
  *     return this.enhanceWithBlockchainContext(rawData);
  *   }
- * 
+ *
  *   private async enhanceWithBlockchainContext(data: any[]) {
  *     // Add blockchain-specific metadata and analysis
  *     return data.map(item => ({
@@ -334,16 +334,16 @@
  *     }));
  *   }
  * }
- * 
+ *
  * // Use custom processor
  * const factBridge = new FactBridge({ useRustEngine: true });
  * const blockchainProcessor = new BlockchainFactProcessor(factBridge);
- * 
+ *
  * const blockchainFacts = await blockchainProcessor.processBlockchainData(
  *   'ethereum layer 2 scaling solutions'
  * );
  * ```
- * 
+ *
  * **Performance Characteristics:**
  * - **Query Speed**: <100ms for cached results, <2s for live searches
  * - **Throughput**: 1000+ concurrent fact gathering operations
@@ -351,7 +351,7 @@
  * - **Accuracy**: 95%+ relevance score for semantic searches
  * - **Rust Engine**: 10-50x performance improvement for processing
  * - **Scalability**: Horizontally scalable with distributed caching
- * 
+ *
  * **Supported Knowledge Sources:**
  * - GitHub repositories with full API and GraphQL support
  * - NPM package registry with download and maintenance metrics
@@ -359,7 +359,7 @@
  * - Security databases (NVD, GitHub Security Advisories)
  * - API documentation with live endpoint monitoring
  * - Custom knowledge bases via plugin architecture
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  * @license MIT
@@ -379,7 +379,7 @@ export {
   createFactClient,
   createSQLiteFactClient,
   createLanceDBFactClient,
-  createKuzuFactClient
+  createKuzuFactClient,
 } from './src/main';
 
 // =============================================================================
@@ -414,7 +414,7 @@ export type {
   FactCacheEntry,
   FactSourceType,
   FactProcessingOptions,
-  RustEngineConfig
+  RustEngineConfig,
 } from './src/main';
 
 // =============================================================================
@@ -423,18 +423,19 @@ export type {
 export const FACT_SYSTEM_INFO = {
   name: '@claude-zen/fact-system',
   version: '1.0.0',
-  description: 'High-performance FACT system with Rust engine and TypeScript coordination',
+  description:
+    'High-performance FACT system with Rust engine and TypeScript coordination',
   features: [
     'Multi-source fact gathering',
     'High-performance Rust processing',
-    'Smart caching with multiple backends', 
+    'Smart caching with multiple backends',
     'GitHub GraphQL integration',
     'NPM package analysis',
     'Security advisory lookup',
     'API documentation retrieval',
     'Type-safe TypeScript API',
-    'Command-line interface'
+    'Command-line interface',
   ],
   backends: ['SQLite', 'LanceDB', 'Kuzu', 'PostgreSQL'],
-  sources: ['NPM Registry', 'GitHub API', 'NVD Security', 'API Documentation']
+  sources: ['NPM Registry', 'GitHub API', 'NVD Security', 'API Documentation'],
 } as const;

@@ -1,17 +1,17 @@
 /**
  * @fileoverview Singularity-Coder Integration for AI Linter
- * 
- * Enhances Claude's AI linting capabilities with the singularity-coder's WASM-accelerated 
- * file-aware engine. Works alongside Claude to provide additional insights through 
+ *
+ * Enhances Claude's AI linting capabilities with the singularity-coder's WASM-accelerated
+ * file-aware engine. Works alongside Claude to provide additional insights through
  * hardware-optimized analysis.
- * 
+ *
  * Features:
  * - CodeMesh WASM integration for hardware-optimized analysis
  * - File-aware AI understanding that complements Claude's analysis
  * - Hardware detection and optimization strategies
  * - Tool registry for extensible analysis pipelines
  * - Agent-based analysis to augment Claude's insights
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
@@ -19,18 +19,16 @@
 import { getLogger } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 
+import type {
+  LinterContext,
+  AIAnalysisResult,
+  PerformanceOptimization,
+} from './types/ai-linter-types.js';
+
 // Add createLLMProvider stub until intelligence facade is ready
 function createLLMProvider(provider: string): any {
   return { provider, initialized: true };
 }
-import type { 
-  LinterContext, 
-  AIAnalysisResult, 
-  ClaudeInsights,
-  ComplexityIssue,
-  PerformanceOptimization,
-  TechnicalDebtIndicator
-} from './types/ai-linter-types.js';
 
 /**
  * Singularity-Coder analysis configuration
@@ -97,7 +95,7 @@ export interface FileAwareContext {
  */
 export interface DependencyRelationship {
   /** Type of dependency */
-  type: 'import' | 'export' | 'reference' | 'inheritance';
+  type: 'import | export' | 'reference' | 'inheritance'';
   /** Source file */
   source: string;
   /** Target file */
@@ -113,7 +111,7 @@ export interface DependencyRelationship {
  */
 export interface CrossFilePattern {
   /** Pattern type */
-  type: 'code-duplication' | 'architecture-violation' | 'inconsistent-style' | 'missing-abstraction';
+  type:'' | '''code-duplication' | 'architecture-violation'''' | '''inconsistent-style' | 'missing-abstraction'';
   /** Files involved */
   files: string[];
   /** Pattern description */
@@ -129,11 +127,11 @@ export interface CrossFilePattern {
  */
 export interface ProjectContextInsight {
   /** Insight category */
-  category: 'architecture' | 'scalability' | 'maintainability' | 'performance';
+  category: 'architecture | scalability' | 'maintainability' | 'performance'';
   /** Insight description */
   description: string;
   /** Impact level */
-  impact: 'low' | 'medium' | 'high' | 'critical';
+  impact: 'low | medium' | 'high' | 'critical'';
   /** Recommendation */
   recommendation: string;
   /** Files affected */
@@ -226,71 +224,87 @@ export class SingularityIntegration {
 
       // Dynamically import the singularity-coder package
       const singularityModule = await this.loadSingularityModule();
-      
+
       if (singularityModule) {
         try {
           // Debug: Check what's available in the module
-          this.logger.debug('Available exports:', Object.keys(singularityModule));
-          
+          this.logger.debug(
+            'Available exports:',
+            Object.keys(singularityModule)
+          );
+
           // Check if we have direct WASM classes or need to use bridge
           if (singularityModule.CodeMesh) {
             // Direct WASM classes available
             this.logger.debug('Using direct WASM classes');
             this.codeMesh = new singularityModule.CodeMesh();
             this.codeMesh.init();
-            
+
             if (this.config.enableHardwareOptimization) {
               this.hardwareDetector = new singularityModule.HardwareDetector();
             }
-            
+
             this.toolRegistry = new singularityModule.ToolRegistry();
             this.registerAnalysisTools();
-            
           } else if (singularityModule.createCodeMeshBridge) {
             // Use bridge API
             this.logger.debug('Using CodeMesh bridge API');
             const bridgeConfig = {
               rootPath: process.cwd(),
-              enableHardwareOptimization: this.config.enableHardwareOptimization,
-              enableAgentAnalysis: this.config.enableAgentAnalysis
+              enableHardwareOptimization:
+                this.config.enableHardwareOptimization,
+              enableAgentAnalysis: this.config.enableAgentAnalysis,
             };
-            
-            this.codeMesh = singularityModule.createCodeMeshBridge(bridgeConfig);
+
+            this.codeMesh =
+              singularityModule.createCodeMeshBridge(bridgeConfig);
             this.logger.debug('CodeMesh bridge created successfully');
-            
+
             // Bridge might not have separate hardware detector
-            if (this.config.enableHardwareOptimization && this.codeMesh.detectHardware) {
+            if (
+              this.config.enableHardwareOptimization &&
+              this.codeMesh.detectHardware
+            ) {
               this.hardwareDetector = this.codeMesh; // Use codeMesh as hardware detector
             }
-            
+
             // Bridge might not have separate tool registry
             this.toolRegistry = this.codeMesh; // Use codeMesh as tool registry
-            
           } else {
-            throw new Error('Neither direct WASM classes nor bridge API available');
+            throw new Error(
+              'Neither direct WASM classes nor bridge API available'
+            );
           }
         } catch (initError) {
           this.logger.error('Failed to initialize WASM classes:', initError);
           throw initError;
         }
-        
+
         this.isInitialized = true;
-        this.logger.info('✅ Singularity-Coder WASM integration initialized successfully');
-        
+        this.logger.info(
+          '✅ Singularity-Coder WASM integration initialized successfully'
+        );
+
         // Setup LLM bridge for Rust agents
         await this.setupLLMBridge();
-        
+
         // Log hardware optimization status
         if (this.config.enableHardwareOptimization) {
           const hardwareInfo = await this.detectHardware();
-          this.logger.info(`🖥️ Hardware optimization enabled: ${JSON.stringify(hardwareInfo.optimizationStrategy)}`);
+          this.logger.info(
+            `🖥️ Hardware optimization enabled: ${JSON.stringify(hardwareInfo.optimizationStrategy)}`
+          );
         }
       } else {
-        this.logger.warn('⚠️ Singularity-Coder WASM modules not available, falling back to basic analysis');
+        this.logger.warn(
+          '⚠️ Singularity-Coder WASM modules not available, falling back to basic analysis'
+        );
       }
-      
     } catch (error) {
-      this.logger.error('Failed to initialize Singularity-Coder integration:', error);
+      this.logger.error(
+        'Failed to initialize Singularity-Coder integration:',
+        error
+      );
       // Continue without WASM optimization
     }
   }
@@ -301,43 +315,69 @@ export class SingularityIntegration {
   private async loadSingularityModule(): Promise<any> {
     try {
       // Try to load the main singularity-coder module
-      const singularityModule = await import('@claude-zen/singularity-coder' as any);
+      const singularityModule = await import(
+        '@claude-zen/singularity-coder' as any
+      );
       this.logger.info('✅ Successfully loaded main singularity-coder module');
       return singularityModule;
     } catch (error) {
-      this.logger.debug('Main module not available, trying bridge module...', String(error));
-      
+      this.logger.debug(
+        'Main module not available, trying bridge module...',
+        String(error)
+      );
+
       try {
         // Try the bridge which includes WASM exports
-        const bridgeModule = await import('@claude-zen/singularity-coder/bridge' as any);
-        this.logger.info('✅ Successfully loaded singularity-coder bridge module');
+        const bridgeModule = await import(
+          '@claude-zen/singularity-coder/bridge' as any
+        );
+        this.logger.info(
+          '✅ Successfully loaded singularity-coder bridge module'
+        );
         return bridgeModule;
       } catch (bridgeError) {
-        this.logger.debug('Bridge module not available, trying direct WASM import...', String(bridgeError));
-        
+        this.logger.debug(
+          'Bridge module not available, trying direct WASM import...',
+          String(bridgeError)
+        );
+
         try {
           // Load WASM module chunk directly from built distribution
-          const wasmModule = await import('../../singularity-coder/dist/chunk-KTBMFE4T.js' as any);
+          const wasmModule = await import(
+            '../../singularity-coder/dist/chunk-KTBMFE4T.js' as any
+          );
           this.logger.info('✅ Successfully loaded WASM module from chunk');
           return wasmModule;
         } catch (chunkError) {
-          this.logger.debug('Chunk import failed, trying relative path...', String(chunkError));
-          
+          this.logger.debug(
+            'Chunk import failed, trying relative path...',
+            String(chunkError)
+          );
+
           try {
             // Fallback to relative path if package resolution fails
-            const wasmModule = await import('../../singularity-coder/dist/code_mesh_wasm.js' as any);
-            
+            const wasmModule = await import(
+              '../../singularity-coder/dist/code_mesh_wasm.js' as any
+            );
+
             // Initialize WASM module
-            if (wasmModule.default && typeof wasmModule.default === 'function') {
+            if (
+              wasmModule.default &&
+              typeof wasmModule.default === 'function'
+            ) {
               await wasmModule.default();
             }
-            
-            this.logger.info('✅ Successfully loaded WASM module from relative path');
+
+            this.logger.info(
+              '✅ Successfully loaded WASM module from relative path'
+            );
             return wasmModule;
           } catch (relativeError) {
-            this.logger.warn('All singularity-coder import attempts failed, falling back to basic analysis');
+            this.logger.warn(
+              'All singularity-coder import attempts failed, falling back to basic analysis'
+            );
             this.logger.warn('Main error:', String(error));
-            this.logger.warn('Bridge error:', String(bridgeError));  
+            this.logger.warn('Bridge error:', String(bridgeError));
             this.logger.warn('Chunk error:', String(chunkError));
             this.logger.warn('Relative error:', String(relativeError));
             return null;
@@ -355,28 +395,38 @@ export class SingularityIntegration {
 
     try {
       // Register complexity analyzer
-      this.toolRegistry.register('complexity-analyzer', JSON.stringify({
-        name: 'AI Complexity Analyzer',
-        version: '1.0.0',
-        description: 'Analyzes code complexity using AI-powered metrics'
-      }));
+      this.toolRegistry.register(
+        'complexity-analyzer',
+        JSON.stringify({
+          name: 'AI Complexity Analyzer',
+          version: '1.0.0',
+          description: 'Analyzes code complexity using AI-powered metrics',
+        })
+      );
 
       // Register performance analyzer
-      this.toolRegistry.register('performance-analyzer', JSON.stringify({
-        name: 'AI Performance Analyzer', 
-        version: '1.0.0',
-        description: 'Predicts performance characteristics and optimizations'
-      }));
+      this.toolRegistry.register(
+        'performance-analyzer',
+        JSON.stringify({
+          name: 'AI Performance Analyzer',
+          version: '1.0.0',
+          description: 'Predicts performance characteristics and optimizations',
+        })
+      );
 
       // Register architecture analyzer
-      this.toolRegistry.register('architecture-analyzer', JSON.stringify({
-        name: 'AI Architecture Analyzer',
-        version: '1.0.0', 
-        description: 'Evaluates architectural patterns and design quality'
-      }));
+      this.toolRegistry.register(
+        'architecture-analyzer',
+        JSON.stringify({
+          name: 'AI Architecture Analyzer',
+          version: '1.0.0',
+          description: 'Evaluates architectural patterns and design quality',
+        })
+      );
 
-      this.logger.debug('📦 Registered analysis tools in Singularity tool registry');
-      
+      this.logger.debug(
+        '📦 Registered analysis tools in Singularity tool registry'
+      );
     } catch (error) {
       this.logger.warn('Failed to register analysis tools:', error);
     }
@@ -387,19 +437,22 @@ export class SingularityIntegration {
    */
   async detectHardware(): Promise<any> {
     if (!this.hardwareDetector) {
-      return { optimizationStrategy: 'basic' };
+      return { optimizationStrategy: 'basic'};
     }
 
     try {
       const hardwareInfo = await this.hardwareDetector.detect_hardware();
-      const optimizationStrategy = this.hardwareDetector.get_optimization_strategy();
-      
+      const optimizationStrategy =
+        this.hardwareDetector.get_optimization_strategy();
+
       return {
         hardwareInfo,
         optimizationStrategy,
-        cpuCores: hardwareInfo?.cpu?.cores || 'unknown',
-        memoryGb: hardwareInfo?.memory?.total ? Math.round(hardwareInfo.memory.total / (1024 * 1024 * 1024)) : 'unknown',
-        hasGpu: hardwareInfo?.gpu?.available || false,
+        cpuCores: hardwareInfo?.cpu?.cores'' | '''' | '''unknown',
+        memoryGb: hardwareInfo?.memory?.total
+          ? Math.round(hardwareInfo.memory.total / (1024 * 1024 * 1024))
+          : 'unknown',
+        hasGpu: hardwareInfo?.gpu?.available'' | '''' | ''false,
       };
     } catch (error) {
       this.logger.warn('Hardware detection failed:', error);
@@ -414,38 +467,45 @@ export class SingularityIntegration {
   async setupLLMBridge(): Promise<void> {
     try {
       this.logger.debug('🔗 Setting up LLM provider bridge for Rust WASM...');
-      
+
       // Create TypeScript LLM provider - Rust will route through this instead of direct external calls
       const llmProvider = createLLMProvider('claude-code');
-      
+
       // Store the LLM provider for bridge calls
       (this as any)._llmProvider = llmProvider;
-      
+
       // Check if the WASM module has direct LLM bridge capability
-      if (this.codeMesh && typeof this.codeMesh.setup_llm_bridge === 'function') {
+      if (
+        this.codeMesh &&
+        typeof this.codeMesh.setup_llm_bridge === 'function'
+      ) {
         // Setup bridge directly in WASM - Rust will call back to TypeScript
         this.codeMesh.setup_llm_bridge({
           provider: 'typescript', // Indicate we're using TypeScript provider
           callLLM: async (prompt: string, options: any) => {
             return await this.handleLLMBridgeCall(prompt, options);
-          }
+          },
         });
-        
-        this.logger.info('✅ Direct LLM bridge configured - Rust WASM will route to TypeScript LLM provider');
-        
+
+        this.logger.info(
+          '✅ Direct LLM bridge configured - Rust WASM will route to TypeScript LLM provider'
+        );
       } else if (this.codeMesh) {
         // Manual bridge setup - expose bridge function to WASM
         (this.codeMesh as any)._llmBridge = {
-          callLLM: (prompt: string, options: any) => this.handleLLMBridgeCall(prompt, options),
-          provider: 'typescript'
+          callLLM: (prompt: string, options: any) =>
+            this.handleLLMBridgeCall(prompt, options),
+          provider: 'typescript',
         };
-        
-        this.logger.info('✅ Manual LLM bridge configured - Rust can access TypeScript LLM via _llmBridge');
-        
+
+        this.logger.info(
+          '✅ Manual LLM bridge configured - Rust can access TypeScript LLM via _llmBridge'
+        );
       } else {
-        this.logger.info('📝 LLM provider stored for future bridge setup (WASM not ready yet)');
+        this.logger.info(
+          '📝 LLM provider stored for future bridge setup (WASM not ready yet)'
+        );
       }
-      
     } catch (error) {
       this.logger.warn('Failed to setup LLM bridge:', error);
       // Continue without LLM integration - WASM will use built-in logic
@@ -455,43 +515,51 @@ export class SingularityIntegration {
   /**
    * Handle LLM bridge calls from Rust WASM - routes to TypeScript LLM providers
    */
-  private async handleLLMBridgeCall(prompt: string, options: any = {}): Promise<any> {
+  private async handleLLMBridgeCall(
+    prompt: string,
+    options: any = {}
+  ): Promise<any> {
     const llmProvider = (this as any)._llmProvider;
     if (!llmProvider) {
       this.logger.warn('No TypeScript LLM provider available for Rust bridge');
       return {
         success: false,
         error: 'TypeScript LLM provider not initialized',
-        content: 'Fallback: Using WASM native analysis'
+        content: 'Fallback: Using WASM native analysis',
       };
     }
-    
+
     try {
-      this.logger.debug(`🌉 Bridging LLM call from Rust WASM to TypeScript provider: ${prompt.substring(0, 100)}...`);
-      
+      this.logger.debug(
+        `🌉 Bridging LLM call from Rust WASM to TypeScript provider: ${prompt.substring(0, 100)}...`
+      );
+
       const response = await llmProvider.generateCompletion({
         messages: [{ role: 'user', content: prompt }],
-        model: options.model || 'claude-3-sonnet',
-        maxTokens: options.maxTokens || 1024,
-        temperature: options.temperature || 0.7
+        model: options.model'' | '''' | '''claude-3-sonnet',
+        maxTokens: options.maxTokens'' | '''' | ''1024,
+        temperature: options.temperature'' | '''' | ''0.7,
       });
-      
+
       this.logger.debug('✅ TypeScript LLM provider responded successfully to Rust WASM');
-      
+
       return {
         success: true,
         content: response.content,
-        usage: response.usage || { total_tokens: 0, prompt_tokens: 0, completion_tokens: 0 },
-        provider: 'typescript-claude'
+        usage: response.usage'' | '''' | ''{
+          total_tokens: 0,
+          prompt_tokens: 0,
+          completion_tokens: 0,
+        },
+        provider:'typescript-claude',
       };
-      
     } catch (error) {
       this.logger.warn('TypeScript LLM bridge call failed:', String(error));
       return {
         success: false,
         error: String(error),
         content: 'Fallback: Using WASM native analysis',
-        provider: 'typescript-claude'
+        provider: 'typescript-claude',
       };
     }
   }
@@ -501,11 +569,14 @@ export class SingularityIntegration {
    * @deprecated Use the LLM bridge instead
    */
   async callLLMForRust(prompt: string, options: any = {}): Promise<string> {
-    this.logger.debug('🔄 Legacy callLLMForRust - routing through new bridge system');
-    
+    this.logger.debug(
+      '🔄 Legacy callLLMForRust - routing through new bridge system');
+
     try {
       const bridgeResponse = await this.handleLLMBridgeCall(prompt, options);
-      return bridgeResponse.success ? bridgeResponse.content : bridgeResponse.error || 'Bridge call failed';
+      return bridgeResponse.success
+        ? bridgeResponse.content
+        : bridgeResponse.error'' | '''' | '''Bridge call failed';
     } catch (error) {
       this.logger.warn('Legacy LLM call failed:', error);
       return 'LLM call failed - using heuristic analysis';
@@ -524,10 +595,12 @@ export class SingularityIntegration {
   ): Promise<EnhancedAnalysisResult> {
     await this.initialize();
 
-    this.logger.debug(`🔍 Enhancing Claude's analysis for ${filePath} with Singularity-Coder...`);
+    this.logger.debug(
+      `🔍 Enhancing Claude's analysis for ${filePath} with Singularity-Coder...`
+    );
 
     // Use Claude's existing analysis as the base, or create a minimal one if not provided
-    const baseResult: AIAnalysisResult = claudeBaseAnalysis || {
+    const baseResult: AIAnalysisResult = claudeBaseAnalysis'' | '''' | ''{
       filePath,
       timestamp: Date.now(),
       patterns: [],
@@ -540,16 +613,15 @@ export class SingularityIntegration {
         quality_assessment: {
           overallScore: 80,
           categoryScores: {
-            'complexity': 80,
-            'type-safety': 85,
-            'performance': 75,
-            'security': 80,
-            'maintainability': 80,
-            'architecture': 80,
-            'style': 85,
-            'correctness': 90,
-            'accessibility': 70,
-            'i18n': 60,
+            complexity: 80,'type-safety': 85,
+            performance: 75,
+            security: 80,
+            maintainability: 80,
+            architecture: 80,
+            style: 85,
+            correctness: 90,
+            accessibility: 70,
+            i18n: 60,
           },
           strengths: ['Well-structured code'],
           improvements: ['Add more comprehensive error handling'],
@@ -628,18 +700,27 @@ export class SingularityIntegration {
 
       // Perform code mesh analysis if available
       if (this.codeMesh) {
-        const codeMeshAnalysis = await this.performCodeMeshAnalysis(content, context);
+        const codeMeshAnalysis = await this.performCodeMeshAnalysis(
+          content,
+          context
+        );
         enhancedResult.singularityInsights.codeMeshAnalysis = codeMeshAnalysis;
       }
 
       // Generate performance predictions
       if (this.config.enableHardwareOptimization) {
-        const performancePredictions = await this.generatePerformancePredictions(content, context);
-        enhancedResult.singularityInsights.performancePredictions = performancePredictions;
+        const performancePredictions =
+          await this.generatePerformancePredictions(content, context);
+        enhancedResult.singularityInsights.performancePredictions =
+          performancePredictions;
       }
 
       // Generate file-aware context that enhances Claude's understanding
-      const fileAwareContext = await this.generateFileAwareContext(filePath, content, context);
+      const fileAwareContext = await this.generateFileAwareContext(
+        filePath,
+        content,
+        context
+      );
       enhancedResult.singularityInsights.fileAwareContext = fileAwareContext;
 
       // Calculate overall confidence based on available analysis
@@ -649,13 +730,14 @@ export class SingularityIntegration {
         enhancedResult.singularityInsights.performancePredictions.length > 0,
       ].filter(Boolean).length;
 
-      enhancedResult.confidence = Math.min(0.95, 0.6 + (analysisCount * 0.15));
+      enhancedResult.confidence = Math.min(0.95, 0.6 + analysisCount * 0.15);
 
       const analysisTime = Date.now() - startTime;
       enhancedResult.performance.totalTimeMs = analysisTime;
 
-      this.logger.debug(`✅ Singularity analysis completed in ${analysisTime}ms (confidence: ${(enhancedResult.confidence * 100).toFixed(1)}%)`);
-
+      this.logger.debug(
+        `✅ Singularity analysis completed in ${analysisTime}ms (confidence: ${(enhancedResult.confidence * 100).toFixed(1)}%)`
+      );
     } catch (error) {
       this.logger.error('Singularity analysis failed:', error);
       enhancedResult.confidence = 0.5; // Fallback confidence
@@ -667,31 +749,38 @@ export class SingularityIntegration {
   /**
    * Perform agent-based analysis using CodeMesh
    */
-  private async performAgentAnalysis(content: string, context: LinterContext): Promise<AgentAnalysisResult[]> {
+  private async performAgentAnalysis(
+    content: string,
+    context: LinterContext
+  ): Promise<AgentAnalysisResult[]> {
     if (!this.codeMesh) return [];
 
     const results: AgentAnalysisResult[] = [];
 
     try {
       // Create different types of analysis agents
-      const agentTypes = ['complexity-analyzer', 'performance-optimizer', 'architecture-reviewer'];
+      const agentTypes = [
+        'complexity-analyzer',
+        'performance-optimizer',
+        'architecture-reviewer',
+      ];
 
       for (const agentType of agentTypes) {
         const startTime = Date.now();
-        
+
         try {
           const agentId = this.codeMesh.create_agent(agentType);
-          
+
           const task = `Analyze ${context.language} code for ${agentType.replace('-', ' ')}`;
           const findings = this.codeMesh.execute_task(agentId, task);
-          
+
           const executionTime = Date.now() - startTime;
-          
+
           results.push({
             agentId,
             agentType,
             task,
-            findings: findings || `${agentType} analysis completed`,
+            findings: findings'' | '''' | ''`${agentType} analysis completed`,
             confidence: 0.85,
             performanceMetrics: {
               executionTimeMs: executionTime,
@@ -703,7 +792,6 @@ export class SingularityIntegration {
           this.logger.warn(`Agent ${agentType} failed:`, agentError);
         }
       }
-
     } catch (error) {
       this.logger.warn('Agent analysis failed:', error);
     }
@@ -714,7 +802,10 @@ export class SingularityIntegration {
   /**
    * Perform code mesh analysis
    */
-  private async performCodeMeshAnalysis(content: string, context: LinterContext): Promise<CodeMeshAnalysis> {
+  private async performCodeMeshAnalysis(
+    content: string,
+    context: LinterContext
+  ): Promise<CodeMeshAnalysis> {
     const defaultAnalysis: CodeMeshAnalysis = {
       complexityScore: 5,
       architectureQuality: 0.7,
@@ -733,23 +824,25 @@ export class SingularityIntegration {
     try {
       // Get performance metrics from CodeMesh
       const performanceMetrics = this.codeMesh.get_performance_metrics();
-      
+
       // Simulate code mesh analysis (in a real implementation, this would use WASM analysis)
       const analysis: CodeMeshAnalysis = {
         complexityScore: Math.min(20, content.split('\n').length / 10), // Simple complexity estimate
         architectureQuality: 0.8,
-        maintainabilityIndex: Math.max(0.5, 1.0 - (content.length / 10000)), // Size-based estimate
+        maintainabilityIndex: Math.max(0.5, 1.0 - content.length / 10000), // Size-based estimate
         technicalDebtRatio: 0.15,
         healthIndicators: {
           typesSafety: context.language === 'typescript' ? 0.9 : 0.6,
-          testCoverage: content.includes('test') || content.includes('spec') ? 0.8 : 0.3,
-          documentation: (content.match(/\/\*\*|\*\/|\/\//g) || []).length / content.split('\n').length,
+          testCoverage:
+            content.includes('test')'' | '''' | ''content.includes('spec') ? 0.8 : 0.3,
+          documentation:
+            (content.match(/\/\*\*'' | ''\*\/'' | ''\/\//g)'' | '''' | ''[]).length /
+            content.split('\n').length,
           consistency: 0.85,
         },
       };
 
       return analysis;
-      
     } catch (error) {
       this.logger.warn('CodeMesh analysis failed:', error);
       return defaultAnalysis;
@@ -759,18 +852,24 @@ export class SingularityIntegration {
   /**
    * Generate performance predictions
    */
-  private async generatePerformancePredictions(content: string, context: LinterContext): Promise<PerformancePrediction[]> {
+  private async generatePerformancePredictions(
+    content: string,
+    context: LinterContext
+  ): Promise<PerformancePrediction[]> {
     const predictions: PerformancePrediction[] = [];
 
     try {
       // Analyze content for performance characteristics
       const lineCount = content.split('\n').length;
-      const functionCount = (content.match(/function|const\s+\w+\s*=/g) || []).length;
-      const loopCount = (content.match(/for\s*\(|while\s*\(|\.map\(|\.forEach\(/g) || []).length;
+      const functionCount = (content.match(/function'' | ''const\s+\w+\s*=/g)'' | '''' | ''[])
+        .length;
+      const loopCount = (
+        content.match(/for\s*\('' | ''while\s*\('' | ''\.map\('' | ''\.forEach\(/g)'' | '''' | ''[]
+      ).length;
 
       // Runtime performance prediction
       predictions.push({
-        metric: 'Execution Time',
+        metric:'Execution Time',
         predictedValue: Math.max(1, lineCount * 0.1 + loopCount * 2), // ms
         confidence: 0.7,
         optimizations: [
@@ -793,7 +892,9 @@ export class SingularityIntegration {
       });
 
       // Bundle size prediction (for web code)
-      if (context.language === 'javascript' || context.language === 'typescript') {
+      if (
+        context.language === 'javascript''' | '''' | ''context.language ==='typescript'
+      ) {
         predictions.push({
           metric: 'Bundle Size',
           predictedValue: content.length / 1024, // KB
@@ -805,7 +906,6 @@ export class SingularityIntegration {
           ],
         });
       }
-
     } catch (error) {
       this.logger.warn('Performance prediction failed:', error);
     }
@@ -816,7 +916,11 @@ export class SingularityIntegration {
   /**
    * Generate file-aware context that enhances Claude's understanding
    */
-  private async generateFileAwareContext(filePath: string, content: string, context: LinterContext): Promise<FileAwareContext> {
+  private async generateFileAwareContext(
+    filePath: string,
+    content: string,
+    context: LinterContext
+  ): Promise<FileAwareContext> {
     const fileAwareContext: FileAwareContext = {
       relatedFiles: [],
       dependencies: [],
@@ -826,12 +930,14 @@ export class SingularityIntegration {
 
     try {
       // Analyze imports/exports to find related files
-      const importMatches = content.match(/import.*from\s+['"`]([^'"`]+)['"`]/g) || [];
-      const exportMatches = content.match(/export.*from\s+['"`]([^'"`]+)['"`]/g) || [];
-      
+      const importMatches =
+        content.match(/import.*from\s+["'`]([^"'`]+)["'`]/g)'' | '''' | ''[];
+      const exportMatches =
+        content.match(/export.*from\s+["'`]([^"'`]+)["'`]/g)'' | '''' | ''[];
+
       // Extract dependency relationships
       for (const importMatch of importMatches) {
-        const moduleMatch = importMatch.match(/from\s+['"`]([^'"`]+)['"`]/);
+        const moduleMatch = importMatch.match(/from\s+["'`]([^"'`]+)["'`]/);
         if (moduleMatch) {
           const modulePath = moduleMatch[1];
           fileAwareContext.dependencies.push({
@@ -841,7 +947,7 @@ export class SingularityIntegration {
             strength: 0.8,
             patterns: ['es6-import'],
           });
-          
+
           // Add to related files if it's a relative import
           if (modulePath.startsWith('.')) {
             fileAwareContext.relatedFiles.push(modulePath);
@@ -850,49 +956,57 @@ export class SingularityIntegration {
       }
 
       // Detect cross-file patterns
-      if (content.includes('TODO') || content.includes('FIXME')) {
+      if (content.includes('TODO')'' | '''' | ''content.includes('FIXME')) {
         fileAwareContext.crossFilePatterns.push({
           type: 'missing-abstraction',
           files: [filePath],
-          description: 'Contains TODO/FIXME comments indicating incomplete implementation',
+          description:
+            'Contains TODO/FIXME comments indicating incomplete implementation',
           suggestion: 'Complete implementation or create proper abstraction',
           confidence: 0.9,
         });
       }
 
       // Check for code duplication patterns
-      const functionMatches = content.match(/function\s+(\w+)/g) || [];
+      const functionMatches = content.match(/function\s+(\w+)/g)'' | '''' | ''[];
       if (functionMatches.length > 5) {
         fileAwareContext.crossFilePatterns.push({
-          type: 'code-duplication',
+          type:'code-duplication',
           files: [filePath],
           description: `File contains ${functionMatches.length} functions, potential for code duplication`,
-          suggestion: 'Consider extracting common functionality into shared utilities',
+          suggestion:
+            'Consider extracting common functionality into shared utilities',
           confidence: 0.6,
         });
       }
 
       // Generate project context insights
-      if (context.language === 'typescript' && !content.includes('interface') && !content.includes('type ')) {
+      if (
+        context.language === 'typescript' &&
+        !content.includes('interface') &&
+        !content.includes('type ')
+      ) {
         fileAwareContext.projectContext.push({
           category: 'maintainability',
           description: 'TypeScript file lacks type definitions',
           impact: 'medium',
-          recommendation: 'Add interfaces and type definitions for better type safety',
+          recommendation:
+            'Add interfaces and type definitions for better type safety',
           affectedFiles: [filePath],
         });
       }
 
       // Performance insights based on content analysis
-      const asyncMatches = content.match(/async\s+function|await\s+/g) || [];
-      const syncLoopMatches = content.match(/for\s*\(|while\s*\(/g) || [];
-      
+      const asyncMatches = content.match(/async\s+function'' | ''await\s+/g)'' | '''' | ''[];
+      const syncLoopMatches = content.match(/for\s*\('' | ''while\s*\(/g)'' | '''' | ''[];
+
       if (asyncMatches.length > 0 && syncLoopMatches.length > 2) {
         fileAwareContext.projectContext.push({
-          category: 'performance',
+          category:'performance',
           description: 'Mix of async operations and synchronous loops detected',
           impact: 'high',
-          recommendation: 'Consider using Promise.all() or async iteration patterns for better performance',
+          recommendation:
+            'Consider using Promise.all() or async iteration patterns for better performance',
           affectedFiles: [filePath],
         });
       }
@@ -901,13 +1015,13 @@ export class SingularityIntegration {
       if (content.length > 2000 && functionMatches.length > 10) {
         fileAwareContext.projectContext.push({
           category: 'architecture',
-          description: 'Large file with many functions indicates potential for modularization',
+          description:
+            'Large file with many functions indicates potential for modularization',
           impact: 'medium',
           recommendation: 'Consider splitting into smaller, focused modules',
           affectedFiles: [filePath],
         });
       }
-
     } catch (error) {
       this.logger.warn('File-aware context generation failed:', error);
     }
@@ -920,7 +1034,7 @@ export class SingularityIntegration {
    */
   getAgentCount(): number {
     if (!this.codeMesh) return 0;
-    
+
     try {
       return this.codeMesh.get_agent_count();
     } catch (error) {

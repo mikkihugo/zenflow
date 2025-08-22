@@ -1,9 +1,9 @@
 /**
  * @fileoverview DSPy Example - Production Grade
- * 
+ *
  * Core Example class for DSPy training and evaluation data.
  * 100% compatible with Stanford DSPy's Example interface.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  */
@@ -14,19 +14,26 @@
  */
 export class Example {
   public data: Record<string, any>;
-  
+
   constructor(
-    inputsOrData?: Record<string, any>, 
+    inputsOrData?: Record<string, any>,
     outputs?: Record<string, any>
   ) {
-    if (typeof inputsOrData === 'object' && inputsOrData !== null && outputs === undefined) {
+    if (
+      typeof inputsOrData === 'object' &&
+      inputsOrData !== null &&
+      outputs === undefined
+    ) {
       // Single object constructor: new Example({question: "What?", answer: "42"})
       this.data = { ...inputsOrData };
-    } else if (typeof inputsOrData === 'object' && typeof outputs === 'object') {
+    } else if (
+      typeof inputsOrData === 'object' &&
+      typeof outputs === 'object'
+    ) {
       // Two-object constructor: new Example({question: "What?"}, {answer: "42"})
-      this.data = { 
+      this.data = {
         ...inputsOrData,
-        ...outputs
+        ...outputs,
       };
     } else {
       // Default empty constructor
@@ -167,14 +174,13 @@ export class Example {
     return this.size === 0;
   }
 
-
   /**
    * Stanford DSPy compatible inputs() method
    * Returns a new Example with only input fields
    */
   inputs(): Example {
     const inputData: Record<string, any> = {};
-    
+
     // If input fields are explicitly designated, use those
     if ((this as any)._input_fields) {
       const inputFields = (this as any)._input_fields as Set<string>;
@@ -185,14 +191,22 @@ export class Example {
       }
     } else {
       // Otherwise, use heuristic approach
-      const outputFields = new Set(['answer', 'output', 'result', 'prediction', 'target', 'label', 'completion']);
+      const outputFields = new Set([
+        'answer',
+        'output',
+        'result',
+        'prediction',
+        'target',
+        'label',
+        'completion',
+      ]);
       for (const [key, value] of Object.entries(this.data)) {
         if (!outputFields.has(key.toLowerCase())) {
           inputData[key] = value;
         }
       }
     }
-    
+
     return new Example(inputData);
   }
 
@@ -202,7 +216,7 @@ export class Example {
    */
   labels(): Example {
     const outputData: Record<string, any> = {};
-    
+
     // If input fields are explicitly designated, labels are everything else
     if ((this as any)._input_fields) {
       const inputFields = (this as any)._input_fields as Set<string>;
@@ -213,14 +227,22 @@ export class Example {
       }
     } else {
       // Otherwise, use heuristic approach for output fields
-      const outputFields = new Set(['answer', 'output', 'result', 'prediction', 'target', 'label', 'completion']);
+      const outputFields = new Set([
+        'answer',
+        'output',
+        'result',
+        'prediction',
+        'target',
+        'label',
+        'completion',
+      ]);
       for (const [key, value] of Object.entries(this.data)) {
         if (outputFields.has(key.toLowerCase())) {
           outputData[key] = value;
         }
       }
     }
-    
+
     return new Example(outputData);
   }
 
@@ -239,13 +261,13 @@ export class Example {
   without(...fields: string[]): Example {
     const filteredData: Record<string, any> = {};
     const fieldsToExclude = new Set(fields);
-    
+
     for (const [key, value] of Object.entries(this.data)) {
       if (!fieldsToExclude.has(key)) {
         filteredData[key] = value;
       }
     }
-    
+
     return new Example(filteredData);
   }
 
@@ -274,7 +296,7 @@ export class Example {
   [Symbol.iterator](): Iterator<[string, any]> {
     const entries = this.entries();
     let index = 0;
-    
+
     return {
       next(): IteratorResult<[string, any]> {
         if (index < entries.length) {
@@ -284,7 +306,7 @@ export class Example {
           }
         }
         return { done: true, value: undefined };
-      }
+      },
     };
   }
 }

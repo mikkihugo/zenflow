@@ -56,7 +56,7 @@
  * @interface AuthenticationConfig
  * @description Unified authentication configuration supporting multiple authentication methods.
  *              Provides a flexible, extensible approach to client authentication across all protocols.
- * @property {'bearer|apikey'|'oauth|basic'|'custom'} type - Authentication method type.
+ * @property {'bearer | apikey | oauth | basic | custom'} type - Authentication method type.
  * @property {string} [token] - Bearer token for token-based authentication.
  * @property {string} [apiKey] - API key for key-based authentication.
  * @property {string} [apiKeyHeader='X-API-Key'] - Header name for API key authentication.
@@ -109,7 +109,7 @@
  */
 export interface AuthenticationConfig {
   /** Authentication method type */
-  type: 'bearer | apikey' | 'oauth | basic' | 'custom');
+  type: 'bearer | apikey | oauth | basic | custom');
 
   /** Bearer token for token-based authentication */
   token?: string;
@@ -148,7 +148,7 @@ export interface AuthenticationConfig {
  *              Provides intelligent retry behavior for handling transient failures.
  * @property {number} attempts - Maximum number of retry attempts (1-10 recommended).
  * @property {number} delay - Base delay between retries in milliseconds.
- * @property {'linear|exponential'|'fixed'} backoff - Backoff strategy for retry delays.
+ * @property {'linear | exponential | fixed'} backoff - Backoff strategy for retry delays.
  * @property {number} [maxDelay] - Maximum delay cap for exponential/linear backoff (ms).
  * @property {Function} [retryCondition] - Custom function to determine if error should be retried.
  * @example
@@ -169,7 +169,7 @@ export interface AuthenticationConfig {
  * const linearRetry: RetryConfig = {
  *   attempts: 3,
  *   delay: 2000,      // 2s, 4s, 6s
- *   backoff: 'linear',
+ *   backoff:'linear',
  *   maxDelay: 10000
  * };
  *
@@ -187,9 +187,7 @@ export interface AuthenticationConfig {
  *   backoff: 'exponential',
  *   retryCondition: (error) => {
  *     // Only retry on network errors and rate limits
- *     return error.code === 'ECONNRESET' ||
- *            error.code === 'ETIMEDOUT' ||
- *            error.status === 429;
+ *     return error.code === 'ECONNRESET' || *            error.code ==='ETIMEDOUT' || *            error.status === 429;
  *   }
  * };
  * ```
@@ -200,7 +198,7 @@ export interface RetryConfig {
   /** Base delay between retries in milliseconds */
   delay: number;
   /** Backoff strategy for calculating retry delays */
-  backoff: 'linear | exponential' | 'fixed');
+  backoff:'linear | exponential'' | ''fixed');
   /** Maximum delay cap for backoff strategies (milliseconds) */
   maxDelay?: number;
   /** Custom function to determine if an error should trigger a retry */
@@ -257,7 +255,7 @@ export interface ClientConfig {
  */
 export interface ClientHealthStatus {
   name: string;
-  status: 'healthy | degraded' | 'unhealthy | disconnected');
+  status: 'healthy | degraded | unhealthy | disconnected');
   lastCheck: Date;
   responseTime: number;
   errorRate: number;
@@ -507,12 +505,12 @@ export interface Client {
   /**
    * Register event handler.
    *
-   * @param {'connect|disconnect'|'error|retry'|string} event - Event name.
+   * @param {'connect|disconnect | error | retry'|string} event - Event name.
    * @param {Function} handler - Event handler function.
    * @description Register listeners for client lifecycle and operational events.
    */
   on(
-    event: 'connect | disconnect' | 'error | retry',
+    event: 'connect | disconnect | error | retry',
     handler: (args: any[]) => void
   ): void;
 
@@ -665,4 +663,4 @@ export interface ClientResponse<T = any> {
 }
 
 // Re-export types from types.ts for convenience
-export type { ClientStatus, ProtocolType } from './types');
+export type { ClientStatus, ProtocolType } from './types';

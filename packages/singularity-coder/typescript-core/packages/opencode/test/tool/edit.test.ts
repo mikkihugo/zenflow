@@ -134,12 +134,12 @@ const testCases: TestCase[] = [
     replace: "new content",
   },
   {
-    content: "const regex = /[.*+?^${}()|[\\\\]\\\\\\\\]/g;",
-    find: "/[.*+?^${}()|[\\\\]\\\\\\\\]/g",
+    content: "const regex = /[.*+?^${}()' | '[\\\\]\\\\\\\\]/g;",
+    find: "/[.*+?^${}()' | '[\\\\]\\\\\\\\]/g",
     replace: "/\\\\w+/g",
   },
   {
-    content: 'const message = "Hello 世界! 🌍";',
+    content:'const message = "Hello 世界! 🌍";',
     find: "Hello 世界! 🌍",
     replace: "Hello World! 🌎",
   },

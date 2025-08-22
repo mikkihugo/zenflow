@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SessionMemoryStore } from '../../src/memory';
-import { mockLogger, mockConfig, createMockMemoryConfig, createMockResult } from '../mocks/foundation-mocks';
+import {
+  mockLogger,
+  mockConfig,
+  createMockMemoryConfig,
+  createMockResult,
+} from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
 vi.mock('@claude-zen/foundation', () => ({
@@ -14,24 +19,30 @@ vi.mock('@claude-zen/foundation', () => ({
   withContext: vi.fn((fn) => fn()),
   PerformanceTracker: vi.fn(() => ({
     startTimer: vi.fn(() => ({ stop: vi.fn(() => 100) })),
-    recordMetric: vi.fn()
+    recordMetric: vi.fn(),
   })),
   BasicTelemetryManager: vi.fn(() => ({
     track: vi.fn(),
     increment: vi.fn(),
-    gauge: vi.fn()
+    gauge: vi.fn(),
   })),
   Storage: vi.fn(),
   KeyValueStore: vi.fn(),
   StorageError: Error,
   injectable: vi.fn((target) => target),
-  createErrorAggregator: vi.fn(() => ({ add: vi.fn(), getErrors: vi.fn(() => []) })),
+  createErrorAggregator: vi.fn(() => ({
+    add: vi.fn(),
+    getErrors: vi.fn(() => []),
+  })),
   createCircuitBreaker: vi.fn(() => ({ execute: vi.fn((fn) => fn()) })),
   recordMetric: vi.fn(),
   recordHistogram: vi.fn(),
   withTrace: vi.fn((fn) => fn()),
-  ensureError: vi.fn((e) => e instanceof Error ? e : new Error(String(e))),
-  TypedEventBase: class { emit = vi.fn(); on = vi.fn(); }
+  ensureError: vi.fn((e) => (e instanceof Error ? e : new Error(String(e)))),
+  TypedEventBase: class {
+    emit = vi.fn();
+    on = vi.fn();
+  },
 }));
 
 describe('SessionMemoryStore', () => {
@@ -57,9 +68,9 @@ describe('SessionMemoryStore', () => {
         maxSize: 5000,
         ttl: 600000,
         compression: true,
-        sessionId: 'test-session'
+        sessionId: 'test-session',
       };
-      
+
       store = new SessionMemoryStore(options);
       expect(store).toBeDefined();
     });
@@ -67,9 +78,9 @@ describe('SessionMemoryStore', () => {
     it('should handle invalid options gracefully', () => {
       const invalidOptions = {
         maxSize: -1,
-        ttl: 0
+        ttl: 0,
       };
-      
+
       store = new SessionMemoryStore(invalidOptions);
       expect(store).toBeDefined();
     });
@@ -98,7 +109,7 @@ describe('SessionMemoryStore', () => {
         id: 1,
         name: 'test',
         nested: { prop: 'value' },
-        array: [1, 2, 3]
+        array: [1, 2, 3],
       };
 
       const storeResult = await store.store(key, value);
@@ -131,7 +142,7 @@ describe('SessionMemoryStore', () => {
       const options = {
         ttl: 1000,
         compress: true,
-        metadata: { source: 'test' }
+        metadata: { source: 'test' },
       };
 
       const result = await store.store(key, value, options);
@@ -170,14 +181,14 @@ describe('SessionMemoryStore', () => {
       const operations = [
         { key: 'key1', value: 'value1' },
         { key: 'key2', value: 'value2' },
-        { key: 'key3', value: 'value3' }
+        { key: 'key3', value: 'value3' },
       ];
 
       const results = await Promise.all(
-        operations.map(op => store.store(op.key, op.value))
+        operations.map((op) => store.store(op.key, op.value))
       );
 
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.isOk()).toBe(true);
       });
 
@@ -190,9 +201,9 @@ describe('SessionMemoryStore', () => {
 
     it('should handle batch retrieve operations', async () => {
       const testData = {
-        'batch1': 'value1',
-        'batch2': 'value2',
-        'batch3': 'value3'
+        batch1: 'value1',
+        batch2: 'value2',
+        batch3: 'value3',
       };
 
       // Store test data
@@ -202,7 +213,7 @@ describe('SessionMemoryStore', () => {
 
       // Batch retrieve
       const results = await Promise.all(
-        Object.keys(testData).map(key => store.retrieve(key))
+        Object.keys(testData).map((key) => store.retrieve(key))
       );
 
       results.forEach((result, index) => {
@@ -226,7 +237,7 @@ describe('SessionMemoryStore', () => {
 
       const retrieve1 = await store.retrieve('key1');
       const retrieve2 = await store.retrieve('key2');
-      
+
       expect(retrieve1._unsafeUnwrap()).toBe(null);
       expect(retrieve2._unsafeUnwrap()).toBe(null);
     });
@@ -243,7 +254,7 @@ describe('SessionMemoryStore', () => {
 
       const statsResult = await store.getStats();
       expect(statsResult.isOk()).toBe(true);
-      
+
       const stats = statsResult._unsafeUnwrap();
       expect(stats.size).toBe(2);
       expect(stats.maxSize).toBeDefined();
@@ -278,24 +289,24 @@ describe('SessionMemoryStore', () => {
 
       const result = await store.store('circular', circularObj);
       // Should handle serialization gracefully
-      expect(result.isOk() || result.isErr()).toBe(true);
+      expect(result.isOk()'' | '''' | ''result.isErr()).toBe(true);
     });
   });
 
   describe('TTL (Time To Live)', () => {
     it('should respect TTL settings', async () => {
       store = new SessionMemoryStore({ ttl: 100 }); // 100ms TTL
-      
+
       await store.store('ttl-key', 'ttl-value');
-      
+
       // Should exist immediately
       let result = await store.retrieve('ttl-key');
       expect(result._unsafeUnwrap()).toBe('ttl-value');
-      
+
       // Wait for TTL to expire (in a real implementation)
       // This is a placeholder - actual TTL testing would require time manipulation
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
       // Note: This test assumes TTL implementation exists
       // In the actual implementation, expired entries should be cleaned up
     });
@@ -304,14 +315,14 @@ describe('SessionMemoryStore', () => {
   describe('Memory Limits', () => {
     it('should respect maximum size limits', async () => {
       store = new SessionMemoryStore({ maxSize: 2 });
-      
+
       await store.store('limit1', 'value1');
       await store.store('limit2', 'value2');
-      
+
       // Third item should either replace existing or be rejected
       const result = await store.store('limit3', 'value3');
       expect(result.isOk() || result.isErr()).toBe(true);
-      
+
       const stats = await store.getStats();
       expect(stats._unsafeUnwrap().size).toBeLessThanOrEqual(2);
     });

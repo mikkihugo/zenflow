@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
  * @fileoverview AgentManager stdio MCP Server
- * 
+ *
  * Provides an MCP (Model Context Protocol) server interface for ephemeral swarm orchestration.
  * This allows Claude Code to interact with AgentManager through standard MCP protocols.
- * 
+ *
  * @example
  * ```bash
  * # Start the MCP server
  * agent-manager mcp start
- * 
+ *
  * # Or run directly
  * node dist/mcp-server.js
  * ```
- * 
+ *
  * @example MCP Integration
  * ```bash
  * # Add to Claude Code
@@ -36,7 +36,7 @@ import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('agent-manager-mcp');
 
 // Global AgentManager instance
-let globalManager: AgentManager | null = null;
+let globalManager: AgentManager'' | ''null = null;
 
 async function getManager(): Promise<AgentManager> {
   if (!globalManager) {
@@ -55,7 +55,7 @@ class AgentManagerMCPServer {
   constructor() {
     this.server = new Server(
       {
-        name: 'agent-manager',
+        name:'agent-manager',
         version: '1.0.0',
       },
       {
@@ -75,7 +75,8 @@ class AgentManagerMCPServer {
         tools: [
           {
             name: 'create_swarm',
-            description: 'Create a new ephemeral swarm for task coordination with cognitive diversity. This creates temporary agents with specialized thinking patterns (researcher, coder, analyst, architect) that coordinate to solve complex tasks. Supports session persistence for Claude CLI restarts and optional WASM neural acceleration for <100ms decision making.',
+            description:
+              'Create a new ephemeral swarm for task coordination with cognitive diversity. This creates temporary agents with specialized thinking patterns (researcher, coder, analyst, architect) that coordinate to solve complex tasks. Supports session persistence for Claude CLI restarts and optional WASM neural acceleration for <100ms decision making.',
             inputSchema: {
               type: 'object',
               properties: {
@@ -104,7 +105,8 @@ class AgentManagerMCPServer {
                 },
                 persistent: {
                   type: 'boolean',
-                  description: 'Enable session persistence (survive Claude CLI restarts)',
+                  description:
+                    'Enable session persistence (survive Claude CLI restarts)',
                   default: true,
                 },
                 neuralAcceleration: {
@@ -123,7 +125,8 @@ class AgentManagerMCPServer {
           },
           {
             name: 'execute_swarm',
-            description: 'Execute coordination for an existing swarm using Claude SDK with flexible turn limits. The swarm uses cognitive diversity and topology-based coordination to provide comprehensive analysis and decision-making. Results include performance metrics, agent insights, and coordination effectiveness.',
+            description:
+              'Execute coordination for an existing swarm using Claude SDK with flexible turn limits. The swarm uses cognitive diversity and topology-based coordination to provide comprehensive analysis and decision-making. Results include performance metrics, agent insights, and coordination effectiveness.',
             inputSchema: {
               type: 'object',
               properties: {
@@ -133,7 +136,8 @@ class AgentManagerMCPServer {
                 },
                 maxTurns: {
                   type: 'number',
-                  description: 'Maximum Claude SDK interactions for this execution',
+                  description:
+                    'Maximum Claude SDK interactions for this execution',
                   default: 50,
                 },
               },
@@ -142,7 +146,8 @@ class AgentManagerMCPServer {
           },
           {
             name: 'list_swarms',
-            description: 'List all active ephemeral swarms with their status, cognitive composition, and performance metrics. Shows swarm topology, agent types, creation time, expiration, and detailed performance data including decision counts and coordination effectiveness.',
+            description:
+              'List all active ephemeral swarms with their status, cognitive composition, and performance metrics. Shows swarm topology, agent types, creation time, expiration, and detailed performance data including decision counts and coordination effectiveness.',
             inputSchema: {
               type: 'object',
               properties: {
@@ -156,7 +161,8 @@ class AgentManagerMCPServer {
           },
           {
             name: 'dissolve_swarm',
-            description: 'Dissolve an ephemeral swarm and clean up all resources. This terminates all agents in the swarm, clears coordination state, and removes the swarm from active management. Use when a task is complete or no longer needed.',
+            description:
+              'Dissolve an ephemeral swarm and clean up all resources. This terminates all agents in the swarm, clears coordination state, and removes the swarm from active management. Use when a task is complete or no longer needed.',
             inputSchema: {
               type: 'object',
               properties: {
@@ -170,7 +176,8 @@ class AgentManagerMCPServer {
           },
           {
             name: 'pause_swarm',
-            description: 'Pause a swarm for Claude CLI session restart. This saves the swarm state and allows it to be resumed after the Claude CLI session restarts. Essential for maintaining long-running coordination across session boundaries.',
+            description:
+              'Pause a swarm for Claude CLI session restart. This saves the swarm state and allows it to be resumed after the Claude CLI session restarts. Essential for maintaining long-running coordination across session boundaries.',
             inputSchema: {
               type: 'object',
               properties: {
@@ -184,7 +191,8 @@ class AgentManagerMCPServer {
           },
           {
             name: 'resume_swarm',
-            description: 'Resume a paused swarm after Claude CLI session restart. This restores the swarm state and reactivates all agents from their checkpointed state, allowing seamless continuation of coordination tasks.',
+            description:
+              'Resume a paused swarm after Claude CLI session restart. This restores the swarm state and reactivates all agents from their checkpointed state, allowing seamless continuation of coordination tasks.',
             inputSchema: {
               type: 'object',
               properties: {
@@ -198,7 +206,8 @@ class AgentManagerMCPServer {
           },
           {
             name: 'get_metrics',
-            description: 'Get comprehensive AgentManager performance metrics including uptime, active swarms, coordination statistics, cognitive distribution, and session restoration data. Provides insights into system performance and agent effectiveness.',
+            description:
+              'Get comprehensive AgentManager performance metrics including uptime, active swarms, coordination statistics, cognitive distribution, and session restoration data. Provides insights into system performance and agent effectiveness.',
             inputSchema: {
               type: 'object',
               properties: {},
@@ -206,7 +215,8 @@ class AgentManagerMCPServer {
           },
           {
             name: 'health_check',
-            description: 'Check AgentManager health and system status including operational state, foundation logger availability, WASM neural acceleration status, uptime, and active swarm health. Essential for monitoring system reliability.',
+            description:
+              'Check AgentManager health and system status including operational state, foundation logger availability, WASM neural acceleration status, uptime, and active swarm health. Essential for monitoring system reliability.',
             inputSchema: {
               type: 'object',
               properties: {},
@@ -239,10 +249,16 @@ class AgentManagerMCPServer {
           case 'health_check':
             return await this.handleHealthCheck();
           default:
-            throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
+            throw new McpError(
+              ErrorCode.MethodNotFound,
+              `Unknown tool: ${name}`
+            );
         }
       } catch (error) {
-        logger.error('Tool execution failed', { error, tool: request.params.name });
+        logger.error('Tool execution failed', {
+          error,
+          tool: request.params.name,
+        });
         throw new McpError(
           ErrorCode.InternalError,
           `Tool execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -253,55 +269,75 @@ class AgentManagerMCPServer {
 
   private async handleCreateSwarm(args: any) {
     const manager = await getManager();
-    
+
     // Validate cognitive types
-    const validTypes: CognitiveArchetype[] = ['researcher', 'coder', 'analyst', 'architect'];
+    const validTypes: CognitiveArchetype[] = [
+      'researcher',
+      'coder',
+      'analyst',
+      'architect',
+    ];
     for (const type of args.cognitiveTypes) {
       if (!validTypes.includes(type)) {
-        throw new McpError(ErrorCode.InvalidParams, `Invalid cognitive type: ${type}`);
+        throw new McpError(
+          ErrorCode.InvalidParams,
+          `Invalid cognitive type: ${type}`
+        );
       }
     }
 
     // Validate topology
-    const validTopologies: SwarmTopology[] = ['mesh', 'hierarchical', 'ring', 'star'];
+    const validTopologies: SwarmTopology[] = [
+      'mesh',
+      'hierarchical',
+      'ring',
+      'star',
+    ];
     if (args.topology && !validTopologies.includes(args.topology)) {
-      throw new McpError(ErrorCode.InvalidParams, `Invalid topology: ${args.topology}`);
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `Invalid topology: ${args.topology}`
+      );
     }
 
     const swarm = await AgentManager.createSwarm({
       task: args.task,
       cognitiveTypes: args.cognitiveTypes,
-      topology: args.topology || 'mesh',
-      maxDuration: args.maxDuration || 3600000,
+      topology: args.topology'' | '''' | '''mesh',
+      maxDuration: args.maxDuration'' | '''' | ''3600000,
       persistent: args.persistent ?? true,
-      neuralAcceleration: args.neuralAcceleration || false,
-      maxTurns: args.maxTurns || 50,
+      neuralAcceleration: args.neuralAcceleration'' | '''' | ''false,
+      maxTurns: args.maxTurns'' | '''' | ''50,
     });
 
     return {
       content: [
         {
-          type: 'text',
-          text: JSON.stringify({
-            success: true,
-            swarm: {
-              id: swarm.id,
-              task: swarm.task,
-              cognitiveTypes: swarm.agents.map(a => a.archetype),
-              topology: swarm.topology,
-              created: swarm.created,
-              expiresAt: swarm.expiresAt,
-              persistent: swarm.persistent,
-              agentCount: swarm.agents.length,
-              agents: swarm.agents.map(agent => ({
-                id: agent.id,
-                archetype: agent.archetype,
-                decisionSpeed: agent.cognition.decisionSpeed,
-                patterns: agent.cognition.patterns,
-                strengths: agent.cognition.strengths,
-              })),
+          type:'text',
+          text: JSON.stringify(
+            {
+              success: true,
+              swarm: {
+                id: swarm.id,
+                task: swarm.task,
+                cognitiveTypes: swarm.agents.map((a) => a.archetype),
+                topology: swarm.topology,
+                created: swarm.created,
+                expiresAt: swarm.expiresAt,
+                persistent: swarm.persistent,
+                agentCount: swarm.agents.length,
+                agents: swarm.agents.map((agent) => ({
+                  id: agent.id,
+                  archetype: agent.archetype,
+                  decisionSpeed: agent.cognition.decisionSpeed,
+                  patterns: agent.cognition.patterns,
+                  strengths: agent.cognition.strengths,
+                })),
+              },
             },
-          }, null, 2),
+            null,
+            2
+          ),
         },
       ],
     };
@@ -309,26 +345,30 @@ class AgentManagerMCPServer {
 
   private async handleExecuteSwarm(args: any) {
     const manager = await getManager();
-    
+
     const result = await manager.executeSwarm(args.swarmId, {
-      maxTurns: args.maxTurns || 50,
+      maxTurns: args.maxTurns'' | '''' | ''50,
     });
 
     return {
       content: [
         {
-          type: 'text',
-          text: JSON.stringify({
-            success: true,
-            result: {
-              swarmId: result.swarmId,
-              success: result.success,
-              duration: result.duration,
-              agentResults: result.agentResults,
-              coordination: result.coordination,
-              neuralMetrics: result.neuralMetrics,
+          type:'text',
+          text: JSON.stringify(
+            {
+              success: true,
+              result: {
+                swarmId: result.swarmId,
+                success: result.success,
+                duration: result.duration,
+                agentResults: result.agentResults,
+                coordination: result.coordination,
+                neuralMetrics: result.neuralMetrics,
+              },
             },
-          }, null, 2),
+            null,
+            2
+          ),
         },
       ],
     };
@@ -338,11 +378,11 @@ class AgentManagerMCPServer {
     const manager = await getManager();
     const swarms = manager.getActiveSwarms();
 
-    const swarmList = swarms.map(swarm => ({
+    const swarmList = swarms.map((swarm) => ({
       id: swarm.id,
       task: swarm.task,
       status: swarm.status,
-      cognitiveTypes: swarm.agents.map(a => a.archetype),
+      cognitiveTypes: swarm.agents.map((a) => a.archetype),
       topology: swarm.topology,
       created: swarm.created,
       expiresAt: swarm.expiresAt,
@@ -350,7 +390,7 @@ class AgentManagerMCPServer {
       agentCount: swarm.agents.length,
       ...(args.detailed && {
         performance: swarm.performance,
-        agents: swarm.agents.map(agent => ({
+        agents: swarm.agents.map((agent) => ({
           id: agent.id,
           archetype: agent.archetype,
           status: agent.status,
@@ -364,11 +404,15 @@ class AgentManagerMCPServer {
       content: [
         {
           type: 'text',
-          text: JSON.stringify({
-            success: true,
-            swarms: swarmList,
-            count: swarms.length,
-          }, null, 2),
+          text: JSON.stringify(
+            {
+              success: true,
+              swarms: swarmList,
+              count: swarms.length,
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -376,17 +420,21 @@ class AgentManagerMCPServer {
 
   private async handleDissolveSwarm(args: any) {
     const manager = await getManager();
-    
+
     await manager.dissolveSwarm(args.swarmId);
 
     return {
       content: [
         {
           type: 'text',
-          text: JSON.stringify({
-            success: true,
-            message: `Swarm ${args.swarmId} dissolved successfully`,
-          }, null, 2),
+          text: JSON.stringify(
+            {
+              success: true,
+              message: `Swarm ${args.swarmId} dissolved successfully`,
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -394,17 +442,21 @@ class AgentManagerMCPServer {
 
   private async handlePauseSwarm(args: any) {
     const manager = await getManager();
-    
+
     await manager.pauseSwarm(args.swarmId);
 
     return {
       content: [
         {
           type: 'text',
-          text: JSON.stringify({
-            success: true,
-            message: `Swarm ${args.swarmId} paused successfully`,
-          }, null, 2),
+          text: JSON.stringify(
+            {
+              success: true,
+              message: `Swarm ${args.swarmId} paused successfully`,
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -412,17 +464,21 @@ class AgentManagerMCPServer {
 
   private async handleResumeSwarm(args: any) {
     const manager = await getManager();
-    
+
     await manager.resumeSwarm(args.swarmId);
 
     return {
       content: [
         {
           type: 'text',
-          text: JSON.stringify({
-            success: true,
-            message: `Swarm ${args.swarmId} resumed successfully`,
-          }, null, 2),
+          text: JSON.stringify(
+            {
+              success: true,
+              message: `Swarm ${args.swarmId} resumed successfully`,
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -437,26 +493,33 @@ class AgentManagerMCPServer {
     const archetypeCounts = new Map<string, number>();
     for (const swarm of swarms) {
       for (const agent of swarm.agents) {
-        archetypeCounts.set(agent.archetype, (archetypeCounts.get(agent.archetype) || 0) + 1);
+        archetypeCounts.set(
+          agent.archetype,
+          (archetypeCounts.get(agent.archetype)'' | '''' | ''0) + 1
+        );
       }
     }
 
     return {
       content: [
         {
-          type: 'text',
-          text: JSON.stringify({
-            success: true,
-            metrics: {
-              uptime: manager.getUptime(),
-              activeSwarms: manager.getSwarmCount(),
-              totalSwarms: metrics.totalSwarms,
-              averageDecisionTime: metrics.averageDecisionTime,
-              successfulCoordinations: metrics.successfulCoordinations,
-              sessionsRestored: metrics.sessionsRestored,
-              cognitiveDistribution: Object.fromEntries(archetypeCounts),
+          type:'text',
+          text: JSON.stringify(
+            {
+              success: true,
+              metrics: {
+                uptime: manager.getUptime(),
+                activeSwarms: manager.getSwarmCount(),
+                totalSwarms: metrics.totalSwarms,
+                averageDecisionTime: metrics.averageDecisionTime,
+                successfulCoordinations: metrics.successfulCoordinations,
+                sessionsRestored: metrics.sessionsRestored,
+                cognitiveDistribution: Object.fromEntries(archetypeCounts),
+              },
             },
-          }, null, 2),
+            null,
+            2
+          ),
         },
       ],
     };
@@ -464,7 +527,7 @@ class AgentManagerMCPServer {
 
   private async handleHealthCheck() {
     const manager = await getManager();
-    
+
     let wasmAvailable = false;
     try {
       // Use dynamic loader to avoid TypeScript compilation issues
@@ -477,24 +540,28 @@ class AgentManagerMCPServer {
     const uptime = manager.getUptime();
     const activeSwarms = manager.getSwarmCount();
     const swarms = manager.getActiveSwarms();
-    const healthySwarms = swarms.filter(s => s.status === 'active').length;
+    const healthySwarms = swarms.filter((s) => s.status === 'active').length;
 
     return {
       content: [
         {
           type: 'text',
-          text: JSON.stringify({
-            success: true,
-            health: {
-              status: 'healthy',
-              agentManager: 'operational',
-              foundationLogger: 'available',
-              wasmNeural: wasmAvailable ? 'available' : 'not_available',
-              uptime,
-              activeSwarms,
-              healthySwarms,
+          text: JSON.stringify(
+            {
+              success: true,
+              health: {
+                status: 'healthy',
+                agentManager: 'operational',
+                foundationLogger: 'available',
+                wasmNeural: wasmAvailable ? 'available' : 'not_available',
+                uptime,
+                activeSwarms,
+                healthySwarms,
+              },
             },
-          }, null, 2),
+            null,
+            2
+          ),
         },
       ],
     };

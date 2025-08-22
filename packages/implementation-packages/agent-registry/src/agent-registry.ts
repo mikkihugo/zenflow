@@ -23,14 +23,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { 
-  DIContainer, 
+import {
+  DIContainer,
   createContainer,
   getLogger,
   Result,
   ok,
   err,
-  type Logger
+  type Logger,
 } from '@claude-zen/foundation';
 import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
 
@@ -44,28 +44,31 @@ export class AgentRegistry extends TypedEventBase {
   private container: DIContainer;
   private logger: Logger;
   private agentCache = new Map<string, JsonValue>();
-  private performanceMetrics = new Map<string, { 
-    createTime: number; 
-    accessCount: number; 
-    lastAccessed: number; 
-    cacheHits: number;
-    cacheMisses?: number;
-    lastResolutionTime?: number;
-    registrationTime?: number;
-  }>();
+  private performanceMetrics = new Map<
+    string,
+    {
+      createTime: number;
+      accessCount: number;
+      lastAccessed: number;
+      cacheHits: number;
+      cacheMisses?: number;
+      lastResolutionTime?: number;
+      registrationTime?: number;
+    }
+  >();
   private initialized = false;
 
   constructor(
     _memoryCoordinator?: JsonObject,
-    sessionPrefix = 'enhanced-agents',
+    sessionPrefix = 'enhanced-agents'
   ) {
     super();
     this.logger = getLogger(`EnhancedAgentRegistry:${sessionPrefix}`);
 
     // Create advanced container with performance optimizations
     this.container = createDIContainer(`agent-registry-${sessionPrefix}`, {
-      injectionMode: InjectionMode.PROXY,   // Optimized injection
-      strict: true,                          // Type safety
+      injectionMode: InjectionMode.PROXY, // Optimized injection
+      strict: true, // Type safety
     });
 
     // Enable performance monitoring
@@ -73,7 +76,7 @@ export class AgentRegistry extends TypedEventBase {
 
     // Listen for container events
     this.container.on('serviceResolved', (event) => {
-      const existing = this.performanceMetrics.get(event.name) || {
+      const existing = this.performanceMetrics.get(event.name)'' | '''' | ''{
         createTime: Date.now(),
         accessCount: 0,
         lastAccessed: Date.now(),
@@ -90,28 +93,33 @@ export class AgentRegistry extends TypedEventBase {
   /**
    * Initialize with advanced auto-discovery
    */
-  async initialize(options: {
-    autoDiscoverAgents?: boolean;
-    discoveryPattern?: string[];
-    healthMonitoring?: { enabled: boolean; interval?: number };
-    caching?: { enabled: boolean; ttl?: number };
-  } = {}): Promise<Result<void, Error>> {
+  async initialize(
+    options: {
+      autoDiscoverAgents?: boolean;
+      discoveryPattern?: string[];
+      healthMonitoring?: { enabled: boolean; interval?: number };
+      caching?: { enabled: boolean; ttl?: number };
+    } = {}
+  ): Promise<Result<void, Error>> {
     if (this.initialized) {
       return ok(undefined);
     }
 
-    this.logger.info('🚀 Initializing Professional Agent Registry with advanced DI capabilities...');
+    this.logger.info('🚀 Initializing Professional Agent Registry with advanced DI capabilities...'
+    );
 
     try {
       // Auto-discover agent modules if enabled
       if (options.autoDiscoverAgents && options.discoveryPattern) {
         const discoveryResult = await this.container.autoDiscoverServices(
           options.discoveryPattern,
-          {},
+          {}
         );
 
         if (discoveryResult.isOk()) {
-          this.logger.info(`✅ Auto-discovered ${discoveryResult.value.length} agent services`);
+          this.logger.info(
+            `✅ Auto-discovered ${discoveryResult.value.length} agent services`
+          );
         }
       }
 
@@ -124,7 +132,7 @@ export class AgentRegistry extends TypedEventBase {
           capabilities: ['agent-creation', 'factory'],
           tags: ['core', 'factory'],
           healthCheck: () => true,
-        },
+        }
       );
 
       this.container.registerFunction(
@@ -135,7 +143,7 @@ export class AgentRegistry extends TypedEventBase {
           capabilities: ['agent-selection', 'matching'],
           tags: ['core', 'selector'],
           priority: 90,
-        },
+        }
       );
 
       this.container.registerFunction(
@@ -146,7 +154,7 @@ export class AgentRegistry extends TypedEventBase {
           capabilities: ['load-balancing', 'distribution'],
           tags: ['performance', 'scaling'],
           priority: 80,
-        },
+        }
       );
 
       this.initialized = true;
@@ -155,10 +163,15 @@ export class AgentRegistry extends TypedEventBase {
         healthMonitoring: !!options.healthMonitoring?.enabled,
       });
 
-      this.logger.info('✅ Professional Agent Registry initialized successfully');
+      this.logger.info(
+        '✅ Professional Agent Registry initialized successfully'
+      );
       return ok(undefined);
     } catch (error) {
-      this.logger.error('❌ Failed to initialize Professional Agent Registry:', error);
+      this.logger.error(
+        '❌ Failed to initialize Professional Agent Registry:',
+        error
+      );
       return err(error instanceof Error ? error : new Error(String(error)));
     }
   }
@@ -209,7 +222,8 @@ export class AgentRegistry extends TypedEventBase {
             // Advanced health check with performance metrics
             const now = Date.now();
             const timeSinceLastSeen = now - enhancedAgent.lastSeen.getTime();
-            const isHealthy = timeSinceLastSeen < 60000 && enhancedAgent.health > 0.5;
+            const isHealthy =
+              timeSinceLastSeen < 60000 && enhancedAgent.health > 0.5;
 
             if (!isHealthy) {
               this.logger.warn(`⚠️ Agent ${agent.id} health check failed`, {
@@ -220,9 +234,13 @@ export class AgentRegistry extends TypedEventBase {
 
             return isHealthy;
           },
-          priority: agent.type === 'coordinator' ? 100 :
-            agent.type === 'specialist' ? 80 : 50,
-        },
+          priority:
+            agent.type === 'coordinator'
+              ? 100
+              : agent.type === 'specialist'
+                ? 80
+                : 50,
+        }
       );
 
       if (registrationResult.isErr()) {
@@ -250,12 +268,14 @@ export class AgentRegistry extends TypedEventBase {
         capabilities: agent.capabilities,
       });
 
-      this.logger.debug(`📝 Agent registered with advanced features: ${agent.id}`, {
-        type: agent.type,
-        capabilities: Object.keys(agent.capabilities),
-        registrationTime: `${registrationTime.toFixed(2)}ms`,
-      });
-
+      this.logger.debug(
+        `📝 Agent registered with advanced features: ${agent.id}`,
+        {
+          type: agent.type,
+          capabilities: Object.keys(agent.capabilities),
+          registrationTime: `${registrationTime.toFixed(2)}ms`,
+        }
+      );
     } catch (error) {
       this.logger.error(`❌ Failed to register agent ${agent.id}:`, error);
       throw error;
@@ -320,7 +340,7 @@ export class AgentRegistry extends TypedEventBase {
     type?: string;
     capabilities?: string[];
     maxResults?: number;
-    prioritizeBy?: 'performance' | 'availability' | 'load';
+    prioritizeBy?: 'performance | availability' | 'load';
     excludeIds?: string[];
   }): Promise<JsonValue[]> {
     const startTime = process.hrtime.bigint();
@@ -329,7 +349,8 @@ export class AgentRegistry extends TypedEventBase {
       const loadBalancer = this.container.resolve('agentLoadBalancer');
 
       if (loadBalancer.isOk()) {
-        const results = await (loadBalancer.value as JsonObject).selectAgents?.(criteria) || [];
+        const results =
+          (await (loadBalancer.value as JsonObject).selectAgents?.(criteria))'' | '''' | ''[];
 
         const endTime = process.hrtime.bigint();
         const selectionTime = Number(endTime - startTime) / 1_000_000;
@@ -360,12 +381,16 @@ export class AgentRegistry extends TypedEventBase {
    * Get agents by capability using advanced service discovery
    */
   getAgentsByCapability(capability: string): JsonValue[] {
-    const discoveredServices = this.container.getServicesByCapability(capability);
+    const discoveredServices =
+      this.container.getServicesByCapability(capability);
 
     return discoveredServices
-      .filter(service => service.name.startsWith('agent-'))
-      .map(service => service.service)
-      .sort((a, b) => (b.performance?.successRate || 0) - (a.performance?.successRate || 0));
+      .filter((service) => service.name.startsWith('agent-'))
+      .map((service) => service.service)
+      .sort(
+        (a, b) =>
+          (b.performance?.successRate'' | '''' | ''0) - (a.performance?.successRate'' | '''' | ''0)
+      );
   }
 
   /**
@@ -393,8 +418,8 @@ export class AgentRegistry extends TypedEventBase {
       for (const tag of query.tags) {
         const taggedServices = this.container.getServicesByTag(tag);
         const tagAgents = taggedServices
-          .filter(service => service.name.startsWith('agent-'))
-          .map(service => service.service);
+          .filter((service) => service.name.startsWith('agent-'))
+          .map((service) => service.service);
         agents.push(...tagAgents);
       }
     }
@@ -412,7 +437,7 @@ export class AgentRegistry extends TypedEventBase {
     // Apply additional filters
     const filteredAgents = agents.filter((agent, index, array) => {
       // Remove duplicates
-      const isFirst = array.findIndex(a => a.id === agent.id) === index;
+      const isFirst = array.findIndex((a) => a.id === agent.id) === index;
       if (!isFirst) {
         return false;
       }
@@ -429,12 +454,17 @@ export class AgentRegistry extends TypedEventBase {
 
       // Performance filters
       if (query.performance) {
-        if (query.performance.minSuccessRate &&
-            agent.performance?.successRate < query.performance.minSuccessRate) {
+        if (
+          query.performance.minSuccessRate &&
+          agent.performance?.successRate < query.performance.minSuccessRate
+        ) {
           return false;
         }
-        if (query.performance.maxResponseTime &&
-            agent.performance?.averageResponseTime > query.performance.maxResponseTime) {
+        if (
+          query.performance.maxResponseTime &&
+          agent.performance?.averageResponseTime >
+            query.performance.maxResponseTime
+        ) {
           return false;
         }
       }
@@ -457,15 +487,20 @@ export class AgentRegistry extends TypedEventBase {
     const containerStats = this.container.getStats();
     const agentCount = this.agentCache.size;
 
-    const performanceData = Array.from(this.performanceMetrics.values());
-    const averageAccessTime = performanceData.length > 0
-      ? performanceData.reduce((sum, m) => sum + (m.lastResolutionTime || 0), 0) / performanceData.length
-      : 0;
+    const performanceData = Array.from(this.performanceMetrics.values())();
+    const averageAccessTime =
+      performanceData.length > 0
+        ? performanceData.reduce(
+            (sum, m) => sum + (m.lastResolutionTime'' | '''' | ''0),
+            0
+          ) / performanceData.length
+        : 0;
 
-    const cacheHitRate = performanceData.length > 0
-      ? performanceData.reduce((sum, m) => sum + m.cacheHits, 0) /
-        performanceData.reduce((sum, m) => sum + m.accessCount, 0)
-      : 0;
+    const cacheHitRate =
+      performanceData.length > 0
+        ? performanceData.reduce((sum, m) => sum + m.cacheHits, 0) /
+          performanceData.reduce((sum, m) => sum + m.accessCount, 0)
+        : 0;
 
     return {
       ...containerStats,
@@ -491,7 +526,7 @@ export class AgentRegistry extends TypedEventBase {
 
     return {
       ...containerHealth,
-      agentRegistryHealth: 'healthy',
+      agentRegistryHealth:'healthy',
       cacheSize: this.agentCache.size,
       performanceMetrics: this.performanceMetrics.size,
       lastHealthCheck: Date.now(),
@@ -526,7 +561,7 @@ export class AgentRegistry extends TypedEventBase {
   private createAgentFactory() {
     return (config: JsonObject) => {
       // Use config for factory customization
-      const factoryConfig = config || {};
+      const factoryConfig = config'' | '''' | ''{};
       return {
         createAgent: (spec: JsonObject) => {
           // Professional agent creation with performance optimization
@@ -534,9 +569,12 @@ export class AgentRegistry extends TypedEventBase {
             ...spec,
             created: Date.now(),
             optimized: true,
-            features: ['advanced-scheduling', 'performance-tracking', 'intelligent-routing'],
+            features: ['advanced-scheduling',
+              'performance-tracking',
+              'intelligent-routing',
+            ],
           };
-        }
+        },
       };
     };
   }
@@ -547,7 +585,7 @@ export class AgentRegistry extends TypedEventBase {
   private createAgentSelector() {
     return (registry: JsonObject) => {
       // Use registry for enhanced selection
-      const registryConfig = registry || {};
+      const registryConfig = registry'' | '''' | ''{};
       return {
         selectAgents: async (criteria: JsonObject) => {
           // Intelligent agent selection algorithm
@@ -556,17 +594,23 @@ export class AgentRegistry extends TypedEventBase {
           // Apply intelligent sorting based on criteria
           return candidates
             .sort((a, b) => {
-              if (criteria.prioritizeBy === 'performance') {
-                return (b.performance?.successRate || 0) - (a.performance?.successRate || 0);
-              } else if (criteria.prioritizeBy === 'availability') {
-                return (a.performance?.tasksInProgress || 0) - (b.performance?.tasksInProgress || 0);
-              } else if (criteria.prioritizeBy === 'load') {
-                return (a.loadFactor || 0) - (b.loadFactor || 0);
+              if (criteria.prioritizeBy ==='performance') {
+                return (
+                  (b.performance?.successRate'' | '''' | ''0) -
+                  (a.performance?.successRate'' | '''' | ''0)
+                );
+              } else if (criteria.prioritizeBy ==='availability') {
+                return (
+                  (a.performance?.tasksInProgress'' | '''' | ''0) -
+                  (b.performance?.tasksInProgress'' | '''' | ''0)
+                );
+              } else if (criteria.prioritizeBy ==='load') {
+                return (a.loadFactor'' | '''' | ''0) - (b.loadFactor'' | '''' | ''0);
               }
               return 0;
             })
-            .slice(0, criteria.maxResults || 10);
-        }
+            .slice(0, criteria.maxResults'' | '''' | ''10);
+        },
       };
     };
   }
@@ -582,13 +626,13 @@ export class AgentRegistry extends TypedEventBase {
 
         // Implement weighted round-robin with performance metrics
         return agents
-          .filter(agent => !criteria.excludeIds?.includes(agent.id))
+          .filter((agent) => !criteria.excludeIds?.includes(agent.id))
           .sort((a, b) => {
             const scoreA = this.calculateAgentScore(a);
             const scoreB = this.calculateAgentScore(b);
             return scoreB - scoreA;
           })
-          .slice(0, criteria.maxResults || 5);
+          .slice(0, criteria.maxResults'' | '''' | ''5);
       },
     });
   }
@@ -597,16 +641,16 @@ export class AgentRegistry extends TypedEventBase {
    * Helper: Calculate agent performance score
    */
   private calculateAgentScore(agent: JsonValue): number {
-    const performance = agent.performance || {};
-    const health = agent.health || 0.5;
-    const loadFactor = agent.loadFactor || 0.5;
+    const performance = agent.performance'' | '''' | ''{};
+    const health = agent.health'' | '''' | ''0.5;
+    const loadFactor = agent.loadFactor'' | '''' | ''0.5;
 
     // Weighted scoring algorithm
     return (
-      (performance.successRate || 0.8) * 0.4 +
+      (performance.successRate'' | '''' | ''0.8) * 0.4 +
       health * 0.3 +
       (1 - loadFactor) * 0.2 +
-      (1 / (performance.averageResponseTime || 1000)) * 0.1
+      (1 / (performance.averageResponseTime'' | '''' | ''1000)) * 0.1
     );
   }
 
@@ -614,10 +658,10 @@ export class AgentRegistry extends TypedEventBase {
    * Helper: Basic agent selection fallback
    */
   private basicAgentSelection(criteria: any): any[] {
-    const agents = Array.from(this.agentCache.values());
+    const agents = Array.from(this.agentCache.values())();
 
     return agents
-      .filter(agent => {
+      .filter((agent) => {
         if (criteria.type && agent.type !== criteria.type) {
           return false;
         }
@@ -626,7 +670,7 @@ export class AgentRegistry extends TypedEventBase {
         }
         return true;
       })
-      .slice(0, criteria.maxResults || 10);
+      .slice(0, criteria.maxResults'' | '''' | ''10);
   }
 }
 
@@ -635,7 +679,7 @@ export class AgentRegistry extends TypedEventBase {
  */
 export function createEnhancedAgentRegistry(
   memoryCoordinator?: any,
-  sessionPrefix = 'enhanced-agents',
+  sessionPrefix ='enhanced-agents'
 ): EnhancedAgentRegistry {
   return new EnhancedAgentRegistry(memoryCoordinator, sessionPrefix);
 }

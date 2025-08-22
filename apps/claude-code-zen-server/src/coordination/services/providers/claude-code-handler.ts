@@ -10,19 +10,19 @@ import {
   filterMessagesForClaudeCode,
   getLogger,
   type ClaudeSDKOptions,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 
 // Simple message types - no external SDK dependency needed
 export interface MessageParam {
-  role: 'user | assistant' | 'system');
-  content: string | Array<{ type: 'text'); text: string }>;
+  role: 'user | assistant | system');
+  content: string | Array<{ type:'text'); text: string }>;
 }
 
 // Stream types (from Cline's stream.ts)
 export type ApiStream = AsyncGenerator<ApiStreamChunk>;
 
 export interface ApiStreamChunk {
-  type: 'text | reasoning' | 'usage');
+  type: 'text | reasoning | usage');
 }
 
 export interface ApiStreamTextChunk extends ApiStreamChunk {
@@ -280,7 +280,7 @@ export class ClaudeCodeHandler implements ApiHandler {
         continue;
       }
 
-      if (chunk.type === 'result && result' in chunk) {
+      if (chunk.type ==='result && result' in chunk) {
         usage.totalCost = isPaidUsage ? chunk.total_cost_usd : 0;
 
         yield usage;

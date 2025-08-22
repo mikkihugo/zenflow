@@ -23,11 +23,11 @@ interface FoundDocument {
 }
 
 interface DocumentAnalysis {
-  category: 'vision' | 'roadmap' | 'epic' | 'prd' | 'adr' | 'other';
+  category: 'vision | roadmap' | 'epic''' | '''prd | adr' | 'other';
   confidence: number;
   title: string;
   summary: string;
-  relevance: 'high' | 'medium' | 'low';
+  relevance: 'high | medium' | 'low';
   extractedData: {
     businessObjectives?: string[];
     features?: string[];
@@ -46,8 +46,7 @@ interface DocumentAnalysis {
 function scanForMarkdownFiles(rootDir: string, excludeDirs: string[] = []): string[] {
   const defaultExcludes = [
     'node_modules', '.git', 'dist', 'build', 'target', 
-    '.svelte-kit', 'coverage', '.next', '.nuxt'
-  ];
+    '.svelte-kit', 'coverage', '.next', '.nuxt'];
   const allExcludes = [...defaultExcludes, ...excludeDirs];
   
   const markdownFiles: string[] = [];
@@ -62,10 +61,10 @@ function scanForMarkdownFiles(rootDir: string, excludeDirs: string[] = []): stri
         
         if (stat.isDirectory()) {
           // Skip excluded directories
-          if (!allExcludes.some(exclude => item === exclude || fullPath.includes(exclude))) {
+          if (!allExcludes.some(exclude => item === exclude'' | '''' | ''fullPath.includes(exclude))) {
             scanDirectory(fullPath);
           }
-        } else if (stat.isFile() && extname(item).toLowerCase() === '.md') {
+        } else if (stat.isFile() && extname(item).toLowerCase() ==='.md') {
           markdownFiles.push(fullPath);
         }
       }
@@ -94,7 +93,7 @@ function analyzeDocument(filePath: string, content: string): DocumentAnalysis {
     }
   }
   if (!title) {
-    title = filePath.split('/').pop()?.replace('.md', '') || 'Untitled';
+    title = filePath.split('/').pop()?.replace('.md', '')'' | '''' | '''Untitled';
   }
   
   // Simple keyword-based categorization (could be enhanced with actual LLM)
@@ -182,13 +181,13 @@ function extractStructuredData(content: string, category: string): DocumentAnaly
     const trimmed = line.trim();
     
     // Extract bullet points
-    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+    if (trimmed.startsWith('- ')'' | '''' | ''trimmed.startsWith('* ')) {
       const item = trimmed.replace(/^[*-]\s*/, '').trim();
       if (item.length > 3) {
         bulletPoints.push(item);
         
         // Detect features
-        if (trimmed.includes('**') || item.toLowerCase().includes('feature')) {
+        if (trimmed.includes('**')'' | '''' | ''item.toLowerCase().includes('feature')) {
           features.push(item);
         }
       }
@@ -198,7 +197,7 @@ function extractStructuredData(content: string, category: string): DocumentAnaly
   if (category === 'vision') {
     data.businessObjectives = bulletPoints.slice(0, 8);
     data.stakeholders = ['developers', 'product-team', 'stakeholders'];
-  } else if (category === 'epic' || category === 'prd') {
+  } else if (category === 'epic''' | '''' | ''category ==='prd') {
     data.features = features.length > 0 ? features : bulletPoints.slice(0, 6);
     data.requirements = bulletPoints.slice(0, 10);
   }
@@ -264,7 +263,7 @@ function generateRecommendations(category: string, confidence: number, relevance
  * Present document for approval
  */
 async function presentForApproval(doc: FoundDocument): Promise<{
-  action: 'import' | 'skip' | 'modify';
+  action: 'import | skip' | 'modify';
   category?: string;
   comments?: string;
 }> {
@@ -316,21 +315,21 @@ async function presentForApproval(doc: FoundDocument): Promise<{
     return { 
       action: 'modify', 
       category: newCategory.toLowerCase(),
-      comments: comments || undefined
+      comments: comments'' | '''' | ''undefined
     };
   }
   
-  if (action.toLowerCase() === 'i') {
+  if (action.toLowerCase() ==='i') {
     const comments = await question('Import comments (optional): ');
     rl.close();
     return { 
       action: 'import',
-      comments: comments || undefined
+      comments: comments'' | '''' | ''undefined
     };
   }
   
   rl.close();
-  return { action: 'skip' };
+  return { action:'skip' };
 }
 
 /**
@@ -367,12 +366,12 @@ async function importDocument(
   
   try {
     if (category === 'vision') {
-      const visionData: Omit<VisionDocumentEntity, 'id' | 'created_at' | 'updated_at'> = {
+      const visionData: Omit<VisionDocumentEntity, 'id | created_at' | 'updated_at'> = {
         ...baseData,
         type: 'vision',
-        business_objectives: doc.analysis.extractedData.businessObjectives || ['Strategic objectives from imported document'],
+        business_objectives: doc.analysis.extractedData.businessObjectives'' | '''' | ''['Strategic objectives from imported document'],
         success_criteria: ['Document successfully imported and categorized'],
-        stakeholders: doc.analysis.extractedData.stakeholders || ['team', 'stakeholders'],
+        stakeholders: doc.analysis.extractedData.stakeholders'' | '''' | ''['team', 'stakeholders'],
         timeline: {
           start_date: new Date(),
           target_completion: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
@@ -395,7 +394,7 @@ async function importDocument(
       logger.info(`✅ Imported vision: ${result.id}`);
       
     } else if (category === 'epic') {
-      const epicData: Omit<EpicDocumentEntity, 'id' | 'created_at' | 'updated_at'> = {
+      const epicData: Omit<EpicDocumentEntity, 'id | created_at' | 'updated_at'> = {
         ...baseData,
         type: 'epic',
         business_value: 'Value derived from imported epic document',
@@ -410,7 +409,7 @@ async function importDocument(
         },
         feature_ids: [],
         features_completed: 0,
-        features_total: doc.analysis.extractedData.features?.length || 1
+        features_total: doc.analysis.extractedData.features?.length'' | '''' | ''1
       };
       
       const result = await hybridManager.createDocument<EpicDocumentEntity>(epicData, {
@@ -421,11 +420,11 @@ async function importDocument(
       
       logger.info(`✅ Imported epic: ${result.id}`);
       
-    } else if (category === 'prd') {
-      const prdData: Omit<PRDDocumentEntity, 'id' | 'created_at' | 'updated_at'> = {
+    } else if (category ==='prd') {
+      const prdData: Omit<PRDDocumentEntity, 'id | created_at' | 'updated_at'> = {
         ...baseData,
         type: 'prd',
-        functional_requirements: (doc.analysis.extractedData.requirements || ['Requirements from imported document']).map((req, idx) => ({
+        functional_requirements: (doc.analysis.extractedData.requirements'' | '''' | ''['Requirements from imported document']).map((req, idx) => ({
           id: `req-${idx + 1}`,
           description: req,
           acceptance_criteria: ['Requirement successfully implemented'],
@@ -478,12 +477,12 @@ function generateChecksum(content: string): string {
  * Extract keywords from content
  */
 function extractKeywords(content: string): string[] {
-  const words = content.toLowerCase().match(/\b\w{4,}\b/g) || [];
+  const words = content.toLowerCase().match(/\b\w{4,}\b/g)'' | '''' | ''[];
   const stopWords = new Set(['this', 'that', 'with', 'have', 'will', 'from', 'they', 'been', 'their', 'said', 'each', 'which', 'your', 'very', 'what', 'make', 'time', 'just', 'about', 'could', 'would', 'should']);
   
   const wordFreq = words.reduce((freq, word) => {
     if (!stopWords.has(word)) {
-      freq[word] = (freq[word] || 0) + 1;
+      freq[word] = (freq[word]'' | '''' | ''0) + 1;
     }
     return freq;
   }, {} as Record<string, number>);
@@ -530,7 +529,7 @@ async function scanAndImport(rootDir: string = process.cwd()): Promise<void> {
         const analysis = analyzeDocument(filePath, content);
         
         // Only include relevant documents
-        if (analysis.category !== 'other' || analysis.relevance !== 'low') {
+        if (analysis.category !== 'other''' | '''' | ''analysis.relevance !=='low') {
           documents.push({
             filePath,
             relativePath,
@@ -573,8 +572,8 @@ async function scanAndImport(rootDir: string = process.cwd()): Promise<void> {
     for (const doc of documents) {
       const approval = await presentForApproval(doc);
       
-      if (approval.action === 'import' || approval.action === 'modify') {
-        const category = approval.category || doc.analysis.category;
+      if (approval.action === 'import''' | '''' | ''approval.action ==='modify') {
+        const category = approval.category'' | '''' | ''doc.analysis.category;
         
         if (['vision', 'epic', 'prd'].includes(category)) {
           await importDocument(doc, hybridManager, category, approval.comments);
@@ -604,9 +603,9 @@ async function scanAndImport(rootDir: string = process.cwd()): Promise<void> {
  */
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  const rootDir = args[0] || process.cwd();
+  const rootDir = args[0]'' | '''' | ''process.cwd();
   
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.includes('--help')'' | '''' | ''args.includes('-h')) {
     console.log(`
 🔍 Intelligent Document Scanner & Importer
 

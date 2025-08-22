@@ -23,9 +23,9 @@
  * - Advanced analytics and reporting
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
-import { getDatabaseAccess } from '@claude-zen/infrastructure');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
 import type {
   BaseDocumentEntity,
   DocumentRelationshipEntity,
@@ -35,8 +35,8 @@ import type {
   DocumentSearchResult,
   DocumentAnalytics,
   DocumentRelationshipType,
-} from '@claude-zen/intelligence');
-import { nanoid } from 'nanoid');
+} from '@claude-zen/intelligence';
+import { nanoid } from 'nanoid';
 
 /**
  * Document Service Configuration
@@ -192,8 +192,8 @@ export class DocumentManager extends TypedEventBase {
         type: input.type,
         title: input.title,
         content: input.content,
-        status: input.status || 'draft',
-        priority: input.priority || 'medium',
+        status: input.status'' | '''' | '''draft',
+        priority: input.priority'' | '''' | '''medium',
         projectId: input.projectId,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -242,7 +242,7 @@ export class DocumentManager extends TypedEventBase {
       includeDependencies?: boolean;
       includeWorkflowState?: boolean;
     } = {}
-  ): Promise<T | null> {
+  ): Promise<T'' | ''null> {
     if (!this.initialized) await this.initialize;
 
     const timer = this.performanceTracker.startTimer('get_document');
@@ -289,9 +289,8 @@ export class DocumentManager extends TypedEventBase {
     options: DocumentSearchOptions
   ): Promise<DocumentSearchResult> {
     if (!this.initialized) await this.initialize;
-    if (!this.configuration.enableSearch || !this.knowledgeManager) {
-      throw new Error(
-        'Search is not enabled or knowledge manager not available'
+    if (!this.configuration.enableSearch'' | '''' | ''!this.knowledgeManager) {
+      throw new Error('Search is not enabled or knowledge manager not available'
       );
     }
 
@@ -302,8 +301,8 @@ export class DocumentManager extends TypedEventBase {
       const results = await this.knowledgeManager.search({
         query: options.query,
         filters: options.filters,
-        limit: options.limit || 10,
-        threshold: options.threshold || .7,
+        limit: options.limit'' | '''' | ''10,
+        threshold: options.threshold'' | '''' | ''.7,
         includeMetadata: true,
       });
 
@@ -333,7 +332,7 @@ export class DocumentManager extends TypedEventBase {
   async updateDocument<T extends BaseDocumentEntity>(
     id: string,
     updates: UpdateDocumentInput
-  ): Promise<T | null> {
+  ): Promise<T'' | ''null> {
     if (!this.initialized) await this.initialize;
 
     const timer = this.performanceTracker.startTimer('update_document');
@@ -513,17 +512,15 @@ export class DocumentManager extends TypedEventBase {
 
     return {
       totalDocuments:
-        (await this.telemetryManager.getCounterValue('documents_created')) || 0,
+        (await this.telemetryManager.getCounterValue('documents_created'))'' | '''' | ''0,
       documentsUpdated:
-        (await this.telemetryManager.getCounterValue('documents_updated')) || 0,
+        (await this.telemetryManager.getCounterValue('documents_updated'))'' | '''' | ''0,
       documentsDeleted:
-        (await this.telemetryManager.getCounterValue('documents_deleted')) || 0,
+        (await this.telemetryManager.getCounterValue('documents_deleted'))'' | '''' | ''0,
       searchQueries:
-        (await this.telemetryManager.getCounterValue('document_searches')) || 0,
+        (await this.telemetryManager.getCounterValue('document_searches'))'' | '''' | ''0,
       relationshipsCreated:
-        (await this.telemetryManager.getCounterValue(
-          'relationships_created'
-        )) || 0,
+        (await this.telemetryManager.getCounterValue('relationships_created'))'' | '''' | ''0,
       performance: this.performanceTracker?.getMetrics,
     };
   }

@@ -92,7 +92,7 @@ export interface ServiceDependency {
  * Service health information
  */
 export interface ServiceHealth {
-  status: 'healthy | degraded' | 'unhealthy');
+  status: 'healthy'' | ''degraded'' | ''unhealthy');
   checks: Record<string, boolean>;
   metrics: ServiceMetrics;
   lastCheck: Date;
@@ -140,7 +140,7 @@ export interface ServiceManagerConfig {
   recovery: {
     enabled: boolean;
     maxRetries: number;
-    strategy: 'linear | exponential');
+    strategy: 'linear'' | ''exponential');
   };
 }
 
@@ -186,7 +186,7 @@ export enum ServiceEnvironment {
  * @example
  */
 export interface BaseServiceConfig extends ServiceConfig {
-  type: ServiceType | string;
+  type: ServiceType'' | ''string;
   priority?: ServicePriority;
   environment?: ServiceEnvironment;
   tags?: string[];
@@ -198,9 +198,9 @@ export interface BaseServiceConfig extends ServiceConfig {
  * @example
  */
 export interface DataServiceConfig extends BaseServiceConfig {
-  type: ServiceType.DATA | ServiceType.WEB_DATA | ServiceType.DOCUMENT;
+  type: ServiceType.DATA'' | ''ServiceType.WEB_DATA'' | ''ServiceType.DOCUMENT;
   dataSource?: {
-    type: 'database | memory' | 'file | api');
+    type:'database | memory''' | '''file | api');
     connection?: string;
     options?: Record<string, unknown>;
   };
@@ -222,11 +222,7 @@ export interface DataServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface WebServiceConfig extends BaseServiceConfig {
-  type:
-    | ServiceType.WEB
-    | ServiceType.API
-    | ServiceType.SAFE_API
-    | ServiceType.WEBSOCKET;
+  type:'' | ''ServiceType.WEB'' | ''ServiceType.API'' | ''ServiceType.SAFE_API'' | ''ServiceType.WEBSOCKET;
   server?: {
     host?: string;
     port?: number;
@@ -265,21 +261,16 @@ export interface WebServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface CoordinationServiceConfig extends BaseServiceConfig {
-  type:
-    | ServiceType.COORDINATION
-    | ServiceType.SWARM
-    | ServiceType.ORCHESTRATION
-    | ServiceType.DAA
-    | ServiceType.SESSION_RECOVERY;
+  type:'' | ''ServiceType.COORDINATION'' | ''ServiceType.SWARM'' | ''ServiceType.ORCHESTRATION'' | ''ServiceType.DAA'' | ''ServiceType.SESSION_RECOVERY;
   coordination?: {
-    topology?: 'mesh | hierarchical' | 'ring | star');
+    topology?:'mesh | hierarchical''' | '''ring | star');
     maxAgents?: number;
-    strategy?: 'parallel | sequential' | 'adaptive');
+    strategy?: 'parallel'' | ''sequential'' | ''adaptive');
     timeout?: number;
   };
   persistence?: {
     enabled: boolean;
-    storage?: 'memory | database' | 'file');
+    storage?: 'memory'' | ''database'' | ''file');
     compression?: boolean;
   };
   recovery?: {
@@ -296,12 +287,9 @@ export interface CoordinationServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface NeuralServiceConfig extends BaseServiceConfig {
-  type:
-    | ServiceType.NEURAL
-    | ServiceType.LEARNING
-    | ServiceType.PATTERN_RECOGNITION;
+  type:'' | ''ServiceType.NEURAL'' | ''ServiceType.LEARNING'' | ''ServiceType.PATTERN_RECOGNITION;
   model?: {
-    type: 'neural-network | transformer' | 'custom');
+    type:'neural-network | transformer''' | '''custom');
     path?: string;
     config?: Record<string, unknown>;
   };
@@ -330,19 +318,19 @@ export interface NeuralServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface MemoryServiceConfig extends BaseServiceConfig {
-  type: ServiceType.MEMORY | ServiceType.CACHE | ServiceType.SESSION;
+  type: ServiceType.MEMORY'' | ''ServiceType.CACHE'' | ''ServiceType.SESSION;
   storage?: {
-    type: 'memory | redis' | 'memcached | database');
+    type:'memory | redis''' | '''memcached | database');
     connection?: string;
     maxMemory?: number;
   };
   eviction?: {
-    policy: 'lru | lfu' | 'fifo | ttl');
+    policy: 'lru'' | ''lfu'' | ''fifo'' | ''ttl');
     maxSize?: number;
     ttl?: number;
   };
   serialization?: {
-    type: 'json | msgpack' | 'custom');
+    type: 'json'' | ''msgpack'' | ''custom');
     compression?: boolean;
   };
   persistence?: {
@@ -358,7 +346,7 @@ export interface MemoryServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface DatabaseServiceConfig extends BaseServiceConfig {
-  type: ServiceType.DATABASE | ServiceType.VECTOR | ServiceType.GRAPH;
+  type: ServiceType.DATABASE'' | ''ServiceType.VECTOR'' | ''ServiceType.GRAPH;
   connection?: {
     host?: string;
     port?: number;
@@ -393,7 +381,7 @@ export interface DatabaseServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface InterfaceServiceConfig extends BaseServiceConfig {
-  type: ServiceType.CLI | ServiceType.MCP;
+  type: ServiceType.CLI'' | ''ServiceType.MCP;
   interface?: {
     interactive?: boolean;
     colors?: boolean;
@@ -406,8 +394,8 @@ export interface InterfaceServiceConfig extends BaseServiceConfig {
     plugins?: string[];
   };
   output?: {
-    format?: 'text | json' | 'yaml | table');
-    verbosity?: 'minimal | normal' | 'verbose | debug');
+    format?:'text | json''' | '''yaml | table');
+    verbosity?: 'minimal'' | ''normal'' | ''verbose'' | ''debug');
     streaming?: boolean;
   };
 }
@@ -423,18 +411,18 @@ export interface MonitoringServiceConfig extends BaseServiceConfig {
     enabled: boolean;
     interval?: number;
     retention?: number;
-    aggregation?: 'none | avg' | 'sum | max' | 'min');
+    aggregation?:'none'' | ''avg'' | ''sum'' | ''max'' | ''min');
   };
   alerts?: {
     enabled: boolean;
     thresholds?: Record<string, number>;
     channels?: Array<{
-      type: 'email | webhook' | 'console');
+      type: 'email'' | ''webhook'' | ''console');
       config: Record<string, unknown>;
     }>;
   };
   storage?: {
-    type: 'memory | database' | 'file | external');
+    type: 'memory'' | ''database'' | ''file'' | ''external');
     connection?: string;
     compression?: boolean;
   };
@@ -460,7 +448,7 @@ export interface WorkflowServiceConfig extends BaseServiceConfig {
   };
   state?: {
     persistence: boolean;
-    storage?: 'memory | database' | 'file');
+    storage?:'memory'' | ''database'' | ''file');
     compression?: boolean;
   };
   notifications?: {
@@ -476,10 +464,7 @@ export interface WorkflowServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface IntegrationServiceConfig extends BaseServiceConfig {
-  type:
-    | ServiceType.API
-    | ServiceType.SAFE_API
-    | ServiceType.ARCHITECTURE_STORAGE;
+  type:'' | ''ServiceType.API'' | ''ServiceType.SAFE_API'' | ''ServiceType.ARCHITECTURE_STORAGE;
   integration?: {
     architectureStorage?: boolean;
     safeAPI?: boolean;
@@ -512,7 +497,7 @@ export interface IntegrationServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface InfrastructureServiceConfig extends BaseServiceConfig {
-  type: ServiceType.NFRASTRUCTURE | ServiceType.SYSTEM | ServiceType.MONITORING;
+  type: ServiceType.NFRASTRUCTURE'' | ''ServiceType.SYSTEM'' | ''ServiceType.MONITORING;
   facade?: {
     enabled: boolean;
     autoInitialize?: boolean;
@@ -523,7 +508,7 @@ export interface InfrastructureServiceConfig extends BaseServiceConfig {
   };
   patternIntegration?: {
     enabled: boolean;
-    configProfile?: 'default | production' | 'development');
+    configProfile?:'default | production''' | '''development');
     enableEventSystem?: boolean;
     enableCommandSystem?: boolean;
     enableProtocolSystem?: boolean;
@@ -578,19 +563,7 @@ export interface InfrastructureServiceConfig extends BaseServiceConfig {
 /**
  * Union type for all service configurations.
  */
-export type AnyServiceConfig =
-  | DataServiceConfig
-  | WebServiceConfig
-  | CoordinationServiceConfig
-  | NeuralServiceConfig
-  | MemoryServiceConfig
-  | DatabaseServiceConfig
-  | InterfaceServiceConfig
-  | IntegrationServiceConfig
-  | InfrastructureServiceConfig
-  | MonitoringServiceConfig
-  | WorkflowServiceConfig
-  | BaseServiceConfig;
+export type AnyServiceConfig ='' | ''DataServiceConfig'' | ''WebServiceConfig'' | ''CoordinationServiceConfig'' | ''NeuralServiceConfig'' | ''MemoryServiceConfig'' | ''DatabaseServiceConfig'' | ''InterfaceServiceConfig'' | ''IntegrationServiceConfig'' | ''InfrastructureServiceConfig'' | ''MonitoringServiceConfig'' | ''WorkflowServiceConfig'' | ''BaseServiceConfig;
 
 /**
  * Service configuration factory for creating typed configurations.
@@ -652,7 +625,7 @@ export class ServiceConfigFactory {
       environment: ServiceEnvironment.DEVELOPMENT,
       timeout: 30000,
       server: {
-        host: 'localhost',
+        host:'localhost',
         port: 3000,
       },
       cors: {

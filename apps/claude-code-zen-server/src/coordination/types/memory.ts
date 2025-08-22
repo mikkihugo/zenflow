@@ -14,26 +14,17 @@ export type MemoryId = string;
  * Memory entry types
  */
 export type MemoryType =
-  | 'working' // Temporary working memory
-  | 'persistent' // Long-term persistent memory
-  | 'shared' // Shared between agents
-  | 'cached' // Cached data with TTL
-  | 'session' // Session-specific memory
-  | 'configuration'); // Configuration memory
+  | 'working'// Temporary working memory'' | '''persistent'// Long-term persistent memory'' | '''shared'// Shared between agents'' | '''cached'// Cached data with TTL'' | '''session'// Session-specific memory'' | '''configuration'); // Configuration memory
 
 /**
  * Memory priority levels
  */
-export type MemoryPriority = 'low | medium' | 'high | critical');
+export type MemoryPriority = 'low'' | ''medium'' | ''high'' | ''critical');
 
 /**
  * Memory access patterns
  */
-export type MemoryAccessPattern =
-  | 'read-only'
-  | 'write-only'
-  | 'read-write'
-  | 'append-only');
+export type MemoryAccessPattern =' | ''read-only''' | '''write-only''' | '''read-write''' | '''append-only');
 
 /**
  * Basic memory entry structure
@@ -116,7 +107,7 @@ export interface MemoryManager {
    * Store a memory entry
    */
   store(
-    entry: Omit<MemoryEntry, 'id | timestamp' | 'lastAccessed'>
+    entry: Omit<MemoryEntry, 'id'' | ''timestamp'' | ''lastAccessed'>
   ): Promise<MemoryOperationResult>;
 
   /**
@@ -127,7 +118,7 @@ export interface MemoryManager {
   /**
    * Get a specific memory entry by ID
    */
-  get(id: MemoryId): Promise<MemoryEntry | null>;
+  get(id: MemoryId): Promise<MemoryEntry'' | ''null>;
 
   /**
    * Update a memory entry
@@ -160,15 +151,14 @@ export interface MemoryManager {
   /**
    * Export memory data
    */
-  export(format?: 'json | binary'): Promise<string | Buffer>;
+  export(format?:'json | binary'): Promise<string'' | ''Buffer>;
 
   /**
    * Import memory data
    */
   import(
-    data: string | Buffer,
-    format?: 'json | binary'
-  ): Promise<MemoryOperationResult>;
+    data: string'' | ''Buffer,
+    format?:'json | binary'): Promise<MemoryOperationResult>;
 }
 
 /**
@@ -185,7 +175,7 @@ export interface WorkingMemory {
   /**
    * Retrieve working data
    */
-  get<T = unknown>(key: string): Promise<T | null>;
+  get<T = unknown>(key: string): Promise<T'' | ''null>;
 
   /**
    * Check if key exists
@@ -230,7 +220,7 @@ export interface SharedMemory {
   /**
    * Retrieve shared data
    */
-  get<T = unknown>(namespace: string, key: string): Promise<T | null>;
+  get<T = unknown>(namespace: string, key: string): Promise<T'' | ''null>;
 
   /**
    * List all keys in namespace
@@ -264,13 +254,7 @@ export interface SharedMemory {
 /**
  * Memory event types
  */
-export type MemoryEventType =
-  | 'entry_created'
-  | 'entry_updated'
-  | 'entry_deleted'
-  | 'entry_expired'
-  | 'cleanup_performed'
-  | 'backup_created');
+export type MemoryEventType ='' | '''entry_created | entry_updated' | 'entry_deleted''' | '''entry_expired | cleanup_performed' | 'backup_created');
 
 /**
  * Memory event
@@ -308,7 +292,7 @@ export interface MemoryBackup {
 export interface MemoryTransaction {
   id: string;
   operations: Array<{
-    type: 'store | update' | 'delete');
+    type: 'store'' | ''update'' | ''delete');
     key: string;
     value?: any;
     namespace?: string;
@@ -328,7 +312,7 @@ export interface MemoryTransaction {
    * Add operation to transaction
    */
   addOperation(
-    type: 'store | update' | 'delete',
+    type: 'store'' | ''update'' | ''delete',
     key: string,
     value?: any,
     namespace?: string

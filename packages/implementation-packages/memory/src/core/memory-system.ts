@@ -14,13 +14,7 @@ import type { MemoryStats } from '../backends/base-backend';
 export type { MemoryStats };
 
 // JSON Value type for database compatibility
-export type JSONValue =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: JSONValue }
-  | JSONValue[];
+export type JSONValue ='' | ''string'' | ''number'' | ''boolean'' | ''null'' | ''{ [key: string]: JSONValue }'' | ''JSONValue[];
 
 /**
  * Backend Stats format used by some legacy implementations.
@@ -92,10 +86,10 @@ export interface BackendInterface {
   store(key: string, value: JSONValue, namespace?: string): Promise<void>;
 
   /** Retrieve a value by key */
-  retrieve<T = JSONValue>(key: string): Promise<T | null>;
+  retrieve<T = JSONValue>(key: string): Promise<T'' | ''null>;
 
   /** Alternative method name for retrieve */
-  get<T = JSONValue>(key: string): Promise<T | null>;
+  get<T = JSONValue>(key: string): Promise<T'' | ''null>;
 
   /** Alternative method name for store */
   set(key: string, value: JSONValue): Promise<void>;
@@ -119,7 +113,7 @@ export interface BackendInterface {
   close(): Promise<void>;
 
   /** Get backend statistics - async version for interface compatibility */
-  getStats?(): Promise<MemoryStats> | MemoryStats;
+  getStats?(): Promise<MemoryStats>'' | ''MemoryStats;
 
   /** Get backend health status */
   health?(): Promise<boolean>;
@@ -134,7 +128,7 @@ export interface BackendInterface {
  * @example
  */
 export interface BackendConfig {
-  type: 'sqlite' | 'lancedb' | 'json' | 'memory';
+  type:'sqlite | lancedb' | 'json''' | '''memory';
   path?: string;
   maxSize?: number;
   ttl?: number;
@@ -167,7 +161,7 @@ export interface MemoryEntryMetadata {
   size: number;
   ttl?: number;
   tags?: string[];
-  priority?: 'low' | 'medium' | 'high';
+  priority?: 'low | medium' | 'high';
 }
 
 /**

@@ -62,15 +62,18 @@ export interface SystemPerformanceTracker {
 }
 
 export interface SystemHealth {
-  status: 'healthy' | 'warning' | 'critical';
-  cpu_health: 'good' | 'high' | 'critical';
-  memory_health: 'good' | 'high' | 'critical';
-  load_health: 'good' | 'high' | 'critical';
+  status: 'healthy | warning' | 'critical';
+  cpu_health: 'good | high' | 'critical';
+  memory_health: 'good | high' | 'critical';
+  load_health: 'good | high' | 'critical';
   recommendations: string[];
 }
 
 export class SystemMetricsError extends Error {
-  constructor(message: string, public readonly metric?: string) {
+  constructor(
+    message: string,
+    public readonly metric?: string
+  ) {
     super(message);
     this.name = 'SystemMetricsError';
   }
@@ -88,7 +91,7 @@ export class SystemMetricsCollector {
   private logger: Logger;
 
   private constructor(logger?: Logger) {
-    this.logger = logger || getLogger('SystemMetricsCollector');
+    this.logger = logger'' | '''' | ''getLogger('SystemMetricsCollector');
     this.cpuBaseline = cpuUsage();
     this.lastCpuCheck = Date.now();
   }
@@ -113,7 +116,8 @@ export class SystemMetricsCollector {
 
     // Calculate CPU percentage based on elapsed time
     const totalTime = currentCpuUsage.user + currentCpuUsage.system;
-    const cpuPercent = timeDiff > 0 ? Math.min((totalTime / (timeDiff * 1000)) * 100, 100) : 0;
+    const cpuPercent =
+      timeDiff > 0 ? Math.min((totalTime / (timeDiff * 1000)) * 100, 100) : 0;
 
     // Update baseline for next measurement
     this.cpuBaseline = cpuUsage();
@@ -138,12 +142,18 @@ export class SystemMetricsCollector {
     const MB_DIVISOR = 1024 * 1024;
 
     return {
-      used_mb: Math.round(((totalSystemMemory - freeSystemMemory) / MB_DIVISOR) * 100) / 100,
+      used_mb:
+        Math.round(
+          ((totalSystemMemory - freeSystemMemory) / MB_DIVISOR) * 100
+        ) / 100,
       total_mb: Math.round((totalSystemMemory / MB_DIVISOR) * 100) / 100,
       free_mb: Math.round((freeSystemMemory / MB_DIVISOR) * 100) / 100,
-      heap_used_mb: Math.round((processMemory.heapUsed / MB_DIVISOR) * 100) / 100,
-      heap_total_mb: Math.round((processMemory.heapTotal / MB_DIVISOR) * 100) / 100,
-      external_mb: Math.round((processMemory.external / MB_DIVISOR) * 100) / 100,
+      heap_used_mb:
+        Math.round((processMemory.heapUsed / MB_DIVISOR) * 100) / 100,
+      heap_total_mb:
+        Math.round((processMemory.heapTotal / MB_DIVISOR) * 100) / 100,
+      external_mb:
+        Math.round((processMemory.external / MB_DIVISOR) * 100) / 100,
       rss_mb: Math.round((processMemory.rss / MB_DIVISOR) * 100) / 100,
     };
   }
@@ -162,7 +172,9 @@ export class SystemMetricsCollector {
   /**
    * End performance tracking and get results
    */
-  public endPerformanceTracking(operationId: string): SystemPerformanceTracker | null {
+  public endPerformanceTracking(
+    operationId: string
+  ): SystemPerformanceTracker'' | ''null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
       this.logger.warn(`No performance tracker found for: ${operationId}`);
@@ -176,9 +188,11 @@ export class SystemMetricsCollector {
     tracker.end_time = endTime;
     tracker.duration_ms = endTime - tracker.start_time;
     tracker.memory_end = endMemory;
-    tracker.memory_delta_mb = Math.round(
-      ((endMemory.heapUsed - tracker.memory_start.heapUsed) / MB_DIVISOR) * 100,
-    ) / 100;
+    tracker.memory_delta_mb =
+      Math.round(
+        ((endMemory.heapUsed - tracker.memory_start.heapUsed) / MB_DIVISOR) *
+          100
+      ) / 100;
 
     // Clean up tracker
     this.performanceTrackers.delete(operationId);
@@ -199,7 +213,7 @@ export class SystemMetricsCollector {
     memory: MemoryMetrics;
     timestamp: string;
     uptime_seconds: number;
-    } {
+  } {
     return {
       cpu: this.getCpuMetrics(),
       memory: this.getMemoryMetrics(),
@@ -216,24 +230,43 @@ export class SystemMetricsCollector {
     const memory = this.getMemoryMetrics();
 
     // Health thresholds
-    const cpuHealth = cpu.usage_percent > 90 ? 'critical' : cpu.usage_percent > 70 ? 'high' : 'good';
+    const cpuHealth =
+      cpu.usage_percent > 90
+        ?'critical'
+        : cpu.usage_percent > 70
+          ? 'high'
+          : 'good';
     const memoryPressure = memory.used_mb / memory.total_mb;
-    const memoryHealth = memoryPressure > 0.95 ? 'critical' : memoryPressure > 0.8 ? 'high' : 'good';
+    const memoryHealth =
+      memoryPressure > 0.95
+        ? 'critical'
+        : memoryPressure > 0.8
+          ? 'high'
+          : 'good';
 
     const loadAvg1Min = (cpu.load_average[0] ?? 0) / cpu.cores;
-    const loadHealth = loadAvg1Min > 2 ? 'critical' : loadAvg1Min > 1 ? 'high' : 'good';
+    const loadHealth =
+      loadAvg1Min > 2 ? 'critical' : loadAvg1Min > 1 ? 'high' : 'good';
 
     // Overall status
     const healths = [cpuHealth, memoryHealth, loadHealth];
-    const status = healths.includes('critical') ? 'critical' : healths.includes('high') ? 'warning' : 'healthy';
+    const status = healths.includes('critical')
+      ? 'critical'
+      : healths.includes('high')
+        ? 'warning'
+        : 'healthy';
 
     // Recommendations
     const recommendations: string[] = [];
     if (cpuHealth !== 'good') {
-      recommendations.push('High CPU usage detected - consider reducing agent count');
+      recommendations.push(
+        'High CPU usage detected - consider reducing agent count'
+      );
     }
     if (memoryHealth !== 'good') {
-      recommendations.push('High memory usage detected - implement cleanup policies');
+      recommendations.push(
+        'High memory usage detected - implement cleanup policies'
+      );
     }
     if (loadHealth !== 'good') {
       recommendations.push('High system load - consider distributing work');
@@ -261,6 +294,8 @@ export const SYSTEM_METRICS_COLLECTOR_TOKEN = Symbol('SystemMetricsCollector');
 /**
  * Create SystemMetricsCollector with DI
  */
-export function createSystemMetricsCollector(logger?: Logger): SystemMetricsCollector {
+export function createSystemMetricsCollector(
+  logger?: Logger
+): SystemMetricsCollector {
   return SystemMetricsCollector.getInstance(logger);
 }

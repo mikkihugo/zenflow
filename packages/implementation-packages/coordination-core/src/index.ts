@@ -1,21 +1,17 @@
 /**
  * @fileoverview Coordination Core
- * 
+ *
  * Strategic multi-swarm coordination system with clean, minimal dependencies.
  */
 
 // Core agents
-export {
-  QueenCoordinator,
-  SwarmCommander,
-  Matron
-} from './agents';
+export { QueenCoordinator, SwarmCommander, Matron } from './agents';
 
 export type {
   QueenConfig,
   CommanderConfig,
   MatronConfig,
-  MatronCoordinationRequest
+  MatronCoordinationRequest,
 } from './agents';
 
 // Events
@@ -28,7 +24,7 @@ export type {
   MatronInitializedEvent,
   DomainCoordinationEvent,
   CrossDomainCoordinationEvent,
-  DecisionMadeEvent
+  DecisionMadeEvent,
 } from './events';
 
 // Types
@@ -39,5 +35,5 @@ export type {
   StrategicObjective,
   CoordinationDecision,
   CoordinationConfig,
-  CoordinationMetrics
+  CoordinationMetrics,
 } from './types';

@@ -69,7 +69,8 @@ export const VERSION = '1.0.0';
 /**
  * Package description
  */
-export const DESCRIPTION = 'Basic agent lifecycle management and simple swarm coordination';
+export const DESCRIPTION =
+  'Basic agent lifecycle management and simple swarm coordination';
 
 /**
  * Default configuration for AgentManager
@@ -79,18 +80,30 @@ export const DEFAULT_CONFIG = {
   topology: 'mesh' as const,
   timeout: 30000,
   healthCheckInterval: 10000,
-  coordinationStrategy: 'adaptive' as const
+  coordinationStrategy: 'adaptive' as const,
 };
 
 /**
  * Agent type categories for convenience
  */
 export const AGENT_CATEGORIES = {
-  DEVELOPMENT: ['coder', 'architect', 'developer', 'fullstack-dev', 'api-dev', 'frontend-dev'],
+  DEVELOPMENT: [
+    'coder',
+    'architect',
+    'developer',
+    'fullstack-dev',
+    'api-dev',
+    'frontend-dev',
+  ],
   ANALYSIS: ['analyst', 'researcher', 'data', 'security-analyzer'],
-  OPERATIONS: ['ops', 'devops-engineer', 'infrastructure-ops', 'monitoring-ops'],
+  OPERATIONS: [
+    'ops',
+    'devops-engineer',
+    'infrastructure-ops',
+    'monitoring-ops',
+  ],
   TESTING: ['tester', 'unit-tester', 'integration-tester', 'e2e-tester'],
-  COORDINATION: ['coordinator', 'optimizer', 'queen', 'specialist']
+  COORDINATION: ['coordinator', 'optimizer', 'queen', 'specialist'],
 };
 
 /**
@@ -99,44 +112,59 @@ export const AGENT_CATEGORIES = {
 export const CAPABILITY_SETS = {
   TYPESCRIPT_DEV: ['typescript', 'node', 'testing', 'debugging'],
   REACT_DEV: ['react', 'javascript', 'jsx', 'css', 'html'],
-  BACKEND_DEV: ['api-development', 'database', 'server-architecture', 'security'],
+  BACKEND_DEV: [
+    'api-development',
+    'database',
+    'server-architecture',
+    'security',
+  ],
   FULLSTACK_DEV: ['frontend', 'backend', 'database', 'deployment', 'testing'],
   DATA_ANALYST: ['data-analysis', 'statistics', 'visualization', 'reporting'],
-  DEVOPS: ['ci-cd', 'containerization', 'cloud-deployment', 'monitoring']
+  DEVOPS: ['ci-cd', 'containerization', 'cloud-deployment', 'monitoring'],
 };
 
 /**
  * Utility function to create an agent with predefined capabilities
  */
-export function createAgent(id: string, type: string, category?: keyof typeof CAPABILITY_SETS) {
+export function createAgent(
+  id: string,
+  type: string,
+  category?: keyof typeof CAPABILITY_SETS
+) {
   return {
     id,
     type,
     status: 'idle' as const,
-    capabilities: category ? [...CAPABILITY_SETS[category]] : []
+    capabilities: category ? [...CAPABILITY_SETS[category]] : [],
   };
 }
 
 /**
  * Utility function to create AgentManager with common configurations
  */
-export function createAgentManager(preset?: 'small' | 'medium' | 'large' | 'enterprise') {
+export function createAgentManager(
+  preset?: 'small | medium' | 'large''' | '''enterprise'
+) {
   // Import dynamically to avoid circular dependency issues during build
   const { AgentManager } = require('./agent-manager');
   const manager = new AgentManager();
-  
+
   // Apply preset configurations
   const presets = {
     small: { maxAgents: 10, topology: 'star' as const },
     medium: { maxAgents: 50, topology: 'mesh' as const },
     large: { maxAgents: 200, topology: 'hierarchical' as const },
-    enterprise: { maxAgents: 1000, topology: 'hierarchical' as const, healthCheckInterval: 5000 }
+    enterprise: {
+      maxAgents: 1000,
+      topology: 'hierarchical' as const,
+      healthCheckInterval: 5000,
+    },
   };
-  
+
   if (preset && presets[preset]) {
     // Configuration will be applied during initialize() call
     (manager as any).presetConfig = presets[preset];
   }
-  
+
   return manager;
 }

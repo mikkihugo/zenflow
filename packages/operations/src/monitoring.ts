@@ -34,19 +34,19 @@ const logger = getLogger('operations-monitoring');
  * Custom error types for monitoring operations
  */
 export class MonitoringSystemError extends Error {
-  public override cause?: Error | undefined;
+  public override cause?: Error'' | ''undefined;
 
-  constructor(message: string, cause?: Error | undefined) {
+  constructor(message: string, cause?: Error'' | ''undefined) {
     super(message);
-    this.name = 'MonitoringSystemError';
+    this.name ='MonitoringSystemError';
     this.cause = cause;
   }
 }
 
 export class MonitoringSystemConnectionError extends MonitoringSystemError {
-  constructor(message: string, cause?: Error | undefined) {
+  constructor(message: string, cause?: Error'' | ''undefined) {
     super(message, cause);
-    this.name = 'MonitoringSystemConnectionError';
+    this.name ='MonitoringSystemConnectionError';
   }
 }
 
@@ -123,13 +123,23 @@ interface MonitoringMetrics {
 
 interface MonitoringSystemModule {
   MonitoringFacade: new (config?: MonitoringSystemConfig) => MonitoringFacade;
-  ObservabilityFramework: new (config?: MonitoringSystemConfig) => ObservabilityFramework;
-  TelemetryCollector: new (config?: MonitoringSystemConfig) => TelemetryCollector;
+  ObservabilityFramework: new (
+    config?: MonitoringSystemConfig
+  ) => ObservabilityFramework;
+  TelemetryCollector: new (
+    config?: MonitoringSystemConfig
+  ) => TelemetryCollector;
   MetricsAggregator: new (config?: MonitoringSystemConfig) => MetricsAggregator;
   HealthChecker: new (config?: MonitoringSystemConfig) => HealthChecker;
-  createMonitoringFacade?: (config?: MonitoringSystemConfig) => MonitoringFacade;
-  createObservabilityFramework?: (config?: MonitoringSystemConfig) => ObservabilityFramework;
-  createTelemetryCollector?: (config?: MonitoringSystemConfig) => TelemetryCollector;
+  createMonitoringFacade?: (
+    config?: MonitoringSystemConfig
+  ) => MonitoringFacade;
+  createObservabilityFramework?: (
+    config?: MonitoringSystemConfig
+  ) => ObservabilityFramework;
+  createTelemetryCollector?: (
+    config?: MonitoringSystemConfig
+  ) => TelemetryCollector;
 }
 
 /**
@@ -139,22 +149,30 @@ interface MonitoringSystemAccess {
   /**
    * Create a new monitoring facade
    */
-  createMonitoringFacade(config?: MonitoringSystemConfig): Promise<MonitoringFacade>;
+  createMonitoringFacade(
+    config?: MonitoringSystemConfig
+  ): Promise<MonitoringFacade>;
 
   /**
    * Create a new observability framework
    */
-  createObservabilityFramework(config?: MonitoringSystemConfig): Promise<ObservabilityFramework>;
+  createObservabilityFramework(
+    config?: MonitoringSystemConfig
+  ): Promise<ObservabilityFramework>;
 
   /**
    * Create a new telemetry collector
    */
-  createTelemetryCollector(config?: MonitoringSystemConfig): Promise<TelemetryCollector>;
+  createTelemetryCollector(
+    config?: MonitoringSystemConfig
+  ): Promise<TelemetryCollector>;
 
   /**
    * Create a new metrics aggregator
    */
-  createMetricsAggregator(config?: MonitoringSystemConfig): Promise<MetricsAggregator>;
+  createMetricsAggregator(
+    config?: MonitoringSystemConfig
+  ): Promise<MetricsAggregator>;
 
   /**
    * Create a health checker
@@ -180,59 +198,87 @@ interface MonitoringSystemConfig {
  * Implementation of monitoring access via runtime delegation
  */
 class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
-  private monitoringModule: MonitoringSystemModule | null = null;
+  private monitoringModule: MonitoringSystemModule'' | ''null = null;
 
   private async getMonitoringModule(): Promise<MonitoringSystemModule> {
     if (!this.monitoringModule) {
       try {
         // Import the monitoring package at runtime (matches database pattern)
         // Use dynamic import with string to avoid TypeScript compile-time checking
-        const packageName = '@claude-zen/system-monitoring';
-        this.monitoringModule = await import(packageName) as MonitoringSystemModule;
+        const packageName ='@claude-zen/system-monitoring';
+        this.monitoringModule = (await import(
+          packageName
+        )) as MonitoringSystemModule;
         logger.debug('Monitoring module loaded successfully');
       } catch (error) {
         throw new MonitoringSystemConnectionError(
           'System monitoring package not available. Operations requires @claude-zen/system-monitoring for monitoring operations.',
-          error instanceof Error ? error : undefined,
+          error instanceof Error ? error : undefined
         );
       }
     }
     return this.monitoringModule;
   }
 
-  async createMonitoringFacade(config?: MonitoringSystemConfig): Promise<MonitoringFacade> {
+  async createMonitoringFacade(
+    config?: MonitoringSystemConfig
+  ): Promise<MonitoringFacade> {
     const module = await this.getMonitoringModule();
-    logger.debug('Creating monitoring facade via operations delegation', { config });
-    return module.createMonitoringFacade ? module.createMonitoringFacade(config) : new module.MonitoringFacade(config);
+    logger.debug('Creating monitoring facade via operations delegation', {
+      config,
+    });
+    return module.createMonitoringFacade
+      ? module.createMonitoringFacade(config)
+      : new module.MonitoringFacade(config);
   }
 
-  async createObservabilityFramework(config?: MonitoringSystemConfig): Promise<ObservabilityFramework> {
+  async createObservabilityFramework(
+    config?: MonitoringSystemConfig
+  ): Promise<ObservabilityFramework> {
     const module = await this.getMonitoringModule();
-    logger.debug('Creating observability framework via operations delegation', { config });
-    return module.createObservabilityFramework ? module.createObservabilityFramework(config) : new module.ObservabilityFramework(config);
+    logger.debug('Creating observability framework via operations delegation', {
+      config,
+    });
+    return module.createObservabilityFramework
+      ? module.createObservabilityFramework(config)
+      : new module.ObservabilityFramework(config);
   }
 
-  async createTelemetryCollector(config?: MonitoringSystemConfig): Promise<TelemetryCollector> {
+  async createTelemetryCollector(
+    config?: MonitoringSystemConfig
+  ): Promise<TelemetryCollector> {
     const module = await this.getMonitoringModule();
-    logger.debug('Creating telemetry collector via operations delegation', { config });
-    return module.createTelemetryCollector ? module.createTelemetryCollector(config) : new module.TelemetryCollector(config);
+    logger.debug('Creating telemetry collector via operations delegation', {
+      config,
+    });
+    return module.createTelemetryCollector
+      ? module.createTelemetryCollector(config)
+      : new module.TelemetryCollector(config);
   }
 
-  async createMetricsAggregator(config?: MonitoringSystemConfig): Promise<MetricsAggregator> {
+  async createMetricsAggregator(
+    config?: MonitoringSystemConfig
+  ): Promise<MetricsAggregator> {
     const module = await this.getMonitoringModule();
-    logger.debug('Creating metrics aggregator via operations delegation', { config });
+    logger.debug('Creating metrics aggregator via operations delegation', {
+      config,
+    });
     return new module.MetricsAggregator(config);
   }
 
-  async createHealthChecker(config?: MonitoringSystemConfig): Promise<HealthChecker> {
+  async createHealthChecker(
+    config?: MonitoringSystemConfig
+  ): Promise<HealthChecker> {
     const module = await this.getMonitoringModule();
-    logger.debug('Creating health checker via operations delegation', { config });
+    logger.debug('Creating health checker via operations delegation', {
+      config,
+    });
     return new module.HealthChecker(config);
   }
 }
 
 // Global singleton instance
-let globalMonitoringSystemAccess: MonitoringSystemAccess | null = null;
+let globalMonitoringSystemAccess: MonitoringSystemAccess'' | ''null = null;
 
 /**
  * Get monitoring access interface (singleton pattern)
@@ -249,45 +295,55 @@ export function getMonitoringSystemAccess(): MonitoringSystemAccess {
  * Create a monitoring facade through operations delegation
  * @param config - Monitoring facade configuration
  */
-export async function getMonitoringFacade(config?: MonitoringSystemConfig): Promise<MonitoringFacade> {
+export async function getMonitoringFacade(
+  config?: MonitoringSystemConfig
+): Promise<MonitoringFacade> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return monitoringSystem.createMonitoringFacade(config);
+  return await Promise.resolve(monitoringSystem.createMonitoringFacade(config));
 }
 
 /**
  * Create an observability framework through operations delegation
  * @param config - Observability framework configuration
  */
-export async function getObservabilityFramework(config?: MonitoringSystemConfig): Promise<ObservabilityFramework> {
+export async function getObservabilityFramework(
+  config?: MonitoringSystemConfig
+): Promise<ObservabilityFramework> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return monitoringSystem.createObservabilityFramework(config);
+  return await Promise.resolve(monitoringSystem.createObservabilityFramework(config));
 }
 
 /**
  * Create a telemetry collector through operations delegation
  * @param config - Telemetry collector configuration
  */
-export async function getTelemetryCollector(config?: MonitoringSystemConfig): Promise<TelemetryCollector> {
+export async function getTelemetryCollector(
+  config?: MonitoringSystemConfig
+): Promise<TelemetryCollector> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return monitoringSystem.createTelemetryCollector(config);
+  return await Promise.resolve(monitoringSystem.createTelemetryCollector(config));
 }
 
 /**
  * Create a metrics aggregator through operations delegation
  * @param config - Metrics aggregator configuration
  */
-export async function getMetricsAggregator(config?: MonitoringSystemConfig): Promise<MetricsAggregator> {
+export async function getMetricsAggregator(
+  config?: MonitoringSystemConfig
+): Promise<MetricsAggregator> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return monitoringSystem.createMetricsAggregator(config);
+  return await Promise.resolve(monitoringSystem.createMetricsAggregator(config));
 }
 
 /**
  * Create a health checker through operations delegation
  * @param config - Health checker configuration
  */
-export async function getHealthChecker(config?: MonitoringSystemConfig): Promise<HealthChecker> {
+export async function getHealthChecker(
+  config?: MonitoringSystemConfig
+): Promise<HealthChecker> {
   const monitoringSystem = getMonitoringSystemAccess();
-  return monitoringSystem.createHealthChecker(config);
+  return await Promise.resolve(monitoringSystem.createHealthChecker(config));
 }
 
 /**
@@ -323,7 +379,7 @@ interface TelemetryMonitoringModule {
 
 export class TelemetryManager {
   private enabled = true;
-  private monitoringModule: TelemetryMonitoringModule | null = null;
+  private monitoringModule: TelemetryMonitoringModule'' | ''null = null;
 
   constructor(config?: TelemetryConfig) {
     this.enabled = config?.enabled !== false;
@@ -332,9 +388,11 @@ export class TelemetryManager {
   private async getMonitoringModule(): Promise<TelemetryMonitoringModule> {
     if (!this.monitoringModule) {
       try {
-        const packageName = '@claude-zen/system-monitoring';
-        this.monitoringModule = await import(packageName) as TelemetryMonitoringModule;
-      } catch (error) {
+        const packageName ='@claude-zen/system-monitoring';
+        this.monitoringModule = (await import(
+          packageName
+        )) as TelemetryMonitoringModule;
+      } catch {
         // Use fallback implementation if agent monitoring package not available
         this.monitoringModule = {
           TelemetryManager: class FallbackTelemetryManager {
@@ -386,7 +444,9 @@ export const monitoringSystem = {
 };
 
 // Additional facade functions for compatibility with legacy usage patterns
-export async function getTelemetryManager(config?: any): Promise<TelemetryManager> {
+export async function getTelemetryManager(
+  config?: any
+): Promise<TelemetryManager> {
   const telemetryManager = new TelemetryManager(config);
   await telemetryManager.initialize();
   return telemetryManager;
@@ -396,7 +456,7 @@ export async function getPerformanceTracker(config?: any): Promise<any> {
   const monitoringSystem = getMonitoringSystemAccess();
   try {
     return await monitoringSystem.createMetricsAggregator(config);
-  } catch (error) {
+  } catch {
     // Fallback performance tracker when monitoring system not available
     return {
       startTimer: (_name?: string) => ({
@@ -409,7 +469,7 @@ export async function getPerformanceTracker(config?: any): Promise<any> {
       recordMetric: (name: string, value: number) => {
         logger.debug(`Metric: ${name} = ${value}`);
       },
-      getMetrics: async () => ({
+      getMetrics: async () => await Promise.resolve({
         operations: {},
         memory: { used: 0, free: 0, total: 0 },
         cpu: { usage: 0 },
@@ -420,7 +480,4 @@ export async function getPerformanceTracker(config?: any): Promise<any> {
 }
 
 // Type exports for external consumers
-export type {
-  MonitoringSystemAccess,
-  MonitoringSystemConfig,
-};
+export type { MonitoringSystemAccess, MonitoringSystemConfig };

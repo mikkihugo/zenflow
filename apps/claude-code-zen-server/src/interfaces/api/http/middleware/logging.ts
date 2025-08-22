@@ -7,7 +7,7 @@
  * @file Express logging middleware with performance monitoring.
  */
 
-import type { NextFunction, Request, Response } from 'express');
+import type { NextFunction, Request, Response } from 'express';
 
 /**
  * Log levels following Google Cloud Logging standards.
@@ -84,11 +84,7 @@ const generateRequestId = (): string => {
  */
 const getClientIp = (req: Request): string => {
   return (
-    (req.headers['x-forwarded-for] as string)?.split(,')[0]?.trim ||
-    (req.headers['x-real-ip'] as string) ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    'unknown'
+    (req.headers['x-forwarded-for] as string)?.split(,')[0]?.trim || (req.headers['x-real-ip'] as string) || req.connection.remoteAddress || req.socket.remoteAddress || 'unknown'
   );
 };
 
@@ -247,7 +243,7 @@ const createLogEntry = (
     trace: requestMetadata?.requestId,
     operation: {
       id: requestMetadata?.requestId,
-      producer: 'claude-zen-flow-api',
+      producer:'claude-zen-flow-api',
       first: !res, // First log entry for request
       last: !!res, // Last log entry for response
     },

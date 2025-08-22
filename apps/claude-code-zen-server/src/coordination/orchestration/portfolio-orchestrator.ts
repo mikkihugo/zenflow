@@ -128,8 +128,8 @@ export interface PortfolioHealth {
  * Health recommendations
  */
 export interface HealthRecommendation {
-  readonly type: 'strategic' | 'resource' | 'risk' | 'delivery';
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly type: 'strategic | resource' | 'risk''' | '''delivery';
+  readonly priority: 'low | medium' | 'high''' | '''critical';
   readonly description: string;
   readonly actionItems: string[];
   readonly expectedImpact: number;
@@ -166,12 +166,8 @@ export interface Investment {
   readonly id: string;
   readonly portfolioItemId: string;
   readonly amount: number;
-  readonly category:
-    | 'development'
-    | 'infrastructure'
-    | 'research'
-    | 'marketing';
-  readonly approvalStatus: 'pending' | 'approved' | 'rejected';
+  readonly category:'' | '''development | infrastructure' | 'research''' | '''marketing';
+  readonly approvalStatus: 'pending | approved' | 'rejected';
   readonly approvedBy?: string;
   readonly approvalDate?: Date;
   readonly actualSpend: number;
@@ -725,7 +721,7 @@ export class PortfolioOrchestrator extends TypedEventBase {
    */
   async trackStrategicDecision(
     gateId: string,
-    decision: 'approved | rejected' | 'deferred',
+    decision: 'approved'' | ''rejected'' | ''deferred',
     rationale: string,
     expectedOutcomes: string[],
     decisionMaker: string
@@ -836,15 +832,14 @@ export class PortfolioOrchestrator extends TypedEventBase {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'portfolio-orchestrator:state'
-      );
+        'portfolio-orchestrator:state');
       if (persistedState) {
         // Reconstruct Maps from serialized data
         this.state = {
           ...this.state,
           ...persistedState,
-          portfolioItems: new Map(persistedState.portfolioItems || []),
-          activeStreams: new Map(persistedState.activeStreams || []),
+          portfolioItems: new Map(persistedState.portfolioItems'' | '''' | ''[]),
+          activeStreams: new Map(persistedState.activeStreams'' | '''' | ''[]),
         };
         this.logger.info('Portfolio orchestrator state loaded');
       }

@@ -1,15 +1,15 @@
 /**
  * @fileoverview Solution Train Engineer Manager - Large Solution SAFe Configuration
- * 
+ *
  * Solution Train Engineer management for SAFe Large Solution configuration.
  * Coordinates multiple Agile Release Trains (ARTs) to deliver complex solutions
  * requiring coordination across multiple development value streams.
- * 
+ *
  * Delegates to:
  * - Multi-ART Coordination Service for cross-ART synchronization and dependency management
  * - Solution Planning Service for solution-level PI planning and coordination activities
  * - Solution Architecture Management Service for architectural runway and governance
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -37,25 +37,25 @@ export interface SolutionContext {
   solutionId: string;
   solutionName: string;
   domain: string;
-  complexity: 'moderate' | 'high' | 'very-high';
+  complexity: 'moderate''' | '''high''' | '''very-high';
   artCount: number;
   teamCount: number;
   stakeholderCount: number;
   complianceRequirements: string[];
   businessValue: string;
-  strategicImportance: 'low' | 'medium' | 'high' | 'critical';
+  strategicImportance: 'low | medium' | 'high''' | '''critical';
 }
 
 export interface ARTCoordinationConfig {
-  coordinationStrategy: 'hierarchical' | 'network' | 'hybrid';
-  synchronizationFrequency: 'daily' | 'weekly' | 'bi-weekly';
+  coordinationStrategy: 'hierarchical | network' | 'hybrid';
+  synchronizationFrequency: 'daily''' | '''weekly''' | '''bi-weekly';
   dependencyManagement: DependencyManagementStrategy;
   escalationMatrix: EscalationRule[];
   communicationProtocols: CommunicationProtocol[];
 }
 
 export interface SolutionPlanningConfig {
-  planningApproach: 'big-room' | 'distributed' | 'hybrid';
+  planningApproach: 'big-room''' | '''distributed''' | '''hybrid';
   planningHorizon: number;
   stakeholderInvolvement: StakeholderInvolvement[];
   riskManagement: RiskManagementStrategy;
@@ -63,7 +63,7 @@ export interface SolutionPlanningConfig {
 }
 
 export interface SolutionGovernanceConfig {
-  framework: 'lightweight' | 'standard' | 'comprehensive';
+  framework: 'lightweight | standard' | 'comprehensive';
   decisionRights: DecisionRight[];
   complianceRequirements: ComplianceRequirement[];
   auditRequirements: AuditRequirement[];
@@ -71,8 +71,8 @@ export interface SolutionGovernanceConfig {
 
 export interface SolutionMetricsConfig {
   kpiFramework: string;
-  measurementFrequency: 'real-time' | 'daily' | 'weekly' | 'monthly';
-  reportingCadence: 'weekly' | 'monthly' | 'quarterly';
+  measurementFrequency: 'real-time''' | '''daily | weekly' | 'monthly';
+  reportingCadence: 'weekly | monthly' | 'quarterly';
   stakeholderReporting: StakeholderReportingConfig[];
 }
 
@@ -222,12 +222,12 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
   private solutionPlanningService: any;
   private solutionArchitectureManagementService: any;
   private initialized = false;
-  private configuration: SolutionTrainEngineerConfig | null = null;
+  private configuration: SolutionTrainEngineerConfig'' | ''null = null;
 
   constructor(config?: SolutionTrainEngineerConfig) {
     super();
     this.logger = getLogger('SolutionTrainEngineerManager');
-    this.config = config || null;
+    this.config = config'' | '''' | ''null;
   }
 
   /**
@@ -238,22 +238,32 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
 
     try {
       // Delegate to Multi-ART Coordination Service
-      const { MultiARTCoordinationService } = await import('../services/solution-train/multi-art-coordination-service');
-      this.multiARTCoordinationService = new MultiARTCoordinationService(this.logger);
+      const { MultiARTCoordinationService } = await import('../services/solution-train/multi-art-coordination-service'
+      );
+      this.multiARTCoordinationService = new MultiARTCoordinationService(
+        this.logger
+      );
 
       // Delegate to Solution Planning Service
-      const { SolutionPlanningService } = await import('../services/solution-train/solution-planning-service');
+      const { SolutionPlanningService } = await import(
+        '../services/solution-train/solution-planning-service'
+      );
       this.solutionPlanningService = new SolutionPlanningService(this.logger);
 
       // Delegate to Solution Architecture Management Service
-      const { SolutionArchitectureManagementService } = await import('../services/solution-train/solution-architecture-management-service');
-      this.solutionArchitectureManagementService = new SolutionArchitectureManagementService(this.logger);
+      const { SolutionArchitectureManagementService } = await import(
+        '../services/solution-train/solution-architecture-management-service'
+      );
+      this.solutionArchitectureManagementService =
+        new SolutionArchitectureManagementService(this.logger);
 
       this.initialized = true;
       this.logger.info('SolutionTrainEngineerManager initialized successfully');
-
     } catch (error) {
-      this.logger.error('Failed to initialize SolutionTrainEngineerManager:', error);
+      this.logger.error(
+        'Failed to initialize SolutionTrainEngineerManager:',
+        error
+      );
       throw error;
     }
   }
@@ -267,7 +277,7 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
     this.logger.info('Configuring Solution Train Engineer', {
       steId: config.steId,
       solutionName: config.solutionContext.solutionName,
-      artCount: config.solutionContext.artCount
+      artCount: config.solutionContext.artCount,
     });
 
     this.config = config;
@@ -284,15 +294,19 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
 
     try {
       // Configure multi-ART coordination
-      await this.multiARTCoordinationService.configureCoordination(coordinationConfig);
+      await this.multiARTCoordinationService.configureCoordination(
+        coordinationConfig
+      );
 
       // Execute coordination
-      const result = await this.multiARTCoordinationService.coordinateARTs(coordinationConfig.coordinationId);
+      const result = await this.multiARTCoordinationService.coordinateARTs(
+        coordinationConfig.coordinationId
+      );
 
-      this.emit('arts-coordinated', { 
-        success: true, 
+      this.emit('arts-coordinated', {
+        success: true,
         participatingARTs: result.participatingARTs.length,
-        effectivenessScore: result.effectiveness.overallScore
+        effectivenessScore: result.effectiveness.overallScore,
       });
 
       return {
@@ -301,12 +315,12 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
         success: true,
         coordinationActivities: result.coordinationActivities,
         dependenciesManaged: result.dependenciesManaged,
-        effectiveness: result.effectiveness
+        effectiveness: result.effectiveness,
       };
-
     } catch (error) {
       this.logger.error('ART coordination failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('coordination-failed', { error: errorMessage });
       throw error;
     }
@@ -333,7 +347,7 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
       this.emit('solution-planning-completed', {
         success: result.success,
         commitmentCount: result.commitments.length,
-        riskCount: result.risks.length
+        riskCount: result.risks.length,
       });
 
       return {
@@ -342,12 +356,12 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
         commitments: result.commitments,
         risks: result.risks,
         dependencies: result.dependencies,
-        nextSteps: result.nextSteps
+        nextSteps: result.nextSteps,
       };
-
     } catch (error) {
       this.logger.error('Solution planning failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('planning-failed', { error: errorMessage });
       throw error;
     }
@@ -363,29 +377,34 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
 
     try {
       // Configure architecture management
-      await this.solutionArchitectureManagementService.configureArchitecture(architectureConfig);
+      await this.solutionArchitectureManagementService.configureArchitecture(
+        architectureConfig
+      );
 
       // Assess compliance
-      const complianceReport = await this.solutionArchitectureManagementService.assessCompliance(
-        architectureConfig.configId
-      );
+      const complianceReport =
+        await this.solutionArchitectureManagementService.assessCompliance(
+          architectureConfig.configId
+        );
 
       this.emit('architecture-managed', {
         success: true,
         complianceScore: complianceReport.overallCompliance,
-        violationCount: complianceReport.violations.length
+        violationCount: complianceReport.violations.length,
       });
 
       return {
         configId: architectureConfig.configId,
         complianceReport,
-        runwayComponents: this.solutionArchitectureManagementService.getAllRunwayComponents(),
-        architecturalDecisions: this.solutionArchitectureManagementService.getAllArchitecturalDecisions()
+        runwayComponents:
+          this.solutionArchitectureManagementService.getAllRunwayComponents(),
+        architecturalDecisions:
+          this.solutionArchitectureManagementService.getAllArchitecturalDecisions(),
       };
-
     } catch (error) {
       this.logger.error('Solution architecture management failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('architecture-failed', { error: errorMessage });
       throw error;
     }
@@ -400,19 +419,19 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
     this.logger.info('Tracking cross-ART dependency', {
       fromART: dependency.fromART,
       toART: dependency.toART,
-      type: dependency.type
+      type: dependency.type,
     });
 
     try {
-      const trackedDependency = await this.multiARTCoordinationService.trackDependency(dependency);
+      const trackedDependency =
+        await this.multiARTCoordinationService.trackDependency(dependency);
 
       this.emit('dependency-tracked', {
         dependencyId: trackedDependency.dependencyId,
-        criticality: trackedDependency.criticality
+        criticality: trackedDependency.criticality,
       });
 
       return trackedDependency;
-
     } catch (error) {
       this.logger.error('Dependency tracking failed:', error);
       throw error;
@@ -422,23 +441,27 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
   /**
    * Update dependency status - Delegates to Multi-ART Coordination Service
    */
-  async updateDependencyStatus(dependencyId: string, status: string, actualDeliveryDate?: Date): Promise<any> {
+  async updateDependencyStatus(
+    dependencyId: string,
+    status: string,
+    actualDeliveryDate?: Date
+  ): Promise<any> {
     if (!this.initialized) await this.initialize();
 
     try {
-      const updatedDependency = await this.multiARTCoordinationService.updateDependencyStatus(
-        dependencyId,
-        status,
-        actualDeliveryDate
-      );
+      const updatedDependency =
+        await this.multiARTCoordinationService.updateDependencyStatus(
+          dependencyId,
+          status,
+          actualDeliveryDate
+        );
 
       this.emit('dependency-updated', {
         dependencyId,
-        newStatus: status
+        newStatus: status,
       });
 
       return updatedDependency;
-
     } catch (error) {
       this.logger.error('Dependency status update failed:', error);
       throw error;
@@ -452,15 +475,17 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
     if (!this.initialized) await this.initialize();
 
     try {
-      const architecturalDecision = await this.solutionArchitectureManagementService.makeArchitecturalDecision(decision);
+      const architecturalDecision =
+        await this.solutionArchitectureManagementService.makeArchitecturalDecision(
+          decision
+        );
 
       this.emit('architectural-decision-made', {
         decisionId: architecturalDecision.decisionId,
-        selectedAlternative: architecturalDecision.selectedAlternative.name
+        selectedAlternative: architecturalDecision.selectedAlternative.name,
       });
 
       return architecturalDecision;
-
     } catch (error) {
       this.logger.error('Architectural decision failed:', error);
       throw error;
@@ -477,11 +502,14 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
       solutionId: this.config?.solutionContext.solutionId,
       artCount: this.config?.solutionContext.artCount,
       teamCount: this.config?.solutionContext.teamCount,
-      dependencies: this.multiARTCoordinationService?.getAllDependencies?.() || [],
-      commitments: this.solutionPlanningService?.getAllCommitments?.() || [],
-      risks: this.solutionPlanningService?.getAllRisks?.() || [],
-      architecturalDecisions: this.solutionArchitectureManagementService?.getAllArchitecturalDecisions?.() || [],
-      runwayComponents: this.solutionArchitectureManagementService?.getAllRunwayComponents?.() || []
+      dependencies:
+        this.multiARTCoordinationService?.getAllDependencies?.()'' | '''' | ''[],
+      commitments: this.solutionPlanningService?.getAllCommitments?.()'' | '''' | ''[],
+      risks: this.solutionPlanningService?.getAllRisks?.()'' | '''' | ''[],
+      architecturalDecisions:
+        this.solutionArchitectureManagementService?.getAllArchitecturalDecisions?.()'' | '''' | ''[],
+      runwayComponents:
+        this.solutionArchitectureManagementService?.getAllRunwayComponents?.()'' | '''' | ''[],
     };
   }
 
@@ -497,7 +525,7 @@ export class SolutionTrainEngineerManager extends TypedEventBase {
       complexity: this.config?.solutionContext.complexity,
       strategicImportance: this.config?.solutionContext.strategicImportance,
       initialized: this.initialized,
-      capabilities: this.config?.capabilities
+      capabilities: this.config?.capabilities,
     };
   }
 

@@ -1,13 +1,13 @@
 /**
  * @fileoverview SAFe Framework Integration
- * 
+ *
  * Scaled Agile Framework (SAFe) integration providing:
  * - Portfolio management with lean portfolio management
  * - Program Increment (PI) planning and execution
  * - Value stream mapping and optimization
  * - Epic lifecycle management
  * - Product management coordination
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -25,16 +25,16 @@ export type {
   EpicBlocker,
   EpicBusinessCase,
   EpicOwnerManagerConfig,
-  QualityGate as EpicQualityGate
+  QualityGate as EpicQualityGate,
 } from './types/epic-management';
 
-// Product management types  
+// Product management types
 export type * from './types/product-management';
 
 // SAFe-SPARC Integration Bridge types (only export types that actually exist)
 export type {
   QualityGate as IntegrationQualityGate,
-  QualityGateSettings
+  QualityGateSettings,
 } from './types/integration-bridge';
 
 // Core SAFe types
@@ -43,16 +43,16 @@ export type {
   PortfolioEpic,
   InvestmentHorizon,
   ValueStream,
-  
-  // Program types  
+
+  // Program types
   ProgramIncrement,
   PIObjective,
-  
+
   // Configuration types
   SafeConfiguration,
   PIConfiguration,
   PortfolioConfiguration,
-  
+
   // SAFe Framework entities
   AgileReleaseTrain,
   ARTTeam,
@@ -62,9 +62,9 @@ export type {
   Story,
   Dependency,
   Risk,
-  
+
   // Integration types
-  SAFeIntegrationConfig
+  SAFeIntegrationConfig,
 } from './types';
 
 // ============================================================================
@@ -102,7 +102,7 @@ export { default as SolutionTrainEngineerManager } from './managers/solution-tra
 // Enterprise Architecture Management
 export { default as EnterpriseArchitectureManager } from './managers/enterprise-architecture-manager';
 
-// System Solution Architecture Management  
+// System Solution Architecture Management
 export { default as SystemSolutionArchitectureManager } from './managers/system-solution-architecture-manager';
 
 // DevSecOps Management
@@ -168,21 +168,21 @@ export {
   createSafeTeamKanban,
   portfolioEpicToKanbanTask,
   featureToKanbanTask,
-  storyToKanbanTask
+  storyToKanbanTask,
 } from './integrations/kanban-integration';
 
 export type {
   SafePortfolioKanbanState,
   SafeProgramKanbanState,
   SafeTeamKanbanState,
-  SafeSolutionKanbanState
+  SafeSolutionKanbanState,
 } from './integrations/kanban-integration';
 
 // Database-SPARC Bridge integration
 export { DatabaseSPARCBridge } from './integrations/database-sparc-bridge';
 export type {
   WorkAssignment,
-  ImplementationResult
+  ImplementationResult,
 } from './integrations/database-sparc-bridge';
 
 // ============================================================================

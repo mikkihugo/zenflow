@@ -3,7 +3,7 @@
  *
  * Tests for conversation orchestration using London School TDD (mockist approach)
  * Focus on interactions between orchestrator and its dependencies
- * 
+ *
  * CONVERTED FROM VITEST: Uses Jest mocking and assertions
  */
 

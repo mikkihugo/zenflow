@@ -1,11 +1,11 @@
 /**
  * @fileoverview Complete Intelligence System Implementation
- * 
+ *
  * Stub implementation for the main intelligence system
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { 
+import type {
   IntelligenceSystemConfig,
   IntelligenceSystem,
   AgentId,
@@ -19,7 +19,7 @@ import type {
   EmergentBehaviorPrediction,
   AdaptiveLearningUpdate,
   SystemHealthSummary,
-  ForecastHorizon
+  ForecastHorizon,
 } from './types';
 
 const logger = getLogger('agent-monitoring-intelligence-system');
@@ -68,7 +68,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     };
   }
 
-  getAgentLearningState(agentId: AgentId): AgentLearningState | null {
+  getAgentLearningState(agentId: AgentId): AgentLearningState'' | ''null {
     return null;
   }
 
@@ -80,7 +80,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     logger.debug('Agent performance updated', { agentId: agentId.id, success });
   }
 
-  getAgentHealth(agentId: AgentId): AgentHealth | null {
+  getAgentHealth(agentId: AgentId): AgentHealth'' | ''null {
     return null;
   }
 
@@ -89,7 +89,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     horizon?: ForecastHorizon
   ): Promise<PerformanceOptimizationForecast> {
     return {
-      agentId: { id: 'agent-1', swarmId, type: 'coordinator', instance: 1 },
+      agentId: { id:'agent-1', swarmId, type: 'coordinator', instance: 1 },
       currentPerformance: 0.8,
       predictedPerformance: 0.9,
       optimizationStrategies: [],
@@ -103,8 +103,18 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     patterns: unknown[]
   ): Promise<KnowledgeTransferPrediction> {
     return {
-      sourceAgent: { id: 'source-1', swarmId: sourceSwarm, type: 'researcher', instance: 1 },
-      targetAgent: { id: 'target-1', swarmId: targetSwarm, type: 'coder', instance: 1 },
+      sourceAgent: {
+        id: 'source-1',
+        swarmId: sourceSwarm,
+        type: 'researcher',
+        instance: 1,
+      },
+      targetAgent: {
+        id: 'target-1',
+        swarmId: targetSwarm,
+        type: 'coder',
+        instance: 1,
+      },
       knowledge: 'pattern-knowledge',
       transferProbability: 0.7,
       expectedBenefit: 0.6,
@@ -123,7 +133,12 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
   async updateAdaptiveLearningModels(): Promise<AdaptiveLearningUpdate> {
     return {
-      agentId: { id: 'agent-1', swarmId: 'swarm-1', type: 'optimizer', instance: 1 },
+      agentId: {
+        id: 'agent-1',
+        swarmId: 'swarm-1',
+        type: 'optimizer',
+        instance: 1,
+      },
       learningRate: 0.1,
       adaptationStrategy: 'gradient-based',
       performanceImprovement: 0.05,

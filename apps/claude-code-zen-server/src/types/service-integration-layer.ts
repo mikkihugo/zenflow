@@ -74,7 +74,7 @@ import type {
   WorkflowExecution,
   WorkflowMetrics,
   ExecutionResult,
-} from '@claude-zen/enterprise');
+} from '@claude-zen/enterprise';
 import type {
   Logger,
   Result,
@@ -82,14 +82,14 @@ import type {
   ValidationError,
   DatabaseError,
   SystemError,
-} from '@claude-zen/foundation/types');
+} from '@claude-zen/foundation/types';
 
 // Brain Domain Types - Layer 2 neural coordination
 import type {
   SwarmConfiguration,
   BrainMetrics,
   SwarmIntelligence,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Workflow Domain Types - Layer 2 process orchestration
 
@@ -192,7 +192,7 @@ export interface ServiceContext {
  */
 export interface TranslationError extends ServiceError {
   code: 'TRANSLATION_ERROR');
-  layer: 'api-to-domain | domain-to-api');
+  layer: 'api-to-domain'' | ''domain-to-api');
   originalError?: any;
 }
 
@@ -571,7 +571,7 @@ export interface SystemServiceIntegration {
    */
   getLLMAnalytics(
     options: {
-      timeRange?: '1h | 24h' | '7d | 30d');
+      timeRange?: '1h'' | ''24h'' | ''7d'' | ''30d');
       provider?: string;
     },
     context: ServiceContext
@@ -688,7 +688,7 @@ export interface ErrorTranslationService {
   translateServiceResult<TDomain, TApi>(
     result: ServiceResult<TDomain>,
     successMapper: (data: TDomain) => TApi
-  ): ApiResponse<TApi> | ApiErrorResponse;
+  ): ApiResponse<TApi>' | 'ApiErrorResponse;
 
   /**
    * Create Validation Error Response
@@ -754,7 +754,7 @@ export const SERVICE_INTEGRATION_CONSTANTS = {
 
   // Error codes
   ERROR_CODES: {
-    TRANSLATION_ERROR: 'TRANSLATION_ERROR',
+    TRANSLATION_ERROR:'TRANSLATION_ERROR',
     VALIDATION_TRANSLATION_ERROR: 'VALIDATION_TRANSLATION_ERROR',
     DOMAIN_SERVICE_ERROR: 'DOMAIN_SERVICE_ERROR',
     API_CONTRACT_VIOLATION: 'API_CONTRACT_VIOLATION',

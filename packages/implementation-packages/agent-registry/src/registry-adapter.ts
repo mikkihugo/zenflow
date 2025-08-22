@@ -55,10 +55,10 @@
  * ```
  */
 
-import { 
+import {
   createServiceContainer,
   getLogger,
-  type Logger
+  type Logger,
 } from '@claude-zen/foundation';
 import { TypedEventBase } from '@claude-zen/foundation';
 import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
@@ -121,7 +121,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
     this.container = createServiceContainer(this.options.containerName, {
       healthCheckFrequency: 30000,
       autoCleanup: true,
-      persistentStorage: true
+      persistentStorage: true,
     });
     this.logger = getLogger(`registry-adapter:${this.options.containerName}`);
 
@@ -130,7 +130,9 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
     }
 
     if (this.options.enableMigrationLogging) {
-      this.logger.info('Registry adapter initialized with ServiceContainer backend');
+      this.logger.info(
+        'Registry adapter initialized with ServiceContainer backend'
+      );
     }
   }
 
@@ -236,11 +238,13 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
     const result = this.container.registerService(
       agent.id,
       AgentService,
-      registrationOptions,
+      registrationOptions
     );
 
     if (result.isErr()) {
-      throw new Error(`Failed to register agent ${agent.id}: ${result.error.message}`);
+      throw new Error(
+        `Failed to register agent ${agent.id}: ${result.error.message}`
+      );
     }
 
     // Store for legacy compatibility
@@ -269,7 +273,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
       status?: string;
       metrics?: UnknownRecord;
       capabilities?: UnknownRecord;
-    },
+    }
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (agent) {
@@ -289,15 +293,17 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
   /**
    * Query agents matching criteria
    */
-  async queryAgents(query: {
-    type?: string;
-    status?: string;
-    namePattern?: string;
-    capabilities?: string[];
-  } = {}): Promise<JsonValue[]> {
-    const agents = Array.from(this.agents.values());
+  async queryAgents(
+    query: {
+      type?: string;
+      status?: string;
+      namePattern?: string;
+      capabilities?: string[];
+    } = {}
+  ): Promise<JsonValue[]> {
+    const agents = Array.from(this.agents.values())();
 
-    return agents.filter(agent => {
+    return agents.filter((agent) => {
       if (query.type && agent.type !== query.type) {
         return false;
       }
@@ -311,8 +317,8 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
         }
       }
       if (query.capabilities) {
-        const hasCapabilities = query.capabilities.every(cap =>
-          this.agentHasCapability(agent, cap),
+        const hasCapabilities = query.capabilities.every((cap) =>
+          this.agentHasCapability(agent, cap)
         );
         if (!hasCapabilities) {
           return false;
@@ -341,26 +347,28 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
     let filteredAgents = agents;
 
     if (criteria.excludeAgents) {
-      filteredAgents = agents.filter(agent =>
-        !criteria.excludeAgents!.includes(agent.id),
+      filteredAgents = agents.filter(
+        (agent) => !criteria.excludeAgents!.includes(agent.id)
       );
     }
 
     // Simple sorting by performance metrics
     filteredAgents.sort((a, b) => {
-      const aScore = (a.metrics?.successRate || 0.5) * (1 - (a.metrics?.loadFactor || 0.5));
-      const bScore = (b.metrics?.successRate || 0.5) * (1 - (b.metrics?.loadFactor || 0.5));
+      const aScore =
+        (a.metrics?.successRate'' | '''' | ''0.5) * (1 - (a.metrics?.loadFactor'' | '''' | ''0.5));
+      const bScore =
+        (b.metrics?.successRate'' | '''' | ''0.5) * (1 - (b.metrics?.loadFactor'' | '''' | ''0.5));
       return bScore - aScore;
     });
 
-    const maxResults = criteria.maxResults || 3;
+    const maxResults = criteria.maxResults'' | '''' | ''3;
     return filteredAgents.slice(0, maxResults);
   }
 
   /**
    * Get agent by ID
    */
-  getAgent(agentId: string): JsonValue | undefined {
+  getAgent(agentId: string): JsonValue'' | ''undefined {
     return this.agents.get(agentId);
   }
 
@@ -368,40 +376,53 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
    * Get all registered agents
    */
   getAllAgents(): JsonValue[] {
-    return Array.from(this.agents.values());
+    return Array.from(this.agents.values())();
   }
 
   /**
    * Get agents by type
    */
   getAgentsByType(type: string): JsonValue[] {
-    return Array.from(this.agents.values()).filter(agent => agent.type === type);
+    return Array.from(this.agents.values()).filter(
+      (agent) => agent.type === type
+    );
   }
 
   /**
    * Get registry statistics (enhanced with ServiceContainer benefits)
    */
   getStats(): JsonObject {
-    const agents = Array.from(this.agents.values());
+    const agents = Array.from(this.agents.values())();
     const serviceStats = this.container.getStats();
 
-    const byType = agents.reduce((acc, agent) => {
-      acc[agent.type] = (acc[agent.type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const byType = agents.reduce(
+      (acc, agent) => {
+        acc[agent.type] = (acc[agent.type]'' | '''' | ''0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const byStatus = agents.reduce((acc, agent) => {
-      acc[agent.status] = (acc[agent.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const byStatus = agents.reduce(
+      (acc, agent) => {
+        acc[agent.status] = (acc[agent.status]'' | '''' | ''0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalAgents: agents.length,
       agentsByType: byType,
       agentsByStatus: byStatus,
-      averageLoadFactor: agents.reduce((sum, a) => sum + (a.metrics?.loadFactor || 0), 0) / agents.length || 0,
-      averageHealth: agents.reduce((sum, a) => sum + (a.health || 1), 0) / agents.length || 0,
-      averageSuccessRate: agents.reduce((sum, a) => sum + (a.metrics?.successRate || 0.5), 0) / agents.length || 0,
+      averageLoadFactor:
+        agents.reduce((sum, a) => sum + (a.metrics?.loadFactor'' | '''' | ''0), 0) /
+          agents.length'' | '''' | ''0,
+      averageHealth:
+        agents.reduce((sum, a) => sum + (a.health'' | '''' | ''1), 0) / agents.length'' | '''' | ''0,
+      averageSuccessRate:
+        agents.reduce((sum, a) => sum + (a.metrics?.successRate'' | '''' | ''0.5), 0) /
+          agents.length'' | '''' | ''0,
       // Enhanced with ServiceContainer stats
       serviceContainerStats: serviceStats,
       migrationStats: this.getMigrationStats(),
@@ -410,8 +431,11 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
   // Initialize with existing AgentRegistry compatibility
   async initialize(): Promise<void> {
-    this.logger.info('AgentRegistryAdapter initialized with ServiceContainer backend');
-    this.emitMigrationEvent('initialized', { containerName: this.container.getName() });
+    this.logger.info('AgentRegistryAdapter initialized with ServiceContainer backend'
+    );
+    this.emitMigrationEvent('initialized', {
+      containerName: this.container.getName(),
+    });
   }
 
   async shutdown(): Promise<void> {
@@ -443,12 +467,10 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
   }
 
   private agentHasCapability(agent: JsonValue, capability: string): boolean {
-    const capabilities = agent.capabilities || {};
+    const capabilities = agent.capabilities'' | '''' | ''{};
     return (
-      (capabilities.languages && capabilities.languages.includes(capability)) ||
-      (capabilities.frameworks && capabilities.frameworks.includes(capability)) ||
-      (capabilities.domains && capabilities.domains.includes(capability)) ||
-      (capabilities.tools && capabilities.tools.includes(capability))
+      (capabilities.languages && capabilities.languages.includes(capability))'' | '''' | ''(capabilities.frameworks &&
+        capabilities.frameworks.includes(capability))'' | '''' | ''(capabilities.domains && capabilities.domains.includes(capability))'' | '''' | ''(capabilities.tools && capabilities.tools.includes(capability))
     );
   }
 }
@@ -461,7 +483,7 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
 
   constructor(options: RegistryAdapterOptions = {}) {
     super({
-      containerName: 'service-registry',
+      containerName:'service-registry',
       ...options,
     });
   }
@@ -472,16 +494,18 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
   register<T>(
     name: string,
     implementation: new (...args: unknown[]) => T,
-    options: ServiceRegistrationOptions = {},
+    options: ServiceRegistrationOptions = {}
   ): void {
     const result = this.container.registerService(name, implementation, {
       lifetime: Lifetime.SINGLETON,
-      capabilities: options.capabilities || [],
+      capabilities: options.capabilities'' | '''' | ''[],
       ...options,
     });
 
     if (result.isErr()) {
-      throw new Error(`Failed to register service ${name}: ${result.error.message}`);
+      throw new Error(
+        `Failed to register service ${name}: ${result.error.message}`
+      );
     }
 
     this.services.set(name, implementation);
@@ -495,7 +519,9 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
     const result = this.container.registerInstance(name, instance);
 
     if (result.isErr()) {
-      throw new Error(`Failed to register instance ${name}: ${result.error.message}`);
+      throw new Error(
+        `Failed to register instance ${name}: ${result.error.message}`
+      );
     }
 
     this.services.set(name, instance);
@@ -508,7 +534,9 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
     const result = this.container.resolve<T>(name);
 
     if (result.isErr()) {
-      throw new Error(`Failed to resolve service ${name}: ${result.error.message}`);
+      throw new Error(
+        `Failed to resolve service ${name}: ${result.error.message}`
+      );
     }
 
     return result.value;
@@ -539,7 +567,7 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
    * Get service names
    */
   getServiceNames(): string[] {
-    return Array.from(this.services.keys());
+    return Array.from(this.services.keys())();
   }
 
   /**
@@ -567,7 +595,7 @@ export class RegistryMigrationUtil {
   static async migrateRegistry<T extends BaseRegistryAdapter>(
     oldRegistry: any,
     AdapterClass: new (options?: RegistryAdapterOptions) => T,
-    options: RegistryAdapterOptions = {},
+    options: RegistryAdapterOptions = {}
   ): Promise<T> {
     const startTime = Date.now();
     const adapter = new AdapterClass(options);
@@ -579,11 +607,13 @@ export class RegistryMigrationUtil {
         // Use type-safe method call based on adapter type
         if ('register' in adapter && typeof adapter.register === 'function') {
           (adapter as UnknownRecord)['register'](service.id, service, {
-            lifetime: service.lifetime || Lifetime.SINGLETON,
-            capabilities: service.capabilities || [],
-            metadata: service.metadata || {},
+            lifetime: service.lifetime'' | '''' | ''Lifetime.SINGLETON,
+            capabilities: service.capabilities'' | '''' | ''[],
+            metadata: service.metadata'' | '''' | ''{},
           });
-        } else if ('registerAgent' in adapter && typeof adapter.registerAgent === 'function') {
+        } else if ('registerAgent' in adapter &&
+          typeof adapter.registerAgent === 'function'
+        ) {
           await adapter.registerAgent(service);
         }
       }
@@ -613,16 +643,19 @@ export class RegistryMigrationUtil {
   static async performanceComparison(
     oldRegistry: any,
     newAdapter: BaseRegistryAdapter,
-    testOperations: Array<() => Promise<JsonValue>>,
+    testOperations: Array<() => Promise<JsonValue>>
   ): Promise<{
     oldPerformance: number;
     newPerformance: number;
     improvement: number;
   }> {
-    const runTest = async (_registry: UnknownRecord, operations: Array<() => Promise<JsonValue>>): Promise<number> => {
+    const runTest = async (
+      _registry: UnknownRecord,
+      operations: Array<() => Promise<JsonValue>>
+    ): Promise<number> => {
       const start = Date.now();
       // Run operations in context of provided registry
-      await Promise.all(operations.map(op => op()));
+      await Promise.all(operations.map((op) => op()));
       return Date.now() - start;
     };
 
@@ -632,7 +665,8 @@ export class RegistryMigrationUtil {
     // Test new adapter performance
     const newPerformance = await runTest(newAdapter, testOperations);
 
-    const improvement = ((oldPerformance - newPerformance) / oldPerformance) * 100;
+    const improvement =
+      ((oldPerformance - newPerformance) / oldPerformance) * 100;
 
     this.logger.info('Performance comparison completed', {
       oldPerformance: `${oldPerformance}ms`,
@@ -651,11 +685,15 @@ export class RegistryMigrationUtil {
 /**
  * Factory functions for quick adapter creation
  */
-export function createAgentRegistryAdapter(options?: RegistryAdapterOptions): AgentRegistryAdapter {
+export function createAgentRegistryAdapter(
+  options?: RegistryAdapterOptions
+): AgentRegistryAdapter {
   return new AgentRegistryAdapter(options);
 }
 
-export function createServiceRegistryAdapter(options?: RegistryAdapterOptions): ServiceRegistryAdapter {
+export function createServiceRegistryAdapter(
+  options?: RegistryAdapterOptions
+): ServiceRegistryAdapter {
   return new ServiceRegistryAdapter(options);
 }
 
@@ -665,12 +703,15 @@ export function createServiceRegistryAdapter(options?: RegistryAdapterOptions): 
 export function replaceRegistry<T>(
   existingRegistry: UnknownRecord,
   AdapterClass: new (options?: RegistryAdapterOptions) => T,
-  options?: RegistryAdapterOptions,
+  options?: RegistryAdapterOptions
 ): T {
   const adapter = new AdapterClass(options);
 
   // Copy any existing data if possible
-  if (existingRegistry && typeof existingRegistry['getAllServices'] === 'function') {
+  if (
+    existingRegistry &&
+    typeof existingRegistry['getAllServices'] === 'function'
+  ) {
     // Migration logic would go here
   }
 

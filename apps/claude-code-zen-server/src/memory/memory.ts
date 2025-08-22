@@ -5,7 +5,7 @@
  * persistent data management, and intelligent caching capabilities.
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('MemorySystem');
 
@@ -51,7 +51,7 @@ export interface MemoryConfig {
   /** Cleanup interval in milliseconds */
   cleanupInterval?: number;
   /** Persistence backend */
-  persistenceBackend?: 'memory | file' | 'database');
+  persistenceBackend?: 'memory'' | ''file'' | ''database');
 }
 
 export interface SessionMemory {
@@ -137,7 +137,7 @@ export class MemoryStore extends TypedEventBase {
   /**
    * Retrieve a value from memory
    */
-  async get(key: string): Promise<unknown | null> {
+  async get(key: string): Promise<unknown'' | ''null> {
     const entry = this.entries.get(key);
 
     if (!entry) {
@@ -265,11 +265,11 @@ export class MemoryStore extends TypedEventBase {
   }
 
   private async evictOldest(): Promise<void> {
-    let oldestKey: string | null = null;
+    let oldestKey: string'' | ''null = null;
     let oldestTime = Date.now();
 
     for (const [key, entry] of this.entries?.entries) {
-      if (entry.lastAccessedAt?.getTime < oldestTime) {
+      if (entry.lastAccessedAt?.getTime() < oldestTime) {
         oldestTime = entry.lastAccessedAt?.getTime()
         oldestKey = key;
       }
@@ -299,7 +299,7 @@ export class SessionMemoryStore extends TypedEventBase {
 
   constructor(memoryStore?: MemoryStore) {
     super();
-    this.memoryStore = memoryStore || new MemoryStore();
+    this.memoryStore = memoryStore'' | '''' | ''new MemoryStore();
   }
 
   /**
@@ -331,14 +331,14 @@ export class SessionMemoryStore extends TypedEventBase {
   /**
    * Get session data
    */
-  async getSession(sessionId: string): Promise<SessionMemory | null> {
+  async getSession(sessionId: string): Promise<SessionMemory'' | ''null> {
     const session = this.sessions.get(sessionId);
 
     if (!session) {
       // Try to restore from memory store
       const stored = (await this.memoryStore.get(
         `session:${sessionId}`
-      )) as SessionMemory | null;
+      )) as SessionMemory'' | ''null;
       if (stored) {
         this.sessions.set(sessionId, stored);
         return stored;

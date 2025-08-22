@@ -91,5 +91,5 @@ export const NEURAL_PRESETS: NeuralPresetMap = {
     learningRate: 0.001,
     batchSize: 32,
     useCase: ['data_generation', 'anomaly_detection'],
-  }
+  },
 };

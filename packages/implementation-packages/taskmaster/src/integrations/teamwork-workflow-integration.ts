@@ -1,20 +1,20 @@
 /**
  * @fileoverview Teamwork-Workflow Integration - Conversation-Driven Workflow Orchestration
- * 
+ *
  * **CONVERSATION-DRIVEN WORKFLOW AUTOMATION:**
- * 
+ *
  * 🔄 **WORKFLOW TRIGGERS FROM CONVERSATIONS:**
  * - ART Sync decisions trigger dependency resolution workflows
- * - PI Planning commitments trigger capacity allocation workflows  
+ * - PI Planning commitments trigger capacity allocation workflows
  * - System Demo feedback triggers improvement workflows
  * - I&A workshop outcomes trigger process improvement workflows
- * 
+ *
  * 🤖 **AUTOMATED WORKFLOW ORCHESTRATION:**
  * - Conversation decisions automatically start workflows
  * - Workflow progress feeds back into conversations
  * - Human approval gates embedded in workflow steps
  * - Real-time workflow status in conversation context
- * 
+ *
  * 🎯 **SAFЕ-SPECIFIC WORKFLOW PATTERNS:**
  * - Cross-team dependency resolution workflows
  * - Feature acceptance and deployment workflows
@@ -23,8 +23,15 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { WorkflowEngine, WorkflowDefinition, WorkflowContext } from '@claude-zen/workflows';
-import type { ConversationOrchestrator, ConversationOutcome } from '@claude-zen/teamwork';
+import type {
+  WorkflowEngine,
+  WorkflowDefinition,
+  WorkflowContext,
+} from '@claude-zen/workflows';
+import type {
+  ConversationOrchestrator,
+  ConversationOutcome,
+} from '@claude-zen/teamwork';
 import type { ApprovalWorkflow, ApprovalGate } from '../core/approval-gates';
 
 const logger = getLogger('TeamworkWorkflowIntegration');
@@ -44,11 +51,11 @@ export interface ConversationTriggeredWorkflow {
 }
 
 export interface ConversationWorkflowTrigger {
-  triggerType: 'decision_reached' | 'consensus_achieved' | 'escalation_needed' | 'completion';
+  triggerType:'' | '''decision_reached | consensus_achieved' | 'escalation_needed''' | '''completion';
   conditions: {
     decisionType?: string;
     participantConsensus?: number; // 0-1
-    urgencyLevel?: 'low' | 'medium' | 'high' | 'critical';
+    urgencyLevel?: 'low | medium' | 'high''' | '''critical';
     conversationDuration?: number; // minutes
   };
   autoTrigger: boolean;
@@ -58,7 +65,7 @@ export interface ConversationWorkflowTrigger {
 export interface WorkflowConversationUpdate {
   workflowId: string;
   conversationId: string;
-  updateType: 'progress' | 'completion' | 'approval_needed' | 'error';
+  updateType: 'progress | completion' | 'approval_needed''' | '''error';
   data: any;
   requiresHumanInput: boolean;
 }
@@ -68,9 +75,10 @@ export interface WorkflowConversationUpdate {
 // ============================================================================
 
 export class TeamworkWorkflowIntegration {
-  private workflowEngine: WorkflowEngine | null = null;
-  private conversationOrchestrator: ConversationOrchestrator | null = null;
-  private activeIntegrations: Map<string, ConversationTriggeredWorkflow> = new Map();
+  private workflowEngine: WorkflowEngine'' | ''null = null;
+  private conversationOrchestrator: ConversationOrchestrator'' | ''null = null;
+  private activeIntegrations: Map<string, ConversationTriggeredWorkflow> =
+    new Map();
   private conversationWorkflowMappings: Map<string, string[]> = new Map(); // conversation -> workflows
 
   constructor() {
@@ -89,7 +97,7 @@ export class TeamworkWorkflowIntegration {
 
     // Register SAFe-specific workflow patterns
     await this.registerSAFeWorkflowPatterns();
-    
+
     logger.info('TeamworkWorkflowIntegration initialized with SAFe patterns');
   }
 
@@ -100,11 +108,14 @@ export class TeamworkWorkflowIntegration {
     conversationWorkflow: ConversationTriggeredWorkflow
   ): Promise<void> {
     this.activeIntegrations.set(conversationWorkflow.id, conversationWorkflow);
-    
-    logger.info(`Registered conversation workflow: ${conversationWorkflow.name}`, {
-      conversationType: conversationWorkflow.conversationType,
-      autoTrigger: conversationWorkflow.trigger.autoTrigger
-    });
+
+    logger.info(
+      `Registered conversation workflow: ${conversationWorkflow.name}`,
+      {
+        conversationType: conversationWorkflow.conversationType,
+        autoTrigger: conversationWorkflow.trigger.autoTrigger,
+      }
+    );
   }
 
   /**
@@ -115,12 +126,13 @@ export class TeamworkWorkflowIntegration {
     conversationType: string,
     outcome: ConversationOutcome
   ): Promise<{ triggeredWorkflows: string[]; approvalGates: ApprovalGate[] }> {
-    
-    const applicableWorkflows = Array.from(this.activeIntegrations.values())
-      .filter(cw => 
-        cw.conversationType === conversationType && 
+    const applicableWorkflows = Array.from(
+      this.activeIntegrations.values()
+    ).filter(
+      (cw) =>
+        cw.conversationType === conversationType &&
         this.evaluateTriggerConditions(cw.trigger, outcome)
-      );
+    );
 
     const triggeredWorkflows: string[] = [];
     const approvalGates: ApprovalGate[] = [];
@@ -131,18 +143,24 @@ export class TeamworkWorkflowIntegration {
           conversationId,
           conversationOutcome: outcome,
           triggerTimestamp: new Date().toISOString(),
-          participants: outcome.participants || [],
-          decisions: outcome.decisions || [],
+          participants: outcome.participants'' | '''' | ''[],
+          decisions: outcome.decisions'' | '''' | ''[],
           metadata: {
             conversationType,
-            workflowType: 'conversation_triggered',
-            safeEvent: this.determineSAFeEventType(conversationType)
-          }
+            workflowType:'conversation_triggered',
+            safeEvent: this.determineSAFeEventType(conversationType),
+          },
         };
 
         // Start workflow if conditions met
-        if (workflowDef.trigger.autoTrigger && !workflowDef.trigger.requiresApproval) {
-          const workflowId = await this.startWorkflow(workflowDef, workflowContext);
+        if (
+          workflowDef.trigger.autoTrigger &&
+          !workflowDef.trigger.requiresApproval
+        ) {
+          const workflowId = await this.startWorkflow(
+            workflowDef,
+            workflowContext
+          );
           triggeredWorkflows.push(workflowId);
         } else {
           // Create approval gate for manual workflow trigger
@@ -154,10 +172,13 @@ export class TeamworkWorkflowIntegration {
         }
 
         // Map conversation to workflow for future updates
-        const existingWorkflows = this.conversationWorkflowMappings.get(conversationId) || [];
+        const existingWorkflows =
+          this.conversationWorkflowMappings.get(conversationId)'' | '''' | ''[];
         existingWorkflows.push(workflowDef.id);
-        this.conversationWorkflowMappings.set(conversationId, existingWorkflows);
-
+        this.conversationWorkflowMappings.set(
+          conversationId,
+          existingWorkflows
+        );
       } catch (error) {
         logger.error(`Failed to process workflow ${workflowDef.name}`, error);
       }
@@ -175,24 +196,27 @@ export class TeamworkWorkflowIntegration {
     if (!this.conversationOrchestrator) return;
 
     const message = this.generateWorkflowUpdateMessage(update);
-    
+
     // Send workflow update to conversation
     await this.conversationOrchestrator.sendMessage({
       conversationId: update.conversationId,
-      sender: 'workflow_system',
+      sender:'workflow_system',
       message: message.content,
       messageType: message.type,
       metadata: {
         workflowId: update.workflowId,
         updateType: update.updateType,
-        requiresHumanInput: update.requiresHumanInput
-      }
+        requiresHumanInput: update.requiresHumanInput,
+      },
     });
 
-    logger.info(`Updated conversation ${update.conversationId} with workflow progress`, {
-      workflowId: update.workflowId,
-      updateType: update.updateType
-    });
+    logger.info(
+      `Updated conversation ${update.conversationId} with workflow progress`,
+      {
+        workflowId: update.workflowId,
+        updateType: update.updateType,
+      }
+    );
   }
 
   // ============================================================================
@@ -203,7 +227,6 @@ export class TeamworkWorkflowIntegration {
    * Register built-in SAFe workflow patterns
    */
   private async registerSAFeWorkflowPatterns(): Promise<void> {
-    
     // ART Sync Dependency Resolution Workflow
     await this.registerConversationWorkflow({
       id: 'art-sync-dependency-resolution',
@@ -213,14 +236,14 @@ export class TeamworkWorkflowIntegration {
         triggerType: 'decision_reached',
         conditions: {
           decisionType: 'dependency_resolution',
-          participantConsensus: 0.8
+          participantConsensus: 0.8,
         },
         autoTrigger: true,
-        requiresApproval: false
+        requiresApproval: false,
       },
       workflowDefinition: this.createDependencyResolutionWorkflow(),
       approvalGateIntegration: true,
-      realTimeUpdates: true
+      realTimeUpdates: true,
     });
 
     // PI Planning Commitment Workflow
@@ -232,14 +255,14 @@ export class TeamworkWorkflowIntegration {
         triggerType: 'consensus_achieved',
         conditions: {
           decisionType: 'pi_commitment',
-          participantConsensus: 0.9
+          participantConsensus: 0.9,
         },
         autoTrigger: true,
-        requiresApproval: false
+        requiresApproval: false,
       },
       workflowDefinition: this.createPICommitmentWorkflow(),
       approvalGateIntegration: true,
-      realTimeUpdates: true
+      realTimeUpdates: true,
     });
 
     // System Demo Improvement Workflow
@@ -251,14 +274,14 @@ export class TeamworkWorkflowIntegration {
         triggerType: 'decision_reached',
         conditions: {
           decisionType: 'improvement_required',
-          urgencyLevel: 'high'
+          urgencyLevel: 'high',
         },
         autoTrigger: false,
-        requiresApproval: true
+        requiresApproval: true,
       },
       workflowDefinition: this.createImprovementWorkflow(),
       approvalGateIntegration: true,
-      realTimeUpdates: true
+      realTimeUpdates: true,
     });
 
     // Inspect & Adapt Process Improvement Workflow
@@ -269,14 +292,14 @@ export class TeamworkWorkflowIntegration {
       trigger: {
         triggerType: 'completion',
         conditions: {
-          decisionType: 'process_improvement'
+          decisionType: 'process_improvement',
         },
         autoTrigger: false,
-        requiresApproval: true
+        requiresApproval: true,
       },
       workflowDefinition: this.createProcessImprovementWorkflow(),
       approvalGateIntegration: true,
-      realTimeUpdates: true
+      realTimeUpdates: true,
     });
 
     logger.info('Registered SAFe-specific workflow patterns');
@@ -290,7 +313,8 @@ export class TeamworkWorkflowIntegration {
       id: 'dependency-resolution-workflow',
       name: 'Cross-Team Dependency Resolution',
       version: '1.0.0',
-      description: 'Automated workflow for resolving cross-team dependencies identified in ART Sync',
+      description:
+        'Automated workflow for resolving cross-team dependencies identified in ART Sync',
       steps: [
         {
           id: 'analyze-dependency',
@@ -300,7 +324,7 @@ export class TeamworkWorkflowIntegration {
           inputs: ['dependency_details', 'team_capacity'],
           outputs: ['impact_assessment', 'resolution_options'],
           timeout: 3600000, // 1 hour
-          retryPolicy: { maxRetries: 2, backoffMs: 30000 }
+          retryPolicy: { maxRetries: 2, backoffMs: 30000 },
         },
         {
           id: 'create-resolution-plan',
@@ -310,7 +334,7 @@ export class TeamworkWorkflowIntegration {
           inputs: ['impact_assessment', 'resolution_options'],
           outputs: ['resolution_plan', 'timeline'],
           timeout: 1800000, // 30 minutes
-          approvalRequired: true
+          approvalRequired: true,
         },
         {
           id: 'coordinate-implementation',
@@ -325,18 +349,21 @@ export class TeamworkWorkflowIntegration {
                   id: 'allocate-capacity',
                   name: 'Allocate Team Capacity',
                   type: 'approval_gate',
-                  approvalCriteria: ['capacity_available', 'priority_justified'],
+                  approvalCriteria: [
+                    'capacity_available',
+                    'priority_justified',
+                  ],
                   approvers: ['provider_team_lead'],
-                  timeout: 1800000
+                  timeout: 1800000,
                 },
                 {
                   id: 'implement-dependency',
                   name: 'Implement Dependency',
                   type: 'task',
                   action: 'implement_dependency_solution',
-                  timeout: 86400000 // 24 hours
-                }
-              ]
+                  timeout: 86400000, // 24 hours
+                },
+              ],
             },
             {
               id: 'consumer-team-tasks',
@@ -347,11 +374,11 @@ export class TeamworkWorkflowIntegration {
                   name: 'Prepare for Integration',
                   type: 'task',
                   action: 'prepare_dependency_integration',
-                  timeout: 3600000 // 1 hour
-                }
-              ]
-            }
-          ]
+                  timeout: 3600000, // 1 hour
+                },
+              ],
+            },
+          ],
         },
         {
           id: 'validate-resolution',
@@ -359,25 +386,25 @@ export class TeamworkWorkflowIntegration {
           type: 'approval_gate',
           approvalCriteria: ['dependency_satisfied', 'integration_tested'],
           approvers: ['consumer_team_lead', 'provider_team_lead'],
-          timeout: 3600000
+          timeout: 3600000,
         },
         {
           id: 'update-conversation',
           name: 'Update ART Sync Conversation',
           type: 'notification',
           action: 'update_conversation_with_resolution',
-          inputs: ['resolution_status', 'timeline', 'outcomes']
-        }
+          inputs: ['resolution_status', 'timeline', 'outcomes'],
+        },
       ],
       errorHandling: {
         onError: 'escalate_to_rte',
-        escalationTimeout: 1800000
+        escalationTimeout: 1800000,
       },
       notifications: {
         onStart: ['conversation_participants'],
         onCompletion: ['conversation_participants', 'rte'],
-        onError: ['rte', 'system_admins']
-      }
+        onError: ['rte', 'system_admins'],
+      },
     };
   }
 
@@ -389,7 +416,8 @@ export class TeamworkWorkflowIntegration {
       id: 'pi-commitment-workflow',
       name: 'PI Objective Commitment Process',
       version: '1.0.0',
-      description: 'Workflow for formalizing PI objective commitments from team planning sessions',
+      description:
+        'Workflow for formalizing PI objective commitments from team planning sessions',
       steps: [
         {
           id: 'validate-objectives',
@@ -397,16 +425,20 @@ export class TeamworkWorkflowIntegration {
           type: 'task',
           action: 'validate_pi_objectives',
           inputs: ['objectives', 'team_capacity', 'dependencies'],
-          outputs: ['validation_results', 'risk_assessment']
+          outputs: ['validation_results', 'risk_assessment'],
         },
         {
           id: 'confidence-assessment',
           name: 'Team Confidence Assessment',
           type: 'approval_gate',
-          approvalCriteria: ['objectives_realistic', 'capacity_adequate', 'dependencies_manageable'],
+          approvalCriteria: [
+            'objectives_realistic',
+            'capacity_adequate',
+            'dependencies_manageable',
+          ],
           approvers: ['team_members'],
           timeout: 1800000,
-          metadata: { confidenceVoting: true }
+          metadata: { confidenceVoting: true },
         },
         {
           id: 'formal-commitment',
@@ -414,14 +446,18 @@ export class TeamworkWorkflowIntegration {
           type: 'approval_gate',
           approvalCriteria: ['team_consensus', 'stakeholder_alignment'],
           approvers: ['product_owner', 'scrum_master'],
-          timeout: 1800000
+          timeout: 1800000,
         },
         {
           id: 'register-commitment',
           name: 'Register PI Commitment',
           type: 'task',
           action: 'register_pi_commitment',
-          inputs: ['validated_objectives', 'team_commitment', 'confidence_vote']
+          inputs: [
+            'validated_objectives',
+            'team_commitment',
+            'confidence_vote',
+          ],
         },
         {
           id: 'setup-tracking',
@@ -429,9 +465,9 @@ export class TeamworkWorkflowIntegration {
           type: 'task',
           action: 'setup_pi_tracking',
           inputs: ['committed_objectives'],
-          outputs: ['tracking_dashboard', 'milestone_schedule']
-        }
-      ]
+          outputs: ['tracking_dashboard', 'milestone_schedule'],
+        },
+      ],
     };
   }
 
@@ -443,7 +479,8 @@ export class TeamworkWorkflowIntegration {
       id: 'improvement-workflow',
       name: 'Feature Improvement Implementation',
       version: '1.0.0',
-      description: 'Workflow for implementing improvements based on system demo feedback',
+      description:
+        'Workflow for implementing improvements based on system demo feedback',
       steps: [
         {
           id: 'analyze-feedback',
@@ -451,7 +488,7 @@ export class TeamworkWorkflowIntegration {
           type: 'task',
           action: 'analyze_demo_feedback',
           inputs: ['feedback_items', 'stakeholder_priorities'],
-          outputs: ['improvement_requirements', 'priority_ranking']
+          outputs: ['improvement_requirements', 'priority_ranking'],
         },
         {
           id: 'estimate-effort',
@@ -459,7 +496,7 @@ export class TeamworkWorkflowIntegration {
           type: 'task',
           action: 'estimate_improvement_effort',
           inputs: ['improvement_requirements'],
-          outputs: ['effort_estimate', 'implementation_plan']
+          outputs: ['effort_estimate', 'implementation_plan'],
         },
         {
           id: 'prioritize-improvements',
@@ -467,16 +504,16 @@ export class TeamworkWorkflowIntegration {
           type: 'approval_gate',
           approvalCriteria: ['business_value_justified', 'effort_reasonable'],
           approvers: ['product_owner', 'business_stakeholder'],
-          timeout: 86400000 // 24 hours
+          timeout: 86400000, // 24 hours
         },
         {
           id: 'schedule-implementation',
           name: 'Schedule Implementation',
           type: 'task',
           action: 'schedule_improvement_work',
-          inputs: ['prioritized_improvements', 'team_capacity']
-        }
-      ]
+          inputs: ['prioritized_improvements', 'team_capacity'],
+        },
+      ],
     };
   }
 
@@ -488,7 +525,8 @@ export class TeamworkWorkflowIntegration {
       id: 'process-improvement-workflow',
       name: 'Process Improvement Implementation',
       version: '1.0.0',
-      description: 'Workflow for implementing process improvements from I&A workshops',
+      description:
+        'Workflow for implementing process improvements from I&A workshops',
       steps: [
         {
           id: 'validate-improvements',
@@ -496,7 +534,7 @@ export class TeamworkWorkflowIntegration {
           type: 'task',
           action: 'validate_process_improvements',
           inputs: ['improvement_proposals', 'current_process_metrics'],
-          outputs: ['validated_improvements', 'impact_assessment']
+          outputs: ['validated_improvements', 'impact_assessment'],
         },
         {
           id: 'plan-implementation',
@@ -504,15 +542,19 @@ export class TeamworkWorkflowIntegration {
           type: 'task',
           action: 'plan_process_implementation',
           inputs: ['validated_improvements'],
-          outputs: ['implementation_plan', 'success_criteria', 'rollback_plan']
+          outputs: ['implementation_plan', 'success_criteria', 'rollback_plan'],
         },
         {
           id: 'approve-changes',
           name: 'Approve Process Changes',
           type: 'approval_gate',
-          approvalCriteria: ['improvement_justified', 'plan_viable', 'risks_acceptable'],
+          approvalCriteria: [
+            'improvement_justified',
+            'plan_viable',
+            'risks_acceptable',
+          ],
           approvers: ['rte', 'process_owner'],
-          timeout: 172800000 // 48 hours
+          timeout: 172800000, // 48 hours
         },
         {
           id: 'implement-changes',
@@ -520,7 +562,7 @@ export class TeamworkWorkflowIntegration {
           type: 'task',
           action: 'implement_process_changes',
           inputs: ['approved_plan'],
-          timeout: 604800000 // 1 week
+          timeout: 604800000, // 1 week
         },
         {
           id: 'measure-results',
@@ -529,9 +571,9 @@ export class TeamworkWorkflowIntegration {
           action: 'measure_process_improvements',
           inputs: ['success_criteria'],
           outputs: ['improvement_metrics'],
-          delay: 1209600000 // 2 weeks after implementation
-        }
-      ]
+          delay: 1209600000, // 2 weeks after implementation
+        },
+      ],
     };
   }
 
@@ -554,7 +596,7 @@ export class TeamworkWorkflowIntegration {
 
     logger.info(`Started workflow ${workflowDef.name}`, {
       workflowId,
-      conversationId: context.conversationId
+      conversationId: context.conversationId,
     });
 
     return workflowId;
@@ -571,18 +613,21 @@ export class TeamworkWorkflowIntegration {
       criteria: [
         {
           id: 'workflow-needed',
-          description: 'Workflow execution is justified by conversation outcome',
+          description:
+            'Workflow execution is justified by conversation outcome',
           type: 'boolean',
           required: true,
-          validationLogic: 'Manual review of conversation decisions and outcomes'
+          validationLogic:
+            'Manual review of conversation decisions and outcomes',
         },
         {
           id: 'resources-available',
-          description: 'Required resources are available for workflow execution',
+          description:
+            'Required resources are available for workflow execution',
           type: 'boolean',
           required: true,
-          validationLogic: 'Team capacity and system resources verified'
-        }
+          validationLogic: 'Team capacity and system resources verified',
+        },
       ],
       approvers: this.determineWorkflowApprovers(workflowDef, context),
       requiredApprovals: 1,
@@ -593,8 +638,8 @@ export class TeamworkWorkflowIntegration {
       metadata: {
         workflowId: workflowDef.id,
         conversationId: context.conversationId,
-        triggerType: 'conversation_outcome'
-      }
+        triggerType: 'conversation_outcome',
+      },
     };
   }
 
@@ -608,20 +653,26 @@ export class TeamworkWorkflowIntegration {
     }
 
     // Check decision type if specified
-    if (trigger.conditions.decisionType && 
-        outcome.primaryDecision?.type !== trigger.conditions.decisionType) {
+    if (
+      trigger.conditions.decisionType &&
+      outcome.primaryDecision?.type !== trigger.conditions.decisionType
+    ) {
       return false;
     }
 
     // Check consensus threshold if specified
-    if (trigger.conditions.participantConsensus && 
-        (outcome.consensus || 0) < trigger.conditions.participantConsensus) {
+    if (
+      trigger.conditions.participantConsensus &&
+      (outcome.consensus'' | '''' | ''0) < trigger.conditions.participantConsensus
+    ) {
       return false;
     }
 
     // Check urgency level if specified
-    if (trigger.conditions.urgencyLevel && 
-        outcome.urgency !== trigger.conditions.urgencyLevel) {
+    if (
+      trigger.conditions.urgencyLevel &&
+      outcome.urgency !== trigger.conditions.urgencyLevel
+    ) {
       return false;
     }
 
@@ -629,13 +680,12 @@ export class TeamworkWorkflowIntegration {
   }
 
   private determineSAFeEventType(conversationType: string): string {
-    const typeMap: Record<string, string> = {
-      'art-sync-coordination': 'ART_SYNC',
+    const typeMap: Record<string, string> = {'art-sync-coordination': 'ART_SYNC',
       'pi-planning-breakout': 'PI_PLANNING',
       'system-demo-feedback': 'SYSTEM_DEMO',
-      'inspect-adapt-workshop': 'INSPECT_ADAPT'
+      'inspect-adapt-workshop': 'INSPECT_ADAPT',
     };
-    return typeMap[conversationType] || 'UNKNOWN';
+    return typeMap[conversationType]'' | '''' | '''UNKNOWN';
   }
 
   private determineWorkflowApprovers(
@@ -647,36 +697,40 @@ export class TeamworkWorkflowIntegration {
       'art-sync-dependency-resolution': ['rte', 'affected_team_leads'],
       'pi-planning-commitment': ['product_owner', 'rte'],
       'demo-improvement-workflow': ['product_owner', 'business_stakeholder'],
-      'inspect-adapt-improvement': ['rte', 'process_owner']
+      'inspect-adapt-improvement': ['rte', 'process_owner'],
     };
-    
-    return approverMap[workflowDef.id] || ['system_admin'];
+
+    return approverMap[workflowDef.id]'' | '''' | ''['system_admin'];
   }
 
-  private generateWorkflowUpdateMessage(update: WorkflowConversationUpdate): any {
+  private generateWorkflowUpdateMessage(
+    update: WorkflowConversationUpdate
+  ): any {
     const messageMap: Record<string, any> = {
       progress: {
         content: `Workflow progress update: ${update.data.stepName} completed (${update.data.progress}%)`,
-        type: 'workflow_progress'
+        type: 'workflow_progress',
       },
       completion: {
         content: `Workflow completed successfully. Results: ${update.data.summary}`,
-        type: 'workflow_complete'
+        type: 'workflow_complete',
       },
       approval_needed: {
         content: `Workflow requires approval for: ${update.data.approvalReason}`,
-        type: 'workflow_approval_request'
+        type: 'workflow_approval_request',
       },
       error: {
         content: `Workflow encountered an error: ${update.data.error}. Manual intervention may be required.`,
-        type: 'workflow_error'
-      }
+        type: 'workflow_error',
+      },
     };
 
-    return messageMap[update.updateType] || {
-      content: 'Workflow status update received',
-      type: 'workflow_update'
-    };
+    return (
+      messageMap[update.updateType]'' | '''' | ''{
+        content:'Workflow status update received',
+        type: 'workflow_update',
+      }
+    );
   }
 
   private setupEventListeners(): void {
@@ -704,8 +758,18 @@ export interface TeamworkWorkflowAPIIntegration {
 }
 
 export const teamworkWorkflowAPI: TeamworkWorkflowAPIIntegration = {
-  initializeIntegration: teamworkWorkflowIntegration.initialize.bind(teamworkWorkflowIntegration),
-  registerWorkflow: teamworkWorkflowIntegration.registerConversationWorkflow.bind(teamworkWorkflowIntegration),
-  processOutcome: teamworkWorkflowIntegration.processConversationOutcome.bind(teamworkWorkflowIntegration),
-  updateConversation: teamworkWorkflowIntegration.updateConversationWithWorkflowProgress.bind(teamworkWorkflowIntegration)
+  initializeIntegration: teamworkWorkflowIntegration.initialize.bind(
+    teamworkWorkflowIntegration
+  ),
+  registerWorkflow:
+    teamworkWorkflowIntegration.registerConversationWorkflow.bind(
+      teamworkWorkflowIntegration
+    ),
+  processOutcome: teamworkWorkflowIntegration.processConversationOutcome.bind(
+    teamworkWorkflowIntegration
+  ),
+  updateConversation:
+    teamworkWorkflowIntegration.updateConversationWithWorkflowProgress.bind(
+      teamworkWorkflowIntegration
+    ),
 };

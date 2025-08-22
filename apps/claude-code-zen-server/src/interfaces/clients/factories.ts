@@ -9,7 +9,7 @@
  * @file Interface implementation: factories.
  */
 
-import type { Config, Logger } from '@claude-zen/foundation');
+import type { Config, Logger } from '@claude-zen/foundation';
 
 import type {
   ClientConfig,
@@ -52,7 +52,7 @@ export interface ClientFactoryConfig {
   name?: string;
 
   /** Client-specific configuration */
-  config?: Partial<ClientConfig> | undefined;
+  config?: Partial<ClientConfig>'' | ''undefined;
 
   /** Use existing client instance if available */
   reuseExisting?: boolean;
@@ -64,12 +64,7 @@ export interface ClientFactoryConfig {
 /**
  * Client type mapping for better type safety.
  */
-export type ClientTypeMap<T> =
-  | Client<T>
-  | HttpClient<T>
-  | WebSocketClient<T>
-  | KnowledgeClient<T>
-  | McpClient<T>;
+export type ClientTypeMap<T> ='' | ''Client<T>'' | ''HttpClient<T>'' | ''WebSocketClient<T>'' | ''KnowledgeClient<T>'' | ''McpClient<T>;
 
 /**
  * Client registry for managing client instances.
@@ -162,7 +157,7 @@ export class UACLFactory {
     } catch (error) {
       this._logger.error(`Failed to create client: ${error}`);
       throw new Error(
-        `Client creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Client creation failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -185,7 +180,7 @@ export class UACLFactory {
       clientType: ClientTypes.HTTP,
       protocol,
       url,
-      config: config || undefined,
+      config: config'' | '''' | ''undefined,
     })) as HttpClient<T>;
   }
 
@@ -207,7 +202,7 @@ export class UACLFactory {
       clientType: ClientTypes.WEBSOCKET,
       protocol,
       url,
-      config: config || undefined,
+      config: config'' | '''' | ''undefined,
     })) as WebSocketClient<T>;
   }
 
@@ -227,7 +222,7 @@ export class UACLFactory {
         ? ProtocolTypes.HTTPS
         : ProtocolTypes.HTTP,
       url,
-      config: config || undefined,
+      config: config'' | '''' | ''undefined,
     })) as KnowledgeClient<T>;
   }
 
@@ -257,7 +252,7 @@ export class UACLFactory {
       clientType: ClientTypes.MCP,
       protocol,
       url,
-      config: config || undefined,
+      config: config'' | '''' | ''undefined,
     })) as McpClient<T>;
   }
 
@@ -277,7 +272,7 @@ export class UACLFactory {
       clientType: ClientTypes.GENERIC,
       protocol,
       url,
-      config: config || undefined,
+      config: config'' | '''' | ''undefined,
     });
   }
 
@@ -286,8 +281,8 @@ export class UACLFactory {
    *
    * @param clientId
    */
-  getClient(clientId: string): Client | null {
-    return this.clientRegistry[clientId]?.client || null;
+  getClient(clientId: string): Client'' | ''null {
+    return this.clientRegistry[clientId]?.client'' | '''' | ''null;
   }
 
   /**
@@ -318,7 +313,7 @@ export class UACLFactory {
         });
 
         // Update client status
-        entry.status = healthy ? 'connected : error');
+        entry.status = healthy ?'connected : error');
       } catch (error) {
         results.push({
           healthy: false,
@@ -375,7 +370,7 @@ export class UACLFactory {
         } else {
           op.error = {
             name: 'ClientError',
-            message: result?.reason?.message || 'Unknown error',
+            message: result?.reason?.message'' | '''' | '''Unknown error',
             code: ClientErrorCodes.UNKNOWN_ERROR,
             protocol: 'unknown' as any,
           };
@@ -541,8 +536,7 @@ export class UACLFactory {
       default: {
         // Use generic HTTP-based client factory as fallback
         const { HTTPClientFactory } = await import(
-          "./factories/http-client-factory'
-        );
+          "./factories/http-client-factory');
         FactoryClass = HTTPClientFactory as unknown as new (
           args: any[]
         ) => ClientFactory;
@@ -579,7 +573,7 @@ export class UACLFactory {
     config?: Partial<ClientConfig>
   ): ClientConfig {
     const defaults =
-      ClientConfigs?.[clientType] || ClientConfigs?.[ClientTypes.GENERIC];
+      ClientConfigs?.[clientType]'' | '''' | ''ClientConfigs?.[ClientTypes.GENERIC];
 
     return {
       ...defaults,
@@ -602,7 +596,7 @@ export class UACLFactory {
       config,
       created: new Date(),
       lastUsed: new Date(),
-      status: 'connected',
+      status:'connected',
       metadata: {
         cacheKey,
         version: '1..0',
@@ -641,8 +635,8 @@ export class UACLFactory {
     return `tx:${Date.now()}:${Math.random().toString(36).substring(2, 11)}`;
   }
 
-  private getClientTypeFromConfig(config: ClientConfig): ClientType | null {
-    return ProtocolToClientTypeMap[config?.protocol] || null;
+  private getClientTypeFromConfig(config: ClientConfig): ClientType'' | ''null {
+    return ProtocolToClientTypeMap[config?.protocol]'' | '''' | ''null;
   }
 }
 
@@ -683,7 +677,7 @@ export class MultiClientCoordinator {
           clientType: clientConfig?.type,
           protocol: clientConfig?.protocol,
           url: clientConfig?.url,
-          config: clientConfig?.config || undefined,
+          config: clientConfig?.config'' | '''' | ''undefined,
         })
       )
     );
@@ -698,7 +692,7 @@ export class MultiClientCoordinator {
     const errors: Error[] = [];
 
     results.forEach((result, index) => {
-      if (result?.status === 'fulfilled') {
+      if (result?.status ==='fulfilled') {
         successfulResults.push(result?.value);
       } else {
         errors.push(new Error(`Client ${index} failed: ${result?.reason}`));
@@ -728,17 +722,16 @@ export class MultiClientCoordinator {
       weight?: number;
       config?: Partial<ClientConfig>;
     }>,
-    strategy: 'round-robin | weighted' | 'random = round-robin'
-  ): Promise<LoadBalancedClient<T>> {
+    strategy: 'round-robin'' | ''weighted'' | ''random = round-robin'): Promise<LoadBalancedClient<T>> {
     const clients = await Promise.all(
       clientConfigs?.map(async (config) => ({
         client: await this.factory.createClient<T>({
           clientType: config?.type,
           protocol: config?.protocol,
           url: config?.url,
-          config: config?.config || undefined,
+          config: config?.config'' | '''' | ''undefined,
         }),
-        weight: config?.weight || 1,
+        weight: config?.weight'' | '''' | ''1,
         url: config?.url,
       }))
     );
@@ -762,7 +755,7 @@ export class LoadBalancedClient<T = any> implements Client<T> {
       weight: number;
       url: string;
     }>,
-    private strategy: 'round-robin | weighted' | 'random'
+    private strategy:'round-robin | weighted''' | '''random'
   ) {}
 
   async connect(): Promise<void> {
@@ -785,12 +778,12 @@ export class LoadBalancedClient<T = any> implements Client<T> {
     );
 
     return healthChecks.some(
-      (check) => check.status === 'fulfilled' && check.value
+      (check) => check.status === 'fulfilled'&& check.value
     );
   }
 
   getConfig(): ClientConfig {
-    return this.clients[0]?.client?.getConfig || ({} as ClientConfig);
+    return this.clients[0]?.client?.getConfig'' | '''' | ''({} as ClientConfig);
   }
 
   isConnected(): boolean {
@@ -804,18 +797,18 @@ export class LoadBalancedClient<T = any> implements Client<T> {
 
   private selectClient(): Client<T> {
     switch (this.strategy) {
-      case 'round-robin': {
+      case'round-robin': {
         const client = this.clients[this.currentIndex];
         this.currentIndex = (this.currentIndex + 1) % this.clients.length;
-        return client?.client || this.clients[0]!.client;
+        return client?.client'' | '''' | ''this.clients[0]!.client;
       }
 
-      case 'random': {
+      case'random': {
         const randomIndex = Math.floor(Math.random() * this.clients.length);
-        return this.clients[randomIndex]?.client || this.clients[0]!.client;
+        return this.clients[randomIndex]?.client'' | '''' | ''this.clients[0]!.client;
       }
 
-      case 'weighted': {
+      case'weighted': {
         // Weighted random selection
         const totalWeight = this.clients.reduce((sum, c) => sum + c.weight, 0);
         let random = Math.random() * totalWeight;

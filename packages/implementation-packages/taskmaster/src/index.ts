@@ -224,7 +224,12 @@ export const ALL_WORKFLOW_STATES: TaskState[] = [
 /**
  * Task priority levels in order (highest to lowest)
  */
-export const TASK_PRIORITIES: TaskPriority[] = ['critical', 'high', 'medium', 'low'];
+export const TASK_PRIORITIES: TaskPriority[] = [
+  'critical',
+  'high',
+  'medium',
+  'low',
+];
 
 /**
  * Available optimization strategies
@@ -251,23 +256,31 @@ export const isValidWorkflowState = (state: string): state is TaskState => {
 /**
  * Validate if a priority is valid
  */
-export const isValidTaskPriority = (priority: string): priority is TaskPriority => {
+export const isValidTaskPriority = (
+  priority: string
+): priority is TaskPriority => {
   return TASK_PRIORITIES.includes(priority as TaskPriority);
 };
 
 /**
  * Validate if an optimization strategy is valid
  */
-export const isValidOptimizationStrategy = (strategy: string): strategy is OptimizationStrategy => {
+export const isValidOptimizationStrategy = (
+  strategy: string
+): strategy is OptimizationStrategy => {
   return OPTIMIZATION_STRATEGIES.includes(strategy as OptimizationStrategy);
 };
 
 /**
  * Get next state in workflow (or null if at end)
  */
-export const getNextWorkflowState = (currentState: TaskState): TaskState | null => {
+export const getNextWorkflowState = (
+  currentState: TaskState
+): TaskState'' | ''null => {
   const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
-  if (currentIndex === -1 || currentIndex === DEFAULT_WORKFLOW_STATES.length - 1) {
+  if (
+    currentIndex === -1'' | '''' | ''currentIndex === DEFAULT_WORKFLOW_STATES.length - 1
+  ) {
     return null;
   }
   return DEFAULT_WORKFLOW_STATES[currentIndex + 1];
@@ -276,7 +289,9 @@ export const getNextWorkflowState = (currentState: TaskState): TaskState | null 
 /**
  * Get previous state in workflow (or null if at beginning)
  */
-export const getPreviousWorkflowState = (currentState: TaskState): TaskState | null => {
+export const getPreviousWorkflowState = (
+  currentState: TaskState
+): TaskState'' | ''null => {
   const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
   if (currentIndex <= 0) {
     return null;
@@ -287,9 +302,14 @@ export const getPreviousWorkflowState = (currentState: TaskState): TaskState | n
 /**
  * Check if state transition is valid (follows workflow order)
  */
-export const isValidStateTransition = (fromState: TaskState, toState: TaskState): boolean => {
+export const isValidStateTransition = (
+  fromState: TaskState,
+  toState: TaskState
+): boolean => {
   // Special states can transition to any state
-  if (SPECIAL_WORKFLOW_STATES.includes(fromState) || SPECIAL_WORKFLOW_STATES.includes(toState)) {
+  if (
+    SPECIAL_WORKFLOW_STATES.includes(fromState)'' | '''' | ''SPECIAL_WORKFLOW_STATES.includes(toState)
+  ) {
     return true;
   }
 
@@ -297,12 +317,12 @@ export const isValidStateTransition = (fromState: TaskState, toState: TaskState)
   const fromIndex = DEFAULT_WORKFLOW_STATES.indexOf(fromState);
   const toIndex = DEFAULT_WORKFLOW_STATES.indexOf(toState);
 
-  if (fromIndex === -1 || toIndex === -1) {
+  if (fromIndex === -1'' | '''' | ''toIndex === -1) {
     return false;
   }
 
   // Allow forward movement, backward movement (for rework), or staying in same state
-  return Math.abs(toIndex - fromIndex) <= 2 || toIndex >= fromIndex;
+  return Math.abs(toIndex - fromIndex) <= 2'' | '''' | ''toIndex >= fromIndex;
 };
 
 // =============================================================================
@@ -313,9 +333,10 @@ export const isValidStateTransition = (fromState: TaskState, toState: TaskState)
  * Package metadata and feature information
  */
 export const KANBAN_PACKAGE_INFO = {
-  name: '@claude-zen/kanban',
+  name:'@claude-zen/kanban',
   version: '1.0.0',
-  description: 'Professional workflow coordination engine with XState-powered state management',
+  description:
+    'Professional workflow coordination engine with XState-powered state management',
 
   features: [
     'XState state management',

@@ -9,7 +9,7 @@
  * - Direct APIs: Anthropic, OpenAI, GitHub Copilot Chat, Google AI, Cohere
  *
  * ARCHITECTURE:
- * - Foundation: Core utilities and primitives 
+ * - Foundation: Core utilities and primitives
  * - LLM Providers: All LLM integrations (this PRIVATE package)
  * - Intelligence Facade: PUBLIC API for LLM access
  *
@@ -26,11 +26,11 @@
  *   // CLI tools for file operations + agentic development
  *   if (type === 'claude-cli') return new LLMProvider('claude-code');
  *   if (type === 'copilot-cli') return new LLMProvider('github-copilot-cli');
- *   
+ *
  *   // Direct APIs for pure inference + conversational AI
  *   if (type === 'anthropic-api') return new LLMProvider('anthropic-direct');
  *   if (type === 'copilot-api') return new LLMProvider('github-copilot-api');
- *   
+ *
  *   return new LLMProvider('claude-code'); // default
  * }
  * ```
@@ -46,13 +46,13 @@ import {
   SWARM_AGENT_ROLES,
 } from './llm-provider';
 
-export {
-  LLMProvider,
-  setGlobalLLM,
-  getGlobalLLM,
-  SWARM_AGENT_ROLES,
-};
-export type { CLIMessage, CLIRequest, CLIResponse, SwarmAgentRole } from './types/cli-providers';
+export { LLMProvider, setGlobalLLM, getGlobalLLM, SWARM_AGENT_ROLES };
+export type {
+  CLIMessage,
+  CLIRequest,
+  CLIResponse,
+  SwarmAgentRole,
+} from './types/cli-providers';
 
 // =============================================================================
 // CLI INTEGRATIONS - File operations, agentic development
@@ -115,7 +115,7 @@ export type { GitHubCopilotOptions } from './api/github-copilot';
 // export { CohereProvider } from './api/cohere';
 
 // =============================================================================
-// PROVIDER REGISTRY - Factory and management  
+// PROVIDER REGISTRY - Factory and management
 // =============================================================================
 
 // Model Registry with DI support
@@ -155,14 +155,17 @@ export type {
 // =============================================================================
 
 // API Provider Factory
-export { createAPIProvider, listAPIProviders } from './factories/api-provider-factory';
+export {
+  createAPIProvider,
+  listAPIProviders,
+} from './factories/api-provider-factory';
 
 /**
  * Create a CLI provider instance (INTERNAL USE ONLY)
  * Supports CLI tools only (file ops, agentic development)
  */
 export function createLLMProvider(
-  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code'
+  providerId: 'claude-code''' | '''cursor-cli''' | '''gemini-cli' = 'claude-code'
 ): LLMProvider {
   return new LLMProvider(providerId);
 }
@@ -171,27 +174,57 @@ export function createLLMProvider(
  * List all available LLM providers (INTERNAL USE ONLY)
  * Includes CLI tools and direct APIs
  */
-export function listLLMProviders(): Array<{ 
-  id: string; 
-  name: string; 
-  type: 'cli' | 'api'; 
-  category: 'file-operations' | 'agentic-dev' | 'inference' | 'conversational';
+export function listLLMProviders(): Array<{
+  id: string;
+  name: string;
+  type: 'cli''' | '''api';
+  category: 'file-operations''' | '''agentic-dev''' | '''inference''' | '''conversational';
   available: boolean;
 }> {
   const cliProviders = [
-    { id: 'claude-code', name: 'Claude Code CLI', type: 'cli' as const, category: 'file-operations' as const, available: true },
-    { id: 'cursor-cli', name: 'Cursor CLI', type: 'cli' as const, category: 'agentic-dev' as const, available: false },
-    { id: 'gemini-cli', name: 'Gemini CLI', type: 'cli' as const, category: 'agentic-dev' as const, available: false }
+    {
+      id: 'claude-code',
+      name: 'Claude Code CLI',
+      type: 'cli' as const,
+      category: 'file-operations' as const,
+      available: true,
+    },
+    {
+      id: 'cursor-cli',
+      name: 'Cursor CLI',
+      type: 'cli' as const,
+      category: 'agentic-dev' as const,
+      available: false,
+    },
+    {
+      id: 'gemini-cli',
+      name: 'Gemini CLI',
+      type: 'cli' as const,
+      category: 'agentic-dev' as const,
+      available: false,
+    },
   ];
-  
+
   const apiProviders = [
-    { id: 'github-models-api', name: 'GitHub Models API', type: 'api' as const, category: 'inference' as const, available: true },
-    { id: 'github-copilot-api', name: 'GitHub Copilot Chat API', type: 'api' as const, category: 'conversational' as const, available: true },
+    {
+      id: 'github-models-api',
+      name: 'GitHub Models API',
+      type: 'api' as const,
+      category: 'inference' as const,
+      available: true,
+    },
+    {
+      id: 'github-copilot-api',
+      name: 'GitHub Copilot Chat API',
+      type: 'api' as const,
+      category: 'conversational' as const,
+      available: true,
+    },
     // Future API providers:
     // { id: 'anthropic-api', name: 'Anthropic API', type: 'api', category: 'inference', available: false },
     // { id: 'openai-api', name: 'OpenAI API', type: 'api', category: 'inference', available: false },
   ];
-  
+
   return [...cliProviders, ...apiProviders];
 }
 
@@ -199,20 +232,20 @@ export function listLLMProviders(): Array<{
  * Get provider by capability (INTERNAL USE ONLY)
  */
 export function getLLMProviderByCapability(
-  capability: 'file-operations' | 'agentic-development' | 'code-completion' | 'chat' | 'inference'
+  capability:'' | '''file-operations''' | '''agentic-development''' | '''code-completion''' | '''chat''' | '''inference'
 ): LLMProvider {
   switch (capability) {
     case 'file-operations':
-      return new LLMProvider('claude-code');           // Best for file ops
-    case 'agentic-development': 
-      return new LLMProvider('github-copilot-api');    // Future: Real agentic development
+      return new LLMProvider('claude-code'); // Best for file ops
+    case 'agentic-development':
+      return new LLMProvider('github-copilot-api'); // Future: Real agentic development
     case 'code-completion':
-      return new LLMProvider('github-copilot-api');    // Future: Best for autocomplete
+      return new LLMProvider('github-copilot-api'); // Future: Best for autocomplete
     case 'chat':
-      return new LLMProvider('github-copilot-api');    // Future: Conversational
+      return new LLMProvider('github-copilot-api'); // Future: Conversational
     case 'inference':
     default:
-      return new LLMProvider('github-copilot-api');    // Copilot should be default for inference
+      return new LLMProvider('github-copilot-api'); // Copilot should be default for inference
   }
 }
 

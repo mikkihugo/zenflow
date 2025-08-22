@@ -5,10 +5,7 @@
  * Contains factory functions and entity type definitions.
  */
 
-import type {
-  DatabaseAdapter,
-  Logger,
-} from '../interfaces.js';
+import type { DatabaseAdapter, Logger } from '../interfaces.js';
 import type {
   DatabaseTypes,
   EntityTypes as EntityTypesEnum,
@@ -23,19 +20,19 @@ import type {
 export interface MultiDatabaseDao<T> {
   primary: Dao<T>;
   fallbacks: Dao<T>[];
-  readPreference: 'primary' | 'fallback' | 'balanced';
-  writePolicy: 'primary-only' | 'replicated';
+  readPreference: 'primary | fallback' | 'balanced';
+  writePolicy: 'primary-only''' | '''replicated';
   failoverTimeout: number;
-  findById(id: string): Promise<T | null>;
+  findById(id: string): Promise<T'' | ''null>;
   findAll(): Promise<T[]>;
-  create(entity: Omit<T, 'id'>): Promise<T>;
-  update(id: string, updates: Partial<T>): Promise<T | null>;
+  create(entity: Omit<T,'id'>): Promise<T>;
+  update(id: string, updates: Partial<T>): Promise<T'' | ''null>;
   delete(id: string): Promise<boolean>;
   findBy(filter: Partial<T>): Promise<T[]>;
   count(filter?: Partial<T>): Promise<number>;
 }
 
-import { BaseDao } from '../base.dao';
+import { BaseDao } from'../base.dao';
 import { CoordinationDao } from '../dao/coordination.dao';
 import { GraphDao } from '../dao/graph.dao';
 import { MemoryDao } from '../dao/memory.dao';
@@ -116,8 +113,7 @@ export interface DatabaseConfig {
  *     port: 5432,
  *     database: 'myapp',
  *     username: 'user',
- *     password: 'pass'
- *   }
+ *     password: 'pass'*   }
  * );
  * ```
  */
@@ -130,15 +126,13 @@ export async function createDao<T>(
     primaryKey?: string;
     enableCaching?: boolean;
     connectionPoolSize?: number;
-    logger?:
-      | Console
-      | { debug: Function; info: Function; warn: Function; error: Function };
+    logger?:'' | ''Console'' | ''{ debug: Function; info: Function; warn: Function; error: Function };
   } = {}
 ): Promise<Dao<T>> {
   // Set defaults based on entity type
-  const tableName = options?.tableName || getDefaultTableName(entityType);
-  const primaryKey = options?.primaryKey || 'id';
-  const logger = options?.logger || console;
+  const tableName = options?.tableName'' | '''' | ''getDefaultTableName(entityType);
+  const primaryKey = options?.primaryKey'' | '''' | '''id';
+  const logger = options?.logger'' | '''' | ''console;
 
   // Create a mock adapter for now - in real implementation this would connect to actual database
   const adapter: DatabaseAdapter = {
@@ -151,12 +145,12 @@ export async function createDao<T>(
     health: async () => ({
       healthy: true,
       isHealthy: true,
-      status: 'healthy',
+      status:'healthy',
       score: 100,
       details: { mock: true },
-      lastCheck: new Date()
+      lastCheck: new Date(),
     }),
-    getSchema: async () => ({ tables: [], views: [], version: '1.0.0' }),
+    getSchema: async () => ({ tables: [], views: [], version: '1.0.0'}),
     getConnectionStats: async () => ({
       total: 1,
       active: 1,
@@ -167,16 +161,16 @@ export async function createDao<T>(
   };
 
   const iLogger: Logger = {
-    debug: logger.debug?.bind(logger) || (() => {}),
-    info: logger.info?.bind(logger) || (() => {}),
-    warn: logger.warn?.bind(logger) || (() => {}),
-    error: logger.error?.bind(logger) || (() => {}),
+    debug: logger.debug?.bind(logger)'' | '''' | ''(() => {}),
+    info: logger.info?.bind(logger)'' | '''' | ''(() => {}),
+    warn: logger.warn?.bind(logger)'' | '''' | ''(() => {}),
+    error: logger.error?.bind(logger)'' | '''' | ''(() => {}),
   };
 
   // Create specialized DAOs based on entity type
   switch (entityType) {
     case EntityTypeValues.Memory:
-    case 'memory':
+    case'memory':
       return createMemoryDao<T>(adapter, iLogger, tableName);
 
     case EntityTypeValues.Product: // Use available enum value instead of Coordination
@@ -249,12 +243,10 @@ export async function createMultiDatabaseSetup<T>(
     config: DatabaseConfig;
   }> = [],
   options: {
-    readPreference?: 'primary' | 'fallback' | 'balanced';
-    writePolicy?: 'primary-only' | 'replicated';
+    readPreference?: 'primary | fallback' | 'balanced';
+    writePolicy?: 'primary-only''' | '''replicated';
     failoverTimeout?: number;
-    logger?:
-      | Console
-      | { debug: Function; info: Function; warn: Function; error: Function };
+    logger?:'' | ''Console'' | ''{ debug: Function; info: Function; warn: Function; error: Function };
   } = {}
 ): Promise<MultiDatabaseDao<T>> {
   const primaryDao = await createDao<T>(
@@ -278,11 +270,11 @@ export async function createMultiDatabaseSetup<T>(
   return {
     primary: primaryDao,
     fallbacks: fallbackDaos,
-    readPreference: options?.readPreference || 'primary',
-    writePolicy: options?.writePolicy || 'primary-only',
-    failoverTimeout: options?.failoverTimeout || 5000,
+    readPreference: options?.readPreference'' | '''' | '''primary',
+    writePolicy: options?.writePolicy'' | '''' | '''primary-only',
+    failoverTimeout: options?.failoverTimeout'' | '''' | ''5000,
 
-    async findById(id: string): Promise<T | null> {
+    async findById(id: string): Promise<T'' | ''null> {
       try {
         return await primaryDao.findById(id);
       } catch (error) {
@@ -299,7 +291,7 @@ export async function createMultiDatabaseSetup<T>(
 
     async findAll(): Promise<T[]> {
       const dao =
-        this.readPreference === 'fallback' && fallbackDaos.length > 0
+        this.readPreference ==='fallback' && fallbackDaos.length > 0
           ? fallbackDaos[0]
           : primaryDao;
 
@@ -333,10 +325,10 @@ export async function createMultiDatabaseSetup<T>(
       return created;
     },
 
-    async update(id: string, updates: Partial<T>): Promise<T | null> {
+    async update(id: string, updates: Partial<T>): Promise<T'' | ''null> {
       const updated = await primaryDao.update(id, updates);
 
-      if (this.writePolicy === 'replicated') {
+      if (this.writePolicy ==='replicated') {
         fallbackDaos.forEach((dao) => {
           dao.update(id, updates).catch(() => {
             options?.logger?.warn('Fallback update failed');

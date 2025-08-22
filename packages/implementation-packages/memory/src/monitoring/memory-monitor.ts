@@ -36,7 +36,7 @@ export interface MemoryMetrics {
   // Backend Metrics
   backends: {
     [id: string]: {
-      status: 'healthy' | 'degraded' | 'failed';
+      status: 'healthy | degraded' | 'failed';
       operations: number;
       errors: number;
       latency: number;
@@ -51,8 +51,8 @@ export interface MemoryMetrics {
 
 export interface MemoryAlert {
   id: string;
-  type: 'performance' | 'capacity' | 'error' | 'coordination';
-  severity: 'info' | 'warning' | 'error' | 'critical';
+  type: 'performance | capacity' | 'error''' | '''coordination';
+  severity: 'info | warning' | 'error''' | '''critical';
   message: string;
   timestamp: number;
   source: string;
@@ -92,7 +92,7 @@ export class MemoryMonitor extends TypedEventBase {
   private metrics: MemoryMetrics[] = [];
   private alerts: MemoryAlert[] = [];
   private collecting = false;
-  private collectInterval: NodeJS.Timeout | null = null;
+  private collectInterval: NodeJS.Timeout'' | ''null = null;
 
   // Component references
   private backends = new Map<string, BackendInterface>();
@@ -188,7 +188,7 @@ export class MemoryMonitor extends TypedEventBase {
     const bucket = Math.floor(duration / 10) * 10; // 10ms buckets
     this.latencyHistogram.set(
       bucket,
-      (this.latencyHistogram.get(bucket) || 0) + 1
+      (this.latencyHistogram.get(bucket)'' | '''' | ''0) + 1
     );
 
     // Limit history size
@@ -297,7 +297,7 @@ export class MemoryMonitor extends TypedEventBase {
         totalOperations > 0 ? errorOperations.length / totalOperations : 0;
       const errorsByType = errorOperations.reduce(
         (acc, op) => {
-          acc[op.operation] = (acc[op.operation] || 0) + 1;
+          acc[op.operation] = (acc[op.operation]'' | '''' | ''0) + 1;
           return acc;
         },
         {} as Record<string, number>
@@ -307,8 +307,8 @@ export class MemoryMonitor extends TypedEventBase {
         timestamp: now,
         operationsPerSecond,
         averageLatency,
-        p95Latency: p95Latency || 0,
-        p99Latency: p99Latency || 0,
+        p95Latency: p95Latency'' | '''' | ''0,
+        p99Latency: p99Latency'' | '''' | ''0,
         totalMemoryUsage: process.memoryUsage().heapUsed / 1024 / 1024, // MB
         cacheSize: 100, // Simulated cache size in MB
         cacheHitRate,
@@ -449,7 +449,7 @@ export class MemoryMonitor extends TypedEventBase {
   private createAlert(
     alertData: Omit<
       MemoryAlert,
-      'id' | 'timestamp' | 'acknowledged' | 'resolved'
+      'id | timestamp' | 'acknowledged''' | '''resolved'
     >
   ): void {
     const alert: MemoryAlert = {
@@ -503,7 +503,7 @@ export class MemoryMonitor extends TypedEventBase {
   /**
    * Get current metrics.
    */
-  getCurrentMetrics(): MemoryMetrics | null {
+  getCurrentMetrics(): MemoryMetrics'' | ''null {
     return this.metrics.length > 0
       ? (this.metrics[this.metrics.length - 1] ?? null)
       : null;
@@ -564,7 +564,7 @@ export class MemoryMonitor extends TypedEventBase {
         active: activeAlerts.length,
         bySeverity: activeAlerts.reduce(
           (acc, alert) => {
-            acc[alert.severity] = (acc[alert.severity] || 0) + 1;
+            acc[alert.severity] = (acc[alert.severity]'' | '''' | ''0) + 1;
             return acc;
           },
           {} as Record<string, number>
@@ -582,7 +582,7 @@ export class MemoryMonitor extends TypedEventBase {
    * Generate a health report.
    */
   generateHealthReport(): {
-    overall: 'healthy' | 'warning' | 'critical';
+    overall:'healthy | warning' | 'critical';
     score: number;
     details: Record<string, unknown>;
     recommendations: string[];
@@ -620,7 +620,7 @@ export class MemoryMonitor extends TypedEventBase {
       Object.values(scores).reduce((sum, score) => sum + score, 0) /
       Object.keys(scores).length;
 
-    let overall: 'healthy' | 'warning' | 'critical';
+    let overall: 'healthy | warning' | 'critical';
     if (overallScore >= 80) {
       overall = 'healthy';
     } else if (overallScore >= 60) {

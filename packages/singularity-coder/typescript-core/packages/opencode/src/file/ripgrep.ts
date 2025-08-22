@@ -198,7 +198,7 @@ export namespace Ripgrep {
 
     if (input.query) commands.push(`${await Fzf.filepath()} --filter=${input.query}`)
     if (input.limit) commands.push(`head -n ${input.limit}`)
-    const joined = commands.join(" | ")
+    const joined = commands.join("' | '")
     const result = await $`${{ raw: joined }}`.cwd(input.cwd).nothrow().text()
     return result.split("\n").filter(Boolean)
   }

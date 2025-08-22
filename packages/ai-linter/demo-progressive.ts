@@ -2,7 +2,7 @@
 
 /**
  * Demo script showing how the progressive batch linter works
- * 
+ *
  * This demonstrates the --head 50 incremental processing with FIXME:: comments
  * for low-confidence issues that Claude can't fix automatically.
  */

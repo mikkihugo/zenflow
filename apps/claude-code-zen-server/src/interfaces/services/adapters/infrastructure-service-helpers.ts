@@ -9,9 +9,9 @@
  * @file Interface implementation: infrastructure-service-helpers.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
-import type { ServiceOperationOptions } from './core/interfaces');
+import type { ServiceOperationOptions } from './core/interfaces';
 
 import type {
   InfrastructureServiceAdapter,
@@ -144,7 +144,7 @@ export async function createFacadeOnlyInfrastructureService(
 export async function createPatternIntegrationOnlyService(
   name: string,
   patternOptions: {
-    configProfile?: 'default | production' | 'development');
+    configProfile?:'default | production'' | ''development');
     maxAgents?: number;
     enableAutoOptimization?: boolean;
   } = {}
@@ -329,7 +329,7 @@ export async function processDocumentEnhanced(
   options: {
     useNeural?: boolean;
     cacheResults?: boolean;
-    priority?: 'low | medium' | 'high | critical');
+    priority?: 'low | medium | high | critical');
     timeout?: number;
     swarmId?: string;
   } = {}
@@ -476,7 +476,7 @@ export async function getSystemStatusCached(
 export async function initializeOptimizedSwarm(
   service: InfrastructureServiceAdapter,
   swarmConfig: {
-    topology?: 'mesh | hierarchical' | 'ring | star');
+    topology?: 'mesh | hierarchical | ring | star');
     agentCount?: number;
     capabilities?: string[];
     enableAutoOptimization?: boolean;
@@ -487,8 +487,7 @@ export async function initializeOptimizedSwarm(
   const optimizedConfig = {
     topology: swarmConfig?.topology || 'hierarchical',
     agentCount: swarmConfig?.agentCount || 5,
-    capabilities: swarmConfig?.capabilities || [
-      'coordination',
+    capabilities: swarmConfig?.capabilities || ['coordination',
       'processing',
       'analysis',
     ],
@@ -914,7 +913,7 @@ export async function performComprehensiveHealthCheck(
  */
 export async function createInfrastructureServiceWithBestPractices(
   name: string,
-  environment: 'development | staging' | 'production = development',
+  environment: 'development | staging | production = development',
   customOptions?: CreateServiceOptions
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Creating infrastructure service with best practices', {
@@ -1084,8 +1083,7 @@ export async function executeWithRetries<T>(
   }
 
   throw (
-    lastError ||
-    new Error(`Operation ${operation} failed after ${maxRetries} attempts`)
+    lastError || new Error(`Operation ${operation} failed after ${maxRetries} attempts`)
   );
 }
 

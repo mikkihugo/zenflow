@@ -1,27 +1,31 @@
 /**
  * @fileoverview Migrated Event Registry - ServiceContainer-based implementation
- * 
+ *
  * Modern event registry using battle-tested ServiceContainer (Awilix) backend.
  * Provides zero breaking changes migration from custom EventRegistry implementation
  * with enhanced capabilities including health monitoring, service discovery, and metrics.
- * 
+ *
  * MIGRATION: EventRegistry (986 lines) → ServiceContainer-based (enhanced functionality)
- * 
+ *
  * Key Improvements:
  * - Battle-tested Awilix dependency injection for event managers
  * - Health monitoring and metrics collection for all event managers
- * - Service discovery and capability-based event manager queries  
+ * - Service discovery and capability-based event manager queries
  * - Type-safe registration with lifecycle management
  * - Error handling with Result patterns
  * - Event-driven notifications for registry changes
  * - Factory tracking and usage statistics
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 2.1.0
  */
 
-import { ServiceContainer, createServiceContainer, Lifetime } from '@claude-zen/foundation';
+import {
+  ServiceContainer,
+  createServiceContainer,
+  Lifetime,
+} from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 import { TypedEventBase } from '@claude-zen/foundation';
 
@@ -40,11 +44,14 @@ import { EventCategories, EventPriorityMap } from './types';
 
 /**
  * Service Container-based Event Registry
- * 
+ *
  * Drop-in replacement for EventRegistry with enhanced capabilities through ServiceContainer.
  * Maintains exact API compatibility while adding health monitoring, metrics, and discovery.
  */
-export class MigratedEventRegistry extends TypedEventBase implements EventManagerRegistry {
+export class MigratedEventRegistry
+  extends TypedEventBase
+  implements EventManagerRegistry
+{
   private container: ServiceContainer;
   private logger: Logger;
   private eventManagers = new Map<string, EventManager>();
@@ -59,10 +66,10 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   constructor() {
     super();
     this.container = createServiceContainer('event-registry', {
-      healthCheckFrequency: 30000 // 30 seconds
+      healthCheckFrequency: 30000, // 30 seconds
     });
     this.logger = getLogger('MigratedEventRegistry');
-    
+
     // Initialize default configurations
     this.healthMonitoring = {
       checkInterval: 30000, // 30 seconds
@@ -70,14 +77,14 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
       failureThreshold: 3,
       autoRecovery: true,
       maxRecoveryAttempts: 3,
-      notifyOnStatusChange: true
+      notifyOnStatusChange: true,
     };
-    
+
     this.discoveryConfig = {
       autoDiscover: true,
       patterns: ['*Event', '*event', 'event:*'],
       scanPaths: ['./events', './src/events'],
-      fileExtensions: ['js', 'ts']
+      fileExtensions: ['js', 'ts'],
     };
   }
 
@@ -94,7 +101,10 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
     try {
       // Apply configuration overrides
       if (config?.healthMonitoring) {
-        this.healthMonitoring = { ...this.healthMonitoring, ...config.healthMonitoring };
+        this.healthMonitoring = {
+          ...this.healthMonitoring,
+          ...config.healthMonitoring,
+        };
       }
 
       if (config?.discovery) {
@@ -118,11 +128,15 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
       }
 
       this.initialized = true;
-      this.logger.info('✅ MigratedEventRegistry initialized with ServiceContainer');
+      this.logger.info(
+        '✅ MigratedEventRegistry initialized with ServiceContainer'
+      );
       this.emit('initialized', {});
-
     } catch (error) {
-      this.logger.error('❌ Failed to initialize MigratedEventRegistry:', error);
+      this.logger.error(
+        '❌ Failed to initialize MigratedEventRegistry:',
+        error
+      );
       throw error;
     }
   }
@@ -136,20 +150,26 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   ): void {
     try {
       // Register factory with ServiceContainer for enhanced capabilities
-      const registrationResult = this.container.registerInstance(`factory:${type}`, factory, {
-        capabilities: ['event-manager-factory', type],
-        metadata: {
-          type: 'event-manager-factory',
-          managerType: type,
-          registeredAt: new Date(),
-          version: '1.0.0'
-        },
-        enabled: true,
-        healthCheck: () => this.performFactoryHealthCheck(factory)
-      });
+      const registrationResult = this.container.registerInstance(
+        `factory:${type}`,
+        factory,
+        {
+          capabilities: ['event-manager-factory', type],
+          metadata: {
+            type: 'event-manager-factory',
+            managerType: type,
+            registeredAt: new Date(),
+            version: '1.0.0',
+          },
+          enabled: true,
+          healthCheck: () => this.performFactoryHealthCheck(factory),
+        }
+      );
 
       if (registrationResult.isErr()) {
-        throw new Error(`Failed to register factory ${type}: ${registrationResult.error.message}`);
+        throw new Error(
+          `Failed to register factory ${type}: ${registrationResult.error.message}`
+        );
       }
 
       // Store for legacy compatibility
@@ -161,7 +181,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
         metadata: {
           name: factory.constructor.name,
           version: '1.0.0',
-          capabilities: [], 
+          capabilities: [],
           supported: [type],
         },
         registered: new Date(),
@@ -174,7 +194,6 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
       this.logger.debug(`📋 Registered event manager factory: ${type}`);
       this.emit('factory-registered', type, factory);
-
     } catch (error) {
       this.logger.error(`❌ Failed to register factory ${type}:`, error);
       throw error;
@@ -186,11 +205,13 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T> | undefined {
+  ): EventManagerFactory<T>'' | ''undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
-      const result = this.container.resolve<EventManagerFactory<T>>(`factory:${type}`);
-      
+      const result = this.container.resolve<EventManagerFactory<T>>(
+        `factory:${type}`
+      );
+
       if (result.isOk()) {
         // Update usage statistics
         if (this.factoryRegistry[type]) {
@@ -201,9 +222,11 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
       // Fallback to legacy storage
       return this.factories.get(type) as EventManagerFactory<T>;
-
     } catch (error) {
-      this.logger.warn(`⚠️ Failed to resolve factory ${type}, falling back to legacy:`, error);
+      this.logger.warn(
+        `⚠️ Failed to resolve factory ${type}, falling back to legacy:`,
+        error
+      );
       return this.factories.get(type) as EventManagerFactory<T>;
     }
   }
@@ -212,12 +235,13 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
    * List all registered factory types (compatible with existing EventRegistry interface)
    */
   listFactoryTypes(): EventManagerType[] {
-    const containerTypes = this.container.getServiceNames()
-      .filter(name => name.startsWith('factory:'))
-      .map(name => name.replace('factory:', '') as EventManagerType);
-    
-    const legacyTypes = Array.from(this.factories.keys());
-    
+    const containerTypes = this.container
+      .getServiceNames()
+      .filter((name) => name.startsWith('factory:'))
+      .map((name) => name.replace('factory:', '') as EventManagerType);
+
+    const legacyTypes = Array.from(this.factories.keys())();
+
     // Combine and deduplicate
     const allTypes = new Set([...containerTypes, ...legacyTypes]);
     return Array.from(allTypes);
@@ -234,24 +258,30 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   ): void {
     try {
       // Register with ServiceContainer for enhanced capabilities
-      const registrationResult = this.container.registerInstance(name, manager, {
-        capabilities: this.extractManagerCapabilities(manager, config),
-        metadata: {
-          type: 'event-manager',
-          managerType: config.type,
-          factoryName: factory.constructor.name,
-          registeredAt: new Date(),
-          version: config.version || '1.0.0'
-        },
-        enabled: true,
-        healthCheck: () => this.performManagerHealthCheck(manager)
-      });
+      const registrationResult = this.container.registerInstance(
+        name,
+        manager,
+        {
+          capabilities: this.extractManagerCapabilities(manager, config),
+          metadata: {
+            type: 'event-manager',
+            managerType: config.type,
+            factoryName: factory.constructor.name,
+            registeredAt: new Date(),
+            version: config.version'' | '''' | '''1.0.0',
+          },
+          enabled: true,
+          healthCheck: () => this.performManagerHealthCheck(manager),
+        }
+      );
 
       if (registrationResult.isErr()) {
-        throw new Error(`Failed to register manager ${name}: ${registrationResult.error.message}`);
+        throw new Error(
+          `Failed to register manager ${name}: ${registrationResult.error.message}`
+        );
       }
 
-      // Store for legacy compatibility  
+      // Store for legacy compatibility
       this.eventManagers.set(name, manager);
 
       // Update factory usage statistics
@@ -261,7 +291,6 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
       this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);
       this.emit('manager-registered', { name, manager, factory, config });
-
     } catch (error) {
       this.logger.error(`❌ Failed to register manager ${name}:`, error);
       throw error;
@@ -271,18 +300,17 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   /**
    * Find event manager by name (compatible with existing EventRegistry interface)
    */
-  findEventManager(name: string): EventManager | undefined {
+  findEventManager(name: string): EventManager'' | ''undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<EventManager>(name);
-      
+
       if (result.isOk()) {
         return result.value;
       }
 
       // Fallback to legacy storage
       return this.eventManagers.get(name);
-
     } catch (error) {
       this.logger.warn(`⚠️ Failed to resolve event manager ${name}:`, error);
       return this.eventManagers.get(name);
@@ -294,7 +322,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
    */
   getAllEventManagers(): Map<string, EventManager> {
     const allManagers = new Map<string, EventManager>();
-    
+
     // Collect from ServiceContainer
     for (const serviceName of this.container.getServiceNames()) {
       if (!serviceName.startsWith('factory:')) {
@@ -332,7 +360,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   }
 
   /**
-   * Get event managers by status (compatible with existing EventRegistry interface)  
+   * Get event managers by status (compatible with existing EventRegistry interface)
    */
   getEventManagersByStatus(status: any): EventManager[] {
     const managers: EventManager[] = [];
@@ -364,29 +392,38 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   ): void {
     try {
       // Register with ServiceContainer
-      const registrationResult = this.container.registerInstance(`eventType:${eventType}`, config, {
-        capabilities: ['event-type', config.category, ...config.managerTypes],
-        metadata: {
-          type: 'event-type',
-          eventType,
-          category: config.category,
-          registeredAt: new Date()
-        },
-        enabled: true
-      });
+      const registrationResult = this.container.registerInstance(
+        `eventType:${eventType}`,
+        config,
+        {
+          capabilities: ['event-type', config.category, ...config.managerTypes],
+          metadata: {
+            type: 'event-type',
+            eventType,
+            category: config.category,
+            registeredAt: new Date(),
+          },
+          enabled: true,
+        }
+      );
 
       if (registrationResult.isErr()) {
-        throw new Error(`Failed to register event type ${eventType}: ${registrationResult.error.message}`);
+        throw new Error(
+          `Failed to register event type ${eventType}: ${registrationResult.error.message}`
+        );
       }
 
       // Store for legacy compatibility
       this.eventTypes[eventType] = {
         type: eventType,
         category: config.category,
-        priority: config.priority || (typeof EventPriorityMap['medium'] === 'number' ? EventPriorityMap['medium'] : 2),
+        priority:
+          config.priority'' | '''' | ''(typeof EventPriorityMap['medium'] === 'number'
+            ? EventPriorityMap['medium']
+            : 2),
         schema: config.schema,
         managerTypes: config.managerTypes,
-        config: config.options || {},
+        config: config.options'' | '''' | ''{},
         registered: new Date(),
         usage: {
           totalEmissions: 0,
@@ -397,9 +434,11 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
       this.logger.debug(`🏷️ Registered event type: ${eventType}`);
       this.emit('event-type-registered', { eventType, config });
-
     } catch (error) {
-      this.logger.error(`❌ Failed to register event type ${eventType}:`, error);
+      this.logger.error(
+        `❌ Failed to register event type ${eventType}:`,
+        error
+      );
       throw error;
     }
   }
@@ -408,12 +447,13 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
    * Get registered event types (compatible with existing EventRegistry interface)
    */
   getEventTypes(): string[] {
-    const containerTypes = this.container.getServiceNames()
-      .filter(name => name.startsWith('eventType:'))
-      .map(name => name.replace('eventType:', ''));
-    
+    const containerTypes = this.container
+      .getServiceNames()
+      .filter((name) => name.startsWith('eventType:'))
+      .map((name) => name.replace('eventType:', ''));
+
     const legacyTypes = Object.keys(this.eventTypes);
-    
+
     // Combine and deduplicate
     const allTypes = new Set([...containerTypes, ...legacyTypes]);
     return Array.from(allTypes);
@@ -422,7 +462,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   /**
    * Get event type configuration (compatible with existing EventRegistry interface)
    */
-  getEventTypeConfig(eventType: string): any | undefined {
+  getEventTypeConfig(eventType: string): any'' | ''undefined {
     try {
       const result = this.container.resolve<any>(`eventType:${eventType}`);
       if (result.isOk()) {
@@ -431,7 +471,6 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
       // Fallback to legacy storage
       return this.eventTypes[eventType];
-
     } catch (error) {
       this.logger.warn(`⚠️ Failed to resolve event type ${eventType}:`, error);
       return this.eventTypes[eventType];
@@ -453,13 +492,13 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
           const status: EventManagerStatus = {
             name: manager.name,
             type: manager.type,
-            status: healthy ? 'healthy' : 'unhealthy',
+            status: healthy ?'healthy' : 'unhealthy',
             lastCheck: new Date(),
             subscriptions: 0, // Would get from manager if available
             queueSize: 0,
             errorRate: healthy ? 0 : 1.0,
             uptime: 0,
-            metadata: {}
+            metadata: {},
           };
           results.set(name, status);
         })
@@ -474,7 +513,9 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
             queueSize: 0,
             errorRate: 1.0,
             uptime: 0,
-            metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
+            metadata: {
+              error: error instanceof Error ? error.message : 'Unknown error',
+            },
           };
           results.set(name, errorStatus);
         });
@@ -510,20 +551,21 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
     for (const [name, manager] of allManagers) {
       if (manager.type) {
-        managersByType[manager.type] = (managersByType[manager.type] || 0) + 1;
+        managersByType[manager.type] = (managersByType[manager.type]'' | '''' | ''0) + 1;
       }
     }
 
     // Manager status from ServiceContainer
     const managersByStatus: Record<string, number> = {
       healthy: containerStats.enabledServices,
-      unhealthy: containerStats.disabledServices
+      unhealthy: containerStats.disabledServices,
     };
 
     // Factory usage statistics
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
-      factoryUsage[type] = this.factoryRegistry[type]?.usage.managersCreated || 0;
+      factoryUsage[type] =
+        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
     });
 
     return {
@@ -534,7 +576,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
       errorRate: 0,
       managersByType,
       managersByStatus,
-      factoryUsage
+      factoryUsage,
     };
   }
 
@@ -548,10 +590,9 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
     for (const [name, manager] of allManagers) {
       const serviceInfo = this.container.getServiceInfo(name);
       if (serviceInfo && serviceInfo.enabled) {
-        const broadcastPromise = manager.emit(event)
-          .catch((error) => {
-            this.logger.error(`❌ Broadcast failed for ${name}:`, error);
-          });
+        const broadcastPromise = manager.emit(event).catch((error) => {
+          this.logger.error(`❌ Broadcast failed for ${name}:`, error);
+        });
 
         broadcastPromises.push(broadcastPromise);
       }
@@ -563,11 +604,17 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   /**
    * Broadcast event to specific event manager type (compatible with existing EventRegistry interface)
    */
-  async broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void> {
+  async broadcastToType<T extends SystemEvent>(
+    type: EventManagerType,
+    event: T
+  ): Promise<void> {
     const managers = this.getEventManagersByType(type);
     const broadcastPromises = managers.map((manager) =>
       manager.emit(event).catch((error) => {
-        this.logger.error(`❌ Type broadcast failed for ${manager.name}:`, error);
+        this.logger.error(
+          `❌ Type broadcast failed for ${manager.name}:`,
+          error
+        );
       })
     );
 
@@ -586,13 +633,15 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
       // Shutdown all managers
       const allManagers = this.getAllEventManagers();
-      const shutdownPromises = Array.from(allManagers.values()).map(async (manager) => {
-        try {
-          await manager.destroy();
-        } catch (error) {
-          this.logger.error(`❌ Failed to shutdown ${manager.name}:`, error);
+      const shutdownPromises = Array.from(allManagers.values()).map(
+        async (manager) => {
+          try {
+            await manager.destroy();
+          } catch (error) {
+            this.logger.error(`❌ Failed to shutdown ${manager.name}:`, error);
+          }
         }
-      });
+      );
 
       await Promise.allSettled(shutdownPromises);
 
@@ -608,7 +657,6 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
       this.logger.info('✅ All event managers shut down');
       this.emit('shutdown', {});
-
     } catch (error) {
       this.logger.error('❌ Error during registry shutdown:', error);
       throw error;
@@ -629,7 +677,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
   } {
     const allManagers = this.getAllEventManagers();
     const containerStats = this.container.getStats();
-    
+
     const managersByType: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
       managersByType[type] = 0;
@@ -637,13 +685,14 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
     for (const [name, manager] of allManagers) {
       if (manager.type) {
-        managersByType[manager.type] = (managersByType[manager.type] || 0) + 1;
+        managersByType[manager.type] = (managersByType[manager.type]'' | '''' | ''0) + 1;
       }
     }
 
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
-      factoryUsage[type] = this.factoryRegistry[type]?.usage.managersCreated || 0;
+      factoryUsage[type] =
+        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
     });
 
     return {
@@ -653,7 +702,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
       healthyManagers: containerStats.enabledServices,
       managersByType,
       factoryUsage,
-      uptime: this.initialized ? Date.now() : 0
+      uptime: this.initialized ? Date.now() : 0,
     };
   }
 
@@ -673,16 +722,18 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
     }>;
   } {
     const allManagers = this.getAllEventManagers();
-    const managers = Array.from(allManagers.entries()).map(([name, manager]) => {
-      const serviceInfo = this.container.getServiceInfo(name);
-      return {
-        name,
-        type: manager.type,
-        config: (serviceInfo?.metadata as any) || {},
-        status: serviceInfo?.enabled ? 'enabled' : 'disabled',
-        usage: {}
-      };
-    });
+    const managers = Array.from(allManagers.entries()).map(
+      ([name, manager]) => {
+        const serviceInfo = this.container.getServiceInfo(name);
+        return {
+          name,
+          type: manager.type,
+          config: (serviceInfo?.metadata as any)'' | '''' | ''{},
+          status: serviceInfo?.enabled ?'enabled' : 'disabled',
+          usage: {},
+        };
+      }
+    );
 
     return {
       eventTypes: this.eventTypes,
@@ -721,9 +772,11 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
    */
   setManagerEnabled(name: string, enabled: boolean) {
     const result = this.container.setServiceEnabled(name, enabled);
-    
+
     if (result.isOk()) {
-      this.logger.debug(`${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} manager: ${name}`);
+      this.logger.debug(
+        `${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} manager: ${name}`
+      );
       this.emit('manager-status-changed', { name, enabled });
     }
 
@@ -732,13 +785,16 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 
   // Private helper methods
 
-  private extractManagerCapabilities(manager: EventManager, config: EventManagerConfig): string[] {
+  private extractManagerCapabilities(
+    manager: EventManager,
+    config: EventManagerConfig
+  ): string[] {
     const capabilities: string[] = [];
-    
+
     if (manager.type) capabilities.push(manager.type);
     if (manager.name) capabilities.push(`name:${manager.name}`);
     if (config.type) capabilities.push(`config-type:${config.type}`);
-    
+
     // Extract capabilities from manager properties
     if (typeof manager === 'object') {
       if ('capabilities' in manager && Array.isArray(manager.capabilities)) {
@@ -754,38 +810,44 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
       // Basic health check - more sophisticated checks can be added
       if (typeof factory === 'object' && factory !== null) {
         // Check if factory has health check method
-        if ('healthCheck' in factory && typeof factory.healthCheck === 'function') {
+        if (
+          'healthCheck' in factory &&
+          typeof factory.healthCheck === 'function'
+        ) {
           return factory.healthCheck();
         }
-        
+
         // Default: assume healthy if factory exists
         return true;
       }
 
       return false;
-
     } catch (error) {
       this.logger.warn(`⚠️ Factory health check failed:`, error);
       return false;
     }
   }
 
-  private async performManagerHealthCheck(manager: EventManager): Promise<boolean> {
+  private async performManagerHealthCheck(
+    manager: EventManager
+  ): Promise<boolean> {
     try {
       // Basic health check - more sophisticated checks can be added
       if (typeof manager === 'object' && manager !== null) {
         // Check if manager has health check method
-        if ('healthCheck' in manager && typeof manager.healthCheck === 'function') {
+        if (
+          'healthCheck' in manager &&
+          typeof manager.healthCheck === 'function'
+        ) {
           const result = await manager.healthCheck();
           return result && result.status === 'healthy';
         }
-        
+
         // Default: assume healthy if manager exists
         return true;
       }
 
       return false;
-
     } catch (error) {
       this.logger.warn(`⚠️ Manager health check failed:`, error);
       return false;
@@ -885,7 +947,9 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
       });
     }
 
-    this.logger.debug(`🏷️ Registered ${defaultEventTypes.length} default event types`);
+    this.logger.debug(
+      `🏷️ Registered ${defaultEventTypes.length} default event types`
+    );
   }
 
   private async performEventDiscovery(): Promise<void> {
@@ -902,7 +966,7 @@ export class MigratedEventRegistry extends TypedEventBase implements EventManage
 /**
  * Global registry instance for backward compatibility
  */
-let migratedEventRegistryInstance: MigratedEventRegistry | null = null;
+let migratedEventRegistryInstance: MigratedEventRegistry'' | ''null = null;
 
 /**
  * Get singleton instance (compatible with globalEventRegistry)
@@ -911,7 +975,7 @@ export function getMigratedEventRegistry(): MigratedEventRegistry {
   if (!migratedEventRegistryInstance) {
     migratedEventRegistryInstance = new MigratedEventRegistry();
     // Auto-initialize for convenience
-    migratedEventRegistryInstance.initialize().catch(error => {
+    migratedEventRegistryInstance.initialize().catch((error) => {
       console.error('Failed to initialize MigratedEventRegistry:', error);
     });
   }

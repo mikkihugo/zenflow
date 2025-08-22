@@ -325,42 +325,128 @@
  * @license MIT
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Framework
  */
-export { BrainService, getBrainService, initializeBrainService, type BrainAnalysisRequest, type BrainOptimizationRequest, type BrainResponse } from '../core/brain-service.js';
+export {
+  BrainService,
+  getBrainService,
+  initializeBrainService,
+  type BrainAnalysisRequest,
+  type BrainOptimizationRequest,
+  type BrainResponse,
+} from '../core/brain-service.js';
 export { DSPyEngine, createDSPyEngine } from '../core/dspy-engine.js';
 export { getDSPyService, initializeDSPyService } from '../core/service.js';
 export { DSPyModule } from '../primitives/module';
 export { Example } from '../primitives/example';
 export { type Prediction, PredictionUtils } from '../primitives/prediction';
 export { SeededRNG } from '../primitives/seeded-rng';
-export { type LMInterface, type GenerationOptions, type ModelInfo, type ModelUsage, BaseLM } from '../interfaces/lm';
-export { type MetricFunction, type CompileOptions, type PredictorSignature, type FieldSpec, type Predictor, type TrainingData, type EvaluationResult, type OptimizationCandidate, type Hyperparameter, type OptimizationConfig, type ModelConfig, type CacheEntry, type ProgressCallback, type Logger, DSPyError, ValidationError, OptimizationError, ModelError } from '../interfaces/types';
-export { type Adapter, type FinetuneDataInput, type FinetuneDataOutput, type InferenceDataInput, type InferenceDataOutput, type EvaluationDataInput, type EvaluationDataOutput, BaseAdapter } from '../interfaces/adapter';
-export { ChatAdapter, type ChatAdapterConfig, type ChatMessage } from '../adapters/chat-adapter';
+export {
+  type LMInterface,
+  type GenerationOptions,
+  type ModelInfo,
+  type ModelUsage,
+  BaseLM,
+} from '../interfaces/lm';
+export {
+  type MetricFunction,
+  type CompileOptions,
+  type PredictorSignature,
+  type FieldSpec,
+  type Predictor,
+  type TrainingData,
+  type EvaluationResult,
+  type OptimizationCandidate,
+  type Hyperparameter,
+  type OptimizationConfig,
+  type ModelConfig,
+  type CacheEntry,
+  type ProgressCallback,
+  type Logger,
+  DSPyError,
+  ValidationError,
+  OptimizationError,
+  ModelError,
+} from '../interfaces/types';
+export {
+  type Adapter,
+  type FinetuneDataInput,
+  type FinetuneDataOutput,
+  type InferenceDataInput,
+  type InferenceDataOutput,
+  type EvaluationDataInput,
+  type EvaluationDataOutput,
+  BaseAdapter,
+} from '../interfaces/adapter';
+export {
+  ChatAdapter,
+  type ChatAdapterConfig,
+  type ChatMessage,
+} from '../adapters/chat-adapter';
 export { Teleprompter } from '../teleprompters/teleprompter';
-export { BootstrapFinetune, FinetuneTeleprompter, FailedPrediction } from '../teleprompters/bootstrap-finetune';
+export {
+  BootstrapFinetune,
+  FinetuneTeleprompter,
+  FailedPrediction,
+} from '../teleprompters/bootstrap-finetune';
 export type { BootstrapFinetuneConfig } from '../teleprompters/bootstrap-finetune';
 export type { TraceData } from '../teleprompters/bootstrap-finetune';
 export { MIPROv2 } from '../teleprompters/miprov2';
 export type { MIPROv2Config } from '../teleprompters/miprov2';
-export type { InstructionCandidates, DemoCandidates, TrialLog } from '../teleprompters/miprov2';
+export type {
+  InstructionCandidates,
+  DemoCandidates,
+  TrialLog,
+} from '../teleprompters/miprov2';
 export { Ensemble } from '../teleprompters/ensemble';
 export type { EnsembleConfig } from '../teleprompters/ensemble';
-export { GEPA, DspyGEPAResult, type GEPAFeedbackMetric, type ScoreWithFeedback, type DSPyTrace, AUTO_RUN_SETTINGS } from '../teleprompters/gepa';
-export { BootstrapFewShot, LabeledFewShot, type BootstrapConfig, DEFAULT_BOOTSTRAP_CONFIG, type BootstrapCompileOptions } from '../teleprompters/bootstrap';
-export { COPRO, type BasicGenerateInstructionSignature, type GenerateInstructionGivenAttemptsSignature, type InstructionCompletions, type CoproCandidate, type CoproStats } from '../teleprompters/copro';
-export { BootstrapFewShotWithRandomSearch, type CandidateResult } from '../teleprompters/bootstrap-random-search';
+export {
+  GEPA,
+  DspyGEPAResult,
+  type GEPAFeedbackMetric,
+  type ScoreWithFeedback,
+  type DSPyTrace,
+  AUTO_RUN_SETTINGS,
+} from '../teleprompters/gepa';
+export {
+  BootstrapFewShot,
+  LabeledFewShot,
+  type BootstrapConfig,
+  DEFAULT_BOOTSTRAP_CONFIG,
+  type BootstrapCompileOptions,
+} from '../teleprompters/bootstrap';
+export {
+  COPRO,
+  type BasicGenerateInstructionSignature,
+  type GenerateInstructionGivenAttemptsSignature,
+  type InstructionCompletions,
+  type CoproCandidate,
+  type CoproStats,
+} from '../teleprompters/copro';
+export {
+  BootstrapFewShotWithRandomSearch,
+  type CandidateResult,
+} from '../teleprompters/bootstrap-random-search';
 export { SignatureOptimizer } from '../teleprompters/signature-opt';
-export { AvatarOptimizer, type EvalResult, type ActionOutput, type ComparatorSignature, type FeedbackBasedInstructionSignature, type AvatarModule } from '../teleprompters/avatar-optimizer';
+export {
+  AvatarOptimizer,
+  type EvalResult,
+  type ActionOutput,
+  type ComparatorSignature,
+  type FeedbackBasedInstructionSignature,
+  type AvatarModule,
+} from '../teleprompters/avatar-optimizer';
 export { BetterTogether } from '../teleprompters/better-together';
 /**
  * Foundation-based Evaluate class for real evaluation
  */
 export declare class Evaluate {
-    private config;
-    constructor(config: any);
-    evaluate(program: any, dataset: any[]): Promise<{
-        score: number;
-    }>;
-    private calculateStringSimilarity;
+  private config;
+  constructor(config: any);
+  evaluate(
+    program: any,
+    dataset: any[]
+  ): Promise<{
+    score: number;
+  }>;
+  private calculateStringSimilarity;
 }
 //# sourceMappingURL=index.d.ts.map

@@ -1,17 +1,17 @@
 /**
  * @fileoverview Task Complexity Estimation System
- * 
+ *
  * Uses machine learning to automatically estimate task complexity based on
  * prompt content, context, and historical patterns. Helps the autonomous
  * optimization engine make better decisions about which method to use.
- * 
+ *
  * Features:
  * - Natural language analysis of prompts
  * - Context complexity scoring
  * - Historical pattern matching
  * - ML-based complexity prediction
  * - Continuous learning from feedback
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0
  */
@@ -37,9 +37,9 @@ export interface ComplexityEstimate {
   readonly estimatedComplexity: number; // 0-1 scale
   readonly confidence: number;
   readonly reasoning: string[];
-  readonly suggestedMethod: 'dspy' | 'ml' | 'hybrid';
+  readonly suggestedMethod: 'dspy | ml' | 'hybrid';
   readonly estimatedDuration: number; // milliseconds
-  readonly difficultyLevel: 'trivial' | 'easy' | 'medium' | 'hard' | 'expert';
+  readonly difficultyLevel: 'trivial | easy' | 'medium' | 'hard' | 'expert';
   readonly keyFactors: string[];
 }
 
@@ -53,7 +53,7 @@ export interface ComplexityPattern {
 
 /**
  * Task Complexity Estimation System
- * 
+ *
  * Automatically estimates how complex a task is based on prompt analysis,
  * context evaluation, and machine learning patterns. This helps the
  * autonomous optimization engine choose the most appropriate method.
@@ -125,7 +125,11 @@ export class TaskComplexityEstimator {
       reasoning.push(`Context analysis: ${contextComplexity.reasoning}`);
 
       // 3. Pattern matching against historical data
-      const patternComplexity = await this.matchComplexityPatterns(task, prompt, context);
+      const patternComplexity = await this.matchComplexityPatterns(
+        task,
+        prompt,
+        context
+      );
       totalComplexity += patternComplexity.score * 0.2;
       reasoning.push(`Pattern matching: ${patternComplexity.reasoning}`);
 
@@ -138,16 +142,26 @@ export class TaskComplexityEstimator {
       const finalComplexity = Math.max(0, Math.min(1, totalComplexity));
 
       // Determine suggested optimization method
-      const suggestedMethod = this.suggestOptimizationMethod(finalComplexity, context);
+      const suggestedMethod = this.suggestOptimizationMethod(
+        finalComplexity,
+        context
+      );
 
       // Estimate duration based on complexity
-      const estimatedDuration = this.estimateDurationFromComplexity(finalComplexity, agentRole);
+      const estimatedDuration = this.estimateDurationFromComplexity(
+        finalComplexity,
+        agentRole
+      );
 
       // Determine difficulty level
       const difficultyLevel = this.mapComplexityToDifficulty(finalComplexity);
 
       // Extract key complexity factors
-      const keyFactors = this.extractKeyFactors(prompt, context, finalComplexity);
+      const keyFactors = this.extractKeyFactors(
+        prompt,
+        context,
+        finalComplexity
+      );
 
       // Adjust confidence based on available data
       if (this.complexityHistory.length >= 10) {
@@ -161,15 +175,17 @@ export class TaskComplexityEstimator {
         suggestedMethod,
         estimatedDuration,
         difficultyLevel,
-        keyFactors
+        keyFactors,
       };
 
-      logger.info(`🎯 Complexity estimated: ${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested`);
+      logger.info(
+        `🎯 Complexity estimated: ${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested`
+      );
 
       return estimate;
     } catch (error) {
       logger.error('❌ Complexity estimation failed:', error);
-      
+
       // Return safe default estimate
       return {
         estimatedComplexity: 0.5,
@@ -178,7 +194,7 @@ export class TaskComplexityEstimator {
         suggestedMethod: 'hybrid',
         estimatedDuration: 5000,
         difficultyLevel: 'medium',
-        keyFactors: ['estimation-error']
+        keyFactors: ['estimation-error'],
       };
     }
   }
@@ -208,7 +224,7 @@ export class TaskComplexityEstimator {
         actualComplexity,
         actualDuration,
         actualSuccess,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       // Add to history
@@ -216,7 +232,9 @@ export class TaskComplexityEstimator {
 
       // Maintain history size
       if (this.complexityHistory.length > this.maxHistorySize) {
-        this.complexityHistory = this.complexityHistory.slice(-this.maxHistorySize);
+        this.complexityHistory = this.complexityHistory.slice(
+          -this.maxHistorySize
+        );
       }
 
       // Update ML models with new data
@@ -225,7 +243,9 @@ export class TaskComplexityEstimator {
       // Update keyword weights based on outcome
       await this.updateKeywordWeights(prompt, actualComplexity);
 
-      logger.debug(`📚 Learned from task outcome: ${task} (complexity: ${actualComplexity.toFixed(2)})`);
+      logger.debug(
+        `📚 Learned from task outcome: ${task} (complexity: ${actualComplexity.toFixed(2)})`
+      );
     } catch (error) {
       logger.error('❌ Failed to learn from outcome:', error);
     }
@@ -241,22 +261,28 @@ export class TaskComplexityEstimator {
     patternCount: number;
     topComplexityFactors: string[];
   } {
-    const estimationsWithActual = this.complexityHistory.filter(h => h.actualComplexity !== undefined);
-    
+    const estimationsWithActual = this.complexityHistory.filter(
+      (h) => h.actualComplexity !== undefined
+    );
+
     let accuracyRate = 0;
     if (estimationsWithActual.length > 0) {
       // Calculate how often our estimates were within 20% of actual
-      const accurateEstimations = estimationsWithActual.filter(h => {
+      const accurateEstimations = estimationsWithActual.filter((h) => {
         // We need to re-estimate to compare (simplified for stats)
-        const simpleEstimate = this.getSimpleComplexityEstimate(h.prompt, h.context);
+        const simpleEstimate = this.getSimpleComplexityEstimate(
+          h.prompt,
+          h.context
+        );
         return Math.abs(simpleEstimate - h.actualComplexity!) < 0.2;
       });
       accuracyRate = accurateEstimations.length / estimationsWithActual.length;
     }
 
-    const averageComplexity = estimationsWithActual.length > 0 
-      ? ss.mean(estimationsWithActual.map(h => h.actualComplexity!))
-      : 0.5;
+    const averageComplexity =
+      estimationsWithActual.length > 0
+        ? ss.mean(estimationsWithActual.map((h) => h.actualComplexity!))
+        : 0.5;
 
     // Get top complexity factors from keyword weights
     const topFactors = Array.from(this.keywordWeights.entries())
@@ -269,13 +295,16 @@ export class TaskComplexityEstimator {
       averageComplexity,
       accuracyRate,
       patternCount: this.complexityPatterns.length,
-      topComplexityFactors: topFactors
+      topComplexityFactors: topFactors,
     };
   }
 
   // Private helper methods
 
-  private analyzePromptComplexity(prompt: string): { score: number; reasoning: string } {
+  private analyzePromptComplexity(prompt: string): {
+    score: number;
+    reasoning: string;
+  } {
     let complexity = 0;
     const factors: string[] = [];
 
@@ -291,12 +320,26 @@ export class TaskComplexityEstimator {
 
     // Technical complexity keywords
     const technicalKeywords = [
-      'algorithm', 'optimize', 'analyze', 'implement', 'design', 'architecture',
-      'machine learning', 'neural network', 'database', 'performance', 'security',
-      'distributed', 'concurrent', 'async', 'parallel', 'complex', 'advanced'
+      'algorithm',
+      'optimize',
+      'analyze',
+      'implement',
+      'design',
+      'architecture',
+      'machine learning',
+      'neural network',
+      'database',
+      'performance',
+      'security',
+      'distributed',
+      'concurrent',
+      'async',
+      'parallel',
+      'complex',
+      'advanced',
     ];
 
-    const technicalMatches = technicalKeywords.filter(keyword => 
+    const technicalMatches = technicalKeywords.filter((keyword) =>
       prompt.toLowerCase().includes(keyword)
     ).length;
 
@@ -306,21 +349,30 @@ export class TaskComplexityEstimator {
     }
 
     // Question complexity
-    const questionMarks = (prompt.match(/\?/g) || []).length;
+    const questionMarks = (prompt.match(/\?/g)'' | '''' | ''[]).length;
     if (questionMarks > 3) {
       complexity += 0.2;
       factors.push('multiple questions');
     }
 
     // Code-related complexity
-    if (prompt.includes('```') || prompt.includes('function') || prompt.includes('class')) {
+    if (
+      prompt.includes('```')'' | '''' | ''prompt.includes('function')'' | '''' | ''prompt.includes('class')
+    ) {
       complexity += 0.2;
       factors.push('code involved');
     }
 
     // Multi-step indicators
-    const stepIndicators = ['step', 'first', 'then', 'next', 'finally', 'after'];
-    const stepMatches = stepIndicators.filter(indicator => 
+    const stepIndicators = [
+      'step',
+      'first',
+      'then',
+      'next',
+      'finally',
+      'after',
+    ];
+    const stepMatches = stepIndicators.filter((indicator) =>
       prompt.toLowerCase().includes(indicator)
     ).length;
 
@@ -331,11 +383,14 @@ export class TaskComplexityEstimator {
 
     return {
       score: Math.min(complexity, 1),
-      reasoning: factors.length > 0 ? factors.join(', ') : 'simple prompt'
+      reasoning: factors.length > 0 ? factors.join(', ') : 'simple prompt',
     };
   }
 
-  private analyzeContextComplexity(context: Record<string, any>): { score: number; reasoning: string } {
+  private analyzeContextComplexity(context: Record<string, any>): {
+    score: number;
+    reasoning: string;
+  } {
     let complexity = 0;
     const factors: string[] = [];
 
@@ -368,8 +423,14 @@ export class TaskComplexityEstimator {
 
     // Complexity hints in context values
     const contextString = JSON.stringify(context).toLowerCase();
-    const complexityKeywords = ['complex', 'advanced', 'difficult', 'expert', 'sophisticated'];
-    const complexityHints = complexityKeywords.filter(keyword => 
+    const complexityKeywords = [
+      'complex',
+      'advanced',
+      'difficult',
+      'expert',
+      'sophisticated',
+    ];
+    const complexityHints = complexityKeywords.filter((keyword) =>
       contextString.includes(keyword)
     ).length;
 
@@ -380,7 +441,7 @@ export class TaskComplexityEstimator {
 
     return {
       score: Math.min(complexity, 1),
-      reasoning: factors.length > 0 ? factors.join(', ') : 'simple context'
+      reasoning: factors.length > 0 ? factors.join(', ') : 'simple context',
     };
   }
 
@@ -396,8 +457,9 @@ export class TaskComplexityEstimator {
       let matchScore = 0;
 
       // Check keyword matches
-      const keywordMatches = pattern.keywords.filter(keyword =>
-        prompt.toLowerCase().includes(keyword) || task.toLowerCase().includes(keyword)
+      const keywordMatches = pattern.keywords.filter(
+        (keyword) =>
+          prompt.toLowerCase().includes(keyword)'' | '''' | ''task.toLowerCase().includes(keyword)
       ).length;
 
       if (keywordMatches > 0) {
@@ -405,7 +467,7 @@ export class TaskComplexityEstimator {
       }
 
       // Check context key matches
-      const contextMatches = pattern.contextKeys.filter(key =>
+      const contextMatches = pattern.contextKeys.filter((key) =>
         Object.prototype.hasOwnProperty.call(context, key)
       ).length;
 
@@ -419,41 +481,57 @@ export class TaskComplexityEstimator {
       }
     }
 
-    const patternComplexity = bestMatch > 0.5 ? 
-      this.complexityPatterns.find(p => p.keywords.join(', ') === bestPattern)?.complexity || 0.5 : 0.5;
+    const patternComplexity =
+      bestMatch > 0.5
+        ? this.complexityPatterns.find(
+            (p) => p.keywords.join(', ') === bestPattern
+          )?.complexity'' | '''' | ''0.5
+        : 0.5;
 
     return {
       score: patternComplexity * bestMatch,
-      reasoning: bestMatch > 0.5 ? `matched pattern: ${bestPattern}` : 'no strong pattern match'
+      reasoning:
+        bestMatch > 0.5
+          ? `matched pattern: ${bestPattern}`
+          :'no strong pattern match',
     };
   }
 
-  private analyzeRoleComplexity(agentRole?: string): { score: number; reasoning: string } {
+  private analyzeRoleComplexity(agentRole?: string): {
+    score: number;
+    reasoning: string;
+  } {
     if (!agentRole) {
-      return { score: 0, reasoning: 'no role specified' };
+      return { score: 0, reasoning: 'no role specified'};
     }
 
     const roleComplexities = {
-      'architect': 0.8,
-      'expert': 0.9,
-      'specialist': 0.7,
-      'analyst': 0.6,
-      'researcher': 0.7,
-      'coordinator': 0.5,
-      'manager': 0.4,
-      'assistant': 0.3,
-      'helper': 0.2
+      architect: 0.8,
+      expert: 0.9,
+      specialist: 0.7,
+      analyst: 0.6,
+      researcher: 0.7,
+      coordinator: 0.5,
+      manager: 0.4,
+      assistant: 0.3,
+      helper: 0.2,
     };
 
-    const complexity = roleComplexities[agentRole.toLowerCase() as keyof typeof roleComplexities] || 0.5;
+    const complexity =
+      roleComplexities[
+        agentRole.toLowerCase() as keyof typeof roleComplexities
+      ]'' | '''' | ''0.5;
 
     return {
       score: complexity * 0.3, // Scale down role impact
-      reasoning: `${agentRole} role (${(complexity * 100).toFixed(0)}% complexity)`
+      reasoning: `${agentRole} role (${(complexity * 100).toFixed(0)}% complexity)`,
     };
   }
 
-  private suggestOptimizationMethod(complexity: number, context: Record<string, any>): 'dspy' | 'ml' | 'hybrid' {
+  private suggestOptimizationMethod(
+    complexity: number,
+    context: Record<string, any>
+  ):'dspy | ml' | 'hybrid' {
     // High complexity tasks benefit from DSPy's sophisticated optimization
     if (complexity > 0.7) {
       return 'dspy';
@@ -473,29 +551,37 @@ export class TaskComplexityEstimator {
     return 'ml';
   }
 
-  private estimateDurationFromComplexity(complexity: number, agentRole?: string): number {
+  private estimateDurationFromComplexity(
+    complexity: number,
+    agentRole?: string
+  ): number {
     // Base duration: 1-15 seconds based on complexity
-    let baseDuration = 1000 + (complexity * 14000);
+    let baseDuration = 1000 + complexity * 14000;
 
     // Role adjustments
     if (agentRole) {
       const roleMultipliers = {
-        'expert': 1.3,
-        'architect': 1.4,
-        'specialist': 1.2,
-        'analyst': 1.1,
-        'assistant': 0.8,
-        'helper': 0.7
+        expert: 1.3,
+        architect: 1.4,
+        specialist: 1.2,
+        analyst: 1.1,
+        assistant: 0.8,
+        helper: 0.7,
       };
 
-      const multiplier = roleMultipliers[agentRole.toLowerCase() as keyof typeof roleMultipliers] || 1.0;
+      const multiplier =
+        roleMultipliers[
+          agentRole.toLowerCase() as keyof typeof roleMultipliers
+        ]'' | '''' | ''1.0;
       baseDuration *= multiplier;
     }
 
     return Math.round(baseDuration);
   }
 
-  private mapComplexityToDifficulty(complexity: number): 'trivial' | 'easy' | 'medium' | 'hard' | 'expert' {
+  private mapComplexityToDifficulty(
+    complexity: number
+  ):'trivial | easy' | 'medium' | 'hard' | 'expert' {
     if (complexity < 0.1) return 'trivial';
     if (complexity < 0.3) return 'easy';
     if (complexity < 0.6) return 'medium';
@@ -503,7 +589,11 @@ export class TaskComplexityEstimator {
     return 'expert';
   }
 
-  private extractKeyFactors(prompt: string, context: Record<string, any>, complexity: number): string[] {
+  private extractKeyFactors(
+    prompt: string,
+    context: Record<string, any>,
+    complexity: number
+  ): string[] {
     const factors: string[] = [];
 
     // High-weight keywords
@@ -532,43 +622,50 @@ export class TaskComplexityEstimator {
   private initializeComplexityPatterns(): void {
     this.complexityPatterns = [
       {
-        keywords: ['machine learning', 'neural network', 'ai', 'model training'],
+        keywords: [
+          'machine learning',
+          'neural network',
+          'ai',
+          'model training',
+        ],
         contextKeys: ['modelSize', 'trainingData', 'epochs'],
         complexity: 0.9,
         weight: 1.0,
-        examples: ['Train a neural network', 'Optimize ML model']
+        examples: ['Train a neural network', 'Optimize ML model'],
       },
       {
         keywords: ['algorithm', 'optimization', 'performance', 'efficiency'],
         contextKeys: ['dataSize', 'complexity', 'constraints'],
         complexity: 0.8,
         weight: 0.9,
-        examples: ['Optimize algorithm performance', 'Improve efficiency']
+        examples: ['Optimize algorithm performance', 'Improve efficiency'],
       },
       {
         keywords: ['architecture', 'design', 'system', 'distributed'],
         contextKeys: ['components', 'scalability', 'requirements'],
         complexity: 0.7,
         weight: 0.8,
-        examples: ['Design system architecture', 'Plan distributed system']
+        examples: ['Design system architecture', 'Plan distributed system'],
       },
       {
         keywords: ['analysis', 'research', 'investigation', 'study'],
         contextKeys: ['sources', 'methodology', 'depth'],
         complexity: 0.6,
         weight: 0.7,
-        examples: ['Analyze data patterns', 'Research best practices']
+        examples: ['Analyze data patterns', 'Research best practices'],
       },
       {
         keywords: ['simple', 'basic', 'quick', 'straightforward'],
         contextKeys: ['simple', 'basic'],
         complexity: 0.2,
         weight: 0.5,
-        examples: ['Simple task', 'Basic operation']
-      }
+        examples: ['Simple task', 'Basic operation'],
+      },
     ];
 
-    logger.debug(`📋 Initialized ${this.complexityPatterns.length} complexity patterns`);
+    logger.debug(
+      `📋 Initialized ${this.complexityPatterns.length} complexity patterns`
+    );
   }
 
   private initializeKeywordWeights(): void {
@@ -587,7 +684,7 @@ export class TaskComplexityEstimator {
       ['implement', 0.5],
       ['simple', 0.2],
       ['basic', 0.2],
-      ['quick', 0.1]
+      ['quick', 0.1],
     ]);
 
     this.keywordWeights = initialWeights;
@@ -600,18 +697,20 @@ export class TaskComplexityEstimator {
     try {
       // Prepare training data for regression
       const trainingData = this.complexityHistory
-        .filter(h => h.actualComplexity !== undefined)
-        .map(h => {
+        .filter((h) => h.actualComplexity !== undefined)
+        .map((h) => {
           const features = this.extractNumericalFeatures(h.prompt, h.context);
           return [features, h.actualComplexity!] as [number[], number];
         });
 
       if (trainingData.length >= 5) {
         // Simple linear regression using feature averages as predictors
-        const points: [number, number][] = trainingData.map(([features, complexity]) => [
-          features.reduce((sum, val) => sum + val, 0) / features.length, // Average feature value
-          complexity
-        ]);
+        const points: [number, number][] = trainingData.map(
+          ([features, complexity]) => [
+            features.reduce((sum, val) => sum + val, 0) / features.length, // Average feature value
+            complexity,
+          ]
+        );
 
         this.complexityRegressor = regression.linear(points);
         logger.debug('📈 Updated complexity regression model');
@@ -624,7 +723,7 @@ export class TaskComplexityEstimator {
   private updateKeywordWeights(prompt: string, actualComplexity: number): void {
     // Simple weight adjustment based on correlation
     const words = prompt.toLowerCase().split(/\s+/);
-    
+
     for (const word of words) {
       if (this.keywordWeights.has(word)) {
         const currentWeight = this.keywordWeights.get(word)!;
@@ -636,22 +735,28 @@ export class TaskComplexityEstimator {
     }
   }
 
-  private extractNumericalFeatures(prompt: string, context: Record<string, any>): number[] {
+  private extractNumericalFeatures(
+    prompt: string,
+    context: Record<string, any>
+  ): number[] {
     return [
       prompt.length / 1000, // Normalized length
       Object.keys(context).length / 10, // Normalized context size
-      (prompt.match(/\?/g) || []).length / 5, // Normalized question count
+      (prompt.match(/\?/g)'' | '''' | ''[]).length / 5, // Normalized question count
       prompt.toLowerCase().includes('complex') ? 1 : 0,
-      prompt.toLowerCase().includes('simple') ? 1 : 0
+      prompt.toLowerCase().includes('simple') ? 1 : 0,
     ];
   }
 
-  private getSimpleComplexityEstimate(prompt: string, context: Record<string, any>): number {
+  private getSimpleComplexityEstimate(
+    prompt: string,
+    context: Record<string, any>
+  ): number {
     // Simplified estimation for stats calculation
     const promptComplexity = this.analyzePromptComplexity(prompt);
     const contextComplexity = this.analyzeContextComplexity(context);
-    
-    return (promptComplexity.score * 0.6) + (contextComplexity.score * 0.4);
+
+    return promptComplexity.score * 0.6 + contextComplexity.score * 0.4;
   }
 }
 

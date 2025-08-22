@@ -1,11 +1,11 @@
 /**
  * @fileoverview Autonomous Teleprompter Selector - Intelligent ML Selection
- * 
+ *
  * Provides autonomous selection between basic mathematical teleprompters and
  * ML-enhanced variants using the DSPy-Brain ML Bridge for intelligent analysis.
  * This system automatically determines whether to use standard optimization
  * or advanced ML capabilities based on task characteristics and performance history.
- * 
+ *
  * Key Features:
  * - 🤖 Autonomous teleprompter selection using ML analysis
  * - 📊 Performance-based decision making with historical data
@@ -14,14 +14,14 @@
  * - 🎯 Multi-objective optimization (accuracy, speed, memory, complexity)
  * - 📈 Confidence scoring and uncertainty quantification
  * - 🔄 Fallback mechanisms for robust operation
- * 
+ *
  * Architecture:
  * - Task analysis using natural language processing and pattern recognition
  * - Historical performance tracking for each teleprompter variant
  * - ML-powered recommendation engine using DSPy-Brain Bridge
  * - Confidence-based selection with fallback to proven alternatives
  * - Real-time adaptation based on success/failure feedback
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 1.0.0
@@ -44,32 +44,32 @@ export interface OptimizationTask {
 }
 
 export interface TaskDomain {
-  type: 'nlp' | 'vision' | 'reasoning' | 'classification' | 'generation' | 'multimodal' | 'general';
+  type:'' | '''nlp | vision' | 'reasoning''' | '''classification | generation' | 'multimodal''' | '''general';
   specificArea?: string;
   dataCharacteristics: {
-    size: 'small' | 'medium' | 'large' | 'massive';
-    quality: 'poor' | 'fair' | 'good' | 'excellent';
-    complexity: 'simple' | 'moderate' | 'complex' | 'highly_complex';
+    size: 'small | medium' | 'large''' | '''massive';
+    quality: 'poor | fair' | 'good''' | '''excellent';
+    complexity: 'simple | moderate' | 'complex''' | '''highly_complex';
   };
 }
 
 export interface TaskComplexity {
-  computational: 'low' | 'medium' | 'high' | 'extreme';
-  algorithmic: 'basic' | 'intermediate' | 'advanced' | 'research_level';
-  dataVolume: 'tiny' | 'small' | 'medium' | 'large' | 'huge';
-  timeConstraints: 'relaxed' | 'moderate' | 'tight' | 'critical';
+  computational: 'low | medium' | 'high''' | '''extreme';
+  algorithmic: 'basic | intermediate' | 'advanced''' | '''research_level';
+  dataVolume: 'tiny | small' | 'medium' | 'large' | 'huge';
+  timeConstraints: 'relaxed | moderate' | 'tight''' | '''critical';
 }
 
 export interface TaskRequirements {
   minimumAccuracy: number;
   maximumLatency: number;
   memoryConstraints: number;
-  robustness: 'basic' | 'moderate' | 'high' | 'critical';
-  interpretability: 'not_required' | 'helpful' | 'important' | 'mandatory';
+  robustness: 'basic | moderate' | 'high''' | '''critical';
+  interpretability: 'not_required | helpful' | 'important''' | '''mandatory';
 }
 
 export interface TaskConstraints {
-  computationalBudget: 'unlimited' | 'high' | 'moderate' | 'limited' | 'minimal';
+  computationalBudget:'' | '''unlimited | high' | 'moderate' | 'limited' | 'minimal';
   timeLimit: number; // milliseconds
   memoryLimit: number; // MB
   qualityThreshold: number; // 0-1
@@ -89,8 +89,8 @@ export interface TeleprompterSelection {
 
 export interface TeleprompterVariant {
   name: string;
-  type: 'basic' | 'ml_enhanced';
-  algorithm: 'miprov2' | 'copro' | 'bootstrap' | 'grpo' | 'custom';
+  type: 'basic''' | '''ml_enhanced';
+  algorithm: 'miprov2 | copro' | 'bootstrap' | 'grpo' | 'custom';
   implementation: string; // Class name or identifier
   capabilities: string[];
   requiredResources: ResourceRequirements;
@@ -98,9 +98,9 @@ export interface TeleprompterVariant {
 }
 
 export interface ResourceRequirements {
-  computationLevel: 'minimal' | 'low' | 'moderate' | 'high' | 'intensive';
+  computationLevel: 'minimal | low' | 'moderate' | 'high' | 'intensive';
   memoryUsage: number; // MB
-  timeComplexity: 'O(1)' | 'O(log n)' | 'O(n)' | 'O(n log n)' | 'O(n²)' | 'O(2^n)';
+  timeComplexity:'' | '''O(1)''' | '''O(log n)''' | '''O(n)''' | '''O(n log n)''' | '''O(n²)''' | '''O(2^n)';
   gpuRequired: boolean;
   networkAccess: boolean;
 }
@@ -111,14 +111,14 @@ export interface PerformanceEstimate {
   memory: { mean: number; std: number; min: number; max: number };
   robustness: number;
   confidence: number;
-  sourceData: 'historical' | 'predicted' | 'hybrid';
+  sourceData: 'historical | predicted' | 'hybrid';
 }
 
 export interface SelectionMetadata {
   analysisTime: number;
   decisionFactors: Array<{ factor: string; weight: number; value: number }>;
   uncertaintyFactors: string[];
-  recommendationSource: 'ml_bridge' | 'historical' | 'heuristic' | 'hybrid';
+  recommendationSource: 'ml_bridge | historical' | 'heuristic''' | '''hybrid';
   alternativeEvaluations: number;
   confidenceBreakdown: Record<string, number>;
 }
@@ -165,7 +165,7 @@ export interface PerformanceHistory {
 
 /**
  * Autonomous Teleprompter Selector - Intelligent ML Selection System
- * 
+ *
  * This class provides autonomous selection between basic mathematical teleprompters
  * and ML-enhanced variants using sophisticated analysis and machine learning.
  */
@@ -173,14 +173,14 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
   private logger: Logger;
   private mlBridge: DSPyBrainMLBridge;
   private initialized: boolean = false;
-  
+
   // Available teleprompter variants
   private availableVariants: Map<string, TeleprompterVariant> = new Map();
-  
+
   // Performance tracking
   private performanceHistory: Map<string, PerformanceHistory> = new Map();
   private recentRecords: TeleprompterPerformanceRecord[] = [];
-  
+
   // Selection analytics
   private selectionHistory: TeleprompterSelection[] = [];
   private adaptationParameters = {
@@ -190,9 +190,9 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
       accuracy: 0.4,
       speed: 0.3,
       memory: 0.2,
-      robustness: 0.1
+      robustness: 0.1,
     },
-    fallbackThreshold: 0.5
+    fallbackThreshold: 0.5,
   };
 
   constructor() {
@@ -209,93 +209,115 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
 
     try {
       this.logger.info('🤖 Initializing Autonomous Teleprompter Selector');
-      
+
       // Initialize ML Bridge
       await this.mlBridge.initialize();
-      
+
       // Register available teleprompter variants
       await this.registerTeleprompterVariants();
-      
+
       // Load historical performance data
       await this.loadPerformanceHistory();
-      
-      this.initialized = true;
-      this.logger.info(`✅ Autonomous Selector initialized with ${this.availableVariants.size} teleprompter variants`);
-      this.emit('selector:initialized', { timestamp: new Date() });
 
+      this.initialized = true;
+      this.logger.info(
+        `✅ Autonomous Selector initialized with ${this.availableVariants.size} teleprompter variants`
+      );
+      this.emit('selector:initialized', { timestamp: new Date() });
     } catch (error) {
-      this.logger.error('Failed to initialize Autonomous Teleprompter Selector:', error);
+      this.logger.error(
+        'Failed to initialize Autonomous Teleprompter Selector:',
+        error
+      );
       throw error;
     }
   }
 
   /**
    * Autonomously select the optimal teleprompter for a given optimization task.
-   * 
+   *
    * @param task - The optimization task to analyze
    * @returns Selected teleprompter with confidence and reasoning
    */
-  async selectOptimalTeleprompter(task: OptimizationTask): Promise<TeleprompterSelection> {
+  async selectOptimalTeleprompter(
+    task: OptimizationTask
+  ): Promise<TeleprompterSelection> {
     await this.initialize();
-    
+
     const startTime = Date.now();
-    this.logger.info(`🎯 Analyzing task for optimal teleprompter selection: ${task.id}`);
+    this.logger.info(
+      `🎯 Analyzing task for optimal teleprompter selection: ${task.id}`
+    );
 
     try {
       // Step 1: Analyze task characteristics using ML
       const taskAnalysis = await this.analyzeTaskCharacteristics(task);
-      
+
       // Step 2: Get ML-powered recommendation from DSPy-Brain Bridge
-      const mlRecommendation = await this.mlBridge.getIntelligentTeleprompterRecommendation(
-        this.generateTaskDescription(task)
-      );
-      
+      const mlRecommendation =
+        await this.mlBridge.getIntelligentTeleprompterRecommendation(
+          this.generateTaskDescription(task)
+        );
+
       // Step 3: Evaluate all available variants against task requirements
-      const variantEvaluations = await this.evaluateAllVariants(task, taskAnalysis);
-      
+      const variantEvaluations = await this.evaluateAllVariants(
+        task,
+        taskAnalysis
+      );
+
       // Step 4: Apply performance-based weighting using historical data
-      const weightedEvaluations = this.applyPerformanceWeighting(variantEvaluations, task);
-      
+      const weightedEvaluations = this.applyPerformanceWeighting(
+        variantEvaluations,
+        task
+      );
+
       // Step 5: Make final selection with confidence scoring
       const selection = this.makeFinalSelection(
         weightedEvaluations,
         mlRecommendation,
         task
       );
-      
+
       // Step 6: Generate comprehensive reasoning and alternatives
-      const finalSelection = await this.enrichSelection(selection, task, variantEvaluations);
-      
+      const finalSelection = await this.enrichSelection(
+        selection,
+        task,
+        variantEvaluations
+      );
+
       const analysisTime = Date.now() - startTime;
       finalSelection.selectionMetadata.analysisTime = analysisTime;
-      
+
       // Store selection for future learning
       this.selectionHistory.push(finalSelection);
-      
-      this.logger.info(`🎯 Selected teleprompter: ${finalSelection.selectedTeleprompter.name} (confidence: ${(finalSelection.confidence * 100).toFixed(1)}%)`);
-      
+
+      this.logger.info(
+        `🎯 Selected teleprompter: ${finalSelection.selectedTeleprompter.name} (confidence: ${(finalSelection.confidence * 100).toFixed(1)}%)`
+      );
+
       this.emit('teleprompter:selected', {
         task,
         selection: finalSelection,
-        analysisTime
+        analysisTime,
       });
-      
-      return finalSelection;
 
+      return finalSelection;
     } catch (error) {
       this.logger.error('Failed to select optimal teleprompter:', error);
-      
+
       // Fallback to safest option
       const fallbackSelection = this.createFallbackSelection(task);
-      this.logger.warn(`⚠️ Using fallback selection: ${fallbackSelection.selectedTeleprompter.name}`);
-      
+      this.logger.warn(
+        `⚠️ Using fallback selection: ${fallbackSelection.selectedTeleprompter.name}`
+      );
+
       return fallbackSelection;
     }
   }
 
   /**
    * Record the actual performance of a selected teleprompter for learning.
-   * 
+   *
    * @param taskId - The task ID
    * @param teleprompterName - The teleprompter that was used
    * @param actualPerformance - The actual performance achieved
@@ -320,13 +342,13 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
       executionContext: {
         systemLoad: await this.getSystemLoad(),
         memoryUsage: process.memoryUsage(),
-        nodeVersion: process.version
-      }
+        nodeVersion: process.version,
+      },
     };
 
     // Add to recent records
     this.recentRecords.push(record);
-    
+
     // Keep only last 1000 records for memory management
     if (this.recentRecords.length > 1000) {
       this.recentRecords.shift();
@@ -334,12 +356,14 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
 
     // Update performance history
     await this.updatePerformanceHistory(record);
-    
+
     // Adapt selection parameters based on feedback
     await this.adaptSelectionParameters(record);
-    
-    this.logger.info(`📊 Recorded performance for ${teleprompterName}: accuracy=${actualPerformance.accuracy.toFixed(3)}, success=${actualPerformance.success}`);
-    
+
+    this.logger.info(
+      `📊 Recorded performance for ${teleprompterName}: accuracy=${actualPerformance.accuracy.toFixed(3)}, success=${actualPerformance.success}`
+    );
+
     this.emit('performance:recorded', { record });
   }
 
@@ -360,7 +384,7 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
       performanceRecords: this.recentRecords.length,
       selectionHistory: this.selectionHistory.length,
       mlBridgeStatus: this.mlBridge.getStatus(),
-      adaptationParameters: this.adaptationParameters
+      adaptationParameters: this.adaptationParameters,
     };
   }
 
@@ -373,13 +397,17 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
       type: 'basic',
       algorithm: 'miprov2',
       implementation: 'MIPROv2',
-      capabilities: ['instruction_optimization', 'prefix_optimization', 'mathematical_approach'],
+      capabilities: [
+        'instruction_optimization',
+        'prefix_optimization',
+        'mathematical_approach',
+      ],
       requiredResources: {
         computationLevel: 'moderate',
         memoryUsage: 256,
         timeComplexity: 'O(n log n)',
         gpuRequired: false,
-        networkAccess: false
+        networkAccess: false,
       },
       estimatedPerformance: {
         accuracy: { mean: 0.75, std: 0.1, min: 0.6, max: 0.9 },
@@ -387,8 +415,8 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
         memory: { mean: 0.9, std: 0.1, min: 0.7, max: 1.0 },
         robustness: 0.8,
         confidence: 0.9,
-        sourceData: 'historical'
-      }
+        sourceData: 'historical',
+      },
     });
 
     // Register ML-enhanced variants
@@ -397,13 +425,18 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
       type: 'ml_enhanced',
       algorithm: 'miprov2',
       implementation: 'MIPROv2ML',
-      capabilities: ['bayesian_optimization', 'multi_objective', 'pattern_learning', 'statistical_validation'],
+      capabilities: [
+        'bayesian_optimization',
+        'multi_objective',
+        'pattern_learning',
+        'statistical_validation',
+      ],
       requiredResources: {
         computationLevel: 'high',
         memoryUsage: 1024,
         timeComplexity: 'O(n²)',
         gpuRequired: false,
-        networkAccess: false
+        networkAccess: false,
       },
       estimatedPerformance: {
         accuracy: { mean: 0.85, std: 0.08, min: 0.7, max: 0.95 },
@@ -411,14 +444,16 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
         memory: { mean: 0.7, std: 0.15, min: 0.5, max: 0.9 },
         robustness: 0.9,
         confidence: 0.8,
-        sourceData: 'predicted'
-      }
+        sourceData: 'predicted',
+      },
     });
 
     // Register other variants (bootstrap, copro, grpo)
     this.registerAdditionalVariants();
-    
-    this.logger.info(`📋 Registered ${this.availableVariants.size} teleprompter variants`);
+
+    this.logger.info(
+      `📋 Registered ${this.availableVariants.size} teleprompter variants`
+    );
   }
 
   private registerAdditionalVariants(): void {
@@ -434,16 +469,16 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
         memoryUsage: 128,
         timeComplexity: 'O(n)',
         gpuRequired: false,
-        networkAccess: false
+        networkAccess: false,
       },
       estimatedPerformance: {
-        accuracy: { mean: 0.70, std: 0.12, min: 0.5, max: 0.85 },
+        accuracy: { mean: 0.7, std: 0.12, min: 0.5, max: 0.85 },
         speed: { mean: 0.9, std: 0.1, min: 0.7, max: 1.0 },
         memory: { mean: 0.95, std: 0.05, min: 0.85, max: 1.0 },
         robustness: 0.7,
         confidence: 0.85,
-        sourceData: 'historical'
-      }
+        sourceData: 'historical',
+      },
     });
 
     // COPRO variants
@@ -458,7 +493,7 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
         memoryUsage: 512,
         timeComplexity: 'O(n log n)',
         gpuRequired: false,
-        networkAccess: false
+        networkAccess: false,
       },
       estimatedPerformance: {
         accuracy: { mean: 0.78, std: 0.09, min: 0.65, max: 0.9 },
@@ -466,19 +501,25 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
         memory: { mean: 0.85, std: 0.12, min: 0.6, max: 1.0 },
         robustness: 0.75,
         confidence: 0.8,
-        sourceData: 'historical'
-      }
+        sourceData: 'historical',
+      },
     });
   }
 
-  private async analyzeTaskCharacteristics(task: OptimizationTask): Promise<any> {
+  private async analyzeTaskCharacteristics(
+    task: OptimizationTask
+  ): Promise<any> {
     // Analyze task using ML Bridge capabilities
     const features = {
       domainComplexity: this.calculateDomainComplexity(task.domain),
-      computationalRequirements: this.estimateComputationalRequirements(task.complexity),
-      dataCharacteristics: this.analyzeDataCharacteristics(task.domain.dataCharacteristics),
+      computationalRequirements: this.estimateComputationalRequirements(
+        task.complexity
+      ),
+      dataCharacteristics: this.analyzeDataCharacteristics(
+        task.domain.dataCharacteristics
+      ),
       constraintsSeverity: this.assessConstraints(task.constraints),
-      requirementsStrictness: this.assessRequirements(task.requirements)
+      requirementsStrictness: this.assessRequirements(task.requirements),
     };
 
     return features;
@@ -486,7 +527,7 @@ export class AutonomousTeleprompterSelector extends TypedEventBase {
 
   private generateTaskDescription(task: OptimizationTask): string {
     return `
-Domain: ${task.domain.type} (${task.domain.specificArea || 'general'})
+Domain: ${task.domain.type} (${task.domain.specificArea'' | '''' | '''general'})
 Data: ${task.domain.dataCharacteristics.size} size, ${task.domain.dataCharacteristics.quality} quality, ${task.domain.dataCharacteristics.complexity} complexity
 Computational: ${task.complexity.computational} computation, ${task.complexity.algorithmic} algorithm complexity
 Requirements: ${task.requirements.minimumAccuracy} min accuracy, ${task.requirements.maximumLatency}ms max latency
@@ -495,48 +536,61 @@ Description: ${task.description}
     `.trim();
   }
 
-  private async evaluateAllVariants(task: OptimizationTask, taskAnalysis: any): Promise<Map<string, number>> {
+  private async evaluateAllVariants(
+    task: OptimizationTask,
+    taskAnalysis: any
+  ): Promise<Map<string, number>> {
     const evaluations = new Map<string, number>();
-    
+
     for (const [name, variant] of this.availableVariants) {
       const score = this.evaluateVariantForTask(variant, task, taskAnalysis);
       evaluations.set(name, score);
     }
-    
+
     return evaluations;
   }
 
-  private evaluateVariantForTask(variant: TeleprompterVariant, task: OptimizationTask, analysis: any): number {
+  private evaluateVariantForTask(
+    variant: TeleprompterVariant,
+    task: OptimizationTask,
+    analysis: any
+  ): number {
     const weights = this.adaptationParameters.performanceWeights;
-    
+
     // Calculate fit scores for each dimension
     const accuracyFit = this.calculateAccuracyFit(variant, task);
     const speedFit = this.calculateSpeedFit(variant, task);
     const memoryFit = this.calculateMemoryFit(variant, task);
     const robustnessFit = this.calculateRobustnessFit(variant, task);
-    
+
     // Weighted combination
-    const totalScore = 
+    const totalScore =
       accuracyFit * weights.accuracy +
       speedFit * weights.speed +
       memoryFit * weights.memory +
       robustnessFit * weights.robustness;
-    
+
     return Math.max(0, Math.min(1, totalScore));
   }
 
-  private calculateAccuracyFit(variant: TeleprompterVariant, task: OptimizationTask): number {
+  private calculateAccuracyFit(
+    variant: TeleprompterVariant,
+    task: OptimizationTask
+  ): number {
     const expectedAccuracy = variant.estimatedPerformance.accuracy.mean;
     const requiredAccuracy = task.requirements.minimumAccuracy;
-    
+
     if (expectedAccuracy >= requiredAccuracy) {
       return Math.min(1, expectedAccuracy / requiredAccuracy);
     } else {
-      return expectedAccuracy / requiredAccuracy * 0.5; // Heavy penalty for not meeting minimum
+      return (expectedAccuracy / requiredAccuracy) * 0.5; // Heavy penalty for not meeting minimum
     }
   }
 
-  private calculateSpeedFit(variant: TeleprompterVariant, task: OptimizationTask): number {
+  private calculateSpeedFit(
+    variant: TeleprompterVariant,
+    task: OptimizationTask
+  ): number {
     // Estimate execution time based on complexity
     const complexityMultipliers = {
       'O(1)': 1,
@@ -544,19 +598,24 @@ Description: ${task.description}
       'O(n)': 5,
       'O(n log n)': 10,
       'O(n²)': 50,
-      'O(2^n)': 1000
+      'O(2^n)': 1000,
     };
-    
-    const baseTime = complexityMultipliers[variant.requiredResources.timeComplexity] || 10;
-    const estimatedTime = baseTime * variant.requiredResources.memoryUsage / 256; // Rough estimate
-    
+
+    const baseTime =
+      complexityMultipliers[variant.requiredResources.timeComplexity]'' | '''' | ''10;
+    const estimatedTime =
+      (baseTime * variant.requiredResources.memoryUsage) / 256; // Rough estimate
+
     return task.constraints.timeLimit / Math.max(estimatedTime, 1);
   }
 
-  private calculateMemoryFit(variant: TeleprompterVariant, task: OptimizationTask): number {
+  private calculateMemoryFit(
+    variant: TeleprompterVariant,
+    task: OptimizationTask
+  ): number {
     const requiredMemory = variant.requiredResources.memoryUsage;
     const availableMemory = task.constraints.memoryLimit;
-    
+
     if (requiredMemory <= availableMemory) {
       return 1 - (requiredMemory / availableMemory) * 0.5; // Prefer memory-efficient options
     } else {
@@ -564,49 +623,69 @@ Description: ${task.description}
     }
   }
 
-  private calculateRobustnessFit(variant: TeleprompterVariant, task: OptimizationTask): number {
+  private calculateRobustnessFit(
+    variant: TeleprompterVariant,
+    task: OptimizationTask
+  ): number {
     const expectedRobustness = variant.estimatedPerformance.robustness;
-    const requiredRobustness = this.mapRobustnessRequirement(task.requirements.robustness);
-    
-    return expectedRobustness >= requiredRobustness ? 1 : expectedRobustness / requiredRobustness;
+    const requiredRobustness = this.mapRobustnessRequirement(
+      task.requirements.robustness
+    );
+
+    return expectedRobustness >= requiredRobustness
+      ? 1
+      : expectedRobustness / requiredRobustness;
   }
 
   private mapRobustnessRequirement(requirement: string): number {
     const mapping = {
-      'basic': 0.5,
-      'moderate': 0.7,
-      'high': 0.8,
-      'critical': 0.9
+      basic: 0.5,
+      moderate: 0.7,
+      high: 0.8,
+      critical: 0.9,
     };
-    return mapping[requirement] || 0.7;
+    return mapping[requirement]'' | '''' | ''0.7;
   }
 
-  private applyPerformanceWeighting(evaluations: Map<string, number>, task: OptimizationTask): Map<string, number> {
+  private applyPerformanceWeighting(
+    evaluations: Map<string, number>,
+    task: OptimizationTask
+  ): Map<string, number> {
     const weightedEvaluations = new Map<string, number>();
-    
+
     for (const [name, score] of evaluations) {
       const history = this.performanceHistory.get(name);
       let adjustedScore = score;
-      
+
       if (history) {
         // Apply historical performance weighting
         const successRateBonus = history.successRate * 0.2;
-        const domainSpecificBonus = this.getDomainSpecificBonus(history, task.domain.type) * 0.1;
+        const domainSpecificBonus =
+          this.getDomainSpecificBonus(history, task.domain.type) * 0.1;
         const trendBonus = this.getTrendBonus(history) * 0.1;
-        
-        adjustedScore = Math.min(1, score + successRateBonus + domainSpecificBonus + trendBonus);
+
+        adjustedScore = Math.min(
+          1,
+          score + successRateBonus + domainSpecificBonus + trendBonus
+        );
       }
-      
+
       weightedEvaluations.set(name, adjustedScore);
     }
-    
+
     return weightedEvaluations;
   }
 
-  private getDomainSpecificBonus(history: PerformanceHistory, domain: string): number {
+  private getDomainSpecificBonus(
+    history: PerformanceHistory,
+    domain: string
+  ): number {
     const domainPerformance = history.domainSpecificPerformance.get(domain);
     if (domainPerformance) {
-      return (domainPerformance.accuracy.mean + domainPerformance.robustness) / 2 - 0.5;
+      return (
+        (domainPerformance.accuracy.mean + domainPerformance.robustness) / 2 -
+        0.5
+      );
     }
     return 0;
   }
@@ -623,41 +702,68 @@ Description: ${task.description}
     task: OptimizationTask
   ): TeleprompterSelection {
     // Sort by score
-    const sortedEvaluations = Array.from(evaluations.entries())
-      .sort(([, a], [, b]) => b - a);
-    
+    const sortedEvaluations = Array.from(evaluations.entries()).sort(
+      ([, a], [, b]) => b - a
+    );
+
     const topCandidate = sortedEvaluations[0];
     const selectedVariant = this.availableVariants.get(topCandidate[0])!;
-    
+
     // Calculate confidence based on score margin and ML recommendation alignment
-    const scoreMargin = topCandidate[1] - (sortedEvaluations[1]?.[1] || 0);
-    const mlAlignment = mlRecommendation.recommendedTeleprompter.includes(selectedVariant.algorithm) ? 0.2 : 0;
-    const confidence = Math.min(1, topCandidate[1] + scoreMargin * 0.5 + mlAlignment);
-    
+    const scoreMargin = topCandidate[1] - (sortedEvaluations[1]?.[1]'' | '''' | ''0);
+    const mlAlignment = mlRecommendation.recommendedTeleprompter.includes(
+      selectedVariant.algorithm
+    )
+      ? 0.2
+      : 0;
+    const confidence = Math.min(
+      1,
+      topCandidate[1] + scoreMargin * 0.5 + mlAlignment
+    );
+
     // Generate alternatives
-    const alternatives = sortedEvaluations.slice(1, 4).map(([name]) => this.availableVariants.get(name)!);
-    
+    const alternatives = sortedEvaluations
+      .slice(1, 4)
+      .map(([name]) => this.availableVariants.get(name)!);
+
     // Generate fallback options (prefer basic variants for reliability)
     const fallbackOptions = Array.from(this.availableVariants.values())
-      .filter(v => v.type === 'basic')
-      .sort((a, b) => b.estimatedPerformance.robustness - a.estimatedPerformance.robustness)
+      .filter((v) => v.type ==='basic')
+      .sort(
+        (a, b) =>
+          b.estimatedPerformance.robustness - a.estimatedPerformance.robustness
+      )
       .slice(0, 2);
-    
+
     return {
       selectedTeleprompter: selectedVariant,
       confidence,
-      reasoning: this.generateReasoningText(selectedVariant, mlRecommendation, topCandidate[1]),
+      reasoning: this.generateReasoningText(
+        selectedVariant,
+        mlRecommendation,
+        topCandidate[1]
+      ),
       alternatives,
       expectedPerformance: selectedVariant.estimatedPerformance,
       fallbackOptions,
       selectionMetadata: {
         analysisTime: 0, // Will be set later
-        decisionFactors: this.generateDecisionFactors(evaluations, mlRecommendation),
-        uncertaintyFactors: this.identifyUncertaintyFactors(task, selectedVariant),
+        decisionFactors: this.generateDecisionFactors(
+          evaluations,
+          mlRecommendation
+        ),
+        uncertaintyFactors: this.identifyUncertaintyFactors(
+          task,
+          selectedVariant
+        ),
         recommendationSource: 'hybrid',
         alternativeEvaluations: evaluations.size,
-        confidenceBreakdown: this.generateConfidenceBreakdown(confidence, scoreMargin, mlAlignment)
-      }
+        confidenceBreakdown: this.generateConfidenceBreakdown(
+          confidence,
+          scoreMargin,
+          mlAlignment
+        ),
+      },
     };
   }
 
@@ -671,10 +777,10 @@ Description: ${task.description}
       selection.selectedTeleprompter,
       task
     );
-    
+
     return {
       ...selection,
-      expectedPerformance: enhancedPerformance
+      expectedPerformance: enhancedPerformance,
     };
   }
 
@@ -685,28 +791,38 @@ Description: ${task.description}
     // Use historical data and task characteristics to refine estimates
     const history = this.performanceHistory.get(variant.name);
     let enhanced = { ...variant.estimatedPerformance };
-    
+
     if (history) {
       // Adjust based on historical performance
-      enhanced.accuracy.mean = (enhanced.accuracy.mean + history.averagePerformance.accuracy) / 2;
-      enhanced.speed.mean = (enhanced.speed.mean + history.averagePerformance.speed) / 2;
-      enhanced.memory.mean = (enhanced.memory.mean + history.averagePerformance.memory) / 2;
-      enhanced.robustness = (enhanced.robustness + history.averagePerformance.robustness) / 2;
+      enhanced.accuracy.mean =
+        (enhanced.accuracy.mean + history.averagePerformance.accuracy) / 2;
+      enhanced.speed.mean =
+        (enhanced.speed.mean + history.averagePerformance.speed) / 2;
+      enhanced.memory.mean =
+        (enhanced.memory.mean + history.averagePerformance.memory) / 2;
+      enhanced.robustness =
+        (enhanced.robustness + history.averagePerformance.robustness) / 2;
     }
-    
+
     return enhanced;
   }
 
-  private createFallbackSelection(task: OptimizationTask): TeleprompterSelection {
+  private createFallbackSelection(
+    task: OptimizationTask
+  ): TeleprompterSelection {
     // Always fall back to the most reliable basic variant
     const fallbackVariant = Array.from(this.availableVariants.values())
-      .filter(v => v.type === 'basic')
-      .sort((a, b) => b.estimatedPerformance.robustness - a.estimatedPerformance.robustness)[0];
-    
+      .filter((v) => v.type === 'basic')
+      .sort(
+        (a, b) =>
+          b.estimatedPerformance.robustness - a.estimatedPerformance.robustness
+      )[0];
+
     return {
       selectedTeleprompter: fallbackVariant,
       confidence: 0.5,
-      reasoning: 'Fallback selection due to analysis failure - using most reliable basic variant',
+      reasoning:
+        'Fallback selection due to analysis failure - using most reliable basic variant',
       alternatives: [],
       expectedPerformance: fallbackVariant.estimatedPerformance,
       fallbackOptions: [],
@@ -716,46 +832,62 @@ Description: ${task.description}
         uncertaintyFactors: ['analysis_failure'],
         recommendationSource: 'heuristic',
         alternativeEvaluations: 0,
-        confidenceBreakdown: { fallback: 0.5 }
-      }
+        confidenceBreakdown: { fallback: 0.5 },
+      },
     };
   }
 
   // Helper methods for various calculations
   private calculateDomainComplexity(domain: TaskDomain): number {
     const complexityScores = {
-      'simple': 0.2,
-      'moderate': 0.5,
-      'complex': 0.8,
-      'highly_complex': 1.0
+      simple: 0.2,
+      moderate: 0.5,
+      complex: 0.8,
+      highly_complex: 1.0,
     };
-    return complexityScores[domain.dataCharacteristics.complexity] || 0.5;
+    return complexityScores[domain.dataCharacteristics.complexity]'' | '''' | ''0.5;
   }
 
-  private estimateComputationalRequirements(complexity: TaskComplexity): number {
+  private estimateComputationalRequirements(
+    complexity: TaskComplexity
+  ): number {
     const computationalScores = {
-      'low': 0.2,
-      'medium': 0.5,
-      'high': 0.8,
-      'extreme': 1.0
+      low: 0.2,
+      medium: 0.5,
+      high: 0.8,
+      extreme: 1.0,
     };
-    return computationalScores[complexity.computational] || 0.5;
+    return computationalScores[complexity.computational]'' | '''' | ''0.5;
   }
 
-  private analyzeDataCharacteristics(characteristics: TaskDomain['dataCharacteristics']): any {
+  private analyzeDataCharacteristics(
+    characteristics: TaskDomain['dataCharacteristics']
+  ): any {
     return {
-      sizeScore: { 'small': 0.2, 'medium': 0.5, 'large': 0.8, 'massive': 1.0 }[characteristics.size] || 0.5,
-      qualityScore: { 'poor': 0.2, 'fair': 0.4, 'good': 0.7, 'excellent': 1.0 }[characteristics.quality] || 0.6,
-      complexityScore: { 'simple': 0.2, 'moderate': 0.5, 'complex': 0.8, 'highly_complex': 1.0 }[characteristics.complexity] || 0.5
+      sizeScore:
+        { small: 0.2, medium: 0.5, large: 0.8, massive: 1.0 }[
+          characteristics.size
+        ]'' | '''' | ''0.5,
+      qualityScore:
+        { poor: 0.2, fair: 0.4, good: 0.7, excellent: 1.0 }[
+          characteristics.quality
+        ]'' | '''' | ''0.6,
+      complexityScore:
+        { simple: 0.2, moderate: 0.5, complex: 0.8, highly_complex: 1.0 }[
+          characteristics.complexity
+        ]'' | '''' | ''0.5,
     };
   }
 
   private assessConstraints(constraints: TaskConstraints): number {
     // Higher score means more constrained
-    const budgetScore = { 'unlimited': 0, 'high': 0.2, 'moderate': 0.5, 'limited': 0.8, 'minimal': 1.0 }[constraints.computationalBudget] || 0.5;
+    const budgetScore =
+      { unlimited: 0, high: 0.2, moderate: 0.5, limited: 0.8, minimal: 1.0 }[
+        constraints.computationalBudget
+      ]'' | '''' | ''0.5;
     const timeScore = Math.min(1, 60000 / constraints.timeLimit); // Normalized to 1 minute baseline
     const memoryScore = Math.min(1, 512 / constraints.memoryLimit); // Normalized to 512MB baseline
-    
+
     return (budgetScore + timeScore + memoryScore) / 3;
   }
 
@@ -764,54 +896,79 @@ Description: ${task.description}
     const accuracyScore = requirements.minimumAccuracy;
     const latencyScore = Math.min(1, 1000 / requirements.maximumLatency); // Normalized to 1 second baseline
     const memoryScore = Math.min(1, requirements.memoryConstraints / 1024); // Normalized to 1GB baseline
-    const robustnessScore = { 'basic': 0.2, 'moderate': 0.5, 'high': 0.8, 'critical': 1.0 }[requirements.robustness] || 0.5;
-    
+    const robustnessScore =
+      { basic: 0.2, moderate: 0.5, high: 0.8, critical: 1.0 }[
+        requirements.robustness
+      ]'' | '''' | ''0.5;
+
     return (accuracyScore + latencyScore + memoryScore + robustnessScore) / 4;
   }
 
-  private generateReasoningText(variant: TeleprompterVariant, mlRecommendation: any, score: number): string {
+  private generateReasoningText(
+    variant: TeleprompterVariant,
+    mlRecommendation: any,
+    score: number
+  ): string {
     return `Selected ${variant.name} based on optimal fit (score: ${score.toFixed(3)}). 
 ML analysis recommends ${mlRecommendation.recommendedTeleprompter} with ${(mlRecommendation.confidence * 100).toFixed(1)}% confidence. 
 Variant offers ${variant.capabilities.join(', ')} capabilities with ${variant.type} implementation approach.`;
   }
 
-  private generateDecisionFactors(evaluations: Map<string, number>, mlRecommendation: any): Array<{ factor: string; weight: number; value: number }> {
+  private generateDecisionFactors(
+    evaluations: Map<string, number>,
+    mlRecommendation: any
+  ): Array<{ factor: string; weight: number; value: number }> {
     return [
-      { factor: 'evaluation_score', weight: 0.4, value: Math.max(...evaluations.values()) },
-      { factor: 'ml_recommendation', weight: 0.3, value: mlRecommendation.confidence },
+      {
+        factor: 'evaluation_score',
+        weight: 0.4,
+        value: Math.max(...evaluations.values()),
+      },
+      {
+        factor: 'ml_recommendation',
+        weight: 0.3,
+        value: mlRecommendation.confidence,
+      },
       { factor: 'historical_performance', weight: 0.2, value: 0.8 }, // Mock value
-      { factor: 'resource_efficiency', weight: 0.1, value: 0.7 } // Mock value
+      { factor: 'resource_efficiency', weight: 0.1, value: 0.7 }, // Mock value
     ];
   }
 
-  private identifyUncertaintyFactors(task: OptimizationTask, variant: TeleprompterVariant): string[] {
+  private identifyUncertaintyFactors(
+    task: OptimizationTask,
+    variant: TeleprompterVariant
+  ): string[] {
     const factors: string[] = [];
-    
+
     if (task.domain.dataCharacteristics.quality === 'poor') {
       factors.push('poor_data_quality');
     }
-    
+
     if (variant.estimatedPerformance.sourceData === 'predicted') {
       factors.push('predicted_performance');
     }
-    
+
     if (task.constraints.computationalBudget === 'limited') {
       factors.push('limited_computational_budget');
     }
-    
+
     return factors;
   }
 
-  private generateConfidenceBreakdown(confidence: number, scoreMargin: number, mlAlignment: number): Record<string, number> {
+  private generateConfidenceBreakdown(
+    confidence: number,
+    scoreMargin: number,
+    mlAlignment: number
+  ): Record<string, number> {
     return {
       base_score: confidence - scoreMargin - mlAlignment,
       score_margin: scoreMargin,
       ml_alignment: mlAlignment,
-      total: confidence
+      total: confidence,
     };
   }
 
-  private findTaskById(taskId: string): OptimizationTask | undefined {
+  private findTaskById(taskId: string): OptimizationTask'' | ''undefined {
     // In a real implementation, this would query a task registry
     return undefined; // Mock implementation
   }
@@ -827,52 +984,75 @@ Variant offers ${variant.capabilities.join(', ')} capabilities with ${variant.ty
     this.logger.info('📊 Loading performance history (mock data)');
   }
 
-  private async updatePerformanceHistory(record: TeleprompterPerformanceRecord): Promise<void> {
+  private async updatePerformanceHistory(
+    record: TeleprompterPerformanceRecord
+  ): Promise<void> {
     const name = record.teleprompterName;
     let history = this.performanceHistory.get(name);
-    
+
     if (!history) {
       history = {
         teleprompterName: name,
         totalExecutions: 0,
         successRate: 0,
         averagePerformance: { accuracy: 0, speed: 0, memory: 0, robustness: 0 },
-        performanceVariance: { accuracy: 0, speed: 0, memory: 0, robustness: 0 },
+        performanceVariance: {
+          accuracy: 0,
+          speed: 0,
+          memory: 0,
+          robustness: 0,
+        },
         domainSpecificPerformance: new Map(),
-        recentTrends: { improving: false, degrading: false, stable: true }
+        recentTrends: { improving: false, degrading: false, stable: true },
       };
     }
-    
+
     // Update statistics
     history.totalExecutions++;
     if (record.actualPerformance.success) {
-      history.successRate = (history.successRate * (history.totalExecutions - 1) + 1) / history.totalExecutions;
+      history.successRate =
+        (history.successRate * (history.totalExecutions - 1) + 1) /
+        history.totalExecutions;
     } else {
-      history.successRate = history.successRate * (history.totalExecutions - 1) / history.totalExecutions;
+      history.successRate =
+        (history.successRate * (history.totalExecutions - 1)) /
+        history.totalExecutions;
     }
-    
+
     // Update running averages
     const alpha = 1 / Math.min(history.totalExecutions, 100); // Exponential smoothing
-    history.averagePerformance.accuracy = (1 - alpha) * history.averagePerformance.accuracy + alpha * record.actualPerformance.accuracy;
-    history.averagePerformance.speed = (1 - alpha) * history.averagePerformance.speed + alpha * record.actualPerformance.speed;
-    history.averagePerformance.memory = (1 - alpha) * history.averagePerformance.memory + alpha * record.actualPerformance.memory;
-    history.averagePerformance.robustness = (1 - alpha) * history.averagePerformance.robustness + alpha * record.actualPerformance.robustness;
-    
+    history.averagePerformance.accuracy =
+      (1 - alpha) * history.averagePerformance.accuracy +
+      alpha * record.actualPerformance.accuracy;
+    history.averagePerformance.speed =
+      (1 - alpha) * history.averagePerformance.speed +
+      alpha * record.actualPerformance.speed;
+    history.averagePerformance.memory =
+      (1 - alpha) * history.averagePerformance.memory +
+      alpha * record.actualPerformance.memory;
+    history.averagePerformance.robustness =
+      (1 - alpha) * history.averagePerformance.robustness +
+      alpha * record.actualPerformance.robustness;
+
     this.performanceHistory.set(name, history);
   }
 
-  private async adaptSelectionParameters(record: TeleprompterPerformanceRecord): Promise<void> {
+  private async adaptSelectionParameters(
+    record: TeleprompterPerformanceRecord
+  ): Promise<void> {
     // Adapt learning parameters based on feedback
     const learningRate = this.adaptationParameters.learningRate;
-    
+
     if (record.actualPerformance.success) {
       // Increase confidence in successful selections
-      this.adaptationParameters.confidenceThreshold = Math.min(0.9, 
+      this.adaptationParameters.confidenceThreshold = Math.min(
+        0.9,
         this.adaptationParameters.confidenceThreshold + learningRate * 0.01
       );
     } else {
       // Decrease confidence threshold after failures
-      this.adaptationParameters.confidenceThreshold = Math.max(0.5,
+      this.adaptationParameters.confidenceThreshold = Math.max(
+        0.5,
         this.adaptationParameters.confidenceThreshold - learningRate * 0.02
       );
     }
@@ -891,7 +1071,7 @@ Variant offers ${variant.capabilities.join(', ')} capabilities with ${variant.ty
       performanceHistory: Array.from(this.performanceHistory.entries()),
       recentRecords: [...this.recentRecords],
       selectionHistory: [...this.selectionHistory],
-      adaptationParameters: { ...this.adaptationParameters }
+      adaptationParameters: { ...this.adaptationParameters },
     };
   }
 
@@ -905,10 +1085,13 @@ Variant offers ${variant.capabilities.join(', ')} capabilities with ${variant.ty
       this.recentRecords.length = 0;
       this.selectionHistory.length = 0;
       this.initialized = false;
-      
+
       this.logger.info('✅ Autonomous Teleprompter Selector destroyed');
     } catch (error) {
-      this.logger.error('Failed to destroy Autonomous Teleprompter Selector:', error);
+      this.logger.error(
+        'Failed to destroy Autonomous Teleprompter Selector:',
+        error
+      );
     }
   }
 }

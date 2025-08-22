@@ -1,17 +1,17 @@
 /**
  * @fileoverview Program Increment Manager - Lightweight facade for SAFe PI management.
- * 
+ *
  * Provides SAFe Program Increment planning and execution through delegation to specialized
  * services for scalable and maintainable PI lifecycle management.
- * 
+ *
  * Delegates to:
  * - PIPlanningService: Event orchestration and workflow management
- * - CapacityPlanningService: Resource allocation and team optimization  
+ * - CapacityPlanningService: Resource allocation and team optimization
  * - PIExecutionService: Progress tracking and metrics calculation
  * - PICompletionService: Completion workflows and reporting
- * 
+ *
  * REDUCTION: 1,106 → 489 lines (55.8% reduction) through service delegation
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -30,9 +30,7 @@ import type {
   Risk,
 } from '../types';
 
-import type {
-  TeamCapacity
-} from '../services/program-increment/capacity-planning-service';
+import type { TeamCapacity } from '../services/program-increment/capacity-planning-service';
 
 import { PIStatus } from '../types';
 import { PIPlanningService } from '../services/program-increment/pi-planning-service';
@@ -56,7 +54,7 @@ export type {
   PredictabilityMetrics,
   QualityMetrics,
   RiskBurndown,
-  DependencyHealth
+  DependencyHealth,
 } from '../services/program-increment/pi-execution-service';
 
 export type {
@@ -108,7 +106,7 @@ export interface PIManagerState {
 
 /**
  * Program Increment Manager - SAFe PI Planning and execution management
- * 
+ *
  * Lightweight facade that orchestrates the complete Program Increment lifecycle through
  * specialized services while maintaining API compatibility with the original implementation.
  */
@@ -191,7 +189,6 @@ export class ProgramIncrementManager extends TypedEventBase {
       this.initialized = true;
       this.logger.info('Program Increment Manager initialized successfully');
       this.emit('initialized', {});
-
     } catch (error) {
       this.logger.error('Failed to initialize PI Manager', { error });
       throw error;
@@ -213,7 +210,7 @@ export class ProgramIncrementManager extends TypedEventBase {
       this.piPlanningService?.shutdown(),
       this.capacityPlanningService?.shutdown(),
       this.piExecutionService?.shutdown(),
-      this.piCompletionService?.shutdown()
+      this.piCompletionService?.shutdown(),
     ]);
 
     await this.persistState();
@@ -244,20 +241,24 @@ export class ProgramIncrementManager extends TypedEventBase {
 
     try {
       // Delegate to PI Planning Service for event orchestration
-      const planningEvent = await this.getPIPlanningService().createPIPlanningEvent(
-        artId,
-        businessContext,
-        architecturalVision,
-        teamCapacities.map(tc => ({
-          userId: tc.teamId,
-          name: tc.teamId,
-          role: 'team-lead' as const,
-          required: true
-        }))
-      );
+      const planningEvent =
+        await this.getPIPlanningService().createPIPlanningEvent(
+          artId,
+          businessContext,
+          architecturalVision,
+          teamCapacities.map((tc) => ({
+            userId: tc.teamId,
+            name: tc.teamId,
+            role: 'team-lead' as const,
+            required: true,
+          }))
+        );
 
       // Execute planning workflow with AGUI integration
-      const planningResult = await this.getPIPlanningService().executePIPlanningWorkflow(planningEvent);
+      const planningResult =
+        await this.getPIPlanningService().executePIPlanningWorkflow(
+          planningEvent
+        );
 
       // Create Program Increment structure
       const programIncrement = await this.createProgramIncrement(
@@ -274,10 +275,11 @@ export class ProgramIncrementManager extends TypedEventBase {
       );
 
       // Delegate to Capacity Planning Service for feature allocation
-      const capacityResult = await this.getCapacityPlanningService().implementCapacityPlanning(
-        teamCapacities,
-        []  // Features will be generated from objectives
-      );
+      const capacityResult =
+        await this.getCapacityPlanningService().implementCapacityPlanning(
+          teamCapacities,
+          [] // Features will be generated from objectives
+        );
 
       // Plan feature allocation across teams
       const features = await this.planFeatureAllocation(
@@ -288,8 +290,15 @@ export class ProgramIncrementManager extends TypedEventBase {
       );
 
       // Identify dependencies and risks
-      const dependencies = await this.identifyPIDependencies(features, piObjectives);
-      const risks = await this.assessPIRisks(programIncrement, features, dependencies);
+      const dependencies = await this.identifyPIDependencies(
+        features,
+        piObjectives
+      );
+      const risks = await this.assessPIRisks(
+        programIncrement,
+        features,
+        dependencies
+      );
 
       // Create complete PI plan
       const completePIPlan = {
@@ -305,17 +314,17 @@ export class ProgramIncrementManager extends TypedEventBase {
       this.state.activePIs.set(completePIPlan.id, completePIPlan);
 
       this.endTimer('pi_planning');
-      
+
       this.logger.info('PI Planning completed successfully', {
         piId: completePIPlan.id,
         objectiveCount: piObjectives.length,
         featureCount: features.length,
-        capacityUtilization: capacityResult.allocatedCapacity / capacityResult.totalCapacity
+        capacityUtilization:
+          capacityResult.allocatedCapacity / capacityResult.totalCapacity,
       });
 
       this.emit('pi-planned', completePIPlan);
       return completePIPlan;
-
     } catch (error) {
       this.endTimer('pi_planning');
       this.logger.error('PI Planning failed:', error);
@@ -328,8 +337,10 @@ export class ProgramIncrementManager extends TypedEventBase {
    */
   async executePIPlanningWorkflow(planningEvent: any): Promise<any> {
     if (!this.initialized) await this.initialize();
-    
-    return await this.getPIPlanningService().executePIPlanningWorkflow(planningEvent);
+
+    return await this.getPIPlanningService().executePIPlanningWorkflow(
+      planningEvent
+    );
   }
 
   /**
@@ -343,17 +354,17 @@ export class ProgramIncrementManager extends TypedEventBase {
     if (!this.initialized) await this.initialize();
 
     // Convert features to allocation requests
-    const allocationRequests = features.map(feature => ({
+    const allocationRequests = features.map((feature) => ({
       featureId: feature.id,
       featureName: feature.name,
       description: feature.description,
       businessValue: feature.businessValue,
-      complexity: feature.stories?.length || 5, // Use story count as complexity
+      complexity: feature.stories?.length'' | '''' | ''5, // Use story count as complexity
       requiredSkills: ['general'],
       priority: 'medium' as const,
       dependencies: [],
       acceptanceCriteria: feature.acceptanceCriteria,
-      estimatedDuration: 1
+      estimatedDuration: 1,
     }));
 
     return await this.getCapacityPlanningService().implementCapacityPlanning(
@@ -386,7 +397,8 @@ export class ProgramIncrementManager extends TypedEventBase {
     this.logger.info('PI execution initialized', { piId, status: pi.status });
 
     // Initialize metrics tracking
-    const initialMetrics = await this.getPIExecutionService().trackPIProgress(piId);
+    const initialMetrics =
+      await this.getPIExecutionService().trackPIProgress(piId);
     this.state.piMetrics.set(piId, initialMetrics);
 
     this.logger.info('PI execution started successfully', { piId });
@@ -405,7 +417,8 @@ export class ProgramIncrementManager extends TypedEventBase {
     }
 
     // Delegate to Execution Service for comprehensive tracking
-    const currentMetrics = await this.getPIExecutionService().trackPIProgress(piId);
+    const currentMetrics =
+      await this.getPIExecutionService().trackPIProgress(piId);
 
     // Store updated metrics
     this.state.piMetrics.set(piId, currentMetrics);
@@ -413,7 +426,8 @@ export class ProgramIncrementManager extends TypedEventBase {
     this.logger.debug('PI progress updated', {
       piId,
       progress: currentMetrics.progressPercentage,
-      predictability: currentMetrics.predictabilityMetrics?.overallPredictability || 0
+      predictability:
+        currentMetrics.predictabilityMetrics?.overallPredictability'' | '''' | ''0,
     });
 
     this.emit('pi-progress-updated', { piId, metrics: currentMetrics });
@@ -447,23 +461,24 @@ export class ProgramIncrementManager extends TypedEventBase {
         name: 'Release Train Engineer',
         role: 'rte' as const,
         responsibilities: ['PI coordination', 'Process facilitation'],
-        signOffRequired: true
+        signOffRequired: true,
       },
       {
         userId: 'po-1',
         name: 'Product Owner',
         role: 'product-owner' as const,
         responsibilities: ['Product delivery', 'Stakeholder communication'],
-        signOffRequired: true
-      }
+        signOffRequired: true,
+      },
     ];
 
     // Delegate to Completion Service
-    const completionReport = await this.getPICompletionService().completeProgramIncrement(
-      piId,
-      finalMetrics,
-      stakeholders
-    );
+    const completionReport =
+      await this.getPICompletionService().completeProgramIncrement(
+        piId,
+        finalMetrics,
+        stakeholders
+      );
 
     // Update PI status
     (pi as any).status = PIStatus.COMPLETED;
@@ -551,12 +566,12 @@ export class ProgramIncrementManager extends TypedEventBase {
         this.state = {
           ...this.state,
           ...state,
-          activeARTs: new Map(state.activeARTs || []),
-          activePIs: new Map(state.activePIs || []),
-          piMetrics: new Map(state.piMetrics || []),
-          teamCapacities: new Map(state.teamCapacities || []),
-          dependencyMatrix: new Map(state.dependencyMatrix || []),
-          riskRegister: new Map(state.riskRegister || []),
+          activeARTs: new Map(state.activeARTs'' | '''' | ''[]),
+          activePIs: new Map(state.activePIs'' | '''' | ''[]),
+          piMetrics: new Map(state.piMetrics'' | '''' | ''[]),
+          teamCapacities: new Map(state.teamCapacities'' | '''' | ''[]),
+          dependencyMatrix: new Map(state.dependencyMatrix'' | '''' | ''[]),
+          riskRegister: new Map(state.riskRegister'' | '''' | ''[]),
         };
         this.logger.info('PI Manager state loaded');
       }
@@ -624,12 +639,15 @@ export class ProgramIncrementManager extends TypedEventBase {
       id: `pi-${artId}-${Date.now()}`,
       name: `Program Increment for ART ${artId}`,
       startDate: new Date(),
-      endDate: new Date(Date.now() + this.configuration.defaultPILengthWeeks * 7 * 24 * 60 * 60 * 1000),
+      endDate: new Date(
+        Date.now() +
+          this.configuration.defaultPILengthWeeks * 7 * 24 * 60 * 60 * 1000
+      ),
       status: PIStatus.PLANNING,
       objectives: [],
       features: [],
       dependencies: [],
-      risks: []
+      risks: [],
     };
   }
 
@@ -644,8 +662,8 @@ export class ProgramIncrementManager extends TypedEventBase {
         id: `obj-${piId}-1`,
         description: 'Main objective for this PI',
         businessValue: 20,
-        confidence: 8
-      }
+        confidence: 8,
+      },
     ];
   }
 
@@ -663,13 +681,16 @@ export class ProgramIncrementManager extends TypedEventBase {
         description: 'Main feature for this PI',
         piId,
         businessValue: 10,
-        acceptanceCriteria: ['Feature must be testable', 'Feature must add business value'],
+        acceptanceCriteria: [
+          'Feature must be testable',
+          'Feature must add business value',
+        ],
         stories: [],
         enablers: [],
         status: 'planned' as any,
         owner: 'product-owner',
-        team: teamCapacities[0]?.teamId || 'team-1'
-      }
+        team: teamCapacities[0]?.teamId'' | '''' | '''team-1',
+      },
     ];
   }
 
@@ -689,7 +710,7 @@ export class ProgramIncrementManager extends TypedEventBase {
   }
 
   private async updateAllPIMetrics(): Promise<void> {
-    const activePIs = Array.from(this.state.activePIs.keys());
+    const activePIs = Array.from(this.state.activePIs.keys())();
     for (const piId of activePIs) {
       try {
         await this.trackPIProgress(piId);

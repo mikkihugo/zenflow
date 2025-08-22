@@ -1,6 +1,6 @@
 /**
  * @fileoverview Foundation Types - Import Test
- * 
+ *
  * Tests that foundation types can be imported correctly using the
  * package's export paths and that all expected exports are available.
  */
@@ -37,7 +37,9 @@ describe('Foundation Types Import Tests', () => {
   });
 
   it('should generate valid UUIDs and timestamps', async () => {
-    const { generateUUID, now, isUUID, isTimestamp } = await import('../../src/types/index.js');
+    const { generateUUID, now, isUUID, isTimestamp } = await import(
+      '../../src/types/index.js'
+    );
 
     const uuid = generateUUID();
     const timestamp = now();
@@ -47,12 +49,12 @@ describe('Foundation Types Import Tests', () => {
   });
 
   it('should work with Result pattern', async () => {
-    const { 
-      createSuccess, 
-      createError, 
-      createValidationError, 
-      isSuccess, 
-      isError 
+    const {
+      createSuccess,
+      createError,
+      createValidationError,
+      isSuccess,
+      isError,
     } = await import('../../src/types/index.js');
 
     // Test success result
@@ -68,7 +70,9 @@ describe('Foundation Types Import Tests', () => {
   });
 
   it('should work with pagination utilities', async () => {
-    const { createPaginated, createPaginationMetadata } = await import('../../src/types/index.js');
+    const { createPaginated, createPaginationMetadata } = await import(
+      '../../src/types/index.js'
+    );
 
     const items = [1, 2, 3, 4, 5];
     const pagination = createPaginationMetadata(2, 5, 20);
@@ -86,12 +90,8 @@ describe('Foundation Types Import Tests', () => {
   });
 
   it('should provide enum values correctly', async () => {
-    const { 
-      PriorityEnum, 
-      StatusEnum, 
-      LogLevelEnum, 
-      EnvironmentEnum 
-    } = await import('../../src/types/index.js');
+    const { PriorityEnum, StatusEnum, LogLevelEnum, EnvironmentEnum } =
+      await import('../../src/types/index.js');
 
     // Test Priority enum
     expect(PriorityEnum.LOW).toBe('low');
@@ -119,16 +119,16 @@ describe('Foundation Types Import Tests', () => {
   });
 
   it('should handle type guards correctly', async () => {
-    const { 
-      isUUID, 
-      isTimestamp, 
+    const {
+      isUUID,
+      isTimestamp,
       isValidationError,
       isEmail,
       isPrimitive,
       isNonEmptyArray,
       generateUUID,
       now,
-      createValidationError
+      createValidationError,
     } = await import('../../src/types/index.js');
 
     // Test UUID validation

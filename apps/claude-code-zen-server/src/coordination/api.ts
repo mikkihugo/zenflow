@@ -428,7 +428,7 @@ export class HealthAPI {
    *               $ref: '#/components/schemas/PerformanceMetrics'
    */
   static async getMetrics(
-    _timeRange?: '1h | 24h' | '7d | 30d'
+    _timeRange?: '1h' | '24h' | '7d' | '30d'
   ): Promise<PerformanceMetrics> {
     throw new Error('Not implemented');
   }

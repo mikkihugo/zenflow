@@ -6,7 +6,7 @@ import {
   getLogger,
   getMCPServerURL,
   getWebDashboardURL,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 
 /**
  * UACL Integration Validation.
@@ -28,14 +28,14 @@ const logger = getLogger('interfaces-clients-validation');
 
 export interface ValidationResult {
   component: string;
-  status: 'pass | fail' | 'warning');
+  status: 'pass'' | ''fail'' | ''warning');
   message: string;
   error?: Error;
   details?: any;
 }
 
 export interface ValidationReport {
-  overall: 'pass | fail' | 'warning');
+  overall: 'pass'' | ''fail'' | ''warning');
   timestamp: Date;
   results: ValidationResult[];
   summary: {

@@ -15,9 +15,13 @@ async function loadOrchestrationModule() {
   if (!orchestrationModuleCache) {
     try {
       // Load the real Multi-Level Orchestration package
-      orchestrationModuleCache = await import('@claude-zen/multi-level-orchestration');
-    } catch (error) {
-      console.warn('Multi-level orchestration package not available, providing compatibility layer');
+      orchestrationModuleCache = await import(
+        '@claude-zen/multi-level-orchestration'
+      );
+    } catch {
+      console.warn(
+        'Multi-level orchestration package not available, providing compatibility layer',
+      );
       orchestrationModuleCache = {
         MultiLevelOrchestrationManager: class CompatibilityOrchestrationManager extends TypedEventBase {
           async initialize() {

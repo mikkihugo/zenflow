@@ -4,8 +4,8 @@
  * Interface-specific configuration utilities that integrate with the unified config system.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import { config, type InterfaceConfig } from '@claude-zen/intelligence');
+import { getLogger } from '@claude-zen/foundation';
+import { config, type InterfaceConfig } from '@claude-zen/intelligence';
 
 const logger = getLogger('interfaces-shared-config');
 
@@ -23,7 +23,7 @@ export function getInterfaceConfig(): InterfaceConfig {
  */
 export const INTERFACE_CONSTANTS = {
   get DEFAULT_TIMEOUT() {
-    return config?.get('interfaces.mcp.http.timeout') || 30000;
+    return config?.get('interfaces.mcp.http.timeout')'' | '''' | ''30000;
   },
   get DEFAULT_RETRY_ATTEMPTS() {
     return 3;
@@ -32,10 +32,10 @@ export const INTERFACE_CONSTANTS = {
     return 1000;
   },
   get MAX_COMMAND_HISTORY() {
-    return config?.get('interfaces.shared.maxCommandHistory') || 100;
+    return config?.get('interfaces.shared.maxCommandHistory')'' | '''' | ''100;
   },
   get DEFAULT_PAGE_SIZE() {
-    return config?.get('interfaces.shared.pageSize') || 25;
+    return config?.get('interfaces.shared.pageSize')'' | '''' | ''25;
   },
   get MIN_REFRESH_INTERVAL() {
     return 1000;
@@ -50,7 +50,7 @@ export const INTERFACE_CONSTANTS = {
  */
 export const COLOR_SCHEMES = {
   dark: {
-    primary: '#00D9FF',
+    primary:'#00D9FF',
     secondary: '#FF6B35',
     success: '#28A745',
     warning: '#FFC107',
@@ -142,8 +142,7 @@ export class ConfigurationUtils {
       )
     ) {
       errors.push(
-        'Invalid verbosity. Must be one of: quiet, normal, verbose, debug'
-      );
+        'Invalid verbosity. Must be one of: quiet, normal, verbose, debug');
     }
 
     if (configOverrides?.refreshInterval) {
@@ -162,15 +161,14 @@ export class ConfigurationUtils {
 
     if (
       configOverrides?.pageSize &&
-      (configOverrides?.pageSize < 1 || configOverrides?.pageSize > 1000)
+      (configOverrides?.pageSize < 1'' | '''' | ''configOverrides?.pageSize > 1000)
     ) {
       errors.push('Page size must be between 1 and 1000');
     }
 
     if (
       configOverrides?.maxCommandHistory &&
-      (configOverrides?.maxCommandHistory < 10 ||
-        configOverrides?.maxCommandHistory > 10000)
+      (configOverrides?.maxCommandHistory < 10'' | '''' | ''configOverrides?.maxCommandHistory > 10000)
     ) {
       errors.push('Max command history must be between 10 and 10000');
     }
@@ -184,10 +182,9 @@ export class ConfigurationUtils {
    * @param theme
    */
   static getColorScheme(
-    theme?: 'dark | light' | 'auto'
-  ): typeof COLOR_SCHEMES.dark {
+    theme?: 'dark'' | ''light'' | ''auto'): typeof COLOR_SCHEMES.dark {
     const currentTheme =
-      theme || config?.get('interfaces.shared.theme) || dark');
+      theme'' | '''' | ''config?.get('interfaces.shared.theme) || dark');
 
     if (currentTheme === 'auto') {
       // In a real implementation, this would detect system theme
@@ -243,7 +240,7 @@ export class ConfigurationUtils {
   ): () => void {
     const handler = (event: any) => {
       if (event.path.startsWith('interfaces.shared.')) {
-        callback(getInterfaceConfig());
+        callback(getInterfaceConfig())();
       }
     };
 

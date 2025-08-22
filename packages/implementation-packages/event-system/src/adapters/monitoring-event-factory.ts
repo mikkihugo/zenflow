@@ -39,10 +39,10 @@ export class MonitoringEventFactory {
     config?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     if (MonitoringEventFactory.instances.has(name)) {
-      throw new Error(`Monitoring event adapter '${name}' already exists`);
+      throw new Error(`Monitoring event adapter '${name}'already exists`);
     }
 
-    const defaultConfig = MonitoringEventFactory.defaultConfigs.get(name) || {};
+    const defaultConfig = MonitoringEventFactory.defaultConfigs.get(name)'' | '''' | ''{};
     const finalConfig = createDefaultMonitoringEventAdapterConfig(name, {
       ...defaultConfig,
       ...config,
@@ -59,7 +59,7 @@ export class MonitoringEventFactory {
    *
    * @param name
    */
-  static get(name: string): MonitoringEventAdapter | undefined {
+  static get(name: string): MonitoringEventAdapter'' | ''undefined {
     return MonitoringEventFactory.instances.get(name);
   }
 
@@ -101,21 +101,21 @@ export class MonitoringEventFactory {
    * List all monitoring event adapter names.
    */
   static list(): string[] {
-    return Array.from(MonitoringEventFactory.instances.keys());
+    return Array.from(MonitoringEventFactory.instances.keys())();
   }
 
   /**
    * Get all monitoring event adapter instances.
    */
   static getAll(): MonitoringEventAdapter[] {
-    return Array.from(MonitoringEventFactory.instances.values());
+    return Array.from(MonitoringEventFactory.instances.values())();
   }
 
   /**
    * Clear all monitoring event adapter instances.
    */
   static async clear(): Promise<void> {
-    const adapters = Array.from(MonitoringEventFactory.instances.values());
+    const adapters = Array.from(MonitoringEventFactory.instances.values())();
     await Promise.all(adapters.map((adapter) => adapter.destroy()));
     MonitoringEventFactory.instances.clear();
   }
@@ -644,7 +644,7 @@ export class MonitoringEventRegistry {
    *
    * @param name
    */
-  static get(name: string): MonitoringEventAdapter | undefined {
+  static get(name: string): MonitoringEventAdapter'' | ''undefined {
     return MonitoringEventRegistry.adapters.get(name);
   }
 
@@ -706,7 +706,7 @@ export class MonitoringEventRegistry {
    * List all registered adapter names.
    */
   static list(): string[] {
-    return Array.from(MonitoringEventRegistry.adapters.keys());
+    return Array.from(MonitoringEventRegistry.adapters.keys())();
   }
 
   /**
@@ -732,8 +732,8 @@ export class MonitoringEventRegistry {
  * @example
  */
 export class MonitoringEventManager {
-  private static instance: MonitoringEventAdapter | null = null;
-  private static config: MonitoringEventAdapterConfig | null = null;
+  private static instance: MonitoringEventAdapter'' | ''null = null;
+  private static config: MonitoringEventAdapterConfig'' | ''null = null;
 
   /**
    * Initialize global monitoring event manager.
@@ -760,8 +760,7 @@ export class MonitoringEventManager {
   static getInstance(): MonitoringEventAdapter {
     if (!MonitoringEventManager.instance) {
       throw new Error(
-        'Monitoring event manager is not initialized. Call initialize() first.'
-      );
+        'Monitoring event manager is not initialized. Call initialize() first.');
     }
     return MonitoringEventManager.instance;
   }
@@ -787,7 +786,7 @@ export class MonitoringEventManager {
   /**
    * Get current configuration.
    */
-  static getConfig(): MonitoringEventAdapterConfig | null {
+  static getConfig(): MonitoringEventAdapterConfig'' | ''null {
     return MonitoringEventManager.config;
   }
 }
@@ -797,7 +796,7 @@ export {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
   MonitoringEventAdapter,
-} from './monitoring-event-adapter';
+} from'./monitoring-event-adapter';
 export type { MonitoringEventAdapterConfig } from './monitoring-event-adapter';
 
 export default MonitoringEventFactory;

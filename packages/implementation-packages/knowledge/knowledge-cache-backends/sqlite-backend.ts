@@ -106,7 +106,7 @@ export class SQLiteBackend implements FACTStorageBackend {
    *
    * @param id
    */
-  async get(id: string): Promise<FACTKnowledgeEntry | null> {
+  async get(id: string): Promise<FACTKnowledgeEntry'' | ''null> {
     await this.ensureInitialized();
 
     try {
@@ -181,8 +181,8 @@ export class SQLiteBackend implements FACTStorageBackend {
       // const countResult = await countStmt.get();
       // const sizeResult = await sizeStmt.get();
       //
-      // this.stats.totalEntries = countResult.count || 0;
-      // this.stats.totalSize = sizeResult.size || 0;
+      // this.stats.totalEntries = countResult.count'' | '''' | ''0;
+      // this.stats.totalSize = sizeResult.size'' | '''' | ''0;
 
       return {
         totalEntries: this.stats.totalEntries,
@@ -217,7 +217,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       //   WHERE timestamp < ?
       // `);
       // const result = await stmt.run([Date.now() - maxAge]);
-      // return result.changes || 0;
+      // return result.changes'' | '''' | ''0;
 
       // Stub implementation
       return 0;
@@ -290,7 +290,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   private updateStats(
-    operation: 'read' | 'write' | 'delete',
+    operation: 'read | write' | 'delete',
     size: number
   ): void {
     this.stats.lastAccessed = Date.now();

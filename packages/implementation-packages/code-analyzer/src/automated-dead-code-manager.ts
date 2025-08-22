@@ -79,9 +79,9 @@ import { getLogger } from '@claude-zen/foundation';
 // Use compatible ValidationQuestion interface that matches AGUI expectations
 interface ValidationQuestion {
   question: string;
-  type: 'yesno' | 'choice' | 'input' | 'dead-code-action' | 'batch-operation';
+  type: 'yesno | choice' | 'input''' | '''dead-code-action''' | '''batch-operation';
   choices?: string[];
-  defaultValue?: string | boolean;
+  defaultValue?: string'' | ''boolean;
 }
 
 // Define Knip output interfaces for strict TypeScript compliance
@@ -98,7 +98,7 @@ interface KnipExportItem {
 }
 
 interface KnipOutput {
-  files?: (KnipFileItem | string)[];
+  files?: (KnipFileItem'' | ''string)[];
   exports?: KnipExportItem[];
   [key: string]: any;
 }
@@ -107,7 +107,7 @@ const logger = getLogger('automated-dead-code-manager') as any; // Use any to al
 
 export interface DeadCodeItem {
   id: string;
-  type: 'export' | 'file' | 'dependency' | 'import';
+  type: 'export | file' | 'dependency''' | '''import';
   location: string;
   name: string;
   confidence: number; // 0-1, how confident we are it's truly dead
@@ -134,19 +134,19 @@ export interface DeadCodeScanResult {
 
 export interface DeadCodeDecision {
   itemId: string;
-  action: 'remove' | 'keep' | 'investigate' | 'defer' | 'wire-up';
+  action: 'remove | keep' | 'investigate''' | '''defer''' | '''wire-up';
   reason?: string;
   timestamp: Date;
   humanApprover?: string;
 }
 
 export class AutomatedDeadCodeManager {
-  private aguiInterface: AGUIInterface | null = null;
+  private aguiInterface: AGUIInterface'' | ''null = null;
   private scanHistory: DeadCodeScanResult[] = [];
   private pendingDecisions = new Map<string, DeadCodeItem>();
 
   constructor(aguiInterface?: AGUIInterface) {
-    this.aguiInterface = aguiInterface || null;
+    this.aguiInterface = aguiInterface'' | '''' | ''null;
   }
 
   /**
@@ -175,7 +175,7 @@ export class AutomatedDeadCodeManager {
         totalItems: allItems.length,
         highConfidenceItems: allItems.filter((item) => item.confidence > 0.8),
         mediumConfidenceItems: allItems.filter(
-          (item) => item.confidence > 0.5 && item.confidence <= 0.8,
+          (item) => item.confidence > 0.5 && item.confidence <= 0.8
         ),
         lowConfidenceItems: allItems.filter((item) => item.confidence <= 0.5),
         scanDuration: Date.now() - startTime,
@@ -200,7 +200,7 @@ export class AutomatedDeadCodeManager {
    * Present dead code findings to human for decision making
    */
   async presentToHuman(
-    scanResult: DeadCodeScanResult,
+    scanResult: DeadCodeScanResult
   ): Promise<DeadCodeDecision[]> {
     if (!this.aguiInterface) {
       logger.warn('No AGUI interface available for human interaction');
@@ -227,7 +227,7 @@ export class AutomatedDeadCodeManager {
     // Ask about batch operations for medium confidence items
     if (scanResult.mediumConfidenceItems.length > 0) {
       const batchDecision = await this.askAboutBatchOperation(
-        scanResult.mediumConfidenceItems,
+        scanResult.mediumConfidenceItems
       );
       decisions.push(...batchDecision);
     }
@@ -239,7 +239,7 @@ export class AutomatedDeadCodeManager {
    * Ask human about a specific dead code item
    */
   private async askHumanAboutDeadCode(
-    item: DeadCodeItem,
+    item: DeadCodeItem
   ): Promise<DeadCodeDecision> {
     if (!this.aguiInterface) {
       throw new Error('AGUI interface required for human interaction');
@@ -296,7 +296,7 @@ export class AutomatedDeadCodeManager {
    * Ask about batch operations for multiple items
    */
   private async askAboutBatchOperation(
-    items: DeadCodeItem[],
+    items: DeadCodeItem[]
   ): Promise<DeadCodeDecision[]> {
     if (!this.aguiInterface) {
       return [];
@@ -328,48 +328,48 @@ export class AutomatedDeadCodeManager {
     const decisions: DeadCodeDecision[] = [];
 
     switch (response) {
-    case 'review-each':
-      // Process individually (up to a limit)
-      for (const item of items.slice(0, 5)) {
-        decisions.push(await this.askHumanAboutDeadCode(item));
-      }
-      break;
+      case 'review-each':
+        // Process individually (up to a limit)
+        for (const item of items.slice(0, 5)) {
+          decisions.push(await this.askHumanAboutDeadCode(item));
+        }
+        break;
 
-    case 'auto-remove':
-      // Auto-remove items with high safety scores
-      items
-        .filter((i) => i.safetyScore > 0.8)
-        .forEach((item) => {
+      case 'auto-remove':
+        // Auto-remove items with high safety scores
+        items
+          .filter((i) => i.safetyScore > 0.8)
+          .forEach((item) => {
+            decisions.push({
+              itemId: item.id,
+              action: 'remove',
+              timestamp: new Date(),
+              reason: 'Auto-removal based on high safety score',
+            });
+          });
+        break;
+
+      case 'defer-all':
+        items.forEach((item) => {
           decisions.push({
             itemId: item.id,
-            action: 'remove',
+            action: 'defer',
             timestamp: new Date(),
-            reason: 'Auto-removal based on high safety score',
+            reason: 'Batch deferral',
           });
         });
-      break;
+        break;
 
-    case 'defer-all':
-      items.forEach((item) => {
-        decisions.push({
-          itemId: item.id,
-          action: 'defer',
-          timestamp: new Date(),
-          reason: 'Batch deferral',
+      case 'investigate-all':
+        items.forEach((item) => {
+          decisions.push({
+            itemId: item.id,
+            action: 'investigate',
+            timestamp: new Date(),
+            reason: 'Batch investigation request',
+          });
         });
-      });
-      break;
-
-    case 'investigate-all':
-      items.forEach((item) => {
-        decisions.push({
-          itemId: item.id,
-          action: 'investigate',
-          timestamp: new Date(),
-          reason: 'Batch investigation request',
-        });
-      });
-      break;
+        break;
     }
 
     return decisions;
@@ -379,7 +379,7 @@ export class AutomatedDeadCodeManager {
    * Schedule automated dead code scans
    */
   async scheduleAutomatedScans(
-    intervalMs: number = 7 * 24 * 60 * 60 * 1000,
+    intervalMs: number = 7 * 24 * 60 * 60 * 1000
   ): Promise<void> {
     // Weekly
     logger.info('Scheduling automated dead code scans', { intervalMs });
@@ -417,7 +417,7 @@ export class AutomatedDeadCodeManager {
         {
           encoding: 'utf8',
           timeout: 30000,
-        },
+        }
       );
 
       return this.parseTsPruneOutput(output);
@@ -437,7 +437,7 @@ export class AutomatedDeadCodeManager {
         {
           encoding: 'utf8',
           timeout: 45000,
-        },
+        }
       );
 
       return this.parseKnipOutput(output);
@@ -452,7 +452,7 @@ export class AutomatedDeadCodeManager {
    */
   private parseTsPruneOutput(output: string): DeadCodeItem[] {
     const items: DeadCodeItem[] = [];
-    const lines = output.split('\\n').filter((line) => line.trim());
+    const lines = output.split('\\n').filter((line) => line.trim())();
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -470,7 +470,7 @@ export class AutomatedDeadCodeManager {
           safetyScore: this.calculateSafetyScore(filePath, exportName),
           context: {
             publicAPI:
-              filePath.includes('index') || filePath.includes('public-api'),
+              filePath.includes('index')'' | '''' | ''filePath.includes('public-api'),
           },
         });
       }
@@ -489,8 +489,8 @@ export class AutomatedDeadCodeManager {
 
       // Parse knip's structured output
       if (data.files) {
-        data.files.forEach((file: KnipFileItem | string, index: number) => {
-          const filePath = typeof file === 'string' ? file : (file.path || '');
+        data.files.forEach((file: KnipFileItem'' | ''string, index: number) => {
+          const filePath = typeof file ==='string'? file : file.path'' | '''' | '''';
           items.push({
             id: `knip-file-${index}`,
             type: 'file',
@@ -507,10 +507,13 @@ export class AutomatedDeadCodeManager {
           items.push({
             id: `knip-export-${index}`,
             type: 'export',
-            location: `${exp.file || ''}:${exp.line || 1}`,
-            name: exp.name || '',
+            location: `${exp.file'' | '''' | ''''}:${exp.line'' | '''' | ''1}`,
+            name: exp.name'' | '''' | '''',
             confidence: 0.85,
-            safetyScore: this.calculateSafetyScore(exp.file || '', exp.name || ''),
+            safetyScore: this.calculateSafetyScore(
+              exp.file'' | '''' | '''',
+              exp.name'' | '''' | ''''
+            ),
           });
         });
       }
@@ -528,22 +531,22 @@ export class AutomatedDeadCodeManager {
     let score = 0.5; // Base score
 
     // Lower safety for public APIs
-    if (filePath.includes('index') || filePath.includes('public-api')) {
+    if (filePath.includes('index')'' | '''' | ''filePath.includes('public-api')) {
       score -= 0.3;
     }
 
     // Lower safety for types (might be used in .d.ts files)
-    if (name.includes('Type') || name.includes('Interface')) {
+    if (name.includes('Type')'' | '''' | ''name.includes('Interface')) {
       score -= 0.2;
     }
 
     // Higher safety for test files
-    if (filePath.includes('test') || filePath.includes('__tests__')) {
+    if (filePath.includes('test')'' | '''' | ''filePath.includes('__tests__')) {
       score += 0.3;
     }
 
     // Higher safety for clearly internal files
-    if (filePath.includes('internal') || filePath.includes('utils')) {
+    if (filePath.includes('internal')'' | '''' | ''filePath.includes('utils')) {
       score += 0.2;
     }
 
@@ -570,7 +573,7 @@ export class AutomatedDeadCodeManager {
       }
     }
 
-    return Array.from(merged.values());
+    return Array.from(merged.values())();
   }
 
   /**
@@ -582,10 +585,10 @@ export class AutomatedDeadCodeManager {
     parts.push(`📍 Location: ${item.location}`);
     parts.push(`🔍 Type: ${item.type}`);
     parts.push(
-      `📊 Confidence: ${(item.confidence * 100).toFixed(1)}% that it's unused`,
+      `📊 Confidence: ${(item.confidence * 100).toFixed(1)}% that it's unused`
     );
     parts.push(
-      `🛡️ Safety Score: ${(item.safetyScore * 100).toFixed(1)}% safe to remove`,
+      `🛡️ Safety Score: ${(item.safetyScore * 100).toFixed(1)}% safe to remove`
     );
 
     if (item.context?.publicAPI) {
@@ -607,27 +610,27 @@ export class AutomatedDeadCodeManager {
 
     if (item.confidence > 0.9 && item.safetyScore > 0.8) {
       recommendations.push(
-        '✅ Recommended: REMOVE - High confidence, low risk',
+        '✅ Recommended: REMOVE - High confidence, low risk'
       );
     } else if (item.confidence > 0.7 && item.safetyScore > 0.6) {
       recommendations.push(
-        '⚠️ Recommended: NVESTIGATE - Medium confidence and safety',
+        '⚠️ Recommended: NVESTIGATE - Medium confidence and safety'
       );
     } else {
       recommendations.push(
-        '🤔 Recommended: KEEP - Lower confidence or higher risk',
+        '🤔 Recommended: KEEP - Lower confidence or higher risk'
       );
     }
 
     if (item.context?.publicAPI) {
       recommendations.push(
-        '⚠️ Consider: This might be used by external consumers',
+        '⚠️ Consider: This might be used by external consumers'
       );
     }
 
     if (item.type === 'export' && item.safetyScore < 0.4) {
       recommendations.push(
-        '💡 Consider: WIRE-UP - This might need to be connected to something',
+        '💡 Consider: WIRE-UP - This might need to be connected to something'
       );
     }
 
@@ -638,20 +641,20 @@ export class AutomatedDeadCodeManager {
    * Parse action from human response
    */
   private parseActionFromResponse(
-    response: string,
+    response: string
   ): DeadCodeDecision['action'] {
     const lower = response.toLowerCase();
 
     if (lower.includes('remove')) {
       return 'remove';
     }
-    if (lower.includes('wire') || lower.includes('connect')) {
+    if (lower.includes('wire')'' | '''' | ''lower.includes('connect')) {
       return 'wire-up';
     }
     if (lower.includes('keep')) {
       return 'keep';
     }
-    if (lower.includes('investigate') || lower.includes('analyze')) {
+    if (lower.includes('investigate')'' | '''' | ''lower.includes('analyze')) {
       return 'investigate';
     }
 
@@ -685,7 +688,7 @@ export class AutomatedDeadCodeManager {
    * Generate dead code report
    */
   private async generateDeadCodeReport(
-    scanResult: DeadCodeScanResult,
+    scanResult: DeadCodeScanResult
   ): Promise<void> {
     const report = {
       timestamp: scanResult.timestamp,
@@ -697,7 +700,7 @@ export class AutomatedDeadCodeManager {
       },
       recommendations: {
         safeToRemove: scanResult.highConfidenceItems.filter(
-          (i) => i.safetyScore > 0.8,
+          (i) => i.safetyScore > 0.8
         ).length,
         needsInvestigation: scanResult.mediumConfidenceItems.length,
         shouldKeep: scanResult.lowConfidenceItems.length,

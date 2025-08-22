@@ -452,12 +452,12 @@ async function setupIntegrations(
 export function getCoordinationMetrics(
   systems: AdvancedCoordinationSystem
 ): CoordinationMetrics {
-  const topologyMetrics = systems.topologyManager?.getTopologyMetrics()
-  const distributionMetrics = systems.distributionEngine?.getMetrics()
-  const communicationMetrics = systems.communicationProtocols?.getMetrics()
-  const lifecycleMetrics = systems.lifecycleManager?.getMetrics()
-  const patternsMetrics = systems.coordinationPatterns?.getMetrics()
-  const optimizationMetrics = systems.performanceOptimizer?.getMetrics()
+  const topologyMetrics = systems.topologyManager.getTopologyMetrics();
+  const distributionMetrics = systems.distributionEngine.getMetrics();
+  const communicationMetrics = systems.communicationProtocols.getMetrics();
+  const lifecycleMetrics = systems.lifecycleManager.getMetrics();
+  const patternsMetrics = systems.coordinationPatterns.getMetrics();
+  const optimizationMetrics = systems.performanceOptimizer.getMetrics();
 
   // Calculate overall system metrics
   const efficiency =
@@ -550,12 +550,12 @@ export async function shutdownCoordinationSystem(
 
   try {
     // Shutdown in reverse dependency order
-    await systems.performanceOptimizer?.shutdown();
-    await systems.coordinationPatterns?.shutdown();
-    await systems.lifecycleManager?.shutdown();
-    await systems.communicationProtocols?.shutdown();
-    await systems.distributionEngine?.shutdown();
-    await systems.topologyManager?.shutdown();
+    await systems.performanceOptimizer.shutdown();
+    await systems.coordinationPatterns.shutdown();
+    await systems.lifecycleManager.shutdown();
+    await systems.communicationProtocols.shutdown();
+    await systems.distributionEngine.shutdown();
+    await systems.topologyManager.shutdown();
 
     logger.info('Advanced coordination system shutdown complete');
   } catch (error) {
@@ -581,12 +581,12 @@ export function getDefaultCoordinationConfig(
       constraints: {
         maxLatency: 1000,
         minBandwidth: 1000000,
-        faultTolerance: .8,
+        faultTolerance: 0.8,
         scalabilityTarget: 100,
       },
       adaptation: {
         enabled: true,
-        sensitivity: .3,
+        sensitivity: 0.3,
         cooldownPeriod: 30000,
         maxSwitchesPerHour: 5,
       },
@@ -594,8 +594,8 @@ export function getDefaultCoordinationConfig(
     distribution: {
       maxConcurrentTasks: 100,
       defaultTimeout: 30000,
-      qualityThreshold: .8,
-      loadBalanceTarget: .8,
+      qualityThreshold: 0.8,
+      loadBalanceTarget: 0.8,
       enablePredictiveAssignment: true,
       enableDynamicRebalancing: true,
     },
@@ -627,11 +627,11 @@ export function getDefaultCoordinationConfig(
         maxProcesses: 50,
       },
       qualityThresholds: {
-        minSuccessRate: .9,
+        minSuccessRate: 0.9,
         minResponseTime: 1000,
-        maxErrorRate: .1,
-        minReliability: .9,
-        minEfficiency: .8,
+        maxErrorRate: 0.1,
+        minReliability: 0.9,
+        minEfficiency: 0.8,
       },
     },
     patterns: {
@@ -654,7 +654,7 @@ export function getDefaultCoordinationConfig(
       workStealing: {
         maxQueueSize: 1000,
         stealThreshold: 10,
-        stealRatio: .5,
+        stealRatio: 0.5,
         retryInterval: 1000,
         maxRetries: 3,
         loadBalancingInterval: 5000,
@@ -662,7 +662,7 @@ export function getDefaultCoordinationConfig(
       hierarchical: {
         maxDepth: 4,
         fanOut: 5,
-        delegationThreshold: .8,
+        delegationThreshold: 0.8,
         escalationTimeout: 30000,
         rebalanceInterval: 60000,
       },
@@ -672,7 +672,7 @@ export function getDefaultCoordinationConfig(
         initialSize: 10,
         minSize: 1,
         maxSize: 100,
-        adaptationRate: .1,
+        adaptationRate: 0.1,
         targetLatency: 100,
         targetThroughput: 1000,
         windowSize: 100,
@@ -690,7 +690,7 @@ export function getDefaultCoordinationConfig(
       caching: {
         maxSize: 10000,
         ttl: 300000,
-        refreshThreshold: .8,
+        refreshThreshold: 0.8,
         compressionEnabled: true,
         deduplicationEnabled: true,
         prefetchEnabled: true,
@@ -700,11 +700,11 @@ export function getDefaultCoordinationConfig(
         alertThresholds: {
           latency: 1000,
           throughput: 100,
-          errorRate: .1,
-          cpuUsage: .8,
-          memoryUsage: .8,
+          errorRate: 0.1,
+          cpuUsage: 0.8,
+          memoryUsage: 0.8,
           queueDepth: 100,
-          connectionUtilization: .9,
+          connectionUtilization: 0.9,
         },
         historySizeLimit: 1000,
         anomalyDetection: true,
@@ -712,11 +712,11 @@ export function getDefaultCoordinationConfig(
       },
       adaptation: {
         enabled: true,
-        sensitivity: .2,
+        sensitivity: 0.2,
         cooldownPeriod: 30000,
         maxChangesPerPeriod: 3,
-        learningRate: .1,
-        explorationRate: .1,
+        learningRate: 0.1,
+        explorationRate: 0.1,
       },
     },
   };

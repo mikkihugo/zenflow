@@ -1,13 +1,13 @@
 /**
  * @fileoverview Workflows Domain Types - Process Orchestration Domain
- * 
+ *
  * Comprehensive type definitions for workflow execution, orchestration, and
- * process management. These types define the core domain model for all 
+ * process management. These types define the core domain model for all
  * workflow operations, execution engines, and process coordination.
- * 
+ *
  * Dependencies: Only imports from @claude-zen/foundation for shared primitives.
  * Domain Independence: Self-contained workflow domain types.
- * 
+ *
  * @package @claude-zen/workflows
  * @since 2.1.0
  * @version 1.0.0
@@ -23,7 +23,7 @@ import type {
   ValidationError,
   Optional,
   NonEmptyArray,
-  Branded
+  Branded,
 } from '@claude-zen/foundation/types';
 
 // =============================================================================
@@ -42,7 +42,7 @@ export enum WorkflowStatus {
   FAILED = 'failed',
   CANCELLED = 'cancelled',
   TIMEOUT = 'timeout',
-  RETRYING = 'retrying'
+  RETRYING = 'retrying',
 }
 
 /**
@@ -56,7 +56,7 @@ export enum StepStatus {
   SKIPPED = 'skipped',
   CANCELLED = 'cancelled',
   TIMEOUT = 'timeout',
-  RETRYING = 'retrying'
+  RETRYING = 'retrying',
 }
 
 /**
@@ -67,7 +67,7 @@ export enum ExecutionStrategy {
   PARALLEL = 'parallel',
   MIXED = 'mixed',
   BATCH = 'batch',
-  STREAMING = 'streaming'
+  STREAMING = 'streaming',
 }
 
 /**
@@ -80,7 +80,7 @@ export enum TriggerType {
   WEBHOOK = 'webhook',
   API = 'api',
   DEPENDENCY = 'dependency',
-  CONDITIONAL = 'conditional'
+  CONDITIONAL = 'conditional',
 }
 
 /**
@@ -97,7 +97,7 @@ export enum WorkflowCategory {
   SECURITY = 'security',
   ANALYTICS = 'analytics',
   INTEGRATION = 'integration',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 // =============================================================================
@@ -143,18 +143,18 @@ export interface WorkflowStep extends Entity {
   action: StepAction;
   conditions: StepCondition[];
   dependencies: UUID[];
-  retry: RetryConfig | undefined;
-  timeout: number | undefined;
-  resources: ResourceRequirement | undefined;
-  validation: StepValidation | undefined;
-  rollback: RollbackConfig | undefined;
+  retry: RetryConfig'' | ''undefined;
+  timeout: number'' | ''undefined;
+  resources: ResourceRequirement'' | ''undefined;
+  validation: StepValidation'' | ''undefined;
+  rollback: RollbackConfig'' | ''undefined;
 }
 
 /**
  * Step types for categorization
  */
 export enum StepType {
-  ACTION = 'action',
+  ACTION ='action',
   CONDITION = 'condition',
   LOOP = 'loop',
   PARALLEL = 'parallel',
@@ -165,7 +165,7 @@ export enum StepType {
   API_CALL = 'api_call',
   DATABASE = 'database',
   FILE_OPERATION = 'file_operation',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 /**
@@ -184,10 +184,10 @@ export interface StepAction {
  * Step execution condition
  */
 export interface StepCondition {
-  type: 'skip' | 'execute' | 'retry' | 'fail';
+  type: 'skip | execute' | 'retry''' | '''fail';
   expression: string;
   variables: string[];
-  operator: 'and' | 'or' | 'not';
+  operator: 'and | or' | 'not';
 }
 
 // =============================================================================
@@ -260,7 +260,7 @@ export interface StepExecution extends Entity {
 export interface StepError {
   code: string;
   message: string;
-  type: 'validation' | 'execution' | 'timeout' | 'resource' | 'permission';
+  type: 'validation | execution' | 'timeout' | 'resource' | 'permission';
   stack?: string;
   context?: Record<string, unknown>;
   recoverable: boolean;
@@ -304,7 +304,7 @@ export enum BackoffStrategy {
   LINEAR = 'linear',
   EXPONENTIAL = 'exponential',
   FIBONACCI = 'fibonacci',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 /**
@@ -341,7 +341,7 @@ export enum ErrorStrategy {
   ROLLBACK = 'rollback',
   RETRY = 'retry',
   ESCALATE = 'escalate',
-  IGNORE = 'ignore'
+  IGNORE = 'ignore',
 }
 
 /**
@@ -428,7 +428,7 @@ export enum DependencyType {
   DATA = 'data',
   RESOURCE = 'resource',
   TIME = 'time',
-  EVENT = 'event'
+  EVENT = 'event',
 }
 
 /**
@@ -549,7 +549,7 @@ export interface StepLog {
   level: LogLevel;
   message: string;
   data?: Record<string, unknown>;
-  phase: 'start' | 'execute' | 'complete' | 'error' | 'retry';
+  phase: 'start | execute' | 'complete' | 'error' | 'retry';
 }
 
 /**
@@ -560,7 +560,7 @@ export enum LogLevel {
   INFO = 'info',
   WARN = 'warn',
   ERROR = 'error',
-  FATAL = 'fatal'
+  FATAL = 'fatal',
 }
 
 // =============================================================================
@@ -586,7 +586,7 @@ export interface WorkflowArtifact extends Entity {
  */
 export interface StepArtifact extends WorkflowArtifact {
   stepId: UUID;
-  phase: 'input' | 'output' | 'temporary' | 'log';
+  phase: 'input | output' | 'temporary''' | '''log';
 }
 
 /**
@@ -600,7 +600,7 @@ export enum ArtifactType {
   CONFIGURATION = 'configuration',
   BINARY = 'binary',
   ARCHIVE = 'archive',
-  DATABASE = 'database'
+  DATABASE = 'database',
 }
 
 /**
@@ -666,7 +666,7 @@ export enum ParameterType {
   ARRAY = 'array',
   OBJECT = 'object',
   FILE = 'file',
-  SECRET = 'secret'
+  SECRET = 'secret',
 }
 
 /**
@@ -720,7 +720,7 @@ export interface WorkflowPermissions {
  * Permission specification
  */
 export interface Permission {
-  type: 'user' | 'role' | 'group' | 'service';
+  type: 'user | role' | 'group''' | '''service';
   principal: string;
   conditions?: PermissionCondition[];
   expiry?: Timestamp;
@@ -779,7 +779,7 @@ export enum RollbackStrategy {
   COMPENSATE = 'compensate',
   RESTORE = 'restore',
   MANUAL = 'manual',
-  IGNORE = 'ignore'
+  IGNORE = 'ignore',
 }
 
 /**
@@ -898,7 +898,7 @@ export interface StateLock {
 export enum LockType {
   READ = 'read',
   WRITE = 'write',
-  EXCLUSIVE = 'exclusive'
+  EXCLUSIVE = 'exclusive',
 }
 
 // =============================================================================
@@ -911,71 +911,180 @@ export type ExecutionId = Branded<UUID, 'ExecutionId'>;
 export type StepId = Branded<UUID, 'StepId'>;
 
 // Complex type aliases for easier usage
-export type WorkflowEventType = 
-  | 'workflow.created'
-  | 'workflow.started' 
-  | 'workflow.completed'
-  | 'workflow.failed'
-  | 'workflow.cancelled'
-  | 'step.started'
-  | 'step.completed'
-  | 'step.failed'
-  | 'step.retried';
+export type WorkflowEventType ='' | '''workflow.created''' | '''workflow.started''' | '''workflow.completed''' | '''workflow.failed''' | '''workflow.cancelled''' | '''step.started''' | '''step.completed''' | '''step.failed''' | '''step.retried';
 
 // Stub definitions for referenced types (to be defined in respective modules)
-export interface WorkflowMetadata { 
-  tags: string[]; 
-  author: string; 
-  created: Timestamp; 
-  modified: Timestamp; 
-  size: number; 
-  complexity: number; 
+export interface WorkflowMetadata {
+  tags: string[];
+  author: string;
+  created: Timestamp;
+  modified: Timestamp;
+  size: number;
+  complexity: number;
 }
-export interface MonitoringConfig { 
-  enabled: boolean; 
-  metrics: string[]; 
-  alerting: boolean; 
-  thresholds: Record<string, number>; 
+export interface MonitoringConfig {
+  enabled: boolean;
+  metrics: string[];
+  alerting: boolean;
+  thresholds: Record<string, number>;
 }
-export interface QueueingConfig { strategy: string; priority: boolean; }
-export interface ThrottlingConfig { enabled: boolean; rate: number; }
-export interface PoolingConfig { size: number; timeout: number; }
-export interface EscalationConfig { levels: string[]; timeout: number; }
-export interface NotificationConfig { type: string; recipients: string[]; }
-export interface IsolationConfig { enabled: boolean; type: string; }
-export interface Toleration { key: string; operator: string; value: string; }
-export interface SchedulingConfig { strategy: string; constraints: string[]; }
-export interface SecurityConstraints { runAsUser: number; capabilities: string[]; }
-export interface ResourceRequirement { cpu: number; memory: number; }
-export interface Bottleneck { type: string; severity: number; suggestion: string; }
-export interface OptimizationSuggestions { recommendations: string[]; }
-export interface CostMetrics { compute: number; storage: number; network: number; }
-export interface ValidationSchema { type: string; properties: Record<string, unknown>; }
-export interface ValidationRule { field: string; rule: string; message: string; }
-export interface DependencyValidation { type: string; condition: string; }
-export interface ResourceValidation { limits: ResourceLimits; }
-export interface SecurityValidation { permissions: string[]; restrictions: string[]; }
-export interface PermissionCondition { type: string; value: string; }
-export interface InputValidation { schema: ValidationSchema; rules: ValidationRule[]; }
-export interface OutputValidation { schema: ValidationSchema; rules: ValidationRule[]; }
-export interface InputSource { type: string; location: string; }
-export interface OutputDestination { type: string; location: string; }
-export interface OutputFormat { type: string; encoding: string; }
-export interface CompressionConfig { algorithm: string; level: number; }
-export interface CheckpointFrequency { interval: number; conditions: string[]; }
-export interface CheckpointStorage { type: string; location: string; }
-export interface StorageConfig { type: string; connection: string; }
-export interface SecurityConfig { authentication: boolean; authorization: boolean; }
-export interface ClusteringConfig { enabled: boolean; nodes: number; }
-export interface CachingConfig { enabled: boolean; size: number; }
-export interface OptimizationConfig { enabled: boolean; strategies: string[]; }
-export interface ProfilingConfig { enabled: boolean; sampling: number; }
-export interface TemplateRating { score: number; reviews: number; }
-export interface TemplateUsage { count: number; lastUsed: Timestamp; }
-export interface ParameterValidation { rules: ValidationRule[]; }
-export interface StepDocumentation { name: string; description: string; }
-export interface TroubleshootingGuide { issue: string; solution: string; }
-export interface ChangelogEntry { version: string; changes: string[]; }
+export interface QueueingConfig {
+  strategy: string;
+  priority: boolean;
+}
+export interface ThrottlingConfig {
+  enabled: boolean;
+  rate: number;
+}
+export interface PoolingConfig {
+  size: number;
+  timeout: number;
+}
+export interface EscalationConfig {
+  levels: string[];
+  timeout: number;
+}
+export interface NotificationConfig {
+  type: string;
+  recipients: string[];
+}
+export interface IsolationConfig {
+  enabled: boolean;
+  type: string;
+}
+export interface Toleration {
+  key: string;
+  operator: string;
+  value: string;
+}
+export interface SchedulingConfig {
+  strategy: string;
+  constraints: string[];
+}
+export interface SecurityConstraints {
+  runAsUser: number;
+  capabilities: string[];
+}
+export interface ResourceRequirement {
+  cpu: number;
+  memory: number;
+}
+export interface Bottleneck {
+  type: string;
+  severity: number;
+  suggestion: string;
+}
+export interface OptimizationSuggestions {
+  recommendations: string[];
+}
+export interface CostMetrics {
+  compute: number;
+  storage: number;
+  network: number;
+}
+export interface ValidationSchema {
+  type: string;
+  properties: Record<string, unknown>;
+}
+export interface ValidationRule {
+  field: string;
+  rule: string;
+  message: string;
+}
+export interface DependencyValidation {
+  type: string;
+  condition: string;
+}
+export interface ResourceValidation {
+  limits: ResourceLimits;
+}
+export interface SecurityValidation {
+  permissions: string[];
+  restrictions: string[];
+}
+export interface PermissionCondition {
+  type: string;
+  value: string;
+}
+export interface InputValidation {
+  schema: ValidationSchema;
+  rules: ValidationRule[];
+}
+export interface OutputValidation {
+  schema: ValidationSchema;
+  rules: ValidationRule[];
+}
+export interface InputSource {
+  type: string;
+  location: string;
+}
+export interface OutputDestination {
+  type: string;
+  location: string;
+}
+export interface OutputFormat {
+  type: string;
+  encoding: string;
+}
+export interface CompressionConfig {
+  algorithm: string;
+  level: number;
+}
+export interface CheckpointFrequency {
+  interval: number;
+  conditions: string[];
+}
+export interface CheckpointStorage {
+  type: string;
+  location: string;
+}
+export interface StorageConfig {
+  type: string;
+  connection: string;
+}
+export interface SecurityConfig {
+  authentication: boolean;
+  authorization: boolean;
+}
+export interface ClusteringConfig {
+  enabled: boolean;
+  nodes: number;
+}
+export interface CachingConfig {
+  enabled: boolean;
+  size: number;
+}
+export interface OptimizationConfig {
+  enabled: boolean;
+  strategies: string[];
+}
+export interface ProfilingConfig {
+  enabled: boolean;
+  sampling: number;
+}
+export interface TemplateRating {
+  score: number;
+  reviews: number;
+}
+export interface TemplateUsage {
+  count: number;
+  lastUsed: Timestamp;
+}
+export interface ParameterValidation {
+  rules: ValidationRule[];
+}
+export interface StepDocumentation {
+  name: string;
+  description: string;
+}
+export interface TroubleshootingGuide {
+  issue: string;
+  solution: string;
+}
+export interface ChangelogEntry {
+  version: string;
+  changes: string[];
+}
 
 // =============================================================================
 // RESULT TYPES FOR WORKFLOW OPERATIONS
@@ -993,7 +1102,7 @@ export type StepResult = Result<StepExecution, StepExecutionError>;
  */
 export interface WorkflowError extends Omit<ValidationError, 'type'> {
   type: 'WorkflowError';
-  category: 'definition' | 'execution' | 'validation' | 'permission' | 'resource';
+  category:'' | '''definition | execution' | 'validation' | 'permission' | 'resource';
   workflowId?: UUID;
   executionId?: UUID;
 }
@@ -1014,7 +1123,7 @@ export interface ExecutionError extends WorkflowError {
 export interface StepExecutionError extends WorkflowError {
   category: 'execution';
   stepId: UUID;
-  phase: 'validation' | 'execution' | 'output' | 'cleanup';
+  phase: 'validation | execution' | 'output''' | '''cleanup';
   recoverable: boolean;
 }
 

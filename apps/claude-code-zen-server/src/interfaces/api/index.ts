@@ -12,7 +12,7 @@
  * @file Api module exports.
  */
 
-import { getWebDashboardURL } from '@claude-zen/intelligence');
+import { getWebDashboardURL } from '@claude-zen/intelligence';
 
 // Import WebSocketClient for internal use in this file
 import('/websocket/client');
@@ -50,7 +50,7 @@ export const APIUtils = {
    * @param config
    */
   validateConfig: (config: APIInterfaceConfig): boolean => {
-    return Boolean(config?.baseUrl || config?.websocketUrl);
+    return Boolean(config?.baseUrl'' | '''' | ''config?.websocketUrl);
   },
 
   /**
@@ -61,7 +61,7 @@ export const APIUtils = {
   parseResponse: (
     response: any
   ): { success: boolean; data?: any; error?: string } => {
-    if (response && typeof response === 'object') {
+    if (response && typeof response ==='object') {
       if (response?.error) {
         return { success: false, error: response?.error };
       }

@@ -32,66 +32,69 @@ import { type MetricFunction } from '../interfaces/types';
  * Matches Stanford DSPy BetterTogether implementation exactly.
  */
 export declare class BetterTogether extends Teleprompter {
-    private prompt_optimizer;
-    private weight_optimizer;
-    private rng;
-    constructor(config: {
-        metric: MetricFunction;
-        prompt_optimizer?: Teleprompter | null;
-        weight_optimizer?: Teleprompter | null;
-        seed?: number | null;
-    });
-    /**
-     * Compile method exactly matching Stanford DSPy API
-     */
-    compile(student: DSPyModule, config: {
-        trainset: Example[];
-        teacher?: DSPyModule | null;
-        valset?: Example[] | null;
-        strategy?: string;
-        valset_ratio?: number;
-        [key: string]: any;
-    }): Promise<DSPyModule>;
-    /**
-     * Parse and validate strategy exactly matching Stanford implementation
-     */
-    private _parse_strategy;
-    /**
-     * Prepare student exactly matching Stanford prepare_student
-     */
-    private _prepare_student;
-    /**
-     * Validate all predictors have LMs exactly matching Stanford implementation
-     */
-    private _all_predictors_have_lms;
-    /**
-     * Run strategies exactly matching Stanford implementation
-     */
-    private _run_strategies;
-    /**
-     * Compile prompt optimizer exactly matching Stanford implementation
-     */
-    private _compile_prompt_optimizer;
-    /**
-     * Compile weight optimizer exactly matching Stanford implementation
-     */
-    private _compile_weight_optimizer;
-    /**
-     * Get all predictors from module exactly matching Stanford implementation
-     */
-    private _get_predictors;
-    /**
-     * Launch LMs exactly matching Stanford launch_lms
-     */
-    private _launch_lms;
-    /**
-     * Kill LMs exactly matching Stanford kill_lms
-     */
-    private _kill_lms;
-    /**
-     * Deep copy exactly matching Stanford deepcopy
-     */
-    private _deepcopy;
+  private prompt_optimizer;
+  private weight_optimizer;
+  private rng;
+  constructor(config: {
+    metric: MetricFunction;
+    prompt_optimizer?: Teleprompter | null;
+    weight_optimizer?: Teleprompter | null;
+    seed?: number | null;
+  });
+  /**
+   * Compile method exactly matching Stanford DSPy API
+   */
+  compile(
+    student: DSPyModule,
+    config: {
+      trainset: Example[];
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
+      strategy?: string;
+      valset_ratio?: number;
+      [key: string]: any;
+    }
+  ): Promise<DSPyModule>;
+  /**
+   * Parse and validate strategy exactly matching Stanford implementation
+   */
+  private _parse_strategy;
+  /**
+   * Prepare student exactly matching Stanford prepare_student
+   */
+  private _prepare_student;
+  /**
+   * Validate all predictors have LMs exactly matching Stanford implementation
+   */
+  private _all_predictors_have_lms;
+  /**
+   * Run strategies exactly matching Stanford implementation
+   */
+  private _run_strategies;
+  /**
+   * Compile prompt optimizer exactly matching Stanford implementation
+   */
+  private _compile_prompt_optimizer;
+  /**
+   * Compile weight optimizer exactly matching Stanford implementation
+   */
+  private _compile_weight_optimizer;
+  /**
+   * Get all predictors from module exactly matching Stanford implementation
+   */
+  private _get_predictors;
+  /**
+   * Launch LMs exactly matching Stanford launch_lms
+   */
+  private _launch_lms;
+  /**
+   * Kill LMs exactly matching Stanford kill_lms
+   */
+  private _kill_lms;
+  /**
+   * Deep copy exactly matching Stanford deepcopy
+   */
+  private _deepcopy;
 }
 export default BetterTogether;
 //# sourceMappingURL=better-together.d.ts.map

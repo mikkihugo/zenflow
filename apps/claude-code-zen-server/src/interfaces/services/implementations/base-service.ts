@@ -8,8 +8,8 @@
  * @file Base service implementation.
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   Service,
@@ -22,7 +22,7 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces');
+} from './core/interfaces';
 import {
   ServiceConfigurationError,
   ServiceDependencyError,
@@ -30,7 +30,7 @@ import {
   ServiceInitializationError,
   ServiceOperationError,
   ServiceTimeoutError,
-} from './core/interfaces');
+} from './core/interfaces';
 
 /**
  * Abstract base service class with common functionality.
@@ -103,7 +103,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
   // ============================================
 
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {
-    if (this.lifecycleStatus !== 'uninitialized') {
+    if (this.lifecycleStatus !=='uninitialized') {
       this.logger.warn(`Service ${this.name} is already initialized`);
       return;
     }
@@ -202,8 +202,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
 
   async stop(): Promise<void> {
     if (
-      this.lifecycleStatus === 'stopped' ||
-      this.lifecycleStatus === 'uninitialized'
+      this.lifecycleStatus === 'stopped' || this.lifecycleStatus ==='uninitialized'
     ) {
       this.logger.warn(
         `Service ${this.name} is already stopped or not initialized`
@@ -268,7 +267,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
         : 0;
 
     // Check health
-    let health: 'healthy | degraded' | 'unhealthy | unknown');
+    let health: 'healthy | degraded | unhealthy | unknown');
     try {
       const isHealthy = await this.doHealthCheck;
       if (isHealthy && errorRate < 5) {
@@ -353,7 +352,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
 
   async healthCheck(): Promise<boolean> {
     try {
-      if (this.lifecycleStatus !== 'running') {
+      if (this.lifecycleStatus !=='running') {
         return false;
       }
 
@@ -495,8 +494,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
         },
       };
 
-      this.emit(
-        'operation',
+      this.emit('operation',
         this.createEvent('operation', {
           operation,
           success: true,
@@ -593,7 +591,7 @@ export abstract class BaseService extends TypedEventBase implements Service {
     const results = await Promise.allSettled(dependencyChecks);
     const failedDependencies = results
       ?.filter((result, _index) => {
-        if (result?.status === 'fulfilled') {
+        if (result?.status ==='fulfilled') {
           return !result?.value?.available()
         }
         return true; // Consider rejected promises as failed dependencies

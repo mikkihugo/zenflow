@@ -40,7 +40,10 @@ import type {
 // INPUT VALIDATION
 // =============================================================================
 
-function validateString(value: unknown, fieldName: string): ValidationResult<string> {
+function validateString(
+  value: unknown,
+  fieldName: string,
+): ValidationResult<string> {
   if (typeof value !== 'string') {
     return {
       valid: false,
@@ -56,11 +59,16 @@ function validateString(value: unknown, fieldName: string): ValidationResult<str
   return { valid: true, data: value.trim(), errors: [] };
 }
 
-function validateNumber(value: unknown, fieldName: string, min?: number, max?: number): ValidationResult<number> {
-  if (typeof value !== 'number' || isNaN(value)) {
+function validateNumber(
+  value: unknown,
+  fieldName: string,
+  min?: number,
+  max?: number,
+): ValidationResult<number> {
+  if (typeof value !== 'number''' | '''' | ''isNaN(value)) {
     return {
       valid: false,
-      errors: [{ field: fieldName, message: 'Must be a valid number', value }],
+      errors: [{ field: fieldName, message:'Must be a valid number', value }],
     };
   }
   if (min !== undefined && value < min) {
@@ -78,15 +86,19 @@ function validateNumber(value: unknown, fieldName: string, min?: number, max?: n
   return { valid: true, data: value, errors: [] };
 }
 
-function validateConfigInput(config: unknown): ValidationResult<Partial<Config>> {
-  if (config === null || config === undefined) {
+function validateConfigInput(
+  config: unknown,
+): ValidationResult<Partial<Config>> {
+  if (config === null'' | '''' | ''config === undefined) {
     return { valid: true, data: {}, errors: [] };
   }
 
-  if (typeof config !== 'object') {
+  if (typeof config !=='object') {
     return {
       valid: false,
-      errors: [{ field: 'config', message: 'Must be an object', value: config }],
+      errors: [
+        { field: 'config', message: 'Must be an object', value: config },
+      ],
     };
   }
 
@@ -100,7 +112,7 @@ function validateConfigInput(config: unknown): ValidationResult<Partial<Config>>
 // =============================================================================
 
 class InfrastructureFacade {
-  private static instance: InfrastructureFacade | null = null;
+  private static instance: InfrastructureFacade'' | ''null = null;
   private readonly logger: Logger;
   private isInitialized = false;
 
@@ -122,29 +134,41 @@ class InfrastructureFacade {
 
     try {
       // Register this facade with the foundation facade manager
-      registerFacade('infrastructure', [
-        '@claude-zen/event-system',
-        '@claude-zen/database',
-        '@claude-zen/system-monitoring',
-        '@claude-zen/load-balancing',
-        '@claude-zen/foundation',
-      ], [
-        'configuration',
-        'system-monitoring',
-        'database-access',
-        'event-system',
-        'load-balancing',
-        'telemetry',
-        'performance-tracking',
-      ]);
+      registerFacade(
+        'infrastructure',
+        [
+          '@claude-zen/event-system',
+          '@claude-zen/database',
+          '@claude-zen/system-monitoring',
+          '@claude-zen/load-balancing',
+          '@claude-zen/foundation',
+        ],
+        [
+          'configuration',
+          'system-monitoring',
+          'database-access',
+          'event-system',
+          'load-balancing',
+          'telemetry',
+          'performance-tracking',
+        ],
+      );
 
       this.isInitialized = true;
       this.logger.info('Infrastructure facade initialized successfully');
       return ok(undefined);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown initialization error';
-      this.logger.error('Failed to initialize infrastructure facade:', errorMessage);
-      return err(new Error(`Infrastructure facade initialization failed: ${errorMessage}`));
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown initialization error';
+      this.logger.error(
+        'Failed to initialize infrastructure facade:',
+        errorMessage,
+      );
+      return err(
+        new Error(
+          `Infrastructure facade initialization failed: ${errorMessage}`,
+        ),
+      );
     }
   }
 
@@ -165,7 +189,9 @@ class InfrastructureFacade {
           enabled: process.env['ZEN_ENABLE_METRICS'] === 'true',
         },
         storage: {
-          backend: this.validateStorageBackend(process.env['ZEN_MEMORY_BACKEND']),
+          backend: this.validateStorageBackend(
+            process.env['ZEN_MEMORY_BACKEND'],
+          ),
         },
         neural: {
           enabled: process.env['ZEN_NEURAL_ENABLED'] === 'true',
@@ -177,7 +203,8 @@ class InfrastructureFacade {
 
       return ok(config);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to get config';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to get config';
       return err(new Error(errorMessage));
     }
   }
@@ -187,13 +214,15 @@ class InfrastructureFacade {
     return this.getConfig();
   }
 
-  public async validateConfigInput(config?: unknown): Promise<ConfigValidationResult> {
+  public async validateConfigInput(
+    config?: unknown,
+  ): Promise<ConfigValidationResult> {
     const validation = validateConfigInput(config);
     if (!validation.valid) {
       return {
         valid: false,
-        config: await this.getConfig().then(r => r.unwrapOr({} as Config)),
-        errors: validation.errors.map(e => e.message),
+        config: await this.getConfig().then((r) => r.unwrapOr({} as Config)),
+        errors: validation.errors.map((e) => e.message),
       };
     }
 
@@ -216,55 +245,73 @@ class InfrastructureFacade {
   // TELEMETRY - TYPE-SAFE ACCESS
   // =============================================================================
 
-  public async getTelemetrySystemAccess(): Promise<Result<TelemetrySystemAccess, Error>> {
+  public async getTelemetrySystemAccess(): Promise<
+    Result<TelemetrySystemAccess, Error>
+    > {
     try {
       // In production, would use actual telemetry implementation
       const telemetryAccess: TelemetrySystemAccess = {
         recordMetric: async (name: string, value?: number): Promise<void> => {
           const nameValidation = validateString(name, 'name');
           if (!nameValidation.valid) {
-            const errorMessage = nameValidation.errors[0]?.message ?? 'Invalid name';
+            const errorMessage =
+              nameValidation.errors[0]?.message ?? 'Invalid name';
             throw new Error(errorMessage);
           }
           if (value !== undefined) {
             const valueValidation = validateNumber(value, 'value');
             if (!valueValidation.valid) {
-              const errorMessage = valueValidation.errors[0]?.message ?? 'Invalid value';
+              const errorMessage =
+                valueValidation.errors[0]?.message ?? 'Invalid value';
               throw new Error(errorMessage);
             }
           }
           const logger = getLogger('infrastructure-telemetry');
-          logger.debug(`Recording metric: ${nameValidation.data || name} with value ${value}`);
+          logger.debug(
+            `Recording metric: ${nameValidation.data'' | '''' | ''name} with value ${value}`,
+          );
         },
 
         recordHistogram: async (name: string, value: number): Promise<void> => {
-          const nameValidation = validateString(name, 'name');
+          const nameValidation = validateString(name,'name');
           const valueValidation = validateNumber(value, 'value', 0);
           if (!nameValidation.valid) {
-            throw new Error(nameValidation.errors[0]?.message ?? 'Invalid name');
+            throw new Error(
+              nameValidation.errors[0]?.message ?? 'Invalid name',
+            );
           }
           if (!valueValidation.valid) {
-            throw new Error(valueValidation.errors[0]?.message ?? 'Invalid value');
+            throw new Error(
+              valueValidation.errors[0]?.message ?? 'Invalid value',
+            );
           }
           const logger = getLogger('infrastructure-telemetry');
-          logger.debug(`Recording histogram: ${nameValidation.data || name} with value ${valueValidation.data || value}`);
+          logger.debug(
+            `Recording histogram: ${nameValidation.data'' | '''' | ''name} with value ${valueValidation.data'' | '''' | ''value}`,
+          );
         },
 
         recordGauge: async (name: string, value: number): Promise<void> => {
-          const nameValidation = validateString(name, 'name');
+          const nameValidation = validateString(name,'name');
           const valueValidation = validateNumber(value, 'value');
           if (!nameValidation.valid) {
-            throw new Error(nameValidation.errors[0]?.message ?? 'Invalid name');
+            throw new Error(
+              nameValidation.errors[0]?.message ?? 'Invalid name',
+            );
           }
           if (!valueValidation.valid) {
-            throw new Error(valueValidation.errors[0]?.message ?? 'Invalid value');
+            throw new Error(
+              valueValidation.errors[0]?.message ?? 'Invalid value',
+            );
           }
           const logger = getLogger('infrastructure-telemetry');
-          logger.debug(`Recording gauge: ${nameValidation.data || name} with value ${valueValidation.data || value}`);
+          logger.debug(
+            `Recording gauge: ${nameValidation.data'' | '''' | ''name} with value ${valueValidation.data'' | '''' | ''value}`,
+          );
         },
 
         withTrace: <T>(fn: () => T): T => {
-          if (typeof fn !== 'function') {
+          if (typeof fn !=='function') {
             throw new Error('withTrace requires a function argument');
           }
           this.logger.debug('Executing with trace');
@@ -282,20 +329,25 @@ class InfrastructureFacade {
         startTrace: (name: string) => {
           const nameValidation = validateString(name, 'name');
           if (!nameValidation.valid) {
-            const errorMessage = nameValidation.errors[0]?.message ?? 'Invalid name';
+            const errorMessage =
+              nameValidation.errors[0]?.message ?? 'Invalid name';
             throw new Error(errorMessage);
           }
           const logger = getLogger('infrastructure-telemetry');
-          logger.debug(`Starting trace: ${nameValidation.data || name}`);
+          logger.debug(`Starting trace: ${nameValidation.data'' | '''' | ''name}`);
           return {
-            setAttributes: (attributes: Record<string, string | number | boolean>): void => {
-              if (typeof attributes !== 'object' || attributes === null) {
+            setAttributes: (
+              attributes: Record<string, string'' | ''number'' | ''boolean>,
+            ): void => {
+              if (typeof attributes !=='object''' | '''' | ''attributes === null) {
                 throw new Error('Attributes must be an object');
               }
-              logger.debug(`Setting trace attributes: ${JSON.stringify(attributes)}`);
+              logger.debug(
+                `Setting trace attributes: ${JSON.stringify(attributes)}`,
+              );
             },
             end: (): void => {
-              logger.debug(`Ending trace: ${nameValidation.data || name}`);
+              logger.debug(`Ending trace: ${nameValidation.data'' | '''' | ''name}`);
             },
           };
         },
@@ -303,7 +355,10 @@ class InfrastructureFacade {
 
       return ok(telemetryAccess);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to get telemetry access';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          :'Failed to get telemetry access';
       return err(new Error(errorMessage));
     }
   }
@@ -312,22 +367,30 @@ class InfrastructureFacade {
   // PRIVATE VALIDATION HELPERS
   // =============================================================================
 
-  private validateEnv(env: string | undefined): Config['env'] {
-    if (env === 'development' || env === 'production' || env === 'test') {
+  private validateEnv(env: string'' | ''undefined): Config['env'] {
+    if (env === 'development''' | '''' | ''env ==='production''' | '''' | ''env ==='test') {
       return env;
     }
     return 'production';
   }
 
-  private validateLogLevel(level: string | undefined): Config['logging']['level'] {
-    if (level === 'debug' || level === 'info' || level === 'warn' || level === 'error') {
+  private validateLogLevel(
+    level: string'' | ''undefined,
+  ): Config['logging']['level'] {
+    if (
+      level === 'debug''' | '''' | ''level ==='info''' | '''' | ''level ==='warn''' | '''' | ''level ==='error'
+    ) {
       return level;
     }
     return 'info';
   }
 
-  private validateStorageBackend(backend: string | undefined): Config['storage']['backend'] {
-    if (backend === 'memory' || backend === 'sqlite' || backend === 'lancedb' || backend === 'kuzu') {
+  private validateStorageBackend(
+    backend: string'' | ''undefined,
+  ): Config['storage']['backend'] {
+    if (
+      backend === 'memory''' | '''' | ''backend ==='sqlite''' | '''' | ''backend ==='lancedb''' | '''' | ''backend ==='kuzu'
+    ) {
       return backend;
     }
     return 'memory';
@@ -352,7 +415,9 @@ export async function reloadConfig(): Promise<Result<Config, Error>> {
   return facade.reloadConfig();
 }
 
-export async function validateConfig(config?: unknown): Promise<ConfigValidationResult> {
+export async function validateConfig(
+  config?: unknown,
+): Promise<ConfigValidationResult> {
   return facade.validateConfigInput(config);
 }
 
@@ -364,11 +429,16 @@ export function areMetricsEnabled(): boolean {
   return process.env['ZEN_ENABLE_METRICS'] === 'true';
 }
 
-export async function getTelemetrySystemAccess(): Promise<Result<TelemetrySystemAccess, Error>> {
+export async function getTelemetrySystemAccess(): Promise<
+  Result<TelemetrySystemAccess, Error>
+  > {
   return facade.getTelemetrySystemAccess();
 }
 
-export async function recordMetric(name: string, value?: number): Promise<Result<void, Error>> {
+export async function recordMetric(
+  name: string,
+  value?: number,
+): Promise<Result<void, Error>> {
   const telemetryResult = await facade.getTelemetrySystemAccess();
   if (telemetryResult.isErr()) {
     return err(telemetryResult.error);
@@ -378,7 +448,8 @@ export async function recordMetric(name: string, value?: number): Promise<Result
     await telemetryResult.value.recordMetric(name, value);
     return ok(undefined);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Failed to record metric';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Failed to record metric';
     return err(new Error(errorMessage));
   }
 }
@@ -445,7 +516,9 @@ async function loadAgentRegistry() {
     return registryModule;
   } catch {
     const logger = getLogger('infrastructure-facade');
-    logger.warn('Agent registry package not available, using fallback implementation');
+    logger.warn(
+      'Agent registry package not available, using fallback implementation',
+    );
 
     // Return a minimal fallback implementation
     return {
@@ -471,12 +544,20 @@ async function loadServiceContainer() {
     throw new Error('Service container package not available during build');
   } catch {
     const logger = getLogger('infrastructure-facade');
-    logger.warn('Service container package not available, using fallback implementation');
+    logger.warn(
+      'Service container package not available, using fallback implementation',
+    );
 
     // Return a minimal fallback implementation
     return {
-      createServiceContainer: (_name?: string) => ({ register: () => {}, resolve: () => null }),
-      createDIContainer: (_name?: string) => ({ register: () => {}, resolve: () => null }),
+      createServiceContainer: () => ({
+        register: () => { /* Fallback register */ },
+        resolve: () => null,
+      }),
+      createDIContainer: () => ({
+        register: () => { /* Fallback register */ },
+        resolve: () => null,
+      }),
       ServiceContainer: class FallbackServiceContainer {
         register() {
           return { isOk: () => true };
@@ -516,7 +597,9 @@ export async function getDIContainer(name?: string): Promise<unknown> {
   } catch (error) {
     const logger = getLogger('infrastructure-facade');
     logger.error('Failed to create DI container:', error);
-    throw new Error('Service container package required for advanced DI operations');
+    throw new Error(
+      'Service container package required for advanced DI operations',
+    );
   }
 }
 
@@ -541,7 +624,7 @@ class InMemoryAgentRegistry {
       name: config.name,
       type: config.type,
       status: 'active',
-      capabilities: config.capabilities || [],
+      capabilities: config.capabilities'' | '''' | ''[],
       performance: {},
       health: {},
     };
@@ -552,11 +635,11 @@ class InMemoryAgentRegistry {
   }
 
   async getAllAgents(): Promise<AgentInstance[]> {
-    return Array.from(this.agents.values());
+    return Array.from(this.agents.values())();
   }
 
   async findAgentsByCapability(capability: string): Promise<AgentInstance[]> {
-    return Array.from(this.agents.values()).filter(agent =>
+    return Array.from(this.agents.values()).filter((agent) =>
       agent.capabilities.includes(capability),
     );
   }
@@ -573,9 +656,13 @@ interface AgentRegistryInterface {
 /**
  * Get agent registry instance (with dynamic loading)
  */
-export async function getAgentRegistry(options?: AgentRegistryOptions): Promise<AgentRegistryInterface> {
+export async function getAgentRegistry(
+  options?: AgentRegistryOptions,
+): Promise<AgentRegistryInterface> {
   const registryModule = await loadAgentRegistry();
-  const registry = registryModule.getGlobalAgentRegistry(options) as AgentRegistryInterface;
+  const registry = registryModule.getGlobalAgentRegistry(
+    options,
+  ) as AgentRegistryInterface;
   await registry.initialize();
   return registry;
 }
@@ -583,7 +670,9 @@ export async function getAgentRegistry(options?: AgentRegistryOptions): Promise<
 /**
  * Register an agent through infrastructure facade
  */
-export async function registerAgent(config: AgentRegistrationConfig): Promise<Result<AgentInstance, Error>> {
+export async function registerAgent(
+  config: AgentRegistrationConfig,
+): Promise<Result<AgentInstance, Error>> {
   try {
     const registry = await getAgentRegistry();
     const agent = await registry.registerAgent(config);
@@ -609,8 +698,10 @@ export async function getAllAgents(): Promise<Result<AgentInstance[], Error>> {
 /**
  * Find agents by capability
  */
-export async function findAgentsByCapability(capability: string): Promise<Result<AgentInstance[], Error>> {
-  if (!capability || typeof capability !== 'string') {
+export async function findAgentsByCapability(
+  capability: string,
+): Promise<Result<AgentInstance[], Error>> {
+  if (!capability'' | '''' | ''typeof capability !=='string') {
     return err(new Error('Capability must be a non-empty string'));
   }
 

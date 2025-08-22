@@ -1,11 +1,11 @@
 /**
  * @fileoverview Teamwork Package - Production-Grade Multi-Agent Collaboration System
- * 
+ *
  * **COMPREHENSIVE MULTI-AGENT TEAMWORK PLATFORM**
- * 
+ *
  * Enterprise-grade multi-agent collaboration system inspired by Microsoft AutoGen and ag2.ai,
  * designed for sophisticated agent teamwork, structured conversations, and collaborative problem-solving.
- * 
+ *
  * **COLLABORATION CAPABILITIES:**
  * - 🤝 **Multi-Agent Conversations**: Structured dialogue between specialized agents
  * - 🎯 **Role-Based Collaboration**: Agents with specific roles, permissions, and expertise
@@ -15,7 +15,7 @@
  * - 🎨 **Creative Collaboration**: Brainstorming, ideation, and creative problem-solving
  * - 🔍 **Code Review Teams**: Specialized teams for code analysis and improvement
  * - 📊 **Planning & Strategy**: Collaborative planning and strategic decision-making
- * 
+ *
  * **SUPPORTED COLLABORATION PATTERNS:**
  * - 🚀 **Debate & Discussion**: Multi-perspective analysis with structured argumentation
  * - 🔧 **Problem-Solving Teams**: Collaborative troubleshooting and solution development
@@ -25,7 +25,7 @@
  * - 🧪 **Research & Analysis**: Multi-agent research and knowledge synthesis
  * - 📋 **Project Management**: Agile planning, sprint coordination, and retrospectives
  * - 🎓 **Learning & Teaching**: Knowledge transfer and skill development teams
- * 
+ *
  * **ARCHITECTURE PATTERNS:**
  * - **Observer Pattern**: Real-time conversation monitoring and analytics
  * - **Mediator Pattern**: Centralized conversation orchestration and coordination
@@ -33,7 +33,7 @@
  * - **Command Pattern**: Structured action coordination and execution
  * - **State Machine**: Conversation flow control and state management
  * - **Publish-Subscribe**: Event-driven collaboration and notifications
- * 
+ *
  * **KEY PERFORMANCE CHARACTERISTICS:**
  * - **Conversation Scaling**: Support for 2-50+ agents in structured dialogue
  * - **Real-time Coordination**: <100ms message routing and response coordination
@@ -41,9 +41,9 @@
  * - **Consensus Speed**: Automated agreement reaching in complex scenarios
  * - **Pattern Recognition**: Learning from successful collaboration patterns
  * - **Quality Assurance**: Built-in conversation quality metrics and optimization
- * 
+ *
  * **COLLABORATION DOMAINS:**
- * 
+ *
  * 🤝 **Multi-Agent Conversations** - Structured team discussions
  * ```typescript
  * import { ConversationOrchestrator, TeamworkSystem } from '@claude-zen/teamwork';
@@ -51,7 +51,7 @@
  * // FEATURES: Role assignment, moderation, consensus building
  * // PERFORMANCE: Real-time coordination, scalable team sizes
  * ```
- * 
+ *
  * 🎯 **Specialized Task Forces** - Expert teams for domain challenges
  * ```typescript
  * import { SpecializedTeam, ExpertCoordinator } from '@claude-zen/teamwork';
@@ -59,7 +59,7 @@
  * // FEATURES: Expert role matching, domain-specific workflows
  * // PERFORMANCE: Optimized for expertise utilization and quality outcomes
  * ```
- * 
+ *
  * 🔄 **Workflow Orchestration** - Automated process coordination
  * ```typescript
  * import { WorkflowOrchestrator, ProcessCoordinator } from '@claude-zen/teamwork';
@@ -67,7 +67,7 @@
  * // FEATURES: Workflow templates, dependency tracking, error handling
  * // PERFORMANCE: Parallel processing, intelligent resource allocation
  * ```
- * 
+ *
  * 🧠 **Collective Intelligence** - Emergent team capabilities
  * ```typescript
  * import { CollectiveIntelligence, TeamLearning } from '@claude-zen/teamwork';
@@ -75,7 +75,7 @@
  * // FEATURES: Knowledge synthesis, perspective integration, emergent insights
  * // PERFORMANCE: Intelligence amplification, quality enhancement
  * ```
- * 
+ *
  * 📝 **Consensus Building** - Automated decision-making
  * ```typescript
  * import { ConsensusBuilder, DecisionOrchestrator } from '@claude-zen/teamwork';
@@ -83,13 +83,13 @@
  * // FEATURES: Voting mechanisms, conflict detection, compromise generation
  * // PERFORMANCE: Fast consensus, quality decision outcomes
  * ```
- * 
+ *
  * **INTEGRATION EXAMPLES:**
- * 
+ *
  * @example Comprehensive Code Review Team
  * ```typescript
  * import { TeamworkSystem, ConversationOrchestrator } from '@claude-zen/teamwork';
- * 
+ *
  * // Create specialized code review team
  * const codeReviewTeam = await TeamworkSystem.create({
  *   pattern: 'code-review',
@@ -100,27 +100,27 @@
  *     codebase: 'typescript-backend'
  *   },
  *   participants: [
- *     { 
- *       id: 'security-expert', 
- *       type: 'security-analyst', 
+ *     {
+ *       id: 'security-expert',
+ *       type: 'security-analyst',
  *       role: 'lead-security-reviewer',
  *       expertise: ['security', 'penetration-testing', 'threat-modeling']
  *     },
- *     { 
- *       id: 'performance-expert', 
- *       type: 'performance-engineer', 
+ *     {
+ *       id: 'performance-expert',
+ *       type: 'performance-engineer',
  *       role: 'performance-reviewer',
  *       expertise: ['optimization', 'profiling', 'scalability']
  *     },
- *     { 
- *       id: 'architecture-expert', 
- *       type: 'solutions-architect', 
+ *     {
+ *       id: 'architecture-expert',
+ *       type: 'solutions-architect',
  *       role: 'architecture-reviewer',
  *       expertise: ['system-design', 'patterns', 'best-practices']
  *     },
- *     { 
- *       id: 'senior-developer', 
- *       type: 'senior-engineer', 
+ *     {
+ *       id: 'senior-developer',
+ *       type: 'senior-engineer',
  *       role: 'code-quality-reviewer',
  *       expertise: ['typescript', 'testing', 'maintainability']
  *     }
@@ -131,7 +131,7 @@
  *     role: 'conversation-facilitator'
  *   }
  * });
- * 
+ *
  * // Execute structured code review conversation
  * const reviewResult = await codeReviewTeam.orchestrator.startConversation({
  *   initialPrompt: 'Please review the attached pull request focusing on your areas of expertise',
@@ -141,25 +141,25 @@
  *   ],
  *   expectedOutcomes: [
  *     'security-assessment',
- *     'performance-analysis', 
+ *     'performance-analysis',
  *     'architecture-evaluation',
  *     'code-quality-review',
  *     'consensus-recommendation'
  *   ]
  * });
- * 
+ *
  * console.log(`Review completed with ${reviewResult.consensus.approval} approval`);
  * console.log(`Key concerns: ${reviewResult.consensus.concerns.join(', ')}`);
  * ```
- * 
+ *
  * @example Advanced Problem-Solving Task Force
  * ```typescript
- * import { 
- *   SpecializedTeam, 
+ * import {
+ *   SpecializedTeam,
  *   ProblemSolvingOrchestrator,
- *   CollectiveIntelligence 
+ *   CollectiveIntelligence
  * } from '@claude-zen/teamwork';
- * 
+ *
  * // Create multi-disciplinary problem-solving team
  * const problemSolvingTeam = new SpecializedTeam({
  *   mission: 'Solve complex system performance degradation',
@@ -171,7 +171,7 @@
  *       role: 'pattern-analyzer'
  *     },
  *     'infrastructure-engineer': {
- *       count: 1, 
+ *       count: 1,
  *       expertise: ['kubernetes', 'monitoring', 'scaling'],
  *       role: 'infrastructure-analyst'
  *     },
@@ -193,7 +193,7 @@
  *     'consensus-required': true
  *   }
  * });
- * 
+ *
  * // Execute collaborative problem-solving workflow
  * const solution = await problemSolvingTeam.solve({
  *   problem: {
@@ -204,7 +204,7 @@
  *   },
  *   investigationPhases: [
  *     'data-collection',
- *     'hypothesis-generation', 
+ *     'hypothesis-generation',
  *     'testing-validation',
  *     'root-cause-analysis',
  *     'solution-design',
@@ -216,20 +216,20 @@
  *     riskTolerance: 'low'
  *   }
  * });
- * 
+ *
  * console.log(`Root cause identified: ${solution.rootCause}`);
  * console.log(`Recommended solution: ${solution.recommendedSolution}`);
  * console.log(`Team confidence: ${solution.consensus.confidence}%`);
  * ```
- * 
+ *
  * @example Creative Brainstorming and Innovation Session
  * ```typescript
- * import { 
- *   CreativeCollaboration, 
+ * import {
+ *   CreativeCollaboration,
  *   BrainstormingOrchestrator,
- *   IdeationFramework 
+ *   IdeationFramework
  * } from '@claude-zen/teamwork';
- * 
+ *
  * // Create diverse creative team for innovation
  * const innovationTeam = new CreativeCollaboration({
  *   objective: 'Design next-generation AI collaboration features',
@@ -240,7 +240,7 @@
  *       strengths: ['user-research', 'product-strategy', 'market-analysis']
  *     },
  *     'technical-innovator': {
- *       perspective: 'technical-feasibility', 
+ *       perspective: 'technical-feasibility',
  *       strengths: ['emerging-tech', 'scalability', 'implementation']
  *     },
  *     'design-thinker': {
@@ -264,7 +264,7 @@
  *     'quantity-over-quality': true
  *   }
  * });
- * 
+ *
  * // Execute structured innovation session
  * const innovationResults = await innovationTeam.ideate({
  *   challenge: 'How might we enable AI agents to collaborate more naturally and effectively?',
@@ -272,7 +272,7 @@
  *   successMetrics: ['user-adoption', 'task-completion-rate', 'collaboration-quality'],
  *   timeboxed: {
  *     divergence: '30 minutes',
- *     convergence: '20 minutes', 
+ *     convergence: '20 minutes',
  *     refinement: '15 minutes'
  *   },
  *   techniques: [
@@ -283,20 +283,20 @@
  *     'constraint-removal'
  *   ]
  * });
- * 
+ *
  * console.log(`Generated ${innovationResults.ideas.length} innovative concepts`);
  * console.log(`Top concepts: ${innovationResults.topIdeas.map(i => i.title).join(', ')}`);
  * console.log(`Team alignment score: ${innovationResults.alignment.score}`);
  * ```
- * 
+ *
  * @example Enterprise Planning and Strategy Session
  * ```typescript
- * import { 
- *   StrategicPlanning, 
+ * import {
+ *   StrategicPlanning,
  *   ExecutiveTeam,
- *   ConsensusBuilder 
+ *   ConsensusBuilder
  * } from '@claude-zen/teamwork';
- * 
+ *
  * // Create executive-level strategic planning team
  * const executiveTeam = new ExecutiveTeam({
  *   planningHorizon: 'quarterly',
@@ -329,7 +329,7 @@
  *     }
  *   }
  * });
- * 
+ *
  * // Execute strategic planning session
  * const strategicPlan = await executiveTeam.plan({
  *   session: {
@@ -339,7 +339,7 @@
  *   },
  *   agenda: [
  *     'current-state-assessment',
- *     'market-opportunity-analysis', 
+ *     'market-opportunity-analysis',
  *     'resource-allocation-review',
  *     'initiative-prioritization',
  *     'risk-assessment',
@@ -359,20 +359,20 @@
  *     'risk-mitigation': 10
  *   }
  * });
- * 
+ *
  * console.log(`Strategic initiatives approved: ${strategicPlan.initiatives.length}`);
  * console.log(`Total investment: $${strategicPlan.totalBudget.toLocaleString()}`);
  * console.log(`Executive consensus: ${strategicPlan.consensus.unanimous ? 'Unanimous' : 'Majority'}`);
  * ```
- * 
+ *
  * @example Real-time Learning and Knowledge Transfer
  * ```typescript
- * import { 
- *   LearningTeam, 
+ * import {
+ *   LearningTeam,
  *   KnowledgeTransfer,
- *   SkillDevelopment 
+ *   SkillDevelopment
  * } from '@claude-zen/teamwork';
- * 
+ *
  * // Create mentorship and learning team
  * const learningTeam = new LearningTeam({
  *   learningObjective: 'Advanced TypeScript and System Architecture',
@@ -399,13 +399,13 @@
  *   },
  *   learningMethods: [
  *     'code-reviews',
- *     'pair-programming', 
+ *     'pair-programming',
  *     'architecture-discussions',
  *     'problem-solving-sessions',
  *     'knowledge-sharing-presentations'
  *   ]
  * });
- * 
+ *
  * // Execute collaborative learning session
  * const learningOutcome = await learningTeam.learn({
  *   topic: 'Implementing scalable microservices architecture with TypeScript',
@@ -419,7 +419,7 @@
  *     },
  *     {
  *       type: 'hands-on-coding',
- *       duration: '60 minutes', 
+ *       duration: '60 minutes',
  *       focus: 'implementation-patterns'
  *     },
  *     {
@@ -440,46 +440,46 @@
  *     'collaborative-contribution'
  *   ]
  * });
- * 
+ *
  * console.log(`Learning objectives achieved: ${learningOutcome.objectivesAchieved}%`);
  * console.log(`Participant engagement: ${learningOutcome.engagement.average}`);
  * console.log(`Knowledge transfer effectiveness: ${learningOutcome.transferEffectiveness}`);
  * ```
- * 
+ *
  * **CONVERSATION PATTERNS AND WORKFLOWS:**
- * 
+ *
  * 1. **Code Review Conversations**
  *    - Multi-expert review with specialized focus areas
  *    - Structured feedback collection and consensus building
  *    - Quality gates and approval workflows
- * 
- * 2. **Problem-Solving Sessions** 
+ *
+ * 2. **Problem-Solving Sessions**
  *    - Collaborative troubleshooting and root cause analysis
  *    - Hypothesis-driven investigation and validation
  *    - Solution design and implementation planning
- * 
+ *
  * 3. **Brainstorming and Innovation**
  *    - Creative ideation with diverse perspectives
  *    - Structured creativity techniques and facilitation
  *    - Idea evaluation and selection processes
- * 
+ *
  * 4. **Strategic Planning**
  *    - Executive-level decision-making and prioritization
  *    - Resource allocation and constraint management
  *    - Risk assessment and mitigation planning
- * 
+ *
  * 5. **Learning and Development**
  *    - Mentorship and knowledge transfer sessions
  *    - Collaborative skill development and practice
  *    - Peer learning and mutual support
- * 
+ *
  * **FOUNDATION INTEGRATION BENEFITS:**
  * - Persistent conversation context and memory
  * - Integrated storage for conversation artifacts
  * - Professional telemetry and collaboration analytics
  * - Secure participant management and access control
  * - Cost optimization for large team conversations
- * 
+ *
  * **ADVANCED FEATURES:**
  * - Intelligent conversation moderation and facilitation
  * - Automatic role assignment based on expertise
@@ -487,7 +487,7 @@
  * - Conversation quality metrics and optimization
  * - Learning from successful collaboration patterns
  * - Integration with external collaboration tools
- * 
+ *
  * @author Claude Zen Team & Microsoft AutoGen Research Team
  * @version 2.0.0 (Production Multi-Agent Collaboration)
  * @license MIT
@@ -500,7 +500,7 @@
 // ConversationFramework is defined in this file, exported at the bottom
 
 // =============================================================================
-// ORCHESTRATION - Conversation orchestration and coordination  
+// ORCHESTRATION - Conversation orchestration and coordination
 // =============================================================================
 export { ConversationOrchestratorImpl as ConversationOrchestrator } from './src/main';
 export { ConversationOrchestratorImpl as TeamCoordinator } from './src/main';
@@ -508,10 +508,10 @@ export { ConversationOrchestratorImpl as TeamCoordinator } from './src/main';
 // =============================================================================
 // BRAIN INTELLIGENCE - Brain-enhanced meeting intelligence
 // =============================================================================
-export { 
+export {
   BrainMeetingIntelligence,
   createBrainMeetingIntelligence,
-  enhanceTeamworkWithBrain
+  enhanceTeamworkWithBrain,
 } from './src/brain';
 
 // =============================================================================
@@ -542,7 +542,7 @@ export type {
   ConversationRole,
   ConversationRole as TeamRole,
   DialoguePattern,
-  TeamworkConfig
+  TeamworkConfig,
 } from './src/types';
 
 // Brain intelligence types
@@ -550,7 +550,7 @@ export type {
   MeetingIssue,
   BrainMeetingParticipant,
   BrainMeetingConfig,
-  BrainMeetingOutcome
+  BrainMeetingOutcome,
 } from './src/brain';
 
 /**
@@ -567,7 +567,7 @@ export interface ConversationSystem {
 
 /**
  * Conversation Framework.
- * 
+ *
  * ag2.ai-inspired conversations with @claude-zen/foundation storage.
  *
  * @example
@@ -630,25 +630,24 @@ class ConversationFramework {
   static validateConfig(config: any): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    if (!config?.title || typeof config.title !== 'string') {
+    if (!config?.title''''' | '''''''''' | '''''typeof config.title !=='string') {
       errors.push('Title is required and must be a string');
     }
 
-    if (!config?.pattern || typeof config.pattern !== 'string') {
+    if (!config?.pattern''''' | '''''''''' | '''''typeof config.pattern !=='string') {
       errors.push('Pattern is required and must be a string');
     }
 
-    if (!config?.context?.goal || typeof config.context.goal !== 'string') {
+    if (!config?.context?.goal''''' | '''''''''' | '''''typeof config.context.goal !=='string') {
       errors.push('Goal is required and must be a string');
     }
 
-    if (!config?.context?.domain || typeof config.context.domain !== 'string') {
+    if (!config?.context?.domain''''' | '''''''''' | '''''typeof config.context.domain !=='string') {
       errors.push('Domain is required and must be a string');
     }
 
     if (
-      !Array.isArray(config?.initialParticipants) ||
-      config.initialParticipants.length === 0
+      !Array.isArray(config?.initialParticipants)''''' | '''''''''' | '''''config.initialParticipants.length === 0
     ) {
       errors.push('At least one participant is required');
     }

@@ -1,0 +1,498 @@
+🚀 Starting comprehensive codebase linting...
+📊 Target: All packages + main app
+
+📦 PHASE 1: Core Packages
+=========================
+🔍 Linting AI Linter...
+  📦 Running package-specific lint for AI Linter
+
+> @claude-zen/ai-linter@1.0.0 lint /home/mhugo/code/claude-code-zen/packages/ai-linter
+> eslint src/**/*.ts
+
+  🔷 Running TypeScript check for AI Linter
+  ✅ AI Linter linting complete
+
+🔍 Linting Foundation...
+  📦 Running package-specific lint for Foundation
+
+> @claude-zen/foundation@1.1.1 lint /home/mhugo/code/claude-code-zen/packages/foundation
+> eslint src --ext .ts
+
+
+/home/mhugo/code/claude-code-zen/packages/foundation/src/config.ts
+  187:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/foundation/src/environment-detection.ts
+  152:23  error  Missing trailing comma       comma-dangle
+  232:37  error  Trailing spaces not allowed  no-trailing-spaces
+  233:45  error  Trailing spaces not allowed  no-trailing-spaces
+  234:30  error  Trailing spaces not allowed  no-trailing-spaces
+  234:30  error  Missing trailing comma       comma-dangle
+
+/home/mhugo/code/claude-code-zen/packages/foundation/src/error-recovery.ts
+  264:23  error  Missing trailing comma  comma-dangle
+
+/home/mhugo/code/claude-code-zen/packages/foundation/src/facade-status-manager.ts
+  234:23  error  Missing trailing comma  comma-dangle
+
+/home/mhugo/code/claude-code-zen/packages/foundation/src/index.ts
+  474:22  warning  Unexpected empty async method 'set'                                                                            @typescript-eslint/no-empty-function
+  477:24  warning  Unexpected empty async method 'clear'                                                                          @typescript-eslint/no-empty-function
+  483:38  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  484:38  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  485:18  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  485:35  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  498:20  warning  Unexpected empty method 'setRole'                                                                              @typescript-eslint/no-empty-function
+  498:22  error    Missing trailing comma                                                                                         comma-dangle
+  502:41  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  508:45  error    Type number trivially inferred from a number literal, remove type annotation                                   @typescript-eslint/no-inferrable-types
+  508:45  error    '_value' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+  508:65  error    '_attributes' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+  512:33  error    '_name' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+  512:48  error    '_value' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+  512:64  error    '_attributes' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+  516:28  error    '_name' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+  516:43  error    '_attributes' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+  520:20  error    '_key' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+  520:34  error    '_value' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+  521:17  error    '_status' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  521:96  error    Missing trailing comma                                                                                         comma-dangle
+  530:10  warning  Forbidden non-null assertion                                                                                   @typescript-eslint/no-non-null-assertion
+  533:24  error    '_name' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+  535:20  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  540:25  error    '_name' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+  542:20  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  550:16  warning  Unexpected empty arrow function                                                                                @typescript-eslint/no-empty-function
+  561:31  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  561:55  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  562:33  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  563:37  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  575:24  warning  Unexpected empty async method 'set'                                                                            @typescript-eslint/no-empty-function
+  578:26  warning  Unexpected empty async method 'clear'                                                                          @typescript-eslint/no-empty-function
+  578:28  error    Missing trailing comma                                                                                         comma-dangle
+  579:7   error    Missing trailing comma                                                                                         comma-dangle
+  585:60  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  591:36  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  592:1   error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  594:62  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  606:6   error    Missing trailing comma                                                                                         comma-dangle
+  624:5   warning  Forbidden non-null assertion                                                                                   @typescript-eslint/no-non-null-assertion
+  628:32  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  630:21  error    Expected { after 'if' condition                                                                                curly
+  631:1   error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  657:35  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  676:35  error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  703:22  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  709:29  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  713:50  warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  719:40  error    Missing trailing comma                                                                                         comma-dangle
+  726:68  error    Missing trailing comma                                                                                         comma-dangle
+  735:13  error    Statement inside of curly braces should be on next line                                                        brace-style
+  735:26  error    Closing curly brace should be on the same line as opening curly brace or on the line after the previous block  brace-style
+  736:16  error    Statement inside of curly braces should be on next line                                                        brace-style
+  736:29  error    Closing curly brace should be on the same line as opening curly brace or on the line after the previous block  brace-style
+
+/home/mhugo/code/claude-code-zen/packages/foundation/src/logging.ts
+  230:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/foundation/src/typed-event-base.ts
+   91:69  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   91:91  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   92:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   93:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:17  error    Missing trailing comma                    comma-dangle
+  110:52  error    Missing trailing comma                    comma-dangle
+  132:52  error    Missing trailing comma                    comma-dangle
+  188:28  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  189:1   error    Trailing spaces not allowed               no-trailing-spaces
+  209:32  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  210:1   error    Trailing spaces not allowed               no-trailing-spaces
+  329:31  error    Missing trailing comma                    comma-dangle
+  345:1   error    Trailing spaces not allowed               no-trailing-spaces
+  350:1   error    Trailing spaces not allowed               no-trailing-spaces
+  352:55  error    Trailing spaces not allowed               no-trailing-spaces
+  362:23  error    Missing trailing comma                    comma-dangle
+
+✖ 80 problems (45 errors, 35 warnings)
+  33 errors and 0 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.
+  ⚠️  Lint errors found in Foundation
+  🔷 Running TypeScript check for Foundation
+  ✅ Foundation linting complete
+
+🔍 Linting Intelligence...
+  📦 Running package-specific lint for Intelligence
+
+> @claude-zen/intelligence@1.0.0 lint /home/mhugo/code/claude-code-zen/packages/intelligence
+> eslint src/ --ext .ts,.js
+
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/brain.ts
+   31:23   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+   32:26   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  123:52   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  128:59   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  133:58   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  138:48   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  169:21   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  170:24   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  172:24   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  185:26   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  185:40   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  192:16   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  225:25   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  226:25   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  228:24   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  233:31   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  265:25   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  266:23   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  268:24   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  298:25   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  299:26   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  301:24   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  341:25   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  342:27   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  344:24   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  366:34   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  373:42   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  373:56   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  380:31   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  401:55   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  407:54   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  416:51   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  422:61   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  441:41   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  443:24   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  447:19   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  453:35   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  461:40   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  484:40   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  485:19   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  488:43   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  495:34   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  512:40   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  544:12   error    'error' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+  576:58   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  588:64   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  600:64   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  605:12   error    'error' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+  622:3    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  626:48   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  626:62   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  629:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  678:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  681:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  686:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  688:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  691:43   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  693:28   error    Statement inside of curly braces should be on next line                                                        brace-style
+  693:66   error    Expected { after 'for-of'                                                                                      curly
+  693:93   error    Expected { after 'if' condition                                                                                curly
+  693:116  error    Closing curly brace should be on the same line as opening curly brace or on the line after the previous block  brace-style
+  693:117  error    Missing trailing comma                                                                                         comma-dangle
+  696:39   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  697:132  error    Missing trailing comma                                                                                         comma-dangle
+  700:39   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  701:59   error    Missing trailing comma                                                                                         comma-dangle
+  704:31   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  705:118  error    Missing trailing comma                                                                                         comma-dangle
+  706:9    error    Missing trailing comma                                                                                         comma-dangle
+  714:57   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  714:71   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  722:53   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  722:67   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  730:52   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  730:66   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  738:53   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  738:67   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  751:49   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  751:63   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  767:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  780:66   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  780:80   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  796:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  809:68   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  809:82   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  825:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  838:54   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  838:68   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  854:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  863:50   error    Missing trailing comma                                                                                         comma-dangle
+  877:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  879:28   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  880:33   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  881:29   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  882:28   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  883:30   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  884:1    error    Trailing spaces not allowed                                                                                    no-trailing-spaces
+  886:39   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  887:33   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  888:35   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  889:38   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  889:85   error    Missing trailing comma                                                                                         comma-dangle
+  894:36   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  896:35   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  900:40   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  932:5    warning  Forbidden non-null assertion                                                                                   @typescript-eslint/no-non-null-assertion
+  949:32   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  959:35   warning  Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/fact-system.ts
+   10:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   18:14  error    'error' is defined but never used         @typescript-eslint/no-unused-vars
+   54:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   98:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  140:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  146:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  160:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  167:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  175:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  187:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  197:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  198:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  203:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/index.ts
+  119:1   error    Trailing spaces not allowed                   no-trailing-spaces
+  121:30  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  125:1   error    Trailing spaces not allowed                   no-trailing-spaces
+  126:94  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  129:1   error    Expected indentation of 4 spaces but found 6  indent
+  130:1   error    Expected indentation of 4 spaces but found 6  indent
+  131:1   error    Expected indentation of 4 spaces but found 6  indent
+  132:1   error    Expected indentation of 4 spaces but found 6  indent
+  133:1   error    Expected indentation of 4 spaces but found 6  indent
+  146:58  error    Trailing spaces not allowed                   no-trailing-spaces
+  153:45  error    Trailing spaces not allowed                   no-trailing-spaces
+  191:24  error    '_token' is defined but never used            @typescript-eslint/no-unused-vars
+  191:44  error    '_target' is defined but never used           @typescript-eslint/no-unused-vars
+  191:53  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  191:58  error    '_key' is defined but never used              @typescript-eslint/no-unused-vars
+  195:36  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/llm-providers.ts
+  101:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  220:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  226:18  error    Strings must use singlequote              quotes
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/module-declarations.d.ts
+    8:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   11:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   11:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   12:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   13:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   13:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   13:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   14:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   16:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   21:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   22:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   23:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   27:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   31:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   31:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   31:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   32:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   33:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   33:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   33:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   34:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   36:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   41:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   42:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   43:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   45:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   62:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   66:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   70:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   70:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   71:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   73:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   75:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   80:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   82:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   86:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   90:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   90:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   91:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   92:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   92:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   92:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   93:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   95:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  106:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  111:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  113:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  120:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  121:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  128:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  129:69  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:72  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/safety.ts
+   10:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   18:14  error    'error' is defined but never used         @typescript-eslint/no-unused-vars
+   57:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   63:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   78:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  123:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  160:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  166:55  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  177:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  178:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  180:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  185:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  185:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  209:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  221:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  226:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  226:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  249:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  249:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  256:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  258:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  269:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  291:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  296:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  298:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  327:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  329:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  335:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/teamwork.ts
+   16:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   24:14  error    'error' is defined but never used         @typescript-eslint/no-unused-vars
+   81:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   82:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   84:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   97:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   97:56  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  104:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  126:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  127:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  129:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  142:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  142:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  164:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  165:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  167:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  182:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  182:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  200:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  206:58  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  212:58  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  249:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  251:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  255:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  282:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  282:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  283:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  284:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  294:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  325:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  325:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  329:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  333:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  355:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  357:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  369:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  383:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  383:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  397:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  401:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/test-gpt5.ts
+    3:3    error    Trailing spaces not allowed               no-trailing-spaces
+   12:19   error    Missing trailing comma                    comma-dangle
+   22:1    error    Trailing spaces not allowed               no-trailing-spaces
+   40:125  error    Missing trailing comma                    comma-dangle
+   41:10   error    Missing trailing comma                    comma-dangle
+   44:21   error    Missing trailing comma                    comma-dangle
+   56:1    error    Trailing spaces not allowed               no-trailing-spaces
+   74:1    error    Trailing spaces not allowed               no-trailing-spaces
+   76:1    error    Trailing spaces not allowed               no-trailing-spaces
+   80:61   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:1    error    Trailing spaces not allowed               no-trailing-spaces
+   85:28   error    Trailing spaces not allowed               no-trailing-spaces
+   86:173  error    Missing trailing comma                    comma-dangle
+   87:14   error    Missing trailing comma                    comma-dangle
+   91:25   error    Missing trailing comma                    comma-dangle
+   93:1    error    Trailing spaces not allowed               no-trailing-spaces
+   95:1    error    Trailing spaces not allowed               no-trailing-spaces
+  101:1    error    Trailing spaces not allowed               no-trailing-spaces
+  114:1    error    Trailing spaces not allowed               no-trailing-spaces
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/types/index.ts
+  169:27  error  Trailing spaces not allowed  no-trailing-spaces
+
+/home/mhugo/code/claude-code-zen/packages/intelligence/src/workflows.ts
+   33:27  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+   45:14  error    'error' is defined but never used               @typescript-eslint/no-unused-vars
+   50:31  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+   52:32  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+   62:33  warning  Unexpected empty async method 'pauseWorkflow'   @typescript-eslint/no-empty-function
+   63:34  warning  Unexpected empty async method 'resumeWorkflow'  @typescript-eslint/no-empty-function
+   64:32  warning  Unexpected empty async method 'stopWorkflow'    @typescript-eslint/no-empty-function
+   68:28  warning  Unexpected empty async method 'shutdown'        @typescript-eslint/no-empty-function
+   69:21  warning  Unexpected empty method 'cleanup'               @typescript-eslint/no-empty-function
+   94:21  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+   95:27  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+   97:24  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  110:35  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  110:57  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  110:71  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  130:55  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  135:79  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  140:43  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  160:37  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  160:52  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  160:66  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  166:36  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  177:56  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  198:18  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  205:27  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  206:24  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  207:22  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  207:38  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  208:12  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  221:32  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  221:62  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  226:18  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  231:12  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  239:12  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  244:18  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  258:31  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  267:87  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+
+✖ 338 problems (61 errors, 277 warnings)
+  52 errors and 0 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.
+  ⚠️  Lint errors found in Intelligence
+  🔷 Running TypeScript check for Intelligence
+  ✅ Intelligence linting complete
+
+🔍 Linting LLM Providers...
+  🔧 Running ESLint directly on LLM Providers

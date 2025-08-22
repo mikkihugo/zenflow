@@ -13,14 +13,7 @@ import type { Logger } from '@claude-zen/foundation';
 import type { EventBusInterface as EventBus } from './../core/event-bus';
 
 // Core types for topology management
-export type TopologyType =
-  | 'mesh'
-  | 'hierarchical'
-  | 'ring'
-  | 'star'
-  | 'hybrid'
-  | 'small-world'
-  | 'scale-free');
+export type TopologyType = 'mesh' | 'hierarchical' | 'ring' | 'star' | 'hybrid' | 'small-world' | 'scale-free';
 
 export interface TopologyConfig {
   type: TopologyType;
@@ -41,7 +34,7 @@ export interface TopologyConfig {
 
 export interface NetworkNode {
   id: string;
-  type: 'agent | broker' | 'coordinator | gateway');
+  type: 'agent' | 'broker' | 'coordinator' | 'gateway';
   capabilities: string[];
   connections: Map<string, Connection>;
   metrics: NodeMetrics;
@@ -52,7 +45,7 @@ export interface NetworkNode {
 
 export interface Connection {
   targetId: string;
-  type: 'direct | relay' | 'broadcast | multicast');
+  type: 'direct' | 'relay' | 'broadcast' | 'multicast';
   quality: ConnectionQuality;
   traffic: TrafficStats;
   established: Date;
@@ -102,7 +95,7 @@ export interface TopologyDecision {
   reason: string;
   expectedImprovement: number;
   migrationCost: number;
-  riskLevel: 'low | medium' | 'high');
+  riskLevel: 'low' | 'medium' | 'high';
 }
 
 /**
@@ -400,7 +393,7 @@ export class TopologyManager extends TypedEventBase {
   }
 
   private async calculateTopologyMetrics(): Promise<TopologyMetrics> {
-    const nodes = Array.from(this.nodes?.values());
+    const nodes = Array.from(this.nodes?.values())();
 
     return {
       networkDiameter: this.calculateNetworkDiameter(nodes),
@@ -831,7 +824,7 @@ export class TopologyManager extends TypedEventBase {
 
   private async handleNodeFailure(nodeId: string): Promise<void> {
     // Check if topology needs rebalancing after node failure
-    const remainingNodes = Array.from(this.nodes?.values());
+    const remainingNodes = Array.from(this.nodes?.values())();
     const connectivity = this.calculateConnectivity(remainingNodes);
 
     if (connectivity < .8) {
@@ -1072,14 +1065,14 @@ class TopologyAdaptationEngine {
     reason: string;
     expectedImprovement: number;
     migrationCost: number;
-    riskLevel: 'low | medium' | 'high');
+    riskLevel: 'low' | 'medium' | 'high';
   }> {
     // Placeholder for ML analysis
     // Would use neural networks, decision trees, or reinforcement learning
 
     return {
       recommendedTopology: config?.type,
-      confidence: .7,
+      confidence: 0.7,
       reason: 'Current topology is optimal',
       expectedImprovement: .05,
       migrationCost: .1,
@@ -1151,7 +1144,7 @@ interface MigrationPlan {
 
 interface MigrationStep {
   id: string;
-  type: 'disconnect | connect' | 'reconfigure | validate');
+  type: 'disconnect' | 'connect' | 'reconfigure' | 'validate';
   nodeIds: string[];
   parameters: Record<string, unknown>;
   timeout: number;

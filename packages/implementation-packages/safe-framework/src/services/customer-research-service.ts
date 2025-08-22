@@ -1,12 +1,12 @@
 /**
  * @fileoverview Customer Research Service - Customer Analysis
- * 
+ *
  * Service for managing customer research and market analysis.
  * Handles customer segmentation, needs analysis, and feedback collection.
- * 
+ *
  * SINGLE RESPONSIBILITY: Customer research and market analysis
  * FOCUSES ON: Customer segmentation, needs analysis, competitive research
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -14,15 +14,15 @@
 
 import { addDays, differenceInDays, format } from 'date-fns';
 import { nanoid } from 'nanoid';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
   maxBy,
-  countBy 
+  countBy,
 } from 'lodash-es';
 import type {
   CustomerSegment,
@@ -35,7 +35,7 @@ import type {
   BuyingProcessStage,
   MarketOpportunity,
   CompetitorAnalysis,
-  MarketTrend
+  MarketTrend,
 } from '../types/product-management';
 import type { Logger } from '../types';
 import { CustomerNeedPriority } from '../types/product-management';
@@ -48,7 +48,7 @@ export interface CustomerResearchConfig {
   readonly feedbackRetentionDays: number;
   readonly competitorAnalysisFrequency: number; // days
   readonly customerInterviewQuota: number; // per month
-  readonly marketResearchDepth: 'basic' | 'comprehensive' | 'advanced';
+  readonly marketResearchDepth: 'basic | comprehensive' | 'advanced';
 }
 
 /**
@@ -59,8 +59,8 @@ export interface CustomerFeedback {
   readonly customerId: string;
   readonly segmentId: string;
   readonly feedback: string;
-  readonly sentiment: 'positive' | 'negative' | 'neutral';
-  readonly category: 'feature' | 'usability' | 'performance' | 'support' | 'pricing';
+  readonly sentiment: 'positive | negative' | 'neutral';
+  readonly category:'' | '''feature | usability' | 'performance' | 'support' | 'pricing';
   readonly priority: CustomerNeedPriority;
   readonly source: string;
   readonly collectedAt: Date;
@@ -73,8 +73,8 @@ export interface CustomerFeedback {
 export interface MarketInsight {
   readonly id: string;
   readonly insight: string;
-  readonly category: 'trend' | 'opportunity' | 'threat' | 'competitive';
-  readonly impact: 'high' | 'medium' | 'low';
+  readonly category: 'trend | opportunity' | 'threat''' | '''competitive';
+  readonly impact: 'high | medium' | 'low';
   readonly confidence: number; // 0-100%
   readonly sources: string[];
   readonly discoveredAt: Date;
@@ -115,7 +115,7 @@ export interface CompetitivePositioning {
   readonly strengthsVsCompetitors: string[];
   readonly weaknessesVsCompetitors: string[];
   readonly differentiationOpportunities: string[];
-  readonly competitiveThreat: 'low' | 'medium' | 'high';
+  readonly competitiveThreat: 'low | medium' | 'high';
 }
 
 /**
@@ -137,21 +137,23 @@ export class CustomerResearchService {
   /**
    * Create detailed customer segment
    */
-  createCustomerSegment(segmentData: Omit<CustomerSegment, 'id'>): CustomerSegment {
+  createCustomerSegment(
+    segmentData: Omit<CustomerSegment, 'id'>
+  ): CustomerSegment {
     if (this.segments.size >= this.config.maxSegments) {
       throw new Error(`Maximum segments reached: ${this.config.maxSegments}`);
     }
 
     const segment: CustomerSegment = {
       id: `segment-${nanoid(10)}`,
-      ...segmentData
+      ...segmentData,
     };
 
     this.segments.set(segment.id, segment);
-    this.logger.info('Customer segment created', { 
-      segmentId: segment.id, 
+    this.logger.info('Customer segment created', {
+      segmentId: segment.id,
       name: segment.name,
-      size: segment.size 
+      size: segment.size,
     });
 
     return segment;
@@ -161,31 +163,37 @@ export class CustomerResearchService {
    * Analyze customer needs across segments
    */
   analyzeCustomerNeeds(segmentIds?: string[]): CustomerNeed[] {
-    const targetSegments = segmentIds 
-      ? filter(Array.from(this.segments.values()), s => segmentIds.includes(s.id))
-      : Array.from(this.segments.values());
+    const targetSegments = segmentIds
+      ? filter(Array.from(this.segments.values()), (s) =>
+          segmentIds.includes(s.id)
+        )
+      : Array.from(this.segments.values())();
 
-    this.logger.info('Analyzing customer needs', { segmentCount: targetSegments.length });
+    this.logger.info('Analyzing customer needs', {
+      segmentCount: targetSegments.length,
+    });
 
     // Aggregate all needs from target segments
     const allNeeds: CustomerNeed[] = [];
-    targetSegments.forEach(segment => {
+    targetSegments.forEach((segment) => {
       allNeeds.push(...segment.needs);
     });
 
     // Group by description and calculate aggregate priority
     const needsGrouped = groupBy(allNeeds, 'description');
     const prioritizedNeeds = map(needsGrouped, (needs, description) => {
-      const avgFrequency = meanBy(needs, n => this.getFrequencyScore(n.frequency));
+      const avgFrequency = meanBy(needs, (n) =>
+        this.getFrequencyScore(n.frequency)
+      );
       const avgSatisfaction = meanBy(needs, 'satisfactionLevel');
-      const maxWillingness = maxBy(needs, 'willingnessToPay')?.willingnessToPay || 0;
-      
+      const maxWillingness =
+        maxBy(needs, 'willingnessToPay')?.willingnessToPay'' | '''' | ''0;
+
       // Calculate composite priority score
-      const priorityScore = (
+      const priorityScore =
         avgFrequency * 0.3 +
         (100 - avgSatisfaction) * 0.4 + // Lower satisfaction = higher priority
-        (maxWillingness / 1000) * 0.3 // Normalize willingness to pay
-      );
+        (maxWillingness / 1000) * 0.3; // Normalize willingness to pay
 
       return {
         ...needs[0], // Use first need as base
@@ -193,14 +201,14 @@ export class CustomerResearchService {
         description,
         priority: this.scoreToPriority(priorityScore),
         satisfactionLevel: avgSatisfaction,
-        willingnessToPay: maxWillingness
+        willingnessToPay: maxWillingness,
       };
     });
 
     // Sort by priority and satisfaction gap
     return orderBy(
       prioritizedNeeds,
-      ['priority', n => 100 - n.satisfactionLevel],
+      ['priority', (n) => 100 - n.satisfactionLevel],
       ['asc', 'desc']
     );
   }
@@ -211,18 +219,18 @@ export class CustomerResearchService {
   collectFeedback(feedbackData: Omit<CustomerFeedback, 'id'>): string {
     const feedback: CustomerFeedback = {
       id: `feedback-${nanoid(12)}`,
-      ...feedbackData
+      ...feedbackData,
     };
 
     this.feedback.set(feedback.id, feedback);
-    
+
     // Auto-cleanup old feedback
     this.cleanupOldFeedback();
 
     this.logger.info('Customer feedback collected', {
       feedbackId: feedback.id,
       sentiment: feedback.sentiment,
-      category: feedback.category
+      category: feedback.category,
     });
 
     return feedback.id;
@@ -234,10 +242,12 @@ export class CustomerResearchService {
   analyzeCompetitivePosition(
     competitors: CompetitorAnalysis[]
   ): CompetitivePositioning {
-    this.logger.info('Analyzing competitive position', { competitorCount: competitors.length });
+    this.logger.info('Analyzing competitive position', {
+      competitorCount: competitors.length,
+    });
 
     // Store competitor data
-    competitors.forEach(competitor => {
+    competitors.forEach((competitor) => {
       this.competitorData.set(competitor.name, competitor);
     });
 
@@ -253,7 +263,7 @@ export class CustomerResearchService {
       strengthsVsCompetitors: analysis.strengths,
       weaknessesVsCompetitors: analysis.weaknesses,
       differentiationOpportunities: analysis.opportunities,
-      competitiveThreat: analysis.threatLevel
+      competitiveThreat: analysis.threatLevel,
     };
   }
 
@@ -267,13 +277,17 @@ export class CustomerResearchService {
     if (marketData.marketGrowthRate > 15) {
       insights.push({
         id: `insight-${nanoid(8)}`,
-        insight: 'High-growth market opportunity with significant expansion potential',
+        insight:
+          'High-growth market opportunity with significant expansion potential',
         category: 'opportunity',
         impact: 'high',
         confidence: 85,
         sources: ['market-analysis'],
         discoveredAt: new Date(),
-        actionItems: ['Accelerate product development', 'Increase market investment']
+        actionItems: [
+          'Accelerate product development',
+          'Increase market investment',
+        ],
       });
     }
 
@@ -281,18 +295,25 @@ export class CustomerResearchService {
     if (marketData.competitiveLandscape.length > 10) {
       insights.push({
         id: `insight-${nanoid(8)}`,
-        insight: 'Highly competitive market requires strong differentiation strategy',
+        insight:
+          'Highly competitive market requires strong differentiation strategy',
         category: 'threat',
         impact: 'high',
         confidence: 90,
         sources: ['competitive-analysis'],
         discoveredAt: new Date(),
-        actionItems: ['Strengthen unique value proposition', 'Focus on niche segments']
+        actionItems: [
+          'Strengthen unique value proposition',
+          'Focus on niche segments',
+        ],
       });
     }
 
     // Analyze market trends
-    const positiveImpactTrends = filter(marketData.marketTrends, t => t.impact === 'positive');
+    const positiveImpactTrends = filter(
+      marketData.marketTrends,
+      (t) => t.impact === 'positive'
+    );
     if (positiveImpactTrends.length >= 3) {
       insights.push({
         id: `insight-${nanoid(8)}`,
@@ -302,16 +323,21 @@ export class CustomerResearchService {
         confidence: 75,
         sources: ['trend-analysis'],
         discoveredAt: new Date(),
-        actionItems: ['Align product roadmap with trends', 'Accelerate go-to-market timing']
+        actionItems: [
+          'Align product roadmap with trends',
+          'Accelerate go-to-market timing',
+        ],
       });
     }
 
     // Store insights
-    insights.forEach(insight => {
+    insights.forEach((insight) => {
       this.insights.set(insight.id, insight);
     });
 
-    this.logger.info('Market insights generated', { insightCount: insights.length });
+    this.logger.info('Market insights generated', {
+      insightCount: insights.length,
+    });
     return insights;
   }
 
@@ -329,7 +355,7 @@ export class CustomerResearchService {
 
     const marketOpportunities = Array.from(this.insights.values()).slice(0, 10);
     const recommendedActions = this.generateRecommendedActions(
-      segmentInsights, 
+      segmentInsights,
       competitivePosition
     );
 
@@ -338,7 +364,7 @@ export class CustomerResearchService {
       needsPrioritization,
       competitivePosition,
       marketOpportunities,
-      recommendedActions
+      recommendedActions,
     };
   }
 
@@ -349,17 +375,17 @@ export class CustomerResearchService {
    */
   private getFrequencyScore(frequency: any): number {
     const frequencyScores: Record<string, number> = {
-      'continuous': 100,
-      'daily': 90,
-      'weekly': 70,
-      'monthly': 50,
-      'quarterly': 30,
-      'annually': 20,
-      'sporadic': 15,
-      'one_time': 10
+      continuous: 100,
+      daily: 90,
+      weekly: 70,
+      monthly: 50,
+      quarterly: 30,
+      annually: 20,
+      sporadic: 15,
+      one_time: 10,
     };
-    
-    return frequencyScores[frequency] || 25;
+
+    return frequencyScores[frequency]'' | '''' | ''25;
   }
 
   /**
@@ -378,7 +404,7 @@ export class CustomerResearchService {
    */
   private calculateOurPosition(competitors: CompetitorAnalysis[]): number {
     // Simplified calculation - in reality this would use more sophisticated metrics
-    const avgCompetitorPosition = meanBy(competitors, 'marketShare');
+    const avgCompetitorPosition = meanBy(competitors,'marketShare');
     return Math.max(1, Math.min(10, 5 + Math.random() * 3)); // Mock calculation
   }
 
@@ -389,15 +415,21 @@ export class CustomerResearchService {
     strengths: string[];
     weaknesses: string[];
     opportunities: string[];
-    threatLevel: 'low' | 'medium' | 'high';
+    threatLevel: 'low | medium' | 'high';
   } {
-    const topCompetitors = orderBy(competitors, 'marketShare', 'desc').slice(0, 3);
-    
+    const topCompetitors = orderBy(competitors, 'marketShare', 'desc').slice(
+      0,
+      3
+    );
+
     return {
       strengths: ['Innovative product features', 'Strong customer service'],
       weaknesses: ['Limited market presence', 'Higher pricing'],
-      opportunities: ['Underserved customer segments', 'Emerging market trends'],
-      threatLevel: topCompetitors.length > 2 ? 'high' : 'medium'
+      opportunities: [
+        'Underserved customer segments',
+        'Emerging market trends',
+      ],
+      threatLevel: topCompetitors.length > 2 ? 'high' : 'medium',
     };
   }
 
@@ -405,14 +437,16 @@ export class CustomerResearchService {
    * Analyze insights for each customer segment
    */
   private analyzeSegmentInsights(): CustomerSegmentInsight[] {
-    return map(Array.from(this.segments.values()), segment => ({
+    return map(Array.from(this.segments.values()), (segment) => ({
       segment,
       size: segment.size,
       growth: Math.random() * 20, // Mock growth calculation
       satisfaction: meanBy(segment.needs, 'satisfactionLevel'),
       churnRisk: Math.random() * 30, // Mock churn risk
       valueScore: segment.size * 0.1 + Math.random() * 40,
-      keyInsights: [`Primary need: ${segment.needs[0]?.description || 'Unknown'}`]
+      keyInsights: [
+        `Primary need: ${segment.needs[0]?.description'' | '''' | '''Unknown'}`,
+      ],
     }));
   }
 
@@ -426,7 +460,7 @@ export class CustomerResearchService {
     const actions: string[] = [];
 
     // High-value segment focus
-    const highValueSegments = filter(segmentInsights, s => s.valueScore > 70);
+    const highValueSegments = filter(segmentInsights, (s) => s.valueScore > 70);
     if (highValueSegments.length > 0) {
       actions.push('Focus on high-value customer segments for maximum ROI');
     }
@@ -437,7 +471,10 @@ export class CustomerResearchService {
     }
 
     // Customer satisfaction improvements
-    const lowSatisfactionSegments = filter(segmentInsights, s => s.satisfaction < 60);
+    const lowSatisfactionSegments = filter(
+      segmentInsights,
+      (s) => s.satisfaction < 60
+    );
     if (lowSatisfactionSegments.length > 0) {
       actions.push('Address customer satisfaction gaps in key segments');
     }
@@ -450,7 +487,7 @@ export class CustomerResearchService {
    */
   private cleanupOldFeedback(): void {
     const cutoffDate = addDays(new Date(), -this.config.feedbackRetentionDays);
-    
+
     for (const [id, feedback] of this.feedback.entries()) {
       if (feedback.collectedAt < cutoffDate) {
         this.feedback.delete(id);

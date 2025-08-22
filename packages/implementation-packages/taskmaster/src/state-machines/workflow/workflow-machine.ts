@@ -167,7 +167,9 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
 /**
  * Create configured workflow machine instance with default services
  */
-export const createConfiguredWorkflowMachine = (config: WorkflowKanbanConfig) => {
+export const createConfiguredWorkflowMachine = (
+  config: WorkflowKanbanConfig
+) => {
   return createWorkflowMachine(config);
 };
 

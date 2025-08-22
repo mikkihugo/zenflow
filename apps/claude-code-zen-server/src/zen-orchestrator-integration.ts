@@ -104,7 +104,7 @@ interface NativeZenSwarmOrchestrator {
 }
 
 // Lazy loading of native binding with platform detection
-let nativeBinding: NativeZenSwarmOrchestrator | null = null;
+let nativeBinding: NativeZenSwarmOrchestrator'' | ''null = null;
 let fallbackMode = false;
 
 /**
@@ -120,7 +120,7 @@ export function resetBindingState(): void {
  */
 function getPlatformBindingName(): string {
   const platformMap: Record<string, string> = {
-    linux: 'linux',
+    linux:'linux',
     darwin: 'darwin',
     win32: 'win32',
   };
@@ -131,8 +131,8 @@ function getPlatformBindingName(): string {
     ia32: 'x86',
   };
 
-  const platformName = platformMap[platform()] || 'linux';
-  const archName = archMap[arch()] || 'x64';
+  const platformName = platformMap[platform()]'' | '''' | '''linux';
+  const archName = archMap[arch()]'' | '''' | '''x64';
 
   return `zen-code-bindings.${platformName}-${archName}-gnu.node`;
 }
@@ -247,7 +247,7 @@ function createFallbackBinding(): NativeZenSwarmOrchestrator {
       await Promise.resolve(); // Satisfy require-await rule
 
       // Basic echo service for testing
-      if (task.task_type === 'echo || task.task_type === neural-forward') {
+      if (task.task_type === 'echo'' | '''' | ''task.task_type === neural-forward') {
         return {
           success: true,
           result: JSON.stringify({ echo: task.input_data, mode: 'fallback' }),
@@ -309,26 +309,26 @@ function createFallbackBinding(): NativeZenSwarmOrchestrator {
  * - Bridge to zen-code's existing LLM and database infrastructure
  */
 export class ZenOrchestratorIntegration {
-  private zenSwarmOrchestrator: ZenSwarmOrchestratorInstance | null = null;
+  private zenSwarmOrchestrator: ZenSwarmOrchestratorInstance'' | ''null = null;
   private isInitialized = false;
   private config: OrchestratorConfig;
 
   constructor(config?: Partial<OrchestratorConfig>) {
     this.config = {
-      host: config?.host || 'localhost',
-      port: config?.port || 4003,
-      storage_path: config?.storage_path || ".zen/collective",
+      host: config?.host'' | '''' | '''localhost',
+      port: config?.port'' | '''' | ''4003,
+      storage_path: config?.storage_path'' | '''' | ''".zen/collective",
       enabled: config?.enabled ?? true,
 
       // A2A Protocol defaults
-      a2a_server_port: config?.a2a_server_port || 4005,
+      a2a_server_port: config?.a2a_server_port'' | '''' | ''4005,
       a2a_client_endpoint: config?.a2a_client_endpoint,
-      heartbeat_timeout_sec: config?.heartbeat_timeout_sec || 300,
-      message_timeout_ms: config?.message_timeout_ms || 30000,
+      heartbeat_timeout_sec: config?.heartbeat_timeout_sec'' | '''' | ''300,
+      message_timeout_ms: config?.message_timeout_ms'' | '''' | ''30000,
 
       // WebSocket defaults for real-time coordination
       use_websocket_transport: config?.use_websocket_transport ?? true,
-      websocket_port: config?.websocket_port || 4006,
+      websocket_port: config?.websocket_port'' | '''' | ''4006,
       websocket_endpoint: config?.websocket_endpoint,
 
       // Neural Stack defaults
@@ -339,7 +339,7 @@ export class ZenOrchestratorIntegration {
 
       // Quantum Computing defaults
       enable_quantum: config?.enable_quantum ?? true,
-      quantum_backend: config?.quantum_backend ?? 'ibmq_qasm_simulator',
+      quantum_backend: config?.quantum_backend ??'ibmq_qasm_simulator',
     };
 
     logger.info('🚀 ZenSwarmOrchestratorIntegration created with config:', {
@@ -390,7 +390,7 @@ export class ZenOrchestratorIntegration {
 
       // Log initialization status
       const status = await this.getStatus;
-      logger.info('📊 Initialization status:', status.data || {});
+      logger.info('📊 Initialization status:', status.data'' | '''' | ''{});
     } catch (error) {
       logger.error('❌ Failed to initialize zen-orchestrator:', error);
 
@@ -437,7 +437,7 @@ export class ZenOrchestratorIntegration {
    * Get binding information
    */
   getBindingInfo(): {
-    mode: 'native' | 'fallback';
+    mode: 'native''' | '''fallback';
     platform?: string;
     arch?: string;
   } {
@@ -471,9 +471,8 @@ export class ZenOrchestratorIntegration {
       statusData.binding = bindingInfo;
 
       if (fallbackMode) {
-        statusData.warnings = statusData.warnings || [];
-        statusData.warnings.push(
-          'Running in fallback mode - limited functionality available'
+        statusData.warnings = statusData.warnings'' | '''' | ''[];
+        statusData.warnings.push('Running in fallback mode - limited functionality available'
         );
       }
 
@@ -629,7 +628,7 @@ export class ZenOrchestratorIntegration {
       'quantum-submit': 'quantum-submit',
     };
 
-    const taskType = taskTypeMap[serviceName] || serviceName;
+    const taskType = taskTypeMap[serviceName]'' | '''' | ''serviceName;
     const result = await this.executeNeuralService(taskType, parameters);
 
     return {
@@ -651,7 +650,7 @@ export class ZenOrchestratorIntegration {
     if (!(await this.isReady)) {
       return {
         success: false,
-        error: 'zen-swarm-orchestrator not initialized',
+        error:'zen-swarm-orchestrator not initialized',
       };
     }
 
@@ -751,9 +750,8 @@ export class ZenOrchestratorIntegration {
    * Shutdown zen-orchestrator gracefully
    */
   async shutdown(): Promise<void> {
-    if (!this.isInitialized || !this.zenSwarmOrchestrator) {
-      logger.warn(
-        '⚠️ zen-swarm-orchestrator not initialized, nothing to shutdown'
+    if (!this.isInitialized'' | '''' | ''!this.zenSwarmOrchestrator) {
+      logger.warn('⚠️ zen-swarm-orchestrator not initialized, nothing to shutdown'
       );
       return;
     }
@@ -771,7 +769,7 @@ export class ZenOrchestratorIntegration {
 }
 
 // Singleton instance for global access
-let zenSwarmOrchestratorInstance: ZenOrchestratorIntegration | null = null;
+let zenSwarmOrchestratorInstance: ZenOrchestratorIntegration'' | ''null = null;
 
 /**
  * Get or create the global zen-swarm-orchestrator instance
@@ -785,8 +783,7 @@ export function getZenSwarmOrchestratorIntegration(
     // Auto-initialize if enabled
     if (config?.enabled !== false) {
       zenSwarmOrchestratorInstance?.initialize.catch((error) => {
-        logger.error(
-          '❌ Failed to auto-initialize zen-swarm-orchestrator:',
+        logger.error('❌ Failed to auto-initialize zen-swarm-orchestrator:',
           error
         );
       });

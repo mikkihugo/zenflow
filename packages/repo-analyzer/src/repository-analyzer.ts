@@ -18,7 +18,7 @@ import type {
   AnalysisResult,
   AnalysisRecommendation,
   AnalysisSummary,
-  ExportFormat
+  ExportFormat,
 } from './types/index.js';
 
 export class RepositoryAnalyzer {
@@ -45,8 +45,10 @@ export class RepositoryAnalyzer {
    * Perform comprehensive repository analysis
    */
   async analyze(options: AnalysisOptions = {}): Promise<AnalysisResult> {
-    this.logger.info(`Starting comprehensive analysis of repository: ${this.repositoryPath}`);
-    
+    this.logger.info(
+      `Starting comprehensive analysis of repository: ${this.repositoryPath}`
+    );
+
     const startTime = Date.now();
 
     // Set default options
@@ -60,13 +62,16 @@ export class RepositoryAnalyzer {
       enableDependencyAnalysis: true,
       enableDomainAnalysis: true,
       performanceMode: 'balanced',
-      ...options
+      ...options,
     };
 
     try {
       // Initialize complexity analyzer
       if (analysisOptions.enableComplexityAnalysis) {
-        await this.complexityAnalyzer.initialize(this.repositoryPath, analysisOptions);
+        await this.complexityAnalyzer.initialize(
+          this.repositoryPath,
+          analysisOptions
+        );
       }
 
       // Get all source files
@@ -74,19 +79,14 @@ export class RepositoryAnalyzer {
       this.logger.info(`Found ${sourceFiles.length} source files to analyze`);
 
       // Run all analyses in parallel for maximum performance
-      const [
-        workspaceInfo,
-        complexity,
-        dependencies,
-        gitMetrics,
-        domains
-      ] = await Promise.allSettled([
-        this.analyzeWorkspace(analysisOptions),
-        this.analyzeComplexity(sourceFiles, analysisOptions),
-        this.analyzeDependencies(analysisOptions),
-        this.analyzeGit(analysisOptions),
-        this.analyzeDomains(sourceFiles, analysisOptions)
-      ]);
+      const [workspaceInfo, complexity, dependencies, gitMetrics, domains] =
+        await Promise.allSettled([
+          this.analyzeWorkspace(analysisOptions),
+          this.analyzeComplexity(sourceFiles, analysisOptions),
+          this.analyzeDependencies(analysisOptions),
+          this.analyzeGit(analysisOptions),
+          this.analyzeDomains(sourceFiles, analysisOptions),
+        ]);
 
       // Build comprehensive repository metrics
       const repositoryMetrics: RepositoryMetrics = {
@@ -97,14 +97,22 @@ export class RepositoryAnalyzer {
         totalLines: await this.countTotalLines(sourceFiles),
         languages: await this.detectLanguages(sourceFiles),
         complexity: this.getSettledValue(complexity, this.getEmptyComplexity()),
-        dependencies: this.getSettledValue(dependencies, this.getEmptyDependencies()),
+        dependencies: this.getSettledValue(
+          dependencies,
+          this.getEmptyDependencies()
+        ),
         domains: this.getSettledValue(domains, []),
-        gitMetrics: analysisOptions.enableGitAnalysis ? this.getSettledValue(gitMetrics, undefined) : undefined,
-        analysisTimestamp: new Date()
+        gitMetrics: analysisOptions.enableGitAnalysis
+          ? this.getSettledValue(gitMetrics, undefined)
+          : undefined,
+        analysisTimestamp: new Date(),
       };
 
       // Generate recommendations
-      const recommendations = await this.generateRecommendations(repositoryMetrics, analysisOptions);
+      const recommendations = await this.generateRecommendations(
+        repositoryMetrics,
+        analysisOptions
+      );
 
       // Generate summary
       const summary = this.generateSummary(repositoryMetrics, recommendations);
@@ -117,9 +125,17 @@ export class RepositoryAnalyzer {
         domains: repositoryMetrics.domains,
         recommendations,
         summary,
-        exportOptions: ['json', 'yaml', 'csv', 'html', 'markdown', 'pdf', 'graphml', 'dot']
+        exportOptions: [
+          'json',
+          'yaml',
+          'csv',
+          'html',
+          'markdown',
+          'pdf',
+          'graphml',
+          'dot',
+        ],
       };
-
     } catch (error) {
       this.logger.error('Repository analysis failed:', error);
       throw error;
@@ -129,7 +145,11 @@ export class RepositoryAnalyzer {
   /**
    * Export analysis results in specified format
    */
-  async exportResults(result: AnalysisResult, format: ExportFormat, outputPath?: string): Promise<string> {
+  async exportResults(
+    result: AnalysisResult,
+    format: ExportFormat,
+    outputPath?: string
+  ): Promise<string> {
     return this.reportGenerator.generateReport(result, format, outputPath);
   }
 
@@ -144,22 +164,24 @@ export class RepositoryAnalyzer {
     const quickOptions: AnalysisOptions = {
       ...options,
       performanceMode: 'fast',
-      analysisDepth: 'shallow'
+      analysisDepth: 'shallow',
     };
 
     const result = await this.analyze(quickOptions);
-    
+
     return {
       score: result.summary.overallScore,
       breakdown: {
         complexity: this.scoreComplexity(result.repository.complexity),
         dependencies: this.scoreDependencies(result.repository.dependencies),
         maintainability: this.scoreMaintainability(result.repository),
-        gitHealth: result.repository.gitMetrics ? this.scoreGitHealth(result.repository.gitMetrics) : 0.8
+        gitHealth: result.repository.gitMetrics
+          ? this.scoreGitHealth(result.repository.gitMetrics)
+          : 0.8,
       },
       criticalIssues: result.recommendations
-        .filter(r => r.priority === 'urgent')
-        .map(r => r.title)
+        .filter((r) => r.priority === 'urgent')
+        .map((r) => r.title),
     };
   }
 
@@ -168,9 +190,12 @@ export class RepositoryAnalyzer {
    */
   private async analyzeWorkspace(options: AnalysisOptions): Promise<any> {
     if (!options.enableDependencyAnalysis) return null;
-    
+
     try {
-      return await this.workspaceAnalyzer.analyzeWorkspace(this.repositoryPath, options);
+      return await this.workspaceAnalyzer.analyzeWorkspace(
+        this.repositoryPath,
+        options
+      );
     } catch (error) {
       this.logger.warn('Workspace analysis failed:', error);
       return null;
@@ -180,9 +205,12 @@ export class RepositoryAnalyzer {
   /**
    * Analyze code complexity
    */
-  private async analyzeComplexity(files: string[], options: AnalysisOptions): Promise<any> {
+  private async analyzeComplexity(
+    files: string[],
+    options: AnalysisOptions
+  ): Promise<any> {
     if (!options.enableComplexityAnalysis) return this.getEmptyComplexity();
-    
+
     try {
       return await this.complexityAnalyzer.analyzeRepository(files, options);
     } catch (error) {
@@ -196,9 +224,12 @@ export class RepositoryAnalyzer {
    */
   private async analyzeDependencies(options: AnalysisOptions): Promise<any> {
     if (!options.enableDependencyAnalysis) return this.getEmptyDependencies();
-    
+
     try {
-      return await this.dependencyAnalyzer.analyzeRepository(this.repositoryPath, options);
+      return await this.dependencyAnalyzer.analyzeRepository(
+        this.repositoryPath,
+        options
+      );
     } catch (error) {
       this.logger.warn('Dependency analysis failed:', error);
       return this.getEmptyDependencies();
@@ -210,7 +241,7 @@ export class RepositoryAnalyzer {
    */
   private async analyzeGit(options: AnalysisOptions): Promise<any> {
     if (!options.enableGitAnalysis) return undefined;
-    
+
     try {
       return await this.gitAnalyzer.analyzeRepository(options);
     } catch (error) {
@@ -222,11 +253,18 @@ export class RepositoryAnalyzer {
   /**
    * Analyze domains
    */
-  private async analyzeDomains(files: string[], options: AnalysisOptions): Promise<any> {
+  private async analyzeDomains(
+    files: string[],
+    options: AnalysisOptions
+  ): Promise<any> {
     if (!options.enableDomainAnalysis) return [];
-    
+
     try {
-      return await this.domainAnalyzer.analyzeRepository(this.repositoryPath, files, options);
+      return await this.domainAnalyzer.analyzeRepository(
+        this.repositoryPath,
+        files,
+        options
+      );
     } catch (error) {
       this.logger.warn('Domain analysis failed:', error);
       return [];
@@ -239,31 +277,32 @@ export class RepositoryAnalyzer {
   private async getSourceFiles(options: AnalysisOptions): Promise<string[]> {
     const patterns = [
       '**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs,py,go,rs,java,cpp,c,h,hpp}',
-      ...(options.includeTests ? [] : [
-        '!**/*.{test,spec}.{ts,tsx,js,jsx}',
-        '!**/test/**',
-        '!**/tests/**',
-        '!**/__tests__/**'
-      ]),
+      ...(options.includeTests
+        ? []
+        : [
+            '!**/*.{test,spec}.{ts,tsx,js,jsx}',
+            '!**/test/**',
+            '!**/tests/**',
+            '!**/__tests__/**',
+          ]),
       ...(options.includeNodeModules ? [] : ['!**/node_modules/**']),
       ...(options.includeDotFiles ? [] : ['!**/.*']),
-      ...(options.excludePatterns || []).map(p => `!${p}`),
-      '!**/dist/**',
+      ...(options.excludePatterns'' | '''' | ''[]).map((p) => `!${p}`),'!**/dist/**',
       '!**/build/**',
-      '!**/.git/**'
+      '!**/.git/**',
     ];
 
     const files = await (fastGlob as any)(patterns, {
       cwd: this.repositoryPath,
       absolute: true,
-      followSymbolicLinks: false
+      followSymbolicLinks: false,
     });
 
     // Filter by file size if specified
     if (options.maxFileSize) {
       const fs = await import('fs/promises');
       const filteredFiles: string[] = [];
-      
+
       for (const file of files) {
         try {
           const stats = await fs.stat(file);
@@ -274,7 +313,7 @@ export class RepositoryAnalyzer {
           // Skip files that can't be accessed
         }
       }
-      
+
       return filteredFiles;
     }
 
@@ -288,14 +327,16 @@ export class RepositoryAnalyzer {
     const fs = await import('fs/promises');
     let totalLines = 0;
 
-    await Promise.all(files.map(async (file) => {
-      try {
-        const content = await fs.readFile(file, 'utf-8');
-        totalLines += content.split('\n').length;
-      } catch {
-        // Skip files that can't be read
-      }
-    }));
+    await Promise.all(
+      files.map(async (file) => {
+        try {
+          const content = await fs.readFile(file, 'utf-8');
+          totalLines += content.split('\n').length;
+        } catch {
+          // Skip files that can't be read
+        }
+      })
+    );
 
     return totalLines;
   }
@@ -303,7 +344,9 @@ export class RepositoryAnalyzer {
   /**
    * Detect programming languages
    */
-  private async detectLanguages(files: string[]): Promise<Record<string, number>> {
+  private async detectLanguages(
+    files: string[]
+  ): Promise<Record<string, number>> {
     const fs = await import('fs/promises');
     const languages: Record<string, number> = {};
 
@@ -353,7 +396,7 @@ export class RepositoryAnalyzer {
             break;
         }
 
-        languages[language] = (languages[language] || 0) + lines;
+        languages[language] = (languages[language]'' | '''' | ''0) + lines;
       } catch {
         // Skip files that can't be read
       }
@@ -366,29 +409,42 @@ export class RepositoryAnalyzer {
    * Generate recommendations based on analysis
    */
   private async generateRecommendations(
-    repository: RepositoryMetrics, 
+    repository: RepositoryMetrics,
     options: AnalysisOptions
   ): Promise<AnalysisRecommendation[]> {
-    return this.recommendationEngine.generateRecommendations(repository, options);
+    return this.recommendationEngine.generateRecommendations(
+      repository,
+      options
+    );
   }
 
   /**
    * Generate analysis summary
    */
   private generateSummary(
-    repository: RepositoryMetrics, 
+    repository: RepositoryMetrics,
     recommendations: AnalysisRecommendation[]
   ): AnalysisSummary {
     const complexityScore = this.scoreComplexity(repository.complexity);
     const dependencyScore = this.scoreDependencies(repository.dependencies);
     const maintainabilityScore = this.scoreMaintainability(repository);
-    const gitScore = repository.gitMetrics ? this.scoreGitHealth(repository.gitMetrics) : 0.8;
+    const gitScore = repository.gitMetrics
+      ? this.scoreGitHealth(repository.gitMetrics)
+      : 0.8;
 
-    const overallScore = (complexityScore + dependencyScore + maintainabilityScore + gitScore) / 4;
+    const overallScore =
+      (complexityScore + dependencyScore + maintainabilityScore + gitScore) / 4;
 
-    const criticalIssues = recommendations.filter(r => r.priority === 'urgent').length;
-    const highPriorityRecommendations = recommendations.filter(r => r.priority === 'high').length;
-    const estimatedImprovementEffort = recommendations.reduce((sum, r) => sum + r.effort.hours, 0);
+    const criticalIssues = recommendations.filter(
+      (r) => r.priority === 'urgent'
+    ).length;
+    const highPriorityRecommendations = recommendations.filter(
+      (r) => r.priority === 'high'
+    ).length;
+    const estimatedImprovementEffort = recommendations.reduce(
+      (sum, r) => sum + r.effort.hours,
+      0
+    );
 
     const strengths: string[] = [];
     const weaknesses: string[] = [];
@@ -397,7 +453,8 @@ export class RepositoryAnalyzer {
     else if (complexityScore < 0.5) weaknesses.push('High code complexity');
 
     if (dependencyScore > 0.8) strengths.push('Well-managed dependencies');
-    else if (dependencyScore < 0.5) weaknesses.push('Dependency management issues');
+    else if (dependencyScore < 0.5)
+      weaknesses.push('Dependency management issues');
 
     if (maintainabilityScore > 0.8) strengths.push('High maintainability');
     else if (maintainabilityScore < 0.5) weaknesses.push('Low maintainability');
@@ -413,50 +470,57 @@ export class RepositoryAnalyzer {
       highPriorityRecommendations,
       estimatedImprovementEffort,
       riskAssessment: {
-        technicalDebtRisk: repository.complexity.technicalDebt > 100 ? 'high' : 'medium',
+        technicalDebtRisk:
+          repository.complexity.technicalDebt > 100 ? 'high' : 'medium',
         maintainabilityRisk: maintainabilityScore < 0.5 ? 'high' : 'medium',
-        scalabilityRisk: repository.dependencies.circularDependencies.length > 5 ? 'high' : 'low',
-        teamVelocityRisk: criticalIssues > 10 ? 'high' : 'medium'
-      }
+        scalabilityRisk:
+          repository.dependencies.circularDependencies.length > 5
+            ? 'high'
+            : 'low',
+        teamVelocityRisk: criticalIssues > 10 ? 'high' : 'medium',
+      },
     };
   }
 
   // Scoring methods
   private scoreComplexity(complexity: any): number {
     if (!complexity) return 0.5;
-    
-    const cyclomaticScore = Math.max(0, 1 - (complexity.cyclomatic / 100));
+
+    const cyclomaticScore = Math.max(0, 1 - complexity.cyclomatic / 100);
     const maintainabilityScore = complexity.maintainabilityIndex / 100;
-    const debtScore = Math.max(0, 1 - (complexity.technicalDebt / 200));
-    
+    const debtScore = Math.max(0, 1 - complexity.technicalDebt / 200);
+
     return (cyclomaticScore + maintainabilityScore + debtScore) / 3;
   }
 
   private scoreDependencies(dependencies: any): number {
     if (!dependencies) return 0.5;
-    
-    const circularScore = Math.max(0, 1 - (dependencies.circularDependencies.length / 10));
+
+    const circularScore = Math.max(
+      0,
+      1 - dependencies.circularDependencies.length / 10
+    );
     const couplingScore = Math.max(0, 1 - dependencies.coupling.instability);
     const stabilityScore = dependencies.stability.stabilityIndex;
-    
+
     return (circularScore + couplingScore + stabilityScore) / 3;
   }
 
   private scoreMaintainability(repository: RepositoryMetrics): number {
     const complexityFactor = this.scoreComplexity(repository.complexity);
     const dependencyFactor = this.scoreDependencies(repository.dependencies);
-    const sizeFactor = Math.max(0, 1 - (repository.totalFiles / 1000));
-    
+    const sizeFactor = Math.max(0, 1 - repository.totalFiles / 1000);
+
     return (complexityFactor + dependencyFactor + sizeFactor) / 3;
   }
 
   private scoreGitHealth(gitMetrics: any): number {
     if (!gitMetrics) return 0.8;
-    
+
     const contributorScore = Math.min(1, gitMetrics.contributors / 5); // Optimal: 5+ contributors
     const activityScore = Math.min(1, gitMetrics.averageCommitsPerDay / 2); // Optimal: 2+ commits/day
-    const hotFileScore = Math.max(0, 1 - (gitMetrics.hotFiles.length / 20)); // Bad: 20+ hot files
-    
+    const hotFileScore = Math.max(0, 1 - gitMetrics.hotFiles.length / 20); // Bad: 20+ hot files
+
     return (contributorScore + activityScore + hotFileScore) / 3;
   }
 
@@ -466,10 +530,13 @@ export class RepositoryAnalyzer {
   }
 
   private getRepositoryName(): string {
-    return this.repositoryPath.split('/').pop() || 'unknown';
+    return this.repositoryPath.split('/').pop()'' | '''' | '''unknown';
   }
 
-  private getSettledValue<T>(result: PromiseSettledResult<T>, defaultValue: T): T {
+  private getSettledValue<T>(
+    result: PromiseSettledResult<T>,
+    defaultValue: T
+  ): T {
     return result.status === 'fulfilled' ? result.value : defaultValue;
   }
 
@@ -483,12 +550,12 @@ export class RepositoryAnalyzer {
         effort: 0,
         time: 0,
         bugs: 0,
-        volume: 0
+        volume: 0,
       },
       maintainabilityIndex: 100,
       technicalDebt: 0,
       codeSmells: [],
-      hotspots: []
+      hotspots: [],
     };
   }
 
@@ -504,19 +571,19 @@ export class RepositoryAnalyzer {
         efferentCoupling: 0,
         instability: 0,
         abstractness: 0,
-        distance: 0
+        distance: 0,
       },
       cohesion: {
         lcom: 0,
         tcc: 0,
-        lcc: 0
+        lcc: 0,
       },
       stability: {
         stabilityIndex: 0.5,
         changeFrequency: 0,
         bugFrequency: 0,
-        riskScore: 0
-      }
+        riskScore: 0,
+      },
     };
   }
 }

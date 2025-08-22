@@ -1,37 +1,37 @@
 /**
  * @fileoverview Type-Safe Event Bus - mitt + zod Integration
- * 
+ *
  * Modern type-safe event system combining mitt (200 bytes) with zod validation.
  * Replaces custom type-safe event implementation with battle-tested dependencies.
- * 
+ *
  * **BATTLE-TESTED DEPENDENCIES:**
  * - mitt: Tiny (200 bytes) functional event emitter with wildcard support
  * - zod: TypeScript-first schema validation with compile-time type inference
  * - foundation: Professional error handling and logging
- * 
+ *
  * Key Features:
  * - Compile-time type safety with runtime validation
  * - Tiny footprint (200 bytes for core emitter)
  * - Wildcard event support
  * - Schema-based validation with rich error messages
  * - Foundation integration for robust error handling
- * 
+ *
  * @example Type-safe event usage
  * ```typescript
  * import { TypedEventBus } from '@claude-zen/event-system/core';
  * import { EventSchemas } from '@claude-zen/event-system/validation';
- * 
+ *
  * const eventBus = new TypedEventBus({
  *   enableValidation: true,
  *   enableWildcards: true
  * });
- * 
+ *
  * // Type-safe event handling with validation
  * eventBus.on('user.login', (event) => {
  *   // event is fully typed from schema
  *   console.log('User logged in:', event.payload.userId);
  * });
- * 
+ *
  * // Emit with automatic validation
  * eventBus.emit('user.login', {
  *   id: 'evt_123',
@@ -43,7 +43,7 @@
 
 import mitt, { type Emitter } from 'mitt';
 import { z } from 'zod';
-import { 
+import {
   getLogger,
   Result,
   ok,
@@ -53,14 +53,14 @@ import {
   recordHistogram,
   withTrace,
   traced,
-  metered
+  metered,
 } from '@claude-zen/foundation';
-import { 
+import {
   EventValidator,
   BaseEventSchema,
   EventSchemas,
   type BaseEvent,
-  type AllEventTypes
+  type AllEventTypes,
 } from '../validation/zod-validation';
 
 const logger = getLogger('TypedEventBus');
@@ -93,10 +93,13 @@ export interface TypedEventMap {
 }
 
 // Handler type for type-safe event listeners
-export type TypedEventHandler<T = any> = (event: T) => void | Promise<void>;
+export type TypedEventHandler<T = any> = (event: T) => void'' | ''Promise<void>;
 
 // Wildcard handler type
-export type WildcardHandler = (type: string | symbol, event: any) => void | Promise<void>;
+export type WildcardHandler = (
+  type: string'' | ''symbol,
+  event: any
+) => void'' | ''Promise<void>;
 
 // =============================================================================
 // TYPE-SAFE EVENT BUS IMPLEMENTATION
@@ -115,7 +118,7 @@ export class TypedEventBus {
   constructor(config: Partial<TypedEventBusConfig> = {}) {
     // Create mitt emitter (200 bytes!)
     this.emitter = mitt<TypedEventMap>();
-    
+
     this.config = {
       enableValidation: true,
       enableWildcards: false,
@@ -123,7 +126,7 @@ export class TypedEventBus {
       enableTelemetry: true,
       throwOnValidationError: false,
       maxListeners: 100,
-      ...config
+      ...config,
     };
 
     // Pre-register common event validators
@@ -132,7 +135,7 @@ export class TypedEventBus {
     if (this.config.enableLogging) {
       logger.info('[TypedEventBus] Initialized with mitt + zod integration', {
         config: this.config,
-        validatorCount: this.validators.size
+        validatorCount: this.validators.size,
       });
     }
   }
@@ -154,31 +157,47 @@ export class TypedEventBus {
     return withTrace('typed_event.emit', async (span) => {
       return safeAsync(async () => {
         const startTime = Date.now();
-        
+
         // Record telemetry metrics
         if (this.config.enableTelemetry) {
-          recordMetric('typed_event_bus.events_total', 1, { event_type: String(type) });
-          recordMetric('typed_event_bus.active_listeners', this.getListenerCount(String(type)), { event_type: String(type) });
+          recordMetric('typed_event_bus.events_total', 1, {
+            event_type: String(type),
+          });
+          recordMetric(
+            'typed_event_bus.active_listeners',
+            this.getListenerCount(String(type)),
+            { event_type: String(type) }
+          );
         }
 
         // Validate event if validation is enabled
         if (this.config.enableValidation) {
-          const validationResult = await this.validateEvent(String(type), event);
+          const validationResult = await this.validateEvent(
+            String(type),
+            event
+          );
           if (!validationResult.isOk()) {
-            const error = new Error(`Event validation failed for '${String(type)}': ${validationResult.error.message}`);
-            
+            const error = new Error(
+              `Event validation failed for '${String(type)}': ${validationResult.error.message}`
+            );
+
             if (this.config.enableTelemetry) {
-              recordMetric('typed_event_bus.validation_errors', 1, { event_type: String(type) });
+              recordMetric('typed_event_bus.validation_errors', 1, {
+                event_type: String(type),
+              });
             }
-            
+
             if (this.config.throwOnValidationError) {
               throw error;
             } else {
-              logger.error('[TypedEventBus] Validation failed, event not emitted', {
-                type: String(type),
-                error: validationResult.error.message,
-                event
-              });
+              logger.error(
+                '[TypedEventBus] Validation failed, event not emitted',
+                {
+                  type: String(type),
+                  error: validationResult.error.message,
+                  event,
+                }
+              );
               return;
             }
           }
@@ -189,20 +208,24 @@ export class TypedEventBus {
           logger.debug(`[TypedEventBus] Emitting event: ${String(type)}`, {
             type: String(type),
             eventId: (event as any)?.id,
-            timestamp: (event as any)?.timestamp
+            timestamp: (event as any)?.timestamp,
           });
         }
 
         // Use mitt's emit (functional and tiny)
         this.emitter.emit(type, event);
-        
+
         // Record processing time telemetry
         const processingTime = Date.now() - startTime;
         if (this.config.enableTelemetry) {
-          recordHistogram('typed_event_bus.processing_duration', processingTime, { event_type: String(type) });
+          recordHistogram(
+            'typed_event_bus.processing_duration',
+            processingTime,
+            { event_type: String(type) }
+          );
           span?.setAttributes({
             'event.processing_time_ms': processingTime,
-            'event.validation_enabled': this.config.enableValidation
+            'event.validation_enabled': this.config.enableValidation,
           });
         }
       });
@@ -220,7 +243,10 @@ export class TypedEventBus {
     try {
       this.emitter.emit(type, event);
     } catch (error) {
-      logger.error(`[TypedEventBus] Error emitting event '${String(type)}':`, error);
+      logger.error(
+        `[TypedEventBus] Error emitting event '${String(type)}':`,
+        error
+      );
     }
   }
 
@@ -237,9 +263,11 @@ export class TypedEventBus {
     handler: TypedEventHandler<TypedEventMap[K]>
   ): void {
     // Check listener limits
-    const currentCount = this.listenerCounts.get(String(type)) || 0;
+    const currentCount = this.listenerCounts.get(String(type))'' | '''' | ''0;
     if (currentCount >= this.config.maxListeners) {
-      logger.warn(`[TypedEventBus] Max listeners (${this.config.maxListeners}) reached for event: ${String(type)}`);
+      logger.warn(
+        `[TypedEventBus] Max listeners (${this.config.maxListeners}) reached for event: ${String(type)}`
+      );
       return;
     }
 
@@ -248,15 +276,23 @@ export class TypedEventBus {
 
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('typed_event_bus.listeners_registered', 1, { event_type: String(type) });
-      recordMetric('typed_event_bus.total_listeners', this.getTotalListenerCount());
+      recordMetric('typed_event_bus.listeners_registered', 1, {
+        event_type: String(type),
+      });
+      recordMetric(
+        'typed_event_bus.total_listeners',
+        this.getTotalListenerCount()
+      );
     }
 
     if (this.config.enableLogging) {
-      logger.debug(`[TypedEventBus] Registered listener for event: ${String(type)}`, {
-        type: String(type),
-        listenerCount: currentCount + 1
-      });
+      logger.debug(
+        `[TypedEventBus] Registered listener for event: ${String(type)}`,
+        {
+          type: String(type),
+          listenerCount: currentCount + 1,
+        }
+      );
     }
   }
 
@@ -272,7 +308,7 @@ export class TypedEventBus {
       handler(event);
       this.off(type, wrappedHandler);
     };
-    
+
     this.on(type, wrappedHandler);
   }
 
@@ -284,9 +320,9 @@ export class TypedEventBus {
     handler?: TypedEventHandler<TypedEventMap[K]>
   ): void {
     this.emitter.off(type, handler);
-    
+
     if (handler) {
-      const currentCount = this.listenerCounts.get(String(type)) || 0;
+      const currentCount = this.listenerCounts.get(String(type))'' | '''' | ''0;
       this.listenerCounts.set(String(type), Math.max(0, currentCount - 1));
     } else {
       // Removing all listeners for this type
@@ -321,15 +357,14 @@ export class TypedEventBus {
   /**
    * Register custom validator for event type.
    */
-  registerValidator<T>(
-    eventType: string,
-    schema: z.ZodSchema<T>
-  ): void {
+  registerValidator<T>(eventType: string, schema: z.ZodSchema<T>): void {
     const validator = new EventValidator(schema, eventType);
     this.validators.set(eventType, validator);
 
     if (this.config.enableLogging) {
-      logger.debug(`[TypedEventBus] Registered validator for event: ${eventType}`);
+      logger.debug(
+        `[TypedEventBus] Registered validator for event: ${eventType}`
+      );
     }
   }
 
@@ -340,8 +375,9 @@ export class TypedEventBus {
     eventType: string,
     event: unknown
   ): Promise<Result<unknown, Error>> {
-    const validator = this.validators.get(eventType) || this.validators.get('*');
-    
+    const validator =
+      this.validators.get(eventType)'' | '''' | ''this.validators.get('*');
+
     if (!validator) {
       // Try base event validation as fallback
       const baseValidator = new EventValidator(BaseEventSchema, 'BaseEvent');
@@ -366,7 +402,7 @@ export class TypedEventBus {
           .replace(/([A-Z])/g, '.$1')
           .toLowerCase()
           .slice(1);
-        
+
         this.validators.set(eventType, new EventValidator(schema, schemaName));
       }
     }
@@ -380,21 +416,24 @@ export class TypedEventBus {
    * Get all registered event types.
    */
   getEventTypes(): string[] {
-    return Array.from(this.validators.keys());
+    return Array.from(this.validators.keys())();
   }
 
   /**
    * Get listener count for event type.
    */
   getListenerCount(eventType: string): number {
-    return this.listenerCounts.get(eventType) || 0;
+    return this.listenerCounts.get(eventType)'' | '''' | ''0;
   }
 
   /**
    * Get total listener count across all events.
    */
   getTotalListenerCount(): number {
-    return Array.from(this.listenerCounts.values()).reduce((sum, count) => sum + count, 0);
+    return Array.from(this.listenerCounts.values()).reduce(
+      (sum, count) => sum + count,
+      0
+    );
   }
 
   /**
@@ -423,7 +462,9 @@ export class TypedEventBus {
     this.config = { ...this.config, ...updates };
 
     if (this.config.enableLogging) {
-      logger.info('[TypedEventBus] Configuration updated', { config: this.config });
+      logger.info('[TypedEventBus] Configuration updated', {
+        config: this.config,
+      });
     }
   }
 
@@ -440,7 +481,7 @@ export class TypedEventBus {
       totalListeners: this.getTotalListenerCount(),
       eventTypes: this.getEventTypes(),
       validatorCount: this.validators.size,
-      config: this.getConfig()
+      config: this.getConfig(),
     };
   }
 }
@@ -468,7 +509,7 @@ export function createHighPerformanceEventBus(): TypedEventBus {
     enableTelemetry: true, // Keep telemetry for performance monitoring
     enableWildcards: false,
     throwOnValidationError: false,
-    maxListeners: 1000
+    maxListeners: 1000,
   });
 }
 
@@ -482,7 +523,7 @@ export function createValidatedEventBus(): TypedEventBus {
     enableTelemetry: true,
     enableWildcards: true,
     throwOnValidationError: true,
-    maxListeners: 100
+    maxListeners: 100,
   });
 }
 

@@ -53,7 +53,12 @@ import type { Config } from '@claude-zen/foundation';
 // DatabaseAdapter interface imported from interfaces.js
 
 // Foundation DI system integration - using Awilix
-import { DIContainer, injectable, inject, TOKENS } from '@claude-zen/foundation';
+import {
+  DIContainer,
+  injectable,
+  inject,
+  TOKENS,
+} from '@claude-zen/foundation';
 
 // Database config types
 interface DatabaseConfig {
@@ -70,7 +75,11 @@ interface DatabaseConfig {
   options?: Record<string, unknown>;
 }
 
-import type { CoordinationRepository, MemoryRepository, DatabaseAdapter } from './interfaces';
+import type {
+  CoordinationRepository,
+  MemoryRepository,
+  DatabaseAdapter,
+} from './interfaces';
 import type {
   DataAccessObject,
   DatabaseMetadata,
@@ -127,14 +136,13 @@ interface DatabaseProviderFactory {
  *   },
  *   databaseConfig: {
  *     type: 'lancedb',
- *     database: './vectors.lance'
- *   }
+ *     database: './vectors.lance'*   }
  * };
  * ```
  */
 export interface RepositoryConfig {
   /** Database type to use */
-  databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination';
+  databaseType:'' | '''postgresql | sqlite' | 'kuzu''' | '''lancedb | mysql' | 'memory''' | '''coordination';
 
   /** Entity type name */
   entityType: string;
@@ -181,12 +189,7 @@ export interface RepositoryConfig {
  * }
  * ```
  */
-export type RepositoryType<T> =
-  | Repository<T>
-  | GraphRepository<T>
-  | VectorRepository<T>
-  | MemoryRepository<T>
-  | CoordinationRepository<T>;
+export type RepositoryType<T> ='' | ''Repository<T>'' | ''GraphRepository<T>'' | ''VectorRepository<T>'' | ''MemoryRepository<T>'' | ''CoordinationRepository<T>;
 
 /**
  * Entity Type Registry Interface.
@@ -202,7 +205,7 @@ export type RepositoryType<T> =
  * const registry: EntityTypeRegistry = {
  *   User: {
  *     schema: {
- *       id: { type: 'uuid', primaryKey: true },
+ *       id: { type:'uuid', primaryKey: true },
  *       name: { type: 'string', required: true, maxLength: 100 },
  *       email: { type: 'string', unique: true },
  *       profile: { type: 'json' },
@@ -315,7 +318,7 @@ export class DALFactory {
   constructor(
     private _logger: Logger,
     private _config: Config,
-    private databaseProviderFactory: DatabaseProviderFactory,
+    private databaseProviderFactory: DatabaseProviderFactory
   ) {
     this.initializeEntityRegistry();
   }
@@ -376,7 +379,9 @@ export class DALFactory {
    * const similar = await vectorRepo.vectorSearch(queryVector, 10);
    * ```
    */
-  async createRepository<T>(config: RepositoryConfig): Promise<RepositoryType<T>> {
+  async createRepository<T>(
+    config: RepositoryConfig
+  ): Promise<RepositoryType<T>> {
     const cacheKey = this.generateCacheKey(config);
 
     if (this.repositoryCache.has(cacheKey)) {
@@ -390,8 +395,10 @@ export class DALFactory {
 
     try {
       // Merge config with registered entity configuration
-      const entityConfig = config.entityType ? this.getEntityConfig(config.entityType) : null;
-      const enrichedConfig = entityConfig 
+      const entityConfig = config.entityType
+        ? this.getEntityConfig(config.entityType)
+        : null;
+      const enrichedConfig = entityConfig
         ? { ...entityConfig, ...config } // Entity config as base, with config overrides
         : config;
 
@@ -399,7 +406,10 @@ export class DALFactory {
       const adapter = await this.getOrCreateAdapter(enrichedConfig);
 
       // Create repository based on database type
-      const repository = await this.createRepositoryInstance<T>(enrichedConfig, adapter);
+      const repository = await this.createRepositoryInstance<T>(
+        enrichedConfig,
+        adapter
+      );
 
       // Cache the repository
       this.repositoryCache.set(cacheKey, repository);
@@ -487,8 +497,10 @@ export class DALFactory {
 
     try {
       // Merge config with registered entity configuration
-      const entityConfig = config.entityType ? this.getEntityConfig(config.entityType) : null;
-      const enrichedConfig = entityConfig 
+      const entityConfig = config.entityType
+        ? this.getEntityConfig(config.entityType)
+        : null;
+      const enrichedConfig = entityConfig
         ? { ...entityConfig, ...config } // Entity config as base, with config overrides
         : config;
 
@@ -499,7 +511,11 @@ export class DALFactory {
       const adapter = await this.getOrCreateAdapter(enrichedConfig);
 
       // Create DAO instance
-      const dao = await this.createDAOInstance<T>(enrichedConfig, repository, adapter);
+      const dao = await this.createDAOInstance<T>(
+        enrichedConfig,
+        repository,
+        adapter
+      );
 
       // Cache the DAO
       this.daoCache.set(cacheKey, dao);
@@ -616,7 +632,7 @@ export class DALFactory {
    * entity type is not registered.
    *
    * @param {string} entityType - The entity type name to look up.
-   * @returns {EntityTypeRegistry[string] | undefined} Entity configuration or undefined.
+   * @returns {EntityTypeRegistry[string]'' | ''undefined} Entity configuration or undefined.
    * @example Getting Entity Configuration
    * ```typescript
    * const userConfig = factory.getEntityConfig('User');
@@ -638,14 +654,14 @@ export class DALFactory {
    *
    * // Use configuration for DAO creation
    * const productDAO = await factory.createDAO({
-   *   databaseType: config.databaseType || 'postgresql',
+   *   databaseType: config.databaseType'' | '''' | '''postgresql',
    *   entityType,
    *   tableName: config.tableName,
    *   schema: config.schema
    * });
    * ```
    */
-  getEntityConfig(entityType: string): EntityTypeRegistry[string] | undefined {
+  getEntityConfig(entityType: string): EntityTypeRegistry[string]'' | ''undefined {
     return this.entityRegistry[entityType];
   }
 
@@ -672,7 +688,7 @@ export class DALFactory {
    * }
    *
    * const personRepo = await factory.createKuzuGraphRepository<Person>(
-   *   'Person',
+   *'Person',
    *   'social_network_nodes'
    * );
    *
@@ -704,7 +720,7 @@ export class DALFactory {
    * ```typescript
    * interface Concept {
    *   id: string;
-   *   type: 'concept' | 'entity' | 'relationship';
+   *   type: 'concept | entity' | 'relationship';
    *   properties: Record<string, unknown>;
    * }
    *
@@ -727,7 +743,7 @@ export class DALFactory {
     const config: RepositoryConfig = {
       databaseType: 'kuzu',
       entityType,
-      tableName: tableName || entityType,
+      tableName: tableName'' | '''' | ''entityType,
       databaseConfig: this.getDefaultKuzuConfig(),
     };
 
@@ -763,7 +779,7 @@ export class DALFactory {
    *
    * // OpenAI ada-002 embeddings (1536 dimensions)
    * const embeddingRepo = await factory.createLanceDBVectorRepository<DocumentEmbedding>(
-   *   'DocumentEmbedding',
+   *'DocumentEmbedding',
    *   1536
    * );
    *
@@ -888,8 +904,8 @@ export class DALFactory {
    * ```typescript
    * interface CoordinationTask {
    *   id: string;
-   *   type: 'processing' | 'cleanup' | 'migration';
-   *   status: 'pending' | 'processing' | 'completed' | 'failed';
+   *   type: 'processing | cleanup' | 'migration';
+   *   status: 'pending | processing' | 'completed''' | '''failed';
    *   assignedTo?: string;
    *   priority: number;
    *   payload: Record<string, unknown>;
@@ -915,7 +931,9 @@ export class DALFactory {
    * });
    * ```
    */
-  async createCoordinationRepository<T>(entityType: string): Promise<CoordinationRepository<T>> {
+  async createCoordinationRepository<T>(
+    entityType: string
+  ): Promise<CoordinationRepository<T>> {
     const config: RepositoryConfig = {
       databaseType: 'coordination',
       entityType,
@@ -926,7 +944,9 @@ export class DALFactory {
       },
     };
 
-    return (await this.createRepository<T>(config)) as CoordinationRepository<T>;
+    return (await this.createRepository<T>(
+      config
+    )) as CoordinationRepository<T>;
   }
 
   /**
@@ -1016,7 +1036,9 @@ export class DALFactory {
    * await cacheRepo.invalidateByTags(['users']);
    * ```
    */
-  async createMemoryRepository<T>(entityType: string): Promise<MemoryRepository<T>> {
+  async createMemoryRepository<T>(
+    entityType: string
+  ): Promise<MemoryRepository<T>> {
     const config: RepositoryConfig = {
       databaseType: 'memory',
       entityType,
@@ -1183,7 +1205,9 @@ export class DALFactory {
    * Private methods for internal operations.
    */
 
-  private async getOrCreateAdapter(config: RepositoryConfig): Promise<DatabaseAdapter> {
+  private async getOrCreateAdapter(
+    config: RepositoryConfig
+  ): Promise<DatabaseAdapter> {
     if (config?.['existingAdapter']) {
       return config?.['existingAdapter'];
     }
@@ -1195,10 +1219,14 @@ export class DALFactory {
     }
 
     if (!config?.['databaseConfig']) {
-      throw new Error('Database configuration required when creating new adapter');
+      throw new Error(
+        'Database configuration required when creating new adapter'
+      );
     }
 
-    const adapter = await this.databaseProviderFactory.createAdapter(config?.['databaseConfig']);
+    const adapter = await this.databaseProviderFactory.createAdapter(
+      config?.['databaseConfig']
+    );
 
     this.adapterCache.set(adapterCacheKey, adapter);
     return adapter;
@@ -1216,8 +1244,9 @@ export class DALFactory {
     const { MemoryDao } = await import('./dao/memory.dao');
     const { CoordinationDao } = await import('./dao/coordination.dao');
 
-    const tableName = config?.['tableName'] || config?.['entityType'];
-    const entitySchema = config?.['schema'] || this.entityRegistry[config?.['entityType']]?.schema;
+    const tableName = config?.['tableName']'' | '''' | ''config?.['entityType'];
+    const entitySchema =
+      config?.['schema']'' | '''' | ''this.entityRegistry[config?.['entityType']]?.schema;
 
     switch (config?.['databaseType']) {
       case 'kuzu':
@@ -1273,33 +1302,62 @@ export class DALFactory {
     const { MemoryDao } = await import('./dao/memory.dao');
     const { CoordinationDao } = await import('./dao/coordination.dao');
 
-    const tableName = config?.['tableName'] || config?.['entityType'];
-    const entitySchema = config?.['schema'] || this.entityRegistry[config?.['entityType']]?.schema;
+    const tableName = config?.['tableName']'' | '''' | ''config?.['entityType'];
+    const entitySchema =
+      config?.['schema']'' | '''' | ''this.entityRegistry[config?.['entityType']]?.schema;
 
     switch (config?.['databaseType']) {
       case 'kuzu':
-        return new GraphDao<T>(adapter, this['_logger'], tableName, entitySchema);
+        return new GraphDao<T>(
+          adapter,
+          this['_logger'],
+          tableName,
+          entitySchema
+        );
 
       case 'lancedb':
-        return new VectorDao<T>(adapter, this['_logger'], tableName, entitySchema);
+        return new VectorDao<T>(
+          adapter,
+          this['_logger'],
+          tableName,
+          entitySchema
+        );
 
       case 'memory':
-        return new MemoryDao<T>(adapter, this['_logger'], tableName, entitySchema) as any;
+        return new MemoryDao<T>(
+          adapter,
+          this['_logger'],
+          tableName,
+          entitySchema
+        ) as any;
 
       case 'coordination':
-        return new CoordinationDao<T>(adapter, this['_logger'], tableName, entitySchema);
+        return new CoordinationDao<T>(
+          adapter,
+          this['_logger'],
+          tableName,
+          entitySchema
+        );
       default:
-        return new RelationalDao<T>(adapter, this['_logger'], tableName, entitySchema);
+        return new RelationalDao<T>(
+          adapter,
+          this['_logger'],
+          tableName,
+          entitySchema
+        );
     }
   }
 
-  private generateCacheKey(config: RepositoryConfig, type: 'repo' | 'dao' = 'repo'): string {
+  private generateCacheKey(
+    config: RepositoryConfig,
+    type: 'repo''' | '''dao' = 'repo'
+  ): string {
     const parts = [
       type,
       config?.['databaseType'],
       config?.['entityType'],
-      config?.['tableName'] || config?.['entityType'],
-      JSON.stringify(config?.['options'] || {}),
+      config?.['tableName']'' | '''' | ''config?.['entityType'],
+      JSON.stringify(config?.['options']'' | '''' | ''{}),
     ];
     return parts.join(':');
   }
@@ -1311,9 +1369,9 @@ export class DALFactory {
 
     return [
       config?.['databaseType'],
-      config?.['databaseConfig']?.host || 'localhost',
-      config?.['databaseConfig']?.database || 'default',
-      config?.['databaseConfig']?.port || 'default',
+      config?.['databaseConfig']?.host'' | '''' | '''localhost',
+      config?.['databaseConfig']?.database'' | '''' | '''default',
+      config?.['databaseConfig']?.port'' | '''' | '''default',
     ].join(':');
   }
 
@@ -1415,7 +1473,8 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
 
   async executeTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     // Execute on primary first
-    const primaryResult = await this.primaryDAO.executeTransaction<R>(operations);
+    const primaryResult =
+      await this.primaryDAO.executeTransaction<R>(operations);
 
     // Replicate to secondaries (fire and forget for performance)
     this.replicateToSecondaries(operations).catch((error) => {
@@ -1439,9 +1498,11 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       config: {
         primary,
         secondaries: secondaries.map((result) =>
-          result?.status === 'fulfilled' ? result?.value : { error: result?.reason }
+          result?.status === 'fulfilled'
+            ? result?.value
+            : { error: result?.reason }
         ),
-      }
+      },
     } as DatabaseMetadata;
   }
 
@@ -1451,7 +1512,8 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       this.secondaryDAOs.map((dao) => dao.healthCheck())
     );
 
-    const isHealthy = primary.healthy && secondaries.some((s) => s.status === 'fulfilled');
+    const isHealthy =
+      primary.healthy && secondaries.some((s) => s.status === 'fulfilled');
     return {
       healthy: isHealthy,
       isHealthy,
@@ -1460,16 +1522,20 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       details: {
         primary,
         secondaries: secondaries.map((result) =>
-          result?.status === 'fulfilled' ? result?.value : { healthy: false, error: result?.reason }
+          result?.status === 'fulfilled'
+            ? result?.value
+            : { healthy: false, error: result?.reason }
         ),
       },
-      lastCheck: new Date()
+      lastCheck: new Date(),
     };
   }
 
   async getMetrics(): Promise<PerformanceMetrics> {
     const primary = await this.primaryDAO.getMetrics();
-    const secondaries = await Promise.allSettled(this.secondaryDAOs.map((dao) => dao.getMetrics()));
+    const secondaries = await Promise.allSettled(
+      this.secondaryDAOs.map((dao) => dao.getMetrics())
+    );
 
     return {
       averageQueryTime: primary.averageQueryTime,
@@ -1479,16 +1545,22 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       custom: {
         primary,
         secondaries: secondaries.map((result) =>
-          result?.status === 'fulfilled' ? result?.value : { error: result?.reason }
+          result?.status === 'fulfilled'
+            ? result?.value
+            : { error: result?.reason }
         ),
-      }
+      },
     };
   }
 
-  private async replicateToSecondaries(operations: TransactionOperation[]): Promise<void> {
+  private async replicateToSecondaries(
+    operations: TransactionOperation[]
+  ): Promise<void> {
     if (this.secondaryDAOs.length === 0) return;
 
-    await Promise.allSettled(this.secondaryDAOs.map((dao) => dao.executeTransaction(operations)));
+    await Promise.allSettled(
+      this.secondaryDAOs.map((dao) => dao.executeTransaction(operations))
+    );
   }
 }
 

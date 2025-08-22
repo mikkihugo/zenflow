@@ -1,12 +1,12 @@
 /**
  * @fileoverview Security Incident Response Service
- * 
+ *
  * Service for managing security incidents and coordinating response activities.
  * Handles incident detection, classification, response coordination, and post-incident analysis.
- * 
+ *
  * SINGLE RESPONSIBILITY: Security incident response and coordination
  * FOCUSES ON: Incident management, response coordination, security operations
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,15 +15,15 @@
 import { format, addMinutes, addHours, addDays } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
   maxBy,
-  sortBy
+  sortBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -57,7 +57,7 @@ export enum IncidentSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -72,7 +72,7 @@ export enum IncidentCategory {
   INSIDER_THREAT = 'insider_threat',
   VULNERABILITY_EXPLOIT = 'vulnerability_exploit',
   COMPLIANCE_VIOLATION = 'compliance_violation',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 /**
@@ -85,7 +85,7 @@ export enum IncidentStatus {
   ERADICATING = 'eradicating',
   RECOVERING = 'recovering',
   RESOLVED = 'resolved',
-  CLOSED = 'closed'
+  CLOSED = 'closed',
 }
 
 /**
@@ -95,7 +95,7 @@ export enum IncidentPriority {
   P1 = 'p1', // Critical - immediate response
   P2 = 'p2', // High - response within 2 hours
   P3 = 'p3', // Medium - response within 8 hours
-  P4 = 'p4'  // Low - response within 24 hours
+  P4 = 'p4', // Low - response within 24 hours
 }
 
 /**
@@ -121,7 +121,7 @@ export enum ResponseRole {
   COMMUNICATIONS_LEAD = 'communications_lead',
   LEGAL_COUNSEL = 'legal_counsel',
   IT_OPERATIONS = 'it_operations',
-  BUSINESS_LIAISON = 'business_liaison'
+  BUSINESS_LIAISON = 'business_liaison',
 }
 
 /**
@@ -141,7 +141,7 @@ export enum AvailabilityStatus {
   AVAILABLE = 'available',
   BUSY = 'busy',
   ON_CALL = 'on_call',
-  UNAVAILABLE = 'unavailable'
+  UNAVAILABLE = 'unavailable',
 }
 
 /**
@@ -153,7 +153,7 @@ export interface IncidentTimelineEntry {
   readonly action: string;
   readonly description: string;
   readonly performer: string;
-  readonly category: 'detection' | 'analysis' | 'containment' | 'eradication' | 'recovery' | 'communication';
+  readonly category:' | ''detection'' | ''analysis'' | ''containment'' | ''eradication'' | ''recovery'' | ''communication';
   readonly evidence?: string;
 }
 
@@ -183,7 +183,7 @@ export enum EvidenceType {
   FILE_SAMPLE = 'file_sample',
   SCREENSHOT = 'screenshot',
   WITNESS_STATEMENT = 'witness_statement',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 /**
@@ -191,7 +191,7 @@ export enum EvidenceType {
  */
 export interface ChainOfCustodyEntry {
   readonly timestamp: Date;
-  readonly action: 'collected' | 'transferred' | 'analyzed' | 'stored';
+  readonly action: 'collected'' | ''transferred'' | ''analyzed'' | ''stored';
   readonly person: string;
   readonly location: string;
   readonly notes: string;
@@ -219,7 +219,7 @@ export enum ImpactLevel {
   NONE = 'none',
   LOW = 'low',
   MEDIUM = 'medium',
-  HIGH = 'high'
+  HIGH = 'high',
 }
 
 /**
@@ -229,7 +229,7 @@ export enum BusinessImpactLevel {
   MINIMAL = 'minimal',
   MODERATE = 'moderate',
   SIGNIFICANT = 'significant',
-  SEVERE = 'severe'
+  SEVERE = 'severe',
 }
 
 /**
@@ -252,7 +252,7 @@ export enum ContainmentStrategy {
   NETWORK_SEGMENTATION = 'network_segmentation',
   ACCESS_REVOCATION = 'access_revocation',
   PATCH_DEPLOYMENT = 'patch_deployment',
-  MONITORING_ENHANCEMENT = 'monitoring_enhancement'
+  MONITORING_ENHANCEMENT = 'monitoring_enhancement',
 }
 
 /**
@@ -276,7 +276,7 @@ export enum ActionStatus {
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   FAILED = 'failed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 /**
@@ -319,7 +319,7 @@ export interface PostIncidentReview {
  */
 export interface ReviewFinding {
   readonly findingId: string;
-  readonly category: 'process' | 'technology' | 'people' | 'communication';
+  readonly category: 'process'' | ''technology'' | ''people'' | ''communication';
   readonly description: string;
   readonly impact: ImpactLevel;
   readonly recommendation: string;
@@ -332,7 +332,7 @@ export interface ImprovementRecommendation {
   readonly recommendationId: string;
   readonly title: string;
   readonly description: string;
-  readonly priority: 'high' | 'medium' | 'low';
+  readonly priority: 'high'' | ''medium'' | ''low';
   readonly estimatedCost: number;
   readonly timeframe: string;
   readonly owner: string;
@@ -397,10 +397,10 @@ export interface CommunicationPlan {
  */
 export interface CommunicationChannel {
   readonly channelId: string;
-  readonly type: 'email' | 'phone' | 'slack' | 'sms' | 'dashboard';
+  readonly type: 'email'' | ''phone'' | ''slack'' | ''sms'' | ''dashboard';
   readonly recipients: string[];
   readonly purpose: string;
-  readonly urgency: 'immediate' | 'high' | 'normal' | 'low';
+  readonly urgency: 'immediate'' | ''high'' | ''normal'' | ''low';
 }
 
 /**
@@ -410,7 +410,7 @@ export interface StakeholderMapping {
   readonly severityLevel: IncidentSeverity;
   readonly stakeholders: string[];
   readonly notificationTiming: string;
-  readonly informationLevel: 'detailed' | 'summary' | 'minimal';
+  readonly informationLevel: 'detailed'' | ''summary'' | ''minimal';
 }
 
 /**
@@ -461,18 +461,24 @@ export class SecurityIncidentResponseService {
     initialEvidence?: Partial<IncidentEvidence>[];
   }): SecurityIncident {
     const incidentId = `incident-${nanoid(12)}`;
-    
+
     this.logger.info('Creating security incident', {
       incidentId,
       severity: incidentData.severity,
-      category: incidentData.category
+      category: incidentData.category,
     });
 
     // Determine priority based on severity
-    const priority = this.determinePriority(incidentData.severity, incidentData.category);
+    const priority = this.determinePriority(
+      incidentData.severity,
+      incidentData.category
+    );
 
     // Assign response team
-    const responseTeam = this.assignResponseTeam(incidentData.severity, incidentData.category);
+    const responseTeam = this.assignResponseTeam(
+      incidentData.severity,
+      incidentData.category
+    );
 
     // Create initial impact assessment
     const impact = this.performInitialImpactAssessment(incidentData);
@@ -496,16 +502,17 @@ export class SecurityIncidentResponseService {
           action: 'incident_created',
           description: `Incident created: ${incidentData.title}`,
           performer: incidentData.reportedBy,
-          category: 'detection'
-        }
+          category: 'detection',
+        },
       ],
-      evidence: incidentData.initialEvidence ? 
-        this.convertToEvidence(incidentData.initialEvidence) : [],
+      evidence: incidentData.initialEvidence
+        ? this.convertToEvidence(incidentData.initialEvidence)
+        : [],
       impact,
       containment: {
         strategy: ContainmentStrategy.MONITORING_ENHANCEMENT,
         actions: [],
-        effectiveness: 0
+        effectiveness: 0,
       },
       resolution: {
         rootCause: '',
@@ -519,9 +526,9 @@ export class SecurityIncidentResponseService {
           systemDowntime: 0,
           lostRevenue: 0,
           recoveryComplexity: 1,
-          totalCost: 0
-        }
-      }
+          totalCost: 0,
+        },
+      },
     };
 
     // Store incident
@@ -536,7 +543,7 @@ export class SecurityIncidentResponseService {
     this.logger.info('Security incident created', {
       incidentId,
       priority,
-      responseTeamSize: responseTeam.length
+      responseTeamSize: responseTeam.length,
     });
 
     return incident;
@@ -560,7 +567,7 @@ export class SecurityIncidentResponseService {
       incidentId,
       oldStatus: incident.status,
       newStatus: status,
-      updatedBy
+      updatedBy,
     });
 
     // Add timeline entry
@@ -570,14 +577,14 @@ export class SecurityIncidentResponseService {
       action: 'status_updated',
       description: `Status changed from ${incident.status} to ${status}${notes ? `: ${notes}` : ''}`,
       performer: updatedBy,
-      category: this.getTimelineCategory(status)
+      category: this.getTimelineCategory(status),
     };
 
     // Update incident
     const updatedIncident: SecurityIncident = {
       ...incident,
       status,
-      timeline: [...incident.timeline, timelineEntry]
+      timeline: [...incident.timeline, timelineEntry],
     };
 
     this.incidents.set(incidentId, updatedIncident);
@@ -593,7 +600,10 @@ export class SecurityIncidentResponseService {
    */
   addEvidence(
     incidentId: string,
-    evidence: Omit<IncidentEvidence, 'evidenceId' | 'collectedDate' | 'chainOfCustody'>
+    evidence: Omit<
+      IncidentEvidence,
+      'evidenceId'' | ''collectedDate'' | ''chainOfCustody'
+    >
   ): void {
     const incident = this.incidents.get(incidentId);
     if (!incident) {
@@ -609,24 +619,27 @@ export class SecurityIncidentResponseService {
           action: 'collected',
           person: evidence.collectedBy,
           location: 'Digital collection',
-          notes: 'Evidence collected for incident investigation'
-        }
+          notes: 'Evidence collected for incident investigation',
+        },
       ],
-      ...evidence
+      ...evidence,
     };
 
     const updatedIncident: SecurityIncident = {
       ...incident,
       evidence: [...incident.evidence, newEvidence],
-      timeline: [...incident.timeline, {
-        entryId: `timeline-${nanoid(8)}`,
-        timestamp: new Date(),
-        action: 'evidence_added',
-        description: `Evidence added: ${evidence.description}`,
-        performer: evidence.collectedBy,
-        category: 'analysis',
-        evidence: newEvidence.evidenceId
-      }]
+      timeline: [
+        ...incident.timeline,
+        {
+          entryId: `timeline-${nanoid(8)}`,
+          timestamp: new Date(),
+          action: 'evidence_added',
+          description: `Evidence added: ${evidence.description}`,
+          performer: evidence.collectedBy,
+          category: 'analysis',
+          evidence: newEvidence.evidenceId,
+        },
+      ],
     };
 
     this.incidents.set(incidentId, updatedIncident);
@@ -634,7 +647,7 @@ export class SecurityIncidentResponseService {
     this.logger.info('Evidence added to incident', {
       incidentId,
       evidenceId: newEvidence.evidenceId,
-      evidenceType: evidence.type
+      evidenceType: evidence.type,
     });
   }
 
@@ -644,7 +657,7 @@ export class SecurityIncidentResponseService {
   async initiateContainment(
     incidentId: string,
     strategy: ContainmentStrategy,
-    actions: Omit<ContainmentAction, 'actionId' | 'status' | 'startTime'>[]
+    actions: Omit<ContainmentAction, 'actionId'' | ''status'' | ''startTime'>[]
   ): Promise<void> {
     const incident = this.incidents.get(incidentId);
     if (!incident) {
@@ -654,14 +667,14 @@ export class SecurityIncidentResponseService {
     this.logger.info('Initiating containment actions', {
       incidentId,
       strategy,
-      actionCount: actions.length
+      actionCount: actions.length,
     });
 
-    const containmentActions: ContainmentAction[] = actions.map(action => ({
+    const containmentActions: ContainmentAction[] = actions.map((action) => ({
       actionId: `action-${nanoid(8)}`,
       status: ActionStatus.PLANNED,
       startTime: new Date(),
-      ...action
+      ...action,
     }));
 
     const updatedIncident: SecurityIncident = {
@@ -670,16 +683,19 @@ export class SecurityIncidentResponseService {
       containment: {
         strategy,
         actions: containmentActions,
-        effectiveness: 0 // Will be updated as actions complete
+        effectiveness: 0, // Will be updated as actions complete
       },
-      timeline: [...incident.timeline, {
-        entryId: `timeline-${nanoid(8)}`,
-        timestamp: new Date(),
-        action: 'containment_initiated',
-        description: `Containment strategy initiated: ${strategy}`,
-        performer: 'system',
-        category: 'containment'
-      }]
+      timeline: [
+        ...incident.timeline,
+        {
+          entryId: `timeline-${nanoid(8)}`,
+          timestamp: new Date(),
+          action: 'containment_initiated',
+          description: `Containment strategy initiated: ${strategy}`,
+          performer: 'system',
+          category: 'containment',
+        },
+      ],
     };
 
     this.incidents.set(incidentId, updatedIncident);
@@ -693,7 +709,10 @@ export class SecurityIncidentResponseService {
    */
   resolveIncident(
     incidentId: string,
-    resolution: Omit<IncidentResolution, 'resolutionDate' | 'totalResponseTime'>,
+    resolution: Omit<
+      IncidentResolution,
+      'resolutionDate'' | ''totalResponseTime'
+    >,
     resolvedBy: string
   ): SecurityIncident {
     const incident = this.incidents.get(incidentId);
@@ -714,16 +733,19 @@ export class SecurityIncidentResponseService {
       resolution: {
         ...resolution,
         resolutionDate,
-        totalResponseTime
+        totalResponseTime,
       },
-      timeline: [...incident.timeline, {
-        entryId: `timeline-${nanoid(8)}`,
-        timestamp: resolutionDate,
-        action: 'incident_resolved',
-        description: `Incident resolved: ${resolution.resolutionSummary}`,
-        performer: resolvedBy,
-        category: 'recovery'
-      }]
+      timeline: [
+        ...incident.timeline,
+        {
+          entryId: `timeline-${nanoid(8)}`,
+          timestamp: resolutionDate,
+          action: 'incident_resolved',
+          description: `Incident resolved: ${resolution.resolutionSummary}`,
+          performer: resolvedBy,
+          category: 'recovery',
+        },
+      ],
     };
 
     this.incidents.set(incidentId, updatedIncident);
@@ -734,7 +756,7 @@ export class SecurityIncidentResponseService {
     this.logger.info('Incident resolved', {
       incidentId,
       totalResponseTime,
-      rootCause: resolution.rootCause
+      rootCause: resolution.rootCause,
     });
 
     return updatedIncident;
@@ -743,7 +765,10 @@ export class SecurityIncidentResponseService {
   /**
    * Helper methods
    */
-  private determinePriority(severity: IncidentSeverity, category: IncidentCategory): IncidentPriority {
+  private determinePriority(
+    severity: IncidentSeverity,
+    category: IncidentCategory
+  ): IncidentPriority {
     if (severity === IncidentSeverity.CRITICAL) return IncidentPriority.P1;
     if (severity === IncidentSeverity.HIGH) return IncidentPriority.P2;
     if (severity === IncidentSeverity.MEDIUM) return IncidentPriority.P3;
@@ -763,7 +788,7 @@ export class SecurityIncidentResponseService {
         contactInfo: { email: 'commander@example.com', phone: '+1-555-0001' },
         expertise: ['incident_management', 'coordination'],
         availability: AvailabilityStatus.ON_CALL,
-        assignedDate: new Date()
+        assignedDate: new Date(),
       },
       {
         memberId: 'analyst-1',
@@ -772,8 +797,8 @@ export class SecurityIncidentResponseService {
         contactInfo: { email: 'analyst@example.com', phone: '+1-555-0002' },
         expertise: ['threat_analysis', 'forensics'],
         availability: AvailabilityStatus.AVAILABLE,
-        assignedDate: new Date()
-      }
+        assignedDate: new Date(),
+      },
     ];
 
     // Add specialists based on category
@@ -785,7 +810,7 @@ export class SecurityIncidentResponseService {
         contactInfo: { email: 'forensics@example.com', phone: '+1-555-0003' },
         expertise: ['malware_analysis', 'digital_forensics'],
         availability: AvailabilityStatus.AVAILABLE,
-        assignedDate: new Date()
+        assignedDate: new Date(),
       });
     }
 
@@ -799,7 +824,7 @@ export class SecurityIncidentResponseService {
   }): SecurityImpactAssessment {
     // Simplified impact assessment
     const baseImpact = this.mapSeverityToImpact(incidentData.severity);
-    
+
     return {
       confidentialityImpact: baseImpact,
       integrityImpact: baseImpact,
@@ -809,30 +834,42 @@ export class SecurityIncidentResponseService {
       affectedUsers: 0,
       dataCompromised: incidentData.category === IncidentCategory.DATA_BREACH,
       regulatoryImplications: [],
-      estimatedCost: 0
+      estimatedCost: 0,
     };
   }
 
   private mapSeverityToImpact(severity: IncidentSeverity): ImpactLevel {
     switch (severity) {
-      case IncidentSeverity.CRITICAL: return ImpactLevel.HIGH;
-      case IncidentSeverity.HIGH: return ImpactLevel.MEDIUM;
-      case IncidentSeverity.MEDIUM: return ImpactLevel.LOW;
-      default: return ImpactLevel.NONE;
+      case IncidentSeverity.CRITICAL:
+        return ImpactLevel.HIGH;
+      case IncidentSeverity.HIGH:
+        return ImpactLevel.MEDIUM;
+      case IncidentSeverity.MEDIUM:
+        return ImpactLevel.LOW;
+      default:
+        return ImpactLevel.NONE;
     }
   }
 
-  private mapSeverityToBusinessImpact(severity: IncidentSeverity): BusinessImpactLevel {
+  private mapSeverityToBusinessImpact(
+    severity: IncidentSeverity
+  ): BusinessImpactLevel {
     switch (severity) {
-      case IncidentSeverity.CRITICAL: return BusinessImpactLevel.SEVERE;
-      case IncidentSeverity.HIGH: return BusinessImpactLevel.SIGNIFICANT;
-      case IncidentSeverity.MEDIUM: return BusinessImpactLevel.MODERATE;
-      default: return BusinessImpactLevel.MINIMAL;
+      case IncidentSeverity.CRITICAL:
+        return BusinessImpactLevel.SEVERE;
+      case IncidentSeverity.HIGH:
+        return BusinessImpactLevel.SIGNIFICANT;
+      case IncidentSeverity.MEDIUM:
+        return BusinessImpactLevel.MODERATE;
+      default:
+        return BusinessImpactLevel.MINIMAL;
     }
   }
 
-  private convertToEvidence(partialEvidence: Partial<IncidentEvidence>[]): IncidentEvidence[] {
-    return partialEvidence.map(evidence => ({
+  private convertToEvidence(
+    partialEvidence: Partial<IncidentEvidence>[]
+  ): IncidentEvidence[] {
+    return partialEvidence.map((evidence) => ({
       evidenceId: `evidence-${nanoid(8)}`,
       collectedDate: new Date(),
       chainOfCustody: [],
@@ -841,47 +878,66 @@ export class SecurityIncidentResponseService {
       description: 'Initial evidence',
       collectedBy: 'reporter',
       metadata: {},
-      ...evidence
+      ...evidence,
     })) as IncidentEvidence[];
   }
 
   private sendIncidentNotifications(incident: SecurityIncident): void {
     this.logger.info('Sending incident notifications', {
       incidentId: incident.incidentId,
-      severity: incident.severity
+      severity: incident.severity,
     });
     // Implementation would send actual notifications
   }
 
   private startEscalationTimer(incident: SecurityIncident): void {
     const escalationRule = this.responseConfig.escalationMatrix.find(
-      rule => rule.severity === incident.severity && rule.priority === incident.priority
+      (rule) =>
+        rule.severity === incident.severity &&
+        rule.priority === incident.priority
     );
 
     if (escalationRule) {
-      setTimeout(() => {
-        this.escalateIncident(incident.incidentId, escalationRule);
-      }, escalationRule.timeThreshold * 60 * 1000);
+      setTimeout(
+        () => {
+          this.escalateIncident(incident.incidentId, escalationRule);
+        },
+        escalationRule.timeThreshold * 60 * 1000
+      );
     }
   }
 
   private escalateIncident(incidentId: string, rule: EscalationRule): void {
-    this.logger.info('Escalating incident', { incidentId, rule: rule.severity });
+    this.logger.info('Escalating incident', {
+      incidentId,
+      rule: rule.severity,
+    });
     // Implementation would perform escalation
   }
 
-  private getTimelineCategory(status: IncidentStatus): IncidentTimelineEntry['category'] {
+  private getTimelineCategory(
+    status: IncidentStatus
+  ): IncidentTimelineEntry['category'] {
     switch (status) {
-      case IncidentStatus.DETECTED: return 'detection';
-      case IncidentStatus.ANALYZING: return 'analysis';
-      case IncidentStatus.CONTAINED: return 'containment';
-      case IncidentStatus.ERADICATING: return 'eradication';
-      case IncidentStatus.RECOVERING: return 'recovery';
-      default: return 'communication';
+      case IncidentStatus.DETECTED:
+        return 'detection';
+      case IncidentStatus.ANALYZING:
+        return 'analysis';
+      case IncidentStatus.CONTAINED:
+        return 'containment';
+      case IncidentStatus.ERADICATING:
+        return 'eradication';
+      case IncidentStatus.RECOVERING:
+        return 'recovery';
+      default:
+        return 'communication';
     }
   }
 
-  private handleStatusChange(incident: SecurityIncident, status: IncidentStatus): void {
+  private handleStatusChange(
+    incident: SecurityIncident,
+    status: IncidentStatus
+  ): void {
     switch (status) {
       case IncidentStatus.CONTAINED:
         this.sendStatusNotification(incident, 'Incident has been contained');
@@ -892,10 +948,13 @@ export class SecurityIncidentResponseService {
     }
   }
 
-  private sendStatusNotification(incident: SecurityIncident, message: string): void {
+  private sendStatusNotification(
+    incident: SecurityIncident,
+    message: string
+  ): void {
     this.logger.info('Sending status notification', {
       incidentId: incident.incidentId,
-      message
+      message,
     });
     // Implementation would send notifications
   }
@@ -907,8 +966,8 @@ export class SecurityIncidentResponseService {
     for (const action of actions) {
       try {
         // Simulate action execution
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // Note: Would update action status to COMPLETED
         // action.status = ActionStatus.COMPLETED;
         // action.endTime = new Date();
@@ -917,18 +976,17 @@ export class SecurityIncidentResponseService {
         this.logger.info('Containment action completed', {
           incidentId,
           actionId: action.actionId,
-          description: action.description
+          description: action.description,
         });
-
       } catch (error) {
         // Note: Would update action status to FAILED
         // action.status = ActionStatus.FAILED;
         // action.result = `Action failed: ${error}`;
-        
+
         this.logger.error('Containment action failed', {
           incidentId,
           actionId: action.actionId,
-          error
+          error,
         });
       }
     }
@@ -955,35 +1013,35 @@ export class SecurityIncidentResponseService {
           priority: IncidentPriority.P1,
           timeThreshold: 15, // 15 minutes
           escalateTo: ['ciso@example.com'],
-          notificationChannels: ['email', 'sms']
-        }
+          notificationChannels: ['email', 'sms'],
+        },
       ],
       communicationPlan: {
         internalChannels: [],
         externalChannels: [],
         stakeholderMatrix: [],
-        templates: []
+        templates: [],
       },
       slaThresholds: {
         acknowledgmentTime: {
-          [IncidentPriority.P1]: 15,  // 15 minutes
-          [IncidentPriority.P2]: 30,  // 30 minutes
-          [IncidentPriority.P3]: 60,  // 1 hour
-          [IncidentPriority.P4]: 120  // 2 hours
+          [IncidentPriority.P1]: 15, // 15 minutes
+          [IncidentPriority.P2]: 30, // 30 minutes
+          [IncidentPriority.P3]: 60, // 1 hour
+          [IncidentPriority.P4]: 120, // 2 hours
         },
         responseTime: {
-          [IncidentPriority.P1]: 30,   // 30 minutes
-          [IncidentPriority.P2]: 120,  // 2 hours
-          [IncidentPriority.P3]: 480,  // 8 hours
-          [IncidentPriority.P4]: 1440  // 24 hours
+          [IncidentPriority.P1]: 30, // 30 minutes
+          [IncidentPriority.P2]: 120, // 2 hours
+          [IncidentPriority.P3]: 480, // 8 hours
+          [IncidentPriority.P4]: 1440, // 24 hours
         },
         resolutionTime: {
-          [IncidentPriority.P1]: 4,    // 4 hours
-          [IncidentPriority.P2]: 24,   // 24 hours
-          [IncidentPriority.P3]: 72,   // 3 days
-          [IncidentPriority.P4]: 168   // 1 week
-        }
-      }
+          [IncidentPriority.P1]: 4, // 4 hours
+          [IncidentPriority.P2]: 24, // 24 hours
+          [IncidentPriority.P3]: 72, // 3 days
+          [IncidentPriority.P4]: 168, // 1 week
+        },
+      },
     };
   }
 
@@ -995,15 +1053,21 @@ export class SecurityIncidentResponseService {
   }
 
   getAllIncidents(): SecurityIncident[] {
-    return Array.from(this.incidents.values());
+    return Array.from(this.incidents.values())();
   }
 
   getIncidentsByStatus(status: IncidentStatus): SecurityIncident[] {
-    return filter(Array.from(this.incidents.values()), i => i.status === status);
+    return filter(
+      Array.from(this.incidents.values()),
+      (i) => i.status === status
+    );
   }
 
   getIncidentsBySeverity(severity: IncidentSeverity): SecurityIncident[] {
-    return filter(Array.from(this.incidents.values()), i => i.severity === severity);
+    return filter(
+      Array.from(this.incidents.values()),
+      (i) => i.severity === severity
+    );
   }
 
   getActiveIncidents(): SecurityIncident[] {
@@ -1012,9 +1076,9 @@ export class SecurityIncidentResponseService {
       IncidentStatus.ANALYZING,
       IncidentStatus.CONTAINED,
       IncidentStatus.ERADICATING,
-      IncidentStatus.RECOVERING
+      IncidentStatus.RECOVERING,
     ];
-    return filter(Array.from(this.incidents.values()), i => 
+    return filter(Array.from(this.incidents.values()), (i) =>
       activeStatuses.includes(i.status)
     );
   }

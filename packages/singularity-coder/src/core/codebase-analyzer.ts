@@ -1,6 +1,6 @@
 /**
  * @fileoverview Codebase Analyzer
- * 
+ *
  * Analyzes codebase structure and relationships for file-aware AI
  */
 
@@ -16,7 +16,7 @@ async function glob(pattern: string, options: any): Promise<string[]> {
   try {
     const fs = require('fs');
     const path = require('path');
-    
+
     function walkDir(dir: string, fileList: string[] = []): string[] {
       // Validate that dir is actually a string
       if (typeof dir !== 'string') {
@@ -26,47 +26,67 @@ async function glob(pattern: string, options: any): Promise<string[]> {
 
       try {
         const files = fs.readdirSync(dir);
-        
+
         for (const file of files) {
           const fullPath = path.join(dir, file);
-          
+
           try {
             const stat = fs.statSync(fullPath);
-            
-            if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
+
+            if (
+              stat.isDirectory() &&
+              !file.startsWith('.') &&
+              file !== 'node_modules') {
               walkDir(fullPath, fileList);
             } else if (stat.isFile() && options.onlyFiles) {
-              const relativePath = path.relative(options.cwd || process.cwd(), fullPath);
+              const relativePath = path.relative(
+                options.cwd'' | '''' | ''process.cwd(),
+                fullPath
+              );
               fileList.push(relativePath);
             }
           } catch (statError) {
             // Skip files that can't be stat'd (e.g., broken symlinks)
-            console.warn('Cannot stat file:', fullPath, statError instanceof Error ? statError.message : String(statError));
+            console.warn(
+              'Cannot stat file:',
+              fullPath,
+              statError instanceof Error ? statError.message : String(statError)
+            );
             continue;
           }
         }
       } catch (readDirError) {
-        console.warn('Cannot read directory:', dir, readDirError instanceof Error ? readDirError.message : String(readDirError));
+        console.warn(
+          'Cannot read directory:',
+          dir,
+          readDirError instanceof Error
+            ? readDirError.message
+            : String(readDirError)
+        );
       }
-      
+
       return fileList;
     }
-    
-    const baseDir = options.cwd || process.cwd();
-    
+
+    const baseDir = options.cwd'' | '''' | ''process.cwd();
+
     // Validate baseDir is a string
-    if (typeof baseDir !== 'string') {
+    if (typeof baseDir !=='string') {
       console.warn('Invalid baseDir type:', typeof baseDir, baseDir);
       return [];
     }
-    
+
     return walkDir(baseDir).slice(0, 100); // Limit for safety
   } catch (error) {
     console.warn('Fallback glob failed:', error);
     return [];
   }
 }
-import { AnalyzedContext, FileDependency, SymbolReference } from '../types/index';
+import {
+  AnalyzedContext,
+  FileDependency,
+  SymbolReference,
+} from '../types/index';
 
 export class CodebaseAnalyzer {
   private rootPath: string;
@@ -82,7 +102,7 @@ export class CodebaseAnalyzer {
       'build/**',
       '*.log',
       '.env*',
-      ...excludePatterns
+      ...excludePatterns,
     ];
     this.gitignore = ignore().add(this.excludePatterns);
   }
@@ -97,26 +117,36 @@ export class CodebaseAnalyzer {
   /**
    * Analyze codebase and return context for AI processing
    */
-  async analyzeContext(targetFiles: string[] = [], maxFiles: number = 50): Promise<AnalyzedContext> {
+  async analyzeContext(
+    targetFiles: string[] = [],
+    maxFiles: number = 50
+  ): Promise<AnalyzedContext> {
     const relevantFiles = await this.findRelevantFiles(targetFiles, maxFiles);
     const dependencies = await this.analyzeDependencies(relevantFiles);
     const symbols = await this.extractSymbols(relevantFiles);
     const summary = this.generateSummary(relevantFiles, dependencies, symbols);
-    const complexity = this.assessComplexity(relevantFiles, dependencies, symbols);
+    const complexity = this.assessComplexity(
+      relevantFiles,
+      dependencies,
+      symbols
+    );
 
     return {
       relevantFiles,
       dependencies,
       symbols,
       summary,
-      complexity
+      complexity,
     };
   }
 
   /**
    * Find files relevant to the analysis
    */
-  private async findRelevantFiles(targetFiles: string[], maxFiles: number): Promise<string[]> {
+  private async findRelevantFiles(
+    targetFiles: string[],
+    maxFiles: number
+  ): Promise<string[]> {
     const allFiles = new Set<string>();
 
     // Add target files
@@ -130,13 +160,13 @@ export class CodebaseAnalyzer {
     for (const file of targetFiles) {
       const dir = path.dirname(file);
       const relatedFiles = await this.findFilesInDirectory(dir, 10);
-      relatedFiles.forEach(f => allFiles.add(f));
+      relatedFiles.forEach((f) => allFiles.add(f));
     }
 
     // If we need more files, scan the project structure
     if (allFiles.size < maxFiles) {
       const projectFiles = await this.scanProject(maxFiles - allFiles.size);
-      projectFiles.forEach(f => allFiles.add(f));
+      projectFiles.forEach((f) => allFiles.add(f));
     }
 
     return Array.from(allFiles).slice(0, maxFiles);
@@ -145,7 +175,9 @@ export class CodebaseAnalyzer {
   /**
    * Analyze dependencies between files
    */
-  private async analyzeDependencies(files: string[]): Promise<FileDependency[]> {
+  private async analyzeDependencies(
+    files: string[]
+  ): Promise<FileDependency[]> {
     const dependencies: FileDependency[] = [];
 
     for (const file of files) {
@@ -182,16 +214,20 @@ export class CodebaseAnalyzer {
    */
   private extractImports(content: string, filePath: string): FileDependency[] {
     const dependencies: FileDependency[] = [];
-    const importRegex = /(?:import|require|from)\s+['"](.*?)['"];?/g;
+    const importRegex = /(?:import'' | ''require'' | ''from)\s+['"](.*?)['"];?/g;
     let match;
 
     while ((match = importRegex.exec(content)) !== null) {
       const importPath = match[1];
-      if (importPath && !importPath.startsWith('.') && !importPath.includes('node_modules')) {
+      if (
+        importPath &&
+        !importPath.startsWith('.') &&
+        !importPath.includes('node_modules')
+      ) {
         dependencies.push({
           from: filePath,
           to: importPath,
-          type: 'import'
+          type: 'import',
         });
       }
     }
@@ -202,32 +238,37 @@ export class CodebaseAnalyzer {
   /**
    * Extract symbols from content
    */
-  private extractSymbolsFromContent(content: string, filePath: string): SymbolReference[] {
+  private extractSymbolsFromContent(
+    content: string,
+    filePath: string
+  ): SymbolReference[] {
     const symbols: SymbolReference[] = [];
     const lines = content.split('\n');
 
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
-      const functionMatch = line.match(/(?:function|const|let|var)\s+(\w+)\s*[=:]?\s*(?:function|\()/);
+      const functionMatch = line.match(
+        /(?:function'' | ''const'' | ''let'' | ''var)\s+(\w+)\s*[=:]?\s*(?:function'' | ''\()/
+      );
       if (functionMatch && functionMatch[1]) {
         symbols.push({
           name: functionMatch[1],
-          type: 'function',
+          type:'function',
           file: filePath,
           line: lineIndex + 1,
-          column: line.indexOf(functionMatch[1])
+          column: line.indexOf(functionMatch[1]),
         });
       }
 
       // Extract class declarations
-      const classMatch = line.match(/(?:class|interface)\s+(\w+)/);
+      const classMatch = line.match(/(?:class'' | ''interface)\s+(\w+)/);
       if (classMatch && classMatch[1] && classMatch[0]) {
         symbols.push({
           name: classMatch[1],
           type: classMatch[0].includes('class') ? 'class' : 'interface',
           file: filePath,
           line: lineIndex + 1,
-          column: line.indexOf(classMatch[1])
+          column: line.indexOf(classMatch[1]),
         });
       }
     });
@@ -238,19 +279,29 @@ export class CodebaseAnalyzer {
   /**
    * Generate summary of codebase
    */
-  private generateSummary(files: string[], dependencies: FileDependency[], symbols: SymbolReference[]): string {
+  private generateSummary(
+    files: string[],
+    dependencies: FileDependency[],
+    symbols: SymbolReference[]
+  ): string {
     const fileTypes = this.categorizeFiles(files);
     const mainLanguages = Object.keys(fileTypes).slice(0, 3);
 
-    return `Codebase analysis: ${files.length} files, ${symbols.length} symbols, ${dependencies.length} dependencies. ` +
-           `Primary languages: ${mainLanguages.join(', ')}. ` +
-           `Structure includes ${fileTypes['ts'] || 0} TypeScript, ${fileTypes['js'] || 0} JavaScript, ${fileTypes['json'] || 0} config files.`;
+    return (
+      `Codebase analysis: ${files.length} files, ${symbols.length} symbols, ${dependencies.length} dependencies. ` +
+      `Primary languages: ${mainLanguages.join(', ')}. ` +
+      `Structure includes ${fileTypes['ts']'' | '''' | ''0} TypeScript, ${fileTypes['js']'' | '''' | ''0} JavaScript, ${fileTypes['json']'' | '''' | ''0} config files.`
+    );
   }
 
   /**
    * Assess complexity of the codebase
    */
-  private assessComplexity(files: string[], dependencies: FileDependency[], symbols: SymbolReference[]): 'low' | 'medium' | 'high' {
+  private assessComplexity(
+    files: string[],
+    dependencies: FileDependency[],
+    symbols: SymbolReference[]
+  ):'low | medium' | 'high' {
     const fileCount = files.length;
     const dependencyCount = dependencies.length;
     const symbolCount = symbols.length;
@@ -270,9 +321,9 @@ export class CodebaseAnalyzer {
   private categorizeFiles(files: string[]): Record<string, number> {
     const categories: Record<string, number> = {};
 
-    files.forEach(file => {
-      const ext = path.extname(file).slice(1) || 'unknown';
-      categories[ext] = (categories[ext] || 0) + 1;
+    files.forEach((file) => {
+      const ext = path.extname(file).slice(1)'' | '''' | '''unknown';
+      categories[ext] = (categories[ext]'' | '''' | ''0) + 1;
     });
 
     return categories;
@@ -281,18 +332,23 @@ export class CodebaseAnalyzer {
   /**
    * Find files in a specific directory
    */
-  private async findFilesInDirectory(dir: string, limit: number): Promise<string[]> {
+  private async findFilesInDirectory(
+    dir: string,
+    limit: number
+  ): Promise<string[]> {
     try {
-      const pattern = path.join(dir, '**/*').replace(/\\/g, '/');
+      const pattern = path.join(dir,'**/*').replace(/\\/g, '/');
       const files = await glob(pattern, {
         cwd: this.rootPath,
         ignore: this.excludePatterns,
         onlyFiles: true,
-        absolute: false
+        absolute: false,
       });
 
       // Apply additional gitignore filtering
-      const filteredFiles = files.filter((file: string) => !this.shouldIgnoreFile(file));
+      const filteredFiles = files.filter(
+        (file: string) => !this.shouldIgnoreFile(file)
+      );
       return filteredFiles.slice(0, limit);
     } catch (error) {
       console.warn(`Error scanning directory ${dir}:`, error);
@@ -309,7 +365,7 @@ export class CodebaseAnalyzer {
         cwd: this.rootPath,
         ignore: this.excludePatterns,
         onlyFiles: true,
-        absolute: false
+        absolute: false,
       });
 
       // Prioritize source files
@@ -338,10 +394,10 @@ export class CodebaseAnalyzer {
       '.jsx': 7,
       '.json': 5,
       '.md': 3,
-      '.txt': 1
+      '.txt': 1,
     };
 
-    return priorities[ext] || 0;
+    return priorities[ext]'' | '''' | ''0;
   }
 
   /**
@@ -359,15 +415,17 @@ export class CodebaseAnalyzer {
   /**
    * Read file content
    */
-  private async readFile(filePath: string): Promise<string | null> {
+  private async readFile(filePath: string): Promise<string'' | ''null> {
     try {
       // Validate that filePath is actually a string
-      if (typeof filePath !== 'string') {
+      if (typeof filePath !=='string') {
         console.warn(`Invalid filePath type: ${typeof filePath}`, filePath);
         return null;
       }
 
-      const fullPath = path.isAbsolute(filePath) ? filePath : path.join(this.rootPath, filePath);
+      const fullPath = path.isAbsolute(filePath)
+        ? filePath
+        : path.join(this.rootPath, filePath);
       const content = await fs.promises.readFile(fullPath, 'utf-8');
       return content;
     } catch (error) {

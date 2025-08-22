@@ -1,6 +1,6 @@
 /**
  * @fileoverview Coordination Agents
- * 
+ *
  * Strategic and tactical coordination agents for multi-swarm systems.
  */
 
@@ -8,7 +8,7 @@
 export { QueenCoordinator } from './queen-coordinator';
 export type { QueenConfig } from './queen-coordinator';
 
-// Tactical coordination  
+// Tactical coordination
 export { SwarmCommander } from './swarm-commander';
 export type { CommanderConfig } from './swarm-commander';
 

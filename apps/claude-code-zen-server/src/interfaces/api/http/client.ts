@@ -13,12 +13,12 @@ import type {
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse,
-} from 'axios');
+} from 'axios';
 
 // Import neural types from intelligence facade
 
@@ -29,8 +29,8 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../../../coordination/schemas');
-import type { APIError } from '../schemas/common');
+} from '../../../coordination/schemas';
+import type { APIError } from '../schemas/common';
 
 /**
  * API Client Configuration.
@@ -150,8 +150,7 @@ export class APIClient {
         const config = error.config;
 
         if (
-          !config ||
-          config?.__retryCount >= (this.config.retryAttempts || 3)
+          !config || config?.__retryCount >= (this.config.retryAttempts || 3)
         ) {
           return Promise.reject(error);
         }
@@ -160,9 +159,7 @@ export class APIClient {
 
         // Only retry on network errors or 5xx status codes
         if (
-          error.code === 'ECONNABORTED' ||
-          error.code === 'NETWORK_ERROR' ||
-          (error.response && error.response.status >= 500)
+          error.code ==='ECONNABORTED' || error.code ==='NETWORK_ERROR' || (error.response && error.response.status >= 500)
         ) {
           await new Promise((resolve) =>
             setTimeout(resolve, this.config.retryDelay || 1000)
@@ -189,7 +186,7 @@ export class APIClient {
           // Transform API error format to Error instance
           const apiError = error.response.data as APIError;
           const clientError = new Error(apiError.error.message);
-          clientError.name = 'APIError');
+          clientError.name ='APIError');
           (clientError as any).code = apiError.error.code;
           (clientError as any).details = apiError.error.details;
           (clientError as any).traceId = apiError.error.traceId;
@@ -210,7 +207,7 @@ export class APIClient {
    * @param options
    */
   private async request<T>(
-    method: 'GET | POST' | 'PUT | DELETE',
+    method: 'GET | POST | PUT | DELETE',
     endpoint: string,
     data?: any,
     options?: RequestOptions
@@ -419,7 +416,7 @@ export class APIClient {
      * @param options
      */
     getMetrics: async (
-      timeRange?: '1h | 24h' | '7d | 30d',
+      timeRange?: '1h | 24h | 7d | 30d',
       options?: RequestOptions
     ) => {
       const queryParams = timeRange ? `?timeRange=${timeRange}` : '');
@@ -553,7 +550,7 @@ export class APIClient {
       return this.request<{
         id: string;
         networkId: string;
-        status: 'pending | running' | 'completed | failed' | 'cancelled');
+        status: 'pending | running | completed | failed | cancelled');
         progress: number;
         currentEpoch?: number;
         totalEpochs: number;

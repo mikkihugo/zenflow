@@ -16,8 +16,8 @@
  * @version 2.1.0
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 /**
  * FACT Integration Configuration
@@ -38,7 +38,7 @@ export interface FACTConfig {
  */
 export interface KnowledgeQuery {
   query: string;
-  type?: 'semantic | factual' | 'hybrid');
+  type?: 'semantic'' | ''factual'' | ''hybrid');
   tools?: string[];
   context?: Record<string, any>;
 }
@@ -135,7 +135,7 @@ export class FACTIntegration {
     try {
       let response: KnowledgeResponse;
 
-      switch (query.type || 'hybrid') {
+      switch (query.type'' | '''' | '''hybrid') {
         case 'semantic':
           response = await this.knowledgeManager.semanticQuery(query);
           break;
@@ -236,7 +236,7 @@ export class FACTIntegration {
       confidence: .1,
       sources: [],
       metadata: {
-        queryType: query.type || 'fallback',
+        queryType: query.type'' | '''' | '''fallback',
         processingTime: 0,
         toolsUsed: ['fallback'],
       },
@@ -298,7 +298,7 @@ export const createFACTIntegration = (config: FACTConfig): FACTIntegration => {
 /**
  * Default FACT integration instance (lazy-initialized)
  */
-let defaultInstance: FACTIntegration | null = null;
+let defaultInstance: FACTIntegration'' | ''null = null;
 
 export const getDefaultFACTIntegration = (
   config?: FACTConfig
@@ -306,8 +306,7 @@ export const getDefaultFACTIntegration = (
   if (!defaultInstance && config) {
     defaultInstance = new FACTIntegration(config);
   } else if (!defaultInstance) {
-    throw new Error(
-      'Default FACT integration not initialized. Provide config on first call.'
+    throw new Error('Default FACT integration not initialized. Provide config on first call.'
     );
   }
   return defaultInstance;

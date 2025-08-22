@@ -21,21 +21,21 @@
  * - Enterprise dependency injection integration
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
-import type { ConnectionStats, Logger } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
+import type { ConnectionStats, Logger } from '@claude-zen/foundation';
 import {
   inject,
   injectable,
   CORE_TOKENS,
   DATABASE_TOKENS,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 import type {
   DatabaseAdapter,
   DatabaseProviderFactory,
   GraphDatabaseAdapter,
   VectorData,
   VectorDatabaseAdapter,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Preserve original interfaces for API compatibility
 export interface QueryRequest {
@@ -79,7 +79,7 @@ export interface VectorInsertRequest {
 export interface VectorIndexRequest {
   name: string;
   dimension: number;
-  metric?: 'euclidean | cosine' | 'dot');
+  metric?: 'euclidean | cosine | dot');
   type?: string;
 }
 
@@ -115,7 +115,7 @@ export interface DatabaseResponse {
  * ```typescript
  * const controller = new DatabaseController(logger, factory, healthMonitor);
  * await controller?.initialize()
- * const result = await controller.executeQuery({ sql: 'SELECT * FROM users' });
+ * const result = await controller.executeQuery({ sql: 'SELECT * FROM users'});
  * ```
  */
 @injectable()
@@ -165,8 +165,7 @@ export class DatabaseController extends TypedEventBase {
     if (this.initialized) return;
 
     try {
-      this._logger.info(
-        'Initializing Database Controller with package delegation'
+      this._logger.info('Initializing Database Controller with package delegation'
       );
 
       // Delegate to @claude-zen/infrastructure for database operations
@@ -418,16 +417,11 @@ export class DatabaseController extends TypedEventBase {
         performance: this.performanceTracker?.getMetrics,
         telemetry: {
           queriesExecuted:
-            (await this.telemetryManager.getCounterValue('queries_executed')) ||
-            0,
+            (await this.telemetryManager.getCounterValue('queries_executed')) || 0,
           vectorQueries:
-            (await this.telemetryManager.getCounterValue(
-              'vector_queries_executed'
-            )) || 0,
+            (await this.telemetryManager.getCounterValue('vector_queries_executed')) || 0,
           graphQueries:
-            (await this.telemetryManager.getCounterValue(
-              'graph_queries_executed'
-            )) || 0,
+            (await this.telemetryManager.getCounterValue('graph_queries_executed')) || 0,
         },
         connections: this.connectionStats,
         loadBalancing: this.loadBalancer
@@ -440,7 +434,7 @@ export class DatabaseController extends TypedEventBase {
         data: metrics,
         metadata: {
           timestamp: Date.now(),
-          adapter: 'multi-database',
+          adapter:'multi-database',
         },
       };
     } catch (error) {
@@ -477,7 +471,7 @@ export class DatabaseController extends TypedEventBase {
   private isVectorAdapter(
     adapter: DatabaseAdapter | undefined
   ): adapter is VectorDatabaseAdapter {
-    return adapter ? 'search' in adapter : false;
+    return adapter ?'search'in adapter : false;
   }
 
   /**
@@ -486,7 +480,7 @@ export class DatabaseController extends TypedEventBase {
   private isGraphAdapter(
     adapter: DatabaseAdapter | undefined
   ): adapter is GraphDatabaseAdapter {
-    return adapter ? 'findPaths' in adapter : false;
+    return adapter ?'findPaths' in adapter : false;
   }
 
   /**

@@ -26,7 +26,7 @@ import type {
   DatabaseMetadata,
   HealthStatus,
   PerformanceMetrics,
-  TransactionOperation
+  TransactionOperation,
 } from '../interfaces';
 import type { VectorDatabaseAdapter } from '../providers/database-providers';
 
@@ -36,7 +36,10 @@ import type { VectorDatabaseAdapter } from '../providers/database-providers';
  * @template T The entity type this repository manages.
  * @example
  */
-export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, DataAccessObject<T> {
+export class VectorDao<T>
+  extends BaseDao<T>
+  implements VectorRepository<T>, DataAccessObject<T>
+{
   private get vectorAdapter(): VectorDatabaseAdapter {
     return this.adapter as VectorDatabaseAdapter;
   }
@@ -63,9 +66,9 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
       this.validateVector(queryVector);
 
       const searchOptions = {
-        limit: options?.limit || 10,
-        threshold: options?.threshold || 0.0,
-        metric: (options?.metric as 'cosine' | 'l2' | 'dot') || 'cosine',
+        limit: options?.limit'' | '''' | ''10,
+        threshold: options?.threshold'' | '''' | ''0.0,
+        metric: (options?.metric as'cosine | l2' | 'dot')'' | '''' | '''cosine',
         filter: options?.filter,
       };
 
@@ -84,7 +87,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
             score: match?.score,
             document: this.mapVectorDocumentToEntity(match),
             vector: match?.vector,
-          })) || [];
+          }))'' | '''' | ''[];
 
       this.logger.debug(
         `Similarity search completed: ${results.length} results`
@@ -93,7 +96,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
     } catch (error) {
       this.logger.error(`Similarity search failed: ${error}`);
       throw new Error(
-        `Similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Similarity search failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -204,10 +207,10 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
 
     try {
       const clusterOptions = {
-        algorithm: options?.algorithm || 'kmeans',
-        numClusters: options?.numClusters || 5,
-        epsilon: options?.epsilon || 0.5,
-        minSamples: options?.minSamples || 5,
+        algorithm: options?.algorithm'' | '''' | '''kmeans',
+        numClusters: options?.numClusters'' | '''' | ''5,
+        epsilon: options?.epsilon'' | '''' | ''0.5,
+        minSamples: options?.minSamples'' | '''' | ''5,
       };
 
       // This is a simplified implementation - real clustering would use specialized algorithms
@@ -221,7 +224,11 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
       );
 
       const result: ClusterResult = {
-        clusters: clusters as { id: number; centroid: number[]; members: (string | number)[]; }[],
+        clusters: clusters as {
+          id: number;
+          centroid: number[];
+          members: (string'' | ''number)[];
+        }[],
         statistics: {
           silhouetteScore: 0.7, // Mock score
           inertia: 100.5, // Mock inertia
@@ -235,7 +242,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
     } catch (error) {
       this.logger.error(`Clustering failed: ${error}`);
       throw new Error(
-        `Clustering failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Clustering failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -251,7 +258,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
    * @param options
    */
   async findSimilarToEntity(
-    entityId: string | number,
+    entityId: string'' | ''number,
     options?: VectorSearchOptions
   ): Promise<VectorSearchResult<T>[]> {
     this.logger.debug(`Finding entities similar to: ${entityId}`);
@@ -274,7 +281,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
     } catch (error) {
       this.logger.error(`Find similar to entity failed: ${error}`);
       throw new Error(
-        `Find similar to entity failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find similar to entity failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -286,7 +293,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
    * @param newVector
    */
   async updateVector(
-    entityId: string | number,
+    entityId: string'' | ''number,
     newVector: number[]
   ): Promise<T> {
     this.logger.debug(`Updating vector for entity: ${entityId}`);
@@ -309,7 +316,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
     } catch (error) {
       this.logger.error(`Update vector failed: ${error}`);
       throw new Error(
-        `Update vector failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Update vector failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -439,7 +446,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
 
   private getVectorDimension(): number {
     // Get from schema or default configuration
-    return (this.entitySchema as any)?.vector?.dimension || 384;
+    return (this.entitySchema as any)?.vector?.dimension'' | '''' | ''384;
   }
 
   private mapVectorDocumentToEntity(match: unknown): T {
@@ -451,9 +458,9 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
     } as T;
   }
 
-  private extractVectorFromEntity(entity: T): number[] | null {
+  private extractVectorFromEntity(entity: T): number[]'' | ''null {
     const entityObj = entity as any;
-    return entityObj.vector || null;
+    return entityObj.vector'' | '''' | ''null;
   }
 
   private performSimpleClustering(
@@ -490,7 +497,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
     return this.adapter.transaction(async () => {
       const results: unknown[] = [];
       for (const operation of operations) {
-        if (operation.type === 'create' && operation.data) {
+        if (operation.type ==='create' && operation.data) {
           results.push(await this.create((operation as any).data));
         }
         // Add other operation types as needed
@@ -505,7 +512,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
       version: '0.21.2',
       features: ['vector', 'similarity-search', 'clustering'],
       schema: await this.adapter.getSchema(),
-      config: {}
+      config: {},
     };
   }
 
@@ -518,7 +525,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
         status: 'healthy',
         score: 100,
         details: { accessible: true },
-        lastCheck: new Date()
+        lastCheck: new Date(),
       };
     } catch (error) {
       return {
@@ -528,7 +535,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
         score: 0,
         details: { accessible: false, error: (error as Error).message },
         lastCheck: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -539,7 +546,7 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
       queriesPerSecond: 200,
       connectionPool: { active: 1, idle: 0, total: 1, utilization: 100 },
       memoryUsage: { used: 2048, total: 8192, percentage: 25 },
-      custom: {}
+      custom: {},
     };
   }
 }

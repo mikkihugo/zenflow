@@ -5,8 +5,8 @@
 
 export interface AIInsight {
   id: string;
-  type: 'performance' | 'optimization' | 'security' | 'usage' | 'prediction' | 'anomaly';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: 'performance | optimization' | 'security''' | '''usage | prediction' | 'anomaly';
+  severity: 'low | medium' | 'high''' | '''critical';
   title: string;
   description: string;
   recommendation: string;
@@ -23,9 +23,9 @@ export interface AIAnalysisResult {
   overallScore: number; // 0-100 health score
   recommendations: string[];
   trends: {
-    performance: 'improving' | 'stable' | 'declining';
-    usage: 'increasing' | 'stable' | 'decreasing';
-    efficiency: 'optimized' | 'normal' | 'needs-attention';
+    performance: 'improving | stable' | 'declining';
+    usage: 'increasing | stable' | 'decreasing';
+    efficiency: 'optimized''' | '''normal''' | '''needs-attention';
   };
 }
 

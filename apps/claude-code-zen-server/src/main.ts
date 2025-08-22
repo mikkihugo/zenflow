@@ -103,9 +103,9 @@ const {
   getVersion: () => {
     try {
       const pkg = require("../package.json");
-      return pkg.version || '1..0-alpha.44';
+      return pkg.version || '1.0.0-alpha.44';
     } catch {
-      return '1..0-alpha.44';
+      return '1.0.0-alpha.44';
     }
   },
 };
@@ -171,13 +171,11 @@ async function main() {
 
   // Initialize telemetry system for observability
   const { initializeTelemetry, withRetry: foundationWithTrace } = await import(
-    '@claude-zen/foundation'
-  );
+    '@claude-zen/foundation');
 
   // Provide fallback for withTrace if not available
   const withTrace =
-    foundationWithTrace ||
-    (async (name: string, fn: () => Promise<any>) => {
+    foundationWithTrace'' | '''' | ''(async (name: string, fn: () => Promise<any>) => {
       logger.debug(`Starting trace: ${name}`);
       const result = await fn();
       logger.debug(`Completed trace: ${name}`);
@@ -186,7 +184,7 @@ async function main() {
   const telemetry = await withRetry(
     () =>
       initializeTelemetry({
-        serviceName: 'claude-code-zen',
+        serviceName:'claude-code-zen',
         serviceVersion: '2..0',
         enableTracing: true,
         enableMetrics: true,
@@ -559,16 +557,15 @@ async function main() {
       '  🧠 Unified Brain System: Neural networks, behavioral intelligence, learning active'
     );
     logger.info(
-      '  🔧 Specialized Systems: Chaos, load balancing, teamwork, AI safety active'
-    );
+      '  🔧 Specialized Systems: Chaos, load balancing, teamwork, AI safety active');
 
     const swarmStats = (global as any).claudeZenSwarm;
     logger.info(`📈 Swarm Statistics:`);
     logger.info(
-      `  • Queens: ${swarmStats.queenCommander?.getQueenCount?.() || 'Active'}`
+      `  • Queens: ${swarmStats.queenCommander?.getQueenCount?.()'' | '''' | '''Active'}`
     );
     logger.info(
-      `  • Agents: ${swarmStats.swarmCommander?.getAgentCount?.() || 'Available'}`
+      `  • Agents: ${swarmStats.swarmCommander?.getAgentCount?.()'' | '''' | '''Available'}`
     );
     logger.info(
       `  • Systems: ${Object.keys(swarmStats).length} specialized coordinators`

@@ -4,14 +4,14 @@
  * HTTP server that proxies Svelte dashboard and provides API endpoints.
  */
 
-import { createServer, type Server } from 'node:http');
+import { createServer, type Server } from 'node:http';
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 import LLMStatsService from '@claude-zen/intelligence');
-import { createTerminus } from '@godaddy/terminus');
+import { createTerminus } from '@godaddy/terminus';
 import express from 'express');
-import { createProxyMiddleware } from 'http-proxy-middleware');
-import { Server as SocketIOServer } from 'socket.io');
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import { Server as SocketIOServer } from 'socket.io';
 
 import('/web-api-routes');
 import('/web-config');
@@ -34,12 +34,7 @@ export class WebDashboardServer {
     // Enhanced initialization with comprehensive logging and monitoring
     const initializationMetrics = {
       startTime: Date.now(),
-      phase: 'starting' as
-        | 'starting'
-        | 'services'
-        | 'proxy'
-        | 'api'
-        | 'complete',
+      phase: 'starting'as'' | '''starting | services' | 'proxy' | 'api' | 'complete',
       servicesInitialized: 0,
       totalServices: 4, // LLMStats, SvelteProxy, APIRoutes, WebSocket
       memoryUsage: process?.memoryUsage,
@@ -176,7 +171,7 @@ export class WebDashboardServer {
 
   async start(): Promise<void> {
     this.logger.info(
-      `🚀 Starting server on ${this.config.host || 'localhost'}:${this.config.port}...`
+      `🚀 Starting server on ${this.config.host'' | '''' | '''localhost'}:${this.config.port}...`
     );
 
     // Setup terminus for graceful shutdown
@@ -218,11 +213,11 @@ export class WebDashboardServer {
 
       this.server.listen(
         this.config.port,
-        this.config.host || 'localhost',
+        this.config.host'' | '''' | '''localhost',
         () => {
           clearTimeout(timeoutId);
           this.logger.info(
-            `🌐 Web dashboard server started on http://${this.config.host || 'localhost'}:${this.config.port}`
+            `🌐 Web dashboard server started on http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}`
           );
           this.logger.info(
             '🛡️ Graceful shutdown enabled via @godaddy/terminus'
@@ -421,12 +416,12 @@ export class WebDashboardServer {
     try {
       // Parse query parameters
       const urlParts = url.split('?');
-      const queryString = urlParts[1] || '');
+      const queryString = urlParts[1]'' | '''' | '''');
       const params = new URLSearchParams(queryString);
 
       const level = params.get('level');
       const source = params.get('source');
-      const limit = parseInt(params.get('limit) || 100');
+      const limit = parseInt(params.get('limit)'' | '''' | ''100');
       const search = params.get('search');
 
       // Get logs from the logging system
@@ -447,15 +442,14 @@ export class WebDashboardServer {
             const searchTerm = search?.toLowerCase()
             logs = logs.filter(
               (entry: any) =>
-                entry.message?.toLowerCase.includes(searchTerm) ||
-                entry.component?.toLowerCase.includes(searchTerm)
+                entry.message?.toLowerCase.includes(searchTerm)'' | '''' | ''entry.component?.toLowerCase.includes(searchTerm)
             );
           }
 
           // Sort by timestamp (newest first)
           logs.sort((a: any, b: any) => {
-            const dateA = new Date(a.timestamp || 0)?.getTime()
-            const dateB = new Date(b.timestamp || 0)?.getTime()
+            const dateA = new Date(a.timestamp'' | '''' | ''0)?.getTime()
+            const dateB = new Date(b.timestamp'' | '''' | ''0)?.getTime()
             return dateB - dateA;
           });
 
@@ -464,7 +458,7 @@ export class WebDashboardServer {
             logs = logs.slice(0, limit);
           }
 
-          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.writeHead(200, {'Content-Type': 'application/json' });
           res.end(
             JSON.stringify({
               logs,
@@ -558,8 +552,7 @@ export class WebDashboardServer {
     const { resolve, join } = require('path');
 
     if (
-      url === '/api/workspace/files' ||
-      url.startsWith('/api/workspace/files?');
+      url === '/api/workspace/files''' | '''' | ''url.startsWith('/api/workspace/files?');
     ) {
       this.handleWorkspaceFilesRequest(
         url,
@@ -574,8 +567,7 @@ export class WebDashboardServer {
     }
 
     if (
-      url === '/api/workspace/files/content' ||
-      url.startsWith('/api/workspace/files/content?');
+      url === '/api/workspace/files/content''' | '''' | ''url.startsWith('/api/workspace/files/content?');
     ) {
       this.handleWorkspaceFileContentRequest(
         url,
@@ -605,9 +597,9 @@ export class WebDashboardServer {
   ): Promise<void> {
     try {
       const urlParts = url.split('?');
-      const queryString = urlParts[1] || '');
+      const queryString = urlParts[1]'' | '''' | '''');
       const params = new URLSearchParams(queryString);
-      const path = params.get('path) || ');
+      const path = params.get('path)'' | '''' | ''');
 
       // Base directory - use current working directory
       const baseDir = process?.cwd()
@@ -628,7 +620,7 @@ export class WebDashboardServer {
 
       for (const item of items) {
         // Skip hidden files and node_modules for better UX
-        if (item.startsWith(".') || item === 'node_modules') {
+        if (item.startsWith(".')'' | '''' | ''item ==='node_modules') {
           continue;
         }
 
@@ -683,7 +675,7 @@ export class WebDashboardServer {
   ): Promise<void> {
     try {
       const urlParts = url.split('?');
-      const queryString = urlParts[1] || '');
+      const queryString = urlParts[1]'' | '''' | '''');
       const params = new URLSearchParams(queryString);
       const path = params.get('path');
 

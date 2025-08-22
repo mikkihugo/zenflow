@@ -1,9 +1,9 @@
 /**
  * @fileoverview Secure ID Generation Utilities
- * 
+ *
  * Professional ID generation using nanoid library.
  * Focused on secure, collision-resistant identifiers.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
@@ -46,7 +46,8 @@ export class SecureIdGenerator {
    * Generate URL-safe ID
    */
   static generateUrlSafe(size: number = 21): string {
-    const urlSafeAlphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
+    const urlSafeAlphabet =
+      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
     return customAlphabet(urlSafeAlphabet, size)();
   }
 

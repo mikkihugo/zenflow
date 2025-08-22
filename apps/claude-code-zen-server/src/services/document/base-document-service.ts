@@ -11,11 +11,11 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise');
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import type { DocumentType } from '@claude-zen/enterprise';
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import type { BaseDocumentEntity } from './../entities/document-entities');
+import type { BaseDocumentEntity } from './../entities/document-entities';
 
 import {
   DocumentManager,
@@ -35,7 +35,7 @@ export interface ValidationResult {
 
 export interface QueryFilters {
   status?: string;
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   author?: string;
   projectId?: string;
   tags?: string[];
@@ -56,7 +56,7 @@ export interface QueryResult<T> {
 
 export interface SearchOptions extends QueryFilters {
   query: string;
-  searchType?: 'fulltext | semantic' | 'keyword | combined');
+  searchType?: 'fulltext'' | ''semantic'' | ''keyword'' | ''combined');
   includeRelationships?: boolean;
   includeWorkflowState?: boolean;
 }
@@ -187,8 +187,8 @@ export abstract class BaseDocumentService<
         keywords,
         searchable_content: this.createSearchableContent(data, content),
         checksum: this.generateChecksum(content),
-        version: data.version || '1..0',
-        completion_percentage: data.completion_percentage || 0,
+        version: data.version'' | '''' | '''1..0',
+        completion_percentage: data.completion_percentage'' | '''' | ''0,
         created_at: new Date(),
         updated_at: new Date(),
       } as Partial<T>;
@@ -226,7 +226,7 @@ export abstract class BaseDocumentService<
   async getDocumentById(
     id: string,
     options: DocumentQueryOptions = {}
-  ): Promise<T | null> {
+  ): Promise<T'' | ''null> {
     if (!this.initialized) await this.initialize;
 
     try {
@@ -259,7 +259,7 @@ export abstract class BaseDocumentService<
     if (!this.initialized) await this.initialize;
 
     // Validate updates if content is being changed
-    if (updates.content || updates.title) {
+    if (updates.content'' | '''' | ''updates.title) {
       const validation = this.validateDocument(updates);
       if (!validation.isValid) {
         throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
@@ -270,7 +270,7 @@ export abstract class BaseDocumentService<
       // Update content and keywords if necessary
       const updateData = { ...updates };
 
-      if (updates.content || updates.title) {
+      if (updates.content'' | '''' | ''updates.title) {
         updateData.content = this.formatDocumentContent(updateData);
         updateData.keywords = this.generateKeywords(updateData);
         updateData.searchable_content = this.createSearchableContent(
@@ -377,7 +377,7 @@ export abstract class BaseDocumentService<
         documents: filteredDocuments,
         total: filteredDocuments.length,
         hasMore:
-          result.total > (filters.offset || 0) + filteredDocuments.length,
+          result.total > (filters.offset'' | '''' | ''0) + filteredDocuments.length,
         facets: result.facets,
       };
     } catch (error) {
@@ -397,7 +397,7 @@ export abstract class BaseDocumentService<
 
     try {
       const searchOptions = {
-        searchType: options.searchType || ('combined' as const),
+        searchType: options.searchType'' | '''' | ''('combined' as const),
         query: options.query,
         documentTypes: [this.getDocumentType],
         projectId: options.projectId,
@@ -406,13 +406,13 @@ export abstract class BaseDocumentService<
         dateRange: options.dateRange
           ? {
               ...options.dateRange,
-              field: 'created_at' as const,
+              field: 'created_at'as const,
             }
           : undefined,
         limit: options.limit,
         offset: options.offset,
-        includeRelationships: options.includeRelationships || false,
-        includeWorkflowState: options.includeWorkflowState || false,
+        includeRelationships: options.includeRelationships'' | '''' | ''false,
+        includeWorkflowState: options.includeWorkflowState'' | '''' | ''false,
       };
 
       const startTime = Date.now();
@@ -440,11 +440,11 @@ export abstract class BaseDocumentService<
         documents: filteredDocuments,
         total: filteredDocuments.length,
         hasMore:
-          result.total > (options.offset || 0) + filteredDocuments.length,
+          result.total > (options.offset'' | '''' | ''0) + filteredDocuments.length,
         facets: result.facets,
         searchMetadata: {
           query: options.query,
-          searchType: options.searchType || 'combined',
+          searchType: options.searchType'' | '''' | '''combined',
           executionTime,
         },
       };
@@ -566,19 +566,19 @@ export abstract class BaseDocumentService<
         // Status distribution
         if (doc.status) {
           metrics.byStatus[doc.status] =
-            (metrics.byStatus[doc.status] || 0) + 1;
+            (metrics.byStatus[doc.status]'' | '''' | ''0) + 1;
         }
 
         // Priority distribution
         if (doc.priority) {
           metrics.byPriority[doc.priority] =
-            (metrics.byPriority[doc.priority] || 0) + 1;
+            (metrics.byPriority[doc.priority]'' | '''' | ''0) + 1;
         }
 
         // Author distribution
         if (doc.author) {
           metrics.byAuthor[doc.author] =
-            (metrics.byAuthor[doc.author] || 0) + 1;
+            (metrics.byAuthor[doc.author]'' | '''' | ''0) + 1;
         }
 
         // Recent activity
@@ -606,9 +606,9 @@ export abstract class BaseDocumentService<
    */
   protected createSearchableContent(data: Partial<T>, content: string): string {
     const searchableText = [
-      data.title || '',
-      content || '',
-      data.tags?.join(' ) || ',
+      data.title'' | '''' | '''',
+      content'' | '''' | '''',
+      data.tags?.join(')'' | '''' | ''',
       data.author || '',
     ]
       .filter(Boolean)

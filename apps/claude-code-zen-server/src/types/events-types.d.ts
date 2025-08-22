@@ -4,12 +4,12 @@
  */
 export interface EventManagerConfig {
   maxListeners: number;
-  errorHandling: 'throw | log' | 'ignore');
+  errorHandling: 'throw'' | ''log'' | ''ignore');
   enableMetrics: boolean;
 }
 export interface EventManagerTypes {
   maxListeners: number;
-  errorHandling: 'throw | log' | 'ignore');
+  errorHandling: 'throw'' | ''log'' | ''ignore');
   enableMetrics: boolean;
 }
 //# sourceMappingURL=events-types.d.ts.map

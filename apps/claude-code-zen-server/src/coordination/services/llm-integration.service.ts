@@ -34,21 +34,21 @@
  * ```
  */
 
-import { spawn } from 'child_process');
+import { spawn } from 'child_process';
 import path from 'path');
-import { promisify } from 'util');
+import { promisify } from 'util';
 
 import {
   getLogger,
   DIContainer,
   getGlobalContainer,
   type Logger,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 import {
   BrainCoordinator,
   type PromptOptimizationRequest,
-} from '@claude-zen/intelligence');
-import { v4 as uuidv4 } from 'uuid');
+} from '@claude-zen/intelligence';
+import { v4 as uuidv4 } from 'uuid';
 // LLM functionality moved to intelligence facade
 type LLMProvider = any;
 type LLMRequest = any;
@@ -70,14 +70,7 @@ export interface LLMIntegrationConfig {
   /** Session ID for conversation continuity */
   sessionId?: string;
   /** Agent role for specialized behavior */
-  agentRole?:
-    | 'assistant'
-    | 'coder'
-    | 'analyst'
-    | 'researcher'
-    | 'coordinator'
-    | 'tester'
-    | 'architect');
+  agentRole?:'' | '''assistant | coder' | 'analyst''' | '''researcher | coordinator' | 'tester''' | '''architect');
   /** Temperature for model responses (0-1) */
   temperature?: number;
   /** Max tokens for model responses */
@@ -89,11 +82,7 @@ export interface LLMIntegrationConfig {
  */
 export interface AnalysisRequest {
   /** Type of analysis task */
-  task:
-    | 'domain-analysis'
-    | 'typescript-error-analysis'
-    | 'code-review'
-    | 'custom');
+  task:'' | '''domain-analysis''' | '''typescript-error-analysis''' | '''code-review''' | '''custom');
   /** Analysis context data */
   context: {
     files?: string[];
@@ -105,7 +94,7 @@ export interface AnalysisRequest {
     swarmContext?: {
       swarmId?: string;
       agentId?: string;
-      coordinationLevel?: 'high | medium' | 'low');
+      coordinationLevel?: 'high'' | ''medium'' | ''low');
     };
   };
   /** Custom prompt text */
@@ -192,7 +181,7 @@ export class LLMIntegrationService {
       ...config,
     };
 
-    this.sessionId = config.sessionId || uuidv4();
+    this.sessionId = config.sessionId'' | '''' | ''uuidv4();
 
     // Initialize foundation services
     this.diContainer = getGlobalContainer();
@@ -212,8 +201,7 @@ export class LLMIntegrationService {
     });
 
     this.logger.info(
-      '🚀 LLM Integration Service initialized with Foundation + Brain packages'
-    );
+      '🚀 LLM Integration Service initialized with Foundation + Brain packages');
     this.logger.info(
       `Configuration: Agent Role: ${this.config.agentRole}, Session: ${this.sessionId}`
     );
@@ -236,13 +224,13 @@ export class LLMIntegrationService {
       // Build AI-optimized prompts using Brain Coordinator
       const optimizedSystemPrompt = await this.optimizeSystemPrompt(request);
       const optimizedUserPrompt =
-        request.prompt || (await this.optimizeUserPrompt(request));
+        request.prompt'' | '''' | ''(await this.optimizeUserPrompt(request));
 
       // Build the LLM request with optimized prompts
       const llmRequest: LLMRequest = {
         messages: [
           {
-            role: 'system',
+            role:'system',
             content: optimizedSystemPrompt,
           },
           {
@@ -547,7 +535,7 @@ RESPOND IN JSON FORMAT with analysis findings and recommendations.`
       migration: 'foundation-brain-integrated',
       llmProvider: {
         available: true,
-        currentRole: llmStats.currentRole || 'assistant',
+        currentRole: llmStats.currentRole'' | '''' | '''assistant',
         requestCount: llmStats.requestCount,
         lastRequestTime: llmStats.lastRequestTime,
       },

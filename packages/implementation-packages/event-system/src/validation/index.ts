@@ -1,11 +1,11 @@
 /**
  * @fileoverview Event Validation Exports - Modern Battle-Tested Architecture
- * 
+ *
  * Professional event validation using zod schema validation.
  * Provides type-safe validation with excellent error messages and performance.
- * 
+ *
  * **MIGRATION COMPLETE**: Custom validation replaced with zod for:
- * - Better type safety (compile-time + runtime)  
+ * - Better type safety (compile-time + runtime)
  * - Superior error messages and debugging
  * - Industry-standard schema validation
  * - Foundation integration with Result patterns
@@ -26,7 +26,7 @@ export {
   CoordinationEventSchemas,
   WorkflowEventSchemas,
   InterfaceEventSchemas,
-  CoreEventSchemas
+  CoreEventSchemas,
 } from './zod-validation';
 
 export type {
@@ -36,13 +36,16 @@ export type {
   InterfaceEvent,
   CoreEvent,
   EventTypeFromSchema,
-  AllEventTypes
+  AllEventTypes,
 } from './zod-validation';
 
 // =============================================================================
 // LEGACY DOMAIN VALIDATION - Keep for domain boundary validation
 // =============================================================================
-export { SimpleDomainValidator, getDomainValidator } from '../core/domain-validator';
+export {
+  SimpleDomainValidator,
+  getDomainValidator,
+} from '../core/domain-validator';
 export { SimpleDomainValidator as DomainValidator } from '../core/domain-validator';
 
 // Export validation utilities from main validation file

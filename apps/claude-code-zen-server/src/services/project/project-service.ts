@@ -20,17 +20,17 @@ import {
   SafePortfolioManager,
   SafeProgramIncrementManager,
   SafeValueStreamMapper,
-} from '@claude-zen/enterprise');
+} from '@claude-zen/enterprise';
 import {
   DevelopmentCoordinator,
   createDevelopmentConfig,
-} from '@claude-zen/enterprise');
-import type { Logger } from '@claude-zen/foundation');
+} from '@claude-zen/enterprise';
+import type { Logger } from '@claude-zen/foundation';
 import {
   getLogger,
   GitManager,
   createGitManager,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 import {
   TypedEventBus,
   TypedEventBase,
@@ -41,17 +41,17 @@ import {
   NeuralProcessor,
   DSPyOptimizer,
   CognitivePatterns,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 import {
   SPARCDevelopmentIntegration,
   createSPARCDevelopmentIntegration,
-} from './../coordination/sparc-development-integration');
+} from './../coordination/sparc-development-integration';
 import {
   type ValidationResult,
   type QueryFilters,
   type QueryResult,
-} from './document/base-document-service');
+} from './document/base-document-service';
 
 // ============================================================================
 // PROJECT INTERFACES - SAFe LPM
@@ -64,9 +64,9 @@ export interface ProjectUserStory {
   readonly id: string;
   readonly title: string;
   readonly description?: string;
-  readonly status: 'backlog | ready' | 'in_progress | review' | 'done');
-  readonly priority: 'low | medium' | 'high | urgent');
-  readonly storyType: 'user_story | enabler_story');
+  readonly status: 'backlog'' | ''ready'' | ''in_progress'' | ''review'' | ''done');
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''urgent');
+  readonly storyType: 'user_story'' | ''enabler_story');
   readonly storyPoints?: number;
   readonly businessValue?: number;
   readonly assignedTo?: string;
@@ -79,11 +79,7 @@ export interface ProjectUserStory {
   readonly featureId?: string; // Parent feature (SAFe)
   readonly epicId?: string; // Parent epic (SAFe)
   readonly persona?: string; // For user stories
-  readonly enablerType?:
-    | 'infrastructure'
-    | 'architectural'
-    | 'exploration'
-    | 'compliance');
+  readonly enablerType?:' | ''infrastructure | architectural' | 'exploration''' | '''compliance');
   readonly swimlane?: string; // Visual organization by type/team/priority
 
   // SAFe document relationships (database entity UUIDs, not file links)
@@ -94,7 +90,7 @@ export interface ProjectUserStory {
   readonly nfrIds?: string[]; // Non-functional requirements
 
   // SAFe compliance tracking
-  readonly safeComplianceLevel?: 'basic | intermediate' | 'advanced');
+  readonly safeComplianceLevel?: 'basic'' | ''intermediate'' | ''advanced');
   readonly complianceGaps?: string[]; // Identified compliance issues
   readonly lastComplianceCheck?: Date;
 
@@ -113,8 +109,8 @@ export interface ProjectUserStory {
 export interface SAFeStoryTemplate {
   readonly id: string;
   readonly name: string;
-  readonly type: 'user_story | enabler_story' | 'epic | feature' | 'custom');
-  readonly safeLevel: 'team | program' | 'portfolio'); // SAFe hierarchy level
+  readonly type: 'user_story'' | ''enabler_story'' | ''epic'' | ''feature'' | ''custom');
+  readonly safeLevel: 'team'' | ''program'' | ''portfolio'); // SAFe hierarchy level
   readonly template: string; // Template text with placeholders like {{persona}}, {{capability}}
   readonly requiredFields: string[]; // Fields that must be filled for SAFe compliance
   readonly suggestedFields: string[]; // Fields that should be considered
@@ -249,8 +245,8 @@ export const SAFE_STORY_TEMPLATES: Record<string, SAFeStoryTemplate> = {
 export interface StoryCreateOptions {
   title: string;
   description?: string;
-  storyType?: 'user_story | enabler_story');
-  priority?: 'low | medium' | 'high | urgent');
+  storyType?: 'user_story'' | ''enabler_story');
+  priority?: 'low'' | ''medium'' | ''high'' | ''urgent');
   storyPoints?: number;
   businessValue?: number;
   assignedTo?: string;
@@ -263,11 +259,7 @@ export interface StoryCreateOptions {
   featureId?: string;
   epicId?: string;
   persona?: string;
-  enablerType?:
-    | 'infrastructure'
-    | 'architectural'
-    | 'exploration'
-    | 'compliance');
+  enablerType?:' | ''infrastructure | architectural' | 'exploration''' | '''compliance');
   swimlane?: string;
   createdBy: string;
   metadata?: Record<string, unknown>;
@@ -302,16 +294,11 @@ export interface ProjectConfig {
   enableBottleneckDetection?: boolean;
 
   // Swimlane configuration (when enabled)
-  swimlaneTypes?: ('team | priority' | 'story_type | custom')[];
+  swimlaneTypes?: ('team'' | ''priority'' | ''story_type'' | ''custom')[];
   customSwimlanes?: string[];
 
   // Story template configuration (when enabled)
-  availableTemplates?: (
-    | 'user_story'
-    | 'enabler_story'
-    | 'epic'
-    | 'feature'
-    | 'custom'
+  availableTemplates?: (' | ''user_story | enabler_story' | 'epic' | 'feature' | 'custom'
   )[];
   requireAcceptanceCriteria?: boolean;
   requireDefinitionOfDone?: boolean;
@@ -359,26 +346,26 @@ export interface StoryQueryFilters extends QueryFilters {
 export class ProjectService extends TypedEventBase {
   private logger: Logger;
   private eventBus: TypedEventBus<any>;
-  private workflowEngine: WorkflowEngine | null = null;
+  private workflowEngine: WorkflowEngine'' | ''null = null;
   private configuration: ProjectConfig;
   private initialized = false;
 
   // SPARC integration components
-  private developmentCoordinator: DevelopmentCoordinator | null = null;
-  private gitManager: GitManager | null = null;
-  private sparcIntegration: SPARCDevelopmentIntegration | null = null;
+  private developmentCoordinator: DevelopmentCoordinator'' | ''null = null;
+  private gitManager: GitManager'' | ''null = null;
+  private sparcIntegration: SPARCDevelopmentIntegration'' | ''null = null;
 
   // SAFe LPM components - enterprise facade delegation
-  private databaseSPARCBridge: DatabaseSPARCBridge | null = null;
-  private portfolioManager: SafePortfolioManager | null = null;
-  private programIncrementManager: SafeProgramIncrementManager | null = null;
-  private valueStreamMapper: SafeValueStreamMapper | null = null;
+  private databaseSPARCBridge: DatabaseSPARCBridge'' | ''null = null;
+  private portfolioManager: SafePortfolioManager'' | ''null = null;
+  private programIncrementManager: SafeProgramIncrementManager'' | ''null = null;
+  private valueStreamMapper: SafeValueStreamMapper'' | ''null = null;
 
   // Neural intelligence components - intelligence facade delegation
-  private brainCoordinator: BrainCoordinator | null = null;
-  private neuralProcessor: NeuralProcessor | null = null;
-  private dspyOptimizer: DSPyOptimizer | null = null;
-  private cognitivePatterns: CognitivePatterns | null = null;
+  private brainCoordinator: BrainCoordinator'' | ''null = null;
+  private neuralProcessor: NeuralProcessor'' | ''null = null;
+  private dspyOptimizer: DSPyOptimizer'' | ''null = null;
+  private cognitivePatterns: CognitivePatterns'' | ''null = null;
 
   constructor(config: ProjectConfig) {
     super();
@@ -423,7 +410,7 @@ export class ProjectService extends TypedEventBase {
       this.workflowEngine = new WorkflowEngine({
         enableTelemetry: this.configuration.enableAdvancedFeatures,
         enableRetry: true,
-        maxConcurrentWorkflows: this.configuration.maxInProgress || 5,
+        maxConcurrentWorkflows: this.configuration.maxInProgress'' | '''' | ''5,
         enableAnalytics: this.configuration.enableFlowMetrics,
         enableRealTimeMonitoring: this.configuration.enableAdvancedFeatures,
         timeout: 30000, // 30 second timeout for workflow steps
@@ -559,15 +546,15 @@ export class ProjectService extends TypedEventBase {
       {
         title: options.title,
         description: options.description,
-        priority: this.mapPriorityToWorkflow(options.priority || 'medium'),
-        estimatedEffort: options.storyPoints || 1,
+        priority: this.mapPriorityToWorkflow(options.priority'' | '''' | '''medium'),
+        estimatedEffort: options.storyPoints'' | '''' | ''1,
         assignedAgent: options.assignedTo,
-        tags: options.tags || [],
+        tags: options.tags'' | '''' | ''[],
         metadata: {
-          storyType: options.storyType || 'user_story',
+          storyType: options.storyType'' | '''' | '''user_story',
           businessValue: options.businessValue,
-          acceptanceCriteria: options.acceptanceCriteria || [],
-          dependencies: options.dependencies || [],
+          acceptanceCriteria: options.acceptanceCriteria'' | '''' | ''[],
+          dependencies: options.dependencies'' | '''' | ''[],
           dueDate: options.dueDate,
           projectId: options.projectId,
           featureId: options.featureId,
@@ -590,8 +577,8 @@ export class ProjectService extends TypedEventBase {
       }
     );
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to create story');
+    if (!result.success'' | '''' | ''!result.data) {
+      throw new Error(result.error'' | '''' | '''Failed to create story');
     }
 
     return this.convertToProjectStory(result.data);
@@ -710,8 +697,8 @@ export class ProjectService extends TypedEventBase {
 
     // Apply pagination
     const total = stories.length;
-    const offset = filters?.offset || 0;
-    const limit = filters?.limit || 50;
+    const offset = filters?.offset'' | '''' | ''0;
+    const limit = filters?.limit'' | '''' | ''50;
     const paginatedStories = stories.slice(offset, offset + limit);
 
     return {
@@ -751,7 +738,7 @@ export class ProjectService extends TypedEventBase {
     );
 
     if (!result.success) {
-      throw new Error(result.error || 'Failed to move story');
+      throw new Error(result.error'' | '''' | '''Failed to move story');
     }
 
     const updatedTask = await this.workflowKanban!.getTask(storyId);
@@ -836,7 +823,7 @@ export class ProjectService extends TypedEventBase {
     // For now, create a replacement task (in a full implementation, we'd have an update method)
     const result = await this.workflowKanban!.createTask({
       ...currentTask.data,
-      title: updates.title || currentTask.data.title,
+      title: updates.title'' | '''' | ''currentTask.data.title,
       description:
         updates.description !== undefined
           ? updates.description
@@ -844,17 +831,17 @@ export class ProjectService extends TypedEventBase {
       priority: updates.priority
         ? this.mapPriorityToWorkflow(updates.priority)
         : currentTask.data.priority,
-      estimatedEffort: updates.storyPoints || currentTask.data.estimatedEffort,
+      estimatedEffort: updates.storyPoints'' | '''' | ''currentTask.data.estimatedEffort,
       assignedAgent:
         updates.assignedTo !== undefined
           ? updates.assignedTo
           : currentTask.data.assignedAgent,
-      tags: updates.tags || currentTask.data.tags,
+      tags: updates.tags'' | '''' | ''currentTask.data.tags,
       metadata: updatedMetadata,
     });
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to update story');
+    if (!result.success'' | '''' | ''!result.data) {
+      throw new Error(result.error'' | '''' | '''Failed to update story');
     }
 
     return this.convertToProjectStory(result.data);
@@ -871,7 +858,7 @@ export class ProjectService extends TypedEventBase {
       await this.workflowKanban!.moveTask(
         storyId,
         'done',
-        reason || 'Story deleted'
+        reason'' | '''' | '''Story deleted'
       );
       this.emit('story:deleted', {
         id: storyId,
@@ -972,8 +959,8 @@ export class ProjectService extends TypedEventBase {
   /**
    * Get flow health report if advanced features are enabled
    */
-  async getFlowHealth(): Promise<any | null> {
-    if (!this.configuration.enableAdvancedFeatures || !this.workflowKanban) {
+  async getFlowHealth(): Promise<any'' | ''null> {
+    if (!this.configuration.enableAdvancedFeatures'' | '''' | ''!this.workflowKanban) {
       return null;
     }
 
@@ -1006,8 +993,7 @@ export class ProjectService extends TypedEventBase {
       return [];
     }
 
-    const availableTypes = this.configuration.availableTemplates || [
-      'user_story',
+    const availableTypes = this.configuration.availableTemplates'' | '''' | ''['user_story',
       'enabler_story',
     ];
     return availableTypes
@@ -1021,7 +1007,7 @@ export class ProjectService extends TypedEventBase {
   /**
    * Get specific template by ID (when templates enabled)
    */
-  getTemplate(templateId: string): SAFeStoryTemplate | null {
+  getTemplate(templateId: string): SAFeStoryTemplate'' | ''null {
     if (!this.configuration.enableStoryTemplates) {
       return null;
     }
@@ -1029,7 +1015,7 @@ export class ProjectService extends TypedEventBase {
     return (
       Object.values()(SAFE_STORY_TEMPLATES).find(
         (template) => template.id === templateId
-      ) || null
+      )'' | '''' | ''null
     );
   }
 
@@ -1066,7 +1052,7 @@ export class ProjectService extends TypedEventBase {
     return {
       description,
       storyType:
-        template.type === 'user_story || template.type === enabler_story'
+        template.type === 'user_story'' | '''' | ''template.type === enabler_story'
           ? template.type
           : 'user_story',
       templateId,
@@ -1108,7 +1094,7 @@ export class ProjectService extends TypedEventBase {
     // Check required acceptance criteria
     if (
       this.configuration.requireAcceptanceCriteria &&
-      (!story.acceptanceCriteria || story.acceptanceCriteria.length === 0)
+      (!story.acceptanceCriteria'' | '''' | ''story.acceptanceCriteria.length === 0)
     ) {
       errors.push('Acceptance criteria required when using story templates');
     }
@@ -1149,8 +1135,7 @@ export class ProjectService extends TypedEventBase {
 
     if (configChanged && this.initialized) {
       this.logger.info(
-        'Significant configuration change detected, reinitializing...'
-      );
+        'Significant configuration change detected, reinitializing...');
       this.initialized = false;
       await this.initialize;
     }
@@ -1171,7 +1156,7 @@ export class ProjectService extends TypedEventBase {
    * Convert WorkflowTask to ProjectUserStory
    */
   private convertToProjectStory(task: WorkflowTask): ProjectUserStory {
-    const metadata = task.metadata || {};
+    const metadata = task.metadata'' | '''' | ''{};
 
     return {
       id: task.id,
@@ -1179,25 +1164,25 @@ export class ProjectService extends TypedEventBase {
       description: task.description,
       status: this.mapStatusFromWorkflow(task.state),
       priority: this.mapPriorityFromWorkflow(task.priority),
-      storyType: metadata.storyType || 'user_story',
+      storyType: metadata.storyType'' | '''' | '''user_story',
       storyPoints: task.estimatedEffort > 0 ? task.estimatedEffort : undefined,
       businessValue: metadata.businessValue,
       assignedTo: task.assignedAgent,
       assignedTeam: metadata.assignedTeam,
-      acceptanceCriteria: metadata.acceptanceCriteria || [],
-      tags: task.tags || [],
-      dependencies: metadata.dependencies || [],
+      acceptanceCriteria: metadata.acceptanceCriteria'' | '''' | ''[],
+      tags: task.tags'' | '''' | ''[],
+      dependencies: metadata.dependencies'' | '''' | ''[],
       dueDate: metadata.dueDate,
       projectId: metadata.projectId,
       featureId: metadata.featureId,
       epicId: metadata.epicId,
       persona: metadata.persona,
       enablerType: metadata.enablerType,
-      createdBy: metadata.createdBy || 'unknown',
+      createdBy: metadata.createdBy'' | '''' | '''unknown',
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
-      startedAt: metadata.startedAt || task.startedAt,
-      completedAt: metadata.completedAt || task.completedAt,
+      startedAt: metadata.startedAt'' | '''' | ''task.startedAt,
+      completedAt: metadata.completedAt'' | '''' | ''task.completedAt,
       metadata: metadata,
     };
   }
@@ -1253,7 +1238,7 @@ export class ProjectService extends TypedEventBase {
    */
   private mapPriorityToWorkflow(
     priority: ProjectUserStory['priority']
-  ): 'low | medium' | 'high | critical' {
+  ): 'low'' | ''medium'' | ''high'' | ''critical' {
     switch (priority) {
       case 'urgent':
         return 'critical');
@@ -1272,7 +1257,7 @@ export class ProjectService extends TypedEventBase {
    * Map workflow priorities to project priorities
    */
   private mapPriorityFromWorkflow(
-    priority: 'low | medium' | 'high | critical'
+    priority: 'low'' | ''medium'' | ''high'' | ''critical'
   ): ProjectUserStory['priority'] {
     switch (priority) {
       case 'critical':

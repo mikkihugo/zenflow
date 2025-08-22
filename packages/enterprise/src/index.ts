@@ -34,47 +34,48 @@
  * @version 1.0.0
  */
 
-import {
-  registerFacade,
-  getLogger,
-} from '@claude-zen/foundation';
+import { registerFacade, getLogger } from '@claude-zen/foundation';
 import './module-declarations';
 
 const logger = getLogger('enterprise');
 
 // Register enterprise facade with expected packages
-registerFacade('enterprise', [
-  '@claude-zen/safe-framework',
-  '@claude-zen/sparc',
-  '@claude-zen/agui',
-  '@claude-zen/knowledge',
-  '@claude-zen/kanban',
-  '@claude-zen/multi-level-orchestration',
-  '@claude-zen/agent-manager',
-  '@claude-zen/coordination-core',
-  '@claude-zen/enterprise-coordination',
-  '@claude-zen/document-processing',
-  '@claude-zen/documentation',
-  '@claude-zen/exporters',
-  '@claude-zen/agent-registry',
-  '@claude-zen/interfaces',
-], [
-  'Safety protocols and risk management',
-  'Systematic Problem Analysis and Resolution Coordination',
-  'Advanced GUI framework and interface components',
-  'Knowledge management and semantic processing',
-  'Kanban workflow management and task coordination',
-  'Multi-level system orchestration',
-  'Agent lifecycle and coordination management',
-  'Core coordination primitives and patterns',
-  'Enterprise coordination implementation',
-  'Document workflow and processing systems',
-  'Documentation management and linking',
-  'Data export management and formatting',
-  'Centralized agent registration and lifecycle management',
-  'Interface management and detection systems',
-  'Enterprise business logic and coordination',
-]);
+registerFacade(
+  'enterprise',
+  [
+    '@claude-zen/safe-framework',
+    '@claude-zen/sparc',
+    '@claude-zen/agui',
+    '@claude-zen/knowledge',
+    '@claude-zen/kanban',
+    '@claude-zen/multi-level-orchestration',
+    '@claude-zen/agent-manager',
+    '@claude-zen/coordination-core',
+    '@claude-zen/enterprise-coordination',
+    '@claude-zen/document-processing',
+    '@claude-zen/documentation',
+    '@claude-zen/exporters',
+    '@claude-zen/agent-registry',
+    '@claude-zen/interfaces',
+  ],
+  [
+    'Safety protocols and risk management',
+    'Systematic Problem Analysis and Resolution Coordination',
+    'Advanced GUI framework and interface components',
+    'Knowledge management and semantic processing',
+    'Kanban workflow management and task coordination',
+    'Multi-level system orchestration',
+    'Agent lifecycle and coordination management',
+    'Core coordination primitives and patterns',
+    'Enterprise coordination implementation',
+    'Document workflow and processing systems',
+    'Documentation management and linking',
+    'Data export management and formatting',
+    'Centralized agent registration and lifecycle management',
+    'Interface management and detection systems',
+    'Enterprise business logic and coordination',
+  ],
+);
 
 // =============================================================================
 // MODULE EXPORTS - Delegate to implementation modules with fallback patterns
@@ -94,7 +95,10 @@ export * from './exporters';
 // Dynamic exports with fallbacks for missing packages
 try {
   // Re-export agent registry if available
-  module.exports = { ...module.exports, ...require('@claude-zen/agent-registry') };
+  module.exports = {
+    ...module.exports,
+    ...require('@claude-zen/agent-registry'),
+  };
 } catch {
   // agent-registry not available - using fallbacks
 }
@@ -122,7 +126,10 @@ export const DevelopmentManager = class {
     return { success: false, message: 'Package not available' };
   }
 };
-export const createDevelopmentConfig = () => ({ mode: 'basic', enableAI: false });
+export const createDevelopmentConfig = () => ({
+  mode: 'basic',
+  enableAI: false,
+});
 export const getProjectCoordinator = () => null;
 export const createProjectConfig = () => ({ mode: 'basic' });
 export const createDevelopmentManager = () => null;
@@ -149,8 +156,10 @@ export const enterpriseSystem = {
   exporters: () => import('./exporters'),
 
   // Agent and interface management (with fallbacks)
-  agentRegistry: () => import('@claude-zen/agent-registry').catch(() => ({ default: {} })),
-  interfaces: () => import('@claude-zen/interfaces').catch(() => ({ default: {} })),
+  agentRegistry: () =>
+    import('@claude-zen/agent-registry').catch(() => ({ default: {} })),
+  interfaces: () =>
+    import('@claude-zen/interfaces').catch(() => ({ default: {} })),
 
   // Legacy coordination functions
   development: {
@@ -179,7 +188,13 @@ export const enterpriseSystem = {
 // TYPE EXPORTS - For external consumers
 // =============================================================================
 
-export type { SAFeConfig, TeamworkConfig, AGUIConfig, KnowledgeConfig, KanbanConfig } from './types';
+export type {
+  SAFeConfig,
+  TeamworkConfig,
+  AGUIConfig,
+  KnowledgeConfig,
+  KanbanConfig,
+} from './types';
 
 // Default export for convenience
 export default enterpriseSystem;
@@ -202,7 +217,9 @@ export const getBusinessAgentRegistry = async () => {
     // Fallback to foundation AgentRegistry with business-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('Business agents package not available, using basic agent registry');
+    console.warn(
+      'Business agents package not available, using basic agent registry',
+    );
     return registry;
   }
 };
@@ -217,11 +234,13 @@ export const getWorkflowAgentRegistry = async () => {
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
     return registry;
-  } catch (error) {
+  } catch {
     // Fallback to foundation AgentRegistry with workflow-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('Workflow agents package not available, using basic agent registry');
+    console.warn(
+      'Workflow agents package not available, using basic agent registry',
+    );
     return registry;
   }
 };
@@ -262,11 +281,13 @@ export const createSafeFrameworkAgentRegistry = async (config?: any) => {
       console.log('SAFE framework agent registry config:', config);
     }
     return registry;
-  } catch (error) {
+  } catch {
     // Fallback to foundation AgentRegistry with SAFE-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('SAFE framework package not available, using basic agent registry');
+    console.warn(
+      'SAFE framework package not available, using basic agent registry',
+    );
     return registry;
   }
 };

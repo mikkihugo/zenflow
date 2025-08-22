@@ -64,13 +64,12 @@
 // Re-export zod for type-safe validation
 // Foundation integration utilities
 import type { Spec, CleanedEnv } from 'envalid';
-import { cleanEnv , str as envStr, bool as envBool } from 'envalid';
+import { cleanEnv, str as envStr, bool as envBool } from 'envalid';
 import { default as pTimeout, TimeoutError } from 'p-timeout';
 import { z } from 'zod';
 
 import { Result, ok, err } from './error-handling';
 import { getLogger } from './logging';
-
 
 /**
  * Common environment configuration schema
@@ -111,18 +110,18 @@ const logger = getLogger('foundation-utilities');
  */
 export function validateInput<T>(
   schema: z.ZodSchema<T>,
-  input: unknown,
+  input: unknown
 ): Result<T, Error> {
   try {
     const validated = schema.parse(input);
     return ok(validated);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const message = `Validation failed: ${error.issues.map((e: { path: (string | number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
+      const message = `Validation failed: ${error.issues.map((e: { path: (string'' | ''number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
       return err(new Error(message));
     }
     return err(
-      error instanceof Error ? error : new Error('Unknown validation error'),
+      error instanceof Error ? error : new Error('Unknown validation error')
     );
   }
 }
@@ -157,7 +156,7 @@ export function createValidator<T>(schema: z.ZodSchema<T>) {
  * ```
  */
 export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
-  specs: T,
+  specs: T
 ): CleanedEnv<T> {
   try {
     return cleanEnv(process.env, specs);
@@ -188,12 +187,12 @@ export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
 export async function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  timeoutMessage?: string,
+  timeoutMessage?: string
 ): Promise<Result<T, Error>> {
   try {
     const result = await pTimeout(promise, {
       milliseconds: timeoutMs,
-      message: timeoutMessage || `Operation timed out after ${timeoutMs}ms`,
+      message: timeoutMessage'' | '''' | ''`Operation timed out after ${timeoutMs}ms`,
     });
     return ok(result);
   } catch (error) {
@@ -204,7 +203,7 @@ export async function withTimeout<T>(
     return err(
       errorInstance instanceof Error
         ? errorInstance
-        : new Error('Unknown timeout error'),
+        : new Error('Unknown timeout error')
     );
   }
 }
@@ -248,4 +247,3 @@ export function isProduction(): boolean {
 export function isTest(): boolean {
   return process.env['NODE_ENV'] === 'test';
 }
-

@@ -1,12 +1,12 @@
 /**
  * @fileoverview Development Coordinator - Essential SPARC + Git + Swarms
- * 
+ *
  * Essential development coordination for SPARC methodology, Git control,
  * and swarm coordination. These are core development features, not optional.
- * 
+ *
  * The AI toggle only affects project management features (predictive analytics,
  * auto-planning, etc.), not core development coordination.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.3.0
  * @version 1.0.0
@@ -17,7 +17,7 @@ import { getLogger } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 
 // SPARC types for development coordination
-export type SPARCPhase = 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+export type SPARCPhase ='' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion';
 
 /**
  * Development coordination configuration
@@ -27,18 +27,18 @@ export interface DevelopmentCoordinationConfig {
   sparcEnabled: boolean; // Always true for development projects
   gitControlEnabled: boolean; // Always true for code projects
   swarmCoordination: boolean; // Always true for multi-agent work
-  
+
   // SPARC settings
   sparcPhaseValidation: boolean;
   autoProgressPhases: boolean;
-  
+
   // Git settings
-  branchStrategy: 'feature' | 'gitflow' | 'github-flow';
+  branchStrategy: 'feature''' | '''gitflow''' | '''github-flow';
   autoCommitMessages: boolean;
-  
+
   // Swarm settings
   maxSwarmSize: number;
-  swarmStrategy: 'collaborative' | 'specialized' | 'mixed';
+  swarmStrategy: 'collaborative | specialized' | 'mixed';
 }
 
 /**
@@ -50,23 +50,23 @@ export interface DevelopmentTask {
   sparcPhase: SPARCPhase;
   gitBranch?: string;
   assignedAgents: string[];
-  status: 'pending' | 'in_progress' | 'review' | 'completed';
+  status: 'pending | in_progress' | 'review''' | '''completed';
   dependencies: string[];
 }
 
 /**
  * Development Coordinator
- * 
+ *
  * Handles essential development coordination:
  * - SPARC methodology workflow
  * - Git branch and commit management
  * - Swarm coordination for development tasks
- * 
+ *
  * These are core development features, separate from optional AI project management.
  */
 export class DevelopmentCoordinator extends TypedEventBase {
   private logger: Logger;
-  private config: DevelopmentCoordinationConfig | null = null;
+  private config: DevelopmentCoordinationConfig'' | ''null = null;
   private activeTasks = new Map<string, DevelopmentTask>();
   private initialized = false;
 
@@ -82,23 +82,25 @@ export class DevelopmentCoordinator extends TypedEventBase {
     if (this.initialized) return;
 
     this.config = config;
-    this.logger.info(`Initializing development coordination for project ${config.projectId}`);
-    
+    this.logger.info(
+      `Initializing development coordination for project ${config.projectId}`
+    );
+
     // Initialize SPARC workflow
     if (config.sparcEnabled) {
       await this.initializeSPARC();
     }
-    
+
     // Initialize Git coordination
     if (config.gitControlEnabled) {
       await this.initializeGitControl();
     }
-    
+
     // Initialize swarm coordination
     if (config.swarmCoordination) {
       await this.initializeSwarmCoordination();
     }
-    
+
     this.initialized = true;
     this.emit('development:initialized', { projectId: config.projectId });
   }
@@ -106,7 +108,9 @@ export class DevelopmentCoordinator extends TypedEventBase {
   /**
    * Start SPARC workflow for a task
    */
-  async startSPARCWorkflow(task: Omit<DevelopmentTask, 'id' | 'status'>): Promise<string> {
+  async startSPARCWorkflow(
+    task: Omit<DevelopmentTask, 'id''' | '''status'>
+  ): Promise<string> {
     if (!this.config?.sparcEnabled) {
       throw new Error('SPARC workflow not enabled');
     }
@@ -116,14 +120,14 @@ export class DevelopmentCoordinator extends TypedEventBase {
       ...task,
       id: taskId,
       status: 'pending',
-      sparcPhase: 'specification'
+      sparcPhase: 'specification',
     };
 
     this.activeTasks.set(taskId, sparcTask);
-    
+
     this.logger.info(`Started SPARC workflow: ${task.title} (${taskId})`);
     this.emit('sparc:workflow_started', { taskId, task: sparcTask });
-    
+
     return taskId;
   }
 
@@ -136,13 +140,19 @@ export class DevelopmentCoordinator extends TypedEventBase {
       throw new Error(`Task not found: ${taskId}`);
     }
 
-    const phaseOrder: SPARCPhase[] = ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'];
+    const phaseOrder: SPARCPhase[] = [
+      'specification',
+      'pseudocode',
+      'architecture',
+      'refinement',
+      'completion',
+    ];
     const currentIndex = phaseOrder.indexOf(task.sparcPhase);
-    
+
     if (currentIndex < phaseOrder.length - 1) {
       const nextPhase = phaseOrder[currentIndex + 1];
       task.sparcPhase = nextPhase;
-      
+
       this.logger.info(`Task ${taskId} progressed to ${nextPhase} phase`);
       this.emit('sparc:phase_changed', { taskId, phase: nextPhase });
     } else {
@@ -165,7 +175,7 @@ export class DevelopmentCoordinator extends TypedEventBase {
     }
 
     task.gitBranch = branchName;
-    
+
     this.logger.info(`Created branch ${branchName} for task ${taskId}`);
     this.emit('git:branch_created', { taskId, branchName });
   }
@@ -184,11 +194,13 @@ export class DevelopmentCoordinator extends TypedEventBase {
     }
 
     if (agentIds.length > this.config.maxSwarmSize) {
-      throw new Error(`Swarm size exceeds limit: ${agentIds.length} > ${this.config.maxSwarmSize}`);
+      throw new Error(
+        `Swarm size exceeds limit: ${agentIds.length} > ${this.config.maxSwarmSize}`
+      );
     }
 
     task.assignedAgents = agentIds;
-    
+
     this.logger.info(`Assigned ${agentIds.length} agents to task ${taskId}`);
     this.emit('swarm:agents_assigned', { taskId, agentIds });
   }
@@ -196,15 +208,15 @@ export class DevelopmentCoordinator extends TypedEventBase {
   /**
    * Get task status
    */
-  getTask(taskId: string): DevelopmentTask | null {
-    return this.activeTasks.get(taskId) || null;
+  getTask(taskId: string): DevelopmentTask'' | ''null {
+    return this.activeTasks.get(taskId)'' | '''' | ''null;
   }
 
   /**
    * Get all active tasks
    */
   getActiveTasks(): DevelopmentTask[] {
-    return Array.from(this.activeTasks.values());
+    return Array.from(this.activeTasks.values())();
   }
 
   /**
@@ -212,29 +224,42 @@ export class DevelopmentCoordinator extends TypedEventBase {
    */
   private async initializeSPARC(): Promise<void> {
     this.logger.info('SPARC methodology initialized via enterprise facade');
-    
+
     try {
       // Use enterprise facade for SPARC functionality
       const { createSPARCWorkflow } = await import('@claude-zen/enterprise');
       const sparcWorkflow = createSPARCWorkflow({
         enableAI: false, // Keep it simple for now
-        phases: ['specification', 'pseudocode', 'architecture', 'refinement', 'completion']
+        phases: [
+          'specification',
+          'pseudocode',
+          'architecture',
+          'refinement',
+          'completion',
+        ],
       });
-      
+
       this.logger.info('SPARC workflow configured via enterprise facade');
     } catch (error) {
-      this.logger.warn('Enterprise facade SPARC not available, using fallback', { error });
+      this.logger.warn(
+        'Enterprise facade SPARC not available, using fallback',
+        { error }
+      );
       // Continue with basic coordination without SPARC
     }
   }
 
   private async initializeGitControl(): Promise<void> {
-    this.logger.info(`Git control initialized with ${this.config?.branchStrategy} strategy`);
+    this.logger.info(
+      `Git control initialized with ${this.config?.branchStrategy} strategy`
+    );
     // Git coordination setup
   }
 
   private async initializeSwarmCoordination(): Promise<void> {
-    this.logger.info(`Swarm coordination initialized (max size: ${this.config?.maxSwarmSize})`);
+    this.logger.info(
+      `Swarm coordination initialized (max size: ${this.config?.maxSwarmSize})`
+    );
     // Swarm coordination setup
   }
 
@@ -267,6 +292,6 @@ export function createDevelopmentConfig(
     autoCommitMessages: true,
     maxSwarmSize: 5,
     swarmStrategy: 'collaborative',
-    ...options
+    ...options,
   };
 }

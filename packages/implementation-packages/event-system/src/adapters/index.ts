@@ -151,7 +151,11 @@ export {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
 } from './system-event-adapter';
-export type { SystemEventAdapter, SystemEventAdapterConfig, SystemEventHelpers };
+export type {
+  SystemEventAdapter,
+  SystemEventAdapterConfig,
+  SystemEventHelpers,
+};
 export type { SystemEventAdapterConfig as SystemEventAdapterConfigType } from './system-event-adapter';
 // System Event Factory - Factory pattern
 export {

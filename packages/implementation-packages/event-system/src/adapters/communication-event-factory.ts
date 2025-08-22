@@ -152,7 +152,7 @@ export class CommunicationEventFactory
    *
    * @param name
    */
-  get(name: string): CommunicationEventAdapter | undefined {
+  get(name: string): CommunicationEventAdapter'' | ''undefined {
     return this.adapters.get(name);
   }
 
@@ -160,7 +160,7 @@ export class CommunicationEventFactory
    * List all communication event adapters.
    */
   list(): CommunicationEventAdapter[] {
-    return Array.from(this.adapters.values());
+    return Array.from(this.adapters.values())();
   }
 
   /**
@@ -768,13 +768,12 @@ export class CommunicationEventFactory
    * @param config
    */
   private validateConfig(config: CommunicationEventAdapterConfig): void {
-    if (!config?.name || typeof config?.name !== 'string') {
+    if (!config?.name'' | '''' | ''typeof config?.name !=='string') {
       throw new Error(
-        'Communication event adapter configuration must have a valid name'
-      );
+        'Communication event adapter configuration must have a valid name');
     }
 
-    if (!config?.type || config?.type !== 'communication') {
+    if (!config?.type'' | '''' | ''config?.type !=='communication') {
       throw new Error(
         'Communication event adapter configuration must have type "communication"'
       );
@@ -846,11 +845,17 @@ export class CommunicationEventFactory
     });
 
     adapter.on('subscription', (data) => {
-      this.emit('adapter-subscription', { name: adapter.name, ...(data as object) });
+      this.emit('adapter-subscription', {
+        name: adapter.name,
+        ...(data as object),
+      });
     });
 
     adapter.on('emission', (data) => {
-      this.emit('adapter-emission', { name: adapter.name, ...(data as object) });
+      this.emit('adapter-emission', {
+        name: adapter.name,
+        ...(data as object),
+      });
     });
   }
 }

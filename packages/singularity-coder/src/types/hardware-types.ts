@@ -6,7 +6,9 @@ declare module 'os-utils' {
   export function totalmem(): number;
   export function freememPercentage(): number;
   export function freeCommand(callback: (free: string) => void): void;
-  export function harddrive(callback: (free: number, used: number, total: number) => void): void;
+  export function harddrive(
+    callback: (free: number, used: number, total: number) => void
+  ): void;
   export function getProcesses(callback: (processes: any[]) => void): void;
   export function allLoadavgs(): number[];
   export function loadavg(period?: number): number;
@@ -95,7 +97,33 @@ declare module 'systeminformation' {
   export function mem(): Promise<MemInfo>;
   export function graphics(): Promise<GraphicsInfo>;
   export function system(): Promise<SystemInfo>;
-  export function cpuCurrentspeed(): Promise<{ avg: number; min: number; max: number; cores: number[] }>;
-  export function cpuTemperature(): Promise<{ main: number; cores: number[]; max: number; socket: number[]; chipset: number }>;
-  export function currentLoad(): Promise<{ avgload: number; currentload: number; currentload_user: number; currentload_system: number; currentload_nice: number; currentload_idle: number; currentload_irq: number; raw_currentload: number; raw_currentload_user: number; raw_currentload_system: number; raw_currentload_nice: number; raw_currentload_idle: number; raw_currentload_irq: number; cpus: any[] }>;
+  export function cpuCurrentspeed(): Promise<{
+    avg: number;
+    min: number;
+    max: number;
+    cores: number[];
+  }>;
+  export function cpuTemperature(): Promise<{
+    main: number;
+    cores: number[];
+    max: number;
+    socket: number[];
+    chipset: number;
+  }>;
+  export function currentLoad(): Promise<{
+    avgload: number;
+    currentload: number;
+    currentload_user: number;
+    currentload_system: number;
+    currentload_nice: number;
+    currentload_idle: number;
+    currentload_irq: number;
+    raw_currentload: number;
+    raw_currentload_user: number;
+    raw_currentload_system: number;
+    raw_currentload_nice: number;
+    raw_currentload_idle: number;
+    raw_currentload_irq: number;
+    cpus: any[];
+  }>;
 }

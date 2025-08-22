@@ -3,6 +3,11 @@
  *
  * Provides data access functions for system capability tracking. This module
  * contains ONLY data providers - no UI, no display logic, no Express routes.
+ */
+
+/* eslint-disable no-console */
+
+/**
  *
  * @example Get System Capability Data
  * ```typescript
@@ -33,7 +38,7 @@ export interface InstallationSuggestion {
   package: string;
   facade: string;
   reason: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: 'high | medium' | 'low';
   features: string[];
 }
 
@@ -78,13 +83,13 @@ export async function getSystemCapabilityData(): Promise<SystemCapabilityData> {
       capability: status.capability,
       healthScore: status.healthScore,
       availablePackages: Object.values(status.packages).filter(
-        (pkg) => pkg.status === 'available' || pkg.status === 'registered',
+        (pkg) => pkg.status === 'available''' | '''' | ''pkg.status ==='registered'
       ).length,
       totalPackages: Object.keys(status.packages).length,
       missingPackages: status.missingPackages,
       registeredServices: status.registeredServices,
       features: status.features,
-    }),
+    })
   );
 
   return {
@@ -104,14 +109,14 @@ export async function getSystemCapabilityData(): Promise<SystemCapabilityData> {
  */
 export async function getInstallationSuggestions(): Promise<
   InstallationSuggestion[]
-  > {
+> {
   const systemStatus = getSystemStatus();
   const suggestions: InstallationSuggestion[] = [];
 
   Object.entries(systemStatus.facades).forEach(([facadeName, facade]) => {
     facade.missingPackages.forEach((packageName) => {
       // Determine priority based on facade type
-      let priority: 'high' | 'medium' | 'low' = 'medium';
+      let priority: 'high | medium' | 'low' = 'medium';
       if (facadeName === 'infrastructure') {
         priority = 'high';
       }
@@ -138,7 +143,7 @@ export async function getInstallationSuggestions(): Promise<
   // Sort by priority
   const priorityOrder = { high: 3, medium: 2, low: 1 };
   suggestions.sort(
-    (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority],
+    (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]
   );
 
   return suggestions;
@@ -149,15 +154,15 @@ export async function getInstallationSuggestions(): Promise<
  */
 function getPackageFeatures(
   packageName: string,
-  allFeatures: string[],
+  allFeatures: string[]
 ): string[] {
   const packageKeywords = packageName.replace('@claude-zen/', '').split('-');
 
   return allFeatures
     .filter((feature) =>
       packageKeywords.some((keyword) =>
-        feature.toLowerCase().includes(keyword.toLowerCase()),
-      ),
+        feature.toLowerCase().includes(keyword.toLowerCase())
+      )
     )
     .slice(0, 3); // Limit to top 3 most relevant features
 }
@@ -179,13 +184,13 @@ export async function displaySystemStatus(): Promise<void> {
         ? '⚠️'
         : '❌';
   console.log(
-    `${statusEmoji} Overall: ${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`,
+    `${statusEmoji} Overall: ${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`
   );
   console.log(
-    `📦 Packages: ${dashboard.availablePackages}/${dashboard.totalPackages} available`,
+    `📦 Packages: ${dashboard.availablePackages}/${dashboard.totalPackages} available`
   );
   console.log(
-    `🔧 Services: ${dashboard.registeredServices} registered in Awilix`,
+    `🔧 Services: ${dashboard.registeredServices} registered in Awilix`
   );
 
   // Facade breakdown
@@ -198,7 +203,7 @@ export async function displaySystemStatus(): Promise<void> {
           ? '⚠️'
           : '❌';
     console.log(
-      `  ${facadeEmoji} ${facade.name}: ${facade.capability} (${facade.healthScore}%)`,
+      `  ${facadeEmoji} ${facade.name}: ${facade.capability} (${facade.healthScore}%)`
     );
 
     if (facade.missingPackages.length > 0) {
@@ -289,10 +294,10 @@ export function startSystemMonitoring(): void {
     'package-loaded',
     (data: { packageName: string; version?: string; timestamp: Date }) => {
       logger.info(`📦 Package ${data.packageName} loaded successfully`, {
-        version: data.version || 'unknown',
+        version: data.version'' | '''' | '''unknown',
         timestamp: data.timestamp.toISOString(),
       });
-    },
+    }
   );
 
   facadeStatusManager.on(
@@ -301,7 +306,7 @@ export function startSystemMonitoring(): void {
       logger.info(`🏗️ Facade ${data.facadeName} registered`, {
         timestamp: data.timestamp.toISOString(),
       });
-    },
+    }
   );
 
   facadeStatusManager.on(
@@ -312,7 +317,7 @@ export function startSystemMonitoring(): void {
         healthScore: data.healthScore,
         timestamp: data.timestamp.toISOString(),
       });
-    },
+    }
   );
 
   logger.info('🔍 System monitoring started');

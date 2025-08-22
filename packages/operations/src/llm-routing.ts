@@ -14,18 +14,24 @@ async function loadLLMRoutingModule() {
       // Use string-based dynamic import to avoid TypeScript compile-time resolution
       const packageName = '@claude-zen/llm-routing';
       llmRoutingModuleCache = await import(packageName);
-    } catch (error) {
-      console.warn('LLM routing package not available, providing compatibility layer');
+    } catch {
+      // LLM routing package not available, providing compatibility layer
       llmRoutingModuleCache = {
         LLM_PROVIDER_CONFIG: {},
         ROUTING_STRATEGY: {},
-        getOptimalProvider: async () => ({ providerId: 'default', provider: 'compatibility' }),
-        addProvider: async () => Promise.resolve(),
-        removeProvider: async () => Promise.resolve(),
-        updateProvider: async () => Promise.resolve(),
-        getProvider: async () => ({ id: 'default', name: 'Compatibility Provider' }),
-        getProviderIds: async () => ['default'],
-        getProvidersByCapability: async () => [],
+        getOptimalProvider: async () => await Promise.resolve({
+          providerId: 'default',
+          provider: 'compatibility',
+        }),
+        addProvider: async () => await Promise.resolve(),
+        removeProvider: async () => await Promise.resolve(),
+        updateProvider: async () => await Promise.resolve(),
+        getProvider: async () => await Promise.resolve({
+          id: 'default',
+          name: 'Compatibility Provider',
+        }),
+        getProviderIds: async () => await Promise.resolve(['default']),
+        getProvidersByCapability: async () => await Promise.resolve([]),
       };
     }
   }
@@ -80,7 +86,6 @@ export const getProvidersByCapability = async (capability: string) => {
   const module = await loadLLMRoutingModule();
   return module.getProvidersByCapability(capability);
 };
-
 
 // Type declarations for compatibility
 export interface ProviderConfig {

@@ -27,11 +27,11 @@ declare global {
 
   // Hybrid testing utilities
   function testWithApproach(
-    approach: 'london' | 'classical',
-    testFn: () => void | Promise<void>
+    approach: 'london''' | '''classical',
+    testFn: () => void'' | ''Promise<void>
   ): void;
   function createMemoryTestScenario(
-    type: 'sqlite' | 'lancedb' | 'json'
+    type:'sqlite | lancedb' | 'json'
   ): MemoryTestScenario;
 
   // Node.js garbage collection (optional)
@@ -54,7 +54,7 @@ interface ExpectedCall {
 }
 
 interface NeuralTestConfig {
-  type: 'xor' | 'linear' | 'classification';
+  type: 'xor | linear' | 'classification';
   size: number;
 }
 

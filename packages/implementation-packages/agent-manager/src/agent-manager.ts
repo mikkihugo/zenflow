@@ -58,13 +58,13 @@
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { 
+import {
   executeSwarmCoordinationTask,
   getLogger,
   EnhancedError,
   safeAsync,
   withRetry,
-  getConfig
+  getConfig,
 } from '@claude-zen/foundation';
 import type {
   AgentType,
@@ -79,11 +79,9 @@ import type {
   EphemeralSwarm,
   CognitiveAgent,
   SwarmExecutionResult,
-  SwarmDecision
+  SwarmDecision,
 } from './types';
-import {
-  getSwarmRegistry
-} from './swarm-registry';
+import { getSwarmRegistry } from './swarm-registry';
 
 /**
  * Dynamic Swarm Orchestrator - claude-code-zen's equivalent to ruvswarm.
@@ -156,22 +154,22 @@ export class AgentManager extends TypedEventBase {
 
   /**
    * Create an ephemeral swarm for task-specific coordination.
-   * 
+   *
    * This is the core ruvswarm-style method that instantiates cognitive agents
    * on-demand for a specific task. Unlike persistent agents, these swarms:
    * - Auto-dissolve after task completion or timeout (default: 1 hour)
    * - Support Claude CLI session persistence (survive restarts)
    * - Provide <100ms decision making with optional WASM acceleration
    * - Enable unlimited Claude SDK interactions by default
-   * 
+   *
    * @param config Swarm creation configuration
    * @returns Promise resolving to created swarm instance
-   * 
+   *
    * @example
    * ```typescript
    * const swarm = await AgentManager.createSwarm({
    *   task: 'analyze-codebase-security',
-   *   cognitiveTypes: ['researcher', 'coder', 'analyst'], 
+   *   cognitiveTypes: ['researcher', 'coder', 'analyst'],
    *   topology: 'hierarchical',
    *   maxDuration: 3600000, // 1 hour
    *   persistent: true, // Survive Claude CLI restarts
@@ -179,25 +177,27 @@ export class AgentManager extends TypedEventBase {
    * });
    * ```
    */
-  static async createSwarm(config: SwarmCreationConfig): Promise<EphemeralSwarm> {
+  static async createSwarm(
+    config: SwarmCreationConfig
+  ): Promise<EphemeralSwarm> {
     const logger = getLogger('agent-manager');
     logger.debug('AgentManager.createSwarm called');
     const manager = new AgentManager();
     logger.debug('Manager created, initializing...');
     await manager.initialize();
     logger.debug('Manager initialized successfully');
-    
+
     const swarmId = `swarm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const expiresAt = new Date(Date.now() + (config.maxDuration || 3600000)); // 1 hour default
+    const expiresAt = new Date(Date.now() + (config.maxDuration'' | '''' | ''3600000)); // 1 hour default
     logger.debug('Generated swarm ID', { swarmId });
-    
+
     // Instantiate cognitive agents based on requested archetypes
     const agents: CognitiveAgent[] = [];
     for (const archetype of config.cognitiveTypes) {
       const agent = manager.instantiateCognitiveAgent(archetype, swarmId);
       agents.push(agent);
     }
-    
+
     const swarm: EphemeralSwarm = {
       id: swarmId,
       task: config.task,
@@ -215,17 +215,22 @@ export class AgentManager extends TypedEventBase {
         lastActivity: new Date(),
       },
     };
-    
+
     // Enable WASM neural acceleration if requested
     if (config.neuralAcceleration) {
       try {
         await manager.initializeWasmNeural();
-        manager.logger.info('🧠 WASM neural acceleration enabled for swarm', { swarmId });
+        manager.logger.info('🧠 WASM neural acceleration enabled for swarm', {
+          swarmId,
+        });
       } catch (error) {
-        manager.logger.warn('⚠️ WASM neural acceleration failed, continuing without', { error, swarmId });
+        manager.logger.warn(
+          '⚠️ WASM neural acceleration failed, continuing without',
+          { error, swarmId }
+        );
       }
     }
-    
+
     // Register swarm in global registry for CLI persistence
     const staticLogger = getLogger('agent-manager');
     staticLogger.debug('About to register swarm in global registry');
@@ -235,37 +240,37 @@ export class AgentManager extends TypedEventBase {
     manager.activeSwarms.set(swarmId, swarm);
     swarm.status = 'active';
     staticLogger.debug('Swarm status set to active');
-    
+
     manager.logger.info('🐝 Ephemeral swarm created', {
       swarmId,
       task: config.task,
       cognitiveTypes: config.cognitiveTypes,
       topology: config.topology,
       expiresAt,
-      persistent: swarm.persistent
+      persistent: swarm.persistent,
     });
-    
+
     manager.emit('swarm:created', { swarm });
-    
+
     // Set up auto-dissolution (but not for persistent swarms)
     if (!swarm.persistent) {
       setTimeout(() => {
         manager.dissolveSwarm(swarmId);
-      }, config.maxDuration || 3600000);
+      }, config.maxDuration'' | '''' | ''3600000);
     }
-    
+
     return swarm;
   }
-  
+
   /**
    * Execute a swarm and get comprehensive results.
-   * 
+   *
    * @param swarmId Unique swarm identifier
    * @param options Execution options
    * @returns Promise resolving to execution results
    */
   async executeSwarm(
-    swarmId: string, 
+    swarmId: string,
     options?: { maxTurns?: number }
   ): Promise<SwarmExecutionResult> {
     let swarm = this.activeSwarms.get(swarmId);
@@ -278,77 +283,76 @@ export class AgentManager extends TypedEventBase {
       }
       this.activeSwarms.set(swarmId, swarm);
     }
-    
+
     swarm.status = 'executing';
     const startTime = Date.now();
-    
+
     try {
       // Execute coordination using Claude SDK with flexible turn limits
       const coordinationResult = await executeSwarmCoordinationTask(
         this.buildSwarmExecutionPrompt(swarm),
-        swarm.agents.map(a => a.id),
+        swarm.agents.map((a) => a.id),
         {
-          maxTurns: options?.maxTurns || 50, // Much higher default for complex tasks
-          timeoutMs: 300000 // 5 minutes per execution
+          maxTurns: options?.maxTurns'' | '''' | ''50, // Much higher default for complex tasks
+          timeoutMs: 300000, // 5 minutes per execution
         }
       );
-      
+
       const duration = Date.now() - startTime;
-      
+
       // Update swarm metrics
       swarm.performance.claudeInteractions++;
       const registry = getSwarmRegistry();
       registry.updateSwarm(swarm);
       swarm.performance.lastActivity = new Date();
-      
+
       const result: SwarmExecutionResult = {
         swarmId,
         success: true,
         duration,
-        agentResults: swarm.agents.map(agent => ({
+        agentResults: swarm.agents.map((agent) => ({
           agentId: agent.id,
           archetype: agent.archetype,
           decisions: agent.performance.decisions,
           averageDecisionTime: agent.performance.averageThinkingTime,
-          insights: [`${agent.archetype} archetype coordination completed`]
+          insights: [`${agent.archetype} archetype coordination completed`],
         })),
         coordination: {
           totalDecisions: swarm.performance.decisions,
           consensusReached: true,
           conflictResolutions: 0,
-          emergentInsights: ['Swarm coordination successful']
-        }
+          emergentInsights: ['Swarm coordination successful'],
+        },
       };
-      
+
       if (this.wasmNeural) {
         result.neuralMetrics = {
           wasmCallsExecuted: 1,
           neuralDecisions: swarm.agents.length,
-          accelerationGain: 2.5 // Estimated speedup
+          accelerationGain: 2.5, // Estimated speedup
         };
       }
-      
+
       this.logger.info('✅ Swarm execution completed', {
         swarmId,
         duration,
         success: true,
-        claudeInteractions: swarm.performance.claudeInteractions
+        claudeInteractions: swarm.performance.claudeInteractions,
       });
-      
+
       return result;
-      
     } catch (error) {
-      const enhancedError = new EnhancedError(
-        'Swarm execution failed',
-        { originalError: error, swarmId }
-      );
+      const enhancedError = new EnhancedError('Swarm execution failed', {
+        originalError: error,
+        swarmId,
+      });
       this.logger.error('❌ Swarm execution failed', enhancedError);
       throw enhancedError;
     } finally {
       swarm.status = 'active';
     }
   }
-  
+
   /**
    * Dissolve a swarm and clean up resources.
    */
@@ -359,28 +363,28 @@ export class AgentManager extends TypedEventBase {
       swarm = registry.getSwarm(swarmId);
       if (!swarm) return;
     }
-    
+
     swarm.status = 'dissolved';
-    
+
     // Clean up agent resources
     for (const agent of swarm.agents) {
       agent.status = 'dissolved';
     }
-    
+
     this.activeSwarms.delete(swarmId);
     const registry = getSwarmRegistry();
     registry.removeSwarm(swarmId);
-    
+
     this.logger.info('🗑️ Swarm dissolved', {
       swarmId,
       task: swarm.task,
       duration: Date.now() - swarm.created.getTime(),
-      decisions: swarm.performance.decisions
+      decisions: swarm.performance.decisions,
     });
-    
+
     this.emit('swarm:dissolved', { swarmId, swarm });
   }
-  
+
   /**
    * Pause a swarm for Claude CLI session restart.
    */
@@ -391,23 +395,23 @@ export class AgentManager extends TypedEventBase {
       swarm = registry.getSwarm(swarmId);
       if (!swarm) return;
     }
-    
+
     swarm.status = 'paused';
     swarm.resumption = {
       checkpoint: Date.now(),
       lastState: 'paused',
       contextData: {
         task: swarm.task,
-        cognitiveTypes: swarm.agents.map(a => a.archetype),
-        topology: swarm.topology
-      }
+        cognitiveTypes: swarm.agents.map((a) => a.archetype),
+        topology: swarm.topology,
+      },
     };
-    
+
     const registry = getSwarmRegistry();
     registry.updateSwarm(swarm);
     this.logger.info('⏸️ Swarm paused for session restart', { swarmId });
   }
-  
+
   /**
    * Resume a swarm after Claude CLI session restart.
    */
@@ -419,20 +423,20 @@ export class AgentManager extends TypedEventBase {
       if (!swarm) return;
     }
     if (!swarm.resumption) return;
-    
+
     swarm.status = 'active';
     this.performanceMetrics.sessionsRestored++;
-    
+
     this.logger.info('▶️ Swarm resumed after session restart', {
       swarmId,
-      pausedDuration: Date.now() - (swarm.resumption.checkpoint as number)
+      pausedDuration: Date.now() - (swarm.resumption.checkpoint as number),
     });
-    
+
     delete swarm.resumption;
     const registry = getSwarmRegistry();
     registry.updateSwarm(swarm);
   }
-  
+
   /**
    * Get all active swarms.
    */
@@ -440,10 +444,10 @@ export class AgentManager extends TypedEventBase {
     const registry = getSwarmRegistry();
     return registry.getAllSwarms();
   }
-  
+
   /**
    * Initialize the agent manager with specified configuration.
-   * 
+   *
    * @param config Optional configuration object for swarm initialization
    * @returns Promise that resolves when initialization is complete
    */
@@ -451,7 +455,7 @@ export class AgentManager extends TypedEventBase {
     try {
       // Merge with foundation config if available
       const foundationConfig = getConfig();
-      
+
       this.logger.info('🚀 AgentManager initialized successfully');
       this.emit('swarm:initialized', { config });
     } catch (error) {
@@ -470,13 +474,13 @@ export class AgentManager extends TypedEventBase {
   async shutdown(): Promise<void> {
     try {
       this.logger.info('🔄 Shutting down AgentManager');
-      
+
       // Dissolve all active swarms
-      const swarmIds = Array.from(this.activeSwarms.keys());
+      const swarmIds = Array.from(this.activeSwarms.keys())();
       for (const swarmId of swarmIds) {
         await this.dissolveSwarm(swarmId);
       }
-      
+
       this.logger.info('✅ AgentManager shutdown complete');
       this.emit('swarm:shutdown', {});
     } catch (error) {
@@ -511,14 +515,16 @@ export class AgentManager extends TypedEventBase {
     return { ...this.performanceMetrics };
   }
 
-
   /**
    * Instantiate a cognitive agent with specialized archetype.
    */
-  private instantiateCognitiveAgent(archetype: CognitiveArchetype, swarmId: string): CognitiveAgent {
+  private instantiateCognitiveAgent(
+    archetype: CognitiveArchetype,
+    swarmId: string
+  ): CognitiveAgent {
     const agentId = `${archetype}-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     const archetypeConfig = AgentManager.COGNITIVE_ARCHETYPES[archetype];
-    
+
     return {
       id: agentId,
       archetype,
@@ -537,21 +543,45 @@ export class AgentManager extends TypedEventBase {
       },
     };
   }
-  
+
   /**
    * Get capabilities for a cognitive archetype.
    */
   private getCapabilitiesForArchetype(archetype: CognitiveArchetype): string[] {
     const capabilityMap: Record<CognitiveArchetype, string[]> = {
-      researcher: ['systematic-analysis', 'data-gathering', 'hypothesis-testing', 'literature-review', 'pattern-recognition'],
-      coder: ['solution-implementation', 'optimization', 'debugging', 'code-review', 'architecture-design'],
-      analyst: ['pattern-recognition', 'trend-analysis', 'insights', 'data-synthesis', 'strategic-thinking'],
-      architect: ['system-design', 'scalability', 'integration', 'complexity-management', 'long-term-vision'],
+      researcher: [
+        'systematic-analysis',
+        'data-gathering',
+        'hypothesis-testing',
+        'literature-review',
+        'pattern-recognition',
+      ],
+      coder: [
+        'solution-implementation',
+        'optimization',
+        'debugging',
+        'code-review',
+        'architecture-design',
+      ],
+      analyst: [
+        'pattern-recognition',
+        'trend-analysis',
+        'insights',
+        'data-synthesis',
+        'strategic-thinking',
+      ],
+      architect: [
+        'system-design',
+        'scalability',
+        'integration',
+        'complexity-management',
+        'long-term-vision',
+      ],
     };
-    
+
     return capabilityMap[archetype];
   }
-  
+
   /**
    * Initialize WASM neural acceleration.
    */
@@ -560,7 +590,7 @@ export class AgentManager extends TypedEventBase {
       // Use dynamic loader to avoid TypeScript compilation issues
       const { loadWasmNeural } = await import('./wasm-loader');
       const wasmModule = await loadWasmNeural();
-      
+
       if (wasmModule && typeof wasmModule.default === 'function') {
         await wasmModule.default();
         this.wasmNeural = wasmModule;
@@ -569,10 +599,12 @@ export class AgentManager extends TypedEventBase {
         throw new Error('WASM module not found or incompatible');
       }
     } catch (error) {
-      throw new EnhancedError('Failed to initialize WASM neural acceleration', { originalError: error });
+      throw new EnhancedError('Failed to initialize WASM neural acceleration', {
+        originalError: error,
+      });
     }
   }
-  
+
   /**
    * Build swarm execution prompt for Claude SDK.
    */
@@ -587,18 +619,22 @@ Swarm Configuration:
 - Persistent: ${swarm.persistent ? 'Yes (survives Claude CLI restarts)' : 'No'}
 
 Cognitive Agents (${swarm.agents.length}):
-${swarm.agents.map(agent => `
+${swarm.agents
+  .map(
+    (agent) => `
 - ${agent.archetype.toUpperCase()} Agent (${agent.id})
   Status: ${agent.status}
   Capabilities: ${agent.capabilities.join(', ')}
   Decision Speed: ${agent.cognition.decisionSpeed}ms
   Patterns: ${agent.cognition.patterns.join(', ')}
   Strengths: ${agent.cognition.strengths.join(', ')}
-`).join('')}
+`
+  )
+  .join('')}
 
 Task Requirements:
 1. Coordinate agents using ${swarm.topology} topology
-2. Leverage cognitive diversity (${swarm.agents.map(a => a.archetype).join(', ')})
+2. Leverage cognitive diversity (${swarm.agents.map((a) => a.archetype).join(', ')})
 3. Optimize for <100ms decision making where possible
 4. Maintain coordination state for potential session restarts
 5. Generate actionable insights and recommendations
@@ -611,7 +647,6 @@ Coordination Goals:
 
 Execute swarm coordination and provide detailed results.`;
   }
-  
 }
 
 export default AgentManager;

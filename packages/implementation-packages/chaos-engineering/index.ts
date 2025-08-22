@@ -1,11 +1,11 @@
 /**
  * @fileoverview Chaos Engineering Package - Production-Grade System Resilience Testing
- * 
+ *
  * **ENTERPRISE CHAOS ENGINEERING SYSTEM**
- * 
+ *
  * Comprehensive chaos engineering framework for testing system resilience, fault tolerance,
  * and recovery mechanisms in production environments with safety guarantees.
- * 
+ *
  * **CORE CAPABILITIES:**
  * - 🎯 **Controlled Failure Injection**: Safe, targeted chaos experiments with rollback mechanisms
  * - 🛡️ **Safety Guardrails**: Automatic experiment termination when safety thresholds are exceeded
@@ -15,7 +15,7 @@
  * - 🚨 **Emergency Stop**: Immediate experiment termination and system restoration
  * - 🎲 **Hypothesis Testing**: Scientific approach to resilience validation
  * - 📋 **Experiment Catalog**: Pre-built chaos experiments for common failure patterns
- * 
+ *
  * **CHAOS EXPERIMENT TYPES:**
  * - 🔌 **Infrastructure Chaos**: Network partitions, server failures, resource exhaustion
  * - 🌐 **Network Chaos**: Latency injection, packet loss, bandwidth throttling
@@ -25,7 +25,7 @@
  * - 🔐 **Security Chaos**: Authentication failures, authorization bypasses, credential rotation
  * - 🕒 **Timing Chaos**: Clock skew, timeout variations, scheduling delays
  * - 🔄 **State Chaos**: Configuration changes, feature flag flips, deployment rollbacks
- * 
+ *
  * **PERFORMANCE CHARACTERISTICS:**
  * - **Experiment Setup**: <5 seconds for standard chaos experiments
  * - **Safety Monitoring**: <1 second detection of safety threshold breaches
@@ -35,9 +35,9 @@
  * - **Monitoring Overhead**: <2% system performance impact during experiments
  * - **Experiment Isolation**: Zero cross-contamination between concurrent experiments
  * - **Documentation Coverage**: Complete experiment logs and recovery procedures
- * 
+ *
  * **CHAOS ENGINEERING STRATEGIES:**
- * 
+ *
  * 🎯 **Controlled Infrastructure Chaos** - Safe server and network failure simulation
  * ```typescript
  * import { ChaosEngineering } from '@claude-zen/chaos-engineering';
@@ -45,7 +45,7 @@
  * // FEATURES: Gradual failure injection, automatic safety monitoring, instant rollback
  * // PERFORMANCE: <5s setup, 99%+ accuracy, zero production risk
  * ```
- * 
+ *
  * 🌐 **Application-Level Chaos** - Service dependency and API failure testing
  * ```typescript
  * import { ChaosEngineering, ApplicationChaos } from '@claude-zen/chaos-engineering';
@@ -53,7 +53,7 @@
  * // FEATURES: Service mesh integration, circuit breaker testing, timeout simulation
  * // PERFORMANCE: Real-time impact analysis, automated recovery validation
  * ```
- * 
+ *
  * 📊 **Data Layer Chaos** - Database and storage resilience testing
  * ```typescript
  * import { ChaosEngineering, DataChaos } from '@claude-zen/chaos-engineering';
@@ -61,7 +61,7 @@
  * // FEATURES: Read-only chaos, transaction isolation, data integrity verification
  * // PERFORMANCE: Zero data loss guarantee, complete rollback capabilities
  * ```
- * 
+ *
  * 🔐 **Security Chaos** - Authentication and authorization resilience testing
  * ```typescript
  * import { ChaosEngineering, SecurityChaos } from '@claude-zen/chaos-engineering';
@@ -69,13 +69,13 @@
  * // FEATURES: Safe credential simulation, permission boundary testing, audit logging
  * // PERFORMANCE: Security-first design, complete audit trails, zero privilege escalation
  * ```
- * 
+ *
  * **INTEGRATION EXAMPLES:**
- * 
+ *
  * @example Basic Chaos Engineering Setup
  * ```typescript
  * import { ChaosEngineering } from '@claude-zen/chaos-engineering';
- * 
+ *
  * const chaosEngine = new ChaosEngineering({
  *   environment: 'staging', // Never run in production without explicit approval
  *   safetyGuardrails: {
@@ -99,9 +99,9 @@
  *     requireApproval: true
  *   }
  * });
- * 
+ *
  * await chaosEngine.initialize();
- * 
+ *
  * // Define a network latency chaos experiment
  * const networkLatencyExperiment = await chaosEngine.createExperiment({
  *   name: 'API Gateway Latency Resilience Test',
@@ -134,7 +134,7 @@
  *     ]
  *   }
  * });
- * 
+ *
  * // Execute the experiment with safety monitoring
  * const execution = await chaosEngine.executeExperiment(networkLatencyExperiment, {
  *   dryRun: false,
@@ -142,22 +142,22 @@
  *   realTimeMonitoring: true,
  *   automaticRollback: true
  * });
- * 
+ *
  * console.log(`Experiment ${execution.id} started`);
  * console.log(`Hypothesis: ${execution.hypothesis}`);
  * console.log(`Expected duration: ${execution.estimatedDuration}ms`);
  * ```
- * 
+ *
  * @example Advanced Multi-Layer Chaos Testing
  * ```typescript
- * import { 
- *   ChaosEngineering, 
+ * import {
+ *   ChaosEngineering,
  *   InfrastructureChaos,
  *   ApplicationChaos,
  *   DataChaos,
- *   ChaosOrchestrator 
+ *   ChaosOrchestrator
  * } from '@claude-zen/chaos-engineering';
- * 
+ *
  * // Create orchestrated chaos testing across multiple layers
  * const chaosOrchestrator = new ChaosOrchestrator({
  *   environment: 'staging',
@@ -174,7 +174,7 @@
  *     comprehensiveReporting: true
  *   }
  * });
- * 
+ *
  * // Define infrastructure chaos experiment
  * const infraExperiment = chaosOrchestrator.defineExperiment({
  *   name: 'Multi-Zone Infrastructure Resilience',
@@ -191,7 +191,7 @@
  *     dataConsistencyCheck: true
  *   }
  * });
- * 
+ *
  * // Define application chaos experiment
  * const appExperiment = chaosOrchestrator.defineExperiment({
  *   name: 'Payment Service Dependency Failure',
@@ -208,7 +208,7 @@
  *     userExperienceImpact: 'minimal'
  *   }
  * });
- * 
+ *
  * // Define data layer chaos experiment
  * const dataExperiment = chaosOrchestrator.defineExperiment({
  *   name: 'Database Primary Failover Test',
@@ -225,7 +225,7 @@
  *     dataIntegrityCheck: 'comprehensive'
  *   }
  * });
- * 
+ *
  * // Execute orchestrated chaos testing
  * const chaosTest = await chaosOrchestrator.orchestrateExperiments([
  *   infraExperiment,
@@ -237,21 +237,21 @@
  *   comprehensiveMonitoring: true,
  *   generateDetailedReport: true
  * });
- * 
+ *
  * console.log(`Orchestrated chaos test ${chaosTest.id} completed`);
  * console.log(`Overall system resilience score: ${chaosTest.resilienceScore}/100`);
  * console.log(`Recovery time (avg): ${chaosTest.averageRecoveryTime}ms`);
  * console.log(`Experiments passed: ${chaosTest.passedExperiments}/${chaosTest.totalExperiments}`);
  * ```
- * 
+ *
  * @example Real-time Safety Monitoring and Emergency Protocols
  * ```typescript
- * import { 
- *   ChaosEngineering, 
+ * import {
+ *   ChaosEngineering,
  *   SafetyMonitor,
- *   EmergencyProtocols 
+ *   EmergencyProtocols
  * } from '@claude-zen/chaos-engineering';
- * 
+ *
  * const safetyMonitor = new SafetyMonitor({
  *   monitoring: {
  *     realTimeMetrics: true,
@@ -281,32 +281,32 @@
  *     }
  *   }
  * });
- * 
+ *
  * // Set up safety monitoring with real-time alerts
  * safetyMonitor.on('safety-threshold-exceeded', async (event) => {
  *   console.log(`SAFETY ALERT: ${event.metric} exceeded threshold`);
  *   console.log(`Current value: ${event.currentValue}, Threshold: ${event.threshold}`);
  *   console.log(`Automatic action: ${event.recommendedAction}`);
- *   
+ *
  *   // Automatic emergency response
  *   await safetyMonitor.executeEmergencyProtocol(event.severity);
  * });
- * 
+ *
  * safetyMonitor.on('experiment-rollback-initiated', async (event) => {
  *   console.log(`ROLLBACK: Experiment ${event.experimentId} rollback initiated`);
  *   console.log(`Reason: ${event.reason}`);
  *   console.log(`Expected recovery time: ${event.estimatedRecoveryTime}ms`);
  * });
- * 
+ *
  * safetyMonitor.on('system-recovery-validated', (event) => {
  *   console.log(`RECOVERY: System fully recovered from experiment ${event.experimentId}`);
  *   console.log(`Recovery time: ${event.actualRecoveryTime}ms`);
  *   console.log(`All health checks passed: ${event.healthChecksPassed}`);
  * });
- * 
+ *
  * // Start safety monitoring
  * await safetyMonitor.startMonitoring();
- * 
+ *
  * // Configure emergency protocols
  * const emergencyProtocols = new EmergencyProtocols({
  *   incidentResponse: {
@@ -329,24 +329,16 @@
  *       'system-health-check',
  *       'data-consistency-verification',
  *       'performance-baseline-restoration',
- *       'user-experience-validation'
- *     ]
+ *       'user-experience-validation'*     ]
  *   }
  * });
  * ```
- * 
+ *
  * **EXPERIMENT CATALOG:**
- * 
- * | Experiment Type | Target | Impact Level | Duration | Recovery Time |
- * |----------------|--------|--------------|----------|---------------|
- * | Network Latency | API Gateway | Low | 5-10 min | <30 sec |
- * | Service Failure | Microservice | Medium | 2-5 min | <60 sec |
- * | Database Failover | Primary DB | High | 1-2 min | <90 sec |
- * | Zone Outage | Infrastructure | High | 5-15 min | <120 sec |
- * | Memory Pressure | Application | Medium | 3-8 min | <45 sec |
- * 
+ *
+ *''''' | '''''Experiment Type''''' | '''''Target''''' | '''''Impact Level''''' | '''''Duration''''' | '''''Recovery Time''''' | '''''*''''' | '''''----------------''''' | '''''--------''''' | '''''--------------''''' | '''''----------''''' | '''''---------------''''' | '''''*''''' | '''''Network Latency''''' | '''''API Gateway''''' | '''''Low''''' | '''''5-10 min''''' | '''''<30 sec''''' | '''''*''''' | '''''Service Failure''''' | '''''Microservice''''' | '''''Medium''''' | '''''2-5 min''''' | '''''<60 sec''''' | '''''*''''' | '''''Database Failover''''' | '''''Primary DB''''' | '''''High''''' | '''''1-2 min''''' | '''''<90 sec''''' | '''''*''''' | '''''Zone Outage''''' | '''''Infrastructure''''' | '''''High''''' | '''''5-15 min''''' | '''''<120 sec''''' | '''''*''''' | '''''Memory Pressure''''' | '''''Application''''' | '''''Medium''''' | '''''3-8 min''''' | '''''<45 sec''''' | '''''*
  * **SAFETY BENCHMARKS:**
- * 
+ *
  * - **Experiment Setup Accuracy**: 99.9%+ precise targeting without collateral impact
  * - **Safety Monitoring Response**: <1 second detection of threshold violations
  * - **Emergency Rollback Speed**: <10 seconds complete experiment termination
@@ -354,32 +346,32 @@
  * - **Zero Data Loss**: Guaranteed data integrity throughout all experiments
  * - **Audit Completeness**: 100% experiment traceability and compliance logging
  * - **Production Safety**: Never run experiments in production without explicit approval
- * 
+ *
  * **FOUNDATION INTEGRATION - ALREADY BATTLE-TESTED:**
- * 
+ *
  * ✅ **Using @claude-zen/foundation** - All battle-tested infrastructure included
  * ```typescript
  * // Foundation provides these battle-tested packages:
- * import { 
+ * import {
  *   getLogger,                    // @logtape/logtape professional logging
  *   recordMetric, recordHistogram, // prom-client Prometheus metrics
- *   createCircuitBreaker,         // opossum Netflix circuit breakers  
+ *   createCircuitBreaker,         // opossum Netflix circuit breakers
  *   withRetry,                    // p-retry exponential backoff
  *   startTrace, withTrace,        // OpenTelemetry tracing
  *   SystemMonitor, AgentMonitor,  // Professional monitoring classes
  *   safeAsync, Result             // neverthrow error handling
- * } from '@claude-zen/foundation';
+ * } from'@claude-zen/foundation';
  * ```
- * 
+ *
  * 🔧 **Chaos Engineering Specific Dependencies** - Embedded, no external software
  * ```typescript
  * // Foundation Integration (USE THESE FIRST)
- * import { 
+ * import {
  *   getLogger, recordMetric, createCircuitBreaker, withRetry,
  *   SystemMonitor, AgentMonitor, safeAsync, Result,
  *   getDatabaseAccess, getKVStore  // Foundation's embedded storage
  * } from '@claude-zen/foundation';
- * 
+ *
  * // Chaos Engineering Specific (embedded, no external dependencies)
  * import { ChaosToolkit } from 'chaos-toolkit-js';     // Chaos engineering framework
  * import { Puppeteer } from 'puppeteer';               // Browser automation for UI chaos
@@ -387,7 +379,7 @@
  * import { Kubernetes } from '@kubernetes/client-node'; // K8s chaos experiments
  * import { randomBytes } from 'crypto';                // Built-in crypto for experiment variation
  * ```
- * 
+ *
  * **FOUNDATION INTEGRATION BENEFITS:**
  * - ✅ **Professional Logging**: `@logtape/logtape` structured experiment logging via foundation
  * - ✅ **Circuit Breakers**: `opossum` Netflix circuit breakers for experiment safety via `createCircuitBreaker`
@@ -398,7 +390,7 @@
  * - ✅ **Persistent Storage**: Database abstraction for experiment history and results
  * - ✅ **Configuration Management**: `convict` + `dotenv` schema validation for safety parameters
  * - ✅ **Dependency Injection**: `awilix` for professional architecture and testability
- * 
+ *
  * @author Claude Zen Team
  * @version 2.0.0 (Production Chaos Engineering with Safety Guarantees)
  * @license MIT
@@ -417,7 +409,7 @@ export type {
   ChaosExperiment,
   ExperimentExecution,
   ChaosEngineeringOptions,
-  ChaosStats
+  ChaosStats,
   // Note: SafetyGuardrails, ExperimentResult, MonitoringConfig not found in src/main.ts
 } from './src/main';
 

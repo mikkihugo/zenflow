@@ -93,7 +93,10 @@ describe('Teamwork Basic Integration - Hybrid Brain', () => {
       expect(updatedSession?.participants).toHaveLength(3);
 
       // Terminate conversation
-      const outcomes = await orchestrator.terminateConversation(session.id, 'Test completed');
+      const outcomes = await orchestrator.terminateConversation(
+        session.id,
+        'Test completed'
+      );
       expect(Array.isArray(outcomes)).toBe(true);
 
       // Verify session is no longer active

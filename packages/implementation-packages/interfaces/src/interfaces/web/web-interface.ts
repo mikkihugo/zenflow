@@ -1,6 +1,6 @@
 /**
  * @fileoverview Web Interface Implementation
- * 
+ *
  * Implementation of web-based interface using Express.js or similar framework.
  * Provides REST API and web dashboard for Claude Code Zen system management.
  */
@@ -22,7 +22,10 @@ export interface WebInterface {
   registerMiddleware(middleware: Function): void;
 }
 
-export class ExpressWebInterface extends TypedEventBase implements WebInterface {
+export class ExpressWebInterface
+  extends TypedEventBase
+  implements WebInterface
+{
   private config: WebConfig;
   private server: any = null;
   private app: any = null;
@@ -35,37 +38,46 @@ export class ExpressWebInterface extends TypedEventBase implements WebInterface 
 
   async initialize(config: WebConfig): Promise<void> {
     this.config = config;
-    
+
     try {
       // Dynamic import to avoid compile-time dependency
       const express = await this.loadExpress();
       this.app = express();
-      
+
       // Configure middleware
       if (this.config.enableCors) {
         const cors = await this.loadCors();
-        this.app.use(cors({
-          origin: this.config.corsOrigins || ['*']
-        }));
+        this.app.use(
+          cors({
+            origin: this.config.corsOrigins || ['*'],
+          })
+        );
       }
-      
+
       if (this.config.enableCompression) {
         const compression = await this.loadCompression();
-        this.app.use(compression());
+        this.app.use(compression())();
       }
-      
+
       // JSON parsing
-      this.app.use(express.json({ limit: this.config.maxRequestSize || '10mb' }));
-      this.app.use(express.urlencoded({ extended: true, limit: this.config.maxRequestSize || '10mb' }));
-      
+      this.app.use(
+        express.json({ limit: this.config.maxRequestSize || '10mb'})
+      );
+      this.app.use(
+        express.urlencoded({
+          extended: true,
+          limit: this.config.maxRequestSize || '10mb',
+        })
+      );
+
       // Static files
       if (this.config.publicDir) {
         this.app.use(express.static(this.config.publicDir));
       }
-      
+
       // Default routes
       this.setupDefaultRoutes();
-      
+
       this.emit('initialized', {});
     } catch (error) {
       console.error('Failed to initialize web interface:', error);
@@ -81,7 +93,9 @@ export class ExpressWebInterface extends TypedEventBase implements WebInterface 
     return new Promise((resolve, reject) => {
       this.server = this.app.listen(this.config.port, this.config.host, () => {
         this.startTime = Date.now();
-        console.log(`Web interface listening on http://${this.config.host}:${this.config.port}`);
+        console.log(
+          `Web interface listening on http://${this.config.host}:${this.config.port}`
+        );
         this.emit('started', {});
         resolve();
       });
@@ -122,7 +136,7 @@ export class ExpressWebInterface extends TypedEventBase implements WebInterface 
       running: this.server !== null,
       port: this.config?.port || 0,
       uptime: this.startTime ? Date.now() - this.startTime : 0,
-      connections: this.connections
+      connections: this.connections,
     };
   }
 
@@ -153,13 +167,13 @@ export class ExpressWebInterface extends TypedEventBase implements WebInterface 
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: this.getStatus().uptime,
-        version: '1.0.0'
+        version: '1.0.0',
       });
     });
 
     // Status endpoint
     this.registerRoute('GET', '/status', (_req: any, res: any) => {
-      res.json(this.getStatus());
+      res.json(this.getStatus())();
     });
   }
 
@@ -176,7 +190,7 @@ export class ExpressWebInterface extends TypedEventBase implements WebInterface 
             callback();
             return {
               on: () => {},
-              close: (cb: Function) => cb()
+              close: (cb: Function) => cb(),
             };
           },
           get: () => {},
@@ -185,8 +199,8 @@ export class ExpressWebInterface extends TypedEventBase implements WebInterface 
           delete: () => {},
           static: () => () => {},
           json: () => () => {},
-          urlencoded: () => () => {}
-        })
+          urlencoded: () => () => {},
+        }),
       };
     }
   }

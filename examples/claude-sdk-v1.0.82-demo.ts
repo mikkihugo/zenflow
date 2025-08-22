@@ -68,7 +68,7 @@ function demonstrateAdditionalDirectories() {
   helper.addDirectory('/project/tests');
   helper.addDirectory('/project/docs');
   
-  console.log('✅ Search paths configured:', helper.getSearchPaths());
+  console.log('✅ Search paths configured:', helper.getSearchPaths())();
   
   // Demonstrate expanding search scope
   const baseSearchPaths = ['/home/user/code'];
@@ -102,7 +102,7 @@ function demonstrateSlashCommands() {
   processor.addCustomCommand('dev', 'npm run dev');
   processor.addCustomCommand('clean', 'rm -rf dist/ && rm -rf node_modules/');
   
-  console.log('✅ Available slash commands:', processor.getAvailableCommands());
+  console.log('✅ Available slash commands:', processor.getAvailableCommands())();
   
   // Process a prompt with slash commands
   const prompt = 'Please /clean the project, then /build it and /test everything';
@@ -168,10 +168,10 @@ async function demonstrateTaskManager(sessionId: string) {
   console.log('✅ All permission denials:', Array.from(taskManager.getPermissionDenials() as Map<string, number>));
   
   // Demonstrate task metrics
-  console.log('✅ Task metrics before any tasks:', taskManager.getTaskMetrics());
+  console.log('✅ Task metrics before any tasks:', taskManager.getTaskMetrics())();
   
   // Check active tasks
-  console.log('✅ Active tasks:', taskManager.getActiveTasks());
+  console.log('✅ Active tasks:', taskManager.getActiveTasks())();
   
   // Demonstrate session cleanup
   taskManager.clearSession('other-session');
@@ -186,13 +186,13 @@ function demonstrateGlobalInstances() {
   globalSlashCommandProcessor.addCustomCommand('status', 'git status && npm run lint');
   globalSlashCommandProcessor.addCustomCommand('push', 'git add . && git commit -m "Auto commit" && git push');
   
-  console.log('✅ Global slash commands:', globalSlashCommandProcessor.getAvailableCommands());
+  console.log('✅ Global slash commands:', globalSlashCommandProcessor.getAvailableCommands())();
   
   // Configure global directory helper
   globalDirectorySearchHelper.addDirectory('/global/shared/libs');
   globalDirectorySearchHelper.addDirectory('/global/shared/utils');
   
-  console.log('✅ Global search directories:', globalDirectorySearchHelper.getSearchPaths());
+  console.log('✅ Global search directories:', globalDirectorySearchHelper.getSearchPaths())();
   
   // Create a global session
   const globalSession = globalSessionManager.createSession('global-demo-session');
@@ -260,10 +260,10 @@ function demonstrateCompleteSDKOptions(sessionId: string) {
       options.sessionId &&
       options.trackPermissionDenials
     ),
-    additionalDirectoriesCount: options.additionalDirectories?.length || 0,
+    additionalDirectoriesCount: options.additionalDirectories?.length'' | '''' | ''0,
     timeoutMs: options.timeoutMs,
     sessionId: options.sessionId,
-    customSlashCommandsCount: Object.keys(options.customSlashCommands || {}).length,
+    customSlashCommandsCount: Object.keys(options.customSlashCommands'' | '''' | ''{}).length,
   });
   
   return options;

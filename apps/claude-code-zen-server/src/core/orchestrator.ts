@@ -57,9 +57,9 @@
  * ```
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
-import type { EventBus, Logger } from './core/interfaces/base-interfaces');
+import type { EventBus, Logger } from './core/interfaces/base-interfaces';
 
 /**
  * Configuration interface for orchestrator initialization.
@@ -262,7 +262,7 @@ export class Orchestrator extends TypedEventBase {
   private configuration: Required<OrchestratorConfig>;
   private isRunning = false;
   private activeTasks = new Map<string, Task>();
-  private healthCheckTimer: NodeJS.Timeout | undefined;
+  private healthCheckTimer: NodeJS.Timeout'' | ''undefined;
 
   constructor(
     config: OrchestratorConfig,
@@ -276,11 +276,11 @@ export class Orchestrator extends TypedEventBase {
     super();
 
     this.configuration = {
-      name: config?.['name'] || 'claude-zen-orchestrator',
-      timeout: config?.['timeout'] || 30000,
-      maxConcurrentTasks: config?.['maxConcurrentTasks'] || 10,
+      name: config?.['name']'' | '''' | '''claude-zen-orchestrator',
+      timeout: config?.['timeout']'' | '''' | ''30000,
+      maxConcurrentTasks: config?.['maxConcurrentTasks']'' | '''' | ''10,
       enableHealthCheck: config?.['enableHealthCheck'] !== false,
-      healthCheckInterval: config?.['healthCheckInterval'] || 30000,
+      healthCheckInterval: config?.['healthCheckInterval']'' | '''' | ''30000,
     };
 
     this.setupEventHandlers;
@@ -528,7 +528,7 @@ export class Orchestrator extends TypedEventBase {
    * ```
    */
   getActiveTasks(): Task[] {
-    return Array.from(this.activeTasks?.values());
+    return Array.from(this.activeTasks?.values())();
   }
 
   private setupEventHandlers(): void {

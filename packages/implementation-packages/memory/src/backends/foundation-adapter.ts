@@ -2,25 +2,25 @@
  * Foundation Storage Adapter for Memory Backend - Simplified Implementation
  */
 
-import { 
+import {
   getDatabaseAccess,
   getKVStore,
   getLogger,
   recordMetric,
-  withTrace
+  withTrace,
 } from '@claude-zen/foundation';
-import type { 
+import type {
   DatabaseAccess,
   KeyValueStore,
-  Logger
+  Logger,
 } from '@claude-zen/foundation';
 import { BaseMemoryBackend, type BackendCapabilities } from './base-backend';
 import type { MemoryConfig } from '../providers/memory-providers';
 import type { JSONValue } from '../core/memory-system';
 
 interface FoundationMemoryConfig extends MemoryConfig {
-  storageType: 'kv' | 'database' | 'hybrid';
-  databaseType?: 'sqlite' | 'lancedb' | 'kuzu';
+  storageType: 'kv | database' | 'hybrid';
+  databaseType?: 'sqlite | lancedb' | 'kuzu';
 }
 
 export class FoundationMemoryBackend extends BaseMemoryBackend {
@@ -45,8 +45,12 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
         // Use KV store for all storage types for now
         this.kvStore = await getKVStore('sqlite');
         this.initialized = true;
-        this.logger.info(`Foundation backend initialized with ${config.storageType} storage`);
-        recordMetric('memory_backend_initialized', 1, { storageType: config.storageType });
+        this.logger.info(
+          `Foundation backend initialized with ${config.storageType} storage`
+        );
+        recordMetric('memory_backend_initialized', 1, {
+          storageType: config.storageType,
+        });
       });
     } catch (error) {
       this.logger.error('Failed to initialize Foundation backend:', error);
@@ -55,53 +59,68 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     }
   }
 
-  override async store(key: string, value: JSONValue, namespace = 'default'): Promise<void> {
+  override async store(
+    key: string,
+    value: JSONValue,
+    namespace = 'default'
+  ): Promise<void> {
     await this.ensureInitialized();
-    
+
     const finalKey = `${namespace}:${key}`;
     const entry = {
       key,
       value,
       namespace,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     if (this.kvStore) {
       await this.kvStore.set(finalKey, JSON.stringify(entry));
     }
 
-    recordMetric('memory_operations_total', 1, { operation: 'store', namespace });
+    recordMetric('memory_operations_total', 1, {
+      operation: 'store',
+      namespace,
+    });
   }
 
   override async set(key: string, value: JSONValue): Promise<void> {
     return this.store(key, value);
   }
 
-  override async retrieve<T = JSONValue>(key: string, namespace = 'default'): Promise<T | null> {
+  override async retrieve<T = JSONValue>(
+    key: string,
+    namespace = 'default'): Promise<T'' | ''null> {
     await this.ensureInitialized();
-    
+
     const finalKey = `${namespace}:${key}`;
 
     if (this.kvStore) {
       const data = await this.kvStore.get(finalKey);
       if (data) {
         const entry = JSON.parse(data);
-        recordMetric('memory_operations_total', 1, { operation: 'retrieve_hit', namespace });
+        recordMetric('memory_operations_total', 1, {
+          operation: 'retrieve_hit',
+          namespace,
+        });
         return entry.value as T;
       }
     }
 
-    recordMetric('memory_operations_total', 1, { operation: 'retrieve_miss', namespace });
+    recordMetric('memory_operations_total', 1, {
+      operation: 'retrieve_miss',
+      namespace,
+    });
     return null;
   }
 
-  override async get<T = JSONValue>(key: string): Promise<T | null> {
+  override async get<T = JSONValue>(key: string): Promise<T'' | ''null> {
     return this.retrieve<T>(key);
   }
 
-  override async delete(key: string, namespace = 'default'): Promise<boolean> {
+  override async delete(key: string, namespace ='default'): Promise<boolean> {
     await this.ensureInitialized();
-    
+
     const finalKey = `${namespace}:${key}`;
     let deleted = false;
 
@@ -114,13 +133,18 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     }
 
     if (deleted) {
-      recordMetric('memory_operations_total', 1, { operation: 'delete', namespace });
+      recordMetric('memory_operations_total', 1, {
+        operation: 'delete',
+        namespace,
+      });
     }
 
     return deleted;
   }
 
-  override async list(pattern?: string, namespace = 'default'): Promise<string[]> {
+  override async list(
+    pattern?: string,
+    namespace = 'default'): Promise<string[]> {
     await this.ensureInitialized();
 
     let keys: string[] = [];
@@ -128,11 +152,11 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     if (this.kvStore) {
       const allKeys = await this.kvStore.keys();
       const namespacePrefix = `${namespace}:`;
-      
+
       keys = allKeys
-        .filter(key => key.startsWith(namespacePrefix))
-        .map(key => key.substring(namespacePrefix.length))
-        .filter(key => !pattern || key.includes(pattern));
+        .filter((key) => key.startsWith(namespacePrefix))
+        .map((key) => key.substring(namespacePrefix.length))
+        .filter((key) => !pattern'' | '''' | ''key.includes(pattern));
     }
 
     return keys.sort();
@@ -145,7 +169,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       if (namespace) {
         const allKeys = await this.kvStore.keys();
         const namespacePrefix = `${namespace}:`;
-        
+
         for (const key of allKeys) {
           if (key.startsWith(namespacePrefix)) {
             await this.kvStore.delete(key);
@@ -156,7 +180,10 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       }
     }
 
-    recordMetric('memory_operations_total', 1, { operation: 'clear', namespace: namespace || 'all' });
+    recordMetric('memory_operations_total', 1, {
+      operation: 'clear',
+      namespace: namespace'' | '''' | '''all',
+    });
   }
 
   override async close(): Promise<void> {
@@ -169,11 +196,12 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
   override getCapabilities(): BackendCapabilities {
     const config = this.memoryConfig;
-    
+
     return {
       persistent: true,
       searchable: true,
-      transactional: config.storageType === 'database' || config.storageType === 'hybrid',
+      transactional:
+        config.storageType === 'database''' | '''' | ''config.storageType ==='hybrid',
       vectorized: config.databaseType === 'lancedb',
       distributed: false,
       concurrent: true,
@@ -188,14 +216,14 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     if (this.kvStore) {
       const allKeys = await this.kvStore.keys();
       const namespaces = new Set<string>();
-      
+
       for (const key of allKeys) {
         const colonIndex = key.indexOf(':');
         if (colonIndex > 0) {
           namespaces.add(key.substring(0, colonIndex));
         }
       }
-      
+
       return Array.from(namespaces).sort();
     }
 
@@ -214,7 +242,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   }
 
   private validateKey(key: string): void {
-    if (!key || typeof key !== 'string') {
+    if (!key'' | '''' | ''typeof key !=='string') {
       throw new Error('Key must be a non-empty string');
     }
   }

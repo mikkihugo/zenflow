@@ -26,13 +26,13 @@ import type {
   SerializationFormat,
   CircuitBreakerState,
   LoadBalancingStrategy,
-} from '@claude-zen/foundation');
-import { isString } from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
+import { isString } from '@claude-zen/foundation';
 import type {
   WebSocketEventType,
   KnowledgeQueryType,
   McpClientMessageType,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Type guards using foundation delegation
 
@@ -51,44 +51,11 @@ export type {
 };
 
 // Client-specific types (minimal custom definitions)
-export type ClientType =
-  | 'http'
-  | 'websocket'
-  | 'knowledge'
-  | 'mcpclient'
-  | 'generic');
-export type ProtocolType =
-  | 'http'
-  | 'https'
-  | 'ws'
-  | 'wss'
-  | 'tcp'
-  | 'udp'
-  | 'stdio'
-  | 'ipc'
-  | 'custom');
-export type AuthType =
-  | 'none'
-  | 'bearer'
-  | 'basic'
-  | 'api-key'
-  | 'oauth'
-  | 'jwt'
-  | 'custom');
-export type ClientStatus =
-  | 'disconnected'
-  | 'connecting'
-  | 'connected'
-  | 'reconnecting'
-  | 'error'
-  | 'suspended');
-export type ClientPreset =
-  | 'default'
-  | 'fast'
-  | 'reliable'
-  | 'minimal'
-  | 'secure'
-  | 'debug');
+export type ClientType ='' | '''http | websocket' | 'knowledge' | 'mcpclient' | 'generic');
+export type ProtocolType ='' | '''http | https' | 'ws''' | '''wss | tcp' | 'udp''' | '''stdio | ipc' | 'custom');
+export type AuthType ='' | '''none | bearer' | 'basic''' | '''api-key''' | '''oauth | jwt' | 'custom');
+export type ClientStatus ='' | '''disconnected | connecting' | 'connected''' | '''reconnecting | error' | 'suspended');
+export type ClientPreset ='' | '''default | fast' | 'reliable''' | '''minimal | secure' | 'debug');
 
 // Core enums and constants (delegated to @claude-zen packages when possible)
 export const ClientTypes = {

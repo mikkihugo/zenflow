@@ -8,8 +8,8 @@
  * @file Interface implementation: api-route-handler.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { Express, Request, Response } from 'express');
+import { getLogger } from '@claude-zen/foundation';
+import type { Express, Request, Response } from 'express';
 
 import('/web-socket-coordinator');
 
@@ -245,8 +245,8 @@ export class ApiRouteHandler {
     const session = this.webSocket.getSession(sessionId);
 
     res.json({
-      theme: session?.preferences?.theme || 'dark',
-      refreshInterval: session?.preferences?.refreshInterval || 3000,
+      theme: session?.preferences?.theme'' | '''' | '''dark',
+      refreshInterval: session?.preferences?.refreshInterval'' | '''' | ''3000,
       notifications: session?.preferences?.notifications ?? true,
     });
   }
@@ -267,7 +267,7 @@ export class ApiRouteHandler {
     if (success) {
       res.json({ success: true });
     } else {
-      res.status(400).json({ error: 'Failed to update settings' });
+      res.status(400).json({ error: 'Failed to update settings'});
     }
   }
 
@@ -283,7 +283,7 @@ export class ApiRouteHandler {
       const logs = await this.getLogs({
         level: level as string,
         source: source as string,
-        limit: parseInt(limit as string) || 100,
+        limit: parseInt(limit as string)'' | '''' | ''100,
         search: search as string,
       });
       res.json({ logs, timestamp: new Date()?.toISOString });
@@ -350,10 +350,10 @@ export class ApiRouteHandler {
   private async createSwarm(config: any): Promise<unknown> {
     const swarm = {
       id: `swarm-${Date.now()}`,
-      name: config?.name || 'New Swarm',
+      name: config?.name'' | '''' | '''New Swarm',
       status: 'active',
-      agents: config?.agents || 4,
-      topology: config?.topology || 'mesh',
+      agents: config?.agents'' | '''' | ''4,
+      topology: config?.topology'' | '''' | '''mesh',
       uptime: 0,
       created: new Date()?.toISOString,
     };
@@ -398,11 +398,11 @@ export class ApiRouteHandler {
   private async createTask(config: any): Promise<unknown> {
     const task = {
       id: `task-${Date.now()}`,
-      description: config?.description || 'New Task',
+      description: config?.description'' | '''' | '''New Task',
       status: 'pending',
       progress: 0,
-      assignedAgents: config?.assignedAgents || [],
-      priority: config?.priority || 'medium',
+      assignedAgents: config?.assignedAgents'' | '''' | ''[],
+      priority: config?.priority'' | '''' | '''medium',
       created: new Date()?.toISOString,
     };
 
@@ -485,15 +485,14 @@ export class ApiRouteHandler {
         const searchTerm = filters.search?.toLowerCase()
         logs = logs.filter(
           (entry: any) =>
-            entry.message?.toLowerCase.includes(searchTerm) ||
-            entry.component?.toLowerCase.includes(searchTerm)
+            entry.message?.toLowerCase.includes(searchTerm)'' | '''' | ''entry.component?.toLowerCase.includes(searchTerm)
         );
       }
 
       // Sort by timestamp (newest first)
       logs.sort((a: any, b: any) => {
-        const dateA = new Date(a.timestamp || 0)?.getTime()
-        const dateB = new Date(b.timestamp || 0)?.getTime()
+        const dateA = new Date(a.timestamp'' | '''' | ''0)?.getTime()
+        const dateB = new Date(b.timestamp'' | '''' | ''0)?.getTime()
         return dateB - dateA;
       });
 

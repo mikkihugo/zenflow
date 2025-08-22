@@ -5,10 +5,10 @@
  * monorepo detection, dependency analysis, and architectural insights.
  */
 
-import { existsSync, readFileSync, statSync } from 'node:fs');
-import { join } from 'node:path');
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('ProjectContextAnalyzer');
 
@@ -16,11 +16,11 @@ export interface MonorepoInfo {
   /** Root directory of the monorepo */
   rootPath: string;
   /** Package manager used (npm, yarn, pnpm) */
-  packageManager: 'npm | yarn' | 'pnpm | unknown');
+  packageManager: 'npm'' | ''yarn'' | ''pnpm'' | ''unknown');
   /** List of workspace packages */
   workspaces: string[];
   /** Build tool configuration */
-  buildTool?: 'webpack | vite' | 'rollup | esbuild' | 'unknown');
+  buildTool?: 'webpack'' | ''vite'' | ''rollup'' | ''esbuild'' | ''unknown');
   /** Framework detection */
   frameworks: string[];
   /** Language configuration */
@@ -32,12 +32,12 @@ export interface MonorepoInfo {
   /** Whether monorepo has a root package.json */
   hasRootPackageJson: boolean;
   /** Type of monorepo structure */
-  type: 'lerna | nx' | 'rush | pnpm' | 'yarn | standard');
+  type: 'lerna'' | ''nx'' | ''rush'' | ''pnpm'' | ''yarn'' | ''standard');
 }
 
 export interface ProjectStructure {
   /** Project type classification */
-  type: 'monorepo | single-package' | 'library | application');
+  type: 'monorepo'' | ''single-package'' | ''library'' | ''application');
   /** Source directories */
   sourceDirs: string[];
   /** Test directories */
@@ -52,13 +52,13 @@ export interface ProjectStructure {
 
 export interface ArchitecturalInsight {
   /** Insight category */
-  category: 'architecture | performance' | 'maintainability | security');
+  category: 'architecture'' | ''performance'' | ''maintainability'' | ''security');
   /** Insight title */
   title: string;
   /** Detailed description */
   description: string;
   /** Severity level */
-  severity: 'low | medium' | 'high | critical');
+  severity: 'low'' | ''medium'' | ''high'' | ''critical');
   /** Suggested actions */
   suggestions: string[];
   /** Confidence score (0-1) */
@@ -125,14 +125,14 @@ export class ProjectContextAnalyzer extends TypedEventBase {
   /**
    * Get monorepo information
    */
-  getMonorepoInfo(): MonorepoInfo | null {
+  getMonorepoInfo(): MonorepoInfo'' | ''null {
     return this.monorepoInfo;
   }
 
   /**
    * Get project structure information
    */
-  getProjectStructure(): ProjectStructure | null {
+  getProjectStructure(): ProjectStructure'' | ''null {
     return this.projectStructure;
   }
 
@@ -146,7 +146,7 @@ export class ProjectContextAnalyzer extends TypedEventBase {
   /**
    * Get project metrics
    */
-  getMetrics(): ProjectMetrics | null {
+  getMetrics(): ProjectMetrics'' | ''null {
     return this.metrics;
   }
 
@@ -339,13 +339,13 @@ export class ProjectContextAnalyzer extends TypedEventBase {
 
     try {
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
-      return !!(packageJson.workspaces || packageJson.pnpm?.packages);
+      return !!(packageJson.workspaces'' | '''' | ''packageJson.pnpm?.packages);
     } catch {
       return false;
     }
   }
 
-  private detectPackageManager(): 'npm | yarn' | 'pnpm | unknown' {
+  private detectPackageManager():'npm | yarn''' | '''pnpm | unknown' {
     if (existsSync(join(this.rootPath, 'pnpm-lock.yaml))) return pnpm');
     if (existsSync(join(this.rootPath, 'yarn.lock))) return yarn');
     if (existsSync(join(this.rootPath, 'package-lock.json))) return npm');
@@ -354,7 +354,7 @@ export class ProjectContextAnalyzer extends TypedEventBase {
 
   private getWorkspaces(packageJson: any): string[] {
     const workspaces =
-      packageJson.workspaces || packageJson.pnpm?.packages || [];
+      packageJson.workspaces'' | '''' | ''packageJson.pnpm?.packages'' | '''' | ''[];
     if (Array.isArray(workspaces)) return workspaces;
     if (workspaces.packages) return workspaces.packages;
     return [];
@@ -362,7 +362,7 @@ export class ProjectContextAnalyzer extends TypedEventBase {
 
   private detectFrameworks(): string[] {
     const frameworks: string[] = [];
-    const packageJsonPath = join(this.rootPath, 'package.json');
+    const packageJsonPath = join(this.rootPath,'package.json');
 
     try {
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
@@ -401,7 +401,7 @@ export class ProjectContextAnalyzer extends TypedEventBase {
     const packageJsonPath = join(this.rootPath, 'package.json');
     try {
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
-      return !!(packageJson.main || packageJson.module || packageJson.exports);
+      return !!(packageJson.main'' | '''' | ''packageJson.module'' | '''' | ''packageJson.exports);
     } catch {
       return false;
     }
@@ -428,8 +428,8 @@ export class ProjectContextAnalyzer extends TypedEventBase {
     const packageJsonPath = join(this.rootPath, 'package.json');
     try {
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
-      const deps = Object.keys(packageJson.dependencies || {});
-      const devDeps = Object.keys(packageJson.devDependencies || {});
+      const deps = Object.keys(packageJson.dependencies'' | '''' | ''{});
+      const devDeps = Object.keys(packageJson.devDependencies'' | '''' | ''{});
       return deps.length + devDeps.length;
     } catch {
       return 0;

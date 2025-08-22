@@ -103,7 +103,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     }
 
     let latency: number;
-    if (from.includes('gateway') || to.includes('gateway')) {
+    if (from.includes('gateway')'' | '''' | ''to.includes('gateway')) {
       latency = 20 + Math.random() * 30; // Gateway connections
     } else {
       latency = 10 + Math.random() * 20; // Direct connections

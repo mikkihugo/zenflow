@@ -10,5 +10,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   minify: false,
-  external: ['xstate', 'eventemitter3', 'immer', 'zod']
+  external: ['xstate', 'eventemitter3', 'immer', 'zod'],
 });

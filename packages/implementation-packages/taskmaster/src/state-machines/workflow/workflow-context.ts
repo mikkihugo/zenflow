@@ -82,7 +82,9 @@ export interface WorkflowMachineContext {
 /**
  * Create initial workflow machine context with safe defaults
  */
-export const createInitialContext = (config: WorkflowKanbanConfig): WorkflowMachineContext => ({
+export const createInitialContext = (
+  config: WorkflowKanbanConfig
+): WorkflowMachineContext => ({
   // Initialize task management structures
   tasks: {},
   tasksByState: {
@@ -132,15 +134,24 @@ export class WorkflowContextUtils {
   /**
    * Get task count for specific state
    */
-  static getTaskCountForState(context: WorkflowMachineContext, state: TaskState): number {
+  static getTaskCountForState(
+    context: WorkflowMachineContext,
+    state: TaskState
+  ): number {
     return context.tasksByState[state]?.length || 0;
   }
 
   /**
    * Get WIP utilization for specific state
    */
-  static getWIPUtilization(context: WorkflowMachineContext, state: TaskState): number {
-    const currentCount = WorkflowContextUtils.getTaskCountForState(context, state);
+  static getWIPUtilization(
+    context: WorkflowMachineContext,
+    state: TaskState
+  ): number {
+    const currentCount = WorkflowContextUtils.getTaskCountForState(
+      context,
+      state
+    );
     const limit = context.wipLimits[state];
     return limit > 0 ? currentCount / limit : 0;
   }
@@ -153,7 +164,10 @@ export class WorkflowContextUtils {
     state: TaskState,
     additionalTasks: number = 1
   ): boolean {
-    const currentCount = WorkflowContextUtils.getTaskCountForState(context, state);
+    const currentCount = WorkflowContextUtils.getTaskCountForState(
+      context,
+      state
+    );
     const limit = context.wipLimits[state];
     return currentCount + additionalTasks > limit;
   }
@@ -161,7 +175,9 @@ export class WorkflowContextUtils {
   /**
    * Get system health category
    */
-  static getSystemHealthCategory(health: number): 'excellent' | 'good' | 'warning' | 'critical' {
+  static getSystemHealthCategory(
+    health: number
+  ):'excellent'' | ''good'' | ''warning'' | ''critical' {
     if (health >= 0.9) return 'excellent';
     if (health >= 0.7) return 'good';
     if (health >= 0.3) return 'warning';
@@ -182,13 +198,22 @@ export class WorkflowContextUtils {
    * Calculate overall system utilization
    */
   static calculateSystemUtilization(context: WorkflowMachineContext): number {
-    const workStates: TaskState[] = ['analysis', 'development', 'testing', 'review', 'deployment'];
+    const workStates: TaskState[] = [
+      'analysis',
+      'development',
+      'testing',
+      'review',
+      'deployment',
+    ];
 
     let totalUtilization = 0;
     let stateCount = 0;
 
     for (const state of workStates) {
-      const utilization = WorkflowContextUtils.getWIPUtilization(context, state);
+      const utilization = WorkflowContextUtils.getWIPUtilization(
+        context,
+        state
+      );
       totalUtilization += Math.min(1, utilization); // Cap at 100%
       stateCount++;
     }

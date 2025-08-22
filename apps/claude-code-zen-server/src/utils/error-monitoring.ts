@@ -6,9 +6,9 @@
  * @file Error-monitoring implementation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
-import type { Logger } from './core/interfaces/base-interfaces');
+import type { Logger } from './core/interfaces/base-interfaces';
 
 export interface ErrorContext {
   component: string;
@@ -34,7 +34,7 @@ export interface ErrorPattern {
   id: string;
   pattern: string;
   description: string;
-  severity: 'low | medium' | 'high | critical');
+  severity: 'low'' | ''medium'' | ''high'' | ''critical');
   threshold: number;
   timeWindow: number;
   actions: string[];
@@ -42,9 +42,9 @@ export interface ErrorPattern {
 
 export interface ErrorAlert {
   id: string;
-  type: 'threshold | pattern' | 'critical');
+  type: 'threshold'' | ''pattern'' | ''critical');
   message: string;
-  severity: 'low | medium' | 'high | critical');
+  severity: 'low'' | ''medium'' | ''high'' | ''critical');
   component: string;
   count: number;
   timeframe: string;
@@ -79,16 +79,16 @@ export class ErrorMonitoring extends TypedEventBase {
   recordError(error: Error, context: Partial<ErrorContext> = {}): void {
     const errorContext: ErrorContext = {
       component: context.component || 'unknown',
-      operation: context.operation || 'unknown',
+      operation: context.operation'' | '''' | '''unknown',
       ...(context.userId !== undefined && { userId: context.userId }),
       ...(context.sessionId !== undefined && { sessionId: context.sessionId }),
-      metadata: context.metadata || {},
-      stackTrace: error.stack || '',
+      metadata: context.metadata'' | '''' | ''{},
+      stackTrace: error.stack'' | '''' | '''',
       timestamp: new Date(),
     };
 
     const errorKey = `${errorContext.component}:${error.name}`;
-    const componentErrors = this.errors.get(errorKey) || [];
+    const componentErrors = this.errors.get(errorKey)'' | '''' | ''[];
     componentErrors.push(errorContext);
     this.errors.set(errorKey, componentErrors);
 
@@ -140,7 +140,7 @@ export class ErrorMonitoring extends TypedEventBase {
    */
   getComponentErrors(component: string, since?: Date): ErrorContext[] {
     const allErrors: ErrorContext[] = [];
-    const sinceTime = since?.getTime || 0;
+    const sinceTime = since?.getTime'' | '''' | ''0;
 
     for (const [key, errors] of Array.from(this.errors)) {
       if (key.startsWith(`${component}:`)) {
@@ -181,7 +181,7 @@ export class ErrorMonitoring extends TypedEventBase {
       const componentName = key.split(':')[0];
       if (componentName) {
         components[componentName] =
-          (components[componentName] || 0) + errors.length;
+          (components[componentName]'' | '''' | ''0) + errors.length;
       }
 
       for (const error of errors) {
@@ -260,7 +260,7 @@ export class ErrorMonitoring extends TypedEventBase {
     for (const [key, errors] of Array.from(this.errors)) {
       const [component, _errorType] = key.split(':');
       const recentErrors = errors.filter(
-        (e) => Date.now() - e.timestamp?.getTime <= timeWindow
+        (e) => Date.now() - e.timestamp?.getTime() <= timeWindow
       );
 
       if (recentErrors.length > 0 && component) {
@@ -273,7 +273,7 @@ export class ErrorMonitoring extends TypedEventBase {
       .slice(0, 10);
 
     for (const [key, data] of sortedErrors) {
-      const errorType = key.split(':)[1] || unknown');
+      const errorType = key.split(':)[1]'' | '''' | ''unknown');
       topErrors.push({
         error: errorType,
         count: data?.['count'],
@@ -296,12 +296,12 @@ export class ErrorMonitoring extends TypedEventBase {
     // Update component metrics
     const component = context.component;
     this.metrics.errorsByComponent[component] =
-      (this.metrics.errorsByComponent[component] || 0) + 1;
+      (this.metrics.errorsByComponent[component]'' | '''' | ''0) + 1;
 
     // Update error type metrics
     const errorType = error.name;
     this.metrics.errorsByType[errorType] =
-      (this.metrics.errorsByType[errorType] || 0) + 1;
+      (this.metrics.errorsByType[errorType]'' | '''' | ''0) + 1;
 
     // Check if critical error
     if (this.isCriticalError(error, context)) {
@@ -336,13 +336,10 @@ export class ErrorMonitoring extends TypedEventBase {
     context: ErrorContext,
     pattern: ErrorPattern
   ): boolean {
-    const regex = new RegExp(pattern.pattern, 'i');
+    const regex = new RegExp(pattern.pattern,'i');
 
     return (
-      regex.test(error.message) ||
-      regex.test(error.name) ||
-      regex.test(context.component) ||
-      regex.test(context.operation)
+      regex.test(error.message)'' | '''' | ''regex.test(error.name)'' | '''' | ''regex.test(context.component)'' | '''' | ''regex.test(context.operation)
     );
   }
 
@@ -368,7 +365,7 @@ export class ErrorMonitoring extends TypedEventBase {
   private triggerAlert(pattern: ErrorPattern, count: number): void {
     const alert: ErrorAlert = {
       id: `alert-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      type: 'pattern',
+      type:'pattern',
       message: `Pattern "${pattern.description}" triggered`,
       severity: pattern.severity,
       component: 'error-monitoring',
@@ -400,10 +397,8 @@ export class ErrorMonitoring extends TypedEventBase {
     return (
       criticalPatterns.some(
         (pattern) =>
-          error.name.includes(pattern) || error.message.includes(pattern)
-      ) ||
-      context.component === 'security' ||
-      context.component === 'database'
+          error.name.includes(pattern)'' | '''' | ''error.message.includes(pattern)
+      )'' | '''' | ''context.component ==='security''' | '''' | ''context.component ==='database'
     );
   }
 
@@ -420,7 +415,7 @@ export class ErrorMonitoring extends TypedEventBase {
       },
       {
         id: 'memory-errors',
-        pattern: 'memory|oom|out of memory',
+        pattern: 'memory'' | ''oom'' | ''out of memory',
         description: 'Memory-related errors',
         severity: 'high',
         threshold: 3,
@@ -429,7 +424,7 @@ export class ErrorMonitoring extends TypedEventBase {
       },
       {
         id: 'security-errors',
-        pattern: 'security|unauthorized|forbidden|auth',
+        pattern: 'security'' | ''unauthorized'' | ''forbidden'' | ''auth',
         description: 'Security-related errors',
         severity: 'critical',
         threshold: 1,
@@ -438,7 +433,7 @@ export class ErrorMonitoring extends TypedEventBase {
       },
       {
         id: 'database-errors',
-        pattern: 'database|sql|connection|timeout',
+        pattern: 'database'' | ''sql'' | ''connection'' | ''timeout',
         description: 'Database connectivity issues',
         severity: 'high',
         threshold: 5,

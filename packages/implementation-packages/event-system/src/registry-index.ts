@@ -1,16 +1,16 @@
 /**
  * @fileoverview Event Registry Index - ServiceContainer Migration (Option 1)
- * 
+ *
  * Provides seamless migration from EventRegistry to ServiceContainer-based implementation.
  * Zero breaking changes by making MigratedEventRegistry the default export while preserving
  * legacy EventRegistry for fallback compatibility.
- * 
+ *
  * Migration Pattern: Option 1 (Zero Breaking Changes)
  * - MigratedEventRegistry as default export
  * - Legacy EventRegistry available for fallback
  * - Factory functions for both implementations
  * - Enhanced ServiceContainer features via MigratedEventRegistry
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 2.1.0
@@ -20,19 +20,19 @@
 // MAIN EXPORTS - Option 1: MigratedEventRegistry as default (zero breaking changes)
 // =============================================================================
 
-export { 
-  MigratedEventRegistry as EventRegistry, 
+export {
+  MigratedEventRegistry as EventRegistry,
   getMigratedEventRegistry as getEventRegistry,
-  createMigratedEventRegistry as createEventRegistry
+  createMigratedEventRegistry as createEventRegistry,
 } from './registry-migrated';
 
 // =============================================================================
 // LEGACY IMPLEMENTATIONS - Available for fallback
 // =============================================================================
 
-export { 
+export {
   EventRegistry as LegacyEventRegistry,
-  globalEventRegistry
+  globalEventRegistry,
 } from './registry';
 
 // =============================================================================
@@ -44,7 +44,7 @@ export type {
   EventTypeRegistry,
   FactoryRegistry,
   HealthMonitoringConfig,
-  EventDiscoveryConfig
+  EventDiscoveryConfig,
 } from './registry';
 
 // =============================================================================
@@ -52,7 +52,11 @@ export type {
 // =============================================================================
 
 // Re-export ServiceContainer-enhanced EventRegistry for explicit usage
-export { MigratedEventRegistry, getMigratedEventRegistry, createMigratedEventRegistry } from './registry-migrated';
+export {
+  MigratedEventRegistry,
+  getMigratedEventRegistry,
+  createMigratedEventRegistry,
+} from './registry-migrated';
 
 /**
  * Convenience factory function that creates the migrated registry with sensible defaults
@@ -63,12 +67,12 @@ export function createEnhancedEventRegistry(config?: {
   autoRegisterDefaults?: boolean;
 }) {
   const registry = createMigratedEventRegistry();
-  
+
   // Auto-initialize with provided config
-  registry.initialize(config).catch(error => {
+  registry.initialize(config).catch((error) => {
     console.error('Failed to initialize enhanced event registry:', error);
   });
-  
+
   return registry;
 }
 
@@ -86,8 +90,8 @@ export const MIGRATION_INFO = {
     enhancedMetrics: true,
     eventDrivenNotifications: true,
     legacyCompatibility: true,
-    zeroBreakingChanges: true
+    zeroBreakingChanges: true,
   },
   defaultImplementation: 'MigratedEventRegistry',
-  fallbackImplementation: 'LegacyEventRegistry'
+  fallbackImplementation: 'LegacyEventRegistry',
 } as const;

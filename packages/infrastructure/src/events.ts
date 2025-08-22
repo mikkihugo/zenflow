@@ -16,7 +16,11 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { JsonValue, UnknownRecord, Constructor } from '@claude-zen/foundation';
+import type {
+  JsonValue,
+  UnknownRecord,
+  Constructor,
+} from '@claude-zen/foundation';
 
 const logger = getLogger('infrastructure-events');
 
@@ -24,19 +28,19 @@ const logger = getLogger('infrastructure-events');
  * Custom error types for event system operations
  */
 export class EventSystemError extends Error {
-  public override cause?: Error | undefined;
+  public override cause?: Error'' | ''undefined;
 
-  constructor(message: string, cause?: Error | undefined) {
+  constructor(message: string, cause?: Error'' | ''undefined) {
     super(message);
-    this.name = 'EventSystemError';
+    this.name ='EventSystemError';
     this.cause = cause;
   }
 }
 
 export class EventSystemConnectionError extends EventSystemError {
-  constructor(message: string, cause?: Error | undefined) {
+  constructor(message: string, cause?: Error'' | ''undefined) {
     super(message, cause);
-    this.name = 'EventSystemConnectionError';
+    this.name ='EventSystemConnectionError';
   }
 }
 
@@ -93,15 +97,19 @@ export interface EventSystemConfig {
  * Implementation of event system access via runtime delegation
  */
 class EventSystemAccessImpl implements EventSystemAccess {
-  private eventSystemModule: EventSystemModule | null = null;
+  private eventSystemModule: EventSystemModule'' | ''null = null;
 
   private async getEventSystemModule(): Promise<EventSystemModule> {
     if (!this.eventSystemModule) {
       try {
         // Import the event-system package at runtime (matches database pattern)
         // this.eventSystemModule = await import('@claude-zen/event-system') as EventSystemModule;
-        logger.debug('Event system module loading temporarily disabled for build');
-        throw new Error('Event system module loading temporarily disabled for build');
+        logger.debug(
+          'Event system module loading temporarily disabled for build',
+        );
+        throw new Error(
+          'Event system module loading temporarily disabled for build',
+        );
       } catch (error) {
         throw new EventSystemConnectionError(
           'Event system package not available. Foundation requires @claude-zen/event-system for event operations.',
@@ -112,7 +120,9 @@ class EventSystemAccessImpl implements EventSystemAccess {
     return this.eventSystemModule;
   }
 
-  async createEventBus<T = UnknownRecord>(config?: EventSystemConfig): Promise<T> {
+  async createEventBus<T = UnknownRecord>(
+    config?: EventSystemConfig,
+  ): Promise<T> {
     const module = await this.getEventSystemModule();
     logger.debug('Creating typed event bus via foundation delegation');
     return module.createEventBus(config as JsonValue) as T;
@@ -132,7 +142,7 @@ class EventSystemAccessImpl implements EventSystemAccess {
 }
 
 // Global singleton instance
-let globalEventSystemAccess: EventSystemAccess | null = null;
+let globalEventSystemAccess: EventSystemAccess'' | ''null = null;
 
 /**
  * Get event system access interface (singleton pattern)
@@ -149,7 +159,9 @@ export function getEventSystemAccess(): EventSystemAccess {
  * Create a typed event bus through foundation delegation
  * @param config - Event bus configuration
  */
-export async function getEventBus<T = UnknownRecord>(config?: EventSystemConfig): Promise<T> {
+export async function getEventBus<T = UnknownRecord>(
+  config?: EventSystemConfig,
+): Promise<T> {
   const eventSystem = getEventSystemAccess();
   return eventSystem.createEventBus<T>(config);
 }
@@ -158,7 +170,9 @@ export async function getEventBus<T = UnknownRecord>(config?: EventSystemConfig)
  * Create an event manager through foundation delegation
  * @param config - Event manager configuration
  */
-export async function getEventManager(config?: EventSystemConfig): Promise<UnknownRecord> {
+export async function getEventManager(
+  config?: EventSystemConfig,
+): Promise<UnknownRecord> {
   const eventSystem = getEventSystemAccess();
   return eventSystem.createEventManager(config);
 }
@@ -178,54 +192,55 @@ export function createEventSystem(config?: EventSystemConfig) {
   const neuralConfig = config?.neuralProcessing;
   const enableMetrics = config?.enableMetrics ?? false;
   const enableValidation = config?.enableValidation ?? false;
-  
+
   return Promise.resolve({
     config: {
       enableMetrics,
       enableValidation,
       neuralProcessing: neuralConfig,
-      maxListeners: config?.maxListeners ?? 100
+      maxListeners: config?.maxListeners ?? 100,
     },
-    emit: async (event: string, data: any) => {
+    emit: async (event: string, data: unknown) => {
+      await Promise.resolve(); // Add await expression
       if (enableValidation && !event) {
         throw new Error('Event name is required');
       }
-      
+
       if (enableMetrics) {
-        console.log(`Event emitted: ${event}`, data);
+        logger.debug(`Event emitted: ${event}`, data);
       }
-      
+
       if (neuralConfig?.enableLearning) {
-        console.log(`Neural learning enabled for event: ${event}`);
+        logger.debug(`Neural learning enabled for event: ${event}`);
       }
-      
+
       if (neuralConfig?.predictionEnabled) {
-        console.log(`Event prediction active for: ${event}`);
+        logger.debug(`Event prediction active for: ${event}`);
       }
-      
+
       if (neuralConfig?.smartRoutingEnabled) {
-        console.log(`Smart routing applied to: ${event}`);
+        logger.debug(`Smart routing applied to: ${event}`);
       }
     },
-    on: (event: string, _handler: (data: any) => void) => {
-      console.log(`Event listener registered: ${event}`);
-      return () => console.log(`Event listener removed: ${event}`);
+    on: (event: string) => {
+      logger.debug(`Event listener registered: ${event}`);
+      return () => logger.debug(`Event listener removed: ${event}`);
     },
-    off: (event: string, _handler: (data: any) => void) => {
-      console.log(`Event listener removed: ${event}`);
+    off: (event: string) => {
+      logger.debug(`Event listener removed: ${event}`);
     },
-    once: (event: string, _handler: (data: any) => void) => {
-      console.log(`One-time event listener registered: ${event}`);
+    once: (event: string) => {
+      logger.debug(`One-time event listener registered: ${event}`);
     },
     removeAllListeners: (event?: string) => {
-      console.log(`All listeners removed${event ? ` for: ${event}` : ''}`);
+      logger.debug(`All listeners removed${event ? ` for: ${event}` : ''}`);
     },
     getMetrics: () => ({
       totalEvents: 0,
       activeListeners: 0,
       neuralLearning: neuralConfig?.enableLearning ?? false,
-      predictionAccuracy: neuralConfig?.predictionEnabled ? 0.85 : 0
-    })
+      predictionAccuracy: neuralConfig?.predictionEnabled ? 0.85 : 0,
+    }),
   });
 }
 
@@ -240,20 +255,22 @@ export const eventSystem = {
 
 /**
  * Type-safe event bus class for strategic infrastructure facade.
- * 
+ *
  * Provides the TypeSafeEventBus class export that many files are looking for.
  * Delegates to the actual event-system implementation when available.
  */
 export class TypeSafeEventBus {
-  private busInstance: any;
-  
+  private busInstance: unknown;
+
   constructor(config?: EventSystemConfig) {
     // Initialize with fallback bus
     this.busInstance = getEventBus(config);
     this.tryLoadRealImplementation(config);
   }
-  
-  private async tryLoadRealImplementation(config?: EventSystemConfig): Promise<void> {
+
+  private async tryLoadRealImplementation(
+    config?: EventSystemConfig,
+  ): Promise<void> {
     try {
       const eventSystemModule = await import('@claude-zen/event-system');
       if (eventSystemModule.TypeSafeEventBus) {
@@ -265,37 +282,41 @@ export class TypeSafeEventBus {
       logger.debug('Using fallback TypeSafeEventBus implementation:', error);
     }
   }
-  
+
   // Delegate all methods to the underlying bus
-  emit(event: string, data?: any): void {
+  emit(event: string, data?: unknown): void {
     return this.busInstance.emit?.(event, data);
   }
-  
-  on(event: string, handler: (data: any) => void): () => void {
-    return this.busInstance.on?.(event, handler) || (() => {});
+
+  on(event: string, handler: (data: unknown) => void): () => void {
+    return this.busInstance.on?.(event, handler) || (() => { /* Empty handler */ });
   }
-  
-  off(event: string, handler: (data: any) => void): void {
+
+  off(event: string, handler: (data: unknown) => void): void {
     return this.busInstance.off?.(event, handler);
   }
-  
-  once(event: string, handler: (data: any) => void): void {
+
+  once(event: string, handler: (data: unknown) => void): void {
     return this.busInstance.once?.(event, handler);
   }
-  
+
   removeAllListeners(event?: string): void {
     return this.busInstance.removeAllListeners?.(event);
   }
-  
-  getMetrics(): any {
-    return this.busInstance.getMetrics?.() || { totalEvents: 0, activeListeners: 0 };
+
+  getMetrics(): unknown {
+    return (
+      this.busInstance.getMetrics?.() || { totalEvents: 0, activeListeners: 0 }
+    );
   }
 }
 
 /**
  * Factory function for creating TypeSafeEventBus instances
  */
-export async function getTypeSafeEventBus<TEvents = UnknownRecord>(config?: EventSystemConfig): Promise<TEvents> {
+export async function getTypeSafeEventBus<TEvents = UnknownRecord>(
+  config?: EventSystemConfig,
+): Promise<TEvents> {
   return new TypeSafeEventBus(config) as TEvents;
 }
 

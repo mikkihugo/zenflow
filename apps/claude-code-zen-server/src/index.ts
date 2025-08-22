@@ -32,7 +32,7 @@ export * as SPARC from '@claude-zen/enterprise');
  *
  * @example
  * ```typescript
- * import { Database } from 'claude-code-zen');
+ * import { Database } from 'claude-code-zen';
  *
  * const manager = await Database?.createDatabaseManager()
  * const dao = manager?.getCoordinationDAO()
@@ -54,7 +54,7 @@ export * as Database from '@claude-zen/intelligence');
  *
  * @example
  * ```typescript
- * import { Memory } from 'claude-code-zen');
+ * import { Memory } from 'claude-code-zen';
  *
  * const system = await Memory.BrainCoordinatorFactory?.createBasicBrainCoordinator()
  * await system.store('session-key', sessionData);
@@ -76,7 +76,7 @@ export * as Memory from '@claude-zen/intelligence');
  *
  * @example
  * ```typescript
- * import { Neural } from 'claude-code-zen');
+ * import { Neural } from 'claude-code-zen';
  *
  * const agent = new Neural.NeuralAgent(baseAgent, 'researcher');
  * const bridge = Neural.NeuralBridge?.getInstance()
@@ -98,7 +98,7 @@ export * as Neural from '@claude-zen/intelligence');
  *
  * @example
  * ```typescript
- * import { Optimization } from 'claude-code-zen');
+ * import { Optimization } from 'claude-code-zen';
  *
  * const monitor = new Optimization?.OptimizationMonitor()
  * await monitor?.startMonitoring()
@@ -120,7 +120,7 @@ export * as Optimization from '@claude-zen/operations');
  *
  * @example
  * ```typescript
- * import { Workflows } from 'claude-code-zen');
+ * import { Workflows } from 'claude-code-zen';
  *
  * const engine = new Workflows.WorkflowEngine(memorySystem);
  * const workflow = await engine.executeWorkflow(workflowDefinition);
@@ -146,7 +146,7 @@ export * as Workflows from '@claude-zen/enterprise');
  *
  * @example
  * ```typescript
- * import { Interfaces } from 'claude-code-zen');
+ * import { Interfaces } from 'claude-code-zen';
  *
  * const mcpServer = new Interfaces.MCP?.HTTPMCPServer()
  * await mcpServer?.start()
@@ -173,7 +173,7 @@ export * as Interfaces from "./interfaces/index";
  *
  * @example
  * ```typescript
- * import { BrainCoordinator } from 'claude-code-zen');
+ * import { BrainCoordinator } from 'claude-code-zen';
  *
  * const brain = new BrainCoordinator();
  * await brain?.initialize()
@@ -195,7 +195,7 @@ export { BrainCoordinator } from "./neural/neural-interface";
  *
  * @example
  * ```typescript
- * import { Integration } from 'claude-code-zen');
+ * import { Integration } from 'claude-code-zen';
  *
  * const wrapper = new Integration?.DSPyWrapperArchitecture()
  * const bridge = new Integration?.MemoryDatabaseIntegration()
@@ -250,8 +250,8 @@ export * as Integration from "./integration/index";
 export * from "./coordination/public-api";
 
 // Utils and core services - use strategic facades
-export { getLogger } from '@claude-zen/intelligence');
-export type { Logger } from '@claude-zen/intelligence');
+export { getLogger } from '@claude-zen/intelligence';
+export type { Logger } from '@claude-zen/intelligence';
 
 // Terminal Interface (CLI and TUI unified)
 
@@ -272,7 +272,7 @@ export type { Logger } from '@claude-zen/intelligence');
  *
  * @example
  * ```typescript
- * import { NeuralAgent } from 'claude-code-zen');
+ * import { NeuralAgent } from 'claude-code-zen';
  *
  * // Create a specialized research agent
  * const agent = new NeuralAgent(baseAgent, 'researcher');
@@ -302,7 +302,7 @@ export {
    */
   NeuralAgent,
   // Note: createNeuralAgent, NeuralAgentConfig, NeuralAgentState not available
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Neural network integration
 export * from '@claude-zen/intelligence');
@@ -315,7 +315,7 @@ export * from '@claude-zen/intelligence');
  *
  * @example
  * ```typescript
- * import { SharedTypes } from 'claude-code-zen');
+ * import { SharedTypes } from 'claude-code-zen';
  *
  * type Config = SharedTypes.WASMNeuralConfig;
  * const metrics: SharedTypes.WASMPerformanceMetrics = {...};
@@ -339,7 +339,7 @@ export * as SharedTypes from "./types/index";
  *
  * @example
  * ```typescript
- * import type { ClaudeZenConfig } from 'claude-code-zen');
+ * import type { ClaudeZenConfig } from 'claude-code-zen';
  *
  * const config: ClaudeZenConfig = {
  *   mcp: {
@@ -373,8 +373,8 @@ export interface ClaudeZenConfig {
   // Swarm orchestration
   swarm: {
     maxAgents: number;
-    topology: 'mesh | hierarchical' | 'ring | star');
-    strategy: 'balanced | specialized' | 'adaptive | parallel');
+    topology: 'mesh'' | ''hierarchical'' | ''ring'' | ''star');
+    strategy: 'balanced'' | ''specialized'' | ''adaptive'' | ''parallel');
   };
 
   // Neural network settings
@@ -393,7 +393,7 @@ export interface ClaudeZenConfig {
 
   // Database and persistence
   persistence: {
-    provider: 'sqlite | postgresql' | 'memory');
+    provider: 'sqlite'' | ''postgresql'' | ''memory');
     connectionString?: string;
   };
 
@@ -425,7 +425,7 @@ export interface ClaudeZenConfig {
  *
  * @example
  * ```typescript
- * import { defaultConfig, initializeClaudeZen } from 'claude-code-zen');
+ * import { defaultConfig, initializeClaudeZen } from 'claude-code-zen';
  *
  * // Use default configuration
  * await initializeClaudeZen();
@@ -488,9 +488,9 @@ export async function initializeClaudeZen(
     // Create and initialize a public swarm coordinator
     const swarmCoordinator =
       await coordinationModule.createPublicSwarmCoordinator({
-        topology: finalConfig?.swarm?.topology || 'hierarchical',
-        maxAgents: finalConfig?.swarm?.maxAgents || 8,
-        strategy: finalConfig?.swarm?.strategy || 'parallel',
+        topology: finalConfig?.swarm?.topology'' | '''' | '''hierarchical',
+        maxAgents: finalConfig?.swarm?.maxAgents'' | '''' | ''8,
+        strategy: finalConfig?.swarm?.strategy'' | '''' | '''parallel',
       });
 
     // Store coordinator reference for shutdown orchestration
@@ -521,7 +521,7 @@ export async function initializeClaudeZen(
       await BrainCoordinatorFactory.createBasicBrainCoordinator([
         {
           id: 'primary',
-          type: finalConfig?.persistence?.provider || 'sqlite',
+          type: finalConfig?.persistence?.provider'' | '''' | '''sqlite',
           config: finalConfig?.persistence?.connectionString
             ? { connectionString: finalConfig.persistence.connectionString }
             : { path: "./data/claude-zen-memory.db' },
@@ -535,7 +535,7 @@ export async function initializeClaudeZen(
       await import('claude-zen/infrastructure');
     ).getLogger('SystemInitializer');
     logger.info('✅ Memory system initialized with', {
-      provider: finalConfig?.persistence?.provider || 'sqlite',
+      provider: finalConfig?.persistence?.provider'' | '''' | '''sqlite',
     });
   } catch (error) {
     const logger = await (
@@ -580,7 +580,7 @@ export async function shutdownClaudeZen(): Promise<void> {
 
   const shutdownResults: Array<{
     component: string;
-    status: 'success | error');
+    status: 'success'' | ''error');
     error?: string;
   }> = [];
 
@@ -687,12 +687,12 @@ export async function shutdownClaudeZen(): Promise<void> {
 export async function healthCheck() {
   const timestamp = new Date()?.toISOString()
   const healthStatus = {
-    status: 'healthy as healthy' | 'degraded | unhealthy',
+    status: 'healthy as healthy''' | '''degraded | unhealthy',
     timestamp,
     components: {} as Record<
       string,
       {
-        status: 'healthy | degraded' | 'unhealthy | unknown');
+        status: 'healthy'' | ''degraded'' | ''unhealthy'' | ''unknown');
         details?: any;
         error?: string;
       }
@@ -870,8 +870,8 @@ export async function healthCheck() {
  */
 export function getVersion() {
   return {
-    version: process.env['npm_package_version] || 2..0',
-    build: process.env['BUILD_ID] || development',
+    version: process.env['npm_package_version]'' | '''' | ''2..0',
+    build: process.env['BUILD_ID]'' | '''' | ''development',
     timestamp: new Date()?.toISOString,
   };
 }

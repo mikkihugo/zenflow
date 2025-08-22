@@ -5,17 +5,20 @@
  * Separated from CLI providers for proper architectural distinction.
  */
 
-import type { LiteralUnion, SetOptional, Merge } from '@claude-zen/foundation/types';
 import type { Result } from '@claude-zen/foundation';
+import type { LiteralUnion } from '@claude-zen/foundation/types';
 
 export interface APIMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: 'system | user' | 'assistant';
   content: string;
 }
 
 export interface APIRequest {
   messages: APIMessage[];
-  model?: LiteralUnion<'claude-3-5-sonnet' | 'gpt-4' | 'gemini-pro' | 'gpt-4o' | 'gpt-4-turbo', string>;
+  model?: LiteralUnion<
+    'claude-3-5-sonnet''' | '''gpt-4''' | '''gemini-pro''' | '''gpt-4o''' | '''gpt-4-turbo',
+    string
+  >;
   temperature?: number;
   maxTokens?: number;
   metadata?: Record<string, unknown>;
@@ -75,10 +78,10 @@ export interface APIProvider {
 
   getCapabilities(): APIProviderCapabilities;
   execute(request: APIRequest): Promise<APIResult>;
-  
+
   // Model discovery
   listModels(): Promise<string[]>;
-  
+
   // Health and monitoring
   healthCheck(): Promise<boolean>;
   getUsageStats(): { requestCount: number; lastRequestTime: number };
@@ -90,23 +93,31 @@ export interface APIProvider {
 export interface APIProviderRegistry {
   register(provider: APIProvider): void;
   unregister(providerId: string): void;
-  get(providerId: string): APIProvider | undefined;
+  get(providerId: string): APIProvider'' | ''undefined;
   list(): APIProvider[];
-  getByCapability(capability: keyof APIProviderCapabilities['features']): APIProvider[];
+  getByCapability(
+    capability: keyof APIProviderCapabilities['features']
+  ): APIProvider[];
 }
 
 /**
  * API Provider Factory
  */
 export interface APIProviderFactory {
-  createProvider(type: LiteralUnion<'github-copilot' | 'openai' | 'anthropic' | 'github-models', string>, options?: Record<string, unknown>): APIProvider;
+  createProvider(
+    type: LiteralUnion<
+      'github-copilot''' | '''openai''' | '''anthropic''' | '''github-models',
+      string
+    >,
+    options?: Record<string, unknown>
+  ): APIProvider;
   getSupportedTypes(): string[];
 }
 
 // Error codes for API operations
 export const API_ERROR_CODES = {
   VALIDATION_ERROR: 'VALIDATION_ERROR',
-  TIMEOUT_ERROR: 'TIMEOUT_ERROR', 
+  TIMEOUT_ERROR: 'TIMEOUT_ERROR',
   NETWORK_ERROR: 'NETWORK_ERROR',
   AUTH_ERROR: 'AUTH_ERROR',
   RATE_LIMIT_ERROR: 'RATE_LIMIT_ERROR',
@@ -114,4 +125,5 @@ export const API_ERROR_CODES = {
   UNKNOWN_ERROR: 'UNKNOWN_ERROR',
 } as const;
 
-export type APIErrorCode = typeof API_ERROR_CODES[keyof typeof API_ERROR_CODES];
+export type APIErrorCode =
+  (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES];

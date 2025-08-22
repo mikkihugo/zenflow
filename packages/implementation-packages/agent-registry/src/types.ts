@@ -1,9 +1,9 @@
 /**
  * @fileoverview Agent Registry Types
- * 
+ *
  * Type definitions for the agent registry system, including configuration,
  * metadata, lifecycle management, and health monitoring types.
- * 
+ *
  * @package @claude-zen/agent-registry
  * @version 1.0.0
  */
@@ -22,7 +22,7 @@ export interface AgentInstance {
   templateId: string;
   name: string;
   type: string;
-  status: 'active' | 'inactive' | 'error' | 'disposed';
+  status: 'active | inactive' | 'error''' | '''disposed';
   config: Record<string, unknown>;
   capabilities: string[];
   metadata: Record<string, unknown>;

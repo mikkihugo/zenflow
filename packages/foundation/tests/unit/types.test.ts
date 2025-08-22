@@ -1,6 +1,6 @@
 /**
  * @fileoverview Foundation Types - Test Suite
- * 
+ *
  * Tests for the foundation type system to ensure proper functionality,
  * type safety, and utility function correctness.
  */
@@ -15,7 +15,7 @@ import type {
   Paginated,
   Result,
   ValidationError,
-  Entity
+  Entity,
 } from '../../src/types/index';
 
 import {
@@ -32,7 +32,7 @@ import {
   isSuccess,
   isError,
   createValidationError,
-  isValidationError
+  isValidationError,
 } from '../../src/types/index';
 
 describe('Foundation Types', () => {
@@ -41,7 +41,9 @@ describe('Foundation Types', () => {
       it('should generate valid UUIDs', () => {
         const uuid = generateUUID();
         expect(isUUID(uuid)).toBe(true);
-        expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+        expect(uuid).toMatch(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        );
       });
 
       it('should validate UUIDs correctly', () => {
@@ -100,7 +102,7 @@ describe('Foundation Types', () => {
           id: '123',
           name: 'test',
           createdAt: now(),
-          updatedAt: now()
+          updatedAt: now(),
         };
 
         expect(isTimestamp(entity.createdAt)).toBe(true);
@@ -118,7 +120,7 @@ describe('Foundation Types', () => {
           createdAt: now(),
           updatedAt: now(),
           version: 1,
-          isActive: true
+          isActive: true,
         };
 
         expect(isUUID(entity.id)).toBe(true);
@@ -162,7 +164,7 @@ describe('Foundation Types', () => {
         const result = createSuccess('test data');
         expect(isSuccess(result)).toBe(true);
         expect(isError(result)).toBe(false);
-        
+
         if (isSuccess(result)) {
           expect(result.data).toBe('test data');
         }
@@ -171,10 +173,10 @@ describe('Foundation Types', () => {
       it('should create error results', () => {
         const error = createValidationError('Test error');
         const result = createError(error);
-        
+
         expect(isError(result)).toBe(true);
         expect(isSuccess(result)).toBe(false);
-        
+
         if (isError(result)) {
           expect(result.error.message).toBe('Test error');
           expect(result.error.type).toBe('ValidationError');
@@ -188,7 +190,7 @@ describe('Foundation Types', () => {
           field: 'email',
           rule: 'format',
           expected: 'valid email',
-          actual: 'invalid-email'
+          actual: 'invalid-email',
         });
 
         expect(isValidationError(error)).toBe(true);
@@ -230,7 +232,7 @@ describe('Foundation Types', () => {
         priority: PriorityEnum.HIGH,
         status: StatusEnum.PENDING,
         createdAt: now(),
-        updatedAt: now()
+        updatedAt: now(),
       };
 
       const userList: UserList = createPaginated([user], 1, 10, 1);
@@ -254,7 +256,9 @@ describe('Foundation Types', () => {
         name: string;
       }
 
-      function processEntity(entity: TestInterface): Result<string, ValidationError> {
+      function processEntity(
+        entity: TestInterface
+      ): Result<string, ValidationError> {
         if (!entity.name) {
           return createError(createValidationError('Name is required'));
         }
@@ -265,7 +269,7 @@ describe('Foundation Types', () => {
         id: generateUUID(),
         name: 'Test Entity',
         createdAt: now(),
-        updatedAt: now()
+        updatedAt: now(),
       };
 
       const result = processEntity(entity);

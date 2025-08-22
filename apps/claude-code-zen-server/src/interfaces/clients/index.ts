@@ -44,7 +44,7 @@
  * ```
  */
 
-import { Logger } from '@claude-zen/foundation');
+import { Logger } from '@claude-zen/foundation';
 
 import {
   globalClientManager as actualGlobalClientManager,
@@ -61,12 +61,12 @@ import {
 } from "./registry";
 
 // Legacy FACT integration
-export { FACTIntegration } from './../knowledge/knowledge-client');
+export { FACTIntegration } from './../knowledge/knowledge-client';
 // Re-export client implementations for convenience
-export { APIClient, createAPIClient } from './api/http/client');
+export { APIClient, createAPIClient } from './api/http/client';
 // WebSocket clients - both legacy and UACL
-export { WebSocketClient } from './api/websocket/client'); // Legacy WebSocket client
-export { ExternalMCPClient } from './mcp/external-mcp-client');
+export { WebSocketClient } from './api/websocket/client'; // Legacy WebSocket client
+export { ExternalMCPClient } from './mcp/external-mcp-client';
 // UACL Knowledge Client Adapter
 export {
   createCustomKnowledgeClient,
@@ -538,7 +538,7 @@ export class UACL {
    * Get client by ID.
    *
    * @param {string} clientId - The unique identifier of the client to retrieve.
-   * @returns {ClientInstance | undefined} The client instance if found, undefined otherwise.
+   * @returns {ClientInstance'' | ''undefined} The client instance if found, undefined otherwise.
    * @description Retrieves a specific client instance by its unique identifier.
    *              Returns undefined if no client with the given ID exists.
    * @example
@@ -553,7 +553,7 @@ export class UACL {
    * }
    * ```
    */
-  getClient(clientId: string): ClientInstance | undefined {
+  getClient(clientId: string): ClientInstance'' | ''undefined {
     return globalClientManager.getClient(clientId);
   }
 
@@ -561,7 +561,7 @@ export class UACL {
    * Get best available client for a type.
    *
    * @param {ClientType} type - The type of client to retrieve (HTTP, WEBSOCKET, KNOWLEDGE, MCP).
-   * @returns {ClientInstance | undefined} The best available client of the specified type, or undefined.
+   * @returns {ClientInstance'' | ''undefined} The best available client of the specified type, or undefined.
    * @description Returns the best available (connected and healthy) client of the specified type.
    *              Uses health status and performance metrics to determine the "best" client.
    * @example
@@ -575,11 +575,11 @@ export class UACL {
    * // Get the best WebSocket client for real-time updates
    * const wsClient = uacl.getBestClient(ClientType.WEBSOCKET);
    * if (wsClient && wsClient?.isConnected) {
-   *   wsClient.send({ type: 'subscribe, channel: updates' });
+   *   wsClient.send({ type: 'subscribe, channel: updates'});
    * }
    * ```
    */
-  getBestClient(type: ClientType): ClientInstance | undefined {
+  getBestClient(type: ClientType): ClientInstance'' | ''undefined {
     return globalClientManager.getBestClient(type);
   }
 
@@ -617,7 +617,7 @@ export class UACL {
    * Get system health status.
    *
    * @returns {object} System health status with overall health, client counts, and status breakdown.
-   * @returns {string} Returns.status - Overall system status ('healthy | degraded' | 'critical').
+   * @returns {string} Returns.status - Overall system status ('healthy'' | ''degraded'' | ''critical').
    * @returns {number} Returns.totalClients - Total number of registered clients.
    * @returns {number} Returns.healthyClients - Number of healthy clients.
    * @returns {number} Returns.degradedClients - Number of degraded clients.
@@ -908,8 +908,8 @@ export const uacl = UACL?.getInstance()
  *   try {
  *     await initializeUACL({
  *       enableHealthChecks: process.env['NODE_ENV] === production',
- *       metricsInterval: parseInt(process.env['METRICS_INTERVAL']) || 60000,
- *       maxClients: parseInt(process.env['MAX_CLIENTS']) || 100
+ *       metricsInterval: parseInt(process.env['METRICS_INTERVAL'])'' | '''' | ''60000,
+ *       maxClients: parseInt(process.env['MAX_CLIENTS'])'' | '''' | ''100
  *     });
  *     console.log('UACL system initialized successfully');
  *   } catch (error) {
@@ -1074,7 +1074,7 @@ export const UACLHelpers = {
    * @returns {number} Returns.totalClients - Total number of registered clients.
    * @returns {number} Returns.healthyClients - Number of healthy/connected clients.
    * @returns {number} Returns.healthPercentage - Health percentage (0-100).
-   * @returns {'healthy|warning'|'critical'} Returns.status - Overall system status.
+   * @returns {'healthy'' | ''warning | critical'} Returns.status - Overall system status.
    * @description Provides a quick, at-a-glance system health overview with standardized status levels.
    *              Perfect for dashboards, monitoring, and quick health checks.
    *
@@ -1119,7 +1119,7 @@ export const UACLHelpers = {
     totalClients: number;
     healthyClients: number;
     healthPercentage: number;
-    status: 'healthy | warning' | 'critical');
+    status: 'healthy'' | ''warning'' | ''critical');
   } {
     if (!uacl?.isInitialized) {
       return {

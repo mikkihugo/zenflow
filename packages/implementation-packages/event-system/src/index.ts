@@ -1,6 +1,6 @@
 /**
  * @fileoverview Event System Package - Simplified Entry Point
- * 
+ *
  * A simplified, battle-tested event system with minimal dependencies.
  * This package provides type-safe event handling for the claude-code-zen system.
  */
@@ -20,7 +20,7 @@ export {
   TypeSafeEventBus,
   createTypeSafeEventBus,
   uel,
-  createUEL
+  createUEL,
 } from './main';
 
 // =============================================================================
@@ -30,12 +30,12 @@ export {
   NeuralEventProcessor,
   createNeuralEventProcessor,
   createHighPerformanceNeuralProcessor,
-  createFullNeuralProcessor
+  createFullNeuralProcessor,
 } from './neural-integration';
 
 export type {
   NeuralEventConfig,
-  EventClassification
+  EventClassification,
 } from './neural-integration';
 
 // =============================================================================
@@ -70,7 +70,7 @@ export type {
   InterfaceEvent,
   CoreEvent,
   EventTypeFromSchema,
-  AllEventTypes
+  AllEventTypes,
 } from './main';
 
 // =============================================================================
@@ -84,14 +84,14 @@ export type {
   ProcessingStrategy,
   BackoffStrategy,
   ReliabilityLevel,
-  
+
   // Configuration types
   EventManagerConfig as EventManagerDomainConfig,
   ProcessingConfig,
   RetryConfig,
   HealthConfig,
   MonitoringConfig,
-  
+
   // Event types by domain
   SystemLifecycleEvent,
   CoordinationEvent as CoordinationDomainEvent,
@@ -105,27 +105,27 @@ export type {
   OrchestrationEvent,
   SafeEvent,
   MemoryOrchestrationEvent,
-  
+
   // Unified event types
   UELEvent,
-  
+
   // Coordination types
   CoordinationTopology,
   CommunicationProtocol,
-  
+
   // Processing types
   ProcessingStatus,
   SubscriptionInfo,
-  
+
   // Error types
   EventError,
   ProcessingError,
   SubscriptionError,
-  
+
   // Result types
   EventResult,
   EventProcessingResult,
-  EventSubscriptionResult
+  EventSubscriptionResult,
 } from './types/index';
 
 // Export constants and type guards
@@ -134,7 +134,7 @@ export {
   EventTypePatterns,
   EventPriorityMap,
   EventConstants,
-  UELTypeGuards
+  UELTypeGuards,
 } from './types/index';
 
 // Export enums (avoiding duplicate exports - these are already exported as types above)
@@ -148,7 +148,7 @@ export {
   ValidationChain,
   createValidationChain,
   BaseEventSchema,
-  EventSchemas
+  EventSchemas,
 } from './main';
 
 // =============================================================================
@@ -162,7 +162,7 @@ export {
   createRateLimitingMiddleware,
   createConditionalMiddleware,
   createEventTypeMiddleware,
-  createAsyncMiddleware
+  createAsyncMiddleware,
 } from './main';
 
 // =============================================================================
@@ -173,13 +173,13 @@ export {
  * Create a basic event system for simple use cases.
  */
 export function createEventSystem(config?: any) {
-  return new EventBus(config || {});
+  return new EventBus(config'' | '''' | ''{});
 }
 
 /**
  * Package information
  */
-export const VERSION = '1.0.1';
+export const VERSION ='1.0.1';
 export const DESCRIPTION = 'Type-safe event system with neural intelligence';
 
 export default createEventSystem;

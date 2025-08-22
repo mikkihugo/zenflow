@@ -1,6 +1,6 @@
 /**
  * @fileoverview Type definitions for LLM routing system
- * 
+ *
  * Core types and interfaces for multi-provider LLM routing, configuration,
  * and statistics tracking. These types support intelligent routing decisions,
  * performance monitoring, and cost optimization across multiple LLM providers.
@@ -22,7 +22,7 @@ export interface ProviderConfig {
     baseUrl?: string;
     tokenPath?: string; // Path to token file
     headers?: Record<string, string>;
-    authType?: 'bearer' | 'api-key' | 'oauth';
+    authType?: 'bearer''' | '''api-key''' | '''oauth';
   };
   features: {
     structuredOutput: boolean;
@@ -41,7 +41,7 @@ export interface ProviderConfig {
 export interface RoutingStrategy {
   SMALL_CONTEXT_THRESHOLD: number;
   LARGE_CONTEXT_THRESHOLD: number;
-  STRATEGY: 'smart' | 'fallback' | 'round-robin';
+  STRATEGY: 'smart''' | '''fallback''' | '''round-robin';
   AUTO_FAILOVER: boolean;
   MAX_RETRIES_PER_PROVIDER: number;
   RULES: {
@@ -59,7 +59,7 @@ export interface ProviderRoutingContext {
   requiresFileOps: boolean;
   requiresCodebaseAware: boolean;
   requiresStructuredOutput: boolean;
-  taskType: 'analysis' | 'generation' | 'review' | 'custom';
+  taskType: 'analysis | generation' | 'review''' | '''custom';
 }
 
 export interface AnalysisRequest {
@@ -82,7 +82,7 @@ export interface AnalysisResult {
 export interface LLMCallRecord {
   id: string;
   timestamp: Date;
-  requestType: 'analyze' | 'analyzeSmart' | 'analyzeArchitectureAB';
+  requestType: 'analyze | analyzeSmart' | 'analyzeArchitectureAB';
   provider: string;
   model?: string;
   task: string;
@@ -91,7 +91,7 @@ export interface LLMCallRecord {
   success: boolean;
   error?: string;
   errorDetails?: {
-    errorType: 'rate_limit' | 'auth_error' | 'network_error' | 'timeout' | 'quota_exceeded' | 'provider_down' | 'parse_error' | 'other';
+    errorType:'' | '''rate_limit | auth_error' | 'network_error''' | '''timeout | quota_exceeded' | 'provider_down' | 'parse_error' | 'other';
     statusCode?: number;
     retryable: boolean;
     providerMessage?: string;
@@ -119,7 +119,7 @@ export interface LLMCallRecord {
   metadata?: {
     requiresFileOps: boolean;
     requiresCodebaseAware: boolean;
-    taskComplexity: 'low' | 'medium' | 'high';
+    taskComplexity: 'low | medium' | 'high';
     sessionId?: string;
   };
 }
@@ -128,13 +128,13 @@ export interface LLMError {
   id: string;
   timestamp: Date;
   provider: string;
-  errorType: 'rate_limit' | 'auth_error' | 'network_error' | 'timeout' | 'quota_exceeded' | 'provider_down' | 'parse_error' | 'other';
+  errorType:'' | '''rate_limit | auth_error' | 'network_error''' | '''timeout | quota_exceeded' | 'provider_down' | 'parse_error' | 'other';
   message: string;
   count: number;
   firstOccurred: Date;
   lastOccurred: Date;
   isActive: boolean;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: 'low | medium' | 'high''' | '''critical';
   resolution?: string;
   affectedCalls: number;
 }
@@ -153,11 +153,11 @@ export interface LLMProviderStats {
   costEfficiency: number;
   reliability: number;
   rateLimitHits: number;
-  lastUsed: Date | null;
-  currentStatus: 'active' | 'cooldown' | 'error' | 'disabled';
+  lastUsed: Date'' | ''null;
+  currentStatus:'active | cooldown' | 'error''' | '''disabled';
   cooldownUntil?: Date;
   preferredForTasks: string[];
-  performanceTrend: 'improving' | 'stable' | 'declining';
+  performanceTrend: 'improving | stable' | 'declining';
 }
 
 export interface LLMRoutingStats {
@@ -171,15 +171,18 @@ export interface LLMRoutingStats {
     frequency: number;
     successRate: number;
   }>;
-  taskTypeRouting: Record<string, {
-    preferredProvider: string;
-    alternativeProviders: string[];
-    successRate: number;
-  }>;
+  taskTypeRouting: Record<
+    string,
+    {
+      preferredProvider: string;
+      alternativeProviders: string[];
+      successRate: number;
+    }
+  >;
 }
 
 export interface LLMSystemHealth {
-  overallHealth: 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
+  overallHealth: 'excellent | good' | 'fair' | 'poor' | 'critical';
   healthScore: number; // 0-100
   activeProviders: number;
   providersInCooldown: number;
@@ -189,7 +192,7 @@ export interface LLMSystemHealth {
   resourceUtilization: number;
   recommendations: string[];
   alerts: Array<{
-    level: 'info' | 'warning' | 'error' | 'critical';
+    level: 'info | warning' | 'error''' | '''critical';
     message: string;
     timestamp: Date;
     provider?: string;

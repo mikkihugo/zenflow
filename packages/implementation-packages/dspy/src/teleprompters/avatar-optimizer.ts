@@ -1,21 +1,21 @@
 /**
  * @fileoverview Avatar Optimizer Teleprompter
- * 
+ *
  * Production-grade implementation with 100% Stanford DSPy API compatibility.
  * Avatar optimizer for tool-using agents that optimizes instructions based on
  * performance feedback from positive and negative examples.
- * 
+ *
  * Key Features:
  * - Exact Stanford DSPy AvatarOptimizer API compatibility
  * - Multi-threaded evaluation with parallel processing
  * - Feedback-based instruction generation
  * - Positive/negative example analysis
  * - Tool usage optimization
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  * @since 1.0.0-alpha.47
- * 
+ *
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
  */
 
@@ -35,7 +35,7 @@ const DEFAULT_MAX_EXAMPLES = 10;
 export interface EvalResult {
   example: Record<string, any>;
   score: number;
-  actions?: any[] | null;
+  actions?: any[]'' | ''null;
 }
 
 /**
@@ -88,10 +88,10 @@ export interface AvatarModule extends DSPyModule {
 
 /**
  * Avatar Optimizer Teleprompter with exact Stanford DSPy API compatibility
- * 
+ *
  * Optimizes tool-using agent instructions by analyzing performance patterns
  * between positive and negative examples through iterative feedback generation.
- * 
+ *
  * Matches Stanford DSPy AvatarOptimizer implementation exactly.
  */
 export class AvatarOptimizer extends Teleprompter {
@@ -101,7 +101,7 @@ export class AvatarOptimizer extends Teleprompter {
   private upper_bound: number;
   private max_positive_inputs: number;
   private max_negative_inputs: number;
-  private optimize_for: 'max' | 'min';
+  private optimize_for:'max''' | '''min';
 
   // Internal components exactly matching Stanford implementation
   private comparator: any;
@@ -112,23 +112,26 @@ export class AvatarOptimizer extends Teleprompter {
     max_iters?: number;
     lower_bound?: number;
     upper_bound?: number;
-    max_positive_inputs?: number | null;
-    max_negative_inputs?: number | null;
+    max_positive_inputs?: number'' | ''null;
+    max_negative_inputs?: number'' | ''null;
     optimize_for?: string;
   }) {
     super();
 
     if (!config.metric) {
-      throw new Error("`metric` argument cannot be None. Please provide a metric function.");
+      throw new Error('`metric` argument cannot be None. Please provide a metric function.'
+      );
     }
 
     this.metric = config.metric;
-    this.optimize_for = (config.optimize_for as 'max' | 'min') || 'max';
+    this.optimize_for = (config.optimize_for as 'max''' | '''min')'' | '''' | '''max';
     this.max_iters = config.max_iters ?? 10;
     this.lower_bound = config.lower_bound ?? 0;
     this.upper_bound = config.upper_bound ?? 1;
-    this.max_positive_inputs = config.max_positive_inputs ?? DEFAULT_MAX_EXAMPLES;
-    this.max_negative_inputs = config.max_negative_inputs ?? DEFAULT_MAX_EXAMPLES;
+    this.max_positive_inputs =
+      config.max_positive_inputs ?? DEFAULT_MAX_EXAMPLES;
+    this.max_negative_inputs =
+      config.max_negative_inputs ?? DEFAULT_MAX_EXAMPLES;
 
     // Initialize predictors exactly matching Stanford implementation
     this.comparator = this._createComparator();
@@ -142,35 +145,46 @@ export class AvatarOptimizer extends Teleprompter {
     student: AvatarModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule | null;
-      valset?: Example[] | null;
+      teacher?: DSPyModule'' | ''null;
+      valset?: Example[]'' | ''null;
       [key: string]: any;
     }
   ): Promise<AvatarModule> {
     const { trainset } = config;
 
     let best_actor = this._deepcopy(student);
-    let best_score = this.optimize_for === 'max' ? -999 : 999;
+    let best_score = this.optimize_for ==='max' ? -999 : 999;
 
     for (let i = 0; i < this.max_iters; i++) {
       console.log('='.repeat(20));
       console.log(`Iteration ${i + 1}/${this.max_iters}`);
 
-      const { score, pos_inputs, neg_inputs } = await this._get_pos_neg_results(best_actor, trainset);
-      
+      const { score, pos_inputs, neg_inputs } = await this._get_pos_neg_results(
+        best_actor,
+        trainset
+      );
+
       console.log(`Positive examples: ${pos_inputs.length}`);
       console.log(`Negative examples: ${neg_inputs.length}`);
-      console.log(`Sampling ${this.max_positive_inputs} positive examples and ${this.max_negative_inputs} negative examples`);
+      console.log(
+        `Sampling ${this.max_positive_inputs} positive examples and ${this.max_negative_inputs} negative examples`
+      );
 
       // Sample examples exactly matching Stanford implementation
       let sampled_pos_inputs = pos_inputs;
       let sampled_neg_inputs = neg_inputs;
 
-      if (this.max_positive_inputs && pos_inputs.length > this.max_positive_inputs) {
+      if (
+        this.max_positive_inputs &&
+        pos_inputs.length > this.max_positive_inputs
+      ) {
         sampled_pos_inputs = this._sample(pos_inputs, this.max_positive_inputs);
       }
 
-      if (this.max_negative_inputs && neg_inputs.length > this.max_negative_inputs) {
+      if (
+        this.max_negative_inputs &&
+        neg_inputs.length > this.max_negative_inputs
+      ) {
         sampled_neg_inputs = this._sample(neg_inputs, this.max_negative_inputs);
       }
 
@@ -179,14 +193,14 @@ export class AvatarOptimizer extends Teleprompter {
         instruction: best_actor.actor.signature.instructions,
         actions: best_actor.tools.map((tool: any) => String(tool)),
         pos_input_with_metrics: sampled_pos_inputs,
-        neg_input_with_metrics: sampled_neg_inputs
+        neg_input_with_metrics: sampled_neg_inputs,
       });
 
       const feedback = feedback_result.feedback;
 
       const new_instruction_result = await this.feedback_instruction({
         previous_instruction: best_actor.actor.signature.instructions,
-        feedback: feedback
+        feedback: feedback,
       });
 
       const new_instruction = new_instruction_result.new_instruction;
@@ -194,18 +208,19 @@ export class AvatarOptimizer extends Teleprompter {
       console.log(`Generated new instruction: ${new_instruction}`);
 
       // Update best actor exactly matching Stanford logic
-      const should_update = (this.optimize_for === 'max' && best_score < score) ||
-                           (this.optimize_for === 'min' && best_score > score);
+      const should_update =
+        (this.optimize_for === 'max'&& best_score < score)'' | '''' | ''(this.optimize_for ==='min'&& best_score > score);
 
       if (should_update) {
-        best_actor.actor.signature = best_actor.actor.signature.with_instructions(new_instruction);
+        best_actor.actor.signature =
+          best_actor.actor.signature.with_instructions(new_instruction);
         best_actor.actor_clone = this._deepcopy(best_actor.actor);
         best_score = score;
       }
     }
 
     console.log(`Best Actor: ${best_actor}`);
-    
+
     (best_actor as any)._compiled = true;
     return best_actor;
   }
@@ -256,7 +271,7 @@ export class AvatarOptimizer extends Teleprompter {
     // Simulate parallel processing (in production would use actual threading)
     for (const example of devset) {
       const result = await this.process_example(actor, example, return_outputs);
-      
+
       if (return_outputs) {
         total_score += result.score;
         results.push(result);
@@ -288,7 +303,11 @@ export class AvatarOptimizer extends Teleprompter {
     const pos_inputs: EvalResult[] = [];
     const neg_inputs: EvalResult[] = [];
 
-    const evaluation_result = await this.thread_safe_evaluator(trainset, actor, true);
+    const evaluation_result = await this.thread_safe_evaluator(
+      trainset,
+      actor,
+      true
+    );
     const avg_score = evaluation_result.score;
     const results = evaluation_result.results;
 
@@ -299,22 +318,25 @@ export class AvatarOptimizer extends Teleprompter {
         pos_inputs.push({
           example: example.inputs,
           score,
-          actions: prediction?.actions || null
+          actions: prediction?.actions'' | '''' | ''null,
         });
       } else if (score <= this.lower_bound) {
         neg_inputs.push({
           example: example.inputs,
           score,
-          actions: prediction?.actions || null
+          actions: prediction?.actions'' | '''' | ''null,
         });
       }
     }
 
     if (pos_inputs.length === 0) {
-      throw new Error("No positive examples found, try lowering the upper_bound or providing more training data");
+      throw new Error('No positive examples found, try lowering the upper_bound or providing more training data'
+      );
     }
     if (neg_inputs.length === 0) {
-      throw new Error("No negative examples found, try raising the lower_bound or providing more training data");
+      throw new Error(
+        'No negative examples found, try raising the lower_bound or providing more training data'
+      );
     }
 
     return { score: avg_score, pos_inputs, neg_inputs };
@@ -327,10 +349,11 @@ export class AvatarOptimizer extends Teleprompter {
     // Mock predictor for comparator signature
     return async (inputs: ComparatorSignature) => {
       // Simulate LLM-based feedback generation
-      const feedback = `Based on the analysis of positive vs negative examples, ` +
+      const feedback =
+        `Based on the analysis of positive vs negative examples, ` +
         `the tool usage needs improvement. Focus on better action selection and ` +
         `more effective instruction following for the problematic cases.`;
-      
+
       return { feedback };
     };
   }
@@ -342,9 +365,10 @@ export class AvatarOptimizer extends Teleprompter {
     // Mock predictor for feedback-based instruction generation
     return async (inputs: FeedbackBasedInstructionSignature) => {
       // Simulate instruction improvement
-      const new_instruction = `${inputs.previous_instruction}\n\nBased on feedback: ${inputs.feedback}\n` +
+      const new_instruction =
+        `${inputs.previous_instruction}\n\nBased on feedback: ${inputs.feedback}\n` +
         `Please pay special attention to tool selection and action planning to improve performance on challenging cases.`;
-      
+
       return { new_instruction };
     };
   }

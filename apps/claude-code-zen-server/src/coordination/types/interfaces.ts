@@ -6,19 +6,19 @@
 /**
  * Priority levels for tasks and operations
  */
-export type Priority = 'low | medium' | 'high | critical');
+export type Priority = 'low'' | ''medium'' | ''high'' | ''critical');
 
 /**
  * Risk level assessment
  */
-export type RiskLevel = 'low | medium' | 'high | critical');
+export type RiskLevel = 'low'' | ''medium'' | ''high'' | ''critical');
 
 /**
  * Server instance interface - wraps Express.Server with additional metadata
  */
 export interface ServerInstance {
   id: string;
-  status: 'starting | running' | 'stopping | stopped' | 'error');
+  status: 'starting'' | ''running'' | ''stopping'' | ''stopped'' | ''error');
   port?: number;
   host?: string;
   uptime?: number;
@@ -43,7 +43,7 @@ export interface BaseError {
 export interface TestResult {
   id?: string;
   name?: string;
-  status?: 'passed | failed' | 'skipped | pending');
+  status?: 'passed'' | ''failed'' | ''skipped'' | ''pending');
   success: boolean;
   duration?: number;
   error?: BaseError | string;
@@ -81,7 +81,7 @@ export interface BaseApiResponse {
  * Basic neural configuration for coordination components
  */
 export interface NeuralConfig {
-  modelType: 'feedforward | recurrent' | 'transformer');
+  modelType:'feedforward'' | ''recurrent'' | ''transformer');
   layers: number[];
   activations: string[];
   learningRate: number;
@@ -172,7 +172,7 @@ export interface WasmNeuralBinding {
   /**
    * Load WASM module
    */
-  loadWasm(): Promise<WebAssembly.Module | Record<string, unknown>>;
+  loadWasm(): Promise<WebAssembly.Module'' | ''Record<string, unknown>>;
 
   /**
    * Check if WASM is available
@@ -195,67 +195,10 @@ export interface WasmNeuralBinding {
  */
 export type AgentId = string;
 export type AgentType =
-  // Core hierarchy types
-  | 'queen'
-  | 'commander'
-  | 'drone'
-  | 'worker'
-  // Queen types
-  | 'primary'
-  | 'secondary'
-  | 'backup'
-  // Specialized agent types
-  | 'coder'
-  | 'analyst'
-  | 'researcher'
-  | 'architect'
-  | 'optimizer'
-  | 'ui-designer'
-  | 'ux-designer'
-  | 'accessibility-specialist'
-  | 'ops'
-  | 'coordinator'
-  | 'data'
-  // Performance specialized
-  | 'performance-analyzer'
-  | 'cache-optimizer'
-  | 'memory-optimizer'
-  | 'latency-optimizer'
-  | 'bottleneck-analyzer'
-  // Migration and modernization
-  | 'legacy-analyzer'
-  | 'modernization-agent'
-  | 'migration-coordinator'
-  | 'migration-plan'
-  | 'system-architect'
-  | 'database-architect'
-  // Testing specialists
-  | 'unit-tester'
-  | 'integration-tester'
-  | 'e2e-tester'
-  | 'performance-tester'
-  | 'tdd-london-swarm'
-  | 'production-validator'
-  // Development specialists
-  | 'developer'
-  | 'fullstack-dev'
-  | 'dev-backend-api'
-  | 'api-dev'
-  | 'analyze-code-quality'
-  | 'security-analyzer'
-  | 'refactoring-analyzer'
-  | 'user-guide-writer');
+  // Core hierarchy types'' | '''queen | commander' | 'drone''' | '''worker'// Queen types'' | '''primary | secondary' | 'backup'// Specialized agent types'' | '''coder | analyst' | 'researcher' | 'architect' | 'optimizer''' | '''ui-designer''' | '''ux-designer''' | '''accessibility-specialist''' | '''ops | coordinator' | 'data'// Performance specialized'' | '''performance-analyzer''' | '''cache-optimizer''' | '''memory-optimizer''' | '''latency-optimizer''' | '''bottleneck-analyzer'// Migration and modernization'' | '''legacy-analyzer''' | '''modernization-agent''' | '''migration-coordinator''' | '''migration-plan''' | '''system-architect''' | '''database-architect'// Testing specialists'' | '''unit-tester''' | '''integration-tester''' | '''e2e-tester''' | '''performance-tester''' | '''tdd-london-swarm''' | '''production-validator'// Development specialists'' | '''developer''' | '''fullstack-dev''' | '''dev-backend-api''' | '''api-dev''' | '''analyze-code-quality''' | '''security-analyzer''' | '''refactoring-analyzer''' | '''user-guide-writer');
 
 export type AgentStatus =
-  // Basic states
-  | 'idle'
-  | 'active'
-  | 'busy'
-  | 'error'
-  | 'offline'
-  // Extended states
-  | 'initializing'
-  | 'terminated');
+  // Basic states'' | '''idle | active' | 'busy' | 'error' | 'offline'// Extended states'' | '''initializing''' | '''terminated');
 
 export interface AgentCapabilities {
   canCoordinate: boolean;
@@ -336,7 +279,7 @@ export interface QueenCluster {
 }
 
 export interface QueenPool {
-  available: QueenId[] | number; // Can be array or count
+  available: QueenId[]'' | ''number; // Can be array or count
   busy: QueenId[];
   offline: QueenId[];
   // Extended properties used by queen-coordinator
@@ -365,7 +308,7 @@ export interface QueenPool {
 }
 
 export interface QueenHealth {
-  status: 'healthy | degraded' | 'critical | unhealthy');
+  status:'healthy | degraded''' | '''critical | unhealthy');
   lastCheck: Date;
   issues: string[];
   queenId?: string; // Queen ID for queen-coordinator
@@ -373,18 +316,18 @@ export interface QueenHealth {
   components?: Record<
     string,
     {
-      status: 'healthy | degraded' | 'critical | unhealthy');
+      status: 'healthy'' | ''degraded'' | ''critical'' | ''unhealthy');
       lastCheck?: Date;
       metrics?: Record<string, unknown>;
     }
   >; // Optional components used by queen-coordinator
   overall?: {
-    status: 'healthy | degraded' | 'critical | unhealthy');
+    status: 'healthy'' | ''degraded'' | ''critical'' | ''unhealthy');
     score: number;
   }; // Optional overall health used by queen-coordinator
 }
 
-export type QueenType = 'primary | secondary' | 'backup');
+export type QueenType = 'primary'' | ''secondary'' | ''backup');
 
 export interface QueenCapabilities extends AgentCapabilities {
   canManageSwarms: boolean;
@@ -549,7 +492,7 @@ export type QueenStatus = AgentStatus;
  * Event Bus and Logger interfaces
  * Re-export from event-system package for better integration
  */
-export type { SystemEvent } from '@claude-zen/intelligence');
+export type { SystemEvent } from '@claude-zen/intelligence';
 
 // Use the comprehensive EventBus from event-system package instead of basic interface
 export interface EventBus {

@@ -5,7 +5,7 @@
  * instead of managing WASM bindings directly in the server.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('NeuralInterface');
 
@@ -18,7 +18,7 @@ const logger = getLogger('NeuralInterface');
  *
  * @example
  * ```typescript
- * import { BrainCoordinator } from '@claude-zen/intelligence');
+ * import { BrainCoordinator } from '@claude-zen/intelligence';
  *
  * const brain = new BrainCoordinator();
  * await brain?.initialize()
@@ -26,6 +26,6 @@ const logger = getLogger('NeuralInterface');
  */
 
 // Re-export BrainCoordinator for easier migration
-export { BrainCoordinator } from '@claude-zen/intelligence');
+export { BrainCoordinator } from '@claude-zen/intelligence';
 
 // TODO: Remove this file entirely once all imports are updated

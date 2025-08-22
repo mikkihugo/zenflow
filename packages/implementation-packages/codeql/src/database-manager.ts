@@ -9,7 +9,7 @@ import {
   ok,
   err,
   safeAsync,
-  type Logger
+  type Logger,
 } from '@claude-zen/foundation';
 
 import * as fs from 'fs/promises';
@@ -60,7 +60,7 @@ export class DatabaseManager {
     await fs.mkdir(this.config.tempDir!, { recursive: true });
 
     // Remove existing database if overwrite is enabled
-    if (options.overwrite && await this.databaseExists(databasePath)) {
+    if (options.overwrite && (await this.databaseExists(databasePath))) {
       await this.deleteDatabaseFiles(databasePath);
     }
 
@@ -88,13 +88,16 @@ export class DatabaseManager {
 
     if (options.excludePatterns && options.excludePatterns.length > 0) {
       // Create exclude file
-      const excludeFile = path.join(this.config.tempDir!, `${databaseId}.exclude`);
+      const excludeFile = path.join(
+        this.config.tempDir!,
+        `${databaseId}.exclude`
+      );
       await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));
       args.push('--exclude', excludeFile);
     }
 
     if (this.config.threads && this.config.threads > 1) {
-      args.push('--threads', this.config.threads.toString());
+      args.push('--threads', this.config.threads.toString())();
     }
 
     if (this.config.verbose) {
@@ -102,7 +105,7 @@ export class DatabaseManager {
     }
 
     // Set working directory
-    const workingDirectory = options.workingDirectory || absolutePath;
+    const workingDirectory = options.workingDirectory'' | '''' | ''absolutePath;
 
     try {
       // Execute database creation
@@ -110,7 +113,7 @@ export class DatabaseManager {
         cwd: workingDirectory,
         env: {
           ...process.env,
-          ...(options.environmentVariables || {}),
+          ...(options.environmentVariables'' | '''' | ''{}),
         },
       });
 
@@ -147,7 +150,6 @@ export class DatabaseManager {
       });
 
       return database;
-
     } catch (error) {
       this.logger.error('Database creation failed', {
         databaseId,
@@ -159,7 +161,9 @@ export class DatabaseManager {
       try {
         await this.deleteDatabaseFiles(databasePath);
       } catch (cleanupError) {
-        this.logger.warn('Failed to clean up failed database', { cleanupError });
+        this.logger.warn('Failed to clean up failed database', {
+          cleanupError,
+        });
       }
 
       throw error;
@@ -171,11 +175,11 @@ export class DatabaseManager {
    */
   async listDatabases(): Promise<Result<CodeQLDatabase[], CodeQLError>> {
     return await safeAsync(async () => {
-      const databases = Array.from(this.databases.values());
-      
+      const databases = Array.from(this.databases.values())();
+
       // Verify database files still exist
       const validDatabases: CodeQLDatabase[] = [];
-      
+
       for (const database of databases) {
         if (await this.databaseExists(database.path)) {
           validDatabases.push(database);
@@ -198,12 +202,15 @@ export class DatabaseManager {
   async deleteDatabase(databaseId: string): Promise<Result<void, CodeQLError>> {
     return await safeAsync(async () => {
       const database = this.databases.get(databaseId);
-      
+
       if (!database) {
         throw this.createError('config', `Database not found: ${databaseId}`);
       }
 
-      this.logger.info('Deleting database', { databaseId, path: database.path });
+      this.logger.info('Deleting database', {
+        databaseId,
+        path: database.path,
+      });
 
       // Delete database files
       await this.deleteDatabaseFiles(database.path);
@@ -221,8 +228,8 @@ export class DatabaseManager {
   async cleanup(): Promise<void> {
     this.logger.info('Cleaning up all databases');
 
-    const databases = Array.from(this.databases.values());
-    
+    const databases = Array.from(this.databases.values())();
+
     for (const database of databases) {
       try {
         await this.deleteDatabaseFiles(database.path);
@@ -240,16 +247,19 @@ export class DatabaseManager {
     try {
       await fs.rmdir(this.config.tempDir!, { recursive: true });
     } catch (error) {
-      this.logger.warn('Failed to clean temp directory', { 
+      this.logger.warn('Failed to clean temp directory', {
         tempDir: this.config.tempDir,
-        error 
+        error,
       });
     }
   }
 
   // Private helper methods
 
-  private generateDatabaseId(repositoryPath: string, languages: CodeQLLanguage[]): string {
+  private generateDatabaseId(
+    repositoryPath: string,
+    languages: CodeQLLanguage[]
+  ): string {
     const repoName = path.basename(repositoryPath);
     const langString = languages.sort().join('-');
     const timestamp = Date.now();
@@ -269,7 +279,10 @@ export class DatabaseManager {
     try {
       await fs.rm(databasePath, { recursive: true, force: true });
     } catch (error) {
-      this.logger.warn('Failed to delete database files', { databasePath, error });
+      this.logger.warn('Failed to delete database files', {
+        databasePath,
+        error,
+      });
       throw error;
     }
   }
@@ -277,14 +290,16 @@ export class DatabaseManager {
   private async calculateDatabaseSize(databasePath: string): Promise<number> {
     try {
       let totalSize = 0;
-      
-      const calculateDirectorySize = async (dirPath: string): Promise<number> => {
+
+      const calculateDirectorySize = async (
+        dirPath: string
+      ): Promise<number> => {
         let size = 0;
         const entries = await fs.readdir(dirPath, { withFileTypes: true });
-        
+
         for (const entry of entries) {
           const entryPath = path.join(dirPath, entry.name);
-          
+
           if (entry.isDirectory()) {
             size += await calculateDirectorySize(entryPath);
           } else {
@@ -292,13 +307,12 @@ export class DatabaseManager {
             size += stats.size;
           }
         }
-        
+
         return size;
       };
 
       totalSize = await calculateDirectorySize(databasePath);
       return totalSize;
-      
     } catch {
       return 0;
     }
@@ -310,12 +324,12 @@ export class DatabaseManager {
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     return new Promise((resolve, reject) => {
       const child = spawn(this.config.codeqlPath!, args, {
-        cwd: options.cwd || process.cwd(),
+        cwd: options.cwd'' | '''' | ''process.cwd(),
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: options.env || process.env,
+        env: options.env'' | '''' | ''process.env,
       });
 
-      let stdout = '';
+      let stdout ='';
       let stderr = '';
 
       child.stdout.on('data', (data) => {
@@ -328,30 +342,36 @@ export class DatabaseManager {
 
       const timeoutId = setTimeout(() => {
         child.kill('SIGTERM');
-        reject(this.createError('system', 'Database creation timeout', {
-          timeout: this.config.timeout,
-        }));
+        reject(
+          this.createError('system', 'Database creation timeout', {
+            timeout: this.config.timeout,
+          })
+        );
       }, this.config.timeout);
 
       child.on('close', (exitCode) => {
         clearTimeout(timeoutId);
-        
+
         if (exitCode === 0) {
           resolve({ stdout, stderr, exitCode });
         } else {
-          reject(this.createError('database', 'Database creation failed', {
-            exitCode,
-            stderr,
-            stdout,
-          }));
+          reject(
+            this.createError('database', 'Database creation failed', {
+              exitCode,
+              stderr,
+              stdout,
+            })
+          );
         }
       });
 
       child.on('error', (error) => {
         clearTimeout(timeoutId);
-        reject(this.createError('system', 'Failed to spawn CodeQL process', {
-          originalError: error.message,
-        }));
+        reject(
+          this.createError('system', 'Failed to spawn CodeQL process', {
+            originalError: error.message,
+          })
+        );
       });
     });
   }

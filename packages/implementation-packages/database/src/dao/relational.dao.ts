@@ -57,13 +57,13 @@
 // Using Awilix DI - no reflect-metadata needed
 import { BaseDao } from '../base.dao';
 import { injectable } from '@claude-zen/foundation';
-import type { 
-  Dao, 
+import type {
+  Dao,
   DataAccessObject,
   DatabaseMetadata,
   HealthStatus,
   PerformanceMetrics,
-  TransactionOperation
+  TransactionOperation,
 } from '../interfaces';
 
 /**
@@ -116,7 +116,10 @@ import type {
  * const userCount = await userDao.aggregate('COUNT', '*', { isActive: true });
  * ```
  */
-export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessObject<T> {
+export class RelationalDao<T>
+  extends BaseDao<T>
+  implements Dao<T>, DataAccessObject<T>
+{
   /**
    * Map Database Row to Entity Object.
    *
@@ -167,13 +170,13 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
 
     // Handle common SQL data type conversions
     for (const [key, value] of Object.entries(row)) {
-      if (value === null || value === undefined) {
+      if (value === null'' | '''' | ''value === undefined) {
         entity[key] = value;
         continue;
       }
 
       // Handle JSON columns
-      if (typeof value === 'string' && this.isJsonColumn(key)) {
+      if (typeof value ==='string' && this.isJsonColumn(key)) {
         try {
           entity[key] = JSON.parse(value);
         } catch {
@@ -192,7 +195,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       if (this.isDateColumn(key)) {
         if (value instanceof Date) {
           entity[key] = value;
-        } else if (typeof value === 'string' || typeof value === 'number') {
+        } else if (typeof value === 'string''' | '''' | ''typeof value ==='number') {
           entity[key] = new Date(value);
         } else {
           entity[key] = value;
@@ -245,7 +248,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
    * //   profile: '{"age":30,"location":"NYC"}', // JSON string
    * //   created_at: '2024-01-15T00:00:00.000Z',  // SO string
    * //   is_active: true,                          // Boolean (or 1 for SQLite)
-   * //   tags: '["developer","manager"]'          // JSON array string
+   * //   tags: '["developer","manager"]'// JSON array string
    * // }
    * ```
    */
@@ -257,7 +260,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
     const row = {} as Record<string, unknown>;
 
     for (const [key, value] of Object.entries(entity)) {
-      if (value === null || value === undefined) {
+      if (value === null'' | '''' | ''value === undefined) {
         row[key] = value;
         continue;
       }
@@ -265,7 +268,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       // Handle JSON columns - serialize objects/arrays
       if (
         this.isJsonColumn(key) &&
-        (typeof value === 'object' || Array.isArray(value))
+        (typeof value ==='object''' | '''' | ''Array.isArray(value))
       ) {
         row[key] = JSON.stringify(value);
         continue;
@@ -275,7 +278,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       if (this.isDateColumn(key)) {
         if (value instanceof Date) {
           row[key] = value.toISOString();
-        } else if (typeof value === 'string' || typeof value === 'number') {
+        } else if (typeof value ==='string''' | '''' | ''typeof value ==='number') {
           row[key] = new Date(value).toISOString();
         } else {
           row[key] = value;
@@ -408,7 +411,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
    * On specified columns with optional filtering criteria. Returns numeric results for
    * statistical analysis and reporting..
    *
-   * @param {('COUNT'|'SUM'|'AVG'|'MIN'|'MAX')} aggregateFunction - SQL aggregate function to execute.
+   * @param {('COUNT | SUM | AVG | MIN | MAX')} aggregateFunction - SQL aggregate function to execute.
    * @param {string} [column='*'] - Column name to aggregate (default: '*' for COUNT).
    * @param {Partial<T>} [criteria] - Optional filtering criteria.
    * @returns {Promise<number>} Numeric result of the aggregate function.
@@ -444,7 +447,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
    * interface Order {
    *   id: string;
    *   total: number;
-   *   status: 'pending' | 'completed' | 'cancelled';
+   *   status: 'pending | completed' | 'cancelled';
    *   createdAt: Date;
    * }
    *
@@ -468,7 +471,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
    * ```
    */
   async aggregate(
-    aggregateFunction: 'COUNT' | 'SUM' | 'AVG' | 'MIN' | 'MAX',
+    aggregateFunction: 'COUNT | SUM' | 'AVG' | 'MIN' | 'MAX',
     column: string = '*',
     criteria?: Partial<T>
   ): Promise<number> {
@@ -486,11 +489,11 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
         : [];
 
       const result = await this.adapter.query(sql, params);
-      return Number((result?.rows?.[0] as any)?.result || 0);
+      return Number((result?.rows?.[0] as any)?.result'' | '''' | ''0);
     } catch (error) {
       this.logger.error(`Aggregate query failed: ${error}`);
       throw new Error(
-        `Aggregate query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Aggregate query failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -576,7 +579,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
         this.mapEntityToRow(entity as Partial<T>)
       );
 
-      if (mappedEntities.length === 0 || !mappedEntities[0]) {
+      if (mappedEntities.length === 0'' | '''' | ''!mappedEntities[0]) {
         throw new Error('No valid entities to insert');
       }
 
@@ -692,11 +695,11 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       ];
 
       const result = await this.adapter.query(sql, params);
-      return result?.rowCount || 0;
+      return result?.rowCount'' | '''' | ''0;
     } catch (error) {
       this.logger.error(`Update many failed: ${error}`);
       throw new Error(
-        `Update many failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Update many failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -764,19 +767,18 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
 
       if (!whereClause) {
         throw new Error(
-          'DELETE without WHERE clause is not allowed for safety'
-        );
+          'DELETE without WHERE clause is not allowed for safety');
       }
 
       const sql = `DELETE FROM ${this.tableName} ${whereClause}`;
       const params = Object.values(mappedCriteria);
 
       const result = await this.adapter.query(sql, params);
-      return result?.rowCount || 0;
+      return result?.rowCount'' | '''' | ''0;
     } catch (error) {
       this.logger.error(`Delete many failed: ${error}`);
       throw new Error(
-        `Delete many failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Delete many failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -949,7 +951,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
    * // Group by day for trending analysis
    * const activityByDay = recentActivity.reduce((acc, log) => {
    *   const day = log.timestamp.toISOString().split('T')[0];
-   *   acc[day] = (acc[day] || 0) + 1;
+   *   acc[day] = (acc[day]'' | '''' | ''0) + 1;
    *   return acc;
    * }, {} as Record<string, number>);
    * ```
@@ -985,7 +987,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
     } catch (error) {
       this.logger.error(`Date range query failed: ${error}`);
       throw new Error(
-        `Date range query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Date range query failed: ${error instanceof Error ? error.message :'Unknown error'}`
       );
     }
   }
@@ -995,44 +997,25 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
    */
   private isJsonColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'json' ||
-      columnName.endsWith('_json') ||
-      columnName === 'metadata' ||
-      columnName === 'properties' ||
-      columnName === 'data'
+      (this.entitySchema as any)?.[columnName]?.type === 'json''' | '''' | ''columnName.endsWith('_json')'' | '''' | ''columnName ==='metadata''' | '''' | ''columnName ==='properties''' | '''' | ''columnName ==='data'
     );
   }
 
   private isBooleanColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'boolean' ||
-      columnName.startsWith('is_') ||
-      columnName.startsWith('has_') ||
-      columnName.endsWith('_flag') ||
-      ['active', 'enabled', 'visible', 'deleted'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'boolean''' | '''' | ''columnName.startsWith('is_')'' | '''' | ''columnName.startsWith('has_')'' | '''' | ''columnName.endsWith('_flag')'' | '''' | ''['active', 'enabled', 'visible', 'deleted'].includes(columnName)
     );
   }
 
   private isDateColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'date' ||
-      (this.entitySchema as any)?.[columnName]?.type === 'datetime' ||
-      columnName.endsWith('_at') ||
-      columnName.endsWith('_date') ||
-      columnName.endsWith('_time') ||
-      ['created', 'updated', 'deleted', 'timestamp'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'date''' | '''' | ''(this.entitySchema as any)?.[columnName]?.type ==='datetime''' | '''' | ''columnName.endsWith('_at')'' | '''' | ''columnName.endsWith('_date')'' | '''' | ''columnName.endsWith('_time')'' | '''' | ''['created', 'updated', 'deleted', 'timestamp'].includes(columnName)
     );
   }
 
   private isNumberColumn(columnName: string): boolean {
     return (
-      (this.entitySchema as any)?.[columnName]?.type === 'number' ||
-      (this.entitySchema as any)?.[columnName]?.type === 'integer' ||
-      (this.entitySchema as any)?.[columnName]?.type === 'float' ||
-      columnName.endsWith('_id') ||
-      columnName.endsWith('_count') ||
-      columnName.endsWith('_size') ||
-      ['id', 'count', 'size', 'length', 'duration'].includes(columnName)
+      (this.entitySchema as any)?.[columnName]?.type === 'number''' | '''' | ''(this.entitySchema as any)?.[columnName]?.type ==='integer''' | '''' | ''(this.entitySchema as any)?.[columnName]?.type ==='float''' | '''' | ''columnName.endsWith('_id')'' | '''' | ''columnName.endsWith('_count')'' | '''' | ''columnName.endsWith('_size')'' | '''' | ''['id', 'count', 'size', 'length', 'duration'].includes(columnName)
     );
   }
 
@@ -1060,7 +1043,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       version: '1.0.0',
       features: ['relational', 'sql', 'transactions'],
       schema: await this.adapter.getSchema(),
-      config: {}
+      config: {},
     };
   }
 
@@ -1073,7 +1056,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
         status: 'healthy',
         score: 100,
         details: { accessible: true },
-        lastCheck: new Date()
+        lastCheck: new Date(),
       };
     } catch (error) {
       return {
@@ -1083,7 +1066,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
         score: 0,
         details: { accessible: false, error: (error as Error).message },
         lastCheck: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -1094,7 +1077,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       queriesPerSecond: 300,
       connectionPool: { active: 1, idle: 0, total: 1, utilization: 100 },
       memoryUsage: { used: 1024, total: 4096, percentage: 25 },
-      custom: {}
+      custom: {},
     };
   }
 }

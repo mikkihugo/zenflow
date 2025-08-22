@@ -50,14 +50,13 @@ const config = {
     },
     rateLimit: {
       windowMs: 15 * 60 * 1000, // 15 minutes
-      max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Stricter in production
+      max: process.env.NODE_ENV === 'production'? 100 : 1000, // Stricter in production
       standardHeaders: true,
       legacyHeaders: false,
       skipSuccessfulRequests: false,
       skipFailedRequests: false,
       keyGenerator: (req: any) => {
-        return req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 
-               (req.connection.socket ? req.connection.socket.remoteAddress : '127.0.0.1');
+        return req.ip'' | '''' | ''req.connection.remoteAddress'' | '''' | ''req.socket.remoteAddress'' | '''' | ''(req.connection.socket ? req.connection.socket.remoteAddress :'127.0.0.1');
       },
       handler: (req: any, res: any) => {
         res.status(429).json({
@@ -507,7 +506,7 @@ const config = {
           );
           return 'claude-zen-development-secret-REPLACE-IN-PRODUCTION';
         }
-        return secret || 'test-secret-for-testing-only';
+        return secret'' | '''' | '''test-secret-for-testing-only';
       })(),
       algorithm: 'HS256',
       issuer: 'claude-zen',

@@ -1,8 +1,8 @@
 /**
  * @fileoverview Advanced Approval Gate Coordination
- * 
+ *
  * Prepares TaskMaster for complex approval scenarios:
- * - Multi-gate coordination 
+ * - Multi-gate coordination
  * - AI team consultations
  * - Teamwork package integration
  * - Role-based AI specialists
@@ -10,10 +10,10 @@
 
 export interface GateCoordinationConfig {
   enabled: boolean;
-  coordinationType: 'sequential' | 'parallel' | 'conditional' | 'consensus';
+  coordinationType: 'sequential | parallel' | 'conditional''' | '''consensus';
   gateIds: string[];
   coordinationRules: CoordinationRule[];
-  timeoutStrategy: 'fail' | 'escalate' | 'partial_approval';
+  timeoutStrategy: 'fail | escalate' | 'partial_approval';
   requiredConsensus?: number; // For consensus type
 }
 
@@ -21,7 +21,7 @@ export interface CoordinationRule {
   id: string;
   name: string;
   condition: string; // JavaScript expression
-  action: 'block' | 'proceed' | 'escalate' | 'consult_ai_team';
+  action: 'block | proceed' | 'escalate''' | '''consult_ai_team';
   priority: number;
   metadata: Record<string, unknown>;
 }
@@ -35,7 +35,7 @@ export interface AITeamConsultation {
   requestId: string;
   gateId: string;
   taskId: string;
-  
+
   // Team configuration
   team: {
     architect?: AISpecialist;
@@ -44,20 +44,20 @@ export interface AITeamConsultation {
     reviewer?: AISpecialist;
     custom?: AISpecialist[];
   };
-  
+
   // Consultation process
-  consultationType: 'advisory' | 'blocking' | 'informational';
+  consultationType: 'advisory | blocking' | 'informational';
   consensus: {
     required: boolean;
     threshold: number; // 0.0 - 1.0
-    strategy: 'majority' | 'unanimous' | 'weighted';
+    strategy: 'majority | unanimous' | 'weighted';
   };
-  
+
   // Results
   recommendations: AIRecommendation[];
-  finalDecision?: 'approve' | 'reject' | 'escalate' | 'modify';
+  finalDecision?: 'approve | reject' | 'escalate''' | '''modify';
   confidence: number;
-  
+
   // Audit
   createdAt: Date;
   completedAt?: Date;
@@ -65,7 +65,7 @@ export interface AITeamConsultation {
 }
 
 export interface AISpecialist {
-  role: 'architect' | 'security' | 'compliance' | 'reviewer' | 'custom';
+  role: 'architect | security' | 'compliance' | 'reviewer' | 'custom';
   name: string;
   model: string;
   prompt: string;
@@ -77,13 +77,13 @@ export interface AISpecialist {
 
 export interface AIRecommendation {
   specialistRole: string;
-  decision: 'approve' | 'reject' | 'needs_changes';
+  decision: 'approve | reject' | 'needs_changes';
   confidence: number;
   reasoning: string;
   concerns: string[];
   suggestions: string[];
   riskAssessment: {
-    level: 'low' | 'medium' | 'high' | 'critical';
+    level: 'low | medium' | 'high''' | '''critical';
     factors: string[];
   };
   metadata: Record<string, unknown>;
@@ -97,7 +97,7 @@ export interface GateDependency {
   id: string;
   sourceGateId: string;
   targetGateId: string;
-  dependencyType: 'blocks' | 'triggers' | 'informs' | 'modifies';
+  dependencyType: 'blocks | triggers' | 'informs''' | '''modifies';
   condition?: string; // When dependency applies
   weight: number; // Influence strength
   metadata: Record<string, unknown>;
@@ -133,7 +133,7 @@ export interface RuleAdjustment {
   newRule: string;
   reason: string;
   confidence: number;
-  triggeredBy: 'ai_learning' | 'human_override' | 'performance_analysis';
+  triggeredBy: 'ai_learning | human_override' | 'performance_analysis';
 }
 
 /**
@@ -144,8 +144,8 @@ export interface ApprovalPattern {
   id: string;
   name: string;
   description: string;
-  pattern: 'dual_control' | 'segregation_of_duties' | 'escalation_matrix' | 'risk_based' | 'consensus_building';
-  
+  pattern:'' | '''dual_control | segregation_of_duties' | 'escalation_matrix' | 'risk_based' | 'consensus_building';
+
   configuration: {
     roles: string[];
     minimumLevels: number;
@@ -153,7 +153,7 @@ export interface ApprovalPattern {
     timeoutEscalation: boolean;
     aiAssistance: boolean;
   };
-  
+
   applicability: {
     taskTypes: string[];
     riskLevels: string[];
@@ -171,20 +171,20 @@ export interface AdvancedApprovalMetrics {
     coordinationSuccessRate: number;
     bottleneckDetection: string[];
   };
-  
+
   aiTeamPerformance: {
     consultationAccuracy: number;
     averageConsultationTime: number;
     humanOverrideRate: number;
     specialistAgreementRate: Record<string, number>;
   };
-  
+
   patternEffectiveness: {
     patternUsage: Record<string, number>;
     patternSuccessRates: Record<string, number>;
     optimizationOpportunities: string[];
   };
-  
+
   learningProgress: {
     ruleEvolution: number; // How many rules have been improved
     adaptationSpeed: number; // How quickly system learns
@@ -200,24 +200,24 @@ export interface ClaudeZenIntegration {
   teamwork: {
     enabled: boolean;
     coordinatorId?: string;
-    teamTopology: 'hierarchical' | 'flat' | 'matrix';
+    teamTopology: 'hierarchical | flat' | 'matrix';
     communicationChannels: string[];
   };
-  
-  // SAFE framework integration  
+
+  // SAFE framework integration
   safe: {
     enabled: boolean;
-    complianceLevel: 'basic' | 'enhanced' | 'strict';
+    complianceLevel: 'basic | enhanced' | 'strict';
     auditRequirements: string[];
   };
-  
+
   // Intelligence facade integration
   intelligence: {
     brainSystemId?: string;
     neuralPatterns: string[];
     learningEnabled: boolean;
   };
-  
+
   // Event system integration
   events: {
     publishDecisions: boolean;
@@ -236,26 +236,26 @@ export interface ExtensionHooks {
     handler: string; // Function reference
     priority: number;
   }>;
-  
+
   // External system integrations
   externalSystems: Array<{
     name: string;
-    type: 'jira' | 'github' | 'slack' | 'custom';
+    type: 'jira | github' | 'slack''' | '''custom';
     webhookUrl?: string;
     apiConfig?: Record<string, unknown>;
   }>;
-  
+
   // Workflow engine hooks
   workflowHooks: Array<{
-    event: 'before_approval' | 'after_approval' | 'on_timeout' | 'on_escalation';
+    event:'' | '''before_approval | after_approval' | 'on_timeout''' | '''on_escalation';
     handler: string;
     async: boolean;
   }>;
-  
+
   // ML model integration
   mlModels: Array<{
     name: string;
-    type: 'classification' | 'regression' | 'reinforcement';
+    type: 'classification | regression' | 'reinforcement';
     endpoint?: string;
     config: Record<string, unknown>;
   }>;
@@ -272,30 +272,33 @@ export const APPROVAL_TEMPLATES = {
       model: 'claude-3-5-sonnet',
       prompt: 'Review for security vulnerabilities, secrets, and compliance',
       criteria: ['no_secrets', 'secure_patterns', 'compliance_check'],
-      confidenceThreshold: 0.9
+      confidenceThreshold: 0.9,
     },
     aiTeam: {
       security: {
         role: 'security',
         expertise: ['vulnerability_detection', 'compliance', 'threat_modeling'],
-        weight: 0.8
+        weight: 0.8,
       },
       architect: {
         role: 'architect',
         expertise: ['system_design', 'security_architecture'],
-        weight: 0.6
-      }
+        weight: 0.6,
+      },
     },
     autoApprovalRules: [
       {
         id: 'documentation_only',
         name: 'Documentation Changes',
-        conditions: ['task.type === "documentation"', 'task.complexity === "trivial"'],
-        priority: 100
-      }
-    ]
+        conditions: [
+          'task.type === "documentation"',
+          'task.complexity === "trivial"',
+        ],
+        priority: 100,
+      },
+    ],
   },
-  
+
   PRODUCTION_DEPLOYMENT: {
     name: 'Production Deployment Gate',
     coordinationType: 'sequential',
@@ -304,20 +307,24 @@ export const APPROVAL_TEMPLATES = {
       reviewer: {
         role: 'reviewer',
         expertise: ['deployment_safety', 'rollback_planning', 'monitoring'],
-        weight: 0.9
-      }
-    }
+        weight: 0.9,
+      },
+    },
   },
-  
+
   COMPLIANCE_AUDIT: {
     name: 'Compliance Audit Gate',
     aiTeam: {
       compliance: {
         role: 'compliance',
         expertise: ['regulatory_requirements', 'audit_trails', 'documentation'],
-        weight: 1.0
-      }
+        weight: 1.0,
+      },
     },
-    requiredDocumentation: ['impact_assessment', 'rollback_plan', 'approval_justification']
-  }
+    requiredDocumentation: [
+      'impact_assessment',
+      'rollback_plan',
+      'approval_justification',
+    ],
+  },
 } as const;

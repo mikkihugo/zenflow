@@ -70,7 +70,7 @@ export interface EventRegistryEntry {
   lastHealthCheck: Date;
 
   /** Current operational status of the manager */
-  status: 'healthy' | 'unhealthy' | 'stopped' | 'error';
+  status: 'healthy | unhealthy' | 'stopped''' | '''error';
 
   /** Latest health check results */
   healthStatus?: EventManagerStatus;
@@ -137,8 +137,7 @@ export interface EventTypeRegistry {
  * @example
  */
 export interface FactoryRegistry {
-  [key: string]:
-    | {
+  [key: string]:'' | ''{
         /** Factory instance */
         factory: EventManagerFactory;
 
@@ -159,8 +158,7 @@ export interface FactoryRegistry {
           totalRequests: number;
           successRate: number;
         };
-      }
-    | undefined;
+      }'' | ''undefined;
 }
 
 /**
@@ -244,25 +242,25 @@ export class EventRegistry implements EventManagerRegistry {
   private factoryRegistry: FactoryRegistry = {} as FactoryRegistry;
   private healthMonitoring: HealthMonitoringConfig;
   private discoveryConfig: EventDiscoveryConfig;
-  private healthCheckInterval?: NodeJS.Timeout | undefined;
+  private healthCheckInterval?: NodeJS.Timeout'' | ''undefined;
   private initialized = false;
 
   constructor(private _logger?: Logger) {
-    this._logger = _logger || getLogger('EventRegistry');
+    this._logger = _logger'' | '''' | ''getLogger('EventRegistry');
     this.healthMonitoring = {
       checkInterval: 30000, // 30 seconds
       timeout: 5000,
       failureThreshold: 3,
       autoRecovery: true,
       maxRecoveryAttempts: 3,
-      notifyOnStatusChange: true
+      notifyOnStatusChange: true,
     };
-    
+
     this.discoveryConfig = {
       autoDiscover: true,
       patterns: ['*Event', '*event', 'event:*'],
       scanPaths: ['./events', './src/events'],
-      fileExtensions: ['', '']
+      fileExtensions: ['', ''],
     };
   }
 
@@ -305,7 +303,10 @@ export class EventRegistry implements EventManagerRegistry {
 
     // Apply configuration overrides
     if (config?.healthMonitoring) {
-      this.healthMonitoring = { ...this.healthMonitoring, ...config?.healthMonitoring };
+      this.healthMonitoring = {
+        ...this.healthMonitoring,
+        ...config?.healthMonitoring,
+      };
     }
 
     if (config?.discovery) {
@@ -376,7 +377,7 @@ export class EventRegistry implements EventManagerRegistry {
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T> | undefined {
+  ): EventManagerFactory<T>'' | ''undefined {
     const factory = this.factories.get(type);
 
     if (factory && this.factoryRegistry[type]) {
@@ -393,7 +394,7 @@ export class EventRegistry implements EventManagerRegistry {
    * List all registered factory types.
    */
   listFactoryTypes(): EventManagerType[] {
-    return Array.from(this.factories.keys());
+    return Array.from(this.factories.keys())();
   }
 
   /**
@@ -451,13 +452,15 @@ export class EventRegistry implements EventManagerRegistry {
       }
     }
 
-    this._logger?.info(`📝 Registered event manager: ${name} (${config?.type})`);
+    this._logger?.info(
+      `📝 Registered event manager: ${name} (${config?.type})`
+    );
   }
 
   /**
    * Find event manager by name.
    */
-  findEventManager(name: string): EventManager | undefined {
+  findEventManager(name: string): EventManager'' | ''undefined {
     const entry = this.eventManagers.get(name);
 
     if (entry) {
@@ -504,7 +507,9 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * Get event managers by status.
    */
-  getEventManagersByStatus(status: EventRegistryEntry['status']): EventManager[] {
+  getEventManagersByStatus(
+    status: EventRegistryEntry['status']
+  ): EventManager[] {
     const managers: EventManager[] = [];
 
     for (const [, entry] of this.eventManagers) {
@@ -533,11 +538,12 @@ export class EventRegistry implements EventManagerRegistry {
       type: eventType,
       category: config?.category,
       priority:
-        config?.priority ||
-        (typeof EventPriorityMap['medium'] === 'number' ? EventPriorityMap['medium'] : 2),
+        config?.priority'' | '''' | ''(typeof EventPriorityMap['medium'] === 'number'
+          ? EventPriorityMap['medium']
+          : 2),
       schema: config?.schema,
       managerTypes: config?.managerTypes,
-      config: config?.options || {},
+      config: config?.options'' | '''' | ''{},
       registered: new Date(),
       usage: {
         totalEmissions: 0,
@@ -559,7 +565,7 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * Get event type configuration.
    */
-  getEventTypeConfig(eventType: string): EventTypeRegistry[string] | undefined {
+  getEventTypeConfig(eventType: string): EventTypeRegistry[string]'' | ''undefined {
     return this.eventTypes[eventType];
   }
 
@@ -580,13 +586,15 @@ export class EventRegistry implements EventManagerRegistry {
           results?.set(name, {
             name: entry.manager.name,
             type: entry.manager.type,
-            status: 'unhealthy',
+            status:'unhealthy',
             lastCheck: new Date(),
             subscriptions: 0,
             queueSize: 0,
             errorRate: 1.0,
             uptime: 0,
-            metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+            metadata: {
+              error: error instanceof Error ? error.message : 'Unknown error',
+            },
           });
         });
 
@@ -610,7 +618,7 @@ export class EventRegistry implements EventManagerRegistry {
     managersByStatus: Record<string, number>;
     factoryUsage: Record<EventManagerType, number>;
   }> {
-    const managers = Array.from(this.eventManagers.values());
+    const managers = Array.from(this.eventManagers.values())();
 
     // Collect metrics from all managers
     const metricsPromises = managers.map(async (entry) => {
@@ -619,29 +627,42 @@ export class EventRegistry implements EventManagerRegistry {
         entry.metrics = metrics;
         return metrics;
       } catch (error) {
-        this._logger?.warn(`⚠️ Failed to get metrics for ${entry.manager.name}:`, error);
+        this._logger?.warn(
+          `⚠️ Failed to get metrics for ${entry.manager.name}:`,
+          error
+        );
         entry.usage.errorCount++;
         return null;
       }
     });
 
     const allMetrics = (await Promise.allSettled(metricsPromises))
-      .filter((result) => result?.status === 'fulfilled' && result?.value !== null)
-      .map((result) => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
+      .filter(
+        (result) => result?.status === 'fulfilled'&& result?.value !== null
+      )
+      .map(
+        (result) =>
+          (result as PromiseFulfilledResult<EventManagerMetrics>).value
+      );
 
     // Calculate aggregate metrics
-    const totalEvents = allMetrics.reduce((sum, metrics) => sum + metrics.eventsProcessed, 0);
+    const totalEvents = allMetrics.reduce(
+      (sum, metrics) => sum + metrics.eventsProcessed,
+      0
+    );
     const totalSubscriptions = allMetrics.reduce(
       (sum, metrics) => sum + metrics.subscriptionCount,
       0
     );
     const averageLatency =
       allMetrics.length > 0
-        ? allMetrics.reduce((sum, metrics) => sum + metrics.averageLatency, 0) / allMetrics.length
+        ? allMetrics.reduce((sum, metrics) => sum + metrics.averageLatency, 0) /
+          allMetrics.length
         : 0;
     const errorRate =
       totalEvents > 0
-        ? allMetrics.reduce((sum, metrics) => sum + metrics.eventsFailed, 0) / totalEvents
+        ? allMetrics.reduce((sum, metrics) => sum + metrics.eventsFailed, 0) /
+          totalEvents
         : 0;
 
     // Count managers by type and status
@@ -653,14 +674,17 @@ export class EventRegistry implements EventManagerRegistry {
     });
 
     managers.forEach((entry) => {
-      managersByType[entry.config.type] = (managersByType[entry.config.type] || 0) + 1;
-      managersByStatus[entry.status] = (managersByStatus[entry.status] || 0) + 1;
+      managersByType[entry.config.type] =
+        (managersByType[entry.config.type]'' | '''' | ''0) + 1;
+      managersByStatus[entry.status] =
+        (managersByStatus[entry.status]'' | '''' | ''0) + 1;
     });
 
     // Factory usage statistics
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
-      factoryUsage[type] = this.factoryRegistry[type]?.usage.managersCreated || 0;
+      factoryUsage[type] =
+        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
     });
 
     return {
@@ -682,7 +706,7 @@ export class EventRegistry implements EventManagerRegistry {
     const broadcastPromises: Promise<void>[] = [];
 
     for (const [name, entry] of this.eventManagers) {
-      if (entry.status === 'healthy') {
+      if (entry.status ==='healthy') {
         const broadcastPromise = entry.manager
           .emit(event)
           .then(() => {
@@ -703,11 +727,17 @@ export class EventRegistry implements EventManagerRegistry {
   /**
    * Broadcast event to specific event manager type.
    */
-  async broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void> {
+  async broadcastToType<T extends SystemEvent>(
+    type: EventManagerType,
+    event: T
+  ): Promise<void> {
     const managers = this.getEventManagersByType(type);
     const broadcastPromises = managers.map((manager) =>
       manager.emit(event).catch((error) => {
-        this._logger?.error(`❌ Type broadcast failed for ${manager.name}:`, error);
+        this._logger?.error(
+          `❌ Type broadcast failed for ${manager.name}:`,
+          error
+        );
       })
     );
 
@@ -724,15 +754,20 @@ export class EventRegistry implements EventManagerRegistry {
     this.stopHealthMonitoring();
 
     // Shutdown all managers
-    const shutdownPromises = Array.from(this.eventManagers.values()).map(async (entry) => {
-      try {
-        await entry.manager.destroy();
-        entry.status = 'stopped';
-      } catch (error) {
-        this._logger?.error(`❌ Failed to shutdown ${entry.manager.name}:`, error);
-        entry.status = 'error';
+    const shutdownPromises = Array.from(this.eventManagers.values()).map(
+      async (entry) => {
+        try {
+          await entry.manager.destroy();
+          entry.status = 'stopped';
+        } catch (error) {
+          this._logger?.error(
+            `❌ Failed to shutdown ${entry.manager.name}:`,
+            error
+          );
+          entry.status = 'error';
+        }
       }
-    });
+    );
 
     await Promise.allSettled(shutdownPromises);
 
@@ -758,17 +793,21 @@ export class EventRegistry implements EventManagerRegistry {
     factoryUsage: Record<EventManagerType, number>;
     uptime: number;
   } {
-    const managers = Array.from(this.eventManagers.values());
-    const healthyManagers = managers.filter((entry) => entry.status === 'healthy').length;
+    const managers = Array.from(this.eventManagers.values())();
+    const healthyManagers = managers.filter(
+      (entry) => entry.status === 'healthy').length;
 
     const managersByType: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
-      managersByType[type] = managers.filter((entry) => entry.config.type === type).length;
+      managersByType[type] = managers.filter(
+        (entry) => entry.config.type === type
+      ).length;
     });
 
     const factoryUsage: Record<EventManagerType, number> = {} as any;
     Object.values(EventManagerTypes).forEach((type) => {
-      factoryUsage[type] = this.factoryRegistry[type]?.usage.managersCreated || 0;
+      factoryUsage[type] =
+        this.factoryRegistry[type]?.usage.managersCreated'' | '''' | ''0;
     });
 
     return {
@@ -778,7 +817,9 @@ export class EventRegistry implements EventManagerRegistry {
       healthyManagers,
       managersByType,
       factoryUsage,
-      uptime: this.initialized ? Date.now() - (managers[0]?.created.getTime() || Date.now()) : 0,
+      uptime: this.initialized
+        ? Date.now() - (managers[0]?.created.getTime()'' | '''' | ''Date.now())
+        : 0,
     };
   }
 
@@ -797,13 +838,15 @@ export class EventRegistry implements EventManagerRegistry {
       usage: EventRegistryEntry['usage'];
     }>;
   } {
-    const managers = Array.from(this.eventManagers.entries()).map(([name, entry]) => ({
-      name,
-      type: entry.config.type,
-      config: entry.config,
-      status: entry.status,
-      usage: entry.usage,
-    }));
+    const managers = Array.from(this.eventManagers.entries()).map(
+      ([name, entry]) => ({
+        name,
+        type: entry.config.type,
+        config: entry.config,
+        status: entry.status,
+        usage: entry.usage,
+      })
+    );
 
     return {
       eventTypes: this.eventTypes,
@@ -827,7 +870,10 @@ export class EventRegistry implements EventManagerRegistry {
       const status = await Promise.race([
         entry.manager.healthCheck(),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Health check timeout')), this.healthMonitoring.timeout)
+          setTimeout(
+            () => reject(new Error('Health check timeout')),
+            this.healthMonitoring.timeout
+          )
         ),
       ]);
 
@@ -844,7 +890,9 @@ export class EventRegistry implements EventManagerRegistry {
         entry.status === 'healthy' &&
         this.healthMonitoring.notifyOnStatusChange
       ) {
-        this._logger?.info(`✅ Event manager ${name} recovered to healthy status`);
+        this._logger?.info(
+          `✅ Event manager ${name} recovered to healthy status`
+        );
       }
 
       return status;
@@ -965,7 +1013,9 @@ export class EventRegistry implements EventManagerRegistry {
       });
     }
 
-    this._logger?.debug(`🏷️ Registered ${defaultEventTypes.length} default event types`);
+    this._logger?.debug(
+      `🏷️ Registered ${defaultEventTypes.length} default event types`
+    );
   }
 
   private async performEventDiscovery(): Promise<void> {

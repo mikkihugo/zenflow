@@ -5,10 +5,10 @@
  * architectural boundaries, domain relationships, and code organization patterns.
  */
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs');
-import { basename, dirname, join } from 'node:path');
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('DomainAnalyzer');
 
@@ -26,7 +26,7 @@ export interface DomainBoundary {
   /** Subdirectories within the domain */
   subdirectories: string[];
   /** Domain type classification */
-  type: 'core | support' | 'infrastructure | application' | 'presentation');
+  type: 'core | support | infrastructure | application | presentation');
   /** Confidence score for domain identification (0-1) */
   confidence: number;
 }
@@ -37,13 +37,7 @@ export interface DomainRelationship {
   /** Target domain ID */
   targetId: string;
   /** Relationship type */
-  type:
-    | 'depends-on'
-    | 'uses'
-    | 'extends'
-    | 'implements'
-    | 'aggregates'
-    | 'composes');
+  type:' | ''depends-on'' | ''uses'' | ''extends'' | ''implements'' | ''aggregates'' | ''composes');
   /** Relationship strength (0-1) */
   strength: number;
   /** Evidence for the relationship */
@@ -259,8 +253,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     const suggestions: string[] = [];
 
     if (metrics.coupling > .7) {
-      suggestions.push(
-        'Consider reducing coupling by extracting shared interfaces'
+      suggestions.push('Consider reducing coupling by extracting shared interfaces'
       );
     }
 
@@ -382,7 +375,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
   private extractExports(content: string): string[] {
     const exports: string[] = [];
     const exportRegex =
-      /export\s+(?:class|function|const|let|var|interface|type)\s+(\w+)/g;
+      /export\s+(?:class | function | const | let | var | interface | type)\s+(\w+)/g;
     let match;
 
     while ((match = exportRegex.exec(content)) !== null) {
@@ -429,7 +422,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 
     // Simple complexity calculation
     const complexity =
-      (content.match(/if|for|while|switch|catch/g) || []).length + 1;
+      (content.match(/if | for | while | switch | catch/g) || []).length + 1;
 
     // Simple maintainability index
     const maintainability = Math.max(
@@ -525,33 +518,25 @@ export class DomainAnalysisEngine extends TypedEventBase {
     const nameUpper = name?.toLowerCase()
 
     if (
-      nameUpper.includes('core') ||
-      nameUpper.includes('domain') ||
-      nameUpper.includes('model');
+      nameUpper.includes('core') || nameUpper.includes('domain') || nameUpper.includes('model');
     ) {
       return 'core');
     }
 
     if (
-      nameUpper.includes('infra') ||
-      nameUpper.includes('database') ||
-      nameUpper.includes('storage');
+      nameUpper.includes('infra') || nameUpper.includes('database') || nameUpper.includes('storage');
     ) {
       return 'infrastructure');
     }
 
     if (
-      nameUpper.includes('ui') ||
-      nameUpper.includes('view') ||
-      nameUpper.includes('component');
+      nameUpper.includes('ui') || nameUpper.includes('view') || nameUpper.includes('component');
     ) {
       return 'presentation');
     }
 
     if (
-      nameUpper.includes('service') ||
-      nameUpper.includes('util') ||
-      nameUpper.includes('helper');
+      nameUpper.includes('service') || nameUpper.includes('util') || nameUpper.includes('helper');
     ) {
       return 'support');
     }
@@ -580,7 +565,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 
   private identifyTightlyCoupledGroups(): DomainBoundary[][] {
     const groups: DomainBoundary[][] = [];
-    const domains = Array.from(this.discoveredDomains?.values());
+    const domains = Array.from(this.discoveredDomains?.values())();
     const visited = new Set<string>();
 
     for (const domain of domains) {
@@ -663,7 +648,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     return {
       sourceId: source.id,
       targetId: target.id,
-      type: 'depends-on',
+      type:'depends-on',
       strength,
       evidence,
       connectionCount,
@@ -747,7 +732,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
   }
 
   private async calculateOverallMetrics(): Promise<DomainAnalysis['metrics']> {
-    const domains = Array.from(this.discoveredDomains?.values());
+    const domains = Array.from(this.discoveredDomains?.values())();
     let totalCohesion = 0;
     let totalCoupling = 0;
 

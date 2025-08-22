@@ -1,9 +1,9 @@
 /**
  * @fileoverview Architecture Principle Service - Enterprise Architecture Principles Management
- * 
+ *
  * Specialized service for managing enterprise architecture principles within SAFe environments.
  * Handles principle creation, validation, compliance checking, and lifecycle management.
- * 
+ *
  * Features:
  * - Architecture principle creation and management
  * - Principle compliance validation with intelligent reasoning
@@ -11,12 +11,12 @@
  * - Principle versioning and lifecycle tracking
  * - Knowledge-based principle storage and retrieval
  * - Automated compliance reporting and alerts
- * 
+ *
  * Integrations:
  * - @claude-zen/knowledge: Semantic principle storage and retrieval
  * - @claude-zen/fact-system: Fact-based compliance reasoning
  * - @claude-zen/workflows: Principle approval and review workflows
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -36,8 +36,8 @@ export interface ArchitecturePrinciple {
   readonly rationale: string;
   readonly implications: string[];
   readonly category: string;
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
-  readonly status: 'active' | 'deprecated' | 'draft' | 'under_review';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly status: 'active'' | ''deprecated'' | ''draft'' | ''under_review';
   readonly owner: string;
   readonly stakeholders: string[];
   readonly createdAt: Date;
@@ -54,14 +54,14 @@ export interface PrincipleComplianceMetrics {
   readonly violationCount: number;
   readonly lastComplianceCheck: Date;
   readonly criticalViolations: ComplianceViolation[];
-  readonly trend: 'improving' | 'stable' | 'declining';
-  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  readonly trend: 'improving'' | ''stable'' | ''declining';
+  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
 }
 
 export interface ComplianceViolation {
   readonly id: string;
   readonly principleId: string;
-  readonly violationType: 'major' | 'minor' | 'critical';
+  readonly violationType: 'major'' | ''minor'' | ''critical';
   readonly description: string;
   readonly impact: string;
   readonly detectedAt: Date;
@@ -69,20 +69,20 @@ export interface ComplianceViolation {
   readonly recommendation: string;
   readonly assignee?: string;
   readonly dueDate?: Date;
-  readonly status: 'open' | 'in_progress' | 'resolved' | 'accepted_risk';
+  readonly status: 'open'' | ''in_progress'' | ''resolved'' | ''accepted_risk';
 }
 
 export interface ApprovalRecord {
   readonly approver: string;
   readonly approvedAt: Date;
-  readonly status: 'approved' | 'rejected' | 'pending';
+  readonly status: 'approved'' | ''rejected'' | ''pending';
   readonly comments: string;
   readonly conditions?: string[];
 }
 
 export interface PrincipleRelationship {
   readonly relatedPrincipleId: string;
-  readonly relationshipType: 'depends_on' | 'conflicts_with' | 'complements' | 'supersedes';
+  readonly relationshipType:' | ''depends_on'' | ''conflicts_with'' | ''complements'' | ''supersedes';
   readonly description: string;
   readonly strength: number; // 0-1
 }
@@ -112,7 +112,7 @@ export interface ComplianceRule {
   readonly name: string;
   readonly description: string;
   readonly condition: string; // Logical expression
-  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly automated: boolean;
   readonly remediation: string;
   readonly category: string;
@@ -129,9 +129,9 @@ export interface ValidationThresholds {
 }
 
 export interface ReportingConfig {
-  readonly frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly';
+  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''quarterly';
   readonly recipients: string[];
-  readonly format: 'dashboard' | 'email' | 'api' | 'all';
+  readonly format: 'dashboard'' | ''email'' | ''api'' | ''all';
   readonly includeRecommendations: boolean;
   readonly includeTrends: boolean;
 }
@@ -141,7 +141,7 @@ export interface PrincipleCreationRequest {
   readonly statement: string;
   readonly rationale: string;
   readonly category: string;
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly implications: string[];
   readonly owner: string;
   readonly stakeholders: string[];
@@ -163,36 +163,36 @@ export interface PrincipleValidationResult {
 
 export interface ValidationRecommendation {
   readonly id: string;
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
-  readonly category: 'process' | 'technology' | 'governance' | 'training';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly category: 'process'' | ''technology'' | ''governance'' | ''training';
   readonly description: string;
   readonly implementation: string;
   readonly expectedImpact: string;
-  readonly effort: 'low' | 'medium' | 'high';
+  readonly effort: 'low'' | ''medium'' | ''high';
   readonly timeline: string;
   readonly dependencies: string[];
 }
 
 export interface RiskAssessment {
-  readonly overallRisk: 'low' | 'medium' | 'high' | 'critical';
+  readonly overallRisk: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly riskFactors: RiskFactor[];
   readonly mitigationStrategies: MitigationStrategy[];
-  readonly residualRisk: 'low' | 'medium' | 'high' | 'critical';
+  readonly residualRisk: 'low'' | ''medium'' | ''high'' | ''critical';
 }
 
 export interface RiskFactor {
   readonly factor: string;
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
+  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly probability: number; // 0-1
   readonly description: string;
-  readonly category: 'technical' | 'organizational' | 'compliance' | 'external';
+  readonly category: 'technical'' | ''organizational'' | ''compliance'' | ''external';
 }
 
 export interface MitigationStrategy {
   readonly strategy: string;
   readonly description: string;
   readonly effectiveness: number; // 0-1
-  readonly cost: 'low' | 'medium' | 'high';
+  readonly cost: 'low'' | ''medium'' | ''high';
   readonly timeline: string;
   readonly owner: string;
 }
@@ -230,10 +230,14 @@ export class ArchitecturePrincipleService extends TypedEventBase {
       this.workflowEngine = this.createWorkflowEngineFallback();
 
       this.initialized = true;
-      this.logger.info('Architecture Principle Service initialized successfully');
-
+      this.logger.info(
+        'Architecture Principle Service initialized successfully'
+      );
     } catch (error) {
-      this.logger.error('Failed to initialize Architecture Principle Service:', error);
+      this.logger.error(
+        'Failed to initialize Architecture Principle Service:',
+        error
+      );
       throw error;
     }
   }
@@ -241,22 +245,27 @@ export class ArchitecturePrincipleService extends TypedEventBase {
   /**
    * Create new architecture principle with comprehensive validation
    */
-  createArchitecturePrinciple(request: PrincipleCreationRequest): ArchitecturePrinciple {
+  createArchitecturePrinciple(
+    request: PrincipleCreationRequest
+  ): ArchitecturePrinciple {
     if (!this.initialized) this.initialize();
 
     this.logger.info('Creating architecture principle', {
       name: request.name,
       category: request.category,
-      priority: request.priority
+      priority: request.priority,
     });
 
     try {
       // Validate principle uniqueness
-      const existingPrinciple = Array.from(this.principles.values())
-        .find(p => p.name.toLowerCase() === request.name.toLowerCase());
-      
+      const existingPrinciple = Array.from(this.principles.values()).find(
+        (p) => p.name.toLowerCase() === request.name.toLowerCase()
+      );
+
       if (existingPrinciple) {
-        throw new Error(`Architecture principle with name "${request.name}" already exists`);
+        throw new Error(
+          `Architecture principle with name "${request.name}" already exists`
+        );
       }
 
       const principle: ArchitecturePrinciple = {
@@ -272,10 +281,12 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         stakeholders: request.stakeholders,
         createdAt: new Date(),
         lastUpdated: new Date(),
-        reviewDate: new Date(Date.now() + request.reviewIntervalDays * 24 * 60 * 60 * 1000),
+        reviewDate: new Date(
+          Date.now() + request.reviewIntervalDays * 24 * 60 * 60 * 1000
+        ),
         version: '1.0.0',
         relationships: request.relationships || [],
-        approvalHistory: []
+        approvalHistory: [],
       };
 
       // Store principle locally
@@ -285,9 +296,9 @@ export class ArchitecturePrincipleService extends TypedEventBase {
       this.knowledgeManager.store({
         content: {
           principle,
-          type: 'architecture_principle',
+          type:'architecture_principle',
           category: request.category,
-          priority: request.priority
+          priority: request.priority,
         },
         type: 'enterprise_architecture_principle',
         source: 'architecture-principle-service',
@@ -295,8 +306,8 @@ export class ArchitecturePrincipleService extends TypedEventBase {
           principleId: principle.id,
           category: request.category,
           priority: request.priority,
-          owner: request.owner
-        }
+          owner: request.owner,
+        },
       });
 
       // Store facts for reasoning
@@ -309,10 +320,10 @@ export class ArchitecturePrincipleService extends TypedEventBase {
           priority: request.priority,
           status: 'draft',
           owner: request.owner,
-          createdAt: principle.createdAt.toISOString()
+          createdAt: principle.createdAt.toISOString(),
         },
         confidence: 1.0,
-        source: 'architecture-principle-service'
+        source: 'architecture-principle-service',
       });
 
       // Initiate approval workflow if stakeholders are defined
@@ -324,22 +335,22 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         principleId: principle.id,
         name: principle.name,
         category: principle.category,
-        owner: principle.owner
+        owner: principle.owner,
       });
 
       this.logger.info('Architecture principle created successfully', {
         principleId: principle.id,
-        name: principle.name
+        name: principle.name,
       });
 
       return principle;
-
     } catch (error) {
       this.logger.error('Failed to create architecture principle:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('principle-creation-failed', {
         name: request.name,
-        error: errorMessage
+        error: errorMessage,
       });
       throw error;
     }
@@ -348,18 +359,22 @@ export class ArchitecturePrincipleService extends TypedEventBase {
   /**
    * Validate principle compliance across projects and teams
    */
-  async validatePrincipleCompliance(config: PrincipleValidationConfig): Promise<PrincipleValidationResult> {
+  async validatePrincipleCompliance(
+    config: PrincipleValidationConfig
+  ): Promise<PrincipleValidationResult> {
     if (!this.initialized) this.initialize();
 
     this.logger.info('Validating principle compliance', {
       principleId: config.principleId,
-      scope: config.validationScope
+      scope: config.validationScope,
     });
 
     try {
       const principle = this.principles.get(config.principleId);
       if (!principle) {
-        throw new Error(`Architecture principle ${config.principleId} not found`);
+        throw new Error(
+          `Architecture principle ${config.principleId} not found`
+        );
       }
 
       // Perform compliance validation using fact-based reasoning
@@ -367,8 +382,8 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         type: 'project_compliance',
         filters: {
           principleId: config.principleId,
-          timeWindow: config.validationScope.timeWindow
-        }
+          timeWindow: config.validationScope.timeWindow,
+        },
       });
 
       const violations: ComplianceViolation[] = [];
@@ -411,7 +426,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         violations,
         recommendations,
         riskAssessment,
-        nextReviewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+        nextReviewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
       };
 
       // Update principle with compliance metrics
@@ -426,8 +441,8 @@ export class ArchitecturePrincipleService extends TypedEventBase {
           principleId: config.principleId,
           validationId: result.validationId,
           complianceRate,
-          riskLevel: riskAssessment.overallRisk
-        }
+          riskLevel: riskAssessment.overallRisk,
+        },
       });
 
       this.emit('principle-validated', {
@@ -435,23 +450,23 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         validationId: result.validationId,
         complianceRate,
         violationCount: violations.length,
-        riskLevel: riskAssessment.overallRisk
+        riskLevel: riskAssessment.overallRisk,
       });
 
       this.logger.info('Principle compliance validation completed', {
         principleId: config.principleId,
         complianceRate,
-        violationCount: violations.length
+        violationCount: violations.length,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Principle compliance validation failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('principle-validation-failed', {
         principleId: config.principleId,
-        error: errorMessage
+        error: errorMessage,
       });
       throw error;
     }
@@ -468,21 +483,25 @@ export class ArchitecturePrincipleService extends TypedEventBase {
    * Get all principles
    */
   getAllPrinciples(): ArchitecturePrinciple[] {
-    return Array.from(this.principles.values());
+    return Array.from(this.principles.values())();
   }
 
   /**
    * Get principles by category
    */
   getPrinciplesByCategory(category: string): ArchitecturePrinciple[] {
-    return Array.from(this.principles.values())
-      .filter(p => p.category === category);
+    return Array.from(this.principles.values()).filter(
+      (p) => p.category === category
+    );
   }
 
   /**
    * Update principle status
    */
-  updatePrincipleStatus(principleId: string, status: ArchitecturePrinciple['status']): void {
+  updatePrincipleStatus(
+    principleId: string,
+    status: ArchitecturePrinciple['status']
+  ): void {
     const principle = this.principles.get(principleId);
     if (!principle) {
       throw new Error(`Architecture principle ${principleId} not found`);
@@ -491,20 +510,20 @@ export class ArchitecturePrincipleService extends TypedEventBase {
     const updatedPrinciple = {
       ...principle,
       status,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
 
     this.principles.set(principleId, updatedPrinciple);
 
     this.factSystem.updateFact(principleId, {
       status,
-      lastUpdated: updatedPrinciple.lastUpdated.toISOString()
+      lastUpdated: updatedPrinciple.lastUpdated.toISOString(),
     });
 
     this.emit('principle-status-updated', {
       principleId,
       oldStatus: principle.status,
-      newStatus: status
+      newStatus: status,
     });
   }
 
@@ -532,8 +551,8 @@ export class ArchitecturePrincipleService extends TypedEventBase {
       participants: principle.stakeholders,
       data: {
         principle,
-        approvalDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-      }
+        approvalDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      },
     });
   }
 
@@ -554,14 +573,18 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         violations.push({
           id: `violation-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
           principleId: principle.id,
-          violationType: rule.severity === 'critical' ? 'critical' : 
-                        rule.severity === 'high' ? 'major' : 'minor',
+          violationType:
+            rule.severity === 'critical'
+              ? 'critical'
+              : rule.severity === 'high'
+                ? 'major'
+                : 'minor',
           description: `Rule "${rule.name}" violated: ${rule.description}`,
           impact: `Violation of ${principle.name} principle`,
           detectedAt: new Date(),
           source: fact.source || 'unknown',
           recommendation: rule.remediation,
-          status: 'open'
+          status: 'open',
         });
       }
     }
@@ -580,16 +603,26 @@ export class ArchitecturePrincipleService extends TypedEventBase {
   /**
    * Calculate compliance rate
    */
-  private calculateComplianceRate(violations: ComplianceViolation[], config: PrincipleValidationConfig): number {
-    const criticalViolations = violations.filter(v => v.violationType === 'critical').length;
-    const majorViolations = violations.filter(v => v.violationType === 'major').length;
-    const minorViolations = violations.filter(v => v.violationType === 'minor').length;
+  private calculateComplianceRate(
+    violations: ComplianceViolation[],
+    config: PrincipleValidationConfig
+  ): number {
+    const criticalViolations = violations.filter(
+      (v) => v.violationType === 'critical'
+    ).length;
+    const majorViolations = violations.filter(
+      (v) => v.violationType === 'major'
+    ).length;
+    const minorViolations = violations.filter(
+      (v) => v.violationType === 'minor'
+    ).length;
 
     // Weighted compliance calculation
-    const totalPenalty = (criticalViolations * 10) + (majorViolations * 5) + (minorViolations * 1);
+    const totalPenalty =
+      criticalViolations * 10 + majorViolations * 5 + minorViolations * 1;
     const maxPenalty = 100; // Assume max 100 penalty points
-    
-    return Math.max(0, 100 - (totalPenalty / maxPenalty * 100));
+
+    return Math.max(0, 100 - (totalPenalty / maxPenalty) * 100);
   }
 
   /**
@@ -603,8 +636,12 @@ export class ArchitecturePrincipleService extends TypedEventBase {
     const recommendations: ValidationRecommendation[] = [];
 
     // Group violations by type and generate recommendations
-    const criticalViolations = violations.filter(v => v.violationType === 'critical');
-    const majorViolations = violations.filter(v => v.violationType === 'major');
+    const criticalViolations = violations.filter(
+      (v) => v.violationType === 'critical'
+    );
+    const majorViolations = violations.filter(
+      (v) => v.violationType === 'major'
+    );
 
     if (criticalViolations.length > 0) {
       recommendations.push({
@@ -612,11 +649,12 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         priority: 'critical',
         category: 'governance',
         description: `Address ${criticalViolations.length} critical violations of ${principle.name}`,
-        implementation: 'Immediate remediation required for all critical violations',
+        implementation:
+          'Immediate remediation required for all critical violations',
         expectedImpact: 'Significant improvement in principle compliance',
         effort: 'high',
         timeline: '1-2 weeks',
-        dependencies: []
+        dependencies: [],
       });
     }
 
@@ -630,7 +668,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         expectedImpact: 'Moderate improvement in compliance metrics',
         effort: 'medium',
         timeline: '2-4 weeks',
-        dependencies: []
+        dependencies: [],
       });
     }
 
@@ -645,17 +683,21 @@ export class ArchitecturePrincipleService extends TypedEventBase {
     violations: ComplianceViolation[],
     complianceRate: number
   ): RiskAssessment {
-    const criticalCount = violations.filter(v => v.violationType === 'critical').length;
-    const majorCount = violations.filter(v => v.violationType === 'major').length;
+    const criticalCount = violations.filter(
+      (v) => v.violationType === 'critical'
+    ).length;
+    const majorCount = violations.filter(
+      (v) => v.violationType === 'major'
+    ).length;
 
     let overallRisk: RiskAssessment['overallRisk'] = 'low';
-    
+
     if (criticalCount > 0 || complianceRate < 50) {
-      overallRisk = 'critical';
+      overallRisk ='critical';
     } else if (majorCount > 5 || complianceRate < 70) {
-      overallRisk = 'high';
+      overallRisk ='high';
     } else if (majorCount > 2 || complianceRate < 85) {
-      overallRisk = 'medium';
+      overallRisk ='medium';
     }
 
     const riskFactors: RiskFactor[] = [
@@ -664,15 +706,15 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         impact: 'critical',
         probability: criticalCount > 0 ? 1.0 : 0.0,
         description: `${criticalCount} critical violations detected`,
-        category: 'compliance'
+        category: 'compliance',
       },
       {
         factor: 'Low compliance rate',
         impact: 'high',
         probability: complianceRate < 70 ? 0.8 : 0.2,
         description: `Compliance rate: ${complianceRate.toFixed(1)}%`,
-        category: 'compliance'
-      }
+        category: 'compliance',
+      },
     ];
 
     const mitigationStrategies: MitigationStrategy[] = [
@@ -682,7 +724,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         effectiveness: 0.9,
         cost: 'high',
         timeline: '2-4 weeks',
-        owner: principle.owner
+        owner: principle.owner,
       },
       {
         strategy: 'Enhanced monitoring',
@@ -690,15 +732,15 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         effectiveness: 0.7,
         cost: 'medium',
         timeline: '1-2 weeks',
-        owner: principle.owner
-      }
+        owner: principle.owner,
+      },
     ];
 
     return {
       overallRisk,
       riskFactors,
       mitigationStrategies,
-      residualRisk: overallRisk === 'critical' ? 'high' : 'medium'
+      residualRisk: overallRisk === 'critical' ? 'high' : 'medium',
     };
   }
 
@@ -715,11 +757,13 @@ export class ArchitecturePrincipleService extends TypedEventBase {
         complianceRate: validationResult.overallCompliance,
         violationCount: validationResult.violations.length,
         lastComplianceCheck: validationResult.timestamp,
-        criticalViolations: validationResult.violations.filter(v => v.violationType === 'critical'),
+        criticalViolations: validationResult.violations.filter(
+          (v) => v.violationType === 'critical'
+        ),
         trend: 'stable' as const, // Would calculate based on historical data
-        riskLevel: validationResult.riskAssessment.overallRisk
+        riskLevel: validationResult.riskAssessment.overallRisk,
       },
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
 
     this.principles.set(principle.id, updatedPrinciple);
@@ -736,7 +780,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
       retrieve: (query: any) => {
         this.logger.debug('Knowledge retrieved (fallback)', { query });
         return [];
-      }
+      },
     };
   }
 
@@ -754,7 +798,7 @@ export class ArchitecturePrincipleService extends TypedEventBase {
       },
       updateFact: (entityId: string, updates: any) => {
         this.logger.debug('Fact updated (fallback)', { entityId });
-      }
+      },
     };
   }
 
@@ -764,9 +808,11 @@ export class ArchitecturePrincipleService extends TypedEventBase {
   private createWorkflowEngineFallback() {
     return {
       startWorkflow: (workflow: any) => {
-        this.logger.debug('Workflow started (fallback)', { type: workflow.workflowType });
+        this.logger.debug('Workflow started (fallback)', {
+          type: workflow.workflowType,
+        });
         return `workflow-${Date.now()}`;
-      }
+      },
     };
   }
 }

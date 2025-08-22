@@ -1,6 +1,6 @@
 /**
  * @fileoverview Transform Processor
- * 
+ *
  * Transforms telemetry data by adding, modifying, or removing attributes.
  * Supports field mapping, data enrichment, and format conversion.
  */
@@ -9,16 +9,13 @@ import { getLogger } from '@claude-zen/foundation/logging';
 import type { Logger } from '@claude-zen/foundation';
 
 import type { BaseProcessor } from './index.js';
-import type { 
-  TelemetryData, 
-  ProcessorConfig 
-} from '../types.js';
+import type { TelemetryData, ProcessorConfig } from '../types.js';
 
 /**
  * Transform operation interface
  */
 interface TransformOperation {
-  type: 'add' | 'modify' | 'remove' | 'rename' | 'map';
+  type: 'add | modify' | 'remove' | 'rename' | 'map';
   field: string;
   value?: any;
   newField?: string;
@@ -36,7 +33,7 @@ export class TransformProcessor implements BaseProcessor {
   private processedCount = 0;
   private transformedCount = 0;
   private lastProcessedTime = 0;
-  private lastError: string | null = null;
+  private lastError: string'' | ''null = null;
 
   // Configuration
   private readonly addAttributes: Record<string, any>;
@@ -48,10 +45,10 @@ export class TransformProcessor implements BaseProcessor {
     this.logger = getLogger(`TransformProcessor:${config.name}`);
 
     // Parse configuration
-    this.addAttributes = config.config?.addAttributes || {};
-    this.removeFields = config.config?.removeFields || [];
-    this.fieldMappings = config.config?.fieldMappings || {};
-    this.operations = this.parseOperations(config.config?.operations || []);
+    this.addAttributes = config.config?.addAttributes'' | '''' | ''{};
+    this.removeFields = config.config?.removeFields'' | '''' | ''[];
+    this.fieldMappings = config.config?.fieldMappings'' | '''' | ''{};
+    this.operations = this.parseOperations(config.config?.operations'' | '''' | ''[]);
   }
 
   async initialize(): Promise<void> {
@@ -59,11 +56,11 @@ export class TransformProcessor implements BaseProcessor {
       addAttributes: Object.keys(this.addAttributes).length,
       removeFields: this.removeFields.length,
       fieldMappings: Object.keys(this.fieldMappings).length,
-      operations: this.operations.length
+      operations: this.operations.length,
     });
   }
 
-  async process(data: TelemetryData): Promise<TelemetryData | null> {
+  async process(data: TelemetryData): Promise<TelemetryData'' | ''null> {
     try {
       const transformedData = await this.transformData(data);
 
@@ -79,7 +76,7 @@ export class TransformProcessor implements BaseProcessor {
       const errorMessage = String(error);
       this.lastError = errorMessage;
       this.logger.error('Transform processing failed', error);
-      
+
       // Return original data on error
       return data;
     }
@@ -88,22 +85,24 @@ export class TransformProcessor implements BaseProcessor {
   async processBatch(dataItems: TelemetryData[]): Promise<TelemetryData[]> {
     try {
       const transformedItems = await Promise.all(
-        dataItems.map(data => this.transformData(data))
+        dataItems.map((data) => this.transformData(data))
       );
 
       this.processedCount += dataItems.length;
-      
+
       // Count actual transformations
-      const actuallyTransformed = transformedItems.filter((transformed, index) => 
-        transformed !== dataItems[index]
+      const actuallyTransformed = transformedItems.filter(
+        (transformed, index) => transformed !== dataItems[index]
       ).length;
       this.transformedCount += actuallyTransformed;
-      
+
       this.lastProcessedTime = Date.now();
       this.lastError = null;
 
       if (actuallyTransformed > 0) {
-        this.logger.debug(`Transformed ${actuallyTransformed} out of ${dataItems.length} items`);
+        this.logger.debug(
+          `Transformed ${actuallyTransformed} out of ${dataItems.length} items`
+        );
       }
 
       return transformedItems;
@@ -111,7 +110,7 @@ export class TransformProcessor implements BaseProcessor {
       const errorMessage = String(error);
       this.lastError = errorMessage;
       this.logger.error('Transform batch processing failed', error);
-      
+
       // Return original data on error
       return dataItems;
     }
@@ -121,19 +120,23 @@ export class TransformProcessor implements BaseProcessor {
     this.logger.info('Transform processor shut down', {
       totalProcessed: this.processedCount,
       totalTransformed: this.transformedCount,
-      transformRate: this.processedCount > 0 ? (this.transformedCount / this.processedCount * 100).toFixed(1) + '%' : '0%'
+      transformRate:
+        this.processedCount > 0
+          ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) +
+            '%'
+          : '0%',
     });
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
+    status: 'healthy | degraded' | 'unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
     return {
       status: this.lastError ? 'unhealthy' : 'healthy',
-      lastProcessed: this.lastProcessedTime || undefined,
-      lastError: this.lastError || undefined
+      lastProcessed: this.lastProcessedTime'' | '''' | ''undefined,
+      lastError: this.lastError'' | '''' | ''undefined,
     };
   }
 
@@ -145,14 +148,15 @@ export class TransformProcessor implements BaseProcessor {
     transformed: number;
     transformRate: string;
   } {
-    const transformRate = this.processedCount > 0 
-      ? (this.transformedCount / this.processedCount * 100).toFixed(1) + '%' 
-      : '0%';
+    const transformRate =
+      this.processedCount > 0
+        ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) +'%'
+        : '0%';
 
     return {
       processed: this.processedCount,
       transformed: this.transformedCount,
-      transformRate
+      transformRate,
     };
   }
 
@@ -162,7 +166,7 @@ export class TransformProcessor implements BaseProcessor {
   private async transformData(data: TelemetryData): Promise<TelemetryData> {
     // Deep clone to avoid mutating original data
     let transformedData: TelemetryData;
-    
+
     try {
       transformedData = JSON.parse(JSON.stringify(data));
     } catch (error) {
@@ -177,7 +181,7 @@ export class TransformProcessor implements BaseProcessor {
       if (!transformedData.attributes) {
         transformedData.attributes = {};
       }
-      
+
       for (const [key, value] of Object.entries(this.addAttributes)) {
         const resolvedValue = this.resolveValue(value, transformedData);
         if (resolvedValue !== undefined) {
@@ -227,9 +231,15 @@ export class TransformProcessor implements BaseProcessor {
   /**
    * Apply a single transform operation
    */
-  private async applyOperation(data: TelemetryData, operation: TransformOperation): Promise<boolean> {
+  private async applyOperation(
+    data: TelemetryData,
+    operation: TransformOperation
+  ): Promise<boolean> {
     // Check condition if present
-    if (operation.condition && !this.evaluateCondition(data, operation.condition)) {
+    if (
+      operation.condition &&
+      !this.evaluateCondition(data, operation.condition)
+    ) {
       return false;
     }
 
@@ -248,7 +258,11 @@ export class TransformProcessor implements BaseProcessor {
       case 'modify':
         const currentValue = this.getFieldValue(data, operation.field);
         if (currentValue !== undefined) {
-          const newValue = this.resolveValue(operation.value, data, currentValue);
+          const newValue = this.resolveValue(
+            operation.value,
+            data,
+            currentValue
+          );
           this.setFieldValue(data, operation.field, newValue);
           return true;
         }
@@ -271,8 +285,15 @@ export class TransformProcessor implements BaseProcessor {
       case 'map':
         if (operation.mapping) {
           const currentValue = this.getFieldValue(data, operation.field);
-          if (currentValue !== undefined && operation.mapping[currentValue] !== undefined) {
-            this.setFieldValue(data, operation.field, operation.mapping[currentValue]);
+          if (
+            currentValue !== undefined &&
+            operation.mapping[currentValue] !== undefined
+          ) {
+            this.setFieldValue(
+              data,
+              operation.field,
+              operation.mapping[currentValue]
+            );
             return true;
           }
         }
@@ -290,7 +311,7 @@ export class TransformProcessor implements BaseProcessor {
     let value = data;
 
     for (const part of parts) {
-      if (value === null || value === undefined) {
+      if (value === null'' | '''' | ''value === undefined) {
         return undefined;
       }
       value = value[part];
@@ -308,7 +329,7 @@ export class TransformProcessor implements BaseProcessor {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part] || typeof current[part] !== 'object') {
+      if (!current[part]'' | '''' | ''typeof current[part] !=='object') {
         current[part] = {};
       }
       current = current[part];
@@ -344,11 +365,15 @@ export class TransformProcessor implements BaseProcessor {
   /**
    * Resolve value (supports templates and functions)
    */
-  private resolveValue(value: any, data: TelemetryData, currentValue?: any): any {
+  private resolveValue(
+    value: any,
+    data: TelemetryData,
+    currentValue?: any
+  ): any {
     if (typeof value === 'string') {
       // Template substitution
       return value.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
-        const resolved = this.getFieldValue(data, path.trim());
+        const resolved = this.getFieldValue(data, path.trim())();
         return resolved !== undefined ? String(resolved) : match;
       });
     }
@@ -399,13 +424,13 @@ export class TransformProcessor implements BaseProcessor {
    * Parse transform operations from configuration
    */
   private parseOperations(operations: any[]): TransformOperation[] {
-    return operations.map(op => ({
-      type: op.type || 'add',
+    return operations.map((op) => ({
+      type: op.type'' | '''' | '''add',
       field: op.field,
       value: op.value,
       newField: op.newField,
       mapping: op.mapping,
-      condition: op.condition
+      condition: op.condition,
     }));
   }
 }

@@ -1,103 +1,103 @@
 // Types for GitHub GraphQL query responses
 export type GitHubAuthor = {
-  login: string;
-  name?: string;
-};
+  login: string
+  name?: string
+}
 
 export type GitHubComment = {
-  id: string;
-  databaseId: string;
-  body: string;
-  author: GitHubAuthor;
-  createdAt: string;
-};
+  id: string
+  databaseId: string
+  body: string
+  author: GitHubAuthor
+  createdAt: string
+}
 
 export type GitHubReviewComment = GitHubComment & {
-  path: string;
-  line: number | null;
-};
+  path: string
+  line: number | null
+}
 
 export type GitHubCommit = {
-  oid: string;
-  message: string;
+  oid: string
+  message: string
   author: {
-    name: string;
-    email: string;
-  };
-};
+    name: string
+    email: string
+  }
+}
 
 export type GitHubFile = {
-  path: string;
-  additions: number;
-  deletions: number;
-  changeType: string;
-};
+  path: string
+  additions: number
+  deletions: number
+  changeType: string
+}
 
 export type GitHubReview = {
-  id: string;
-  databaseId: string;
-  author: GitHubAuthor;
-  body: string;
-  state: string;
-  submittedAt: string;
+  id: string
+  databaseId: string
+  author: GitHubAuthor
+  body: string
+  state: string
+  submittedAt: string
   comments: {
-    nodes: GitHubReviewComment[];
-  };
-};
+    nodes: GitHubReviewComment[]
+  }
+}
 
 export type GitHubPullRequest = {
-  title: string;
-  body: string;
-  author: GitHubAuthor;
-  baseRefName: string;
-  headRefName: string;
-  headRefOid: string;
-  createdAt: string;
-  additions: number;
-  deletions: number;
-  state: string;
+  title: string
+  body: string
+  author: GitHubAuthor
+  baseRefName: string
+  headRefName: string
+  headRefOid: string
+  createdAt: string
+  additions: number
+  deletions: number
+  state: string
   baseRepository: {
-    nameWithOwner: string;
-  };
+    nameWithOwner: string
+  }
   headRepository: {
-    nameWithOwner: string;
-  };
+    nameWithOwner: string
+  }
   commits: {
-    totalCount: number;
+    totalCount: number
     nodes: Array<{
-      commit: GitHubCommit;
-    }>;
-  };
+      commit: GitHubCommit
+    }>
+  }
   files: {
-    nodes: GitHubFile[];
-  };
+    nodes: GitHubFile[]
+  }
   comments: {
-    nodes: GitHubComment[];
-  };
+    nodes: GitHubComment[]
+  }
   reviews: {
-    nodes: GitHubReview[];
-  };
-};
+    nodes: GitHubReview[]
+  }
+}
 
 export type GitHubIssue = {
-  title: string;
-  body: string;
-  author: GitHubAuthor;
-  createdAt: string;
-  state: string;
+  title: string
+  body: string
+  author: GitHubAuthor
+  createdAt: string
+  state: string
   comments: {
-    nodes: GitHubComment[];
-  };
-};
+    nodes: GitHubComment[]
+  }
+}
 
 export type PullRequestQueryResponse = {
   repository: {
-    pullRequest: GitHubPullRequest;
-  };
-};
+    pullRequest: GitHubPullRequest
+  }
+}
 
 export type IssueQueryResponse = {
   repository: {
-    issue: GitHubIssue;
-  };
-};
+    issue: GitHubIssue
+  }
+}

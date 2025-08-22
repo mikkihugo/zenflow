@@ -204,7 +204,7 @@ describe('GitHub Models API', () => {
         yield { choices: [{ finish_reason: 'stop' }] };
       };
 
-      api.streamRequest = vi.fn().mockReturnValue(mockStream());
+      api.streamRequest = vi.fn().mockReturnValue(mockStream())();
 
       const stream = api.streamRequest('stream test');
       const chunks = [];

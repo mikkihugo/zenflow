@@ -15,12 +15,12 @@
  * @file Memory management domain API routes.
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger } from '@claude-zen/foundation');
-import { type Request, type Response, Router } from 'express');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
+import { type Request, type Response, Router } from 'express';
 
-import { asyncHandler } from './middleware/errors');
-import { LogLevel, log, logPerformance } from './middleware/logging');
+import { asyncHandler } from './middleware/errors';
+import { LogLevel, log, logPerformance } from './middleware/logging';
 
 /**
  * Create memory management routes with @claude-zen/intelligence delegation.
@@ -141,8 +141,7 @@ export const createMemoryRoutes = (): Router => {
   /**
    * POST /api/v1/memory/stores - Create new memory store via coordinator
    */
-  router.post(
-    '/stores',
+  router.post('/stores',
     asyncHandler(async (req: Request, res: Response) => {
       await initializeBrainCoordinator();
       log(
@@ -197,7 +196,7 @@ export const createMemoryRoutes = (): Router => {
           value: value || `Simulated value for ${key}`,
           exists: true,
           retrieved: new Date()?.toISOString,
-          source: 'memory-coordinator',
+          source:'memory-coordinator',
         };
 
         const duration = Date.now() - startTime;
@@ -250,7 +249,7 @@ export const createMemoryRoutes = (): Router => {
           stored: new Date()?.toISOString,
           ttl: ttl || null,
           metadata,
-          source: 'memory-coordinator',
+          source:'memory-coordinator',
         };
 
         const duration = Date.now() - startTime;
@@ -306,7 +305,7 @@ export const createMemoryRoutes = (): Router => {
           issues: health.details.issues || [],
           recommendations: health.recommendations || [],
           timestamp: new Date()?.toISOString,
-          source: 'memory-monitor',
+          source:'memory-monitor',
         };
 
         const statusCode = health.overall === 'healthy' ? 200 : 503;

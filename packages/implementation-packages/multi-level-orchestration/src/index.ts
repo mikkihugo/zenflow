@@ -1,6 +1,6 @@
 /**
  * @fileoverview Multi-Level Orchestration Package
- * 
+ *
  * Comprehensive orchestration system providing Portfolio → Program → Swarm execution
  * coordination with intelligent WIP management, flow optimization, and cross-level dependency management.
  */
@@ -18,7 +18,7 @@ export type {
   StreamStatus,
   StreamMetrics,
   StreamConfiguration,
-  
+
   // Work item types
   PortfolioItem,
   ProgramItem,
@@ -28,16 +28,16 @@ export type {
   CodeArtifact,
   QualityGate,
   QualityGateResult,
-  
+
   // Coordination types
   CrossLevelDependency,
   OptimizationRecommendation,
   MultiLevelOrchestratorState,
   SystemPerformanceMetrics,
-  
+
   // SPARC integration
   SPARCPhase,
-  SPARCProjectRef
+  SPARCProjectRef,
 } from './types';
 
 // ============================================================================
@@ -47,12 +47,10 @@ export type {
   OrchestrationEvent,
   StreamStatusChangedEvent,
   WIPLimitExceededEvent,
-  OrchestrationEventType
+  OrchestrationEventType,
 } from './events/orchestration-events';
 
-export {
-  isStreamEvent
-} from './events/orchestration-events';
+export { isStreamEvent } from './events/orchestration-events';
 
 // ============================================================================
 // ORCHESTRATORS - Core orchestration engines
@@ -74,7 +72,7 @@ export type {
   OrchestrationError,
   OrchestrationWarning,
   ExecutionPlan,
-  ExecutionPhase
+  ExecutionPhase,
 } from './core/multi-level-orchestration-manager';
 
 /**
@@ -82,12 +80,14 @@ export type {
  */
 export class MultiLevelOrchestrator {
   public readonly id: string;
-  
+
   constructor(config: { wipLimits: WIPLimits }) {
     this.id = `orchestrator-${Date.now()}`;
-    console.warn('MultiLevelOrchestrator is deprecated. Use MultiLevelOrchestrationManager instead.');
+    console.warn(
+      'MultiLevelOrchestrator is deprecated. Use MultiLevelOrchestrationManager instead.'
+    );
   }
-  
+
   async initialize(): Promise<void> {
     // Implementation to be added
   }
@@ -106,7 +106,9 @@ export function createMultiLevelOrchestration(config: {
   enableMetrics?: boolean;
 }) {
   // Import locally to avoid circular dependency
-  const { MultiLevelOrchestrationManager } = require('./core/multi-level-orchestration-manager');
+  const {
+    MultiLevelOrchestrationManager,
+  } = require('./core/multi-level-orchestration-manager');
   return new MultiLevelOrchestrationManager(config);
 }
 

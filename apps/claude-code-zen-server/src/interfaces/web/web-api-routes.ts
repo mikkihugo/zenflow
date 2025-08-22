@@ -48,19 +48,19 @@
  * **REDUCTION ACHIEVED: 1,854 → 420 lines (77.3% reduction) through strategic delegation**
  */
 
-import type { AdvancedGUI } from '@claude-zen/enterprise');
-import type { SystemMonitor, WebMiddleware } from '@claude-zen/foundation');
+import type { AdvancedGUI } from '@claude-zen/enterprise';
+import type { SystemMonitor, WebMiddleware } from '@claude-zen/foundation';
 import {
   getLogger,
   assertDefined,
   getErrorMessage,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 import type {
   WorkflowEngine,
   CollaborationEngine,
   DocumentationManager,
-} from '@claude-zen/intelligence');
-import type { Express, Request, Response, NextFunction } from 'express');
+} from '@claude-zen/intelligence';
+import type { Express, Request, Response, NextFunction } from 'express';
 
 import('/web-config');
 import('/web-data-service');
@@ -102,12 +102,12 @@ export class WebApiRoutes {
   private dataService: WebDataService;
 
   // Strategic delegation instances
-  private advancedGUI: AdvancedGUI | null = null;
-  private workflowEngine: WorkflowEngine | null = null;
-  private healthMonitor: SystemMonitor | null = null;
-  private webMiddleware: WebMiddleware | null = null;
-  private collaborationEngine: CollaborationEngine | null = null;
-  private documentationManager: DocumentationManager | null = null;
+  private advancedGUI: AdvancedGUI'' | ''null = null;
+  private workflowEngine: WorkflowEngine'' | ''null = null;
+  private healthMonitor: SystemMonitor'' | ''null = null;
+  private webMiddleware: WebMiddleware'' | ''null = null;
+  private collaborationEngine: CollaborationEngine'' | ''null = null;
+  private documentationManager: DocumentationManager'' | ''null = null;
 
   private initialized = false;
 

@@ -22,7 +22,7 @@ async function verifyTodoImplementations() {
   let allTestsPassed = true;
   const results: Array<{
     test: string;
-    status: 'PASS' | 'FAIL';
+    status: 'PASS''' | '''FAIL';
     details?: string;
   }> = [];
 

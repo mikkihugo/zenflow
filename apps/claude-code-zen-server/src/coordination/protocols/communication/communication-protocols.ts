@@ -32,25 +32,9 @@ export interface Message {
   checksum: string;
 }
 
-export type MessageType =
-  | 'broadcast'
-  | 'multicast'
-  | 'unicast'
-  | 'gossip'
-  | 'heartbeat'
-  | 'consensus'
-  | 'election'
-  | 'coordination'
-  | 'data'
-  | 'control'
-  | 'emergency';
+export type MessageType = 'broadcast' | 'multicast' | 'unicast' | 'gossip' | 'heartbeat' | 'consensus' | 'election' | 'coordination' | 'data' | 'control' | 'emergency';
 
-export type MessagePriority =
-  | 'emergency'
-  | 'high'
-  | 'normal'
-  | 'low'
-  | 'background';
+export type MessagePriority = 'emergency' | 'high' | 'normal' | 'low' | 'background';
 
 export interface MessagePayload {
   data: any;
@@ -264,7 +248,7 @@ export class CommunicationProtocols extends TypedEventBase {
       payload: message.payload || {
         data: null,
         metadata: {},
-        contentType: 'application/json',
+        contentType:'application/json',
         encoding: 'utf8',
         version: '1.0',
       },
@@ -274,12 +258,12 @@ export class CommunicationProtocols extends TypedEventBase {
       },
       compression: message.compression || {
         enabled: true,
-        algorithm: 'gzip',
+        algorithm:'gzip',
         level: 6,
         threshold: this.configuration.compressionThreshold,
       },
       routing: message.routing || {
-        strategy: 'adaptive',
+        strategy:'adaptive',
         maxHops: this.configuration.maxHops,
         reliabilityMode: 'at-least-once',
         acknowledgment: true,
@@ -294,7 +278,7 @@ export class CommunicationProtocols extends TypedEventBase {
       },
       timestamp: new Date(),
       ttl: message.ttl || this.configuration.messageTimeout,
-      checksum: '',
+      checksum:'',
     };
 
     // Calculate checksum
@@ -447,13 +431,12 @@ export class CommunicationProtocols extends TypedEventBase {
     await this.consensusEngine.initiateConsensus(proposal.id, proposal);
 
     const targetNodes =
-      participants ||
-      Array.from(this.nodes?.keys).filter((id) => id !== this._nodeId);
+      participants || Array.from(this.nodes?.keys).filter((id) => id !== this._nodeId);
 
     await this.multicast(
       targetNodes,
       {
-        data: { type: 'consensus_proposal', proposal },
+        data: { type:'consensus_proposal', proposal },
         metadata: { consensusRound: 1 },
         contentType: 'application/json',
         encoding: 'utf8',
@@ -504,7 +487,7 @@ export class CommunicationProtocols extends TypedEventBase {
     await this.unicast(
       proposal.proposer,
       {
-        data: { type: 'consensus_vote', vote },
+        data: { type:'consensus_vote', vote },
         metadata: { consensusRound: proposal.round },
         contentType: 'application/json',
         encoding: 'utf8',
@@ -591,26 +574,26 @@ export class CommunicationProtocols extends TypedEventBase {
     return {
       routingTable,
       broadcastTrees,
-      networkTopology: this.buildNetworkTopology,
+      networkTopology: this.buildNetworkTopology(),
     };
   }
 
   private startProcessing(): void {
     // Message processing loop
     this.processingInterval = setInterval(async () => {
-      await this.processMessageQueues;
-      await this.cleanupExpiredMessages;
-      await this.updateNodeMetrics;
+      await this.processMessageQueues();
+      await this.cleanupExpiredMessages();
+      await this.updateNodeMetrics();
     }, 100); // Process every 100ms
 
     // Gossip loop
     this.gossipInterval = setInterval(async () => {
-      await this.performGossipRound;
+      await this.performGossipRound();
     }, this.configuration.gossipInterval);
 
     // Heartbeat loop
     this.heartbeatInterval = setInterval(async () => {
-      await this.sendHeartbeats;
+      await this.sendHeartbeats();
     }, this.configuration.heartbeatInterval);
   }
 
@@ -709,7 +692,7 @@ export class CommunicationProtocols extends TypedEventBase {
 
   private async handleIncomingMessage(data: any): Promise<void> {
     try {
-      const message: Message = data?.message()
+      const message: Message = data?.message;
 
       // Verify checksum
       if (!this.verifyChecksum(message)) {
@@ -765,7 +748,7 @@ export class CommunicationProtocols extends TypedEventBase {
 
     // Built-in message type handling
     switch (message.type) {
-      case 'heartbeat':
+      case'heartbeat':
         await this.handleHeartbeat(message);
         break;
       case 'gossip':
@@ -837,7 +820,7 @@ export class CommunicationProtocols extends TypedEventBase {
     const requiredVotes = Math.floor(totalNodes * .67); // 2/3 majority
 
     if (votes.length >= requiredVotes) {
-      const acceptVotes = votes.filter((v) => v.decision === 'accept').length;
+      const acceptVotes = votes.filter((v) => v.decision ==='accept').length;
       const result = acceptVotes >= requiredVotes ? 'accepted' : 'rejected';
 
       this.emit('consensus:reached', {
@@ -913,7 +896,7 @@ export class CommunicationProtocols extends TypedEventBase {
         await this.unicast(
           targetId,
           {
-            data: { type: 'state_update', key, state },
+            data: { type:'state_update', key, state },
             metadata: { gossipRound: Date.now() },
             contentType: 'application/json',
             encoding: 'utf8',
@@ -1173,7 +1156,7 @@ class CompressionEngine {
       let compressed: Buffer;
 
       switch (config?.algorithm) {
-        case 'gzip':
+        case'gzip':
           compressed = gzipSync(data, { level: config?.level });
           break;
         default:
@@ -1278,7 +1261,7 @@ class RoutingEngine {
     for (const recipient of message.recipients) {
       if (!recipient) continue;
       const route = routingTable.get(recipient);
-      if (route && route.length > 0 && route[0]) {
+        if (route && route.length > 0 && route[0]) {
         await this.forwardMessage(message, route[0], nodes);
       }
     }
@@ -1332,7 +1315,7 @@ class RoutingEngine {
     nodes: Map<string, CommunicationNode>
   ): Promise<void> {
     const targetNode = nodes?.get(targetId);
-    if (!targetNode || targetNode?.status === 'offline') {
+    if (!targetNode || targetNode?.status ==='offline') {
       throw new Error(`Target node ${targetId} is unreachable`);
     }
 
@@ -1426,7 +1409,7 @@ class ConsensusEngine {
    * Get active proposals for monitoring.
    */
   getActiveProposals(): ConsensusProposal[] {
-    return Array.from(this.activeProposals?.values());
+    return Array.from(this.activeProposals?.values())();
   }
 }
 

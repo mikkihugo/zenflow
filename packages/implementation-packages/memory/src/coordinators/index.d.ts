@@ -7,5 +7,11 @@
 export { MemoryCoordinationSystem } from './memory-coordination-system';
 export { MemoryLoadBalancer } from './memory-load-balancer';
 export { MemoryHealthMonitor } from './memory-health-monitor';
-export type { MemoryCoordinationConfig, MemoryNode, MemoryDistributionStrategy, MemoryHealthStatus, MemoryLoadMetrics } from './types';
+export type {
+  MemoryCoordinationConfig,
+  MemoryNode,
+  MemoryDistributionStrategy,
+  MemoryHealthStatus,
+  MemoryLoadMetrics,
+} from './types';
 //# sourceMappingURL=index.d.ts.map

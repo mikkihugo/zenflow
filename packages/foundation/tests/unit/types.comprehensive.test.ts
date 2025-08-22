@@ -1,6 +1,6 @@
 /**
  * @fileoverview Comprehensive Types System Tests
- * 
+ *
  * 100% coverage tests for the types system.
  */
 
@@ -22,7 +22,7 @@ import type {
   AsyncOperationResult,
   QueryCriteria,
   AuditEntry,
-  LogLevel
+  LogLevel,
 } from '../../src/types';
 
 describe('Foundation Types - 100% Coverage', () => {
@@ -30,10 +30,10 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle ID types correctly', () => {
       const stringId: ID = 'test-id';
       const numberId: ID = 12345;
-      
+
       expect(typeof stringId).toBe('string');
       expect(typeof numberId).toBe('number');
-      
+
       // Test type compatibility
       const ids: ID[] = [stringId, numberId, 'another-id', 999];
       expect(ids).toHaveLength(4);
@@ -42,7 +42,7 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle UUID types correctly', () => {
       const uuid: UUID = 'test-uuid-123';
       const realUuid: UUID = '550e8400-e29b-41d4-a716-446655440000';
-      
+
       expect(typeof uuid).toBe('string');
       expect(typeof realUuid).toBe('string');
       expect(realUuid).toMatch(/^[0-9a-f-]+$/i);
@@ -51,7 +51,7 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle Timestamp types correctly', () => {
       const timestamp: Timestamp = Date.now();
       const customTimestamp: Timestamp = 1640995200000; // Jan 1, 2022
-      
+
       expect(typeof timestamp).toBe('number');
       expect(typeof customTimestamp).toBe('number');
       expect(timestamp).toBeGreaterThan(0);
@@ -61,29 +61,51 @@ describe('Foundation Types - 100% Coverage', () => {
 
   describe('Enum Types', () => {
     it('should handle Status enum values', () => {
-      const statuses: Status[] = ['pending', 'in_progress', 'completed', 'failed', 'cancelled'];
-      
-      statuses.forEach(status => {
+      const statuses: Status[] = [
+        'pending',
+        'in_progress',
+        'completed',
+        'failed',
+        'cancelled',
+      ];
+
+      statuses.forEach((status) => {
         const statusValue: Status = status;
-        expect(['pending', 'in_progress', 'completed', 'failed', 'cancelled']).toContain(statusValue);
+        expect([
+          'pending',
+          'in_progress',
+          'completed',
+          'failed',
+          'cancelled',
+        ]).toContain(statusValue);
       });
     });
 
     it('should handle Priority enum values', () => {
-      const priorities: Priority[] = ['low', 'medium', 'high', 'critical', 'urgent'];
-      
-      priorities.forEach(priority => {
+      const priorities: Priority[] = [
+        'low',
+        'medium',
+        'high',
+        'critical',
+        'urgent',
+      ];
+
+      priorities.forEach((priority) => {
         const priorityValue: Priority = priority;
-        expect(['low', 'medium', 'high', 'critical', 'urgent']).toContain(priorityValue);
+        expect(['low', 'medium', 'high', 'critical', 'urgent']).toContain(
+          priorityValue
+        );
       });
     });
 
     it('should handle LogLevel enum values', () => {
       const logLevels: LogLevel[] = ['debug', 'info', 'warn', 'error', 'fatal'];
-      
-      logLevels.forEach(level => {
+
+      logLevels.forEach((level) => {
         const levelValue: LogLevel = level;
-        expect(['debug', 'info', 'warn', 'error', 'fatal']).toContain(levelValue);
+        expect(['debug', 'info', 'warn', 'error', 'fatal']).toContain(
+          levelValue
+        );
       });
     });
   });
@@ -93,9 +115,9 @@ describe('Foundation Types - 100% Coverage', () => {
       const now = Date.now();
       const timestamped: Timestamped = {
         createdAt: now,
-        updatedAt: now + 1000
+        updatedAt: now + 1000,
       };
-      
+
       expect(timestamped.createdAt).toBe(now);
       expect(timestamped.updatedAt).toBe(now + 1000);
       expect(typeof timestamped.createdAt).toBe('number');
@@ -104,13 +126,13 @@ describe('Foundation Types - 100% Coverage', () => {
 
     it('should handle Identifiable interface', () => {
       const identifiable: Identifiable<string> = {
-        id: 'test-id'
+        id: 'test-id',
       };
-      
+
       const identifiableNumber: Identifiable<number> = {
-        id: 12345
+        id: 12345,
       };
-      
+
       expect(identifiable.id).toBe('test-id');
       expect(identifiableNumber.id).toBe(12345);
     });
@@ -122,9 +144,9 @@ describe('Foundation Types - 100% Coverage', () => {
         version: 1,
         isActive: true,
         createdAt: Date.now(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       };
-      
+
       expect(entity.id).toBe('entity-123');
       expect(entity.name).toBe('Test Entity');
       expect(entity.version).toBe(1);
@@ -143,7 +165,7 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle Paginated interface', () => {
       const items: TestItem[] = [
         { id: '1', name: 'Item 1' },
-        { id: '2', name: 'Item 2' }
+        { id: '2', name: 'Item 2' },
       ];
 
       const paginated: Paginated<TestItem> = {
@@ -151,9 +173,9 @@ describe('Foundation Types - 100% Coverage', () => {
         totalItems: 100,
         totalPages: 10,
         currentPage: 1,
-        pageSize: 10
+        pageSize: 10,
       };
-      
+
       expect(paginated.items).toHaveLength(2);
       expect(paginated.totalItems).toBe(100);
       expect(paginated.totalPages).toBe(10);
@@ -167,24 +189,24 @@ describe('Foundation Types - 100% Coverage', () => {
       const options1: PaginationOptions = {
         page: 1,
         limit: 10,
-        offset: 0
+        offset: 0,
       };
-      
+
       const options2: PaginationOptions = {
         page: 2,
-        limit: 20
+        limit: 20,
       };
-      
+
       const options3: PaginationOptions = {};
-      
+
       expect(options1.page).toBe(1);
       expect(options1.limit).toBe(10);
       expect(options1.offset).toBe(0);
-      
+
       expect(options2.page).toBe(2);
       expect(options2.limit).toBe(20);
       expect(options2.offset).toBeUndefined();
-      
+
       expect(options3).toEqual({});
     });
   });
@@ -193,9 +215,9 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle SuccessResult type', () => {
       const success: SuccessResult<string> = {
         success: true,
-        data: 'test-data'
+        data: 'test-data',
       };
-      
+
       expect(success.success).toBe(true);
       expect(success.data).toBe('test-data');
     });
@@ -203,9 +225,9 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle ErrorResult type', () => {
       const error: ErrorResult<Error> = {
         success: false,
-        error: new Error('Test error')
+        error: new Error('Test error'),
       };
-      
+
       expect(error.success).toBe(false);
       expect(error.error).toBeInstanceOf(Error);
       expect(error.error.message).toBe('Test error');
@@ -214,19 +236,19 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle Result union type', () => {
       const successResult: Result<string, Error> = {
         success: true,
-        data: 'success'
+        data: 'success',
       };
-      
+
       const errorResult: Result<string, Error> = {
         success: false,
-        error: new Error('failure')
+        error: new Error('failure'),
       };
-      
+
       // Type guards
       if (successResult.success) {
         expect(successResult.data).toBe('success');
       }
-      
+
       if (!errorResult.success) {
         expect(errorResult.error.message).toBe('failure');
       }
@@ -235,30 +257,30 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle AsyncOperationResult type', () => {
       const asyncSuccess: AsyncOperationResult<string> = Promise.resolve({
         success: true,
-        data: 'async-data'
+        data: 'async-data',
       });
-      
+
       const asyncError: AsyncOperationResult<string> = Promise.resolve({
         success: false,
-        error: new Error('Async error')
+        error: new Error('Async error'),
       });
-      
+
       expect(asyncSuccess).toBeInstanceOf(Promise);
       expect(asyncError).toBeInstanceOf(Promise);
-      
+
       return Promise.all([
-        asyncSuccess.then(result => {
+        asyncSuccess.then((result) => {
           expect(result.success).toBe(true);
           if (result.success) {
             expect(result.data).toBe('async-data');
           }
         }),
-        asyncError.then(result => {
+        asyncError.then((result) => {
           expect(result.success).toBe(false);
           if (!result.success) {
             expect(result.error.message).toBe('Async error');
           }
-        })
+        }),
       ]);
     });
   });
@@ -268,21 +290,21 @@ describe('Foundation Types - 100% Coverage', () => {
       const criteria: QueryCriteria = {
         filters: {
           status: 'active',
-          category: 'test'
+          category: 'test',
         },
         sort: [
           { field: 'name', direction: 'asc' },
-          { field: 'createdAt', direction: 'desc' }
+          { field: 'createdAt', direction: 'desc' },
         ],
         pagination: {
           page: 1,
-          limit: 10
-        }
+          limit: 10,
+        },
       };
-      
+
       expect(criteria.filters).toEqual({
         status: 'active',
-        category: 'test'
+        category: 'test',
       });
       expect(criteria.sort).toHaveLength(2);
       expect(criteria.sort![0].field).toBe('name');
@@ -294,9 +316,9 @@ describe('Foundation Types - 100% Coverage', () => {
     it('should handle minimal QueryCriteria', () => {
       const emptyCriteria: QueryCriteria = {};
       const filterOnlyCriteria: QueryCriteria = {
-        filters: { active: true }
+        filters: { active: true },
       };
-      
+
       expect(emptyCriteria).toEqual({});
       expect(filterOnlyCriteria.filters).toEqual({ active: true });
       expect(filterOnlyCriteria.sort).toBeUndefined();
@@ -313,17 +335,17 @@ describe('Foundation Types - 100% Coverage', () => {
         action: 'UPDATE',
         changes: {
           name: { from: 'Old Name', to: 'New Name' },
-          email: { from: 'old@test.com', to: 'new@test.com' }
+          email: { from: 'old@test.com', to: 'new@test.com' },
         },
         userId: 'user-789',
         metadata: {
           ip: '192.168.1.1',
-          userAgent: 'Test Agent'
+          userAgent: 'Test Agent',
         },
         createdAt: Date.now(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       };
-      
+
       expect(auditEntry.id).toBe('audit-123');
       expect(auditEntry.entityId).toBe('entity-456');
       expect(auditEntry.entityType).toBe('User');
@@ -342,9 +364,9 @@ describe('Foundation Types - 100% Coverage', () => {
         action: 'CREATE',
         changes: {},
         createdAt: Date.now(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       };
-      
+
       expect(minimalAudit.userId).toBeUndefined();
       expect(minimalAudit.metadata).toBeUndefined();
       expect(minimalAudit.changes).toEqual({});
@@ -356,7 +378,7 @@ describe('Foundation Types - 100% Coverage', () => {
       email: string;
       role: string;
     }
-    
+
     it('should handle complex type compositions', () => {
       const user: User = {
         id: 'user-123',
@@ -366,9 +388,9 @@ describe('Foundation Types - 100% Coverage', () => {
         createdAt: Date.now(),
         updatedAt: Date.now(),
         email: 'john@test.com',
-        role: 'admin'
+        role: 'admin',
       };
-      
+
       expect(user.id).toBe('user-123');
       expect(user.name).toBe('John Doe');
       expect(user.email).toBe('john@test.com');
@@ -386,8 +408,8 @@ describe('Foundation Types - 100% Coverage', () => {
           createdAt: Date.now(),
           updatedAt: Date.now(),
           email: 'user1@test.com',
-          role: 'user'
-        }
+          role: 'user',
+        },
       ];
 
       const paginatedUsers: Paginated<User> = {
@@ -395,9 +417,9 @@ describe('Foundation Types - 100% Coverage', () => {
         totalItems: 50,
         totalPages: 5,
         currentPage: 1,
-        pageSize: 10
+        pageSize: 10,
       };
-      
+
       expect(paginatedUsers.items[0].email).toBe('user1@test.com');
       expect(paginatedUsers.totalItems).toBe(50);
     });
@@ -413,10 +435,10 @@ describe('Foundation Types - 100% Coverage', () => {
           createdAt: Date.now(),
           updatedAt: Date.now(),
           email: 'result@test.com',
-          role: 'user'
-        }
+          role: 'user',
+        },
       };
-      
+
       if (userResult.success) {
         expect(userResult.data.email).toBe('result@test.com');
       }

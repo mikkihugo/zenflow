@@ -5,8 +5,8 @@
  * HybridDocumentManager for semantic search and graph relationships.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { ProjectEntity } from '@claude-zen/intelligence');
+import { getLogger } from '@claude-zen/foundation';
+import type { ProjectEntity } from '@claude-zen/intelligence';
 
 import('/hybrid-document-service');
 
@@ -25,7 +25,7 @@ export interface ADRCreateOptions {
   }>;
   author?: string;
   project_id?: string;
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   stakeholders?: string[];
   implementation_notes?: string;
   success_criteria?: string[];
@@ -33,14 +33,8 @@ export interface ADRCreateOptions {
 }
 
 export interface ADRQueryOptions {
-  status?:
-    | 'proposed'
-    | 'discussion'
-    | 'decided'
-    | 'implemented'
-    | 'superseded'
-    | 'deprecated');
-  priority?: 'low | medium' | 'high | critical');
+  status?:' | ''proposed | discussion' | 'decided''' | '''implemented | superseded' | 'deprecated');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   author?: string;
   project_id?: string;
   date_range?: {
@@ -193,10 +187,10 @@ export class ADRManagerHybrid {
         title: `${adrId}: ${options.title}`,
         content: this.formatADRContent(adrId, options),
         summary: `Architecture decision ${adrId} regarding ${options.title}`,
-        author: options.author || 'architecture-team',
+        author: options.author'' | '''' | '''architecture-team',
         project_id: this.architectureProject?.id,
         status: 'draft',
-        priority: options.priority || 'medium',
+        priority: options.priority'' | '''' | '''medium',
         tags: ['architecture, decision', 'adr'],
         parent_document_id: undefined,
         dependencies: [],
@@ -212,7 +206,7 @@ export class ADRManagerHybrid {
         decision: options.decision,
         consequences: [options.consequences],
         alternatives_considered:
-          options.alternatives?.map((alt) => alt.name) || [],
+          options.alternatives?.map((alt) => alt.name)'' | '''' | ''[],
         supersedes_adr_id: undefined,
         source_vision_id: undefined,
         impacted_prds: [],
@@ -289,7 +283,7 @@ export class ADRManagerHybrid {
             id: rel.target_document_id,
             title: 'Related ADR', // Would fetch actual title
             relationship_type: rel.relationship_type,
-            strength: rel.strength || .5,
+            strength: rel.strength'' | '''' | ''.5,
           }));
         }
 
@@ -355,7 +349,7 @@ export class ADRManagerHybrid {
       searchResults = [];
       for (const id of relatedIds) {
         const searchResult = await this.hybridManager.hybridSearch({
-          query: '',
+          query:'',
           documentTypes: ['adr'],
           maxResults: 1,
         });
@@ -418,19 +412,19 @@ export class ADRManagerHybrid {
 
     for (const adr of adrs) {
       // Status stats
-      stats.by_status[adr.status] = (stats.by_status[adr.status] || 0) + 1;
+      stats.by_status[adr.status] = (stats.by_status[adr.status]'' | '''' | ''0) + 1;
 
       // Priority stats
       stats.by_priority[adr.priority] =
-        (stats.by_priority[adr.priority] || 0) + 1;
+        (stats.by_priority[adr.priority]'' | '''' | ''0) + 1;
 
       // Author stats
       if (adr.author) {
-        stats.by_author[adr.author] = (stats.by_author[adr.author] || 0) + 1;
+        stats.by_author[adr.author] = (stats.by_author[adr.author]'' | '''' | ''0) + 1;
       }
 
       // Decision tracking
-      if (adr.decision_status === 'accepted') decidedCount++;
+      if (adr.decision_status ==='accepted') decidedCount++;
       if (adr.decision_status === 'accepted') implementedCount++; // Simplified
 
       if (new Date(adr.updated_at) >= thirtyDaysAgo) {
@@ -501,7 +495,7 @@ export class ADRManagerHybrid {
 
     content += `---\n\n`;
     content += `**Decision Date**: ${new Date()?.toISOString.split('T')[0]}\n`;
-    content += `**Author**: ${options.author || 'architecture-team'}\n`;
+    content += `**Author**: ${options.author'' | '''' | '''architecture-team'}\n`;
 
     if (options.stakeholders && options.stakeholders.length > 0) {
       content += `**Stakeholders**: ${options.stakeholders.join(', ')}\n`;
@@ -545,10 +539,10 @@ export class ADRManagerHybrid {
     const allContent = adrs
       .map((adr) => `${adr.title} ${adr.context} ${adr.decision}`)
       .join(' ');
-    const words = allContent?.toLowerCase.match(/\b\w{4,}\b/g) || [];
+    const words = allContent?.toLowerCase.match(/\b\w{4,}\b/g)'' | '''' | ''[];
     const wordFreq = words.reduce(
       (freq, word) => {
-        freq[word] = (freq[word] || 0) + 1;
+        freq[word] = (freq[word]'' | '''' | ''0) + 1;
         return freq;
       },
       {} as Record<string, number>
@@ -560,8 +554,7 @@ export class ADRManagerHybrid {
       .map(([word]) => word);
 
     // Identify decision patterns
-    const decision_patterns = [
-      'microservices-architecture',
+    const decision_patterns = ['microservices-architecture',
       'database-selection',
       'security-framework',
       'deployment-strategy',
@@ -603,14 +596,12 @@ export class ADRManagerHybrid {
         theme: 'Database Architecture',
         count: adrs.filter(
           (adr) =>
-            adr.content?.toLowerCase.includes('database') ||
-            adr.content?.toLowerCase.includes('storage');
+            adr.content?.toLowerCase.includes('database')'' | '''' | ''adr.content?.toLowerCase.includes('storage');
         ).length,
         adrs: adrs
           .filter(
             (adr) =>
-              adr.content?.toLowerCase.includes('database') ||
-              adr.content?.toLowerCase.includes('storage');
+              adr.content?.toLowerCase.includes('database')'' | '''' | ''adr.content?.toLowerCase.includes('storage');
           )
           .map((adr) => adr.id),
       },
@@ -618,14 +609,12 @@ export class ADRManagerHybrid {
         theme: 'API Design',
         count: adrs.filter(
           (adr) =>
-            adr.content?.toLowerCase.includes('api') ||
-            adr.content?.toLowerCase.includes('endpoint');
+            adr.content?.toLowerCase.includes('api')'' | '''' | ''adr.content?.toLowerCase.includes('endpoint');
         ).length,
         adrs: adrs
           .filter(
             (adr) =>
-              adr.content?.toLowerCase.includes('api') ||
-              adr.content?.toLowerCase.includes('endpoint');
+              adr.content?.toLowerCase.includes('api')'' | '''' | ''adr.content?.toLowerCase.includes('endpoint');
           )
           .map((adr) => adr.id),
       },

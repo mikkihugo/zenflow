@@ -3,7 +3,10 @@
  * Integrates with claude-zen foundation for consistent logging.
  */
 
-import { getLogger as getFoundationLogger, type Logger } from '@claude-zen/foundation';
+import {
+  getLogger as getFoundationLogger,
+  type Logger,
+} from '@claude-zen/foundation';
 
 export type { Logger } from '@claude-zen/foundation';
 

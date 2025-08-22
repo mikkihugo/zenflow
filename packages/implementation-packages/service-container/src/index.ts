@@ -32,4 +32,8 @@ export type * from './di-container';
 
 // Re-export Awilix types for external use
 export { Lifetime, InjectionMode } from 'awilix';
-export type { AwilixContainer, BuildResolverOptions, ListModulesOptions } from 'awilix';
+export type {
+  AwilixContainer,
+  BuildResolverOptions,
+  ListModulesOptions,
+} from 'awilix';

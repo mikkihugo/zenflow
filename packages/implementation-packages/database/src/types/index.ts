@@ -1,13 +1,13 @@
 /**
  * @fileoverview Database Domain Types - Multi-Database System Domain
- * 
+ *
  * Comprehensive type definitions for database operations, connections, transactions,
  * and multi-backend database abstraction. These types define the core domain model
  * for all database operations including relational, vector, and graph databases.
- * 
+ *
  * Dependencies: Only imports from ../../main for shared primitives.
  * Domain Independence: Self-contained database domain types.
- * 
+ *
  * @package @claude-zen/database
  * @since 2.1.0
  * @version 1.0.0
@@ -16,8 +16,8 @@
 // Core primitive types (self-contained)
 export type UUID = string;
 export type Timestamp = Date;
-export type Priority = 'low' | 'medium' | 'high' | 'critical';
-export type Status = 'active' | 'inactive' | 'pending' | 'error';
+export type Priority = 'low | medium' | 'high''' | '''critical';
+export type Status = 'active | inactive' | 'pending''' | '''error';
 
 export interface Entity {
   id: UUID;
@@ -37,7 +37,7 @@ export interface ValidationError {
   code?: string;
 }
 
-export type Optional<T> = T | undefined;
+export type Optional<T> = T'' | ''undefined;
 export type NonEmptyArray<T> = [T, ...T[]];
 export type Brand<T, B> = T & { __brand: B };
 
@@ -49,14 +49,14 @@ export type Brand<T, B> = T & { __brand: B };
  * Database engine types supported by the system
  */
 export enum DatabaseType {
-  SQLITE = 'sqlite',
-  POSTGRESQL = 'postgresql', 
+  SQLITE ='sqlite',
+  POSTGRESQL = 'postgresql',
   MYSQL = 'mysql',
   LANCEDB = 'lancedb',
   KUZU = 'kuzu',
   REDIS = 'redis',
   MONGODB = 'mongodb',
-  ELASTICSEARCH = 'elasticsearch'
+  ELASTICSEARCH = 'elasticsearch',
 }
 
 /**
@@ -64,7 +64,7 @@ export enum DatabaseType {
  */
 export enum OperationType {
   SELECT = 'select',
-  INSERT = 'insert', 
+  INSERT = 'insert',
   UPDATE = 'update',
   DELETE = 'delete',
   CREATE = 'create',
@@ -76,7 +76,7 @@ export enum OperationType {
   RESTORE = 'restore',
   MIGRATE = 'migrate',
   VACUUM = 'vacuum',
-  ANALYZE = 'analyze'
+  ANALYZE = 'analyze',
 }
 
 /**
@@ -86,7 +86,7 @@ export enum IsolationLevel {
   READ_UNCOMMITTED = 'READ_UNCOMMITTED',
   READ_COMMITTED = 'READ_COMMITTED',
   REPEATABLE_READ = 'REPEATABLE_READ',
-  SERIALIZABLE = 'SERIALIZABLE'
+  SERIALIZABLE = 'SERIALIZABLE',
 }
 
 /**
@@ -97,7 +97,7 @@ export enum PoolState {
   ACTIVE = 'active',
   DRAINING = 'draining',
   CLOSED = 'closed',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 // =============================================================================
@@ -169,8 +169,8 @@ export interface PerformanceConfig {
   enableQueryPlan: boolean;
   cacheSize: number;
   walMode?: boolean; // SQLite WAL mode
-  synchronous?: 'off' | 'normal' | 'full'; // SQLite synchronous mode
-  journalMode?: 'delete' | 'truncate' | 'persist' | 'memory' | 'wal';
+  synchronous?: 'off | normal' | 'full'; // SQLite synchronous mode
+  journalMode?: 'delete | truncate' | 'persist' | 'memory' | 'wal';
 }
 
 /**
@@ -196,21 +196,21 @@ export interface DatabaseOptions {
   schema?: string;
   searchPath?: string[];
   applicationName?: string;
-  
+
   // MySQL specific
   charset?: string;
   collation?: string;
   timezone?: string;
-  
+
   // SQLite specific
   readonly?: boolean;
   fileMustExist?: boolean;
   busyTimeout?: number;
-  
+
   // MongoDB specific
   authSource?: string;
   compressors?: string[];
-  
+
   // Custom options
   [key: string]: unknown;
 }
@@ -227,30 +227,36 @@ export interface DatabaseAdapter {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
-  
+
   // Query operations
-  query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>>;
+  query<T = unknown>(
+    sql: string,
+    params?: QueryParams
+  ): Promise<QueryResult<T>>;
   execute(sql: string, params?: QueryParams): Promise<ExecuteResult>;
-  
+
   // Transaction support
-  transaction<T>(fn: TransactionFn<T>, options?: TransactionOptions): Promise<T>;
-  
+  transaction<T>(
+    fn: TransactionFn<T>,
+    options?: TransactionOptions
+  ): Promise<T>;
+
   // Schema operations
   getSchema(): Promise<SchemaInfo>;
   createTable(definition: TableDefinition): Promise<void>;
   dropTable(name: string): Promise<void>;
   alterTable(name: string, changes: TableAlteration[]): Promise<void>;
-  
+
   // Index operations
   createIndex(definition: IndexDefinition): Promise<void>;
   dropIndex(name: string): Promise<void>;
-  
+
   // Maintenance operations
   backup(options: BackupOptions): Promise<BackupResult>;
   restore(options: RestoreOptions): Promise<void>;
   vacuum(): Promise<VacuumResult>;
   analyze(): Promise<AnalyzeResult>;
-  
+
   // Health and monitoring
   health(): Promise<HealthStatus>;
   getStats(): Promise<DatabaseStats>;
@@ -260,12 +266,12 @@ export interface DatabaseAdapter {
 /**
  * Query parameters type
  */
-export type QueryParams = Array<QueryValue> | Record<string, QueryValue>;
+export type QueryParams = Array<QueryValue>'' | ''Record<string, QueryValue>;
 
 /**
  * Query value types
  */
-export type QueryValue = string | number | boolean | Date | Buffer | null | undefined;
+export type QueryValue ='' | ''string'' | ''number'' | ''boolean'' | ''Date'' | ''Buffer'' | ''null'' | ''undefined;
 
 /**
  * Transaction function type
@@ -319,7 +325,7 @@ export interface FieldInfo {
  */
 export enum DataType {
   // Numeric types
-  INTEGER = 'integer',
+  INTEGER ='integer',
   BIGINT = 'bigint',
   SMALLINT = 'smallint',
   DECIMAL = 'decimal',
@@ -327,39 +333,39 @@ export enum DataType {
   REAL = 'real',
   DOUBLE = 'double',
   FLOAT = 'float',
-  
+
   // String types
   CHAR = 'char',
   VARCHAR = 'varchar',
   TEXT = 'text',
   BLOB = 'blob',
-  
+
   // Date/Time types
   DATE = 'date',
   TIME = 'time',
   TIMESTAMP = 'timestamp',
   DATETIME = 'datetime',
   INTERVAL = 'interval',
-  
+
   // Boolean type
   BOOLEAN = 'boolean',
-  
+
   // JSON type
   JSON = 'json',
   JSONB = 'jsonb',
-  
+
   // Array type
   ARRAY = 'array',
-  
+
   // UUID type
   UUID = 'uuid',
-  
+
   // Vector type (for vector databases)
   VECTOR = 'vector',
-  
+
   // Binary types
   BINARY = 'binary',
-  VARBINARY = 'varbinary'
+  VARBINARY = 'varbinary',
 }
 
 /**
@@ -372,7 +378,7 @@ export enum FieldConstraint {
   NOT_NULL = 'not_null',
   CHECK = 'check',
   DEFAULT = 'default',
-  AUTO_INCREMENT = 'auto_increment'
+  AUTO_INCREMENT = 'auto_increment',
 }
 
 /**
@@ -435,7 +441,7 @@ export interface ExecutionMetadata {
 export interface Warning {
   code: string;
   message: string;
-  severity: 'info' | 'warning' | 'error';
+  severity: 'info | warning' | 'error';
   sqlState?: string;
 }
 
@@ -451,18 +457,21 @@ export interface TransactionContext {
   isolationLevel: IsolationLevel;
   readOnly: boolean;
   startTime: Timestamp;
-  
+
   // Transaction operations
-  query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>>;
+  query<T = unknown>(
+    sql: string,
+    params?: QueryParams
+  ): Promise<QueryResult<T>>;
   execute(sql: string, params?: QueryParams): Promise<ExecuteResult>;
-  
+
   // Transaction control
   commit(): Promise<void>;
   rollback(): Promise<void>;
   savepoint(name: string): Promise<void>;
   rollbackTo(name: string): Promise<void>;
   releaseSavepoint(name: string): Promise<void>;
-  
+
   // State information
   isActive(): boolean;
   isCommitted(): boolean;
@@ -489,7 +498,7 @@ export enum TransactionState {
   COMMITTED = 'committed',
   ABORTED = 'aborted',
   PREPARING = 'preparing',
-  PREPARED = 'prepared'
+  PREPARED = 'prepared',
 }
 
 // =============================================================================
@@ -518,7 +527,7 @@ export interface SchemaInfo {
 export interface TableInfo {
   name: string;
   schema?: string;
-  type: 'table' | 'view' | 'materialized_view' | 'temporary';
+  type: 'table | view' | 'materialized_view''' | '''temporary';
   columns: ColumnInfo[];
   constraints: ConstraintInfo[];
   indexes: string[];
@@ -588,7 +597,7 @@ export enum IndexType {
   BRIN = 'brin',
   SPGIST = 'spgist',
   FULLTEXT = 'fulltext',
-  SPATIAL = 'spatial'
+  SPATIAL = 'spatial',
 }
 
 /**
@@ -597,7 +606,7 @@ export enum IndexType {
 export interface IndexColumn {
   name: string;
   position: number;
-  direction: 'asc' | 'desc';
+  direction: 'asc''' | '''desc';
   nullsFirst?: boolean;
   expression?: string;
 }
@@ -668,7 +677,7 @@ export enum ConstraintType {
   FOREIGN_KEY = 'foreign_key',
   UNIQUE = 'unique',
   CHECK = 'check',
-  NOT_NULL = 'not_null'
+  NOT_NULL = 'not_null',
 }
 
 /**
@@ -679,7 +688,7 @@ export enum ReferentialAction {
   SET_NULL = 'set_null',
   SET_DEFAULT = 'set_default',
   RESTRICT = 'restrict',
-  NO_ACTION = 'no_action'
+  NO_ACTION = 'no_action',
 }
 
 /**
@@ -746,7 +755,7 @@ export enum VectorMetric {
   DOT_PRODUCT = 'dot_product',
   MANHATTAN = 'manhattan',
   HAMMING = 'hamming',
-  JACCARD = 'jaccard'
+  JACCARD = 'jaccard',
 }
 
 /**
@@ -757,7 +766,7 @@ export enum VectorIndexType {
   IVF_PQ = 'ivf_pq',
   HNSW = 'hnsw',
   LSH = 'lsh',
-  ANNOY = 'annoy'
+  ANNOY = 'annoy',
 }
 
 /**
@@ -777,7 +786,7 @@ export interface VectorOptions {
  * Vector document/record
  */
 export interface VectorDocument extends Entity {
-  vector: Float32Array | number[];
+  vector: Float32Array'' | ''number[];
   metadata?: Record<string, QueryValue>;
   distance?: number; // populated in search results
   score?: number; // similarity score
@@ -801,7 +810,7 @@ export interface VectorSearchOptions {
  */
 export interface VectorFilter {
   conditions: VectorCondition[];
-  operator: 'and' | 'or';
+  operator:'and''' | '''or';
 }
 
 /**
@@ -809,8 +818,8 @@ export interface VectorFilter {
  */
 export interface VectorCondition {
   field: string;
-  operator: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' | 'contains';
-  value: QueryValue | QueryValue[];
+  operator:'' | '''eq | ne' | 'gt''' | '''gte | lt' | 'lte''' | '''in | nin' | 'contains';
+  value: QueryValue'' | ''QueryValue[];
 }
 
 // =============================================================================
@@ -855,7 +864,7 @@ export interface GraphRelationship extends Entity {
   fromNode: UUID;
   toNode: UUID;
   properties?: Record<string, QueryValue>;
-  direction: 'incoming' | 'outgoing' | 'both';
+  direction:'incoming | outgoing' | 'both';
 }
 
 /**
@@ -863,7 +872,7 @@ export interface GraphRelationship extends Entity {
  */
 export interface GraphQueryOptions {
   maxDepth?: number;
-  direction?: 'in' | 'out' | 'both';
+  direction?: 'in | out' | 'both';
   nodeLabels?: string[];
   relationshipTypes?: string[];
   properties?: Record<string, QueryValue>;
@@ -1012,12 +1021,12 @@ export interface LockStats {
  * Replication statistics
  */
 export interface ReplicationStats {
-  role: 'primary' | 'secondary' | 'standby';
+  role: 'primary | secondary' | 'standby';
   lag: number;
   lastSyncTime: Timestamp;
   replicatedTransactions: number;
   failedReplications: number;
-  syncStatus: 'syncing' | 'in_sync' | 'delayed' | 'error';
+  syncStatus: 'syncing | in_sync' | 'delayed''' | '''error';
 }
 
 // =============================================================================
@@ -1047,7 +1056,7 @@ export enum BackupFormat {
   BINARY = 'binary',
   TAR = 'tar',
   DIRECTORY = 'directory',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 /**
@@ -1113,7 +1122,7 @@ export interface AnalyzeResult {
  * Analyze improvement recommendations
  */
 export interface AnalyzeImprovement {
-  type: 'index' | 'query' | 'schema' | 'configuration';
+  type: 'index | query' | 'schema''' | '''configuration';
   priority: Priority;
   description: string;
   estimatedImpact: number;
@@ -1129,9 +1138,9 @@ export interface AnalyzeImprovement {
  */
 export interface DatabaseError extends ValidationError {
   type: 'DatabaseError';
-  category: 'connection' | 'query' | 'transaction' | 'schema' | 'constraint';
+  category: 'connection | query' | 'transaction' | 'schema' | 'constraint';
   sqlState?: string;
-  errorCode?: string | number;
+  errorCode?: string'' | ''number;
   databaseType: DatabaseType;
   operation?: OperationType;
 }
@@ -1140,7 +1149,7 @@ export interface DatabaseError extends ValidationError {
  * Connection-specific error types
  */
 export interface ConnectionError extends DatabaseError {
-  category: 'connection';
+  category:'connection';
   host?: string;
   port?: number;
   database?: string;
@@ -1174,7 +1183,7 @@ export interface TransactionError extends DatabaseError {
  */
 export interface SchemaError extends DatabaseError {
   category: 'schema';
-  objectType?: 'table' | 'column' | 'index' | 'constraint';
+  objectType?: 'table | column' | 'index''' | '''constraint';
   objectName?: string;
 }
 
@@ -1206,7 +1215,7 @@ export type SchemaOperationResult = Result<void, SchemaError>;
  * Database health status
  */
 export interface HealthStatus {
-  status: 'healthy' | 'degraded' | 'critical' | 'offline';
+  status: 'healthy | degraded' | 'critical''' | '''offline';
   score: number; // 0.0 - 1.0
   checks: HealthCheck[];
   lastCheck: Timestamp;
@@ -1219,7 +1228,7 @@ export interface HealthStatus {
  */
 export interface HealthCheck {
   name: string;
-  status: 'pass' | 'warn' | 'fail';
+  status: 'pass | warn' | 'fail';
   duration: number;
   output?: string;
   observedValue?: number;
@@ -1249,7 +1258,7 @@ export interface MigrationInfo {
  * Table alteration operations
  */
 export interface TableAlteration {
-  type: 'add_column' | 'drop_column' | 'modify_column' | 'rename_column' | 'add_constraint' | 'drop_constraint';
+  type:'' | '''add_column | drop_column' | 'modify_column''' | '''rename_column | add_constraint' | 'drop_constraint';
   columnName?: string;
   newColumnName?: string;
   columnDefinition?: ColumnDefinition;
@@ -1290,8 +1299,8 @@ export interface TriggerInfo {
   name: string;
   table: string;
   schema?: string;
-  event: 'INSERT' | 'UPDATE' | 'DELETE';
-  timing: 'BEFORE' | 'AFTER' | 'INSTEAD OF';
+  event: 'INSERT | UPDATE' | 'DELETE';
+  timing: 'BEFORE''' | '''AFTER''' | '''INSTEAD OF';
   definition: string;
   enabled: boolean;
   comment?: string;
@@ -1318,7 +1327,7 @@ export interface ConstraintInfo {
 export interface ProcedureParameter {
   name: string;
   dataType: DataType;
-  mode: 'IN' | 'OUT' | 'INOUT';
+  mode: 'IN | OUT' | 'INOUT';
   defaultValue?: QueryValue;
 }
 
@@ -1335,7 +1344,7 @@ export interface FunctionParameter {
  * Partitioning options
  */
 export interface PartitioningOptions {
-  type: 'range' | 'list' | 'hash' | 'key';
+  type: 'range | list' | 'hash''' | '''key';
   column: string;
   partitions: PartitionDefinition[];
 }
@@ -1362,22 +1371,22 @@ export const DatabaseConstants = {
   DEFAULT_QUERY_TIMEOUT: 60000,
   DEFAULT_TRANSACTION_TIMEOUT: 120000,
   DEFAULT_HEALTH_CHECK_TIMEOUT: 5000,
-  
+
   // Default pool settings
   DEFAULT_POOL_MIN: 2,
   DEFAULT_POOL_MAX: 10,
   DEFAULT_POOL_ACQUIRE_TIMEOUT: 10000,
   DEFAULT_POOL_IDLE_TIMEOUT: 300000,
-  
+
   // Query limits
   MAX_QUERY_SIZE: 1024 * 1024, // 1MB
   MAX_PARAMETER_COUNT: 1000,
   MAX_RESULT_SET_SIZE: 100000,
-  
+
   // Monitoring intervals
   DEFAULT_STATS_INTERVAL: 60000, // 1 minute
   DEFAULT_HEALTH_CHECK_INTERVAL: 30000, // 30 seconds
-  
+
   // Retry settings
   DEFAULT_RETRY_ATTEMPTS: 3,
   DEFAULT_RETRY_DELAY: 1000,
@@ -1387,7 +1396,10 @@ export const DatabaseConstants = {
 /**
  * Default database configurations by type
  */
-export const DefaultDatabaseConfigs: Record<DatabaseType, Partial<DatabaseConfig>> = {
+export const DefaultDatabaseConfigs: Record<
+  DatabaseType,
+  Partial<DatabaseConfig>
+> = {
   [DatabaseType.SQLITE]: {
     type: DatabaseType.SQLITE,
     pool: {
@@ -1418,7 +1430,7 @@ export const DefaultDatabaseConfigs: Record<DatabaseType, Partial<DatabaseConfig
       journalMode: 'wal',
     },
   },
-  
+
   [DatabaseType.POSTGRESQL]: {
     type: DatabaseType.POSTGRESQL,
     port: 5432,
@@ -1438,7 +1450,7 @@ export const DefaultDatabaseConfigs: Record<DatabaseType, Partial<DatabaseConfig
       testWhileIdle: true,
     },
   },
-  
+
   [DatabaseType.MYSQL]: {
     type: DatabaseType.MYSQL,
     port: 3306,
@@ -1458,25 +1470,25 @@ export const DefaultDatabaseConfigs: Record<DatabaseType, Partial<DatabaseConfig
       testWhileIdle: true,
     },
   },
-  
+
   [DatabaseType.LANCEDB]: {
     type: DatabaseType.LANCEDB,
   },
-  
+
   [DatabaseType.KUZU]: {
     type: DatabaseType.KUZU,
   },
-  
+
   [DatabaseType.REDIS]: {
     type: DatabaseType.REDIS,
     port: 6379,
   },
-  
+
   [DatabaseType.MONGODB]: {
     type: DatabaseType.MONGODB,
     port: 27017,
   },
-  
+
   [DatabaseType.ELASTICSEARCH]: {
     type: DatabaseType.ELASTICSEARCH,
     port: 9200,
@@ -1516,14 +1528,14 @@ export const DatabaseTypeGuards = {
     return (
       typeof obj === 'object' &&
       obj !== null &&
-      'vector' in obj &&
-      (Array.isArray((obj as any).vector) || (obj as any).vector instanceof Float32Array)
+      'vector'in obj &&
+      (Array.isArray((obj as any).vector)'' | '''' | ''(obj as any).vector instanceof Float32Array)
     );
   },
 
   isGraphNode: (obj: unknown): obj is GraphNode => {
     return (
-      typeof obj === 'object' &&
+      typeof obj ==='object' &&
       obj !== null &&
       'label' in obj &&
       'properties' in obj &&
@@ -1558,11 +1570,11 @@ export default {
   VectorMetric,
   VectorIndexType,
   BackupFormat,
-  
+
   // Constants
   DatabaseConstants,
   DefaultDatabaseConfigs,
-  
+
   // Type guards
   DatabaseTypeGuards,
 };

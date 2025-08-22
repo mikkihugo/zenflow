@@ -1,9 +1,9 @@
 /**
  * @fileoverview Product Management Manager - SAFe Product Management
- * 
+ *
  * Manages product vision, customer research, and market analysis for SAFe portfolio.
  * Coordinates product ownership activities across value streams and agile release trains.
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  */
@@ -16,14 +16,14 @@ import type {
   PortfolioEpic,
   ValueStream,
   Feature,
-  AgileReleaseTrain
+  AgileReleaseTrain,
 } from '../types';
 import type {
   ProductManagerConfig,
   ProductVision,
   CustomerSegment,
   MarketOpportunity,
-  ProductLifecycleStage
+  ProductLifecycleStage,
 } from '../types/product-management';
 import { ProductVisionService } from '../services/product-vision-service';
 import { CustomerResearchService } from '../services/customer-research-service';
@@ -39,7 +39,7 @@ interface ProductManagerState {
   readonly isInitialized: boolean;
   readonly activeProducts: Map<string, ProductLifecycleStage>;
   readonly visionCount: number;
-  readonly lastMarketAnalysis: Date | null;
+  readonly lastMarketAnalysis: Date'' | ''null;
   readonly customerSegmentCount: number;
 }
 
@@ -89,35 +89,44 @@ export class ProductManagementManager extends TypedEventBase {
 
       // Delegate to ProductVisionService for vision management
       if (this.config.enableProductVisionManagement) {
-        this.visionService = new ProductVisionService({
-          visionValidationThreshold: this.config.minimumViabilityThreshold,
-          stakeholderAlignmentTarget: this.config.customerSatisfactionTarget,
-          visionReviewCycle: this.config.performanceReviewCycle,
-          maxVisionLength: 500,
-          enableAutoAlignment: true
-        }, this.logger);
+        this.visionService = new ProductVisionService(
+          {
+            visionValidationThreshold: this.config.minimumViabilityThreshold,
+            stakeholderAlignmentTarget: this.config.customerSatisfactionTarget,
+            visionReviewCycle: this.config.performanceReviewCycle,
+            maxVisionLength: 500,
+            enableAutoAlignment: true,
+          },
+          this.logger
+        );
       }
 
       // Delegate to CustomerResearchService for market research
       if (this.config.enableMarketResearch) {
-        this.researchService = new CustomerResearchService({
-          maxSegments: 10,
-          feedbackRetentionDays: 90,
-          competitorAnalysisFrequency: this.config.marketAnalysisCycle,
-          customerInterviewQuota: 20,
-          marketResearchDepth: 'comprehensive'
-        }, this.logger);
+        this.researchService = new CustomerResearchService(
+          {
+            maxSegments: 10,
+            feedbackRetentionDays: 90,
+            competitorAnalysisFrequency: this.config.marketAnalysisCycle,
+            customerInterviewQuota: 20,
+            marketResearchDepth: 'comprehensive',
+          },
+          this.logger
+        );
       }
 
       // Delegate to MarketAnalysisService for competitive analysis
       if (this.config.enableCompetitiveAnalysis) {
-        this.marketService = new MarketAnalysisService({
-          analysisDepth: 'comprehensive',
-          competitorTrackingCount: 15,
-          trendAnalysisHorizon: this.config.roadmapHorizonMonths,
-          marketDataRefreshDays: this.config.marketAnalysisCycle,
-          confidenceThreshold: 70
-        }, this.logger);
+        this.marketService = new MarketAnalysisService(
+          {
+            analysisDepth: 'comprehensive',
+            competitorTrackingCount: 15,
+            trendAnalysisHorizon: this.config.roadmapHorizonMonths,
+            marketDataRefreshDays: this.config.marketAnalysisCycle,
+            confidenceThreshold: 70,
+          },
+          this.logger
+        );
       }
 
       // Restore state from memory if available
@@ -127,9 +136,11 @@ export class ProductManagementManager extends TypedEventBase {
       this.logger.info('Product Management Manager initialized successfully');
 
       this.emit('initialized', { timestamp: SafeDateUtils.formatISOString() });
-
     } catch (error) {
-      this.logger.error('Failed to initialize Product Management Manager:', error);
+      this.logger.error(
+        'Failed to initialize Product Management Manager:',
+        error
+      );
       throw error;
     }
   }
@@ -158,19 +169,22 @@ export class ProductManagementManager extends TypedEventBase {
           metric: 'Customer Satisfaction',
           target: this.config.customerSatisfactionTarget,
           timeframe: '12 months',
-          measurement: 'NPS Score'
-        }
-      ]
+          measurement: 'NPS Score',
+        },
+      ],
     });
 
     // Update state
     this.state = {
       ...this.state,
-      visionCount: this.state.visionCount + 1
+      visionCount: this.state.visionCount + 1,
     };
 
     await this.persistState();
-    this.emit('vision-created', { vision, timestamp: SafeDateUtils.formatISOString() });
+    this.emit('vision-created', {
+      vision,
+      timestamp: SafeDateUtils.formatISOString(),
+    });
 
     return vision;
   }
@@ -186,17 +200,16 @@ export class ProductManagementManager extends TypedEventBase {
     const analysis = await this.researchService.performResearchAnalysis();
     // Filter segments by urgency level (immediate, short_term, medium_term are high priority)
     const segments = analysis.segmentInsights
-      .map(si => si.segment)
-      .filter(segment => 
-        segment.urgency === 'immediate' || 
-        segment.urgency === 'short_term' || 
-        segment.urgency === 'medium_term'
+      .map((si) => si.segment)
+      .filter(
+        (segment) =>
+          segment.urgency === 'immediate''' | '''' | ''segment.urgency ==='short_term''' | '''' | ''segment.urgency ==='medium_term'
       );
 
     // Update state
     this.state = {
       ...this.state,
-      customerSegmentCount: segments.length
+      customerSegmentCount: segments.length,
     };
 
     await this.persistState();
@@ -217,13 +230,23 @@ export class ProductManagementManager extends TypedEventBase {
   }> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Performing market analysis', { category: input.marketCategory });
+    this.logger.info('Performing market analysis', {
+      category: input.marketCategory,
+    });
 
     const [sizing, competitive, opportunities] = await Promise.all([
       this.marketService.performMarketSizing({
         ...input,
-        pricingModel: { model: 'competitive', basePrice: 100, discount: 10, bundling: false },
-        assumptions: ['Market growth continues', 'Competitive landscape stable']
+        pricingModel: {
+          model: 'competitive',
+          basePrice: 100,
+          discount: 10,
+          bundling: false,
+        },
+        assumptions: [
+          'Market growth continues',
+          'Competitive landscape stable',
+        ],
       }),
       this.marketService.analyzeCompetitiveLandscape([]),
       this.marketService.assessOpportunity(
@@ -235,25 +258,25 @@ export class ProductManagementManager extends TypedEventBase {
           competitiveLandscape: [],
           marketTrends: [],
           barriers: [],
-          opportunities: []
+          opportunities: [],
         },
         75, // competitive position
         1000000 // investment capacity
-      )
+      ),
     ]);
 
     // Update state
     this.state = {
       ...this.state,
-      lastMarketAnalysis: new Date()
+      lastMarketAnalysis: new Date(),
     };
 
     await this.persistState();
-    this.emit('market-analysis-complete', { 
-      sizing, 
-      competitive, 
-      opportunities, 
-      timestamp: SafeDateUtils.formatISOString() 
+    this.emit('market-analysis-complete', {
+      sizing,
+      competitive,
+      opportunities,
+      timestamp: SafeDateUtils.formatISOString(),
     });
 
     return { sizing, competitive, opportunities };
@@ -265,21 +288,24 @@ export class ProductManagementManager extends TypedEventBase {
   async prioritizeFeatures(features: Feature[]): Promise<Feature[]> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Prioritizing features using WSJF', { featureCount: features.length });
+    this.logger.info('Prioritizing features using WSJF', {
+      featureCount: features.length,
+    });
 
     // Transform features for WSJF calculation
-    const featuresWithWSJF = features.map(feature => ({
+    const featuresWithWSJF = features.map((feature) => ({
       ...feature,
-      businessValue: feature.businessValue || 20,
+      businessValue: feature.businessValue'' | '''' | ''20,
       urgency: 15, // Mock urgency score
       riskReduction: 10, // Mock risk reduction score
-      size: feature.stories?.length || 8 // Use story count as size estimate
+      size: feature.stories?.length'' | '''' | ''8, // Use story count as size estimate
     }));
 
-    const prioritizedFeatures = SafeCollectionUtils.prioritizeByWSJF(featuresWithWSJF);
-    
-    this.logger.info('Feature prioritization completed', { 
-      topFeature: prioritizedFeatures[0]?.name 
+    const prioritizedFeatures =
+      SafeCollectionUtils.prioritizeByWSJF(featuresWithWSJF);
+
+    this.logger.info('Feature prioritization completed', {
+      topFeature: prioritizedFeatures[0]?.name,
     });
 
     return prioritizedFeatures;
@@ -288,36 +314,42 @@ export class ProductManagementManager extends TypedEventBase {
   /**
    * Generate product roadmap - uses SafeDateUtils for timeline management
    */
-  async generateProductRoadmap(productId: string, horizonMonths: number = 12): Promise<{
+  async generateProductRoadmap(
+    productId: string,
+    horizonMonths: number = 12
+  ): Promise<{
     roadmapId: string;
     timeline: any;
     milestones: Array<{ date: Date; title: string; description: string }>;
   }> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Generating product roadmap', { productId, horizonMonths });
+    this.logger.info('Generating product roadmap', {
+      productId,
+      horizonMonths,
+    });
 
     const roadmapHorizon = SafeDateUtils.calculateRoadmapHorizon(horizonMonths);
-    const milestones = roadmapHorizon.quarters.map(quarter => ({
+    const milestones = roadmapHorizon.quarters.map((quarter) => ({
       date: quarter.start,
       title: `${quarter.label} Planning`,
-      description: `Quarterly planning and review for ${quarter.label}`
+      description: `Quarterly planning and review for ${quarter.label}`,
     }));
 
     const roadmap = {
       roadmapId: `roadmap-${productId}-${Date.now()}`,
       timeline: roadmapHorizon,
-      milestones
+      milestones,
     };
 
-    this.logger.info('Product roadmap generated', { 
+    this.logger.info('Product roadmap generated', {
       roadmapId: roadmap.roadmapId,
-      milestoneCount: milestones.length 
+      milestoneCount: milestones.length,
     });
 
-    this.emit('roadmap-generated', { 
-      roadmap, 
-      timestamp: SafeDateUtils.formatISOString() 
+    this.emit('roadmap-generated', {
+      roadmap,
+      timestamp: SafeDateUtils.formatISOString(),
     });
 
     return roadmap;
@@ -339,14 +371,16 @@ export class ProductManagementManager extends TypedEventBase {
     // Validate using schema validation
     const epicValidation = SafeValidationUtils.validateEpic(productData.epic);
     if (!epicValidation.success) {
-      errors.push(...epicValidation.error.errors.map(e => e.message));
+      errors.push(...epicValidation.error.errors.map((e) => e.message));
     }
 
     if (productData.features) {
       for (const feature of productData.features) {
         const featureValidation = SafeValidationUtils.validateFeature(feature);
         if (!featureValidation.success) {
-          warnings.push(...featureValidation.error.errors.map(e => e.message));
+          warnings.push(
+            ...featureValidation.error.errors.map((e) => e.message)
+          );
         }
       }
     }
@@ -354,7 +388,7 @@ export class ProductManagementManager extends TypedEventBase {
     return {
       isValid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -371,7 +405,7 @@ export class ProductManagementManager extends TypedEventBase {
       initialized: this.initialized,
       state: this.state,
       config: this.config,
-      lastActivity: SafeDateUtils.formatISOString()
+      lastActivity: SafeDateUtils.formatISOString(),
     };
   }
 
@@ -386,7 +420,7 @@ export class ProductManagementManager extends TypedEventBase {
       activeProducts: new Map(),
       visionCount: 0,
       lastMarketAnalysis: null,
-      customerSegmentCount: 0
+      customerSegmentCount: 0,
     };
   }
 
@@ -410,7 +444,9 @@ export class ProductManagementManager extends TypedEventBase {
    */
   private async restoreState(): Promise<void> {
     try {
-      const savedState = await this.memorySystem.retrieve('product-manager-state');
+      const savedState = await this.memorySystem.retrieve(
+        'product-manager-state'
+      );
       if (savedState) {
         this.state = { ...this.state, ...savedState };
         this.logger.info('Product manager state restored from memory');
@@ -428,7 +464,7 @@ export class ProductManagementManager extends TypedEventBase {
       await this.memorySystem.store('product-manager-state', {
         visionCount: this.state.visionCount,
         lastMarketAnalysis: this.state.lastMarketAnalysis,
-        customerSegmentCount: this.state.customerSegmentCount
+        customerSegmentCount: this.state.customerSegmentCount,
       });
     } catch (error) {
       this.logger.warn('Failed to persist state to memory:', error);

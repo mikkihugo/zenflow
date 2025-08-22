@@ -3,7 +3,7 @@
  * Database Domain DI Container Setup - Simplified.
  * Configures dependency injection for database operations.
  */
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('interfaces-api-http-di-database-container');
 
@@ -122,7 +122,7 @@ export interface DatabaseResponse {
  */
 export interface DatabaseHealthStatus {
   /** Overall health status */
-  status: 'healthy | warning' | 'critical | unknown');
+  status: 'healthy | warning | critical | unknown');
   /** Database adapter type */
   adapter: string;
   /** Connection status */
@@ -167,7 +167,7 @@ class ConsoleLogger {
  * @example
  */
 interface DatabaseConfig {
-  type: 'sqlite | postgresql' | 'mysql | lancedb' | 'kuzu');
+  type: 'sqlite | postgresql | mysql | lancedb | kuzu');
   host?: string;
   port?: number;
   database?: string;
@@ -435,7 +435,7 @@ class SimplifiedDatabaseController {
 
     // Type assertion with validation
     const queryRequest = request as QueryRequest;
-    if (!queryRequest || typeof queryRequest !== 'object') {
+    if (!queryRequest || typeof queryRequest !=='object') {
       throw new Error('Invalid query request format');
     }
 
@@ -507,7 +507,7 @@ class SimplifiedDatabaseController {
 
     // Type assertion with validation
     const commandRequest = request as CommandRequest;
-    if (!commandRequest || typeof commandRequest !== 'object') {
+    if (!commandRequest || typeof commandRequest !=='object') {
       throw new Error('Invalid command request format');
     }
 
@@ -572,7 +572,7 @@ class SimplifiedDatabaseController {
 
     // Type assertion with validation
     const batchRequest = request as BatchRequest;
-    if (!batchRequest || typeof batchRequest !== 'object') {
+    if (!batchRequest || typeof batchRequest !=='object') {
       throw new Error('Invalid batch request format');
     }
 
@@ -678,7 +678,7 @@ class SimplifiedDatabaseController {
 
       return {
         success: false,
-        error: `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `Transaction failed: ${error instanceof Error ? error.message :'Unknown error'}`,
         metadata: {
           rowCount: 0,
           executionTime,
@@ -755,7 +755,7 @@ class SimplifiedDatabaseController {
 
     // Type assertion with validation
     const migrationRequest = request as MigrationRequest;
-    if (!migrationRequest || typeof migrationRequest !== 'object') {
+    if (!migrationRequest || typeof migrationRequest !=='object') {
       throw new Error('Invalid migration request format');
     }
 
@@ -765,8 +765,7 @@ class SimplifiedDatabaseController {
       );
 
       if (
-        !migrationRequest.statements ||
-        migrationRequest.statements.length === 0
+        !migrationRequest.statements || migrationRequest.statements.length === 0
       ) {
         throw new Error('Migration statements are required');
       }
@@ -878,7 +877,7 @@ class SimplifiedDatabaseController {
 
       return {
         success: false,
-        error: `Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `Migration failed: ${error instanceof Error ? error.message :'Unknown error'}`,
         metadata: {
           rowCount: 0,
           executionTime,
@@ -983,11 +982,7 @@ class SimplifiedDatabaseController {
   private isQueryStatement(sql: string): boolean {
     const trimmedSql = sql?.trim?.toLowerCase()
     return (
-      trimmedSql.startsWith('select') ||
-      trimmedSql.startsWith('with') ||
-      trimmedSql.startsWith('show') ||
-      trimmedSql.startsWith('explain') ||
-      trimmedSql.startsWith('describe');
+      trimmedSql.startsWith('select') || trimmedSql.startsWith('with') || trimmedSql.startsWith('show') || trimmedSql.startsWith('explain') || trimmedSql.startsWith('describe');
     );
   }
 
@@ -1050,7 +1045,7 @@ export function resetDatabaseContainer(): void {
  * @example
  */
 export async function checkDatabaseContainerHealth(): Promise<{
-  status: 'healthy | unhealthy');
+  status:'healthy | unhealthy');
   services: {
     logger: boolean;
     config: boolean;

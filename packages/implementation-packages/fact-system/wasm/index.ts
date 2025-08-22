@@ -1,6 +1,6 @@
 /**
  * WASM module index for fact-system.
- * 
+ *
  * Re-exports the zen_swarm_neural WASM module as fact_tools for compatibility.
  */
 

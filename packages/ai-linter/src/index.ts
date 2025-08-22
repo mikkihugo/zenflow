@@ -30,11 +30,17 @@ export type {
   RuleFeedback,
 } from './ai-rule-generator.js';
 
-export { ClaudeESLintBridge, createClaudeESLintBridge } from './claude-eslint-bridge.js';
+export {
+  ClaudeESLintBridge,
+  createClaudeESLintBridge,
+} from './claude-eslint-bridge.js';
 export type { EventBus } from './claude-eslint-bridge.js';
 
 // Claude SDK Integration
-export { ClaudeSDKIntegration, createClaudeSDKIntegration } from './claude-sdk-integration.js';
+export {
+  ClaudeSDKIntegration,
+  createClaudeSDKIntegration,
+} from './claude-sdk-integration.js';
 export type { ClaudeAnalysisConfig } from './claude-sdk-integration.js';
 
 // Type Definitions
@@ -70,7 +76,7 @@ export type {
   CustomRuleTemplate,
 } from './types/ai-linter-types.js';
 
-// ESLint Integration Types (using existing ESLint ecosystem) 
+// ESLint Integration Types (using existing ESLint ecosystem)
 export type { ESLintAIConfig } from './claude-eslint-bridge.js';
 
 /**
@@ -191,6 +197,10 @@ export function createDefaultRuleGeneratorConfig(): import('./ai-rule-generator.
  */
 export const VERSION = '1.0.0';
 export const PACKAGE_NAME = '@claude-zen/ai-linter';
+
+// Self-Repair Utility
+export { SelfRepairUtility, runSelfRepair } from './self-repair-utility.js';
+export type { RepairStats } from './self-repair-utility.js';
 
 /**
  * Package metadata

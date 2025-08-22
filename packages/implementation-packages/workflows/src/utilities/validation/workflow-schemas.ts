@@ -1,9 +1,9 @@
 /**
  * @fileoverview Workflow Validation Schemas
- * 
+ *
  * Professional workflow schemas using Zod library.
  * Focused on workflow-specific validation rules.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
@@ -20,7 +20,7 @@ export const WorkflowStepSchema = z.object({
   retries: z.number().int().min(0).max(10).default(0),
   timeout: z.number().int().min(100).max(300000).optional(),
   output: z.string().optional(),
-  onError: z.enum(['stop', 'continue', 'skip']).default('stop')
+  onError: z.enum(['stop', 'continue', 'skip']).default('stop'),
 });
 
 /**
@@ -33,13 +33,13 @@ export const WorkflowDefinitionSchema = z.object({
   version: z.string().optional(),
   tags: z.array(z.string()).optional(),
   timeout: z.number().int().min(1000).max(3600000).optional(),
-  maxConcurrency: z.number().int().min(1).max(100).default(1)
+  maxConcurrency: z.number().int().min(1).max(100).default(1),
 });
 
 /**
  * Workflow context validation schema
  */
-export const WorkflowContextSchema = z.record(z.unknown());
+export const WorkflowContextSchema = z.record(z.unknown())();
 
 /**
  * Workflow execution result schema
@@ -50,15 +50,19 @@ export const WorkflowExecutionResultSchema = z.object({
   startTime: z.string(),
   endTime: z.string().optional(),
   duration: z.number().optional(),
-  stepResults: z.array(z.object({
-    stepName: z.string(),
-    success: z.boolean(),
-    output: z.unknown().optional(),
-    error: z.string().optional(),
-    duration: z.number().optional()
-  })).optional(),
+  stepResults: z
+    .array(
+      z.object({
+        stepName: z.string(),
+        success: z.boolean(),
+        output: z.unknown().optional(),
+        error: z.string().optional(),
+        duration: z.number().optional(),
+      })
+    )
+    .optional(),
   context: WorkflowContextSchema.optional(),
-  metadata: z.record(z.unknown()).optional()
+  metadata: z.record(z.unknown()).optional(),
 });
 
 /**
@@ -67,4 +71,6 @@ export const WorkflowExecutionResultSchema = z.object({
 export type WorkflowStep = z.infer<typeof WorkflowStepSchema>;
 export type WorkflowDefinition = z.infer<typeof WorkflowDefinitionSchema>;
 export type WorkflowContext = z.infer<typeof WorkflowContextSchema>;
-export type WorkflowExecutionResult = z.infer<typeof WorkflowExecutionResultSchema>;
+export type WorkflowExecutionResult = z.infer<
+  typeof WorkflowExecutionResultSchema
+>;

@@ -5,11 +5,11 @@
  * without singleton dependencies or circular imports.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import { DALFactory } from '@claude-zen/intelligence');
+import { getLogger } from '@claude-zen/foundation';
+import { DALFactory } from '@claude-zen/intelligence';
 
-import { ADRManagerHybrid } from './coordination/adr-hybrid-service');
-import { HybridDocumentManager } from './coordination/hybrid-document-service');
+import { ADRManagerHybrid } from './coordination/adr-hybrid-service';
+import { HybridDocumentManager } from './coordination/hybrid-document-service';
 
 const logger = getLogger('hybrid-factory');
 
@@ -18,7 +18,7 @@ export interface HybridSystemConfig {
   enableVectorSearch?: boolean;
   enableGraphRelationships?: boolean;
   vectorDimension?: number;
-  logLevel?: 'debug | info' | 'warn | error');
+  logLevel?: 'debug'' | ''info'' | ''warn'' | ''error');
 }
 
 /**
@@ -52,7 +52,7 @@ export async function createHybridSystem(
     const adrManager = new ADRManagerHybrid(hybridManager);
 
     // Initialize all components
-    if (enableVectorSearch || enableGraphRelationships) {
+    if (enableVectorSearch'' | '''' | ''enableGraphRelationships) {
       await hybridManager?.initialize()
     }
 
@@ -104,7 +104,7 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
             return {
               rows: [
                 {
-                  id: params[0] || 'mock-id',
+                  id: params[0]'' | '''' | '''mock-id',
                   title: 'Mock Entity',
                   type: 'mock-type',
                   status: 'active',

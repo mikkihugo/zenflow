@@ -16,15 +16,7 @@ export type { AgentType } from './types/agent-types';
 
 // Additional agent-related types
 export type AgentId = string;
-export type AgentStatus =
-  | 'idle'
-  | 'busy'
-  | 'active'
-  | 'inactive'
-  | 'error'
-  | 'initializing'
-  | 'offline'
-  | 'terminated';
+export type AgentStatus ='' | '''idle | busy' | 'active''' | '''inactive | error' | 'initializing' | 'offline' | 'terminated';
 export interface AgentCapabilities {
   codeGeneration: boolean;
   codeReview: boolean;
@@ -67,9 +59,9 @@ export interface AgentMetrics {
 
 export interface AgentState {
   status: AgentStatus;
-  currentTask?: string | null;
+  currentTask?: string'' | ''null;
   lastUpdate: Date;
-  health: 'healthy | degraded' | 'error' | number;
+  health:'healthy | degraded''' | '''error''' | ''number;
   lastHeartbeat?: Date;
   metrics?: AgentMetrics;
   name?: string;
@@ -107,7 +99,7 @@ export interface AgentError {
   timestamp: Date;
   stack?: string;
   type?: string;
-  severity?: 'low' | 'medium' | 'high' | 'critical';
+  severity?:'low | medium' | 'high''' | '''critical';
   context?: Record<string, unknown>;
   resolved?: boolean;
 }
@@ -146,17 +138,7 @@ export interface Message {
   swarmId?: string;
 }
 
-export type MessageType =
-  | 'task'
-  | 'response'
-  | 'error'
-  | 'status'
-  | 'heartbeat'
-  | 'task_assignment'
-  | 'coordination'
-  | 'knowledge_share'
-  | 'status_update'
-  | 'result';
+export type MessageType ='' | '''task | response' | 'error''' | '''status | heartbeat' | 'task_assignment''' | '''coordination | knowledge_share' | 'status_update''' | '''result';
 
 export interface ExecutionResult {
   success: boolean;
@@ -186,7 +168,7 @@ export interface Agent {
 export interface Task {
   id: string;
   description: string;
-  strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus';
+  strategy: 'parallel | sequential' | 'adaptive''' | '''consensus';
   dependencies: string[];
   requiredCapabilities: string[];
   maxAgents: number;
@@ -197,14 +179,14 @@ export interface PhaseAssignment {
   phase: string;
   agentId: string;
   capabilities: AgentCapabilities;
-  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  status: 'pending | in_progress' | 'completed''' | '''failed';
 }
 
 export interface ExecutionCheckpoint {
   id: string;
   phase: string;
   timestamp: Date;
-  status: 'pending' | 'completed';
+  status: 'pending''' | '''completed';
   data?: Record<string, unknown>;
 }
 

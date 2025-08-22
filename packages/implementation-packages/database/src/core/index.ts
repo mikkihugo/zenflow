@@ -1,11 +1,16 @@
 /**
  * @fileoverview Database Core - Base Classes and Utilities
- * 
+ *
  * Core database abstractions that provide common functionality
  * across different database adapters.
  */
 
-import type { DatabaseAdapter, QueryResult, QueryParams, HealthStatus } from '../interfaces.js';
+import type {
+  DatabaseAdapter,
+  QueryResult,
+  QueryParams,
+  HealthStatus,
+} from '../interfaces.js';
 import { getLogger, type Logger } from '../logger.js';
 
 /**
@@ -19,12 +24,15 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
     protected config: any,
     logger?: Logger
   ) {
-    this.logger = logger || getLogger('DatabaseAdapter');
+    this.logger = logger'' | '''' | ''getLogger('DatabaseAdapter');
   }
 
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
-  abstract query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>>;
+  abstract query<T = unknown>(
+    sql: string,
+    params?: QueryParams
+  ): Promise<QueryResult<T>>;
   abstract execute(sql: string, params?: any[]): Promise<any>;
   abstract transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
   abstract getSchema(): Promise<any>;
@@ -47,10 +55,10 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
           status: 'disconnected',
           score: 0,
           details: { connected: false },
-          lastCheck: new Date()
+          lastCheck: new Date(),
         };
       }
-      
+
       // Try a simple query to test connectivity
       await this.query('SELECT 1');
       return {
@@ -59,7 +67,7 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
         status: 'healthy',
         score: 100,
         details: { connected: true },
-        lastCheck: new Date()
+        lastCheck: new Date(),
       };
     } catch (error) {
       this.logger.error('Health check failed:', error);
@@ -70,16 +78,20 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
         score: 0,
         details: { error: String(error) },
         lastCheck: new Date(),
-        errors: [String(error)]
+        errors: [String(error)],
       };
     }
   }
 
-  protected logQuery(sql: string, params?: any[], executionTime?: number): void {
+  protected logQuery(
+    sql: string,
+    params?: any[],
+    executionTime?: number
+  ): void {
     this.logger.debug('Query executed', {
       sql: sql.slice(0, 200) + (sql.length > 200 ? '...' : ''),
       params: params?.slice(0, 5),
-      executionTime
+      executionTime,
     });
   }
 
@@ -143,8 +155,8 @@ export class QueryBuilder {
   private limitValue?: number;
   private offsetValue?: number;
 
-  select(fields: string | string[]): this {
-    if (typeof fields === 'string') {
+  select(fields: string'' | ''string[]): this {
+    if (typeof fields ==='string') {
       this.selectFields.push(fields);
     } else {
       this.selectFields.push(...fields);
@@ -162,7 +174,7 @@ export class QueryBuilder {
     return this;
   }
 
-  orderBy(field: string, direction: 'ASC' | 'DESC' = 'ASC'): this {
+  orderBy(field: string, direction: 'ASC''' | '''DESC' = 'ASC'): this {
     this.orderByFields.push(`${field} ${direction}`);
     return this;
   }
@@ -181,23 +193,23 @@ export class QueryBuilder {
     let sql = 'SELECT ';
     sql += this.selectFields.length > 0 ? this.selectFields.join(', ') : '*';
     sql += ` FROM ${this.fromTable}`;
-    
+
     if (this.whereConditions.length > 0) {
       sql += ` WHERE ${this.whereConditions.join(' AND ')}`;
     }
-    
+
     if (this.orderByFields.length > 0) {
       sql += ` ORDER BY ${this.orderByFields.join(', ')}`;
     }
-    
+
     if (this.limitValue !== undefined) {
       sql += ` LIMIT ${this.limitValue}`;
     }
-    
+
     if (this.offsetValue !== undefined) {
       sql += ` OFFSET ${this.offsetValue}`;
     }
-    
+
     return sql;
   }
 }

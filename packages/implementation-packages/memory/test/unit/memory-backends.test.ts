@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { mockLogger, createMockMemoryConfig, createMockResult } from '../mocks/foundation-mocks';
+import {
+  mockLogger,
+  createMockMemoryConfig,
+  createMockResult,
+} from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
 vi.mock('@claude-zen/foundation', () => ({
@@ -10,7 +14,10 @@ vi.mock('@claude-zen/foundation', () => ({
   safeAsync: vi.fn((fn) => fn()),
   withRetry: vi.fn((fn) => fn()),
   withTimeout: vi.fn((fn) => fn()),
-  TypedEventBase: class { emit = vi.fn(); on = vi.fn(); }
+  TypedEventBase: class {
+    emit = vi.fn();
+    on = vi.fn();
+  },
 }));
 
 describe('Memory Backends', () => {
@@ -34,8 +41,8 @@ describe('Memory Backends', () => {
           size: 0,
           maxSize: 1000,
           memoryUsage: 0,
-          hitRate: 0
-        })
+          hitRate: 0,
+        }),
       };
     });
 
@@ -57,7 +64,7 @@ describe('Memory Backends', () => {
       const largeData = Array.from({ length: 1000 }, (_, i) => ({
         id: i,
         data: `test-data-${i}`,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       }));
 
       for (let i = 0; i < largeData.length; i++) {
@@ -72,7 +79,7 @@ describe('Memory Backends', () => {
 
     it('should respect memory limits', async () => {
       const config = { ...createMockMemoryConfig(), maxSize: 5 };
-      
+
       // Simulate storing beyond limit
       for (let i = 0; i < 10; i++) {
         await backend.store(`limit-key-${i}`, `value-${i}`);
@@ -88,7 +95,7 @@ describe('Memory Backends', () => {
         size: 42,
         maxSize: 1000,
         memoryUsage: 2048,
-        hitRate: 0.85
+        hitRate: 0.85,
       };
 
       backend.getStats.mockResolvedValue(stats);
@@ -113,7 +120,7 @@ describe('Memory Backends', () => {
         health: vi.fn().mockResolvedValue(true),
         query: vi.fn().mockResolvedValue([]),
         transaction: vi.fn().mockImplementation((fn) => fn()),
-        close: vi.fn().mockResolvedValue(undefined)
+        close: vi.fn().mockResolvedValue(undefined),
       };
     });
 
@@ -135,7 +142,7 @@ describe('Memory Backends', () => {
       const operations = [
         { key: 'tx-1', value: 'value-1' },
         { key: 'tx-2', value: 'value-2' },
-        { key: 'tx-3', value: 'value-3' }
+        { key: 'tx-3', value: 'value-3' },
       ];
 
       const transactionFn = vi.fn(async () => {
@@ -153,7 +160,7 @@ describe('Memory Backends', () => {
     it('should support SQL queries', async () => {
       const mockResults = [
         { key: 'query-1', value: 'result-1' },
-        { key: 'query-2', value: 'result-2' }
+        { key: 'query-2', value: 'result-2' },
       ];
 
       backend.query.mockResolvedValue(mockResults);
@@ -184,7 +191,7 @@ describe('Memory Backends', () => {
     it('should support proper cleanup', async () => {
       await backend.close();
       expect(backend.close).toHaveBeenCalled();
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith(
         expect.stringContaining('SQLite backend closed')
       );
@@ -204,7 +211,7 @@ describe('Memory Backends', () => {
         health: vi.fn().mockResolvedValue(true),
         search: vi.fn().mockResolvedValue([]),
         addVector: vi.fn().mockResolvedValue(undefined),
-        searchSimilar: vi.fn().mockResolvedValue([])
+        searchSimilar: vi.fn().mockResolvedValue([]),
       };
     });
 
@@ -212,7 +219,7 @@ describe('Memory Backends', () => {
       const key = 'vector-key';
       const vectorData = {
         embedding: [0.1, 0.2, 0.3, 0.4, 0.5],
-        metadata: { type: 'document', content: 'test' }
+        metadata: { type: 'document', content: 'test' },
       };
 
       await backend.store(key, vectorData);
@@ -227,7 +234,7 @@ describe('Memory Backends', () => {
       const queryVector = [0.1, 0.2, 0.3, 0.4, 0.5];
       const similarResults = [
         { key: 'similar-1', distance: 0.1, metadata: {} },
-        { key: 'similar-2', distance: 0.3, metadata: {} }
+        { key: 'similar-2', distance: 0.3, metadata: {} },
       ];
 
       backend.searchSimilar.mockResolvedValue(similarResults);
@@ -238,7 +245,7 @@ describe('Memory Backends', () => {
     });
 
     it('should handle high-dimensional vectors', async () => {
-      const highDimVector = Array.from({ length: 1536 }, () => Math.random());
+      const highDimVector = Array.from({ length: 1536 }, () => Math.random())();
       const key = 'high-dim-vector';
 
       await backend.addVector(key, highDimVector);
@@ -249,11 +256,15 @@ describe('Memory Backends', () => {
       const query = {
         vector: [0.1, 0.2, 0.3],
         filter: { type: 'document', category: 'technical' },
-        limit: 10
+        limit: 10,
       };
 
       const filteredResults = [
-        { key: 'doc-1', distance: 0.2, metadata: { type: 'document', category: 'technical' } }
+        {
+          key: 'doc-1',
+          distance: 0.2,
+          metadata: { type: 'document', category: 'technical' },
+        },
       ];
 
       backend.search.mockResolvedValue(filteredResults);
@@ -277,14 +288,14 @@ describe('Memory Backends', () => {
         health: vi.fn().mockResolvedValue(true),
         load: vi.fn().mockResolvedValue({}),
         save: vi.fn().mockResolvedValue(undefined),
-        backup: vi.fn().mockResolvedValue(undefined)
+        backup: vi.fn().mockResolvedValue(undefined),
       };
     });
 
     it('should store data in JSON format', async () => {
       const data = {
         'json-key-1': { type: 'test', value: 123 },
-        'json-key-2': { type: 'test', value: 456 }
+        'json-key-2': { type: 'test', value: 456 },
       };
 
       for (const [key, value] of Object.entries(data)) {
@@ -300,7 +311,7 @@ describe('Memory Backends', () => {
 
     it('should handle file I/O operations', async () => {
       const testData = { 'file-key': 'file-value' };
-      
+
       await backend.save(testData);
       expect(backend.save).toHaveBeenCalledWith(testData);
 
@@ -311,10 +322,10 @@ describe('Memory Backends', () => {
 
     it('should support data backup and restore', async () => {
       const backupPath = '/tmp/memory-backup.json';
-      
+
       await backend.backup(backupPath);
       expect(backend.backup).toHaveBeenCalledWith(backupPath);
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith(
         expect.stringContaining('Backup created')
       );
@@ -361,7 +372,7 @@ describe('Memory Backends', () => {
         { type: 'memory', maxSize: 1000 },
         { type: 'sqlite', path: ':memory:', maxSize: 5000 },
         { type: 'lancedb', path: '/tmp/lance', maxSize: 10000 },
-        { type: 'json', path: '/tmp/data.json', maxSize: 2000 }
+        { type: 'json', path: '/tmp/data.json', maxSize: 2000 },
       ];
 
       const factory = {
@@ -373,9 +384,9 @@ describe('Memory Backends', () => {
             retrieve: vi.fn(),
             delete: vi.fn(),
             clear: vi.fn(),
-            health: vi.fn().mockResolvedValue(true)
+            health: vi.fn().mockResolvedValue(true),
           };
-        })
+        }),
       };
 
       for (const config of configs) {
@@ -394,7 +405,7 @@ describe('Memory Backends', () => {
             throw new Error(`Unknown backend type: ${config.type}`);
           }
           return { type: config.type };
-        })
+        }),
       };
 
       const unknownConfig = { type: 'unknown', maxSize: 1000 };
@@ -407,16 +418,16 @@ describe('Memory Backends', () => {
 
   describe('Backend Health Monitoring', () => {
     it('should monitor backend health status', async () => {
-      const backends = ['memory', 'sqlite', 'lancedb', 'json'].map(type => ({
+      const backends = ['memory', 'sqlite', 'lancedb', 'json'].map((type) => ({
         type,
         health: vi.fn().mockResolvedValue(true),
-        getStats: vi.fn().mockResolvedValue({ status: 'healthy' })
+        getStats: vi.fn().mockResolvedValue({ status: 'healthy' }),
       }));
 
       for (const backend of backends) {
         const health = await backend.health();
         expect(health).toBe(true);
-        
+
         const stats = await backend.getStats();
         expect(stats.status).toBe('healthy');
       }
@@ -425,7 +436,12 @@ describe('Memory Backends', () => {
     it('should detect unhealthy backends', async () => {
       const unhealthyBackend = {
         health: vi.fn().mockResolvedValue(false),
-        getStats: vi.fn().mockResolvedValue({ status: 'unhealthy', error: 'Connection failed' })
+        getStats: vi
+          .fn()
+          .mockResolvedValue({
+            status: 'unhealthy',
+            error: 'Connection failed',
+          }),
       };
 
       const health = await unhealthyBackend.health();
@@ -438,19 +454,22 @@ describe('Memory Backends', () => {
 
     it('should handle health check timeouts', async () => {
       const timeoutBackend = {
-        health: vi.fn().mockImplementation(() => 
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Health check timeout')), 100)
-          )
-        )
+        health: vi
+          .fn()
+          .mockImplementation(
+            () =>
+              new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Health check timeout')), 100)
+              )
+          ),
       };
 
       try {
         await Promise.race([
           timeoutBackend.health(),
-          new Promise((_, reject) => 
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Timeout')), 50)
-          )
+          ),
         ]);
       } catch (error) {
         expect(error.message).toContain('Timeout');

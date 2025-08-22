@@ -15,7 +15,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from './neural/types/wasm-types');
+} from './neural/types/wasm-types';
 export type {
   AgentCapabilities,
   AgentConfig,
@@ -53,7 +53,7 @@ export {
   isObjectArrayWithProps,
   isPositiveNumber,
   isValidNumber,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 export * from "./client-types";
 export * from "./events-types";
 export * from "./knowledge-types";

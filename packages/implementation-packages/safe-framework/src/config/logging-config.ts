@@ -1,9 +1,9 @@
 /**
  * @fileoverview Logging Configuration for SAFe Framework
- * 
+ *
  * Provides standardized logging configuration for all SAFe Framework components.
  * Integrates with @claude-zen/foundation logging infrastructure.
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -36,7 +36,12 @@ export function getLogger(componentName: string): SafeLogger {
     },
     error: (message: string, error?: any, ...args: any[]) => {
       if (error instanceof Error) {
-        console.error(`[${componentName}] ${message}`, error.message, error.stack, ...args);
+        console.error(
+          `[${componentName}] ${message}`,
+          error.message,
+          error.stack,
+          ...args
+        );
       } else if (error) {
         console.error(`[${componentName}] ${message}`, error, ...args);
       } else {
@@ -45,7 +50,7 @@ export function getLogger(componentName: string): SafeLogger {
     },
     debug: (message: string, ...args: any[]) => {
       console.debug(`[${componentName}] ${message}`, ...args);
-    }
+    },
   };
 }
 
@@ -57,5 +62,5 @@ export const defaultLoggerConfig = {
   format: 'json' as const,
   timestamp: true,
   colorize: false,
-  component: 'safe-framework'
+  component: 'safe-framework',
 };

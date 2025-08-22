@@ -48,7 +48,7 @@
  *     retryCondition: (error) => error.status >= 500 || error.status === 429
  *   },
  *   health: {
- *     endpoint: '/health',
+ *     endpoint:'/health',
  *     interval: 30000,
  *     timeout: 5000,
  *     failureThreshold: 3,
@@ -83,13 +83,13 @@
  * ```
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 import axios, {
   type AxiosError,
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 import type {
   ClientMetrics,
@@ -97,13 +97,13 @@ import type {
   ClientStatus,
   Client,
   RequestOptions,
-} from './core/interfaces');
+} from './core/interfaces';
 import {
   AuthenticationError,
   ConnectionError,
   RetryExhaustedError,
   TimeoutError,
-} from './core/interfaces');
+} from './core/interfaces';
 
 import type {
   HTTPClientCapabilities,
@@ -151,7 +151,7 @@ import type {
  *     delay: 1000,
  *     backoff: 'exponential',
  *     retryCondition: (error) => {
- *       return error.status >= 500 || error.status === 429 || error.code === 'ECONNRESET');
+ *       return error.status >= 500 || error.status === 429 || error.code ==='ECONNRESET');
  *     }
  *   },
  *   health: {
@@ -272,7 +272,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
    *   baseURL: 'https://api.example.com',
    *   timeout: 45000,
    *   authentication: { type: 'bearer, token: your-token' },
-   *   retry: { attempts: 3, delay: 1000, backoff: 'exponential' }
+   *   retry: { attempts: 3, delay: 1000, backoff: 'exponential'}
    * });
    * ```
    */
@@ -301,14 +301,12 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
     const client = axios.create({
       baseURL: this.config.baseURL,
       timeout: this.config.timeout || 30000,
-      headers: {
-        'Content-Type': 'application/json',
+      headers: {'Content-Type': 'application/json',
         Accept: 'application/json',
         ...this.config.headers,
       },
       validateStatus:
-        this.config.validateStatus ||
-        ((status) => status >= 200 && status < 300),
+        this.config.validateStatus || ((status) => status >= 200 && status < 300),
       maxRedirects: this.config.maxRedirects || 5,
       // Add more HTTP-specific options
       decompress: this.config.compression !== false,
@@ -340,7 +338,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
     if (!auth) return;
 
     switch (auth.type) {
-      case 'bearer':
+      case'bearer':
         if (auth.token) {
           client.defaults.headers.common.Authorization = `Bearer ${auth.token}`;
         }
@@ -416,7 +414,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
     if (credentials.refreshToken) {
       try {
         const response = await axios.post(credentials.tokenUrl, {
-          grant_type: 'refresh_token',
+          grant_type:'refresh_token',
           refresh_token: credentials.refreshToken,
           client_id: credentials.clientId,
           client_secret: credentials.clientSecret,
@@ -452,8 +450,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
         const config = error.config as any;
 
         if (!config || config?.__retryCount >= retryConfig?.attempts) {
-          this.emit(
-            'error',
+          this.emit('error',
             new RetryExhaustedError(this.name, retryConfig?.attempts, error)
           );
           return Promise.reject(error);
@@ -516,7 +513,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
     let delay: number;
 
     switch (retryConfig?.backoff) {
-      case 'exponential':
+      case'exponential':
         delay = baseDelay * 2 ** (attempt - 1);
         break;
       case 'linear':
@@ -772,7 +769,7 @@ export class HTTPClientAdapter extends TypedEventBase implements Client {
 
       return {
         name: this.name,
-        status: errorRate > .1 ? 'degraded : healthy',
+        status: errorRate > .1 ?'degraded : healthy',
         lastCheck: new Date(),
         responseTime,
         errorRate,

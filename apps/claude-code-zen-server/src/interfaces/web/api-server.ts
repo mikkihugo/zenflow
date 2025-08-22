@@ -11,16 +11,16 @@
  * - Performance: Compression, caching headers, optimized middleware
  */
 
-import { readdir, stat } from 'node:fs/promises');
-import { createServer, type Server } from 'node:http');
-import { join, resolve } from 'node:path');
+import { readdir, stat } from 'node:fs/promises';
+import { createServer, type Server } from 'node:http';
+import { join, resolve } from 'node:path';
 
-import { getLogger } from '@claude-zen/foundation');
-import { createTerminus } from '@godaddy/terminus');
+import { getLogger } from '@claude-zen/foundation';
+import { createTerminus } from '@godaddy/terminus';
 import compression from 'compression');
 import cors from 'cors');
-import express, { type Express, type Request, type Response } from 'express');
-import { rateLimit } from 'express-rate-limit');
+import express, { type Express, type Request, type Response } from 'express';
+import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet');
 import morgan from 'morgan');
 
@@ -86,7 +86,7 @@ export class ApiServer {
     this.app.use(cors(corsOptions));
 
     // Compression - Gzip responses
-    this.app.use(compression());
+    this.app.use(compression())();
 
     // Security headers (helmet)
     this.app.use(
@@ -229,7 +229,7 @@ export class ApiServer {
         timestamp: new Date()?.toISOString,
         version: getVersion(),
         memory: process?.memoryUsage,
-        environment: process.env.NODE_ENV || 'development',
+        environment: process.env.NODE_ENV'' | '''' | '''development',
         checks: {
           filesystem: 'healthy',
           memory: 'healthy',
@@ -345,7 +345,7 @@ export class ApiServer {
       '/api/workspace/files',
       async (req: Request, res: Response) => {
         try {
-          const requestedPath = (req.query.path as string) || ".');
+          const requestedPath = (req.query.path as string)'' | '''' | ''".');
 
           // Input validation and security
           if (typeof requestedPath !== 'string') {
@@ -356,7 +356,7 @@ export class ApiServer {
           }
 
           // Prevent directory traversal attacks
-          if (requestedPath.includes("..') || requestedPath.includes('~')) {
+          if (requestedPath.includes("..')'' | '''' | ''requestedPath.includes('~')) {
             return res.status(403).json({
               error: 'Access denied',
               message: 'Path traversal not allowed',
@@ -383,7 +383,7 @@ export class ApiServer {
 
           for (const item of items) {
             // Skip hidden files and sensitive directories
-            if (item.startsWith(".') || item === 'node_modules') {
+            if (item.startsWith(".')'' | '''' | ''item ==='node_modules') {
               continue;
             }
 
@@ -417,7 +417,7 @@ export class ApiServer {
             files,
             parentPath:
               requestedPath !== ".'
-                ? requestedPath.split('/).slice(0, -1).join(/') || ".'
+                ? requestedPath.split('/).slice(0, -1).join(/')'' | '''' | ''".'
                 : null,
             timestamp: new Date()?.toISOString,
           });
@@ -457,7 +457,7 @@ export class ApiServer {
         lastModified: true,
         setHeaders: (res, path) => {
           // Set proper cache headers for different file types
-          if (path.endsWith(".js') || path.endsWith(".css')) {
+          if (path.endsWith(".js')'' | '''' | ''path.endsWith(".css')) {
             res.setHeader('Cache-Control, public, max-age=31536000'); // Cache JS/CSS for 1 year
           }
         },
@@ -518,7 +518,7 @@ export class ApiServer {
 
   async start(): Promise<void> {
     this.logger.info(
-      `🚀 Starting server on ${this.config.host || 'localhost'}:${this.config.port}...`
+      `🚀 Starting server on ${this.config.host'' | '''' | '''localhost'}:${this.config.port}...`
     );
 
     // Setup terminus for graceful shutdown BEFORE starting server
@@ -529,12 +529,8 @@ export class ApiServer {
       const connectionMonitor = {
         startTime: Date.now(),
         errorCount: 0,
-        lastError: null as Error | null,
-        connectionState: 'initializing' as
-          | 'initializing'
-          | 'connecting'
-          | 'connected'
-          | 'error',
+        lastError: null as Error'' | ''null,
+        connectionState:'initializing'as'' | '''initializing | connecting' | 'connected''' | '''error',
       };
 
       // Enhanced error handler with connection state tracking
@@ -576,39 +572,39 @@ export class ApiServer {
       connectionMonitor.connectionState = 'connecting');
       this.server.listen(
         this.config.port,
-        this.config.host || 'localhost',
+        this.config.host'' | '''' | '''localhost',
         () => {
           connectionMonitor.connectionState = 'connected');
           const startupTime = Date.now() - connectionMonitor.startTime;
 
           this.logger.info(
-            `🌐 Claude Code Zen Server started on http://${this.config.host || 'localhost'}:${this.config.port}`
+            `🌐 Claude Code Zen Server started on http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}`
           );
           this.logger.info(`⚡ Startup completed in ${startupTime}ms`);
           this.logger.info(
             `🔌 Connection state: ${connectionMonitor.connectionState}`
           );
           this.logger.info(
-            `🎨 Web Dashboard: http://${this.config.host || 'localhost'}:${this.config.port}/ (Svelte)`
+            `🎨 Web Dashboard: http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}/ (Svelte)`
           );
           this.logger.info(`🏥 K8s Health Checks:`);
           this.logger.info(
-            `  • Liveness:  http://${this.config.host || 'localhost'}:${this.config.port}/healthz`
+            `  • Liveness:  http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}/healthz`
           );
           this.logger.info(
-            `  • Readiness: http://${this.config.host || 'localhost'}:${this.config.port}/readyz`
+            `  • Readiness: http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}/readyz`
           );
           this.logger.info(
-            `  • Startup:   http://${this.config.host || 'localhost'}:${this.config.port}/started`
+            `  • Startup:   http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}/started`
           );
           this.logger.info(
-            `📊 System Status: http://${this.config.host || 'localhost'}:${this.config.port}/api/status`
+            `📊 System Status: http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}/api/status`
           );
           this.logger.info(
-            `🎛️ Control APIs: http://${this.config.host || 'localhost'}:${this.config.port}/api/v1/control/*`
+            `🎛️ Control APIs: http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}/api/v1/control/*`
           );
           this.logger.info(
-            `📂 Workspace API: http://${this.config.host || 'localhost'}:${this.config.port}/api/workspace/files`
+            `📂 Workspace API: http://${this.config.host'' | '''' | '''localhost'}:${this.config.port}/api/workspace/files`
           );
           this.logger.info(
             '🎯 Single port deployment: API + Svelte dashboard + K8s health'
@@ -634,7 +630,7 @@ export class ApiServer {
       const shutdownMonitor = {
         startTime: Date.now(),
         activeConnections: 0,
-        shutdownState: 'initiating as initiating' | 'draining | stopped',
+        shutdownState: 'initiating as initiating''' | '''draining | stopped',
         gracefulTimeout: 10000, // 10 seconds
       };
 
@@ -742,8 +738,8 @@ export class ApiServer {
   /**
    * Get allowed CORS origins based on environment
    */
-  private getCorsOrigins(): string[] | boolean {
-    const nodeEnv = process.env.NODE_ENV || 'development');
+  private getCorsOrigins(): string[]'' | ''boolean {
+    const nodeEnv = process.env.NODE_ENV'' | '''' | '''development');
 
     if (nodeEnv === 'development') {
       // Allow localhost and common dev ports

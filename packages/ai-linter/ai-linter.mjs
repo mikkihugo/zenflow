@@ -20,7 +20,7 @@ const logger = {
   info: (...args) => console.log('ℹ️', ...args),
   warn: (...args) => console.warn('⚠️', ...args),
   error: (...args) => console.error('❌', ...args),
-  debug: (...args) => console.log('🐛', ...args)
+  debug: (...args) => console.log('🐛', ...args),
 };
 
 /**
@@ -61,11 +61,11 @@ class AILinter {
    */
   async analyzeFile(filePath) {
     this.logger.info(`🔍 Analyzing ${path.basename(filePath)}...`);
-    
+
     try {
       const content = await fs.readFile(filePath, 'utf-8');
       const analysis = await this.analyzeCode(filePath, content);
-      
+
       return {
         filePath,
         success: true,
@@ -74,15 +74,15 @@ class AILinter {
         qualityScore: analysis.qualityScore,
         canAutoFix: analysis.autoFixableIssues.length > 0,
         autoFixableIssues: analysis.autoFixableIssues,
-        complexIssues: analysis.complexIssues
+        complexIssues: analysis.complexIssues,
       };
-      
+
     } catch (error) {
       this.logger.error(`Failed to analyze ${filePath}:`, error.message);
       return {
         filePath,
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -96,16 +96,16 @@ class AILinter {
     const suggestions = [];
     const autoFixableIssues = [];
     const complexIssues = [];
-    
+
     let typeIssues = 0;
     let complexityIssues = 0;
     let performanceIssues = 0;
     let securityIssues = 0;
-    
+
     // Analyze each line
     lines.forEach((line, index) => {
       const lineNum = index + 1;
-      
+
       // Check for 'any' types
       if (line.includes(': any') || line.includes('any[]') || line.includes('any,')) {
         typeIssues++;
@@ -114,11 +114,11 @@ class AILinter {
           column: line.indexOf('any') + 1,
           severity: 'warning',
           message: 'Generic any type detected - consider specific typing',
-          type: 'type-safety'
+          type: 'type-safety',
         });
         autoFixableIssues.push(`Line ${lineNum}: Replace 'any' with specific type`);
       }
-      
+
       // Check for console.log (should use logger)
       if (line.includes('console.log') || line.includes('console.error')) {
         issues.push({
@@ -126,11 +126,11 @@ class AILinter {
           column: line.indexOf('console') + 1,
           severity: 'info',
           message: 'Consider using structured logging instead of console',
-          type: 'best-practices'
+          type: 'best-practices',
         });
         autoFixableIssues.push(`Line ${lineNum}: Replace console with logger`);
       }
-      
+
       // Check for complex function signatures
       if (line.includes('function') && line.length > 120) {
         complexityIssues++;
@@ -139,11 +139,11 @@ class AILinter {
           column: 1,
           severity: 'warning',
           message: 'Complex function signature - consider breaking down',
-          type: 'complexity'
+          type: 'complexity',
         });
         complexIssues.push(`Line ${lineNum}: Simplify complex function signature`);
       }
-      
+
       // Check for missing return type annotations
       if (line.match(/function\s+\w+\s*\([^)]*\)\s*{/) && !line.includes(':')) {
         issues.push({
@@ -151,11 +151,11 @@ class AILinter {
           column: 1,
           severity: 'warning',
           message: 'Missing return type annotation',
-          type: 'type-safety'
+          type: 'type-safety',
         });
         complexIssues.push(`Line ${lineNum}: Add return type annotation`);
       }
-      
+
       // Check for async functions without proper error handling
       if (line.includes('async ') && !content.includes('try') && !content.includes('catch')) {
         issues.push({
@@ -163,11 +163,11 @@ class AILinter {
           column: 1,
           severity: 'warning',
           message: 'Async function lacks error handling',
-          type: 'error-handling'
+          type: 'error-handling',
         });
         complexIssues.push(`Line ${lineNum}: Add proper error handling to async function`);
       }
-      
+
       // Check for TODO/FIXME comments
       if (line.includes('TODO') || line.includes('FIXME') || line.includes('HACK')) {
         issues.push({
@@ -175,11 +175,11 @@ class AILinter {
           column: 1,
           severity: 'info',
           message: 'Technical debt marker found',
-          type: 'technical-debt'
+          type: 'technical-debt',
         });
         complexIssues.push(`Line ${lineNum}: Address technical debt comment`);
       }
-      
+
       // Check for complex conditionals
       if ((line.match(/&&/g) || []).length > 2 || (line.match(/\|\|/g) || []).length > 2) {
         complexityIssues++;
@@ -188,11 +188,11 @@ class AILinter {
           column: 1,
           severity: 'warning',
           message: 'Complex conditional logic - consider extracting to functions',
-          type: 'complexity'
+          type: 'complexity',
         });
         complexIssues.push(`Line ${lineNum}: Simplify complex conditional logic`);
       }
-      
+
       // Check for performance issues
       if (line.includes('for (') && content.includes('.forEach(')) {
         performanceIssues++;
@@ -201,13 +201,13 @@ class AILinter {
           column: 1,
           severity: 'info',
           message: 'Mixed loop patterns - consider consistency',
-          type: 'performance'
+          type: 'performance',
         });
         complexIssues.push(`Line ${lineNum}: Standardize iteration approach`);
       }
-      
+
       // SECURITY VULNERABILITY CHECKS
-      
+
       // Check for eval() usage (critical security risk)
       if (line.includes('eval(')) {
         securityIssues++;
@@ -216,11 +216,11 @@ class AILinter {
           column: line.indexOf('eval(') + 1,
           severity: 'error',
           message: 'CRITICAL: eval() usage detected - code injection vulnerability',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: CRITICAL - Replace eval() with safe alternatives`);
       }
-      
+
       // Check for shell command execution
       if (line.includes('exec(') || line.includes('spawn(') || line.includes('execSync(')) {
         securityIssues++;
@@ -229,11 +229,11 @@ class AILinter {
           column: 1,
           severity: 'error',
           message: 'CRITICAL: Shell command execution detected - RCE vulnerability risk',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: CRITICAL - Validate and sanitize shell commands`);
       }
-      
+
       // Check for SQL injection patterns
       if (line.match(/SELECT.*\$\{.*\}|INSERT.*\$\{.*\}|UPDATE.*\$\{.*\}|DELETE.*\$\{.*\}/)) {
         securityIssues++;
@@ -242,11 +242,11 @@ class AILinter {
           column: 1,
           severity: 'error',
           message: 'CRITICAL: SQL injection vulnerability - unsanitized input in query',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: CRITICAL - Use parameterized queries`);
       }
-      
+
       // Check for XSS vulnerabilities
       if (line.includes('innerHTML') || line.includes('outerHTML') || line.includes('document.write')) {
         securityIssues++;
@@ -255,11 +255,11 @@ class AILinter {
           column: 1,
           severity: 'error',
           message: 'CRITICAL: XSS vulnerability - unsafe HTML injection',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: CRITICAL - Sanitize HTML content or use textContent`);
       }
-      
+
       // Check for hardcoded secrets/credentials
       if (line.match(/(?:api[_-]?key|password|secret|token|credential)\s*[=:]\s*["'][\w-]{8,}/i)) {
         securityIssues++;
@@ -268,11 +268,11 @@ class AILinter {
           column: 1,
           severity: 'error',
           message: 'CRITICAL: Hardcoded credentials detected - security leak',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: CRITICAL - Move credentials to environment variables`);
       }
-      
+
       // Check for insecure random
       if (line.includes('Math.random()')) {
         securityIssues++;
@@ -281,11 +281,11 @@ class AILinter {
           column: line.indexOf('Math.random()') + 1,
           severity: 'warning',
           message: 'Insecure random number generation - not cryptographically secure',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: Use crypto.randomBytes() for security purposes`);
       }
-      
+
       // Check for dangerous file operations
       if (line.match(/readFileSync\(.*userPath|writeFileSync\(.*userPath|unlinkSync\(.*userPath/)) {
         securityIssues++;
@@ -294,11 +294,11 @@ class AILinter {
           column: 1,
           severity: 'error',
           message: 'CRITICAL: Path traversal vulnerability - unsanitized file path',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: CRITICAL - Validate and sanitize file paths`);
       }
-      
+
       // Check for dangerous require() patterns
       if (line.match(/require\(.*\$\{.*\}/) || line.match(/require\(.*userInput/)) {
         securityIssues++;
@@ -307,12 +307,12 @@ class AILinter {
           column: 1,
           severity: 'error',
           message: 'CRITICAL: Dynamic require() detected - code injection risk',
-          type: 'security'
+          type: 'security',
         });
         complexIssues.push(`Line ${lineNum}: CRITICAL - Validate module names before require()`);
       }
     });
-    
+
     // Generate suggestions
     if (typeIssues > 0) {
       suggestions.push(`Found ${typeIssues} type safety issues - consider adding specific types`);
@@ -326,20 +326,20 @@ class AILinter {
     if (securityIssues > 0) {
       suggestions.push(`CRITICAL: Found ${securityIssues} security vulnerabilities - immediate attention required`);
     }
-    
+
     // Calculate quality score (heavily penalize security issues)
     const totalLines = lines.length;
     const issueCount = issues.length;
     const securityPenalty = securityIssues * 15; // Heavy penalty for security issues
     const baseScore = Math.max(10, 100 - Math.round((issueCount / totalLines) * 200));
     const qualityScore = Math.max(0, baseScore - securityPenalty);
-    
+
     return {
       issues,
       suggestions,
       autoFixableIssues,
       complexIssues,
-      qualityScore
+      qualityScore,
     };
   }
 
@@ -372,27 +372,27 @@ Quality score: ${analysisResult.qualityScore}/100`;
    */
   async lintMonorepo(filePatterns = ['**/*.ts', '**/*.js']) {
     this.logger.info('🔍 Scanning monorepo for files to lint...');
-    
+
     // Simple file discovery (without glob for now)
     const filesToLint = [
       './apps/claude-code-zen-server/src/coordination/agents/agent.ts',
       './apps/claude-code-zen-server/src/coordination/core/event-bus.ts',
       './apps/claude-code-zen-server/src/interfaces/api/http/client.ts',
-      './packages/ai-linter/src/claude-sdk-integration.ts'
+      './packages/ai-linter/src/claude-sdk-integration.ts',
     ];
-    
+
     const results = [];
-    
+
     for (const filePath of filesToLint) {
       try {
         // Check if file exists
         await fs.access(filePath);
         const result = await this.analyzeFile(filePath);
         results.push(result);
-        
+
         if (result.success) {
           this.logger.info(`📊 ${path.basename(filePath)}: Quality ${result.qualityScore}/100, ${result.issues.length} issues`);
-          
+
           // Generate Claude prompt if needed
           if (result.complexIssues.length > 0) {
             const prompt = this.generateClaudePrompt(result);
@@ -402,12 +402,12 @@ Quality score: ${analysisResult.qualityScore}/100`;
             console.log('─'.repeat(60));
           }
         }
-        
+
       } catch (error) {
         this.logger.warn(`Skipping ${filePath}: ${error.message}`);
       }
     }
-    
+
     return results;
   }
 }
@@ -417,25 +417,25 @@ Quality score: ${analysisResult.qualityScore}/100`;
  */
 async function main() {
   const linter = new AILinter();
-  
+
   // Check command line arguments
   const args = process.argv.slice(2);
-  
+
   if (args.length > 0) {
     // Lint specific file
     const filePath = args[0];
     const result = await linter.analyzeFile(filePath);
-    
+
     if (result.success) {
       console.log(`\n📊 Analysis Results for ${path.basename(filePath)}:`);
       console.log(`   Quality Score: ${result.qualityScore}/100`);
       console.log(`   Total Issues: ${result.issues.length}`);
       console.log(`   Auto-fixable: ${result.autoFixableIssues.length}`);
       console.log(`   Need Claude: ${result.complexIssues.length}`);
-      
+
       if (result.complexIssues.length > 0) {
         const prompt = linter.generateClaudePrompt(result);
-        console.log(`\n🤖 Claude Prompt:`);
+        console.log('\n🤖 Claude Prompt:');
         console.log('─'.repeat(60));
         console.log(prompt);
         console.log('─'.repeat(60));
@@ -445,10 +445,10 @@ async function main() {
     // Lint entire monorepo
     console.log('🚀 Linting entire monorepo...\n');
     const results = await linter.lintMonorepo();
-    
+
     const successfulResults = results.filter(r => r.success);
-    
-    console.log(`\n📈 Monorepo Linting Summary:`);
+
+    console.log('\n📈 Monorepo Linting Summary:');
     console.log(`   Files analyzed: ${successfulResults.length}`);
     console.log(`   Average quality: ${Math.round(successfulResults.reduce((sum, r) => sum + r.qualityScore, 0) / successfulResults.length)}/100`);
     console.log(`   Total issues: ${successfulResults.reduce((sum, r) => sum + r.issues.length, 0)}`);

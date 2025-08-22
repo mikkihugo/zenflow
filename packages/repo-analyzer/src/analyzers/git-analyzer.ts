@@ -11,7 +11,7 @@ import type {
   GitHotFile,
   ContributorStats,
   BranchMetrics,
-  AnalysisOptions
+  AnalysisOptions,
 } from '../types/index.js';
 
 export class GitAnalyzer {
@@ -33,18 +33,21 @@ export class GitAnalyzer {
       statusResult,
       branchResult,
       contributorResult,
-      hotFileResult
+      hotFileResult,
     ] = await Promise.allSettled([
       this.getCommitHistory(options),
       this.getRepositoryStatus(),
       this.analyzeBranches(),
       this.analyzeContributors(options),
-      this.identifyHotFiles(options)
+      this.identifyHotFiles(options),
     ]);
 
     const commits = this.getSettledValue(logResult, []);
     const status = this.getSettledValue(statusResult, null);
-    const branches = this.getSettledValue(branchResult, this.getEmptyBranchMetrics());
+    const branches = this.getSettledValue(
+      branchResult,
+      this.getEmptyBranchMetrics()
+    );
     const contributors = this.getSettledValue(contributorResult, []);
     const hotFiles = this.getSettledValue(hotFileResult, []);
 
@@ -60,7 +63,7 @@ export class GitAnalyzer {
       fileChangeFrequency,
       hotFiles,
       contributorStats: contributors,
-      branchMetrics: branches
+      branchMetrics: branches,
     };
   }
 
@@ -77,8 +80,8 @@ export class GitAnalyzer {
           message: '%s',
           author_name: '%an',
           author_email: '%ae',
-          body: '%b'
-        }
+          body: '%b',
+        },
       };
 
       // Get commits from the last year for performance
@@ -99,7 +102,7 @@ export class GitAnalyzer {
   /**
    * Get repository status
    */
-  private async getRepositoryStatus(): Promise<StatusResult | null> {
+  private async getRepositoryStatus(): Promise<StatusResult'' | ''null> {
     try {
       return await this.git.status();
     } catch (error) {
@@ -115,7 +118,7 @@ export class GitAnalyzer {
     try {
       const branches = await this.git.branch(['--all']);
       const localBranches = await this.git.branchLocal();
-      
+
       const totalBranches = branches.all.length;
       const activeBranches = this.countActiveBranches(localBranches);
       const averageBranchLifetime = await this.calculateAverageBranchLifetime();
@@ -125,7 +128,7 @@ export class GitAnalyzer {
         totalBranches,
         activeBranches,
         averageBranchLifetime,
-        mergeConflictRate
+        mergeConflictRate,
       };
     } catch (error) {
       this.logger.warn('Failed to analyze branches:', error);
@@ -136,7 +139,9 @@ export class GitAnalyzer {
   /**
    * Analyze contributor statistics
    */
-  private async analyzeContributors(options?: AnalysisOptions): Promise<ContributorStats[]> {
+  private async analyzeContributors(
+    options?: AnalysisOptions
+  ): Promise<ContributorStats[]> {
     try {
       const commits = await this.getCommitHistory(options);
       const contributorMap = new Map<string, ContributorStats>();
@@ -154,13 +159,13 @@ export class GitAnalyzer {
             linesDeleted: 0,
             filesModified: 0,
             firstCommit: date,
-            lastCommit: date
+            lastCommit: date,
           });
         }
 
         const stats = contributorMap.get(author)!;
         stats.commits++;
-        
+
         if (date < stats.firstCommit) stats.firstCommit = date;
         if (date > stats.lastCommit) stats.lastCommit = date;
 
@@ -175,8 +180,9 @@ export class GitAnalyzer {
         }
       }
 
-      return Array.from(contributorMap.values())
-        .sort((a, b) => b.commits - a.commits);
+      return Array.from(contributorMap.values()).sort(
+        (a, b) => b.commits - a.commits
+      );
     } catch (error) {
       this.logger.warn('Failed to analyze contributors:', error);
       return [];
@@ -186,14 +192,19 @@ export class GitAnalyzer {
   /**
    * Identify hot files (frequently changed files)
    */
-  private async identifyHotFiles(options?: AnalysisOptions): Promise<GitHotFile[]> {
+  private async identifyHotFiles(
+    options?: AnalysisOptions
+  ): Promise<GitHotFile[]> {
     try {
       const commits = await this.getCommitHistory(options);
-      const fileChangeMap = new Map<string, {
-        count: number;
-        lastChanged: Date;
-        contributors: Set<string>;
-      }>();
+      const fileChangeMap = new Map<
+        string,
+        {
+          count: number;
+          lastChanged: Date;
+          contributors: Set<string>;
+        }
+      >();
 
       for (const commit of commits) {
         try {
@@ -206,14 +217,14 @@ export class GitAnalyzer {
               fileChangeMap.set(file, {
                 count: 0,
                 lastChanged: commitDate,
-                contributors: new Set()
+                contributors: new Set(),
               });
             }
 
             const stats = fileChangeMap.get(file)!;
             stats.count++;
             stats.contributors.add(author);
-            
+
             if (commitDate > stats.lastChanged) {
               stats.lastChanged = commitDate;
             }
@@ -226,7 +237,11 @@ export class GitAnalyzer {
       const hotFiles: GitHotFile[] = [];
       for (const [file, stats] of fileChangeMap) {
         const complexity = await this.estimateFileComplexity(file);
-        const riskScore = this.calculateRiskScore(stats.count, complexity, stats.contributors.size);
+        const riskScore = this.calculateRiskScore(
+          stats.count,
+          complexity,
+          stats.contributors.size
+        );
 
         hotFiles.push({
           file,
@@ -234,13 +249,11 @@ export class GitAnalyzer {
           lastChanged: stats.lastChanged,
           contributors: stats.contributors.size,
           complexity,
-          riskScore
+          riskScore,
         });
       }
 
-      return hotFiles
-        .sort((a, b) => b.riskScore - a.riskScore)
-        .slice(0, 50); // Top 50 hot files
+      return hotFiles.sort((a, b) => b.riskScore - a.riskScore).slice(0, 50); // Top 50 hot files
     } catch (error) {
       this.logger.warn('Failed to identify hot files:', error);
       return [];
@@ -258,7 +271,7 @@ export class GitAnalyzer {
     try {
       const diff = await this.git.show(['--stat', '--format=', commitHash]);
       const lines = diff.split('\n');
-      
+
       let linesAdded = 0;
       let linesDeleted = 0;
       let filesModified = 0;
@@ -266,13 +279,15 @@ export class GitAnalyzer {
       for (const line of lines) {
         if (line.includes('|')) {
           filesModified++;
-          
-          const match = line.match(/(\d+)\s+insertions?\(\+\)|(\d+)\s+deletions?\(-\)/g);
+
+          const match = line.match(
+            /(\d+)\s+insertions?\(\+\)'' | ''(\d+)\s+deletions?\(-\)/g
+          );
           if (match) {
             for (const m of match) {
               const insertions = m.match(/(\d+)\s+insertions?\(\+\)/);
               const deletions = m.match(/(\d+)\s+deletions?\(-\)/);
-              
+
               if (insertions) linesAdded += parseInt(insertions[1]);
               if (deletions) linesDeleted += parseInt(deletions[1]);
             }
@@ -291,8 +306,11 @@ export class GitAnalyzer {
    */
   private async getCommitFiles(commitHash: string): Promise<string[]> {
     try {
-      const diff = await this.git.show(['--name-only', '--format=', commitHash]);
-      return diff.split('\n').filter(file => file.trim() !== '');
+      const diff = await this.git.show(['--name-only',
+        '--format=',
+        commitHash,
+      ]);
+      return diff.split('\n').filter((file) => file.trim() !== '');
     } catch (error) {
       return [];
     }
@@ -304,12 +322,15 @@ export class GitAnalyzer {
   private calculateAverageCommitsPerDay(commits: any[]): number {
     if (commits.length === 0) return 0;
 
-    const dates = commits.map(c => new Date(c.date));
-    const earliest = new Date(Math.min(...dates.map(d => d.getTime())));
-    const latest = new Date(Math.max(...dates.map(d => d.getTime())));
-    
-    const daysDiff = Math.max(1, Math.ceil((latest.getTime() - earliest.getTime()) / (1000 * 60 * 60 * 24)));
-    
+    const dates = commits.map((c) => new Date(c.date));
+    const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
+    const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+
+    const daysDiff = Math.max(
+      1,
+      Math.ceil((latest.getTime() - earliest.getTime()) / (1000 * 60 * 60 * 24))
+    );
+
     return parseFloat((commits.length / daysDiff).toFixed(2));
   }
 
@@ -318,7 +339,7 @@ export class GitAnalyzer {
    */
   private calculateFileChangeFrequency(commits: any[]): Record<string, number> {
     const frequency: Record<string, number> = {};
-    
+
     // This would require parsing commit diffs
     // For now, return empty object
     return frequency;
@@ -330,7 +351,7 @@ export class GitAnalyzer {
   private countActiveBranches(localBranches: any): number {
     // Consider branches active if they have commits in the last 30 days
     // This would require checking last commit date for each branch
-    return localBranches.all?.length || 0;
+    return localBranches.all?.length'' | '''' | ''0;
   }
 
   /**
@@ -368,12 +389,16 @@ export class GitAnalyzer {
     try {
       const fs = await import('fs/promises');
       const content = await fs.readFile(filePath, 'utf-8');
-      
+
       // Simple complexity estimation
       const lines = content.split('\n').length;
-      const functions = (content.match(/function\s+\w+|=>\s*{|^\s*\w+\s*:/gm) || []).length;
-      const conditionals = (content.match(/\b(if|else|switch|case|while|for)\b/g) || []).length;
-      
+      const functions = (
+        content.match(/function\s+\w+'' | ''=>\s*{'' | ''^\s*\w+\s*:/gm)'' | '''' | ''[]
+      ).length;
+      const conditionals = (
+        content.match(/\b(if'' | ''else'' | ''switch'' | ''case'' | ''while'' | ''for)\b/g)'' | '''' | ''[]
+      ).length;
+
       return Math.min(100, lines * 0.1 + functions * 2 + conditionals * 3);
     } catch (error) {
       return 10; // Default complexity
@@ -383,18 +408,25 @@ export class GitAnalyzer {
   /**
    * Calculate risk score for a file
    */
-  private calculateRiskScore(changeCount: number, complexity: number, contributorCount: number): number {
+  private calculateRiskScore(
+    changeCount: number,
+    complexity: number,
+    contributorCount: number
+  ): number {
     // Normalize factors
     const changeScore = Math.min(1, changeCount / 100); // Max at 100 changes
     const complexityScore = Math.min(1, complexity / 100); // Max at 100 complexity
     const contributorScore = Math.min(1, contributorCount / 10); // Max at 10 contributors
-    
+
     // Weighted combination
-    return parseFloat((
-      changeScore * 0.4 +           // 40% weight on change frequency
-      complexityScore * 0.4 +       // 40% weight on complexity
-      contributorScore * 0.2        // 20% weight on contributor count
-    ).toFixed(3));
+    return parseFloat(
+      (
+        changeScore * 0.4 + // 40% weight on change frequency
+        complexityScore * 0.4 + // 40% weight on complexity
+        contributorScore * 0.2
+      ) // 20% weight on contributor count
+        .toFixed(3)
+    );
   }
 
   /**
@@ -416,14 +448,14 @@ export class GitAnalyzer {
       for (const commit of commits) {
         const stats = await this.getCommitStats(commit.hash);
         const churn = stats.linesAdded + stats.linesDeleted;
-        
+
         totalChurn += churn;
-        
+
         const author = commit.author_name;
-        churnByAuthor[author] = (churnByAuthor[author] || 0) + churn;
-        
+        churnByAuthor[author] = (churnByAuthor[author]'' | '''' | ''0) + churn;
+
         const date = new Date(commit.date).toISOString().split('T')[0];
-        const existingEntry = churnTrend.find(entry => entry.date === date);
+        const existingEntry = churnTrend.find((entry) => entry.date === date);
         if (existingEntry) {
           existingEntry.churn += churn;
         } else {
@@ -435,7 +467,7 @@ export class GitAnalyzer {
         totalChurn,
         churnByFile,
         churnByAuthor,
-        churnTrend: churnTrend.sort((a, b) => a.date.localeCompare(b.date))
+        churnTrend: churnTrend.sort((a, b) => a.date.localeCompare(b.date)),
       };
     } catch (error) {
       this.logger.warn('Failed to analyze code churn:', error);
@@ -443,7 +475,7 @@ export class GitAnalyzer {
         totalChurn: 0,
         churnByFile: {},
         churnByAuthor: {},
-        churnTrend: []
+        churnTrend: [],
       };
     }
   }
@@ -466,24 +498,27 @@ export class GitAnalyzer {
         const date = new Date(commit.date);
         const hour = date.getHours();
         const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-        const month = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        const month = date.toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric',
+        });
 
-        hourlyDistribution[hour] = (hourlyDistribution[hour] || 0) + 1;
-        dailyDistribution[dayOfWeek] = (dailyDistribution[dayOfWeek] || 0) + 1;
-        monthlyDistribution[month] = (monthlyDistribution[month] || 0) + 1;
+        hourlyDistribution[hour] = (hourlyDistribution[hour]'' | '''' | ''0) + 1;
+        dailyDistribution[dayOfWeek] = (dailyDistribution[dayOfWeek]'' | '''' | ''0) + 1;
+        monthlyDistribution[month] = (monthlyDistribution[month]'' | '''' | ''0) + 1;
       }
 
       return {
         hourlyDistribution,
         dailyDistribution,
-        monthlyDistribution
+        monthlyDistribution,
       };
     } catch (error) {
       this.logger.warn('Failed to analyze commit patterns:', error);
       return {
         hourlyDistribution: {},
         dailyDistribution: {},
-        monthlyDistribution: {}
+        monthlyDistribution: {},
       };
     }
   }
@@ -491,12 +526,14 @@ export class GitAnalyzer {
   /**
    * Find potential refactoring opportunities based on git history
    */
-  async findRefactoringOpportunities(options?: AnalysisOptions): Promise<Array<{
-    file: string;
-    reason: string;
-    confidence: number;
-    metrics: Record<string, any>;
-  }>> {
+  async findRefactoringOpportunities(options?: AnalysisOptions): Promise<
+    Array<{
+      file: string;
+      reason: string;
+      confidence: number;
+      metrics: Record<string, any>;
+    }>
+  > {
     const opportunities: Array<{
       file: string;
       reason: string;
@@ -504,22 +541,23 @@ export class GitAnalyzer {
       metrics: Record<string, any>;
     }> = [];
     const hotFiles = await this.identifyHotFiles(options);
-    
-    for (const hotFile of hotFiles.slice(0, 20)) { // Top 20 hot files
+
+    for (const hotFile of hotFiles.slice(0, 20)) {
+      // Top 20 hot files
       const reasons: string[] = [];
-      
+
       if (hotFile.changeCount > 50) {
         reasons.push('High change frequency indicates instability');
       }
-      
+
       if (hotFile.complexity > 75) {
         reasons.push('High complexity makes maintenance difficult');
       }
-      
+
       if (hotFile.contributors > 8) {
         reasons.push('Too many contributors suggest unclear ownership');
       }
-      
+
       if (hotFile.riskScore > 0.7) {
         reasons.push('High risk score indicates potential issues');
       }
@@ -533,8 +571,8 @@ export class GitAnalyzer {
             changeCount: hotFile.changeCount,
             complexity: hotFile.complexity,
             contributors: hotFile.contributors,
-            riskScore: hotFile.riskScore
-          }
+            riskScore: hotFile.riskScore,
+          },
         });
       }
     }
@@ -543,7 +581,10 @@ export class GitAnalyzer {
   }
 
   // Helper methods
-  private getSettledValue<T>(result: PromiseSettledResult<T>, defaultValue: T): T {
+  private getSettledValue<T>(
+    result: PromiseSettledResult<T>,
+    defaultValue: T
+  ): T {
     return result.status === 'fulfilled' ? result.value : defaultValue;
   }
 
@@ -552,7 +593,7 @@ export class GitAnalyzer {
       totalBranches: 0,
       activeBranches: 0,
       averageBranchLifetime: 0,
-      mergeConflictRate: 0
+      mergeConflictRate: 0,
     };
   }
 
@@ -566,12 +607,15 @@ export class GitAnalyzer {
 
       // Analyze branch creation and merge patterns
       const lifetimes: number[] = [];
-      for (const branch of branches.all.slice(0, 10)) { // Sample first 10 branches
+      for (const branch of branches.all.slice(0, 10)) {
+        // Sample first 10 branches
         try {
           const branchLog = await this.git.log([branch, '--max-count=1']);
           const firstCommit = branchLog.latest;
           if (firstCommit) {
-            const age = (Date.now() - new Date(firstCommit.date).getTime()) / (1000 * 60 * 60 * 24);
+            const age =
+              (Date.now() - new Date(firstCommit.date).getTime()) /
+              (1000 * 60 * 60 * 24);
             lifetimes.push(age);
           }
         } catch {
@@ -579,8 +623,10 @@ export class GitAnalyzer {
         }
       }
 
-      return lifetimes.length > 0 ? 
-        lifetimes.reduce((sum, lifetime) => sum + lifetime, 0) / lifetimes.length : 7;
+      return lifetimes.length > 0
+        ? lifetimes.reduce((sum, lifetime) => sum + lifetime, 0) /
+            lifetimes.length
+        : 7;
     } catch {
       return 7;
     }
@@ -592,17 +638,17 @@ export class GitAnalyzer {
   private async performMergeConflictAnalysis(): Promise<number> {
     try {
       const commits = await this.getCommitHistory({ maxCount: 100 });
-      const mergeCommits = commits.filter(commit => 
-        commit.message.includes('Merge') || commit.parents.length > 1
+      const mergeCommits = commits.filter(
+        (commit) =>
+          commit.message.includes('Merge')'' | '''' | ''commit.parents.length > 1
       );
 
       if (mergeCommits.length === 0) return 0.1;
 
       // Estimate conflict rate based on merge commit patterns
-      const conflictIndicators = mergeCommits.filter(commit =>
-        commit.message.includes('conflict') || 
-        commit.message.includes('resolve') ||
-        commit.message.includes('fix merge')
+      const conflictIndicators = mergeCommits.filter(
+        (commit) =>
+          commit.message.includes('conflict')'' | '''' | ''commit.message.includes('resolve')'' | '''' | ''commit.message.includes('fix merge')
       );
 
       return conflictIndicators.length / mergeCommits.length;

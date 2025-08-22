@@ -1,8 +1,8 @@
 /**
  * @fileoverview Date Utilities Index
- * 
+ *
  * Professional date handling utilities using date-fns.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */

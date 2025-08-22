@@ -1,19 +1,19 @@
 /**
  * @fileoverview Date Calculation Utilities
- * 
+ *
  * Professional date arithmetic using date-fns library.
  * Focused on duration and time manipulation.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
 
-import { 
-  differenceInMilliseconds, 
-  addMinutes, 
+import {
+  differenceInMilliseconds,
+  addMinutes,
   subMinutes,
   formatDuration,
-  intervalToDuration
+  intervalToDuration,
 } from 'date-fns';
 
 /**

@@ -7,7 +7,11 @@
  */
 
 import type { CapacityManager } from '../interfaces';
-import type { CapacityMetrics, LoadMetrics, ResourceConstraint } from '../types';
+import type {
+  CapacityMetrics,
+  LoadMetrics,
+  ResourceConstraint,
+} from '../types';
 
 import { CapacityPredictor } from './capacity-predictor';
 import { ResourceMonitor } from './resource-monitor';
@@ -22,7 +26,7 @@ interface AgentCapacityProfile {
   resourceConstraints: ResourceConstraint[];
   adaptiveThresholds: AdaptiveThresholds;
   lastUpdate: Date;
-  capacityTrend: 'increasing' | 'decreasing' | 'stable';
+  capacityTrend: 'increasing | decreasing' | 'stable';
 }
 
 interface PerformanceMetrics {
@@ -197,8 +201,7 @@ export class AgentCapacityManager implements CapacityManager {
     // Check resource constraints
     const constraints = this.evaluateResourceConstraints(profile);
     const criticalConstraints = constraints.filter(
-      (c) => c.severity === 'critical'
-    );
+      (c) => c.severity === 'critical');
 
     if (criticalConstraints.length > 0) {
       return false; // Critical constraints prevent new tasks
@@ -206,7 +209,7 @@ export class AgentCapacityManager implements CapacityManager {
 
     // Check if current utilization plus required resources exceeds capacity
     const projectedUtilization =
-      currentMetrics?.activeTasks + (requiredResources.tasks || 1);
+      currentMetrics?.activeTasks + (requiredResources.tasks'' | '''' | ''1);
     const availableCapacity = this.calculateAvailableCapacity(profile);
 
     return projectedUtilization <= availableCapacity;
@@ -243,7 +246,7 @@ export class AgentCapacityManager implements CapacityManager {
           errorRateThreshold: 0.05,
         },
         lastUpdate: new Date(),
-        capacityTrend: 'stable',
+        capacityTrend:'stable',
       });
     }
     return this.capacityProfiles.get(agentId)!;
@@ -559,7 +562,7 @@ export class AgentCapacityManager implements CapacityManager {
   private calculateConstraintSeverity(
     currentValue: number,
     threshold: number
-  ): 'low' | 'medium' | 'high' | 'critical' {
+  ): 'low | medium' | 'high''' | '''critical' {
     const violation = (currentValue - threshold) / threshold;
 
     if (violation > 0.3) return 'critical';
@@ -628,7 +631,7 @@ export class AgentCapacityManager implements CapacityManager {
         0.9,
         thresholds.memoryThreshold + rate
       );
-    } else if (metrics.errorRate > 0.05 || metrics.responseTime > 5000) {
+    } else if (metrics.errorRate > 0.05'' | '''' | ''metrics.responseTime > 5000) {
       // Poor performance, decrease thresholds
       thresholds.cpuThreshold = Math.max(0.5, thresholds.cpuThreshold - rate);
       thresholds.memoryThreshold = Math.max(
@@ -674,7 +677,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   private calculateCapacityTrend(
     profile: AgentCapacityProfile
-  ): 'increasing' | 'decreasing' | 'stable' {
+  ):'increasing | decreasing' | 'stable' {
     const history = profile.utilizationHistory;
     if (history.length < 10) return 'stable';
 

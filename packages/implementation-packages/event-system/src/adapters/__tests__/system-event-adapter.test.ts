@@ -115,7 +115,7 @@ describe('SystemEventAdapter', () => {
       const event: SystemLifecycleEvent = {
         id: 'test-event-1',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'test-component',
         type: 'system:startup',
         operation: 'start',
@@ -135,7 +135,7 @@ describe('SystemEventAdapter', () => {
       const event: SystemLifecycleEvent = {
         id: 'test-event-2',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'test-component',
         type: 'system:health',
         operation: 'status',
@@ -162,7 +162,7 @@ describe('SystemEventAdapter', () => {
       const slowEvent: SystemLifecycleEvent = {
         id: 'slow-event',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'test-component',
         type: 'system:startup',
         operation: 'start',
@@ -283,7 +283,8 @@ describe('SystemEventAdapter', () => {
 
     it('should add and remove event transforms', () => {
       const transform = {
-        mapper: (event: SystemEvent) => ({ ...event, transformed: true } as SystemEvent),
+        mapper: (event: SystemEvent) =>
+          ({ ...event, transformed: true }) as SystemEvent,
       };
 
       const transformId = adapter.addTransform(transform);
@@ -306,7 +307,7 @@ describe('SystemEventAdapter', () => {
       const allowedEvent: SystemLifecycleEvent = {
         id: 'allowed-event',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'allowed-component',
         type: 'system:startup',
         operation: 'start',
@@ -318,7 +319,7 @@ describe('SystemEventAdapter', () => {
       const blockedEvent: SystemLifecycleEvent = {
         id: 'blocked-event',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'blocked-component',
         type: 'system:startup',
         operation: 'start',
@@ -336,7 +337,8 @@ describe('SystemEventAdapter', () => {
     it('should apply transforms during subscription', async () => {
       const mockListener = vi.fn();
       const transform = {
-        mapper: (event: SystemEvent) => ({ ...event, transformed: true } as SystemEvent),
+        mapper: (event: SystemEvent) =>
+          ({ ...event, transformed: true }) as SystemEvent,
       };
 
       adapter.subscribe(['system:startup'], mockListener, { transform });
@@ -344,7 +346,7 @@ describe('SystemEventAdapter', () => {
       const originalEvent: SystemLifecycleEvent = {
         id: 'transform-event',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'test-component',
         type: 'system:startup',
         operation: 'start',
@@ -453,7 +455,7 @@ describe('SystemEventAdapter', () => {
       const startupEvent: SystemLifecycleEvent = {
         id: 'startup-event',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'test-component',
         type: 'system:startup',
         operation: 'start',
@@ -477,7 +479,7 @@ describe('SystemEventAdapter', () => {
       const startupEvent: SystemLifecycleEvent = {
         id: 'startup-event',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'test-component',
         type: 'system:startup',
         operation: 'start',
@@ -489,7 +491,7 @@ describe('SystemEventAdapter', () => {
       const healthEvent: SystemLifecycleEvent = {
         id: 'health-event',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'test-component',
         type: 'system:health',
         operation: 'status',
@@ -513,7 +515,7 @@ describe('SystemEventAdapter', () => {
       const startupEvent: SystemLifecycleEvent = {
         id: 'startup-1',
         timestamp: new Date(),
-      payload: {},
+        payload: {},
         source: 'component-a',
         type: 'system:startup',
         operation: 'start',
@@ -567,7 +569,7 @@ describe('SystemEventAdapter', () => {
         const event: SystemLifecycleEvent = {
           id: `success-event-${i}`,
           timestamp: new Date(),
-      payload: {},
+          payload: {},
           source: 'test-component',
           type: 'system:health',
           operation: 'status',
@@ -599,7 +601,7 @@ describe('SystemEventAdapter', () => {
         const event: SystemLifecycleEvent = {
           id: `success-event-${i}`,
           timestamp: new Date(),
-      payload: {},
+          payload: {},
           source: 'test-component',
           type: 'system:health',
           operation: 'status',
@@ -660,7 +662,7 @@ describe('SystemEventAdapter', () => {
         const event: SystemLifecycleEvent = {
           id: `perf-event-${eventConfig?.delay}`,
           timestamp: new Date(),
-      payload: {},
+          payload: {},
           source: 'test-component',
           type: 'system:health',
           operation: 'status',
@@ -691,7 +693,7 @@ describe('SystemEventAdapter', () => {
         const event: SystemLifecycleEvent = {
           id: `throughput-event-${i}`,
           timestamp: new Date(),
-      payload: {},
+          payload: {},
           source: 'test-component',
           type: 'system:health',
           operation: 'status',
@@ -720,7 +722,7 @@ describe('SystemEventAdapter', () => {
         const event: SystemLifecycleEvent = {
           id: `memory-event-${i}`,
           timestamp: new Date(),
-      payload: {},
+          payload: {},
           source: 'test-component',
           type: 'system:health',
           operation: 'status',

@@ -1,9 +1,9 @@
 /**
  * @fileoverview DSPy Module - Production Grade
- * 
+ *
  * Core DSPy module abstraction for all DSPy programs and teleprompters.
  * 100% compatible with Stanford DSPy's Module interface.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  */
@@ -31,14 +31,14 @@ export abstract class DSPyModule {
    */
   predictors(): any[] {
     const predictors: any[] = [];
-    
+
     // Iterate through all properties to find predictors
     for (const [_key, value] of Object.entries(this)) {
       if (value && typeof value === 'object' && 'signature' in value) {
         predictors.push(value);
       }
     }
-    
+
     return predictors;
   }
 
@@ -47,14 +47,14 @@ export abstract class DSPyModule {
    */
   namedPredictors(): [string, any][] {
     const namedPredictors: [string, any][] = [];
-    
+
     // Iterate through all properties to find predictors
     for (const [key, value] of Object.entries(this)) {
       if (value && typeof value === 'object' && 'signature' in value) {
         namedPredictors.push([key, value]);
       }
     }
-    
+
     return namedPredictors;
   }
 
@@ -71,7 +71,7 @@ export abstract class DSPyModule {
   deepcopy(): DSPyModule {
     // Create a new instance of the same class
     const copy = Object.create(Object.getPrototypeOf(this));
-    
+
     // Copy all properties
     for (const [key, value] of Object.entries(this)) {
       if (value && typeof value === 'object' && 'deepcopy' in value) {
@@ -84,7 +84,7 @@ export abstract class DSPyModule {
         (copy as any)[key] = value;
       }
     }
-    
+
     return copy;
   }
 
@@ -130,17 +130,17 @@ export abstract class DSPyModule {
    */
   getParameters(): Record<string, any> {
     const params: Record<string, any> = {};
-    
+
     for (const [name, predictor] of this.namedPredictors()) {
       if (predictor.signature) {
         params[name] = {
           signature: predictor.signature,
           demos: predictor.demos || [],
-          lm: predictor.lm?.model || null
+          lm: predictor.lm?.model || null,
         };
       }
     }
-    
+
     return params;
   }
 
@@ -151,11 +151,11 @@ export abstract class DSPyModule {
     return {
       type: this.constructor.name,
       parameters: this.getParameters(),
-      predictors: this.predictors().map(p => ({
+      predictors: this.predictors().map((p) => ({
         signature: p.signature,
         demos: p.demos || [],
-        lm: p.lm?.model || null
-      }))
+        lm: p.lm?.model || null,
+      })),
     };
   }
 

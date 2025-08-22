@@ -1,6 +1,6 @@
 /**
  * @fileoverview Swarm Commander
- * 
+ *
  * Tactical coordination agent for individual swarms.
  */
 
@@ -47,7 +47,7 @@ export class SwarmCommander implements CoordinationAgent {
   async spawnMatron(domain: string, specialization: string): Promise<string> {
     const matronId = `matron-${domain}-${specialization}-${Date.now()}`;
     this.matrons.add(matronId);
-    
+
     logger.info(`Commander ${this.id} spawned matron ${matronId}`);
     return matronId;
   }
@@ -68,12 +68,12 @@ export class SwarmCommander implements CoordinationAgent {
       action: 'coordinate-operation',
       parameters: operation,
       confidence: 0.85,
-      reasoning: `Tactical coordination for ${operation.type}`
+      reasoning: `Tactical coordination for ${operation.type}`,
     };
 
     this.decisions.push(decision);
     const operationId = `op-${Date.now()}`;
-    
+
     logger.info(`Commander ${this.id} coordinating operation: ${operationId}`);
     return { success: true, operationId };
   }
@@ -85,7 +85,7 @@ export class SwarmCommander implements CoordinationAgent {
     return {
       decisionsMade: this.decisions.length,
       matronsManaged: this.matrons.size,
-      averageResponseTime: 15 // ms
+      averageResponseTime: 15, // ms
     };
   }
 

@@ -18,13 +18,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { 
-  getLogger, 
-  Result, 
-  ok, 
-  err, 
-  safeAsync, 
-  withRetry, 
+import {
+  getLogger,
+  Result,
+  ok,
+  err,
+  safeAsync,
+  withRetry,
   withTimeout,
   withContext,
   PerformanceTracker,
@@ -48,7 +48,7 @@ import {
   validateObject,
   createContextError,
   ContextError,
-  Logger
+  Logger,
 } from '@claude-zen/foundation';
 import {
   AIDeceptionDetector,
@@ -58,7 +58,11 @@ import {
 
 // Enhanced error classes with foundation ContextError
 export class SafetyError extends ContextError {
-  constructor(message: string, context?: Record<string, unknown>, cause?: Error) {
+  constructor(
+    message: string,
+    context?: Record<string, unknown>,
+    cause?: Error
+  ) {
     super(message, { ...context, domain: 'ai-safety' }, cause);
     this.name = 'SafetyError';
   }
@@ -115,7 +119,7 @@ export interface HumanEscalationResult {
   sessionPaused: boolean;
   timeMs: number;
   timestamp: Timestamp;
-  escalationLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  escalationLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
 }
 
 /**
@@ -164,12 +168,12 @@ export class AISafetyOrchestrator extends TypedEventBase {
   private _config: unknown;
   private interventionHistory: Map<string, DeceptionAlert[]>;
   private detectionCircuitBreaker: any;
-  
+
   // Comprehensive foundation integration
-  private storage: KeyValueStore | null = null;
+  private storage: KeyValueStore'' | ''null = null;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;
-  private telemetryManager: BasicTelemetryManager | null = null;
+  private telemetryManager: BasicTelemetryManager'' | ''null = null;
   private errorAggregator = createErrorAggregator();
   private sessionCircuitBreaker: any;
   private initialized = false;
@@ -183,7 +187,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
     this.isMonitoring = false;
     this.metrics = this.initializeMetrics();
     this.interventionHistory = new Map();
-    
+
     this.setupConfiguration();
     this.setupEventHandlers();
     this.setupCircuitBreakers();
@@ -199,19 +203,21 @@ export class AISafetyOrchestrator extends TypedEventBase {
   async initialize(): Promise<Result<void, SafetyError>> {
     if (this.initialized) return ok(undefined);
 
-    const timer = this.performanceTracker.startTimer('safety_orchestrator_initialize');
-    
+    const timer = this.performanceTracker.startTimer(
+      'safety_orchestrator_initialize'
+    );
+
     try {
       // Initialize telemetry
       await this.initializeTelemetry();
-      
+
       // Initialize storage using foundation storage
       const storageResult = await safeAsync(async () => {
         const storage = new Storage();
         await storage.initialize();
         return storage.createKeyValueStore('safety-metrics');
       })();
-      
+
       if (!storageResult.success) {
         const error = new SafetyError(
           'Failed to initialize safety storage',
@@ -222,26 +228,28 @@ export class AISafetyOrchestrator extends TypedEventBase {
         recordMetric('safety_orchestrator_initialization_failure', 1);
         return err(error);
       }
-      
+
       this.storage = storageResult.data;
-      
+
       // Load existing metrics from storage
       const loadResult = await this.loadMetricsFromStorage();
       if (!loadResult.success) {
-        this.logger.warn('Failed to load existing safety metrics:', loadResult.error);
+        this.logger.warn(
+          'Failed to load existing safety metrics:',
+          loadResult.error
+        );
       }
-      
+
       this.initialized = true;
       this.performanceTracker.endTimer('safety_orchestrator_initialize');
       recordMetric('safety_orchestrator_initialized', 1);
-      
+
       this.logger.info('Safety orchestrator initialized successfully', {
         storageConnected: !!this.storage,
-        metricsLoaded: !!loadResult.success
+        metricsLoaded: !!loadResult.success,
       });
-      
+
       return ok(undefined);
-      
     } catch (error) {
       const safetyError = new SafetyError(
         'Safety orchestrator initialization failed',
@@ -267,7 +275,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
       {
         timeout: 5000,
         errorThresholdPercentage: 20,
-        resetTimeout: 30000
+        resetTimeout: 30000,
       },
       'safety-deception-detection'
     );
@@ -278,12 +286,14 @@ export class AISafetyOrchestrator extends TypedEventBase {
       {
         timeout: 3000,
         errorThresholdPercentage: 30,
-        resetTimeout: 20000
+        resetTimeout: 20000,
       },
       'safety-session-management'
     );
 
-    this.logger.info('🔌 Circuit breakers configured for comprehensive safety operations');
+    this.logger.info(
+      '🔌 Circuit breakers configured for comprehensive safety operations'
+    );
   }
 
   /**
@@ -311,27 +321,32 @@ export class AISafetyOrchestrator extends TypedEventBase {
    */
   async stopSafetyMonitoring(): Promise<Result<void, SafetyError>> {
     return withTrace('safety_monitoring_stop', async () => {
-      const timer = this.performanceTracker.startTimer('safety_monitoring_stop');
-      
+      const timer = this.performanceTracker.startTimer(
+        'safety_monitoring_stop'
+      );
+
       try {
         this.isMonitoring = false;
-        
+
         // Persist monitoring state
         if (this.storage) {
           await withRetry(
-            () => this.storage!.set('monitoring-state', JSON.stringify({ active: false, stoppedAt: Date.now() })),
+            () =>
+              this.storage!.set(
+                'monitoring-state',
+                JSON.stringify({ active: false, stoppedAt: Date.now() })
+              ),
             { maxAttempts: 3, baseDelay: 100 }
           );
         }
-        
+
         this.performanceTracker.endTimer('safety_monitoring_stop');
         recordMetric('safety_monitoring_stopped', 1);
-        
+
         this.logger.info('🛑 Enterprise AI Safety monitoring STOPPED');
         this.emit('safety:monitoring-stopped', {});
-        
+
         return ok(undefined);
-        
       } catch (error) {
         const safetyError = new SafetyError(
           'Failed to stop safety monitoring',
@@ -365,8 +380,8 @@ export class AISafetyOrchestrator extends TypedEventBase {
     totalInterventions += phase2.guidedInterventions;
 
     // Phase 3: Human Escalation if needed (like phase3_integration)
-    let phase3: HumanEscalationResult | undefined;
-    if (phase1.alertsGenerated >= 3 || phase2.behavioralDeviations >= 2) {
+    let phase3: HumanEscalationResult'' | ''undefined;
+    if (phase1.alertsGenerated >= 3'' | '''' | ''phase2.behavioralDeviations >= 2) {
       phase3 = await this.triggerHumanEscalation(phase1, phase2);
     }
 
@@ -529,7 +544,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
       span?.setAttributes({
         'agent.id': interactionData.agentId,
         'interaction.toolCalls': interactionData.toolCalls.length,
-        'interaction.responseLength': interactionData.response.length
+        'interaction.responseLength': interactionData.response.length,
       });
 
       this.metrics.totalInteractions++;
@@ -540,13 +555,13 @@ export class AISafetyOrchestrator extends TypedEventBase {
       });
 
       if (result.isErr()) {
-        logger.error('Deception detection failed', { 
+        logger.error('Deception detection failed', {
           error: result.error.message,
-          agentId: interactionData.agentId 
+          agentId: interactionData.agentId,
         });
         recordMetric('ai_safety_detection_errors', 1, {
           agentId: interactionData.agentId,
-          error: result.error.message
+          error: result.error.message,
         });
         return [];
       }
@@ -558,7 +573,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
         // Store in intervention history
         const existing =
-          this.interventionHistory.get(interactionData.agentId) || [];
+          this.interventionHistory.get(interactionData.agentId)'' | '''' | ''[];
         this.interventionHistory.set(interactionData.agentId, [
           ...existing,
           ...alerts,
@@ -566,21 +581,21 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
         // Record metrics
         recordMetric('ai_safety_alerts_generated', alerts.length, {
-          agentId: interactionData.agentId
+          agentId: interactionData.agentId,
         });
 
         // Trigger immediate orchestration if critical
         const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL');
         if (criticalAlerts.length > 0) {
           recordMetric('ai_safety_critical_alerts', criticalAlerts.length, {
-            agentId: interactionData.agentId
+            agentId: interactionData.agentId,
           });
           await this.orchestrateSafetyMonitoring();
         }
 
         span?.setAttributes({
           'alerts.total': alerts.length,
-          'alerts.critical': criticalAlerts.length
+          'alerts.critical': criticalAlerts.length,
         });
       }
 
@@ -674,9 +689,9 @@ export class AISafetyOrchestrator extends TypedEventBase {
     this.deceptionDetector.on('deception:escalation', (data: unknown) => {
       // Type-safe escalation data with defaults
       const escalationData = {
-        agentId: (data as any)?.agentId || 'unknown',
-        totalInterventions: (data as any)?.totalInterventions || 0,
-        recentAlerts: (data as any)?.recentAlerts || []
+        agentId: (data as any)?.agentId'' | '''' | '''unknown',
+        totalInterventions: (data as any)?.totalInterventions'' | '''' | ''0,
+        recentAlerts: (data as any)?.recentAlerts'' | '''' | ''[],
       };
       this.handleEscalation(escalationData);
     });
@@ -720,7 +735,11 @@ export class AISafetyOrchestrator extends TypedEventBase {
    *
    * @param data
    */
-  private async handleEscalation(data: { agentId: string; totalInterventions: number; recentAlerts: any[] }): Promise<void> {
+  private async handleEscalation(data: {
+    agentId: string;
+    totalInterventions: number;
+    recentAlerts: any[];
+  }): Promise<void> {
     logger.error(`🚨 ESCALATION for agent ${data.agentId}:`, {
       totalInterventions: data.totalInterventions,
       recentAlerts: data.recentAlerts.length,
@@ -762,7 +781,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
   private initializeMetrics(): SafetyMetrics {
     const metricsId = generateUUID();
     const timestamp = createTimestamp();
-    
+
     return {
       id: metricsId,
       totalInteractions: 0,
@@ -775,7 +794,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
       version: 1,
       isActive: true,
       performanceScore: 0.0,
-      reliabilityScore: 0.0
+      reliabilityScore: 0.0,
     };
   }
 
@@ -800,7 +819,7 @@ export class AISafetyOrchestrator extends TypedEventBase {
 
   /**
    * Validate safety of a command or action (replaces hook system).
-   * 
+   *
    * @param context - Context containing command, agent info, and environment
    * @returns Safety validation result with recommendations
    */
@@ -811,38 +830,40 @@ export class AISafetyOrchestrator extends TypedEventBase {
     environment?: string;
   }): Promise<{
     safe: boolean;
-    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    riskLevel: 'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL';
     warnings: string[];
     recommendations: string[];
     blocked?: boolean;
   }> {
     return withTrace('safety-validation', async (span) => {
       span?.setAttributes({
-        'command': context.command || 'unknown',
-        'agentId': context.agentId || 'unknown',
-        'toolCallsCount': context.toolCalls?.length || 0
+        command: context.command'' | '''' | '''unknown',
+        agentId: context.agentId'' | '''' | '''unknown',
+        toolCallsCount: context.toolCalls?.length'' | '''' | ''0,
       });
 
       // Basic safety checks
       const warnings: string[] = [];
       const recommendations: string[] = [];
-      let riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' = 'LOW';
+      let riskLevel:'LOW | MEDIUM' | 'HIGH''' | '''CRITICAL' = 'LOW';
       let blocked = false;
 
       // Check for dangerous commands
       if (context.command) {
         const dangerousPatterns = [
-          /rm\s+-rf\s+\/(?!tmp|var\/tmp)/i,  // Dangerous rm commands
-          /sudo\s+(?!which|type)/i,           // Sudo commands (except safe ones)
-          /curl.*\|\s*(?:sh|bash)/i,          // Piping curl to shell
-          /wget.*\|\s*(?:sh|bash)/i,          // Piping wget to shell
-          /eval\s*\(/i,                       // Eval statements
+          /rm\s+-rf\s+\/(?!tmp'' | ''var\/tmp)/i, // Dangerous rm commands
+          /sudo\s+(?!which'' | ''type)/i, // Sudo commands (except safe ones)
+          /curl.*\'' | ''\s*(?:sh'' | ''bash)/i, // Piping curl to shell
+          /wget.*\'' | ''\s*(?:sh'' | ''bash)/i, // Piping wget to shell
+          /eval\s*\(/i, // Eval statements
         ];
 
         for (const pattern of dangerousPatterns) {
           if (pattern.test(context.command)) {
-            warnings.push(`Potentially dangerous command detected: ${context.command}`);
-            riskLevel = 'HIGH';
+            warnings.push(
+              `Potentially dangerous command detected: ${context.command}`
+            );
+            riskLevel ='HIGH';
             recommendations.push('Review command before execution');
             blocked = true;
             break;
@@ -853,19 +874,21 @@ export class AISafetyOrchestrator extends TypedEventBase {
       // Check tool call safety
       if (context.toolCalls) {
         for (const toolCall of context.toolCalls) {
-          if (toolCall.tool === 'Bash' && typeof toolCall.parameters === 'object') {
+          if (
+            toolCall.tool === 'Bash' &&
+            typeof toolCall.parameters === 'object') {
             const params = toolCall.parameters as any;
             if (params?.command) {
               const subValidation = await this.validateSafety({
                 command: params.command,
-                agentId: context.agentId
+                agentId: context.agentId,
               });
-              
+
               if (!subValidation.safe) {
                 warnings.push(...subValidation.warnings);
                 recommendations.push(...subValidation.recommendations);
                 riskLevel = subValidation.riskLevel;
-                blocked = blocked || subValidation.blocked || false;
+                blocked = blocked'' | '''' | ''subValidation.blocked'' | '''' | ''false;
               }
             }
           }
@@ -873,36 +896,36 @@ export class AISafetyOrchestrator extends TypedEventBase {
       }
 
       const result = {
-        safe: !blocked && riskLevel !== 'CRITICAL',
+        safe: !blocked && riskLevel !=='CRITICAL',
         riskLevel,
         warnings,
         recommendations,
-        blocked
+        blocked,
       };
 
       // Record metrics
       recordMetric('safety_validations_total', 1, {
-        agentId: context.agentId || 'unknown',
+        agentId: context.agentId'' | '''' | '''unknown',
         riskLevel,
-        blocked: blocked ? 'true' : 'false'
+        blocked: blocked ? 'true' : 'false',
       });
 
       if (blocked) {
         recordMetric('safety_validations_blocked', 1, {
-          agentId: context.agentId || 'unknown',
-          reason: warnings[0] || 'unknown'
+          agentId: context.agentId'' | '''' | '''unknown',
+          reason: warnings[0]'' | '''' | '''unknown',
         });
         logger.warn('🛡️ Safety validation BLOCKED command', {
           command: context.command,
           agentId: context.agentId,
           riskLevel,
-          warnings: warnings.length
+          warnings: warnings.length,
         });
       } else {
         logger.debug('✅ Safety validation PASSED', {
           agentId: context.agentId,
           riskLevel,
-          warnings: warnings.length
+          warnings: warnings.length,
         });
       }
 
@@ -919,19 +942,19 @@ export class AISafetyOrchestrator extends TypedEventBase {
    */
   private async initializeTelemetry(): Promise<void> {
     if (this.telemetryInitialized) return;
-    
+
     try {
       const config: TelemetryConfig = {
         serviceName: 'ai-safety-orchestrator',
         enableTracing: true,
         enableMetrics: true,
-        enableLogging: true
+        enableLogging: true,
       };
-      
+
       this.telemetryManager = new BasicTelemetryManager(config);
       await this.telemetryManager.initialize();
       this.telemetryInitialized = true;
-      
+
       this.logger.debug('Telemetry initialized successfully');
     } catch (error) {
       this.logger.warn('Failed to initialize telemetry:', error);
@@ -941,7 +964,10 @@ export class AISafetyOrchestrator extends TypedEventBase {
   /**
    * Perform session operation via circuit breaker
    */
-  private async performSessionOperation(operation: string, ...args: any[]): Promise<any> {
+  private async performSessionOperation(
+    operation: string,
+    ...args: any[]
+  ): Promise<any> {
     switch (operation) {
       case 'pause':
         return this.pauseAllAgentSessions();
@@ -959,37 +985,39 @@ export class AISafetyOrchestrator extends TypedEventBase {
    */
   private async loadMetricsFromStorage(): Promise<Result<void, SafetyError>> {
     if (!this.storage) return ok(undefined);
-    
+
     try {
       const metricsData = await this.storage.get('safety-metrics');
       if (metricsData && typeof metricsData === 'string') {
         const storedMetrics = JSON.parse(metricsData) as SafetyMetrics;
-        
+
         // Validate stored metrics
         const validation = validateObject(storedMetrics, {
           id: { type: 'string', required: true },
           totalInteractions: { type: 'number', required: true, min: 0 },
-          timestamp: { type: 'number', required: true }
+          timestamp: { type: 'number', required: true },
         });
-        
+
         if (validation.success) {
           this.metrics = storedMetrics;
           this.logger.debug('Loaded safety metrics from storage', {
             metricsId: storedMetrics.id,
-            totalInteractions: storedMetrics.totalInteractions
+            totalInteractions: storedMetrics.totalInteractions,
           });
         } else {
           this.logger.warn('Invalid stored metrics format, using defaults');
         }
       }
-      
+
       return ok(undefined);
     } catch (error) {
-      return err(new SafetyError(
-        'Failed to load metrics from storage',
-        { operation: 'loadMetricsFromStorage' },
-        ensureError(error)
-      ));
+      return err(
+        new SafetyError(
+          'Failed to load metrics from storage',
+          { operation: 'loadMetricsFromStorage' },
+          ensureError(error)
+        )
+      );
     }
   }
 
@@ -998,20 +1026,22 @@ export class AISafetyOrchestrator extends TypedEventBase {
    */
   private async persistMetricsToStorage(): Promise<Result<void, SafetyError>> {
     if (!this.storage) return ok(undefined);
-    
+
     try {
       await withRetry(
         () => this.storage!.set('safety-metrics', JSON.stringify(this.metrics)),
         { maxAttempts: 3, baseDelay: 100 }
       );
-      
+
       return ok(undefined);
     } catch (error) {
-      return err(new SafetyError(
-        'Failed to persist metrics to storage',
-        { operation: 'persistMetricsToStorage', metricsId: this.metrics.id },
-        ensureError(error)
-      ));
+      return err(
+        new SafetyError(
+          'Failed to persist metrics to storage',
+          { operation: 'persistMetricsToStorage', metricsId: this.metrics.id },
+          ensureError(error)
+        )
+      );
     }
   }
 
@@ -1025,39 +1055,46 @@ export class AISafetyOrchestrator extends TypedEventBase {
         if (this.isMonitoring) {
           const stopResult = await this.stopSafetyMonitoring();
           if (!stopResult.success) {
-            this.logger.warn('Failed to stop monitoring during shutdown:', stopResult.error);
+            this.logger.warn(
+              'Failed to stop monitoring during shutdown:',
+              stopResult.error
+            );
           }
         }
-        
+
         // Persist final metrics
         const persistResult = await this.persistMetricsToStorage();
         if (!persistResult.success) {
-          this.logger.warn('Failed to persist metrics during shutdown:', persistResult.error);
+          this.logger.warn(
+            'Failed to persist metrics during shutdown:',
+            persistResult.error
+          );
         }
-        
+
         // Cleanup storage
         if (this.storage) {
           await this.storage.close?.();
           this.storage = null;
         }
-        
+
         // Cleanup telemetry
         if (this.telemetryManager) {
           await this.telemetryManager.shutdown();
           this.telemetryManager = null;
         }
-        
+
         // Clear state
         this.interventionHistory.clear();
         this.removeAllListeners();
         this.initialized = false;
         this.telemetryInitialized = false;
-        
+
         recordMetric('safety_orchestrator_shutdown', 1);
-        this.logger.info('🚨 Enterprise AI Safety Orchestrator shut down successfully');
-        
+        this.logger.info(
+          '🚨 Enterprise AI Safety Orchestrator shut down successfully'
+        );
+
         return ok(undefined);
-        
       } catch (error) {
         const safetyError = new SafetyError(
           'Safety orchestrator shutdown failed',
@@ -1081,21 +1118,25 @@ export function createAISafetyOrchestrator(): AISafetyOrchestrator {
 /**
  * Factory function to create initialized AI safety orchestrator.
  */
-export async function createInitializedAISafetyOrchestrator(): Promise<Result<AISafetyOrchestrator, SafetyError>> {
+export async function createInitializedAISafetyOrchestrator(): Promise<
+  Result<AISafetyOrchestrator, SafetyError>
+> {
   try {
     const orchestrator = new AISafetyOrchestrator();
     const initResult = await orchestrator.initialize();
-    
+
     if (!initResult.success) {
       return err(initResult.error);
     }
-    
+
     return ok(orchestrator);
   } catch (error) {
-    return err(new SafetyError(
-      'Failed to create initialized safety orchestrator',
-      { operation: 'createInitializedAISafetyOrchestrator' },
-      ensureError(error)
-    ));
+    return err(
+      new SafetyError(
+        'Failed to create initialized safety orchestrator',
+        { operation: 'createInitializedAISafetyOrchestrator' },
+        ensureError(error)
+      )
+    );
   }
 }

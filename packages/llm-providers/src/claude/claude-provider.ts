@@ -5,10 +5,9 @@
  * Integrates directly with Claude Code SDK for swarm agent capabilities.
  */
 
-import { executeClaudeTask, type ClaudeSDKOptions } from './claude-sdk';
+import { Result, ok, err } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
 
-const logger = getLogger('claude-provider');
 import type {
   CLIProvider,
   CLIRequest,
@@ -19,49 +18,89 @@ import type {
   CLIProviderCapabilities,
 } from '../types/cli-providers';
 import { CLI_ERROR_CODES } from '../types/cli-providers';
-import { Result, ok, err } from '@claude-zen/foundation';
+
+import { executeClaudeTask, type ClaudeSDKOptions } from './claude-sdk';
+
+const logger = getLogger('claude-provider');
 
 export const CLAUDE_SWARM_AGENT_ROLES: Record<string, SwarmAgentRole> = {
   assistant: {
     role: 'assistant',
-    systemPrompt: 'You are a helpful AI assistant that provides accurate, concise responses and follows instructions carefully.',
+    systemPrompt:
+      'You are a helpful AI assistant that provides accurate, concise responses and follows instructions carefully.',
     capabilities: ['general-assistance', 'question-answering', 'task-guidance'],
   },
 
   coder: {
     role: 'coder',
-    systemPrompt: 'You are an expert software engineer. Write clean, efficient, well-documented code. Follow best practices and coding standards. Request explicit permission for file operations and system commands.',
-    capabilities: ['code-generation', 'debugging', 'refactoring', 'code-review'],
+    systemPrompt:
+      'You are an expert software engineer. Write clean, efficient, well-documented code. Follow best practices and coding standards. Request explicit permission for file operations and system commands.',
+    capabilities: [
+      'code-generation',
+      'debugging',
+      'refactoring',
+      'code-review',
+    ],
   },
 
   analyst: {
     role: 'analyst',
-    systemPrompt: 'You are a data analyst and system architect. Analyze requirements, identify patterns, and provide strategic insights.',
-    capabilities: ['data-analysis', 'pattern-recognition', 'requirements-analysis', 'system-design'],
+    systemPrompt:
+      'You are a data analyst and system architect. Analyze requirements, identify patterns, and provide strategic insights.',
+    capabilities: [
+      'data-analysis',
+      'pattern-recognition',
+      'requirements-analysis',
+      'system-design',
+    ],
   },
 
   researcher: {
     role: 'researcher',
-    systemPrompt: 'You are a research specialist. Gather information, analyze sources, and provide comprehensive research summaries.',
-    capabilities: ['information-gathering', 'source-analysis', 'research-synthesis', 'fact-checking'],
+    systemPrompt:
+      'You are a research specialist. Gather information, analyze sources, and provide comprehensive research summaries.',
+    capabilities: [
+      'information-gathering',
+      'source-analysis',
+      'research-synthesis',
+      'fact-checking',
+    ],
   },
 
   coordinator: {
     role: 'coordinator',
-    systemPrompt: 'You are a project coordinator. Manage tasks, coordinate between team members, and ensure project goals are met.',
-    capabilities: ['task-management', 'team-coordination', 'project-planning', 'resource-allocation'],
+    systemPrompt:
+      'You are a project coordinator. Manage tasks, coordinate between team members, and ensure project goals are met.',
+    capabilities: [
+      'task-management',
+      'team-coordination',
+      'project-planning',
+      'resource-allocation',
+    ],
   },
 
   tester: {
     role: 'tester',
-    systemPrompt: 'You are a QA engineer. Design tests, identify edge cases, validate functionality, and ensure quality standards.',
-    capabilities: ['test-design', 'quality-assurance', 'edge-case-identification', 'validation'],
+    systemPrompt:
+      'You are a QA engineer. Design tests, identify edge cases, validate functionality, and ensure quality standards.',
+    capabilities: [
+      'test-design',
+      'quality-assurance',
+      'edge-case-identification',
+      'validation',
+    ],
   },
 
   architect: {
     role: 'architect',
-    systemPrompt: 'You are a system architect. Design scalable systems, make architectural decisions, and ensure technical excellence.',
-    capabilities: ['system-architecture', 'technical-design', 'scalability-planning', 'technology-selection'],
+    systemPrompt:
+      'You are a system architect. Design scalable systems, make architectural decisions, and ensure technical excellence.',
+    capabilities: [
+      'system-architecture',
+      'technical-design',
+      'scalability-planning',
+      'technology-selection',
+    ],
   },
 };
 
@@ -71,7 +110,7 @@ export class ClaudeProvider implements CLIProvider {
 
   private requestCount = 0;
   private lastRequestTime = 0;
-  private currentRole: SwarmAgentRole | undefined;
+  private currentRole: SwarmAgentRole'' | ''undefined;
 
   constructor() {
     // Set assistant as default role with safe permissions
@@ -97,40 +136,41 @@ export class ClaudeProvider implements CLIProvider {
         planning: true, // Strategic planning
       },
       pricing: {
-        inputTokens: 3.00, // per million tokens
-        outputTokens: 15.00, // per million tokens
+        inputTokens: 3.0, // per million tokens
+        outputTokens: 15.0, // per million tokens
         currency: 'USD',
       },
     };
   }
 
   // Set the agent role for specialized behavior with Result pattern
-  setRole(roleName: keyof typeof CLAUDE_SWARM_AGENT_ROLES): Result<void, CLIError> {
+  setRole(
+    roleName: keyof typeof CLAUDE_SWARM_AGENT_ROLES
+  ): Result<void, CLIError> {
     if (!(roleName in CLAUDE_SWARM_AGENT_ROLES)) {
       return err({
         code: CLI_ERROR_CODES.ROLE_ERROR,
         message: `Invalid role: ${roleName}`,
         details: {
           providerId: this.id,
-          availableRoles: Object.keys(CLAUDE_SWARM_AGENT_ROLES)
-        }
+          availableRoles: Object.keys(CLAUDE_SWARM_AGENT_ROLES),
+        },
       });
     }
 
     this.currentRole = CLAUDE_SWARM_AGENT_ROLES[roleName];
-    logger.debug('Role set successfully', { 
-      providerId: this.id, 
-      role: roleName 
+    logger.debug('Role set successfully', {
+      providerId: this.id,
+      role: roleName,
     });
-    
-    return ok(undefined);
+
+    return ok();
   }
 
   // Get current role
-  getRole(): SwarmAgentRole | undefined {
+  getRole(): SwarmAgentRole'' | ''undefined {
     return this.currentRole;
   }
-
 
   async execute(request: CLIRequest): Promise<CLIResult> {
     this.requestCount++;
@@ -138,7 +178,7 @@ export class ClaudeProvider implements CLIProvider {
 
     // Add role system prompt if set
     const messages = [...request.messages];
-    if (this.currentRole && messages[0]?.role !== 'system') {
+    if (this.currentRole && messages[0]?.role !=='system') {
       messages.unshift({
         role: 'system',
         content: this.currentRole.systemPrompt,
@@ -155,9 +195,9 @@ export class ClaudeProvider implements CLIProvider {
         details: {
           providerId: this.id,
           requestCount: this.requestCount,
-          currentRole: this.currentRole?.role
+          currentRole: this.currentRole?.role,
         },
-        cause: error instanceof Error ? error : undefined
+        cause: error instanceof Error ? error : undefined,
       };
 
       // Determine specific error type
@@ -165,9 +205,13 @@ export class ClaudeProvider implements CLIProvider {
         const message = error.message.toLowerCase();
         if (message.includes('timeout')) {
           cliError.code = CLI_ERROR_CODES.TIMEOUT_ERROR;
-        } else if (message.includes('network') || message.includes('connection')) {
+        } else if (
+          message.includes('network')'' | '''' | ''message.includes('connection')
+        ) {
           cliError.code = CLI_ERROR_CODES.NETWORK_ERROR;
-        } else if (message.includes('auth') || message.includes('unauthorized')) {
+        } else if (
+          message.includes('auth')'' | '''' | ''message.includes('unauthorized')
+        ) {
           cliError.code = CLI_ERROR_CODES.AUTH_ERROR;
         } else if (message.includes('rate limit')) {
           cliError.code = CLI_ERROR_CODES.RATE_LIMIT_ERROR;
@@ -182,7 +226,10 @@ export class ClaudeProvider implements CLIProvider {
   }
 
   // Role-specific helper methods with Result pattern
-  async executeAsAssistant(prompt: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async executeAsAssistant(
+    prompt: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('assistant');
     if (roleResult.isErr()) {
       return err(roleResult.error);
@@ -190,70 +237,94 @@ export class ClaudeProvider implements CLIProvider {
     return this.complete(prompt, options);
   }
 
-  async executeAsCoder(task: string, context?: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async executeAsCoder(
+    task: string,
+    context?: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('coder');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
-    
+
     const prompt = context
       ? `Coding task: ${task}\n\nContext:\n${context}\n\nPlease provide the code solution:`
       : `Coding task: ${task}`;
     return this.complete(prompt, options);
   }
 
-  async executeAsAnalyst(data: string, analysis_type: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async executeAsAnalyst(
+    data: string,
+    analysis_type: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('analyst');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
-    
+
     const prompt = `Analysis type: ${analysis_type}\n\nData to analyze:\n${data}\n\nPlease provide your analysis:`;
     return this.complete(prompt, options);
   }
 
-  async executeAsResearcher(topic: string, scope?: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async executeAsResearcher(
+    topic: string,
+    scope?: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('researcher');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
-    
+
     const prompt = scope
       ? `Research topic: ${topic}\nScope: ${scope}\n\nPlease provide comprehensive research:`
       : `Research topic: ${topic}\n\nPlease provide comprehensive research:`;
     return this.complete(prompt, options);
   }
 
-  async executeAsCoordinator(task: string, team_context?: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async executeAsCoordinator(
+    task: string,
+    team_context?: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('coordinator');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
-    
+
     const prompt = team_context
       ? `Coordination task: ${task}\nTeam context: ${team_context}\n\nPlease provide coordination plan:`
       : `Coordination task: ${task}\n\nPlease provide coordination plan:`;
     return this.complete(prompt, options);
   }
 
-  async executeAsTester(feature: string, requirements?: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async executeAsTester(
+    feature: string,
+    requirements?: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('tester');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
-    
+
     const prompt = requirements
       ? `Feature to test: ${feature}\nRequirements: ${requirements}\n\nPlease provide test plan and cases:`
       : `Feature to test: ${feature}\n\nPlease provide test plan and cases:`;
     return this.complete(prompt, options);
   }
 
-  async executeAsArchitect(system: string, requirements?: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async executeAsArchitect(
+    system: string,
+    requirements?: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const roleResult = this.setRole('architect');
     if (roleResult.isErr()) {
       return err(roleResult.error);
     }
-    
+
     const prompt = requirements
       ? `System to architect: ${system}\nRequirements: ${requirements}\n\nPlease provide architectural design:`
       : `System to architect: ${system}\n\nPlease provide architectural design:`;
@@ -261,21 +332,27 @@ export class ClaudeProvider implements CLIProvider {
   }
 
   // Helper for simple text completion with Result pattern
-  async complete(prompt: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async complete(
+    prompt: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const result = await this.execute({
       messages: [{ role: 'user', content: prompt }],
       ...options,
     });
-    
+
     if (result.isErr()) {
       return err(result.error);
     }
-    
+
     return ok(result.value.content);
   }
 
   // Direct task execution using Claude Code SDK with Result pattern
-  async executeTask(prompt: string, options?: ClaudeSDKOptions): Promise<Result<unknown, CLIError>> {
+  async executeTask(
+    prompt: string,
+    options?: ClaudeSDKOptions
+  ): Promise<Result<unknown, CLIError>> {
     try {
       const sdkOptions: ClaudeSDKOptions = {
         model: 'sonnet',
@@ -296,9 +373,9 @@ export class ClaudeProvider implements CLIProvider {
         message: `Task execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         details: {
           providerId: this.id,
-          currentRole: this.currentRole?.role
+          currentRole: this.currentRole?.role,
         },
-        cause: error instanceof Error ? error : undefined
+        cause: error instanceof Error ? error : undefined,
       };
 
       logger.error('Task execution failed', { error: cliError });
@@ -307,8 +384,16 @@ export class ClaudeProvider implements CLIProvider {
   }
 
   // Get usage statistics
-  getUsageStats(): { requestCount: number; lastRequestTime: number; currentRole?: string } {
-    const stats: { requestCount: number; lastRequestTime: number; currentRole?: string } = {
+  getUsageStats(): {
+    requestCount: number;
+    lastRequestTime: number;
+    currentRole?: string;
+  } {
+    const stats: {
+      requestCount: number;
+      lastRequestTime: number;
+      currentRole?: string;
+    } = {
       requestCount: this.requestCount,
       lastRequestTime: this.lastRequestTime,
     };
@@ -322,12 +407,14 @@ export class ClaudeProvider implements CLIProvider {
 
   private async callClaudeCodeCLI(request: CLIRequest): Promise<CLIResponse> {
     // Use actual Claude Code SDK integration
-    const prompt = request.messages.map(m => {
-      if (m.role === 'system') {
-        return m.content;
-      }
-      return `${m.role}: ${m.content}`;
-    }).join('\n\n');
+    const prompt = request.messages
+      .map((m) => {
+        if (m.role === 'system') {
+          return m.content;
+        }
+        return `${m.role}: ${m.content}`;
+      })
+      .join('\n\n');
 
     // Always default to sonnet unless opus explicitly requested
     const model = request.model === 'opus' ? 'opus' : 'sonnet';

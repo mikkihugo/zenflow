@@ -1,25 +1,25 @@
 /**
  * @fileoverview Modern Event Validation - Zod Integration
- * 
+ *
  * Professional event validation using zod schema validation library.
  * Replaces custom validation system with battle-tested industry standard.
- * 
+ *
  * **BATTLE-TESTED DEPENDENCY:**
  * - zod: TypeScript-first schema validation with compile-time type inference
- * 
+ *
  * Key Features:
  * - Compile-time type safety with runtime validation
  * - Rich schema composition and transformation
  * - Better error messages and performance than custom validation
  * - Foundation integration with Result patterns
- * 
+ *
  * @example Basic event validation
  * ```typescript
  * import { createEventValidator, EventSchemas } from '@claude-zen/event-system/validation';
- * 
+ *
  * const validator = createEventValidator(EventSchemas.UserAction);
  * const result = validator.validate(eventData);
- * 
+ *
  * if (result.success) {
  *   console.log('Valid event:', result.data);
  * } else {
@@ -29,13 +29,7 @@
  */
 
 import { z } from 'zod';
-import { 
-  getLogger,
-  Result,
-  ok,
-  err,
-  safeAsync
-} from '@claude-zen/foundation';
+import { getLogger, Result, ok, err, safeAsync } from '@claude-zen/foundation';
 
 const logger = getLogger('EventValidation');
 
@@ -49,22 +43,40 @@ const logger = getLogger('EventValidation');
 export const BaseEventSchema = z.object({
   id: z.string().min(1).describe('Unique event identifier'),
   type: z.string().min(1).describe('Event type identifier'),
-  domain: z.enum(['COORDINATION', 'WORKFLOW', 'NEURAL', 'DATABASE', 'MEMORY', 'KNOWLEDGE', 'INTERFACE', 'CORE'])
+  domain: z
+    .enum([
+      'COORDINATION',
+      'WORKFLOW',
+      'NEURAL',
+      'DATABASE',
+      'MEMORY',
+      'KNOWLEDGE',
+      'INTERFACE',
+      'CORE',
+    ])
     .describe('Event domain for routing and validation'),
   timestamp: z.coerce.date().describe('Event creation timestamp'),
   version: z.string().default('1.0.0').describe('Event schema version'),
-  payload: z.record(z.string(), z.unknown()).optional().describe('Event payload data'),
-  metadata: z.object({
-    correlationId: z.string().optional(),
-    causationId: z.string().optional(),
-    source: z.string().optional(),
-    userId: z.string().optional(),
-    sessionId: z.string().optional(),
-    traceId: z.string().optional(),
-    priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'CRITICAL', 'URGENT']).optional(),
-    tags: z.array(z.string()).optional(),
-    customData: z.record(z.string(), z.unknown()).optional()
-  }).optional().describe('Event metadata for tracking and debugging')
+  payload: z
+    .record(z.string(), z.unknown())
+    .optional()
+    .describe('Event payload data'),
+  metadata: z
+    .object({
+      correlationId: z.string().optional(),
+      causationId: z.string().optional(),
+      source: z.string().optional(),
+      userId: z.string().optional(),
+      sessionId: z.string().optional(),
+      traceId: z.string().optional(),
+      priority: z
+        .enum(['LOW', 'NORMAL', 'HIGH', 'CRITICAL', 'URGENT'])
+        .optional(),
+      tags: z.array(z.string()).optional(),
+      customData: z.record(z.string(), z.unknown()).optional(),
+    })
+    .optional()
+    .describe('Event metadata for tracking and debugging'),
 });
 
 /**
@@ -77,8 +89,8 @@ export const CoordinationEventSchemas = {
     payload: z.object({
       agent: z.record(z.string(), z.unknown()),
       capabilities: z.array(z.string()),
-      initialStatus: z.enum(['idle', 'busy'])
-    })
+      initialStatus: z.enum(['idle', 'busy']),
+    }),
   }),
 
   TaskAssigned: BaseEventSchema.extend({
@@ -87,8 +99,8 @@ export const CoordinationEventSchemas = {
     payload: z.object({
       task: z.record(z.string(), z.unknown()),
       agentId: z.string(),
-      assignmentTime: z.coerce.date()
-    })
+      assignmentTime: z.coerce.date(),
+    }),
   }),
 
   TaskCompleted: BaseEventSchema.extend({
@@ -99,9 +111,9 @@ export const CoordinationEventSchemas = {
       agentId: z.string(),
       result: z.unknown(),
       duration: z.number().positive(),
-      success: z.boolean()
-    })
-  })
+      success: z.boolean(),
+    }),
+  }),
 };
 
 /**
@@ -115,8 +127,8 @@ export const WorkflowEventSchemas = {
       workflowId: z.string(),
       definition: z.record(z.string(), z.unknown()),
       context: z.record(z.string(), z.unknown()),
-      startTime: z.coerce.date()
-    })
+      startTime: z.coerce.date(),
+    }),
   }),
 
   WorkflowCompleted: BaseEventSchema.extend({
@@ -126,9 +138,9 @@ export const WorkflowEventSchemas = {
       workflowId: z.string(),
       result: z.unknown(),
       duration: z.number().positive(),
-      stepsExecuted: z.number().int().nonnegative()
-    })
-  })
+      stepsExecuted: z.number().int().nonnegative(),
+    }),
+  }),
 };
 
 /**
@@ -143,8 +155,8 @@ export const InterfaceEventSchemas = {
       validationType: z.enum(['approval', 'selection', 'input', 'review']),
       context: z.record(z.string(), z.unknown()),
       priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'CRITICAL', 'URGENT']),
-      timeout: z.number().positive().optional()
-    })
+      timeout: z.number().positive().optional(),
+    }),
   }),
 
   HumanValidationCompleted: BaseEventSchema.extend({
@@ -155,9 +167,9 @@ export const InterfaceEventSchemas = {
       approved: z.boolean(),
       input: z.unknown().optional(),
       feedback: z.string().optional(),
-      processingTime: z.number().positive()
-    })
-  })
+      processingTime: z.number().positive(),
+    }),
+  }),
 };
 
 /**
@@ -170,8 +182,8 @@ export const CoreEventSchemas = {
     payload: z.object({
       version: z.string(),
       startTime: z.coerce.date(),
-      configuration: z.record(z.string(), z.unknown())
-    })
+      configuration: z.record(z.string(), z.unknown()),
+    }),
   }),
 
   ErrorOccurred: BaseEventSchema.extend({
@@ -181,9 +193,9 @@ export const CoreEventSchemas = {
       error: z.instanceof(Error),
       context: z.record(z.string(), z.unknown()),
       severity: z.enum(['low', 'medium', 'high', 'critical']),
-      recoverable: z.boolean()
-    })
-  })
+      recoverable: z.boolean(),
+    }),
+  }),
 };
 
 /**
@@ -192,12 +204,12 @@ export const CoreEventSchemas = {
 export const EventSchemas = {
   // Base schema
   BaseEvent: BaseEventSchema,
-  
+
   // Domain-specific schemas
   ...CoordinationEventSchemas,
   ...WorkflowEventSchemas,
   ...InterfaceEventSchemas,
-  ...CoreEventSchemas
+  ...CoreEventSchemas,
 } as const;
 
 // =============================================================================
@@ -216,33 +228,36 @@ export class EventValidator<T = unknown> {
 
   /**
    * Validate event data against schema with Result pattern
-   * 
+   *
    * @param data - Event data to validate
    * @returns Result containing validated data or validation errors
    */
   validate(data: unknown): Result<T, Error> {
     try {
       const result = this.schema.safeParse(data);
-      
+
       if (result.success) {
         logger.debug(`[EventValidator] Validation succeeded for ${this.name}`, {
           schema: this.name,
-          dataKeys: Object.keys(data as Record<string, unknown>)
+          dataKeys: Object.keys(data as Record<string, unknown>),
         });
         return ok(result.data);
       } else {
         logger.warn(`[EventValidator] Validation failed for ${this.name}`, {
           schema: this.name,
-          errors: result.error.issues.map(issue => ({
+          errors: result.error.issues.map((issue) => ({
             path: issue.path.join('.'),
             message: issue.message,
-            code: issue.code
-          }))
+            code: issue.code,
+          })),
         });
         return err(new Error(`Validation failed: ${result.error.message}`));
       }
     } catch (error) {
-      logger.error(`[EventValidator] Validation error for ${this.name}:`, error);
+      logger.error(
+        `[EventValidator] Validation error for ${this.name}:`,
+        error
+      );
       return err(error instanceof Error ? error : new Error(String(error)));
     }
   }
@@ -253,7 +268,7 @@ export class EventValidator<T = unknown> {
   async validateAsync(data: unknown): Promise<Result<T, Error>> {
     return safeAsync(async () => {
       const result = await this.schema.safeParseAsync(data);
-      
+
       if (result.success) {
         return result.data;
       } else {
@@ -280,7 +295,7 @@ export class EventValidator<T = unknown> {
    * Get schema description for debugging
    */
   getSchemaDescription(): string {
-    return this.schema.description || `Schema for ${this.name}`;
+    return this.schema.description'' | '''' | ''`Schema for ${this.name}`;
   }
 }
 
@@ -321,7 +336,7 @@ export class ValidationChain<T = unknown> {
 
     for (const validator of this.validators) {
       const result = validator.validate(lastValidData);
-      
+
       if (result.isOk()) {
         lastValidData = result.value;
       } else {
@@ -344,7 +359,7 @@ export class ValidationChain<T = unknown> {
 
     for (const validator of this.validators) {
       const result = validator.validate(data);
-      
+
       if (result.isOk()) {
         return ok(result.value);
       } else {
@@ -390,14 +405,19 @@ export function createValidationChain<T = unknown>(): ValidationChain<T> {
 export function createTypedEventValidator<K extends keyof typeof EventSchemas>(
   eventType: K
 ): EventValidator<any> {
-  return new EventValidator(EventSchemas[eventType] as any, eventType as string);
+  return new EventValidator(
+    EventSchemas[eventType] as any,
+    eventType as string
+  );
 }
 
 /**
  * Validate any event against base schema
  */
-export function validateBaseEvent(data: unknown): Result<z.infer<typeof BaseEventSchema>, Error> {
-  const validator = new EventValidator(BaseEventSchema, 'BaseEvent');
+export function validateBaseEvent(
+  data: unknown
+): Result<z.infer<typeof BaseEventSchema>, Error> {
+  const validator = new EventValidator(BaseEventSchema,'BaseEvent');
   return validator.validate(data);
 }
 
@@ -406,9 +426,15 @@ export function validateBaseEvent(data: unknown): Result<z.infer<typeof BaseEven
 // =============================================================================
 
 export type BaseEvent = z.infer<typeof BaseEventSchema>;
-export type CoordinationEvent = z.infer<typeof CoordinationEventSchemas.AgentCreated>;
-export type WorkflowEvent = z.infer<typeof WorkflowEventSchemas.WorkflowStarted>;
-export type InterfaceEvent = z.infer<typeof InterfaceEventSchemas.HumanValidationRequested>;
+export type CoordinationEvent = z.infer<
+  typeof CoordinationEventSchemas.AgentCreated
+>;
+export type WorkflowEvent = z.infer<
+  typeof WorkflowEventSchemas.WorkflowStarted
+>;
+export type InterfaceEvent = z.infer<
+  typeof InterfaceEventSchemas.HumanValidationRequested
+>;
 export type CoreEvent = z.infer<typeof CoreEventSchemas.SystemStarted>;
 
 // Utility type to extract event types from schemas
@@ -416,5 +442,5 @@ export type EventTypeFromSchema<T extends z.ZodSchema> = z.infer<T>;
 
 // Union type of all event schemas
 export type AllEventTypes = {
-  [K in keyof typeof EventSchemas]: z.infer<typeof EventSchemas[K]>
+  [K in keyof typeof EventSchemas]: z.infer<(typeof EventSchemas)[K]>;
 }[keyof typeof EventSchemas];

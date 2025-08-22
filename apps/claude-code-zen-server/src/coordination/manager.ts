@@ -339,58 +339,58 @@ export class CoordinationManager extends TypedEventBus {
 
         if (this.chaosEngineering) {
           try {
-            shutdownPromises.push(this.chaosEngineering?.shutdown());
+            shutdownPromises.push(this.chaosEngineering?.shutdown())();
           } catch (error) {
             this.logger.warn('Chaos engineering shutdown failed', error);
           }
         }
 
         if (this.teamworkSystem) {
-          shutdownPromises.push(this.teamworkSystem?.shutdown());
+          shutdownPromises.push(this.teamworkSystem?.shutdown())();
         }
 
         if (this.conversationOrchestrator) {
-          shutdownPromises.push(this.conversationOrchestrator?.shutdown());
+          shutdownPromises.push(this.conversationOrchestrator?.shutdown())();
         }
 
         if (this.teamwork) {
-          shutdownPromises.push(this.teamwork?.shutdown());
+          shutdownPromises.push(this.teamwork?.shutdown())();
         }
 
         if (this.safetyProtocols) {
-          shutdownPromises.push(this.safetyProtocols?.shutdown());
+          shutdownPromises.push(this.safetyProtocols?.shutdown())();
         }
 
         if (this.aiSafety) {
-          shutdownPromises.push(this.aiSafety?.shutdown());
+          shutdownPromises.push(this.aiSafety?.shutdown())();
         }
 
         if (this.neuralForecasting) {
-          shutdownPromises.push(this.neuralForecasting?.shutdown());
+          shutdownPromises.push(this.neuralForecasting?.shutdown())();
         }
 
         if (this.adaptiveOptimizer) {
-          shutdownPromises.push(this.adaptiveOptimizer?.shutdown());
+          shutdownPromises.push(this.adaptiveOptimizer?.shutdown())();
         }
 
         if (this.neuralML) {
-          shutdownPromises.push(this.neuralML?.shutdown());
+          shutdownPromises.push(this.neuralML?.shutdown())();
         }
 
         if (this.taskPredictor) {
-          shutdownPromises.push(this.taskPredictor?.shutdown());
+          shutdownPromises.push(this.taskPredictor?.shutdown())();
         }
 
         if (this.intelligenceSystem) {
-          shutdownPromises.push(this.intelligenceSystem?.shutdown());
+          shutdownPromises.push(this.intelligenceSystem?.shutdown())();
         }
 
         if (this.agentMonitoring) {
-          shutdownPromises.push(this.agentMonitoring?.shutdown());
+          shutdownPromises.push(this.agentMonitoring?.shutdown())();
         }
 
         if (this.loadBalancer) {
-          shutdownPromises.push(this.loadBalancer?.shutdown());
+          shutdownPromises.push(this.loadBalancer?.shutdown())();
         }
 
         // Wait for all AI systems to shutdown gracefully
@@ -510,7 +510,7 @@ export class CoordinationManager extends TypedEventBus {
    */
   getAvailableAgents(): Agent[] {
     return Array.from(this.agents?.values()).filter(
-      (agent) => agent.status === 'idle || agent.status === busy'
+      (agent) => agent.status === 'idle' || agent.status === 'busy'
     );
   }
 
@@ -563,7 +563,7 @@ export class CoordinationManager extends TypedEventBus {
       this.emit('taskStatusChanged', { taskId, status });
 
       if (
-        (status === 'completed || status === failed') && // Free up the assigned agent
+        (status === 'completed' || status === 'failed') && // Free up the assigned agent
         task.assignedAgent
       ) {
         const agent = this.agents.get(task.assignedAgent);
@@ -597,8 +597,8 @@ export class CoordinationManager extends TypedEventBus {
     chaosEngineeringActive?: boolean;
     aiSystemsStatus?: string;
   }> {
-    const agents = Array.from(this.agents?.values());
-    const tasks = Array.from(this.tasks?.values());
+    const agents = Array.from(this.agents?.values())();
+    const tasks = Array.from(this.tasks?.values())();
 
     const basicStats = {
       totalAgents: agents.length,
@@ -647,7 +647,7 @@ export class CoordinationManager extends TypedEventBus {
       this.foundationLogger.info('coordination_stats_generated', {
         totalAgents: basicStats.totalAgents,
         availableAgents: basicStats.availableAgents,
-        aiSystemsActive: Object.values()(aiStats).filter(Boolean).length,
+        aiSystemsActive: Object.values(aiStats).filter(Boolean).length,
         timestamp: Date.now(),
       });
     }
@@ -755,8 +755,7 @@ export class CoordinationManager extends TypedEventBus {
         const suitableAgents = Array.from(this.agents?.values()).filter(
           (agent) =>
             agent.status === 'idle' &&
-            (requiredCapabilities.length === 0 ||
-              requiredCapabilities.some((cap) =>
+            (requiredCapabilities.length === 0 || requiredCapabilities.some((cap) =>
                 agent.capabilities.includes(cap)
               ))
         );
@@ -805,16 +804,16 @@ export class CoordinationManager extends TypedEventBus {
           const features = suitableAgents.map((agent) => [
             agent.taskCount,
             agent.healthScore || 1.0,
-            agent.performancePrediction || .8,
-            agent.collaborationRating || .8,
-            agent.resilienceScore || .8,
+            agent.performancePrediction || 0.8,
+            agent.collaborationRating || 0.8,
+            agent.resilienceScore || 0.8,
             requiredCapabilities.length > 0
               ? requiredCapabilities.filter((cap) =>
                   agent.capabilities.includes(cap)
                 ).length / requiredCapabilities.length
               : 1.0,
             task.priority / 1.0, // Normalize priority
-            Date.now() - agent.lastHeartbeat?.getTime < 60000 ? 1.0 : .5, // Recent heartbeat
+            Date.now() - agent.lastHeartbeat?.getTime() < 60000 ? 1.0 : 0.5, // Recent heartbeat
             agent.capabilities.length / 1.0, // Capability diversity
             1.0 - agent.taskCount / this.config.maxAgents, // Inverse load factor
           ]);
@@ -822,7 +821,7 @@ export class CoordinationManager extends TypedEventBus {
           const optimizedSelection =
             await this.adaptiveOptimizer.optimizeSelection({
               features,
-              selectionCriteria: 'coordination-agent-selection',
+              selectionCriteria:'coordination-agent-selection',
             });
 
           if (
@@ -841,13 +840,13 @@ export class CoordinationManager extends TypedEventBus {
           suitableAgents.sort((a, b) => {
             // Multi-factor sorting: task count, health score, performance prediction
             const scoreA =
-              a.taskCount * .4 +
-              (1 - (a.healthScore || 1.0)) * .3 +
-              (1 - (a.performancePrediction || .8)) * .3;
+              a.taskCount * 0.4 +
+              (1 - (a.healthScore || 1.0)) * 0.3 +
+              (1 - (a.performancePrediction || 0.8)) * 0.3;
             const scoreB =
-              b.taskCount * .4 +
-              (1 - (b.healthScore || 1.0)) * .3 +
-              (1 - (b.performancePrediction || .8)) * .3;
+              b.taskCount * 0.4 +
+              (1 - (b.healthScore || 1.0)) * 0.3 +
+              (1 - (b.performancePrediction || 0.8)) * 0.3;
             return scoreA - scoreB;
           });
           selectedAgent = suitableAgents[0];
@@ -866,7 +865,7 @@ export class CoordinationManager extends TypedEventBus {
 
         // ASSIGN TASK with AI monitoring
         task.assignedAgent = selectedAgent.id;
-        task.status = 'assigned';
+        task.status ='assigned';
         selectedAgent.status = 'busy';
         selectedAgent.taskCount++;
 
@@ -877,7 +876,7 @@ export class CoordinationManager extends TypedEventBus {
             agentId: selectedAgent.id,
             taskType: task.type,
             taskPriority: task.priority,
-            historicalPerformance: selectedAgent.performancePrediction || .8,
+            historicalPerformance: selectedAgent.performancePrediction || 0.8,
           });
           this.foundationLogger.debug(
             `📈 Neural forecast for assignment: ${forecast.expectedPerformance}`
@@ -919,8 +918,7 @@ export class CoordinationManager extends TypedEventBus {
           agentId: selectedAgent.id,
           timestamp: Date.now(),
           selectionOptimized:
-            this.config.enableNeuralOptimization ||
-            this.config.enableLoadBalancing,
+            this.config.enableNeuralOptimization || this.config.enableLoadBalancing,
         });
 
         this._logger?.info(`Task assigned: ${task.id} -> ${selectedAgent.id}`);
@@ -929,8 +927,7 @@ export class CoordinationManager extends TypedEventBus {
         );
       });
     } catch (error) {
-      this.foundationLogger.error(
-        '🚨 Failed to assign task with AI optimization:',
+      this.foundationLogger.error('🚨 Failed to assign task with AI optimization:',
         error
       );
       this._logger?.error(`Failed to assign task ${task.id}:`, error);

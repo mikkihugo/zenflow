@@ -1,14 +1,14 @@
 /**
  * @fileoverview Pipeline Performance Service - Pipeline performance monitoring and metrics.
- * 
+ *
  * Provides specialized pipeline performance monitoring with comprehensive metrics analysis,
  * trend detection, bottleneck identification, and intelligent performance optimization.
- * 
+ *
  * Integrates with:
  * - @claude-zen/brain: BrainCoordinator for intelligent performance analysis
  * - @claude-zen/foundation: Performance tracking and telemetry
  * - @claude-zen/brain: LoadBalancer for performance optimization
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -21,7 +21,7 @@ export type {
   PipelineExecution,
   PipelineMetrics,
   PipelineBottleneck,
-  MetricTrend
+  MetricTrend,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -57,8 +57,8 @@ export interface PerformanceThresholds {
  */
 export interface PerformanceAlert {
   readonly id: string;
-  readonly type: 'duration' | 'error_rate' | 'throughput' | 'bottleneck' | 'trend';
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly type:' | ''duration'' | ''error_rate'' | ''throughput'' | ''bottleneck'' | ''trend';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly pipelineId?: string;
   readonly stageId?: string;
   readonly metric: string;
@@ -185,7 +185,7 @@ export interface BottleneckAnalysis {
   readonly averageDuration: number;
   readonly causes: string[];
   readonly solutions: string[];
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
 }
 
 /**
@@ -193,7 +193,7 @@ export interface BottleneckAnalysis {
  */
 export interface TrendAnalysis {
   readonly metric: string;
-  readonly direction: 'improving' | 'stable' | 'degrading';
+  readonly direction: 'improving'' | ''stable'' | ''degrading';
   readonly change: number;
   readonly period: string;
   readonly confidence: number;
@@ -214,12 +214,12 @@ export interface TrendForecast {
  * Performance recommendation
  */
 export interface PerformanceRecommendation {
-  readonly category: 'optimization' | 'scaling' | 'configuration' | 'architecture';
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly category:' | ''optimization'' | ''scaling'' | ''configuration'' | ''architecture';
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly title: string;
   readonly description: string;
   readonly expectedImpact: number;
-  readonly implementationEffort: 'low' | 'medium' | 'high';
+  readonly implementationEffort: 'low'' | ''medium'' | ''high';
   readonly estimatedTimeToValue: number;
   readonly prerequisites: string[];
 }
@@ -231,7 +231,7 @@ export interface HistoricalComparison {
   readonly previousPeriod: ComparisonPeriod;
   readonly improvements: MetricImprovement[];
   readonly degradations: MetricDegradation[];
-  readonly overallTrend: 'improving' | 'stable' | 'degrading';
+  readonly overallTrend: 'improving'' | ''stable'' | ''degrading';
 }
 
 /**
@@ -250,7 +250,7 @@ export interface ComparisonPeriod {
 export interface MetricImprovement {
   readonly metric: string;
   readonly improvement: number;
-  readonly significance: 'low' | 'medium' | 'high';
+  readonly significance: 'low'' | ''medium'' | ''high';
 }
 
 /**
@@ -259,7 +259,7 @@ export interface MetricImprovement {
 export interface MetricDegradation {
   readonly metric: string;
   readonly degradation: number;
-  readonly significance: 'low' | 'medium' | 'high';
+  readonly significance: 'low'' | ''medium'' | ''high';
 }
 
 // Import types from mapping service
@@ -267,7 +267,7 @@ import type {
   PipelineExecution,
   PipelineMetrics,
   PipelineBottleneck,
-  MetricTrend
+  MetricTrend,
 } from './sparc-cd-mapping-service';
 
 // ============================================================================
@@ -276,7 +276,7 @@ import type {
 
 /**
  * Pipeline Performance Service - Pipeline performance monitoring and metrics
- * 
+ *
  * Provides comprehensive pipeline performance monitoring with intelligent metrics analysis,
  * trend detection, bottleneck identification, and AI-powered optimization recommendations.
  */
@@ -307,7 +307,11 @@ export class PipelinePerformanceService {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
-        autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
+        autonomous: {
+          enabled: true,
+          learningRate: 0.1,
+          adaptationThreshold: 0.7,
+        },
       });
       await this.brainCoordinator.initialize();
 
@@ -321,15 +325,17 @@ export class PipelinePerformanceService {
         strategy: 'intelligent',
         enableHealthChecks: true,
         healthCheckInterval: 30000,
-        failoverTimeout: 5000
+        failoverTimeout: 5000,
       });
       await this.loadBalancer.initialize();
 
       this.initialized = true;
       this.logger.info('Pipeline Performance Service initialized successfully');
-
     } catch (error) {
-      this.logger.error('Failed to initialize Pipeline Performance Service:', error);
+      this.logger.error(
+        'Failed to initialize Pipeline Performance Service:',
+        error
+      );
       throw error;
     }
   }
@@ -340,10 +346,14 @@ export class PipelinePerformanceService {
   async monitorPipelinePerformance(): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('pipeline_performance_monitoring');
+    const timer = this.performanceTracker.startTimer(
+      'pipeline_performance_monitoring'
+    );
 
     try {
-      this.logger.info('Monitoring pipeline performance with intelligent analysis');
+      this.logger.info(
+        'Monitoring pipeline performance with intelligent analysis'
+      );
 
       // Get active pipelines to monitor
       const activePipelines = this.getActivePipelines();
@@ -370,9 +380,8 @@ export class PipelinePerformanceService {
 
       this.logger.info('Pipeline performance monitoring completed', {
         pipelineCount: activePipelines.length,
-        alertCount: Array.from(this.activeAlerts.values()).flat().length
+        alertCount: Array.from(this.activeAlerts.values()).flat().length,
       });
-
     } catch (error) {
       this.performanceTracker.endTimer('pipeline_performance_monitoring');
       this.logger.error('Pipeline performance monitoring failed:', error);
@@ -383,28 +392,38 @@ export class PipelinePerformanceService {
   /**
    * Analyze individual pipeline performance with AI insights
    */
-  async analyzePipelinePerformance(execution: PipelineExecution): Promise<PerformanceAnalysisResult> {
+  async analyzePipelinePerformance(
+    execution: PipelineExecution
+  ): Promise<PerformanceAnalysisResult> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('pipeline_performance_analysis');
+    const timer = this.performanceTracker.startTimer(
+      'pipeline_performance_analysis'
+    );
 
     try {
       this.logger.info('Analyzing pipeline performance with AI insights', {
-        pipelineId: execution.context.pipelineId
+        pipelineId: execution.context.pipelineId,
       });
 
       // Calculate detailed metrics
       const detailedMetrics = this.calculateDetailedMetrics(execution);
 
       // Use brain coordinator for intelligent bottleneck detection
-      const bottleneckAnalysis = await this.brainCoordinator.analyzeBottlenecks({
-        execution,
-        metrics: detailedMetrics,
-        historicalData: this.historicalData.get(execution.context.pipelineId) || []
-      });
+      const bottleneckAnalysis = await this.brainCoordinator.analyzeBottlenecks(
+        {
+          execution,
+          metrics: detailedMetrics,
+          historicalData:
+            this.historicalData.get(execution.context.pipelineId) || [],
+        }
+      );
 
       // Analyze trends with AI
-      const trendAnalysis = await this.analyzeTrends(execution, detailedMetrics);
+      const trendAnalysis = await this.analyzeTrends(
+        execution,
+        detailedMetrics
+      );
 
       // Generate AI-powered recommendations
       const recommendations = await this.generatePerformanceRecommendations(
@@ -427,7 +446,7 @@ export class PipelinePerformanceService {
         trends: trendAnalysis,
         recommendations,
         alerts: [],
-        historicalComparison
+        historicalComparison,
       };
 
       this.performanceTracker.endTimer('pipeline_performance_analysis');
@@ -436,11 +455,10 @@ export class PipelinePerformanceService {
         pipelineId: execution.context.pipelineId,
         overallScore: result.overallScore,
         bottleneckCount: result.bottlenecks.length,
-        recommendationCount: result.recommendations.length
+        recommendationCount: result.recommendations.length,
       });
 
       return result;
-
     } catch (error) {
       this.performanceTracker.endTimer('pipeline_performance_analysis');
       this.logger.error('Pipeline performance analysis failed:', error);
@@ -469,16 +487,17 @@ export class PipelinePerformanceService {
         pipelineId,
         performanceData: Array.from(this.performanceMetrics.values()),
         historicalData: Array.from(this.historicalData.values()).flat(),
-        timeframe: '30d'
+        timeframe: '30d',
       });
 
       const result = {
-        overallPerformance: insights.overallScore || this.calculateAveragePerformance(),
+        overallPerformance:
+          insights.overallScore || this.calculateAveragePerformance(),
         keyMetrics: insights.keyMetrics || this.getKeyMetrics(),
         topBottlenecks: insights.bottlenecks || this.getTopBottlenecks(),
         trendSummary: insights.trends || [],
         criticalAlerts: insights.alerts || this.getCriticalAlerts(),
-        recommendations: insights.recommendations || []
+        recommendations: insights.recommendations || [],
       };
 
       this.performanceTracker.endTimer('performance_insights');
@@ -487,11 +506,10 @@ export class PipelinePerformanceService {
         pipelineId,
         overallPerformance: result.overallPerformance,
         bottleneckCount: result.topBottlenecks.length,
-        alertCount: result.criticalAlerts.length
+        alertCount: result.criticalAlerts.length,
       });
 
       return result;
-
     } catch (error) {
       this.performanceTracker.endTimer('performance_insights');
       this.logger.error('Failed to generate performance insights:', error);
@@ -504,7 +522,11 @@ export class PipelinePerformanceService {
    */
   async optimizePipelinePerformance(
     pipelineId: string,
-    optimizationGoals: string[] = ['reduce_duration', 'improve_reliability', 'increase_throughput']
+    optimizationGoals: string[] = [
+      'reduce_duration',
+      'improve_reliability',
+      'increase_throughput',
+    ]
   ): Promise<{
     optimizedConfiguration: any;
     expectedImprovement: number;
@@ -518,28 +540,34 @@ export class PipelinePerformanceService {
     try {
       const analysis = this.performanceMetrics.get(pipelineId);
       if (!analysis) {
-        throw new Error(`Performance analysis not found for pipeline: ${pipelineId}`);
+        throw new Error(
+          `Performance analysis not found for pipeline: ${pipelineId}`
+        );
       }
 
-      this.logger.info('Optimizing pipeline performance with AI recommendations', {
-        pipelineId,
-        goals: optimizationGoals
-      });
+      this.logger.info(
+        'Optimizing pipeline performance with AI recommendations',
+        {
+          pipelineId,
+          goals: optimizationGoals,
+        }
+      );
 
       // Use brain coordinator for intelligent optimization
-      const optimization = await this.brainCoordinator.optimizePipelinePerformance({
-        pipelineId,
-        currentMetrics: analysis.performanceMetrics,
-        bottlenecks: analysis.bottlenecks,
-        goals: optimizationGoals,
-        historicalData: this.historicalData.get(pipelineId) || []
-      });
+      const optimization =
+        await this.brainCoordinator.optimizePipelinePerformance({
+          pipelineId,
+          currentMetrics: analysis.performanceMetrics,
+          bottlenecks: analysis.bottlenecks,
+          goals: optimizationGoals,
+          historicalData: this.historicalData.get(pipelineId) || [],
+        });
 
       const result = {
         optimizedConfiguration: optimization.configuration || {},
         expectedImprovement: optimization.expectedImprovement || 0,
         implementationPlan: optimization.implementationPlan || [],
-        riskAssessment: optimization.risks || []
+        riskAssessment: optimization.risks || [],
       };
 
       this.performanceTracker.endTimer('pipeline_optimization');
@@ -547,11 +575,10 @@ export class PipelinePerformanceService {
       this.logger.info('Pipeline performance optimization completed', {
         pipelineId,
         expectedImprovement: result.expectedImprovement,
-        planSteps: result.implementationPlan.length
+        planSteps: result.implementationPlan.length,
       });
 
       return result;
-
     } catch (error) {
       this.performanceTracker.endTimer('pipeline_optimization');
       this.logger.error('Pipeline performance optimization failed:', error);
@@ -575,7 +602,9 @@ export class PipelinePerformanceService {
       }
     }, intervalMs);
 
-    this.logger.info('Continuous performance monitoring started', { intervalMs });
+    this.logger.info('Continuous performance monitoring started', {
+      intervalMs,
+    });
   }
 
   /**
@@ -594,7 +623,7 @@ export class PipelinePerformanceService {
    */
   async shutdown(): Promise<void> {
     this.stopContinuousMonitoring();
-    
+
     if (this.brainCoordinator?.shutdown) {
       await this.brainCoordinator.shutdown();
     }
@@ -614,20 +643,22 @@ export class PipelinePerformanceService {
     return [];
   }
 
-  private calculateDetailedMetrics(execution: PipelineExecution): DetailedPerformanceMetrics {
+  private calculateDetailedMetrics(
+    execution: PipelineExecution
+  ): DetailedPerformanceMetrics {
     const executionTime: ExecutionTimeMetrics = {
       total: execution.duration || 0,
       stages: execution.metrics.stageDurations,
       queueTime: execution.metrics.queueTime,
       waitTime: 0,
-      percentiles: { p50: 0, p90: 0, p95: 0, p99: 0 }
+      percentiles: { p50: 0, p90: 0, p95: 0, p99: 0 },
     };
 
     const throughput: ThroughputMetrics = {
       pipelinesPerHour: execution.metrics.throughput,
       stagesPerHour: 0,
       parallelExecutions: 0,
-      concurrencyUtilization: 0
+      concurrencyUtilization: 0,
     };
 
     const reliability: ReliabilityMetrics = {
@@ -636,14 +667,14 @@ export class PipelinePerformanceService {
       retryRate: 0,
       rollbackRate: 0,
       mttr: 0,
-      mtbf: 0
+      mtbf: 0,
     };
 
     const efficiency: EfficiencyMetrics = {
       resourceEfficiency: 0,
       timeEfficiency: 0,
       costEfficiency: 0,
-      wasteReduction: 0
+      wasteReduction: 0,
     };
 
     const resourceUtilization: ResourceUtilizationMetrics = {
@@ -651,7 +682,13 @@ export class PipelinePerformanceService {
       memory: { average: 0, peak: 0, minimum: 0, utilization: 0 },
       disk: { average: 0, peak: 0, minimum: 0, utilization: 0 },
       network: { average: 0, peak: 0, minimum: 0, utilization: 0 },
-      agents: { totalAgents: 0, activeAgents: 0, idleAgents: 0, utilizationRate: 0, queuedTasks: 0 }
+      agents: {
+        totalAgents: 0,
+        activeAgents: 0,
+        idleAgents: 0,
+        utilizationRate: 0,
+        queuedTasks: 0,
+      },
     };
 
     return {
@@ -659,16 +696,20 @@ export class PipelinePerformanceService {
       throughput,
       reliability,
       efficiency,
-      resourceUtilization
+      resourceUtilization,
     };
   }
 
-  private async analyzeTrends(execution: PipelineExecution, metrics: DetailedPerformanceMetrics): Promise<TrendAnalysis[]> {
+  private async analyzeTrends(
+    execution: PipelineExecution,
+    metrics: DetailedPerformanceMetrics
+  ): Promise<TrendAnalysis[]> {
     // Use brain coordinator for trend analysis
     const trendAnalysis = await this.brainCoordinator.analyzePipelineTrends({
       execution,
       metrics,
-      historicalData: this.historicalData.get(execution.context.pipelineId) || []
+      historicalData:
+        this.historicalData.get(execution.context.pipelineId) || [],
     });
 
     return trendAnalysis.trends || [];
@@ -680,11 +721,12 @@ export class PipelinePerformanceService {
     bottlenecks: BottleneckAnalysis[]
   ): Promise<PerformanceRecommendation[]> {
     // Use brain coordinator for intelligent recommendations
-    const recommendations = await this.brainCoordinator.generatePerformanceRecommendations({
-      execution,
-      metrics,
-      bottlenecks
-    });
+    const recommendations =
+      await this.brainCoordinator.generatePerformanceRecommendations({
+        execution,
+        metrics,
+        bottlenecks,
+      });
 
     return recommendations.recommendations || [];
   }
@@ -694,17 +736,17 @@ export class PipelinePerformanceService {
     metrics: DetailedPerformanceMetrics
   ): HistoricalComparison {
     const history = this.historicalData.get(execution.context.pipelineId) || [];
-    
+
     return {
       previousPeriod: {
         startDate: new Date(),
         endDate: new Date(),
         executionCount: history.length,
-        averageMetrics: {}
+        averageMetrics: {},
       },
       improvements: [],
       degradations: [],
-      overallTrend: 'stable'
+      overallTrend:'stable',
     };
   }
 
@@ -712,7 +754,8 @@ export class PipelinePerformanceService {
     const alerts: PerformanceAlert[] = [];
 
     // Check for duration alerts
-    if (analysis.performanceMetrics.executionTime.total > 7200000) { // 2 hours
+    if (analysis.performanceMetrics.executionTime.total > 7200000) {
+      // 2 hours
       alerts.push({
         id: `duration-${analysis.pipelineId}`,
         type: 'duration',
@@ -722,8 +765,11 @@ export class PipelinePerformanceService {
         actualValue: analysis.performanceMetrics.executionTime.total,
         threshold: 7200000,
         description: 'Pipeline execution time exceeds threshold',
-        recommendations: ['Optimize bottleneck stages', 'Increase parallelization'],
-        timestamp: new Date()
+        recommendations: [
+          'Optimize bottleneck stages',
+          'Increase parallelization',
+        ],
+        timestamp: new Date(),
       });
     }
 
@@ -738,8 +784,11 @@ export class PipelinePerformanceService {
         actualValue: analysis.performanceMetrics.reliability.successRate,
         threshold: 0.95,
         description: 'Pipeline success rate below acceptable threshold',
-        recommendations: ['Investigate failure causes', 'Improve error handling'],
-        timestamp: new Date()
+        recommendations: [
+          'Investigate failure causes',
+          'Improve error handling',
+        ],
+        timestamp: new Date(),
       });
     }
 
@@ -747,7 +796,7 @@ export class PipelinePerformanceService {
       this.activeAlerts.set(analysis.pipelineId, alerts);
       this.logger.warn('Performance alerts detected', {
         pipelineId: analysis.pipelineId,
-        alertCount: alerts.length
+        alertCount: alerts.length,
       });
     }
   }
@@ -755,12 +804,12 @@ export class PipelinePerformanceService {
   private updateHistoricalData(execution: PipelineExecution): void {
     const history = this.historicalData.get(execution.context.pipelineId) || [];
     history.push(execution);
-    
+
     // Keep last 100 executions
     if (history.length > 100) {
       history.splice(0, history.length - 100);
     }
-    
+
     this.historicalData.set(execution.context.pipelineId, history);
   }
 
@@ -774,31 +823,40 @@ export class PipelinePerformanceService {
     this.logger.debug('Generating optimization recommendations');
   }
 
-  private calculateOverallPerformanceScore(metrics: DetailedPerformanceMetrics): number {
+  private calculateOverallPerformanceScore(
+    metrics: DetailedPerformanceMetrics
+  ): number {
     // Calculate weighted performance score
     const reliabilityScore = metrics.reliability.successRate * 100;
     const efficiencyScore = metrics.efficiency.timeEfficiency * 100;
-    const throughputScore = Math.min(metrics.throughput.pipelinesPerHour / 10, 10) * 10;
-    
-    return (reliabilityScore * 0.4 + efficiencyScore * 0.3 + throughputScore * 0.3);
+    const throughputScore =
+      Math.min(metrics.throughput.pipelinesPerHour / 10, 10) * 10;
+
+    return (
+      reliabilityScore * 0.4 + efficiencyScore * 0.3 + throughputScore * 0.3
+    );
   }
 
   private calculateAveragePerformance(): number {
-    const scores = Array.from(this.performanceMetrics.values()).map(a => a.overallScore);
-    return scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+    const scores = Array.from(this.performanceMetrics.values()).map(
+      (a) => a.overallScore
+    );
+    return scores.length > 0
+      ? scores.reduce((a, b) => a + b, 0) / scores.length
+      : 0;
   }
 
   private getKeyMetrics(): Record<string, number> {
     return {
       averageExecutionTime: 0,
       averageSuccessRate: 0,
-      averageThroughput: 0
+      averageThroughput: 0,
     };
   }
 
   private getTopBottlenecks(): BottleneckAnalysis[] {
     return Array.from(this.performanceMetrics.values())
-      .flatMap(a => a.bottlenecks)
+      .flatMap((a) => a.bottlenecks)
       .sort((a, b) => b.impact - a.impact)
       .slice(0, 5);
   }
@@ -806,7 +864,9 @@ export class PipelinePerformanceService {
   private getCriticalAlerts(): PerformanceAlert[] {
     return Array.from(this.activeAlerts.values())
       .flat()
-      .filter(alert => alert.severity === 'critical' || alert.severity === 'high');
+      .filter(
+        (alert) => alert.severity === 'critical' || alert.severity ==='high'
+      );
   }
 }
 

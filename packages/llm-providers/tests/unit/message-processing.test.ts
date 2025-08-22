@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { mockMessageProcessor, mockPermissionHandler, createMockResponse, createMockError } from '../mocks/llm-mocks';
+import {
+  mockMessageProcessor,
+  mockPermissionHandler,
+  createMockResponse,
+  createMockError,
+} from '../mocks/llm-mocks';
 
 // Since the actual message processor and permission handler are not exported,
 // we'll test the general patterns and interfaces they should follow
@@ -12,9 +17,9 @@ describe('Message Processing', () => {
   describe('Message Processor', () => {
     it('should process basic messages', () => {
       const message = { content: 'Hello', role: 'user', timestamp: Date.now() };
-      
+
       const processed = mockMessageProcessor.processMessage(message);
-      
+
       expect(processed).toBeDefined();
       expect(processed.processed).toBe(true);
       expect(processed.content).toBe('Hello');
@@ -28,15 +33,15 @@ describe('Message Processing', () => {
         metadata: {
           language: 'typescript',
           context: 'function analysis',
-          priority: 'high'
+          priority: 'high',
         },
         attachments: [
-          { type: 'code', content: 'function test() { return true; }' }
-        ]
+          { type: 'code', content: 'function test() { return true; }' },
+        ],
       };
 
       const processed = mockMessageProcessor.processMessage(complexMessage);
-      
+
       expect(processed).toBeDefined();
       expect(processed.processed).toBe(true);
       expect(processed.metadata).toBeDefined();
@@ -49,16 +54,16 @@ describe('Message Processing', () => {
         { role: 'assistant', content: 'Assistant response' },
         { role: 'system', content: 'System instruction' },
         { role: 'tool', content: 'Tool output', tool_call_id: '123' },
-        { role: 'user', content: 'Follow-up question' }
+        { role: 'user', content: 'Follow-up question' },
       ];
 
       const filtered = mockMessageProcessor.filterMessagesForProvider(messages);
 
       expect(Array.isArray(filtered)).toBe(true);
       expect(filtered.length).toBeLessThanOrEqual(messages.length);
-      
+
       // All filtered messages should be valid
-      filtered.forEach(msg => {
+      filtered.forEach((msg) => {
         expect(msg.role).toBeDefined();
         expect(msg.content).toBeDefined();
       });
@@ -69,7 +74,8 @@ describe('Message Processing', () => {
       const invalidMessage = { role: 'invalid' }; // Missing content
 
       const validResult = mockMessageProcessor.validateMessage(validMessage);
-      const invalidResult = mockMessageProcessor.validateMessage(invalidMessage);
+      const invalidResult =
+        mockMessageProcessor.validateMessage(invalidMessage);
 
       expect(validResult.valid).toBe(true);
       expect(invalidResult.valid).toBe(false);
@@ -79,7 +85,7 @@ describe('Message Processing', () => {
       const unsafeMessage = {
         role: 'user',
         content: 'Message with <script>alert("xss")</script> content',
-        metadata: { userInput: true }
+        metadata: { userInput: true },
       };
 
       const sanitized = mockMessageProcessor.sanitizeMessage(unsafeMessage);
@@ -95,11 +101,13 @@ describe('Message Processing', () => {
       const nullMessage = null;
 
       const emptyResult = mockMessageProcessor.processMessage(emptyMessage);
-      
+
       expect(emptyResult).toBeDefined();
       expect(emptyResult.processed).toBe(true);
 
-      expect(() => mockMessageProcessor.processMessage(nullMessage)).not.toThrow();
+      expect(() =>
+        mockMessageProcessor.processMessage(nullMessage)
+      ).not.toThrow();
     });
 
     it('should preserve message order during filtering', () => {
@@ -107,15 +115,19 @@ describe('Message Processing', () => {
         { role: 'user', content: 'First' },
         { role: 'assistant', content: 'Second' },
         { role: 'user', content: 'Third' },
-        { role: 'assistant', content: 'Fourth' }
+        { role: 'assistant', content: 'Fourth' },
       ];
 
       const filtered = mockMessageProcessor.filterMessagesForProvider(messages);
 
       // Check that order is preserved
       for (let i = 0; i < filtered.length - 1; i++) {
-        const originalIndex1 = messages.findIndex(m => m.content === filtered[i].content);
-        const originalIndex2 = messages.findIndex(m => m.content === filtered[i + 1].content);
+        const originalIndex1 = messages.findIndex(
+          (m) => m.content === filtered[i].content
+        );
+        const originalIndex2 = messages.findIndex(
+          (m) => m.content === filtered[i + 1].content
+        );
         expect(originalIndex1).toBeLessThan(originalIndex2);
       }
     });
@@ -124,11 +136,12 @@ describe('Message Processing', () => {
       const largeMessageBatch = Array.from({ length: 1000 }, (_, i) => ({
         role: i % 2 === 0 ? 'user' : 'assistant',
         content: `Message ${i + 1}`,
-        timestamp: Date.now() + i
+        timestamp: Date.now() + i,
       }));
 
       const startTime = Date.now();
-      const filtered = mockMessageProcessor.filterMessagesForProvider(largeMessageBatch);
+      const filtered =
+        mockMessageProcessor.filterMessagesForProvider(largeMessageBatch);
       const endTime = Date.now();
 
       expect(filtered).toBeDefined();
@@ -141,7 +154,7 @@ describe('Message Processing', () => {
     it('should check basic permissions', async () => {
       const permission = await mockPermissionHandler.checkPermission('read', {
         context: 'file-access',
-        resource: '/path/to/file.txt'
+        resource: '/path/to/file.txt',
       });
 
       expect(permission).toBeDefined();
@@ -153,7 +166,7 @@ describe('Message Processing', () => {
       const granted = await mockPermissionHandler.requestPermission('write', {
         context: 'file-modification',
         resource: '/path/to/output.txt',
-        justification: 'Save analysis results'
+        justification: 'Save analysis results',
       });
 
       expect(typeof granted).toBe('boolean');
@@ -161,7 +174,7 @@ describe('Message Processing', () => {
         'write',
         expect.objectContaining({
           context: 'file-modification',
-          justification: 'Save analysis results'
+          justification: 'Save analysis results',
         })
       );
     });
@@ -178,14 +191,14 @@ describe('Message Processing', () => {
 
     it('should revoke permissions', async () => {
       const revoked = await mockPermissionHandler.revokePermission('bash', {
-        reason: 'Security policy change'
+        reason: 'Security policy change',
       });
 
       expect(typeof revoked).toBe('boolean');
       expect(mockPermissionHandler.revokePermission).toHaveBeenCalledWith(
         'bash',
         expect.objectContaining({
-          reason: 'Security policy change'
+          reason: 'Security policy change',
         })
       );
     });
@@ -194,8 +207,8 @@ describe('Message Processing', () => {
       const permissions = await mockPermissionHandler.listPermissions();
 
       expect(Array.isArray(permissions)).toBe(true);
-      
-      permissions.forEach(permission => {
+
+      permissions.forEach((permission) => {
         expect(permission).toHaveProperty('tool');
         expect(permission).toHaveProperty('allowed');
         expect(typeof permission.allowed).toBe('boolean');
@@ -207,8 +220,9 @@ describe('Message Processing', () => {
         createMockError('Permission service unavailable', 'PERMISSION_ERROR')
       );
 
-      await expect(mockPermissionHandler.checkPermission('unknown-tool'))
-        .rejects.toThrow('Permission service unavailable');
+      await expect(
+        mockPermissionHandler.checkPermission('unknown-tool')
+      ).rejects.toThrow('Permission service unavailable');
     });
 
     it('should validate permission requests', async () => {
@@ -217,23 +231,26 @@ describe('Message Processing', () => {
       expect(invalidResult.allowed).toBe(false);
 
       // Test with null context
-      const nullContextResult = await mockPermissionHandler.checkPermission('read', null);
+      const nullContextResult = await mockPermissionHandler.checkPermission(
+        'read',
+        null
+      );
       expect(nullContextResult).toBeDefined();
     });
 
     it('should handle concurrent permission checks', async () => {
       const tools = ['read', 'write', 'bash', 'edit', 'search'];
-      
+
       const startTime = Date.now();
       const checks = await Promise.all(
-        tools.map(tool => mockPermissionHandler.checkPermission(tool))
+        tools.map((tool) => mockPermissionHandler.checkPermission(tool))
       );
       const endTime = Date.now();
 
       expect(checks).toHaveLength(tools.length);
       expect(endTime - startTime).toBeLessThan(1000); // Should complete within 1 second
-      
-      checks.forEach(check => {
+
+      checks.forEach((check) => {
         expect(check).toHaveProperty('allowed');
         expect(typeof check.allowed).toBe('boolean');
       });
@@ -247,21 +264,23 @@ describe('Message Processing', () => {
         content: 'Please read the file and analyze it',
         metadata: {
           requestedTools: ['read', 'analyze'],
-          context: 'code-analysis'
-        }
+          context: 'code-analysis',
+        },
       };
 
       // Check permissions first
-      const readPermission = await mockPermissionHandler.checkPermission('read');
-      const analyzePermission = await mockPermissionHandler.checkPermission('analyze');
+      const readPermission =
+        await mockPermissionHandler.checkPermission('read');
+      const analyzePermission =
+        await mockPermissionHandler.checkPermission('analyze');
 
       // Process message with permission context
       const processed = mockMessageProcessor.processMessage({
         ...messageWithTools,
         permissions: {
           read: readPermission.allowed,
-          analyze: analyzePermission.allowed
-        }
+          analyze: analyzePermission.allowed,
+        },
       });
 
       expect(processed).toBeDefined();
@@ -273,7 +292,7 @@ describe('Message Processing', () => {
       const messages = [
         { role: 'user', content: 'Read this file', tools: ['read'] },
         { role: 'user', content: 'Execute this command', tools: ['bash'] },
-        { role: 'user', content: 'Just a question', tools: [] }
+        { role: 'user', content: 'Just a question', tools: [] },
       ];
 
       // Mock permissions - bash not allowed
@@ -285,12 +304,13 @@ describe('Message Processing', () => {
 
       // Should filter out bash-requiring message
       expect(filtered.length).toBeLessThanOrEqual(messages.length);
-      
-      const bashMessage = filtered.find(msg => 
+
+      const bashMessage = filtered.find((msg) =>
         msg.content.includes('Execute this command')
       );
       // In a real implementation, this might be filtered out or modified
-      expect(bashMessage === undefined || bashMessage.tools.length === 0).toBeTruthy;
+      expect(bashMessage === undefined'' | '''' | ''bashMessage.tools.length === 0)
+        .toBeTruthy;
     });
 
     it('should handle permission escalation requests', async () => {
@@ -300,19 +320,23 @@ describe('Message Processing', () => {
         metadata: {
           escalation: true,
           requestedTools: ['write'],
-          target: '/etc/hosts'
-        }
+          target: '/etc/hosts',
+        },
       };
 
       // Check if escalation is needed
-      const currentPermission = await mockPermissionHandler.checkPermission('write');
-      
+      const currentPermission =
+        await mockPermissionHandler.checkPermission('write');
+
       if (!currentPermission.allowed) {
-        const escalated = await mockPermissionHandler.requestPermission('write', {
-          escalation: true,
-          justification: 'System configuration update'
-        });
-        
+        const escalated = await mockPermissionHandler.requestPermission(
+          'write',
+          {
+            escalation: true,
+            justification: 'System configuration update',
+          }
+        );
+
         expect(typeof escalated).toBe('boolean');
       }
 
@@ -330,11 +354,13 @@ describe('Message Processing', () => {
         null, // Null
         undefined, // Undefined
         'string message', // Wrong type
-        123 // Number
+        123, // Number
       ];
 
-      malformedMessages.forEach(msg => {
-        expect(() => mockMessageProcessor.processMessage(msg as any)).not.toThrow();
+      malformedMessages.forEach((msg) => {
+        expect(() =>
+          mockMessageProcessor.processMessage(msg as any)
+        ).not.toThrow();
       });
     });
 
@@ -352,7 +378,9 @@ describe('Message Processing', () => {
       const circularMessage: any = { role: 'user', content: 'Circular test' };
       circularMessage.self = circularMessage; // Create circular reference
 
-      expect(() => mockMessageProcessor.processMessage(circularMessage)).not.toThrow();
+      expect(() =>
+        mockMessageProcessor.processMessage(circularMessage)
+      ).not.toThrow();
     });
 
     it('should handle very long message content', () => {
@@ -371,7 +399,7 @@ describe('Message Processing', () => {
       const unicodeMessage = {
         role: 'user',
         content: '测试 🚀 العربية русский 🎉 \u{1F600}',
-        metadata: { encoding: 'utf-8' }
+        metadata: { encoding: 'utf-8' },
       };
 
       const processed = mockMessageProcessor.processMessage(unicodeMessage);

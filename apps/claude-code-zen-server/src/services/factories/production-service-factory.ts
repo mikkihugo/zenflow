@@ -5,14 +5,14 @@
  * with real database connections and file persistence.
  */
 
-import { existsSync, mkdirSync } from 'fs');
-import { join } from 'path');
+import { existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
 
-import { getLogger } from '@claude-zen/foundation');
-import { DALFactory } from '@claude-zen/intelligence');
+import { getLogger } from '@claude-zen/foundation';
+import { DALFactory } from '@claude-zen/intelligence';
 
-import { ADRManagerHybrid } from './coordination/adr-hybrid-service');
-import { HybridDocumentManager } from './coordination/hybrid-document-service');
+import { ADRManagerHybrid } from './coordination/adr-hybrid-service';
+import { HybridDocumentManager } from './coordination/hybrid-document-service';
 
 const logger = getLogger('production-hybrid-factory');
 
@@ -22,7 +22,7 @@ export interface ProductionHybridSystemConfig {
   enableGraphRelationships?: boolean;
   vectorDimension?: number;
   useRealDatabases?: boolean;
-  logLevel?: 'debug | info' | 'warn | error');
+  logLevel?: 'debug'' | ''info'' | ''warn'' | ''error');
 }
 
 /**
@@ -66,7 +66,7 @@ export async function createProductionHybridSystem(
     const adrManager = new ADRManagerHybrid(hybridManager);
 
     // Initialize all components with real databases
-    if (enableVectorSearch || enableGraphRelationships) {
+    if (enableVectorSearch'' | '''' | ''enableGraphRelationships) {
       await hybridManager?.initialize()
     }
 
@@ -164,8 +164,8 @@ function createEnhancedMockProviderFactory(dataDir: string) {
             return {
               rows: [
                 {
-                  id: params[0] || `mock-${Date.now()}`,
-                  title: 'Production Mock Entity',
+                  id: params[0]'' | '''' | ''`mock-${Date.now()}`,
+                  title:'Production Mock Entity',
                   type: 'adr',
                   status: 'active',
                   author: 'claude-zen-system',

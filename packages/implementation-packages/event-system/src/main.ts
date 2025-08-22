@@ -1,17 +1,17 @@
 /**
  * @fileoverview Event System - Enterprise Foundation Integration
- * 
+ *
  * Professional event system leveraging comprehensive @claude-zen/foundation utilities.
  * Transformed to match memory package pattern with battle-tested enterprise architecture.
- * 
+ *
  * Foundation Integration:
  * - Result pattern for type-safe error handling
- * - Circuit breakers for resilience  
+ * - Circuit breakers for resilience
  * - Performance tracking and telemetry
  * - Error aggregation and comprehensive logging
  * - Dependency injection with TSyringe
  * - Structured validation and type safety
- * 
+ *
  * ENHANCEMENT: 437 → 600+ lines with comprehensive enterprise features
  * PATTERN: Matches memory package's comprehensive foundation integration
  */
@@ -23,9 +23,9 @@ import type { Logger } from '@claude-zen/foundation/logging';
 
 // Simple utilities to replace missing foundation imports
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16)'' | ''0;
+    const v = c =='x'? r : (r & 0x3)'' | ''0x8;
     return v.toString(16);
   });
 }
@@ -34,9 +34,12 @@ type Timestamp = number;
 const createTimestamp = (): Timestamp => Date.now();
 
 class ContextError extends Error {
-  constructor(message: string, public context?: any) {
+  constructor(
+    message: string,
+    public context?: any
+  ) {
     super(message);
-    this.name = 'ContextError';
+    this.name ='ContextError';
   }
 }
 
@@ -65,12 +68,16 @@ export interface EventBusMetrics {
   averageLatency: number;
   errorRate: number;
   eventsPerSecond: number;
-  circuitBreakerState?: 'closed' | 'open' | 'half-open';
+  circuitBreakerState?: 'closed''' | '''open''' | '''half-open';
   lastErrorTime?: Timestamp;
 }
 
 export class EventSystemError extends ContextError {
-  constructor(message: string, context?: Record<string, unknown>, cause?: Error) {
+  constructor(
+    message: string,
+    context?: Record<string, unknown>,
+    cause?: Error
+  ) {
     super(message, { ...context, domain: 'event-system' }, cause);
     this.name = 'EventSystemError';
   }
@@ -85,7 +92,7 @@ export class FoundationEventBus extends TypedEventBase {
   private config: EventBusConfig;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;
-  private telemetryManager: BasicTelemetryManager | null = null;
+  private telemetryManager: BasicTelemetryManager'' | ''null = null;
   private errorAggregator = createErrorAggregator();
   private circuitBreaker: any;
   private initialized = false;
@@ -94,26 +101,31 @@ export class FoundationEventBus extends TypedEventBase {
     totalEvents: 0,
     averageLatency: 0,
     errorRate: 0,
-    eventsPerSecond: 0
+    eventsPerSecond: 0,
   };
 
   constructor(config: EventBusConfig = {}) {
     super();
-    this.config = { enableMetrics: true, enableValidation: true, enableTelemetry: true, ...config };
+    this.config = {
+      enableMetrics: true,
+      enableValidation: true,
+      enableTelemetry: true,
+      ...config,
+    };
     this.logger = getLogger('foundation-event-bus');
     this.performanceTracker = new PerformanceTracker();
-    
+
     // Initialize circuit breaker for event operations
     this.circuitBreaker = createCircuitBreaker(
       this.performEventOperation.bind(this),
       {
-        timeout: this.config.circuitBreakerConfig?.timeout || 5000,
-        errorThresholdPercentage: this.config.circuitBreakerConfig?.errorThresholdPercentage || 50,
-        resetTimeout: this.config.circuitBreakerConfig?.resetTimeout || 30000
-      },
-      'event-bus-circuit-breaker'
+        timeout: this.config.circuitBreakerConfig?.timeout'' | '''' | ''5000,
+        errorThresholdPercentage:
+          this.config.circuitBreakerConfig?.errorThresholdPercentage'' | '''' | ''50,
+        resetTimeout: this.config.circuitBreakerConfig?.resetTimeout'' | '''' | ''30000,
+      },'event-bus-circuit-breaker'
     );
-    
+
     // Set max listeners if specified
     if (this.config.maxListeners) {
       this.setMaxListeners(this.config.maxListeners);
@@ -127,24 +139,23 @@ export class FoundationEventBus extends TypedEventBase {
     if (this.initialized) return ok(undefined);
 
     const timer = this.performanceTracker.startTimer('event_bus_initialize');
-    
+
     try {
       // Initialize telemetry if enabled
       if (this.config.enableTelemetry) {
         await this.initializeTelemetry();
       }
-      
+
       this.initialized = true;
       this.performanceTracker.endTimer('event_bus_initialize');
       recordMetric('event_bus_initialized', 1);
-      
+
       this.logger.info('Foundation event bus initialized successfully', {
         config: this.config,
-        telemetryEnabled: this.telemetryInitialized
+        telemetryEnabled: this.telemetryInitialized,
       });
-      
+
       return ok(undefined);
-      
     } catch (error) {
       const eventError = new EventSystemError(
         'Event bus initialization failed',
@@ -161,7 +172,10 @@ export class FoundationEventBus extends TypedEventBase {
   /**
    * Enhanced emit with comprehensive foundation integration
    */
-  async emitAsync(eventType: string, payload: any): Promise<Result<boolean, EventSystemError>> {
+  async emitAsync(
+    eventType: string,
+    payload: any
+  ): Promise<Result<boolean, EventSystemError>> {
     if (!this.initialized) {
       const initResult = await this.initialize();
       if (!initResult.success) return err(initResult.error);
@@ -170,7 +184,7 @@ export class FoundationEventBus extends TypedEventBase {
     return withTrace('event_bus_emit', async () => {
       const timer = this.performanceTracker.startTimer('event_bus_emit');
       const eventId = generateUUID();
-      
+
       try {
         // Validate event if validation is enabled
         if (this.config.enableValidation) {
@@ -178,7 +192,12 @@ export class FoundationEventBus extends TypedEventBase {
           if (!validationResult.success) {
             const error = new EventSystemError(
               'Event validation failed',
-              { eventType, payload, eventId, validation: validationResult.errors },
+              {
+                eventType,
+                payload,
+                eventId,
+                validation: validationResult.errors,
+              },
               validationResult.error
             );
             this.errorAggregator.addError(error);
@@ -192,7 +211,7 @@ export class FoundationEventBus extends TypedEventBase {
           type: eventType,
           payload,
           timestamp: createTimestamp(),
-          source: 'foundation-event-bus'
+          source: 'foundation-event-bus',
         };
 
         // Emit via circuit breaker for resilience
@@ -200,7 +219,7 @@ export class FoundationEventBus extends TypedEventBase {
           () => this.circuitBreaker.execute('emit', eventType, enhancedEvent),
           { maxAttempts: 3, baseDelay: 100 }
         );
-        
+
         if (!emitResult.success) {
           const error = new EventSystemError(
             'Failed to emit event',
@@ -211,22 +230,21 @@ export class FoundationEventBus extends TypedEventBase {
           this.updateMetrics('error');
           return err(error);
         }
-        
+
         // Update metrics and telemetry
         const latency = this.performanceTracker.endTimer('event_bus_emit');
         this.updateMetrics('success', latency);
         recordMetric('event_bus_events_emitted', 1);
         recordHistogram('event_bus_emit_latency', latency);
-        
+
         this.logger.debug('Event emitted successfully', {
           eventId,
           eventType,
           latency,
-          payloadSize: JSON.stringify(payload).length
+          payloadSize: JSON.stringify(payload).length,
         });
-        
+
         return ok(true);
-        
       } catch (error) {
         const eventError = new EventSystemError(
           'Failed to emit event',
@@ -266,16 +284,15 @@ export class FoundationEventBus extends TypedEventBase {
         type: eventType,
         payload,
         timestamp: createTimestamp(),
-        source: 'foundation-event-bus'
+        source: 'foundation-event-bus',
       };
 
       const result = super.emit(eventType, enhancedEvent);
-      
+
       this.updateMetrics('success');
       recordMetric('event_bus_events_emitted_sync', 1);
-      
+
       return ok(result);
-      
     } catch (error) {
       const eventError = new EventSystemError(
         'Failed to emit event synchronously',
@@ -295,13 +312,13 @@ export class FoundationEventBus extends TypedEventBase {
     try {
       const enhancedMetrics: EventBusMetrics = {
         ...this.metrics,
-        circuitBreakerState: this.circuitBreaker?.getState?.() || 'unknown'
+        circuitBreakerState: this.circuitBreaker?.getState?.()'' | '''' | '''unknown',
       };
-      
+
       recordHistogram('event_bus_total_events', this.metrics.totalEvents);
       recordHistogram('event_bus_average_latency', this.metrics.averageLatency);
       recordHistogram('event_bus_error_rate', this.metrics.errorRate);
-      
+
       return ok(enhancedMetrics);
     } catch (error) {
       const eventError = new EventSystemError(
@@ -318,27 +335,26 @@ export class FoundationEventBus extends TypedEventBase {
    */
   async destroy(): Promise<Result<void, EventSystemError>> {
     const timer = this.performanceTracker.startTimer('event_bus_destroy');
-    
+
     try {
       // Remove all listeners
       this.removeAllListeners();
-      
+
       // Shutdown telemetry
       if (this.telemetryManager) {
         await this.telemetryManager.shutdown();
         this.telemetryManager = null;
         this.telemetryInitialized = false;
       }
-      
+
       this.initialized = false;
-      
+
       this.performanceTracker.endTimer('event_bus_destroy');
       recordMetric('event_bus_destroyed', 1);
-      
+
       this.logger.info('Foundation event bus destroyed successfully');
-      
+
       return ok(undefined);
-      
     } catch (error) {
       const eventError = new EventSystemError(
         'Failed to destroy event bus',
@@ -361,19 +377,19 @@ export class FoundationEventBus extends TypedEventBase {
 
   private async initializeTelemetry(): Promise<void> {
     if (this.telemetryInitialized) return;
-    
+
     try {
       const config: TelemetryConfig = {
         serviceName: 'foundation-event-bus',
         enableTracing: true,
         enableMetrics: true,
-        enableLogging: true
+        enableLogging: true,
       };
-      
+
       this.telemetryManager = new BasicTelemetryManager(config);
       await this.telemetryManager.initialize();
       this.telemetryInitialized = true;
-      
+
       this.logger.debug('Event bus telemetry initialized');
     } catch (error) {
       this.logger.warn('Failed to initialize telemetry:', error);
@@ -381,7 +397,10 @@ export class FoundationEventBus extends TypedEventBase {
     }
   }
 
-  private async performEventOperation(operation: string, ...args: any[]): Promise<any> {
+  private async performEventOperation(
+    operation: string,
+    ...args: any[]
+  ): Promise<any> {
     switch (operation) {
       case 'emit':
         return super.emit(args[0], args[1]);
@@ -390,46 +409,60 @@ export class FoundationEventBus extends TypedEventBase {
     }
   }
 
-  private validateEvent(eventType: string, payload: any): { success: boolean; errors?: string[]; error?: Error } {
+  private validateEvent(
+    eventType: string,
+    payload: any
+  ): { success: boolean; errors?: string[]; error?: Error } {
     try {
-      const validation = validateObject({
-        eventType,
-        payload
-      }, {
-        eventType: { type: 'string', required: true, minLength: 1 },
-        payload: { type: 'object', required: false }
-      });
-      
+      const validation = validateObject(
+        {
+          eventType,
+          payload,
+        },
+        {
+          eventType: { type: 'string', required: true, minLength: 1 },
+          payload: { type: 'object', required: false },
+        }
+      );
+
       return {
         success: validation.success,
-        errors: validation.success ? undefined : validation.errors
+        errors: validation.success ? undefined : validation.errors,
       };
     } catch (error) {
       return {
         success: false,
         errors: ['Validation failed'],
-        error: ensureError(error)
+        error: ensureError(error),
       };
     }
   }
 
-  private updateMetrics(type: 'success' | 'error', latency?: number): void {
+  private updateMetrics(type: 'success''' | '''error', latency?: number): void {
     this.metrics.totalEvents++;
-    
+
     if (type === 'error') {
-      this.metrics.errorRate = (this.metrics.errorRate * (this.metrics.totalEvents - 1) + 1) / this.metrics.totalEvents;
+      this.metrics.errorRate =
+        (this.metrics.errorRate * (this.metrics.totalEvents - 1) + 1) /
+        this.metrics.totalEvents;
       this.metrics.lastErrorTime = createTimestamp();
     } else {
-      this.metrics.errorRate = (this.metrics.errorRate * (this.metrics.totalEvents - 1)) / this.metrics.totalEvents;
+      this.metrics.errorRate =
+        (this.metrics.errorRate * (this.metrics.totalEvents - 1)) /
+        this.metrics.totalEvents;
     }
-    
+
     if (latency !== undefined) {
-      this.metrics.averageLatency = (this.metrics.averageLatency * (this.metrics.totalEvents - 1) + latency) / this.metrics.totalEvents;
+      this.metrics.averageLatency =
+        (this.metrics.averageLatency * (this.metrics.totalEvents - 1) +
+          latency) /
+        this.metrics.totalEvents;
     }
-    
+
     // Calculate events per second (simple approximation)
     const now = Date.now();
-    this.metrics.eventsPerSecond = this.metrics.totalEvents / Math.max(1, (now - (now - 60000)) / 1000);
+    this.metrics.eventsPerSecond =
+      this.metrics.totalEvents / Math.max(1, (now - (now - 60000)) / 1000);
   }
 }
 
@@ -446,27 +479,37 @@ export interface TypedEventBusConfig extends EventBusConfig {
   enableNeuralRouting?: boolean;
 }
 
-export type TypedEventHandler<T = any> = (event: T) => void | Promise<void>;
-export type WildcardHandler = (type: string, event: any) => void | Promise<void>;
+export type TypedEventHandler<T = any> = (event: T) => void'' | ''Promise<void>;
+export type WildcardHandler = (
+  type: string,
+  event: any
+) => void'' | ''Promise<void>;
 
 /**
  * TypedEventBus with type-safe event handling and foundation integration
  */
 @injectable()
-export class FoundationTypedEventBus<TEventMap extends TypedEventMap = TypedEventMap> extends FoundationEventBus {
+export class FoundationTypedEventBus<
+  TEventMap extends TypedEventMap = TypedEventMap,
+> extends FoundationEventBus {
   private logger: Logger;
-  
+
   constructor(config: TypedEventBusConfig = {}) {
     super(config);
     this.logger = getLogger('foundation-typed-event-bus');
   }
 
   // Type-safe event subscription with foundation error handling
-  onTyped<K extends keyof TEventMap>(type: K, handler: TypedEventHandler<TEventMap[K]>): Result<this, EventSystemError> {
+  onTyped<K extends keyof TEventMap>(
+    type: K,
+    handler: TypedEventHandler<TEventMap[K]>
+  ): Result<this, EventSystemError> {
     try {
       const wrappedHandler = async (event: TEventMap[K]) => {
-        const timer = this.performanceTracker?.startTimer('typed_event_handler');
-        
+        const timer = this.performanceTracker?.startTimer(
+          'typed_event_handler'
+        );
+
         try {
           await safeAsync(() => handler(event));
           this.performanceTracker?.endTimer('typed_event_handler');
@@ -483,10 +526,10 @@ export class FoundationTypedEventBus<TEventMap extends TypedEventMap = TypedEven
           this.logger.error('Typed event handler error:', eventError);
         }
       };
-      
+
       super.on(type as string, wrappedHandler);
       recordMetric('typed_event_listeners_added', 1);
-      
+
       return ok(this);
     } catch (error) {
       const eventError = new EventSystemError(
@@ -499,7 +542,10 @@ export class FoundationTypedEventBus<TEventMap extends TypedEventMap = TypedEven
   }
 
   // Type-safe synchronous emit
-  emitTyped<K extends keyof TEventMap>(type: K, event: TEventMap[K]): Result<boolean, EventSystemError> {
+  emitTyped<K extends keyof TEventMap>(
+    type: K,
+    event: TEventMap[K]
+  ): Result<boolean, EventSystemError> {
     return withContext(
       { operation: 'emitTyped', eventType: type as string },
       () => this.emitSync(type as string, event)
@@ -507,7 +553,10 @@ export class FoundationTypedEventBus<TEventMap extends TypedEventMap = TypedEven
   }
 
   // Type-safe asynchronous emit
-  async emitAsyncTyped<K extends keyof TEventMap>(type: K, event: TEventMap[K]): Promise<Result<boolean, EventSystemError>> {
+  async emitAsyncTyped<K extends keyof TEventMap>(
+    type: K,
+    event: TEventMap[K]
+  ): Promise<Result<boolean, EventSystemError>> {
     return withContext(
       { operation: 'emitAsyncTyped', eventType: type as string },
       () => this.emitAsync(type as string, event)
@@ -515,7 +564,10 @@ export class FoundationTypedEventBus<TEventMap extends TypedEventMap = TypedEven
   }
 
   // Enhanced listener management
-  removeTypedListener<K extends keyof TEventMap>(type: K, handler: TypedEventHandler<TEventMap[K]>): Result<this, EventSystemError> {
+  removeTypedListener<K extends keyof TEventMap>(
+    type: K,
+    handler: TypedEventHandler<TEventMap[K]>
+  ): Result<this, EventSystemError> {
     try {
       super.removeListener(type as string, handler);
       recordMetric('typed_event_listeners_removed', 1);
@@ -541,13 +593,16 @@ export const TypedEventBus = FoundationTypedEventBus;
 @injectable()
 export class FoundationTypeSafeEventBus extends FoundationTypedEventBus {
   private validationRules = new Map<string, any>();
-  
+
   constructor(config: TypedEventBusConfig = {}) {
     super(config);
   }
-  
+
   // Add validation rule for event type
-  addValidationRule<K extends keyof TypedEventMap>(eventType: K, rule: any): Result<void, EventSystemError> {
+  addValidationRule<K extends keyof TypedEventMap>(
+    eventType: K,
+    rule: any
+  ): Result<void, EventSystemError> {
     try {
       this.validationRules.set(eventType as string, rule);
       recordMetric('validation_rules_added', 1);
@@ -561,18 +616,26 @@ export class FoundationTypeSafeEventBus extends FoundationTypedEventBus {
       return err(eventError);
     }
   }
-  
+
   // Override emit with enhanced validation
-  async emitAsyncTyped<K extends keyof TypedEventMap>(type: K, event: TypedEventMap[K]): Promise<Result<boolean, EventSystemError>> {
+  async emitAsyncTyped<K extends keyof TypedEventMap>(
+    type: K,
+    event: TypedEventMap[K]
+  ): Promise<Result<boolean, EventSystemError>> {
     // Custom validation if rule exists
     const rule = this.validationRules.get(type as string);
     if (rule) {
       try {
-        const validationResult = rule.validate ? rule.validate(event) : { success: true };
+        const validationResult = rule.validate
+          ? rule.validate(event)
+          : { success: true };
         if (!validationResult.success) {
           const error = new EventSystemError(
             'Event validation failed',
-            { eventType: type as string, validationErrors: validationResult.errors },
+            {
+              eventType: type as string,
+              validationErrors: validationResult.errors,
+            },
             validationResult.error
           );
           recordMetric('typed_event_validation_failure', 1);
@@ -587,7 +650,7 @@ export class FoundationTypeSafeEventBus extends FoundationTypedEventBus {
         return err(eventError);
       }
     }
-    
+
     return super.emitAsyncTyped(type, event);
   }
 }
@@ -599,9 +662,9 @@ export const TypeSafeEventBus = FoundationTypeSafeEventBus;
 // FACTORY FUNCTIONS
 // =============================================================================
 
-export function createTypedEventBus<TEventMap extends TypedEventMap = TypedEventMap>(
-  config: TypedEventBusConfig = {}
-): TypedEventBus<TEventMap> {
+export function createTypedEventBus<
+  TEventMap extends TypedEventMap = TypedEventMap,
+>(config: TypedEventBusConfig = {}): TypedEventBus<TEventMap> {
   return new TypedEventBus<TEventMap>(config);
 }
 
@@ -611,15 +674,13 @@ export function createHighPerformanceEventBus(
   return new EventBus({ ...config, performance: true });
 }
 
-export function createValidatedEventBus(
-  config: EventBusConfig = {}
-): EventBus {
+export function createValidatedEventBus(config: EventBusConfig = {}): EventBus {
   return new EventBus({ ...config, validation: true });
 }
 
-export function createTypeSafeEventBus<TEventMap extends TypedEventMap = TypedEventMap>(
-  config: TypedEventBusConfig = {}
-): TypeSafeEventBus {
+export function createTypeSafeEventBus<
+  TEventMap extends TypedEventMap = TypedEventMap,
+>(config: TypedEventBusConfig = {}): TypeSafeEventBus {
   return new TypeSafeEventBus(config);
 }
 
@@ -645,42 +706,53 @@ export function createUEL(config: UELConfig = {}): EventBus {
 // MIDDLEWARE SYSTEM
 // =============================================================================
 
-export type EventMiddleware = (event: any, next?: () => void | Promise<void>) => void | Promise<void>;
+export type EventMiddleware = (
+  event: any,
+  next?: () => void'' | ''Promise<void>
+) => void'' | ''Promise<void>;
 export type EventContext = { event: any; metadata?: Record<string, any> };
 
-export function createLoggingMiddleware(config: { prefix?: string } = {}): EventMiddleware {
-  const prefix = config.prefix || '[EventSystem]';
+export function createLoggingMiddleware(
+  config: { prefix?: string } = {}
+): EventMiddleware {
+  const prefix = config.prefix'' | '''' | '''[EventSystem]';
   return (event, next) => {
-    console.log(prefix, event.type || 'unknown', event);
+    console.log(prefix, event.type'' | '''' | '''unknown', event);
     if (next) return next();
   };
 }
 
-export function createTimingMiddleware(config: { logTiming?: boolean } = {}): EventMiddleware {
+export function createTimingMiddleware(
+  config: { logTiming?: boolean } = {}
+): EventMiddleware {
   return (event, next) => {
     const start = Date.now();
     const result = next ? next() : Promise.resolve();
-    
+
     if (result && typeof result.then === 'function') {
-      return result.then(r => {
+      return result.then((r) => {
         if (config.logTiming) {
-          console.log(`[EventSystem] ${event.type} took ${Date.now() - start}ms`);
+          console.log(
+            `[EventSystem] ${event.type} took ${Date.now() - start}ms`
+          );
         }
         return r;
       });
     }
-    
+
     if (config.logTiming) {
       console.log(`[EventSystem] ${event.type} took ${Date.now() - start}ms`);
     }
-    
+
     return result;
   };
 }
 
-export function createValidationMiddleware(config: { strict?: boolean } = {}): EventMiddleware {
+export function createValidationMiddleware(
+  config: { strict?: boolean } = {}
+): EventMiddleware {
   return (event, next) => {
-    if (!event || typeof event !== 'object') {
+    if (!event'' | '''' | ''typeof event !=='object') {
       if (config.strict) {
         throw new Error('Invalid event object');
       }
@@ -690,7 +762,9 @@ export function createValidationMiddleware(config: { strict?: boolean } = {}): E
   };
 }
 
-export function createErrorHandlingMiddleware(config: { logErrors?: boolean } = {}): EventMiddleware {
+export function createErrorHandlingMiddleware(
+  config: { logErrors?: boolean } = {}
+): EventMiddleware {
   return (event, next) => {
     try {
       return next ? next() : Promise.resolve();
@@ -703,30 +777,32 @@ export function createErrorHandlingMiddleware(config: { logErrors?: boolean } = 
   };
 }
 
-export function createRateLimitingMiddleware(config: { maxEventsPerSecond?: number } = {}): EventMiddleware {
+export function createRateLimitingMiddleware(
+  config: { maxEventsPerSecond?: number } = {}
+): EventMiddleware {
   const rateLimitMap = new Map<string, number[]>();
-  const limit = config.maxEventsPerSecond || 100;
-  
+  const limit = config.maxEventsPerSecond'' | '''' | ''100;
+
   return (event, next) => {
-    const eventType = event.type || 'unknown';
+    const eventType = event.type'' | '''' | '''unknown';
     const now = Date.now();
     const windowStart = now - 1000; // 1 second window
-    
+
     if (!rateLimitMap.has(eventType)) {
       rateLimitMap.set(eventType, []);
     }
-    
+
     const timestamps = rateLimitMap.get(eventType)!;
     // Remove old timestamps
     while (timestamps.length > 0 && timestamps[0] < windowStart) {
       timestamps.shift();
     }
-    
+
     if (timestamps.length >= limit) {
       console.warn(`[EventSystem] Rate limit exceeded for ${eventType}`);
       return;
     }
-    
+
     timestamps.push(now);
     if (next) return next();
   };
@@ -747,7 +823,9 @@ export function createConditionalMiddleware(
   };
 }
 
-export function createEventTypeMiddleware(config: { allowedTypes?: string[] } = {}): EventMiddleware {
+export function createEventTypeMiddleware(
+  config: { allowedTypes?: string[] } = {}
+): EventMiddleware {
   return (event, next) => {
     if (config.allowedTypes && config.allowedTypes.length > 0) {
       if (!config.allowedTypes.includes(event.type)) {
@@ -759,7 +837,9 @@ export function createEventTypeMiddleware(config: { allowedTypes?: string[] } = 
   };
 }
 
-export function createAsyncMiddleware(handler: (event: any) => Promise<void>): EventMiddleware {
+export function createAsyncMiddleware(
+  handler: (event: any) => Promise<void>
+): EventMiddleware {
   return async (event, next) => {
     await handler(event);
     if (next) return await next();
@@ -777,7 +857,7 @@ export interface ValidationResult {
 
 export class EventValidator {
   validate(event: any): ValidationResult {
-    if (!event || typeof event !== 'object') {
+    if (!event'' | '''' | ''typeof event !=='object') {
       return { valid: false, errors: ['Event must be an object'] };
     }
     return { valid: true, errors: [] };
@@ -793,7 +873,10 @@ export class DomainValidator extends EventValidator {
     const baseResult = super.validate(event);
     if (!baseResult.valid) return baseResult;
 
-    if (this.allowedDomains.length > 0 && !this.allowedDomains.includes(event.domain)) {
+    if (
+      this.allowedDomains.length > 0 &&
+      !this.allowedDomains.includes(event.domain)
+    ) {
       return { valid: false, errors: [`Domain ${event.domain} not allowed`] };
     }
 
@@ -828,12 +911,14 @@ export function createValidationChain(): ValidationChain {
 
 export interface EventSchema<T = any> {
   parse(data: unknown): T;
-  safeParse(data: unknown): { success: true; data: T } | { success: false; error: Error };
+  safeParse(
+    data: unknown
+  ): { success: true; data: T }'' | ''{ success: false; error: Error };
 }
 
 export const BaseEventSchema: EventSchema<any> = {
   parse: (data) => data,
-  safeParse: (data) => ({ success: true, data })
+  safeParse: (data) => ({ success: true, data }),
 };
 
 export const EventSchemas = {
@@ -841,14 +926,14 @@ export const EventSchemas = {
   coordination: BaseEventSchema,
   workflow: BaseEventSchema,
   interface: BaseEventSchema,
-  core: BaseEventSchema
+  core: BaseEventSchema,
 };
 
 // =============================================================================
 // DOMAIN BOUNDARY TYPES
 // =============================================================================
 
-export type DomainBoundary = 'COORDINATION' | 'WORKFLOW' | 'NEURAL' | 'DATABASE' | 'MEMORY' | 'KNOWLEDGE' | 'INTERFACE' | 'CORE';
+export type DomainBoundary ='' | '''COORDINATION | WORKFLOW' | 'NEURAL''' | '''DATABASE | MEMORY' | 'KNOWLEDGE' | 'INTERFACE' | 'CORE';
 
 export interface BaseEvent {
   id: string;
@@ -876,7 +961,7 @@ export interface CoreEvent extends BaseEvent {
 }
 
 export type EventTypeFromSchema<T> = T extends EventSchema<infer U> ? U : never;
-export type AllEventTypes = BaseEvent | CoordinationEvent | WorkflowEvent | InterfaceEvent | CoreEvent;
+export type AllEventTypes ='' | ''BaseEvent'' | ''CoordinationEvent'' | ''WorkflowEvent'' | ''InterfaceEvent'' | ''CoreEvent;
 
 // =============================================================================
 // CORE INTERFACES
@@ -900,7 +985,7 @@ export interface EventManagerMetrics {
 }
 
 export type EventFilter = (event: any) => boolean;
-export type EventManagerType = 'basic' | 'typed' | 'validated' | 'neural';
+export type EventManagerType ='basic | typed' | 'validated''' | '''neural';
 export type EventListener = (...args: any[]) => void;
 export type EventSubscription = { unsubscribe: () => void };
 
@@ -928,44 +1013,58 @@ export interface EventSystemOptions {
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getEventSystemAccess(config?: EventBusConfig): Promise<any> {
+export async function getEventSystemAccess(
+  config?: EventBusConfig
+): Promise<any> {
   const eventBus = new EventBus(config);
   await eventBus.initialize();
   return {
     createEventBus: (busConfig?: EventBusConfig) => new EventBus(busConfig),
-    createTypedEventBus: <T extends TypedEventMap>(busConfig?: TypedEventBusConfig) => new TypedEventBus<T>(busConfig),
-    createTypeSafeEventBus: <T extends TypedEventMap>(busConfig?: TypedEventBusConfig) => new TypeSafeEventBus(busConfig),
+    createTypedEventBus: <T extends TypedEventMap>(
+      busConfig?: TypedEventBusConfig
+    ) => new TypedEventBus<T>(busConfig),
+    createTypeSafeEventBus: <T extends TypedEventMap>(
+      busConfig?: TypedEventBusConfig
+    ) => new TypeSafeEventBus(busConfig),
     emit: (event: string, data: any) => eventBus.emitAsync(event, data),
     emitSync: (event: string, data: any) => eventBus.emitSync(event, data),
     on: (event: string, handler: any) => eventBus.on(event, handler),
     off: (event: string, handler: any) => eventBus.off(event, handler),
     removeAllListeners: () => eventBus.removeAllListeners(),
     getMetrics: () => eventBus.getMetrics(),
-    destroy: () => eventBus.destroy()
+    destroy: () => eventBus.destroy(),
   };
 }
 
-export async function getEventBusInstance(config?: EventBusConfig): Promise<EventBus> {
+export async function getEventBusInstance(
+  config?: EventBusConfig
+): Promise<EventBus> {
   const eventBus = new EventBus(config);
   await eventBus.initialize();
   return eventBus;
 }
 
-export async function getTypedEventBusInstance<T extends TypedEventMap>(config?: TypedEventBusConfig): Promise<TypedEventBus<T>> {
+export async function getTypedEventBusInstance<T extends TypedEventMap>(
+  config?: TypedEventBusConfig
+): Promise<TypedEventBus<T>> {
   return new TypedEventBus<T>(config);
 }
 
-export async function getEventCoordination(config?: EventBusConfig): Promise<any> {
+export async function getEventCoordination(
+  config?: EventBusConfig
+): Promise<any> {
   const system = await getEventSystemAccess(config);
   return {
     broadcast: (event: string, data: any) => system.emit(event, data),
     subscribe: (event: string, handler: any) => system.on(event, handler),
     unsubscribe: (event: string, handler: any) => system.off(event, handler),
-    metrics: () => system.getMetrics()
+    metrics: () => system.getMetrics(),
   };
 }
 
-export async function getEventMiddleware(config?: EventBusConfig): Promise<any> {
+export async function getEventMiddleware(
+  config?: EventBusConfig
+): Promise<any> {
   return {
     createLogging: createLoggingMiddleware,
     createTiming: createTimingMiddleware,
@@ -974,7 +1073,7 @@ export async function getEventMiddleware(config?: EventBusConfig): Promise<any> 
     createRateLimit: createRateLimitingMiddleware,
     createConditional: createConditionalMiddleware,
     createEventType: createEventTypeMiddleware,
-    createAsync: createAsyncMiddleware
+    createAsync: createAsyncMiddleware,
   };
 }
 
@@ -988,7 +1087,7 @@ export const eventSystem = {
   createEventBus: createTypedEventBus,
   createHighPerformance: createHighPerformanceEventBus,
   createValidated: createValidatedEventBus,
-  createTypeSafe: createTypeSafeEventBus
+  createTypeSafe: createTypeSafeEventBus,
 };
 
 // =============================================================================

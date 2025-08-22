@@ -1,4 +1,4 @@
-import { EventEmitter } from "@claude-zen/foundation";
+import { EventEmitter } from '@claude-zen/foundation';
 /**
  * @fileoverview Base Event Manager Implementation
  *
@@ -85,8 +85,7 @@ import type {
  *   id: 'custom-001',
  *   type: 'custom:event',
  *   timestamp: new Date(),
- *   source: 'test'
- * });
+ *   source: 'test'* });
  * ```
  */
 export abstract class BaseEventManager implements EventManager {
@@ -97,7 +96,7 @@ export abstract class BaseEventManager implements EventManager {
     string,
     {
       eventTypes: string[];
-      listener: (event: SystemEvent) => void | Promise<void>;
+      listener: (event: SystemEvent) => void'' | ''Promise<void>;
       filter?: EventFilter;
       subscriptionTime: Date;
       eventCount: number;
@@ -133,7 +132,7 @@ export abstract class BaseEventManager implements EventManager {
     this.logger = logger;
     this.name = config.name;
     this.type = config.type as EventManagerType;
-    this.processingStrategy = config.processing?.strategy || 'immediate';
+    this.processingStrategy = config.processing?.strategy'' | '''' | '''immediate';
 
     this.logger.debug(
       `BaseEventManager initialized: ${this.name} (${this.type})`
@@ -154,9 +153,7 @@ export abstract class BaseEventManager implements EventManager {
 
     // Start processing based on strategy
     if (
-      this.processingStrategy === 'queued' ||
-      this.processingStrategy === 'batched'
-    ) {
+      this.processingStrategy === 'queued''' | '''' | ''this.processingStrategy ==='batched') {
       this.startQueueProcessing();
     }
 
@@ -236,7 +233,7 @@ export abstract class BaseEventManager implements EventManager {
       // Add priority and options to event
       const enrichedEvent = {
         ...event,
-        priority: options?.priority || 'medium',
+        priority: options?.priority'' | '''' | '''medium',
         metadata: {
           ...event.metadata,
           emittedAt: new Date(),
@@ -256,12 +253,12 @@ export abstract class BaseEventManager implements EventManager {
           this.processingBatch.push(enrichedEvent);
           if (
             this.processingBatch.length >=
-            (this.config.processing?.batchSize || 10)
+            (this.config.processing?.batchSize'' | '''' | ''10)
           ) {
             await this.processBatch();
           }
           break;
-        case 'throttled':
+        case'throttled':
           await this.processEventThrottled(enrichedEvent);
           break;
         default:
@@ -295,8 +292,8 @@ export abstract class BaseEventManager implements EventManager {
    * Subscribe to events with optional filtering.
    */
   subscribe<T extends SystemEvent>(
-    eventTypes: string | string[],
-    listener: (event: T) => void | Promise<void>,
+    eventTypes: string'' | ''string[],
+    listener: (event: T) => void'' | ''Promise<void>,
     options?: {
       filter?: EventFilter;
       once?: boolean;
@@ -308,8 +305,11 @@ export abstract class BaseEventManager implements EventManager {
     this.subscribers.set(subscriptionId, {
       eventTypes: types,
       listener: options?.once
-        ? this.wrapOnceListener(listener as (event: SystemEvent) => void | Promise<void>, subscriptionId)
-        : listener as (event: SystemEvent) => void | Promise<void>,
+        ? this.wrapOnceListener(
+            listener as (event: SystemEvent) => void'' | ''Promise<void>,
+            subscriptionId
+          )
+        : (listener as (event: SystemEvent) => void'' | ''Promise<void>),
       filter: options?.filter,
       subscriptionTime: new Date(),
       eventCount: 0,
@@ -352,7 +352,9 @@ export abstract class BaseEventManager implements EventManager {
       eventsEmitted: this.metrics.eventsEmitted,
       p95Latency: this.metrics.averageLatency * 1.2, // Approximate p95
       p99Latency: this.metrics.averageLatency * 1.5, // Approximate p99
-      throughput: this.metrics.eventsProcessed / Math.max(1, (Date.now() - this.metrics.startTime.getTime()) / 1000), // events per second
+      throughput:
+        this.metrics.eventsProcessed /
+        Math.max(1, (Date.now() - this.metrics.startTime.getTime()) / 1000), // events per second
       memoryUsage: process.memoryUsage().heapUsed,
       timestamp: new Date(),
     };
@@ -364,16 +366,16 @@ export abstract class BaseEventManager implements EventManager {
   async healthCheck(): Promise<EventManagerStatus> {
     const metrics = await this.getMetrics();
     const queueBacklog =
-      this.eventQueue.length > (this.config.processing?.queueSize || 1000);
+      this.eventQueue.length > (this.config.processing?.queueSize'' | '''' | ''1000);
     const highErrorRate = false; // metrics.errorRate > 0.1; // 10% error threshold (errorRate not in interface)
     const notResponsive = !this.isRunning;
 
-    const isHealthy = !(queueBacklog || highErrorRate || notResponsive);
+    const isHealthy = !(queueBacklog'' | '''' | ''highErrorRate'' | '''' | ''notResponsive);
 
     return {
       name: this.name,
       type: this.type,
-      status: isHealthy ? 'healthy' : 'unhealthy',
+      status: isHealthy ?'healthy' : 'unhealthy',
       lastCheck: new Date(),
       subscriptions: this.metrics.subscriptionCount,
       queueSize: this.eventQueue.length,
@@ -395,7 +397,7 @@ export abstract class BaseEventManager implements EventManager {
   getSubscriptions(): Array<{
     id: string;
     eventTypes: string[];
-    listener: (event: SystemEvent) => void | Promise<void>;
+    listener: (event: SystemEvent) => void'' | ''Promise<void>;
     filter?: EventFilter;
     priority: EventPriority;
     created: Date;
@@ -407,7 +409,7 @@ export abstract class BaseEventManager implements EventManager {
       eventTypes: subscription.eventTypes,
       listener: subscription.listener,
       filter: subscription.filter,
-      priority: 'medium' as EventPriority, // Default priority
+      priority:'medium' as EventPriority, // Default priority
       created: subscription.subscriptionTime,
       active: true, // All stored subscriptions are active
       metadata: { eventCount: subscription.eventCount },
@@ -443,13 +445,19 @@ export abstract class BaseEventManager implements EventManager {
    * Emit a batch of events efficiently.
    */
   async emitBatch<T extends SystemEvent>(
-    batch: { id: string; events: T[]; size: number; created: Date; metadata?: Record<string, unknown> },
+    batch: {
+      id: string;
+      events: T[];
+      size: number;
+      created: Date;
+      metadata?: Record<string, unknown>;
+    },
     options?: { priority?: EventPriority; timeout?: number; retries?: number }
   ): Promise<void> {
     this.logger.debug(`Emitting batch of ${batch.events.length} events`);
-    
+
     // Process all events in the batch
-    const promises = batch.events.map(event => this.emit(event, options));
+    const promises = batch.events.map((event) => this.emit(event, options));
     await Promise.allSettled(promises);
   }
 
@@ -460,7 +468,7 @@ export abstract class BaseEventManager implements EventManager {
     // Force immediate processing regardless of strategy
     const originalStrategy = this.processingStrategy;
     this.processingStrategy = 'immediate';
-    
+
     try {
       await this.emit(event);
     } finally {
@@ -473,7 +481,7 @@ export abstract class BaseEventManager implements EventManager {
    */
   unsubscribeAll(eventType?: string): number {
     let removedCount = 0;
-    
+
     if (eventType) {
       // Remove subscriptions for specific event type
       for (const [id, subscription] of this.subscribers.entries()) {
@@ -487,9 +495,11 @@ export abstract class BaseEventManager implements EventManager {
       removedCount = this.subscribers.size;
       this.subscribers.clear();
     }
-    
+
     this.metrics.subscriptionCount -= removedCount;
-    this.logger.debug(`Unsubscribed ${removedCount} listeners${eventType ? ` for event type: ${eventType}` : ''}`);
+    this.logger.debug(
+      `Unsubscribed ${removedCount} listeners${eventType ? ` for event type: ${eventType}` : ''}`
+    );
     return removedCount;
   }
 
@@ -515,7 +525,11 @@ export abstract class BaseEventManager implements EventManager {
   /**
    * Add a global event transformation.
    */
-  addTransform(transform: { mapper?: (event: SystemEvent) => SystemEvent; enricher?: (event: SystemEvent) => Promise<SystemEvent>; validator?: (event: SystemEvent) => boolean }): string {
+  addTransform(transform: {
+    mapper?: (event: SystemEvent) => SystemEvent;
+    enricher?: (event: SystemEvent) => Promise<SystemEvent>;
+    validator?: (event: SystemEvent) => boolean;
+  }): string {
     // Stub implementation
     const transformId = `transform-${Date.now()}-${Math.random().toString(36).substring(2)}`;
     this.logger.debug(`Transform added: ${transformId}`);
@@ -538,8 +552,8 @@ export abstract class BaseEventManager implements EventManager {
     filter?: EventFilter;
     limit?: number;
     offset?: number;
-    sortBy?: 'timestamp' | 'priority' | 'type' | 'source';
-    sortOrder?: 'asc' | 'desc';
+    sortBy?: 'timestamp | priority' | 'type''' | '''source';
+    sortOrder?: 'asc''' | '''desc';
     includeMetadata?: boolean;
   }): Promise<T[]> {
     // Stub implementation - would query from event store
@@ -550,9 +564,14 @@ export abstract class BaseEventManager implements EventManager {
   /**
    * Get event history for a specific event type.
    */
-  async getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]> {
+  async getEventHistory(
+    eventType: string,
+    limit?: number
+  ): Promise<SystemEvent[]> {
     // Stub implementation - would query from event store
-    this.logger.debug(`Getting event history for type: ${eventType}, limit: ${limit}`);
+    this.logger.debug(
+      `Getting event history for type: ${eventType}, limit: ${limit}`
+    );
     return [];
   }
 
@@ -562,12 +581,12 @@ export abstract class BaseEventManager implements EventManager {
   updateConfig(config: Partial<EventManagerConfig>): void {
     // Note: config is readonly, so we need to cast for updates
     (this.config as any) = { ...this.config, ...config };
-    
+
     // Update processing strategy if changed
     if (config.processing?.strategy) {
       this.processingStrategy = config.processing.strategy;
     }
-    
+
     this.logger.debug(`Configuration updated for manager: ${this.name}`);
   }
 
@@ -575,7 +594,7 @@ export abstract class BaseEventManager implements EventManager {
    * Add listener for manager lifecycle events.
    */
   on(
-    event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
+    event: 'start | stop' | 'error' | 'subscription' | 'emission',
     handler: (...args: unknown[]) => void
   ): void {
     // Stub implementation - could use EventEmitter if needed
@@ -608,14 +627,14 @@ export abstract class BaseEventManager implements EventManager {
 
   protected async processEventThrottled(event: SystemEvent): Promise<void> {
     // Simple throttling - could be made more sophisticated
-    const delay = (this.config.processing as any)?.throttleDelay || 100;
+    const delay = (this.config.processing as any)?.throttleDelay'' | '''' | ''100;
     setTimeout(async () => {
       await this.notifySubscribers(event);
     }, delay);
   }
 
   protected async processBatch(): Promise<void> {
-    if (this.processingBatch.length === 0 || this.isProcessing) {
+    if (this.processingBatch.length === 0'' | '''' | ''this.isProcessing) {
       return;
     }
 
@@ -636,12 +655,12 @@ export abstract class BaseEventManager implements EventManager {
   }
 
   protected async processEventQueue(): Promise<void> {
-    if (this.eventQueue.length === 0 || this.isProcessing) {
+    if (this.eventQueue.length === 0'' | '''' | ''this.isProcessing) {
       return;
     }
 
     this.isProcessing = true;
-    const batchSize = this.config.processing?.batchSize || 10;
+    const batchSize = this.config.processing?.batchSize'' | '''' | ''10;
     const batch = this.eventQueue.splice(0, batchSize);
 
     try {
@@ -679,14 +698,14 @@ export abstract class BaseEventManager implements EventManager {
 
   protected findMatchingSubscribers(event: SystemEvent): Array<{
     eventTypes: string[];
-    listener: (event: SystemEvent) => void | Promise<void>;
+    listener: (event: SystemEvent) => void'' | ''Promise<void>;
     filter?: EventFilter;
     subscriptionTime: Date;
     eventCount: number;
   }> {
     const matching: Array<{
       eventTypes: string[];
-      listener: (event: SystemEvent) => void | Promise<void>;
+      listener: (event: SystemEvent) => void'' | ''Promise<void>;
       filter?: EventFilter;
       subscriptionTime: Date;
       eventCount: number;
@@ -755,7 +774,7 @@ export abstract class BaseEventManager implements EventManager {
     // Metadata filtering
     if (filter.metadata) {
       for (const [key, value] of Object.entries(filter.metadata)) {
-        if (!event.metadata || event.metadata[key] !== value) {
+        if (!event.metadata'' | '''' | ''event.metadata[key] !== value) {
           return false;
         }
       }
@@ -774,9 +793,9 @@ export abstract class BaseEventManager implements EventManager {
   }
 
   protected wrapOnceListener(
-    listener: (event: SystemEvent) => void | Promise<void>,
+    listener: (event: SystemEvent) => void'' | ''Promise<void>,
     subscriptionId: string
-  ): (event: SystemEvent) => void | Promise<void> {
+  ): (event: SystemEvent) => void'' | ''Promise<void> {
     return async (event: SystemEvent) => {
       try {
         await listener(event);
@@ -787,26 +806,26 @@ export abstract class BaseEventManager implements EventManager {
   }
 
   protected startQueueProcessing(): void {
-    const interval = (this.config.processing as any)?.processInterval || 100;
+    const interval = (this.config.processing as any)?.processInterval'' | '''' | ''100;
     this.processingInterval = setInterval(async () => {
       if (this.eventQueue.length > 0) {
         await this.processEventQueue();
       }
       if (
         this.processingBatch.length > 0 &&
-        this.processingStrategy === 'batched'
-      ) {
+        this.processingStrategy ==='batched') {
         await this.processBatch();
       }
     }, interval);
   }
 
   protected startHealthMonitoring(): void {
-    const interval = (this.config.monitoring as any)?.healthCheckInterval || 60000;
+    const interval =
+      (this.config.monitoring as any)?.healthCheckInterval'' | '''' | ''60000;
     this.healthCheckInterval = setInterval(async () => {
       try {
         const status = await this.healthCheck();
-        if (status.status !== 'healthy') {
+        if (status.status !=='healthy') {
           this.logger.warn(
             `Event manager health check failed: ${this.name}`,
             status

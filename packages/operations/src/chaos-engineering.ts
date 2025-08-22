@@ -97,20 +97,22 @@ interface ChaosEngineeringSystemConfig {
  * Implementation of chaos engineering access via runtime delegation
  */
 class ChaosEngineeringSystemAccessImpl implements ChaosEngineeringSystemAccess {
-  private chaosEngineeringModule: ChaosEngineeringSystemModule | null = null;
+  private chaosEngineeringModule: ChaosEngineeringSystemModule'' | ''null = null;
 
   private async getChaosEngineeringModule(): Promise<ChaosEngineeringSystemModule> {
     if (!this.chaosEngineeringModule) {
       try {
         // Import the chaos-engineering package at runtime (matches database pattern)
         // Use dynamic import with string to avoid TypeScript compile-time checking
-        const packageName = '@claude-zen/chaos-engineering';
-        this.chaosEngineeringModule = await import(packageName) as ChaosEngineeringSystemModule;
+        const packageName ='@claude-zen/chaos-engineering';
+        this.chaosEngineeringModule = (await import(
+          packageName
+        )) as ChaosEngineeringSystemModule;
         logger.debug('Chaos engineering module loaded successfully');
       } catch (error) {
         throw new ChaosEngineeringSystemConnectionError(
           'Chaos engineering package not available. Operations requires @claude-zen/chaos-engineering for chaos operations.',
-          error instanceof Error ? error : undefined,
+          error instanceof Error ? error : undefined
         );
       }
     }
@@ -120,30 +122,43 @@ class ChaosEngineeringSystemAccessImpl implements ChaosEngineeringSystemAccess {
   async createChaosEngine(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
     logger.debug('Creating chaos engine via operations delegation', { config });
-    return module.createChaosEngine ? module.createChaosEngine(config) : new module.ChaosEngine(config);
+    return module.createChaosEngine
+      ? module.createChaosEngine(config)
+      : new module.ChaosEngine(config);
   }
 
   async createResilienceTestSuite(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
-    logger.debug('Creating resilience test suite via operations delegation', { config });
-    return module.createResilienceTestSuite ? module.createResilienceTestSuite(config) : new module.ResilienceTestSuite(config);
+    logger.debug('Creating resilience test suite via operations delegation', {
+      config,
+    });
+    return module.createResilienceTestSuite
+      ? module.createResilienceTestSuite(config)
+      : new module.ResilienceTestSuite(config);
   }
 
   async createFailureSimulator(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
-    logger.debug('Creating failure simulator via operations delegation', { config });
-    return module.createFailureSimulator ? module.createFailureSimulator(config) : new module.FailureSimulator(config);
+    logger.debug('Creating failure simulator via operations delegation', {
+      config,
+    });
+    return module.createFailureSimulator
+      ? module.createFailureSimulator(config)
+      : new module.FailureSimulator(config);
   }
 
   async createExperimentRunner(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
-    logger.debug('Creating experiment runner via operations delegation', { config });
+    logger.debug('Creating experiment runner via operations delegation', {
+      config,
+    });
     return new module.ExperimentRunner(config);
   }
 }
 
 // Global singleton instance
-let globalChaosEngineeringSystemAccess: ChaosEngineeringSystemAccess | null = null;
+let globalChaosEngineeringSystemAccess: ChaosEngineeringSystemAccess'' | ''null =
+  null;
 
 /**
  * Get chaos engineering access interface (singleton pattern)
@@ -160,36 +175,44 @@ export function getChaosEngineeringSystemAccess(): ChaosEngineeringSystemAccess 
  * Create a chaos engine through operations delegation
  * @param config - Chaos engine configuration
  */
-export async function getChaosEngine(config?: ChaosEngineeringSystemConfig): Promise<any> {
+export async function getChaosEngine(
+  config?: ChaosEngineeringSystemConfig
+): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
-  return chaosSystem.createChaosEngine(config);
+  return await Promise.resolve(chaosSystem.createChaosEngine(config));
 }
 
 /**
  * Create a resilience test suite through operations delegation
  * @param config - Resilience test suite configuration
  */
-export async function getResilienceTestSuite(config?: ChaosEngineeringSystemConfig): Promise<any> {
+export async function getResilienceTestSuite(
+  config?: ChaosEngineeringSystemConfig
+): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
-  return chaosSystem.createResilienceTestSuite(config);
+  return await Promise.resolve(chaosSystem.createResilienceTestSuite(config));
 }
 
 /**
  * Create a failure simulator through operations delegation
  * @param config - Failure simulator configuration
  */
-export async function getFailureSimulator(config?: ChaosEngineeringSystemConfig): Promise<any> {
+export async function getFailureSimulator(
+  config?: ChaosEngineeringSystemConfig
+): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
-  return chaosSystem.createFailureSimulator(config);
+  return await Promise.resolve(chaosSystem.createFailureSimulator(config));
 }
 
 /**
  * Create an experiment runner through operations delegation
  * @param config - Experiment runner configuration
  */
-export async function getExperimentRunner(config?: ChaosEngineeringSystemConfig): Promise<any> {
+export async function getExperimentRunner(
+  config?: ChaosEngineeringSystemConfig
+): Promise<any> {
   const chaosSystem = getChaosEngineeringSystemAccess();
-  return chaosSystem.createExperimentRunner(config);
+  return await Promise.resolve(chaosSystem.createExperimentRunner(config));
 }
 
 // Professional chaos engineering object with proper naming (matches Storage/Telemetry patterns)
@@ -202,7 +225,4 @@ export const chaosEngineeringSystem = {
 };
 
 // Type exports for external consumers
-export type {
-  ChaosEngineeringSystemAccess,
-  ChaosEngineeringSystemConfig,
-};
+export type { ChaosEngineeringSystemAccess, ChaosEngineeringSystemConfig };

@@ -11,15 +11,8 @@
 // Using Awilix DI - no reflect-metadata needed
 import { BaseDao } from '../base.dao';
 import { injectable } from '@claude-zen/foundation';
-import type {
-  DatabaseAdapter,
-  Logger,
-} from '../interfaces.js';
-import type {
-  CustomQuery,
-  MemoryRepository,
-  MemoryStats,
-} from '../interfaces';
+import type { DatabaseAdapter, Logger } from '../interfaces.js';
+import type { CustomQuery, MemoryRepository, MemoryStats } from '../interfaces';
 
 /**
  * In-memory cache entry.
@@ -67,9 +60,9 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
   ) {
     super(adapter, logger, tableName, entitySchema);
 
-    this.maxSize = options?.maxSize || 1000;
-    this.defaultTTL = options?.ttlDefault || 3600; // 1 hour
-    this.cleanupInterval = options?.cleanupInterval || 60000; // 1 minute
+    this.maxSize = options?.maxSize'' | '''' | ''1000;
+    this.defaultTTL = options?.ttlDefault'' | '''' | ''3600; // 1 hour
+    this.cleanupInterval = options?.cleanupInterval'' | '''' | ''60000; // 1 minute
 
     this.startCleanupTimer();
   }
@@ -80,7 +73,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    * @param id
    * @param ttlSeconds
    */
-  async setTTL(id: string | number, ttlSeconds: number): Promise<void> {
+  async setTTL(id: string'' | ''number, ttlSeconds: number): Promise<void> {
     this.logger.debug(`Setting TTL for entity ${id}: ${ttlSeconds} seconds`);
 
     const key = this.getEntityKey(id);
@@ -114,7 +107,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    *
    * @param id
    */
-  async getTTL(id: string | number): Promise<number | null> {
+  async getTTL(id: string'' | ''number): Promise<number'' | ''null> {
     const key = this.getEntityKey(id);
     const entry = this.memoryStore.get(key);
 
@@ -168,7 +161,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    *
    * @param key
    */
-  async getCached(key: string): Promise<T | null> {
+  async getCached(key: string): Promise<T'' | ''null> {
     this.accessCount++;
 
     const entry = this.keyStore.get(key);
@@ -223,7 +216,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
       }
 
       this.logger.debug(
-        `Cleared cache with pattern '${pattern}': ${clearedCount} entries`
+        `Cleared cache with pattern'${pattern}': ${clearedCount} entries`
       );
     } else {
       // Clear all cache entries
@@ -265,7 +258,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    * Override base repository methods for memory-specific implementations.
    */
 
-  override async findById(id: string | number): Promise<T | null> {
+  override async findById(id: string'' | ''number): Promise<T'' | ''null> {
     this.accessCount++;
 
     const key = this.getEntityKey(id);
@@ -301,7 +294,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     return entry.value;
   }
 
-  override async create(entity: Omit<T, 'id'>): Promise<T> {
+  override async create(entity: Omit<T,'id'>): Promise<T> {
     // Create in underlying storage first
     const created = await super.create(entity);
 
@@ -311,7 +304,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     return created;
   }
 
-  override async update(id: string | number, updates: Partial<T>): Promise<T> {
+  override async update(id: string'' | ''number, updates: Partial<T>): Promise<T> {
     // Update in underlying storage first
     const updated = await super.update(id, updates);
 
@@ -321,7 +314,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     return updated;
   }
 
-  override async delete(id: string | number): Promise<boolean> {
+  override async delete(id: string'' | ''number): Promise<boolean> {
     // Delete from underlying storage first
     const deleted = await super.delete(id);
 
@@ -356,7 +349,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
   override async executeCustomQuery<R = any>(
     customQuery: CustomQuery
   ): Promise<R> {
-    if (customQuery.type === 'memory') {
+    if (customQuery.type ==='memory') {
       const query = customQuery.query as any;
 
       if (query.operation === 'get_stats') {
@@ -382,19 +375,19 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
    * Private helper methods.
    */
 
-  private getEntityKey(id: string | number): string {
+  private getEntityKey(id: string'' | ''number): string {
     return `entity:${this.tableName}:${id}`;
   }
 
   private async storeInMemory(
-    id: string | number,
+    id: string'' | ''number,
     entity: T,
     ttlSeconds?: number
   ): Promise<void> {
     await this.ensureSpace();
 
     const key = this.getEntityKey(id);
-    const ttl = ttlSeconds || this.defaultTTL;
+    const ttl = ttlSeconds'' | '''' | ''this.defaultTTL;
 
     const entry: CacheEntry<T> = {
       value: entity,
@@ -427,7 +420,7 @@ export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
     const allEntries: Array<{
       key: string;
       entry: CacheEntry<any>;
-      store: 'memory' | 'key';
+      store:'memory''' | '''key';
     }> = [];
 
     // Collect all entries with their access times

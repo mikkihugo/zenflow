@@ -50,28 +50,31 @@ import { type MetricFunction } from '../interfaces/types';
  * ```
  */
 export declare class SignatureOptimizer extends COPRO {
-    constructor(config?: {
-        prompt_model?: any;
-        metric?: MetricFunction | null;
-        breadth?: number;
-        depth?: number;
-        init_temperature?: number;
-        verbose?: boolean;
-        track_stats?: boolean;
-    });
-    /**
-     * Compile method exactly matching Stanford DSPy SignatureOptimizer API
-     *
-     * Note: Uses 'devset' parameter name for backward compatibility,
-     * but passes it as 'trainset' to COPRO as per Stanford implementation.
-     */
-    compile(student: DSPyModule, config: {
-        trainset: Example[];
-        teacher?: DSPyModule | null;
-        valset?: Example[] | null;
-        eval_kwargs?: Record<string, any>;
-        [key: string]: any;
-    }): Promise<DSPyModule>;
+  constructor(config?: {
+    prompt_model?: any;
+    metric?: MetricFunction'' | ''null;
+    breadth?: number;
+    depth?: number;
+    init_temperature?: number;
+    verbose?: boolean;
+    track_stats?: boolean;
+  });
+  /**
+   * Compile method exactly matching Stanford DSPy SignatureOptimizer API
+   *
+   * Note: Uses'devset' parameter name for backward compatibility,
+   * but passes it as 'trainset' to COPRO as per Stanford implementation.
+   */
+  compile(
+    student: DSPyModule,
+    config: {
+      trainset: Example[];
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
+      eval_kwargs?: Record<string, any>;
+      [key: string]: any;
+    }
+  ): Promise<DSPyModule>;
 }
 export default SignatureOptimizer;
 //# sourceMappingURL=signature-opt.d.ts.map

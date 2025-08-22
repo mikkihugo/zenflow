@@ -1,15 +1,15 @@
 /**
  * @fileoverview System Design Management Service - System design creation and lifecycle management.
- * 
+ *
  * Provides specialized system design management with AI-powered design analysis,
  * automated pattern recognition, and intelligent design coordination.
- * 
+ *
  * Integrates with:
  * - @claude-zen/brain: BrainCoordinator for intelligent design analysis and pattern recognition
  * - @claude-zen/foundation: Performance tracking and telemetry
  * - @claude-zen/knowledge: Knowledge management for design patterns and architectural knowledge
  * - @claude-zen/workflows: WorkflowEngine for design workflow orchestration
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -30,7 +30,7 @@ export type {
   ComponentInterface,
   ArchitecturalConstraint,
   QualityAttributeSpec,
-  ComplianceRequirement
+  ComplianceRequirement,
 } from '../../managers/system-solution-architecture-manager';
 
 import type {
@@ -38,7 +38,7 @@ import type {
   SystemArchitectureType,
   SolutionArchitecturePattern,
   SystemDesignStatus,
-  BusinessContext
+  BusinessContext,
 } from '../../managers/system-solution-architecture-manager';
 
 /**
@@ -80,7 +80,7 @@ export interface PatternUsage {
 
 /**
  * System Design Management Service - System design creation and lifecycle management
- * 
+ *
  * Provides comprehensive system design management with AI-powered analysis,
  * automated pattern recognition, and intelligent design coordination.
  */
@@ -106,7 +106,7 @@ export class SystemDesignManagementService {
       enableDesignValidation: true,
       designValidationThreshold: 80, // percentage
       autoOptimizationEnabled: true,
-      ...config
+      ...config,
     };
   }
 
@@ -120,17 +120,23 @@ export class SystemDesignManagementService {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent design analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
-        autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
+        autonomous: {
+          enabled: true,
+          learningRate: 0.1,
+          adaptationThreshold: 0.7,
+        },
       });
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
+      const { PerformanceTracker, TelemetryManager } = await import(
+        '@claude-zen/foundation'
+      );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
         serviceName: 'system-design-management',
         enableTracing: true,
-        enableMetrics: true
+        enableMetrics: true,
       });
       await this.telemetryManager.initialize();
 
@@ -144,15 +150,19 @@ export class SystemDesignManagementService {
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 5,
-        enableVisualization: true
+        enableVisualization: true,
       });
       await this.workflowEngine.initialize();
 
       this.initialized = true;
-      this.logger.info('System Design Management Service initialized successfully');
-
+      this.logger.info(
+        'System Design Management Service initialized successfully'
+      );
     } catch (error) {
-      this.logger.error('Failed to initialize System Design Management Service:', error);
+      this.logger.error(
+        'Failed to initialize System Design Management Service:',
+        error
+      );
       throw error;
     }
   }
@@ -171,7 +181,11 @@ export class SystemDesignManagementService {
     const timer = this.performanceTracker.startTimer('create_system_design');
 
     try {
-      this.logger.info('Creating system design with AI analysis', { name, type, pattern });
+      this.logger.info('Creating system design with AI analysis', {
+        name,
+        type,
+        pattern,
+      });
 
       // Use brain coordinator for intelligent design analysis
       const designAnalysis = await this.brainCoordinator.analyzeSystemDesign({
@@ -179,14 +193,15 @@ export class SystemDesignManagementService {
         type,
         pattern,
         businessContext,
-        existingDesigns: Array.from(this.systemDesigns.values())
+        existingDesigns: Array.from(this.systemDesigns.values()),
       });
 
       // Generate AI-powered recommendations for design optimization
-      const optimizationRecommendations = await this.generateOptimizationRecommendations(
-        { name, type, pattern, businessContext },
-        designAnalysis
-      );
+      const optimizationRecommendations =
+        await this.generateOptimizationRecommendations(
+          { name, type, pattern, businessContext },
+          designAnalysis
+        );
 
       // Create system design with AI-enhanced data
       const systemDesign: SystemDesign = {
@@ -195,7 +210,7 @@ export class SystemDesignManagementService {
         version: '1.0.0',
         type,
         pattern,
-        status: 'draft' as SystemDesignStatus,
+        status: 'draft'as SystemDesignStatus,
         businessContext,
         stakeholders: designAnalysis.recommendedStakeholders || [],
         architecturalDrivers: designAnalysis.identifiedDrivers || [],
@@ -206,7 +221,7 @@ export class SystemDesignManagementService {
         complianceRequirements: designAnalysis.complianceRequirements || [],
         createdAt: new Date(),
         updatedAt: new Date(),
-        reviewHistory: []
+        reviewHistory: [],
       };
 
       // Store design
@@ -217,29 +232,31 @@ export class SystemDesignManagementService {
         content: {
           design: systemDesign,
           analysis: designAnalysis,
-          optimizations: optimizationRecommendations
+          optimizations: optimizationRecommendations,
         },
-        type: 'system_design_pattern',
+        type:'system_design_pattern',
         source: 'system-design-management-service',
-        metadata: { 
-          designId: systemDesign.id, 
-          pattern, 
+        metadata: {
+          designId: systemDesign.id,
+          pattern,
           type,
-          complexity: designAnalysis.complexityScore || 5
-        }
+          complexity: designAnalysis.complexityScore || 5,
+        },
       });
 
       this.performanceTracker.endTimer('create_system_design');
-      this.telemetryManager.recordCounter('system_designs_created', 1, { type, pattern });
+      this.telemetryManager.recordCounter('system_designs_created', 1, {
+        type,
+        pattern,
+      });
 
       this.logger.info('System design created successfully', {
         designId: systemDesign.id,
         name: systemDesign.name,
-        complexityScore: designAnalysis.complexityScore
+        complexityScore: designAnalysis.complexityScore,
       });
 
       return systemDesign;
-
     } catch (error) {
       this.performanceTracker.endTimer('create_system_design');
       this.logger.error('Failed to create system design:', error);
@@ -266,21 +283,24 @@ export class SystemDesignManagementService {
       }
 
       // Use workflow engine for status transition validation
-      const statusTransition = await this.workflowEngine.validateStatusTransition({
-        fromStatus: design.status,
-        toStatus: newStatus,
-        context: { design, ...context }
-      });
+      const statusTransition =
+        await this.workflowEngine.validateStatusTransition({
+          fromStatus: design.status,
+          toStatus: newStatus,
+          context: { design, ...context },
+        });
 
       if (!statusTransition.isValid) {
-        throw new Error(`Invalid status transition: ${statusTransition.reason}`);
+        throw new Error(
+          `Invalid status transition: ${statusTransition.reason}`
+        );
       }
 
       // Update design with new status
       const updatedDesign: SystemDesign = {
         ...design,
         status: newStatus,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       this.systemDesigns.set(designId, updatedDesign);
@@ -292,11 +312,10 @@ export class SystemDesignManagementService {
         designId,
         oldStatus: design.status,
         newStatus,
-        name: design.name
+        name: design.name,
       });
 
       return updatedDesign;
-
     } catch (error) {
       this.performanceTracker.endTimer('update_design_status');
       this.logger.error('Failed to update system design status:', error);
@@ -310,16 +329,18 @@ export class SystemDesignManagementService {
   async getSystemDesignDashboard(): Promise<SystemDesignDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('generate_design_dashboard');
+    const timer = this.performanceTracker.startTimer(
+      'generate_design_dashboard');
 
     try {
-      const allDesigns = Array.from(this.systemDesigns.values());
+      const allDesigns = Array.from(this.systemDesigns.values())();
 
       // Use brain coordinator for intelligent dashboard insights
-      const dashboardInsights = await this.brainCoordinator.generateDesignDashboardInsights({
-        designs: allDesigns,
-        config: this.config
-      });
+      const dashboardInsights =
+        await this.brainCoordinator.generateDesignDashboardInsights({
+          designs: allDesigns,
+          config: this.config,
+        });
 
       const dashboard: SystemDesignDashboard = {
         totalDesigns: allDesigns.length,
@@ -331,18 +352,17 @@ export class SystemDesignManagementService {
         recentDesigns: allDesigns
           .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
           .slice(0, 10),
-        popularPatterns: dashboardInsights.popularPatterns || []
+        popularPatterns: dashboardInsights.popularPatterns || [],
       };
 
       this.performanceTracker.endTimer('generate_design_dashboard');
 
       this.logger.info('System design dashboard generated', {
         totalDesigns: dashboard.totalDesigns,
-        qualityScore: dashboard.designQualityScore
+        qualityScore: dashboard.designQualityScore,
       });
 
       return dashboard;
-
     } catch (error) {
       this.performanceTracker.endTimer('generate_design_dashboard');
       this.logger.error('Failed to generate system design dashboard:', error);
@@ -354,7 +374,7 @@ export class SystemDesignManagementService {
    * Get all system designs
    */
   getAllSystemDesigns(): SystemDesign[] {
-    return Array.from(this.systemDesigns.values());
+    return Array.from(this.systemDesigns.values())();
   }
 
   /**
@@ -396,42 +416,58 @@ export class SystemDesignManagementService {
 
     // AI-powered optimization recommendations
     try {
-      const optimizations = await this.brainCoordinator.generateOptimizationRecommendations({
-        designInput,
-        analysis,
-        patterns: await this.knowledgeManager.searchPatterns({
-          type: designInput.type,
-          pattern: designInput.pattern,
-          domain: designInput.businessContext.domain
-        })
-      });
+      const optimizations =
+        await this.brainCoordinator.generateOptimizationRecommendations({
+          designInput,
+          analysis,
+          patterns: await this.knowledgeManager.searchPatterns({
+            type: designInput.type,
+            pattern: designInput.pattern,
+            domain: designInput.businessContext.domain,
+          }),
+        });
 
       return optimizations.recommendations || [];
     } catch (error) {
-      this.logger.warn('Failed to generate optimization recommendations:', error);
+      this.logger.warn('Failed to generate optimization recommendations:',
+        error
+      );
       return [];
     }
   }
 
-  private groupDesignsByStatus(designs: SystemDesign[]): Record<SystemDesignStatus, number> {
-    return designs.reduce((groups, design) => {
-      groups[design.status] = (groups[design.status] || 0) + 1;
-      return groups;
-    }, {} as Record<SystemDesignStatus, number>);
+  private groupDesignsByStatus(
+    designs: SystemDesign[]
+  ): Record<SystemDesignStatus, number> {
+    return designs.reduce(
+      (groups, design) => {
+        groups[design.status] = (groups[design.status] || 0) + 1;
+        return groups;
+      },
+      {} as Record<SystemDesignStatus, number>
+    );
   }
 
   private groupDesignsByType(designs: SystemDesign[]): Record<string, number> {
-    return designs.reduce((groups, design) => {
-      groups[design.type] = (groups[design.type] || 0) + 1;
-      return groups;
-    }, {} as Record<string, number>);
+    return designs.reduce(
+      (groups, design) => {
+        groups[design.type] = (groups[design.type] || 0) + 1;
+        return groups;
+      },
+      {} as Record<string, number>
+    );
   }
 
-  private groupDesignsByPattern(designs: SystemDesign[]): Record<string, number> {
-    return designs.reduce((groups, design) => {
-      groups[design.pattern] = (groups[design.pattern] || 0) + 1;
-      return groups;
-    }, {} as Record<string, number>);
+  private groupDesignsByPattern(
+    designs: SystemDesign[]
+  ): Record<string, number> {
+    return designs.reduce(
+      (groups, design) => {
+        groups[design.pattern] = (groups[design.pattern] || 0) + 1;
+        return groups;
+      },
+      {} as Record<string, number>
+    );
   }
 }
 

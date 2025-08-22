@@ -5,7 +5,7 @@
  * Optimized for AI tool integration and development efficiency
  */
 
-import type { ConfigFile } from 'openapi-typescript-codegen');
+import type { ConfigFile } from 'openapi-typescript-codegen';
 
 const config: ConfigFile = {
   input: './docs/api/openapi.yaml',

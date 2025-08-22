@@ -1,10 +1,14 @@
 /**
  * @fileoverview Coordination Events
- * 
+ *
  * Event definitions for the coordination system.
  */
 
-import type { CoordinationAgent, CoordinationDecision, StrategicObjective } from '../types';
+import type {
+  CoordinationAgent,
+  CoordinationDecision,
+  StrategicObjective,
+} from '../types';
 
 // Base event interface
 export interface CoordinationEvent {
@@ -41,7 +45,7 @@ export interface CrossSwarmCoordinationEvent extends CoordinationEvent {
   queenId: string;
   swarms: string[];
   objective: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: 'low | medium' | 'high';
   taskId: string;
 }
 
@@ -109,7 +113,7 @@ export interface DecisionMadeEvent extends CoordinationEvent {
   type: 'decision:made';
   decision: CoordinationDecision;
   agentId: string;
-  agentRole: 'queen' | 'commander' | 'matron';
+  agentRole: 'queen | commander' | 'matron';
 }
 
 export interface ObjectiveCreatedEvent extends CoordinationEvent {
@@ -147,7 +151,7 @@ export interface CoordinationSystemShutdownEvent extends CoordinationEvent {
 export interface PerformanceMetricsEvent extends CoordinationEvent {
   type: 'metrics:performance';
   agentId: string;
-  agentType: 'queen' | 'commander' | 'matron';
+  agentType: 'queen | commander' | 'matron';
   metrics: {
     decisionsMade: number;
     averageResponseTime: number;
@@ -157,7 +161,7 @@ export interface PerformanceMetricsEvent extends CoordinationEvent {
 }
 
 // Union type of all coordination events
-export type CoordinationEventType = 
+export type CoordinationEventType =
   | QueenSpawnedEvent
   | QueenShutdownEvent
   | CommanderSpawnedEvent

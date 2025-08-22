@@ -79,7 +79,7 @@ async function main() {
 }
 
 function setupProductionPaths(): ProductionPaths {
-  const dataDir = process.argv[2] || join(process.cwd(), 'data');
+  const dataDir = process.argv[2]'' | '''' | ''join(process.cwd(),'data');
 
   if (!existsSync(dataDir)) {
     mkdirSync(dataDir, { recursive: true });

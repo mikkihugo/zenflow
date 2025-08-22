@@ -151,7 +151,7 @@ async function startService(name: string, command: string[]) {
     });
 
     childProcess.stderr?.on('data', (data) => {
-      console.warn(`${name} stderr:`, data.toString());
+      console.warn(`${name} stderr:`, data.toString();
     });
 
     childProcess.on('error', reject);
@@ -361,7 +361,7 @@ async function generateE2EReport() {
         globalThis.testMetrics.operations.reduce(
           (sum, op) => sum + op.duration,
           0
-        ) / globalThis.testMetrics.operations.length || 0,
+        ) / globalThis.testMetrics.operations.length'' | '''' | ''0,
     },
   };
 }
@@ -394,9 +394,9 @@ interface E2EHttpClient {
  */
 interface WorkflowStep {
   name: string;
-  type: 'http' | 'delay' | 'custom';
+  type:'http | delay' | 'custom';
   service?: string;
-  method?: 'get' | 'post' | 'put' | 'delete';
+  method?: 'get | post' | 'put''' | '''delete';
   path?: string;
   data?: HttpRequestData;
   duration?: number;

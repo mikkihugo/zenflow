@@ -10,22 +10,22 @@
  * @file Interface implementation: integration-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger } from '@claude-zen/foundation');
-import { getMCPServerURL } from '@claude-zen/intelligence');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
+import { getMCPServerURL } from '@claude-zen/intelligence';
 
 import type {
   Service,
   ServiceFactory,
   ServiceConfig,
-} from './core/interfaces');
+} from './core/interfaces';
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
   type IntegrationServiceAdapter,
   type IntegrationServiceAdapterConfig,
 } from "./integration-service-adapter";
-import type { ServiceType } from './types');
+import type { ServiceType } from './types';
 
 
 /**
@@ -37,7 +37,7 @@ export interface IntegrationServiceFactoryOptions {
   /** Default base URL for Safe API integrations */
   defaultBaseURL?: string;
   /** Default database type for Architecture Storage integrations */
-  defaultDatabaseType?: 'postgresql | sqlite' | 'mysql');
+  defaultDatabaseType?: 'postgresql | sqlite | mysql');
   /** Default supported protocols for Protocol Management integrations */
   defaultProtocols?: string[];
   /** Enable caching across all created services */
@@ -135,8 +135,7 @@ export class IntegrationServiceFactory
    * @param type
    */
   canHandle(type: ServiceType | string): boolean {
-    const integrationTypes = [
-      'api',
+    const integrationTypes = ['api',
       'safe-api',
       'architecture-storage',
       'integration',
@@ -168,7 +167,7 @@ export class IntegrationServiceFactory
    * List all managed service instances.
    */
   list(): Service[] {
-    return Array.from(this.createdServices?.values());
+    return Array.from(this.createdServices?.values())();
   }
 
   /**
@@ -239,7 +238,7 @@ export class IntegrationServiceFactory
       try {
         results.set(name, await service?.getStatus);
       } catch (error) {
-        results.set(name, { health: 'unhealthy', error: error.message });
+        results.set(name, { health:'unhealthy', error: error.message });
       }
     }
     return results;
@@ -296,10 +295,10 @@ export class IntegrationServiceFactory
    *
    * @param type
    */
-  getConfigSchema(type: string): Record<string, unknown> | undefined {
+  getConfigSchema(type: string): Record<string, unknown>' | 'undefined {
     if (this.canHandle(type)) {
       return {
-        type: 'object',
+        type:'object',
         properties: {
           name: { type: 'string' },
           type: { type: 'string' },
@@ -328,7 +327,7 @@ export class IntegrationServiceFactory
    */
   async createArchitectureStorageAdapter(
     name: string,
-    databaseType: 'postgresql | sqlite' | 'mysql = postgresql',
+    databaseType: 'postgresql | sqlite | mysql = postgresql',
     options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Architecture Storage adapter: ${name}`);
@@ -348,7 +347,7 @@ export class IntegrationServiceFactory
       protocolManagement: {
         enabled: false,
         supportedProtocols: [],
-        defaultProtocol: 'http',
+        defaultProtocol:'http',
       },
       cache: {
         enabled: this.options.enableGlobalCaching ?? true,
@@ -361,8 +360,7 @@ export class IntegrationServiceFactory
         ? {
             ...this.options.defaultRetrySettings,
             retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
-              'architecture-save',
+              .retryableOperations || ['architecture-save',
               'architecture-retrieve',
               'architecture-update',
               'architecture-search',
@@ -417,7 +415,7 @@ export class IntegrationServiceFactory
           burstSize: 200,
         },
         authentication: {
-          type: 'bearer' as const,
+          type:'bearer' as const,
         },
         validation: {
           enabled: true,
@@ -441,8 +439,7 @@ export class IntegrationServiceFactory
         ? {
             ...this.options.defaultRetrySettings,
             retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
-              'api-get',
+              .retryableOperations || ['api-get',
               'api-post',
               'api-put',
               'api-delete',
@@ -484,8 +481,7 @@ export class IntegrationServiceFactory
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Protocol Management adapter: ${name}`);
 
-    const protocols = supportedProtocols ||
-      this.options.defaultProtocols || ['http, websocket'];
+    const protocols = supportedProtocols || this.options.defaultProtocols || ['http, websocket'];
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: { enabled: false },
@@ -527,8 +523,7 @@ export class IntegrationServiceFactory
         ? {
             ...this.options.defaultRetrySettings,
             retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
-              'protocol-connect',
+              .retryableOperations || ['protocol-connect',
               'protocol-send',
               'protocol-healthcheck',
             ],
@@ -566,7 +561,7 @@ export class IntegrationServiceFactory
     name: string,
     options: {
       baseURL?: string;
-      databaseType?: 'postgresql | sqlite' | 'mysql');
+      databaseType?: 'postgresql | sqlite | mysql');
       supportedProtocols?: string[];
     } & Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
@@ -644,8 +639,7 @@ export class IntegrationServiceFactory
         ? {
             ...this.options.defaultRetrySettings,
             retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
-              'architecture-save',
+              .retryableOperations || ['architecture-save',
               'architecture-retrieve',
               'api-get',
               'api-post',
@@ -766,7 +760,7 @@ export class IntegrationServiceFactory
    */
   async createDocumentIntegrationAdapter(
     name: string,
-    databaseType: 'postgresql | sqlite' | 'mysql = postgresql',
+    databaseType: 'postgresql | sqlite | mysql = postgresql',
     options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Document Integration adapter: ${name}`);
@@ -1012,7 +1006,7 @@ export const IntegrationServiceHelpers = {
    */
   async createArchitectureStorage(
     name: string,
-    databaseType: 'postgresql | sqlite' | 'mysql = postgresql'
+    databaseType:'postgresql | sqlite'' | ''mysql = postgresql'
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createArchitectureStorageAdapter(
       name,
@@ -1062,7 +1056,7 @@ export const IntegrationServiceHelpers = {
     name: string,
     options: {
       baseURL?: string;
-      databaseType?: 'postgresql | sqlite' | 'mysql');
+      databaseType?: 'postgresql | sqlite | mysql');
       supportedProtocols?: string[];
     } = {}
   ): Promise<IntegrationServiceAdapter> {
@@ -1096,7 +1090,7 @@ export const IntegrationServiceHelpers = {
    */
   async createDocumentIntegration(
     name: string,
-    databaseType: 'postgresql | sqlite' | 'mysql = postgresql'
+    databaseType: 'postgresql | sqlite | mysql = postgresql'
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createDocumentIntegrationAdapter(
       name,

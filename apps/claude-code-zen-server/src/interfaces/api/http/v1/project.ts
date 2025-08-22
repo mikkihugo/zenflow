@@ -11,16 +11,16 @@
  * @version 2"..0' - SAFe LPM
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { Logger } from '@claude-zen/foundation');
-import { Request, Response } from 'express');
+import { getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
+import { Request, Response } from 'express';
 
 import {
   createProjectSAFeLPMService,
   type ProjectUserStory,
   type StoryCreateOptions,
   type StoryQueryFilters,
-} from './../../../services/project/project-service');
+} from './../../../services/project/project-service';
 
 /**
  * Project SAFe LPM API Controller - AI-Enhanced Enterprise Portfolio Management
@@ -286,8 +286,7 @@ export class ProjectSAFeLPMController {
       if (!status || !validStatuses.includes(status)) {
         res.status(400).json({
           success: false,
-          error:
-            'Invalid status. Must be: backlog, ready, in_progress, review, or done',
+          error:'Invalid status. Must be: backlog, ready, in_progress, review, or done',
         });
         return;
       }

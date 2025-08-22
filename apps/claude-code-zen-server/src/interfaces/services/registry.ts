@@ -25,9 +25,9 @@
 import {
   ServiceContainer,
   createServiceContainer,
-} from '@claude-zen/foundation');
-import { getLogger, type Logger } from '@claude-zen/foundation');
-import { TypedEventBus, createTypedEventBus } from '@claude-zen/intelligence');
+} from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
+import { TypedEventBus, createTypedEventBus } from '@claude-zen/intelligence';
 
 import type {
   Service,
@@ -105,7 +105,7 @@ export interface ServiceDiscoveryInfo {
   metadata: Record<string, unknown>;
   lastHeartbeat: Date;
   endpoint?: string;
-  health: 'healthy | degraded' | 'unhealthy');
+  health: 'healthy'' | ''degraded'' | ''unhealthy');
 }
 
 export interface ServiceDependencyGraph {
@@ -140,7 +140,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
   private factories = new Map<string, ServiceFactory>();
   private services = new Map<string, Service>();
   private serviceDiscovery = new Map<string, ServiceDiscoveryInfo>();
-  private dependencyGraph: ServiceDependencyGraph | null = null;
+  private dependencyGraph: ServiceDependencyGraph'' | ''null = null;
   private healthStatuses = new Map<string, ServiceStatus>();
   private metricsHistory = new Map<string, ServiceMetrics[]>();
   private config: ServiceRegistryConfig;
@@ -163,7 +163,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
 
   constructor(config?: Partial<ServiceRegistryConfig>) {
     this.container = createServiceContainer('enhanced-service-registry', {
-      healthCheckFrequency: config?.healthMonitoring?.interval || 30000,
+      healthCheckFrequency: config?.healthMonitoring?.interval'' | '''' | ''30000,
     });
     this.logger = getLogger('ServiceRegistry');
     this.eventBus = createTypedEventBus<ServiceEvent>({
@@ -304,7 +304,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
    */
   getFactory<T extends ServiceConfig>(
     type: string
-  ): ServiceFactory<T> | undefined {
+  ): ServiceFactory<T>'' | ''undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<ServiceFactory<T>>(
@@ -413,7 +413,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
   /**
    * Find service by name (compatible with existing EnhancedServiceRegistry interface)
    */
-  findService(name: string): Service | undefined {
+  findService(name: string): Service'' | ''undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
       const result = this.container.resolve<Service>(name);
@@ -573,7 +573,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
       (status) => status.health === 'healthy'
     ).length;
     const errorServices = Array.from(healthStatuses?.values()).filter(
-      (status) => status.lifecycle === 'error || status.health === unhealthy'
+      (status) => status.lifecycle === 'error'' | '''' | ''status.health === unhealthy'
     ).length;
 
     // Collect metrics from all services
@@ -654,10 +654,10 @@ export class ServiceRegistry implements ServiceRegistryInterface {
   discoverServices(criteria?: {
     type?: string;
     capabilities?: string[];
-    health?: 'healthy | degraded' | 'unhealthy');
+    health?: 'healthy'' | ''degraded'' | ''unhealthy');
     tags?: string[];
   }): Service[] {
-    const allServices = Array.from(this.getAllServices?.values());
+    const allServices = Array.from(this.getAllServices?.values())();
 
     if (!criteria) {
       return allServices;
@@ -723,12 +723,12 @@ export class ServiceRegistry implements ServiceRegistryInterface {
       const discoveryInfo: ServiceDiscoveryInfo = {
         serviceName: service.name,
         serviceType: service.type,
-        version: service.config.version || '1..0',
+        version: service.config.version'' | '''' | '''1..0',
         capabilities: service?.getCapabilities,
-        tags: (service.config as any).tags || [],
+        tags: (service.config as any).tags'' | '''' | ''[],
         metadata: { ...service.config.metadata, ...metadata },
         lastHeartbeat: new Date(),
-        health: 'healthy',
+        health:'healthy',
       };
 
       this.serviceDiscovery.set(service.name, discoveryInfo);
@@ -744,7 +744,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
             serviceType: service.type,
             discoveryInfo,
             registeredAt: new Date(),
-            version: service.config.version || '1..0',
+            version: service.config.version'' | '''' | '''1..0',
           },
           enabled: true,
           healthCheck: () => this.performServiceHealthCheckSync(service),
@@ -790,11 +790,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
    * Event handling (compatible with existing EnhancedServiceRegistry interface)
    */
   on(
-    event:
-      | 'service-registered'
-      | 'service-unregistered'
-      | 'service-status-changed'
-      | string,
+    event:'' | '''service-registered''' | '''service-unregistered''' | '''service-status-changed''' | ''string,
     handler: (serviceName: string, service?: Service) => void
   ): void {
     super.on(event, handler);
@@ -840,7 +836,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
 
     if (result?.isOk) {
       this.logger.debug(
-        `${enabled ? '✅ : ❌'} ${enabled ? 'Enabled : Disabled'} service: ${serviceName}`
+        `${enabled ?'✅ : ❌'} ${enabled ? 'Enabled : Disabled'} service: ${serviceName}`
       );
       this.eventBus.emit('service-status-changed', {
         serviceName,
@@ -1227,7 +1223,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
     const discoveryInfo = this.serviceDiscovery.get(serviceName);
     if (discoveryInfo && healthData) {
       discoveryInfo.health =
-        (healthData as any)?.health || discoveryInfo.health;
+        (healthData as any)?.health'' | '''' | ''discoveryInfo.health;
       discoveryInfo.lastHeartbeat = new Date();
     }
   }
@@ -1249,7 +1245,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
         metrics.successfulOperations += 1;
       }
       metrics.averageLatency =
-        (metrics.averageLatency + ((metricsData as any)?.latency || 0)) / 2;
+        (metrics.averageLatency + ((metricsData as any)?.latency'' | '''' | ''0)) / 2;
       metrics.lastOperation = new Date();
     }
   }
@@ -1266,7 +1262,7 @@ export class ServiceRegistry implements ServiceRegistryInterface {
       nodes.set(name, {
         service,
         dependencies: new Set(
-          service.config.dependencies?.map((dep: any) => dep.serviceName) || []
+          service.config.dependencies?.map((dep: any) => dep.serviceName)'' | '''' | ''[]
         ),
         dependents: new Set<string>(),
         level: 0,

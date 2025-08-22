@@ -1,6 +1,6 @@
 /**
  * @fileoverview Brain Coordination Module Exports
- * 
+ *
  * Coordination subsystem for the brain package, providing intelligent
  * coordination capabilities including prompt generation, retraining
  * monitoring, and DSPy integration.

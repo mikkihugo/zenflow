@@ -18,9 +18,7 @@
  */
 
 // BEAM Language Parser Exports
-export {
-  BeamLanguageParser
-} from './beam-parser';
+export { BeamLanguageParser } from './beam-parser';
 
 export type {
   BeamModule,
@@ -52,9 +50,9 @@ export const SUPPORTED_EXTENSIONS = {
 /**
  * Language detection utility
  */
-export function detectLanguageFamily(filePath: string): string | null {
+export function detectLanguageFamily(filePath: string): string'' | ''null {
   const ext = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
-  return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS] || null;
+  return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS]'' | '''' | ''null;
 }
 
 /**
@@ -75,14 +73,18 @@ export function isSupported(filePath: string): boolean {
  * Create parser factory for different language families
  */
 export interface ParserFactory {
-  createBeamParser(options?: import('./beam-parser').BeamParserOptions): import('./beam-parser').BeamLanguageParser;
+  createBeamParser(
+    options?: import('./beam-parser').BeamParserOptions
+  ): import('./beam-parser').BeamLanguageParser;
 }
 
 /**
  * Default parser factory implementation
  */
 export class DefaultParserFactory implements ParserFactory {
-  createBeamParser(options?: import('./beam-parser').BeamParserOptions): import('./beam-parser').BeamLanguageParser {
+  createBeamParser(
+    options?: import('./beam-parser').BeamParserOptions
+  ): import('./beam-parser').BeamLanguageParser {
     const { BeamLanguageParser } = require('./beam-parser');
     return new BeamLanguageParser(options);
   }
@@ -98,19 +100,22 @@ export function createParserFactory(): ParserFactory {
 /**
  * Quick parse utility for single files
  */
-export async function parseFile(filePath: string, options?: {
-  includeMetrics?: boolean;
-  analyzeFunctionComplexity?: boolean;
-  extractDocumentation?: boolean;
-}) {
+export async function parseFile(
+  filePath: string,
+  options?: {
+    includeMetrics?: boolean;
+    analyzeFunctionComplexity?: boolean;
+    extractDocumentation?: boolean;
+  }
+) {
   const family = detectLanguageFamily(filePath);
-  
+
   if (!family) {
     throw new Error(`Unsupported file type: ${filePath}`);
   }
-  
+
   const factory = createParserFactory();
-  
+
   switch (family) {
     case 'beam': {
       const parser = factory.createBeamParser(options);
@@ -124,14 +129,17 @@ export async function parseFile(filePath: string, options?: {
 /**
  * Quick parse utility for multiple files
  */
-export async function parseFiles(filePaths: string[], options?: {
-  includeMetrics?: boolean;
-  analyzeFunctionComplexity?: boolean;
-  extractDocumentation?: boolean;
-}) {
+export async function parseFiles(
+  filePaths: string[],
+  options?: {
+    includeMetrics?: boolean;
+    analyzeFunctionComplexity?: boolean;
+    extractDocumentation?: boolean;
+  }
+) {
   // Group files by language family
   const filesByFamily = new Map<string, string[]>();
-  
+
   for (const filePath of filePaths) {
     const family = detectLanguageFamily(filePath);
     if (family) {
@@ -141,29 +149,31 @@ export async function parseFiles(filePaths: string[], options?: {
       filesByFamily.get(family)!.push(filePath);
     }
   }
-  
+
   const factory = createParserFactory();
   const allResults: any[] = [];
-  
+
   // Parse each family in parallel
-  const familyPromises = Array.from(filesByFamily.entries()).map(async ([family, paths]) => {
-    switch (family) {
-      case 'beam': {
-        const parser = factory.createBeamParser(options);
-        const result = await parser.parseFiles(paths);
-        return result.isOk() ? result._unsafeUnwrap() : [];
+  const familyPromises = Array.from(filesByFamily.entries()).map(
+    async ([family, paths]) => {
+      switch (family) {
+        case 'beam': {
+          const parser = factory.createBeamParser(options);
+          const result = await parser.parseFiles(paths);
+          return result.isOk() ? result._unsafeUnwrap() : [];
+        }
+        default:
+          return [];
       }
-      default:
-        return [];
     }
-  });
-  
+  );
+
   const familyResults = await Promise.all(familyPromises);
-  
+
   for (const results of familyResults) {
     allResults.push(...results);
   }
-  
+
   return allResults;
 }
 
@@ -179,7 +189,8 @@ export const PACKAGE_NAME = '@claude-zen/language-parsers';
 export const PACKAGE_INFO = {
   name: PACKAGE_NAME,
   version: VERSION,
-  description: 'Multi-language parsers for code analysis and repository understanding',
+  description:
+    'Multi-language parsers for code analysis and repository understanding',
   author: 'Claude Code Zen Team',
   license: 'MIT',
   repository: 'https://github.com/zen-neural/claude-code-zen',

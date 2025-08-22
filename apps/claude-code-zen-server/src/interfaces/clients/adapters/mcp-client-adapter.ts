@@ -13,8 +13,8 @@
  * - Factory pattern implementation
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
-import { MCPClient } from 'mcp-client');
+import { TypedEventBase } from '@claude-zen/foundation';
+import { MCPClient } from 'mcp-client';
 
 import type {
   ClientConfig,
@@ -23,9 +23,9 @@ import type {
   Client,
   ClientFactory,
   McpClient,
-} from './interfaces');
-import type { ProtocolType } from './types');
-import { ClientStatuses, ProtocolTypes } from './types');
+} from './interfaces';
+import type { ProtocolType } from './types';
+import { ClientStatuses, ProtocolTypes } from './types';
 
 /**
  * Extended client configuration for MCP clients.
@@ -63,7 +63,7 @@ export interface McpClientConfig extends ClientConfig {
  * MCP request types for tool calls and resource access.
  */
 export interface McpRequest {
-  type: 'tool_call | resource_read' | 'resource_list | tool_list');
+  type: 'tool_call | resource_read | resource_list | tool_list');
   data: {
     toolName?: string;
     arguments?: Record<string, unknown>;
@@ -236,7 +236,7 @@ export class McpClientAdapter
           break;
         }
 
-        case 'tool_list': {
+        case'tool_list': {
           const tools = await this.mcpClient?.getAllTools()
           result = { success: true, tools };
           break;
@@ -357,7 +357,7 @@ export class McpClientAdapter
     }>
   > {
     const request: McpRequest = {
-      type: 'tool_list',
+      type:'tool_list',
       data: {},
     };
 
@@ -370,7 +370,7 @@ export class McpClientAdapter
    */
   async readResource<R = unknown>(uri: string): Promise<R> {
     const request: McpRequest = {
-      type: 'resource_read',
+      type:'resource_read',
       data: {
         resourceUri: uri,
       },
@@ -406,7 +406,7 @@ export class McpClientAdapter
    * Get connection configuration based on URL and protocol.
    */
   private getConnectionConfig(): {
-    type: 'httpStream | sse' | 'stdio');
+    type:'httpStream | sse'' | ''stdio');
     url?: string;
     command?: string;
     args?: string[];

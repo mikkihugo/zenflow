@@ -4,12 +4,12 @@
  * Type definitions for event emitters and error objects with proper typing
  * for properties like 'on, code', and other event-related functionality.
  */
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 /**
  * Base error interface with common error properties
  */
 export interface BaseError extends Error {
-  code?: string | number;
+  code?: string'' | ''number;
   errno?: number;
   path?: string;
   syscall?: string;
@@ -28,7 +28,7 @@ export interface SystemError extends BaseError {
  * Network error interface
  */
 export interface NetworkError extends BaseError {
-  code: 'EADDRINUSE | ECONNREFUSED' | 'ENOTFOUND | ETIMEDOUT' | string;
+  code:'EADDRINUSE | ECONNREFUSED''' | '''ENOTFOUND | ETIMEDOUT' | string;
   port?: number;
   address?: string;
   hostname?: string;

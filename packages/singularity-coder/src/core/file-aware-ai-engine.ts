@@ -1,10 +1,15 @@
 /**
  * @fileoverview File-Aware AI Engine
- * 
+ *
  * Main engine for processing file-aware AI requests with LLM integration
  */
 
-import { FileAwareRequest, FileAwareResponse, FileChange, AnalyzedContext } from '../types/index';
+import {
+  FileAwareRequest,
+  FileAwareResponse,
+  FileChange,
+  AnalyzedContext,
+} from '../types/index';
 import { CodebaseAnalyzer } from './codebase-analyzer';
 
 export class FileAwareAIEngine {
@@ -32,8 +37,8 @@ export class FileAwareAIEngine {
     try {
       // Analyze codebase context
       const context = await this.analyzer.analyzeContext(
-        request.files || [],
-        request.context?.maxFiles || 50
+        request.files'' | '''' | ''[],
+        request.context?.maxFiles'' | '''' | ''50
       );
 
       // Generate changes based on the request and context
@@ -47,12 +52,11 @@ export class FileAwareAIEngine {
         context,
         metadata: {
           filesAnalyzed: context.relevantFiles.length,
-          provider: 'fallback',
-          model: request.options?.model || 'default',
-          executionTime
-        }
+          provider:'fallback',
+          model: request.options?.model'' | '''' | '''default',
+          executionTime,
+        },
       };
-
     } catch (error) {
       const executionTime = Date.now() - startTime;
 
@@ -64,14 +68,14 @@ export class FileAwareAIEngine {
           dependencies: [],
           symbols: [],
           summary: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-          complexity: 'low'
+          complexity: 'low',
         },
         metadata: {
           filesAnalyzed: 0,
           provider: 'fallback',
-          model: request.options?.model || 'default',
-          executionTime
-        }
+          model: request.options?.model'' | '''' | '''default',
+          executionTime,
+        },
       };
     }
   }
@@ -79,7 +83,10 @@ export class FileAwareAIEngine {
   /**
    * Generate file changes based on request and context
    */
-  private async generateChanges(request: FileAwareRequest, context: AnalyzedContext): Promise<FileChange[]> {
+  private async generateChanges(
+    request: FileAwareRequest,
+    context: AnalyzedContext
+  ): Promise<FileChange[]> {
     const changes: FileChange[] = [];
 
     // This is a fallback implementation - in production, this would use
@@ -92,22 +99,25 @@ export class FileAwareAIEngine {
         changes.push({
           type: 'modify',
           path: targetFile,
-          reasoning: `Suggested modification for file ${targetFile} based on task: ${request.task}. ` +
-                    `This is a fallback response - actual AI processing would analyze the code structure ` +
-                    `and generate specific improvements based on the ${context.complexity} complexity context ` +
-                    `with ${context.dependencies.length} dependencies and ${context.symbols.length} symbols.`
+          reasoning:
+            `Suggested modification for file ${targetFile} based on task: ${request.task}. ` +
+            `This is a fallback response - actual AI processing would analyze the code structure ` +
+            `and generate specific improvements based on the ${context.complexity} complexity context ` +
+            `with ${context.dependencies.length} dependencies and ${context.symbols.length} symbols.`,
         });
       }
     } else {
       changes.push({
         type: 'create',
         path: 'ANALYSIS.md',
-        content: `# Codebase Analysis Results\n\n${context.summary}\n\n## Task\n${request.task}\n\n` +
-                `## Files Analyzed\n${context.relevantFiles.length} files\n\n` +
-                `## Dependencies\n${context.dependencies.length} dependencies found\n\n` +
-                `## Symbols\n${context.symbols.length} symbols identified\n\n` +
-                `## Complexity\nAssessed as: ${context.complexity}`,
-        reasoning: 'Created analysis file since no existing files were found to modify'
+        content:
+          `# Codebase Analysis Results\n\n${context.summary}\n\n## Task\n${request.task}\n\n` +
+          `## Files Analyzed\n${context.relevantFiles.length} files\n\n` +
+          `## Dependencies\n${context.dependencies.length} dependencies found\n\n` +
+          `## Symbols\n${context.symbols.length} symbols identified\n\n` +
+          `## Complexity\nAssessed as: ${context.complexity}`,
+        reasoning:
+          'Created analysis file since no existing files were found to modify',
       });
     }
 

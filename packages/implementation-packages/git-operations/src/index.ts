@@ -13,9 +13,7 @@
  */
 
 // Export main GitOperationsManager class and utilities
-export {
-  GitOperationsManager,
-} from './git-operations-manager';
+export { GitOperationsManager } from './git-operations-manager';
 
 // Import the class for type reference in factory functions
 import { GitOperationsManager } from './git-operations-manager';
@@ -34,17 +32,21 @@ export type {
 } from './git-operations-manager';
 
 // Export factory functions for common use cases
-export function createEnterpriseGitManager(repositoryPath: string): GitOperationsManager {
+export function createEnterpriseGitManager(
+  repositoryPath: string
+): GitOperationsManager {
   const config = {
     aiConflictResolution: true,
     intelligentBranching: true,
     automatedMaintenance: true,
     maxConcurrentOps: 10,
     operationTimeout: 600000, // 10 minutes for enterprise
-    remotes: [{
-      name: 'origin',
-      url: repositoryPath, // Use the repository path for remote configuration
-    }],
+    remotes: [
+      {
+        name: 'origin',
+        url: repositoryPath, // Use the repository path for remote configuration
+      },
+    ],
   };
 
   const branchStrategy = {
@@ -54,7 +56,11 @@ export function createEnterpriseGitManager(repositoryPath: string): GitOperation
     defaultMergeStrategy: 'merge' as const,
   };
 
-  return new GitOperationsManager(`enterprise-git-${Date.now()}`, config, branchStrategy);
+  return new GitOperationsManager(
+    `enterprise-git-${Date.now()}`,
+    config,
+    branchStrategy
+  );
 }
 
 export function createSAFEGitManager(artId: string): GitOperationsManager {

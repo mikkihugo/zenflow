@@ -2,7 +2,7 @@
  * @file Integration module exports.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('src-integration-index');
 
@@ -34,8 +34,7 @@ export const IntegrationUtils = {
 
     return compatiblePairs.some(
       (pair) =>
-        (pair[0] === systemA && pair[1] === systemB) ||
-        (pair[1] === systemA && pair[0] === systemB)
+        (pair[0] === systemA && pair[1] === systemB)'' | '''' | ''(pair[1] === systemA && pair[0] === systemB)
     );
   },
 
@@ -49,7 +48,7 @@ export const IntegrationUtils = {
 
     systems.forEach((system) => {
       switch (system) {
-        case 'neural':
+        case'neural':
           requirements.add('wasm');
           requirements.add('memory');
           break;

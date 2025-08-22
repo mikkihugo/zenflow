@@ -8,8 +8,8 @@
  * - Existing entity definitions and DAL architecture
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import { DALFactory } from '@claude-zen/intelligence');
+import { getLogger } from '@claude-zen/foundation';
+import { DALFactory } from '@claude-zen/intelligence';
 import type {
   BaseDocumentEntity,
   DocumentRelationshipEntity,
@@ -18,8 +18,8 @@ import type {
   GraphRepository,
   VectorRepository,
   Repository,
-} from '@claude-zen/intelligence');
-import { nanoid } from 'nanoid');
+} from '@claude-zen/intelligence';
+import { nanoid } from 'nanoid';
 
 const logger = getLogger('hybrid-document-manager');
 
@@ -41,7 +41,7 @@ export interface DocumentEmbedding {
 
 export interface DocumentNode {
   id: string;
-  type: 'document | project');
+  type: 'document'' | ''project');
   labels: string[];
   properties: {
     documentType: string;
@@ -57,7 +57,7 @@ export interface DocumentNode {
 
 export interface DocumentRelationship {
   id: string;
-  type: 'generates | implements' | 'depends_on | relates_to' | 'supersedes');
+  type: 'generates'' | ''implements'' | ''depends_on'' | ''relates_to'' | ''supersedes');
   fromNodeId: string;
   toNodeId: string;
   properties: {
@@ -160,7 +160,7 @@ export class HybridDocumentManager {
    * Create a new document with automatic vector embedding and graph node creation
    */
   async createDocument<T extends BaseDocumentEntity>(
-    documentData: Omit<T, 'id | created_at' | 'updated_at'>,
+    documentData: Omit<T, 'id'' | ''created_at'' | ''updated_at'>,
     options: {
       generateEmbedding?: boolean;
       createGraphNode?: boolean;
@@ -295,7 +295,7 @@ export class HybridDocumentManager {
           graphQuery,
           Object.values()(params)
         );
-        graphResults = (graphQueryResults?.nodes || []) as DocumentNode[];
+        graphResults = (graphQueryResults?.nodes'' | '''' | ''[]) as DocumentNode[];
       } catch (error) {
         logger.warn('Graph search failed:', error);
       }
@@ -339,7 +339,7 @@ export class HybridDocumentManager {
     }
 
     // Process graph results - ensure graphResults is iterable
-    for (const graphResult of graphResults || []) {
+    for (const graphResult of graphResults'' | '''' | ''[]) {
       if (seenDocuments.has(graphResult.id)) continue;
 
       try {
@@ -383,8 +383,7 @@ export class HybridDocumentManager {
 
     try {
       const traversalResult = await this.graphRepo.traverse(
-        documentId,
-        '',
+        documentId,'',
         maxDepth
       );
 
@@ -393,7 +392,7 @@ export class HybridDocumentManager {
         source_document_id: rel.fromNodeId?.toString,
         target_document_id: rel.toNodeId?.toString,
         relationship_type: rel.type as any,
-        created_at: (rel.properties.created as Date) || new Date(),
+        created_at: (rel.properties.created as Date)'' | '''' | ''new Date(),
         strength: rel.properties.strength as number,
         metadata: rel.properties.metadata as Record<string, unknown>,
       }));
@@ -555,10 +554,9 @@ export class HybridDocumentManager {
 
   private extractKeywords(title: string, content: string): string[] {
     const text = `${title} ${content}`?.toLowerCase()
-    const words = text.match(/\b\w{3,}\b/g) || [];
+    const words = text.match(/\b\w{3,}\b/g)'' | '''' | ''[];
 
-    const stopWords = new Set([
-      'the',
+    const stopWords = new Set(['the',
       'and',
       'for',
       'are',

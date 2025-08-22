@@ -1,12 +1,12 @@
 /**
  * @fileoverview Program Predictability Service
- * 
+ *
  * Service for measuring and tracking program predictability metrics.
  * Handles objective completion tracking, velocity analysis, and predictability reporting.
- * 
+ *
  * SINGLE RESPONSIBILITY: Program predictability measurement and analysis
  * FOCUSES ON: Predictability metrics, velocity tracking, commitment analysis
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,15 +15,15 @@
 import { format, addDays, differenceInDays, subDays } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
   maxBy,
-  minBy 
+  minBy,
 } from 'lodash-es';
 import type {
   ProgramIncrement,
@@ -31,7 +31,7 @@ import type {
   Feature,
   AgileReleaseTrain,
   ARTTeam,
-  Logger
+  Logger,
 } from '../../types';
 
 /**
@@ -54,7 +54,7 @@ export interface ProgramPredictability {
  * Predictability trend analysis
  */
 export interface PredictabilityTrend {
-  readonly direction: 'improving' | 'stable' | 'declining';
+  readonly direction: 'improving'' | ''stable'' | ''declining';
   readonly changeRate: number; // percentage change
   readonly trendPeriod: number; // PIs analyzed
   readonly confidenceLevel: number; // 0-100%
@@ -83,7 +83,7 @@ export interface ObjectiveCompletionTracking {
   readonly actualValue: number;
   readonly completion: number; // 0-100%
   readonly confidence: number; // 1-5
-  readonly status: 'not_started' | 'in_progress' | 'completed' | 'at_risk' | 'missed';
+  readonly status:' | ''not_started'' | ''in_progress'' | ''completed'' | ''at_risk'' | ''missed';
   readonly blockers: string[];
   readonly adjustments: ObjectiveAdjustment[];
 }
@@ -93,7 +93,7 @@ export interface ObjectiveCompletionTracking {
  */
 export interface ObjectiveAdjustment {
   readonly date: Date;
-  readonly type: 'scope_change' | 'priority_change' | 'resource_change' | 'timeline_change';
+  readonly type:' | ''scope_change'' | ''priority_change'' | ''resource_change'' | ''timeline_change';
   readonly description: string;
   readonly impact: number; // -100 to 100 (percentage impact)
   readonly reason: string;
@@ -110,7 +110,7 @@ export interface VelocityTracking {
   readonly actualVelocity: number;
   readonly velocityVariance: number; // percentage
   readonly historicalAverage: number;
-  readonly trend: 'increasing' | 'stable' | 'decreasing';
+  readonly trend: 'increasing'' | ''stable'' | ''decreasing';
   readonly factors: VelocityFactor[];
 }
 
@@ -121,7 +121,7 @@ export interface VelocityFactor {
   readonly factor: string;
   readonly impact: number; // -100 to 100
   readonly duration: number; // sprints affected
-  readonly category: 'team_composition' | 'technical_debt' | 'dependencies' | 'external';
+  readonly category:' | ''team_composition'' | ''technical_debt'' | ''dependencies'' | ''external';
 }
 
 /**
@@ -143,7 +143,7 @@ export interface ProgramSynchronization {
 export interface SynchronizationBlocker {
   readonly blocker: string;
   readonly affectedTeams: string[];
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly duration: number; // days
   readonly resolution: string;
   readonly owner: string;
@@ -169,7 +169,7 @@ export interface MultiARTCoordination {
 export interface CoordinationChallenge {
   readonly challenge: string;
   readonly artIds: string[];
-  readonly impact: 'low' | 'medium' | 'high';
+  readonly impact: 'low'' | ''medium'' | ''high';
   readonly resolution: string;
   readonly timeline: number; // days
   readonly owner: string;
@@ -182,8 +182,8 @@ export interface BusinessImpactAssessment {
   readonly impactId: string;
   readonly piId: string;
   readonly description: string;
-  readonly category: 'customer' | 'revenue' | 'compliance' | 'strategic';
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly category: 'customer'' | ''revenue'' | ''compliance'' | ''strategic';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly likelihood: number; // 0-100%
   readonly timelineImpact: number; // days delayed
   readonly financialImpact: number; // cost impact
@@ -202,7 +202,7 @@ export enum QualityImpactLevel {
   MINOR = 'minor',
   MODERATE = 'moderate',
   SIGNIFICANT = 'significant',
-  SEVERE = 'severe'
+  SEVERE = 'severe',
 }
 
 /**
@@ -213,7 +213,7 @@ export enum CustomerImpactLevel {
   LOW = 'low',
   MODERATE = 'moderate',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -224,7 +224,7 @@ export enum MoraleImpactLevel {
   NEUTRAL = 'neutral',
   SLIGHT_NEGATIVE = 'slight_negative',
   NEGATIVE = 'negative',
-  SEVERELY_NEGATIVE = 'severely_negative'
+  SEVERELY_NEGATIVE = 'severely_negative',
 }
 
 /**
@@ -252,15 +252,15 @@ export class ProgramPredictabilityService {
   ): Promise<ProgramPredictability> {
     this.logger.info('Measuring program predictability', { piId, artId });
 
-    const objectivePredictability = this.calculateObjectivePredictability(objectives);
+    const objectivePredictability =
+      this.calculateObjectivePredictability(objectives);
     const featurePredictability = this.calculateFeaturePredictability(features);
     const velocityPredictability = this.calculateVelocityPredictability(artId);
 
-    const overallPredictability = (
+    const overallPredictability =
       objectivePredictability * 0.4 +
       featurePredictability * 0.35 +
-      velocityPredictability * 0.25
-    );
+      velocityPredictability * 0.25;
 
     const predictability: ProgramPredictability = {
       piId,
@@ -272,7 +272,7 @@ export class ProgramPredictabilityService {
       overallPredictability,
       trend: this.analyzeTrend(artId, overallPredictability),
       risks: this.identifyPredictabilityRisks(objectives, features),
-      recommendations: this.generateRecommendations(overallPredictability)
+      recommendations: this.generateRecommendations(overallPredictability),
     };
 
     this.predictabilityRecords.set(`${piId}-${artId}`, predictability);
@@ -281,7 +281,7 @@ export class ProgramPredictabilityService {
       piId,
       artId,
       overallScore: Math.round(overallPredictability),
-      trend: predictability.trend.direction
+      trend: predictability.trend.direction,
     });
 
     return predictability;
@@ -299,7 +299,7 @@ export class ProgramPredictabilityService {
       actualValue: number;
       completion: number;
       confidence: number;
-      status: 'not_started' | 'in_progress' | 'completed' | 'at_risk' | 'missed';
+      status:' | ''not_started'' | ''in_progress'' | ''completed'' | ''at_risk'' | ''missed';
       blockers?: string[];
     }
   ): Promise<ObjectiveCompletionTracking> {
@@ -313,7 +313,7 @@ export class ProgramPredictabilityService {
       confidence: completion.confidence,
       status: completion.status,
       blockers: completion.blockers || [],
-      adjustments: []
+      adjustments: [],
     };
 
     this.objectiveTracking.set(objectiveId, tracking);
@@ -321,7 +321,7 @@ export class ProgramPredictabilityService {
     this.logger.info('Objective completion tracked', {
       objectiveId,
       completion: completion.completion,
-      status: completion.status
+      status: completion.status,
     });
 
     return tracking;
@@ -340,8 +340,14 @@ export class ProgramPredictabilityService {
       factors?: VelocityFactor[];
     }
   ): Promise<VelocityTracking> {
-    const velocityVariance = ((velocity.actualVelocity - velocity.plannedVelocity) / velocity.plannedVelocity) * 100;
-    const trend = this.determineTrend(velocity.actualVelocity, velocity.historicalAverage);
+    const velocityVariance =
+      ((velocity.actualVelocity - velocity.plannedVelocity) /
+        velocity.plannedVelocity) *
+      100;
+    const trend = this.determineTrend(
+      velocity.actualVelocity,
+      velocity.historicalAverage
+    );
 
     const tracking: VelocityTracking = {
       teamId,
@@ -351,7 +357,7 @@ export class ProgramPredictabilityService {
       velocityVariance,
       historicalAverage: velocity.historicalAverage,
       trend,
-      factors: velocity.factors || []
+      factors: velocity.factors || [],
     };
 
     this.velocityTracking.set(`${teamId}-${piId}`, tracking);
@@ -360,7 +366,7 @@ export class ProgramPredictabilityService {
       teamId,
       piId,
       variance: Math.round(velocityVariance),
-      trend
+      trend,
     });
 
     return tracking;
@@ -372,8 +378,8 @@ export class ProgramPredictabilityService {
   async assessBusinessImpact(impact: {
     piId: string;
     description: string;
-    category: 'customer' | 'revenue' | 'compliance' | 'strategic';
-    severity: 'low' | 'medium' | 'high' | 'critical';
+    category: 'customer'' | ''revenue'' | ''compliance'' | ''strategic';
+    severity: 'low'' | ''medium'' | ''high'' | ''critical';
     likelihood: number;
     timelineImpact: number;
     financialImpact: number;
@@ -387,14 +393,14 @@ export class ProgramPredictabilityService {
 
     const assessment: BusinessImpactAssessment = {
       impactId,
-      ...impact
+      ...impact,
     };
 
     this.logger.info('Business impact assessed', {
       impactId,
       category: impact.category,
       severity: impact.severity,
-      likelihood: impact.likelihood
+      likelihood: impact.likelihood,
     });
 
     return assessment;
@@ -407,7 +413,10 @@ export class ProgramPredictabilityService {
     if (objectives.length === 0) return 0;
 
     const totalBusinessValue = sumBy(objectives, 'businessValue');
-    const confidenceWeightedValue = sumBy(objectives, obj => obj.businessValue * (obj.confidence / 5));
+    const confidenceWeightedValue = sumBy(
+      objectives,
+      (obj) => obj.businessValue * (obj.confidence / 5)
+    );
 
     return (confidenceWeightedValue / totalBusinessValue) * 100;
   }
@@ -418,7 +427,10 @@ export class ProgramPredictabilityService {
   private calculateFeaturePredictability(features: Feature[]): number {
     if (features.length === 0) return 0;
 
-    const completedFeatures = filter(features, f => f.status === 'done').length;
+    const completedFeatures = filter(
+      features,
+      (f) => f.status === 'done'
+    ).length;
     return (completedFeatures / features.length) * 100;
   }
 
@@ -428,56 +440,67 @@ export class ProgramPredictabilityService {
   private calculateVelocityPredictability(artId: string): number {
     const velocityRecords = filter(
       Array.from(this.velocityTracking.values()),
-      v => v.teamId.startsWith(artId)
+      (v) => v.teamId.startsWith(artId)
     );
 
     if (velocityRecords.length === 0) return 75; // Default assumption
 
-    const averageVariance = meanBy(velocityRecords, v => Math.abs(v.velocityVariance));
+    const averageVariance = meanBy(velocityRecords, (v) =>
+      Math.abs(v.velocityVariance)
+    );
     return Math.max(0, 100 - averageVariance);
   }
 
   /**
    * Analyze predictability trend
    */
-  private analyzeTrend(artId: string, currentScore: number): PredictabilityTrend {
+  private analyzeTrend(
+    artId: string,
+    currentScore: number
+  ): PredictabilityTrend {
     // Simplified trend analysis
     return {
       direction: 'stable',
       changeRate: 0,
       trendPeriod: 3,
       confidenceLevel: 75,
-      seasonalFactors: []
+      seasonalFactors: [],
     };
   }
 
   /**
    * Identify predictability risks
    */
-  private identifyPredictabilityRisks(objectives: PIObjective[], features: Feature[]): PredictabilityRisk[] {
+  private identifyPredictabilityRisks(
+    objectives: PIObjective[],
+    features: Feature[]
+  ): PredictabilityRisk[] {
     const risks: PredictabilityRisk[] = [];
 
     // Check for low confidence objectives
-    const lowConfidenceObjectives = filter(objectives, obj => obj.confidence <= 2);
+    const lowConfidenceObjectives = filter(
+      objectives,
+      (obj) => obj.confidence <= 2
+    );
     if (lowConfidenceObjectives.length > 0) {
       risks.push({
         factor: 'Low confidence objectives',
         impact: -20,
         likelihood: 80,
         mitigation: 'Increase planning depth and stakeholder alignment',
-        owner: 'Product Manager'
+        owner: 'Product Manager',
       });
     }
 
     // Check for high-risk features
-    const highValueFeatures = filter(features, f => f.businessValue > 50);
+    const highValueFeatures = filter(features, (f) => f.businessValue > 50);
     if (highValueFeatures.length > objectives.length * 0.3) {
       risks.push({
         factor: 'High concentration of high-value features',
         impact: -15,
         likelihood: 60,
         mitigation: 'Distribute risk across multiple PIs',
-        owner: 'RTE'
+        owner: 'RTE',
       });
     }
 
@@ -491,7 +514,9 @@ export class ProgramPredictabilityService {
     const recommendations: string[] = [];
 
     if (overallPredictability < 60) {
-      recommendations.push('Improve planning accuracy and team commitment process');
+      recommendations.push(
+        'Improve planning accuracy and team commitment process'
+      );
       recommendations.push('Increase focus on dependency management');
       recommendations.push('Enhance risk identification and mitigation');
     } else if (overallPredictability < 80) {
@@ -508,9 +533,12 @@ export class ProgramPredictabilityService {
   /**
    * Determine velocity trend
    */
-  private determineTrend(actualVelocity: number, historicalAverage: number): 'increasing' | 'stable' | 'decreasing' {
+  private determineTrend(
+    actualVelocity: number,
+    historicalAverage: number
+  ): 'increasing'' | ''stable'' | ''decreasing' {
     const variance = (actualVelocity - historicalAverage) / historicalAverage;
-    
+
     if (variance > 0.1) return 'increasing';
     if (variance < -0.1) return 'decreasing';
     return 'stable';
@@ -519,21 +547,29 @@ export class ProgramPredictabilityService {
   /**
    * Get predictability record
    */
-  getPredictability(piId: string, artId: string): ProgramPredictability | undefined {
+  getPredictability(
+    piId: string,
+    artId: string
+  ): ProgramPredictability | undefined {
     return this.predictabilityRecords.get(`${piId}-${artId}`);
   }
 
   /**
    * Get objective tracking
    */
-  getObjectiveTracking(objectiveId: string): ObjectiveCompletionTracking | undefined {
+  getObjectiveTracking(
+    objectiveId: string
+  ): ObjectiveCompletionTracking | undefined {
     return this.objectiveTracking.get(objectiveId);
   }
 
   /**
    * Get velocity tracking
    */
-  getVelocityTracking(teamId: string, piId: string): VelocityTracking | undefined {
+  getVelocityTracking(
+    teamId: string,
+    piId: string
+  ): VelocityTracking | undefined {
     return this.velocityTracking.get(`${teamId}-${piId}`);
   }
 }

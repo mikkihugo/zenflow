@@ -1,6 +1,6 @@
 /**
  * Fact Tools WASM Module Wrapper
- * 
+ *
  * Wraps the zen_swarm_neural WASM module to provide fact-system specific functionality.
  */
 
@@ -12,11 +12,11 @@ export interface RustFactEngine {
   verify_fact(fact: string): boolean;
   store_fact(fact: string, metadata?: any): void;
   query_facts(query: string): string[];
-  
+
   // Advanced operations
   analyze_patterns(data: string[]): any;
   process_bulk_facts(facts: string[]): any;
-  
+
   // Neural processing (from zen_swarm_neural)
   neural_process?(input: any): any;
   coordinate_swarm?(params: any): any;
@@ -24,31 +24,31 @@ export interface RustFactEngine {
 
 class FactEngineImpl implements RustFactEngine {
   private wasmInstance: any;
-  
+
   constructor(wasmInstance: any) {
     this.wasmInstance = wasmInstance;
   }
-  
+
   verify_fact(fact: string): boolean {
     // Stub implementation - would call WASM function
     return Boolean(fact && fact.length > 0);
   }
-  
+
   store_fact(fact: string, metadata?: any): void {
     // Stub implementation - would call WASM function
     console.log('Storing fact:', fact, metadata);
   }
-  
+
   query_facts(query: string): string[] {
     // Stub implementation - would call WASM function
     return [];
   }
-  
+
   analyze_patterns(data: string[]): any {
     // Stub implementation - would call WASM function
     return { patterns: [], confidence: 0.5 };
   }
-  
+
   process_bulk_facts(facts: string[]): any {
     // Stub implementation - would call WASM function
     return { processed: facts.length, errors: 0 };

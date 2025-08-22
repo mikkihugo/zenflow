@@ -9,8 +9,8 @@
  * @file Interface implementation: coordination-service-factory.
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 import {
   type CoordinationServiceAdapter,
@@ -18,8 +18,8 @@ import {
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
 } from "./coordination-service-adapter";
-import type { ServiceFactory } from './core/interfaces');
-import { ServicePriority, ServiceType } from './types');
+import type { ServiceFactory } from './core/interfaces';
+import { ServicePriority, ServiceType } from './types';
 
 
 /**
@@ -115,7 +115,7 @@ export class CoordinationServiceFactory
    * List all coordination service adapter instances.
    */
   list(): CoordinationServiceAdapter[] {
-    return Array.from(this.instances?.values());
+    return Array.from(this.instances?.values())();
   }
 
   /**
@@ -339,7 +339,7 @@ export function createAgentCoordinationConfig(
   name: string,
   options?: {
     maxAgents?: number;
-    topology?: 'mesh | hierarchical' | 'ring | star');
+    topology?: 'mesh | hierarchical | ring | star');
     enableLearning?: boolean;
     autoSpawn?: boolean;
   }

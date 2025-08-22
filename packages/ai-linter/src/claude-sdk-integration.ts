@@ -1,9 +1,9 @@
 /**
  * @fileoverview Intelligence-Powered AI Linter Integration
- * 
+ *
  * Advanced AI linting using the intelligence facade with brain coordination,
  * neural analysis, memory systems, and adaptive learning capabilities.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 2.0.0
@@ -11,10 +11,16 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+
 // Intelligence facade temporarily disabled
 // import { getBrainSystem } from '@claude-zen/intelligence';
 // Import types from proper types file
-import type { LintingCategory, CodePattern, LinterContext, ClaudeInsights } from './types/ai-linter-types';
+import type {
+  LintingCategory,
+  CodePattern,
+  LinterContext,
+  ClaudeInsights,
+} from './types/ai-linter-types';
 // Additional temporary types
 type ComplexityIssue = any;
 type TypeSafetyConcern = any;
@@ -32,7 +38,10 @@ interface ClaudeSDKOptions {
 }
 
 // Stub implementation for executeClaudeTask
-async function executeClaudeTask(prompt: string, options: ClaudeSDKOptions): Promise<any> {
+async function executeClaudeTask(
+  prompt: string,
+  options: ClaudeSDKOptions
+): Promise<any> {
   return Promise.resolve({ content: 'Analysis complete', insights: [] });
 }
 
@@ -87,8 +96,13 @@ export class ClaudeSDKIntegration {
     this.logger.info(`Analyzing ${filePath} with Claude SDK`);
 
     try {
-      const prompt = this.buildAnalysisPrompt(filePath, content, patterns, context);
-      
+      const prompt = this.buildAnalysisPrompt(
+        filePath,
+        content,
+        patterns,
+        context
+      );
+
       const claudeOptions: ClaudeSDKOptions = {
         model: 'sonnet',
         maxTokens: this.config.maxTokens,
@@ -105,13 +119,10 @@ export class ClaudeSDKIntegration {
       this.logger.debug(`Claude analysis completed in ${analysisTime}ms`);
 
       // Extract insights from Claude's response
-      const insights = this.parseClaudeResponse(messages, patterns);
-      
-      return insights;
-
+      return this.parseClaudeResponse(messages, patterns);
     } catch (error) {
       this.logger.error('Claude analysis failed:', error);
-      
+
       // Return fallback insights on error
       return this.getFallbackInsights(patterns);
     }
@@ -119,7 +130,7 @@ export class ClaudeSDKIntegration {
 
   /**
    * Analyze multiple files with smart batching logic
-   * - If file has ≤5 errors: batch up to 10 files 
+   * - If file has ≤5 errors: batch up to 10 files
    * - If file has >5 errors: analyze individually
    */
   async analyzeBatchCodePatterns(
@@ -133,7 +144,7 @@ export class ClaudeSDKIntegration {
     this.logger.info(`Analyzing ${files.length} files with smart batching`);
 
     const results = new Map<string, ClaudeInsights>();
-    
+
     // Group files by batching strategy
     const heavyFiles: typeof files = []; // >5 errors = individual analysis
     const lightFiles: typeof files = []; // ≤5 errors = can batch
@@ -148,7 +159,9 @@ export class ClaudeSDKIntegration {
 
     // Process heavy files individually
     for (const file of heavyFiles) {
-      this.logger.info(`Individual analysis for ${file.filePath} (${file.patterns.length} errors)`);
+      this.logger.info(
+        `Individual analysis for ${file.filePath} (${file.patterns.length} errors)`
+      );
       try {
         const insights = await this.analyzeCodePatterns(
           file.filePath,
@@ -199,8 +212,8 @@ export class ClaudeSDKIntegration {
     const results = new Map<string, ClaudeInsights>();
 
     // Use the first file's context as representative
-    const representativeContext = files[0]?.context || {
-      language: 'typescript',
+    const representativeContext = files[0]?.context'' | '''' | ''{
+      language:'typescript',
       filePath: '',
       projectRoot: '',
       mode: 'balanced',
@@ -233,13 +246,13 @@ export class ClaudeSDKIntegration {
       // For batch analysis (not fixing), we need a different parsing method
       // This method should return insights, not fix results
       const batchInsights = this.parseBatchAnalysisResponse(messages, files);
-      
+
       // Convert batch response to individual insights
       for (const file of files) {
-        const fileInsights = batchInsights.get(file.filePath) || this.getFallbackInsights(file.patterns);
+        const fileInsights =
+          batchInsights.get(file.filePath)'' | '''' | ''this.getFallbackInsights(file.patterns);
         results.set(file.filePath, fileInsights);
       }
-      
     } catch (error) {
       this.logger.error('Batch analysis failed:', error);
       // Fallback to individual insights
@@ -265,8 +278,11 @@ export class ClaudeSDKIntegration {
   ): Promise<Map<string, { fixedContent: string; fixes: string[] }>> {
     this.logger.info(`🔧 Batch fixing ${files.length} files with Claude`);
 
-    const results = new Map<string, { fixedContent: string; fixes: string[] }>();
-    
+    const results = new Map<
+      string,
+      { fixedContent: string; fixes: string[] }
+    >();
+
     // Group files by complexity (same batching strategy)
     const complexFiles: typeof files = []; // >5 errors = individual fixing
     const simpleFiles: typeof files = []; // ≤5 errors = can batch
@@ -281,7 +297,9 @@ export class ClaudeSDKIntegration {
 
     // Fix complex files individually with detailed analysis
     for (const file of complexFiles) {
-      this.logger.info(`🔧 Individual fix for ${file.filePath} (${file.patterns.length} errors)`);
+      this.logger.info(
+        `🔧 Individual fix for ${file.filePath} (${file.patterns.length} errors)`
+      );
       try {
         const fixResult = await this.fixSingleFileWithClaude(file);
         results.set(file.filePath, fixResult);
@@ -321,9 +339,8 @@ export class ClaudeSDKIntegration {
     patterns: CodePattern[];
     context: LinterContext;
   }): Promise<{ fixedContent: string; fixes: string[] }> {
-    
     const fixPrompt = this.buildSingleFileFixPrompt(file);
-    
+
     const claudeOptions: ClaudeSDKOptions = {
       model: 'sonnet',
       maxTokens: this.config.maxTokens * 2, // More tokens for fixing
@@ -353,9 +370,11 @@ export class ClaudeSDKIntegration {
       context: LinterContext;
     }>
   ): Promise<Map<string, { fixedContent: string; fixes: string[] }>> {
-    
     const batchFixPrompt = this.buildBatchFileFixPrompt(files);
-    const results = new Map<string, { fixedContent: string; fixes: string[] }>();
+    const results = new Map<
+      string,
+      { fixedContent: string; fixes: string[] }
+    >();
 
     const claudeOptions: ClaudeSDKOptions = {
       model: 'sonnet',
@@ -391,19 +410,22 @@ export class ClaudeSDKIntegration {
     }>
   ): string {
     const focusAreasText = this.config.focusAreas.join(', ');
-    
+
     // Build files section
-    const filesSection = files.map((file, index) => {
-      const eslintIssues = file.patterns.length > 0 
-        ? `\n🔴 ESLint Issues: ${file.patterns.map(p => `${p.type} at L${p.location.line} (${p.severity})`).join(', ')}`
-        : '\n✅ No ESLint issues';
-      
-      return `## 📁 FILE ${index + 1}: ${file.filePath}${eslintIssues}
+    const filesSection = files
+      .map((file, index) => {
+        const eslintIssues =
+          file.patterns.length > 0
+            ? `\n🔴 ESLint Issues: ${file.patterns.map((p) => `${p.type} at L${p.location.line} (${p.severity})`).join(', ')}`
+            : '\n✅ No ESLint issues';
+
+        return `## 📁 FILE ${index + 1}: ${file.filePath}${eslintIssues}
 
 \`\`\`${file.context.language}
 ${file.content}
 \`\`\``;
-    }).join('\n\n');
+      })
+      .join('\n\n');
 
     return `🔍 EXPERT BATCH CODE ANALYSIS - ${files.length} FILES
 
@@ -419,8 +441,8 @@ Return JSON with file-specific insights:
       "file": "relative/path.ts",
       "issues": [
         {
-          "type": "complexity|type-safety|performance|security|maintainability|style",
-          "severity": "critical|high|medium|low",
+          "type": "complexity'' | ''type-safety'' | ''performance'' | ''security'' | ''maintainability'' | ''style",
+          "severity": "critical'' | ''high'' | ''medium'' | ''low",
           "line": number,
           "message": "Clear problem description", 
           "fix": "Specific fix instruction"
@@ -452,13 +474,14 @@ Return JSON with file-specific insights:
     context: LinterContext
   ): string {
     const focusAreasText = this.config.focusAreas.join(', ');
-    const eslintContext = patterns.length > 0 
-      ? `\n🔴 ESLint Issues (${patterns.length}): ${patterns.map(p => `${p.type} at L${p.location.line} (${p.severity})`).join(', ')}`
-      : '\n✅ No ESLint issues detected';
-    
+    const eslintContext =
+      patterns.length > 0
+        ? `\n🔴 ESLint Issues (${patterns.length}): ${patterns.map((p) => `${p.type} at L${p.location.line} (${p.severity})`).join(', ')}`
+        : '\n✅ No ESLint issues detected';
+
     return `🔍 EXPERT ${context.language.toUpperCase()} CODE ANALYSIS
 
-📁 File: ${filePath}${context.framework ? ` | Framework: ${context.framework}` : ''}${eslintContext}
+📁 File: ${filePath}${context.framework ? `'' | ''Framework: ${context.framework}` :''}${eslintContext}
 
 \`\`\`${context.language}
 ${content}
@@ -471,8 +494,8 @@ Return concise JSON with ACTIONABLE insights:
 {
   "issues": [
     {
-      "type": "complexity|type-safety|performance|security|maintainability|style",
-      "severity": "critical|high|medium|low", 
+      "type": "complexity'' | ''type-safety'' | ''performance'' | ''security'' | ''maintainability'' | ''style",
+      "severity": "critical'' | ''high'' | ''medium'' | ''low", 
       "line": number,
       "message": "Clear problem description",
       "fix": "Specific fix instruction",
@@ -512,11 +535,12 @@ Return concise JSON with ACTIONABLE insights:
   private buildSystemPrompt(context: LinterContext): string {
     const modeInstructions = {
       strict: 'Apply rigorous standards with zero tolerance for technical debt',
-      security: 'Prioritize security vulnerabilities and attack vectors', 
-      performance: 'Focus on performance bottlenecks and optimization opportunities',
-      balanced: 'Provide comprehensive analysis across all quality dimensions'
+      security: 'Prioritize security vulnerabilities and attack vectors',
+      performance:
+        'Focus on performance bottlenecks and optimization opportunities',
+      balanced: 'Provide comprehensive analysis across all quality dimensions',
     };
-    
+
     return `You are a WORLD-CLASS ${context.language}${context.framework ? ` ${context.framework}` : ''} code reviewer with 15+ years experience.
 
 🏆 GOLDEN STANDARDS:
@@ -526,7 +550,7 @@ Return concise JSON with ACTIONABLE insights:
 • Balance criticism with recognition of good practices
 • Focus on maintainability, readability, and real-world performance
 
-⚡ MODE: ${context.mode.toUpperCase()} - ${modeInstructions[context.mode as keyof typeof modeInstructions] || 'Standard analysis'}
+⚡ MODE: ${context.mode.toUpperCase()} - ${modeInstructions[context.mode as keyof typeof modeInstructions]'' | '''' | '''Standard analysis'}
 
 🎯 OUTPUT: Valid JSON only. No markdown, no explanations outside JSON. Be concise but thorough.`;
   }
@@ -534,64 +558,73 @@ Return concise JSON with ACTIONABLE insights:
   /**
    * Parse Claude's GOLDEN response into structured insights
    */
-  private parseClaudeResponse(messages: any[], patterns: CodePattern[]): ClaudeInsights {
+  private parseClaudeResponse(
+    messages: any[],
+    patterns: CodePattern[]
+  ): ClaudeInsights {
     try {
       // Get the last message content which should contain the analysis
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content || '';
-      
+      const content = lastMessage?.content'' | '''' | '''';
+
       // Extract JSON from the response
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      const jsonMatch = content.match(/{[\S\s]*}/);
       if (!jsonMatch) {
         this.logger.warn('No JSON found in Claude response, using fallback');
         return this.getFallbackInsights(patterns);
       }
 
       const analysisData = JSON.parse(jsonMatch[0]);
-      
+
       // Transform new simplified format to existing ClaudeInsights structure
-      const issues = analysisData.issues || [];
-      const score = analysisData.score || 60;
-      const improvements = analysisData.improvements || [];
-      const goodPractices = analysisData.patterns?.good || [];
-      const antipatterns = analysisData.patterns?.antipatterns || [];
-      
+      const issues = analysisData.issues'' | '''' | ''[];
+      const score = analysisData.score'' | '''' | ''60;
+      const improvements = analysisData.improvements'' | '''' | ''[];
+      const goodPractices = analysisData.patterns?.good'' | '''' | ''[];
+      const antipatterns = analysisData.patterns?.antipatterns'' | '''' | ''[];
+
       // Convert issues to structured format
       const complexity_issues = issues
-        .filter((i: any) => i.type === 'complexity')
+        .filter((i: any) => i.type ==='complexity')
         .map((i: any) => ({
           functionName: `Line ${i.line}`,
-          complexityScore: Math.max(10, 20 - (score / 5)), // Derive complexity from score
+          complexityScore: Math.max(10, 20 - score / 5), // Derive complexity from score
           complexityType: 'cognitive',
           suggestions: [i.fix],
-          location: { line: i.line || 1, column: 1 }
+          location: { line: i.line'' | '''' | ''1, column: 1 },
         }));
 
       const type_safety_concerns = issues
-        .filter((i: any) => i.type === 'type-safety')
+        .filter((i: any) => i.type ==='type-safety')
         .map((i: any) => ({
           type: 'unsafe_cast',
           description: i.message,
           suggestedFix: i.fix,
           severity: i.severity,
-          location: { line: i.line || 1, column: 1 }
+          location: { line: i.line'' | '''' | ''1, column: 1 },
         }));
 
       // Validate and structure the response
       const insights: ClaudeInsights = {
         complexity_issues,
         type_safety_concerns,
-        architectural_suggestions: improvements.filter((imp: string) => 
-          imp.toLowerCase().includes('architect') || imp.toLowerCase().includes('design')
+        architectural_suggestions: improvements.filter(
+          (imp: string) =>
+            imp.toLowerCase().includes('architect')'' | '''' | ''imp.toLowerCase().includes('design')
         ),
         performance_optimizations: issues
           .filter((i: any) => i.type === 'performance')
           .map((i: any) => ({
             type: 'optimization',
             description: i.message,
-            impact: i.severity === 'critical' ? 'critical' : i.severity === 'high' ? 'high' : 'medium',
+            impact:
+              i.severity === 'critical'
+                ? 'critical'
+                : i.severity === 'high'
+                  ? 'high'
+                  : 'medium',
             difficulty: 'medium',
-            implementation: i.fix
+            implementation: i.fix,
           })),
         maintainability_score: score,
         quality_assessment: {
@@ -606,29 +639,31 @@ Return concise JSON with ACTIONABLE insights:
             style: score + 10,
             correctness: score + 20,
             accessibility: score - 10,
-            i18n: score - 5
+            i18n: score - 5,
           },
           strengths: goodPractices,
           improvements: improvements,
-          technicalDebt: antipatterns.map((ap: string) => ({ description: ap, severity: 'medium' }))
+          technicalDebt: antipatterns.map((ap: string) => ({
+            description: ap,
+            severity: 'medium',
+          })),
         },
         antipatterns: antipatterns.map((ap: string, index: number) => ({
           name: `Antipattern ${index + 1}`,
           description: ap,
           refactoringApproach: 'Refactor to use better patterns',
           location: { line: 1, column: 1 },
-          alternatives: ['Consider modern approaches']
+          alternatives: ['Consider modern approaches'],
         })),
         good_practices: goodPractices.map((gp: string, index: number) => ({
           name: `Good Practice ${index + 1}`,
           description: gp,
           location: { line: 1, column: 1 },
-          category: 'general'
+          category: 'general',
         })),
       };
 
       return insights;
-
     } catch (error) {
       this.logger.error('Failed to parse Claude response:', error);
       return this.getFallbackInsights(patterns);
@@ -639,47 +674,54 @@ Return concise JSON with ACTIONABLE insights:
    * Validate complexity issues from Claude response
    */
   private validateComplexityIssues(issues: any[]): ComplexityIssue[] {
-    return issues.filter(issue => 
-      issue.functionName && 
-      typeof issue.complexityScore === 'number' &&
-      issue.location
-    ).map(issue => ({
-      functionName: issue.functionName,
-      complexityScore: issue.complexityScore,
-      complexityType: issue.complexityType || 'cognitive',
-      suggestions: Array.isArray(issue.suggestions) ? issue.suggestions : [],
-      location: issue.location,
-    }));
+    return issues
+      .filter(
+        (issue) =>
+          issue.functionName &&
+          typeof issue.complexityScore === 'number'&&
+          issue.location
+      )
+      .map((issue) => ({
+        functionName: issue.functionName,
+        complexityScore: issue.complexityScore,
+        complexityType: issue.complexityType'' | '''' | '''cognitive',
+        suggestions: Array.isArray(issue.suggestions) ? issue.suggestions : [],
+        location: issue.location,
+      }));
   }
 
   /**
    * Validate type safety concerns from Claude response
    */
   private validateTypeSafetyConcerns(concerns: any[]): TypeSafetyConcern[] {
-    return concerns.filter(concern =>
-      concern.type && concern.description && concern.location
-    ).map(concern => ({
-      type: concern.type,
-      description: concern.description,
-      suggestedFix: concern.suggestedFix || '',
-      severity: concern.severity || 'warning',
-      location: concern.location,
-    }));
+    return concerns
+      .filter(
+        (concern) => concern.type && concern.description && concern.location
+      )
+      .map((concern) => ({
+        type: concern.type,
+        description: concern.description,
+        suggestedFix: concern.suggestedFix'' | '''' | '''',
+        severity: concern.severity'' | '''' | '''warning',
+        location: concern.location,
+      }));
   }
 
   /**
    * Validate performance optimizations from Claude response
    */
-  private validatePerformanceOptimizations(optimizations: any[]): PerformanceOptimization[] {
-    return optimizations.filter(opt =>
-      opt.type && opt.description
-    ).map(opt => ({
-      type: opt.type,
-      description: opt.description,
-      impact: opt.impact || 'medium',
-      difficulty: opt.difficulty || 'medium',
-      implementation: opt.implementation,
-    }));
+  private validatePerformanceOptimizations(
+    optimizations: any[]
+  ): PerformanceOptimization[] {
+    return optimizations
+      .filter((opt) => opt.type && opt.description)
+      .map((opt) => ({
+        type: opt.type,
+        description: opt.description,
+        impact: opt.impact'' | '''' | '''medium',
+        difficulty: opt.difficulty'' | '''' | '''medium',
+        implementation: opt.implementation,
+      }));
   }
 
   /**
@@ -700,14 +742,18 @@ Return concise JSON with ACTIONABLE insights:
     };
 
     return {
-      overallScore: Math.min(Math.max(assessment?.overallScore || 50, 0), 100),
+      overallScore: Math.min(Math.max(assessment?.overallScore'' | '''' | ''50, 0), 100),
       categoryScores: {
         ...defaultScores,
-        ...(assessment?.categoryScores || {}),
+        ...(assessment?.categoryScores'' | '''' | ''{}),
       },
-      strengths: Array.isArray(assessment?.strengths) ? assessment.strengths : [],
-      improvements: Array.isArray(assessment?.improvements) ? assessment.improvements : [],
-      technicalDebt: assessment?.technicalDebt || [],
+      strengths: Array.isArray(assessment?.strengths)
+        ? assessment.strengths
+        : [],
+      improvements: Array.isArray(assessment?.improvements)
+        ? assessment.improvements
+        : [],
+      technicalDebt: assessment?.technicalDebt'' | '''' | ''[],
     };
   }
 
@@ -718,19 +764,24 @@ Return concise JSON with ACTIONABLE insights:
     this.logger.warn('Using fallback insights due to Claude analysis failure');
 
     const complexityIssues: ComplexityIssue[] = patterns
-      .filter(p => p.type === 'function_complexity')
-      .map(pattern => ({
+      .filter((p) => p.type === 'function_complexity')
+      .map((pattern) => ({
         functionName: 'unknown',
-        complexityScore: (pattern.data?.complexity as number) || 10,
-        complexityType: 'cognitive' as const,
-        suggestions: ['Consider breaking down complex logic', 'Extract reusable functions'],
+        complexityScore: (pattern.data?.complexity as number)'' | '''' | ''10,
+        complexityType:'cognitive' as const,
+        suggestions: [
+          'Consider breaking down complex logic',
+          'Extract reusable functions',
+        ],
         location: pattern.location,
       }));
 
     return {
       complexity_issues: complexityIssues,
       type_safety_concerns: [],
-      architectural_suggestions: ['Consider code refactoring for better maintainability'],
+      architectural_suggestions: [
+        'Consider code refactoring for better maintainability',
+      ],
       performance_optimizations: [],
       maintainability_score: 60,
       quality_assessment: {
@@ -780,12 +831,15 @@ Return concise JSON with ACTIONABLE insights:
     patterns: CodePattern[];
     context: LinterContext;
   }): string {
-    const errorDescriptions = file.patterns.map((pattern, index) => 
-      `🔴 ERROR ${index + 1}: ${pattern.type} at Line ${pattern.location.line}
+    const errorDescriptions = file.patterns
+      .map(
+        (pattern, index) =>
+          `🔴 ERROR ${index + 1}: ${pattern.type} at Line ${pattern.location.line}
    Severity: ${pattern.severity}
    Rule: ${pattern.pattern}
-   ESLint Message: ${pattern.description || 'N/A'}`
-    ).join('\n\n');
+   ESLint Message: ${pattern.description'' | '''' | '''N/A'}`
+      )
+      .join('\n\n');
 
     return `🔧 EXPERT CODE FIXER - FIX ALL ERRORS
 
@@ -821,25 +875,32 @@ Return JSON:
   /**
    * Build batch file fix prompt for multiple files
    */
-  private buildBatchFileFixPrompt(files: Array<{
-    filePath: string;
-    content: string;
-    patterns: CodePattern[];
-    context: LinterContext;
-  }>): string {
-    const filesSection = files.map((file, index) => {
-      const errorDescriptions = file.patterns.map((pattern, errorIndex) => 
-        `   🔴 ${pattern.type} at L${pattern.location.line} (${pattern.severity}): ${pattern.pattern}`
-      ).join('\n');
+  private buildBatchFileFixPrompt(
+    files: Array<{
+      filePath: string;
+      content: string;
+      patterns: CodePattern[];
+      context: LinterContext;
+    }>
+  ): string {
+    const filesSection = files
+      .map((file, index) => {
+        const errorDescriptions = file.patterns
+          .map(
+            (pattern, errorIndex) =>
+              `   🔴 ${pattern.type} at L${pattern.location.line} (${pattern.severity}): ${pattern.pattern}`
+          )
+          .join('\n');
 
-      return `## 📁 FILE ${index + 1}: ${file.filePath}
+        return `## 📁 FILE ${index + 1}: ${file.filePath}
 🔴 Errors (${file.patterns.length}):
 ${errorDescriptions}
 
 \`\`\`${file.context.language}
 ${file.content}
 \`\`\``;
-    }).join('\n\n');
+      })
+      .join('\n\n');
 
     return `🔧 EXPERT BATCH CODE FIXER - FIX ALL ERRORS IN ${files.length} FILES
 
@@ -879,7 +940,7 @@ Return JSON:
 • Use modern ${context.language} best practices and conventions
 • Provide clear explanations for each fix made
 • Maintain code readability and maintainability
-• Follow ${context.framework || 'standard'} patterns when applicable
+• Follow ${context.framework'' | '''' | '''standard'} patterns when applicable
 
 🎯 OUTPUT: Valid JSON only with fixed code and detailed fix explanations.`;
   }
@@ -888,7 +949,7 @@ Return JSON:
    * Build system prompt for batch file fixing
    */
   private buildBatchFixerSystemPrompt(context?: LinterContext): string {
-    const lang = context?.language || 'TypeScript';
+    const lang = context?.language'' | '''' | '''TypeScript';
     return `You are an EXPERT ${lang} CODE FIXER analyzing and fixing MULTIPLE FILES.
 
 🔧 BATCH FIXING STANDARDS:
@@ -904,24 +965,26 @@ Return JSON:
   /**
    * Parse fix response from Claude
    */
-  private parseFixResponse(messages: any[], originalContent: string): { fixedContent: string; fixes: string[] } {
+  private parseFixResponse(
+    messages: any[],
+    originalContent: string
+  ): { fixedContent: string; fixes: string[] } {
     try {
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content || '';
-      
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      const content = lastMessage?.content'' | '''' | '''';
+
+      const jsonMatch = content.match(/{[\S\s]*}/);
       if (!jsonMatch) {
         this.logger.warn('No JSON found in fix response');
         return { fixedContent: originalContent, fixes: [] };
       }
 
       const fixData = JSON.parse(jsonMatch[0]);
-      
+
       return {
-        fixedContent: fixData.fixedCode || originalContent,
-        fixes: Array.isArray(fixData.fixes) ? fixData.fixes : []
+        fixedContent: fixData.fixedCode'' | '''' | ''originalContent,
+        fixes: Array.isArray(fixData.fixes) ? fixData.fixes : [],
       };
-      
     } catch (error) {
       this.logger.error('Failed to parse fix response:', error);
       return { fixedContent: originalContent, fixes: [] };
@@ -932,16 +995,19 @@ Return JSON:
    * Parse batch fix response from Claude
    */
   private parseBatchFixResponse(
-    messages: any[], 
+    messages: any[],
     files: Array<{ filePath: string; content: string }>
   ): Map<string, { fixedContent: string; fixes: string[] }> {
-    const results = new Map<string, { fixedContent: string; fixes: string[] }>();
-    
+    const results = new Map<
+      string,
+      { fixedContent: string; fixes: string[] }
+    >();
+
     try {
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content || '';
-      
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      const content = lastMessage?.content'' | '''' | '''';
+
+      const jsonMatch = content.match(/{[\S\s]*}/);
       if (!jsonMatch) {
         this.logger.warn('No JSON found in batch fix response');
         // Return original content for all files
@@ -952,24 +1018,23 @@ Return JSON:
       }
 
       const batchFixData = JSON.parse(jsonMatch[0]);
-      const fileResults = batchFixData.files || [];
-      
+      const fileResults = batchFixData.files'' | '''' | ''[];
+
       // Process each file result
       for (const fileResult of fileResults) {
         const filePath = fileResult.file;
-        const fixedContent = fileResult.fixedCode || '';
+        const fixedContent = fileResult.fixedCode'' | '''' | '''';
         const fixes = Array.isArray(fileResult.fixes) ? fileResult.fixes : [];
-        
+
         results.set(filePath, { fixedContent, fixes });
       }
-      
+
       // Fill in missing files with original content
       for (const file of files) {
         if (!results.has(file.filePath)) {
           results.set(file.filePath, { fixedContent: file.content, fixes: [] });
         }
       }
-      
     } catch (error) {
       this.logger.error('Failed to parse batch fix response:', error);
       // Return original content for all files
@@ -977,7 +1042,7 @@ Return JSON:
         results.set(file.filePath, { fixedContent: file.content, fixes: [] });
       }
     }
-    
+
     return results;
   }
 
@@ -985,16 +1050,16 @@ Return JSON:
    * Parse batch analysis response from Claude (different from fix response)
    */
   private parseBatchAnalysisResponse(
-    messages: any[], 
+    messages: any[],
     files: Array<{ filePath: string; patterns: CodePattern[] }>
   ): Map<string, ClaudeInsights> {
     const results = new Map<string, ClaudeInsights>();
-    
+
     try {
       const lastMessage = messages[messages.length - 1];
-      const content = lastMessage?.content || '';
-      
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      const content = lastMessage?.content'' | '''' | '''';
+
+      const jsonMatch = content.match(/{[\S\s]*}/);
       if (!jsonMatch) {
         this.logger.warn('No JSON found in batch analysis response');
         // Return fallback for all files
@@ -1005,37 +1070,38 @@ Return JSON:
       }
 
       const batchData = JSON.parse(jsonMatch[0]);
-      const fileResults = batchData.files || [];
-      
+      const fileResults = batchData.files'' | '''' | ''[];
+
       // Process each file result (similar to single file, but for multiple files)
       for (const fileResult of fileResults) {
         const filePath = fileResult.file;
-        const issues = fileResult.issues || [];
-        const score = fileResult.score || 60;
-        const improvements = fileResult.improvements || [];
-        
+        const issues = fileResult.issues'' | '''' | ''[];
+        const score = fileResult.score'' | '''' | ''60;
+        const improvements = fileResult.improvements'' | '''' | ''[];
+
         // Convert to ClaudeInsights format (same as single file parsing)
         const insights: ClaudeInsights = {
           complexity_issues: issues
-            .filter((i: any) => i.type === 'complexity')
+            .filter((i: any) => i.type ==='complexity')
             .map((i: any) => ({
               functionName: `Line ${i.line}`,
-              complexityScore: Math.max(10, 20 - (score / 5)),
+              complexityScore: Math.max(10, 20 - score / 5),
               complexityType: 'cognitive',
               suggestions: [i.fix],
-              location: { line: i.line || 1, column: 1 }
+              location: { line: i.line'' | '''' | ''1, column: 1 },
             })),
           type_safety_concerns: issues
-            .filter((i: any) => i.type === 'type-safety')
+            .filter((i: any) => i.type ==='type-safety')
             .map((i: any) => ({
               type: 'unsafe_cast',
               description: i.message,
               suggestedFix: i.fix,
               severity: i.severity,
-              location: { line: i.line || 1, column: 1 }
+              location: { line: i.line'' | '''' | ''1, column: 1 },
             })),
-          architectural_suggestions: improvements.filter((imp: string) => 
-            imp.toLowerCase().includes('architect') || imp.toLowerCase().includes('design')
+          architectural_suggestions: improvements.filter(
+            (imp: string) =>
+              imp.toLowerCase().includes('architect')'' | '''' | ''imp.toLowerCase().includes('design')
           ),
           performance_optimizations: issues
             .filter((i: any) => i.type === 'performance')
@@ -1044,7 +1110,7 @@ Return JSON:
               description: i.message,
               impact: i.severity === 'critical' ? 'critical' : 'medium',
               difficulty: 'medium',
-              implementation: i.fix
+              implementation: i.fix,
             })),
           maintainability_score: score,
           quality_assessment: {
@@ -1059,26 +1125,25 @@ Return JSON:
               style: score + 10,
               correctness: score + 20,
               accessibility: score - 10,
-              i18n: score - 5
+              i18n: score - 5,
             },
-            strengths: batchData.overall?.patterns?.good || [],
+            strengths: batchData.overall?.patterns?.good'' | '''' | ''[],
             improvements: improvements,
-            technicalDebt: []
+            technicalDebt: [],
           },
           antipatterns: [],
           good_practices: [],
         };
-        
+
         results.set(filePath, insights);
       }
-      
+
       // Fill in missing files with fallback
       for (const file of files) {
         if (!results.has(file.filePath)) {
           results.set(file.filePath, this.getFallbackInsights(file.patterns));
         }
       }
-      
     } catch (error) {
       this.logger.error('Failed to parse batch analysis response:', error);
       // Return fallback for all files
@@ -1086,7 +1151,7 @@ Return JSON:
         results.set(file.filePath, this.getFallbackInsights(file.patterns));
       }
     }
-    
+
     return results;
   }
 }

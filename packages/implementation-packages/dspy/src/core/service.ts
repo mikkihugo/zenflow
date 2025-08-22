@@ -1,28 +1,25 @@
 /**
  * @fileoverview DSPy Service Layer - @claude-zen/foundation Integration
- * 
+ *
  * Service layer that manages @claude-zen/foundation integration for DSPy operations.
  * Provides centralized access to LLM services, storage, logging, and configuration.
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  */
 
 // Direct foundation imports for proper integration
 import {
-  getGlobalLLM,          // Re-enabled in foundation
-  type LLMProvider,      // Re-enabled in foundation
+  getGlobalLLM, // Re-enabled in foundation
+  type LLMProvider, // Re-enabled in foundation
   getLogger,
   type Logger,
   getConfig,
-  type Config
+  type Config,
 } from '@claude-zen/foundation';
 
 // Database access from foundation (fallback)
-import {
-  getDatabaseAccess,
-  type DatabaseAccess
-} from '@claude-zen/foundation';
+import { getDatabaseAccess, type DatabaseAccess } from '@claude-zen/foundation';
 
 // Legacy interfaces for backward compatibility
 interface SharedLLMService {
@@ -54,16 +51,18 @@ interface SharedModule {
  * DSPy Service - Central coordinator for @claude-zen/foundation integration
  */
 export class DSPyService {
-  private llmProvider: LLMProvider | null = null;
-  private dbAccess: DatabaseAccess | null = null;
+  private llmProvider: LLMProvider'' | ''null = null;
+  private dbAccess: DatabaseAccess'' | ''null = null;
   private logger: Logger;
-  private config: Config | null = null;
+  private config: Config'' | ''null = null;
   private initialized = false;
 
   constructor() {
     // Initialize with foundation logger
     this.logger = getLogger('dspy-service');
-    this.logger.info('DSPy Service initializing with @claude-zen/foundation integration');
+    this.logger.info(
+      'DSPy Service initializing with @claude-zen/foundation integration'
+    );
   }
 
   /**
@@ -80,11 +79,16 @@ export class DSPyService {
       this.llmProvider = getGlobalLLM();
       this.dbAccess = getDatabaseAccess();
       this.config = getConfig();
-      
+
       this.initialized = true;
-      this.logger.info('DSPy service successfully initialized with @claude-zen/foundation');
+      this.logger.info(
+        'DSPy service successfully initialized with @claude-zen/foundation'
+      );
     } catch (error) {
-      this.logger.error('Failed to initialize DSPy service with foundation:', error);
+      this.logger.error(
+        'Failed to initialize DSPy service with foundation:',
+        error
+      );
       throw error;
     }
   }
@@ -96,48 +100,53 @@ export class DSPyService {
     if (!this.initialized) {
       await this.initialize();
     }
-    
+
     if (!this.llmProvider) {
-      throw new Error('LLM provider not available - foundation not properly initialized');
+      throw new Error(
+        'LLM provider not available - foundation not properly initialized'
+      );
     }
-    
+
     return this.llmProvider;
   }
 
   /**
    * Execute DSPy prompt with foundation LLM
    */
-  async executePrompt(prompt: string, options: {
-    temperature?: number;
-    maxTokens?: number;
-    role?: 'user' | 'analyst' | 'architect';
-  } = {}): Promise<string> {
+  async executePrompt(
+    prompt: string,
+    options: {
+      temperature?: number;
+      maxTokens?: number;
+      role?: 'user | analyst' | 'architect';
+    } = {}
+  ): Promise<string> {
     const llm = await this.getLLMProvider();
-    
-    // DSPy should use 'analyst' role by default (not 'coder' which is for tool access)
+
+    // DSPy should use 'analyst' role by default (not 'coder'which is for tool access)
     // DSPy is pure LLM operations for prompt optimization, no tool access needed
-    const dspyRole = options.role || 'analyst';
+    const dspyRole = options.role'' | '''' | '''analyst';
     if (llm.setRole) {
       llm.setRole(dspyRole);
     }
-    
-    this.logger.debug('Executing DSPy prompt via foundation LLM', { 
+
+    this.logger.debug('Executing DSPy prompt via foundation LLM', {
       promptLength: prompt.length,
       role: dspyRole,
-      options 
+      options,
     });
-    
+
     try {
       const result = await llm.complete(prompt, {
-        temperature: options.temperature || 0.7,
-        maxTokens: options.maxTokens || 16384 // 16K default for DSPy operations
+        temperature: options.temperature'' | '''' | ''0.7,
+        maxTokens: options.maxTokens'' | '''' | ''16384, // 16K default for DSPy operations
       });
-      
+
       this.logger.debug('DSPy prompt execution completed', {
         resultLength: result.length,
-        role: dspyRole
+        role: dspyRole,
       });
-      
+
       return result;
     } catch (error) {
       this.logger.error('DSPy prompt execution failed:', error);
@@ -152,15 +161,19 @@ export class DSPyService {
     if (!this.initialized) {
       await this.initialize();
     }
-    
+
     if (!this.dbAccess) {
-      throw new Error('Database access not available - foundation not properly initialized');
+      throw new Error(
+        'Database access not available - foundation not properly initialized'
+      );
     }
-    
+
     try {
       // Get DSPy-specific KV storage from foundation
       const kvStorage = await this.dbAccess.getKV('dspy');
-      this.logger.debug('DSPy storage initialized via foundation database access');
+      this.logger.debug(
+        'DSPy storage initialized via foundation database access'
+      );
       return kvStorage;
     } catch (error) {
       this.logger.error('Failed to get DSPy storage from foundation:', error);
@@ -180,18 +193,18 @@ export class DSPyService {
    */
   async getLLMService(): Promise<SharedLLMService> {
     const llmProvider = await this.getLLMProvider();
-    
+
     return {
       async analyze(prompt: string, options?: any): Promise<string> {
         return llmProvider.complete(prompt, {
-          temperature: options?.temperature || 0.7,
-          maxTokens: options?.maxTokens || 16384 // 16K for backward compatibility
+          temperature: options?.temperature'' | '''' | ''0.7,
+          maxTokens: options?.maxTokens'' | '''' | ''16384, // 16K for backward compatibility
         });
       },
-      
+
       async createLLMProvider(): Promise<any> {
         return llmProvider;
-      }
+      },
     };
   }
 
@@ -202,15 +215,16 @@ export class DSPyService {
     if (!this.initialized) {
       throw new Error('DSPy service not initialized - call initialize() first');
     }
-    
+
     if (this.config) {
       return this.config;
     }
-    
-    // If config not available, throw error - DSPy requires foundation
-    throw new Error('Configuration not available - foundation not properly initialized');
-  }
 
+    // If config not available, throw error - DSPy requires foundation
+    throw new Error(
+      'Configuration not available - foundation not properly initialized'
+    );
+  }
 }
 
 /**
@@ -244,5 +258,5 @@ export type {
   SharedStorage,
   SharedLogger,
   Config,
-  SharedModule
+  SharedModule,
 };

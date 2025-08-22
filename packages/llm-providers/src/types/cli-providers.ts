@@ -5,17 +5,21 @@
  * Refactored to use foundation's Result pattern and proper error handling.
  */
 
-import type { LiteralUnion, SetOptional, Merge } from '@claude-zen/foundation/types';
 import type { Result } from '@claude-zen/foundation';
+import type {
+  LiteralUnion,
+  SetOptional,
+  Merge,
+} from '@claude-zen/foundation/types';
 
 export interface CLIMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: 'system | user' | 'assistant';
   content: string;
 }
 
 export interface CLIRequest {
   messages: CLIMessage[];
-  model?: LiteralUnion<'claude-3-5-sonnet' | 'gpt-4' | 'gemini-pro', string>;
+  model?: LiteralUnion<'claude-3-5-sonnet''' | '''gpt-4''' | '''gemini-pro', string>;
   temperature?: number;
   maxTokens?: number;
   metadata?: Record<string, unknown>;
@@ -39,7 +43,9 @@ export type CLIResult = Result<CLIResponse, CLIError>;
 
 // Specialized CLI roles for swarm agents
 export interface SwarmAgentRole {
-  role: LiteralUnion<'assistant' | 'coder' | 'analyst' | 'researcher' | 'coordinator' | 'tester' | 'architect', string>;
+  role: LiteralUnion<'' | '''assistant | coder' | 'analyst''' | '''researcher | coordinator' | 'tester''' | '''architect',
+    string
+  >;
   systemPrompt: string;
   capabilities: string[];
 }
@@ -88,33 +94,57 @@ export interface CLIProvider {
 
   // Role management with Result pattern
   setRole(roleName: string): Result<void, CLIError>;
-  getRole(): SwarmAgentRole | undefined;
+  getRole(): SwarmAgentRole'' | ''undefined;
 
   // Helper methods with Result pattern
-  complete(prompt: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>>;
-  executeTask(prompt: string, options?: Record<string, unknown>): Promise<Result<unknown, CLIError>>;
-  getUsageStats(): { requestCount: number; lastRequestTime: number; currentRole?: string };
+  complete(
+    prompt: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>>;
+  executeTask(
+    prompt: string,
+    options?: Record<string, unknown>
+  ): Promise<Result<unknown, CLIError>>;
+  getUsageStats(): {
+    requestCount: number;
+    lastRequestTime: number;
+    currentRole?: string;
+  };
 }
 
 // CLI Provider Registry
 export interface CLIProviderRegistry {
   register(provider: CLIProvider): void;
   unregister(providerId: string): void;
-  get(providerId: string): CLIProvider | undefined;
+  get(providerId: string): CLIProvider'' | ''undefined;
   list(): CLIProvider[];
-  getByCapability(capability: keyof CLIProviderCapabilities['features']): CLIProvider[];
+  getByCapability(
+    capability: keyof CLIProviderCapabilities['features']
+  ): CLIProvider[];
 }
 
 // CLI Provider Factory
 export interface CLIProviderFactory {
-  createProvider(type: LiteralUnion<'claude-code' | 'gemini-cli' | 'cursor-cli', string>, options?: Record<string, unknown>): CLIProvider;
+  createProvider(
+    type: LiteralUnion<'claude-code''' | '''gemini-cli''' | '''cursor-cli', string>,
+    options?: Record<string, unknown>
+  ): CLIProvider;
   getSupportedTypes(): string[];
 }
 
 // Type utilities for CLI providers with Result pattern support
-export type OptionalCLIRequest = SetOptional<CLIRequest, 'model' | 'temperature' | 'maxTokens' | 'metadata'>;
-export type MinimalCLIProvider = SetOptional<CLIProvider, 'setRole' | 'getRole'>;
-export type CLIProviderWithDefaults = Merge<CLIProvider, { getCapabilities(): Required<CLIProviderCapabilities> }>;
+export type OptionalCLIRequest = SetOptional<
+  CLIRequest,
+  'model | temperature' | 'maxTokens''' | '''metadata'
+>;
+export type MinimalCLIProvider = SetOptional<
+  CLIProvider,
+  'setRole''' | '''getRole'
+>;
+export type CLIProviderWithDefaults = Merge<
+  CLIProvider,
+  { getCapabilities(): Required<CLIProviderCapabilities> }
+>;
 
 // Validation schemas using foundation's Zod integration
 export interface CLIValidationSchema {
@@ -126,7 +156,7 @@ export interface CLIValidationSchema {
 // Error types for different CLI operations
 export const CLI_ERROR_CODES = {
   VALIDATION_ERROR: 'VALIDATION_ERROR',
-  TIMEOUT_ERROR: 'TIMEOUT_ERROR', 
+  TIMEOUT_ERROR: 'TIMEOUT_ERROR',
   NETWORK_ERROR: 'NETWORK_ERROR',
   AUTH_ERROR: 'AUTH_ERROR',
   RATE_LIMIT_ERROR: 'RATE_LIMIT_ERROR',
@@ -135,4 +165,5 @@ export const CLI_ERROR_CODES = {
   UNKNOWN_ERROR: 'UNKNOWN_ERROR',
 } as const;
 
-export type CLIErrorCode = typeof CLI_ERROR_CODES[keyof typeof CLI_ERROR_CODES];
+export type CLIErrorCode =
+  (typeof CLI_ERROR_CODES)[keyof typeof CLI_ERROR_CODES];

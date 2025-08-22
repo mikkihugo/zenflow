@@ -1,6 +1,6 @@
 /**
  * @fileoverview TaskMaster Event Integration - Enterprise Event System
- * 
+ *
  * Complete integration with @claude-zen/event-system featuring:
  * - Type-safe event definitions and handlers
  * - Real-time task flow coordination
@@ -28,7 +28,7 @@ import type {
   SystemHealthStatus,
   APIError,
   AuditLogEntry,
-  WIPViolationSeverity
+  WIPViolationSeverity,
 } from '../types/core/index.js';
 
 // =============================================================================
@@ -48,46 +48,48 @@ export interface TaskMasterEventMap {
   'task:completed': (event: TaskCompletedEvent) => void;
   'task:blocked': (event: TaskBlockedEvent) => void;
   'task:unblocked': (event: TaskUnblockedEvent) => void;
-  
+
   // Workflow events
   'workflow:started': (event: WorkflowStartedEvent) => void;
   'workflow:completed': (event: WorkflowCompletedEvent) => void;
   'workflow:failed': (event: WorkflowFailedEvent) => void;
   'workflow:paused': (event: WorkflowPausedEvent) => void;
   'workflow:resumed': (event: WorkflowResumedEvent) => void;
-  
+
   // Approval gate events
   'approval:requested': (event: ApprovalRequestedEvent) => void;
   'approval:granted': (event: ApprovalGrantedEvent) => void;
   'approval:rejected': (event: ApprovalRejectedEvent) => void;
   'approval:timeout': (event: ApprovalTimeoutEvent) => void;
   'approval:escalated': (event: ApprovalEscalatedEvent) => void;
-  
+
   // Performance and monitoring events
-  'performance:threshold_exceeded': (event: PerformanceThresholdExceededEvent) => void;
+  'performance:threshold_exceeded': (
+    event: PerformanceThresholdExceededEvent
+  ) => void;
   'performance:bottleneck_detected': (event: BottleneckDetectedEvent) => void;
   'performance:wip_violation': (event: WIPViolationEvent) => void;
   'performance:metrics_updated': (event: MetricsUpdatedEvent) => void;
   'performance:prediction_completed': (event: PredictionCompletedEvent) => void;
-  
+
   // System events
   'system:started': (event: SystemStartedEvent) => void;
   'system:shutdown': (event: SystemShutdownEvent) => void;
   'system:error': (event: SystemErrorEvent) => void;
   'system:health_check': (event: SystemHealthCheckEvent) => void;
   'system:configuration_changed': (event: ConfigurationChangedEvent) => void;
-  
+
   // Security events
   'security:authentication_failed': (event: AuthenticationFailedEvent) => void;
   'security:authorization_denied': (event: AuthorizationDeniedEvent) => void;
   'security:rate_limit_exceeded': (event: RateLimitExceededEvent) => void;
   'security:suspicious_activity': (event: SuspiciousActivityEvent) => void;
-  
+
   // Integration events
   'integration:external_update': (event: ExternalUpdateEvent) => void;
   'integration:sync_completed': (event: SyncCompletedEvent) => void;
   'integration:sync_failed': (event: SyncFailedEvent) => void;
-  
+
   // Audit events
   'audit:action_logged': (event: AuditActionLoggedEvent) => void;
   'audit:compliance_check': (event: ComplianceCheckEvent) => void;
@@ -158,7 +160,7 @@ export interface TaskDeletedEvent extends TaskBaseEvent {
 export interface TaskStateChangedEvent extends TaskBaseEvent {
   type: 'task:state_changed';
   transition: TaskStateTransition;
-  triggeredBy: 'user' | 'system' | 'automation';
+  triggeredBy: 'user | system' | 'automation';
 }
 
 export interface TaskAssignedEvent extends TaskBaseEvent {
@@ -283,14 +285,14 @@ export interface PerformanceThresholdExceededEvent extends BaseEvent {
   metric: string;
   value: number;
   threshold: number;
-  severity: 'warning' | 'critical';
+  severity: 'warning''' | '''critical';
   affectedTasks: TaskId[];
 }
 
 export interface BottleneckDetectedEvent extends BaseEvent {
   type: 'performance:bottleneck_detected';
   bottleneck: BottleneckInfo;
-  detectionMethod: 'algorithm' | 'manual' | 'wasm_ml';
+  detectionMethod: 'algorithm | manual' | 'wasm_ml';
   confidence: number;
   recommendedActions: string[];
 }
@@ -307,13 +309,13 @@ export interface WIPViolationEvent extends BaseEvent {
 export interface MetricsUpdatedEvent extends BaseEvent {
   type: 'performance:metrics_updated';
   metrics: FlowMetrics;
-  calculationMethod: 'real_time' | 'batch' | 'wasm_accelerated';
+  calculationMethod: 'real_time | batch' | 'wasm_accelerated';
   processingTimeMs: number;
 }
 
 export interface PredictionCompletedEvent extends BaseEvent {
   type: 'performance:prediction_completed';
-  predictionType: 'throughput' | 'cycle_time' | 'bottleneck' | 'wip_optimization';
+  predictionType:'' | '''throughput | cycle_time' | 'bottleneck''' | '''wip_optimization';
   results: unknown;
   confidence: number;
   modelVersion: string;
@@ -332,7 +334,7 @@ export interface SystemStartedEvent extends BaseEvent {
 
 export interface SystemShutdownEvent extends BaseEvent {
   type: 'system:shutdown';
-  reason: 'graceful' | 'forced' | 'error';
+  reason: 'graceful | forced' | 'error';
   uptimeMs: number;
 }
 
@@ -347,7 +349,7 @@ export interface SystemHealthCheckEvent extends BaseEvent {
   type: 'system:health_check';
   health: SystemHealthStatus;
   previousHealth?: SystemHealthStatus;
-  healthTrend: 'improving' | 'stable' | 'degrading';
+  healthTrend: 'improving | stable' | 'degrading';
 }
 
 export interface ConfigurationChangedEvent extends BaseEvent {
@@ -443,7 +445,7 @@ export interface ComplianceCheckEvent extends BaseEvent {
   type: 'audit:compliance_check';
   framework: string;
   checkType: string;
-  result: 'passed' | 'failed' | 'warning';
+  result: 'passed | failed' | 'warning';
   findings: string[];
 }
 
@@ -462,7 +464,7 @@ export interface DataExportEvent extends BaseEvent {
 
 /**
  * Enterprise TaskMaster Event Manager
- * 
+ *
  * Provides comprehensive event management with:
  * - Type-safe event emission and handling
  * - Event persistence and replay
@@ -475,11 +477,11 @@ export class TaskMasterEventManager {
   private eventBus: any; // Will be injected from infrastructure
   private telemetryManager: any;
   private eventStore: any;
-  
+
   // Event handlers registry
   private handlers = new Map<string, Array<(event: any) => Promise<void>>>();
   private middleware: Array<(event: any) => Promise<any>> = [];
-  
+
   // Configuration
   private config: {
     enablePersistence: boolean;
@@ -488,7 +490,7 @@ export class TaskMasterEventManager {
     maxRetries: number;
     retryDelay: number;
   };
-  
+
   constructor(config?: Partial<typeof this.config>) {
     this.config = {
       enablePersistence: true,
@@ -496,14 +498,14 @@ export class TaskMasterEventManager {
       enableReplay: true,
       maxRetries: 3,
       retryDelay: 1000,
-      ...config
+      ...config,
     };
   }
-  
+
   // =============================================================================
   // INITIALIZATION
   // =============================================================================
-  
+
   /**
    * Initialize the event manager
    */
@@ -513,34 +515,33 @@ export class TaskMasterEventManager {
       const eventSystem = await getEventSystem();
       this.eventBus = eventSystem.createEventBus({
         maxListeners: 1000,
-        enablePersistence: this.config.enablePersistence
+        enablePersistence: this.config.enablePersistence,
       });
-      
+
       // Initialize telemetry if enabled
       if (this.config.enableTelemetry) {
         this.telemetryManager = await getTelemetryManager();
       }
-      
+
       // Initialize event store for persistence
       if (this.config.enablePersistence) {
         this.eventStore = eventSystem.createEventStore();
       }
-      
+
       // Set up error handling
       this.eventBus.on('error', this.handleEventError.bind(this));
-      
+
       this.logger.info('TaskMaster Event Manager initialized', {
         persistence: this.config.enablePersistence,
         telemetry: this.config.enableTelemetry,
-        replay: this.config.enableReplay
+        replay: this.config.enableReplay,
       });
-      
     } catch (error) {
       this.logger.error('Failed to initialize event manager', error);
       throw error;
     }
   }
-  
+
   /**
    * Shutdown the event manager
    */
@@ -549,29 +550,28 @@ export class TaskMasterEventManager {
       // Remove all handlers
       this.handlers.clear();
       this.middleware = [];
-      
+
       // Close event bus
       if (this.eventBus) {
         await this.eventBus.close();
       }
-      
+
       // Close event store
       if (this.eventStore) {
         await this.eventStore.close();
       }
-      
+
       this.logger.info('TaskMaster Event Manager shutdown completed');
-      
     } catch (error) {
       this.logger.error('Error during event manager shutdown', error);
       throw error;
     }
   }
-  
+
   // =============================================================================
   // EVENT EMISSION
   // =============================================================================
-  
+
   /**
    * Emit a typed event
    */
@@ -582,58 +582,58 @@ export class TaskMasterEventManager {
     try {
       // Add metadata to event
       const event = this.enrichEvent(eventType as string, eventData);
-      
+
       // Apply middleware
       const processedEvent = await this.applyMiddleware(event);
-      
+
       // Persist event if enabled
       if (this.config.enablePersistence && this.eventStore) {
         await this.eventStore.store(processedEvent);
       }
-      
+
       // Emit to event bus
       this.eventBus.emit(eventType, processedEvent);
-      
+
       // Track telemetry
       if (this.config.enableTelemetry && this.telemetryManager) {
         this.telemetryManager.trackEvent('event_emitted', {
           eventType,
           timestamp: event.timestamp,
-          source: event.source
+          source: event.source,
         });
       }
-      
+
       this.logger.debug('Event emitted', { eventType, eventId: event.id });
-      
     } catch (error) {
       this.logger.error('Failed to emit event', error, { eventType });
       throw error;
     }
   }
-  
+
   /**
    * Emit multiple events in a batch
    */
-  async emitBatch(events: Array<{
-    type: keyof TaskMasterEventMap;
-    data: any;
-  }>): Promise<void> {
+  async emitBatch(
+    events: Array<{
+      type: keyof TaskMasterEventMap;
+      data: any;
+    }>
+  ): Promise<void> {
     try {
       const promises = events.map(({ type, data }) => this.emit(type, data));
       await Promise.all(promises);
-      
+
       this.logger.debug('Batch events emitted', { count: events.length });
-      
     } catch (error) {
       this.logger.error('Failed to emit batch events', error);
       throw error;
     }
   }
-  
+
   // =============================================================================
   // EVENT HANDLING
   // =============================================================================
-  
+
   /**
    * Register an event handler
    */
@@ -642,11 +642,11 @@ export class TaskMasterEventManager {
     handler: TaskMasterEventMap[K]
   ): void {
     const eventTypeStr = eventType as string;
-    
+
     if (!this.handlers.has(eventTypeStr)) {
       this.handlers.set(eventTypeStr, []);
     }
-    
+
     const asyncHandler = async (event: any) => {
       try {
         await handler(event);
@@ -655,13 +655,13 @@ export class TaskMasterEventManager {
         throw error;
       }
     };
-    
+
     this.handlers.get(eventTypeStr)!.push(asyncHandler);
     this.eventBus.on(eventType, asyncHandler);
-    
+
     this.logger.debug('Event handler registered', { eventType });
   }
-  
+
   /**
    * Remove an event handler
    */
@@ -671,18 +671,18 @@ export class TaskMasterEventManager {
   ): void {
     const eventTypeStr = eventType as string;
     const handlers = this.handlers.get(eventTypeStr);
-    
+
     if (handlers) {
       const index = handlers.indexOf(handler as any);
       if (index > -1) {
         handlers.splice(index, 1);
         this.eventBus.off(eventType, handler);
-        
+
         this.logger.debug('Event handler removed', { eventType });
       }
     }
   }
-  
+
   /**
    * Register middleware for event processing
    */
@@ -690,43 +690,42 @@ export class TaskMasterEventManager {
     this.middleware.push(middleware);
     this.logger.debug('Event middleware registered');
   }
-  
+
   // =============================================================================
   // EVENT REPLAY AND RECOVERY
   // =============================================================================
-  
+
   /**
    * Replay events from a specific timestamp
    */
   async replayEvents(fromTimestamp: Date, toTimestamp?: Date): Promise<void> {
-    if (!this.config.enableReplay || !this.eventStore) {
+    if (!this.config.enableReplay'' | '''' | ''!this.eventStore) {
       throw new Error('Event replay is not enabled');
     }
-    
+
     try {
       const events = await this.eventStore.getEvents({
         from: fromTimestamp,
-        to: toTimestamp || new Date()
+        to: toTimestamp'' | '''' | ''new Date(),
       });
-      
+
       this.logger.info('Replaying events', {
         count: events.length,
         from: fromTimestamp,
-        to: toTimestamp
+        to: toTimestamp,
       });
-      
+
       for (const event of events) {
         // Re-emit event with replay flag
         const replayEvent = { ...event, isReplay: true };
         this.eventBus.emit(event.type, replayEvent);
       }
-      
     } catch (error) {
       this.logger.error('Failed to replay events', error);
       throw error;
     }
   }
-  
+
   /**
    * Get event history for analysis
    */
@@ -740,57 +739,56 @@ export class TaskMasterEventManager {
     if (!this.eventStore) {
       throw new Error('Event persistence is not enabled');
     }
-    
+
     try {
       const events = await this.eventStore.query(filter);
       return events;
-      
     } catch (error) {
       this.logger.error('Failed to get event history', error);
       throw error;
     }
   }
-  
+
   // =============================================================================
   // PRIVATE METHODS
   // =============================================================================
-  
+
   private enrichEvent(eventType: string, eventData: any): any {
     const enriched = {
       ...eventData,
-      id: eventData.id || this.generateEventId(),
-      timestamp: eventData.timestamp || new Date(),
-      source: eventData.source || 'taskmaster',
-      version: eventData.version || '2.0.0',
+      id: eventData.id'' | '''' | ''this.generateEventId(),
+      timestamp: eventData.timestamp'' | '''' | ''new Date(),
+      source: eventData.source'' | '''' | '''taskmaster',
+      version: eventData.version'' | '''' | '''2.0.0',
       type: eventType,
       metadata: {
         ...eventData.metadata,
         emittedAt: new Date(),
-        nodeId: process.env.NODE_ID || 'unknown'
-      }
+        nodeId: process.env.NODE_ID'' | '''' | '''unknown',
+      },
     };
-    
+
     return enriched;
   }
-  
+
   private async applyMiddleware(event: any): Promise<any> {
     let processedEvent = event;
-    
+
     for (const middleware of this.middleware) {
       try {
-        processedEvent = await middleware(processedEvent) || processedEvent;
+        processedEvent = (await middleware(processedEvent))'' | '''' | ''processedEvent;
       } catch (error) {
         this.logger.error('Middleware error', error, { eventType: event.type });
         throw error;
       }
     }
-    
+
     return processedEvent;
   }
-  
+
   private async handleEventError(error: Error, event?: any): Promise<void> {
     this.logger.error('Event bus error', error, { event });
-    
+
     // Emit system error event
     await this.emit('system:error', {
       id: this.generateEventId(),
@@ -803,12 +801,12 @@ export class TaskMasterEventManager {
         message: error.message,
         details: error.stack,
         metadata: { event },
-        correlationId: this.generateEventId()
+        correlationId: this.generateEventId(),
       },
-      component: 'event_bus'
+      component: 'event_bus',
     });
   }
-  
+
   private generateEventId(): string {
     return `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
@@ -881,13 +879,13 @@ export function createEventCorrelation(baseEvent: BaseEvent): {
   getCorrelatedEvent: <T extends BaseEvent>(event: T) => T;
 } {
   const correlationId = baseEvent.correlationId || baseEvent.id;
-  
+
   return {
     correlationId,
     getCorrelatedEvent: <T extends BaseEvent>(event: T): T => ({
       ...event,
-      correlationId
-    })
+      correlationId,
+    }),
   };
 }
 
@@ -897,28 +895,28 @@ export function createEventCorrelation(baseEvent: BaseEvent): {
 export class EventAggregator {
   private events: BaseEvent[] = [];
   private timeWindow: number;
-  
+
   constructor(timeWindowMs: number = 5000) {
     this.timeWindow = timeWindowMs;
   }
-  
+
   add(event: BaseEvent): void {
     this.events.push(event);
     this.cleanup();
   }
-  
+
   getAggregatedEvents(eventType?: string): BaseEvent[] {
     this.cleanup();
-    
+
     if (eventType) {
-      return this.events.filter(e => (e as any).type === eventType);
+      return this.events.filter((e) => (e as any).type === eventType);
     }
-    
+
     return [...this.events];
   }
-  
+
   private cleanup(): void {
     const cutoff = Date.now() - this.timeWindow;
-    this.events = this.events.filter(e => e.timestamp.getTime() > cutoff);
+    this.events = this.events.filter((e) => e.timestamp.getTime() > cutoff);
   }
 }

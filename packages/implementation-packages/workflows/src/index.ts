@@ -57,10 +57,7 @@
 // MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages
 // =============================================================================
 
-export { 
-  WorkflowEngine as default, 
-  WorkflowEngine
-} from './main';
+export { WorkflowEngine as default, WorkflowEngine } from './main';
 
 // =============================================================================
 // PROFESSIONAL UTILITIES - Library Integrations
@@ -70,7 +67,7 @@ export {
   // Date utilities
   DateFormatter,
   DateCalculator,
-  // Collection utilities  
+  // Collection utilities
   ArrayProcessor,
   ObjectProcessor,
   // ID generation utilities
@@ -90,11 +87,11 @@ export {
   type WorkflowStep as ValidatedWorkflowStep,
   type WorkflowDefinition as ValidatedWorkflowDefinition,
   type WorkflowContext as ValidatedWorkflowContext,
-  type WorkflowExecutionResult as ValidatedWorkflowExecutionResult
+  type WorkflowExecutionResult as ValidatedWorkflowExecutionResult,
 } from './utilities/index';
 
 // =============================================================================
-// WORKFLOW DOMAIN TYPES - Comprehensive workflow domain types  
+// WORKFLOW DOMAIN TYPES - Comprehensive workflow domain types
 // =============================================================================
 
 // Export comprehensive workflow domain types from types/index.ts
@@ -114,7 +111,7 @@ export type {
   ParameterType,
   RollbackStrategy,
   LockType,
-  
+
   // Core workflow interfaces
   WorkflowDefinition,
   WorkflowConfig,
@@ -126,7 +123,7 @@ export type {
   WorkflowContext,
   StepExecution,
   StepError,
-  
+
   // Configuration types
   ConcurrencyConfig,
   RetryConfig,
@@ -136,35 +133,35 @@ export type {
   ResourceLimits,
   ResourceRequests,
   ResourceConstraints,
-  
+
   // Scheduling and dependencies
   ScheduleInfo,
   WorkflowDependency,
   DependencyCondition,
-  
+
   // Monitoring and metrics
   ExecutionMetrics,
   ResourceUsage,
   PerformanceMetrics,
   LatencyMetrics,
   StepMetrics,
-  
+
   // Logging and audit
   ExecutionLog,
   StepLog,
-  
+
   // Artifacts and output
   WorkflowArtifact,
   StepArtifact,
   RetentionPolicy,
   AccessPolicy,
-  
+
   // Templates and registry
   WorkflowTemplate,
   TemplateParameter,
   TemplateExample,
   TemplateDocumentation,
-  
+
   // Validation and permissions
   WorkflowValidation,
   WorkflowPermissions,
@@ -172,18 +169,18 @@ export type {
   StepValidation,
   InputSpecification,
   OutputSpecification,
-  
+
   // Advanced features
   RollbackConfig,
   CheckpointConfig,
   CompensationConfig,
   CompensationAction,
-  
+
   // Engine configuration
   WorkflowEngineConfig,
   ExecutionConfig,
   PerformanceConfig,
-  
+
   // Utility types
   WorkflowState,
   StateCheckpoint,
@@ -192,14 +189,14 @@ export type {
   ExecutionId,
   StepId,
   WorkflowEventType,
-  
+
   // Result types
   WorkflowResult,
   ExecutionResult,
   StepResult,
   WorkflowError,
   ExecutionError,
-  StepExecutionError
+  StepExecutionError,
 } from './types/index';
 
 // =============================================================================
@@ -219,7 +216,7 @@ export type {
   WorkflowTemplate as WorkflowTemplateLegacy,
   WorkflowExecution as WorkflowExecutionLegacy,
   WorkflowRegistry,
-  WorkflowEvent
+  WorkflowEvent,
 } from './types';
 
 // =============================================================================
@@ -229,7 +226,8 @@ export type {
 export const WORKFLOWS_INFO = {
   version: '1.0.0',
   name: '@claude-zen/workflows',
-  description: 'Production-ready workflow engine with battle-tested npm dependencies',
+  description:
+    'Production-ready workflow engine with battle-tested npm dependencies',
   battleTestedDependencies: [
     'expr-eval: Safe expression evaluation',
     'async: Professional async utilities',
@@ -238,7 +236,7 @@ export const WORKFLOWS_INFO = {
     'xstate: Robust state management',
     'mermaid: Professional visualization',
     'node-cron: Production scheduling',
-    'foundation: Battle-tested storage'
+    'foundation: Battle-tested storage',
   ],
   capabilities: [
     'Secure workflow orchestration (no arbitrary code execution)',
@@ -255,12 +253,12 @@ export const WORKFLOWS_INFO = {
     'Advanced date/time handling (date-fns)',
     'Runtime validation (zod)',
     'Reactive programming (rxjs)',
-    'Immutable state management (immer)'
+    'Immutable state management (immer)',
   ],
   security: {
     safeExpressionEvaluation: true,
     noArbitraryCodeExecution: true,
     foundationStorageIntegration: true,
-    productionReady: true
-  }
+    productionReady: true,
+  },
 };

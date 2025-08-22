@@ -12,8 +12,8 @@
  * - @claude-zen/intelligence: ResourceOptimizer for performance optimization
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   Service,
@@ -24,8 +24,8 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces');
-import { ServiceEnvironment, ServicePriority, ServiceType } from './types');
+} from './core/interfaces';
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
 
 // ============================================
 // Service Error Classes
@@ -180,7 +180,7 @@ export class InfrastructureServiceAdapter
 
     try {
       this.logger.info(`Initializing ${this.name}`);
-      this.status = 'initializing');
+      this.status ='initializing');
 
       // Merge configuration
       if (config) {

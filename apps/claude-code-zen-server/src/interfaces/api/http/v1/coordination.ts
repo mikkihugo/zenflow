@@ -8,11 +8,11 @@
  * @file Coordination domain API routes.
  */
 
-import { type Request, type Response, Router } from 'express');
+import { type Request, type Response, Router } from 'express';
 
-import { CoordinationAPI } from './../../../coordination/api');
-import { asyncHandler } from './middleware/errors');
-import { LogLevel, log } from './middleware/logging');
+import { CoordinationAPI } from './../../../coordination/api';
+import { asyncHandler } from './middleware/errors';
+import { LogLevel, log } from './middleware/logging';
 
 /**
  * Create coordination routes.
@@ -218,14 +218,9 @@ export const createCoordinationRoutes = (): Router => {
   router.get(
     '/metrics',
     asyncHandler(async (req: Request, res: Response) => {
-      const timeRange = req.query.timeRange as
-        | '1h'
-        | '24h'
-        | '7d'
-        | '30d'
-        | undefined;
+      const timeRange = req.query.timeRange as' | ''1h'' | ''24h'' | ''7d'' | ''30d'' | 'undefined;
 
-      log(LogLevel.DEBUG, 'Getting coordination metrics', req, {
+      log(LogLevel.DEBUG,'Getting coordination metrics', req, {
         timeRange: timeRange || 'default',
       });
 
@@ -254,7 +249,7 @@ export const createCoordinationRoutes = (): Router => {
         swarmId: `swarm-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
         topology: req.body.topology || 'mesh',
         maxAgents: req.body.maxAgents || 10,
-        status: 'initializing',
+        status:'initializing',
         created: new Date()?.toISOString,
       };
 

@@ -1,24 +1,18 @@
 /**
  * @fileoverview SPARC Types
- * 
+ *
  * Types for the SPARC methodology system.
  */
 
 // SPARC phases
-export type SPARCPhase = 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+export type SPARCPhase =
+  | 'specification | pseudocode' | 'architecture' | 'refinement' | 'completion';
 
 // Project complexity levels
-export type ProjectComplexity = 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
+export type ProjectComplexity ='' | '''simple | moderate' | 'high' | 'complex' | 'enterprise';
 
 // Domain types
-export type ProjectDomain = 
-  | 'swarm-coordination'
-  | 'neural-networks' 
-  | 'wasm-integration'
-  | 'rest-api'
-  | 'memory-systems'
-  | 'interfaces'
-  | 'general';
+export type ProjectDomain ='' | '''swarm-coordination''' | '''neural-networks''' | '''wasm-integration''' | '''rest-api''' | '''memory-systems''' | '''interfaces''' | '''general';
 
 // SPARC project definition
 export interface SPARCProject {
@@ -67,8 +61,8 @@ export interface AlgorithmPseudocode {
   id: string;
   name: string;
   purpose: string;
-  inputs: Array<{ name: string; type: string; description: string; }>;
-  outputs: Array<{ name: string; type: string; description: string; }>;
+  inputs: Array<{ name: string; type: string; description: string }>;
+  outputs: Array<{ name: string; type: string; description: string }>;
   steps: Array<{
     stepNumber: number;
     description: string;
@@ -84,7 +78,7 @@ export interface AlgorithmPseudocode {
 
 export interface DataStructure {
   name: string;
-  type: 'class' | 'interface' | 'enum' | 'type';
+  type: 'class | interface' | 'enum''' | '''type';
   purpose: string;
   properties: Array<{
     name: string;
@@ -114,7 +108,7 @@ export interface ProjectArchitecture {
 
 export interface ArchitectureComponent {
   name: string;
-  type: 'service' | 'module' | 'component' | 'utility';
+  type: 'service | module' | 'component''' | '''utility';
   purpose: string;
   interfaces: string[];
   dependencies: string[];
@@ -123,7 +117,7 @@ export interface ArchitectureComponent {
 export interface ComponentRelationship {
   from: string;
   to: string;
-  type: 'depends-on' | 'implements' | 'extends' | 'uses';
+  type: 'depends-on''' | '''implements | extends' | 'uses';
   description: string;
 }
 
@@ -133,7 +127,7 @@ export interface ProjectRefinement {
   phase: SPARCPhase;
   description: string;
   changes: string[];
-  impact: 'low' | 'medium' | 'high';
+  impact: 'low | medium' | 'high';
   timestamp: number;
 }
 
@@ -154,7 +148,7 @@ export interface ImplementationFile {
 
 export interface TestSuite {
   name: string;
-  type: 'unit' | 'integration' | 'e2e';
+  type: 'unit | integration' | 'e2e';
   tests: TestCase[];
 }
 
@@ -167,12 +161,12 @@ export interface TestCase {
 
 export interface DocumentationFile {
   name: string;
-  format: 'markdown' | 'rst' | 'html';
+  format: 'markdown | rst' | 'html';
   content: string;
 }
 
 export interface DeploymentConfig {
-  environment: 'development' | 'staging' | 'production';
+  environment: 'development | staging' | 'production';
   platform: string;
   requirements: string[];
   scripts: Record<string, string>;

@@ -1,10 +1,10 @@
 /**
  * @fileoverview Bootstrap Few-Shot with Random Search Teleprompter
- * 
+ *
  * Production-grade implementation with 100% Stanford DSPy API compatibility.
  * Advanced teleprompter that combines the Bootstrap Few-Shot approach with
  * systematic random search across multiple candidate configurations.
- * 
+ *
  * Key Features:
  * - Exact Stanford DSPy BootstrapFewShotWithRandomSearch API compatibility
  * - Multiple candidate program generation with different random seeds
@@ -12,11 +12,11 @@
  * - Parallel evaluation with configurable thread limits
  * - Early stopping based on score thresholds
  * - Comprehensive candidate comparison and selection
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  * @since 1.0.0-alpha.47
- * 
+ *
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
  */
 
@@ -44,16 +44,16 @@ class LabeledFewShot extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule | null;
-      valset?: Example[] | null;
+      teacher?: DSPyModule'' | ''null;
+      valset?: Example[]'' | ''null;
       sample?: boolean;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     const { trainset, sample = this.sample } = config;
-    
+
     const compiled = student.reset_copy();
-    
+
     // Sample k examples from trainset (matching Stanford implementation)
     let demos: Example[];
     if (sample && trainset.length > this.k) {
@@ -68,12 +68,12 @@ class LabeledFewShot extends Teleprompter {
       // First k examples
       demos = trainset.slice(0, Math.min(this.k, trainset.length));
     }
-    
+
     // Add to all predictors
     for (const predictor of compiled.predictors()) {
       predictor.updateDemos(demos);
     }
-    
+
     (compiled as any)._compiled = true;
     return compiled;
   }
@@ -91,12 +91,12 @@ export interface CandidateResult {
 
 /**
  * Bootstrap Few-Shot with Random Search Teleprompter
- * 
+ *
  * Exactly matches Stanford DSPy BootstrapFewShotWithRandomSearch implementation.
  * Systematically explores the space of few-shot demonstrations by generating
  * multiple candidate programs using different bootstrap configurations and
  * random seeds.
- * 
+ *
  * @example
  * ```typescript
  * // Basic random search with default settings
@@ -105,12 +105,12 @@ export interface CandidateResult {
  *   max_bootstrapped_demos: 4,
  *   num_candidate_programs: 16  // Try 16 different configurations
  * });
- * 
+ *
  * const optimized = await randomSearch.compile(studentProgram, {
  *   trainset: trainingData,
  *   valset: validationData
  * });
- * 
+ *
  * // Advanced search with early stopping
  * const earlyStopSearch = new BootstrapFewShotWithRandomSearch({
  *   metric: f1ScoreMetric,
@@ -122,12 +122,12 @@ export interface CandidateResult {
  *   max_rounds: 3,              // Multiple bootstrap rounds per candidate
  *   max_errors: 10              // Allow some failures
  * });
- * 
+ *
  * const result = await earlyStopSearch.compile(complexProgram, {
  *   trainset: largeTrainingSet,
  *   valset: validationSet
  * });
- * 
+ *
  * // Parallel search for faster execution
  * const parallelSearch = new BootstrapFewShotWithRandomSearch({
  *   metric: accuracyMetric,
@@ -139,12 +139,12 @@ export interface CandidateResult {
  *     max_tokens: 150
  *   }
  * });
- * 
+ *
  * const parallelResult = await parallelSearch.compile(program, {
  *   trainset: examples,
  *   valset: validation
  * });
- * 
+ *
  * // Production search with comprehensive evaluation
  * const productionSearch = new BootstrapFewShotWithRandomSearch({
  *   metric: (gold, pred) => {
@@ -162,19 +162,19 @@ export interface CandidateResult {
  *   num_threads: 8,              // Maximum parallelization
  *   max_errors: 20               // Allow for exploration
  * });
- * 
+ *
  * try {
  *   const bestProgram = await productionSearch.compile(deploymentProgram, {
  *     trainset: productionTraining,
  *     valset: productionValidation
  *   });
- *   
+ *
  *   console.log('Random search completed successfully');
  *   console.log('Best program performance:', await evaluate(bestProgram, testSet));
  * } catch (error) {
  *   console.error('Random search failed:', error.message);
  * }
- * 
+ *
  * // Custom search with specific strategies
  * const strategicSearch = new BootstrapFewShotWithRandomSearch({
  *   metric: domainSpecificMetric,
@@ -185,7 +185,7 @@ export interface CandidateResult {
  *     exploration_factor: 0.3
  *   }
  * });
- * 
+ *
  * // Search with different demonstration counts
  * const adaptiveSearch = new BootstrapFewShotWithRandomSearch({
  *   metric: adaptiveMetric,
@@ -195,7 +195,7 @@ export interface CandidateResult {
  *   stop_at_score: undefined,       // No early stopping - full exploration
  *   metric_threshold: 0.6           // Moderate demo quality threshold
  * });
- * 
+ *
  * const adaptiveResult = await adaptiveSearch.compile(adaptiveProgram, {
  *   trainset: diverseTrainingSet,
  *   valset: representativeValidation
@@ -221,20 +221,20 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 
   constructor(config: {
     metric: MetricFunction;
-    teacher_settings?: Record<string, any> | null;
+    teacher_settings?: Record<string, any>'' | ''null;
     max_bootstrapped_demos?: number;
     max_labeled_demos?: number;
     max_rounds?: number;
     num_candidate_programs?: number;
-    num_threads?: number | null;
-    max_errors?: number | null;
-    stop_at_score?: number | null;
-    metric_threshold?: number | null;
+    num_threads?: number'' | ''null;
+    max_errors?: number'' | ''null;
+    stop_at_score?: number'' | ''null;
+    metric_threshold?: number'' | ''null;
   }) {
     super();
 
     this.metric = config.metric;
-    this.teacher_settings = config.teacher_settings || {};
+    this.teacher_settings = config.teacher_settings'' | '''' | ''{};
     this.max_rounds = config.max_rounds ?? 1;
 
     this.num_threads = config.num_threads ?? undefined;
@@ -246,8 +246,12 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
     this.num_candidate_sets = config.num_candidate_programs ?? 16;
     this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
-    console.log(`Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`);
-    console.log(`Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`);
+    console.log(
+      `Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`
+    );
+    console.log(
+      `Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`
+    );
   }
 
   /**
@@ -257,28 +261,38 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule | null;
-      valset?: Example[] | null;
-      restrict?: number[] | null;
+      teacher?: DSPyModule'' | ''null;
+      valset?: Example[]'' | ''null;
+      restrict?: number[]'' | ''null;
       labeled_sample?: boolean;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
-    const { teacher, trainset, valset, restrict, labeled_sample = true } = config;
+    const {
+      teacher,
+      trainset,
+      valset,
+      restrict,
+      labeled_sample = true,
+    } = config;
 
     this.trainset = trainset;
-    this.valset = valset || trainset; // Note: Stanford DSPy uses trainset as fallback
+    this.valset = valset'' | '''' | ''trainset; // Note: Stanford DSPy uses trainset as fallback
 
     const effective_max_errors = this.max_errors ?? 10; // dspy.settings.max_errors equivalent
 
     const scores: number[] = [];
     const all_subscores: number[][] = [];
     const score_data: CandidateResult[] = [];
-    let best_program: DSPyModule | undefined;
+    let best_program: DSPyModule'' | ''undefined;
 
     // Generate candidate programs exactly matching Stanford implementation
     for (let seed = -3; seed < this.num_candidate_sets; seed++) {
-      if (restrict !== null && restrict !== undefined && !restrict.includes(seed)) {
+      if (
+        restrict !== null &&
+        restrict !== undefined &&
+        !restrict.includes(seed)
+      ) {
         continue;
       }
 
@@ -288,15 +302,13 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
       if (seed === -3) {
         // Zero-shot
         program = student.reset_copy();
-
       } else if (seed === -2) {
         // Labels only
         const teleprompter = new LabeledFewShot(this.max_labeled_demos);
         program = await teleprompter.compile(student, {
           trainset: trainset_copy,
-          sample: labeled_sample
+          sample: labeled_sample,
         });
-
       } else if (seed === -1) {
         // Unshuffled few-shot
         const optimizer = new BootstrapFewShot({
@@ -306,14 +318,13 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
           max_bootstrapped_demos: this.max_num_samples,
           max_labeled_demos: this.max_labeled_demos,
           max_rounds: this.max_rounds,
-          max_errors: effective_max_errors
+          max_errors: effective_max_errors,
         });
 
         program = await optimizer.compile(student, {
           trainset: trainset_copy,
-          teacher
+          teacher,
         });
-
       } else {
         if (seed < 0) {
           throw new Error(`Invalid seed: ${seed}`);
@@ -321,7 +332,11 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 
         // Random shuffle and size exactly matching Stanford implementation
         this.shuffleArray(trainset_copy, seed);
-        const size = this.seededRandomInt(seed, this.min_num_samples, this.max_num_samples);
+        const size = this.seededRandomInt(
+          seed,
+          this.min_num_samples,
+          this.max_num_samples
+        );
 
         const optimizer = new BootstrapFewShot({
           metric: this.metric,
@@ -330,12 +345,12 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
           max_bootstrapped_demos: size,
           max_labeled_demos: this.max_labeled_demos,
           max_rounds: this.max_rounds,
-          max_errors: effective_max_errors
+          max_errors: effective_max_errors,
         });
 
         program = await optimizer.compile(student, {
           trainset: trainset_copy,
-          teacher
+          teacher,
         });
       }
 
@@ -346,8 +361,8 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 
       all_subscores.push(subscores);
 
-      if (scores.length === 0 || score > Math.max(...scores)) {
-        console.log("New best score:", score, "for seed", seed);
+      if (scores.length === 0'' | '''' | ''score > Math.max(...scores)) {
+        console.log('New best score:', score, 'for seed', seed);
         best_program = program;
       }
 
@@ -359,11 +374,17 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
         score,
         subscores,
         seed,
-        program
+        program,
       });
 
-      if (this.stop_at_score !== null && this.stop_at_score !== undefined && score >= this.stop_at_score) {
-        console.log(`Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`);
+      if (
+        this.stop_at_score !== null &&
+        this.stop_at_score !== undefined &&
+        score >= this.stop_at_score
+      ) {
+        console.log(
+          `Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`
+        );
         break;
       }
     }
@@ -374,7 +395,9 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 
     // Attach metadata exactly matching Stanford implementation
     (best_program as any).candidate_programs = score_data;
-    (best_program as any).candidate_programs = score_data.sort((a, b) => b.score - a.score);
+    (best_program as any).candidate_programs = score_data.sort(
+      (a, b) => b.score - a.score
+    );
 
     console.log(`${score_data.length} candidate programs found.`);
 
@@ -397,10 +420,11 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
       try {
         const prediction = await program.forward(example.inputs);
         const trace: any[] = []; // Simplified trace for metric evaluation
-        
+
         const result = this.metric(example, prediction, trace);
-        const score = typeof result === 'boolean' ? (result ? 1 : 0) : result as number;
-        
+        const score =
+          typeof result === 'boolean' ? (result ? 1 : 0) : (result as number);
+
         subscores.push(score);
         total_score += score;
         valid_evaluations++;
@@ -410,11 +434,12 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
       }
     }
 
-    const average_score = valid_evaluations > 0 ? total_score / valid_evaluations : 0;
+    const average_score =
+      valid_evaluations > 0 ? total_score / valid_evaluations : 0;
 
     return {
       score: average_score,
-      subscores
+      subscores,
     };
   }
 
@@ -446,7 +471,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
       random: () => {
         state = (state * 1103515245 + 12345) & 0x7fffffff;
         return state / 0x7fffffff;
-      }
+      },
     };
   }
 }

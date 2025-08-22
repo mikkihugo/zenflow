@@ -1,23 +1,23 @@
 /**
  * @fileoverview Governance Decision Service - Enterprise Architecture Governance Management
- * 
+ *
  * Specialized service for managing enterprise architecture governance decisions within SAFe environments.
  * Handles decision workflows, approval processes, impact analysis, and governance compliance tracking.
- * 
+ *
  * Features:
  * - Architecture governance decision initiation and management
  * - Multi-stakeholder approval workflows with escalation
  * - Impact analysis and risk assessment for architectural decisions
- * - Decision audit trail and compliance tracking  
+ * - Decision audit trail and compliance tracking
  * - Automated governance policy enforcement
  * - Decision outcome monitoring and feedback loops
- * 
+ *
  * Integrations:
  * - @claude-zen/workflows: Governance decision workflows and approvals
  * - @claude-zen/agui: Advanced GUI for decision review and approval
  * - @claude-zen/fact-system: Decision impact analysis and reasoning
  * - @claude-zen/knowledge: Governance policy knowledge base
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -42,7 +42,7 @@ export interface GovernanceDecision {
   readonly criteria: DecisionCriteria[];
   readonly risks: RiskFactor[];
   readonly implications: Implication[];
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly status: DecisionStatus;
   readonly createdAt: Date;
   readonly requestedDecisionDate: Date;
@@ -56,28 +56,9 @@ export interface GovernanceDecision {
   readonly auditTrail: AuditRecord[];
 }
 
-export type DecisionType =
-  | 'architecture_standard'
-  | 'technology_selection'
-  | 'design_pattern'
-  | 'security_policy'
-  | 'integration_approach'
-  | 'data_governance'
-  | 'performance_requirement'
-  | 'compliance_exception'
-  | 'investment_decision'
-  | 'strategic_direction';
+export type DecisionType =' | ''architecture_standard'' | ''technology_selection'' | ''design_pattern'' | ''security_policy'' | ''integration_approach'' | ''data_governance'' | ''performance_requirement'' | ''compliance_exception'' | ''investment_decision'' | ''strategic_direction';
 
-export type DecisionStatus =
-  | 'submitted'
-  | 'under_review'
-  | 'pending_approval'
-  | 'approved'
-  | 'rejected'
-  | 'escalated'
-  | 'withdrawn'
-  | 'implemented'
-  | 'closed';
+export type DecisionStatus =' | ''submitted'' | ''under_review'' | ''pending_approval'' | ''approved'' | ''rejected'' | ''escalated'' | ''withdrawn'' | ''implemented'' | ''closed';
 
 export interface DecisionMaker {
   readonly userId: string;
@@ -95,13 +76,13 @@ export interface AvailabilityWindow {
   readonly startDate: Date;
   readonly endDate: Date;
   readonly timezone: string;
-  readonly type: 'available' | 'limited' | 'unavailable';
+  readonly type: 'available'' | ''limited'' | ''unavailable';
 }
 
 export interface DecisionArtifact {
   readonly id: string;
   readonly name: string;
-  readonly type: 'document' | 'diagram' | 'specification' | 'analysis' | 'proposal' | 'evidence';
+  readonly type:' | ''document'' | ''diagram'' | ''specification'' | ''analysis'' | ''proposal'' | ''evidence';
   readonly url: string;
   readonly description: string;
   readonly version: string;
@@ -109,14 +90,14 @@ export interface DecisionArtifact {
   readonly uploadedAt: Date;
   readonly size: number;
   readonly checksum: string;
-  readonly confidentiality: 'public' | 'internal' | 'confidential' | 'restricted';
+  readonly confidentiality:' | ''public'' | ''internal'' | ''confidential'' | ''restricted';
 }
 
 export interface DecisionCriteria {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly category: 'technical' | 'business' | 'compliance' | 'financial' | 'operational' | 'strategic';
+  readonly category:' | ''technical'' | ''business'' | ''compliance'' | ''financial'' | ''operational'' | ''strategic';
   readonly weight: number; // 0-1
   readonly mandatory: boolean;
   readonly measurable: boolean;
@@ -125,7 +106,7 @@ export interface DecisionCriteria {
 }
 
 export interface CriteriaEvaluation {
-  readonly method: 'quantitative' | 'qualitative' | 'binary' | 'scoring';
+  readonly method: 'quantitative'' | ''qualitative'' | ''binary'' | ''scoring';
   readonly scale: EvaluationScale;
   readonly evidence: string[];
   readonly evaluator: string;
@@ -135,7 +116,7 @@ export interface CriteriaEvaluation {
 }
 
 export interface EvaluationScale {
-  readonly type: 'numeric' | 'categorical' | 'boolean';
+  readonly type: 'numeric'' | ''categorical'' | ''boolean';
   readonly range: ScaleRange;
   readonly labels?: string[];
 }
@@ -148,29 +129,29 @@ export interface ScaleRange {
 }
 
 export interface EvaluationThreshold {
-  readonly operator: 'gt' | 'lt' | 'gte' | 'lte' | 'eq' | 'neq';
+  readonly operator: 'gt'' | ''lt'' | ''gte'' | ''lte'' | ''eq'' | ''neq';
   readonly value: number;
-  readonly action: 'accept' | 'reject' | 'escalate' | 'review';
+  readonly action: 'accept'' | ''reject'' | ''escalate'' | ''review';
 }
 
 export interface RiskFactor {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly category: 'technical' | 'business' | 'operational' | 'security' | 'compliance' | 'financial';
+  readonly category:' | ''technical'' | ''business'' | ''operational'' | ''security'' | ''compliance'' | ''financial';
   readonly probability: number; // 0-1
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
+  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly timeframe: string;
   readonly owner: string;
   readonly mitigation: RiskMitigation;
-  readonly status: 'identified' | 'assessed' | 'mitigated' | 'accepted' | 'transferred';
+  readonly status:' | ''identified'' | ''assessed'' | ''mitigated'' | ''accepted'' | ''transferred';
 }
 
 export interface RiskMitigation {
-  readonly strategy: 'avoid' | 'mitigate' | 'transfer' | 'accept';
+  readonly strategy: 'avoid'' | ''mitigate'' | ''transfer'' | ''accept';
   readonly description: string;
   readonly actions: MitigationAction[];
-  readonly cost: 'low' | 'medium' | 'high';
+  readonly cost: 'low'' | ''medium'' | ''high';
   readonly timeline: string;
   readonly effectiveness: number; // 0-1
   readonly owner: string;
@@ -182,20 +163,20 @@ export interface MitigationAction {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly status: 'planned' | 'in_progress' | 'completed' | 'blocked';
+  readonly status: 'planned'' | ''in_progress'' | ''completed'' | ''blocked';
   readonly dependencies: string[];
 }
 
 export interface Implication {
   readonly id: string;
-  readonly type: 'immediate' | 'short_term' | 'medium_term' | 'long_term';
-  readonly category: 'technical' | 'business' | 'operational' | 'financial' | 'organizational';
+  readonly type: 'immediate'' | ''short_term'' | ''medium_term'' | ''long_term';
+  readonly category:' | ''technical'' | ''business'' | ''operational'' | ''financial'' | ''organizational';
   readonly description: string;
-  readonly impact: 'positive' | 'negative' | 'neutral';
-  readonly magnitude: 'low' | 'medium' | 'high' | 'critical';
+  readonly impact: 'positive'' | ''negative'' | ''neutral';
+  readonly magnitude: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly stakeholders: string[];
   readonly timeframe: string;
-  readonly reversibility: 'reversible' | 'partially_reversible' | 'irreversible';
+  readonly reversibility:' | ''reversible'' | ''partially_reversible'' | ''irreversible';
   readonly dependencies: string[];
 }
 
@@ -220,7 +201,7 @@ export interface BudgetConstraint {
   readonly amount: number;
   readonly currency: string;
   readonly period: string;
-  readonly flexibility: 'fixed' | 'flexible' | 'negotiable';
+  readonly flexibility: 'fixed'' | ''flexible'' | ''negotiable';
   readonly source: string;
 }
 
@@ -234,7 +215,7 @@ export interface TechnicalContext {
 }
 
 export interface TechnicalConstraint {
-  readonly type: 'platform' | 'security' | 'performance' | 'integration' | 'data' | 'compliance';
+  readonly type:' | ''platform'' | ''security'' | ''performance'' | ''integration'' | ''data'' | ''compliance';
   readonly description: string;
   readonly mandatory: boolean;
   readonly source: string;
@@ -247,7 +228,7 @@ export interface PerformanceRequirement {
   readonly threshold: number;
   readonly unit: string;
   readonly measurement: string;
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
 }
 
 export interface OrganizationalContext {
@@ -264,9 +245,9 @@ export interface OrganizationalStakeholder {
   readonly name: string;
   readonly role: string;
   readonly department: string;
-  readonly influence: 'high' | 'medium' | 'low';
-  readonly interest: 'high' | 'medium' | 'low';
-  readonly sentiment: 'supportive' | 'neutral' | 'opposed';
+  readonly influence: 'high'' | ''medium'' | ''low';
+  readonly interest: 'high'' | ''medium'' | ''low';
+  readonly sentiment: 'supportive'' | ''neutral'' | ''opposed';
   readonly requirements: string[];
 }
 
@@ -287,12 +268,12 @@ export interface RegulatoryRequirement {
   readonly compliance: ComplianceStatus;
 }
 
-export type ComplianceStatus = 'compliant' | 'non_compliant' | 'partially_compliant' | 'under_review';
+export type ComplianceStatus =' | ''compliant'' | ''non_compliant'' | ''partially_compliant'' | ''under_review';
 
 export interface VendorConstraint {
   readonly vendor: string;
   readonly constraint: string;
-  readonly type: 'licensing' | 'technical' | 'commercial' | 'support';
+  readonly type: 'licensing'' | ''technical'' | ''commercial'' | ''support';
   readonly impact: string;
   readonly workaround?: string;
 }
@@ -310,13 +291,13 @@ export interface DecisionWorkflow {
 export interface WorkflowStage {
   readonly stageId: string;
   readonly name: string;
-  readonly type: 'review' | 'analysis' | 'approval' | 'implementation' | 'closure';
+  readonly type:' | ''review'' | ''analysis'' | ''approval'' | ''implementation'' | ''closure';
   readonly owner: string;
   readonly participants: string[];
   readonly duration: string;
   readonly prerequisites: string[];
   readonly deliverables: string[];
-  readonly status: 'pending' | 'in_progress' | 'completed' | 'skipped' | 'failed';
+  readonly status:' | ''pending'' | ''in_progress'' | ''completed'' | ''skipped'' | ''failed';
   readonly startDate?: Date;
   readonly completedDate?: Date;
 }
@@ -325,13 +306,13 @@ export interface EscalationRule {
   readonly ruleId: string;
   readonly trigger: EscalationTrigger;
   readonly escalateTo: string[];
-  readonly action: 'notify' | 'reassign' | 'expedite' | 'override';
+  readonly action: 'notify'' | ''reassign'' | ''expedite'' | ''override';
   readonly message: string;
   readonly autoExecute: boolean;
 }
 
 export interface EscalationTrigger {
-  readonly type: 'timeout' | 'criteria_not_met' | 'manual' | 'risk_threshold';
+  readonly type: 'timeout'' | ''criteria_not_met'' | ''manual'' | ''risk_threshold';
   readonly threshold: any;
   readonly condition: string;
 }
@@ -353,10 +334,10 @@ export interface ApprovalLevel {
 }
 
 export interface VotingRule {
-  readonly method: 'unanimous' | 'majority' | 'weighted' | 'quorum';
+  readonly method: 'unanimous'' | ''majority'' | ''weighted'' | ''quorum';
   readonly threshold?: number;
   readonly tieBreaker: string;
-  readonly abstentionHandling: 'ignore' | 'count_as_no' | 'escalate';
+  readonly abstentionHandling: 'ignore'' | ''count_as_no'' | ''escalate';
 }
 
 export interface DelegationRule {
@@ -378,20 +359,20 @@ export interface WorkflowTimeout {
   readonly stage: string;
   readonly duration: string;
   readonly warningTime: string;
-  readonly action: 'escalate' | 'auto_approve' | 'auto_reject' | 'extend';
+  readonly action: 'escalate'' | ''auto_approve'' | ''auto_reject'' | ''extend';
   readonly notifications: string[];
 }
 
 export interface NotificationRule {
   readonly event: string;
   readonly recipients: string[];
-  readonly method: 'email' | 'slack' | 'teams' | 'dashboard';
+  readonly method: 'email'' | ''slack'' | ''teams'' | ''dashboard';
   readonly template: string;
   readonly delay?: string;
 }
 
 export interface DecisionOutcome {
-  readonly decision: 'approved' | 'rejected' | 'deferred' | 'modified';
+  readonly decision: 'approved'' | ''rejected'' | ''deferred'' | ''modified';
   readonly finalApprovers: string[];
   readonly votes: DecisionVote[];
   readonly conditions: string[];
@@ -403,7 +384,7 @@ export interface DecisionOutcome {
 
 export interface DecisionVote {
   readonly voterId: string;
-  readonly vote: 'approve' | 'reject' | 'abstain' | 'delegate';
+  readonly vote: 'approve'' | ''reject'' | ''abstain'' | ''delegate';
   readonly weight: number;
   readonly timestamp: Date;
   readonly rationale: string;
@@ -433,7 +414,7 @@ export interface ImplementationPhase {
 }
 
 export interface ResourceRequirement {
-  readonly type: 'human' | 'technical' | 'financial' | 'infrastructure';
+  readonly type: 'human'' | ''technical'' | ''financial'' | ''infrastructure';
   readonly description: string;
   readonly quantity: number;
   readonly unit: string;
@@ -453,7 +434,7 @@ export interface MonitoringPlan {
 
 export interface MonitoringMetric {
   readonly name: string;
-  readonly type: 'technical' | 'business' | 'operational' | 'financial';
+  readonly type: 'technical'' | ''business'' | ''operational'' | ''financial';
   readonly measurement: string;
   readonly target: number;
   readonly threshold: number;
@@ -480,7 +461,7 @@ export interface CommunicationAudience {
 
 export interface CommunicationChannel {
   readonly channelId: string;
-  readonly type: 'email' | 'meeting' | 'document' | 'portal' | 'workshop';
+  readonly type: 'email'' | ''meeting'' | ''document'' | ''portal'' | ''workshop';
   readonly format: string;
   readonly frequency: string;
   readonly owner: string;
@@ -496,7 +477,7 @@ export interface CommunicationTimeline {
 }
 
 export interface FeedbackMechanism {
-  readonly type: 'survey' | 'interview' | 'workshop' | 'observation';
+  readonly type: 'survey'' | ''interview'' | ''workshop'' | ''observation';
   readonly frequency: string;
   readonly participants: string[];
   readonly questions: string[];
@@ -522,14 +503,14 @@ export interface GovernanceDecisionRequest {
   readonly description: string;
   readonly requesterId: string;
   readonly requesterRole: string;
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly requestedDecisionDate: Date;
   readonly decisionMakers: string[];
-  readonly criteria: Omit<DecisionCriteria, 'id' | 'evaluation'>[];
-  readonly risks: Omit<RiskFactor, 'id' | 'status'>[];
+  readonly criteria: Omit<DecisionCriteria, 'id'' | ''evaluation'>[];
+  readonly risks: Omit<RiskFactor, 'id'' | ''status'>[];
   readonly implications: Omit<Implication, 'id'>[];
   readonly context: DecisionContext;
-  readonly artifacts: Omit<DecisionArtifact, 'id' | 'uploadedAt'>[];
+  readonly artifacts: Omit<DecisionArtifact, 'id'' | ''uploadedAt'>[];
 }
 
 // ============================================================================
@@ -568,9 +549,11 @@ export class GovernanceDecisionService extends TypedEventBase {
 
       this.initialized = true;
       this.logger.info('Governance Decision Service initialized successfully');
-
     } catch (error) {
-      this.logger.error('Failed to initialize Governance Decision Service:', error);
+      this.logger.error(
+        'Failed to initialize Governance Decision Service:',
+        error
+      );
       throw error;
     }
   }
@@ -578,14 +561,16 @@ export class GovernanceDecisionService extends TypedEventBase {
   /**
    * Initiate new governance decision with comprehensive workflow
    */
-  async initiateGovernanceDecision(request: GovernanceDecisionRequest): Promise<GovernanceDecision> {
+  async initiateGovernanceDecision(
+    request: GovernanceDecisionRequest
+  ): Promise<GovernanceDecision> {
     if (!this.initialized) this.initialize();
 
     this.logger.info('Initiating governance decision', {
       type: request.type,
       title: request.title,
       priority: request.priority,
-      requesterId: request.requesterId
+      requesterId: request.requesterId,
     });
 
     try {
@@ -597,30 +582,33 @@ export class GovernanceDecisionService extends TypedEventBase {
         description: request.description,
         requesterId: request.requesterId,
         requesterRole: request.requesterRole,
-        decisionMakers: this.resolveDecisionMakers(request.decisionMakers, request.type),
-        artifacts: request.artifacts.map(a => ({
+        decisionMakers: this.resolveDecisionMakers(
+          request.decisionMakers,
+          request.type
+        ),
+        artifacts: request.artifacts.map((a) => ({
           ...a,
           id: `artifact-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-          uploadedAt: new Date()
+          uploadedAt: new Date(),
         })),
-        criteria: request.criteria.map(c => ({
+        criteria: request.criteria.map((c) => ({
           ...c,
           id: `criteria-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
           evaluation: {
             method: 'qualitative' as const,
             scale: { type: 'categorical' as const, range: { min: 1, max: 5 } },
             evidence: [],
-            evaluator: ''
-          }
+            evaluator: '',
+          },
         })),
-        risks: request.risks.map(r => ({
+        risks: request.risks.map((r) => ({
           ...r,
           id: `risk-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-          status: 'identified' as const
+          status: 'identified' as const,
         })),
-        implications: request.implications.map(i => ({
+        implications: request.implications.map((i) => ({
           ...i,
-          id: `implication-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+          id: `implication-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
         })),
         priority: request.priority,
         status: 'submitted',
@@ -630,14 +618,16 @@ export class GovernanceDecisionService extends TypedEventBase {
         version: '1.0.0',
         context: request.context,
         workflow: this.createDecisionWorkflow(request),
-        auditTrail: [{
-          id: `audit-${Date.now()}`,
-          timestamp: new Date(),
-          actor: request.requesterId,
-          action: 'decision_created',
-          target: 'decision',
-          reason: 'Initial decision submission'
-        }]
+        auditTrail: [
+          {
+            id: `audit-${Date.now()}`,
+            timestamp: new Date(),
+            actor: request.requesterId,
+            action: 'decision_created',
+            target: 'decision',
+            reason: 'Initial decision submission',
+          },
+        ],
       };
 
       // Store decision locally
@@ -652,8 +642,8 @@ export class GovernanceDecisionService extends TypedEventBase {
           decisionId: decision.id,
           type: request.type,
           priority: request.priority,
-          requesterId: request.requesterId
-        }
+          requesterId: request.requesterId,
+        },
       });
 
       // Store facts for decision analysis
@@ -665,22 +655,22 @@ export class GovernanceDecisionService extends TypedEventBase {
           priority: request.priority,
           status: 'submitted',
           requesterId: request.requesterId,
-          createdAt: decision.createdAt.toISOString()
+          createdAt: decision.createdAt.toISOString(),
         },
         confidence: 1.0,
-        source: 'governance-decision-service'
+        source: 'governance-decision-service',
       });
 
       // Start decision workflow
       const workflowId = this.workflowEngine.startWorkflow({
         workflowType: 'governance_decision_approval',
         entityId: decision.id,
-        participants: decision.decisionMakers.map(dm => dm.userId),
+        participants: decision.decisionMakers.map((dm) => dm.userId),
         data: {
           decision,
           priority: request.priority,
-          deadline: decision.approvalDeadline
-        }
+          deadline: decision.approvalDeadline,
+        },
       });
 
       // Update decision with workflow ID
@@ -688,8 +678,8 @@ export class GovernanceDecisionService extends TypedEventBase {
         ...decision,
         workflow: {
           ...decision.workflow,
-          workflowId
-        }
+          workflowId,
+        },
       };
       this.decisions.set(decision.id, updatedDecision);
 
@@ -701,23 +691,23 @@ export class GovernanceDecisionService extends TypedEventBase {
         type: request.type,
         priority: request.priority,
         workflowId,
-        decisionMakers: decision.decisionMakers.length
+        decisionMakers: decision.decisionMakers.length,
       });
 
       this.logger.info('Governance decision initiated successfully', {
         decisionId: decision.id,
         type: request.type,
-        workflowId
+        workflowId,
       });
 
       return updatedDecision;
-
     } catch (error) {
       this.logger.error('Failed to initiate governance decision:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('governance-decision-failed', {
         type: request.type,
-        error: errorMessage
+        error: errorMessage,
       });
       throw error;
     }
@@ -734,29 +724,33 @@ export class GovernanceDecisionService extends TypedEventBase {
    * Get all decisions
    */
   getAllDecisions(): GovernanceDecision[] {
-    return Array.from(this.decisions.values());
+    return Array.from(this.decisions.values())();
   }
 
   /**
    * Get decisions by status
    */
   getDecisionsByStatus(status: DecisionStatus): GovernanceDecision[] {
-    return Array.from(this.decisions.values())
-      .filter(d => d.status === status);
+    return Array.from(this.decisions.values()).filter(
+      (d) => d.status === status
+    );
   }
 
   /**
    * Get decisions by type
    */
   getDecisionsByType(type: DecisionType): GovernanceDecision[] {
-    return Array.from(this.decisions.values())
-      .filter(d => d.type === type);
+    return Array.from(this.decisions.values()).filter((d) => d.type === type);
   }
 
   /**
    * Update decision status
    */
-  async updateDecisionStatus(decisionId: string, status: DecisionStatus, reason?: string): Promise<void> {
+  async updateDecisionStatus(
+    decisionId: string,
+    status: DecisionStatus,
+    reason?: string
+  ): Promise<void> {
     const decision = this.decisions.get(decisionId);
     if (!decision) {
       throw new Error(`Governance decision ${decisionId} not found`);
@@ -770,28 +764,28 @@ export class GovernanceDecisionService extends TypedEventBase {
         {
           id: `audit-${Date.now()}`,
           timestamp: new Date(),
-          actor: 'system', // Would be actual user in practice
+          actor:'system', // Would be actual user in practice
           action: 'status_updated',
           target: 'decision',
           previousState: { status: decision.status },
           newState: { status },
-          reason
-        }
-      ]
+          reason,
+        },
+      ],
     };
 
     this.decisions.set(decisionId, updatedDecision);
 
     this.factSystem.updateFact(decisionId, {
       status,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     });
 
     this.emit('decision-status-updated', {
       decisionId,
       oldStatus: decision.status,
       newStatus: status,
-      reason
+      reason,
     });
   }
 
@@ -828,12 +822,14 @@ export class GovernanceDecisionService extends TypedEventBase {
         weight: 1.0 / requestedMakers.length,
         required: true,
         expertise: [decisionType],
-        availability: [{
-          startDate: new Date(),
-          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-          timezone: 'UTC',
-          type: 'available'
-        }]
+        availability: [
+          {
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            timezone: 'UTC',
+            type: 'available',
+          },
+        ],
       });
     }
 
@@ -854,7 +850,7 @@ export class GovernanceDecisionService extends TypedEventBase {
       performance_requirement: 'Performance Architect',
       compliance_exception: 'Compliance Officer',
       investment_decision: 'Portfolio Manager',
-      strategic_direction: 'CTO'
+      strategic_direction: 'CTO',
     };
 
     return roleMap[decisionType] || 'Senior Architect';
@@ -863,7 +859,9 @@ export class GovernanceDecisionService extends TypedEventBase {
   /**
    * Create decision workflow based on type and priority
    */
-  private createDecisionWorkflow(request: GovernanceDecisionRequest): DecisionWorkflow {
+  private createDecisionWorkflow(
+    request: GovernanceDecisionRequest
+  ): DecisionWorkflow {
     const stages: WorkflowStage[] = [
       {
         stageId: 'initial-review',
@@ -874,7 +872,7 @@ export class GovernanceDecisionService extends TypedEventBase {
         duration: '2 days',
         prerequisites: [],
         deliverables: ['Initial analysis'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         stageId: 'stakeholder-analysis',
@@ -885,7 +883,7 @@ export class GovernanceDecisionService extends TypedEventBase {
         duration: '3 days',
         prerequisites: ['initial-review'],
         deliverables: ['Impact analysis', 'Risk assessment'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         stageId: 'decision-approval',
@@ -896,62 +894,72 @@ export class GovernanceDecisionService extends TypedEventBase {
         duration: '5 days',
         prerequisites: ['stakeholder-analysis'],
         deliverables: ['Decision outcome'],
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     ];
 
     return {
       workflowId: '',
       stages,
       currentStage: 'initial-review',
-      escalationRules: [{
-        ruleId: 'timeout-escalation',
-        trigger: {
-          type: 'timeout',
-          threshold: '7 days',
-          condition: 'stage_not_completed'
+      escalationRules: [
+        {
+          ruleId: 'timeout-escalation',
+          trigger: {
+            type: 'timeout',
+            threshold: '7 days',
+            condition: 'stage_not_completed',
+          },
+          escalateTo: ['cto@company.com'],
+          action: 'notify',
+          message: 'Decision workflow has exceeded timeout',
+          autoExecute: true,
         },
-        escalateTo: ['cto@company.com'],
-        action: 'notify',
-        message: 'Decision workflow has exceeded timeout',
-        autoExecute: true
-      }],
+      ],
       approvalMatrix: {
-        levels: [{
-          level: 1,
-          name: 'Architecture Review Board',
-          approvers: request.decisionMakers,
-          requiredApprovals: Math.ceil(request.decisionMakers.length / 2),
-          parallel: true,
-          timeout: '5 days'
-        }],
+        levels: [
+          {
+            level: 1,
+            name: 'Architecture Review Board',
+            approvers: request.decisionMakers,
+            requiredApprovals: Math.ceil(request.decisionMakers.length / 2),
+            parallel: true,
+            timeout: '5 days',
+          },
+        ],
         votingRules: {
           method: 'majority',
           threshold: 0.5,
           tieBreaker: 'cto@company.com',
-          abstentionHandling: 'ignore'
+          abstentionHandling: 'ignore',
         },
         delegationRules: [],
-        overrideRules: [{
-          role: 'CTO',
-          conditions: ['emergency', 'business_critical'],
-          justificationRequired: true,
-          auditRequired: true
-        }]
+        overrideRules: [
+          {
+            role: 'CTO',
+            conditions: ['emergency', 'business_critical'],
+            justificationRequired: true,
+            auditRequired: true,
+          },
+        ],
       },
-      timeouts: [{
-        stage: 'decision-approval',
-        duration: '7 days',
-        warningTime: '5 days',
-        action: 'escalate',
-        notifications: ['manager@company.com']
-      }],
-      notifications: [{
-        event: 'stage_started',
-        recipients: request.decisionMakers,
-        method: 'email',
-        template: 'stage_notification'
-      }]
+      timeouts: [
+        {
+          stage: 'decision-approval',
+          duration: '7 days',
+          warningTime: '5 days',
+          action: 'escalate',
+          notifications: ['manager@company.com'],
+        },
+      ],
+      notifications: [
+        {
+          event: 'stage_started',
+          recipients: request.decisionMakers,
+          method: 'email',
+          template: 'stage_notification',
+        },
+      ],
     };
   }
 
@@ -963,33 +971,33 @@ export class GovernanceDecisionService extends TypedEventBase {
       type: 'decision_review',
       entityId: decision.id,
       title: `Review: ${decision.title}`,
-      participants: decision.decisionMakers.map(dm => dm.userId),
+      participants: decision.decisionMakers.map((dm) => dm.userId),
       sections: [
         {
           id: 'overview',
           title: 'Decision Overview',
           content: decision.description,
-          type: 'readonly'
+          type: 'readonly',
         },
         {
           id: 'criteria',
           title: 'Decision Criteria',
           content: decision.criteria,
-          type: 'evaluation'
+          type: 'evaluation',
         },
         {
           id: 'risks',
           title: 'Risk Assessment',
           content: decision.risks,
-          type: 'assessment'
+          type: 'assessment',
         },
         {
           id: 'vote',
           title: 'Your Decision',
           type: 'vote',
-          options: ['Approve', 'Reject', 'Request Changes']
-        }
-      ]
+          options: ['Approve', 'Reject', 'Request Changes'],
+        },
+      ],
     });
   }
 
@@ -999,17 +1007,21 @@ export class GovernanceDecisionService extends TypedEventBase {
   private createWorkflowEngineFallback() {
     return {
       startWorkflow: (workflow: any) => {
-        this.logger.debug('Workflow started (fallback)', { type: workflow.workflowType });
+        this.logger.debug('Workflow started (fallback)', {
+          type: workflow.workflowType,
+        });
         return `workflow-${Date.now()}`;
-      }
+      },
     };
   }
 
   private createAGUISystemFallback() {
     return {
       createInterface: (config: any) => {
-        this.logger.debug('AGUI interface created (fallback)', { type: config.type });
-      }
+        this.logger.debug('AGUI interface created (fallback)', {
+          type: config.type,
+        });
+      },
     };
   }
 
@@ -1020,7 +1032,7 @@ export class GovernanceDecisionService extends TypedEventBase {
       },
       updateFact: (entityId: string, updates: any) => {
         this.logger.debug('Fact updated (fallback)', { entityId });
-      }
+      },
     };
   }
 
@@ -1028,7 +1040,7 @@ export class GovernanceDecisionService extends TypedEventBase {
     return {
       store: (data: any) => {
         this.logger.debug('Knowledge stored (fallback)', { type: data.type });
-      }
+      },
     };
   }
 }

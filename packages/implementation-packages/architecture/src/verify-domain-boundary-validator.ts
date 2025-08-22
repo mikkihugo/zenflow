@@ -16,13 +16,13 @@ import {
 interface TestAgent {
   id: string;
   capabilities: string[];
-  status: 'idle' | 'busy';
+  status: 'idle''' | '''busy';
 }
 
 interface TestTask {
   id: string;
   description: string;
-  strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus';
+  strategy: 'parallel | sequential' | 'adaptive''' | '''consensus';
   dependencies: string[];
   requiredCapabilities: string[];
   maxAgents: number;

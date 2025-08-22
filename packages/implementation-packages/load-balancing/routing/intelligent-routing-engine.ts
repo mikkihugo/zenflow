@@ -17,7 +17,7 @@ import type {
   RoutingResult,
   Task,
 } from '../types';
-import { taskPriorityToNumber , AgentStatus } from '../types';
+import { taskPriorityToNumber, AgentStatus } from '../types';
 
 import { FailoverManager } from './failover-manager';
 import { TaskAgentMatcher } from './task-agent-matcher';
@@ -57,14 +57,17 @@ interface RoutingMetrics {
   qosViolations: number;
 }
 
-export class IntelligentRoutingEngine extends TypedEventBase implements RoutingEngine {
+export class IntelligentRoutingEngine
+  extends TypedEventBase
+  implements RoutingEngine
+{
   private routingTable: Map<string, RoutingTable> = new Map();
   private taskAgentMatcher: TaskAgentMatcher;
   private failoverManager: FailoverManager;
   private networkOptimizer: NetworkLatencyOptimizer;
   private capacityManager: CapacityManager;
   private routingMetrics: RoutingMetrics;
-  private networkTopology: NetworkTopology | null = null;
+  private networkTopology: NetworkTopology'' | ''null = null;
 
   private config = {
     routeUpdateInterval: 30000, // 30 seconds
@@ -79,10 +82,7 @@ export class IntelligentRoutingEngine extends TypedEventBase implements RoutingE
     failoverThreshold: 0.8,
     adaptiveRoutingEnabled: true,
     geographicAwareRouting: true,
-    loadBalancingStrategy: 'intelligent' as
-      | 'round_robin'
-      | 'least_connections'
-      | 'intelligent',
+    loadBalancingStrategy:'intelligent'as'' | '''round_robin | least_connections' | 'intelligent',
   };
 
   constructor(capacityManager: CapacityManager) {
@@ -228,7 +228,7 @@ export class IntelligentRoutingEngine extends TypedEventBase implements RoutingE
     return {
       ...this.routingMetrics,
       routingTableSize: this.routingTable.size,
-      avgRouteReliability: avgReliability || 0,
+      avgRouteReliability: avgReliability'' | '''' | ''0,
     };
   }
 
@@ -244,7 +244,10 @@ export class IntelligentRoutingEngine extends TypedEventBase implements RoutingE
         id: agentId,
         name: `Agent-${agentId}`,
         capabilities: [], // Would be populated from actual agent data
-        status: routingEntry.reliability > 0.8 ? AgentStatus.HEALTHY : AgentStatus.DEGRADED,
+        status:
+          routingEntry.reliability > 0.8
+            ? AgentStatus.HEALTHY
+            : AgentStatus.DEGRADED,
         endpoint: `http://agent-${agentId}:8080`,
         lastHealthCheck: routingEntry.lastUpdate,
         metadata: {
@@ -317,8 +320,7 @@ export class IntelligentRoutingEngine extends TypedEventBase implements RoutingE
     if (!agentLocation) return routes;
 
     // Find optimal path using network topology
-    const optimalPath = await this.networkOptimizer.selectOptimalPath(
-      'source', // Would be actual source location
+    const optimalPath = await this.networkOptimizer.selectOptimalPath('source', // Would be actual source location
       agent.id
     );
 
@@ -479,7 +481,8 @@ export class IntelligentRoutingEngine extends TypedEventBase implements RoutingE
     const qosScore = route.qosLevel / 5; // Normalize QoS level
 
     // Priority adjustment
-    const priorityMultiplier = taskPriorityToNumber(task.priority) >= 4 ? 1.2 : 1.0;
+    const priorityMultiplier =
+      taskPriorityToNumber(task.priority) >= 4 ? 1.2 : 1.0;
 
     return (
       (latencyScore * weights.latency +

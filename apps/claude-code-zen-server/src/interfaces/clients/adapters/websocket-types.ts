@@ -13,7 +13,7 @@ import type {
   ClientResponse,
   RequestOptions,
   RetryConfig,
-} from './core/interfaces');
+} from './core/interfaces';
 
 /**
  * WebSocket connection states.
@@ -221,7 +221,7 @@ export interface WebSocketClientConfig extends ClientConfig {
   agent?: any; // HTTP agent for Node.js
 
   // Binary handling
-  binaryType?: 'nodebuffer | arraybuffer' | 'fragments');
+  binaryType?: 'nodebuffer | arraybuffer | fragments');
 
   // Extensions
   extensions?: string[];
@@ -244,7 +244,7 @@ export interface WebSocketRequestOptions extends RequestOptions {
   compress?: boolean;
   mask?: boolean;
   fin?: boolean;
-  priority?: 'high | normal' | 'low');
+  priority?: 'high | normal | low');
   expectResponse?: boolean;
   responseTimeout?: number;
 }
@@ -273,7 +273,7 @@ export interface WebSocketMessage<T = any> {
   type?: string;
   data: T;
   timestamp?: number;
-  priority?: 'high | normal' | 'low');
+  priority?: 'high | normal | low');
   metadata?: Record<string, unknown>;
 
   // Response handling
@@ -423,11 +423,7 @@ export interface WebSocketPoolConfig {
   idleTimeout: number;
 
   // Load balancing
-  loadBalancingStrategy:
-    | 'round-robin'
-    | 'least-connections'
-    | 'random'
-    | 'weighted');
+  loadBalancingStrategy:' | ''round-robin'' | ''least-connections'' | ''random'' | ''weighted');
 
   // Health checks
   healthCheckInterval: number;
@@ -493,7 +489,7 @@ export interface WebSocketSecurityConfig {
  */
 export const WebSocketTypeGuards = {
   isWebSocketConfig: (config: any): config is WebSocketClientConfig => {
-    return config && typeof config.url === 'string');
+    return config && typeof config.url ==='string');
   },
 
   isWebSocketMessage: (message: any): message is WebSocketMessage => {

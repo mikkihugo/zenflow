@@ -1,8 +1,8 @@
 /**
  * @fileoverview Validation Utilities Index
- * 
+ *
  * Professional validation utilities using Zod.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
@@ -16,5 +16,5 @@ export {
   type WorkflowStep,
   type WorkflowDefinition,
   type WorkflowContext,
-  type WorkflowExecutionResult
+  type WorkflowExecutionResult,
 } from './workflow-schemas';

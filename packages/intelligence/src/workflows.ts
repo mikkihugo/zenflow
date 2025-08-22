@@ -42,31 +42,38 @@ async function loadWorkflowsModule() {
       const packageName = '@claude-zen/workflows';
       workflowsModuleCache = await import(packageName);
       console.log('✅ Successfully loaded real @claude-zen/workflows package');
-    } catch (error) {
-      console.warn('Workflows package not available, providing minimal compatibility layer');
+    } catch {
+      console.warn(
+        'Workflows package not available, providing minimal compatibility layer',
+      );
       // Provide minimal compatibility
       workflowsModuleCache = {
         WorkflowEngine: class WorkflowEngineStub extends TypedEventBase {
-          private stubConfig: any;
+          private stubConfig: unknown;
 
-          constructor(config?: any) {
+          constructor(config?: unknown) {
             super();
-            this.stubConfig = config || { maxConcurrentWorkflows: 10 };
+            this.stubConfig = config'' | '''' | ''{ maxConcurrentWorkflows: 10 };
           }
           async initialize() {
-            console.log('WorkflowEngine initialized with config:', this.stubConfig);
+            console.log('WorkflowEngine initialized with config:',
+              this.stubConfig,
+            );
           }
           async startWorkflow() {
-            return { success: true, maxConcurrent: this.stubConfig.maxConcurrentWorkflows };
+            return {
+              success: true,
+              maxConcurrent: this.stubConfig.maxConcurrentWorkflows,
+            };
           }
-          async pauseWorkflow() {}
-          async resumeWorkflow() {}
-          async stopWorkflow() {}
+          async pauseWorkflow() { /* Stub implementation */ }
+          async resumeWorkflow() { /* Stub implementation */ }
+          async stopWorkflow() { /* Stub implementation */ }
           async getWorkflowState() {
             return {};
           }
-          async shutdown() {}
-          cleanup() {}
+          async shutdown() { /* Stub implementation */ }
+          cleanup() { /* Stub implementation */ }
         },
       };
     }
@@ -132,18 +139,21 @@ export class WorkflowEngine extends TypedEventBase {
     return await this.instance.getWorkflowState(workflowId);
   }
 
-  async scheduleWorkflow(cronExpression: string, workflowId: string): Promise<any> {
+  async scheduleWorkflow(
+    cronExpression: string,
+    workflowId: string,
+  ): Promise<any> {
     await this.initialize();
     return await this.instance.scheduleWorkflow?.(cronExpression, workflowId);
   }
 
   generateWorkflowVisualization(workflow: any): string {
     // Synchronous method, might need initialization first
-    return this.instance?.generateWorkflowVisualization?.(workflow) || '';
+    return this.instance?.generateWorkflowVisualization?.(workflow)'' | '''' | '''';
   }
 
   listActiveWorkflows(): string[] {
-    return this.instance?.listActiveWorkflows?.() || [];
+    return this.instance?.listActiveWorkflows?.()'' | '''' | ''[];
   }
 
   async shutdown(): Promise<void> {
@@ -159,25 +169,29 @@ export class WorkflowEngine extends TypedEventBase {
   // Additional compatibility methods for server usage
   async executeWorkflow(definition: any, context?: any): Promise<any> {
     await this.initialize();
-    return await this.instance.executeWorkflow?.(definition, context) ||
-           await this.startWorkflow(definition, context);
+    return (
+      (await this.instance.executeWorkflow?.(definition, context))'' | '''' | ''(await this.startWorkflow(definition, context))
+    );
   }
 
   async createWorkflow(definition: any): Promise<string> {
     await this.initialize();
-    return await this.instance.createWorkflow?.(definition) || definition.id || 'workflow-1';
+    return (
+      (await this.instance.createWorkflow?.(definition))'' | '''' | ''definition.id'' | '''' | '''workflow-1');
   }
 
   async cancelWorkflow(workflowId: string): Promise<void> {
     await this.initialize();
-    return await this.instance.cancelWorkflow?.(workflowId) ||
-           await this.stopWorkflow(workflowId);
+    return (
+      (await this.instance.cancelWorkflow?.(workflowId))'' | '''' | ''(await this.stopWorkflow(workflowId))
+    );
   }
 
   async getWorkflowStatus(workflowId: string): Promise<any> {
     await this.initialize();
-    return await this.instance.getWorkflowStatus?.(workflowId) ||
-           await this.getWorkflowState(workflowId);
+    return (
+      (await this.instance.getWorkflowStatus?.(workflowId))'' | '''' | ''(await this.getWorkflowState(workflowId))
+    );
   }
 }
 
@@ -246,7 +260,7 @@ export interface WorkflowData {
 
 export interface WorkflowState {
   id: string;
-  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+  status:'' | '''pending | running' | 'paused''' | '''completed | failed' | 'cancelled';
   currentStep: number;
   totalSteps: number;
   startedAt?: Date;
@@ -264,7 +278,9 @@ export type DocumentContent = any;
 /**
  * Get comprehensive workflow system access with real package delegation
  */
-export async function getWorkflowSystemAccess(config?: WorkflowEngineConfig): Promise<any> {
+export async function getWorkflowSystemAccess(
+  config?: WorkflowEngineConfig,
+): Promise<any> {
   try {
     const workflowsModule = await loadWorkflowsModule();
     return await workflowsModule.getWorkflowSystemAccess(config);
@@ -273,13 +289,17 @@ export async function getWorkflowSystemAccess(config?: WorkflowEngineConfig): Pr
     const engine = new WorkflowEngine(config);
     await engine.initialize();
     return {
-      createEngine: (engineConfig?: WorkflowEngineConfig) => new WorkflowEngine(engineConfig),
-      startWorkflow: (definition: WorkflowDefinition, initialContext?: WorkflowContext) =>
-        engine.startWorkflow(definition, initialContext),
+      createEngine: (engineConfig?: WorkflowEngineConfig) =>
+        new WorkflowEngine(engineConfig),
+      startWorkflow: (
+        definition: WorkflowDefinition,
+        initialContext?: WorkflowContext,
+      ) => engine.startWorkflow(definition, initialContext),
       pauseWorkflow: (workflowId: string) => engine.pauseWorkflow(workflowId),
       resumeWorkflow: (workflowId: string) => engine.resumeWorkflow(workflowId),
       stopWorkflow: (workflowId: string) => engine.stopWorkflow(workflowId),
-      getWorkflowState: (workflowId: string) => engine.getWorkflowState(workflowId),
+      getWorkflowState: (workflowId: string) =>
+        engine.getWorkflowState(workflowId),
       scheduleWorkflow: (cronExpression: string, workflowId: string) =>
         engine.scheduleWorkflow(cronExpression, workflowId),
       generateVisualization: (workflow: WorkflowDefinition) =>
@@ -293,7 +313,9 @@ export async function getWorkflowSystemAccess(config?: WorkflowEngineConfig): Pr
 /**
  * Get workflow engine with real package delegation
  */
-export async function getWorkflowEngine(config?: WorkflowEngineConfig): Promise<WorkflowEngine> {
+export async function getWorkflowEngine(
+  config?: WorkflowEngineConfig,
+): Promise<WorkflowEngine> {
   try {
     const workflowsModule = await loadWorkflowsModule();
     return await workflowsModule.getWorkflowEngine(config);
@@ -321,7 +343,8 @@ export { WorkflowEngine as default };
 export const WORKFLOWS_INFO = {
   version: '2.1.0',
   name: '@claude-zen/intelligence/workflows',
-  description: 'Strategic facade for @claude-zen/workflows with battle-tested production features',
+  description:
+    'Strategic facade for @claude-zen/workflows with battle-tested production features',
   capabilities: [
     'Professional workflow orchestration engine',
     'Battle-tested npm dependencies integration',

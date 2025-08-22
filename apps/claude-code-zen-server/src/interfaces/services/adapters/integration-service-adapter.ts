@@ -17,12 +17,12 @@ import type {
   ServiceManager,
   MetricsCollector,
   ConnectionManager,
-} from '@claude-zen/foundation');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type {
   WorkflowEngine,
   CollaborationEngine,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 import type {
   Service,
@@ -34,9 +34,9 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from './core/interfaces');
-import type { IntegrationServiceConfig } from './types');
-import { ServiceEnvironment, ServicePriority, ServiceType } from './types');
+} from './core/interfaces';
+import type { IntegrationServiceConfig } from './types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from './types';
 
 // ============================================
 // Service-Specific Error Classes
@@ -99,7 +99,7 @@ export interface IntegrationServiceAdapterConfig
   cacheSettings: {
     ttl: number;
     maxSize: number;
-    strategy: 'lru | fifo' | 'lfu');
+    strategy: 'lru | fifo | lfu');
   };
 
   // Monitoring and metrics
@@ -160,7 +160,7 @@ export class IntegrationServiceAdapter
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {
     try {
       this.logger.info(`Initializing ${this.name}`);
-      this.status = 'initializing');
+      this.status ='initializing');
 
       // Merge configuration
       if (config) {

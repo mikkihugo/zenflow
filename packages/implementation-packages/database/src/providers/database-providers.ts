@@ -6,10 +6,7 @@
 
 import { getLogger } from '../logger.js';
 import type { DatabaseAdapter } from '../interfaces.js';
-import {
-  SQLiteAdapter,
-  type SQLiteConfig,
-} from '../adapters/sqlite-adapter';
+import { SQLiteAdapter, type SQLiteConfig } from '../adapters/sqlite-adapter';
 import {
   LanceDBAdapter,
   type LanceDBConfig,
@@ -20,14 +17,14 @@ import { KuzuAdapter, type KuzuConfig } from '../adapters/kuzu-adapter';
 import type {
   VectorDocument,
   VectorSearchOptions,
-  GraphNode, 
+  GraphNode,
   GraphRelationship,
 } from '../types.js';
 
 const logger = getLogger('database-providers');
 
 export interface DatabaseConfig {
-  type: 'sqlite' | 'lancedb' | 'kuzu' | 'postgresql' | 'mysql';
+  type: 'sqlite | lancedb' | 'kuzu' | 'postgresql' | 'mysql';
   database: string;
   options?: any;
   [key: string]: any;
@@ -37,7 +34,12 @@ export interface DatabaseConfig {
 export interface GraphDatabaseAdapter extends DatabaseAdapter {
   executeQuery(query: string, params?: any[]): Promise<any>;
   createNode(label: string, properties: Record<string, any>): Promise<any>;
-  createRelationship(from: string, to: string, type: string, properties?: Record<string, any>): Promise<any>;
+  createRelationship(
+    from: string,
+    to: string,
+    type: string,
+    properties?: Record<string, any>
+  ): Promise<any>;
   queryGraph(query: string, params?: any[]): Promise<any>;
   getNodeCount(label?: string): Promise<number>;
   getRelationshipCount(type?: string): Promise<number>;

@@ -441,8 +441,7 @@ describe('TeamworkStorage - Classical TDD', () => {
       await storage.updateSession('conv-update-test', updates);
 
       // Assert
-      const updatedConversation =
-        await storage.getSession('conv-update-test');
+      const updatedConversation = await storage.getSession('conv-update-test');
 
       expect(updatedConversation).not.toBeNull();
       expect(updatedConversation?.status).toBe('completed');

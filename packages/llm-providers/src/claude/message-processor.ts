@@ -7,6 +7,7 @@
 
 import { getLogger } from '@claude-zen/foundation/logging';
 import type { JsonObject } from '@claude-zen/foundation/types';
+
 import type { ClaudeMessage } from './types';
 import { sanitizeString, truncateForLogging, generateSessionId } from './utils';
 
@@ -21,13 +22,13 @@ const logger = getLogger('claude-message-processor');
  */
 export function processClaudeMessage(
   message: unknown,
-  messageCount: number,
+  messageCount: number
 ): ClaudeMessage {
   logger.debug(`Processing message ${messageCount}`);
 
   try {
     // Validate basic structure
-    if (!message || typeof message !== 'object') {
+    if (!message'' | '''' | ''typeof message !=='object') {
       throw new Error('Invalid message structure');
     }
 
@@ -56,7 +57,6 @@ export function processClaudeMessage(
 
     logger.debug(`Processed ${type} message: ${truncateForLogging(content)}`);
     return processedMessage;
-
   } catch (error) {
     logger.error(`Error processing message ${messageCount}:`, error);
 
@@ -81,7 +81,10 @@ export function processClaudeMessage(
 /**
  * Extract message type and content from raw message
  */
-function extractMessageTypeAndContent(msg: Record<string, unknown>): { type: string; content: string } {
+function extractMessageTypeAndContent(msg: Record<string, unknown>): {
+  type: string;
+  content: string;
+} {
   // Check for explicit type field
   if (msg['type'] && typeof msg['type'] === 'string') {
     return {
@@ -99,7 +102,7 @@ function extractMessageTypeAndContent(msg: Record<string, unknown>): { type: str
   }
 
   // Check for result indicators
-  if (msg['success'] !== undefined || msg['exitCode'] !== undefined) {
+  if (msg['success'] !== undefined'' | '''' | ''msg['exitCode'] !== undefined) {
     return {
       type: 'result',
       content: extractContent(msg),
@@ -107,7 +110,7 @@ function extractMessageTypeAndContent(msg: Record<string, unknown>): { type: str
   }
 
   // Check for system message indicators
-  if (msg['level'] || msg['source'] === 'system') {
+  if (msg['level']'' | '''' | ''msg['source'] === 'system') {
     return {
       type: 'system',
       content: extractContent(msg),
@@ -143,7 +146,7 @@ function extractContent(msg: Record<string, unknown>): string {
   // Array of content parts (for complex messages)
   if (Array.isArray(msg['content'])) {
     return msg['content']
-      .map(part => {
+      .map((part) => {
         if (typeof part === 'string') {
           return part;
         }
@@ -156,7 +159,9 @@ function extractContent(msg: Record<string, unknown>): string {
   }
 
   // Fallback to string representation
-  return String(msg['content'] || msg['message'] || msg['text'] || 'Empty message');
+  return String(
+    msg['content']'' | '''' | ''msg['message']'' | '''' | ''msg['text']'' | '''' | '''Empty message'
+  );
 }
 
 // =============================================================================
@@ -166,37 +171,44 @@ function extractContent(msg: Record<string, unknown>): string {
 /**
  * Extract type-specific metadata from raw message
  */
-function extractMessageMetadata(msg: Record<string, unknown>, type: string): Record<string, unknown> {
+function extractMessageMetadata(
+  msg: Record<string, unknown>,
+  type: string
+): Record<string, unknown> {
   const baseMetadata: Record<string, unknown> = {};
 
   switch (type) {
-  case 'assistant':
-    return extractAssistantMetadata(msg, baseMetadata);
+    case 'assistant':
+      return extractAssistantMetadata(msg, baseMetadata);
 
-  case 'user':
-    return extractUserMetadata(msg, baseMetadata);
+    case 'user':
+      return extractUserMetadata(msg, baseMetadata);
 
-  case 'result':
-    return extractResultMetadata(msg, baseMetadata);
+    case 'result':
+      return extractResultMetadata(msg, baseMetadata);
 
-  case 'system':
-    return extractSystemMetadata(msg, baseMetadata);
+    case 'system':
+      return extractSystemMetadata(msg, baseMetadata);
 
-  default:
-    logger.debug(`Unknown message type: ${type}, using base metadata`);
-    return baseMetadata;
+    default:
+      logger.debug(`Unknown message type: ${type}, using base metadata`);
+      return baseMetadata;
   }
 }
 
 /**
  * Extract assistant-specific metadata
  */
-function extractAssistantMetadata(msg: Record<string, unknown>, base: Record<string, unknown>) {
+function extractAssistantMetadata(
+  msg: Record<string, unknown>,
+  base: Record<string, unknown>
+) {
   return {
     ...base,
-    model: msg['model'] || msg['modelName'],
-    tokens: msg['tokens'] || (msg['usage'] as JsonObject | undefined)?.['total_tokens'],
-    executionTime: msg['executionTime'] || msg['duration'],
+    model: msg['model']'' | '''' | ''msg['modelName'],
+    tokens:
+      msg['tokens']'' | '''' | ''(msg['usage'] as JsonObject'' | ''undefined)?.['total_tokens'],
+    executionTime: msg['executionTime']'' | '''' | ''msg['duration'],
     toolsUsed: Array.isArray(msg['toolsUsed']) ? msg['toolsUsed'] : undefined,
   };
 }
@@ -204,20 +216,28 @@ function extractAssistantMetadata(msg: Record<string, unknown>, base: Record<str
 /**
  * Extract user-specific metadata
  */
-function extractUserMetadata(msg: Record<string, unknown>, base: Record<string, unknown>) {
+function extractUserMetadata(
+  msg: Record<string, unknown>,
+  base: Record<string, unknown>
+) {
   return {
     ...base,
     source: msg['source'],
     priority: msg['priority'],
     context: msg['context'],
-    attachments: Array.isArray(msg['attachments']) ? msg['attachments'] : undefined,
+    attachments: Array.isArray(msg['attachments'])
+      ? msg['attachments']
+      : undefined,
   };
 }
 
 /**
  * Extract result-specific metadata
  */
-function extractResultMetadata(msg: Record<string, unknown>, base: Record<string, unknown>) {
+function extractResultMetadata(
+  msg: Record<string, unknown>,
+  base: Record<string, unknown>
+) {
   return {
     ...base,
     exitCode: msg['exitCode'],
@@ -231,11 +251,14 @@ function extractResultMetadata(msg: Record<string, unknown>, base: Record<string
 /**
  * Extract system-specific metadata
  */
-function extractSystemMetadata(msg: Record<string, unknown>, base: Record<string, unknown>) {
+function extractSystemMetadata(
+  msg: Record<string, unknown>,
+  base: Record<string, unknown>
+) {
   return {
     ...base,
-    level: msg['level'] || 'info',
-    source: msg['source'] || 'system',
+    level: msg['level']'' | '''' | '''info',
+    source: msg['source']'' | '''' | '''system',
     category: msg['category'],
   };
 }
@@ -247,15 +270,17 @@ function extractSystemMetadata(msg: Record<string, unknown>, base: Record<string
 /**
  * Validate processed message structure
  */
-export function validateProcessedMessage(message: unknown): message is ClaudeMessage {
-  if (!message || typeof message !== 'object') {
+export function validateProcessedMessage(
+  message: unknown
+): message is ClaudeMessage {
+  if (!message'' | '''' | ''typeof message !=='object') {
     return false;
   }
 
   const msg = message as Record<string, unknown>;
 
   // Check required fields
-  if (typeof msg['type'] !== 'string' || !msg['type']) {
+  if (typeof msg['type'] !== 'string''' | '''' | ''!msg['type']) {
     return false;
   }
 
@@ -281,9 +306,12 @@ export function validateProcessedMessage(message: unknown): message is ClaudeMes
  */
 export function filterMessagesByType<T extends ClaudeMessage['type']>(
   messages: ClaudeMessage[],
-  type: T,
+  type: T
 ): Extract<ClaudeMessage, { type: T }>[] {
-  return messages.filter(msg => msg.type === type) as Extract<ClaudeMessage, { type: T }>[];
+  return messages.filter((msg) => msg.type === type) as Extract<
+    ClaudeMessage,
+    { type: T }
+  >[];
 }
 
 /**

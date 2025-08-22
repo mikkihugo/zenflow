@@ -151,7 +151,7 @@ class DatabaseEventManagerImpl
           ...event.metadata,
           timestamp: new Date(),
           processingTime: Date.now(),
-          database: event.details?.tableName || 'default',
+          database: event.details?.tableName'' | '''' | '''default',
           connectionId: event.details?.transactionId,
         },
       };
@@ -163,7 +163,7 @@ class DatabaseEventManagerImpl
       await this.routeDatabaseEvent(enrichedEvent);
 
       this.logger.debug(
-        `Database event emitted: ${event.operation} on ${event.details?.tableName || 'unknown'}`
+        `Database event emitted: ${event.operation} on ${event.details?.tableName'' | '''' | '''unknown'}`
       );
     } catch (error) {
       this.databaseMetrics.failedQueries++;
@@ -381,16 +381,28 @@ class DatabaseEventManagerImpl
           await this.notifyDatabaseSubscribers(this.subscriptions.query, event);
           break;
         case 'transaction':
-          await this.notifyDatabaseSubscribers(this.subscriptions.transaction, event);
+          await this.notifyDatabaseSubscribers(
+            this.subscriptions.transaction,
+            event
+          );
           break;
         case 'connection':
-          await this.notifyDatabaseSubscribers(this.subscriptions.connection, event);
+          await this.notifyDatabaseSubscribers(
+            this.subscriptions.connection,
+            event
+          );
           break;
         case 'migration':
-          await this.notifyDatabaseSubscribers(this.subscriptions.migration, event);
+          await this.notifyDatabaseSubscribers(
+            this.subscriptions.migration,
+            event
+          );
           break;
         case 'performance':
-          await this.notifyDatabaseSubscribers(this.subscriptions.performance, event);
+          await this.notifyDatabaseSubscribers(
+            this.subscriptions.performance,
+            event
+          );
           break;
         default:
           this.logger.warn(`Unknown database operation type: ${operationType}`);
@@ -426,10 +438,14 @@ class DatabaseEventManagerImpl
       default:
         // Handle custom operations through details
         if (event.details?.transactionId) {
-          this.logger.debug(`Transaction operation: ${event.operation} - ${event.details.transactionId}`);
+          this.logger.debug(
+            `Transaction operation: ${event.operation} - ${event.details.transactionId}`
+          );
         }
         if (event.details?.errorCode) {
-          this.logger.error(`Database error: ${event.details.errorCode} - table: ${event.details?.tableName}`);
+          this.logger.error(
+            `Database error: ${event.details.errorCode} - table: ${event.details?.tableName}`
+          );
         }
         break;
     }
@@ -525,7 +541,7 @@ class DatabaseEventManagerImpl
    */
   async processTransaction(transactionId: string): Promise<void> {
     this.logger.debug(`Processing transaction: ${transactionId}`);
-    
+
     try {
       // Emit transaction processing event
       await this.emitDatabaseEvent({
@@ -540,10 +556,13 @@ class DatabaseEventManagerImpl
           processingStart: new Date(),
         },
       });
-      
+
       this.logger.info(`Transaction processed successfully: ${transactionId}`);
     } catch (error) {
-      this.logger.error(`Failed to process transaction ${transactionId}:`, error);
+      this.logger.error(
+        `Failed to process transaction ${transactionId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -554,7 +573,7 @@ class DatabaseEventManagerImpl
    */
   async handleSchemaChange(changeId: string): Promise<void> {
     this.logger.debug(`Handling schema change: ${changeId}`);
-    
+
     try {
       // Emit schema change event
       await this.emitDatabaseEvent({
@@ -569,7 +588,7 @@ class DatabaseEventManagerImpl
           changeStart: new Date(),
         },
       });
-      
+
       this.logger.info(`Schema change handled successfully: ${changeId}`);
     } catch (error) {
       this.logger.error(`Failed to handle schema change ${changeId}:`, error);
@@ -583,7 +602,7 @@ class DatabaseEventManagerImpl
    */
   async optimizeQuery(queryId: string): Promise<void> {
     this.logger.debug(`Optimizing query: ${queryId}`);
-    
+
     try {
       // Emit query optimization event
       await this.emitDatabaseEvent({
@@ -598,7 +617,7 @@ class DatabaseEventManagerImpl
           optimizationStart: new Date(),
         },
       });
-      
+
       this.logger.info(`Query optimized successfully: ${queryId}`);
     } catch (error) {
       this.logger.error(`Failed to optimize query ${queryId}:`, error);
@@ -693,34 +712,40 @@ export class DatabaseEventManagerFactory
    */
   async createMultiple(configs: EventManagerConfig[]): Promise<EventManager[]> {
     this.logger.info(`Creating ${configs.length} database event managers`);
-    
+
     const results = await Promise.allSettled(
-      configs.map(config => this.create(config))
+      configs.map((config) => this.create(config))
     );
-    
+
     const managers: EventManager[] = [];
     const errors: Error[] = [];
-    
+
     results.forEach((result, index) => {
       if (result.status === 'fulfilled') {
         managers.push(result.value);
       } else {
-        errors.push(new Error(`Failed to create manager ${configs[index]?.name}: ${result.reason}`));
+        errors.push(
+          new Error(
+            `Failed to create manager ${configs[index]?.name}: ${result.reason}`
+          )
+        );
       }
     });
-    
+
     if (errors.length > 0) {
       this.logger.error(`${errors.length} managers failed to create:`, errors);
-      throw new Error(`Failed to create ${errors.length} out of ${configs.length} managers`);
+      throw new Error(
+        `Failed to create ${errors.length} out of ${configs.length} managers`
+      );
     }
-    
+
     return managers;
   }
 
   /**
    * Get an event manager by name.
    */
-  get(name: string): EventManager | undefined {
+  get(name: string): EventManager'' | ''undefined {
     return this.managers.get(name);
   }
 
@@ -728,7 +753,7 @@ export class DatabaseEventManagerFactory
    * List all event managers managed by this factory.
    */
   list(): EventManager[] {
-    return Array.from(this.managers.values());
+    return Array.from(this.managers.values())();
   }
 
   /**
@@ -746,14 +771,17 @@ export class DatabaseEventManagerFactory
     if (!manager) {
       return false;
     }
-    
+
     try {
       await manager.destroy();
       this.managers.delete(name);
       this.logger.info(`Database event manager removed: ${name}`);
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove database event manager ${name}:`, error);
+      this.logger.error(
+        `Failed to remove database event manager ${name}:`,
+        error
+      );
       throw error;
     }
   }
@@ -763,27 +791,29 @@ export class DatabaseEventManagerFactory
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
-    
-    const healthChecks = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        const status = await manager.healthCheck();
-        results.set(name, status);
-      } catch (error) {
-        this.logger.error(`Health check failed for manager ${name}:`, error);
-        results.set(name, {
-          name,
-          type: 'database',
-          status: 'unhealthy',
-          lastCheck: new Date(),
-          subscriptions: 0,
-          queueSize: 0,
-          errorRate: 1,
-          uptime: 0,
-          metadata: { error: String(error) }
-        });
+
+    const healthChecks = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const status = await manager.healthCheck();
+          results.set(name, status);
+        } catch (error) {
+          this.logger.error(`Health check failed for manager ${name}:`, error);
+          results.set(name, {
+            name,
+            type:'database',
+            status: 'unhealthy',
+            lastCheck: new Date(),
+            subscriptions: 0,
+            queueSize: 0,
+            errorRate: 1,
+            uptime: 0,
+            metadata: { error: String(error) },
+          });
+        }
       }
-    });
-    
+    );
+
     await Promise.allSettled(healthChecks);
     return results;
   }
@@ -793,16 +823,21 @@ export class DatabaseEventManagerFactory
    */
   async getMetricsAll(): Promise<Map<string, EventManagerMetrics>> {
     const results = new Map<string, EventManagerMetrics>();
-    
-    const metricRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        const metrics = await manager.getMetrics();
-        results.set(name, metrics);
-      } catch (error) {
-        this.logger.error(`Failed to get metrics for manager ${name}:`, error);
+
+    const metricRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const metrics = await manager.getMetrics();
+          results.set(name, metrics);
+        } catch (error) {
+          this.logger.error(
+            `Failed to get metrics for manager ${name}:`,
+            error
+          );
+        }
       }
-    });
-    
+    );
+
     await Promise.allSettled(metricRequests);
     return results;
   }
@@ -811,21 +846,25 @@ export class DatabaseEventManagerFactory
    * Start all managed event managers.
    */
   async startAll(): Promise<void> {
-    const startRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        await manager.start();
-        this.logger.debug(`Started database event manager: ${name}`);
-      } catch (error) {
-        this.logger.error(`Failed to start manager ${name}:`, error);
-        throw error;
+    const startRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          await manager.start();
+          this.logger.debug(`Started database event manager: ${name}`);
+        } catch (error) {
+          this.logger.error(`Failed to start manager ${name}:`, error);
+          throw error;
+        }
       }
-    });
-    
+    );
+
     const results = await Promise.allSettled(startRequests);
-    const failures = results.filter(result => result.status === 'rejected');
-    
+    const failures = results.filter((result) => result.status === 'rejected');
+
     if (failures.length > 0) {
-      throw new Error(`Failed to start ${failures.length} out of ${results.length} managers`);
+      throw new Error(
+        `Failed to start ${failures.length} out of ${results.length} managers`
+      );
     }
   }
 
@@ -833,21 +872,25 @@ export class DatabaseEventManagerFactory
    * Stop all managed event managers.
    */
   async stopAll(): Promise<void> {
-    const stopRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        await manager.stop();
-        this.logger.debug(`Stopped database event manager: ${name}`);
-      } catch (error) {
-        this.logger.error(`Failed to stop manager ${name}:`, error);
-        throw error;
+    const stopRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          await manager.stop();
+          this.logger.debug(`Stopped database event manager: ${name}`);
+        } catch (error) {
+          this.logger.error(`Failed to stop manager ${name}:`, error);
+          throw error;
+        }
       }
-    });
-    
+    );
+
     const results = await Promise.allSettled(stopRequests);
-    const failures = results.filter(result => result.status === 'rejected');
-    
+    const failures = results.filter((result) => result.status === 'rejected');
+
     if (failures.length > 0) {
-      throw new Error(`Failed to stop ${failures.length} out of ${results.length} managers`);
+      throw new Error(
+        `Failed to stop ${failures.length} out of ${results.length} managers`
+      );
     }
   }
 
@@ -856,22 +899,24 @@ export class DatabaseEventManagerFactory
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down database event manager factory');
-    
+
     try {
       await this.stopAll();
-      
+
       // Destroy all managers
-      const destroyRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-        try {
-          await manager.destroy();
-        } catch (error) {
-          this.logger.error(`Failed to destroy manager ${name}:`, error);
+      const destroyRequests = Array.from(this.managers.entries()).map(
+        async ([name, manager]) => {
+          try {
+            await manager.destroy();
+          } catch (error) {
+            this.logger.error(`Failed to destroy manager ${name}:`, error);
+          }
         }
-      });
-      
+      );
+
       await Promise.allSettled(destroyRequests);
       this.managers.clear();
-      
+
       this.logger.info('Database event manager factory shutdown complete');
     } catch (error) {
       this.logger.error('Error during factory shutdown:', error);
@@ -895,9 +940,10 @@ export class DatabaseEventManagerFactory
     errorCount: number;
     uptime: number;
   } {
-    const runningManagers = Array.from(this.managers.values())
-      .filter(manager => manager.isRunning()).length;
-    
+    const runningManagers = Array.from(this.managers.values()).filter(
+      (manager) => manager.isRunning()
+    ).length;
+
     return {
       totalManagers: this.managers.size,
       runningManagers,
@@ -929,8 +975,7 @@ export class DatabaseEventManagerFactory
 
     if (config.maxListeners && config.maxListeners < 100) {
       this.logger.warn(
-        'Database managers should support at least 100 listeners for concurrent operations'
-      );
+        'Database managers should support at least 100 listeners for concurrent operations');
     }
   }
 
@@ -942,12 +987,12 @@ export class DatabaseEventManagerFactory
   ): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners || 300,
+      maxListeners: config.maxListeners'' | '''' | ''300,
       processing: {
         batchSize: 100, // Efficient batch processing for DB operations
         queueSize: 5000,
         ...config.processing,
-        strategy: config.processing?.strategy || 'queued', // Database operations benefit from queuing
+        strategy: config.processing?.strategy'' | '''' | '''queued', // Database operations benefit from queuing
       },
       retry: {
         attempts: 3,
@@ -982,7 +1027,7 @@ export class DatabaseEventManagerFactory
       );
     }
 
-    // Set up health checking with database-specific intervals  
+    // Set up health checking with database-specific intervals
     const healthCheckInterval = 120000; // 2 minutes default
     setInterval(async () => {
       try {

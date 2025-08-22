@@ -1,14 +1,14 @@
 /**
  * @fileoverview Event System Tests (Jest Version)
- * 
+ *
  * Tests the core event system functionality:
  * - Basic event emission and handling
  * - Event listener management
  * - Async event processing
  * - Event bus configuration
- * 
+ *
  * JEST FRAMEWORK: Uses Jest testing patterns and assertions
- * 
+ *
  * @author Claude Code Zen Team - Event System Developer Agent
  * @since 1.0.0-alpha.44
  * @version 2.1.0
@@ -23,13 +23,10 @@ jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-  })
+  }),
 }));
 
-import {
-  EventBus as EventSystem,
-  createEventSystem
-} from '../index';
+import { EventBus as EventSystem, createEventSystem } from '../index';
 
 // Test event interfaces
 interface TestPayload {
@@ -92,7 +89,7 @@ describe('Event System Core (Jest)', () => {
       expect(handler2).toHaveBeenCalledTimes(1);
       expect(handler3).toHaveBeenCalledTimes(1);
 
-      [handler1, handler2, handler3].forEach(handler => {
+      [handler1, handler2, handler3].forEach((handler) => {
         expect(handler).toHaveBeenCalledWith(payload);
       });
     });
@@ -131,9 +128,9 @@ describe('Event System Core (Jest)', () => {
   describe('Async Event Processing', () => {
     it('should handle async event handlers', async () => {
       const results: string[] = [];
-      
+
       const asyncHandler = async (payload: TestPayload) => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
         results.push(`processed: ${payload.message}`);
       };
 
@@ -143,7 +140,7 @@ describe('Event System Core (Jest)', () => {
       eventSystem.emit('test.async', payload);
 
       // Wait a bit for async processing
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(results).toContain('processed: async test');
     });
@@ -153,7 +150,7 @@ describe('Event System Core (Jest)', () => {
       const results: number[] = [];
 
       const createAsyncHandler = (delay: number) => async () => {
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
         results.push(Date.now() - startTime);
       };
 
@@ -165,7 +162,7 @@ describe('Event System Core (Jest)', () => {
       eventSystem.emit('test.parallel', payload);
 
       // Wait for all handlers to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(results).toHaveLength(3);
       // All handlers should complete in roughly the same time due to parallel processing
@@ -185,7 +182,7 @@ describe('Event System Core (Jest)', () => {
       eventSystem.on('test.error', anotherGoodHandler);
 
       const payload: TestPayload = { message: 'error test', count: 1 };
-      
+
       // Should not crash the event system
       expect(() => eventSystem.emit('test.error', payload)).not.toThrow();
 
@@ -206,12 +203,12 @@ describe('Event System Core (Jest)', () => {
       const customConfig = {
         maxListeners: 50,
         enableMetrics: true,
-        enableValidation: true
+        enableValidation: true,
       };
 
       const customEventSystem = createEventSystem(customConfig);
       expect(customEventSystem).toBeDefined();
-      
+
       const config = customEventSystem.getConfig();
       expect(config.maxListeners).toBe(50);
       expect(config.enableMetrics).toBe(true);
@@ -227,7 +224,7 @@ describe('Event System Core (Jest)', () => {
       const userPayload: UserActionPayload = {
         userId: 'user123',
         action: 'login',
-        metadata: { timestamp: Date.now() }
+        metadata: { timestamp: Date.now() },
       };
 
       eventSystem.emit('user.action', userPayload);
@@ -325,12 +322,12 @@ describe('Event System Factory and Utilities', () => {
       maxListeners: 50,
       enableMetrics: true,
       performance: true,
-      validation: false
+      validation: false,
     };
 
     const system = createEventSystem(config);
     expect(system).toBeDefined();
-    
+
     const systemConfig = system.getConfig();
     expect(systemConfig.maxListeners).toBe(50);
     expect(systemConfig.enableMetrics).toBe(true);

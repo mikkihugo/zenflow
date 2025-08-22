@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 beforeEach(() => {
   // Clear all mocks before each test
   vi.clearAllMocks();
-  
+
   // Reset any global state
   if (global.gc) {
     global.gc();
@@ -23,7 +23,7 @@ global.console = {
   debug: vi.fn(),
   info: vi.fn(),
   warn: vi.fn(),
-  error: vi.fn()
+  error: vi.fn(),
 };
 
 // Setup test environment variables

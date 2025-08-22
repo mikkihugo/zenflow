@@ -43,13 +43,13 @@ export interface PromptValidationResult {
   isValid: boolean;
   filteredPrompt?: string;
   issues: PromptIssue[];
-  risk: 'low' | 'medium' | 'high' | 'critical';
+  risk: 'low | medium' | 'high''' | '''critical';
   recommendations?: string[];
 }
 
 export interface PromptIssue {
-  type: 'safety' | 'parsing' | 'quality' | 'performance';
-  severity: 'info' | 'warning' | 'error' | 'critical';
+  type: 'safety | parsing' | 'quality''' | '''performance';
+  severity: 'info | warning' | 'error''' | '''critical';
   message: string;
   location?: {
     line: number;
@@ -72,8 +72,8 @@ const DANGEROUS_PATTERNS = [
   },
   {
     pattern:
-      /\b[a-z]:[/\\]\S+\.(ts|js|tsx|jsx|py|java|cpp|c|h|cs|php|rb|go|rs|swift|kt|scala|clj|hs|ml|fs|dart|lua|pl|r|m|sh|bat|ps1)\b/gi,
-    type: 'parsing' as const,
+      /\b[a-z]:[/\\]\S+\.(ts'' | ''js'' | ''tsx'' | ''jsx'' | ''py'' | ''java'' | ''cpp'' | ''c'' | ''h'' | ''cs'' | ''php'' | ''rb'' | ''go'' | ''rs'' | ''swift'' | ''kt'' | ''scala'' | ''clj'' | ''hs'' | ''ml'' | ''fs'' | ''dart'' | ''lua'' | ''pl'' | ''r'' | ''m'' | ''sh'' | ''bat'' | ''ps1)\b/gi,
+    type:'parsing' as const,
     severity: 'warning' as const,
     message: 'Contains specific file paths that may cause parsing confusion',
     suggestion: 'Use relative paths or generic file references',
@@ -87,16 +87,16 @@ const DANGEROUS_PATTERNS = [
     suggestion: 'Remove dangerous permission bypasses from prompts',
   },
   {
-    pattern: /\b(rm\s+-rf|del\s+\/[qs]|format\s+c:|sudo\s+rm)/gi,
-    type: 'safety' as const,
+    pattern: /\b(rm\s+-rf'' | ''del\s+\/[qs]'' | ''format\s+c:'' | ''sudo\s+rm)/gi,
+    type:'safety' as const,
     severity: 'critical' as const,
     message: 'Contains potentially destructive system commands',
     suggestion: 'Remove destructive system commands from prompts',
   },
   // Command injection patterns
   {
-    pattern: /[$&();[\]`{|}]/g,
-    type: 'safety' as const,
+    pattern: /[$&();[\]`{'' | ''}]/g,
+    type:'safety' as const,
     severity: 'warning' as const,
     message:
       'Contains shell metacharacters that could enable command injection',
@@ -105,8 +105,8 @@ const DANGEROUS_PATTERNS = [
   // Credential patterns
   {
     pattern:
-      /\b(password|token|key|secret|api[_-]?key|auth[_-]?token)\s*[:=]\s*\S+/gi,
-    type: 'safety' as const,
+      /\b(password'' | ''token'' | ''key'' | ''secret'' | ''api[_-]?key'' | ''auth[_-]?token)\s*[:=]\s*\S+/gi,
+    type:'safety' as const,
     severity: 'critical' as const,
     message: 'Contains potential credentials or secrets',
     suggestion: 'Remove credentials and use secure configuration instead',
@@ -116,15 +116,15 @@ const DANGEROUS_PATTERNS = [
 // Quality patterns for good prompts
 const QUALITY_PATTERNS = [
   {
-    pattern: /\b(please|help|assist|can you|could you)\b/gi,
-    type: 'quality' as const,
+    pattern: /\b(please'' | ''help'' | ''assist'' | ''can you'' | ''could you)\b/gi,
+    type:'quality' as const,
     severity: 'info' as const,
     message: 'Uses polite language - good practice',
     suggestion: null,
   },
   {
-    pattern: /\b(step by step|systematic|detailed|comprehensive|thorough)\b/gi,
-    type: 'quality' as const,
+    pattern: /\b(step by step'' | ''systematic'' | ''detailed'' | ''comprehensive'' | ''thorough)\b/gi,
+    type:'quality' as const,
     severity: 'info' as const,
     message: 'Requests systematic approach - good practice',
     suggestion: null,
@@ -137,10 +137,10 @@ const QUALITY_PATTERNS = [
 export function validatePrompt(prompt: string): PromptValidationResult {
   const issues: PromptIssue[] = [];
   let filteredPrompt = prompt;
-  let risk: 'low' | 'medium' | 'high' | 'critical' = 'low';
+  let risk: 'low | medium' | 'high''' | '''critical' = 'low';
 
   // Basic validation checks
-  if (!prompt || typeof prompt !== 'string') {
+  if (!prompt'' | '''' | ''typeof prompt !=='string') {
     return {
       isValid: false,
       issues: [
@@ -216,7 +216,7 @@ export function validatePrompt(prompt: string): PromptValidationResult {
         // Remove problematic patterns that could interfere with output parsing
         filteredPrompt = filteredPrompt.replace(
           dangerousPattern.pattern,
-          '[FILTERED_CONTENT]',
+          '[FILTERED_CONTENT]'
         );
 
         logger.debug('🧹 Filtered parsing interference pattern from prompt');
@@ -244,26 +244,26 @@ export function validatePrompt(prompt: string): PromptValidationResult {
 
   if (criticalIssues.length > 0) {
     recommendations.push(
-      '🚨 Address critical security issues before proceeding',
+      '🚨 Address critical security issues before proceeding'
     );
     recommendations.push(
-      ...criticalIssues.map((i) => `• ${i.suggestion}`).filter(Boolean),
+      ...criticalIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
     );
   }
 
   if (errorIssues.length > 0) {
     recommendations.push('⚠️  Fix error-level issues for better reliability');
     recommendations.push(
-      ...errorIssues.map((i) => `• ${i.suggestion}`).filter(Boolean),
+      ...errorIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
     );
   }
 
-  const isValid = risk !== 'critical' && criticalIssues.length === 0;
+  const isValid = risk !== 'critical'&& criticalIssues.length === 0;
 
   // Log validation results if configured
   if (
     PROMPT_VALIDATION_CONFIG.LOG_VALIDATION_FAILURES &&
-    (!isValid || issues.length > 0)
+    (!isValid'' | '''' | ''issues.length > 0)
   ) {
     logger.warn('Prompt validation findings:', {
       isValid,
@@ -288,7 +288,7 @@ export function validatePrompt(prompt: string): PromptValidationResult {
  */
 export function filterClaudeOutput(
   output: string,
-  context: 'stderr' | 'stdout' = 'stdout',
+  context: 'stderr''' | '''stdout' = 'stdout'
 ): {
   cleanOutput: string;
   filteredLines: string[];
@@ -311,32 +311,32 @@ export function filterClaudeOutput(
     // Detect Claude's descriptive output patterns that should not be parsed as data
     const isDescriptivePattern = [
       // File path patterns with emojis (Claude's descriptive output)
-      /^📁\s+(File:|Directory:|Path:)/,
+      /^📁\s+(File:'' | ''Directory:'' | ''Path:)/,
       /^📄\s+/,
       /^🔍\s+/,
       // Progress indicators
-      /^(✅|❌|⚠️|🔄|⏳|🚀|📊|📈|📉)\s+/,
+      /^(✅'' | ''❌'' | ''⚠️'' | ''🔄'' | ''⏳'' | ''🚀'' | ''📊'' | ''📈'' | ''📉)\s+/,
       // Conversational patterns
-      /^(i'll|i'm|let me|here's|this|the|based on)/i,
+      /^(i'll | i'm'' | ''let me'' | ''here's | this | the | based on)/i,
       // Analysis patterns
-      /^(analysis:|summary:|results:|findings:)/i,
+      /^(analysis:' | 'summary:' | 'results:' | 'findings:)/i,
       // Lists with bullets
       /^\s*[•-]\s+/,
       // Numbered lists that are explanatory
-      /^\s*\d+\.\s+(the|this|here|based|i)/i,
+      /^\s*\d+\.\s+(the | this | here | based | i)/i,
     ].some((pattern) => pattern.test(trimmedLine));
 
     // Special handling for stderr - be more conservative
-    if (context === 'stderr') {
+    if (context ==='stderr') {
       // Only include lines that look like actual error output from tools
       // TypeScript errors: path(line,col): error TSnnnn: message
       const isActualError =
-        /^[\w./\\-]+\.tsx?\(\d+,\d+\):\s+(error|warning)\s+/i.test(trimmedLine);
+        /^[\w./\\-]+\.tsx?\(\d+,\d+\):\s+(error'' | ''warning)\s+/i.test(trimmedLine);
 
       if (isDescriptivePattern && !isActualError) {
         filteredLines.push(line);
         parsingWarnings.push(
-          `Filtered descriptive pattern from stderr: ${trimmedLine.substring(0, 80)}...`,
+          `Filtered descriptive pattern from stderr: ${trimmedLine.substring(0, 80)}...`
         );
         continue;
       }
@@ -346,7 +346,7 @@ export function filterClaudeOutput(
     if (isDescriptivePattern) {
       filteredLines.push(line);
       parsingWarnings.push(
-        `Filtered descriptive pattern: ${trimmedLine.substring(0, 80)}...`,
+        `Filtered descriptive pattern: ${trimmedLine.substring(0, 80)}...`
       );
       continue;
     }
@@ -369,18 +369,18 @@ export function validateAndRejectPrompt(prompt: string): string {
 
   if (!validation.isValid) {
     const criticalIssues = validation.issues.filter(
-      (i) => i.severity === 'critical',
+      (i) => i.severity === 'critical'
     );
 
     throw new Error(
       `Prompt validation failed with ${criticalIssues.length} critical issue(s): ${criticalIssues
         .map((i) => i.message)
-        .join('; ')}`,
+        .join('; ')}`
     );
   }
 
   // Return filtered prompt if available, otherwise original
-  return validation.filteredPrompt || prompt;
+  return validation.filteredPrompt'' | '''' | ''prompt;
 }
 
 /**
@@ -392,7 +392,7 @@ export function createSafePrompt(
     enableFiltering?: boolean;
     strictValidation?: boolean;
     logValidation?: boolean;
-  } = {},
+  } = {}
 ): string {
   const config = {
     enableFiltering:
@@ -409,7 +409,7 @@ export function createSafePrompt(
 
   if (config.logValidation && validation.issues.length > 0) {
     logger.info(
-      `Prompt safety analysis found ${validation.issues.length} issue(s), risk level: ${validation.risk}`,
+      `Prompt safety analysis found ${validation.issues.length} issue(s), risk level: ${validation.risk}`
     );
   }
 
@@ -417,9 +417,9 @@ export function createSafePrompt(
   if (config.strictValidation && !validation.isValid) {
     throw new Error(
       `Prompt rejected due to safety concerns: ${validation.issues
-        .filter((i) => i.severity === 'critical')
+        .filter((i) => i.severity ==='critical')
         .map((i) => i.message)
-        .join('; ')}`,
+        .join('; ')}`
     );
   }
 

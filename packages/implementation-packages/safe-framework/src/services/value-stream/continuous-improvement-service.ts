@@ -1,31 +1,37 @@
 /**
  * @fileoverview Continuous Improvement Service
- * 
+ *
  * Service for automated kaizen cycles and continuous improvement loops.
  * Handles improvement tracking, kaizen automation, and feedback loop management.
- * 
+ *
  * SINGLE RESPONSIBILITY: Continuous improvement automation and kaizen cycles
  * FOCUSES ON: Kaizen automation, improvement tracking, feedback loops
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
  */
 
-import { format, addDays, addWeeks, addMonths, differenceInDays } from 'date-fns';
+import {
+  format,
+  addDays,
+  addWeeks,
+  addMonths,
+  differenceInDays,
+} from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   maxBy,
   minBy,
   meanBy,
   uniqBy,
-  countBy
+  countBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -62,7 +68,7 @@ export enum KaizenFrequency {
   WEEKLY = 'weekly',
   BI_WEEKLY = 'bi_weekly',
   MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly'
+  QUARTERLY = 'quarterly',
 }
 
 /**
@@ -71,7 +77,7 @@ export enum KaizenFrequency {
 export enum FacilitationMode {
   FULLY_AUTOMATED = 'fully_automated',
   HUMAN_GUIDED = 'human_guided',
-  HYBRID = 'hybrid'
+  HYBRID = 'hybrid',
 }
 
 /**
@@ -83,7 +89,7 @@ export enum ImprovementType {
   SKILLS = 'skills',
   ORGANIZATION = 'organization',
   CULTURE = 'culture',
-  MEASUREMENT = 'measurement'
+  MEASUREMENT = 'measurement',
 }
 
 /**
@@ -105,7 +111,7 @@ export interface KaizenSuccessCriteria {
 export enum AutomationLevel {
   MANUAL = 'manual',
   SEMI_AUTOMATED = 'semi_automated',
-  FULLY_AUTOMATED = 'fully_automated'
+  FULLY_AUTOMATED = 'fully_automated',
 }
 
 /**
@@ -130,7 +136,7 @@ export enum FeedbackLoopType {
   OBSERVATION_BASED = 'observation_based',
   SURVEY_BASED = 'survey_based',
   EVENT_DRIVEN = 'event_driven',
-  HYBRID = 'hybrid'
+  HYBRID = 'hybrid',
 }
 
 /**
@@ -141,7 +147,7 @@ export enum LoopFrequency {
   HOURLY = 'hourly',
   DAILY = 'daily',
   WEEKLY = 'weekly',
-  MONTHLY = 'monthly'
+  MONTHLY = 'monthly',
 }
 
 /**
@@ -163,7 +169,7 @@ export enum ParticipantResponsibility {
   ANALYZER = 'analyzer',
   DECISION_MAKER = 'decision_maker',
   IMPLEMENTER = 'implementer',
-  VALIDATOR = 'validator'
+  VALIDATOR = 'validator',
 }
 
 /**
@@ -173,7 +179,7 @@ export enum AuthorityLevel {
   OBSERVER = 'observer',
   ADVISOR = 'advisor',
   APPROVER = 'approver',
-  EXECUTOR = 'executor'
+  EXECUTOR = 'executor',
 }
 
 /**
@@ -225,7 +231,7 @@ export enum DataSourceType {
   FILE = 'file',
   STREAM = 'stream',
   MANUAL = 'manual',
-  SENSOR = 'sensor'
+  SENSOR = 'sensor',
 }
 
 /**
@@ -242,7 +248,7 @@ export interface DataConnection {
  * Authentication configuration
  */
 export interface AuthenticationConfig {
-  readonly type: 'none' | 'basic' | 'token' | 'oauth' | 'certificate';
+  readonly type: 'none'' | ''basic'' | ''token'' | ''oauth'' | ''certificate';
   readonly credentials: Record<string, any>;
 }
 
@@ -268,7 +274,7 @@ export enum AggregationType {
   MAX = 'max',
   MIN = 'min',
   MEDIAN = 'median',
-  PERCENTILE = 'percentile'
+  PERCENTILE = 'percentile',
 }
 
 /**
@@ -315,7 +321,7 @@ export interface ActionTrigger {
  * Trigger condition
  */
 export interface TriggerCondition {
-  readonly type: 'threshold' | 'pattern' | 'anomaly' | 'change' | 'time';
+  readonly type: 'threshold'' | ''pattern'' | ''anomaly'' | ''change'' | ''time';
   readonly parameters: Record<string, any>;
   readonly evaluation: ConditionEvaluation;
 }
@@ -324,7 +330,7 @@ export interface TriggerCondition {
  * Condition evaluation
  */
 export interface ConditionEvaluation {
-  readonly operator: 'gt' | 'lt' | 'eq' | 'ne' | 'between' | 'contains';
+  readonly operator: 'gt'' | ''lt'' | ''eq'' | ''ne'' | ''between'' | ''contains';
   readonly value: any;
   readonly duration: number; // minutes
   readonly confidence: number; // 0-100
@@ -348,7 +354,7 @@ export enum ActionType {
   ESCALATION = 'escalation',
   AUTOMATION = 'automation',
   INVESTIGATION = 'investigation',
-  IMPROVEMENT = 'improvement'
+  IMPROVEMENT = 'improvement',
 }
 
 /**
@@ -357,7 +363,7 @@ export enum ActionType {
 export interface ActionParameters {
   readonly [key: string]: any;
   readonly description?: string;
-  readonly urgency?: 'low' | 'medium' | 'high' | 'critical';
+  readonly urgency?: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly category?: string;
 }
 
@@ -368,7 +374,7 @@ export enum TriggerPriority {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -386,9 +392,9 @@ export interface ClosureCondition {
  * Closure criteria
  */
 export interface ClosureCriteria {
-  readonly type: 'metric' | 'time' | 'approval' | 'combination';
+  readonly type: 'metric'' | ''time'' | ''approval'' | ''combination';
   readonly requirements: CriteriaRequirement[];
-  readonly operator: 'and' | 'or';
+  readonly operator: 'and'' | ''or';
 }
 
 /**
@@ -406,7 +412,7 @@ export interface CriteriaRequirement {
  * Validation method
  */
 export interface ValidationMethod {
-  readonly method: 'automated' | 'manual' | 'hybrid';
+  readonly method: 'automated'' | ''manual'' | ''hybrid';
   readonly validator: string;
   readonly evidence: EvidenceRequirement[];
 }
@@ -415,7 +421,7 @@ export interface ValidationMethod {
  * Evidence requirement
  */
 export interface EvidenceRequirement {
-  readonly evidenceType: 'data' | 'document' | 'observation' | 'test';
+  readonly evidenceType: 'data'' | ''document'' | ''observation'' | ''test';
   readonly description: string;
   readonly required: boolean;
 }
@@ -426,7 +432,7 @@ export interface EvidenceRequirement {
 export interface ApprovalRequirement {
   readonly required: boolean;
   readonly approvers: string[];
-  readonly threshold: 'any' | 'majority' | 'all';
+  readonly threshold: 'any'' | ''majority'' | ''all';
   readonly timeout: number; // hours
 }
 
@@ -453,7 +459,7 @@ export enum ObjectiveCategory {
   SPEED = 'speed',
   COST = 'cost',
   SATISFACTION = 'satisfaction',
-  INNOVATION = 'innovation'
+  INNOVATION = 'innovation',
 }
 
 /**
@@ -516,7 +522,7 @@ export enum CheckpointPurpose {
   PROGRESS_REVIEW = 'progress_review',
   COURSE_CORRECTION = 'course_correction',
   STAKEHOLDER_UPDATE = 'stakeholder_update',
-  RISK_ASSESSMENT = 'risk_assessment'
+  RISK_ASSESSMENT = 'risk_assessment',
 }
 
 /**
@@ -538,7 +544,7 @@ export enum MeasurementApproach {
   OKR = 'okr',
   BALANCED_SCORECARD = 'balanced_scorecard',
   LEAN_METRICS = 'lean_metrics',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 /**
@@ -563,7 +569,7 @@ export enum MeasurementFrequency {
   DAILY = 'daily',
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly'
+  QUARTERLY = 'quarterly',
 }
 
 /**
@@ -596,7 +602,7 @@ export enum ReportingFrequency {
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',
   QUARTERLY = 'quarterly',
-  ANNUALLY = 'annually'
+  ANNUALLY = 'annually',
 }
 
 /**
@@ -607,7 +613,7 @@ export enum ReportFormat {
   EMAIL = 'email',
   PDF = 'pdf',
   PRESENTATION = 'presentation',
-  API = 'api'
+  API = 'api',
 }
 
 /**
@@ -626,9 +632,9 @@ export interface ReportingAudience {
  */
 export interface InformationNeed {
   readonly needId: string;
-  readonly category: 'strategic' | 'tactical' | 'operational';
+  readonly category: 'strategic'' | ''tactical'' | ''operational';
   readonly description: string;
-  readonly urgency: 'low' | 'medium' | 'high';
+  readonly urgency: 'low'' | ''medium'' | ''high';
   readonly frequency: string;
 }
 
@@ -638,7 +644,7 @@ export interface InformationNeed {
 export interface AudiencePreferences {
   readonly format: ReportFormat[];
   readonly frequency: ReportingFrequency;
-  readonly detail: 'summary' | 'detailed' | 'comprehensive';
+  readonly detail: 'summary'' | ''detailed'' | ''comprehensive';
   readonly delivery: DeliveryMethod[];
 }
 
@@ -650,7 +656,7 @@ export enum DeliveryMethod {
   SLACK = 'slack',
   TEAMS = 'teams',
   DASHBOARD = 'dashboard',
-  API = 'api'
+  API = 'api',
 }
 
 /**
@@ -756,7 +762,7 @@ export interface ChangeControl {
 export enum ChangeProcess {
   LIGHTWEIGHT = 'lightweight',
   STANDARD = 'standard',
-  COMPREHENSIVE = 'comprehensive'
+  COMPREHENSIVE = 'comprehensive',
 }
 
 /**
@@ -785,7 +791,7 @@ export interface ValidationRule {
   readonly ruleId: string;
   readonly description: string;
   readonly condition: string;
-  readonly severity: 'warning' | 'error';
+  readonly severity: 'warning'' | ''error';
   readonly action: string;
 }
 
@@ -815,7 +821,7 @@ export interface MonitoringRequirement {
 export interface AlertingConfig {
   readonly enabled: boolean;
   readonly channels: string[];
-  readonly severity: 'info' | 'warning' | 'error' | 'critical';
+  readonly severity: 'info'' | ''warning'' | ''error'' | ''critical';
   readonly escalation: EscalationRule[];
 }
 
@@ -860,7 +866,7 @@ export enum ImprovementCategory {
   AUTOMATION = 'automation',
   SKILL_DEVELOPMENT = 'skill_development',
   QUALITY_IMPROVEMENT = 'quality_improvement',
-  COMMUNICATION = 'communication'
+  COMMUNICATION = 'communication',
 }
 
 /**
@@ -870,7 +876,7 @@ export enum ImprovementPriority {
   CRITICAL = 'critical',
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -887,7 +893,7 @@ export interface EstimatedEffort {
  * Resource requirement
  */
 export interface ResourceRequirement {
-  readonly resourceType: 'people' | 'technology' | 'budget' | 'time';
+  readonly resourceType: 'people'' | ''technology'' | ''budget'' | ''time';
   readonly quantity: number;
   readonly duration: number; // days
   readonly skills: string[];
@@ -900,7 +906,7 @@ export enum EffortComplexity {
   SIMPLE = 'simple',
   MODERATE = 'moderate',
   COMPLEX = 'complex',
-  VERY_COMPLEX = 'very_complex'
+  VERY_COMPLEX = 'very_complex',
 }
 
 /**
@@ -933,7 +939,7 @@ export enum FeasibilityLevel {
   HIGH = 'high',
   MEDIUM = 'medium',
   LOW = 'low',
-  BLOCKED = 'blocked'
+  BLOCKED = 'blocked',
 }
 
 /**
@@ -959,7 +965,7 @@ export enum ImplementationStatus {
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   ON_HOLD = 'on_hold',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 /**
@@ -1002,7 +1008,7 @@ export enum BlockerCategory {
   ORGANIZATIONAL = 'organizational',
   RESOURCE = 'resource',
   DEPENDENCY = 'dependency',
-  POLICY = 'policy'
+  POLICY = 'policy',
 }
 
 /**
@@ -1012,7 +1018,7 @@ export enum BlockerSeverity {
   MINOR = 'minor',
   MODERATE = 'moderate',
   MAJOR = 'major',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -1078,7 +1084,7 @@ export enum LearningCategory {
   FACILITATION = 'facilitation',
   ENGAGEMENT = 'engagement',
   MEASUREMENT = 'measurement',
-  IMPLEMENTATION = 'implementation'
+  IMPLEMENTATION = 'implementation',
 }
 
 /**
@@ -1102,19 +1108,17 @@ export class ContinuousImprovementService {
     currentMetrics: any
   ): Promise<AutomatedKaizenCycle> {
     const cycleId = `kaizen-${nanoid(12)}`;
-    
+
     this.logger.info('Executing automated kaizen cycle', {
       cycleId,
       valueStreamId: config.valueStreamId,
-      automationLevel: config.automationLevel
+      automationLevel: config.automationLevel,
     });
 
     try {
       // Identify improvement opportunities
-      const improvementsIdentified = await this.identifyImprovementOpportunities(
-        config,
-        currentMetrics
-      );
+      const improvementsIdentified =
+        await this.identifyImprovementOpportunities(config, currentMetrics);
 
       // Prioritize improvements
       const prioritizedImprovements = await this.prioritizeImprovements(
@@ -1157,7 +1161,7 @@ export class ContinuousImprovementService {
         improvementsImplemented: implementedImprovements,
         cycleMetrics,
         nextCycleDate: this.calculateNextCycleDate(config.kaizenConfig),
-        learnings
+        learnings,
       };
 
       this.kaizenCycles.set(cycleId, cycle);
@@ -1167,15 +1171,14 @@ export class ContinuousImprovementService {
         improvementsIdentified: improvementsIdentified.length,
         improvementsImplemented: implementedImprovements.length,
         cycleEffectiveness: Math.round(cycleMetrics.improvementRate * 100),
-        nextCycleDate: format(cycle.nextCycleDate, 'yyyy-MM-dd')
+        nextCycleDate: format(cycle.nextCycleDate, 'yyyy-MM-dd'),
       });
 
       return cycle;
-
     } catch (error) {
       this.logger.error('Failed to execute automated kaizen cycle', {
         cycleId,
-        error
+        error,
       });
       throw error;
     }
@@ -1188,7 +1191,9 @@ export class ContinuousImprovementService {
     valueStreamId: string,
     config: ContinuousImprovementConfig
   ): Promise<void> {
-    this.logger.info('Executing continuous improvement loop', { valueStreamId });
+    this.logger.info('Executing continuous improvement loop', {
+      valueStreamId,
+    });
 
     // Initialize feedback loops
     for (const loopConfig of config.feedbackLoops) {
@@ -1210,8 +1215,9 @@ export class ContinuousImprovementService {
    * Get active improvements
    */
   getActiveImprovements(): ImprovementImplementation[] {
-    return Array.from(this.activeImprovements.values())
-      .filter(impl => impl.status === ImplementationStatus.IN_PROGRESS);
+    return Array.from(this.activeImprovements.values()).filter(
+      (impl) => impl.status === ImplementationStatus.IN_PROGRESS
+    );
   }
 
   /**
@@ -1224,11 +1230,15 @@ export class ContinuousImprovementService {
     const opportunities: ImprovementItem[] = [];
 
     // Analyze current metrics for improvement opportunities
-    if (currentMetrics.cycleTime && currentMetrics.cycleTime.variance > currentMetrics.cycleTime.average * 0.3) {
+    if (
+      currentMetrics.cycleTime &&
+      currentMetrics.cycleTime.variance > currentMetrics.cycleTime.average * 0.3
+    ) {
       opportunities.push({
         itemId: `improvement-${nanoid(8)}`,
-        title: 'Reduce cycle time variance',
-        description: 'High variance in cycle time indicates process inconsistency',
+        title:'Reduce cycle time variance',
+        description:
+          'High variance in cycle time indicates process inconsistency',
         category: ImprovementCategory.PROCESS_STREAMLINING,
         priority: ImprovementPriority.HIGH,
         effort: {
@@ -1238,18 +1248,18 @@ export class ContinuousImprovementService {
               resourceType: 'people',
               quantity: 2,
               duration: 5,
-              skills: ['Process Analysis', 'Lean']
-            }
+              skills: ['Process Analysis', 'Lean'],
+            },
           ],
           complexity: EffortComplexity.MODERATE,
-          dependencies: []
+          dependencies: [],
         },
         impact: {
           cycleTimeReduction: 15,
           qualityImprovement: 10,
           costSavings: 5000,
           satisfactionIncrease: 8,
-          confidence: 80
+          confidence: 80,
         },
         feasibility: {
           technical: FeasibilityLevel.HIGH,
@@ -1257,10 +1267,10 @@ export class ContinuousImprovementService {
           financial: FeasibilityLevel.HIGH,
           timeline: FeasibilityLevel.HIGH,
           overall: FeasibilityLevel.HIGH,
-          constraints: []
+          constraints: [],
         },
         proposedBy: 'AI Analysis',
-        supportLevel: 85
+        supportLevel: 85,
       });
     }
 
@@ -1269,7 +1279,8 @@ export class ContinuousImprovementService {
       opportunities.push({
         itemId: `improvement-${nanoid(8)}`,
         title: 'Reduce queue length',
-        description: 'Long queues indicate capacity constraints or inefficient resource allocation',
+        description:
+          'Long queues indicate capacity constraints or inefficient resource allocation',
         category: ImprovementCategory.WASTE_ELIMINATION,
         priority: ImprovementPriority.HIGH,
         effort: {
@@ -1279,18 +1290,18 @@ export class ContinuousImprovementService {
               resourceType: 'people',
               quantity: 3,
               duration: 10,
-              skills: ['Capacity Planning', 'Resource Management']
-            }
+              skills: ['Capacity Planning', 'Resource Management'],
+            },
           ],
           complexity: EffortComplexity.COMPLEX,
-          dependencies: ['Resource approval']
+          dependencies: ['Resource approval'],
         },
         impact: {
           cycleTimeReduction: 20,
           qualityImprovement: 5,
           costSavings: 8000,
           satisfactionIncrease: 12,
-          confidence: 75
+          confidence: 75,
         },
         feasibility: {
           technical: FeasibilityLevel.MEDIUM,
@@ -1298,14 +1309,18 @@ export class ContinuousImprovementService {
           financial: FeasibilityLevel.MEDIUM,
           timeline: FeasibilityLevel.MEDIUM,
           overall: FeasibilityLevel.MEDIUM,
-          constraints: ['Budget approval required']
+          constraints: ['Budget approval required'],
         },
         proposedBy: 'AI Analysis',
-        supportLevel: 78
+        supportLevel: 78,
       });
     }
 
-    return orderBy(opportunities, ['priority', 'supportLevel'], ['desc', 'desc']);
+    return orderBy(
+      opportunities,
+      ['priority', 'supportLevel'],
+      ['desc', 'desc']
+    );
   }
 
   private async prioritizeImprovements(
@@ -1313,9 +1328,9 @@ export class ContinuousImprovementService {
     objectives: ImprovementObjective[]
   ): Promise<ImprovementItem[]> {
     // Score improvements based on alignment with objectives
-    const scoredImprovements = improvements.map(improvement => ({
+    const scoredImprovements = improvements.map((improvement) => ({
       ...improvement,
-      score: this.scoreImprovement(improvement, objectives)
+      score: this.scoreImprovement(improvement, objectives),
     }));
 
     return orderBy(scoredImprovements, 'score', 'desc');
@@ -1352,7 +1367,8 @@ export class ContinuousImprovementService {
   ): Promise<ImprovementImplementation[]> {
     const plans: ImprovementImplementation[] = [];
 
-    for (const improvement of improvements.slice(0, 5)) { // Top 5 improvements
+    for (const improvement of improvements.slice(0, 5)) {
+      // Top 5 improvements
       const implementation: ImprovementImplementation = {
         implementationId: `impl-${nanoid(8)}`,
         improvementId: improvement.itemId,
@@ -1363,7 +1379,7 @@ export class ContinuousImprovementService {
           timeHours: 0,
           resourcesUsed: [],
           complexityEncountered: improvement.effort.complexity,
-          blockers: []
+          blockers: [],
         },
         actualImpact: {
           measuredImprovements: [],
@@ -1373,10 +1389,10 @@ export class ContinuousImprovementService {
             participants: 0,
             averageScore: 0,
             feedback: [],
-            recommendations: []
-          }
+            recommendations: [],
+          },
         },
-        lessons: []
+        lessons: [],
       };
 
       plans.push(implementation);
@@ -1406,8 +1422,8 @@ export class ContinuousImprovementService {
                 before: 100,
                 after: 85,
                 improvement: 15,
-                confidence: 80
-              }
+                confidence: 80,
+              },
             ],
             unexpectedBenefits: ['Improved team morale'],
             unintendedConsequences: [],
@@ -1415,10 +1431,10 @@ export class ContinuousImprovementService {
               participants: 5,
               averageScore: 8.2,
               feedback: ['Great improvement', 'Easy to implement'],
-              recommendations: ['Scale to other areas']
-            }
+              recommendations: ['Scale to other areas'],
+            },
           },
-          lessons: ['Automation accelerates implementation']
+          lessons: ['Automation accelerates implementation'],
         };
 
         this.activeImprovements.set(impl.implementationId, executedImpl);
@@ -1439,7 +1455,7 @@ export class ContinuousImprovementService {
       cycleTime: 7, // days
       satisfaction: 8.2, // 1-10 scale
       roi: 150, // percentage
-      learningIndex: 75 // 0-100
+      learningIndex: 75, // 0-100
     };
   }
 
@@ -1455,7 +1471,7 @@ export class ContinuousImprovementService {
         description: 'Automated identification increases opportunity discovery',
         application: 'Use AI analysis for future cycles',
         confidence: 85,
-        source: 'Cycle Analysis'
+        source: 'Cycle Analysis',
       },
       {
         learningId: `learning-${nanoid(6)}`,
@@ -1463,31 +1479,36 @@ export class ContinuousImprovementService {
         description: 'Quick wins build momentum',
         application: 'Prioritize quick wins in early cycles',
         confidence: 90,
-        source: 'Implementation Results'
-      }
+        source: 'Implementation Results',
+      },
     ];
   }
 
-  private async initializeFeedbackLoop(config: FeedbackLoopConfig): Promise<void> {
+  private async initializeFeedbackLoop(
+    config: FeedbackLoopConfig
+  ): Promise<void> {
     this.feedbackLoops.set(config.loopId, config);
     this.logger.info('Feedback loop initialized', {
       loopId: config.loopId,
       type: config.type,
-      frequency: config.frequency
+      frequency: config.frequency,
     });
   }
 
-  private async startImprovementMonitoring(config: ContinuousImprovementConfig): Promise<void> {
+  private async startImprovementMonitoring(
+    config: ContinuousImprovementConfig
+  ): Promise<void> {
     // Start monitoring improvement progress and triggering actions
     this.logger.info('Started improvement monitoring', {
       valueStreamId: config.valueStreamId,
-      feedbackLoops: config.feedbackLoops.length
+      feedbackLoops: config.feedbackLoops.length,
     });
   }
 
   private getNextCycleNumber(valueStreamId: string): number {
-    const cycles = Array.from(this.kaizenCycles.values())
-      .filter(c => c.valueStreamId === valueStreamId);
+    const cycles = Array.from(this.kaizenCycles.values()).filter(
+      (c) => c.valueStreamId === valueStreamId
+    );
     return cycles.length + 1;
   }
 
@@ -1497,21 +1518,31 @@ export class ContinuousImprovementService {
 
   private mapFeasibilityToScore(feasibility: FeasibilityLevel): number {
     switch (feasibility) {
-      case FeasibilityLevel.HIGH: return 90;
-      case FeasibilityLevel.MEDIUM: return 60;
-      case FeasibilityLevel.LOW: return 30;
-      case FeasibilityLevel.BLOCKED: return 0;
-      default: return 50;
+      case FeasibilityLevel.HIGH:
+        return 90;
+      case FeasibilityLevel.MEDIUM:
+        return 60;
+      case FeasibilityLevel.LOW:
+        return 30;
+      case FeasibilityLevel.BLOCKED:
+        return 0;
+      default:
+        return 50;
     }
   }
 
   private mapPriorityToScore(priority: ImprovementPriority): number {
     switch (priority) {
-      case ImprovementPriority.CRITICAL: return 100;
-      case ImprovementPriority.HIGH: return 80;
-      case ImprovementPriority.MEDIUM: return 60;
-      case ImprovementPriority.LOW: return 40;
-      default: return 50;
+      case ImprovementPriority.CRITICAL:
+        return 100;
+      case ImprovementPriority.HIGH:
+        return 80;
+      case ImprovementPriority.MEDIUM:
+        return 60;
+      case ImprovementPriority.LOW:
+        return 40;
+      default:
+        return 50;
     }
   }
 
@@ -1521,10 +1552,23 @@ export class ContinuousImprovementService {
   ): boolean {
     // Simple alignment check based on category matching
     const categoryAlignment = {
-      [ImprovementCategory.WASTE_ELIMINATION]: [ObjectiveCategory.EFFICIENCY, ObjectiveCategory.COST],
-      [ImprovementCategory.PROCESS_STREAMLINING]: [ObjectiveCategory.EFFICIENCY, ObjectiveCategory.SPEED],
-      [ImprovementCategory.QUALITY_IMPROVEMENT]: [ObjectiveCategory.QUALITY, ObjectiveCategory.SATISFACTION],
-      [ImprovementCategory.AUTOMATION]: [ObjectiveCategory.EFFICIENCY, ObjectiveCategory.SPEED, ObjectiveCategory.COST]
+      [ImprovementCategory.WASTE_ELIMINATION]: [
+        ObjectiveCategory.EFFICIENCY,
+        ObjectiveCategory.COST,
+      ],
+      [ImprovementCategory.PROCESS_STREAMLINING]: [
+        ObjectiveCategory.EFFICIENCY,
+        ObjectiveCategory.SPEED,
+      ],
+      [ImprovementCategory.QUALITY_IMPROVEMENT]: [
+        ObjectiveCategory.QUALITY,
+        ObjectiveCategory.SATISFACTION,
+      ],
+      [ImprovementCategory.AUTOMATION]: [
+        ObjectiveCategory.EFFICIENCY,
+        ObjectiveCategory.SPEED,
+        ObjectiveCategory.COST,
+      ],
     };
 
     const alignedCategories = categoryAlignment[improvement.category] || [];

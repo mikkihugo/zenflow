@@ -16,8 +16,8 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise');
-import { nanoid } from 'nanoid');
+import type { DocumentType } from '@claude-zen/enterprise';
+import { nanoid } from 'nanoid';
 
 import {
   BaseDocumentService,
@@ -36,23 +36,17 @@ export interface FunctionalRequirement {
   id: string;
   description: string;
   acceptanceCriteria: string[];
-  priority: 'must_have | should_have' | 'could_have | wont_have');
-  complexity?: 'low | medium' | 'high | very_high');
+  priority: 'must_have'' | ''should_have'' | ''could_have'' | ''wont_have');
+  complexity?: 'low'' | ''medium'' | ''high'' | ''very_high');
   estimatedEffort?: number; // story points or hours
 }
 
 export interface NonFunctionalRequirement {
   id: string;
-  type:
-    | 'performance'
-    | 'security'
-    | 'usability'
-    | 'reliability'
-    | 'scalability'
-    | 'maintainability');
+  type:' | ''performance | security' | 'usability''' | '''reliability | scalability' | 'maintainability');
   description: string;
   metrics: string;
-  priority: 'must_have | should_have' | 'could_have | wont_have');
+  priority: 'must_have'' | ''should_have'' | ''could_have'' | ''wont_have');
   testable: boolean;
 }
 
@@ -62,7 +56,7 @@ export interface UserStory {
   description: string;
   acceptanceCriteria: string[];
   storyPoints?: number;
-  priority: 'must_have | should_have' | 'could_have | wont_have');
+  priority: 'must_have'' | ''should_have'' | ''could_have'' | ''wont_have');
   persona?: string; // user persona
   businessValue?: string;
 }
@@ -81,7 +75,7 @@ export interface BusinessEpicCreateOptions {
   outOfScope?: string[];
   author?: string;
   projectId?: string;
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   stakeholders?: string[];
   deliveryTimeline?: {
     startDate?: Date;
@@ -98,18 +92,9 @@ export interface BusinessEpicCreateOptions {
 export interface BusinessEpicQueryOptions extends QueryFilters {
   businessObjective?: string;
   targetAudience?: string;
-  requirementsPriority?:
-    | 'must_have'
-    | 'should_have'
-    | 'could_have'
-    | 'wont_have');
+  requirementsPriority?:' | ''must_have | should_have' | 'could_have''' | '''wont_have');
   hasUserStories?: boolean;
-  completionStatus?:
-    | 'planning'
-    | 'in_progress'
-    | 'review'
-    | 'approved'
-    | 'implemented');
+  completionStatus?:'' | '''planning | in_progress' | 'review' | 'approved' | 'implemented');
 }
 
 export interface RequirementProgress {
@@ -147,11 +132,11 @@ export interface BusinessEpicStats {
  * Compatible across Kanban → Agile → SAFe modes.
  */
 export class BusinessEpicService extends BaseDocumentService<any> {
-  private currentMode: 'kanban | agile' | 'safe = kanban');
+  private currentMode: 'kanban'' | ''agile'' | ''safe = kanban');
 
   constructor(
     documentManager?: DocumentManager,
-    mode: 'kanban | agile' | 'safe = kanban'
+    mode: 'kanban'' | ''agile'' | ''safe = kanban'
   ) {
     super('business-epic', documentManager);
     this.currentMode = mode;
@@ -160,7 +145,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
   /**
    * Set the current project mode (determines schema version)
    */
-  setProjectMode(mode: 'kanban | agile' | 'safe'): void {
+  setProjectMode(mode: 'kanban'' | ''agile'' | ''safe'): void {
     this.currentMode = mode;
     this.logger.info(`Business Epic service set to ${mode} mode`);
   }
@@ -188,14 +173,13 @@ export class BusinessEpicService extends BaseDocumentService<any> {
 
     // Requirements validation (mode-dependent)
     if (this.currentMode === 'kanban') {
-      if (!data.requirements || data.requirements.length === 0) {
+      if (!data.requirements'' | '''' | ''data.requirements.length === 0) {
         errors.push('At least one requirement is required');
       }
     } else {
       // Agile/SAFe modes use structured functional requirements
       if (
-        !data.functional_requirements ||
-        data.functional_requirements.length === 0
+        !data.functional_requirements'' | '''' | ''data.functional_requirements.length === 0
       ) {
         errors.push('At least one functional requirement is required');
       } else {
@@ -205,7 +189,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
               `Functional requirement ${index + 1} must have a description`
             );
           }
-          if (!req.acceptanceCriteria || req.acceptanceCriteria.length === 0) {
+          if (!req.acceptanceCriteria'' | '''' | ''req.acceptanceCriteria.length === 0) {
             errors.push(
               `Functional requirement ${index + 1} must have acceptance criteria`
             );
@@ -216,26 +200,20 @@ export class BusinessEpicService extends BaseDocumentService<any> {
 
     // Validation warnings
     if (data.title && data.title.length < 15) {
-      warnings.push(
-        'Title should be more descriptive (at least 15 characters)'
+      warnings.push('Title should be more descriptive (at least 15 characters)'
       );
     }
 
     // Mode-specific warnings
-    if (this.currentMode === 'agile || this.currentMode === safe') {
+    if (this.currentMode === 'agile'' | '''' | ''this.currentMode === safe') {
       if (!data.user_stories || data.user_stories.length === 0) {
-        warnings.push(
-          'Consider adding user stories for better implementation guidance'
-        );
+        warnings.push('Consider adding user stories for better implementation guidance');
       }
 
       if (
-        !data.non_functional_requirements ||
-        data.non_functional_requirements.length === 0
+        !data.non_functional_requirements'' | '''' | ''data.non_functional_requirements.length === 0
       ) {
-        warnings.push(
-          'Consider adding non-functional requirements (performance, security, etc.)'
-        );
+        warnings.push('Consider adding non-functional requirements (performance, security, etc.)');
       }
     }
 
@@ -250,23 +228,23 @@ export class BusinessEpicService extends BaseDocumentService<any> {
     let content = `# ${data.title}\n\n`;
 
     // Business objective (all modes)
-    if (data.business_objective || data.metadata?.businessObjective) {
-      content += `## Business Objective\n${data.business_objective || data.metadata?.businessObjective}\n\n`;
+    if (data.business_objective'' | '''' | ''data.metadata?.businessObjective) {
+      content += `## Business Objective\n${data.business_objective'' | '''' | ''data.metadata?.businessObjective}\n\n`;
     }
 
     // Target audience (all modes)
     const targetAudience =
-      data.target_audience || data.metadata?.targetAudience()
+      data.target_audience'' | '''' | ''data.metadata?.targetAudience()
     if (targetAudience && Array.isArray(targetAudience)) {
       content += `## Target Audience\n`;
       targetAudience.forEach((audience: string) => {
         content += `- ${audience}\n`;
       });
-      content += '\n');
+      content +='\n');
     }
 
     // Description
-    content += `## Description\n${data.content || ''}\n\n`;
+    content += `## Description\n${data.content'' | '''' | ''''}\n\n`;
 
     // Requirements (mode-dependent format)
     if (
@@ -307,7 +285,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
         content += `### NFR${index + 1}: ${req.description}\n`;
         content += `**Type**: ${req.type}\n`;
         content += `**Metrics**: ${req.metrics}\n`;
-        content += `**Priority**: ${req.priority || 'should_have'}\n\n`;
+        content += `**Priority**: ${req.priority'' | '''' | '''should_have'}\n\n`;
       });
     }
 
@@ -376,7 +354,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
     // Metadata section
     content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
-    content += `**Author**: ${data.author || 'product-team'}\n`;
+    content += `**Author**: ${data.author'' | '''' | '''product-team'}\n`;
 
     if (
       data.metadata?.stakeholders &&
@@ -390,23 +368,21 @@ export class BusinessEpicService extends BaseDocumentService<any> {
 
   protected generateKeywords(data: Partial<any>): string[] {
     const textSources = [
-      data.title || '',
-      data.content || '',
-      data.business_objective || data.metadata?.businessObjective || '',
-      ...(data.requirements || []),
-      ...(data.functional_requirements?.map((req: any) => req.description) ||
-        []),
+      data.title'' | '''' | '''',
+      data.content'' | '''' | '''',
+      data.business_objective'' | '''' | ''data.metadata?.businessObjective'' | '''' | '''',
+      ...(data.requirements'' | '''' | ''[]),
+      ...(data.functional_requirements?.map((req: any) => req.description)'' | '''' | ''[]),
       ...(data.user_stories?.map(
         (story: any) => `${story.title} ${story.description}`
-      ) || []),
+      )'' | '''' | ''[]),
     ];
 
     const text = textSources.join(' ')?.toLowerCase()
-    const words = text.match(/\b\w{3,}\b/g) || [];
+    const words = text.match(/\b\w{3,}\b/g)'' | '''' | ''[];
 
     // Common stop words to filter out
-    const stopWords = new Set([
-      'the',
+    const stopWords = new Set(['the',
       'and',
       'for',
       'are',
@@ -467,7 +443,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
     // Add Business Epic keywords
     keywords.push('business, epic', 'requirements');
 
-    if (this.currentMode === 'agile || this.currentMode === safe') {
+    if (this.currentMode === 'agile'' | '''' | ''this.currentMode === safe') {
       keywords.push('functional, user-story');
     }
 
@@ -497,13 +473,13 @@ export class BusinessEpicService extends BaseDocumentService<any> {
         }));
 
       const nonFunctionalRequirements: NonFunctionalRequirement[] = (
-        options.nonFunctionalRequirements || []
+        options.nonFunctionalRequirements'' | '''' | ''[]
       ).map((req) => ({
         ...req,
         id: nanoid(),
       }));
 
-      const userStories: UserStory[] = (options.userStories || []).map(
+      const userStories: UserStory[] = (options.userStories'' | '''' | ''[]).map(
         (story) => ({
           ...story,
           id: nanoid(),
@@ -511,16 +487,15 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       );
 
       // Create Business Epic document with current mode schema
-      const businessEpicData = documentSchemaManager.createDocumentWithSchema(
-        'business_epic',
+      const businessEpicData = documentSchemaManager.createDocumentWithSchema('business_epic',
         {
           title: options.title,
           content: options.description,
           summary: `Business epic for ${options.title}`,
-          author: options.author || 'product-team',
+          author: options.author'' | '''' | '''product-team',
           project_id: options.projectId,
           status: 'todo',
-          priority: options.priority || 'medium',
+          priority: options.priority'' | '''' | '''medium',
           tags: ['business, epic'],
         },
         this.currentMode
@@ -539,7 +514,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
         businessEpicData.non_functional_requirements =
           nonFunctionalRequirements;
 
-        if (this.currentMode === 'agile || this.currentMode === safe') {
+        if (this.currentMode === 'agile'' | '''' | ''this.currentMode === safe') {
           businessEpicData.user_stories = userStories;
           businessEpicData.acceptance_criteria = [];
           businessEpicData.definition_of_done = [
@@ -551,11 +526,11 @@ export class BusinessEpicService extends BaseDocumentService<any> {
 
         if (this.currentMode === 'safe') {
           businessEpicData.epic_type = 'business');
-          businessEpicData.epic_owner = options.author || 'product-team');
+          businessEpicData.epic_owner = options.author'' | '''' | '''product-team');
           businessEpicData.portfolio_canvas = {
             leading_indicators: [],
-            success_metrics: options.successMetrics || [],
-            mvp_hypothesis: '',
+            success_metrics: options.successMetrics'' | '''' | ''[],
+            mvp_hypothesis:'',
             solution_intent: '',
           };
           businessEpicData.program_epics_generated = 0;
@@ -603,7 +578,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       };
 
       const updatedRequirements = [
-        ...(prd.functional_requirements || []),
+        ...(prd.functional_requirements'' | '''' | ''[]),
         newRequirement,
       ];
 
@@ -611,10 +586,10 @@ export class BusinessEpicService extends BaseDocumentService<any> {
         functional_requirements: updatedRequirements,
         metadata: {
           ...prd.metadata,
-          totalRequirements: (prd.metadata?.totalRequirements || 0) + 1,
+          totalRequirements: (prd.metadata?.totalRequirements'' | '''' | ''0) + 1,
           requirementsByPriority: this.countByPriority([
             ...updatedRequirements,
-            ...(prd.non_functional_requirements || []),
+            ...(prd.non_functional_requirements'' | '''' | ''[]),
           ]),
         },
       } as Partial<any>);
@@ -651,7 +626,7 @@ export class BusinessEpicService extends BaseDocumentService<any> {
         id: nanoid(),
       };
 
-      const updatedUserStories = [...(prd.user_stories || []), newUserStory];
+      const updatedUserStories = [...(prd.user_stories'' | '''' | ''[]), newUserStory];
 
       const updatedPrd = await this.updateDocument(prd.id, {
         user_stories: updatedUserStories,
@@ -709,9 +684,9 @@ export class BusinessEpicService extends BaseDocumentService<any> {
     }
 
     try {
-      const functionalReqs = prd.functional_requirements || [];
-      const nonFunctionalReqs = prd.non_functional_requirements || [];
-      const userStories = prd.user_stories || [];
+      const functionalReqs = prd.functional_requirements'' | '''' | ''[];
+      const nonFunctionalReqs = prd.non_functional_requirements'' | '''' | ''[];
+      const userStories = prd.user_stories'' | '''' | ''[];
 
       const totalRequirements =
         functionalReqs.length + nonFunctionalReqs.length;
@@ -787,8 +762,8 @@ export class BusinessEpicService extends BaseDocumentService<any> {
     if (options.requirementsPriority) {
       filteredPrds = filteredPrds.filter((prd) => {
         const allRequirements = [
-          ...(prd.functional_requirements || []),
-          ...(prd.non_functional_requirements || []),
+          ...(prd.functional_requirements'' | '''' | ''[]),
+          ...(prd.non_functional_requirements'' | '''' | ''[]),
         ];
         return allRequirements.some(
           (req) => req.priority === options.requirementsPriority
@@ -838,34 +813,34 @@ export class BusinessEpicService extends BaseDocumentService<any> {
       for (const prd of prds) {
         // Status distribution
         if (prd.status) {
-          stats.byStatus[prd.status] = (stats.byStatus[prd.status] || 0) + 1;
+          stats.byStatus[prd.status] = (stats.byStatus[prd.status]'' | '''' | ''0) + 1;
         }
 
         // Priority distribution
         if (prd.priority) {
           stats.byPriority[prd.priority] =
-            (stats.byPriority[prd.priority] || 0) + 1;
+            (stats.byPriority[prd.priority]'' | '''' | ''0) + 1;
         }
 
         // Requirements counting
-        const functionalReqs = prd.functional_requirements?.length || 0;
-        const nonFunctionalReqs = prd.non_functional_requirements?.length || 0;
+        const functionalReqs = prd.functional_requirements?.length'' | '''' | ''0;
+        const nonFunctionalReqs = prd.non_functional_requirements?.length'' | '''' | ''0;
         const prdRequirements = functionalReqs + nonFunctionalReqs;
         totalRequirements += prdRequirements;
 
         // User stories counting
-        const prdUserStories = prd.user_stories?.length || 0;
+        const prdUserStories = prd.user_stories?.length'' | '''' | ''0;
         totalUserStories += prdUserStories;
 
         // Requirements by priority
         const allRequirements = [
-          ...(prd.functional_requirements || []),
-          ...(prd.non_functional_requirements || []),
+          ...(prd.functional_requirements'' | '''' | ''[]),
+          ...(prd.non_functional_requirements'' | '''' | ''[]),
         ];
 
         allRequirements.forEach((req) => {
           stats.requirementsByPriority[req.priority] =
-            (stats.requirementsByPriority[req.priority] || 0) + 1;
+            (stats.requirementsByPriority[req.priority]'' | '''' | ''0) + 1;
         });
 
         // Recent activity

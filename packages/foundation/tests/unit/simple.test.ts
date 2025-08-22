@@ -1,6 +1,6 @@
 /**
  * @fileoverview Simple Foundation Test
- * 
+ *
  * Basic test to verify gold standard testing setup works.
  */
 

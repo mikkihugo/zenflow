@@ -1,6 +1,6 @@
 /**
  * @file Performance Tracker - Replaces Hook System Performance Tracking
- * 
+ *
  * Monitors agent performance, resource usage, and coordination metrics.
  * This replaces the removed hook system's performance tracking functionality.
  */
@@ -55,7 +55,7 @@ export interface PerformanceStats {
   totalOperations: number;
   avgDuration: number;
   successRate: number;
-  memoryTrend: 'increasing' | 'stable' | 'decreasing';
+  memoryTrend: 'increasing | stable' | 'decreasing';
   cpuEfficiency: number;
   recentFailures: number;
 }
@@ -85,18 +85,21 @@ export const DEFAULT_PERFORMANCE_CONFIG: PerformanceTrackerConfig = {
     memoryMB: 500, // 500MB
     cpuPercent: 80, // 80% CPU
     operationTimeoutMs: 30000, // 30 seconds
-  }
+  },
 };
 
 /**
  * Performance Tracker - Monitors agent and coordination performance
- * 
+ *
  * Replaces the removed hook system's performance tracking with integrated monitoring.
  */
 export class PerformanceTracker {
   private config: PerformanceTrackerConfig;
   private snapshots: Map<string, PerformanceSnapshot[]> = new Map();
-  private activeOperations: Map<string, { startTime: number; operation: string; agentId: string }> = new Map();
+  private activeOperations: Map<
+    string,
+    { startTime: number; operation: string; agentId: string }
+  > = new Map();
   private baselineMemory: NodeJS.MemoryUsage;
   private baselineCpu: NodeJS.CpuUsage;
 
@@ -104,14 +107,14 @@ export class PerformanceTracker {
     this.config = { ...DEFAULT_PERFORMANCE_CONFIG, ...config };
     this.baselineMemory = process.memoryUsage();
     this.baselineCpu = process.cpuUsage();
-    
+
     if (this.config.enabled) {
       this.startPeriodicMetrics();
     }
-    
-    logger.info('PerformanceTracker initialized', { 
+
+    logger.info('PerformanceTracker initialized', {
       enabled: this.config.enabled,
-      historySize: this.config.historySize 
+      historySize: this.config.historySize,
     });
   }
 
@@ -124,27 +127,34 @@ export class PerformanceTracker {
     metadata?: Record<string, unknown>;
   }): Promise<PerformanceTrackingResult> {
     if (!this.config.enabled) {
-      return { tracked: false, startTime: 0, metrics: { memoryUsage: process.memoryUsage(), cpuUsage: process.cpuUsage() } };
+      return {
+        tracked: false,
+        startTime: 0,
+        metrics: {
+          memoryUsage: process.memoryUsage(),
+          cpuUsage: process.cpuUsage(),
+        },
+      };
     }
 
     try {
       const startTime = Date.now();
-      const operationId = `${context.agentId || 'unknown'}-${context.operation || 'unknown'}-${startTime}`;
-      
+      const operationId = `${context.agentId'' | '''' | '''unknown'}-${context.operation'' | '''' | '''unknown'}-${startTime}`;
+
       const memoryUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
 
       // Track active operation
       this.activeOperations.set(operationId, {
         startTime,
-        operation: context.operation || 'unknown',
-        agentId: context.agentId || 'unknown'
+        operation: context.operation'' | '''' | '''unknown',
+        agentId: context.agentId'' | '''' | '''unknown',
       });
 
       // Record start metrics
       recordMetric('performance_tracking_started', 1, {
-        operation: context.operation || 'unknown',
-        agentId: context.agentId || 'unknown'
+        operation: context.operation'' | '''' | '''unknown',
+        agentId: context.agentId'' | '''' | '''unknown',
       });
 
       return {
@@ -152,23 +162,24 @@ export class PerformanceTracker {
         startTime,
         metrics: {
           memoryUsage,
-          cpuUsage
+          cpuUsage,
         },
         operation: context.operation,
-        agentId: context.agentId
+        agentId: context.agentId,
       };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       logger.error('Performance tracking failed', { error: errorMessage });
-      
+
       return {
         tracked: false,
         startTime: Date.now(),
         metrics: {
           memoryUsage: process.memoryUsage(),
-          cpuUsage: process.cpuUsage()
+          cpuUsage: process.cpuUsage(),
         },
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }
@@ -186,7 +197,7 @@ export class PerformanceTracker {
   ): PerformanceSnapshot {
     const endTime = Date.now();
     const duration = endTime - startTime;
-    
+
     const snapshot: PerformanceSnapshot = {
       timestamp: endTime,
       agentId,
@@ -196,7 +207,7 @@ export class PerformanceTracker {
       cpuUsage: process.cpuUsage(this.baselineCpu),
       success,
       error,
-      metadata
+      metadata,
     };
 
     // Store snapshot
@@ -204,10 +215,10 @@ export class PerformanceTracker {
     if (!this.snapshots.has(agentKey)) {
       this.snapshots.set(agentKey, []);
     }
-    
+
     const agentSnapshots = this.snapshots.get(agentKey)!;
     agentSnapshots.push(snapshot);
-    
+
     // Maintain history size
     if (agentSnapshots.length > this.config.historySize) {
       agentSnapshots.shift();
@@ -222,7 +233,7 @@ export class PerformanceTracker {
       operation,
       agentId,
       duration: duration.toString(),
-      success: success ? 'true' : 'false'
+      success: success ? 'true' : 'false',
     });
 
     // Check for performance alerts
@@ -233,7 +244,7 @@ export class PerformanceTracker {
       operation,
       duration,
       success,
-      memoryMB: Math.round(snapshot.memoryUsage.rss / 1024 / 1024)
+      memoryMB: Math.round(snapshot.memoryUsage.rss / 1024 / 1024),
     });
 
     return snapshot;
@@ -242,27 +253,29 @@ export class PerformanceTracker {
   /**
    * Get performance statistics for an agent
    */
-  getAgentPerformanceStats(agentId: string): PerformanceStats | null {
+  getAgentPerformanceStats(agentId: string): PerformanceStats'' | ''null {
     const snapshots = this.snapshots.get(agentId);
-    if (!snapshots || snapshots.length === 0) {
+    if (!snapshots'' | '''' | ''snapshots.length === 0) {
       return null;
     }
 
-    const successful = snapshots.filter(s => s.success);
+    const successful = snapshots.filter((s) => s.success);
     const recent = snapshots.slice(-10); // Last 10 operations
-    
+
     const totalOperations = snapshots.length;
-    const avgDuration = snapshots.reduce((sum, s) => sum + s.duration, 0) / totalOperations;
+    const avgDuration =
+      snapshots.reduce((sum, s) => sum + s.duration, 0) / totalOperations;
     const successRate = successful.length / totalOperations;
-    
+
     // Memory trend analysis
     const memoryTrend = this.calculateMemoryTrend(snapshots);
-    
+
     // CPU efficiency (lower CPU usage per operation is better)
-    const avgCpuUser = snapshots.reduce((sum, s) => sum + s.cpuUsage.user, 0) / totalOperations;
-    const cpuEfficiency = Math.max(0, 100 - (avgCpuUser / 1000)); // Normalize to 0-100 scale
-    
-    const recentFailures = recent.filter(s => !s.success).length;
+    const avgCpuUser =
+      snapshots.reduce((sum, s) => sum + s.cpuUsage.user, 0) / totalOperations;
+    const cpuEfficiency = Math.max(0, 100 - avgCpuUser / 1000); // Normalize to 0-100 scale
+
+    const recentFailures = recent.filter((s) => !s.success).length;
 
     return {
       totalOperations,
@@ -270,7 +283,7 @@ export class PerformanceTracker {
       successRate,
       memoryTrend,
       cpuEfficiency,
-      recentFailures
+      recentFailures,
     };
   }
 
@@ -288,7 +301,7 @@ export class PerformanceTracker {
       operationId: id,
       agentId: op.agentId,
       operation: op.operation,
-      elapsedTime: now - op.startTime
+      elapsedTime: now - op.startTime,
     }));
   }
 
@@ -335,19 +348,23 @@ export class PerformanceTracker {
   /**
    * Calculate memory trend over time
    */
-  private calculateMemoryTrend(snapshots: PerformanceSnapshot[]): 'increasing' | 'stable' | 'decreasing' {
+  private calculateMemoryTrend(
+    snapshots: PerformanceSnapshot[]
+  ): 'increasing | stable' | 'decreasing' {
     if (snapshots.length < 3) return 'stable';
-    
-    const recentMemory = snapshots.slice(-5).map(s => s.memoryUsage.rss);
-    const olderMemory = snapshots.slice(-10, -5).map(s => s.memoryUsage.rss);
-    
-    if (recentMemory.length === 0 || olderMemory.length === 0) return 'stable';
-    
-    const recentAvg = recentMemory.reduce((sum, m) => sum + m, 0) / recentMemory.length;
-    const olderAvg = olderMemory.reduce((sum, m) => sum + m, 0) / olderMemory.length;
-    
+
+    const recentMemory = snapshots.slice(-5).map((s) => s.memoryUsage.rss);
+    const olderMemory = snapshots.slice(-10, -5).map((s) => s.memoryUsage.rss);
+
+    if (recentMemory.length === 0'' | '''' | ''olderMemory.length === 0) return'stable';
+
+    const recentAvg =
+      recentMemory.reduce((sum, m) => sum + m, 0) / recentMemory.length;
+    const olderAvg =
+      olderMemory.reduce((sum, m) => sum + m, 0) / olderMemory.length;
+
     const change = (recentAvg - olderAvg) / olderAvg;
-    
+
     if (change > 0.1) return 'increasing';
     if (change < -0.1) return 'decreasing';
     return 'stable';
@@ -358,20 +375,21 @@ export class PerformanceTracker {
    */
   private checkPerformanceAlerts(snapshot: PerformanceSnapshot): void {
     const memoryMB = snapshot.memoryUsage.rss / 1024 / 1024;
-    const cpuPercent = (snapshot.cpuUsage.user + snapshot.cpuUsage.system) / 10000; // Convert to percentage
-    
+    const cpuPercent =
+      (snapshot.cpuUsage.user + snapshot.cpuUsage.system) / 10000; // Convert to percentage
+
     // Memory alert
     if (memoryMB > this.config.alertThresholds.memoryMB) {
       logger.warn('High memory usage detected', {
         agentId: snapshot.agentId,
         operation: snapshot.operation,
         memoryMB: Math.round(memoryMB),
-        threshold: this.config.alertThresholds.memoryMB
+        threshold: this.config.alertThresholds.memoryMB,
       });
-      
+
       recordMetric('performance_alert_memory', 1, {
         agentId: snapshot.agentId,
-        memoryMB: Math.round(memoryMB).toString()
+        memoryMB: Math.round(memoryMB).toString(),
       });
     }
 
@@ -381,12 +399,12 @@ export class PerformanceTracker {
         agentId: snapshot.agentId,
         operation: snapshot.operation,
         cpuPercent: Math.round(cpuPercent),
-        threshold: this.config.alertThresholds.cpuPercent
+        threshold: this.config.alertThresholds.cpuPercent,
       });
-      
+
       recordMetric('performance_alert_cpu', 1, {
         agentId: snapshot.agentId,
-        cpuPercent: Math.round(cpuPercent).toString()
+        cpuPercent: Math.round(cpuPercent).toString(),
       });
     }
 
@@ -396,12 +414,12 @@ export class PerformanceTracker {
         agentId: snapshot.agentId,
         operation: snapshot.operation,
         duration: snapshot.duration,
-        threshold: this.config.alertThresholds.operationTimeoutMs
+        threshold: this.config.alertThresholds.operationTimeoutMs,
       });
-      
+
       recordMetric('performance_alert_duration', 1, {
         agentId: snapshot.agentId,
-        duration: snapshot.duration.toString()
+        duration: snapshot.duration.toString(),
       });
     }
   }
@@ -410,7 +428,9 @@ export class PerformanceTracker {
 /**
  * Factory function to create Performance Tracker
  */
-export function createPerformanceTracker(config?: Partial<PerformanceTrackerConfig>): PerformanceTracker {
+export function createPerformanceTracker(
+  config?: Partial<PerformanceTrackerConfig>
+): PerformanceTracker {
   return new PerformanceTracker(config);
 }
 
@@ -439,15 +459,33 @@ export async function withPerformanceTracking<T>(
   metadata?: Record<string, unknown>
 ): Promise<T> {
   const tracker = getGlobalPerformanceTracker();
-  const tracking = await tracker.trackPerformance({ operation, agentId, metadata });
-  
+  const tracking = await tracker.trackPerformance({
+    operation,
+    agentId,
+    metadata,
+  });
+
   try {
     const result = await fn();
-    tracker.completeTracking(agentId, operation, tracking.startTime, true, undefined, metadata);
+    tracker.completeTracking(
+      agentId,
+      operation,
+      tracking.startTime,
+      true,
+      undefined,
+      metadata
+    );
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    tracker.completeTracking(agentId, operation, tracking.startTime, false, errorMessage, metadata);
+    tracker.completeTracking(
+      agentId,
+      operation,
+      tracking.startTime,
+      false,
+      errorMessage,
+      metadata
+    );
     throw error;
   }
 }

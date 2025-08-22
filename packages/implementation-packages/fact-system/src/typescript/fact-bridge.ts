@@ -1,9 +1,9 @@
 /**
  * @fileoverview FACT Bridge - TypeScript to Rust Bridge
- * 
+ *
  * Bridges TypeScript coordination layer with high-performance Rust fact processing engine.
  * Handles WASM loading, N-API bindings, and fallback to TypeScript implementations.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -27,14 +27,22 @@ import type {
   PerlPackageFactResult,
   JavaPackageFactResult,
   GitLabRepoFactResult,
-  BitbucketRepoFactResult
+  BitbucketRepoFactResult,
 } from './types';
 
 const logger = getLogger('FactBridge');
 
 interface RustFactEngine {
-  search_facts(query: string, fact_types: string[], limit: number): Promise<string>;
-  get_fact(fact_type: string, identifier: string, version?: string): Promise<string>;
+  search_facts(
+    query: string,
+    fact_types: string[],
+    limit: number
+  ): Promise<string>;
+  get_fact(
+    fact_type: string,
+    identifier: string,
+    version?: string
+  ): Promise<string>;
   get_npm_facts(package_name: string, version?: string): Promise<string>;
   get_github_facts(owner: string, repo: string): Promise<string>;
   get_security_facts(cve_id: string): Promise<string>;
@@ -43,7 +51,11 @@ interface RustFactEngine {
   get_rust_crate(crate_name: string, version?: string): Promise<string>;
   get_go_module(module_path: string, version?: string): Promise<string>;
   get_perl_package(package_name: string, version?: string): Promise<string>;
-  get_java_package(group_id: string, artifact_id: string, version?: string): Promise<string>;
+  get_java_package(
+    group_id: string,
+    artifact_id: string,
+    version?: string
+  ): Promise<string>;
   get_gitlab_repo(project_path: string): Promise<string>;
   get_bitbucket_repo(workspace: string, repo_slug: string): Promise<string>;
   get_stats(): Promise<string>;
@@ -54,7 +66,7 @@ interface RustFactEngine {
  * Bridge between TypeScript and Rust fact processing engine
  */
 export class FactBridge {
-  private rustEngine?: RustFactEngine | null;
+  private rustEngine?: RustFactEngine'' | ''null;
   private database: DatabaseAccess;
   private useRustEngine: boolean;
   private initialized = false;
@@ -75,7 +87,10 @@ export class FactBridge {
         await this.loadRustEngine();
         logger.info('✅ Rust FACT engine loaded successfully');
       } catch (error) {
-        logger.warn('Failed to load Rust engine, falling back to TypeScript:', error);
+        logger.warn(
+          'Failed to load Rust engine, falling back to TypeScript:',
+          error
+        );
         this.useRustEngine = false;
       }
     }
@@ -91,14 +106,26 @@ export class FactBridge {
       try {
         const resultJson = await this.rustEngine.search_facts(
           query.query,
-          query.factTypes || ['npm-package', 'github-repo', 'security-advisory', 'hex-package', 'rust-crate', 'go-module', 'perl-package', 'java-package', 'gitlab-repo', 'bitbucket-repo'],
-          query.limit || 10
+          query.factTypes'' | '''' | ''['npm-package',
+            'github-repo',
+            'security-advisory',
+            'hex-package',
+            'rust-crate',
+            'go-module',
+            'perl-package',
+            'java-package',
+            'gitlab-repo',
+            'bitbucket-repo',
+          ],
+          query.limit'' | '''' | ''10
         );
-        
+
         const rustResults = JSON.parse(resultJson);
         return this.convertRustSearchResults(rustResults);
       } catch (error) {
-        logger.warn('Rust fact search failed, falling back to TypeScript:', error);
+        logger.warn('Rust fact search failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -117,11 +144,14 @@ export class FactBridge {
           query.identifier,
           query.version
         );
-        
+
         const rustResult = JSON.parse(resultJson);
         return this.convertRustFactResult(rustResult, query);
       } catch (error) {
-        logger.warn('Rust fact lookup failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Rust fact lookup failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -132,13 +162,22 @@ export class FactBridge {
   /**
    * Get NPM package facts
    */
-  async getNPMFacts(packageName: string, version?: string): Promise<NPMFactResult> {
+  async getNPMFacts(
+    packageName: string,
+    version?: string
+  ): Promise<NPMFactResult> {
     if (this.useRustEngine && this.rustEngine) {
       try {
-        const resultJson = await this.rustEngine.get_npm_facts(packageName, version);
+        const resultJson = await this.rustEngine.get_npm_facts(
+          packageName,
+          version
+        );
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Rust NPM facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Rust NPM facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -155,7 +194,10 @@ export class FactBridge {
         const resultJson = await this.rustEngine.get_github_facts(owner, repo);
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Rust GitHub facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Rust GitHub facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -172,7 +214,10 @@ export class FactBridge {
         const resultJson = await this.rustEngine.get_security_facts(cveId);
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Rust security facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Rust security facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -183,13 +228,22 @@ export class FactBridge {
   /**
    * Get Hex (Elixir package manager) facts
    */
-  async getHexFacts(packageName: string, version?: string): Promise<HexFactResult> {
+  async getHexFacts(
+    packageName: string,
+    version?: string
+  ): Promise<HexFactResult> {
     if (this.useRustEngine && this.rustEngine) {
       try {
-        const resultJson = await this.rustEngine.get_hex_facts(packageName, version);
+        const resultJson = await this.rustEngine.get_hex_facts(
+          packageName,
+          version
+        );
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Rust Hex facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Rust Hex facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -200,7 +254,10 @@ export class FactBridge {
   /**
    * Get API documentation facts (TypeScript only for now)
    */
-  async getAPIDocsFacts(apiName: string, endpoint?: string): Promise<APIDocumentationFactResult> {
+  async getAPIDocsFacts(
+    apiName: string,
+    endpoint?: string
+  ): Promise<APIDocumentationFactResult> {
     // API docs are handled in TypeScript for structured data
     return this.getAPIDocsFactsTypeScript(apiName, endpoint);
   }
@@ -208,13 +265,22 @@ export class FactBridge {
   /**
    * Get Rust crate facts
    */
-  async getRustCrateFacts(crateName: string, version?: string): Promise<RustCrateFactResult> {
+  async getRustCrateFacts(
+    crateName: string,
+    version?: string
+  ): Promise<RustCrateFactResult> {
     if (this.useRustEngine && this.rustEngine) {
       try {
-        const resultJson = await this.rustEngine.get_rust_crate(crateName, version);
+        const resultJson = await this.rustEngine.get_rust_crate(
+          crateName,
+          version
+        );
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Rust crate facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Rust crate facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -225,13 +291,22 @@ export class FactBridge {
   /**
    * Get Go module facts
    */
-  async getGoModuleFacts(modulePath: string, version?: string): Promise<GoModuleFactResult> {
+  async getGoModuleFacts(
+    modulePath: string,
+    version?: string
+  ): Promise<GoModuleFactResult> {
     if (this.useRustEngine && this.rustEngine) {
       try {
-        const resultJson = await this.rustEngine.get_go_module(modulePath, version);
+        const resultJson = await this.rustEngine.get_go_module(
+          modulePath,
+          version
+        );
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Go module facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Go module facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -242,13 +317,22 @@ export class FactBridge {
   /**
    * Get Perl package facts
    */
-  async getPerlPackageFacts(packageName: string, version?: string): Promise<PerlPackageFactResult> {
+  async getPerlPackageFacts(
+    packageName: string,
+    version?: string
+  ): Promise<PerlPackageFactResult> {
     if (this.useRustEngine && this.rustEngine) {
       try {
-        const resultJson = await this.rustEngine.get_perl_package(packageName, version);
+        const resultJson = await this.rustEngine.get_perl_package(
+          packageName,
+          version
+        );
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Perl package facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Perl package facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -259,13 +343,24 @@ export class FactBridge {
   /**
    * Get Java package facts
    */
-  async getJavaPackageFacts(groupId: string, artifactId: string, version?: string): Promise<JavaPackageFactResult> {
+  async getJavaPackageFacts(
+    groupId: string,
+    artifactId: string,
+    version?: string
+  ): Promise<JavaPackageFactResult> {
     if (this.useRustEngine && this.rustEngine) {
       try {
-        const resultJson = await this.rustEngine.get_java_package(groupId, artifactId, version);
+        const resultJson = await this.rustEngine.get_java_package(
+          groupId,
+          artifactId,
+          version
+        );
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Java package facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Java package facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -282,7 +377,10 @@ export class FactBridge {
         const resultJson = await this.rustEngine.get_gitlab_repo(projectPath);
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('GitLab repo facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'GitLab repo facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -293,13 +391,22 @@ export class FactBridge {
   /**
    * Get Bitbucket repository facts
    */
-  async getBitbucketRepoFacts(workspace: string, repoSlug: string): Promise<BitbucketRepoFactResult> {
+  async getBitbucketRepoFacts(
+    workspace: string,
+    repoSlug: string
+  ): Promise<BitbucketRepoFactResult> {
     if (this.useRustEngine && this.rustEngine) {
       try {
-        const resultJson = await this.rustEngine.get_bitbucket_repo(workspace, repoSlug);
+        const resultJson = await this.rustEngine.get_bitbucket_repo(
+          workspace,
+          repoSlug
+        );
         return JSON.parse(resultJson);
       } catch (error) {
-        logger.warn('Bitbucket repo facts failed, falling back to TypeScript:', error);
+        logger.warn(
+          'Bitbucket repo facts failed, falling back to TypeScript:',
+          error
+        );
       }
     }
 
@@ -328,7 +435,7 @@ export class FactBridge {
     return {
       cacheSize: 0,
       totalQueries: 0,
-      cacheHitRate: 0
+      cacheHitRate: 0,
     };
   }
 
@@ -345,7 +452,9 @@ export class FactBridge {
       try {
         // Try to load N-API version (optional - may not exist in dev)
         // Use dynamic import to handle missing files gracefully
-        const nativeModule = await eval(`import('../../src/rust/target/release/fact-tools.node')`);
+        const nativeModule = await eval(
+          `import('../../src/rust/target/release/fact-tools.node')`
+        );
         this.rustEngine = nativeModule as unknown as RustFactEngine;
         logger.info('Loaded Rust engine via N-API');
       } catch (nativeError) {
@@ -358,14 +467,16 @@ export class FactBridge {
   /**
    * TypeScript SQL search against facts database
    */
-  private async searchFactsTypeScript(query: FactSearchQuery): Promise<FactSearchResult[]> {
+  private async searchFactsTypeScript(
+    query: FactSearchQuery
+  ): Promise<FactSearchResult[]> {
     // In production: would run SQL queries against facts database
     // For now: mock search results pointing to REAL API endpoints
-    
+
     const mockResults: FactSearchResult[] = [];
-    
+
     // Example: search for "react" in npm packages
-    if (!query.factTypes || query.factTypes.includes('npm-package')) {
+    if (!query.factTypes'' | '''' | ''query.factTypes.includes('npm-package')) {
       if (query.query.toLowerCase().includes('react')) {
         mockResults.push({
           factType: 'npm-package',
@@ -376,8 +487,8 @@ export class FactBridge {
           indexedAt: Date.now() - 86400000, // 1 day ago
           metadata: {
             title: 'React',
-            description: 'A JavaScript library for building user interfaces'
-          }
+            description: 'A JavaScript library for building user interfaces',
+          },
         });
         mockResults.push({
           factType: 'npm-package',
@@ -388,14 +499,14 @@ export class FactBridge {
           indexedAt: Date.now() - 86400000,
           metadata: {
             title: 'React DOM',
-            description: 'React package for working with the DOM'
-          }
+            description: 'React package for working with the DOM',
+          },
         });
       }
     }
-    
+
     // Example: search for repositories
-    if (!query.factTypes || query.factTypes.includes('github-repo')) {
+    if (!query.factTypes'' | '''' | ''query.factTypes.includes('github-repo')) {
       if (query.query.toLowerCase().includes('typescript')) {
         mockResults.push({
           factType: 'github-repo',
@@ -405,50 +516,54 @@ export class FactBridge {
           indexedAt: Date.now() - 3600000, // 1 hour ago
           metadata: {
             title: 'TypeScript',
-            description: 'TypeScript is a superset of JavaScript that compiles to clean JavaScript output'
-          }
+            description:
+              'TypeScript is a superset of JavaScript that compiles to clean JavaScript output',
+          },
         });
       }
     }
-    
+
     // Example: search for Hex packages
-    if (!query.factTypes || query.factTypes.includes('hex-package')) {
+    if (!query.factTypes'' | '''' | ''query.factTypes.includes('hex-package')) {
       if (query.query.toLowerCase().includes('phoenix')) {
         mockResults.push({
           factType: 'hex-package',
           identifier: 'phoenix',
           version: 'latest',
           resourceUrl: 'https://hex.pm/api/packages/phoenix', // Point to Hex.pm API
-          score: 0.90,
+          score: 0.9,
           indexedAt: Date.now() - 7200000, // 2 hours ago
           metadata: {
             title: 'Phoenix',
-            description: 'A productive web framework for Elixir'
-          }
+            description: 'A productive web framework for Elixir',
+          },
         });
       }
     }
-    
+
     // Example: search for security advisories
-    if (!query.factTypes || query.factTypes.includes('security-advisory')) {
-      if (query.query.toLowerCase().includes('cve-2024') || query.query.toLowerCase().includes('vulnerability')) {
+    if (!query.factTypes'' | '''' | ''query.factTypes.includes('security-advisory')) {
+      if (
+        query.query.toLowerCase().includes('cve-2024')'' | '''' | ''query.query.toLowerCase().includes('vulnerability')
+      ) {
         mockResults.push({
           factType: 'security-advisory',
           identifier: 'CVE-2024-1234',
-          resourceUrl: 'https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-1234', // Point to NVD API
+          resourceUrl:
+            'https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2024-1234', // Point to NVD API
           score: 0.85,
           indexedAt: Date.now() - 1800000, // 30 minutes ago
           metadata: {
             title: 'CVE-2024-1234',
-            description: 'Critical vulnerability in web framework'
-          }
+            description: 'Critical vulnerability in web framework',
+          },
         });
       }
     }
-    
+
     return mockResults
       .sort((a, b) => b.score - a.score)
-      .slice(0, query.limit || 10);
+      .slice(0, query.limit'' | '''' | ''10);
   }
 
   /**
@@ -464,7 +579,7 @@ export class FactBridge {
       data: factData,
       isCached: false,
       ttl: 3600000,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -473,7 +588,7 @@ export class FactBridge {
    */
   private async collectFactData(query: FactQuery): Promise<any> {
     switch (query.factType) {
-      case 'npm-package':
+      case'npm-package':
         return this.getNPMFactsTypeScript(query.identifier, query.version);
       case 'github-repo':
         const [owner, repo] = query.identifier.split('/');
@@ -483,16 +598,29 @@ export class FactBridge {
       case 'hex-package':
         return this.getHexFactsTypeScript(query.identifier, query.version);
       case 'api-docs':
-        return this.getAPIDocsFactsTypeScript(query.identifier, query.parameters?.endpoint);
+        return this.getAPIDocsFactsTypeScript(
+          query.identifier,
+          query.parameters?.endpoint
+        );
       case 'rust-crate':
-        return this.getRustCrateFactsTypeScript(query.identifier, query.version);
+        return this.getRustCrateFactsTypeScript(
+          query.identifier,
+          query.version
+        );
       case 'go-module':
         return this.getGoModuleFactsTypeScript(query.identifier, query.version);
       case 'perl-package':
-        return this.getPerlPackageFactsTypeScript(query.identifier, query.version);
+        return this.getPerlPackageFactsTypeScript(
+          query.identifier,
+          query.version
+        );
       case 'java-package':
         const [groupId, artifactId] = query.identifier.split(':');
-        return this.getJavaPackageFactsTypeScript(groupId, artifactId, query.version);
+        return this.getJavaPackageFactsTypeScript(
+          groupId,
+          artifactId,
+          query.version
+        );
       case 'gitlab-repo':
         return this.getGitLabRepoFactsTypeScript(query.identifier);
       case 'bitbucket-repo':
@@ -506,70 +634,99 @@ export class FactBridge {
   /**
    * NPM facts - direct API call
    */
-  private async getNPMFactsTypeScript(packageName: string, version?: string): Promise<NPMFactResult> {
+  private async getNPMFactsTypeScript(
+    packageName: string,
+    version?: string
+  ): Promise<NPMFactResult> {
     return liveAPIConnector.fetchNPMPackage(packageName, version);
   }
 
   /**
    * GitHub facts - direct API call
    */
-  private async getGitHubFactsTypeScript(owner: string, repo: string): Promise<GitHubFactResult> {
+  private async getGitHubFactsTypeScript(
+    owner: string,
+    repo: string
+  ): Promise<GitHubFactResult> {
     return liveAPIConnector.fetchGitHubRepository(owner, repo);
   }
 
   /**
    * Security facts - direct API call
    */
-  private async getSecurityFactsTypeScript(cveId: string): Promise<SecurityFactResult> {
+  private async getSecurityFactsTypeScript(
+    cveId: string
+  ): Promise<SecurityFactResult> {
     return liveAPIConnector.fetchSecurityAdvisory(cveId);
   }
 
   /**
    * Hex facts - direct API call
    */
-  private async getHexFactsTypeScript(packageName: string, version?: string): Promise<HexFactResult> {
+  private async getHexFactsTypeScript(
+    packageName: string,
+    version?: string
+  ): Promise<HexFactResult> {
     return liveAPIConnector.fetchHexPackage(packageName, version);
   }
 
   /**
    * Rust crate facts - direct API call
    */
-  private async getRustCrateFactsTypeScript(crateName: string, version?: string): Promise<RustCrateFactResult> {
+  private async getRustCrateFactsTypeScript(
+    crateName: string,
+    version?: string
+  ): Promise<RustCrateFactResult> {
     return liveAPIConnector.fetchRustCrate(crateName, version);
   }
 
   /**
    * Go module facts - direct API call
    */
-  private async getGoModuleFactsTypeScript(modulePath: string, version?: string): Promise<GoModuleFactResult> {
+  private async getGoModuleFactsTypeScript(
+    modulePath: string,
+    version?: string
+  ): Promise<GoModuleFactResult> {
     return liveAPIConnector.fetchGoModule(modulePath, version);
   }
 
   /**
    * Perl package facts - direct API call
    */
-  private async getPerlPackageFactsTypeScript(packageName: string, version?: string): Promise<PerlPackageFactResult> {
+  private async getPerlPackageFactsTypeScript(
+    packageName: string,
+    version?: string
+  ): Promise<PerlPackageFactResult> {
     return liveAPIConnector.fetchPerlPackage(packageName, version);
   }
 
   /**
    * Java package facts - direct API call
    */
-  private async getJavaPackageFactsTypeScript(groupId: string, artifactId: string, version?: string): Promise<JavaPackageFactResult> {
+  private async getJavaPackageFactsTypeScript(
+    groupId: string,
+    artifactId: string,
+    version?: string
+  ): Promise<JavaPackageFactResult> {
     return liveAPIConnector.fetchJavaPackage(groupId, artifactId, version);
   }
 
   /**
    * GitLab repository facts - direct API call
    */
-  private async getGitLabRepoFactsTypeScript(projectPath: string): Promise<GitLabRepoFactResult> {
+  private async getGitLabRepoFactsTypeScript(
+    projectPath: string
+  ): Promise<GitLabRepoFactResult> {
     return liveAPIConnector.fetchGitLabRepository(projectPath);
   }
 
   /**
    * Bitbucket repository facts - direct API call
    */
-  private async getBitbucketRepoFactsTypeScript(workspace: string, repoSlug: string): Promise<BitbucketRepoFactResult> {
+  private async getBitbucketRepoFactsTypeScript(
+    workspace: string,
+    repoSlug: string
+  ): Promise<BitbucketRepoFactResult> {
     return liveAPIConnector.fetchBitbucketRepository(workspace, repoSlug);
   }
 
@@ -577,48 +734,56 @@ export class FactBridge {
    * Production OpenAPI/Swagger documentation fetching
    * Fetches and parses actual swagger.json or openapi.yaml endpoints
    */
-  private async getAPIDocsFactsTypeScript(apiName: string, endpoint?: string): Promise<APIDocumentationFactResult> {
+  private async getAPIDocsFactsTypeScript(
+    apiName: string,
+    endpoint?: string
+  ): Promise<APIDocumentationFactResult> {
     const apiNameLower = apiName.toLowerCase();
-    
+
     // Production OpenAPI/Swagger endpoints for major APIs
     const swaggerEndpoints: Record<string, string> = {
-      stripe: 'https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json',
-      github: 'https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json',
-      kubernetes: 'https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/swagger.json',
+      stripe:
+        'https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json',
+      github:
+        'https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json',
+      kubernetes:
+        'https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/swagger.json',
       docker: 'https://docs.docker.com/engine/api/v1.41.yaml',
       gitlab: 'https://docs.gitlab.com/ee/api/openapi/openapi.yaml',
       bitbucket: 'https://api.bitbucket.org/swagger.json',
       npm: 'https://registry.npmjs.org/-/api-docs/openapi.json',
       'hex.pm': 'https://hex.pm/api/docs/openapi.json',
-      'crates.io': 'https://crates.io/api/docs/openapi.json'
+      'crates.io': 'https://crates.io/api/docs/openapi.json',
     };
 
     // Try to find a known OpenAPI endpoint
     const swaggerUrl = swaggerEndpoints[apiNameLower];
-    
+
     if (swaggerUrl) {
       try {
         logger.info(`Fetching OpenAPI spec for ${apiName} from ${swaggerUrl}`);
-        
+
         const response = await fetch(swaggerUrl, {
           headers: {
-            'Accept': 'application/json',
-            'User-Agent': 'claude-code-zen-fact-system'
-          }
+            Accept: 'application/json',
+            'User-Agent': 'claude-code-zen-fact-system',
+          },
         });
-        
+
         if (!response.ok) {
-          throw new Error(`OpenAPI fetch failed: ${response.status} ${response.statusText}`);
+          throw new Error(
+            `OpenAPI fetch failed: ${response.status} ${response.statusText}`
+          );
         }
-        
+
         const openApiSpec = await response.json();
-        
+
         // Parse OpenAPI 3.0 spec
-        const info = openApiSpec.info || {};
-        const servers = openApiSpec.servers || [];
-        const paths = openApiSpec.paths || {};
-        
-        // Extract endpoints from paths  
+        const info = openApiSpec.info'' | '''' | ''{};
+        const servers = openApiSpec.servers'' | '''' | ''[];
+        const paths = openApiSpec.paths'' | '''' | ''{};
+
+        // Extract endpoints from paths
         const endpoints: Array<{
           path: string;
           method: string;
@@ -626,26 +791,36 @@ export class FactBridge {
           parameters: Record<string, any>;
         }> = [];
         for (const [pathStr, pathObj] of Object.entries(paths)) {
-          if (typeof pathObj === 'object' && pathObj !== null) {
+          if (typeof pathObj ==='object' && pathObj !== null) {
             for (const [method, methodObj] of Object.entries(pathObj)) {
-              if (typeof methodObj === 'object' && methodObj !== null && 
-                  ['get', 'post', 'put', 'patch', 'delete', 'options', 'head'].includes(method.toLowerCase())) {
-                
+              if (
+                typeof methodObj === 'object' &&
+                methodObj !== null &&
+                [
+                  'get',
+                  'post',
+                  'put',
+                  'patch',
+                  'delete',
+                  'options',
+                  'head',
+                ].includes(method.toLowerCase())
+              ) {
                 const operation = methodObj as any;
                 const parameters: Record<string, any> = {};
-                
+
                 // Extract parameters
                 if (operation.parameters) {
                   for (const param of operation.parameters) {
                     parameters[param.name] = {
-                      type: param.schema?.type || 'string',
+                      type: param.schema?.type'' | '''' | '''string',
                       description: param.description,
-                      required: param.required || false,
-                      in: param.in
+                      required: param.required'' | '''' | ''false,
+                      in: param.in,
                     };
                   }
                 }
-                
+
                 // Extract request body schema
                 if (operation.requestBody?.content) {
                   const content = operation.requestBody.content;
@@ -654,22 +829,25 @@ export class FactBridge {
                     Object.assign(parameters, jsonContent.schema.properties);
                   }
                 }
-                
+
                 endpoints.push({
                   path: pathStr,
                   method: method.toUpperCase(),
-                  description: operation.summary || operation.description || `${method.toUpperCase()} ${pathStr}`,
-                  parameters
+                  description:
+                    operation.summary'' | '''' | ''operation.description'' | '''' | ''`${method.toUpperCase()} ${pathStr}`,
+                  parameters,
                 });
               }
             }
           }
         }
-        
+
         // Extract authentication info
-        let authentication = 'API Key';
+        let authentication ='API Key';
         if (openApiSpec.components?.securitySchemes) {
-          const schemes = Object.values(openApiSpec.components.securitySchemes) as any[];
+          const schemes = Object.values(
+            openApiSpec.components.securitySchemes
+          ) as any[];
           if (schemes.length > 0) {
             const scheme = schemes[0];
             if (scheme.type === 'http' && scheme.scheme === 'bearer') {
@@ -681,35 +859,36 @@ export class FactBridge {
             }
           }
         }
-        
+
         // Filter endpoints by specific endpoint if requested
         let filteredEndpoints = endpoints;
         if (endpoint) {
-          filteredEndpoints = endpoints.filter(ep => 
-            ep.path.includes(endpoint) || ep.description.toLowerCase().includes(endpoint.toLowerCase())
+          filteredEndpoints = endpoints.filter(
+            (ep) =>
+              ep.path.includes(endpoint)'' | '''' | ''ep.description.toLowerCase().includes(endpoint.toLowerCase())
           );
         }
-        
+
         return {
-          name: info.title || apiName,
-          baseUrl: servers[0]?.url || `https://api.${apiNameLower}.com`,
+          name: info.title'' | '''' | ''apiName,
+          baseUrl: servers[0]?.url'' | '''' | ''`https://api.${apiNameLower}.com`,
           authentication,
           endpoints: filteredEndpoints.slice(0, 20), // Limit to first 20 endpoints
           endpoint,
-          rateLimit: 'See documentation',
-          documentation: info.contact?.url || openApiSpec.externalDocs?.url || `https://docs.${apiNameLower}.com`,
+          rateLimit:'See documentation',
+          documentation:
+            info.contact?.url'' | '''' | ''openApiSpec.externalDocs?.url'' | '''' | ''`https://docs.${apiNameLower}.com`,
           sdks: [], // Would need additional lookup
           confidence: 1.0, // High confidence for actual OpenAPI spec
-          source: 'openapi-spec-live',
-          timestamp: Date.now()
+          source:'openapi-spec-live',
+          timestamp: Date.now(),
         };
-        
       } catch (error) {
         logger.warn(`Failed to fetch OpenAPI spec for ${apiName}:`, error);
         // Fall through to default handling
       }
     }
-    
+
     // Fallback: Try common OpenAPI endpoint patterns
     const commonPatterns = [
       `https://api.${apiNameLower}.com/swagger.json`,
@@ -717,35 +896,35 @@ export class FactBridge {
       `https://api.${apiNameLower}.com/docs/openapi.json`,
       `https://${apiNameLower}.com/api/swagger.json`,
       `https://${apiNameLower}.com/api/openapi.json`,
-      `https://docs.${apiNameLower}.com/openapi.json`
+      `https://docs.${apiNameLower}.com/openapi.json`,
     ];
-    
+
     for (const patternUrl of commonPatterns) {
       try {
         logger.debug(`Trying OpenAPI pattern: ${patternUrl}`);
-        
+
         const response = await fetch(patternUrl, {
           headers: {
-            'Accept': 'application/json',
-            'User-Agent': 'claude-code-zen-fact-system'
-          }
+            Accept: 'application/json',
+            'User-Agent': 'claude-code-zen-fact-system',
+          },
         });
-        
+
         if (response.ok) {
           const openApiSpec = await response.json();
-          
+
           // Basic validation that this looks like an OpenAPI spec
-          if (openApiSpec.openapi || openApiSpec.swagger) {
+          if (openApiSpec.openapi'' | '''' | ''openApiSpec.swagger) {
             logger.info(`Found OpenAPI spec at ${patternUrl}`);
-            
+
             // Parse basic info (simplified version of above)
-            const info = openApiSpec.info || {};
-            const servers = openApiSpec.servers || [];
-            
+            const info = openApiSpec.info'' | '''' | ''{};
+            const servers = openApiSpec.servers'' | '''' | ''[];
+
             return {
-              name: info.title || apiName,
-              baseUrl: servers[0]?.url || `https://api.${apiNameLower}.com`,
-              authentication: 'API Key',
+              name: info.title'' | '''' | ''apiName,
+              baseUrl: servers[0]?.url'' | '''' | ''`https://api.${apiNameLower}.com`,
+              authentication:'API Key',
               endpoints: [],
               endpoint,
               rateLimit: 'See documentation',
@@ -753,7 +932,7 @@ export class FactBridge {
               sdks: [],
               confidence: 0.8, // Good confidence for discovered spec
               source: 'openapi-spec-discovered',
-              timestamp: Date.now()
+              timestamp: Date.now(),
             };
           }
         }
@@ -762,19 +941,19 @@ export class FactBridge {
         continue;
       }
     }
-    
+
     // Final fallback: Try web search to find OpenAPI docs
     try {
       logger.info(`Attempting web search to find OpenAPI docs for ${apiName}`);
-      
+
       // Search for OpenAPI/Swagger documentation
       const searchQuery = `${apiName} openapi swagger documentation api docs site:docs.${apiNameLower}.com OR site:api.${apiNameLower}.com OR site:${apiNameLower}.com`;
-      
+
       // Use foundation LLM provider for API docs discovery
       const { getGlobalLLM } = await import('@claude-zen/foundation');
       const llm = getGlobalLLM();
       llm.setRole('researcher'); // Use researcher role for web search
-      
+
       const searchPrompt = `Find OpenAPI/Swagger documentation for "${apiName}" API. 
       Research and identify:
       1. Official API documentation URL
@@ -790,13 +969,13 @@ export class FactBridge {
         "confidence": 0.1-1.0,
         "found": true/false
       }`;
-      
+
       const searchResponse = await llm.complete(searchPrompt, {
         model: 'sonnet',
         temperature: 0.1,
-        maxTokens: 500
+        maxTokens: 500,
       });
-      
+
       try {
         // Extract JSON from response
         const jsonMatch = searchResponse.match(/\{[^}]*\}/);
@@ -805,26 +984,31 @@ export class FactBridge {
           if (searchResult.found) {
             return {
               name: apiName,
-              baseUrl: searchResult.baseUrl || `https://api.${apiNameLower}.com`,
-              authentication: searchResult.authentication || 'API Key',
+              baseUrl:
+                searchResult.baseUrl'' | '''' | ''`https://api.${apiNameLower}.com`,
+              authentication: searchResult.authentication'' | '''' | '''API Key',
               endpoints: [],
               endpoint,
               rateLimit: 'See documentation',
-              documentation: searchResult.documentation || `https://docs.${apiNameLower}.com`,
+              documentation:
+                searchResult.documentation'' | '''' | ''`https://docs.${apiNameLower}.com`,
               sdks: [],
-              confidence: Math.min(searchResult.confidence || 0.6, 0.8), // Cap at 0.8 for LLM search
-              source: 'llm-knowledge-discovery',
-              timestamp: Date.now()
+              confidence: Math.min(searchResult.confidence'' | '''' | ''0.6, 0.8), // Cap at 0.8 for LLM search
+              source:'llm-knowledge-discovery',
+              timestamp: Date.now(),
             };
           }
         }
       } catch (parseError) {
-        logger.warn(`Failed to parse LLM search result for ${apiName}:`, parseError);
+        logger.warn(
+          `Failed to parse LLM search result for ${apiName}:`,
+          parseError
+        );
       }
     } catch (error) {
       logger.warn(`Web search fallback failed for ${apiName}:`, error);
     }
-    
+
     // Absolute final fallback: Return structured default
     return {
       name: apiName,
@@ -837,7 +1021,7 @@ export class FactBridge {
       sdks: [],
       confidence: 0.3, // Low confidence for default structure
       source: 'default-structure',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -845,17 +1029,17 @@ export class FactBridge {
    * Convert Rust search results to TypeScript format
    */
   private convertRustSearchResults(rustResults: any[]): FactSearchResult[] {
-    return rustResults.map(result => ({
+    return rustResults.map((result) => ({
       factType: result.fact_type,
       identifier: result.identifier,
       version: result.version,
       resourceUrl: result.resource_url,
-      score: result.score || 0.8,
-      indexedAt: result.indexed_at || Date.now(),
-      metadata: result.metadata || {
+      score: result.score'' | '''' | ''0.8,
+      indexedAt: result.indexed_at'' | '''' | ''Date.now(),
+      metadata: result.metadata'' | '''' | ''{
         title: result.identifier,
-        description: result.description
-      }
+        description: result.description,
+      },
     }));
   }
 
@@ -864,14 +1048,14 @@ export class FactBridge {
    */
   private convertRustFactResult(rustResult: any, query: FactQuery): FactResult {
     return {
-      source: rustResult.source || 'rust-engine',
+      source: rustResult.source'' | '''' | '''rust-engine',
       factType: query.factType,
       identifier: query.identifier,
-      data: rustResult.data || rustResult,
-      isCached: rustResult.is_cached || false,
+      data: rustResult.data'' | '''' | ''rustResult,
+      isCached: rustResult.is_cached'' | '''' | ''false,
       cacheTimestamp: rustResult.cache_timestamp,
-      ttl: rustResult.ttl || query.cacheTTL || 3600000,
-      timestamp: Date.now()
+      ttl: rustResult.ttl'' | '''' | ''query.cacheTTL'' | '''' | ''3600000,
+      timestamp: Date.now(),
     };
   }
 

@@ -32,7 +32,7 @@ export { CompleteIntelligenceSystem } from './intelligence-system';
 export {
   createIntelligenceSystem,
   createBasicIntelligenceSystem,
-  createProductionIntelligenceSystem
+  createProductionIntelligenceSystem,
 } from './intelligence-factory';
 
 // =============================================================================
@@ -45,9 +45,7 @@ export {
   getPredictionSummary,
 } from './task-predictor';
 
-export type {
-  TaskPredictor,
-} from './task-predictor';
+export type { TaskPredictor } from './task-predictor';
 
 // =============================================================================
 // PERFORMANCE TRACKING - Replaces Hook System Performance Tracking
@@ -57,7 +55,7 @@ export {
   createPerformanceTracker,
   getGlobalPerformanceTracker,
   withPerformanceTracking,
-  DEFAULT_PERFORMANCE_CONFIG
+  DEFAULT_PERFORMANCE_CONFIG,
 } from './performance-tracker';
 
 export type {
@@ -134,7 +132,7 @@ export type {
   IntelligenceSystemConfig as Config,
   TaskPrediction as Prediction,
   AgentHealth as Health,
-  SystemHealthSummary as SystemHealth
+  SystemHealthSummary as SystemHealth,
 } from './types';
 
 // =============================================================================
@@ -151,9 +149,9 @@ export const PACKAGE_INFO = {
   description: 'Core agent monitoring primitives for Claude Code Zen',
   features: [
     'Basic task prediction interfaces',
-    'Simple intelligence system implementations', 
+    'Simple intelligence system implementations',
     'Core monitoring types and configurations',
     'Foundation logging and storage integration',
-    'Tree-shakable exports for optimal bundles'
-  ]
+    'Tree-shakable exports for optimal bundles',
+  ],
 } as const;

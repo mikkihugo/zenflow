@@ -27,30 +27,31 @@
  * @version 1.0.0
  */
 
-import {
-  registerFacade,
-  getLogger,
-} from '@claude-zen/foundation';
+import { registerFacade, getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('operations');
 
 // Register operations facade with expected packages
-registerFacade('operations', [
-  '@claude-zen/agent-monitoring',
-  '@claude-zen/chaos-engineering',
-  '@claude-zen/load-balancing',
-  '@claude-zen/llm-routing',
-  '@claude-zen/memory',
-  '@claude-zen/system-monitoring',
-], [
-  'Agent performance tracking and health checks',
-  'Chaos engineering and resilience testing',
-  'Load balancing and performance optimization',
-  'LLM provider routing and management',
-  'Memory management and optimization',
-  'System and infrastructure performance monitoring',
-  'Real-time operational metrics and alerting',
-]);
+registerFacade(
+  'operations',
+  [
+    '@claude-zen/agent-monitoring',
+    '@claude-zen/chaos-engineering',
+    '@claude-zen/load-balancing',
+    '@claude-zen/llm-routing',
+    '@claude-zen/memory',
+    '@claude-zen/system-monitoring',
+  ],
+  [
+    'Agent performance tracking and health checks',
+    'Chaos engineering and resilience testing',
+    'Load balancing and performance optimization',
+    'LLM provider routing and management',
+    'Memory management and optimization',
+    'System and infrastructure performance monitoring',
+    'Real-time operational metrics and alerting',
+  ]
+);
 
 // =============================================================================
 // MODULE EXPORTS - Delegate to implementation modules with fallback patterns
@@ -82,17 +83,26 @@ async function loadSystemMonitoring() {
       systemMonitoringCache = {
         SystemMonitor: class {
           async initialize() {
-            return this;
+            return await Promise.resolve(this);
           }
           async startMonitoring() {
-            console.debug('System Monitor Fallback: Started monitoring');
-            return { result: 'fallback-monitoring', status: 'started', timestamp: Date.now() };
+            logger.debug('System Monitor Fallback: Started monitoring');
+            return await Promise.resolve({
+              result: 'fallback-monitoring',
+              status: 'started',
+              timestamp: Date.now(),
+            });
           }
           async stopMonitoring() {
-            console.debug('System Monitor Fallback: Stopped monitoring');
-            return { result: 'fallback-stop', status: 'stopped', timestamp: Date.now() };
+            logger.debug('System Monitor Fallback: Stopped monitoring');
+            return await Promise.resolve({
+              result: 'fallback-stop',
+              status: 'stopped',
+              timestamp: Date.now(),
+            });
           }
           async getMetrics() {
+            await Promise.resolve();
             return {
               cpu: Math.random() * 100,
               memory: Math.random() * 100,
@@ -106,19 +116,31 @@ async function loadSystemMonitoring() {
           }
         },
         createSystemMonitor: () => ({
-          initialize: async () => Promise.resolve(),
-          startMonitoring: async () => ({ result: 'fallback-start', status: 'started', timestamp: Date.now() }),
-          stopMonitoring: async () => ({ result: 'fallback-stop', status: 'stopped', timestamp: Date.now() }),
-          getMetrics: async () => ({
+          initialize: async () => await Promise.resolve(),
+          startMonitoring: async () => await Promise.resolve({
+            result: 'fallback-start',
+            status: 'started',
+            timestamp: Date.now(),
+          }),
+          stopMonitoring: async () => await Promise.resolve({
+            result: 'fallback-stop',
+            status: 'stopped',
+            timestamp: Date.now(),
+          }),
+          getMetrics: async () => await Promise.resolve({
             system: { cpu: 45, memory: 67, disk: 23 },
             network: { bytesIn: 1024, bytesOut: 512 },
             processes: { count: 156, active: 89 },
             status: 'fallback',
             timestamp: Date.now(),
           }),
-          getStatus: () => ({ status: 'fallback', healthy: true, monitoring: false }),
+          getStatus: () => ({
+            status: 'fallback',
+            healthy: true,
+            monitoring: false,
+          }),
         }),
-        getSystemMetrics: async () => ({
+        getSystemMetrics: async () => await Promise.resolve({
           uptime: Date.now(),
           loadAverage: [0.5, 0.7, 0.9],
           memoryUsage: { used: 4096, free: 4096, total: 8192 },
@@ -134,7 +156,9 @@ async function loadSystemMonitoring() {
 // Professional exports for system monitoring
 export const getSystemMonitor = async () => {
   const systemModule = await loadSystemMonitoring();
-  return systemModule.createSystemMonitor?.() || systemModule.createSystemMonitor();
+  return (
+    systemModule.createSystemMonitor?.()'' | '''' | ''systemModule.createSystemMonitor()
+  );
 };
 
 export const getSystemMetrics = async () => {
@@ -174,7 +198,7 @@ export const operationsSystem = {
   logger: logger,
   init: async () => {
     logger.info('Operations system initialized');
-    return { success: true, message: 'Operations ready' };
+    return await Promise.resolve({ success: true, message: 'Operations ready' });
   },
 };
 
@@ -196,13 +220,14 @@ export const getPerformanceAgentRegistry = async () => {
   try {
     // Performance agents are part of the Operations facade itself
     const { AgentRegistry } = await import('@claude-zen/foundation');
-    const registry = new AgentRegistry();
-    return registry;
+    return new AgentRegistry();
   } catch {
     // Fallback to foundation AgentRegistry with performance-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('Performance agents package not available, using basic agent registry');
+    logger.warn(
+      'Performance agents package not available, using basic agent registry'
+    );
     return registry;
   }
 };
@@ -215,13 +240,14 @@ export const getTelemetryAgentRegistry = async () => {
   try {
     // Telemetry agents are part of the Operations facade itself
     const { AgentRegistry } = await import('@claude-zen/foundation');
-    const registry = new AgentRegistry();
-    return registry;
+    return new AgentRegistry();
   } catch {
     // Fallback to foundation AgentRegistry with telemetry-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('Telemetry agents package not available, using basic agent registry');
+    logger.warn(
+      'Telemetry agents package not available, using basic agent registry'
+    );
     return registry;
   }
 };
@@ -233,7 +259,7 @@ export const createPerformanceAgentRegistry = async (config?: any) => {
   const registry = await getPerformanceAgentRegistry();
   // AgentRegistry from foundation doesn't have configure method
   if (config) {
-    console.log('Performance agent registry config:', config);
+    logger.info('Performance agent registry config:', config);
   }
   return registry;
 };
@@ -245,7 +271,7 @@ export const createTelemetryAgentRegistry = async (config?: any) => {
   const registry = await getTelemetryAgentRegistry();
   // AgentRegistry from foundation doesn't have configure method
   if (config) {
-    console.log('Telemetry agent registry config:', config);
+    logger.info('Telemetry agent registry config:', config);
   }
   return registry;
 };
@@ -259,14 +285,16 @@ export const createHealthMonitoringAgentRegistry = async (config?: any) => {
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
     if (config) {
-      console.log('Health monitoring agent registry config:', config);
+      logger.info('Health monitoring agent registry config:', config);
     }
     return registry;
-  } catch (error) {
+  } catch {
     // Fallback to foundation AgentRegistry with health monitoring-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('Agent monitoring package not available, using basic agent registry');
+    logger.warn(
+      'Agent monitoring package not available, using basic agent registry'
+    );
     return registry;
   }
 };

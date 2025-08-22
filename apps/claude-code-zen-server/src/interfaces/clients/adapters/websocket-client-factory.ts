@@ -2,7 +2,7 @@
  * @file Interface implementation: websocket-client-factory.
  */
 
-import { Logger } from '@claude-zen/foundation');
+import { Logger } from '@claude-zen/foundation';
 
 /**
  * WebSocket Client Factory for UACL.
@@ -17,7 +17,7 @@ import type {
   ClientStatus,
   Client,
   ClientFactory,
-} from './core/interfaces');
+} from './core/interfaces';
 
 import('/enhanced-websocket-client');
 import('/websocket-client-adapter');
@@ -108,7 +108,7 @@ export class WebSocketClientFactory
    * List all active clients.
    */
   list(): Client[] {
-    return Array.from(this.clients?.values());
+    return Array.from(this.clients?.values())();
   }
 
   /**
@@ -156,7 +156,7 @@ export class WebSocketClientFactory
         } catch (error) {
           results?.set(name, {
             name,
-            status: 'unhealthy',
+            status:'unhealthy',
             lastCheck: new Date(),
             responseTime: -1,
             errorRate: 1,
@@ -234,12 +234,12 @@ export class WebSocketClientFactory
    * @param config
    */
   validateConfig(config: WebSocketClientConfig): boolean {
-    if (!config || typeof config !== 'object') {
+    if (!config || typeof config !=='object') {
       return false;
     }
 
     // Validate required fields
-    if (!config?.url || typeof config?.url !== 'string') {
+    if (!config?.url || typeof config?.url !=='string') {
       return false;
     }
 
@@ -264,9 +264,7 @@ export class WebSocketClientFactory
     if (config?.reconnection) {
       const reconnect = config?.reconnection()
       if (
-        typeof reconnect.enabled !== 'boolean' ||
-        (reconnect.maxAttempts && typeof reconnect.maxAttempts !== 'number') ||
-        (reconnect.initialDelay && typeof reconnect.initialDelay !== 'number');
+        typeof reconnect.enabled !=='boolean' || (reconnect.maxAttempts && typeof reconnect.maxAttempts !=='number') || (reconnect.initialDelay && typeof reconnect.initialDelay !=='number');
       ) {
         return false;
       }
@@ -275,8 +273,7 @@ export class WebSocketClientFactory
     if (config?.heartbeat) {
       const heartbeat = config?.heartbeat()
       if (
-        typeof heartbeat.enabled !== 'boolean' ||
-        (heartbeat.interval && typeof heartbeat.interval !== 'number');
+        typeof heartbeat.enabled !== 'boolean' || (heartbeat.interval && typeof heartbeat.interval !=='number');
       ) {
         return false;
       }
@@ -322,8 +319,7 @@ export class WebSocketClientFactory
    */
   async createLoadBalanced(
     configs: WebSocketClientConfig[],
-    strategy: 'round-robin | random' | 'least-connections = round-robin'
-  ): Promise<LoadBalancedWebSocketClient> {
+    strategy: 'round-robin | random | least-connections = round-robin'): Promise<LoadBalancedWebSocketClient> {
     const clients = await this.createMultiple(configs);
     return new LoadBalancedWebSocketClient(clients, strategy);
   }
@@ -428,7 +424,7 @@ export class WebSocketClientFactory
   private generateClientName(config: WebSocketClientConfig): string {
     const url = new URL(config?.url);
     const host = url.hostname;
-    const port = url.port || (url.protocol === 'wss: ? 443' : '80');
+    const port = url.port || (url.protocol ==='wss: ? 443' : '80');
     const timestamp = Date.now();
 
     return `ws-${host}-${port}-${timestamp}`;
@@ -446,7 +442,7 @@ export class LoadBalancedWebSocketClient implements Client {
 
   constructor(
     private clients: Client[],
-    private strategy: 'round-robin | random' | 'least-connections'
+    private strategy: 'round-robin | random | least-connections'
   ) {
     if (clients.length === 0) {
       throw new Error('At least one client is required for load balancing');
@@ -593,7 +589,7 @@ export class LoadBalancedWebSocketClient implements Client {
   }
 
   on(
-    event: 'connect | disconnect' | 'error | retry',
+    event: 'connect | disconnect | error | retry',
     handler: (args: any[]) => void
   ): void {
     this.clients.forEach((client) => client.on(event, handler));
@@ -708,7 +704,7 @@ export class FailoverWebSocketClient implements Client {
   }
 
   on(
-    event: 'connect | disconnect' | 'error | retry',
+    event: 'connect | disconnect | error | retry',
     handler: (args: any[]) => void
   ): void {
     this.currentClient.on(event, handler);

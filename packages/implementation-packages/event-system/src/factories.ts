@@ -10,16 +10,16 @@
  */
 
 import type { Config, Logger, RetryOptions } from '@claude-zen/foundation';
-import { 
-  inject, 
-  injectable, 
+import {
+  inject,
+  injectable,
   TOKENS,
   withRetry,
   withTimeout,
   safeAsync,
   EnhancedError,
   Storage,
-  getDatabaseAccess
+  getDatabaseAccess,
 } from '@claude-zen/foundation';
 import type {
   EventManagerConfig,
@@ -35,17 +35,21 @@ import type {
 // Import event manager types for use in this file
 import type {
   CommunicationEventManager,
-  CoordinationEventManager, 
+  CoordinationEventManager,
   DatabaseEventManager,
   InterfaceEventManager,
   MemoryEventManager,
   MonitoringEventManager,
-  NeuralEventManager, 
+  NeuralEventManager,
   SystemEventManager,
-  WorkflowEventManager
+  WorkflowEventManager,
 } from './event-manager-types';
 
-import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces';
+import {
+  EventManagerPresets,
+  EventManagerTypes,
+  EventTypeGuards,
+} from './core/interfaces';
 import type {
   CommunicationEvent,
   CoordinationEvent,
@@ -96,9 +100,7 @@ export interface EventManagerFactoryConfig {
   reuseExisting?: boolean;
 
   /** Custom event manager implementation class to use */
-  customImplementation?: new (
-    ...args: unknown[]
-  ) => EventManager;
+  customImplementation?: new (...args: unknown[]) => EventManager;
 
   /** Preset configuration to apply (REAL_TIME, BATCH_PROCESSING, etc.) */
   preset?: keyof typeof EventManagerPresets;
@@ -138,12 +140,12 @@ export interface EventManagerTransaction {
   id: string;
   operations: Array<{
     manager: string;
-    operation: 'emit' | 'subscribe' | 'unsubscribe';
+    operation: 'emit | subscribe' | 'unsubscribe';
     data: unknown;
-  result?: unknown;
+    result?: unknown;
     error?: Error;
   }>;
-  status: 'pending' | 'executing' | 'completed' | 'failed';
+  status: 'pending | executing' | 'completed''' | '''failed';
   startTime: Date;
   endTime?: Date;
   error?: Error;
@@ -215,7 +217,14 @@ export class UELFactory {
   private factoryCache = new Map<EventManagerType, EventManagerFactory>();
   private storage = Storage;
   private database = getDatabaseAccess();
-  private managerInstances = new Map<string, { manager: EventManager; type: EventManagerType; config: EventManagerConfig }>();
+  private managerInstances = new Map<
+    string,
+    {
+      manager: EventManager;
+      type: EventManagerType;
+      config: EventManagerConfig;
+    }
+  >();
   private managerRegistry: EventManagerRegistry = {
     registerFactory: () => {},
     getFactory: () => undefined,
@@ -231,9 +240,15 @@ export class UELFactory {
     getEventManagersByType: () => [],
     broadcast: async () => {},
     broadcastToType: async () => {},
-    getGlobalMetrics: async () => ({ totalManagers: 0, totalEvents: 0, totalSubscriptions: 0, averageLatency: 0, errorRate: 0 }),
+    getGlobalMetrics: async () => ({
+      totalManagers: 0,
+      totalEvents: 0,
+      totalSubscriptions: 0,
+      averageLatency: 0,
+      errorRate: 0,
+    }),
     healthCheckAll: async () => new Map<string, EventManagerStatus>(),
-    shutdownAll: async () => {}
+    shutdownAll: async () => {},
   };
   private transactionLog = new Map<string, EventManagerTransaction>();
 
@@ -271,7 +286,13 @@ export class UELFactory {
   async createEventManager<T extends EventManagerType>(
     factoryConfig: EventManagerFactoryConfig & { managerType: T }
   ): Promise<EventManagerTypeMap<T>> {
-    const { managerType, name, config, reuseExisting = true, preset } = factoryConfig;
+    const {
+      managerType,
+      name,
+      config,
+      reuseExisting = true,
+      preset,
+    } = factoryConfig;
 
     const cacheKey = this.generateCacheKey(managerType, name);
 
@@ -292,7 +313,12 @@ export class UELFactory {
       const factory = await this.getOrCreateFactory(managerType);
 
       // Merge with default configuration and preset
-      const mergedConfig = this.mergeWithDefaults(managerType, name, config, preset);
+      const mergedConfig = this.mergeWithDefaults(
+        managerType,
+        name,
+        config,
+        preset
+      );
 
       // Create event manager instance
       const manager = await factory.create(mergedConfig);
@@ -304,15 +330,12 @@ export class UELFactory {
       this._logger.info(`Successfully created event manager: ${managerId}`);
       return manager as EventManagerTypeMap<T>;
     } catch (error) {
-      const enhancedError = new EnhancedError(
-        'Event manager creation failed',
-        { 
-          managerType, 
-          name, 
-          originalError: error,
-          context: 'UELFactory.createEventManager'
-        } as Record<string, unknown>
-      );
+      const enhancedError = new EnhancedError('Event manager creation failed', {
+        managerType,
+        name,
+        originalError: error,
+        context: 'UELFactory.createEventManager',
+      } as Record<string, unknown>);
       this._logger.error('Failed to create event manager:', enhancedError);
       throw enhancedError;
     }
@@ -331,8 +354,8 @@ export class UELFactory {
     return (await this.createEventManager({
       managerType: EventManagerTypes.SYSTEM,
       name,
-      config: config || undefined,
-      preset: 'REAL_TIME',
+      config: config'' | '''' | ''undefined,
+      preset:'REAL_TIME',
     })) as SystemEventManager;
   }
 
@@ -346,12 +369,12 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<CoordinationEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.COORDINATION,
       name,
-      config: config || undefined,
-      preset: 'HIGH_THROUGHPUT',
-    }));
+      config: config'' | '''' | ''undefined,
+      preset:'HIGH_THROUGHPUT',
+    });
   }
 
   /**
@@ -364,12 +387,12 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<CommunicationEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.COMMUNICATION,
       name,
-      config: config || undefined,
-      preset: 'REAL_TIME',
-    }));
+      config: config'' | '''' | ''undefined,
+      preset:'REAL_TIME',
+    });
   }
 
   /**
@@ -382,12 +405,12 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<MonitoringEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.MONITORING,
       name,
-      config: config || undefined,
-      preset: 'BATCH_PROCESSING',
-    }));
+      config: config'' | '''' | ''undefined,
+      preset:'BATCH_PROCESSING',
+    });
   }
 
   /**
@@ -400,12 +423,12 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<InterfaceEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.INTERFACE,
       name,
-      config: config || undefined,
-      preset: 'REAL_TIME',
-    }));
+      config: config'' | '''' | ''undefined,
+      preset:'REAL_TIME',
+    });
   }
 
   /**
@@ -418,12 +441,12 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<NeuralEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.NEURAL,
       name,
-      config: config || undefined,
-      preset: 'RELIABLE',
-    }));
+      config: config'' | '''' | ''undefined,
+      preset:'RELIABLE',
+    });
   }
 
   /**
@@ -436,12 +459,12 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<DatabaseEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.DATABASE,
       name,
-      config: config || undefined,
-      preset: 'BATCH_PROCESSING',
-    }));
+      config: config'' | '''' | ''undefined,
+      preset:'BATCH_PROCESSING',
+    });
   }
 
   /**
@@ -454,11 +477,11 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<MemoryEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.MEMORY,
       name,
-      config: config || undefined,
-    }));
+      config: config'' | '''' | ''undefined,
+    });
   }
 
   /**
@@ -471,12 +494,12 @@ export class UELFactory {
     name: string,
     config?: Partial<EventManagerConfig>
   ): Promise<WorkflowEventManager> {
-    return (await this.createEventManager({
+    return await this.createEventManager({
       managerType: EventManagerTypes.WORKFLOW,
       name,
-      config: config || undefined,
-      preset: 'RELIABLE',
-    }));
+      config: config'' | '''' | ''undefined,
+      preset:'RELIABLE',
+    });
   }
 
   /**
@@ -484,8 +507,8 @@ export class UELFactory {
    *
    * @param managerId
    */
-  getEventManager(managerId: string): EventManager | null {
-    return this.managerRegistry.findEventManager?.(managerId) || null;
+  getEventManager(managerId: string): EventManager'' | ''null {
+    return this.managerRegistry.findEventManager?.(managerId)'' | '''' | ''null;
   }
 
   /**
@@ -509,13 +532,15 @@ export class UELFactory {
         results.push({
           name: entry.manager.name,
           type: entry.manager.type,
-          status: 'unhealthy',
+          status:'unhealthy',
           lastCheck: new Date(),
           subscriptions: 0,
           queueSize: 0,
           errorRate: 1.0,
           uptime: 0,
-          metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+          metadata: {
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
         });
       }
     }
@@ -559,7 +584,7 @@ export class UELFactory {
   async executeTransaction(
     operations: Array<{
       manager: string;
-      operation: 'emit' | 'subscribe' | 'unsubscribe';
+      operation: 'emit | subscribe' | 'unsubscribe';
       data: unknown;
     }>
   ): Promise<EventManagerTransaction> {
@@ -584,9 +609,16 @@ export class UELFactory {
 
           switch (op.operation) {
             case 'emit':
-              return await manager.emit((op.data as any).event, (op.data as any).options);
+              return await manager.emit(
+                (op.data as any).event,
+                (op.data as any).options
+              );
             case 'subscribe':
-              return manager.subscribe((op.data as any).eventTypes, (op.data as any).listener, (op.data as any).options);
+              return manager.subscribe(
+                (op.data as any).eventTypes,
+                (op.data as any).listener,
+                (op.data as any).options
+              );
             case 'unsubscribe':
               return manager.unsubscribe((op.data as any).subscriptionId);
             default:
@@ -624,14 +656,16 @@ export class UELFactory {
   async shutdownAll(): Promise<void> {
     this._logger.info('Shutting down all event managers');
 
-    const shutdownPromises = Array.from(this.managerInstances.values()).map(async (entry) => {
-      try {
-        await entry.manager.stop();
-        await entry.manager.destroy();
-      } catch (error) {
-        this._logger.warn(`Failed to shutdown event manager: ${error}`);
+    const shutdownPromises = Array.from(this.managerInstances.values()).map(
+      async (entry) => {
+        try {
+          await entry.manager.stop();
+          await entry.manager.destroy();
+        } catch (error) {
+          this._logger.warn(`Failed to shutdown event manager: ${error}`);
+        }
       }
-    });
+    );
 
     await Promise.allSettled(shutdownPromises);
 
@@ -647,9 +681,15 @@ export class UELFactory {
       getEventManagersByType: () => [],
       broadcast: async () => {},
       broadcastToType: async () => {},
-      getGlobalMetrics: async () => ({ totalManagers: 0, totalEvents: 0, totalSubscriptions: 0, averageLatency: 0, errorRate: 0 }),
+      getGlobalMetrics: async () => ({
+        totalManagers: 0,
+        totalEvents: 0,
+        totalSubscriptions: 0,
+        averageLatency: 0,
+        errorRate: 0,
+      }),
       healthCheckAll: async () => new Map<string, EventManagerStatus>(),
-      shutdownAll: async () => {}
+      shutdownAll: async () => {},
     };
     this.factoryCache.clear();
   }
@@ -707,7 +747,9 @@ export class UELFactory {
     // Real implementation would load specific factory classes
   }
 
-  private async getOrCreateFactory(managerType: EventManagerType): Promise<EventManagerFactory> {
+  private async getOrCreateFactory(
+    managerType: EventManagerType
+  ): Promise<EventManagerFactory> {
     if (this.factoryCache.has(managerType)) {
       return this.factoryCache.get(managerType)!;
     }
@@ -717,7 +759,9 @@ export class UELFactory {
 
     switch (managerType) {
       case EventManagerTypes.SYSTEM: {
-        const { SystemEventManagerFactory } = await import('./adapters/system-event-factory');
+        const { SystemEventManagerFactory } = await import(
+          './adapters/system-event-factory'
+        );
         FactoryClass = SystemEventManagerFactory as any;
         break;
       }
@@ -731,54 +775,63 @@ export class UELFactory {
       }
 
       case EventManagerTypes.COMMUNICATION: {
-        const { CommunicationEventFactory: CommunicationEventManagerFactory } = await import(
-          './adapters/communication-event-factory'
-        );
+        const { CommunicationEventFactory: CommunicationEventManagerFactory } =
+          await import('./adapters/communication-event-factory');
         FactoryClass = CommunicationEventManagerFactory;
         break;
       }
 
       case EventManagerTypes.MONITORING: {
-        const { MonitoringEventFactory: MonitoringEventManagerFactory } = await import(
-          './adapters/monitoring-event-factory'
-        );
+        const { MonitoringEventFactory: MonitoringEventManagerFactory } =
+          await import('./adapters/monitoring-event-factory');
         FactoryClass = MonitoringEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.INTERFACE: {
-        const { InterfaceEventManagerFactory } = await import('./adapters/interface-event-factory');
+        const { InterfaceEventManagerFactory } = await import(
+          './adapters/interface-event-factory'
+        );
         FactoryClass = InterfaceEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.NEURAL: {
-        const { NeuralEventManagerFactory } = await import('./adapters/neural-event-factory');
+        const { NeuralEventManagerFactory } = await import(
+          './adapters/neural-event-factory'
+        );
         FactoryClass = NeuralEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.DATABASE: {
-        const { DatabaseEventManagerFactory } = await import('./adapters/database-event-factory');
+        const { DatabaseEventManagerFactory } = await import(
+          './adapters/database-event-factory'
+        );
         FactoryClass = DatabaseEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.MEMORY: {
-        const { MemoryEventManagerFactory } = await import('./adapters/memory-event-factory');
+        const { MemoryEventManagerFactory } = await import(
+          './adapters/memory-event-factory'
+        );
         FactoryClass = MemoryEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.WORKFLOW: {
-        const { WorkflowEventManagerFactory } = await import('./adapters/workflow-event-factory');
+        const { WorkflowEventManagerFactory } = await import(
+          './adapters/workflow-event-factory'
+        );
         FactoryClass = WorkflowEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.CUSTOM: {
         // Custom event managers need to be registered manually
-        throw new Error('Custom event managers must be registered explicitly through the registry');
+        throw new Error(
+          'Custom event managers must be registered explicitly through the registry');
       }
 
       default: {
@@ -801,7 +854,7 @@ export class UELFactory {
       throw new Error(`Invalid event manager type: ${managerType}`);
     }
 
-    if (!name || typeof name !== 'string') {
+    if (!name'' | '''' | ''typeof name !=='string') {
       throw new Error(`Invalid event manager name: ${name}`);
     }
 
@@ -815,8 +868,7 @@ export class UELFactory {
     preset?: keyof typeof EventManagerPresets
   ): EventManagerConfig {
     const defaults =
-      (DefaultEventManagerConfigs as any)?.[managerType] ||
-      (DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
+      (DefaultEventManagerConfigs as any)?.[managerType]'' | '''' | ''(DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
     const presetConfig = preset ? EventManagerPresets[preset] : {};
 
     return {
@@ -839,7 +891,7 @@ export class UELFactory {
     this.managerInstances.set(managerId, {
       manager,
       type: config.type,
-      config
+      config,
     });
 
     return managerId;
@@ -855,7 +907,10 @@ export class UELFactory {
     }
   }
 
-  private generateCacheKey(managerType: EventManagerType, name: string): string {
+  private generateCacheKey(
+    managerType: EventManagerType,
+    name: string
+  ): string {
     return `${managerType}:${name}`;
   }
 
@@ -878,9 +933,7 @@ export class UELRegistry implements EventManagerRegistry {
   private factories = new Map<EventManagerType, EventManagerFactory>();
   private globalEventManagers = new Map<string, EventManager>();
 
-  constructor(
-    private _logger: Logger
-  ) {}
+  constructor(private _logger: Logger) {}
 
   registerFactory<T extends EventManagerConfig>(
     type: EventManagerType,
@@ -892,24 +945,26 @@ export class UELRegistry implements EventManagerRegistry {
 
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
-  ): EventManagerFactory<T> | undefined {
+  ): EventManagerFactory<T>'' | ''undefined {
     return this.factories.get(type) as EventManagerFactory<T>;
   }
 
   listFactoryTypes(): EventManagerType[] {
-    return Array.from(this.factories.keys());
+    return Array.from(this.factories.keys())();
   }
 
   getAllEventManagers(): Map<string, EventManager> {
     return new Map(this.globalEventManagers);
   }
 
-  findEventManager(name: string): EventManager | undefined {
+  findEventManager(name: string): EventManager'' | ''undefined {
     return this.globalEventManagers.get(name);
   }
 
   getEventManagersByType(type: EventManagerType): EventManager[] {
-    return Array.from(this.globalEventManagers.values()).filter((manager) => manager.type === type);
+    return Array.from(this.globalEventManagers.values()).filter(
+      (manager) => manager.type === type
+    );
   }
 
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
@@ -923,13 +978,15 @@ export class UELRegistry implements EventManagerRegistry {
         results?.set(name, {
           name: manager.name,
           type: manager.type,
-          status: 'unhealthy',
+          status:'unhealthy',
           lastCheck: new Date(),
           subscriptions: 0,
           queueSize: 0,
           errorRate: 1.0,
           uptime: 0,
-          metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+          metadata: {
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
         });
       }
     }
@@ -944,33 +1001,46 @@ export class UELRegistry implements EventManagerRegistry {
     averageLatency: number;
     errorRate: number;
   }> {
-    const managers = Array.from(this.globalEventManagers.values());
+    const managers = Array.from(this.globalEventManagers.values())();
 
     const metricsPromises = managers.map(async (manager) => {
       try {
         return await manager.getMetrics();
       } catch (error) {
-        this._logger.warn(`Failed to get metrics for manager ${manager.name}:`, error);
+        this._logger.warn(
+          `Failed to get metrics for manager ${manager.name}:`,
+          error
+        );
         return null;
       }
     });
 
     const allMetrics = (await Promise.allSettled(metricsPromises))
-      .filter((result) => result?.status === 'fulfilled' && result?.value !== null)
-      .map((result) => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
+      .filter(
+        (result) => result?.status === 'fulfilled' && result?.value !== null
+      )
+      .map(
+        (result) =>
+          (result as PromiseFulfilledResult<EventManagerMetrics>).value
+      );
 
-    const totalEvents = allMetrics.reduce((sum, metrics) => sum + metrics.eventsProcessed, 0);
+    const totalEvents = allMetrics.reduce(
+      (sum, metrics) => sum + metrics.eventsProcessed,
+      0
+    );
     const totalSubscriptions = allMetrics.reduce(
       (sum, metrics) => sum + metrics.subscriptionCount,
       0
     );
     const averageLatency =
       allMetrics.length > 0
-        ? allMetrics.reduce((sum, metrics) => sum + metrics.averageLatency, 0) / allMetrics.length
+        ? allMetrics.reduce((sum, metrics) => sum + metrics.averageLatency, 0) /
+          allMetrics.length
         : 0;
     const errorRate =
       totalEvents > 0
-        ? allMetrics.reduce((sum, metrics) => sum + metrics.eventsFailed, 0) / totalEvents
+        ? allMetrics.reduce((sum, metrics) => sum + metrics.eventsFailed, 0) /
+          totalEvents
         : 0;
 
     return {
@@ -983,8 +1053,8 @@ export class UELRegistry implements EventManagerRegistry {
   }
 
   async shutdownAll(): Promise<void> {
-    const shutdownPromises = Array.from(this.globalEventManagers.values()).map((manager) =>
-      manager.destroy()
+    const shutdownPromises = Array.from(this.globalEventManagers.values()).map(
+      (manager) => manager.destroy()
     );
 
     await Promise.allSettled(shutdownPromises);
@@ -994,14 +1064,17 @@ export class UELRegistry implements EventManagerRegistry {
   }
 
   async broadcast<T extends SystemEvent>(event: T): Promise<void> {
-    const broadcastPromises = Array.from(this.globalEventManagers.values()).map((manager) =>
-      manager.emit(event)
+    const broadcastPromises = Array.from(this.globalEventManagers.values()).map(
+      (manager) => manager.emit(event)
     );
 
     await Promise.allSettled(broadcastPromises);
   }
 
-  async broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void> {
+  async broadcastToType<T extends SystemEvent>(
+    type: EventManagerType,
+    event: T
+  ): Promise<void> {
     const managers = this.getEventManagersByType(type);
     const broadcastPromises = managers.map((manager) => manager.emit(event));
 
@@ -1047,16 +1120,19 @@ export async function createEventManager<T extends EventManagerType>(
     create: () => ({}),
   });
 
-  // Register UELFactory  
+  // Register UELFactory
   const uelToken = TOKENS.Logger; // Reuse existing token for simplicity
   container.register(uelToken, {
     type: 'singleton' as const,
     create: (container: any) =>
-      new UELFactory(container.resolve(TOKENS.Logger), container.resolve(TOKENS.Config) as Config),
+      new UELFactory(
+        container.resolve(TOKENS.Logger),
+        container.resolve(TOKENS.Config) as Config
+      ),
   });
 
   const factory = new UELFactory(
-    container.resolve(TOKENS.Logger), 
+    container.resolve(TOKENS.Logger),
     container.resolve(TOKENS.Config) as Config
   );
 
@@ -1078,7 +1154,7 @@ export async function createSystemEventBus(
   name: string = 'default-system',
   config?: Partial<EventManagerConfig>
 ): Promise<SystemEventManager> {
-  return (await createEventManager(EventManagerTypes.SYSTEM, name, config));
+  return await createEventManager(EventManagerTypes.SYSTEM, name, config);
 }
 
 /**
@@ -1092,11 +1168,7 @@ export async function createCoordinationEventBus(
   name: string = 'default-coordination',
   config?: Partial<EventManagerConfig>
 ): Promise<CoordinationEventManager> {
-  return (await createEventManager(
-    EventManagerTypes.COORDINATION,
-    name,
-    config
-  ));
+  return await createEventManager(EventManagerTypes.COORDINATION, name, config);
 }
 
 /**
@@ -1110,11 +1182,11 @@ export async function createCommunicationEventBus(
   name: string = 'default-communication',
   config?: Partial<EventManagerConfig>
 ): Promise<CommunicationEventManager> {
-  return (await createEventManager(
+  return await createEventManager(
     EventManagerTypes.COMMUNICATION,
     name,
     config
-  ));
+  );
 }
 
 /**
@@ -1128,11 +1200,7 @@ export async function createMonitoringEventBus(
   name: string = 'default-monitoring',
   config?: Partial<EventManagerConfig>
 ): Promise<MonitoringEventManager> {
-  return (await createEventManager(
-    EventManagerTypes.MONITORING,
-    name,
-    config
-  ));
+  return await createEventManager(EventManagerTypes.MONITORING, name, config);
 }
 
 // Add missing exports for index.ts compatibility

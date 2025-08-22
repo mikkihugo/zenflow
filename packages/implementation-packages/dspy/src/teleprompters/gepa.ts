@@ -1,11 +1,11 @@
 /**
  * @fileoverview GEPA (Reflective Prompt Evolution) Teleprompter Implementation
- * 
+ *
  * GEPA is an evolutionary optimizer that uses reflection to evolve text components
  * of complex systems. GEPA is proposed in the paper "GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning".
- * 
+ *
  * This implementation provides 100% API compatibility with Stanford DSPy GEPA.
- * 
+ *
  * Key Features:
  * - Reflective prompt evolution with LLM feedback
  * - Genetic algorithm with Pareto optimization
@@ -14,11 +14,11 @@
  * - Comprehensive trace capture and feedback extraction
  * - Batch inference-time search capabilities
  * - Full integration with DSPy modules and predictors
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  * @since 1.0.0-alpha.47
- * 
+ *
  * @see {@link https://arxiv.org/abs/2507.19457} GEPA: Reflective Prompt Evolution Paper
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
  */
@@ -35,9 +35,9 @@ import { type LMInterface } from '../interfaces/lm';
  * Matches Stanford DSPy GEPA implementation exactly
  */
 export const AUTO_RUN_SETTINGS = {
-  "light": { "n": 6 },
-  "medium": { "n": 12 },
-  "heavy": { "n": 18 },
+  light: { n: 6 },
+  medium: { n: 12 },
+  heavy: { n: 18 },
 } as const;
 
 /**
@@ -47,10 +47,10 @@ export interface GEPAFeedbackMetric {
   (
     gold: Example,
     pred: Prediction,
-    trace?: DSPyTrace | null,
-    pred_name?: string | null,
-    pred_trace?: DSPyTrace | null,
-  ): number | ScoreWithFeedback;
+    trace?: DSPyTrace'' | ''null,
+    pred_name?: string'' | ''null,
+    pred_trace?: DSPyTrace'' | ''null
+  ): number'' | ''ScoreWithFeedback;
 }
 
 /**
@@ -73,55 +73,58 @@ export interface ScoreWithFeedback {
 export class DspyGEPAResult {
   /** Proposed candidates (component_name -> component_text) */
   public readonly candidates: DSPyModule[];
-  
+
   /** Lineage info; for each candidate i, parents[i] is a list of parent indices or None */
-  public readonly parents: Array<Array<number | null>>;
-  
+  public readonly parents: Array<Array<number'' | ''null>>;
+
   /** Per-candidate aggregate score on the validation set (higher is better) */
   public readonly val_aggregate_scores: number[];
-  
+
   /** Per-candidate per-instance scores on the validation set */
   public readonly val_subscores: number[][];
-  
+
   /** For each val instance t, a set of candidate indices achieving the best score on t */
   public readonly per_val_instance_best_candidates: Set<number>[];
-  
+
   /** Budget consumed up to the discovery of each candidate */
   public readonly discovery_eval_counts: number[];
 
   /** Best outputs on validation set (optional) */
-  public readonly best_outputs_valset?: Array<Array<[number, Prediction[]]>> | null;
+  public readonly best_outputs_valset?: Array<
+    Array<[number, Prediction[]]>
+  >'' | ''null;
 
   /** Total number of metric calls made across the run */
-  public readonly total_metric_calls?: number | null;
-  
+  public readonly total_metric_calls?: number'' | ''null;
+
   /** Number of full validation evaluations performed */
-  public readonly num_full_val_evals?: number | null;
-  
+  public readonly num_full_val_evals?: number'' | ''null;
+
   /** Where artifacts were written (if any) */
-  public readonly log_dir?: string | null;
-  
+  public readonly log_dir?: string'' | ''null;
+
   /** RNG seed for reproducibility (if known) */
-  public readonly seed?: number | null;
+  public readonly seed?: number'' | ''null;
 
   constructor(data: {
     candidates: DSPyModule[];
-    parents: Array<Array<number | null>>;
+    parents: Array<Array<number'' | ''null>>;
     val_aggregate_scores: number[];
     val_subscores: number[][];
     per_val_instance_best_candidates: Set<number>[];
     discovery_eval_counts: number[];
-    best_outputs_valset?: Array<Array<[number, Prediction[]]>> | null;
-    total_metric_calls?: number | null;
-    num_full_val_evals?: number | null;
-    log_dir?: string | null;
-    seed?: number | null;
+    best_outputs_valset?: Array<Array<[number, Prediction[]]>>'' | ''null;
+    total_metric_calls?: number'' | ''null;
+    num_full_val_evals?: number'' | ''null;
+    log_dir?: string'' | ''null;
+    seed?: number'' | ''null;
   }) {
     this.candidates = data.candidates;
     this.parents = data.parents;
     this.val_aggregate_scores = data.val_aggregate_scores;
     this.val_subscores = data.val_subscores;
-    this.per_val_instance_best_candidates = data.per_val_instance_best_candidates;
+    this.per_val_instance_best_candidates =
+      data.per_val_instance_best_candidates;
     this.discovery_eval_counts = data.discovery_eval_counts;
     this.best_outputs_valset = data.best_outputs_valset;
     this.total_metric_calls = data.total_metric_calls;
@@ -133,8 +136,10 @@ export class DspyGEPAResult {
   /** Candidate index with the highest val_aggregate_scores */
   get best_idx(): number {
     const scores = this.val_aggregate_scores;
-    return scores.reduce((maxIdx, score, idx) => 
-      score > scores[maxIdx] ? idx : maxIdx, 0);
+    return scores.reduce(
+      (maxIdx, score, idx) => (score > scores[maxIdx] ? idx : maxIdx),
+      0
+    );
   }
 
   /** The program text mapping for best_idx */
@@ -144,15 +149,17 @@ export class DspyGEPAResult {
 
   /** Highest score achieved per validation task */
   get highest_score_achieved_per_val_task(): number[] {
-    return this.per_val_instance_best_candidates.map((bestCandidates, valIdx) => {
-      const firstBestCandidate = Array.from(bestCandidates)[0];
-      return this.val_subscores[firstBestCandidate][valIdx];
-    });
+    return this.per_val_instance_best_candidates.map(
+      (bestCandidates, valIdx) => {
+        const firstBestCandidate = Array.from(bestCandidates)[0];
+        return this.val_subscores[firstBestCandidate][valIdx];
+      }
+    );
   }
 
   /** Convert to dictionary representation */
   to_dict(): Record<string, any> {
-    const cands = this.candidates.map(cand => {
+    const cands = this.candidates.map((cand) => {
       const result: Record<string, any> = {};
       const predictors = cand.predictors();
       for (const pred of predictors) {
@@ -169,7 +176,8 @@ export class DspyGEPAResult {
       val_aggregate_scores: this.val_aggregate_scores,
       best_outputs_valset: this.best_outputs_valset,
       val_subscores: this.val_subscores,
-      per_val_instance_best_candidates: this.per_val_instance_best_candidates.map(s => Array.from(s)),
+      per_val_instance_best_candidates:
+        this.per_val_instance_best_candidates.map((s) => Array.from(s)),
       discovery_eval_counts: this.discovery_eval_counts,
       total_metric_calls: this.total_metric_calls,
       num_full_val_evals: this.num_full_val_evals,
@@ -182,11 +190,14 @@ export class DspyGEPAResult {
   /** Create from GEPA result with adapter */
   static from_gepa_result(gepa_result: any, adapter: any): DspyGEPAResult {
     return new DspyGEPAResult({
-      candidates: gepa_result.candidates.map((c: any) => adapter.build_program(c)),
+      candidates: gepa_result.candidates.map((c: any) =>
+        adapter.build_program(c)
+      ),
       parents: gepa_result.parents,
       val_aggregate_scores: gepa_result.val_aggregate_scores,
       val_subscores: gepa_result.val_subscores,
-      per_val_instance_best_candidates: gepa_result.per_val_instance_best_candidates,
+      per_val_instance_best_candidates:
+        gepa_result.per_val_instance_best_candidates,
       discovery_eval_counts: gepa_result.discovery_eval_counts,
       best_outputs_valset: gepa_result.best_outputs_valset,
       total_metric_calls: gepa_result.total_metric_calls,
@@ -199,12 +210,12 @@ export class DspyGEPAResult {
 
 /**
  * GEPA Teleprompter with exact Stanford DSPy API compatibility
- * 
+ *
  * GEPA is an evolutionary optimizer that uses reflection to evolve text components
  * of complex systems. GEPA captures full traces of the DSPy module's execution,
  * identifies parts of the trace corresponding to specific predictors, and reflects
  * on the behavior to propose new instructions.
- * 
+ *
  * @example
  * ```typescript
  * // Basic GEPA optimization with auto mode
@@ -212,11 +223,11 @@ export class DspyGEPAResult {
  *   metric: (gold, pred) => gold.answer === pred.answer ? 1 : 0,
  *   auto: "light"  // Quick evolutionary optimization
  * });
- * const optimized = await gepa.compile(studentProgram, { 
+ * const optimized = await gepa.compile(studentProgram, {
  *   trainset: trainingData,
- *   valset: validationData 
+ *   valset: validationData
  * });
- * 
+ *
  * // Advanced GEPA with reflection and feedback
  * const advancedGepa = new GEPA({
  *   metric: (gold, pred, trace) => {
@@ -232,13 +243,13 @@ export class DspyGEPAResult {
  *   reflection_minibatch_size: 10,
  *   track_stats: true
  * });
- * 
+ *
  * const result = await advancedGepa.compile(complexProgram, {
  *   trainset: largeTrainingSet,
  *   valset: validationSet,
  *   valset_idx: [0, 5, 10, 15]  // Select specific validation indices
  * });
- * 
+ *
  * // Production GEPA with comprehensive logging
  * const productionGepa = new GEPA({
  *   metric: productionMetric,
@@ -255,13 +266,13 @@ export class DspyGEPAResult {
  *   use_wandb: true,             // Integration with Weights & Biases
  *   wandb_api_key: process.env.WANDB_API_KEY
  * });
- * 
+ *
  * const bestProgram = await productionGepa.compile(deploymentProgram, {
  *   trainset: productionTraining,
  *   valset: productionValidation,
  *   requires_permission_to_run: false
  * });
- * 
+ *
  * // Custom budget control (expert usage)
  * const customBudgetGepa = new GEPA({
  *   metric: customMetric,
@@ -270,17 +281,17 @@ export class DspyGEPAResult {
  *   reflection_minibatch_size: 5,
  *   add_format_failure_as_feedback: true  // Include format errors in feedback
  * });
- * 
+ *
  * const customResult = await customBudgetGepa.compile(program, {
  *   trainset: examples,
  *   valset: validation
  * });
- * 
+ *
  * // Access detailed optimization results
  * console.log(`Best score: ${customResult.val_aggregate_scores[customResult.best_idx]}`);
  * console.log(`Total evaluations: ${customResult.total_metric_calls}`);
  * console.log(`Discovery budget: ${customResult.discovery_eval_counts}`);
- * 
+ *
  * // Get per-instance best candidates
  * const perInstanceBest = customResult.per_val_instance_best_candidates;
  * console.log(`Best candidates per validation instance:`, perInstanceBest);
@@ -288,91 +299,91 @@ export class DspyGEPAResult {
  */
 export class GEPA extends Teleprompter {
   private metric_fn: GEPAFeedbackMetric;
-  
+
   // Budget configuration
-  private auto?: "light" | "medium" | "heavy" | null;
-  private max_full_evals?: number | null;
-  private max_metric_calls?: number | null;
-  
+  private auto?: 'light | medium' | 'heavy''' | ''null;
+  private max_full_evals?: number'' | ''null;
+  private max_metric_calls?: number'' | ''null;
+
   // Reflection configuration
   private reflection_minibatch_size: number;
-  private candidate_selection_strategy: "pareto" | "current_best";
+  private candidate_selection_strategy:'pareto''' | '''current_best';
   private reflection_lm: (input: string) => string;
   private skip_perfect_score: boolean;
   private add_format_failure_as_feedback: boolean;
-  
+
   // Merge configuration
   private use_merge: boolean;
-  private max_merge_invocations?: number | null;
-  
+  private max_merge_invocations?: number'' | ''null;
+
   // Evaluation configuration
-  private num_threads?: number | null;
+  private num_threads?: number'' | ''null;
   private failure_score: number;
   private perfect_score: number;
-  
+
   // Logging configuration
-  private log_dir?: string | null;
+  private log_dir?: string'' | ''null;
   private track_stats: boolean;
   private use_wandb: boolean;
-  private wandb_api_key?: string | null;
-  private wandb_init_kwargs?: Record<string, any> | null;
+  private wandb_api_key?: string'' | ''null;
+  private wandb_init_kwargs?: Record<string, any>'' | ''null;
   private track_best_outputs: boolean;
-  
+
   // Reproducibility
-  private seed?: number | null;
+  private seed?: number'' | ''null;
 
   constructor(config: {
     metric: GEPAFeedbackMetric;
-    
+
     // Budget configuration (exactly one required)
-    auto?: "light" | "medium" | "heavy" | null;
-    max_full_evals?: number | null;
-    max_metric_calls?: number | null;
-    
+    auto?:'light | medium' | 'heavy''' | ''null;
+    max_full_evals?: number'' | ''null;
+    max_metric_calls?: number'' | ''null;
+
     // Reflection configuration
     reflection_minibatch_size?: number;
-    candidate_selection_strategy?: "pareto" | "current_best";
-    reflection_lm?: LMInterface | null;
+    candidate_selection_strategy?:'pareto''' | '''current_best';
+    reflection_lm?: LMInterface'' | ''null;
     skip_perfect_score?: boolean;
     add_format_failure_as_feedback?: boolean;
-    
+
     // Merge configuration
     use_merge?: boolean;
-    max_merge_invocations?: number | null;
-    
+    max_merge_invocations?: number'' | ''null;
+
     // Evaluation configuration
-    num_threads?: number | null;
+    num_threads?: number'' | ''null;
     failure_score?: number;
     perfect_score?: number;
-    
+
     // Logging configuration
-    log_dir?: string | null;
+    log_dir?: string'' | ''null;
     track_stats?: boolean;
     use_wandb?: boolean;
-    wandb_api_key?: string | null;
-    wandb_init_kwargs?: Record<string, any> | null;
+    wandb_api_key?: string'' | ''null;
+    wandb_init_kwargs?: Record<string, any>'' | ''null;
     track_best_outputs?: boolean;
-    
+
     // Reproducibility
-    seed?: number | null;
+    seed?: number'' | ''null;
   }) {
     super();
-    
+
     this.metric_fn = config.metric;
 
     // Budget configuration validation
     const budgetOptions = [
       config.max_metric_calls !== undefined ? 1 : 0,
       config.max_full_evals !== undefined ? 1 : 0,
-      config.auto !== undefined ? 1 : 0
+      config.auto !== undefined ? 1 : 0,
     ].reduce((a, b) => a + b, 0);
 
     if (budgetOptions !== 1) {
       throw new Error(
         `Exactly one of max_metric_calls, max_full_evals, auto must be set. ` +
-        `You set max_metric_calls=${config.max_metric_calls}, ` +
-        `max_full_evals=${config.max_full_evals}, ` +
-        `auto=${config.auto}.`
+          `You set max_metric_calls=${config.max_metric_calls}, ` +
+          `max_full_evals=${config.max_full_evals}, ` +
+          `auto=${config.auto}.`
       );
     }
 
@@ -382,24 +393,26 @@ export class GEPA extends Teleprompter {
 
     // Reflection configuration
     this.reflection_minibatch_size = config.reflection_minibatch_size ?? 3;
-    this.candidate_selection_strategy = config.candidate_selection_strategy ?? "pareto";
-    
+    this.candidate_selection_strategy =
+      config.candidate_selection_strategy ??'pareto';
+
     if (!config.reflection_lm) {
       throw new Error(
-        "GEPA requires a reflection language model to be provided. " +
-        "Typically, you can use `new LM({ model: 'gpt-4', temperature: 1.0, max_tokens: 32000 })` " +
-        "to get a good reflection model. Reflection LM is used by GEPA to reflect on the behavior " +
-        "of the program and propose new instructions, and will benefit from a strong model."
+        'GEPA requires a reflection language model to be provided. ' +
+          "Typically, you can use `new LM({ model: 'gpt-4', temperature: 1.0, max_tokens: 32000 })` " +
+          'to get a good reflection model. Reflection LM is used by GEPA to reflect on the behavior ' +
+          'of the program and propose new instructions, and will benefit from a strong model.'
       );
     }
-    
+
     this.reflection_lm = (x: string) => {
       // Simplified reflection LM interface - in production would call actual LM
       return `Reflected analysis: ${x}`;
     };
-    
+
     this.skip_perfect_score = config.skip_perfect_score ?? true;
-    this.add_format_failure_as_feedback = config.add_format_failure_as_feedback ?? false;
+    this.add_format_failure_as_feedback =
+      config.add_format_failure_as_feedback ?? false;
 
     // Merge configuration
     this.use_merge = config.use_merge ?? true;
@@ -418,7 +431,8 @@ export class GEPA extends Teleprompter {
     this.wandb_init_kwargs = config.wandb_init_kwargs;
 
     if (config.track_best_outputs && !this.track_stats) {
-      throw new Error("track_stats must be True if track_best_outputs is True.");
+      throw new Error(
+        'track_stats must be True if track_best_outputs is True.');
     }
     this.track_best_outputs = config.track_best_outputs ?? false;
 
@@ -430,22 +444,23 @@ export class GEPA extends Teleprompter {
    * Auto budget calculation matching Stanford DSPy implementation
    */
   auto_budget(
-    num_preds: number, 
-    num_candidates: number, 
-    valset_size: number, 
-    minibatch_size: number = 35, 
+    num_preds: number,
+    num_candidates: number,
+    valset_size: number,
+    minibatch_size: number = 35,
     full_eval_steps: number = 5
   ): number {
     const num_trials = Math.max(
-      2 * (num_preds * 2) * Math.log2(num_candidates), 
+      2 * (num_preds * 2) * Math.log2(num_candidates),
       1.5 * num_candidates
     );
-    
-    if (num_trials < 0 || valset_size < 0 || minibatch_size < 0) {
-      throw new Error("num_trials, valset_size, and minibatch_size must be >= 0.");
+
+    if (num_trials < 0'' | '''' | ''valset_size < 0'' | '''' | ''minibatch_size < 0) {
+      throw new Error('num_trials, valset_size, and minibatch_size must be >= 0.'
+      );
     }
     if (full_eval_steps < 1) {
-      throw new Error("full_eval_steps must be >= 1.");
+      throw new Error('full_eval_steps must be >= 1.');
     }
 
     const V = valset_size;
@@ -467,7 +482,7 @@ export class GEPA extends Teleprompter {
 
     // Periodic full evals occur when trial_num % (m+1) == 0, where trial_num runs 2..N+1
     const periodic_fulls = Math.floor((N + 1) / m) + 1;
-    
+
     // If 1 <= N < m, the code triggers one final full eval at the end
     const extra_final = N < m ? 1 : 0;
 
@@ -482,59 +497,72 @@ export class GEPA extends Teleprompter {
     student: DSPyModule,
     config: {
       trainset: Example[];
-      teacher?: DSPyModule | null;
-      valset?: Example[] | null;
+      teacher?: DSPyModule'' | ''null;
+      valset?: Example[]'' | ''null;
       [key: string]: any;
     }
   ): Promise<DSPyModule> {
     const { trainset, teacher, valset } = config;
-    
-    if (!trainset || trainset.length === 0) {
-      throw new Error("Trainset must be provided and non-empty");
+
+    if (!trainset'' | '''' | ''trainset.length === 0) {
+      throw new Error('Trainset must be provided and non-empty');
     }
-    
+
     if (teacher !== null) {
-      throw new Error("Teacher is not supported in GEPA yet.");
+      throw new Error('Teacher is not supported in GEPA yet.');
     }
 
     // Calculate max metric calls based on budget configuration
     if (this.auto !== null && this.auto !== undefined) {
       this.max_metric_calls = this.auto_budget(
         student.predictors().length,
-        AUTO_RUN_SETTINGS[this.auto]["n"],
-        valset ? valset.length : trainset.length,
+        AUTO_RUN_SETTINGS[this.auto]['n'],
+        valset ? valset.length : trainset.length
       );
-    } else if (this.max_full_evals !== null && this.max_full_evals !== undefined) {
-      this.max_metric_calls = this.max_full_evals * (
-        trainset.length + (valset ? valset.length : 0)
+    } else if (
+      this.max_full_evals !== null &&
+      this.max_full_evals !== undefined
+    ) {
+      this.max_metric_calls =
+        this.max_full_evals * (trainset.length + (valset ? valset.length : 0));
+    } else if (
+      this.max_metric_calls === null'' | '''' | ''this.max_metric_calls === undefined
+    ) {
+      throw new Error('Either auto, max_full_evals, or max_metric_calls must be set.'
       );
-    } else if (this.max_metric_calls === null || this.max_metric_calls === undefined) {
-      throw new Error("Either auto, max_full_evals, or max_metric_calls must be set.");
     }
 
     console.log(
       `Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +
-      `This amounts to ${
-        (this.max_metric_calls / (valset === null ? trainset.length : trainset.length + valset.length)).toFixed(2)
-      } full evals on the ${valset === null ? 'train' : 'train+val'} set.`
+        `This amounts to ${(
+          this.max_metric_calls /
+          (valset === null ? trainset.length : trainset.length + valset.length)
+        ).toFixed(
+          2
+        )} full evals on the ${valset === null ? 'train' : 'train+val'} set.`
     );
 
-    const actualValset = valset || trainset;
+    const actualValset = valset'' | '''' | ''trainset;
     console.log(
       `Using ${actualValset.length} examples for tracking Pareto scores. ` +
-      `You can consider using a smaller sample of the valset to allow GEPA to explore ` +
-      `more diverse solutions within the same budget.`
+        `You can consider using a smaller sample of the valset to allow GEPA to explore ` +
+        `more diverse solutions within the same budget.`
     );
 
     // Initialize random number generator
-    const rng = this.createSeededRNG(this.seed || 0);
+    const rng = this.createSeededRNG(this.seed'' | '''' | ''0);
 
     // Create feedback function for each predictor
     const feedback_map: Record<string, any> = {};
     const predictors = student.predictors();
-    
-    for (const [pred_name, predictor] of Object.entries(student.named_predictors())) {
-      feedback_map[pred_name] = this.createFeedbackFunction(pred_name, predictor);
+
+    for (const [pred_name, predictor] of Object.entries(
+      student.named_predictors()
+    )) {
+      feedback_map[pred_name] = this.createFeedbackFunction(
+        pred_name,
+        predictor
+      );
     }
 
     // Build DSPy adapter for evaluation and coordination
@@ -543,7 +571,7 @@ export class GEPA extends Teleprompter {
     // Create base program from current instructions
     const base_program: Record<string, string> = {};
     for (const [name, pred] of student.namedPredictors()) {
-      base_program[name] = (pred as any).signature?.instruction || '';
+      base_program[name] = (pred as any).signature?.instruction'' | '''' | '''';
     }
 
     // Run GEPA optimization
@@ -552,28 +580,28 @@ export class GEPA extends Teleprompter {
       trainset,
       valset: actualValset,
       adapter,
-      
+
       // Reflection configuration
       reflection_lm: this.reflection_lm,
       candidate_selection_strategy: this.candidate_selection_strategy,
       skip_perfect_score: this.skip_perfect_score,
       reflection_minibatch_size: this.reflection_minibatch_size,
       perfect_score: this.perfect_score,
-      
+
       // Merge configuration
       use_merge: this.use_merge,
       max_merge_invocations: this.max_merge_invocations,
-      
+
       // Budget
       max_metric_calls: this.max_metric_calls!,
-      
+
       // Logging
       run_dir: this.log_dir,
       use_wandb: this.use_wandb,
       wandb_api_key: this.wandb_api_key,
       wandb_init_kwargs: this.wandb_init_kwargs,
       track_best_outputs: this.track_best_outputs,
-      
+
       // Reproducibility
       seed: this.seed,
     });
@@ -583,7 +611,10 @@ export class GEPA extends Teleprompter {
 
     // Add detailed results if tracking stats
     if (this.track_stats) {
-      const dspy_gepa_result = DspyGEPAResult.from_gepa_result(gepa_result, adapter);
+      const dspy_gepa_result = DspyGEPAResult.from_gepa_result(
+        gepa_result,
+        adapter
+      );
       (new_prog as any).detailed_results = dspy_gepa_result;
     }
 
@@ -599,19 +630,21 @@ export class GEPA extends Teleprompter {
       predictor_inputs: Record<string, any>,
       module_inputs: Example,
       module_outputs: Prediction,
-      captured_trace: DSPyTrace,
+      captured_trace: DSPyTrace
     ): ScoreWithFeedback => {
-      const trace_for_pred: DSPyTrace = [[predictor, predictor_inputs, predictor_output]];
-      
+      const trace_for_pred: DSPyTrace = [
+        [predictor, predictor_inputs, predictor_output],
+      ];
+
       const result = this.metric_fn(
         module_inputs,
         module_outputs,
         captured_trace,
         pred_name,
-        trace_for_pred,
+        trace_for_pred
       );
 
-      if (typeof result === 'object' && 'feedback' in result) {
+      if (typeof result === 'object' && 'feedback'in result) {
         if (!result.feedback) {
           result.feedback = `This trajectory got a score of ${result.score}.`;
         }
@@ -619,7 +652,7 @@ export class GEPA extends Teleprompter {
       } else {
         return {
           score: result,
-          feedback: `This trajectory got a score of ${result}.`
+          feedback: `This trajectory got a score of ${result}.`,
         };
       }
     };
@@ -628,24 +661,31 @@ export class GEPA extends Teleprompter {
   /**
    * Create DSPy adapter for evaluation coordination
    */
-  private createDspyAdapter(student: DSPyModule, feedback_map: Record<string, any>, rng: any): any {
+  private createDspyAdapter(
+    student: DSPyModule,
+    feedback_map: Record<string, any>,
+    rng: any
+  ): any {
     return {
       build_program: (candidate: Record<string, string>) => {
         const new_student = student.deepcopy();
         const predictors = new_student.predictors();
-        
+
         for (const [name, instruction] of Object.entries(candidate)) {
-          const predictor = predictors.find(p => p.id === name);
+          const predictor = predictors.find((p) => p.id === name);
           if (predictor) {
             predictor.updateInstructions(instruction);
           }
         }
-        
+
         new_student.compiled = true;
         return new_student;
       },
-      
-      evaluate: async (program: DSPyModule, examples: Example[]): Promise<any> => {
+
+      evaluate: async (
+        program: DSPyModule,
+        examples: Example[]
+      ): Promise<any> => {
         const results = [];
         for (const example of examples) {
           try {
@@ -653,12 +693,16 @@ export class GEPA extends Teleprompter {
             const score = this.metric_fn(example, { data: prediction });
             results.push({ example, prediction: { data: prediction }, score });
           } catch (error) {
-            results.push({ example, prediction: { data: null }, score: this.failure_score });
+            results.push({
+              example,
+              prediction: { data: null },
+              score: this.failure_score,
+            });
           }
         }
         return results;
       },
-      
+
       feedback_map,
       failure_score: this.failure_score,
       num_threads: this.num_threads,
@@ -681,18 +725,17 @@ export class GEPA extends Teleprompter {
     reflection_minibatch_size: number;
     perfect_score: number;
     use_merge: boolean;
-    max_merge_invocations?: number | null;
+    max_merge_invocations?: number'' | ''null;
     max_metric_calls: number;
-    run_dir?: string | null;
+    run_dir?: string'' | ''null;
     use_wandb: boolean;
-    wandb_api_key?: string | null;
-    wandb_init_kwargs?: Record<string, any> | null;
+    wandb_api_key?: string'' | ''null;
+    wandb_init_kwargs?: Record<string, any>'' | ''null;
     track_best_outputs: boolean;
-    seed?: number | null;
+    seed?: number'' | ''null;
   }): Promise<any> {
-    
-    console.log("🧬 Starting GEPA optimization...");
-    
+    console.log('🧬 Starting GEPA optimization...');
+
     // Initialize candidates with seed candidate
     const candidates = [config.seed_candidate];
     const parents = [[]];
@@ -700,31 +743,41 @@ export class GEPA extends Teleprompter {
     const val_subscores: number[][] = [];
     const per_val_instance_best_candidates: Set<number>[] = [];
     const discovery_eval_counts = [0];
-    
+
     // Evaluate seed candidate
     const seed_program = config.adapter.build_program(config.seed_candidate);
-    const seed_results = await config.adapter.evaluate(seed_program, config.valset);
-    
-    const seed_score = seed_results.reduce((sum: number, r: any) => sum + r.score, 0) / seed_results.length;
+    const seed_results = await config.adapter.evaluate(
+      seed_program,
+      config.valset
+    );
+
+    const seed_score =
+      seed_results.reduce((sum: number, r: any) => sum + r.score, 0) /
+      seed_results.length;
     val_aggregate_scores[0] = seed_score;
     val_subscores.push(seed_results.map((r: any) => r.score));
-    
+
     // Initialize per-instance best candidates
     for (let i = 0; i < config.valset.length; i++) {
       per_val_instance_best_candidates.push(new Set([0]));
     }
-    
+
     let metric_calls = config.valset.length;
     let generation = 0;
-    const max_generations = Math.floor(config.max_metric_calls / config.valset.length);
-    
+    const max_generations = Math.floor(
+      config.max_metric_calls / config.valset.length
+    );
+
     console.log(`📊 Running for up to ${max_generations} generations`);
-    
+
     // Evolution loop
-    while (metric_calls < config.max_metric_calls && generation < max_generations) {
+    while (
+      metric_calls < config.max_metric_calls &&
+      generation < max_generations
+    ) {
       generation++;
       console.log(`\n🔄 Generation ${generation}`);
-      
+
       // Generate new candidates through reflection
       const new_candidates = await this.generateCandidates(
         candidates,
@@ -734,26 +787,32 @@ export class GEPA extends Teleprompter {
         config.reflection_lm,
         config.reflection_minibatch_size
       );
-      
+
       // Evaluate new candidates
       for (const new_candidate of new_candidates) {
         if (metric_calls >= config.max_metric_calls) break;
-        
+
         const program = config.adapter.build_program(new_candidate);
         const results = await config.adapter.evaluate(program, config.valset);
-        
-        const score = results.reduce((sum: number, r: any) => sum + r.score, 0) / results.length;
+
+        const score =
+          results.reduce((sum: number, r: any) => sum + r.score, 0) /
+          results.length;
         const subscores = results.map((r: any) => r.score);
-        
+
         candidates.push(new_candidate);
         parents.push([candidates.length - 2]); // Parent is previous best
         val_aggregate_scores.push(score);
         val_subscores.push(subscores);
         discovery_eval_counts.push(metric_calls);
-        
+
         // Update per-instance best candidates
         for (let i = 0; i < config.valset.length; i++) {
-          const current_best_score = Math.max(...Array.from(per_val_instance_best_candidates[i]).map(idx => val_subscores[idx][i]));
+          const current_best_score = Math.max(
+            ...Array.from(per_val_instance_best_candidates[i]).map(
+              (idx) => val_subscores[idx][i]
+            )
+          );
           if (subscores[i] >= current_best_score) {
             if (subscores[i] > current_best_score) {
               per_val_instance_best_candidates[i].clear();
@@ -761,29 +820,36 @@ export class GEPA extends Teleprompter {
             per_val_instance_best_candidates[i].add(candidates.length - 1);
           }
         }
-        
+
         metric_calls += config.valset.length;
-        
-        console.log(`   Candidate ${candidates.length - 1}: ${score.toFixed(3)}`);
+
+        console.log(
+          `   Candidate ${candidates.length - 1}: ${score.toFixed(3)}`
+        );
       }
-      
+
       // Report best score
       const best_score = Math.max(...val_aggregate_scores);
       console.log(`✨ Best score so far: ${best_score.toFixed(3)}`);
-      
+
       // Early stopping if perfect score achieved
       if (best_score >= config.perfect_score && config.skip_perfect_score) {
-        console.log("🎯 Perfect score achieved, stopping early");
+        console.log('🎯 Perfect score achieved, stopping early');
         break;
       }
     }
-    
+
     // Find best candidate
-    const best_idx = val_aggregate_scores.reduce((maxIdx, score, idx) => 
-      score > val_aggregate_scores[maxIdx] ? idx : maxIdx, 0);
-    
-    console.log(`🏆 Optimization complete! Best candidate: ${best_idx} (score: ${val_aggregate_scores[best_idx].toFixed(3)})`);
-    
+    const best_idx = val_aggregate_scores.reduce(
+      (maxIdx, score, idx) =>
+        score > val_aggregate_scores[maxIdx] ? idx : maxIdx,
+      0
+    );
+
+    console.log(
+      `🏆 Optimization complete! Best candidate: ${best_idx} (score: ${val_aggregate_scores[best_idx].toFixed(3)})`
+    );
+
     return {
       candidates,
       parents,
@@ -811,28 +877,31 @@ export class GEPA extends Teleprompter {
     reflection_lm: (input: string) => string,
     minibatch_size: number
   ): Promise<Record<string, string>[]> {
-    
     const new_candidates: Record<string, string>[] = [];
-    
+
     // Get current best candidate
     const best_candidate = existing_candidates[existing_candidates.length - 1];
-    
+
     // Simple reflection-based mutation strategies
     const mutation_strategies = [
       'simplify',
-      'elaborate', 
+      'elaborate',
       'specialize',
       'generalize',
-      'debug'
+      'debug',
     ];
-    
+
     for (const strategy of mutation_strategies) {
-      const mutated = await this.mutateCandidate(best_candidate, strategy, reflection_lm);
+      const mutated = await this.mutateCandidate(
+        best_candidate,
+        strategy,
+        reflection_lm
+      );
       if (mutated && !this.isDuplicate(mutated, existing_candidates)) {
         new_candidates.push(mutated);
       }
     }
-    
+
     return new_candidates.slice(0, 2); // Limit new candidates per generation
   }
 
@@ -843,15 +912,14 @@ export class GEPA extends Teleprompter {
     candidate: Record<string, string>,
     strategy: string,
     reflection_lm: (input: string) => string
-  ): Promise<Record<string, string> | null> {
-    
+  ): Promise<Record<string, string>'' | ''null> {
     const mutated: Record<string, string> = {};
-    
+
     for (const [pred_name, instruction] of Object.entries(candidate)) {
       let new_instruction = instruction;
-      
+
       switch (strategy) {
-        case 'simplify':
+        case'simplify':
           new_instruction = this.simplifyInstruction(instruction);
           break;
         case 'elaborate':
@@ -867,10 +935,10 @@ export class GEPA extends Teleprompter {
           new_instruction = this.debugInstruction(instruction);
           break;
       }
-      
+
       mutated[pred_name] = new_instruction;
     }
-    
+
     return mutated;
   }
 
@@ -879,8 +947,8 @@ export class GEPA extends Teleprompter {
    */
   private simplifyInstruction(instruction: string): string {
     return instruction
-      .replace(/\b(very|really|quite|extremely)\s+/gi, '')
-      .replace(/\b(please|kindly)\s+/gi, '')
+      .replace(/\b(very'' | ''really'' | ''quite'' | ''extremely)\s+/gi,'')
+      .replace(/\b(please'' | ''kindly)\s+/gi,'')
       .replace(/\s+/g, ' ')
       .trim();
   }
@@ -895,8 +963,9 @@ export class GEPA extends Teleprompter {
       'Consider multiple perspectives.',
       'Explain your approach.',
     ];
-    
-    const elaboration = elaborations[Math.floor(Math.random() * elaborations.length)];
+
+    const elaboration =
+      elaborations[Math.floor(Math.random() * elaborations.length)];
     return `${instruction} ${elaboration}`;
   }
 
@@ -910,8 +979,9 @@ export class GEPA extends Teleprompter {
       'Apply relevant expertise.',
       'Use appropriate terminology.',
     ];
-    
-    const specialization = specializations[Math.floor(Math.random() * specializations.length)];
+
+    const specialization =
+      specializations[Math.floor(Math.random() * specializations.length)];
     return `${instruction} ${specialization}`;
   }
 
@@ -935,8 +1005,11 @@ export class GEPA extends Teleprompter {
       'Ensure accuracy.',
       'Review for errors.',
     ];
-    
-    const addition = debugging_additions[Math.floor(Math.random() * debugging_additions.length)];
+
+    const addition =
+      debugging_additions[
+        Math.floor(Math.random() * debugging_additions.length)
+      ];
     return `${instruction} ${addition}`;
   }
 
@@ -944,11 +1017,12 @@ export class GEPA extends Teleprompter {
    * Check if candidate is duplicate
    */
   private isDuplicate(
-    candidate: Record<string, string>, 
+    candidate: Record<string, string>,
     existing: Record<string, string>[]
   ): boolean {
-    return existing.some(existing_candidate => 
-      JSON.stringify(candidate) === JSON.stringify(existing_candidate)
+    return existing.some(
+      (existing_candidate) =>
+        JSON.stringify(candidate) === JSON.stringify(existing_candidate)
     );
   }
 
@@ -963,8 +1037,13 @@ export class GEPA extends Teleprompter {
         return state / 0x7fffffff;
       },
       choice: <T>(array: T[]): T => {
-        return array[Math.floor((state = (state * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff * array.length)];
-      }
+        return array[
+          Math.floor(
+            ((state = (state * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff) *
+              array.length
+          )
+        ];
+      },
     };
   }
 }

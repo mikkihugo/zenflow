@@ -8,8 +8,8 @@ export default defineConfig({
     pool: 'forks',
     poolOptions: {
       forks: {
-        singleFork: true
-      }
+        singleFork: true,
+      },
     },
     coverage: {
       provider: 'v8',
@@ -22,32 +22,26 @@ export default defineConfig({
         'src/**/*.test.ts',
         'src/**/*.spec.ts',
         'coverage/**',
-        'vitest.config.ts'
+        'vitest.config.ts',
       ],
       thresholds: {
         global: {
           branches: 80,
           functions: 80,
           lines: 80,
-          statements: 80
-        }
-      }
+          statements: 80,
+        },
+      },
     },
-    include: [
-      'src/**/*.{test,spec}.{js,ts}',
-      'test/**/*.{test,spec}.{js,ts}'
-    ],
+    include: ['src/**/*.{test,spec}.{js,ts}', 'test/**/*.{test,spec}.{js,ts}'],
     testTimeout: 5000,
     hookTimeout: 5000,
-    exclude: [
-      'node_modules/**',
-      'dist/**'
-    ]
+    exclude: ['node_modules/**', 'dist/**'],
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@test': resolve(__dirname, './test')
-    }
-  }
+      '@test': resolve(__dirname, './test'),
+    },
+  },
 });

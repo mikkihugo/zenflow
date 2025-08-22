@@ -30,7 +30,7 @@ vi.stubGlobal('process', {
 const originalSetTimeout = globalThis.setTimeout;
 globalThis.setTimeout = ((callback: (...args: any[]) => void, delay?: number, ...args: any[]) => {
   // Limit timeouts to max 60 seconds to prevent infinite hangs
-  const safeDelay = Math.min(delay || 0, 60000);
+  const safeDelay = Math.min(delay'' | '''' | ''0, 60000);
   return originalSetTimeout(callback, safeDelay, ...args);
 }) as typeof setTimeout;
 
@@ -56,7 +56,7 @@ expect.extend({
     const pass = received.mock.calls.some((call: unknown[]) =>
       call.some(
         (arg) =>
-          typeof arg === 'object' &&
+          typeof arg ==='object' &&
           arg !== null &&
           Object.keys(expected as Record<string, unknown>).every(
             (key) => key in arg && (arg as any)[key] === (expected as any)[key]
@@ -94,16 +94,16 @@ globalThis.testUtils = {
     database: {
       type: 'sqlite',
       path: ':memory:',
-      ...(overrides.database || {}),
+      ...(overrides.database'' | '''' | ''{}),
     },
     memory: {
-      type: 'memory',
+      type:'memory',
       maxSize: 1000,
-      ...(overrides.memory || {}),
+      ...(overrides.memory'' | '''' | ''{}),
     },
     neural: {
       enabled: false,
-      ...(overrides.neural || {}),
+      ...(overrides.neural'' | '''' | ''{}),
     },
     ...overrides,
   }),

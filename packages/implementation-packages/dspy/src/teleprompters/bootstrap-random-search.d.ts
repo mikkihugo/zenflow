@@ -27,10 +27,10 @@ import { type MetricFunction } from '../interfaces/types';
  * Candidate program evaluation result exactly matching Stanford DSPy
  */
 export interface CandidateResult {
-    score: number;
-    subscores: number[];
-    seed: number;
-    program: DSPyModule;
+  score: number;
+  subscores: number[];
+  seed: number;
+  program: DSPyModule;
 }
 /**
  * Bootstrap Few-Shot with Random Search Teleprompter
@@ -146,58 +146,61 @@ export interface CandidateResult {
  * ```
  */
 export declare class BootstrapFewShotWithRandomSearch extends Teleprompter {
-    private metric;
-    private teacher_settings;
-    private max_rounds;
-    private num_threads?;
-    private stop_at_score?;
-    private metric_threshold?;
-    private min_num_samples;
-    private max_num_samples;
-    private max_errors?;
-    private num_candidate_sets;
-    private max_labeled_demos;
-    private trainset;
-    private valset;
-    constructor(config: {
-        metric: MetricFunction;
-        teacher_settings?: Record<string, any> | null;
-        max_bootstrapped_demos?: number;
-        max_labeled_demos?: number;
-        max_rounds?: number;
-        num_candidate_programs?: number;
-        num_threads?: number | null;
-        max_errors?: number | null;
-        stop_at_score?: number | null;
-        metric_threshold?: number | null;
-    });
-    /**
-     * Compile method exactly matching Stanford DSPy API
-     */
-    compile(student: DSPyModule, config: {
-        trainset: Example[];
-        teacher?: DSPyModule | null;
-        valset?: Example[] | null;
-        restrict?: number[] | null;
-        labeled_sample?: boolean;
-        [key: string]: any;
-    }): Promise<DSPyModule>;
-    /**
-     * Evaluate program exactly matching Stanford Evaluate class behavior
-     */
-    private evaluateProgram;
-    /**
-     * Shuffle array with seeded random exactly matching Stanford random.Random(seed).shuffle
-     */
-    private shuffleArray;
-    /**
-     * Seeded random integer exactly matching Stanford random.Random(seed).randint
-     */
-    private seededRandomInt;
-    /**
-     * Create seeded RNG exactly matching Stanford random.Random behavior
-     */
-    private createSeededRNG;
+  private metric;
+  private teacher_settings;
+  private max_rounds;
+  private num_threads?;
+  private stop_at_score?;
+  private metric_threshold?;
+  private min_num_samples;
+  private max_num_samples;
+  private max_errors?;
+  private num_candidate_sets;
+  private max_labeled_demos;
+  private trainset;
+  private valset;
+  constructor(config: {
+    metric: MetricFunction;
+    teacher_settings?: Record<string, any> | null;
+    max_bootstrapped_demos?: number;
+    max_labeled_demos?: number;
+    max_rounds?: number;
+    num_candidate_programs?: number;
+    num_threads?: number | null;
+    max_errors?: number | null;
+    stop_at_score?: number | null;
+    metric_threshold?: number | null;
+  });
+  /**
+   * Compile method exactly matching Stanford DSPy API
+   */
+  compile(
+    student: DSPyModule,
+    config: {
+      trainset: Example[];
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
+      restrict?: number[] | null;
+      labeled_sample?: boolean;
+      [key: string]: any;
+    }
+  ): Promise<DSPyModule>;
+  /**
+   * Evaluate program exactly matching Stanford Evaluate class behavior
+   */
+  private evaluateProgram;
+  /**
+   * Shuffle array with seeded random exactly matching Stanford random.Random(seed).shuffle
+   */
+  private shuffleArray;
+  /**
+   * Seeded random integer exactly matching Stanford random.Random(seed).randint
+   */
+  private seededRandomInt;
+  /**
+   * Create seeded RNG exactly matching Stanford random.Random behavior
+   */
+  private createSeededRNG;
 }
 export default BootstrapFewShotWithRandomSearch;
 //# sourceMappingURL=bootstrap-random-search.d.ts.map

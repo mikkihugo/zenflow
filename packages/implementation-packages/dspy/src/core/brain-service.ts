@@ -1,19 +1,22 @@
 /**
  * @fileoverview Brain Service Layer - System Interface for DSPy Operations
- * 
+ *
  * This is the main interface that systems should use. Brain orchestrates DSPy operations
  * internally and provides intelligent, optimized responses to system requests.
- * 
+ *
  * Architecture:
  * System → Brain → DSPy → Foundation (LLM)
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  */
 
 import { getDSPyService } from './service.js';
 import { DSPyEngine, createDSPyEngine } from './dspy-engine.js';
-import type { DSPyExample, DSPyOptimizationResult } from '../types/interfaces.js';
+import type {
+  DSPyExample,
+  DSPyOptimizationResult,
+} from '../types/interfaces.js';
 
 /**
  * Brain request types for different cognitive operations
@@ -21,8 +24,8 @@ import type { DSPyExample, DSPyOptimizationResult } from '../types/interfaces.js
 export interface BrainAnalysisRequest {
   task: string;
   context?: string;
-  complexity?: 'simple' | 'moderate' | 'complex';
-  role?: 'user' | 'analyst' | 'architect';
+  complexity?: 'simple | moderate' | 'complex';
+  role?: 'user | analyst' | 'architect';
   optimizePrompt?: boolean;
 }
 
@@ -47,7 +50,7 @@ export interface BrainResponse {
 
 /**
  * Brain Service - Intelligent System Interface
- * 
+ *
  * The Brain service is the main entry point for systems. It:
  * - Decides when to use DSPy optimization
  * - Manages conversation context and memory
@@ -66,7 +69,7 @@ export class BrainService {
       maxIterations: 3,
       fewShotExamples: 2,
       temperature: 0.1,
-      model: 'claude-3-sonnet'
+      model: 'claude-3-sonnet',
     });
   }
 
@@ -96,7 +99,7 @@ export class BrainService {
     }
 
     const startTime = Date.now();
-    
+
     // Add context to conversation history
     this.conversationContext.push(`Task: ${request.task}`);
     if (this.conversationContext.length > 10) {
@@ -124,9 +127,9 @@ export class BrainService {
         metadata: {
           processingTime,
           dspyOptimized,
-          role: request.role || 'user',
-          timestamp: new Date().toISOString()
-        }
+          role: request.role'' | '''' | '''user',
+          timestamp: new Date().toISOString(),
+        },
       };
     } catch (error) {
       console.error('[Brain] Analysis failed:', error);
@@ -156,12 +159,13 @@ export class BrainService {
           originalPrompt: cached.originalPrompt,
           optimizedPrompt: cached.optimizedPrompt,
           improvement: cached.improvement,
-          examples: request.examples || []
+          examples: request.examples'' | '''' | ''[],
         };
       }
 
       // Create examples if not provided
-      const examples = request.examples || this.generateExamplesFromContext(request.prompt);
+      const examples =
+        request.examples'' | '''' | ''this.generateExamplesFromContext(request.prompt);
 
       // Use DSPy for optimization
       const optimization = await this.dspyEngine.optimizePrompt(
@@ -173,13 +177,15 @@ export class BrainService {
       // Cache the result
       this.optimizationCache.set(cacheKey, optimization);
 
-      console.log(`[Brain] Optimized prompt with ${optimization.improvement.toFixed(3)} improvement`);
+      console.log(
+        `[Brain] Optimized prompt with ${optimization.improvement.toFixed(3)} improvement`
+      );
 
       return {
         originalPrompt: optimization.originalPrompt,
         optimizedPrompt: optimization.optimizedPrompt,
         improvement: optimization.improvement,
-        examples
+        examples,
       };
     } catch (error) {
       console.error('[Brain] Prompt optimization failed:', error);
@@ -196,11 +202,11 @@ export class BrainService {
     dspyStats: any;
   }> {
     const dspyStats = await this.dspyEngine.getStats();
-    
+
     return {
       conversationLength: this.conversationContext.length,
       optimizationCacheSize: this.optimizationCache.size,
-      dspyStats
+      dspyStats,
     };
   }
 
@@ -224,7 +230,7 @@ export class BrainService {
 
     // Auto-decide based on complexity and role
     if (request.complexity === 'complex') return true;
-    if (request.role === 'architect' || request.role === 'analyst') return true;
+    if (request.role === 'architect''' | '''' | ''request.role ==='analyst') return true;
     if (request.task.length > 200) return true; // Long tasks benefit from optimization
 
     return false;
@@ -233,9 +239,11 @@ export class BrainService {
   /**
    * Private: Execute with DSPy optimization
    */
-  private async executeWithOptimization(request: BrainAnalysisRequest): Promise<string> {
+  private async executeWithOptimization(
+    request: BrainAnalysisRequest
+  ): Promise<string> {
     const examples = this.generateExamplesFromContext(request.task);
-    
+
     const optimization = await this.dspyEngine.optimizePrompt(
       request.task,
       examples,
@@ -244,27 +252,34 @@ export class BrainService {
 
     // Execute the optimized prompt via DSPy service
     const dspyService = await getDSPyService();
-    const result = await dspyService.executePrompt(optimization.optimizedPrompt, {
-      temperature: 0.7,
-      maxTokens: 2048,
-      role: (request.role as 'user' | 'analyst' | 'architect') || 'analyst' // Default to analyst for DSPy
-    });
+    const result = await dspyService.executePrompt(
+      optimization.optimizedPrompt,
+      {
+        temperature: 0.7,
+        maxTokens: 2048,
+        role: (request.role as 'user | analyst' | 'architect')'' | '''' | '''analyst', // Default to analyst for DSPy
+      }
+    );
 
-    console.log(`[Brain] Used DSPy optimization (${optimization.improvement.toFixed(3)} improvement)`);
+    console.log(
+      `[Brain] Used DSPy optimization (${optimization.improvement.toFixed(3)} improvement)`
+    );
     return result;
   }
 
   /**
    * Private: Execute directly without optimization
    */
-  private async executeDirectly(request: BrainAnalysisRequest): Promise<string> {
+  private async executeDirectly(
+    request: BrainAnalysisRequest
+  ): Promise<string> {
     const dspyService = await getDSPyService();
     const prompt = this.buildPromptFromRequest(request);
-    
+
     return await dspyService.executePrompt(prompt, {
       temperature: 0.7,
       maxTokens: 2048,
-      role: (request.role as 'user' | 'analyst' | 'architect') || 'analyst' // Default to analyst for DSPy
+      role: (request.role as 'user | analyst' | 'architect')'' | '''' | '''analyst', // Default to analyst for DSPy
     });
   }
 
@@ -292,19 +307,19 @@ export class BrainService {
    */
   private generateExamplesFromContext(_task: string): DSPyExample[] {
     const examples: DSPyExample[] = [];
-    
+
     // Simple example generation from context
     if (this.conversationContext.length > 0) {
       const recentTasks = this.conversationContext
-        .filter(ctx => ctx.startsWith('Task: '))
+        .filter((ctx) => ctx.startsWith('Task: '))
         .slice(-3);
-      
+
       recentTasks.forEach((taskCtx, index) => {
         examples.push({
           id: `context-${index}`,
           input: taskCtx.replace('Task: ', ''),
           output: `Analyzed and provided insights for: ${taskCtx.replace('Task: ', '')}`,
-          metadata: { createdAt: new Date(), source: 'conversation-context' }
+          metadata: { createdAt: new Date(), source: 'conversation-context' },
         });
       });
     }
@@ -315,7 +330,7 @@ export class BrainService {
         id: 'default',
         input: 'Analyze this request',
         output: 'Provided comprehensive analysis with actionable insights',
-        metadata: { createdAt: new Date(), source: 'default-example' }
+        metadata: { createdAt: new Date(), source: 'default-example'},
       });
     }
 
@@ -325,7 +340,10 @@ export class BrainService {
   /**
    * Private: Calculate confidence based on optimization and complexity
    */
-  private calculateConfidence(request: BrainAnalysisRequest, optimized: boolean): number {
+  private calculateConfidence(
+    request: BrainAnalysisRequest,
+    optimized: boolean
+  ): number {
     let confidence = 0.8; // Base confidence
 
     if (optimized) confidence += 0.1; // DSPy optimization boost
@@ -339,7 +357,7 @@ export class BrainService {
    * Private: Generate cache key for optimization results
    */
   private generateCacheKey(prompt: string, domain?: string): string {
-    const content = `${prompt}-${domain || 'general'}`;
+    const content = `${prompt}-${domain'' | '''' | '''general'}`;
     return Buffer.from(content).toString('base64').slice(0, 32);
   }
 }

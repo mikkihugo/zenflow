@@ -7,21 +7,15 @@
  * @file TypeScript type definitions.
  */
 
-// Standalone types for conversation framework  
+// Standalone types for conversation framework
 export interface AgentId {
   id: string;
   swarmId: string;
   type: AgentType;
   instance: number;
 }
-export type AgentType = 
-  | 'researcher' 
-  | 'coder' 
-  | 'analyst' 
-  | 'optimizer' 
-  | 'coordinator' 
-  | 'tester' 
-  | 'architect';
+export type AgentType =
+  | 'researcher | coder' | 'analyst''' | '''optimizer | coordinator' | 'tester''' | '''architect';
 
 export interface Tool {
   name: string;
@@ -38,46 +32,34 @@ export interface ConversationMessage {
   id: string;
   conversationId: string;
   fromAgent: AgentId;
-  toAgent: AgentId | undefined; // undefined for broadcast messages
+  toAgent: AgentId'' | ''undefined; // undefined for broadcast messages
   timestamp: Date;
   content: MessageContent;
   messageType: MessageType;
   metadata: MessageMetadata;
 }
 
-export type MessageType =
-  | 'task_request'
-  | 'task_response'
-  | 'question'
-  | 'answer'
-  | 'suggestion'
-  | 'critique'
-  | 'agreement'
-  | 'disagreement'
-  | 'clarification'
-  | 'summary'
-  | 'decision'
-  | 'system_notification';
+export type MessageType ='' | '''task_request | task_response' | 'question''' | '''answer | suggestion' | 'critique''' | '''agreement | disagreement' | 'clarification''' | '''summary | decision' | 'system_notification';
 
 export interface MessageContent {
   text: string;
-  code: string | undefined;
-  data: unknown | undefined;
-  attachments: ConversationAttachment[] | undefined;
+  code: string'' | ''undefined;
+  data: unknown'' | ''undefined;
+  attachments: ConversationAttachment[]'' | ''undefined;
 }
 
 export interface MessageMetadata {
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  priority:'low | medium' | 'high''' | '''urgent';
   requiresResponse: boolean;
   context: ConversationContext;
   tags: string[];
-  referencedMessages: string[] | undefined;
+  referencedMessages: string[]'' | ''undefined;
 }
 
 export interface ConversationAttachment {
-  type: 'file' | 'image' | 'data' | 'code' | 'link';
+  type:'file | image' | 'data' | 'code' | 'link';
   content: unknown;
-  metadata: Record<string, unknown> | undefined;
+  metadata: Record<string, unknown>'' | ''undefined;
 }
 
 /**
@@ -88,12 +70,12 @@ export interface ConversationAttachment {
 export interface ConversationSession {
   id: string;
   title: string;
-  description: string | undefined;
+  description: string'' | ''undefined;
   participants: AgentId[];
   initiator: AgentId;
-  orchestrator: AgentId | undefined;
+  orchestrator: AgentId'' | ''undefined;
   startTime: Date;
-  endTime: Date | undefined;
+  endTime: Date'' | ''undefined;
   status: ConversationStatus;
   context: ConversationContext;
   messages: ConversationMessage[];
@@ -101,20 +83,14 @@ export interface ConversationSession {
   metrics: ConversationMetrics;
 }
 
-export type ConversationStatus =
-  | 'initializing'
-  | 'active'
-  | 'paused'
-  | 'completed'
-  | 'terminated'
-  | 'error';
+export type ConversationStatus ='' | '''initializing | active' | 'paused''' | '''completed | terminated' | 'error';
 
 export interface ConversationContext {
-  task: unknown | undefined;
+  task: unknown'' | ''undefined;
   goal: string;
   constraints: string[];
   resources: string[];
-  deadline: Date | undefined;
+  deadline: Date'' | ''undefined;
   domain: string;
   expertise: string[];
   solutionId?: string;
@@ -122,13 +98,7 @@ export interface ConversationContext {
 }
 
 export interface ConversationOutcome {
-  type:
-    | 'decision'
-    | 'solution'
-    | 'plan'
-    | 'code'
-    | 'analysis'
-    | 'recommendation';
+  type:'' | '''decision | solution' | 'plan''' | '''code | analysis' | 'recommendation';
   content: unknown;
   confidence: number;
   contributors: AgentId[];
@@ -166,8 +136,8 @@ export interface ConversationRole {
 }
 
 export interface RolePermission {
-  action: 'read' | 'write' | 'moderate' | 'terminate' | 'invite';
-  scope: 'all' | 'own' | 'direct' | 'group';
+  action: 'read | write' | 'moderate' | 'terminate' | 'invite';
+  scope: 'all | own' | 'direct''' | '''group';
 }
 
 export interface ConversationStep {
@@ -182,27 +152,18 @@ export interface ConversationStep {
 }
 
 export interface StepTrigger {
-  type: 'time' | 'message' | 'consensus' | 'external' | 'manual';
+  type: 'time | message' | 'consensus' | 'external' | 'manual';
   condition: unknown;
 }
 
 export interface StepAction {
-  type:
-    | 'send_message'
-    | 'request_input'
-    | 'make_decision'
-    | 'summarize'
-    | 'escalate';
+  type:'' | '''send_message | request_input' | 'make_decision' | 'summarize' | 'escalate';
   params: unknown;
   agent?: string; // role name
 }
 
 export interface PatternConstraint {
-  type:
-    | 'time_limit'
-    | 'message_limit'
-    | 'participant_limit'
-    | 'quality_threshold';
+  type:'' | '''time_limit | message_limit' | 'participant_limit''' | '''quality_threshold';
   value: unknown;
 }
 
@@ -213,7 +174,9 @@ export interface PatternConstraint {
  */
 export interface ConversationOrchestrator {
   createConversation(config: ConversationConfig): Promise<ConversationSession>;
-  startConversation(config: ConversationConfig | string): Promise<ConversationSession>;
+  startConversation(
+    config: ConversationConfig'' | ''string
+  ): Promise<ConversationSession>;
   joinConversation(conversationId: string, agent: AgentId): Promise<void>;
   leaveConversation(conversationId: string, agent: AgentId): Promise<void>;
   sendMessage(message: ConversationMessage): Promise<void>;
@@ -242,14 +205,7 @@ export interface ConversationConfig {
 }
 
 export interface ModerationAction {
-  type:
-    | 'mute'
-    | 'unmute'
-    | 'warn'
-    | 'remove'
-    | 'change_role'
-    | 'pause'
-    | 'resume';
+  type:'' | '''mute | unmute' | 'warn''' | '''remove | change_role' | 'pause''' | '''resume';
   target: AgentId;
   reason: string;
   duration?: number;
@@ -269,7 +225,7 @@ export interface ConversationLearning {
 }
 
 export interface LearningInsight {
-  type: 'efficiency' | 'quality' | 'participation' | 'outcome';
+  type: 'efficiency | quality' | 'participation''' | '''outcome';
   description: string;
   confidence: number;
   evidence: unknown[];
@@ -277,7 +233,7 @@ export interface LearningInsight {
 }
 
 export interface PatternImprovement {
-  target: 'workflow' | 'roles' | 'constraints' | 'triggers';
+  target: 'workflow | roles' | 'constraints''' | '''triggers';
   change: unknown;
   rationale: string;
   expectedImpact: number;
@@ -298,7 +254,7 @@ export interface ConversationFeedback {
  */
 export interface ConversationMemory {
   storeConversation(session: ConversationSession): Promise<void>;
-  getConversation(id: string): Promise<ConversationSession | null>;
+  getConversation(id: string): Promise<ConversationSession'' | ''null>;
   searchConversations(query: ConversationQuery): Promise<ConversationSession[]>;
   updateConversation(
     id: string,
@@ -333,7 +289,7 @@ export interface ConversationParticipant {
   id: string;
   name: string;
   role: string;
-  status: 'active' | 'inactive' | 'busy';
+  status:'active | inactive' | 'busy';
   capabilities: string[];
 }
 

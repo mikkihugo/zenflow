@@ -1,6 +1,6 @@
 /**
  * @fileoverview Internal OTEL Collector - Main Entry Point
- * 
+ *
  * Provides centralized OpenTelemetry data collection and export capabilities
  * for the claude-code-zen ecosystem. Supports multiple exporters, processors,
  * and telemetry signals (traces, metrics, logs).
@@ -9,7 +9,13 @@
 export { InternalOTELCollector } from './collector.js';
 export { ProcessorManager } from './processors/index.js';
 export { ExporterManager } from './exporters/index.js';
-export { ConfigManager, configManager, loadDefaultConfig, createDevelopmentConfig, createProductionConfig } from './config/index.js';
+export {
+  ConfigManager,
+  configManager,
+  loadDefaultConfig,
+  createDevelopmentConfig,
+  createProductionConfig,
+} from './config/index.js';
 
 // Re-export types
 export type {
@@ -17,16 +23,16 @@ export type {
   CollectorConfig,
   TelemetryData,
   TelemetryService,
-  
+
   // Exporter types
   ExporterConfig,
   ExportResult,
-  
+
   // Processor types
   ProcessorConfig,
-  
+
   // Health types
-  HealthStatus
+  HealthStatus,
 } from './types.js';
 
 // Re-export specific exporters
@@ -45,16 +51,18 @@ export { SamplerProcessor } from './processors/sampler-processor.js';
 /**
  * Create and start an OTEL collector with default configuration
  */
-export async function createCollector(configPath?: string): Promise<InternalOTELCollector> {
+export async function createCollector(
+  configPath?: string
+): Promise<InternalOTELCollector> {
   const collector = new InternalOTELCollector();
-  
+
   if (configPath) {
     await collector.initialize(configPath);
   } else {
     const config = await loadDefaultConfig();
     await collector.initialize(config);
   }
-  
+
   return collector;
 }
 
@@ -83,7 +91,7 @@ export async function createProductionCollector(): Promise<InternalOTELCollector
  */
 export async function quickStart(): Promise<InternalOTELCollector> {
   const isDevelopment = process.env.NODE_ENV === 'development';
-  
+
   if (isDevelopment) {
     return createDevelopmentCollector();
   } else {

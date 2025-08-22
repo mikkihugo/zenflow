@@ -44,20 +44,23 @@ export interface SystemMetrics {
  */
 export interface PerformanceMetrics {
   /** Operation timings */
-  operations: Record<string, {
-    count: number;
-    totalTime: number;
-    avgTime: number;
-    minTime: number;
-    maxTime: number;
-    p50?: number;
-    p90?: number;
-    p95?: number;
-    p99?: number;
-    stdDev?: number;
-    throughput?: number;
-    trend?: 'improving' | 'stable' | 'degrading';
-  }>;
+  operations: Record<
+    string,
+    {
+      count: number;
+      totalTime: number;
+      avgTime: number;
+      minTime: number;
+      maxTime: number;
+      p50?: number;
+      p90?: number;
+      p95?: number;
+      p99?: number;
+      stdDev?: number;
+      throughput?: number;
+      trend?: 'improving | stable' | 'degrading';
+    }
+  >;
   /** System performance */
   system: {
     responseTime: number;
@@ -73,14 +76,17 @@ export interface PerformanceMetrics {
  */
 export interface HealthStatus {
   /** Overall health status */
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: 'healthy | degraded' | 'unhealthy';
   /** Individual check results */
-  checks: Record<string, {
-    status: 'ok' | 'warning' | 'error';
-    message?: string;
-    value?: number;
-    threshold?: number;
-  }>;
+  checks: Record<
+    string,
+    {
+      status: 'ok | warning' | 'error';
+      message?: string;
+      value?: number;
+      threshold?: number;
+    }
+  >;
   /** Additional health details */
   details?: {
     systemLoad?: number[];

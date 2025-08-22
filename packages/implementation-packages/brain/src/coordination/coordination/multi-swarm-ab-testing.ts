@@ -1,10 +1,10 @@
 /**
  * @fileoverview Multi-Swarm A/B Testing System
- * 
+ *
  * Advanced A/B testing system that launches multiple swarms simultaneously
  * to compare results and identify optimal approaches. Supports git tree
  * integration and multiple AI model backends (Claude, Gemini, Aider, etc.)
- * 
+ *
  * Features:
  * - Parallel swarm execution with result comparison
  * - Git tree integration for isolated testing environments
@@ -12,7 +12,7 @@
  * - Statistical analysis of performance differences
  * - Automated swarm selection based on success metrics
  * - A/B test result persistence and learning
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0
  * @since 2024-01-01
@@ -21,7 +21,13 @@
 import { getLogger } from '@claude-zen/foundation';
 import { nanoid } from 'nanoid';
 
-import { CodingPrinciplesResearcher, type PrinciplesResearchConfig, type ProgrammingLanguage, type TaskDomain, type DevelopmentRole } from './coding-principles-researcher';
+import {
+  CodingPrinciplesResearcher,
+  type PrinciplesResearchConfig,
+  type ProgrammingLanguage,
+  type TaskDomain,
+  type DevelopmentRole,
+} from './coding-principles-researcher';
 import { IntelligentPromptGenerator } from './intelligent-prompt-generator';
 
 const logger = getLogger('multi-swarm-ab-testing');
@@ -29,16 +35,7 @@ const logger = getLogger('multi-swarm-ab-testing');
 /**
  * Supported AI model backends for swarm A/B testing
  */
-export type AIModelBackend = 
-  | 'claude-sonnet'
-  | 'claude-opus' 
-  | 'claude-haiku'
-  | 'gemini-pro'
-  | 'gemini-flash'
-  | 'gpt-4'
-  | 'gpt-4-turbo'
-  | 'aider'
-  | 'custom';
+export type AIModelBackend =' | ''claude-sonnet'' | ''claude-opus'' | ''claude-haiku'' | ''gemini-pro'' | ''gemini-flash'' | ''gpt-4'' | ''gpt-4-turbo'' | ''aider'' | ''custom';
 
 /**
  * A/B test strategy configuration
@@ -52,17 +49,17 @@ export interface ABTestStrategy {
   modelBackend: AIModelBackend;
   /** Swarm configuration parameters */
   swarmConfig: {
-    topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+    topology: 'mesh'' | ''hierarchical'' | ''ring'' | ''star';
     maxAgents: number;
-    strategy: 'balanced' | 'specialized' | 'adaptive';
-    coordinationApproach: 'conservative' | 'aggressive' | 'exploratory';
+    strategy: 'balanced'' | ''specialized'' | ''adaptive';
+    coordinationApproach: 'conservative'' | ''aggressive'' | ''exploratory';
   };
   /** Research configuration for this strategy */
   researchConfig?: Partial<PrinciplesResearchConfig>;
   /** Custom prompt variations */
   promptVariations?: {
-    style: 'concise' | 'detailed' | 'step-by-step' | 'creative';
-    focus: 'performance' | 'quality' | 'speed' | 'innovation';
+    style: 'concise'' | ''detailed'' | ''step-by-step'' | ''creative';
+    focus: 'performance'' | ''quality'' | ''speed'' | ''innovation';
   };
 }
 
@@ -94,15 +91,15 @@ export interface SwarmTestResult {
   duration: number;
   /** Quality metrics */
   qualityMetrics: {
-    codeQuality: number;           // 0-100
-    requirementsCoverage: number;  // 0-100
+    codeQuality: number; // 0-100
+    requirementsCoverage: number; // 0-100
     implementationCorrectness: number; // 0-100
-    maintainability: number;       // 0-100
-    performance: number;           // 0-100
-    overallScore: number;          // 0-100
-    accuracy?: number;             // 0-100 (for backwards compatibility)
-    completeness?: number;         // 0-100 (for backwards compatibility)
-    efficiency?: number;           // 0-100 (for backwards compatibility)
+    maintainability: number; // 0-100
+    performance: number; // 0-100
+    overallScore: number; // 0-100
+    accuracy?: number; // 0-100 (for backwards compatibility)
+    completeness?: number; // 0-100 (for backwards compatibility)
+    efficiency?: number; // 0-100 (for backwards compatibility)
   };
   /** Generated artifacts and outputs */
   artifacts: {
@@ -146,7 +143,7 @@ export interface ABTestResult {
     /** Confidence in winner selection (0-1) */
     confidence: number;
     /** Statistical significance */
-    significance: 'high' | 'medium' | 'low' | 'none';
+    significance: 'high'' | ''medium'' | ''low'' | ''none';
     /** Performance differences */
     performanceDelta: Record<string, number>;
   };
@@ -164,7 +161,7 @@ export interface ABTestResult {
 
 /**
  * Multi-Swarm A/B Testing System
- * 
+ *
  * Orchestrates parallel execution of multiple swarm strategies to identify
  * optimal approaches through statistical comparison and analysis.
  */
@@ -183,11 +180,17 @@ export class MultiSwarmABTesting {
       // Create a placeholder DSPyLLMBridge for initialization
       const dspyBridge = {
         initialize: async () => {},
-        processCoordinationTask: async () => ({ success: true, result: null })
+        processCoordinationTask: async () => ({ success: true, result: null }),
       } as any;
-      this.codingPrinciplesResearcher = new CodingPrinciplesResearcher(dspyBridge);
+      this.codingPrinciplesResearcher = new CodingPrinciplesResearcher(
+        dspyBridge
+      );
     }
-    this.promptGenerator = promptGenerator || new IntelligentPromptGenerator(undefined, this.codingPrinciplesResearcher);
+    this.promptGenerator =
+      promptGenerator || new IntelligentPromptGenerator(
+        undefined,
+        this.codingPrinciplesResearcher
+      );
   }
 
   /**
@@ -208,16 +211,32 @@ export class MultiSwarmABTesting {
 
     console.log(`🧪 Starting A/B test: ${testId}`);
     console.log(`📋 Task: ${taskDescription}`);
-    console.log(`🔬 Testing ${strategies.length} strategies: ${strategies.map(s => s.name).join(', ')}`);
+    console.log(
+      `🔬 Testing ${strategies.length} strategies: ${strategies.map((s) => s.name).join(', ')}`
+    );
 
     try {
       // Prepare git worktrees if configured
-      const worktreePaths = await this.prepareGitWorktrees(strategies, options.gitConfig);
+      const worktreePaths = await this.prepareGitWorktrees(
+        strategies,
+        options.gitConfig
+      );
 
       // Execute strategies (parallel or sequential)
-      const results = options.parallelExecution !== false
-        ? await this.executeStrategiesParallel(taskDescription, strategies, worktreePaths, options)
-        : await this.executeStrategiesSequential(taskDescription, strategies, worktreePaths, options);
+      const results =
+        options.parallelExecution !== false
+          ? await this.executeStrategiesParallel(
+              taskDescription,
+              strategies,
+              worktreePaths,
+              options
+            )
+          : await this.executeStrategiesSequential(
+              taskDescription,
+              strategies,
+              worktreePaths,
+              options
+            );
 
       // Analyze and compare results
       const comparison = this.analyzeResults(results);
@@ -237,9 +256,9 @@ export class MultiSwarmABTesting {
           endTime,
           totalDuration: endTime.getTime() - startTime.getTime(),
           parallelExecution: options.parallelExecution !== false,
-          gitTreesUsed: !!options.gitConfig?.useGitWorktrees
+          gitTreesUsed: !!options.gitConfig?.useGitWorktrees,
         },
-        insights
+        insights,
       };
 
       // Store test result for learning
@@ -252,10 +271,11 @@ export class MultiSwarmABTesting {
       }
 
       console.log(`✅ A/B test completed: ${testId}`);
-      console.log(`🏆 Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(2)} confidence)`);
+      console.log(
+        `🏆 Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(2)} confidence)`
+      );
 
       return testResult;
-
     } catch (error) {
       console.error(`❌ A/B test failed: ${testId}`, error);
       throw error;
@@ -265,7 +285,9 @@ export class MultiSwarmABTesting {
   /**
    * Create predefined strategy sets for common scenarios
    */
-  createStrategySet(scenario: 'performance' | 'quality' | 'innovation' | 'comprehensive'): ABTestStrategy[] {
+  createStrategySet(
+    scenario: 'performance'' | ''quality'' | ''innovation'' | ''comprehensive'
+  ): ABTestStrategy[] {
     switch (scenario) {
       case 'performance':
         return [
@@ -277,12 +299,12 @@ export class MultiSwarmABTesting {
               topology: 'star',
               maxAgents: 3,
               strategy: 'specialized',
-              coordinationApproach: 'aggressive'
+              coordinationApproach: 'aggressive',
             },
             promptVariations: {
               style: 'concise',
-              focus: 'speed'
-            }
+              focus: 'speed',
+            },
           },
           {
             id: 'performance-gemini',
@@ -292,13 +314,13 @@ export class MultiSwarmABTesting {
               topology: 'hierarchical',
               maxAgents: 4,
               strategy: 'balanced',
-              coordinationApproach: 'conservative'
+              coordinationApproach: 'conservative',
             },
             promptVariations: {
               style: 'step-by-step',
-              focus: 'performance'
-            }
-          }
+              focus: 'performance',
+            },
+          },
         ];
 
       case 'quality':
@@ -311,12 +333,12 @@ export class MultiSwarmABTesting {
               topology: 'mesh',
               maxAgents: 6,
               strategy: 'specialized',
-              coordinationApproach: 'conservative'
+              coordinationApproach: 'conservative',
             },
             promptVariations: {
               style: 'detailed',
-              focus: 'quality'
-            }
+              focus: 'quality',
+            },
           },
           {
             id: 'quality-gpt4',
@@ -326,13 +348,13 @@ export class MultiSwarmABTesting {
               topology: 'hierarchical',
               maxAgents: 5,
               strategy: 'adaptive',
-              coordinationApproach: 'exploratory'
+              coordinationApproach: 'exploratory',
             },
             promptVariations: {
               style: 'detailed',
-              focus: 'quality'
-            }
-          }
+              focus: 'quality',
+            },
+          },
         ];
 
       case 'innovation':
@@ -345,12 +367,12 @@ export class MultiSwarmABTesting {
               topology: 'ring',
               maxAgents: 8,
               strategy: 'adaptive',
-              coordinationApproach: 'exploratory'
+              coordinationApproach: 'exploratory',
             },
             promptVariations: {
               style: 'creative',
-              focus: 'innovation'
-            }
+              focus: 'innovation',
+            },
           },
           {
             id: 'innovative-gemini',
@@ -360,12 +382,12 @@ export class MultiSwarmABTesting {
               topology: 'mesh',
               maxAgents: 7,
               strategy: 'adaptive',
-              coordinationApproach: 'aggressive'
+              coordinationApproach: 'aggressive',
             },
             promptVariations: {
               style: 'creative',
-              focus: 'innovation'
-            }
+              focus: 'innovation',
+            },
           },
           {
             id: 'aider-experimental',
@@ -375,20 +397,20 @@ export class MultiSwarmABTesting {
               topology: 'hierarchical',
               maxAgents: 4,
               strategy: 'specialized',
-              coordinationApproach: 'exploratory'
+              coordinationApproach: 'exploratory',
             },
             promptVariations: {
               style: 'step-by-step',
-              focus: 'innovation'
-            }
-          }
+              focus: 'innovation',
+            },
+          },
         ];
 
       case 'comprehensive':
         return [
           ...this.createStrategySet('performance'),
           ...this.createStrategySet('quality'),
-          ...this.createStrategySet('innovation')
+          ...this.createStrategySet('innovation'),
         ];
 
       default:
@@ -408,33 +430,34 @@ export class MultiSwarmABTesting {
       return {
         recommendedStrategy: null,
         confidence: 0,
-        reasoning: ['No historical data available for recommendations']
+        reasoning: ['No historical data available for recommendations'],
       };
     }
 
     // Analyze historical performance
-    const relevantTests = this.testHistory.filter(test => 
+    const relevantTests = this.testHistory.filter((test) =>
       test.description.toLowerCase().includes(taskType.toLowerCase())
     );
 
     if (relevantTests.length === 0) {
-      const allWinners = this.testHistory.map(test => test.comparison.winner);
+      const allWinners = this.testHistory.map((test) => test.comparison.winner);
       const mostSuccessful = this.findMostSuccessfulStrategy(allWinners);
-      
+
       return {
         recommendedStrategy: mostSuccessful,
         confidence: 0.3,
         reasoning: [
           `No specific data for "${taskType}" tasks`,
           'Recommendation based on general performance across all task types',
-          'Consider running A/B test for this specific task type'
-        ]
+          'Consider running A/B test for this specific task type',
+        ],
       };
     }
 
-    const winners = relevantTests.map(test => test.comparison.winner);
+    const winners = relevantTests.map((test) => test.comparison.winner);
     const recommended = this.findMostSuccessfulStrategy(winners);
-    const successRate = winners.filter(w => w.id === recommended?.id).length / winners.length;
+    const successRate =
+      winners.filter((w) => w.id === recommended?.id).length / winners.length;
 
     return {
       recommendedStrategy: recommended,
@@ -443,8 +466,8 @@ export class MultiSwarmABTesting {
         `Based on ${relevantTests.length} historical tests for "${taskType}"`,
         `Success rate: ${(successRate * 100).toFixed(1)}%`,
         `Model: ${recommended?.modelBackend}`,
-        `Topology: ${recommended?.swarmConfig.topology}`
-      ]
+        `Topology: ${recommended?.swarmConfig.topology}`,
+      ],
     };
   }
 
@@ -471,11 +494,14 @@ export class MultiSwarmABTesting {
 
     // Validate git configuration
     if (strategies.length > maxWorktrees) {
-      logger.warn(`Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`, {
-        strategies: strategies.length,
-        maxWorktrees,
-        willLimitTo: maxWorktrees
-      });
+      logger.warn(
+        `Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`,
+        {
+          strategies: strategies.length,
+          maxWorktrees,
+          willLimitTo: maxWorktrees,
+        }
+      );
     }
 
     const strategiesToProcess = strategies.slice(0, maxWorktrees);
@@ -483,25 +509,25 @@ export class MultiSwarmABTesting {
       baseBranch,
       branchPrefix,
       cleanupAfterTest,
-      maxWorktrees
+      maxWorktrees,
     });
 
     for (const strategy of strategiesToProcess) {
       const branchName = `${branchPrefix}-${strategy.id}-${nanoid(6)}`;
       const worktreePath = `/tmp/ab-test-worktrees/${branchName}`;
-      
+
       // Log worktree creation with gitConfig details
       logger.debug(`📁 Creating worktree for ${strategy.name}`, {
         strategyId: strategy.id,
         branchName,
         worktreePath,
         baseBranch,
-        modelBackend: strategy.modelBackend
+        modelBackend: strategy.modelBackend,
       });
-      
+
       // In a real implementation, this would execute:
       // await exec(`git worktree add ${worktreePath} -b ${branchName} ${baseBranch}`)
-      
+
       worktreePaths[strategy.id] = worktreePath;
       logger.info(`✅ Created worktree for ${strategy.name}: ${worktreePath}`);
     }
@@ -510,7 +536,7 @@ export class MultiSwarmABTesting {
     logger.info('Git worktree preparation completed', {
       totalWorktrees: Object.keys(worktreePaths).length,
       cleanupAfterTest,
-      worktreeIds: Object.keys(worktreePaths)
+      worktreeIds: Object.keys(worktreePaths),
     });
 
     return worktreePaths;
@@ -524,8 +550,13 @@ export class MultiSwarmABTesting {
   ): Promise<SwarmTestResult[]> {
     console.log(`⚡ Executing ${strategies.length} strategies in parallel...`);
 
-    const promises = strategies.map(strategy =>
-      this.executeStrategy(taskDescription, strategy, worktreePaths[strategy.id], options)
+    const promises = strategies.map((strategy) =>
+      this.executeStrategy(
+        taskDescription,
+        strategy,
+        worktreePaths[strategy.id],
+        options
+      )
     );
 
     return Promise.all(promises);
@@ -541,42 +572,52 @@ export class MultiSwarmABTesting {
     const enableProgressLogging = options.verbose || false;
     const delayBetweenStrategies = options.sequentialDelay || 1000;
     const enableContinueOnFailure = options.continueOnFailure !== false;
-    
+
     if (enableProgressLogging) {
-      console.log(`⏭️ Executing ${strategies.length} strategies sequentially...`);
-      console.log(`📊 Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}`);
+      console.log(
+        `⏭️ Executing ${strategies.length} strategies sequentially...`
+      );
+      console.log(
+        `📊 Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}`
+      );
     } else {
-      console.log(`⏭️ Executing ${strategies.length} strategies sequentially...`);
+      console.log(
+        `⏭️ Executing ${strategies.length} strategies sequentially...`
+      );
     }
 
     const results: SwarmTestResult[] = [];
-    
+
     for (let i = 0; i < strategies.length; i++) {
       const strategy = strategies[i];
-      
+
       try {
         if (enableProgressLogging) {
-          console.log(`📋 Executing strategy ${i + 1}/${strategies.length}: ${strategy.name}`);
+          console.log(
+            `📋 Executing strategy ${i + 1}/${strategies.length}: ${strategy.name}`
+          );
         }
-        
+
         const result = await this.executeStrategy(
-          taskDescription, 
-          strategy, 
-          worktreePaths[strategy.id], 
+          taskDescription,
+          strategy,
+          worktreePaths[strategy.id],
           options
         );
         results.push(result);
-        
+
         if (enableProgressLogging) {
-          console.log(`✅ Strategy ${i + 1} completed: ${strategy.name} (${result.success ? 'SUCCESS' : 'FAILED'})`);
+          console.log(
+            `✅ Strategy ${i + 1} completed: ${strategy.name} (${result.success ?'SUCCESS' : 'FAILED'})`
+          );
         }
       } catch (error) {
         logger.error(`❌ Strategy ${i + 1} failed: ${strategy.name}`, error);
-        
+
         if (!enableContinueOnFailure) {
           throw error;
         }
-        
+
         // Create failure result and continue with next strategy
         const failureResult: SwarmTestResult = {
           strategy,
@@ -588,31 +629,35 @@ export class MultiSwarmABTesting {
             implementationCorrectness: 0,
             maintainability: 0,
             performance: 0,
-            overallScore: 0
+            overallScore: 0,
           },
           artifacts: {
             filesCreated: [],
             linesOfCode: 0,
             functionsCreated: 0,
-            testsGenerated: 0
+            testsGenerated: 0,
           },
           error: error instanceof Error ? error.message : String(error),
           modelMetadata: {
             backend: strategy.modelBackend,
             tokenUsage: 0,
             requestCount: 0,
-            avgResponseTime: 0
-          }
+            avgResponseTime: 0,
+          },
         };
         results.push(failureResult);
       }
-      
+
       // Add delay between strategies if configured (except for last strategy)
       if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
         if (enableProgressLogging) {
-          console.log(`⏸️ Pausing ${delayBetweenStrategies}ms before next strategy...`);
+          console.log(
+            `⏸️ Pausing ${delayBetweenStrategies}ms before next strategy...`
+          );
         }
-        await new Promise(resolve => setTimeout(resolve, delayBetweenStrategies));
+        await new Promise((resolve) =>
+          setTimeout(resolve, delayBetweenStrategies)
+        );
       }
     }
 
@@ -631,31 +676,46 @@ export class MultiSwarmABTesting {
     const enableVerboseLogging = options.verbose || false;
     const timeoutMs = options.timeout || 30000;
     const retryCount = options.retries || 1;
-    
+
     if (enableVerboseLogging) {
-      console.log(`🚀 Executing strategy: ${strategy.name} (${strategy.modelBackend})`);
-      console.log(`📊 Options: timeout=${timeoutMs}ms, retries=${retryCount}, verbose=${enableVerboseLogging}`);
+      console.log(
+        `🚀 Executing strategy: ${strategy.name} (${strategy.modelBackend})`
+      );
+      console.log(
+        `📊 Options: timeout=${timeoutMs}ms, retries=${retryCount}, verbose=${enableVerboseLogging}`
+      );
     }
 
     let lastError: Error | null = null;
-    
+
     for (let attempt = 1; attempt <= retryCount; attempt++) {
       try {
         // Generate strategy-specific prompt with options
-        const prompt = await this.generateStrategyPrompt(taskDescription, strategy);
+        const prompt = await this.generateStrategyPrompt(
+          taskDescription,
+          strategy
+        );
 
         // Simulate swarm execution with timeout and options
         const executionResult = await Promise.race([
           this.simulateSwarmExecution(strategy, prompt, worktreePath, options),
-          new Promise<never>((_, reject) => 
-            setTimeout(() => reject(new Error(`Strategy execution timeout after ${timeoutMs}ms`)), timeoutMs)
-          )
+          new Promise<never>((_, reject) =>
+            setTimeout(
+              () =>
+                reject(
+                  new Error(`Strategy execution timeout after ${timeoutMs}ms`)
+                ),
+              timeoutMs
+            )
+          ),
         ]);
 
         const duration = Date.now() - startTime;
 
         if (enableVerboseLogging) {
-          console.log(`✅ Strategy completed: ${strategy.name} (${duration}ms, attempt ${attempt})`);
+          console.log(
+            `✅ Strategy completed: ${strategy.name} (${duration}ms, attempt ${attempt})`
+          );
         }
 
         // Success - return result
@@ -672,24 +732,26 @@ export class MultiSwarmABTesting {
             requestCount: executionResult.requestCount,
             avgResponseTime: duration / (executionResult.requestCount || 1),
             attemptNumber: attempt,
-            totalAttempts: retryCount
-          }
+            totalAttempts: retryCount,
+          },
         };
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        
+
         if (enableVerboseLogging) {
-          console.log(`❌ Strategy failed (attempt ${attempt}/${retryCount}): ${lastError.message}`);
+          console.log(
+            `❌ Strategy failed (attempt ${attempt}/${retryCount}): ${lastError.message}`
+          );
         }
-        
+
         // If this is the last attempt, we'll throw below
         if (attempt === retryCount) {
           break;
         }
-        
+
         // Wait before retry (exponential backoff based on options)
-        const retryDelay = options.retryDelay || (1000 * attempt);
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        const retryDelay = options.retryDelay || 1000 * attempt;
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
     }
 
@@ -707,13 +769,13 @@ export class MultiSwarmABTesting {
         implementationCorrectness: 0,
         maintainability: 0,
         performance: 0,
-        overallScore: 0
+        overallScore: 0,
       },
       artifacts: {
         filesCreated: [],
         linesOfCode: 0,
         functionsCreated: 0,
-        testsGenerated: 0
+        testsGenerated: 0,
       },
       worktreePath,
       error: lastError?.message || 'Unknown error',
@@ -724,9 +786,9 @@ export class MultiSwarmABTesting {
         avgResponseTime: 0,
         attemptNumber: retryCount,
         totalAttempts: retryCount,
-        timedOut: lastError?.message.includes('timeout') || false
-      }
-    }
+        timedOut: lastError?.message.includes('timeout') || false,
+      },
+    };
   }
 
   private async generateStrategyPrompt(
@@ -735,12 +797,13 @@ export class MultiSwarmABTesting {
   ): Promise<string> {
     // Use research config if available
     if (strategy.researchConfig) {
-      const adaptivePrinciples = await this.codingPrinciplesResearcher.getAdaptivePrinciples({
-        language: 'typescript' as ProgrammingLanguage,
-        domain: 'rest-api' as TaskDomain,
-        role: 'backend-developer' as DevelopmentRole,
-        ...strategy.researchConfig
-      });
+      const adaptivePrinciples =
+        await this.codingPrinciplesResearcher.getAdaptivePrinciples({
+          language:'typescript' as ProgrammingLanguage,
+          domain: 'rest-api' as TaskDomain,
+          role: 'backend-developer'as DevelopmentRole,
+          ...strategy.researchConfig,
+        });
 
       if (adaptivePrinciples) {
         return `# A/B Test Strategy: ${strategy.name}
@@ -797,18 +860,26 @@ Execute this task using the specified strategy.`;
     const qualityBoost = options.qualityBoost || 1.0;
     const speedMultiplier = options.speedMultiplier || 1.0;
     const enableDetailedMetrics = options.detailedMetrics || false;
-    
+
     // Simulate execution with realistic metrics based on strategy and options
     const baseQuality = this.getBaseQualityForModel(strategy.modelBackend);
-    const topologyMultiplier = this.getTopologyMultiplier(strategy.swarmConfig.topology);
-    const agentMultiplier = Math.min(1.2, 1 + (strategy.swarmConfig.maxAgents - 3) * 0.05);
+    const topologyMultiplier = this.getTopologyMultiplier(
+      strategy.swarmConfig.topology
+    );
+    const agentMultiplier = Math.min(
+      1.2,
+      1 + (strategy.swarmConfig.maxAgents - 3) * 0.05
+    );
 
-    const qualityScore = Math.min(100, baseQuality * topologyMultiplier * agentMultiplier * qualityBoost);
+    const qualityScore = Math.min(
+      100,
+      baseQuality * topologyMultiplier * agentMultiplier * qualityBoost
+    );
 
     // Simulate execution delay with speed multiplier
     const baseDelay = Math.random() * 2000 + 1000;
     const adjustedDelay = Math.max(100, baseDelay / speedMultiplier);
-    await new Promise(resolve => setTimeout(resolve, adjustedDelay));
+    await new Promise((resolve) => setTimeout(resolve, adjustedDelay));
 
     return {
       qualityMetrics: {
@@ -817,75 +888,102 @@ Execute this task using the specified strategy.`;
         implementationCorrectness: qualityScore + Math.random() * 6 - 3,
         maintainability: qualityScore + Math.random() * 10 - 5,
         performance: qualityScore + Math.random() * 12 - 6,
-        overallScore: qualityScore
+        overallScore: qualityScore,
       },
       artifacts: {
-        filesCreated: [
-          'src/main.ts',
+        filesCreated: ['src/main.ts',
           'src/types.ts',
           'src/utils.ts',
-          'tests/main.test.ts'
+          'tests/main.test.ts',
         ],
         linesOfCode: Math.floor(200 + Math.random() * 300),
         functionsCreated: Math.floor(8 + Math.random() * 12),
-        testsGenerated: Math.floor(3 + Math.random() * 8)
+        testsGenerated: Math.floor(3 + Math.random() * 8),
       },
-      tokenUsage: Math.floor((5000 + Math.random() * 10000) * (enableDetailedMetrics ? 1.2 : 1.0)),
-      requestCount: Math.floor((3 + Math.random() * 7) * (enableDetailedMetrics ? 1.3 : 1.0))
+      tokenUsage: Math.floor(
+        (5000 + Math.random() * 10000) * (enableDetailedMetrics ? 1.2 : 1.0)
+      ),
+      requestCount: Math.floor(
+        (3 + Math.random() * 7) * (enableDetailedMetrics ? 1.3 : 1.0)
+      ),
     };
   }
 
   private getBaseQualityForModel(model: AIModelBackend): number {
     switch (model) {
-      case 'claude-opus': return 92;
-      case 'claude-sonnet': return 88;
-      case 'claude-haiku': return 82;
-      case 'gpt-4': return 90;
-      case 'gpt-4-turbo': return 89;
-      case 'gemini-pro': return 86;
-      case 'gemini-flash': return 81;
-      case 'aider': return 84;
-      default: return 80;
+      case 'claude-opus':
+        return 92;
+      case 'claude-sonnet':
+        return 88;
+      case 'claude-haiku':
+        return 82;
+      case 'gpt-4':
+        return 90;
+      case 'gpt-4-turbo':
+        return 89;
+      case 'gemini-pro':
+        return 86;
+      case 'gemini-flash':
+        return 81;
+      case 'aider':
+        return 84;
+      default:
+        return 80;
     }
   }
 
   private getTopologyMultiplier(topology: string): number {
     switch (topology) {
-      case 'mesh': return 1.1;
-      case 'hierarchical': return 1.05;
-      case 'ring': return 1.0;
-      case 'star': return 0.95;
-      default: return 1.0;
+      case 'mesh':
+        return 1.1;
+      case 'hierarchical':
+        return 1.05;
+      case 'ring':
+        return 1.0;
+      case 'star':
+        return 0.95;
+      default:
+        return 1.0;
     }
   }
 
-  private analyzeResults(results: SwarmTestResult[]): ABTestResult['comparison'] {
-    const successfulResults = results.filter(r => r.success);
-    
+  private analyzeResults(
+    results: SwarmTestResult[]
+  ): ABTestResult['comparison'] {
+    const successfulResults = results.filter((r) => r.success);
+
     if (successfulResults.length === 0) {
       throw new Error('No successful strategy executions to compare');
     }
 
     // Find winner based on overall score
-    const winner = successfulResults.reduce((best, current) => 
-      current.qualityMetrics.overallScore > best.qualityMetrics.overallScore ? current : best
+    const winner = successfulResults.reduce((best, current) =>
+      current.qualityMetrics.overallScore > best.qualityMetrics.overallScore
+        ? current
+        : best
     );
 
     // Calculate confidence based on score difference
-    const scores = successfulResults.map(r => r.qualityMetrics.overallScore);
-    const avgScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+    const scores = successfulResults.map((r) => r.qualityMetrics.overallScore);
+    const avgScore =
+      scores.reduce((sum, score) => sum + score, 0) / scores.length;
     const scoreDiff = winner.qualityMetrics.overallScore - avgScore;
     const confidence = Math.min(1, scoreDiff / 20); // Normalize to 0-1
 
     // Determine statistical significance
-    const significance = confidence > 0.7 ? 'high' : 
-                       confidence > 0.4 ? 'medium' :
-                       confidence > 0.1 ? 'low' : 'none';
+    const significance =
+      confidence > 0.7
+        ? 'high'
+        : confidence > 0.4
+          ? 'medium'
+          : confidence > 0.1
+            ? 'low'
+            : 'none';
 
     // Calculate performance deltas
     const performanceDelta: Record<string, number> = {};
-    successfulResults.forEach(result => {
-      performanceDelta[result.strategy.id] = 
+    successfulResults.forEach((result) => {
+      performanceDelta[result.strategy.id] =
         result.qualityMetrics.overallScore - winner.qualityMetrics.overallScore;
     });
 
@@ -893,7 +991,7 @@ Execute this task using the specified strategy.`;
       winner: winner.strategy,
       confidence,
       significance,
-      performanceDelta
+      performanceDelta,
     };
   }
 
@@ -905,124 +1003,170 @@ Execute this task using the specified strategy.`;
 
     // Add comparison-specific insights based on winner and confidence
     if (comparison.winner) {
-      insights.push(`🏆 Winner: ${comparison.winner.name} with ${comparison.confidence.toFixed(1)}% confidence`);
-      
+      insights.push(
+        `🏆 Winner: ${comparison.winner.name} with ${comparison.confidence.toFixed(1)}% confidence`
+      );
+
       if (comparison.significance === 'high') {
         insights.push(`📊 High statistical significance - reliable results`);
-      } else if (comparison.significance === 'low' || comparison.significance === 'none') {
-        insights.push(`⚠️  Low statistical significance (${comparison.significance}) - results may be inconclusive`);
+      } else if (
+        comparison.significance === 'low' || comparison.significance ==='none'
+      ) {
+        insights.push(
+          `⚠️  Low statistical significance (${comparison.significance}) - results may be inconclusive`
+        );
       }
-      
+
       // Find the winner's performance delta
       const winnerDelta = comparison.performanceDelta[comparison.winner.id];
       if (winnerDelta && winnerDelta > 10) {
-        insights.push(`⚡ Significant performance advantage: ${winnerDelta.toFixed(1)}% improvement`);
+        insights.push(
+          `⚡ Significant performance advantage: ${winnerDelta.toFixed(1)}% improvement`
+        );
       } else if (winnerDelta && winnerDelta > 0) {
-        insights.push(`📈 Moderate performance advantage: ${winnerDelta.toFixed(1)}% improvement`);
+        insights.push(
+          `📈 Moderate performance advantage: ${winnerDelta.toFixed(1)}% improvement`
+        );
       }
     }
 
     // Model performance insights
     const modelPerformance = results
-      .filter(r => r.success)
-      .reduce((acc, result) => {
-        const model = result.strategy.modelBackend;
-        if (!acc[model]) acc[model] = [];
-        acc[model].push(result.qualityMetrics.overallScore);
-        return acc;
-      }, {} as Record<string, number[]>);
+      .filter((r) => r.success)
+      .reduce(
+        (acc, result) => {
+          const model = result.strategy.modelBackend;
+          if (!acc[model]) acc[model] = [];
+          acc[model].push(result.qualityMetrics.overallScore);
+          return acc;
+        },
+        {} as Record<string, number[]>
+      );
 
     Object.entries(modelPerformance).forEach(([model, scores]) => {
-      const avgScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+      const avgScore =
+        scores.reduce((sum, score) => sum + score, 0) / scores.length;
       insights.push(`${model}: Average quality score ${avgScore.toFixed(1)}`);
     });
 
     // Topology insights
     const topologyPerformance = results
-      .filter(r => r.success)
-      .reduce((acc, result) => {
-        const topology = result.strategy.swarmConfig.topology;
-        if (!acc[topology]) acc[topology] = [];
-        acc[topology].push(result.qualityMetrics.overallScore);
-        return acc;
-      }, {} as Record<string, number[]>);
+      .filter((r) => r.success)
+      .reduce(
+        (acc, result) => {
+          const topology = result.strategy.swarmConfig.topology;
+          if (!acc[topology]) acc[topology] = [];
+          acc[topology].push(result.qualityMetrics.overallScore);
+          return acc;
+        },
+        {} as Record<string, number[]>
+      );
 
     const bestTopology = Object.entries(topologyPerformance)
       .map(([topology, scores]) => ({
         topology,
-        avgScore: scores.reduce((sum, score) => sum + score, 0) / scores.length
+        avgScore: scores.reduce((sum, score) => sum + score, 0) / scores.length,
       }))
       .sort((a, b) => b.avgScore - a.avgScore)[0];
 
-    insights.push(`Best topology: ${bestTopology.topology} (${bestTopology.avgScore.toFixed(1)} avg score)`);
+    insights.push(
+      `Best topology: ${bestTopology.topology} (${bestTopology.avgScore.toFixed(1)} avg score)`
+    );
 
     // Performance vs Speed insights
     const speedVsQuality = results
-      .filter(r => r.success)
-      .map(r => ({
+      .filter((r) => r.success)
+      .map((r) => ({
         strategy: r.strategy.name,
         speed: 1000 / r.duration, // requests per second
-        quality: r.qualityMetrics.overallScore
+        quality: r.qualityMetrics.overallScore,
       }))
       .sort((a, b) => b.quality - a.quality);
 
     const fastest = speedVsQuality.sort((a, b) => b.speed - a.speed)[0];
-    insights.push(`Fastest execution: ${fastest.strategy} (${fastest.speed.toFixed(2)} ops/sec)`);
+    insights.push(
+      `Fastest execution: ${fastest.strategy} (${fastest.speed.toFixed(2)} ops/sec)`
+    );
 
     // Agent count insights
     const agentEfficiency = results
-      .filter(r => r.success)
-      .map(r => ({
+      .filter((r) => r.success)
+      .map((r) => ({
         agents: r.strategy.swarmConfig.maxAgents,
-        efficiency: r.qualityMetrics.overallScore / r.strategy.swarmConfig.maxAgents
+        efficiency:
+          r.qualityMetrics.overallScore / r.strategy.swarmConfig.maxAgents,
       }));
 
-    const avgEfficiency = agentEfficiency.reduce((sum, item) => sum + item.efficiency, 0) / agentEfficiency.length;
-    insights.push(`Average efficiency: ${avgEfficiency.toFixed(1)} quality points per agent`);
+    const avgEfficiency =
+      agentEfficiency.reduce((sum, item) => sum + item.efficiency, 0) /
+      agentEfficiency.length;
+    insights.push(
+      `Average efficiency: ${avgEfficiency.toFixed(1)} quality points per agent`
+    );
 
     return insights;
   }
 
-  private findMostSuccessfulStrategy(strategies: ABTestStrategy[]): ABTestStrategy | null {
+  private findMostSuccessfulStrategy(
+    strategies: ABTestStrategy[]
+  ): ABTestStrategy | null {
     if (strategies.length === 0) return null;
 
     // Count strategy occurrences
-    const counts = strategies.reduce((acc, strategy) => {
-      acc[strategy.id] = (acc[strategy.id] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const counts = strategies.reduce(
+      (acc, strategy) => {
+        acc[strategy.id] = (acc[strategy.id] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     // Find most frequent
-    const mostFrequentId = Object.entries(counts)
-      .sort(([,a], [,b]) => b - a)[0][0];
+    const mostFrequentId = Object.entries(counts).sort(
+      ([, a], [, b]) => b - a
+    )[0][0];
 
-    return strategies.find(s => s.id === mostFrequentId) || null;
+    return strategies.find((s) => s.id === mostFrequentId) || null;
   }
 
-  private async cleanupGitWorktrees(worktreePaths: Record<string, string>): Promise<void> {
-    logger.debug(`🧹 Cleaning up ${Object.keys(worktreePaths).length} git worktrees...`);
-    
+  private async cleanupGitWorktrees(
+    worktreePaths: Record<string, string>
+  ): Promise<void> {
+    logger.debug(
+      `🧹 Cleaning up ${Object.keys(worktreePaths).length} git worktrees...`
+    );
+
     // Use strategyId for cleanup tracking and validation
     for (const [strategyId, path] of Object.entries(worktreePaths)) {
       try {
         // Validate strategy ID and path before cleanup
         if (!strategyId || !path) {
-          logger.warn('Invalid strategyId or path for cleanup', { strategyId, path });
+          logger.warn('Invalid strategyId or path for cleanup', {
+            strategyId,
+            path,
+          });
           continue;
         }
 
         // Log cleanup with strategy context
-        logger.debug(`🗑️ Cleaning up worktree for strategy ${strategyId}: ${path}`);
-        
+        logger.debug(
+          `🗑️ Cleaning up worktree for strategy ${strategyId}: ${path}`
+        );
+
         // Track cleanup metrics by strategy
         this.recordCleanupMetrics(strategyId, path);
-        
+
         // In a real implementation, this would execute:
         // await exec(`git worktree remove ${path}`);
-        
-        logger.info(`✅ Successfully cleaned up worktree for strategy ${strategyId}`);
+
+        logger.info(
+          `✅ Successfully cleaned up worktree for strategy ${strategyId}`
+        );
       } catch (error) {
-        logger.error(`❌ Failed to cleanup worktree for strategy ${strategyId}:`, error);
+        logger.error(
+          `❌ Failed to cleanup worktree for strategy ${strategyId}:`,
+          error
+        );
       }
     }
   }
@@ -1033,7 +1177,7 @@ Execute this task using the specified strategy.`;
       strategyId,
       pathLength: path.length,
       timestamp: Date.now(),
-      cleanupType: 'git_worktree'
+      cleanupType: 'git_worktree',
     });
   }
 
@@ -1048,7 +1192,7 @@ Execute this task using the specified strategy.`;
  */
 export async function quickABTest(
   taskDescription: string,
-  scenario: 'performance' | 'quality' | 'innovation' | 'comprehensive' = 'comprehensive',
+  scenario:' | ''performance'' | ''quality'' | ''innovation'' | ''comprehensive' = 'comprehensive',
   options: {
     useGitTrees?: boolean;
     timeoutMs?: number;
@@ -1056,20 +1200,22 @@ export async function quickABTest(
 ): Promise<ABTestResult> {
   const abTesting = new MultiSwarmABTesting();
   const strategies = abTesting.createStrategySet(scenario);
-  
-  const gitConfig: GitTreeConfig | undefined = options.useGitTrees ? {
-    useGitWorktrees: true,
-    baseBranch: 'main',
-    branchPrefix: 'ab-test',
-    cleanupAfterTest: true,
-    maxWorktrees: 10
-  } : undefined;
+
+  const gitConfig: GitTreeConfig | undefined = options.useGitTrees
+    ? {
+        useGitWorktrees: true,
+        baseBranch:'main',
+        branchPrefix: 'ab-test',
+        cleanupAfterTest: true,
+        maxWorktrees: 10,
+      }
+    : undefined;
 
   return abTesting.executeABTest(taskDescription, strategies, {
     gitConfig,
     timeoutMs: options.timeoutMs || 300000, // 5 minute default timeout
     parallelExecution: true,
-    collectDetailedMetrics: true
+    collectDetailedMetrics: true,
   });
 }
 

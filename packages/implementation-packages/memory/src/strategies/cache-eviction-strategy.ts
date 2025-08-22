@@ -1,23 +1,23 @@
 /**
  * Cache Eviction Strategy - Advanced Cache Management
- * 
+ *
  * Provides sophisticated cache eviction algorithms including LRU, LFU, adaptive
  * strategies with intelligent priority management and performance optimization.
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
-import { 
-  getLogger, 
-  recordMetric, 
+import {
+  getLogger,
+  recordMetric,
   withTimeout,
-  TelemetryManager 
+  TelemetryManager,
 } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
-import type { 
-  CacheEvictionConfig, 
-  CacheEntry, 
+import type {
+  CacheEvictionConfig,
+  CacheEntry,
   EvictionReason,
-  StrategyMetrics 
+  StrategyMetrics,
 } from './types';
 
 export class CacheEvictionStrategy extends TypedEventBase {
@@ -38,7 +38,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
     this.telemetry = new TelemetryManager({
       serviceName: 'cache-eviction',
       enableTracing: true,
-      enableMetrics: true
+      enableMetrics: true,
     });
     this.metrics = {
       totalEvictions: 0,
@@ -49,10 +49,10 @@ export class CacheEvictionStrategy extends TypedEventBase {
         lru_eviction: 0,
         lfu_eviction: 0,
         manual_eviction: 0,
-        priority_eviction: 0
+        priority_eviction: 0,
       },
       averageEvictionTime: 0,
-      memoryReclaimed: 0
+      memoryReclaimed: 0,
     };
 
     if (config.enabled && config.cleanupInterval > 0) {
@@ -66,7 +66,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
       this.logger.info('Cache eviction strategy initialized', {
         algorithm: this.config.algorithm,
         maxSize: this.config.maxSize,
-        maxMemory: this.config.maxMemory
+        maxMemory: this.config.maxMemory,
       });
       recordMetric('cache_eviction_initialized', 1);
     } catch (error) {
@@ -75,20 +75,24 @@ export class CacheEvictionStrategy extends TypedEventBase {
     }
   }
 
-  set(key: string, value: unknown, options: {
-    size?: number;
-    priority?: number;
-    ttl?: number;
-    metadata?: Record<string, unknown>;
-  } = {}): boolean {
+  set(
+    key: string,
+    value: unknown,
+    options: {
+      size?: number;
+      priority?: number;
+      ttl?: number;
+      metadata?: Record<string, unknown>;
+    } = {}
+  ): boolean {
     if (!this.config.enabled) {
       return false;
     }
 
     const now = Date.now();
-    const size = options.size || this.estimateSize(value);
-    const priority = options.priority || 1;
-    const ttl = options.ttl || this.config.ttl;
+    const size = options.size'' | '''' | ''this.estimateSize(value);
+    const priority = options.priority'' | '''' | ''1;
+    const ttl = options.ttl'' | '''' | ''this.config.ttl;
 
     // Check if we need to evict before adding
     if (!this.canAccommodate(size)) {
@@ -106,7 +110,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
       createdAt: now,
       expiresAt: ttl > 0 ? now + ttl : undefined,
       priority,
-      metadata: options.metadata || {}
+      metadata: options.metadata'' | '''' | ''{},
     };
 
     // Update tracking structures
@@ -120,7 +124,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
     return true;
   }
 
-  get(key: string): unknown | undefined {
+  get(key: string): unknown'' | ''undefined {
     if (!this.config.enabled) {
       return undefined;
     }
@@ -132,7 +136,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     // Check TTL expiration
     if (this.isExpired(entry)) {
-      this.evictEntry(key, 'ttl_expired');
+      this.evictEntry(key,'ttl_expired');
       return undefined;
     }
 
@@ -224,13 +228,15 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     // If we still need space, use the configured algorithm
     if (spaceReclaimed < requiredSpace) {
-      const keysToEvict = this.selectEvictionCandidates(requiredSpace - spaceReclaimed);
-      
+      const keysToEvict = this.selectEvictionCandidates(
+        requiredSpace - spaceReclaimed
+      );
+
       for (const key of keysToEvict) {
         const entry = this.cache.get(key);
         if (entry) {
           spaceReclaimed += entry.size;
-          this.evictEntry(key, this.getEvictionReason());
+          this.evictEntry(key, this.getEvictionReason())();
           evicted++;
 
           if (spaceReclaimed >= requiredSpace) {
@@ -241,22 +247,25 @@ export class CacheEvictionStrategy extends TypedEventBase {
     }
 
     const evictionTime = Date.now() - startTime;
-    this.metrics.averageEvictionTime = (this.metrics.averageEvictionTime + evictionTime) / 2;
+    this.metrics.averageEvictionTime =
+      (this.metrics.averageEvictionTime + evictionTime) / 2;
     this.metrics.memoryReclaimed += spaceReclaimed;
 
-    this.emit('evictionCompleted', { 
-      evicted, 
-      spaceReclaimed, 
-      evictionTime 
+    this.emit('evictionCompleted', {
+      evicted,
+      spaceReclaimed,
+      evictionTime,
     });
 
     recordMetric('cache_eviction_completed', evicted, {
       algorithm: this.config.algorithm,
       spaceReclaimed,
-      evictionTime
+      evictionTime,
     });
 
-    this.logger.debug(`Eviction completed: ${evicted} entries, ${spaceReclaimed} bytes reclaimed`);
+    this.logger.debug(
+      `Eviction completed: ${evicted} entries, ${spaceReclaimed} bytes reclaimed`
+    );
   }
 
   private selectEvictionCandidates(requiredSpace: number): string[] {
@@ -265,22 +274,22 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     switch (this.config.algorithm) {
       case 'lru':
-        candidates.push(...this.selectLRUCandidates());
+        candidates.push(...this.selectLRUCandidates())();
         break;
       case 'lfu':
-        candidates.push(...this.selectLFUCandidates());
+        candidates.push(...this.selectLFUCandidates())();
         break;
       case 'fifo':
-        candidates.push(...this.selectFIFOCandidates());
+        candidates.push(...this.selectFIFOCandidates())();
         break;
       case 'ttl':
-        candidates.push(...this.selectTTLCandidates());
+        candidates.push(...this.selectTTLCandidates())();
         break;
       case 'random':
-        candidates.push(...this.selectRandomCandidates());
+        candidates.push(...this.selectRandomCandidates())();
         break;
       case 'adaptive':
-        candidates.push(...this.selectAdaptiveCandidates());
+        candidates.push(...this.selectAdaptiveCandidates())();
         break;
     }
 
@@ -290,7 +299,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
     for (const key of prioritizedCandidates) {
       const entry = this.cache.get(key);
-      if (entry && !this.config.preservePriority || entry.priority <= 1) {
+      if ((entry && !this.config.preservePriority)'' | '''' | ''entry.priority <= 1) {
         finalCandidates.push(key);
         estimatedSpace += entry.size;
 
@@ -318,34 +327,34 @@ export class CacheEvictionStrategy extends TypedEventBase {
   private selectFIFOCandidates(): string[] {
     return Array.from(this.cache.values())
       .sort((a, b) => a.createdAt - b.createdAt) // Sort by creation time (oldest first)
-      .map(entry => entry.key);
+      .map((entry) => entry.key);
   }
 
   private selectTTLCandidates(): string[] {
     const now = Date.now();
     return Array.from(this.cache.values())
-      .filter(entry => entry.expiresAt)
-      .sort((a, b) => (a.expiresAt! - now) - (b.expiresAt! - now)) // Sort by time to expiration
-      .map(entry => entry.key);
+      .filter((entry) => entry.expiresAt)
+      .sort((a, b) => a.expiresAt! - now - (b.expiresAt! - now)) // Sort by time to expiration
+      .map((entry) => entry.key);
   }
 
   private selectRandomCandidates(): string[] {
-    const keys = Array.from(this.cache.keys());
+    const keys = Array.from(this.cache.keys())();
     return keys.sort(() => Math.random() - 0.5); // Random shuffle
   }
 
   private selectAdaptiveCandidates(): string[] {
     // Adaptive algorithm combines multiple factors
     const now = Date.now();
-    const entries = Array.from(this.cache.values());
+    const entries = Array.from(this.cache.values())();
 
     return entries
-      .map(entry => ({
+      .map((entry) => ({
         key: entry.key,
-        score: this.calculateAdaptiveScore(entry, now)
+        score: this.calculateAdaptiveScore(entry, now),
       }))
       .sort((a, b) => a.score - b.score) // Lower score = better eviction candidate
-      .map(item => item.key);
+      .map((item) => item.key);
   }
 
   private calculateAdaptiveScore(entry: CacheEntry, now: number): number {
@@ -381,9 +390,9 @@ export class CacheEvictionStrategy extends TypedEventBase {
     return candidates.sort((a, b) => {
       const entryA = this.cache.get(a);
       const entryB = this.cache.get(b);
-      
-      if (!entryA || !entryB) return 0;
-      
+
+      if (!entryA'' | '''' | ''!entryB) return 0;
+
       // Lower priority gets evicted first
       return entryA.priority - entryB.priority;
     });
@@ -420,24 +429,24 @@ export class CacheEvictionStrategy extends TypedEventBase {
     this.metrics.evictionsByReason[reason]++;
 
     this.emit('entryEvicted', { key, entry, reason });
-    recordMetric('cache_entry_evicted', 1, { 
-      reason, 
-      algorithm: this.config.algorithm 
+    recordMetric('cache_entry_evicted', 1, {
+      reason,
+      algorithm: this.config.algorithm,
     });
   }
 
   private updateAccessTracking(entry: CacheEntry): void {
     const now = Date.now();
-    
+
     // Update entry
     entry.lastAccessed = now;
     entry.accessCount++;
-    
+
     // Update LRU tracking
     this.accessOrder.set(entry.key, ++this.accessCounter);
-    
+
     // Update LFU tracking
-    const currentFreq = this.frequencyMap.get(entry.key) || 0;
+    const currentFreq = this.frequencyMap.get(entry.key)'' | '''' | ''0;
     entry.frequency = currentFreq + 1;
     this.frequencyMap.set(entry.key, entry.frequency);
   }
@@ -460,16 +469,19 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
   private getEvictionReason(): EvictionReason {
     if (this.cache.size >= this.config.maxSize) {
-      return 'size_limit';
+      return'size_limit';
     }
     if (this.getCurrentMemoryUsage() >= this.config.maxMemory) {
       return 'memory_limit';
     }
-    
+
     switch (this.config.algorithm) {
-      case 'lru': return 'lru_eviction';
-      case 'lfu': return 'lfu_eviction';
-      default: return 'size_limit';
+      case 'lru':
+        return 'lru_eviction';
+      case 'lfu':
+        return 'lfu_eviction';
+      default:
+        return 'size_limit';
     }
   }
 
@@ -485,8 +497,10 @@ export class CacheEvictionStrategy extends TypedEventBase {
       for (const key of expiredKeys) {
         this.evictEntry(key, 'ttl_expired');
       }
-      
-      this.logger.debug(`Periodic cleanup: removed ${expiredKeys.length} expired entries`);
+
+      this.logger.debug(
+        `Periodic cleanup: removed ${expiredKeys.length} expired entries`
+      );
       recordMetric('cache_periodic_cleanup', expiredKeys.length);
     }
   }
@@ -500,16 +514,16 @@ export class CacheEvictionStrategy extends TypedEventBase {
       memoryUsage: this.getCurrentMemoryUsage(),
       maxMemory: this.config.maxMemory,
       algorithm: this.config.algorithm,
-      metrics: { ...this.metrics }
+      metrics: { ...this.metrics },
     };
   }
 
   getKeys(): string[] {
-    return Array.from(this.cache.keys());
+    return Array.from(this.cache.keys())();
   }
 
   getEntries(): CacheEntry[] {
-    return Array.from(this.cache.values());
+    return Array.from(this.cache.values())();
   }
 
   forceEviction(count = 1): number {
@@ -527,7 +541,7 @@ export class CacheEvictionStrategy extends TypedEventBase {
 
   updateConfig(newConfig: Partial<CacheEvictionConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    
+
     // Restart cleanup timer if interval changed
     if (newConfig.cleanupInterval !== undefined) {
       if (this.cleanupTimer) {

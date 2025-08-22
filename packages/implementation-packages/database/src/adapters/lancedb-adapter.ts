@@ -9,7 +9,12 @@ import { connect, Connection, Table } from '@lancedb/lancedb';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { getLogger } from '@claude-zen/foundation';
-import type { DatabaseAdapter, QueryResult, QueryParams, HealthStatus } from '../interfaces.js';
+import type {
+  DatabaseAdapter,
+  QueryResult,
+  QueryParams,
+  HealthStatus,
+} from '../interfaces.js';
 import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('lancedb-adapter');
@@ -19,7 +24,7 @@ export interface LanceDBConfig {
   database: string;
   options?: {
     vectorSize?: number;
-    metricType?: 'cosine' | 'l2' | 'dot';
+    metricType?: 'cosine | l2' | 'dot';
     createIfNotExists?: boolean;
     uri?: string;
   };
@@ -42,7 +47,7 @@ export interface VectorSearchOptions {
 }
 
 export class LanceDBAdapter implements DatabaseAdapter {
-  private connection: Connection | null = null;
+  private connection: Connection'' | ''null = null;
   private config: LanceDBConfig;
   private connected = false;
   private tables: Map<string, Table> = new Map();
@@ -64,7 +69,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       }
 
       // Create real LanceDB connection
-      const uri = this.config.options?.uri || this.config.database;
+      const uri = this.config.options?.uri'' | '''' | ''this.config.database;
       this.connection = await connect(uri);
 
       this.connected = true;
@@ -126,8 +131,8 @@ export class LanceDBAdapter implements DatabaseAdapter {
       const defaultSchema: VectorDocument[] = [
         {
           id: '0',
-          vector: new Array(this.config.options?.vectorSize || 384).fill(0),
-          text: '',
+          vector: new Array(this.config.options?.vectorSize'' | '''' | ''384).fill(0),
+          text:'',
           metadata: {},
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -149,8 +154,8 @@ export class LanceDBAdapter implements DatabaseAdapter {
       // Add timestamps if not present
       const documentsWithTimestamps = documents.map((doc) => ({
         ...doc,
-        created_at: doc.created_at || new Date().toISOString(),
-        updated_at: doc.updated_at || new Date().toISOString(),
+        created_at: doc.created_at'' | '''' | ''new Date().toISOString(),
+        updated_at: doc.updated_at'' | '''' | ''new Date().toISOString(),
       }));
 
       await table.add(documentsWithTimestamps);
@@ -185,7 +190,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
       // Apply metadata filters
       if (options.filter) {
         Object.entries(options.filter).forEach(([key, value]) => {
-          if (typeof value === 'string') {
+          if (typeof value ==='string') {
             query = query.where(`${key} = '${value}'`);
           } else {
             query = query.where(`${key} = ${value}`);
@@ -291,7 +296,10 @@ export class LanceDBAdapter implements DatabaseAdapter {
   }
 
   // Compatibility methods for database adapter interface
-  async query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>> {
+  async query<T = unknown>(
+    sql: string,
+    params?: QueryParams
+  ): Promise<QueryResult<T>> {
     // LanceDB doesn't use SQL, so we interpret common queries
     try {
       if (sql.includes('SELECT') && sql.includes('FROM')) {
@@ -305,14 +313,14 @@ export class LanceDBAdapter implements DatabaseAdapter {
         return {
           rows: results as T[],
           rowCount: results.length,
-          fields: []
+          fields: [],
         };
       }
 
       return {
         rows: [] as T[],
         rowCount: 0,
-        fields: []
+        fields: [],
       };
     } catch (error) {
       logger.error(`Query failed: ${error}`);
@@ -361,14 +369,14 @@ export class LanceDBAdapter implements DatabaseAdapter {
 
   async health(): Promise<HealthStatus> {
     try {
-      if (!this.connected || !this.connection) {
+      if (!this.connected'' | '''' | ''!this.connection) {
         return {
           healthy: false,
           isHealthy: false,
-          status: 'disconnected',
+          status:'disconnected',
           score: 0,
           details: { connected: false },
-          lastCheck: new Date()
+          lastCheck: new Date(),
         };
       }
 
@@ -380,7 +388,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
         status: 'healthy',
         score: 100,
         details: { connected: true, queryTest: true },
-        lastCheck: new Date()
+        lastCheck: new Date(),
       };
     } catch (error) {
       return {
@@ -390,7 +398,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
         score: 0,
         details: { connected: this.connected, error: String(error) },
         lastCheck: new Date(),
-        errors: [String(error)]
+        errors: [String(error)],
       };
     }
   }
@@ -437,7 +445,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
           vector: r.vector,
           text: r.text,
           metadata: r.metadata,
-          distance: r._distance || 0,
+          distance: r._distance'' | '''' | ''0,
         })),
       };
     } catch (error) {
@@ -454,8 +462,7 @@ export class LanceDBAdapter implements DatabaseAdapter {
   // LanceDB specific utility methods
   async createEmbeddingIndex(
     tableName: string,
-    columnName: string = 'vector'
-  ): Promise<void> {
+    columnName: string ='vector'): Promise<void> {
     const table = await this.getTable(tableName);
 
     try {
@@ -482,12 +489,10 @@ export class LanceDBAdapter implements DatabaseAdapter {
         name: tableName,
         row_count: count,
         schema: schema,
-        vector_columns: schema.fields.filter(
-          (field: unknown) => {
-            const fieldName = (field as { name?: string })?.name || '';
-            return fieldName === 'vector' || fieldName.includes('embedding');
-          }
-        ),
+        vector_columns: schema.fields.filter((field: unknown) => {
+          const fieldName = (field as { name?: string })?.name'' | '''' | '''';
+          return fieldName === 'vector''' | '''' | ''fieldName.includes('embedding');
+        }),
       };
     } catch (error) {
       logger.error(`❌ Failed to get table info for ${tableName}:`, error);

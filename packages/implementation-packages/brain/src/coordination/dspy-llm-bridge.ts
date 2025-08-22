@@ -1,16 +1,12 @@
 /**
  * @file Simplified DSPy-LLM Bridge - Fallback Implementation
- * 
+ *
  * Provides fallback implementations for DSPy integration when the dspy package
  * is not available. This allows the brain package to compile without dependencies.
  */
 
-import {
-  getLogger,
-  type Logger
-} from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 // Database access via infrastructure facade
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
 
 // Simple fallback implementations
 const logger = getLogger('dspy-llm-bridge-fallback');
@@ -18,13 +14,13 @@ const logger = getLogger('dspy-llm-bridge-fallback');
 // Use logger for initialization tracking
 logger.info('DSPy LLM Bridge fallback implementation loaded', {
   mode: 'fallback',
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 });
 
 export interface DSPyCoordinationTask {
   id: string;
   type: string;
-  complexity?: 'simple' | 'moderate' | 'complex' | 'heavy';
+  complexity?: 'simple | moderate' | 'complex''' | '''heavy';
   data?: any;
   requirements?: any;
   // Additional flexible properties
@@ -35,7 +31,7 @@ export interface DSPyCoordinationTask {
 }
 
 export interface DSPyOptimizationConfig {
-  teleprompter?: 'BootstrapFewShot' | 'COPRO' | 'MIPRO' | 'Ensemble' | 'MIPROv2';
+  teleprompter?:'' | '''BootstrapFewShot | COPRO' | 'MIPRO' | 'Ensemble' | 'MIPROv2';
   optimizationSteps?: number;
   maxTokens?: number;
   temperature?: number;
@@ -50,7 +46,7 @@ export interface CoordinationResult {
   result: any;
   reasoning: string[];
   confidence: number;
-  success?: boolean;  // Add success property
+  success?: boolean; // Add success property
   metrics: {
     executionTime: number;
     tokensUsed: number;
@@ -79,27 +75,34 @@ export class DSPyLLMBridge {
   private databaseAccess: any; // DatabaseAccess via infrastructure facade
 
   constructor(
-    configOrDatabaseAccess: any,  // Can be config object or database access
-    neuralBridge?: any  // Optional neural bridge parameter
+    configOrDatabaseAccess: any, // Can be config object or database access
+    neuralBridge?: any // Optional neural bridge parameter
   ) {
     this.logger = getLogger('DSPyLLMBridge');
-    
+
     // Handle different constructor signatures
-    if (configOrDatabaseAccess && typeof configOrDatabaseAccess === 'object' && 'query' in configOrDatabaseAccess) {
+    if (
+      configOrDatabaseAccess &&
+      typeof configOrDatabaseAccess === 'object' &&
+      'query' in configOrDatabaseAccess
+    ) {
       // It's a DatabaseAccess object
       this.databaseAccess = configOrDatabaseAccess;
     } else {
       // It's a config object, create a fallback database access
       this.databaseAccess = {
         query: async () => ({ rows: [] }),
-        execute: async () => ({ changes: 0 })
+        execute: async () => ({ changes: 0 }),
       } as any;
     }
-    
-    this.logger.info('DSPy LLM Bridge initialized with fallback implementations', {
-      neuralBridgeProvided: !!neuralBridge,
-      hasDatabase: !!this.databaseAccess
-    });
+
+    this.logger.info(
+      'DSPy LLM Bridge initialized with fallback implementations',
+      {
+        neuralBridgeProvided: !!neuralBridge,
+        hasDatabase: !!this.databaseAccess,
+      }
+    );
   }
 
   /**
@@ -109,30 +112,33 @@ export class DSPyLLMBridge {
     task: DSPyCoordinationTask,
     config: DSPyOptimizationConfig = {}
   ): Promise<CoordinationResult> {
-    this.logger.info('Executing coordination task (fallback mode)', { task: task.id, type: task.type });
-    
+    this.logger.info('Executing coordination task (fallback mode)', {
+      task: task.id,
+      type: task.type,
+    });
+
     // Use config to enhance fallback behavior
-    const optimizationSteps = config.optimizationSteps || 1;
-    const maxTokens = config.maxTokens || 1000;
-    const teleprompter = config.teleprompter || 'BootstrapFewShot';
-    
+    const optimizationSteps = config.optimizationSteps'' | '''' | ''1;
+    const maxTokens = config.maxTokens'' | '''' | ''1000;
+    const teleprompter = config.teleprompter'' | '''' | '''BootstrapFewShot';
+
     this.logger.debug('Config applied to coordination task', {
       optimizationSteps,
       maxTokens,
       teleprompter,
-      hybridMode: config.hybridMode || false
+      hybridMode: config.hybridMode'' | '''' | ''false,
     });
-    
+
     // Fallback implementation
     return {
-      result: 'fallback_coordination_result',
+      result:'fallback_coordination_result',
       reasoning: ['Fallback coordination executed'],
       confidence: 0.7,
-      success: true,  // Add success property
+      success: true, // Add success property
       metrics: {
         executionTime: 100,
-        tokensUsed: 50
-      }
+        tokensUsed: 50,
+      },
     };
   }
 
@@ -154,11 +160,11 @@ export class DSPyLLMBridge {
     result: any,
     feedback: { success: boolean; improvements?: string[] }
   ): Promise<void> {
-    this.logger.info('Learning from coordination feedback (fallback mode)', { 
-      task: task.id, 
-      success: feedback.success 
+    this.logger.info('Learning from coordination feedback (fallback mode)', {
+      task: task.id,
+      success: feedback.success,
     });
-    
+
     // Fallback - would normally update DSPy optimization
   }
 
@@ -170,7 +176,7 @@ export class DSPyLLMBridge {
       tasksExecuted: 0,
       optimizationAccuracy: 0.8,
       averageLatency: 100,
-      fallbackMode: true
+      fallbackMode: true,
     };
   }
 

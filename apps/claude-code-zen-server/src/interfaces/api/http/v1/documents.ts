@@ -23,27 +23,27 @@
  * @since 2024-01-01
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import { getDatabaseAccess } from '@claude-zen/infrastructure');
-import { type Request, type Response, Router } from 'express');
+import { getLogger } from '@claude-zen/foundation';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import { type Request, type Response, Router } from 'express';
 
-import type { StoryDocumentEntity } from './../../../entities/document-entities');
-import { DocumentManager } from './../../../services/database/document-service');
-import { ArchitectureRunwayService } from './../../../services/document/architecture-runway-service');
+import type { StoryDocumentEntity } from './../../../entities/document-entities';
+import { DocumentManager } from './../../../services/database/document-service';
+import { ArchitectureRunwayService } from './../../../services/document/architecture-runway-service';
 
 // Document services
-import { BusinessEpicService } from './../../../services/document/business-epic-service');
-import { documentSchemaManager } from './../../../services/document/document-schemas');
-import { FeatureService } from './../../../services/document/feature-service');
-import { ProgramEpicService } from './../../../services/document/program-epic-service');
-import { StoryService } from './../../../services/document/story-service');
+import { BusinessEpicService } from './../../../services/document/business-epic-service';
+import { documentSchemaManager } from './../../../services/document/document-schemas';
+import { FeatureService } from './../../../services/document/feature-service';
+import { ProgramEpicService } from './../../../services/document/program-epic-service';
+import { StoryService } from './../../../services/document/story-service';
 
 // Document entities and schemas
 
 // SPARC integration
-import { SPARCDocumentIntegration } from './../../../services/sparc/sparc-document-integration');
-import { asyncHandler } from './middleware/errors');
-import { LogLevel, log } from './middleware/logging');
+import { SPARCDocumentIntegration } from './../../../services/sparc/sparc-document-integration';
+import { asyncHandler } from './middleware/errors';
+import { LogLevel, log } from './middleware/logging';
 
 /**
  * Document type mapping for route handling
@@ -274,7 +274,7 @@ export const createDocumentRoutes = (): Router => {
         // Validate required fields
         if (!documentData.type || !documentData.title) {
           return res.status(400).json({
-            error: 'Bad Request',
+            error:'Bad Request',
             message: 'Document type and title are required',
           });
         }
@@ -482,11 +482,10 @@ export const createDocumentRoutes = (): Router => {
         const featureDocument: any = featureId
           ? (await documentManager.getDocument(featureId)) || null
           : this.findParentFeature
-            ? (await this.findParentFeature(document as StoryDocumentEntity)) ||
-              null
+            ? (await this.findParentFeature(document as StoryDocumentEntity)) || null
             : null;
 
-        if (!featureDocument || featureDocument.type !== 'feature') {
+        if (!featureDocument || featureDocument.type !=='feature') {
           return res.status(400).json({
             error: 'Feature context required',
             message:
@@ -635,7 +634,7 @@ export const createDocumentRoutes = (): Router => {
       try {
         const document = await documentManager.getDocument(documentId);
 
-        if (!document || document.type !== 'story') {
+        if (!document || document.type !=='story') {
           return res.status(404).json({
             error: 'Story document not found',
             message: `Story document with ID '${documentId}' does not exist`,
@@ -689,7 +688,7 @@ export const createDocumentRoutes = (): Router => {
           timestamp: new Date()?.toISOString,
         });
       } catch (error) {
-        log(LogLevel.ERROR, 'Failed to get SPARC status', req, {
+        log(LogLevel.ERROR,'Failed to get SPARC status', req, {
           documentId,
           error: (error as Error).message,
         });
@@ -802,7 +801,7 @@ export const createDocumentRoutes = (): Router => {
       const feature = await documentManager.getDocument(
         story.parent_feature_id
       );
-      return feature?.type === 'feature' ? (feature as any) : null;
+      return feature?.type ==='feature' ? (feature as any) : null;
     }
 
     // Search for Feature that contains this Story
@@ -885,7 +884,7 @@ async function findParentFeature(
 ): Promise<any | null> {
   if (story.parent_feature_id) {
     const feature = await documentManager.getDocument(story.parent_feature_id);
-    return feature?.type === 'feature' ? (feature as any) : null;
+    return feature?.type ==='feature' ? (feature as any) : null;
   }
 
   // Search for Feature that contains this Story based on project relationship

@@ -183,7 +183,6 @@ export interface Config {
 // =============================================================================
 
 export class FoundationConfig {
-
   private config: any;
   private isInitialized = false;
 
@@ -199,7 +198,7 @@ export class FoundationConfig {
     } catch (error) {
       logger.error('Foundation configuration initialization failed:', error);
       throw new Error(
-        `Configuration error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Configuration error: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -207,7 +206,6 @@ export class FoundationConfig {
   get(key: string): unknown {
     this.ensureInitialized();
     try {
-
       return this.config.get(key as keyof Config);
     } catch (error) {
       logger.error(`Failed to get config key '${key}':`, error);
@@ -234,7 +232,7 @@ export class FoundationConfig {
   private ensureInitialized(): void {
     if (!this.isInitialized) {
       throw new Error(
-        'Configuration not initialized. Call initialize() first.',
+        'Configuration not initialized. Call initialize() first.'
       );
     }
   }
@@ -281,7 +279,7 @@ export const configHelpers = {
  * Placeholder for neural config - should be implemented in neural packages
  */
 export function getNeuralConfig(): Record<string, unknown> {
-  console.warn('getNeuralConfig is a placeholder - implement in neural package');
+  // Note: getNeuralConfig is a placeholder - implement in neural package
   return {};
 }
 

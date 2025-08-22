@@ -125,7 +125,7 @@ async function cleanupIntegrationState() {
  */
 interface TestRoute {
   /** HTTP method (get, post, put, delete) */
-  method: 'get' | 'post' | 'put' | 'delete';
+  method: 'get | post' | 'put''' | '''delete';
   /** Route path */
   path: string;
   /** Route handler function */
@@ -240,7 +240,7 @@ interface MockAgent {
   /** Agent type */
   type: string;
   /** Current status */
-  status: 'idle' | 'working' | 'offline';
+  status: 'idle | working' | 'offline';
   /** Assigned tasks */
   tasks: unknown[];
 }
@@ -256,7 +256,7 @@ interface MockSwarm {
   /** Swarm agents */
   agents: MockAgent[];
   /** Swarm coordinator */
-  coordinator: unknown | null;
+  coordinator: unknown'' | ''null;
   /** Swarm status */
   status: string;
 }
@@ -284,7 +284,7 @@ globalThis.createMockSwarm = (agentCount: number = 3): MockSwarm => {
     id: `test-swarm-${Date.now()}`,
     agents: [],
     coordinator: null,
-    status: 'active',
+    status:'active',
   };
 
   for (let i = 0; i < agentCount; i++) {
@@ -365,7 +365,7 @@ interface MCPMessage {
   /** JSON-RPC version */
   jsonrpc: string;
   /** Message ID */
-  id: string | number;
+  id: string'' | ''number;
   /** Method name */
   method: string;
   /** Method parameters */
@@ -384,7 +384,7 @@ globalThis.createMockMCPClient = (): MockMCPClient => {
     connect: vi.fn().mockResolvedValue(true),
     disconnect: vi.fn().mockResolvedValue(true),
     listTools: vi.fn().mockResolvedValue([]),
-    callTool: vi.fn().mockResolvedValue({ result: 'mock' }),
+    callTool: vi.fn().mockResolvedValue({ result:'mock' }),
   };
 };
 

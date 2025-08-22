@@ -1,24 +1,24 @@
 /**
  * @fileoverview Load Balancing Package - Advanced Agent Load Balancing and Resource Optimization
- * 
+ *
  * Provides comprehensive load balancing capabilities for claude-code-zen swarm coordination
  * including ML-predictive routing, real-time health monitoring, and adaptive resource management.
- * 
+ *
  * Key Features:
  * - ML-predictive agent assignment with 95%+ accuracy
  * - Real-time health monitoring with automatic failover
  * - Adaptive load balancing algorithms
  * - Auto-scaling based on demand and performance
  * - QoS enforcement and emergency protocols
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 1.0.0
- * 
+ *
  * @example
  * ```typescript
  * import { LoadBalancer, LoadBalancingConfig } from '@claude-zen/load-balancing';
- * 
+ *
  * const loadBalancer = new LoadBalancer({
  *   algorithm: 'ml-predictive',
  *   healthCheckInterval: 5000,
@@ -30,9 +30,9 @@
  *     targetUtilization: 0.7
  *   }
  * });
- * 
+ *
  * await loadBalancer.start();
- * 
+ *
  * const assignment = await loadBalancer.routeTask({
  *   type: 'neural-training',
  *   priority: 'high',
@@ -45,9 +45,9 @@
 export * from './main';
 export * from './types';
 // Export interfaces without re-exporting duplicates
-export type { 
+export type {
   LoadBalancingAlgorithm,
-  HealthChecker as HealthCheckerInterface 
+  HealthChecker as HealthCheckerInterface,
 } from './interfaces';
 
 // Export algorithm implementations

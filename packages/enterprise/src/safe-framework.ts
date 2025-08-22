@@ -40,8 +40,8 @@ export interface WorkAssignment {
   storyId: string;
   featureId: string;
   assignedTo: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'pending' | 'in_progress' | 'completed' | 'blocked';
+  priority: 'low | medium' | 'high''' | '''critical';
+  status: 'pending | in_progress' | 'completed''' | '''blocked';
   sparcPhase?: string;
   estimatedHours: number;
   description: string;
@@ -83,25 +83,35 @@ export class DatabaseSPARCBridge {
     }
 
     try {
-      logger.info('Initializing DatabaseSPARCBridge with real SAFe framework package');
+      logger.info(
+        'Initializing DatabaseSPARCBridge with real SAFe framework package',
+      );
 
       // Try to load real SAFe framework package
-      const { DatabaseSPARCBridge: RealBridge } = await import('@claude-zen/safe-framework');
+      const { DatabaseSPARCBridge: RealBridge } = await import(
+        '@claude-zen/safe-framework'
+      );
 
       this.realBridge = new RealBridge({} as any, {} as any, {} as any);
       await this.realBridge.initialize();
       this.initialized = true;
 
-      logger.info('DatabaseSPARCBridge initialized successfully with real package');
-
-    } catch (error) {
-      logger.warn('Real SAFe framework package not available, using fallback implementation', error);
+      logger.info(
+        'DatabaseSPARCBridge initialized successfully with real package',
+      );
+    } catch {
+      logger.warn(
+        'Real SAFe framework package not available, using fallback implementation',
+      );
       this.realBridge = this.createFallbackBridge();
       this.initialized = true;
     }
   }
 
-  async assignWork(storyId: string, featureContext: any): Promise<WorkAssignment> {
+  async assignWork(
+    storyId: string,
+    featureContext: any,
+  ): Promise<WorkAssignment> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -114,7 +124,7 @@ export class DatabaseSPARCBridge {
     return {
       id: `work-${Date.now()}`,
       storyId,
-      featureId: featureContext.featureId || 'unknown',
+      featureId: featureContext.featureId'' | '''' | '''unknown',
       assignedTo: 'fallback-agent',
       priority: 'medium',
       status: 'pending',
@@ -123,12 +133,17 @@ export class DatabaseSPARCBridge {
     };
   }
 
-  async recordImplementation(workId: string, result: Partial<ImplementationResult>): Promise<ImplementationResult> {
+  async recordImplementation(
+    workId: string,
+    result: Partial<ImplementationResult>,
+  ): Promise<ImplementationResult> {
     if (!this.initialized) {
       await this.initialize();
     }
 
-    if (this.realBridge && typeof this.realBridge.recordImplementation === 'function') {
+    if (
+      this.realBridge &&
+      typeof this.realBridge.recordImplementation === 'function') {
       return await this.realBridge.recordImplementation(workId, result);
     }
 
@@ -136,8 +151,8 @@ export class DatabaseSPARCBridge {
     return {
       workAssignmentId: workId,
       success: true,
-      deliverables: result.deliverables || ['fallback-deliverable'],
-      qualityMetrics: result.qualityMetrics || { quality: 0.8 },
+      deliverables: result.deliverables'' | '''' | ''['fallback-deliverable'],
+      qualityMetrics: result.qualityMetrics'' | '''' | ''{ quality: 0.8 },
       completedAt: new Date(),
       sparcMetrics: {
         phaseCompletionRate: 0.9,
@@ -168,7 +183,7 @@ export class SafePortfolioManager {
 
   // Method to access the real manager (ensures realManager is used)
   getRealManager() {
-    return this.realManager || { status: 'fallback' };
+    return this.realManager'' | '''' | ''{ status:'fallback' };
   }
 
   private async initializeManager(config: any) {
@@ -203,12 +218,19 @@ export class SafeProgramIncrementManager {
       return;
     }
     try {
-      const { ProgramIncrementManager } = await import('@claude-zen/safe-framework');
-      this.realManager = new ProgramIncrementManager({} as any, {} as any, {} as any, config);
+      const { ProgramIncrementManager } = await import(
+        '@claude-zen/safe-framework'
+      );
+      this.realManager = new ProgramIncrementManager(
+        {} as any,
+        {} as any,
+        {} as any,
+        config,
+      );
       this.initialized = true;
       logger.debug('ProgramIncrementManager initialized with real package');
-    } catch (error) {
-      logger.warn('Using fallback ProgramIncrementManager', error);
+    } catch {
+      logger.warn('Using fallback ProgramIncrementManager');
       this.realManager = this.createFallbackPIManager();
       this.initialized = true;
     }
@@ -217,8 +239,10 @@ export class SafeProgramIncrementManager {
   private createFallbackPIManager() {
     return {
       status: 'fallback',
-      planProgramIncrement: () => Promise.resolve({ success: true, message: 'Fallback PI planning' }),
-      executeProgramIncrement: () => Promise.resolve({ success: true, message: 'Fallback PI execution' }),
+      planProgramIncrement: () =>
+        Promise.resolve({ success: true, message: 'Fallback PI planning' }),
+      executeProgramIncrement: () =>
+        Promise.resolve({ success: true, message: 'Fallback PI execution' }),
     };
   }
 
@@ -226,7 +250,10 @@ export class SafeProgramIncrementManager {
     if (!this.initialized) {
       await this.initialize({});
     }
-    if (this.realManager && typeof this.realManager.planProgramIncrement === 'function') {
+    if (
+      this.realManager &&
+      typeof this.realManager.planProgramIncrement === 'function'
+    ) {
       return await this.realManager.planProgramIncrement(config);
     }
     return this.realManager.planProgramIncrement();
@@ -236,7 +263,10 @@ export class SafeProgramIncrementManager {
     if (!this.initialized) {
       await this.initialize({});
     }
-    if (this.realManager && typeof this.realManager.executeProgramIncrement === 'function') {
+    if (
+      this.realManager &&
+      typeof this.realManager.executeProgramIncrement === 'function'
+    ) {
       return await this.realManager.executeProgramIncrement(config);
     }
     return this.realManager.executeProgramIncrement();
@@ -257,11 +287,19 @@ export class SafeValueStreamMapper {
     }
     try {
       const { ValueStreamMapper } = await import('@claude-zen/safe-framework');
-      this.realManager = new ValueStreamMapper({} as any, {} as any, {} as any, {} as any, {} as any, {} as any, config);
+      this.realManager = new ValueStreamMapper(
+        {} as any,
+        {} as any,
+        {} as any,
+        {} as any,
+        {} as any,
+        {} as any,
+        config,
+      );
       this.initialized = true;
       logger.debug('ValueStreamMapper initialized with real package');
-    } catch (error) {
-      logger.warn('Using fallback ValueStreamMapper', error);
+    } catch {
+      logger.warn('Using fallback ValueStreamMapper');
       this.realManager = this.createFallbackVSM();
       this.initialized = true;
     }
@@ -270,8 +308,16 @@ export class SafeValueStreamMapper {
   private createFallbackVSM() {
     return {
       status: 'fallback',
-      mapValueStream: () => Promise.resolve({ success: true, message: 'Fallback value stream mapping' }),
-      optimizeFlow: () => Promise.resolve({ success: true, message: 'Fallback flow optimization' }),
+      mapValueStream: () =>
+        Promise.resolve({
+          success: true,
+          message: 'Fallback value stream mapping',
+        }),
+      optimizeFlow: () =>
+        Promise.resolve({
+          success: true,
+          message: 'Fallback flow optimization',
+        }),
     };
   }
 
@@ -279,7 +325,10 @@ export class SafeValueStreamMapper {
     if (!this.initialized) {
       await this.initialize({});
     }
-    if (this.realManager && typeof this.realManager.mapValueStream === 'function') {
+    if (
+      this.realManager &&
+      typeof this.realManager.mapValueStream === 'function'
+    ) {
       return await this.realManager.mapValueStream(config);
     }
     return this.realManager.mapValueStream();
@@ -289,7 +338,10 @@ export class SafeValueStreamMapper {
     if (!this.initialized) {
       await this.initialize({});
     }
-    if (this.realManager && typeof this.realManager.optimizeFlow === 'function') {
+    if (
+      this.realManager &&
+      typeof this.realManager.optimizeFlow === 'function'
+    ) {
       return await this.realManager.optimizeFlow(config);
     }
     return this.realManager.optimizeFlow();
@@ -309,12 +361,18 @@ export class SafeArchitectureRunwayManager {
       return;
     }
     try {
-      const { ArchitectureRunwayManager } = await import('@claude-zen/safe-framework');
-      this.realManager = new ArchitectureRunwayManager({} as any, {} as any, config);
+      const { ArchitectureRunwayManager } = await import(
+        '@claude-zen/safe-framework'
+      );
+      this.realManager = new ArchitectureRunwayManager(
+        {} as any,
+        {} as any,
+        config,
+      );
       this.initialized = true;
       logger.debug('ArchitectureRunwayManager initialized with real package');
-    } catch (error) {
-      logger.warn('Using fallback ArchitectureRunwayManager', error);
+    } catch {
+      logger.warn('Using fallback ArchitectureRunwayManager');
       this.realManager = this.createFallbackARM();
       this.initialized = true;
     }
@@ -323,8 +381,16 @@ export class SafeArchitectureRunwayManager {
   private createFallbackARM() {
     return {
       status: 'fallback',
-      manageRunway: () => Promise.resolve({ success: true, message: 'Fallback runway management' }),
-      trackArchitecturalWork: () => Promise.resolve({ success: true, message: 'Fallback architecture tracking' }),
+      manageRunway: () =>
+        Promise.resolve({
+          success: true,
+          message: 'Fallback runway management',
+        }),
+      trackArchitecturalWork: () =>
+        Promise.resolve({
+          success: true,
+          message: 'Fallback architecture tracking',
+        }),
     };
   }
 
@@ -332,7 +398,10 @@ export class SafeArchitectureRunwayManager {
     if (!this.initialized) {
       await this.initialize({});
     }
-    if (this.realManager && typeof this.realManager.manageRunway === 'function') {
+    if (
+      this.realManager &&
+      typeof this.realManager.manageRunway === 'function'
+    ) {
       return await this.realManager.manageRunway(config);
     }
     return this.realManager.manageRunway();
@@ -342,7 +411,10 @@ export class SafeArchitectureRunwayManager {
     if (!this.initialized) {
       await this.initialize({});
     }
-    if (this.realManager && typeof this.realManager.trackArchitecturalWork === 'function') {
+    if (
+      this.realManager &&
+      typeof this.realManager.trackArchitecturalWork === 'function'
+    ) {
       return await this.realManager.trackArchitecturalWork(config);
     }
     return this.realManager.trackArchitecturalWork();
@@ -350,17 +422,42 @@ export class SafeArchitectureRunwayManager {
 }
 
 // Convenience factory functions for compatibility
-export const getPortfolioManager = (config?: any) => new SafePortfolioManager(config);
-export const getProgramIncrementManager = (config?: any) => new SafeProgramIncrementManager(config);
-export const getEpicOwnerManager = (config?: any) => ({ status: 'fallback', config });
-export const getArchitectureRunwayManager = (config?: any) => new SafeArchitectureRunwayManager(config);
-export const getValueStreamMapper = (config?: any) => new SafeValueStreamMapper(config);
-export const getReleaseTrainEngineerManager = (config?: any) => ({ status: 'fallback', config });
-export const getEnterpriseArchitectureManager = (config?: any) => ({ status: 'fallback', config });
-export const getContinuousDeliveryPipeline = (config?: any) => ({ status: 'fallback', config });
-export const getSystemSolutionArchitectureManager = (config?: any) => ({ status: 'fallback', config });
-export const getSafeEventsManager = (config?: any) => ({ status: 'fallback', config });
-export const getValueStreamOptimizationEngine = (config?: any) => ({ status: 'fallback', config });
+export const getPortfolioManager = (config?: any) =>
+  new SafePortfolioManager(config);
+export const getProgramIncrementManager = (config?: any) =>
+  new SafeProgramIncrementManager(config);
+export const getEpicOwnerManager = (config?: any) => ({
+  status: 'fallback',
+  config,
+});
+export const getArchitectureRunwayManager = (config?: any) =>
+  new SafeArchitectureRunwayManager(config);
+export const getValueStreamMapper = (config?: any) =>
+  new SafeValueStreamMapper(config);
+export const getReleaseTrainEngineerManager = (config?: any) => ({
+  status: 'fallback',
+  config,
+});
+export const getEnterpriseArchitectureManager = (config?: any) => ({
+  status: 'fallback',
+  config,
+});
+export const getContinuousDeliveryPipeline = (config?: any) => ({
+  status: 'fallback',
+  config,
+});
+export const getSystemSolutionArchitectureManager = (config?: any) => ({
+  status: 'fallback',
+  config,
+});
+export const getSafeEventsManager = (config?: any) => ({
+  status: 'fallback',
+  config,
+});
+export const getValueStreamOptimizationEngine = (config?: any) => ({
+  status: 'fallback',
+  config,
+});
 
 export const safeFramework = {
   getPortfolioManager,
@@ -393,22 +490,34 @@ export const PortfolioManager = SafePortfolioManager;
 
 // Direct fallback exports - additional SAFe managers (package not available)
 export const EpicOwnerManager = class {
-  constructor(_config: any = {}) { /* fallback */ }
+  constructor() {
+    /* fallback */
+  }
 };
 export const EnterpriseArchitectureManager = class {
-  constructor(_config: any = {}) { /* fallback */ }
+  constructor() {
+    /* fallback */
+  }
 };
 export const SystemSolutionArchitectureManager = class {
-  constructor(_config: any = {}) { /* fallback */ }
+  constructor() {
+    /* fallback */
+  }
 };
 export const ContinuousDeliveryPipeline = class {
-  constructor(_config: any = {}) { /* fallback */ }
+  constructor() {
+    /* fallback */
+  }
 };
 export const SAFeEventsManager = class {
-  constructor(_config: any = {}) { /* fallback */ }
+  constructor() {
+    /* fallback */
+  }
 };
 export const ValueStreamOptimizationEngine = class {
-  constructor(_config: any = {}) { /* fallback */ }
+  constructor() {
+    /* fallback */
+  }
 };
 
 // Export the main bridge as default for compatibility

@@ -1,9 +1,9 @@
 /**
  * @fileoverview SAFe Events Manager - Comprehensive SAFe ceremony orchestration.
- * 
+ *
  * Provides enterprise-grade SAFe events and ceremonies management through specialized
  * event scheduling, workflow coordination, and human-facilitated ceremonies.
- * 
+ *
  * Key Features:
  * - SAFe event scheduling and orchestration (System Demos, I&A workshops)
  * - ART sync meeting coordination
@@ -11,7 +11,7 @@
  * - Cross-ART coordination events
  * - Event metrics and retrospective analysis
  * - Human-facilitated ceremony integration
- * 
+ *
  * Part of the @claude-zen/safe-framework package providing comprehensive
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
@@ -48,7 +48,7 @@ export interface SAFeEventsManagerConfig {
 
 export interface SAFeEventConfig {
   id: string;
-  type: 'system-demo' | 'inspect-adapt' | 'art-sync' | 'cross-art-sync' | 'pi-planning';
+  type:'' | '''system-demo''' | '''inspect-adapt''' | '''art-sync''' | '''cross-art-sync''' | '''pi-planning';
   title: string;
   description: string;
   duration: number;
@@ -73,14 +73,14 @@ export interface EventAgendaItem {
   id: string;
   title: string;
   duration: number;
-  type: 'presentation' | 'discussion' | 'workshop' | 'demo' | 'retrospective';
+  type: 'presentation | discussion' | 'workshop' | 'demo' | 'retrospective';
   facilitator?: string;
   materials?: string[];
   objectives: string[];
 }
 
 export interface EventSchedulingPattern {
-  type: 'weekly' | 'bi-weekly' | 'monthly' | 'per-iteration' | 'per-pi';
+  type: 'weekly''' | '''bi-weekly''' | '''monthly''' | '''per-iteration''' | '''per-pi';
   dayOfWeek?: number;
   timeOfDay?: string;
   iterationWeek?: number;
@@ -107,7 +107,7 @@ export interface EventExecutionContext {
 
 export interface EventOutcome {
   eventId: string;
-  status: 'completed' | 'cancelled' | 'postponed' | 'partial';
+  status: 'completed | cancelled' | 'postponed''' | '''partial';
   duration: number;
   attendance: {
     expected: number;
@@ -128,7 +128,7 @@ export interface EventDecision {
   decisionMaker: string;
   participants: string[];
   rationale: string;
-  impact: 'low' | 'medium' | 'high' | 'critical';
+  impact: 'low | medium' | 'high''' | '''critical';
   implementationDate?: Date;
   responsible: string[];
 }
@@ -139,8 +139,8 @@ export interface ActionItem {
   description: string;
   assignee: string;
   dueDate: Date;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'open' | 'in-progress' | 'completed' | 'cancelled';
+  priority: 'low | medium' | 'high''' | '''critical';
+  status: 'open''' | '''in-progress''' | '''completed''' | '''cancelled';
   dependencies: string[];
 }
 
@@ -166,7 +166,7 @@ export interface EventMetrics {
 
 /**
  * SAFe Events Manager - Comprehensive SAFe ceremony orchestration.
- * 
+ *
  * Manages all SAFe events and ceremonies including System Demos, Inspect & Adapt
  * workshops, ART synchronization meetings, and cross-ART coordination events.
  *
@@ -182,7 +182,7 @@ export class SAFeEventsManager extends TypedEventBase {
   private memory: MemorySystem;
   private eventBus: TypeSafeEventBus;
   private config: SAFeEventsManagerConfig;
-  
+
   // Internal state
   private scheduledEvents = new Map<string, SAFeEventConfig>();
   private eventOutcomes = new Map<string, EventOutcome>();
@@ -198,7 +198,7 @@ export class SAFeEventsManager extends TypedEventBase {
     this.logger = getLogger('SAFeEventsManager');
     this.memory = memory;
     this.eventBus = eventBus;
-    
+
     this.config = {
       enableSystemDemos: true,
       enableInspectAdapt: true,
@@ -222,23 +222,25 @@ export class SAFeEventsManager extends TypedEventBase {
 
     try {
       this.logger.info('Initializing SAFe Events Manager');
-      
+
       // Setup templates synchronously
       this.setupEventTemplates();
-      
+
       // In production, this would initialize external event bus connections
       await this.initializeEventBusConnections();
-      
+
       // Emit initialization event
-      this.eventBus.emit('safe-events:initialized', createEvent(
+      this.eventBus.emit(
         'safe-events:initialized',
-        { timestamp: Date.now() },
-        EventPriority.NORMAL
-      ));
-      
+        createEvent(
+          'safe-events:initialized',
+          { timestamp: Date.now() },
+          EventPriority.NORMAL
+        )
+      );
+
       this.initialized = true;
       this.logger.info('SAFe Events Manager initialized successfully');
-
     } catch (error) {
       this.logger.error('Failed to initialize SAFe Events Manager:', error);
       throw error;
@@ -266,22 +268,33 @@ export class SAFeEventsManager extends TypedEventBase {
         participants: await this.buildParticipantList(features),
         agenda: await this.buildSystemDemoAgenda(features),
         required: true,
-        recurring: false
+        recurring: false,
       };
 
       this.scheduledEvents.set(eventId, eventConfig);
 
       // Store in memory for persistence
-      await this.memory.store(`safe-events:system-demo:${eventId}`, eventConfig);
+      await this.memory.store(
+        `safe-events:system-demo:${eventId}`,
+        eventConfig
+      );
 
-      this.emit('system-demo:scheduled', { eventId, eventConfig, piId, features });
-      this.eventBus.emit('safe-events:system-demo:scheduled', createEvent(
+      this.emit('system-demo:scheduled', {
+        eventId,
+        eventConfig,
+        piId,
+        features,
+      });
+      this.eventBus.emit(
         'safe-events:system-demo:scheduled',
-        { eventId, piId, featuresCount: features.length }
-      ));
+        createEvent('safe-events:system-demo:scheduled', {
+          eventId,
+          piId,
+          featuresCount: features.length,
+        })
+      );
 
       return { success: true, eventId };
-
     } catch (error) {
       this.logger.error('Failed to schedule system demo:', error);
       return { success: false, error: (error as Error).message };
@@ -310,20 +323,26 @@ export class SAFeEventsManager extends TypedEventBase {
         agenda: await this.buildInspectAdaptAgenda(),
         facilitator: 'safe-coach',
         required: true,
-        recurring: false
+        recurring: false,
       };
 
       this.scheduledEvents.set(eventId, eventConfig);
-      await this.memory.store(`safe-events:inspect-adapt:${eventId}`, eventConfig);
+      await this.memory.store(
+        `safe-events:inspect-adapt:${eventId}`,
+        eventConfig
+      );
 
       this.emit('inspect-adapt:scheduled', { eventId, piId, artId });
-      this.eventBus.emit('safe-events:inspect-adapt:scheduled', createEvent(
+      this.eventBus.emit(
         'safe-events:inspect-adapt:scheduled',
-        { eventId, piId, artId }
-      ));
+        createEvent('safe-events:inspect-adapt:scheduled', {
+          eventId,
+          piId,
+          artId,
+        })
+      );
 
       return { success: true, eventId };
-
     } catch (error) {
       this.logger.error('Failed to schedule Inspect & Adapt workshop:', error);
       return { success: false, error: (error as Error).message };
@@ -352,7 +371,7 @@ export class SAFeEventsManager extends TypedEventBase {
         attendance: {
           expected: event.participants.length,
           actual: event.participants.length, // Would be updated with actual attendance
-          participants: event.participants
+          participants: event.participants,
         },
         decisions: [],
         actionItems: [],
@@ -364,22 +383,24 @@ export class SAFeEventsManager extends TypedEventBase {
           effectivenessRating: 0.8,
           decisionsCount: 0,
           actionItemsCount: 0,
-          followUpRate: 0.0
+          followUpRate: 0.0,
         },
-        artifacts: []
+        artifacts: [],
       };
 
       this.eventOutcomes.set(eventId, outcome);
       await this.memory.store(`safe-events:outcome:${eventId}`, outcome);
 
       this.emit('event:executed', { eventId, outcome });
-      this.eventBus.emit('safe-events:event:executed', createEvent(
+      this.eventBus.emit(
         'safe-events:event:executed',
-        { eventId, status: outcome.status }
-      ));
+        createEvent('safe-events:event:executed', {
+          eventId,
+          status: outcome.status,
+        })
+      );
 
       return { success: true, outcome };
-
     } catch (error) {
       this.logger.error('Failed to execute event:', error);
       return { success: false, error: (error as Error).message };
@@ -391,30 +412,35 @@ export class SAFeEventsManager extends TypedEventBase {
    */
   async getEventAnalytics(): Promise<any> {
     if (!this.initialized) await this.initialize();
-    
+
     return {
       events: {
         scheduled: this.scheduledEvents.size,
-        completed: Array.from(this.eventOutcomes.values()).filter(o => o.status === 'completed').length,
-        systemDemos: Array.from(this.scheduledEvents.values()).filter(e => e.type === 'system-demo').length,
-        inspectAdapt: Array.from(this.scheduledEvents.values()).filter(e => e.type === 'inspect-adapt').length,
+        completed: Array.from(this.eventOutcomes.values()).filter(
+          (o) => o.status === 'completed'
+        ).length,
+        systemDemos: Array.from(this.scheduledEvents.values()).filter(
+          (e) => e.type === 'system-demo'
+        ).length,
+        inspectAdapt: Array.from(this.scheduledEvents.values()).filter(
+          (e) => e.type === 'inspect-adapt').length,
       },
       outcomes: Array.from(this.eventOutcomes.values()),
-      templates: Array.from(this.eventTemplates.keys())
+      templates: Array.from(this.eventTemplates.keys()),
     };
   }
 
   /**
    * Get scheduled event by ID
    */
-  getScheduledEvent(eventId: string): SAFeEventConfig | undefined {
+  getScheduledEvent(eventId: string): SAFeEventConfig'' | ''undefined {
     return this.scheduledEvents.get(eventId);
   }
 
   /**
    * Get event outcome by ID
    */
-  getEventOutcome(eventId: string): EventOutcome | undefined {
+  getEventOutcome(eventId: string): EventOutcome'' | ''undefined {
     return this.eventOutcomes.get(eventId);
   }
 
@@ -422,7 +448,7 @@ export class SAFeEventsManager extends TypedEventBase {
    * Get all scheduled events
    */
   getAllScheduledEvents(): SAFeEventConfig[] {
-    return Array.from(this.scheduledEvents.values());
+    return Array.from(this.scheduledEvents.values())();
   }
 
   // ============================================================================
@@ -444,29 +470,29 @@ export class SAFeEventsManager extends TypedEventBase {
           title: 'Demo Introduction',
           duration: 10,
           type: 'presentation',
-          objectives: ['Set context', 'Review agenda']
+          objectives: ['Set context', 'Review agenda'],
         },
         {
           id: 'feature-demos',
           title: 'Feature Demonstrations',
           duration: 90,
           type: 'demo',
-          objectives: ['Show completed features', 'Gather feedback']
+          objectives: ['Show completed features', 'Gather feedback'],
         },
         {
           id: 'wrap-up',
           title: 'Wrap-up & Next Steps',
           duration: 20,
           type: 'discussion',
-          objectives: ['Summarize feedback', 'Plan follow-up']
-        }
+          objectives: ['Summarize feedback', 'Plan follow-up'],
+        },
       ],
       required: true,
       recurring: true,
       schedulingPattern: {
         type: 'per-iteration',
-        iterationWeek: 2
-      }
+        iterationWeek: 2,
+      },
     });
 
     this.eventTemplates.set('inspect-adapt', {
@@ -482,41 +508,41 @@ export class SAFeEventsManager extends TypedEventBase {
           title: 'PI Retrospective',
           duration: 90,
           type: 'retrospective',
-          objectives: ['Review PI performance', 'Identify improvement areas']
+          objectives: ['Review PI performance', 'Identify improvement areas'],
         },
         {
           id: 'problem-solving',
           title: 'Problem Solving Workshop',
           duration: 90,
           type: 'workshop',
-          objectives: ['Address identified issues', 'Develop solutions']
+          objectives: ['Address identified issues', 'Develop solutions'],
         },
         {
           id: 'planning',
           title: 'Action Planning',
           duration: 60,
           type: 'workshop',
-          objectives: ['Create improvement backlog', 'Assign ownership']
-        }
+          objectives: ['Create improvement backlog', 'Assign ownership'],
+        },
       ],
       required: true,
       recurring: true,
       schedulingPattern: {
-        type: 'per-pi'
-      }
+        type: 'per-pi',
+      },
     });
   }
 
   private buildParticipantList(features: Feature[]): EventParticipant[] {
     // Build participant list from feature teams
-    const uniqueTeams = new Set(features.map(f => f.team).filter(Boolean));
-    return Array.from(uniqueTeams).map(team => ({
+    const uniqueTeams = new Set(features.map((f) => f.team).filter(Boolean));
+    return Array.from(uniqueTeams).map((team) => ({
       id: `team-${team}`,
       name: `${team} Team`,
       role: 'development-team',
       team: team!,
       required: true,
-      facilitator: false
+      facilitator: false,
     }));
   }
 
@@ -529,7 +555,7 @@ export class SAFeEventsManager extends TypedEventBase {
         role: 'safe-coach',
         team: artId,
         required: true,
-        facilitator: true
+        facilitator: true,
       },
       {
         id: `art-${artId}-rte`,
@@ -537,8 +563,8 @@ export class SAFeEventsManager extends TypedEventBase {
         role: 'rte',
         team: artId,
         required: true,
-        facilitator: false
-      }
+        facilitator: false,
+      },
     ];
   }
 
@@ -549,22 +575,22 @@ export class SAFeEventsManager extends TypedEventBase {
         title: 'Demo Introduction',
         duration: 10,
         type: 'presentation',
-        objectives: ['Set context', 'Review agenda']
+        objectives: ['Set context', 'Review agenda'],
       },
       {
         id: 'demos',
         title: `Feature Demonstrations (${features.length} features)`,
         duration: Math.max(60, features.length * 10),
         type: 'demo',
-        objectives: ['Show completed features', 'Gather stakeholder feedback']
+        objectives: ['Show completed features', 'Gather stakeholder feedback'],
       },
       {
         id: 'wrap-up',
         title: 'Wrap-up & Feedback',
         duration: 20,
         type: 'discussion',
-        objectives: ['Collect feedback', 'Plan next iteration']
-      }
+        objectives: ['Collect feedback', 'Plan next iteration'],
+      },
     ];
   }
 
@@ -575,22 +601,22 @@ export class SAFeEventsManager extends TypedEventBase {
         title: 'PI Retrospective',
         duration: 90,
         type: 'retrospective',
-        objectives: ['Review PI performance', 'Identify improvement areas']
+        objectives: ['Review PI performance', 'Identify improvement areas'],
       },
       {
         id: 'problem-solving',
         title: 'Problem Solving Workshop',
         duration: 90,
         type: 'workshop',
-        objectives: ['Address identified issues', 'Develop solutions']
+        objectives: ['Address identified issues', 'Develop solutions'],
       },
       {
         id: 'planning',
         title: 'Action Planning',
         duration: 60,
         type: 'workshop',
-        objectives: ['Create improvement backlog', 'Assign ownership']
-      }
+        objectives: ['Create improvement backlog', 'Assign ownership'],
+      },
     ];
   }
 
@@ -602,10 +628,10 @@ export class SAFeEventsManager extends TypedEventBase {
     // - Message queues (Redis, RabbitMQ)
     // - Event streams (Kafka, EventBridge)
     // - Database event listeners
-    
+
     // Mock async operation for now
-    await new Promise(resolve => setTimeout(resolve, 10));
-    
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
     this.logger.debug('Event bus connections initialized');
   }
 
@@ -614,16 +640,16 @@ export class SAFeEventsManager extends TypedEventBase {
    */
   shutdown(): void {
     this.logger.info('Shutting down SAFe Events Manager');
-    
+
     this.scheduledEvents.clear();
     this.eventOutcomes.clear();
     this.eventTemplates.clear();
     this.initialized = false;
-    
-    this.eventBus.emit('safe-events:shutdown', createEvent(
+
+    this.eventBus.emit(
       'safe-events:shutdown',
-      { timestamp: Date.now() }
-    ));
+      createEvent('safe-events:shutdown', { timestamp: Date.now() })
+    );
   }
 }
 

@@ -23,19 +23,19 @@ const logger = getLogger('operations-memory');
  * Custom error types for memory operations
  */
 export class MemorySystemError extends Error {
-  public override cause?: Error | undefined;
+  public override cause?: Error'' | ''undefined;
 
-  constructor(message: string, cause?: Error | undefined) {
+  constructor(message: string, cause?: Error'' | ''undefined) {
     super(message);
-    this.name = 'MemorySystemError';
+    this.name ='MemorySystemError';
     this.cause = cause;
   }
 }
 
 export class MemorySystemConnectionError extends MemorySystemError {
-  constructor(message: string, cause?: Error | undefined) {
+  constructor(message: string, cause?: Error'' | ''undefined) {
     super(message, cause);
-    this.name = 'MemorySystemConnectionError';
+    this.name ='MemorySystemConnectionError';
   }
 }
 
@@ -103,20 +103,20 @@ interface MemorySystemConfig {
  * Implementation of memory access via runtime delegation
  */
 class MemorySystemAccessImpl implements MemorySystemAccess {
-  private memoryModule: MemorySystemModule | null = null;
+  private memoryModule: MemorySystemModule'' | ''null = null;
 
   private async getMemoryModule(): Promise<MemorySystemModule> {
     if (!this.memoryModule) {
       try {
         // Import the memory package at runtime (matches database pattern)
         // Use dynamic import with string to avoid TypeScript compile-time checking
-        const packageName = '@claude-zen/memory';
-        this.memoryModule = await import(packageName) as MemorySystemModule;
+        const packageName ='@claude-zen/memory';
+        this.memoryModule = (await import(packageName)) as MemorySystemModule;
         logger.debug('Memory module loaded successfully');
       } catch (error) {
         throw new MemorySystemConnectionError(
           'Memory package not available. Operations requires @claude-zen/memory for memory operations.',
-          error instanceof Error ? error : undefined,
+          error instanceof Error ? error : undefined
         );
       }
     }
@@ -125,37 +125,53 @@ class MemorySystemAccessImpl implements MemorySystemAccess {
 
   async createMemoryOrchestrator(config?: any): Promise<any> {
     const module = await this.getMemoryModule();
-    logger.debug('Creating memory orchestrator via operations delegation', { config });
-    return module.createMemoryOrchestrator ? module.createMemoryOrchestrator(config) : new module.MemoryOrchestrator(config);
+    logger.debug('Creating memory orchestrator via operations delegation', {
+      config,
+    });
+    return module.createMemoryOrchestrator
+      ? module.createMemoryOrchestrator(config)
+      : new module.MemoryOrchestrator(config);
   }
 
   async createMemoryCoordinator(config?: any): Promise<any> {
     const module = await this.getMemoryModule();
-    logger.debug('Creating memory coordinator via operations delegation', { config });
-    return module.createMemoryCoordinator ? module.createMemoryCoordinator(config) : new module.MemoryCoordinator(config);
+    logger.debug('Creating memory coordinator via operations delegation', {
+      config,
+    });
+    return module.createMemoryCoordinator
+      ? module.createMemoryCoordinator(config)
+      : new module.MemoryCoordinator(config);
   }
 
   async createPersistenceManager(config?: any): Promise<any> {
     const module = await this.getMemoryModule();
-    logger.debug('Creating persistence manager via operations delegation', { config });
-    return module.createPersistenceManager ? module.createPersistenceManager(config) : new module.PersistenceManager(config);
+    logger.debug('Creating persistence manager via operations delegation', {
+      config,
+    });
+    return module.createPersistenceManager
+      ? module.createPersistenceManager(config)
+      : new module.PersistenceManager(config);
   }
 
   async createMemoryController(config?: any): Promise<any> {
     const module = await this.getMemoryModule();
-    logger.debug('Creating memory controller via operations delegation', { config });
+    logger.debug('Creating memory controller via operations delegation', {
+      config,
+    });
     return new module.MemoryController(config);
   }
 
   async createMemorySystemCore(config?: any): Promise<any> {
     const module = await this.getMemoryModule();
-    logger.debug('Creating memory system core via operations delegation', { config });
+    logger.debug('Creating memory system core via operations delegation', {
+      config,
+    });
     return new module.MemorySystemCore(config);
   }
 }
 
 // Global singleton instance
-let globalMemorySystemAccess: MemorySystemAccess | null = null;
+let globalMemorySystemAccess: MemorySystemAccess'' | ''null = null;
 
 /**
  * Get memory access interface (singleton pattern)
@@ -172,45 +188,55 @@ export function getMemorySystemAccess(): MemorySystemAccess {
  * Create a memory orchestrator through operations delegation
  * @param config - Memory orchestrator configuration
  */
-export async function getMemoryOrchestrator(config?: MemorySystemConfig): Promise<any> {
+export async function getMemoryOrchestrator(
+  config?: MemorySystemConfig
+): Promise<any> {
   const memorySystem = getMemorySystemAccess();
-  return memorySystem.createMemoryOrchestrator(config);
+  return await Promise.resolve(memorySystem.createMemoryOrchestrator(config));
 }
 
 /**
  * Create a memory coordinator through operations delegation
  * @param config - Memory coordinator configuration
  */
-export async function getMemoryCoordinator(config?: MemorySystemConfig): Promise<any> {
+export async function getMemoryCoordinator(
+  config?: MemorySystemConfig
+): Promise<any> {
   const memorySystem = getMemorySystemAccess();
-  return memorySystem.createMemoryCoordinator(config);
+  return await Promise.resolve(memorySystem.createMemoryCoordinator(config));
 }
 
 /**
  * Create a persistence manager through operations delegation
  * @param config - Persistence manager configuration
  */
-export async function getPersistenceManager(config?: MemorySystemConfig): Promise<any> {
+export async function getPersistenceManager(
+  config?: MemorySystemConfig
+): Promise<any> {
   const memorySystem = getMemorySystemAccess();
-  return memorySystem.createPersistenceManager(config);
+  return await Promise.resolve(memorySystem.createPersistenceManager(config));
 }
 
 /**
  * Create a memory controller through operations delegation
  * @param config - Memory controller configuration
  */
-export async function getMemoryController(config?: MemorySystemConfig): Promise<any> {
+export async function getMemoryController(
+  config?: MemorySystemConfig
+): Promise<any> {
   const memorySystem = getMemorySystemAccess();
-  return memorySystem.createMemoryController(config);
+  return await Promise.resolve(memorySystem.createMemoryController(config));
 }
 
 /**
  * Create a memory system core through operations delegation
  * @param config - Memory system core configuration
  */
-export async function getMemorySystemCore(config?: MemorySystemConfig): Promise<any> {
+export async function getMemorySystemCore(
+  config?: MemorySystemConfig
+): Promise<any> {
   const memorySystem = getMemorySystemAccess();
-  return memorySystem.createMemorySystemCore(config);
+  return await Promise.resolve(memorySystem.createMemorySystemCore(config));
 }
 
 // Professional memory object with proper naming (matches Storage/Telemetry patterns)
@@ -224,7 +250,4 @@ export const memorySystem = {
 };
 
 // Type exports for external consumers
-export type {
-  MemorySystemAccess,
-  MemorySystemConfig,
-};
+export type { MemorySystemAccess, MemorySystemConfig };

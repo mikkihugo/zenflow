@@ -39,7 +39,7 @@ export interface MemoryQueryOptions {
   limit?: number;
   offset?: number;
   orderBy?: string;
-  orderDirection?: 'asc' | 'desc';
+  orderDirection?: 'asc''' | '''desc';
 }
 
 export interface MemorySearchResult {
@@ -80,8 +80,12 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
 
   // Abstract methods that must be implemented by concrete backends
   abstract initialize(): Promise<void>;
-  abstract store(key: string, value: unknown, namespace?: string): Promise<void>;
-  abstract retrieve<T = unknown>(key: string): Promise<T | null>;
+  abstract store(
+    key: string,
+    value: unknown,
+    namespace?: string
+  ): Promise<void>;
+  abstract retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
   abstract delete(key: string): Promise<boolean>;
   abstract list(pattern?: string): Promise<string[]>;
   abstract clear(): Promise<void>;
@@ -89,7 +93,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   abstract getCapabilities(): BackendCapabilities;
 
   // Additional methods for BackendInterface compatibility
-  abstract get<T = unknown>(key: string): Promise<T | null>;
+  abstract get<T = unknown>(key: string): Promise<T'' | ''null>;
   abstract set(key: string, value: unknown): Promise<void>;
   abstract listNamespaces(): Promise<string[]>;
 
@@ -120,7 +124,10 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   }
 
   // Protected utility methods for subclasses
-  protected updateStats(operation: 'read' | 'write' | 'delete', size?: number): void {
+  protected updateStats(
+    operation: 'read | write' | 'delete',
+    size?: number
+  ): void {
     this.stats.lastAccessed = Date.now();
     this.stats.modified = Date.now();
 
@@ -147,7 +154,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     return {
       key,
       value,
-      metadata: metadata || {},
+      metadata: metadata'' | '''' | ''{},
       timestamp: Date.now(),
       size: this.calculateSize(value),
       type: this.detectType(value),
@@ -163,7 +170,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   }
 
   protected detectType(value: unknown): string {
-    if (value === null) return 'null';
+    if (value === null) return'null';
     if (Array.isArray(value)) return 'array';
     if (value instanceof Date) return 'date';
     if (value instanceof Buffer) return 'buffer';
@@ -171,7 +178,7 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
   }
 
   protected validateKey(key: string): void {
-    if (!key || typeof key !== 'string') {
+    if (!key'' | '''' | ''typeof key !=='string') {
       throw new Error('Key must be a non-empty string');
     }
     if (key.length > 255) {
@@ -202,7 +209,11 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     });
   }
 
-  protected emitOperation(operation: string, key: string, success: boolean): void {
+  protected emitOperation(
+    operation: string,
+    key: string,
+    success: boolean
+  ): void {
     this.emit('operation', {
       operation,
       key,
@@ -246,15 +257,21 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
 
   // Batch operations support
   public async batchStore(
-    entries: Array<{ key: string; value: unknown; metadata?: Record<string, unknown> }>
+    entries: Array<{
+      key: string;
+      value: unknown;
+      metadata?: Record<string, unknown>;
+    }>
   ): Promise<void> {
     for (const entry of entries) {
       await this.store(entry.key, entry.value);
     }
   }
 
-  public async batchRetrieve<T = unknown>(keys: string[]): Promise<Record<string, T | null>> {
-    const results: Record<string, T | null> = {};
+  public async batchRetrieve<T = unknown>(
+    keys: string[]
+  ): Promise<Record<string, T'' | ''null>> {
+    const results: Record<string, T'' | ''null> = {};
     for (const key of keys) {
       results[key] = await this.retrieve<T>(key);
     }
@@ -283,7 +300,9 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
     try {
       return JSON.parse(value) as T;
     } catch (error) {
-      throw new Error(`Failed to deserialize value: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to deserialize value: ${(error as Error).message}`
+      );
     }
   }
 
@@ -295,7 +314,10 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
    * @param pattern - Search pattern to match keys
    * @param _namespace - Optional namespace (unused in base implementation)
    */
-  public async search(pattern: string, _namespace?: string): Promise<Record<string, JSONValue>> {
+  public async search(
+    pattern: string,
+    _namespace?: string
+  ): Promise<Record<string, JSONValue>> {
     // Base implementation - override in subclasses.
     const results = await this.list(pattern);
     const resultMap: Record<string, JSONValue> = {};
@@ -319,7 +341,9 @@ export abstract class BaseMemoryBackend extends TypedEventBase {
       const healthStatus = await this.healthCheck();
       return healthStatus.healthy;
     } catch (error) {
-      this.emitError(error instanceof Error ? error : new Error(String(error)), 'health');
+      this.emitError(
+        error instanceof Error ? error : new Error(String(error)),'health'
+      );
       return false;
     }
   }

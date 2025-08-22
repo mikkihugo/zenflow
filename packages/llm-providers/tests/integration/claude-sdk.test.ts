@@ -16,12 +16,16 @@ describe('Claude SDK - Integration Tests (Real API)', () => {
     cleanupGlobalInstances();
   });
 
-  itIntegration('should run a single task without memory leaks', async () => {
-    const messages = await executeClaudeTask('Hello', {
-      maxTurns: 1,
-      allowedTools: [],
-      timeoutMs: 60000, // Increased timeout
-    });
-    expect(messages).toBeTruthy();
-  }, 120000); // Increased test timeout
+  itIntegration(
+    'should run a single task without memory leaks',
+    async () => {
+      const messages = await executeClaudeTask('Hello', {
+        maxTurns: 1,
+        allowedTools: [],
+        timeoutMs: 60000, // Increased timeout
+      });
+      expect(messages).toBeTruthy();
+    },
+    120000
+  ); // Increased test timeout
 });

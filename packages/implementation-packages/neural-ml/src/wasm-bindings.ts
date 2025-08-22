@@ -1,9 +1,9 @@
 /**
  * @fileoverview WASM TypeScript bindings for neural-ml Rust package
- * 
+ *
  * Provides TypeScript interfaces and wrapper classes for accessing
  * advanced ML capabilities implemented in Rust via WASM.
- * 
+ *
  * Features:
  * - Bayesian Optimization with Gaussian Processes
  * - Automatic Differentiation and Gradient Optimization
@@ -11,7 +11,7 @@
  * - Online Learning with Concept Drift Detection
  * - Pattern Recognition and Text Embeddings
  * - Comprehensive Error Handling and Performance Metrics
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 1.0.0
@@ -48,9 +48,9 @@ export interface OptimizationConfig {
 
 // Bayesian Optimization Types
 export interface BayesianConfig extends OptimizationConfig {
-  kernel_type: 'rbf' | 'matern' | 'polynomial' | 'linear';
+  kernel_type: 'rbf | matern' | 'polynomial''' | '''linear';
   kernel_params: Record<string, number>;
-  acquisition_type: 'ei' | 'pi' | 'ucb' | 'poi';
+  acquisition_type: 'ei | pi' | 'ucb''' | '''poi';
   acquisition_params: Record<string, number>;
   noise_level: number;
 }
@@ -69,7 +69,7 @@ export interface OptimizationBounds {
 
 // Gradient Optimization Types
 export interface GradientConfig extends OptimizationConfig {
-  optimizer_type: 'sgd' | 'adam' | 'rmsprop' | 'adagrad';
+  optimizer_type: 'sgd | adam' | 'rmsprop''' | '''adagrad';
   learning_rate: number;
   momentum?: number;
   beta1?: number;
@@ -119,7 +119,7 @@ export interface ParetoFront {
 // Online Learning Types
 export interface OnlineLearningConfig {
   learning_rate: number;
-  drift_detection_method: 'page_hinkley' | 'adwin' | 'ddm' | 'eddm' | 'ks_test';
+  drift_detection_method: 'page_hinkley | adwin' | 'ddm' | 'eddm' | 'ks_test';
   drift_threshold: number;
   adaptation_rate: number;
   buffer_size: number;
@@ -128,7 +128,7 @@ export interface OnlineLearningConfig {
 
 export interface ConceptDriftAlert {
   detected: boolean;
-  drift_type: 'gradual' | 'sudden' | 'recurring' | 'incremental';
+  drift_type: 'gradual | sudden' | 'recurring''' | '''incremental';
   confidence: number;
   affected_features: number[];
   timestamp: number;
@@ -144,7 +144,8 @@ export interface LearningUpdate {
 
 // Pattern Recognition Types
 export interface PatternConfig {
-  pattern_types: ('sequential' | 'temporal' | 'frequency' | 'structural' | 'behavioral' | 'optimization')[];
+  pattern_types: ('' | '''sequential | temporal' | 'frequency''' | '''structural | behavioral' | 'optimization'
+  )[];
   min_support: number;
   min_confidence: number;
   max_pattern_length: number;
@@ -161,17 +162,17 @@ export interface EmbeddingConfig {
 }
 
 export interface SimilarityConfig {
-  metric: 'cosine' | 'euclidean' | 'manhattan' | 'jaccard' | 'mahalanobis';
+  metric: 'cosine | euclidean' | 'manhattan' | 'jaccard' | 'mahalanobis';
   threshold: number;
   normalize_inputs: boolean;
 }
 
 export interface ClusteringConfig {
-  algorithm: 'kmeans' | 'dbscan' | 'hierarchical';
+  algorithm: 'kmeans | dbscan' | 'hierarchical';
   n_clusters?: number;
   eps?: number;
   min_samples?: number;
-  linkage?: 'single' | 'complete' | 'average' | 'ward';
+  linkage?: 'single | complete' | 'average''' | '''ward';
   distance_metric?: string;
 }
 
@@ -212,15 +213,15 @@ export class BayesianOptimizer {
         await init();
         this.wasmInstance = new wasm.BayesianOptimizer();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize BayesianOptimizer: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize BayesianOptimizer: ${error}`,
       };
     }
   }
@@ -240,39 +241,43 @@ export class BayesianOptimizer {
         JSON.stringify(bounds),
         num_suggestions
       );
-      
+
       const parsed = JSON.parse(result);
       return {
         success: true,
         data: parsed.suggestions,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Optimization failed: ${error}` 
+      return {
+        success: false,
+        error: `Optimization failed: ${error}`,
       };
     }
   }
 
-  async predict(parameters: number[]): Promise<MLResult<{ mean: number; variance: number }>> {
+  async predict(
+    parameters: number[]
+  ): Promise<MLResult<{ mean: number; variance: number }>> {
     if (!this.initialized) {
       return { success: false, error: 'Optimizer not initialized' };
     }
 
     try {
-      const result = await this.wasmInstance.predict(JSON.stringify(parameters));
+      const result = await this.wasmInstance.predict(
+        JSON.stringify(parameters)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: { mean: parsed.mean, variance: parsed.variance },
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Prediction failed: ${error}` 
+      return {
+        success: false,
+        error: `Prediction failed: ${error}`,
       };
     }
   }
@@ -285,12 +290,12 @@ export class BayesianOptimizer {
     try {
       const result = this.wasmInstance.get_metrics();
       const metrics = JSON.parse(result);
-      
+
       return { success: true, data: metrics };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to get metrics: ${error}` 
+      return {
+        success: false,
+        error: `Failed to get metrics: ${error}`,
       };
     }
   }
@@ -313,15 +318,15 @@ export class GradientOptimizer {
         await init();
         this.wasmInstance = new wasm.GradientOptimizer();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize GradientOptimizer: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize GradientOptimizer: ${error}`,
       };
     }
   }
@@ -335,14 +340,16 @@ export class GradientOptimizer {
       await this.wasmInstance.add_computation_node(JSON.stringify(node));
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to add computation node: ${error}` 
+      return {
+        success: false,
+        error: `Failed to add computation node: ${error}`,
       };
     }
   }
 
-  async forward(inputs: Record<string, number[]>): Promise<MLResult<Record<string, number[]>>> {
+  async forward(
+    inputs: Record<string, number[]>
+  ): Promise<MLResult<Record<string, number[]>>> {
     if (!this.initialized) {
       return { success: false, error: 'Optimizer not initialized' };
     }
@@ -350,38 +357,42 @@ export class GradientOptimizer {
     try {
       const result = await this.wasmInstance.forward(JSON.stringify(inputs));
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.outputs,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Forward pass failed: ${error}` 
+      return {
+        success: false,
+        error: `Forward pass failed: ${error}`,
       };
     }
   }
 
-  async backward(loss_gradients: Record<string, number[]>): Promise<MLResult<Record<string, number[]>>> {
+  async backward(
+    loss_gradients: Record<string, number[]>
+  ): Promise<MLResult<Record<string, number[]>>> {
     if (!this.initialized) {
       return { success: false, error: 'Optimizer not initialized' };
     }
 
     try {
-      const result = await this.wasmInstance.backward(JSON.stringify(loss_gradients));
+      const result = await this.wasmInstance.backward(
+        JSON.stringify(loss_gradients)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.gradients,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Backward pass failed: ${error}` 
+      return {
+        success: false,
+        error: `Backward pass failed: ${error}`,
       };
     }
   }
@@ -395,9 +406,9 @@ export class GradientOptimizer {
       await this.wasmInstance.update_parameters();
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Parameter update failed: ${error}` 
+      return {
+        success: false,
+        error: `Parameter update failed: ${error}`,
       };
     }
   }
@@ -420,15 +431,15 @@ export class MultiObjectiveOptimizer {
         await init();
         this.wasmInstance = new wasm.MultiObjectiveOptimizer();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize MultiObjectiveOptimizer: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize MultiObjectiveOptimizer: ${error}`,
       };
     }
   }
@@ -446,44 +457,51 @@ export class MultiObjectiveOptimizer {
         JSON.stringify(bounds),
         num_objectives
       );
-      
+
       const parsed = JSON.parse(result);
       return {
         success: true,
         data: parsed.pareto_front,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Multi-objective optimization failed: ${error}` 
+      return {
+        success: false,
+        error: `Multi-objective optimization failed: ${error}`,
       };
     }
   }
 
-  async evaluatePopulation(population: Solution[]): Promise<MLResult<Solution[]>> {
+  async evaluatePopulation(
+    population: Solution[]
+  ): Promise<MLResult<Solution[]>> {
     if (!this.initialized) {
       return { success: false, error: 'Optimizer not initialized' };
     }
 
     try {
-      const result = await this.wasmInstance.evaluate_population(JSON.stringify(population));
+      const result = await this.wasmInstance.evaluate_population(
+        JSON.stringify(population)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.evaluated_population,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Population evaluation failed: ${error}` 
+      return {
+        success: false,
+        error: `Population evaluation failed: ${error}`,
       };
     }
   }
 
-  async calculateHypervolume(solutions: Solution[], reference_point: number[]): Promise<MLResult<number>> {
+  async calculateHypervolume(
+    solutions: Solution[],
+    reference_point: number[]
+  ): Promise<MLResult<number>> {
     if (!this.initialized) {
       return { success: false, error: 'Optimizer not initialized' };
     }
@@ -493,17 +511,17 @@ export class MultiObjectiveOptimizer {
         JSON.stringify(solutions),
         JSON.stringify(reference_point)
       );
-      
+
       const parsed = JSON.parse(result);
       return {
         success: true,
         data: parsed.hypervolume,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Hypervolume calculation failed: ${error}` 
+      return {
+        success: false,
+        error: `Hypervolume calculation failed: ${error}`,
       };
     }
   }
@@ -526,15 +544,15 @@ export class OnlineLearner {
         await init();
         this.wasmInstance = new wasm.OnlineLearner();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize OnlineLearner: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize OnlineLearner: ${error}`,
       };
     }
   }
@@ -552,17 +570,17 @@ export class OnlineLearner {
         JSON.stringify(features),
         target
       );
-      
+
       const parsed = JSON.parse(result);
       return {
         success: true,
         data: parsed.update,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Stream processing failed: ${error}` 
+      return {
+        success: false,
+        error: `Stream processing failed: ${error}`,
       };
     }
   }
@@ -575,16 +593,16 @@ export class OnlineLearner {
     try {
       const result = await this.wasmInstance.detect_drift();
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.drift_alert,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Drift detection failed: ${error}` 
+      return {
+        success: false,
+        error: `Drift detection failed: ${error}`,
       };
     }
   }
@@ -597,16 +615,16 @@ export class OnlineLearner {
     try {
       const result = await this.wasmInstance.predict(JSON.stringify(features));
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.prediction,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Prediction failed: ${error}` 
+      return {
+        success: false,
+        error: `Prediction failed: ${error}`,
       };
     }
   }
@@ -619,16 +637,16 @@ export class OnlineLearner {
     try {
       const result = await this.wasmInstance.adapt_learning_rate();
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.new_learning_rate,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Learning rate adaptation failed: ${error}` 
+      return {
+        success: false,
+        error: `Learning rate adaptation failed: ${error}`,
       };
     }
   }
@@ -651,15 +669,15 @@ export class PatternRecognizer {
         await init();
         this.wasmInstance = new wasm.PatternRecognizer();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize PatternRecognizer: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize PatternRecognizer: ${error}`,
       };
     }
   }
@@ -670,62 +688,74 @@ export class PatternRecognizer {
     }
 
     try {
-      const result = await this.wasmInstance.extract_patterns(JSON.stringify(data));
+      const result = await this.wasmInstance.extract_patterns(
+        JSON.stringify(data)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.patterns,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Pattern extraction failed: ${error}` 
+      return {
+        success: false,
+        error: `Pattern extraction failed: ${error}`,
       };
     }
   }
 
-  async detectTrends(data: number[]): Promise<MLResult<{ trend: string; strength: number; significance: number }>> {
+  async detectTrends(
+    data: number[]
+  ): Promise<
+    MLResult<{ trend: string; strength: number; significance: number }>
+  > {
     if (!this.initialized) {
       return { success: false, error: 'Recognizer not initialized' };
     }
 
     try {
-      const result = await this.wasmInstance.detect_trends(JSON.stringify(data));
+      const result = await this.wasmInstance.detect_trends(
+        JSON.stringify(data)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.trend_analysis,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Trend detection failed: ${error}` 
+      return {
+        success: false,
+        error: `Trend detection failed: ${error}`,
       };
     }
   }
 
-  async detectPeriodicity(data: number[]): Promise<MLResult<{ periods: number[]; strengths: number[] }>> {
+  async detectPeriodicity(
+    data: number[]
+  ): Promise<MLResult<{ periods: number[]; strengths: number[] }>> {
     if (!this.initialized) {
       return { success: false, error: 'Recognizer not initialized' };
     }
 
     try {
-      const result = await this.wasmInstance.detect_periodicity(JSON.stringify(data));
+      const result = await this.wasmInstance.detect_periodicity(
+        JSON.stringify(data)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.periodicity_analysis,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Periodicity detection failed: ${error}` 
+      return {
+        success: false,
+        error: `Periodicity detection failed: ${error}`,
       };
     }
   }
@@ -748,15 +778,15 @@ export class EmbeddingModel {
         await init();
         this.wasmInstance = new wasm.EmbeddingModel();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize EmbeddingModel: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize EmbeddingModel: ${error}`,
       };
     }
   }
@@ -770,9 +800,9 @@ export class EmbeddingModel {
       await this.wasmInstance.fit_vocabulary(JSON.stringify(documents));
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Vocabulary fitting failed: ${error}` 
+      return {
+        success: false,
+        error: `Vocabulary fitting failed: ${error}`,
       };
     }
   }
@@ -783,18 +813,20 @@ export class EmbeddingModel {
     }
 
     try {
-      const result = await this.wasmInstance.transform(JSON.stringify(documents));
+      const result = await this.wasmInstance.transform(
+        JSON.stringify(documents)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.embeddings,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Transform failed: ${error}` 
+      return {
+        success: false,
+        error: `Transform failed: ${error}`,
       };
     }
   }
@@ -804,7 +836,7 @@ export class EmbeddingModel {
     if (!fitResult.success) {
       return fitResult as MLResult<number[][]>;
     }
-    
+
     return await this.transform(documents);
   }
 
@@ -817,9 +849,9 @@ export class EmbeddingModel {
       const size = this.wasmInstance.get_vocabulary_size();
       return { success: true, data: size };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to get vocabulary size: ${error}` 
+      return {
+        success: false,
+        error: `Failed to get vocabulary size: ${error}`,
       };
     }
   }
@@ -842,20 +874,23 @@ export class SimilarityCalculator {
         await init();
         this.wasmInstance = new wasm.SimilarityCalculator();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize SimilarityCalculator: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize SimilarityCalculator: ${error}`,
       };
     }
   }
 
-  async calculate(vector1: number[], vector2: number[]): Promise<MLResult<number>> {
+  async calculate(
+    vector1: number[],
+    vector2: number[]
+  ): Promise<MLResult<number>> {
     if (!this.initialized) {
       return { success: false, error: 'Calculator not initialized' };
     }
@@ -865,17 +900,17 @@ export class SimilarityCalculator {
         JSON.stringify(vector1),
         JSON.stringify(vector2)
       );
-      
+
       const parsed = JSON.parse(result);
       return {
         success: true,
         data: parsed.similarity,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Similarity calculation failed: ${error}` 
+      return {
+        success: false,
+        error: `Similarity calculation failed: ${error}`,
       };
     }
   }
@@ -886,25 +921,27 @@ export class SimilarityCalculator {
     }
 
     try {
-      const result = await this.wasmInstance.calculate_matrix(JSON.stringify(vectors));
+      const result = await this.wasmInstance.calculate_matrix(
+        JSON.stringify(vectors)
+      );
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.similarity_matrix,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Similarity matrix calculation failed: ${error}` 
+      return {
+        success: false,
+        error: `Similarity matrix calculation failed: ${error}`,
       };
     }
   }
 
   async findSimilar(
-    query_vector: number[], 
-    candidate_vectors: number[][], 
+    query_vector: number[],
+    candidate_vectors: number[][],
     top_k: number = 10
   ): Promise<MLResult<{ indices: number[]; similarities: number[] }>> {
     if (!this.initialized) {
@@ -917,17 +954,17 @@ export class SimilarityCalculator {
         JSON.stringify(candidate_vectors),
         top_k
       );
-      
+
       const parsed = JSON.parse(result);
       return {
         success: true,
         data: { indices: parsed.indices, similarities: parsed.similarities },
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Similar vector search failed: ${error}` 
+      return {
+        success: false,
+        error: `Similar vector search failed: ${error}`,
       };
     }
   }
@@ -950,15 +987,15 @@ export class ClusteringAlgorithm {
         await init();
         this.wasmInstance = new wasm.ClusteringAlgorithm();
       }
-      
+
       await this.wasmInstance.initialize(JSON.stringify(config));
       this.initialized = true;
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Failed to initialize ClusteringAlgorithm: ${error}` 
+      return {
+        success: false,
+        error: `Failed to initialize ClusteringAlgorithm: ${error}`,
       };
     }
   }
@@ -971,16 +1008,16 @@ export class ClusteringAlgorithm {
     try {
       const result = await this.wasmInstance.fit(JSON.stringify(data));
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.cluster_result,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Clustering failed: ${error}` 
+      return {
+        success: false,
+        error: `Clustering failed: ${error}`,
       };
     }
   }
@@ -993,16 +1030,16 @@ export class ClusteringAlgorithm {
     try {
       const result = await this.wasmInstance.predict(JSON.stringify(data));
       const parsed = JSON.parse(result);
-      
+
       return {
         success: true,
         data: parsed.labels,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Cluster prediction failed: ${error}` 
+      return {
+        success: false,
+        error: `Cluster prediction failed: ${error}`,
       };
     }
   }
@@ -1011,7 +1048,10 @@ export class ClusteringAlgorithm {
     return await this.fit(data);
   }
 
-  async evaluateCluster(data: number[][], labels: number[]): Promise<MLResult<{ silhouette_score: number; inertia?: number }>> {
+  async evaluateCluster(
+    data: number[][],
+    labels: number[]
+  ): Promise<MLResult<{ silhouette_score: number; inertia?: number }>> {
     if (!this.initialized) {
       return { success: false, error: 'Algorithm not initialized' };
     }
@@ -1021,17 +1061,17 @@ export class ClusteringAlgorithm {
         JSON.stringify(data),
         JSON.stringify(labels)
       );
-      
+
       const parsed = JSON.parse(result);
       return {
         success: true,
         data: parsed.evaluation,
-        metrics: parsed.metrics
+        metrics: parsed.metrics,
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Cluster evaluation failed: ${error}` 
+      return {
+        success: false,
+        error: `Cluster evaluation failed: ${error}`,
       };
     }
   }
@@ -1047,9 +1087,9 @@ export async function initializeWASM(): Promise<MLResult<void>> {
     await init();
     return { success: true };
   } catch (error) {
-    return { 
-      success: false, 
-      error: `Failed to initialize WASM module: ${error}` 
+    return {
+      success: false,
+      error: `Failed to initialize WASM module: ${error}`,
     };
   }
 }
@@ -1068,28 +1108,49 @@ export function isWASMReady(): boolean {
 /**
  * Get available ML algorithms and their capabilities
  */
-export async function getAvailableAlgorithms(): Promise<MLResult<Record<string, string[]>>> {
+export async function getAvailableAlgorithms(): Promise<
+  MLResult<Record<string, string[]>>
+> {
   try {
     if (!isWASMReady()) {
       await initializeWASM();
     }
-    
+
     const algorithms = {
-      bayesian_optimization: ['gaussian_process', 'kernel_functions', 'acquisition_functions'],
+      bayesian_optimization: [
+        'gaussian_process',
+        'kernel_functions',
+        'acquisition_functions',
+      ],
       gradient_optimization: ['sgd', 'adam', 'rmsprop', 'adagrad', 'auto_diff'],
-      multi_objective: ['nsga2', 'pareto_optimization', 'hypervolume', 'crowding_distance'],
+      multi_objective: [
+        'nsga2',
+        'pareto_optimization',
+        'hypervolume',
+        'crowding_distance',
+      ],
       online_learning: ['concept_drift', 'adaptive_learning', 'replay_buffer'],
-      pattern_recognition: ['trend_detection', 'periodicity', 'pattern_extraction'],
+      pattern_recognition: [
+        'trend_detection',
+        'periodicity',
+        'pattern_extraction',
+      ],
       embeddings: ['tfidf', 'text_processing', 'vocabulary_fitting'],
-      similarity: ['cosine', 'euclidean', 'manhattan', 'jaccard', 'mahalanobis'],
-      clustering: ['kmeans', 'dbscan', 'hierarchical']
+      similarity: [
+        'cosine',
+        'euclidean',
+        'manhattan',
+        'jaccard',
+        'mahalanobis',
+      ],
+      clustering: ['kmeans', 'dbscan', 'hierarchical'],
     };
-    
+
     return { success: true, data: algorithms };
   } catch (error) {
-    return { 
-      success: false, 
-      error: `Failed to get available algorithms: ${error}` 
+    return {
+      success: false,
+      error: `Failed to get available algorithms: ${error}`,
     };
   }
 }
@@ -1098,18 +1159,18 @@ export async function getAvailableAlgorithms(): Promise<MLResult<Record<string, 
  * Validate configuration objects before passing to WASM
  */
 export function validateConfig<T extends Record<string, any>>(
-  config: T, 
+  config: T,
   requiredFields: string[]
 ): MLResult<void> {
-  const missingFields = requiredFields.filter(field => !(field in config));
-  
+  const missingFields = requiredFields.filter((field) => !(field in config));
+
   if (missingFields.length > 0) {
     return {
       success: false,
-      error: `Missing required configuration fields: ${missingFields.join(', ')}`
+      error: `Missing required configuration fields: ${missingFields.join(', ')}`,
     };
   }
-  
+
   return { success: true };
 }
 
@@ -1127,7 +1188,7 @@ export const DefaultConfigs = {
     kernel_params: { length_scale: 1.0, variance: 1.0 },
     acquisition_type: 'ei',
     acquisition_params: { xi: 0.01 },
-    noise_level: 1e-6
+    noise_level: 1e-6,
   }),
 
   gradient: (): GradientConfig => ({
@@ -1141,7 +1202,7 @@ export const DefaultConfigs = {
     beta1: 0.9,
     beta2: 0.999,
     epsilon: 1e-8,
-    weight_decay: 0.0
+    weight_decay: 0.0,
   }),
 
   multiObjective: (): MultiObjectiveConfig => ({
@@ -1154,7 +1215,7 @@ export const DefaultConfigs = {
     mutation_rate: 0.1,
     crossover_rate: 0.8,
     selection_pressure: 2.0,
-    diversity_threshold: 0.1
+    diversity_threshold: 0.1,
   }),
 
   onlineLearning: (): OnlineLearningConfig => ({
@@ -1163,7 +1224,7 @@ export const DefaultConfigs = {
     drift_threshold: 0.05,
     adaptation_rate: 0.1,
     buffer_size: 1000,
-    batch_size: 32
+    batch_size: 32,
   }),
 
   pattern: (): PatternConfig => ({
@@ -1171,7 +1232,7 @@ export const DefaultConfigs = {
     min_support: 0.1,
     min_confidence: 0.5,
     max_pattern_length: 10,
-    enable_normalization: true
+    enable_normalization: true,
   }),
 
   embedding: (): EmbeddingConfig => ({
@@ -1180,20 +1241,20 @@ export const DefaultConfigs = {
     max_df: 0.95,
     max_features: 5000,
     ngram_range: [1, 2],
-    normalize: true
+    normalize: true,
   }),
 
   similarity: (): SimilarityConfig => ({
     metric: 'cosine',
     threshold: 0.5,
-    normalize_inputs: true
+    normalize_inputs: true,
   }),
 
   clustering: (): ClusteringConfig => ({
     algorithm: 'kmeans',
     n_clusters: 8,
-    distance_metric: 'euclidean'
-  })
+    distance_metric: 'euclidean',
+  }),
 };
 
 // Export all classes and types for easy import
@@ -1205,5 +1266,5 @@ export {
   PatternRecognizer,
   EmbeddingModel,
   SimilarityCalculator,
-  ClusteringAlgorithm
+  ClusteringAlgorithm,
 };

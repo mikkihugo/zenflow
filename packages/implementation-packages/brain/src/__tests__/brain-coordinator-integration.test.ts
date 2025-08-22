@@ -1,6 +1,6 @@
 /**
  * @fileoverview Brain Coordinator Integration Tests (Jest Version)
- * 
+ *
  * Comprehensive integration tests for the BrainCoordinator system including:
  * - Neural network initialization and coordination
  * - Smart neural backend integration
@@ -10,9 +10,9 @@
  * - Autonomous decision making
  * - Memory management and persistence
  * - Error recovery and resilience
- * 
+ *
  * JEST FRAMEWORK: Converted from Vitest to Jest testing patterns
- * 
+ *
  * @author Claude Code Zen Team - Brain Integration Developer Agent
  * @since 1.0.0-alpha.44
  * @version 2.1.0
@@ -22,24 +22,30 @@ import { jest } from '@jest/globals';
 
 // Mock external dependencies to avoid real neural network calls
 jest.unstable_mockModule('@xenova/transformers', () => ({
-  pipeline: jest.fn().mockImplementation(async (task: string, model: string) => {
-    // Simulate model loading time
-    await new Promise(resolve => setTimeout(resolve, 10));
-    
-    return {
-      generate: jest.fn().mockImplementation(async (text: string) => {
-        // Generate deterministic but realistic embeddings based on text
-        const hash = Array.from(text).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return Array.from({ length: 384 }, (_, i) => 
-          Math.sin((hash + i) * 0.1) * 0.5 + 0.5
-        );
-      })
-    };
-  }),
+  pipeline: jest
+    .fn()
+    .mockImplementation(async (task: string, model: string) => {
+      // Simulate model loading time
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      return {
+        generate: jest.fn().mockImplementation(async (text: string) => {
+          // Generate deterministic but realistic embeddings based on text
+          const hash = Array.from(text).reduce(
+            (acc, char) => acc + char.charCodeAt(0),
+            0
+          );
+          return Array.from(
+            { length: 384 },
+            (_, i) => Math.sin((hash + i) * 0.1) * 0.5 + 0.5
+          );
+        }),
+      };
+    }),
   env: {
     allowRemoteModels: true,
-    allowLocalModels: true
-  }
+    allowLocalModels: true,
+  },
 }));
 
 jest.unstable_mockModule('brain.js', () => ({
@@ -47,19 +53,19 @@ jest.unstable_mockModule('brain.js', () => ({
     train: jest.fn(),
     run: jest.fn().mockReturnValue({ prediction: 0.85, confidence: 0.92 }),
     toJSON: jest.fn().mockReturnValue({ layers: [{ weights: [] }] }),
-    fromJSON: jest.fn()
+    fromJSON: jest.fn(),
   })),
   LSTM: jest.fn().mockImplementation(() => ({
     train: jest.fn(),
     run: jest.fn().mockReturnValue('LSTM prediction result'),
-    toJSON: jest.fn().mockReturnValue({ model: 'lstm_model' })
+    toJSON: jest.fn().mockReturnValue({ model: 'lstm_model' }),
   })),
   recurrent: {
     LSTM: jest.fn().mockImplementation(() => ({
       train: jest.fn(),
-      run: jest.fn().mockReturnValue('Recurrent LSTM output')
-    }))
-  }
+      run: jest.fn().mockReturnValue('Recurrent LSTM output'),
+    })),
+  },
 }));
 
 // Mock foundation logging
@@ -69,7 +75,7 @@ jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-  })
+  }),
 }));
 
 import { BrainCoordinator } from '../main';
@@ -92,13 +98,13 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
           maxCacheSize: 50,
           performanceThresholds: {
             maxLatency: 2000,
-            minAccuracy: 0.8
+            minAccuracy: 0.8,
           },
           telemetry: {
             enabled: true,
-            sampleRate: 1.0
-          }
-        }
+            sampleRate: 1.0,
+          },
+        },
       },
       behavioral: {
         learningRate: 0.1,
@@ -107,15 +113,15 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         patterns: {
           coordination: { weight: 1.0, enabled: true },
           optimization: { weight: 0.8, enabled: true },
-          prediction: { weight: 0.6, enabled: true }
-        }
+          prediction: { weight: 0.6, enabled: true },
+        },
       },
       autonomous: {
         enabled: true,
         learningRate: 0.1,
         adaptationThreshold: 0.7,
-        decisionBoundary: 0.6
-      }
+        decisionBoundary: 0.6,
+      },
     };
 
     brainCoordinator = new BrainCoordinator(testConfig);
@@ -132,26 +138,26 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should initialize with default configuration', async () => {
       const defaultCoordinator = new BrainCoordinator();
       await defaultCoordinator.initialize();
-      
+
       const isInitialized = defaultCoordinator.isInitialized();
       expect(isInitialized).toBe(true);
-      
+
       // Test basic functionality instead of config
       const result = await defaultCoordinator.predict([1, 2, 3]);
       expect(result).toBeDefined();
       expect(Array.isArray(result)).toBe(true);
-      
+
       await defaultCoordinator.shutdown();
     });
 
     it('should initialize with custom configuration', async () => {
       await brainCoordinator.initialize();
-      
+
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       // Test that coordinator was initialized successfully
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       // Test basic functionality
       const result = await brainCoordinator.predict([1, 2, 3]);
       expect(result).toBeDefined();
@@ -166,8 +172,8 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         autonomous: {
           enabled: true,
           learningRate: 0.05,
-          adaptationThreshold: 0.9
-        }
+          adaptationThreshold: 0.9,
+        },
       };
 
       expect(() => {
@@ -177,10 +183,10 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should handle initialization gracefully', async () => {
       await brainCoordinator.initialize();
-      
+
       // Should initialize successfully
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       // Can make predictions
       const result = await brainCoordinator.predict([1, 2, 3]);
       expect(result).toBeDefined();
@@ -189,13 +195,13 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should process neural tasks', async () => {
       await brainCoordinator.initialize();
-      
+
       const task = {
         id: 'test-task',
         type: 'prediction' as const,
-        data: { input: [1, 2, 3] }
+        data: { input: [1, 2, 3] },
       };
-      
+
       const result = await brainCoordinator.processNeuralTask(task);
       expect(result).toBeDefined();
       expect(result.result).toBeDefined();
@@ -209,7 +215,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should make predictions with neural input', async () => {
       const input = [1.0, 2.0, 3.0, -1.0, 0.5];
-      
+
       const result = await brainCoordinator.predict(input);
 
       expect(result).toBeDefined();
@@ -225,15 +231,15 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         [3.0, 4.0],
         [5.0, 6.0],
         [-1.0, -2.0],
-        [0.0, 1.0]
+        [0.0, 1.0],
       ];
 
       const startTime = Date.now();
-      
+
       const results = await Promise.all(
-        inputs.map(input => brainCoordinator.predict(input))
+        inputs.map((input) => brainCoordinator.predict(input))
       );
-      
+
       const endTime = Date.now();
       const totalTime = endTime - startTime;
 
@@ -246,7 +252,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
       // Should process efficiently
       expect(totalTime).toBeLessThan(1000); // Under 1 second
-      
+
       // Results should be different for different inputs
       for (let i = 0; i < results.length - 1; i++) {
         for (let j = i + 1; j < results.length; j++) {
@@ -257,11 +263,11 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should provide consistent results for identical inputs', async () => {
       const input = [1.0, 2.0, 3.0];
-      
+
       // First prediction
       const result1 = await brainCoordinator.predict(input);
       expect(result1).toBeDefined();
-      
+
       // Second prediction (should be consistent)
       const result2 = await brainCoordinator.predict(input);
       expect(result2).toBeDefined();
@@ -273,14 +279,14 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       const horizon = 5;
 
       const result = await brainCoordinator.forecast(timeSeries, horizon);
-      
+
       expect(result).toBeDefined();
       expect(Array.isArray(result)).toBe(true);
       // Note: forecast may return input length, not horizon length
       expect(result.length).toBeGreaterThan(0);
-      
+
       // Forecasted values should be meaningful
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(typeof value).toBe('number');
         expect(isFinite(value)).toBe(true);
       });
@@ -296,11 +302,11 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       const task = {
         id: 'neural-task-1',
         type: 'prediction' as const,
-        data: { input: [1, 2, 3, 4, 5] }
+        data: { input: [1, 2, 3, 4, 5] },
       };
-      
+
       const result = await brainCoordinator.processNeuralTask(task);
-      
+
       expect(result).toBeDefined();
       expect(result.result).toBeDefined();
       expect(Array.isArray(result.result)).toBe(true);
@@ -309,25 +315,31 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should predict task complexity', async () => {
       const simpleTask = {
         type: 'prediction' as const,
-        data: { input: [1, 2] }
-      };
-      
-      const complexTask = {
-        type: 'classification' as const,
-        data: { 
-          input: Array.from({ length: 100 }, (_, i) => i),
-          metadata: { complexity: 'high' }
-        }
+        data: { input: [1, 2] },
       };
 
-      const simpleComplexity = brainCoordinator.predictTaskComplexity(simpleTask);
-      const complexComplexity = brainCoordinator.predictTaskComplexity(complexTask);
-      
+      const complexTask = {
+        type: 'classification' as const,
+        data: {
+          input: Array.from({ length: 100 }, (_, i) => i),
+          metadata: { complexity: 'high' },
+        },
+      };
+
+      const simpleComplexity =
+        brainCoordinator.predictTaskComplexity(simpleTask);
+      const complexComplexity =
+        brainCoordinator.predictTaskComplexity(complexTask);
+
       expect(simpleComplexity).toBeDefined();
       expect(complexComplexity).toBeDefined();
       // TaskComplexity enum values: simple, moderate, complex, heavy
-      expect(['simple', 'moderate', 'complex', 'heavy'].includes(simpleComplexity)).toBe(true);
-      expect(['simple', 'moderate', 'complex', 'heavy'].includes(complexComplexity)).toBe(true);
+      expect(
+        ['simple', 'moderate', 'complex', 'heavy'].includes(simpleComplexity)
+      ).toBe(true);
+      expect(
+        ['simple', 'moderate', 'complex', 'heavy'].includes(complexComplexity)
+      ).toBe(true);
     });
 
     it('should store neural data', async () => {
@@ -338,11 +350,13 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         characteristics: {
           size: 40, // 5 numbers * 8 bytes each
           accessFrequency: 'occasional' as const,
-          persistenceLevel: 'session' as const
-        }
+          persistenceLevel: 'session' as const,
+        },
       };
 
-      await expect(brainCoordinator.storeNeuralData(neuralData)).resolves.not.toThrow();
+      await expect(
+        brainCoordinator.storeNeuralData(neuralData)
+      ).resolves.not.toThrow();
     });
 
     it('should provide orchestration metrics', async () => {
@@ -351,7 +365,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       await brainCoordinator.forecast([1, 2, 3, 4, 5], 3);
 
       const metrics = brainCoordinator.getOrchestrationMetrics();
-      
+
       expect(metrics).toBeDefined();
       expect(typeof metrics).toBe('object');
     });
@@ -368,12 +382,12 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         basePrompt: 'Optimize this code for better performance',
         context: {
           language: 'javascript',
-          complexity: 'medium'
-        }
+          complexity: 'medium',
+        },
       };
 
       const result = await brainCoordinator.optimizePrompt(request);
-      
+
       expect(result).toBeDefined();
       expect(result.strategy).toBeDefined();
       expect(result.prompt).toBeDefined();
@@ -387,24 +401,24 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         {
           task: 'code-generation',
           basePrompt: 'Generate a function',
-          context: { type: 'utility' }
+          context: { type: 'utility' },
         },
         {
           task: 'debugging',
           basePrompt: 'Find the bug',
-          context: { severity: 'high' }
+          context: { severity: 'high' },
         },
         {
           task: 'refactoring',
           basePrompt: 'Improve code structure',
-          context: { maintainability: 'important' }
-        }
+          context: { maintainability: 'important' },
+        },
       ];
 
       const results = await Promise.all(
-        requests.map(req => brainCoordinator.optimizePrompt(req))
+        requests.map((req) => brainCoordinator.optimizePrompt(req))
       );
-      
+
       results.forEach((result, index) => {
         expect(result).toBeDefined();
         expect(result.strategy).toBeDefined();
@@ -421,29 +435,31 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
           domain: 'software-architecture',
           constraints: ['time', 'budget'],
           requirements: ['scalability', 'maintainability'],
-          stakeholders: ['developers', 'managers']
-        }
+          stakeholders: ['developers', 'managers'],
+        },
       };
 
       const result = await brainCoordinator.optimizePrompt(complexRequest);
-      
+
       expect(result).toBeDefined();
       expect(result.strategy).toBeDefined();
       expect(result.prompt).toBeDefined();
       expect(result.confidence).toBeGreaterThan(0);
-      expect(result.prompt.length).toBeGreaterThan(complexRequest.basePrompt.length);
+      expect(result.prompt.length).toBeGreaterThan(
+        complexRequest.basePrompt.length
+      );
     });
 
     it('should maintain optimization consistency', async () => {
       const request = {
         task: 'consistency-test',
         basePrompt: 'Test prompt optimization',
-        context: { test: 'consistency' }
+        context: { test: 'consistency' },
       };
 
       const result1 = await brainCoordinator.optimizePrompt(request);
       const result2 = await brainCoordinator.optimizePrompt(request);
-      
+
       expect(result1.strategy).toBe(result2.strategy);
       expect(result1.confidence).toBe(result2.confidence);
       // Prompts should be identical for identical inputs
@@ -459,18 +475,18 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should work with neural bridge for predictions', async () => {
       // Test neural bridge functionality through brain coordinator
       const input = [0.5, -0.3, 1.2, -0.8, 0.0];
-      
+
       const result = await brainCoordinator.predict(input, 'prediction');
-      
+
       expect(result).toBeDefined();
       expect(Array.isArray(result)).toBe(true);
       expect(result).toHaveLength(input.length);
-      
+
       // Neural processing should transform the input
       expect(result).not.toEqual(input);
-      
+
       // All values should be finite numbers
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(typeof value).toBe('number');
         expect(isFinite(value)).toBe(true);
       });
@@ -479,15 +495,15 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should handle classification tasks', async () => {
       // Test classification through neural processing
       const input = [1.0, 0.0, -1.0, 0.5];
-      
+
       const result = await brainCoordinator.predict(input, 'classification');
-      
+
       expect(result).toBeDefined();
       expect(Array.isArray(result)).toBe(true);
       expect(result).toHaveLength(input.length);
-      
+
       // Classification results should be processed values
-      result.forEach(value => {
+      result.forEach((value) => {
         expect(typeof value).toBe('number');
         expect(isFinite(value)).toBe(true);
       });
@@ -499,19 +515,19 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         {
           id: 'task-1',
           type: 'prediction' as const,
-          data: { input: [1, 2, 3] }
+          data: { input: [1, 2, 3] },
         },
         {
-          id: 'task-2', 
+          id: 'task-2',
           type: 'classification' as const,
-          data: { input: [0.5, -0.5, 1.0] }
-        }
+          data: { input: [0.5, -0.5, 1.0] },
+        },
       ];
-      
+
       const results = await Promise.all(
-        tasks.map(task => brainCoordinator.processNeuralTask(task))
+        tasks.map((task) => brainCoordinator.processNeuralTask(task))
       );
-      
+
       results.forEach((result, index) => {
         expect(result).toBeDefined();
         expect(result.result).toBeDefined();
@@ -521,17 +537,17 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should maintain state correctly after operations', async () => {
       // Ensure coordinator remains initialized after various operations
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       await brainCoordinator.predict([1, 2, 3]);
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       await brainCoordinator.forecast([1, 2, 3, 4, 5], 2);
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       const task = {
         id: 'state-test',
         type: 'prediction' as const,
-        data: { input: [0.5] }
+        data: { input: [0.5] },
       };
       await brainCoordinator.processNeuralTask(task);
       expect(brainCoordinator.isInitialized()).toBe(true);
@@ -546,14 +562,14 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should handle invalid inputs gracefully', async () => {
       // Test with invalid numeric inputs
       const invalidInputs = [NaN, Infinity, -Infinity];
-      
+
       for (const invalidInput of invalidInputs) {
         const result = await brainCoordinator.predict([invalidInput, 1, 2]);
         // Should still return a result or handle gracefully
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
       }
-      
+
       // System should remain operational
       expect(brainCoordinator.isInitialized()).toBe(true);
     });
@@ -568,9 +584,9 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       }
 
       const results = await Promise.allSettled(predictionPromises);
-      
+
       // All predictions should succeed
-      const successfulResults = results.filter(r => r.status === 'fulfilled');
+      const successfulResults = results.filter((r) => r.status === 'fulfilled');
       expect(successfulResults.length).toBe(20);
 
       // System should still be responsive after load
@@ -599,17 +615,17 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should maintain state consistency during operations', async () => {
       // Verify initialization state before operations
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       // Perform various operations
       await brainCoordinator.predict([1, 2, 3]);
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       await brainCoordinator.optimizePrompt({
         task: 'test',
-        basePrompt: 'test prompt'
+        basePrompt: 'test prompt',
       });
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       // State should remain consistent
       expect(brainCoordinator.isInitialized()).toBe(true);
     });
@@ -623,12 +639,12 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should integrate neural processing with orchestration', async () => {
       // Test that neural processing works with orchestration layer
       const input = [1.0, 0.5, -0.5, 2.0];
-      
+
       // Process through brain coordinator
       const result = await brainCoordinator.predict(input);
       expect(result).toBeDefined();
       expect(Array.isArray(result)).toBe(true);
-      
+
       // Check orchestration metrics are being tracked
       const metrics = brainCoordinator.getOrchestrationMetrics();
       expect(metrics).toBeDefined();
@@ -638,12 +654,14 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       // Test integration between task complexity prediction and processing
       const simpleTask = {
         type: 'prediction' as const,
-        data: { input: [1, 2] }
+        data: { input: [1, 2] },
       };
-      
+
       const complexity = brainCoordinator.predictTaskComplexity(simpleTask);
-      expect(['simple', 'moderate', 'complex', 'heavy'].includes(complexity)).toBe(true);
-      
+      expect(
+        ['simple', 'moderate', 'complex', 'heavy'].includes(complexity)
+      ).toBe(true);
+
       // Now process the actual task
       const fullTask = { id: 'complexity-test', ...simpleTask };
       const result = await brainCoordinator.processNeuralTask(fullTask);
@@ -660,12 +678,14 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         characteristics: {
           size: 40, // 5 numbers * 8 bytes each
           accessFrequency: 'frequent' as const,
-          persistenceLevel: 'permanent' as const
-        }
+          persistenceLevel: 'permanent' as const,
+        },
       };
-      
-      await expect(brainCoordinator.storeNeuralData(neuralData)).resolves.not.toThrow();
-      
+
+      await expect(
+        brainCoordinator.storeNeuralData(neuralData)
+      ).resolves.not.toThrow();
+
       // Orchestration should handle the storage
       const metrics = brainCoordinator.getOrchestrationMetrics();
       expect(metrics).toBeDefined();
@@ -679,39 +699,42 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should integrate all available subsystems', async () => {
       const sessionId = 'comprehensive-integration-test';
-      
+
       // 1. Neural processing
       const predictionResult = await brainCoordinator.predict([1, 2, 3, 4]);
       expect(predictionResult).toBeDefined();
       expect(Array.isArray(predictionResult)).toBe(true);
-      
+
       // 2. Forecasting
-      const forecastResult = await brainCoordinator.forecast([1, 2, 3, 4, 5], 3);
+      const forecastResult = await brainCoordinator.forecast(
+        [1, 2, 3, 4, 5],
+        3
+      );
       expect(forecastResult).toBeDefined();
       expect(forecastResult.length).toBeGreaterThan(0);
-      
+
       // 3. Prompt optimization
       const optimizationResult = await brainCoordinator.optimizePrompt({
         task: 'integrated-optimization',
-        basePrompt: 'Test integrated system'
+        basePrompt: 'Test integrated system',
       });
       expect(optimizationResult).toBeDefined();
       expect(optimizationResult.strategy).toBeDefined();
-      
+
       // 4. Neural task processing
       const task = {
         id: 'integration-task',
         type: 'prediction' as const,
-        data: { input: [0.5, 1.0, 1.5] }
+        data: { input: [0.5, 1.0, 1.5] },
       };
       const taskResult = await brainCoordinator.processNeuralTask(task);
       expect(taskResult).toBeDefined();
       expect(taskResult.result).toBeDefined();
-      
+
       // 5. Orchestration metrics
       const metrics = brainCoordinator.getOrchestrationMetrics();
       expect(metrics).toBeDefined();
-      
+
       // 6. System state consistency
       expect(brainCoordinator.isInitialized()).toBe(true);
     });
@@ -722,25 +745,33 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
         brainCoordinator.predict([1, 2, 3]),
         brainCoordinator.predict([4, 5, 6]),
         brainCoordinator.predict([7, 8, 9]),
-        
+
         // Forecasting operations
         brainCoordinator.forecast([1, 2, 3, 4], 2),
         brainCoordinator.forecast([5, 6, 7, 8], 2),
-        
+
         // Prompt optimization
-        brainCoordinator.optimizePrompt({ task: 'concurrent-1', basePrompt: 'test 1' }),
-        brainCoordinator.optimizePrompt({ task: 'concurrent-2', basePrompt: 'test 2' }),
+        brainCoordinator.optimizePrompt({
+          task: 'concurrent-1',
+          basePrompt: 'test 1',
+        }),
+        brainCoordinator.optimizePrompt({
+          task: 'concurrent-2',
+          basePrompt: 'test 2',
+        }),
       ];
 
       const results = await Promise.allSettled(concurrentOperations);
-      
+
       // All operations should succeed
-      const successfulOperations = results.filter(r => r.status === 'fulfilled');
+      const successfulOperations = results.filter(
+        (r) => r.status === 'fulfilled'
+      );
       expect(successfulOperations.length).toBe(7);
-      
+
       // System should remain stable
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       // All results should be valid
       results.forEach((result, index) => {
         if (result.status === 'fulfilled') {
@@ -753,22 +784,29 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       // Generate activity across available subsystems
       await brainCoordinator.predict([1, 2, 3]);
       await brainCoordinator.forecast([1, 2, 3, 4, 5], 2);
-      await brainCoordinator.optimizePrompt({ task: 'diagnostic-test', basePrompt: 'test' });
+      await brainCoordinator.optimizePrompt({
+        task: 'diagnostic-test',
+        basePrompt: 'test',
+      });
 
       // Check system state
       expect(brainCoordinator.isInitialized()).toBe(true);
-      
+
       // Check orchestration metrics
       const metrics = brainCoordinator.getOrchestrationMetrics();
       expect(metrics).toBeDefined();
       expect(typeof metrics).toBe('object');
-      
+
       // Verify all core functions work
       const complexityPrediction = brainCoordinator.predictTaskComplexity({
         type: 'prediction',
-        data: { input: [1, 2, 3] }
+        data: { input: [1, 2, 3] },
       });
-      expect(['simple', 'moderate', 'complex', 'heavy'].includes(complexityPrediction)).toBe(true);
+      expect(
+        ['simple', 'moderate', 'complex', 'heavy'].includes(
+          complexityPrediction
+        )
+      ).toBe(true);
     });
   });
 });

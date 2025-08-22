@@ -24,9 +24,9 @@ const logger = getLogger('sparc-facade');
 // ============================================================================
 
 // Core SPARC types - Export from real package when available
-export type SPARCPhase = 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
-export type ProjectComplexity = 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
-export type ProjectDomain = 'swarm-coordination' | 'neural-networks' | 'wasm-integration' | 'rest-api' | 'memory-systems' | 'interfaces' | 'general';
+export type SPARCPhase ='' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion';
+export type ProjectComplexity ='' | '''simple | moderate' | 'high' | 'complex' | 'enterprise';
+export type ProjectDomain ='' | '''swarm-coordination''' | '''neural-networks''' | '''wasm-integration''' | '''rest-api''' | '''memory-systems''' | '''interfaces''' | '''general';
 
 export interface SPARCConfig {
   enabled?: boolean;
@@ -91,7 +91,13 @@ export class SPARCMethodology extends TypedEventBase {
     super();
     this.sparcConfig = {
       enabled: true,
-      phases: ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'],
+      phases: [
+        'specification',
+        'pseudocode',
+        'architecture',
+        'refinement',
+        'completion',
+      ],
       persistence: true,
       visualization: false,
       defaultTimeout: 30000,
@@ -106,7 +112,9 @@ export class SPARCMethodology extends TypedEventBase {
     }
 
     try {
-      logger.info('Initializing SPARC methodology with real package delegation');
+      logger.info(
+        'Initializing SPARC methodology with real package delegation',
+      );
 
       // Try to load real SPARC package
       const { SPARC } = await import('@claude-zen/sparc');
@@ -114,11 +122,14 @@ export class SPARCMethodology extends TypedEventBase {
       this.sparcEngine = SPARC.getEngine();
       this.initialized = true;
 
-      logger.info('SPARC methodology initialized successfully with real package');
+      logger.info(
+        'SPARC methodology initialized successfully with real package',
+      );
       this.emit('initialized', { timestamp: Date.now() });
-
-    } catch (error) {
-      logger.warn('Real SPARC package not available, using fallback implementation', error);
+    } catch {
+      logger.warn(
+        'Real SPARC package not available, using fallback implementation',
+      );
       this.sparcEngine = this.createFallbackEngine();
       this.initialized = true;
     }
@@ -135,13 +146,16 @@ export class SPARCMethodology extends TypedEventBase {
       logger.debug(`Executing SPARC phase: ${phase}`, { input });
 
       // Delegate to real engine if available
-      if (this.sparcEngine && typeof this.sparcEngine.executePhase === 'function') {
-        const project = input.project || await this.sparcEngine.initializeProject({
-          name: input.name || 'SPARC Project',
-          domain: input.domain || 'general',
-          requirements: input.requirements || [],
-          complexity: input.complexity || 'moderate',
-        });
+      if (
+        this.sparcEngine &&
+        typeof this.sparcEngine.executePhase === 'function') {
+        const project =
+          input.project'' | '''' | ''(await this.sparcEngine.initializeProject({
+            name: input.name'' | '''' | '''SPARC Project',
+            domain: input.domain'' | '''' | '''general',
+            requirements: input.requirements'' | '''' | ''[],
+            complexity: input.complexity'' | '''' | '''moderate',
+          }));
 
         const result = await this.sparcEngine.executePhase(project, phase);
 
@@ -157,10 +171,9 @@ export class SPARCMethodology extends TypedEventBase {
         // Fallback implementation
         return this.executeFallbackPhase(phase, input, startTime);
       }
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      logger.error(`SPARC phase ${phase} failed:`, error);
+    } catch {
+      const errorMessage = 'Unknown error';
+      logger.error(`SPARC phase ${phase} failed`);
 
       return {
         phase,
@@ -176,7 +189,10 @@ export class SPARCMethodology extends TypedEventBase {
    * Get projects - delegates to real engine
    */
   getProjects(): SPARCProject[] {
-    if (this.sparcEngine && typeof this.sparcEngine.listProjects === 'function') {
+    if (
+      this.sparcEngine &&
+      typeof this.sparcEngine.listProjects === 'function'
+    ) {
       return this.sparcEngine.listProjects();
     }
     return [];
@@ -185,13 +201,26 @@ export class SPARCMethodology extends TypedEventBase {
   /**
    * Create project - delegates to real engine
    */
-  async createProject(name: string, domain: ProjectDomain, requirements: string[], complexity: ProjectComplexity = 'moderate'): Promise<SPARCProject> {
+  async createProject(
+    name: string,
+    domain: ProjectDomain,
+    requirements: string[],
+    complexity: ProjectComplexity = 'moderate',
+  ): Promise<SPARCProject> {
     if (!this.initialized) {
       await this.initialize();
     }
 
-    if (this.sparcEngine && typeof this.sparcEngine.createProject === 'function') {
-      return await this.sparcEngine.createProject(name, domain, requirements, complexity);
+    if (
+      this.sparcEngine &&
+      typeof this.sparcEngine.createProject === 'function'
+    ) {
+      return await this.sparcEngine.createProject(
+        name,
+        domain,
+        requirements,
+        complexity,
+      );
     }
 
     // Fallback implementation
@@ -232,30 +261,54 @@ export class SPARCMethodology extends TypedEventBase {
     };
   }
 
-  private executeFallbackPhase(phase: SPARCPhase, input: any, startTime: number): SPARCResult {
+  private executeFallbackPhase(
+    phase: SPARCPhase,
+    input: any,
+    startTime: number,
+  ): SPARCResult {
     logger.info(`Executing fallback SPARC phase: ${phase}`);
 
     const fallbackOutputs: Record<SPARCPhase, any> = {
       specification: {
-        goals: input.requirements || ['Define project goals'],
+        goals: input.requirements'' | '''' | ''['Define project goals'],
         scope: 'Project scope to be determined',
         constraints: ['Time constraints', 'Resource constraints'],
         stakeholders: ['Development team'],
         successCriteria: ['Project completion', 'Quality standards met'],
       },
       pseudocode: {
-        algorithms: [{ name: 'Main Algorithm', steps: ['Step 1: Initialize', 'Step 2: Process', 'Step 3: Finalize'] }],
-        dataStructures: [{ name: 'ProjectData', type: 'interface', properties: [] }],
+        algorithms: [
+          {
+            name: 'Main Algorithm',
+            steps: [
+              'Step 1: Initialize',
+              'Step 2: Process',
+              'Step 3: Finalize',
+            ],
+          },
+        ],
+        dataStructures: [
+          { name: 'ProjectData', type: 'interface', properties: [] },
+        ],
         workflows: [{ name: 'Main Workflow', steps: [] }],
       },
       architecture: {
-        components: [{ name: 'MainComponent', type: 'service', purpose: 'Primary functionality' }],
+        components: [
+          {
+            name: 'MainComponent',
+            type: 'service',
+            purpose: 'Primary functionality',
+          },
+        ],
         relationships: [],
         patterns: ['MVC', 'Observer'],
         technologies: ['TypeScript', 'Node.js'],
       },
       refinement: {
-        optimizations: ['Performance improvements', 'Code quality enhancements'],
+        optimizations: [
+          'Performance improvements',
+          'Code quality enhancements',
+        ],
         improvements: ['Better error handling', 'Enhanced logging'],
         validations: ['Input validation', 'Output verification'],
       },
@@ -295,11 +348,16 @@ export function createSPARCWorkflow(config?: SPARCConfig) {
   const methodology = new SPARCMethodology(config);
 
   return {
-    specification: async (input?: any) => await methodology.executePhase('specification', input),
-    pseudocode: async (input?: any) => await methodology.executePhase('pseudocode', input),
-    architecture: async (input?: any) => await methodology.executePhase('architecture', input),
-    refinement: async (input?: any) => await methodology.executePhase('refinement', input),
-    completion: async (input?: any) => await methodology.executePhase('completion', input),
+    specification: async (input?: any) =>
+      await methodology.executePhase('specification', input),
+    pseudocode: async (input?: any) =>
+      await methodology.executePhase('pseudocode', input),
+    architecture: async (input?: any) =>
+      await methodology.executePhase('architecture', input),
+    refinement: async (input?: any) =>
+      await methodology.executePhase('refinement', input),
+    completion: async (input?: any) =>
+      await methodology.executePhase('completion', input),
     initialize: () => methodology.initialize(),
     shutdown: () => methodology.shutdown(),
   };
@@ -312,7 +370,8 @@ export function createSPARCCommander(config?: SPARCConfig) {
   const methodology = new SPARCMethodology(config);
 
   return {
-    execute: async (phase: SPARCPhase, input: any) => await methodology.executePhase(phase, input),
+    execute: async (phase: SPARCPhase, input: any) =>
+      await methodology.executePhase(phase, input),
     getStatus: () => ({
       initialized: methodology.initialized,
       config: methodology.sparcConfig,
@@ -335,7 +394,9 @@ export const SPARC = class {
   }
 };
 export const SPARCEngineCore = class {
-  constructor() { /* fallback */ }
+  constructor() {
+    /* fallback */
+  }
 };
 export const SPARCCommander = class {
   async execute() {

@@ -5,11 +5,11 @@
  * for the command palette and file explorer.
  */
 
-import { spawn } from 'child_process');
+import { spawn } from 'child_process';
 import * as path from 'path');
 
-import { getLogger } from '@claude-zen/foundation');
-import type { Express, Request, Response } from 'express');
+import { getLogger } from '@claude-zen/foundation';
+import type { Express, Request, Response } from 'express';
 import * as fs from 'fs-extra');
 
 export class WorkspaceApiRoutes {
@@ -63,7 +63,7 @@ export class WorkspaceApiRoutes {
    */
   private async listFiles(req: Request, res: Response): Promise<void> {
     try {
-      const requestedPath = (req.query.path as string) || '');
+      const requestedPath = (req.query.path as string)'' | '''' | '''');
       const fullPath = path.resolve(this.workspaceRoot, requestedPath);
 
       // Security check - ensure path is within workspace
@@ -183,7 +183,7 @@ export class WorkspaceApiRoutes {
       });
     } catch (error) {
       this.logger.error('Failed to create file:', error);
-      res.status(500).json({ error: 'Failed to create file' });
+      res.status(500).json({ error: 'Failed to create file'});
     }
   }
 
@@ -194,10 +194,10 @@ export class WorkspaceApiRoutes {
     try {
       const { path: filePath, content } = req.body;
 
-      if (!filePath || content === undefined) {
+      if (!filePath'' | '''' | ''content === undefined) {
         return res
           .status(400)
-          .json({ error: 'File path and content required' });
+          .json({ error:'File path and content required' });
       }
 
       const fullPath = path.resolve(this.workspaceRoot, filePath);
@@ -281,7 +281,7 @@ export class WorkspaceApiRoutes {
       });
     } catch (error) {
       this.logger.error('Failed to create directory:', error);
-      res.status(500).json({ error: 'Failed to create directory' });
+      res.status(500).json({ error: 'Failed to create directory'});
     }
   }
 
@@ -291,10 +291,10 @@ export class WorkspaceApiRoutes {
   private async searchFiles(req: Request, res: Response): Promise<void> {
     try {
       const query = req.query.q as string;
-      const maxResults = parseInt(req.query.limit as string) || 50;
+      const maxResults = parseInt(req.query.limit as string)'' | '''' | ''50;
 
       if (!query) {
-        return res.status(400).json({ error: 'Search query required' });
+        return res.status(400).json({ error:'Search query required' });
       }
 
       const results = await this.searchFilesByName(query, maxResults);
@@ -329,12 +329,12 @@ export class WorkspaceApiRoutes {
           const packageJson = await fs.readJson(packageJsonPath);
           projectInfo = {
             ...projectInfo,
-            name: packageJson.name || projectInfo.name,
-            type: 'nodejs',
+            name: packageJson.name'' | '''' | ''projectInfo.name,
+            type:'nodejs',
             hasPackageJson: true,
-            scripts: Object.keys(packageJson.scripts || {}),
-            dependencies: packageJson.dependencies || {},
-            devDependencies: packageJson.devDependencies || {},
+            scripts: Object.keys(packageJson.scripts'' | '''' | ''{}),
+            dependencies: packageJson.dependencies'' | '''' | ''{},
+            devDependencies: packageJson.devDependencies'' | '''' | ''{},
           };
         } catch (error) {
           this.logger.warn('Failed to parse package.json:', error);
@@ -459,7 +459,7 @@ export class WorkspaceApiRoutes {
       res.json({ files: recentFiles });
     } catch (error) {
       this.logger.error('Failed to get recent files:', error);
-      res.status(500).json({ error: 'Failed to get recent files' });
+      res.status(500).json({ error: 'Failed to get recent files'});
     }
   }
 
@@ -474,7 +474,7 @@ export class WorkspaceApiRoutes {
     const searchPattern = query?.toLowerCase()
 
     const searchDir = async (dirPath: string, depth = 0): Promise<void> => {
-      if (depth > 5 || results.length >= maxResults) return; // Limit depth and results
+      if (depth > 5'' | '''' | ''results.length >= maxResults) return; // Limit depth and results
 
       try {
         const items = await fs.readdir(dirPath);
@@ -486,7 +486,7 @@ export class WorkspaceApiRoutes {
           const relativePath = path.relative(this.workspaceRoot, itemPath);
 
           // Skip hidden files and node_modules
-          if (item.startsWith(".') || item === 'node_modules') continue;
+          if (item.startsWith(".') || item ==='node_modules') continue;
 
           const stats = await fs.stat(itemPath).catch(() => null);
           if (!stats) continue;
@@ -532,7 +532,7 @@ export class WorkspaceApiRoutes {
           const relativePath = path.relative(this.workspaceRoot, itemPath);
 
           // Skip hidden files and node_modules
-          if (item.startsWith(".') || item === 'node_modules') continue;
+          if (item.startsWith(".')'' | '''' | ''item ==='node_modules') continue;
 
           const stats = await fs.stat(itemPath).catch(() => null);
           if (!stats) continue;
@@ -625,6 +625,6 @@ TODO: Add description
 `,
     };
 
-    return templates[template as keyof typeof templates] || '');
+    return templates[template as keyof typeof templates]'' | '''' | '''');
   }
 }

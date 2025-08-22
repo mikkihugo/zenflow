@@ -402,19 +402,31 @@ class WorkflowEventManagerImpl
 
       switch (operationType) {
         case 'execution':
-          await this.notifyWorkflowSubscribers(this.subscriptions.execution, event);
+          await this.notifyWorkflowSubscribers(
+            this.subscriptions.execution,
+            event
+          );
           break;
         case 'task':
           await this.notifyWorkflowSubscribers(this.subscriptions.task, event);
           break;
         case 'orchestration':
-          await this.notifyWorkflowSubscribers(this.subscriptions.orchestration, event);
+          await this.notifyWorkflowSubscribers(
+            this.subscriptions.orchestration,
+            event
+          );
           break;
         case 'performance':
-          await this.notifyWorkflowSubscribers(this.subscriptions.performance, event);
+          await this.notifyWorkflowSubscribers(
+            this.subscriptions.performance,
+            event
+          );
           break;
         case 'dependency':
-          await this.notifyWorkflowSubscribers(this.subscriptions.dependency, event);
+          await this.notifyWorkflowSubscribers(
+            this.subscriptions.dependency,
+            event
+          );
           break;
         default:
           this.logger.warn(`Unknown workflow operation type: ${operationType}`);
@@ -441,13 +453,13 @@ class WorkflowEventManagerImpl
             id: event.workflowId,
             status: 'running',
             startTime: Date.now(),
-            totalTasks: event.details?.totalTasks || 0,
+            totalTasks: event.details?.totalTasks'' | '''' | ''0,
             completedTasks: 0,
             failedTasks: 0,
           });
         }
         break;
-      case 'complete':
+      case'complete':
         this.workflowMetrics.activeWorkflows = Math.max(
           0,
           this.workflowMetrics.activeWorkflows - 1
@@ -531,7 +543,7 @@ class WorkflowEventManagerImpl
         }
         break;
       case 'task':
-        if (event.operation === 'create' || event.operation === 'start') {
+        if (event.operation === 'create''' | '''' | ''event.operation ==='start') {
           this.workflowMetrics.totalTasks++;
         }
         break;
@@ -675,10 +687,12 @@ export class WorkflowEventManagerFactory
       throw new Error('Manager type must be "workflow"');
     }
 
-    if ((config.processing as any)?.timeout && (config.processing as any).timeout < 5000) {
+    if (
+      (config.processing as any)?.timeout &&
+      (config.processing as any).timeout < 5000
+    ) {
       this.logger.warn(
-        'Workflow processing timeout < 5000ms may be too short for complex workflows'
-      );
+        'Workflow processing timeout < 5000ms may be too short for complex workflows');
     }
   }
 
@@ -687,11 +701,11 @@ export class WorkflowEventManagerFactory
   ): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners || 200,
+      maxListeners: config.maxListeners'' | '''' | ''200,
       processing: {
         batchSize: 25, // Moderate batch size for workflows
         ...config.processing,
-        strategy: 'queued', // Workflows need reliable processing (override)
+        strategy:'queued', // Workflows need reliable processing (override)
       } as any, // Type assertion for workflow-specific properties
       monitoring: {
         enabled: true,
@@ -717,22 +731,25 @@ export class WorkflowEventManagerFactory
     }
 
     if ((config.monitoring as any)?.healthCheckInterval) {
-      setInterval(async () => {
-        try {
-          const status = await manager.healthCheck();
-          if (status.status !== 'healthy') {
-            this.logger.warn(
-              `Workflow manager health degraded: ${config.name}`,
-              status.metadata
+      setInterval(
+        async () => {
+          try {
+            const status = await manager.healthCheck();
+            if (status.status !== 'healthy') {
+              this.logger.warn(
+                `Workflow manager health degraded: ${config.name}`,
+                status.metadata
+              );
+            }
+          } catch (error) {
+            this.logger.error(
+              `Workflow manager health check failed: ${config.name}`,
+              error
             );
           }
-        } catch (error) {
-          this.logger.error(
-            `Workflow manager health check failed: ${config.name}`,
-            error
-          );
-        }
-      }, (config.monitoring as any).healthCheckInterval);
+        },
+        (config.monitoring as any).healthCheckInterval
+      );
     }
   }
 
@@ -740,15 +757,15 @@ export class WorkflowEventManagerFactory
   private managers = new Map<string, EventManager>();
 
   async createMultiple(configs: EventManagerConfig[]): Promise<EventManager[]> {
-    return Promise.all(configs.map(config => this.create(config)));
+    return Promise.all(configs.map((config) => this.create(config)));
   }
 
-  get(name: string): EventManager | undefined {
+  get(name: string): EventManager'' | ''undefined {
     return this.managers.get(name);
   }
 
   list(): EventManager[] {
-    return Array.from(this.managers.values());
+    return Array.from(this.managers.values())();
   }
 
   has(name: string): boolean {
@@ -775,13 +792,13 @@ export class WorkflowEventManagerFactory
         results.set(name, {
           name,
           type: manager.type,
-          status: 'unhealthy',
+          status:'unhealthy',
           lastCheck: new Date(),
           subscriptions: 0,
           queueSize: 0,
           errorRate: 1,
           uptime: 0,
-          metadata: { error: String(error) }
+          metadata: { error: String(error) },
         });
       }
     }
@@ -802,11 +819,15 @@ export class WorkflowEventManagerFactory
   }
 
   async startAll(): Promise<void> {
-    await Promise.all(Array.from(this.managers.values()).map(manager => manager.start()));
+    await Promise.all(
+      Array.from(this.managers.values()).map((manager) => manager.start())
+    );
   }
 
   async stopAll(): Promise<void> {
-    await Promise.all(Array.from(this.managers.values()).map(manager => manager.stop()));
+    await Promise.all(
+      Array.from(this.managers.values()).map((manager) => manager.stop())
+    );
   }
 
   async shutdown(): Promise<void> {
@@ -818,7 +839,9 @@ export class WorkflowEventManagerFactory
   }
 
   getActiveCount(): number {
-    return Array.from(this.managers.values()).filter(manager => manager.isRunning()).length;
+    return Array.from(this.managers.values()).filter((manager) =>
+      manager.isRunning()
+    ).length;
   }
 
   getFactoryMetrics() {
@@ -826,7 +849,7 @@ export class WorkflowEventManagerFactory
       totalManagers: this.managers.size,
       runningManagers: this.getActiveCount(),
       errorCount: 0, // Could be tracked if needed
-      uptime: Date.now() - Date.now() // Simplified
+      uptime: Date.now() - Date.now(), // Simplified
     };
   }
 }

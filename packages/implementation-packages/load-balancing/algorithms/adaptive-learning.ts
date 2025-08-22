@@ -75,10 +75,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     strategyUpdateInterval: 1000,
     contextSimilarityThreshold: 0.8,
     reinforcementDiscountFactor: 0.9,
-    strategySelectionMethod: 'epsilon_greedy' as
-      | 'epsilon_greedy'
-      | 'ucb'
-      | 'thompson_sampling',
+    strategySelectionMethod: 'epsilon_greedy'as'' | '''epsilon_greedy | ucb' | 'thompson_sampling',
   };
 
   constructor() {
@@ -151,7 +148,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
-    const strategies = Array.from(this.strategies.values());
+    const strategies = Array.from(this.strategies.values())();
     const totalDecisions = this.decisionHistory.length;
 
     const avgSuccessRate =
@@ -169,7 +166,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const mostUsedStrategy = strategies.reduce(
       (best, current) =>
         current?.usageCount > best.usageCount ? current : best,
-      strategies[0] || { name: 'none', usageCount: 0 }
+      strategies[0]'' | '''' | ''{ name:'none', usageCount: 0 }
     );
 
     return {
@@ -321,7 +318,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    *
    * @param context
    */
-  private detectPattern(context: PatternContext): LearningPattern | undefined {
+  private detectPattern(context: PatternContext): LearningPattern'' | ''undefined {
     // Generate pattern key
     const patternKey = this.generatePatternKey(context);
 
@@ -330,7 +327,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     if (!pattern) {
       // Look for similar patterns
-      pattern = this.findSimilarPattern(context) || undefined;
+      pattern = this.findSimilarPattern(context)'' | '''' | ''undefined;
     }
 
     return pattern;
@@ -344,7 +341,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    */
   private async selectStrategy(
     _context: PatternContext,
-    detectedPattern?: LearningPattern | undefined
+    detectedPattern?: LearningPattern'' | ''undefined
   ): Promise<string> {
     // If pattern detected, use its optimal strategy with high probability
     if (detectedPattern && Math.random() > this.config.explorationRate) {
@@ -353,7 +350,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     // Strategy selection based on method
     switch (this.config.strategySelectionMethod) {
-      case 'epsilon_greedy':
+      case'epsilon_greedy':
         return this.epsilonGreedySelection();
       case 'ucb':
         return this.upperConfidenceBoundSelection();
@@ -370,7 +367,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private epsilonGreedySelection(): string {
     if (Math.random() < this.config.explorationRate) {
       // Explore: select random strategy
-      const strategies = Array.from(this.strategies.keys());
+      const strategies = Array.from(this.strategies.keys())();
       return strategies[Math.floor(Math.random() * strategies.length)];
     }
     // Exploit: select best strategy
@@ -385,7 +382,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy || Array.from(this.strategies.keys())[0];
+    return bestStrategy'' | '''' | ''Array.from(this.strategies.keys())[0];
   }
 
   /**
@@ -397,7 +394,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       0
     );
 
-    let bestStrategy = '';
+    let bestStrategy ='';
     let bestUCB = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -418,14 +415,14 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy || Array.from(this.strategies.keys())[0];
+    return bestStrategy'' | '''' | ''Array.from(this.strategies.keys())[0];
   }
 
   /**
    * Thompson sampling strategy selection.
    */
   private thompsonSamplingSelection(): string {
-    let bestStrategy = '';
+    let bestStrategy ='';
     let bestSample = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -442,7 +439,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       }
     }
 
-    return bestStrategy || Array.from(this.strategies.keys())[0];
+    return bestStrategy'' | '''' | ''Array.from(this.strategies.keys())[0];
   }
 
   /**
@@ -466,7 +463,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     let reasoning: string;
 
     switch (strategyName) {
-      case 'least_connections':
+      case'least_connections':
         selectedAgent = this.selectByLeastConnections(availableAgents, metrics);
         reasoning = 'Selected agent with least active connections';
         break;
@@ -514,11 +511,11 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     return {
       selectedAgent,
-      confidence: this.strategies.get(strategyName)?.confidence || 0.5,
+      confidence: this.strategies.get(strategyName)?.confidence'' | '''' | ''0.5,
       reasoning: `${reasoning} (strategy: ${strategyName})`,
       alternativeAgents: alternatives,
-      estimatedLatency: metrics.get(selectedAgent?.id)?.responseTime || 1000,
-      expectedQuality: this.strategies.get(strategyName)?.successRate || 0.8,
+      estimatedLatency: metrics.get(selectedAgent?.id)?.responseTime'' | '''' | ''1000,
+      expectedQuality: this.strategies.get(strategyName)?.successRate'' | '''' | ''0.8,
     };
   }
 
@@ -540,7 +537,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     reward += success ? 100 : -100;
 
     // Latency penalty (prefer faster responses)
-    const targetLatency = task.estimatedDuration || 5000;
+    const targetLatency = task.estimatedDuration'' | '''' | ''5000;
     const latencyRatio = duration / targetLatency;
 
     if (latencyRatio < 0.8) {
@@ -650,7 +647,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     for (const agent of agents) {
       const agentMetrics = metrics.get(agent.id);
-      const connections = agentMetrics?.activeTasks || 0;
+      const connections = agentMetrics?.activeTasks'' | '''' | ''0;
 
       if (connections < minConnections) {
         minConnections = connections;
@@ -668,7 +665,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     // Simplified weighted selection based on inverse of current load
     const weights = agents.map((agent) => {
       const agentMetrics = metrics.get(agent.id);
-      const load = agentMetrics?.activeTasks || 0;
+      const load = agentMetrics?.activeTasks'' | '''' | ''0;
       return Math.max(0.1, 1 / (load + 1)); // Inverse weight
     });
 
@@ -723,7 +720,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     for (const agent of agents) {
       const agentMetrics = metrics.get(agent.id);
       const responseTime =
-        agentMetrics?.responseTime || Number.POSITIVE_INFINITY;
+        agentMetrics?.responseTime'' | '''' | ''Number.POSITIVE_INFINITY;
 
       if (responseTime < bestTime) {
         bestTime = responseTime;
@@ -817,7 +814,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     return `${timeSlot}_${context.dayOfWeek}_${loadLevel}_${context.taskType}_${context.agentCount}`;
   }
 
-  private findSimilarPattern(context: PatternContext): LearningPattern | undefined {
+  private findSimilarPattern(
+    context: PatternContext
+  ): LearningPattern | undefined {
     let bestMatch: LearningPattern | undefined = undefined;
     let bestSimilarity = 0;
 
@@ -979,7 +978,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   private calculateLearningProgress(): number {
     // Calculate how much the algorithm has learned
-    const strategies = Array.from(this.strategies.values());
+    const strategies = Array.from(this.strategies.values())();
     const avgConfidence =
       strategies.reduce((sum, s) => sum + s.confidence, 0) / strategies.length;
     const patternsLearned = this.patterns.size / 100; // Normalize by expected patterns

@@ -1,23 +1,23 @@
 /**
  * @fileoverview Epic Owner Manager - Clean DI-based SAFe Epic Lifecycle Management
- * 
+ *
  * Manages epic lifecycle through Portfolio Kanban states with WSJF prioritization.
  * Uses clean dependency injection for core SAFe services and optional AI enhancements.
  * AI features are completely optional and injected via @claude-zen/foundation DI system.
- * 
+ *
  * Core SAFe Features:
  * - Portfolio Kanban state management
- * - WSJF scoring and prioritization 
+ * - WSJF scoring and prioritization
  * - Business case development
  * - Epic lifecycle tracking
  * - Stakeholder coordination
- * 
+ *
  * Optional AI Enhancements (injected via DI):
  * - Brain Coordinator for intelligent decision making
  * - Performance tracking and telemetry
  * - Workflow automation
  * - Interactive approvals via AGUI
- * 
+ *
  * @author Claude-Zen Team
  * @since 2.0.0
  * @version 2.0.0
@@ -37,14 +37,14 @@ import type {
   MemorySystem,
   PortfolioEpic,
   Feature,
-  Stakeholder
+  Stakeholder,
 } from '../types';
 import type {
   EpicOwnerManagerConfig,
   WSJFScore,
   EpicBusinessCase,
   EpicBlocker,
-  EpicLifecycleStage
+  EpicLifecycleStage,
 } from '../types/epic-management';
 import { PortfolioKanbanState } from '../types/epic-management';
 import { EpicLifecycleService } from '../services/epic-lifecycle-service';
@@ -54,14 +54,18 @@ import { SafeDateUtils } from '../utilities/date/safe-date-utils';
 import { SafeValidationUtils } from '../utilities/validation/safe-validation';
 import { SAFE_TOKENS, AI_ENHANCEMENT_TOKENS } from '../di/tokens';
 import type { OptionalAIEnhancements } from '../interfaces/ai-enhancements';
-import { 
-  ApprovalRequestEvent, 
+import {
+  ApprovalRequestEvent,
   ApprovalResponseEvent,
   ApprovalWorkflowManager,
   createApprovalRequest,
-  APPROVAL_EVENTS 
+  APPROVAL_EVENTS,
 } from '../events/approval-events';
-import { EpicLifecycleError, BusinessCaseError, createSAFeError } from '../errors';
+import {
+  EpicLifecycleError,
+  BusinessCaseError,
+  createSAFeError,
+} from '../errors';
 
 /**
  * Epic owner manager state
@@ -70,7 +74,7 @@ interface EpicOwnerState {
   readonly isInitialized: boolean;
   readonly activeEpicsCount: number;
   readonly portfolioValue: number;
-  readonly lastWSJFUpdate: Date | null;
+  readonly lastWSJFUpdate: Date'' | ''null;
   readonly businessCasesCount: number;
 }
 
@@ -88,10 +92,10 @@ interface EpicPerformanceMetrics {
 
 /**
  * Epic Owner Manager - Optimal SAFe architecture with full @claude-zen integration
- * 
+ *
  * Leverages proven @claude-zen packages:
  * - @claude-zen/event-system: Type-safe event handling
- * - @claude-zen/workflows: Ceremony and process orchestration  
+ * - @claude-zen/workflows: Ceremony and process orchestration
  * - @claude-zen/teamwork: Cross-stakeholder collaboration
  * - @claude-zen/agent-monitoring: Performance tracking and health monitoring
  * - @claude-zen/foundation: Logging, DI, error handling, telemetry
@@ -108,16 +112,16 @@ export class EpicOwnerManager extends TypedEventBase {
   // Core SAFe services (initialized during setup)
   private lifecycleService?: EpicLifecycleService;
   private businessCaseService?: BusinessCaseService;
-  
-  // @claude-zen package integrations  
+
+  // @claude-zen package integrations
   private readonly workflowEngine?: WorkflowEngine;
   private readonly conversationOrchestrator?: ConversationOrchestrator;
-  
+
   // Infrastructure services (foundation - always available)
   private readonly performanceTracker: PerformanceTracker;
   private readonly telemetryManager: TelemetryManager;
   private readonly approvalWorkflow: ApprovalWorkflowManager;
-  
+
   // Optional AI enhancements (injected via DI)
   private readonly aiEnhancements: OptionalAIEnhancements;
 
@@ -137,22 +141,22 @@ export class EpicOwnerManager extends TypedEventBase {
     this.memorySystem = memorySystem;
     // this.eventBus = eventBus;
     this.state = this.initializeState();
-    
+
     // Initialize @claude-zen integrations
     this.workflowEngine = workflowEngine;
     this.conversationOrchestrator = conversationOrchestrator;
-    
+
     // Initialize infrastructure services (foundation - always available)
     this.performanceTracker = new PerformanceTracker();
     this.telemetryManager = new TelemetryManager({
       serviceName: 'epic-owner-manager',
       enableTracing: true,
-      enableMetrics: true
+      enableMetrics: true,
     });
     this.approvalWorkflow = new ApprovalWorkflowManager();
-    
+
     // Store optional AI enhancements
-    this.aiEnhancements = aiEnhancements || {};
+    this.aiEnhancements = aiEnhancements'' | '''' | ''{};
 
     this.setupEventHandlers();
   }
@@ -171,25 +175,31 @@ export class EpicOwnerManager extends TypedEventBase {
 
       // Delegate to EpicLifecycleService for Portfolio Kanban management
       if (this.config.enablePortfolioKanban) {
-        this.lifecycleService = new EpicLifecycleService({
-          analysisTimeLimit: this.config.epicAnalysisTimeLimit,
-          maxEpicsPerState: this.config.maxActiveEpics,
-          autoProgressEnabled: true,
-          wsjfUpdateFrequency: this.config.wsjfUpdateFrequency,
-          gateValidationStrict: true
-        }, this.logger);
+        this.lifecycleService = new EpicLifecycleService(
+          {
+            analysisTimeLimit: this.config.epicAnalysisTimeLimit,
+            maxEpicsPerState: this.config.maxActiveEpics,
+            autoProgressEnabled: true,
+            wsjfUpdateFrequency: this.config.wsjfUpdateFrequency,
+            gateValidationStrict: true,
+          },
+          this.logger
+        );
       }
 
       // Delegate to BusinessCaseService for investment analysis
       if (this.config.enableBusinessCaseManagement) {
-        this.businessCaseService = new BusinessCaseService({
-          discountRate: 8, // 8% discount rate
-          analysisHorizon: 5, // 5 years
-          riskThreshold: 70,
-          roiThreshold: 15, // 15% ROI threshold
-          paybackPeriodLimit: 36, // 36 months
-          confidenceThreshold: 70
-        }, this.logger);
+        this.businessCaseService = new BusinessCaseService(
+          {
+            discountRate: 8, // 8% discount rate
+            analysisHorizon: 5, // 5 years
+            riskThreshold: 70,
+            roiThreshold: 15, // 15% ROI threshold
+            paybackPeriodLimit: 36, // 36 months
+            confidenceThreshold: 70,
+          },
+          this.logger
+        );
       }
 
       // Restore state from memory if available
@@ -199,7 +209,6 @@ export class EpicOwnerManager extends TypedEventBase {
       this.logger.info('Epic Owner Manager initialized successfully');
 
       this.emit('initialized', { timestamp: SafeDateUtils.formatISOString() });
-
     } catch (error) {
       this.logger.error('Failed to initialize Epic Owner Manager:', error);
       throw error;
@@ -210,7 +219,7 @@ export class EpicOwnerManager extends TypedEventBase {
    * Progress epic through Portfolio Kanban - delegates to EpicLifecycleService
    */
   async progressEpic(
-    epicId: string, 
+    epicId: string,
     targetState: PortfolioKanbanState,
     evidence?: Record<string, string[]>
   ): Promise<{
@@ -221,9 +230,9 @@ export class EpicOwnerManager extends TypedEventBase {
   }> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Progressing epic through Portfolio Kanban', { 
-      epicId, 
-      targetState 
+    this.logger.info('Progressing epic through Portfolio Kanban', {
+      epicId,
+      targetState,
     });
 
     if (!this.lifecycleService) {
@@ -231,8 +240,8 @@ export class EpicOwnerManager extends TypedEventBase {
     }
 
     const result = await this.lifecycleService.progressEpicState(
-      epicId, 
-      targetState, 
+      epicId,
+      targetState,
       evidence
     );
 
@@ -240,23 +249,23 @@ export class EpicOwnerManager extends TypedEventBase {
     if (result.success && targetState === PortfolioKanbanState.DONE) {
       this.state = {
         ...this.state,
-        activeEpicsCount: Math.max(0, this.state.activeEpicsCount - 1)
+        activeEpicsCount: Math.max(0, this.state.activeEpicsCount - 1),
       };
       await this.persistState();
     }
 
-    this.emit('epic-progressed', { 
-      epicId, 
-      newState: result.newState, 
+    this.emit('epic-progressed', {
+      epicId,
+      newState: result.newState,
       success: result.success,
-      timestamp: SafeDateUtils.formatISOString() 
+      timestamp: SafeDateUtils.formatISOString(),
     });
 
     return {
       success: result.success,
       newState: result.newState,
       recommendations: result.recommendations,
-      nextActions: result.nextActions
+      nextActions: result.nextActions,
     };
   }
 
@@ -280,7 +289,7 @@ export class EpicOwnerManager extends TypedEventBase {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer('calculate_wsjf');
-    
+
     try {
       this.logger.info('Calculating WSJF score', { epicId: input.epicId });
 
@@ -291,7 +300,7 @@ export class EpicOwnerManager extends TypedEventBase {
       // Standard SAFe WSJF calculation via lifecycle service
       const result = await this.lifecycleService.calculateWSJFScore({
         ...input,
-        confidence: 85 // Default confidence level
+        confidence: 85, // Default confidence level
       });
 
       // Optional AI enhancement for WSJF analysis
@@ -299,55 +308,58 @@ export class EpicOwnerManager extends TypedEventBase {
         wsjfScore: result.currentScore.wsjfScore,
         rank: 1, // Would be calculated from all epics
         rankChange: result.rankChange,
-        recommendations: result.recommendedActions
+        recommendations: result.recommendedActions,
       };
 
       if (this.aiEnhancements.brainCoordinator) {
         try {
-          const aiAnalysis = await this.aiEnhancements.brainCoordinator.analyzeWSJF({
-            epicId: input.epicId,
-            businessValue: input.businessValue,
-            urgency: input.urgency,
-            riskReduction: input.riskReduction,
-            opportunityEnablement: input.opportunityEnablement,
-            size: input.size,
-            context: { scoredBy: input.scoredBy }
-          });
-          
+          const aiAnalysis =
+            await this.aiEnhancements.brainCoordinator.analyzeWSJF({
+              epicId: input.epicId,
+              businessValue: input.businessValue,
+              urgency: input.urgency,
+              riskReduction: input.riskReduction,
+              opportunityEnablement: input.opportunityEnablement,
+              size: input.size,
+              context: { scoredBy: input.scoredBy },
+            });
+
           // Enhance recommendations with AI insights
           enhancedResult.recommendations = [
             ...enhancedResult.recommendations,
-            ...aiAnalysis.recommendations
+            ...aiAnalysis.recommendations,
           ];
-          
+
           this.logger.debug('WSJF enhanced with AI analysis', {
             epicId: input.epicId,
-            confidenceLevel: aiAnalysis.confidenceLevel
+            confidenceLevel: aiAnalysis.confidenceLevel,
           });
         } catch (error) {
-          this.logger.warn('AI WSJF enhancement failed, using standard calculation:', error);
+          this.logger.warn(
+            'AI WSJF enhancement failed, using standard calculation:',
+            error
+          );
         }
       }
 
       // Update state
       this.state = {
         ...this.state,
-        lastWSJFUpdate: new Date()
+        lastWSJFUpdate: new Date(),
       };
       await this.persistState();
 
-      this.emit('wsjf-calculated', { 
-        epicId: input.epicId, 
+      this.emit('wsjf-calculated', {
+        epicId: input.epicId,
         score: enhancedResult.wsjfScore,
         rank: enhancedResult.rankChange,
-        timestamp: SafeDateUtils.formatISOString() 
+        timestamp: SafeDateUtils.formatISOString(),
       });
-      
+
       this.performanceTracker.endTimer('calculate_wsjf');
       this.telemetryManager.recordCounter('wsjf_calculations', 1);
 
       return enhancedResult;
-      
     } catch (error) {
       this.performanceTracker.endTimer('calculate_wsjf');
       this.logger.error('WSJF calculation failed:', error);
@@ -374,7 +386,7 @@ export class EpicOwnerManager extends TypedEventBase {
     };
     risks: Array<{
       description: string;
-      category: 'technical' | 'market' | 'financial' | 'regulatory' | 'operational';
+      category:'' | '''technical | market' | 'financial' | 'regulatory' | 'operational';
       probability: number;
       impact: number;
       owner: string;
@@ -382,7 +394,7 @@ export class EpicOwnerManager extends TypedEventBase {
     assumptions: string[];
   }): Promise<{
     businessCaseId: string;
-    recommendation: 'proceed' | 'defer' | 'pivot' | 'stop';
+    recommendation: 'proceed | defer' | 'pivot''' | '''stop';
     financialViability: boolean;
     roi: number;
     paybackPeriod: number;
@@ -390,7 +402,7 @@ export class EpicOwnerManager extends TypedEventBase {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer('create_business_case');
-    
+
     try {
       this.logger.info('Creating epic business case', { epicId: input.epicId });
 
@@ -413,37 +425,45 @@ export class EpicOwnerManager extends TypedEventBase {
             timeline: 18,
             investmentRequired: input.financialInputs.investmentRequired,
             expectedMarketShare: 5,
-            keySuccessFactors: ['Product differentiation']
-          }
+            keySuccessFactors: ['Product differentiation'],
+          },
         },
         financialInputs: {
           ...input.financialInputs,
-          revenueAssumptions: [{
-            revenue: input.financialInputs.expectedRevenue,
-            customerCount: 1000,
-            averageRevenuePerCustomer: input.financialInputs.expectedRevenue / 1000,
-            assumptions: ['Base revenue projection']
-          }]
+          revenueAssumptions: [
+            {
+              revenue: input.financialInputs.expectedRevenue,
+              customerCount: 1000,
+              averageRevenuePerCustomer:
+                input.financialInputs.expectedRevenue / 1000,
+              assumptions: ['Base revenue projection'],
+            },
+          ],
         },
-        risks: input.risks.map(risk => ({
+        risks: input.risks.map((risk) => ({
           ...risk,
-          riskScore: risk.probability * risk.impact / 10 // Calculate risk score from probability and impact
+          riskScore: (risk.probability * risk.impact) / 10, // Calculate risk score from probability and impact
         })),
-        assumptions: input.assumptions
+        assumptions: input.assumptions,
       });
 
       // Standard business case analysis
-      const analysis = await this.businessCaseService.analyzeBusinessCase(businessCase.id);
-      
+      const analysis = await this.businessCaseService.analyzeBusinessCase(
+        businessCase.id
+      );
+
       // Optional workflow automation for approval process
       if (this.aiEnhancements.workflowEngine) {
         try {
-          await this.aiEnhancements.workflowEngine.executeWorkflow('business-case-approval', {
-            businessCaseId: businessCase.id,
-            epicId: input.epicId,
-            recommendation: analysis.recommendation.recommendation,
-            financialViability: analysis.financialViability.isViable
-          });
+          await this.aiEnhancements.workflowEngine.executeWorkflow(
+            'business-case-approval',
+            {
+              businessCaseId: businessCase.id,
+              epicId: input.epicId,
+              recommendation: analysis.recommendation.recommendation,
+              financialViability: analysis.financialViability.isViable,
+            }
+          );
           this.logger.info('Business case approval workflow initiated');
         } catch (error) {
           this.logger.warn('Workflow automation failed:', error);
@@ -453,17 +473,17 @@ export class EpicOwnerManager extends TypedEventBase {
       // Update state
       this.state = {
         ...this.state,
-        businessCasesCount: this.state.businessCasesCount + 1
+        businessCasesCount: this.state.businessCasesCount + 1,
       };
       await this.persistState();
 
-      this.emit('business-case-created', { 
+      this.emit('business-case-created', {
         businessCaseId: businessCase.id,
         epicId: input.epicId,
         recommendation: analysis.recommendation.recommendation,
-        timestamp: SafeDateUtils.formatISOString() 
+        timestamp: SafeDateUtils.formatISOString(),
       });
-      
+
       this.performanceTracker.endTimer('create_business_case');
       this.telemetryManager.recordCounter('business_cases_created', 1);
 
@@ -472,9 +492,8 @@ export class EpicOwnerManager extends TypedEventBase {
         recommendation: analysis.recommendation.recommendation,
         financialViability: analysis.financialViability.isViable,
         roi: analysis.financialViability.roi,
-        paybackPeriod: analysis.financialViability.paybackPeriod
+        paybackPeriod: analysis.financialViability.paybackPeriod,
       };
-      
     } catch (error) {
       this.performanceTracker.endTimer('create_business_case');
       this.logger.error('Business case creation failed:', error);
@@ -485,12 +504,14 @@ export class EpicOwnerManager extends TypedEventBase {
   /**
    * Get prioritized epic portfolio - uses SafeCollectionUtils
    */
-  async getPrioritizedPortfolio(): Promise<Array<{
-    epic: PortfolioEpic;
-    wsjfScore: number;
-    rank: number;
-    stage: PortfolioKanbanState;
-  }>> {
+  async getPrioritizedPortfolio(): Promise<
+    Array<{
+      epic: PortfolioEpic;
+      wsjfScore: number;
+      rank: number;
+      stage: PortfolioKanbanState;
+    }>
+  > {
     if (!this.initialized) await this.initialize();
 
     this.logger.info('Retrieving prioritized epic portfolio');
@@ -500,20 +521,25 @@ export class EpicOwnerManager extends TypedEventBase {
     }
 
     const backlog = await this.lifecycleService.getPrioritizedBacklog();
-    
+
     // Transform to include stage information
     const portfolio = backlog.map((item, index) => ({
       epic: item.epic,
       wsjfScore: item.wsjfScore.wsjfScore,
       rank: item.rank,
-      stage: item.epic.status as PortfolioKanbanState
+      stage: item.epic.status as PortfolioKanbanState,
     }));
 
     // Use SafeCollectionUtils for additional sorting if needed
     const filteredPortfolio = SafeCollectionUtils.filterByPriority(
-      portfolio.map(p => ({ 
-        ...p.epic, 
-        priority: p.epic.priority > 80 ? 'critical' : p.epic.priority > 60 ? 'high' : 'medium'
+      portfolio.map((p) => ({
+        ...p.epic,
+        priority:
+          p.epic.priority > 80
+            ? 'critical'
+            : p.epic.priority > 60
+              ? 'high'
+              : 'medium',
       })),
       ['critical', 'high', 'medium']
     );
@@ -527,11 +553,11 @@ export class EpicOwnerManager extends TypedEventBase {
    * Add epic blocker - delegates to EpicLifecycleService
    */
   async addEpicBlocker(
-    epicId: string, 
+    epicId: string,
     blockerData: {
       description: string;
-      category: 'technical' | 'business' | 'resource' | 'external' | 'regulatory';
-      severity: 'low' | 'medium' | 'high' | 'critical';
+      category:'' | '''technical | business' | 'resource' | 'external' | 'regulatory';
+      severity: 'low | medium' | 'high''' | '''critical';
       owner: string;
       resolutionPlan: string[];
       impact: string;
@@ -539,7 +565,10 @@ export class EpicOwnerManager extends TypedEventBase {
   ): Promise<string> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.warn('Adding epic blocker', { epicId, severity: blockerData.severity });
+    this.logger.warn('Adding epic blocker', {
+      epicId,
+      severity: blockerData.severity,
+    });
 
     if (!this.lifecycleService) {
       throw new Error('Lifecycle service not initialized');
@@ -547,14 +576,14 @@ export class EpicOwnerManager extends TypedEventBase {
 
     const blockerId = await this.lifecycleService.addEpicBlocker(epicId, {
       ...blockerData,
-      dependencies: []
+      dependencies: [],
     });
 
-    this.emit('blocker-added', { 
-      epicId, 
-      blockerId, 
+    this.emit('blocker-added', {
+      epicId,
+      blockerId,
       severity: blockerData.severity,
-      timestamp: SafeDateUtils.formatISOString() 
+      timestamp: SafeDateUtils.formatISOString(),
     });
 
     return blockerId;
@@ -574,17 +603,20 @@ export class EpicOwnerManager extends TypedEventBase {
 
     await this.lifecycleService.resolveEpicBlocker(epicId, blockerId);
 
-    this.emit('blocker-resolved', { 
-      epicId, 
+    this.emit('blocker-resolved', {
+      epicId,
       blockerId,
-      timestamp: SafeDateUtils.formatISOString() 
+      timestamp: SafeDateUtils.formatISOString(),
     });
   }
 
   /**
    * Generate epic timeline - uses SafeDateUtils
    */
-  async generateEpicTimeline(epicId: string, estimatedMonths: number): Promise<{
+  async generateEpicTimeline(
+    epicId: string,
+    estimatedMonths: number
+  ): Promise<{
     timelineId: string;
     phases: Array<{
       name: string;
@@ -599,24 +631,27 @@ export class EpicOwnerManager extends TypedEventBase {
 
     this.logger.info('Generating epic timeline', { epicId, estimatedMonths });
 
-    const timeline = SafeDateUtils.generateEpicTimeline(new Date(), estimatedMonths);
-    
-    const enhancedPhases = timeline.phases.map(phase => ({
+    const timeline = SafeDateUtils.generateEpicTimeline(
+      new Date(),
+      estimatedMonths
+    );
+
+    const enhancedPhases = timeline.phases.map((phase) => ({
       ...phase,
-      milestones: [`${phase.name} completion`, 'Stakeholder review']
+      milestones: [`${phase.name} completion`, 'Stakeholder review'],
     }));
 
     const result = {
       timelineId: `timeline-${epicId}-${Date.now()}`,
       phases: enhancedPhases,
-      criticalPath: ['Epic Hypothesis', 'Development', 'Validation']
+      criticalPath: ['Epic Hypothesis', 'Development', 'Validation'],
     };
 
-    this.emit('timeline-generated', { 
+    this.emit('timeline-generated', {
       epicId,
       timelineId: result.timelineId,
       duration: estimatedMonths,
-      timestamp: SafeDateUtils.formatISOString() 
+      timestamp: SafeDateUtils.formatISOString(),
     });
 
     return result;
@@ -634,11 +669,15 @@ export class EpicOwnerManager extends TypedEventBase {
       throw new Error('Lifecycle service not initialized');
     }
 
-    const kanbanMetrics = await this.lifecycleService.getPortfolioKanbanMetrics();
-    
-    const completedCount = kanbanMetrics.stateDistribution[PortfolioKanbanState.DONE] || 0;
-    const totalCount = Object.values(kanbanMetrics.stateDistribution)
-      .reduce((sum, count) => sum + count, 0);
+    const kanbanMetrics =
+      await this.lifecycleService.getPortfolioKanbanMetrics();
+
+    const completedCount =
+      kanbanMetrics.stateDistribution[PortfolioKanbanState.DONE]'' | '''' | ''0;
+    const totalCount = Object.values(kanbanMetrics.stateDistribution).reduce(
+      (sum, count) => sum + count,
+      0
+    );
 
     return {
       totalEpics: totalCount,
@@ -646,7 +685,7 @@ export class EpicOwnerManager extends TypedEventBase {
       averageLeadTime: kanbanMetrics.averageLeadTime,
       portfolioThroughput: kanbanMetrics.throughput,
       wsjfScoreDistribution: kanbanMetrics.wsjfScoreDistribution,
-      businessValueRealized: completedCount * 1000000 // Mock calculation
+      businessValueRealized: completedCount * 1000000, // Mock calculation
     };
   }
 
@@ -666,7 +705,7 @@ export class EpicOwnerManager extends TypedEventBase {
     // Validate using schema validation
     const epicValidation = SafeValidationUtils.validateEpic(epicData);
     if (!epicValidation.success) {
-      errors.push(...epicValidation.error.errors.map(e => e.message));
+      errors.push(...epicValidation.error.errors.map((e) => e.message));
     }
 
     // Additional epic-specific validation
@@ -681,7 +720,7 @@ export class EpicOwnerManager extends TypedEventBase {
     return {
       isValid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -689,27 +728,36 @@ export class EpicOwnerManager extends TypedEventBase {
    * Epic approval using optimal event-driven architecture
    * Emits approval events for UI layer to handle, maintains business/UI separation
    */
-  async approveEpic(epicId: string, approvalContext: {
-    businessCase: EpicBusinessCase;
-    wsjfScore: number;
-    stakeholders: string[];
-    deadline?: Date;
-  }): Promise<{
+  async approveEpic(
+    epicId: string,
+    approvalContext: {
+      businessCase: EpicBusinessCase;
+      wsjfScore: number;
+      stakeholders: string[];
+      deadline?: Date;
+    }
+  ): Promise<{
     requestId: string;
-    status: 'pending' | 'auto-approved';
+    status: 'pending''' | '''auto-approved';
     message: string;
   }> {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer('epic_approval');
-    
+
     try {
       // Auto-approve if conditions are met (business logic)
-      const shouldAutoApprove = this.shouldAutoApproveEpic(epicId, approvalContext);
-      
+      const shouldAutoApprove = this.shouldAutoApproveEpic(
+        epicId,
+        approvalContext
+      );
+
       if (shouldAutoApprove) {
-        this.logger.info('Epic auto-approved', { epicId, wsjfScore: approvalContext.wsjfScore });
-        
+        this.logger.info('Epic auto-approved', {
+          epicId,
+          wsjfScore: approvalContext.wsjfScore,
+        });
+
         // Emit approval completed event
         this.emit('approval-received', {
           type: 'APPROVAL_RECEIVED',
@@ -717,15 +765,15 @@ export class EpicOwnerManager extends TypedEventBase {
             requestId: `auto-${epicId}`,
             approved: true,
             approvedBy: 'system',
-            timestamp: new Date()
+            timestamp: new Date(),
           },
-          priority: 'high'
+          priority: 'high',
         });
 
         return {
           requestId: `auto-${epicId}`,
           status: 'auto-approved',
-          message: 'Epic meets auto-approval criteria'
+          message: 'Epic meets auto-approval criteria',
         };
       }
 
@@ -741,8 +789,8 @@ export class EpicOwnerManager extends TypedEventBase {
         context: {
           epicId,
           businessCaseId: approvalContext.businessCase.id,
-          wsjfScore: approvalContext.wsjfScore
-        }
+          wsjfScore: approvalContext.wsjfScore,
+        },
       });
 
       // Track approval workflow
@@ -752,12 +800,12 @@ export class EpicOwnerManager extends TypedEventBase {
       this.emit('request-approval', {
         type: 'REQUEST_APPROVAL',
         data: approvalRequest,
-        priority: approvalRequest.priority === 'high' ? 'high' : 'medium'
+        priority: approvalRequest.priority === 'high' ? 'high' : 'medium',
       });
 
-      this.logger.info('Epic approval requested via event system', { 
-        epicId, 
-        requestId: approvalRequest.requestId 
+      this.logger.info('Epic approval requested via event system', {
+        epicId,
+        requestId: approvalRequest.requestId,
       });
 
       this.performanceTracker.endTimer('epic_approval');
@@ -766,9 +814,8 @@ export class EpicOwnerManager extends TypedEventBase {
       return {
         requestId: approvalRequest.requestId,
         status: 'pending',
-        message: 'Approval request sent to stakeholders'
+        message: 'Approval request sent to stakeholders',
       };
-
     } catch (error) {
       this.performanceTracker.endTimer('epic_approval');
       this.logger.error('Epic approval failed:', error);
@@ -779,11 +826,14 @@ export class EpicOwnerManager extends TypedEventBase {
   /**
    * Business logic for auto-approval determination
    */
-  private shouldAutoApproveEpic(epicId: string, context: {
-    businessCase: EpicBusinessCase;
-    wsjfScore: number;
-    stakeholders: string[];
-  }): boolean {
+  private shouldAutoApproveEpic(
+    epicId: string,
+    context: {
+      businessCase: EpicBusinessCase;
+      wsjfScore: number;
+      stakeholders: string[];
+    }
+  ): boolean {
     // SAFe business rules for auto-approval
     return (
       context.wsjfScore >= this.config.autoApprovalWSJFThreshold &&
@@ -807,7 +857,7 @@ export class EpicOwnerManager extends TypedEventBase {
       state: this.state,
       config: this.config,
       pendingApprovals: this.approvalWorkflow.getPendingApprovals().length,
-      lastActivity: SafeDateUtils.formatISOString()
+      lastActivity: SafeDateUtils.formatISOString(),
     };
   }
 
@@ -822,7 +872,7 @@ export class EpicOwnerManager extends TypedEventBase {
       activeEpicsCount: 0,
       portfolioValue: 0,
       lastWSJFUpdate: null,
-      businessCasesCount: 0
+      businessCasesCount: 0,
     };
   }
 
@@ -835,12 +885,10 @@ export class EpicOwnerManager extends TypedEventBase {
     //   this.logger.info('Epic state changed', data);
     //   this.emit('epic-updated', data);
     // });
-
     // this.eventBus.on('wsjf-scores-updated', (data) => {
     //   this.logger.info('WSJF scores updated', data);
     //   this.emit('portfolio-rebalanced', data);
     // });
-
     // this.eventBus.on('business-case-approved', (data) => {
     //   this.logger.info('Business case approved', data);
     //   this.emit('investment-approved', data);
@@ -852,8 +900,9 @@ export class EpicOwnerManager extends TypedEventBase {
    */
   private async restoreState(): Promise<void> {
     try {
-      const savedState = await this.memorySystem.retrieve('epic-owner-state') as Partial<EpicOwnerState> | null;
-      if (savedState && typeof savedState === 'object') {
+      const savedState = (await this.memorySystem.retrieve(
+        'epic-owner-state')) as Partial<EpicOwnerState>'' | ''null;
+      if (savedState && typeof savedState ==='object') {
         this.state = { ...this.state, ...savedState };
         this.logger.info('Epic owner state restored from memory');
       }
@@ -871,7 +920,7 @@ export class EpicOwnerManager extends TypedEventBase {
         activeEpicsCount: this.state.activeEpicsCount,
         portfolioValue: this.state.portfolioValue,
         lastWSJFUpdate: this.state.lastWSJFUpdate,
-        businessCasesCount: this.state.businessCasesCount
+        businessCasesCount: this.state.businessCasesCount,
       });
     } catch (error) {
       this.logger.warn('Failed to persist state to memory:', error);

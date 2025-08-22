@@ -8,8 +8,8 @@
  * @file Web-socket coordination system.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { Server as SocketIOServer } from 'socket.io');
+import { getLogger } from '@claude-zen/foundation';
+import type { Server as SocketIOServer } from 'socket.io';
 
 export interface WebSession {
   id: string;
@@ -17,7 +17,7 @@ export interface WebSession {
   createdAt: Date;
   lastActivity: Date;
   preferences: {
-    theme: 'dark | light');
+    theme: 'dark'' | ''light');
     refreshInterval: number;
     notifications: boolean;
   };
@@ -147,7 +147,7 @@ export class WebSocketCoordinator {
    * Get active sessions.
    */
   getSessions(): WebSession[] {
-    return Array.from(this.sessions?.values());
+    return Array.from(this.sessions?.values())();
   }
 
   /**
@@ -155,7 +155,7 @@ export class WebSocketCoordinator {
    *
    * @param sessionId
    */
-  getSession(sessionId: string): WebSession | undefined {
+  getSession(sessionId: string): WebSession'' | ''undefined {
     return this.sessions.get(sessionId);
   }
 
@@ -214,7 +214,7 @@ export class WebSocketCoordinator {
     averageSessionAge: number;
   } {
     const now = new Date();
-    const sessions = Array.from(this.sessions?.values());
+    const sessions = Array.from(this.sessions?.values())();
     const totalSessions = sessions.length;
     const activeSessions = sessions.filter((s) => {
       const age = now?.getTime - s.lastActivity?.getTime()

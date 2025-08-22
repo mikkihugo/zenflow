@@ -13,14 +13,19 @@ export class ReportGenerator {
   /**
    * Generate report in specified format
    */
-  async generateReport(result: AnalysisResult, format: ExportFormat, outputPath?: string): Promise<string> {
+  async generateReport(
+    result: AnalysisResult,
+    format: ExportFormat,
+    outputPath?: string
+  ): Promise<string> {
     this.logger.info(`Generating ${format.toUpperCase()} report`);
 
     const timestamp = new Date().toISOString().replace(/[.:]/g, '-');
-    const defaultPath = outputPath || `./repo-analysis-${timestamp}.${this.getFileExtension(format)}`;
+    const defaultPath =
+      outputPath'' | '''' | ''`./repo-analysis-${timestamp}.${this.getFileExtension(format)}`;
 
     switch (format) {
-      case 'json':
+      case'json':
         return this.generateJsonReport(result, defaultPath);
       case 'yaml':
         return this.generateYamlReport(result, defaultPath);
@@ -44,7 +49,10 @@ export class ReportGenerator {
   /**
    * Generate JSON report
    */
-  private async generateJsonReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generateJsonReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     const fs = await import('fs/promises');
     const jsonContent = JSON.stringify(result, null, 2);
     await fs.writeFile(outputPath, jsonContent, 'utf-8');
@@ -54,7 +62,10 @@ export class ReportGenerator {
   /**
    * Generate YAML report
    */
-  private async generateYamlReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generateYamlReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     const fs = await import('fs/promises');
     const yaml = await import('yaml');
     const yamlContent = yaml.stringify(result);
@@ -65,12 +76,15 @@ export class ReportGenerator {
   /**
    * Generate CSV report
    */
-  private async generateCsvReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generateCsvReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     const fs = await import('fs/promises');
-    
+
     // Create CSV for recommendations
     const csvRows = [
-      'Type,Priority,Title,Description,Effort (hours),Benefits,Risks'
+      'Type,Priority,Title,Description,Effort (hours),Benefits,Risks',
     ];
 
     for (const rec of result.recommendations) {
@@ -81,7 +95,7 @@ export class ReportGenerator {
         `"${rec.description.replace(/"/g, '""')}"`,
         rec.effort.hours.toString(),
         `"${rec.benefits.join('; ').replace(/"/g, '""')}"`,
-        `"${rec.risks.join('; ').replace(/"/g, '""')}"`
+        `"${rec.risks.join('; ').replace(/"/g, '""')}"`,
       ].join(',');
       csvRows.push(row);
     }
@@ -94,9 +108,12 @@ export class ReportGenerator {
   /**
    * Generate HTML report
    */
-  private async generateHtmlReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generateHtmlReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     const fs = await import('fs/promises');
-    
+
     const html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -183,12 +200,12 @@ export class ReportGenerator {
             
             <h3>Strengths</h3>
             <ul>
-                ${result.summary.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                ${result.summary.strengths.map((strength) => `<li>${strength}</li>`).join('')}
             </ul>
             
             <h3>Areas for Improvement</h3>
             <ul>
-                ${result.summary.weaknesses.map(weakness => `<li>${weakness}</li>`).join('')}
+                ${result.summary.weaknesses.map((weakness) => `<li>${weakness}</li>`).join('')}
             </ul>
 
             <h3>Risk Assessment</h3>
@@ -210,28 +227,39 @@ export class ReportGenerator {
 
         <div class="section">
             <h2>Recommendations (${result.recommendations.length})</h2>
-            ${result.recommendations.slice(0, 20).map(rec => `
+            ${result.recommendations
+              .slice(0, 20)
+              .map(
+                (rec) => `
                 <div class="recommendation priority-${rec.priority}">
                     <h3>${rec.title} <span style="color: #666; font-size: 14px;">[${rec.priority.toUpperCase()}]</span></h3>
                     <p>${rec.description}</p>
                     <p><strong>Effort:</strong> ${rec.effort.hours} hours (${rec.effort.difficulty})</p>
                     <p><strong>Benefits:</strong></p>
                     <ul>
-                        ${rec.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+                        ${rec.benefits.map((benefit) => `<li>${benefit}</li>`).join('')}
                     </ul>
-                    ${rec.risks.length > 0 ? `
+                    ${
+                      rec.risks.length > 0
+                        ? `
                         <p><strong>Risks:</strong></p>
                         <ul>
-                            ${rec.risks.map(risk => `<li>${risk}</li>`).join('')}
+                            ${rec.risks.map((risk) => `<li>${risk}</li>`).join('')}
                         </ul>
-                    ` : ''}
+                    `
+                        : ''
+                    }
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
 
         <div class="section">
             <h2>Domains (${result.domains.length})</h2>
-            ${result.domains.map(domain => `
+            ${result.domains
+              .map(
+                (domain) => `
                 <div class="domain">
                     <h3>${domain.name} <span style="color: #666; font-size: 14px;">[${domain.type}]</span></h3>
                     <p>${domain.description}</p>
@@ -249,27 +277,39 @@ export class ReportGenerator {
                             <strong>Coupling:</strong> ${(domain.coupling * 100).toFixed(1)}%
                         </div>
                     </div>
-                    ${domain.splitRecommendation ? `
+                    ${
+                      domain.splitRecommendation
+                        ? `
                         <p><strong>Split Recommendation:</strong> ${domain.splitRecommendation.shouldSplit ? 'Yes' : 'No'} 
                         (Confidence: ${(domain.splitRecommendation.confidence * 100).toFixed(1)}%)</p>
-                    ` : ''}
+                    `
+                        : ''
+                    }
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
 
         <div class="section">
             <h2>Language Distribution</h2>
             <div class="stats-grid">
-                ${Object.entries(result.repository.languages).map(([lang, lines]) => `
+                ${Object.entries(result.repository.languages)
+                  .map(
+                    ([lang, lines]) => `
                     <div class="stat-card">
                         <div class="metric-value">${lines.toLocaleString()}</div>
                         <div class="metric-label">${lang.toUpperCase()}</div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </div>
         </div>
 
-        ${result.repository.gitMetrics ? `
+        ${
+          result.repository.gitMetrics
+            ? `
             <div class="section">
                 <h2>Git Metrics</h2>
                 <div class="stats-grid">
@@ -291,7 +331,9 @@ export class ReportGenerator {
                     </div>
                 </div>
             </div>
-        ` : ''}
+        `
+            : ''
+        }
 
         <div class="section">
             <h2>Technical Details</h2>
@@ -324,9 +366,12 @@ export class ReportGenerator {
   /**
    * Generate Markdown report
    */
-  private async generateMarkdownReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generateMarkdownReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     const fs = await import('fs/promises');
-    
+
     const markdown = `# Repository Analysis Report
 
 **Repository:** ${result.repository.name}  
@@ -335,22 +380,11 @@ export class ReportGenerator {
 
 ## Overall Health Score: ${(result.summary.overallScore * 100).toFixed(1)}%
 
-## Summary
-
-| Metric | Value |
-|--------|-------|
-| Total Files | ${result.repository.totalFiles} |
-| Total Lines | ${result.repository.totalLines.toLocaleString()} |
-| Cyclomatic Complexity | ${result.repository.complexity.cyclomatic} |
-| Maintainability Index | ${result.repository.complexity.maintainabilityIndex.toFixed(1)} |
-| Total Dependencies | ${result.repository.dependencies.totalDependencies} |
-| Domains | ${result.domains.length} |
-
-### Strengths
-${result.summary.strengths.map(s => `- ${s}`).join('\n')}
+## Summary'' | ''Metric'' | ''Value'' | '''' | ''--------'' | ''-------'' | '''' | ''Total Files'' | ''${result.repository.totalFiles}'' | '''' | ''Total Lines'' | ''${result.repository.totalLines.toLocaleString()}'' | '''' | ''Cyclomatic Complexity'' | ''${result.repository.complexity.cyclomatic}'' | '''' | ''Maintainability Index'' | ''${result.repository.complexity.maintainabilityIndex.toFixed(1)}'' | '''' | ''Total Dependencies'' | ''${result.repository.dependencies.totalDependencies}'' | '''' | ''Domains'' | ''${result.domains.length}'' | ''### Strengths
+${result.summary.strengths.map((s) => `- ${s}`).join('\n')}
 
 ### Areas for Improvement
-${result.summary.weaknesses.map(w => `- ${w}`).join('\n')}
+${result.summary.weaknesses.map((w) => `- ${w}`).join('\n')}
 
 ### Risk Assessment
 - **Technical Debt Risk:** ${result.summary.riskAssessment.technicalDebtRisk.toUpperCase()}
@@ -360,7 +394,10 @@ ${result.summary.weaknesses.map(w => `- ${w}`).join('\n')}
 
 ## Top Recommendations
 
-${result.recommendations.slice(0, 10).map((rec, index) => `
+${result.recommendations
+  .slice(0, 10)
+  .map(
+    (rec, index) => `
 ### ${index + 1}. ${rec.title} [${rec.priority.toUpperCase()}]
 
 ${rec.description}
@@ -368,14 +405,18 @@ ${rec.description}
 **Effort:** ${rec.effort.hours} hours (${rec.effort.difficulty})
 
 **Benefits:**
-${rec.benefits.map(b => `- ${b}`).join('\n')}
+${rec.benefits.map((b) => `- ${b}`).join('\n')}
 
-${rec.risks.length > 0 ? `**Risks:**\n${rec.risks.map(r => `- ${r}`).join('\n')}` : ''}
-`).join('\n')}
+${rec.risks.length > 0 ? `**Risks:**\n${rec.risks.map((r) => `- ${r}`).join('\n')}` : ''}
+`
+  )
+  .join('\n')}
 
 ## Domains
 
-${result.domains.map(domain => `
+${result.domains
+  .map(
+    (domain) => `
 ### ${domain.name} [${domain.type}]
 
 ${domain.description}
@@ -386,22 +427,31 @@ ${domain.description}
 - **Coupling:** ${(domain.coupling * 100).toFixed(1)}%
 
 ${domain.splitRecommendation ? `**Split Recommendation:** ${domain.splitRecommendation.shouldSplit ? 'Yes' : 'No'} (${(domain.splitRecommendation.confidence * 100).toFixed(1)}% confidence)` : ''}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Language Distribution
 
-${Object.entries(result.repository.languages).map(([lang, lines]) => 
-  `- **${lang.toUpperCase()}:** ${lines.toLocaleString()} lines`
-).join('\n')}
+${Object.entries(result.repository.languages)
+  .map(
+    ([lang, lines]) =>
+      `- **${lang.toUpperCase()}:** ${lines.toLocaleString()} lines`
+  )
+  .join('\n')}
 
-${result.repository.gitMetrics ? `
+${
+  result.repository.gitMetrics
+    ? `
 ## Git Metrics
 
 - **Total Commits:** ${result.repository.gitMetrics.totalCommits}
 - **Contributors:** ${result.repository.gitMetrics.contributors}
 - **Average Commits/Day:** ${result.repository.gitMetrics.averageCommitsPerDay.toFixed(1)}
 - **Hot Files:** ${result.repository.gitMetrics.hotFiles.length}
-` : ''}
+`
+    : ''
+}
 
 ## Technical Details
 
@@ -430,24 +480,34 @@ ${result.repository.gitMetrics ? `
   /**
    * Generate PDF report (requires additional dependencies)
    */
-  private async generatePdfReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generatePdfReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     // For PDF generation, we'd need puppeteer or similar
     // For now, generate HTML and suggest conversion
     const htmlPath = outputPath.replace('.pdf', '.html');
     await this.generateHtmlReport(result, htmlPath);
-    
-    this.logger.info(`PDF generation requires additional dependencies. HTML report generated at ${htmlPath}`);
-    this.logger.info('To convert to PDF, use: npx puppeteer pdf ' + htmlPath + ' ' + outputPath);
-    
+
+    this.logger.info(
+      `PDF generation requires additional dependencies. HTML report generated at ${htmlPath}`
+    );
+    this.logger.info(
+      'To convert to PDF, use: npx puppeteer pdf ' + htmlPath + ' ' + outputPath
+    );
+
     return htmlPath;
   }
 
   /**
    * Generate GraphML report (dependency graph)
    */
-  private async generateGraphmlReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generateGraphmlReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     const fs = await import('fs/promises');
-    
+
     const graphml = `<?xml version="1.0" encoding="UTF-8"?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -460,17 +520,25 @@ ${result.repository.gitMetrics ? `
   <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
   
   <graph id="DependencyGraph" edgedefault="directed">
-    ${result.repository.dependencies.dependencyGraph.nodes.map(node => `
+    ${result.repository.dependencies.dependencyGraph.nodes
+      .map(
+        (node) => `
     <node id="${node.id}">
       <data key="name">${node.file}</data>
       <data key="type">${node.type}</data>
       <data key="complexity">${node.complexity}</data>
-    </node>`).join('')}
+    </node>`
+      )
+      .join('')}
     
-    ${result.repository.dependencies.dependencyGraph.edges.map((edge, index) => `
+    ${result.repository.dependencies.dependencyGraph.edges
+      .map(
+        (edge, index) => `
     <edge id="e${index}" source="${edge.from}" target="${edge.to}">
       <data key="weight">${edge.weight}</data>
-    </edge>`).join('')}
+    </edge>`
+      )
+      .join('')}
   </graph>
 </graphml>`;
 
@@ -481,22 +549,31 @@ ${result.repository.gitMetrics ? `
   /**
    * Generate DOT report (Graphviz format)
    */
-  private async generateDotReport(result: AnalysisResult, outputPath: string): Promise<string> {
+  private async generateDotReport(
+    result: AnalysisResult,
+    outputPath: string
+  ): Promise<string> {
     const fs = await import('fs/promises');
-    
+
     const dot = `digraph RepositoryDependencies {
   rankdir=TB;
   node [shape=box, style=filled];
   
   // Nodes
-${result.repository.dependencies.dependencyGraph.nodes.map(node => 
-  `  "${node.id}" [label="${node.file}\\n${node.type}", fillcolor="${this.getNodeColor(node.type)}"];`
-).join('\n')}
+${result.repository.dependencies.dependencyGraph.nodes
+  .map(
+    (node) =>
+      `  "${node.id}" [label="${node.file}\\n${node.type}", fillcolor="${this.getNodeColor(node.type)}"];`
+  )
+  .join('\n')}
   
   // Edges
-${result.repository.dependencies.dependencyGraph.edges.map(edge => 
-  `  "${edge.from}" -> "${edge.to}" [label="${edge.weight}", weight="${edge.weight}"];`
-).join('\n')}
+${result.repository.dependencies.dependencyGraph.edges
+  .map(
+    (edge) =>
+      `  "${edge.from}" -> "${edge.to}" [label="${edge.weight}", weight="${edge.weight}"];`
+  )
+  .join('\n')}
 }`;
 
     await fs.writeFile(outputPath, dot, 'utf-8');
@@ -513,7 +590,7 @@ ${result.repository.dependencies.dependencyGraph.edges.map(edge =>
       markdown: 'md',
       pdf: 'pdf',
       graphml: 'graphml',
-      dot: 'dot'
+      dot: 'dot',
     };
     return extensions[format];
   }
@@ -531,15 +608,18 @@ ${result.repository.dependencies.dependencyGraph.edges.map(edge =>
       component: 'lightgreen',
       service: 'lightyellow',
       utility: 'lightgray',
-      test: 'lightpink'
+      test: 'lightpink',
     };
-    return colors[type] || 'white';
+    return colors[type]'' | '''' | '''white';
   }
 
   /**
    * Build comprehensive report metadata for enhanced reporting
    */
-  private async buildReportMetadata(result: AnalysisResult, format: ExportFormat): Promise<{
+  private async buildReportMetadata(
+    result: AnalysisResult,
+    format: ExportFormat
+  ): Promise<{
     generatedAt: string;
     format: string;
     analysisScope: string;
@@ -554,9 +634,9 @@ ${result.repository.dependencies.dependencyGraph.edges.map(edge =>
         files: result.repository.totalFiles,
         lines: result.repository.totalLines,
         recommendations: result.recommendations.length,
-        domains: result.domains.length
+        domains: result.domains.length,
       },
-      qualityScore: result.summary.overallScore
+      qualityScore: result.summary.overallScore,
     };
   }
 }

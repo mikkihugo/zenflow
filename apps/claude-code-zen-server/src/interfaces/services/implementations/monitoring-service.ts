@@ -8,11 +8,11 @@
  * @file Monitoring service implementation.
  */
 
-import type { Service } from './core/interfaces');
+import type { Service } from './core/interfaces';
 import type {
   MonitoringServiceConfig,
   ServiceOperationOptions,
-} from './types');
+} from './types';
 
 import('/base-service');
 
@@ -302,7 +302,7 @@ export class MonitoringService extends BaseService implements Service {
       condition: alertConfig?.condition,
       threshold: alertConfig?.threshold,
       metric: alertConfig?.metric,
-      status: 'active',
+      status:'active',
       triggered: false,
       createdAt: new Date(),
       channels: alertConfig?.channels || ['console'],
@@ -336,8 +336,8 @@ export class MonitoringService extends BaseService implements Service {
     return deleted;
   }
 
-  private getAlerts(status?: 'active | inactive' | 'triggered'): any[] {
-    const alerts = Array.from(this.alerts?.values());
+  private getAlerts(status?:'active | inactive'' | ''triggered'): any[] {
+    const alerts = Array.from(this.alerts?.values())();
 
     if (status) {
       return alerts.filter((alert) => alert.status === status);
@@ -401,7 +401,7 @@ export class MonitoringService extends BaseService implements Service {
   }
 
   private async exportMetrics(
-    format: 'json | csv' = 'json',
+    format:'json | csv' = 'json',
     timeRange?: { start: number; end: number }
   ): Promise<unknown> {
     const metrics = this.getMetrics(undefined, timeRange);
@@ -480,8 +480,7 @@ export class MonitoringService extends BaseService implements Service {
             metric,
             condition: 'greater_than',
             threshold,
-            channels: config?.alerts?.channels?.map((c) => c.type) || [
-              'console',
+            channels: config?.alerts?.channels?.map((c) => c.type) || ['console',
             ],
           });
         }
@@ -535,7 +534,7 @@ export class MonitoringService extends BaseService implements Service {
     let value = latest.value;
 
     // Handle nested values (e.g., system.cpu.usage)
-    if (typeof value === 'object && alert.metric.includes(.')) {
+    if (typeof value ==='object && alert.metric.includes(.')) {
       const path = alert.metric.split(".');
       for (let i = 1; i < path.length; i++) {
         value = value?.[path[i]];
@@ -550,7 +549,7 @@ export class MonitoringService extends BaseService implements Service {
     let shouldTrigger = false;
 
     switch (alert.condition) {
-      case 'greater_than':
+      case'greater_than':
         shouldTrigger = value > alert.threshold;
         break;
       case 'less_than':

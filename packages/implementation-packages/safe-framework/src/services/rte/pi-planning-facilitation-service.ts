@@ -1,12 +1,12 @@
 /**
  * @fileoverview PI Planning Facilitation Service
- * 
+ *
  * Service for facilitating Program Increment (PI) planning events.
  * Handles planning event coordination, participant management, and facilitation workflows.
- * 
+ *
  * SINGLE RESPONSIBILITY: PI planning event facilitation and coordination
  * FOCUSES ON: Event planning, participant coordination, facilitation workflows
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,15 +15,15 @@
 import { format, addDays, addHours } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
   maxBy,
-  minBy 
+  minBy,
 } from 'lodash-es';
 import type {
   ProgramIncrement,
@@ -33,7 +33,7 @@ import type {
   ARTTeam,
   Dependency,
   Risk,
-  Logger
+  Logger,
 } from '../../types';
 
 /**
@@ -60,10 +60,10 @@ export interface PIPlanningEventConfig {
 export interface PlanningParticipant {
   readonly id: string;
   readonly name: string;
-  readonly role: 'product-manager' | 'system-architect' | 'team-member' | 'stakeholder';
+  readonly role:' | ''product-manager'' | ''system-architect'' | ''team-member'' | ''stakeholder';
   readonly team?: string;
   readonly responsibilities: string[];
-  readonly attendance: 'required' | 'optional';
+  readonly attendance: 'required'' | ''optional';
   readonly remote: boolean;
 }
 
@@ -157,8 +157,8 @@ export interface ActionItem {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high' | 'medium' | 'low';
-  readonly status: 'open' | 'in_progress' | 'completed';
+  readonly priority: 'high'' | ''medium'' | ''low';
+  readonly status: 'open'' | ''in_progress'' | ''completed';
 }
 
 /**
@@ -185,10 +185,13 @@ export class PIPlanningFacilitationService {
     objectives: PIObjective[];
     features: Feature[];
   }): Promise<PIPlanningEventConfig> {
-    this.logger.info('Creating PI planning event', { piId: input.piId, artId: input.artId });
+    this.logger.info('Creating PI planning event', {
+      piId: input.piId,
+      artId: input.artId,
+    });
 
     const eventId = `pi-planning-${nanoid(12)}`;
-    
+
     const participants = this.generateParticipants(input.artId);
     const agenda = this.generateAgenda(input.duration);
 
@@ -204,7 +207,7 @@ export class PIPlanningFacilitationService {
       objectives: input.objectives,
       features: input.features,
       dependencies: [],
-      risks: []
+      risks: [],
     };
 
     this.planningEvents.set(eventId, planningEvent);
@@ -212,7 +215,7 @@ export class PIPlanningFacilitationService {
     this.logger.info('PI planning event created', {
       eventId,
       participantCount: participants.length,
-      objectiveCount: input.objectives.length
+      objectiveCount: input.objectives.length,
     });
 
     return planningEvent;
@@ -221,7 +224,9 @@ export class PIPlanningFacilitationService {
   /**
    * Facilitate PI planning session
    */
-  async facilitatePlanning(eventId: string): Promise<PlanningFacilitationResult> {
+  async facilitatePlanning(
+    eventId: string
+  ): Promise<PlanningFacilitationResult> {
     const event = this.planningEvents.get(eventId);
     if (!event) {
       throw new Error(`Planning event not found: ${eventId}`);
@@ -242,9 +247,9 @@ export class PIPlanningFacilitationService {
         'Program objectives committed',
         'Team capacity aligned',
         'Dependencies identified',
-        'Risks assessed'
+        'Risks assessed',
       ],
-      actionItems: this.generateActionItems(event)
+      actionItems: this.generateActionItems(event),
     };
 
     this.facilitationResults.set(eventId, result);
@@ -252,7 +257,7 @@ export class PIPlanningFacilitationService {
     this.logger.info('PI planning facilitation completed', {
       eventId,
       objectivesCommitted: result.objectivesCommitted.length,
-      success: result.success
+      success: result.success,
     });
 
     return result;
@@ -270,7 +275,7 @@ export class PIPlanningFacilitationService {
         role: 'product-manager',
         responsibilities: ['Product vision', 'Feature prioritization'],
         attendance: 'required',
-        remote: false
+        remote: false,
       },
       {
         id: `sa-${nanoid(8)}`,
@@ -278,8 +283,8 @@ export class PIPlanningFacilitationService {
         role: 'system-architect',
         responsibilities: ['Architecture guidance', 'Technical decisions'],
         attendance: 'required',
-        remote: false
-      }
+        remote: false,
+      },
     ];
   }
 
@@ -295,7 +300,7 @@ export class PIPlanningFacilitationService {
         facilitator: 'Product Manager',
         participants: ['all'],
         objectives: ['Understand business context'],
-        deliverables: ['Shared understanding']
+        deliverables: ['Shared understanding'],
       },
       {
         id: `agenda-${nanoid(8)}`,
@@ -304,8 +309,8 @@ export class PIPlanningFacilitationService {
         facilitator: 'Team Leads',
         participants: ['teams'],
         objectives: ['Plan team objectives'],
-        deliverables: ['Team plans']
-      }
+        deliverables: ['Team plans'],
+      },
     ];
 
     const day2Items: AgendaItem[] = [
@@ -316,7 +321,7 @@ export class PIPlanningFacilitationService {
         facilitator: 'RTE',
         participants: ['all'],
         objectives: ['Review draft plans'],
-        deliverables: ['Plan adjustments']
+        deliverables: ['Plan adjustments'],
       },
       {
         id: `agenda-${nanoid(8)}`,
@@ -325,8 +330,8 @@ export class PIPlanningFacilitationService {
         facilitator: 'RTE',
         participants: ['all'],
         objectives: ['Finalize commitments'],
-        deliverables: ['Committed objectives']
-      }
+        deliverables: ['Committed objectives'],
+      },
     ];
 
     return {
@@ -336,16 +341,16 @@ export class PIPlanningFacilitationService {
         morningBreak: 150, // 2.5 hours in
         lunch: 300, // 5 hours in
         afternoonBreak: 450, // 7.5 hours in
-        dayEndTime: 540 // 9 hours
+        dayEndTime: 540, // 9 hours
       },
       timeboxes: [
         {
           activity: 'Business Context',
           duration: 60,
           enforced: true,
-          warningTime: 10
-        }
-      ]
+          warningTime: 10,
+        },
+      ],
     };
   }
 
@@ -353,7 +358,7 @@ export class PIPlanningFacilitationService {
    * Process objectives for commitment
    */
   private processObjectives(objectives: PIObjective[]): PIObjective[] {
-    return filter(objectives, obj => obj.confidence >= 3);
+    return filter(objectives, (obj) => obj.confidence >= 3);
   }
 
   /**
@@ -382,9 +387,14 @@ export class PIPlanningFacilitationService {
   /**
    * Generate team commitments
    */
-  private generateTeamCommitments(participants: PlanningParticipant[]): TeamCommitment[] {
-    const teams = groupBy(filter(participants, p => p.team), 'team');
-    
+  private generateTeamCommitments(
+    participants: PlanningParticipant[]
+  ): TeamCommitment[] {
+    const teams = groupBy(
+      filter(participants, (p) => p.team),
+      'team'
+    );
+
     return map(teams, (members, teamId) => ({
       teamId,
       capacity: 100,
@@ -392,20 +402,22 @@ export class PIPlanningFacilitationService {
       features: [],
       confidence: 4,
       risks: [],
-      dependencies: []
+      dependencies: [],
     }));
   }
 
   /**
    * Calculate facilitation effectiveness metrics
    */
-  private calculateFacilitationMetrics(event: PIPlanningEventConfig): FacilitationMetrics {
+  private calculateFacilitationMetrics(
+    event: PIPlanningEventConfig
+  ): FacilitationMetrics {
     return {
       participationRate: 85,
       timeboxCompliance: 90,
       consensusLevel: 80,
       energyLevel: 75,
-      satisfactionScore: 85
+      satisfactionScore: 85,
     };
   }
 
@@ -420,8 +432,8 @@ export class PIPlanningFacilitationService {
         owner: 'RTE',
         dueDate: addDays(new Date(), 7),
         priority: 'high',
-        status: 'open'
-      }
+        status: 'open',
+      },
     ];
   }
 
@@ -435,7 +447,9 @@ export class PIPlanningFacilitationService {
   /**
    * Get facilitation results
    */
-  getFacilitationResults(eventId: string): PlanningFacilitationResult | undefined {
+  getFacilitationResults(
+    eventId: string
+  ): PlanningFacilitationResult | undefined {
     return this.facilitationResults.get(eventId);
   }
 }

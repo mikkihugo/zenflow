@@ -1,9 +1,9 @@
 /**
  * @fileoverview Architecture Health Service - Enterprise Architecture Health Monitoring
- * 
+ *
  * Specialized service for monitoring and assessing enterprise architecture health within SAFe environments.
  * Handles health metrics calculation, trend analysis, alerting, and architectural debt tracking.
- * 
+ *
  * Features:
  * - Comprehensive architecture health metrics calculation
  * - Real-time health monitoring with trend analysis
@@ -11,13 +11,13 @@
  * - Automated health alerts and escalation
  * - Health dashboard and reporting generation
  * - Predictive health analytics and forecasting
- * 
+ *
  * Integrations:
  * - @claude-zen/monitoring: Real-time health monitoring and alerting
  * - @claude-zen/fact-system: Architecture health fact collection
  * - @claude-zen/knowledge: Health knowledge base and historical analysis
  * - @claude-zen/brain: Predictive health analytics and ML insights
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -47,15 +47,15 @@ export interface ArchitectureHealthMetrics {
   readonly scalability: ScalabilityHealth;
 }
 
-export type HealthGrade = 'A' | 'B' | 'C' | 'D' | 'F';
+export type HealthGrade = 'A'' | ''B'' | ''C'' | ''D'' | ''F';
 
 export interface HealthDimension {
   readonly name: string;
-  readonly category: 'technical' | 'operational' | 'strategic' | 'compliance';
+  readonly category: 'technical'' | ''operational'' | ''strategic'' | ''compliance';
   readonly score: number; // 0-100
   readonly weight: number; // 0-1
-  readonly status: 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
-  readonly trend: 'improving' | 'stable' | 'declining';
+  readonly status: 'excellent'' | ''good'' | ''fair'' | ''poor'' | ''critical';
+  readonly trend: 'improving'' | ''stable'' | ''declining';
   readonly metrics: DimensionMetric[];
   readonly issues: HealthIssue[];
   readonly recommendations: string[];
@@ -68,7 +68,7 @@ export interface DimensionMetric {
   readonly unit: string;
   readonly target: number;
   readonly threshold: MetricThreshold;
-  readonly importance: 'critical' | 'high' | 'medium' | 'low';
+  readonly importance: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly dataSource: string;
   readonly lastUpdated: Date;
   readonly trend: MetricTrend;
@@ -83,7 +83,7 @@ export interface MetricThreshold {
 }
 
 export interface MetricTrend {
-  readonly direction: 'up' | 'down' | 'stable';
+  readonly direction: 'up'' | ''down'' | ''stable';
   readonly velocity: number;
   readonly confidence: number; // 0-1
   readonly projection: TrendProjection;
@@ -100,8 +100,8 @@ export interface HealthIssue {
   readonly issueId: string;
   readonly title: string;
   readonly description: string;
-  readonly category: 'architecture' | 'design' | 'implementation' | 'operations' | 'governance';
-  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly category:' | ''architecture'' | ''design'' | ''implementation'' | ''operations'' | ''governance';
+  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly impact: IssueImpact;
   readonly rootCause: string[];
   readonly affectedComponents: string[];
@@ -109,16 +109,16 @@ export interface HealthIssue {
   readonly estimatedResolution: string;
   readonly cost: IssueCost;
   readonly dependencies: string[];
-  readonly status: 'open' | 'in_progress' | 'resolved' | 'accepted';
+  readonly status: 'open'' | ''in_progress'' | ''resolved'' | ''accepted';
 }
 
 export interface IssueImpact {
-  readonly performance: 'high' | 'medium' | 'low' | 'none';
-  readonly security: 'high' | 'medium' | 'low' | 'none';
-  readonly maintainability: 'high' | 'medium' | 'low' | 'none';
-  readonly scalability: 'high' | 'medium' | 'low' | 'none';
-  readonly compliance: 'high' | 'medium' | 'low' | 'none';
-  readonly business: 'high' | 'medium' | 'low' | 'none';
+  readonly performance: 'high'' | ''medium'' | ''low'' | ''none';
+  readonly security: 'high'' | ''medium'' | ''low'' | ''none';
+  readonly maintainability: 'high'' | ''medium'' | ''low'' | ''none';
+  readonly scalability: 'high'' | ''medium'' | ''low'' | ''none';
+  readonly compliance: 'high'' | ''medium'' | ''low'' | ''none';
+  readonly business: 'high'' | ''medium'' | ''low'' | ''none';
 }
 
 export interface IssueCost {
@@ -130,17 +130,17 @@ export interface IssueCost {
 }
 
 export interface ResourceRequirement {
-  readonly type: 'developer' | 'architect' | 'ops' | 'security' | 'budget';
+  readonly type: 'developer'' | ''architect'' | ''ops'' | ''security'' | ''budget';
   readonly quantity: number;
   readonly duration: string;
-  readonly skillLevel: 'junior' | 'mid' | 'senior' | 'expert';
+  readonly skillLevel: 'junior'' | ''mid'' | ''senior'' | ''expert';
   readonly availability: string;
 }
 
 export interface HealthTrend {
   readonly dimension: string;
   readonly period: string;
-  readonly direction: 'improving' | 'stable' | 'declining';
+  readonly direction: 'improving'' | ''stable'' | ''declining';
   readonly velocity: number;
   readonly significance: number; // 0-1
   readonly confidence: number; // 0-1
@@ -153,13 +153,13 @@ export interface TrendFactor {
   readonly impact: number; // -1 to 1
   readonly confidence: number; // 0-1
   readonly description: string;
-  readonly category: 'internal' | 'external' | 'organizational' | 'technical';
+  readonly category: 'internal'' | ''external'' | ''organizational'' | ''technical';
 }
 
 export interface HealthAlert {
   readonly alertId: string;
-  readonly type: 'threshold_breach' | 'trend_deterioration' | 'anomaly_detected' | 'prediction_warning';
-  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly type:' | ''threshold_breach'' | ''trend_deterioration'' | ''anomaly_detected'' | ''prediction_warning';
+  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly title: string;
   readonly message: string;
   readonly dimension: string;
@@ -172,13 +172,13 @@ export interface HealthAlert {
   readonly escalation: EscalationRule;
   readonly createdAt: Date;
   readonly acknowledgedBy?: string;
-  readonly status: 'active' | 'acknowledged' | 'resolved' | 'suppressed';
+  readonly status: 'active'' | ''acknowledged'' | ''resolved'' | ''suppressed';
 }
 
 export interface AlertImpact {
-  readonly immediate: 'high' | 'medium' | 'low';
-  readonly shortTerm: 'high' | 'medium' | 'low';
-  readonly longTerm: 'high' | 'medium' | 'low';
+  readonly immediate: 'high'' | ''medium'' | ''low';
+  readonly shortTerm: 'high'' | ''medium'' | ''low';
+  readonly longTerm: 'high'' | ''medium'' | ''low';
   readonly affectedSystems: string[];
   readonly affectedTeams: string[];
   readonly businessImpact: string;
@@ -194,8 +194,8 @@ export interface EscalationRule {
 
 export interface HealthRecommendation {
   readonly recommendationId: string;
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
-  readonly category: 'immediate' | 'short_term' | 'long_term' | 'strategic';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
+  readonly category: 'immediate'' | ''short_term'' | ''long_term'' | ''strategic';
   readonly title: string;
   readonly description: string;
   readonly rationale: string;
@@ -217,27 +217,27 @@ export interface RecommendationImpact {
 }
 
 export interface BusinessImpact {
-  readonly revenue: 'positive' | 'negative' | 'neutral';
-  readonly cost: 'decrease' | 'increase' | 'neutral';
-  readonly risk: 'decrease' | 'increase' | 'neutral';
-  readonly agility: 'increase' | 'decrease' | 'neutral';
-  readonly innovation: 'increase' | 'decrease' | 'neutral';
+  readonly revenue: 'positive'' | ''negative'' | ''neutral';
+  readonly cost: 'decrease'' | ''increase'' | ''neutral';
+  readonly risk: 'decrease'' | ''increase'' | ''neutral';
+  readonly agility: 'increase'' | ''decrease'' | ''neutral';
+  readonly innovation: 'increase'' | ''decrease'' | ''neutral';
 }
 
 export interface TechnicalImpact {
-  readonly performance: 'improve' | 'degrade' | 'neutral';
-  readonly scalability: 'improve' | 'degrade' | 'neutral';
-  readonly maintainability: 'improve' | 'degrade' | 'neutral';
-  readonly security: 'improve' | 'degrade' | 'neutral';
-  readonly reliability: 'improve' | 'degrade' | 'neutral';
+  readonly performance: 'improve'' | ''degrade'' | ''neutral';
+  readonly scalability: 'improve'' | ''degrade'' | ''neutral';
+  readonly maintainability: 'improve'' | ''degrade'' | ''neutral';
+  readonly security: 'improve'' | ''degrade'' | ''neutral';
+  readonly reliability: 'improve'' | ''degrade'' | ''neutral';
 }
 
 export interface OperationalImpact {
-  readonly deployability: 'improve' | 'degrade' | 'neutral';
-  readonly monitoring: 'improve' | 'degrade' | 'neutral';
-  readonly troubleshooting: 'improve' | 'degrade' | 'neutral';
-  readonly automation: 'increase' | 'decrease' | 'neutral';
-  readonly complexity: 'decrease' | 'increase' | 'neutral';
+  readonly deployability: 'improve'' | ''degrade'' | ''neutral';
+  readonly monitoring: 'improve'' | ''degrade'' | ''neutral';
+  readonly troubleshooting: 'improve'' | ''degrade'' | ''neutral';
+  readonly automation: 'increase'' | ''decrease'' | ''neutral';
+  readonly complexity: 'decrease'' | ''increase'' | ''neutral';
 }
 
 export interface ImplementationGuide {
@@ -254,7 +254,7 @@ export interface ImplementationPhase {
   readonly name: string;
   readonly description: string;
   readonly duration: string;
-  readonly effort: 'low' | 'medium' | 'high';
+  readonly effort: 'low'' | ''medium'' | ''high';
   readonly parallelizable: boolean;
   readonly deliverables: string[];
   readonly acceptance: string[];
@@ -265,8 +265,8 @@ export interface TrainingRequirement {
   readonly audience: string;
   readonly topic: string;
   readonly duration: string;
-  readonly format: 'classroom' | 'online' | 'hands_on' | 'mentoring';
-  readonly priority: 'required' | 'recommended' | 'optional';
+  readonly format: 'classroom'' | ''online'' | ''hands_on'' | ''mentoring';
+  readonly priority: 'required'' | ''recommended'' | ''optional';
 }
 
 export interface RecommendationCost {
@@ -314,7 +314,7 @@ export interface HistoricalHealthData {
 
 export interface HealthEvent {
   readonly eventId: string;
-  readonly type: 'improvement' | 'degradation' | 'incident' | 'change' | 'milestone';
+  readonly type:' | ''improvement'' | ''degradation'' | ''incident'' | ''change'' | ''milestone';
   readonly description: string;
   readonly impact: number;
   readonly duration: string;
@@ -338,11 +338,11 @@ export interface ArchitecturalDebt {
 }
 
 export interface DebtCategory {
-  readonly category: 'technical' | 'design' | 'documentation' | 'testing' | 'security';
+  readonly category:' | ''technical'' | ''design'' | ''documentation'' | ''testing'' | ''security';
   readonly amount: number;
   readonly percentage: number;
   readonly items: DebtItem[];
-  readonly trend: 'increasing' | 'decreasing' | 'stable';
+  readonly trend: 'increasing'' | ''decreasing'' | ''stable';
 }
 
 export interface DebtItem {
@@ -351,7 +351,7 @@ export interface DebtItem {
   readonly description: string;
   readonly cost: number;
   readonly interest: number; // ongoing cost
-  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly components: string[];
   readonly introduced: Date;
   readonly lastUpdated: Date;
@@ -366,7 +366,7 @@ export interface DebtTimeline {
 }
 
 export interface TimelineRecommendation {
-  readonly period: 'immediate' | 'short_term' | 'medium_term' | 'long_term';
+  readonly period: 'immediate'' | ''short_term'' | ''medium_term'' | ''long_term';
   readonly items: string[];
   readonly rationale: string;
   readonly impact: string;
@@ -381,7 +381,7 @@ export interface DebtPriority {
 }
 
 export interface DebtTrend {
-  readonly direction: 'increasing' | 'decreasing' | 'stable';
+  readonly direction: 'increasing'' | ''decreasing'' | ''stable';
   readonly velocity: number;
   readonly projectedDebt: number;
   readonly timeframe: string;
@@ -394,7 +394,7 @@ export interface ComplianceHealth {
   readonly standards: StandardCompliance[];
   readonly policies: PolicyCompliance[];
   readonly violations: ComplianceViolation[];
-  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
 }
 
 export interface RegulationCompliance {
@@ -407,7 +407,7 @@ export interface RegulationCompliance {
 
 export interface RequirementCompliance {
   readonly requirement: string;
-  readonly status: 'compliant' | 'non_compliant' | 'partially_compliant';
+  readonly status: 'compliant'' | ''non_compliant'' | ''partially_compliant';
   readonly evidence: string[];
   readonly lastVerified: Date;
 }
@@ -415,7 +415,7 @@ export interface RequirementCompliance {
 export interface ComplianceGap {
   readonly gapId: string;
   readonly description: string;
-  readonly impact: 'high' | 'medium' | 'low';
+  readonly impact: 'high'' | ''medium'' | ''low';
   readonly remediation: string;
   readonly timeline: string;
   readonly owner: string;
@@ -439,10 +439,10 @@ export interface ComplianceViolation {
   readonly violationId: string;
   readonly type: string;
   readonly description: string;
-  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly component: string;
   readonly detectedAt: Date;
-  readonly status: 'open' | 'in_progress' | 'resolved';
+  readonly status: 'open'' | ''in_progress'' | ''resolved';
 }
 
 export interface PerformanceHealth {
@@ -459,7 +459,7 @@ export interface ThroughputMetrics {
   readonly target: number;
   readonly peak: number;
   readonly unit: string;
-  readonly trend: 'improving' | 'stable' | 'declining';
+  readonly trend: 'improving'' | ''stable'' | ''declining';
 }
 
 export interface LatencyMetrics {
@@ -468,7 +468,7 @@ export interface LatencyMetrics {
   readonly p99: number;
   readonly target: number;
   readonly unit: string;
-  readonly trend: 'improving' | 'stable' | 'declining';
+  readonly trend: 'improving'' | ''stable'' | ''declining';
 }
 
 export interface AvailabilityMetrics {
@@ -490,7 +490,7 @@ export interface ScalabilityMetrics {
 export interface PerformanceBottleneck {
   readonly bottleneckId: string;
   readonly component: string;
-  readonly type: 'cpu' | 'memory' | 'disk' | 'network' | 'database' | 'application';
+  readonly type:' | ''cpu'' | ''memory'' | ''disk'' | ''network'' | ''database'' | ''application';
   readonly impact: number;
   readonly frequency: number;
   readonly resolution: string;
@@ -502,16 +502,16 @@ export interface SecurityHealth {
   readonly threats: SecurityThreat[];
   readonly controls: SecurityControl[];
   readonly incidents: SecurityIncident[];
-  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
 }
 
 export interface SecurityVulnerability {
   readonly cveId?: string;
-  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly component: string;
   readonly description: string;
   readonly discovered: Date;
-  readonly status: 'open' | 'patched' | 'mitigated' | 'accepted';
+  readonly status: 'open'' | ''patched'' | ''mitigated'' | ''accepted';
 }
 
 export interface SecurityThreat {
@@ -525,16 +525,16 @@ export interface SecurityThreat {
 
 export interface SecurityControl {
   readonly controlId: string;
-  readonly type: 'preventive' | 'detective' | 'corrective';
+  readonly type: 'preventive'' | ''detective'' | ''corrective';
   readonly effectiveness: number;
   readonly coverage: number;
-  readonly status: 'active' | 'inactive' | 'partial';
+  readonly status: 'active'' | ''inactive'' | ''partial';
 }
 
 export interface SecurityIncident {
   readonly incidentId: string;
   readonly type: string;
-  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly severity: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly occurred: Date;
   readonly resolved?: Date;
   readonly impact: string;
@@ -609,7 +609,7 @@ export interface ElasticityMetrics {
 }
 
 export interface ScalabilityConstraint {
-  readonly type: 'resource' | 'architectural' | 'data' | 'network' | 'operational';
+  readonly type:' | ''resource'' | ''architectural'' | ''data'' | ''network'' | ''operational';
   readonly description: string;
   readonly impact: number;
   readonly remediation: string;
@@ -634,9 +634,9 @@ export interface AlertThreshold {
 }
 
 export interface ReportingSchedule {
-  readonly frequency: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly';
+  readonly frequency: 'hourly'' | ''daily'' | ''weekly'' | ''monthly'' | ''quarterly';
   readonly recipients: string[];
-  readonly format: 'dashboard' | 'email' | 'slack' | 'api';
+  readonly format: 'dashboard'' | ''email'' | ''slack'' | ''api';
   readonly includeRecommendations: boolean;
 }
 
@@ -668,7 +668,7 @@ export class ArchitectureHealthService extends TypedEventBase {
   constructor(logger: Logger, config: Partial<HealthMonitoringConfig> = {}) {
     super();
     this.logger = logger;
-    
+
     this.config = {
       enableRealTimeMonitoring: true,
       monitoringInterval: 300, // 5 minutes
@@ -677,7 +677,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       reportingSchedule: [],
       retentionPeriod: 365,
       dimensions: [],
-      ...config
+      ...config,
     };
   }
 
@@ -701,9 +701,11 @@ export class ArchitectureHealthService extends TypedEventBase {
 
       this.initialized = true;
       this.logger.info('Architecture Health Service initialized successfully');
-
     } catch (error) {
-      this.logger.error('Failed to initialize Architecture Health Service:', error);
+      this.logger.error(
+        'Failed to initialize Architecture Health Service:',
+        error
+      );
       throw error;
     }
   }
@@ -722,7 +724,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       const complianceData = this.gatherComplianceData();
       const performanceData = this.gatherPerformanceData();
       const securityData = this.gatherSecurityData();
-      
+
       // Synchronous data gathering
       const maintainabilityData = this.gatherMaintainabilityData();
       const scalabilityData = this.gatherScalabilityData();
@@ -734,7 +736,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         performance: performanceData,
         security: securityData,
         maintainability: maintainabilityData,
-        scalability: scalabilityData
+        scalability: scalabilityData,
       });
 
       // Calculate overall health score
@@ -771,7 +773,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         performance: performanceData,
         security: securityData,
         maintainability: maintainabilityData,
-        scalability: scalabilityData
+        scalability: scalabilityData,
       };
 
       // Store metrics for historical tracking
@@ -787,22 +789,25 @@ export class ArchitectureHealthService extends TypedEventBase {
         healthGrade,
         dimensionCount: dimensions.length,
         alertCount: alerts.length,
-        recommendationCount: recommendations.length
+        recommendationCount: recommendations.length,
       });
 
       this.logger.info('Architecture health metrics calculated successfully', {
         overallHealth,
         healthGrade,
-        alertCount: alerts.length
+        alertCount: alerts.length,
       });
 
       return metrics;
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      this.logger.error('Failed to calculate architecture health metrics:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      this.logger.error(
+        'Failed to calculate architecture health metrics:',
+        error
+      );
       this.emit('health-calculation-failed', {
-        error: errorMessage
+        error: errorMessage,
       });
       throw error;
     }
@@ -823,7 +828,7 @@ export class ArchitectureHealthService extends TypedEventBase {
     }, this.config.monitoringInterval * 1000);
 
     this.logger.info('Architecture health monitoring started', {
-      interval: this.config.monitoringInterval
+      interval: this.config.monitoringInterval,
     });
   }
 
@@ -863,7 +868,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       standards: [],
       policies: [],
       violations: [],
-      riskLevel: 'medium'
+      riskLevel: 'medium',
     };
   }
 
@@ -879,7 +884,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         target: 1200,
         peak: 1500,
         unit: 'requests/sec',
-        trend: 'stable'
+        trend: 'stable',
       },
       latency: {
         p50: 50,
@@ -887,23 +892,23 @@ export class ArchitectureHealthService extends TypedEventBase {
         p99: 500,
         target: 100,
         unit: 'ms',
-        trend: 'improving'
+        trend: 'improving',
       },
       availability: {
         uptime: 99.9,
         target: 99.95,
         mtbf: 720,
         mttr: 15,
-        incidents: 2
+        incidents: 2,
       },
       scalability: {
         currentCapacity: 80,
         maxCapacity: 100,
         utilizationRate: 75,
         elasticity: 85,
-        constraints: []
+        constraints: [],
       },
-      bottlenecks: []
+      bottlenecks: [],
     };
   }
 
@@ -918,7 +923,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       threats: [],
       controls: [],
       incidents: [],
-      riskLevel: 'medium'
+      riskLevel: 'medium',
     };
   }
 
@@ -934,33 +939,33 @@ export class ArchitectureHealthService extends TypedEventBase {
         issues: 45,
         duplication: 5,
         technicalDebt: 120000,
-        maintainabilityIndex: 75
+        maintainabilityIndex: 75,
       },
       documentation: {
         coverage: 70,
         quality: 75,
         freshness: 80,
-        accessibility: 85
+        accessibility: 85,
       },
       testCoverage: {
         overall: 78,
         unit: 85,
         integration: 70,
         endToEnd: 60,
-        quality: 80
+        quality: 80,
       },
       complexity: {
         cyclomatic: 8.5,
         cognitive: 12.3,
         npath: 256,
-        halstead: 45.2
+        halstead: 45.2,
       },
       coupling: {
         afferent: 15,
         efferent: 8,
         instability: 0.35,
-        abstractness: 0.6
-      }
+        abstractness: 0.6,
+      },
     };
   }
 
@@ -975,21 +980,21 @@ export class ArchitectureHealthService extends TypedEventBase {
         current: 5,
         maximum: 20,
         efficiency: 85,
-        bottlenecks: []
+        bottlenecks: [],
       },
       vertical: {
         current: 16,
         maximum: 64,
         efficiency: 75,
-        bottlenecks: ['memory']
+        bottlenecks: ['memory'],
       },
       elasticity: {
         responseTime: 120,
         accuracy: 90,
         cost: 75,
-        automation: 85
+        automation: 85,
       },
-      constraints: []
+      constraints: [],
     };
   }
 
@@ -1007,29 +1012,29 @@ export class ArchitectureHealthService extends TypedEventBase {
           amount: 200000,
           percentage: 44.4,
           items: [],
-          trend: 'increasing'
+          trend: 'increasing',
         },
         {
           category: 'design',
           amount: 150000,
           percentage: 33.3,
           items: [],
-          trend: 'stable'
+          trend: 'stable',
         },
         {
           category: 'documentation',
           amount: 100000,
           percentage: 22.2,
           items: [],
-          trend: 'decreasing'
-        }
+          trend: 'decreasing',
+        },
       ],
       timeline: {
         immediate: 50000,
         shortTerm: 120000,
         mediumTerm: 180000,
         longTerm: 100000,
-        recommendations: []
+        recommendations: [],
       },
       priority: [],
       trends: {
@@ -1037,8 +1042,8 @@ export class ArchitectureHealthService extends TypedEventBase {
         velocity: 1.2,
         projectedDebt: 500000,
         timeframe: '6 months',
-        factors: ['new features', 'technical shortcuts', 'delayed refactoring']
-      }
+        factors: ['new features', 'technical shortcuts', 'delayed refactoring'],
+      },
     };
   }
 
@@ -1062,7 +1067,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         trend: 'stable',
         metrics: [],
         issues: [],
-        recommendations: []
+        recommendations: [],
       },
       {
         name: 'Performance',
@@ -1073,7 +1078,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         trend: 'improving',
         metrics: [],
         issues: [],
-        recommendations: []
+        recommendations: [],
       },
       {
         name: 'Security',
@@ -1084,18 +1089,20 @@ export class ArchitectureHealthService extends TypedEventBase {
         trend: 'stable',
         metrics: [],
         issues: [],
-        recommendations: []
+        recommendations: [],
       },
       {
         name: 'Maintainability',
         category: 'technical',
         score: data.maintainability.overallMaintainability,
         weight: 0.2,
-        status: this.getHealthStatus(data.maintainability.overallMaintainability),
+        status: this.getHealthStatus(
+          data.maintainability.overallMaintainability
+        ),
         trend: 'declining',
         metrics: [],
         issues: [],
-        recommendations: []
+        recommendations: [],
       },
       {
         name: 'Scalability',
@@ -1106,8 +1113,8 @@ export class ArchitectureHealthService extends TypedEventBase {
         trend: 'stable',
         metrics: [],
         issues: [],
-        recommendations: []
-      }
+        recommendations: [],
+      },
     ];
 
     return dimensions;
@@ -1165,7 +1172,7 @@ export class ArchitectureHealthService extends TypedEventBase {
         significance: 0.7,
         confidence: 0.8,
         driverFactors: [],
-        projections: []
+        projections: [],
       });
     }
 
@@ -1179,7 +1186,7 @@ export class ArchitectureHealthService extends TypedEventBase {
     const alerts: HealthAlert[] = [];
 
     for (const dimension of dimensions) {
-      if (dimension.status === 'critical' || dimension.status === 'poor') {
+      if (dimension.status === 'critical' || dimension.status ==='poor') {
         alerts.push({
           alertId: `alert-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
           type: 'threshold_breach',
@@ -1196,7 +1203,7 @@ export class ArchitectureHealthService extends TypedEventBase {
             longTerm: 'high',
             affectedSystems: [],
             affectedTeams: [],
-            businessImpact: `${dimension.name} degradation may impact business operations`
+            businessImpact: `${dimension.name} degradation may impact business operations`,
           },
           recommendations: [`Investigate ${dimension.name} issues immediately`],
           escalation: {
@@ -1204,10 +1211,10 @@ export class ArchitectureHealthService extends TypedEventBase {
             escalationDelay: '30 minutes',
             escalateToRoles: ['Architecture Lead', 'CTO'],
             escalationMessage: `Critical ${dimension.name} health requires immediate attention`,
-            maxEscalations: 3
+            maxEscalations: 3,
           },
           createdAt: new Date(),
-          status: 'active'
+          status: 'active',
         });
       }
     }
@@ -1243,22 +1250,22 @@ export class ArchitectureHealthService extends TypedEventBase {
               cost: 'decrease',
               risk: 'decrease',
               agility: 'increase',
-              innovation: 'neutral'
+              innovation: 'neutral',
             },
             technical: {
               performance: 'improve',
               scalability: 'improve',
               maintainability: 'improve',
               security: 'improve',
-              reliability: 'improve'
+              reliability: 'improve',
             },
             operational: {
               deployability: 'improve',
               monitoring: 'improve',
               troubleshooting: 'improve',
               automation: 'increase',
-              complexity: 'decrease'
-            }
+              complexity: 'decrease',
+            },
           },
           implementation: {
             phases: [],
@@ -1266,7 +1273,7 @@ export class ArchitectureHealthService extends TypedEventBase {
             resources: [],
             tools: [],
             documentation: [],
-            training: []
+            training: [],
           },
           cost: {
             development: 50000,
@@ -1276,17 +1283,19 @@ export class ArchitectureHealthService extends TypedEventBase {
             total: 67000,
             currency: 'USD',
             paybackPeriod: '6 months',
-            roi: 150
+            roi: 150,
           },
           timeline: '3 months',
           dependencies: [],
-          risks: [`Implementation may temporarily impact ${dimension.name} performance`],
+          risks: [
+            `Implementation may temporarily impact ${dimension.name} performance`,
+          ],
           success: {
             objectives: [`Improve ${dimension.name} score to above 80`],
             kpis: [],
             milestones: [],
-            reviewFrequency: 'weekly'
-          }
+            reviewFrequency: 'weekly',
+          },
         });
       }
     }
@@ -1305,7 +1314,9 @@ export class ArchitectureHealthService extends TypedEventBase {
   /**
    * Store health metrics
    */
-  private async storeHealthMetrics(metrics: ArchitectureHealthMetrics): Promise<void> {
+  private async storeHealthMetrics(
+    metrics: ArchitectureHealthMetrics
+  ): Promise<void> {
     await this.knowledgeManager.store({
       content: metrics,
       type: 'architecture_health_metrics',
@@ -1313,8 +1324,8 @@ export class ArchitectureHealthService extends TypedEventBase {
       metadata: {
         timestamp: metrics.timestamp.toISOString(),
         overallHealth: metrics.overallHealth,
-        healthGrade: metrics.healthGrade
-      }
+        healthGrade: metrics.healthGrade,
+      },
     });
   }
 
@@ -1324,7 +1335,7 @@ export class ArchitectureHealthService extends TypedEventBase {
   private async processHealthAlerts(alerts: HealthAlert[]): Promise<void> {
     for (const alert of alerts) {
       await this.monitoringSystem.sendAlert(alert);
-      
+
       if (alert.escalation.autoEscalate) {
         // Schedule escalation if configured
         setTimeout(async () => {
@@ -1341,14 +1352,17 @@ export class ArchitectureHealthService extends TypedEventBase {
    */
   private parseEscalationDelay(delay: string): number {
     // Simple parser - would be more sophisticated in practice
-    const match = delay.match(/(\d+)\s*(minutes|hours|days)/);
+    const match = delay.match(/(\d+)\s*(minutes | hours | days)/);
     if (match) {
       const value = parseInt(match[1]);
       const unit = match[2];
       switch (unit) {
-        case 'minutes': return value * 60 * 1000;
-        case 'hours': return value * 60 * 60 * 1000;
-        case 'days': return value * 24 * 60 * 60 * 1000;
+        case'minutes':
+          return value * 60 * 1000;
+        case 'hours':
+          return value * 60 * 60 * 1000;
+        case 'days':
+          return value * 24 * 60 * 60 * 1000;
       }
     }
     return 30 * 60 * 1000; // Default 30 minutes
@@ -1363,8 +1377,10 @@ export class ArchitectureHealthService extends TypedEventBase {
         this.logger.debug('Alert sent (fallback)', { alertId: alert.alertId });
       },
       escalateAlert: (alert: HealthAlert) => {
-        this.logger.debug('Alert escalated (fallback)', { alertId: alert.alertId });
-      }
+        this.logger.debug('Alert escalated (fallback)', {
+          alertId: alert.alertId,
+        });
+      },
     };
   }
 
@@ -1373,7 +1389,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       queryFacts: (query: any) => {
         this.logger.debug('Facts queried (fallback)', { query });
         return [];
-      }
+      },
     };
   }
 
@@ -1381,7 +1397,7 @@ export class ArchitectureHealthService extends TypedEventBase {
     return {
       store: (data: any) => {
         this.logger.debug('Knowledge stored (fallback)', { type: data.type });
-      }
+      },
     };
   }
 
@@ -1390,7 +1406,7 @@ export class ArchitectureHealthService extends TypedEventBase {
       analyze: (data: any) => {
         this.logger.debug('Brain analysis (fallback)', { type: data.type });
         return {};
-      }
+      },
     };
   }
 }

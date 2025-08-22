@@ -16,40 +16,44 @@ import type { Prediction } from '../primitives/prediction';
  * Matches Stanford DSPy ensemble.py API exactly
  */
 export interface EnsembleConfig {
-    /** Reduce function to combine outputs (e.g., dspy.majority) */
-    reduce_fn?: ((outputs: Prediction[]) => Prediction) | null;
-    /** Number of programs to sample for ensemble (null = use all) */
-    size?: number | null;
-    /** Whether to use deterministic sampling (not implemented yet) */
-    deterministic?: boolean;
+  /** Reduce function to combine outputs (e.g., dspy.majority) */
+  reduce_fn?: ((outputs: Prediction[]) => Prediction)'' | ''null;
+  /** Number of programs to sample for ensemble (null = use all) */
+  size?: number'' | ''null;
+  /** Whether to use deterministic sampling (not implemented yet) */
+  deterministic?: boolean;
 }
 /**
  * EnsembledProgram class - Internal implementation
  * Exact port of Stanford DSPy's EnsembledProgram
  */
 declare class EnsembledProgram extends DSPyModule {
-    private programs;
-    private reduceFunction?;
-    private size?;
-    private rng;
-    constructor(programs: DSPyModule[], reduceFunction?: ((outputs: Prediction[]) => Prediction) | null, size?: number | null);
-    /**
-     * Forward pass through ensemble
-     * Exact implementation of Stanford DSPy's forward method
-     */
-    forward(example: Example): Promise<Prediction>;
-    /**
-     * Get predictors from all ensemble programs
-     */
-    predictors(): any[];
-    /**
-     * Get named predictors from all ensemble programs
-     */
-    namedPredictors(): [string, any][];
-    /**
-     * Deep copy ensemble program
-     */
-    deepcopy(): EnsembledProgram;
+  private programs;
+  private reduceFunction?;
+  private size?;
+  private rng;
+  constructor(
+    programs: DSPyModule[],
+    reduceFunction?: ((outputs: Prediction[]) => Prediction)' | 'null,
+    size?: number | null
+  );
+  /**
+   * Forward pass through ensemble
+   * Exact implementation of Stanford DSPy's forward method
+   */
+  forward(example: Example): Promise<Prediction>;
+  /**
+   * Get predictors from all ensemble programs
+   */
+  predictors(): any[];
+  /**
+   * Get named predictors from all ensemble programs
+   */
+  namedPredictors(): [string, any][];
+  /**
+   * Deep copy ensemble program
+   */
+  deepcopy(): EnsembledProgram;
 }
 /**
  * Ensemble Teleprompter
@@ -73,7 +77,7 @@ declare class EnsembledProgram extends DSPyModule {
  *     // Implement majority voting
  *     const votes = outputs.map(o => o.data.answer);
  *     const counts = votes.reduce((acc, vote) => {
- *       acc[vote] = (acc[vote] || 0) + 1;
+ *       acc[vote] = (acc[vote]'' | '''' | ''0) + 1;
  *       return acc;
  *     }, {});
  *     const winner = Object.keys(counts).reduce((a, b) =>
@@ -92,11 +96,11 @@ declare class EnsembledProgram extends DSPyModule {
  *   reduce_fn: (outputs) => {
  *     // Average confidence scores
  *     const avgConfidence = outputs.reduce((sum, o) =>
- *       sum + (o.confidence || 0), 0) / outputs.length;
+ *       sum + (o.confidence'' | '''' | ''0), 0) / outputs.length;
  *
  *     // Use highest confidence prediction
  *     const best = outputs.reduce((best, current) =>
- *       (current.confidence || 0) > (best.confidence || 0) ? current : best
+ *       (current.confidence'' | '''' | ''0) > (best.confidence'' | '''' | ''0) ? current : best
  *     );
  *
  *     return { ...best, confidence: avgConfidence };
@@ -118,7 +122,7 @@ declare class EnsembledProgram extends DSPyModule {
  *       // Weighted voting based on confidence
  *       const weighted = validOutputs.map(o => ({
  *         ...o,
- *         weight: o.confidence || 0.5
+ *         weight: o.confidence'' | '''' | ''0.5
  *       }));
  *
  *       const totalWeight = weighted.reduce((sum, o) => sum + o.weight, 0);
@@ -184,24 +188,24 @@ declare class EnsembledProgram extends DSPyModule {
  * ```
  */
 export declare class Ensemble {
-    private config;
-    /**
-     * Initialize Ensemble teleprompter
-     * Exact API match with Stanford DSPy constructor
-     */
-    constructor(config?: EnsembleConfig);
-    /**
-     * Compile multiple programs into an ensemble
-     * Exact API match with Stanford DSPy compile method
-     *
-     * @param programs Array of DSPy modules to ensemble
-     * @returns EnsembledProgram that combines all input programs
-     */
-    compile(programs: DSPyModule[]): EnsembledProgram;
-    /**
-     * Get configuration
-     */
-    getConfig(): Required<EnsembleConfig>;
+  private config;
+  /**
+   * Initialize Ensemble teleprompter
+   * Exact API match with Stanford DSPy constructor
+   */
+  constructor(config?: EnsembleConfig);
+  /**
+   * Compile multiple programs into an ensemble
+   * Exact API match with Stanford DSPy compile method
+   *
+   * @param programs Array of DSPy modules to ensemble
+   * @returns EnsembledProgram that combines all input programs
+   */
+  compile(programs: DSPyModule[]): EnsembledProgram;
+  /**
+   * Get configuration
+   */
+  getConfig(): Required<EnsembleConfig>;
 }
 export { Ensemble as EnsembleTeleprompter };
 export default Ensemble;

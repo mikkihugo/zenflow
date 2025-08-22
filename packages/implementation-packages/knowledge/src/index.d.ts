@@ -7,5 +7,23 @@
 export * from './main';
 export * from './intelligent-doc-import';
 export { BasicKnowledgeManager } from './main';
-export { getCoordinationFactSystem, initializeCoordinationFactSystem, storeCoordinationFact, queryCoordinationFacts, searchCoordinationFacts, getCoordinationFacts, storeCoordinationEvent, storeAgentFact, queryAgentFacts, searchExternalFacts, getNPMPackageInfo, getGitHubRepoInfo, type CoordinationFact, type CoordinationFactQuery, type FactEntry, type FactQuery, type FactSearchResult, } from './coordination-api';
+export {
+  getCoordinationFactSystem,
+  initializeCoordinationFactSystem,
+  storeCoordinationFact,
+  queryCoordinationFacts,
+  searchCoordinationFacts,
+  getCoordinationFacts,
+  storeCoordinationEvent,
+  storeAgentFact,
+  queryAgentFacts,
+  searchExternalFacts,
+  getNPMPackageInfo,
+  getGitHubRepoInfo,
+  type CoordinationFact,
+  type CoordinationFactQuery,
+  type FactEntry,
+  type FactQuery,
+  type FactSearchResult,
+} from './coordination-api';
 //# sourceMappingURL=index.d.ts.map

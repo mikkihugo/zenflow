@@ -1,19 +1,26 @@
 /**
  * @fileoverview SAFe Framework DI Container Configuration
- * 
+ *
  * Configures dependency injection for the SAFe framework with optional AI enhancements.
  * Uses @claude-zen/foundation DI system with clean separation between core SAFe logic
  * and optional AI enhancements.
- * 
+ *
  * @author Claude-Zen Team
  * @since 2.0.0
  * @version 2.0.0
  */
 
-import { DIContainer, createContainer, Lifecycle } from '@claude-zen/foundation';
+import {
+  DIContainer,
+  createContainer,
+  Lifecycle,
+} from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 import { SAFE_TOKENS, AI_ENHANCEMENT_TOKENS, INTERFACE_TOKENS } from './tokens';
-import type { OptionalAIEnhancements, AIEnhancementConfig } from '../interfaces/ai-enhancements';
+import type {
+  OptionalAIEnhancements,
+  AIEnhancementConfig,
+} from '../interfaces/ai-enhancements';
 
 const logger = getLogger('SAFeContainer');
 
@@ -51,7 +58,6 @@ export class SafeContainer {
 
       this.initialized = true;
       logger.info('SAFe framework DI container configured successfully');
-
     } catch (error) {
       logger.error('Failed to configure SAFe container:', error);
       throw error;
@@ -70,11 +76,17 @@ export class SafeContainer {
     }
 
     if (coreServices.memorySystem) {
-      this.container.registerInstance(SAFE_TOKENS.MemorySystem, coreServices.memorySystem);
+      this.container.registerInstance(
+        SAFE_TOKENS.MemorySystem,
+        coreServices.memorySystem
+      );
     }
 
     if (coreServices.eventBus) {
-      this.container.registerInstance(SAFE_TOKENS.EventBus, coreServices.eventBus);
+      this.container.registerInstance(
+        SAFE_TOKENS.EventBus,
+        coreServices.eventBus
+      );
     }
 
     if (coreServices.config) {
@@ -83,41 +95,68 @@ export class SafeContainer {
 
     // Portfolio level services
     if (coreServices.epicLifecycleService) {
-      this.container.registerSingleton(SAFE_TOKENS.EpicLifecycleService, coreServices.epicLifecycleService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.EpicLifecycleService,
+        coreServices.epicLifecycleService
+      );
     }
 
     if (coreServices.businessCaseService) {
-      this.container.registerSingleton(SAFE_TOKENS.BusinessCaseService, coreServices.businessCaseService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.BusinessCaseService,
+        coreServices.businessCaseService
+      );
     }
 
     // Architecture services
     if (coreServices.runwayItemService) {
-      this.container.registerSingleton(SAFE_TOKENS.RunwayItemService, coreServices.runwayItemService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.RunwayItemService,
+        coreServices.runwayItemService
+      );
     }
 
     if (coreServices.technicalDebtService) {
-      this.container.registerSingleton(SAFE_TOKENS.TechnicalDebtService, coreServices.technicalDebtService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.TechnicalDebtService,
+        coreServices.technicalDebtService
+      );
     }
 
     if (coreServices.architectureDecisionService) {
-      this.container.registerSingleton(SAFE_TOKENS.ArchitectureDecisionService, coreServices.architectureDecisionService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.ArchitectureDecisionService,
+        coreServices.architectureDecisionService
+      );
     }
 
     if (coreServices.capabilityService) {
-      this.container.registerSingleton(SAFE_TOKENS.CapabilityService, coreServices.capabilityService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.CapabilityService,
+        coreServices.capabilityService
+      );
     }
 
     // DevSecOps services
     if (coreServices.securityScanningService) {
-      this.container.registerSingleton(SAFE_TOKENS.SecurityScanningService, coreServices.securityScanningService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.SecurityScanningService,
+        coreServices.securityScanningService
+      );
     }
 
     if (coreServices.complianceMonitoringService) {
-      this.container.registerSingleton(SAFE_TOKENS.ComplianceMonitoringService, coreServices.complianceMonitoringService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.ComplianceMonitoringService,
+        coreServices.complianceMonitoringService
+      );
     }
 
     if (coreServices.incidentResponseService) {
-      this.container.registerSingleton(SAFE_TOKENS.IncidentResponseService, coreServices.incidentResponseService);
+      this.container.registerSingleton(
+        SAFE_TOKENS.IncidentResponseService,
+        coreServices.incidentResponseService
+      );
     }
 
     logger.debug('Core SAFe services registered');
@@ -126,7 +165,9 @@ export class SafeContainer {
   /**
    * Register optional AI enhancements (only if available)
    */
-  private async registerAIEnhancements(aiConfig?: AIEnhancementConfig): Promise<void> {
+  private async registerAIEnhancements(
+    aiConfig?: AIEnhancementConfig
+  ): Promise<void> {
     if (!aiConfig) {
       logger.debug('No AI enhancements configured');
       return;
@@ -145,17 +186,22 @@ export class SafeContainer {
             autonomous: {
               enabled: true,
               learningRate: 0.1,
-              adaptationThreshold: 0.7
-            }
+              adaptationThreshold: 0.7,
+            },
           };
           // Ensure brainConfig matches BrainConfig interface
-          const config = aiConfig.brainConfig ? {
-            ...defaultConfig,
-            ...aiConfig.brainConfig
-          } : defaultConfig;
+          const config = aiConfig.brainConfig
+            ? {
+                ...defaultConfig,
+                ...aiConfig.brainConfig,
+              }
+            : defaultConfig;
           const brainInstance = new BrainCoordinator(config);
           await brainInstance.initialize();
-          this.container.registerInstance(AI_ENHANCEMENT_TOKENS.BrainCoordinator, brainInstance);
+          this.container.registerInstance(
+            AI_ENHANCEMENT_TOKENS.BrainCoordinator,
+            brainInstance
+          );
           logger.info('Brain Coordinator registered');
         } catch (error) {
           logger.warn('Brain Coordinator not available:', error);
@@ -167,7 +213,10 @@ export class SafeContainer {
         try {
           const { PerformanceTracker } = await import('@claude-zen/foundation');
           const tracker = new PerformanceTracker();
-          this.container.registerInstance(AI_ENHANCEMENT_TOKENS.PerformanceTracker, tracker);
+          this.container.registerInstance(
+            AI_ENHANCEMENT_TOKENS.PerformanceTracker,
+            tracker
+          );
           logger.info('Performance Tracker registered');
         } catch (error) {
           logger.warn('Performance Tracker not available:', error);
@@ -178,13 +227,18 @@ export class SafeContainer {
       if (aiConfig.enableTelemetry) {
         try {
           const { TelemetryManager } = await import('@claude-zen/foundation');
-          const telemetry = new TelemetryManager(aiConfig.telemetryConfig || {
-            serviceName: 'safe-framework',
-            enableTracing: true,
-            enableMetrics: true
-          });
+          const telemetry = new TelemetryManager(
+            aiConfig.telemetryConfig'' | '''' | ''{
+              serviceName:'safe-framework',
+              enableTracing: true,
+              enableMetrics: true,
+            }
+          );
           await telemetry.initialize();
-          this.container.registerInstance(AI_ENHANCEMENT_TOKENS.TelemetryManager, telemetry);
+          this.container.registerInstance(
+            AI_ENHANCEMENT_TOKENS.TelemetryManager,
+            telemetry
+          );
           logger.info('Telemetry Manager registered');
         } catch (error) {
           logger.warn('Telemetry Manager not available:', error);
@@ -196,7 +250,10 @@ export class SafeContainer {
         try {
           const { WorkflowEngine } = await import('@claude-zen/workflows');
           const workflowEngine = new WorkflowEngine();
-          this.container.registerInstance(AI_ENHANCEMENT_TOKENS.WorkflowEngine, workflowEngine);
+          this.container.registerInstance(
+            AI_ENHANCEMENT_TOKENS.WorkflowEngine,
+            workflowEngine
+          );
           logger.info('Workflow Engine registered');
         } catch (error) {
           logger.warn('Workflow Engine not available:', error);
@@ -208,7 +265,10 @@ export class SafeContainer {
         try {
           const { LoadBalancer } = await import('@claude-zen/brain');
           const loadBalancer = new LoadBalancer();
-          this.container.registerInstance(AI_ENHANCEMENT_TOKENS.LoadBalancer, loadBalancer);
+          this.container.registerInstance(
+            AI_ENHANCEMENT_TOKENS.LoadBalancer,
+            loadBalancer
+          );
           logger.info('Load Balancer registered');
         } catch (error) {
           logger.warn('Load Balancer not available:', error);
@@ -221,9 +281,14 @@ export class SafeContainer {
       // Optional Conversation Orchestrator (from @claude-zen/teamwork)
       if (aiConfig.enableConversationOrchestration) {
         try {
-          const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
+          const { ConversationOrchestrator } = await import(
+            '@claude-zen/teamwork'
+          );
           const conversationOrchestrator = new ConversationOrchestrator();
-          this.container.registerInstance(AI_ENHANCEMENT_TOKENS.ConversationOrchestrator, conversationOrchestrator);
+          this.container.registerInstance(
+            AI_ENHANCEMENT_TOKENS.ConversationOrchestrator,
+            conversationOrchestrator
+          );
           logger.info('Conversation Orchestrator registered');
         } catch (error) {
           logger.warn('Conversation Orchestrator not available:', error);
@@ -231,9 +296,11 @@ export class SafeContainer {
       }
 
       logger.info('AI enhancements registration completed');
-
     } catch (error) {
-      logger.warn('Error registering AI enhancements (continuing without them):', error);
+      logger.warn(
+        'Error registering AI enhancements (continuing without them):',
+        error
+      );
     }
   }
 
@@ -248,20 +315,32 @@ export class SafeContainer {
 
     // Register memory repository
     if (interfaces.memoryRepository) {
-      this.container.registerInstance(INTERFACE_TOKENS.MemoryRepository, interfaces.memoryRepository);
+      this.container.registerInstance(
+        INTERFACE_TOKENS.MemoryRepository,
+        interfaces.memoryRepository
+      );
     }
 
     // Register external integrations if provided
     if (interfaces.jiraIntegration) {
-      this.container.registerInstance(INTERFACE_TOKENS.JiraIntegration, interfaces.jiraIntegration);
+      this.container.registerInstance(
+        INTERFACE_TOKENS.JiraIntegration,
+        interfaces.jiraIntegration
+      );
     }
 
     if (interfaces.emailService) {
-      this.container.registerInstance(INTERFACE_TOKENS.EmailService, interfaces.emailService);
+      this.container.registerInstance(
+        INTERFACE_TOKENS.EmailService,
+        interfaces.emailService
+      );
     }
 
     if (interfaces.reportGenerator) {
-      this.container.registerInstance(INTERFACE_TOKENS.ReportGenerator, interfaces.reportGenerator);
+      this.container.registerInstance(
+        INTERFACE_TOKENS.ReportGenerator,
+        interfaces.reportGenerator
+      );
     }
 
     logger.debug('Interface implementations registered');
@@ -272,7 +351,8 @@ export class SafeContainer {
    */
   resolve<T>(token: any): T {
     if (!this.initialized) {
-      throw new Error('SAFe container not initialized. Call configure() first.');
+      throw new Error(
+        'SAFe container not initialized. Call configure() first.');
     }
     return this.container.resolve<T>(token);
   }
@@ -280,18 +360,21 @@ export class SafeContainer {
   /**
    * Try to resolve an optional dependency (returns undefined if not available)
    */
-  tryResolve<T>(token: any): T | undefined {
+  tryResolve<T>(token: any): T'' | ''undefined {
     if (!this.initialized) {
       return undefined;
     }
-    
+
     try {
       if (this.container.isRegistered(token)) {
         return this.container.resolve<T>(token);
       }
       return undefined;
     } catch (error) {
-      logger.debug(`Optional dependency ${String(token)} not available:`, error);
+      logger.debug(
+        `Optional dependency ${String(token)} not available:`,
+        error
+      );
       return undefined;
     }
   }
@@ -347,17 +430,17 @@ export interface CoreSAFeServices {
   memorySystem: any;
   eventBus: any;
   config: any;
-  
+
   // Portfolio services
   epicLifecycleService?: any;
   businessCaseService?: any;
-  
+
   // Architecture services
   runwayItemService?: any;
   technicalDebtService?: any;
   architectureDecisionService?: any;
   capabilityService?: any;
-  
+
   // DevSecOps services
   securityScanningService?: any;
   complianceMonitoringService?: any;
@@ -379,7 +462,9 @@ export interface InterfaceConfig {
 /**
  * Create a configured SAFe container
  */
-export async function createSAFeContainer(config: SafeContainerConfig): Promise<SafeContainer> {
+export async function createSAFeContainer(
+  config: SafeContainerConfig
+): Promise<SafeContainer> {
   const container = new SafeContainer();
   await container.configure(config);
   return container;
@@ -388,7 +473,7 @@ export async function createSAFeContainer(config: SafeContainerConfig): Promise<
 /**
  * Global SAFe container instance
  */
-let globalSAFeContainer: SafeContainer | null = null;
+let globalSAFeContainer: SafeContainer'' | ''null = null;
 
 /**
  * Get the global SAFe container
@@ -403,7 +488,9 @@ export function getGlobalSAFeContainer(): SafeContainer {
 /**
  * Configure the global SAFe container
  */
-export async function configureGlobalSAFeContainer(config: SafeContainerConfig): Promise<void> {
+export async function configureGlobalSAFeContainer(
+  config: SafeContainerConfig
+): Promise<void> {
   const container = getGlobalSAFeContainer();
   await container.configure(config);
 }

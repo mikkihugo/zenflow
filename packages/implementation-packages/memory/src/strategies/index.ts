@@ -1,8 +1,8 @@
 /**
  * Memory Optimization Strategies - Performance and Efficiency Optimization
- * 
+ *
  * Provides advanced strategies for memory optimization, cache management,
- * data lifecycle, performance tuning, and swarm knowledge extraction leveraging 
+ * data lifecycle, performance tuning, and swarm knowledge extraction leveraging
  * Foundation utilities and ML tools.
  */
 
@@ -21,5 +21,5 @@ export type {
   LifecycleConfig,
   LifecycleStage,
   PerformanceConfig,
-  TuningAction
+  TuningAction,
 } from './types';

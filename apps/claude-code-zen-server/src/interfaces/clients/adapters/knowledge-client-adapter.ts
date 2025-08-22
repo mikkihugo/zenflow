@@ -16,7 +16,7 @@
  * @file Knowledge-client adapter implementation.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Import existing FACT integration.
 import type {
@@ -30,9 +30,9 @@ import type {
   KnowledgeSearchOptions,
   KnowledgeStats,
   SemanticSearchOptions,
-} from './interfaces');
-import type { ProtocolType } from './types');
-import { ClientStatuses, ProtocolTypes } from './types');
+} from './interfaces';
+import type { ProtocolType } from './types';
+import { ClientStatuses, ProtocolTypes } from './types';
 
 /**
  * Extended client configuration for Knowledge clients.
@@ -60,7 +60,7 @@ export interface KnowledgeClientConfig extends ClientConfig {
   // Vector search configuration
   vectorConfig?: {
     dimensions: number;
-    similarity: 'cosine | euclidean' | 'dot');
+    similarity: 'cosine | euclidean | dot');
     threshold: number;
   };
 }
@@ -72,8 +72,8 @@ export interface KnowledgeClientConfig extends ClientConfig {
  */
 export interface KnowledgeRequest {
   query: string;
-  type: 'exact | fuzzy' | 'semantic | vector' | 'hybrid');
-  tools?: string[] | undefined;
+  type: 'exact | fuzzy | semantic | vector | hybrid');
+  tools?: string[]' | 'undefined;
   metadata?: Record<string, unknown>;
   options?: KnowledgeQueryOptions | undefined;
 }
@@ -315,7 +315,7 @@ export class KnowledgeClientAdapter
       type: 'semantic',
       tools: this.configuration.tools || undefined,
       options: options || undefined,
-      metadata: { queryType: 'knowledge_query' },
+      metadata: { queryType:'knowledge_query' },
     };
 
     return await this.send<R>(request);
@@ -336,7 +336,7 @@ export class KnowledgeClientAdapter
       type: options?.fuzzy ? 'fuzzy : exact',
       tools: ['web_scraper, documentation_parser'],
       options: options || undefined,
-      metadata: { queryType: 'search' },
+      metadata: { queryType:'search'},
     };
 
     const response = await this.send<R>(request);
@@ -352,7 +352,7 @@ export class KnowledgeClientAdapter
     try {
       const request: KnowledgeRequest = {
         query: `Get entry with ID: ${id}`,
-        type: 'exact',
+        type:'exact',
         tools: ['database_lookup'],
         metadata: { queryType: 'get_entry', entryId: id },
       };
@@ -466,7 +466,7 @@ export class KnowledgeClientAdapter
         : ['semantic_analyzer'],
       options: options || undefined,
       metadata: {
-        queryType: 'semantic_search',
+        queryType:'semantic_search',
         vectorSearch: options?.vectorSearch || undefined,
       },
     };
@@ -488,8 +488,7 @@ export class KnowledgeClientAdapter
       factRepoPath: config?.factConfig?.factRepoPath || "./FACT',
       anthropicApiKey:
         config?.factConfig?.anthropicApiKey ||
-        process.env['ANTHROPIC_API_KEY'] ||
-        '',
+        process.env['ANTHROPIC_API_KEY'] || '',
       cacheConfig: config?.caching
         ? {
             prefix: config?.caching?.prefix,
@@ -686,8 +685,7 @@ export class KnowledgeClientFactory implements ClientFactory {
       }
       if (
         !(
-          knowledgeConfig?.factConfig?.anthropicApiKey ||
-          process.env['ANTHROPIC_API_KEY']
+          knowledgeConfig?.factConfig?.anthropicApiKey || process.env['ANTHROPIC_API_KEY']
         )
       ) {
         return false;

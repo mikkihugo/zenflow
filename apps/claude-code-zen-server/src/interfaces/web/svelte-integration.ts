@@ -5,9 +5,9 @@
  * Provides seamless transition between generated HTML and Svelte components.
  */
 
-import { spawn } from 'node:child_process');
+import { spawn } from 'node:child_process';
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 import('/web-config');
 
@@ -17,7 +17,7 @@ export interface SvelteConfig {
   enabled: boolean;
   port: number;
   host: string;
-  mode: 'development | production');
+  mode: 'development'' | ''production');
   buildDir: string;
   staticDir: string;
 }

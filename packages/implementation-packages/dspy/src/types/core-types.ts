@@ -1,6 +1,6 @@
 /**
  * @fileoverview Standalone Types for DSPy Engine
- * 
+ *
  * Self-contained type definitions to eliminate external dependencies
  */
 
@@ -30,16 +30,16 @@ export interface PluginManifest {
 // Swarm coordination types
 export interface SwarmCoordinator {
   id: string;
-  type: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  type: 'mesh | hierarchical' | 'ring''' | '''star';
   agents: SwarmAgent[];
-  status: 'active' | 'inactive' | 'error';
+  status: 'active | inactive' | 'error';
   metadata?: Record<string, unknown>;
 }
 
 export interface SwarmAgent {
   id: string;
   type: string;
-  status: 'active' | 'inactive' | 'busy' | 'error';
+  status: 'active | inactive' | 'busy''' | '''error';
   capabilities: string[];
   metadata?: Record<string, unknown>;
 }
@@ -48,7 +48,7 @@ export interface SwarmAgent {
 export interface NeuralEngine {
   id: string;
   type: string;
-  status: 'initialized' | 'training' | 'ready' | 'error';
+  status: 'initialized | training' | 'ready''' | '''error';
   metrics?: NeuralMetrics;
   train(data: unknown[]): Promise<void>;
   predict(input: unknown): Promise<unknown>;
@@ -98,7 +98,7 @@ export interface LLMOptimizationResponse {
 
 // Database provider types
 export interface DatabaseProvider {
-  type: 'sqlite' | 'lancedb' | 'kuzu';
+  type: 'sqlite | lancedb' | 'kuzu';
   connection: unknown;
   isConnected(): boolean;
   query(sql: string, params?: unknown[]): Promise<unknown>;
@@ -121,9 +121,7 @@ export interface Logger {
 }
 
 // Foundation-based implementations for production usage
-import { 
-  getLogger as getFoundationLogger 
-} from '@claude-zen/foundation';
+import { getLogger as getFoundationLogger } from '@claude-zen/foundation';
 
 // Foundation imports for standalone operation
 import type { LLMProvider, DatabaseAccess } from '@claude-zen/foundation';
@@ -134,35 +132,37 @@ export class FoundationLLMIntegrationService implements LLMIntegrationService {
     try {
       const llm = getGlobalLLM();
       // Configure LLM for analysis role
-      
+
       const prompt = `Analyze the following task and provide insights:
       
 Task: ${request.task}
-Context: ${request.context || 'No additional context'}
-Expected Output: ${(request as any).expectedFormat || 'General analysis'}
+Context: ${request.context'' | '''' | '''No additional context'}
+Expected Output: ${(request as any).expectedFormat'' | '''' | '''General analysis'}
 
 Please provide a comprehensive analysis with specific recommendations.`;
 
       const result = await llm.complete(prompt, {
         temperature: 0.3,
-        maxTokens: 2048
+        maxTokens: 2048,
       });
 
       return {
-        result: result.content || result,
+        result: result.content'' | '''' | ''result,
         confidence: 0.95,
-        metadata: { 
+        metadata: {
           foundationMode: true,
-          model: (llm as any).model || 'foundation-llm',
-          timestamp: new Date().toISOString()
-        }
+          model: (llm as any).model'' | '''' | '''foundation-llm',
+          timestamp: new Date().toISOString(),
+        },
       };
     } catch (error) {
       throw new Error(`Foundation LLM analysis failed: ${error}`);
     }
   }
 
-  async optimize(request: LLMOptimizationRequest): Promise<LLMOptimizationResponse> {
+  async optimize(
+    request: LLMOptimizationRequest
+  ): Promise<LLMOptimizationResponse> {
     try {
       const llm = getGlobalLLM();
       llm.setRole('architect');
@@ -170,14 +170,14 @@ Please provide a comprehensive analysis with specific recommendations.`;
       const optimizationPrompt = `Optimize the following prompt for better performance:
 
 Original Prompt: "${request.prompt}"
-Target Domain: ${(request as any).domain || 'general'}
-Performance Goals: ${(request as any).goals?.join(', ') || 'clarity, accuracy, efficiency'}
+Target Domain: ${(request as any).domain'' | '''' | '''general'}
+Performance Goals: ${(request as any).goals?.join(', ')'' | '''' | '''clarity, accuracy, efficiency'}
 
 Provide an optimized version with specific improvements and reasoning.`;
 
       const optimizedResult = await llm.complete(optimizationPrompt, {
         temperature: 0.2,
-        maxTokens: 1500
+        maxTokens: 1500,
       });
 
       // Extract optimized prompt and improvements from result
@@ -188,11 +188,14 @@ Provide an optimized version with specific improvements and reasoning.`;
         optimizedPrompt,
         improvements,
         confidence: 0.92,
-        metrics: { 
-          accuracy: 0.96, 
+        metrics: {
+          accuracy: 0.96,
           latency: 120,
-          tokenReduction: this.calculateTokenReduction(request.prompt, optimizedPrompt)
-        }
+          tokenReduction: this.calculateTokenReduction(
+            request.prompt,
+            optimizedPrompt
+          ),
+        },
       };
     } catch (error) {
       throw new Error(`Foundation LLM optimization failed: ${error}`);
@@ -204,33 +207,35 @@ Provide an optimized version with specific improvements and reasoning.`;
     const patterns = [
       /Optimized Prompt:?\s*["']([^"']+)["']/i,
       /Improved Version:?\s*["']([^"']+)["']/i,
-      /Better Prompt:?\s*["']([^"']+)["']/i
+      /Better Prompt:?\s*["']([^"']+)["']/i,
     ];
-    
+
     for (const pattern of patterns) {
       const match = result.match(pattern);
       if (match && match[1]) return match[1];
     }
-    
+
     // Fallback: return first quoted string or first paragraph
     const quotedMatch = result.match(/["']([^"']{20,})["']/);
     if (quotedMatch && quotedMatch[1]) return quotedMatch[1];
-    
-    return result.split('\n').find(line => line.trim().length > 20) || result;
+
+    return result.split('\n').find((line) => line.trim().length > 20)'' | '''' | ''result;
   }
 
   private extractImprovements(result: string): string[] {
     const improvements: string[] = [];
     const lines = result.split('\n');
-    
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]?.trim();
       if (line && line.match(/^[\d\-\*\+]\s/)) {
         improvements.push(line.replace(/^[\d\-\*\+]\s*/, ''));
       }
     }
-    
-    return improvements.length > 0 ? improvements : ['Enhanced clarity', 'Improved specificity', 'Better structure'];
+
+    return improvements.length > 0
+      ? improvements
+      : ['Enhanced clarity', 'Improved specificity', 'Better structure'];
   }
 
   private calculateTokenReduction(original: string, optimized: string): number {
@@ -243,14 +248,14 @@ Provide an optimized version with specific improvements and reasoning.`;
 
 export class FoundationDatabaseProvider implements DatabaseProvider {
   private dbAccess = getDatabaseAccess();
-  type: 'sqlite' | 'lancedb' | 'kuzu' = 'sqlite';
+  type: 'sqlite | lancedb' | 'kuzu' = 'sqlite';
 
   get connection() {
-    return (this.dbAccess as any).connection || {};
+    return (this.dbAccess as any).connection'' | '''' | ''{};
   }
 
   isConnected(): boolean {
-    return (this.dbAccess as any).isConnected?.() || true;
+    return (this.dbAccess as any).isConnected?.()'' | '''' | ''true;
   }
 
   async query(sql: string, params?: unknown[]): Promise<unknown> {

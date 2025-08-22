@@ -7,13 +7,13 @@
  * @file Express error handling middleware.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 import type {
   ErrorRequestHandler,
   NextFunction,
   Request,
   Response,
-} from 'express');
+} from 'express';
 
 const logger = getLogger('interfaces-api-http-middleware-errors');
 
@@ -170,7 +170,7 @@ export const errorHandler: ErrorRequestHandler = (
   let statusCode: number;
   let code: string;
   let message: string;
-  let details: Record<string, unknown> | undefined;
+  let details: Record<string, unknown>' | 'undefined;
 
   if (error instanceof APIError) {
     // Custom API error - use provided values
@@ -178,7 +178,7 @@ export const errorHandler: ErrorRequestHandler = (
     code = error.code;
     message = error.message;
     details = error.details;
-  } else if (error.name === 'ValidationError') {
+  } else if (error.name ==='ValidationError') {
     // OpenAPI validation error
     statusCode = 422;
     code = ErrorCodes.UNPROCESSABLE_ENTITY;
@@ -186,7 +186,7 @@ export const errorHandler: ErrorRequestHandler = (
     details = {
       validationErrors: (error as any).errors || error.message,
     };
-  } else if (error.name === 'SyntaxError && body' in error) {
+  } else if (error.name ==='SyntaxError && body' in error) {
     // JSON parsing error
     statusCode = 400;
     code = ErrorCodes.BAD_REQUEST;
@@ -195,8 +195,7 @@ export const errorHandler: ErrorRequestHandler = (
       parseError: error.message,
     };
   } else if (
-    error.message.includes('ENOTFOUND') ||
-    error.message.includes('ECONNREFUSED');
+    error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED');
   ) {
     // Network/connection error
     statusCode = 502;

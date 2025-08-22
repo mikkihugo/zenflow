@@ -37,12 +37,7 @@ export interface CommandDefinition {
  * Mode detection interface - shared between CLI and Terminal.
  */
 export type TerminalMode =
-  | 'interactive'
-  | 'command'
-  | 'help'
-  | 'daemon'
-  | 'dev'
-  | 'test');
+  | 'interactive | command' | 'help''' | '''daemon | dev' | 'test');
 
 export interface ModeDetectionResult {
   mode: TerminalMode;

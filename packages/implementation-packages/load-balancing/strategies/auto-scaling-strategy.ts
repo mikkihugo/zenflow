@@ -13,11 +13,11 @@ import { AgentStatus } from '../types';
 import type { AutoScalingConfig, LoadMetrics, Agent } from '../types';
 
 interface ScalingDecision {
-  action: 'scale_up' | 'scale_down' | 'no_action';
+  action: 'scale_up | scale_down' | 'no_action';
   targetCount: number;
   confidence: number;
   reasoning: string;
-  urgency: 'low' | 'medium' | 'high' | 'critical';
+  urgency: 'low | medium' | 'high''' | '''critical';
 }
 
 interface ScalingHistory {
@@ -130,42 +130,43 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
     const agentCount = metrics.size;
 
     // Scale up conditions
-    if ((
-      avgUtilization > this.autoScalingConfig.scaleUpThreshold ||
-      maxUtilization > 0.95
-    ) && agentCount < this.autoScalingConfig.maxAgents) {
-        const targetCount = Math.min(
-          this.autoScalingConfig.maxAgents,
-          Math.ceil(agentCount * 1.5) // Scale by 50%
-        );
+    if (
+      (avgUtilization > this.autoScalingConfig.scaleUpThreshold'' | '''' | ''maxUtilization > 0.95) &&
+      agentCount < this.autoScalingConfig.maxAgents
+    ) {
+      const targetCount = Math.min(
+        this.autoScalingConfig.maxAgents,
+        Math.ceil(agentCount * 1.5) // Scale by 50%
+      );
 
-        return {
-          action: 'scale_up',
-          targetCount,
-          confidence: this.calculateScalingConfidence(systemLoad),
-          reasoning: `High utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,
-          urgency: maxUtilization > 0.95 ? 'critical' : 'high',
-        };
-      }
+      return {
+        action:'scale_up',
+        targetCount,
+        confidence: this.calculateScalingConfidence(systemLoad),
+        reasoning: `High utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,
+        urgency: maxUtilization > 0.95 ? 'critical' : 'high',
+      };
+    }
 
     // Scale down conditions
     if (
       avgUtilization < this.autoScalingConfig.scaleDownThreshold &&
-      maxUtilization < 0.6
-     && agentCount > this.autoScalingConfig.minAgents) {
-        const targetCount = Math.max(
-          this.autoScalingConfig.minAgents,
-          Math.floor(agentCount * 0.8) // Scale down by 20%
-        );
+      maxUtilization < 0.6 &&
+      agentCount > this.autoScalingConfig.minAgents
+    ) {
+      const targetCount = Math.max(
+        this.autoScalingConfig.minAgents,
+        Math.floor(agentCount * 0.8) // Scale down by 20%
+      );
 
-        return {
-          action: 'scale_down',
-          targetCount,
-          confidence: this.calculateScalingConfidence(systemLoad),
-          reasoning: `Low utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,
-          urgency: 'low',
-        };
-      }
+      return {
+        action: 'scale_down',
+        targetCount,
+        confidence: this.calculateScalingConfidence(systemLoad),
+        reasoning: `Low utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=${(maxUtilization * 100).toFixed(1)}%`,
+        urgency: 'low',
+      };
+    }
 
     return {
       action: 'no_action',
@@ -191,7 +192,7 @@ export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
       };
     }
 
-    const metricsArray = Array.from(metrics.values());
+    const metricsArray = Array.from(metrics.values())();
 
     // Calculate CPU-based utilization
     const cpuUtilizations = metricsArray.map((m) => m.cpuUsage);

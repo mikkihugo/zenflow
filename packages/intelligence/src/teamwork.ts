@@ -21,8 +21,10 @@ async function loadTeamworkModule() {
       // Use string-based dynamic import to avoid TypeScript compile-time resolution
       const packageName = '@claude-zen/teamwork';
       teamworkModuleCache = await import(packageName);
-    } catch (error) {
-      console.warn('Teamwork package not available, providing minimal compatibility layer');
+    } catch {
+      console.warn(
+        'Teamwork package not available, providing minimal compatibility layer',
+      );
       teamworkModuleCache = {
         ConversationOrchestrator: class MinimalConversationOrchestrator extends TypedEventBase {
           async initialize() {
@@ -54,7 +56,7 @@ async function loadTeamworkModule() {
             return this;
           }
           async collaborate() {
-            return { result: 'compatibility-collaboration' };
+            return { result: 'compatibility-collaboration'};
           }
           async shutdown() {
             return Promise.resolve();
@@ -89,7 +91,9 @@ export class ConversationOrchestrator extends TypedEventBase {
   async initialize(): Promise<void> {
     if (!this.instance) {
       const teamworkModule = await loadTeamworkModule();
-      this.instance = new teamworkModule.ConversationOrchestrator(this.orchestratorConfig);
+      this.instance = new teamworkModule.ConversationOrchestrator(
+        this.orchestratorConfig,
+      );
       await this.instance.initialize?.();
     }
   }
@@ -98,14 +102,16 @@ export class ConversationOrchestrator extends TypedEventBase {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.orchestrateConversation?.(request) || this.instance.orchestrate?.(request);
+    return (
+      this.instance.orchestrateConversation?.(request)'' | '''' | ''this.instance.orchestrate?.(request)
+    );
   }
 
   getStatus(): any {
     if (!this.instance) {
-      return { status: 'not-initialized' };
+      return { status:'not-initialized'};
     }
-    return this.instance.getStatus?.() || { status: 'active' };
+    return this.instance.getStatus?.()'' | '''' | ''{ status:'active'};
   }
 
   async shutdown(): Promise<void> {
@@ -134,7 +140,9 @@ export class ConversationManager extends TypedEventBase {
   async initialize(): Promise<void> {
     if (!this.instance) {
       const teamworkModule = await loadTeamworkModule();
-      this.instance = new teamworkModule.ConversationManager(this.managerConfig);
+      this.instance = new teamworkModule.ConversationManager(
+        this.managerConfig,
+      );
       await this.instance.initialize?.();
     }
   }
@@ -143,7 +151,9 @@ export class ConversationManager extends TypedEventBase {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.manageConversation?.(request) || this.instance.manage?.(request);
+    return (
+      this.instance.manageConversation?.(request)'' | '''' | ''this.instance.manage?.(request)
+    );
   }
 
   async shutdown(): Promise<void> {
@@ -183,7 +193,11 @@ export class CollaborationEngine extends TypedEventBase {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance?.collaborate?.(request) || { result: 'collaboration-complete' };
+    return (
+      this.instance?.collaborate?.(request)'' | '''' | ''{
+        result:'collaboration-complete',
+      }
+    );
   }
 
   async shutdown(): Promise<void> {
@@ -197,19 +211,25 @@ export class CollaborationEngine extends TypedEventBase {
 // FACTORY FUNCTIONS - Professional enterprise patterns
 // ===============================================================================
 
-export async function createConversationOrchestrator(config?: any): Promise<ConversationOrchestrator> {
+export async function createConversationOrchestrator(
+  config?: any,
+): Promise<ConversationOrchestrator> {
   const orchestrator = new ConversationOrchestrator(config);
   await orchestrator.initialize();
   return orchestrator;
 }
 
-export async function createConversationManager(config?: any): Promise<ConversationManager> {
+export async function createConversationManager(
+  config?: any,
+): Promise<ConversationManager> {
   const manager = new ConversationManager(config);
   await manager.initialize();
   return manager;
 }
 
-export async function createCollaborationEngine(config?: any): Promise<CollaborationEngine> {
+export async function createCollaborationEngine(
+  config?: any,
+): Promise<CollaborationEngine> {
   const engine = new CollaborationEngine(config);
   await engine.initialize();
   return engine;
@@ -232,9 +252,12 @@ export const teamworkSystem = {
 export async function getTeamworkAccess() {
   const teamworkModule = await loadTeamworkModule();
   return {
-    ConversationOrchestrator: teamworkModule.ConversationOrchestrator || ConversationOrchestrator,
-    ConversationManager: teamworkModule.ConversationManager || ConversationManager,
-    CollaborationEngine: teamworkModule.CollaborationEngine || CollaborationEngine,
+    ConversationOrchestrator:
+      teamworkModule.ConversationOrchestrator'' | '''' | ''ConversationOrchestrator,
+    ConversationManager:
+      teamworkModule.ConversationManager'' | '''' | ''ConversationManager,
+    CollaborationEngine:
+      teamworkModule.CollaborationEngine'' | '''' | ''CollaborationEngine,
     createOrchestrator: createConversationOrchestrator,
     createManager: createConversationManager,
     createCollaborationEngine: createCollaborationEngine,
@@ -253,7 +276,7 @@ export class InMemoryConversationMemory {
   }
 
   async retrieve(key: string): Promise<any> {
-    return this.memory.get(key) || null;
+    return this.memory.get(key)'' | '''' | ''null;
   }
 
   async clear(): Promise<void> {
@@ -261,7 +284,7 @@ export class InMemoryConversationMemory {
   }
 
   async keys(): Promise<string[]> {
-    return Array.from(this.memory.keys());
+    return Array.from(this.memory.keys())();
   }
 }
 
@@ -299,11 +322,11 @@ export interface McpClientMessageType {
  * AgentType - Compatibility type for agent classification
  */
 export enum AgentType {
-  COORDINATOR = 'coordinator',
+  COORDINATOR ='coordinator',
   SPECIALIST = 'specialist',
   FACILITATOR = 'facilitator',
   ANALYST = 'analyst',
-  EXECUTOR = 'executor'
+  EXECUTOR = 'executor',
 }
 
 /**
@@ -315,7 +338,7 @@ export interface ConversationPattern {
   participants: string[];
   messageFlow: string[];
   duration?: number;
-  priority?: 'low' | 'medium' | 'high';
+  priority?: 'low | medium' | 'high';
 }
 
 /**
@@ -332,7 +355,7 @@ export class ServiceCoordinatorImpl implements ServiceCoordinator {
 
   async registerService(service: any): Promise<void> {
     // Service registration logic - store service info
-    console.log(`Registering service: ${service.name || service.id}`, service);
+    console.log(`Registering service: ${service.name'' | '''' | ''service.id}`, service);
     // In a real implementation, would store service in registry
   }
 
@@ -367,7 +390,7 @@ export class ConversationAgentRegistry extends TypedEventBase {
   }
 
   async register(agent: any): Promise<void> {
-    const agentId = agent.id || agent.name || `agent-${Date.now()}`;
+    const agentId = agent.id'' | '''' | ''agent.name'' | '''' | ''`agent-${Date.now()}`;
     this.agents.set(agentId, agent);
     this.emit('agent-registered', { agentId, agent });
   }
@@ -381,13 +404,16 @@ export class ConversationAgentRegistry extends TypedEventBase {
   }
 
   async findAgents(criteria: any): Promise<any[]> {
-    const allAgents = Array.from(this.agents.values());
+    const allAgents = Array.from(this.agents.values())();
     // Simple filtering based on criteria
-    return allAgents.filter(agent => {
+    return allAgents.filter((agent) => {
       if (criteria.type && agent.type !== criteria.type) {
         return false;
       }
-      if (criteria.capability && !agent.capabilities?.includes(criteria.capability)) {
+      if (
+        criteria.capability &&
+        !agent.capabilities?.includes(criteria.capability)
+      ) {
         return false;
       }
       return true;
@@ -395,12 +421,12 @@ export class ConversationAgentRegistry extends TypedEventBase {
   }
 
   async getAgent(agentId: string): Promise<any> {
-    return this.agents.get(agentId) || null;
+    return this.agents.get(agentId)'' | '''' | ''null;
   }
 
   getStatus(): any {
     return {
-      type: 'conversation-registry',
+      type:'conversation-registry',
       agentCount: this.agents.size,
       healthy: true,
       capabilities: ['conversation', 'orchestration', 'management'],

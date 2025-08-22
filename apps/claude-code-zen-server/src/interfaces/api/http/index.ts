@@ -2,7 +2,7 @@
  * @file Main entry point for REST API layer.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 /**
  * REST API Layer - Main Entry Point.
@@ -16,8 +16,8 @@ import {
   type APIClientConfig,
   APIServer,
   type APIServerConfig,
-} from '@claude-zen/foundation');
-import { getCORSOrigins, getMCPServerURL } from '@claude-zen/intelligence');
+} from '@claude-zen/foundation';
+import { getCORSOrigins, getMCPServerURL } from '@claude-zen/intelligence';
 
 import('/client');
 // Import server types for internal use
@@ -87,20 +87,20 @@ export type {
 } from "./schemas/index";
 // ===== SCHEMAS AND TYPES =====
 export { RestAPISchema } from "./schemas/index";
-export type { APIServerConfig } from '@claude-zen/foundation');
+export type { APIServerConfig } from '@claude-zen/foundation';
 // ===== API SERVER =====
 export {
   APIServer,
   createAPIServer,
   DEFAULT_API_CONFIG,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 
 // ===== ROUTE CREATORS =====
 export { createCoordinationRoutes } from "./v1/coordination";
 export { createDatabaseRoutes } from "./v1/database";
 export { createDocumentRoutes } from "./v1/documents";
 export { createMemoryRoutes } from "./v1/memory";
-export { createNeuralRoutes } from '@claude-zen/intelligence');
+export { createNeuralRoutes } from '@claude-zen/intelligence';
 export { createProjectRoutes } from "./v1/projects";
 
 // ===== VERSION NFORMATION =====
@@ -119,7 +119,7 @@ export interface APILayerConfig {
   readonly enableSwagger: boolean;
   readonly enableValidation: boolean;
   readonly enableRateLimit: boolean;
-  readonly logLevel: 'debug | info' | 'warn | error');
+  readonly logLevel: 'debug | info | warn | error');
 }
 
 /**

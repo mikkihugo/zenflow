@@ -26,7 +26,7 @@ export interface ExportResult {
 }
 
 export interface ExportConfig {
-  format: 'json' | 'csv' | 'yaml' | 'xml' | 'markdown';
+  format: 'json | csv' | 'yaml' | 'xml' | 'markdown';
   outputPath?: string;
   fileName?: string;
   options?: Record<string, unknown>;
@@ -135,8 +135,8 @@ export class ExportSystem {
   }
 
   public convertToCSV(data: unknown[]): string {
-    if (!Array.isArray(data) || data.length === 0) {
-      return '';
+    if (!Array.isArray(data)'' | '''' | ''data.length === 0) {
+      return'';
     }
 
     const headers = Object.keys(data[0]);
@@ -148,11 +148,11 @@ export class ExportSystem {
         // Escape commas and quotes
         if (
           typeof value === 'string' &&
-          (value.includes(',') || value.includes('"'))
+          (value.includes(',')'' | '''' | ''value.includes('"'))
         ) {
           return `"${value.replace(/"/g, '""')}"`;
         }
-        return value?.toString() || '';
+        return value?.toString()'' | '''' | '''';
       });
       csvRows.push(values.join(','));
     }
@@ -165,17 +165,17 @@ export class ExportSystem {
     const yamlify = (obj: unknown, indent = 0): string => {
       const spaces = '  '.repeat(indent);
 
-      if (obj === null || obj === undefined) {
-        return 'null';
+      if (obj === null'' | '''' | ''obj === undefined) {
+        return'null';
       }
 
       if (typeof obj === 'string') {
         return obj.includes('\n')
-          ? `|\n${spaces}  ${obj['replace'](/\n/g, `\n${spaces}  `)}`
+          ? `'' | ''\n${spaces}  ${obj['replace'](/\n/g, `\n${spaces}  `)}`
           : obj;
       }
 
-      if (typeof obj === 'number' || typeof obj === 'boolean') {
+      if (typeof obj === 'number''' | '''' | ''typeof obj ==='boolean') {
         return obj.toString();
       }
 
@@ -205,14 +205,12 @@ export class ExportSystem {
 
   public convertToXML(data: unknown): string {
     const xmlify = (obj: unknown, name = 'root'): string => {
-      if (obj === null || obj === undefined) {
+      if (obj === null'' | '''' | ''obj === undefined) {
         return `<${name}></${name}>`;
       }
 
       if (
-        typeof obj === 'string' ||
-        typeof obj === 'number' ||
-        typeof obj === 'boolean'
+        typeof obj ==='string''' | '''' | ''typeof obj ==='number''' | '''' | ''typeof obj ==='boolean'
       ) {
         return `<${name}>${obj}</${name}>`;
       }
@@ -237,31 +235,31 @@ export class ExportSystem {
 
   public convertToMarkdown(data: unknown): string {
     const mdify = (obj: unknown, level = 1): string => {
-      if (obj === null || obj === undefined) {
-        return '';
+      if (obj === null'' | '''' | ''obj === undefined) {
+        return'';
       }
 
       if (typeof obj === 'string') {
         return obj;
       }
 
-      if (typeof obj === 'number' || typeof obj === 'boolean') {
+      if (typeof obj === 'number''' | '''' | ''typeof obj ==='boolean') {
         return obj.toString();
       }
 
       if (Array.isArray(obj)) {
         if (
           obj.length > 0 &&
-          typeof obj[0] === 'object' &&
+          typeof obj[0] === 'object'&&
           !Array.isArray(obj[0])
         ) {
           // Convert array of objects to table
           const headers = Object.keys(obj[0]);
-          const headerRow = `| ${headers.join(' | ')} |`;
-          const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`;
+          const headerRow = `'' | ''${headers.join('' | '')}'' | ''`;
+          const separatorRow = `'' | ''${headers.map(() =>'---').join(''' | ''')}' | '`;
           const dataRows = obj.map(
             (item) =>
-              `| ${headers.map((header) => item?.[header]?.toString() || '').join(' | ')} |`
+              `' | '${headers.map((header) => item?.[header]?.toString() || '').join(''' | ''')}' | '`
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
         }
@@ -294,7 +292,7 @@ export class ExportSystem {
   }
 
   getSupportedFormats(): string[] {
-    return Array.from(this.exporters.keys());
+    return Array.from(this.exporters.keys())();
   }
 
   getExporterInfo(format: string): ExporterFunction | undefined {

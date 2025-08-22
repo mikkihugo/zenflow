@@ -1,9 +1,9 @@
 /**
  * @fileoverview DSPy Prediction - Production Grade
- * 
+ *
  * Core Prediction interface for DSPy module outputs.
  * 100% compatible with Stanford DSPy's Prediction interface.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  */
@@ -44,12 +44,15 @@ export class PredictionUtils {
   /**
    * Create a new prediction
    */
-  static create(data: Record<string, any>, options: Partial<Prediction> = {}): Prediction {
+  static create(
+    data: Record<string, any>,
+    options: Partial<Prediction> = {}
+  ): Prediction {
     return {
       data,
       timestamp: Date.now(),
       confidence: 1.0,
-      ...options
+      ...options,
     };
   }
 
@@ -78,24 +81,25 @@ export class PredictionUtils {
 
     // Combine reasoning
     const reasoning = predictions
-      .map(p => p.reasoning)
+      .map((p) => p.reasoning)
       .filter(Boolean)
-      .join(' | ');
+      .join(''' | ''');
 
     // Average confidence
     const confidences = predictions
-      .map(p => p.confidence)
-      .filter(c => typeof c === 'number');
-    const avgConfidence = confidences.length > 0 
-      ? confidences.reduce((sum, c) => sum + c, 0) / confidences.length 
-      : undefined;
+      .map((p) => p.confidence)
+      .filter((c) => typeof c === 'number');
+    const avgConfidence =
+      confidences.length > 0
+        ? confidences.reduce((sum, c) => sum + c, 0) / confidences.length
+        : undefined;
 
     const result: Prediction = {
       data: mergedData,
-      metadata: { 
+      metadata: {
         merged_from: predictions.length,
-        merged_at: Date.now()
-      }
+        merged_at: Date.now(),
+      },
     };
 
     if (reasoning) {
@@ -112,7 +116,11 @@ export class PredictionUtils {
   /**
    * Extract specific field from prediction
    */
-  static extract(prediction: Prediction, field: string, defaultValue?: any): any {
+  static extract(
+    prediction: Prediction,
+    field: string,
+    defaultValue?: any
+  ): any {
     return prediction.data?.[field] ?? prediction[field] ?? defaultValue;
   }
 
@@ -120,7 +128,7 @@ export class PredictionUtils {
    * Check if prediction has field
    */
   static hasField(prediction: Prediction, field: string): boolean {
-    return (prediction.data && field in prediction.data) || field in prediction;
+    return (prediction.data && field in prediction.data)'' | '''' | ''field in prediction;
   }
 
   /**
@@ -128,17 +136,17 @@ export class PredictionUtils {
    */
   static getFields(prediction: Prediction): string[] {
     const fields = new Set<string>();
-    
+
     if (prediction.data) {
-      Object.keys(prediction.data).forEach(key => fields.add(key));
+      Object.keys(prediction.data).forEach((key) => fields.add(key));
     }
-    
-    Object.keys(prediction).forEach(key => {
-      if (key !== 'data') {
+
+    Object.keys(prediction).forEach((key) => {
+      if (key !=='data') {
         fields.add(key);
       }
     });
-    
+
     return Array.from(fields);
   }
 
@@ -169,15 +177,20 @@ export class PredictionUtils {
   /**
    * Filter predictions by confidence threshold
    */
-  static filterByConfidence(predictions: Prediction[], threshold: number): Prediction[] {
-    return predictions.filter(p => (p.confidence ?? 1.0) >= threshold);
+  static filterByConfidence(
+    predictions: Prediction[],
+    threshold: number
+  ): Prediction[] {
+    return predictions.filter((p) => (p.confidence ?? 1.0) >= threshold);
   }
 
   /**
    * Sort predictions by confidence (descending)
    */
   static sortByConfidence(predictions: Prediction[]): Prediction[] {
-    return [...predictions].sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0));
+    return [...predictions].sort(
+      (a, b) => (b.confidence ?? 0) - (a.confidence ?? 0)
+    );
   }
 
   /**

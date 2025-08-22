@@ -10,10 +10,7 @@
 
 // Using Awilix DI - no reflect-metadata needed
 import { TypedEventBase } from '@claude-zen/foundation';
-import type {
-  DatabaseAdapter,
-  Logger,
-} from '../interfaces.js';
+import type { DatabaseAdapter, Logger } from '../interfaces.js';
 import { BaseDao } from '../base.dao';
 import { injectable } from '@claude-zen/foundation';
 import type {
@@ -27,7 +24,7 @@ import type {
   DatabaseMetadata,
   HealthStatus,
   PerformanceMetrics,
-  TransactionOperation
+  TransactionOperation,
 } from '../interfaces';
 
 /**
@@ -152,8 +149,8 @@ export class CoordinationDao<T>
     this.logger.debug(`Releasing lock: ${lockId}`);
 
     // Find lock by ID
-    let resourceId: string | null = null;
-    let lockInfo: LockInfo | null = null;
+    let resourceId: string'' | ''null = null;
+    let lockInfo: LockInfo'' | ''null = null;
 
     for (const [resource, lock] of this.locks.entries()) {
       if (lock.id === lockId) {
@@ -342,7 +339,7 @@ export class CoordinationDao<T>
     return created;
   }
 
-  override async update(id: string | number, updates: Partial<T>): Promise<T> {
+  override async update(id: string'' | ''number, updates: Partial<T>): Promise<T> {
     const updated = await super.update(id, updates);
 
     // Emit change notification
@@ -351,7 +348,7 @@ export class CoordinationDao<T>
     return updated;
   }
 
-  override async delete(id: string | number): Promise<boolean> {
+  override async delete(id: string'' | ''number): Promise<boolean> {
     const deleted = await super.delete(id);
 
     if (deleted) {
@@ -422,7 +419,7 @@ export class CoordinationDao<T>
     maxRetries: number = 3,
     retryDelay: number = 1000,
     lockTimeout: number = 30000
-  ): Promise<CoordinationLock | null> {
+  ): Promise<CoordinationLock'' | ''null> {
     this.logger.debug(
       `Trying to acquire lock for resource: ${resourceId} (max retries: ${maxRetries})`
     );
@@ -480,7 +477,7 @@ export class CoordinationDao<T>
    * @param event
    */
   async broadcast(event: CoordinationEvent<T>): Promise<void> {
-    const broadcastChannel = 'broadcast';
+    const broadcastChannel ='broadcast';
     await this.publish(broadcastChannel, event);
   }
 
@@ -532,8 +529,8 @@ export class CoordinationDao<T>
    */
 
   private async emitChange(
-    type: 'create' | 'update' | 'delete',
-    entityId: string | number,
+    type: 'create | update' | 'delete',
+    entityId: string'' | ''number,
     entity?: T
   ): Promise<void> {
     const change: CoordinationChange<T> = {
@@ -559,9 +556,7 @@ export class CoordinationDao<T>
 
     const regex = new RegExp(pattern.replace(/\*/g, '.*'));
     return (
-      regex.test(change.type) ||
-      regex.test(change.entityId.toString()) ||
-      regex.test(this.tableName)
+      regex.test(change.type)'' | '''' | ''regex.test(change.entityId.toString())'' | '''' | ''regex.test(this.tableName)
     );
   }
 
@@ -624,7 +619,7 @@ export class CoordinationDao<T>
         event_data: JSON.stringify(event.data),
         source: event.source,
         timestamp: event.timestamp,
-        metadata: JSON.stringify(event.metadata || {}),
+        metadata: JSON.stringify(event.metadata'' | '''' | ''{}),
       };
 
       await this.adapter.execute(
@@ -649,7 +644,7 @@ export class CoordinationDao<T>
     this.logger.debug('Shutting down coordination repository');
 
     // Release all active locks
-    const activeLocks = Array.from(this.locks.keys());
+    const activeLocks = Array.from(this.locks.keys())();
     for (const resourceId of activeLocks) {
       const lock = this.locks.get(resourceId);
       if (lock) {
@@ -694,7 +689,7 @@ export class CoordinationDao<T>
       version: '1.0.0',
       features: ['coordination', 'locking', 'pubsub'],
       schema: await this.adapter.getSchema(),
-      config: {}
+      config: {},
     };
   }
 
@@ -707,7 +702,7 @@ export class CoordinationDao<T>
         status: 'healthy',
         score: 100,
         details: { accessible: true, activeLocks: this.locks.size },
-        lastCheck: new Date()
+        lastCheck: new Date(),
       };
     } catch (error) {
       return {
@@ -717,7 +712,7 @@ export class CoordinationDao<T>
         score: 0,
         details: { accessible: false, error: (error as Error).message },
         lastCheck: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -732,8 +727,8 @@ export class CoordinationDao<T>
         activeLocks: this.locks.size,
         activeSubscriptions: this.subscriptions.size,
         messagesPublished: this.publishedMessages,
-        messagesReceived: this.receivedMessages
-      }
+        messagesReceived: this.receivedMessages,
+      },
     };
   }
 }

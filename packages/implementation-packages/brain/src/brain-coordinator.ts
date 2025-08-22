@@ -1,22 +1,18 @@
 /**
  * @fileoverview Brain Coordinator - Clean Operations Facade Implementation
- * 
+ *
  * Simplified brain coordinator that uses operations facade for monitoring
  * and avoids complex initialization patterns that cause compilation errors.
- * 
+ *
  * ARCHITECTURAL PATTERN: Uses strategic facade delegation for monitoring.
  */
 
-import { 
-  getLogger, 
-  ContextError,
-  type Logger
-} from '@claude-zen/foundation';
+import { getLogger, ContextError, type Logger } from '@claude-zen/foundation';
 
 // Operations facade for monitoring
-import { 
-  getPerformanceTracker, 
-  getAgentHealthMonitor
+import {
+  getPerformanceTracker,
+  getAgentHealthMonitor,
 } from '@claude-zen/operations';
 
 const logger = getLogger('brain-coordinator');
@@ -67,7 +63,7 @@ export interface BrainMetrics {
 }
 
 /**
- * Brain status interface  
+ * Brain status interface
  */
 export interface BrainStatus {
   initialized: boolean;
@@ -106,16 +102,16 @@ export class BrainCoordinator {
         enabled: true,
         learningRate: 0.01,
         adaptationThreshold: 0.85,
-        ...config.autonomous
+        ...config.autonomous,
       },
       neural: {
         rustAcceleration: false,
         gpuAcceleration: false,
         parallelProcessing: 4,
-        ...config.neural
-      }
+        ...config.neural,
+      },
     };
-    
+
     this.logger = getLogger('brain-coordinator');
     this.logger.info('🧠 Brain Coordinator created - initialization pending');
   }
@@ -130,38 +126,39 @@ export class BrainCoordinator {
     }
 
     const initStartTime = Date.now();
-    
+
     try {
-      this.logger.info('🧠 Initializing Brain Coordinator with operations facade...');
-      
+      this.logger.info(
+        '🧠 Initializing Brain Coordinator with operations facade...'
+      );
+
       // Initialize monitoring components through operations facade
       this.performanceTracker = await getPerformanceTracker({
         enablePerformanceMonitoring: true,
-        monitoringInterval: 5000
+        monitoringInterval: 5000,
       });
-      
+
       this.agentMonitor = await getAgentHealthMonitor({
         enableHealthMonitoring: true,
-        monitoringInterval: 10000
+        monitoringInterval: 10000,
       });
-      
+
       // Mark as initialized
       this.initialized = true;
       const duration = Date.now() - initStartTime;
-      
-      this.logger.info('✅ Brain Coordinator initialized successfully', { 
+
+      this.logger.info('✅ Brain Coordinator initialized successfully', {
         duration: `${duration}ms`,
         monitoring: 'operations-facade',
         performanceTracker: !!this.performanceTracker,
         agentMonitor: !!this.agentMonitor,
-        sessionId: this.config.sessionId
+        sessionId: this.config.sessionId,
       });
-      
     } catch (error) {
       const duration = Date.now() - initStartTime;
-      this.logger.error('❌ Brain Coordinator initialization failed', { 
+      this.logger.error('❌ Brain Coordinator initialization failed', {
         error: error instanceof Error ? error.message : String(error),
-        duration: `${duration}ms`
+        duration: `${duration}ms`,
       });
       throw error;
     }
@@ -177,7 +174,7 @@ export class BrainCoordinator {
     this.initialized = false;
     this.performanceTracker = null;
     this.agentMonitor = null;
-    
+
     this.logger.info('✅ Brain Coordinator shutdown complete');
   }
 
@@ -191,21 +188,26 @@ export class BrainCoordinator {
   /**
    * Optimize a prompt using AI coordination
    */
-  async optimizePrompt(request: PromptOptimizationRequest): Promise<PromptOptimizationResult> {
+  async optimizePrompt(
+    request: PromptOptimizationRequest
+  ): Promise<PromptOptimizationResult> {
     if (!this.initialized) {
-      throw new ContextError('Brain Coordinator not initialized. Call initialize() first.', {
-        code: 'BRAIN_NOT_INITIALIZED'
-      });
+      throw new ContextError(
+        'Brain Coordinator not initialized. Call initialize() first.',
+        {
+          code: 'BRAIN_NOT_INITIALIZED',
+        }
+      );
     }
 
     this.logger.debug(`Optimizing prompt for task: ${request.task}`);
-    
+
     // Simple optimization implementation
     // In a real implementation, this would use DSPy coordination
     return {
       strategy: 'autonomous',
       prompt: `Optimized: ${request.basePrompt}`,
-      confidence: 0.85
+      confidence: 0.85,
     };
   }
 
@@ -218,7 +220,7 @@ export class BrainCoordinator {
       sessionId: this.config.sessionId,
       enableLearning: this.config.enableLearning,
       performanceTracker: !!this.performanceTracker,
-      agentMonitor: !!this.agentMonitor
+      agentMonitor: !!this.agentMonitor,
     };
   }
 }

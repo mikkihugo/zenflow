@@ -653,7 +653,7 @@ export interface operations {
   getLLMAnalytics: {
     parameters: {
       query?: {
-        timeRange?: '1h | 24h' | '7d | 30d');
+        timeRange?: '1h'' | ''24h'' | ''7d'' | ''30d');
         provider?: string;
       };
     };

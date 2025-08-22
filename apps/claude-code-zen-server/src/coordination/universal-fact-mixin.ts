@@ -6,7 +6,7 @@
  * external facts (NPM, GitHub, security, etc.) through the foundation fact system.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 import {
   sharedFactSystem,
@@ -125,7 +125,7 @@ export function withFactCapabilities<
           data: {
             originalFactId: factId,
             sharedBy: this.agentId,
-            sharedWith: targetAgentId || 'all',
+            sharedWith: targetAgentId'' | '''' | '''all',
             originalFact: fact,
           },
           source: `agent:${this.agentId}`,
@@ -134,7 +134,7 @@ export function withFactCapabilities<
         });
 
         logger.debug(
-          `Agent ${this.agentId} shared fact ${factId} with ${targetAgentId || 'all'}`
+          `Agent ${this.agentId} shared fact ${factId} with ${targetAgentId'' | '''' | '''all'}`
         );
         return true;
       } catch (error) {

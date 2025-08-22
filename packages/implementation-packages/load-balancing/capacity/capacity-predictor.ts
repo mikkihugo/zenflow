@@ -15,10 +15,14 @@ interface AgentCapacityProfile {
 
 export class CapacityPredictor {
   private logger = {
-    debug: (message: string, meta?: unknown) => console.log(`[DEBUG] ${message}`, meta || ''),
-    info: (message: string, meta?: unknown) => console.log(`[INFO] ${message}`, meta || ''),
-    warn: (message: string, meta?: unknown) => console.warn(`[WARN] ${message}`, meta || ''),
-    error: (message: string, meta?: unknown) => console.error(`[ERROR] ${message}`, meta || ''),
+    debug: (message: string, meta?: unknown) =>
+      console.log(`[DEBUG] ${message}`, meta || ''),
+    info: (message: string, meta?: unknown) =>
+      console.log(`[INFO] ${message}`, meta'' | '''' | ''''),
+    warn: (message: string, meta?: unknown) =>
+      console.warn(`[WARN] ${message}`, meta'' | '''' | ''''),
+    error: (message: string, meta?: unknown) =>
+      console.error(`[ERROR] ${message}`, meta'' | '''' | ''''),
   };
 
   public async predict(
@@ -29,7 +33,7 @@ export class CapacityPredictor {
     const history = profile.utilizationHistory.slice(-20);
     if (history.length < 5) {
       return (
-        profile.utilizationHistory[profile.utilizationHistory.length - 1] || 5
+        profile.utilizationHistory[profile.utilizationHistory.length - 1]'' | '''' | ''5
       );
     }
 
@@ -53,7 +57,7 @@ export class CapacityPredictor {
     if (history.length < 10) {
       return Math.max(
         1,
-        profile.utilizationHistory[profile.utilizationHistory.length - 1] || 3
+        profile.utilizationHistory[profile.utilizationHistory.length - 1]'' | '''' | ''3
       );
     }
 

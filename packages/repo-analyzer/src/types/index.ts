@@ -18,27 +18,28 @@ export interface RepositoryMetrics {
 }
 
 export interface ComplexityMetrics {
-  cyclomatic: number;           // Cyclomatic complexity
-  halstead: HalsteadMetrics;    // Halstead complexity measures
+  cyclomatic: number; // Cyclomatic complexity
+  halstead: HalsteadMetrics; // Halstead complexity measures
   maintainabilityIndex: number; // Microsoft maintainability index
-  technicalDebt: number;        // Estimated technical debt hours
-  codeSmells: CodeSmell[];      // Identified code smells
+  technicalDebt: number; // Estimated technical debt hours
+  codeSmells: CodeSmell[]; // Identified code smells
   hotspots: ComplexityHotspot[]; // Most complex areas
 }
 
 export interface HalsteadMetrics {
-  vocabulary: number;     // n = n1 + n2
-  length: number;         // N = N1 + N2  
-  difficulty: number;     // D = (n1/2) * (N2/n2)
-  effort: number;         // E = D * V
-  time: number;           // T = E / 18
-  bugs: number;           // B = V / 3000
-  volume: number;         // V = N * log2(n)
+  vocabulary: number; // n = n1 + n2
+  length: number; // N = N1 + N2
+  difficulty: number; // D = (n1/2) * (N2/n2)
+  effort: number; // E = D * V
+  time: number; // T = E / 18
+  bugs: number; // B = V / 3000
+  volume: number; // V = N * log2(n)
 }
 
 export interface CodeSmell {
-  type: 'long-method' | 'large-class' | 'duplicate-code' | 'dead-code' | 'god-class' | 'feature-envy';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type:
+    | 'long-method''' | '''large-class''' | '''duplicate-code''' | '''dead-code''' | '''god-class''' | '''feature-envy';
+  severity: 'low | medium' | 'high''' | '''critical';
   file: string;
   startLine: number;
   endLine: number;
@@ -53,7 +54,7 @@ export interface ComplexityHotspot {
   complexity: number;
   lines: number;
   maintainabilityIndex: number;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  priority: 'low | medium' | 'high''' | '''urgent';
 }
 
 export interface DependencyMetrics {
@@ -68,10 +69,10 @@ export interface DependencyMetrics {
 }
 
 export interface CircularDependency {
-  cycle: string[];           // File paths in the cycle
-  severity: 'warning' | 'error';
-  impactScore: number;       // 0-1 impact on codebase
-  suggestions: string[];     // How to break the cycle
+  cycle: string[]; // File paths in the cycle
+  severity: 'warning''' | '''error';
+  impactScore: number; // 0-1 impact on codebase
+  suggestions: string[]; // How to break the cycle
 }
 
 export interface DependencyGraph {
@@ -83,46 +84,45 @@ export interface DependencyGraph {
 export interface DependencyNode {
   id: string;
   file: string;
-  type: 'module' | 'component' | 'service' | 'utility' | 'test';
-  size: number;              // Lines of code
+  type: 'module | component' | 'service' | 'utility' | 'test';
+  size: number; // Lines of code
   complexity: number;
-  stability: number;         // 0-1 stability score
+  stability: number; // 0-1 stability score
 }
 
 export interface DependencyEdge {
   from: string;
   to: string;
-  weight: number;            // Coupling strength
-  type: 'import' | 'require' | 'dynamic-import' | 'type-only';
+  weight: number; // Coupling strength
+  type: 'import''' | '''require''' | '''dynamic-import''' | '''type-only';
 }
 
 export interface DependencyCluster {
   id: string;
   nodes: string[];
-  cohesion: number;          // 0-1 internal cohesion
-  coupling: number;          // 0-1 external coupling
-  domain?: string;           // Identified domain
+  cohesion: number; // 0-1 internal cohesion
+  coupling: number; // 0-1 external coupling
+  domain?: string; // Identified domain
 }
 
 export interface CouplingMetrics {
-  afferentCoupling: number;  // Ca - incoming dependencies
-  efferentCoupling: number;  // Ce - outgoing dependencies
-  instability: number;       // I = Ce / (Ca + Ce)
-  abstractness: number;      // A = abstract classes / total classes
-  distance: number;          // D = |A + I - 1|
-}
+  afferentCoupling: number; // Ca - incoming dependencies
+  efferentCoupling: number; // Ce - outgoing dependencies
+  instability: number; // I = Ce / (Ca + Ce)
+  abstractness: number; // A = abstract classes / total classes
+  distance: number; // D ='' | ''A + I - 1'' | ''}
 
 export interface CohesionMetrics {
-  lcom: number;              // Lack of Cohesion of Methods
-  tcc: number;               // Tight Class Cohesion
-  lcc: number;               // Loose Class Cohesion
+  lcom: number; // Lack of Cohesion of Methods
+  tcc: number; // Tight Class Cohesion
+  lcc: number; // Loose Class Cohesion
 }
 
 export interface StabilityMetrics {
-  stabilityIndex: number;    // 0-1 overall stability
-  changeFrequency: number;   // Changes per time period
-  bugFrequency: number;      // Bugs per time period
-  riskScore: number;         // 0-1 risk assessment
+  stabilityIndex: number; // 0-1 overall stability
+  changeFrequency: number; // Changes per time period
+  bugFrequency: number; // Bugs per time period
+  riskScore: number; // 0-1 risk assessment
 }
 
 export interface GitMetrics {
@@ -130,7 +130,7 @@ export interface GitMetrics {
   contributors: number;
   averageCommitsPerDay: number;
   fileChangeFrequency: Record<string, number>;
-  hotFiles: GitHotFile[];    // Files changed most frequently
+  hotFiles: GitHotFile[]; // Files changed most frequently
   contributorStats: ContributorStats[];
   branchMetrics: BranchMetrics;
 }
@@ -141,7 +141,7 @@ export interface GitHotFile {
   lastChanged: Date;
   contributors: number;
   complexity: number;
-  riskScore: number;         // High change + high complexity = high risk
+  riskScore: number; // High change + high complexity = high risk
 }
 
 export interface ContributorStats {
@@ -158,7 +158,7 @@ export interface BranchMetrics {
   totalBranches: number;
   activeBranches: number;
   averageBranchLifetime: number; // days
-  mergeConflictRate: number;     // percentage
+  mergeConflictRate: number; // percentage
 }
 
 export interface Domain {
@@ -166,10 +166,10 @@ export interface Domain {
   name: string;
   description: string;
   files: string[];
-  dependencies: string[];           // Other domain IDs
-  complexity: number;               // 0-1 complexity score
-  cohesion: number;                 // 0-1 internal cohesion
-  coupling: number;                 // 0-1 external coupling
+  dependencies: string[]; // Other domain IDs
+  complexity: number; // 0-1 complexity score
+  cohesion: number; // 0-1 internal cohesion
+  coupling: number; // 0-1 external coupling
   size: DomainSize;
   type: DomainType;
   splitRecommendation?: SplitRecommendation;
@@ -184,19 +184,11 @@ export interface DomainSize {
   interfaces: number;
 }
 
-export type DomainType = 
-  | 'core'           // Central business logic
-  | 'feature'        // Feature-specific code
-  | 'infrastructure' // Infrastructure/framework code
-  | 'utility'        // Shared utilities
-  | 'api'           // API/interface layer
-  | 'ui'            // User interface
-  | 'data'          // Data access layer
-  | 'test';         // Test code
+export type DomainType ='' | '''core'// Central business logic'' | '''feature'// Feature-specific code'' | '''infrastructure'// Infrastructure/framework code'' | '''utility'// Shared utilities'' | '''api'// API/interface layer'' | '''ui'// User interface'' | '''data'// Data access layer'' | '''test'; // Test code
 
 export interface SplitRecommendation {
   shouldSplit: boolean;
-  confidence: number;              // 0-1 confidence in recommendation
+  confidence: number; // 0-1 confidence in recommendation
   reasons: string[];
   suggestedSplits: SuggestedSplit[];
   estimatedEffort: EffortEstimate;
@@ -214,7 +206,7 @@ export interface SuggestedSplit {
 
 export interface EffortEstimate {
   hours: number;
-  difficulty: 'low' | 'medium' | 'high' | 'very-high';
+  difficulty: 'low | medium' | 'high''' | '''very-high';
   phases: EffortPhase[];
 }
 
@@ -222,12 +214,12 @@ export interface EffortPhase {
   name: string;
   description: string;
   estimatedHours: number;
-  dependencies: string[];          // Other phase names
+  dependencies: string[]; // Other phase names
   risks: string[];
 }
 
 export interface SplitBenefits {
-  complexityReduction: number;     // Percentage reduction
+  complexityReduction: number; // Percentage reduction
   maintainabilityImprovement: number;
   testabilityImprovement: number;
   teamVelocityImprovement: number;
@@ -235,35 +227,35 @@ export interface SplitBenefits {
 }
 
 export interface SplitRisk {
-  type: 'data-consistency' | 'performance' | 'complexity' | 'team-coordination' | 'technical';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type:'' | '''data-consistency''' | '''performance''' | '''complexity''' | '''team-coordination''' | '''technical';
+  severity: 'low | medium' | 'high''' | '''critical';
   description: string;
   mitigation: string;
-  probability: number;             // 0-1 probability
-  impact: number;                  // 0-1 impact if occurs
+  probability: number; // 0-1 probability
+  impact: number; // 0-1 impact if occurs
 }
 
 export interface AnalysisOptions {
   includeTests?: boolean;
   includeNodeModules?: boolean;
-  maxFileSize?: number;            // Skip files larger than this (bytes)
-  excludePatterns?: string[];      // Glob patterns to exclude
+  maxFileSize?: number; // Skip files larger than this (bytes)
+  excludePatterns?: string[]; // Glob patterns to exclude
   includeDotFiles?: boolean;
-  analysisDepth?: 'shallow' | 'moderate' | 'deep' | 'comprehensive';
+  analysisDepth?: 'shallow | moderate' | 'deep''' | '''comprehensive';
   enableGitAnalysis?: boolean;
   enableComplexityAnalysis?: boolean;
   enableDependencyAnalysis?: boolean;
   enableDomainAnalysis?: boolean;
   complexityThresholds?: ComplexityThresholds;
-  performanceMode?: 'fast' | 'balanced' | 'thorough';
+  performanceMode?: 'fast | balanced' | 'thorough';
 }
 
 export interface ComplexityThresholds {
-  cyclomaticComplexity: number;    // Default: 10
-  maintainabilityIndex: number;    // Default: 20
-  linesOfCode: number;             // Default: 300
-  parameters: number;              // Default: 7
-  nestingDepth: number;            // Default: 4
+  cyclomaticComplexity: number; // Default: 10
+  maintainabilityIndex: number; // Default: 20
+  linesOfCode: number; // Default: 300
+  parameters: number; // Default: 7
+  nestingDepth: number; // Default: 4
 }
 
 export interface AnalysisResult {
@@ -275,8 +267,8 @@ export interface AnalysisResult {
 }
 
 export interface AnalysisRecommendation {
-  type: 'split-domain' | 'merge-domains' | 'refactor-hotspot' | 'reduce-coupling' | 'improve-cohesion';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  type:'' | '''split-domain''' | '''merge-domains''' | '''refactor-hotspot''' | '''reduce-coupling''' | '''improve-cohesion';
+  priority: 'low | medium' | 'high''' | '''urgent';
   title: string;
   description: string;
   rationale: string;
@@ -288,13 +280,13 @@ export interface AnalysisRecommendation {
 
 export interface ActionItem {
   description: string;
-  type: 'code-change' | 'architecture-change' | 'process-change' | 'tooling-change';
+  type:'' | '''code-change''' | '''architecture-change''' | '''process-change''' | '''tooling-change';
   estimatedHours: number;
   dependencies: string[];
 }
 
 export interface AnalysisSummary {
-  overallScore: number;            // 0-1 overall repository health
+  overallScore: number; // 0-1 overall repository health
   strengths: string[];
   weaknesses: string[];
   criticalIssues: number;
@@ -304,24 +296,24 @@ export interface AnalysisSummary {
 }
 
 export interface RiskAssessment {
-  technicalDebtRisk: 'low' | 'medium' | 'high' | 'critical';
-  maintainabilityRisk: 'low' | 'medium' | 'high' | 'critical';
-  scalabilityRisk: 'low' | 'medium' | 'high' | 'critical';
-  teamVelocityRisk: 'low' | 'medium' | 'high' | 'critical';
+  technicalDebtRisk: 'low | medium' | 'high''' | '''critical';
+  maintainabilityRisk: 'low | medium' | 'high''' | '''critical';
+  scalabilityRisk: 'low | medium' | 'high''' | '''critical';
+  teamVelocityRisk: 'low | medium' | 'high''' | '''critical';
 }
 
-export type ExportFormat = 'json' | 'yaml' | 'csv' | 'html' | 'markdown' | 'pdf' | 'graphml' | 'dot';
+export type ExportFormat ='' | '''json | yaml' | 'csv''' | '''html | markdown' | 'pdf' | 'graphml' | 'dot';
 
 export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
   warnings: ValidationWarning[];
-  score: number;                   // 0-1 validation score
+  score: number; // 0-1 validation score
 }
 
 export interface ValidationError {
   type: string;
-  severity: 'error' | 'warning';
+  severity: 'error''' | '''warning';
   message: string;
   file?: string;
   line?: number;

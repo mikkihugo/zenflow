@@ -66,7 +66,10 @@ export class ImmutableWIPUtils {
   /**
    * Update WIP limits immutably
    */
-  static updateWIPLimits<T extends Record<string, number>>(limits: T, updates: Partial<T>): T {
+  static updateWIPLimits<T extends Record<string, number>>(
+    limits: T,
+    updates: Partial<T>
+  ): T {
     return produce(limits, (draft) => {
       Object.entries(updates).forEach(([key, value]) => {
         if (value !== undefined && value >= 0 && key in draft) {
@@ -148,18 +151,30 @@ export class ImmutableMetricsUtils {
     // Calculate cycle times
     const cycleTimes = completedTasks
       .filter((t) => t.startedAt && t.completedAt)
-      .map((t) => ((t.completedAt?.getTime() || 0) - (t.startedAt?.getTime() || 0)) / (1000 * 60 * 60)); // hours
+      .map(
+        (t) =>
+          ((t.completedAt?.getTime() || 0) - (t.startedAt?.getTime() || 0)) /
+          (1000 * 60 * 60)
+      ); // hours
 
     const averageCycleTime =
-      cycleTimes.length > 0 ? cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length : 0;
+      cycleTimes.length > 0
+        ? cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length
+        : 0;
 
     // Calculate lead times
     const leadTimes = completedTasks
       .filter((t) => t.completedAt)
-      .map((t) => ((t.completedAt?.getTime() || 0) - t.createdAt.getTime()) / (1000 * 60 * 60)); // hours
+      .map(
+        (t) =>
+          ((t.completedAt?.getTime() || 0) - t.createdAt.getTime()) /
+          (1000 * 60 * 60)
+      ); // hours
 
     const averageLeadTime =
-      leadTimes.length > 0 ? leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length : 0;
+      leadTimes.length > 0
+        ? leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length
+        : 0;
 
     // Calculate throughput (tasks per day)
     const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
@@ -173,8 +188,10 @@ export class ImmutableMetricsUtils {
       cycleTime: averageCycleTime,
       leadTime: averageLeadTime,
       wipEfficiency: calculators.wipEfficiency,
-      blockageRate: allTasks.length > 0 ? blockedTasks.length / allTasks.length : 0,
-      flowEfficiency: cycleTimes.length > 0 ? Math.min(1, 168 / averageCycleTime) : 1, // Efficiency relative to 1 week
+      blockageRate:
+        allTasks.length > 0 ? blockedTasks.length / allTasks.length : 0,
+      flowEfficiency:
+        cycleTimes.length > 0 ? Math.min(1, 168 / averageCycleTime) : 1, // Efficiency relative to 1 week
       predictability: calculators.predictabilityCalculator(cycleTimes),
       qualityIndex: calculators.qualityCalculator(completedTasks),
     };

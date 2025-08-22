@@ -1,6 +1,6 @@
 /**
  * @fileoverview Comprehensive Error Handling Tests
- * 
+ *
  * 100% coverage tests for error handling system including neverthrow patterns.
  */
 
@@ -18,14 +18,14 @@ import {
   err,
   ResultAsync,
   okAsync,
-  errAsync
+  errAsync,
 } from '../../src/error-handling';
 
 describe('Error Handling System - 100% Coverage', () => {
   describe('safe function', () => {
     it('should wrap successful synchronous functions', () => {
       const result = safe(() => 'success');
-      
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe('success');
@@ -37,7 +37,7 @@ describe('Error Handling System - 100% Coverage', () => {
       const result = safe(() => {
         throw error;
       });
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error).toBe(error);
@@ -46,7 +46,7 @@ describe('Error Handling System - 100% Coverage', () => {
 
     it('should handle functions with parameters', () => {
       const result = safe(() => 2 + 3);
-      
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe(5);
@@ -57,7 +57,7 @@ describe('Error Handling System - 100% Coverage', () => {
       const result = safe(() => {
         throw 'string error';
       });
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error).toBeInstanceOf(Error);
@@ -69,7 +69,7 @@ describe('Error Handling System - 100% Coverage', () => {
       const result = safe(() => {
         throw { message: 'object error' };
       });
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error).toBeInstanceOf(Error);
@@ -80,7 +80,7 @@ describe('Error Handling System - 100% Coverage', () => {
   describe('safeAsync function', () => {
     it('should wrap successful async functions', async () => {
       const result = await safeAsync(async () => 'async success');
-      
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe('async success');
@@ -92,7 +92,7 @@ describe('Error Handling System - 100% Coverage', () => {
       const result = await safeAsync(async () => {
         throw error;
       });
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error).toBe(error);
@@ -100,10 +100,11 @@ describe('Error Handling System - 100% Coverage', () => {
     });
 
     it('should handle async functions with parameters', async () => {
-      const result = await safeAsync(async () => 
-        new Promise<number>(resolve => setTimeout(() => resolve(3 * 4), 10))
+      const result = await safeAsync(
+        async () =>
+          new Promise<number>((resolve) => setTimeout(() => resolve(3 * 4), 10))
       );
-      
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe(12);
@@ -111,11 +112,11 @@ describe('Error Handling System - 100% Coverage', () => {
     });
 
     it('should handle promise rejections', async () => {
-      const safeAsyncFn = safeAsync(async () => 
+      const safeAsyncFn = safeAsync(async () =>
         Promise.reject(new Error('Promise rejection'))
       );
       const result = await safeAsyncFn();
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error.message).toBe('Promise rejection');
@@ -130,9 +131,9 @@ describe('Error Handling System - 100% Coverage', () => {
         attempts++;
         return 'success';
       };
-      
+
       const result = await withRetry(fn, { retries: 3 });
-      
+
       expect(result.isOk()).toBe(true);
       expect(attempts).toBe(1);
       if (result.isOk()) {
@@ -149,9 +150,9 @@ describe('Error Handling System - 100% Coverage', () => {
         }
         return 'success';
       };
-      
+
       const result = await withRetry(fn, { retries: 5, delay: 10 });
-      
+
       expect(result.isOk()).toBe(true);
       expect(attempts).toBe(3);
       if (result.isOk()) {
@@ -165,9 +166,9 @@ describe('Error Handling System - 100% Coverage', () => {
         attempts++;
         throw new Error(`Attempt ${attempts} failed`);
       };
-      
+
       const result = await withRetry(fn, { retries: 3, delay: 1 });
-      
+
       expect(result.isErr()).toBe(true);
       expect(attempts).toBe(4); // Initial + 3 retries
       if (result.isErr()) {
@@ -180,22 +181,22 @@ describe('Error Handling System - 100% Coverage', () => {
       const times: number[] = [];
       const fn = async () => {
         attempts++;
-        times.push(Date.now());
+        times.push(Date.now())();
         if (attempts < 3) {
           throw new Error(`Attempt ${attempts} failed`);
         }
         return 'success';
       };
-      
-      const result = await withRetry(fn, { 
-        retries: 5, 
-        delay: 10, 
-        exponentialBackoff: true 
+
+      const result = await withRetry(fn, {
+        retries: 5,
+        delay: 10,
+        exponentialBackoff: true,
       });
-      
+
       expect(result.isOk()).toBe(true);
       expect(attempts).toBe(3);
-      
+
       // Verify increasing delays (rough check due to timing)
       if (times.length >= 3) {
         const delay1 = times[1] - times[0];
@@ -212,14 +213,15 @@ describe('Error Handling System - 100% Coverage', () => {
         (error as any).code = attempts === 1 ? 'RETRY_ABLE' : 'NO_RETRY';
         throw error;
       };
-      
-      const shouldRetry = (error: Error) => (error as any).code === 'RETRY_ABLE';
-      const result = await withRetry(fn, { 
-        retries: 5, 
+
+      const shouldRetry = (error: Error) =>
+        (error as any).code === 'RETRY_ABLE';
+      const result = await withRetry(fn, {
+        retries: 5,
         delay: 1,
-        shouldRetry 
+        shouldRetry,
       });
-      
+
       expect(result.isErr()).toBe(true);
       expect(attempts).toBe(2); // Initial + 1 retry, then stop
     });
@@ -228,12 +230,12 @@ describe('Error Handling System - 100% Coverage', () => {
   describe('withTimeout function', () => {
     it('should resolve before timeout', async () => {
       const fn = async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
         return 'success';
       };
-      
+
       const result = await withTimeout(fn(), 100);
-      
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe('success');
@@ -242,12 +244,12 @@ describe('Error Handling System - 100% Coverage', () => {
 
     it('should timeout and return error', async () => {
       const fn = async () => {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         return 'success';
       };
-      
+
       const result = await withTimeout(fn(), 10);
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error.message).toContain('timeout');
@@ -256,12 +258,12 @@ describe('Error Handling System - 100% Coverage', () => {
 
     it('should handle promise that rejects before timeout', async () => {
       const fn = async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
         throw new Error('Function error');
       };
-      
+
       const result = await withTimeout(fn(), 100);
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error.message).toBe('Function error');
@@ -274,7 +276,7 @@ describe('Error Handling System - 100% Coverage', () => {
       const result = ok('success');
       const context = { operation: 'test', timestamp: Date.now() };
       const contextualResult = withContext(result, context);
-      
+
       expect(contextualResult.isOk()).toBe(true);
       if (contextualResult.isOk()) {
         expect(contextualResult.value).toBe('success');
@@ -286,7 +288,7 @@ describe('Error Handling System - 100% Coverage', () => {
       const result = err(error);
       const context = { operation: 'test', timestamp: Date.now() };
       const contextualResult = withContext(result, context);
-      
+
       expect(contextualResult.isErr()).toBe(true);
       if (contextualResult.isErr()) {
         const contextualError = contextualResult.error;
@@ -306,17 +308,19 @@ describe('Error Handling System - 100% Coverage', () => {
           requestId: 'req-456',
           nested: {
             level: 2,
-            data: [1, 2, 3]
-          }
-        }
+            data: [1, 2, 3],
+          },
+        },
       };
-      
+
       const contextualResult = withContext(result, context);
-      
+
       expect(contextualResult.isErr()).toBe(true);
       if (contextualResult.isErr()) {
         const contextualError = contextualResult.error;
-        expect((contextualError as any).context.metadata.userId).toBe('user-123');
+        expect((contextualError as any).context.metadata.userId).toBe(
+          'user-123'
+        );
         expect((contextualError as any).context.metadata.nested.level).toBe(2);
       }
     });
@@ -326,14 +330,14 @@ describe('Error Handling System - 100% Coverage', () => {
     it('should return Error instances unchanged', () => {
       const error = new Error('Test error');
       const result = ensureError(error);
-      
+
       expect(result).toBe(error);
       expect(result.message).toBe('Test error');
     });
 
     it('should convert strings to Error instances', () => {
       const result = ensureError('String error');
-      
+
       expect(result).toBeInstanceOf(Error);
       expect(result.message).toBe('String error');
     });
@@ -341,7 +345,7 @@ describe('Error Handling System - 100% Coverage', () => {
     it('should convert objects to Error instances', () => {
       const obj = { message: 'Object error', code: 500 };
       const result = ensureError(obj);
-      
+
       expect(result).toBeInstanceOf(Error);
       expect(result.message).toContain('Object error');
     });
@@ -357,11 +361,11 @@ describe('Error Handling System - 100% Coverage', () => {
       const complex = {
         name: 'CustomError',
         message: 'Complex error',
-        details: { code: 'E001', severity: 'high' }
+        details: { code: 'E001', severity: 'high' },
       };
-      
+
       const result = ensureError(complex);
-      
+
       expect(result).toBeInstanceOf(Error);
       expect(result.message).toContain('Complex error');
     });
@@ -370,7 +374,7 @@ describe('Error Handling System - 100% Coverage', () => {
   describe('AbortError class', () => {
     it('should create AbortError with message', () => {
       const error = new AbortError('Operation aborted');
-      
+
       expect(error).toBeInstanceOf(AbortError);
       expect(error).toBeInstanceOf(Error);
       expect(error.message).toBe('Operation aborted');
@@ -379,7 +383,7 @@ describe('Error Handling System - 100% Coverage', () => {
 
     it('should create AbortError with default message', () => {
       const error = new AbortError();
-      
+
       expect(error).toBeInstanceOf(AbortError);
       expect(error.message).toBe('Operation was aborted');
       expect(error.name).toBe('AbortError');
@@ -387,7 +391,7 @@ describe('Error Handling System - 100% Coverage', () => {
 
     it('should maintain proper prototype chain', () => {
       const error = new AbortError('Test abort');
-      
+
       expect(error instanceof Error).toBe(true);
       expect(error instanceof AbortError).toBe(true);
       expect(Object.getPrototypeOf(error)).toBe(AbortError.prototype);
@@ -397,10 +401,10 @@ describe('Error Handling System - 100% Coverage', () => {
   describe('Result pattern (neverthrow)', () => {
     it('should create successful results with ok()', () => {
       const result = ok('success value');
-      
+
       expect(result.isOk()).toBe(true);
       expect(result.isErr()).toBe(false);
-      
+
       if (result.isOk()) {
         expect(result.value).toBe('success value');
       }
@@ -409,10 +413,10 @@ describe('Error Handling System - 100% Coverage', () => {
     it('should create error results with err()', () => {
       const error = new Error('Error value');
       const result = err(error);
-      
+
       expect(result.isErr()).toBe(true);
       expect(result.isOk()).toBe(false);
-      
+
       if (result.isErr()) {
         expect(result.error).toBe(error);
       }
@@ -420,9 +424,9 @@ describe('Error Handling System - 100% Coverage', () => {
 
     it('should chain operations with map()', () => {
       const result = ok(5)
-        .map(x => x * 2)
-        .map(x => x.toString());
-      
+        .map((x) => x * 2)
+        .map((x) => x.toString())();
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe('10');
@@ -430,9 +434,10 @@ describe('Error Handling System - 100% Coverage', () => {
     });
 
     it('should handle errors in chain with mapErr()', () => {
-      const result = err(new Error('Original error'))
-        .mapErr(error => new Error(`Wrapped: ${error.message}`));
-      
+      const result = err(new Error('Original error')).mapErr(
+        (error) => new Error(`Wrapped: ${error.message}`)
+      );
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error.message).toBe('Wrapped: Original error');
@@ -444,11 +449,11 @@ describe('Error Handling System - 100% Coverage', () => {
         if (y === 0) return err(new Error('Division by zero'));
         return ok(x / y);
       };
-      
+
       const result = ok(10)
-        .andThen(x => divide(x, 2))
-        .andThen(x => divide(x, 5));
-      
+        .andThen((x) => divide(x, 2))
+        .andThen((x) => divide(x, 5));
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe(1);
@@ -460,11 +465,11 @@ describe('Error Handling System - 100% Coverage', () => {
         if (y === 0) return err(new Error('Division by zero'));
         return ok(x / y);
       };
-      
+
       const result = ok(10)
-        .andThen(x => divide(x, 0)) // This will fail
-        .andThen(x => divide(x, 5)); // This won't execute
-      
+        .andThen((x) => divide(x, 0)) // This will fail
+        .andThen((x) => divide(x, 5)); // This won't execute
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error.message).toBe('Division by zero');
@@ -475,7 +480,7 @@ describe('Error Handling System - 100% Coverage', () => {
   describe('ResultAsync pattern', () => {
     it('should create successful async results with okAsync()', async () => {
       const result = await okAsync('async success');
-      
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe('async success');
@@ -485,7 +490,7 @@ describe('Error Handling System - 100% Coverage', () => {
     it('should create error async results with errAsync()', async () => {
       const error = new Error('Async error');
       const result = await errAsync(error);
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error).toBe(error);
@@ -494,9 +499,9 @@ describe('Error Handling System - 100% Coverage', () => {
 
     it('should chain async operations', async () => {
       const result = await okAsync(5)
-        .map(x => x * 2)
-        .map(x => Promise.resolve(x.toString()));
-      
+        .map((x) => x * 2)
+        .map((x) => Promise.resolve(x.toString()));
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe('10');
@@ -504,16 +509,19 @@ describe('Error Handling System - 100% Coverage', () => {
     });
 
     it('should handle async andThen chains', async () => {
-      const asyncDivide = async (x: number, y: number): Promise<Result<number, Error>> => {
-        await new Promise(resolve => setTimeout(resolve, 1));
+      const asyncDivide = async (
+        x: number,
+        y: number
+      ): Promise<Result<number, Error>> => {
+        await new Promise((resolve) => setTimeout(resolve, 1));
         if (y === 0) return err(new Error('Division by zero'));
         return ok(x / y);
       };
-      
+
       const result = await okAsync(20)
-        .andThen(x => asyncDivide(x, 4))
-        .andThen(x => asyncDivide(x, 5));
-      
+        .andThen((x) => asyncDivide(x, 4))
+        .andThen((x) => asyncDivide(x, 5));
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe(1);
@@ -538,9 +546,9 @@ describe('Error Handling System - 100% Coverage', () => {
           throw e;
         }
       };
-      
+
       const result = await safeAsync(deepFn)();
-      
+
       expect(result.isErr()).toBe(true);
       if (result.isErr()) {
         expect(result.error.message).toContain('Outer error');
@@ -552,14 +560,16 @@ describe('Error Handling System - 100% Coverage', () => {
     it('should handle concurrent operations', async () => {
       const operations = Array.from({ length: 10 }, (_, i) =>
         safeAsync(async () => {
-          await new Promise(resolve => setTimeout(resolve, Math.random() * 10));
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.random() * 10)
+          );
           if (i % 3 === 0) throw new Error(`Error in operation ${i}`);
           return `Success ${i}`;
         })()
       );
-      
+
       const results = await Promise.all(operations);
-      
+
       expect(results).toHaveLength(10);
       results.forEach((result, index) => {
         if (index % 3 === 0) {
@@ -576,14 +586,14 @@ describe('Error Handling System - 100% Coverage', () => {
         const largeArray = Array.from({ length: 100000 }, (_, i) => ({
           id: i,
           data: `data-${i}`,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         }));
-        
+
         return largeArray.length;
       });
-      
+
       const result = largeFn();
-      
+
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
         expect(result.value).toBe(100000);

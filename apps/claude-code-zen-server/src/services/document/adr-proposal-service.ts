@@ -8,7 +8,7 @@
  * @file Database layer: adr-proposal-system.
  */
 
-import { adrManager, documentManager } from '@claude-zen/intelligence');
+import { adrManager, documentManager } from '@claude-zen/intelligence';
 
 export interface ADRProposal {
   title: string;
@@ -22,13 +22,13 @@ export interface ADRProposal {
     why_not_chosen: string;
   }>;
   proposer: string;
-  urgency: 'low | medium' | 'high | critical');
+  urgency: 'low'' | ''medium'' | ''high'' | ''critical');
   stakeholders: string[];
   impact_areas: string[];
   discussion_points: string[];
   success_criteria?: string[];
   risks?: string[];
-  implementation_effort?: 'trivial | small' | 'medium | large' | 'epic');
+  implementation_effort?: 'trivial'' | ''small'' | ''medium'' | ''large'' | ''epic');
 }
 
 export interface ADRDiscussion {
@@ -37,12 +37,8 @@ export interface ADRDiscussion {
   discussion_notes: string;
   concerns_raised: string[];
   alternatives_suggested: string[];
-  consensus_level: 'none | weak' | 'moderate | strong');
-  decision_status:
-    | 'needs_more_discussion'
-    | 'ready_for_decision'
-    | 'decided'
-    | 'rejected');
+  consensus_level: 'none'' | ''weak'' | ''moderate'' | ''strong');
+  decision_status:' | ''needs_more_discussion | ready_for_decision' | 'decided''' | '''rejected');
   next_steps: string[];
   decision_date?: Date;
   implementation_plan?: string;
@@ -56,7 +52,7 @@ export interface ADRDiscussion {
 export class ADRProposalSystem {
   /**
    * Propose a new ADR for human discussion.
-   * Creates ADR in 'proposed' status awaiting human review.
+   * Creates ADR in 'proposed'status awaiting human review.
    *
    * @param proposal
    */
@@ -77,10 +73,10 @@ export class ADRProposalSystem {
         urgency: proposal.urgency,
         impact_areas: proposal.impact_areas,
         discussion_points: proposal.discussion_points,
-        risks: proposal.risks || [],
+        risks: proposal.risks'' | '''' | ''[],
         implementation_effort: proposal.implementation_effort,
         requires_human_discussion: true,
-        discussion_status: 'awaiting_discussion',
+        discussion_status:'awaiting_discussion',
         consensus_level: 'none',
       },
     });
@@ -118,7 +114,7 @@ export class ADRProposalSystem {
       metadata: {
         ...updated.metadata,
         discussion_history: [
-          ...(updated.metadata?.['discussion_history'] || []),
+          ...(updated.metadata?.['discussion_history']'' | '''' | ''[]),
           {
             date: new Date()?.toISOString,
             participants: discussion.participants,
@@ -169,7 +165,7 @@ export class ADRProposalSystem {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
-    const newStatus = decision.approved ? 'decided : rejected');
+    const newStatus = decision.approved ?'decided : rejected');
 
     // Update ADR with final decision
     const updated = await adrManager.updateADRStatus(
@@ -190,11 +186,11 @@ export class ADRProposalSystem {
           decision_maker: decision.decision_maker,
           decision_date: new Date()?.toISOString,
           stakeholder_signoffs: decision.stakeholder_signoffs,
-          conditions: decision.conditions || [],
+          conditions: decision.conditions'' | '''' | ''[],
           implementation_plan: decision.implementation_plan,
         },
         decision_status: decision.approved
-          ? 'approved_for_implementation'
+          ?'approved_for_implementation'
           : 'rejected',
       },
     });
@@ -415,7 +411,7 @@ export class ADRProposalSystem {
    *
    * @param urgency
    */
-  private mapUrgencyToPriority(urgency: string): 'low | medium' | 'high' {
+  private mapUrgencyToPriority(urgency: string): 'low'' | ''medium'' | ''high' {
     switch (urgency) {
       case 'critical':
         return 'high');
@@ -441,7 +437,7 @@ export class ADRProposalSystem {
     proposal: ADRProposal
   ): Promise<void> {
     const _adrId =
-      adr.metadata?.['adr_id] || `ADR-${adr.metadata?.[adr_number']}`;
+      adr.metadata?.['adr_id]'' | '''' | ''`ADR-${adr.metadata?.[adr_number']}`;
     proposal.discussion_points.forEach((_point) => {});
   }
 

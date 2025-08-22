@@ -9,7 +9,7 @@ import {
   ok,
   err,
   safeAsync,
-  type Logger
+  type Logger,
 } from '@claude-zen/foundation';
 
 import * as fs from 'fs/promises';
@@ -70,19 +70,25 @@ export class QueryRunner {
     // Execute each query pack
     for (const queryPack of queryPacks) {
       try {
-        const packResult = await this.executeQueryPack(database, queryPack, options);
-        
-        // Merge results
-        results.sarifResults = this.mergeSARIFResults(results.sarifResults, packResult.sarifResults);
-        results.findings.push(...packResult.findings);
+        const packResult = await this.executeQueryPack(
+          database,
+          queryPack,
+          options
+        );
 
+        // Merge results
+        results.sarifResults = this.mergeSARIFResults(
+          results.sarifResults,
+          packResult.sarifResults
+        );
+        results.findings.push(...packResult.findings);
       } catch (error) {
         this.logger.error('Query pack execution failed', {
           queryPack: queryPack.name,
           databaseId: database.id,
           error,
         });
-        
+
         // Continue with other query packs
         continue;
       }
@@ -110,14 +116,14 @@ export class QueryRunner {
     });
 
     // Prepare output file
-    const outputFile = options.outputPath || path.join(
-      this.config.tempDir!,
-      `results_${database.id}_${queryPack.name}_${Date.now()}.sarif`
-    );
+    const outputFile =
+      options.outputPath'' | '''' | ''path.join(
+        this.config.tempDir!,
+        `results_${database.id}_${queryPack.name}_${Date.now()}.sarif`
+      );
 
     // Build command arguments
-    const args = [
-      'database',
+    const args = ['database',
       'analyze',
       database.path,
       this.resolveQueryPack(queryPack),
@@ -129,11 +135,11 @@ export class QueryRunner {
 
     // Add optional arguments
     if (options.maxResults) {
-      args.push('--max-results', options.maxResults.toString());
+      args.push('--max-results', options.maxResults.toString())();
     }
 
     if (this.config.threads && this.config.threads > 1) {
-      args.push('--threads', this.config.threads.toString());
+      args.push('--threads', this.config.threads.toString())();
     }
 
     if (this.config.verbose) {
@@ -147,15 +153,16 @@ export class QueryRunner {
     try {
       // Execute query
       const commandResult = await this.executeCommand(args, {
-        timeout: options.queryTimeout || 60000,
+        timeout: options.queryTimeout'' | '''' | ''60000,
       });
 
       // Read and parse results
-      const sarifContent = await fs.readFile(outputFile, 'utf-8');
+      const sarifContent = await fs.readFile(outputFile,'utf-8');
       const sarifResults = JSON.parse(sarifContent) as SARIFResult;
 
       // Parse findings from SARIF
-      const findings = await this.resultParser.parseSARIFToFindings(sarifResults);
+      const findings =
+        await this.resultParser.parseSARIFToFindings(sarifResults);
 
       // Clean up output file
       try {
@@ -170,7 +177,6 @@ export class QueryRunner {
       });
 
       return { sarifResults, findings };
-
     } catch (error) {
       // Clean up output file on error
       try {
@@ -193,7 +199,7 @@ export class QueryRunner {
   ): Promise<QueryExecutionResult> {
     return await safeAsync(async (): Promise<CodeQLAnalysisResult> => {
       const queryName = path.basename(queryPath, '.ql');
-      
+
       this.logger.info('Executing single query', {
         queryName,
         queryPath,
@@ -216,7 +222,11 @@ export class QueryRunner {
         ...options,
       };
 
-      const results = await this.executeQueries(database, [queryPack], executionOptions);
+      const results = await this.executeQueries(
+        database,
+        [queryPack],
+        executionOptions
+      );
 
       // Create analysis result
       const analysisResult: CodeQLAnalysisResult = {
@@ -229,7 +239,7 @@ export class QueryRunner {
           startTime: new Date(),
           endTime: new Date(),
           codeqlVersion: 'unknown', // Would need to query
-          queryPackVersions: { [queryName]: 'local' },
+          queryPackVersions: { [queryName]: 'local'},
           configuration: executionOptions,
         },
         metrics: {
@@ -237,7 +247,7 @@ export class QueryRunner {
           databaseSizeBytes: database.sizeBytes,
           filesAnalyzed: 0, // Would need to calculate
           linesAnalyzed: 0, // Would need to calculate
-          peakMemoryMb: this.config.maxMemory || 0,
+          peakMemoryMb: this.config.maxMemory'' | '''' | ''0,
           cpuTimeMs: 0, // Would need OS-level tracking
         },
       };
@@ -268,13 +278,16 @@ export class QueryRunner {
 
   private createEmptySARIF(): SARIFResult {
     return {
-      version: '2.1.0',
+      version:'2.1.0',
       $schema: 'https://json.schemastore.org/sarif-2.1.0.json',
       runs: [],
     };
   }
 
-  private mergeSARIFResults(result1: SARIFResult, result2: SARIFResult): SARIFResult {
+  private mergeSARIFResults(
+    result1: SARIFResult,
+    result2: SARIFResult
+  ): SARIFResult {
     return {
       ...result1,
       runs: [...result1.runs, ...result2.runs],
@@ -286,7 +299,7 @@ export class QueryRunner {
     options: { cwd?: string; env?: NodeJS.ProcessEnv; timeout?: number } = {}
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     return new Promise((resolve, reject) => {
-      const timeout = options.timeout || this.config.timeout || 60000;
+      const timeout = options.timeout'' | '''' | ''this.config.timeout'' | '''' | ''60000;
 
       this.logger.debug('Executing CodeQL command', {
         command: this.config.codeqlPath,
@@ -295,12 +308,12 @@ export class QueryRunner {
       });
 
       const child = spawn(this.config.codeqlPath!, args, {
-        cwd: options.cwd || process.cwd(),
+        cwd: options.cwd'' | '''' | ''process.cwd(),
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: options.env || process.env,
+        env: options.env'' | '''' | ''process.env,
       });
 
-      let stdout = '';
+      let stdout ='';
       let stderr = '';
 
       child.stdout.on('data', (data) => {
@@ -313,33 +326,39 @@ export class QueryRunner {
 
       const timeoutId = setTimeout(() => {
         child.kill('SIGTERM');
-        reject(this.createError('system', 'Query execution timeout', {
-          timeout,
-          command: args.join(' '),
-        }));
+        reject(
+          this.createError('system', 'Query execution timeout', {
+            timeout,
+            command: args.join(' '),
+          })
+        );
       }, timeout);
 
       child.on('close', (exitCode) => {
         clearTimeout(timeoutId);
-        
+
         if (exitCode === 0) {
           resolve({ stdout, stderr, exitCode });
         } else {
-          reject(this.createError('query', 'Query execution failed', {
-            exitCode,
-            stderr,
-            stdout,
-            command: args.join(' '),
-          }));
+          reject(
+            this.createError('query', 'Query execution failed', {
+              exitCode,
+              stderr,
+              stdout,
+              command: args.join(' '),
+            })
+          );
         }
       });
 
       child.on('error', (error) => {
         clearTimeout(timeoutId);
-        reject(this.createError('system', 'Failed to execute query', {
-          originalError: error.message,
-          command: args.join(' '),
-        }));
+        reject(
+          this.createError('system', 'Failed to execute query', {
+            originalError: error.message,
+            command: args.join(' '),
+          })
+        );
       });
     });
   }

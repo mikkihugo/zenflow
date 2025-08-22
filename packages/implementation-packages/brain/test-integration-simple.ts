@@ -4,26 +4,30 @@
  */
 
 import { SmartNeuralCoordinator } from './src/smart-neural-coordinator';
-import type { NeuralBackendConfig, NeuralEmbeddingRequest } from './src/smart-neural-coordinator';
+import type {
+  NeuralBackendConfig,
+  NeuralEmbeddingRequest,
+} from './src/smart-neural-coordinator';
 
 // Mock external dependencies
 const mockTransformers = {
   pipeline: async () => ({
-    generate: async () => new Array(384).fill(0).map((_, i) => Math.sin(i * 0.1))
-  })
+    generate: async () =>
+      new Array(384).fill(0).map((_, i) => Math.sin(i * 0.1)),
+  }),
 };
 
 const mockBrainJs = {
-  NeuralNetwork: function() {
+  NeuralNetwork: function () {
     return {
-      run: () => new Array(10).fill(0).map(() => Math.random())
+      run: () => new Array(10).fill(0).map(() => Math.random()),
     };
-  }
+  },
 };
 
 // Mock modules at runtime
 const originalRequire = require;
-require = function(id: string) {
+require = function (id: string) {
   if (id === '@xenova/transformers') {
     return mockTransformers;
   }
@@ -34,7 +38,11 @@ require = function(id: string) {
     return { InferenceSession: { create: async () => null } };
   }
   if (id === 'openai') {
-    return { default: function() { return { embeddings: { create: async () => null } }; } };
+    return {
+      default: function () {
+        return { embeddings: { create: async () => null } };
+      },
+    };
   }
   return originalRequire.call(this, id);
 } as any;
@@ -49,7 +57,7 @@ async function runIntegrationTest() {
       primaryModel: 'all-mpnet-base-v2',
       enableFallbacks: true,
       enableCaching: true,
-      maxCacheSize: 100
+      maxCacheSize: 100,
     };
 
     const coordinator = new SmartNeuralCoordinator(config);
@@ -72,13 +80,13 @@ async function runIntegrationTest() {
       text: 'This is a test sentence for neural embedding generation',
       context: 'integration-test',
       priority: 'medium',
-      qualityLevel: 'standard'
+      qualityLevel: 'standard',
     };
 
     const result = await coordinator.generateEmbedding(request);
     console.log('🧠 Embedding Result:');
     console.log('  Success:', result.success);
-    console.log('  Embedding Length:', result.embedding?.length || 0);
+    console.log('  Embedding Length:', result.embedding?.length''''''''''' | '''''''''''''''''''''' | '''''''''''0);
     console.log('  Model:', result.metadata?.model);
     console.log('  From Cache:', result.metadata?.fromCache);
     console.log('  Processing Time:', result.metadata?.processingTime + 'ms');
@@ -97,9 +105,9 @@ async function runIntegrationTest() {
     console.log('Test 5: Input Validation');
     const emptyRequest: NeuralEmbeddingRequest = {
       text: '',
-      priority: 'medium'
+      priority: 'medium',
     };
-    
+
     const emptyResult = await coordinator.generateEmbedding(emptyRequest);
     console.log('🚫 Empty Text Result:');
     console.log('  Success:', emptyResult.success);
@@ -120,7 +128,6 @@ async function runIntegrationTest() {
     console.log('✅ Cleanup completed successfully\n');
 
     console.log('🎉 All integration tests passed successfully!');
-    
   } catch (error) {
     console.error('❌ Integration test failed:', error);
     process.exit(1);
@@ -128,7 +135,7 @@ async function runIntegrationTest() {
 }
 
 // Run the test
-runIntegrationTest().catch(error => {
+runIntegrationTest().catch((error) => {
   console.error('❌ Failed to run integration test:', error);
   process.exit(1);
 });

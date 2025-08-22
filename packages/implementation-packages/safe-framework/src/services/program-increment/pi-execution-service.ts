@@ -1,10 +1,10 @@
 /**
  * @fileoverview PI Execution Service - Program Increment Execution Tracking and Management
- * 
+ *
  * Specialized service for managing Program Increment execution, progress tracking, metrics calculation,
  * and continuous monitoring throughout the PI lifecycle. Provides real-time visibility into PI health
  * and predictive analytics for execution success.
- * 
+ *
  * Features:
  * - Real-time PI progress tracking and metrics calculation
  * - Team velocity monitoring and predictability analytics
@@ -12,13 +12,13 @@
  * - Risk burndown and dependency management
  * - Automated health assessment and alerting
  * - Performance forecasting and trend analysis
- * 
+ *
  * Integrations:
  * - @claude-zen/brain: AI-powered predictive analytics and execution intelligence
  * - @claude-zen/foundation: Performance tracking, telemetry, and observability
  * - @claude-zen/event-system: Real-time execution event processing
  * - @claude-zen/fact-system: Execution data storage and trend analysis
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -34,7 +34,7 @@ import type { Logger } from '@claude-zen/foundation';
 export interface PIExecutionMetrics {
   readonly piId: string;
   readonly timestamp: Date;
-  readonly overallHealth: 'healthy' | 'at-risk' | 'critical';
+  readonly overallHealth: 'healthy'' | ''at-risk'' | ''critical';
   readonly progressPercentage: number; // 0-100
   readonly burnupData: BurnupDataPoint[];
   readonly velocityTrend: VelocityTrend;
@@ -62,7 +62,7 @@ export interface VelocityTrend {
   readonly currentVelocity: number;
   readonly averageVelocity: number;
   readonly velocityHistory: VelocityDataPoint[];
-  readonly trend: 'improving' | 'stable' | 'declining';
+  readonly trend: 'improving'' | ''stable'' | ''declining';
   readonly confidence: number; // 0-1
   readonly stabilityIndex: number; // 0-1, consistency of velocity
 }
@@ -82,7 +82,7 @@ export interface PredictabilityMetrics {
   readonly qualityPredictability: number; // 0-100%
   readonly riskMitigation: number; // 0-100%
   readonly overallPredictability: number; // 0-100%
-  readonly predictabilityTrend: 'improving' | 'stable' | 'declining';
+  readonly predictabilityTrend: 'improving'' | ''stable'' | ''declining';
   readonly benchmarkComparison: BenchmarkComparison;
 }
 
@@ -90,7 +90,7 @@ export interface BenchmarkComparison {
   readonly industryAverage: number;
   readonly organizationAverage: number;
   readonly artAverage: number;
-  readonly relativePerformance: 'above' | 'at' | 'below';
+  readonly relativePerformance: 'above'' | ''at'' | ''below';
   readonly improvementOpportunity: number; // percentage points
 }
 
@@ -101,7 +101,7 @@ export interface QualityMetrics {
   readonly technicalDebt: number;
   readonly customerSatisfaction: number;
   readonly systemReliability: number;
-  readonly qualityTrend: 'improving' | 'stable' | 'declining';
+  readonly qualityTrend: 'improving'' | ''stable'' | ''declining';
   readonly qualityGates: QualityGateStatus[];
 }
 
@@ -109,7 +109,7 @@ export interface QualityGateStatus {
   readonly gateId: string;
   readonly name: string;
   readonly criteria: QualityGateCriteria[];
-  readonly status: 'passed' | 'warning' | 'failed' | 'not_evaluated';
+  readonly status: 'passed'' | ''warning'' | ''failed'' | ''not_evaluated';
   readonly lastEvaluated: Date;
   readonly nextEvaluation: Date;
 }
@@ -119,7 +119,7 @@ export interface QualityGateCriteria {
   readonly metric: string;
   readonly threshold: number;
   readonly actual: number;
-  readonly status: 'passed' | 'warning' | 'failed';
+  readonly status: 'passed'' | ''warning'' | ''failed';
   readonly weight: number;
 }
 
@@ -128,7 +128,7 @@ export interface RiskBurndown {
   readonly openRisks: number;
   readonly mitigatedRisks: number;
   readonly closedRisks: number;
-  readonly riskTrend: 'improving' | 'stable' | 'worsening';
+  readonly riskTrend: 'improving'' | ''stable'' | ''worsening';
   readonly highRiskItems: RiskItem[];
   readonly riskVelocity: number; // risks resolved per iteration
   readonly projectedBurndown: RiskProjection[];
@@ -139,10 +139,10 @@ export interface RiskItem {
   readonly description: string;
   readonly category: string;
   readonly probability: number;
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
+  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly severity: number; // calculated risk score
   readonly owner: string;
-  readonly status: 'open' | 'mitigating' | 'closed';
+  readonly status: 'open'' | ''mitigating'' | ''closed';
   readonly dueDate: Date;
   readonly mitigationProgress: number; // 0-100%
 }
@@ -159,7 +159,7 @@ export interface DependencyHealth {
   readonly resolvedDependencies: number;
   readonly blockedDependencies: number;
   readonly atRiskDependencies: number;
-  readonly dependencyHealth: 'healthy' | 'at-risk' | 'critical';
+  readonly dependencyHealth: 'healthy'' | ''at-risk'' | ''critical';
   readonly criticalPath: string[];
   readonly dependencyBurndown: DependencyBurndownPoint[];
   readonly blockageImpact: BlockageImpact[];
@@ -178,7 +178,7 @@ export interface BlockageImpact {
   readonly blockedFeatures: string[];
   readonly blockedTeams: string[];
   readonly estimatedDelay: number; // in days
-  readonly businessImpact: 'low' | 'medium' | 'high' | 'critical';
+  readonly businessImpact: 'low'' | ''medium'' | ''high'' | ''critical';
 }
 
 export interface TeamExecutionMetrics {
@@ -190,7 +190,7 @@ export interface TeamExecutionMetrics {
   readonly commitmentReliability: number;
   readonly qualityScore: number;
   readonly satisfactionScore: number;
-  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  readonly riskLevel: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly completedFeatures: number;
   readonly inProgressFeatures: number;
   readonly blockedFeatures: number;
@@ -200,8 +200,8 @@ export interface TeamExecutionMetrics {
 
 export interface ExecutionAlert {
   readonly alertId: string;
-  readonly severity: 'info' | 'warning' | 'error' | 'critical';
-  readonly category: 'velocity' | 'quality' | 'scope' | 'dependency' | 'risk' | 'team';
+  readonly severity: 'info'' | ''warning'' | ''error'' | ''critical';
+  readonly category:' | ''velocity'' | ''quality'' | ''scope'' | ''dependency'' | ''risk'' | ''team';
   readonly title: string;
   readonly message: string;
   readonly affectedItems: string[];
@@ -232,7 +232,7 @@ export interface ProbabilityDistribution {
 
 export interface CompletionFactor {
   readonly factor: string;
-  readonly impact: 'positive' | 'negative' | 'neutral';
+  readonly impact: 'positive'' | ''negative'' | ''neutral';
   readonly magnitude: number; // -1 to 1
   readonly confidence: number; // 0-1
 }
@@ -248,18 +248,18 @@ export interface ScopeProjection {
 export interface QualityProjection {
   readonly currentQuality: number;
   readonly projectedQuality: number;
-  readonly qualityDebtTrend: 'improving' | 'stable' | 'worsening';
+  readonly qualityDebtTrend: 'improving'' | ''stable'' | ''worsening';
   readonly qualityRisk: number; // 0-1
 }
 
 export interface ForecastRecommendation {
   readonly recommendationId: string;
-  readonly type: 'scope' | 'capacity' | 'quality' | 'timeline' | 'risk';
+  readonly type: 'scope'' | ''capacity'' | ''quality'' | ''timeline'' | ''risk';
   readonly title: string;
   readonly description: string;
   readonly expectedBenefit: string;
-  readonly effort: 'low' | 'medium' | 'high';
-  readonly priority: 'critical' | 'high' | 'medium' | 'low';
+  readonly effort: 'low'' | ''medium'' | ''high';
+  readonly priority: 'critical'' | ''high'' | ''medium'' | ''low';
   readonly implementation: string[];
 }
 
@@ -270,8 +270,8 @@ export interface PIExecutionConfiguration {
   readonly enableAutomatedAlerts: boolean;
   readonly metricsUpdateInterval: number; // milliseconds
   readonly alertThresholds: AlertThresholds;
-  readonly forecastUpdateFrequency: 'daily' | 'iteration' | 'weekly';
-  readonly qualityGateFrequency: 'iteration' | 'weekly' | 'continuous';
+  readonly forecastUpdateFrequency: 'daily'' | ''iteration'' | ''weekly';
+  readonly qualityGateFrequency: 'iteration'' | ''weekly'' | ''continuous';
 }
 
 export interface AlertThresholds {
@@ -305,7 +305,7 @@ export class PIExecutionService extends TypedEventBase {
   constructor(logger: Logger, config: Partial<PIExecutionConfiguration> = {}) {
     super();
     this.logger = logger;
-    
+
     this.config = {
       enableRealTimeTracking: true,
       enablePredictiveAnalytics: true,
@@ -319,11 +319,11 @@ export class PIExecutionService extends TypedEventBase {
         riskIncrease: 3,
         dependencyBlockage: 2,
         teamUtilizationLow: 60,
-        teamUtilizationHigh: 95
+        teamUtilizationHigh: 95,
       },
       forecastUpdateFrequency: 'daily',
       qualityGateFrequency: 'iteration',
-      ...config
+      ...config,
     };
   }
 
@@ -342,7 +342,6 @@ export class PIExecutionService extends TypedEventBase {
 
       this.initialized = true;
       this.logger.info('PI Execution Service initialized successfully');
-
     } catch (error) {
       this.logger.error('Failed to initialize PI Execution Service:', error);
       throw error;
@@ -364,12 +363,14 @@ export class PIExecutionService extends TypedEventBase {
       const executionData = this.gatherExecutionData(piId);
 
       // Use brain coordinator for intelligent metrics calculation
-      const intelligentMetrics = await this.brainCoordinator.calculatePIMetrics({
-        piId,
-        executionData,
-        configuration: this.config,
-        historicalContext: await this.factSystem.getPIHistory(piId)
-      });
+      const intelligentMetrics = await this.brainCoordinator.calculatePIMetrics(
+        {
+          piId,
+          executionData,
+          configuration: this.config,
+          historicalContext: await this.factSystem.getPIHistory(piId),
+        }
+      );
 
       // Calculate burnup data
       const burnupData = this.calculateBurnupData(piId, executionData);
@@ -391,13 +392,23 @@ export class PIExecutionService extends TypedEventBase {
       const riskBurndown = this.trackRiskBurndown(piId, executionData);
 
       // Monitor dependency health
-      const dependencyHealth = this.monitorDependencyHealth(piId, executionData);
+      const dependencyHealth = this.monitorDependencyHealth(
+        piId,
+        executionData
+      );
 
       // Calculate team metrics
-      const teamMetrics = this.calculateTeamExecutionMetrics(piId, executionData);
+      const teamMetrics = this.calculateTeamExecutionMetrics(
+        piId,
+        executionData
+      );
 
       // Generate execution alerts
-      const alerts = this.generateExecutionAlerts(piId, executionData, intelligentMetrics);
+      const alerts = this.generateExecutionAlerts(
+        piId,
+        executionData,
+        intelligentMetrics
+      );
 
       // Create execution forecast
       const forecastToCompletion = this.createExecutionForecast(
@@ -415,7 +426,10 @@ export class PIExecutionService extends TypedEventBase {
       );
 
       // Calculate progress percentage
-      const progressPercentage = this.calculateProgressPercentage(burnupData, executionData);
+      const progressPercentage = this.calculateProgressPercentage(
+        burnupData,
+        executionData
+      );
 
       // Create comprehensive metrics
       const piExecutionMetrics: PIExecutionMetrics = {
@@ -431,7 +445,7 @@ export class PIExecutionService extends TypedEventBase {
         dependencyHealth,
         teamMetrics,
         alerts,
-        forecastToCompletion
+        forecastToCompletion,
       };
 
       // Store metrics
@@ -447,10 +461,10 @@ export class PIExecutionService extends TypedEventBase {
           velocityTrend: velocityTrend.trend,
           overallPredictability: predictabilityMetrics.overallPredictability,
           alertCount: alerts.length,
-          riskCount: riskBurndown.openRisks
+          riskCount: riskBurndown.openRisks,
         },
         confidence: intelligentMetrics.confidence || 0.85,
-        source: 'pi-execution-service'
+        source:'pi-execution-service',
       });
 
       // Trigger automated actions if needed
@@ -465,18 +479,17 @@ export class PIExecutionService extends TypedEventBase {
         overallHealth,
         progressPercentage,
         alertCount: alerts.length,
-        criticalAlerts: alerts.filter(a => a.severity === 'critical').length
+        criticalAlerts: alerts.filter((a) => a.severity === 'critical').length,
       });
 
       this.logger.debug('PI progress tracking completed', {
         piId,
         overallHealth,
         progressPercentage: Math.round(progressPercentage),
-        alertCount: alerts.length
+        alertCount: alerts.length,
       });
 
       return piExecutionMetrics;
-
     } catch (error) {
       this.performanceTracker.endTimer('pi_progress_tracking');
       this.logger.error('PI progress tracking failed:', error);
@@ -495,7 +508,7 @@ export class PIExecutionService extends TypedEventBase {
 
     this.logger.info('Starting continuous PI monitoring', {
       piId,
-      updateInterval: this.config.metricsUpdateInterval
+      updateInterval: this.config.metricsUpdateInterval,
     });
 
     // Set up periodic metrics update
@@ -503,7 +516,10 @@ export class PIExecutionService extends TypedEventBase {
       try {
         await this.trackPIProgress(piId);
       } catch (error) {
-        this.logger.error('Continuous monitoring update failed', { piId, error });
+        this.logger.error('Continuous monitoring update failed', {
+          piId,
+          error,
+        });
       }
     }, this.config.metricsUpdateInterval);
 
@@ -520,7 +536,7 @@ export class PIExecutionService extends TypedEventBase {
     if (timer) {
       clearInterval(timer);
       this.executionTimers.delete(piId);
-      
+
       this.logger.info('Continuous PI monitoring stopped', { piId });
       this.emit('continuous-monitoring-stopped', { piId });
     }
@@ -537,7 +553,7 @@ export class PIExecutionService extends TypedEventBase {
    * Get all PI execution metrics
    */
   getAllPIMetrics(): PIExecutionMetrics[] {
-    return Array.from(this.piMetrics.values());
+    return Array.from(this.piMetrics.values())();
   }
 
   /**
@@ -549,7 +565,7 @@ export class PIExecutionService extends TypedEventBase {
       throw new Error(`PI metrics not found: ${piId}`);
     }
 
-    const alert = metrics.alerts.find(a => a.alertId === alertId);
+    const alert = metrics.alerts.find((a) => a.alertId === alertId);
     if (!alert) {
       throw new Error(`Alert not found: ${alertId}`);
     }
@@ -563,21 +579,25 @@ export class PIExecutionService extends TypedEventBase {
       alertId,
       assignee,
       severity: alert.severity,
-      category: alert.category
+      category: alert.category,
     });
 
     this.logger.info('Execution alert acknowledged', {
       piId,
       alertId,
       severity: alert.severity,
-      assignee
+      assignee,
     });
   }
 
   /**
    * Update PI scope change
    */
-  async updatePIScope(piId: string, scopeChange: number, reason: string): Promise<void> {
+  async updatePIScope(
+    piId: string,
+    scopeChange: number,
+    reason: string
+  ): Promise<void> {
     const metrics = this.piMetrics.get(piId);
     if (!metrics) {
       throw new Error(`PI metrics not found: ${piId}`);
@@ -591,10 +611,10 @@ export class PIExecutionService extends TypedEventBase {
         scopeChange,
         reason,
         timestamp: new Date().toISOString(),
-        currentProgress: metrics.progressPercentage
+        currentProgress: metrics.progressPercentage,
       },
       confidence: 1.0,
-      source: 'pi-execution-service'
+      source: 'pi-execution-service',
     });
 
     // Check if scope change exceeds threshold
@@ -609,16 +629,16 @@ export class PIExecutionService extends TypedEventBase {
         recommendedActions: [
           'Review impact on timeline and capacity',
           'Update stakeholder communications',
-          'Reassess risk and dependency implications'
+          'Reassess risk and dependency implications',
         ],
         createdAt: new Date(),
-        acknowledged: false
+        acknowledged: false,
       };
 
       // Add alert to metrics
       const updatedMetrics = {
         ...metrics,
-        alerts: [...metrics.alerts, alert]
+        alerts: [...metrics.alerts, alert],
       };
       this.piMetrics.set(piId, updatedMetrics);
     }
@@ -627,13 +647,14 @@ export class PIExecutionService extends TypedEventBase {
       piId,
       scopeChange,
       reason,
-      newAlertCreated: Math.abs(scopeChange) > this.config.alertThresholds.scopeIncrease
+      newAlertCreated:
+        Math.abs(scopeChange) > this.config.alertThresholds.scopeIncrease,
     });
 
     this.logger.info('PI scope updated', {
       piId,
       scopeChange,
-      reason
+      reason,
     });
   }
 
@@ -679,7 +700,7 @@ export class PIExecutionService extends TypedEventBase {
       risks: this.getRiskData(piId),
       dependencies: this.getDependencyData(piId),
       scope: this.getScopeData(piId),
-      capacity: this.getCapacityData(piId)
+      capacity: this.getCapacityData(piId),
     };
   }
 
@@ -691,7 +712,7 @@ export class PIExecutionService extends TypedEventBase {
     return [
       { id: 'feature-1', status: 'completed', progress: 100, quality: 95 },
       { id: 'feature-2', status: 'in-progress', progress: 75, quality: 90 },
-      { id: 'feature-3', status: 'blocked', progress: 30, quality: 85 }
+      { id: 'feature-3', status: 'blocked', progress: 30, quality: 85 },
     ];
   }
 
@@ -703,7 +724,7 @@ export class PIExecutionService extends TypedEventBase {
     return [
       { id: 'team-1', velocity: 32, capacity: 40, utilization: 80 },
       { id: 'team-2', velocity: 28, capacity: 35, utilization: 85 },
-      { id: 'team-3', velocity: 30, capacity: 38, utilization: 78 }
+      { id: 'team-3', velocity: 30, capacity: 38, utilization: 78 },
     ];
   }
 
@@ -715,7 +736,7 @@ export class PIExecutionService extends TypedEventBase {
     return [
       { iteration: 1, planned: 90, completed: 88, quality: 92 },
       { iteration: 2, planned: 85, completed: 82, quality: 89 },
-      { iteration: 3, planned: 88, completed: 85, quality: 91 }
+      { iteration: 3, planned: 88, completed: 85, quality: 91 },
     ];
   }
 
@@ -729,7 +750,7 @@ export class PIExecutionService extends TypedEventBase {
       defectDensity: 0.3,
       codeQuality: 4.2,
       technicalDebt: 15,
-      customerSatisfaction: 8.5
+      customerSatisfaction: 8.5,
     };
   }
 
@@ -740,8 +761,13 @@ export class PIExecutionService extends TypedEventBase {
     // Simulate risk data retrieval
     return [
       { id: 'risk-1', status: 'open', impact: 'high', probability: 0.6 },
-      { id: 'risk-2', status: 'mitigating', impact: 'medium', probability: 0.4 },
-      { id: 'risk-3', status: 'closed', impact: 'low', probability: 0.2 }
+      {
+        id: 'risk-2',
+        status: 'mitigating',
+        impact: 'medium',
+        probability: 0.4,
+      },
+      { id: 'risk-3', status: 'closed', impact: 'low', probability: 0.2 },
     ];
   }
 
@@ -753,7 +779,7 @@ export class PIExecutionService extends TypedEventBase {
     return [
       { id: 'dep-1', status: 'resolved', impact: 'medium' },
       { id: 'dep-2', status: 'blocked', impact: 'high', blockedDays: 3 },
-      { id: 'dep-3', status: 'at-risk', impact: 'low' }
+      { id: 'dep-3', status: 'at-risk', impact: 'low'},
     ];
   }
 
@@ -766,7 +792,7 @@ export class PIExecutionService extends TypedEventBase {
       originalScope: 100,
       currentScope: 105,
       completedScope: 78,
-      scopeChanges: 3
+      scopeChanges: 3,
     };
   }
 
@@ -779,28 +805,39 @@ export class PIExecutionService extends TypedEventBase {
       totalCapacity: 400,
       allocatedCapacity: 320,
       utilizationRate: 80,
-      bufferCapacity: 60
+      bufferCapacity: 60,
     };
   }
 
   /**
    * Calculate burnup data points
    */
-  private calculateBurnupData(piId: string, executionData: any): BurnupDataPoint[] {
+  private calculateBurnupData(
+    piId: string,
+    executionData: any
+  ): BurnupDataPoint[] {
     const burnupData: BurnupDataPoint[] = [];
 
     for (let i = 0; i < executionData.iterations.length; i++) {
       const iteration = executionData.iterations[i];
-      
+
       burnupData.push({
         iterationNumber: iteration.iteration,
-        date: new Date(Date.now() - (executionData.iterations.length - i) * 14 * 24 * 60 * 60 * 1000),
+        date: new Date(
+          Date.now() -
+            (executionData.iterations.length - i) * 14 * 24 * 60 * 60 * 1000
+        ),
         plannedScope: iteration.planned,
         completedScope: iteration.completed,
-        scopeChange: i > 0 ? iteration.planned - executionData.iterations[i-1].planned : 0,
+        scopeChange:
+          i > 0
+            ? iteration.planned - executionData.iterations[i - 1].planned
+            : 0,
         qualityDebt: Math.max(0, iteration.planned - iteration.completed),
-        cumulativeVelocity: executionData.iterations.slice(0, i + 1).reduce((sum: number, iter: any) => sum + iter.completed, 0),
-        teamCount: executionData.teams.length
+        cumulativeVelocity: executionData.iterations
+          .slice(0, i + 1)
+          .reduce((sum: number, iter: any) => sum + iter.completed, 0),
+        teamCount: executionData.teams.length,
       });
     }
 
@@ -810,38 +847,68 @@ export class PIExecutionService extends TypedEventBase {
   /**
    * Analyze velocity trend
    */
-  private analyzeVelocityTrend(piId: string, executionData: any): VelocityTrend {
+  private analyzeVelocityTrend(
+    piId: string,
+    executionData: any
+  ): VelocityTrend {
     const velocityHistory: VelocityDataPoint[] = [];
     let totalVelocity = 0;
 
     for (let i = 0; i < executionData.iterations.length; i++) {
       const iteration = executionData.iterations[i];
-      const teamVelocity = executionData.teams.reduce((sum: number, team: any) => sum + team.velocity, 0);
-      
+      const teamVelocity = executionData.teams.reduce(
+        (sum: number, team: any) => sum + team.velocity,
+        0
+      );
+
       velocityHistory.push({
         iteration: iteration.iteration,
-        date: new Date(Date.now() - (executionData.iterations.length - i) * 14 * 24 * 60 * 60 * 1000),
+        date: new Date(
+          Date.now() -
+            (executionData.iterations.length - i) * 14 * 24 * 60 * 60 * 1000
+        ),
         velocity: teamVelocity,
-        capacity: executionData.teams.reduce((sum: number, team: any) => sum + team.capacity, 0),
-        utilization: executionData.teams.reduce((sum: number, team: any) => sum + team.utilization, 0) / executionData.teams.length,
-        qualityScore: iteration.quality
+        capacity: executionData.teams.reduce(
+          (sum: number, team: any) => sum + team.capacity,
+          0
+        ),
+        utilization:
+          executionData.teams.reduce(
+            (sum: number, team: any) => sum + team.utilization,
+            0
+          ) / executionData.teams.length,
+        qualityScore: iteration.quality,
       });
 
       totalVelocity += teamVelocity;
     }
 
     const averageVelocity = totalVelocity / executionData.iterations.length;
-    const currentVelocity = velocityHistory[velocityHistory.length - 1]?.velocity || 0;
-    const velocityChange = velocityHistory.length > 1 
-      ? (currentVelocity - velocityHistory[velocityHistory.length - 2].velocity) / velocityHistory[velocityHistory.length - 2].velocity
-      : 0;
+    const currentVelocity =
+      velocityHistory[velocityHistory.length - 1]?.velocity || 0;
+    const velocityChange =
+      velocityHistory.length > 1
+        ? (currentVelocity -
+            velocityHistory[velocityHistory.length - 2].velocity) /
+          velocityHistory[velocityHistory.length - 2].velocity
+        : 0;
 
-    const trend = velocityChange > 0.05 ? 'improving' : velocityChange < -0.05 ? 'declining' : 'stable';
+    const trend =
+      velocityChange > 0.05
+        ?'improving'
+        : velocityChange < -0.05
+          ? 'declining'
+          : 'stable';
 
     // Calculate stability index (lower variance = higher stability)
-    const velocities = velocityHistory.map(v => v.velocity);
-    const variance = velocities.reduce((sum, v) => sum + Math.pow(v - averageVelocity, 2), 0) / velocities.length;
-    const stabilityIndex = Math.max(0, 1 - (Math.sqrt(variance) / averageVelocity));
+    const velocities = velocityHistory.map((v) => v.velocity);
+    const variance =
+      velocities.reduce((sum, v) => sum + Math.pow(v - averageVelocity, 2), 0) /
+      velocities.length;
+    const stabilityIndex = Math.max(
+      0,
+      1 - Math.sqrt(variance) / averageVelocity
+    );
 
     return {
       currentVelocity,
@@ -849,7 +916,7 @@ export class PIExecutionService extends TypedEventBase {
       velocityHistory,
       trend,
       confidence: stabilityIndex,
-      stabilityIndex
+      stabilityIndex,
     };
   }
 
@@ -862,38 +929,66 @@ export class PIExecutionService extends TypedEventBase {
     intelligentMetrics: any
   ): PredictabilityMetrics {
     // Calculate commitment reliability
-    const commitmentReliability = executionData.iterations.reduce((sum: number, iter: any) => {
-      return sum + (iter.completed / iter.planned);
-    }, 0) / executionData.iterations.length * 100;
+    const commitmentReliability =
+      (executionData.iterations.reduce((sum: number, iter: any) => {
+        return sum + iter.completed / iter.planned;
+      }, 0) /
+        executionData.iterations.length) *
+      100;
 
     // Calculate scope stability (lower scope changes = higher stability)
-    const scopeChanges = Math.abs(executionData.scope.currentScope - executionData.scope.originalScope);
-    const scopeStability = Math.max(0, 100 - (scopeChanges / executionData.scope.originalScope * 100));
+    const scopeChanges = Math.abs(
+      executionData.scope.currentScope - executionData.scope.originalScope
+    );
+    const scopeStability = Math.max(
+      0,
+      100 - (scopeChanges / executionData.scope.originalScope) * 100
+    );
 
     // Calculate quality predictability
-    const qualityVariance = executionData.iterations.reduce((sum: number, iter: any) => {
-      const avgQuality = executionData.iterations.reduce((s: number, i: any) => s + i.quality, 0) / executionData.iterations.length;
-      return sum + Math.pow(iter.quality - avgQuality, 2);
-    }, 0) / executionData.iterations.length;
+    const qualityVariance =
+      executionData.iterations.reduce((sum: number, iter: any) => {
+        const avgQuality =
+          executionData.iterations.reduce(
+            (s: number, i: any) => s + i.quality,
+            0
+          ) / executionData.iterations.length;
+        return sum + Math.pow(iter.quality - avgQuality, 2);
+      }, 0) / executionData.iterations.length;
     const qualityPredictability = Math.max(0, 100 - Math.sqrt(qualityVariance));
 
     // Calculate risk mitigation effectiveness
-    const mitigatedRisks = executionData.risks.filter((r: any) => r.status === 'closed' || r.status === 'mitigating').length;
-    const riskMitigation = executionData.risks.length > 0 ? (mitigatedRisks / executionData.risks.length * 100) : 100;
+    const mitigatedRisks = executionData.risks.filter(
+      (r: any) => r.status === 'closed' || r.status ==='mitigating').length;
+    const riskMitigation =
+      executionData.risks.length > 0
+        ? (mitigatedRisks / executionData.risks.length) * 100
+        : 100;
 
     // Calculate overall predictability
-    const overallPredictability = (commitmentReliability + scopeStability + qualityPredictability + riskMitigation) / 4;
+    const overallPredictability =
+      (commitmentReliability +
+        scopeStability +
+        qualityPredictability +
+        riskMitigation) /
+      4;
 
     // Determine trend based on historical data
-    const predictabilityTrend = intelligentMetrics.predictabilityTrend || 'stable';
+    const predictabilityTrend =
+      intelligentMetrics.predictabilityTrend || 'stable';
 
     // Benchmark comparison (would be based on actual organizational data)
     const benchmarkComparison: BenchmarkComparison = {
       industryAverage: 75,
       organizationAverage: 78,
       artAverage: 82,
-      relativePerformance: overallPredictability > 82 ? 'above' : overallPredictability < 75 ? 'below' : 'at',
-      improvementOpportunity: Math.max(0, 85 - overallPredictability)
+      relativePerformance:
+        overallPredictability > 82
+          ? 'above'
+          : overallPredictability < 75
+            ? 'below'
+            : 'at',
+      improvementOpportunity: Math.max(0, 85 - overallPredictability),
     };
 
     return {
@@ -903,23 +998,31 @@ export class PIExecutionService extends TypedEventBase {
       riskMitigation,
       overallPredictability,
       predictabilityTrend,
-      benchmarkComparison
+      benchmarkComparison,
     };
   }
 
   /**
    * Assess quality metrics
    */
-  private assessQualityMetrics(piId: string, executionData: any): QualityMetrics {
+  private assessQualityMetrics(
+    piId: string,
+    executionData: any
+  ): QualityMetrics {
     const qualityData = executionData.quality;
-    
+
     // Calculate quality trend
-    const recentQuality = executionData.iterations.slice(-2).map((i: any) => i.quality);
-    const qualityTrend = recentQuality.length > 1
-      ? recentQuality[1] > recentQuality[0] + 2 ? 'improving'
-        : recentQuality[1] < recentQuality[0] - 2 ? 'declining'
-        : 'stable'
-      : 'stable';
+    const recentQuality = executionData.iterations
+      .slice(-2)
+      .map((i: any) => i.quality);
+    const qualityTrend =
+      recentQuality.length > 1
+        ? recentQuality[1] > recentQuality[0] + 2
+          ? 'improving'
+          : recentQuality[1] < recentQuality[0] - 2
+            ? 'declining'
+            : 'stable'
+        : 'stable';
 
     // Create sample quality gates
     const qualityGates: QualityGateStatus[] = [
@@ -933,7 +1036,7 @@ export class PIExecutionService extends TypedEventBase {
             threshold: 80,
             actual: qualityData.testCoverage,
             status: qualityData.testCoverage >= 80 ? 'passed' : 'failed',
-            weight: 0.3
+            weight: 0.3,
           },
           {
             criteriaId: 'code-quality',
@@ -941,13 +1044,16 @@ export class PIExecutionService extends TypedEventBase {
             threshold: 4.0,
             actual: qualityData.codeQuality,
             status: qualityData.codeQuality >= 4.0 ? 'passed' : 'failed',
-            weight: 0.4
-          }
+            weight: 0.4,
+          },
         ],
-        status: qualityData.testCoverage >= 80 && qualityData.codeQuality >= 4.0 ? 'passed' : 'failed',
+        status:
+          qualityData.testCoverage >= 80 && qualityData.codeQuality >= 4.0
+            ? 'passed'
+            : 'failed',
         lastEvaluated: new Date(),
-        nextEvaluation: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      }
+        nextEvaluation: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
     ];
 
     return {
@@ -958,7 +1064,7 @@ export class PIExecutionService extends TypedEventBase {
       customerSatisfaction: qualityData.customerSatisfaction,
       systemReliability: 95, // Would be calculated from system metrics
       qualityTrend,
-      qualityGates
+      qualityGates,
     };
   }
 
@@ -968,45 +1074,63 @@ export class PIExecutionService extends TypedEventBase {
   private trackRiskBurndown(piId: string, executionData: any): RiskBurndown {
     const risks = executionData.risks;
     const openRisks = risks.filter((r: any) => r.status === 'open').length;
-    const mitigatedRisks = risks.filter((r: any) => r.status === 'mitigating').length;
+    const mitigatedRisks = risks.filter(
+      (r: any) => r.status === 'mitigating'
+    ).length;
     const closedRisks = risks.filter((r: any) => r.status === 'closed').length;
 
     // Convert risk data to RiskItem format
     const highRiskItems: RiskItem[] = risks
-      .filter((r: any) => r.impact === 'high' || r.impact === 'critical')
+      .filter((r: any) => r.impact === 'high' || r.impact ==='critical')
       .map((r: any) => ({
         riskId: r.id,
         description: r.description || `Risk ${r.id}`,
         category: r.category || 'general',
         probability: r.probability,
         impact: r.impact,
-        severity: r.probability * (r.impact === 'critical' ? 4 : r.impact === 'high' ? 3 : r.impact === 'medium' ? 2 : 1),
+        severity:
+          r.probability *
+          (r.impact === 'critical'
+            ? 4
+            : r.impact === 'high'
+              ? 3
+              : r.impact === 'medium'? 2
+                : 1),
         owner: r.owner || 'unassigned',
         status: r.status,
         dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        mitigationProgress: r.status === 'closed' ? 100 : r.status === 'mitigating' ? 50 : 0
+        mitigationProgress:
+          r.status === 'closed' ? 100 : r.status === 'mitigating' ? 50 : 0,
       }));
 
     // Calculate risk velocity (risks resolved per iteration)
-    const riskVelocity = closedRisks / Math.max(1, executionData.iterations.length);
+    const riskVelocity =
+      closedRisks / Math.max(1, executionData.iterations.length);
 
     // Project risk burndown
     const projectedBurndown: RiskProjection[] = [];
     let remainingRisks = openRisks;
-    
-    for (let i = 1; i <= 5; i++) { // Project next 5 iterations
+
+    for (let i = 1; i <= 5; i++) {
+      // Project next 5 iterations
       remainingRisks = Math.max(0, remainingRisks - riskVelocity);
       projectedBurndown.push({
         iteration: executionData.iterations.length + i,
         projectedOpen: Math.round(remainingRisks),
-        projectedClosed: closedRisks + ((executionData.iterations.length + i - 1) * riskVelocity),
-        confidence: Math.max(0.3, 0.9 - (i * 0.1))
+        projectedClosed:
+          closedRisks +
+          (executionData.iterations.length + i - 1) * riskVelocity,
+        confidence: Math.max(0.3, 0.9 - i * 0.1),
       });
     }
 
     // Determine trend
-    const riskTrend = openRisks > closedRisks + mitigatedRisks ? 'worsening' : 
-                      closedRisks > openRisks ? 'improving' : 'stable';
+    const riskTrend =
+      openRisks > closedRisks + mitigatedRisks
+        ? 'worsening'
+        : closedRisks > openRisks
+          ? 'improving'
+          : 'stable';
 
     return {
       totalRisks: risks.length,
@@ -1016,22 +1140,35 @@ export class PIExecutionService extends TypedEventBase {
       riskTrend,
       highRiskItems,
       riskVelocity,
-      projectedBurndown
+      projectedBurndown,
     };
   }
 
   /**
    * Monitor dependency health
    */
-  private monitorDependencyHealth(piId: string, executionData: any): DependencyHealth {
+  private monitorDependencyHealth(
+    piId: string,
+    executionData: any
+  ): DependencyHealth {
     const dependencies = executionData.dependencies;
-    const resolvedDependencies = dependencies.filter((d: any) => d.status === 'resolved').length;
-    const blockedDependencies = dependencies.filter((d: any) => d.status === 'blocked').length;
-    const atRiskDependencies = dependencies.filter((d: any) => d.status === 'at-risk').length;
+    const resolvedDependencies = dependencies.filter(
+      (d: any) => d.status === 'resolved'
+    ).length;
+    const blockedDependencies = dependencies.filter(
+      (d: any) => d.status === 'blocked'
+    ).length;
+    const atRiskDependencies = dependencies.filter(
+      (d: any) => d.status === 'at-risk'
+    ).length;
 
     // Determine overall dependency health
-    const dependencyHealth = blockedDependencies > 0 ? 'critical' :
-                             atRiskDependencies > dependencies.length * 0.3 ? 'at-risk' : 'healthy';
+    const dependencyHealth =
+      blockedDependencies > 0
+        ? 'critical'
+        : atRiskDependencies > dependencies.length * 0.3
+          ? 'at-risk'
+          : 'healthy';
 
     // Identify critical path (dependencies that block multiple items)
     const criticalPath = dependencies
@@ -1039,13 +1176,22 @@ export class PIExecutionService extends TypedEventBase {
       .map((d: any) => d.id);
 
     // Create dependency burndown
-    const dependencyBurndown: DependencyBurndownPoint[] = executionData.iterations.map((iter: any, index: number) => ({
-      iteration: iter.iteration,
-      date: new Date(Date.now() - (executionData.iterations.length - index) * 14 * 24 * 60 * 60 * 1000),
-      totalDependencies: dependencies.length,
-      resolvedDependencies: Math.floor(resolvedDependencies * (index + 1) / executionData.iterations.length),
-      blockedDependencies: Math.max(0, blockedDependencies - Math.floor(index / 2))
-    }));
+    const dependencyBurndown: DependencyBurndownPoint[] =
+      executionData.iterations.map((iter: any, index: number) => ({
+        iteration: iter.iteration,
+        date: new Date(
+          Date.now() -
+            (executionData.iterations.length - index) * 14 * 24 * 60 * 60 * 1000
+        ),
+        totalDependencies: dependencies.length,
+        resolvedDependencies: Math.floor(
+          (resolvedDependencies * (index + 1)) / executionData.iterations.length
+        ),
+        blockedDependencies: Math.max(
+          0,
+          blockedDependencies - Math.floor(index / 2)
+        ),
+      }));
 
     // Calculate blockage impact
     const blockageImpact: BlockageImpact[] = dependencies
@@ -1055,7 +1201,7 @@ export class PIExecutionService extends TypedEventBase {
         blockedFeatures: [`feature-${d.id}`], // Would be actual feature IDs
         blockedTeams: [`team-${d.id}`], // Would be actual team IDs
         estimatedDelay: d.blockedDays || 5,
-        businessImpact: d.impact
+        businessImpact: d.impact,
       }));
 
     return {
@@ -1066,14 +1212,17 @@ export class PIExecutionService extends TypedEventBase {
       dependencyHealth,
       criticalPath,
       dependencyBurndown,
-      blockageImpact
+      blockageImpact,
     };
   }
 
   /**
    * Calculate team execution metrics
    */
-  private calculateTeamExecutionMetrics(piId: string, executionData: any): TeamExecutionMetrics[] {
+  private calculateTeamExecutionMetrics(
+    piId: string,
+    executionData: any
+  ): TeamExecutionMetrics[] {
     return executionData.teams.map((team: any) => ({
       teamId: team.id,
       teamName: team.name || `Team ${team.id}`,
@@ -1083,12 +1232,17 @@ export class PIExecutionService extends TypedEventBase {
       commitmentReliability: 85, // Would be calculated from historical data
       qualityScore: 88, // Would be calculated from quality metrics
       satisfactionScore: 8.2, // Would be from team surveys
-      riskLevel: team.utilization > 90 ? 'high' : team.utilization < 60 ? 'medium' : 'low',
+      riskLevel:
+        team.utilization > 90
+          ?'high'
+          : team.utilization < 60
+            ? 'medium'
+            : 'low',
       completedFeatures: Math.floor(team.velocity / 10), // Rough estimate
       inProgressFeatures: Math.ceil(team.velocity / 15),
       blockedFeatures: Math.floor(Math.random() * 2),
       technicalDebt: Math.floor(Math.random() * 20) + 5,
-      innovationWork: Math.floor(Math.random() * 15) + 5 // 5-20% innovation work
+      innovationWork: Math.floor(Math.random() * 15) + 5, // 5-20% innovation work
     }));
   }
 
@@ -1103,10 +1257,19 @@ export class PIExecutionService extends TypedEventBase {
     const alerts: ExecutionAlert[] = [];
 
     // Velocity decline alert
-    const currentVelocity = executionData.teams.reduce((sum: number, team: any) => sum + team.velocity, 0);
-    const expectedVelocity = executionData.teams.reduce((sum: number, team: any) => sum + team.capacity * 0.8, 0);
-    
-    if (currentVelocity < expectedVelocity * (1 - this.config.alertThresholds.velocityDecline / 100)) {
+    const currentVelocity = executionData.teams.reduce(
+      (sum: number, team: any) => sum + team.velocity,
+      0
+    );
+    const expectedVelocity = executionData.teams.reduce(
+      (sum: number, team: any) => sum + team.capacity * 0.8,
+      0
+    );
+
+    if (
+      currentVelocity <
+      expectedVelocity * (1 - this.config.alertThresholds.velocityDecline / 100)
+    ) {
       alerts.push({
         alertId: `velocity-decline-${piId}-${Date.now()}`,
         severity: 'warning',
@@ -1117,20 +1280,21 @@ export class PIExecutionService extends TypedEventBase {
         recommendedActions: [
           'Review team capacity and blockers',
           'Assess scope and complexity',
-          'Check for skill gaps or training needs'
+          'Check for skill gaps or training needs',
         ],
         createdAt: new Date(),
         acknowledged: false,
-        dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // 3 days
+        dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
       });
     }
 
     // Quality gate failures
-    const failedQualityChecks = executionData.quality.testCoverage < 80 || executionData.quality.codeQuality < 4.0;
+    const failedQualityChecks =
+      executionData.quality.testCoverage < 80 || executionData.quality.codeQuality < 4.0;
     if (failedQualityChecks) {
       alerts.push({
         alertId: `quality-gate-failure-${piId}-${Date.now()}`,
-        severity: 'error',
+        severity:'error',
         category: 'quality',
         title: 'Quality Gate Failure',
         message: 'One or more quality gates have failed',
@@ -1138,16 +1302,18 @@ export class PIExecutionService extends TypedEventBase {
         recommendedActions: [
           'Review failing quality criteria',
           'Implement quality improvement plan',
-          'Increase testing and code review'
+          'Increase testing and code review',
         ],
         createdAt: new Date(),
         acknowledged: false,
-        dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days
+        dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days
       });
     }
 
     // Blocked dependencies
-    const blockedDeps = executionData.dependencies.filter((d: any) => d.status === 'blocked');
+    const blockedDeps = executionData.dependencies.filter(
+      (d: any) => d.status === 'blocked'
+    );
     if (blockedDeps.length > 0) {
       alerts.push({
         alertId: `blocked-dependencies-${piId}-${Date.now()}`,
@@ -1159,11 +1325,11 @@ export class PIExecutionService extends TypedEventBase {
         recommendedActions: [
           'Escalate blocked dependencies',
           'Identify workarounds or alternatives',
-          'Update delivery timelines'
+          'Update delivery timelines',
         ],
         createdAt: new Date(),
         acknowledged: false,
-        dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day
+        dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
       });
     }
 
@@ -1178,13 +1344,20 @@ export class PIExecutionService extends TypedEventBase {
     executionData: any,
     intelligentMetrics: any
   ): ExecutionForecast {
-    const currentProgress = executionData.scope.completedScope / executionData.scope.currentScope;
-    const remainingWork = executionData.scope.currentScope - executionData.scope.completedScope;
-    const averageVelocity = executionData.teams.reduce((sum: number, team: any) => sum + team.velocity, 0);
+    const currentProgress =
+      executionData.scope.completedScope / executionData.scope.currentScope;
+    const remainingWork =
+      executionData.scope.currentScope - executionData.scope.completedScope;
+    const averageVelocity = executionData.teams.reduce(
+      (sum: number, team: any) => sum + team.velocity,
+      0
+    );
 
     // Calculate completion probabilities
-    const baseCompletion = new Date(Date.now() + (remainingWork / averageVelocity) * 14 * 24 * 60 * 60 * 1000);
-    
+    const baseCompletion = new Date(
+      Date.now() + (remainingWork / averageVelocity) * 14 * 24 * 60 * 60 * 1000
+    );
+
     const completionProbability: ProbabilityDistribution = {
       p10: new Date(baseCompletion.getTime() - 7 * 24 * 60 * 60 * 1000),
       p50: baseCompletion,
@@ -1195,15 +1368,15 @@ export class PIExecutionService extends TypedEventBase {
           factor: 'Velocity Stability',
           impact: 'positive',
           magnitude: 0.3,
-          confidence: 0.8
+          confidence: 0.8,
         },
         {
           factor: 'Dependency Risks',
           impact: 'negative',
           magnitude: -0.2,
-          confidence: 0.7
-        }
-      ]
+          confidence: 0.7,
+        },
+      ],
     };
 
     // Scope projection
@@ -1211,8 +1384,9 @@ export class PIExecutionService extends TypedEventBase {
       originalScope: executionData.scope.originalScope,
       currentScope: executionData.scope.currentScope,
       projectedScope: executionData.scope.currentScope * 1.05, // Expect 5% growth
-      scopeChangeVelocity: executionData.scope.scopeChanges / executionData.iterations.length,
-      scopeStabilityDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      scopeChangeVelocity:
+        executionData.scope.scopeChanges / executionData.iterations.length,
+      scopeStabilityDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     };
 
     // Quality projection
@@ -1220,13 +1394,13 @@ export class PIExecutionService extends TypedEventBase {
       currentQuality: executionData.quality.codeQuality,
       projectedQuality: Math.min(5.0, executionData.quality.codeQuality + 0.2),
       qualityDebtTrend: 'stable',
-      qualityRisk: 0.3
+      qualityRisk: 0.3,
     };
 
     // Risk projection (reuse from risk burndown)
     const riskProjection: RiskProjection[] = [
       { iteration: 4, projectedOpen: 2, projectedClosed: 4, confidence: 0.8 },
-      { iteration: 5, projectedOpen: 1, projectedClosed: 5, confidence: 0.7 }
+      { iteration: 5, projectedOpen: 1, projectedClosed: 5, confidence: 0.7 },
     ];
 
     // Generate recommendations
@@ -1242,9 +1416,9 @@ export class PIExecutionService extends TypedEventBase {
         implementation: [
           'Identify available resources',
           'Onboard temporary team members',
-          'Adjust capacity planning'
-        ]
-      }
+          'Adjust capacity planning',
+        ],
+      },
     ];
 
     return {
@@ -1254,7 +1428,7 @@ export class PIExecutionService extends TypedEventBase {
       riskProjection,
       recommendedActions,
       confidenceLevel: 0.75,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
   }
 
@@ -1266,17 +1440,21 @@ export class PIExecutionService extends TypedEventBase {
     alerts: ExecutionAlert[],
     riskBurndown: RiskBurndown,
     dependencyHealth: DependencyHealth
-  ): 'healthy' | 'at-risk' | 'critical' {
-    const criticalAlerts = alerts.filter(a => a.severity === 'critical').length;
-    const errorAlerts = alerts.filter(a => a.severity === 'error').length;
+  ): 'healthy'' | ''at-risk'' | ''critical' {
+    const criticalAlerts = alerts.filter(
+      (a) => a.severity === 'critical'
+    ).length;
+    const errorAlerts = alerts.filter((a) => a.severity === 'error').length;
 
-    if (criticalAlerts > 0 || dependencyHealth.dependencyHealth === 'critical') {
+    if (
+      criticalAlerts > 0 || dependencyHealth.dependencyHealth ==='critical'
+    ) {
       return 'critical';
     }
 
-    if (errorAlerts > 0 || 
-        riskBurndown.riskTrend === 'worsening' || 
-        dependencyHealth.dependencyHealth === 'at-risk') {
+    if (
+      errorAlerts > 0 || riskBurndown.riskTrend ==='worsening' || dependencyHealth.dependencyHealth ==='at-risk'
+    ) {
       return 'at-risk';
     }
 
@@ -1286,19 +1464,25 @@ export class PIExecutionService extends TypedEventBase {
   /**
    * Calculate progress percentage
    */
-  private calculateProgressPercentage(burnupData: BurnupDataPoint[], executionData: any): number {
+  private calculateProgressPercentage(
+    burnupData: BurnupDataPoint[],
+    executionData: any
+  ): number {
     if (burnupData.length === 0) return 0;
-    
+
     const latestBurnup = burnupData[burnupData.length - 1];
-    return Math.min(100, (latestBurnup.completedScope / executionData.scope.currentScope) * 100);
+    return Math.min(
+      100,
+      (latestBurnup.completedScope / executionData.scope.currentScope) * 100
+    );
   }
 
   /**
    * Process execution alerts and trigger automated actions
    */
   private processExecutionAlerts(piId: string, alerts: ExecutionAlert[]): void {
-    const criticalAlerts = alerts.filter(a => a.severity === 'critical');
-    
+    const criticalAlerts = alerts.filter((a) => a.severity === 'critical');
+
     for (const alert of criticalAlerts) {
       // Send notifications (in practice, would integrate with notification systems)
       this.emit('critical-alert-triggered', {
@@ -1306,14 +1490,14 @@ export class PIExecutionService extends TypedEventBase {
         alertId: alert.alertId,
         category: alert.category,
         message: alert.message,
-        recommendedActions: alert.recommendedActions
+        recommendedActions: alert.recommendedActions,
       });
 
       this.logger.warn('Critical execution alert triggered', {
         piId,
         alertId: alert.alertId,
         category: alert.category,
-        title: alert.title
+        title: alert.title,
       });
     }
   }
@@ -1324,13 +1508,15 @@ export class PIExecutionService extends TypedEventBase {
   private createBrainCoordinatorFallback() {
     return {
       calculatePIMetrics: (config: any) => {
-        this.logger.debug('PI metrics calculated (fallback)', { piId: config.piId });
+        this.logger.debug('PI metrics calculated (fallback)', {
+          piId: config.piId,
+        });
         return {
           confidence: 0.85,
           predictabilityTrend: 'stable',
-          recommendations: []
+          recommendations: [],
         };
-      }
+      },
     };
   }
 
@@ -1339,7 +1525,7 @@ export class PIExecutionService extends TypedEventBase {
       startTimer: (name: string) => ({ name, startTime: Date.now() }),
       endTimer: (name: string) => {
         this.logger.debug('Timer ended (fallback)', { name });
-      }
+      },
     };
   }
 
@@ -1347,7 +1533,7 @@ export class PIExecutionService extends TypedEventBase {
     return {
       emit: (event: string, data: any) => {
         this.logger.debug('Event emitted (fallback)', { event, data });
-      }
+      },
     };
   }
 
@@ -1359,7 +1545,7 @@ export class PIExecutionService extends TypedEventBase {
       getPIHistory: (piId: string) => {
         this.logger.debug('PI history retrieved (fallback)', { piId });
         return { metrics: [], trends: [], benchmarks: [] };
-      }
+      },
     };
   }
 }

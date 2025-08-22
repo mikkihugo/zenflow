@@ -16,11 +16,11 @@
  * @file Memory service implementation.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { Logger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
-import type { Service } from './core/interfaces');
-import type { MemoryServiceConfig, ServiceOperationOptions } from './types');
+import type { Service } from './core/interfaces';
+import type { MemoryServiceConfig, ServiceOperationOptions } from './types';
 
 import('/base-service');
 
@@ -88,7 +88,7 @@ export class MemoryService extends BaseService implements Service {
         namespace: config?.namespace || this.name,
         optimization: config?.optimization || {
           enabled: true,
-          mode: 'balanced',
+          mode:'balanced',
         },
       });
 
@@ -202,7 +202,7 @@ export class MemoryService extends BaseService implements Service {
 
   protected async doHealthCheck(): Promise<boolean> {
     try {
-      if (!this.initialized || this.lifecycleStatus !== 'running') {
+      if (!this.initialized || this.lifecycleStatus !=='running') {
         return false;
       }
 
@@ -239,7 +239,7 @@ export class MemoryService extends BaseService implements Service {
 
     try {
       switch (operation) {
-        case 'get':
+        case'get':
         case 'retrieve':
           return (await this.memoryManager.retrieve(params?.key)) as T;
 
@@ -315,7 +315,7 @@ export class MemoryService extends BaseService implements Service {
           this.monitor?.generateHealthReport?.()?.details?.issues?.length || 0,
       },
       timestamp: new Date()?.toISOString,
-      source: '@claude-zen/intelligence',
+      source:'@claude-zen/intelligence',
     };
   }
 }

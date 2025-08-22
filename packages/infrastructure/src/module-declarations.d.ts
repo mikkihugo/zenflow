@@ -8,14 +8,16 @@ declare module '@claude-zen/otel-collector' {
     endpoint?: string;
     apiKey?: string;
   }
-  
+
   export class OtelCollectorManager {
     constructor(config?: OtelCollectorConfig);
     initialize(): Promise<void>;
-    collect(data: any): Promise<void>;
+    collect(data: unknown): Promise<void>;
   }
 
-  export function createOtelCollector(config?: OtelCollectorConfig): OtelCollectorManager;
+  export function createOtelCollector(
+    config?: OtelCollectorConfig
+  ): OtelCollectorManager;
 }
 
 declare module '@claude-zen/service-container' {

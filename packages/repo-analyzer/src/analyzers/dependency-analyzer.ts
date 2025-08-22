@@ -20,7 +20,7 @@ import type {
   CouplingMetrics,
   CohesionMetrics,
   StabilityMetrics,
-  AnalysisOptions
+  AnalysisOptions,
 } from '../types/index.js';
 
 export class DependencyAnalyzer {
@@ -31,7 +31,10 @@ export class DependencyAnalyzer {
   /**
    * Analyze dependencies for the entire repository
    */
-  async analyzeRepository(rootPath: string, options?: AnalysisOptions): Promise<DependencyMetrics> {
+  async analyzeRepository(
+    rootPath: string,
+    options?: AnalysisOptions
+  ): Promise<DependencyMetrics> {
     this.logger.info(`Starting dependency analysis for ${rootPath}`);
 
     // Get all relevant files
@@ -39,18 +42,23 @@ export class DependencyAnalyzer {
     this.logger.info(`Found ${files.length} source files to analyze`);
 
     // Build dependency graph using multiple tools
-    const [madgeResult, dependencyMap, graphMetrics] = await Promise.allSettled([
-      this.buildMadgeGraph(rootPath, options),
-      this.buildDetailedDependencyMap(files),
-      this.calculateGraphMetrics(files)
-    ]);
+    const [madgeResult, dependencyMap, graphMetrics] = await Promise.allSettled(
+      [
+        this.buildMadgeGraph(rootPath, options),
+        this.buildDetailedDependencyMap(files),
+        this.calculateGraphMetrics(files),
+      ]
+    );
 
     const madgeGraph = this.getSettledValue(madgeResult, null);
-    const detailedDeps = this.getSettledValue(dependencyMap, new Map());
-    const metrics = this.getSettledValue(graphMetrics, this.getEmptyMetrics());
+    const detailedDeps = this.getSettledValue(dependencyMap, new Map())();
+    const metrics = this.getSettledValue(graphMetrics, this.getEmptyMetrics())();
 
     // Detect circular dependencies
-    const circularDependencies = await this.detectCircularDependencies(madgeGraph, detailedDeps);
+    const circularDependencies = await this.detectCircularDependencies(
+      madgeGraph,
+      detailedDeps
+    );
 
     // Build comprehensive dependency graph
     const dependencyGraph = this.buildDependencyGraph(detailedDeps, files);
@@ -58,7 +66,10 @@ export class DependencyAnalyzer {
     // Calculate advanced metrics
     const coupling = this.calculateCouplingMetrics(dependencyGraph);
     const cohesion = this.calculateCohesionMetrics(dependencyGraph);
-    const stability = this.calculateStabilityMetrics(dependencyGraph, circularDependencies);
+    const stability = this.calculateStabilityMetrics(
+      dependencyGraph,
+      circularDependencies
+    );
 
     // Count dependencies
     const totalDeps = this.countTotalDependencies(detailedDeps);
@@ -73,55 +84,69 @@ export class DependencyAnalyzer {
       dependencyGraph,
       coupling,
       cohesion,
-      stability
+      stability,
     };
   }
 
   /**
    * Get source files using fast-glob
    */
-  private async getSourceFiles(rootPath: string, options?: AnalysisOptions): Promise<string[]> {
+  private async getSourceFiles(
+    rootPath: string,
+    options?: AnalysisOptions
+  ): Promise<string[]> {
     const patterns = [
       '**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}',
-      ...(options?.includeTests ? [] : ['!**/*.{test,spec}.{ts,tsx,js,jsx}', '!**/test/**', '!**/tests/**']),
+      ...(options?.includeTests
+        ? []
+        : ['!**/*.{test,spec}.{ts,tsx,js,jsx}', '!**/test/**', '!**/tests/**']),
       ...(options?.includeNodeModules ? [] : ['!**/node_modules/**']),
       ...(options?.includeDotFiles ? [] : ['!**/.*']),
-      ...(options?.excludePatterns || []).map(p => `!${p}`)
+      ...(options?.excludePatterns'' | '''' | ''[]).map((p) => `!${p}`),
     ];
 
     return fastGlob(patterns, {
       cwd: rootPath,
       absolute: true,
       followSymbolicLinks: false,
-      ignore: ['**/dist/**', '**/build/**', '**/.git/**']
+      ignore: ['**/dist/**', '**/build/**', '**/.git/**'],
     });
   }
 
   /**
    * Build dependency graph using madge (battle-tested circular dependency detection)
    */
-  private async buildMadgeGraph(rootPath: string, options?: AnalysisOptions): Promise<any> {
+  private async buildMadgeGraph(
+    rootPath: string,
+    options?: AnalysisOptions
+  ): Promise<any> {
     try {
       const madgeOptions = {
         fileExtensions: ['ts', 'tsx', 'js', 'jsx', 'mts', 'cts', 'mjs', 'cjs'],
         excludeRegExp: [
-          ...(options?.includeTests ? [] : [/\.test\.|\.spec\.|\/test\/|\/tests\//]),
+          ...(options?.includeTests
+            ? []
+            : [/\.test\.'' | ''\.spec\.'' | ''\/test\/'' | ''\/tests\//]),
           ...(options?.includeNodeModules ? [] : [/node_modules/]),
-          /dist\/|build\/|\.git\//
+          /dist\/'' | ''build\/'' | ''\.git\//,
         ],
         tsConfig: `${rootPath}/tsconfig.json`,
         webpackConfig: `${rootPath}/webpack.config.js`,
         requireConfig: `${rootPath}/.requirerc`,
         detectiveOptions: {
-          skipTypeImports: true
-        }
+          skipTypeImports: true,
+        },
       };
 
       const result = await madge(rootPath, madgeOptions);
-      this.logger.info(`Madge found ${Object.keys(result.obj()).length} modules`);
+      this.logger.info(
+        `Madge found ${Object.keys(result.obj()).length} modules`
+      );
       return result;
     } catch (error) {
-      this.logger.warn('Madge analysis failed, falling back to manual analysis:', error);
+      this.logger.warn('Madge analysis failed, falling back to manual analysis:',
+        error
+      );
       return null;
     }
   }
@@ -129,44 +154,50 @@ export class DependencyAnalyzer {
   /**
    * Build detailed dependency map using detective and precinct
    */
-  private async buildDetailedDependencyMap(files: string[]): Promise<Map<string, FileDependencyInfo>> {
+  private async buildDetailedDependencyMap(
+    files: string[]
+  ): Promise<Map<string, FileDependencyInfo>> {
     const dependencyMap = new Map<string, FileDependencyInfo>();
     const fs = await import('fs/promises');
 
-    await Promise.all(files.map(async (filePath) => {
-      try {
-        const content = await fs.readFile(filePath, 'utf-8');
-        const deps = await this.extractDependencies(content, filePath);
-        
-        dependencyMap.set(filePath, {
-          filePath,
-          dependencies: deps,
-          size: content.length,
-          lines: content.split('\n').length,
-          complexity: this.estimateComplexity(content)
-        });
+    await Promise.all(
+      files.map(async (filePath) => {
+        try {
+          const content = await fs.readFile(filePath, 'utf-8');
+          const deps = await this.extractDependencies(content, filePath);
 
-        // Add to graph
-        this.graph.setNode(filePath, {
-          file: filePath,
-          size: content.length,
-          lines: content.split('\n').length
-        });
+          dependencyMap.set(filePath, {
+            filePath,
+            dependencies: deps,
+            size: content.length,
+            lines: content.split('\n').length,
+            complexity: this.estimateComplexity(content),
+          });
 
-        // Add edges
-        for (const dep of deps) {
-          if (dep.resolvedPath && files.includes(dep.resolvedPath)) {
-            this.graph.setEdge(filePath, dep.resolvedPath, {
-              type: dep.type,
-              weight: dep.weight
-            });
+          // Add to graph
+          this.graph.setNode(filePath, {
+            file: filePath,
+            size: content.length,
+            lines: content.split('\n').length,
+          });
+
+          // Add edges
+          for (const dep of deps) {
+            if (dep.resolvedPath && files.includes(dep.resolvedPath)) {
+              this.graph.setEdge(filePath, dep.resolvedPath, {
+                type: dep.type,
+                weight: dep.weight,
+              });
+            }
           }
+        } catch (error) {
+          this.logger.debug(
+            `Failed to analyze dependencies for ${filePath}:`,
+            error
+          );
         }
-
-      } catch (error) {
-        this.logger.debug(`Failed to analyze dependencies for ${filePath}:`, error);
-      }
-    }));
+      })
+    );
 
     return dependencyMap;
   }
@@ -174,7 +205,10 @@ export class DependencyAnalyzer {
   /**
    * Extract dependencies using multiple detective engines
    */
-  private async extractDependencies(content: string, filePath: string): Promise<IndividualDependencyInfo[]> {
+  private async extractDependencies(
+    content: string,
+    filePath: string
+  ): Promise<IndividualDependencyInfo[]> {
     const dependencies: IndividualDependencyInfo[] = [];
 
     try {
@@ -184,8 +218,8 @@ export class DependencyAnalyzer {
         includeCore: false,
         detective: {
           skipTypeImports: false,
-          mixedImports: true
-        }
+          mixedImports: true,
+        },
       });
 
       for (const dep of deps) {
@@ -201,19 +235,20 @@ export class DependencyAnalyzer {
           dependencies.push(depInfo);
         }
       }
-
     } catch (error) {
       this.logger.debug(`Dependency extraction failed for ${filePath}:`, error);
-      
+
       // Manual regex fallback
       const manualDeps = this.extractDependenciesManual(content);
-      dependencies.push(...manualDeps.map(dep => ({
-        name: dep,
-        type: 'unknown' as const,
-        resolvedPath: null,
-        weight: 1,
-        line: 0
-      })));
+      dependencies.push(
+        ...manualDeps.map((dep) => ({
+          name: dep,
+          type: 'unknown'as const,
+          resolvedPath: null,
+          weight: 1,
+          line: 0,
+        }))
+      );
     }
 
     return dependencies;
@@ -222,7 +257,11 @@ export class DependencyAnalyzer {
   /**
    * Analyze individual dependency
    */
-  private async analyzeDependency(depName: string, fromFile: string, content: string): Promise<IndividualDependencyInfo> {
+  private async analyzeDependency(
+    depName: string,
+    fromFile: string,
+    content: string
+  ): Promise<IndividualDependencyInfo> {
     const resolvedPath = await this.resolveDependencyPath(depName, fromFile);
     const weight = this.calculateDependencyWeight(depName, content);
     const type = this.classifyDependency(depName, content);
@@ -233,24 +272,38 @@ export class DependencyAnalyzer {
       type,
       resolvedPath,
       weight,
-      line
+      line,
     };
   }
 
   /**
    * Resolve dependency path to absolute path
    */
-  private async resolveDependencyPath(depName: string, fromFile: string): Promise<string | null> {
+  private async resolveDependencyPath(
+    depName: string,
+    fromFile: string
+  ): Promise<string'' | ''null> {
     try {
       if (depName.startsWith('.')) {
         // Relative import
         const path = await import('path');
         const resolved = path.resolve(path.dirname(fromFile), depName);
-        
+
         // Try different extensions
         const fs = await import('fs/promises');
-        const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mts', '.cts', '.mjs', '.cjs', '/index.ts', '/index.js'];
-        
+        const extensions = [
+          '.ts',
+          '.tsx',
+          '.js',
+          '.jsx',
+          '.mts',
+          '.cts',
+          '.mjs',
+          '.cjs',
+          '/index.ts',
+          '/index.js',
+        ];
+
         for (const ext of extensions) {
           const fullPath = resolved + ext;
           try {
@@ -270,7 +323,10 @@ export class DependencyAnalyzer {
    */
   private calculateDependencyWeight(depName: string, content: string): number {
     // Count usage frequency
-    const regex = new RegExp(depName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    const regex = new RegExp(
+      depName.replace(/[.*+?^${}()'' | ''[\]\\]/g,'\\$&'),
+      'g'
+    );
     const matches = content.match(regex);
     return matches ? Math.min(matches.length, 10) : 1;
   }
@@ -278,10 +334,16 @@ export class DependencyAnalyzer {
   /**
    * Classify dependency type
    */
-  private classifyDependency(depName: string, content: string): 'import' | 'require' | 'dynamic-import' | 'type-only' {
-    if (content.includes(`import type`) && content.includes(depName)) return 'type-only';
-    if (content.includes(`import(`) && content.includes(depName)) return 'dynamic-import';
-    if (content.includes(`require(`) && content.includes(depName)) return 'require';
+  private classifyDependency(
+    depName: string,
+    content: string
+  ): 'import''' | '''require''' | '''dynamic-import''' | '''type-only' {
+    if (content.includes(`import type`) && content.includes(depName))
+      return 'type-only';
+    if (content.includes(`import(`) && content.includes(depName))
+      return 'dynamic-import';
+    if (content.includes(`require(`) && content.includes(depName))
+      return 'require';
     return 'import';
   }
 
@@ -291,8 +353,10 @@ export class DependencyAnalyzer {
   private findDependencyLine(depName: string, content: string): number {
     const lines = content.split('\n');
     for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes(depName) && 
-          (lines[i].includes('import') || lines[i].includes('require'))) {
+      if (
+        lines[i].includes(depName) &&
+        (lines[i].includes('import')'' | '''' | ''lines[i].includes('require'))
+      ) {
         return i + 1;
       }
     }
@@ -304,20 +368,21 @@ export class DependencyAnalyzer {
    */
   private extractDependenciesManual(content: string): string[] {
     const dependencies = new Set<string>();
-    
+
     // ES6 imports
-    const importRegex = /import\s+(?:[\w*{}\s,]+\s+from\s+)?['"]([@\w.-/]+)['"]/g;
+    const importRegex =
+      /import\s+(?:[\w*{}\s,]+\s+from\s+)?['"]([@\w.-/]+)['"]/g;
     let match;
     while ((match = importRegex.exec(content)) !== null) {
       dependencies.add(match[1]);
     }
-    
+
     // CommonJS requires
     const requireRegex = /require\s*\(\s*['"]([@\w.-/]+)['"]\s*\)/g;
     while ((match = requireRegex.exec(content)) !== null) {
       dependencies.add(match[1]);
     }
-    
+
     // Dynamic imports
     const dynamicImportRegex = /import\s*\(\s*['"]([@\w.-/]+)['"]\s*\)/g;
     while ((match = dynamicImportRegex.exec(content)) !== null) {
@@ -331,7 +396,7 @@ export class DependencyAnalyzer {
    * Detect circular dependencies using graph algorithms
    */
   private async detectCircularDependencies(
-    madgeResult: any, 
+    madgeResult: any,
     dependencyMap: Map<string, FileDependencyInfo>
   ): Promise<CircularDependency[]> {
     const cycles: CircularDependency[] = [];
@@ -345,7 +410,7 @@ export class DependencyAnalyzer {
             cycle,
             severity: cycle.length > 3 ? 'error' : 'warning',
             impactScore: this.calculateCycleImpact(cycle, dependencyMap),
-            suggestions: this.generateCycleBreakingSuggestions(cycle)
+            suggestions: this.generateCycleBreakingSuggestions(cycle),
           });
         }
       } catch (error) {
@@ -361,7 +426,7 @@ export class DependencyAnalyzer {
           cycle,
           severity: cycle.length > 3 ? 'error' : 'warning',
           impactScore: this.calculateCycleImpact(cycle, dependencyMap),
-          suggestions: this.generateCycleBreakingSuggestions(cycle)
+          suggestions: this.generateCycleBreakingSuggestions(cycle),
         });
       }
     }
@@ -372,10 +437,13 @@ export class DependencyAnalyzer {
   /**
    * Calculate impact score of circular dependency
    */
-  private calculateCycleImpact(cycle: string[], dependencyMap: Map<string, FileDependencyInfo>): number {
+  private calculateCycleImpact(
+    cycle: string[],
+    dependencyMap: Map<string, FileDependencyInfo>
+  ): number {
     let totalComplexity = 0;
     let totalSize = 0;
-    
+
     for (const file of cycle) {
       const info = dependencyMap.get(file);
       if (info) {
@@ -383,13 +451,16 @@ export class DependencyAnalyzer {
         totalSize += info.size;
       }
     }
-    
+
     const cycleLength = cycle.length;
     const avgComplexity = totalComplexity / cycleLength;
     const avgSize = totalSize / cycleLength;
-    
+
     // Normalize to 0-1 scale
-    return Math.min(1, (cycleLength * 0.2) + (avgComplexity * 0.1) + (avgSize * 0.0001));
+    return Math.min(
+      1,
+      cycleLength * 0.2 + avgComplexity * 0.1 + avgSize * 0.0001
+    );
   }
 
   /**
@@ -400,11 +471,12 @@ export class DependencyAnalyzer {
       'Extract common functionality into a shared module',
       'Use dependency injection to invert control',
       'Apply the Interface Segregation Principle',
-      'Consider using events or observers instead of direct dependencies'
+      'Consider using events or observers instead of direct dependencies',
     ];
 
     if (cycle.length > 4) {
-      suggestions.push('The cycle is complex - consider architectural refactoring');
+      suggestions.push(
+        'The cycle is complex - consider architectural refactoring');
     }
 
     return suggestions;
@@ -413,7 +485,10 @@ export class DependencyAnalyzer {
   /**
    * Build comprehensive dependency graph
    */
-  private buildDependencyGraph(dependencyMap: Map<string, FileDependencyInfo>, files: string[]): DependencyGraph {
+  private buildDependencyGraph(
+    dependencyMap: Map<string, FileDependencyInfo>,
+    files: string[]
+  ): DependencyGraph {
     const nodes: DependencyNode[] = [];
     const edges: DependencyEdge[] = [];
     const clusters: DependencyCluster[] = [];
@@ -426,7 +501,7 @@ export class DependencyAnalyzer {
         type: this.classifyFileType(filePath),
         size: info.lines,
         complexity: info.complexity,
-        stability: this.calculateNodeStability(filePath, dependencyMap)
+        stability: this.calculateNodeStability(filePath, dependencyMap),
       });
     }
 
@@ -438,7 +513,7 @@ export class DependencyAnalyzer {
             from: fromFile,
             to: dep.resolvedPath,
             weight: dep.weight,
-            type: dep.type
+            type: dep.type,
           });
         }
       }
@@ -455,21 +530,21 @@ export class DependencyAnalyzer {
    * Calculate coupling metrics
    */
   private calculateCouplingMetrics(graph: DependencyGraph): CouplingMetrics {
-    const nodeMap = new Map(graph.nodes.map(n => [n.id, n]));
+    const nodeMap = new Map(graph.nodes.map((n) => [n.id, n]));
     let totalAfferent = 0;
     let totalEfferent = 0;
     let totalInstability = 0;
     let totalAbstractness = 0;
 
     for (const node of graph.nodes) {
-      const afferent = graph.edges.filter(e => e.to === node.id).length;
-      const efferent = graph.edges.filter(e => e.from === node.id).length;
-      const instability = efferent / (afferent + efferent || 1);
-      
+      const afferent = graph.edges.filter((e) => e.to === node.id).length;
+      const efferent = graph.edges.filter((e) => e.from === node.id).length;
+      const instability = efferent / (afferent + efferent'' | '''' | ''1);
+
       totalAfferent += afferent;
       totalEfferent += efferent;
       totalInstability += instability;
-      
+
       // Estimate abstractness (interfaces, abstract classes)
       const abstractness = this.estimateAbstractness(node.file);
       totalAbstractness += abstractness;
@@ -485,7 +560,7 @@ export class DependencyAnalyzer {
       efferentCoupling: totalEfferent / nodeCount,
       instability: avgInstability,
       abstractness: avgAbstractness,
-      distance
+      distance,
     };
   }
 
@@ -495,7 +570,7 @@ export class DependencyAnalyzer {
   private calculateCohesionMetrics(graph: DependencyGraph): CohesionMetrics {
     // Simplified cohesion calculation
     // In practice, this would require deeper AST analysis
-    
+
     let totalLcom = 0;
     let totalTcc = 0;
     let totalLcc = 0;
@@ -504,11 +579,11 @@ export class DependencyAnalyzer {
       // Estimate LCOM (Lack of Cohesion of Methods)
       const lcom = this.estimateLCOM(node.file);
       totalLcom += lcom;
-      
+
       // Estimate TCC (Tight Class Cohesion)
       const tcc = Math.max(0, 1 - lcom);
       totalTcc += tcc;
-      
+
       // Estimate LCC (Loose Class Cohesion)
       const lcc = Math.max(tcc, 0.1);
       totalLcc += lcc;
@@ -518,16 +593,19 @@ export class DependencyAnalyzer {
     return {
       lcom: totalLcom / nodeCount,
       tcc: totalTcc / nodeCount,
-      lcc: totalLcc / nodeCount
+      lcc: totalLcc / nodeCount,
     };
   }
 
   /**
    * Calculate stability metrics
    */
-  private calculateStabilityMetrics(graph: DependencyGraph, circularDeps: CircularDependency[]): StabilityMetrics {
+  private calculateStabilityMetrics(
+    graph: DependencyGraph,
+    circularDeps: CircularDependency[]
+  ): StabilityMetrics {
     let totalStability = 0;
-    
+
     for (const node of graph.nodes) {
       totalStability += node.stability;
     }
@@ -541,48 +619,65 @@ export class DependencyAnalyzer {
       stabilityIndex: avgStability,
       changeFrequency,
       bugFrequency,
-      riskScore
+      riskScore,
     };
   }
 
   // Helper methods
   private getFileType(filePath: string): string {
-    if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) return 'typescript';
-    if (filePath.endsWith('.js') || filePath.endsWith('.jsx')) return 'javascript';
-    if (filePath.endsWith('.mts') || filePath.endsWith('.cts')) return 'typescript';
-    if (filePath.endsWith('.mjs') || filePath.endsWith('.cjs')) return 'javascript';
+    if (filePath.endsWith('.ts')'' | '''' | ''filePath.endsWith('.tsx'))
+      return 'typescript';
+    if (filePath.endsWith('.js')'' | '''' | ''filePath.endsWith('.jsx'))
+      return 'javascript';
+    if (filePath.endsWith('.mts')'' | '''' | ''filePath.endsWith('.cts'))
+      return 'typescript';
+    if (filePath.endsWith('.mjs')'' | '''' | ''filePath.endsWith('.cjs'))
+      return 'javascript';
     return 'javascript';
   }
 
-  private classifyFileType(filePath: string): 'module' | 'component' | 'service' | 'utility' | 'test' {
+  private classifyFileType(
+    filePath: string
+  ): 'module | component' | 'service' | 'utility' | 'test' {
     const fileName = filePath.toLowerCase();
-    if (fileName.includes('test') || fileName.includes('spec')) return 'test';
+    if (fileName.includes('test')'' | '''' | ''fileName.includes('spec')) return 'test';
     if (fileName.includes('service')) return 'service';
-    if (fileName.includes('component') || fileName.includes('view')) return 'component';
-    if (fileName.includes('util') || fileName.includes('helper')) return 'utility';
+    if (fileName.includes('component')'' | '''' | ''fileName.includes('view'))
+      return 'component';
+    if (fileName.includes('util')'' | '''' | ''fileName.includes('helper'))
+      return 'utility';
     return 'module';
   }
 
-  private calculateNodeStability(filePath: string, dependencyMap: Map<string, FileDependencyInfo>): number {
+  private calculateNodeStability(
+    filePath: string,
+    dependencyMap: Map<string, FileDependencyInfo>
+  ): number {
     const info = dependencyMap.get(filePath);
     if (!info) return 0.5;
-    
+
     // Simple stability heuristic
     const complexity = info.complexity;
     const dependencyCount = info.dependencies.length;
-    
+
     // Lower complexity and fewer dependencies = more stable
-    return Math.max(0, Math.min(1, 1 - (complexity * 0.1) - (dependencyCount * 0.05)));
+    return Math.max(
+      0,
+      Math.min(1, 1 - complexity * 0.1 - dependencyCount * 0.05)
+    );
   }
 
-  private detectClusters(nodes: DependencyNode[], edges: DependencyEdge[]): DependencyCluster[] {
+  private detectClusters(
+    nodes: DependencyNode[],
+    edges: DependencyEdge[]
+  ): DependencyCluster[] {
     // Simple clustering based on file paths and dependencies
     const clusters = new Map<string, string[]>();
-    
+
     for (const node of nodes) {
       const pathParts = node.file.split('/');
       const clusterKey = pathParts.slice(0, -1).join('/'); // Directory path
-      
+
       if (!clusters.has(clusterKey)) {
         clusters.set(clusterKey, []);
       }
@@ -594,22 +689,34 @@ export class DependencyAnalyzer {
       nodes: nodeIds,
       cohesion: this.calculateClusterCohesion(nodeIds, edges),
       coupling: this.calculateClusterCoupling(nodeIds, edges),
-      domain: this.inferDomain(path)
+      domain: this.inferDomain(path),
     }));
   }
 
-  private calculateClusterCohesion(nodeIds: string[], edges: DependencyEdge[]): number {
-    const internalEdges = edges.filter(e => nodeIds.includes(e.from) && nodeIds.includes(e.to));
+  private calculateClusterCohesion(
+    nodeIds: string[],
+    edges: DependencyEdge[]
+  ): number {
+    const internalEdges = edges.filter(
+      (e) => nodeIds.includes(e.from) && nodeIds.includes(e.to)
+    );
     const totalPossibleEdges = nodeIds.length * (nodeIds.length - 1);
-    return totalPossibleEdges > 0 ? internalEdges.length / totalPossibleEdges : 0;
+    return totalPossibleEdges > 0
+      ? internalEdges.length / totalPossibleEdges
+      : 0;
   }
 
-  private calculateClusterCoupling(nodeIds: string[], edges: DependencyEdge[]): number {
-    const externalEdges = edges.filter(e => 
-      (nodeIds.includes(e.from) && !nodeIds.includes(e.to)) ||
-      (!nodeIds.includes(e.from) && nodeIds.includes(e.to))
+  private calculateClusterCoupling(
+    nodeIds: string[],
+    edges: DependencyEdge[]
+  ): number {
+    const externalEdges = edges.filter(
+      (e) =>
+        (nodeIds.includes(e.from) && !nodeIds.includes(e.to))'' | '''' | ''(!nodeIds.includes(e.from) && nodeIds.includes(e.to))
     );
-    const totalEdges = edges.filter(e => nodeIds.includes(e.from) || nodeIds.includes(e.to));
+    const totalEdges = edges.filter(
+      (e) => nodeIds.includes(e.from)'' | '''' | ''nodeIds.includes(e.to)
+    );
     return totalEdges.length > 0 ? externalEdges.length / totalEdges.length : 0;
   }
 
@@ -617,18 +724,23 @@ export class DependencyAnalyzer {
     const segments = path.split('/').filter(Boolean);
     if (segments.includes('components')) return 'ui';
     if (segments.includes('services')) return 'api';
-    if (segments.includes('utils') || segments.includes('helpers')) return 'utility';
-    if (segments.includes('test') || segments.includes('tests')) return 'test';
+    if (segments.includes('utils')'' | '''' | ''segments.includes('helpers'))
+      return 'utility';
+    if (segments.includes('test')'' | '''' | ''segments.includes('tests')) return 'test';
     if (segments.includes('core')) return 'core';
-    return segments[segments.length - 1] || 'unknown';
+    return segments[segments.length - 1]'' | '''' | '''unknown';
   }
 
   private estimateComplexity(content: string): number {
     // Simple complexity estimation
     const lines = content.split('\n').length;
-    const functions = (content.match(/function\s+\w+|=>\s*{|^\s*\w+\s*:/gm) || []).length;
-    const conditionals = (content.match(/\b(if|else|switch|case|while|for)\b/g) || []).length;
-    
+    const functions = (
+      content.match(/function\s+\w+'' | ''=>\s*{'' | ''^\s*\w+\s*:/gm)'' | '''' | ''[]
+    ).length;
+    const conditionals = (
+      content.match(/\b(if'' | ''else'' | ''switch'' | ''case'' | ''while'' | ''for)\b/g)'' | '''' | ''[]
+    ).length;
+
     return Math.min(100, lines * 0.1 + functions * 2 + conditionals * 3);
   }
 
@@ -636,8 +748,9 @@ export class DependencyAnalyzer {
     // Would require full AST analysis for accuracy
     // This is a simple heuristic
     const fileName = filePath.toLowerCase();
-    if (fileName.includes('interface') || fileName.includes('abstract')) return 0.8;
-    if (fileName.includes('base') || fileName.includes('core')) return 0.6;
+    if (fileName.includes('interface')'' | '''' | ''fileName.includes('abstract'))
+      return 0.8;
+    if (fileName.includes('base')'' | '''' | ''fileName.includes('core')) return 0.6;
     return 0.2;
   }
 
@@ -651,11 +764,13 @@ export class DependencyAnalyzer {
     return {
       nodeCount: files.length,
       edgeCount: 0,
-      density: 0
+      density: 0,
     };
   }
 
-  private countTotalDependencies(dependencyMap: Map<string, FileDependencyInfo>): number {
+  private countTotalDependencies(
+    dependencyMap: Map<string, FileDependencyInfo>
+  ): number {
     const allDeps = new Set<string>();
     for (const [, info] of dependencyMap) {
       for (const dep of info.dependencies) {
@@ -665,7 +780,9 @@ export class DependencyAnalyzer {
     return allDeps.size;
   }
 
-  private countDirectDependencies(dependencyMap: Map<string, FileDependencyInfo>): number {
+  private countDirectDependencies(
+    dependencyMap: Map<string, FileDependencyInfo>
+  ): number {
     const directDeps = new Set<string>();
     for (const [, info] of dependencyMap) {
       for (const dep of info.dependencies) {
@@ -677,7 +794,10 @@ export class DependencyAnalyzer {
     return directDeps.size;
   }
 
-  private getSettledValue<T>(result: PromiseSettledResult<T>, defaultValue: T): T {
+  private getSettledValue<T>(
+    result: PromiseSettledResult<T>,
+    defaultValue: T
+  ): T {
     return result.status === 'fulfilled' ? result.value : defaultValue;
   }
 
@@ -685,7 +805,7 @@ export class DependencyAnalyzer {
     return {
       nodeCount: 0,
       edgeCount: 0,
-      density: 0
+      density: 0,
     };
   }
 }
@@ -702,7 +822,7 @@ interface FileDependencyInfo {
 // Secondary DependencyInfo interface for individual dependencies
 interface IndividualDependencyInfo {
   name: string;
-  type: 'import' | 'require' | 'dynamic-import' | 'type-only';
+  type: 'import''' | '''require''' | '''dynamic-import''' | '''type-only';
   resolvedPath: string | null;
   weight: number;
   line: number;

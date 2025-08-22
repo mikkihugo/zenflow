@@ -1,6 +1,6 @@
 /**
  * @file Context Manager - Replaces Hook System Context Loading
- * 
+ *
  * Manages agent and swarm context, replacing the removed hook system's
  * context loading functionality with integrated memory management.
  */
@@ -113,34 +113,38 @@ export const DEFAULT_CONTEXT_CONFIG: ContextManagerConfig = {
     agents: 'context:agents',
     swarms: 'context:swarms',
     sessions: 'context:sessions',
-    global: 'context:global'
-  }
+    global: 'context:global',
+  },
 };
 
 /**
  * Context Manager - Handles context loading and management
- * 
+ *
  * Replaces the removed hook system's context loading with memory-backed
  * context management for agents, swarms, and sessions.
  */
 export class ContextManager extends TypedEventBase {
   private config: ContextManagerConfig;
   private memorySystem: MemorySystem;
-  private contextCache: Map<string, { data: unknown; timestamp: number }> = new Map();
+  private contextCache: Map<string, { data: unknown; timestamp: number }> =
+    new Map();
   private syncTimer?: NodeJS.Timeout;
 
-  constructor(memorySystem: MemorySystem, config?: Partial<ContextManagerConfig>) {
+  constructor(
+    memorySystem: MemorySystem,
+    config?: Partial<ContextManagerConfig>
+  ) {
     super();
     this.config = { ...DEFAULT_CONTEXT_CONFIG, ...config };
     this.memorySystem = memorySystem;
-    
+
     if (this.config.enabled && this.config.autoSync) {
       this.startAutoSync();
     }
-    
-    logger.info('ContextManager initialized', { 
+
+    logger.info('ContextManager initialized', {
       enabled: this.config.enabled,
-      autoSync: this.config.autoSync 
+      autoSync: this.config.autoSync,
     });
   }
 
@@ -148,7 +152,7 @@ export class ContextManager extends TypedEventBase {
    * Load context for any entity (replaces hook system context loading)
    */
   async loadContext(context: {
-    type: 'agent' | 'swarm' | 'session' | 'global';
+    type: 'agent | swarm' | 'session''' | '''global';
     id: string;
     options?: {
       includeHistory?: boolean;
@@ -162,74 +166,84 @@ export class ContextManager extends TypedEventBase {
 
     try {
       const cacheKey = `${context.type}:${context.id}`;
-      
+
       // Check cache first
       const cached = this.contextCache.get(cacheKey);
       if (cached && this.isCacheValid(cached.timestamp)) {
-        logger.debug('Context loaded from cache', { type: context.type, id: context.id });
+        logger.debug('Context loaded from cache', {
+          type: context.type,
+          id: context.id,
+        });
         return {
           loaded: true,
           context: cached.data as Record<string, unknown>,
           timestamp: cached.timestamp,
-          source: 'cache'
+          source: 'cache',
         };
       }
 
       // Load from memory system
       const namespace = this.getNamespace(context.type);
       const data = await this.memorySystem.retrieve(context.id, namespace);
-      
+
       if (data) {
         // Update cache
         this.contextCache.set(cacheKey, { data, timestamp: Date.now() });
-        
+
         // Clean cache if needed
         this.cleanCache();
-        
-        logger.debug('Context loaded from memory', { type: context.type, id: context.id });
-        
+
+        logger.debug('Context loaded from memory', {
+          type: context.type,
+          id: context.id,
+        });
+
         this.emit('context-loaded', {
           type: context.type,
           id: context.id,
-          success: true
+          success: true,
         });
 
         return {
           loaded: true,
           context: data as Record<string, unknown>,
           timestamp: Date.now(),
-          source: 'memory'
+          source: 'memory',
         };
       } else {
         // No context found, return empty context
-        logger.debug('No context found, returning empty', { type: context.type, id: context.id });
-        
+        logger.debug('No context found, returning empty', {
+          type: context.type,
+          id: context.id,
+        });
+
         return {
           loaded: false,
           context: {},
           timestamp: Date.now(),
-          source: 'empty'
+          source: 'empty',
         };
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error('Context loading failed', { 
-        type: context.type, 
-        id: context.id, 
-        error: errorMessage 
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      logger.error('Context loading failed', {
+        type: context.type,
+        id: context.id,
+        error: errorMessage,
       });
-      
+
       this.emit('context-error', {
         type: context.type,
         id: context.id,
-        error: errorMessage
+        error: errorMessage,
       });
-      
+
       return {
         loaded: false,
         context: {},
         timestamp: Date.now(),
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }
@@ -238,37 +252,41 @@ export class ContextManager extends TypedEventBase {
    * Save context to memory
    */
   async saveContext(
-    type: 'agent' | 'swarm' | 'session' | 'global',
+    type: 'agent | swarm' | 'session''' | '''global',
     id: string,
     contextData: Record<string, unknown>
   ): Promise<boolean> {
     try {
       const namespace = this.getNamespace(type);
       await this.memorySystem.store(id, contextData, namespace);
-      
+
       // Update cache
       const cacheKey = `${type}:${id}`;
-      this.contextCache.set(cacheKey, { data: contextData, timestamp: Date.now() });
-      
+      this.contextCache.set(cacheKey, {
+        data: contextData,
+        timestamp: Date.now(),
+      });
+
       logger.debug('Context saved', { type, id });
-      
+
       this.emit('context-saved', {
         type,
         id,
-        success: true
+        success: true,
       });
-      
+
       return true;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       logger.error('Context saving failed', { type, id, error: errorMessage });
-      
+
       this.emit('context-error', {
         type,
         id,
-        error: errorMessage
+        error: errorMessage,
       });
-      
+
       return false;
     }
   }
@@ -276,13 +294,13 @@ export class ContextManager extends TypedEventBase {
   /**
    * Load agent context with full details
    */
-  async loadAgentContext(agentId: string): Promise<AgentContext | null> {
-    const result = await this.loadContext({ type: 'agent', id: agentId });
-    
+  async loadAgentContext(agentId: string): Promise<AgentContext'' | ''null> {
+    const result = await this.loadContext({ type:'agent', id: agentId });
+
     if (result.loaded && result.context) {
       return result.context as AgentContext;
     }
-    
+
     // Return default agent context if none exists
     return {
       agentId,
@@ -296,34 +314,34 @@ export class ContextManager extends TypedEventBase {
         tasksCompleted: 0,
         averageDuration: 0,
         successRate: 0,
-        lastActivity: Date.now()
-      }
+        lastActivity: Date.now(),
+      },
     };
   }
 
   /**
    * Load swarm context with full details
    */
-  async loadSwarmContext(swarmId: string): Promise<SwarmContext | null> {
-    const result = await this.loadContext({ type: 'swarm', id: swarmId });
-    
+  async loadSwarmContext(swarmId: string): Promise<SwarmContext'' | ''null> {
+    const result = await this.loadContext({ type:'swarm', id: swarmId });
+
     if (result.loaded && result.context) {
       return result.context as SwarmContext;
     }
-    
+
     return null;
   }
 
   /**
    * Load session context with full details
    */
-  async loadSessionContext(sessionId: string): Promise<SessionContext | null> {
-    const result = await this.loadContext({ type: 'session', id: sessionId });
-    
+  async loadSessionContext(sessionId: string): Promise<SessionContext'' | ''null> {
+    const result = await this.loadContext({ type:'session', id: sessionId });
+
     if (result.loaded && result.context) {
       return result.context as SessionContext;
     }
-    
+
     return null;
   }
 
@@ -337,7 +355,7 @@ export class ContextManager extends TypedEventBase {
     try {
       const context = await this.loadAgentContext(agentId);
       if (!context) return false;
-      
+
       context.metrics = { ...context.metrics, ...metrics };
       return await this.saveContext('agent', agentId, context);
     } catch (error) {
@@ -358,29 +376,31 @@ export class ContextManager extends TypedEventBase {
     try {
       const context = await this.loadAgentContext(agentId);
       if (!context) return false;
-      
+
       context.history.push({
         task,
         duration,
         success,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
-      
+
       // Keep only last 50 history items
       if (context.history.length > 50) {
         context.history = context.history.slice(-50);
       }
-      
+
       // Update metrics
       context.metrics.tasksCompleted++;
       context.metrics.lastActivity = Date.now();
-      
-      const successful = context.history.filter(h => h.success).length;
+
+      const successful = context.history.filter((h) => h.success).length;
       context.metrics.successRate = successful / context.history.length;
-      
-      const avgDuration = context.history.reduce((sum, h) => sum + h.duration, 0) / context.history.length;
+
+      const avgDuration =
+        context.history.reduce((sum, h) => sum + h.duration, 0) /
+        context.history.length;
       context.metrics.averageDuration = avgDuration;
-      
+
       return await this.saveContext('agent', agentId, context);
     } catch (error) {
       logger.error('Failed to add task to history', { agentId, error });
@@ -392,14 +412,16 @@ export class ContextManager extends TypedEventBase {
    * Get global system context
    */
   async getGlobalContext(): Promise<Record<string, unknown>> {
-    const result = await this.loadContext({ type: 'global', id: 'system' });
-    return result.context || {};
+    const result = await this.loadContext({ type: 'global', id: 'system'});
+    return result.context'' | '''' | ''{};
   }
 
   /**
    * Update global system context
    */
-  async updateGlobalContext(updates: Record<string, unknown>): Promise<boolean> {
+  async updateGlobalContext(
+    updates: Record<string, unknown>
+  ): Promise<boolean> {
     const current = await this.getGlobalContext();
     const updated = { ...current, ...updates };
     return await this.saveContext('global', 'system', updated);
@@ -428,12 +450,12 @@ export class ContextManager extends TypedEventBase {
         oldestTimestamp = entry.timestamp;
       }
     }
-    
+
     return {
       size: this.contextCache.size,
       maxSize: this.config.maxCacheSize,
       hitRate: 0, // Would need to track hits/misses
-      oldestEntry: oldestTimestamp
+      oldestEntry: oldestTimestamp,
     };
   }
 
@@ -445,7 +467,7 @@ export class ContextManager extends TypedEventBase {
       clearInterval(this.syncTimer);
       this.syncTimer = undefined;
     }
-    
+
     this.contextCache.clear();
     this.emit('shutdown', {});
     logger.info('ContextManager shutdown');
@@ -454,7 +476,7 @@ export class ContextManager extends TypedEventBase {
   /**
    * Get namespace for context type
    */
-  private getNamespace(type: 'agent' | 'swarm' | 'session' | 'global'): string {
+  private getNamespace(type: 'agent | swarm' | 'session''' | '''global'): string {
     return this.config.namespaces[type];
   }
 
@@ -462,7 +484,7 @@ export class ContextManager extends TypedEventBase {
    * Check if cache entry is valid
    */
   private isCacheValid(timestamp: number): boolean {
-    return (Date.now() - timestamp) < this.config.cacheTimeout;
+    return Date.now() - timestamp < this.config.cacheTimeout;
   }
 
   /**
@@ -471,19 +493,23 @@ export class ContextManager extends TypedEventBase {
   private cleanCache(): void {
     if (this.contextCache.size > this.config.maxCacheSize) {
       // Remove oldest entries
-      const entries = Array.from(this.contextCache.entries())
-        .sort((a, b) => a[1].timestamp - b[1].timestamp);
-      
-      const toRemove = entries.slice(0, Math.floor(this.config.maxCacheSize * 0.2));
+      const entries = Array.from(this.contextCache.entries()).sort(
+        (a, b) => a[1].timestamp - b[1].timestamp
+      );
+
+      const toRemove = entries.slice(
+        0,
+        Math.floor(this.config.maxCacheSize * 0.2)
+      );
       for (const [key] of toRemove) {
         this.contextCache.delete(key);
       }
     }
-    
+
     // Remove expired entries
     const now = Date.now();
     for (const [key, entry] of this.contextCache.entries()) {
-      if ((now - entry.timestamp) > this.config.cacheTimeout) {
+      if (now - entry.timestamp > this.config.cacheTimeout) {
         this.contextCache.delete(key);
       }
     }
@@ -504,7 +530,7 @@ export class ContextManager extends TypedEventBase {
  * Factory function to create Context Manager
  */
 export function createContextManager(
-  memorySystem: MemorySystem, 
+  memorySystem: MemorySystem,
   config?: Partial<ContextManagerConfig>
 ): ContextManager {
   return new ContextManager(memorySystem, config);
@@ -513,20 +539,23 @@ export function createContextManager(
 /**
  * Global context manager instance
  */
-let globalContextManager: ContextManager | null = null;
+let globalContextManager: ContextManager'' | ''null = null;
 
 /**
  * Get or create global context manager
  */
-export function getGlobalContextManager(memorySystem?: MemorySystem): ContextManager {
+export function getGlobalContextManager(
+  memorySystem?: MemorySystem
+): ContextManager {
   if (!globalContextManager && memorySystem) {
     globalContextManager = new ContextManager(memorySystem);
   }
-  
+
   if (!globalContextManager) {
-    throw new Error('Global context manager not initialized. Provide memorySystem parameter.');
+    throw new Error('Global context manager not initialized. Provide memorySystem parameter.'
+    );
   }
-  
+
   return globalContextManager;
 }
 
@@ -535,10 +564,13 @@ export function getGlobalContextManager(memorySystem?: MemorySystem): ContextMan
  */
 export async function withContextLoading<T>(
   contextManager: ContextManager,
-  contextType: 'agent' | 'swarm' | 'session',
+  contextType: 'agent | swarm' | 'session',
   contextId: string,
   fn: (context: Record<string, unknown>) => Promise<T>
 ): Promise<T> {
-  const contextResult = await contextManager.loadContext({ type: contextType, id: contextId });
+  const contextResult = await contextManager.loadContext({
+    type: contextType,
+    id: contextId,
+  });
   return await fn(contextResult.context);
 }

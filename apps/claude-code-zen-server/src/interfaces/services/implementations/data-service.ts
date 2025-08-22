@@ -11,9 +11,9 @@
  * @file Data service implementation.
  */
 
-import { WebDataService } from './../web/web-data-service');
-import type { Service } from './core/interfaces');
-import type { DataServiceConfig, ServiceOperationOptions } from './types');
+import { WebDataService } from './../web/web-data-service';
+import type { Service } from './core/interfaces';
+import type { DataServiceConfig, ServiceOperationOptions } from './types';
 
 import('/base-service');
 
@@ -400,7 +400,7 @@ export class DataService extends BaseService implements Service {
    */
   private async processData(
     data: any,
-    processingType: 'transform | aggregate' | 'filter = transform'
+    processingType: 'transform | aggregate | filter = transform'
   ): Promise<unknown> {
     this.logger.debug(`Processing data with type: ${processingType}`);
 

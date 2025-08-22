@@ -1,6 +1,6 @@
 /**
  * @fileoverview Coordination Event Bus
- * 
+ *
  * Coordination-specific event bus extending our existing event-system.
  */
 
@@ -36,10 +36,10 @@ export class CoordinationEventBus {
    */
   on<T extends CoordinationEventType>(
     eventType: T['type'],
-    handler: (event: T) => Promise<void> | void
+    handler: (event: T) => Promise<void>'' | ''void
   ): void {
     if (!this.listeners.has(eventType)) {
-      this.listeners.set(eventType, new Set());
+      this.listeners.set(eventType, new Set())();
     }
     this.listeners.get(eventType)!.add(handler);
   }
@@ -49,7 +49,7 @@ export class CoordinationEventBus {
    */
   once<T extends CoordinationEventType>(
     eventType: T['type'],
-    handler: (event: T) => Promise<void> | void
+    handler: (event: T) => Promise<void>'' | ''void
   ): void {
     const wrappedHandler = async (event: T) => {
       await handler(event);
@@ -63,7 +63,7 @@ export class CoordinationEventBus {
    */
   off<T extends CoordinationEventType>(
     eventType: T['type'],
-    handler?: (event: T) => Promise<void> | void
+    handler?: (event: T) => Promise<void>'' | ''void
   ): void {
     const eventListeners = this.listeners.get(eventType);
     if (eventListeners) {
@@ -87,7 +87,7 @@ export class CoordinationEventBus {
           try {
             const result = handler(event);
             // Check if the result is a Promise by checking for then method
-            if (typeof (result as any)?.then === 'function') {
+            if (typeof (result as any)?.then ==='function') {
               promises.push(result as unknown as Promise<void>);
             }
           } catch (error) {
@@ -98,7 +98,9 @@ export class CoordinationEventBus {
           await Promise.all(promises);
         }
       }
-      logger.debug(`Emitted coordination event: ${event.type}`, { eventId: event.id });
+      logger.debug(`Emitted coordination event: ${event.type}`, {
+        eventId: event.id,
+      });
     } catch (error) {
       logger.error(`Failed to emit coordination event ${event.type}:`, error);
       throw error;
@@ -108,13 +110,13 @@ export class CoordinationEventBus {
   /**
    * Create and emit event with automatic ID and timestamp.
    */
-  async createAndEmit<T extends Omit<CoordinationEventType, 'id' | 'timestamp'>>(
-    eventData: T
-  ): Promise<void> {
+  async createAndEmit<
+    T extends Omit<CoordinationEventType, 'id''' | '''timestamp'>,
+  >(eventData: T): Promise<void> {
     const event = {
       ...eventData,
       id: `coord-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     } as unknown as CoordinationEventType;
 
     await this.emit(event);
@@ -123,10 +125,8 @@ export class CoordinationEventBus {
   /**
    * Subscribe to all events (wildcard).
    */
-  onAll(
-    handler: (event: CoordinationEventType) => Promise<void> | void
-  ): void {
-    this.on('*' as any, handler);
+  onAll(handler: (event: CoordinationEventType) => Promise<void>'' | ''void): void {
+    this.on('*'as any, handler);
   }
 
   /**
@@ -134,9 +134,9 @@ export class CoordinationEventBus {
    */
   onMultiple(
     eventTypes: string[],
-    handler: (event: CoordinationEventType) => Promise<void> | void
+    handler: (event: CoordinationEventType) => Promise<void>'' | ''void
   ): void {
-    eventTypes.forEach(eventType => {
+    eventTypes.forEach((eventType) => {
       this.on(eventType as any, handler);
     });
   }
@@ -153,7 +153,7 @@ export class CoordinationEventBus {
       timestamp: Date.now(),
       active: true,
       eventTypes: this.listeners.size,
-      totalHandlers
+      totalHandlers,
     };
   }
 
@@ -174,7 +174,7 @@ export class CoordinationEventBus {
       source: 'coordination-event-bus',
       reason: 'Manual shutdown',
       activeAgents: 0,
-      completedOperations: 0
+      completedOperations: 0,
     });
 
     this.clear();

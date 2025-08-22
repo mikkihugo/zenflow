@@ -29,24 +29,30 @@ import {
 import { EventEmitter } from 'node:events';
 import { getLogger, type Logger } from '@claude-zen/foundation/logging';
 import { Result, ok, err } from 'neverthrow';
-import type { JsonObject, JsonValue, UnknownRecord, Constructor } from '@claude-zen/foundation/types';
+import type {
+  JsonObject,
+  JsonValue,
+  UnknownRecord,
+  Constructor,
+} from '@claude-zen/foundation/types';
 
 /**
  * Resolution mode enum for dependency injection strategies
  */
 export enum ResolutionMode {
   PROXY = 'PROXY',
-  CLASSIC = 'CLASSIC'
+  CLASSIC = 'CLASSIC',
 }
 
 /**
  * Service registration options with dependency injection features
  */
-export interface ServiceRegistrationOptions<T = unknown> extends BuildResolverOptions<T> {
+export interface ServiceRegistrationOptions<T = unknown>
+  extends BuildResolverOptions<T> {
   /** Service lifetime management */
-  lifetime?: typeof Lifetime[keyof typeof Lifetime];
+  lifetime?: (typeof Lifetime)[keyof typeof Lifetime];
   /** Injection mode for constructor/property injection */
-  injectionMode?: typeof InjectionMode[keyof typeof InjectionMode];
+  injectionMode?: (typeof InjectionMode)[keyof typeof InjectionMode];
   /** Resolution mode for dependency injection strategies */
   resolutionMode?: ResolutionMode;
   /** Service capabilities for discovery */
@@ -54,11 +60,11 @@ export interface ServiceRegistrationOptions<T = unknown> extends BuildResolverOp
   /** Service metadata for filtering */
   metadata?: Record<string, unknown>;
   /** Service health check function */
-  healthCheck?: () => boolean | Promise<boolean>;
+  healthCheck?: () => boolean'' | ''Promise<boolean>;
   /** Service interceptors */
   interceptors?: ServiceInterceptor[];
   /** Auto-discovery patterns */
-  discoveryPattern?: string | string[];
+  discoveryPattern?: string'' | ''string[];
   /** Service dependencies */
   dependencies?: string[];
   /** Service tags */
@@ -74,7 +80,11 @@ export interface ServiceRegistrationOptions<T = unknown> extends BuildResolverOp
  */
 export interface ServiceInterceptor {
   name: string;
-  intercept: (target: JsonObject, propertyName: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+  intercept: (
+    target: JsonObject,
+    propertyName: string,
+    descriptor: PropertyDescriptor
+  ) => PropertyDescriptor;
 }
 
 /**
@@ -85,7 +95,7 @@ export interface DiscoveredService {
   service: unknown;
   metadata: ServiceRegistrationOptions;
   capabilities: string[];
-  health: 'healthy' | 'unhealthy' | 'unknown';
+  health:'healthy | unhealthy' | 'unknown';
   performance: {
     resolutionTime: number;
     lastAccessed: number;
@@ -116,33 +126,36 @@ export interface ContainerHealthStatus {
 export class DIContainer extends TypedEventBase {
   private container: AwilixContainer;
   private serviceMetadata = new Map<string, ServiceRegistrationOptions>();
-  private performanceMetrics = new Map<string, { resolutionTime: number; lastAccessed: number; accessCount: number }>();
-  private healthChecks = new Map<string, () => boolean | Promise<boolean>>();
+  private performanceMetrics = new Map<
+    string,
+    { resolutionTime: number; lastAccessed: number; accessCount: number }
+  >();
+  private healthChecks = new Map<string, () => boolean'' | ''Promise<boolean>>();
   private interceptors = new Map<string, ServiceInterceptor[]>();
   private dependencyGraph = new Map<string, string[]>();
   private logger: Logger;
   private startTime = Date.now();
 
   constructor(
-    name = 'di-container',
+    name ='di-container',
     options: {
-      injectionMode?: 'PROXY' | 'CLASSIC';
+      injectionMode?: 'PROXY''' | '''CLASSIC';
       resolutionMode?: ResolutionMode;
       strict?: boolean;
-    } = {},
+    } = {}
   ) {
     super();
     this.logger = getLogger(`DIContainer:${name}`);
 
     // Create container with options
     this.container = createContainer({
-      injectionMode: options.injectionMode || InjectionMode.PROXY,
+      injectionMode: options.injectionMode'' | '''' | ''InjectionMode.PROXY,
       strict: options.strict ?? true,
     });
 
     this.logger.info(`✅ DI container created: ${name}`, {
-      injectionMode: options.injectionMode || 'PROXY',
-      resolutionMode: options.resolutionMode || ResolutionMode.PROXY,
+      injectionMode: options.injectionMode'' | '''' | '''PROXY',
+      resolutionMode: options.resolutionMode'' | '''' | ''ResolutionMode.PROXY,
       strict: options.strict ?? true,
     });
   }
@@ -153,13 +166,13 @@ export class DIContainer extends TypedEventBase {
   registerClass<T>(
     name: string,
     classConstructor: Constructor<T>,
-    options: ServiceRegistrationOptions<T> = {},
+    options: ServiceRegistrationOptions<T> = {}
   ): Result<void, Error> {
     try {
       // Register with library
       this.container.register({
         [name]: asClass(classConstructor, {
-          lifetime: options.lifetime || Lifetime.SINGLETON,
+          lifetime: options.lifetime'' | '''' | ''Lifetime.SINGLETON,
           injectionMode: options.injectionMode,
           ...options,
         }),
@@ -209,12 +222,12 @@ export class DIContainer extends TypedEventBase {
   registerFunction<T>(
     name: string,
     func: (...args: JsonValue[]) => T,
-    options: ServiceRegistrationOptions<T> = {},
+    options: ServiceRegistrationOptions<T> = {}
   ): Result<void, Error> {
     try {
       this.container.register({
         [name]: asFunction(func, {
-          lifetime: options.lifetime || Lifetime.SINGLETON,
+          lifetime: options.lifetime'' | '''' | ''Lifetime.SINGLETON,
           injectionMode: options.injectionMode,
           ...options,
         }),
@@ -247,7 +260,7 @@ export class DIContainer extends TypedEventBase {
   registerInstance<T>(
     name: string,
     instance: T,
-    options: ServiceRegistrationOptions<T> = {},
+    options: ServiceRegistrationOptions<T> = {}
   ): Result<void, Error> {
     try {
       this.container.register({
@@ -279,8 +292,8 @@ export class DIContainer extends TypedEventBase {
    * Auto-discover and register services from modules
    */
   async autoDiscoverServices(
-    pattern: string | string[],
-    options: ListModulesOptions = {},
+    pattern: string'' | ''string[],
+    options: ListModulesOptions = {}
   ): Promise<Result<string[], Error>> {
     try {
       this.logger.info('🔍 Auto-discovering services...', { pattern });
@@ -299,11 +312,19 @@ export class DIContainer extends TypedEventBase {
           // Look for exported services with metadata
           for (const [exportName, exportValue] of Object.entries(module)) {
             if (this.isService(exportValue as UnknownRecord)) {
-              const serviceName = exportName.toLowerCase().replace(/service$/, '');
-              const metadata = this.extractServiceMetadata(exportValue as UnknownRecord);
+              const serviceName = exportName
+                .toLowerCase()
+                .replace(/service$/, '');
+              const metadata = this.extractServiceMetadata(
+                exportValue as UnknownRecord
+              );
 
               if (typeof exportValue === 'function') {
-                this.registerClass(serviceName, exportValue as Constructor<JsonValue>, metadata);
+                this.registerClass(
+                  serviceName,
+                  exportValue as Constructor<JsonValue>,
+                  metadata
+                );
                 registeredServices.push(serviceName);
               } else {
                 this.registerInstance(serviceName, exportValue, metadata);
@@ -312,11 +333,17 @@ export class DIContainer extends TypedEventBase {
             }
           }
         } catch (moduleError) {
-          this.logger.warn(`⚠️ Failed to load module ${moduleInfo.path}:`, moduleError);
+          this.logger.warn(
+            `⚠️ Failed to load module ${moduleInfo.path}:`,
+            moduleError
+          );
         }
       }
 
-      this.logger.info(`✅ Auto-discovery completed: ${registeredServices.length} services`, registeredServices);
+      this.logger.info(
+        `✅ Auto-discovery completed: ${registeredServices.length} services`,
+        registeredServices
+      );
       return ok(registeredServices);
     } catch (error) {
       this.logger.error('❌ Auto-discovery failed:', error);
@@ -362,7 +389,7 @@ export class DIContainer extends TypedEventBase {
       if (metadata.capabilities?.includes(capability)) {
         const resolveResult = this.resolve(name);
         if (resolveResult.isOk()) {
-          const performance = this.performanceMetrics.get(name) || {
+          const performance = this.performanceMetrics.get(name)'' | '''' | ''{
             resolutionTime: 0,
             lastAccessed: Date.now(),
             accessCount: 0,
@@ -372,15 +399,17 @@ export class DIContainer extends TypedEventBase {
             name,
             service: resolveResult.value,
             metadata,
-            capabilities: metadata.capabilities || [],
-            health: 'healthy', // TODO: Implement health checking
+            capabilities: metadata.capabilities'' | '''' | ''[],
+            health:'healthy', // TODO: Implement health checking
             performance,
           });
         }
       }
     }
 
-    return results.sort((a, b) => (b.metadata.priority || 0) - (a.metadata.priority || 0));
+    return results.sort(
+      (a, b) => (b.metadata.priority'' | '''' | ''0) - (a.metadata.priority'' | '''' | ''0)
+    );
   }
 
   /**
@@ -393,7 +422,7 @@ export class DIContainer extends TypedEventBase {
       if (metadata.tags?.includes(tag)) {
         const resolveResult = this.resolve(name);
         if (resolveResult.isOk()) {
-          const performance = this.performanceMetrics.get(name) || {
+          const performance = this.performanceMetrics.get(name)'' | '''' | ''{
             resolutionTime: 0,
             lastAccessed: Date.now(),
             accessCount: 0,
@@ -403,8 +432,8 @@ export class DIContainer extends TypedEventBase {
             name,
             service: resolveResult.value,
             metadata,
-            capabilities: metadata.capabilities || [],
-            health: 'healthy',
+            capabilities: metadata.capabilities'' | '''' | ''[],
+            health:'healthy',
             performance,
           });
         }
@@ -418,7 +447,7 @@ export class DIContainer extends TypedEventBase {
    * Get comprehensive container health status
    */
   async getHealthStatus(): Promise<ContainerHealthStatus> {
-    const services = Array.from(this.serviceMetadata.keys());
+    const services = Array.from(this.serviceMetadata.keys())();
     let healthyServices = 0;
     let totalResolutionTime = 0;
 
@@ -451,7 +480,8 @@ export class DIContainer extends TypedEventBase {
       totalServices: services.length,
       healthyServices,
       unhealthyServices: services.length - healthyServices,
-      averageResolutionTime: services.length > 0 ? totalResolutionTime / services.length : 0,
+      averageResolutionTime:
+        services.length > 0 ? totalResolutionTime / services.length : 0,
       memoryUsage: process.memoryUsage().heapUsed,
       uptime: Date.now() - this.startTime,
       serviceGraph: {
@@ -466,16 +496,23 @@ export class DIContainer extends TypedEventBase {
    * Get service statistics
    */
   getStats() {
-    const services = Array.from(this.serviceMetadata.keys());
+    const services = Array.from(this.serviceMetadata.keys())();
     const capabilityCount = new Set(
-      Array.from(this.serviceMetadata.values()).flatMap(m => m.capabilities || []),
+      Array.from(this.serviceMetadata.values()).flatMap(
+        (m) => m.capabilities'' | '''' | ''[]
+      )
     ).size;
 
-    const lifetimeDistribution = Array.from(this.serviceMetadata.values()).reduce((acc, metadata) => {
-      const lifetime = metadata.lifetime || Lifetime.SINGLETON;
-      acc[lifetime] = (acc[lifetime] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const lifetimeDistribution = Array.from(
+      this.serviceMetadata.values()
+    ).reduce(
+      (acc, metadata) => {
+        const lifetime = metadata.lifetime'' | '''' | ''Lifetime.SINGLETON;
+        acc[lifetime] = (acc[lifetime]'' | '''' | ''0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalServices: services.length,
@@ -483,8 +520,11 @@ export class DIContainer extends TypedEventBase {
       disabledServices: 0,
       capabilityCount,
       lifetimeDistribution,
-      averageResolutionTime: Array.from(this.performanceMetrics.values())
-        .reduce((sum, m) => sum + m.resolutionTime, 0) / services.length || 0,
+      averageResolutionTime:
+        Array.from(this.performanceMetrics.values()).reduce(
+          (sum, m) => sum + m.resolutionTime,
+          0
+        ) / services.length'' | '''' | ''0,
     };
   }
 
@@ -497,11 +537,15 @@ export class DIContainer extends TypedEventBase {
       this.emit('healthCheck', healthStatus);
 
       if (healthStatus.unhealthyServices > 0) {
-        this.logger.warn(`⚠️ ${healthStatus.unhealthyServices} unhealthy services detected`);
+        this.logger.warn(
+          `⚠️ ${healthStatus.unhealthyServices} unhealthy services detected`
+        );
       }
     }, intervalMs);
 
-    this.logger.info(`✅ Health monitoring started (interval: ${intervalMs}ms)`);
+    this.logger.info(
+      `✅ Health monitoring started (interval: ${intervalMs}ms)`
+    );
   }
 
   /**
@@ -528,21 +572,24 @@ export class DIContainer extends TypedEventBase {
    * Helper: Check if export is a service
    */
   private isService(exportValue: UnknownRecord): boolean {
-    return typeof exportValue === 'function' ||
-           (typeof exportValue === 'object' && exportValue !== null);
+    return (
+      typeof exportValue === 'function''' | '''' | ''(typeof exportValue ==='object' && exportValue !== null)
+    );
   }
 
   /**
    * Helper: Extract service metadata from export
    */
-  private extractServiceMetadata(exportValue: UnknownRecord): ServiceRegistrationOptions {
+  private extractServiceMetadata(
+    exportValue: UnknownRecord
+  ): ServiceRegistrationOptions {
     // Look for metadata on the export
-    const metadata = ((exportValue as UnknownRecord)['__serviceMetadata'] || {}) as ServiceRegistrationOptions;
+    const metadata = ((exportValue as UnknownRecord)['__serviceMetadata']'' | '''' | ''{}) as ServiceRegistrationOptions;
     return {
-      lifetime: metadata.lifetime || Lifetime.SINGLETON,
-      capabilities: metadata.capabilities || [],
-      tags: metadata.tags || [],
-      priority: metadata.priority || 0,
+      lifetime: metadata.lifetime'' | '''' | ''Lifetime.SINGLETON,
+      capabilities: metadata.capabilities'' | '''' | ''[],
+      tags: metadata.tags'' | '''' | ''[],
+      priority: metadata.priority'' | '''' | ''0,
       ...metadata,
     };
   }
@@ -558,7 +605,7 @@ export class DIContainer extends TypedEventBase {
     const dfs = (node: string, path: string[]): void => {
       if (recursionStack.has(node)) {
         const cycleStart = path.indexOf(node);
-        cycles.push(path.slice(cycleStart).join(' -> ') + ' -> ' + node);
+        cycles.push(path.slice(cycleStart).join(' -> ') + ' -> '+ node);
         return;
       }
 
@@ -569,7 +616,7 @@ export class DIContainer extends TypedEventBase {
       visited.add(node);
       recursionStack.add(node);
 
-      const dependencies = this.dependencyGraph.get(node) || [];
+      const dependencies = this.dependencyGraph.get(node)'' | '''' | ''[];
       for (const dep of dependencies) {
         dfs(dep, [...path, node]);
       }
@@ -591,12 +638,12 @@ export class DIContainer extends TypedEventBase {
  * Factory function to create dependency injection container
  */
 export function createDIContainer(
-  name = 'di-container',
+  name ='di-container',
   options: {
-    injectionMode?: typeof InjectionMode[keyof typeof InjectionMode];
+    injectionMode?: (typeof InjectionMode)[keyof typeof InjectionMode];
     resolutionMode?: ResolutionMode;
     strict?: boolean;
-  } = {},
+  } = {}
 ): DIContainer {
   return new DIContainer(name, options);
 }
@@ -616,10 +663,10 @@ export function Service(options: ServiceRegistrationOptions = {}) {
  */
 export function Capability(...capabilities: string[]) {
   return function <T extends Constructor<JsonValue>>(constructor: T) {
-    const existing = ((constructor as UnknownRecord)['__serviceMetadata'] || {}) as ServiceRegistrationOptions;
+    const existing = ((constructor as UnknownRecord)['__serviceMetadata']'' | '''' | ''{}) as ServiceRegistrationOptions;
     (constructor as UnknownRecord)['__serviceMetadata'] = {
       ...existing,
-      capabilities: [...(existing.capabilities || []), ...capabilities],
+      capabilities: [...(existing.capabilities'' | '''' | ''[]), ...capabilities],
     };
     return constructor;
   };
@@ -630,7 +677,7 @@ export function Capability(...capabilities: string[]) {
  */
 export function Tag(...tags: string[]) {
   return function <T extends Constructor<JsonValue>>(constructor: T) {
-    const existing = ((constructor as UnknownRecord)['__serviceMetadata'] || {}) as ServiceRegistrationOptions;
+    const existing = ((constructor as UnknownRecord)['__serviceMetadata']'' | '''' | ''{}) as ServiceRegistrationOptions;
     (constructor as UnknownRecord)['__serviceMetadata'] = {
       ...existing,
       tags: [...(existing.tags || []), ...tags],
@@ -640,10 +687,4 @@ export function Tag(...tags: string[]) {
 }
 
 // Export library types and constants for external use
-export {
-  Lifetime,
-  InjectionMode,
-  asClass,
-  asFunction,
-  asValue,
-};
+export { Lifetime, InjectionMode, asClass, asFunction, asValue };

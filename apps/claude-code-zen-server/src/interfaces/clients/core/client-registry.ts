@@ -34,10 +34,10 @@ import {
   ServiceContainer,
   createServiceContainer,
   TypedEventBase,
-} from '@claude-zen/foundation');
-import { getLogger, type Logger } from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 
-import type { ClientInstance, ClientType } from './types');
+import type { ClientInstance, ClientType } from './types';
 
 /**
  * Service Container-based Client Registry
@@ -214,7 +214,7 @@ export class ClientRegistry extends TypedEventBase {
    * Get all client types (compatible with existing UACLRegistry interface)
    */
   getAllClientTypes(): ClientType[] {
-    return Array.from(this.clientTypes?.values());
+    return Array.from(this.clientTypes?.values())();
   }
 
   /**

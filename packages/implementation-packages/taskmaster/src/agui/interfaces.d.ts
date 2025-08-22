@@ -29,16 +29,16 @@ import { TypedEventBase } from '@claude-zen/foundation';
  * ```
  */
 export interface ValidationQuestion {
-    id: string;
-    type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'checkpoint' | 'review';
-    question: string;
-    context: unknown;
-    options?: string[];
-    allowCustom?: boolean;
-    confidence: number;
-    priority?: 'critical' | 'high' | 'medium' | 'low';
-    validationReason?: string;
-    expectedImpact?: number;
+  id: string;
+  type:'' | '''relevance | boundary' | 'relationship''' | '''naming | priority' | 'checkpoint''' | '''review';
+  question: string;
+  context: unknown;
+  options?: string[];
+  allowCustom?: boolean;
+  confidence: number;
+  priority?: 'critical | high' | 'medium''' | '''low';
+  validationReason?: string;
+  expectedImpact?: number;
 }
 /**
  * Core interface for AGUI (Autonomous Graphical User Interface) implementations.
@@ -73,13 +73,16 @@ export interface ValidationQuestion {
  * ```
  */
 export interface AGUIInterface {
-    askQuestion(question: ValidationQuestion): Promise<string>;
-    askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
-    showProgress(progress: unknown): Promise<void>;
-    showMessage(message: string, type?: 'info' | 'warning' | 'error' | 'success'): Promise<void>;
-    showInfo(title: string, data: Record<string, unknown>): Promise<void>;
-    clear?(): Promise<void>;
-    close?(): Promise<void>;
+  askQuestion(question: ValidationQuestion): Promise<string>;
+  askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
+  showProgress(progress: unknown): Promise<void>;
+  showMessage(
+    message: string,
+    type?: 'info | warning' | 'error''' | '''success'
+  ): Promise<void>;
+  showInfo(title: string, data: Record<string, unknown>): Promise<void>;
+  clear?(): Promise<void>;
+  close?(): Promise<void>;
 }
 /**
  * Configuration interface for event handler mappings in AGUI systems.
@@ -109,40 +112,49 @@ export interface AGUIInterface {
  * ```
  */
 export interface EventHandlerConfig {
-    [key: string]: (...args: any[]) => void;
+  [key: string]: (...args: any[]) => void;
 }
 /**
  * Web-based AGUI implementation for browser environments.
  */
 export declare class WebAGUI extends TypedEventBase implements AGUIInterface {
-    private container;
-    constructor(containerSelector?: string);
-    askQuestion(question: ValidationQuestion): Promise<string>;
-    askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
-    showProgress(progress: unknown): Promise<void>;
-    showMessage(message: string, type?: 'info' | 'warning' | 'error' | 'success'): Promise<void>;
-    showInfo(title: string, data: Record<string, unknown>): Promise<void>;
-    clear(): Promise<void>;
-    close(): Promise<void>;
+  private container;
+  constructor(containerSelector?: string);
+  askQuestion(question: ValidationQuestion): Promise<string>;
+  askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
+  showProgress(progress: unknown): Promise<void>;
+  showMessage(
+    message: string,
+    type?: 'info | warning' | 'error''' | '''success'
+  ): Promise<void>;
+  showInfo(title: string, data: Record<string, unknown>): Promise<void>;
+  clear(): Promise<void>;
+  close(): Promise<void>;
 }
 /**
  * Headless AGUI for server-side and automated environments.
  * Provides automatic responses without UI components.
  */
 export declare class HeadlessAGUI implements AGUIInterface {
-    private responses;
-    private defaultResponse;
-    setResponse(questionId: string, response: string): void;
-    setDefaultResponse(response: string): void;
-    askQuestion(question: ValidationQuestion): Promise<string>;
-    askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
-    showProgress(progress: unknown): Promise<void>;
-    showMessage(message: string, type?: 'info' | 'warning' | 'error' | 'success'): Promise<void>;
-    showInfo(title: string, data: Record<string, unknown>): Promise<void>;
-    clear(): Promise<void>;
-    close(): Promise<void>;
+  private responses;
+  private defaultResponse;
+  setResponse(questionId: string, response: string): void;
+  setDefaultResponse(response: string): void;
+  askQuestion(question: ValidationQuestion): Promise<string>;
+  askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
+  showProgress(progress: unknown): Promise<void>;
+  showMessage(
+    message: string,
+    type?: 'info | warning' | 'error''' | '''success'
+  ): Promise<void>;
+  showInfo(title: string, data: Record<string, unknown>): Promise<void>;
+  clear(): Promise<void>;
+  close(): Promise<void>;
 }
 /**
  * Factory function to create appropriate AGUI instance.
  */
-export declare function createAGUI(type?: 'web' | 'headless', containerSelector?: string): AGUIInterface;
+export declare function createAGUI(
+  type?: 'web''' | '''headless',
+  containerSelector?: string
+): AGUIInterface;

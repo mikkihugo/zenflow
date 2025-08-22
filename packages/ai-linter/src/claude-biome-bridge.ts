@@ -16,6 +16,7 @@
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
+
 import type {
   AIAnalysisResult,
   CodePattern,
@@ -132,8 +133,8 @@ export class ClaudeBiomeBridge extends TypedEventBase {
    */
   // eslint-disable-next-line require-await -- Future integration with Biome AST parser
   private async extractASTPatterns(
-    content: string,
-    language: string
+    _content: string,
+    _language: string
   ): Promise<CodePattern[]> {
     // This would integrate with Biome's AST parser
     // For now, return placeholder patterns

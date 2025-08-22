@@ -50,7 +50,7 @@ declare module '@claude-zen/llm-providers' {
     name: string;
     models: string[];
     capabilities: string[];
-    status: 'available' | 'unavailable';
+    status: 'available''' | '''unavailable';
   }
 
   export interface LLMProviderConfig {
@@ -122,14 +122,29 @@ declare module '@claude-zen/llm-providers' {
     updateConfig(config: any): Promise<void>;
   }
 
-  export function createLLMProvider(type: 'claude' | 'openai' | 'anthropic' | string, config?: LLMProviderConfig): LLMProvider;
+  export function createLLMProvider(
+    type: 'claude | openai' | 'anthropic' | string,
+    config?: LLMProviderConfig
+  ): LLMProvider;
   export function getLLMProviderByCapability(capability: string): LLMProvider;
   export function listLLMProviders(): LLMProviderInfo[];
-  export function executeClaudeTask(prompt: string, options?: any): Promise<string>;
-  export function executeGitHubModelsTask(prompt: string, options?: any): Promise<string>;
-  export function executeSwarmCoordinationTask(task: string, options?: any): Promise<string>;
+  export function executeClaudeTask(
+    prompt: string,
+    options?: any
+  ): Promise<string>;
+  export function executeGitHubModelsTask(
+    prompt: string,
+    options?: any
+  ): Promise<string>;
+  export function executeSwarmCoordinationTask(
+    task: string,
+    options?: any
+  ): Promise<string>;
   export function listAvailableProviders(): Promise<LLMProviderInfo[]>;
   export function getProviderById(id: string): Promise<LLMProvider | null>;
-  export function configureProvider(id: string, config: LLMProviderConfig): Promise<void>;
+  export function configureProvider(
+    id: string,
+    config: LLMProviderConfig
+  ): Promise<void>;
   export const DEFAULT_PROVIDERS: Record<string, LLMProviderConfig>;
 }

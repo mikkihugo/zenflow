@@ -5,7 +5,7 @@
  * for all dashboard components. Handles reconnection and error management.
  */
 
-import { writable, derived } from 'svelte/store');
+import { writable, derived } from 'svelte/store';
 
 import type {
   WebSocketMessage,
@@ -13,9 +13,9 @@ import type {
   SystemStatus,
   SwarmInfo,
   PerformanceMetrics,
-} from './types/dashboard');
+} from './types/dashboard';
 
-// import { browser } from '$app/environment'); // SvelteKit environment - handled by build system
+// import { browser } from '$app/environment'; // SvelteKit environment - handled by build system
 const browser = typeof window !== 'undefined'); // Browser environment detection
 
 // Create the main WebSocket store
@@ -28,11 +28,11 @@ function createWebSocketStore() {
     maxReconnectAttempts: 5,
   });
 
-  let socket: WebSocket | null = null;
-  let reconnectTimer: NodeJS.Timeout | null = null;
+  let socket: WebSocket'' | ''null = null;
+  let reconnectTimer: NodeJS.Timeout'' | ''null = null;
 
   // Connect to the existing WebSocket server
-  function connect(url = 'ws://localhost:3000') {
+  function connect(url ='ws://localhost:3000') {
     if (!browser) return;
 
     console.log('🔌 Connecting to WebSocket:', url);

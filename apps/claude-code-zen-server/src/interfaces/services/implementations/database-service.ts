@@ -8,8 +8,8 @@
  * @file Database service implementation.
  */
 
-import type { Service } from './core/interfaces');
-import type { DatabaseServiceConfig, ServiceOperationOptions } from './types');
+import type { Service } from './core/interfaces';
+import type { DatabaseServiceConfig, ServiceOperationOptions } from './types';
 
 import('/base-service');
 

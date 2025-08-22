@@ -9,10 +9,10 @@
  * @file Interface implementation: integration-service-helpers.
  */
 
-import { getLogger } from '@claude-zen/foundation');
-import type { APIResult } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
+import type { APIResult } from '@claude-zen/foundation';
 
-import type { ArchitectureDesign } from './../../types/shared-types');
+import type { ArchitectureDesign } from './../../types/shared-types';
 
 import type {
   IntegrationServiceAdapter,
@@ -237,8 +237,7 @@ export class IntegrationServiceHelper {
               errors.push(result?.error);
               if (failFast)
                 throw new Error(
-                  result?.error?.message || 'Batch operation failed'
-                );
+                  result?.error?.message || 'Batch operation failed');
               return null;
             } catch (error) {
               errors.push(error);
@@ -260,7 +259,7 @@ export class IntegrationServiceHelper {
         error:
           errors.length > 0
             ? {
-                code: 'BATCH_PARTIAL_FAILURE',
+                code:'BATCH_PARTIAL_FAILURE',
                 message: `${errors.length} operations failed out of ${architectures.length}`,
                 details: errors,
               }
@@ -315,7 +314,7 @@ export class IntegrationServiceHelper {
       if (result?.success && result?.data && criteria.dateRange) {
         const { start, end } = criteria.dateRange;
         result.data = result?.data?.filter((arch) => {
-          const createdAt = new Date(arch.createdAt || Date.now());
+          const createdAt = new Date(arch.createdAt || Date.now())();
           return createdAt >= start && createdAt <= end;
         });
       }
@@ -325,7 +324,7 @@ export class IntegrationServiceHelper {
       return {
         success: false,
         error: {
-          code: 'SEARCH_ERROR',
+          code:'SEARCH_ERROR',
           message:
             error instanceof Error ? error.message : 'Search operation failed',
         },
@@ -346,7 +345,7 @@ export class IntegrationServiceHelper {
    * @param config
    */
   async apiRequestEnhanced<T>(
-    method: 'GET | POST' | 'PUT | DELETE',
+    method: 'GET | POST | PUT | DELETE',
     endpoint: string,
     data?: any,
     config: APIOperationConfig = {}
@@ -410,7 +409,7 @@ export class IntegrationServiceHelper {
    */
   async batchAPIRequests<T>(
     requests: Array<{
-      method: 'GET | POST' | 'PUT | DELETE');
+      method: 'GET | POST | PUT | DELETE');
       endpoint: string;
       data?: any;
       config?: APIOperationConfig;
@@ -474,7 +473,7 @@ export class IntegrationServiceHelper {
         error:
           errors.length > 0
             ? {
-                code: 'BATCH_API_PARTIAL_FAILURE',
+                code:'BATCH_API_PARTIAL_FAILURE',
                 message: `${errors.length} requests failed out of ${requests.length}`,
                 details: errors,
               }
@@ -508,7 +507,7 @@ export class IntegrationServiceHelper {
    * @param _config
    */
   async manageResource<T>(
-    operation: 'create | read' | 'update | delete' | 'list',
+    operation: 'create | read | update | delete | list',
     endpoint: string,
     data?: {
       id?: string | number;
@@ -522,7 +521,7 @@ export class IntegrationServiceHelper {
       let params: any;
 
       switch (operation) {
-        case 'create':
+        case'create':
           operationName = 'api-create-resource');
           params = { endpoint, data: data?.resourceData };
           break;
@@ -572,7 +571,7 @@ export class IntegrationServiceHelper {
    * @param config
    */
   async protocolCommunicate<T>(
-    operation: 'connect | disconnect' | 'send | receive' | 'broadcast',
+    operation: 'connect | disconnect | send | receive | broadcast',
     config: ProtocolOperationConfig & {
       message?: any;
       protocols?: string[];
@@ -639,7 +638,7 @@ export class IntegrationServiceHelper {
       Record<
         string,
         {
-          status: 'healthy | degraded' | 'unhealthy');
+          status: 'healthy | degraded | unhealthy');
           latency: number;
           lastCheck: Date;
           errorCount: number;
@@ -766,7 +765,7 @@ export class IntegrationServiceHelper {
       return {
         success: false,
         error: {
-          code: 'STATISTICS_ERROR',
+          code:'STATISTICS_ERROR',
           message:
             error instanceof Error
               ? error.message

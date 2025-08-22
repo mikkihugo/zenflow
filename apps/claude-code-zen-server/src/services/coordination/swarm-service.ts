@@ -52,9 +52,9 @@ import type {
   WorkflowEngine,
   TaskExecution,
   WorkflowResult,
-} from '@claude-zen/enterprise');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
-import { assertDefined, getErrorMessage } from '@claude-zen/intelligence');
+} from '@claude-zen/enterprise';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { assertDefined, getErrorMessage } from '@claude-zen/intelligence';
 import type {
   BrainCoordinator,
   SwarmConfiguration,
@@ -63,14 +63,14 @@ import type {
   ServiceContext,
   ServiceResult,
   TranslationError,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 import type {
   AgentManager,
   AgentStatus,
   PerformanceTracker,
   HealthMonitor,
   SystemMetrics,
-} from '@claude-zen/operations');
+} from '@claude-zen/operations';
 
 // Strategic imports from @claude-zen packages
 
@@ -110,9 +110,9 @@ export interface AgentConfig {
  */
 export interface TaskOrchestrationConfig {
   task: string;
-  strategy: 'sequential | parallel' | 'adaptive');
+  strategy: 'sequential'' | ''parallel'' | ''adaptive');
   maxAgents?: number;
-  priority?: 'low | medium' | 'high');
+  priority?: 'low'' | ''medium'' | ''high');
   timeout?: number;
 }
 
@@ -175,12 +175,12 @@ export class SwarmService extends TypedEventBase {
   private readonly settings: SwarmServiceConfig;
 
   // Strategic delegation instances
-  private brainCoordinator: BrainCoordinator | null = null;
-  private agentManager: AgentManager | null = null;
-  private workflowEngine: WorkflowEngine | null = null;
-  private collaborationEngine: CollaborationEngine | null = null;
-  private performanceTracker: PerformanceTracker | null = null;
-  private healthMonitor: HealthMonitor | null = null;
+  private brainCoordinator: BrainCoordinator'' | ''null = null;
+  private agentManager: AgentManager'' | ''null = null;
+  private workflowEngine: WorkflowEngine'' | ''null = null;
+  private collaborationEngine: CollaborationEngine'' | ''null = null;
+  private performanceTracker: PerformanceTracker'' | ''null = null;
+  private healthMonitor: HealthMonitor'' | ''null = null;
 
   private initialized = false;
   private cleanupIntervalId?: NodeJS?.Timeout()
@@ -297,14 +297,14 @@ export class SwarmService extends TypedEventBase {
     try {
       // Delegate swarm initialization to brain coordinator
       const swarm = await this.brainCoordinator!?.createSwarm({
-        topology: config?.topology || 'mesh',
+        topology: config?.topology'' | '''' | '''mesh',
         maxAgents: Math?.min(
-          config?.maxAgents || 10,
+          config?.maxAgents'' | '''' | ''10,
           this.settings?.maxAgentsPerSwarm
         ),
-        strategy: config?.strategy || 'balanced',
+        strategy: config?.strategy'' | '''' | '''balanced',
         enableNeuralCoordination: this.settings?.enableNeuralCoordination,
-        cognitivePatterns: config?.cognitivePatterns || ['neural-adaptive'],
+        cognitivePatterns: config?.cognitivePatterns'' | '''' | ''['neural-adaptive'],
       });
 
       const result: SwarmInitResult = {
@@ -354,11 +354,11 @@ export class SwarmService extends TypedEventBase {
       // Delegate agent creation to agent manager
       const agent = await this.agentManager?.createAgent({
         swarmId,
-        name: config?.name || `${config?.type}-agent`,
+        name: config?.name'' | '''' | ''`${config?.type}-agent`,
         type: config?.type,
-        capabilities: config?.capabilities || [],
-        cognitivePattern: config?.cognitivePattern || 'neural-adaptive',
-        maxConcurrency: config?.maxConcurrency || 1,
+        capabilities: config?.capabilities'' | '''' | ''[],
+        cognitivePattern: config?.cognitivePattern'' | '''' | '''neural-adaptive',
+        maxConcurrency: config?.maxConcurrency'' | '''' | ''1,
       });
 
       // Register agent with brain coordinator for neural integration
@@ -381,7 +381,7 @@ export class SwarmService extends TypedEventBase {
           agentCount: swarm?.agentCount,
           capacity: `${swarm?.agentCount}/${swarm?.maxAgents}`,
         },
-        performance: this.performanceTracker?.getMetrics('agent_spawn') || {},
+        performance: this.performanceTracker?.getMetrics('agent_spawn')'' | '''' | ''{},
       };
 
       this.logger?.info(`Agent ${agent?.id} spawned via delegation`, {
@@ -433,9 +433,9 @@ export class SwarmService extends TypedEventBase {
       const task = await this.workflowEngine?.createTask({
         description: config?.task,
         strategy: config?.strategy,
-        maxAgents: config?.maxAgents || 5,
-        priority: config?.priority || 'medium',
-        timeout: config?.timeout || 300000, // 5 minutes
+        maxAgents: config?.maxAgents'' | '''' | ''5,
+        priority: config?.priority'' | '''' | '''medium',
+        timeout: config?.timeout'' | '''' | ''300000, // 5 minutes
       });
 
       // Delegate execution coordination to collaboration engine
@@ -453,7 +453,7 @@ export class SwarmService extends TypedEventBase {
         execution: execution,
         result: execution?.result,
         metrics:
-          this.performanceTracker?.getMetrics('task_orchestration') || {},
+          this.performanceTracker?.getMetrics('task_orchestration')'' | '''' | ''{},
       };
 
       this.logger?.info(`Task ${task?.id} orchestrated via delegation`, {
@@ -480,7 +480,7 @@ export class SwarmService extends TypedEventBase {
   /**
    * Get swarm status - delegates to brain coordinator
    */
-  async getSwarmStatus(swarmId: string): Promise<SwarmStatus | null> {
+  async getSwarmStatus(swarmId: string): Promise<SwarmStatus'' | ''null> {
     if (!this.brainCoordinator) return null;
     return this.brainCoordinator?.getSwarmStatus(swarmId);
   }

@@ -20,8 +20,8 @@ export interface SafetyInterventionConfig {
   enabled: boolean;
   autoEscalationThreshold: number;
   humanTimeoutMs: number;
-  defaultDecision: 'pause | continue' | 'terminate');
-  escalationChannels: ('agui | log' | 'webhook')[];
+  defaultDecision: 'pause'' | ''continue'' | ''terminate');
+  escalationChannels: ('agui'' | ''log'' | ''webhook')[];
   criticalPatterns: string[];
 }
 
@@ -30,7 +30,7 @@ export interface SafetyIncident {
   timestamp: number;
   agentId: string;
   agentType: string;
-  severity: 'LOW | MEDIUM' | 'HIGH | CRITICAL');
+  severity: 'LOW'' | ''MEDIUM'' | ''HIGH'' | ''CRITICAL');
   deceptionPatterns: string[];
   confidence: number;
   context: {
@@ -44,8 +44,8 @@ export interface SafetyIncident {
 
 export interface InterventionDecision {
   incidentId: string;
-  decision: 'continue | pause' | 'terminate | retrain' | 'escalate');
-  approvedBy: 'human | automated' | 'timeout');
+  decision: 'continue'' | ''pause'' | ''terminate'' | ''retrain'' | ''escalate');
+  approvedBy: 'human'' | ''automated'' | ''timeout');
   timestamp: number;
   reasoning: string;
   followUpActions: string[];
@@ -175,8 +175,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
       this.emit('intervention:decision', { incident, decision });
 
       if (
-        decision.decision === 'terminate' ||
-        decision.decision === 'escalate'
+        decision.decision === 'terminate''' | '''' | ''decision.decision ==='escalate'
       ) {
         this.emit('intervention:critical', { incident, decision });
       }
@@ -203,7 +202,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
     // High confidence deception in coordination agents
     if (
       incident.confidence >= this.configuration.autoEscalationThreshold &&
-      (incident.agentType === 'queen || incident.agentType === commander');
+      (incident.agentType === 'queen'' | '''' | ''incident.agentType === commander');
     ) {
       return true;
     }
@@ -219,7 +218,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
 
     // Multiple verification failures
     const verificationPatterns = incident.deceptionPatterns.filter(
-      (p) => p.includes('VERIFICATION) || p.includes(TOOL_OMNIPOTENCE');
+      (p) => p.includes('VERIFICATION)'' | '''' | ''p.includes(TOOL_OMNIPOTENCE');
     );
 
     if (verificationPatterns.length >= 2) {
@@ -241,7 +240,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
       severity: incident.severity,
     });
 
-    if (!this.taskApprovalSystem || !this.agui) {
+    if (!this.taskApprovalSystem'' | '''' | ''!this.agui) {
       throw new Error('AGUI system not initialized for human escalation');
     }
 
@@ -337,7 +336,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
       confidence: incident.confidence,
     });
 
-    let automaticDecision: 'continue | pause' | 'terminate');
+    let automaticDecision: 'continue'' | ''pause'' | ''terminate');
 
     // Automatic decision logic
     if (incident.severity === 'HIGH' && incident.confidence > .8) {
@@ -377,7 +376,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
    * Generate follow-up actions based on intervention decision.
    */
   private generateFollowUpActions(
-    decision: 'continue | pause' | 'terminate | retrain' | 'escalate',
+    decision: 'continue'' | ''pause'' | ''terminate'' | ''retrain'' | ''escalate',
     incident: SafetyIncident
   ): string[] {
     const actions: string[] = [];
@@ -520,7 +519,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
   } {
     const decisionsBreakdown = this.interventionHistory.reduce(
       (acc, decision) => {
-        acc[decision.decision] = (acc[decision.decision] || 0) + 1;
+        acc[decision.decision] = (acc[decision.decision]'' | '''' | ''0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -529,7 +528,7 @@ export class SafetyInterventionProtocols extends TypedEventBase {
     return {
       totalIncidents: this.interventionHistory.length,
       humanEscalations: this.interventionHistory.filter(
-        (d) => d.approvedBy === 'human'
+        (d) => d.approvedBy ==='human'
       ).length,
       automaticInterventions: this.interventionHistory.filter(
         (d) => d.approvedBy === 'automated'

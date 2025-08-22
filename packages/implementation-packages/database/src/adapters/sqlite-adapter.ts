@@ -23,10 +23,15 @@ export interface SQLiteConfig {
   };
 }
 
-import type { DatabaseAdapter, QueryResult, QueryParams, HealthStatus } from '../interfaces.js';
+import type {
+  DatabaseAdapter,
+  QueryResult,
+  QueryParams,
+  HealthStatus,
+} from '../interfaces.js';
 
 export class SQLiteAdapter implements DatabaseAdapter {
-  private db: Database.Database | null = null;
+  private db: Database.Database'' | ''null = null;
   private config: SQLiteConfig;
   private connected = false;
 
@@ -46,9 +51,9 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
       // Create real SQLite database connection
       this.db = new Database(this.config.database, {
-        readonly: this.config.options?.readonly || false,
-        fileMustExist: this.config.options?.fileMustExist || false,
-        timeout: this.config.options?.timeout || 5000,
+        readonly: this.config.options?.readonly'' | '''' | ''false,
+        fileMustExist: this.config.options?.fileMustExist'' | '''' | ''false,
+        timeout: this.config.options?.timeout'' | '''' | ''5000,
       });
 
       // Initialize database with required tables
@@ -73,7 +78,10 @@ export class SQLiteAdapter implements DatabaseAdapter {
     }
   }
 
-  async query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>> {
+  async query<T = unknown>(
+    sql: string,
+    params?: QueryParams
+  ): Promise<QueryResult<T>> {
     if (!this.connected) await this.connect();
     if (!this.db) throw new Error('Database not connected');
 
@@ -81,13 +89,17 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
     try {
       const stmt = this.db.prepare(sql);
-      const paramArray = params ? (Array.isArray(params) ? params : Object.values(params)) : [];
+      const paramArray = params
+        ? Array.isArray(params)
+          ? params
+          : Object.values(params)
+        : [];
       const rows = stmt.all(...paramArray);
 
       return {
-        rows: (rows || []) as T[],
+        rows: (rows'' | '''' | ''[]) as T[],
         rowCount: rows ? rows.length : 0,
-        fields: []
+        fields: [],
       };
     } catch (error) {
       logger.error(`Query failed: ${error}`);
@@ -106,8 +118,8 @@ export class SQLiteAdapter implements DatabaseAdapter {
       const result = stmt.run(...params);
 
       return {
-        affectedRows: result.changes || 0,
-        insertId: result.lastInsertRowid || null,
+        affectedRows: result.changes'' | '''' | ''0,
+        insertId: result.lastInsertRowid'' | '''' | ''null,
         executionTime: 1,
       };
     } catch (error) {
@@ -143,14 +155,14 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   async health(): Promise<HealthStatus> {
     try {
-      if (!this.connected || !this.db) {
+      if (!this.connected'' | '''' | ''!this.db) {
         return {
           healthy: false,
           isHealthy: false,
-          status: 'disconnected',
+          status:'disconnected',
           score: 0,
           details: { connected: false },
-          lastCheck: new Date()
+          lastCheck: new Date(),
         };
       }
 
@@ -161,7 +173,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
         status: 'healthy',
         score: 100,
         details: { connected: true, queryTest: true },
-        lastCheck: new Date()
+        lastCheck: new Date(),
       };
     } catch (error) {
       return {
@@ -171,20 +183,22 @@ export class SQLiteAdapter implements DatabaseAdapter {
         score: 0,
         details: { connected: this.connected, error: String(error) },
         lastCheck: new Date(),
-        errors: [String(error)]
+        errors: [String(error)],
       };
     }
   }
 
   async getSchema(): Promise<any> {
-    if (!this.connected || !this.db) return { tables: [], views: [] };
+    if (!this.connected'' | '''' | ''!this.db) return { tables: [], views: [] };
 
     try {
       const tables = this.db
-        .prepare(`
+        .prepare(
+          `
         SELECT name FROM sqlite_master 
         WHERE type='table' AND name NOT LIKE 'sqlite_%'
-      `)
+      `
+        )
         .all();
 
       return {

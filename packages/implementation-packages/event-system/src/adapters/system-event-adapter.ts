@@ -1,4 +1,4 @@
-import { EventEmitter } from "@claude-zen/foundation";
+import { EventEmitter } from '@claude-zen/foundation';
 /**
  * @file UEL System Event Adapter.
  *
@@ -91,7 +91,7 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
   /** Event correlation configuration */
   correlation?: {
     enabled: boolean;
-    strategy: 'session' | 'component' | 'operation' | 'custom';
+    strategy: 'session | component' | 'operation''' | '''custom';
     correlationTTL: number;
     maxCorrelationDepth: number;
     correlationPatterns: string[];
@@ -135,7 +135,7 @@ interface EventCorrelation {
   lastUpdate: Date;
   component: string;
   operation: string;
-  status: 'active' | 'completed' | 'failed' | 'timeout';
+  status: 'active | completed' | 'failed''' | '''timeout';
   metadata: Record<string, unknown>;
 }
 
@@ -146,7 +146,7 @@ interface EventCorrelation {
  */
 interface SystemHealthEntry {
   component: string;
-  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+  status: 'healthy | degraded' | 'unhealthy''' | '''unknown';
   lastCheck: Date;
   consecutiveFailures: number;
   errorRate: number;
@@ -160,7 +160,7 @@ interface SystemHealthEntry {
  * @example
  */
 interface WrappedSystemComponent {
-  component: EventEmitter | null;
+  component: EventEmitter'' | ''null;
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;
   eventMappings: Map<string, string>;
@@ -263,7 +263,7 @@ export class SystemEventAdapter implements EventManager {
       },
       correlation: {
         enabled: true,
-        strategy: 'component',
+        strategy:'component',
         correlationTTL: 300000, // 5 minutes
         maxCorrelationDepth: 10,
         correlationPatterns: [
@@ -408,7 +408,7 @@ export class SystemEventAdapter implements EventManager {
     options?: EventEmissionOptions
   ): Promise<void> {
     const startTime = Date.now();
-    const eventId = event.id || this.generateEventId();
+    const eventId = event.id'' | '''' | ''this.generateEventId();
 
     try {
       // Validate event
@@ -422,7 +422,7 @@ export class SystemEventAdapter implements EventManager {
 
       // Apply timeout if specified
       const timeout =
-        options?.timeout || this.config.performance?.eventTimeout || 30000;
+        options?.timeout'' | '''' | ''this.config.performance?.eventTimeout'' | '''' | ''30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
           () => reject(new EventTimeoutError(this.name, timeout, eventId)),
@@ -440,10 +440,10 @@ export class SystemEventAdapter implements EventManager {
       this.recordEventMetrics({
         eventType: event.type,
         component: event.source,
-        operation: 'emit',
+        operation:'emit',
         executionTime: duration,
         success: true,
-        correlationId: event.correlationId || undefined,
+        correlationId: event.correlationId'' | '''' | ''undefined,
         timestamp: new Date(),
       });
 
@@ -462,9 +462,9 @@ export class SystemEventAdapter implements EventManager {
         operation: 'emit',
         executionTime: duration,
         success: false,
-        correlationId: event.correlationId || undefined,
+        correlationId: event.correlationId'' | '''' | ''undefined,
         errorType:
-          error instanceof Error ? error.constructor.name : 'UnknownError',
+          error instanceof Error ? error.constructor.name :'UnknownError',
         timestamp: new Date(),
       });
 
@@ -550,7 +550,7 @@ export class SystemEventAdapter implements EventManager {
    * @param options
    */
   subscribe<T extends SystemEvent>(
-    eventTypes: string | string[],
+    eventTypes: string'' | ''string[],
     listener: EventListener<T>,
     options?: Partial<EventSubscription<T>>
   ): string {
@@ -563,10 +563,10 @@ export class SystemEventAdapter implements EventManager {
       listener,
       ...(options?.filter && { filter: options?.filter }),
       ...(options?.transform && { transform: options?.transform }),
-      priority: options?.priority || 'medium',
+      priority: options?.priority'' | '''' | '''medium',
       created: new Date(),
       active: true,
-      metadata: options?.metadata || {},
+      metadata: options?.metadata'' | '''' | ''{},
     };
 
     this.subscriptions.set(subscriptionId, subscription as EventSubscription);
@@ -697,13 +697,13 @@ export class SystemEventAdapter implements EventManager {
         const aVal = this.getEventSortValue(a, options?.sortBy!);
         const bVal = this.getEventSortValue(b, options?.sortBy!);
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-        return options.sortOrder === 'desc' ? -comparison : comparison;
+        return options.sortOrder === 'desc'? -comparison : comparison;
       });
     }
 
     // Apply pagination
-    const offset = options?.offset || 0;
-    const limit = options?.limit || 100;
+    const offset = options?.offset'' | '''' | ''0;
+    const limit = options?.limit'' | '''' | ''100;
     events = events.slice(offset, offset + limit);
 
     return events;
@@ -741,11 +741,10 @@ export class SystemEventAdapter implements EventManager {
 
     // Determine overall health status
     let status: EventManagerStatus['status'] = 'healthy';
-    if (errorRate > 20 || !this.running) {
-      status = 'unhealthy';
+    if (errorRate > 20'' | '''' | ''!this.running) {
+      status ='unhealthy';
     } else if (
-      errorRate > 10 ||
-      Object.values(componentHealth).some((h) => h.status !== 'healthy')
+      errorRate > 10'' | '''' | ''Object.values(componentHealth).some((h) => h.status !=='healthy')
     ) {
       status = 'degraded';
     }
@@ -798,8 +797,8 @@ export class SystemEventAdapter implements EventManager {
       eventsEmitted: this.successCount,
       eventsFailed: this.errorCount,
       averageLatency: avgLatency,
-      p95Latency: latencies[p95Index] || 0,
-      p99Latency: latencies[p99Index] || 0,
+      p95Latency: latencies[p95Index]'' | '''' | ''0,
+      p99Latency: latencies[p99Index]'' | '''' | ''0,
       throughput,
       subscriptionCount: this.subscriptions.size,
       queueSize: this.eventQueue.length,
@@ -836,7 +835,7 @@ export class SystemEventAdapter implements EventManager {
    * @param handler
    */
   on(
-    event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
+    event:'start | stop' | 'error' | 'subscription' | 'emission',
     handler: (...args: unknown[]) => void
   ): void {
     this.eventEmitter.on(event, handler);
@@ -902,14 +901,14 @@ export class SystemEventAdapter implements EventManager {
    * @param event
    */
   async emitSystemLifecycleEvent(
-    event: Omit<SystemLifecycleEvent, 'id' | 'timestamp'>
+    event: Omit<SystemLifecycleEvent, 'id''' | '''timestamp'>
   ): Promise<void> {
     const systemEvent: SystemLifecycleEvent = {
       ...event,
       id: this.generateEventId(),
       timestamp: new Date(),
-      priority: event.priority || EventPriorityMap[event.type] || 'medium',
-      correlationId: event.correlationId || this.generateCorrelationId(),
+      priority: event.priority'' | '''' | ''EventPriorityMap[event.type]'' | '''' | '''medium',
+      correlationId: event.correlationId'' | '''' | ''this.generateCorrelationId(),
     };
 
     // Start event correlation if enabled
@@ -929,8 +928,7 @@ export class SystemEventAdapter implements EventManager {
     listener: EventListener<SystemLifecycleEvent>
   ): string {
     return this.subscribe(
-      [
-        'system:startup',
+      ['system:startup',
         'system:shutdown',
         'system:restart',
         'system:error',
@@ -980,8 +978,8 @@ export class SystemEventAdapter implements EventManager {
    *
    * @param correlationId
    */
-  getCorrelatedEvents(correlationId: string): EventCorrelation | null {
-    return this.eventCorrelations.get(correlationId) || null;
+  getCorrelatedEvents(correlationId: string): EventCorrelation'' | ''null {
+    return this.eventCorrelations.get(correlationId)'' | '''' | ''null;
   }
 
   /**
@@ -989,7 +987,7 @@ export class SystemEventAdapter implements EventManager {
    */
   getActiveCorrelations(): EventCorrelation[] {
     return Array.from(this.eventCorrelations.values()).filter(
-      (c) => c.status === 'active'
+      (c) => c.status ==='active'
     );
   }
 
@@ -1013,29 +1011,29 @@ export class SystemEventAdapter implements EventManager {
           typeof (wrapped.component as any).getStatus === 'function'
         ) {
           const status = await (wrapped.component as any).getStatus();
-          isHealthy = status.status === 'ready' || status.status === 'healthy';
-          errorRate = status.errorRate || 0;
+          isHealthy = status.status === 'ready''' | '''' | ''status.status ==='healthy';
+          errorRate = status.errorRate'' | '''' | ''0;
         }
 
         const responseTime = Date.now() - startTime;
         const threshold =
           this.config.healthMonitoring?.componentHealthThresholds?.[
             componentName
-          ] || 0.8;
+          ]'' | '''' | ''0.8;
         const healthScore = isHealthy ? 1 - errorRate : 0;
 
         const healthEntry: SystemHealthEntry = {
           component: componentName,
           status:
             healthScore >= threshold
-              ? 'healthy'
+              ?'healthy'
               : healthScore >= threshold * 0.7
                 ? 'degraded'
                 : 'unhealthy',
           lastCheck: new Date(),
           consecutiveFailures: isHealthy
             ? 0
-            : (this.systemHealth.get(componentName)?.consecutiveFailures || 0) +
+            : (this.systemHealth.get(componentName)?.consecutiveFailures'' | '''' | ''0) +
               1,
           errorRate,
           responseTime,
@@ -1051,15 +1049,15 @@ export class SystemEventAdapter implements EventManager {
       } catch (error) {
         const healthEntry: SystemHealthEntry = {
           component: componentName,
-          status: 'unhealthy',
+          status:'unhealthy',
           lastCheck: new Date(),
           consecutiveFailures:
-            (this.systemHealth.get(componentName)?.consecutiveFailures || 0) +
+            (this.systemHealth.get(componentName)?.consecutiveFailures'' | '''' | ''0) +
             1,
           errorRate: 1.0,
           responseTime: 0,
           metadata: {
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message :'Unknown error',
           },
         };
 
@@ -1132,7 +1130,7 @@ export class SystemEventAdapter implements EventManager {
           type: uelEvent as any,
           operation: this.extractOperationFromEvent(originalEvent),
           status: this.extractStatusFromData(data),
-          priority: EventPriorityMap[uelEvent] || 'medium',
+          priority: EventPriorityMap[uelEvent]'' | '''' | '''medium',
           correlationId: this.generateCorrelationId(),
           payload: {
             source: 'core-system',
@@ -1140,7 +1138,7 @@ export class SystemEventAdapter implements EventManager {
             operation: this.extractOperationFromEvent(originalEvent),
             status: this.extractStatusFromData(data),
             component: 'core-system',
-            eventData: data || {},
+            eventData: data'' | '''' | ''{},
           },
           metadata: { originalEvent, data },
         };
@@ -1181,7 +1179,7 @@ export class SystemEventAdapter implements EventManager {
           type: uelEvent as any,
           operation: this.extractOperationFromEvent(originalEvent),
           status: this.extractStatusFromData(data),
-          priority: EventPriorityMap[uelEvent] || 'medium',
+          priority: EventPriorityMap[uelEvent]'' | '''' | '''medium',
           correlationId: this.generateCorrelationId(),
           payload: {
             source: 'application-coordinator',
@@ -1189,7 +1187,7 @@ export class SystemEventAdapter implements EventManager {
             operation: this.extractOperationFromEvent(originalEvent),
             status: this.extractStatusFromData(data),
             component: 'application-coordinator',
-            eventData: data || {},
+            eventData: data'' | '''' | ''{},
           },
           metadata: { originalEvent, data },
         };
@@ -1239,7 +1237,7 @@ export class SystemEventAdapter implements EventManager {
             status: this.extractStatusFromData(data),
             component: 'error-recovery',
             severity: 'high',
-            eventData: data || {},
+            eventData: data'' | '''' | ''{},
           },
           metadata: { originalEvent, data },
         };
@@ -1376,7 +1374,7 @@ export class SystemEventAdapter implements EventManager {
     this.processingEvents = true;
 
     const processQueue = async () => {
-      if (!this.processingEvents || this.eventQueue.length === 0) {
+      if (!this.processingEvents'' | '''' | ''this.eventQueue.length === 0) {
         setTimeout(processQueue, 100);
         return;
       }
@@ -1401,7 +1399,7 @@ export class SystemEventAdapter implements EventManager {
    * Start health monitoring for system components.
    */
   private startHealthMonitoring(): void {
-    const interval = this.config.healthMonitoring?.healthCheckInterval || 30000;
+    const interval = this.config.healthMonitoring?.healthCheckInterval'' | '''' | ''30000;
 
     setInterval(async () => {
       try {
@@ -1409,7 +1407,7 @@ export class SystemEventAdapter implements EventManager {
 
         // Emit health status events
         for (const [component, health] of this.systemHealth.entries()) {
-          if (health.status !== 'healthy') {
+          if (health.status !=='healthy') {
             await this.emitSystemLifecycleEvent({
               source: component,
               type: 'system:health',
@@ -1418,9 +1416,7 @@ export class SystemEventAdapter implements EventManager {
               payload: {},
               details: {
                 component,
-                healthScore: (health.metadata as any)?.['healthScore'] as
-                  | number
-                  | undefined,
+                healthScore: (health.metadata as any)?.['healthScore'] as'' | ''number'' | ''undefined,
                 // errorRate: health.errorRate, // Not part of SystemLifecycleEvent details interface
                 // consecutiveFailures: health.consecutiveFailures, // Not part of SystemLifecycleEvent details interface
               },
@@ -1438,7 +1434,7 @@ export class SystemEventAdapter implements EventManager {
    */
   private startCorrelationCleanup(): void {
     const cleanupInterval = 60000; // 1 minute
-    const correlationTTL = this.config.correlation?.correlationTTL || 300000; // 5 minutes
+    const correlationTTL = this.config.correlation?.correlationTTL'' | '''' | ''300000; // 5 minutes
 
     setInterval(() => {
       const now = Date.now();
@@ -1456,7 +1452,7 @@ export class SystemEventAdapter implements EventManager {
       expiredCorrelations.forEach((id) => {
         const correlation = this.eventCorrelations.get(id);
         if (correlation) {
-          correlation.status = 'timeout';
+          correlation.status ='timeout';
           this.eventCorrelations.delete(id);
         }
       });
@@ -1475,7 +1471,7 @@ export class SystemEventAdapter implements EventManager {
    * @param event
    */
   private startEventCorrelation(event: SystemEvent): void {
-    const correlationId = event.correlationId || this.generateCorrelationId();
+    const correlationId = event.correlationId'' | '''' | ''this.generateCorrelationId();
 
     if (this.eventCorrelations.has(correlationId)) {
       this.updateEventCorrelation(event);
@@ -1487,7 +1483,7 @@ export class SystemEventAdapter implements EventManager {
         lastUpdate: new Date(),
         component: event.source,
         operation: this.extractOperationFromEvent(event.type),
-        status: 'active',
+        status:'active',
         metadata: {},
       };
 
@@ -1545,7 +1541,7 @@ export class SystemEventAdapter implements EventManager {
    * @param correlation
    */
   private isCorrelationComplete(correlation: EventCorrelation): boolean {
-    const patterns = this.config.correlation?.correlationPatterns || [];
+    const patterns = this.config.correlation?.correlationPatterns'' | '''' | ''[];
 
     for (const pattern of patterns) {
       const [startEvent, endEvent] = pattern.split('->');
@@ -1570,9 +1566,9 @@ export class SystemEventAdapter implements EventManager {
 
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
       const existing = this.systemHealth.get(componentName);
-      const healthEntry: SystemHealthEntry = existing || {
+      const healthEntry: SystemHealthEntry = existing'' | '''' | ''{
         component: componentName,
-        status: wrapped.isActive ? 'healthy' : 'unhealthy',
+        status: wrapped.isActive ?'healthy' : 'unhealthy',
         lastCheck: new Date(),
         consecutiveFailures: 0,
         errorRate: 0,
@@ -1610,7 +1606,7 @@ export class SystemEventAdapter implements EventManager {
     batch: EventBatch<T>,
     options?: EventEmissionOptions
   ): Promise<void> {
-    const batchSize = this.config.processing?.batchSize || 50;
+    const batchSize = this.config.processing?.batchSize'' | '''' | ''50;
 
     for (let i = 0; i < batch.events.length; i += batchSize) {
       const chunk = batch.events.slice(i, i + batchSize);
@@ -1622,7 +1618,7 @@ export class SystemEventAdapter implements EventManager {
     batch: EventBatch<T>,
     options?: EventEmissionOptions
   ): Promise<void> {
-    const throttleMs = this.config.processing?.throttleMs || 100;
+    const throttleMs = this.config.processing?.throttleMs'' | '''' | ''100;
 
     for (const event of batch.events) {
       await this.emit(event, options);
@@ -1662,7 +1658,7 @@ export class SystemEventAdapter implements EventManager {
     // Metadata filter
     if (filter.metadata) {
       for (const [key, value] of Object.entries(filter.metadata)) {
-        if (!event.metadata || event.metadata[key] !== value) {
+        if (!event.metadata'' | '''' | ''event.metadata[key] !== value) {
           return false;
         }
       }
@@ -1703,13 +1699,13 @@ export class SystemEventAdapter implements EventManager {
   private getEventSortValue(
     event: SystemEvent,
     sortBy: string
-  ): string | number {
+  ): string'' | ''number {
     switch (sortBy) {
-      case 'timestamp':
+      case'timestamp':
         return event.timestamp.getTime();
       case 'priority': {
         const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
-        return priorities[event.priority || 'medium'];
+        return priorities[event.priority'' | '''' | '''medium'];
       }
       case 'type':
         return event.type;
@@ -1723,9 +1719,9 @@ export class SystemEventAdapter implements EventManager {
   private extractOperationFromEvent(
     eventType: string
   ): SystemLifecycleEvent['operation'] {
-    if (eventType.includes('start') || eventType.includes('init'))
+    if (eventType.includes('start')'' | '''' | ''eventType.includes('init'))
       return 'start';
-    if (eventType.includes('stop') || eventType.includes('shutdown'))
+    if (eventType.includes('stop')'' | '''' | ''eventType.includes('shutdown'))
       return 'stop';
     if (eventType.includes('restart')) return 'restart';
     if (eventType.includes('health')) return 'status';
@@ -1735,8 +1731,8 @@ export class SystemEventAdapter implements EventManager {
   private extractStatusFromData(data: unknown): SystemLifecycleEvent['status'] {
     if (!data) return 'success';
     const dataObj = data as any;
-    if (dataObj?.error || dataObj?.status === 'error') return 'error';
-    if (dataObj?.warning || dataObj?.status === 'warning') return 'warning';
+    if (dataObj?.error'' | '''' | ''dataObj?.status ==='error') return 'error';
+    if (dataObj?.warning'' | '''' | ''dataObj?.status ==='warning') return 'warning';
     if (dataObj?.status === 'critical') return 'critical';
     return 'success';
   }
@@ -1935,7 +1931,7 @@ export const SystemEventHelpers = {
       errorMessage?: string;
       healthScore?: number;
     }
-  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  ): Omit<SystemLifecycleEvent, 'id''' | '''timestamp'> {
     return {
       source: component,
       type: 'system:startup',
@@ -1963,7 +1959,7 @@ export const SystemEventHelpers = {
       errorMessage?: string;
       healthScore?: number;
     }
-  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  ): Omit<SystemLifecycleEvent, 'id''' | '''timestamp'> {
     return {
       source: component,
       type: 'system:shutdown',
@@ -1986,7 +1982,7 @@ export const SystemEventHelpers = {
     component: string,
     healthScore: number,
     details?: unknown
-  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  ): Omit<SystemLifecycleEvent, 'id''' | '''timestamp'> {
     return {
       source: component,
       type: 'system:health',
@@ -2002,13 +1998,20 @@ export const SystemEventHelpers = {
         component,
         healthScore,
         operation: 'status',
-        severity: healthScore >= 0.8 ? 'info' : healthScore >= 0.5 ? 'warning' : 'error',
+        severity:
+          healthScore >= 0.8
+            ? 'info'
+            : healthScore >= 0.5
+              ? 'warning'
+              : 'error',
         source: component,
         helperFunction: 'createHealthStatusEvent',
-        eventData: details || {},
+        eventData: details'' | '''' | ''{},
       },
       details: {
-        ...(details && typeof details === 'object' ? details as Record<string, unknown> : {}),
+        ...(details && typeof details ==='object'
+          ? (details as Record<string, unknown>)
+          : {}),
         healthScore,
       },
     };
@@ -2025,7 +2028,7 @@ export const SystemEventHelpers = {
     component: string,
     error: Error,
     details?: unknown
-  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  ): Omit<SystemLifecycleEvent, 'id''' | '''timestamp'> {
     return {
       source: component,
       type: 'system:error',
@@ -2042,10 +2045,12 @@ export const SystemEventHelpers = {
         severity: 'error',
         source: component,
         helperFunction: 'createErrorEvent',
-        eventData: details || {},
+        eventData: details'' | '''' | ''{},
       },
       details: {
-        ...(details && typeof details === 'object' ? details as Record<string, unknown> : {}),
+        ...(details && typeof details ==='object'
+          ? (details as Record<string, unknown>)
+          : {}),
         errorCode: error.name,
         errorMessage: error.message,
       },

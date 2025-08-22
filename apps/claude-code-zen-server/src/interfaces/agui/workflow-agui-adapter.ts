@@ -19,15 +19,15 @@ import type {
   type DomainBoundaryValidator,
   getDomainValidator,
   type Result,
-} from '@claude-zen/foundation');
-import { getLogger } from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
   createCorrelationId,
   createEvent,
   type TypeSafeEventBus,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 import type {
   EscalationChain,
@@ -35,7 +35,7 @@ import type {
   GateEscalationLevel,
   WorkflowContext,
   WorkflowGateRequest,
-} from './../coordination/workflows/workflow-gate-request');
+} from './../coordination/workflows/workflow-gate-request';
 
 import('/agui-adapter');
 
@@ -192,7 +192,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     correlationId?: string
   ): Promise<string> {
     const startTime = Date.now();
-    const gateCorrelationId = correlationId || createCorrelationId();
+    const gateCorrelationId = correlationId'' | '''' | ''createCorrelationId();
 
     this.logger.info('Processing workflow gate', {
       gateId: gateRequest.id,
@@ -463,7 +463,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     this.logger.debug('Registered active gate for timeout management', {
       gateId: gateRequest.id,
       initialTimeout: gateRequest.timeoutConfig?.initialTimeout,
-      escalationLevels: gateRequest.escalationChain?.levels.length || 0,
+      escalationLevels: gateRequest.escalationChain?.levels.length'' | '''' | ''0,
     });
   }
 
@@ -697,7 +697,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   /**
    * Export audit trail for compliance/analysis
    */
-  public exportAuditTrail(format: 'json | csv' = 'json'): string {
+  public exportAuditTrail(format: 'json'' | ''csv' = 'json'): string {
     if (format === 'csv') {
       return this.exportAuditTrailAsCsv;
     }
@@ -863,10 +863,9 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   /**
    * Extract rationale from response
    */
-  private extractRationale(response: string): string | undefined {
+  private extractRationale(response: string): string'' | ''undefined {
     // Simple rationale extraction - look for explanatory text
-    const rationaleKeywords = [
-      'because',
+    const rationaleKeywords = ['because',
       'since',
       'due to',
       'reason:',
@@ -952,7 +951,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       record.timestamp?.toISOString,
       record.decision,
       record.decisionMaker,
-      record.rationale || '',
+      record.rationale'' | '''' | '''',
       GateEscalationLevel[record.escalationLevel],
       record.processingTime?.toString,
       record.context.businessImpact,

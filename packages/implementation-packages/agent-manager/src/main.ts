@@ -1,48 +1,48 @@
 /**
  * @fileoverview Agent Manager Package Entry Point
- * 
+ *
  * Standalone agent lifecycle management and basic swarm coordination package.
  * Provides essential agent operations for CLI tools, APIs, and simple coordination
  * scenarios without advanced methodology dependencies.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  * @since 2024-01-01
- * 
+ *
  * @example Basic Usage
  * ```typescript
  * import { AgentManager } from '@claude-zen/agent-manager';
- * 
+ *
  * const manager = new AgentManager();
  * await manager.initialize({ topology: 'mesh', maxAgents: 50 });
- * 
+ *
  * await manager.addAgent({
  *   id: 'worker-001',
  *   type: 'coder',
  *   status: 'idle',
  *   capabilities: ['typescript', 'react', 'testing']
  * });
- * 
+ *
  * const coordination = await manager.coordinateAgents(
  *   manager.getAgents(),
  *   'hierarchical'
  * );
- * 
+ *
  * console.log(`Coordination: ${coordination.success ? 'Success' : 'Failed'}`);
  * ```
- * 
+ *
  * @example Task Assignment
  * ```typescript
  * import { AgentManager, type SwarmAgent } from '@claude-zen/agent-manager';
- * 
+ *
  * const manager = new AgentManager();
  * await manager.initialize();
- * 
+ *
  * // Monitor task completion
  * manager.on('task:completed', (event) => {
  *   console.log(`Task ${event.taskId} completed in ${event.duration}ms`);
  * });
- * 
+ *
  * // Assign task to best available agent
  * const agentId = await manager.assignTask({
  *   id: 'build-component',
@@ -50,7 +50,7 @@
  *   requirements: ['react', 'typescript'],
  *   priority: 7
  * });
- * 
+ *
  * if (agentId) {
  *   console.log(`Task assigned to agent: ${agentId}`);
  * }
@@ -81,17 +81,17 @@ export type {
   TaskAssignment,
   AgentPool,
   SwarmEvent,
-  SwarmCoordinationEvent
+  SwarmCoordinationEvent,
 } from './types';
 
 // Export type utilities for convenience
-export type { 
+export type {
   /** @deprecated Use SwarmAgent instead */
   SwarmAgent as SwarmAgentType,
   /** @deprecated Use SwarmMetrics instead */
   SwarmMetrics as SwarmMetricsType,
   /** @deprecated Use SwarmConfig instead */
-  SwarmConfig as SwarmConfigType
+  SwarmConfig as SwarmConfigType,
 } from './types';
 
 /**
@@ -102,7 +102,8 @@ export const VERSION = '1.0.0';
 /**
  * Package description
  */
-export const DESCRIPTION = 'Basic agent lifecycle management and simple swarm coordination';
+export const DESCRIPTION =
+  'Basic agent lifecycle management and simple swarm coordination';
 
 /**
  * Default configuration for AgentManager
@@ -112,18 +113,35 @@ export const DEFAULT_CONFIG = {
   topology: 'mesh' as const,
   timeout: 30000,
   healthCheckInterval: 10000,
-  coordinationStrategy: 'adaptive' as const
+  coordinationStrategy: 'adaptive' as const,
 };
 
 /**
  * Agent type categories for convenience
  */
 export const AGENT_CATEGORIES = {
-  DEVELOPMENT: ['coder', 'architect', 'developer', 'fullstack-dev', 'api-dev', 'frontend-dev'] as const,
+  DEVELOPMENT: [
+    'coder',
+    'architect',
+    'developer',
+    'fullstack-dev',
+    'api-dev',
+    'frontend-dev',
+  ] as const,
   ANALYSIS: ['analyst', 'researcher', 'data', 'security-analyzer'] as const,
-  OPERATIONS: ['ops', 'devops-engineer', 'infrastructure-ops', 'monitoring-ops'] as const,
-  TESTING: ['tester', 'unit-tester', 'integration-tester', 'e2e-tester'] as const,
-  COORDINATION: ['coordinator', 'optimizer', 'queen', 'specialist'] as const
+  OPERATIONS: [
+    'ops',
+    'devops-engineer',
+    'infrastructure-ops',
+    'monitoring-ops',
+  ] as const,
+  TESTING: [
+    'tester',
+    'unit-tester',
+    'integration-tester',
+    'e2e-tester',
+  ] as const,
+  COORDINATION: ['coordinator', 'optimizer', 'queen', 'specialist'] as const,
 } as const;
 
 /**
@@ -132,10 +150,15 @@ export const AGENT_CATEGORIES = {
 export const CAPABILITY_SETS = {
   TYPESCRIPT_DEV: ['typescript', 'node', 'testing', 'debugging'],
   REACT_DEV: ['react', 'javascript', 'jsx', 'css', 'html'],
-  BACKEND_DEV: ['api-development', 'database', 'server-architecture', 'security'],
+  BACKEND_DEV: [
+    'api-development',
+    'database',
+    'server-architecture',
+    'security',
+  ],
   FULLSTACK_DEV: ['frontend', 'backend', 'database', 'deployment', 'testing'],
   DATA_ANALYST: ['data-analysis', 'statistics', 'visualization', 'reporting'],
-  DEVOPS: ['ci-cd', 'containerization', 'cloud-deployment', 'monitoring']
+  DEVOPS: ['ci-cd', 'containerization', 'cloud-deployment', 'monitoring'],
 } as const;
 
 /**
@@ -145,36 +168,42 @@ export function createAgent(
   id: string,
   type: AgentType,
   category?: keyof typeof CAPABILITY_SETS
-): Omit<SwarmAgent, 'performance' | 'connections'> {
+): Omit<SwarmAgent, 'performance''' | '''connections'> {
   return {
     id,
     type,
     status: 'idle',
-    capabilities: category ? [...CAPABILITY_SETS[category]] : []
+    capabilities: category ? [...CAPABILITY_SETS[category]] : [],
   };
 }
 
 /**
  * Utility function to create AgentManager with common configurations
  */
-export function createAgentManager(preset?: 'small' | 'medium' | 'large' | 'enterprise') {
+export function createAgentManager(
+  preset?: 'small | medium' | 'large''' | '''enterprise'
+) {
   // Import dynamically to avoid circular dependency issues during build
   const { AgentManager } = require('./agent-manager');
   const manager = new AgentManager();
-  
+
   // Apply preset configurations
   const presets = {
     small: { maxAgents: 10, topology: 'star' as const },
     medium: { maxAgents: 50, topology: 'mesh' as const },
     large: { maxAgents: 200, topology: 'hierarchical' as const },
-    enterprise: { maxAgents: 1000, topology: 'hierarchical' as const, healthCheckInterval: 5000 }
+    enterprise: {
+      maxAgents: 1000,
+      topology: 'hierarchical' as const,
+      healthCheckInterval: 5000,
+    },
   };
-  
+
   if (preset && presets[preset]) {
     // Configuration will be applied during initialize() call
     (manager as any).presetConfig = presets[preset];
   }
-  
+
   return manager;
 }
 

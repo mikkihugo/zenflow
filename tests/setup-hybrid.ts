@@ -20,9 +20,9 @@ import './global-types';
  * @example
  */
 interface HybridTDDConfig {
-  domain: 'coordination' | 'interfaces' | 'neural' | 'memory' | 'hybrid';
-  testStyle: 'london' | 'classical' | 'hybrid';
-  mockingStrategy: 'aggressive' | 'minimal' | 'selective';
+  domain: 'coordination | interfaces' | 'neural' | 'memory' | 'hybrid';
+  testStyle: 'london | classical' | 'hybrid';
+  mockingStrategy: 'aggressive | minimal' | 'selective';
   performanceThresholds: {
     coordinationLatency: number;
     neuralComputation: number;
@@ -47,7 +47,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 
   // Setup based on test file path
-  const testPath = expect.getState().testPath || '';
+  const testPath = expect.getState().testPath'' | '''' | '''';
 
   if (testPath.includes('/coordination/')) {
     setupLondonTDD();
@@ -64,7 +64,7 @@ beforeEach(() => {
 
 afterEach(() => {
   // Cleanup based on test type
-  const testPath = expect.getState().testPath || '';
+  const testPath = expect.getState().testPath'' | '''' | '''';
 
   if (testPath.includes('/neural/')) {
     cleanupClassicalResources();
@@ -130,9 +130,9 @@ function setupClassicalTDD() {
           { input: [1, 1], output: [0] },
         ];
       case 'linear':
-        return Array.from({ length: config.samples || 100 }, (_, _i) => {
+        return Array.from({ length: config.samples'' | '''' | ''100 }, (_, _i) => {
           const x = Math.random() * 10;
-          const y = 2 * x + 3 + (Math.random() - 0.5) * (config.noise || 0.1);
+          const y = 2 * x + 3 + (Math.random() - 0.5) * (config.noise'' | '''' | ''0.1);
           return { input: [x], output: [y] };
         });
       default:
@@ -168,10 +168,10 @@ function setupHybridTDD() {
 
   // Hybrid-specific utilities
   globalThis.testWithApproach = (
-    approach: 'london' | 'classical',
-    testFn: () => void | Promise<void>
+    approach:'london''' | '''classical',
+    testFn: () => void'' | ''Promise<void>
   ) => {
-    if (approach === 'london') {
+    if (approach ==='london') {
       // Use mocks for external dependencies
       return testFn();
     }
@@ -180,7 +180,7 @@ function setupHybridTDD() {
   };
 
   // Memory-specific test utilities
-  globalThis.createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
+  globalThis.createMemoryTestScenario = (type: 'sqlite | lancedb' | 'json') => {
     switch (type) {
       case 'sqlite':
         return {
@@ -198,7 +198,7 @@ function setupHybridTDD() {
         return {
           backend: 'json',
           file: '/tmp/test.json',
-          testData: { key: 'value' },
+          testData: { key: 'value'},
         };
       default:
         return {};
@@ -211,10 +211,8 @@ function setupHybridTDD() {
  */
 function cleanupClassicalResources() {
   const g = (globalThis as any).gc;
-  const startMem = (globalThis as any).testStartMemory as
-    | NodeJS.MemoryUsage
-    | undefined;
-  if (typeof g === 'function' && startMem) {
+  const startMem = (globalThis as any).testStartMemory as'' | ''NodeJS.MemoryUsage'' | ''undefined;
+  if (typeof g ==='function' && startMem) {
     try {
       g();
     } catch {
@@ -235,7 +233,7 @@ function cleanupClassicalResources() {
  * @param actualTime
  */
 (globalThis as any).expectPerformanceWithinThreshold = (
-  operation: 'coordination' | 'neural' | 'memory',
+  operation: 'coordination | neural' | 'memory',
   actualTime: number
 ) => {
   const threshold =
@@ -244,8 +242,7 @@ function cleanupClassicalResources() {
         ? 'coordinationLatency'
         : operation === 'neural'
           ? 'neuralComputation'
-          : 'memoryAccess'
-    ];
+          : 'memoryAccess'];
 
   expect(actualTime).toBeLessThanOrEqual(threshold);
 };
@@ -268,12 +265,7 @@ function cleanupClassicalResources() {
  * @param phase
  */
 (globalThis as any).createSPARCTestScenario = (
-  phase:
-    | 'specification'
-    | 'pseudocode'
-    | 'architecture'
-    | 'refinement'
-    | 'completion'
+  phase:'' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion'
 ) => {
   return {
     phase,
@@ -290,7 +282,7 @@ function cleanupClassicalResources() {
  */
 interface MemoryTestScenario {
   /** Memory backend type */
-  type: 'sqlite' | 'lancedb' | 'json';
+  type: 'sqlite | lancedb' | 'json';
   /** Test configuration */
   config: unknown;
   /** Mock methods */
@@ -318,12 +310,7 @@ interface TestContainer {
  */
 interface SPARCTestScenario {
   /** SPARC phase */
-  phase:
-    | 'specification'
-    | 'pseudocode'
-    | 'architecture'
-    | 'refinement'
-    | 'completion';
+  phase:'' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion';
   /** Test input */
   input: string;
   /** Expected output */

@@ -1,6 +1,6 @@
 /**
  * @fileoverview File-Aware AI Integration for claude-code-zen
- * 
+ *
  * Combines CodeMesh's Rust/TypeScript hybrid architecture with claude-code-zen's
  * LLM routing system for enterprise-grade file-aware AI capabilities.
  */
@@ -17,7 +17,10 @@ export * from './integration/code-mesh-bridge';
 export * from './hardware/native-detector';
 
 // Hardware detection types
-export type { HardwareInfo, OptimizationStrategy } from './hardware/native-detector';
+export type {
+  HardwareInfo,
+  OptimizationStrategy,
+} from './hardware/native-detector';
 
 // Re-export from CodeMesh when available
 export type {
@@ -28,13 +31,16 @@ export type {
   SymbolReference,
   FileDependency,
   AnalyzedContext,
-  FileAwareConfig
+  FileAwareConfig,
 } from './types/index';
 
 /**
  * Main factory function for creating file-aware AI instances
  */
-export { createFileAwareAI, createCodeMeshBridge } from './integration/code-mesh-bridge';
+export {
+  createFileAwareAI,
+  createCodeMeshBridge,
+} from './integration/code-mesh-bridge';
 
 /**
  * Direct access to core components
@@ -56,5 +62,5 @@ export const FEATURES = {
   WASM_SUPPORT: true,
   CODE_MESH_INTEGRATION: true,
   LLM_ROUTING_INTEGRATION: true,
-  NATIVE_HARDWARE_DETECTION: true
+  NATIVE_HARDWARE_DETECTION: true,
 } as const;

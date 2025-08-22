@@ -1,14 +1,14 @@
 /**
  * @fileoverview DevSecOps Manager - SAFe Security Integration
- * 
+ *
  * DevSecOps management for SAFe security integration throughout CI/CD pipeline.
  * Coordinates security scanning, compliance monitoring, and incident response.
- * 
+ *
  * Delegates to:
  * - Security Scanning Service for vulnerability detection and assessment
  * - Compliance Monitoring Service for automated compliance tracking
  * - Security Incident Response Service for incident management and coordination
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -25,7 +25,7 @@ export enum IncidentSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -39,7 +39,7 @@ export enum IncidentCategory {
   DENIAL_OF_SERVICE = 'denial-of-service',
   INSIDER_THREAT = 'insider-threat',
   COMPLIANCE_VIOLATION = 'compliance-violation',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 /**
@@ -51,7 +51,7 @@ export enum IncidentStatus {
   INVESTIGATING = 'investigating',
   CONTAINED = 'contained',
   RESOLVED = 'resolved',
-  CLOSED = 'closed'
+  CLOSED = 'closed',
 }
 
 /**
@@ -66,7 +66,7 @@ export interface DevSecOpsManagerConfig {
   readonly enableIncidentResponse: boolean;
   readonly enableSecurityTraining: boolean;
   readonly enablePenetrationTesting: boolean;
-  readonly securityScanFrequency: 'every-commit' | 'daily' | 'weekly';
+  readonly securityScanFrequency: 'every-commit''' | '''daily''' | '''weekly';
   readonly complianceReportingInterval: number; // milliseconds
   readonly vulnerabilityAssessmentInterval: number; // milliseconds
   readonly securityTrainingInterval: number; // milliseconds
@@ -86,7 +86,7 @@ export interface ComplianceConfig {
   readonly enableAutomatedScanning: boolean;
   readonly enableComplianceReporting: boolean;
   readonly enableAuditTrail: boolean;
-  readonly reportingFormat: 'json' | 'xml' | 'pdf' | 'html';
+  readonly reportingFormat: 'json | xml' | 'pdf''' | '''html';
   readonly auditRetentionDays: number;
   readonly complianceThreshold: number; // percentage
 }
@@ -123,7 +123,7 @@ export interface ComplianceRequirement {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low | medium' | 'high''' | '''critical';
   readonly assessmentFrequency?: number; // days
   readonly validationRules: ValidationRule[];
   readonly evidenceRequirements: EvidenceRequirement[];
@@ -136,7 +136,7 @@ export interface ValidationRule {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly ruleType: 'automated' | 'manual' | 'hybrid';
+  readonly ruleType: 'automated | manual' | 'hybrid';
 }
 
 /**
@@ -144,7 +144,7 @@ export interface ValidationRule {
  */
 export interface EvidenceRequirement {
   readonly id: string;
-  readonly type: 'document' | 'log' | 'configuration' | 'assessment';
+  readonly type: 'document | log' | 'configuration''' | '''assessment';
   readonly source: string;
   readonly description: string;
 }
@@ -167,7 +167,7 @@ export interface SecurityControl {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly implementation: 'manual' | 'automated' | 'hybrid';
+  readonly implementation: 'manual | automated' | 'hybrid';
 }
 
 /**
@@ -183,14 +183,7 @@ export interface SecurityTool {
   readonly configuration: Record<string, any>;
 }
 
-export type SecurityToolType =
-  | 'static_analysis'
-  | 'dynamic_analysis'
-  | 'dependency_scanner'
-  | 'secrets_scanner'
-  | 'container_scanner'
-  | 'infrastructure_scanner'
-  | 'vulnerability_scanner';
+export type SecurityToolType ='' | '''static_analysis | dynamic_analysis' | 'dependency_scanner''' | '''secrets_scanner | container_scanner' | 'infrastructure_scanner''' | '''vulnerability_scanner';
 
 /**
  * Security assessment
@@ -204,11 +197,7 @@ export interface SecurityAssessment {
   readonly summary: AssessmentSummary;
 }
 
-export type SecurityAssessmentType = 
-  | 'vulnerability_scan'
-  | 'penetration_test'
-  | 'code_review'
-  | 'compliance_audit';
+export type SecurityAssessmentType ='' | '''vulnerability_scan | penetration_test' | 'code_review''' | '''compliance_audit';
 
 /**
  * Assessment scope
@@ -219,7 +208,7 @@ export interface AssessmentScope {
     readonly start: Date;
     readonly end: Date;
   };
-  readonly depth: 'surface' | 'standard' | 'deep';
+  readonly depth: 'surface | standard' | 'deep';
 }
 
 /**
@@ -240,24 +229,13 @@ export interface SecurityFinding {
   readonly toolId?: string;
   readonly discoveredDate: Date;
   readonly lastSeenDate: Date;
-  readonly status: 'open' | 'in_progress' | 'resolved' | 'false_positive';
+  readonly status: 'open | in_progress' | 'resolved''' | '''false_positive';
   readonly falsePositive: boolean;
 }
 
-export type SecuritySeverity = 'critical' | 'high' | 'medium' | 'low' | 'informational';
+export type SecuritySeverity ='' | '''critical | high' | 'medium' | 'low' | 'informational';
 
-export type SecurityCategory =
-  | 'injection'
-  | 'authentication'
-  | 'authorization'
-  | 'sensitive_data'
-  | 'xml_entities'
-  | 'access_control'
-  | 'security_config'
-  | 'cross_site_scripting'
-  | 'insecure_deserialization'
-  | 'vulnerable_components'
-  | 'logging_monitoring';
+export type SecurityCategory ='' | '''injection | authentication' | 'authorization''' | '''sensitive_data | xml_entities' | 'access_control''' | '''security_config | cross_site_scripting' | 'insecure_deserialization' | 'vulnerable_components' | 'logging_monitoring';
 
 /**
  * CVSS score
@@ -284,9 +262,9 @@ export interface FindingLocation {
  * Security impact
  */
 export interface SecurityImpact {
-  readonly confidentiality: 'none' | 'low' | 'medium' | 'high';
-  readonly integrity: 'none' | 'low' | 'medium' | 'high';
-  readonly availability: 'none' | 'low' | 'medium' | 'high';
+  readonly confidentiality: 'none | low' | 'medium''' | '''high';
+  readonly integrity: 'none | low' | 'medium''' | '''high';
+  readonly availability: 'none | low' | 'medium''' | '''high';
   readonly businessImpact: string;
 }
 
@@ -316,7 +294,7 @@ export interface ComplianceStatus {
 // Re-export types from services for backward compatibility
 export type {
   SecurityIncident,
-  IncidentPriority
+  IncidentPriority,
 } from '../services/devsecops/security-incident-response-service';
 
 export class DevSecOpsManager extends TypedEventBase {
@@ -343,23 +321,32 @@ export class DevSecOpsManager extends TypedEventBase {
       this.logger.info('Initializing DevSecOps Manager...');
 
       // Delegate to Security Scanning Service
-      const { SecurityScanningService } = await import('../services/devsecops/security-scanning-service');
+      const { SecurityScanningService } = await import(
+        '../services/devsecops/security-scanning-service'
+      );
       this.securityScanningService = new SecurityScanningService(this.logger);
 
-      // Delegate to Compliance Monitoring Service  
-      const { ComplianceMonitoringService } = await import('../services/devsecops/compliance-monitoring-service');
-      this.complianceMonitoringService = new ComplianceMonitoringService(this.logger);
+      // Delegate to Compliance Monitoring Service
+      const { ComplianceMonitoringService } = await import(
+        '../services/devsecops/compliance-monitoring-service'
+      );
+      this.complianceMonitoringService = new ComplianceMonitoringService(
+        this.logger
+      );
 
       // Delegate to Security Incident Response Service
-      const { SecurityIncidentResponseService } = await import('../services/devsecops/security-incident-response-service');
-      this.incidentResponseService = new SecurityIncidentResponseService(this.logger);
+      const { SecurityIncidentResponseService } = await import(
+        '../services/devsecops/security-incident-response-service'
+      );
+      this.incidentResponseService = new SecurityIncidentResponseService(
+        this.logger
+      );
 
       // Configure services based on manager config
       await this.configureServices();
 
       this.initialized = true;
       this.logger.info('DevSecOps Manager initialized successfully');
-
     } catch (error) {
       this.logger.error('Failed to initialize DevSecOps Manager:', error);
       throw error;
@@ -376,8 +363,8 @@ export class DevSecOpsManager extends TypedEventBase {
   }): Promise<SecurityAssessment> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Performing security assessment', { 
-      type: assessmentConfig.assessmentType 
+    this.logger.info('Performing security assessment', {
+      type: assessmentConfig.assessmentType,
     });
 
     try {
@@ -385,25 +372,27 @@ export class DevSecOpsManager extends TypedEventBase {
       const scanConfig = {
         scanId: `scan-${Date.now()}`,
         scanType: this.mapAssessmentToScanType(assessmentConfig.assessmentType),
-        tools: assessmentConfig.tools || this.getDefaultTools(),
+        tools: assessmentConfig.tools'' | '''' | ''this.getDefaultTools(),
         targets: this.convertScopeToTargets(assessmentConfig.scope),
         standards: this.configuration.security.securityStandards,
         schedule: {
           frequency: this.configuration.securityScanFrequency,
-          timeWindow: '0 2 * * *', // 2 AM daily
+          timeWindow:'0 2 * * *', // 2 AM daily
           maxDuration: 120,
-          parallelScans: 3
+          parallelScans: 3,
         },
         reporting: {
           format: 'json' as const,
           destinations: ['console'],
           includeRawResults: true,
-          aggregateResults: true
-        }
+          aggregateResults: true,
+        },
       };
 
       // Execute scan
-      const scanResult = await this.securityScanningService.executeScan(scanConfig.scanId);
+      const scanResult = await this.securityScanningService.executeScan(
+        scanConfig.scanId
+      );
 
       // Convert to security assessment format
       const assessment: SecurityAssessment = {
@@ -413,28 +402,28 @@ export class DevSecOpsManager extends TypedEventBase {
         scope: assessmentConfig.scope,
         findings: scanResult.findings,
         summary: {
-          totalFindings: scanResult.summary.criticalIssues + 
-                        scanResult.summary.highIssues + 
-                        scanResult.summary.mediumIssues + 
-                        scanResult.summary.lowIssues + 
-                        scanResult.summary.informationalIssues,
+          totalFindings:
+            scanResult.summary.criticalIssues +
+            scanResult.summary.highIssues +
+            scanResult.summary.mediumIssues +
+            scanResult.summary.lowIssues +
+            scanResult.summary.informationalIssues,
           criticalFindings: scanResult.summary.criticalIssues,
           highFindings: scanResult.summary.highIssues,
           mediumFindings: scanResult.summary.mediumIssues,
           lowFindings: scanResult.summary.lowIssues,
-          riskScore: scanResult.summary.riskScore
-        }
+          riskScore: scanResult.summary.riskScore,
+        },
       };
 
       this.emit('security-assessment-completed', {
         assessmentId: assessment.assessmentId,
         type: assessmentConfig.assessmentType,
         totalFindings: assessment.summary.totalFindings,
-        riskScore: assessment.summary.riskScore
+        riskScore: assessment.summary.riskScore,
       });
 
       return assessment;
-
     } catch (error) {
       this.logger.error('Security assessment failed:', error);
       throw error;
@@ -453,14 +442,20 @@ export class DevSecOpsManager extends TypedEventBase {
       const statuses: ComplianceStatus[] = [];
 
       if (frameworkId) {
-        const status = await this.complianceMonitoringService.getComplianceStatus(frameworkId);
+        const status =
+          await this.complianceMonitoringService.getComplianceStatus(
+            frameworkId
+          );
         if (status) {
           statuses.push(status);
         }
       } else {
         // Get status for all configured frameworks
         for (const framework of this.configuration.compliance.frameworks) {
-          const status = await this.complianceMonitoringService.getComplianceStatus(framework.id);
+          const status =
+            await this.complianceMonitoringService.getComplianceStatus(
+              framework.id
+            );
           if (status) {
             statuses.push(status);
           }
@@ -468,7 +463,6 @@ export class DevSecOpsManager extends TypedEventBase {
       }
 
       return statuses;
-
     } catch (error) {
       this.logger.error('Failed to get compliance status:', error);
       throw error;
@@ -491,21 +485,21 @@ export class DevSecOpsManager extends TypedEventBase {
     this.logger.info('Creating security incident', {
       title: incidentData.title,
       severity: incidentData.severity,
-      category: incidentData.category
+      category: incidentData.category,
     });
 
     try {
-      const incident = await this.incidentResponseService.createIncident(incidentData);
+      const incident =
+        await this.incidentResponseService.createIncident(incidentData);
 
       this.emit('security-incident-created', {
         incidentId: incident.incidentId,
         severity: incident.severity,
         category: incident.category,
-        priority: incident.priority
+        priority: incident.priority,
       });
 
       return incident;
-
     } catch (error) {
       this.logger.error('Failed to create security incident:', error);
       throw error;
@@ -525,20 +519,19 @@ export class DevSecOpsManager extends TypedEventBase {
 
     try {
       const incident = await this.incidentResponseService.updateIncidentStatus(
-        incidentId, 
-        status, 
-        updatedBy, 
+        incidentId,
+        status,
+        updatedBy,
         notes
       );
 
       this.emit('security-incident-updated', {
         incidentId,
         status,
-        updatedBy
+        updatedBy,
       });
 
       return incident;
-
     } catch (error) {
       this.logger.error('Failed to update incident status:', error);
       throw error;
@@ -549,7 +542,7 @@ export class DevSecOpsManager extends TypedEventBase {
    * Generate compliance report - Delegates to Compliance Monitoring Service
    */
   async generateComplianceReport(
-    reportType: 'summary' | 'detailed' | 'executive' | 'audit',
+    reportType: 'summary | detailed' | 'executive''' | '''audit',
     frameworkIds: string[],
     period: {
       startDate: Date;
@@ -559,23 +552,26 @@ export class DevSecOpsManager extends TypedEventBase {
   ): Promise<any> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Generating compliance report', { reportType, frameworks: frameworkIds.length });
+    this.logger.info('Generating compliance report', {
+      reportType,
+      frameworks: frameworkIds.length,
+    });
 
     try {
-      const report = await this.complianceMonitoringService.generateComplianceReport(
-        reportType,
-        frameworkIds,
-        period
-      );
+      const report =
+        await this.complianceMonitoringService.generateComplianceReport(
+          reportType,
+          frameworkIds,
+          period
+        );
 
       this.emit('compliance-report-generated', {
         reportId: report.reportId,
         reportType,
-        overallCompliance: report.overallCompliance
+        overallCompliance: report.overallCompliance,
       });
 
       return report;
-
     } catch (error) {
       this.logger.error('Failed to generate compliance report:', error);
       throw error;
@@ -587,39 +583,54 @@ export class DevSecOpsManager extends TypedEventBase {
    */
   private async configureServices(): Promise<void> {
     // Configure security scanning if enabled
-    if (this.configuration.enableVulnerabilityScanning && this.securityScanningService) {
+    if (
+      this.configuration.enableVulnerabilityScanning &&
+      this.securityScanningService
+    ) {
       // Configuration would be passed to service
       this.logger.info('Security scanning configured');
     }
 
     // Configure compliance monitoring if enabled
-    if (this.configuration.enableComplianceAutomation && this.complianceMonitoringService) {
+    if (
+      this.configuration.enableComplianceAutomation &&
+      this.complianceMonitoringService
+    ) {
       const complianceConfig = {
         monitoringId: 'main-compliance',
         frameworks: this.configuration.compliance.frameworks,
-        automatedScanning: this.configuration.compliance.enableAutomatedScanning,
-        reportingEnabled: this.configuration.compliance.enableComplianceReporting,
+        automatedScanning:
+          this.configuration.compliance.enableAutomatedScanning,
+        reportingEnabled:
+          this.configuration.compliance.enableComplianceReporting,
         auditTrailEnabled: this.configuration.compliance.enableAuditTrail,
         reportingSchedule: {
           frequency: 'monthly' as const,
           format: this.configuration.compliance.reportingFormat,
           recipients: ['compliance@example.com'],
-          customReports: []
+          customReports: [],
         },
         thresholds: {
           minimumCompliance: this.configuration.compliance.complianceThreshold,
-          warningThreshold: this.configuration.compliance.complianceThreshold - 10,
-          criticalThreshold: this.configuration.compliance.complianceThreshold - 20,
+          warningThreshold:
+            this.configuration.compliance.complianceThreshold - 10,
+          criticalThreshold:
+            this.configuration.compliance.complianceThreshold - 20,
           maxNonCompliantDays: 30,
-          escalationRules: []
-        }
+          escalationRules: [],
+        },
       };
 
-      await this.complianceMonitoringService.configureMonitoring(complianceConfig);
+      await this.complianceMonitoringService.configureMonitoring(
+        complianceConfig
+      );
     }
 
     // Configure incident response if enabled
-    if (this.configuration.enableIncidentResponse && this.incidentResponseService) {
+    if (
+      this.configuration.enableIncidentResponse &&
+      this.incidentResponseService
+    ) {
       this.logger.info('Incident response configured');
     }
   }
@@ -627,27 +638,36 @@ export class DevSecOpsManager extends TypedEventBase {
   /**
    * Helper methods
    */
-  private mapAssessmentToScanType(assessmentType: SecurityAssessmentType): string {
+  private mapAssessmentToScanType(
+    assessmentType: SecurityAssessmentType
+  ): string {
     switch (assessmentType) {
-      case 'vulnerability_scan': return 'static';
-      case 'penetration_test': return 'dynamic';
-      case 'code_review': return 'static';
-      case 'compliance_audit': return 'infrastructure';
-      default: return 'static';
+      case 'vulnerability_scan':
+        return 'static';
+      case 'penetration_test':
+        return 'dynamic';
+      case 'code_review':
+        return 'static';
+      case 'compliance_audit':
+        return 'infrastructure';
+      default:
+        return 'static';
     }
   }
 
   private getDefaultTools(): SecurityTool[] {
-    return this.configuration.security.securityToolsIntegration.filter(tool => tool.enabled);
+    return this.configuration.security.securityToolsIntegration.filter(
+      (tool) => tool.enabled
+    );
   }
 
   private convertScopeToTargets(scope: AssessmentScope): any[] {
-    return scope.targets.map(target => ({
+    return scope.targets.map((target) => ({
       type: 'code',
       path: target,
       inclusions: ['**/*'],
       exclusions: ['**/node_modules/**'],
-      priority: 'medium'
+      priority: 'medium',
     }));
   }
 
@@ -688,18 +708,18 @@ export class DevSecOpsManager extends TypedEventBase {
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down DevSecOps Manager...');
-    
+
     // Cleanup services in production
     try {
       await Promise.all([
         this.securityScanningService?.shutdown?.(),
         this.complianceMonitoringService?.shutdown?.(),
-        this.incidentResponseService?.shutdown?.()
+        this.incidentResponseService?.shutdown?.(),
       ]);
     } catch (error) {
       this.logger.warn('Some services failed to shutdown cleanly:', error);
     }
-    
+
     this.initialized = false;
     this.logger.info('DevSecOps Manager shutdown complete');
   }

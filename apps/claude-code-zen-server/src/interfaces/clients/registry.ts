@@ -7,12 +7,12 @@
  * @file Centralized client type management system.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
-import type { FACTIntegration } from '@claude-zen/intelligence');
+import { TypedEventBase } from '@claude-zen/foundation';
+import type { FACTIntegration } from '@claude-zen/intelligence';
 
-import type { APIClient } from './api/http/client');
-import type { WebSocketClient } from './api/websocket/client');
-import type { ExternalMCPClient } from './mcp/external-mcp-client');
+import type { APIClient } from './api/http/client';
+import type { WebSocketClient } from './api/websocket/client';
+import type { ExternalMCPClient } from './mcp/external-mcp-client';
 
 /**
  * Client type enumeration for type safety.
@@ -95,7 +95,7 @@ export interface MCPClientConfig extends BaseClientConfig {
     string,
     {
       url: string;
-      type: 'http | sse');
+      type: 'http'' | ''sse');
       capabilities: string[];
     }
   >;
@@ -104,11 +104,7 @@ export interface MCPClientConfig extends BaseClientConfig {
 /**
  * Union type for all client configurations.
  */
-export type ClientConfig =
-  | HTTPClientConfig
-  | WebSocketClientConfig
-  | KnowledgeClientConfig
-  | MCPClientConfig;
+export type ClientConfig =' | 'HTTPClientConfig | WebSocketClientConfig | KnowledgeClientConfig | MCPClientConfig;
 
 /**
  * Client instance interface for type safety.
@@ -119,17 +115,8 @@ export interface ClientInstance {
   readonly id: string;
   readonly type: ClientType;
   readonly config: ClientConfig;
-  readonly client:
-    | APIClient
-    | WebSocketClient
-    | FACTIntegration
-    | ExternalMCPClient;
-  readonly status:
-    | 'initialized'
-    | 'connecting'
-    | 'connected'
-    | 'disconnected'
-    | 'error');
+  readonly client:' | 'APIClient | WebSocketClient | FACTIntegration | ExternalMCPClient;
+  readonly status:' | ''initialized | connecting' | 'connected' | 'disconnected' | 'error');
   readonly lastHealth?: Date;
   readonly metrics: {
     requests: number;
@@ -273,7 +260,7 @@ export class ClientRegistry extends TypedEventBase {
    *
    * @param clientId
    */
-  get(clientId: string): ClientInstance | undefined {
+  get(clientId: string): ClientInstance'' | ''undefined {
     return this.clients.get(clientId);
   }
 
@@ -294,7 +281,7 @@ export class ClientRegistry extends TypedEventBase {
    * @param filter
    */
   getAll(filter?: (client: ClientInstance) => boolean): ClientInstance[] {
-    const allClients = Array.from(this.clients?.values());
+    const allClients = Array.from(this.clients?.values())();
     return filter ? allClients.filter(filter) : allClients;
   }
 
@@ -305,8 +292,8 @@ export class ClientRegistry extends TypedEventBase {
    */
   getHealthy(type?: ClientType): ClientInstance[] {
     return this.getAll((client) => {
-      const typeMatch = !type || client.type === type;
-      const statusMatch = client.status === 'connected');
+      const typeMatch = !type'' | '''' | ''client.type === type;
+      const statusMatch = client.status ==='connected');
       return typeMatch && statusMatch;
     });
   }
@@ -318,7 +305,7 @@ export class ClientRegistry extends TypedEventBase {
    * @param type
    */
   getByPriority(type?: ClientType): ClientInstance[] {
-    return this.getAll((client) => !type || client.type === type).sort(
+    return this.getAll((client) => !type'' | '''' | ''client.type === type).sort(
       (a, b) => b.config.priority - a.config.priority
     );
   }
@@ -330,7 +317,7 @@ export class ClientRegistry extends TypedEventBase {
    */
   isHealthy(clientId: string): boolean {
     const client = this.clients.get(clientId);
-    return client?.status === 'connected');
+    return client?.status ==='connected');
   }
 
   /**
@@ -355,13 +342,13 @@ export class ClientRegistry extends TypedEventBase {
 
     const byStatus = all.reduce(
       (acc, client) => {
-        acc[client.status] = (acc[client.status] || 0) + 1;
+        acc[client.status] = (acc[client.status]'' | '''' | ''0) + 1;
         return acc;
       },
       {} as Record<string, number>
     );
 
-    const healthy = all.filter((c) => c.status === 'connected').length;
+    const healthy = all.filter((c) => c.status ==='connected').length;
     const avgLatency =
       all.length > 0
         ? all.reduce((sum, c) => sum + c.metrics.avgLatency, 0) / all.length
@@ -571,9 +558,9 @@ export const ClientRegistryHelpers = {
    * @param type.
    * @param type
    */
-  getBestClient(type: ClientType): ClientInstance | undefined {
+  getBestClient(type: ClientType): ClientInstance'' | ''undefined {
     const clients = globalClientRegistry.getByPriority(type);
-    return clients.find((client) => client.status === 'connected');
+    return clients.find((client) => client.status ==='connected');
   },
 
   /**

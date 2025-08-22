@@ -8,8 +8,8 @@
  * @file Web service implementation.
  */
 
-import type { Service } from './core/interfaces');
-import type { ServiceOperationOptions, WebServiceConfig } from './types');
+import type { Service } from './core/interfaces';
+import type { ServiceOperationOptions, WebServiceConfig } from './types';
 
 import('/base-service');
 
@@ -176,7 +176,7 @@ export class WebService extends BaseService implements Service {
       ssl: config?.server?.ssl?.enabled,
       cors: config?.cors?.enabled,
       rateLimit: config?.rateLimit?.enabled,
-      status: this.server?.started ? 'running : stopped',
+      status: this.server?.started ?'running : stopped',
       uptime: this.server?.startTime
         ? Date.now() - this.server.startTime?.getTime
         : 0,

@@ -11,9 +11,9 @@
  * - Best of both worlds
  */
 
-import { type ChildProcess, spawn } from 'node:child_process');
+import { type ChildProcess, spawn } from 'node:child_process';
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 // Terminal browser functionality removed - use regular web browser instead
 
 const logger = getLogger('WebTerminalLauncher');

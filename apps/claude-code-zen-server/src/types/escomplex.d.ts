@@ -74,7 +74,7 @@ declare module 'escomplex' {
 
   export interface DependencyReport {
     path: string;
-    type: 'CommonJS | AMD' | 'ES6');
+    type: 'CommonJS'' | ''AMD'' | ''ES6');
     line: number;
     source: string;
   }

@@ -4,7 +4,7 @@
  * Provides type safety for all dashboard components and data structures
  */
 export interface SystemStatus {
-  health: 'healthy | warning' | 'error | critical');
+  health: 'healthy'' | ''warning'' | ''error'' | ''critical');
   uptime: number;
   memoryUsage: number;
   version: string;
@@ -14,8 +14,8 @@ export interface SwarmInfo {
   id: string | number;
   name: string;
   agents: number;
-  status: 'active | inactive' | 'warning | error');
-  topology?: 'hierarchical | mesh' | 'ring | star');
+  status:'active'' | ''inactive'' | ''warning'' | ''error');
+  topology?: 'hierarchical'' | ''mesh'' | ''ring'' | ''star');
   created?: Date;
   lastActivity?: Date;
 }
@@ -31,7 +31,7 @@ export interface TaskInfo {
   id: string | number;
   title: string;
   progress: number;
-  status: 'pending | active' | 'completed | error' | 'cancelled');
+  status:'pending'' | ''active'' | ''completed'' | ''error'' | ''cancelled');
   assignedAgents?: string[];
   estimatedCompletion?: Date;
   created: Date;
@@ -60,7 +60,7 @@ export interface LLMStatistics {
 export interface LogEntry {
   id: string;
   timestamp: Date;
-  level: 'debug | info' | 'warn | error');
+  level: 'debug'' | ''info'' | ''warn'' | ''error');
   message: string;
   source?: string;
   data?: any;
@@ -71,17 +71,7 @@ export interface ApiResponse<T> {
   error?: string;
   timestamp: Date;
 }
-export type WebSocketEventType =
-  | 'system:status'
-  | 'swarm:update'
-  | 'swarm:created'
-  | 'swarm:stopped'
-  | 'performance:update'
-  | 'task:created'
-  | 'task:updated'
-  | 'task:completed'
-  | 'logs:new'
-  | 'llm:stats');
+export type WebSocketEventType =' | ''system:status''' | '''swarm:update''' | '''swarm:created''' | '''swarm:stopped''' | '''performance:update''' | '''task:created''' | '''task:updated''' | '''task:completed''' | '''logs:new''' | '''llm:stats');
 export interface CardProps {
   title?: string;
   icon?: string;
@@ -90,39 +80,39 @@ export interface CardProps {
 }
 export interface MetricProps {
   label: string;
-  value: string | number;
+  value: string'' | ''number;
   unit?: string;
-  trend?: 'up | down' | 'stable');
-  status?: 'success | warning' | 'error');
+  trend?:'up | down''' | '''stable');
+  status?: 'success'' | ''warning'' | ''error');
 }
 export interface ProgressBarProps {
   value: number;
   max?: number;
-  variant?: 'default | success' | 'warning | error');
-  size?: 'sm | md' | 'lg');
+  variant?: 'default'' | ''success'' | ''warning'' | ''error');
+  size?: 'sm'' | ''md'' | ''lg');
   showLabel?: boolean;
 }
 export interface StatusDotProps {
-  status: 'active | inactive' | 'warning | error' | 'success');
-  size?: 'sm | md' | 'lg');
+  status: 'active'' | ''inactive'' | ''warning'' | ''error'' | ''success');
+  size?: 'sm'' | ''md'' | ''lg');
   animated?: boolean;
 }
 export interface SwarmConfig {
-  topology: 'hierarchical | mesh' | 'ring | star');
+  topology: 'hierarchical'' | ''mesh'' | ''ring'' | ''star');
   maxAgents: number;
-  strategy: 'balanced | specialized' | 'adaptive');
+  strategy: 'balanced'' | ''specialized'' | ''adaptive');
   description?: string;
 }
 export interface TaskConfig {
   title: string;
   description: string;
-  priority: 'low | medium' | 'high | critical');
+  priority: 'low'' | ''medium'' | ''high'' | ''critical');
   assignedSwarm?: string;
   estimatedHours?: number;
   tags?: string[];
 }
 export interface DashboardSettings {
-  theme: 'light | dark' | 'auto');
+  theme: 'light'' | ''dark'' | ''auto');
   refreshInterval: number;
   enableRealTime: boolean;
   enableNotifications: boolean;
@@ -153,20 +143,20 @@ export interface ApiClient {
 export interface DashboardStore {
   data: DashboardData;
   loading: boolean;
-  error: string | null;
+  error: string'' | ''null;
   connected: boolean;
   lastUpdate: Date;
 }
 export interface WebSocketStore {
   connected: boolean;
-  socket: WebSocket | null;
-  lastMessage: WebSocketMessage | null;
+  socket: WebSocket'' | ''null;
+  lastMessage: WebSocketMessage'' | ''null;
   reconnectAttempts: number;
   maxReconnectAttempts: number;
 }
-export type StatusColor = 'success | warning' | 'error | info' | 'default');
-export type ComponentSize = 'xs | sm' | 'md | lg' | 'xl');
-export type LoadingState = 'idle | loading' | 'success | error');
+export type StatusColor ='success | warning''' | '''error | info''' | '''default');
+export type ComponentSize = 'xs'' | ''sm'' | ''md'' | ''lg'' | ''xl');
+export type LoadingState = 'idle'' | ''loading'' | ''success'' | ''error');
 export type EventHandler<T = Event> = (event: T) => void;
 export type AsyncEventHandler<T = Event> = (event: T) => Promise<void>;
 export interface ValidationRule {
@@ -179,7 +169,7 @@ export interface ValidationRule {
 export interface FormField {
   name: string;
   label: string;
-  type: 'text | number' | 'select | checkbox' | 'textarea');
+  type: 'text'' | ''number'' | ''select'' | ''checkbox'' | ''textarea');
   value: any;
   rules?: ValidationRule[];
   options?: {
@@ -194,7 +184,7 @@ export interface ChartDataPoint {
   metadata?: any;
 }
 export interface ChartConfig {
-  type: 'line | bar' | 'doughnut | area');
+  type: 'line'' | ''bar'' | ''doughnut'' | ''area');
   data: ChartDataPoint[];
   options?: {
     title?: string;

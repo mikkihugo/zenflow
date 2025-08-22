@@ -5,7 +5,7 @@
  * agent coordination, and swarm orchestration capabilities.
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('IntelligenceCoordinationSystem');
 
@@ -13,7 +13,7 @@ export interface IntelligenceConfig {
   /** Neural network model preferences */
   neuralModel?: string;
   /** Coordination strategy */
-  strategy?: 'hierarchical | flat' | 'hybrid');
+  strategy?: 'hierarchical'' | ''flat'' | ''hybrid');
   /** Maximum number of agents */
   maxAgents?: number;
   /** Learning rate for adaptation */
@@ -162,7 +162,7 @@ export class DefaultIntelligenceCoordinationSystem
   }
 
   async getAgentStatus(): Promise<unknown[]> {
-    return Array.from(this.agents?.values());
+    return Array.from(this.agents?.values())();
   }
 
   async updateConfig(config: Partial<IntelligenceConfig>): Promise<void> {

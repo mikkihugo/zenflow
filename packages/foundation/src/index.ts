@@ -285,12 +285,8 @@ export type {
 } from './types/primitives';
 
 // Export additional types that implementation packages need
-export type {
-  Entity,
-} from './types/index';
-export type {
-  OperationResult,
-} from './types/patterns';
+export type { Entity } from './types/index';
+export type { OperationResult } from './types/patterns';
 
 // =============================================================================
 // LOGGING SYSTEM - Central logging foundation
@@ -450,12 +446,8 @@ export {
 // =============================================================================
 // EVENT SYSTEM - TypedEventBase for event-driven programming
 // =============================================================================
-export {
-  TypedEventBase,
-} from './typed-event-base';
-export type {
-  EventMetrics,
-} from './typed-event-base';
+export { TypedEventBase } from './typed-event-base';
+export type { EventMetrics } from './typed-event-base';
 
 // =============================================================================
 // INFRASTRUCTURE REDIRECTS - Storage and KV functionality moved to infrastructure
@@ -464,17 +456,17 @@ export type {
 // Storage functionality moved to @claude-zen/infrastructure
 export const Storage = class StorageRedirect {
   constructor() {
-    console.warn('Storage: Use @claude-zen/infrastructure for production storage');
+    // Note: Use @claude-zen/infrastructure for production storage
   }
 };
 
-export const getKVStore = async () => {
-  console.warn('getKVStore: Use @claude-zen/infrastructure for production KV storage');
+export const getKVStore = () => {
+  // Note: Use @claude-zen/infrastructure for production KV storage
   return {
-    set: async () => {},
-    get: async () => null,
-    delete: async () => false,
-    clear: async () => {},
+    set: () => {},
+    get: () => null,
+    delete: () => false,
+    clear: () => {},
   };
 };
 
@@ -490,40 +482,58 @@ export interface LLMProvider {
 export type { LLMProvider as LLMProviderType };
 
 export const getGlobalLLM = (): LLMProvider => {
-  console.warn('getGlobalLLM: Use @claude-zen/intelligence for production LLM access');
+  // Note: Use @claude-zen/intelligence for production LLM access
   return {
-    generate: async () => ({ text: '' }),
-    complete: async () => '',
-    chat: async () => ({ response: '' }),
-    setRole: () => {}
+    generate: () => ({ text: '' }),
+    complete: () => '',
+    chat: () => ({ response: '' }),
+    setRole: () => {},
   };
 };
 
 export const singleton = () => (target: any) => {
-  console.warn('singleton: Use @claude-zen/foundation DI system for production');
+  // Note: Use @claude-zen/foundation DI system for production
   return target;
 };
 
 // Telemetry stub functions - moved to @claude-zen/operations
-export const recordMetric = (_name: string, _value: number = 1, _attributes?: Record<string, unknown>) => {
-  console.warn('recordMetric: Use @claude-zen/operations for production telemetry');
+export const recordMetric = (
+  _name: string,
+  _value: number = 1,
+  _attributes?: Record<string, unknown>
+) => {
+  // Note: Use @claude-zen/operations for production telemetry
 };
 
-export const recordHistogram = (_name: string, _value: number, _attributes?: Record<string, unknown>) => {
-  console.warn('recordHistogram: Use @claude-zen/operations for production telemetry');
+export const recordHistogram = (
+  _name: string,
+  _value: number,
+  _attributes?: Record<string, unknown>
+) => {
+  // Note: Use @claude-zen/operations for production telemetry
 };
 
-export const startTrace = (_name: string, _attributes?: Record<string, unknown>) => {
-  console.warn('startTrace: Use @claude-zen/operations for production telemetry');
+export const startTrace = (
+  _name: string,
+  _attributes?: Record<string, unknown>
+) => {
+  getLogger('foundation').warn(
+    'startTrace: Use @claude-zen/operations for production telemetry'
+  );
   return {
-    end: () => console.warn('trace.end: Use @claude-zen/operations for production telemetry'),
-    addAttribute: (_key: string, _value: unknown) => console.warn('trace.addAttribute: Use @claude-zen/operations'),
-    setStatus: (_status: string) => console.warn('trace.setStatus: Use @claude-zen/operations')
+    end: () =>
+      getLogger('foundation').warn(
+        'trace.end: Use @claude-zen/operations for production telemetry'
+      ),
+    addAttribute: (_key: string, _value: unknown) =>
+      getLogger('foundation').warn('trace.addAttribute: Use @claude-zen/operations'),
+    setStatus: (_status: string) =>
+      getLogger('foundation').warn('trace.setStatus: Use @claude-zen/operations'),
   };
 };
 
-export const withTrace = <T>(nameOrFn: string | (() => T), fn?: () => T): T => {
-  console.warn('withTrace: Use @claude-zen/operations for production tracing');
+export const withTrace = <T>(nameOrFn: string'' | ''(() => T), fn?: () => T): T => {
+  getLogger('foundation').warn('withTrace: Use @claude-zen/operations for production tracing');
   if (typeof nameOrFn === 'function') {
     return nameOrFn();
   }
@@ -531,22 +541,30 @@ export const withTrace = <T>(nameOrFn: string | (() => T), fn?: () => T): T => {
 };
 
 export const traced = (_name?: string) => {
-  console.warn('traced: Use @claude-zen/operations for production tracing');
-  return (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
+  getLogger('foundation').warn('traced: Use @claude-zen/operations for production tracing');
+  return (
+    _target: any,
+    _propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {
     return descriptor;
   };
 };
 
 export const metered = (_name?: string) => {
-  console.warn('metered: Use @claude-zen/operations for production metrics');
-  return (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
+  getLogger('foundation').warn('metered: Use @claude-zen/operations for production metrics');
+  return (
+    _target: any,
+    _propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {
     return descriptor;
   };
 };
 
 // DI-related stubs - moved to strategic facades
 export const inject = () => {
-  console.warn('inject: Use @claude-zen/foundation DI system for production');
+  getLogger('foundation').warn('inject: Use @claude-zen/foundation DI system for production');
   return () => {};
 };
 
@@ -567,16 +585,18 @@ export interface DatabaseAccess {
 export type { DatabaseAccess as DatabaseAccessType };
 
 export const getDatabaseAccess = (): DatabaseAccess => {
-  console.warn('getDatabaseAccess: Use @claude-zen/infrastructure for production database access');
+  getLogger('foundation').warn(
+    'getDatabaseAccess: Use @claude-zen/infrastructure for production database access'
+  );
   return {
-    query: async () => ({ rows: [] }),
-    execute: async () => ({ changes: 0 }),
-    getKV: async () => ({
-      set: async () => {},
-      get: async () => null,
-      delete: async () => false,
-      clear: async () => {}
-    })
+    query: async () => await Promise.resolve({ rows: [] }),
+    execute: async () => await Promise.resolve({ changes: 0 }),
+    getKV: async () => await Promise.resolve({
+      set: async () => await Promise.resolve(),
+      get: async () => await Promise.resolve(null),
+      delete: async () => await Promise.resolve(false),
+      clear: async () => await Promise.resolve(),
+    }),
   };
 };
 
@@ -589,9 +609,12 @@ export interface ServiceContainer {
 
 export const createServiceContainer = (): ServiceContainer => {
   const services = new Map<string, any>();
-  
+
   return {
-    register<T>(token: string, implementation: new (...args: any[]) => T): void {
+    register<T>(
+      token: string,
+      implementation: new (...args: any[]) => T
+    ): void {
       services.set(token, implementation);
     },
     resolve<T>(token: string): T {
@@ -603,14 +626,14 @@ export const createServiceContainer = (): ServiceContainer => {
     },
     has(token: string): boolean {
       return services.has(token);
-    }
+    },
   };
 };
 
 export enum Lifetime {
   Singleton = 'singleton',
   Transient = 'transient',
-  Scoped = 'scoped'
+  Scoped = 'scoped',
 }
 
 // EventEmitter implementation for packages that need it
@@ -628,8 +651,8 @@ export class EventEmitter {
   emit(event: string, ...args: any[]): boolean {
     const listeners = this.events.get(event);
     if (!listeners) return false;
-    
-    listeners.forEach(listener => listener(...args));
+
+    listeners.forEach((listener) => listener(...args));
     return true;
   }
 
@@ -665,7 +688,7 @@ export class EventEmitter {
 
 // KeyValueStore interface for memory backends
 export interface KeyValueStore {
-  get(key: string): Promise<string | null>;
+  get(key: string): Promise<string'' | ''null>;
   set(key: string, value: string): Promise<void>;
   has(key: string): Promise<boolean>;
   delete(key: string): Promise<boolean>;
@@ -673,9 +696,9 @@ export interface KeyValueStore {
   keys(): Promise<string[]>;
 }
 
-// Memory configuration interfaces  
+// Memory configuration interfaces
 export interface MemoryConfig {
-  type?: 'sqlite' | 'lancedb' | 'json' | 'memory';
+  type?:'sqlite | lancedb' | 'json''' | '''memory';
   path?: string;
   maxSize?: number;
   ttl?: number;
@@ -685,7 +708,7 @@ export interface MemoryConfig {
 
 // Database configuration and factory types
 export interface DatabaseConfig {
-  type: 'sqlite' | 'lancedb' | 'kuzu' | 'postgresql' | 'mysql';
+  type: 'sqlite | lancedb' | 'kuzu' | 'postgresql' | 'mysql';
   path?: string;
   connectionString?: string;
   host?: string;
@@ -710,40 +733,54 @@ export interface VectorDocument {
 }
 
 // Create functions for database/memory packages
-export const createDao = (type: string, config: any) => {
-  console.warn(`createDao: Package-specific implementation required for type ${type}`);
+export const createDao = (type: string, config?: any) => {
+  getLogger('foundation').warn(
+    `createDao: Package-specific implementation required for type ${type}${config ? ' with config' : ''}`
+  );
   return {
     find: () => Promise.resolve([]),
     create: () => Promise.resolve({}),
     update: () => Promise.resolve({}),
-    delete: () => Promise.resolve(true)
+    delete: () => Promise.resolve(true),
   };
 };
 
 export const createMultiDatabaseSetup = (config: DatabaseConfig[]) => {
-  console.warn('createMultiDatabaseSetup: Package-specific implementation required');
+  getLogger('foundation').warn(
+    'createMultiDatabaseSetup: Package-specific implementation required'
+  );
   return Promise.resolve({
-    databases: config.map(c => ({ type: c.type, status: 'ready' }))
+    databases: config.map((c) => ({ type: c.type, status: 'ready' })),
   });
 };
 
 // System monitoring stubs - moved to @claude-zen/operations
 export const SystemMetricsCollector = class SystemMetricsCollectorStub {
   constructor() {
-    console.warn('SystemMetricsCollector: Use @claude-zen/operations for production system monitoring');
+    getLogger('foundation').warn(
+      'SystemMetricsCollector: Use @claude-zen/operations for production system monitoring'
+    );
   }
-  collect() { return {}; }
-  getMetrics() { return {}; }
+  collect() {
+    return {};
+  }
+  getMetrics() {
+    return {};
+  }
 };
 
 export const createSystemMetricsCollector = () => {
-  console.warn('createSystemMetricsCollector: Use @claude-zen/operations for production system monitoring');
+  getLogger('foundation').warn(
+    'createSystemMetricsCollector: Use @claude-zen/operations for production system monitoring'
+  );
   return new SystemMetricsCollector();
 };
 
 // Neural configuration stubs - moved to @claude-zen/intelligence
 export const getNeuralConfig = () => {
-  console.warn('getNeuralConfig: Use @claude-zen/intelligence for production neural configuration');
+  getLogger('foundation').warn(
+    'getNeuralConfig: Use @claude-zen/intelligence for production neural configuration'
+  );
   return {
     enableLearning: false,
     predictionEnabled: false,

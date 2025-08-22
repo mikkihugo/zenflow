@@ -11,13 +11,13 @@
  * @file Interface implementation: api-client-wrapper.
  */
 
-import { getMCPServerURL } from '@claude-zen/foundation');
+import { getMCPServerURL } from '@claude-zen/foundation';
 import type {
   NeuralNetwork,
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 import type {
   Agent,
@@ -25,9 +25,9 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from './../../coordination/schemas');
-import { HTTPClientAdapter } from './adapters/http-client-adapter');
-import type { HTTPClientConfig } from './adapters/http-types');
+} from './../../coordination/schemas';
+import { HTTPClientAdapter } from './adapters/http-client-adapter';
+import type { HTTPClientConfig } from './adapters/http-types';
 
 /**
  * Legacy API Client Configuration (maintained for compatibility).
@@ -108,7 +108,7 @@ export class APIClient {
       retry: {
         attempts: this.config.retryAttempts || 3,
         delay: this.config.retryDelay || 1000,
-        backoff: 'exponential',
+        backoff:'exponential',
         retryStatusCodes: [408, 429, 500, 502, 503, 504],
       },
 
@@ -165,7 +165,7 @@ export class APIClient {
    * @param options
    */
   private async request<T>(
-    method: 'GET | POST' | 'PUT | DELETE',
+    method: 'GET | POST | PUT | DELETE',
     endpoint: string,
     data?: any,
     options?: RequestOptions
@@ -390,7 +390,7 @@ export class APIClient {
      * @param options
      */
     getMetrics: async (
-      timeRange?: '1h | 24h' | '7d | 30d',
+      timeRange?: '1h | 24h | 7d | 30d',
       options?: RequestOptions
     ) => {
       const queryParams = timeRange ? `?timeRange=${timeRange}` : '');
@@ -524,7 +524,7 @@ export class APIClient {
       return this.request<{
         id: string;
         networkId: string;
-        status: 'pending | running' | 'completed | failed' | 'cancelled');
+        status: 'pending | running | completed | failed | cancelled');
         progress: number;
         currentEpoch?: number;
         totalEpochs: number;

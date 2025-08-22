@@ -1,12 +1,12 @@
 /**
  * @fileoverview SAFe Collections - Collection Operations
- * 
+ *
  * Collection utilities using lodash-es for SAFe framework operations.
  * Provides optimized array/object manipulations with consistent implementations.
- * 
+ *
  * SINGLE RESPONSIBILITY: Collection operations for SAFe framework
  * FOCUSES ON: Feature prioritization, epic filtering, backlog management
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -27,7 +27,7 @@ import {
   minBy,
   countBy,
   findIndex,
-  chunk
+  chunk,
 } from 'lodash-es';
 
 /**
@@ -41,7 +41,7 @@ export class SafeCollectionUtils {
     items: T[],
     priorities: string[]
   ): T[] {
-    return filter(items, item => priorities.includes(item.priority));
+    return filter(items, (item) => priorities.includes(item.priority));
   }
 
   /**
@@ -50,7 +50,7 @@ export class SafeCollectionUtils {
   static sortByBusinessValue<T extends { businessValue: number }>(
     epics: T[]
   ): T[] {
-    return sortBy(epics, epic => -epic.businessValue); // Descending order
+    return sortBy(epics, (epic) => -epic.businessValue); // Descending order
   }
 
   /**
@@ -69,24 +69,32 @@ export class SafeCollectionUtils {
     features: T[]
   ): Record<string, number> {
     const grouped = groupBy(features, 'artId');
-    return reduce(grouped, (result, artFeatures, artId) => {
-      result[artId] = sumBy(artFeatures, 'storyPoints');
-      return result;
-    }, {} as Record<string, number>);
+    return reduce(
+      grouped,
+      (result, artFeatures, artId) => {
+        result[artId] = sumBy(artFeatures, 'storyPoints');
+        return result;
+      },
+      {} as Record<string, number>
+    );
   }
 
   /**
    * Prioritize backlog items using WSJF (Weighted Shortest Job First)
    */
-  static prioritizeByWSJF<T extends {
-    businessValue: number;
-    urgency: number;
-    riskReduction: number;
-    size: number;
-  }>(items: T[]): T[] {
-    const itemsWithWSJF = map(items, item => ({
+  static prioritizeByWSJF<
+    T extends {
+      businessValue: number;
+      urgency: number;
+      riskReduction: number;
+      size: number;
+    },
+  >(items: T[]): T[] {
+    const itemsWithWSJF = map(items, (item) => ({
       ...item,
-      wsjf: (item.businessValue + item.urgency + item.riskReduction) / Math.max(item.size, 1)
+      wsjf:
+        (item.businessValue + item.urgency + item.riskReduction) /
+        Math.max(item.size, 1),
     }));
 
     return orderBy(itemsWithWSJF, 'wsjf', 'desc');
@@ -104,9 +112,7 @@ export class SafeCollectionUtils {
   /**
    * Remove duplicate epics by identifier using lodash
    */
-  static deduplicateById<T extends { id: string }>(
-    items: T[]
-  ): T[] {
+  static deduplicateById<T extends { id: string }>(items: T[]): T[] {
     return uniqBy(items, 'id');
   }
 
@@ -125,7 +131,7 @@ export class SafeCollectionUtils {
   static findHighestValueEpic<T extends { businessValue: number }>(
     epics: T[]
   ): T | undefined {
-    return maxBy(epics, 'businessValue');
+    return maxBy(epics,'businessValue');
   }
 
   /**
@@ -134,7 +140,7 @@ export class SafeCollectionUtils {
   static findSmallestEpic<T extends { effort: number }>(
     epics: T[]
   ): T | undefined {
-    return minBy(epics, 'effort');
+    return minBy(epics,'effort');
   }
 
   /**
@@ -149,10 +155,7 @@ export class SafeCollectionUtils {
   /**
    * Batch features into PI increments using lodash
    */
-  static batchFeaturesByPI<T>(
-    features: T[],
-    batchSize: number
-  ): T[][] {
+  static batchFeaturesByPI<T>(features: T[], batchSize: number): T[][] {
     return chunk(features, batchSize);
   }
 
@@ -163,7 +166,10 @@ export class SafeCollectionUtils {
     features: T[],
     newFeature: T
   ): number {
-    return findIndex(features, feature => feature.priority > newFeature.priority);
+    return findIndex(
+      features,
+      (feature) => feature.priority > newFeature.priority
+    );
   }
 }
 
@@ -174,11 +180,15 @@ export class SafePortfolioUtils {
   /**
    * Calculate portfolio health metrics using lodash
    */
-  static calculatePortfolioMetrics<T extends {
-    status: 'green' | 'yellow' | 'red';
-    budget: number;
-    actualSpent: number;
-  }>(portfolioItems: T[]): {
+  static calculatePortfolioMetrics<
+    T extends {
+      status: 'green'' | ''yellow'' | ''red';
+      budget: number;
+      actualSpent: number;
+    },
+  >(
+    portfolioItems: T[]
+  ): {
     healthScore: number;
     budgetUtilization: number;
     statusDistribution: Record<string, number>;
@@ -187,15 +197,15 @@ export class SafePortfolioUtils {
   } {
     const statusCount = countBy(portfolioItems, 'status');
     const totalItems = portfolioItems.length;
-    
-    // Calculate health score (green=3, yellow=2, red=1)
-    const healthScore = (
-      (statusCount.green || 0) * 3 +
-      (statusCount.yellow || 0) * 2 +
-      (statusCount.red || 0) * 1
-    ) / (totalItems * 3);
 
-    const totalBudget = sumBy(portfolioItems, 'budget');
+    // Calculate health score (green=3, yellow=2, red=1)
+    const healthScore =
+      ((statusCount.green || 0) * 3 +
+        (statusCount.yellow || 0) * 2 +
+        (statusCount.red || 0) * 1) /
+      (totalItems * 3);
+
+    const totalBudget = sumBy(portfolioItems,'budget');
     const totalSpent = sumBy(portfolioItems, 'actualSpent');
     const budgetUtilization = totalBudget > 0 ? totalSpent / totalBudget : 0;
 
@@ -204,23 +214,25 @@ export class SafePortfolioUtils {
       budgetUtilization,
       statusDistribution: statusCount,
       totalBudget,
-      totalSpent
+      totalSpent,
     };
   }
 
   /**
    * Optimize value stream flow using lodash
    */
-  static optimizeValueStreamFlow<T extends {
-    valueStreamId: string;
-    cycleTime: number;
-    throughput: number;
-    leadTime: number;
-  }>(valueStreams: T[]): T[] {
+  static optimizeValueStreamFlow<
+    T extends {
+      valueStreamId: string;
+      cycleTime: number;
+      throughput: number;
+      leadTime: number;
+    },
+  >(valueStreams: T[]): T[] {
     // Sort by efficiency (throughput/cycle time ratio)
     return orderBy(
       valueStreams,
-      [vs => vs.throughput / Math.max(vs.cycleTime, 1)],
+      [(vs) => vs.throughput / Math.max(vs.cycleTime, 1)],
       ['desc']
     );
   }
@@ -228,29 +240,41 @@ export class SafePortfolioUtils {
   /**
    * Analyze epic dependencies using lodash
    */
-  static analyzeEpicDependencies<T extends {
-    id: string;
-    dependencies: string[];
-  }>(epics: T[]): {
+  static analyzeEpicDependencies<
+    T extends {
+      id: string;
+      dependencies: string[];
+    },
+  >(
+    epics: T[]
+  ): {
     epicLookup: Record<string, T>;
     dependencyCount: Record<string, number>;
     criticalPath: string[];
   } {
     const epicLookup = keyBy(epics, 'id');
-    const dependencyCount = reduce(epics, (counts, epic) => {
-      counts[epic.id] = epic.dependencies.length;
-      return counts;
-    }, {} as Record<string, number>);
+    const dependencyCount = reduce(
+      epics,
+      (counts, epic) => {
+        counts[epic.id] = epic.dependencies.length;
+        return counts;
+      },
+      {} as Record<string, number>
+    );
 
     // Find critical path (epics with most dependencies)
-    const criticalPath = orderBy(epics, epic => epic.dependencies.length, 'desc')
+    const criticalPath = orderBy(
+      epics,
+      (epic) => epic.dependencies.length,
+      'desc'
+    )
       .slice(0, 5)
-      .map(epic => epic.id);
+      .map((epic) => epic.id);
 
     return {
       epicLookup,
       dependencyCount,
-      criticalPath
+      criticalPath,
     };
   }
 }

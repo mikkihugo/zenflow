@@ -10,11 +10,7 @@ import type {
   EventManager,
   EventManagerConfig,
 } from './core/interfaces';
-import { 
-  getConfig, 
-  getLogger,
-  type Config
-} from '@claude-zen/foundation';
+import { getConfig, getLogger, type Config } from '@claude-zen/foundation';
 
 /**
  * Factory interface for event manager creation.
@@ -79,7 +75,7 @@ class EventAdapterRegistry {
    * @returns Promise resolving to the factory, or null if not found
    * @throws {Error} If adapter loading fails
    */
-  async get(name: string): Promise<EventManagerFactory | null> {
+  async get(name: string): Promise<EventManagerFactory'' | ''null> {
     const loader = this.adapters.get(name);
     if (!loader) return null;
     return loader();
@@ -89,7 +85,7 @@ class EventAdapterRegistry {
    * Get all registered adapter names.
    */
   getRegisteredNames(): string[] {
-    return Array.from(this.adapters.keys());
+    return Array.from(this.adapters.keys())();
   }
 
   /**

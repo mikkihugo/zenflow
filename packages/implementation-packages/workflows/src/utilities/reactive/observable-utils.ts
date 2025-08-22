@@ -1,25 +1,25 @@
 /**
  * @fileoverview Observable Utilities
- * 
+ *
  * Professional reactive programming using RxJS library.
  * Focused on Observable creation and manipulation.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
 
-import { 
-  Observable, 
-  Subject, 
-  BehaviorSubject, 
+import {
+  Observable,
+  Subject,
+  BehaviorSubject,
   timer,
   interval,
-  combineLatest
+  combineLatest,
 } from 'rxjs';
-import { 
-  throttleTime, 
-  debounceTime, 
-  distinctUntilChanged 
+import {
+  throttleTime,
+  debounceTime,
+  distinctUntilChanged,
 } from 'rxjs/operators';
 
 /**
@@ -50,14 +50,20 @@ export class ObservableUtils {
   /**
    * Create throttled stream
    */
-  static throttleStream<T>(source: Observable<T>, milliseconds: number): Observable<T> {
+  static throttleStream<T>(
+    source: Observable<T>,
+    milliseconds: number
+  ): Observable<T> {
     return source.pipe(throttleTime(milliseconds));
   }
 
   /**
    * Create debounced stream
    */
-  static debounceStream<T>(source: Observable<T>, milliseconds: number): Observable<T> {
+  static debounceStream<T>(
+    source: Observable<T>,
+    milliseconds: number
+  ): Observable<T> {
     return source.pipe(debounceTime(milliseconds));
   }
 
@@ -65,7 +71,7 @@ export class ObservableUtils {
    * Filter distinct values in stream
    */
   static distinctStream<T>(source: Observable<T>): Observable<T> {
-    return source.pipe(distinctUntilChanged());
+    return source.pipe(distinctUntilChanged())();
   }
 
   /**

@@ -1,19 +1,19 @@
 /**
  * @fileoverview SignatureOptimizer Teleprompter (Deprecated)
- * 
+ *
  * Production-grade implementation with 100% Stanford DSPy API compatibility.
  * SignatureOptimizer is a deprecated wrapper around COPRO for backward compatibility.
- * 
+ *
  * Key Features:
  * - Exact Stanford DSPy SignatureOptimizer API compatibility
  * - Deprecation warning matching Stanford implementation
  * - Complete delegation to COPRO teleprompter
  * - Backward compatibility for legacy code
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  * @since 1.0.0-alpha.47
- * 
+ *
  * @deprecated Use COPRO instead. This class will be removed in a future release.
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
  */
@@ -25,12 +25,12 @@ import { type MetricFunction } from '../interfaces/types';
 
 /**
  * SignatureOptimizer Teleprompter (Deprecated)
- * 
+ *
  * This class is a deprecated wrapper around COPRO that exactly matches
  * Stanford DSPy's SignatureOptimizer implementation for backward compatibility.
- * 
+ *
  * @deprecated Use COPRO instead. This class will be removed in a future release.
- * 
+ *
  * @example
  * ```typescript
  * // DEPRECATED - Use COPRO instead
@@ -43,7 +43,7 @@ import { type MetricFunction } from '../interfaces/types';
  *   verbose: false,
  *   track_stats: false
  * });
- * 
+ *
  * const optimized = await optimizer.compile({
  *   student: myProgram,
  *   devset: devExamples,
@@ -52,19 +52,20 @@ import { type MetricFunction } from '../interfaces/types';
  * ```
  */
 export class SignatureOptimizer extends COPRO {
-  constructor(config: {
-    prompt_model?: any;
-    metric?: MetricFunction | null;
-    breadth?: number;
-    depth?: number;
-    init_temperature?: number;
-    verbose?: boolean;
-    track_stats?: boolean;
-  } = {}) {
+  constructor(
+    config: {
+      prompt_model?: any;
+      metric?: MetricFunction'' | ''null;
+      breadth?: number;
+      depth?: number;
+      init_temperature?: number;
+      verbose?: boolean;
+      track_stats?: boolean;
+    } = {}
+  ) {
     // Show deprecation warning exactly matching Stanford implementation
-    console.warn(
-      "\u001b[31m[WARNING] SignatureOptimizer has been deprecated and replaced with COPRO. " +
-      "SignatureOptimizer will be removed in a future release. \u001b[31m"
+    console.warn('\u001b[31m[WARNING] SignatureOptimizer has been deprecated and replaced with COPRO. ' +
+        'SignatureOptimizer will be removed in a future release. \u001b[31m'
     );
 
     // Pass through to COPRO parent class exactly matching Stanford implementation
@@ -74,13 +75,13 @@ export class SignatureOptimizer extends COPRO {
       breadth: config.breadth,
       depth: config.depth,
       init_temperature: config.init_temperature,
-      track_stats: config.track_stats
+      track_stats: config.track_stats,
     });
   }
 
   /**
    * Compile method exactly matching Stanford DSPy SignatureOptimizer API
-   * 
+   *
    * Note: Uses 'devset' parameter name for backward compatibility,
    * but passes it as 'trainset' to COPRO as per Stanford implementation.
    */
@@ -101,7 +102,7 @@ export class SignatureOptimizer extends COPRO {
     // Note: devset becomes trainset in COPRO
     return super.compile(student, {
       trainset: devset,
-      eval_kwargs
+      eval_kwargs,
     });
   }
 }

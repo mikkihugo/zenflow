@@ -7,10 +7,10 @@
  * @file Multi-system coordination system.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
-import { inject, injectable, CORE_TOKENS } from '@claude-zen/intelligence');
+import { TypedEventBase } from '@claude-zen/foundation';
+import { inject, injectable, CORE_TOKENS } from '@claude-zen/intelligence';
 
-import type { Logger } from './core/interfaces/base-interfaces');
+import type { Logger } from './core/interfaces/base-interfaces';
 
 @injectable
 export class MultiSystemCoordinator extends TypedEventBase {

@@ -1,12 +1,12 @@
 /**
  * @fileoverview Compliance Monitoring Service
- * 
+ *
  * Service for automated compliance monitoring and reporting.
  * Handles compliance framework integration, audit trail management, and compliance reporting.
- * 
+ *
  * SINGLE RESPONSIBILITY: Compliance monitoring and automated reporting
  * FOCUSES ON: Compliance frameworks, audit trails, regulatory reporting
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,15 +15,15 @@
 import { format, addDays, startOfMonth, endOfMonth } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
   countBy,
-  uniqBy
+  uniqBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -43,7 +43,7 @@ export interface ComplianceRequirement {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly priority: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly assessmentFrequency?: number; // days
   readonly validationRules: ValidationRule[];
   readonly evidenceRequirements: EvidenceRequirement[];
@@ -53,8 +53,8 @@ export interface ValidationRule {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly ruleType: 'automated' | 'manual' | 'hybrid';
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly ruleType: 'automated'' | ''manual'' | ''hybrid';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly category: string;
 }
 
@@ -62,7 +62,7 @@ export interface EvidenceRequirement {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'document' | 'artifact' | 'screenshot' | 'log' | 'report';
+  readonly type: 'document'' | ''artifact'' | ''screenshot'' | ''log'' | ''report';
   readonly required: boolean;
   readonly source: string;
 }
@@ -84,8 +84,8 @@ export interface ComplianceMonitoringConfig {
  * Reporting schedule configuration
  */
 export interface ReportingSchedule {
-  readonly frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'annual';
-  readonly format: 'json' | 'xml' | 'pdf' | 'html' | 'csv';
+  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''quarterly'' | ''annual';
+  readonly format: 'json'' | ''xml'' | ''pdf'' | ''html'' | ''csv';
   readonly recipients: string[];
   readonly customReports: CustomReport[];
 }
@@ -117,7 +117,7 @@ export interface ComplianceThresholds {
  * Escalation rule for compliance violations
  */
 export interface EscalationRule {
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly threshold: number;
   readonly timeframe: number; // hours
   readonly recipients: string[];
@@ -157,11 +157,11 @@ export interface RequirementComplianceStatus {
  */
 export interface Evidence {
   readonly evidenceId: string;
-  readonly type: 'document' | 'automated_scan' | 'manual_assessment' | 'audit_log';
+  readonly type:' | ''document'' | ''automated_scan'' | ''manual_assessment'' | ''audit_log';
   readonly source: string;
   readonly description: string;
   readonly timestamp: Date;
-  readonly validity: 'valid' | 'expired' | 'pending_review';
+  readonly validity: 'valid'' | ''expired'' | ''pending_review';
   readonly metadata: Record<string, any>;
 }
 
@@ -172,10 +172,10 @@ export interface ComplianceViolation {
   readonly violationId: string;
   readonly frameworkId: string;
   readonly requirementId: string;
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly severity: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly description: string;
   readonly detectedDate: Date;
-  readonly status: 'open' | 'acknowledged' | 'in_remediation' | 'resolved' | 'false_positive';
+  readonly status:' | ''open'' | ''acknowledged'' | ''in_remediation'' | ''resolved'' | ''false_positive';
   readonly assignedTo?: string;
   readonly dueDate?: Date;
   readonly remediationPlan?: string;
@@ -189,7 +189,7 @@ export interface ComplianceTrend {
   readonly period: string;
   readonly complianceScore: number;
   readonly violationCount: number;
-  readonly trend: 'improving' | 'stable' | 'declining';
+  readonly trend: 'improving'' | ''stable'' | ''declining';
   readonly factors: string[];
 }
 
@@ -198,7 +198,7 @@ export interface ComplianceTrend {
  */
 export interface ComplianceReport {
   readonly reportId: string;
-  readonly reportType: 'summary' | 'detailed' | 'executive' | 'audit';
+  readonly reportType: 'summary'' | ''detailed'' | ''executive'' | ''audit';
   readonly generatedDate: Date;
   readonly period: ReportPeriod;
   readonly frameworks: ComplianceFrameworkReport[];
@@ -271,7 +271,7 @@ export class ComplianceMonitoringService {
   configureMonitoring(config: ComplianceMonitoringConfig): void {
     this.logger.info('Configuring compliance monitoring', {
       monitoringId: config.monitoringId,
-      frameworks: config.frameworks.length
+      frameworks: config.frameworks.length,
     });
 
     // Validate configuration
@@ -291,7 +291,7 @@ export class ComplianceMonitoringService {
     }
 
     this.logger.info('Compliance monitoring configured', {
-      monitoringId: config.monitoringId
+      monitoringId: config.monitoringId,
     });
   }
 
@@ -312,17 +312,21 @@ export class ComplianceMonitoringService {
     try {
       // Assess each requirement
       const requirementStatuses: RequirementComplianceStatus[] = [];
-      
+
       for (const requirement of framework.requirements) {
         const status = this.assessRequirement(requirement, framework);
         requirementStatuses.push(status);
       }
 
       // Calculate overall compliance
-      const overallCompliance = this.calculateOverallCompliance(requirementStatuses);
+      const overallCompliance =
+        this.calculateOverallCompliance(requirementStatuses);
 
       // Identify violations
-      const violations = this.identifyViolations(requirementStatuses, framework);
+      const violations = this.identifyViolations(
+        requirementStatuses,
+        framework
+      );
 
       // Generate trends
       const trends = this.generateComplianceTrends(frameworkId);
@@ -335,7 +339,7 @@ export class ComplianceMonitoringService {
         lastAssessment: new Date(),
         nextAssessment: addDays(new Date(), 30), // Default next assessment
         violations,
-        trends
+        trends,
       };
 
       // Store status
@@ -350,25 +354,24 @@ export class ComplianceMonitoringService {
           frameworkId,
           assessmentId,
           duration: Date.now() - startTime,
-          overallCompliance
+          overallCompliance,
         },
-        user: 'system'
+        user: 'system',
       });
 
       this.logger.info('Compliance assessment completed', {
         frameworkId,
         assessmentId,
         overallCompliance: Math.round(overallCompliance),
-        violations: violations.length
+        violations: violations.length,
       });
 
       return complianceStatus;
-
     } catch (error) {
       this.logger.error('Compliance assessment failed', {
         frameworkId,
         assessmentId,
-        error
+        error,
       });
       throw error;
     }
@@ -378,14 +381,14 @@ export class ComplianceMonitoringService {
    * Generate compliance report
    */
   generateComplianceReport(
-    reportType: 'summary' | 'detailed' | 'executive' | 'audit',
+    reportType: 'summary'' | ''detailed'' | ''executive'' | ''audit',
     frameworkIds: string[],
     period: ReportPeriod
   ): ComplianceReport {
     this.logger.info('Generating compliance report', {
       reportType,
       frameworks: frameworkIds.length,
-      period
+      period,
     });
 
     const reportId = `report-${nanoid(12)}`;
@@ -393,7 +396,7 @@ export class ComplianceMonitoringService {
     try {
       // Collect framework reports
       const frameworkReports: ComplianceFrameworkReport[] = [];
-      
+
       for (const frameworkId of frameworkIds) {
         const status = this.complianceStatuses.get(frameworkId);
         if (status) {
@@ -406,7 +409,10 @@ export class ComplianceMonitoringService {
       const overallCompliance = meanBy(frameworkReports, 'compliance');
 
       // Generate executive summary
-      const executiveSummary = this.generateExecutiveSummary(frameworkReports, period);
+      const executiveSummary = this.generateExecutiveSummary(
+        frameworkReports,
+        period
+      );
 
       // Generate recommendations
       const recommendations = this.generateRecommendations(frameworkReports);
@@ -420,7 +426,7 @@ export class ComplianceMonitoringService {
         overallCompliance,
         executiveSummary,
         recommendations,
-        attachments: []
+        attachments: [],
       };
 
       // Store report
@@ -429,15 +435,14 @@ export class ComplianceMonitoringService {
       this.logger.info('Compliance report generated', {
         reportId,
         reportType,
-        overallCompliance: Math.round(overallCompliance)
+        overallCompliance: Math.round(overallCompliance),
       });
 
       return report;
-
     } catch (error) {
       this.logger.error('Compliance report generation failed', {
         reportType,
-        error
+        error,
       });
       throw error;
     }
@@ -452,21 +457,29 @@ export class ComplianceMonitoringService {
   ): RequirementComplianceStatus {
     this.logger.debug('Assessing requirement', {
       requirementId: requirement.id,
-      requirementName: requirement.name
+      requirementName: requirement.name,
     });
 
     // Execute validation rules
-    const validationResults = this.executeValidationRules(requirement.validationRules);
+    const validationResults = this.executeValidationRules(
+      requirement.validationRules
+    );
 
     // Collect evidence
     const evidence = this.collectEvidence(requirement.evidenceRequirements);
 
     // Calculate compliance score
-    const complianceScore = this.calculateRequirementCompliance(validationResults, evidence);
+    const complianceScore = this.calculateRequirementCompliance(
+      validationResults,
+      evidence
+    );
     const compliant = complianceScore >= 80; // 80% threshold
 
     // Identify violations
-    const violations = this.identifyRequirementViolations(requirement, validationResults);
+    const violations = this.identifyRequirementViolations(
+      requirement,
+      validationResults
+    );
 
     return {
       requirementId: requirement.id,
@@ -476,7 +489,7 @@ export class ComplianceMonitoringService {
       evidence,
       violations,
       lastChecked: new Date(),
-      nextCheck: addDays(new Date(), requirement.assessmentFrequency || 30)
+      nextCheck: addDays(new Date(), requirement.assessmentFrequency || 30),
     };
   }
 
@@ -497,14 +510,13 @@ export class ComplianceMonitoringService {
           ruleName: rule.name,
           passed,
           score,
-          details: `Validation rule ${rule.name} ${passed ? 'passed' : 'failed'}`,
-          evidence: `Automated validation result for ${rule.name}`
+          details: `Validation rule ${rule.name} ${passed ?'passed' : 'failed'}`,
+          evidence: `Automated validation result for ${rule.name}`,
         });
-
       } catch (error) {
         this.logger.error('Validation rule execution failed', {
           ruleId: rule.id,
-          error
+          error,
         });
 
         results.push({
@@ -513,7 +525,7 @@ export class ComplianceMonitoringService {
           passed: false,
           score: 0,
           details: `Validation failed: ${error}`,
-          evidence: ''
+          evidence: '',
         });
       }
     }
@@ -524,7 +536,9 @@ export class ComplianceMonitoringService {
   /**
    * Collect compliance evidence
    */
-  private collectEvidence(evidenceRequirements: EvidenceRequirement[]): Evidence[] {
+  private collectEvidence(
+    evidenceRequirements: EvidenceRequirement[]
+  ): Evidence[] {
     const evidence: Evidence[] = [];
 
     for (const requirement of evidenceRequirements) {
@@ -538,8 +552,8 @@ export class ComplianceMonitoringService {
         validity: 'valid',
         metadata: {
           requirement: requirement.id,
-          automated: true
-        }
+          automated: true,
+        },
       });
     }
 
@@ -557,14 +571,16 @@ export class ComplianceMonitoringService {
 
     const validationScore = meanBy(validationResults, 'score');
     const evidenceScore = evidence.length > 0 ? 100 : 50; // Evidence provides confidence boost
-    
-    return (validationScore * 0.8) + (evidenceScore * 0.2);
+
+    return validationScore * 0.8 + evidenceScore * 0.2;
   }
 
   /**
    * Calculate overall compliance across requirements
    */
-  private calculateOverallCompliance(requirements: RequirementComplianceStatus[]): number {
+  private calculateOverallCompliance(
+    requirements: RequirementComplianceStatus[]
+  ): number {
     if (requirements.length === 0) return 0;
     return meanBy(requirements, 'complianceScore');
   }
@@ -572,8 +588,10 @@ export class ComplianceMonitoringService {
   /**
    * Helper methods and utilities
    */
-  private validateMonitoringConfiguration(config: ComplianceMonitoringConfig): void {
-    if (!config.monitoringId || config.monitoringId.trim() === '') {
+  private validateMonitoringConfiguration(
+    config: ComplianceMonitoringConfig
+  ): void {
+    if (!config.monitoringId || config.monitoringId.trim() ==='') {
       throw new Error('Monitoring ID is required');
     }
 
@@ -585,21 +603,23 @@ export class ComplianceMonitoringService {
   private initializeFrameworkMonitoring(framework: ComplianceFramework): void {
     this.logger.debug('Initializing framework monitoring', {
       frameworkId: framework.id,
-      frameworkName: framework.name
+      frameworkName: framework.name,
     });
     // Implementation would set up framework-specific monitoring
   }
 
-  private scheduleAutomatedAssessments(config: ComplianceMonitoringConfig): void {
+  private scheduleAutomatedAssessments(
+    config: ComplianceMonitoringConfig
+  ): void {
     this.logger.info('Scheduling automated compliance assessments', {
-      monitoringId: config.monitoringId
+      monitoringId: config.monitoringId,
     });
     // Implementation would integrate with job scheduler
   }
 
   private findFramework(frameworkId: string): ComplianceFramework | undefined {
     for (const config of this.configurations.values()) {
-      const framework = config.frameworks.find(f => f.id === frameworkId);
+      const framework = config.frameworks.find((f) => f.id === frameworkId);
       if (framework) return framework;
     }
     return undefined;
@@ -617,11 +637,11 @@ export class ComplianceMonitoringService {
           violationId: `violation-${nanoid(8)}`,
           frameworkId: framework.id,
           requirementId: req.requirementId,
-          severity: req.complianceScore < 40 ? 'high' : 'medium',
+          severity: req.complianceScore < 40 ?'high' : 'medium',
           description: `Non-compliance with requirement: ${req.requirementName}`,
           detectedDate: new Date(),
           status: 'open',
-          evidence: req.evidence
+          evidence: req.evidence,
         });
       }
     }
@@ -634,8 +654,8 @@ export class ComplianceMonitoringService {
     validationResults: ValidationResult[]
   ): ComplianceViolation[] {
     return validationResults
-      .filter(result => !result.passed)
-      .map(result => ({
+      .filter((result) => !result.passed)
+      .map((result) => ({
         violationId: `violation-${nanoid(8)}`,
         frameworkId: '',
         requirementId: requirement.id,
@@ -643,7 +663,7 @@ export class ComplianceMonitoringService {
         description: result.details,
         detectedDate: new Date(),
         status: 'open' as const,
-        evidence: []
+        evidence: [],
       }));
   }
 
@@ -655,8 +675,8 @@ export class ComplianceMonitoringService {
         complianceScore: Math.random() * 20 + 75,
         violationCount: Math.floor(Math.random() * 10),
         trend: 'stable',
-        factors: ['Regular assessments', 'Automated monitoring']
-      }
+        factors: ['Regular assessments', 'Automated monitoring'],
+      },
     ];
   }
 
@@ -664,25 +684,35 @@ export class ComplianceMonitoringService {
     status: ComplianceStatus,
     period: ReportPeriod
   ): ComplianceFrameworkReport {
-    const requirementsSummary = this.summarizeRequirements(status.requirementStatus);
-    
+    const requirementsSummary = this.summarizeRequirements(
+      status.requirementStatus
+    );
+
     return {
       frameworkId: status.frameworkId,
       frameworkName: status.frameworkName,
       compliance: status.overallCompliance,
       requirementsSummary,
       keyFindings: this.generateKeyFindings(status),
-      actionItems: this.generateActionItems(status)
+      actionItems: this.generateActionItems(status),
     };
   }
 
-  private summarizeRequirements(requirements: RequirementComplianceStatus[]): RequirementSummary {
+  private summarizeRequirements(
+    requirements: RequirementComplianceStatus[]
+  ): RequirementSummary {
     return {
       total: requirements.length,
-      compliant: filter(requirements, r => r.compliant).length,
-      nonCompliant: filter(requirements, r => !r.compliant && r.complianceScore < 50).length,
-      partiallyCompliant: filter(requirements, r => !r.compliant && r.complianceScore >= 50).length,
-      notAssessed: 0
+      compliant: filter(requirements, (r) => r.compliant).length,
+      nonCompliant: filter(
+        requirements,
+        (r) => !r.compliant && r.complianceScore < 50
+      ).length,
+      partiallyCompliant: filter(
+        requirements,
+        (r) => !r.compliant && r.complianceScore >= 50
+      ).length,
+      notAssessed: 0,
     };
   }
 
@@ -704,8 +734,10 @@ export class ComplianceMonitoringService {
     const actions: string[] = [];
 
     for (const violation of status.violations) {
-      if (violation.severity === 'high' || violation.severity === 'critical') {
-        actions.push(`Address ${violation.severity} violation: ${violation.description}`);
+      if (violation.severity === 'high' || violation.severity ==='critical') {
+        actions.push(
+          `Address ${violation.severity} violation: ${violation.description}`
+        );
       }
     }
 
@@ -717,14 +749,19 @@ export class ComplianceMonitoringService {
     period: ReportPeriod
   ): string {
     const avgCompliance = meanBy(frameworkReports, 'compliance');
-    const totalViolations = sumBy(frameworkReports, r => 
-      r.requirementsSummary.nonCompliant + r.requirementsSummary.partiallyCompliant
+    const totalViolations = sumBy(
+      frameworkReports,
+      (r) =>
+        r.requirementsSummary.nonCompliant +
+        r.requirementsSummary.partiallyCompliant
     );
 
     return `Compliance assessment for ${period.description}: Average compliance ${Math.round(avgCompliance)}%, ${totalViolations} violations identified across ${frameworkReports.length} frameworks.`;
   }
 
-  private generateRecommendations(frameworkReports: ComplianceFrameworkReport[]): string[] {
+  private generateRecommendations(
+    frameworkReports: ComplianceFrameworkReport[]
+  ): string[] {
     const recommendations: string[] = [];
 
     const avgCompliance = meanBy(frameworkReports, 'compliance');
@@ -741,7 +778,7 @@ export class ComplianceMonitoringService {
 
   private recordAuditEntry(entry: AuditEntry): void {
     this.auditTrail.push(entry);
-    
+
     // Keep audit trail manageable (last 10000 entries)
     if (this.auditTrail.length > 10000) {
       this.auditTrail = this.auditTrail.slice(-10000);
@@ -760,10 +797,10 @@ export class ComplianceMonitoringService {
   }
 
   getViolations(frameworkId?: string): ComplianceViolation[] {
-    const allViolations = Array.from(this.violations.values());
-    return frameworkId ? 
-      filter(allViolations, v => v.frameworkId === frameworkId) : 
-      allViolations;
+    const allViolations = Array.from(this.violations.values())();
+    return frameworkId
+      ? filter(allViolations, (v) => v.frameworkId === frameworkId)
+      : allViolations;
   }
 
   getAuditTrail(limit: number = 100): AuditEntry[] {

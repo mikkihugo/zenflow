@@ -1,6 +1,6 @@
 /**
  * @fileoverview Filter Processor
- * 
+ *
  * Filters telemetry data based on configurable rules.
  * Can filter by service name, data type, attributes, or custom logic.
  */
@@ -9,17 +9,14 @@ import { getLogger } from '@claude-zen/foundation/logging';
 import type { Logger } from '@claude-zen/foundation';
 
 import type { BaseProcessor } from './index.js';
-import type { 
-  TelemetryData, 
-  ProcessorConfig 
-} from '../types.js';
+import type { TelemetryData, ProcessorConfig } from '../types.js';
 
 /**
  * Filter rule interface
  */
 interface FilterRule {
   field: string;
-  operator: 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'regex' | 'exists';
+  operator:'' | '''equals | contains' | 'startsWith''' | '''endsWith | regex' | 'exists';
   value?: any;
   regex?: RegExp;
 }
@@ -34,32 +31,32 @@ export class FilterProcessor implements BaseProcessor {
   private processedCount = 0;
   private filteredCount = 0;
   private lastProcessedTime = 0;
-  private lastError: string | null = null;
+  private lastError: string'' | ''null = null;
 
   // Configuration
   private readonly includeRules: FilterRule[];
   private readonly excludeRules: FilterRule[];
-  private readonly filterMode: 'include' | 'exclude' | 'both';
+  private readonly filterMode:'include | exclude' | 'both';
 
   constructor(config: ProcessorConfig) {
     this.config = config;
     this.logger = getLogger(`FilterProcessor:${config.name}`);
 
     // Parse filter rules
-    this.includeRules = this.parseFilterRules(config.config?.include || []);
-    this.excludeRules = this.parseFilterRules(config.config?.exclude || []);
-    this.filterMode = config.config?.mode || 'exclude';
+    this.includeRules = this.parseFilterRules(config.config?.include'' | '''' | ''[]);
+    this.excludeRules = this.parseFilterRules(config.config?.exclude'' | '''' | ''[]);
+    this.filterMode = config.config?.mode'' | '''' | '''exclude';
   }
 
   async initialize(): Promise<void> {
     this.logger.info('Filter processor initialized', {
       includeRules: this.includeRules.length,
       excludeRules: this.excludeRules.length,
-      filterMode: this.filterMode
+      filterMode: this.filterMode,
     });
   }
 
-  async process(data: TelemetryData): Promise<TelemetryData | null> {
+  async process(data: TelemetryData): Promise<TelemetryData'' | ''null> {
     try {
       const shouldInclude = this.shouldIncludeData(data);
 
@@ -71,7 +68,7 @@ export class FilterProcessor implements BaseProcessor {
         this.filteredCount++;
         this.logger.debug('Data filtered out', {
           service: data.service.name,
-          type: data.type
+          type: data.type,
         });
         return null;
       }
@@ -81,7 +78,7 @@ export class FilterProcessor implements BaseProcessor {
       const errorMessage = String(error);
       this.lastError = errorMessage;
       this.logger.error('Filter processing failed', error);
-      
+
       // Return original data on error
       return data;
     }
@@ -89,7 +86,7 @@ export class FilterProcessor implements BaseProcessor {
 
   async processBatch(dataItems: TelemetryData[]): Promise<TelemetryData[]> {
     try {
-      const filteredItems = dataItems.filter(data => {
+      const filteredItems = dataItems.filter((data) => {
         const shouldInclude = this.shouldIncludeData(data);
         if (!shouldInclude) {
           this.filteredCount++;
@@ -102,7 +99,9 @@ export class FilterProcessor implements BaseProcessor {
       this.lastError = null;
 
       if (filteredItems.length < dataItems.length) {
-        this.logger.debug(`Filtered ${dataItems.length - filteredItems.length} out of ${dataItems.length} items`);
+        this.logger.debug(
+          `Filtered ${dataItems.length - filteredItems.length} out of ${dataItems.length} items`
+        );
       }
 
       return filteredItems;
@@ -110,7 +109,7 @@ export class FilterProcessor implements BaseProcessor {
       const errorMessage = String(error);
       this.lastError = errorMessage;
       this.logger.error('Filter batch processing failed', error);
-      
+
       // Return original data on error
       return dataItems;
     }
@@ -120,19 +119,22 @@ export class FilterProcessor implements BaseProcessor {
     this.logger.info('Filter processor shut down', {
       totalProcessed: this.processedCount,
       totalFiltered: this.filteredCount,
-      filterRate: this.processedCount > 0 ? (this.filteredCount / this.processedCount * 100).toFixed(1) + '%' : '0%'
+      filterRate:
+        this.processedCount > 0
+          ? ((this.filteredCount / this.processedCount) * 100).toFixed(1) + '%'
+          : '0%',
     });
   }
 
   async getHealthStatus(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
+    status: 'healthy | degraded' | 'unhealthy';
     lastProcessed?: number;
     lastError?: string;
   }> {
     return {
       status: this.lastError ? 'unhealthy' : 'healthy',
-      lastProcessed: this.lastProcessedTime || undefined,
-      lastError: this.lastError || undefined
+      lastProcessed: this.lastProcessedTime'' | '''' | ''undefined,
+      lastError: this.lastError'' | '''' | ''undefined,
     };
   }
 
@@ -146,15 +148,16 @@ export class FilterProcessor implements BaseProcessor {
     filterRate: string;
   } {
     const passed = this.processedCount - this.filteredCount;
-    const filterRate = this.processedCount > 0 
-      ? (this.filteredCount / this.processedCount * 100).toFixed(1) + '%' 
-      : '0%';
+    const filterRate =
+      this.processedCount > 0
+        ? ((this.filteredCount / this.processedCount) * 100).toFixed(1) +'%'
+        : '0%';
 
     return {
       processed: this.processedCount,
       filtered: this.filteredCount,
       passed,
-      filterRate
+      filterRate,
     };
   }
 
@@ -165,18 +168,23 @@ export class FilterProcessor implements BaseProcessor {
     switch (this.filterMode) {
       case 'include':
         // Must match at least one include rule
-        return this.includeRules.length === 0 || this.includeRules.some(rule => this.matchesRule(data, rule));
-      
-      case 'exclude':
+        return (
+          this.includeRules.length === 0'' | '''' | ''this.includeRules.some((rule) => this.matchesRule(data, rule))
+        );
+
+      case'exclude':
         // Must not match any exclude rule
-        return !this.excludeRules.some(rule => this.matchesRule(data, rule));
-      
+        return !this.excludeRules.some((rule) => this.matchesRule(data, rule));
+
       case 'both':
         // Must match include rules AND not match exclude rules
-        const passesInclude = this.includeRules.length === 0 || this.includeRules.some(rule => this.matchesRule(data, rule));
-        const passesExclude = !this.excludeRules.some(rule => this.matchesRule(data, rule));
+        const passesInclude =
+          this.includeRules.length === 0'' | '''' | ''this.includeRules.some((rule) => this.matchesRule(data, rule));
+        const passesExclude = !this.excludeRules.some((rule) =>
+          this.matchesRule(data, rule)
+        );
         return passesInclude && passesExclude;
-      
+
       default:
         return true;
     }
@@ -189,29 +197,29 @@ export class FilterProcessor implements BaseProcessor {
     const fieldValue = this.getFieldValue(data, rule.field);
 
     if (fieldValue === undefined) {
-      return rule.operator === 'exists' ? false : true;
+      return rule.operator ==='exists' ? false : true;
     }
 
     switch (rule.operator) {
       case 'exists':
         return fieldValue !== undefined;
-      
+
       case 'equals':
         return fieldValue === rule.value;
-      
+
       case 'contains':
         return String(fieldValue).includes(String(rule.value));
-      
+
       case 'startsWith':
         return String(fieldValue).startsWith(String(rule.value));
-      
+
       case 'endsWith':
         return String(fieldValue).endsWith(String(rule.value));
-      
+
       case 'regex':
         if (!rule.regex) return false;
         return rule.regex.test(String(fieldValue));
-      
+
       default:
         return false;
     }
@@ -225,7 +233,7 @@ export class FilterProcessor implements BaseProcessor {
     let value: any = data;
 
     for (const part of parts) {
-      if (value === null || value === undefined) {
+      if (value === null'' | '''' | ''value === undefined) {
         return undefined;
       }
       value = value[part];
@@ -241,14 +249,14 @@ export class FilterProcessor implements BaseProcessor {
     return rules.map((rule: any) => {
       const parsed: FilterRule = {
         field: rule.field,
-        operator: rule.operator || 'equals',
-        value: rule.value
+        operator: rule.operator'' | '''' | '''equals',
+        value: rule.value,
       };
 
       // Compile regex if needed
       if (parsed.operator === 'regex' && typeof rule.value === 'string') {
         try {
-          parsed.regex = new RegExp(rule.value, rule.flags || 'i');
+          parsed.regex = new RegExp(rule.value, rule.flags'' | '''' | '''i');
         } catch (error) {
           this.logger.warn(`Invalid regex pattern: ${rule.value}`, error);
           // Fallback to contains operator

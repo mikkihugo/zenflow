@@ -15,7 +15,7 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise');
+import type { DocumentType } from '@claude-zen/enterprise';
 
 import {
   BaseDocumentService,
@@ -43,7 +43,7 @@ export interface ArchitectureRunwayCreateOptions {
   }>;
   author?: string;
   projectId?: string;
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   stakeholders?: string[];
   implementationNotes?: string;
   successCriteria?: string[];
@@ -51,7 +51,7 @@ export interface ArchitectureRunwayCreateOptions {
 }
 
 export interface ArchitectureRunwayQueryOptions extends QueryFilters {
-  decisionStatus?: 'proposed | accepted' | 'deprecated | superseded');
+  decisionStatus?: 'proposed'' | ''accepted'' | ''deprecated'' | ''superseded');
   adrNumber?: number;
   adrId?: string;
 }
@@ -66,11 +66,7 @@ export interface ArchitectureRunwayStats {
   averageDecisionTime?: number; // Days from proposed to accepted
 }
 
-export type DecisionStatus =
-  | 'proposed'
-  | 'accepted'
-  | 'deprecated'
-  | 'superseded');
+export type DecisionStatus =' | ''proposed | accepted' | 'deprecated''' | '''superseded');
 
 // ============================================================================
 // ARCHITECTURE RUNWAY SERVICE
@@ -84,11 +80,11 @@ export type DecisionStatus =
  * Compatible across Kanban → Agile → SAFe modes.
  */
 export class ArchitectureRunwayService extends BaseDocumentService<any> {
-  private currentMode: 'kanban | agile' | 'safe = kanban');
+  private currentMode: 'kanban'' | ''agile'' | ''safe = kanban');
 
   constructor(
     documentManager?: DocumentManager,
-    mode: 'kanban | agile' | 'safe = kanban'
+    mode: 'kanban'' | ''agile'' | ''safe = kanban'
   ) {
     super('architecture-runway', documentManager);
     this.currentMode = mode;
@@ -97,7 +93,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
   /**
    * Set the current project mode (determines schema version)
    */
-  setProjectMode(mode: 'kanban | agile' | 'safe'): void {
+  setProjectMode(mode: 'kanban'' | ''agile'' | ''safe'): void {
     this.currentMode = mode;
     this.logger.info(`Architecture Runway service set to ${mode} mode`);
   }
@@ -127,7 +123,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
       errors.push('Decision is required');
     }
 
-    if (!data.consequences || data.consequences.length === 0) {
+    if (!data.consequences'' | '''' | ''data.consequences.length === 0) {
       errors.push('At least one consequence is required');
     }
 
@@ -156,12 +152,12 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
   }
 
   protected formatDocumentContent(data: Partial<any>): string {
-    const runwayId = data.runway_id || this.extractRunwayId(data.title || '');
+    const runwayId = data.runway_id'' | '''' | ''this.extractRunwayId(data.title'' | '''' | '''');
 
     let content = `# ${data.title}\n\n`;
 
     // Status section
-    const status = data.decision_status || 'proposed');
+    const status = data.decision_status'' | '''' | '''proposed');
     content += `## Status\n**${status?.toUpperCase}**\n\n`;
 
     // Runway ID
@@ -170,10 +166,10 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
     }
 
     // Context section
-    content += `## Context\n${data.context || ''}\n\n`;
+    content += `## Context\n${data.context'' | '''' | ''''}\n\n`;
 
     // Decision section
-    content += `## Decision\n${data.decision || ''}\n\n`;
+    content += `## Decision\n${data.decision'' | '''' | ''''}\n\n`;
 
     // Consequences section
     content += `## Consequences\n`;
@@ -191,24 +187,24 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
     ) {
       content += `## Alternatives Considered\n\n`;
       data.alternatives_considered.forEach((alt: any) => {
-        content += `### ${alt.name || 'Alternative'}\n`;
+        content += `### ${alt.name'' | '''' | '''Alternative'}\n`;
         if (alt.pros && alt.pros.length > 0) {
           content += `**Pros**: ${alt.pros.join(', ')}\n`;
         }
         if (alt.cons && alt.cons.length > 0) {
           content += `**Cons**: ${alt.cons.join(', ')}\n`;
         }
-        if (alt.rejectedReason || alt.rejected_reason) {
-          content += `**Rejected because**: ${alt.rejectedReason || alt.rejected_reason}\n`;
+        if (alt.rejectedReason'' | '''' | ''alt.rejected_reason) {
+          content += `**Rejected because**: ${alt.rejectedReason'' | '''' | ''alt.rejected_reason}\n`;
         }
-        content += '\n');
+        content +='\n');
       });
     }
 
     // Metadata section
     content += '---\n\n');
     content += `**Decision Date**: ${new Date()?.toISOString.split('T')[0]}\n`;
-    content += `**Author**: ${data.author || 'architecture-team'}\n`;
+    content += `**Author**: ${data.author'' | '''' | '''architecture-team'}\n`;
 
     if (data.stakeholders && data.stakeholders.length > 0) {
       content += `**Stakeholders**: ${data.stakeholders.join(', ')}\n`;
@@ -219,12 +215,11 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
 
   protected generateKeywords(data: Partial<any>): string[] {
     const text =
-      `${data.title || '} ${data.decision || '} ${data.context || ''}`?.toLowerCase()
-    const words = text.match(/\b\w{3,}\b/g) || [];
+      `${data.title'' | '''' | '''} ${data.decision || '} ${data.context'' | '''' | ''''}`?.toLowerCase()
+    const words = text.match(/\b\w{3,}\b/g)'' | '''' | ''[];
 
     // Common stop words to filter out
-    const stopWords = new Set([
-      'the',
+    const stopWords = new Set(['the',
       'and',
       'for',
       'are',
@@ -335,10 +330,10 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
           title: `${runwayId}: ${options.title}`,
           content: '', // Will be generated by formatDocumentContent
           summary: `Architecture runway item ${runwayId} regarding ${options.title}`,
-          author: options.author || 'architecture-team',
+          author: options.author'' | '''' | '''architecture-team',
           project_id: options.projectId,
           status: 'todo',
-          priority: options.priority || 'medium',
+          priority: options.priority'' | '''' | '''medium',
           tags: ['architecture, runway', 'technical'],
         },
         this.currentMode // Use current project mode
@@ -353,14 +348,14 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
           : options.consequences;
 
       // Agile mode fields
-      if (this.currentMode === 'agile || this.currentMode === safe') {
+      if (this.currentMode === 'agile'' | '''' | ''this.currentMode === safe') {
         runwayData.decision_status = 'proposed');
-        runwayData.alternatives_considered = options.alternatives || [];
-        runwayData.stakeholders = options.stakeholders || [];
+        runwayData.alternatives_considered = options.alternatives'' | '''' | ''[];
+        runwayData.stakeholders = options.stakeholders'' | '''' | ''[];
       }
 
       // SAFe mode fields
-      if (this.currentMode === 'safe') {
+      if (this.currentMode ==='safe') {
         runwayData.runway_number = runwayNumber;
         runwayData.runway_id = runwayId;
         runwayData.architecture_impact = 'system');
@@ -413,12 +408,11 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
   /**
    * Get Runway by number (e.g., 1, 15, 142)
    */
-  async getRunwayByNumber(runwayNumber: number): Promise<any | null> {
+  async getRunwayByNumber(runwayNumber: number): Promise<any'' | ''null> {
     try {
       const { documents } = await this.queryDocuments({});
       return (
-        documents.find((runway) => runway.runway_number === runwayNumber) ||
-        null
+        documents.find((runway) => runway.runway_number === runwayNumber)'' | '''' | ''null
       );
     } catch (error) {
       this.logger.error('Failed to get Runway by number:', error);
@@ -429,10 +423,10 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
   /**
    * Get Runway by ID string (e.g., "AR-001, AR-015", "AR-142")
    */
-  async getRunwayById(runwayId: string): Promise<any | null> {
+  async getRunwayById(runwayId: string): Promise<any'' | ''null> {
     try {
       const { documents } = await this.queryDocuments({});
-      return documents.find((runway) => runway.runway_id === runwayId) || null;
+      return documents.find((runway) => runway.runway_id === runwayId)'' | '''' | ''null;
     } catch (error) {
       this.logger.error('Failed to get Runway by ID:', error);
       return null;
@@ -514,8 +508,8 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
       if (this.currentMode === 'safe') {
         await this.updateDocument(newRunway.id, {
           supersedes: [
-            ...(newRunway.supersedes || []),
-            oldRunway.runway_id || oldRunway.id,
+            ...(newRunway.supersedes'' | '''' | ''[]),
+            oldRunway.runway_id'' | '''' | ''oldRunway.id,
           ],
         });
       }
@@ -551,8 +545,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
       // Keep for backward compatibility
       filteredRunways = filteredRunways.filter(
         (runway) =>
-          runway.runway_number === options.adrNumber ||
-          runway.decision_number === options.adrNumber // Legacy field
+          runway.runway_number === options.adrNumber'' | '''' | ''runway.decision_number === options.adrNumber // Legacy field
       );
     }
 
@@ -560,7 +553,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
       // Keep for backward compatibility
       filteredRunways = filteredRunways.filter(
         (runway) =>
-          runway.runway_id === options.adrId || runway.adr_id === options.adrId // Legacy field
+          runway.runway_id === options.adrId'' | '''' | ''runway.adr_id === options.adrId // Legacy field
       );
     }
 
@@ -596,25 +589,25 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
 
       for (const runway of runways) {
         // Decision status stats
-        const status = runway.decision_status || 'proposed');
+        const status = runway.decision_status'' | '''' | '''proposed');
         stats.byDecisionStatus[status] =
-          (stats.byDecisionStatus[status] || 0) + 1;
+          (stats.byDecisionStatus[status]'' | '''' | ''0) + 1;
 
         // Priority stats
         if (runway.priority) {
           stats.byPriority[runway.priority] =
-            (stats.byPriority[runway.priority] || 0) + 1;
+            (stats.byPriority[runway.priority]'' | '''' | ''0) + 1;
         }
 
         // Author stats
         if (runway.author) {
           stats.byAuthor[runway.author] =
-            (stats.byAuthor[runway.author] || 0) + 1;
+            (stats.byAuthor[runway.author]'' | '''' | ''0) + 1;
         }
 
         // Recent decisions
         if (
-          status === 'accepted' &&
+          status ==='accepted' &&
           new Date(runway.updated_at) >= thirtyDaysAgo
         ) {
           stats.recentDecisions++;
@@ -680,15 +673,15 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
 
       return runways
         .map((runway) => ({
-          number: runway.runway_number || 0,
-          id: runway.runway_id || '',
+          number: runway.runway_number'' | '''' | ''0,
+          id: runway.runway_id'' | '''' | '''',
           title: runway.title.replace(/^AR-\d+:\s*/, ''), // Remove AR prefix
-          status: runway.status || 'unknown',
-          decisionStatus: runway.decision_status || 'proposed',
-          priority: runway.priority || 'medium',
-          author: runway.author || 'unknown',
+          status: runway.status'' | '''' | '''unknown',
+          decisionStatus: runway.decision_status'' | '''' | '''proposed',
+          priority: runway.priority'' | '''' | '''medium',
+          author: runway.author'' | '''' | '''unknown',
           created: new Date(runway.created_at),
-          summary: runway.summary || 'No summary available',
+          summary: runway.summary'' | '''' | '''No summary available',
         }))
         .sort((a, b) => b.number - a.number); // Sort by runway number descending
     } catch (error) {
@@ -722,7 +715,7 @@ export class ArchitectureRunwayService extends BaseDocumentService<any> {
       superseded: 'archived',
     };
 
-    return statusMap[decisionStatus] || 'draft');
+    return statusMap[decisionStatus]'' | '''' | '''draft');
   }
 }
 

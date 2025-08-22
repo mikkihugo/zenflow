@@ -1,16 +1,16 @@
-import { EventEmitter } from "@claude-zen/foundation";
+import { EventEmitter } from '@claude-zen/foundation';
 /**
  * @fileoverview Event Bus - Professional Battle-Tested Architecture
- * 
+ *
  * High-performance event bus with battle-tested dependencies and foundation integration.
- * 
+ *
  * **BATTLE-TESTED DEPENDENCIES INTEGRATED:**
  * - eventemitter3: High-performance event emitter (2x faster than Node.js EventEmitter)
  * - koa-compose: Battle-tested middleware composition used by Koa.js framework
  * - foundation error handling: Result patterns with neverthrow
  * - foundation DI: Injectable and singleton decorators
  * - foundation logging: Professional logging system
- * 
+ *
  * Key Features:
  * - Type-safe event handling with strict typing
  * - Modern async middleware with koa-compose (battle-tested)
@@ -18,28 +18,28 @@ import { EventEmitter } from "@claude-zen/foundation";
  * - Professional error handling with Result patterns
  * - High-performance eventemitter3 (2x faster than Node.js EventEmitter)
  * - Professional logging and metrics
- * 
+ *
  * @example Basic event bus usage
  * ```typescript
  * import { EventBus } from '@claude-zen/event-system';
- * 
+ *
  * const eventBus = new EventBus({
  *   maxListeners: 100,
  *   enableMetrics: true
  * });
- * 
+ *
  * // Type-safe event handling
  * eventBus.on('userAction', (payload) => {
  *   console.log('User action:', payload);
  * });
- * 
+ *
  * eventBus.emit('userAction', { action: 'click', target: 'button' });
  * ```
  */
 
 import { TypedEventBase } from '@claude-zen/foundation';
 import compose from 'koa-compose';
-import { 
+import {
   getLogger,
   injectable,
   singleton,
@@ -52,7 +52,7 @@ import {
   startTrace,
   withTrace,
   traced,
-  metered
+  metered,
 } from '@claude-zen/foundation';
 
 const logger = getLogger('EventBus');
@@ -66,7 +66,7 @@ export interface EventBusConfig {
   logLevel: string;
 }
 
-export type EventListenerFunction = (event: unknown) => void | Promise<void>;
+export type EventListenerFunction = (event: unknown) => void'' | ''Promise<void>;
 
 export interface EventMap {
   [key: string]: any;
@@ -82,7 +82,7 @@ export interface EventMetrics {
 
 // Modern koa-compose compatible middleware types
 export interface EventContext {
-  event: string | symbol;
+  event: string'' | ''symbol;
   payload: unknown;
   timestamp: number;
   processedBy: string[];
@@ -96,7 +96,7 @@ export type EventMiddleware = (
 /**
  * Professional Event Bus with battle-tested dependencies and foundation integration.
  * Uses eventemitter3 for 2x performance improvement over Node.js EventEmitter.
- * 
+ *
  * @example
  * ```typescript
  * const eventBus = new EventBus({
@@ -108,7 +108,7 @@ export type EventMiddleware = (
 @injectable()
 @singleton()
 export class EventBus extends TypedEventBase {
-  private static instance: EventBus | null = null;
+  private static instance: EventBus'' | ''null = null;
   private middleware: EventMiddleware[] = [];
   private metrics: EventMetrics;
   private config: EventBusConfig;
@@ -121,10 +121,10 @@ export class EventBus extends TypedEventBase {
       enableMetrics: true,
       enableLogging: true,
       enableTelemetry: true,
-      logLevel: 'info',
+      logLevel:'info',
       ...config,
     };
-    
+
     this.metrics = {
       eventCount: 0,
       eventTypes: {},
@@ -155,7 +155,7 @@ export class EventBus extends TypedEventBase {
     return safeAsync(async () => {
       logger.info('[EventBus] Initialized successfully', {
         config: this.config,
-        metrics: this.metrics
+        metrics: this.metrics,
       });
     });
   }
@@ -178,12 +178,17 @@ export class EventBus extends TypedEventBase {
         // Record telemetry metrics
         if (this.config.enableTelemetry) {
           recordMetric('event_bus.events_total', 1, { event_type: event });
-          recordMetric('event_bus.active_listeners', this.listenerCount(event), { event_type: event });
+          recordMetric(
+            'event_bus.active_listeners',
+            this.listenerCount(event),
+            { event_type: event }
+          );
         }
 
         // Update local metrics
         this.metrics.eventCount++;
-        this.metrics.eventTypes[event] = (this.metrics.eventTypes[event] || 0) + 1;
+        this.metrics.eventTypes[event] =
+          (this.metrics.eventTypes[event]'' | '''' | ''0) + 1;
 
         // Run middleware if enabled (now async with koa-compose)
         if (this.config.enableMiddleware && this.middleware.length > 0) {
@@ -201,13 +206,15 @@ export class EventBus extends TypedEventBase {
         // Update processing time metrics and telemetry
         const processingTime = Date.now() - startTime;
         this.updateProcessingTimeMetrics(processingTime);
-        
+
         if (this.config.enableTelemetry) {
-          recordHistogram('event_bus.processing_duration', processingTime, { event_type: event });
+          recordHistogram('event_bus.processing_duration', processingTime, {
+            event_type: event,
+          });
           span?.setAttributes({
             'event.result': result,
             'event.processing_time_ms': processingTime,
-            'event.middleware_count': this.middleware.length
+            'event.middleware_count': this.middleware.length,
           });
         }
 
@@ -223,14 +230,15 @@ export class EventBus extends TypedEventBase {
    * @param event - Event name
    * @param payload - Event payload
    */
-  override emit(event: string | symbol, payload?: any): boolean {
+  override emit(event: string'' | ''symbol, payload?: any): boolean {
     const startTime = Date.now();
 
     try {
       // Update metrics
       this.metrics.eventCount++;
       const eventKey = String(event);
-      this.metrics.eventTypes[eventKey] = (this.metrics.eventTypes[eventKey] || 0) + 1;
+      this.metrics.eventTypes[eventKey] =
+        (this.metrics.eventTypes[eventKey]'' | '''' | ''0) + 1;
 
       // Handle middleware for synchronous usage
       if (this.config.enableMiddleware && this.middleware.length > 0) {
@@ -238,7 +246,10 @@ export class EventBus extends TypedEventBase {
         // Note: This may not complete middleware processing
         this.runMiddleware(String(event), payload).catch((error) => {
           this.metrics.errorCount++;
-          logger.error(`[EventBus] Middleware error in sync emit for '${String(event)}':`, error);
+          logger.error(
+            `[EventBus] Middleware error in sync emit for'${String(event)}':`,
+            error
+          );
         });
       }
 
@@ -265,23 +276,25 @@ export class EventBus extends TypedEventBase {
   /**
    * Type-safe event listener registration with telemetry.
    */
-  override on(event: string | symbol, listener: EventListenerFunction): this {
+  override on(event: string'' | ''symbol, listener: EventListenerFunction): this {
     super.on(event, listener);
     this.metrics.listenerCount++;
-    
+
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('event_bus.listeners_registered', 1, { event_type: String(event) });
+      recordMetric('event_bus.listeners_registered', 1, {
+        event_type: String(event),
+      });
       recordMetric('event_bus.total_listeners', this.metrics.listenerCount);
     }
-    
+
     return this;
   }
 
   /**
    * Type-safe once listener registration.
    */
-  override once(event: string | symbol, listener: EventListenerFunction): this {
+  override once(event: string'' | ''symbol, listener: EventListenerFunction): this {
     super.once(event, listener);
     this.metrics.listenerCount++;
     return this;
@@ -290,16 +303,18 @@ export class EventBus extends TypedEventBase {
   /**
    * Type-safe event listener removal with telemetry.
    */
-  override off(event: string | symbol, listener: EventListenerFunction): this {
+  override off(event: string'' | ''symbol, listener: EventListenerFunction): this {
     super.off(event, listener);
     this.metrics.listenerCount = Math.max(0, this.metrics.listenerCount - 1);
-    
+
     // Record telemetry
     if (this.config.enableTelemetry) {
-      recordMetric('event_bus.listeners_removed', 1, { event_type: String(event) });
+      recordMetric('event_bus.listeners_removed', 1, {
+        event_type: String(event),
+      });
       recordMetric('event_bus.total_listeners', this.metrics.listenerCount);
     }
-    
+
     return this;
   }
 
@@ -308,7 +323,7 @@ export class EventBus extends TypedEventBase {
    */
   use(middleware: EventMiddleware): void {
     this.middleware.push(middleware);
-    
+
     // Record telemetry
     if (this.config.enableTelemetry) {
       recordMetric('event_bus.middleware_added', 1);
@@ -358,24 +373,24 @@ export class EventBus extends TypedEventBase {
       event,
       payload,
       timestamp: Date.now(),
-      processedBy: []
+      processedBy: [],
     };
 
     // Use koa-compose for battle-tested middleware composition
     const composedMiddleware = compose(this.middleware);
-    
+
     try {
       await composedMiddleware(context, async () => {
         // Empty next function - middleware chain completes here
       });
     } catch (error) {
       this.metrics.errorCount++;
-      
+
       // Record telemetry for middleware errors
       if (this.config.enableTelemetry) {
         recordMetric('event_bus.middleware_errors', 1, { event_type: event });
       }
-      
+
       logger.error(`[EventBus] Middleware error for event '${event}':`, error);
       throw error; // Re-throw to let caller handle
     }
@@ -385,7 +400,9 @@ export class EventBus extends TypedEventBase {
    * Update processing time metrics.
    */
   private updateProcessingTimeMetrics(processingTime: number): void {
-    const totalTime = this.metrics.avgProcessingTime * (this.metrics.eventCount - 1) + processingTime;
+    const totalTime =
+      this.metrics.avgProcessingTime * (this.metrics.eventCount - 1) +
+      processingTime;
     this.metrics.avgProcessingTime = totalTime / this.metrics.eventCount;
   }
 
@@ -394,7 +411,10 @@ export class EventBus extends TypedEventBase {
    */
   getStats(): { eventNames: string[]; listenerCount: number } {
     const eventNames = this.eventNames().map((name) => String(name));
-    const listenerCount = eventNames.reduce((sum, name) => sum + this.listenerCount(name), 0);
+    const listenerCount = eventNames.reduce(
+      (sum, name) => sum + this.listenerCount(name),
+      0
+    );
 
     return {
       eventNames,

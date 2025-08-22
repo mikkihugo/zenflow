@@ -1,18 +1,18 @@
 /**
  * @fileoverview DSPy Library - Production Stanford DSPy TypeScript Implementation
- * 
+ *
  * **COMPREHENSIVE STANFORD DSPY ALGORITHMS FOR PROMPT OPTIMIZATION**
- * 
+ *
  * Complete TypeScript port of Stanford's DSPy framework providing sophisticated
  * prompt optimization, few-shot learning, and teleprompter techniques for
  * production AI systems requiring systematic prompt engineering.
- * 
+ *
  * **⚠️ RECOMMENDED USAGE: Access via @claude-zen/brain Package**
- * 
- * While this package can be used directly, it is recommended to access DSPy 
+ *
+ * While this package can be used directly, it is recommended to access DSPy
  * functionality through `@claude-zen/brain` which provides integrated optimization
  * with autonomous decision making, task complexity estimation, and ML integration.
- * 
+ *
  * **CORE DSPY CAPABILITIES:**
  * - 🎯 **Prompt Optimization**: Advanced prompt engineering with systematic optimization
  * - 📚 **Few-Shot Learning**: Intelligent example selection and demonstration optimization
@@ -22,7 +22,7 @@
  * - ⚡ **Foundation Integration**: Complete @claude-zen/foundation support
  * - 🔧 **Modular Architecture**: Composable primitives and reusable components
  * - 📈 **Production Ready**: Battle-tested algorithms for enterprise deployment
- * 
+ *
  * **Enterprise Features:**
  * - Multi-model support with adapter pattern for various LLM providers
  * - Advanced ensemble methods for improved reliability and performance
@@ -31,11 +31,11 @@
  * - Circuit breaker protection and graceful degradation
  * - Caching and memoization for improved performance
  * - Custom teleprompter development framework
- * 
+ *
  * @example Basic DSPy Prompt Optimization
  * ```typescript
  * import { DSPyEngine, createDSPyEngine } from '@claude-zen/dspy';
- * 
+ *
  * // Create DSPy engine with foundation integration
  * const dspy = await createDSPyEngine({
  *   llmProvider: 'anthropic',
@@ -51,7 +51,7 @@
  *     storage: 'lancedb'
  *   }
  * });
- * 
+ *
  * // Define your task with examples
  * const task = {
  *   description: 'Classify customer feedback sentiment',
@@ -63,31 +63,31 @@
  *   ],
  *   metric: 'accuracy'
  * };
- * 
+ *
  * // Optimize the prompt automatically
  * const optimizationResult = await dspy.optimize(task);
- * 
+ *
  * console.log('Optimization Results:', {
  *   originalAccuracy: optimizationResult.baseline.accuracy,
  *   optimizedAccuracy: optimizationResult.optimized.accuracy,
  *   improvement: optimizationResult.improvement,
  *   optimizedPrompt: optimizationResult.optimized.prompt
  * });
- * 
+ *
  * // Use the optimized prompt for predictions
  * const prediction = await dspy.predict('The service was amazing!');
  * console.log('Prediction:', prediction.sentiment);
  * ```
- * 
+ *
  * @example Advanced Teleprompter Usage
  * ```typescript
- * import { 
- *   DSPyEngine, 
+ * import {
+ *   DSPyEngine,
  *   Ensemble,
  *   Module,
- *   Example 
+ *   Example
  * } from '@claude-zen/dspy';
- * 
+ *
  * // Create custom DSPy module
  * class SentimentClassifier extends Module {
  *   constructor() {
@@ -97,19 +97,19 @@
  *       instructions: 'Analyze customer feedback sentiment accurately'
  *     });
  *   }
- * 
+ *
  *   async forward(feedback: string) {
  *     return await this.classifier({ feedback });
  *   }
  * }
- * 
+ *
  * // Create training examples
  * const trainingSet = [
  *   new Example({ feedback: 'Outstanding service!' }, { sentiment: 'positive' }),
  *   new Example({ feedback: 'Poor quality product' }, { sentiment: 'negative' }),
  *   new Example({ feedback: 'Average experience' }, { sentiment: 'neutral' })
  * ];
- * 
+ *
  * // Create ensemble of optimized models
  * const ensemble = new Ensemble({
  *   modules: [
@@ -124,7 +124,7 @@
  *     crossValidation: 5
  *   }
  * });
- * 
+ *
  * // Train the ensemble
  * const trainedEnsemble = await ensemble.train(trainingSet, {
  *   teleprompter: 'bootstrap-fewshot',
@@ -132,7 +132,7 @@
  *   earlyStoppingThreshold: 0.95,
  *   validationSplit: 0.2
  * });
- * 
+ *
  * // Evaluate performance
  * const evaluation = await trainedEnsemble.evaluate(testSet);
  * console.log('Ensemble Performance:', {
@@ -143,19 +143,19 @@
  *   confidence: evaluation.averageConfidence
  * });
  * ```
- * 
+ *
  * @example Integration with Brain Package (Recommended)
  * ```typescript
  * // ✅ RECOMMENDED: Use via brain package for autonomous optimization
  * import { BrainCoordinator, AutonomousOptimizationEngine } from '@claude-zen/brain';
- * 
+ *
  * // Brain automatically chooses DSPy when appropriate
  * const brain = new BrainCoordinator({
  *   optimizationStrategies: ['dspy', 'ml-optimization', 'hybrid'],
  *   autoSelectStrategy: true,
  *   learningEnabled: true
  * });
- * 
+ *
  * // Autonomous optimization with DSPy integration
  * const result = await brain.autonomousOptimize({
  *   task: 'sentiment-classification',
@@ -167,7 +167,7 @@
  *     budget: 'medium'
  *   }
  * });
- * 
+ *
  * // Brain automatically selected DSPy and optimized
  * console.log('Autonomous Result:', {
  *   strategyUsed: result.strategy, // 'dspy-bootstrap'
@@ -176,43 +176,43 @@
  *   confidence: result.confidence
  * });
  * ```
- * 
+ *
  * @example Custom Teleprompter Development
  * ```typescript
  * import { DSPyEngine, Example, Prediction } from '@claude-zen/dspy';
- * 
+ *
  * // Create custom teleprompter for domain-specific optimization
  * class DomainSpecificTeleprompter {
  *   constructor(private config: {
  *     domain: string;
  *     expertKnowledge: string[];
- *     optimizationStrategy: 'conservative' | 'aggressive';
+ *     optimizationStrategy: 'conservative'''' | ''''aggressive';
  *   }) {}
- * 
+ *
  *   async optimize(module: Module, examples: Example[]) {
  *     // Custom optimization logic for specific domain
  *     const domainAugmentedExamples = await this.augmentWithDomainKnowledge(examples);
  *     const optimizedPrompts = await this.generateDomainSpecificPrompts(module);
- *     
+ *
  *     // Evaluate different prompt variations
  *     const results = await Promise.all(
- *       optimizedPrompts.map(prompt => 
+ *       optimizedPrompts.map(prompt =>
  *         this.evaluatePrompt(prompt, domainAugmentedExamples)
  *       )
  *     );
- *     
+ *
  *     // Select best performing prompt
- *     const bestPrompt = results.reduce((best, current) => 
+ *     const bestPrompt = results.reduce((best, current) =>
  *       current.score > best.score ? current : best
  *     );
- *     
+ *
  *     return {
  *       optimizedModule: module.withPrompt(bestPrompt.prompt),
  *       metrics: bestPrompt.metrics,
  *       optimizationPath: results
  *     };
  *   }
- * 
+ *
  *   private async augmentWithDomainKnowledge(examples: Example[]) {
  *     // Add domain-specific context to examples
  *     return examples.map(example => ({
@@ -220,18 +220,18 @@
  *       context: this.config.expertKnowledge.join('\\n')
  *     }));
  *   }
- * 
+ *
  *   private async generateDomainSpecificPrompts(module: Module) {
  *     // Generate prompts tailored to domain
  *     const basePrompt = module.getPrompt();
- *     const domainPrompts = this.config.expertKnowledge.map(knowledge => 
+ *     const domainPrompts = this.config.expertKnowledge.map(knowledge =>
  *       `${basePrompt}\\n\\nDomain expertise: ${knowledge}`
  *     );
- *     
+ *
  *     return domainPrompts;
  *   }
  * }
- * 
+ *
  * // Use custom teleprompter
  * const customTeleprompter = new DomainSpecificTeleprompter({
  *   domain: 'healthcare',
@@ -242,14 +242,14 @@
  *   ],
  *   optimizationStrategy: 'conservative'
  * });
- * 
+ *
  * const optimized = await customTeleprompter.optimize(module, medicalExamples);
  * ```
- * 
+ *
  * @example Production Monitoring and Evaluation
  * ```typescript
  * import { DSPyService, getDSPyService } from '@claude-zen/dspy';
- * 
+ *
  * // Initialize DSPy service with production monitoring
  * const dspyService = await getDSPyService({
  *   monitoring: {
@@ -273,7 +273,7 @@
  *     retentionDays: 30
  *   }
  * });
- * 
+ *
  * // Monitor optimization performance over time
  * dspyService.on('optimizationComplete', (event) => {
  *   console.log('Optimization completed:', {
@@ -282,21 +282,21 @@
  *     duration: event.duration,
  *     accuracy: event.finalAccuracy
  *   });
- *   
+ *
  *   // Alert if performance degrades
  *   if (event.finalAccuracy < 0.85) {
  *     console.warn('Performance below threshold, investigating...');
  *     // Trigger investigation or re-optimization
  *   }
  * });
- * 
+ *
  * // Schedule regular evaluation
  * setInterval(async () => {
  *   const metrics = await dspyService.getPerformanceMetrics({
  *     timeRange: '24h',
  *     includeBreakdown: true
  *   });
- *   
+ *
  *   console.log('DSPy Performance:', {
  *     totalOptimizations: metrics.totalOptimizations,
  *     averageImprovement: metrics.averageImprovement,
@@ -305,7 +305,7 @@
  *   });
  * }, 3600000); // Every hour
  * ```
- * 
+ *
  * **Performance Characteristics:**
  * - **Optimization Speed**: 10-100x faster than manual prompt engineering
  * - **Accuracy Improvements**: Typical 15-40% improvement over baseline prompts
@@ -313,7 +313,7 @@
  * - **Memory Efficiency**: <200MB per optimization process
  * - **Caching**: 90%+ cache hit rate for repeated optimization patterns
  * - **Reliability**: 99.5%+ success rate with automatic retry mechanisms
- * 
+ *
  * **Stanford DSPy Algorithms Implemented:**
  * - Bootstrap Few-Shot Learning with intelligent example selection
  * - Ensemble methods with multiple optimization strategies
@@ -321,7 +321,7 @@
  * - Multi-stage optimization with progressive improvement
  * - Cross-validation and holdout evaluation frameworks
  * - Custom metric optimization with user-defined objectives
- * 
+ *
  * @author Claude Code Zen Team (Stanford DSPy TypeScript Port)
  * @version 2.0.0
  * @license MIT
@@ -338,17 +338,13 @@ export type { DSPyKV } from './src/main';
 // =============================================================================
 // DSPY SERVICE LAYER AND FOUNDATION INTEGRATION
 // =============================================================================
-export { 
-  DSPyService, 
-  getDSPyService, 
-  initializeDSPyService
-} from './src/main';
+export { DSPyService, getDSPyService, initializeDSPyService } from './src/main';
 
 export type {
   SharedLLMService,
   SharedStorage,
   SharedLogger,
-  Config
+  Config,
 } from './src/core/service.js';
 
 // Export all DSPy types
@@ -366,25 +362,32 @@ export type {
   DSPyStorage,
   DSPyExampleGenerator,
   DSPyPromptEvaluator,
-  DSPyConfigValidator
+  DSPyConfigValidator,
 } from './src/types/interfaces.js';
 
 // Export core DSPy components only - working modules without complex Stanford DSPy issues
 export { DSPyModule } from './src/primitives/module.js';
 export { Example } from './src/primitives/example.js';
-export { type Prediction, PredictionUtils } from './src/primitives/prediction.js';
+export {
+  type Prediction,
+  PredictionUtils,
+} from './src/primitives/prediction.js';
 export { SeededRNG } from './src/primitives/seeded-rng.js';
 
 // Export adapter
-export { ChatAdapter, type ChatAdapterConfig, type ChatMessage } from './src/adapters/chat-adapter.js';
+export {
+  ChatAdapter,
+  type ChatAdapterConfig,
+  type ChatMessage,
+} from './src/adapters/chat-adapter.js';
 
 // Export interfaces
-export { 
-  type LMInterface, 
-  type GenerationOptions, 
-  type ModelInfo, 
+export {
+  type LMInterface,
+  type GenerationOptions,
+  type ModelInfo,
   type ModelUsage,
-  BaseLM 
+  BaseLM,
 } from './src/interfaces/lm.js';
 
 export {
@@ -395,7 +398,7 @@ export {
   type InferenceDataOutput,
   type EvaluationDataInput,
   type EvaluationDataOutput,
-  BaseAdapter
+  BaseAdapter,
 } from './src/interfaces/adapter.js';
 
 // Import the necessary functions
@@ -409,8 +412,8 @@ export const DSPy = {
   Engine: {
     DSPyEngine,
     createDSPyEngine,
-    utils: dspyUtils
-  }
+    utils: dspyUtils,
+  },
 } as const;
 
 // Default export

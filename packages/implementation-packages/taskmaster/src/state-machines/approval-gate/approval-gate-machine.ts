@@ -35,7 +35,7 @@ export interface ApprovalRequest {
   gateType: string;
   question: string;
   confidence: number;
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: 'low'' | ''medium'' | ''high'' | ''critical';
   context?: Record<string, any>;
   timestamp: number;
 }
@@ -47,7 +47,7 @@ export interface ApprovalGateConfig {
   gateId: string;
   autoApproveThreshold: number;
   maxQueueDepth: number;
-  onQueueFull: 'halt' | 'spillover' | 'escalate' | 'auto-approve';
+  onQueueFull: 'halt'' | ''spillover'' | ''escalate'' | ''auto-approve';
   spilloverTarget?: string;
   humanApprovalTimeout: number; // milliseconds
 }
@@ -58,10 +58,10 @@ export interface ApprovalGateConfig {
 export interface ApprovalDecision {
   requestId: string;
   approved: boolean;
-  decision: 'approve' | 'reject' | 'defer' | 'escalate';
+  decision: 'approve'' | ''reject'' | ''defer'' | ''escalate';
   rationale?: string;
   timestamp: number;
-  decidedBy: 'auto' | 'human' | 'system';
+  decidedBy: 'auto'' | ''human'' | ''system';
 }
 
 /**
@@ -80,15 +80,7 @@ interface ApprovalGateContext {
 /**
  * State machine events
  */
-type ApprovalGateEvent =
-  | { type: 'REQUEST_APPROVAL'; request: ApprovalRequest }
-  | { type: 'HUMAN_DECISION'; decision: ApprovalDecision }
-  | { type: 'AUTO_APPROVE'; reason: string }
-  | { type: 'AUTO_REJECT'; reason: string }
-  | { type: 'TIMEOUT' }
-  | { type: 'QUEUE_OVERFLOW' }
-  | { type: 'RESET' }
-  | { type: 'UPDATE_CONFIG'; config: Partial<ApprovalGateConfig> };
+type ApprovalGateEvent =' | '{ type:'REQUEST_APPROVAL'; request: ApprovalRequest }' | '{ type:'HUMAN_DECISION'; decision: ApprovalDecision }' | '{ type:'AUTO_APPROVE'; reason: string }' | '{ type:'AUTO_REJECT'; reason: string }' | '{ type:'TIMEOUT'}' | '{ type:'QUEUE_OVERFLOW'}' | '{ type:'RESET'}' | '{ type:'UPDATE_CONFIG'; config: Partial<ApprovalGateConfig> };
 
 // =============================================================================
 // APPROVAL GATE STATE MACHINE
@@ -119,7 +111,7 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
                 decision: Math.random() > 0.3 ? 'approve' : 'reject',
                 rationale: 'Simulated human decision',
                 timestamp: Date.now(),
-                decidedBy: 'human'
+                decidedBy: 'human',
               });
             }, 2000); // 2 second delay for human decision
           });
@@ -128,9 +120,13 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
 
       // Actor for overflow handling
       handleOverflow: fromPromise(
-        async ({ input }: { input: { request: ApprovalRequest; behavior: string } }) => {
+        async ({
+          input,
+        }: {
+          input: { request: ApprovalRequest; behavior: string };
+        }) => {
           const { request, behavior } = input;
-          
+
           switch (behavior) {
             case 'auto-approve':
               return {
@@ -139,9 +135,9 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
                 decision: 'approve' as const,
                 rationale: 'Auto-approved due to queue overflow',
                 timestamp: Date.now(),
-                decidedBy: 'system' as const
+                decidedBy: 'system' as const,
               };
-              
+
             case 'spillover':
               // Would route to spillover gate
               return {
@@ -150,9 +146,9 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
                 decision: 'defer' as const,
                 rationale: 'Deferred to spillover gate',
                 timestamp: Date.now(),
-                decidedBy: 'system' as const
+                decidedBy: 'system' as const,
               };
-              
+
             default:
               return {
                 requestId: request.id,
@@ -160,18 +156,20 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
                 decision: 'reject' as const,
                 rationale: 'Rejected due to queue overflow',
                 timestamp: Date.now(),
-                decidedBy: 'system' as const
+                decidedBy: 'system' as const,
               };
           }
         }
-      )
+      ),
     },
 
     guards: {
       // Check if request can be auto-approved
       canAutoApprove: ({ context, event }) => {
         if (event.type === 'REQUEST_APPROVAL') {
-          return event.request.confidence >= context.config.autoApproveThreshold;
+          return (
+            event.request.confidence >= context.config.autoApproveThreshold
+          );
         }
         return false;
       },
@@ -184,10 +182,12 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
       // Check if request is high priority
       isHighPriority: ({ event }) => {
         if (event.type === 'REQUEST_APPROVAL') {
-          return event.request.priority === 'high' || event.request.priority === 'critical';
+          return (
+            event.request.priority === 'high' || event.request.priority ==='critical'
+          );
         }
         return false;
-      }
+      },
     },
 
     actions: {
@@ -198,7 +198,7 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
             return event.request;
           }
           return undefined;
-        }
+        },
       }),
 
       // Add request to pending queue
@@ -209,24 +209,25 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
           }
           return context.pendingRequests;
         },
-        queueDepth: ({ context }) => context.queueDepth + 1
+        queueDepth: ({ context }) => context.queueDepth + 1,
       }),
 
       // Remove request from queue
       removeFromQueue: assign({
         pendingRequests: ({ context }) => context.pendingRequests.slice(1),
         queueDepth: ({ context }) => Math.max(0, context.queueDepth - 1),
-        currentRequest: ({ context }) => context.pendingRequests[1] || undefined
+        currentRequest: ({ context }) =>
+          context.pendingRequests[1] || undefined,
       }),
 
       // Store approval decision
       storeDecision: assign({
         lastDecision: ({ event }) => {
-          if (event.type === 'HUMAN_DECISION') {
+          if (event.type ==='HUMAN_DECISION') {
             return event.decision;
           }
           return undefined;
-        }
+        },
       }),
 
       // Create auto-approval decision
@@ -239,11 +240,11 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
               decision: 'approve' as const,
               rationale: event.reason,
               timestamp: Date.now(),
-              decidedBy: 'auto' as const
+              decidedBy: 'auto' as const,
             };
           }
           return context.lastDecision;
-        }
+        },
       }),
 
       // Create auto-rejection decision
@@ -256,11 +257,11 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
               decision: 'reject' as const,
               rationale: event.reason,
               timestamp: Date.now(),
-              decidedBy: 'auto' as const
+              decidedBy: 'auto' as const,
             };
           }
           return context.lastDecision;
-        }
+        },
       }),
 
       // Log state transitions
@@ -270,7 +271,7 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
           from: params.from,
           to: params.to,
           queueDepth: context.queueDepth,
-          currentRequest: context.currentRequest?.id
+          currentRequest: context.currentRequest?.id,
         });
       },
 
@@ -281,27 +282,27 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
             return { ...context.config, ...event.config };
           }
           return context.config;
-        }
+        },
       }),
 
       // Clear current request
       clearCurrentRequest: assign({
-        currentRequest: undefined
+        currentRequest: undefined,
       }),
 
       // Set error state
       setError: assign({
-        error: (_, params: { error: string }) => params.error
-      })
-    }
+        error: (_, params: { error: string }) => params.error,
+      }),
+    },
   }).createMachine({
     id: `approvalGate_${config.gateId}`,
-    
+
     context: {
       config,
       queueDepth: 0,
       pendingRequests: [],
-      logger
+      logger,
     },
 
     initial: 'idle',
@@ -309,198 +310,219 @@ export function createApprovalGateMachine(config: ApprovalGateConfig) {
     states: {
       idle: {
         entry: [
-          { type: 'logTransition', params: { from: 'unknown', to: 'idle' } }
+          { type: 'logTransition', params: { from: 'unknown', to: 'idle' } },
         ],
-        
+
         on: {
           REQUEST_APPROVAL: [
             {
               guard: 'isQueueFull',
               target: 'overflow',
-              actions: ['setCurrentRequest']
+              actions: ['setCurrentRequest'],
             },
             {
               guard: 'canAutoApprove',
               target: 'autoApproving',
-              actions: ['setCurrentRequest', 'addToQueue']
+              actions: ['setCurrentRequest', 'addToQueue'],
             },
             {
               target: 'pending',
-              actions: ['setCurrentRequest', 'addToQueue']
-            }
+              actions: ['setCurrentRequest', 'addToQueue'],
+            },
           ],
-          
+
           UPDATE_CONFIG: {
-            actions: ['updateConfig']
-          }
-        }
+            actions: ['updateConfig'],
+          },
+        },
       },
 
       autoApproving: {
         entry: [
-          { type: 'logTransition', params: { from: 'idle', to: 'autoApproving' } },
-          { type: 'autoApprove', params: { reason: 'Confidence threshold met' } }
+          {
+            type: 'logTransition',
+            params: { from: 'idle', to: 'autoApproving' },
+          },
+          {
+            type: 'autoApprove',
+            params: { reason: 'Confidence threshold met' },
+          },
         ],
-        
+
         always: {
-          target: 'approved'
-        }
+          target: 'approved',
+        },
       },
 
       pending: {
         entry: [
-          { type: 'logTransition', params: { from: 'idle', to: 'pending' } }
+          { type: 'logTransition', params: { from: 'idle', to: 'pending' } },
         ],
-        
+
         invoke: {
           src: 'requestHumanApproval',
           input: ({ context }) => ({ request: context.currentRequest! }),
-          
+
           onDone: {
             target: 'deciding',
             actions: [
               assign({
-                lastDecision: ({ event }) => event.output
-              })
-            ]
+                lastDecision: ({ event }) => event.output,
+              }),
+            ],
           },
-          
+
           onError: {
             target: 'error',
             actions: [
-              { type: 'setError', params: { error: 'Human approval request failed' } }
-            ]
-          }
+              {
+                type: 'setError',
+                params: { error: 'Human approval request failed' },
+              },
+            ],
+          },
         },
 
         after: {
           [config.humanApprovalTimeout]: {
-            target: 'timeout'
-          }
+            target: 'timeout',
+          },
         },
 
         on: {
           HUMAN_DECISION: {
             target: 'deciding',
-            actions: ['storeDecision']
-          }
-        }
+            actions: ['storeDecision'],
+          },
+        },
       },
 
       deciding: {
         entry: [
-          { type: 'logTransition', params: { from: 'pending', to: 'deciding' } }
+          {
+            type: 'logTransition',
+            params: { from: 'pending', to: 'deciding' },
+          },
         ],
-        
+
         always: [
           {
             guard: ({ context }) => context.lastDecision?.approved === true,
-            target: 'approved'
+            target: 'approved',
           },
           {
-            target: 'rejected'
-          }
-        ]
+            target: 'rejected',
+          },
+        ],
       },
 
       approved: {
         entry: [
-          { type: 'logTransition', params: { from: 'deciding', to: 'approved' } },
-          'removeFromQueue'
+          {
+            type: 'logTransition',
+            params: { from: 'deciding', to: 'approved' },
+          },
+          'removeFromQueue',
         ],
-        
+
         after: {
           100: {
             target: 'idle',
-            actions: ['clearCurrentRequest']
-          }
-        }
+            actions: ['clearCurrentRequest'],
+          },
+        },
       },
 
       rejected: {
         entry: [
-          { type: 'logTransition', params: { from: 'deciding', to: 'rejected' } },
-          'removeFromQueue'
+          {
+            type: 'logTransition',
+            params: { from: 'deciding', to: 'rejected' },
+          },
+          'removeFromQueue',
         ],
-        
+
         after: {
           100: {
             target: 'idle',
-            actions: ['clearCurrentRequest']
-          }
-        }
+            actions: ['clearCurrentRequest'],
+          },
+        },
       },
 
       overflow: {
         entry: [
-          { type: 'logTransition', params: { from: 'idle', to: 'overflow' } }
+          { type: 'logTransition', params: { from: 'idle', to: 'overflow' } },
         ],
-        
+
         invoke: {
           src: 'handleOverflow',
           input: ({ context }) => ({
             request: context.currentRequest!,
-            behavior: context.config.onQueueFull
+            behavior: context.config.onQueueFull,
           }),
-          
+
           onDone: [
             {
               guard: ({ event }) => event.output.approved,
               target: 'approved',
               actions: [
                 assign({
-                  lastDecision: ({ event }) => event.output
-                })
-              ]
+                  lastDecision: ({ event }) => event.output,
+                }),
+              ],
             },
             {
               target: 'rejected',
               actions: [
                 assign({
-                  lastDecision: ({ event }) => event.output
-                })
-              ]
-            }
+                  lastDecision: ({ event }) => event.output,
+                }),
+              ],
+            },
           ],
-          
+
           onError: {
             target: 'error',
             actions: [
-              { type: 'setError', params: { error: 'Overflow handling failed' } }
-            ]
-          }
-        }
+              {
+                type: 'setError',
+                params: { error: 'Overflow handling failed' },
+              },
+            ],
+          },
+        },
       },
 
       timeout: {
         entry: [
           { type: 'logTransition', params: { from: 'pending', to: 'timeout' } },
-          { type: 'autoReject', params: { reason: 'Human approval timeout' } }
+          { type: 'autoReject', params: { reason: 'Human approval timeout' } },
         ],
-        
+
         always: {
-          target: 'rejected'
-        }
+          target: 'rejected',
+        },
       },
 
       error: {
         entry: [
-          { type: 'logTransition', params: { from: 'unknown', to: 'error' } }
+          { type: 'logTransition', params: { from: 'unknown', to: 'error' } },
         ],
-        
+
         on: {
           RESET: {
             target: 'idle',
             actions: [
               assign({
                 error: undefined,
-                currentRequest: undefined
-              })
-            ]
-          }
-        }
-      }
-    }
+                currentRequest: undefined,
+              }),
+            ],
+          },
+        },
+      },
+    },
   });
 }
 
@@ -525,15 +547,15 @@ export class ApprovalGateManager {
   createGate(config: ApprovalGateConfig) {
     const machine = createApprovalGateMachine(config);
     const actor = machine.createActor();
-    
+
     actor.start();
-    
+
     this.gates.set(config.gateId, actor);
-    
+
     this.logger.info('Approval gate created', {
       gateId: config.gateId,
       autoApproveThreshold: config.autoApproveThreshold,
-      maxQueueDepth: config.maxQueueDepth
+      maxQueueDepth: config.maxQueueDepth,
     });
 
     return actor;
@@ -542,7 +564,10 @@ export class ApprovalGateManager {
   /**
    * Submit approval request to specific gate
    */
-  async requestApproval(gateId: string, request: ApprovalRequest): Promise<ApprovalDecision> {
+  async requestApproval(
+    gateId: string,
+    request: ApprovalRequest
+  ): Promise<ApprovalDecision> {
     const gate = this.gates.get(gateId);
     if (!gate) {
       throw new Error(`Approval gate not found: ${gateId}`);
@@ -553,14 +578,14 @@ export class ApprovalGateManager {
       const subscription = gate.subscribe((state: any) => {
         if (state.matches('approved') || state.matches('rejected')) {
           subscription.unsubscribe();
-          
+
           if (state.context.lastDecision) {
             resolve(state.context.lastDecision);
           } else {
             reject(new Error('No decision available'));
           }
         }
-        
+
         if (state.matches('error')) {
           subscription.unsubscribe();
           reject(new Error(state.context.error || 'Approval gate error'));
@@ -588,7 +613,7 @@ export class ApprovalGateManager {
       queueDepth: snapshot.context.queueDepth,
       currentRequest: snapshot.context.currentRequest,
       lastDecision: snapshot.context.lastDecision,
-      error: snapshot.context.error
+      error: snapshot.context.error,
     };
   }
 
@@ -602,10 +627,10 @@ export class ApprovalGateManager {
     }
 
     gate.send({ type: 'UPDATE_CONFIG', config });
-    
+
     this.logger.info('Approval gate configuration updated', {
       gateId,
-      updates: config
+      updates: config,
     });
   }
 
@@ -617,7 +642,7 @@ export class ApprovalGateManager {
     if (gate) {
       gate.stop();
       this.gates.delete(gateId);
-      
+
       this.logger.info('Approval gate removed', { gateId });
     }
   }
@@ -638,8 +663,4 @@ export class ApprovalGateManager {
 // EXPORTS
 // =============================================================================
 
-export type {
-  ApprovalRequest,
-  ApprovalGateConfig,
-  ApprovalDecision
-};
+export type { ApprovalRequest, ApprovalGateConfig, ApprovalDecision };

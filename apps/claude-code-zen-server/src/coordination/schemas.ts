@@ -218,8 +218,8 @@
 // TypeScript interfaces that match OpenAPI schemas
 export interface Agent {
   readonly id: string;
-  readonly type: 'researcher' | 'coder' | 'analyst' | 'tester' | 'coordinator';
-  status: 'idle' | 'busy' | 'error' | 'offline';
+  readonly type: 'researcher | coder' | 'analyst' | 'tester' | 'coordinator';
+  status: 'idle | busy' | 'error''' | '''offline';
   readonly capabilities: readonly string[];
   readonly created: Date;
   lastHeartbeat: Date;
@@ -228,9 +228,9 @@ export interface Agent {
 }
 
 export interface SwarmConfig {
-  topology: 'mesh | hierarchical' | 'ring | star');
+  topology: 'mesh'' | ''hierarchical'' | ''ring'' | ''star');
   maxAgents: number;
-  strategy?: 'balanced | specialized' | 'adaptive | performance');
+  strategy?: 'balanced'' | ''specialized'' | ''adaptive'' | ''performance');
   adaptiveThreshold?: number;
 }
 
@@ -240,7 +240,7 @@ export interface Task {
   readonly priority: number;
   readonly description: string;
   assignedAgent?: string;
-  status: 'pending | assigned' | 'in_progress | completed' | 'failed');
+  status: 'pending'' | ''assigned'' | ''in_progress'' | ''completed'' | ''failed');
   readonly created: Date;
   deadline?: Date;
   result?: any;
@@ -248,13 +248,7 @@ export interface Task {
 }
 
 export interface CoordinationError {
-  readonly code:
-    | 'AGENT_NOT_FOUND'
-    | 'TASK_TIMEOUT'
-    | 'INVALID_CONFIG'
-    | 'SWARM_FULL'
-    | 'COORDINATION_FAILED'
-    | 'INTERNAL_ERROR');
+  readonly code:'' | '''AGENT_NOT_FOUND | TASK_TIMEOUT' | 'INVALID_CONFIG''' | '''SWARM_FULL | COORDINATION_FAILED' | 'INTERNAL_ERROR');
   readonly message: string;
   readonly details?: Record<string, unknown>;
   readonly timestamp: Date;
@@ -262,12 +256,12 @@ export interface CoordinationError {
 }
 
 export interface HealthStatus {
-  readonly status: 'healthy | degraded' | 'unhealthy');
+  readonly status: 'healthy'' | ''degraded'' | ''unhealthy');
   readonly timestamp: Date;
   readonly components: {
-    readonly coordination: 'healthy | degraded' | 'unhealthy');
-    readonly agents: 'healthy | degraded' | 'unhealthy');
-    readonly swarm: 'healthy | degraded' | 'unhealthy');
+    readonly coordination: 'healthy'' | ''degraded'' | ''unhealthy');
+    readonly agents: 'healthy'' | ''degraded'' | ''unhealthy');
+    readonly swarm: 'healthy'' | ''degraded'' | ''unhealthy');
   };
   readonly metrics: PerformanceMetrics;
 }

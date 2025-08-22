@@ -21,7 +21,7 @@
  * - Service lifecycle management
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type {
   Logger,
   Service,
@@ -34,20 +34,20 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '@claude-zen/foundation');
-import { DocumentService } from '@claude-zen/intelligence');
+} from '@claude-zen/foundation';
+import { DocumentService } from '@claude-zen/intelligence';
 import type {
   BaseDocumentEntity,
   DocumentCreateOptions,
   DocumentQueryOptions,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 import type {
   DocumentData,
   SystemStatusData,
-} from './../../interfaces/web/web-data-service');
-import { WebDataService } from './../../interfaces/web/web-data-service');
-import { ServiceEnvironment, ServicePriority } from './types');
+} from './../../interfaces/web/web-data-service';
+import { WebDataService } from './../../interfaces/web/web-data-service';
+import { ServiceEnvironment, ServicePriority } from './types';
 
 // ============================================================================
 // CONFIGURATION INTERFACES
@@ -83,7 +83,7 @@ export interface DataServiceAdapterConfig {
   };
   documentData?: {
     enabled: boolean;
-    databaseType?: 'postgresql | sqlite' | 'mysql');
+    databaseType?: 'postgresql | sqlite | mysql');
     autoInitialize?: boolean;
     searchIndexing?: boolean;
   };
@@ -286,8 +286,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
 
       // Delegate to @claude-zen/intelligence for request optimization
       const { LoadBalancer, CircuitBreaker } = await import(
-        '@claude-zen/intelligence'
-      );
+        '@claude-zen/intelligence');
       this.loadBalancer = new LoadBalancer({
         maxConcurrentRequests: this.config.performance?.maxConcurrency || 10,
         requestDeduplication:
@@ -373,7 +372,7 @@ export class DataServiceAdapter extends TypedEventBase implements Service {
 
       const systemStatus: SystemStatusData = {
         uptime: Date.now() - (this.startTime?.getTime || Date.now()),
-        status: 'healthy',
+        status:'healthy',
         database: dbHealth,
         metrics: {
           operations: this.operationCount,

@@ -59,7 +59,7 @@ const logger = {
   },
   debug: (args: any[]) => {
     // Add debug logging capability for enhanced development experience
-    if (process.env.DEBUG_AUTH || process.env.NODE_ENV === 'development') {
+    if (process.env.DEBUG_AUTH || process.env.NODE_ENV ==='development') {
       console.log('🔍 DEBUG:', args);
       const debugEntry = {
         level: 'debug',
@@ -119,7 +119,7 @@ async function getAuthConfig(): Promise<{ useProjectConfig?: boolean }> {
     return projectConfig.auth || {};
   } catch {
     // Fall back to user config
-    const userConfigPath = join(homedir(), '.claude-zen', 'config.json');
+    const userConfigPath = join(homedir(),'.claude-zen', 'config.json');
     try {
       const userConfig = JSON.parse(await fs.readFile(userConfigPath, 'utf8'));
       return userConfig.auth || {};
@@ -139,7 +139,7 @@ async function ensureClaudeZenDir(): Promise<string> {
 
   if (authConfig.useProjectConfig) {
     // Store in project directory if configured
-    claudeZenDir = join(process.cwd(), '.claude-zen');
+    claudeZenDir = join(process.cwd(),'.claude-zen');
     logger.info('Using project-local config directory');
   } else {
     // Default to user home directory

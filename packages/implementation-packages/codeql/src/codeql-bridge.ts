@@ -3,14 +3,14 @@
  * Primary interface for CodeQL CLI operations and database management
  */
 
-import { 
+import {
   getLogger,
   Result,
   ok,
   err,
   safeAsync,
   withRetry,
-  type Logger
+  type Logger,
 } from '@claude-zen/foundation';
 
 import * as fs from 'fs/promises';
@@ -49,15 +49,17 @@ export class CodeQLBridge {
 
   constructor(config: Partial<CodeQLConfig> = {}) {
     this.logger = getLogger('CodeQLBridge');
-    
+
     // Default configuration
     this.config = {
-      codeqlPath: config.codeqlPath || 'codeql',
-      maxMemory: config.maxMemory || 4096,
-      threads: config.threads || Math.max(1, Math.floor(require('os').cpus().length / 2)),
+      codeqlPath: config.codeqlPath'' | '''' | '''codeql',
+      maxMemory: config.maxMemory'' | '''' | ''4096,
+      threads:
+        config.threads'' | '''' | ''Math.max(1, Math.floor(require('os').cpus().length / 2)),
       verbose: config.verbose ?? false,
-      timeout: config.timeout || 300000, // 5 minutes
-      tempDir: config.tempDir || path.join(require('os').tmpdir(), 'codeql-zen'),
+      timeout: config.timeout'' | '''' | ''300000, // 5 minutes
+      tempDir:
+        config.tempDir'' | '''' | ''path.join(require('os').tmpdir(), 'codeql-zen'),
       ...config,
     };
 
@@ -66,10 +68,10 @@ export class CodeQLBridge {
     this.queryRunner = new QueryRunner(this.config, this.logger);
     this.resultParser = new ResultParser(this.logger);
 
-    this.logger.info('CodeQL Bridge initialized', { 
+    this.logger.info('CodeQL Bridge initialized', {
       codeqlPath: this.config.codeqlPath,
       maxMemory: this.config.maxMemory,
-      threads: this.config.threads 
+      threads: this.config.threads,
     });
   }
 
@@ -80,7 +82,7 @@ export class CodeQLBridge {
     return await safeAsync(async () => {
       const result = await this.executeCommand(['version', '--format=json']);
       const versionData = JSON.parse(result.stdout);
-      return versionData.productVersion || versionData.version || 'unknown';
+      return versionData.productVersion'' | '''' | ''versionData.version'' | '''' | '''unknown';
     });
   }
 
@@ -91,29 +93,38 @@ export class CodeQLBridge {
     repositoryPath: string,
     options: DatabaseCreationOptions
   ): Promise<DatabaseCreationResult> {
-    return await withRetry(async () => {
-      this.logger.info('Creating CodeQL database', { 
-        repositoryPath, 
-        languages: options.languages 
-      });
+    return await withRetry(
+      async () => {
+        this.logger.info('Creating CodeQL database', {
+          repositoryPath,
+          languages: options.languages,
+        });
 
-      // Validate repository path
-      const repoStats = await fs.stat(repositoryPath);
-      if (!repoStats.isDirectory()) {
-        throw this.createError('config', `Repository path is not a directory: ${repositoryPath}`);
-      }
+        // Validate repository path
+        const repoStats = await fs.stat(repositoryPath);
+        if (!repoStats.isDirectory()) {
+          throw this.createError(
+            'config',
+            `Repository path is not a directory: ${repositoryPath}`
+          );
+        }
 
-      // Create database using database manager
-      const database = await this.databaseManager.createDatabase(repositoryPath, options);
-      
-      this.logger.info('CodeQL database created successfully', { 
-        databaseId: database.id,
-        path: database.path,
-        language: database.language 
-      });
+        // Create database using database manager
+        const database = await this.databaseManager.createDatabase(
+          repositoryPath,
+          options
+        );
 
-      return database;
-    }, { retries: 2, minTimeout: 2000 });
+        this.logger.info('CodeQL database created successfully', {
+          databaseId: database.id,
+          path: database.path,
+          language: database.language,
+        });
+
+        return database;
+      },
+      { retries: 2, minTimeout: 2000 }
+    );
   }
 
   /**
@@ -125,9 +136,9 @@ export class CodeQLBridge {
     options: Partial<DatabaseCreationOptions & QueryExecutionOptions> = {}
   ): Promise<QueryExecutionResult> {
     return await safeAsync(async (): Promise<CodeQLAnalysisResult> => {
-      this.logger.info('Starting CodeQL repository analysis', { 
-        repositoryPath, 
-        queryPackCount: queryPacks.length 
+      this.logger.info('Starting CodeQL repository analysis', {
+        repositoryPath,
+        queryPackCount: queryPacks.length,
       });
 
       const startTime = Date.now();
@@ -135,7 +146,9 @@ export class CodeQLBridge {
       // Step 1: Detect languages in repository
       const languages = await this.detectLanguages(repositoryPath);
       if (languages.length === 0) {
-        throw this.createError('config', 'No supported languages detected in repository');
+        throw this.createError(
+          'config',
+          'No supported languages detected in repository');
       }
 
       // Step 2: Create database
@@ -143,26 +156,28 @@ export class CodeQLBridge {
         languages,
         buildCommand: options.buildCommand,
         additionalSources: options.additionalSources,
-        excludePatterns: options.excludePatterns || [
-          '**/node_modules/**',
+        excludePatterns: options.excludePatterns'' | '''' | ''['**/node_modules/**',
           '**/dist/**',
           '**/build/**',
           '**/.git/**',
         ],
         overwrite: options.overwrite ?? true,
-        workingDirectory: options.workingDirectory || repositoryPath,
+        workingDirectory: options.workingDirectory'' | '''' | ''repositoryPath,
         environmentVariables: options.environmentVariables,
       };
 
-      const database = await this.createDatabase(repositoryPath, databaseOptions);
+      const database = await this.createDatabase(
+        repositoryPath,
+        databaseOptions
+      );
 
       // Step 3: Execute queries
       const queryOptions: QueryExecutionOptions = {
-        format: options.format || 'sarif-latest',
+        format: options.format'' | '''' | '''sarif-latest',
         outputPath: options.outputPath,
-        maxResults: options.maxResults || 10000,
-        queryTimeout: options.queryTimeout || 60000,
-        additionalArgs: options.additionalArgs || [],
+        maxResults: options.maxResults'' | '''' | ''10000,
+        queryTimeout: options.queryTimeout'' | '''' | ''60000,
+        additionalArgs: options.additionalArgs'' | '''' | ''[],
       };
 
       const queryResults = await this.queryRunner.executeQueries(
@@ -193,7 +208,7 @@ export class CodeQLBridge {
           databaseSizeBytes: database.sizeBytes,
           filesAnalyzed: await this.countAnalyzedFiles(database),
           linesAnalyzed: 0, // Would need to calculate from database
-          peakMemoryMb: this.config.maxMemory || 0,
+          peakMemoryMb: this.config.maxMemory'' | '''' | ''0,
           cpuTimeMs: 0, // Would need OS-level tracking
         },
       };
@@ -256,7 +271,7 @@ export class CodeQLBridge {
         },
       });
 
-      // Code quality queries  
+      // Code quality queries
       queryPacks.push({
         name: `${language}-code-scanning`,
         version: 'latest',
@@ -279,11 +294,11 @@ export class CodeQLBridge {
 
     try {
       const languageDirs = await fs.readdir(queriesDir);
-      
+
       for (const languageDir of languageDirs) {
         const languagePath = path.join(queriesDir, languageDir);
         const stats = await fs.stat(languagePath);
-        
+
         if (stats.isDirectory()) {
           queryPacks.push({
             name: `claude-zen-${languageDir}`,
@@ -310,14 +325,14 @@ export class CodeQLBridge {
     options: { cwd?: string; timeout?: number } = {}
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     return new Promise((resolve, reject) => {
-      const timeout = options.timeout || this.config.timeout || 300000;
-      const cwd = options.cwd || process.cwd();
+      const timeout = options.timeout'' | '''' | ''this.config.timeout'' | '''' | ''300000;
+      const cwd = options.cwd'' | '''' | ''process.cwd();
 
-      this.logger.debug('Executing CodeQL command', { 
+      this.logger.debug('Executing CodeQL command', {
         command: this.config.codeqlPath,
         args,
         cwd,
-        timeout 
+        timeout,
       });
 
       const child = spawn(this.config.codeqlPath!, args, {
@@ -339,37 +354,45 @@ export class CodeQLBridge {
 
       const timeoutId = setTimeout(() => {
         child.kill('SIGTERM');
-        reject(this.createError('system', 'Command timeout exceeded', { 
-          command: args.join(' '),
-          timeout 
-        }));
+        reject(
+          this.createError('system', 'Command timeout exceeded', {
+            command: args.join(' '),
+            timeout,
+          })
+        );
       }, timeout);
 
       child.on('close', (exitCode) => {
         clearTimeout(timeoutId);
-        
+
         if (exitCode === 0) {
           resolve({ stdout, stderr, exitCode });
         } else {
-          reject(this.createError('system', 'Command failed', {
-            command: args.join(' '),
-            exitCode,
-            stderr,
-          }));
+          reject(
+            this.createError('system', 'Command failed', {
+              command: args.join(' '),
+              exitCode,
+              stderr,
+            })
+          );
         }
       });
 
       child.on('error', (error) => {
         clearTimeout(timeoutId);
-        reject(this.createError('system', 'Failed to execute command', { 
-          command: args.join(' '),
-          originalError: error.message 
-        }));
+        reject(
+          this.createError('system', 'Failed to execute command', {
+            command: args.join(' '),
+            originalError: error.message,
+          })
+        );
       });
     });
   }
 
-  private async detectLanguages(repositoryPath: string): Promise<CodeQLLanguage[]> {
+  private async detectLanguages(
+    repositoryPath: string
+  ): Promise<CodeQLLanguage[]> {
     const languages: Set<CodeQLLanguage> = new Set();
 
     try {
@@ -377,7 +400,7 @@ export class CodeQLBridge {
       const languagePatterns: Record<string, CodeQLLanguage> = {
         '**/*.ts': 'typescript',
         '**/*.tsx': 'typescript',
-        '**/*.js': 'javascript', 
+        '**/*.js': 'javascript',
         '**/*.jsx': 'javascript',
         '**/*.py': 'python',
         '**/*.java': 'java',
@@ -403,11 +426,10 @@ export class CodeQLBridge {
         }
       }
 
-      this.logger.debug('Detected languages', { 
+      this.logger.debug('Detected languages', {
         repositoryPath,
-        languages: Array.from(languages) 
+        languages: Array.from(languages),
       });
-
     } catch (error) {
       this.logger.warn('Error detecting languages', { repositoryPath, error });
     }
@@ -424,13 +446,15 @@ export class CodeQLBridge {
     }
   }
 
-  private extractQueryPackVersions(queryPacks: QueryPack[]): Record<string, string> {
+  private extractQueryPackVersions(
+    queryPacks: QueryPack[]
+  ): Record<string, string> {
     const versions: Record<string, string> = {};
-    
+
     for (const pack of queryPacks) {
-      versions[pack.name] = pack.version || 'latest';
+      versions[pack.name] = pack.version'' | '''' | '''latest';
     }
-    
+
     return versions;
   }
 
@@ -443,7 +467,7 @@ export class CodeQLBridge {
         ignore: ['**/node_modules/**', '**/dist/**', '**/build/**'],
         nodir: true,
       });
-      
+
       return files.length;
     } catch {
       return 0;
@@ -474,14 +498,18 @@ export class CodeQLBridge {
 /**
  * Create CodeQL bridge with configuration
  */
-export function createCodeQLBridge(config?: Partial<CodeQLConfig>): CodeQLBridge {
+export function createCodeQLBridge(
+  config?: Partial<CodeQLConfig>
+): CodeQLBridge {
   return new CodeQLBridge(config);
 }
 
 /**
  * Check if CodeQL is available on the system
  */
-export async function checkCodeQLAvailability(codeqlPath?: string): Promise<boolean> {
+export async function checkCodeQLAvailability(
+  codeqlPath?: string
+): Promise<boolean> {
   try {
     const bridge = new CodeQLBridge({ codeqlPath });
     const result = await bridge.checkAvailability();

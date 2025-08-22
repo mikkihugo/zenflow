@@ -1,21 +1,21 @@
 /**
  * @fileoverview Documentation Processor for FACT System
- * 
+ *
  * Converts raw API responses and documentation to clean, structured markdown
  * for optimal LLM consumption. Provides context7-quality documentation processing.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 1.0.0
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { 
-  NPMFactResult, 
-  GitHubFactResult, 
-  HexFactResult, 
+import type {
+  NPMFactResult,
+  GitHubFactResult,
+  HexFactResult,
   SecurityFactResult,
-  APIDocumentationFactResult 
+  APIDocumentationFactResult,
 } from '../types';
 
 const logger = getLogger('DocumentationProcessor');
@@ -44,13 +44,12 @@ export interface ProcessedDocumentation {
  * Documentation processor that converts various fact types to clean markdown
  */
 export class DocumentationProcessor {
-  
   /**
    * Process NPM package data into structured markdown
    */
   processNPMPackage(npmData: NPMFactResult): ProcessedDocumentation {
     const markdown = this.generateNPMMarkdown(npmData);
-    
+
     return {
       source: 'npm',
       markdown,
@@ -59,19 +58,21 @@ export class DocumentationProcessor {
         version: npmData.version,
         license: npmData.license,
         maintainers: npmData.maintainers,
-        keywords: npmData.keywords
+        keywords: npmData.keywords,
       },
       confidence: npmData.confidence,
-      metrics: this.calculateMetrics(JSON.stringify(npmData), markdown)
+      metrics: this.calculateMetrics(JSON.stringify(npmData), markdown),
     };
   }
 
   /**
    * Process GitHub repository data into structured markdown
    */
-  processGitHubRepository(githubData: GitHubFactResult): ProcessedDocumentation {
+  processGitHubRepository(
+    githubData: GitHubFactResult
+  ): ProcessedDocumentation {
     const markdown = this.generateGitHubMarkdown(githubData);
-    
+
     return {
       source: 'github',
       markdown,
@@ -80,10 +81,10 @@ export class DocumentationProcessor {
         language: githubData.language,
         stars: githubData.stars,
         license: githubData.license,
-        topics: githubData.topics
+        topics: githubData.topics,
       },
       confidence: githubData.confidence,
-      metrics: this.calculateMetrics(JSON.stringify(githubData), markdown)
+      metrics: this.calculateMetrics(JSON.stringify(githubData), markdown),
     };
   }
 
@@ -92,7 +93,7 @@ export class DocumentationProcessor {
    */
   processHexPackage(hexData: HexFactResult): ProcessedDocumentation {
     const markdown = this.generateHexMarkdown(hexData);
-    
+
     return {
       source: 'hex',
       markdown,
@@ -101,19 +102,21 @@ export class DocumentationProcessor {
         version: hexData.version,
         elixirVersion: hexData.elixirVersion,
         otpVersion: hexData.otpVersion,
-        owner: hexData.owner
+        owner: hexData.owner,
       },
       confidence: hexData.confidence,
-      metrics: this.calculateMetrics(JSON.stringify(hexData), markdown)
+      metrics: this.calculateMetrics(JSON.stringify(hexData), markdown),
     };
   }
 
   /**
    * Process security advisory into structured markdown
    */
-  processSecurityAdvisory(securityData: SecurityFactResult): ProcessedDocumentation {
+  processSecurityAdvisory(
+    securityData: SecurityFactResult
+  ): ProcessedDocumentation {
     const markdown = this.generateSecurityMarkdown(securityData);
-    
+
     return {
       source: 'security',
       markdown,
@@ -121,19 +124,21 @@ export class DocumentationProcessor {
         cveId: securityData.id,
         severity: securityData.severity,
         score: securityData.score,
-        affectedProducts: securityData.affectedProducts
+        affectedProducts: securityData.affectedProducts,
       },
       confidence: securityData.confidence,
-      metrics: this.calculateMetrics(JSON.stringify(securityData), markdown)
+      metrics: this.calculateMetrics(JSON.stringify(securityData), markdown),
     };
   }
 
   /**
    * Process API documentation into structured markdown
    */
-  processAPIDocumentation(apiData: APIDocumentationFactResult): ProcessedDocumentation {
+  processAPIDocumentation(
+    apiData: APIDocumentationFactResult
+  ): ProcessedDocumentation {
     const markdown = this.generateAPIMarkdown(apiData);
-    
+
     return {
       source: 'api-docs',
       markdown,
@@ -141,10 +146,10 @@ export class DocumentationProcessor {
         apiName: apiData.name,
         baseUrl: apiData.baseUrl,
         authentication: apiData.authentication,
-        endpointCount: apiData.endpoints?.length || 0
+        endpointCount: apiData.endpoints?.length || 0,
       },
       confidence: apiData.confidence,
-      metrics: this.calculateMetrics(JSON.stringify(apiData), markdown)
+      metrics: this.calculateMetrics(JSON.stringify(apiData), markdown),
     };
   }
 
@@ -162,13 +167,13 @@ export class DocumentationProcessor {
 - **Homepage**: ${data.homepage || 'Not specified'}
 
 ## Maintainers
-${data.maintainers.map(m => `- ${m}`).join('\n')}
+${data.maintainers.map((m) => `- ${m}`).join('\n')}
 
 ## Dependencies
-${data.dependencies.length > 0 ? data.dependencies.map(dep => `- ${dep}`).join('\n') : '*No dependencies*'}
+${data.dependencies.length > 0 ? data.dependencies.map((dep) => `- ${dep}`).join('\n') : '*No dependencies*'}
 
 ## Development Dependencies
-${data.devDependencies.length > 0 ? data.devDependencies.map(dep => `- ${dep}`).join('\n') : '*No development dependencies*'}
+${data.devDependencies.length > 0 ? data.devDependencies.map((dep) => `- ${dep}`).join('\n') : '*No development dependencies*'}
 
 ## Download Statistics
 - **Weekly**: ${data.downloads?.weekly?.toLocaleString() || 'N/A'}
@@ -176,13 +181,13 @@ ${data.devDependencies.length > 0 ? data.devDependencies.map(dep => `- ${dep}`).
 - **Yearly**: ${data.downloads?.yearly?.toLocaleString() || 'N/A'}
 
 ## Keywords
-${data.keywords.length > 0 ? data.keywords.map(k => `\`${k}\``).join(', ') : '*No keywords*'}
+${data.keywords.length > 0 ? data.keywords.map((k) => `\`${k}\``).join(', ') : '*No keywords*'}
 
 ## Published
 **Date**: ${new Date(data.publishedAt).toLocaleDateString()}
 
 ---
-*Source: ${data.source} | Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -221,15 +226,22 @@ ${languageBreakdown}
 - **Last Pushed**: ${new Date(data.pushedAt).toLocaleDateString()}
 
 ## Topics
-${data.topics.length > 0 ? data.topics.map(t => `\`${t}\``).join(', ') : '*No topics*'}
+${data.topics.length > 0 ? data.topics.map((t) => `\`${t}\``).join(', ') : '*No topics*'}
 
-${data.releases.length > 0 ? `## Recent Releases
-${data.releases.slice(0, 5).map(release => 
-  `- **${release.name}** (${release.tagName}) - ${new Date(release.publishedAt).toLocaleDateString()}${release.prerelease ? ' *[prerelease]*' : ''}`
-).join('\n')}` : ''}
+${
+  data.releases.length > 0
+    ? `## Recent Releases
+${data.releases
+  .slice(0, 5)
+  .map(
+    (release) =>
+      `- **${release.name}** (${release.tagName}) - ${new Date(release.publishedAt).toLocaleDateString()}${release.prerelease ? ' *[prerelease]*' : ''}`
+  )
+  .join('\n')}`
+    : ''}
 
 ---
-*Source: ${data.source} | Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -237,7 +249,10 @@ ${data.releases.slice(0, 5).map(release =>
    */
   private generateHexMarkdown(data: HexFactResult): string {
     const dependencyList = data.dependencies
-      .map(dep => `- **${dep.name}**: ${dep.requirement}${dep.optional ? ' *(optional)*' : ''}`)
+      .map(
+        (dep) =>
+          `- **${dep.name}**: ${dep.requirement}${dep.optional ?' *(optional)*' : ''}`
+      )
       .join('\n');
 
     return `# ${data.name}
@@ -255,7 +270,7 @@ ${data.releases.slice(0, 5).map(release =>
 - **OTP Version**: ${data.otpVersion || 'Not specified'}
 
 ## Maintainers
-${data.maintainers.map(m => `- ${m}`).join('\n')}
+${data.maintainers.map((m) => `- ${m}`).join('\n')}
 
 ## Dependencies
 ${data.dependencies.length > 0 ? dependencyList : '*No dependencies*'}
@@ -270,16 +285,19 @@ ${data.dependencies.length > 0 ? dependencyList : '*No dependencies*'}
 ${data.documentation ? `[View Documentation](${data.documentation})` : '*No documentation link available*'}
 
 ## Configuration
-${data.config ? Object.entries(data.config)
-  .map(([key, value]) => `- **${key}**: ${value}`)
-  .join('\n') : '*No configuration specified*'}
+${
+  data.config
+    ? Object.entries(data.config)
+        .map(([key, value]) => `- **${key}**: ${value}`)
+        .join('\n')
+    : '*No configuration specified*'}
 
 ## Timeline
 - **Published**: ${new Date(data.publishedAt).toLocaleDateString()}
 - **Last Updated**: ${new Date(data.updatedAt).toLocaleDateString()}
 
 ---
-*Source: ${data.source} | Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -301,16 +319,16 @@ ${data.config ? Object.entries(data.config)
 - **Last Modified**: ${new Date(data.lastModified).toLocaleDateString()}
 
 ## Affected Products
-${data.affectedProducts.map(product => `- ${product}`).join('\n')}
+${data.affectedProducts.map((product) => `- ${product}`).join('\n')}
 
 ## Mitigation
 ${data.mitigation || '*No mitigation advice available*'}
 
 ## References
-${data.references.map(ref => `- [${ref}](${ref})`).join('\n')}
+${data.references.map((ref) => `- [${ref}](${ref})`).join('\n')}
 
 ---
-*Source: ${data.source} | Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -318,7 +336,10 @@ ${data.references.map(ref => `- [${ref}](${ref})`).join('\n')}
    */
   private generateAPIMarkdown(data: APIDocumentationFactResult): string {
     const endpointsList = data.endpoints
-      .map(endpoint => `- **${endpoint.method} ${endpoint.path}**: ${endpoint.description}`)
+      .map(
+        (endpoint) =>
+          `- **${endpoint.method} ${endpoint.path}**: ${endpoint.description}`
+      )
       .join('\n');
 
     return `# ${data.name}
@@ -328,20 +349,31 @@ ${data.references.map(ref => `- [${ref}](${ref})`).join('\n')}
 - **Authentication**: ${data.authentication}
 - **Rate Limiting**: ${data.rateLimit || 'Not specified'}
 
-${data.endpoint ? `## Specific Endpoint
-**${data.endpoint}**` : ''}
+${
+  data.endpoint
+    ? `## Specific Endpoint
+**${data.endpoint}**`
+    : ''
+}
 
 ## Available Endpoints
 ${data.endpoints.length > 0 ? endpointsList : '*No endpoints documented*'}
 
-${data.documentation ? `## Documentation
-[View Full Documentation](${data.documentation})` : ''}
+${
+  data.documentation
+    ? `## Documentation
+[View Full Documentation](${data.documentation})`
+    : ''
+}
 
-${data.sdks && data.sdks.length > 0 ? `## Available SDKs
-${data.sdks.map(sdk => `- ${sdk}`).join('\n')}` : ''}
+${
+  data.sdks && data.sdks.length > 0
+    ? `## Available SDKs
+${data.sdks.map((sdk) => `- ${sdk}`).join('\n')}`
+    : ''}
 
 ---
-*Source: ${data.source} | Confidence: ${Math.round(data.confidence * 100)}%*`;
+*Source: ${data.source}' | 'Confidence: ${Math.round(data.confidence * 100)}%*`;
   }
 
   /**
@@ -350,11 +382,11 @@ ${data.sdks.map(sdk => `- ${sdk}`).join('\n')}` : ''}
   private calculateMetrics(original: string, processed: string) {
     const originalLength = original.length;
     const processedLength = processed.length;
-    
+
     return {
       originalLength,
       processedLength,
-      compressionRatio: processedLength / originalLength
+      compressionRatio: processedLength / originalLength,
     };
   }
 
@@ -365,7 +397,7 @@ ${data.sdks.map(sdk => `- ${sdk}`).join('\n')}` : ''}
     // Basic HTML to Markdown conversion
     // In production, this would use a proper HTML-to-markdown library
     return html
-      .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '# $1\n')
+      .replace(/<h1[^>]*>(.*?)<\/h1>/gi,'# $1\n')
       .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '## $1\n')
       .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '### $1\n')
       .replace(/<h4[^>]*>(.*?)<\/h4>/gi, '#### $1\n')
@@ -377,7 +409,14 @@ ${data.sdks.map(sdk => `- ${sdk}`).join('\n')}` : ''}
       .replace(/<a[^>]*href="([^"]*)"[^>]*>(.*?)<\/a>/gi, '[$2]($1)')
       .replace(/<ul[^>]*>(.*?)<\/ul>/gs, (match, content) => {
         const items = content.match(/<li[^>]*>(.*?)<\/li>/gi);
-        return items ? items.map((item: string) => `- ${item.replace(/<li[^>]*>(.*?)<\/li>/gi, '$1')}`).join('\n') + '\n' : '';
+        return items
+          ? items
+              .map(
+                (item: string) =>
+                  `- ${item.replace(/<li[^>]*>(.*?)<\/li>/gi, '$1')}`
+              )
+              .join('\n') + '\n'
+          : '';
       })
       .replace(/<[^>]*>/g, '') // Remove remaining HTML tags
       .replace(/\n\s*\n\s*\n/g, '\n\n') // Clean up excessive newlines
@@ -391,21 +430,21 @@ ${data.sdks.map(sdk => `- ${sdk}`).join('\n')}` : ''}
     if (typeof rawContent === 'string') {
       return this.convertHTMLToMarkdown(rawContent);
     }
-    
+
     if (typeof rawContent === 'object') {
       // Extract readable content from structured data
       const textFields = ['description', 'content', 'body', 'text', 'summary'];
-      
+
       for (const field of textFields) {
         if (rawContent[field] && typeof rawContent[field] === 'string') {
           return this.convertHTMLToMarkdown(rawContent[field]);
         }
       }
-      
+
       // Fallback to JSON stringification with formatting
       return JSON.stringify(rawContent, null, 2);
     }
-    
+
     return String(rawContent);
   }
 }

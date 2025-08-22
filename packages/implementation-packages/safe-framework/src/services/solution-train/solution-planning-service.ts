@@ -1,12 +1,12 @@
 /**
  * @fileoverview Solution Planning Service
- * 
+ *
  * Service for solution-level planning and coordination activities.
  * Handles solution backlog management, PI planning coordination, and cross-ART synchronization.
- * 
+ *
  * SINGLE RESPONSIBILITY: Solution-level planning and coordination
  * FOCUSES ON: Solution backlog, PI planning, cross-train coordination
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,15 +15,15 @@
 import { format, addWeeks, addDays, startOfWeek } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
   maxBy,
-  minBy
+  minBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -59,7 +59,7 @@ export enum CommitmentLevel {
   HIGH = 'high',
   MEDIUM = 'medium',
   LOW = 'low',
-  CONDITIONAL = 'conditional'
+  CONDITIONAL = 'conditional',
 }
 
 /**
@@ -82,7 +82,7 @@ export enum ConstraintType {
   REGULATORY = 'regulatory',
   BUDGET = 'budget',
   TIMELINE = 'timeline',
-  DEPENDENCY = 'dependency'
+  DEPENDENCY = 'dependency',
 }
 
 /**
@@ -92,7 +92,7 @@ export enum ImpactLevel {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -102,14 +102,14 @@ export interface PlanningHorizon {
   readonly currentPI: number;
   readonly planningWindow: number; // number of PIs to plan
   readonly lookaheadPeriod: number; // number of PIs for lookahead
-  readonly planningCadence: 'quarterly' | 'continuous';
+  readonly planningCadence: 'quarterly'' | ''continuous';
 }
 
 /**
  * Coordination strategy
  */
 export interface CoordinationStrategy {
-  readonly approach: 'centralized' | 'federated' | 'hybrid';
+  readonly approach: 'centralized'' | ''federated'' | ''hybrid';
   readonly coordinationEvents: CoordinationEvent[];
   readonly communicationProtocols: CommunicationProtocol[];
   readonly decisionMaking: DecisionMakingProcess;
@@ -135,7 +135,7 @@ export enum EventType {
   SOLUTION_SYNC = 'solution_sync',
   ARCHITECTURAL_RUNWAY = 'architectural_runway',
   SUPPLIER_SYNC = 'supplier_sync',
-  SOLUTION_DEMO = 'solution_demo'
+  SOLUTION_DEMO = 'solution_demo',
 }
 
 /**
@@ -146,7 +146,7 @@ export enum EventFrequency {
   WEEKLY = 'weekly',
   BI_WEEKLY = 'bi_weekly',
   PI_BOUNDARY = 'pi_boundary',
-  ON_DEMAND = 'on_demand'
+  ON_DEMAND = 'on_demand',
 }
 
 /**
@@ -169,7 +169,7 @@ export enum ParticipantRole {
   RTE = 'rte',
   PRODUCT_MANAGER = 'product_manager',
   SYSTEM_ARCHITECT = 'system_architect',
-  STAKEHOLDER = 'stakeholder'
+  STAKEHOLDER = 'stakeholder',
 }
 
 /**
@@ -198,17 +198,17 @@ export interface CommunicationProtocol {
  * Communication channel
  */
 export interface CommunicationChannel {
-  readonly channelType: 'email' | 'slack' | 'dashboard' | 'meeting' | 'wiki';
+  readonly channelType: 'email'' | ''slack'' | ''dashboard'' | ''meeting'' | ''wiki';
   readonly address: string;
   readonly purpose: string;
-  readonly urgency: 'high' | 'medium' | 'low';
+  readonly urgency: 'high'' | ''medium'' | ''low';
 }
 
 /**
  * Decision making process
  */
 export interface DecisionMakingProcess {
-  readonly framework: 'consensus' | 'consultation' | 'delegation' | 'autocratic';
+  readonly framework:' | ''consensus'' | ''consultation'' | ''delegation'' | ''autocratic';
   readonly escalationPath: EscalationLevel[];
   readonly timeboxes: Record<string, number>; // minutes
   readonly votingMechanism?: VotingMechanism;
@@ -228,7 +228,7 @@ export interface EscalationLevel {
  * Voting mechanism
  */
 export interface VotingMechanism {
-  readonly type: 'majority' | 'consensus' | 'weighted' | 'veto';
+  readonly type: 'majority'' | ''consensus'' | ''weighted'' | ''veto';
   readonly threshold: number; // percentage or count
   readonly anonymity: boolean;
 }
@@ -254,7 +254,7 @@ export enum StakeholderRole {
   CUSTOMER = 'customer',
   COMPLIANCE_OFFICER = 'compliance_officer',
   SECURITY_LEAD = 'security_lead',
-  OPERATIONS_LEAD = 'operations_lead'
+  OPERATIONS_LEAD = 'operations_lead',
 }
 
 /**
@@ -263,13 +263,13 @@ export enum StakeholderRole {
 export enum InfluenceLevel {
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 export enum InterestLevel {
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -277,8 +277,8 @@ export enum InterestLevel {
  */
 export interface CommunicationPreference {
   readonly channel: CommunicationChannel['channelType'];
-  readonly frequency: 'real_time' | 'daily' | 'weekly' | 'on_demand';
-  readonly detail: 'summary' | 'detailed' | 'executive';
+  readonly frequency: 'real_time'' | ''daily'' | ''weekly'' | ''on_demand';
+  readonly detail: 'summary'' | ''detailed'' | ''executive';
 }
 
 /**
@@ -304,7 +304,7 @@ export enum PlanningType {
   PI_PLANNING = 'pi_planning',
   SOLUTION_PLANNING = 'solution_planning',
   ARCHITECTURAL_PLANNING = 'architectural_planning',
-  CAPACITY_PLANNING = 'capacity_planning'
+  CAPACITY_PLANNING = 'capacity_planning',
 }
 
 /**
@@ -327,7 +327,7 @@ export enum OutcomeCategory {
   DEPENDENCY_RESOLUTION = 'dependency_resolution',
   RISK_MITIGATION = 'risk_mitigation',
   ARCHITECTURAL_DECISION = 'architectural_decision',
-  RESOURCE_ALLOCATION = 'resource_allocation'
+  RESOURCE_ALLOCATION = 'resource_allocation',
 }
 
 /**
@@ -350,7 +350,7 @@ export interface SolutionCommitment {
 export enum ConfidenceLevel {
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -375,7 +375,7 @@ export enum RiskCategory {
   RESOURCE = 'resource',
   SCHEDULE = 'schedule',
   INTEGRATION = 'integration',
-  EXTERNAL = 'external'
+  EXTERNAL = 'external',
 }
 
 /**
@@ -384,13 +384,13 @@ export enum RiskCategory {
 export enum RiskProbability {
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 export enum RiskImpact {
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -401,7 +401,7 @@ export enum RiskStatus {
   MITIGATING = 'mitigating',
   MITIGATED = 'mitigated',
   ACCEPTED = 'accepted',
-  CLOSED = 'closed'
+  CLOSED = 'closed',
 }
 
 /**
@@ -427,7 +427,7 @@ export enum DependencyType {
   DATA = 'data',
   SERVICE = 'service',
   INFRASTRUCTURE = 'infrastructure',
-  KNOWLEDGE = 'knowledge'
+  KNOWLEDGE = 'knowledge',
 }
 
 export enum DependencyStatus {
@@ -435,7 +435,7 @@ export enum DependencyStatus {
   IN_PROGRESS = 'in_progress',
   DELIVERED = 'delivered',
   BLOCKED = 'blocked',
-  AT_RISK = 'at_risk'
+  AT_RISK = 'at_risk',
 }
 
 /**
@@ -446,7 +446,7 @@ export interface NextStep {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high' | 'medium' | 'low';
+  readonly priority: 'high'' | ''medium'' | ''low';
   readonly dependencies: string[];
 }
 
@@ -471,7 +471,7 @@ export class SolutionPlanningService {
     this.logger.info('Configuring solution planning', {
       planningId: config.planningId,
       solutionId: config.solutionId,
-      artCount: config.participatingARTs.length
+      artCount: config.participatingARTs.length,
     });
 
     // Validate configuration
@@ -484,7 +484,7 @@ export class SolutionPlanningService {
     await this.initializeStakeholderCommunication(config.stakeholders);
 
     this.logger.info('Solution planning configured successfully', {
-      planningId: config.planningId
+      planningId: config.planningId,
     });
   }
 
@@ -503,7 +503,7 @@ export class SolutionPlanningService {
     this.logger.info('Executing solution planning', {
       planningId,
       planningType,
-      artCount: config.participatingARTs.length
+      artCount: config.participatingARTs.length,
     });
 
     const startTime = Date.now();
@@ -511,31 +511,42 @@ export class SolutionPlanningService {
 
     try {
       // Execute planning activities
-      const planningOutcomes = await this.executePlanningActivities(config, planningType);
+      const planningOutcomes = await this.executePlanningActivities(
+        config,
+        planningType
+      );
 
       // Collect commitments
-      const commitments = await this.collectCommitments(config.participatingARTs);
+      const commitments = await this.collectCommitments(
+        config.participatingARTs
+      );
 
       // Identify risks
       const risks = await this.identifyPlanningRisks(config, commitments);
 
       // Manage dependencies
-      const dependencies = await this.manageCrossARTDependencies(config.participatingARTs);
+      const dependencies = await this.manageCrossARTDependencies(
+        config.participatingARTs
+      );
 
       // Generate next steps
-      const nextSteps = await this.generateNextSteps(commitments, risks, dependencies);
+      const nextSteps = await this.generateNextSteps(
+        commitments,
+        risks,
+        dependencies
+      );
 
       const result: SolutionPlanningResult = {
         planningId: resultId,
         timestamp: new Date(),
         planningType,
-        participatingARTs: config.participatingARTs.map(art => art.artId),
+        participatingARTs: config.participatingARTs.map((art) => art.artId),
         planningOutcomes,
         commitments,
         risks,
         dependencies,
-        success: planningOutcomes.every(outcome => outcome.success),
-        nextSteps
+        success: planningOutcomes.every((outcome) => outcome.success),
+        nextSteps,
       };
 
       this.planningResults.set(resultId, result);
@@ -554,15 +565,14 @@ export class SolutionPlanningService {
         duration: Date.now() - startTime,
         success: result.success,
         commitmentCount: commitments.length,
-        riskCount: risks.length
+        riskCount: risks.length,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Solution planning failed', {
         planningId,
-        error
+        error,
       });
       throw error;
     }
@@ -587,14 +597,18 @@ export class SolutionPlanningService {
       onTrack,
       lastUpdate: new Date(),
       blockers: onTrack ? [] : ['Resource constraints', 'Technical challenges'],
-      nextMilestone: addWeeks(new Date(), 2)
+      nextMilestone: addWeeks(new Date(), 2),
     };
   }
 
   /**
    * Update risk status
    */
-  async updateRisk(riskId: string, status: RiskStatus, notes?: string): Promise<PlanningRisk> {
+  async updateRisk(
+    riskId: string,
+    status: RiskStatus,
+    notes?: string
+  ): Promise<PlanningRisk> {
     const risk = this.risks.get(riskId);
     if (!risk) {
       throw new Error(`Risk not found: ${riskId}`);
@@ -602,7 +616,7 @@ export class SolutionPlanningService {
 
     const updatedRisk: PlanningRisk = {
       ...risk,
-      status
+      status,
     };
 
     this.risks.set(riskId, updatedRisk);
@@ -611,7 +625,7 @@ export class SolutionPlanningService {
       riskId,
       oldStatus: risk.status,
       newStatus: status,
-      notes
+      notes,
     });
 
     return updatedRisk;
@@ -621,18 +635,22 @@ export class SolutionPlanningService {
    * Private helper methods
    */
   private validatePlanningConfig(config: SolutionPlanningConfig): void {
-    if (!config.planningId || config.planningId.trim() === '') {
+    if (!config.planningId || config.planningId.trim() ==='') {
       throw new Error('Planning ID is required');
     }
 
     if (config.participatingARTs.length < 2) {
-      throw new Error('At least two ARTs must participate in solution planning');
+      throw new Error(
+        'At least two ARTs must participate in solution planning'
+      );
     }
   }
 
-  private async initializeStakeholderCommunication(stakeholders: SolutionStakeholder[]): Promise<void> {
+  private async initializeStakeholderCommunication(
+    stakeholders: SolutionStakeholder[]
+  ): Promise<void> {
     this.logger.info('Initializing stakeholder communication', {
-      stakeholderCount: stakeholders.length
+      stakeholderCount: stakeholders.length,
     });
     // Implementation would set up communication channels
   }
@@ -652,7 +670,7 @@ export class SolutionPlanningService {
           description: `${event.eventType} completed successfully`,
           deliverables: [`${event.eventType} artifacts`, 'Meeting notes'],
           success: Math.random() > 0.2, // 80% success rate
-          participants: event.participants.map(p => p.participantId)
+          participants: event.participants.map((p) => p.participantId),
         });
       }
     }
@@ -660,21 +678,27 @@ export class SolutionPlanningService {
     return outcomes;
   }
 
-  private isEventRelevant(event: CoordinationEvent, planningType: PlanningType): boolean {
+  private isEventRelevant(
+    event: CoordinationEvent,
+    planningType: PlanningType
+  ): boolean {
     if (planningType === PlanningType.PI_PLANNING) {
-      return event.eventType === EventType.PI_PLANNING || 
-             event.eventType === EventType.SOLUTION_SYNC;
+      return (
+        event.eventType === EventType.PI_PLANNING || event.eventType === EventType.SOLUTION_SYNC
+      );
     }
     return true;
   }
 
-  private async collectCommitments(arts: PlanningART[]): Promise<SolutionCommitment[]> {
+  private async collectCommitments(
+    arts: PlanningART[]
+  ): Promise<SolutionCommitment[]> {
     const commitments: SolutionCommitment[] = [];
 
     for (const art of arts) {
       // Generate sample commitments for each ART
       const commitmentCount = Math.floor(Math.random() * 3) + 2; // 2-4 commitments per ART
-      
+
       for (let i = 0; i < commitmentCount; i++) {
         commitments.push({
           commitmentId: `commit-${nanoid(8)}`,
@@ -684,7 +708,10 @@ export class SolutionPlanningService {
           confidence: this.getRandomConfidence(),
           dependencies: [],
           risks: [],
-          deliveryDate: addWeeks(new Date(), Math.floor(Math.random() * 12) + 4)
+          deliveryDate: addWeeks(
+            new Date(),
+            Math.floor(Math.random() * 12) + 4
+          ),
         });
       }
     }
@@ -699,17 +726,21 @@ export class SolutionPlanningService {
     const risks: PlanningRisk[] = [];
 
     // Identify resource risks
-    const highCommitmentARTs = filter(config.participatingARTs, art => art.commitmentLevel === CommitmentLevel.HIGH);
+    const highCommitmentARTs = filter(
+      config.participatingARTs,
+      (art) => art.commitmentLevel === CommitmentLevel.HIGH
+    );
     if (highCommitmentARTs.length > config.participatingARTs.length * 0.7) {
       risks.push({
         riskId: `risk-${nanoid(8)}`,
         category: RiskCategory.RESOURCE,
-        description: 'High commitment levels across ARTs may lead to resource constraints',
+        description:'High commitment levels across ARTs may lead to resource constraints',
         probability: RiskProbability.MEDIUM,
         impact: RiskImpact.HIGH,
-        mitigation: 'Monitor capacity utilization and adjust commitments as needed',
+        mitigation:
+          'Monitor capacity utilization and adjust commitments as needed',
         owner: 'Solution Train Engineer',
-        status: RiskStatus.OPEN
+        status: RiskStatus.OPEN,
       });
     }
 
@@ -718,25 +749,29 @@ export class SolutionPlanningService {
       risks.push({
         riskId: `risk-${nanoid(8)}`,
         category: RiskCategory.INTEGRATION,
-        description: 'High number of commitments increases integration complexity',
+        description:
+          'High number of commitments increases integration complexity',
         probability: RiskProbability.HIGH,
         impact: RiskImpact.MEDIUM,
         mitigation: 'Implement continuous integration practices',
         owner: 'Solution Architect',
-        status: RiskStatus.OPEN
+        status: RiskStatus.OPEN,
       });
     }
 
     return risks;
   }
 
-  private async manageCrossARTDependencies(arts: PlanningART[]): Promise<CrossARTDependency[]> {
+  private async manageCrossARTDependencies(
+    arts: PlanningART[]
+  ): Promise<CrossARTDependency[]> {
     const dependencies: CrossARTDependency[] = [];
 
     // Generate cross-ART dependencies based on ART domains
     for (let i = 0; i < arts.length; i++) {
       for (let j = i + 1; j < arts.length; j++) {
-        if (Math.random() > 0.7) { // 30% chance of dependency
+        if (Math.random() > 0.7) {
+          // 30% chance of dependency
           dependencies.push({
             dependencyId: `dep-${nanoid(8)}`,
             fromART: arts[i].artId,
@@ -744,8 +779,11 @@ export class SolutionPlanningService {
             description: `Integration dependency between ${arts[i].domain} and ${arts[j].domain}`,
             type: DependencyType.SERVICE,
             status: DependencyStatus.PLANNED,
-            plannedDate: addWeeks(new Date(), Math.floor(Math.random() * 8) + 2),
-            impact: ImpactLevel.MEDIUM
+            plannedDate: addWeeks(
+              new Date(),
+              Math.floor(Math.random() * 8) + 2
+            ),
+            impact: ImpactLevel.MEDIUM,
           });
         }
       }
@@ -763,20 +801,25 @@ export class SolutionPlanningService {
 
     // Generate steps for high-risk items
     for (const risk of risks) {
-      if (risk.impact === RiskImpact.HIGH || risk.probability === RiskProbability.HIGH) {
+      if (
+        risk.impact === RiskImpact.HIGH || risk.probability === RiskProbability.HIGH
+      ) {
         nextSteps.push({
           stepId: `step-${nanoid(8)}`,
           description: `Address high-priority risk: ${risk.description}`,
           owner: risk.owner,
           dueDate: addDays(new Date(), 7),
-          priority: 'high',
-          dependencies: []
+          priority:'high',
+          dependencies: [],
         });
       }
     }
 
     // Generate steps for critical dependencies
-    const criticalDeps = filter(dependencies, dep => dep.impact === ImpactLevel.HIGH);
+    const criticalDeps = filter(
+      dependencies,
+      (dep) => dep.impact === ImpactLevel.HIGH
+    );
     for (const dep of criticalDeps) {
       nextSteps.push({
         stepId: `step-${nanoid(8)}`,
@@ -784,7 +827,7 @@ export class SolutionPlanningService {
         owner: 'Solution Train Engineer',
         dueDate: addDays(new Date(), 3),
         priority: 'high',
-        dependencies: [dep.dependencyId]
+        dependencies: [dep.dependencyId],
       });
     }
 
@@ -792,7 +835,11 @@ export class SolutionPlanningService {
   }
 
   private getRandomConfidence(): ConfidenceLevel {
-    const confidences = [ConfidenceLevel.HIGH, ConfidenceLevel.MEDIUM, ConfidenceLevel.LOW];
+    const confidences = [
+      ConfidenceLevel.HIGH,
+      ConfidenceLevel.MEDIUM,
+      ConfidenceLevel.LOW,
+    ];
     return confidences[Math.floor(Math.random() * confidences.length)];
   }
 
@@ -812,15 +859,18 @@ export class SolutionPlanningService {
   }
 
   getAllCommitments(): SolutionCommitment[] {
-    return Array.from(this.commitments.values());
+    return Array.from(this.commitments.values())();
   }
 
   getAllRisks(): PlanningRisk[] {
-    return Array.from(this.risks.values());
+    return Array.from(this.risks.values())();
   }
 
   getOpenRisks(): PlanningRisk[] {
-    return filter(Array.from(this.risks.values()), risk => risk.status === RiskStatus.OPEN);
+    return filter(
+      Array.from(this.risks.values()),
+      (risk) => risk.status === RiskStatus.OPEN
+    );
   }
 }
 

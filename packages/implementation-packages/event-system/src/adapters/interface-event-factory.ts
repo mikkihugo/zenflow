@@ -57,10 +57,7 @@
  * @since 1.0.0
  */
 
-import type {
-  Config,
-  Logger,
-} from '@claude-zen/foundation';
+import type { Config, Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
@@ -309,12 +306,7 @@ class InterfaceEventManagerImpl
 
     // Set up event type routing
     this.subscribe(
-      [
-        'interface:cli',
-        'interface:web',
-        'interface:api',
-        'interface:tui',
-      ],
+      ['interface:cli', 'interface:web', 'interface:api', 'interface:tui'],
       (event: SystemEvent) => this.handleInterfaceEvent(event as InterfaceEvent)
     );
   }
@@ -335,7 +327,10 @@ class InterfaceEventManagerImpl
           await this.notifyInterfaceSubscribers(this.subscriptions.api, event);
           break;
         case 'tui':
-          await this.notifyInterfaceSubscribers(this.subscriptions.websocket, event);
+          await this.notifyInterfaceSubscribers(
+            this.subscriptions.websocket,
+            event
+          );
           break;
         default:
           this.logger.warn(`Unknown interface type: ${event.interface}`);
@@ -420,7 +415,7 @@ class InterfaceEventManagerImpl
    */
   async handleUIInteraction(element: string, action: string): Promise<void> {
     this.logger.debug(`Handling UI interaction: ${element} - ${action}`);
-    
+
     try {
       // Emit UI interaction event
       await this.emitInterfaceEvent({
@@ -437,10 +432,15 @@ class InterfaceEventManagerImpl
           interactionStart: new Date(),
         },
       });
-      
-      this.logger.info(`UI interaction handled successfully: ${element} - ${action}`);
+
+      this.logger.info(
+        `UI interaction handled successfully: ${element} - ${action}`
+      );
     } catch (error) {
-      this.logger.error(`Failed to handle UI interaction ${element} - ${action}:`, error);
+      this.logger.error(
+        `Failed to handle UI interaction ${element} - ${action}:`,
+        error
+      );
       throw error;
     }
   }
@@ -451,7 +451,7 @@ class InterfaceEventManagerImpl
    */
   async updateInterface(componentId: string, state: unknown): Promise<void> {
     this.logger.debug(`Updating interface component: ${componentId}`);
-    
+
     try {
       // Emit interface update event
       await this.emitInterfaceEvent({
@@ -467,10 +467,15 @@ class InterfaceEventManagerImpl
           updateStart: new Date(),
         },
       });
-      
-      this.logger.info(`Interface component updated successfully: ${componentId}`);
+
+      this.logger.info(
+        `Interface component updated successfully: ${componentId}`
+      );
     } catch (error) {
-      this.logger.error(`Failed to update interface component ${componentId}:`, error);
+      this.logger.error(
+        `Failed to update interface component ${componentId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -481,7 +486,7 @@ class InterfaceEventManagerImpl
    */
   async refreshComponent(componentId: string): Promise<void> {
     this.logger.debug(`Refreshing interface component: ${componentId}`);
-    
+
     try {
       // Emit component refresh event
       await this.emitInterfaceEvent({
@@ -497,10 +502,15 @@ class InterfaceEventManagerImpl
           refreshStart: new Date(),
         },
       });
-      
-      this.logger.info(`Interface component refreshed successfully: ${componentId}`);
+
+      this.logger.info(
+        `Interface component refreshed successfully: ${componentId}`
+      );
     } catch (error) {
-      this.logger.error(`Failed to refresh interface component ${componentId}:`, error);
+      this.logger.error(
+        `Failed to refresh interface component ${componentId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -591,34 +601,40 @@ export class InterfaceEventManagerFactory
    */
   async createMultiple(configs: EventManagerConfig[]): Promise<EventManager[]> {
     this.logger.info(`Creating ${configs.length} interface event managers`);
-    
+
     const results = await Promise.allSettled(
-      configs.map(config => this.create(config))
+      configs.map((config) => this.create(config))
     );
-    
+
     const managers: EventManager[] = [];
     const errors: Error[] = [];
-    
+
     results.forEach((result, index) => {
       if (result.status === 'fulfilled') {
         managers.push(result.value);
       } else {
-        errors.push(new Error(`Failed to create manager ${configs[index]?.name}: ${result.reason}`));
+        errors.push(
+          new Error(
+            `Failed to create manager ${configs[index]?.name}: ${result.reason}`
+          )
+        );
       }
     });
-    
+
     if (errors.length > 0) {
       this.logger.error(`${errors.length} managers failed to create:`, errors);
-      throw new Error(`Failed to create ${errors.length} out of ${configs.length} managers`);
+      throw new Error(
+        `Failed to create ${errors.length} out of ${configs.length} managers`
+      );
     }
-    
+
     return managers;
   }
 
   /**
    * Get an event manager by name.
    */
-  get(name: string): EventManager | undefined {
+  get(name: string): EventManager'' | ''undefined {
     return this.managers.get(name);
   }
 
@@ -626,7 +642,7 @@ export class InterfaceEventManagerFactory
    * List all event managers managed by this factory.
    */
   list(): EventManager[] {
-    return Array.from(this.managers.values());
+    return Array.from(this.managers.values())();
   }
 
   /**
@@ -644,14 +660,17 @@ export class InterfaceEventManagerFactory
     if (!manager) {
       return false;
     }
-    
+
     try {
       await manager.destroy();
       this.managers.delete(name);
       this.logger.info(`Interface event manager removed: ${name}`);
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove interface event manager ${name}:`, error);
+      this.logger.error(
+        `Failed to remove interface event manager ${name}:`,
+        error
+      );
       throw error;
     }
   }
@@ -661,27 +680,29 @@ export class InterfaceEventManagerFactory
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
-    
-    const healthChecks = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        const status = await manager.healthCheck();
-        results.set(name, status);
-      } catch (error) {
-        this.logger.error(`Health check failed for manager ${name}:`, error);
-        results.set(name, {
-          name,
-          type: 'interface',
-          status: 'unhealthy',
-          lastCheck: new Date(),
-          subscriptions: 0,
-          queueSize: 0,
-          errorRate: 1,
-          uptime: 0,
-          metadata: { error: String(error) }
-        });
+
+    const healthChecks = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const status = await manager.healthCheck();
+          results.set(name, status);
+        } catch (error) {
+          this.logger.error(`Health check failed for manager ${name}:`, error);
+          results.set(name, {
+            name,
+            type:'interface',
+            status: 'unhealthy',
+            lastCheck: new Date(),
+            subscriptions: 0,
+            queueSize: 0,
+            errorRate: 1,
+            uptime: 0,
+            metadata: { error: String(error) },
+          });
+        }
       }
-    });
-    
+    );
+
     await Promise.allSettled(healthChecks);
     return results;
   }
@@ -691,16 +712,21 @@ export class InterfaceEventManagerFactory
    */
   async getMetricsAll(): Promise<Map<string, EventManagerMetrics>> {
     const results = new Map<string, EventManagerMetrics>();
-    
-    const metricRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        const metrics = await manager.getMetrics();
-        results.set(name, metrics);
-      } catch (error) {
-        this.logger.error(`Failed to get metrics for manager ${name}:`, error);
+
+    const metricRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const metrics = await manager.getMetrics();
+          results.set(name, metrics);
+        } catch (error) {
+          this.logger.error(
+            `Failed to get metrics for manager ${name}:`,
+            error
+          );
+        }
       }
-    });
-    
+    );
+
     await Promise.allSettled(metricRequests);
     return results;
   }
@@ -709,21 +735,25 @@ export class InterfaceEventManagerFactory
    * Start all managed event managers.
    */
   async startAll(): Promise<void> {
-    const startRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        await manager.start();
-        this.logger.debug(`Started interface event manager: ${name}`);
-      } catch (error) {
-        this.logger.error(`Failed to start manager ${name}:`, error);
-        throw error;
+    const startRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          await manager.start();
+          this.logger.debug(`Started interface event manager: ${name}`);
+        } catch (error) {
+          this.logger.error(`Failed to start manager ${name}:`, error);
+          throw error;
+        }
       }
-    });
-    
+    );
+
     const results = await Promise.allSettled(startRequests);
-    const failures = results.filter(result => result.status === 'rejected');
-    
+    const failures = results.filter((result) => result.status === 'rejected');
+
     if (failures.length > 0) {
-      throw new Error(`Failed to start ${failures.length} out of ${results.length} managers`);
+      throw new Error(
+        `Failed to start ${failures.length} out of ${results.length} managers`
+      );
     }
   }
 
@@ -731,21 +761,25 @@ export class InterfaceEventManagerFactory
    * Stop all managed event managers.
    */
   async stopAll(): Promise<void> {
-    const stopRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        await manager.stop();
-        this.logger.debug(`Stopped interface event manager: ${name}`);
-      } catch (error) {
-        this.logger.error(`Failed to stop manager ${name}:`, error);
-        throw error;
+    const stopRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          await manager.stop();
+          this.logger.debug(`Stopped interface event manager: ${name}`);
+        } catch (error) {
+          this.logger.error(`Failed to stop manager ${name}:`, error);
+          throw error;
+        }
       }
-    });
-    
+    );
+
     const results = await Promise.allSettled(stopRequests);
-    const failures = results.filter(result => result.status === 'rejected');
-    
+    const failures = results.filter((result) => result.status === 'rejected');
+
     if (failures.length > 0) {
-      throw new Error(`Failed to stop ${failures.length} out of ${results.length} managers`);
+      throw new Error(
+        `Failed to stop ${failures.length} out of ${results.length} managers`
+      );
     }
   }
 
@@ -754,22 +788,24 @@ export class InterfaceEventManagerFactory
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down interface event manager factory');
-    
+
     try {
       await this.stopAll();
-      
+
       // Destroy all managers
-      const destroyRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-        try {
-          await manager.destroy();
-        } catch (error) {
-          this.logger.error(`Failed to destroy manager ${name}:`, error);
+      const destroyRequests = Array.from(this.managers.entries()).map(
+        async ([name, manager]) => {
+          try {
+            await manager.destroy();
+          } catch (error) {
+            this.logger.error(`Failed to destroy manager ${name}:`, error);
+          }
         }
-      });
-      
+      );
+
       await Promise.allSettled(destroyRequests);
       this.managers.clear();
-      
+
       this.logger.info('Interface event manager factory shutdown complete');
     } catch (error) {
       this.logger.error('Error during factory shutdown:', error);
@@ -793,9 +829,10 @@ export class InterfaceEventManagerFactory
     errorCount: number;
     uptime: number;
   } {
-    const runningManagers = Array.from(this.managers.values())
-      .filter(manager => manager.isRunning()).length;
-    
+    const runningManagers = Array.from(this.managers.values()).filter(
+      (manager) => manager.isRunning()
+    ).length;
+
     return {
       totalManagers: this.managers.size,
       runningManagers,
@@ -821,8 +858,7 @@ export class InterfaceEventManagerFactory
     // Validate interface-specific settings
     if (config.maxListeners && config.maxListeners < 100) {
       this.logger.warn(
-        'Interface managers should support at least 100 listeners for UI responsiveness'
-      );
+        'Interface managers should support at least 100 listeners for UI responsiveness');
     }
 
     // Note: timeout validation would go here if timeout property existed
@@ -836,12 +872,12 @@ export class InterfaceEventManagerFactory
   ): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners || 500,
+      maxListeners: config.maxListeners'' | '''' | ''500,
       processing: {
         batchSize: 10,
         queueSize: 1000,
         ...config.processing,
-        strategy: config.processing?.strategy || 'immediate', // UI needs immediate processing
+        strategy: config.processing?.strategy'' | '''' | '''immediate', // UI needs immediate processing
       },
       monitoring: {
         enabled: true,

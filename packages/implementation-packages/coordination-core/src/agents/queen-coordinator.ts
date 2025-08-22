@@ -1,16 +1,16 @@
 /**
  * @fileoverview Queen Coordinator
- * 
+ *
  * Strategic multi-swarm coordination agent.
  */
 
 import { getLogger } from '@claude-zen/foundation';
 import { CoordinationEventBus } from '../events/coordination-event-bus';
-import type { 
-  CoordinationAgent, 
-  StrategicObjective, 
-  CoordinationDecision, 
-  CoordinationConfig 
+import type {
+  CoordinationAgent,
+  StrategicObjective,
+  CoordinationDecision,
+  CoordinationConfig,
 } from '../types';
 
 const logger = getLogger('queen-coordinator');
@@ -43,10 +43,10 @@ export class QueenCoordinator implements CoordinationAgent {
     this.capabilities = [
       'multi-swarm-coordination',
       'resource-allocation',
-      'strategic-planning'
+      'strategic-planning',
     ];
     this.eventBus = CoordinationEventBus.getInstance();
-    
+
     // Subscribe to relevant events
     this.setupEventHandlers();
   }
@@ -58,14 +58,18 @@ export class QueenCoordinator implements CoordinationAgent {
     // Listen for commander events
     this.eventBus.on('commander:initialized', async (event: any) => {
       if (event.commanderId && this.commanders.has(event.commanderId)) {
-        logger.info(`Queen ${this.id} received commander initialization: ${event.commanderId}`);
+        logger.info(
+          `Queen ${this.id} received commander initialization: ${event.commanderId}`
+        );
       }
     });
 
     // Listen for operation completion events
     this.eventBus.on('operation:completed', async (event: any) => {
       if (event.operationId) {
-        logger.info(`Queen ${this.id} notified of operation completion: ${event.operationId}`);
+        logger.info(
+          `Queen ${this.id} notified of operation completion: ${event.operationId}`
+        );
         this.updateMetrics();
       }
     });
@@ -73,7 +77,9 @@ export class QueenCoordinator implements CoordinationAgent {
     // Listen for cross-domain coordination events
     this.eventBus.on('coordination:cross-domain', async (event: any) => {
       if (event.coordinationId) {
-        logger.info(`Queen ${this.id} monitoring cross-domain coordination: ${event.coordinationId}`);
+        logger.info(
+          `Queen ${this.id} monitoring cross-domain coordination: ${event.coordinationId}`
+        );
       }
     });
   }
@@ -92,7 +98,7 @@ export class QueenCoordinator implements CoordinationAgent {
       source: this.id,
       queenId: this.id,
       domain: this.config.domain,
-      maxSwarms: this.config.maxSwarms
+      maxSwarms: this.config.maxSwarms,
     });
   }
 
@@ -106,7 +112,7 @@ export class QueenCoordinator implements CoordinationAgent {
   }): Promise<string> {
     const commanderId = `commander-${config.type}-${Date.now()}`;
     this.commanders.add(commanderId);
-    
+
     // Emit commander spawned event
     await this.eventBus.createAndEmit({
       type: 'commander:spawned',
@@ -114,9 +120,9 @@ export class QueenCoordinator implements CoordinationAgent {
       queenId: this.id,
       commanderId: commanderId,
       domain: config.domain,
-      capabilities: config.capabilities
+      capabilities: config.capabilities,
     });
-    
+
     logger.info(`Queen ${this.id} spawned commander ${commanderId}`);
     return commanderId;
   }
@@ -128,7 +134,7 @@ export class QueenCoordinator implements CoordinationAgent {
     type: string;
     swarms: string[];
     objective: string;
-    priority: 'low' | 'medium' | 'high';
+    priority: 'low | medium' | 'high';
   }): Promise<{ success: boolean; result?: unknown }> {
     const decision: CoordinationDecision = {
       id: `decision-${Date.now()}`,
@@ -138,11 +144,11 @@ export class QueenCoordinator implements CoordinationAgent {
       action: 'coordinate-cross-swarm-task',
       parameters: task,
       confidence: 0.9,
-      reasoning: `Multi-swarm coordination for ${task.objective}`
+      reasoning: `Multi-swarm coordination for ${task.objective}`,
     };
 
     this.decisions.push(decision);
-    
+
     const taskId = `task-${Date.now()}`;
 
     // Emit cross-swarm coordination event
@@ -153,7 +159,7 @@ export class QueenCoordinator implements CoordinationAgent {
       swarms: task.swarms,
       objective: task.objective,
       priority: task.priority,
-      taskId: taskId
+      taskId: taskId,
     });
 
     // Emit decision made event
@@ -162,7 +168,7 @@ export class QueenCoordinator implements CoordinationAgent {
       source: this.id,
       decision: decision,
       agentId: this.id,
-      agentRole: 'queen'
+      agentRole: 'queen',
     });
 
     logger.info(`Queen ${this.id} coordinating task: ${task.objective}`);
@@ -184,7 +190,7 @@ export class QueenCoordinator implements CoordinationAgent {
       decisionsMade: this.decisions.length,
       averageDecisionTime: 25, // ms
       successRate: 0.95,
-      swarmsCoordinated: this.commanders.size
+      swarmsCoordinated: this.commanders.size,
     };
 
     // Emit performance metrics event
@@ -197,8 +203,8 @@ export class QueenCoordinator implements CoordinationAgent {
         decisionsMade: metrics.decisionsMade,
         averageResponseTime: metrics.averageDecisionTime,
         successRate: metrics.successRate,
-        resourceUtilization: 0.8
-      }
+        resourceUtilization: 0.8,
+      },
     });
 
     return metrics;
@@ -215,7 +221,7 @@ export class QueenCoordinator implements CoordinationAgent {
       type: 'queen:shutdown',
       source: this.id,
       queenId: this.id,
-      reason: 'Manual shutdown'
+      reason: 'Manual shutdown',
     });
 
     logger.info(`Queen Coordinator ${this.id} shutting down`);

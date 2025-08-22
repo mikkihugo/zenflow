@@ -1,17 +1,17 @@
 /**
  * @file Coordination API - Public Interface for Coordination Layer
- * 
+ *
  * This file provides the public API for coordination layer to interact with
  * the knowledge package's fact system. The actual implementation remains
  * private within the knowledge package.
- * 
+ *
  * This maintains the same interface as the old shared-fact-system to ensure
  * compatibility with existing coordination code.
  */
 
 import { knowledgeFactSystem } from './fact-system';
-import type { 
-  CoordinationFact, 
+import type {
+  CoordinationFact,
   CoordinationFactQuery,
   FactSearchResult,
 } from './fact-system';
@@ -44,7 +44,7 @@ export async function initializeCoordinationFactSystem(): Promise<void> {
  * Store a coordination-specific fact
  */
 export async function storeCoordinationFact(
-  fact: Omit<CoordinationFact, 'id' | 'timestamp'>
+  fact: Omit<CoordinationFact, 'id''' | '''timestamp'>
 ): Promise<string> {
   return await knowledgeFactSystem.storeFact(fact);
 }
@@ -61,16 +61,20 @@ export async function queryCoordinationFacts(
 /**
  * Search coordination facts with text-based query
  */
-export async function searchCoordinationFacts(
-  searchParams: { query: string; type?: string; limit?: number }
-): Promise<CoordinationFact[]> {
+export async function searchCoordinationFacts(searchParams: {
+  query: string;
+  type?: string;
+  limit?: number;
+}): Promise<CoordinationFact[]> {
   return await knowledgeFactSystem.searchFacts(searchParams);
 }
 
 /**
  * Get coordination facts (convenience function)
  */
-export async function getCoordinationFacts(limit = 50): Promise<CoordinationFact[]> {
+export async function getCoordinationFacts(
+  limit = 50
+): Promise<CoordinationFact[]> {
   return await knowledgeFactSystem.queryFacts({
     tags: ['coordination'],
     limit,
@@ -123,11 +127,11 @@ export async function queryAgentFacts(
   limit = 100
 ): Promise<CoordinationFact[]> {
   const query: CoordinationFactQuery = { limit };
-  
+
   if (agentId) {
     query.source = `agent:${agentId}`;
   }
-  
+
   if (type) {
     query.type = type;
   }
@@ -165,7 +169,10 @@ export async function getGitHubRepoInfo(owner: string, repo: string) {
   try {
     return await knowledgeFactSystem.getGitHubRepoInfo(owner, repo);
   } catch (error) {
-    console.error(`Failed to get GitHub repo info for ${owner}/${repo}:`, error);
+    console.error(
+      `Failed to get GitHub repo info for ${owner}/${repo}:`,
+      error
+    );
     return null;
   }
 }

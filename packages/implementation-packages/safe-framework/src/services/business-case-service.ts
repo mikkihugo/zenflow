@@ -1,12 +1,12 @@
 /**
  * @fileoverview Business Case Service - Epic Investment Analysis
- * 
+ *
  * Service for managing epic business cases, financial analysis, and investment decisions.
  * Handles business hypothesis validation, ROI calculation, and risk assessment.
- * 
+ *
  * SINGLE RESPONSIBILITY: Business case development and financial analysis
  * FOCUSES ON: ROI calculation, risk assessment, business hypothesis validation
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,15 +15,15 @@
 import { addMonths, addYears, differenceInMonths, format } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   meanBy,
   sortBy,
-  maxBy 
+  maxBy,
 } from 'lodash-es';
 import type {
   EpicBusinessCase,
@@ -42,7 +42,7 @@ import type {
   RiskMitigation,
   ROICalculation,
   RevenueProjection,
-  CostProjection
+  CostProjection,
 } from '../types/epic-management';
 import type { Logger } from '../types';
 
@@ -74,19 +74,19 @@ export interface BusinessCaseAnalysis {
  * Risk profile assessment
  */
 export interface RiskProfile {
-  readonly overallRiskLevel: 'low' | 'medium' | 'high' | 'critical';
+  readonly overallRiskLevel: 'low | medium' | 'high''' | '''critical';
   readonly riskScore: number; // 0-100
   readonly criticalRisks: EpicRisk[];
   readonly mitigationCoverage: number; // 0-100%
   readonly residualRisk: number; // 0-100%
-  readonly riskTrend: 'improving' | 'stable' | 'worsening';
+  readonly riskTrend: 'improving | stable' | 'worsening';
 }
 
 /**
  * Business recommendation
  */
 export interface BusinessRecommendation {
-  readonly recommendation: 'proceed' | 'defer' | 'pivot' | 'stop';
+  readonly recommendation: 'proceed | defer' | 'pivot''' | '''stop';
   readonly confidence: number; // 0-100%
   readonly reasoning: string[];
   readonly conditions: string[];
@@ -108,7 +108,7 @@ export interface SensitivityAnalysis {
  * Business scenario analysis
  */
 export interface BusinessScenario {
-  readonly scenario: 'optimistic' | 'realistic' | 'pessimistic';
+  readonly scenario: 'optimistic | realistic' | 'pessimistic';
   readonly probability: number; // 0-100%
   readonly roi: number;
   readonly npv: number;
@@ -123,7 +123,7 @@ export interface FinancialDriver {
   readonly driver: string;
   readonly impact: number; // -100 to +100
   readonly likelihood: number; // 0-100%
-  readonly category: 'revenue' | 'cost' | 'timeline' | 'market';
+  readonly category: 'revenue | cost' | 'timeline''' | '''market';
 }
 
 /**
@@ -134,7 +134,7 @@ export interface BreakpointAnalysis {
   readonly breakpoint: number;
   readonly currentValue: number;
   readonly margin: number; // percentage difference
-  readonly riskLevel: 'low' | 'medium' | 'high';
+  readonly riskLevel: 'low | medium' | 'high';
 }
 
 /**
@@ -154,7 +154,7 @@ export interface CompetitivePosition {
 export interface CompetitorResponse {
   readonly competitor: string;
   readonly likelyResponse: string;
-  readonly impact: 'positive' | 'negative' | 'neutral';
+  readonly impact: 'positive | negative' | 'neutral';
   readonly timeframe: number; // months
   readonly mitigation: string[];
 }
@@ -178,7 +178,10 @@ export class BusinessCaseService {
    */
   createBusinessCase(input: {
     epicId: string;
-    businessHypothesis: Omit<BusinessHypothesis, 'assumptionsList' | 'validationPlan' | 'riskMitigations'>;
+    businessHypothesis: Omit<
+      BusinessHypothesis,
+      'assumptionsList | validationPlan' | 'riskMitigations'
+    >;
     marketData: MarketAnalysis;
     financialInputs: {
       investmentRequired: number;
@@ -186,17 +189,19 @@ export class BusinessCaseService {
       operationalCost: number;
       revenueAssumptions: Omit<RevenueProjection, 'period'>[];
     };
-    risks: Omit<EpicRisk, 'id' | 'identifiedAt' | 'status'>[];
+    risks: Omit<EpicRisk, 'id | identifiedAt' | 'status'>[];
     assumptions: string[];
   }): EpicBusinessCase {
     this.logger.info('Creating business case', { epicId: input.epicId });
 
     // Generate business assumptions
-    const businessAssumptions = this.generateBusinessAssumptions(input.assumptions);
-    
+    const businessAssumptions = this.generateBusinessAssumptions(
+      input.assumptions
+    );
+
     // Create validation plan
     const validationPlan = this.createValidationPlan(businessAssumptions);
-    
+
     // Generate risk mitigations
     const riskMitigations = this.generateRiskMitigations(input.risks);
 
@@ -205,21 +210,23 @@ export class BusinessCaseService {
       ...input.businessHypothesis,
       assumptionsList: businessAssumptions,
       validationPlan,
-      riskMitigations
+      riskMitigations,
     };
 
     // Create financial projections
-    const financialProjection = this.createFinancialProjection(input.financialInputs);
-    
+    const financialProjection = this.createFinancialProjection(
+      input.financialInputs
+    );
+
     // Perform risk assessment
     const riskAssessment = this.performRiskAssessment(input.risks);
-    
+
     // Generate implementation plan
     const implementationPlan = this.generateImplementationPlan(input.epicId);
-    
+
     // Define success metrics
     const successMetrics = this.defineSuccessMetrics(financialProjection);
-    
+
     // Analyze alternative solutions
     const alternativeSolutions = this.analyzeAlternativeSolutions(input.epicId);
 
@@ -241,15 +248,15 @@ export class BusinessCaseService {
       approvalStatus: {
         status: 'draft',
         approver: '',
-      }
+      },
     };
 
     this.businessCases.set(businessCase.id, businessCase);
-    
-    this.logger.info('Business case created', { 
+
+    this.logger.info('Business case created', {
       businessCaseId: businessCase.id,
       roi: financialProjection.internalRateReturn,
-      riskLevel: riskAssessment.overallRiskLevel
+      riskLevel: riskAssessment.overallRiskLevel,
     });
 
     return businessCase;
@@ -267,23 +274,29 @@ export class BusinessCaseService {
     this.logger.info('Analyzing business case', { businessCaseId });
 
     // Assess financial viability
-    const financialViability = this.assessFinancialViability(businessCase.financialProjection);
-    
+    const financialViability = this.assessFinancialViability(
+      businessCase.financialProjection
+    );
+
     // Profile risks
     const riskProfile = this.profileRisks(businessCase.riskAssessment);
-    
+
     // Generate recommendation
     const recommendation = this.generateBusinessRecommendation(
-      financialViability, 
-      riskProfile, 
+      financialViability,
+      riskProfile,
       businessCase.marketAnalysis
     );
-    
+
     // Perform sensitivity analysis
-    const sensitivityAnalysis = this.performSensitivityAnalysis(businessCase.financialProjection);
-    
+    const sensitivityAnalysis = this.performSensitivityAnalysis(
+      businessCase.financialProjection
+    );
+
     // Analyze competitive position
-    const competitivePosition = this.analyzeCompetitivePosition(businessCase.marketAnalysis);
+    const competitivePosition = this.analyzeCompetitivePosition(
+      businessCase.marketAnalysis
+    );
 
     const analysis: BusinessCaseAnalysis = {
       businessCase,
@@ -291,15 +304,15 @@ export class BusinessCaseService {
       riskProfile,
       recommendation,
       sensitivityAnalysis,
-      competitivePosition
+      competitivePosition,
     };
 
     this.analysisResults.set(businessCaseId, analysis);
-    
-    this.logger.info('Business case analysis completed', { 
+
+    this.logger.info('Business case analysis completed', {
       businessCaseId,
       recommendation: recommendation.recommendation,
-      confidence: recommendation.confidence
+      confidence: recommendation.confidence,
     });
 
     return analysis;
@@ -309,7 +322,7 @@ export class BusinessCaseService {
    * Update business case approval status
    */
   updateApprovalStatus(
-    businessCaseId: string, 
+    businessCaseId: string,
     approvalData: ApprovalStatus
   ): void {
     const businessCase = this.businessCases.get(businessCaseId);
@@ -320,15 +333,15 @@ export class BusinessCaseService {
     const updatedBusinessCase = {
       ...businessCase,
       approvalStatus: approvalData,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     this.businessCases.set(businessCaseId, updatedBusinessCase);
-    
-    this.logger.info('Business case approval status updated', { 
+
+    this.logger.info('Business case approval status updated', {
       businessCaseId,
       status: approvalData.status,
-      approver: approvalData.approver
+      approver: approvalData.approver,
     });
   }
 
@@ -340,7 +353,7 @@ export class BusinessCaseService {
     recommendation: string;
     reasoning: string[];
   } {
-    const analyses = businessCaseIds.map(id => this.analyzeBusinessCase(id));
+    const analyses = businessCaseIds.map((id) => this.analyzeBusinessCase(id));
 
     const comparison = analyses.map((analysis, index) => ({
       businessCaseId: businessCaseIds[index],
@@ -349,7 +362,7 @@ export class BusinessCaseService {
       paybackPeriod: analysis.financialViability.paybackPeriod,
       riskScore: analysis.riskProfile.riskScore,
       recommendation: analysis.recommendation.recommendation,
-      overallScore: this.calculateOverallScore(analysis)
+      overallScore: this.calculateOverallScore(analysis),
     }));
 
     const sortedComparison = orderBy(comparison, 'overallScore', 'desc');
@@ -359,13 +372,13 @@ export class BusinessCaseService {
     const reasoning = [
       `Highest ROI: ${topChoice.roi}%`,
       `Best payback period: ${topChoice.paybackPeriod} months`,
-      `Risk level: ${analyses.find(a => a.businessCase.id === topChoice.businessCaseId)?.riskProfile.overallRiskLevel}`
+      `Risk level: ${analyses.find((a) => a.businessCase.id === topChoice.businessCaseId)?.riskProfile.overallRiskLevel}`,
     ];
 
     return {
       comparison: sortedComparison,
       recommendation,
-      reasoning
+      reasoning,
     };
   }
 
@@ -374,36 +387,51 @@ export class BusinessCaseService {
   /**
    * Generate business assumptions from input
    */
-  private generateBusinessAssumptions(assumptions: string[]): BusinessAssumption[] {
-    return assumptions.map(assumption => ({
+  private generateBusinessAssumptions(
+    assumptions: string[]
+  ): BusinessAssumption[] {
+    return assumptions.map((assumption) => ({
       assumption,
       criticality: 'medium' as const,
       validationMethod: 'market_research',
       validationStatus: 'unvalidated' as const,
-      impactIfIncorrect: 'Moderate impact on business case viability'
+      impactIfIncorrect: 'Moderate impact on business case viability',
     }));
   }
 
   /**
    * Create validation plan for assumptions
    */
-  private createValidationPlan(assumptions: BusinessAssumption[]): ValidationStep[] {
-    return assumptions.map(assumption => ({
+  private createValidationPlan(
+    assumptions: BusinessAssumption[]
+  ): ValidationStep[] {
+    return assumptions.map((assumption) => ({
       step: `Validate: ${assumption.assumption}`,
       method: assumption.validationMethod as any,
       timeline: 30, // 30 days
       owner: 'Epic Owner',
-      successCriteria: ['Data collected', 'Analysis completed', 'Findings documented'],
-      resources: ['Market research team', 'Customer interviews', 'Data analysis tools']
+      successCriteria: [
+        'Data collected',
+        'Analysis completed',
+        'Findings documented',
+      ],
+      resources: [
+        'Market research team',
+        'Customer interviews',
+        'Data analysis tools',
+      ],
     }));
   }
 
   /**
    * Generate risk mitigations
    */
-  private generateRiskMitigations(risks: Omit<EpicRisk, 'id' | 'identifiedAt' | 'status'>[]): string[] {
-    return risks.map(risk => 
-      `Mitigate ${risk.category} risk: ${risk.description.substring(0, 50)}...`
+  private generateRiskMitigations(
+    risks: Omit<EpicRisk, 'id | identifiedAt' | 'status'>[]
+  ): string[] {
+    return risks.map(
+      (risk) =>
+        `Mitigate ${risk.category} risk: ${risk.description.substring(0, 50)}...`
     );
   }
 
@@ -414,13 +442,14 @@ export class BusinessCaseService {
     // Generate 5-year revenue projections
     const revenueProjections: RevenueProjection[] = [];
     for (let year = 1; year <= 5; year++) {
-      const baseRevenue = financialInputs.revenueAssumptions[0]?.revenue || 1000000;
+      const baseRevenue =
+        financialInputs.revenueAssumptions[0]?.revenue'' | '''' | ''1000000;
       revenueProjections.push({
         period: `Year ${year}`,
         revenue: baseRevenue * Math.pow(1.2, year - 1), // 20% annual growth
         customerCount: 100 * year,
         averageRevenuePerCustomer: baseRevenue / (100 * year),
-        assumptions: [`Year ${year} growth assumptions`]
+        assumptions: [`Year ${year} growth assumptions`],
       });
     }
 
@@ -434,28 +463,40 @@ export class BusinessCaseService {
         operationalCost: baseCost * year,
         marketingCost: baseCost * 0.3 * year,
         supportCost: baseCost * 0.2 * year,
-        totalCost: (year === 1 ? financialInputs.developmentCost : 0) + 
-                  baseCost * year + baseCost * 0.3 * year + baseCost * 0.2 * year
+        totalCost:
+          (year === 1 ? financialInputs.developmentCost : 0) +
+          baseCost * year +
+          baseCost * 0.3 * year +
+          baseCost * 0.2 * year,
       });
     }
 
     // Calculate ROI
-    const totalRevenue = sumBy(revenueProjections, 'revenue');
+    const totalRevenue = sumBy(revenueProjections,'revenue');
     const totalCost = sumBy(costProjections, 'totalCost');
     const totalInvestment = financialInputs.investmentRequired;
 
     const roiCalculation: ROICalculation = {
       totalInvestment,
       totalReturn: totalRevenue - totalCost,
-      roi: ((totalRevenue - totalCost - totalInvestment) / totalInvestment) * 100,
+      roi:
+        ((totalRevenue - totalCost - totalInvestment) / totalInvestment) * 100,
       calculationMethod: '5-year DCF analysis',
       timeHorizon: 5,
-      discountRate: this.config.discountRate
+      discountRate: this.config.discountRate,
     };
 
     // Calculate NPV and payback period
-    const npv = this.calculateNPV(revenueProjections, costProjections, totalInvestment);
-    const paybackPeriod = this.calculatePaybackPeriod(revenueProjections, costProjections, totalInvestment);
+    const npv = this.calculateNPV(
+      revenueProjections,
+      costProjections,
+      totalInvestment
+    );
+    const paybackPeriod = this.calculatePaybackPeriod(
+      revenueProjections,
+      costProjections,
+      totalInvestment
+    );
 
     return {
       investmentRequired: totalInvestment,
@@ -466,7 +507,7 @@ export class BusinessCaseService {
       roiCalculation,
       paybackPeriod,
       netPresentValue: npv,
-      internalRateReturn: roiCalculation.roi
+      internalRateReturn: roiCalculation.roi,
     };
   }
 
@@ -474,18 +515,19 @@ export class BusinessCaseService {
    * Calculate Net Present Value
    */
   private calculateNPV(
-    revenue: RevenueProjection[], 
-    costs: CostProjection[], 
+    revenue: RevenueProjection[],
+    costs: CostProjection[],
     initialInvestment: number
   ): number {
     let npv = -initialInvestment;
-    
+
     for (let year = 0; year < Math.min(revenue.length, costs.length); year++) {
       const cashFlow = revenue[year].revenue - costs[year].totalCost;
-      const discountedCashFlow = cashFlow / Math.pow(1 + this.config.discountRate / 100, year + 1);
+      const discountedCashFlow =
+        cashFlow / Math.pow(1 + this.config.discountRate / 100, year + 1);
       npv += discountedCashFlow;
     }
-    
+
     return npv;
   }
 
@@ -493,48 +535,54 @@ export class BusinessCaseService {
    * Calculate payback period
    */
   private calculatePaybackPeriod(
-    revenue: RevenueProjection[], 
-    costs: CostProjection[], 
+    revenue: RevenueProjection[],
+    costs: CostProjection[],
     initialInvestment: number
   ): number {
     let cumulativeCashFlow = -initialInvestment;
-    
+
     for (let year = 0; year < Math.min(revenue.length, costs.length); year++) {
       const cashFlow = revenue[year].revenue - costs[year].totalCost;
       cumulativeCashFlow += cashFlow;
-      
+
       if (cumulativeCashFlow >= 0) {
         return (year + 1) * 12; // Convert to months
       }
     }
-    
+
     return 60; // Default to 5 years if not achieved
   }
 
   /**
    * Perform risk assessment
    */
-  private performRiskAssessment(risks: Omit<EpicRisk, 'id' | 'identifiedAt' | 'status'>[]): RiskAssessment {
-    const epicRisks: EpicRisk[] = risks.map(risk => ({
+  private performRiskAssessment(
+    risks: Omit<EpicRisk, 'id | identifiedAt' | 'status'>[]
+  ): RiskAssessment {
+    const epicRisks: EpicRisk[] = risks.map((risk) => ({
       ...risk,
       id: `risk-${nanoid(8)}`,
       identifiedAt: new Date(),
       status: 'identified',
-      riskScore: risk.probability * risk.impact
+      riskScore: risk.probability * risk.impact,
     }));
 
     const overallRiskScore = meanBy(epicRisks, 'riskScore');
-    const overallRiskLevel = 
-      overallRiskScore > 80 ? 'critical' :
-      overallRiskScore > 60 ? 'high' :
-      overallRiskScore > 30 ? 'medium' : 'low';
+    const overallRiskLevel =
+      overallRiskScore > 80
+        ? 'critical'
+        : overallRiskScore > 60
+          ? 'high'
+          : overallRiskScore > 30
+            ? 'medium'
+            : 'low';
 
     return {
       risks: epicRisks,
       overallRiskLevel,
       riskMitigationPlan: [],
       contingencyPlans: [],
-      riskOwners: ['Epic Owner', 'Portfolio Manager']
+      riskOwners: ['Epic Owner', 'Portfolio Manager'],
     };
   }
 
@@ -552,21 +600,23 @@ export class BusinessCaseService {
           resources: ['Epic Owner', 'Solution Architect'],
           dependencies: [],
           successCriteria: ['Analysis complete', 'Plan approved'],
-          riskFactors: ['Resource availability']
-        }
+          riskFactors: ['Resource availability'],
+        },
       ],
       timeline: 18, // months
       resourceRequirements: [],
       dependencies: [],
       milestones: [],
-      qualityGates: []
+      qualityGates: [],
     };
   }
 
   /**
    * Define success metrics
    */
-  private defineSuccessMetrics(financial: FinancialProjection): SuccessMetric[] {
+  private defineSuccessMetrics(
+    financial: FinancialProjection
+  ): SuccessMetric[] {
     return [
       {
         metric: 'Return on Investment',
@@ -575,17 +625,19 @@ export class BusinessCaseService {
         baseline: 0,
         unit: 'percentage',
         measurementFrequency: 'quarterly',
-        owner: 'Epic Owner'
+        owner: 'Epic Owner',
       },
       {
         metric: 'Revenue Growth',
         category: 'financial',
-        target: financial.revenueProjection[financial.revenueProjection.length - 1].revenue,
+        target:
+          financial.revenueProjection[financial.revenueProjection.length - 1]
+            .revenue,
         baseline: 0,
         unit: 'dollars',
         measurementFrequency: 'monthly',
-        owner: 'Product Manager'
-      }
+        owner: 'Product Manager',
+      },
     ];
   }
 
@@ -601,16 +653,18 @@ export class BusinessCaseService {
         timeline: 12,
         benefits: ['Lower long-term cost', 'Custom fit'],
         risks: ['Development risk', 'Time to market'],
-        recommendationScore: 75
-      }
+        recommendationScore: 75,
+      },
     ];
   }
 
   /**
    * Assess financial viability
    */
-  private assessFinancialViability(financial: FinancialProjection): FinancialViability {
-    const isViable = 
+  private assessFinancialViability(
+    financial: FinancialProjection
+  ): FinancialViability {
+    const isViable =
       financial.roiCalculation.roi >= this.config.roiThreshold &&
       financial.paybackPeriod <= this.config.paybackPeriodLimit &&
       financial.netPresentValue > 0;
@@ -625,7 +679,7 @@ export class BusinessCaseService {
       breakEvenPoint: financial.paybackPeriod,
       riskAdjustedReturn: financial.roiCalculation.roi * 0.85, // Apply risk adjustment
       confidenceLevel: 75,
-      financialScore: isViable ? 85 : 45
+      financialScore: isViable ? 85 : 45,
     };
   }
 
@@ -633,7 +687,7 @@ export class BusinessCaseService {
    * Profile risks comprehensively
    */
   private profileRisks(riskAssessment: RiskAssessment): RiskProfile {
-    const criticalRisks = filter(riskAssessment.risks, r => r.riskScore > 80);
+    const criticalRisks = filter(riskAssessment.risks, (r) => r.riskScore > 80);
     const avgRiskScore = meanBy(riskAssessment.risks, 'riskScore');
 
     return {
@@ -642,7 +696,7 @@ export class BusinessCaseService {
       criticalRisks,
       mitigationCoverage: 60,
       residualRisk: avgRiskScore * 0.4,
-      riskTrend: 'stable'
+      riskTrend: 'stable',
     };
   }
 
@@ -656,17 +710,17 @@ export class BusinessCaseService {
   ): BusinessRecommendation {
     let recommendation: BusinessRecommendation['recommendation'] = 'proceed';
     const reasoning: string[] = [];
-    
+
     if (!financial.isViable) {
       recommendation = 'defer';
       reasoning.push('Financial projections do not meet viability criteria');
     }
-    
+
     if (risk.overallRiskLevel === 'critical') {
       recommendation = 'stop';
       reasoning.push('Risk level too high for acceptable investment');
     }
-    
+
     if (financial.isViable && risk.overallRiskLevel !== 'critical') {
       reasoning.push('Strong financial case with manageable risk');
     }
@@ -677,14 +731,19 @@ export class BusinessCaseService {
       reasoning,
       conditions: recommendation === 'proceed' ? ['Monitor risk closely'] : [],
       alternativeOptions: [],
-      nextSteps: recommendation === 'proceed' ? ['Begin implementation planning'] : ['Revise business case']
+      nextSteps:
+        recommendation === 'proceed'
+          ? ['Begin implementation planning']
+          : ['Revise business case'],
     };
   }
 
   /**
    * Perform sensitivity analysis
    */
-  private performSensitivityAnalysis(financial: FinancialProjection): SensitivityAnalysis {
+  private performSensitivityAnalysis(
+    financial: FinancialProjection
+  ): SensitivityAnalysis {
     // Generate scenarios
     const scenarios: BusinessScenario[] = [
       {
@@ -693,7 +752,7 @@ export class BusinessCaseService {
         roi: financial.roiCalculation.roi * 1.3,
         npv: financial.netPresentValue * 1.3,
         paybackPeriod: financial.paybackPeriod * 0.8,
-        keyAssumptions: ['Market grows faster than expected']
+        keyAssumptions: ['Market grows faster than expected'],
       },
       {
         scenario: 'realistic',
@@ -701,7 +760,7 @@ export class BusinessCaseService {
         roi: financial.roiCalculation.roi,
         npv: financial.netPresentValue,
         paybackPeriod: financial.paybackPeriod,
-        keyAssumptions: ['Base case assumptions hold']
+        keyAssumptions: ['Base case assumptions hold'],
       },
       {
         scenario: 'pessimistic',
@@ -709,28 +768,33 @@ export class BusinessCaseService {
         roi: financial.roiCalculation.roi * 0.6,
         npv: financial.netPresentValue * 0.6,
         paybackPeriod: financial.paybackPeriod * 1.4,
-        keyAssumptions: ['Market adoption slower than expected']
-      }
+        keyAssumptions: ['Market adoption slower than expected'],
+      },
     ];
 
     return {
       scenarios,
       keyDrivers: [],
       breakpoints: [],
-      recommendedActions: ['Monitor key assumptions', 'Plan scenario responses']
+      recommendedActions: [
+        'Monitor key assumptions',
+        'Plan scenario responses',
+      ],
     };
   }
 
   /**
    * Analyze competitive position
    */
-  private analyzeCompetitivePosition(market: MarketAnalysis): CompetitivePosition {
+  private analyzeCompetitivePosition(
+    market: MarketAnalysis
+  ): CompetitivePosition {
     return {
       marketPosition: 6,
       competitiveAdvantage: ['Unique value proposition'],
       competitiveDisadvantage: ['Late to market'],
       marketShare: 5,
-      competitorResponse: []
+      competitorResponse: [],
     };
   }
 
@@ -738,23 +802,34 @@ export class BusinessCaseService {
    * Calculate overall business case score
    */
   private calculateOverallScore(analysis: BusinessCaseAnalysis): number {
-    const financialScore = Math.min(100, (analysis.financialViability.roi + 100) / 2);
+    const financialScore = Math.min(
+      100,
+      (analysis.financialViability.roi + 100) / 2
+    );
     const riskScore = 100 - analysis.riskProfile.riskScore;
     const confidenceScore = analysis.recommendation.confidence;
-    
-    return (financialScore * 0.4 + riskScore * 0.3 + confidenceScore * 0.3);
+
+    return financialScore * 0.4 + riskScore * 0.3 + confidenceScore * 0.3;
   }
 
   /**
    * Calculate financial viability based on financial projection
    */
-  private calculateFinancialViability(projection: FinancialProjection): FinancialViability {
-    const isViable = projection.netPresentValue > 0 && projection.internalRateReturn > 15;
+  private calculateFinancialViability(
+    projection: FinancialProjection
+  ): FinancialViability {
+    const isViable =
+      projection.netPresentValue > 0 && projection.internalRateReturn > 15;
     const riskAdjustedReturn = projection.internalRateReturn * 0.85; // 15% risk discount
-    const financialScore = Math.max(0, Math.min(100, 
-      (projection.netPresentValue / 1000000 * 20) + (projection.internalRateReturn * 2)
-    ));
-    
+    const financialScore = Math.max(
+      0,
+      Math.min(
+        100,
+        (projection.netPresentValue / 1000000) * 20 +
+          projection.internalRateReturn * 2
+      )
+    );
+
     return {
       isViable,
       roi: projection.internalRateReturn,
@@ -765,7 +840,7 @@ export class BusinessCaseService {
       breakEvenPoint: 18, // Simplified - 18 months
       riskAdjustedReturn,
       confidenceLevel: 80, // 80% confidence
-      financialScore
+      financialScore,
     };
   }
 }

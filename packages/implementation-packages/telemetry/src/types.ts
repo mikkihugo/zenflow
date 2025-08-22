@@ -2,7 +2,10 @@
  * @fileoverview Telemetry Types - Core interfaces and types for telemetry infrastructure
  */
 
-import type { Span as OTelSpan, Tracer as OTelTracer } from '@opentelemetry/api';
+import type {
+  Span as OTelSpan,
+  Tracer as OTelTracer,
+} from '@opentelemetry/api';
 
 /**
  * Configuration for telemetry system
@@ -23,7 +26,7 @@ export interface TelemetryConfig {
   /** Sampling ratio for traces (0.0 to 1.0) */
   samplingRatio?: number;
   /** Additional attributes for all telemetry */
-  globalAttributes?: Record<string, string | number | boolean>;
+  globalAttributes?: Record<string, string'' | ''number'' | ''boolean>;
 }
 
 /**
@@ -39,7 +42,7 @@ export interface MetricDefinition {
 /**
  * Metric types
  */
-export type MetricType = 'counter' | 'histogram' | 'gauge' | 'up_down_counter';
+export type MetricType ='counter | histogram' | 'gauge''' | '''up_down_counter';
 
 /**
  * Telemetry event
@@ -48,7 +51,7 @@ export interface TelemetryEvent {
   name: string;
   timestamp?: number;
   attributes?: Attributes;
-  severity?: 'debug' | 'info' | 'warn' | 'error';
+  severity?: 'debug | info' | 'warn''' | '''error';
 }
 
 /**
@@ -63,11 +66,14 @@ export interface SpanOptions {
 /**
  * Attributes for telemetry data
  */
-export type Attributes = Record<string, string | number | boolean | string[] | number[] | boolean[]>;
+export type Attributes = Record<
+  string,
+  string'' | ''number'' | ''boolean'' | ''string[]'' | ''number[]'' | ''boolean[]
+>;
 
 /**
  * Re-export OpenTelemetry types
  */
 export type Span = OTelSpan;
 export type Tracer = OTelTracer;
-export type { Meter } from '@opentelemetry/api';
+export type { Meter } from'@opentelemetry/api';

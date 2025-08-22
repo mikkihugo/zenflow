@@ -1,17 +1,17 @@
 /**
  * @fileoverview Value Stream Optimization Engine - Lightweight facade for SAFe Flow Optimization
- * 
+ *
  * Value stream optimization engine with advanced bottleneck detection and analysis,
  * flow optimization recommendations, continuous improvement automation, and predictive analytics.
- * 
+ *
  * Delegates to:
  * - BottleneckAnalysisService: Advanced bottleneck detection and root cause analysis
  * - FlowOptimizationService: AI-powered optimization recommendations
  * - ContinuousImprovementService: Automated kaizen cycles and improvement loops
  * - PredictiveAnalyticsService: Value delivery time predictions and forecasting
- * 
+ *
  * STATUS: 737 lines - Well-structured facade with comprehensive service delegation
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -28,7 +28,7 @@ export interface OptimizationEngineConfig {
   readonly enableAutomatedKaizen: boolean;
   readonly enablePredictiveAnalytics: boolean;
   readonly enableContinuousLearning: boolean;
-  readonly bottleneckAnalysisDepth: 'shallow' | 'deep' | 'comprehensive';
+  readonly bottleneckAnalysisDepth: 'shallow | deep' | 'comprehensive';
   readonly optimizationFrequency: number; // milliseconds
   readonly kaizenCycleLength: number; // days
   readonly predictionHorizon: number; // days
@@ -39,7 +39,7 @@ export interface OptimizationEngineConfig {
 
 export interface OptimizationEngineState {
   readonly isRunning: boolean;
-  readonly lastOptimizationRun: Date | null;
+  readonly lastOptimizationRun: Date'' | ''null;
   readonly totalOptimizationCycles: number;
   readonly learningData: Map<string, any>;
   readonly activeRecommendations: Set<string>;
@@ -71,7 +71,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
   constructor(config: Partial<OptimizationEngineConfig> = {}) {
     super();
     this.logger = getLogger('ValueStreamOptimizationEngine');
-    
+
     this.config = {
       enableAdvancedBottleneckAnalysis: true,
       enableAIOptimizationRecommendations: true,
@@ -85,7 +85,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
       learningDataRetentionDays: 365,
       minImpactThreshold: 5, // 5% minimum impact
       maxRecommendationsPerCycle: 10,
-      ...config
+      ...config,
     };
 
     this.state = this.initializeState();
@@ -99,29 +99,47 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
 
     try {
       // Delegate to Bottleneck Analysis Service
-      const { BottleneckAnalysisService } = await import('../services/value-stream/bottleneck-analysis-service');
-      this.bottleneckAnalysisService = new BottleneckAnalysisService(this.logger);
+      const { BottleneckAnalysisService } = await import(
+        '../services/value-stream/bottleneck-analysis-service'
+      );
+      this.bottleneckAnalysisService = new BottleneckAnalysisService(
+        this.logger
+      );
 
       // Delegate to Flow Optimization Service
-      const { FlowOptimizationService } = await import('../services/value-stream/flow-optimization-service');
+      const { FlowOptimizationService } = await import(
+        '../services/value-stream/flow-optimization-service'
+      );
       this.flowOptimizationService = new FlowOptimizationService(this.logger);
 
       // Delegate to Continuous Improvement Service
-      const { ContinuousImprovementService } = await import('../services/value-stream/continuous-improvement-service');
-      this.continuousImprovementService = new ContinuousImprovementService(this.logger);
+      const { ContinuousImprovementService } = await import(
+        '../services/value-stream/continuous-improvement-service'
+      );
+      this.continuousImprovementService = new ContinuousImprovementService(
+        this.logger
+      );
 
       // Delegate to Predictive Analytics Service
-      const { PredictiveAnalyticsService } = await import('../services/value-stream/predictive-analytics-service');
-      this.predictiveAnalyticsService = new PredictiveAnalyticsService(this.logger);
+      const { PredictiveAnalyticsService } = await import(
+        '../services/value-stream/predictive-analytics-service'
+      );
+      this.predictiveAnalyticsService = new PredictiveAnalyticsService(
+        this.logger
+      );
 
       this.initialized = true;
-      this.logger.info('ValueStreamOptimizationEngine initialized successfully');
+      this.logger.info(
+        'ValueStreamOptimizationEngine initialized successfully'
+      );
 
       // Start optimization cycle if enabled
       this.startOptimizationCycle();
-
     } catch (error) {
-      this.logger.error('Failed to initialize ValueStreamOptimizationEngine:', error);
+      this.logger.error(
+        'Failed to initialize ValueStreamOptimizationEngine:',
+        error
+      );
       throw error;
     }
   }
@@ -138,7 +156,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
 
     this.logger.info('Performing advanced bottleneck analysis', {
       valueStreamId,
-      analysisDepth: analysisConfig.analysisDepth
+      analysisDepth: analysisConfig.analysisDepth,
     });
 
     try {
@@ -150,7 +168,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
           startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
           endDate: new Date(),
           granularity: 'daily' as const,
-          includeSeasonality: true
+          includeSeasonality: true,
         },
         analysisScope: {
           includeStages: [],
@@ -158,14 +176,14 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
           includeTeams: [],
           excludeTeams: [],
           includeWorkTypes: [],
-          minimumVolumeThreshold: 5
+          minimumVolumeThreshold: 5,
         },
         detectionThresholds: {
           cycleTimeThreshold: 48, // hours
           waitTimeThreshold: 24, // hours
           queueLengthThreshold: 10,
           utilizationThreshold: 85, // percentage
-          errorRateThreshold: 5 // percentage
+          errorRateThreshold: 5, // percentage
         },
         rootCauseAnalysis: {
           enableAutomated: true,
@@ -173,27 +191,28 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
           confidenceThreshold: 70,
           includeExternalFactors: true,
           includeDependencies: true,
-          includeSeasonality: true
-        }
+          includeSeasonality: true,
+        },
       };
 
-      const result = await this.bottleneckAnalysisService.performAdvancedBottleneckAnalysis(
-        bottleneckConfig,
-        flowData
-      );
+      const result =
+        await this.bottleneckAnalysisService.performAdvancedBottleneckAnalysis(
+          bottleneckConfig,
+          flowData
+        );
 
       this.emit('bottleneck-analysis-completed', {
         valueStreamId,
         analysisId: result.analysisId,
         bottleneckCount: result.detectedBottlenecks.length,
-        confidence: result.confidence
+        confidence: result.confidence,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Bottleneck analysis failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('bottleneck-analysis-failed', { error: errorMessage });
       throw error;
     }
@@ -212,7 +231,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
 
     this.logger.info('Generating AI optimization recommendations', {
       valueStreamId,
-      aiModel: optimizationConfig.aiModel?.modelType
+      aiModel: optimizationConfig.aiModel?.modelType,
     });
 
     try {
@@ -227,17 +246,17 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
             includeSeasonality: true,
             includeExternalFactors: true,
             dataQualityThreshold: 80,
-            minimumSampleSize: 100
+            minimumSampleSize: 100,
           },
           validationThreshold: 0.8,
-          confidence: 'high' as const
+          confidence: 'high' as const,
         },
         optimizationScope: {
           includeStages: [],
           excludeStages: [],
           focusAreas: ['cycle_time', 'throughput', 'quality'] as const,
           optimizationHorizon: this.config.predictionHorizon,
-          granularity: 'stage' as const
+          granularity: 'stage' as const,
         },
         constraints: {
           budgetConstraint: {
@@ -247,28 +266,28 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
             roi: {
               minimumROI: 150,
               timeToROI: 6,
-              calculation: 'net_present_value' as const
-            }
+              calculation: 'net_present_value' as const,
+            },
           },
           timeConstraint: {
             maxImplementationTime: 90,
             urgencyLevel: 'medium' as const,
             milestones: [],
-            dependencies: []
+            dependencies: [],
           },
           resourceConstraint: {
             availableCapacity: 1000,
             skillConstraints: [],
             toolConstraints: [],
-            infrastructureConstraints: []
+            infrastructureConstraints: [],
           },
           qualityConstraint: {
             minimumQuality: 85,
             qualityMetrics: [],
             testingRequirements: [],
-            acceptanceCriteria: []
+            acceptanceCriteria: [],
           },
-          complianceConstraints: []
+          complianceConstraints: [],
         },
         objectives: {
           primaryObjective: {
@@ -279,11 +298,11 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
             currentValue: 72,
             improvement: 33.3,
             measurement: 'hours',
-            priority: 'critical' as const
+            priority: 'critical' as const,
           },
           secondaryObjectives: [],
           weights: [],
-          successCriteria: []
+          successCriteria: [],
         },
         preferences: {
           riskTolerance: 'moderate' as const,
@@ -294,33 +313,34 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
               channels: [],
               frequency: 'weekly',
               content: [],
-              feedback: []
+              feedback: [],
             },
-            trainingRequirements: []
+            trainingRequirements: [],
           },
           automationLevel: 'semi_automated' as const,
-          monitoringRequirements: []
-        }
+          monitoringRequirements: [],
+        },
       };
 
-      const result = await this.flowOptimizationService.generateAIOptimizationRecommendations(
-        flowConfig,
-        flowData,
-        bottleneckAnalysis
-      );
+      const result =
+        await this.flowOptimizationService.generateAIOptimizationRecommendations(
+          flowConfig,
+          flowData,
+          bottleneckAnalysis
+        );
 
       this.emit('optimization-recommendations-generated', {
         valueStreamId,
         recommendationId: result.recommendationId,
         recommendationCount: result.recommendations.length,
-        confidence: result.confidence
+        confidence: result.confidence,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('AI optimization recommendations failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('optimization-recommendations-failed', { error: errorMessage });
       throw error;
     }
@@ -338,7 +358,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
 
     this.logger.info('Executing automated kaizen cycle', {
       valueStreamId,
-      cycleLength: this.config.kaizenCycleLength
+      cycleLength: this.config.kaizenCycleLength,
     });
 
     try {
@@ -348,12 +368,19 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
         kaizenConfig: {
           cycleLength: this.config.kaizenCycleLength,
           frequency: 'weekly' as const,
-          participantRoles: ['Product Owner', 'Scrum Master', 'Development Team', 'QA'],
+          participantRoles: [
+            'Product Owner',
+            'Scrum Master',
+            'Development Team',
+            'QA',
+          ],
           facilitationMode: 'hybrid' as const,
           improvementTypes: ['process', 'technology', 'skills'] as const,
-          successCriteria: []
+          successCriteria: [],
         },
-        automationLevel: this.config.enableAutomatedKaizen ? 'fully_automated' as const : 'manual' as const,
+        automationLevel: this.config.enableAutomatedKaizen
+          ? ('fully_automated' as const)
+          : ('manual' as const),
         feedbackLoops: [],
         improvementObjectives: [
           {
@@ -365,22 +392,24 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
               metrics: [],
               description: 'Current state assessment',
               evidence: [],
-              timestamp: new Date()
+              timestamp: new Date(),
             },
             targetState: {
               metrics: [],
               description: 'Target state definition',
               evidence: [],
-              timestamp: new Date()
+              timestamp: new Date(),
             },
             timeline: {
               startDate: new Date(),
-              targetDate: new Date(Date.now() + this.config.kaizenCycleLength * 24 * 60 * 60 * 1000),
+              targetDate: new Date(
+                Date.now() + this.config.kaizenCycleLength * 24 * 60 * 60 * 1000
+              ),
               milestones: [],
-              checkpoints: []
+              checkpoints: [],
             },
-            dependencies: []
-          }
+            dependencies: [],
+          },
         ],
         measurementFramework: {
           frameworkId: 'lean-metrics-1',
@@ -391,14 +420,14 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
             frequency: 'weekly' as const,
             format: ['dashboard'] as const,
             audience: [],
-            distribution: []
+            distribution: [],
           },
           governance: {
             reviewCycle: 1,
             approvalProcess: {
               steps: [],
               escalation: [],
-              timeout: 5
+              timeout: 5,
             },
             changeControl: {
               process: 'lightweight' as const,
@@ -407,36 +436,37 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
                 required: false,
                 approvers: [],
                 threshold: 'any' as const,
-                timeout: 24
-              }
+                timeout: 24,
+              },
             },
             qualityAssurance: {
               validation: [],
               testing: [],
-              monitoring: []
-            }
-          }
-        }
+              monitoring: [],
+            },
+          },
+        },
       };
 
-      const result = await this.continuousImprovementService.executeAutomatedKaizenCycle(
-        improvementConfig,
-        currentMetrics
-      );
+      const result =
+        await this.continuousImprovementService.executeAutomatedKaizenCycle(
+          improvementConfig,
+          currentMetrics
+        );
 
       this.emit('kaizen-cycle-completed', {
         valueStreamId,
         cycleId: result.cycleId,
         improvementsIdentified: result.improvementsIdentified.length,
         improvementsImplemented: result.improvementsImplemented.length,
-        effectiveness: result.cycleMetrics.improvementRate
+        effectiveness: result.cycleMetrics.improvementRate,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Automated kaizen cycle failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('kaizen-cycle-failed', { error: errorMessage });
       throw error;
     }
@@ -454,7 +484,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
 
     this.logger.info('Predicting value delivery times', {
       valueStreamId,
-      horizon: this.config.predictionHorizon
+      horizon: this.config.predictionHorizon,
     });
 
     try {
@@ -468,7 +498,12 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
           parameters: {
             learningRate: 0.001,
             epochs: 100,
-            features: ['cycle_time', 'queue_length', 'team_velocity', 'complexity'],
+            features: [
+              'cycle_time',
+              'queue_length',
+              'team_velocity',
+              'complexity',
+            ],
             seasonality: {
               enabled: true,
               periods: [
@@ -476,11 +511,11 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
                   name: 'weekly',
                   length: 7,
                   strength: 0.3,
-                  pattern: 'additive' as const
-                }
+                  pattern: 'additive' as const,
+                },
               ],
               strength: 0.2,
-              automatic: true
+              automatic: true,
             },
             trend: {
               enabled: true,
@@ -489,9 +524,9 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
               changepoints: {
                 automatic: true,
                 flexibility: 0.05,
-                threshold: 0.01
-              }
-            }
+                threshold: 0.01,
+              },
+            },
           },
           validation: {
             method: 'time_series_split' as const,
@@ -500,15 +535,15 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
             threshold: {
               metric: 'mae' as const,
               acceptableValue: 5.0,
-              targetValue: 2.0
-            }
+              targetValue: 2.0,
+            },
           },
           ensemble: {
             enabled: false,
             methods: [],
             weights: [],
-            combination: 'weighted_average' as const
-          }
+            combination: 'weighted_average' as const,
+          },
         },
         dataConfig: {
           historicalWindow: 90,
@@ -524,28 +559,28 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
                   endpoint: 'localhost',
                   authentication: { type: 'none', credentials: {} },
                   timeout: 30,
-                  retries: 3
+                  retries: 3,
                 },
                 refresh: {
                   frequency: 60,
                   automatic: true,
-                  failureHandling: 'retry' as const
-                }
+                  failureHandling: 'retry' as const,
+                },
               },
               transformation: [],
               importance: {
                 score: 0.85,
                 rank: 1,
                 method: 'correlation' as const,
-                confidence: 0.9
-              }
-            }
+                confidence: 0.9,
+              },
+            },
           ],
           preprocessing: {
             missingValues: {
               strategy: 'impute' as const,
               method: 'mean',
-              threshold: 10
+              threshold: 10,
             },
             outliers: {
               detection: 'z_score' as const,
@@ -553,19 +588,23 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
               threshold: {
                 method: 'z_score' as const,
                 value: 3,
-                adaptive: true
-              }
+                adaptive: true,
+              },
             },
             scaling: 'z_score' as const,
-            encoding: []
+            encoding: [],
           },
           quality: {
-            completeness: { minimum: 80, target: 95, measurement: 'percentage' },
+            completeness: {
+              minimum: 80,
+              target: 95,
+              measurement: 'percentage',
+            },
             accuracy: { minimum: 85, target: 95, measurement: 'percentage' },
             consistency: { minimum: 80, target: 90, measurement: 'percentage' },
-            timeliness: { minimum: 90, target: 98, measurement: 'percentage' }
+            timeliness: { minimum: 90, target: 98, measurement: 'percentage' },
           },
-          external: []
+          external: [],
         },
         accuracy: {
           targetAccuracy: 85,
@@ -574,31 +613,32 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
           tolerance: {
             absolute: 2.0,
             relative: 10,
-            timeWindow: 7
-          }
+            timeWindow: 7,
+          },
         },
-        updateFrequency: 'daily' as const
+        updateFrequency: 'daily' as const,
       };
 
-      const result = await this.predictiveAnalyticsService.predictValueDeliveryTimes(
-        analyticsConfig,
-        historicalData,
-        { currentMetrics: true }
-      );
+      const result =
+        await this.predictiveAnalyticsService.predictValueDeliveryTimes(
+          analyticsConfig,
+          historicalData,
+          { currentMetrics: true }
+        );
 
       this.emit('predictions-generated', {
         valueStreamId,
         predictionId: result.predictionId,
         horizon: result.horizon,
         confidence: result.confidence.overall,
-        predictionsCount: result.predictions.length
+        predictionsCount: result.predictions.length,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Value delivery prediction failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('predictions-failed', { error: errorMessage });
       throw error;
     }
@@ -610,7 +650,9 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
   async executeContinuousImprovementLoop(valueStreamId: string): Promise<void> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Executing continuous improvement loop', { valueStreamId });
+    this.logger.info('Executing continuous improvement loop', {
+      valueStreamId,
+    });
 
     const improvementConfig = {
       improvementId: `ci-loop-${Date.now()}`,
@@ -621,7 +663,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
         participantRoles: ['Team Lead', 'Process Owner'],
         facilitationMode: 'hybrid' as const,
         improvementTypes: ['process'] as const,
-        successCriteria: []
+        successCriteria: [],
       },
       automationLevel: 'semi_automated' as const,
       feedbackLoops: [],
@@ -635,7 +677,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
           frequency: 'weekly' as const,
           format: ['dashboard'] as const,
           audience: [],
-          distribution: []
+          distribution: [],
         },
         governance: {
           reviewCycle: 1,
@@ -647,12 +689,12 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
               required: false,
               approvers: [],
               threshold: 'any' as const,
-              timeout: 24
-            }
+              timeout: 24,
+            },
           },
-          qualityAssurance: { validation: [], testing: [], monitoring: [] }
-        }
-      }
+          qualityAssurance: { validation: [], testing: [], monitoring: [] },
+        },
+      },
     };
 
     await this.continuousImprovementService.executeContinuousImprovementLoop(
@@ -675,8 +717,8 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
         bottleneckAnalysis: !!this.bottleneckAnalysisService,
         flowOptimization: !!this.flowOptimizationService,
         continuousImprovement: !!this.continuousImprovementService,
-        predictiveAnalytics: !!this.predictiveAnalyticsService
-      }
+        predictiveAnalytics: !!this.predictiveAnalyticsService,
+      },
     };
   }
 
@@ -692,7 +734,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
     }, this.config.optimizationFrequency);
 
     this.logger.info('Optimization cycle started', {
-      frequency: this.config.optimizationFrequency
+      frequency: this.config.optimizationFrequency,
     });
   }
 
@@ -712,7 +754,7 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
    */
   shutdown(): void {
     this.logger.info('Shutting down Value Stream Optimization Engine');
-    
+
     this.stopOptimizationCycle();
     this.removeAllListeners();
     this.initialized = false;
@@ -735,8 +777,8 @@ export class ValueStreamOptimizationEngine extends TypedEventBase {
         optimizationEffectiveness: 0,
         learningAccuracy: 0,
         recommendationAcceptanceRate: 0,
-        improvementVelocity: 0
-      }
+        improvementVelocity: 0,
+      },
     };
   }
 }

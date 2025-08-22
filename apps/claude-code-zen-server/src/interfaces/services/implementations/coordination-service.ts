@@ -8,11 +8,11 @@
  * @file Coordination service implementation.
  */
 
-import type { Service } from './core/interfaces');
+import type { Service } from './core/interfaces';
 import type {
   CoordinationServiceConfig,
   ServiceOperationOptions,
-} from './types');
+} from './types';
 
 import('/base-service');
 
@@ -128,7 +128,7 @@ export class CoordinationService extends BaseService implements Service {
   protected async doHealthCheck(): Promise<boolean> {
     try {
       // Check if service is running
-      if (this.lifecycleStatus !== 'running') {
+      if (this.lifecycleStatus !=='running') {
         return false;
       }
 
@@ -175,7 +175,7 @@ export class CoordinationService extends BaseService implements Service {
     this.logger.debug(`Executing coordination operation: ${operation}`);
 
     switch (operation) {
-      case 'create-swarm':
+      case'create-swarm':
         return (await this.createSwarm(params)) as T;
 
       case 'destroy-swarm':
@@ -228,7 +228,7 @@ export class CoordinationService extends BaseService implements Service {
       topology: config?.topology || 'mesh',
       maxAgents: config?.maxAgents || 5,
       agents: [],
-      status: 'active',
+      status:'active',
       createdAt: new Date(),
       metadata: config?.metadata || {},
     };
@@ -257,7 +257,7 @@ export class CoordinationService extends BaseService implements Service {
   }
 
   private getSwarms(): any[] {
-    return Array.from(this.swarms?.values());
+    return Array.from(this.swarms?.values())();
   }
 
   private async spawnAgent(config: any): Promise<unknown> {
@@ -266,7 +266,7 @@ export class CoordinationService extends BaseService implements Service {
       id: agentId,
       type: config?.type || 'generic',
       name: config?.name || `Agent ${agentId}`,
-      status: 'active',
+      status:'active',
       capabilities: config?.capabilities || [],
       swarmId: config?.swarmId,
       createdAt: new Date(),
@@ -318,13 +318,13 @@ export class CoordinationService extends BaseService implements Service {
   private async disconnectAgent(agentId: string): Promise<void> {
     const agent = this.agents.get(agentId);
     if (agent) {
-      agent.status = 'disconnected');
+      agent.status ='disconnected');
       this.logger.debug(`Disconnected agent: ${agentId}`);
     }
   }
 
   private getAgents(): any[] {
-    return Array.from(this.agents?.values());
+    return Array.from(this.agents?.values())();
   }
 
   private async startWorkflow(config: any): Promise<unknown> {
@@ -333,7 +333,7 @@ export class CoordinationService extends BaseService implements Service {
       id: workflowId,
       name: config?.name || `Workflow ${workflowId}`,
       steps: config?.steps || [],
-      status: 'running',
+      status:'running',
       startTime: Date.now(),
       assignedAgents: config?.agents || [],
       progress: 0,
@@ -355,7 +355,7 @@ export class CoordinationService extends BaseService implements Service {
       throw new Error(`Workflow not found: ${workflowId}`);
     }
 
-    workflow.status = 'stopped');
+    workflow.status ='stopped');
     workflow.endTime = Date.now();
 
     this.activeWorkflows.delete(workflowId);
@@ -365,7 +365,7 @@ export class CoordinationService extends BaseService implements Service {
   }
 
   private getWorkflows(): any[] {
-    return Array.from(this.activeWorkflows?.values());
+    return Array.from(this.activeWorkflows?.values())();
   }
 
   private async coordinate(task: any, agentIds: string[]): Promise<unknown> {
@@ -463,8 +463,7 @@ export class CoordinationService extends BaseService implements Service {
   private monitorCoordination(): void {
     // Monitor coordination health and performance
     const inactiveAgents = Array.from(this.agents?.values()).filter(
-      (agent) => agent.status === 'disconnected'
-    );
+      (agent) => agent.status ==='disconnected');
 
     if (inactiveAgents.length > 0) {
       this.logger.debug(`Found ${inactiveAgents.length} inactive agents`);
@@ -494,7 +493,7 @@ export class CoordinationService extends BaseService implements Service {
 
     // Simulate workflow progress
     const updateProgress = () => {
-      if (workflow.status !== 'running') return;
+      if (workflow.status !=='running') return;
 
       workflow.progress = Math.min(workflow.progress + Math.random() * 20, 100);
 

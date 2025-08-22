@@ -33,8 +33,8 @@
  * @requires @claude-zen/foundation - LLMProvider and Claude SDK integration
  */
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation');
-import type { Logger } from '@claude-zen/foundation');
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
 // =============================================================================
 // CORE TYPES
@@ -47,18 +47,13 @@ export interface EpicProposal {
   estimatedValue: number;
   estimatedCost: number;
   timeframe: string;
-  riskLevel: 'low | medium' | 'high');
+  riskLevel: 'low'' | ''medium'' | ''high');
 }
 
-export type SafeRoleType =
-  | 'lean-portfolio-manager'
-  | 'release-train-engineer'
-  | 'product-manager'
-  | 'system-architect'
-  | 'epic-owner');
+export type SafeRoleType ='' | '''lean-portfolio-manager''' | '''release-train-engineer''' | '''product-manager''' | '''system-architect''' | '''epic-owner');
 
 export interface SafeRoleDecisionResult {
-  decision: 'approve | reject' | 'defer | more-information');
+  decision: 'approve'' | ''reject'' | ''defer'' | ''more-information');
   confidence: number;
   reasoning: string;
   recommendations: string[];
@@ -68,7 +63,7 @@ export interface SafeRoleDecisionResult {
 }
 
 export interface SafeWorkflowResult {
-  overallDecision: 'approve | reject' | 'defer');
+  overallDecision: 'approve'' | ''reject'' | ''defer');
   consensusReached: boolean;
   roleDecisions: Array<{
     roleType: SafeRoleType;
@@ -77,7 +72,7 @@ export interface SafeWorkflowResult {
     reasoning: string;
   }>;
   sparcArtifacts?: {
-    status: 'completed | failed' | 'partial');
+    status: 'completed'' | ''failed'' | ''partial');
     specification?: any;
     architecture?: any;
     implementation?: {
@@ -88,12 +83,7 @@ export interface SafeWorkflowResult {
   };
 }
 
-export type SPARCPhase =
-  | 'specification'
-  | 'pseudocode'
-  | 'architecture'
-  | 'refinement'
-  | 'completion');
+export type SPARCPhase ='' | '''specification | pseudocode' | 'architecture' | 'refinement' | 'completion');
 
 export interface SPARCProject {
   id: string;
@@ -173,23 +163,21 @@ ROI Calculation: ${(((epic.estimatedValue - epic.estimatedCost) / epic.estimated
 
 Provide your decision as a JSON object with this exact structure:
 {
-  "decision: approve|reject|defer|more-information",
+  "decision: approve'' | ''reject'' | ''defer'' | ''more-information",
   "confidence": .8,
   "reasoning: brief explanation",
-  "humanOversightRequired": true|false
+  "humanOversightRequired": true'' | ''false
 }`;
 
     try {
       const response = await this.llmProvider.executeAsAnalyst(
-        prompt,
-        'safe-portfolio-decision'
-      );
+        prompt,'safe-portfolio-decision');
       const parsed = this.parseDecisionResponse(response);
 
       return {
-        decision: parsed.decision || 'defer',
-        confidence: parsed.confidence || .7,
-        reasoning: parsed.reasoning || 'Portfolio analysis completed',
+        decision: parsed.decision'' | '''' | '''defer',
+        confidence: parsed.confidence'' | '''' | ''.7,
+        reasoning: parsed.reasoning'' | '''' | '''Portfolio analysis completed',
         recommendations: [
           'Consider market timing and competitive landscape',
           'Validate customer demand through MVP approach',
@@ -231,23 +219,21 @@ Analyze customer value, market fit, competitive advantage, and product strategy 
 
 Provide your decision as a JSON object with this exact structure:
 {
-  "decision: approve|reject|defer|more-information",
+  "decision: approve'' | ''reject'' | ''defer'' | ''more-information",
   "confidence": .8,
   "reasoning: brief explanation focusing on customer value and market fit",
-  "humanOversightRequired": true|false
+  "humanOversightRequired": true'' | ''false
 }`;
 
     try {
       const response = await this.llmProvider.executeAsAnalyst(
-        prompt,
-        'safe-product-manager-decision'
-      );
+        prompt,'safe-product-manager-decision');
       const parsed = this.parseDecisionResponse(response);
 
       return {
-        decision: parsed.decision || 'defer',
-        confidence: parsed.confidence || .7,
-        reasoning: parsed.reasoning || 'Customer value analysis completed',
+        decision: parsed.decision'' | '''' | '''defer',
+        confidence: parsed.confidence'' | '''' | ''.7,
+        reasoning: parsed.reasoning'' | '''' | '''Customer value analysis completed',
         recommendations: [
           'Conduct user research to validate assumptions',
           'Develop minimum viable product (MVP) approach',
@@ -287,24 +273,22 @@ Analyze technical feasibility, architectural complexity, and system integration 
 
 Provide your decision as a JSON object with this exact structure:
 {
-  "decision: approve|reject|defer|more-information",
+  "decision: approve'' | ''reject'' | ''defer'' | ''more-information",
   "confidence": .8,
   "reasoning: brief explanation focusing on technical feasibility",
-  "humanOversightRequired": true|false
+  "humanOversightRequired": true'' | ''false
 }`;
 
     try {
       const response = await this.llmProvider.executeAsAnalyst(
-        prompt,
-        'safe-system-architect-decision'
-      );
+        prompt,'safe-system-architect-decision');
       const parsed = this.parseDecisionResponse(response);
 
       return {
-        decision: parsed.decision || 'defer',
-        confidence: parsed.confidence || .7,
+        decision: parsed.decision'' | '''' | '''defer',
+        confidence: parsed.confidence'' | '''' | ''.7,
         reasoning:
-          parsed.reasoning || 'Technical feasibility analysis completed',
+          parsed.reasoning'' | '''' | '''Technical feasibility analysis completed',
         recommendations: [
           'Plan architecture runway enablers',
           'Address technical debt before implementation',
@@ -343,23 +327,21 @@ Analyze program capacity, team availability, and delivery timeline feasibility.
 
 Provide your decision as a JSON object with this exact structure:
 {
-  "decision: approve|reject|defer|more-information",
+  "decision: approve'' | ''reject'' | ''defer'' | ''more-information",
   "confidence": .8,
   "reasoning: brief explanation focusing on program capacity and delivery",
-  "humanOversightRequired": true|false
+  "humanOversightRequired": true'' | ''false
 }`;
 
     try {
       const response = await this.llmProvider.executeAsAnalyst(
-        prompt,
-        'safe-rte-decision'
-      );
+        prompt,'safe-rte-decision');
       const parsed = this.parseDecisionResponse(response);
 
       return {
-        decision: parsed.decision || 'defer',
-        confidence: parsed.confidence || .7,
-        reasoning: parsed.reasoning || 'Program execution analysis completed',
+        decision: parsed.decision'' | '''' | '''defer',
+        confidence: parsed.confidence'' | '''' | ''.7,
+        reasoning: parsed.reasoning'' | '''' | '''Program execution analysis completed',
         recommendations: [
           'Schedule PI Planning session to confirm team commitment',
           'Identify and address program dependencies',
@@ -400,23 +382,21 @@ Analyze business case strength, market opportunity, and customer value propositi
 
 Provide your decision as a JSON object with this exact structure:
 {
-  "decision: approve|reject|defer|more-information",
+  "decision: approve'' | ''reject'' | ''defer'' | ''more-information",
   "confidence": .8,
   "reasoning: brief explanation focusing on business case strength",
-  "humanOversightRequired": true|false
+  "humanOversightRequired": true'' | ''false
 }`;
 
     try {
       const response = await this.llmProvider.executeAsAnalyst(
-        prompt,
-        'safe-epic-owner-decision'
-      );
+        prompt,'safe-epic-owner-decision');
       const parsed = this.parseDecisionResponse(response);
 
       return {
-        decision: parsed.decision || 'defer',
-        confidence: parsed.confidence || .7,
-        reasoning: parsed.reasoning || 'Business case analysis completed',
+        decision: parsed.decision'' | '''' | '''defer',
+        confidence: parsed.confidence'' | '''' | ''.7,
+        reasoning: parsed.reasoning'' | '''' | '''Business case analysis completed',
         recommendations: [
           'Validate benefit hypothesis with customer interviews',
           'Define leading and lagging success metrics',
@@ -448,8 +428,8 @@ Provide your decision as a JSON object with this exact structure:
         const parsed = JSON.parse(jsonMatch[0]);
         return {
           decision: parsed.decision,
-          confidence: Number(parsed.confidence) || .7,
-          reasoning: parsed.reasoning || 'LLM decision completed',
+          confidence: Number(parsed.confidence)'' | '''' | ''.7,
+          reasoning: parsed.reasoning'' | '''' | '''LLM decision completed',
           humanOversightRequired: Boolean(parsed.humanOversightRequired),
         };
       }
@@ -457,11 +437,11 @@ Provide your decision as a JSON object with this exact structure:
       // Fallback: parse text response for decision keywords
       const text = response?.toLowerCase()
       let decision = 'defer');
-      if (text.includes('approve) || text.includes(accept'))
+      if (text.includes('approve)'' | '''' | ''text.includes(accept'))
         decision = 'approve');
-      else if (text.includes('reject) || text.includes(decline'))
+      else if (text.includes('reject)'' | '''' | ''text.includes(decline'))
         decision = 'reject');
-      else if (text.includes('more information) || text.includes(need more'))
+      else if (text.includes('more information)'' | '''' | ''text.includes(need more'))
         decision = 'more-information');
 
       return {
@@ -575,24 +555,20 @@ class SPARCEngineStandalone {
       const specPrompt = this.buildSpecificationPrompt(project, epic);
       const response = await llm.executeAsAnalyst(
         specPrompt,
-        'sparc-specification'
-      );
+        'sparc-specification');
 
       const specData = this.parseSpecificationResponse(response);
 
       project.specification = {
-        goals: specData.goals || [`Implement ${epic.title}`],
-        scope: specData.scope || epic.businessCase,
-        constraints: specData.constraints || [
-          'Time constraints',
+        goals: specData.goals'' | '''' | ''[`Implement ${epic.title}`],
+        scope: specData.scope'' | '''' | ''epic.businessCase,
+        constraints: specData.constraints'' | '''' | ''['Time constraints',
           'Budget constraints',
         ],
-        stakeholders: specData.stakeholders || [
-          'Development team',
+        stakeholders: specData.stakeholders'' | '''' | ''['Development team',
           'End users',
         ],
-        successCriteria: specData.successCriteria || [
-          'All requirements met',
+        successCriteria: specData.successCriteria'' | '''' | ''['All requirements met',
           'System is functional',
           'Tests pass',
         ],
@@ -629,24 +605,20 @@ class SPARCEngineStandalone {
       const architecturePrompt = this.buildArchitecturePrompt(project, epic);
       const response = await llm.executeAsArchitect(
         architecturePrompt,
-        'sparc-architecture'
-      );
+        'sparc-architecture');
 
       const architectureData = this.parseArchitectureResponse(response);
 
       project.architecture = {
-        components: architectureData.components || [
-          'API Service',
+        components: architectureData.components'' | '''' | ''['API Service',
           'Database',
           'Frontend',
         ],
-        relationships: architectureData.relationships || [
-          'Frontend → API Service',
+        relationships: architectureData.relationships'' | '''' | ''['Frontend → API Service',
           'API Service → Database',
         ],
-        patterns: architectureData.patterns || ['MVC, REST API'],
-        technologies: architectureData.technologies || [
-          'TypeScript',
+        patterns: architectureData.patterns'' | '''' | ''['MVC, REST API'],
+        technologies: architectureData.technologies'' | '''' | ''['TypeScript',
           'Node.js',
           'React',
         ],
@@ -682,8 +654,7 @@ class SPARCEngineStandalone {
       );
       const response = await llm.executeAsCoder(
         codeExplanationPrompt,
-        'sparc-code-explanation'
-      );
+        'sparc-code-explanation');
 
       // Parse explanation into simulated file structure
       const simulatedFiles = this.parseCodeExplanation(response);
@@ -692,7 +663,7 @@ class SPARCEngineStandalone {
         files: simulatedFiles.files,
         tests: simulatedFiles.tests,
         documentation:
-          simulatedFiles.documentation || (simulatedFiles as any).docs || [],
+          simulatedFiles.documentation'' | '''' | ''(simulatedFiles as any).docs'' | '''' | ''[],
         explanation: response, // Keep full explanation for review
       };
 
@@ -705,7 +676,7 @@ class SPARCEngineStandalone {
         `   Simulated tests: ${simulatedFiles.tests.length} tests`
       );
       this.logger.info(
-        `   Simulated docs: ${(simulatedFiles.documentation || (simulatedFiles as any).docs || []).length} docs`
+        `   Simulated docs: ${(simulatedFiles.documentation'' | '''' | ''(simulatedFiles as any).docs'' | '''' | ''[]).length} docs`
       );
       this.logger.info(`   Note: NO ACTUAL FILES CREATED (simulation only)`);
     } catch (error) {
@@ -959,8 +930,7 @@ Make it production-ready with proper structure and documentation.
     return lines
       .filter(
         (line) =>
-          line?.toLowerCase.includes('algorithm') ||
-          line?.toLowerCase.includes('process');
+          line?.toLowerCase.includes('algorithm')'' | '''' | ''line?.toLowerCase.includes('process');
       )
       .slice(0, 3);
   }
@@ -970,8 +940,7 @@ Make it production-ready with proper structure and documentation.
     return lines
       .filter(
         (line) =>
-          line?.toLowerCase.includes('data') ||
-          line?.toLowerCase.includes('structure');
+          line?.toLowerCase.includes('data')'' | '''' | ''line?.toLowerCase.includes('structure');
       )
       .slice(0, 3);
   }
@@ -980,7 +949,7 @@ Make it production-ready with proper structure and documentation.
     const lines = response.split('\n');
     return lines
       .filter(
-        (line) => line.includes('→) || line?.toLowerCase.includes(workflow');
+        (line) => line.includes('→)'' | '''' | ''line?.toLowerCase.includes(workflow');
       )
       .slice(0, 3);
   }
@@ -990,8 +959,7 @@ Make it production-ready with proper structure and documentation.
     return lines
       .filter(
         (line) =>
-          line?.toLowerCase.includes('optimiz') ||
-          line?.toLowerCase.includes('performance');
+          line?.toLowerCase.includes('optimiz')'' | '''' | ''line?.toLowerCase.includes('performance');
       )
       .slice(0, 3);
   }
@@ -1001,8 +969,7 @@ Make it production-ready with proper structure and documentation.
     return lines
       .filter(
         (line) =>
-          line?.toLowerCase.includes('risk') ||
-          line?.toLowerCase.includes('error');
+          line?.toLowerCase.includes('risk')'' | '''' | ''line?.toLowerCase.includes('error');
       )
       .slice(0, 3);
   }
@@ -1012,8 +979,7 @@ Make it production-ready with proper structure and documentation.
     return lines
       .filter(
         (line) =>
-          line?.toLowerCase.includes('quality') ||
-          line?.toLowerCase.includes('test');
+          line?.toLowerCase.includes('quality')'' | '''' | ''line?.toLowerCase.includes('test');
       )
       .slice(0, 3);
   }
@@ -1096,7 +1062,7 @@ Make it production-ready with proper structure and documentation.
 
   private extractGeneratedTests(claudeMessages: any[]): string[] {
     return this.extractGeneratedFiles(claudeMessages).filter(
-      (file) => file.includes('test) || file.includes(spec');
+      (file) => file.includes('test)'' | '''' | ''file.includes(spec');
     );
   }
 
@@ -1118,21 +1084,19 @@ Make it production-ready with proper structure and documentation.
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
         return {
-          files: parsed.files || [],
-          tests: parsed.tests || [],
-          documentation: parsed.documentation || [],
-          explanation: parsed.explanation || response.substring(0, 200),
+          files: parsed.files'' | '''' | ''[],
+          tests: parsed.tests'' | '''' | ''[],
+          documentation: parsed.documentation'' | '''' | ''[],
+          explanation: parsed.explanation'' | '''' | ''response.substring(0, 200),
         };
       }
 
       // Fallback: extract file patterns from text
       const fileMatches =
-        response.match(/[\w./-]+\.(ts|js|tsx|jsx|py|go|rs|java|cpp|c|h)/g) ||
-        [];
+        response.match(/[\w./-]+\.(ts'' | ''js'' | ''tsx'' | ''jsx'' | ''py'' | ''go'' | ''rs'' | ''java'' | ''cpp'' | ''c'' | ''h)/g)'' | '''' | ''[];
       const testMatches =
-        response.match(/[\w./-]+\.(test|spec)\.(ts|js|tsx|jsx|py|go|rs)/g) ||
-        [];
-      const docMatches = response.match(/[\w./-]+\.(md|txt|rst|adoc)/g) || [];
+        response.match(/[\w./-]+\.(test'' | ''spec)\.(ts'' | ''js'' | ''tsx'' | ''jsx'' | ''py'' | ''go'' | ''rs)/g)'' | '''' | ''[];
+      const docMatches = response.match(/[\w./-]+\.(md'' | ''txt'' | ''rst'' | ''adoc)/g)'' | '''' | ''[];
 
       return {
         files: Array.from(new Set(fileMatches)).slice(0, 10),
@@ -1294,7 +1258,7 @@ export class SafeSparcWorkflow extends TypedEventBase {
 
   private determineOverallDecision(
     decisions: SafeRoleDecisionResult[]
-  ): 'approve | reject' | 'defer' {
+  ): 'approve'' | ''reject'' | ''defer' {
     const approvals = decisions.filter((d) => d.decision === 'approve').length;
     const rejections = decisions.filter((d) => d.decision === 'reject').length;
     const totalDecisions = decisions.length;

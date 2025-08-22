@@ -201,7 +201,7 @@ export interface MonitoringSummary {
   avg_memory_mb: number;
   avg_cpu_usage: number;
   stable_agents: boolean;
-  performance_trend: 'stable | improving' | 'degrading');
+  performance_trend: 'stable'' | ''improving'' | ''degrading');
 }
 
 export interface SwarmMonitorResult {

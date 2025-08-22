@@ -3,17 +3,17 @@
  * Consolidates all Express servers into one with organized routes.
  */
 
-import { createServer } from 'http');
+import { createServer } from 'http';
 import path from 'path');
 
-import { Logger, Config } from '@claude-zen/foundation');
-import type { SystemConfiguration } from '@claude-zen/intelligence');
+import { Logger, Config } from '@claude-zen/foundation';
+import type { SystemConfiguration } from '@claude-zen/intelligence';
 import compression from 'compression');
 import cors from 'cors');
 import express from 'express');
 import rateLimit from 'express-rate-limit');
 import helmet from 'helmet');
-import type { Server as SocketIOServer } from 'socket.io');
+import type { Server as SocketIOServer } from 'socket.io';
 // Foundation package - unified interface for all shared utilities
 
 // Type moved to @claude-zen/infrastructure
@@ -86,13 +86,9 @@ export class UnifiedClaudeZenServer {
     // Transform SystemConfiguration to ServerConfig
     return {
       port:
-        systemConfig.interfaces?.web?.port ||
-        systemConfig.interfaces?.mcp?.http?.port ||
-        defaultConfig.port,
+        systemConfig.interfaces?.web?.port'' | '''' | ''systemConfig.interfaces?.mcp?.http?.port'' | '''' | ''defaultConfig.port,
       host:
-        systemConfig.interfaces?.web?.host ||
-        systemConfig.interfaces?.mcp?.http?.host ||
-        defaultConfig.host,
+        systemConfig.interfaces?.web?.host'' | '''' | ''systemConfig.interfaces?.mcp?.http?.host'' | '''' | ''defaultConfig.host,
       features: {
         mcp: true, // MCP always enabled for this unified server
         api: true, // API always enabled
@@ -137,7 +133,7 @@ export class UnifiedClaudeZenServer {
 
     // Apply performance middleware
     if (this.config.middleware.compression) {
-      this.app.use(compression());
+      this.app.use(compression())();
     }
 
     // Apply CORS
@@ -300,8 +296,8 @@ export class UnifiedClaudeZenServer {
           method: req.method,
         });
 
-        res.status((err as any).status || 500).json({
-          error: 'Internal server error',
+        res.status((err as any).status'' | '''' | ''500).json({
+          error:'Internal server error',
           message:
             process.env['NODE_ENV] === production'
               ? 'Something went wrong'
@@ -349,11 +345,11 @@ export class UnifiedClaudeZenServer {
       const { createProjectRoutes } = await import('/api/http/v1/projects');
 
       // Mount REST API routes
-      this.app.use('/api/v1/coordination', createCoordinationRoutes());
-      this.app.use('/api/v1/database', createDatabaseRoutes());
-      this.app.use('/api/v1/documents', createDocumentRoutes());
-      this.app.use('/api/v1/memory', createMemoryRoutes());
-      this.app.use('/api/v1/projects', createProjectRoutes());
+      this.app.use('/api/v1/coordination', createCoordinationRoutes())();
+      this.app.use('/api/v1/database', createDatabaseRoutes())();
+      this.app.use('/api/v1/documents', createDocumentRoutes())();
+      this.app.use('/api/v1/memory', createMemoryRoutes())();
+      this.app.use('/api/v1/projects', createProjectRoutes())();
 
       logger.info('REST API routes mounted', {
         routes: ['coordination, database', 'documents, memory', 'projects'],

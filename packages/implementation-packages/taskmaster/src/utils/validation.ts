@@ -114,7 +114,9 @@ export class ValidationUtils {
   /**
    * Validate task creation input
    */
-  static validateTaskCreation(input: unknown): ZodSafeParseResult<TaskCreationInput> {
+  static validateTaskCreation(
+    input: unknown
+  ): ZodSafeParseResult<TaskCreationInput> {
     return TaskCreationSchema.safeParse(input);
   }
 
@@ -130,7 +132,9 @@ export class ValidationUtils {
   /**
    * Validate WIP limits
    */
-  static validateWIPLimits(input: unknown): ZodSafeParseResult<z.infer<typeof WIPLimitsSchema>> {
+  static validateWIPLimits(
+    input: unknown
+  ): ZodSafeParseResult<z.infer<typeof WIPLimitsSchema>> {
     return WIPLimitsSchema.safeParse(input);
   }
 
@@ -150,12 +154,14 @@ export class ValidationUtils {
     const from = TaskStateSchema.safeParse(fromState);
     const to = TaskStateSchema.safeParse(toState);
 
-    if (!from.success || !to.success) {
+    if (!from.success'' | '''' | ''!to.success) {
       return false;
     }
 
     // Special states can transition to any state
-    if (['blocked', 'expedite'].includes(from.data) || ['blocked', 'expedite'].includes(to.data)) {
+    if (
+      ['blocked', 'expedite'].includes(from.data)'' | '''' | ''['blocked', 'expedite'].includes(to.data)
+    ) {
       return true;
     }
 
@@ -188,7 +194,9 @@ export class ValidationUtils {
 /**
  * Validate task creation input with comprehensive error reporting
  */
-export function validateTaskCreation(input: unknown): ZodSafeParseResult<TaskCreationInput> {
+export function validateTaskCreation(
+  input: unknown
+): ZodSafeParseResult<TaskCreationInput> {
   return TaskCreationSchema.safeParse(input);
 }
 

@@ -1,4 +1,4 @@
-import { EventEmitter } from "@claude-zen/foundation";
+import { EventEmitter } from '@claude-zen/foundation';
 /**
  * UEL (Unified Event Layer) - System Integration Layer.
  *
@@ -37,9 +37,18 @@ interface EventManagerInterface extends EventManager {
 interface UELSystem {
   initialize(config: any): Promise<void>;
   getEventManager(): EventManager;
-  createSystemEventManager(name: string, config: any): Promise<EventManagerInterface>;
-  createCoordinationEventManager(name: string, config: any): Promise<EventManagerInterface>;
-  createInterfaceEventManager(name: string, config: any): Promise<EventManagerInterface>;
+  createSystemEventManager(
+    name: string,
+    config: any
+  ): Promise<EventManagerInterface>;
+  createCoordinationEventManager(
+    name: string,
+    config: any
+  ): Promise<EventManagerInterface>;
+  createInterfaceEventManager(
+    name: string,
+    config: any
+  ): Promise<EventManagerInterface>;
   getSystemStatus(): Promise<any>;
   shutdown(): Promise<void>;
 }
@@ -71,13 +80,17 @@ export class UELEnhancedEventBus extends TypedEventBase {
   ) {
     super();
 
-    this.logger = options?.logger || getLogger('UELEnhancedEventBus');
+    this.logger = options?.logger'' | '''' | ''getLogger('UELEnhancedEventBus');
 
     if (options?.enableUEL && options?.uelIntegration?.eventManager) {
       this.initializeUELIntegration({
         eventManager: options.uelIntegration.eventManager,
-        ...(options.uelIntegration.managerType && { managerType: options.uelIntegration.managerType }),
-        ...(options.uelIntegration.managerName && { managerName: options.uelIntegration.managerName }),
+        ...(options.uelIntegration.managerType && {
+          managerType: options.uelIntegration.managerType,
+        }),
+        ...(options.uelIntegration.managerName && {
+          managerName: options.uelIntegration.managerName,
+        }),
       });
     }
   }
@@ -120,14 +133,14 @@ export class UELEnhancedEventBus extends TypedEventBase {
    * @param eventName
    * @param {...any} args
    */
-  override emit(eventName: string | symbol, ...args: unknown[]): boolean {
+  override emit(eventName: string'' | ''symbol, ...args: unknown[]): boolean {
     const startTime = Date.now();
 
     // Standard EventEmitter behavior
     const result = super.emit(eventName, ...args);
 
     // UEL integration if enabled
-    if (this.uelEnabled && this.uelManager && typeof eventName === 'string') {
+    if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {
       this.emitToUEL(eventName, args, startTime).catch((error) => {
         this.logger?.warn(`UEL emit failed for ${eventName}:`, error);
       });
@@ -143,13 +156,13 @@ export class UELEnhancedEventBus extends TypedEventBase {
    * @param listener
    */
   override on(
-    eventName: string | symbol,
+    eventName: string'' | ''symbol,
     listener: (...args: unknown[]) => void
   ): this {
     const result = super.on(eventName, listener);
 
     // Track UEL subscriptions if enabled
-    if (this.uelEnabled && this.uelManager && typeof eventName === 'string') {
+    if (this.uelEnabled && this.uelManager && typeof eventName ==='string') {
       this.trackUELSubscription(eventName, listener).catch((error) => {
         this.logger?.debug(
           `UEL subscription tracking failed for ${eventName}:`,
@@ -167,7 +180,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
   getStatus(): {
     eventEmitter: {
       maxListeners: number;
-      eventNames: (string | symbol)[];
+      eventNames: (string'' | ''symbol)[];
       listenerCount: number;
     };
     uel: {
@@ -186,7 +199,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
       0
     );
 
-    const maxListeners = (this as any)._maxListeners || 10; // EventEmitter3 default
+    const maxListeners = (this as any)._maxListeners'' | '''' | ''10; // EventEmitter3 default
 
     return {
       eventEmitter: {
@@ -241,8 +254,8 @@ export class UELEnhancedEventBus extends TypedEventBase {
 
     await this.initializeUELIntegration({
       eventManager,
-      managerType: options?.managerType || EventManagerTypes.SYSTEM,
-      managerName: options?.managerName || 'enhanced-event-bus',
+      managerType: options?.managerType'' | '''' | ''EventManagerTypes.SYSTEM,
+      managerName: options?.managerName'' | '''' | '''enhanced-event-bus',
     });
 
     if (options?.migrateExistingListeners) {
@@ -263,15 +276,15 @@ export class UELEnhancedEventBus extends TypedEventBase {
 
     try {
       const uelEventType =
-        this.eventMappings.get(eventName) || `eventbus:${eventName}`;
+        this.eventMappings.get(eventName)'' | '''' | ''`eventbus:${eventName}`;
 
       const uelEvent: SystemLifecycleEvent = {
         id: `bus-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
-        source: 'enhanced-event-bus',
+        source:'enhanced-event-bus',
         type: uelEventType as any,
         operation: 'emit' as any,
-        status: 'success' as any,
+        status: 'success'as any,
         payload: {
           eventName,
           args,
@@ -298,7 +311,7 @@ export class UELEnhancedEventBus extends TypedEventBase {
 
     try {
       const uelEventType =
-        this.eventMappings.get(eventName) || `eventbus:${eventName}`;
+        this.eventMappings.get(eventName)'' | '''' | ''`eventbus:${eventName}`;
 
       // Create UEL-compatible listener wrapper
       const uelListener = (event: SystemEvent) => {
@@ -378,7 +391,8 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
   ) {
     super();
 
-    this.logger = options?.logger || getLogger('UELEnhancedApplicationCoordinator');
+    this.logger =
+      options?.logger'' | '''' | ''getLogger('UELEnhancedApplicationCoordinator');
 
     if (options?.enableUEL) {
       this.initializeUEL(options?.uelConfig);
@@ -517,12 +531,12 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
    * @param eventName
    * @param {...any} args
    */
-  override emit(eventName: string | symbol, ...args: unknown[]): boolean {
+  override emit(eventName: string'' | ''symbol, ...args: unknown[]): boolean {
     // Standard EventEmitter behavior
     const result = super.emit(eventName, ...args);
 
     // Route to enhanced event bus if available
-    if (this.eventBus && typeof eventName === 'string') {
+    if (this.eventBus && typeof eventName ==='string') {
       this.eventBus.emit(eventName, ...args);
     }
 
@@ -535,7 +549,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
   async getSystemStatus(): Promise<{
     applicationCoordinator: {
       initialized: boolean;
-      eventNames: (string | symbol)[];
+      eventNames: (string'' | ''symbol)[];
       listenerCount: number;
     };
     uel: {
@@ -587,7 +601,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
     componentName: string,
     type: EventManagerType = EventManagerTypes.SYSTEM,
     config?: Partial<EventManagerConfig>
-  ): Promise<EventManagerInterface | null> {
+  ): Promise<EventManagerInterface'' | ''null> {
     if (!this.uelSystem) {
       this.logger.warn('UEL not enabled - cannot create component manager');
       return null;
@@ -599,7 +613,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
       const manager = await eventManager.createEventManager?.({
         type,
         name: `app-${componentName}`,
-        config: config || {},
+        config: config'' | '''' | ''{},
         autoStart: true,
       });
 
@@ -638,7 +652,7 @@ export class UELEnhancedApplicationCoordinator extends TypedEventBase {
           score -= 20;
         }
 
-        const healthPercentage = uelStatus.healthPercentage || 100;
+        const healthPercentage = uelStatus.healthPercentage'' | '''' | ''100;
         if (healthPercentage < 80) {
           issues.push(`UEL system health degraded: ${healthPercentage}%`);
           score -= 15;
@@ -732,7 +746,7 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
   ) {
     super();
 
-    this.logger = options?.logger || getLogger('UELEnhancedObserverSystem');
+    this.logger = options?.logger'' | '''' | ''getLogger('UELEnhancedObserverSystem');
 
     if (options?.enableUEL && options?.eventManager) {
       this.initializeUELIntegration(options?.eventManager);
@@ -748,13 +762,12 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
     eventManager: EventManager
   ): Promise<void> {
     try {
-      this.uelEventManager = await (eventManager as any).createMonitoringEventManager?.(
-        'observer-system',
-        {
-          maxListeners: 100,
-          retryAttempts: 2,
-        }
-      );
+      this.uelEventManager = await (
+        eventManager as any
+      ).createMonitoringEventManager?.('observer-system', {
+        maxListeners: 100,
+        retryAttempts: 2,
+      });
 
       this.logger?.info('✅ UEL integration initialized for Observer System');
     } catch (error) {
@@ -801,13 +814,13 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
     const originalEmit = observer.emit.bind(observer);
 
     observer.emit = (
-      eventName: string | symbol,
+      eventName: string'' | ''symbol,
       ...args: unknown[]
     ): boolean => {
       const result = originalEmit(eventName, ...args);
 
       // Emit to UEL system
-      if (this.uelEventManager && typeof eventName === 'string') {
+      if (this.uelEventManager && typeof eventName ==='string') {
         const uelEvent: MonitoringEvent = {
           id: `obs-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
           timestamp: new Date(),
@@ -883,7 +896,7 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
    *
    * @param name
    */
-  getObserver(name: string): EventEmitter | undefined {
+  getObserver(name: string): EventEmitter'' | ''undefined {
     return this.observers.get(name);
   }
 
@@ -891,7 +904,7 @@ export class UELEnhancedObserverSystem extends TypedEventBase {
    * List all observer names.
    */
   listObservers(): string[] {
-    return Array.from(this.observers.keys());
+    return Array.from(this.observers.keys())();
   }
 }
 
@@ -923,10 +936,7 @@ export class SystemIntegrationFactory {
    * @param eventManager
    * @param logger
    */
-  async initialize(
-    eventManager: EventManager,
-    logger?: Logger
-  ): Promise<void> {
+  async initialize(eventManager: EventManager, logger?: Logger): Promise<void> {
     this.eventManager = eventManager;
     if (logger) {
       this.logger = logger;
@@ -955,12 +965,12 @@ export class SystemIntegrationFactory {
       uelIntegration: this.eventManager
         ? {
             eventManager: this.eventManager,
-            managerType: options?.managerType || EventManagerTypes.SYSTEM,
-            managerName: options?.managerName || 'enhanced-bus',
+            managerType: options?.managerType'' | '''' | ''EventManagerTypes.SYSTEM,
+            managerName: options?.managerName'' | '''' | '''enhanced-bus',
           }
         : undefined,
       logger: this.logger,
-      maxListeners: options?.maxListeners || undefined,
+      maxListeners: options?.maxListeners'' | '''' | ''undefined,
     } as any);
   }
 
@@ -987,7 +997,7 @@ export class SystemIntegrationFactory {
     return new UELEnhancedApplicationCoordinator({
       enableUEL: options?.enableUEL,
       logger: this.logger,
-      uelConfig: options?.uelConfig || undefined,
+      uelConfig: options?.uelConfig'' | '''' | ''undefined,
     } as any);
   }
 
@@ -1002,7 +1012,7 @@ export class SystemIntegrationFactory {
   ): UELEnhancedObserverSystem {
     return new UELEnhancedObserverSystem({
       enableUEL: options?.enableUEL && !!this.eventManager,
-      eventManager: this.eventManager || undefined,
+      eventManager: this.eventManager'' | '''' | ''undefined,
       logger: this.logger,
     } as any);
   }
@@ -1051,7 +1061,10 @@ export async function enhanceWithUEL<T extends TypedEventBase>(
   managerType: EventManagerType = EventManagerTypes.SYSTEM,
   logger?: Logger
 ): Promise<UELCompatibleEventEmitter> {
-  const migrationHelper = new TypedEventBaseMigrationHelper(eventManager as any, logger);
+  const migrationHelper = new TypedEventBaseMigrationHelper(
+    eventManager as any,
+    logger
+  );
   return await migrationHelper.wrapEventEmitter(
     originalInstance,
     name,
@@ -1076,10 +1089,21 @@ export function analyzeSystemEventEmitterUsage(
     >;
   };
   migrationRecommendations: string[];
-  overallComplexity: 'low' | 'medium' | 'high';
+  overallComplexity: 'low | medium' | 'high';
 } {
-  const migrationHelper = new TypedEventBaseMigrationHelper(null as any, logger);
-  const systemAnalyses: { [key: string]: { eventTypes: string[]; listenerCounts: Record<string, number>; maxListeners: number; recommendations: string[]; migrationComplexity: "high" | "medium" | "low"; } } = {};
+  const migrationHelper = new TypedEventBaseMigrationHelper(
+    null as any,
+    logger
+  );
+  const systemAnalyses: {
+    [key: string]: {
+      eventTypes: string[];
+      listenerCounts: Record<string, number>;
+      maxListeners: number;
+      recommendations: string[];
+      migrationComplexity: 'high | medium' | 'low';
+    };
+  } = {};
   const migrationRecommendations: string[] = [];
 
   let totalListeners = 0;
@@ -1120,16 +1144,14 @@ export function analyzeSystemEventEmitterUsage(
 
   // Determine overall complexity
   const systemCount = Object.keys(systems).length;
-  let overallComplexity: 'low' | 'medium' | 'high' = 'low';
+  let overallComplexity: 'low | medium' | 'high' = 'low';
 
-  if (highComplexitySystems > systemCount * 0.3 || totalListeners > 100) {
-    overallComplexity = 'high';
+  if (highComplexitySystems > systemCount * 0.3'' | '''' | ''totalListeners > 100) {
+    overallComplexity ='high';
   } else if (
-    highComplexitySystems > 0 ||
-    totalListeners > 50 ||
-    totalEventTypes > 50
+    highComplexitySystems > 0'' | '''' | ''totalListeners > 50'' | '''' | ''totalEventTypes > 50
   ) {
-    overallComplexity = 'medium';
+    overallComplexity ='medium';
   }
 
   // Add global recommendations
@@ -1170,10 +1192,7 @@ export const UELSystemIntegration = {
   analyzeSystemEventEmitterUsage,
 
   // Initialize system integration
-  async initialize(
-    eventManager: EventManager,
-    logger?: Logger
-  ): Promise<void> {
+  async initialize(eventManager: EventManager, logger?: Logger): Promise<void> {
     await SystemIntegrationFactory.getInstance().initialize(
       eventManager,
       logger

@@ -18,7 +18,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
   AgentCapabilities,
@@ -84,7 +84,7 @@ export {
   isObjectArrayWithProps,
   isPositiveNumber,
   isValidNumber,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 export * from "./client-types";
 export * from "./events-types";
 export * from "./knowledge-types";

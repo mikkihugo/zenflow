@@ -11,7 +11,7 @@ export interface Widget {
   component: string;
   title: string;
   icon: string;
-  size: 'small' | 'medium' | 'large';
+  size: 'small | medium' | 'large';
   position: { row: number; col: number };
   enabled: boolean;
 }
@@ -130,7 +130,7 @@ export const dashboardLayout = writable<DashboardLayout>({
 /**
  * Widget being dragged store
  */
-export const draggedWidget = writable<Widget | null>(null);
+export const draggedWidget = writable<Widget'' | ''null>(null);
 
 /**
  * Customization mode store
@@ -142,7 +142,7 @@ export const customizationMode = writable<boolean>(false);
  */
 export const availableWidgets: Widget[] = [
   {
-    id: 'websocket-status',
+    id:'websocket-status',
     name: 'WebSocket Status',
     component: 'WebSocketStatusWidget',
     title: '📡 Connection Status',
@@ -208,7 +208,7 @@ export const availableWidgets: Widget[] = [
  */
 export class DragDropManager {
   private dropZones = new Map<string, HTMLElement>();
-  private dragPreview: HTMLElement | null = null;
+  private dragPreview: HTMLElement'' | ''null = null;
 
   /**
    * Register a drop zone

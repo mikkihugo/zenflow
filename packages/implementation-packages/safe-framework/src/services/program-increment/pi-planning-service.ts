@@ -1,10 +1,10 @@
 /**
  * @fileoverview PI Planning Service - Program Increment Planning Management
- * 
+ *
  * Specialized service for managing SAFe Program Increment planning events and workflows.
  * Handles PI planning event orchestration, AGUI integration, stakeholder coordination,
  * and business context alignment.
- * 
+ *
  * Features:
  * - PI planning event configuration and execution
  * - AGUI-integrated planning workflows with approval gates
@@ -12,13 +12,13 @@
  * - Business context and architectural vision alignment
  * - Planning agenda execution and outcome tracking
  * - Planning adjustment and decision management
- * 
+ *
  * Integrations:
  * - @claude-zen/workflows: PI planning workflows and orchestration
  * - @claude-zen/agui: Advanced GUI for planning gates and approvals
  * - @claude-zen/teamwork: Stakeholder collaboration and coordination
  * - @claude-zen/knowledge: Business context and architectural knowledge
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -48,9 +48,9 @@ export interface PIPlanningEventConfig {
 export interface PlanningParticipant {
   readonly userId: string;
   readonly name: string;
-  readonly role: 'product-owner' | 'architect' | 'team-lead' | 'scrum-master' | 'stakeholder';
+  readonly role:' | ''product-owner'' | ''architect'' | ''team-lead'' | ''scrum-master'' | ''stakeholder';
   readonly teamId?: string;
-  readonly artRole?: 'rte' | 'product-manager' | 'system-architect' | 'business-owner';
+  readonly artRole?:' | ''rte'' | ''product-manager'' | ''system-architect'' | ''business-owner';
   readonly required: boolean;
 }
 
@@ -79,9 +79,9 @@ export interface BusinessContext {
 }
 
 export interface BusinessConstraint {
-  readonly type: 'budget' | 'timeline' | 'resource' | 'regulatory' | 'technical';
+  readonly type:' | ''budget'' | ''timeline'' | ''resource'' | ''regulatory'' | ''technical';
   readonly description: string;
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
+  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly mitigation: string;
   readonly owner: string;
 }
@@ -120,11 +120,11 @@ export interface ArchitecturalDecision {
   readonly context: string;
   readonly decision: string;
   readonly consequences: string[];
-  readonly status: 'proposed' | 'accepted' | 'superseded';
+  readonly status: 'proposed'' | ''accepted'' | ''superseded';
 }
 
 export interface ArchitecturalConstraint {
-  readonly type: 'platform' | 'integration' | 'security' | 'performance';
+  readonly type: 'platform'' | ''integration'' | ''security'' | ''performance';
   readonly description: string;
   readonly rationale: string;
   readonly implications: string[];
@@ -133,7 +133,7 @@ export interface ArchitecturalConstraint {
 export interface IntegrationPoint {
   readonly id: string;
   readonly name: string;
-  readonly type: 'api' | 'message' | 'database' | 'file';
+  readonly type: 'api'' | ''message'' | ''database'' | ''file';
   readonly description: string;
   readonly interfaces: string[];
   readonly protocols: string[];
@@ -141,7 +141,7 @@ export interface IntegrationPoint {
 }
 
 export interface PlanningAdjustment {
-  readonly type: 'scope' | 'timeline' | 'resources' | 'quality';
+  readonly type: 'scope'' | ''timeline'' | ''resources'' | ''quality';
   readonly description: string;
   readonly impact: string;
   readonly adjustment: any;
@@ -161,7 +161,7 @@ export interface PIPlanningResult {
 
 export interface PlanningOutcome {
   readonly agendaItemId: string;
-  readonly outcome: 'completed' | 'partial' | 'deferred' | 'failed';
+  readonly outcome: 'completed'' | ''partial'' | ''deferred'' | ''failed';
   readonly deliverables: string[];
   readonly issues: string[];
   readonly nextActions: string[];
@@ -185,9 +185,9 @@ export interface PlanningDecision {
 export interface PlanningRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly category: 'schedule' | 'scope' | 'resource' | 'technical' | 'business';
+  readonly category:' | ''schedule'' | ''scope'' | ''resource'' | ''technical'' | ''business';
   readonly probability: number;
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
+  readonly impact: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly mitigation: string;
   readonly owner: string;
   readonly dueDate: Date;
@@ -197,11 +197,11 @@ export interface PlanningDependency {
   readonly dependencyId: string;
   readonly fromItem: string;
   readonly toItem: string;
-  readonly type: 'finish-to-start' | 'start-to-start' | 'finish-to-finish';
+  readonly type: 'finish-to-start'' | ''start-to-start'' | ''finish-to-finish';
   readonly description: string;
-  readonly criticality: 'low' | 'medium' | 'high' | 'critical';
+  readonly criticality: 'low'' | ''medium'' | ''high'' | ''critical';
   readonly owner: string;
-  readonly status: 'identified' | 'planned' | 'resolved' | 'blocked';
+  readonly status: 'identified'' | ''planned'' | ''resolved'' | ''blocked';
 }
 
 export interface PIPlanningConfiguration {
@@ -251,7 +251,6 @@ export class PIPlanningService extends TypedEventBase {
 
       this.initialized = true;
       this.logger.info('PI Planning Service initialized successfully');
-
     } catch (error) {
       this.logger.error('Failed to initialize PI Planning Service:', error);
       throw error;
@@ -271,7 +270,7 @@ export class PIPlanningService extends TypedEventBase {
 
     this.logger.info('Creating PI planning event', {
       artId,
-      participantCount: participants.length
+      participantCount: participants.length,
     });
 
     try {
@@ -279,7 +278,10 @@ export class PIPlanningService extends TypedEventBase {
       const piId = `pi-${artId}-${Date.now()}`;
 
       // Generate comprehensive planning agenda
-      const agenda = this.generatePlanningAgenda(businessContext, architecturalVision);
+      const agenda = this.generatePlanningAgenda(
+        businessContext,
+        architecturalVision
+      );
 
       // Create planning event configuration
       const planningEvent: PIPlanningEventConfig = {
@@ -293,7 +295,7 @@ export class PIPlanningService extends TypedEventBase {
         agenda,
         businessContext,
         architecturalVision,
-        planningAdjustments: []
+        planningAdjustments: [],
       };
 
       // Store planning event
@@ -307,8 +309,8 @@ export class PIPlanningService extends TypedEventBase {
         metadata: {
           eventId,
           artId,
-          participantCount: participants.length
-        }
+          participantCount: participants.length,
+        },
       });
 
       this.emit('planning-event-created', {
@@ -316,17 +318,16 @@ export class PIPlanningService extends TypedEventBase {
         piId,
         artId,
         participantCount: participants.length,
-        agendaItemCount: agenda.length
+        agendaItemCount: agenda.length,
       });
 
       this.logger.info('PI planning event created successfully', {
         eventId,
         piId,
-        agendaItemCount: agenda.length
+        agendaItemCount: agenda.length,
       });
 
       return planningEvent;
-
     } catch (error) {
       this.logger.error('Failed to create PI planning event:', error);
       throw error;
@@ -343,7 +344,7 @@ export class PIPlanningService extends TypedEventBase {
 
     this.logger.info('Executing PI planning workflow', {
       eventId: planningEvent.eventId,
-      agendaItemCount: planningEvent.agenda.length
+      agendaItemCount: planningEvent.agenda.length,
     });
 
     try {
@@ -353,26 +354,29 @@ export class PIPlanningService extends TypedEventBase {
         decisions: [],
         adjustments: [],
         risks: [],
-        dependencies: []
+        dependencies: [],
       };
 
       // Start workflow orchestration
       const workflowId = await this.workflowEngine.startWorkflow({
         workflowType: 'pi_planning_execution',
         entityId: planningEvent.eventId,
-        participants: planningEvent.participants.map(p => p.userId),
+        participants: planningEvent.participants.map((p) => p.userId),
         data: {
           planningEvent,
           businessContext: planningEvent.businessContext,
-          architecturalVision: planningEvent.architecturalVision
-        }
+          architecturalVision: planningEvent.architecturalVision,
+        },
       });
 
       // Execute planning agenda items with proper orchestration
       for (const agendaItem of planningEvent.agenda) {
         try {
           // Execute agenda item with teamwork orchestration
-          const outcome = await this.executeAgendaItem(agendaItem, planningEvent);
+          const outcome = await this.executeAgendaItem(
+            agendaItem,
+            planningEvent
+          );
           planningResult.outcomes.push(outcome);
 
           // Create AGUI gate if required
@@ -387,14 +391,17 @@ export class PIPlanningService extends TypedEventBase {
 
           // Check for critical path delays
           if (agendaItem.criticalPath && outcome.outcome !== 'completed') {
-            await this.handleCriticalPathDelay(agendaItem, outcome, planningEvent);
+            await this.handleCriticalPathDelay(
+              agendaItem,
+              outcome,
+              planningEvent
+            );
           }
-
         } catch (error) {
           this.logger.error('Agenda item execution failed', {
             itemId: agendaItem.id,
             activity: agendaItem.activity,
-            error: error instanceof Error ? error.message : String(error)
+            error: error instanceof Error ? error.message : String(error),
           });
 
           // Create adjustment for failed agenda item
@@ -405,11 +412,15 @@ export class PIPlanningService extends TypedEventBase {
             adjustment: {
               skippedItem: agendaItem.id,
               alternativeApproach: this.suggestAlternativeApproach(agendaItem),
-              impactAnalysis: this.analyzeAdjustmentImpact(agendaItem, planningEvent)
+              impactAnalysis: this.analyzeAdjustmentImpact(
+                agendaItem,
+                planningEvent
+              ),
             },
-            rationale: (error as Error).message || 'Execution error during planning',
+            rationale:
+              (error as Error).message || 'Execution error during planning',
             approvedBy: 'system',
-            timestamp: new Date()
+            timestamp: new Date(),
           };
 
           planningResult.adjustments.push(adjustment);
@@ -422,9 +433,10 @@ export class PIPlanningService extends TypedEventBase {
               category: 'schedule',
               probability: 0.9,
               impact: 'high',
-              mitigation: adjustment.adjustment.alternativeApproach || 'Manual intervention required',
+              mitigation:
+                adjustment.adjustment.alternativeApproach || 'Manual intervention required',
               owner: agendaItem.facilitator,
-              dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day
+              dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
             };
             planningResult.risks.push(risk);
           }
@@ -454,24 +466,24 @@ export class PIPlanningService extends TypedEventBase {
         outcomeCount: planningResult.outcomes.length,
         decisionCount: planningResult.decisions.length,
         adjustmentCount: planningResult.adjustments.length,
-        riskCount: planningResult.risks.length
+        riskCount: planningResult.risks.length,
       });
 
       this.logger.info('PI planning workflow completed successfully', {
         eventId: planningEvent.eventId,
         outcomes: planningResult.outcomes.length,
         decisions: planningResult.decisions.length,
-        risks: planningResult.risks.length
+        risks: planningResult.risks.length,
       });
 
       return planningResult;
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       this.logger.error('PI planning workflow execution failed:', errorMessage);
       this.emit('planning-workflow-failed', {
         eventId: planningEvent.eventId,
-        error: errorMessage
+        error: errorMessage,
       });
       throw error;
     }
@@ -495,7 +507,7 @@ export class PIPlanningService extends TypedEventBase {
    * Get all planning events
    */
   getAllPlanningEvents(): PIPlanningEventConfig[] {
-    return Array.from(this.planningEvents.values());
+    return Array.from(this.planningEvents.values())();
   }
 
   /**
@@ -512,14 +524,14 @@ export class PIPlanningService extends TypedEventBase {
 
     const updatedEvent = {
       ...event,
-      planningAdjustments: [...event.planningAdjustments, ...adjustments]
+      planningAdjustments: [...event.planningAdjustments, ...adjustments],
     };
 
     this.planningEvents.set(eventId, updatedEvent);
 
     this.emit('planning-event-updated', {
       eventId,
-      adjustmentCount: adjustments.length
+      adjustmentCount: adjustments.length,
     });
   }
 
@@ -550,14 +562,15 @@ export class PIPlanningService extends TypedEventBase {
       {
         id: 'business-context',
         activity: 'Business Context Presentation',
-        description: 'Present business objectives, market drivers, and strategic direction',
+        description:
+          'Present business objectives, market drivers, and strategic direction',
         duration: 60,
         facilitator: 'business-owner',
         participants: ['all'],
         prerequisites: [],
         deliverables: ['Business context alignment'],
         aguiGateRequired: true,
-        criticalPath: true
+        criticalPath: true,
       },
       {
         id: 'product-vision',
@@ -569,7 +582,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['business-context'],
         deliverables: ['Product vision alignment'],
         aguiGateRequired: true,
-        criticalPath: true
+        criticalPath: true,
       },
       {
         id: 'architecture-vision',
@@ -581,7 +594,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['product-vision'],
         deliverables: ['Architecture alignment'],
         aguiGateRequired: true,
-        criticalPath: true
+        criticalPath: true,
       },
       {
         id: 'planning-context',
@@ -593,7 +606,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['architecture-vision'],
         deliverables: ['Planning guidance'],
         aguiGateRequired: false,
-        criticalPath: false
+        criticalPath: false,
       },
       {
         id: 'team-breakouts',
@@ -605,7 +618,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['planning-context'],
         deliverables: ['Team plans', 'Dependencies'],
         aguiGateRequired: true,
-        criticalPath: true
+        criticalPath: true,
       },
       {
         id: 'draft-plan-review',
@@ -617,7 +630,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['team-breakouts'],
         deliverables: ['Draft plan review'],
         aguiGateRequired: true,
-        criticalPath: true
+        criticalPath: true,
       },
       {
         id: 'management-review',
@@ -629,7 +642,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['draft-plan-review'],
         deliverables: ['Final plan decisions'],
         aguiGateRequired: true,
-        criticalPath: true
+        criticalPath: true,
       },
       {
         id: 'plan-rework',
@@ -641,7 +654,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['management-review'],
         deliverables: ['Revised plans'],
         aguiGateRequired: false,
-        criticalPath: false
+        criticalPath: false,
       },
       {
         id: 'final-plan-review',
@@ -653,7 +666,7 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['plan-rework'],
         deliverables: ['Final PI plan', 'Team commitments'],
         aguiGateRequired: true,
-        criticalPath: true
+        criticalPath: true,
       },
       {
         id: 'plan-retrospective',
@@ -665,18 +678,20 @@ export class PIPlanningService extends TypedEventBase {
         prerequisites: ['final-plan-review'],
         deliverables: ['Process improvements'],
         aguiGateRequired: false,
-        criticalPath: false
-      }
+        criticalPath: false,
+      },
     ];
   }
 
   /**
    * Identify event facilitators based on participants
    */
-  private identifyEventFacilitators(participants: PlanningParticipant[]): string[] {
+  private identifyEventFacilitators(
+    participants: PlanningParticipant[]
+  ): string[] {
     const facilitators = participants
-      .filter(p => p.artRole === 'rte' || p.role === 'scrum-master')
-      .map(p => p.userId);
+      .filter((p) => p.artRole === 'rte' || p.role ==='scrum-master')
+      .map((p) => p.userId);
 
     // Ensure we have at least one facilitator
     if (facilitators.length === 0) {
@@ -696,20 +711,23 @@ export class PIPlanningService extends TypedEventBase {
     this.logger.debug('Executing agenda item', {
       itemId: agendaItem.id,
       activity: agendaItem.activity,
-      duration: agendaItem.duration
+      duration: agendaItem.duration,
     });
 
     // Coordinate with teamwork orchestrator
     const coordination = await this.teamworkOrchestrator.coordinateActivity({
       activityId: agendaItem.id,
       facilitator: agendaItem.facilitator,
-      participants: this.resolveParticipants(agendaItem.participants, planningEvent.participants),
+      participants: this.resolveParticipants(
+        agendaItem.participants,
+        planningEvent.participants
+      ),
       duration: agendaItem.duration,
-      deliverables: agendaItem.deliverables
+      deliverables: agendaItem.deliverables,
     });
 
     // Simulate activity execution (in practice, this would coordinate actual work)
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const outcome: PlanningOutcome = {
       agendaItemId: agendaItem.id,
@@ -719,7 +737,7 @@ export class PIPlanningService extends TypedEventBase {
       nextActions: coordination.nextActions || [],
       participants: coordination.actualParticipants || [],
       duration: coordination.actualDuration || agendaItem.duration,
-      notes: coordination.notes || `Executed ${agendaItem.activity}`
+      notes: coordination.notes || `Executed ${agendaItem.activity}`,
     };
 
     return outcome;
@@ -735,7 +753,7 @@ export class PIPlanningService extends TypedEventBase {
   ): Promise<PlanningDecision> {
     this.logger.debug('Creating planning gate', {
       itemId: agendaItem.id,
-      outcome: outcome.outcome
+      outcome: outcome.outcome,
     });
 
     // Create AGUI interface for decision
@@ -743,31 +761,34 @@ export class PIPlanningService extends TypedEventBase {
       type: 'planning_gate',
       entityId: `${planningEvent.eventId}-${agendaItem.id}`,
       title: `Planning Gate: ${agendaItem.activity}`,
-      participants: this.resolveParticipants(agendaItem.participants, planningEvent.participants),
+      participants: this.resolveParticipants(
+        agendaItem.participants,
+        planningEvent.participants
+      ),
       sections: [
         {
           id: 'outcome-review',
           title: 'Outcome Review',
           content: outcome,
-          type: 'readonly'
+          type: 'readonly',
         },
         {
           id: 'deliverables',
           title: 'Deliverables',
           content: outcome.deliverables,
-          type: 'checklist'
+          type: 'checklist',
         },
         {
           id: 'approval',
           title: 'Approval Decision',
           type: 'approval',
-          options: ['Approve', 'Approve with Conditions', 'Reject', 'Defer']
-        }
-      ]
+          options: ['Approve', 'Approve with Conditions', 'Reject', 'Defer'],
+        },
+      ],
     });
 
     // Wait for gate decision (simulated)
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const decision: PlanningDecision = {
       decisionId: `decision-${agendaItem.id}-${Date.now()}`,
@@ -776,9 +797,12 @@ export class PIPlanningService extends TypedEventBase {
       rationale: `Planning gate approved for ${agendaItem.activity}`,
       alternatives: [],
       consequences: [],
-      approvers: this.resolveParticipants(agendaItem.participants, planningEvent.participants),
+      approvers: this.resolveParticipants(
+        agendaItem.participants,
+        planningEvent.participants
+      ),
       timestamp: new Date(),
-      reviewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+      reviewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     };
 
     return decision;
@@ -795,7 +819,7 @@ export class PIPlanningService extends TypedEventBase {
     this.logger.warn('Critical path delay detected', {
       itemId: agendaItem.id,
       outcome: outcome.outcome,
-      impact: 'PI planning timeline at risk'
+      impact: 'PI planning timeline at risk',
     });
 
     // Notify stakeholders of critical path delay
@@ -804,16 +828,19 @@ export class PIPlanningService extends TypedEventBase {
       agendaItemId: agendaItem.id,
       activity: agendaItem.activity,
       outcome: outcome.outcome,
-      impact: 'Planning timeline at risk'
+      impact: 'Planning timeline at risk',
     });
 
     // Suggest mitigation strategies
-    const mitigationStrategies = await this.suggestMitigationStrategies(agendaItem, outcome);
-    
+    const mitigationStrategies = await this.suggestMitigationStrategies(
+      agendaItem,
+      outcome
+    );
+
     this.emit('mitigation-strategies-suggested', {
       eventId: planningEvent.eventId,
       agendaItemId: agendaItem.id,
-      strategies: mitigationStrategies
+      strategies: mitigationStrategies,
     });
   }
 
@@ -822,16 +849,21 @@ export class PIPlanningService extends TypedEventBase {
    */
   private suggestAlternativeApproach(agendaItem: PlanningAgendaItem): string {
     const alternatives: Record<string, string> = {
-      'business-context': 'Asynchronous business context review with recorded session',
+      'business-context':
+        'Asynchronous business context review with recorded session',
       'product-vision': 'Written product vision with Q&A session',
-      'architecture-vision': 'Architecture documentation review with office hours',
+      'architecture-vision':
+        'Architecture documentation review with office hours',
       'team-breakouts': 'Individual team planning with cross-team coordination',
       'draft-plan-review': 'Peer review process with documented feedback',
       'management-review': 'Executive summary review with escalation process',
-      'final-plan-review': 'Recorded plan presentation with asynchronous approval'
+      'final-plan-review':
+        'Recorded plan presentation with asynchronous approval',
     };
 
-    return alternatives[agendaItem.id] || 'Manual coordination with subject matter experts';
+    return (
+      alternatives[agendaItem.id] || 'Manual coordination with subject matter experts'
+    );
   }
 
   /**
@@ -845,7 +877,7 @@ export class PIPlanningService extends TypedEventBase {
       return 'High impact - critical path affected, timeline and dependencies at risk';
     }
 
-    const dependentItems = planningEvent.agenda.filter(item =>
+    const dependentItems = planningEvent.agenda.filter((item) =>
       item.prerequisites.includes(agendaItem.id)
     );
 
@@ -875,7 +907,7 @@ export class PIPlanningService extends TypedEventBase {
           description: `${agendaItem.activity} depends on completion of ${prerequisite}`,
           criticality: agendaItem.criticalPath ? 'critical' : 'medium',
           owner: agendaItem.facilitator,
-          status: this.getDependencyStatus(prerequisite, outcomes)
+          status: this.getDependencyStatus(prerequisite, outcomes),
         };
 
         dependencies.push(dependency);
@@ -891,16 +923,20 @@ export class PIPlanningService extends TypedEventBase {
   private getDependencyStatus(
     prerequisiteId: string,
     outcomes: PlanningOutcome[]
-  ): 'identified' | 'planned' | 'resolved' | 'blocked' {
-    const outcome = outcomes.find(o => o.agendaItemId === prerequisiteId);
-    
+  ): 'identified'' | ''planned'' | ''resolved'' | ''blocked' {
+    const outcome = outcomes.find((o) => o.agendaItemId === prerequisiteId);
+
     if (!outcome) return 'identified';
-    
+
     switch (outcome.outcome) {
-      case 'completed': return 'resolved';
-      case 'partial': return 'planned';
-      case 'failed': return 'blocked';
-      default: return 'identified';
+      case 'completed':
+        return 'resolved';
+      case 'partial':
+        return 'planned';
+      case 'failed':
+        return 'blocked';
+      default:
+        return 'identified';
     }
   }
 
@@ -914,8 +950,8 @@ export class PIPlanningService extends TypedEventBase {
     const risks: PlanningRisk[] = [];
 
     // Analyze failed or partial outcomes
-    const problematicOutcomes = outcomes.filter(o => 
-      o.outcome === 'failed' || o.outcome === 'partial'
+    const problematicOutcomes = outcomes.filter(
+      (o) => o.outcome === 'failed' || o.outcome ==='partial'
     );
 
     for (const outcome of problematicOutcomes) {
@@ -927,7 +963,7 @@ export class PIPlanningService extends TypedEventBase {
         impact: outcome.issues.length > 2 ? 'high' : 'medium',
         mitigation: `Address issues: ${outcome.issues.join(', ')}`,
         owner: 'planning-coordinator',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1 week
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
       };
 
       risks.push(risk);
@@ -935,7 +971,7 @@ export class PIPlanningService extends TypedEventBase {
 
     // Analyze business constraint risks
     for (const constraint of businessContext.constraints) {
-      if (constraint.impact === 'high' || constraint.impact === 'critical') {
+      if (constraint.impact === 'high' || constraint.impact ==='critical') {
         const risk: PlanningRisk = {
           riskId: `risk-constraint-${constraint.type}-${Date.now()}`,
           description: `Business constraint risk: ${constraint.description}`,
@@ -944,7 +980,7 @@ export class PIPlanningService extends TypedEventBase {
           impact: constraint.impact,
           mitigation: constraint.mitigation,
           owner: constraint.owner,
-          dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 2 weeks
+          dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks
         };
 
         risks.push(risk);
@@ -962,13 +998,13 @@ export class PIPlanningService extends TypedEventBase {
     allParticipants: PlanningParticipant[]
   ): string[] {
     if (participantIds.includes('all')) {
-      return allParticipants.map(p => p.userId);
+      return allParticipants.map((p) => p.userId);
     }
 
     if (participantIds.includes('teams')) {
       return allParticipants
-        .filter(p => p.role === 'team-lead' || p.teamId)
-        .map(p => p.userId);
+        .filter((p) => p.role === 'team-lead' || p.teamId)
+        .map((p) => p.userId);
     }
 
     return participantIds;
@@ -981,12 +1017,11 @@ export class PIPlanningService extends TypedEventBase {
     agendaItem: PlanningAgendaItem,
     outcome: PlanningOutcome
   ): Promise<string[]> {
-    const strategies: string[] = [
-      'Extend planning session duration',
+    const strategies: string[] = ['Extend planning session duration',
       'Assign additional facilitators',
       'Break down into smaller segments',
       'Use asynchronous coordination',
-      'Escalate to management for priority support'
+      'Escalate to management for priority support',
     ];
 
     // Add item-specific strategies
@@ -1007,34 +1042,40 @@ export class PIPlanningService extends TypedEventBase {
   private createWorkflowEngineFallback() {
     return {
       startWorkflow: (workflow: any) => {
-        this.logger.debug('Workflow started (fallback)', { type: workflow.workflowType });
+        this.logger.debug('Workflow started (fallback)', {
+          type: workflow.workflowType,
+        });
         return `workflow-${Date.now()}`;
-      }
+      },
     };
   }
 
   private createAGUISystemFallback() {
     return {
       createInterface: (config: any) => {
-        this.logger.debug('AGUI interface created (fallback)', { type: config.type });
+        this.logger.debug('AGUI interface created (fallback)', {
+          type: config.type,
+        });
         return { interfaceId: `interface-${Date.now()}` };
-      }
+      },
     };
   }
 
   private createTeamworkOrchestratorFallback() {
     return {
       coordinateActivity: (activity: any) => {
-        this.logger.debug('Activity coordinated (fallback)', { activityId: activity.activityId });
+        this.logger.debug('Activity coordinated (fallback)', {
+          activityId: activity.activityId,
+        });
         return {
           success: true,
           actualParticipants: activity.participants,
           actualDuration: activity.duration,
           issues: [],
           nextActions: [],
-          notes: `Coordinated ${activity.activityId}`
+          notes: `Coordinated ${activity.activityId}`,
         };
-      }
+      },
     };
   }
 
@@ -1042,7 +1083,7 @@ export class PIPlanningService extends TypedEventBase {
     return {
       store: (data: any) => {
         this.logger.debug('Knowledge stored (fallback)', { type: data.type });
-      }
+      },
     };
   }
 }

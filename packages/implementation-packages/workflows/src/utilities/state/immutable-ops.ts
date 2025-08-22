@@ -1,9 +1,9 @@
 /**
  * @fileoverview Immutable Operations
- * 
+ *
  * Professional immutable state management using Immer library.
  * Focused on safe state updates and transformations.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
@@ -35,7 +35,7 @@ export class ImmutableOps {
    * Merge objects immutably
    */
   static merge<T extends Record<string, any>>(base: T, updates: Partial<T>): T {
-    return produce(base, draft => {
+    return produce(base, (draft) => {
       Object.assign(draft, updates);
     });
   }
@@ -48,8 +48,8 @@ export class ImmutableOps {
     id: string,
     updater: (item: Draft<T>) => void
   ): T[] {
-    return produce(array, draft => {
-      const index = draft.findIndex(item => item.id === id);
+    return produce(array, (draft) => {
+      const index = draft.findIndex((item) => item.id === id);
       if (index >= 0) {
         updater(draft[index]);
       }
@@ -68,9 +68,12 @@ export class ImmutableOps {
   /**
    * Remove item from array immutably
    */
-  static removeFromArray<T extends { id: string }>(array: T[], id: string): T[] {
-    return produce(array, draft => {
-      const index = draft.findIndex(item => item.id === id);
+  static removeFromArray<T extends { id: string }>(
+    array: T[],
+    id: string
+  ): T[] {
+    return produce(array, (draft) => {
+      const index = draft.findIndex((item) => item.id === id);
       if (index >= 0) {
         draft.splice(index, 1);
       }

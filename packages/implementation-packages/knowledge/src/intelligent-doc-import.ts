@@ -29,8 +29,8 @@ import { getLogger } from '@claude-zen/foundation';
 // Define WorkflowGateRequest interface locally since we moved from workflows
 interface WorkflowGateRequest {
   id: string;
-  type: 'approval' | 'decision' | 'input' | 'confirmation';
-  gateType: 'approval' | 'decision' | 'input' | 'confirmation';
+  type: 'approval | decision' | 'input''' | '''confirmation';
+  gateType: 'approval | decision' | 'input''' | '''confirmation';
   workflowContext: {
     workflowId: string;
     stepName: string;
@@ -48,7 +48,7 @@ class DocumentManager {
     // Mock implementation
     console.log('Saving document:', doc.id);
   }
-  
+
   async getDocument(id: string): Promise<any> {
     // Mock implementation
     return { id, content: 'Mock content' };
@@ -67,13 +67,13 @@ export interface IntelligentDocImportConfig {
   /** Swarm configuration for analysis */
   swarmConfig: {
     maxAgents: number;
-    topology: 'mesh' | 'hierarchical' | 'star';
+    topology: 'mesh | hierarchical' | 'star';
     enableUltraThink: boolean;
   };
 
   /** Database configuration */
   databaseConfig: {
-    type: 'postgresql' | 'sqlite' | 'mysql';
+    type: 'postgresql | sqlite' | 'mysql';
     connectionString?: string;
   };
 
@@ -95,17 +95,10 @@ export interface IntelligentDocImportConfig {
  */
 export interface FileAnalysisResult {
   filePath: string;
-  fileType: 'document' | 'code' | 'config' | 'other';
+  fileType: 'document | code' | 'config''' | '''other';
 
   /** Document classification (if document) */
-  documentType?:
-    | 'vision'
-    | 'adr'
-    | 'prd'
-    | 'epic'
-    | 'feature'
-    | 'task'
-    | 'spec';
+  documentType?:'' | '''vision | adr' | 'prd''' | '''epic | feature' | 'task''' | '''spec';
 
   /** Documentation completeness (if code) */
   documentationScore?: {
@@ -127,7 +120,7 @@ export interface FileAnalysisResult {
 
   /** Recommended actions */
   recommendations: {
-    action: 'import' | 'improve' | 'reject' | 'manual_review';
+    action: 'import | improve' | 'reject''' | '''manual_review';
     reasoning: string;
     improvements?: string[];
     confidence: number;
@@ -158,7 +151,7 @@ export interface ImportWorkflowResult {
     summary: string;
     keyFindings: string[];
     suggestedActions: string[];
-    estimatedEffort: 'low' | 'medium' | 'high';
+    estimatedEffort: 'low | medium' | 'high';
   };
 
   /** Approval gates created */
@@ -212,7 +205,7 @@ export class IntelligentDocImport extends TypedEventBase {
       async getDocument(id: string): Promise<any> {
         logger.info('Getting document', { id });
         return null;
-      }
+      },
     };
   }
 
@@ -361,7 +354,7 @@ export class IntelligentDocImport extends TypedEventBase {
     const ext = extname(filename).toLowerCase();
 
     // Documentation files
-    if (ext === '.md' || ext === '.rst' || ext === '.txt') return true;
+    if (ext === '.md''' | '''' | ''ext ==='.rst''' | '''' | ''ext ==='.txt') return true;
 
     // Code files that should have documentation
     if (
@@ -383,9 +376,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
     // Configuration files
     if (
-      filename.toLowerCase().includes('readme') ||
-      filename.toLowerCase().includes('changelog') ||
-      filename.toLowerCase().includes('todo')
+      filename.toLowerCase().includes('readme')'' | '''' | ''filename.toLowerCase().includes('changelog')'' | '''' | ''filename.toLowerCase().includes('todo')
     ) {
       return true;
     }
@@ -521,12 +512,12 @@ export class IntelligentDocImport extends TypedEventBase {
   private determineFileType(
     filePath: string,
     _content: string
-  ): 'document' | 'code' | 'config' | 'other' {
+  ): 'document | code' | 'config''' | '''other' {
     const ext = extname(filePath).toLowerCase();
     const filename = filePath.toLowerCase();
 
     // Documentation
-    if (ext === '.md' || ext === '.rst' || ext === '.txt') return 'document';
+    if (ext === '.md''' | '''' | ''ext ==='.rst''' | '''' | ''ext ==='.txt') return 'document';
 
     // Code files
     if (
@@ -548,10 +539,7 @@ export class IntelligentDocImport extends TypedEventBase {
 
     // Configuration
     if (
-      ['.json', '.yaml', '.yml', '.toml', '.ini'].includes(ext) ||
-      filename.includes('package.json') ||
-      filename.includes('tsconfig') ||
-      filename.includes('config')
+      ['.json', '.yaml', '.yml', '.toml', '.ini'].includes(ext)'' | '''' | ''filename.includes('package.json')'' | '''' | ''filename.includes('tsconfig')'' | '''' | ''filename.includes('config')
     ) {
       return 'config';
     }
@@ -583,48 +571,44 @@ export class IntelligentDocImport extends TypedEventBase {
   private classifyDocument(
     filePath: string,
     content: string
-  ): 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'spec' {
+  ): 'vision | adr' | 'prd''' | '''epic | feature' | 'task''' | '''spec' {
     const filename = filePath.toLowerCase();
     const contentLower = content.toLowerCase();
 
     // Filename patterns
-    if (filename.includes('readme') || filename.includes('vision'))
+    if (filename.includes('readme')'' | '''' | ''filename.includes('vision'))
       return 'vision';
-    if (filename.includes('adr-') || filename.includes('decision'))
+    if (filename.includes('adr-')'' | '''' | ''filename.includes('decision'))
       return 'adr';
-    if (filename.includes('prd') || filename.includes('requirements'))
+    if (filename.includes('prd')'' | '''' | ''filename.includes('requirements'))
       return 'prd';
     if (filename.includes('epic')) return 'epic';
     if (filename.includes('feature')) return 'feature';
-    if (filename.includes('todo') || filename.includes('task')) return 'task';
-    if (filename.includes('spec') || filename.includes('specification'))
+    if (filename.includes('todo')'' | '''' | ''filename.includes('task')) return 'task';
+    if (filename.includes('spec')'' | '''' | ''filename.includes('specification'))
       return 'spec';
 
     // Content analysis
     if (
-      contentLower.includes('# vision') ||
-      contentLower.includes('product vision')
+      contentLower.includes('# vision')'' | '''' | ''contentLower.includes('product vision')
     )
       return 'vision';
     if (
-      contentLower.includes('architectural decision') ||
-      contentLower.includes('# adr')
+      contentLower.includes('architectural decision')'' | '''' | ''contentLower.includes('# adr')
     )
       return 'adr';
     if (
-      contentLower.includes('product requirements') ||
-      contentLower.includes('# prd')
+      contentLower.includes('product requirements')'' | '''' | ''contentLower.includes('# prd')
     )
       return 'prd';
-    if (contentLower.includes('# epic') || contentLower.includes('user story'))
+    if (contentLower.includes('# epic')'' | '''' | ''contentLower.includes('user story'))
       return 'epic';
-    if (contentLower.includes('# feature') || contentLower.includes('feature:'))
+    if (contentLower.includes('# feature')'' | '''' | ''contentLower.includes('feature:'))
       return 'feature';
-    if (contentLower.includes('# todo') || contentLower.includes('- [ ]'))
+    if (contentLower.includes('# todo')'' | '''' | ''contentLower.includes('- [ ]'))
       return 'task';
     if (
-      contentLower.includes('specification') ||
-      contentLower.includes('# spec')
+      contentLower.includes('specification')'' | '''' | ''contentLower.includes('# spec')
     )
       return 'spec';
 
@@ -663,9 +647,9 @@ export class IntelligentDocImport extends TypedEventBase {
     // For now, return simulated analysis
 
     const qualityFactors = {
-      hasIntroduction: content.includes('# ') || content.includes('## '),
-      hasStructure: (content.match(/^#+/gm) || []).length >= 3,
-      hasExamples: content.includes('```') || content.includes('example'),
+      hasIntroduction: content.includes('# ')'' | '''' | ''content.includes('## '),
+      hasStructure: (content.match(/^#+/gm)'' | '''' | ''[]).length >= 3,
+      hasExamples: content.includes('```')'' | '''' | ''content.includes('example'),
       isComprehensive: content.length > 500,
       isWellFormatted: content.includes('\n') && !content.includes('\t\t\t'),
     };
@@ -785,26 +769,27 @@ export class IntelligentDocImport extends TypedEventBase {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const functions: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt === '' || fileExt === '') {
+    if (fileExt === '''' | '''' | ''fileExt ==='') {
       // TypeScript/JavaScript function patterns
       const functionRegex =
-        /(?:export\s+)?(?:async\s+)?function\s+(\w+)|(\w+)\s*=\s*(?:async\s+)?\(/g;
+        /(?:export\s+)?(?:async\s+)?function\s+(\w+)'' | ''(\w+)\s*=\s*(?:async\s+)?\(/g;
       const lines = content.split('\n');
 
       let match;
       while ((match = functionRegex.exec(content)) !== null) {
-        const functionName = match[1] || match[2];
+        const functionName = match[1]'' | '''' | ''match[2];
         const lineIndex =
           content.substring(0, match.index).split('\n').length - 1;
 
         // Check for JSDoc/TSDoc comment above
         const hasDocumentation =
           lineIndex > 0 &&
-          (lines[lineIndex - 1]?.trim().includes('*/') ||
-            lines[lineIndex - 1]?.trim().startsWith('//') ||
-            lines[lineIndex - 2]?.trim().includes('/**'));
+          (lines[lineIndex - 1]?.trim().includes('*/')'' | '''' | ''lines[lineIndex - 1]?.trim().startsWith('//')'' | '''' | ''lines[lineIndex - 2]?.trim().includes('/**'));
 
-        functions.push({ name: functionName || 'unknown', hasDocumentation: hasDocumentation || false });
+        functions.push({
+          name: functionName'' | '''' | '''unknown',
+          hasDocumentation: hasDocumentation'' | '''' | ''false,
+        });
       }
     }
 
@@ -832,7 +817,7 @@ export class IntelligentDocImport extends TypedEventBase {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const classes: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt === '' || fileExt === '') {
+    if (fileExt ==='''' | '''' | ''fileExt ==='') {
       const classRegex = /(?:export\s+)?class\s+(\w+)/g;
       const lines = content.split('\n');
 
@@ -844,10 +829,12 @@ export class IntelligentDocImport extends TypedEventBase {
 
         const hasDocumentation =
           lineIndex > 0 &&
-          (lines[lineIndex - 1]?.trim().includes('*/') ||
-            lines[lineIndex - 2]?.trim().includes('/**'));
+          (lines[lineIndex - 1]?.trim().includes('*/')'' | '''' | ''lines[lineIndex - 2]?.trim().includes('/**'));
 
-        classes.push({ name: className || 'unknown', hasDocumentation: hasDocumentation || false });
+        classes.push({
+          name: className'' | '''' | '''unknown',
+          hasDocumentation: hasDocumentation'' | '''' | ''false,
+        });
       }
     }
 
@@ -875,7 +862,7 @@ export class IntelligentDocImport extends TypedEventBase {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const interfaces: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt === '') {
+    if (fileExt ==='') {
       const interfaceRegex = /(?:export\s+)?interface\s+(\w+)/g;
       const lines = content.split('\n');
 
@@ -887,10 +874,12 @@ export class IntelligentDocImport extends TypedEventBase {
 
         const hasDocumentation =
           lineIndex > 0 &&
-          (lines[lineIndex - 1]?.trim().includes('*/') ||
-            lines[lineIndex - 2]?.trim().includes('/**'));
+          (lines[lineIndex - 1]?.trim().includes('*/')'' | '''' | ''lines[lineIndex - 2]?.trim().includes('/**'));
 
-        interfaces.push({ name: interfaceName || 'unknown', hasDocumentation: hasDocumentation || false });
+        interfaces.push({
+          name: interfaceName'' | '''' | '''unknown',
+          hasDocumentation: hasDocumentation'' | '''' | ''false,
+        });
       }
     }
 
@@ -913,16 +902,14 @@ export class IntelligentDocImport extends TypedEventBase {
    * @returns Promise resolving to recommendation object
    * @private
    */
-  private async generateRecommendations(
-    analysis: FileAnalysisResult
-  ): Promise<{
-    action: 'import' | 'improve' | 'reject' | 'manual_review';
+  private async generateRecommendations(analysis: FileAnalysisResult): Promise<{
+    action:'import | improve' | 'reject''' | '''manual_review';
     reasoning: string;
     improvements?: string[];
     confidence: number;
   }> {
     let confidence = 0.5;
-    let action: 'import' | 'improve' | 'reject' | 'manual_review' =
+    let action: 'import | improve' | 'reject''' | '''manual_review' =
       'manual_review';
     let reasoning = 'Requires manual review';
     const improvements: string[] = [];
@@ -1024,8 +1011,7 @@ export class IntelligentDocImport extends TypedEventBase {
     );
     const requiresApproval = analyses.filter(
       (a) =>
-        a.recommendations.action === 'manual_review' ||
-        a.recommendations.confidence <
+        a.recommendations.action === 'manual_review''' | '''' | ''a.recommendations.confidence <
           this.config.analysisConfig.autoApprovalThreshold
     );
 
@@ -1062,24 +1048,24 @@ export class IntelligentDocImport extends TypedEventBase {
       const gate: WorkflowGateRequest = {
         // ValidationQuestion base properties
         id: gateId,
-        type: 'approval',
+        type:'approval',
         gateType: 'approval',
         workflowContext: {
           workflowId: 'intelligent-doc-import',
-          stepName: 'approval'
+          stepName: 'approval',
         },
-        question: `Should we import "${analysis.filePath}" as a ${analysis.documentType || analysis.fileType}?`,
+        question: `Should we import "${analysis.filePath}" as a ${analysis.documentType'' | '''' | ''analysis.fileType}?`,
         context: {
           fileAnalysis: analysis,
           recommendations: analysis.recommendations,
-          workflowType: 'document_import_approval',
+          workflowType:'document_import_approval',
         },
         // Required fields
         data: {
           filePath: analysis.filePath,
           documentType: analysis.documentType,
           fileType: analysis.fileType,
-          recommendations: analysis.recommendations
+          recommendations: analysis.recommendations,
         },
         requester: 'intelligent-doc-import-workflow',
         timestamp: new Date(),
@@ -1099,7 +1085,7 @@ export class IntelligentDocImport extends TypedEventBase {
         gateType: 'approval',
         workflowContext: {
           workflowId: 'intelligent-doc-import',
-          stepName: 'improvement'
+          stepName: 'improvement',
         },
         question: `Apply suggested improvements to "${analysis.filePath}"?`,
         context: {
@@ -1112,7 +1098,7 @@ export class IntelligentDocImport extends TypedEventBase {
           filePath: analysis.filePath,
           improvements: analysis.recommendations.improvements,
           documentType: analysis.documentType,
-          fileType: analysis.fileType
+          fileType: analysis.fileType,
         },
         requester: 'intelligent-doc-import-workflow',
         timestamp: new Date(),
@@ -1150,7 +1136,7 @@ export class IntelligentDocImport extends TypedEventBase {
     summary: string;
     keyFindings: string[];
     suggestedActions: string[];
-    estimatedEffort: 'low' | 'medium' | 'high';
+    estimatedEffort: 'low | medium' | 'high';
   }> {
     const total =
       classified.readyForImport.length +
@@ -1173,7 +1159,7 @@ export class IntelligentDocImport extends TypedEventBase {
       'Consider establishing documentation standards',
     ];
 
-    let estimatedEffort: 'low' | 'medium' | 'high' = 'low';
+    let estimatedEffort: 'low | medium' | 'high' = 'low';
     if (classified.requiresApproval.length > total * 0.3)
       estimatedEffort = 'medium';
     if (classified.requiresApproval.length > total * 0.6)
@@ -1222,17 +1208,16 @@ export class IntelligentDocImport extends TypedEventBase {
 
         // Store in database using DocumentManager
         await this.documentManager.saveDocument({
-          type: analysis.documentType || 'task',
+          type: analysis.documentType'' | '''' | '''task',
           title: analysis.filePath,
-            content: content,
-            metadata: {
-              originalPath: analysis.filePath,
-              analysisResults: analysis,
-              importDate: new Date(),
-              source: 'intelligent_import',
-            },
-          }
-        );
+          content: content,
+          metadata: {
+            originalPath: analysis.filePath,
+            analysisResults: analysis,
+            importDate: new Date(),
+            source: 'intelligent_import',
+          },
+        });
 
         logger.debug(`✅ Stored: ${analysis.filePath}`);
       } catch (error) {
@@ -1269,8 +1254,8 @@ export class IntelligentDocImport extends TypedEventBase {
   }> {
     return this.workflowGates.map((gate) => ({
       gateId: gate.id,
-      status: (gate as any).status || 'pending',
-      filePath: (gate.context as any)?.fileAnalysis?.filePath || 'unknown',
+      status: (gate as any).status'' | '''' | '''pending',
+      filePath: (gate.context as any)?.fileAnalysis?.filePath'' | '''' | '''unknown',
     }));
   }
 }

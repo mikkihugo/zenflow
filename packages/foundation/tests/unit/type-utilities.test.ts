@@ -1,17 +1,17 @@
 /**
  * @fileoverview Comprehensive Type Utilities Tests
- * 
+ *
  * 100% coverage tests for foundation type utilities and guards.
  */
 
 import { describe, it, expect } from 'vitest';
-import { 
-  generateUUID, 
-  isUUID, 
-  isTimestamp, 
-  isISODateString, 
-  isEmail, 
-  isNonEmptyArray, 
+import {
+  generateUUID,
+  isUUID,
+  isTimestamp,
+  isISODateString,
+  isEmail,
+  isNonEmptyArray,
   isPrimitive,
   brand,
   unbrand,
@@ -22,7 +22,7 @@ import {
   Priority,
   Status,
   LogLevel,
-  Environment
+  Environment,
 } from '../../src/types/primitives';
 
 describe('Foundation Type Utilities - 100% Coverage', () => {
@@ -31,7 +31,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
       const original = 'test-value';
       const branded = brand<string, 'Test'>(original);
       const unbranded = unbrand(branded);
-      
+
       expect(branded).toBe(original);
       expect(unbranded).toBe(original);
       expect(unbranded).toBe('test-value');
@@ -41,7 +41,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
       const stringValue = brand<string, 'TestString'>('hello');
       const numberValue = brand<number, 'TestNumber'>(42);
       const booleanValue = brand<boolean, 'TestBoolean'>(true);
-      
+
       expect(unbrand(stringValue)).toBe('hello');
       expect(unbrand(numberValue)).toBe(42);
       expect(unbrand(booleanValue)).toBe(true);
@@ -52,7 +52,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
     it('should create current timestamp', () => {
       const timestamp = now();
       const currentTime = Date.now();
-      
+
       expect(typeof unbrand(timestamp)).toBe('number');
       expect(unbrand(timestamp)).toBeCloseTo(currentTime, -2); // Within 100ms
     });
@@ -60,25 +60,25 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
     it('should create timestamp from date', () => {
       const date = new Date('2023-01-01T00:00:00.000Z');
       const timestamp = timestampFromDate(date);
-      
-      expect(unbrand(timestamp)).toBe(date.getTime());
+
+      expect(unbrand(timestamp)).toBe(date.getTime())();
     });
 
     it('should convert timestamp to date', () => {
       const originalDate = new Date('2023-06-15T12:30:45.123Z');
       const timestamp = timestampFromDate(originalDate);
       const convertedDate = dateFromTimestamp(timestamp);
-      
-      expect(convertedDate.getTime()).toBe(originalDate.getTime());
-      expect(convertedDate.toISOString()).toBe(originalDate.toISOString());
+
+      expect(convertedDate.getTime()).toBe(originalDate.getTime())();
+      expect(convertedDate.toISOString()).toBe(originalDate.toISOString())();
     });
 
     it('should create ISO string from timestamp', () => {
       const date = new Date('2023-12-25T15:45:30.500Z');
       const timestamp = timestampFromDate(date);
       const isoString = isoStringFromTimestamp(timestamp);
-      
-      expect(unbrand(isoString)).toBe(date.toISOString());
+
+      expect(unbrand(isoString)).toBe(date.toISOString())();
     });
   });
 
@@ -88,10 +88,10 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
         const validTimestamps = [
           Date.now(),
           1672531200000, // Jan 1, 2023
-          new Date().getTime()
+          new Date().getTime(),
         ];
 
-        validTimestamps.forEach(ts => {
+        validTimestamps.forEach((ts) => {
           expect(isTimestamp(ts)).toBe(true);
         });
       });
@@ -104,10 +104,10 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           0, // zero
           Date.now() + 1000 * 60 * 60 * 24 * 500, // too far in future
           null,
-          undefined
+          undefined,
         ];
 
-        invalidTimestamps.forEach(ts => {
+        invalidTimestamps.forEach((ts) => {
           expect(isTimestamp(ts)).toBe(false);
         });
       });
@@ -119,10 +119,10 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           '2023-01-01T00:00:00.000Z',
           '2023-12-31T23:59:59.999Z',
           '2023-06-15T12:30:45Z',
-          new Date().toISOString()
+          new Date().toISOString(),
         ];
 
-        validDates.forEach(date => {
+        validDates.forEach((date) => {
           expect(isISODateString(date)).toBe(true);
         });
       });
@@ -137,10 +137,10 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           '',
           null,
           undefined,
-          123
+          123,
         ];
 
-        invalidDates.forEach(date => {
+        invalidDates.forEach((date) => {
           expect(isISODateString(date)).toBe(false);
         });
       });
@@ -152,10 +152,10 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           'test@example.com',
           'user.name@domain.co.uk',
           'first+last@subdomain.example.org',
-          'valid@123.456.789.012' // IP addresses
+          'valid@123.456.789.012', // IP addresses
         ];
 
-        validEmails.forEach(email => {
+        validEmails.forEach((email) => {
           expect(isEmail(email)).toBe(true);
         });
       });
@@ -170,10 +170,10 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           '',
           null,
           undefined,
-          123
+          123,
         ];
 
-        invalidEmails.forEach(email => {
+        invalidEmails.forEach((email) => {
           expect(isEmail(email)).toBe(false);
         });
       });
@@ -186,20 +186,18 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           [1, 2, 3],
           ['a', 'b'],
           [null],
-          [undefined]
+          [undefined],
         ];
 
-        nonEmptyArrays.forEach(arr => {
+        nonEmptyArrays.forEach((arr) => {
           expect(isNonEmptyArray(arr)).toBe(true);
         });
       });
 
       it('should reject empty arrays', () => {
-        const emptyArrays = [
-          []
-        ];
+        const emptyArrays = [[]];
 
-        emptyArrays.forEach(arr => {
+        emptyArrays.forEach((arr) => {
           expect(isNonEmptyArray(arr)).toBe(false);
         });
       });
@@ -215,24 +213,18 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           null,
           undefined,
           Symbol('test'),
-          BigInt(123)
+          BigInt(123),
         ];
 
-        primitives.forEach(primitive => {
+        primitives.forEach((primitive) => {
           expect(isPrimitive(primitive)).toBe(true);
         });
       });
 
       it('should reject non-primitive values', () => {
-        const nonPrimitives = [
-          {},
-          [],
-          () => {},
-          new Date(),
-          /regex/
-        ];
+        const nonPrimitives = [{}, [], () => {}, new Date(), /regex/];
 
-        nonPrimitives.forEach(nonPrimitive => {
+        nonPrimitives.forEach((nonPrimitive) => {
           expect(isPrimitive(nonPrimitive)).toBe(false);
         });
       });
@@ -321,37 +313,37 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
   describe('Performance', () => {
     it('should handle many type guard operations efficiently', () => {
       const start = performance.now();
-      
+
       const testData = Array.from({ length: 1000 }, (_, i) => ({
         email: `user${i}@example.com`,
         timestamp: Date.now() + i,
         uuid: generateUUID(),
         array: [i],
-        primitive: i
+        primitive: i,
       }));
-      
-      testData.forEach(data => {
+
+      testData.forEach((data) => {
         expect(isEmail(data.email)).toBe(true);
         expect(isTimestamp(data.timestamp)).toBe(true);
         expect(isUUID(data.uuid)).toBe(true);
         expect(isNonEmptyArray(data.array)).toBe(true);
         expect(isPrimitive(data.primitive)).toBe(true);
       });
-      
+
       const duration = performance.now() - start;
       expect(duration).toBeLessThan(1000); // Should be fast
     });
 
     it('should handle branding/unbranding efficiently', () => {
       const start = performance.now();
-      
+
       const values = Array.from({ length: 1000 }, (_, i) => `value-${i}`);
-      
-      const branded = values.map(val => brand<string, 'Test'>(val));
-      const unbranded = branded.map(val => unbrand(val));
-      
+
+      const branded = values.map((val) => brand<string, 'Test'>(val));
+      const unbranded = branded.map((val) => unbrand(val));
+
       expect(unbranded).toEqual(values);
-      
+
       const duration = performance.now() - start;
       expect(duration).toBeLessThan(100); // Should be very fast
     });
@@ -360,12 +352,12 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
   describe('Edge Cases', () => {
     it('should handle edge case timestamps', () => {
       const edgeCases = [
-        1, // minimum valid timestamp  
+        1, // minimum valid timestamp
         Date.now(), // current time
-        Date.now() + 1000 * 60 * 60 * 24 * 364 // almost 1 year in future
+        Date.now() + 1000 * 60 * 60 * 24 * 364, // almost 1 year in future
       ];
 
-      edgeCases.forEach(ts => {
+      edgeCases.forEach((ts) => {
         expect(isTimestamp(ts)).toBe(true);
       });
     });
@@ -374,10 +366,10 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
       const edgeEmails = [
         'a@b.co', // minimal valid email
         'very.long.email.address.with.many.dots@very.long.domain.name.with.many.dots.example.com',
-        '123@456.789' // numeric
+        '123@456.789', // numeric
       ];
 
-      edgeEmails.forEach(email => {
+      edgeEmails.forEach((email) => {
         expect(isEmail(email)).toBe(true);
       });
     });

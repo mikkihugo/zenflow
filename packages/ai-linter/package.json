@@ -18,7 +18,7 @@
     "test:coverage": "vitest --coverage",
     "test:integration": "node dist/test-integration.js",
     "test:singularity": "node dist/test-singularity-linting.js",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
@@ -40,7 +40,6 @@
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/intelligence": "workspace:*",
     "@claude-zen/repo-analyzer": "workspace:*",
-    "@claude-zen/singularity-coder": "workspace:*",
     "eslint": "^9.33.0",
     "prettier": "^3.0.0",
     "@typescript-eslint/parser": "^6.21.0",

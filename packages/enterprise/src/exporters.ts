@@ -15,7 +15,7 @@ async function loadExportersModule() {
       // Use dynamic import with string to avoid TypeScript compile-time checking
       const packageName = '@claude-zen/exporters';
       exportersModuleCache = await import(packageName);
-    } catch (error) {
+    } catch {
       // Fallback implementation when exporters package isn't available
       exportersModuleCache = {
         ExportManager: class {
@@ -40,9 +40,9 @@ async function loadExportersModule() {
 function createFallbackExportManager() {
   return {
     exportData: async (data: any, format: string) => ({
-      result: `fallback-export-${format || 'json'}`,
+      result: `fallback-export-${format'' | '''' | '''json'}`,
       status: 'exported',
-      format: format || 'json',
+      format: format'' | '''' | '''json',
       size: JSON.stringify(data).length,
       timestamp: Date.now(),
     }),
@@ -53,7 +53,9 @@ function createFallbackExportManager() {
       timestamp: Date.now(),
     }),
     exportToCSV: async (data: any) => ({
-      result: Array.isArray(data) ? data.map(row => Object.values(row).join(',')).join('\n') : 'fallback-csv',
+      result: Array.isArray(data)
+        ? data.map((row) => Object.values(row).join(',')).join('\n')
+        : 'fallback-csv',
       status: 'exported',
       format: 'csv',
       timestamp: Date.now(),
@@ -73,7 +75,10 @@ function createFallbackExportManager() {
 function createFallbackExporters() {
   return {
     json: (data: any) => JSON.stringify(data, null, 2),
-    csv: (data: any) => Array.isArray(data) ? data.map(row => Object.values(row).join(',')).join('\n') : 'fallback-csv',
+    csv: (data: any) =>
+      Array.isArray(data)
+        ? data.map((row) => Object.values(row).join(',')).join('\n')
+        : 'fallback-csv',
     xml: (data: any) => `<data>${JSON.stringify(data)}</data>`,
     yaml: (data: any) => `# Fallback YAML\ndata: ${JSON.stringify(data)}`,
     getStatus: () => ({ status: 'fallback', healthy: true }),
@@ -83,12 +88,14 @@ function createFallbackExporters() {
 // Professional naming patterns - delegate to exporters implementation or fallback
 export const getExportManager = async () => {
   const exportersModule = await loadExportersModule();
-  return exportersModule.createExportManager?.() || createFallbackExportManager();
+  return (
+    exportersModule.createExportManager?.()'' | '''' | ''createFallbackExportManager()
+  );
 };
 
 export const getExporters = async () => {
   const exportersModule = await loadExportersModule();
-  return exportersModule.createExporters?.() || createFallbackExporters();
+  return exportersModule.createExporters?.()'' | '''' | ''createFallbackExporters();
 };
 
 // Export main classes with delegation
@@ -99,7 +106,7 @@ export class ExportManager {
     const exportersModule = await loadExportersModule();
     if (exportersModule.ExportManager) {
       this.instance = new exportersModule.ExportManager();
-      return this.instance.initialize?.(config) || Promise.resolve();
+      return this.instance.initialize?.(config)'' | '''' | ''Promise.resolve();
     }
     this.instance = new exportersModule.ExportManager(config);
     return Promise.resolve();
@@ -116,21 +123,36 @@ export class ExportManager {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.exportToJSON?.(data) || { result: JSON.stringify(data, null, 2), format: 'json' };
+    return (
+      this.instance.exportToJSON?.(data)'' | '''' | ''{
+        result: JSON.stringify(data, null, 2),
+        format:'json',
+      }
+    );
   }
 
   async exportToCSV(data: any) {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.exportToCSV?.(data) || { result: 'fallback-csv', format: 'csv' };
+    return (
+      this.instance.exportToCSV?.(data)'' | '''' | ''{
+        result:'fallback-csv',
+        format: 'csv',
+      }
+    );
   }
 
   async exportToXML(data: any) {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.exportToXML?.(data) || { result: `<data>${JSON.stringify(data)}</data>`, format: 'xml' };
+    return (
+      this.instance.exportToXML?.(data)'' | '''' | ''{
+        result: `<data>${JSON.stringify(data)}</data>`,
+        format:'xml',
+      }
+    );
   }
 
   getStatus() {

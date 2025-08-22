@@ -5,7 +5,7 @@
  * Provides complete type safety for AI tools interacting with Express routes.
  */
 
-import type { Request, Response } from 'express');
+import type { Request, Response } from 'express';
 
 import('/api-types');
 
@@ -109,46 +109,46 @@ export interface ApiResponse<T = any> {
 export type HealthHandler = (
   req: HealthRequest,
   res: TypedResponse<ApiResponse<HealthResponse>>
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 export type SystemStatusHandler = (
   req: SystemStatusRequest,
   res: TypedResponse<ApiResponse<SystemStatusResponse>>
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 export type GetSwarmsHandler = (
   req: GetSwarmsRequest,
   res: TypedResponse<
     ApiResponse<{ swarms: SwarmResponse[]; metrics: SwarmMetrics }>
   >
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 export type CreateSwarmHandler = (
   req: CreateSwarmRequestBody,
   res: TypedResponse<ApiResponse<SwarmResponse>>
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 export type GetTasksHandler = (
   req: GetTasksRequest,
   res: TypedResponse<
     ApiResponse<{ tasks: TaskResponse[]; metrics: TaskMetrics }>
   >
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 export type CreateTaskHandler = (
   req: CreateTaskRequestBody,
   res: TypedResponse<ApiResponse<TaskResponse>>
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 export type ExecuteCommandHandler = (
   req: ExecuteCommandRequestBody,
   res: TypedResponse<ApiResponse<CommandResult>>
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 export type GetLLMAnalyticsHandler = (
   req: GetLLMAnalyticsRequest,
   res: TypedResponse<ApiResponse<LLMAnalytics>>
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 /**
  * Generic error handler type
@@ -156,7 +156,7 @@ export type GetLLMAnalyticsHandler = (
 export type ErrorHandler = (
   req: Request,
   res: TypedResponse<ErrorResponse>
-) => Promise<void> | void;
+) => Promise<void>'' | ''void;
 
 /**
  * Route path types extracted from OpenAPI
@@ -197,7 +197,7 @@ export type ValidationMiddleware<T extends keyof ValidationSchemas> = (
  */
 export interface RouteConfig<TReq extends Request = Request, TRes = any> {
   path: string;
-  method: 'get | post' | 'put | delete' | 'patch');
+  method: 'get'' | ''post'' | ''put'' | ''delete'' | ''patch');
   handler: (req: TReq, res: TypedResponse<TRes>) => Promise<void> | void;
   validation?: ValidationMiddleware<any>;
   middleware?: Array<(req: Request, res: Response, next: () => void) => void>;

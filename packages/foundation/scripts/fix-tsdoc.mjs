@@ -22,11 +22,10 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
 
 /**
  * Configuration for TSDoc auto-fix operations
@@ -95,7 +94,7 @@ async function runTSDocCheck(filePath = '.') {
     });
 
     let stdout = '';
-    let stderr = '';
+    // let stderr = '';
 
     child.stdout.on('data', (data) => {
       stdout += data.toString();
@@ -315,7 +314,7 @@ async function fixFileWithClaude(filePath, undocumentedExports, fileAnalysis = n
     });
 
     let stdout = '';
-    let stderr = '';
+    // let stderr = '';
 
     child.stdout.on('data', (data) => {
       stdout += data.toString();

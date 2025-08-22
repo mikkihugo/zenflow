@@ -8,7 +8,7 @@
  * @file Adr management system.
  */
 
-import type { ProjectEntity } from '@claude-zen/intelligence');
+import type { ProjectEntity } from '@claude-zen/intelligence';
 
 import('/document-service');
 
@@ -25,7 +25,7 @@ export interface ADRCreateOptions {
   }>;
   author?: string;
   project_id?: string;
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   stakeholders?: string[];
   implementation_notes?: string;
   success_criteria?: string[];
@@ -33,14 +33,8 @@ export interface ADRCreateOptions {
 }
 
 export interface ADRQueryOptions {
-  status?:
-    | 'proposed'
-    | 'discussion'
-    | 'decided'
-    | 'implemented'
-    | 'superseded'
-    | 'deprecated');
-  priority?: 'low | medium' | 'high | critical');
+  status?:' | ''proposed | discussion' | 'decided''' | '''implemented | superseded' | 'deprecated');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   author?: string;
   project_id?: string;
   date_range?: {
@@ -123,17 +117,17 @@ export class ADRManager {
         title: `${adrId}: ${options?.title}`,
         content: this.formatADRContent(adrId, options),
         summary: `Architecture decision ${adrId} regarding ${options?.title}`,
-        author: options?.author || 'architecture-team',
+        author: options?.author'' | '''' | '''architecture-team',
         project_id: this.architectureProject?.id,
-        status: 'draft as any, // Changed from proposed' due to type mismatch
-        priority: options?.priority || 'medium',
+        status: 'draft as any, // Changed from proposed'due to type mismatch
+        priority: options?.priority'' | '''' | '''medium',
         keywords,
         metadata: {
           adr_number: adrNumber,
           adr_id: adrId,
           decision_date: new Date()?.toISOString,
-          stakeholders: options?.stakeholders || [],
-          implementation_status: 'pending',
+          stakeholders: options?.stakeholders'' | '''' | ''[],
+          implementation_status:'pending',
           supersedes: [],
           superseded_by: null,
           related_adrs: [],
@@ -144,14 +138,14 @@ export class ADRManager {
         decision: options?.decision,
         context: options?.context,
         consequences: [options?.consequences], // Wrapped in array due to type requirement
-        alternatives_considered: (options?.alternatives || []) as any, // Cast due to type mismatch
-        implementation_notes: options?.implementation_notes || '',
-        success_criteria: options?.success_criteria || [],
+        alternatives_considered: (options?.alternatives'' | '''' | ''[]) as any, // Cast due to type mismatch
+        implementation_notes: options?.implementation_notes'' | '''' | '''',
+        success_criteria: options?.success_criteria'' | '''' | ''[],
         success_metrics: {},
       },
       {
         autoGenerateRelationships: true,
-        startWorkflow: 'adr_workflow',
+        startWorkflow:'adr_workflow',
         generateSearchIndex: true,
       }
     );
@@ -164,7 +158,7 @@ export class ADRManager {
     // Query all existing ADRs to find the highest number
     const { documents } = await documentManager.queryDocuments({
       type: 'adr',
-      projectId: this.architectureProject?.id || undefined,
+      projectId: this.architectureProject?.id'' | '''' | ''undefined,
     });
 
     let maxNumber = 0;
@@ -201,9 +195,9 @@ export class ADRManager {
       includeContent: true,
       includeRelationships: true,
       includeWorkflowState: true,
-      limit: options?.limit || 50,
-      offset: options?.offset || 0,
-      sortBy: 'created_at',
+      limit: options?.limit'' | '''' | ''50,
+      offset: options?.offset'' | '''' | ''0,
+      sortBy:'created_at',
       sortOrder: 'desc',
     };
 
@@ -216,9 +210,8 @@ export class ADRManager {
       filteredADRs = filteredADRs.filter((adr) => {
         const created = new Date(adr.created_at);
         return (
-          (!options?.date_range?.start ||
-            created >= options?.date_range?.start) &&
-          (!options?.date_range?.end || created <= options?.date_range?.end)
+          (!options?.date_range?.start'' | '''' | ''created >= options?.date_range?.start) &&
+          (!options?.date_range?.end'' | '''' | ''created <= options?.date_range?.end)
         );
       });
     }
@@ -248,7 +241,7 @@ export class ADRManager {
   async searchADRs(
     query: string,
     options: {
-      searchType?: 'fulltext | semantic' | 'keyword | combined');
+      searchType?:'fulltext | semantic''' | '''keyword | combined');
       limit?: number;
       filters?: ADRQueryOptions;
     } = {}
@@ -258,11 +251,11 @@ export class ADRManager {
     searchMetadata: any;
   }> {
     const searchOptions: any = {
-      searchType: options?.searchType || 'combined',
+      searchType: options?.searchType'' | '''' | '''combined',
       query,
       projectId: this.architectureProject?.id,
       documentTypes: ['adr'],
-      limit: options?.limit || 20,
+      limit: options?.limit'' | '''' | ''20,
     };
 
     // Apply additional filters
@@ -275,7 +268,7 @@ export class ADRManager {
         searchOptions.dateRange = {
           start: options?.filters?.date_range?.start,
           end: options?.filters?.date_range?.end,
-          field: 'created_at' as const,
+          field:'created_at'as const,
         };
     }
 
@@ -293,9 +286,9 @@ export class ADRManager {
    *
    * @param number
    */
-  async getADRByNumber(number: number): Promise<any | null> {
+  async getADRByNumber(number: number): Promise<any'' | ''null> {
     const { adrs } = await this.queryADRs;
-    return adrs.find((adr) => adr.metadata?.['adr_number'] === number) || null; // Fixed bracket notation
+    return adrs.find((adr) => adr.metadata?.['adr_number'] === number)'' | '''' | ''null; // Fixed bracket notation
   }
 
   /**
@@ -303,9 +296,9 @@ export class ADRManager {
    *
    * @param adrId
    */
-  async getADRById(adrId: string): Promise<any | null> {
+  async getADRById(adrId: string): Promise<any'' | ''null> {
     const { adrs } = await this.queryADRs;
-    return adrs.find((adr) => adr.metadata?.['adr_id'] === adrId) || null; // Fixed bracket notation
+    return adrs.find((adr) => adr.metadata?.['adr_id'] === adrId)'' | '''' | ''null; // Fixed bracket notation
   }
 
   /**
@@ -317,13 +310,7 @@ export class ADRManager {
    */
   async updateADRStatus(
     adrNumber: number,
-    newStatus:
-      | 'proposed'
-      | 'discussion'
-      | 'decided'
-      | 'implemented'
-      | 'superseded'
-      | 'deprecated',
+    newStatus:'' | '''proposed | discussion' | 'decided''' | '''implemented | superseded' | 'deprecated',
     notes?: string
   ): Promise<any> {
     const adr = await this.getADRByNumber(adrNumber);
@@ -389,7 +376,7 @@ export class ADRManager {
       metadata: {
         ...newADR.metadata,
         supersedes: [
-          ...(newADR.metadata?.['supersedes'] || []),
+          ...(newADR.metadata?.['supersedes']'' | '''' | ''[]),
           oldADR.metadata?.['adr_id'],
         ], // Fixed bracket notation
       },
@@ -437,25 +424,25 @@ export class ADRManager {
       // Status stats
       if (adr.status) {
         // Added null check
-        stats.by_status[adr.status] = (stats.by_status[adr.status] || 0) + 1;
+        stats.by_status[adr.status] = (stats.by_status[adr.status]'' | '''' | ''0) + 1;
       }
 
       // Priority stats
       if (adr.priority) {
         // Added null check
         stats.by_priority[adr.priority] =
-          (stats.by_priority[adr.priority] || 0) + 1;
+          (stats.by_priority[adr.priority]'' | '''' | ''0) + 1;
       }
 
       // Author stats
       if (adr.author) {
         // Added null check
-        stats.by_author[adr.author] = (stats.by_author[adr.author] || 0) + 1;
+        stats.by_author[adr.author] = (stats.by_author[adr.author]'' | '''' | ''0) + 1;
       }
 
       // Recent decisions - commented out due to status type mismatch
       /*
-      if (adr.status === 'decided' && new Date(adr.updated_at) >= thirtyDaysAgo) {
+      if (adr.status ==='decided' && new Date(adr.updated_at) >= thirtyDaysAgo) {
         stats.recent_decisions++;
       }
       */
@@ -492,14 +479,14 @@ export class ADRManager {
 
     return adrs
       .map((adr) => ({
-        number: adr.metadata?.['adr_number'] || 0, // Fixed bracket notation
+        number: adr.metadata?.['adr_number']'' | '''' | ''0, // Fixed bracket notation
         id: adr.metadata?.['adr_id] || ', // Fixed bracket notation
         title: adr.title.replace(/^ADR-\d+:\s*/, ''), // Remove ADR prefix
-        status: adr.status || 'unknown', // Added fallback
-        priority: adr.priority || 'medium', // Added fallback
-        author: adr.author || 'unknown', // Added fallback
+        status: adr.status'' | '''' | '''unknown', // Added fallback
+        priority: adr.priority'' | '''' | '''medium', // Added fallback
+        author: adr.author'' | '''' | '''unknown', // Added fallback
         created: new Date(adr.created_at),
-        summary: (adr as any).summary || 'No summary available', // Cast and fallback due to type error
+        summary: (adr as any).summary'' | '''' | '''No summary available', // Cast and fallback due to type error
       }))
       .sort((a, b) => b.number - a.number); // Sort by ADR number descending
   }
@@ -541,7 +528,7 @@ export class ADRManager {
 
     content += `---\n\n`;
     content += `**Decision Date**: ${new Date()?.toISOString.split('T')[0]}\n`;
-    content += `**Author**: ${options?.author || 'architecture-team'}\n`;
+    content += `**Author**: ${options?.author'' | '''' | '''architecture-team'}\n`;
 
     if (options?.stakeholders && options?.stakeholders.length > 0) {
       content += `**Stakeholders**: ${options?.stakeholders?.join(', ')}\n`;
@@ -558,11 +545,10 @@ export class ADRManager {
    */
   private generateKeywords(title: string, decision: string): string[] {
     const text = `${title} ${decision}`?.toLowerCase()
-    const words = text.match(/\b\w{3,}\b/g) || [];
+    const words = text.match(/\b\w{3,}\b/g)'' | '''' | ''[];
 
     // Remove common words and duplicates
-    const stopWords = new Set([
-      'the',
+    const stopWords = new Set(['the',
       'and',
       'for',
       'are',

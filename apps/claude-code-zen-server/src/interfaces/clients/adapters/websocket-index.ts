@@ -2,7 +2,7 @@
  * @file Interface implementation: websocket-index.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 // Import for internal use
 import {
@@ -31,7 +31,7 @@ export type {
   Client,
   ClientFactory,
   RequestOptions,
-} from './core/interfaces');
+} from './core/interfaces';
 
 // Enhanced WebSocket client with backward compatibility
 export {
@@ -104,7 +104,7 @@ export async function createOptimalWebSocketClient(
     useEnhanced?: boolean;
     loadBalancing?: {
       enabled: boolean;
-      strategy?: 'round-robin | random' | 'least-connections');
+      strategy?: 'round-robin | random | least-connections');
       urls?: string[];
     };
     failover?: {
@@ -195,7 +195,7 @@ export async function createSimpleWebSocketClient(
       maxAttempts: 10,
       initialDelay: 1000,
       maxDelay: 30000,
-      backoff: 'exponential',
+      backoff:'exponential',
     },
     heartbeat: {
       enabled: options?.heartbeat !== false,

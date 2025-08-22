@@ -1,6 +1,6 @@
 /**
  * @fileoverview Knowledge Package - Main exports
- * 
+ *
  * This package provides collective intelligence, distributed learning,
  * and knowledge management capabilities for the swarm system.
  */
@@ -10,7 +10,7 @@ export * from './intelligent-doc-import';
 export { BasicKnowledgeManager } from './main';
 
 // Public coordination API (fact system implementation is private)
-export { 
+export {
   getCoordinationFactSystem,
   initializeCoordinationFactSystem,
   storeCoordinationFact,
@@ -23,7 +23,7 @@ export {
   searchExternalFacts,
   getNPMPackageInfo,
   getGitHubRepoInfo,
-  
+
   // Re-export types for coordination layer
   type CoordinationFact,
   type CoordinationFactQuery,

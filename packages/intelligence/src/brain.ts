@@ -38,7 +38,9 @@ async function loadBrainModule() {
       const packageName = '@claude-zen/brain';
       brainModuleCache = await import(packageName);
     } catch {
-      console.warn('Brain package not available, providing minimal compatibility layer');
+      console.warn(
+        'Brain package not available, providing minimal compatibility layer',
+      );
       brainModuleCache = {
         getBrainSystemAccess: async () => createCompatibilityBrainSystem(),
         BrainCoordinator: class MinimalBrainCoordinator extends TypedEventBase {
@@ -122,7 +124,9 @@ export const getBrainSystemAccess = async () => {
 
 export const getBrainCoordinator = async (config?: any) => {
   const brainModule = await loadBrainModule();
-  return brainModule.getBrainCoordinator?.(config) || new brainModule.BrainCoordinator(config);
+  return (
+    brainModule.getBrainCoordinator?.(config)'' | '''' | ''new brainModule.BrainCoordinator(config)
+  );
 };
 
 export const getTaskComplexityEstimator = async (config?: any) => {
@@ -132,13 +136,17 @@ export const getTaskComplexityEstimator = async (config?: any) => {
 
 export const getBehavioralIntelligence = async (config?: any) => {
   const brainModule = await loadBrainModule();
-  return brainModule.getBehavioralIntelligence?.(config) || new brainModule.BehavioralIntelligence(config);
+  return (
+    brainModule.getBehavioralIntelligence?.(config)'' | '''' | ''new brainModule.BehavioralIntelligence(config)
+  );
 };
 
 export const getNeuralBridge = async (config?: any) => {
   const brainModule = await loadBrainModule();
   if (brainModule.NeuralBridge) {
-    return brainModule.NeuralBridge.getInstance?.(config) || new brainModule.NeuralBridge(config);
+    return (
+      brainModule.NeuralBridge.getInstance?.(config)'' | '''' | ''new brainModule.NeuralBridge(config)
+    );
   }
   return null;
 };
@@ -186,14 +194,16 @@ export class BrainCoordinator extends TypedEventBase {
     if (!this.instance) {
       await this.initialize();
     }
-    return this.instance.coordinate?.(task) || this.instance.coordinateTask?.(task);
+    return (
+      this.instance.coordinate?.(task)'' | '''' | ''this.instance.coordinateTask?.(task)
+    );
   }
 
   getStatus(): any {
     if (!this.instance) {
-      return { status: 'not-initialized' };
+      return { status:'not-initialized'};
     }
-    return this.instance.getStatus?.() || { status: 'active' };
+    return this.instance.getStatus?.()'' | '''' | ''{ status:'active' };
   }
 
   async shutdown(): Promise<void> {
@@ -221,7 +231,7 @@ export class BrainCoordinator extends TypedEventBase {
  * • No neural computation - compatibility stubs only
  */
 export class NeuralBridge extends TypedEventBase {
-  private static instance: NeuralBridge | null = null;
+  private static instance: NeuralBridge'' | ''null = null;
   private realInstance: any = null;
   private neuralConfig: any;
 
@@ -241,7 +251,8 @@ export class NeuralBridge extends TypedEventBase {
     if (!this.realInstance) {
       const brainModule = await loadBrainModule();
       if (brainModule.NeuralBridge) {
-        this.realInstance = brainModule.NeuralBridge.getInstance?.(this.neuralConfig) || new brainModule.NeuralBridge(this.neuralConfig);
+        this.realInstance =
+          brainModule.NeuralBridge.getInstance?.(this.neuralConfig)'' | '''' | ''new brainModule.NeuralBridge(this.neuralConfig);
         await this.realInstance.initialize?.();
       }
     }
@@ -307,7 +318,9 @@ export class RetrainingMonitor extends TypedEventBase {
     if (!this.realInstance) {
       const brainModule = await loadBrainModule();
       if (brainModule.RetrainingMonitor) {
-        this.realInstance = new brainModule.RetrainingMonitor(this.monitorConfig);
+        this.realInstance = new brainModule.RetrainingMonitor(
+          this.monitorConfig,
+        );
         await this.realInstance.initialize?.();
       }
     }
@@ -350,7 +363,9 @@ export class BehavioralIntelligence extends TypedEventBase {
     if (!this.realInstance) {
       const brainModule = await loadBrainModule();
       if (brainModule.BehavioralIntelligence) {
-        this.realInstance = new brainModule.BehavioralIntelligence(this.behaviorConfig);
+        this.realInstance = new brainModule.BehavioralIntelligence(
+          this.behaviorConfig,
+        );
         await this.realInstance.initialize?.();
       }
     }
@@ -398,7 +413,9 @@ export const brainSystem = {
 // FACTORY FUNCTIONS - Professional enterprise patterns
 // ===============================================================================
 
-export async function createBrainCoordinator(config?: any): Promise<BrainCoordinator> {
+export async function createBrainCoordinator(
+  config?: any,
+): Promise<BrainCoordinator> {
   const coordinator = new BrainCoordinator(config);
   await coordinator.initialize();
   return coordinator;
@@ -419,7 +436,9 @@ export async function createNeuralBridge(config?: any): Promise<NeuralBridge> {
   return bridge;
 }
 
-export async function createBehavioralIntelligence(config?: any): Promise<BehavioralIntelligence> {
+export async function createBehavioralIntelligence(
+  config?: any,
+): Promise<BehavioralIntelligence> {
   const behavioral = new BehavioralIntelligence(config);
   await behavioral.initialize();
   return behavioral;
@@ -515,10 +534,10 @@ export class SessionMemoryStore {
   }
 
   async clearSession(): Promise<void> {
-    const keysToDelete = Array.from(this.memoryData.keys()).filter(key =>
+    const keysToDelete = Array.from(this.memoryData.keys()).filter((key) =>
       key.startsWith(`${this.sessionId}:`),
     );
-    keysToDelete.forEach(key => this.memoryData.delete(key));
+    keysToDelete.forEach((key) => this.memoryData.delete(key));
   }
 
   async shutdown(): Promise<void> {
@@ -541,11 +560,13 @@ export const getNeuralAgentRegistry = async () => {
     const registry = new AgentRegistry();
     // Configure as neural agent registry
     return registry;
-  } catch (error) {
+  } catch {
     // Fallback to foundation AgentRegistry with neural-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('Neural agents package not available, using basic agent registry');
+    console.warn(
+      'Neural agents package not available, using basic agent registry',
+    );
     return registry;
   }
 };
@@ -565,7 +586,9 @@ export const getIntelligenceAgentRegistry = async () => {
     // Fallback to foundation AgentRegistry with intelligence-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
-    console.warn('Intelligence agents package not available, using basic agent registry');
+    console.warn(
+      'Intelligence agents package not available, using basic agent registry',
+    );
     return registry;
   }
 };
@@ -602,7 +625,7 @@ export const createConversationAgentRegistry = async (config?: any) => {
     const { ConversationAgentRegistry } = await import('./teamwork');
     const registry = new ConversationAgentRegistry(config);
     return registry;
-  } catch (error) {
+  } catch {
     // Fallback to foundation AgentRegistry with conversation-specific config
     const { AgentRegistry } = await import('@claude-zen/foundation');
     const registry = new AgentRegistry();
@@ -619,14 +642,14 @@ export const createConversationAgentRegistry = async (config?: any) => {
  * getMemorySystem - Access to comprehensive memory capabilities
  * Memory systems include: conversation memory, learning memory, context memory,
  * persistent storage, and knowledge graphs.
- * 
+ *
  * Delegates to the comprehensive memory implementation package with DI integration,
  * REST API support, and multi-backend support (SQLite, LanceDB, JSON, In-Memory).
  */
 export async function getMemorySystem(config?: any): Promise<any> {
   // STRATEGIC DELEGATION with safer runtime loading approach
   // Use dynamic imports that don't cause TypeScript compilation issues
-  
+
   try {
     // APPROACH 1: Try to use built memory package via require at runtime
     // This bypasses TypeScript compilation issues by using runtime resolution
@@ -675,35 +698,51 @@ export async function getMemorySystem(config?: any): Promise<any> {
         }
       });
     `);
-    
+
     const result = await memorySystemFactory()(config);
     return result;
-    
   } catch (runtimeError) {
     // FALLBACK: Minimal in-memory implementation
-    console.warn('Advanced memory systems not available, using basic in-memory fallback');
+    console.warn(
+      'Advanced memory systems not available, using basic in-memory fallback',
+    );
     console.warn('Runtime error:', runtimeError);
-    
+
     const memoryStore = new Map();
-    
+
     return {
       createConversationMemory: () => ({
-        store: async (key: string, value: any) => memoryStore.set(`conv:${key}`, value),
+        store: async (key: string, value: any) =>
+          memoryStore.set(`conv:${key}`, value),
         retrieve: async (key: string) => memoryStore.get(`conv:${key}`),
-        clear: async () => { for (const k of memoryStore.keys()) if (k.startsWith('conv:')) memoryStore.delete(k); }
+        clear: async () => {
+          for (const k of memoryStore.keys()) {
+            if (k.startsWith('conv:')) {
+              memoryStore.delete(k);
+            }
+          }
+        },
       }),
       createLearningMemory: () => ({
-        storePattern: async (pattern: any) => memoryStore.set(`pattern:${Date.now()}`, pattern),
-        retrievePatterns: async () => Array.from(memoryStore.entries()).filter(([k]) => k.startsWith('pattern:')).map(([, v]) => v)
+        storePattern: async (pattern: any) =>
+          memoryStore.set(`pattern:${Date.now()}`, pattern),
+        retrievePatterns: async () =>
+          Array.from(memoryStore.entries())
+            .filter(([k]) => k.startsWith('pattern:'))
+            .map(([, v]) => v),
       }),
       createContextMemory: () => ({
-        storeContext: async (context: any) => memoryStore.set('context', context),
-        getContext: async () => memoryStore.get('context')
+        storeContext: async (context: any) =>
+          memoryStore.set('context', context),
+        getContext: async () => memoryStore.get('context'),
       }),
       createKnowledgeGraph: () => ({
         addNode: async (node: any) => memoryStore.set(`node:${node.id}`, node),
-        query: async () => Array.from(memoryStore.entries()).filter(([k]) => k.startsWith('node:')).map(([, v]) => v)
-      })
+        query: async () =>
+          Array.from(memoryStore.entries())
+            .filter(([k]) => k.startsWith('node:'))
+            .map(([, v]) => v),
+      }),
     };
   }
 }
@@ -764,12 +803,14 @@ export async function getMemoryManager(config?: any): Promise<any> {
         }
       });
     `);
-    
+
     return await memoryManagerFactory()(config);
   } catch {
-    console.warn('Memory implementation not available, using memory system fallback');
+    console.warn(
+      'Memory implementation not available, using memory system fallback',
+    );
     const memorySystem = await getMemorySystem(config);
-    return memorySystem.getManager?.() || memorySystem;
+    return memorySystem.getManager?.()'' | '''' | ''memorySystem;
   }
 }
 
@@ -777,7 +818,10 @@ export async function getMemoryManager(config?: any): Promise<any> {
  * getMemoryStorage - Factory for memory storage with specific store ID
  * Provides: Direct memory storage access with comprehensive backend support
  */
-export async function getMemoryStorage(storeId: string, config?: any): Promise<any> {
+export async function getMemoryStorage(
+  storeId: string,
+  config?: any,
+): Promise<any> {
   try {
     // Use runtime require to avoid TypeScript compilation issues
     const memoryStorageFactory = new Function(`
@@ -793,10 +837,12 @@ export async function getMemoryStorage(storeId: string, config?: any): Promise<a
         }
       });
     `);
-    
+
     return await memoryStorageFactory()(storeId, config);
   } catch {
-    console.warn('Memory implementation not available, using memory system fallback');
+    console.warn(
+      'Memory implementation not available, using memory system fallback',
+    );
     const memorySystem = await getMemorySystem(config);
     return memorySystem.createConversationMemory(config);
   }
@@ -806,7 +852,10 @@ export async function getMemoryStorage(storeId: string, config?: any): Promise<a
  * getSessionMemory - Factory for session-based memory systems
  * Provides: Session memory with automatic namespace management
  */
-export async function getSessionMemory(sessionId: string, config?: any): Promise<any> {
+export async function getSessionMemory(
+  sessionId: string,
+  config?: any,
+): Promise<any> {
   try {
     // Use runtime require to avoid TypeScript compilation issues
     const sessionMemoryFactory = new Function(`
@@ -822,10 +871,12 @@ export async function getSessionMemory(sessionId: string, config?: any): Promise
         }
       });
     `);
-    
+
     return await sessionMemoryFactory()(sessionId, config);
   } catch {
-    console.warn('Memory implementation not available, using memory system fallback');
+    console.warn(
+      'Memory implementation not available, using memory system fallback',
+    );
     const memorySystem = await getMemorySystem(config);
     return memorySystem.createConversationMemory(config);
   }
@@ -851,17 +902,27 @@ export async function getMemoryCoordination(config?: any): Promise<any> {
         }
       });
     `);
-    
+
     return await memoryCoordinationFactory()(config);
   } catch {
-    console.warn('Memory implementation not available, using memory system fallback');
+    console.warn(
+      'Memory implementation not available, using memory system fallback',
+    );
     const memorySystem = await getMemorySystem(config);
-    return memorySystem.getCoordination?.() || {
-      coordinate: async () => ({ success: true, message: 'Basic coordination' }),
-      orchestrate: async () => ({ success: true, message: 'Basic orchestration' }),
-      monitor: async () => ({ healthy: true, stats: {} }),
-      health: async () => ({ status: 'unknown' })
-    };
+    return (
+      memorySystem.getCoordination?.()'' | '''' | ''{
+        coordinate: async () => ({
+          success: true,
+          message:'Basic coordination',
+        }),
+        orchestrate: async () => ({
+          success: true,
+          message: 'Basic orchestration',
+        }),
+        monitor: async () => ({ healthy: true, stats: {} }),
+        health: async () => ({ status: 'unknown' }),
+      }
+    );
   }
 }
 
@@ -874,19 +935,20 @@ export const memorySystem = {
   getStorage: getMemoryStorage,
   getSession: getSessionMemory,
   getCoordination: getMemoryCoordination,
-  
+
   // Convenience factories
   createManager: (config?: any) => getMemoryManager(config),
   createConversation: (config?: any) => createConversationMemory(config),
   createLearning: (config?: any) => createLearningMemory(config),
   createContext: (config?: any) => createContextMemory(config),
   createKnowledge: (config?: any) => createKnowledgeGraph(config),
-  
+
   // Professional naming patterns for enterprise use
   createIntelligenceMemory: (config?: any) => createLearningMemory(config),
   createNeuralMemory: (config?: any) => createLearningMemory(config),
   createBusinessMemory: (config?: any) => createContextMemory(config),
-  createPerformanceMemory: (config?: any) => getMemoryStorage('performance', config)
+  createPerformanceMemory: (config?: any) =>
+    getMemoryStorage('performance', config),
 };
 
 // Memory system compatibility class
@@ -906,7 +968,7 @@ export class InMemoryConversationMemory {
   }
 
   async keys(): Promise<string[]> {
-    return Array.from(this.memory.keys());
+    return Array.from(this.memory.keys())();
   }
 }
 
@@ -949,7 +1011,7 @@ export class TypedEventBus {
   emit(event: string, ...args: any[]): boolean {
     const handlers = this.listeners.get(event);
     if (handlers) {
-      handlers.forEach(handler => handler(...args));
+      handlers.forEach((handler) => handler(...args));
       return true;
     }
     return false;

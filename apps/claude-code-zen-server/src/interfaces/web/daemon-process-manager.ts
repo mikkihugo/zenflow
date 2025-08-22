@@ -8,12 +8,12 @@
  * @file Daemon-process management system.
  */
 
-import { spawn } from 'node:child_process');
-import { existsSync } from 'node:fs');
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises');
-import { join } from 'node:path');
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 export interface DaemonConfig {
   pidFile?: string;
@@ -26,7 +26,7 @@ export interface DaemonConfig {
 export interface ProcessInfo {
   pid: number;
   startTime: Date;
-  status: 'running | stopped' | 'error');
+  status: 'running'' | ''stopped'' | ''error');
   command: string;
   args: string[];
 }
@@ -42,10 +42,10 @@ export class DaemonProcessManager {
 
   constructor(config: DaemonConfig = {}) {
     this.config = {
-      pidFile: config?.pidFile || join(process?.cwd, ".claude-zen-web.pid'),
+      pidFile: config?.pidFile'' | '''' | ''join(process?.cwd, ".claude-zen-web.pid'),
       logFile: config?.logFile || join(process?.cwd, ".claude-zen-web.log'),
       errorFile:
-        config?.errorFile || join(process?.cwd, ".claude-zen-web.error'),
+        config?.errorFile'' | '''' | ''join(process?.cwd, ".claude-zen-web.error'),
       cwd: config?.cwd || process?.cwd,
       detached: config?.detached ?? true,
     };
@@ -180,13 +180,13 @@ export class DaemonProcessManager {
   /**
    * Get information about running daemon process.
    */
-  async getRunningProcess(): Promise<ProcessInfo | null> {
+  async getRunningProcess(): Promise<ProcessInfo'' | ''null> {
     if (!existsSync(this.config.pidFile)) {
       return null;
     }
 
     try {
-      const pidContent = await readFile(this.config.pidFile, 'utf-8');
+      const pidContent = await readFile(this.config.pidFile,'utf-8');
       const pid = Number.parseInt(pidContent?.trim);
 
       if (Number.isNaN(pid)) {
@@ -230,7 +230,7 @@ export class DaemonProcessManager {
     pid?: number;
     uptime?: number;
     memory?: NodeJS.MemoryUsage;
-    status: 'healthy | unhealthy' | 'stopped');
+    status: 'healthy'' | ''unhealthy'' | ''stopped');
   }> {
     const processInfo = await this.getRunningProcess;
 

@@ -1,17 +1,17 @@
 /**
  * @fileoverview SAFe Portfolio Kanban Event System
- * 
+ *
  * Event-driven architecture for SAFe Portfolio Kanban state transitions.
  * Manages epic lifecycle through Portfolio Kanban states with proper
  * governance and approval workflows.
- * 
+ *
  * SAFe Portfolio Kanban States:
  * - Funnel: New epic ideas
  * - Analyzing: Epic hypothesis and business case development
  * - Portfolio Backlog: Approved epics awaiting implementation
  * - Implementing: Epics in active development
  * - Done: Completed epics with validated business hypothesis
- * 
+ *
  * @author Claude-Zen Team
  * @since 2.0.0
  * @version 2.0.0
@@ -25,10 +25,10 @@ import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
  */
 export enum PortfolioKanbanState {
   FUNNEL = 'funnel',
-  ANALYZING = 'analyzing', 
+  ANALYZING = 'analyzing',
   PORTFOLIO_BACKLOG = 'portfolio-backlog',
   IMPLEMENTING = 'implementing',
-  DONE = 'done'
+  DONE = 'done',
 }
 
 /**
@@ -52,8 +52,8 @@ export interface EpicBlockedEvent {
   readonly epicId: string;
   readonly currentState: PortfolioKanbanState;
   readonly blockerId: string;
-  readonly blockerType: 'technical' | 'business' | 'resource' | 'external' | 'regulatory';
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly blockerType:'' | '''technical | business' | 'resource' | 'external' | 'regulatory';
+  readonly severity: 'low | medium' | 'high''' | '''critical';
   readonly description: string;
   readonly owner: string;
   readonly timestamp: Date;
@@ -89,9 +89,9 @@ export interface WSJFScoreUpdatedEvent {
 export const PORTFOLIO_KANBAN_EVENTS = {
   EPIC_STATE_TRANSITION: 'portfolio-kanban:epic-transition',
   EPIC_BLOCKED: 'portfolio-kanban:epic-blocked',
-  EPIC_UNBLOCKED: 'portfolio-kanban:epic-unblocked', 
+  EPIC_UNBLOCKED: 'portfolio-kanban:epic-unblocked',
   WSJF_SCORE_UPDATED: 'portfolio-kanban:wsjf-updated',
-  PORTFOLIO_REBALANCED: 'portfolio-kanban:rebalanced'
+  PORTFOLIO_REBALANCED: 'portfolio-kanban:rebalanced',
 } as const;
 
 /**
@@ -113,7 +113,7 @@ export function createEpicStateTransition(params: {
     reason: params.reason,
     evidence: params.evidence,
     timestamp: new Date(),
-    transitionId: nanoid()
+    transitionId: nanoid(),
   };
 }
 
@@ -136,7 +136,7 @@ export function createEpicBlocked(params: {
     severity: params.severity,
     description: params.description,
     owner: params.owner,
-    timestamp: new Date()
+    timestamp: new Date(),
   };
 }
 
@@ -158,7 +158,7 @@ export function createWSJFScoreUpdate(params: {
     scoredBy: params.scoredBy,
     rank: params.rank,
     rankChange: params.rankChange,
-    timestamp: new Date()
+    timestamp: new Date(),
   };
 }
 
@@ -166,32 +166,47 @@ export function createWSJFScoreUpdate(params: {
  * Portfolio Kanban state machine for epic lifecycle management
  */
 export class PortfolioKanbanStateMachine {
-  private readonly allowedTransitions: Map<PortfolioKanbanState, PortfolioKanbanState[]>;
+  private readonly allowedTransitions: Map<
+    PortfolioKanbanState,
+    PortfolioKanbanState[]
+  >;
 
   constructor() {
     // Define valid SAFe Portfolio Kanban state transitions
     this.allowedTransitions = new Map([
       [PortfolioKanbanState.FUNNEL, [PortfolioKanbanState.ANALYZING]],
-      [PortfolioKanbanState.ANALYZING, [
-        PortfolioKanbanState.FUNNEL,  // Reject back to funnel
-        PortfolioKanbanState.PORTFOLIO_BACKLOG
-      ]],
-      [PortfolioKanbanState.PORTFOLIO_BACKLOG, [
-        PortfolioKanbanState.ANALYZING,  // Need more analysis
-        PortfolioKanbanState.IMPLEMENTING
-      ]],
-      [PortfolioKanbanState.IMPLEMENTING, [
-        PortfolioKanbanState.PORTFOLIO_BACKLOG,  // Scope reduction
-        PortfolioKanbanState.DONE
-      ]],
-      [PortfolioKanbanState.DONE, []]  // Terminal state
+      [
+        PortfolioKanbanState.ANALYZING,
+        [
+          PortfolioKanbanState.FUNNEL, // Reject back to funnel
+          PortfolioKanbanState.PORTFOLIO_BACKLOG,
+        ],
+      ],
+      [
+        PortfolioKanbanState.PORTFOLIO_BACKLOG,
+        [
+          PortfolioKanbanState.ANALYZING, // Need more analysis
+          PortfolioKanbanState.IMPLEMENTING,
+        ],
+      ],
+      [
+        PortfolioKanbanState.IMPLEMENTING,
+        [
+          PortfolioKanbanState.PORTFOLIO_BACKLOG, // Scope reduction
+          PortfolioKanbanState.DONE,
+        ],
+      ],
+      [PortfolioKanbanState.DONE, []], // Terminal state
     ]);
   }
 
   /**
    * Check if state transition is valid according to SAFe Portfolio Kanban rules
    */
-  isValidTransition(fromState: PortfolioKanbanState, toState: PortfolioKanbanState): boolean {
+  isValidTransition(
+    fromState: PortfolioKanbanState,
+    toState: PortfolioKanbanState
+  ): boolean {
     const allowedTargets = this.allowedTransitions.get(fromState);
     return allowedTargets ? allowedTargets.includes(toState) : false;
   }
@@ -199,8 +214,10 @@ export class PortfolioKanbanStateMachine {
   /**
    * Get allowed transitions from current state
    */
-  getAllowedTransitions(currentState: PortfolioKanbanState): PortfolioKanbanState[] {
-    return this.allowedTransitions.get(currentState) || [];
+  getAllowedTransitions(
+    currentState: PortfolioKanbanState
+  ): PortfolioKanbanState[] {
+    return this.allowedTransitions.get(currentState)'' | '''' | ''[];
   }
 
   /**
@@ -216,35 +233,39 @@ export class PortfolioKanbanStateMachine {
         return {
           required: ['epic-hypothesis', 'problem-statement'],
           optional: ['market-research', 'customer-feedback'],
-          gates: []
+          gates: [],
         };
 
       case PortfolioKanbanState.ANALYZING:
         return {
           required: ['business-case', 'wsjf-score', 'lean-business-case'],
           optional: ['market-analysis', 'competitive-analysis'],
-          gates: ['epic-review-board']
+          gates: ['epic-review-board'],
         };
 
       case PortfolioKanbanState.PORTFOLIO_BACKLOG:
         return {
-          required: ['approved-business-case', 'prioritized-wsjf', 'capacity-allocation'],
+          required: [
+            'approved-business-case',
+            'prioritized-wsjf',
+            'capacity-allocation',
+          ],
           optional: ['roadmap-alignment'],
-          gates: ['portfolio-sync']
+          gates: ['portfolio-sync'],
         };
 
       case PortfolioKanbanState.IMPLEMENTING:
         return {
           required: ['art-assignment', 'pi-planning', 'mvp-definition'],
           optional: ['architecture-runway', 'enablers'],
-          gates: ['system-demo', 'inspect-adapt']
+          gates: ['system-demo', 'inspect-adapt'],
         };
 
       case PortfolioKanbanState.DONE:
         return {
           required: ['hypothesis-validation', 'business-outcome-measurement'],
           optional: ['lessons-learned', 'retrospective'],
-          gates: ['final-demo', 'value-realization']
+          gates: ['final-demo', 'value-realization'],
         };
 
       default:
@@ -258,8 +279,8 @@ export class PortfolioKanbanStateMachine {
  */
 export interface PortfolioKanbanMetrics {
   readonly stateDistribution: Record<PortfolioKanbanState, number>;
-  readonly averageLeadTime: number;  // Days from funnel to done
-  readonly throughput: number;  // Epics completed per PI
+  readonly averageLeadTime: number; // Days from funnel to done
+  readonly throughput: number; // Epics completed per PI
   readonly wsjfScoreDistribution: { min: number; max: number; avg: number };
   readonly blockedEpicsCount: number;
   readonly cycleTimeByState: Record<PortfolioKanbanState, number>;
@@ -297,26 +318,35 @@ export class PortfolioKanbanWorkflow {
     newState: PortfolioKanbanState;
     message: string;
   } {
-    const currentState = this.epicStates.get(params.epicId) || PortfolioKanbanState.FUNNEL;
-    
+    const currentState =
+      this.epicStates.get(params.epicId)'' | '''' | ''PortfolioKanbanState.FUNNEL;
+
     // Validate transition according to SAFe rules
-    if (!this.stateMachine.isValidTransition(currentState, params.targetState)) {
+    if (
+      !this.stateMachine.isValidTransition(currentState, params.targetState)
+    ) {
       return {
         success: false,
         newState: currentState,
-        message: `Invalid transition from ${currentState} to ${params.targetState}`
+        message: `Invalid transition from ${currentState} to ${params.targetState}`,
       };
     }
 
     // Check state requirements
-    const requirements = this.stateMachine.getStateRequirements(params.targetState);
-    const validationResult = this.validateStateRequirements(params.epicId, requirements, params.evidence);
-    
+    const requirements = this.stateMachine.getStateRequirements(
+      params.targetState
+    );
+    const validationResult = this.validateStateRequirements(
+      params.epicId,
+      requirements,
+      params.evidence
+    );
+
     if (!validationResult.isValid) {
       return {
         success: false,
         newState: currentState,
-        message: `Requirements not met: ${validationResult.missingRequirements.join(', ')}`
+        message: `Requirements not met: ${validationResult.missingRequirements.join(', ')}`,
       };
     }
 
@@ -330,19 +360,21 @@ export class PortfolioKanbanWorkflow {
       toState: params.targetState,
       triggeredBy: params.triggeredBy,
       reason: params.reason,
-      evidence: params.evidence
+      evidence: params.evidence,
     });
 
-    this.eventBus.emit(createEvent({
-      type: PORTFOLIO_KANBAN_EVENTS.EPIC_STATE_TRANSITION,
-      data: transitionEvent,
-      priority: EventPriority.HIGH
-    }));
+    this.eventBus.emit(
+      createEvent({
+        type: PORTFOLIO_KANBAN_EVENTS.EPIC_STATE_TRANSITION,
+        data: transitionEvent,
+        priority: EventPriority.HIGH,
+      })
+    );
 
     return {
       success: true,
       newState: params.targetState,
-      message: `Epic successfully transitioned to ${params.targetState}`
+      message: `Epic successfully transitioned to ${params.targetState}`,
     };
   }
 
@@ -356,28 +388,34 @@ export class PortfolioKanbanWorkflow {
     description: string;
     owner: string;
   }): string {
-    const currentState = this.epicStates.get(params.epicId) || PortfolioKanbanState.FUNNEL;
-    
+    const currentState =
+      this.epicStates.get(params.epicId)'' | '''' | ''PortfolioKanbanState.FUNNEL;
+
     const blockedEvent = createEpicBlocked({
       epicId: params.epicId,
       currentState,
       blockerType: params.blockerType,
       severity: params.severity,
       description: params.description,
-      owner: params.owner
+      owner: params.owner,
     });
 
     // Track blocker
-    const existingBlockers = this.blockedEpics.get(params.epicId) || [];
+    const existingBlockers = this.blockedEpics.get(params.epicId)'' | '''' | ''[];
     existingBlockers.push(blockedEvent);
     this.blockedEpics.set(params.epicId, existingBlockers);
 
     // Emit blocked event
-    this.eventBus.emit(createEvent({
-      type: PORTFOLIO_KANBAN_EVENTS.EPIC_BLOCKED,
-      data: blockedEvent,
-      priority: blockedEvent.severity === 'critical' ? EventPriority.CRITICAL : EventPriority.HIGH
-    }));
+    this.eventBus.emit(
+      createEvent({
+        type: PORTFOLIO_KANBAN_EVENTS.EPIC_BLOCKED,
+        data: blockedEvent,
+        priority:
+          blockedEvent.severity ==='critical'
+            ? EventPriority.CRITICAL
+            : EventPriority.HIGH,
+      })
+    );
 
     return blockedEvent.blockerId;
   }
@@ -386,7 +424,7 @@ export class PortfolioKanbanWorkflow {
    * Validate state transition requirements
    */
   private validateStateRequirements(
-    epicId: string, 
+    epicId: string,
     requirements: { required: string[]; optional: string[]; gates: string[] },
     evidence?: Record<string, string[]>
   ): {
@@ -399,7 +437,11 @@ export class PortfolioKanbanWorkflow {
 
     // Check required evidence
     for (const requirement of requirements.required) {
-      if (!evidence || !evidence[requirement] || evidence[requirement].length === 0) {
+      if (
+        !evidence ||
+        !evidence[requirement] ||
+        evidence[requirement].length === 0
+      ) {
         missingRequirements.push(requirement);
       }
     }
@@ -415,7 +457,7 @@ export class PortfolioKanbanWorkflow {
     return {
       isValid: missingRequirements.length === 0 && pendingGates.length === 0,
       missingRequirements,
-      pendingGates
+      pendingGates,
     };
   }
 }

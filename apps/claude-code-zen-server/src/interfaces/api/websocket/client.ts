@@ -6,7 +6,7 @@
  * @file Interface implementation: client.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Use Node.js WebSocket API when available, fallback to DOM types
 

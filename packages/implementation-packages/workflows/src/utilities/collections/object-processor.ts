@@ -1,23 +1,23 @@
 /**
  * @fileoverview Object Processing Utilities
- * 
+ *
  * Professional object manipulation using lodash-es.
  * Focused on object operations and transformations.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
 
-import { 
-  groupBy, 
-  keyBy, 
-  mapValues, 
-  pick, 
-  omit, 
-  cloneDeep, 
-  merge, 
+import {
+  groupBy,
+  keyBy,
+  mapValues,
+  pick,
+  omit,
+  cloneDeep,
+  merge,
   isEmpty,
-  isEqual 
+  isEqual,
 } from 'lodash-es';
 
 /**
@@ -27,7 +27,10 @@ export class ObjectProcessor {
   /**
    * Group items by key function
    */
-  static groupBy<T>(items: T[], keyFn: (item: T) => string): Record<string, T[]> {
+  static groupBy<T>(
+    items: T[],
+    keyFn: (item: T) => string
+  ): Record<string, T[]> {
     return groupBy(items, keyFn);
   }
 
@@ -41,7 +44,10 @@ export class ObjectProcessor {
   /**
    * Transform object values while preserving keys
    */
-  static mapValues<T, U>(obj: Record<string, T>, valueFn: (value: T) => U): Record<string, U> {
+  static mapValues<T, U>(
+    obj: Record<string, T>,
+    valueFn: (value: T) => U
+  ): Record<string, U> {
     return mapValues(obj, valueFn);
   }
 

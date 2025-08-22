@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { mockLogger, createMockMemoryConfig, createMockResult } from '../mocks/foundation-mocks';
+import {
+  mockLogger,
+  createMockMemoryConfig,
+  createMockResult,
+} from '../mocks/foundation-mocks';
 
 // Mock foundation dependencies
 vi.mock('@claude-zen/foundation', () => ({
@@ -10,13 +14,16 @@ vi.mock('@claude-zen/foundation', () => ({
   safeAsync: vi.fn((fn) => fn()),
   withRetry: vi.fn((fn) => fn()),
   withTimeout: vi.fn((fn) => fn()),
-  TypedEventBase: class { emit = vi.fn(); on = vi.fn(); },
+  TypedEventBase: class {
+    emit = vi.fn();
+    on = vi.fn();
+  },
   DIContainer: vi.fn(() => ({
     register: vi.fn(),
     resolve: vi.fn(),
     has: vi.fn(),
-    clear: vi.fn()
-  }))
+    clear: vi.fn(),
+  })),
 }));
 
 describe('Memory System Integration', () => {
@@ -25,7 +32,7 @@ describe('Memory System Integration', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock multiple backends
     mockBackends = {
       cache: {
@@ -35,7 +42,7 @@ describe('Memory System Integration', () => {
         delete: vi.fn().mockResolvedValue(true),
         clear: vi.fn().mockResolvedValue(undefined),
         health: vi.fn().mockResolvedValue(true),
-        size: vi.fn().mockResolvedValue(0)
+        size: vi.fn().mockResolvedValue(0),
       },
       session: {
         type: 'sqlite',
@@ -44,7 +51,7 @@ describe('Memory System Integration', () => {
         delete: vi.fn().mockResolvedValue(true),
         clear: vi.fn().mockResolvedValue(undefined),
         health: vi.fn().mockResolvedValue(true),
-        size: vi.fn().mockResolvedValue(0)
+        size: vi.fn().mockResolvedValue(0),
       },
       semantic: {
         type: 'lancedb',
@@ -53,8 +60,8 @@ describe('Memory System Integration', () => {
         delete: vi.fn().mockResolvedValue(true),
         clear: vi.fn().mockResolvedValue(undefined),
         health: vi.fn().mockResolvedValue(true),
-        search: vi.fn().mockResolvedValue([])
-      }
+        search: vi.fn().mockResolvedValue([]),
+      },
     };
 
     // Mock memory system
@@ -68,7 +75,7 @@ describe('Memory System Integration', () => {
       getStats: vi.fn(),
       registerBackend: vi.fn(),
       unregisterBackend: vi.fn(),
-      routeToBackend: vi.fn()
+      routeToBackend: vi.fn(),
     };
   });
 
@@ -91,20 +98,28 @@ describe('Memory System Integration', () => {
       // Test routing to different backends
       await memorySystem.store('cache:user:123', { name: 'John' });
       await memorySystem.store('session:auth:456', { token: 'abc123' });
-      await memorySystem.store('semantic:doc:789', { 
+      await memorySystem.store('semantic:doc:789', {
         content: 'test document',
-        embedding: [0.1, 0.2, 0.3]
+        embedding: [0.1, 0.2, 0.3],
       });
 
-      expect(mockBackends.cache.store).toHaveBeenCalledWith('cache:user:123', { name: 'John' });
-      expect(mockBackends.session.store).toHaveBeenCalledWith('session:auth:456', { token: 'abc123' });
-      expect(mockBackends.semantic.store).toHaveBeenCalledWith('semantic:doc:789', expect.any(Object));
+      expect(mockBackends.cache.store).toHaveBeenCalledWith('cache:user:123', {
+        name: 'John',
+      });
+      expect(mockBackends.session.store).toHaveBeenCalledWith(
+        'session:auth:456',
+        { token: 'abc123' }
+      );
+      expect(mockBackends.semantic.store).toHaveBeenCalledWith(
+        'semantic:doc:789',
+        expect.any(Object)
+      );
     });
 
     it('should handle cross-backend data migration', async () => {
       // Simulate data migration from cache to session storage
       const testData = { userId: 123, preferences: { theme: 'dark' } };
-      
+
       // Store in cache first
       mockBackends.cache.retrieve.mockResolvedValue(testData);
       await memorySystem.store('cache:temp:user:123', testData);
@@ -116,9 +131,16 @@ describe('Memory System Integration', () => {
       );
 
       expect(migrationResult.success).toBe(true);
-      expect(mockBackends.cache.retrieve).toHaveBeenCalledWith('cache:temp:user:123');
-      expect(mockBackends.session.store).toHaveBeenCalledWith('session:user:123', testData);
-      expect(mockBackends.cache.delete).toHaveBeenCalledWith('cache:temp:user:123');
+      expect(mockBackends.cache.retrieve).toHaveBeenCalledWith(
+        'cache:temp:user:123'
+      );
+      expect(mockBackends.session.store).toHaveBeenCalledWith(
+        'session:user:123',
+        testData
+      );
+      expect(mockBackends.cache.delete).toHaveBeenCalledWith(
+        'cache:temp:user:123'
+      );
     });
 
     it('should provide unified statistics across all backends', async () => {
@@ -131,7 +153,7 @@ describe('Memory System Integration', () => {
           totalEntries: 0,
           backends: {},
           memoryUsage: 0,
-          performance: {}
+          performance: {},
         };
 
         for (const [name, backend] of Object.entries(mockBackends)) {
@@ -140,7 +162,7 @@ describe('Memory System Integration', () => {
           stats.backends[name] = {
             type: backend.type,
             size,
-            health: await backend.health()
+            health: await backend.health(),
           };
         }
 
@@ -160,19 +182,33 @@ describe('Memory System Integration', () => {
     it('should support semantic search across vector backends', async () => {
       const queryVector = [0.1, 0.2, 0.3, 0.4, 0.5];
       const searchResults = [
-        { key: 'semantic:doc:1', distance: 0.1, metadata: { title: 'Document 1' } },
-        { key: 'semantic:doc:2', distance: 0.3, metadata: { title: 'Document 2' } }
+        {
+          key: 'semantic:doc:1',
+          distance: 0.1,
+          metadata: { title: 'Document 1' },
+        },
+        {
+          key: 'semantic:doc:2',
+          distance: 0.3,
+          metadata: { title: 'Document 2' },
+        },
       ];
 
       mockBackends.semantic.search.mockResolvedValue(searchResults);
 
-      memorySystem.semanticSearch = vi.fn().mockImplementation(async (vector: number[], options: any = {}) => {
-        return mockBackends.semantic.search(vector, options);
+      memorySystem.semanticSearch = vi
+        .fn()
+        .mockImplementation(async (vector: number[], options: any = {}) => {
+          return mockBackends.semantic.search(vector, options);
+        });
+
+      const results = await memorySystem.semanticSearch(queryVector, {
+        limit: 5,
       });
 
-      const results = await memorySystem.semanticSearch(queryVector, { limit: 5 });
-
-      expect(mockBackends.semantic.search).toHaveBeenCalledWith(queryVector, { limit: 5 });
+      expect(mockBackends.semantic.search).toHaveBeenCalledWith(queryVector, {
+        limit: 5,
+      });
       expect(results).toEqual(searchResults);
       expect(results).toHaveLength(2);
     });
@@ -180,35 +216,45 @@ describe('Memory System Integration', () => {
     it('should support cross-backend search queries', async () => {
       // Setup test data across backends
       mockBackends.cache.retrieve.mockImplementation((key: string) => {
-        if (key === 'cache:user:123') return Promise.resolve({ name: 'John', type: 'user' });
+        if (key === 'cache:user:123')
+          return Promise.resolve({ name: 'John', type: 'user' });
         return Promise.resolve(null);
       });
 
       mockBackends.session.retrieve.mockImplementation((key: string) => {
-        if (key === 'session:auth:123') return Promise.resolve({ userId: 123, token: 'abc' });
+        if (key === 'session:auth:123')
+          return Promise.resolve({ userId: 123, token: 'abc' });
         return Promise.resolve(null);
       });
 
-      memorySystem.crossBackendSearch = vi.fn().mockImplementation(async (query: any) => {
-        const results = [];
-        
-        if (query.backends.includes('cache')) {
-          const cacheResult = await mockBackends.cache.retrieve(query.cacheKey);
-          if (cacheResult) results.push({ backend: 'cache', data: cacheResult });
-        }
-        
-        if (query.backends.includes('session')) {
-          const sessionResult = await mockBackends.session.retrieve(query.sessionKey);
-          if (sessionResult) results.push({ backend: 'session', data: sessionResult });
-        }
-        
-        return results;
-      });
+      memorySystem.crossBackendSearch = vi
+        .fn()
+        .mockImplementation(async (query: any) => {
+          const results = [];
+
+          if (query.backends.includes('cache')) {
+            const cacheResult = await mockBackends.cache.retrieve(
+              query.cacheKey
+            );
+            if (cacheResult)
+              results.push({ backend: 'cache', data: cacheResult });
+          }
+
+          if (query.backends.includes('session')) {
+            const sessionResult = await mockBackends.session.retrieve(
+              query.sessionKey
+            );
+            if (sessionResult)
+              results.push({ backend: 'session', data: sessionResult });
+          }
+
+          return results;
+        });
 
       const searchQuery = {
         backends: ['cache', 'session'],
         cacheKey: 'cache:user:123',
-        sessionKey: 'session:auth:123'
+        sessionKey: 'session:auth:123',
       };
 
       const results = await memorySystem.crossBackendSearch(searchQuery);
@@ -231,13 +277,13 @@ describe('Memory System Integration', () => {
         const healthStatus = {
           overall: true,
           backends: {},
-          issues: []
+          issues: [],
         };
 
         for (const [name, backend] of Object.entries(mockBackends)) {
           const isHealthy = await backend.health();
           healthStatus.backends[name] = isHealthy;
-          
+
           if (!isHealthy) {
             healthStatus.overall = false;
             healthStatus.issues.push(`Backend '${name}' is unhealthy`);
@@ -258,28 +304,32 @@ describe('Memory System Integration', () => {
 
     it('should handle backend failures gracefully', async () => {
       // Simulate cache backend failure
-      mockBackends.cache.store.mockRejectedValue(new Error('Cache backend failed'));
-      
+      mockBackends.cache.store.mockRejectedValue(
+        new Error('Cache backend failed')
+      );
+
       // But session backend still works
       mockBackends.session.store.mockResolvedValue(undefined);
 
-      memorySystem.store.mockImplementation(async (key: string, value: any, options: any = {}) => {
-        const primaryBackend = options.backend || 'cache';
-        const fallbackBackend = options.fallback || 'session';
+      memorySystem.store.mockImplementation(
+        async (key: string, value: any, options: any = {}) => {
+          const primaryBackend = options.backend'' | '''' | '''cache';
+          const fallbackBackend = options.fallback'' | '''' | '''session';
 
-        try {
-          await mockBackends[primaryBackend].store(key, value);
-          return { success: true, backend: primaryBackend };
-        } catch (error) {
-          // Fallback to secondary backend
-          await mockBackends[fallbackBackend].store(key, value);
-          return { success: true, backend: fallbackBackend, fallback: true };
+          try {
+            await mockBackends[primaryBackend].store(key, value);
+            return { success: true, backend: primaryBackend };
+          } catch (error) {
+            // Fallback to secondary backend
+            await mockBackends[fallbackBackend].store(key, value);
+            return { success: true, backend: fallbackBackend, fallback: true };
+          }
         }
-      });
+      );
 
       const result = await memorySystem.store('test-key', 'test-value', {
         backend: 'cache',
-        fallback: 'session'
+        fallback: 'session',
       });
 
       expect(result.success).toBe(true);
@@ -292,24 +342,39 @@ describe('Memory System Integration', () => {
     it('should track performance metrics', async () => {
       const performanceTracker = {
         operations: [],
-        recordOperation: vi.fn((operation: string, duration: number, backend: string) => {
-          performanceTracker.operations.push({ operation, duration, backend, timestamp: Date.now() });
-        }),
+        recordOperation: vi.fn(
+          (operation: string, duration: number, backend: string) => {
+            performanceTracker.operations.push({
+              operation,
+              duration,
+              backend,
+              timestamp: Date.now(),
+            });
+          }
+        ),
         getMetrics: vi.fn(() => {
           const metrics = {};
           for (const op of performanceTracker.operations) {
             if (!metrics[op.backend]) {
-              metrics[op.backend] = { totalOps: 0, avgDuration: 0, operations: {} };
+              metrics[op.backend] = {
+                totalOps: 0,
+                avgDuration: 0,
+                operations: {},
+              };
             }
             if (!metrics[op.backend].operations[op.operation]) {
-              metrics[op.backend].operations[op.operation] = { count: 0, totalDuration: 0 };
+              metrics[op.backend].operations[op.operation] = {
+                count: 0,
+                totalDuration: 0,
+              };
             }
-            
+
             metrics[op.backend].totalOps++;
             metrics[op.backend].operations[op.operation].count++;
-            metrics[op.backend].operations[op.operation].totalDuration += op.duration;
+            metrics[op.backend].operations[op.operation].totalDuration +=
+              op.duration;
           }
-          
+
           // Calculate averages
           for (const backend of Object.values(metrics) as any[]) {
             let totalDuration = 0;
@@ -319,9 +384,9 @@ describe('Memory System Integration', () => {
             }
             backend.avgDuration = totalDuration / backend.totalOps;
           }
-          
+
           return metrics;
-        })
+        }),
       };
 
       // Simulate operations with performance tracking
@@ -354,42 +419,70 @@ describe('Memory System Integration', () => {
 
       // Store in primary backend
       await mockBackends.cache.store(testKey, testValue);
-      
+
       // Simulate synchronization to secondary backend
-      memorySystem.synchronize = vi.fn().mockImplementation(async (key: string, fromBackend: string, toBackend: string) => {
-        const data = await mockBackends[fromBackend].retrieve(key);
-        if (data) {
-          await mockBackends[toBackend].store(key, data);
-          return { success: true, synchronized: true };
-        }
-        return { success: false, error: 'Data not found' };
-      });
+      memorySystem.synchronize = vi
+        .fn()
+        .mockImplementation(
+          async (key: string, fromBackend: string, toBackend: string) => {
+            const data = await mockBackends[fromBackend].retrieve(key);
+            if (data) {
+              await mockBackends[toBackend].store(key, data);
+              return { success: true, synchronized: true };
+            }
+            return { success: false, error: 'Data not found' };
+          }
+        );
 
       mockBackends.cache.retrieve.mockResolvedValue(testValue);
 
-      const syncResult = await memorySystem.synchronize(testKey, 'cache', 'session');
+      const syncResult = await memorySystem.synchronize(
+        testKey,
+        'cache',
+        'session'
+      );
 
       expect(syncResult.success).toBe(true);
       expect(syncResult.synchronized).toBe(true);
       expect(mockBackends.cache.retrieve).toHaveBeenCalledWith(testKey);
-      expect(mockBackends.session.store).toHaveBeenCalledWith(testKey, testValue);
+      expect(mockBackends.session.store).toHaveBeenCalledWith(
+        testKey,
+        testValue
+      );
     });
 
     it('should handle version conflicts during synchronization', async () => {
       const key = 'version:conflict:123';
-      const cacheVersion = { data: 'cache-data', version: 2, timestamp: Date.now() };
-      const sessionVersion = { data: 'session-data', version: 3, timestamp: Date.now() - 1000 };
+      const cacheVersion = {
+        data: 'cache-data',
+        version: 2,
+        timestamp: Date.now(),
+      };
+      const sessionVersion = {
+        data: 'session-data',
+        version: 3,
+        timestamp: Date.now() - 1000,
+      };
 
       mockBackends.cache.retrieve.mockResolvedValue(cacheVersion);
       mockBackends.session.retrieve.mockResolvedValue(sessionVersion);
 
-      memorySystem.resolveConflict = vi.fn().mockImplementation(async (key: string, version1: any, version2: any) => {
-        // Use highest version number as resolution strategy
-        const winner = version1.version > version2.version ? version1 : version2;
-        return { resolved: true, winner, strategy: 'highest-version' };
-      });
+      memorySystem.resolveConflict = vi
+        .fn()
+        .mockImplementation(
+          async (key: string, version1: any, version2: any) => {
+            // Use highest version number as resolution strategy
+            const winner =
+              version1.version > version2.version ? version1 : version2;
+            return { resolved: true, winner, strategy: 'highest-version' };
+          }
+        );
 
-      const resolution = await memorySystem.resolveConflict(key, cacheVersion, sessionVersion);
+      const resolution = await memorySystem.resolveConflict(
+        key,
+        cacheVersion,
+        sessionVersion
+      );
 
       expect(resolution.resolved).toBe(true);
       expect(resolution.winner.version).toBe(3); // Session version is higher
@@ -399,24 +492,28 @@ describe('Memory System Integration', () => {
     it('should support distributed locking for concurrent operations', async () => {
       const lockManager = {
         locks: new Map(),
-        acquire: vi.fn().mockImplementation(async (key: string, timeout: number = 5000) => {
-          if (lockManager.locks.has(key)) {
-            return { acquired: false, reason: 'already-locked' };
-          }
-          lockManager.locks.set(key, { acquiredAt: Date.now(), timeout });
-          return { acquired: true, lockId: `lock-${Date.now()}` };
-        }),
-        release: vi.fn().mockImplementation(async (key: string, lockId: string) => {
-          if (lockManager.locks.has(key)) {
-            lockManager.locks.delete(key);
-            return { released: true };
-          }
-          return { released: false, reason: 'not-locked' };
-        })
+        acquire: vi
+          .fn()
+          .mockImplementation(async (key: string, timeout: number = 5000) => {
+            if (lockManager.locks.has(key)) {
+              return { acquired: false, reason: 'already-locked' };
+            }
+            lockManager.locks.set(key, { acquiredAt: Date.now(), timeout });
+            return { acquired: true, lockId: `lock-${Date.now()}` };
+          }),
+        release: vi
+          .fn()
+          .mockImplementation(async (key: string, lockId: string) => {
+            if (lockManager.locks.has(key)) {
+              lockManager.locks.delete(key);
+              return { released: true };
+            }
+            return { released: false, reason: 'not-locked' };
+          }),
       };
 
       const key = 'concurrent:operation:123';
-      
+
       // First operation acquires lock
       const lock1 = await lockManager.acquire(key);
       expect(lock1.acquired).toBe(true);
@@ -442,31 +539,38 @@ describe('Memory System Integration', () => {
         type: 'redis',
         host: 'localhost',
         port: 6379,
-        maxSize: 50000
+        maxSize: 50000,
       };
 
-      memorySystem.registerBackend.mockImplementation(async (name: string, config: any) => {
-        mockBackends[name] = {
-          type: config.type,
-          config,
-          store: vi.fn().mockResolvedValue(undefined),
-          retrieve: vi.fn().mockResolvedValue(null),
-          delete: vi.fn().mockResolvedValue(true),
-          health: vi.fn().mockResolvedValue(true)
-        };
-        return { success: true, backend: name };
-      });
-
-      memorySystem.unregisterBackend.mockImplementation(async (name: string) => {
-        if (mockBackends[name]) {
-          delete mockBackends[name];
+      memorySystem.registerBackend.mockImplementation(
+        async (name: string, config: any) => {
+          mockBackends[name] = {
+            type: config.type,
+            config,
+            store: vi.fn().mockResolvedValue(undefined),
+            retrieve: vi.fn().mockResolvedValue(null),
+            delete: vi.fn().mockResolvedValue(true),
+            health: vi.fn().mockResolvedValue(true),
+          };
           return { success: true, backend: name };
         }
-        return { success: false, error: 'Backend not found' };
-      });
+      );
+
+      memorySystem.unregisterBackend.mockImplementation(
+        async (name: string) => {
+          if (mockBackends[name]) {
+            delete mockBackends[name];
+            return { success: true, backend: name };
+          }
+          return { success: false, error: 'Backend not found' };
+        }
+      );
 
       // Register new backend
-      const registerResult = await memorySystem.registerBackend('redis', newBackendConfig);
+      const registerResult = await memorySystem.registerBackend(
+        'redis',
+        newBackendConfig
+      );
       expect(registerResult.success).toBe(true);
       expect(mockBackends.redis).toBeDefined();
       expect(mockBackends.redis.type).toBe('redis');
@@ -480,7 +584,7 @@ describe('Memory System Integration', () => {
     it('should support graceful system shutdown', async () => {
       memorySystem.shutdown = vi.fn().mockImplementation(async () => {
         const shutdownResults = {};
-        
+
         for (const [name, backend] of Object.entries(mockBackends)) {
           try {
             if (backend.close) {
@@ -491,7 +595,7 @@ describe('Memory System Integration', () => {
             shutdownResults[name] = { success: false, error: error.message };
           }
         }
-        
+
         return { success: true, backends: shutdownResults };
       });
 
@@ -506,7 +610,7 @@ describe('Memory System Integration', () => {
       expect(shutdownResult.backends.cache.success).toBe(true);
       expect(shutdownResult.backends.session.success).toBe(true);
       expect(shutdownResult.backends.semantic.success).toBe(true);
-      
+
       expect(mockBackends.cache.close).toHaveBeenCalled();
       expect(mockBackends.session.close).toHaveBeenCalled();
       expect(mockBackends.semantic.close).toHaveBeenCalled();

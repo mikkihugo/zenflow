@@ -5,10 +5,17 @@
  * Follows dependency injection patterns for easy testing and configuration.
  */
 
-import { getLogger } from '@claude-zen/foundation/logging';
 import { TypedEventBase } from '@claude-zen/foundation';
-import type { APIProvider, APIProviderCapabilities } from '../types/api-providers';
-import type { CLIProvider, CLIProviderCapabilities } from '../types/cli-providers';
+import { getLogger } from '@claude-zen/foundation/logging';
+
+import type {
+  APIProvider,
+  APIProviderCapabilities,
+} from '../types/api-providers';
+import type {
+  CLIProvider,
+  CLIProviderCapabilities,
+} from '../types/cli-providers';
 
 const logger = getLogger('ModelRegistry');
 
@@ -41,27 +48,27 @@ export interface ModelRegistryConfig {
 
 /**
  * Model Registry with Dependency Injection
- * 
+ *
  * Manages registration and discovery of LLM providers and their models.
  * Uses DI pattern for flexible configuration and testing.
  */
 export class ModelRegistry extends TypedEventBase {
-  private providers = new Map<string, CLIProvider | APIProvider>();
+  private providers = new Map<string, CLIProvider'' | ''APIProvider>();
   private models = new Map<string, ModelInfo>();
   private registryConfig: ModelRegistryConfig;
 
   constructor(config: Partial<ModelRegistryConfig> = {}) {
     super();
-    
+
     this.registryConfig = {
       autoDiscovery: true,
       refreshInterval: 60000, // 1 minute
       enableCache: true,
-      ...config
+      ...config,
     };
 
     logger.info('🏭 ModelRegistry initialized with DI pattern');
-    
+
     if (this.registryConfig.autoDiscovery) {
       this.startAutoDiscovery();
     }
@@ -70,12 +77,12 @@ export class ModelRegistry extends TypedEventBase {
   /**
    * Register a provider with the registry
    */
-  registerProvider(provider: CLIProvider | APIProvider): void {
+  registerProvider(provider: CLIProvider'' | ''APIProvider): void {
     logger.info(`📝 Registering provider: ${provider.name} (${provider.id})`);
-    
+
     this.providers.set(provider.id, provider);
     this.loadProviderModels(provider);
-    
+
     this.emit('provider:registered', { providerId: provider.id, provider });
   }
 
@@ -84,7 +91,7 @@ export class ModelRegistry extends TypedEventBase {
    */
   unregisterProvider(providerId: string): void {
     logger.info(`🗑️ Unregistering provider: ${providerId}`);
-    
+
     const provider = this.providers.get(providerId);
     if (provider) {
       // Remove all models from this provider
@@ -93,7 +100,7 @@ export class ModelRegistry extends TypedEventBase {
           this.models.delete(modelId);
         }
       }
-      
+
       this.providers.delete(providerId);
       this.emit('provider:unregistered', { providerId, provider });
     }
@@ -102,21 +109,21 @@ export class ModelRegistry extends TypedEventBase {
   /**
    * Get provider by ID
    */
-  getProvider(providerId: string): CLIProvider | APIProvider | undefined {
+  getProvider(providerId: string): CLIProvider'' | ''APIProvider'' | ''undefined {
     return this.providers.get(providerId);
   }
 
   /**
    * List all registered providers
    */
-  listProviders(): (CLIProvider | APIProvider)[] {
-    return Array.from(this.providers.values());
+  listProviders(): (CLIProvider'' | ''APIProvider)[] {
+    return Array.from(this.providers.values())();
   }
 
   /**
    * Get model by ID
    */
-  getModel(modelId: string): ModelInfo | undefined {
+  getModel(modelId: string): ModelInfo'' | ''undefined {
     return this.models.get(modelId);
   }
 
@@ -124,14 +131,14 @@ export class ModelRegistry extends TypedEventBase {
    * List all available models
    */
   listModels(): ModelInfo[] {
-    return Array.from(this.models.values());
+    return Array.from(this.models.values())();
   }
 
   /**
    * Find models by capability
    */
   findModelsByCapability(capability: string): ModelInfo[] {
-    return Array.from(this.models.values()).filter(model => 
+    return Array.from(this.models.values()).filter((model) =>
       model.capabilities.includes(capability)
     );
   }
@@ -140,8 +147,8 @@ export class ModelRegistry extends TypedEventBase {
    * Find models by provider
    */
   findModelsByProvider(providerId: string): ModelInfo[] {
-    return Array.from(this.models.values()).filter(model => 
-      model.provider === providerId
+    return Array.from(this.models.values()).filter(
+      (model) => model.provider === providerId
     );
   }
 
@@ -153,24 +160,32 @@ export class ModelRegistry extends TypedEventBase {
     maxCost?: number;
     minContextWindow?: number;
     provider?: string;
-  }): ModelInfo | undefined {
-    let candidates = Array.from(this.models.values()).filter(model => model.available);
+  }): ModelInfo'' | ''undefined {
+    let candidates = Array.from(this.models.values()).filter(
+      (model) => model.available
+    );
 
     // Filter by criteria
     if (criteria.capability) {
-      candidates = candidates.filter(model => model.capabilities.includes(criteria.capability!));
+      candidates = candidates.filter((model) =>
+        model.capabilities.includes(criteria.capability!)
+      );
     }
-    
+
     if (criteria.provider) {
-      candidates = candidates.filter(model => model.provider === criteria.provider);
+      candidates = candidates.filter(
+        (model) => model.provider === criteria.provider
+      );
     }
-    
+
     if (criteria.minContextWindow) {
-      candidates = candidates.filter(model => model.contextWindow >= criteria.minContextWindow!);
+      candidates = candidates.filter(
+        (model) => model.contextWindow >= criteria.minContextWindow!
+      );
     }
-    
+
     if (criteria.maxCost && candidates.length > 0) {
-      candidates = candidates.filter(model => {
+      candidates = candidates.filter((model) => {
         if (!model.pricing) return true;
         return model.pricing.outputTokens <= criteria.maxCost!;
       });
@@ -178,8 +193,8 @@ export class ModelRegistry extends TypedEventBase {
 
     // Sort by context window (larger is better) and cost (lower is better)
     candidates.sort((a, b) => {
-      const aScore = a.contextWindow - (a.pricing?.outputTokens || 0) * 1000;
-      const bScore = b.contextWindow - (b.pricing?.outputTokens || 0) * 1000;
+      const aScore = a.contextWindow - (a.pricing?.outputTokens'' | '''' | ''0) * 1000;
+      const bScore = b.contextWindow - (b.pricing?.outputTokens'' | '''' | ''0) * 1000;
       return bScore - aScore;
     });
 
@@ -192,8 +207,8 @@ export class ModelRegistry extends TypedEventBase {
   private loadProviderModels(provider: CLIProvider | APIProvider): void {
     try {
       const capabilities = provider.getCapabilities();
-      
-      capabilities.models.forEach(modelId => {
+
+      capabilities.models.forEach((modelId) => {
         const modelInfo: ModelInfo = {
           id: `${provider.id}:${modelId}`,
           name: modelId,
@@ -202,32 +217,41 @@ export class ModelRegistry extends TypedEventBase {
           contextWindow: capabilities.contextWindow,
           maxTokens: capabilities.maxTokens,
           pricing: capabilities.pricing,
-          available: true
+          available: true,
         };
-        
+
         this.models.set(modelInfo.id, modelInfo);
-        logger.info(`📊 Registered model: ${modelInfo.name} from ${provider.name}`);
+        logger.info(
+          `📊 Registered model: ${modelInfo.name} from ${provider.name}`
+        );
       });
-      
-      this.emit('models:loaded', { providerId: provider.id, modelCount: capabilities.models.length });
-      
+
+      this.emit('models:loaded', {
+        providerId: provider.id,
+        modelCount: capabilities.models.length,
+      });
     } catch (error) {
-      logger.error(`Failed to load models from provider ${provider.id}:`, error);
+      logger.error(
+        `Failed to load models from provider ${provider.id}:`,
+        error
+      );
     }
   }
 
   /**
    * Extract capability strings from provider capabilities
    */
-  private extractCapabilities(capabilities: CLIProviderCapabilities | APIProviderCapabilities): string[] {
+  private extractCapabilities(
+    capabilities: CLIProviderCapabilities'' | ''APIProviderCapabilities
+  ): string[] {
     const caps: string[] = [];
-    
+
     Object.entries(capabilities.features).forEach(([key, value]) => {
       if (value === true) {
         caps.push(key);
       }
     });
-    
+
     return caps;
   }
 
@@ -247,21 +271,27 @@ export class ModelRegistry extends TypedEventBase {
    */
   private async refreshAvailability(): Promise<void> {
     logger.debug('🔄 Refreshing model availability...');
-    
+
     for (const [providerId, provider] of this.providers.entries()) {
       try {
         // Check if provider has healthCheck method
-        if ('healthCheck' in provider && typeof provider.healthCheck === 'function') {
+        if (
+          'healthCheck' in provider &&
+          typeof provider.healthCheck === 'function'
+        ) {
           const isHealthy = await provider.healthCheck();
-          
+
           // Update all models from this provider
           for (const [modelId, model] of this.models.entries()) {
             if (model.provider === providerId) {
               const wasAvailable = model.available;
               model.available = isHealthy;
-              
+
               if (wasAvailable !== isHealthy) {
-                this.emit('model:availability-changed', { modelId, available: isHealthy });
+                this.emit('model:availability-changed', {
+                  modelId,
+                  available: isHealthy,
+                });
               }
             }
           }
@@ -283,7 +313,7 @@ export class ModelRegistry extends TypedEventBase {
     return {
       providers: Array.from(this.providers.keys()),
       models: Array.from(this.models.keys()),
-      config: this.registryConfig
+      config: this.registryConfig,
     };
   }
 }
@@ -325,7 +355,7 @@ export class ModelRegistryFactory {
 export class ModelRegistryService {
   constructor(
     private registry: ModelRegistry,
-    private providers: (CLIProvider | APIProvider)[]
+    private providers: (CLIProvider'' | ''APIProvider)[]
   ) {}
 
   /**
@@ -333,12 +363,14 @@ export class ModelRegistryService {
    */
   async initialize(): Promise<void> {
     logger.info('🚀 Initializing ModelRegistryService...');
-    
+
     for (const provider of this.providers) {
       this.registry.registerProvider(provider);
     }
-    
-    logger.info(`✅ ModelRegistryService initialized with ${this.providers.length} providers`);
+
+    logger.info(
+      `✅ ModelRegistryService initialized with ${this.providers.length} providers`
+    );
   }
 
   /**

@@ -1,13 +1,17 @@
 /**
  * @fileoverview LLM Provider Configuration
- * 
+ *
  * Centralized configuration for all LLM providers including models,
  * rate limits, context sizes, and routing strategies. This configuration
  * supports intelligent routing decisions, cost optimization, and reliability
  * through sophisticated fallback mechanisms.
  */
 
-import type { ProviderConfig, RoutingStrategy, ProviderRoutingContext } from '../types/index';
+import type {
+  ProviderConfig,
+  RoutingStrategy,
+  ProviderRoutingContext,
+} from '../types/index';
 
 export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
   'github-models': {
@@ -39,7 +43,20 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
   copilot: {
     name: 'copilot',
     displayName: 'GitHub Copilot (GPT-5)',
-    models: ['gpt-5', 'o3', 'o3-mini', 'o4-mini', 'gpt-4.1', 'gpt-4o', 'gpt-4', 'claude-opus-4', 'claude-sonnet-4', 'claude-3.5-sonnet', 'gemini-2.5-pro', 'gpt-3.5-turbo'],
+    models: [
+      'gpt-5',
+      'o3',
+      'o3-mini',
+      'o4-mini',
+      'gpt-4.1',
+      'gpt-4o',
+      'gpt-4',
+      'claude-opus-4',
+      'claude-sonnet-4',
+      'claude-3.5-sonnet',
+      'gemini-2.5-pro',
+      'gpt-3.5-turbo',
+    ],
     defaultModel: 'gpt-5',
     maxContextTokens: 1000000, // Maximum context window for advanced models
     maxOutputTokens: 16384, // Standard output limit for chat completions
@@ -240,8 +257,10 @@ export function getOptimalProvider(context: ProviderRoutingContext): string[] {
   } = context;
 
   // Determine context size category
-  const isSmallContext = contentLength < ROUTING_STRATEGY.SMALL_CONTEXT_THRESHOLD;
-  const isLargeContext = contentLength > ROUTING_STRATEGY.LARGE_CONTEXT_THRESHOLD;
+  const isSmallContext =
+    contentLength < ROUTING_STRATEGY.SMALL_CONTEXT_THRESHOLD;
+  const isLargeContext =
+    contentLength > ROUTING_STRATEGY.LARGE_CONTEXT_THRESHOLD;
   const estimatedTokens = Math.ceil(contentLength / 4); // Rough estimation
 
   // Special routing for very large contexts
@@ -258,16 +277,18 @@ export function getOptimalProvider(context: ProviderRoutingContext): string[] {
     const canHandleTokens = estimatedTokens <= config.maxContextTokens;
 
     const meetsContextRequirements =
-      (isSmallContext && config.routing.useForSmallContext) ||
-      (isLargeContext && config.routing.useForLargeContext) ||
-      !(isSmallContext || isLargeContext); // Medium context
+      (isSmallContext && config.routing.useForSmallContext)'' | '''' | ''(isLargeContext && config.routing.useForLargeContext)'' | '''' | ''!(isSmallContext'' | '''' | ''isLargeContext); // Medium context
 
     const meetsFeatureRequirements =
-      (!requiresFileOps || config.features.fileOperations) &&
-      (!requiresCodebaseAware || config.features.codebaseAware) &&
-      (!requiresStructuredOutput || config.features.structuredOutput);
+      (!requiresFileOps'' | '''' | ''config.features.fileOperations) &&
+      (!requiresCodebaseAware'' | '''' | ''config.features.codebaseAware) &&
+      (!requiresStructuredOutput'' | '''' | ''config.features.structuredOutput);
 
-    if (canHandleTokens && meetsContextRequirements && meetsFeatureRequirements) {
+    if (
+      canHandleTokens &&
+      meetsContextRequirements &&
+      meetsFeatureRequirements
+    ) {
       candidates.push(providerId);
     }
   }
@@ -310,9 +331,15 @@ export function removeProvider(providerId: string): boolean {
 /**
  * Update provider configuration
  */
-export function updateProvider(providerId: string, updates: Partial<ProviderConfig>): boolean {
+export function updateProvider(
+  providerId: string,
+  updates: Partial<ProviderConfig>
+): boolean {
   if (providerId in LLM_PROVIDER_CONFIG) {
-    LLM_PROVIDER_CONFIG[providerId] = { ...LLM_PROVIDER_CONFIG[providerId], ...updates };
+    LLM_PROVIDER_CONFIG[providerId] = {
+      ...LLM_PROVIDER_CONFIG[providerId],
+      ...updates,
+    };
     return true;
   }
   return false;
@@ -321,7 +348,7 @@ export function updateProvider(providerId: string, updates: Partial<ProviderConf
 /**
  * Get provider configuration
  */
-export function getProvider(providerId: string): ProviderConfig | undefined {
+export function getProvider(providerId: string): ProviderConfig'' | ''undefined {
   return LLM_PROVIDER_CONFIG[providerId];
 }
 
@@ -335,7 +362,9 @@ export function getProviderIds(): string[] {
 /**
  * Get providers by capability
  */
-export function getProvidersByCapability(capability: keyof ProviderConfig['features']): string[] {
+export function getProvidersByCapability(
+  capability: keyof ProviderConfig['features']
+): string[] {
   return Object.entries(LLM_PROVIDER_CONFIG)
     .filter(([, config]) => config.features[capability])
     .map(([providerId]) => providerId);

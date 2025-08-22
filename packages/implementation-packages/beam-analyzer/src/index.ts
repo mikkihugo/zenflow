@@ -4,7 +4,11 @@
  */
 
 // Core exports
-export { BeamBridge, createBeamBridge, checkBeamAvailability } from './analyzers/beam-bridge';
+export {
+  BeamBridge,
+  createBeamBridge,
+  checkBeamAvailability,
+} from './analyzers/beam-bridge';
 
 // Integration exports
 export { DialyzerIntegration } from './integrations/dialyzer-integration';
@@ -30,13 +34,15 @@ export type {
   SobelowResult,
   ElvisResult,
   BeamAnalysisError,
-  BeamAnalysisExecutionResult
+  BeamAnalysisExecutionResult,
 } from './types/beam-types';
 
 /**
  * Default BEAM analysis configuration
  */
-export const DEFAULT_BEAM_CONFIG: Partial<import('./types/beam-types').BeamAnalysisConfig> = {
+export const DEFAULT_BEAM_CONFIG: Partial<
+  import('./types/beam-types').BeamAnalysisConfig
+> = {
   languages: ['erlang', 'elixir'],
   useDialyzer: true,
   useSobelow: true,
@@ -44,7 +50,7 @@ export const DEFAULT_BEAM_CONFIG: Partial<import('./types/beam-types').BeamAnaly
   timeout: 300000, // 5 minutes
   includeDeps: true,
   otpVersion: 'latest',
-  customRules: []
+  customRules: [],
 };
 
 /**
@@ -58,10 +64,10 @@ export async function analyzeBeamProject(
   } = {}
 ): Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
   const bridge = createBeamBridge(options.config);
-  
+
   return bridge.analyzeProject(projectPath, {
-    languages: options.languages || ['erlang', 'elixir'],
-    ...options.config
+    languages: options.languages'' | '''' | ''['erlang', 'elixir'],
+    ...options.config,
   });
 }
 
@@ -71,7 +77,7 @@ export async function analyzeBeamProject(
 export async function analyzeElixirSecurity(
   projectPath: string,
   options: {
-    confidence?: 'high' | 'medium' | 'low';
+    confidence?: 'high | medium' | 'low';
     skipFiles?: string[];
     config?: Partial<import('./types/beam-types').BeamAnalysisConfig>;
   } = {}
@@ -81,12 +87,12 @@ export async function analyzeElixirSecurity(
     languages: ['elixir'],
     useSobelow: true,
     useDialyzer: false,
-    useElvis: false
+    useElvis: false,
   });
-  
+
   return bridge.analyzeProject(projectPath, {
     languages: ['elixir'],
-    useSobelow: true
+    useSobelow: true,
   });
 }
 
@@ -103,15 +109,15 @@ export async function analyzeBeamTypes(
 ): Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
   const bridge = createBeamBridge({
     ...options.config,
-    languages: options.languages || ['erlang', 'elixir'],
+    languages: options.languages'' | '''' | ''['erlang', 'elixir'],
     useDialyzer: true,
     useSobelow: false,
-    useElvis: false
+    useElvis: false,
   });
-  
+
   return bridge.analyzeProject(projectPath, {
     languages: options.languages,
-    useDialyzer: true
+    useDialyzer: true,
   });
 }
 
@@ -128,16 +134,16 @@ export async function analyzeBeamPatterns(
 ): Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
   const bridge = createBeamBridge({
     ...options.config,
-    languages: options.languages || ['erlang', 'elixir'],
+    languages: options.languages'' | '''' | ''['erlang', 'elixir'],
     useDialyzer: false,
     useSobelow: false,
     useElvis: false,
-    customRules: options.customRules || []
+    customRules: options.customRules'' | '''' | ''[],
   });
-  
+
   return bridge.analyzeProject(projectPath, {
     languages: options.languages,
-    customRules: options.customRules
+    customRules: options.customRules,
   });
 }
 
@@ -154,7 +160,7 @@ export async function analyzeBeamComprehensive(
   const config = {
     ...DEFAULT_BEAM_CONFIG,
     ...options.config,
-    languages: options.languages || ['erlang', 'elixir']
+    languages: options.languages'' | '''' | ''['erlang', 'elixir'],
   };
 
   const bridge = createBeamBridge(config);
@@ -165,7 +171,7 @@ export async function analyzeBeamComprehensive(
  * Get analysis configuration for different project types
  */
 export function getBeamConfigForProject(
-  projectType: 'library' | 'application' | 'phoenix' | 'nerves' | 'umbrella'
+  projectType: 'library | application' | 'phoenix' | 'nerves' | 'umbrella'
 ): Partial<import('./types/beam-types').BeamAnalysisConfig> {
   const baseConfig = { ...DEFAULT_BEAM_CONFIG };
 
@@ -176,7 +182,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: false,
         useElvis: true,
-        timeout: 180000 // 3 minutes for libraries
+        timeout: 180000, // 3 minutes for libraries
       };
 
     case 'application':
@@ -185,7 +191,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: false,
         useElvis: false,
-        timeout: 300000 // 5 minutes for applications
+        timeout: 300000, // 5 minutes for applications
       };
 
     case 'phoenix':
@@ -195,7 +201,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: true,
         useElvis: false,
-        timeout: 600000 // 10 minutes for Phoenix apps
+        timeout: 600000, // 10 minutes for Phoenix apps
       };
 
     case 'nerves':
@@ -206,7 +212,7 @@ export function getBeamConfigForProject(
         useSobelow: false,
         useElvis: false,
         timeout: 900000, // 15 minutes for Nerves
-        includeDeps: false // Skip deps for embedded
+        includeDeps: false, // Skip deps for embedded
       };
 
     case 'umbrella':
@@ -216,7 +222,7 @@ export function getBeamConfigForProject(
         useSobelow: true,
         useElvis: false,
         timeout: 1200000, // 20 minutes for umbrella apps
-        includeDeps: true
+        includeDeps: true,
       };
 
     default:
@@ -227,19 +233,22 @@ export function getBeamConfigForProject(
 /**
  * Language detection utilities
  */
-export function detectBeamLanguage(filePath: string): import('./types/beam-types').BeamLanguage | null {
+export function detectBeamLanguage(
+  filePath: string
+): import('./types/beam-types').BeamLanguage'' | ''null {
   const ext = require('path').extname(filePath).toLowerCase();
-  
-  const languageMap: Record<string, import('./types/beam-types').BeamLanguage> = {
-    '.erl': 'erlang',
-    '.hrl': 'erlang',
-    '.ex': 'elixir',
-    '.exs': 'elixir',
-    '.gleam': 'gleam',
-    '.lfe': 'lfe'
-  };
 
-  return languageMap[ext] || null;
+  const languageMap: Record<string, import('./types/beam-types').BeamLanguage> =
+    {
+      '.erl': 'erlang',
+      '.hrl': 'erlang',
+      '.ex': 'elixir',
+      '.exs': 'elixir',
+      '.gleam': 'gleam',
+      '.lfe': 'lfe',
+    };
+
+  return languageMap[ext]'' | '''' | ''null;
 }
 
 /**
@@ -252,12 +261,12 @@ export async function isBeamProject(projectPath: string): Promise<boolean> {
   try {
     // Check for common BEAM project files
     const indicators = [
-      'mix.exs',          // Elixir
-      'rebar.config',     // Erlang
-      'rebar3.config',    // Erlang
-      'gleam.toml',       // Gleam
-      'rebar.lfe',        // LFE
-      'lfe.config'        // LFE
+      'mix.exs', // Elixir
+      'rebar.config', // Erlang
+      'rebar3.config', // Erlang
+      'gleam.toml', // Gleam
+      'rebar.lfe', // LFE
+      'lfe.config', // LFE
     ];
 
     for (const indicator of indicators) {
@@ -281,7 +290,8 @@ export async function isBeamProject(projectPath: string): Promise<boolean> {
 export const PACKAGE_INFO = {
   name: '@claude-zen/beam-analyzer',
   version: '1.0.0',
-  description: 'BEAM ecosystem static analysis and security scanning for Erlang, Elixir, Gleam, and LFE',
+  description:
+    'BEAM ecosystem static analysis and security scanning for Erlang, Elixir, Gleam, and LFE',
   author: 'Claude Code Zen Team',
   license: 'MIT',
   keywords: [
@@ -299,8 +309,18 @@ export const PACKAGE_INFO = {
     'actor-model',
     'fault-tolerance',
     'supervision-trees',
-    'claude-zen'
+    'claude-zen',
   ],
-  supportedLanguages: ['erlang', 'elixir', 'gleam', 'lfe'] as import('./types/beam-types').BeamLanguage[],
-  supportedTools: ['dialyzer', 'sobelow', 'elvis', 'xref'] as import('./types/beam-types').BeamAnalysisTool[]
+  supportedLanguages: [
+    'erlang',
+    'elixir',
+    'gleam',
+    'lfe',
+  ] as import('./types/beam-types').BeamLanguage[],
+  supportedTools: [
+    'dialyzer',
+    'sobelow',
+    'elvis',
+    'xref',
+  ] as import('./types/beam-types').BeamAnalysisTool[],
 } as const;

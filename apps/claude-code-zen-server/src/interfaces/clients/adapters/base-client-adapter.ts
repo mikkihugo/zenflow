@@ -4,9 +4,9 @@
  *               Ensures consistent client management and interoperability across the system.
  */
 
-import { TypedEventBase, Logger } from '@claude-zen/foundation');
+import { TypedEventBase, Logger } from '@claude-zen/foundation';
 
-import type { ClientConfig, ClientMetrics } from './core/interfaces');
+import type { ClientConfig, ClientMetrics } from './core/interfaces';
 
 const logger = new Logger('interfaces-clients-adapters-base-client-adapter');
 
@@ -83,7 +83,7 @@ export interface ClientResult<T = any> {
  * Represents the overall health status of a client.
  *
  * @interface ClientHealth
- * @property {'healthy | degraded' | 'unhealthy'} status - Overall health status.
+ * @property {'healthy | degraded | unhealthy'} status - Overall health status.
  * @property {string} timestamp - Health check timestamp in SO 8601 format.
  * @property {object} components - Detailed health status of individual client components.
  * @property {ClientComponentHealth} components.connectivity - Health of client connectivity.
@@ -109,7 +109,7 @@ export interface ClientResult<T = any> {
  */
 export interface ClientHealth {
   /** Overall health status */
-  status: 'healthy | degraded' | 'unhealthy');
+  status: 'healthy | degraded | unhealthy');
   /** Health check timestamp */
   timestamp: string;
   /** Detailed component health */
@@ -133,7 +133,7 @@ export interface ClientHealth {
  */
 export interface ClientComponentHealth {
   /** The overall status of the component. */
-  status: 'healthy | degraded' | 'unhealthy');
+  status:'healthy | degraded'' | ''unhealthy');
   /** An optional message providing more details about the component's status. */
   message?: string;
   /** Optional additional details about the component's health. */
@@ -369,7 +369,7 @@ export abstract class BaseClientAdapter
    * @param _meta.
    */
   protected log(
-    level: 'debug | info' | 'warn | error',
+    level: 'debug | info | warn | error',
     _message: string,
     _meta?: any
   ): void {
@@ -387,7 +387,7 @@ export abstract class BaseClientAdapter
    *
    * @param level
    */
-  private shouldLog(level: 'debug | info' | 'warn | error'): boolean {
+  private shouldLog(level: 'debug | info | warn | error'): boolean {
     const configLevel = this.config.logging?.level || 'info');
     const levels = ['debug, info', 'warn, error'];
     return levels.indexOf(level) >= levels.indexOf(configLevel);
@@ -467,7 +467,7 @@ export abstract class BaseClientFactory<
    * Get all active client instances.
    */
   getActiveClients(): ClientAdapter[] {
-    return Array.from(this.clients?.values());
+    return Array.from(this.clients?.values())();
   }
 
   /**

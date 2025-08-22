@@ -15,9 +15,13 @@ async function loadCoordinationCoreModule() {
   if (!coordinationCoreModuleCache) {
     try {
       // Load the real Coordination Core package
-      coordinationCoreModuleCache = await import('@claude-zen/coordination-core');
-    } catch (error) {
-      console.warn('Coordination core package not available, providing compatibility layer');
+      coordinationCoreModuleCache = await import(
+        '@claude-zen/coordination-core'
+      );
+    } catch {
+      console.warn(
+        'Coordination core package not available, providing compatibility layer',
+      );
       coordinationCoreModuleCache = {
         QueenCoordinator: class CompatibilityQueenCoordinator extends TypedEventBase {
           async initialize() {

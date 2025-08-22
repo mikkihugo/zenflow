@@ -34,7 +34,6 @@ try {
 
 const logger = getLogger('teamwork-orchestrator');
 
-
 /**
  * Conversation orchestrator with shared storage persistence.
  * Uses @claude-zen/foundation storage wrapper for lightweight persistence.
@@ -43,7 +42,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private activeSessions = new Map<string, ConversationSession>();
   private eventHandlers = new Map<string, Function[]>();
   private storage = getTeamworkStorage();
-  
+
   // AI-powered coordination with Brain (initialized in constructor)
   private brainCoordinator: any;
 
@@ -52,16 +51,18 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     this.brainCoordinator = new BrainCoordinator({
       sessionId: 'teamwork-orchestrator',
       enableLearning: true,
-      cacheOptimizations: true
+      cacheOptimizations: true,
     });
-    
+
     logger.info('🧠 Team coordination initialized with Brain');
   }
 
   /**
    * Create a new conversation session.
    */
-  async createConversation(config: ConversationConfig): Promise<ConversationSession> {
+  async createConversation(
+    config: ConversationConfig
+  ): Promise<ConversationSession> {
     logger.info('Creating conversation:', config.title);
 
     const session: ConversationSession = {
@@ -69,8 +70,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0] || {
-        id: 'unknown',
+      initiator: config.initialParticipants[0]'' | '''' | ''{
+        id:'unknown',
         swarmId: 'system',
         type: 'coordinator',
         instance: 0,
@@ -97,10 +98,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     });
 
     this.activeSessions.set(session.id, session);
-    
+
     // Persist to storage
     await this.storage.storeSession(session);
-    
+
     logger.info('Conversation created:', session.id);
 
     return session;
@@ -109,7 +110,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Start an existing conversation.
    */
-  async startConversation(conversationId: string): Promise<ConversationSession> {
+  async startConversation(
+    conversationId: string
+  ): Promise<ConversationSession> {
     logger.info('Starting conversation:', conversationId);
 
     const session = this.activeSessions.get(conversationId);
@@ -121,9 +124,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     if (session.status !== 'active') {
       session.status = 'active';
       session.startTime = new Date();
-      await this.storage.updateSession(conversationId, { 
-        status: 'active', 
-        startTime: session.startTime 
+      await this.storage.updateSession(conversationId, {
+        status: 'active',
+        startTime: session.startTime,
       });
     }
 
@@ -134,7 +137,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Add an agent to an active conversation.
    */
-  async joinConversation(conversationId: string, agent: AgentId): Promise<void> {
+  async joinConversation(
+    conversationId: string,
+    agent: AgentId
+  ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
@@ -143,34 +149,45 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     if (!session.participants.find((p) => p.id === agent.id)) {
       session.participants.push(agent);
       session.metrics.participationByAgent[agent.id] = 0;
-      
+
       // Update storage
       await this.storage.updateSession(conversationId, {
         participants: session.participants,
         metrics: session.metrics,
       });
-      
-      logger.info('Agent joined conversation', { agentId: agent.id, conversationId });
+
+      logger.info('Agent joined conversation', {
+        agentId: agent.id,
+        conversationId,
+      });
     }
   }
 
   /**
    * Remove an agent from a conversation.
    */
-  async leaveConversation(conversationId: string, agent: AgentId): Promise<void> {
+  async leaveConversation(
+    conversationId: string,
+    agent: AgentId
+  ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
     }
 
-    session.participants = session.participants.filter((p) => p.id !== agent.id);
-    
+    session.participants = session.participants.filter(
+      (p) => p.id !== agent.id
+    );
+
     // Update storage
     await this.storage.updateSession(conversationId, {
       participants: session.participants,
     });
-    
-    logger.info('Agent left conversation', { agentId: agent.id, conversationId });
+
+    logger.info('Agent left conversation', {
+      agentId: agent.id,
+      conversationId,
+    });
   }
 
   /**
@@ -183,7 +200,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     }
 
     if (session.status !== 'active') {
-      throw new Error(`Cannot send message to conversation in status: ${session.status}`);
+      throw new Error(
+        `Cannot send message to conversation in status: ${session.status}`
+      );
     }
 
     // Validate sender is participant
@@ -203,12 +222,15 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     session.messages.push(message);
     session.metrics.messageCount++;
     session.metrics.participationByAgent[message.fromAgent.id] =
-      (session.metrics.participationByAgent[message.fromAgent.id] || 0) + 1;
+      (session.metrics.participationByAgent[message.fromAgent.id]'' | '''' | ''0) + 1;
 
     // Update storage
     await this.storage.addMessage(message.conversationId, message);
 
-    logger.debug('Message sent', { messageId: message.id, messageType: message.messageType });
+    logger.debug('Message sent', {
+      messageId: message.id,
+      messageType: message.messageType,
+    });
 
     // Emit message event
     await this.emit('message', { session, message });
@@ -217,7 +239,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Moderate a conversation.
    */
-  async moderateConversation(conversationId: string, action: ModerationAction): Promise<void> {
+  async moderateConversation(
+    conversationId: string,
+    action: ModerationAction
+  ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
@@ -241,16 +266,21 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     await this.storage.updateSession(conversationId, {
       status: session.status,
     });
-    
-    logger.info('Moderation action applied', { actionType: action.type, conversationId });
+
+    logger.info('Moderation action applied', {
+      actionType: action.type,
+      conversationId,
+    });
   }
 
   /**
    * Get conversation message history.
    */
-  async getConversationHistory(conversationId: string): Promise<ConversationMessage[]> {
+  async getConversationHistory(
+    conversationId: string
+  ): Promise<ConversationMessage[]> {
     let session = this.activeSessions.get(conversationId);
-    
+
     // Try to load from storage if not in memory
     if (!session) {
       const storedSession = await this.storage.getSession(conversationId);
@@ -259,7 +289,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         this.activeSessions.set(conversationId, session);
       }
     }
-    
+
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
     }
@@ -270,7 +300,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Terminate a conversation and return outcomes.
    */
-  async terminateConversation(conversationId: string, reason?: string): Promise<ConversationOutcome[]> {
+  async terminateConversation(
+    conversationId: string,
+    reason?: string
+  ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
@@ -292,13 +325,13 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       logger.debug('Brain coordinator session context:', {
         sessionId: session.id,
         outcomes: session.outcomes.length,
-        coordinator: this.brainCoordinator ? 'active' : 'inactive'
+        coordinator: this.brainCoordinator ? 'active' : 'inactive',
       });
-      
+
       logger.debug('Pattern engine analysis context:', {
         sessionId: session.id,
         messageCount: session.messages.length,
-        engine: 'brain-only'
+        engine: 'brain-only',
       });
     } catch (error) {
       logger.warn('AI coordination processing failed:', error);
@@ -323,12 +356,18 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   /**
    * Generate simple conversation outcomes.
    */
-  private generateSimpleOutcomes(session: ConversationSession): ConversationOutcome[] {
+  private generateSimpleOutcomes(
+    session: ConversationSession
+  ): ConversationOutcome[] {
     const outcomes: ConversationOutcome[] = [];
 
     // Simple outcome based on message types
-    const decisionMessages = session.messages.filter((m) => m.messageType === 'decision');
-    const solutionMessages = session.messages.filter((m) => m.messageType === 'answer');
+    const decisionMessages = session.messages.filter(
+      (m) => m.messageType === 'decision'
+    );
+    const solutionMessages = session.messages.filter(
+      (m) => m.messageType === 'answer'
+    );
 
     decisionMessages.forEach((msg) => {
       outcomes.push({
@@ -363,8 +402,12 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     session.metrics.resolutionTime = duration;
 
     // Simple consensus score
-    const agreements = session.messages.filter((m) => m.messageType === 'agreement').length;
-    const disagreements = session.messages.filter((m) => m.messageType === 'disagreement').length;
+    const agreements = session.messages.filter(
+      (m) => m.messageType === 'agreement'
+    ).length;
+    const disagreements = session.messages.filter(
+      (m) => m.messageType === 'disagreement'
+    ).length;
     const total = agreements + disagreements;
     session.metrics.consensusScore = total > 0 ? agreements / total : 0.5;
 
@@ -373,7 +416,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     session.metrics.qualityRating = Math.min(1, messageTypes.size / 5);
 
     // Simple average response time
-    const messages = session.messages.filter((m) => m.messageType !== 'system_notification');
+    const messages = session.messages.filter(
+      (m) => m.messageType !== 'system_notification');
     if (messages.length > 1) {
       let totalTime = 0;
       for (let i = 1; i < messages.length; i++) {
@@ -391,7 +435,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * Simple event system.
    */
   private async emit(event: string, data: unknown): Promise<void> {
-    const handlers = this.eventHandlers.get(event) || [];
+    const handlers = this.eventHandlers.get(event)'' | '''' | ''[];
     await Promise.all(handlers.map((handler) => handler(data)));
   }
 
@@ -409,13 +453,13 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * Get active conversations.
    */
   public getActiveSessions(): ConversationSession[] {
-    return Array.from(this.activeSessions.values());
+    return Array.from(this.activeSessions.values())();
   }
 
   /**
    * Get conversation by ID.
    */
-  public getSession(conversationId: string): ConversationSession | undefined {
+  public getSession(conversationId: string): ConversationSession'' | ''undefined {
     return this.activeSessions.get(conversationId);
   }
 }
@@ -434,21 +478,32 @@ export default ConversationOrchestratorImpl;
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getTeamworkSystemAccess(config?: ConversationConfig): Promise<any> {
+export async function getTeamworkSystemAccess(
+  config?: ConversationConfig
+): Promise<any> {
   const orchestrator = new ConversationOrchestratorImpl();
   return {
     createOrchestrator: () => new ConversationOrchestratorImpl(),
-    createConversation: (convConfig: ConversationConfig) => orchestrator.createConversation(convConfig),
-    startConversation: (conversationId: string) => orchestrator.startConversation(conversationId),
-    joinConversation: (conversationId: string, agent: AgentId) => orchestrator.joinConversation(conversationId, agent),
-    leaveConversation: (conversationId: string, agent: AgentId) => orchestrator.leaveConversation(conversationId, agent),
-    sendMessage: (message: ConversationMessage) => orchestrator.sendMessage(message),
-    moderateConversation: (conversationId: string, action: ModerationAction) => orchestrator.moderateConversation(conversationId, action),
-    getHistory: (conversationId: string) => orchestrator.getConversationHistory(conversationId),
-    terminateConversation: (conversationId: string, reason?: string) => orchestrator.terminateConversation(conversationId, reason),
+    createConversation: (convConfig: ConversationConfig) =>
+      orchestrator.createConversation(convConfig),
+    startConversation: (conversationId: string) =>
+      orchestrator.startConversation(conversationId),
+    joinConversation: (conversationId: string, agent: AgentId) =>
+      orchestrator.joinConversation(conversationId, agent),
+    leaveConversation: (conversationId: string, agent: AgentId) =>
+      orchestrator.leaveConversation(conversationId, agent),
+    sendMessage: (message: ConversationMessage) =>
+      orchestrator.sendMessage(message),
+    moderateConversation: (conversationId: string, action: ModerationAction) =>
+      orchestrator.moderateConversation(conversationId, action),
+    getHistory: (conversationId: string) =>
+      orchestrator.getConversationHistory(conversationId),
+    terminateConversation: (conversationId: string, reason?: string) =>
+      orchestrator.terminateConversation(conversationId, reason),
     getActiveSessions: () => orchestrator.getActiveSessions(),
-    getSession: (conversationId: string) => orchestrator.getSession(conversationId),
-    on: (event: string, handler: Function) => orchestrator.on(event, handler)
+    getSession: (conversationId: string) =>
+      orchestrator.getSession(conversationId),
+    on: (event: string, handler: Function) => orchestrator.on(event, handler),
   };
 }
 
@@ -456,40 +511,58 @@ export async function getConversationOrchestrator(): Promise<ConversationOrchest
   return new ConversationOrchestratorImpl();
 }
 
-export async function getMultiAgentCollaboration(config?: ConversationConfig): Promise<any> {
+export async function getMultiAgentCollaboration(
+  config?: ConversationConfig
+): Promise<any> {
   const system = await getTeamworkSystemAccess(config);
   return {
-    startCollaboration: (convConfig: ConversationConfig) => system.createConversation(convConfig),
-    addAgent: (conversationId: string, agent: AgentId) => system.joinConversation(conversationId, agent),
-    removeAgent: (conversationId: string, agent: AgentId) => system.leaveConversation(conversationId, agent),
-    facilitateDiscussion: (message: ConversationMessage) => system.sendMessage(message),
-    moderateSession: (conversationId: string, action: ModerationAction) => system.moderateConversation(conversationId, action),
-    concludeSession: (conversationId: string, reason?: string) => system.terminateConversation(conversationId, reason)
+    startCollaboration: (convConfig: ConversationConfig) =>
+      system.createConversation(convConfig),
+    addAgent: (conversationId: string, agent: AgentId) =>
+      system.joinConversation(conversationId, agent),
+    removeAgent: (conversationId: string, agent: AgentId) =>
+      system.leaveConversation(conversationId, agent),
+    facilitateDiscussion: (message: ConversationMessage) =>
+      system.sendMessage(message),
+    moderateSession: (conversationId: string, action: ModerationAction) =>
+      system.moderateConversation(conversationId, action),
+    concludeSession: (conversationId: string, reason?: string) =>
+      system.terminateConversation(conversationId, reason),
   };
 }
 
-export async function getConversationManagement(config?: ConversationConfig): Promise<any> {
+export async function getConversationManagement(
+  config?: ConversationConfig
+): Promise<any> {
   const system = await getTeamworkSystemAccess(config);
   return {
     listActive: () => system.getActiveSessions(),
-    getConversation: (conversationId: string) => system.getSession(conversationId),
+    getConversation: (conversationId: string) =>
+      system.getSession(conversationId),
     getHistory: (conversationId: string) => system.getHistory(conversationId),
     control: (conversationId: string) => ({
       start: () => system.startConversation(conversationId),
-      pause: () => system.moderateConversation(conversationId, { type: 'pause' }),
-      resume: () => system.moderateConversation(conversationId, { type: 'resume' }),
-      terminate: (reason?: string) => system.terminateConversation(conversationId, reason)
-    })
+      pause: () =>
+        system.moderateConversation(conversationId, { type:'pause' }),
+      resume: () =>
+        system.moderateConversation(conversationId, { type: 'resume' }),
+      terminate: (reason?: string) =>
+        system.terminateConversation(conversationId, reason),
+    }),
   };
 }
 
-export async function getConversationCoordination(config?: ConversationConfig): Promise<any> {
+export async function getConversationCoordination(
+  config?: ConversationConfig
+): Promise<any> {
   const system = await getTeamworkSystemAccess(config);
   return {
-    coordinate: (convConfig: ConversationConfig) => system.createConversation(convConfig),
-    orchestrate: (conversationId: string, message: ConversationMessage) => system.sendMessage(message),
+    coordinate: (convConfig: ConversationConfig) =>
+      system.createConversation(convConfig),
+    orchestrate: (conversationId: string, message: ConversationMessage) =>
+      system.sendMessage(message),
     synchronize: (conversationId: string) => system.getSession(conversationId),
-    monitor: (conversationId: string) => system.getHistory(conversationId)
+    monitor: (conversationId: string) => system.getHistory(conversationId),
   };
 }
 
@@ -500,5 +573,5 @@ export const teamworkSystem = {
   getCollaboration: getMultiAgentCollaboration,
   getManagement: getConversationManagement,
   getCoordination: getConversationCoordination,
-  createOrchestrator: () => new ConversationOrchestratorImpl()
+  createOrchestrator: () => new ConversationOrchestratorImpl(),
 };

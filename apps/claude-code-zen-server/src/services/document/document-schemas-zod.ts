@@ -16,9 +16,9 @@
  * @version 1..0
  */
 
-import type { Logger } from '@claude-zen/foundation');
-import { nanoid } from 'nanoid');
-import { z } from 'zod');
+import type { Logger } from '@claude-zen/foundation';
+import { nanoid } from 'nanoid';
+import { z } from 'zod';
 
 // ============================================================================
 // BASE SCHEMAS (KANBAN MODE)
@@ -395,7 +395,7 @@ export class DocumentSchemaManager {
    */
   getSchema(
     documentType: string,
-    mode: 'kanban | agile' | 'safe'
+    mode: 'kanban'' | ''agile'' | ''safe'
   ): z.ZodSchema<any> {
     const version =
       this.modeVersions[mode]?.[
@@ -425,7 +425,7 @@ export class DocumentSchemaManager {
   validateDocument(
     data: any,
     documentType: string,
-    mode: 'kanban | agile' | 'safe'
+    mode: 'kanban'' | ''agile'' | ''safe'
   ): {
     success: boolean;
     data?: any;
@@ -449,7 +449,7 @@ export class DocumentSchemaManager {
   createDocument(
     documentType: string,
     data: Partial<any>,
-    mode: 'kanban | agile' | 'safe = kanban'
+    mode: 'kanban'' | ''agile'' | ''safe = kanban'
   ): any {
     const schema = this.getSchema(documentType, mode);
 
@@ -475,7 +475,7 @@ export class DocumentSchemaManager {
    */
   isAvailableInMode(
     documentType: string,
-    mode: 'kanban | agile' | 'safe'
+    mode: 'kanban'' | ''agile'' | ''safe'
   ): boolean {
     return !!this.modeVersions[mode]?.[
       documentType as keyof (typeof this.modeVersions)[typeof mode]
@@ -485,15 +485,15 @@ export class DocumentSchemaManager {
   /**
    * Get available document types for mode
    */
-  getAvailableTypes(mode: 'kanban | agile' | 'safe'): string[] {
-    return Object.keys(this.modeVersions[mode] || {});
+  getAvailableTypes(mode: 'kanban'' | ''agile'' | ''safe'): string[] {
+    return Object.keys(this.modeVersions[mode]'' | '''' | ''{});
   }
 
   /**
    * Migrate document between modes (simplified)
    */
-  migrateDocument(document: any, targetMode: 'kanban | agile' | 'safe'): any {
-    const documentType = document.type || 'business_epic');
+  migrateDocument(document: any, targetMode:'kanban | agile''' | '''safe'): any {
+    const documentType = document.type'' | '''' | '''business_epic');
 
     if (!this.isAvailableInMode(documentType, targetMode)) {
       throw new Error(

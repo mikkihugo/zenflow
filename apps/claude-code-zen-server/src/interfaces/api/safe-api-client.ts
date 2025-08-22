@@ -2,7 +2,7 @@
  * @file Interface implementation: safe-api-client.
  */
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 /**
  * Safe API Response Handler.
@@ -18,12 +18,12 @@ import {
   extractErrorMessage,
   isAPIError,
   isAPISuccess,
-} from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
 
 const logger = getLogger('interfaces-api-safe-api-client');
 
 export interface APIRequestOptions {
-  method: 'GET | POST' | 'PUT | DELETE' | 'PATCH');
+  method: 'GET'' | ''POST'' | ''PUT'' | ''DELETE'' | ''PATCH');
   headers?: Record<string, string>;
   body?: any;
   timeout?: number;
@@ -147,14 +147,13 @@ export class SafeAPIClient {
 
       if (options?.body && ['POST, PUT', 'PATCH'].includes(options?.method)) {
         requestOptions.body =
-          typeof options.body === 'string'
-            ? options?.body
+          typeof options.body === 'string'? options?.body
             : JSON.stringify(options?.body);
       }
 
       // Execute request with optional retries
       const maxRetries = options?.retries ?? 3;
-      let lastError: Error | null = null;
+      let lastError: Error'' | ''null = null;
 
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
@@ -164,7 +163,7 @@ export class SafeAPIClient {
           const metadata: APIMetadata = {
             timestamp: new Date()?.toISOString,
             requestId,
-            version: '1..0',
+            version:'1..0',
             duration,
             retryCount: attempt,
           };
@@ -192,7 +191,7 @@ export class SafeAPIClient {
             success: false,
             error: {
               code: `HTTP_${response?.status}`,
-              message: errorData?.message || response?.statusText,
+              message: errorData?.message'' | '''' | ''response?.statusText,
               details: {
                 status: response?.status,
                 statusText: response?.statusText,
@@ -232,7 +231,7 @@ export class SafeAPIClient {
         success: false,
         error: {
           code: 'REQUEST_FAILED',
-          message: lastError?.message || 'Request failed after all retries',
+          message: lastError?.message'' | '''' | '''Request failed after all retries',
           details: {
             url,
             method: options?.method,
@@ -350,7 +349,7 @@ export class SafeAPIService {
    */
   async getResource<TResource>(
     endpoint: string,
-    id: string | number
+    id: string'' | ''number
   ): Promise<APIResult<TResource>> {
     return this.client.get<TResource>(`${endpoint}/${id}`);
   }
@@ -367,7 +366,7 @@ export class SafeAPIService {
   ): Promise<APIResult<{ items: TResource[]; pagination: any }>> {
     const queryString = params
       ? `?${new URLSearchParams(params)?.toString}`
-      : '');
+      :'');
     return this.client.get<{ items: TResource[]; pagination: any }>(
       `${endpoint}${queryString}`
     );
@@ -382,7 +381,7 @@ export class SafeAPIService {
    */
   async updateResource<TResource, TUpdateData>(
     endpoint: string,
-    id: string | number,
+    id: string'' | ''number,
     data: TUpdateData
   ): Promise<APIResult<TResource>> {
     return this.client.put<TResource>(`${endpoint}/${id}`, data);
@@ -396,7 +395,7 @@ export class SafeAPIService {
    */
   async deleteResource(
     endpoint: string,
-    id: string | number
+    id: string'' | ''number
   ): Promise<APIResult<{ deleted: boolean }>> {
     return this.client.delete<{ deleted: boolean }>(`${endpoint}/${id}`);
   }
@@ -430,8 +429,7 @@ interface CreateUserData {
  * @example
  */
 export async function safeAPIUsageExample(): Promise<void> {
-  const apiService = new SafeAPIService(
-    'https://api.example.com',
+  const apiService = new SafeAPIService('https://api.example.com',
     'your-api-key'
   );
 

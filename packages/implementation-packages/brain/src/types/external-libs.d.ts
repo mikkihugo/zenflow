@@ -14,7 +14,7 @@ declare module 'regression' {
     0: number;
     1: number;
   }
-  
+
   export interface RegressionResult {
     equation: number[];
     points: DataPoint[];
@@ -22,12 +22,15 @@ declare module 'regression' {
     string: string;
     predict(x: number): [number, number];
   }
-  
+
   export function linear(data: DataPoint[]): RegressionResult;
   export function exponential(data: DataPoint[]): RegressionResult;
   export function logarithmic(data: DataPoint[]): RegressionResult;
   export function power(data: DataPoint[]): RegressionResult;
-  export function polynomial(data: DataPoint[], order?: number): RegressionResult;
+  export function polynomial(
+    data: DataPoint[],
+    order?: number
+  ): RegressionResult;
 }
 
 declare module 'density-clustering' {
@@ -35,10 +38,10 @@ declare module 'density-clustering' {
     constructor(eps?: number, minPts?: number);
     run(dataset: number[][]): number[][];
   }
-  
+
   export class OPTICS {
     constructor(eps?: number, minPts?: number);
-    run(dataset: number[][]): { clusters: number[][], noise: number[] };
+    run(dataset: number[][]): { clusters: number[][]; noise: number[] };
   }
 }
 

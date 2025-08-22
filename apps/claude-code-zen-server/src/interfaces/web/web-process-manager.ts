@@ -8,11 +8,11 @@
  * @file Web-process management system.
  */
 
-import { existsSync } from 'node:fs');
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises');
-import { dirname, join } from 'node:path');
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 
-import { getLogger } from '@claude-zen/foundation');
+import { getLogger } from '@claude-zen/foundation';
 
 import('/web-config');
 
@@ -64,7 +64,7 @@ export class WebProcessManager {
       await mkdir(dirname(this.pidFile), { recursive: true });
       await writeFile(
         this.pidFile,
-        this.pid?.toString || process.pid?.toString
+        this.pid?.toString'' | '''' | ''process.pid?.toString
       );
       this.logger.debug(`PID file saved: ${this.pidFile}`);
     } catch (error) {
@@ -147,13 +147,13 @@ export class WebProcessManager {
   /**
    * Check if another instance is running.
    */
-  async isInstanceRunning(): Promise<ProcessInfo | null> {
+  async isInstanceRunning(): Promise<ProcessInfo'' | ''null> {
     try {
       if (!existsSync(this.pidFile)) {
         return null;
       }
 
-      const pidContent = await readFile(this.pidFile, 'utf-8');
+      const pidContent = await readFile(this.pidFile,'utf-8');
       const pid = Number.parseInt(pidContent?.trim);
 
       if (Number.isNaN(pid)) {
@@ -285,7 +285,7 @@ export class WebProcessManager {
    * Health check for process manager.
    */
   healthCheck(): {
-    status: 'healthy | warning' | 'error');
+    status: 'healthy'' | ''warning'' | ''error');
     pid: number;
     uptime: number;
     daemonMode: boolean;

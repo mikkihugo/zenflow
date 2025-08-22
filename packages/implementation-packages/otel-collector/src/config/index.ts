@@ -1,6 +1,6 @@
 /**
  * @fileoverview Configuration System
- * 
+ *
  * Provides configuration management for the internal OTEL collector.
  * Supports default configurations, environment overrides, and validation.
  */
@@ -10,10 +10,10 @@ import { join, resolve } from 'node:path';
 import { getLogger } from '@claude-zen/foundation/logging';
 import type { Logger } from '@claude-zen/foundation';
 
-import type { 
-  CollectorConfig, 
-  ExporterConfig, 
-  ProcessorConfig 
+import type {
+  CollectorConfig,
+  ExporterConfig,
+  ProcessorConfig,
 } from '../types.js';
 
 /**
@@ -21,7 +21,7 @@ import type {
  */
 export class ConfigManager {
   private logger: Logger;
-  private config: CollectorConfig | null = null;
+  private config: CollectorConfig'' | ''null = null;
 
   constructor() {
     this.logger = getLogger('ConfigManager');
@@ -49,7 +49,7 @@ export class ConfigManager {
           'otel-collector.json',
           'otel-collector.config.js',
           '.otel/collector.json',
-          process.env.OTEL_COLLECTOR_CONFIG
+          process.env.OTEL_COLLECTOR_CONFIG,
         ].filter(Boolean);
 
         for (const path of commonPaths) {
@@ -72,7 +72,7 @@ export class ConfigManager {
       this.logger.info('Configuration loaded successfully', {
         exporters: config.exporters.length,
         processors: config.processors.length,
-        httpPort: config.http.port
+        httpPort: config.http.port,
       });
 
       return config;
@@ -108,18 +108,18 @@ export class ConfigManager {
       service: {
         name: 'claude-zen-otel-collector',
         version: '1.0.0',
-        instance: process.env.HOSTNAME || 'localhost'
+        instance: process.env.HOSTNAME'' | '''' | '''localhost',
       },
       http: {
         enabled: true,
-        port: parseInt(process.env.OTEL_COLLECTOR_PORT || '4318'),
-        host: process.env.OTEL_COLLECTOR_HOST || '0.0.0.0',
+        port: parseInt(process.env.OTEL_COLLECTOR_PORT'' | '''' | '''4318'),
+        host: process.env.OTEL_COLLECTOR_HOST'' | '''' | '''0.0.0.0',
         cors: {
           enabled: true,
           origins: ['*'],
           methods: ['GET', 'POST', 'PUT', 'DELETE'],
-          headers: ['Content-Type', 'Authorization']
-        }
+          headers: ['Content-Type', 'Authorization'],
+        },
       },
       processors: [
         {
@@ -129,8 +129,8 @@ export class ConfigManager {
           config: {
             maxBatchSize: 100,
             batchTimeout: 5000,
-            flushOnShutdown: true
-          }
+            flushOnShutdown: true,
+          },
         },
         {
           name: 'filter',
@@ -142,10 +142,10 @@ export class ConfigManager {
               {
                 field: 'attributes.internal',
                 operator: 'equals',
-                value: true
-              }
-            ]
-          }
+                value: true,
+              },
+            ],
+          },
         },
         {
           name: 'transform',
@@ -154,10 +154,10 @@ export class ConfigManager {
           config: {
             addAttributes: {
               'collector.name': 'claude-zen-otel-collector',
-              'collector.version': '1.0.0'
-            }
-          }
-        }
+              'collector.version': '1.0.0',
+            },
+          },
+        },
       ],
       exporters: [
         {
@@ -165,7 +165,7 @@ export class ConfigManager {
           type: 'console',
           enabled: process.env.NODE_ENV === 'development',
           signals: ['traces', 'metrics', 'logs'],
-          config: {}
+          config: {},
         },
         {
           name: 'file',
@@ -178,14 +178,14 @@ export class ConfigManager {
             maxFileSize: 50 * 1024 * 1024, // 50MB
             rotationInterval: 3600000, // 1 hour
             compression: true,
-            maxFiles: 10
-          }
-        }
+            maxFiles: 10,
+          },
+        },
       ],
       queue: {
         maxSize: 10000,
         batchSize: 100,
-        flushInterval: 5000
+        flushInterval: 5000,
       },
       health: {
         enabled: true,
@@ -193,15 +193,15 @@ export class ConfigManager {
         thresholds: {
           queueUtilization: 0.8,
           errorRate: 0.1,
-          exportFailureRate: 0.2
-        }
+          exportFailureRate: 0.2,
+        },
       },
       logging: {
-        level: process.env.LOG_LEVEL || 'info',
+        level: process.env.LOG_LEVEL'' | '''' | '''info',
         format: 'json',
         enableConsole: true,
-        enableFile: false
-      }
+        enableFile: false,
+      },
     };
   }
 
@@ -210,7 +210,7 @@ export class ConfigManager {
    */
   private loadConfigFromFile(configPath: string): Partial<CollectorConfig> {
     const resolvedPath = resolve(configPath);
-    
+
     if (!existsSync(resolvedPath)) {
       throw new Error(`Configuration file not found: ${resolvedPath}`);
     }
@@ -219,16 +219,19 @@ export class ConfigManager {
       if (configPath.endsWith('.json')) {
         const content = readFileSync(resolvedPath, 'utf-8');
         return JSON.parse(content);
-      } else if (configPath.endsWith('.js') || configPath.endsWith('.mjs')) {
+      } else if (configPath.endsWith('.js')'' | '''' | ''configPath.endsWith('.mjs')) {
         // Dynamic import for JS config files
         delete require.cache[resolvedPath];
         const config = require(resolvedPath);
-        return config.default || config;
+        return config.default'' | '''' | ''config;
       } else {
         throw new Error(`Unsupported configuration file format: ${configPath}`);
       }
     } catch (error) {
-      this.logger.error(`Failed to parse configuration file: ${configPath}`, error);
+      this.logger.error(
+        `Failed to parse configuration file: ${configPath}`,
+        error
+      );
       throw error;
     }
   }
@@ -236,15 +239,18 @@ export class ConfigManager {
   /**
    * Merge configurations with deep merge
    */
-  private mergeConfigs(base: CollectorConfig, override: Partial<CollectorConfig>): CollectorConfig {
+  private mergeConfigs(
+    base: CollectorConfig,
+    override: Partial<CollectorConfig>
+  ): CollectorConfig {
     const merged = { ...base };
 
     for (const [key, value] of Object.entries(override)) {
-      if (value === undefined || value === null) {
+      if (value === undefined'' | '''' | ''value === null) {
         continue;
       }
 
-      if (typeof value === 'object' && !Array.isArray(value)) {
+      if (typeof value ==='object' && !Array.isArray(value)) {
         merged[key] = { ...merged[key], ...value };
       } else {
         merged[key] = value;
@@ -264,7 +270,7 @@ export class ConfigManager {
     if (process.env.OTEL_COLLECTOR_PORT) {
       envOverrides.http = {
         ...config.http,
-        port: parseInt(process.env.OTEL_COLLECTOR_PORT)
+        port: parseInt(process.env.OTEL_COLLECTOR_PORT),
       };
     }
 
@@ -272,7 +278,7 @@ export class ConfigManager {
       envOverrides.http = {
         ...envOverrides.http,
         ...config.http,
-        host: process.env.OTEL_COLLECTOR_HOST
+        host: process.env.OTEL_COLLECTOR_HOST,
       };
     }
 
@@ -280,7 +286,7 @@ export class ConfigManager {
     if (process.env.OTEL_COLLECTOR_QUEUE_SIZE) {
       envOverrides.queue = {
         ...config.queue,
-        maxSize: parseInt(process.env.OTEL_COLLECTOR_QUEUE_SIZE)
+        maxSize: parseInt(process.env.OTEL_COLLECTOR_QUEUE_SIZE),
       };
     }
 
@@ -288,7 +294,7 @@ export class ConfigManager {
     if (process.env.OTEL_COLLECTOR_LOG_LEVEL) {
       envOverrides.logging = {
         ...config.logging,
-        level: process.env.OTEL_COLLECTOR_LOG_LEVEL
+        level: process.env.OTEL_COLLECTOR_LOG_LEVEL,
       };
     }
 
@@ -303,8 +309,8 @@ export class ConfigManager {
         config: {
           maxQueueSize: 1000,
           batchTimeout: 5000,
-          maxBatchSize: 100
-        }
+          maxBatchSize: 100,
+        },
       };
 
       envOverrides.exporters = [...config.exporters, jaegerExporter];
@@ -320,26 +326,32 @@ export class ConfigManager {
         config: {
           maxQueueSize: 1000,
           batchTimeout: 5000,
-          maxBatchSize: 100
-        }
+          maxBatchSize: 100,
+        },
       };
 
-      envOverrides.exporters = [...(envOverrides.exporters || config.exporters), otlpExporter];
+      envOverrides.exporters = [
+        ...(envOverrides.exporters'' | '''' | ''config.exporters),
+        otlpExporter,
+      ];
     }
 
     if (process.env.OTEL_COLLECTOR_PROMETHEUS_PORT) {
       const prometheusExporter: ExporterConfig = {
-        name: 'prometheus',
+        name:'prometheus',
         type: 'prometheus',
         enabled: true,
         signals: ['metrics'],
         config: {
           port: parseInt(process.env.OTEL_COLLECTOR_PROMETHEUS_PORT),
-          metricsPath: '/metrics'
-        }
+          metricsPath: '/metrics',
+        },
       };
 
-      envOverrides.exporters = [...(envOverrides.exporters || config.exporters), prometheusExporter];
+      envOverrides.exporters = [
+        ...(envOverrides.exporters'' | '''' | ''config.exporters),
+        prometheusExporter,
+      ];
     }
 
     return this.mergeConfigs(config, envOverrides);
@@ -354,22 +366,24 @@ export class ConfigManager {
       throw new Error('Configuration missing service.name');
     }
 
-    if (!config.http?.port || config.http.port < 1 || config.http.port > 65535) {
+    if (
+      !config.http?.port'' | '''' | ''config.http.port < 1'' | '''' | ''config.http.port > 65535
+    ) {
       throw new Error('Configuration invalid http.port');
     }
 
     // Validate exporters
-    if (!Array.isArray(config.exporters) || config.exporters.length === 0) {
+    if (!Array.isArray(config.exporters)'' | '''' | ''config.exporters.length === 0) {
       throw new Error('Configuration must have at least one exporter');
     }
 
-    const enabledExporters = config.exporters.filter(e => e.enabled);
+    const enabledExporters = config.exporters.filter((e) => e.enabled);
     if (enabledExporters.length === 0) {
       throw new Error('Configuration must have at least one enabled exporter');
     }
 
     // Validate exporter names are unique
-    const exporterNames = config.exporters.map(e => e.name);
+    const exporterNames = config.exporters.map((e) => e.name);
     const uniqueNames = new Set(exporterNames);
     if (exporterNames.length !== uniqueNames.size) {
       throw new Error('Configuration exporter names must be unique');
@@ -377,7 +391,7 @@ export class ConfigManager {
 
     // Validate processors
     if (Array.isArray(config.processors)) {
-      const processorNames = config.processors.map(p => p.name);
+      const processorNames = config.processors.map((p) => p.name);
       const uniqueProcessorNames = new Set(processorNames);
       if (processorNames.length !== uniqueProcessorNames.size) {
         throw new Error('Configuration processor names must be unique');
@@ -391,7 +405,7 @@ export class ConfigManager {
 
     this.logger.debug('Configuration validation passed', {
       exporters: enabledExporters.length,
-      processors: config.processors?.length || 0
+      processors: config.processors?.length'' | '''' | ''0,
     });
   }
 }
@@ -414,21 +428,21 @@ export async function loadDefaultConfig(): Promise<CollectorConfig> {
 export function createDevelopmentConfig(): CollectorConfig {
   const config = new ConfigManager();
   const devConfig = config['getDefaultConfig']();
-  
+
   // Enable console exporter for development
-  const consoleExporter = devConfig.exporters.find(e => e.name === 'console');
+  const consoleExporter = devConfig.exporters.find((e) => e.name === 'console');
   if (consoleExporter) {
     consoleExporter.enabled = true;
   }
 
   // Disable file exporter for development
-  const fileExporter = devConfig.exporters.find(e => e.name === 'file');
+  const fileExporter = devConfig.exporters.find((e) => e.name === 'file');
   if (fileExporter) {
     fileExporter.enabled = false;
   }
 
   // Reduce batch sizes for faster feedback
-  const batchProcessor = devConfig.processors.find(p => p.name === 'batch');
+  const batchProcessor = devConfig.processors.find((p) => p.name === 'batch');
   if (batchProcessor?.config) {
     batchProcessor.config.maxBatchSize = 10;
     batchProcessor.config.batchTimeout = 1000;
@@ -443,21 +457,23 @@ export function createDevelopmentConfig(): CollectorConfig {
 export function createProductionConfig(): CollectorConfig {
   const config = new ConfigManager();
   const prodConfig = config['getDefaultConfig']();
-  
+
   // Disable console exporter for production
-  const consoleExporter = prodConfig.exporters.find(e => e.name === 'console');
+  const consoleExporter = prodConfig.exporters.find(
+    (e) => e.name === 'console'
+  );
   if (consoleExporter) {
     consoleExporter.enabled = false;
   }
 
   // Enable file exporter for production
-  const fileExporter = prodConfig.exporters.find(e => e.name === 'file');
+  const fileExporter = prodConfig.exporters.find((e) => e.name === 'file');
   if (fileExporter) {
     fileExporter.enabled = true;
   }
 
   // Increase batch sizes for efficiency
-  const batchProcessor = prodConfig.processors.find(p => p.name === 'batch');
+  const batchProcessor = prodConfig.processors.find((p) => p.name === 'batch');
   if (batchProcessor?.config) {
     batchProcessor.config.maxBatchSize = 500;
     batchProcessor.config.batchTimeout = 10000;

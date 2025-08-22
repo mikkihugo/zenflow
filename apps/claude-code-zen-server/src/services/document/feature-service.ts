@@ -16,12 +16,12 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise');
+import type { DocumentType } from '@claude-zen/enterprise';
 
 import type {
   FeatureEntity,
   StoryEntity,
-} from './../entities/document-entities');
+} from './../entities/document-entities';
 
 import {
   BaseDocumentService,
@@ -43,18 +43,13 @@ export interface FeatureCreateOptions {
   parentProgramEpicId?: string;
   artId?: string; // Agile Release Train
   programIncrementId?: string;
-  priority?: 'low | medium' | 'high | critical');
-  estimatedSize?: 'XS | S' | 'M | L' | 'XL');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
+  estimatedSize?: 'XS'' | ''S'' | ''M'' | ''L'' | ''XL');
   dependencies?: string[];
   author?: string;
   projectId?: string;
   teamAssignments?: string[];
-  enablerType?:
-    | 'infrastructure'
-    | 'architectural'
-    | 'exploration'
-    | 'compliance'
-    | null;
+  enablerType?:'' | '''infrastructure | architectural' | 'exploration''' | '''compliance''' | ''null;
   metadata?: Record<string, unknown>;
 }
 
@@ -65,12 +60,7 @@ export interface FeatureQueryOptions extends QueryFilters {
   teamId?: string;
   enablerType?: string;
   hasStories?: boolean;
-  implementationStatus?:
-    | 'backlog'
-    | 'implementing'
-    | 'validating'
-    | 'deploying'
-    | 'released');
+  implementationStatus?:'' | '''backlog | implementing' | 'validating' | 'deploying' | 'released');
 }
 
 export interface FeatureStats {
@@ -91,7 +81,7 @@ export interface BenefitHypothesis {
   hypothesis: string;
   successMetrics: string[];
   measurableOutcome: string;
-  validationStatus: 'pending | validating' | 'validated | rejected');
+  validationStatus: 'pending'' | ''validating'' | ''validated'' | ''rejected');
   validationResults?: string;
 }
 
@@ -137,8 +127,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
     }
 
     if (
-      !data.metadata?.acceptanceCriteria ||
-      (data.metadata.acceptanceCriteria as string[])?.length === 0
+      !data.metadata?.acceptanceCriteria'' | '''' | ''(data.metadata.acceptanceCriteria as string[])?.length === 0
     ) {
       errors.push('At least one acceptance criteria is required');
     }
@@ -155,8 +144,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
     }
 
     if (
-      !data.metadata?.teamAssignments ||
-      (data.metadata.teamAssignments as string[])?.length === 0
+      !data.metadata?.teamAssignments'' | '''' | ''(data.metadata.teamAssignments as string[])?.length === 0
     ) {
       warnings.push('Consider assigning teams for implementation planning');
     }
@@ -177,7 +165,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
       : `*Business Feature*\n\n`;
 
     // Description
-    content += `## Description\n${data.content || ''}\n\n`;
+    content += `## Description\n${data.content'' | '''' | ''''}\n\n`;
 
     // Benefit hypothesis
     if (data.metadata?.benefitHypothesis) {
@@ -220,7 +208,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
     // Metadata section
     content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
-    content += `**Author**: ${data.author || 'feature-team'}\n`;
+    content += `**Author**: ${data.author'' | '''' | '''feature-team'}\n`;
 
     if (data.metadata?.artId) {
       content += `**ART**: ${data.metadata.artId}\n`;
@@ -239,18 +227,17 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
 
   protected generateKeywords(data: Partial<FeatureEntity>): string[] {
     const textSources = [
-      data.title || '',
-      data.content || '',
-      data.metadata?.benefitHypothesis || '',
-      ...(data.metadata?.acceptanceCriteria || []),
+      data.title'' | '''' | '''',
+      data.content'' | '''' | '''',
+      data.metadata?.benefitHypothesis'' | '''' | '''',
+      ...(data.metadata?.acceptanceCriteria'' | '''' | ''[]),
     ];
 
     const text = textSources.join(' ')?.toLowerCase()
-    const words = text.match(/\b\w{3,}\b/g) || [];
+    const words = text.match(/\b\w{3,}\b/g)'' | '''' | ''[];
 
     // Common stop words to filter out
-    const stopWords = new Set([
-      'the',
+    const stopWords = new Set(['the',
       'and',
       'for',
       'are',
@@ -336,12 +323,12 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
         title: options.title,
         content: options.description,
         summary: `Feature: ${options.title}`,
-        author: options.author || 'feature-team',
+        author: options.author'' | '''' | '''feature-team',
         project_id: options.projectId,
         status: 'draft',
-        priority: options.priority || 'medium',
+        priority: options.priority'' | '''' | '''medium',
         tags: ['feature, safe'],
-        dependencies: options.dependencies || [],
+        dependencies: options.dependencies'' | '''' | ''[],
         related_documents: [],
 
         metadata: {
@@ -351,9 +338,9 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
           artId: options.artId,
           programIncrementId: options.programIncrementId,
           estimatedSize: options.estimatedSize,
-          teamAssignments: options.teamAssignments || [],
+          teamAssignments: options.teamAssignments'' | '''' | ''[],
           enablerType: options.enablerType,
-          implementationStatus: 'backlog',
+          implementationStatus:'backlog',
           storiesGenerated: 0,
           benefitValidation: {
             hypothesis: options.benefitHypothesis,
@@ -548,25 +535,25 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
         // Status distribution
         if (feature.status) {
           stats.byStatus[feature.status] =
-            (stats.byStatus[feature.status] || 0) + 1;
+            (stats.byStatus[feature.status]'' | '''' | ''0) + 1;
         }
 
         // Priority distribution
         if (feature.priority) {
           stats.byPriority[feature.priority] =
-            (stats.byPriority[feature.priority] || 0) + 1;
+            (stats.byPriority[feature.priority]'' | '''' | ''0) + 1;
         }
 
         // Size distribution
         if (feature.metadata?.estimatedSize) {
           const size = feature.metadata.estimatedSize as string;
-          stats.bySize[size] = (stats.bySize[size] || 0) + 1;
+          stats.bySize[size] = (stats.bySize[size]'' | '''' | ''0) + 1;
         }
 
         // ART distribution
         if (feature.metadata?.artId) {
           const artId = feature.metadata.artId as string;
-          stats.byART[artId] = (stats.byART[artId] || 0) + 1;
+          stats.byART[artId] = (stats.byART[artId]'' | '''' | ''0) + 1;
         }
 
         // Feature type counting
@@ -577,7 +564,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
         }
 
         // Stories counting
-        const featureStories = feature.metadata?.storiesGenerated || 0;
+        const featureStories = feature.metadata?.storiesGenerated'' | '''' | ''0;
         stats.totalStories += featureStories as number;
 
         // Recent activity

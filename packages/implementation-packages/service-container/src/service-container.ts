@@ -40,15 +40,16 @@ import type { JsonValue, UnknownRecord } from '@claude-zen/foundation/types';
 /**
  * Service registration options
  */
-export interface BasicServiceRegistrationOptions<T = unknown> extends BuildResolverOptions<T> {
+export interface BasicServiceRegistrationOptions<T = unknown>
+  extends BuildResolverOptions<T> {
   /** Service lifetime management */
-  lifetime?: typeof Lifetime.SINGLETON | typeof Lifetime.TRANSIENT | typeof Lifetime.SCOPED;
+  lifetime?:'' | ''typeof Lifetime.SINGLETON'' | ''typeof Lifetime.TRANSIENT'' | ''typeof Lifetime.SCOPED;
   /** Service resolution mode (deprecated in newer versions) */
   // resolutionMode?: ResolutionMode;
   /** Service capabilities for discovery */
   capabilities?: string[];
   /** Health check function */
-  healthCheck?: () => Promise<boolean> | boolean;
+  healthCheck?: () => Promise<boolean>'' | ''boolean;
   /** Service metadata */
   metadata?: Record<string, unknown>;
   /** Enable/disable service */
@@ -62,9 +63,9 @@ export interface BasicServiceRegistrationOptions<T = unknown> extends BuildResol
  */
 export interface ServiceDiscoveryOptions extends ListModulesOptions {
   /** File pattern for service discovery */
-  pattern?: string | string[];
+  pattern?: string'' | ''string[];
   /** Exclude pattern */
-  excludePattern?: string | string[];
+  excludePattern?: string'' | ''string[];
   /** Auto-register discovered services */
   autoRegister?: boolean;
   /** Default service options */
@@ -86,7 +87,7 @@ export interface ServiceInfo {
   /** Service dependencies */
   dependencies: string[];
   /** Service lifetime */
-  lifetime: typeof Lifetime.SINGLETON | typeof Lifetime.TRANSIENT | typeof Lifetime.SCOPED;
+  lifetime:'' | ''typeof Lifetime.SINGLETON'' | ''typeof Lifetime.TRANSIENT'' | ''typeof Lifetime.SCOPED;
   /** Service enabled status */
   enabled: boolean;
   /** Last health check timestamp */
@@ -124,10 +125,10 @@ export class ServiceContainerError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly context?: Record<string, unknown>,
+    public readonly context?: Record<string, unknown>
   ) {
     super(message);
-    this.name = 'ServiceContainerError';
+    this.name ='ServiceContainerError';
   }
 }
 
@@ -148,8 +149,8 @@ export class ServiceContainer {
     name = 'default',
     options: {
       healthCheckFrequency?: number;
-      injectionMode?: typeof InjectionMode.CLASSIC | typeof InjectionMode.PROXY;
-    } = {},
+      injectionMode?: typeof InjectionMode.CLASSIC'' | ''typeof InjectionMode.PROXY;
+    } = {}
   ) {
     this.name = name;
     this.healthCheckFrequency = options.healthCheckFrequency ?? 30000; // 30 seconds
@@ -167,18 +168,29 @@ export class ServiceContainer {
    */
   registerService<T>(
     name: string,
-    implementation: (new (...args: unknown[]) => T) | (() => T) | T,
-    options: BasicServiceRegistrationOptions<T> = {},
+    implementation: (new (...args: unknown[]) => T)'' | ''(() => T)'' | ''T,
+    options: BasicServiceRegistrationOptions<T> = {}
   ): Result<void, ServiceContainerError> {
     // Handle different implementation types
-    if (typeof implementation === 'function') {
+    if (typeof implementation ==='function') {
       // Check if it's a constructor (has prototype) or factory function
-      if (implementation.prototype && implementation.prototype.constructor === implementation) {
+      if (
+        implementation.prototype &&
+        implementation.prototype.constructor === implementation
+      ) {
         // It's a class constructor
-        return this.registerClass(name, implementation as new (...args: unknown[]) => T, options);
+        return this.registerClass(
+          name,
+          implementation as new (...args: unknown[]) => T,
+          options
+        );
       } else {
         // It's a factory function
-        return this.registerFactoryFunction(name, implementation as () => T, options);
+        return this.registerFactoryFunction(
+          name,
+          implementation as () => T,
+          options
+        );
       }
     } else {
       // It's an instance value
@@ -192,7 +204,7 @@ export class ServiceContainer {
   private registerClass<T>(
     name: string,
     implementation: new (...args: unknown[]) => T,
-    options: BasicServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {}
   ): Result<void, ServiceContainerError> {
     try {
       const {
@@ -229,7 +241,7 @@ export class ServiceContainer {
 
       // Perform initial health check if provided
       if (healthCheck && enabled) {
-        this.performHealthCheck(name, healthCheck).catch(error => {
+        this.performHealthCheck(name, healthCheck).catch((error) => {
           this.logger.warn(`Initial health check failed for ${name}:`, error);
         });
       }
@@ -242,12 +254,11 @@ export class ServiceContainer {
       });
 
       return ok(undefined);
-
     } catch (error) {
       const containerError = new ServiceContainerError(
         `Failed to register service: ${name}`,
         'SERVICE_REGISTRATION_ERROR',
-        { name, error: error instanceof Error ? error.message : String(error) },
+        { name, error: error instanceof Error ? error.message : String(error) }
       );
       this.logger.error(containerError.message, containerError.context);
       return err(containerError);
@@ -260,7 +271,7 @@ export class ServiceContainer {
   private registerFactoryFunction<T>(
     name: string,
     factory: () => T,
-    options: BasicServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {}
   ): Result<void, ServiceContainerError> {
     try {
       const {
@@ -305,12 +316,11 @@ export class ServiceContainer {
       });
 
       return ok(undefined);
-
     } catch (error) {
       const containerError = new ServiceContainerError(
         `Failed to register factory function: ${name}`,
         'FACTORY_REGISTRATION_ERROR',
-        { name, error: error instanceof Error ? error.message : String(error) },
+        { name, error: error instanceof Error ? error.message : String(error) }
       );
       return err(containerError);
     }
@@ -322,7 +332,7 @@ export class ServiceContainer {
   registerFactory<T>(
     name: string,
     factory: (container: AwilixContainer) => T,
-    options: BasicServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {}
   ): Result<void, ServiceContainerError> {
     try {
       const {
@@ -364,12 +374,11 @@ export class ServiceContainer {
       });
 
       return ok(undefined);
-
     } catch (error) {
       const containerError = new ServiceContainerError(
         `Failed to register factory: ${name}`,
         'FACTORY_REGISTRATION_ERROR',
-        { name, error: error instanceof Error ? error.message : String(error) },
+        { name, error: error instanceof Error ? error.message : String(error) }
       );
       return err(containerError);
     }
@@ -381,7 +390,7 @@ export class ServiceContainer {
   registerInstance<T>(
     name: string,
     instance: T,
-    options: BasicServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {}
   ): Result<void, ServiceContainerError> {
     try {
       const {
@@ -418,12 +427,11 @@ export class ServiceContainer {
       });
 
       return ok(undefined);
-
     } catch (error) {
       const containerError = new ServiceContainerError(
         `Failed to register instance: ${name}`,
         'INSTANCE_REGISTRATION_ERROR',
-        { name, error: error instanceof Error ? error.message : String(error) },
+        { name, error: error instanceof Error ? error.message : String(error) }
       );
       return err(containerError);
     }
@@ -440,7 +448,7 @@ export class ServiceContainer {
         const error = new ServiceContainerError(
           `Service is disabled: ${name}`,
           'SERVICE_DISABLED',
-          { name, serviceInfo },
+          { name, serviceInfo }
         );
         return err(error);
       }
@@ -449,12 +457,11 @@ export class ServiceContainer {
 
       this.logger.debug(`Resolved service: ${name}`);
       return ok(instance);
-
     } catch (error) {
       const containerError = new ServiceContainerError(
         `Failed to resolve service: ${name}`,
         'SERVICE_RESOLUTION_ERROR',
-        { name, error: error instanceof Error ? error.message : String(error) },
+        { name, error: error instanceof Error ? error.message : String(error) }
       );
       this.logger.error(containerError.message, containerError.context);
       return err(containerError);
@@ -471,7 +478,7 @@ export class ServiceContainer {
   /**
    * Get service information
    */
-  getServiceInfo(name: string): ServiceInfo | undefined {
+  getServiceInfo(name: string): ServiceInfo'' | ''undefined {
     return this.services.get(name);
   }
 
@@ -479,26 +486,24 @@ export class ServiceContainer {
    * Get all registered service names
    */
   getServiceNames(): string[] {
-    return Array.from(this.services.keys());
+    return Array.from(this.services.keys())();
   }
 
   /**
    * Get services by capability
    */
   getServicesByCapability(capability: string): ServiceInfo[] {
-    return Array.from(this.services.values())
-      .filter(service =>
-        service.enabled &&
-        service.capabilities.includes(capability),
-      );
+    return Array.from(this.services.values()).filter(
+      (service) => service.enabled && service.capabilities.includes(capability)
+    );
   }
 
   /**
    * Discover services from filesystem
    */
   async discoverServices(
-    globPatterns: string | string[],
-    options: ServiceDiscoveryOptions = {},
+    globPatterns: string'' | ''string[],
+    options: ServiceDiscoveryOptions = {}
   ): Promise<Result<string[], ServiceContainerError>> {
     try {
       const {
@@ -514,7 +519,10 @@ export class ServiceContainer {
 
       for (const descriptor of moduleDescriptors) {
         const modulePath = descriptor.path;
-        const serviceName = path.basename(descriptor.name, path.extname(descriptor.name));
+        const serviceName = path.basename(
+          descriptor.name,
+          path.extname(descriptor.name)
+        );
 
         discoveredServices.push(serviceName);
 
@@ -522,21 +530,28 @@ export class ServiceContainer {
           try {
             // Dynamic import of the service module
             const serviceModule = await import(modulePath);
-            const ServiceClass = serviceModule.default || serviceModule[serviceName];
+            const ServiceClass =
+              serviceModule.default'' | '''' | ''serviceModule[serviceName];
 
             if (ServiceClass) {
               const registrationResult = this.registerService(
                 serviceName,
                 ServiceClass,
-                defaultOptions,
+                defaultOptions
               );
 
               if (registrationResult.isErr()) {
-                this.logger.warn(`Failed to auto-register ${serviceName}:`, registrationResult.error);
+                this.logger.warn(
+                  `Failed to auto-register ${serviceName}:`,
+                  registrationResult.error
+                );
               }
             }
           } catch (error) {
-            this.logger.warn(`Failed to load service module ${modulePath}:`, error);
+            this.logger.warn(
+              `Failed to load service module ${modulePath}:`,
+              error
+            );
           }
         }
       }
@@ -548,12 +563,13 @@ export class ServiceContainer {
       });
 
       return ok(discoveredServices);
-
     } catch (error) {
-      const containerError = new ServiceContainerError(
-        'Service discovery failed',
+      const containerError = new ServiceContainerError('Service discovery failed',
         'SERVICE_DISCOVERY_ERROR',
-        { patterns: globPatterns, error: error instanceof Error ? error.message : String(error) },
+        {
+          patterns: globPatterns,
+          error: error instanceof Error ? error.message : String(error),
+        }
       );
       return err(containerError);
     }
@@ -587,7 +603,8 @@ export class ServiceContainer {
         } catch (error) {
           unhealthyCount++;
           currentInfo.isHealthy = false;
-          currentInfo.healthError = error instanceof Error ? error : new Error(String(error));
+          currentInfo.healthError =
+            error instanceof Error ? error : new Error(String(error));
         }
       }
 
@@ -595,7 +612,8 @@ export class ServiceContainer {
     }
 
     const totalServices = services.length;
-    const healthPercentage = totalServices > 0 ? (healthyCount / totalServices) * 100 : 100;
+    const healthPercentage =
+      totalServices > 0 ? (healthyCount / totalServices) * 100 : 100;
 
     return {
       totalServices,
@@ -612,14 +630,17 @@ export class ServiceContainer {
   /**
    * Enable/disable a service
    */
-  setServiceEnabled(name: string, enabled: boolean): Result<void, ServiceContainerError> {
+  setServiceEnabled(
+    name: string,
+    enabled: boolean
+  ): Result<void, ServiceContainerError> {
     const serviceInfo = this.services.get(name);
 
     if (!serviceInfo) {
       const error = new ServiceContainerError(
         `Service not found: ${name}`,
         'SERVICE_NOT_FOUND',
-        { name },
+        { name }
       );
       return err(error);
     }
@@ -647,7 +668,9 @@ export class ServiceContainer {
       }
     }, this.healthCheckFrequency);
 
-    this.logger.info(`Started health monitoring with ${this.healthCheckFrequency}ms frequency`);
+    this.logger.info(
+      `Started health monitoring with ${this.healthCheckFrequency}ms frequency`
+    );
   }
 
   /**
@@ -667,19 +690,21 @@ export class ServiceContainer {
   integrateWithExternalContainer(_externalContainer: UnknownRecord): void {
     // This method would provide bridge functionality for gradual migration
     // Implementation would depend on specific integration needs
-    this.logger.info('External container integration initialized for gradual migration');
+    this.logger.info(
+      'External container integration initialized for gradual migration');
   }
 
   /**
    * Create a child container
    */
   createChild(name?: string): ServiceContainer {
-    const childName = name || `${this.name}-child-${Date.now()}`;
+    const childName = name'' | '''' | ''`${this.name}-child-${Date.now()}`;
     const childServiceContainer = new ServiceContainer(childName);
 
     // Create child container
     const childAwilixContainer = this.container.createScope();
-    (childServiceContainer as UnknownRecord)['container'] = childAwilixContainer;
+    (childServiceContainer as UnknownRecord)['container'] =
+      childAwilixContainer;
 
     this.logger.debug(`Created child container: ${childName}`);
     return childServiceContainer;
@@ -723,20 +748,21 @@ export class ServiceContainer {
     disabledServices: number;
     capabilityCount: number;
     lifetimeDistribution: Record<string, number>;
-    } {
-    const services = Array.from(this.services.values());
-    const enabledServices = services.filter(s => s.enabled).length;
+  } {
+    const services = Array.from(this.services.values())();
+    const enabledServices = services.filter((s) => s.enabled).length;
     const disabledServices = services.length - enabledServices;
 
-    const capabilities = new Set(
-      services.flatMap(s => s.capabilities),
-    );
+    const capabilities = new Set(services.flatMap((s) => s.capabilities));
 
-    const lifetimeDistribution = services.reduce((acc, service) => {
-      const lifetime = service.lifetime;
-      acc[lifetime] = (acc[lifetime] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const lifetimeDistribution = services.reduce(
+      (acc, service) => {
+        const lifetime = service.lifetime;
+        acc[lifetime] = (acc[lifetime]'' | '''' | ''0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalServices: services.length,
@@ -749,7 +775,10 @@ export class ServiceContainer {
 
   // Private helper methods
 
-  private async performHealthCheck(name: string, healthCheck: () => Promise<boolean> | boolean): Promise<void> {
+  private async performHealthCheck(
+    name: string,
+    healthCheck: () => Promise<boolean>'' | ''boolean
+  ): Promise<void> {
     try {
       const isHealthy = await healthCheck();
       const serviceInfo = this.services.get(name);
@@ -765,7 +794,8 @@ export class ServiceContainer {
       if (serviceInfo) {
         serviceInfo.isHealthy = false;
         serviceInfo.lastHealthCheck = new Date();
-        serviceInfo.healthError = error instanceof Error ? error : new Error(String(error));
+        serviceInfo.healthError =
+          error instanceof Error ? error : new Error(String(error));
         this.services.set(name, serviceInfo);
       }
     }
@@ -777,11 +807,14 @@ export class ServiceContainer {
     const healthReport = await this.getHealthStatus();
 
     if (healthReport.healthPercentage < 80) {
-      this.logger.warn(`Container health degraded: ${healthReport.healthPercentage.toFixed(1)}%`, {
-        healthy: healthReport.healthyServices,
-        unhealthy: healthReport.unhealthyServices,
-        disabled: healthReport.disabledServices,
-      });
+      this.logger.warn(
+        `Container health degraded: ${healthReport.healthPercentage.toFixed(1)}%`,
+        {
+          healthy: healthReport.healthyServices,
+          unhealthy: healthReport.unhealthyServices,
+          disabled: healthReport.disabledServices,
+        }
+      );
     }
   }
 }
@@ -793,8 +826,8 @@ export function createServiceContainer(
   name?: string,
   options?: {
     healthCheckFrequency?: number;
-    injectionMode?: typeof InjectionMode.CLASSIC | typeof InjectionMode.PROXY;
-  },
+    injectionMode?: typeof InjectionMode.CLASSIC'' | ''typeof InjectionMode.PROXY;
+  }
 ): ServiceContainer {
   return new ServiceContainer(name, options);
 }
@@ -802,7 +835,7 @@ export function createServiceContainer(
 /**
  * Global service container instance
  */
-let globalServiceContainer: ServiceContainer | null = null;
+let globalServiceContainer: ServiceContainer'' | ''null = null;
 
 /**
  * Get the global service container

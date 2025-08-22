@@ -8,38 +8,39 @@
 export function createLoadBalancer() {
   return {
     route: <T>(req: T): T => req,
-    addTarget: (): void => {},
-    removeTarget: (): void => {},
+    addTarget: (): void => { /* Fallback addTarget */ },
+    removeTarget: (): void => { /* Fallback removeTarget */ },
   };
 }
 
 // Additional exports for composite system compatibility
-export function getLoadBalancer(_config?: any) {
+export function getLoadBalancer(): Promise<unknown> {
   return Promise.resolve({
-    route: async (request: any) => {
+    route: async (request: unknown) => {
       return {
-        id: request.id || 'generated-id',
+        id: (request as { id?: string })?.id || 'generated-id',
         result: 'load-balanced-result',
         processingTime: 100,
-        handlerInfo: { id: 'handler-1', load: 0.5 }
+        handlerInfo: { id: 'handler-1', load: 0.5 },
       };
     },
     getStats: async () => ({
       requests: 0,
       errors: 0,
       averageResponseTime: 100,
-      activeHandlers: 1
+      activeHandlers: 1,
     }),
-    addHandler: (handler: any) => console.log('Added handler:', handler.id),
-    removeHandler: (handlerId: string) => console.log('Removed handler:', handlerId),
-    isHealthy: async () => true
+    addHandler: (handler: unknown) => console.log('Added handler:', (handler as { id?: string })?.id),
+    removeHandler: (handlerId: string) =>
+      console.log('Removed handler:', handlerId),
+    isHealthy: async () => true,
   });
 }
 
 export function getPerformanceTracker() {
   return Promise.resolve({
-    startTimer: (_name?: string) => ({
-      end: () => Date.now()
+    startTimer: () => ({
+      end: () => Date.now(),
     }),
     recordDuration: (name: string, duration: number) => {
       console.log(`Performance: ${name} took ${duration}ms`);
@@ -47,9 +48,9 @@ export function getPerformanceTracker() {
     getMetrics: async () => ({
       operations: {},
       memory: { used: 0, free: 0, total: 0 },
-      cpu: { usage: 0 }
+      cpu: { usage: 0 },
     }),
-    reset: () => console.log('Performance tracker reset')
+    reset: () => console.log('Performance tracker reset'),
   });
 }
 
@@ -58,10 +59,10 @@ export function getTelemetryManager(config?: {
   enableTracing?: boolean;
   enableMetrics?: boolean;
 }) {
-  const serviceName = config?.serviceName || 'default-service';
+  const serviceName = config?.serviceName'' | '''' | '''default-service';
   const enableTracing = config?.enableTracing !== false;
   const enableMetrics = config?.enableMetrics !== false;
-  
+
   return Promise.resolve({
     serviceName,
     enableTracing,
@@ -81,25 +82,37 @@ export function getTelemetryManager(config?: {
         console.log(`Gauge[${serviceName}]: ${name} = ${value}`);
       }
     },
-    recordCounter: async (name: string, value = 1, tags?: Record<string, string>) => {
+    recordCounter: async (
+      name: string,
+      value = 1,
+      tags?: Record<string, string>,
+    ) => {
       if (enableMetrics) {
-        console.log(`Counter[${serviceName}]: ${name} = ${value}`, tags ? `Tags: ${JSON.stringify(tags)}` : '');
+        console.log(
+          `Counter[${serviceName}]: ${name} = ${value}`,
+          tags ? `Tags: ${JSON.stringify(tags)}` : '',
+        );
       }
     },
-    withTrace: <T>(fn: () => T) => enableTracing ? fn() : fn(),
-    withAsyncTrace: async <T>(fn: () => Promise<T>) => enableTracing ? fn() : fn(),
+    withTrace: <T>(fn: () => T) => (enableTracing ? fn() : fn()),
+    withAsyncTrace: async <T>(fn: () => Promise<T>) =>
+      enableTracing ? fn() : fn(),
     startTrace: (name: string) => ({
-      setAttributes: (attrs: any) => enableTracing && console.log(`Trace[${serviceName}] ${name}:`, attrs),
-      end: () => enableTracing && console.log(`Trace[${serviceName}] ${name} ended`)
+      setAttributes: (attrs: unknown) =>
+        enableTracing && console.log(`Trace[${serviceName}] ${name}:`, attrs),
+      end: () =>
+        enableTracing && console.log(`Trace[${serviceName}] ${name} ended`),
     }),
     initialize: async () => {
-      console.log(`Telemetry Manager initialized for ${serviceName} (tracing: ${enableTracing}, metrics: ${enableMetrics})`);
+      console.log(
+        `Telemetry Manager initialized for ${serviceName} (tracing: ${enableTracing}, metrics: ${enableMetrics})`,
+      );
       return Promise.resolve();
     },
     shutdown: async () => {
       console.log(`Telemetry Manager shutdown for ${serviceName}`);
       return Promise.resolve();
-    }
+    },
   });
 }
 
@@ -113,7 +126,7 @@ export function createResourceOptimizer() {
 export function createIntelligentRouter() {
   return {
     route: <T>(req: T): T => req,
-    updateRoutes: (): void => {},
+    updateRoutes: (): void => { /* Fallback updateRoutes */ },
   };
 }
 

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Development Strategic Facade - Type Definitions
- * 
+ *
  * Strategic facade type definitions for development tools and utilities.
  */
 
@@ -110,7 +110,10 @@ export interface CodeAnalyzer {
 }
 
 export interface GitOperationsManager {
-  executeGitOperation(operation: string, args?: string[]): Promise<GitOperationResult>;
+  executeGitOperation(
+    operation: string,
+    args?: string[]
+  ): Promise<GitOperationResult>;
   initialize(): Promise<void>;
   getStatus(): { status: string; healthy: boolean; operations?: string[] };
 }
@@ -154,13 +157,13 @@ export interface DevelopmentSystemType {
   gitOperations(): Promise<any>;
   codeql(): Promise<any>;
   beamAnalyzer(): Promise<any>;
-  
+
   // Additional development tools
   repoAnalyzer(): Promise<any>;
   aiLinter(): Promise<any>;
   languageParsers(): Promise<any>;
   architecture(): Promise<any>;
-  
+
   // Direct access functions
   getCodeAnalyzer(): Promise<CodeAnalyzer>;
   getGitOperationsManager(): Promise<GitOperationsManager>;
@@ -170,7 +173,7 @@ export interface DevelopmentSystemType {
   getAILinter(): Promise<AILinter>;
   getLanguageParser(): Promise<LanguageParser>;
   getArchitectureValidator(): Promise<ArchitectureValidator>;
-  
+
   // Utilities
   logger: any;
   init(): Promise<{ success: boolean; message: string }>;
@@ -180,7 +183,8 @@ export interface DevelopmentSystemType {
 // UTILITY TYPES
 // =============================================================================
 
-export type DevelopmentToolStatus = 'active' | 'fallback' | 'error' | 'not-available';
+export type DevelopmentToolStatus =
+  | 'active | fallback' | 'error''' | '''not-available';
 
 export interface HealthStatus {
   status: string;

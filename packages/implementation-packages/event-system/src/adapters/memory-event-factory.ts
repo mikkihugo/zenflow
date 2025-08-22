@@ -61,10 +61,7 @@
  * @since 1.0.0
  */
 
-import type {
-  Config,
-  Logger,
-} from '@claude-zen/foundation';
+import type { Config, Logger } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
@@ -149,7 +146,7 @@ class MemoryEventManagerImpl
           ...event.metadata,
           timestamp: new Date(),
           processingTime: Date.now(),
-          memoryUsage: process.memoryUsage?.()?.heapUsed || 0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
           cacheSize: event.details?.size,
         },
       };
@@ -161,7 +158,7 @@ class MemoryEventManagerImpl
       await this.routeMemoryEvent(enrichedEvent);
 
       this.logger.debug(
-        `Memory event emitted: ${event.operation} for ${event.details?.key || 'system'}`
+        `Memory event emitted: ${event.operation} for ${event.details?.key'' | '''' | '''system'}`
       );
     } catch (error) {
       this.logger.error('Failed to emit memory event:', error);
@@ -354,7 +351,7 @@ class MemoryEventManagerImpl
    */
   async storeMemoryEvent(key: string, data: unknown): Promise<void> {
     this.logger.debug(`Storing memory event: ${key}`);
-    
+
     try {
       // Emit memory storage event
       await this.emitMemoryEvent({
@@ -366,15 +363,18 @@ class MemoryEventManagerImpl
         details: {
           key,
           size: JSON.stringify(data).length,
-          memoryUsage: process.memoryUsage?.()?.heapUsed || 0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
         },
-        payload: typeof data === 'object' && data !== null ? data as Record<string, unknown> : { data },
+        payload:
+          typeof data ==='object' && data !== null
+            ? (data as Record<string, unknown>)
+            : { data },
         metadata: {
           key,
           storeStart: new Date(),
         },
       });
-      
+
       this.logger.info(`Memory event stored successfully: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to store memory event ${key}:`, error);
@@ -388,7 +388,7 @@ class MemoryEventManagerImpl
    */
   async retrieveMemoryEvent(key: string): Promise<unknown> {
     this.logger.debug(`Retrieving memory event: ${key}`);
-    
+
     try {
       // Emit memory retrieval event
       await this.emitMemoryEvent({
@@ -400,7 +400,7 @@ class MemoryEventManagerImpl
         details: {
           key,
           cacheHit: true, // Simplified for demonstration
-          memoryUsage: process.memoryUsage?.()?.heapUsed || 0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
         },
         payload: { key, retrieved: true },
         metadata: {
@@ -408,7 +408,7 @@ class MemoryEventManagerImpl
           retrieveStart: new Date(),
         },
       });
-      
+
       // For demonstration, return a simple success indication
       // In a real implementation, this would retrieve actual data
       const result = { key, retrieved: true, timestamp: new Date() };
@@ -426,7 +426,7 @@ class MemoryEventManagerImpl
    */
   async clearMemoryCache(): Promise<void> {
     this.logger.debug('Clearing memory cache');
-    
+
     try {
       // Emit memory cache clear event
       await this.emitMemoryEvent({
@@ -436,14 +436,14 @@ class MemoryEventManagerImpl
         type: 'memory:cache',
         operation: 'clear',
         details: {
-          memoryUsage: process.memoryUsage?.()?.heapUsed || 0,
+          memoryUsage: process.memoryUsage?.()?.heapUsed'' | '''' | ''0,
         },
         payload: { cleared: true },
         metadata: {
           clearStart: new Date(),
         },
       });
-      
+
       // Clear internal metrics
       this.memoryMetrics.accessPatterns.clear();
       this.logger.info('Memory cache cleared successfully');
@@ -462,12 +462,7 @@ class MemoryEventManagerImpl
 
     // Set up event type routing
     this.subscribe(
-      [
-        'memory:cache',
-        'memory:store',
-        'memory:gc',
-        'memory:pool',
-      ],
+      ['memory:cache', 'memory:store', 'memory:gc', 'memory:pool'],
       (event: SystemEvent) => this.handleMemoryEvent(event as MemoryEvent)
     );
   }
@@ -490,7 +485,10 @@ class MemoryEventManagerImpl
           await this.notifyMemorySubscribers(this.subscriptions.gc, event);
           break;
         case 'pool':
-          await this.notifyMemorySubscribers(this.subscriptions.performance, event);
+          await this.notifyMemorySubscribers(
+            this.subscriptions.performance,
+            event
+          );
           break;
         default:
           this.logger.warn(`Unknown memory operation type: ${operationType}`);
@@ -499,8 +497,11 @@ class MemoryEventManagerImpl
       // Track access patterns
       if (event.details?.key) {
         const currentCount =
-          this.memoryMetrics.accessPatterns.get(event.details.key) || 0;
-        this.memoryMetrics.accessPatterns.set(event.details.key, currentCount + 1);
+          this.memoryMetrics.accessPatterns.get(event.details.key)'' | '''' | ''0;
+        this.memoryMetrics.accessPatterns.set(
+          event.details.key,
+          currentCount + 1
+        );
       }
     } catch (error) {
       this.logger.error('Memory event handling failed:', error);
@@ -681,34 +682,40 @@ export class MemoryEventManagerFactory
    */
   async createMultiple(configs: EventManagerConfig[]): Promise<EventManager[]> {
     this.logger.info(`Creating ${configs.length} memory event managers`);
-    
+
     const results = await Promise.allSettled(
-      configs.map(config => this.create(config))
+      configs.map((config) => this.create(config))
     );
-    
+
     const managers: EventManager[] = [];
     const errors: Error[] = [];
-    
+
     results.forEach((result, index) => {
       if (result.status === 'fulfilled') {
         managers.push(result.value);
       } else {
-        errors.push(new Error(`Failed to create manager ${configs[index]?.name}: ${result.reason}`));
+        errors.push(
+          new Error(
+            `Failed to create manager ${configs[index]?.name}: ${result.reason}`
+          )
+        );
       }
     });
-    
+
     if (errors.length > 0) {
       this.logger.error(`${errors.length} managers failed to create:`, errors);
-      throw new Error(`Failed to create ${errors.length} out of ${configs.length} managers`);
+      throw new Error(
+        `Failed to create ${errors.length} out of ${configs.length} managers`
+      );
     }
-    
+
     return managers;
   }
 
   /**
    * Get an event manager by name.
    */
-  get(name: string): EventManager | undefined {
+  get(name: string): EventManager'' | ''undefined {
     return this.managers.get(name);
   }
 
@@ -716,7 +723,7 @@ export class MemoryEventManagerFactory
    * List all event managers managed by this factory.
    */
   list(): EventManager[] {
-    return Array.from(this.managers.values());
+    return Array.from(this.managers.values())();
   }
 
   /**
@@ -734,14 +741,17 @@ export class MemoryEventManagerFactory
     if (!manager) {
       return false;
     }
-    
+
     try {
       await manager.destroy();
       this.managers.delete(name);
       this.logger.info(`Memory event manager removed: ${name}`);
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove memory event manager ${name}:`, error);
+      this.logger.error(
+        `Failed to remove memory event manager ${name}:`,
+        error
+      );
       throw error;
     }
   }
@@ -751,27 +761,29 @@ export class MemoryEventManagerFactory
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
-    
-    const healthChecks = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        const status = await manager.healthCheck();
-        results.set(name, status);
-      } catch (error) {
-        this.logger.error(`Health check failed for manager ${name}:`, error);
-        results.set(name, {
-          name,
-          type: 'memory',
-          status: 'unhealthy',
-          lastCheck: new Date(),
-          subscriptions: 0,
-          queueSize: 0,
-          errorRate: 1,
-          uptime: 0,
-          metadata: { error: String(error) }
-        });
+
+    const healthChecks = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const status = await manager.healthCheck();
+          results.set(name, status);
+        } catch (error) {
+          this.logger.error(`Health check failed for manager ${name}:`, error);
+          results.set(name, {
+            name,
+            type:'memory',
+            status: 'unhealthy',
+            lastCheck: new Date(),
+            subscriptions: 0,
+            queueSize: 0,
+            errorRate: 1,
+            uptime: 0,
+            metadata: { error: String(error) },
+          });
+        }
       }
-    });
-    
+    );
+
     await Promise.allSettled(healthChecks);
     return results;
   }
@@ -781,16 +793,21 @@ export class MemoryEventManagerFactory
    */
   async getMetricsAll(): Promise<Map<string, EventManagerMetrics>> {
     const results = new Map<string, EventManagerMetrics>();
-    
-    const metricRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        const metrics = await manager.getMetrics();
-        results.set(name, metrics);
-      } catch (error) {
-        this.logger.error(`Failed to get metrics for manager ${name}:`, error);
+
+    const metricRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const metrics = await manager.getMetrics();
+          results.set(name, metrics);
+        } catch (error) {
+          this.logger.error(
+            `Failed to get metrics for manager ${name}:`,
+            error
+          );
+        }
       }
-    });
-    
+    );
+
     await Promise.allSettled(metricRequests);
     return results;
   }
@@ -799,21 +816,25 @@ export class MemoryEventManagerFactory
    * Start all managed event managers.
    */
   async startAll(): Promise<void> {
-    const startRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        await manager.start();
-        this.logger.debug(`Started memory event manager: ${name}`);
-      } catch (error) {
-        this.logger.error(`Failed to start manager ${name}:`, error);
-        throw error;
+    const startRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          await manager.start();
+          this.logger.debug(`Started memory event manager: ${name}`);
+        } catch (error) {
+          this.logger.error(`Failed to start manager ${name}:`, error);
+          throw error;
+        }
       }
-    });
-    
+    );
+
     const results = await Promise.allSettled(startRequests);
-    const failures = results.filter(result => result.status === 'rejected');
-    
+    const failures = results.filter((result) => result.status === 'rejected');
+
     if (failures.length > 0) {
-      throw new Error(`Failed to start ${failures.length} out of ${results.length} managers`);
+      throw new Error(
+        `Failed to start ${failures.length} out of ${results.length} managers`
+      );
     }
   }
 
@@ -821,21 +842,25 @@ export class MemoryEventManagerFactory
    * Stop all managed event managers.
    */
   async stopAll(): Promise<void> {
-    const stopRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-      try {
-        await manager.stop();
-        this.logger.debug(`Stopped memory event manager: ${name}`);
-      } catch (error) {
-        this.logger.error(`Failed to stop manager ${name}:`, error);
-        throw error;
+    const stopRequests = Array.from(this.managers.entries()).map(
+      async ([name, manager]) => {
+        try {
+          await manager.stop();
+          this.logger.debug(`Stopped memory event manager: ${name}`);
+        } catch (error) {
+          this.logger.error(`Failed to stop manager ${name}:`, error);
+          throw error;
+        }
       }
-    });
-    
+    );
+
     const results = await Promise.allSettled(stopRequests);
-    const failures = results.filter(result => result.status === 'rejected');
-    
+    const failures = results.filter((result) => result.status === 'rejected');
+
     if (failures.length > 0) {
-      throw new Error(`Failed to stop ${failures.length} out of ${results.length} managers`);
+      throw new Error(
+        `Failed to stop ${failures.length} out of ${results.length} managers`
+      );
     }
   }
 
@@ -844,22 +869,24 @@ export class MemoryEventManagerFactory
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down memory event manager factory');
-    
+
     try {
       await this.stopAll();
-      
+
       // Destroy all managers
-      const destroyRequests = Array.from(this.managers.entries()).map(async ([name, manager]) => {
-        try {
-          await manager.destroy();
-        } catch (error) {
-          this.logger.error(`Failed to destroy manager ${name}:`, error);
+      const destroyRequests = Array.from(this.managers.entries()).map(
+        async ([name, manager]) => {
+          try {
+            await manager.destroy();
+          } catch (error) {
+            this.logger.error(`Failed to destroy manager ${name}:`, error);
+          }
         }
-      });
-      
+      );
+
       await Promise.allSettled(destroyRequests);
       this.managers.clear();
-      
+
       this.logger.info('Memory event manager factory shutdown complete');
     } catch (error) {
       this.logger.error('Error during factory shutdown:', error);
@@ -883,9 +910,10 @@ export class MemoryEventManagerFactory
     errorCount: number;
     uptime: number;
   } {
-    const runningManagers = Array.from(this.managers.values())
-      .filter(manager => manager.isRunning()).length;
-    
+    const runningManagers = Array.from(this.managers.values()).filter(
+      (manager) => manager.isRunning()
+    ).length;
+
     return {
       totalManagers: this.managers.size,
       runningManagers,
@@ -907,19 +935,18 @@ export class MemoryEventManagerFactory
 
     if (config.maxListeners && config.maxListeners < 100) {
       this.logger.warn(
-        'Memory managers should support at least 100 listeners for high-frequency operations'
-      );
+        'Memory managers should support at least 100 listeners for high-frequency operations');
     }
   }
 
   private applyMemoryDefaults(config: EventManagerConfig): EventManagerConfig {
     return {
       ...config,
-      maxListeners: config.maxListeners || 500,
+      maxListeners: config.maxListeners'' | '''' | ''500,
       processing: {
         batchSize: 200, // High batch size for memory events
         ...config.processing,
-        strategy: 'immediate', // Memory operations need immediate processing
+        strategy:'immediate', // Memory operations need immediate processing
       },
       monitoring: {
         enabled: true,

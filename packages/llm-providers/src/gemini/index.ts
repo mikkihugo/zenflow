@@ -5,8 +5,15 @@
  * Will include SDK wrapper and provider implementation.
  */
 
-import type { CLIProvider, CLIRequest, CLIResult, CLIError, CLIProviderCapabilities, SwarmAgentRole } from '../types/cli-providers';
-import { Result, ok, err } from '@claude-zen/foundation';
+import { Result, err } from '@claude-zen/foundation';
+
+import type {
+  CLIProvider,
+  CLIRequest,
+  CLIResult,
+  CLIError,
+  CLIProviderCapabilities,
+} from '../types/cli-providers';
 
 // TODO: Implement GeminiProvider class
 // TODO: Implement Gemini CLI SDK wrapper
@@ -32,43 +39,49 @@ export class GeminiCLI implements CLIProvider {
         contextWindow: true,
         reasoning: true,
         coding: true,
-        planning: true
-      }
+        planning: true,
+      },
     };
   }
 
   async execute(request: CLIRequest): Promise<CLIResult> {
     const error: CLIError = {
       code: 'NOT_IMPLEMENTED',
-      message: 'Gemini CLI provider not yet implemented.'
+      message: 'Gemini CLI provider not yet implemented.',
     };
     return err(error);
   }
 
   setRole(roleName: string): Result<void, CLIError> {
     const error: CLIError = {
-      code: 'NOT_IMPLEMENTED', 
-      message: 'Gemini CLI provider not yet implemented.'
+      code: 'NOT_IMPLEMENTED',
+      message: 'Gemini CLI provider not yet implemented.',
     };
     return err(error);
   }
 
   getRole() {
-    return undefined;
+    return;
   }
 
-  async complete(prompt: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+  async complete(
+    prompt: string,
+    options?: Partial<CLIRequest>
+  ): Promise<Result<string, CLIError>> {
     const error: CLIError = {
       code: 'NOT_IMPLEMENTED',
-      message: 'Gemini CLI provider not yet implemented.'
+      message: 'Gemini CLI provider not yet implemented.',
     };
     return err(error);
   }
 
-  async executeTask(prompt: string, options?: Record<string, unknown>): Promise<Result<unknown, CLIError>> {
+  async executeTask(
+    prompt: string,
+    options?: Record<string, unknown>
+  ): Promise<Result<unknown, CLIError>> {
     const error: CLIError = {
       code: 'NOT_IMPLEMENTED',
-      message: 'Gemini CLI provider not yet implemented.'
+      message: 'Gemini CLI provider not yet implemented.',
     };
     return err(error);
   }

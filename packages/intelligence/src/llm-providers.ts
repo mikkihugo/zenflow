@@ -55,10 +55,9 @@ import './module-declarations.d.ts';
 
 const logger = getLogger('Intelligence/LLMProviders');
 
-
 // Types re-exported from @claude-zen/llm-providers
 export interface CLIMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: 'system | user' | 'assistant';
   content: string;
 }
 
@@ -86,8 +85,8 @@ export interface SwarmAgentRole {
 export interface LLMProviderInfo {
   id: string;
   name: string;
-  type: 'cli' | 'api';
-  category: 'file-operations' | 'agentic-dev' | 'inference' | 'conversational';
+  type: 'cli''' | '''api';
+  category: 'file-operations''' | '''agentic-dev''' | '''inference''' | '''conversational';
   available: boolean;
 }
 
@@ -112,9 +111,13 @@ export class LLMProvider extends TypedEventBase {
       if (hasService('@claude-zen/llm-providers')) {
         const llmModule = await import('@claude-zen/llm-providers');
         this.realInstance = new llmModule.LLMProvider(this.providerId);
-        logger.info(`✅ Successfully loaded real @claude-zen/llm-providers package with provider: ${this.providerId}`);
+        logger.info(
+          `✅ Successfully loaded real @claude-zen/llm-providers package with provider: ${this.providerId}`,
+        );
       } else {
-        logger.warn('⚠️ Using fallback LLM provider implementation - @claude-zen/llm-providers not available');
+        logger.warn(
+          '⚠️ Using fallback LLM provider implementation - @claude-zen/llm-providers not available',
+        );
       }
     } catch (error) {
       logger.error('Failed to initialize LLM provider:', error);
@@ -127,7 +130,9 @@ export class LLMProvider extends TypedEventBase {
     }
 
     // No fallback - fail clearly when real providers not available
-    throw new Error(`LLM Provider ${this.providerId} not available - @claude-zen/llm-providers package required`);
+    throw new Error(
+      `LLM Provider ${this.providerId} not available - @claude-zen/llm-providers package required`,
+    );
   }
 
   setRole(role: string): void {
@@ -138,7 +143,7 @@ export class LLMProvider extends TypedEventBase {
     }
   }
 
-  getRole(): SwarmAgentRole | undefined {
+  getRole(): SwarmAgentRole'' | ''undefined {
     if (this.realInstance?.getRole) {
       return this.realInstance.getRole();
     }
@@ -161,7 +166,9 @@ export async function executeClaudeTask(
     return await realExecuteClaudeTask(prompt, options);
   } catch (error) {
     // No fallback - fail clearly when real providers not available
-    throw new Error(`Claude task execution failed - @claude-zen/llm-providers package required: ${error}`);
+    throw new Error(
+      `Claude task execution failed - @claude-zen/llm-providers package required: ${error}`,
+    );
   }
 }
 
@@ -171,18 +178,24 @@ export async function executeClaudeTask(
  * Delegates to @claude-zen/llm-providers for intelligent provider selection.
  */
 export function getLLMProvider(
-  capability: 'file-operations' | 'agentic-development' | 'code-completion' | 'chat' | 'inference' = 'file-operations',
+  capability:'' | '''file-operations''' | '''agentic-development''' | '''code-completion''' | '''chat''' | '''inference' = 'file-operations',
 ): LLMProvider {
   try {
     const { getLLMProviderByCapability } = require('@claude-zen/llm-providers');
     logger.info(`🔍 Requesting LLM provider for capability: ${capability}`);
     const provider = getLLMProviderByCapability(capability);
-    logger.info(`✅ Selected LLM provider: ${provider.constructor.name} for capability: ${capability}`);
+    logger.info(
+      `✅ Selected LLM provider: ${provider.constructor.name} for capability: ${capability}`,
+    );
     return provider;
   } catch (error) {
     // No fallback - fail clearly when real providers not available
-    logger.error(`❌ LLM Provider with capability '${capability}' not available`);
-    throw new Error(`LLM Provider with capability '${capability}' not available - @claude-zen/llm-providers package required: ${error}`);
+    logger.error(
+      `❌ LLM Provider with capability '${capability}' not available`,
+    );
+    throw new Error(
+      `LLM Provider with capability '${capability}'not available - @claude-zen/llm-providers package required: ${error}`,
+    );
   }
 }
 
@@ -192,18 +205,22 @@ export function getLLMProvider(
  * Supports both CLI tools (file operations) and direct APIs (inference).
  */
 export function createLLMProvider(
-  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' | 'github-models-api' | 'github-copilot-api' | 'anthropic-api' | 'openai-api' = 'claude-code',
+  providerId:'' | '''claude-code''' | '''cursor-cli''' | '''gemini-cli''' | '''github-models-api''' | '''github-copilot-api''' | '''anthropic-api''' | '''openai-api' = 'claude-code',
 ): LLMProvider {
   try {
     const { createLLMProvider } = require('@claude-zen/llm-providers');
     logger.info(`🔍 Creating LLM provider: ${providerId}`);
     const provider = createLLMProvider(providerId);
-    logger.info(`✅ Created LLM provider: ${provider.constructor.name} (ID: ${providerId})`);
+    logger.info(
+      `✅ Created LLM provider: ${provider.constructor.name} (ID: ${providerId})`,
+    );
     return provider;
   } catch (error) {
     // No fallback - fail clearly when real providers not available
     logger.error(`❌ LLM Provider '${providerId}' not available`);
-    throw new Error(`LLM Provider '${providerId}' not available - @claude-zen/llm-providers package required: ${error}`);
+    throw new Error(
+      `LLM Provider '${providerId}' not available - @claude-zen/llm-providers package required: ${error}`,
+    );
   }
 }
 
@@ -218,13 +235,17 @@ export function listLLMProviders(): LLMProviderInfo[] {
     const providers = listLLMProviders();
     logger.info(`📋 Available LLM providers (${providers.length}):`);
     providers.forEach((provider: any) => {
-      logger.info(`  - ${provider.name} (${provider.type}, ${provider.category}): ${provider.available ? '✅ Available' : '❌ Unavailable'}`);
+      logger.info(
+        `  - ${provider.name} (${provider.type}, ${provider.category}): ${provider.available ? '✅ Available' : '❌ Unavailable'}`,
+      );
     });
     return providers;
   } catch (error) {
     // No fallback - fail clearly when real providers not available
-    logger.error(`❌ LLM Provider listing failed`);
-    throw new Error(`LLM Provider listing failed - @claude-zen/llm-providers package required: ${error}`);
+    logger.error('❌ LLM Provider listing failed');
+    throw new Error(
+      `LLM Provider listing failed - @claude-zen/llm-providers package required: ${error}`,
+    );
   }
 }
 
@@ -239,11 +260,15 @@ export async function executeGitHubModelsTask(
   options: { token: string; model?: string } = { token: '' },
 ): Promise<string> {
   try {
-    const { executeGitHubModelsTask } = await import('@claude-zen/llm-providers');
+    const { executeGitHubModelsTask } = await import(
+      '@claude-zen/llm-providers'
+    );
     return executeGitHubModelsTask(prompt, options);
   } catch (error) {
     // No fallback - fail clearly when real providers not available
-    throw new Error(`GitHub Models task execution failed - @claude-zen/llm-providers package required: ${error}`);
+    throw new Error(
+      `GitHub Models task execution failed - @claude-zen/llm-providers package required: ${error}`,
+    );
   }
 }
 
@@ -253,11 +278,15 @@ export async function executeSwarmCoordinationTask(
   options?: Record<string, unknown>,
 ): Promise<string> {
   try {
-    const { executeSwarmCoordinationTask } = await import('@claude-zen/llm-providers');
+    const { executeSwarmCoordinationTask } = await import(
+      '@claude-zen/llm-providers'
+    );
     return executeSwarmCoordinationTask(task, options);
   } catch (error) {
     // No fallback - fail clearly when real providers not available
-    throw new Error(`Swarm coordination task execution failed - @claude-zen/llm-providers package required: ${error}`);
+    throw new Error(
+      `Swarm coordination task execution failed - @claude-zen/llm-providers package required: ${error}`,
+    );
   }
 }
 
@@ -266,7 +295,8 @@ export async function executeSwarmCoordinationTask(
  */
 export const llmProvidersFacade = {
   name: '@claude-zen/intelligence/llm-providers',
-  description: 'Strategic facade for @claude-zen/llm-providers with CLI tools and direct APIs',
+  description:
+    'Strategic facade for @claude-zen/llm-providers with CLI tools and direct APIs',
   version: '1.0.0',
   capabilities: [
     'Claude Code CLI integration for file operations',

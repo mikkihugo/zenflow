@@ -62,18 +62,16 @@ function initializeTestDataGenerators() {
 
 function cleanupTestState() {
   // Clean up any global state or resources
-  const start = (globalThis as any).testStartTime as number | undefined;
-  if (typeof start === 'number') {
+  const start = (globalThis as any).testStartTime as number'' | ''undefined;
+  if (typeof start ==='number') {
     const executionTime = Date.now() - start;
     (globalThis as any).lastTestExecutionTime = executionTime;
   }
 }
 
 function collectPerformanceMetrics() {
-  const startMem = (globalThis as any).testStartMemory as
-    | NodeJS.MemoryUsage
-    | undefined;
-  if (typeof globalThis.gc === 'function' && startMem) {
+  const startMem = (globalThis as any).testStartMemory as'' | ''NodeJS.MemoryUsage'' | ''undefined;
+  if (typeof globalThis.gc ==='function'&& startMem) {
     try {
       globalThis.gc?.();
     } catch {
@@ -112,7 +110,7 @@ interface ExtendedGlobal {
     noise?: number
   ): Array<{ input: number[]; output: number[] }>;
   expectPerformance(fn: () => void, maxTimeMs: number): number;
-  expectMemoryUsage(fn: () => void, maxMemoryMB: number): number | undefined;
+  expectMemoryUsage(fn: () => void, maxMemoryMB: number): number'' | ''undefined;
   expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
   expectArrayNearlyEqual(
     actual: number[],
@@ -191,9 +189,9 @@ globalThis.expectPerformance = (
 globalThis.expectMemoryUsage = (
   fn: () => void,
   maxMemoryMB: number
-): number | undefined => {
+): number'' | ''undefined => {
   const g = (globalThis as any).gc;
-  if (typeof g !== 'function') return undefined; // Skip if garbage collection not available
+  if (typeof g !=='function') return undefined; // Skip if garbage collection not available
 
   try {
     g();

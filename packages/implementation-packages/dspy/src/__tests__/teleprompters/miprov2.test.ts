@@ -1,13 +1,18 @@
 /**
  * @fileoverview Comprehensive test suite for MIPROv2 teleprompter
- * 
+ *
  * Tests 100% API compatibility with Stanford DSPy's MIPROv2 teleprompter.
  * Validates all constructor parameters, compile method behavior, and optimization logic.
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { MIPROv2, MIPROv2Config } from '../../teleprompters/miprov2.js';
-import { DSPyModule, Example, Prediction, MetricFunction } from '../../lib/index.js';
+import {
+  DSPyModule,
+  Example,
+  Prediction,
+  MetricFunction,
+} from '../../lib/index.js';
 
 // Mock DSPy Module for testing
 class MockModule extends DSPyModule {
@@ -24,21 +29,23 @@ class MockModule extends DSPyModule {
   async forward(example: Example): Promise<Prediction> {
     return {
       ...this.mockResponse,
-      data: { 
-        ...this.mockResponse.data, 
+      data: {
+        ...this.mockResponse.data,
         source: this.name,
-        input: example.data 
-      }
+        input: example.data,
+      },
     };
   }
 
   predictors() {
-    return [{
-      name: `${this.name}_predictor`,
-      signature: { instructions: 'Follow the instructions carefully.' },
-      lm: { model: 'mock-model', generate: async () => 'mock response' },
-      demos: []
-    }];
+    return [
+      {
+        name: `${this.name}_predictor`,
+        signature: { instructions: 'Follow the instructions carefully.' },
+        lm: { model: 'mock-model', generate: async () => 'mock response' },
+        demos: [],
+      },
+    ];
   }
 
   namedPredictors() {
@@ -57,11 +64,14 @@ const mockLM = {
   model: 'mock-gpt-4',
   generate: async (prompt: string) => 'mock response',
   kill: () => {},
-  launch: () => {}
+  launch: () => {},
 };
 
 // Mock metric function
-const exactMatch: MetricFunction = (example: Example, prediction: Prediction): number => {
+const exactMatch: MetricFunction = (
+  example: Example,
+  prediction: Prediction
+): number => {
   return prediction.data?.answer === example.data.answer ? 1 : 0;
 };
 
@@ -76,12 +86,12 @@ describe('MIPROv2 Teleprompter', () => {
     basicConfig = {
       metric: exactMatch,
       auto: 'light',
-      verbose: false
+      verbose: false,
     };
 
-    mockStudent = new MockModule('student', { 
-      data: { answer: 'A' }, 
-      confidence: 0.8 
+    mockStudent = new MockModule('student', {
+      data: { answer: 'A' },
+      confidence: 0.8,
     });
 
     trainset = [
@@ -89,12 +99,12 @@ describe('MIPROv2 Teleprompter', () => {
       new Example({ question: 'What is 2+2?', answer: '4' }),
       new Example({ question: 'What is 3+3?', answer: '6' }),
       new Example({ question: 'What is 4+4?', answer: '8' }),
-      new Example({ question: 'What is 5+5?', answer: '10' })
+      new Example({ question: 'What is 5+5?', answer: '10' }),
     ];
 
     valset = [
       new Example({ question: 'What is 1+2?', answer: '3' }),
-      new Example({ question: 'What is 2+3?', answer: '5' })
+      new Example({ question: 'What is 2+3?', answer: '5' }),
     ];
   });
 
@@ -102,7 +112,7 @@ describe('MIPROv2 Teleprompter', () => {
     it('should create MIPROv2 with required metric parameter', () => {
       miprov2 = new MIPROv2({ metric: exactMatch });
       const config = miprov2.getConfig();
-      
+
       expect(config.metric).toBe(exactMatch);
       expect(config.auto).toBe('light'); // Default
     });
@@ -110,7 +120,7 @@ describe('MIPROv2 Teleprompter', () => {
     it('should create MIPROv2 with auto=light configuration', () => {
       miprov2 = new MIPROv2({ metric: exactMatch, auto: 'light' });
       const config = miprov2.getConfig();
-      
+
       expect(config.auto).toBe('light');
       expect(config.verbose).toBe(false);
       expect(config.track_stats).toBe(true);
@@ -119,25 +129,25 @@ describe('MIPROv2 Teleprompter', () => {
     it('should create MIPROv2 with auto=medium configuration', () => {
       miprov2 = new MIPROv2({ metric: exactMatch, auto: 'medium' });
       const config = miprov2.getConfig();
-      
+
       expect(config.auto).toBe('medium');
     });
 
     it('should create MIPROv2 with auto=heavy configuration', () => {
       miprov2 = new MIPROv2({ metric: exactMatch, auto: 'heavy' });
       const config = miprov2.getConfig();
-      
+
       expect(config.auto).toBe('heavy');
     });
 
     it('should create MIPROv2 with auto=null (manual mode)', () => {
-      miprov2 = new MIPROv2({ 
-        metric: exactMatch, 
-        auto: null, 
-        num_candidates: 6 
+      miprov2 = new MIPROv2({
+        metric: exactMatch,
+        auto: null,
+        num_candidates: 6,
       });
       const config = miprov2.getConfig();
-      
+
       expect(config.auto).toBeNull();
       expect(config.num_candidates).toBe(6);
     });
@@ -162,12 +172,12 @@ describe('MIPROv2 Teleprompter', () => {
         verbose: true,
         track_stats: false,
         log_dir: '/tmp/mipro',
-        metric_threshold: 0.8
+        metric_threshold: 0.8,
       };
 
       miprov2 = new MIPROv2(fullConfig);
       const config = miprov2.getConfig();
-      
+
       expect(config.metric).toBe(exactMatch);
       expect(config.prompt_model).toBe(mockLM);
       expect(config.task_model).toBe(mockLM);
@@ -186,7 +196,7 @@ describe('MIPROv2 Teleprompter', () => {
     it('should set default values correctly', () => {
       miprov2 = new MIPROv2({ metric: exactMatch });
       const config = miprov2.getConfig();
-      
+
       expect(config.prompt_model).toBeNull();
       expect(config.task_model).toBeNull();
       expect(config.teacher_settings).toEqual({});
@@ -212,77 +222,77 @@ describe('MIPROv2 Teleprompter', () => {
 
     it('should compile with minimal required parameters', async () => {
       const result = await miprov2.compile(mockStudent, { trainset });
-      
+
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(MockModule);
     });
 
     it('should compile with trainset and valset', async () => {
-      const result = await miprov2.compile(mockStudent, { 
-        trainset, 
-        valset 
+      const result = await miprov2.compile(mockStudent, {
+        trainset,
+        valset,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should compile with teacher program', async () => {
       const teacher = new MockModule('teacher', { data: { answer: 'B' } });
-      
-      const result = await miprov2.compile(mockStudent, { 
-        trainset, 
-        teacher 
+
+      const result = await miprov2.compile(mockStudent, {
+        trainset,
+        teacher,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should compile with multiple teacher programs', async () => {
       const teacher1 = new MockModule('teacher1', { data: { answer: 'B' } });
       const teacher2 = new MockModule('teacher2', { data: { answer: 'C' } });
-      
-      const result = await miprov2.compile(mockStudent, { 
-        trainset, 
-        teacher: [teacher1, teacher2]
+
+      const result = await miprov2.compile(mockStudent, {
+        trainset,
+        teacher: [teacher1, teacher2],
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should validate auto/num_trials/num_candidates combinations', async () => {
       // Test auto=null with num_candidates but no num_trials
-      miprov2 = new MIPROv2({ 
-        metric: exactMatch, 
-        auto: null, 
-        num_candidates: 6 
+      miprov2 = new MIPROv2({
+        metric: exactMatch,
+        auto: null,
+        num_candidates: 6,
       });
 
-      await expect(
-        miprov2.compile(mockStudent, { trainset })
-      ).rejects.toThrow('If auto is None, num_trials must also be provided');
+      await expect(miprov2.compile(mockStudent, { trainset })).rejects.toThrow(
+        'If auto is None, num_trials must also be provided'
+      );
     });
 
     it('should validate auto=null requires num_candidates', async () => {
-      miprov2 = new MIPROv2({ 
-        metric: exactMatch, 
-        auto: null 
+      miprov2 = new MIPROv2({
+        metric: exactMatch,
+        auto: null,
       });
 
-      await expect(
-        miprov2.compile(mockStudent, { trainset })
-      ).rejects.toThrow('If auto is None, num_candidates must also be provided');
+      await expect(miprov2.compile(mockStudent, { trainset })).rejects.toThrow(
+        'If auto is None, num_candidates must also be provided'
+      );
     });
 
     it('should validate auto conflicts with manual parameters', async () => {
-      miprov2 = new MIPROv2({ 
-        metric: exactMatch, 
+      miprov2 = new MIPROv2({
+        metric: exactMatch,
         auto: 'light',
-        num_candidates: 6 
+        num_candidates: 6,
       });
 
-      await expect(
-        miprov2.compile(mockStudent, { trainset })
-      ).rejects.toThrow('If auto is not None, num_candidates and num_trials cannot be set');
+      await expect(miprov2.compile(mockStudent, { trainset })).rejects.toThrow(
+        'If auto is not None, num_candidates and num_trials cannot be set'
+      );
     });
 
     it('should handle empty trainset', async () => {
@@ -293,10 +303,12 @@ describe('MIPROv2 Teleprompter', () => {
 
     it('should handle trainset too small without valset', async () => {
       const smallTrainset = [trainset[0]]; // Only 1 example
-      
+
       await expect(
         miprov2.compile(mockStudent, { trainset: smallTrainset })
-      ).rejects.toThrow('Trainset must have at least 2 examples if no valset specified');
+      ).rejects.toThrow(
+        'Trainset must have at least 2 examples if no valset specified'
+      );
     });
 
     it('should handle empty valset', async () => {
@@ -307,7 +319,7 @@ describe('MIPROv2 Teleprompter', () => {
 
     it('should auto-split trainset when no valset provided', async () => {
       const result = await miprov2.compile(mockStudent, { trainset });
-      
+
       expect(result).toBeDefined();
       // Should have automatically created valset from trainset
     });
@@ -317,27 +329,27 @@ describe('MIPROv2 Teleprompter', () => {
     beforeEach(() => {
       miprov2 = new MIPROv2({
         ...basicConfig,
-        verbose: false // Reduce test output
+        verbose: false, // Reduce test output
       });
     });
 
     it('should perform bootstrap fewshot examples step', async () => {
       const result = await miprov2.compile(mockStudent, { trainset, valset });
-      
+
       expect(result).toBeDefined();
       // Should have completed Step 1: Bootstrap fewshot examples
     });
 
     it('should perform instruction proposal step', async () => {
       const result = await miprov2.compile(mockStudent, { trainset, valset });
-      
+
       expect(result).toBeDefined();
       // Should have completed Step 2: Propose instruction candidates
     });
 
     it('should perform prompt parameter optimization step', async () => {
       const result = await miprov2.compile(mockStudent, { trainset, valset });
-      
+
       expect(result).toBeDefined();
       // Should have completed Step 3: Find optimal prompt parameters
     });
@@ -347,43 +359,43 @@ describe('MIPROv2 Teleprompter', () => {
         metric: exactMatch,
         auto: 'light',
         max_bootstrapped_demos: 0,
-        max_labeled_demos: 0
+        max_labeled_demos: 0,
       });
 
       const result = await miprov2.compile(mockStudent, { trainset, valset });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should handle minibatch evaluation', async () => {
-      const result = await miprov2.compile(mockStudent, { 
-        trainset, 
+      const result = await miprov2.compile(mockStudent, {
+        trainset,
         valset,
         minibatch: true,
-        minibatch_size: 2
+        minibatch_size: 2,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should handle full evaluation (no minibatch)', async () => {
-      const result = await miprov2.compile(mockStudent, { 
-        trainset, 
+      const result = await miprov2.compile(mockStudent, {
+        trainset,
         valset,
-        minibatch: false
+        minibatch: false,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should validate minibatch size against valset', async () => {
       await expect(
-        miprov2.compile(mockStudent, { 
-          trainset, 
+        miprov2.compile(mockStudent, {
+          trainset,
           valset,
           minibatch: true,
           minibatch_size: 10, // Larger than valset
-          strict_minibatch_validation: true
+          strict_minibatch_validation: true,
         })
       ).rejects.toThrow('Minibatch size cannot exceed the size of the valset');
     });
@@ -394,82 +406,82 @@ describe('MIPROv2 Teleprompter', () => {
       miprov2 = new MIPROv2({
         metric: exactMatch,
         auto: null,
-        num_candidates: 4
+        num_candidates: 4,
       });
 
-      const result = await miprov2.compile(mockStudent, { 
-        trainset, 
+      const result = await miprov2.compile(mockStudent, {
+        trainset,
         valset,
-        num_trials: 10
+        num_trials: 10,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should handle override parameters in compile method', async () => {
       const localMiprov2 = new MIPROv2({
         metric: exactMatch,
-        auto: 'light'
+        auto: 'light',
       });
 
-      const result = await localMiprov2.compile(mockStudent, { 
-        trainset, 
+      const result = await localMiprov2.compile(mockStudent, {
+        trainset,
         valset,
         max_bootstrapped_demos: 2,
         max_labeled_demos: 1,
-        seed: 123
+        seed: 123,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should handle proposer configuration flags', async () => {
       const localMiprov2 = new MIPROv2({
         metric: exactMatch,
-        auto: 'light'
+        auto: 'light',
       });
 
-      const result = await localMiprov2.compile(mockStudent, { 
-        trainset, 
+      const result = await localMiprov2.compile(mockStudent, {
+        trainset,
         valset,
         program_aware_proposer: false,
         data_aware_proposer: false,
         tip_aware_proposer: false,
-        fewshot_aware_proposer: false
+        fewshot_aware_proposer: false,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should handle custom view_data_batch_size', async () => {
       const localMiprov2 = new MIPROv2({
         metric: exactMatch,
-        auto: 'light'
+        auto: 'light',
       });
 
-      const result = await localMiprov2.compile(mockStudent, { 
-        trainset, 
+      const result = await localMiprov2.compile(mockStudent, {
+        trainset,
         valset,
-        view_data_batch_size: 5
+        view_data_batch_size: 5,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should handle custom minibatch configuration', async () => {
       const localMiprov2 = new MIPROv2({
         metric: exactMatch,
-        auto: 'light'
+        auto: 'light',
       });
 
-      const result = await localMiprov2.compile(mockStudent, { 
-        trainset, 
+      const result = await localMiprov2.compile(mockStudent, {
+        trainset,
         valset,
         minibatch: true,
         minibatch_size: 2,
-        minibatch_full_eval_steps: 3
+        minibatch_full_eval_steps: 3,
       });
-      
+
       expect(result).toBeDefined();
     });
   });
@@ -477,27 +489,27 @@ describe('MIPROv2 Teleprompter', () => {
   describe('Auto Mode Configurations', () => {
     it('should handle light auto mode correctly', async () => {
       miprov2 = new MIPROv2({ metric: exactMatch, auto: 'light' });
-      
+
       const result = await miprov2.compile(mockStudent, { trainset });
-      
+
       expect(result).toBeDefined();
       // Light mode should use n=6, val_size=100
     });
 
     it('should handle medium auto mode correctly', async () => {
       miprov2 = new MIPROv2({ metric: exactMatch, auto: 'medium' });
-      
+
       const result = await miprov2.compile(mockStudent, { trainset });
-      
+
       expect(result).toBeDefined();
       // Medium mode should use n=12, val_size=300
     });
 
     it('should handle heavy auto mode correctly', async () => {
       miprov2 = new MIPROv2({ metric: exactMatch, auto: 'heavy' });
-      
+
       const result = await miprov2.compile(mockStudent, { trainset });
-      
+
       expect(result).toBeDefined();
       // Heavy mode should use n=18, val_size=1000
     });
@@ -513,39 +525,44 @@ describe('MIPROv2 Teleprompter', () => {
         forward: async () => ({ data: { answer: 'test' } }),
         predictors: () => [],
         namedPredictors: () => [],
-        deepcopy: function() { return this; }
+        deepcopy: function () {
+          return this;
+        },
       };
 
-      const result = await miprov2.compile(emptyProgram as any, { trainset, valset });
-      
+      const result = await miprov2.compile(emptyProgram as any, {
+        trainset,
+        valset,
+      });
+
       expect(result).toBeDefined();
     });
 
     it('should handle very small datasets', async () => {
       const tinyTrainset = trainset.slice(0, 2);
       const tinyValset = valset.slice(0, 1);
-      
-      const result = await miprov2.compile(mockStudent, { 
-        trainset: tinyTrainset, 
-        valset: tinyValset 
+
+      const result = await miprov2.compile(mockStudent, {
+        trainset: tinyTrainset,
+        valset: tinyValset,
       });
-      
+
       expect(result).toBeDefined();
     });
 
     it('should handle seed parameter for reproducibility', async () => {
-      const result1 = await miprov2.compile(mockStudent, { 
-        trainset, 
-        valset, 
-        seed: 42 
+      const result1 = await miprov2.compile(mockStudent, {
+        trainset,
+        valset,
+        seed: 42,
       });
-      
-      const result2 = await miprov2.compile(mockStudent, { 
-        trainset, 
-        valset, 
-        seed: 42 
+
+      const result2 = await miprov2.compile(mockStudent, {
+        trainset,
+        valset,
+        seed: 42,
       });
-      
+
       expect(result1).toBeDefined();
       expect(result2).toBeDefined();
       // Results should be reproducible with same seed
@@ -555,16 +572,16 @@ describe('MIPROv2 Teleprompter', () => {
       miprov2 = new MIPROv2({
         metric: exactMatch,
         auto: 'light',
-        teacher_settings: { temperature: 0.7, max_tokens: 100 }
+        teacher_settings: { temperature: 0.7, max_tokens: 100 },
       });
 
       const teacher = new MockModule('teacher', { data: { answer: 'B' } });
-      const result = await miprov2.compile(mockStudent, { 
-        trainset, 
-        valset, 
-        teacher 
+      const result = await miprov2.compile(mockStudent, {
+        trainset,
+        valset,
+        teacher,
       });
-      
+
       expect(result).toBeDefined();
     });
   });
@@ -588,7 +605,7 @@ describe('MIPROv2 Teleprompter', () => {
         verbose: false,
         track_stats: true,
         log_dir: null,
-        metric_threshold: null
+        metric_threshold: null,
       };
 
       miprov2 = new MIPROv2(config);
@@ -614,7 +631,7 @@ describe('MIPROv2 Teleprompter', () => {
         tip_aware_proposer: true,
         fewshot_aware_proposer: true,
         requires_permission_to_run: true,
-        provide_traceback: null
+        provide_traceback: null,
       });
 
       expect(result).toBeDefined();
@@ -622,15 +639,15 @@ describe('MIPROv2 Teleprompter', () => {
 
     it('should throw exact same errors as Stanford DSPy', async () => {
       // Test error messages match Stanford DSPy exactly
-      miprov2 = new MIPROv2({ 
-        metric: exactMatch, 
-        auto: null, 
-        num_candidates: 6 
+      miprov2 = new MIPROv2({
+        metric: exactMatch,
+        auto: null,
+        num_candidates: 6,
       });
 
-      await expect(
-        miprov2.compile(mockStudent, { trainset })
-      ).rejects.toThrow(/If auto is None, num_trials must also be provided/);
+      await expect(miprov2.compile(mockStudent, { trainset })).rejects.toThrow(
+        /If auto is None, num_trials must also be provided/
+      );
     });
 
     it('should handle auto run settings like Stanford DSPy', () => {
@@ -647,20 +664,22 @@ describe('MIPROv2 Teleprompter', () => {
 
   describe('Performance and Resource Management', () => {
     it('should handle large trainsets efficiently', async () => {
-      const largeTrainset = Array.from({ length: 50 }, (_, i) => 
-        new Example({ question: `What is ${i}+${i}?`, answer: `${i*2}` })
+      const largeTrainset = Array.from(
+        { length: 50 },
+        (_, i) =>
+          new Example({ question: `What is ${i}+${i}?`, answer: `${i * 2}` })
       );
 
       const localMiprov2 = new MIPROv2({
         metric: exactMatch,
-        auto: 'light'
+        auto: 'light',
       });
 
-      const result = await localMiprov2.compile(mockStudent, { 
+      const result = await localMiprov2.compile(mockStudent, {
         trainset: largeTrainset,
-        valset 
+        valset,
       });
-      
+
       expect(result).toBeDefined();
     });
 
@@ -668,11 +687,11 @@ describe('MIPROv2 Teleprompter', () => {
       miprov2 = new MIPROv2({
         metric: exactMatch,
         auto: 'light',
-        track_stats: true
+        track_stats: true,
       });
 
       const result = await miprov2.compile(mockStudent, { trainset, valset });
-      
+
       expect(result).toBeDefined();
       // Should have attached trial_logs and other stats
     });
@@ -681,11 +700,11 @@ describe('MIPROv2 Teleprompter', () => {
       miprov2 = new MIPROv2({
         metric: exactMatch,
         auto: 'light',
-        track_stats: false
+        track_stats: false,
       });
 
       const result = await miprov2.compile(mockStudent, { trainset, valset });
-      
+
       expect(result).toBeDefined();
       // Should not have attached statistics
     });

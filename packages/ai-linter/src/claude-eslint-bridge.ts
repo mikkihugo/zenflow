@@ -3,7 +3,7 @@
  *
  * Revolutionary linting system that combines:
  * - Claude's natural language understanding and code generation
- * - ruv-swarm's multi-agent coordination  
+ * - ruv-swarm's multi-agent coordination
  * - ESLint's mature ecosystem and AST analysis
  * - Intelligence coordination system for complex rule generation
  *
@@ -17,6 +17,7 @@
 import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import { ESLint } from 'eslint';
+
 import { ClaudeSDKIntegration } from './claude-sdk-integration';
 import type {
   AIAnalysisResult,
@@ -61,19 +62,21 @@ export class ClaudeESLintBridge extends TypedEventBase {
   private aiConfig: ESLintAIConfig;
   private analysisCache: Map<string, AIAnalysisResult> = new Map();
 
-  constructor(
-    eventBus: EventBus,
-    config: Partial<ESLintAIConfig> = {}
-  ) {
+  constructor(eventBus: EventBus, config: Partial<ESLintAIConfig> = {}) {
     super();
     this.logger = getLogger('claude-eslint-bridge');
     this.eventBus = eventBus;
-    
+
     // Default configuration
     this.aiConfig = {
       enableAIRules: true,
       confidenceThreshold: 0.8,
-      focusAreas: ['complexity', 'maintainability', 'type-safety', 'performance'],
+      focusAreas: [
+        'complexity',
+        'maintainability',
+        'type-safety',
+        'performance',
+      ],
       ...config,
     };
 
@@ -109,7 +112,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
     try {
       // Step 1: Run ESLint analysis
       const eslintResults = await this.runESLintAnalysis(filePath, content);
-      
+
       // Step 2: Convert ESLint results to our pattern format
       const astPatterns = this.convertESLintToPatterns(eslintResults);
 
@@ -139,7 +142,10 @@ export class ClaudeESLintBridge extends TypedEventBase {
         generatedRules: eslintRules,
         swarmEnhancements,
         confidence: this.calculateConfidence(claudeAnalysis, swarmEnhancements),
-        suggestions: this.generateSuggestions(claudeAnalysis, swarmEnhancements),
+        suggestions: this.generateSuggestions(
+          claudeAnalysis,
+          swarmEnhancements
+        ),
         performance: {
           totalTimeMs: 500,
           astParsingTimeMs: 50,
@@ -163,7 +169,6 @@ export class ClaudeESLintBridge extends TypedEventBase {
       this.emit('analysis:complete', result);
 
       return result;
-
     } catch (error) {
       this.logger.error(`Analysis failed for ${filePath}:`, error);
       throw error;
@@ -173,11 +178,13 @@ export class ClaudeESLintBridge extends TypedEventBase {
   /**
    * Run ESLint analysis on code content
    */
-  private async runESLintAnalysis(filePath: string, content: string): Promise<ESLint.LintResult[]> {
+  private async runESLintAnalysis(
+    filePath: string,
+    content: string
+  ): Promise<ESLint.LintResult[]> {
     try {
       // Create a temporary file-like object for ESLint
-      const results = await this.eslint.lintText(content, { filePath });
-      return results;
+      return await this.eslint.lintText(content, { filePath });
     } catch (error) {
       this.logger.error('ESLint analysis failed:', error);
       return [];
@@ -187,7 +194,9 @@ export class ClaudeESLintBridge extends TypedEventBase {
   /**
    * Convert ESLint results to our CodePattern format
    */
-  private convertESLintToPatterns(eslintResults: ESLint.LintResult[]): CodePattern[] {
+  private convertESLintToPatterns(
+    eslintResults: ESLint.LintResult[]
+  ): CodePattern[] {
     const patterns: CodePattern[] = [];
 
     for (const result of eslintResults) {
@@ -201,7 +210,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
             endColumn: message.endColumn,
           },
           severity: this.convertESLintSeverity(message.severity),
-          pattern: message.ruleId || 'unknown',
+          pattern: message.ruleId'' | '''' | '''unknown',
           data: {
             rule: message.ruleId,
             message: message.message,
@@ -220,12 +229,17 @@ export class ClaudeESLintBridge extends TypedEventBase {
   /**
    * Get pattern type from ESLint rule ID
    */
-  private getPatternTypeFromRule(ruleId: string | null): import('./types/ai-linter-types').PatternType {
+  private getPatternTypeFromRule(
+    ruleId: string'' | ''null
+  ): import('./types/ai-linter-types').PatternType {
     if (!ruleId) return 'code_duplication';
 
     // Map ESLint rules to our pattern types
-    const ruleMap: Record<string, import('./types/ai-linter-types').PatternType> = {
-      'complexity': 'function_complexity',
+    const ruleMap: Record<
+      string,
+      import('./types/ai-linter-types').PatternType
+    > = {
+      complexity: 'function_complexity',
       'max-complexity': 'function_complexity',
       'max-lines': 'function_complexity',
       'max-lines-per-function': 'function_complexity',
@@ -243,32 +257,41 @@ export class ClaudeESLintBridge extends TypedEventBase {
       'n/no-sync': 'async_pattern',
     };
 
-    return ruleMap[ruleId] || 'code_duplication';
+    return ruleMap[ruleId]'' | '''' | '''code_duplication';
   }
 
   /**
    * Convert ESLint severity to our severity format
    */
-  private convertESLintSeverity(severity: number): 'error' | 'warning' | 'info' | 'hint' | 'suggestion' {
+  private convertESLintSeverity(
+    severity: number
+  ): 'error | warning' | 'info' | 'hint' | 'suggestion' {
     switch (severity) {
-      case 2: return 'error';
-      case 1: return 'warning';
-      default: return 'info';
+      case 2:
+        return 'error';
+      case 1:
+        return 'warning';
+      default:
+        return 'info';
     }
   }
 
   /**
    * Generate ESLint-compatible rules from Claude's analysis
    */
-  private async generateESLintRules(claudeAnalysis: ClaudeInsights): Promise<any[]> {
+  private async generateESLintRules(
+    claudeAnalysis: ClaudeInsights
+  ): Promise<any[]> {
     const rules: any[] = [];
 
     // Generate complexity rules based on Claude's analysis
     if (claudeAnalysis.complexity_issues?.length > 0) {
-      const avgComplexity = claudeAnalysis.complexity_issues.reduce(
-        (sum, issue) => sum + issue.complexityScore, 0
-      ) / claudeAnalysis.complexity_issues.length;
-      
+      const avgComplexity =
+        claudeAnalysis.complexity_issues.reduce(
+          (sum, issue) => sum + issue.complexityScore,
+          0
+        ) / claudeAnalysis.complexity_issues.length;
+
       rules.push({
         name: 'ai-generated-complexity-limit',
         rule: 'complexity',
@@ -310,15 +333,20 @@ export class ClaudeESLintBridge extends TypedEventBase {
   ): Promise<SwarmAnalysisResult> {
     // This would integrate with the swarm coordinator
     return {
-      architectural_review: 'ESLint + Claude analysis shows good code structure',
+      architectural_review:
+        'ESLint + Claude analysis shows good code structure',
       security_analysis: 'No security vulnerabilities detected by ESLint rules',
-      performance_insights: 'Consider the performance optimizations suggested by Claude',
+      performance_insights:
+        'Consider the performance optimizations suggested by Claude',
       coordination_quality: 'high',
       agent_contributions: [
         {
           agentId: 'eslint-analyzer',
           agentType: 'static-analyzer',
-          insights: ['Code follows ESLint rules', 'No critical violations found'],
+          insights: [
+            'Code follows ESLint rules',
+            'No critical violations found',
+          ],
           confidence: 0.95,
           processingTimeMs: 50,
         },
@@ -330,7 +358,7 @@ export class ClaudeESLintBridge extends TypedEventBase {
           processingTimeMs: 200,
         },
       ],
-      consensus_score: 0.90,
+      consensus_score: 0.9,
       conflicts: [],
     };
   }
@@ -346,7 +374,8 @@ export class ClaudeESLintBridge extends TypedEventBase {
 
     if (claudeAnalysis.maintainability_score > 80) confidence += 0.1;
     if (swarmEnhancements.coordination_quality === 'high') confidence += 0.1;
-    if (claudeAnalysis.architectural_suggestions?.length > 0) confidence += 0.05;
+    if (claudeAnalysis.architectural_suggestions?.length > 0)
+      confidence += 0.05;
 
     return Math.min(confidence, 1.0);
   }
@@ -367,7 +396,9 @@ export class ClaudeESLintBridge extends TypedEventBase {
 
     // Add swarm insights
     if (swarmEnhancements.performance_insights) {
-      suggestions.push(`🚀 Performance: ${swarmEnhancements.performance_insights}`);
+      suggestions.push(
+        `🚀 Performance: ${swarmEnhancements.performance_insights}`
+      );
     }
 
     if (swarmEnhancements.security_analysis) {
@@ -376,7 +407,9 @@ export class ClaudeESLintBridge extends TypedEventBase {
 
     // Add ESLint-specific suggestions
     suggestions.push('✅ Code follows ESLint rules');
-    suggestions.push('🎯 Consider implementing Claude\'s optimization suggestions');
+    suggestions.push(
+      "🎯 Consider implementing Claude's optimization suggestions"
+    );
 
     return suggestions;
   }
@@ -389,23 +422,28 @@ export class ClaudeESLintBridge extends TypedEventBase {
     content: string,
     analysisResult: AIAnalysisResult
   ): Promise<string> {
-    this.logger.info(`🔧 Comprehensive auto-fixing ${filePath}: ESLint → Prettier → Claude AI`);
-    
+    this.logger.info(
+      `🔧 Comprehensive auto-fixing ${filePath}: ESLint → Prettier → Claude AI`
+    );
+
     try {
       // Step 1: Apply ESLint --fix for mechanical issues
       const eslintFixed = await this.applyESLintFix(content, filePath);
       this.logger.info(`✅ ESLint --fix applied`);
-      
+
       // Step 2: Apply Prettier formatting
       const prettierFixed = await this.applyPrettierFix(eslintFixed, filePath);
       this.logger.info(`✅ Prettier formatting applied`);
-      
+
       // Step 3: Apply Claude AI fixes for complex issues
-      const claudeFixed = await this.applyClaudeAIFix(prettierFixed, filePath, analysisResult);
+      const claudeFixed = await this.applyClaudeAIFix(
+        prettierFixed,
+        filePath,
+        analysisResult
+      );
       this.logger.info(`✅ Claude AI fixes applied`);
-      
+
       return claudeFixed;
-      
     } catch (error) {
       this.logger.error('Comprehensive auto-fix pipeline failed:', error);
       return content; // Return original if fixing fails
@@ -415,22 +453,24 @@ export class ClaudeESLintBridge extends TypedEventBase {
   /**
    * Apply ESLint --fix to code
    */
-  private async applyESLintFix(content: string, filePath: string): Promise<string> {
+  private async applyESLintFix(
+    content: string,
+    filePath: string
+  ): Promise<string> {
     try {
       // ESLint 9+ uses lintText with auto-fixing via ESLint.outputFixes
       const results = await this.eslint.lintText(content, { filePath });
       await ESLint.outputFixes(results);
-      
+
       // Return fixed code if available, otherwise original
-      const fixed = results[0]?.output || content;
-      
+      const fixed = results[0]?.output'' | '''' | ''content;
+
       if (fixed !== content) {
-        const fixCount = results[0]?.fixableErrorCount || 0;
+        const fixCount = results[0]?.fixableErrorCount'' | '''' | ''0;
         this.logger.info(`  ESLint fixed ${fixCount} issues`);
       }
-      
+
       return fixed;
-      
     } catch (error) {
       this.logger.warn('ESLint --fix failed:', error);
       return content;
@@ -440,37 +480,42 @@ export class ClaudeESLintBridge extends TypedEventBase {
   /**
    * Apply Prettier formatting to code
    */
-  private async applyPrettierFix(content: string, filePath: string): Promise<string> {
+  private async applyPrettierFix(
+    content: string,
+    filePath: string
+  ): Promise<string> {
     try {
       // Dynamic import for Prettier (only if needed)
       const prettier = await import('prettier');
-      
+
       // Get Prettier config from project or use defaults
-      const options = await prettier.resolveConfig(filePath) || {
+      const options = (await prettier.resolveConfig(filePath))'' | '''' | ''{
         semi: true,
-        trailingComma: 'es5',
+        trailingComma:'es5',
         singleQuote: true,
         printWidth: 80,
         tabWidth: 2,
         useTabs: false,
       };
-      
+
       // Determine parser from file extension
       const parser = this.getPrettierParser(filePath);
       if (parser) {
         options.parser = parser;
       }
-      
+
       const formatted = await prettier.format(content, options);
-      
+
       if (formatted !== content) {
         this.logger.info(`  Prettier applied formatting changes`);
       }
-      
+
       return formatted;
-      
     } catch (error) {
-      this.logger.warn('Prettier formatting failed (install prettier for formatting):', error);
+      this.logger.warn(
+        'Prettier formatting failed (install prettier for formatting):',
+        error
+      );
       return content;
     }
   }
@@ -478,45 +523,45 @@ export class ClaudeESLintBridge extends TypedEventBase {
   /**
    * Get Prettier parser from file extension
    */
-  private getPrettierParser(filePath: string): string | undefined {
+  private getPrettierParser(filePath: string): string'' | ''undefined {
     const ext = filePath.split('.').pop()?.toLowerCase();
     const parserMap: Record<string, string> = {
-      'js': 'babel',
-      'jsx': 'babel', 
-      'ts': 'typescript',
-      'tsx': 'typescript',
-      'json': 'json',
-      'css': 'css',
-      'scss': 'scss',
-      'less': 'less',
-      'html': 'html',
-      'vue': 'vue',
-      'md': 'markdown',
-      'yml': 'yaml',
-      'yaml': 'yaml',
+      js: 'babel',
+      jsx: 'babel',
+      ts: 'typescript',
+      tsx: 'typescript',
+      json: 'json',
+      css: 'css',
+      scss: 'scss',
+      less: 'less',
+      html: 'html',
+      vue: 'vue',
+      md: 'markdown',
+      yml: 'yaml',
+      yaml: 'yaml',
     };
-    return parserMap[ext || ''];
+    return parserMap[ext'' | '''' | ''''];
   }
 
   /**
    * Apply Claude AI fixes for complex issues
    */
   private async applyClaudeAIFix(
-    content: string, 
-    filePath: string, 
+    content: string,
+    filePath: string,
     analysisResult: AIAnalysisResult
   ): Promise<string> {
     try {
       // Only apply AI fixes if there are significant issues to fix
-      const hasComplexIssues = analysisResult.claudeInsights.complexity_issues.length > 0 ||
-                              analysisResult.claudeInsights.type_safety_concerns.length > 0 ||
-                              analysisResult.claudeInsights.performance_optimizations.length > 0;
-      
+      const hasComplexIssues =
+        analysisResult.claudeInsights.complexity_issues.length > 0'' | '''' | ''analysisResult.claudeInsights.type_safety_concerns.length > 0'' | '''' | ''analysisResult.claudeInsights.performance_optimizations.length > 0;
+
       if (!hasComplexIssues) {
-        this.logger.info('  No complex issues detected, skipping Claude AI fixes');
+        this.logger.info('  No complex issues detected, skipping Claude AI fixes'
+        );
         return content;
       }
-      
+
       // Use the batch fixer for complex issues
       const context = {
         language: this.getLanguageFromPath(filePath),
@@ -538,30 +583,35 @@ export class ClaudeESLintBridge extends TypedEventBase {
         },
       };
 
-      const fixResult = await this.claudeIntegration.batchFixCodeWithClaude([{
-        filePath,
-        content,
-        patterns: analysisResult.patterns,
-        context: {
-          ...context,
-          preferences: {
-            ...context.preferences,
-            focusAreas: [...context.preferences.focusAreas] as LintingCategory[]
-          }
-        }
-      }]);
-      
+      const fixResult = await this.claudeIntegration.batchFixCodeWithClaude([
+        {
+          filePath,
+          content,
+          patterns: analysisResult.patterns,
+          context: {
+            ...context,
+            preferences: {
+              ...context.preferences,
+              focusAreas: [
+                ...context.preferences.focusAreas,
+              ] as LintingCategory[],
+            },
+          },
+        },
+      ]);
+
       const result = fixResult.get(filePath);
       if (result?.fixedContent && result.fixedContent !== content) {
-        this.logger.info(`  Claude AI applied ${result.fixes.length} intelligent fixes:`);
+        this.logger.info(
+          `  Claude AI applied ${result.fixes.length} intelligent fixes:`
+        );
         result.fixes.forEach((fix, index) => {
           this.logger.info(`    ${index + 1}. ${fix}`);
         });
         return result.fixedContent;
       }
-      
+
       return content;
-      
     } catch (error) {
       this.logger.warn('Claude AI fixes failed:', error);
       return content;
@@ -574,21 +624,21 @@ export class ClaudeESLintBridge extends TypedEventBase {
   private getLanguageFromPath(filePath: string): string {
     const ext = filePath.split('.').pop()?.toLowerCase();
     const langMap: Record<string, string> = {
-      'js': 'javascript',
-      'jsx': 'javascript',
-      'ts': 'typescript', 
-      'tsx': 'typescript',
-      'py': 'python',
-      'rb': 'ruby',
-      'go': 'go',
-      'rs': 'rust',
-      'java': 'java',
-      'c': 'c',
-      'cpp': 'cpp',
-      'cs': 'csharp',
-      'php': 'php',
+      js: 'javascript',
+      jsx: 'javascript',
+      ts: 'typescript',
+      tsx: 'typescript',
+      py: 'python',
+      rb: 'ruby',
+      go: 'go',
+      rs: 'rust',
+      java: 'java',
+      c: 'c',
+      cpp: 'cpp',
+      cs: 'csharp',
+      php: 'php',
     };
-    return langMap[ext || ''] || 'typescript';
+    return langMap[ext'' | '''' | '''']'' | '''' | '''typescript';
   }
 
   /**
@@ -596,7 +646,8 @@ export class ClaudeESLintBridge extends TypedEventBase {
    */
   private generateCacheKey(filePath: string, content: string): string {
     // Create a simple hash-like key
-    const contentHash = content.length.toString(36) + content.charCodeAt(0).toString(36);
+    const contentHash =
+      content.length.toString(36) + content.charCodeAt(0).toString(36);
     return `${filePath}:${contentHash}`;
   }
 
@@ -635,7 +686,9 @@ export class ClaudeESLintBridge extends TypedEventBase {
       (result) => result.confidence
     );
 
-    return confidences.reduce((sum, conf) => sum + conf, 0) / confidences.length;
+    return (
+      confidences.reduce((sum, conf) => sum + conf, 0) / confidences.length
+    );
   }
 
   private calculateCacheHitRate(): number {

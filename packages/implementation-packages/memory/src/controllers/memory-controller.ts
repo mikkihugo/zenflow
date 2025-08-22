@@ -69,7 +69,7 @@ export interface MemoryBatchRequest {
   /** Array of operations to perform */
   operations: Array<{
     /** Type of operation */
-    type: 'store' | 'retrieve' | 'delete';
+    type: 'store | retrieve' | 'delete';
     /** Key for the operation */
     key: string;
     /** Value for store operations */
@@ -114,7 +114,7 @@ export interface MemoryAnalytics {
   /** System health information */
   health: {
     /** Overall health status */
-    status: 'healthy' | 'warning' | 'critical';
+    status: 'healthy | warning' | 'critical';
     /** System uptime in seconds */
     uptime: number;
     /** Last health check timestamp */
@@ -139,9 +139,10 @@ export class MemoryController {
   };
 
   constructor(
-    @inject(MEMORY_TOKENS.ProviderFactory) private _factory: MemoryProviderFactory,
+    @inject(MEMORY_TOKENS.ProviderFactory)
+    private _factory: MemoryProviderFactory,
     @inject(MEMORY_TOKENS.Config) private _config: MemoryConfig,
-    @inject(CORE_TOKENS.Logger) private _logger: Logger,
+    @inject(CORE_TOKENS.Logger) private _logger: Logger
   ) {
     this.initializeBackend();
   }
@@ -156,7 +157,10 @@ export class MemoryController {
     try {
       this._logger.debug('Getting memory system status');
 
-      const [size, isHealthy] = await Promise.all([this.backend.size(), this.backend.health()]);
+      const [size, isHealthy] = await Promise.all([
+        this.backend.size(),
+        this.backend.health(),
+      ]);
 
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
@@ -167,11 +171,13 @@ export class MemoryController {
           status: isHealthy ? 'healthy' : 'unhealthy',
           totalKeys: size,
           backend: this._config.type,
-          uptime: Math.floor((Date.now() - this.performanceMetrics.startTime) / 1000),
+          uptime: Math.floor(
+            (Date.now() - this.performanceMetrics.startTime) / 1000
+          ),
           configuration: {
             type: this._config.type,
-            maxSize: this._config.maxSize || -1,
-            ttl: this._config.ttl || 0,
+            maxSize: this._config.maxSize'' | '''' | ''-1,
+            ttl: this._config.ttl'' | '''' | ''0,
             compression: this._config.compression,
           },
         },
@@ -189,7 +195,7 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to get memory status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `Failed to get memory status: ${error instanceof Error ? error.message :'Unknown error'}`,
         metadata: {
           size: 0,
           timestamp: Date.now(),
@@ -221,7 +227,10 @@ export class MemoryController {
       }
 
       // Process value with options (TTL, compression, etc.)
-      const processedValue = this.processValueForStorage(request.value, request.options);
+      const processedValue = this.processValueForStorage(
+        request.value,
+        request.options
+      );
 
       await this.backend.store(request.key, processedValue);
       const size = await this.backend.size();
@@ -237,7 +246,7 @@ export class MemoryController {
           key: request.key,
           stored: true,
           compressed: request.options?.compress,
-          ttl: request.options?.ttl || 0,
+          ttl: request.options?.ttl'' | '''' | ''0,
         },
         metadata: {
           size,
@@ -253,7 +262,7 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to store memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `Failed to store memory: ${error instanceof Error ? error.message :'Unknown error'}`,
         metadata: {
           size: 0,
           timestamp: Date.now(),
@@ -295,7 +304,7 @@ export class MemoryController {
           key,
           value: processedValue?.value,
           exists: rawValue !== undefined,
-          metadata: processedValue?.metadata || {},
+          metadata: processedValue?.metadata'' | '''' | ''{},
           retrieved: true,
         },
         metadata: {
@@ -312,7 +321,7 @@ export class MemoryController {
 
       return {
         success: false,
-        error: `Failed to retrieve memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `Failed to retrieve memory: ${error instanceof Error ? error.message :'Unknown error'}`,
         metadata: {
           size: 0,
           timestamp: Date.now(),
@@ -436,7 +445,9 @@ export class MemoryController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug(`Executing batch operations: ${request.operations.length} operations`);
+      this._logger.debug(
+        `Executing batch operations: ${request.operations.length} operations`
+      );
 
       const results = [];
       let errorCount = 0;
@@ -552,28 +563,36 @@ export class MemoryController {
         performance: {
           averageResponseTime:
             this.performanceMetrics.operationCount > 0
-              ? this.performanceMetrics.totalResponseTime / this.performanceMetrics.operationCount
+              ? this.performanceMetrics.totalResponseTime /
+                this.performanceMetrics.operationCount
               : 0,
           successRate:
             this.performanceMetrics.operationCount > 0
-              ? ((this.performanceMetrics.operationCount - this.performanceMetrics.errorCount) /
+              ? ((this.performanceMetrics.operationCount -
+                  this.performanceMetrics.errorCount) /
                   this.performanceMetrics.operationCount) *
                 100
               : 100,
           errorRate:
             this.performanceMetrics.operationCount > 0
-              ? (this.performanceMetrics.errorCount / this.performanceMetrics.operationCount) * 100
+              ? (this.performanceMetrics.errorCount /
+                  this.performanceMetrics.operationCount) *
+                100
               : 0,
           operationsPerSecond: this.calculateOperationsPerSecond(),
         },
         usage: {
           memoryUsed: process.memoryUsage().heapUsed,
-          maxMemory: this._config.maxSize || -1,
-          utilizationPercent: this._config.maxSize ? (size / this._config.maxSize) * 100 : 0,
+          maxMemory: this._config.maxSize'' | '''' | ''-1,
+          utilizationPercent: this._config.maxSize
+            ? (size / this._config.maxSize) * 100
+            : 0,
         },
         health: {
-          status: isHealthy ? 'healthy' : 'critical',
-          uptime: Math.floor((Date.now() - this.performanceMetrics.startTime) / 1000),
+          status: isHealthy ?'healthy' : 'critical',
+          uptime: Math.floor(
+            (Date.now() - this.performanceMetrics.startTime) / 1000
+          ),
           lastHealthCheck: Date.now(),
         },
       };
@@ -615,7 +634,9 @@ export class MemoryController {
   private initializeBackend(): void {
     try {
       this.backend = this._factory.createProvider(this._config);
-      this._logger.info(`Memory controller initialized with ${this._config.type} backend`);
+      this._logger.info(
+        `Memory controller initialized with ${this._config.type} backend`
+      );
     } catch (error) {
       this._logger.error(`Failed to initialize memory backend: ${error}`);
       throw error;
@@ -628,12 +649,15 @@ export class MemoryController {
    * @param value
    * @param options
    */
-  private processValueForStorage(value: unknown, options?: MemoryRequest['options']): unknown {
+  private processValueForStorage(
+    value: unknown,
+    options?: MemoryRequest['options']
+  ): unknown {
     const processed = {
       value,
       metadata: {
         storedAt: Date.now(),
-        ttl: options?.ttl || 0,
+        ttl: options?.ttl'' | '''' | ''0,
         compressed: options?.compress,
         originalSize: 0, // Will be set below if compression is enabled
         ...options?.metadata,
@@ -655,7 +679,7 @@ export class MemoryController {
    * @param rawValue
    */
   private processValueFromStorage(rawValue: unknown): unknown {
-    if (!rawValue || typeof rawValue !== 'object') {
+    if (!rawValue'' | '''' | ''typeof rawValue !=='object') {
       return { value: rawValue, metadata: {} };
     }
 
@@ -694,8 +718,11 @@ export class MemoryController {
    * Calculate operations per second.
    */
   private calculateOperationsPerSecond(): number {
-    const uptimeSeconds = (Date.now() - this.performanceMetrics.startTime) / 1000;
-    return uptimeSeconds > 0 ? this.performanceMetrics.operationCount / uptimeSeconds : 0;
+    const uptimeSeconds =
+      (Date.now() - this.performanceMetrics.startTime) / 1000;
+    return uptimeSeconds > 0
+      ? this.performanceMetrics.operationCount / uptimeSeconds
+      : 0;
   }
 }
 

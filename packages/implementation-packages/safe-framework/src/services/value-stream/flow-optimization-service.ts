@@ -1,12 +1,12 @@
 /**
  * @fileoverview Flow Optimization Service
- * 
+ *
  * Service for AI-powered flow optimization recommendations.
  * Handles optimization strategy generation, flow analysis, and recommendation scoring.
- * 
+ *
  * SINGLE RESPONSIBILITY: AI-powered flow optimization and recommendations
  * FOCUSES ON: Optimization strategies, AI analysis, recommendation generation
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -15,17 +15,17 @@
 import { format, addDays, addWeeks, addMonths } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { 
-  groupBy, 
-  map, 
-  filter, 
-  orderBy, 
+import {
+  groupBy,
+  map,
+  filter,
+  orderBy,
   sumBy,
   maxBy,
   minBy,
   meanBy,
   uniqBy,
-  sortBy
+  sortBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
 
@@ -46,7 +46,7 @@ export interface FlowOptimizationConfig {
  * AI model configuration
  */
 export interface AIModelConfig {
-  readonly modelType: 'neural_network' | 'genetic_algorithm' | 'reinforcement_learning' | 'hybrid';
+  readonly modelType:' | ''neural_network'' | ''genetic_algorithm'' | ''reinforcement_learning'' | ''hybrid';
   readonly learningRate: number;
   readonly trainingData: TrainingDataConfig;
   readonly validationThreshold: number;
@@ -71,7 +71,7 @@ export enum AIConfidenceLevel {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  VERY_HIGH = 'very_high'
+  VERY_HIGH = 'very_high',
 }
 
 /**
@@ -82,7 +82,7 @@ export interface OptimizationScope {
   readonly excludeStages: string[];
   readonly focusAreas: FocusArea[];
   readonly optimizationHorizon: number; // days
-  readonly granularity: 'stage' | 'team' | 'individual';
+  readonly granularity: 'stage'' | ''team'' | ''individual';
 }
 
 /**
@@ -94,7 +94,7 @@ export enum FocusArea {
   QUALITY = 'quality',
   COST = 'cost',
   PREDICTABILITY = 'predictability',
-  CUSTOMER_SATISFACTION = 'customer_satisfaction'
+  CUSTOMER_SATISFACTION = 'customer_satisfaction',
 }
 
 /**
@@ -122,7 +122,7 @@ export interface BudgetConstraint {
  * Budget allocation
  */
 export interface BudgetAllocation {
-  readonly category: 'people' | 'technology' | 'process' | 'training';
+  readonly category: 'people'' | ''technology'' | ''process'' | ''training';
   readonly percentage: number;
   readonly maxAmount: number;
 }
@@ -133,7 +133,7 @@ export interface BudgetAllocation {
 export interface ROIRequirement {
   readonly minimumROI: number; // percentage
   readonly timeToROI: number; // months
-  readonly calculation: 'net_present_value' | 'internal_rate_return' | 'payback_period';
+  readonly calculation:' | ''net_present_value'' | ''internal_rate_return'' | ''payback_period';
 }
 
 /**
@@ -153,7 +153,7 @@ export enum UrgencyLevel {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -182,7 +182,7 @@ export interface ResourceConstraint {
  */
 export interface SkillConstraint {
   readonly skill: string;
-  readonly requiredLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  readonly requiredLevel: 'beginner'' | ''intermediate'' | ''advanced'' | ''expert';
   readonly availableCapacity: number; // hours
   readonly trainingOptions: TrainingOption[];
 }
@@ -242,7 +242,7 @@ export interface QualityMetric {
  * Testing requirement
  */
 export interface TestingRequirement {
-  readonly testType: 'unit' | 'integration' | 'system' | 'acceptance';
+  readonly testType: 'unit'' | ''integration'' | ''system'' | ''acceptance';
   readonly coverage: number; // percentage
   readonly automated: boolean;
   readonly duration: number; // hours
@@ -289,7 +289,7 @@ export enum ObjectivePriority {
   CRITICAL = 'critical',
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -329,14 +329,14 @@ export interface OptimizationPreferences {
 export enum RiskTolerance {
   CONSERVATIVE = 'conservative',
   MODERATE = 'moderate',
-  AGGRESSIVE = 'aggressive'
+  AGGRESSIVE = 'aggressive',
 }
 
 /**
  * Change management preference
  */
 export interface ChangeManagementPreference {
-  readonly approach: 'big_bang' | 'phased' | 'pilot' | 'gradual';
+  readonly approach: 'big_bang'' | ''phased'' | ''pilot'' | ''gradual';
   readonly stakeholderInvolvement: StakeholderInvolvement[];
   readonly communicationPlan: CommunicationPlan;
   readonly trainingRequirements: TrainingRequirement[];
@@ -348,8 +348,8 @@ export interface ChangeManagementPreference {
 export interface StakeholderInvolvement {
   readonly stakeholder: string;
   readonly role: string;
-  readonly involvement: 'inform' | 'consult' | 'involve' | 'collaborate' | 'empower';
-  readonly frequency: 'daily' | 'weekly' | 'monthly' | 'milestone';
+  readonly involvement:' | ''inform'' | ''consult'' | ''involve'' | ''collaborate'' | ''empower';
+  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''milestone';
 }
 
 /**
@@ -366,7 +366,7 @@ export interface CommunicationPlan {
  * Communication channel
  */
 export interface CommunicationChannel {
-  readonly channelType: 'email' | 'slack' | 'teams' | 'meeting' | 'dashboard';
+  readonly channelType: 'email'' | ''slack'' | ''teams'' | ''meeting'' | ''dashboard';
   readonly audience: string[];
   readonly purpose: string;
   readonly frequency: string;
@@ -376,7 +376,7 @@ export interface CommunicationChannel {
  * Feedback mechanism
  */
 export interface FeedbackMechanism {
-  readonly mechanismType: 'survey' | 'interview' | 'observation' | 'metrics';
+  readonly mechanismType: 'survey'' | ''interview'' | ''observation'' | ''metrics';
   readonly frequency: string;
   readonly participants: string[];
   readonly purpose: string;
@@ -389,8 +389,8 @@ export interface TrainingRequirement {
   readonly trainingType: string;
   readonly audience: string[];
   readonly duration: number; // hours
-  readonly delivery: 'classroom' | 'online' | 'hands_on' | 'hybrid';
-  readonly timing: 'before' | 'during' | 'after';
+  readonly delivery: 'classroom'' | ''online'' | ''hands_on'' | ''hybrid';
+  readonly timing: 'before'' | ''during'' | ''after';
 }
 
 /**
@@ -399,7 +399,7 @@ export interface TrainingRequirement {
 export enum AutomationLevel {
   MANUAL = 'manual',
   SEMI_AUTOMATED = 'semi_automated',
-  FULLY_AUTOMATED = 'fully_automated'
+  FULLY_AUTOMATED = 'fully_automated',
 }
 
 /**
@@ -407,7 +407,7 @@ export enum AutomationLevel {
  */
 export interface MonitoringRequirement {
   readonly metricName: string;
-  readonly frequency: 'real_time' | 'hourly' | 'daily' | 'weekly';
+  readonly frequency: 'real_time'' | ''hourly'' | ''daily'' | ''weekly';
   readonly alertThreshold: number;
   readonly dashboard: boolean;
   readonly reporting: ReportingRequirement;
@@ -417,9 +417,9 @@ export interface MonitoringRequirement {
  * Reporting requirement
  */
 export interface ReportingRequirement {
-  readonly frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly';
+  readonly frequency: 'daily'' | ''weekly'' | ''monthly'' | ''quarterly';
   readonly audience: string[];
-  readonly format: 'dashboard' | 'report' | 'email' | 'presentation';
+  readonly format: 'dashboard'' | ''report'' | ''email'' | ''presentation';
   readonly content: string[];
 }
 
@@ -465,7 +465,7 @@ export enum RecommendationCategory {
   AUTOMATION = 'automation',
   TOOLING = 'tooling',
   TRAINING = 'training',
-  ORGANIZATIONAL = 'organizational'
+  ORGANIZATIONAL = 'organizational',
 }
 
 /**
@@ -475,7 +475,7 @@ export enum RecommendationPriority {
   CRITICAL = 'critical',
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW = 'low',
 }
 
 /**
@@ -508,7 +508,7 @@ export enum ImplementationEffort {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  VERY_HIGH = 'very_high'
+  VERY_HIGH = 'very_high',
 }
 
 /**
@@ -548,7 +548,7 @@ export interface ImplementationMilestone {
  * Required resource
  */
 export interface RequiredResource {
-  readonly resourceType: 'people' | 'technology' | 'budget' | 'time';
+  readonly resourceType: 'people'' | ''technology'' | ''budget'' | ''time';
   readonly name: string;
   readonly quantity: number;
   readonly duration: number; // days
@@ -563,7 +563,7 @@ export enum ResourceAvailability {
   AVAILABLE = 'available',
   LIMITED = 'limited',
   UNAVAILABLE = 'unavailable',
-  REQUIRES_APPROVAL = 'requires_approval'
+  REQUIRES_APPROVAL = 'requires_approval',
 }
 
 /**
@@ -601,7 +601,7 @@ export enum RiskCategory {
   FINANCIAL = 'financial',
   SCHEDULE = 'schedule',
   QUALITY = 'quality',
-  EXTERNAL = 'external'
+  EXTERNAL = 'external',
 }
 
 /**
@@ -612,7 +612,7 @@ export enum RiskProbability {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  VERY_HIGH = 'very_high'
+  VERY_HIGH = 'very_high',
 }
 
 /**
@@ -623,7 +623,7 @@ export enum RiskImpact {
   MINOR = 'minor',
   MODERATE = 'moderate',
   MAJOR = 'major',
-  SEVERE = 'severe'
+  SEVERE = 'severe',
 }
 
 /**
@@ -644,7 +644,10 @@ export interface SuccessMetric {
  */
 export class FlowOptimizationService {
   private readonly logger: Logger;
-  private optimizationResults = new Map<string, AIOptimizationRecommendations>();
+  private optimizationResults = new Map<
+    string,
+    AIOptimizationRecommendations
+  >();
   private aiModels = new Map<string, any>();
 
   constructor(logger: Logger) {
@@ -663,7 +666,7 @@ export class FlowOptimizationService {
     this.logger.info('Generating AI optimization recommendations', {
       optimizationId: config.optimizationId,
       valueStreamId: config.valueStreamId,
-      aiModel: config.aiModel.modelType
+      aiModel: config.aiModel.modelType,
     });
 
     try {
@@ -671,7 +674,10 @@ export class FlowOptimizationService {
       const trainingData = await this.prepareTrainingData(config, flowData);
 
       // Train/update AI model
-      const aiModel = await this.trainOptimizationModel(config.aiModel, trainingData);
+      const aiModel = await this.trainOptimizationModel(
+        config.aiModel,
+        trainingData
+      );
 
       // Generate recommendations
       const recommendations = await this.generateRecommendations(
@@ -717,7 +723,7 @@ export class FlowOptimizationService {
         alternativeStrategies,
         implementationRoadmap,
         expectedOutcomes,
-        riskAssessment
+        riskAssessment,
       };
 
       this.optimizationResults.set(config.optimizationId, result);
@@ -726,15 +732,14 @@ export class FlowOptimizationService {
         optimizationId: config.optimizationId,
         recommendationCount: recommendations.length,
         confidence: Math.round(result.confidence),
-        topRecommendation: recommendations[0]?.title
+        topRecommendation: recommendations[0]?.title,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Failed to generate AI optimization recommendations', {
         optimizationId: config.optimizationId,
-        error
+        error,
       });
       throw error;
     }
@@ -743,7 +748,9 @@ export class FlowOptimizationService {
   /**
    * Get optimization recommendations
    */
-  getOptimizationRecommendations(optimizationId: string): AIOptimizationRecommendations | undefined {
+  getOptimizationRecommendations(
+    optimizationId: string
+  ): AIOptimizationRecommendations | undefined {
     return this.optimizationResults.get(optimizationId);
   }
 
@@ -755,14 +762,14 @@ export class FlowOptimizationService {
     config: FlowOptimizationConfig
   ): number {
     let score = 0;
-    
+
     // Impact scoring (40% weight)
-    const impactScore = (
-      recommendation.expectedImpact.cycleTimeReduction +
-      recommendation.expectedImpact.throughputIncrease +
-      recommendation.expectedImpact.qualityImprovement +
-      recommendation.expectedImpact.costReduction
-    ) / 4;
+    const impactScore =
+      (recommendation.expectedImpact.cycleTimeReduction +
+        recommendation.expectedImpact.throughputIncrease +
+        recommendation.expectedImpact.qualityImprovement +
+        recommendation.expectedImpact.costReduction) /
+      4;
     score += impactScore * 0.4;
 
     // Priority scoring (30% weight)
@@ -770,7 +777,9 @@ export class FlowOptimizationService {
     score += priorityScore * 0.3;
 
     // Implementation effort scoring (20% weight, inverse)
-    const effortScore = this.mapEffortToScore(recommendation.implementation.effort);
+    const effortScore = this.mapEffortToScore(
+      recommendation.implementation.effort
+    );
     score += (100 - effortScore) * 0.2;
 
     // Risk scoring (10% weight, inverse)
@@ -789,39 +798,49 @@ export class FlowOptimizationService {
       type: 'neural_network',
       accuracy: 0.85,
       trainingTime: 'medium',
-      predictive: true
+      predictive: true,
     });
 
     this.aiModels.set('genetic_algorithm', {
       type: 'genetic_algorithm',
       accuracy: 0.78,
       trainingTime: 'high',
-      optimization: true
+      optimization: true,
     });
 
     this.aiModels.set('reinforcement_learning', {
       type: 'reinforcement_learning',
       accuracy: 0.82,
       trainingTime: 'high',
-      adaptive: true
+      adaptive: true,
     });
   }
 
-  private async prepareTrainingData(config: FlowOptimizationConfig, flowData: any): Promise<any> {
+  private async prepareTrainingData(
+    config: FlowOptimizationConfig,
+    flowData: any
+  ): Promise<any> {
     // Prepare historical data for AI training
     const historicalData = {
       timeWindow: config.aiModel.trainingData.historicalDataMonths,
       flowMetrics: flowData.metrics || [],
       bottlenecks: flowData.bottlenecks || [],
       improvements: flowData.improvements || [],
-      seasonality: config.aiModel.trainingData.includeSeasonality ? flowData.seasonality : null,
-      externalFactors: config.aiModel.trainingData.includeExternalFactors ? flowData.externalFactors : null
+      seasonality: config.aiModel.trainingData.includeSeasonality
+        ? flowData.seasonality
+        : null,
+      externalFactors: config.aiModel.trainingData.includeExternalFactors
+        ? flowData.externalFactors
+        : null,
     };
 
     return historicalData;
   }
 
-  private async trainOptimizationModel(aiConfig: AIModelConfig, trainingData: any): Promise<any> {
+  private async trainOptimizationModel(
+    aiConfig: AIModelConfig,
+    trainingData: any
+  ): Promise<any> {
     const model = this.aiModels.get(aiConfig.modelType);
     if (!model) {
       throw new Error(`Unknown AI model type: ${aiConfig.modelType}`);
@@ -834,7 +853,7 @@ export class FlowOptimizationService {
       trainingData: trainingData,
       accuracy: model.accuracy * (0.9 + Math.random() * 0.1), // Slight variance
       confidence: aiConfig.confidence,
-      learningRate: aiConfig.learningRate
+      learningRate: aiConfig.learningRate,
     };
 
     return trainedModel;
@@ -852,8 +871,9 @@ export class FlowOptimizationService {
     if (config.optimizationScope.focusAreas.includes(FocusArea.CYCLE_TIME)) {
       recommendations.push({
         recommendationId: `rec-${nanoid(8)}`,
-        title: 'Optimize stage handoffs',
-        description: 'Reduce wait time between stages through automated notifications and parallel processing',
+        title:'Optimize stage handoffs',
+        description:
+          'Reduce wait time between stages through automated notifications and parallel processing',
         category: RecommendationCategory.PROCESS_OPTIMIZATION,
         priority: RecommendationPriority.HIGH,
         stage: 'cross-stage',
@@ -863,7 +883,7 @@ export class FlowOptimizationService {
           qualityImprovement: 5,
           costReduction: 10,
           timeToRealize: 30,
-          confidence: 85
+          confidence: 85,
         },
         implementation: {
           effort: ImplementationEffort.MEDIUM,
@@ -876,11 +896,11 @@ export class FlowOptimizationService {
                 duration: 15,
                 objectives: ['Analyze current handoffs', 'Design optimization'],
                 deliverables: ['Analysis report', 'Design document'],
-                resources: ['Business Analyst', 'Process Designer']
-              }
+                resources: ['Business Analyst', 'Process Designer'],
+              },
             ],
             milestones: [],
-            criticalPath: ['Analysis', 'Design', 'Implementation']
+            criticalPath: ['Analysis', 'Design', 'Implementation'],
           },
           resources: [
             {
@@ -889,11 +909,11 @@ export class FlowOptimizationService {
               quantity: 3,
               duration: 45,
               cost: 15000,
-              availability: ResourceAvailability.AVAILABLE
-            }
+              availability: ResourceAvailability.AVAILABLE,
+            },
           ],
           prerequisites: ['Stakeholder approval', 'Resource allocation'],
-          steps: []
+          steps: [],
         },
         risks: [
           {
@@ -903,8 +923,8 @@ export class FlowOptimizationService {
             probability: RiskProbability.MEDIUM,
             impact: RiskImpact.MODERATE,
             mitigation: ['Change management', 'Training', 'Communication'],
-            owner: 'Change Manager'
-          }
+            owner: 'Change Manager',
+          },
         ],
         dependencies: ['Management approval', 'Team availability'],
         successMetrics: [
@@ -915,9 +935,9 @@ export class FlowOptimizationService {
             target: 25,
             current: 0,
             measurement: 'percentage',
-            frequency: 'weekly'
-          }
-        ]
+            frequency: 'weekly',
+          },
+        ],
       });
     }
 
@@ -926,7 +946,8 @@ export class FlowOptimizationService {
       recommendations.push({
         recommendationId: `rec-${nanoid(8)}`,
         title: 'Dynamic resource allocation',
-        description: 'Implement intelligent resource allocation based on real-time demand',
+        description:
+          'Implement intelligent resource allocation based on real-time demand',
         category: RecommendationCategory.RESOURCE_ALLOCATION,
         priority: RecommendationPriority.HIGH,
         stage: 'all-stages',
@@ -936,7 +957,7 @@ export class FlowOptimizationService {
           qualityImprovement: 10,
           costReduction: 5,
           timeToRealize: 60,
-          confidence: 78
+          confidence: 78,
         },
         implementation: {
           effort: ImplementationEffort.HIGH,
@@ -944,21 +965,21 @@ export class FlowOptimizationService {
             estimatedDuration: 90,
             phases: [],
             milestones: [],
-            criticalPath: []
+            criticalPath: [],
           },
           resources: [],
           prerequisites: [],
-          steps: []
+          steps: [],
         },
         risks: [],
         dependencies: [],
-        successMetrics: []
+        successMetrics: [],
       });
     }
 
     return orderBy(
       recommendations,
-      [rec => this.scoreRecommendation(rec, config)],
+      [(rec) => this.scoreRecommendation(rec, config)],
       ['desc']
     );
   }
@@ -976,8 +997,8 @@ export class FlowOptimizationService {
         riskProfile: 'low',
         timeline: 120,
         expectedROI: 150,
-        recommendations: recommendations.slice(0, 3)
-      }
+        recommendations: recommendations.slice(0, 3),
+      },
     ];
   }
 
@@ -993,12 +1014,14 @@ export class FlowOptimizationService {
           phaseId: `phase-${nanoid(6)}`,
           name: 'Quick Wins',
           duration: 30,
-          recommendations: recommendations.filter(r => r.implementation.effort === ImplementationEffort.LOW)
-        }
+          recommendations: recommendations.filter(
+            (r) => r.implementation.effort === ImplementationEffort.LOW
+          ),
+        },
       ],
       dependencies: [],
       criticalPath: [],
-      riskMitigation: []
+      riskMitigation: [],
     };
   }
 
@@ -1021,10 +1044,10 @@ export class FlowOptimizationService {
             currentValue: 240,
             predictedValue: 180,
             improvement: 25,
-            confidence: 0.8
-          }
-        ]
-      }
+            confidence: 0.8,
+          },
+        ],
+      },
     ];
   }
 
@@ -1032,8 +1055,8 @@ export class FlowOptimizationService {
     recommendations: FlowOptimizationRecommendation[],
     config: FlowOptimizationConfig
   ): Promise<RiskAssessment> {
-    const allRisks = recommendations.flatMap(r => r.risks);
-    
+    const allRisks = recommendations.flatMap((r) => r.risks);
+
     return {
       assessmentId: `risk-assessment-${nanoid(8)}`,
       overallRisk: 'medium',
@@ -1043,43 +1066,55 @@ export class FlowOptimizationService {
         planId: `mitigation-${nanoid(8)}`,
         actions: ['Regular monitoring', 'Stakeholder engagement'],
         timeline: 30,
-        owner: 'Risk Manager'
-      }
+        owner: 'Risk Manager',
+      },
     };
   }
 
-  private calculateOverallConfidence(recommendations: FlowOptimizationRecommendation[]): number {
+  private calculateOverallConfidence(
+    recommendations: FlowOptimizationRecommendation[]
+  ): number {
     if (recommendations.length === 0) return 0;
-    return meanBy(recommendations, r => r.expectedImpact.confidence);
+    return meanBy(recommendations, (r) => r.expectedImpact.confidence);
   }
 
   private mapPriorityToScore(priority: RecommendationPriority): number {
     switch (priority) {
-      case RecommendationPriority.CRITICAL: return 100;
-      case RecommendationPriority.HIGH: return 80;
-      case RecommendationPriority.MEDIUM: return 60;
-      case RecommendationPriority.LOW: return 40;
-      default: return 50;
+      case RecommendationPriority.CRITICAL:
+        return 100;
+      case RecommendationPriority.HIGH:
+        return 80;
+      case RecommendationPriority.MEDIUM:
+        return 60;
+      case RecommendationPriority.LOW:
+        return 40;
+      default:
+        return 50;
     }
   }
 
   private mapEffortToScore(effort: ImplementationEffort): number {
     switch (effort) {
-      case ImplementationEffort.LOW: return 20;
-      case ImplementationEffort.MEDIUM: return 50;
-      case ImplementationEffort.HIGH: return 80;
-      case ImplementationEffort.VERY_HIGH: return 100;
-      default: return 50;
+      case ImplementationEffort.LOW:
+        return 20;
+      case ImplementationEffort.MEDIUM:
+        return 50;
+      case ImplementationEffort.HIGH:
+        return 80;
+      case ImplementationEffort.VERY_HIGH:
+        return 100;
+      default:
+        return 50;
     }
   }
 
   private calculateRiskScore(risks: Risk[]): number {
     if (risks.length === 0) return 0;
-    
-    const totalRiskScore = sumBy(risks, risk => {
+
+    const totalRiskScore = sumBy(risks, (risk) => {
       const probScore = this.mapProbabilityToScore(risk.probability);
       const impactScore = this.mapImpactToScore(risk.impact);
-      return probScore * impactScore / 100;
+      return (probScore * impactScore) / 100;
     });
 
     return Math.min(100, totalRiskScore / risks.length);
@@ -1087,23 +1122,35 @@ export class FlowOptimizationService {
 
   private mapProbabilityToScore(probability: RiskProbability): number {
     switch (probability) {
-      case RiskProbability.VERY_LOW: return 10;
-      case RiskProbability.LOW: return 30;
-      case RiskProbability.MEDIUM: return 50;
-      case RiskProbability.HIGH: return 70;
-      case RiskProbability.VERY_HIGH: return 90;
-      default: return 50;
+      case RiskProbability.VERY_LOW:
+        return 10;
+      case RiskProbability.LOW:
+        return 30;
+      case RiskProbability.MEDIUM:
+        return 50;
+      case RiskProbability.HIGH:
+        return 70;
+      case RiskProbability.VERY_HIGH:
+        return 90;
+      default:
+        return 50;
     }
   }
 
   private mapImpactToScore(impact: RiskImpact): number {
     switch (impact) {
-      case RiskImpact.NEGLIGIBLE: return 10;
-      case RiskImpact.MINOR: return 30;
-      case RiskImpact.MODERATE: return 50;
-      case RiskImpact.MAJOR: return 70;
-      case RiskImpact.SEVERE: return 90;
-      default: return 50;
+      case RiskImpact.NEGLIGIBLE:
+        return 10;
+      case RiskImpact.MINOR:
+        return 30;
+      case RiskImpact.MODERATE:
+        return 50;
+      case RiskImpact.MAJOR:
+        return 70;
+      case RiskImpact.SEVERE:
+        return 90;
+      default:
+        return 50;
     }
   }
 }
@@ -1113,7 +1160,7 @@ interface OptimizationStrategy {
   readonly strategyId: string;
   readonly name: string;
   readonly description: string;
-  readonly riskProfile: 'low' | 'medium' | 'high';
+  readonly riskProfile: 'low'' | ''medium'' | ''high';
   readonly timeline: number; // days
   readonly expectedROI: number; // percentage
   readonly recommendations: FlowOptimizationRecommendation[];
@@ -1140,7 +1187,7 @@ interface ExpectedOutcome {
   readonly description: string;
   readonly category: string;
   readonly probability: number; // 0-1
-  readonly impact: 'low' | 'medium' | 'high';
+  readonly impact: 'low'' | ''medium'' | ''high';
   readonly timeframe: number; // days
   readonly metrics: PredictedMetric[];
 }
@@ -1155,7 +1202,7 @@ interface PredictedMetric {
 
 interface RiskAssessment {
   readonly assessmentId: string;
-  readonly overallRisk: 'low' | 'medium' | 'high';
+  readonly overallRisk: 'low'' | ''medium'' | ''high';
   readonly riskScore: number; // 0-100
   readonly topRisks: Risk[];
   readonly mitigationPlan: MitigationPlan;

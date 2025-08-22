@@ -1,9 +1,9 @@
 /**
  * @fileoverview Seeded Random Number Generator - Production Grade
- * 
+ *
  * Provides reproducible random number generation for DSPy teleprompters.
  * Essential for maintaining consistency in ML experiments and teleprompter optimization.
- * 
+ *
  * @version 1.0.0
  * @author Claude Code Zen Team
  */
@@ -53,12 +53,12 @@ export class SeededRNG {
    */
   choice<T>(array: T[]): T {
     if (array.length === 0) {
-      throw new Error("Cannot choose from empty array");
+      throw new Error('Cannot choose from empty array');
     }
     const index = Math.floor(this.random() * array.length);
     const item = array[index];
     if (item === undefined) {
-      throw new Error("Array access returned undefined");
+      throw new Error('Array access returned undefined');
     }
     return item;
   }
@@ -68,9 +68,9 @@ export class SeededRNG {
    */
   sample<T>(array: T[], k: number): T[] {
     if (k > array.length) {
-      throw new Error("Sample size cannot be larger than array length");
+      throw new Error('Sample size cannot be larger than array length');
     }
-    
+
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(this.random() * (i + 1));
@@ -81,7 +81,7 @@ export class SeededRNG {
         shuffled[j] = temp;
       }
     }
-    
+
     return shuffled.slice(0, k);
   }
 

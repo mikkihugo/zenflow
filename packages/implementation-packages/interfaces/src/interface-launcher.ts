@@ -11,11 +11,11 @@
 import { TypedEventBase } from '@claude-zen/foundation';
 
 // Removed broken import - using simple URL construction
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 // WebConfig interface - using fallback type if infrastructure facade not available
 interface WebConfig {
   port: number;
-  theme?: 'dark' | 'light';
+  theme?: 'dark''' | '''light';
   realTime?: boolean;
   coreSystem?: Record<string, unknown>;
 }
@@ -32,7 +32,7 @@ export interface LaunchOptions extends ModeDetectionOptions {
   verbose?: boolean;
   silent?: boolean;
   config?: {
-    theme?: 'dark' | 'light';
+    theme?: 'dark''' | '''light';
     realTime?: boolean;
     coreSystem?: Record<string, unknown>; // Reference to ApplicationCoordinator
   };
@@ -50,15 +50,13 @@ export interface LaunchResult {
 
 export class InterfaceLauncher extends TypedEventBase {
   private static instance: InterfaceLauncher;
-  private activeInterface?:
-    | {
+  private activeInterface?:'' | ''{
         mode: InterfaceMode;
         process?: NodeJS.Process;
         server?: Record<string, unknown>;
         url?: string;
         pid?: number;
-      }
-    | undefined;
+      }'' | ''undefined;
 
   private constructor() {
     super();
@@ -266,19 +264,17 @@ export class InterfaceLauncher extends TypedEventBase {
     options: LaunchOptions,
     port?: number
   ): Promise<LaunchResult> {
-    const webPort = port || options?.['webPort'] || 3456;
+    const webPort = port'' | '''' | ''options?.['webPort']'' | '''' | ''3456;
 
     logger.debug(`Launching Web interface on port ${webPort}`);
 
     try {
       // Dynamic import of Web interface
-      const { WebInterface } = await import(
-        './interfaces/web/web-interface'
-      );
+      const { WebInterface } = await import('./interfaces/web/web-interface');
 
       const webConfig: WebConfig = {
         port: webPort,
-        theme: options?.['config']?.theme || 'dark',
+        theme: options?.['config']?.theme'' | '''' | '''dark',
         realTime: options?.['config']?.realTime !== false,
         coreSystem: options?.['config']?.coreSystem,
       };

@@ -23,14 +23,14 @@
 import { TypedEventBase } from '@claude-zen/foundation';
 
 const { getConfig } = (global as any).claudeZenFoundation;
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('InterfaceManager');
 
 /**
  * Interface mode types.
  */
-export type InterfaceMode = 'auto' | 'cli' | 'tui' | 'web';
+export type InterfaceMode = 'auto | cli' | 'tui''' | '''web';
 
 /**
  * Interface manager configuration.
@@ -43,7 +43,7 @@ export interface InterfaceManagerConfig {
   /** Web interface port */
   webPort?: number;
   /** TUI theme */
-  theme?: 'dark' | 'light';
+  theme?: 'dark''' | '''light';
   /** Enable real-time updates */
   enableRealTime?: boolean;
   /** Reference to core system */
@@ -80,14 +80,14 @@ export class InterfaceManager extends TypedEventBase {
     // Use centralized configuration with user overrides
     const centralConfig = this.getCentralConfig();
     this.config = {
-      defaultMode: userConfig?.defaultMode || 'auto',
-      webPort: userConfig?.webPort || centralConfig?.interfaces?.web?.port,
+      defaultMode: userConfig?.defaultMode'' | '''' | '''auto',
+      webPort: userConfig?.webPort'' | '''' | ''centralConfig?.interfaces?.web?.port,
       theme:
-        userConfig?.theme ||
-        (centralConfig?.interfaces?.shared?.theme as 'dark' | 'light'),
+        userConfig?.theme'' | '''' | ''(centralConfig?.interfaces?.shared?.theme as'dark''' | '''light'),
       enableRealTime:
         userConfig?.enableRealTime ??
-        (centralConfig?.interfaces?.shared as any)?.realTimeUpdates ?? true,
+        (centralConfig?.interfaces?.shared as any)?.realTimeUpdates ??
+        true,
       coreSystem: userConfig?.coreSystem,
     };
   }
@@ -98,7 +98,10 @@ export class InterfaceManager extends TypedEventBase {
     logger.info('Initializing interface manager');
 
     // Detect appropriate interface mode if auto
-    this.currentMode = this.configuration.defaultMode === 'auto' ? this.detectInterfaceMode() : this.configuration.defaultMode;
+    this.currentMode =
+      this.configuration.defaultMode === 'auto'
+        ? this.detectInterfaceMode()
+        : this.configuration.defaultMode;
 
     this.initialized = true;
     this.emit('initialized', {});
@@ -158,14 +161,14 @@ export class InterfaceManager extends TypedEventBase {
     return {
       interfaces: {
         web: { port: 3000 },
-        shared: { theme: 'dark' as const }
+        shared: { theme: 'dark' as const },
       },
       environment: {
         isCI: process.env.CI === 'true',
         enableRealTime: true,
         enableNotifications: true,
-        logLevel: 'info' as const
-      }
+        logLevel: 'info'as const,
+      },
     };
   }
 
@@ -175,8 +178,8 @@ export class InterfaceManager extends TypedEventBase {
     const environment = centralConfig?.environment;
 
     // CI environment detection
-    if (environment.isCI || !process.stdout.isTTY) {
-      return 'cli';
+    if (environment.isCI'' | '''' | ''!process.stdout.isTTY) {
+      return'cli';
     }
 
     // Check if we're in a terminal that supports TUI

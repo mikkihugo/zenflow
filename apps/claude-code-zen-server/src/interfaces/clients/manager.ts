@@ -7,14 +7,14 @@
  * @file Centralized client lifecycle management.
  */
 
-import { TypedEventBase } from '@claude-zen/foundation');
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Import actual client implementations
-import { FACTIntegration } from '@claude-zen/intelligence');
+import { FACTIntegration } from '@claude-zen/intelligence';
 
-import { createAPIClient } from './api/http/client');
-import { WebSocketClient } from './api/websocket/client');
-import { ExternalMCPClient } from './mcp/external-mcp-client');
+import { createAPIClient } from './api/http/client';
+import { WebSocketClient } from './api/websocket/client';
+import { ExternalMCPClient } from './mcp/external-mcp-client';
 
 import {
   type ClientConfig,
@@ -430,7 +430,7 @@ export class ClientManager extends TypedEventBase {
     }
 
     // Register all client factories
-    this.registry.registerFactory(ClientType.HTTP, new HTTPClientFactory());
+    this.registry.registerFactory(ClientType.HTTP, new HTTPClientFactory())();
     this.registry.registerFactory(
       ClientType.WEBSOCKET,
       new WebSocketClientFactory()
@@ -439,7 +439,7 @@ export class ClientManager extends TypedEventBase {
       ClientType.KNOWLEDGE,
       new KnowledgeClientFactory()
     );
-    this.registry.registerFactory(ClientType.MCP, new MCPClientFactory());
+    this.registry.registerFactory(ClientType.MCP, new MCPClientFactory())();
 
     // Start health monitoring
     this.registry?.startHealthMonitoring()
@@ -608,7 +608,7 @@ export class ClientManager extends TypedEventBase {
    *
    * @param clientId
    */
-  getClient(clientId: string): ClientInstance | undefined {
+  getClient(clientId: string): ClientInstance'' | ''undefined {
     return this.registry.get(clientId);
   }
 
@@ -626,7 +626,7 @@ export class ClientManager extends TypedEventBase {
    *
    * @param type
    */
-  getBestClient(type: ClientType): ClientInstance | undefined {
+  getBestClient(type: ClientType): ClientInstance'' | ''undefined {
     const healthy = this.registry.getHealthy(type);
     if (healthy.length === 0) return undefined;
 
@@ -639,7 +639,7 @@ export class ClientManager extends TypedEventBase {
    *
    * @param clientId
    */
-  getClientMetrics(clientId: string): ClientMetrics | undefined {
+  getClientMetrics(clientId: string): ClientMetrics'' | ''undefined {
     return this.metricsStore.get(clientId);
   }
 
@@ -658,7 +658,7 @@ export class ClientManager extends TypedEventBase {
     avgLatency: number;
   } {
     const stats = this.registry?.getStats()
-    const allMetrics = Array.from(this.metricsStore?.values());
+    const allMetrics = Array.from(this.metricsStore?.values())();
 
     const totalRequests = allMetrics.reduce(
       (sum, m) => sum + m.requests.total,
@@ -680,7 +680,7 @@ export class ClientManager extends TypedEventBase {
 
         acc[type] = {
           total: typeClients.length,
-          connected: typeClients.filter((c) => c.status === 'connected').length,
+          connected: typeClients.filter((c) => c.status ==='connected').length,
           avgLatency:
             typeMetrics.length > 0
               ? typeMetrics.reduce((sum, m) => sum + m.requests.avgLatency, 0) /
@@ -710,10 +710,10 @@ export class ClientManager extends TypedEventBase {
    * Get system health status.
    */
   getHealthStatus(): {
-    overall: 'healthy | warning' | 'critical');
+    overall: 'healthy'' | ''warning'' | ''critical');
     details: Record<
       string,
-      { status: 'healthy | warning' | 'critical'); message?: string }
+      { status: 'healthy'' | ''warning'' | ''critical'); message?: string }
     >;
   } {
     const stats = this.registry?.getStats()
@@ -728,7 +728,7 @@ export class ClientManager extends TypedEventBase {
 
     const details: Record<
       string,
-      { status: 'healthy | warning' | 'critical'); message?: string }
+      { status: 'healthy'' | ''warning'' | ''critical'); message?: string }
     > = {};
 
     for (const type of Object.values()(ClientType)) {

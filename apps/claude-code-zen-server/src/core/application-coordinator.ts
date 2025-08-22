@@ -15,23 +15,23 @@
  * @file Application coordination system.
  */
 
-import { DocumentDrivenSystem } from '@claude-zen/document-processing');
-import { DocumentationLinker } from '@claude-zen/documentation');
-import { WorkflowEngine } from '@claude-zen/enterprise');
-import { ExportSystem as ExportManager } from '@claude-zen/exporters');
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
-import { BrainCoordinator, MemoryManager } from '@claude-zen/intelligence');
-import { InterfaceLauncher } from '@claude-zen/interfaces');
+import { DocumentDrivenSystem } from '@claude-zen/document-processing';
+import { DocumentationLinker } from '@claude-zen/documentation';
+import { WorkflowEngine } from '@claude-zen/enterprise';
+import { ExportSystem as ExportManager } from '@claude-zen/exporters';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { BrainCoordinator, MemoryManager } from '@claude-zen/intelligence';
+import { InterfaceLauncher } from '@claude-zen/interfaces';
 
 const logger = getLogger('ApplicationCoordinator');
 
 export interface ApplicationCoordinatorConfig {
   // Interface configuration
   interface?: {
-    defaultMode?: 'auto | cli' | ' | web');
+    defaultMode?: 'auto'' | ''cli'' | '''' | ''web');
     webPort?: number;
     enableRealTime?: boolean;
-    theme?: 'dark | light');
+    theme?: 'dark'' | ''light');
   };
 
   // Memory configuration
@@ -72,7 +72,7 @@ export interface ApplicationCoordinatorConfig {
 }
 
 export interface SystemStatus {
-  status: 'initializing | ready' | 'error | shutdown');
+  status: 'initializing'' | ''ready'' | ''error'' | ''shutdown');
   version: string;
   components: {
     interface: { status: string; mode?: string; url?: string };
@@ -127,13 +127,13 @@ export class ApplicationCoordinator extends TypedEventBase {
     // Memory system (existing)
     this.memorySystem = new BrainCoordinator({
       backend: 'json', // Default to JSON backend
-      path: this.configuration.memory?.directory || "./data/memory",
+      path: this.configuration.memory?.directory'' | '''' | ''"./data/memory",
     });
 
     this.memoryManager = new MemoryManager({
       backendConfig: {
-        type: 'json',
-        path: this.configuration.memory?.directory || "./data/memory",
+        type:'json',
+        path: this.configuration.memory?.directory'' | '''' | ''"./data/memory",
       },
       enableCache: this.configuration.memory?.enableCache !== false,
       enableVectorStorage:
@@ -143,14 +143,14 @@ export class ApplicationCoordinator extends TypedEventBase {
     // Workflow engine
     this.workflowEngine = new WorkflowEngine(this.memorySystem, {
       maxConcurrentWorkflows:
-        this.configuration.workflow?.maxConcurrentWorkflows || 10,
+        this.configuration.workflow?.maxConcurrentWorkflows'' | '''' | ''10,
       workspaceRoot: "./",
       templatesPath: "./templates",
       outputPath: "./output",
       defaultTimeout: 300000,
       enableMetrics: true,
       enablePersistence: true,
-      storageBackend: { type: 'database', config: {} },
+      storageBackend: { type:'database', config: {} },
     });
 
     // Export system
@@ -367,15 +367,15 @@ export class ApplicationCoordinator extends TypedEventBase {
         },
         memory: {
           status: 'ready',
-          sessions: memoryStats.namespaces || 0,
+          sessions: memoryStats.namespaces'' | '''' | ''0,
           size: memoryStats.size,
         },
         workflow: {
-          status: 'ready',
-          activeWorkflows: workflowMetrics.running || 0,
+          status:'ready',
+          activeWorkflows: workflowMetrics.running'' | '''' | ''0,
         },
         export: {
-          status: 'ready',
+          status:'ready',
           availableFormats: this.exportSystem?.getAvailableFormats.length,
         },
         documentation: {
@@ -413,7 +413,7 @@ export class ApplicationCoordinator extends TypedEventBase {
 
       // Process through document system
       await this.documentSystem.processVisionaryDocument(
-        this.activeWorkspaceId || 'default',
+        this.activeWorkspaceId'' | '''' | '''default',
         documentPath
       );
 
@@ -569,7 +569,7 @@ export class ApplicationCoordinator extends TypedEventBase {
   /**
    * Utility methods.
    */
-  private detectWorkspaceRoot(): string | null {
+  private detectWorkspaceRoot(): string'' | ''null {
     // Simple workspace detection logic
     const candidates = ["./docs", "./adrs", "./prds", "."];
 

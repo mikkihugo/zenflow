@@ -5,15 +5,15 @@
  *
  * Flow:
  * 1. DatabaseDrivenSystem generates Features/Capabilities
- * 2. DatabaseSPARCBridge receives assignments  
+ * 2. DatabaseSPARCBridge receives assignments
  * 3. Safe6DevelopmentManager processes using SAFe 6.0 + SPARC methodology
  * 4. Results are stored back in database with flow metrics
- * 
+ *
  * Uses Strategic Facades for:
  * - @claude-zen/enterprise (SAFe framework access)
  * - @claude-zen/infrastructure (database access)
  * - @claude-zen/development (SPARC access)
- * 
+ *
  * @package @claude-zen/safe-framework
  * @version 6.0.0 - SAFe 6.0 Flow-Based Implementation
  * @author Claude Code Zen Team
@@ -21,8 +21,11 @@
 
 import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 import { getSafeFramework } from '@claude-zen/enterprise';
-import { getDatabaseSystem } from '@claude-zen/infrastructure'; 
-import { getSafe6DevelopmentManager, createSafe6SolutionTrainManager } from '@claude-zen/development';
+import { getDatabaseSystem } from '@claude-zen/infrastructure';
+import {
+  getSafe6DevelopmentManager,
+  createSafe6SolutionTrainManager,
+} from '@claude-zen/development';
 
 // TODO: Import proper types when available
 interface FeatureDocumentEntity {
@@ -73,17 +76,17 @@ interface SPARCTask {
   type: string;
   phase: string;
   data: any;
-  status?: 'completed' | 'failed';
+  status?: 'completed''' | '''failed';
   sourceDocument?: any;
   phaseProgress?: any;
 }
 
 export interface WorkAssignment {
   id: string;
-  type: 'feature' | 'task';
-  document: FeatureDocumentEntity | TaskDocumentEntity;
-  assignedTo: 'sparc-swarm';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  type: 'feature''' | '''task';
+  document: FeatureDocumentEntity'' | ''TaskDocumentEntity;
+  assignedTo:'sparc-swarm';
+  priority: 'low | medium' | 'high''' | '''critical';
   deadline?: Date;
   requirements: string[];
   context: {
@@ -96,7 +99,7 @@ export interface WorkAssignment {
 export interface ImplementationResult {
   workAssignmentId: string;
   sparcTaskId: string;
-  status: 'completed' | 'failed' | 'partial';
+  status: 'completed | failed' | 'partial';
   artifacts: {
     specification: string[];
     pseudocode: string[];
@@ -139,12 +142,17 @@ export class DatabaseSPARCBridge extends TypedEventBase {
     this.sparcSwarm = sparcSwarm;
 
     // Use provided logger or create a simple console logger
-    this.logger = logger || {
-      info: (msg: string, ...args: any[]) => console.log(`[DatabaseSPARCBridge] ${msg}`, ...args),
-      warn: (msg: string, ...args: any[]) => console.warn(`[DatabaseSPARCBridge] ${msg}`, ...args),
-      error: (msg: string, ...args: any[]) => console.error(`[DatabaseSPARCBridge] ${msg}`, ...args),
-      debug: (msg: string, ...args: any[]) => console.debug(`[DatabaseSPARCBridge] ${msg}`, ...args)
-    } as Logger;
+    this.logger =
+      logger'' | '''' | ''({
+        info: (msg: string, ...args: any[]) =>
+          console.log(`[DatabaseSPARCBridge] ${msg}`, ...args),
+        warn: (msg: string, ...args: any[]) =>
+          console.warn(`[DatabaseSPARCBridge] ${msg}`, ...args),
+        error: (msg: string, ...args: any[]) =>
+          console.error(`[DatabaseSPARCBridge] ${msg}`, ...args),
+        debug: (msg: string, ...args: any[]) =>
+          console.debug(`[DatabaseSPARCBridge] ${msg}`, ...args),
+      } as Logger);
 
     this.setupEventHandlers();
   }
@@ -180,14 +188,14 @@ export class DatabaseSPARCBridge extends TypedEventBase {
       type: 'feature',
       document: feature,
       assignedTo: 'sparc-swarm',
-      priority: this.mapPriority(feature.priority || 'medium'),
-      requirements: feature.acceptance_criteria || [],
+      priority: this.mapPriority(feature.priority'' | '''' | '''medium'),
+      requirements: feature.acceptance_criteria'' | '''' | ''[],
       context: {
         projectId: feature.project_id ?? this.generateId(),
         ...(feature.parent_document_id !== undefined && {
           parentDocumentId: feature.parent_document_id,
         }),
-        relatedDocuments: feature.related_documents || [],
+        relatedDocuments: feature.related_documents'' | '''' | ''[],
       },
     };
 
@@ -213,14 +221,14 @@ export class DatabaseSPARCBridge extends TypedEventBase {
       type: 'task',
       document: task,
       assignedTo: 'sparc-swarm',
-      priority: this.mapPriority(task.priority || 'medium'),
-      requirements: task.implementation_details?.files_to_create || [],
+      priority: this.mapPriority(task.priority'' | '''' | '''medium'),
+      requirements: task.implementation_details?.files_to_create'' | '''' | ''[],
       context: {
         projectId: task.project_id ?? this.generateId(),
         ...(task.parent_document_id !== undefined && {
           parentDocumentId: task.parent_document_id,
         }),
-        relatedDocuments: task.related_documents || [],
+        relatedDocuments: task.related_documents'' | '''' | ''[],
       },
     };
 
@@ -246,8 +254,8 @@ export class DatabaseSPARCBridge extends TypedEventBase {
       successRate: number;
     };
   }> {
-    const activeAssignments = Array.from(this.activeAssignments.values());
-    const completedWork = Array.from(this.completedWork.values());
+    const activeAssignments = Array.from(this.activeAssignments.values())();
+    const completedWork = Array.from(this.completedWork.values())();
 
     const successfulCompletions = completedWork.filter(
       (work) => work.status === 'completed'
@@ -367,22 +375,23 @@ export class DatabaseSPARCBridge extends TypedEventBase {
   private extractArtifacts(
     sparcTask: SPARCTask
   ): ImplementationResult['artifacts'] {
-    const phases = Object.values(sparcTask.phaseProgress || {});
+    const phases = Object.values(sparcTask.phaseProgress'' | '''' | ''{});
     return {
       specification:
-        phases.find((p: any) => p.phase === 'specification')?.artifacts || [],
-      pseudocode: phases.find((p: any) => p.phase === 'pseudocode')?.artifacts || [],
+        phases.find((p: any) => p.phase ==='specification')?.artifacts'' | '''' | ''[],
+      pseudocode:
+        phases.find((p: any) => p.phase ==='pseudocode')?.artifacts'' | '''' | ''[],
       architecture:
-        phases.find((p: any) => p.phase === 'architecture')?.artifacts || [],
+        phases.find((p: any) => p.phase ==='architecture')?.artifacts'' | '''' | ''[],
       implementation:
-        phases.find((p: any) => p.phase === 'completion')?.artifacts || [],
+        phases.find((p: any) => p.phase ==='completion')?.artifacts'' | '''' | ''[],
       tests:
         phases
-          .find((p: any) => p.phase === 'completion')
-          ?.artifacts?.filter((a: string) => a.includes('test')) || [],
+          .find((p: any) => p.phase ==='completion')
+          ?.artifacts?.filter((a: string) => a.includes('test'))'' | '''' | ''[],
       documentation: [
-        ...(phases.find((p: any) => p.phase === 'specification')?.artifacts || []),
-        ...(phases.find((p: any) => p.phase === 'architecture')?.artifacts || []),
+        ...(phases.find((p: any) => p.phase ==='specification')?.artifacts'' | '''' | ''[]),
+        ...(phases.find((p: any) => p.phase ==='architecture')?.artifacts'' | '''' | ''[]),
       ],
     };
   }
@@ -395,8 +404,10 @@ export class DatabaseSPARCBridge extends TypedEventBase {
   private calculateMetrics(
     sparcTask: SPARCTask
   ): ImplementationResult['metrics'] {
-    const phases = Object.values(sparcTask.phaseProgress || {});
-    const allAgents = phases.flatMap((p: any) => p.metrics?.agentsInvolved || []);
+    const phases = Object.values(sparcTask.phaseProgress'' | '''' | ''{});
+    const allAgents = phases.flatMap(
+      (p: any) => p.metrics?.agentsInvolved'' | '''' | ''[]
+    );
 
     // Calculate total time
     const startTime = phases[0]?.metrics?.startTime;
@@ -414,10 +425,10 @@ export class DatabaseSPARCBridge extends TypedEventBase {
     });
 
     // Calculate quality score based on validation results
-    const validationScores = phases.map((p: any) => p.validation?.score || 0);
+    const validationScores = phases.map((p: any) => p.validation?.score'' | '''' | ''0);
     const qualityScore =
       validationScores.reduce((sum, score) => sum + score, 0) /
-      (validationScores.length || 1);
+      (validationScores.length'' | '''' | ''1);
 
     return {
       totalTimeMs: totalTime,
@@ -433,15 +444,15 @@ export class DatabaseSPARCBridge extends TypedEventBase {
    * @param sparcTask
    */
   private generateCompletionReport(sparcTask: SPARCTask): string {
-    const document = sparcTask.sourceDocument || {};
-    const phases = Object.values(sparcTask.phaseProgress || {});
+    const document = sparcTask.sourceDocument'' | '''' | ''{};
+    const phases = Object.values(sparcTask.phaseProgress'' | '''' | ''{});
 
     const report = `
 # SPARC Implementation Report
 
-**Document**: ${document.title || 'Unknown'}
+**Document**: ${document.title'' | '''' | '''Unknown'}
 **Type**: ${sparcTask.type.toUpperCase()}
-**Status**: ${(sparcTask.status || 'unknown').toUpperCase()}
+**Status**: ${(sparcTask.status'' | '''' | '''unknown').toUpperCase()}
 **Completion Date**: ${new Date().toISOString()}
 
 ## Phase Summary
@@ -449,20 +460,20 @@ export class DatabaseSPARCBridge extends TypedEventBase {
 ${phases
   .map(
     (phase: any) => `
-### ${(phase.phase || 'UNKNOWN').toUpperCase()} Phase
+### ${(phase.phase'' | '''' | '''UNKNOWN').toUpperCase()} Phase
 - **Status**: ${phase.status}
-- **Agents**: ${phase.metrics?.agentsInvolved?.length || 0}
-- **Artifacts**: ${phase.artifacts?.length || 0}
-- **Quality Score**: ${((phase.validation?.score || 0) * 100).toFixed(1)}%
-- **Iterations**: ${phase.metrics?.iterationsCount || 0}
+- **Agents**: ${phase.metrics?.agentsInvolved?.length'' | '''' | ''0}
+- **Artifacts**: ${phase.artifacts?.length'' | '''' | ''0}
+- **Quality Score**: ${((phase.validation?.score'' | '''' | ''0) * 100).toFixed(1)}%
+- **Iterations**: ${phase.metrics?.iterationsCount'' | '''' | ''0}
 `
   )
   .join('\n')}
 
 ## Overall Results
-- **Total Agents Used**: ${[...new Set(phases.flatMap((p: any) => p.metrics?.agentsInvolved || []))].length}
-- **Total Artifacts**: ${phases.reduce((sum, p: any) => sum + (p.artifacts?.length || 0), 0)}
-- **Average Quality**: ${((phases.reduce((sum, p: any) => sum + (p.validation?.score || 0), 0) / (phases.length || 1)) * 100).toFixed(1)}%
+- **Total Agents Used**: ${[...new Set(phases.flatMap((p: any) => p.metrics?.agentsInvolved'' | '''' | ''[]))].length}
+- **Total Artifacts**: ${phases.reduce((sum, p: any) => sum + (p.artifacts?.length'' | '''' | ''0), 0)}
+- **Average Quality**: ${((phases.reduce((sum, p: any) => sum + (p.validation?.score'' | '''' | ''0), 0) / (phases.length'' | '''' | ''1)) * 100).toFixed(1)}%
 
 ## Methodology Applied
 This implementation used the SPARC methodology (Specification → Pseudocode → Architecture → Refinement → Completion) with distributed swarm coordination.
@@ -531,10 +542,7 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
   private shouldAutoAssignToSparc(document: any): boolean {
     // Auto-assign high-priority items or items tagged for swarm processing
     return (
-      document.priority === 'high' ||
-      document.priority === 'critical' ||
-      document.tags?.includes('sparc-auto-assign') ||
-      document.workflow_stage === 'ready-for-implementation'
+      document.priority === 'high''' | '''' | ''document.priority ==='critical''' | '''' | ''document.tags?.includes('sparc-auto-assign')'' | '''' | ''document.workflow_stage ==='ready-for-implementation'
     );
   }
 
@@ -545,14 +553,14 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
    */
   private mapPriority(
     priority: string
-  ): 'low' | 'medium' | 'high' | 'critical' {
-    const mapping: Record<string, 'low' | 'medium' | 'high' | 'critical'> = {
+  ): 'low | medium' | 'high''' | '''critical' {
+    const mapping: Record<string, 'low | medium' | 'high''' | '''critical'> = {
       low: 'low',
       medium: 'medium',
       high: 'high',
       critical: 'critical',
     };
-    return mapping[priority] || 'medium';
+    return mapping[priority]'' | '''' | '''medium';
   }
 
   private generateId(): string {
@@ -563,7 +571,7 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
    * Get bridge status and metrics.
    */
   getStatus(): {
-    bridgeStatus: 'active' | 'inactive';
+    bridgeStatus: 'active''' | '''inactive';
     activeAssignments: number;
     completedWork: number;
     sparcSwarmStatus: string;

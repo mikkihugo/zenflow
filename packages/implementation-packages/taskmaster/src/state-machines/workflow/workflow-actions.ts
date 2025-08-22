@@ -172,7 +172,8 @@ export const addBottleneck = assign({
 
     // Reduce system health based on bottleneck severity
     const severity = event.bottleneck.severity;
-    const healthImpact = severity === 'critical' ? 0.3 : severity === 'high' ? 0.2 : 0.1;
+    const healthImpact =
+      severity === 'critical' ? 0.3 : severity === 'high' ? 0.2 : 0.1;
 
     return Math.max(0, context.systemHealth - healthImpact);
   },
@@ -185,7 +186,9 @@ export const resolveBottleneck = assign({
   activeBottlenecks: ({ context, event }) => {
     if (event.type !== 'BOTTLENECK_RESOLVED') return context.activeBottlenecks;
 
-    return context.activeBottlenecks.filter((b: any) => b.id !== event.bottleneckId);
+    return context.activeBottlenecks.filter(
+      (b: any) => b.id !== event.bottleneckId
+    );
   },
 
   bottleneckHistory: ({ context, event }) => {

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Vitest Configuration for DSPy Library
- * 
+ *
  * Test configuration for the TypeScript DSPy implementation.
  * Ensures proper ES module handling and test environment setup.
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  */
@@ -24,11 +24,11 @@ export default defineConfig({
         'dist/',
         '**/*.test.ts',
         '**/*.config.*',
-        'stanford-reference/'
-      ]
-    }
+        'stanford-reference/',
+      ],
+    },
   },
   esbuild: {
-    target: 'es2022'
-  }
+    target: 'es2022',
+  },
 });

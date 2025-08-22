@@ -1,9 +1,9 @@
 /**
  * @fileoverview AI Safety Package - Enterprise Foundation Integration
- * 
+ *
  * Professional AI safety system leveraging comprehensive @claude-zen/foundation utilities.
  * Transformed to match memory package pattern with battle-tested enterprise architecture.
- * 
+ *
  * Foundation Integration:
  * - Result pattern for type-safe error handling
  * - Circuit breakers for resilience
@@ -12,14 +12,14 @@
  * - Error aggregation and comprehensive logging
  * - Dependency injection with TSyringe
  * - Structured validation and type safety
- * 
+ *
  * ENHANCEMENT: Basic → Comprehensive foundation integration
  * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
  *
  * @example Enterprise usage with Result pattern
  * ```typescript
  * import { createInitializedAISafetyOrchestrator } from '@claude-zen/ai-safety';
- * 
+ *
  * const result = await createInitializedAISafetyOrchestrator();
  * if (result.success) {
  *   const orchestrator = result.value;
@@ -60,7 +60,7 @@ export {
   SafetyOrchestrationResult,
   AutomatedDetectionResult,
   BehavioralAnalysisResult,
-  HumanEscalationResult
+  HumanEscalationResult,
 } from './safety-orchestrator';
 
 // =============================================================================
@@ -86,14 +86,14 @@ export async function initializeAISafety() {
   const { createInitializedAISafetyOrchestrator } = await import(
     './safety-orchestrator'
   );
-  
+
   const orchestratorResult = await createInitializedAISafetyOrchestrator();
   if (!orchestratorResult.success) {
     return orchestratorResult;
   }
-  
+
   const orchestrator = orchestratorResult.value;
-  
+
   // Start monitoring with Result pattern
   const startResult = await orchestrator.startSafetyMonitoring();
   if (!startResult.success) {
@@ -120,21 +120,25 @@ export async function initializeAISafety() {
 export async function emergencySafetyShutdown() {
   try {
     const { SafetyError, ok, err } = await import('@claude-zen/foundation');
-    
+
     console.log('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
-    
+
     // This would coordinate with all safety systems
     // For now, return success - full implementation would coordinate shutdown
-    
+
     console.log('🚨 Emergency safety protocols activated');
     return ok(undefined);
   } catch (error) {
-    const { SafetyError, err, ensureError } = await import('@claude-zen/foundation');
-    return err(new SafetyError(
-      'Emergency safety shutdown failed',
-      { operation: 'emergencySafetyShutdown' },
-      ensureError(error)
-    ));
+    const { SafetyError, err, ensureError } = await import(
+      '@claude-zen/foundation'
+    );
+    return err(
+      new SafetyError(
+        'Emergency safety shutdown failed',
+        { operation: 'emergencySafetyShutdown' },
+        ensureError(error)
+      )
+    );
   }
 }
 
@@ -149,9 +153,7 @@ export type {
 } from './ai-deception-detector';
 
 // Safety orchestration types (SafetyMetrics is defined here)
-export type {
-  SafetyMetrics,
-} from './safety-orchestrator';
+export type { SafetyMetrics } from './safety-orchestrator';
 
 // =============================================================================
 // PLACEHOLDER TYPES - Safety system types (future implementation)
@@ -167,22 +169,22 @@ export interface SafetyConfig {
 
 /** Safety event interface */
 export interface SafetyEvent {
-  type: 'alert' | 'intervention' | 'escalation' | 'shutdown';
+  type: 'alert | intervention' | 'escalation''' | '''shutdown';
   timestamp: number;
   agentId?: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: 'low | medium' | 'high''' | '''critical';
   data: Record<string, any>;
 }
 
 /** Risk level enum */
-export type RiskLevel = 'minimal' | 'low' | 'medium' | 'high' | 'critical' | 'extreme';
+export type RiskLevel ='' | '''minimal | low' | 'medium''' | '''high | critical' | 'extreme';
 
 /** Safety status enum */
-export type SafetyStatus = 'safe' | 'monitoring' | 'warning' | 'alert' | 'intervention' | 'emergency';
+export type SafetyStatus ='' | '''safe | monitoring' | 'warning''' | '''alert | intervention' | 'emergency';
 
 /** Intervention action interface */
 export interface InterventionAction {
-  type: 'pause' | 'restrict' | 'terminate' | 'escalate';
+  type: 'pause | restrict' | 'terminate''' | '''escalate';
   target: string;
   reason: string;
   timestamp: number;
@@ -193,13 +195,17 @@ export interface InterventionAction {
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getAISafetySystemAccess(config?: SafetyConfig): Promise<any> {
+export async function getAISafetySystemAccess(
+  config?: SafetyConfig
+): Promise<any> {
   const orchestrator = await createInitializedAISafetyOrchestrator();
   if (!orchestrator.success) {
-    throw new Error(`Failed to initialize AI Safety system: ${orchestrator.error?.message}`);
+    throw new Error(
+      `Failed to initialize AI Safety system: ${orchestrator.error?.message}`
+    );
   }
   const safetySystem = orchestrator.value;
-  
+
   return {
     createOrchestrator: () => createAISafetyOrchestrator(),
     createDetector: () => createAIDeceptionDetector(),
@@ -207,17 +213,22 @@ export async function getAISafetySystemAccess(config?: SafetyConfig): Promise<an
     stopMonitoring: () => safetySystem.stopSafetyMonitoring(),
     getMetrics: () => safetySystem.getSafetyMetrics(),
     analyzeResponse: (response: any) => analyzeAIResponse(response),
-    checkSafety: (agentId: string) => safetySystem.evaluateAgentSafety?.(agentId),
+    checkSafety: (agentId: string) =>
+      safetySystem.evaluateAgentSafety?.(agentId),
     emergencyShutdown: () => emergencySafetyShutdown(),
     getStatus: () => safetySystem.getSafetyStatus?.(),
-    escalate: (alert: any) => safetySystem.escalateToHuman?.(alert)
+    escalate: (alert: any) => safetySystem.escalateToHuman?.(alert),
   };
 }
 
-export async function getSafetyOrchestrator(config?: SafetyConfig): Promise<any> {
+export async function getSafetyOrchestrator(
+  config?: SafetyConfig
+): Promise<any> {
   const result = await createInitializedAISafetyOrchestrator();
   if (!result.success) {
-    throw new Error(`Failed to create safety orchestrator: ${result.error?.message}`);
+    throw new Error(
+      `Failed to create safety orchestrator: ${result.error?.message}`
+    );
   }
   return result.value;
 }
@@ -227,8 +238,9 @@ export async function getDeceptionDetection(config?: any): Promise<any> {
   return {
     analyze: (data: AIInteractionData) => detector.analyzeAIResponse(data),
     detect: (response: any) => analyzeAIResponse(response),
-    check: (interactionData: AIInteractionData) => detector.analyzeAIResponse(interactionData),
-    getMetrics: () => detector.getDetectionMetrics?.()
+    check: (interactionData: AIInteractionData) =>
+      detector.analyzeAIResponse(interactionData),
+    getMetrics: () => detector.getDetectionMetrics?.(),
   };
 }
 
@@ -238,11 +250,13 @@ export async function getSafetyMonitoring(config?: SafetyConfig): Promise<any> {
     monitor: (agentId: string) => system.checkSafety(agentId),
     evaluate: (data: any) => system.analyzeResponse(data),
     alert: (event: SafetyEvent) => system.escalate(event),
-    report: () => system.getMetrics()
+    report: () => system.getMetrics(),
   };
 }
 
-export async function getSafetyIntervention(config?: SafetyConfig): Promise<any> {
+export async function getSafetyIntervention(
+  config?: SafetyConfig
+): Promise<any> {
   const system = await getAISafetySystemAccess(config);
   return {
     intervene: (action: InterventionAction) => {
@@ -252,8 +266,16 @@ export async function getSafetyIntervention(config?: SafetyConfig): Promise<any>
     },
     escalate: (alert: any) => system.escalate(alert),
     emergency: () => system.emergencyShutdown(),
-    pause: (agentId: string) => ({ type: 'pause', target: agentId, timestamp: Date.now() }),
-    terminate: (agentId: string) => ({ type: 'terminate', target: agentId, timestamp: Date.now() })
+    pause: (agentId: string) => ({
+      type: 'pause',
+      target: agentId,
+      timestamp: Date.now(),
+    }),
+    terminate: (agentId: string) => ({
+      type: 'terminate',
+      target: agentId,
+      timestamp: Date.now(),
+    }),
   };
 }
 
@@ -265,5 +287,5 @@ export const aiSafetySystem = {
   getMonitoring: getSafetyMonitoring,
   getIntervention: getSafetyIntervention,
   initialize: initializeAISafety,
-  emergencyShutdown: emergencySafetyShutdown
+  emergencyShutdown: emergencySafetyShutdown,
 };

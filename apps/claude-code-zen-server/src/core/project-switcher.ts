@@ -15,14 +15,14 @@
 import * as fs from 'fs');
 import * as path from 'path');
 
-import { TypedEventBase, getLogger } from '@claude-zen/foundation');
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 import {
   getRegisteredProjects,
   getCurrentProject,
   ensureDataDirectories,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
-import { initializeClaudeZen, shutdownClaudeZen } from './index');
+import { initializeClaudeZen, shutdownClaudeZen } from './index';
 
 const logger = getLogger('ProjectSwitcher');
 
@@ -53,7 +53,7 @@ export interface ProjectSwitchResult {
  * Project switcher status
  */
 export interface ProjectSwitcherStatus {
-  status: 'idle | switching' | 'error');
+  status: 'idle'' | ''switching'' | ''error');
   isSwitching: boolean;
   currentProject?: string;
   lastSwitch?: string;
@@ -135,7 +135,7 @@ export class ProjectSwitcher extends TypedEventBase {
 
       this.emit('shutdownStarted', { currentProject: currentProject.id });
 
-      await this.gracefulShutdown(request.timeout || this.switchTimeout);
+      await this.gracefulShutdown(request.timeout'' | '''' | ''this.switchTimeout);
 
       this.emit('shutdownCompleted', { currentProject: currentProject.id });
 
@@ -217,7 +217,7 @@ export class ProjectSwitcher extends TypedEventBase {
       const currentProject = getCurrentProject();
       this.switchHistory.push({
         from: currentProject.id,
-        to: request.projectId || 'unknown',
+        to: request.projectId'' | '''' | '''unknown',
         timestamp: new Date()?.toISOString,
         duration: Date.now() - startTime,
         success: false,

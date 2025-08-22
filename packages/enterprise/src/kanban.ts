@@ -16,8 +16,10 @@ async function loadKanbanModule() {
     try {
       // Load the real Kanban package
       kanbanModuleCache = await import('@claude-zen/kanban');
-    } catch (error) {
-      console.warn('Kanban package not available, providing compatibility layer');
+    } catch {
+      console.warn(
+        'Kanban package not available, providing compatibility layer',
+      );
       kanbanModuleCache = {
         WorkflowKanban: class CompatibilityWorkflowKanban extends TypedEventBase {
           async initialize() {
@@ -27,13 +29,19 @@ async function loadKanbanModule() {
             return Promise.resolve();
           }
           async createTask() {
-            return { success: true, data: { id: 'compat-task', status: 'backlog' } };
+            return {
+              success: true,
+              data: { id: 'compat-task', status: 'backlog' },
+            };
           }
           async moveTask() {
             return { success: true, data: null };
           }
           async getTask() {
-            return { success: true, data: { id: 'compat-task', status: 'backlog' } };
+            return {
+              success: true,
+              data: { id: 'compat-task', status: 'backlog' },
+            };
           }
           async deleteTask() {
             return { success: true, data: null };
@@ -48,9 +56,19 @@ async function loadKanbanModule() {
             return { healthy: true, score: 100 };
           }
         },
-        createWorkflowKanban: (config?: any) => new kanbanModuleCache.WorkflowKanban(config),
-        createHighThroughputWorkflowKanban: (eventBus?: any) => new kanbanModuleCache.WorkflowKanban({}, eventBus),
-        DEFAULT_WORKFLOW_STATES: ['backlog', 'analysis', 'development', 'testing', 'review', 'deployment', 'done'],
+        createWorkflowKanban: (config?: any) =>
+          new kanbanModuleCache.WorkflowKanban(config),
+        createHighThroughputWorkflowKanban: (eventBus?: any) =>
+          new kanbanModuleCache.WorkflowKanban({}, eventBus),
+        DEFAULT_WORKFLOW_STATES: [
+          'backlog',
+          'analysis',
+          'development',
+          'testing',
+          'review',
+          'deployment',
+          'done',
+        ],
         TASK_PRIORITIES: ['critical', 'high', 'medium', 'low'],
         isValidWorkflowState: () => true,
         isValidTaskPriority: () => true,

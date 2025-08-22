@@ -9,7 +9,7 @@
  * @file Interface implementation: compatibility.
  */
 
-import { getLogger, type Logger } from '@claude-zen/foundation');
+import { getLogger, type Logger } from '@claude-zen/foundation';
 
 import('/core/interfaces');
 import('/manager');
@@ -59,7 +59,7 @@ export class USLCompatibilityLayer {
   private uslInstance?: any; // USL instance for fallback operations
   private migrationLog: Array<{
     timestamp: Date;
-    type: 'warning | info' | 'migration');
+    type: 'warning'' | ''info'' | ''migration');
     pattern: string;
     replacement?: string;
     details: string;
@@ -72,11 +72,11 @@ export class USLCompatibilityLayer {
     this.config = {
       warnOnLegacyUsage: config?.warnOnLegacyUsage ?? true,
       autoMigrate: config?.autoMigrate ?? true,
-      legacyPatterns: config?.legacyPatterns || this.getDefaultLegacyPatterns,
+      legacyPatterns: config?.legacyPatterns'' | '''' | ''this.getDefaultLegacyPatterns,
       serviceMappings:
-        config?.serviceMappings || this.getDefaultServiceMappings,
+        config?.serviceMappings'' | '''' | ''this.getDefaultServiceMappings,
       configTransformations:
-        config?.configTransformations || this.getDefaultConfigTransformations,
+        config?.configTransformations'' | '''' | ''this.getDefaultConfigTransformations,
     };
   }
 
@@ -145,7 +145,7 @@ export class USLCompatibilityLayer {
     if (this.config.autoMigrate) {
       return await this.serviceManager.createDocumentService(
         name,
-        (dbType as 'postgresql | sqlite' | 'mysql) || postgresql',
+        (dbType as 'postgresql'' | ''sqlite'' | ''mysql)'' | '''' | ''postgresql',
         options
       );
     }
@@ -239,7 +239,7 @@ export class USLCompatibilityLayer {
     if (this.config.autoMigrate) {
       return await this.serviceManager.createArchitectureStorageService(
         name,
-        (dbType as 'postgresql | sqlite' | 'mysql) || postgresql',
+        (dbType as 'postgresql'' | ''sqlite'' | ''mysql)'' | '''' | ''postgresql',
         options
       );
     }
@@ -284,8 +284,7 @@ export class USLCompatibilityLayer {
     // Legacy fallback
     if (!this.uslInstance) {
       throw new Error(
-        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
-      );
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.');
     }
     return await this.uslInstance.createSafeAPIService(name, baseURL, options);
   }
@@ -298,7 +297,7 @@ export class USLCompatibilityLayer {
    * @param name
    * @deprecated Use serviceManager?.getService instead.
    */
-  getService(name: string): Service | undefined {
+  getService(name: string): Service'' | ''undefined {
     this.logLegacyUsage('getService, serviceManager?.getService');
     return this.serviceManager.getService(name);
   }
@@ -721,7 +720,7 @@ export class USLCompatibilityLayer {
 
       if (mapping) {
         warnings.push(
-          `Service '${serviceRef.name} should be renamed to ${mapping.newName}' (${mapping.migrationNotes})`
+          `Service '${serviceRef.name} should be renamed to ${mapping.newName}'(${mapping.migrationNotes})`
         );
       }
 
@@ -761,12 +760,12 @@ export class USLCompatibilityLayer {
     const usageCounts = new Map<string, number>();
 
     this.migrationLog.forEach((log) => {
-      const count = usageCounts.get(log.pattern) || 0;
+      const count = usageCounts.get(log.pattern)'' | '''' | ''0;
       usageCounts.set(log.pattern, count + 1);
     });
 
     const totalLegacyUsages = this.migrationLog.filter(
-      (log) => log.type === 'warning'
+      (log) => log.type ==='warning'
     ).length;
     const migratedPatterns = this.migrationLog.filter(
       (log) => log.type === 'migration'
@@ -853,37 +852,33 @@ export class USLCompatibilityLayer {
     this.logger.info(`Migration: ${serviceName} -> ${details}`);
   }
 
-  private detectServiceType(serviceInstance: any): ServiceType | null {
+  private detectServiceType(serviceInstance: any): ServiceType'' | ''null {
     // Simple heuristic-based service type detection
-    if (!serviceInstance || typeof serviceInstance !== 'object') {
+    if (!serviceInstance'' | '''' | ''typeof serviceInstance !=='object') {
       return null;
     }
 
     // Check for known service patterns
     if (
-      serviceInstance.isDataService ||
-      serviceInstance.constructor?.name.includes('Data');
+      serviceInstance.isDataService'' | '''' | ''serviceInstance.constructor?.name.includes('Data');
     ) {
       return ServiceType.DATA;
     }
 
     if (
-      serviceInstance.isCoordinationService ||
-      serviceInstance.constructor?.name.includes('Coordination');
+      serviceInstance.isCoordinationService'' | '''' | ''serviceInstance.constructor?.name.includes('Coordination');
     ) {
       return ServiceType.COORDINATION;
     }
 
     if (
-      serviceInstance.isIntegrationService ||
-      serviceInstance.constructor?.name.includes('Integration');
+      serviceInstance.isIntegrationService'' | '''' | ''serviceInstance.constructor?.name.includes('Integration');
     ) {
       return ServiceType.API;
     }
 
     if (
-      serviceInstance.isInfrastructureService ||
-      serviceInstance.constructor?.name.includes('Infrastructure');
+      serviceInstance.isInfrastructureService'' | '''' | ''serviceInstance.constructor?.name.includes('Infrastructure');
     ) {
       return ServiceType.NFRASTRUCTURE;
     }
@@ -1032,30 +1027,30 @@ export class USLCompatibilityLayer {
   > {
     return {
       dataService: (oldConfig: any) => ({
-        name: oldConfig?.name || 'migrated-data-service',
+        name: oldConfig?.name'' | '''' | '''migrated-data-service',
         type: ServiceType.DATA,
         enabled: true,
         priority: ServicePriority.NORMAL,
-        dataSource: oldConfig?.dataSource || { type: 'memory' },
+        dataSource: oldConfig?.dataSource'' | '''' | ''{ type:'memory'},
         caching: { enabled: true, ttl: 300000 },
         validation: { enabled: true, strict: false },
       }),
 
       coordinationService: (oldConfig: any) => ({
-        name: oldConfig?.name || 'migrated-coordination-service',
+        name: oldConfig?.name'' | '''' | '''migrated-coordination-service',
         type: ServiceType.COORDINATION,
         enabled: true,
         priority: ServicePriority.HIGH,
         coordination: {
-          topology: oldConfig?.topology || 'mesh',
-          maxAgents: oldConfig?.maxAgents || 10,
-          strategy: oldConfig?.strategy || 'adaptive',
+          topology: oldConfig?.topology'' | '''' | '''mesh',
+          maxAgents: oldConfig?.maxAgents'' | '''' | ''10,
+          strategy: oldConfig?.strategy'' | '''' | '''adaptive',
         },
-        persistence: { enabled: true, storage: 'memory' },
+        persistence: { enabled: true, storage: 'memory'},
       }),
 
       integrationService: (oldConfig: any) => ({
-        name: oldConfig?.name || 'migrated-integration-service',
+        name: oldConfig?.name'' | '''' | '''migrated-integration-service',
         type: ServiceType.API,
         enabled: true,
         priority: ServicePriority.HIGH,
@@ -1129,7 +1124,7 @@ export const MigrationUtils = {
 
     // Check for common migration blockers
     Object.entries(services).forEach(([name, service]) => {
-      if (!service || typeof service !== 'object') {
+      if (!service'' | '''' | ''typeof service !=='object') {
         blockers.push(`Service ${name} is not a valid object`);
       }
 
@@ -1151,7 +1146,7 @@ export const MigrationUtils = {
    * Generate compatibility report.
    */
   generateCompatibilityReport: (): {
-    status: 'compatible | partial' | 'incompatible');
+    status: 'compatible'' | ''partial'' | ''incompatible');
     score: number;
     details: {
       supportedPatterns: number;
@@ -1163,7 +1158,7 @@ export const MigrationUtils = {
     const migrationStatus = compat?.getMigrationStatus()
     const score = migrationStatus.completionPercentage;
 
-    let status: 'compatible | partial' | 'incompatible');
+    let status: 'compatible'' | ''partial'' | ''incompatible');
     if (score >= 90) {
       status = 'compatible');
     } else if (score >= 50) {

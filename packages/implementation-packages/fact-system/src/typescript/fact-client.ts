@@ -1,23 +1,23 @@
 /**
  * @fileoverview High-level FACT System Client
- * 
+ *
  * Provides a clean TypeScript API for the FACT (Fast Augmented Context Tools) system.
- * Combines high-performance Rust processing with TypeScript coordination and 
+ * Combines high-performance Rust processing with TypeScript coordination and
  * integrates with the unified database package for storage.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 1.0.0
  */
 
-import { 
-  getDatabaseAccess, 
+import {
+  getDatabaseAccess,
   getLogger,
   type Logger,
   ContextError,
   withRetry,
   Storage,
-  getConfig
+  getConfig,
 } from '@claude-zen/foundation';
 import { FactBridge } from './fact-bridge';
 import type {
@@ -34,7 +34,7 @@ import type {
   PerlPackageFactResult,
   JavaPackageFactResult,
   GitLabRepoFactResult,
-  BitbucketRepoFactResult
+  BitbucketRepoFactResult,
 } from './types';
 
 const logger = getLogger('FactClient');
@@ -55,13 +55,13 @@ export class FactClient {
       cacheTTL: 3600000, // 1 hour
       enableGitHubGraphQL: true,
       enableRealTimeAPIs: true,
-      ...config
+      ...config,
     };
 
     this.database = config.database;
     this.bridge = new FactBridge({
-      useRustEngine: this.config.useRustEngine || false,
-      database: this.database
+      useRustEngine: this.config.useRustEngine'' | '''' | ''false,
+      database: this.database,
     });
   }
 
@@ -70,9 +70,9 @@ export class FactClient {
    */
   async initialize(): Promise<void> {
     logger.info('Initializing FACT System...');
-    
+
     await this.bridge.initialize();
-    
+
     logger.info('✅ FACT System initialized successfully');
   }
 
@@ -87,14 +87,20 @@ export class FactClient {
   /**
    * Get NPM package - fast query
    */
-  async getNPMPackage(packageName: string, version?: string): Promise<NPMFactResult> {
+  async getNPMPackage(
+    packageName: string,
+    version?: string
+  ): Promise<NPMFactResult> {
     return this.bridge.getNPMFacts(packageName, version);
   }
 
   /**
    * Get GitHub repository - fast query
    */
-  async getGitHubRepository(owner: string, repo: string): Promise<GitHubFactResult> {
+  async getGitHubRepository(
+    owner: string,
+    repo: string
+  ): Promise<GitHubFactResult> {
     return this.bridge.getGitHubFacts(owner, repo);
   }
 
@@ -108,56 +114,80 @@ export class FactClient {
   /**
    * Get Hex package - fast query
    */
-  async getHexPackage(packageName: string, version?: string): Promise<HexFactResult> {
+  async getHexPackage(
+    packageName: string,
+    version?: string
+  ): Promise<HexFactResult> {
     return this.bridge.getHexFacts(packageName, version);
   }
 
   /**
    * Get API documentation - fast query
    */
-  async getAPIDocumentation(apiName: string, endpoint?: string): Promise<APIDocumentationFactResult> {
+  async getAPIDocumentation(
+    apiName: string,
+    endpoint?: string
+  ): Promise<APIDocumentationFactResult> {
     return this.bridge.getAPIDocsFacts(apiName, endpoint);
   }
 
   /**
    * Get Rust crate - fast query (with docs.rs integration)
    */
-  async getRustCrate(crateName: string, version?: string): Promise<RustCrateFactResult> {
+  async getRustCrate(
+    crateName: string,
+    version?: string
+  ): Promise<RustCrateFactResult> {
     return this.bridge.getRustCrateFacts(crateName, version);
   }
 
   /**
    * Get Go module - fast query
    */
-  async getGoModule(modulePath: string, version?: string): Promise<GoModuleFactResult> {
+  async getGoModule(
+    modulePath: string,
+    version?: string
+  ): Promise<GoModuleFactResult> {
     return this.bridge.getGoModuleFacts(modulePath, version);
   }
 
   /**
    * Get Perl package - fast query (CPAN)
    */
-  async getPerlPackage(packageName: string, version?: string): Promise<PerlPackageFactResult> {
+  async getPerlPackage(
+    packageName: string,
+    version?: string
+  ): Promise<PerlPackageFactResult> {
     return this.bridge.getPerlPackageFacts(packageName, version);
   }
 
   /**
    * Get Java package - fast query (Maven Central)
    */
-  async getJavaPackage(groupId: string, artifactId: string, version?: string): Promise<JavaPackageFactResult> {
+  async getJavaPackage(
+    groupId: string,
+    artifactId: string,
+    version?: string
+  ): Promise<JavaPackageFactResult> {
     return this.bridge.getJavaPackageFacts(groupId, artifactId, version);
   }
 
   /**
    * Get GitLab repository - fast query
    */
-  async getGitLabRepository(projectPath: string): Promise<GitLabRepoFactResult> {
+  async getGitLabRepository(
+    projectPath: string
+  ): Promise<GitLabRepoFactResult> {
     return this.bridge.getGitLabRepoFacts(projectPath);
   }
 
   /**
    * Get Bitbucket repository - fast query
    */
-  async getBitbucketRepository(workspace: string, repoSlug: string): Promise<BitbucketRepoFactResult> {
+  async getBitbucketRepository(
+    workspace: string,
+    repoSlug: string
+  ): Promise<BitbucketRepoFactResult> {
     return this.bridge.getBitbucketRepoFacts(workspace, repoSlug);
   }
 
@@ -180,22 +210,21 @@ export class FactClient {
     rustEngineActive: boolean;
   }> {
     const stats = await this.bridge.getStats();
-    
+
     return {
       ...stats,
-      rustEngineActive: this.config.useRustEngine || false
+      rustEngineActive: this.config.useRustEngine'' | '''' | ''false,
     };
   }
-
 
   /**
    * Shutdown the FACT system
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down FACT System...');
-    
+
     await this.bridge.shutdown();
-    
+
     logger.info('✅ FACT System shut down');
   }
 }
@@ -214,7 +243,7 @@ export const createSQLiteFactClient = async (): Promise<FactClient> => {
   return new FactClient({
     database: getDatabaseAccess(),
     useRustEngine: true,
-    enableGitHubGraphQL: true
+    enableGitHubGraphQL: true,
   });
 };
 
@@ -225,7 +254,7 @@ export const createLanceDBFactClient = async (): Promise<FactClient> => {
   return new FactClient({
     database: getDatabaseAccess(),
     useRustEngine: true,
-    enableGitHubGraphQL: true
+    enableGitHubGraphQL: true,
   });
 };
 
@@ -236,6 +265,6 @@ export const createKuzuFactClient = async (): Promise<FactClient> => {
   return new FactClient({
     database: getDatabaseAccess(),
     useRustEngine: true,
-    enableGitHubGraphQL: true
+    enableGitHubGraphQL: true,
   });
 };

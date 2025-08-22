@@ -17,8 +17,8 @@ export function createTelemetryManager() {
   return {
     recordMetric,
     withTrace,
-    initialize: async () => {},
-    shutdown: async () => {},
+    initialize: async () => { /* Telemetry initialization */ },
+    shutdown: async () => { /* Telemetry shutdown */ },
   };
 }
 

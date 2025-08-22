@@ -1,6 +1,6 @@
 /**
  * @fileoverview Multi-Level Orchestration Events
- * 
+ *
  * Event definitions for orchestration-specific events.
  * Provides type-safe events for portfolio, program, and swarm execution coordination.
  */
@@ -52,9 +52,7 @@ export interface WIPLimitExceededEvent extends OrchestrationEvent {
 /**
  * Union of all orchestration event types
  */
-export type OrchestrationEventType =
-  | StreamStatusChangedEvent
-  | WIPLimitExceededEvent;
+export type OrchestrationEventType ='' | ''StreamStatusChangedEvent'' | ''WIPLimitExceededEvent;
 
 // ============================================================================
 // EVENT TYPE GUARDS
@@ -63,6 +61,10 @@ export type OrchestrationEventType =
 /**
  * Type guard for stream events
  */
-export function isStreamEvent(event: OrchestrationEventType): event is StreamStatusChangedEvent | WIPLimitExceededEvent {
-  return event.type.startsWith('orchestration:stream:') || event.type.startsWith('orchestration:wip:');
+export function isStreamEvent(
+  event: OrchestrationEventType
+): event is StreamStatusChangedEvent'' | ''WIPLimitExceededEvent {
+  return (
+    event.type.startsWith('orchestration:stream:')'' | '''' | ''event.type.startsWith('orchestration:wip:')
+  );
 }

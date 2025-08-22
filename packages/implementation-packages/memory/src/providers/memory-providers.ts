@@ -7,7 +7,10 @@
  */
 
 import type { DALFactory } from '../../database/factory';
-import type { CoordinationRepository, VectorRepository } from '../../database/interfaces';
+import type {
+  CoordinationRepository,
+  VectorRepository,
+} from '../../database/interfaces';
 import { inject, injectable } from '../../di/decorators/injectable';
 import {
   CORE_TOKENS,
@@ -27,7 +30,7 @@ export interface MemoryBackend {
   /** Store a value with the given key */
   store(key: string, value: unknown): Promise<void>;
   /** Retrieve a value by key */
-  retrieve<T = unknown>(key: string): Promise<T | null>;
+  retrieve<T = unknown>(key: string): Promise<T'' | ''null>;
   /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
   delete(key: string): Promise<boolean>;
   /** Clear all stored data */
@@ -45,7 +48,7 @@ export interface MemoryBackend {
  */
 export interface MemoryConfig {
   /** Type of memory backend to use */
-  type: 'sqlite' | 'lancedb' | 'json' | 'memory';
+  type:'sqlite | lancedb' | 'json''' | '''memory';
   /** Optional path for file-based backends */
   path?: string;
   /** Maximum size limit */
@@ -142,7 +145,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
         id: key,
         data: value,
         createdAt: new Date().toISOString(),
-        metadata: { type: 'memory_entry' },
+        metadata: { type: 'memory_entry'},
       });
       this.logger.debug(`Successfully stored key: ${key}`);
     } catch (error) {
@@ -151,7 +154,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T | null> {
+  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
     this.logger.debug(`Retrieving key: ${key} from SQLite backend`);
     await this.ensureInitialized();
 
@@ -231,7 +234,8 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
     try {
       // Create coordination repository using DAL Factory
-      this.repository = await this.dalFactory.createCoordinationRepository('MemoryStore');
+      this.repository =
+        await this.dalFactory.createCoordinationRepository('MemoryStore');
       this.initialized = true;
       this.logger.info('SQLite memory backend initialized via DAL Factory');
     } catch (error) {
@@ -294,17 +298,18 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T | null> {
+  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
     this.logger.debug(`Retrieving key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
 
     try {
-      const results = await this.repository.similaritySearch([0], { limit: 1000 });
+      const results = await this.repository.similaritySearch([0], {
+        limit: 1000,
+      });
       const match = results?.find((r) => r.id === key);
       // Ensure metadata exists on VectorSearchResult and access originalValue safely
       if (
-        match &&
-        'metadata' in match &&
+        match &&'metadata' in match &&
         match.metadata &&
         typeof match.metadata === 'object' &&
         match.metadata !== null &&
@@ -347,7 +352,9 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
     try {
       // Get all vectors and delete them
-      const allVectors = await this.repository.similaritySearch([0], { limit: 10000 });
+      const allVectors = await this.repository.similaritySearch([0], {
+        limit: 10000,
+      });
       for (const vector of allVectors) {
         if (vector && 'id' in vector && typeof vector.id === 'string') {
           await this.repository.delete(vector.id);
@@ -364,7 +371,9 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      const allVectors = await this.repository.similaritySearch([0], { limit: 10000 });
+      const allVectors = await this.repository.similaritySearch([0], {
+        limit: 10000,
+      });
       return allVectors ? allVectors.length : 0;
     } catch (error) {
       this.logger.error(`Failed to get size: ${error}`);
@@ -444,7 +453,7 @@ export class JsonMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T | null> {
+  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
     this.logger.debug(`Retrieving key: ${key} from JSON backend`);
     await this.ensureInitialized();
 
@@ -546,8 +555,10 @@ export class InMemoryBackend implements MemoryBackend {
     private config: MemoryConfig,
     private logger: Logger
   ) {
-    this.maxSize = config?.maxSize || 10000;
-    this.logger.info(`Initialized in-memory backend with max size: ${this.maxSize}`);
+    this.maxSize = config?.maxSize'' | '''' | ''10000;
+    this.logger.info(
+      `Initialized in-memory backend with max size: ${this.maxSize}`
+    );
   }
 
   async store(key: string, value: unknown): Promise<void> {
@@ -567,7 +578,7 @@ export class InMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve<T = unknown>(key: string): Promise<T | null> {
+  async retrieve<T = unknown>(key: string): Promise<T'' | ''null> {
     this.logger.debug(`Retrieving key: ${key} from memory backend`);
 
     try {

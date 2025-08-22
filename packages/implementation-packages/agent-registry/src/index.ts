@@ -1,13 +1,13 @@
 /**
  * @fileoverview Agent Registry Package - Dedicated agent management system
- * 
+ *
  * Provides centralized agent registration, discovery, and lifecycle management
  * using battle-tested dependency injection patterns and service container integration.
- * 
+ *
  * This package was extracted from @claude-zen/foundation to provide dedicated
  * agent management capabilities while keeping the foundation package focused
  * on core utilities.
- * 
+ *
  * Key Features:
  * - Agent registration with template-based configuration
  * - Health monitoring and performance tracking
@@ -15,17 +15,17 @@
  * - Persistent storage with automatic cleanup
  * - Type-safe registration with lifecycle management
  * - Event-driven notifications for registry changes
- * 
+ *
  * @package @claude-zen/agent-registry
  * @version 1.0.0
- * 
+ *
  * @example Basic Usage
  * ```typescript
  * import { AgentRegistry, createAgentRegistry } from '@claude-zen/agent-registry';
- * 
+ *
  * const registry = createAgentRegistry();
  * await registry.initialize();
- * 
+ *
  * // Register an agent
  * const agent = await registry.registerAgent({
  *   templateId: 'coder-template',
@@ -33,7 +33,7 @@
  *   type: 'coder',
  *   config: { maxTasks: 10 }
  * });
- * 
+ *
  * // Query agents by capability
  * const coders = registry.findAgentsByCapability('code-generation');
  * ```
@@ -43,11 +43,11 @@
 export { AgentRegistry } from './agent-registry';
 
 // Registry adapter for migration and compatibility
-export { 
+export {
   AgentRegistryAdapter,
   createAgentRegistryAdapter,
   type RegistryAdapterOptions,
-  type MigrationStats
+  type MigrationStats,
 } from './registry-adapter';
 
 // Type definitions
@@ -57,7 +57,7 @@ export type {
   AgentHealthStatus,
   AgentRegistryOptions,
   AgentTemplate,
-  RegistryStats
+  RegistryStats,
 } from './types';
 
 // Factory functions
@@ -67,7 +67,9 @@ import type { AgentRegistryOptions } from './types';
 /**
  * Create a new agent registry instance with default configuration
  */
-export function createAgentRegistry(options?: AgentRegistryOptions): AgentRegistry {
+export function createAgentRegistry(
+  options?: AgentRegistryOptions
+): AgentRegistry {
   return new AgentRegistry(options);
 }
 
@@ -79,7 +81,9 @@ let globalAgentRegistry: AgentRegistry | null = null;
 /**
  * Get or create the global agent registry instance
  */
-export function getGlobalAgentRegistry(options?: AgentRegistryOptions): AgentRegistry {
+export function getGlobalAgentRegistry(
+  options?: AgentRegistryOptions
+): AgentRegistry {
   if (!globalAgentRegistry) {
     globalAgentRegistry = new AgentRegistry(options);
   }

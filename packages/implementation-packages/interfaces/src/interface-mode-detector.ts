@@ -3,7 +3,7 @@
  * @file Interface-mode-detector implementation.
  */
 
-export type InterfaceMode = 'cli' | 'tui' | 'web';
+export type InterfaceMode = 'cli | tui' | 'web';
 
 export interface ModeDetectionOptions {
   /** Force a specific mode regardless of environment */
@@ -39,11 +39,7 @@ export class InterfaceModeDetector {
 
     // Environment analysis
     const isCI = !!(
-      process.env['CI'] ||
-      process.env['GITHUB_ACTIONS'] ||
-      process.env['TRAVIS'] ||
-      process.env['JENKINS'] ||
-      process.env['GITLAB_CI']
+      process.env['CI']'' | '''' | ''process.env['GITHUB_ACTIONS']'' | '''' | ''process.env['TRAVIS']'' | '''' | ''process.env['JENKINS']'' | '''' | ''process.env['GITLAB_CI']
     );
 
     const hasTerminal = !!process.stdin?.isTTY;
@@ -52,8 +48,8 @@ export class InterfaceModeDetector {
     // Command line argument analysis
     const args = process.argv.slice(2);
     const hasCliFlag = args.includes('--cli');
-    const hasWebFlag = args.includes('--web') || args.includes('--daemon');
-    const hasTuiFlag = args.includes('--tui') || args.includes('--interactive');
+    const hasWebFlag = args.includes('--web')'' | '''' | ''args.includes('--daemon');
+    const hasTuiFlag = args.includes('--tui')'' | '''' | ''args.includes('--interactive');
 
     let mode: InterfaceMode;
     let reason: string;
@@ -64,8 +60,8 @@ export class InterfaceModeDetector {
       reason = `Forced mode: ${forceMode}`;
     }
     // Explicit CLI flag or non-interactive environment
-    else if (hasCliFlag || isCI || !hasTerminal) {
-      mode = 'cli';
+    else if (hasCliFlag'' | '''' | ''isCI'' | '''' | ''!hasTerminal) {
+      mode ='cli';
       reason = hasCliFlag
         ? 'Explicit --cli flag provided'
         : isCI
@@ -73,8 +69,8 @@ export class InterfaceModeDetector {
           : 'Non-interactive terminal detected';
     }
     // Explicit web flag or daemon mode
-    else if (hasWebFlag || daemon || webPort) {
-      mode = 'web';
+    else if (hasWebFlag'' | '''' | ''daemon'' | '''' | ''webPort) {
+      mode ='web';
       reason = hasWebFlag
         ? 'Explicit --web or --daemon flag provided'
         : webPort
@@ -100,8 +96,8 @@ export class InterfaceModeDetector {
     }
 
     // Build config object with proper optional property handling
-    const port = webPort || (mode === 'web' ? 3456 : undefined);
-    const daemonMode = daemon || mode === 'web';
+    const port = webPort'' | '''' | ''(mode ==='web'? 3456 : undefined);
+    const daemonMode = daemon'' | '''' | ''mode ==='web';
 
     const config: ModeDetectionResult['config'] = {
       interactive,

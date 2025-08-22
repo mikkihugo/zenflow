@@ -12,16 +12,16 @@ import {
   getCurrentProject,
   getDataStoragePaths,
   cleanupProjectRegistry,
-} from '@claude-zen/intelligence');
-import { type Request, type Response, Router } from 'express');
+} from '@claude-zen/intelligence';
+import { type Request, type Response, Router } from 'express';
 
 import {
   getProjectModeManager,
   ProjectMode,
-} from './../../../core/project-mode-manager');
-import { ProjectSwitcher } from './../../../core/project-switcher');
-import { asyncHandler } from './middleware/errors');
-import { LogLevel, log } from './middleware/logging');
+} from './../../../core/project-mode-manager';
+import { ProjectSwitcher } from './../../../core/project-switcher';
+import { asyncHandler } from './middleware/errors';
+import { LogLevel, log } from './middleware/logging';
 
 /**
  * Create project management routes.
@@ -381,7 +381,7 @@ export const createProjectRoutes = (): Router => {
 
         if (!capabilities || !config) {
           return res.status(404).json({
-            error: 'Mode not found',
+            error:'Mode not found',
             message: `Mode '${mode}' does not exist`,
             availableModes: Object.values()(ProjectMode),
           });
@@ -558,7 +558,7 @@ export const createProjectRoutes = (): Router => {
 
       if (!fromVersion || !toVersion) {
         return res.status(400).json({
-          error: 'Bad Request',
+          error:'Bad Request',
           message:
             'Both fromVersion and toVersion query parameters are required',
         });

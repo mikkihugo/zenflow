@@ -92,8 +92,7 @@ export function getPreset(
     return presets.find(
       (preset) =>
         preset.type === category &&
-        (preset.id === presetName ||
-          preset.name.toLowerCase().includes(presetName.toLowerCase()))
+        (preset.id === presetName || preset.name.toLowerCase().includes(presetName.toLowerCase()))
     );
   }
   // Single-argument version (legacy) - category is actually presetId

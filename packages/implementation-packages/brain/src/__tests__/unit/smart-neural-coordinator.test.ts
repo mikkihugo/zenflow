@@ -6,67 +6,79 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { SmartNeuralCoordinator } from '../../smart-neural-coordinator';
-import type { 
-  NeuralBackendConfig, 
+import type {
+  NeuralBackendConfig,
   NeuralEmbeddingRequest,
   NeuralClassificationRequest,
   NeuralGenerationRequest,
   NeuralVisionRequest,
-  NeuralTaskRequest
+  NeuralTaskRequest,
 } from '../../smart-neural-coordinator';
 
 // Mock external dependencies
 vi.mock('@xenova/transformers', () => ({
   pipeline: vi.fn().mockResolvedValue({
-    generate: vi.fn().mockResolvedValue(new Array(384).fill(0).map((_, i) => Math.sin(i * 0.1)))
+    generate: vi
+      .fn()
+      .mockResolvedValue(
+        new Array(384).fill(0).map((_, i) => Math.sin(i * 0.1))
+      ),
   }),
   env: {
     allowRemoteModels: true,
-    allowLocalModels: true
-  }
+    allowLocalModels: true,
+  },
 }));
 
 vi.mock('onnxruntime-node', () => ({
   InferenceSession: {
     create: vi.fn().mockResolvedValue({
       run: vi.fn().mockResolvedValue({
-        output: { data: new Float32Array(384).fill(0).map((_, i) => Math.cos(i * 0.1)) }
-      })
-    })
-  }
+        output: {
+          data: new Float32Array(384).fill(0).map((_, i) => Math.cos(i * 0.1)),
+        },
+      }),
+    }),
+  },
 }));
 
 vi.mock('openai', () => ({
   default: vi.fn().mockImplementation(() => ({
     embeddings: {
       create: vi.fn().mockResolvedValue({
-        data: [{
-          embedding: new Array(1536).fill(0).map((_, i) => Math.random() * 0.2 - 0.1)
-        }]
-      })
-    }
-  }))
+        data: [
+          {
+            embedding: new Array(1536)
+              .fill(0)
+              .map((_, i) => Math.random() * 0.2 - 0.1),
+          },
+        ],
+      }),
+    },
+  })),
 }));
 
 // Mock brain.js for fallback scenarios
 vi.mock('brain.js', () => ({
   NeuralNetwork: vi.fn().mockImplementation(() => ({
     train: vi.fn(),
-    run: vi.fn().mockReturnValue(new Array(10).fill(0).map(() => Math.random())),
+    run: vi
+      .fn()
+      .mockReturnValue(new Array(10).fill(0).map(() => Math.random())),
     toJSON: vi.fn().mockReturnValue({ layers: [] }),
-    fromJSON: vi.fn()
+    fromJSON: vi.fn(),
   })),
   LSTM: vi.fn().mockImplementation(() => ({
     train: vi.fn(),
     run: vi.fn().mockReturnValue('Mock LSTM output'),
-    toJSON: vi.fn().mockReturnValue({ model: 'lstm' })
+    toJSON: vi.fn().mockReturnValue({ model: 'lstm' }),
   })),
   recurrent: {
     LSTM: vi.fn().mockImplementation(() => ({
       train: vi.fn(),
-      run: vi.fn().mockReturnValue('Mock recurrent output')
-    }))
-  }
+      run: vi.fn().mockReturnValue('Mock recurrent output'),
+    })),
+  },
 }));
 
 // Mock TensorFlow.js for advanced neural processing
@@ -74,13 +86,13 @@ vi.mock('@tensorflow/tfjs', () => ({
   tensor: vi.fn().mockReturnValue({
     data: vi.fn().mockResolvedValue(new Float32Array([0.1, 0.2, 0.3])),
     shape: [1, 3],
-    dispose: vi.fn()
+    dispose: vi.fn(),
   }),
   loadLayersModel: vi.fn().mockResolvedValue({
     predict: vi.fn().mockReturnValue({
       data: vi.fn().mockResolvedValue(new Float32Array([0.8, 0.2])),
-      dispose: vi.fn()
-    })
+      dispose: vi.fn(),
+    }),
   }),
   sequential: vi.fn().mockReturnValue({
     add: vi.fn(),
@@ -88,26 +100,26 @@ vi.mock('@tensorflow/tfjs', () => ({
     fit: vi.fn().mockResolvedValue({ history: { loss: [0.5, 0.3, 0.1] } }),
     predict: vi.fn().mockReturnValue({
       data: vi.fn().mockResolvedValue(new Float32Array([0.7, 0.3])),
-      dispose: vi.fn()
-    })
-  })
+      dispose: vi.fn(),
+    }),
+  }),
 }));
 
 // Mock natural language processing library
 vi.mock('natural', () => ({
   SentimentAnalyzer: vi.fn().mockImplementation(() => ({
-    getSentiment: vi.fn().mockReturnValue(0.7)
+    getSentiment: vi.fn().mockReturnValue(0.7),
   })),
   PorterStemmer: {
-    stem: vi.fn().mockImplementation((word: string) => word.toLowerCase())
+    stem: vi.fn().mockImplementation((word: string) => word.toLowerCase()),
   },
   WordTokenizer: vi.fn().mockImplementation(() => ({
-    tokenize: vi.fn().mockImplementation((text: string) => text.split(' '))
+    tokenize: vi.fn().mockImplementation((text: string) => text.split(' ')),
   })),
   TfIdf: vi.fn().mockImplementation(() => ({
     addDocument: vi.fn(),
-    tfidfs: vi.fn().mockReturnValue([0.5, 0.3, 0.2])
-  }))
+    tfidfs: vi.fn().mockReturnValue([0.5, 0.3, 0.2]),
+  })),
 }));
 
 describe('SmartNeuralCoordinator Unit Tests', () => {
@@ -122,12 +134,12 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       maxCacheSize: 100,
       performanceThresholds: {
         maxLatency: 2000,
-        minAccuracy: 0.8
+        minAccuracy: 0.8,
       },
       telemetry: {
         enabled: true,
-        sampleRate: 1.0
-      }
+        sampleRate: 1.0,
+      },
     };
 
     coordinator = new SmartNeuralCoordinator(mockConfig);
@@ -144,12 +156,12 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should initialize with default configuration', async () => {
       const defaultCoordinator = new SmartNeuralCoordinator();
       await defaultCoordinator.initialize();
-      
+
       const stats = defaultCoordinator.getCoordinatorStats();
       expect(stats.configuration.primaryModel).toBe('all-mpnet-base-v2');
       expect(stats.configuration.enableFallbacks).toBe(true);
       expect(stats.configuration.enableCaching).toBe(true);
-      
+
       await defaultCoordinator.shutdown();
     });
 
@@ -158,18 +170,18 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         primaryModel: 'custom-model',
         enableFallbacks: false,
         enableCaching: false,
-        maxCacheSize: 50
+        maxCacheSize: 50,
       };
 
       const customCoordinator = new SmartNeuralCoordinator(customConfig);
       await customCoordinator.initialize();
-      
+
       const stats = customCoordinator.getCoordinatorStats();
       expect(stats.configuration.primaryModel).toBe('custom-model');
       expect(stats.configuration.enableFallbacks).toBe(false);
       expect(stats.configuration.enableCaching).toBe(false);
       expect(stats.configuration.maxCacheSize).toBe(50);
-      
+
       await customCoordinator.shutdown();
     });
 
@@ -180,7 +192,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       );
 
       await coordinator.initialize();
-      
+
       // Should still initialize but with fallback status
       const stats = coordinator.getCoordinatorStats();
       expect(stats.models.primary.status).toBe('error');
@@ -197,11 +209,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         text: 'Test embedding generation',
         context: 'unit-test',
         priority: 'medium',
-        qualityLevel: 'standard'
+        qualityLevel: 'standard',
       };
 
       const result = await coordinator.generateEmbedding(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.embedding).toBeDefined();
       expect(Array.isArray(result.embedding)).toBe(true);
@@ -212,13 +224,17 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     });
 
     it('should handle different priority levels', async () => {
-      const priorities: Array<'low' | 'medium' | 'high'> = ['low', 'medium', 'high'];
-      
+      const priorities: Array<'low'' | ''medium'' | ''high'> = [
+        'low',
+        'medium',
+        'high',
+      ];
+
       const results = await Promise.all(
         priorities.map(async (priority) => {
           const request: NeuralEmbeddingRequest = {
             text: `Priority test ${priority}`,
-            priority
+            priority,
           };
           return await coordinator.generateEmbedding(request);
         })
@@ -231,13 +247,17 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     });
 
     it('should handle different quality levels', async () => {
-      const qualityLevels: Array<'basic' | 'standard' | 'premium'> = ['basic', 'standard', 'premium'];
-      
+      const qualityLevels: Array<'basic'' | ''standard'' | ''premium'> = [
+        'basic',
+        'standard',
+        'premium',
+      ];
+
       const results = await Promise.all(
         qualityLevels.map(async (qualityLevel) => {
           const request: NeuralEmbeddingRequest = {
             text: `Quality test ${qualityLevel}`,
-            qualityLevel
+            qualityLevel,
           };
           return await coordinator.generateEmbedding(request);
         })
@@ -253,7 +273,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       // Test empty string
       const emptyRequest: NeuralEmbeddingRequest = {
         text: '',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const emptyResult = await coordinator.generateEmbedding(emptyRequest);
@@ -264,7 +284,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const longText = 'a'.repeat(10001);
       const longRequest: NeuralEmbeddingRequest = {
         text: longText,
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const longResult = await coordinator.generateEmbedding(longRequest);
@@ -281,7 +301,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should cache embeddings when caching is enabled', async () => {
       const request: NeuralEmbeddingRequest = {
         text: 'Cache test text',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       // First request - should generate and cache
@@ -303,19 +323,21 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should implement cache eviction when max size is reached', async () => {
       const smallCacheConfig: NeuralBackendConfig = {
         ...mockConfig,
-        maxCacheSize: 3
+        maxCacheSize: 3,
       };
 
-      const smallCacheCoordinator = new SmartNeuralCoordinator(smallCacheConfig);
+      const smallCacheCoordinator = new SmartNeuralCoordinator(
+        smallCacheConfig
+      );
       await smallCacheCoordinator.initialize();
 
       // Add items beyond cache capacity
       const texts = ['text1', 'text2', 'text3', 'text4', 'text5'];
-      
+
       for (const text of texts) {
         await smallCacheCoordinator.generateEmbedding({
           text,
-          priority: 'medium'
+          priority: 'medium',
         });
       }
 
@@ -328,8 +350,14 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 
     it('should clear cache when requested', async () => {
       // Add some items to cache
-      await coordinator.generateEmbedding({ text: 'cache item 1', priority: 'medium' });
-      await coordinator.generateEmbedding({ text: 'cache item 2', priority: 'medium' });
+      await coordinator.generateEmbedding({
+        text: 'cache item 1',
+        priority: 'medium',
+      });
+      await coordinator.generateEmbedding({
+        text: 'cache item 2',
+        priority: 'medium',
+      });
 
       let stats = coordinator.getCoordinatorStats();
       expect(stats.cache.size).toBe(2);
@@ -344,7 +372,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should respect cache disabled configuration', async () => {
       const noCacheConfig: NeuralBackendConfig = {
         ...mockConfig,
-        enableCaching: false
+        enableCaching: false,
       };
 
       const noCacheCoordinator = new SmartNeuralCoordinator(noCacheConfig);
@@ -352,7 +380,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 
       const request: NeuralEmbeddingRequest = {
         text: 'No cache test',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       // Both requests should generate fresh embeddings
@@ -377,11 +405,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should track performance metrics', async () => {
       const requests = Array.from({ length: 5 }, (_, i) => ({
         text: `Performance test ${i}`,
-        priority: 'medium' as const
+        priority: 'medium' as const,
       }));
 
       await Promise.all(
-        requests.map(request => coordinator.generateEmbedding(request))
+        requests.map((request) => coordinator.generateEmbedding(request))
       );
 
       const stats = coordinator.getCoordinatorStats();
@@ -395,13 +423,15 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 
     it('should track failed requests', async () => {
       // Mock pipeline to fail
-      vi.mocked(require('@xenova/transformers').pipeline).mockImplementation(async () => {
-        throw new Error('Model failure');
-      });
+      vi.mocked(require('@xenova/transformers').pipeline).mockImplementation(
+        async () => {
+          throw new Error('Model failure');
+        }
+      );
 
       const request: NeuralEmbeddingRequest = {
         text: 'Failure test',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const result = await coordinator.generateEmbedding(request);
@@ -430,20 +460,22 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         new Error('Primary model failed')
       );
 
-      // Mock brain.js fallback to succeed  
+      // Mock brain.js fallback to succeed
       vi.doMock('brain.js', () => ({
         NeuralNetwork: vi.fn().mockImplementation(() => ({
-          run: vi.fn().mockReturnValue(new Array(10).fill(0).map(() => Math.random()))
-        }))
+          run: vi
+            .fn()
+            .mockReturnValue(new Array(10).fill(0).map(() => Math.random())),
+        })),
       }));
 
       const request: NeuralEmbeddingRequest = {
         text: 'Fallback test',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const result = await coordinator.generateEmbedding(request);
-      
+
       // Should still succeed using fallback or fail gracefully
       if (result.success) {
         expect(result.embedding).toBeDefined();
@@ -461,28 +493,28 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 
     it('should provide comprehensive statistics', () => {
       const stats = coordinator.getCoordinatorStats();
-      
+
       // Configuration
       expect(stats.configuration).toBeDefined();
       expect(stats.configuration.primaryModel).toBeDefined();
-      
+
       // Models
       expect(stats.models).toBeDefined();
       expect(stats.models.primary).toBeDefined();
       expect(stats.models.primary.status).toBeDefined();
-      
+
       // Performance
       expect(stats.performance).toBeDefined();
       expect(stats.performance.totalRequests).toBeDefined();
       expect(stats.performance.successfulRequests).toBeDefined();
       expect(stats.performance.failedRequests).toBeDefined();
-      
+
       // Cache
       expect(stats.cache).toBeDefined();
       expect(stats.cache.size).toBeDefined();
       expect(stats.cache.hits).toBeDefined();
       expect(stats.cache.misses).toBeDefined();
-      
+
       // Fallback chain
       expect(stats.fallbackChain).toBeDefined();
       expect(Array.isArray(stats.fallbackChain)).toBe(true);
@@ -490,12 +522,12 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 
     it('should update statistics after operations', async () => {
       const initialStats = coordinator.getCoordinatorStats();
-      
+
       await coordinator.generateEmbedding({
         text: 'Stats update test',
-        priority: 'medium'
+        priority: 'medium',
       });
-      
+
       const updatedStats = coordinator.getCoordinatorStats();
       expect(updatedStats.performance.totalRequests).toBe(
         initialStats.performance.totalRequests + 1
@@ -513,11 +545,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         text: 'I love this amazing product! It works perfectly.',
         taskType: 'sentiment',
         priority: 'medium',
-        qualityLevel: 'standard'
+        qualityLevel: 'standard',
       };
 
       const result = await coordinator.classifyText(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.classification).toBeDefined();
       expect(result.classification.label).toBeDefined();
@@ -533,11 +565,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         text: 'Can you help me find the best hotel in Paris?',
         taskType: 'intent',
         categories: ['booking', 'information', 'complaint', 'support'],
-        priority: 'high'
+        priority: 'high',
       };
 
       const result = await coordinator.classifyText(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.classification.label).toBeDefined();
       expect(result.classification.scores).toBeDefined();
@@ -550,7 +582,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const emptyRequest: NeuralClassificationRequest = {
         text: '',
         taskType: 'sentiment',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const emptyResult = await coordinator.classifyText(emptyRequest);
@@ -561,7 +593,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const invalidRequest = {
         text: 'Valid text',
         taskType: 'invalid_type' as any,
-        priority: 'medium' as const
+        priority: 'medium' as const,
       };
 
       const invalidResult = await coordinator.classifyText(invalidRequest);
@@ -570,15 +602,19 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     });
 
     it('should handle different quality levels for classification', async () => {
-      const qualityLevels: Array<'basic' | 'standard' | 'premium'> = ['basic', 'standard', 'premium'];
-      
+      const qualityLevels: Array<'basic'' | ''standard'' | ''premium'> = [
+        'basic',
+        'standard',
+        'premium',
+      ];
+
       const results = await Promise.all(
         qualityLevels.map(async (qualityLevel) => {
           const request: NeuralClassificationRequest = {
             text: `Quality test for ${qualityLevel} classification`,
             taskType: 'category',
             qualityLevel,
-            priority: 'medium'
+            priority: 'medium',
           };
           return await coordinator.classifyText(request);
         })
@@ -602,11 +638,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         taskType: 'completion',
         maxTokens: 100,
         priority: 'medium',
-        qualityLevel: 'standard'
+        qualityLevel: 'standard',
       };
 
       const result = await coordinator.generateText(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.generated).toBeDefined();
       expect(result.generated.text).toBeDefined();
@@ -636,12 +672,12 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         priority: 'high',
         parameters: {
           temperature: 0.7,
-          topP: 0.9
-        }
+          topP: 0.9,
+        },
       };
 
       const result = await coordinator.generateText(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.generated.text.length).toBeLessThan(longText.length);
       expect(result.metadata.taskType).toBe('summarization');
@@ -652,7 +688,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const emptyRequest: NeuralGenerationRequest = {
         prompt: '',
         taskType: 'completion',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const emptyResult = await coordinator.generateText(emptyRequest);
@@ -664,10 +700,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         prompt: 'Valid prompt',
         taskType: 'completion',
         maxTokens: -10,
-        priority: 'medium'
+        priority: 'medium',
       };
 
-      const invalidResult = await coordinator.generateText(invalidTokensRequest);
+      const invalidResult =
+        await coordinator.generateText(invalidTokensRequest);
       expect(invalidResult.success).toBe(false);
       expect(invalidResult.error).toContain('maxTokens');
     });
@@ -677,11 +714,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         prompt: 'Write a very long essay about technology',
         taskType: 'completion',
         maxTokens: 20,
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const result = await coordinator.generateText(request);
-      
+
       if (result.success) {
         expect(result.generated.tokensGenerated).toBeLessThanOrEqual(20);
       }
@@ -695,17 +732,17 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 
     it('should process image to text successfully', async () => {
       const mockImageData = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]); // PNG header
-      
+
       const request: NeuralVisionRequest = {
         taskType: 'image-to-text',
         imageData: mockImageData,
         format: 'png',
         priority: 'medium',
-        qualityLevel: 'standard'
+        qualityLevel: 'standard',
       };
 
       const result = await coordinator.processImage(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.result).toBeDefined();
       expect(result.metadata.model).toBeDefined();
@@ -717,11 +754,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const request: NeuralVisionRequest = {
         taskType: 'classify',
         image: 'https://example.com/test-image.jpg',
-        priority: 'high'
+        priority: 'high',
       };
 
       const result = await coordinator.processImage(request);
-      
+
       // Should succeed or fail gracefully
       if (result.success) {
         expect(result.vision).toBeDefined();
@@ -735,7 +772,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       // Test missing image data and URL
       const emptyRequest: NeuralVisionRequest = {
         taskType: 'image-to-text',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const emptyResult = await coordinator.processImage(emptyRequest);
@@ -747,25 +784,31 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         taskType: 'image-to-text',
         imageData: new Uint8Array([1, 2, 3]),
         format: 'invalid' as any,
-        priority: 'medium'
+        priority: 'medium',
       };
 
-      const invalidResult = await coordinator.processImage(invalidFormatRequest);
+      const invalidResult =
+        await coordinator.processImage(invalidFormatRequest);
       expect(invalidResult.success).toBe(false);
       expect(invalidResult.error).toContain('format');
     });
 
     it('should handle different image formats', async () => {
-      const formats: Array<'png' | 'jpg' | 'jpeg' | 'webp' | 'gif'> = ['png', 'jpg', 'jpeg', 'webp'];
+      const formats: Array<'png'' | ''jpg'' | ''jpeg'' | ''webp'' | ''gif'> = [
+        'png',
+        'jpg',
+        'jpeg',
+        'webp',
+      ];
       const mockImageData = new Uint8Array([255, 216, 255, 224]); // JPEG header
-      
+
       const results = await Promise.all(
         formats.map(async (format) => {
           const request: NeuralVisionRequest = {
             taskType: 'image-analysis',
             imageData: mockImageData,
             format,
-            priority: 'medium'
+            priority: 'medium',
           };
           return await coordinator.processImage(request);
         })
@@ -789,14 +832,15 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         taskType: 'question-answering',
         input: {
           question: 'What is artificial intelligence?',
-          context: 'Artificial intelligence is the simulation of human intelligence in machines.'
+          context:
+            'Artificial intelligence is the simulation of human intelligence in machines.',
         },
         priority: 'medium',
-        qualityLevel: 'standard'
+        qualityLevel: 'standard',
       };
 
       const result = await coordinator.performNeuralTask(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.result).toBeDefined();
       expect(result.metadata.model).toBeDefined();
@@ -809,16 +853,16 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         taskType: 'similarity',
         input: {
           text1: 'Machine learning is a subset of AI',
-          text2: 'AI includes machine learning as a component'
+          text2: 'AI includes machine learning as a component',
         },
         priority: 'high',
         parameters: {
-          metric: 'cosine'
-        }
+          metric: 'cosine',
+        },
       };
 
       const result = await coordinator.performNeuralTask(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.result).toBeDefined();
       expect(result.metadata.taskType).toBe('similarity');
@@ -833,18 +877,18 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
             'Deep neural networks',
             'Natural language processing',
             'Computer vision systems',
-            'Reinforcement learning'
+            'Reinforcement learning',
           ],
-          numClusters: 2
+          numClusters: 2,
         },
         priority: 'low',
         parameters: {
-          algorithm: 'kmeans'
-        }
+          algorithm: 'kmeans',
+        },
       };
 
       const result = await coordinator.performNeuralTask(request);
-      
+
       expect(result.success).toBe(true);
       expect(result.result).toBeDefined();
       expect(result.metadata.taskType).toBe('clustering');
@@ -855,7 +899,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const invalidRequest: NeuralTaskRequest = {
         taskType: 'invalid-task' as any,
         input: { data: 'test' },
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const invalidResult = await coordinator.performNeuralTask(invalidRequest);
@@ -866,10 +910,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const missingInputRequest: NeuralTaskRequest = {
         taskType: 'similarity',
         input: {},
-        priority: 'medium'
+        priority: 'medium',
       };
 
-      const missingResult = await coordinator.performNeuralTask(missingInputRequest);
+      const missingResult =
+        await coordinator.performNeuralTask(missingInputRequest);
       expect(missingResult.success).toBe(false);
       expect(missingResult.error).toContain('input');
     });
@@ -879,18 +924,18 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         taskType: 'custom',
         input: {
           data: 'Custom processing data',
-          operation: 'feature_extraction'
+          operation: 'feature_extraction',
         },
         priority: 'medium',
         parameters: {
           customParam1: 'value1',
           customParam2: 42,
-          customParam3: true
-        }
+          customParam3: true,
+        },
       };
 
       const result = await coordinator.performNeuralTask(request);
-      
+
       // Should handle gracefully even if custom task is not fully implemented
       if (result.success) {
         expect(result.result).toBeDefined();
@@ -910,28 +955,29 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       // Test all phases working together
       const embeddingRequest: NeuralEmbeddingRequest = {
         text: 'Test sequence processing',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const classificationRequest: NeuralClassificationRequest = {
         text: 'This is a positive sentiment test',
         taskType: 'sentiment',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const generationRequest: NeuralGenerationRequest = {
         prompt: 'Generate a brief summary of neural processing',
         taskType: 'completion',
         maxTokens: 50,
-        priority: 'medium'
+        priority: 'medium',
       };
 
       // Execute all phases
-      const [embeddingResult, classificationResult, generationResult] = await Promise.all([
-        coordinator.generateEmbedding(embeddingRequest),
-        coordinator.classifyText(classificationRequest),
-        coordinator.generateText(generationRequest)
-      ]);
+      const [embeddingResult, classificationResult, generationResult] =
+        await Promise.all([
+          coordinator.generateEmbedding(embeddingRequest),
+          coordinator.classifyText(classificationRequest),
+          coordinator.generateText(generationRequest),
+        ]);
 
       // All should succeed
       expect(embeddingResult.success).toBe(true);
@@ -946,16 +992,16 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should maintain consistent caching across phases', async () => {
       // Test caching with different phases
       const text = 'Consistent caching test';
-      
+
       const embeddingRequest: NeuralEmbeddingRequest = {
         text,
-        priority: 'medium'
+        priority: 'medium',
       };
 
       const classificationRequest: NeuralClassificationRequest = {
         text,
         taskType: 'sentiment',
-        priority: 'medium'
+        priority: 'medium',
       };
 
       // First requests
@@ -963,8 +1009,11 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       await coordinator.classifyText(classificationRequest);
 
       // Second requests (should hit cache if implemented)
-      const embeddingResult2 = await coordinator.generateEmbedding(embeddingRequest);
-      const classificationResult2 = await coordinator.classifyText(classificationRequest);
+      const embeddingResult2 =
+        await coordinator.generateEmbedding(embeddingRequest);
+      const classificationResult2 = await coordinator.classifyText(
+        classificationRequest
+      );
 
       expect(embeddingResult2.success).toBe(true);
       expect(classificationResult2.success).toBe(true);
@@ -975,19 +1024,42 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 
     it('should track performance metrics across all phases', async () => {
       const initialStats = coordinator.getCoordinatorStats();
-      
+
       // Execute operations in different phases
-      await coordinator.generateEmbedding({ text: 'Metrics test 1', priority: 'medium' });
-      await coordinator.classifyText({ text: 'Metrics test 2', taskType: 'sentiment', priority: 'medium' });
-      await coordinator.generateText({ prompt: 'Metrics test 3', taskType: 'completion', maxTokens: 20, priority: 'medium' });
-      
+      await coordinator.generateEmbedding({
+        text: 'Metrics test 1',
+        priority: 'medium',
+      });
+      await coordinator.classifyText({
+        text: 'Metrics test 2',
+        taskType: 'sentiment',
+        priority: 'medium',
+      });
+      await coordinator.generateText({
+        prompt: 'Metrics test 3',
+        taskType: 'completion',
+        maxTokens: 20,
+        priority: 'medium',
+      });
+
       const mockImageData = new Uint8Array([137, 80, 78, 71]);
-      await coordinator.processImage({ taskType: 'image-to-text', imageData: mockImageData, format: 'png', priority: 'medium' });
-      
-      await coordinator.performNeuralTask({ taskType: 'similarity', input: { text1: 'test1', text2: 'test2' }, priority: 'medium' });
+      await coordinator.processImage({
+        taskType: 'image-to-text',
+        imageData: mockImageData,
+        format: 'png',
+        priority: 'medium',
+      });
+
+      await coordinator.performNeuralTask({
+        taskType: 'similarity',
+        input: { text1: 'test1', text2: 'test2' },
+        priority: 'medium',
+      });
 
       const finalStats = coordinator.getCoordinatorStats();
-      expect(finalStats.performance.totalRequests).toBe(initialStats.performance.totalRequests + 5);
+      expect(finalStats.performance.totalRequests).toBe(
+        initialStats.performance.totalRequests + 5
+      );
       expect(finalStats.performance.averageLatency).toBeGreaterThan(0);
     });
   });
@@ -996,27 +1068,41 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should initialize properly', async () => {
       const newCoordinator = new SmartNeuralCoordinator(mockConfig);
       await newCoordinator.initialize();
-      
+
       const stats = newCoordinator.getCoordinatorStats();
       expect(stats.models.primary.status).toBe('ready');
-      
+
       await newCoordinator.shutdown();
     });
 
     it('should shutdown gracefully', async () => {
       await coordinator.initialize();
-      
+
       // Generate some activity across all phases
-      await coordinator.generateEmbedding({ text: 'Shutdown test', priority: 'medium' });
-      await coordinator.classifyText({ text: 'Shutdown test', taskType: 'sentiment', priority: 'medium' });
-      
+      await coordinator.generateEmbedding({
+        text: 'Shutdown test',
+        priority: 'medium',
+      });
+      await coordinator.classifyText({
+        text: 'Shutdown test',
+        taskType: 'sentiment',
+        priority: 'medium',
+      });
+
       // Shutdown should complete without errors
       await expect(coordinator.shutdown()).resolves.not.toThrow();
-      
+
       // After shutdown, new requests should fail
-      const embeddingResult = await coordinator.generateEmbedding({ text: 'Post-shutdown test', priority: 'medium' });
-      const classificationResult = await coordinator.classifyText({ text: 'Post-shutdown test', taskType: 'sentiment', priority: 'medium' });
-      
+      const embeddingResult = await coordinator.generateEmbedding({
+        text: 'Post-shutdown test',
+        priority: 'medium',
+      });
+      const classificationResult = await coordinator.classifyText({
+        text: 'Post-shutdown test',
+        taskType: 'sentiment',
+        priority: 'medium',
+      });
+
       expect(embeddingResult.success).toBe(false);
       expect(embeddingResult.error).toContain('shutdown');
       expect(classificationResult.success).toBe(false);
@@ -1026,7 +1112,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     it('should handle multiple initialization calls', async () => {
       await coordinator.initialize();
       await coordinator.initialize(); // Second call should be safe
-      
+
       const stats = coordinator.getCoordinatorStats();
       expect(stats.models.primary.status).toBe('ready');
     });

@@ -142,7 +142,7 @@ export class ConnectionDiagnostics {
       {}
     );
 
-    const failures = this.connectionHistory.filter((e) => e.event === 'failed');
+    const failures = this.connectionHistory.filter((e) => e.event ==='failed');
     const recentFailures = failures.slice(-10);
 
     return {
@@ -163,9 +163,7 @@ export class ConnectionDiagnostics {
     // Group failures by error type
     const errorTypes = failures.reduce(
       (acc: Record<string, number>, failure) => {
-        const errorObj = failure.details?.['error'] as
-          | { message?: string }
-          | undefined;
+        const errorObj = failure.details?.['error'] as { message?: string } | undefined;
         const error = errorObj?.message || 'Unknown';
         acc[error] = (acc[error] || 0) + 1;
         return acc;
@@ -300,7 +298,7 @@ export class PerformanceDiagnostics {
 
   constructor(logger?: LoggerInterface | null) {
     this.logger =
-      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG'});
     this.operations = new Map();
     this.thresholds = {
       swarm_init: 1000, // 1 second
@@ -666,13 +664,13 @@ export class DiagnosticsManager {
     const tests: DiagnosticTest[] = [];
 
     // Test 1: Memory allocation
-    tests.push(await this.testMemoryAllocation());
+    tests.push(await this.testMemoryAllocation())();
 
     // Test 2: File system access
-    tests.push(await this.testFileSystem());
+    tests.push(await this.testFileSystem())();
 
     // Test 3: WASM loading
-    tests.push(await this.testWasmLoading());
+    tests.push(await this.testWasmLoading())();
 
     return {
       timestamp: new Date().toISOString(),

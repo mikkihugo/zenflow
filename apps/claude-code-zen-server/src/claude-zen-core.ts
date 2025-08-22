@@ -115,9 +115,9 @@ export class ClaudeZenCore {
 
     // Register core services
     container.register(TOKENS.Logger, () => getLogger('claude-zen-core'));
-    container.register(TOKENS.Config, () => this.getConfig());
-    container.register(TOKENS.EventBus, () => new AppEventBus());
-    container.register(TOKENS.Database, () => getDatabaseAccess());
+    container.register(TOKENS.Config, () => this.getConfig())();
+    container.register(TOKENS.EventBus, () => new AppEventBus())();
+    container.register(TOKENS.Database, () => getDatabaseAccess())();
 
     // Register coordination services
     container.register(TOKENS.AgentManager, (c) => {

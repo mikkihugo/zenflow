@@ -24,7 +24,7 @@ lint_directory() {
             pnpm lint || echo "  ⚠️  Lint errors found in $name"
         else
             echo "  🔧 Running ESLint directly on $name"
-            npx eslint . --ext .ts,.tsx,.js,.jsx --fix || echo "  ⚠️  ESLint errors found in $name"
+            npx eslint . --fix || echo "  ⚠️  ESLint errors found in $name"
         fi
         
         # Run TypeScript check if tsconfig exists

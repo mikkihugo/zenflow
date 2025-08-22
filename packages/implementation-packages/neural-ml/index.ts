@@ -1,12 +1,12 @@
 /**
  * @fileoverview Neural-ML Package - Enterprise-Grade Machine Learning with Rust Acceleration
- * 
+ *
  * **HIGH-PERFORMANCE NEURAL MACHINE LEARNING ENGINE WITH RUST/WASM ACCELERATION**
- * 
+ *
  * Production-grade machine learning library that automatically optimizes for your hardware
  * configuration, providing maximum performance through TypeScript-Rust integration with
  * comprehensive Foundation support and enterprise-scale neural computation capabilities.
- * 
+ *
  * **CORE CAPABILITIES:**
  * - 🚀 **Machine-Adaptive Optimization**: Auto-detects and optimizes for CPU/GPU capabilities
  * - 🧠 **TypeScript-Rust Bridge**: Zero-overhead native performance with type safety
@@ -16,7 +16,7 @@
  * - 🎯 **GPU Acceleration**: CUDA, Metal, WebGPU for massive parallel computation
  * - 📈 **Real-Time Performance**: Live optimization and bottleneck detection
  * - 🔧 **Foundation Integration**: Complete @claude-zen/foundation ecosystem support
- * 
+ *
  * **Enterprise Features:**
  * - Multi-backend hardware optimization with automatic fallback
  * - Real-time performance profiling and optimization recommendations
@@ -25,11 +25,11 @@
  * - Advanced neural network primitives and activation functions
  * - Comprehensive error handling with circuit breaker patterns
  * - Enterprise-grade logging, monitoring, and observability
- * 
+ *
  * @example Basic Neural ML Engine Setup
  * ```typescript
  * import { NeuralMLEngine } from '@claude-zen/neural-ml';
- * 
+ *
  * // Initialize with comprehensive telemetry and monitoring
  * const engine = new NeuralMLEngine({
  *   enableTelemetry: true,
@@ -49,25 +49,25 @@
  *     }
  *   }
  * });
- * 
+ *
  * await engine.initialize();
- * 
+ *
  * // Create adaptive optimizer with intelligent backend selection
  * const optimizerId = await engine.createAdaptiveOptimizer({
  *   preferredBackend: 'auto', // 'cpu', 'gpu', 'simd', 'auto'
  *   memoryLimit: '2GB',
  *   parallelization: 'max'
  * });
- * 
+ *
  * // High-performance matrix multiplication with automatic optimization
  * const matrixA = new Float32Array([1, 2, 3, 4]); // 2x2 matrix
  * const matrixB = new Float32Array([5, 6, 7, 8]); // 2x2 matrix
  * const result = await engine.matrixMultiply(optimizerId, matrixA, matrixB, 2, 2, 2);
- * 
+ *
  * console.log('Matrix Result:', result.data);
  * console.log('Execution Backend:', result.backend);
  * console.log('Execution Time:', result.executionTime);
- * 
+ *
  * // Get comprehensive performance statistics and optimization insights
  * const stats = await engine.getStats();
  * console.log('Performance Statistics:', {
@@ -77,7 +77,7 @@
  *   memoryUsage: stats.memoryUsage,
  *   backendUtilization: stats.backendUtilization
  * });
- * 
+ *
  * // Get AI-powered optimization recommendations
  * const recommendations = await engine.getOptimizationRecommendations();
  * recommendations.forEach(rec => {
@@ -85,15 +85,15 @@
  *   console.log(`   Expected improvement: ${rec.expectedImprovement}`);
  * });
  * ```
- * 
+ *
  * @example Advanced Enterprise Neural Network Operations
  * ```typescript
- * import { 
+ * import {
  *   NeuralMLEngine,
  *   ActivationType,
- *   OptimizationBackend 
+ *   OptimizationBackend
  * } from '@claude-zen/neural-ml';
- * 
+ *
  * // Configure enterprise-grade engine with comprehensive fault tolerance
  * const engine = new NeuralMLEngine({
  *   enableTelemetry: true,
@@ -120,27 +120,27 @@
  *     }
  *   }
  * });
- * 
+ *
  * await engine.initialize();
- * 
+ *
  * // Create specialized optimizers for different workloads
  * const cpuOptimizer = await engine.createAdaptiveOptimizer({
  *   preferredBackend: 'cpu',
  *   threadPool: 16,
  *   cacheOptimization: true
  * });
- * 
+ *
  * const gpuOptimizer = await engine.createAdaptiveOptimizer({
  *   preferredBackend: 'gpu',
  *   memoryPool: '8GB',
  *   precision: 'mixed', // fp16/fp32 mixed precision
  *   tensorCores: true
  * });
- * 
+ *
  * // Large-scale vector operations with intelligent backend selection
  * const vectorA = new Float32Array(1000000).fill(1.5);
  * const vectorB = new Float32Array(1000000).fill(2.5);
- * 
+ *
  * // The engine automatically selects optimal backend based on data size and system load
  * const vectorSum = await engine.vectorAdd(gpuOptimizer, vectorA, vectorB);
  * console.log('Vector Addition:', {
@@ -148,11 +148,11 @@
  *   executionTime: vectorSum.executionTime,
  *   throughput: `${(vectorA.length / (vectorSum.executionTime / 1000)).toFixed(0)} ops/sec`
  * });
- * 
+ *
  * // Advanced neural activation functions with performance monitoring
  * const activationResult = await engine.neuralActivation(
- *   gpuOptimizer, 
- *   vectorSum.data, 
+ *   gpuOptimizer,
+ *   vectorSum.data,
  *   ActivationType.ReLU,
  *   {
  *     inPlace: true, // Memory optimization
@@ -160,14 +160,14 @@
  *     enableProfiling: true
  *   }
  * );
- * 
+ *
  * console.log('Neural Activation:', {
  *   activationType: activationResult.activationType,
  *   processedElements: activationResult.processedElements,
  *   memoryEfficiency: activationResult.memoryEfficiency,
  *   profileData: activationResult.profileData
  * });
- * 
+ *
  * // Comprehensive system health monitoring and diagnostics
  * const health = await engine.getSystemHealth();
  * console.log('System Health Report:', {
@@ -178,7 +178,7 @@
  *   thermalState: health.thermalState,
  *   recommendedActions: health.recommendedActions
  * });
- * 
+ *
  * // Real-time performance monitoring and alerting
  * engine.on('performanceAlert', (alert) => {
  *   console.warn(`Performance Alert: ${alert.type} - ${alert.message}`);
@@ -188,15 +188,15 @@
  *   }
  * });
  * ```
- * 
+ *
  * @example Distributed Neural Network Training
  * ```typescript
- * import { 
+ * import {
  *   NeuralMLEngine,
  *   DistributedTrainingManager,
- *   ModelArchitecture 
+ *   ModelArchitecture
  * } from '@claude-zen/neural-ml';
- * 
+ *
  * // Setup distributed neural network training across multiple nodes
  * const distributedEngine = new NeuralMLEngine({
  *   distributed: {
@@ -224,9 +224,9 @@
  *     }
  *   }
  * });
- * 
+ *
  * await distributedEngine.initialize();
- * 
+ *
  * // Define neural network architecture
  * const architecture: ModelArchitecture = {
  *   layers: [
@@ -247,10 +247,10 @@
  *   loss: 'sparse-categorical-crossentropy',
  *   metrics: ['accuracy', 'top-5-accuracy']
  * };
- * 
+ *
  * // Create distributed training manager
  * const trainingManager = new DistributedTrainingManager(distributedEngine);
- * 
+ *
  * // Setup data pipeline with automatic sharding
  * const trainingData = await trainingManager.setupDataPipeline({
  *   source: 's3://ml-datasets/mnist-training',
@@ -263,7 +263,7 @@
  *   caching: true,
  *   prefetch: 4
  * });
- * 
+ *
  * // Start distributed training with real-time monitoring
  * const trainingConfig = {
  *   epochs: 100,
@@ -284,13 +284,13 @@
  *     realTimeMetrics: true
  *   }
  * };
- * 
+ *
  * const trainingResult = await trainingManager.train(
  *   architecture,
  *   trainingData,
  *   trainingConfig
  * );
- * 
+ *
  * console.log('Distributed Training Results:', {
  *   finalAccuracy: trainingResult.metrics.accuracy,
  *   finalLoss: trainingResult.metrics.loss,
@@ -300,7 +300,7 @@
  *   communicationOverhead: trainingResult.communicationOverhead,
  *   energyConsumption: trainingResult.energyConsumption
  * });
- * 
+ *
  * // Export trained model with optimization
  * const exportedModel = await trainingManager.exportModel({
  *   format: 'onnx',
@@ -315,7 +315,7 @@
  *     throughputTarget: 1000 // inferences/sec
  *   }
  * });
- * 
+ *
  * console.log('Model Export:', {
  *   modelSize: exportedModel.sizeBytes,
  *   optimizationRatio: exportedModel.compressionRatio,
@@ -323,15 +323,15 @@
  *   expectedThroughput: exportedModel.benchmarks.throughput
  * });
  * ```
- * 
+ *
  * @example High-Performance Matrix Operations with Auto-Optimization
  * ```typescript
- * import { 
+ * import {
  *   NeuralMLEngine,
  *   MatrixOperations,
- *   OptimizationProfiler 
+ *   OptimizationProfiler
  * } from '@claude-zen/neural-ml';
- * 
+ *
  * // Create performance-optimized engine with comprehensive profiling
  * const engine = new NeuralMLEngine({
  *   enableTelemetry: true,
@@ -348,9 +348,9 @@
  *     memoryPooling: true
  *   }
  * });
- * 
+ *
  * await engine.initialize();
- * 
+ *
  * // Create specialized matrix operations optimizer
  * const matrixOptimizer = await engine.createAdaptiveOptimizer({
  *   workloadType: 'matrix-operations',
@@ -359,7 +359,7 @@
  *   cacheStrategy: 'lru',
  *   memoryAlignment: 64 // bytes
  * });
- * 
+ *
  * // Performance benchmark suite for different matrix sizes
  * const benchmarkSizes = [
  *   { rows: 100, cols: 100, name: 'small' },
@@ -368,29 +368,29 @@
  *   { rows: 2000, cols: 2000, name: 'xl' },
  *   { rows: 5000, cols: 5000, name: 'xxl' }
  * ];
- * 
+ *
  * console.log('Running Matrix Operation Benchmarks...\n');
- * 
+ *
  * for (const size of benchmarkSizes) {
  *   console.log(`🔍 Benchmarking ${size.name} matrices (${size.rows}x${size.cols})...`);
- *   
+ *
  *   // Generate random matrices
  *   const matrixA = new Float32Array(size.rows * size.cols)
  *     .map(() => Math.random() * 2 - 1);
  *   const matrixB = new Float32Array(size.rows * size.cols)
  *     .map(() => Math.random() * 2 - 1);
- *   
+ *
  *   // Benchmark matrix multiplication with different backends
  *   const backends = ['auto', 'cpu', 'simd', 'gpu'];
  *   const results = {};
- *   
+ *
  *   for (const backend of backends) {
  *     try {
  *       const optimizerId = await engine.createAdaptiveOptimizer({
  *         preferredBackend: backend,
  *         workloadHint: 'matrix-multiply'
  *       });
- *       
+ *
  *       const startTime = performance.now();
  *       const result = await engine.matrixMultiply(
  *         optimizerId,
@@ -401,31 +401,31 @@
  *         size.cols
  *       );
  *       const endTime = performance.now();
- *       
+ *
  *       results[backend] = {
  *         executionTime: endTime - startTime,
  *         actualBackend: result.backend,
  *         throughput: (size.rows * size.cols * size.cols) / ((endTime - startTime) / 1000),
  *         memoryUsage: result.memoryUsage
  *       };
- *       
+ *
  *       console.log(`  ${backend.padEnd(8)}: ${(endTime - startTime).toFixed(2)}ms ` +
  *                  `(${result.backend}, ${(results[backend].throughput / 1e6).toFixed(1)}M ops/sec)`);
- *       
+ *
  *     } catch (error) {
  *       console.log(`  ${backend.padEnd(8)}: Failed (${error.message})`);
  *     }
  *   }
- *   
+ *
  *   // Identify optimal backend for this size
  *   const optimal = Object.entries(results)
  *     .sort(([,a], [,b]) => a.executionTime - b.executionTime)[0];
- *   
+ *
  *   if (optimal) {
  *     console.log(`  🏆 Optimal: ${optimal[0]} (${optimal[1].executionTime.toFixed(2)}ms)\n`);
  *   }
  * }
- * 
+ *
  * // Get comprehensive optimization recommendations
  * const profiler = new OptimizationProfiler(engine);
  * const recommendations = await profiler.generateRecommendations({
@@ -434,7 +434,7 @@
  *   memoryPatterns: true,
  *   thermalAnalysis: true
  * });
- * 
+ *
  * console.log('🎯 Optimization Recommendations:');
  * recommendations.forEach((rec, index) => {
  *   console.log(`  ${index + 1}. ${rec.title}`);
@@ -443,7 +443,7 @@
  *   console.log(`     Implementation effort: ${rec.implementationEffort}`);
  *   console.log(`     Priority: ${rec.priority}\n`);
  * });
- * 
+ *
  * // Real-time performance monitoring dashboard
  * const performanceMonitor = engine.createPerformanceMonitor({
  *   updateInterval: 1000, // 1 second
@@ -464,24 +464,24 @@
  *     }
  *   }
  * });
- * 
+ *
  * performanceMonitor.on('metrics', (metrics) => {
  *   console.log(`📊 Live Metrics: Latency: ${metrics.latency}ms, ` +
  *              `Throughput: ${(metrics.throughput / 1e6).toFixed(1)}M ops/sec, ` +
  *              `Memory: ${(metrics.memoryUsage * 100).toFixed(1)}%`);
  * });
  * ```
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.1
  * @version 1.0.0-alpha.1
- * 
+ *
  * @see {@link https://github.com/zen-neural/claude-code-zen} Documentation
  * @see {@link ./src/} Source Code Implementation
- * 
+ *
  * @requires @claude-zen/foundation - Core utilities and infrastructure
  * @requires neural-core - Rust-based high-performance computation engine
- * 
+ *
  * @packageDocumentation
  */
 
@@ -498,7 +498,7 @@ export {
   type ActivationType,
   createAdaptiveOptimizer,
   matrixMultiplyAdaptive,
-  vectorAddAdaptive
+  vectorAddAdaptive,
 } from './src/main';
 
 // Export comprehensive ML interfaces for DSPy teleprompters
@@ -512,20 +512,20 @@ export type {
   ConfigurationError,
   NetworkError,
   TimeoutError,
-  ResourceError
+  ResourceError,
 } from '@claude-zen/foundation';
 
 /**
  * Neural-ML Library Documentation
- * 
+ *
  * ## Overview
- * 
+ *
  * Neural-ML is a high-performance machine learning library that automatically
  * optimizes for your hardware configuration. It seamlessly integrates TypeScript
  * and Rust to provide maximum performance while maintaining ease of use.
- * 
+ *
  * ## Architecture
- * 
+ *
  * ```
  * ┌─────────────────────────────────────────────────────────────┐
  * │                    TypeScript API Layer                    │
@@ -542,34 +542,34 @@ export type {
  * │  • High-performance linear algebra                       │
  * └─────────────────────────────────────────────────────────────┘
  * ```
- * 
+ *
  * ## Supported Backends
- * 
+ *
  * The library automatically detects and selects the best available backend:
- * 
+ *
  * ### Apple Silicon (M1/M2/M3)
  * - **Metal GPU**: For large operations (>1M elements)
  * - **Apple Accelerate**: BLAS optimizations
  * - **ARM NEON**: SIMD vector operations
- * 
+ *
  * ### NVIDIA CUDA
  * - **CUDA Kernels**: Custom GPU acceleration
  * - **cuDNN**: Optimized neural network primitives
  * - **Tensor Cores**: Mixed-precision training
- * 
+ *
  * ### Intel/AMD x86
  * - **AVX-512**: Latest SIMD instructions
  * - **AVX2**: Widely supported SIMD
  * - **Intel MKL**: Optimized BLAS routines
- * 
+ *
  * ### ARM Processors
  * - **ARM NEON**: Advanced SIMD extensions
  * - **Parallel CPU**: Multi-threaded fallback
- * 
+ *
  * ## Foundation Integration
- * 
+ *
  * Neural-ML integrates all 9 Foundation systems:
- * 
+ *
  * 1. **Logging**: Structured logging with context
  * 2. **Telemetry**: OpenTelemetry traces and Prometheus metrics
  * 3. **Configuration**: Type-safe configuration management
@@ -579,9 +579,9 @@ export type {
  * 7. **Dependency Injection**: Service container management
  * 8. **Error Handling**: Circuit breakers and retry logic
  * 9. **Monitoring**: Health checks and performance tracking
- * 
+ *
  * ## Performance Characteristics
- * 
+ *
  * | Operation | Size | Backend | Performance |
  * |-----------|------|---------|-------------|
  * | Matrix Multiply | 1000x1000 | CUDA | ~1ms |
@@ -590,26 +590,26 @@ export type {
  * | Vector Add | 1M elements | GPU | ~0.1ms |
  * | Vector Add | 1M elements | SIMD | ~0.5ms |
  * | Neural Activation | 1M elements | Parallel | ~1ms |
- * 
+ *
  * ## Memory Management
- * 
+ *
  * - **Zero-copy operations**: Direct memory mapping where possible
  * - **Adaptive memory allocation**: GPU vs CPU memory optimization
  * - **Memory usage estimation**: Real-time memory tracking
  * - **Circuit breaker protection**: Prevents memory exhaustion
- * 
+ *
  * ## Error Handling and Resilience
- * 
+ *
  * - **Circuit Breakers**: Automatic failure detection and recovery
  * - **Retry Logic**: Exponential backoff for transient failures
  * - **Timeout Protection**: Prevents indefinite blocking
  * - **Graceful Degradation**: Falls back to CPU when GPU fails
- * 
+ *
  * ## Getting Started
- * 
+ *
  * ```bash
  * npm install @claude-zen/neural-ml @claude-zen/foundation
  * ```
- * 
+ *
  * See the examples above for usage patterns.
  */

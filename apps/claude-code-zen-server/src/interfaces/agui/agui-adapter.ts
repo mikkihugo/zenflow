@@ -10,27 +10,20 @@
 
 import * as readline from 'node:readline');
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('AGUIAdapter');
 
 // Define our own interface since we're adapting @ag-ui/core
 export interface ValidationQuestion {
   id: string;
-  type:
-    | 'relevance'
-    | 'boundary'
-    | 'relationship'
-    | 'naming'
-    | 'priority'
-    | 'checkpoint'
-    | 'review');
+  type:'' | '''relevance | boundary' | 'relationship''' | '''naming | priority' | 'checkpoint''' | '''review');
   question: string;
   context: any;
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
-  priority?: 'critical | high' | 'medium | low');
+  priority?: 'critical'' | ''high'' | ''medium'' | ''low');
   validationReason?: string;
   expectedImpact?: number;
 }
@@ -41,8 +34,7 @@ export interface AGUIInterface {
   showProgress(progress: any): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info | warning' | 'error | success'
-  ): Promise<void>;
+    type?: 'info'' | ''warning'' | ''error'' | ''success'): Promise<void>;
   showInfo(title: string, data: Record<string, unknown>): Promise<void>;
   clear?(): Promise<void>;
   close?(): Promise<void>;
@@ -133,7 +125,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
         if (question.options && /^\d+$/.test(answer)) {
           const idx = Number.parseInt(answer) - 1;
           if (idx >= 0 && idx < question.options.length) {
-            resolve(question.options[idx] || '');
+            resolve(question.options[idx]'' | '''' | '''');
           } else if (answer === '0' && question.allowCustom) {
             rl.question('Enter custom response: ', (custom) => {
               resolve(custom);
@@ -199,7 +191,7 @@ export class TerminalAGUI extends TypedEventBase implements AGUIInterface {
 
   async showMessage(
     message: string,
-    type: 'info | warning' | 'error | success' = 'info'
+    type: 'info'' | ''warning'' | ''error'' | ''success' = 'info'
   ): Promise<void> {
     const icons = {
       info: 'ℹ️ ',
@@ -271,13 +263,13 @@ export class MockAGUI implements AGUIInterface {
 
   async askQuestion(question: ValidationQuestion): Promise<string> {
     logger.debug('Mock AGUI Question:', question);
-    return this.responses.get(question.id) || this.defaultResponse;
+    return this.responses.get(question.id)'' | '''' | ''this.defaultResponse;
   }
 
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
     logger.debug(`Mock AGUI Batch: ${questions.length} questions`);
     return questions.map(
-      (q) => this.responses.get(q.id) || this.defaultResponse
+      (q) => this.responses.get(q.id)'' | '''' | ''this.defaultResponse
     );
   }
 
@@ -287,8 +279,7 @@ export class MockAGUI implements AGUIInterface {
 
   async showMessage(
     message: string,
-    type?: 'info | warning' | 'error | success'
-  ): Promise<void> {
+    type?: 'info'' | ''warning'' | ''error'' | ''success'): Promise<void> {
     logger.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
   }
 
@@ -312,7 +303,7 @@ export class MockAGUI implements AGUIInterface {
  * @example
  */
 export function createAGUI(
-  type: 'terminal | mock' = 'terminal'
+  type: 'terminal'' | ''mock' = 'terminal'
 ): AGUIInterface {
   switch (type) {
     case 'mock':

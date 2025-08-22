@@ -37,7 +37,6 @@
     "teamwork",
     "agui",
     "knowledge",
-    "kanban",
     "strategic-interface",
     "delegation"
   ],
@@ -57,7 +56,6 @@
   },
   "peerDependencies": {
     "@claude-zen/agui": "workspace:*",
-    "@claude-zen/kanban": "workspace:*",
     "@claude-zen/knowledge": "workspace:*",
     "@claude-zen/safe-framework": "workspace:*",
     "@claude-zen/sparc": "workspace:*",

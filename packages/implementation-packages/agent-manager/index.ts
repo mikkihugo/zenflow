@@ -1,12 +1,12 @@
 /**
  * @fileoverview Agent Manager Package - Enterprise-Grade Agent Lifecycle Management & Swarm Orchestration
- * 
+ *
  * **COMPREHENSIVE EPHEMERAL SWARM ORCHESTRATOR WITH CLI AND MCP SERVER INTEGRATION**
- * 
+ *
  * Production-grade agent lifecycle management system with advanced ephemeral swarm coordination,
  * CLI tools, Model Context Protocol server integration, and cognitive diversity optimization
  * for large-scale enterprise claude-code-zen ecosystem deployments.
- * 
+ *
  * **CORE CAPABILITIES:**
  * - 🤖 **Agent Lifecycle Management**: Complete CRUD operations with health monitoring
  * - 🐝 **Ephemeral Swarm Orchestration**: Dynamic temporary swarm creation and coordination
@@ -16,7 +16,7 @@
  * - 🔄 **Dynamic Topology**: Mesh, hierarchical, ring, and custom topologies
  * - 💾 **State Management**: Persistent and ephemeral agent state with recovery
  * - 🎯 **Foundation Integration**: Complete @claude-zen/foundation ecosystem support
- * 
+ *
  * **Enterprise Features:**
  * - Advanced agent health monitoring with predictive failure detection
  * - Cognitive diversity optimization using ruvswarm mathematical models
@@ -25,11 +25,11 @@
  * - Circuit breaker protection with cascading failure prevention
  * - Graceful shutdown protocols with emergency recovery procedures
  * - Distributed coordination across multiple nodes and clusters
- * 
+ *
  * @example Basic Agent Management with Health Monitoring
  * ```typescript
  * import { AgentManager } from '@claude-zen/agent-manager';
- * 
+ *
  * // Initialize comprehensive agent management system
  * const manager = new AgentManager({
  *   maxAgents: 500,
@@ -54,10 +54,10 @@
  *     resourceAllocation: 'dynamic'
  *   }
  * });
- * 
+ *
  * await manager.initialize();
  * console.log('Agent Manager initialized with health monitoring');
- * 
+ *
  * // Add specialized agents with comprehensive configuration
  * const researcherAgent = await manager.addAgent({
  *   id: 'researcher-001',
@@ -80,9 +80,9 @@
  *     retryCount: 3
  *   }
  * });
- * 
+ *
  * const coderAgent = await manager.addAgent({
- *   id: 'coder-001', 
+ *   id: 'coder-001',
  *   type: 'coder',
  *   capabilities: ['typescript', 'react', 'testing', 'deployment', 'debugging'],
  *   cognitiveProfile: 'systematic',
@@ -102,12 +102,12 @@
  *     testCoverage: 0.9
  *   }
  * });
- * 
+ *
  * console.log('Agents created:', {
  *   researcher: researcherAgent.id,
  *   coder: coderAgent.id
  * });
- * 
+ *
  * // Advanced agent coordination with intelligent task routing
  * const coordination = await manager.coordinateAgents(
  *   manager.getAgentsByCapability('typescript'),
@@ -119,77 +119,77 @@
  *     performanceMonitoring: true
  *   }
  * );
- * 
+ *
  * console.log('Coordination established:', {
  *   topology: coordination.topology,
  *   agents: coordination.agents.length,
  *   expectedPerformance: coordination.performanceMetrics
  * });
  * ```
- * 
+ *
  * @example Advanced CLI Integration with Workflow Management
  * ```bash
  * # Install globally or use npx for comprehensive agent management
  * npm install -g @claude-zen/agent-manager
- * 
+ *
  * # Basic agent management commands
  * agent-manager create --type coder --capabilities typescript,react,testing \\
  *   --cognitive-profile systematic --max-memory 4GB --cpu-cores 8
- * 
+ *
  * agent-manager create --type researcher --capabilities web-search,analysis \\
  *   --specialization "market-research,competitive-analysis" \\
  *   --languages "english,spanish"
- * 
+ *
  * # Advanced agent listing and filtering
  * agent-manager list --status active --type coder --sort-by performance
  * agent-manager list --capabilities typescript --cognitive-profile analytical
  * agent-manager list --health-score ">0.8" --response-time "<1000ms"
- * 
+ *
  * # Sophisticated coordination and topology management
  * agent-manager coordinate --topology mesh --agents coder-001,researcher-001 \\
  *   --task-distribution optimal --enable-failover
- * 
+ *
  * agent-manager coordinate --topology hierarchical --auto-select-agents \\
  *   --task-type "full-stack-development" --required-capabilities "typescript,react,testing"
- * 
+ *
  * # Ephemeral swarm management with advanced configuration
  * agent-manager swarm-create --ephemeral --max-agents 10 \\
  *   --cognitive-diversity ruvswarm --duration 3600 \\
  *   --auto-scale --performance-threshold 0.8
- * 
+ *
  * agent-manager swarm-create --name "emergency-response" \\
  *   --agents "coder-001,researcher-001,analyst-001" \\
  *   --topology ring --task-timeout 1800
- * 
+ *
  * # Health monitoring and performance management
  * agent-manager health --agent-id coder-001 --detailed
  * agent-manager health --all --export-format json --output health-report.json
  * agent-manager performance --agent-id researcher-001 --time-range 24h
- * 
+ *
  * # Advanced workspace and environment management
  * agent-manager workspace create --name "microservices-project" \\
  *   --agents "coder-001,coder-002,tester-001" \\
  *   --shared-resources --collaboration-mode real-time
- * 
+ *
  * agent-manager environment setup --name "staging" \\
  *   --agents "all-active" --resource-limits high \\
  *   --monitoring-level detailed
- * 
+ *
  * # Emergency protocols and disaster recovery
  * agent-manager emergency-stop --all --reason "system-maintenance"
  * agent-manager recovery --from-checkpoint --checkpoint-id "backup-2024-01-15"
  * agent-manager failover --from coder-001 --to coder-backup-001 --preserve-state
  * ```
- * 
+ *
  * @example Production MCP Server with Security and Clustering
  * ```typescript
- * import { 
+ * import {
  *   MCPServer,
  *   AgentManager,
  *   SecurityManager,
- *   ClusterCoordinator 
+ *   ClusterCoordinator
  * } from '@claude-zen/agent-manager';
- * 
+ *
  * // Setup enterprise-grade MCP server with clustering
  * const clusterCoordinator = new ClusterCoordinator({
  *   nodes: [
@@ -201,7 +201,7 @@
  *   replication: 3,
  *   partitionTolerance: true
  * });
- * 
+ *
  * const securityManager = new SecurityManager({
  *   authentication: {
  *     method: 'oauth2',
@@ -227,7 +227,7 @@
  *     compliance: ['sox', 'gdpr', 'hipaa']
  *   }
  * });
- * 
+ *
  * const mcpServer = new MCPServer({
  *   port: 3000,
  *   enableAgentManagement: true,
@@ -250,7 +250,7 @@
  *     },
  *     monitoring: {
  *       prometheus: { enabled: true, port: 9090 },
- *       grafana: { 
+ *       grafana: {
  *         dashboards: ['agent-overview', 'performance', 'health'],
  *         alerts: true
  *       },
@@ -264,7 +264,7 @@
  *     }
  *   }
  * });
- * 
+ *
  * // Start the MCP server with comprehensive error handling
  * try {
  *   await mcpServer.start();
@@ -277,11 +277,11 @@
  *   console.error('❌ Failed to start MCP Server:', error);
  *   process.exit(1);
  * }
- * 
+ *
  * // Setup graceful shutdown
  * process.on('SIGTERM', async () => {
  *   console.log('🛑 Shutting down MCP Server gracefully...');
- *   await mcpServer.shutdown({ 
+ *   await mcpServer.shutdown({
  *     gracePeriod: 30000, // 30 seconds
  *     preserveState: true,
  *     notifyCluster: true
@@ -289,16 +289,16 @@
  *   process.exit(0);
  * });
  * ```
- * 
+ *
  * @example Advanced Cognitive Diversity with Ruvswarm Optimization
  * ```typescript
- * import { 
+ * import {
  *   AgentManager,
  *   CognitiveDiversityOptimizer,
  *   RuvswarmEngine,
- *   PerformanceAnalyzer 
+ *   PerformanceAnalyzer
  * } from '@claude-zen/agent-manager';
- * 
+ *
  * // Initialize manager with advanced cognitive diversity features
  * const manager = new AgentManager({
  *   enableCognitiveDiversity: true,
@@ -316,9 +316,9 @@
  *     adaptiveLearning: true
  *   }
  * });
- * 
+ *
  * await manager.initialize();
- * 
+ *
  * // Create ruvswarm-optimized cognitive diversity engine
  * const diversityOptimizer = new CognitiveDiversityOptimizer({
  *   cognitiveProfiles: {
@@ -355,7 +355,7 @@
  *     diversityWeight: 0.3
  *   }
  * });
- * 
+ *
  * // Create cognitively diverse ephemeral swarm with advanced optimization
  * const complexAnalysisSwarm = await manager.createEphemeralSwarm({
  *   name: 'complex-market-analysis',
@@ -386,7 +386,7 @@
  *     }
  *   }
  * });
- * 
+ *
  * console.log('🧠 Cognitive Diversity Analysis:', {
  *   swarmId: complexAnalysisSwarm.id,
  *   diversityScore: complexAnalysisSwarm.diversityMetrics.score,
@@ -398,7 +398,7 @@
  *     specializations: a.specialization
  *   }))
  * });
- * 
+ *
  * // Execute complex multi-domain analysis task
  * const analysisTask = {
  *   description: 'Comprehensive market analysis for emerging AI technologies',
@@ -431,10 +431,10 @@
  *     stakeholders: ['investors', 'executives', 'product-teams']
  *   }
  * };
- * 
+ *
  * console.log('🚀 Starting complex analysis task...');
  * const startTime = Date.now();
- * 
+ *
  * const analysisResult = await complexAnalysisSwarm.executeTask(analysisTask, {
  *   monitoring: {
  *     realTimeUpdates: true,
@@ -452,9 +452,9 @@
  *     consensusBuilding: true
  *   }
  * });
- * 
+ *
  * const executionTime = Date.now() - startTime;
- * 
+ *
  * console.log('✅ Analysis completed successfully:', {
  *   executionTime: `${executionTime / 1000}s`,
  *   qualityScore: analysisResult.quality.overall,
@@ -467,7 +467,7 @@
  *     diversityUtilization: analysisResult.metrics.diversityUtilization
  *   }
  * });
- * 
+ *
  * // Analyze swarm performance and cognitive diversity effectiveness
  * const performanceAnalyzer = new PerformanceAnalyzer(complexAnalysisSwarm);
  * const diversityAnalysis = await performanceAnalyzer.analyzeCognitiveDiversity({
@@ -476,14 +476,14 @@
  *   includeConflictResolution: true,
  *   includeLearningOutcomes: true
  * });
- * 
+ *
  * console.log('📊 Cognitive Diversity Analysis Results:', {
  *   overallEffectiveness: diversityAnalysis.effectiveness,
  *   profileContributions: diversityAnalysis.profileContributions,
  *   synergyEffects: diversityAnalysis.synergyEffects,
  *   improvementRecommendations: diversityAnalysis.recommendations
  * });
- * 
+ *
  * // Cleanup ephemeral swarm with performance data preservation
  * await complexAnalysisSwarm.cleanup({
  *   preserveResults: true,
@@ -491,21 +491,21 @@
  *   preserveLearnings: true,
  *   generateReport: true
  * });
- * 
+ *
  * console.log('🧹 Swarm cleanup completed, performance data preserved for future optimization');
  * ```
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 1.0.0
- * 
+ *
  * @see {@link https://github.com/zen-neural/claude-code-zen} Claude Code Zen Documentation
  * @see {@link ./src/main} Main Implementation
- * 
+ *
  * @requires @claude-zen/foundation - Core utilities and infrastructure
  * @requires @modelcontextprotocol/sdk - MCP server implementation
  * @requires commander - CLI framework
- * 
+ *
  * @packageDocumentation
  */
 
@@ -526,7 +526,7 @@ export type {
   AgentMetrics,
   SwarmMetrics,
   EphemeralSwarmConfig,
-  DiversityRequirement
+  DiversityRequirement,
 } from './src/main';
 
 // CLI and MCP exports
@@ -535,10 +535,10 @@ export { CLIManager } from './src/cli';
 export { WASMLoader } from './src/wasm-loader';
 
 // Agent registry and swarm management (ServiceContainer-enhanced)
-export { 
+export {
   SwarmRegistry,
   getSwarmRegistry as getGlobalSwarmRegistry,
-  createSwarmRegistry
+  createSwarmRegistry,
 } from './src/swarm-registry';
 
 // Factory functions and utilities
@@ -551,7 +551,7 @@ export {
   AGENT_CATEGORIES,
   CAPABILITY_SETS,
   VERSION,
-  DESCRIPTION
+  DESCRIPTION,
 } from './src/main';
 
 // Configuration and constants
@@ -559,12 +559,12 @@ export type {
   AgentManagerConfig,
   SwarmCoordinationConfig,
   CognitiveDiversityConfig,
-  PerformanceConfig
+  PerformanceConfig,
 } from './src/types';
 
 /**
  * Agent Manager Package Information
- * 
+ *
  * Comprehensive metadata about the agent manager package including
  * version details, capabilities, and feature set.
  */
@@ -574,34 +574,34 @@ export const AGENT_MANAGER_INFO = {
   description: 'Ephemeral swarm orchestrator with CLI and MCP server',
   capabilities: [
     'Agent lifecycle management',
-    'Ephemeral swarm coordination', 
+    'Ephemeral swarm coordination',
     'CLI tools and commands',
     'MCP server integration',
     'Cognitive diversity optimization',
     'Dynamic topology management',
     'Foundation telemetry integration',
-    'Ruvswarm-inspired patterns'
+    'Ruvswarm-inspired patterns',
   ],
   exports: {
     main: './src/main',
-    cli: './src/cli', 
+    cli: './src/cli',
     mcpServer: './src/mcp-server',
     wasmLoader: './src/wasm-loader',
-    swarmRegistry: './src/swarm-registry'
-  }
+    swarmRegistry: './src/swarm-registry',
+  },
 } as const;
 
 /**
  * Agent Manager Documentation
- * 
+ *
  * ## Overview
- * 
+ *
  * Agent Manager provides comprehensive agent lifecycle management with
  * ephemeral swarm coordination capabilities. It integrates CLI tools,
  * MCP server functionality, and cognitive diversity optimization.
- * 
+ *
  * ## Architecture
- * 
+ *
  * ```
  * ┌─────────────────────────────────────────────────────┐
  * │                 CLI Interface                       │
@@ -629,9 +629,9 @@ export const AGENT_MANAGER_INFO = {
  * │  • Storage and persistence                         │
  * └─────────────────────────────────────────────────────┘
  * ```
- * 
+ *
  * ## Agent Types and Capabilities
- * 
+ *
  * | Type | Capabilities | Cognitive Profile |
  * |------|-------------|------------------|
  * | Researcher | web-search, analysis, documentation | analytical |
@@ -640,30 +640,30 @@ export const AGENT_MANAGER_INFO = {
  * | Creative | ideation, brainstorming, design | creative |
  * | Coordinator | project-management, coordination | systematic |
  * | Specialist | domain-specific expertise | focused |
- * 
+ *
  * ## Cognitive Diversity (Ruvswarm)
- * 
+ *
  * Implements ruvswarm-inspired cognitive diversity patterns:
  * - **Analytical**: Logic-driven, systematic approach
- * - **Creative**: Innovation-focused, divergent thinking  
+ * - **Creative**: Innovation-focused, divergent thinking
  * - **Systematic**: Process-oriented, methodical execution
  * - **Intuitive**: Pattern-recognition, rapid insights
  * - **Collaborative**: Team-focused, coordination skills
- * 
+ *
  * ## Performance Characteristics
- * 
+ *
  * - **Agent Capacity**: Up to 500 concurrent agents per manager
  * - **Swarm Size**: 2-50 agents per ephemeral swarm
  * - **Response Time**: <100ms for agent operations
  * - **Coordination Latency**: <500ms for swarm coordination
  * - **Memory Usage**: ~2MB per 100 agents
  * - **CLI Performance**: <50ms for most commands
- * 
+ *
  * ## Getting Started
- * 
+ *
  * ```bash
  * npm install @claude-zen/agent-manager @claude-zen/foundation
  * ```
- * 
+ *
  * See the examples above for usage patterns.
  */

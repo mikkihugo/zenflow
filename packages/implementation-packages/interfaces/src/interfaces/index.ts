@@ -147,7 +147,7 @@ export {
  */
 export interface BackendConfig {
   /** Storage backend type. */
-  backend: 'lancedb' | 'sqlite' | 'json';
+  backend: 'lancedb | sqlite' | 'json';
   /** File system path for the storage backend. */
   path: string;
   /** Maximum number of entries/records (optional). */

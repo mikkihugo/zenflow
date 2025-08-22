@@ -16,12 +16,12 @@
  * @version 1..0
  */
 
-import type { DocumentType } from '@claude-zen/enterprise');
+import type { DocumentType } from '@claude-zen/enterprise';
 
 import type {
   ProgramEpicEntity,
   FeatureEntity,
-} from './../entities/document-entities');
+} from './../entities/document-entities';
 
 import {
   BaseDocumentService,
@@ -43,7 +43,7 @@ export interface ProgramEpicCreateOptions {
   parentBusinessEpicId?: string;
   artId?: string; // Agile Release Train
   programIncrementId?: string;
-  priority?: 'low | medium' | 'high | critical');
+  priority?: 'low'' | ''medium'' | ''high'' | ''critical');
   estimatedEffort?: number; // story points or weeks
   dependencies?: string[];
   author?: string;
@@ -58,12 +58,7 @@ export interface ProgramEpicQueryOptions extends QueryFilters {
   programIncrementId?: string;
   parentBusinessEpicId?: string;
   hasFeatures?: boolean;
-  implementationStatus?:
-    | 'planning'
-    | 'in_progress'
-    | 'review'
-    | 'approved'
-    | 'implemented');
+  implementationStatus?:' | ''planning | in_progress' | 'review' | 'approved' | 'implemented');
 }
 
 export interface ProgramEpicStats {
@@ -123,16 +118,13 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
     // Validation warnings
     if (data.title && data.title.length < 10) {
       warnings.push(
-        'Title should be more descriptive (at least 10 characters)'
-      );
+        'Title should be more descriptive (at least 10 characters)');
     }
 
     if (
-      !data.metadata?.successCriteria ||
-      (data.metadata.successCriteria as string[])?.length === 0
+      !data.metadata?.successCriteria'' | '''' | ''(data.metadata.successCriteria as string[])?.length === 0
     ) {
-      warnings.push(
-        'Consider adding success criteria for better outcome tracking'
+      warnings.push('Consider adding success criteria for better outcome tracking'
       );
     }
 
@@ -156,7 +148,7 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
     }
 
     // Description
-    content += `## Description\n${data.content || ''}\n\n`;
+    content += `## Description\n${data.content'' | '''' | ''''}\n\n`;
 
     // Success criteria
     if (
@@ -194,7 +186,7 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
     // Metadata section
     content += '---\n\n');
     content += `**Created**: ${new Date()?.toISOString.split('T')[0]}\n`;
-    content += `**Author**: ${data.author || 'program-team'}\n`;
+    content += `**Author**: ${data.author'' | '''' | '''program-team'}\n`;
 
     if (data.metadata?.artId) {
       content += `**ART**: ${data.metadata.artId}\n`;
@@ -213,18 +205,17 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
 
   protected generateKeywords(data: Partial<ProgramEpicEntity>): string[] {
     const textSources = [
-      data.title || '',
-      data.content || '',
-      data.metadata?.businessValue || '',
-      ...(data.metadata?.successCriteria || []),
+      data.title'' | '''' | '''',
+      data.content'' | '''' | '''',
+      data.metadata?.businessValue'' | '''' | '''',
+      ...(data.metadata?.successCriteria'' | '''' | ''[]),
     ];
 
     const text = textSources.join(' ')?.toLowerCase()
-    const words = text.match(/\b\w{3,}\b/g) || [];
+    const words = text.match(/\b\w{3,}\b/g)'' | '''' | ''[];
 
     // Common stop words to filter out
-    const stopWords = new Set([
-      'the',
+    const stopWords = new Set(['the',
       'and',
       'for',
       'are',
@@ -306,12 +297,12 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
         title: options.title,
         content: options.description,
         summary: `Program epic for ${options.title}`,
-        author: options.author || 'program-team',
+        author: options.author'' | '''' | '''program-team',
         project_id: options.projectId,
         status: 'draft',
-        priority: options.priority || 'medium',
+        priority: options.priority'' | '''' | '''medium',
         tags: ['program, epic', 'safe'],
-        dependencies: options.dependencies || [],
+        dependencies: options.dependencies'' | '''' | ''[],
         related_documents: [],
 
         metadata: {
@@ -321,9 +312,9 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
           artId: options.artId,
           programIncrementId: options.programIncrementId,
           estimatedEffort: options.estimatedEffort,
-          acceptanceCriteria: options.acceptanceCriteria || [],
-          stakeholders: options.stakeholders || [],
-          implementationStatus: 'planning',
+          acceptanceCriteria: options.acceptanceCriteria'' | '''' | ''[],
+          stakeholders: options.stakeholders'' | '''' | ''[],
+          implementationStatus:'planning',
           featuresGenerated: 0,
           ...options.metadata,
         },
@@ -449,23 +440,23 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
       for (const epic of epics) {
         // Status distribution
         if (epic.status) {
-          stats.byStatus[epic.status] = (stats.byStatus[epic.status] || 0) + 1;
+          stats.byStatus[epic.status] = (stats.byStatus[epic.status]'' | '''' | ''0) + 1;
         }
 
         // Priority distribution
         if (epic.priority) {
           stats.byPriority[epic.priority] =
-            (stats.byPriority[epic.priority] || 0) + 1;
+            (stats.byPriority[epic.priority]'' | '''' | ''0) + 1;
         }
 
         // ART distribution
         if (epic.metadata?.artId) {
           const artId = epic.metadata.artId as string;
-          stats.byART[artId] = (stats.byART[artId] || 0) + 1;
+          stats.byART[artId] = (stats.byART[artId]'' | '''' | ''0) + 1;
         }
 
         // Features counting
-        const epicFeatures = epic.metadata?.featuresGenerated || 0;
+        const epicFeatures = epic.metadata?.featuresGenerated'' | '''' | ''0;
         stats.totalFeatures += epicFeatures as number;
 
         // Recent activity
@@ -474,7 +465,7 @@ export class ProgramEpicService extends BaseDocumentService<ProgramEpicEntity> {
         }
 
         // Completion tracking
-        if (epic.metadata?.implementationStatus === 'implemented') {
+        if (epic.metadata?.implementationStatus ==='implemented') {
           completedCount++;
         }
       }

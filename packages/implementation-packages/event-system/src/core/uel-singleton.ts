@@ -1,4 +1,4 @@
-import { EventEmitter } from "@claude-zen/foundation";
+import { EventEmitter } from '@claude-zen/foundation';
 /**
  * @file UEL Singleton.
  *
@@ -6,9 +6,7 @@ import { EventEmitter } from "@claude-zen/foundation";
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import { 
-  TOKENS 
-} from '@claude-zen/foundation';
+import { TOKENS } from '@claude-zen/foundation';
 import type { CompatibilityFactory } from '../compatibility';
 import type { UELFactory, UELRegistry } from '../factories';
 import type { EventManager } from '../manager';
@@ -24,12 +22,12 @@ import type { EventManagerConfig } from './interfaces';
 export class UEL {
   private static instance: UEL;
   private initialized = false;
-  private factory: UELFactory | null = null;
-  private registry: UELRegistry | null = null;
-  private eventManager: EventManager | null = null;
-  private eventRegistry: EventRegistry | null = null;
-  private validationFramework: UELValidationFramework | null = null;
-  private compatibilityFactory: CompatibilityFactory | null = null;
+  private factory: UELFactory'' | ''null = null;
+  private registry: UELRegistry'' | ''null = null;
+  private eventManager: EventManager'' | ''null = null;
+  private eventRegistry: EventRegistry'' | ''null = null;
+  private validationFramework: UELValidationFramework'' | ''null = null;
+  private compatibilityFactory: CompatibilityFactory'' | ''null = null;
 
   private constructor() {}
 
@@ -41,9 +39,7 @@ export class UEL {
   }
 
   async initialize(config?: {
-    logger?:
-      | Console
-      | { debug: Function; info: Function; warn: Function; error: Function };
+    logger?:'' | ''Console'' | ''{ debug: Function; info: Function; warn: Function; error: Function };
     config?: Record<string, unknown>;
     autoRegisterFactories?: boolean;
     enableValidation?: boolean;
@@ -65,7 +61,7 @@ export class UEL {
     const container = new DIContainer();
 
     // Register dependencies
-    const logger = config?.logger || {
+    const logger = config?.logger'' | '''' | ''{
       debug: (message: string, meta?: unknown) => console.debug(message, meta),
       info: (message: string, meta?: unknown) => console.info(message, meta),
       warn: (message: string, meta?: unknown) => console.warn(message, meta),
@@ -75,23 +71,20 @@ export class UEL {
     // Simplified registration without SingletonProvider
     // TODO: Implement proper DI container registration when Foundation DI is ready
     (container as any).register(TOKENS.Logger, logger);
-    (container as any).register(
-      TOKENS.Config,
-      (() => {
-        const configData = config?.config || {};
-        return {
-          get: <T>(key: string, defaultValue?: T): T => {
-            return (configData as any)[key] ?? defaultValue;
-          },
-          set: (key: string, value: unknown): void => {
-            (configData as any)[key] = value;
-          },
-          has: (key: string): boolean => {
-            return key in configData;
-          },
-        };
-      })
-    );
+    (container as any).register(TOKENS.Config, () => {
+      const configData = config?.config'' | '''' | ''{};
+      return {
+        get: <T>(key: string, defaultValue?: T): T => {
+          return (configData as any)[key] ?? defaultValue;
+        },
+        set: (key: string, value: unknown): void => {
+          (configData as any)[key] = value;
+        },
+        has: (key: string): boolean => {
+          return key in configData;
+        },
+      };
+    });
 
     // Initialize components with proper DI
     this.factory = new UELFactory(logger as any, config?.config as any);
@@ -114,8 +107,7 @@ export class UEL {
       // Basic initialization - some factories may not have initialize method
       try {
         if (
-          this.compatibilityFactory &&
-          'initialize' in this.compatibilityFactory
+          this.compatibilityFactory &&'initialize' in this.compatibilityFactory
         ) {
           await (this.compatibilityFactory as any).initialize(
             this.eventManager,
@@ -186,11 +178,11 @@ export class UEL {
     return this.eventRegistry;
   }
 
-  getValidationFramework(): UELValidationFramework | null {
+  getValidationFramework(): UELValidationFramework'' | ''null {
     return this.validationFramework;
   }
 
-  getCompatibilityFactory(): CompatibilityFactory | null {
+  getCompatibilityFactory(): CompatibilityFactory'' | ''null {
     return this.compatibilityFactory;
   }
 
@@ -256,20 +248,20 @@ export class UEL {
       const healthStatus = Object.entries(healthData).map(
         ([name, data]: [string, any]) => ({
           name,
-          status: data.healthy ? 'healthy' : 'unhealthy',
+          status: data.healthy ?'healthy' : 'unhealthy',
           subscriptions: 0,
           queueSize: 0,
           errorRate: 0,
           uptime: 0,
           lastCheck: new Date(),
-          metadata: data.details || {},
+          metadata: data.details'' | '''' | ''{},
         })
       );
       return healthStatus;
     } catch (error) {
       return [
         {
-          name: 'event-manager',
+          name:'event-manager',
           status: 'unhealthy',
           subscriptions: 0,
           queueSize: 0,
@@ -373,11 +365,11 @@ export class UEL {
     const shutdownPromises: Promise<void>[] = [];
 
     if (this.eventManager) {
-      shutdownPromises.push(this.eventManager.shutdown());
+      shutdownPromises.push(this.eventManager.shutdown())();
     }
 
     if (this.factory) {
-      shutdownPromises.push(this.factory.shutdownAll());
+      shutdownPromises.push(this.factory.shutdownAll())();
     }
 
     await Promise.allSettled(shutdownPromises);
@@ -402,7 +394,9 @@ export const uel = UEL.getInstance();
  * @returns A new UEL instance
  */
 export async function createUEL(config?: {
-  logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
+  logger?:
+    | Console
+    | { debug: Function; info: Function; warn: Function; error: Function };
   config?: Record<string, unknown>;
   autoRegisterFactories?: boolean;
   enableValidation?: boolean;

@@ -1,6 +1,6 @@
 /**
  * @fileoverview SPARC Methodology Package
- * 
+ *
  * Clean SPARC implementation with minimal dependencies.
  */
 
@@ -10,7 +10,7 @@
 
 // Production SPARC Commander (Full Implementation)
 export { SPARCCommander } from './core/sparc-commander';
-export type { 
+export type {
   SPARCProject as SPARCCommanderProject,
   SPARCPhase as SPARCCommanderPhase,
   SPARCDeliverable,
@@ -24,7 +24,7 @@ export type {
   MethodologyResult,
   ProjectMetrics,
   SPARCError,
-  SPARCWarning
+  SPARCWarning,
 } from './core/sparc-commander';
 
 // SAFe-SPARC Integration Workflow (Production Implementation)
@@ -35,15 +35,15 @@ export type {
   PortfolioDecision,
   SparcArtifacts,
   SparcExecutionContext,
-  SparcExecutionResult
+  SparcExecutionResult,
 } from './core/safe-sparc-workflow';
 
 // SAFe 6.0 Development Manager (Flow-Based Enterprise Development)
-export { 
+export {
   Safe6DevelopmentManager,
   createSafe6DevelopmentManager,
   createSafe6SolutionTrainManager,
-  createSafe6BusinessAgilityManager
+  createSafe6BusinessAgilityManager,
 } from './safe6-development-manager';
 export type {
   Safe6DevelopmentManagerConfig,
@@ -55,7 +55,7 @@ export type {
   Feature,
   Safe6DevelopmentTeam,
   TeamMember,
-  Safe6DevelopmentCoordinationResult
+  Safe6DevelopmentCoordinationResult,
 } from './safe6-development-manager';
 
 // Types
@@ -75,7 +75,7 @@ export type {
   ComponentRelationship,
   ProjectRefinement,
   ProjectImplementation,
-  SPARCProgress
+  SPARCProgress,
 } from './types';
 
 // import { SPARCEngineCore } from './core/sparc-engine';
@@ -93,7 +93,9 @@ export class SPARC {
    * Note: Implementation pending
    */
   static getEngine(): any {
-    throw new Error('SPARCEngineCore implementation pending - use SPARCCommander instead');
+    throw new Error(
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+    );
   }
 
   /**
@@ -106,7 +108,9 @@ export class SPARC {
     requirements: string[],
     complexity: any = 'moderate'
   ): Promise<any> {
-    throw new Error('SPARCEngineCore implementation pending - use SPARCCommander instead');
+    throw new Error(
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+    );
   }
 
   /**
@@ -114,7 +118,9 @@ export class SPARC {
    * Note: Implementation pending
    */
   static async executeFullWorkflow(projectId: string): Promise<any[]> {
-    throw new Error('SPARCEngineCore implementation pending - use SPARCCommander instead');
+    throw new Error(
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+    );
   }
 
   /**
@@ -122,7 +128,9 @@ export class SPARC {
    * Note: Implementation pending
    */
   static getProject(projectId: string): any {
-    throw new Error('SPARCEngineCore implementation pending - use SPARCCommander instead');
+    throw new Error(
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+    );
   }
 
   /**
@@ -130,7 +138,9 @@ export class SPARC {
    * Note: Implementation pending
    */
   static listProjects(): any[] {
-    throw new Error('SPARCEngineCore implementation pending - use SPARCCommander instead');
+    throw new Error(
+      'SPARCEngineCore implementation pending - use SPARCCommander instead'
+    );
   }
 }
 

@@ -1,18 +1,27 @@
 /**
  * @fileoverview SAFe Date Utilities - Date Management
- * 
+ *
  * Date utilities using date-fns for SAFe framework operations.
  * Provides consistent date handling with optimized implementations.
- * 
+ *
  * SINGLE RESPONSIBILITY: Date operations for SAFe framework
  * FOCUSES ON: PI planning dates, roadmap timelines, milestone tracking
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
  */
 
-import { format, addMonths, addWeeks, differenceInDays, isAfter, isBefore, startOfWeek, endOfWeek } from 'date-fns';
+import {
+  format,
+  addMonths,
+  addWeeks,
+  differenceInDays,
+  isAfter,
+  isBefore,
+  startOfWeek,
+  endOfWeek,
+} from 'date-fns';
 
 /**
  * SAFe date formatting utilities
@@ -49,9 +58,9 @@ export class SafeDateUtils {
   } {
     const start = startOfWeek(startDate);
     const end = addWeeks(start, 12);
-    
+
     // Calculate 6 sprint start dates (2-week sprints)
-    const sprintStarts = Array.from({ length: 6 }, (_, i) => 
+    const sprintStarts = Array.from({ length: 6 }, (_, i) =>
       addWeeks(start, i * 2)
     );
 
@@ -68,7 +77,7 @@ export class SafeDateUtils {
   } {
     const start = new Date();
     const end = addMonths(start, horizonMonths);
-    
+
     // Generate quarterly milestones
     const quarters: Array<{ start: Date; end: Date; label: string }> = [];
     for (let i = 0; i < Math.ceil(horizonMonths / 3); i++) {
@@ -77,7 +86,7 @@ export class SafeDateUtils {
       quarters.push({
         start: quarterStart,
         end: quarterEnd,
-        label: `Q${(i % 4) + 1} ${quarterStart.getFullYear()}`
+        label: `Q${(i % 4) + 1} ${quarterStart.getFullYear()}`,
       });
     }
 
@@ -102,7 +111,7 @@ export class SafeDateUtils {
    * Generate SAFe epic timeline
    */
   static generateEpicTimeline(
-    epicStart: Date, 
+    epicStart: Date,
     estimatedMonths: number
   ): {
     phases: Array<{
@@ -116,18 +125,18 @@ export class SafeDateUtils {
       { name: 'Epic Hypothesis', percentage: 0.1 },
       { name: 'MVP Definition', percentage: 0.15 },
       { name: 'Development', percentage: 0.6 },
-      { name: 'Validation', percentage: 0.15 }
+      { name: 'Validation', percentage: 0.15 },
     ];
 
     let currentStart = epicStart;
-    const timeline = phases.map(phase => {
+    const timeline = phases.map((phase) => {
       const duration = Math.ceil(estimatedMonths * phase.percentage);
       const end = addMonths(currentStart, duration);
       const result = {
         name: phase.name,
         start: currentStart,
         end,
-        duration: differenceInDays(end, currentStart)
+        duration: differenceInDays(end, currentStart),
       };
       currentStart = end;
       return result;
@@ -165,7 +174,7 @@ export class SafeCalendarUtils {
     return {
       planningStart,
       planningEnd,
-      piExecutionStart
+      piExecutionStart,
     };
   }
 
@@ -183,9 +192,10 @@ export class SafeCalendarUtils {
     return Array.from({ length: numberOfARTs }, (_, i) => ({
       artId: `ART-${i + 1}`,
       syncDate: addWeeks(piStart, 1), // Week 2 of PI
-      sprintDemoDates: Array.from({ length: 5 }, (_, sprintIndex) =>
-        addWeeks(piStart, (sprintIndex + 1) * 2) // Every 2 weeks
-      )
+      sprintDemoDates: Array.from(
+        { length: 5 },
+        (_, sprintIndex) => addWeeks(piStart, (sprintIndex + 1) * 2) // Every 2 weeks
+      ),
     }));
   }
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @fileoverview Test Neural Orchestrator - Brain as Coordinator
- * 
+ *
  * Test script to validate the brain orchestrator functionality:
  * - Task complexity analysis and routing
  * - Storage strategy determination
@@ -11,25 +11,24 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-import { 
-  BrainCoordinator
-} from './main';
-import type { 
-  NeuralTask,
-  NeuralData
-} from './main';
+import { BrainCoordinator } from './main';
+import type { NeuralTask, NeuralData } from './main';
 
 const logger = getLogger('test-neural-orchestrator');
 
 async function testNeuralOrchestrator(): Promise<void> {
   logger.info('🧠 Testing Neural Orchestrator - Brain as Coordinator');
-  
+
   // Initialize brain coordinator
   const brain = new BrainCoordinator({
     autonomous: { enabled: true, learningRate: 0.01, adaptationThreshold: 0.1 },
-    neural: { rustAcceleration: true, gpuAcceleration: false, parallelProcessing: 4 }
+    neural: {
+      rustAcceleration: true,
+      gpuAcceleration: false,
+      parallelProcessing: 4,
+    },
   });
-  
+
   await brain.initialize();
   logger.info('✅ Brain coordinator initialized');
 
@@ -39,8 +38,8 @@ async function testNeuralOrchestrator(): Promise<void> {
     id: 'test-simple-1',
     type: 'prediction',
     data: {
-      input: [0.1, 0.2, 0.3, 0.4, 0.5]
-    }
+      input: [0.1, 0.2, 0.3, 0.4, 0.5],
+    },
   };
 
   // Predict complexity before processing
@@ -49,7 +48,9 @@ async function testNeuralOrchestrator(): Promise<void> {
 
   const simpleResult = await brain.processNeuralTask(simpleTask);
   logger.info(`📈 Simple result: ${JSON.stringify(simpleResult.metadata)}`);
-  logger.info(`🎲 Result data: [${(simpleResult.result as number[]).slice(0, 3).join(', ')}...]`);
+  logger.info(
+    `🎲 Result data: [${(simpleResult.result as number[]).slice(0, 3).join(', ')}...]`
+  );
 
   // Test 2: Complex forecasting task (should attempt neural-ml)
   logger.info('\n📊 Test 2: Complex Forecasting Task');
@@ -57,16 +58,19 @@ async function testNeuralOrchestrator(): Promise<void> {
     id: 'test-complex-1',
     type: 'forecasting',
     data: {
-      input: Array.from({ length: 1000 }, (_, i) => Math.sin(i * 0.1) + Math.random() * 0.1),
+      input: Array.from(
+        { length: 1000 },
+        (_, i) => Math.sin(i * 0.1) + Math.random() * 0.1
+      ),
       metadata: {
         timeSeriesLength: 1000,
-        expectedOutputSize: 50
-      }
+        expectedOutputSize: 50,
+      },
     },
     requirements: {
       accuracy: 0.95,
-      latency: 5000
-    }
+      latency: 5000,
+    },
   };
 
   const complexPrediction = brain.predictTaskComplexity(complexTask);
@@ -74,7 +78,9 @@ async function testNeuralOrchestrator(): Promise<void> {
 
   const complexResult = await brain.processNeuralTask(complexTask);
   logger.info(`📈 Complex result: ${JSON.stringify(complexResult.metadata)}`);
-  logger.info(`🎲 Result size: ${(complexResult.result as number[]).length} predictions`);
+  logger.info(
+    `🎲 Result size: ${(complexResult.result as number[]).length} predictions`
+  );
 
   // Test 3: Heavy optimization task (should definitely use neural-ml)
   logger.info('\n📊 Test 3: Heavy Optimization Task');
@@ -85,13 +91,13 @@ async function testNeuralOrchestrator(): Promise<void> {
       input: Array.from({ length: 10000 }, () => Math.random()),
       metadata: {
         dimensions: 200,
-        featureCount: 100
-      }
+        featureCount: 100,
+      },
     },
     requirements: {
       accuracy: 0.99,
-      gpu: true
-    }
+      gpu: true,
+    },
   };
 
   const heavyPrediction = brain.predictTaskComplexity(heavyTask);
@@ -103,7 +109,7 @@ async function testNeuralOrchestrator(): Promise<void> {
 
   // Test 4: Convenience methods
   logger.info('\n📊 Test 4: Convenience Methods');
-  
+
   // Simple prediction
   const quickPrediction = await brain.predict([0.5, 1.0, 1.5]);
   logger.info(`🔮 Quick prediction: [${quickPrediction.join(', ')}]`);
@@ -111,11 +117,13 @@ async function testNeuralOrchestrator(): Promise<void> {
   // Time series forecasting
   const timeSeries = Array.from({ length: 100 }, (_, i) => Math.sin(i * 0.1));
   const forecast = await brain.forecast(timeSeries, 10);
-  logger.info(`📈 Forecast (10 steps): [${forecast.slice(0, 5).join(', ')}...]`);
+  logger.info(
+    `📈 Forecast (10 steps): [${forecast.slice(0, 5).join(', ')}...]`
+  );
 
   // Test 5: Storage orchestration
   logger.info('\n📊 Test 5: Storage Orchestration');
-  
+
   const testData = [
     // Small frequent data -> Memory
     {
@@ -125,8 +133,8 @@ async function testNeuralOrchestrator(): Promise<void> {
       characteristics: {
         size: 1024,
         accessFrequency: 'realtime' as const,
-        persistenceLevel: 'session' as const
-      }
+        persistenceLevel: 'session' as const,
+      },
     },
     // High-dimensional vectors -> Vector DB
     {
@@ -137,8 +145,8 @@ async function testNeuralOrchestrator(): Promise<void> {
         size: 2048,
         dimensions: 512,
         accessFrequency: 'frequent' as const,
-        persistenceLevel: 'permanent' as const
-      }
+        persistenceLevel: 'permanent' as const,
+      },
     },
     // Connected data -> Graph DB
     {
@@ -149,9 +157,9 @@ async function testNeuralOrchestrator(): Promise<void> {
         size: 4096,
         accessFrequency: 'occasional' as const,
         persistenceLevel: 'permanent' as const,
-        relationships: ['model1', 'model2', 'model3', 'dataset1', 'pipeline1']
-      }
-    }
+        relationships: ['model1', 'model2', 'model3', 'dataset1', 'pipeline1'],
+      },
+    },
   ];
 
   for (const data of testData) {
@@ -165,18 +173,23 @@ async function testNeuralOrchestrator(): Promise<void> {
   logger.info('📈 Orchestration Metrics:');
   logger.info(`  📊 Tasks processed: ${metrics.tasksProcessed}`);
   logger.info(`  🎯 Complexity distribution:`, metrics.complexityDistribution);
-  logger.info(`  ⚡ Average latency:`, Object.entries(metrics.averageLatency).map(([k, v]) => `${k}: ${v.toFixed(1)}ms`));
+  logger.info(
+    `  ⚡ Average latency:`,
+    Object.entries(metrics.averageLatency).map(
+      ([k, v]) => `${k}: ${v.toFixed(1)}ms`
+    )
+  );
   logger.info(`  📦 Neural-ML load count: ${metrics.neuralMlLoadCount}`);
   logger.info(`  💾 Storage distribution:`, metrics.storageDistribution);
 
   // Test 7: Demonstrate task complexity reasoning
   logger.info('\n📊 Test 7: Task Complexity Analysis');
-  
+
   const testTasks = [
     { type: 'prediction', inputSize: 10, desc: 'Small prediction' },
     { type: 'classification', inputSize: 1000, desc: 'Medium classification' },
     { type: 'forecasting', inputSize: 5000, desc: 'Large time series' },
-    { type: 'optimization', inputSize: 10000, desc: 'Heavy optimization' }
+    { type: 'optimization', inputSize: 10000, desc: 'Heavy optimization' },
   ];
 
   for (const test of testTasks) {
@@ -185,11 +198,13 @@ async function testNeuralOrchestrator(): Promise<void> {
       data: {
         input: Array.from({ length: test.inputSize }, () => Math.random()),
         metadata: {
-          timeSeriesLength: test.type === 'forecasting' ? test.inputSize : undefined,
-          dimensions: test.inputSize > 1000 ? Math.floor(test.inputSize / 50) : undefined
-        }
+          timeSeriesLength:
+            test.type === 'forecasting' ? test.inputSize : undefined,
+          dimensions:
+            test.inputSize > 1000 ? Math.floor(test.inputSize / 50) : undefined,
+        },
       },
-      requirements: test.inputSize > 5000 ? { accuracy: 0.95 } : undefined
+      requirements: test.inputSize > 5000 ? { accuracy: 0.95 } : undefined,
     };
 
     const complexity = brain.predictTaskComplexity(task);
@@ -200,12 +215,12 @@ async function testNeuralOrchestrator(): Promise<void> {
   logger.info('🧠 Brain successfully acts as intelligent neural coordinator');
   logger.info('  • Routes tasks based on complexity analysis');
   logger.info('  • Lazy loads neural-ml for heavy operations');
-  logger.info('  • Orchestrates storage strategy intelligently');  
+  logger.info('  • Orchestrates storage strategy intelligently');
   logger.info('  • Learns from usage patterns and optimizes decisions');
 }
 
 // Run the test automatically
-testNeuralOrchestrator().catch(error => {
+testNeuralOrchestrator().catch((error) => {
   logger.error('❌ Test failed:', error);
   process.exit(1);
 });

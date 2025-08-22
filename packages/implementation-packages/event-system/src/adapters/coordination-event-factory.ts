@@ -15,10 +15,7 @@
  */
 
 import { getLogger, type Logger, getConfig } from '@claude-zen/foundation';
-import type {
-  EventManager,
-  EventManagerFactory,
-} from '../core/interfaces';
+import type { EventManager, EventManagerFactory } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
 import type { CoordinationEventAdapterConfig } from './coordination-event-adapter';
 import {
@@ -41,7 +38,7 @@ export class CoordinationEventManagerFactory
   private instances = new Map<string, CoordinationEventAdapter>();
 
   constructor(logger?: Logger) {
-    this.logger = logger || getLogger('CoordinationEventManagerFactory');
+    this.logger = logger'' | '''' | ''getLogger('CoordinationEventManagerFactory');
     this.logger.debug('CoordinationEventManagerFactory initialized');
   }
 
@@ -122,8 +119,8 @@ export class CoordinationEventManagerFactory
    *
    * @param name
    */
-  get(name: string): EventManager | undefined {
-    return this.instances.get(name) as EventManager | undefined;
+  get(name: string): EventManager'' | ''undefined {
+    return this.instances.get(name) as EventManager'' | ''undefined;
   }
 
   /**
@@ -189,7 +186,7 @@ export class CoordinationEventManagerFactory
           results?.set(name, {
             name: manager.name,
             type: manager.type,
-            status: 'unhealthy',
+            status:'unhealthy',
             lastCheck: new Date(),
             subscriptions: 0,
             queueSize: 0,
@@ -349,7 +346,7 @@ export class CoordinationEventManagerFactory
    * @param config
    */
   private validateConfig(config: CoordinationEventAdapterConfig): void {
-    if (!config?.name || typeof config?.name !== 'string') {
+    if (!config?.name'' | '''' | ''typeof config?.name !=='string') {
       throw new Error(
         'Coordination event manager configuration must have a valid name'
       );

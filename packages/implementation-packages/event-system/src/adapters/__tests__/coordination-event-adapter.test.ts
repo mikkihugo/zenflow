@@ -247,7 +247,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:task',
           operation: 'distribute',
           targetId: 'task-1',
-        payload: {},
+          payload: {},
         },
         {
           id: 'batch-2',
@@ -256,7 +256,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:task',
           operation: 'distribute',
           targetId: 'task-2',
-        payload: {},
+          payload: {},
         },
       ];
 
@@ -363,7 +363,7 @@ describe('CoordinationEventAdapter', () => {
       expect(status).toMatchObject({
         name: 'test-coordination',
         type: EventManagerTypes.COORDINATION,
-        status: expect.stringMatching(/healthy|degraded|unhealthy|stopped/),
+        status: expect.stringMatching(/healthy | degraded | unhealthy | stopped/),
         lastCheck: expect.any(Date),
         subscriptions: expect.any(Number),
         queueSize: expect.any(Number),
@@ -400,7 +400,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:swarm',
           operation: 'init',
           targetId: '',
-        payload: {},
+          payload: {},
         } as CoordinationEvent);
       } catch {
         // Expected to fail
@@ -503,7 +503,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:swarm',
           operation: 'init',
           targetId: 'swarm-1',
-        payload: {},
+          payload: {},
         },
         {
           id: 'history-2',
@@ -512,7 +512,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:agent',
           operation: 'spawn',
           targetId: 'agent-1',
-        payload: {},
+          payload: {},
         },
       ];
 
@@ -534,7 +534,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:swarm',
           operation: 'init',
           targetId: 'swarm-1',
-        payload: {},
+          payload: {},
           priority: 'high',
         },
         {
@@ -544,7 +544,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:agent',
           operation: 'spawn',
           targetId: 'agent-1',
-        payload: {},
+          payload: {},
           priority: 'medium',
         },
       ];
@@ -620,7 +620,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:swarm',
           operation: 'init',
           targetId: 'test-swarm',
-        payload: {},
+          payload: {},
         })
       );
     });
@@ -703,7 +703,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:swarm',
           operation: 'init',
           targetId: '',
-        payload: {},
+          payload: {},
         } as CoordinationEvent);
       } catch (error) {
         expect(error).toBeInstanceOf(Error);

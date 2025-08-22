@@ -9,11 +9,11 @@
  * @file Interface implementation: coordination-service-helpers.
  */
 
-import type { SessionState, SwarmAgent } from '@claude-zen/enterprise');
-import { getLogger } from '@claude-zen/foundation');
+import type { SessionState, SwarmAgent } from '@claude-zen/enterprise';
+import { getLogger } from '@claude-zen/foundation';
 
-import type { AgentType } from './../../types/agent-types');
-import type { SwarmTopology } from './../../types/shared-types');
+import type { AgentType } from './../../types/agent-types';
+import type { SwarmTopology } from './../../types/shared-types';
 
 import('/coordination-service-adapter');
 
@@ -53,7 +53,7 @@ export async function createIntelligentAgent(
     learningEnabled: config?.learningEnabled ?? true,
     metadata: {
       created: new Date()?.toISOString,
-      version: '1..0',
+      version:'1..0',
       creator: 'coordination-helper',
     },
   };
@@ -136,7 +136,7 @@ export async function createAgentBatch(
       const batchResults = await Promise.allSettled(batchPromises);
 
       batchResults?.forEach((result, index) => {
-        if (result?.status === 'fulfilled') {
+        if (result?.status ==='fulfilled') {
           results.push(result?.value);
         } else {
           logger.error(
@@ -180,7 +180,7 @@ export async function optimizeAgentPerformance(
     agentId: string;
     issue: string;
     recommendation: string;
-    priority: 'low | medium' | 'high');
+    priority: 'low | medium | high');
   }>;
 }> {
   const logger = getLogger('CoordinationHelpers:AgentOptimization');
@@ -209,7 +209,7 @@ export async function optimizeAgentPerformance(
     agentId: string;
     issue: string;
     recommendation: string;
-    priority: 'low | medium' | 'high');
+    priority: 'low | medium | high');
   }> = [];
 
   let optimized = 0;
@@ -467,7 +467,7 @@ export async function coordinateIntelligentSwarm(
 
   logger.info(`Coordinating intelligent swarm with ${agents.length} agents`);
 
-  let bestTopology: SwarmTopology = 'mesh');
+  let bestTopology: SwarmTopology ='mesh');
   let bestPerformance = {
     latency: Number.POSITIVE_INFINITY,
     successRate: 0,
@@ -503,8 +503,7 @@ export async function coordinateIntelligentSwarm(
         if (
           performance.successRate >= minSuccessRate &&
           performance.latency <= targetLatency &&
-          (performance.successRate > bestPerformance.successRate ||
-            (performance.successRate === bestPerformance.successRate &&
+          (performance.successRate > bestPerformance.successRate || (performance.successRate === bestPerformance.successRate &&
               performance.latency < bestPerformance.latency))
         ) {
           bestTopology = topology;
@@ -523,8 +522,7 @@ export async function coordinateIntelligentSwarm(
 
   // If no topology met requirements, use the best we found
   if (!bestCoordination) {
-    logger.warn(
-      'No topology met performance requirements, using mesh as fallback'
+    logger.warn('No topology met performance requirements, using mesh as fallback'
     );
     const coordinationResult = await adapter.execute('swarm-coordinate', {
       agents,
@@ -577,7 +575,7 @@ export async function distributeSwarmTasks(
     estimatedDuration?: number;
   }>,
   options?: {
-    strategy?: 'round-robin | least-loaded' | 'capability-match');
+    strategy?: 'round-robin | least-loaded | capability-match');
     maxTasksPerAgent?: number;
   }
 ): Promise<{
@@ -633,7 +631,7 @@ export async function distributeSwarmTasks(
     let selectedAgent: SwarmAgent | null = null;
 
     switch (strategy) {
-      case 'capability-match':
+      case'capability-match':
         selectedAgent = findBestCapabilityMatch(
           availableAgents,
           task,
@@ -723,7 +721,7 @@ export async function analyzeCoordinationPerformance(
 ): Promise<{
   overall: {
     score: number;
-    grade: 'A | B' | 'C | D' | 'F');
+    grade:'A | B'' | ''C | D'' | ''F');
     issues: string[];
     recommendations: string[];
   };
@@ -835,14 +833,14 @@ function getDefaultCognitivePattern(type: AgentType): any {
   };
 
   return (
-    patternMap[type] || { focus: 'general', creativity: .5, precision: .7 }
+    patternMap[type] || { focus:'general', creativity: .5, precision: .7 }
   );
 }
 
 function analyzeAgentPerformance(metrics: any): Array<{
   problem: string;
   solution: string;
-  priority: 'low | medium' | 'high');
+  priority: 'low | medium | high');
   autoFix?: (
     adapter: CoordinationServiceAdapter,
     agentId: string
@@ -851,7 +849,7 @@ function analyzeAgentPerformance(metrics: any): Array<{
   const issues: Array<{
     problem: string;
     solution: string;
-    priority: 'low | medium' | 'high');
+    priority: 'low | medium | high');
     autoFix?: (
       adapter: CoordinationServiceAdapter,
       agentId: string
@@ -1008,7 +1006,7 @@ function analyzeOverallPerformance(
   status: any
 ): {
   score: number;
-  grade: 'A | B' | 'C | D' | 'F');
+  grade:'A | B'' | ''C | D'' | ''F');
   issues: string[];
   recommendations: string[];
 } {
@@ -1040,7 +1038,7 @@ function analyzeOverallPerformance(
   }
 
   // Determine grade
-  let grade: 'A | B' | 'C | D' | 'F');
+  let grade: 'A | B | C | D | F');
   if (score >= 90) grade = 'A');
   else if (score >= 80) grade = 'B');
   else if (score >= 70) grade = 'C');
@@ -1060,7 +1058,7 @@ function analyzeAgentPerformanceMetrics(agentMetrics: any[]): {
   const total = agentMetrics.length;
   const active = agentMetrics.filter((m) => {
     const lastActivity = new Date(m.lastActivity);
-    return Date.now() - lastActivity?.getTime < 3600000; // 1 hour
+    return Date.now() - lastActivity?.getTime() < 3600000; // 1 hour
   }).length;
 
   const avgPerformance =
@@ -1139,6 +1137,6 @@ function analyzeCoordinationMetrics(swarmMetrics: any): {
     averageLatency: swarmMetrics.averageResponseTime || 0,
     successRate: swarmMetrics.completedTasks / (swarmMetrics.totalTasks || 1),
     throughput: swarmMetrics.throughput || 0,
-    optimalTopology: 'mesh', // This would be determined by performance analysis
+    optimalTopology:'mesh', // This would be determined by performance analysis
   };
 }

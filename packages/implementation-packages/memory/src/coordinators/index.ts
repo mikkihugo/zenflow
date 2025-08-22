@@ -1,6 +1,6 @@
 /**
  * Memory Coordination System - Complete Memory Orchestration
- * 
+ *
  * Provides intelligent coordination for memory operations across multiple backends,
  * leveraging Foundation utilities and integrating with coordination-core.
  */
@@ -14,5 +14,5 @@ export type {
   MemoryNode,
   MemoryDistributionStrategy,
   MemoryHealthStatus,
-  MemoryLoadMetrics
+  MemoryLoadMetrics,
 } from './types';

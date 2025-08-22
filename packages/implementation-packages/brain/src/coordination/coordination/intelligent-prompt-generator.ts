@@ -1,17 +1,17 @@
 /**
  * @fileoverview Intelligent Prompt Generator for Brain Package
- * 
+ *
  * AI-powered prompt generation system that provides context-aware,
  * high-quality development prompts with built-in coding standards
  * and best practices for TypeScript development.
- * 
+ *
  * Features:
  * - Phase-specific prompt generation
  * - Coding standards integration
  * - TypeScript best practices
  * - Complexity management guidelines
  * - File organization standards
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0
  * @since 2024-01-01
@@ -21,25 +21,24 @@ import { getLogger } from '@claude-zen/foundation';
 
 import type { BehavioralIntelligence } from '../../behavioral-intelligence';
 
-import { CodingPrinciplesResearcher, type ProgrammingLanguage, type TaskDomain, type DevelopmentRole } from './coding-principles-researcher';
+import {
+  CodingPrinciplesResearcher,
+  type ProgrammingLanguage,
+  type TaskDomain,
+  type DevelopmentRole,
+} from './coding-principles-researcher';
 
 /**
  * Development phase types for prompt generation
  */
-export type DevelopmentPhase = 
-  | 'specification'
-  | 'pseudocode' 
-  | 'architecture'
-  | 'refinement'
-  | 'completion'
-  | 'general';
+export type DevelopmentPhase =' | ''specification'' | ''pseudocode'' | ''architecture'' | ''refinement'' | ''completion'' | ''general';
 
 /**
  * Coding standards configuration
  */
 export interface CodingStandardsConfig {
   /** Target language (default: typescript) */
-  language?: 'typescript' | 'javascript' | 'rust' | 'python';
+  language?: 'typescript'' | ''javascript'' | ''rust'' | ''python';
   /** Maximum function complexity (default: 10) */
   maxComplexity?: number;
   /** Maximum lines per function (default: 30) */
@@ -47,7 +46,7 @@ export interface CodingStandardsConfig {
   /** Maximum parameters per function (default: 5) */
   maxParameters?: number;
   /** File naming convention (default: kebab-case) */
-  fileNaming?: 'kebab-case' | 'camelCase' | 'PascalCase' | 'snake_case';
+  fileNaming?: 'kebab-case'' | ''camelCase'' | ''PascalCase'' | ''snake_case';
   /** Include performance guidelines */
   includePerformance?: boolean;
   /** Include security guidelines */
@@ -99,7 +98,7 @@ export interface IntelligentPrompt {
 
 /**
  * Intelligent Prompt Generator
- * 
+ *
  * Generates context-aware, high-quality development prompts with
  * integrated coding standards and best practices.
  */
@@ -122,7 +121,7 @@ export class IntelligentPromptGenerator {
       maxParameters: 5,
       fileNaming: 'kebab-case',
       includePerformance: true,
-      includeSecurity: true
+      includeSecurity: true,
     };
   }
 
@@ -146,19 +145,31 @@ export class IntelligentPromptGenerator {
         includePerformance: mergedConfig.includePerformance,
         includeSecurity: mergedConfig.includeSecurity,
         includeTesting: true,
-        depth: complexityScore > 7 ? 'advanced' as const : 'intermediate' as const
+        depth:
+          complexityScore > 7
+            ? ('advanced' as const)
+            : ('intermediate' as const),
       };
 
       // Get adaptive principles that improve over time with agent feedback
-      const adaptivePrinciples = await this.getAdaptivePrinciples(researchConfig);
-      
+      const adaptivePrinciples =
+        await this.getAdaptivePrinciples(researchConfig);
+
       if (adaptivePrinciples) {
-        const content = this.buildMetaLearningPromptContent(phase, context, adaptivePrinciples);
-        
+        const content = this.buildMetaLearningPromptContent(
+          phase,
+          context,
+          adaptivePrinciples
+        );
+
         return {
           content,
           codingStandards: adaptivePrinciples.template,
-          phaseGuidelines: this.generatePhaseGuidelines(phase, context, mergedConfig),
+          phaseGuidelines: this.generatePhaseGuidelines(
+            phase,
+            context,
+            mergedConfig
+          ),
           qualityMetrics: this.convertPrinciplesToMetrics(adaptivePrinciples),
           complexityScore,
           // Add meta-learning metadata
@@ -166,47 +177,69 @@ export class IntelligentPromptGenerator {
             principlesId: this.generatePrinciplesId(researchConfig),
             researchConfidence: adaptivePrinciples.researchMetadata.confidence,
             usesPrinciplesResearch: true,
-            researchedAt: adaptivePrinciples.researchMetadata.researchedAt
-          }
+            researchedAt: adaptivePrinciples.researchMetadata.researchedAt,
+          },
         };
       }
     } catch (error) {
-      console.warn('Meta-learning prompt generation failed, falling back to DSPy optimization:', error);
+      console.warn(
+        'Meta-learning prompt generation failed, falling back to DSPy optimization:',
+        error
+      );
     }
 
     try {
       // Fallback to DSPy optimization
-      const dspyOptimizedPrompt = await this.generateWithDSPy(phase, context, mergedConfig);
-      
+      const dspyOptimizedPrompt = await this.generateWithDSPy(
+        phase,
+        context,
+        mergedConfig
+      );
+
       if (dspyOptimizedPrompt) {
         return {
           content: dspyOptimizedPrompt.content,
           codingStandards: dspyOptimizedPrompt.codingStandards,
           phaseGuidelines: dspyOptimizedPrompt.phaseGuidelines,
           qualityMetrics: dspyOptimizedPrompt.qualityMetrics,
-          complexityScore
+          complexityScore,
         };
       }
     } catch (error) {
-      console.warn('DSPy prompt generation failed, falling back to static templates:', error);
+      console.warn(
+        'DSPy prompt generation failed, falling back to static templates:',
+        error
+      );
     }
 
     // Final fallback to static generation
     const codingStandards = this.generateCodingStandards(mergedConfig);
-    const phaseGuidelines = this.generatePhaseGuidelines(phase, context, mergedConfig);
+    const phaseGuidelines = this.generatePhaseGuidelines(
+      phase,
+      context,
+      mergedConfig
+    );
     const qualityMetrics = this.generateQualityMetrics(phase, mergedConfig);
-    
-    const content = this.buildPromptContent(phase, context, codingStandards, phaseGuidelines);
+
+    const content = this.buildPromptContent(
+      phase,
+      context,
+      codingStandards,
+      phaseGuidelines
+    );
 
     // Use behavioral intelligence if available
     if (this.behavioralIntelligence) {
-      const enhancedContent = await this.enhanceWithBehavioralIntelligence(content, context);
+      const enhancedContent = await this.enhanceWithBehavioralIntelligence(
+        content,
+        context
+      );
       return {
         content: enhancedContent,
         codingStandards,
         phaseGuidelines,
         qualityMetrics,
-        complexityScore
+        complexityScore,
       };
     }
 
@@ -215,15 +248,23 @@ export class IntelligentPromptGenerator {
       codingStandards,
       phaseGuidelines,
       qualityMetrics,
-      complexityScore
+      complexityScore,
     };
   }
 
   /**
    * Generate comprehensive coding standards
    */
-  private generateCodingStandards(config: Required<CodingStandardsConfig>): string {
-    const { language, maxComplexity, maxLinesPerFunction, maxParameters, fileNaming } = config;
+  private generateCodingStandards(
+    config: Required<CodingStandardsConfig>
+  ): string {
+    const {
+      language,
+      maxComplexity,
+      maxLinesPerFunction,
+      maxParameters,
+      fileNaming,
+    } = config;
 
     let standards = `
 ## 🎯 Coding Standards & Best Practices (${language.toUpperCase()})
@@ -366,7 +407,7 @@ export class IntelligentPromptGenerator {
       `Function length: < ${config.maxLinesPerFunction} lines`,
       `Parameter count: < ${config.maxParameters}`,
       'Code coverage: > 80%',
-      'Documentation coverage: > 90%'
+      'Documentation coverage: > 90%',
     ];
 
     switch (phase) {
@@ -375,21 +416,21 @@ export class IntelligentPromptGenerator {
           ...baseMetrics,
           'Requirements clarity: 100%',
           'Testable requirements: 100%',
-          'Domain model completeness: > 95%'
+          'Domain model completeness: > 95%',
         ];
       case 'architecture':
         return [
           ...baseMetrics,
           'Module coupling: Low',
           'Module cohesion: High',
-          'Interface segregation: 100%'
+          'Interface segregation: 100%',
         ];
       case 'completion':
         return [
           ...baseMetrics,
           'Security scan: 0 vulnerabilities',
           'Performance benchmarks: Met',
-          'Production readiness: 100%'
+          'Production readiness: 100%',
         ];
       default:
         return baseMetrics;
@@ -441,7 +482,10 @@ Remember: Write code that tells a story - it should be self-documenting and easy
   /**
    * Calculate complexity score based on context and phase
    */
-  private calculateComplexityScore(context: ProjectContext, phase: DevelopmentPhase): number {
+  private calculateComplexityScore(
+    context: ProjectContext,
+    phase: DevelopmentPhase
+  ): number {
     let score = 1; // Base complexity
 
     // Add complexity based on requirements
@@ -452,7 +496,7 @@ Remember: Write code that tells a story - it should be self-documenting and easy
 
     // Phase-specific complexity adjustments
     switch (phase) {
-      case 'specification':
+      case'specification':
         score *= 0.8; // Specification is typically less complex
         break;
       case 'architecture':
@@ -476,23 +520,27 @@ Remember: Write code that tells a story - it should be self-documenting and easy
   ): Promise<IntelligentPrompt | null> {
     try {
       // Import DSPy LLM Bridge for prompt optimization
-      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge');
+      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge'
+      );
       const { NeuralBridge } = await import('../../neural-bridge');
-      
+
       // Initialize DSPy bridge if not available
       const { getLogger } = await import('@claude-zen/foundation');
       const logger = getLogger('NeuralBridge');
       const neuralBridge = new NeuralBridge(logger);
-      const dspyBridge = new DSPyLLMBridge({
-        teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization
-        maxTokens: 16384,
-        optimizationSteps: 3,
-        coordinationFeedback: true,
-        hybridMode: true
-      }, neuralBridge);
-      
+      const dspyBridge = new DSPyLLMBridge(
+        {
+          teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization
+          maxTokens: 16384,
+          optimizationSteps: 3,
+          coordinationFeedback: true,
+          hybridMode: true,
+        },
+        neuralBridge
+      );
+
       await dspyBridge.initialize();
-      
+
       // Create coordination task with DSPy examples for prompt generation
       const promptTask = {
         id: `prompt-gen-${phase}-${Date.now()}`,
@@ -523,28 +571,33 @@ Generate a complete, ready-to-use development prompt.`,
           maxLinesPerFunction: config.maxLinesPerFunction,
           includePerformance: config.includePerformance,
           includeSecurity: config.includeSecurity,
-          fewShotExamples: this.generateFewShotPromptExamples(phase, config)
+          fewShotExamples: this.generateFewShotPromptExamples(phase, config),
         },
-        priority: 'high' as const
+        priority:'high' as const,
       };
-      
+
       // Use DSPy to generate optimized prompt
       const result = await dspyBridge.processCoordinationTask(promptTask);
-      
+
       if (result.success && result.result) {
         // Parse DSPy result into structured prompt components
-        const dspyResult = typeof result.result === 'string' ? 
-          JSON.parse(result.result) : result.result;
-        
+        const dspyResult =
+          typeof result.result === 'string'? JSON.parse(result.result)
+            : result.result;
+
         return {
-          content: dspyResult.content || dspyResult.result || 'DSPy generated prompt content',
-          codingStandards: dspyResult.codingStandards || this.generateCodingStandards(config),
-          phaseGuidelines: dspyResult.phaseGuidelines || this.generatePhaseGuidelines(phase, context, config),
-          qualityMetrics: dspyResult.qualityMetrics || this.generateQualityMetrics(phase, config),
-          complexityScore: this.calculateComplexityScore(context, phase)
+          content:
+            dspyResult.content || dspyResult.result || 'DSPy generated prompt content',
+          codingStandards:
+            dspyResult.codingStandards || this.generateCodingStandards(config),
+          phaseGuidelines:
+            dspyResult.phaseGuidelines || this.generatePhaseGuidelines(phase, context, config),
+          qualityMetrics:
+            dspyResult.qualityMetrics || this.generateQualityMetrics(phase, config),
+          complexityScore: this.calculateComplexityScore(context, phase),
         };
       }
-      
+
       return null;
     } catch (error) {
       console.warn('DSPy prompt generation failed:', error);
@@ -578,16 +631,16 @@ Generate a complete, ready-to-use development prompt.`,
   private generateFewShotPromptExamples(
     phase: DevelopmentPhase,
     config: Required<CodingStandardsConfig>
-  ): Array<{input: string; output: string}> {
+  ): Array<{ input: string; output: string }> {
     return [
       {
         input: `Generate ${phase} phase prompt for e-commerce API project in rest-api domain using ${config.language}`,
-        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`,
       },
       {
         input: `Generate ${phase} phase prompt for mobile app project in mobile domain using ${config.language}`,
-        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`
-      }
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`,
+      },
     ];
   }
 
@@ -606,31 +659,31 @@ Generate a complete, ready-to-use development prompt.`,
       // Use project context to get relevant behavioral patterns
       const projectTags = this.extractProjectTags(context);
       const complexityLevel = this.assessProjectComplexity(context);
-      
+
       // Get behavioral insights based on context
       const agentProfiles = this.behavioralIntelligence.getAllAgentProfiles();
       const enhancedStats = this.behavioralIntelligence.getEnhancedStats();
-      
+
       // Build context-specific recommendations
       let contextualInsights = '';
-      
+
       if (context.currentPhase) {
         contextualInsights += `- Project phase: ${context.currentPhase} - applying phase-specific patterns\n`;
       }
-      
+
       if (context.domainSpecific) {
         contextualInsights += `- Domain: ${context.domainSpecific} - leveraging domain expertise\n`;
       }
-      
+
       if (complexityLevel > 0.7) {
         contextualInsights += `- High complexity detected (${(complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;
       }
-      
+
       // Include agent performance insights relevant to project type
       if (enhancedStats.averagePerformance > 0.8) {
         contextualInsights += `- High-performing agent patterns available (${(enhancedStats.averagePerformance * 100).toFixed(1)}%)\n`;
       }
-      
+
       return `${content}
 
 ## 🧠 AI-Enhanced Recommendations:
@@ -640,9 +693,11 @@ ${contextualInsights}
 - Leverage patterns that have proven successful in comparable domains
 - Pay special attention to complexity hotspots identified by behavioral analysis
 - Apply lessons from ${enhancedStats.totalAgents} agents' collective experience`;
-      
     } catch (error) {
-      this.logger.warn('Error enhancing prompt with behavioral intelligence:', error);
+      this.logger.warn(
+        'Error enhancing prompt with behavioral intelligence:',
+        error
+      );
       return content;
     }
   }
@@ -652,19 +707,19 @@ ${contextualInsights}
    */
   private extractProjectTags(context: ProjectContext): string[] {
     const tags: string[] = [];
-    
+
     if (context.currentPhase) tags.push(context.currentPhase);
     if (context.domainSpecific) tags.push(String(context.domainSpecific));
-    
+
     // Add additional tags based on context properties
     if (context.requirements && context.requirements.length > 0) {
       tags.push(`${context.requirements.length}-requirements`);
     }
-    
+
     if (tags.length === 0) {
       tags.push('general');
     }
-    
+
     return tags;
   }
 
@@ -673,34 +728,34 @@ ${contextualInsights}
    */
   private assessProjectComplexity(context: ProjectContext): number {
     let complexity = 0.5; // Base complexity
-    
+
     // Factor in requirements count
     if (context.requirements) {
       complexity += Math.min(context.requirements.length * 0.05, 0.3);
     }
-    
+
     // Factor in phase complexity
     if (context.currentPhase) {
       const phaseComplexity: Record<string, number> = {
-        'specification': 0.1,
-        'pseudocode': 0.2,
-        'architecture': 0.4,
-        'refinement': 0.3,
-        'completion': 0.2
+        specification: 0.1,
+        pseudocode: 0.2,
+        architecture: 0.4,
+        refinement: 0.3,
+        completion: 0.2,
       };
       complexity += phaseComplexity[context.currentPhase] || 0.2;
     }
-    
+
     // Domain-specific complexity
     if (context.domainSpecific) {
       const domainComplexity: Record<string, number> = {
-        'ml': 0.3,
-        'ai': 0.3,
-        'distributed': 0.4,
-        'security': 0.4,
-        'performance': 0.3
+        ml: 0.3,
+        ai: 0.3,
+        distributed: 0.4,
+        security: 0.4,
+        performance: 0.3,
       };
-      
+
       const domain = String(context.domainSpecific).toLowerCase();
       for (const [key, value] of Object.entries(domainComplexity)) {
         if (domain.includes(key)) {
@@ -709,7 +764,7 @@ ${contextualInsights}
         }
       }
     }
-    
+
     return Math.min(complexity, 1.0);
   }
 
@@ -720,9 +775,11 @@ ${contextualInsights}
     if (!this.codingPrinciplesResearcher) {
       return null;
     }
-    
+
     try {
-      return await this.codingPrinciplesResearcher.getAdaptivePrinciples(config);
+      return await this.codingPrinciplesResearcher.getAdaptivePrinciples(
+        config
+      );
     } catch (error) {
       console.warn('Failed to get adaptive principles:', error);
       return null;
@@ -732,25 +789,37 @@ ${contextualInsights}
   /**
    * Infer domain from project context
    */
-  private inferDomainFromContext(context: ProjectContext): TaskDomain | undefined {
+  private inferDomainFromContext(
+    context: ProjectContext
+  ): TaskDomain | undefined {
     const domain = context.domain?.toLowerCase();
-    
-    if (domain?.includes('api') || domain?.includes('rest') || domain?.includes('service')) {
+
+    if (
+      domain?.includes('api') || domain?.includes('rest') || domain?.includes('service')
+    ) {
       return 'rest-api';
     }
-    if (domain?.includes('web') || domain?.includes('frontend') || domain?.includes('react') || domain?.includes('vue')) {
+    if (
+      domain?.includes('web') || domain?.includes('frontend') || domain?.includes('react') || domain?.includes('vue')
+    ) {
       return 'web-app';
     }
-    if (domain?.includes('mobile') || domain?.includes('ios') || domain?.includes('android')) {
+    if (
+      domain?.includes('mobile') || domain?.includes('ios') || domain?.includes('android')
+    ) {
       return 'mobile-app';
     }
     if (domain?.includes('microservice')) {
       return 'microservices';
     }
-    if (domain?.includes('data') || domain?.includes('pipeline') || domain?.includes('etl')) {
+    if (
+      domain?.includes('data') || domain?.includes('pipeline') || domain?.includes('etl')
+    ) {
       return 'data-pipeline';
     }
-    if (domain?.includes('ml') || domain?.includes('machine-learning') || domain?.includes('ai')) {
+    if (
+      domain?.includes('ml') || domain?.includes('machine-learning') || domain?.includes('ai')
+    ) {
       return 'ml-model';
     }
     if (domain?.includes('game')) {
@@ -765,16 +834,18 @@ ${contextualInsights}
     if (domain?.includes('desktop')) {
       return 'desktop-app';
     }
-    
+
     return undefined;
   }
 
   /**
    * Infer role from development phase
    */
-  private inferRoleFromPhase(phase: DevelopmentPhase): DevelopmentRole | undefined {
+  private inferRoleFromPhase(
+    phase: DevelopmentPhase
+  ): DevelopmentRole | undefined {
     switch (phase) {
-      case 'architecture':
+      case'architecture':
         return 'architect';
       case 'specification':
         return 'tech-lead';
@@ -835,20 +906,28 @@ Remember: This prompt learns from your execution. The better you follow and prov
    */
   private convertPrinciplesToMetrics(principles: any): string[] {
     const metrics: string[] = [];
-    
+
     if (principles.qualityMetrics.complexity) {
-      metrics.push(`Complexity: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}`);
+      metrics.push(
+        `Complexity: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}`
+      );
     }
     if (principles.qualityMetrics.coverage) {
-      metrics.push(`Coverage: ${principles.qualityMetrics.coverage.metric} > ${principles.qualityMetrics.coverage.threshold}%`);
+      metrics.push(
+        `Coverage: ${principles.qualityMetrics.coverage.metric} > ${principles.qualityMetrics.coverage.threshold}%`
+      );
     }
     if (principles.qualityMetrics.maintainability) {
-      metrics.push(`Maintainability: ${principles.qualityMetrics.maintainability.metric} > ${principles.qualityMetrics.maintainability.threshold}`);
+      metrics.push(
+        `Maintainability: ${principles.qualityMetrics.maintainability.metric} > ${principles.qualityMetrics.maintainability.threshold}`
+      );
     }
     if (principles.qualityMetrics.performance) {
-      metrics.push(`Performance: ${principles.qualityMetrics.performance.metric} < ${principles.qualityMetrics.performance.threshold}ms`);
+      metrics.push(
+        `Performance: ${principles.qualityMetrics.performance.metric} < ${principles.qualityMetrics.performance.threshold}ms`
+      );
     }
-    
+
     return metrics;
   }
 
@@ -875,12 +954,14 @@ Remember: This prompt learns from your execution. The better you follow and prov
       additionalNeeds: string[];
       actualCodeQuality: number;
       executionTime: number;
-      taskComplexity: 'simple' | 'moderate' | 'complex';
+      taskComplexity: 'simple'' | ''moderate'' | ''complex';
       requirementsCount: number;
     }
   ): Promise<void> {
     if (!this.codingPrinciplesResearcher) {
-      console.warn('Cannot submit feedback: CodingPrinciplesResearcher not available');
+      console.warn(
+        'Cannot submit feedback: CodingPrinciplesResearcher not available'
+      );
       return;
     }
 
@@ -899,18 +980,20 @@ Remember: This prompt learns from your execution. The better you follow and prov
       context: {
         language: this.defaultConfig.language as ProgrammingLanguage,
         taskComplexity: feedback.taskComplexity,
-        requirementsCount: feedback.requirementsCount
+        requirementsCount: feedback.requirementsCount,
       },
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     await this.codingPrinciplesResearcher.submitAgentFeedback(agentFeedback);
-    console.log(`Agent feedback submitted for principles ${principlesId}: accuracy=${feedback.accuracy}, usefulness=${feedback.usefulness}`);
+    console.log(
+      `Agent feedback submitted for principles ${principlesId}: accuracy=${feedback.accuracy}, usefulness=${feedback.usefulness}`
+    );
   }
 
   /**
    * Generate second opinion validation prompt
-   * 
+   *
    * Based on user suggestion: launch a 2nd opinion that validates what was done
    * and identifies misunderstandings
    */
@@ -1001,5 +1084,5 @@ export const DEFAULT_CODING_STANDARDS: Required<CodingStandardsConfig> = {
   maxParameters: 5,
   fileNaming: 'kebab-case',
   includePerformance: true,
-  includeSecurity: true
+  includeSecurity: true,
 };

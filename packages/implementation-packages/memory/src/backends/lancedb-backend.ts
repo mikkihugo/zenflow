@@ -53,18 +53,24 @@ export class VectorStore {
   }
 
   async batchInsert(data: VectorInsertData[]): Promise<VectorInsertResult> {
-    return { 
-      success: true, 
-      insertedCount: data.length, 
-      failedCount: 0 
+    return {
+      success: true,
+      insertedCount: data.length,
+      failedCount: 0,
     };
   }
 
-  async similaritySearch(options: VectorSearchOptions): Promise<VectorSearchResult[]> {
+  async similaritySearch(
+    options: VectorSearchOptions
+  ): Promise<VectorSearchResult[]> {
     return [];
   }
 
-  async rangeSearch(options: { vector: number[]; radius: number; maxResults: number }): Promise<VectorSearchResult[]> {
+  async rangeSearch(options: {
+    vector: number[];
+    radius: number;
+    maxResults: number;
+  }): Promise<VectorSearchResult[]> {
     return [];
   }
 
@@ -72,7 +78,10 @@ export class VectorStore {
     return null;
   }
 
-  async update(id: string, data: VectorInsertData): Promise<VectorInsertResult> {
+  async update(
+    id: string,
+    data: VectorInsertData
+  ): Promise<VectorInsertResult> {
     return { success: true };
   }
 
@@ -84,7 +93,7 @@ export class VectorStore {
     return {
       clusters: 5,
       averageIntraClusterDistance: 0.1,
-      averageInterClusterDistance: 0.8
+      averageInterClusterDistance: 0.8,
     };
   }
 
@@ -92,7 +101,7 @@ export class VectorStore {
     return {
       parameters: { nlist: config.dataDistribution?.clusters || 5 },
       estimatedSearchTime: 25,
-      estimatedMemoryUsage: 50 * 1024 * 1024
+      estimatedMemoryUsage: 50 * 1024 * 1024,
     };
   }
 

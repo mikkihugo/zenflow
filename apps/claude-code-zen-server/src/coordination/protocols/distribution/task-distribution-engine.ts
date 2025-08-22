@@ -73,32 +73,10 @@ export interface TaskConstraints {
 }
 
 export type TaskPriority = 'low' | 'normal' | 'high' | 'urgent' | 'critical';
-export type TaskComplexity =
-  | 'trivial'
-  | 'simple'
-  | 'moderate'
-  | 'complex'
-  | 'expert';
-export type TaskStatus =
-  | 'pending'
-  | 'queued'
-  | 'assigned'
-  | 'running'
-  | 'paused'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+export type TaskComplexity = 'trivial' | 'simple' | 'moderate' | 'complex' | 'expert';
+export type TaskStatus = 'pending' | 'queued' | 'assigned' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
 
-export type CancellationReason =
-  | 'user-request'
-  | 'timeout'
-  | 'resource-unavailable'
-  | 'dependency-failure'
-  | 'priority-override'
-  | 'system-shutdown'
-  | 'agent-failure'
-  | 'task_stuck'
-  | 'agent_unavailable';
+export type CancellationReason = 'user-request' | 'timeout' | 'resource-unavailable' | 'dependency-failure' | 'priority-override' | 'system-shutdown' | 'agent-failure' | 'task_stuck' | 'agent_unavailable';
 
 export interface DecomposedTask {
   id: string;
@@ -338,9 +316,9 @@ export class TaskDistributionEngine extends TypedEventBase {
     this.performancePredictor = new PerformancePredictor(this.logger);
     this.failureHandler = new FailureHandler(this.logger);
 
-    this.metrics = this.initializeMetrics;
-    this.setupEventHandlers;
-    this.startProcessing;
+    this.metrics = this.initializeMetrics();
+    this.setupEventHandlers();
+    this.startProcessing();
   }
 
   private setupEventHandlers(): void {
@@ -379,11 +357,11 @@ export class TaskDistributionEngine extends TypedEventBase {
    * @param taskDef
    */
   async submitTask(
-    taskDef: Omit<TaskDefinition, 'id | created'>
+    taskDef: Omit<TaskDefinition, 'id' | 'created'>
   ): Promise<string> {
     const task: TaskDefinition = {
       ...taskDef,
-      id: this.generateTaskId,
+      id: this.generateTaskId(),
       created: new Date(),
     };
 
@@ -431,7 +409,7 @@ export class TaskDistributionEngine extends TypedEventBase {
     this.emit('agent:registered', { agentId: agentCapability.agentId });
 
     // Trigger assignment optimization
-    await this.optimizeAssignments;
+    await this.optimizeAssignments();
   }
 
   /**
@@ -588,12 +566,12 @@ export class TaskDistributionEngine extends TypedEventBase {
 
   private startProcessing(): void {
     this.processingInterval = setInterval(async () => {
-      await this.processQueue;
-      await this.updateMetrics;
-      await this.performHealthChecks;
+      await this.processQueue();
+      await this.updateMetrics();
+      await this.performHealthChecks();
 
       if (this.configuration.enableDynamicRebalancing) {
-        await this.rebalanceWorkload;
+        await this.rebalanceWorkload();
       }
     }, 1000); // Process every second
   }
@@ -669,7 +647,7 @@ export class TaskDistributionEngine extends TypedEventBase {
     if (task.requirements.excludedAgents?.includes(agent.agentId)) return false;
 
     // Check trust score
-    if (agent.trustScore < .5) return false; // Minimum trust threshold
+    if (agent.trustScore < 0.5) return false; // Minimum trust threshold
 
     // Check resource requirements (simplified)
     return (
@@ -719,7 +697,7 @@ export class TaskDistributionEngine extends TypedEventBase {
       priority:
         task.priority === 'normal'
           ? 'medium'
-          : (task.priority as 'low | medium' | 'high | critical'),
+          : (task.priority as 'low' | 'medium' | 'high' | 'critical'),
       dependencies: [],
       requiredCapabilities: task.requirements.capabilities || [],
       resourceRequirements: {
@@ -822,10 +800,10 @@ export class TaskDistributionEngine extends TypedEventBase {
     const trustScore = agent.trustScore;
 
     return (
-      capabilityScore * .3 +
-      performanceScore * .3 +
-      availabilityScore * .2 +
-      trustScore * .2
+      capabilityScore * 0.3 +
+      performanceScore * 0.3 +
+      availabilityScore * 0.2 +
+      trustScore * 0.2
     );
   }
 
@@ -862,7 +840,7 @@ export class TaskDistributionEngine extends TypedEventBase {
       ),
       speed: task.requirements.qualityRequirements.speed,
       completeness: task.requirements.qualityRequirements.completeness,
-      confidence: .8, // Base confidence
+      confidence: 0.8, // Base confidence
     };
   }
 
@@ -875,15 +853,15 @@ export class TaskDistributionEngine extends TypedEventBase {
       progressTracking: true,
       qualityChecks: [
         {
-          checkType: 'progress',
+          checkType:'progress',
           frequency: 60000, // Every minute
-          threshold: .1, // 10% progress expected per check
+          threshold: 0.1, // 10% progress expected per check
           action: 'warn',
         },
         {
           checkType: 'performance',
           frequency: 120000, // Every 2 minutes
-          threshold: .5, // 50% performance threshold
+          threshold: 0.5, // 50% performance threshold
           action: 'escalate',
         },
       ],
@@ -895,7 +873,7 @@ export class TaskDistributionEngine extends TypedEventBase {
         },
         {
           condition: 'quality_below_threshold',
-          threshold: .3,
+          threshold: 0.3,
           action: 'add_agents',
         },
       ],
@@ -907,15 +885,15 @@ export class TaskDistributionEngine extends TypedEventBase {
       case 'critical':
         return 1.0;
       case 'urgent':
-        return .8;
+        return 0.8;
       case 'high':
-        return .6;
+        return 0.6;
       case 'normal':
-        return .4;
+        return 0.4;
       case 'low':
-        return .2;
+        return 0.2;
       default:
-        return .4;
+        return 0.4;
     }
   }
 
@@ -1029,8 +1007,8 @@ export class TaskDistributionEngine extends TypedEventBase {
   }
 
   private async rebalanceWorkload(): Promise<void> {
-    const imbalance = this.detectLoadImbalance;
-    if (imbalance.severity > .3) {
+    const imbalance = this.detectLoadImbalance();
+    if (imbalance.severity > 0.3) {
       await this.workloadBalancer.rebalance(
         this.agentCapabilities,
         this.assignments,
@@ -1056,11 +1034,11 @@ export class TaskDistributionEngine extends TypedEventBase {
       utilizations.length;
 
     const overloaded = utilizations
-      .filter(({ utilization }) => utilization > avg + .3)
+      .filter(({ utilization }) => utilization > avg + 0.3)
       .map(({ agentId }) => agentId);
 
     const underloaded = utilizations
-      .filter(({ utilization }) => utilization < avg - .3)
+      .filter(({ utilization }) => utilization < avg - 0.3)
       .map(({ agentId }) => agentId);
 
     const severity =
@@ -1306,7 +1284,7 @@ class AssignmentOptimizer {
     const loadScore = 1 - agent.currentLoad / agent.maxLoad;
     const trustScore = agent.trustScore;
 
-    return capabilityMatch * .4 + loadScore * .3 + trustScore * .3;
+    return capabilityMatch * 0.4 + loadScore * 0.3 + trustScore * 0.3;
   }
 }
 

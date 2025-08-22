@@ -1,14 +1,14 @@
 /**
  * @fileoverview Release Train Engineer Manager - SAFe ART Facilitation
- * 
+ *
  * Release Train Engineer management for SAFe Agile Release Train facilitation.
  * Coordinates PI planning, Scrum of Scrums, and program predictability measurement.
- * 
+ *
  * Delegates to:
  * - PI Planning Facilitation Service for event coordination
  * - Scrum of Scrums Service for cross-team synchronization
  * - Program Predictability Service for metrics and analysis
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -31,8 +31,8 @@ export interface RTEManagerConfig {
   readonly enableRiskAndDependencyManagement: boolean;
   readonly enableMultiARTCoordination: boolean;
   readonly enableImpedimentTracking: boolean;
-  readonly scrumOfScrumsFrequency: 'daily' | 'twice-weekly' | 'weekly';
-  readonly systemDemoFrequency: 'iteration' | 'bi-weekly' | 'monthly';
+  readonly scrumOfScrumsFrequency: 'daily''' | '''twice-weekly''' | '''weekly';
+  readonly systemDemoFrequency: 'iteration''' | '''bi-weekly''' | '''monthly';
   readonly impedimentEscalationThreshold: number; // days
   readonly programSyncInterval: number; // milliseconds
   readonly predictabilityReportingInterval: number; // milliseconds
@@ -50,7 +50,7 @@ export interface FacilitationConfig {
   readonly enableConflictResolution: boolean;
   readonly enableConsensusBuilding: boolean;
   readonly enableActionItemTracking: boolean;
-  readonly facilitationStyle: 'collaborative' | 'directive' | 'adaptive';
+  readonly facilitationStyle: 'collaborative | directive' | 'adaptive';
   readonly timeboxDurationMinutes: number;
   readonly breakFrequencyMinutes: number;
   readonly participantEngagementTracking: boolean;
@@ -66,7 +66,7 @@ export type {
   ImpedimentCategory,
   ImpedimentSeverity,
   ImpedimentStatus,
-  ImpedimentEscalationLevel
+  ImpedimentEscalationLevel,
 } from '../services/rte/scrum-of-scrums-service';
 
 export type {
@@ -77,14 +77,14 @@ export type {
   BusinessImpactAssessment,
   QualityImpactLevel,
   CustomerImpactLevel,
-  MoraleImpactLevel
+  MoraleImpactLevel,
 } from '../services/rte/program-predictability-service';
 
 export type {
   PIPlanningEventConfig,
   PlanningParticipant,
   PlanningAgenda,
-  PlanningFacilitationResult
+  PlanningFacilitationResult,
 } from '../services/rte/pi-planning-facilitation-service';
 
 export class ReleaseTrainEngineerManager extends TypedEventBase {
@@ -109,22 +109,32 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
 
     try {
       // Delegate to PI Planning Facilitation Service
-      const { PIPlanningFacilitationService } = await import('../services/rte/pi-planning-facilitation-service');
+      const { PIPlanningFacilitationService } = await import(
+        '../services/rte/pi-planning-facilitation-service'
+      );
       this.piPlanningService = new PIPlanningFacilitationService(this.logger);
 
       // Delegate to Scrum of Scrums Service
-      const { ScrumOfScrumsService } = await import('../services/rte/scrum-of-scrums-service');
+      const { ScrumOfScrumsService } = await import(
+        '../services/rte/scrum-of-scrums-service'
+      );
       this.scrumOfScrumsService = new ScrumOfScrumsService(this.logger);
 
       // Delegate to Program Predictability Service
-      const { ProgramPredictabilityService } = await import('../services/rte/program-predictability-service');
-      this.predictabilityService = new ProgramPredictabilityService(this.logger);
+      const { ProgramPredictabilityService } = await import(
+        '../services/rte/program-predictability-service'
+      );
+      this.predictabilityService = new ProgramPredictabilityService(
+        this.logger
+      );
 
       this.initialized = true;
       this.logger.info('ReleaseTrainEngineerManager initialized successfully');
-
     } catch (error) {
-      this.logger.error('Failed to initialize ReleaseTrainEngineerManager:', error);
+      this.logger.error(
+        'Failed to initialize ReleaseTrainEngineerManager:',
+        error
+      );
       throw error;
     }
   }
@@ -143,24 +153,29 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
   }): Promise<any> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Facilitating PI Planning', { piId: input.piId, artId: input.artId });
+    this.logger.info('Facilitating PI Planning', {
+      piId: input.piId,
+      artId: input.artId,
+    });
 
     try {
       // Create planning event
-      const planningEvent = await this.piPlanningService.createPlanningEvent(input);
-      
+      const planningEvent =
+        await this.piPlanningService.createPlanningEvent(input);
+
       // Facilitate planning
-      const result = await this.piPlanningService.facilitatePlanning(planningEvent.eventId);
+      const result = await this.piPlanningService.facilitatePlanning(
+        planningEvent.eventId
+      );
 
       this.emit('pi-planning-completed', {
         piId: input.piId,
         artId: input.artId,
         success: result.success,
-        objectivesCommitted: result.objectivesCommitted.length
+        objectivesCommitted: result.objectivesCommitted.length,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('PI Planning facilitation failed:', error);
       throw error;
@@ -177,11 +192,14 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
 
     try {
       // Configure Scrum of Scrums
-      const config = await this.scrumOfScrumsService.configureScrumsOfScrums(artId, {
-        frequency: this.config.scrumOfScrumsFrequency,
-        duration: 30, // minutes
-        teams
-      });
+      const config = await this.scrumOfScrumsService.configureScrumsOfScrums(
+        artId,
+        {
+          frequency: this.config.scrumOfScrumsFrequency,
+          duration: 30, // minutes
+          teams,
+        }
+      );
 
       // Conduct meeting
       const result = await this.scrumOfScrumsService.conductMeeting(artId);
@@ -190,11 +208,10 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
         artId,
         meetingId: result.meetingId,
         impedimentsDiscussed: result.impedimentsDiscussed.length,
-        effectiveness: result.meetingEffectiveness.overallEffectiveness
+        effectiveness: result.meetingEffectiveness.overallEffectiveness,
       });
 
       return result;
-
     } catch (error) {
       this.logger.error('Scrum of Scrums coordination failed:', error);
       throw error;
@@ -215,22 +232,22 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
     this.logger.info('Measuring program predictability', { piId, artId });
 
     try {
-      const predictability = await this.predictabilityService.measurePredictability(
-        piId,
-        artId,
-        objectives,
-        features
-      );
+      const predictability =
+        await this.predictabilityService.measurePredictability(
+          piId,
+          artId,
+          objectives,
+          features
+        );
 
       this.emit('predictability-measured', {
         piId,
         artId,
         overallScore: predictability.overallPredictability,
-        trend: predictability.trend.direction
+        trend: predictability.trend.direction,
       });
 
       return predictability;
-
     } catch (error) {
       this.logger.error('Predictability measurement failed:', error);
       throw error;
@@ -251,19 +268,21 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
   }): Promise<any> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Tracking program impediment', { title: impediment.title });
+    this.logger.info('Tracking program impediment', {
+      title: impediment.title,
+    });
 
     try {
-      const programImpediment = await this.scrumOfScrumsService.trackImpediment(impediment);
+      const programImpediment =
+        await this.scrumOfScrumsService.trackImpediment(impediment);
 
       this.emit('impediment-tracked', {
         impedimentId: programImpediment.id,
         severity: impediment.severity,
-        affectedTeams: impediment.affectedTeams.length
+        affectedTeams: impediment.affectedTeams.length,
       });
 
       return programImpediment;
-
     } catch (error) {
       this.logger.error('Impediment tracking failed:', error);
       throw error;
@@ -273,17 +292,22 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
   /**
    * Escalate impediment - Delegates to Scrum of Scrums Service
    */
-  async escalateImpediment(impedimentId: string, escalationLevel: any): Promise<void> {
+  async escalateImpediment(
+    impedimentId: string,
+    escalationLevel: any
+  ): Promise<void> {
     if (!this.initialized) await this.initialize();
 
     try {
-      await this.scrumOfScrumsService.escalateImpediment(impedimentId, escalationLevel);
+      await this.scrumOfScrumsService.escalateImpediment(
+        impedimentId,
+        escalationLevel
+      );
 
       this.emit('impediment-escalated', {
         impedimentId,
-        newLevel: escalationLevel
+        newLevel: escalationLevel,
       });
-
     } catch (error) {
       this.logger.error('Impediment escalation failed:', error);
       throw error;
@@ -293,17 +317,22 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
   /**
    * Resolve impediment - Delegates to Scrum of Scrums Service
    */
-  async resolveImpediment(impedimentId: string, resolution: any): Promise<void> {
+  async resolveImpediment(
+    impedimentId: string,
+    resolution: any
+  ): Promise<void> {
     if (!this.initialized) await this.initialize();
 
     try {
-      await this.scrumOfScrumsService.resolveImpediment(impedimentId, resolution);
+      await this.scrumOfScrumsService.resolveImpediment(
+        impedimentId,
+        resolution
+      );
 
       this.emit('impediment-resolved', {
         impedimentId,
-        resolvedBy: resolution.resolvedBy
+        resolvedBy: resolution.resolvedBy,
       });
-
     } catch (error) {
       this.logger.error('Impediment resolution failed:', error);
       throw error;
@@ -313,26 +342,33 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
   /**
    * Track team velocity - Delegates to Program Predictability Service
    */
-  async trackVelocity(teamId: string, piId: string, velocity: {
-    plannedVelocity: number;
-    actualVelocity: number;
-    historicalAverage: number;
-    factors?: any[];
-  }): Promise<any> {
+  async trackVelocity(
+    teamId: string,
+    piId: string,
+    velocity: {
+      plannedVelocity: number;
+      actualVelocity: number;
+      historicalAverage: number;
+      factors?: any[];
+    }
+  ): Promise<any> {
     if (!this.initialized) await this.initialize();
 
     try {
-      const tracking = await this.predictabilityService.trackVelocity(teamId, piId, velocity);
+      const tracking = await this.predictabilityService.trackVelocity(
+        teamId,
+        piId,
+        velocity
+      );
 
       this.emit('velocity-tracked', {
         teamId,
         piId,
         variance: tracking.velocityVariance,
-        trend: tracking.trend
+        trend: tracking.trend,
       });
 
       return tracking;
-
     } catch (error) {
       this.logger.error('Velocity tracking failed:', error);
       throw error;
@@ -346,16 +382,16 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
     if (!this.initialized) await this.initialize();
 
     try {
-      const assessment = await this.predictabilityService.assessBusinessImpact(impact);
+      const assessment =
+        await this.predictabilityService.assessBusinessImpact(impact);
 
       this.emit('business-impact-assessed', {
         impactId: assessment.impactId,
         category: impact.category,
-        severity: impact.severity
+        severity: impact.severity,
       });
 
       return assessment;
-
     } catch (error) {
       this.logger.error('Business impact assessment failed:', error);
       throw error;
@@ -417,7 +453,7 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
     return {
       artId,
       assessmentDate: new Date(),
-      overallRiskScore: 75
+      overallRiskScore: 75,
     };
   }
 
@@ -425,7 +461,7 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
     return {
       artId,
       synchronizationScore: 90,
-      crossTeamDependencies: []
+      crossTeamDependencies: [],
     };
   }
 
@@ -433,17 +469,21 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
     return {
       artId,
       predictabilityScore: 75,
-      teamPredictability: []
+      teamPredictability: [],
     };
   }
 
-  async facilitateInspectAndAdapt(piId: string, artId: string, config: any): Promise<any> {
+  async facilitateInspectAndAdapt(
+    piId: string,
+    artId: string,
+    config: any
+  ): Promise<any> {
     return {
       piId,
       artId,
       systemDemoCompleted: true,
       improvementActions: [],
-      retrospectiveInsights: []
+      retrospectiveInsights: [],
     };
   }
 
@@ -453,7 +493,7 @@ export class ReleaseTrainEngineerManager extends TypedEventBase {
       piId: config.piId,
       artId: config.artId,
       demoStatus: 'scheduled',
-      preparationTasks: config.preparationTasks || []
+      preparationTasks: config.preparationTasks || [],
     };
   }
 }

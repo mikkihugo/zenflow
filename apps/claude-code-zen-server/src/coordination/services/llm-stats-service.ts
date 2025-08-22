@@ -16,7 +16,7 @@ export {
   type LLMAnalytics,
   type AnalysisRequest,
   type AnalysisResult,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Export default for backward compatibility
-export { LLMStatsService as default } from '@claude-zen/intelligence');
+export { LLMStatsService as default } from '@claude-zen/intelligence';

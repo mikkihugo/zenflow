@@ -1,11 +1,12 @@
 /**
  * @fileoverview Test the Claude-ESLint bridge integration
- * 
+ *
  * Simple test to verify that the AI linter can connect to Claude SDK
  * and analyze code using ESLint + Claude insights.
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
 import { createClaudeESLintBridge, createLinterContext } from './index.js';
 
 // Simple event bus implementation for testing
@@ -22,7 +23,7 @@ class TestEventBus {
   emit(event: string, ...args: any[]): void {
     const handlers = this.listeners.get(event);
     if (handlers) {
-      handlers.forEach(handler => handler(...args));
+      handlers.forEach((handler) => handler(...args));
     }
   }
 
@@ -42,7 +43,7 @@ class TestEventBus {
  */
 export async function testAILinterIntegration(): Promise<void> {
   const logger = getLogger('ai-linter-test');
-  
+
   try {
     logger.info('🧪 Testing AI Linter integration...');
 
@@ -86,7 +87,11 @@ console.log('debugging statement');
     logger.info('📝 Analyzing test code...');
 
     // Analyze the code
-    const result = await bridge.analyzeCodeWithAI('/test/sample.ts', testCode, context);
+    const result = await bridge.analyzeCodeWithAI(
+      '/test/sample.ts',
+      testCode,
+      context
+    );
 
     logger.info('✅ Analysis completed!');
     logger.info(`📊 Found ${result.patterns.length} patterns`);
@@ -99,18 +104,28 @@ console.log('debugging statement');
     });
 
     if (result.claudeInsights.complexity_issues.length > 0) {
-      logger.info(`🔍 Complexity issues found: ${result.claudeInsights.complexity_issues.length}`);
-      result.claudeInsights.complexity_issues.forEach(issue => {
-        logger.info(`  - ${issue.functionName}: complexity ${issue.complexityScore}`);
+      logger.info(
+        `🔍 Complexity issues found: ${result.claudeInsights.complexity_issues.length}`
+      );
+      result.claudeInsights.complexity_issues.forEach((issue) => {
+        logger.info(
+          `  - ${issue.functionName}: complexity ${issue.complexityScore}`
+        );
       });
     }
 
-    logger.info(`📈 Maintainability score: ${result.claudeInsights.maintainability_score}/100`);
+    logger.info(
+      `📈 Maintainability score: ${result.claudeInsights.maintainability_score}/100`
+    );
 
     // Test auto-fix
     logger.info('🔧 Testing auto-fix...');
-    const fixedCode = await bridge.autoFixCode('/test/sample.ts', testCode, result);
-    
+    const fixedCode = await bridge.autoFixCode(
+      '/test/sample.ts',
+      testCode,
+      result
+    );
+
     if (fixedCode !== testCode) {
       logger.info('✅ Auto-fix applied changes');
     } else {
@@ -122,7 +137,6 @@ console.log('debugging statement');
     logger.info('📊 Bridge statistics:', stats);
 
     logger.info('🎉 AI Linter integration test completed successfully!');
-
   } catch (error) {
     logger.error('❌ AI Linter integration test failed:', error);
     throw error;

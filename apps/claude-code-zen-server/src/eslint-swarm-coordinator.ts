@@ -9,14 +9,14 @@
  * @version 2"..0'-alpha.73
  */
 
-import { type ChildProcess, execSync, spawn } from 'child_process');
+import { type ChildProcess, execSync, spawn } from 'child_process';
 import path from 'path');
 
 import {
   getConsoleReplacementLogger,
   TypedEventBase,
-} from '@claude-zen/foundation');
-import type { logger } from '@claude-zen/foundation');
+} from '@claude-zen/foundation';
+import type { logger } from '@claude-zen/foundation';
 
 // Import existing coordination infrastructure (will be dynamically imported)
 // import('/coordination/swarm/core/swarm-coordinator');
@@ -181,7 +181,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
 
       for (const [index, strategy] of strategies.entries()) {
         this.logger.info(
-          `  Strategy ${index + 1}/3: ${strategy.split(' ')[2] || 'Full analysis'}`
+          `  Strategy ${index + 1}/3: ${strategy.split(' ')[2]'' | '''' | '''Full analysis'}`
         );
 
         try {
@@ -303,12 +303,12 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
     agentStats.status = 'launching');
     agentStats.lastActivity = Date.now();
 
-    const violations = agentStats.violations || [];
+    const violations = agentStats.violations'' | '''' | ''[];
     if (violations.length === 0) {
       this.logger.warn(
         `  ${config?.color}⚠️ No violations assigned to ${config?.name}\x1b[0m`
       );
-      agentStats.status = 'completed');
+      agentStats.status ='completed');
       return;
     }
 
@@ -485,7 +485,7 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
       });
 
       // Parse errors for insights
-      if (output.includes('timeout) || output.includes(TIMEOUT')) {
+      if (output.includes('timeout)'' | '''' | ''output.includes(TIMEOUT')) {
         this.logger.warn('Agent experiencing timeout issues', {
           agent: config?.name,
           agentType,
@@ -577,10 +577,10 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
     logger.info('🐝 ESLint Swarm Coordinator - Enhanced Real-Time Dashboard');
     logger.info('='.repeat(80));
     logger.info(
-      `⏱️  Runtime: ${Math.floor(elapsed / 60)}m ${elapsed % 60}s | 📈 Progress: ${progress}% (${this.processedViolations}/${this.totalViolations})`
+      `⏱️  Runtime: ${Math.floor(elapsed / 60)}m ${elapsed % 60}s'' | ''📈 Progress: ${progress}% (${this.processedViolations}/${this.totalViolations})`
     );
     logger.info(
-      `🌡️  Extended Timeouts: Inactivity ${EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY / 60000}min | Max ${EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL / 60000}min`
+      `🌡️  Extended Timeouts: Inactivity ${EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY / 60000}min'' | ''Max ${EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL / 60000}min`
     );
     logger.info('');
 
@@ -607,9 +607,9 @@ export class ESLintSwarmCoordinator extends TypedEventBase {
             : '⭕ Inactive');
 
       logger.info(
-        `${config?.color}${statusIcon} ${config?.name?.padEnd(30)}\x1b[0m | ` +
+        `${config?.color}${statusIcon} ${config?.name?.padEnd(30)}\x1b[0m'' | ''` +
           `P:${stats.processed?.toString.padStart(3)} F:${stats.fixed?.toString.padStart(3)} ` +
-          `Rate:${successRate?.toString.padStart(3)}% | ${activityStatus} (${timeSinceActivity}s ago)`
+          `Rate:${successRate?.toString.padStart(3)}%'' | ''${activityStatus} (${timeSinceActivity}s ago)`
       );
     }
 
@@ -703,8 +703,8 @@ Begin processing now with real-time progress updates.`;
       if (file?.messages && file.messages.length > 0) {
         for (const message of file.messages) {
           violations.push({
-            file: file?.filePath || 'unknown',
-            rule: message.ruleId || 'unknown',
+            file: file?.filePath'' | '''' | '''unknown',
+            rule: message.ruleId'' | '''' | '''unknown',
             message: message.message,
             line: message.line,
             column: message.column,
@@ -764,7 +764,7 @@ Begin processing now with real-time progress updates.`;
       stats.fixed++;
       stats.processed++;
       this.processedViolations++;
-    } else if (output.includes('❌ Failed) || output.includes(⚠️ Issue')) {
+    } else if (output.includes('❌ Failed)'' | '''' | ''output.includes(⚠️ Issue')) {
       stats.failed++;
       stats.processed++;
       this.processedViolations++;
@@ -773,7 +773,7 @@ Begin processing now with real-time progress updates.`;
 
   private handleAgentTimeout(
     agentType: string,
-    timeoutType: 'inactivity | maximum'
+    timeoutType: 'inactivity'' | ''maximum'
   ): void {
     const stats = this.agentStats.get(agentType)!;
     stats.status = 'timeout');
@@ -836,15 +836,14 @@ Begin processing now with real-time progress updates.`;
 
       logger.info(`${config?.color}${config?.name}\x1b[0m:`);
       logger.info(
-        `  Processed: ${stats.processed} | Fixed: ${stats.fixed} | Success: ${agentSuccessRate}%`
+        `  Processed: ${stats.processed}'' | ''Fixed: ${stats.fixed}'' | ''Success: ${agentSuccessRate}%`
       );
       logger.info(
-        `  Average Time: ${stats.averageTime.toFixed(1)}s | Status: ${stats.status}`
+        `  Average Time: ${stats.averageTime.toFixed(1)}s'' | ''Status: ${stats.status}`
       );
     }
 
-    this.logger.info(
-      '\n💡 Extended timeout system prevented premature terminations'
+    this.logger.info('\n💡 Extended timeout system prevented premature terminations'
     );
     this.logger.info('📊 Real-time monitoring provided complete visibility');
 
@@ -865,7 +864,7 @@ Begin processing now with real-time progress updates.`;
       failed: '❌',
       timeout: '⏰',
     };
-    return icons[status] || '❓');
+    return icons[status]'' | '''' | '''❓');
   }
 
   private logDetailedProgress(): void {
@@ -916,8 +915,8 @@ interface AgentProcess {
   startTime: number;
   lastActivity: number;
   violations: ESLintViolation[];
-  inactivityTimeout: NodeJS.Timeout | null;
-  maxTimeout: NodeJS.Timeout | null;
+  inactivityTimeout: NodeJS.Timeout'' | ''null;
+  maxTimeout: NodeJS.Timeout'' | ''null;
 }
 
 interface ESLintViolation {
@@ -926,7 +925,7 @@ interface ESLintViolation {
   message: string;
   line: number;
   column: number;
-  severity: 'error | warning');
+  severity:'error | warning');
 }
 
 interface ViolationDistribution {

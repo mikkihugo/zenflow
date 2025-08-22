@@ -40,12 +40,12 @@
 // Error Handling and Recovery - Delegated to @claude-zen/foundation
 
 // Database Integration
-import type { DatabaseQuery } from '@claude-zen/foundation');
+import type { DatabaseQuery } from '@claude-zen/foundation';
 import {
   DIContainer,
   CORE_TOKENS,
   DATABASE_TOKENS,
-} from '@claude-zen/intelligence');
+} from '@claude-zen/intelligence';
 
 // Foundation Integration (when available)
 let foundationLogger: any;
@@ -291,7 +291,7 @@ export async function createIntegratedSystem() {
           id: 'primary-sqlite',
           type: 'foundation-sqlite',
           config: {
-            path: process?.env?.SQLITE_PATH || '?./data/primary?.db',
+            path: process?.env?.SQLITE_PATH'' | '''' | '''?./data/primary?.db',
             enableWAL: true,
             busyTimeout: 10000,
             cacheSize: 2000,
@@ -304,7 +304,7 @@ export async function createIntegratedSystem() {
           id: 'vector-storage',
           type: 'foundation-lancedb',
           config: {
-            path: process?.env?.LANCEDB_PATH || '?./data/vectors',
+            path: process?.env?.LANCEDB_PATH'' | '''' | '''?./data/vectors',
             dimensions: 1536,
             metric: 'cosine',
             indexType: 'ivf_pq',
@@ -315,7 +315,7 @@ export async function createIntegratedSystem() {
           id: 'graph-knowledge',
           type: 'foundation-kuzu',
           config: {
-            path: process?.env?.KUZU_PATH || '?./data/graph?.db',
+            path: process?.env?.KUZU_PATH'' | '''' | '''?./data/graph?.db',
             bufferPoolSize: '512MB',
             maxDBSize: '100GB',
           },
@@ -561,11 +561,11 @@ export async function createIntegratedSystem() {
       key: string,
       data: any,
       options: {
-        consistency?: 'strong | eventual');
+        consistency?: 'strong'' | ''eventual');
         timeout?: number;
-        priority?: 'low | medium' | 'high | critical');
+        priority?: 'low'' | ''medium'' | ''high'' | ''critical');
         enableKnowledgeExtraction?: boolean;
-        tier?: 'hot | warm' | 'cold');
+        tier?: 'hot'' | ''warm'' | ''cold');
         metadata?: Record<string, unknown>;
       } = {}
     ) {
@@ -606,12 +606,12 @@ export async function createIntegratedSystem() {
           sessionId,
           target: key,
           data: processedData,
-          consistency: options?.consistency || 'strong',
-          timeout: options?.timeout || 10000,
+          consistency: options?.consistency'' | '''' | '''strong',
+          timeout: options?.timeout'' | '''' | ''10000,
           metadata: {
             requestId: `store_${Date?.now()}`,
-            tier: options?.tier || 'warm',
-            priority: options?.priority || 'medium',
+            tier: options?.tier'' | '''' | '''warm',
+            priority: options?.priority'' | '''' | '''medium',
             ?.?.?.options?.metadata,
           },
         });
@@ -629,7 +629,7 @@ export async function createIntegratedSystem() {
           await lifecycleManager?.recordAccess(key, {
             sessionId,
             accessType: 'write',
-            tier: options?.tier || 'warm',
+            tier: options?.tier'' | '''' | '''warm',
             timestamp: Date?.now(),
           });
 
@@ -650,7 +650,7 @@ export async function createIntegratedSystem() {
         });
 
         // Store in database with tier-aware storage
-        const tier = options?.tier || 'warm');
+        const tier = options?.tier'' | '''' | '''warm');
         const query: DatabaseQuery = {
           id: `store_${Date?.now()}`,
           type: 'insert',
@@ -662,15 +662,15 @@ export async function createIntegratedSystem() {
               key,
               data: processedData,
               tier,
-              priority: options?.priority || 'medium',
+              priority: options?.priority'' | '''' | '''medium',
               timestamp: Date?.now(),
-              metadata: options?.metadata || {},
+              metadata: options?.metadata'' | '''' | ''{},
             },
           },
           requirements: {
-            consistency: options?.consistency || 'strong',
-            timeout: options?.timeout || 10000,
-            priority: options?.priority || 'medium',
+            consistency: options?.consistency'' | '''' | '''strong',
+            timeout: options?.timeout'' | '''' | ''10000,
+            priority: options?.priority'' | '''' | '''medium',
           },
           routing: {
             loadBalancing: 'performance_based',
@@ -791,14 +791,14 @@ export async function createIntegratedSystem() {
 
         // Calculate component scores
         const componentScores = {
-          memory: memoryHealth?.score || 0,
-          database: databaseHealth?.score || 0,
-          coordination: coordinationHealth?.score || 0,
-          cache: cacheHealth?.score || 0,
-          lifecycle: lifecycleHealth?.score || 0,
-          optimization: optimizationHealth?.score || 0,
-          knowledge: knowledgeHealth?.score || 0,
-          telemetry: telemetryHealth?.score || 0,
+          memory: memoryHealth?.score'' | '''' | ''0,
+          database: databaseHealth?.score'' | '''' | ''0,
+          coordination: coordinationHealth?.score'' | '''' | ''0,
+          cache: cacheHealth?.score'' | '''' | ''0,
+          lifecycle: lifecycleHealth?.score'' | '''' | ''0,
+          optimization: optimizationHealth?.score'' | '''' | ''0,
+          knowledge: knowledgeHealth?.score'' | '''' | ''0,
+          telemetry: telemetryHealth?.score'' | '''' | ''0,
         };
 
         // Calculate weighted overall score
@@ -820,7 +820,7 @@ export async function createIntegratedSystem() {
         );
 
         // Determine overall status
-        let overallStatus: 'healthy | warning' | 'critical | degraded');
+        let overallStatus:'healthy | warning''' | '''critical | degraded');
         if (overallScore >= 90) {
           overallStatus = 'healthy');
         } else if (overallScore >= 70) {
@@ -833,25 +833,25 @@ export async function createIntegratedSystem() {
 
         // Collect issues and recommendations
         const allIssues = [
-          ?.?.?.(memoryHealth?.details?.issues || []),
-          ?.?.?.(databaseHealth?.details?.issues || []),
-          ?.?.?.(coordinationHealth?.issues || []),
-          ?.?.?.(cacheHealth?.issues || []),
-          ?.?.?.(lifecycleHealth?.issues || []),
-          ?.?.?.(optimizationHealth?.issues || []),
-          ?.?.?.(knowledgeHealth?.issues || []),
-          ?.?.?.(telemetryHealth?.issues || []),
+          ?.?.?.(memoryHealth?.details?.issues'' | '''' | ''[]),
+          ?.?.?.(databaseHealth?.details?.issues'' | '''' | ''[]),
+          ?.?.?.(coordinationHealth?.issues'' | '''' | ''[]),
+          ?.?.?.(cacheHealth?.issues'' | '''' | ''[]),
+          ?.?.?.(lifecycleHealth?.issues'' | '''' | ''[]),
+          ?.?.?.(optimizationHealth?.issues'' | '''' | ''[]),
+          ?.?.?.(knowledgeHealth?.issues'' | '''' | ''[]),
+          ?.?.?.(telemetryHealth?.issues'' | '''' | ''[]),
         ];
 
         const allRecommendations = [
-          ?.?.?.(memoryHealth?.recommendations || []),
-          ?.?.?.(databaseHealth?.recommendations || []),
-          ?.?.?.(coordinationHealth?.recommendations || []),
-          ?.?.?.(cacheHealth?.recommendations || []),
-          ?.?.?.(lifecycleHealth?.recommendations || []),
-          ?.?.?.(optimizationHealth?.recommendations || []),
-          ?.?.?.(knowledgeHealth?.recommendations || []),
-          ?.?.?.(telemetryHealth?.recommendations || []),
+          ?.?.?.(memoryHealth?.recommendations'' | '''' | ''[]),
+          ?.?.?.(databaseHealth?.recommendations'' | '''' | ''[]),
+          ?.?.?.(coordinationHealth?.recommendations'' | '''' | ''[]),
+          ?.?.?.(cacheHealth?.recommendations'' | '''' | ''[]),
+          ?.?.?.(lifecycleHealth?.recommendations'' | '''' | ''[]),
+          ?.?.?.(optimizationHealth?.recommendations'' | '''' | ''[]),
+          ?.?.?.(knowledgeHealth?.recommendations'' | '''' | ''[]),
+          ?.?.?.(telemetryHealth?.recommendations'' | '''' | ''[]),
         ];
 
         const healthReport = {
@@ -860,7 +860,7 @@ export async function createIntegratedSystem() {
             status: overallStatus,
             score: Math?.round(overallScore),
             uptime: process?.uptime,
-            version: '2?.1?.0',
+            version:'2?.1?.0',
           },
           components: {
             memory: {
@@ -869,8 +869,8 @@ export async function createIntegratedSystem() {
               details: memoryHealth?.details,
             },
             database: {
-              status: databaseHealth?.overall || 'unknown',
-              score: databaseHealth?.score || 0,
+              status: databaseHealth?.overall'' | '''' | '''unknown',
+              score: databaseHealth?.score'' | '''' | ''0,
               details: databaseHealth?.details,
             },
             coordination: {
@@ -939,19 +939,18 @@ export async function createIntegratedSystem() {
     // Utility methods for health metrics
     async getAverageResponseTime(): Promise<number> {
       const metrics = await telemetryManager?.getMetrics(['response_time']);
-      return metrics?.response_time?.average || 0;
+      return metrics?.response_time?.average'' | '''' | ''0;
     },
 
     async getCurrentThroughput(): Promise<number> {
-      const metrics = await telemetryManager?.getMetrics([
-        'requests_per_second',
+      const metrics = await telemetryManager?.getMetrics(['requests_per_second',
       ]);
-      return metrics?.requests_per_second?.current || 0;
+      return metrics?.requests_per_second?.current'' | '''' | ''0;
     },
 
     async getCurrentErrorRate(): Promise<number> {
       const metrics = await telemetryManager?.getMetrics(['error_rate']);
-      return metrics?.error_rate?.current || 0;
+      return metrics?.error_rate?.current'' | '''' | ''0;
     },
 
     async getResourceUtilization(): Promise<{
@@ -979,15 +978,15 @@ export async function createIntegratedSystem() {
         database: databaseStats,
         integration: {
           totalOperations:
-            (memoryStats?.coordinator?.decisions?.total || 0) +
-            (databaseStats?.coordinator?.queries?.total || 0),
+            (memoryStats?.coordinator?.decisions?.total'' | '''' | ''0) +
+            (databaseStats?.coordinator?.queries?.total'' | '''' | ''0),
           averageLatency:
-            ((memoryStats?.current?.averageLatency || 0) +
-              (databaseStats?.coordinator?.queries?.averageLatency || 0)) /
+            ((memoryStats?.current?.averageLatency'' | '''' | ''0) +
+              (databaseStats?.coordinator?.queries?.averageLatency'' | '''' | ''0)) /
             2,
           systemUtilization: {
-            memory: memoryStats?.backends || 0,
-            database: databaseStats?.engines || 0,
+            memory: memoryStats?.backends'' | '''' | ''0,
+            database: databaseStats?.engines'' | '''' | ''0,
           },
         },
       };
@@ -1159,7 +1158,7 @@ export async function demonstrateErrorHandling() {
             timestamp: Date?.now(),
           },
           strategy:
-            classification?.suggestedStrategies[0] || 'exponential_backoff',
+            classification?.suggestedStrategies[0]'' | '''' | '''exponential_backoff',
         };
 
         const recoveryResult = await recoveryManager?.recover(

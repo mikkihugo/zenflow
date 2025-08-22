@@ -43,7 +43,7 @@ export interface ValidationResult {
   metrics: {
     validationTime: number;
     checkCount: number;
-    complexity: 'low' | 'medium' | 'high';
+    complexity: 'low | medium' | 'high';
   };
 
   /** Validation metadata */
@@ -68,10 +68,10 @@ export interface ValidationError {
   message: string;
 
   /** Error severity */
-  severity: 'critical' | 'high' | 'medium' | 'low';
+  severity: 'critical | high' | 'medium''' | '''low';
 
   /** Error category */
-  category: 'type' | 'config' | 'integration' | 'performance' | 'compatibility';
+  category: 'type | config' | 'integration' | 'performance' | 'compatibility';
 
   /** Error location */
   location?: {
@@ -100,10 +100,10 @@ export interface ValidationWarning {
   message: string;
 
   /** Warning category */
-  category: 'optimization' | 'deprecation' | 'best-practice' | 'maintenance';
+  category: 'optimization''' | '''deprecation''' | '''best-practice''' | '''maintenance';
 
   /** Warning impact */
-  impact: 'low' | 'medium' | 'high';
+  impact: 'low | medium' | 'high';
 
   /** Warning context */
   context?: Record<string, unknown>;
@@ -116,7 +116,7 @@ export interface ValidationWarning {
  */
 export interface ValidationRecommendation {
   /** Recommendation type */
-  type: 'optimization' | 'refactoring' | 'feature' | 'security' | 'performance';
+  type: 'optimization | refactoring' | 'feature' | 'security' | 'performance';
 
   /** Recommendation message */
   message: string;
@@ -125,10 +125,10 @@ export interface ValidationRecommendation {
   benefit: string;
 
   /** Implementation effort */
-  effort: 'low' | 'medium' | 'high';
+  effort: 'low | medium' | 'high';
 
   /** Priority */
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: 'low | medium' | 'high''' | '''critical';
 
   /** Implementation steps */
   steps?: string[];
@@ -142,7 +142,7 @@ export interface ValidationRecommendation {
 export interface EventTypeSchema {
   /** Schema type */
   type: string;
-  
+
   /** Required properties */
   required: string[];
 
@@ -150,7 +150,7 @@ export interface EventTypeSchema {
   properties: Record<
     string,
     {
-      type: 'string' | 'number' | 'boolean' | 'object' | 'array';
+      type: 'string | number' | 'boolean' | 'object' | 'array';
       format?: string;
       enum?: unknown[];
       minimum?: number;
@@ -276,14 +276,14 @@ export class UELValidationFramework {
 
     try {
       // Get schema for event type
-      const eventSchema = schema || this.eventTypeSchemas.get(event.type);
+      const eventSchema = schema'' | '''' | ''this.eventTypeSchemas.get(event.type);
 
       if (eventSchema) {
         // Validate required properties
         for (const required of eventSchema.required) {
           if (!(required in event)) {
             errors.push({
-              code: 'MISSING_REQUIRED_PROPERTY',
+              code:'MISSING_REQUIRED_PROPERTY',
               message: `Required property '${required}' is missing`,
               severity: 'high',
               category: 'type',
@@ -375,7 +375,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical' || e.severity === 'high'
+            (e) => e.severity === 'critical''' | '''' | ''e.severity ==='high'
           ).length === 0,
         score,
         errors,
@@ -435,7 +435,7 @@ export class UELValidationFramework {
     const recommendations: ValidationRecommendation[] = [];
 
     // Validate required fields
-    if (!config?.name || typeof config?.name !== 'string') {
+    if (!config?.name'' | '''' | ''typeof config?.name !=='string') {
       errors.push({
         code: 'INVALID_MANAGER_NAME',
         message: 'Event manager name is required and must be a string',
@@ -459,10 +459,10 @@ export class UELValidationFramework {
     // Validate configuration values
     if (
       config?.maxListeners !== undefined &&
-      (config?.maxListeners < 1 || config?.maxListeners > 10000)
+      (config?.maxListeners < 1'' | '''' | ''config?.maxListeners > 10000)
     ) {
       warnings.push({
-        code: 'UNUSUAL_MAX_LISTENERS',
+        code:'UNUSUAL_MAX_LISTENERS',
         message: `Unusual maxListeners value: ${config?.maxListeners}`,
         category: 'optimization',
         impact: 'medium',
@@ -501,7 +501,7 @@ export class UELValidationFramework {
 
     return {
       valid:
-        errors.filter((e) => e.severity === 'critical' || e.severity === 'high')
+        errors.filter((e) => e.severity === 'critical''' | '''' | ''e.severity ==='high')
           .length === 0,
       score,
       errors,
@@ -627,7 +627,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical' || e.severity === 'high'
+            (e) => e.severity === 'critical''' | '''' | ''e.severity ==='high'
           ).length === 0,
         score,
         errors,
@@ -771,7 +771,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical' || e.severity === 'high'
+            (e) => e.severity === 'critical''' | '''' | ''e.severity ==='high'
           ).length === 0,
         score,
         errors,
@@ -1010,12 +1010,12 @@ export class UELValidationFramework {
     results.forEach((result) => {
       result?.errors.forEach((error) => {
         errorsByCategory[error.category] =
-          (errorsByCategory[error.category] || 0) + 1;
+          (errorsByCategory[error.category]'' | '''' | ''0) + 1;
       });
 
       result?.recommendations.forEach((rec) => {
         recommendationsByType[rec.type] =
-          (recommendationsByType[rec.type] || 0) + 1;
+          (recommendationsByType[rec.type]'' | '''' | ''0) + 1;
       });
     });
 
@@ -1036,7 +1036,7 @@ export class UELValidationFramework {
 
   private validatePropertyType(value: unknown, expectedType: string): boolean {
     switch (expectedType) {
-      case 'string':
+      case'string':
         return typeof value === 'string';
       case 'number':
         return typeof value === 'number' && !Number.isNaN(value);
@@ -1170,12 +1170,12 @@ export class UELValidationFramework {
     return Math.max(0, Math.min(100, score));
   }
 
-  private determineComplexity(event: SystemEvent): 'low' | 'medium' | 'high' {
+  private determineComplexity(event: SystemEvent): 'low | medium' | 'high'{
     const eventSize = JSON.stringify(event).length;
     const propertyCount = Object.keys(event).length;
 
-    if (eventSize > 5000 || propertyCount > 15) return 'high';
-    if (eventSize > 1000 || propertyCount > 8) return 'medium';
+    if (eventSize > 5000'' | '''' | ''propertyCount > 15) return'high';
+    if (eventSize > 1000'' | '''' | ''propertyCount > 8) return'medium';
     return 'low';
   }
 

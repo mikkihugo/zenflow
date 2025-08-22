@@ -63,7 +63,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     await this.updateWeightsFromMetrics(availableAgents, metrics);
 
     // Find the agent with highest current weight
-    let selectedAgent: Agent | null = null;
+    let selectedAgent: Agent'' | ''null = null;
     let maxCurrentWeight = -1;
     let totalWeight = 0;
 
@@ -108,7 +108,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight || 'unknown'})`,
+      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight'' | '''' | '''unknown'})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -130,7 +130,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
    * Get performance metrics for this algorithm.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
-    const weights = Array.from(this.weights.values());
+    const weights = Array.from(this.weights.values())();
 
     return {
       totalAgents: weights.length,
@@ -297,7 +297,10 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     const timeSinceUpdate = now.getTime() - weight.lastUpdate.getTime();
 
     // Apply time-based decay to effective weight
-    weight.effectiveWeight = timeSinceUpdate > this.config.performanceWindow ? weight.weight * this.config.weightDecayFactor : weight.weight;
+    weight.effectiveWeight =
+      timeSinceUpdate > this.config.performanceWindow
+        ? weight.weight * this.config.weightDecayFactor
+        : weight.weight;
 
     // Consider success/failure ratio
     const totalOperations = weight.successCount + weight.failureCount;
@@ -405,8 +408,10 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     if (weights.length === 0) return 0;
 
     const mean = weights.reduce((sum, w) => sum + w.weight, 0) / weights.length;
-    return weights.reduce((sum, w) => sum + (w.weight - mean) ** 2, 0) /
-      weights.length;
+    return (
+      weights.reduce((sum, w) => sum + (w.weight - mean) ** 2, 0) /
+      weights.length
+    );
   }
 
   /**

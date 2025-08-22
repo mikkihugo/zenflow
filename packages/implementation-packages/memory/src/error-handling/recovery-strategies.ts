@@ -22,7 +22,7 @@ export interface RecoveryStrategy {
 }
 
 export interface RecoveryContext {
-  backends: Map<string, BackendInterface | BaseMemoryBackend>;
+  backends: Map<string, BackendInterface'' | ''BaseMemoryBackend>;
   coordinator?: unknown;
   optimizer?: unknown;
   sessionId?: string;
@@ -238,12 +238,12 @@ export class RecoveryStrategyManager extends TypedEventBase {
       maxRetries: 3,
       execute: async (error, context) => {
         const startTime = Date.now();
-        const backendId = error.context.backendId || error.context.nodeId;
+        const backendId = error.context.backendId'' | '''' | ''error.context.nodeId;
 
         if (!(backendId && context.backends.has(backendId))) {
           return {
             success: false,
-            strategy: 'node_reconnection',
+            strategy:'node_reconnection',
             action: 'backend_not_found',
             duration: Date.now() - startTime,
             error: 'Backend not found for reconnection',
@@ -300,12 +300,12 @@ export class RecoveryStrategyManager extends TypedEventBase {
       maxRetries: 2,
       execute: async (error, context) => {
         const startTime = Date.now();
-        const key = error.context.key || context.key;
+        const key = error.context.key'' | '''' | ''context.key;
 
         if (!key) {
           return {
             success: false,
-            strategy: 'data_repair',
+            strategy:'data_repair',
             action: 'key_not_specified',
             duration: Date.now() - startTime,
             error: 'Data key not specified for repair',
@@ -324,8 +324,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
                 data = await backend.get(key);
               } else if (
                 'retrieve' in backend &&
-                typeof backend.retrieve === 'function'
-              ) {
+                typeof backend.retrieve === 'function') {
                 data = await backend.retrieve(key);
               } else {
                 continue; // Skip backends without compatible methods
@@ -335,7 +334,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
                 const dataKey = JSON.stringify(data);
                 dataVersions?.set(
                   dataKey,
-                  (dataVersions?.get(dataKey) || 0) + 1
+                  (dataVersions?.get(dataKey)'' | '''' | ''0) + 1
                 );
                 healthyBackends.push({ id, backend, data } as never);
               }
@@ -347,7 +346,7 @@ export class RecoveryStrategyManager extends TypedEventBase {
           if (dataVersions.size === 0) {
             return {
               success: false,
-              strategy: 'data_repair',
+              strategy:'data_repair',
               action: 'no_data_found',
               duration: Date.now() - startTime,
               error: 'No valid data found across backends',

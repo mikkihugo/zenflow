@@ -33,48 +33,11 @@ export interface SwarmConfig {
   heartbeatInterval?: number;
   timeout?: number;
 }
-export type SwarmTopology = 'mesh | hierarchical' | 'ring | star');
-export type SwarmStatus =
-  | 'initializing'
-  | 'active'
-  | 'paused'
-  | 'stopped'
-  | 'error');
-export type AgentStatus =
-  | 'initializing'
-  | 'idle'
-  | 'busy'
-  | 'error'
-  | 'offline'
-  | 'terminated');
-export type AgentType =
-  | 'researcher'
-  | 'coder'
-  | 'analyst'
-  | 'requirements-engineer'
-  | 'design-architect'
-  | 'task-planner'
-  | 'developer'
-  | 'system-architect'
-  | 'tester'
-  | 'reviewer'
-  | 'steering-author'
-  | 'frontend-dev'
-  | 'ui-designer'
-  | 'ux-designer'
-  | 'accessibility-specialist'
-  | 'fullstack-dev'
-  | 'dev-backend-api'
-  | 'ai-ml-specialist'
-  | 'data-ml-model'
-  | 'performance-analyzer'
-  | 'database-architect'
-  | 'coordinator'
-  | 'worker'
-  | 'specialist'
-  | 'observer'
-  | 'manager');
-export type CoordinationStrategy = 'parallel | sequential' | 'adaptive');
+export type SwarmTopology = 'mesh'' | ''hierarchical'' | ''ring'' | ''star');
+export type SwarmStatus =' | ''initializing | active' | 'paused' | 'stopped' | 'error');
+export type AgentStatus ='' | '''initializing | idle' | 'busy''' | '''error | offline' | 'terminated');
+export type AgentType ='' | '''researcher | coder' | 'analyst''' | '''requirements-engineer''' | '''design-architect''' | '''task-planner''' | '''developer''' | '''system-architect''' | '''tester''' | '''reviewer''' | '''steering-author''' | '''frontend-dev''' | '''ui-designer''' | '''ux-designer''' | '''accessibility-specialist''' | '''fullstack-dev''' | '''dev-backend-api''' | '''ai-ml-specialist''' | '''data-ml-model''' | '''performance-analyzer''' | '''database-architect''' | '''coordinator | worker' | 'specialist' | 'observer' | 'manager');
+export type CoordinationStrategy = 'parallel'' | ''sequential'' | ''adaptive');
 export interface MemoryEntry {
   key: string;
   value: any;
@@ -105,28 +68,22 @@ export interface Message {
   type: string;
   payload: any;
   timestamp: Date;
-  priority?: 'low | medium' | 'high | urgent');
+  priority?: 'low'' | ''medium'' | ''high'' | ''urgent');
 }
-export type TaskType =
-  | 'analysis'
-  | 'generation'
-  | 'review'
-  | 'coordination'
-  | 'research'
-  | 'testing');
+export type TaskType =' | ''analysis | generation' | 'review''' | '''coordination | research' | 'testing');
 export interface ComponentConfig {
   enabled: boolean;
   [key: string]: any;
 }
 export interface SystemHealth {
-  status: 'healthy | degraded' | 'unhealthy');
+  status: 'healthy'' | ''degraded'' | ''unhealthy');
   components: Record<string, ComponentHealth>;
   uptime: number;
   version: string;
   timestamp: Date;
 }
 export interface ComponentHealth {
-  status: 'healthy | degraded' | 'unhealthy');
+  status: 'healthy'' | ''degraded'' | ''unhealthy');
   message?: string;
   lastCheck: Date;
   metrics?: Record<string, number>;
@@ -149,13 +106,8 @@ export interface Task {
   updatedAt?: Date;
   completedAt?: Date;
 }
-export type TaskStatus =
-  | 'pending'
-  | 'active'
-  | 'completed'
-  | 'failed'
-  | 'cancelled');
-export type TaskPriority = 'low | medium' | 'high | urgent');
+export type TaskStatus ='' | '''pending | active' | 'completed' | 'failed' | 'cancelled');
+export type TaskPriority = 'low'' | ''medium'' | ''high'' | ''urgent');
 export interface NeuralModel {
   id: string;
   name: string;
@@ -167,20 +119,8 @@ export interface NeuralModel {
   weights?: ArrayBuffer;
   metadata?: ModelMetadata;
 }
-export type NeuralModelType =
-  | 'attention'
-  | 'lstm'
-  | 'transformer'
-  | 'feedforward'
-  | 'cnn'
-  | 'gru'
-  | 'autoencoder');
-export type ModelStatus =
-  | 'untrained'
-  | 'training'
-  | 'trained'
-  | 'deployed'
-  | 'deprecated');
+export type NeuralModelType =' | ''attention | lstm' | 'transformer''' | '''feedforward | cnn' | 'gru''' | '''autoencoder');
+export type ModelStatus ='' | '''untrained | training' | 'trained' | 'deployed' | 'deprecated');
 export interface ModelMetadata {
   layers: number;
   inputSize: number;

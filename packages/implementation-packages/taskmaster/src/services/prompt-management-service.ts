@@ -1,6 +1,6 @@
 /**
  * @fileoverview SOC2-Compliant Prompt Management Service
- * 
+ *
  * Enterprise-grade prompt versioning and management with:
  * - Database-backed prompt storage with full audit trails
  * - SOC2 compliance features (access control, audit logging)
@@ -22,16 +22,16 @@ export interface PromptVersion {
   version: string; // semantic versioning: 1.0.0, 1.1.0, etc.
   content: string;
   description: string;
-  
+
   // SOC2 Audit Requirements
   createdBy: string;
   createdAt: Date;
   approvedBy?: string;
   approvedAt?: Date;
-  
+
   // Status tracking
-  status: 'draft' | 'review' | 'approved' | 'deprecated' | 'archived';
-  
+  status: 'draft | review' | 'approved' | 'deprecated' | 'archived';
+
   // Performance tracking
   performance: {
     usageCount: number;
@@ -39,7 +39,7 @@ export interface PromptVersion {
     averageConfidence: number;
     humanOverrideRate: number;
   };
-  
+
   // Configuration
   config: {
     model: string;
@@ -48,7 +48,7 @@ export interface PromptVersion {
     criteria: string[];
     confidenceThreshold: number;
   };
-  
+
   // Metadata
   tags: string[];
   metadata: Record<string, unknown>;
@@ -59,16 +59,16 @@ export interface PromptTemplate {
   name: string;
   description: string;
   gateType: string; // 'security', 'deployment', 'compliance', etc.
-  
+
   // Current active version
   activeVersionId: string;
-  
+
   // All versions (full history)
   versions: PromptVersion[];
-  
+
   // A/B Testing
   variants: PromptVariant[];
-  
+
   // SOC2 Compliance
   accessControl: {
     owners: string[];
@@ -76,17 +76,17 @@ export interface PromptTemplate {
     viewers: string[];
     approvers: string[];
   };
-  
+
   // Audit trail
   auditLog: PromptAuditEntry[];
-  
+
   // Integration
   teamworkConfig?: {
     collaborationEnabled: boolean;
     reviewWorkflowId?: string;
     approvalWorkflowId?: string;
   };
-  
+
   createdAt: Date;
   updatedAt: Date;
   tenantId?: string;
@@ -97,7 +97,7 @@ export interface PromptVariant {
   name: string;
   versionId: string;
   trafficAllocation: number; // 0.0 - 1.0 (percentage of traffic)
-  
+
   // A/B Testing metrics
   metrics: {
     requests: number;
@@ -106,7 +106,7 @@ export interface PromptVariant {
     humanOverrides: number;
     averageProcessingTime: number;
   };
-  
+
   isActive: boolean;
   createdAt: Date;
 }
@@ -114,27 +114,27 @@ export interface PromptVariant {
 export interface PromptAuditEntry {
   id: string;
   promptId: string;
-  action: 'created' | 'updated' | 'approved' | 'deployed' | 'deprecated' | 'accessed' | 'variant_created';
+  action:'' | '''created | updated' | 'approved''' | '''deployed | deprecated' | 'accessed''' | '''variant_created';
   userId: string;
   timestamp: Date;
-  
+
   // SOC2 Requirements
   ipAddress?: string;
   userAgent?: string;
   sessionId?: string;
-  
+
   // Change details
   changes?: {
     field: string;
     oldValue: unknown;
     newValue: unknown;
   }[];
-  
+
   // Compliance metadata
   reason?: string;
   approvalReference?: string;
-  riskAssessment?: 'low' | 'medium' | 'high';
-  
+  riskAssessment?: 'low | medium' | 'high';
+
   metadata: Record<string, unknown>;
 }
 
@@ -145,15 +145,15 @@ export interface PromptDraft {
   title: string;
   content: string;
   config: PromptVersion['config'];
-  
+
   // Collaboration features
   collaborators: string[];
   comments: DraftComment[];
-  
+
   // Workflow integration
-  reviewStatus: 'pending' | 'in_review' | 'approved' | 'rejected';
+  reviewStatus: 'pending | in_review' | 'approved''' | '''rejected';
   workflowInstanceId?: string;
-  
+
   createdAt: Date;
   updatedAt: Date;
   expiresAt?: Date;
@@ -177,12 +177,12 @@ export class PromptManagementService {
   async initialize(): Promise<void> {
     const dbSystem = await getDatabaseSystem();
     this.database = dbSystem.createProvider('sql');
-    
+
     this.teamworkSystem = await getTeamworkSystem();
     this.workflowEngine = await getWorkflowEngine();
-    
+
     await this.createTables();
-    
+
     this.logger.info('SOC2-compliant Prompt Management Service initialized');
   }
 
@@ -204,10 +204,9 @@ export class PromptManagementService {
     createdBy: string,
     auditContext: { ipAddress?: string; userAgent?: string; sessionId?: string }
   ): Promise<PromptTemplate> {
-    
     const promptId = uuidv4();
     const versionId = uuidv4();
-    
+
     // Create initial version
     const initialVersion: PromptVersion = {
       id: versionId,
@@ -222,11 +221,11 @@ export class PromptManagementService {
         usageCount: 0,
         successRate: 0,
         averageConfidence: 0,
-        humanOverrideRate: 0
+        humanOverrideRate: 0,
       },
       config: data.config,
       tags: [],
-      metadata: {}
+      metadata: {},
     };
 
     // Create prompt template
@@ -240,27 +239,27 @@ export class PromptManagementService {
       variants: [],
       accessControl: {
         owners: data.owners,
-        editors: data.editors || [],
-        viewers: data.viewers || [],
-        approvers: data.approvers || []
+        editors: data.editors'' | '''' | ''[],
+        viewers: data.viewers'' | '''' | ''[],
+        approvers: data.approvers'' | '''' | ''[],
       },
       auditLog: [],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     // Create audit entry
-    await this.createAuditEntry(promptId, 'created', createdBy, auditContext, {
-      reason: 'Initial prompt template creation'
+    await this.createAuditEntry(promptId,'created', createdBy, auditContext, {
+      reason: 'Initial prompt template creation',
     });
 
     // Store in database
     await this.storePromptTemplate(promptTemplate);
 
-    this.logger.info('Created new prompt template', { 
-      promptId, 
-      name: data.name, 
-      createdBy 
+    this.logger.info('Created new prompt template', {
+      promptId,
+      name: data.name,
+      createdBy,
     });
 
     return promptTemplate;
@@ -280,7 +279,6 @@ export class PromptManagementService {
     createdBy: string,
     auditContext: any
   ): Promise<PromptVersion> {
-    
     const template = await this.getPromptTemplate(promptId);
     if (!template) {
       throw new Error(`Prompt template ${promptId} not found`);
@@ -291,7 +289,7 @@ export class PromptManagementService {
 
     // Generate next version number
     const nextVersion = this.generateNextVersion(template.versions);
-    
+
     const newVersion: PromptVersion = {
       id: uuidv4(),
       promptId,
@@ -305,14 +303,14 @@ export class PromptManagementService {
         usageCount: 0,
         successRate: 0,
         averageConfidence: 0,
-        humanOverrideRate: 0
+        humanOverrideRate: 0,
       },
       config: {
         ...template.versions[template.versions.length - 1].config,
-        ...data.config
+        ...data.config,
       },
-      tags: data.tags || [],
-      metadata: {}
+      tags: data.tags'' | '''' | ''[],
+      metadata: {},
     };
 
     // Add to template
@@ -325,9 +323,9 @@ export class PromptManagementService {
     }
 
     // Create audit entry
-    await this.createAuditEntry(promptId, 'updated', createdBy, auditContext, {
+    await this.createAuditEntry(promptId,'updated', createdBy, auditContext, {
       reason: 'New version created',
-      version: nextVersion
+      version: nextVersion,
     });
 
     // Update database
@@ -349,7 +347,6 @@ export class PromptManagementService {
     createdBy: string,
     auditContext: any
   ): Promise<PromptVariant> {
-    
     const template = await this.getPromptTemplate(promptId);
     if (!template) {
       throw new Error(`Prompt template ${promptId} not found`);
@@ -359,9 +356,9 @@ export class PromptManagementService {
 
     // Validate traffic allocation
     const currentAllocation = template.variants
-      .filter(v => v.isActive)
+      .filter((v) => v.isActive)
       .reduce((sum, v) => sum + v.trafficAllocation, 0);
-    
+
     if (currentAllocation + data.trafficAllocation > 1.0) {
       throw new Error('Total traffic allocation cannot exceed 100%');
     }
@@ -376,19 +373,25 @@ export class PromptManagementService {
         approvals: 0,
         rejections: 0,
         humanOverrides: 0,
-        averageProcessingTime: 0
+        averageProcessingTime: 0,
       },
       isActive: true,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     template.variants.push(variant);
     template.updatedAt = new Date();
 
-    await this.createAuditEntry(promptId, 'variant_created', createdBy, auditContext, {
-      variantName: data.name,
-      trafficAllocation: data.trafficAllocation
-    });
+    await this.createAuditEntry(
+      promptId,
+      'variant_created',
+      createdBy,
+      auditContext,
+      {
+        variantName: data.name,
+        trafficAllocation: data.trafficAllocation,
+      }
+    );
 
     await this.updatePromptTemplate(template);
 
@@ -408,7 +411,6 @@ export class PromptManagementService {
     },
     authorId: string
   ): Promise<PromptDraft> {
-    
     const template = await this.getPromptTemplate(promptId);
     if (!template) {
       throw new Error(`Prompt template ${promptId} not found`);
@@ -424,14 +426,14 @@ export class PromptManagementService {
       content: data.content,
       config: {
         ...template.versions[template.versions.length - 1].config,
-        ...data.config
+        ...data.config,
       },
-      collaborators: data.collaborators || [],
+      collaborators: data.collaborators'' | '''' | ''[],
       comments: [],
-      reviewStatus: 'pending',
+      reviewStatus:'pending',
       createdAt: new Date(),
       updatedAt: new Date(),
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     };
 
     // Enable teamwork collaboration if configured
@@ -454,11 +456,10 @@ export class PromptManagementService {
     auditContext: any,
     approvalData: {
       reason: string;
-      riskAssessment: 'low' | 'medium' | 'high';
+      riskAssessment: 'low | medium' | 'high';
       approvalReference?: string;
     }
   ): Promise<void> {
-    
     const template = await this.getPromptTemplate(promptId);
     if (!template) {
       throw new Error(`Prompt template ${promptId} not found`);
@@ -466,7 +467,7 @@ export class PromptManagementService {
 
     await this.checkPermission(template, approvedBy, 'approve');
 
-    const version = template.versions.find(v => v.id === versionId);
+    const version = template.versions.find((v) => v.id === versionId);
     if (!version) {
       throw new Error(`Version ${versionId} not found`);
     }
@@ -481,12 +482,18 @@ export class PromptManagementService {
     template.updatedAt = new Date();
 
     // Create comprehensive audit entry for SOC2
-    await this.createAuditEntry(promptId, 'approved', approvedBy, auditContext, {
-      reason: approvalData.reason,
-      version: version.version,
-      riskAssessment: approvalData.riskAssessment,
-      approvalReference: approvalData.approvalReference
-    });
+    await this.createAuditEntry(
+      promptId,
+      'approved',
+      approvedBy,
+      auditContext,
+      {
+        reason: approvalData.reason,
+        version: version.version,
+        riskAssessment: approvalData.riskAssessment,
+        approvalReference: approvalData.approvalReference,
+      }
+    );
 
     await this.updatePromptTemplate(template);
 
@@ -495,7 +502,7 @@ export class PromptManagementService {
       versionId,
       version: version.version,
       approvedBy,
-      riskAssessment: approvalData.riskAssessment
+      riskAssessment: approvalData.riskAssessment,
     });
   }
 
@@ -506,27 +513,28 @@ export class PromptManagementService {
     gateType: string,
     context: any
   ): Promise<{ version: PromptVersion; variant?: PromptVariant }> {
-    
     // Find templates for this gate type
     const templates = await this.getPromptTemplatesByGateType(gateType);
-    
+
     if (templates.length === 0) {
       throw new Error(`No prompt templates found for gate type: ${gateType}`);
     }
 
     // For now, use the first template (could be more sophisticated)
     const template = templates[0];
-    
+
     // Select variant based on A/B testing
     const variant = this.selectVariant(template);
-    
+
     let version: PromptVersion;
-    
+
     if (variant) {
-      version = template.versions.find(v => v.id === variant.versionId)!;
+      version = template.versions.find((v) => v.id === variant.versionId)!;
       await this.trackVariantUsage(variant.id);
     } else {
-      version = template.versions.find(v => v.id === template.activeVersionId)!;
+      version = template.versions.find(
+        (v) => v.id === template.activeVersionId
+      )!;
     }
 
     // Track usage
@@ -549,35 +557,42 @@ export class PromptManagementService {
     },
     variantId?: string
   ): Promise<void> {
-    
     // Update version performance
     const template = await this.getPromptTemplateByVersionId(versionId);
     if (!template) return;
 
-    const version = template.versions.find(v => v.id === versionId);
+    const version = template.versions.find((v) => v.id === versionId);
     if (!version) return;
 
     // Update metrics
     const total = version.performance.usageCount;
-    version.performance.successRate = 
-      (version.performance.successRate * (total - 1) + (result.success ? 1 : 0)) / total;
-    version.performance.averageConfidence = 
-      (version.performance.averageConfidence * (total - 1) + result.confidence) / total;
-    version.performance.humanOverrideRate = 
-      (version.performance.humanOverrideRate * (total - 1) + (result.humanOverride ? 1 : 0)) / total;
+    version.performance.successRate =
+      (version.performance.successRate * (total - 1) +
+        (result.success ? 1 : 0)) /
+      total;
+    version.performance.averageConfidence =
+      (version.performance.averageConfidence * (total - 1) +
+        result.confidence) /
+      total;
+    version.performance.humanOverrideRate =
+      (version.performance.humanOverrideRate * (total - 1) +
+        (result.humanOverride ? 1 : 0)) /
+      total;
 
     // Update variant metrics if applicable
     if (variantId) {
-      const variant = template.variants.find(v => v.id === variantId);
+      const variant = template.variants.find((v) => v.id === variantId);
       if (variant) {
         variant.metrics.requests++;
         if (result.success) variant.metrics.approvals++;
         else variant.metrics.rejections++;
         if (result.humanOverride) variant.metrics.humanOverrides++;
-        
+
         const variantTotal = variant.metrics.requests;
-        variant.metrics.averageProcessingTime = 
-          (variant.metrics.averageProcessingTime * (variantTotal - 1) + result.processingTime) / variantTotal;
+        variant.metrics.averageProcessingTime =
+          (variant.metrics.averageProcessingTime * (variantTotal - 1) +
+            result.processingTime) /
+          variantTotal;
       }
     }
 
@@ -586,12 +601,12 @@ export class PromptManagementService {
 
   // Private helper methods
   private async checkPermission(
-    template: PromptTemplate, 
-    userId: string, 
-    action: 'view' | 'edit' | 'approve'
+    template: PromptTemplate,
+    userId: string,
+    action: 'view | edit' | 'approve'
   ): Promise<void> {
     const { accessControl } = template;
-    
+
     let hasPermission = false;
     switch (action) {
       case 'view':
@@ -599,19 +614,19 @@ export class PromptManagementService {
           ...accessControl.owners,
           ...accessControl.editors,
           ...accessControl.viewers,
-          ...accessControl.approvers
+          ...accessControl.approvers,
         ].includes(userId);
         break;
       case 'edit':
         hasPermission = [
           ...accessControl.owners,
-          ...accessControl.editors
+          ...accessControl.editors,
         ].includes(userId);
         break;
       case 'approve':
         hasPermission = [
           ...accessControl.owners,
-          ...accessControl.approvers
+          ...accessControl.approvers,
         ].includes(userId);
         break;
     }
@@ -627,8 +642,8 @@ export class PromptManagementService {
     return `${major}.${minor}.${patch + 1}`;
   }
 
-  private selectVariant(template: PromptTemplate): PromptVariant | undefined {
-    const activeVariants = template.variants.filter(v => v.isActive);
+  private selectVariant(template: PromptTemplate): PromptVariant'' | ''undefined {
+    const activeVariants = template.variants.filter((v) => v.isActive);
     if (activeVariants.length === 0) return undefined;
 
     const random = Math.random();
@@ -651,7 +666,6 @@ export class PromptManagementService {
     auditContext: any,
     metadata: any = {}
   ): Promise<void> {
-    
     const auditEntry: PromptAuditEntry = {
       id: uuidv4(),
       promptId,
@@ -661,7 +675,7 @@ export class PromptManagementService {
       ipAddress: auditContext.ipAddress,
       userAgent: auditContext.userAgent,
       sessionId: auditContext.sessionId,
-      ...metadata
+      ...metadata,
     };
 
     await this.storeAuditEntry(auditEntry);
@@ -676,8 +690,8 @@ export class PromptManagementService {
       permissions: {
         canEdit: true,
         canComment: true,
-        canView: true
-      }
+        canView: true,
+      },
     });
   }
 
@@ -686,7 +700,6 @@ export class PromptManagementService {
     version: PromptVersion,
     createdBy: string
   ): Promise<void> {
-    
     if (!template.teamworkConfig?.approvalWorkflowId) return;
 
     // Start workflow using the workflow engine
@@ -696,102 +709,129 @@ export class PromptManagementService {
         promptId: template.id,
         versionId: version.id,
         createdBy,
-        approvers: template.accessControl.approvers
-      }
+        approvers: template.accessControl.approvers,
+      },
     });
   }
 
   // Database operations
   private async createTables(): Promise<void> {
     // Create tables for prompt management with SOC2 compliance
-    await this.database.schema.createTableIfNotExists('prompt_templates', (table: any) => {
-      table.uuid('id').primary();
-      table.string('name').notNullable();
-      table.text('description');
-      table.string('gate_type').notNullable();
-      table.uuid('active_version_id');
-      table.json('access_control').notNullable();
-      table.json('teamwork_config');
-      table.timestamps(true, true);
-      table.uuid('tenant_id');
-      
-      table.index(['gate_type']);
-      table.index(['tenant_id']);
-    });
+    await this.database.schema.createTableIfNotExists(
+      'prompt_templates',
+      (table: any) => {
+        table.uuid('id').primary();
+        table.string('name').notNullable();
+        table.text('description');
+        table.string('gate_type').notNullable();
+        table.uuid('active_version_id');
+        table.json('access_control').notNullable();
+        table.json('teamwork_config');
+        table.timestamps(true, true);
+        table.uuid('tenant_id');
 
-    await this.database.schema.createTableIfNotExists('prompt_versions', (table: any) => {
-      table.uuid('id').primary();
-      table.uuid('prompt_id').notNullable();
-      table.string('version').notNullable();
-      table.text('content').notNullable();
-      table.text('description');
-      table.uuid('created_by').notNullable();
-      table.timestamp('created_at').notNullable();
-      table.uuid('approved_by');
-      table.timestamp('approved_at');
-      table.string('status').notNullable();
-      table.json('performance').notNullable();
-      table.json('config').notNullable();
-      table.json('tags');
-      table.json('metadata');
-      
-      table.foreign('prompt_id').references('prompt_templates.id').onDelete('CASCADE');
-      table.index(['prompt_id', 'version']);
-      table.index(['status']);
-    });
+        table.index(['gate_type']);
+        table.index(['tenant_id']);
+      }
+    );
 
-    await this.database.schema.createTableIfNotExists('prompt_variants', (table: any) => {
-      table.uuid('id').primary();
-      table.string('name').notNullable();
-      table.uuid('version_id').notNullable();
-      table.decimal('traffic_allocation', 5, 4).notNullable();
-      table.json('metrics').notNullable();
-      table.boolean('is_active').defaultTo(true);
-      table.timestamp('created_at').notNullable();
-      
-      table.foreign('version_id').references('prompt_versions.id').onDelete('CASCADE');
-    });
+    await this.database.schema.createTableIfNotExists(
+      'prompt_versions',
+      (table: any) => {
+        table.uuid('id').primary();
+        table.uuid('prompt_id').notNullable();
+        table.string('version').notNullable();
+        table.text('content').notNullable();
+        table.text('description');
+        table.uuid('created_by').notNullable();
+        table.timestamp('created_at').notNullable();
+        table.uuid('approved_by');
+        table.timestamp('approved_at');
+        table.string('status').notNullable();
+        table.json('performance').notNullable();
+        table.json('config').notNullable();
+        table.json('tags');
+        table.json('metadata');
 
-    await this.database.schema.createTableIfNotExists('prompt_audit_log', (table: any) => {
-      table.uuid('id').primary();
-      table.uuid('prompt_id').notNullable();
-      table.string('action').notNullable();
-      table.uuid('user_id').notNullable();
-      table.timestamp('timestamp').notNullable();
-      table.string('ip_address');
-      table.text('user_agent');
-      table.string('session_id');
-      table.json('changes');
-      table.text('reason');
-      table.string('approval_reference');
-      table.string('risk_assessment');
-      table.json('metadata');
-      
-      table.foreign('prompt_id').references('prompt_templates.id').onDelete('CASCADE');
-      table.index(['prompt_id', 'timestamp']);
-      table.index(['user_id', 'timestamp']);
-      table.index(['action']);
-    });
+        table
+          .foreign('prompt_id')
+          .references('prompt_templates.id')
+          .onDelete('CASCADE');
+        table.index(['prompt_id', 'version']);
+        table.index(['status']);
+      }
+    );
 
-    await this.database.schema.createTableIfNotExists('prompt_drafts', (table: any) => {
-      table.uuid('id').primary();
-      table.uuid('prompt_id').notNullable();
-      table.uuid('author_id').notNullable();
-      table.string('title').notNullable();
-      table.text('content').notNullable();
-      table.json('config').notNullable();
-      table.json('collaborators');
-      table.json('comments');
-      table.string('review_status').notNullable();
-      table.uuid('workflow_instance_id');
-      table.timestamps(true, true);
-      table.timestamp('expires_at');
-      
-      table.foreign('prompt_id').references('prompt_templates.id').onDelete('CASCADE');
-      table.index(['prompt_id']);
-      table.index(['author_id']);
-      table.index(['review_status']);
-    });
+    await this.database.schema.createTableIfNotExists(
+      'prompt_variants',
+      (table: any) => {
+        table.uuid('id').primary();
+        table.string('name').notNullable();
+        table.uuid('version_id').notNullable();
+        table.decimal('traffic_allocation', 5, 4).notNullable();
+        table.json('metrics').notNullable();
+        table.boolean('is_active').defaultTo(true);
+        table.timestamp('created_at').notNullable();
+
+        table
+          .foreign('version_id')
+          .references('prompt_versions.id')
+          .onDelete('CASCADE');
+      }
+    );
+
+    await this.database.schema.createTableIfNotExists(
+      'prompt_audit_log',
+      (table: any) => {
+        table.uuid('id').primary();
+        table.uuid('prompt_id').notNullable();
+        table.string('action').notNullable();
+        table.uuid('user_id').notNullable();
+        table.timestamp('timestamp').notNullable();
+        table.string('ip_address');
+        table.text('user_agent');
+        table.string('session_id');
+        table.json('changes');
+        table.text('reason');
+        table.string('approval_reference');
+        table.string('risk_assessment');
+        table.json('metadata');
+
+        table
+          .foreign('prompt_id')
+          .references('prompt_templates.id')
+          .onDelete('CASCADE');
+        table.index(['prompt_id', 'timestamp']);
+        table.index(['user_id', 'timestamp']);
+        table.index(['action']);
+      }
+    );
+
+    await this.database.schema.createTableIfNotExists(
+      'prompt_drafts',
+      (table: any) => {
+        table.uuid('id').primary();
+        table.uuid('prompt_id').notNullable();
+        table.uuid('author_id').notNullable();
+        table.string('title').notNullable();
+        table.text('content').notNullable();
+        table.json('config').notNullable();
+        table.json('collaborators');
+        table.json('comments');
+        table.string('review_status').notNullable();
+        table.uuid('workflow_instance_id');
+        table.timestamps(true, true);
+        table.timestamp('expires_at');
+
+        table
+          .foreign('prompt_id')
+          .references('prompt_templates.id')
+          .onDelete('CASCADE');
+        table.index(['prompt_id']);
+        table.index(['author_id']);
+        table.index(['review_status']);
+      }
+    );
   }
 
   private async storePromptTemplate(template: PromptTemplate): Promise<void> {
@@ -807,7 +847,7 @@ export class PromptManagementService {
         teamwork_config: JSON.stringify(template.teamworkConfig),
         created_at: template.createdAt,
         updated_at: template.updatedAt,
-        tenant_id: template.tenantId
+        tenant_id: template.tenantId,
       });
 
       // Insert versions
@@ -826,7 +866,7 @@ export class PromptManagementService {
           performance: JSON.stringify(version.performance),
           config: JSON.stringify(version.config),
           tags: JSON.stringify(version.tags),
-          metadata: JSON.stringify(version.metadata)
+          metadata: JSON.stringify(version.metadata),
         });
       }
     });
@@ -835,26 +875,30 @@ export class PromptManagementService {
   private async updatePromptTemplate(template: PromptTemplate): Promise<void> {
     // Implementation would update the database records
     // This is a simplified version
-    await this.database('prompt_templates')
-      .where('id', template.id)
-      .update({
-        active_version_id: template.activeVersionId,
-        updated_at: template.updatedAt
-      });
+    await this.database('prompt_templates').where('id', template.id).update({
+      active_version_id: template.activeVersionId,
+      updated_at: template.updatedAt,
+    });
   }
 
-  private async getPromptTemplate(promptId: string): Promise<PromptTemplate | null> {
+  private async getPromptTemplate(
+    promptId: string
+  ): Promise<PromptTemplate'' | ''null> {
     // Implementation would fetch from database and reconstruct object
     // This is a placeholder
     return null;
   }
 
-  private async getPromptTemplatesByGateType(gateType: string): Promise<PromptTemplate[]> {
+  private async getPromptTemplatesByGateType(
+    gateType: string
+  ): Promise<PromptTemplate[]> {
     // Implementation would fetch templates by gate type
     return [];
   }
 
-  private async getPromptTemplateByVersionId(versionId: string): Promise<PromptTemplate | null> {
+  private async getPromptTemplateByVersionId(
+    versionId: string
+  ): Promise<PromptTemplate'' | ''null> {
     // Implementation would fetch template by version ID
     return null;
   }
@@ -873,7 +917,7 @@ export class PromptManagementService {
       reason: entry.reason,
       approval_reference: entry.approvalReference,
       risk_assessment: entry.riskAssessment,
-      metadata: JSON.stringify(entry.metadata)
+      metadata: JSON.stringify(entry.metadata),
     });
   }
 
@@ -891,7 +935,7 @@ export class PromptManagementService {
       workflow_instance_id: draft.workflowInstanceId,
       created_at: draft.createdAt,
       updated_at: draft.updatedAt,
-      expires_at: draft.expiresAt
+      expires_at: draft.expiresAt,
     });
   }
 

@@ -11,7 +11,7 @@ import type {
   AuthenticationConfig,
   ClientConfig,
   RetryConfig,
-} from './core/interfaces');
+} from './core/interfaces';
 
 /**
  * HTTP-specific authentication configuration.
@@ -47,7 +47,7 @@ export interface HTTPRetryConfig extends RetryConfig {
   retryStatusCodes?: number[];
 
   // HTTP methods to retry
-  retryMethods?: ('GET | POST' | 'PUT | DELETE' | 'PATCH')[];
+  retryMethods?: ('GET | POST | PUT | DELETE | PATCH')[];
 
   // Idempotent requests only
   idempotentOnly?: boolean;
@@ -118,7 +118,7 @@ export interface HTTPRequestOptions {
   headers?: Record<string, string>;
   retries?: number;
   validateStatus?: (status: number) => boolean;
-  responseType?: 'json | text' | 'blob | stream');
+  responseType?: 'json | text | blob | stream');
   signal?: AbortSignal;
   onUploadProgress?: (progressEvent: any) => void;
   onDownloadProgress?: (progressEvent: any) => void;

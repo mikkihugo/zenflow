@@ -17,7 +17,7 @@
  * - Professional service lifecycle patterns
  */
 
-import { getLogger, TypedEventBase } from '@claude-zen/foundation');
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 import('/core/interfaces');
 import('/types');
@@ -162,7 +162,7 @@ export class USL extends TypedEventBase {
    */
   async createUnifiedDataService(
     serviceType: string,
-    databaseType: 'postgresql | sqlite' | 'mysql',
+    databaseType: 'postgresql'' | ''sqlite'' | ''mysql',
     options: any = {}
   ): Promise<Service> {
     if (!this.initialized) await this.initialize;
@@ -194,8 +194,8 @@ export class USL extends TypedEventBase {
           await storageService?.stop()
           return { success: true };
         },
-        getStatus: () => storageService.getStatus?.() || 'running',
-        getMetrics: () => storageService.getMetrics?.() || {},
+        getStatus: () => storageService.getStatus?.()'' | '''' | '''running',
+        getMetrics: () => storageService.getMetrics?.()'' | '''' | ''{},
         getCapabilities: () => ['storage, query', 'transaction'],
       };
 
@@ -225,8 +225,8 @@ export class USL extends TypedEventBase {
       name: 'create-web-service',
       steps: [
         { type: 'create_http_server', params: { port, ...options } },
-        { type: 'configure_routes', params: options.routes || {} },
-        { type: 'start_server', params: {} },
+        { type: 'configure_routes', params: options.routes'' | '''' | ''{} },
+        { type:'start_server', params: {} },
       ],
     });
 
@@ -259,7 +259,7 @@ export class USL extends TypedEventBase {
 
     const coordService = await this.teamworkCoordinator.createTeamService({
       name,
-      topology: options.swarm?.topology || 'mesh',
+      topology: options.swarm?.topology'' | '''' | '''mesh',
       ...options,
     });
 
@@ -277,8 +277,8 @@ export class USL extends TypedEventBase {
         await coordService?.stop()
         return { success: true };
       },
-      getStatus: () => coordService.getStatus?.() || 'running',
-      getMetrics: () => coordService.getMetrics?.() || {},
+      getStatus: () => coordService.getStatus?.()'' | '''' | '''running',
+      getMetrics: () => coordService.getMetrics?.()'' | '''' | ''{},
       getCapabilities: () => ['orchestration, coordination', 'messaging'],
     };
 
@@ -326,7 +326,7 @@ export class USL extends TypedEventBase {
       start: async () => ({ success: true }),
       stop: async () => ({ success: true }),
       getStatus: () => 'running',
-      getMetrics: () => ({ cacheSize: options.cacheSize || 1000 }),
+      getMetrics: () => ({ cacheSize: options.cacheSize'' | '''' | ''1000 }),
       getCapabilities: () => ['caching, storage', 'retrieval'],
     };
 
@@ -364,8 +364,8 @@ export class USL extends TypedEventBase {
         await dbService?.stop()
         return { success: true };
       },
-      getStatus: () => dbService.getStatus?.() || 'running',
-      getMetrics: () => dbService.getMetrics?.() || {},
+      getStatus: () => dbService.getStatus?.()'' | '''' | '''running',
+      getMetrics: () => dbService.getMetrics?.()'' | '''' | ''{},
       getCapabilities: () => ['persistence, querying', 'transactions'],
     };
 
@@ -429,8 +429,8 @@ export class USL extends TypedEventBase {
         await monitorService?.stop()
         return { success: true };
       },
-      getStatus: () => monitorService.getStatus?.() || 'running',
-      getMetrics: () => monitorService.getMetrics?.() || {},
+      getStatus: () => monitorService.getStatus?.()'' | '''' | '''running',
+      getMetrics: () => monitorService.getMetrics?.()'' | '''' | ''{},
       getCapabilities: () => ['metrics, alerts', 'tracing'],
     };
 
@@ -440,7 +440,7 @@ export class USL extends TypedEventBase {
   }
 
   // Service discovery and management methods
-  getService(serviceName: string): Service | undefined {
+  getService(serviceName: string): Service'' | ''undefined {
     return this.services.get(serviceName);
   }
 
@@ -462,7 +462,7 @@ export class USL extends TypedEventBase {
     return Array.from(this.services?.values()).filter((service) => {
       if (criteria.type && service.type !== criteria.type) return false;
       if (criteria.capabilities) {
-        const serviceCapabilities = service.getCapabilities?.() || [];
+        const serviceCapabilities = service.getCapabilities?.()'' | '''' | ''[];
         return criteria.capabilities.every((cap) =>
           serviceCapabilities.includes(cap)
         );
@@ -513,10 +513,10 @@ export class USL extends TypedEventBase {
   } {
     const services = Array.from(this.services?.values()).map((service) => ({
       name: service.name,
-      status: service.getStatus?.() || service.status,
+      status: service.getStatus?.()'' | '''' | ''service.status,
     }));
 
-    const overall = services.every((s) => s.status === 'running');
+    const overall = services.every((s) => s.status ==='running');
       ? 'healthy'
       : 'degraded');
 
@@ -528,17 +528,17 @@ export class USL extends TypedEventBase {
     servicesByType: Record<string, number>;
     performance: any;
   } {
-    const services = Array.from(this.services?.values());
+    const services = Array.from(this.services?.values())();
     const servicesByType: Record<string, number> = {};
 
     for (const service of services) {
-      servicesByType[service.type] = (servicesByType[service.type] || 0) + 1;
+      servicesByType[service.type] = (servicesByType[service.type]'' | '''' | ''0) + 1;
     }
 
     return {
       totalServices: services.length,
       servicesByType,
-      performance: this.performanceTracker?.getStats || {},
+      performance: this.performanceTracker?.getStats'' | '''' | ''{},
     };
   }
 
@@ -548,11 +548,11 @@ export class USL extends TypedEventBase {
     }
 
     const issues: string[] = [];
-    const services = Array.from(this.services?.values());
+    const services = Array.from(this.services?.values())();
 
     for (const service of services) {
-      const status = service.getStatus?.() || service.status;
-      if (status !== 'running') {
+      const status = service.getStatus?.()'' | '''' | ''service.status;
+      if (status !=='running') {
         issues.push(`Service ${service.name} is ${status}`);
       }
     }

@@ -122,8 +122,8 @@ export function registerMemoryProviders(
     const tokenName =
       `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;
 
-    container.register(MEMORY_TOKENS[tokenName] || MEMORY_TOKENS.Config, {
-      type: 'singleton',
+    container.register(MEMORY_TOKENS[tokenName]'' | '''' | ''MEMORY_TOKENS.Config, {
+      type:'singleton',
       create: () => ({
         ...defaultConfig,
         ...customConfigs?.[name],

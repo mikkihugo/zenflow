@@ -29,7 +29,7 @@
  * Generic identifier type - can be string, number, or symbol
  * Use this for any kind of ID where the specific format doesn't matter
  */
-export type ID = string | number | symbol;
+export type ID = string'' | ''number'' | ''symbol;
 
 /**
  * String-based identifier - most common case for database IDs, UUIDs, etc.
@@ -45,7 +45,7 @@ export type NumericID = number;
  * UUID v4 identifier - RFC 4122 compliant UUID string
  * Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
  */
-export type UUID = string & { readonly __brand: 'UUID' };
+export type UUID = string & { readonly __brand:'UUID' };
 
 /**
  * Timestamp in milliseconds since Unix epoch
@@ -162,19 +162,12 @@ export type DeepPartial<T> = {
 /**
  * Nullable type - can be null or undefined
  */
-export type Nullable<T> = T | null | undefined;
+export type Nullable<T> = T'' | ''null'' | ''undefined;
 
 /**
  * Primitive types only - excludes objects, arrays, functions
  */
-export type Primitive =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | symbol
-  | bigint;
+export type Primitive ='' | ''string'' | ''number'' | ''boolean'' | ''null'' | ''undefined'' | ''symbol'' | ''bigint;
 
 // =============================================================================
 // BRANDED TYPES - Type-safe primitives with compile-time branding
@@ -184,14 +177,14 @@ export type Primitive =
  * Generic branded type helper
  * Creates a type that is nominally different from its base type
  */
-export type Branded<T, Brand extends string | symbol> = T & {
+export type Branded<T, Brand extends string'' | ''symbol> = T & {
   readonly __brand: Brand;
 };
 
 /**
  * Email address - string validated as email format
  */
-export type Email = Branded<string, 'Email'>;
+export type Email = Branded<string,'Email'>;
 
 /**
  * URL - string validated as URL format
@@ -253,7 +246,7 @@ export function isUUID(value: unknown): value is UUID {
   return (
     typeof value === 'string' &&
     /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-      value,
+      value
     )
   );
 }
@@ -285,7 +278,7 @@ export function isISODateString(value: unknown): value is ISODateString {
  * Check if value is a valid email
  */
 export function isEmail(value: unknown): value is Email {
-  return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  return typeof value === 'string'&& /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 /**
@@ -300,7 +293,7 @@ export function isNonEmptyArray<T>(array: T[]): array is NonEmptyArray<T> {
  */
 export function isPrimitive(value: unknown): value is Primitive {
   const type = typeof value;
-  return value === null || (type !== 'object' && type !== 'function');
+  return value === null'' | '''' | ''(type !=='object' && type !== 'function');
 }
 
 // =============================================================================
@@ -311,8 +304,8 @@ export function isPrimitive(value: unknown): value is Primitive {
  * Create a branded type from a base value
  * Runtime identity function, compile-time type branding
  */
-export function brand<T, Brand extends string | symbol>(
-  value: T,
+export function brand<T, Brand extends string'' | ''symbol>(
+  value: T
 ): Branded<T, Brand> {
   return value as Branded<T, Brand>;
 }
@@ -321,8 +314,8 @@ export function brand<T, Brand extends string | symbol>(
  * Remove branding from a branded type
  * Runtime identity function, compile-time unbranding
  */
-export function unbrand<T, Brand extends string | symbol>(
-  value: Branded<T, Brand>,
+export function unbrand<T, Brand extends string'' | ''symbol>(
+  value: Branded<T, Brand>
 ): T {
   return value as T;
 }
@@ -332,12 +325,12 @@ export function unbrand<T, Brand extends string | symbol>(
  * Simple implementation for development - use crypto.randomUUID() in production
  */
 export function generateUUID(): UUID {
-  return brand<string, 'UUID'>(
+  return brand<string,'UUID'>(
     'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = (Math.random() * 16) | 0;
-      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      const r = (Math.random() * 16)'' | ''0;
+      const v = c ==='x'? r : (r & 0x3)'' | ''0x8;
       return v.toString(16);
-    }),
+    })
   );
 }
 
@@ -345,14 +338,14 @@ export function generateUUID(): UUID {
  * Create current timestamp
  */
 export function now(): Timestamp {
-  return brand<number, 'Timestamp'>(Date.now());
+  return brand<number,'Timestamp'>(Date.now())();
 }
 
 /**
  * Create timestamp from date
  */
 export function timestampFromDate(date: Date): Timestamp {
-  return brand<number, 'Timestamp'>(date.getTime());
+  return brand<number, 'Timestamp'>(date.getTime())();
 }
 
 /**
@@ -367,6 +360,6 @@ export function dateFromTimestamp(timestamp: Timestamp): Date {
  */
 export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
   return brand<string, 'ISODateString'>(
-    dateFromTimestamp(timestamp).toISOString(),
+    dateFromTimestamp(timestamp).toISOString()
   );
 }

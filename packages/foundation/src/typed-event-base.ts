@@ -88,7 +88,9 @@ export interface EventMetrics {
  * Base class for typed event emission and handling
  * Replace EventEmitter throughout the codebase with this typed alternative
  */
-export abstract class TypedEventBase<TEvents extends Record<string, any> = Record<string, any>> {
+export abstract class TypedEventBase<
+  TEvents extends Record<string, any> = Record<string, any>,
+> {
   private listeners = new Map<string, Set<(data: any) => void>>();
   private onceListeners = new Map<string, Set<(data: any) => void>>();
   private eventHistory: InternalEvent[] = [];
@@ -98,7 +100,7 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
     eventsByType: {},
     averageListeners: 0,
     lastEvent: undefined,
-    errorRate: 0
+    errorRate: 0,
   };
 
   constructor(config: EventConfig = {}) {
@@ -107,14 +109,17 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
       enableMetrics: config.enableMetrics ?? true,
       enableHistory: config.enableHistory ?? false,
       maxListeners: config.maxListeners ?? 100,
-      maxHistorySize: config.maxHistorySize ?? 1000
+      maxHistorySize: config.maxHistorySize ?? 1000,
     };
   }
 
   /**
    * Emit a typed event
    */
-  protected emit<K extends keyof TEvents>(eventName: K, data: TEvents[K]): boolean {
+  protected emit<K extends keyof TEvents>(
+    eventName: K,
+    data: TEvents[K]
+  ): boolean {
     try {
       // Validate event data if enabled
       if (this.config.enableValidation) {
@@ -122,24 +127,33 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
       }
 
       // Get listeners for this event
-      const eventListeners = this.listeners.get(String(eventName)) || new Set();
-      const onceEventListeners = this.onceListeners.get(String(eventName)) || new Set();
+      const eventListeners = this.listeners.get(String(eventName))'' | '''' | ''new Set();
+      const onceEventListeners =
+        this.onceListeners.get(String(eventName))'' | '''' | ''new Set();
 
       // Create event metadata
       const metadata: EventMetadata = {
         timestamp: new Date(),
         source: this.constructor.name,
-        correlationId: this.generateCorrelationId()
+        correlationId: this.generateCorrelationId(),
       };
 
       // Store in history if enabled
       if (this.config.enableHistory) {
-        this.addToHistory(String(eventName), data, metadata, eventListeners.size + onceEventListeners.size);
+        this.addToHistory(
+          String(eventName),
+          data,
+          metadata,
+          eventListeners.size + onceEventListeners.size
+        );
       }
 
       // Update metrics if enabled
       if (this.config.enableMetrics) {
-        this.updateMetrics(String(eventName), eventListeners.size + onceEventListeners.size);
+        this.updateMetrics(
+          String(eventName),
+          eventListeners.size + onceEventListeners.size
+        );
       }
 
       // Call regular listeners
@@ -147,7 +161,10 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
         try {
           listener(data);
         } catch (error) {
-          logger.error(`Error in event listener for ${String(eventName)}:`, error);
+          logger.error(
+            `Error in event listener for ${String(eventName)}:`,
+            error
+          );
           if (this.config.enableMetrics) {
             this.metrics.errorRate++;
           }
@@ -159,7 +176,10 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
         try {
           listener(data);
         } catch (error) {
-          logger.error(`Error in once event listener for ${String(eventName)}:`, error);
+          logger.error(
+            `Error in once event listener for ${String(eventName)}:`,
+            error
+          );
           if (this.config.enableMetrics) {
             this.metrics.errorRate++;
           }
@@ -169,7 +189,7 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
       // Clear once listeners
       this.onceListeners.delete(String(eventName));
 
-      return eventListeners.size > 0 || onceEventListeners.size > 0;
+      return eventListeners.size > 0'' | '''' | ''onceEventListeners.size > 0;
     } catch (error) {
       logger.error(`Error emitting event ${String(eventName)}:`, error);
       return false;
@@ -179,17 +199,22 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
   /**
    * Add a typed event listener
    */
-  public on<K extends keyof TEvents>(eventName: K, listener: (data: TEvents[K]) => void): this {
+  public on<K extends keyof TEvents>(
+    eventName: K,
+    listener: (data: TEvents[K]) => void
+  ): this {
     const key = String(eventName);
     if (!this.listeners.has(key)) {
-      this.listeners.set(key, new Set());
+      this.listeners.set(key, new Set())();
     }
 
     const eventListeners = this.listeners.get(key)!;
-    
+
     // Check max listeners limit
     if (eventListeners.size >= this.config.maxListeners) {
-      logger.warn(`Max listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`);
+      logger.warn(
+        `Max listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`
+      );
       return this;
     }
 
@@ -200,17 +225,22 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
   /**
    * Add a one-time typed event listener
    */
-  public once<K extends keyof TEvents>(eventName: K, listener: (data: TEvents[K]) => void): this {
+  public once<K extends keyof TEvents>(
+    eventName: K,
+    listener: (data: TEvents[K]) => void
+  ): this {
     const key = String(eventName);
     if (!this.onceListeners.has(key)) {
-      this.onceListeners.set(key, new Set());
+      this.onceListeners.set(key, new Set())();
     }
 
     const onceEventListeners = this.onceListeners.get(key)!;
-    
+
     // Check max listeners limit
     if (onceEventListeners.size >= this.config.maxListeners) {
-      logger.warn(`Max once listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`);
+      logger.warn(
+        `Max once listeners (${this.config.maxListeners}) reached for event ${String(eventName)}`
+      );
       return this;
     }
 
@@ -221,7 +251,10 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
   /**
    * Remove a typed event listener
    */
-  public off<K extends keyof TEvents>(eventName: K, listener: (data: TEvents[K]) => void): this {
+  public off<K extends keyof TEvents>(
+    eventName: K,
+    listener: (data: TEvents[K]) => void
+  ): this {
     const key = String(eventName);
     const eventListeners = this.listeners.get(key);
     if (eventListeners) {
@@ -262,8 +295,8 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
    */
   public listenerCount<K extends keyof TEvents>(eventName: K): number {
     const key = String(eventName);
-    const regularCount = this.listeners.get(key)?.size || 0;
-    const onceCount = this.onceListeners.get(key)?.size || 0;
+    const regularCount = this.listeners.get(key)?.size'' | '''' | ''0;
+    const onceCount = this.onceListeners.get(key)?.size'' | '''' | ''0;
     return regularCount + onceCount;
   }
 
@@ -271,22 +304,22 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
    * Get all event names that have listeners
    */
   public eventNames(): string[] {
-    const regularEvents = Array.from(this.listeners.keys());
-    const onceEvents = Array.from(this.onceListeners.keys());
+    const regularEvents = Array.from(this.listeners.keys())();
+    const onceEvents = Array.from(this.onceListeners.keys())();
     return [...new Set([...regularEvents, ...onceEvents])];
   }
 
   /**
    * Get event metrics (if enabled)
    */
-  public getMetrics(): EventMetrics | null {
+  public getMetrics(): EventMetrics'' | ''null {
     return this.config.enableMetrics ? { ...this.metrics } : null;
   }
 
   /**
    * Get event history (if enabled)
    */
-  public getEventHistory(): InternalEvent[] | null {
+  public getEventHistory(): InternalEvent[]'' | ''null {
     return this.config.enableHistory ? [...this.eventHistory] : null;
   }
 
@@ -300,14 +333,21 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
   /**
    * Validate event data (override in subclasses for custom validation)
    */
-  protected validateEvent<K extends keyof TEvents>(eventName: K, data: TEvents[K]): void {
-    if (data === null || data === undefined) {
-      throw new Error(`Event data cannot be null or undefined for event: ${String(eventName)}`);
+  protected validateEvent<K extends keyof TEvents>(
+    eventName: K,
+    data: TEvents[K]
+  ): void {
+    if (data === null'' | '''' | ''data === undefined) {
+      throw new Error(
+        `Event data cannot be null or undefined for event: ${String(eventName)}`
+      );
     }
 
     // Basic type validation - ensure data is an object
-    if (typeof data !== 'object') {
-      throw new Error(`Event data must be an object for event: ${String(eventName)}`);
+    if (typeof data !=='object') {
+      throw new Error(
+        `Event data must be an object for event: ${String(eventName)}`
+      );
     }
   }
 
@@ -321,12 +361,17 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
   /**
    * Add event to history
    */
-  private addToHistory(eventName: string, data: UnknownRecord, metadata: EventMetadata, listenerCount: number): void {
+  private addToHistory(
+    eventName: string,
+    data: UnknownRecord,
+    metadata: EventMetadata,
+    listenerCount: number
+  ): void {
     this.eventHistory.push({
       eventName,
       data,
       metadata,
-      listeners: listenerCount
+      listeners: listenerCount,
     });
 
     // Trim history if too large
@@ -340,27 +385,31 @@ export abstract class TypedEventBase<TEvents extends Record<string, any> = Recor
    */
   private updateMetrics(eventName: string, listenerCount: number): void {
     this.metrics.totalEvents++;
-    this.metrics.eventsByType[eventName] = (this.metrics.eventsByType[eventName] || 0) + 1;
+    this.metrics.eventsByType[eventName] =
+      (this.metrics.eventsByType[eventName]'' | '''' | ''0) + 1;
     this.metrics.lastEvent = new Date();
-    
+
     // Update average listeners using actual listener count
     const eventCounts = Object.values(this.metrics.eventsByType);
     const totalEventCount = eventCounts.reduce((sum, count) => sum + count, 0);
     const eventTypeCount = Object.keys(this.metrics.eventsByType).length;
-    
+
     // Calculate average listeners per event type, weighted by listener activity
-    this.metrics.averageListeners = eventTypeCount > 0 
-      ? (this.metrics.averageListeners * (totalEventCount - 1) + listenerCount) / totalEventCount
-      : listenerCount;
+    this.metrics.averageListeners =
+      eventTypeCount > 0
+        ? (this.metrics.averageListeners * (totalEventCount - 1) +
+            listenerCount) /
+          totalEventCount
+        : listenerCount;
   }
 }
 
 /**
  * Factory function to create typed event base instances
  */
-export function createTypedEventBase<TEvents extends Record<string, UnknownRecord>>(
-  config?: EventConfig
-): TypedEventBase<TEvents> {
+export function createTypedEventBase<
+  TEvents extends Record<string, UnknownRecord>,
+>(config?: EventConfig): TypedEventBase<TEvents> {
   // Use anonymous class to create instance since TypedEventBase is abstract
   return new (class extends TypedEventBase<TEvents> {})(config);
 }
@@ -369,17 +418,16 @@ export function createTypedEventBase<TEvents extends Record<string, UnknownRecor
  * Common event patterns that packages can extend
  */
 export interface CommonEvents {
-  'error': { error: Error; context: string; timestamp: Date };
-  'warning': { message: string; context: string; timestamp: Date };
-  'info': { message: string; context: string; timestamp: Date };
-  'debug': { message: string; data?: UnknownRecord; timestamp: Date };
+  error: { error: Error; context: string; timestamp: Date };
+  warning: { message: string; context: string; timestamp: Date };
+  info: { message: string; context: string; timestamp: Date };
+  debug: { message: string; data?: UnknownRecord; timestamp: Date };
 }
 
 /**
  * Service event patterns
  */
-export interface ServiceEvents extends CommonEvents {
-  'service-started': { serviceName: string; timestamp: Date };
+export interface ServiceEvents extends CommonEvents {'service-started': { serviceName: string; timestamp: Date };
   'service-stopped': { serviceName: string; timestamp: Date };
   'service-error': { serviceName: string; error: Error; timestamp: Date };
   'health-check': { serviceName: string; healthy: boolean; timestamp: Date };
@@ -401,5 +449,9 @@ export interface CoordinationEvents extends CommonEvents {
   'task-started': { taskId: string; type: string; timestamp: Date };
   'task-completed': { taskId: string; result: UnknownRecord; timestamp: Date };
   'task-failed': { taskId: string; error: Error; timestamp: Date };
-  'coordination-update': { status: string; details: UnknownRecord; timestamp: Date };
+  'coordination-update': {
+    status: string;
+    details: UnknownRecord;
+    timestamp: Date;
+  };
 }
