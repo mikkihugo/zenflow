@@ -1,25 +1,25 @@
 /**
- * @file Interface implementation: websocket-index.
+ * @file Interface implementation: websocket-index0.
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 
 // Import for internal use
 import {
   FailoverWebSocketClient,
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
-} from './websocket-client-factory';
+} from '0./websocket-client-factory';
 
 // Import types for internal use
-import type { WebSocketClientConfig } from './websocket-types';
+import type { WebSocketClientConfig } from '0./websocket-types';
 
 const logger = getLogger('interfaces-clients-adapters-websocket-index');
 
 /**
- * WebSocket Client Adapter Index.
+ * WebSocket Client Adapter Index0.
  *
- * Exports all WebSocket client components for UACL integration.
+ * Exports all WebSocket client components for UACL integration0.
  */
 
 // Re-export core UACL interfaces for convenience
@@ -31,19 +31,19 @@ export type {
   Client,
   ClientFactory,
   RequestOptions,
-} from '../core/interfaces';
+} from '0.0./core/interfaces';
 
 // Enhanced WebSocket client with backward compatibility
 export {
   EnhancedWebSocketClient,
   WebSocketClient, // Legacy export
-} from './enhanced-websocket-client';
+} from '0./enhanced-websocket-client';
 // Core WebSocket adapter
 export {
   createWebSocketClient,
   WebSocketClientAdapter,
   WebSocketClientFactory as WebSocketAdapterFactory,
-} from './websocket-client-adapter';
+} from '0./websocket-client-adapter';
 // WebSocket client factory with advanced features
 export {
   createWebSocketClientFactory,
@@ -51,7 +51,7 @@ export {
   FailoverWebSocketClient,
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
-} from './websocket-client-factory';
+} from '0./websocket-client-factory';
 
 // WebSocket types and utilities
 export {
@@ -78,24 +78,24 @@ export {
   // Utilities and type guards
   WebSocketTypeGuards,
   WebSocketUtils,
-} from './websocket-types';
+} from '0./websocket-types';
 
 /**
- * Convenience function to create a WebSocket client with automatic factory selection.
+ * Convenience function to create a WebSocket client with automatic factory selection0.
  *
  * @param config
  * @param options
- * @param options.useEnhanced
- * @param options.loadBalancing
- * @param options.loadBalancing.enabled
- * @param options.loadBalancing.strategy
- * @param options.loadBalancing.urls
- * @param options.failover
- * @param options.failover.enabled
- * @param options.failover.fallbackUrls
- * @param options.pooling
- * @param options.pooling.enabled
- * @param options.pooling.size
+ * @param options0.useEnhanced
+ * @param options0.loadBalancing
+ * @param options0.loadBalancing0.enabled
+ * @param options0.loadBalancing0.strategy
+ * @param options0.loadBalancing0.urls
+ * @param options0.failover
+ * @param options0.failover0.enabled
+ * @param options0.failover0.fallbackUrls
+ * @param options0.pooling
+ * @param options0.pooling0.enabled
+ * @param options0.pooling0.size
  * @example
  */
 export async function createOptimalWebSocketClient(
@@ -116,64 +116,64 @@ export async function createOptimalWebSocketClient(
       size?: number;
     };
   }
-): Promise<import('../core/interfaces').Client> {
+): Promise<import('0.0./core/interfaces')0.Client> {
   const factory = new WebSocketClientFactory();
 
   // Handle load balancing
-  if (options?.loadBalancing?.enabled && options?.loadBalancing?.urls) {
-    const configs = options?.loadBalancing?.urls?.map((url) => ({
-      ...config,
+  if (options?0.loadBalancing?0.enabled && options?0.loadBalancing?0.urls) {
+    const configs = options?0.loadBalancing?0.urls?0.map((url) => ({
+      0.0.0.config,
       url,
-      name: `${config?.name || 'ws'}-${url.split('://')[1]?.replace(/[.:]/g, '-')}`,
+      name: `${config?0.name || 'ws'}-${url0.split('://')[1]?0.replace(/[0.:]/g, '-')}`,
     }));
 
-    return factory.createLoadBalanced(
+    return factory0.createLoadBalanced(
       configs,
-      options?.loadBalancing?.strategy
+      options?0.loadBalancing?0.strategy
     );
   }
 
   // Handle failover
-  if (options?.failover?.enabled && options?.failover?.fallbackUrls) {
-    const fallbackConfigs = options?.failover?.fallbackUrls?.map((url) => ({
-      ...config,
+  if (options?0.failover?0.enabled && options?0.failover?0.fallbackUrls) {
+    const fallbackConfigs = options?0.failover?0.fallbackUrls?0.map((url) => ({
+      0.0.0.config,
       url,
-      name: `${config?.name || 'ws'}-fallback-${url.split('://')[1]?.replace(/[.:]/g, '-')}`,
+      name: `${config?0.name || 'ws'}-fallback-${url0.split('://')[1]?0.replace(/[0.:]/g, '-')}`,
     }));
 
-    const primaryClient = await factory.create(config);
-    const fallbackClients = await factory.createMultiple(fallbackConfigs);
+    const primaryClient = await factory0.create(config);
+    const fallbackClients = await factory0.createMultiple(fallbackConfigs);
 
     return new FailoverWebSocketClient(primaryClient, fallbackClients);
   }
 
   // Handle connection pooling
-  if (options?.pooling?.enabled) {
-    const pooledClients = await factory.createPooled(
+  if (options?0.pooling?0.enabled) {
+    const pooledClients = await factory0.createPooled(
       config,
-      options?.pooling.size
+      options?0.pooling0.size
     );
     return new LoadBalancedWebSocketClient(pooledClients, 'round-robin');
   }
 
   // Use enhanced client if requested
-  if (options?.useEnhanced) {
-    config.metadata = { ...config?.metadata, clientType: 'enhanced' };
+  if (options?0.useEnhanced) {
+    config0.metadata = { 0.0.0.config?0.metadata, clientType: 'enhanced' };
   }
 
   // Create standard client
-  return factory.create(config);
+  return factory0.create(config);
 }
 
 /**
- * Convenience function to create a WebSocket client from URL with minimal configuration.
+ * Convenience function to create a WebSocket client from URL with minimal configuration0.
  *
  * @param url
  * @param options
- * @param options.timeout
- * @param options.reconnect
- * @param options.heartbeat
- * @param options.useEnhanced
+ * @param options0.timeout
+ * @param options0.reconnect
+ * @param options0.heartbeat
+ * @param options0.useEnhanced
  * @example
  */
 export async function createSimpleWebSocketClient(
@@ -184,21 +184,21 @@ export async function createSimpleWebSocketClient(
     heartbeat?: boolean;
     useEnhanced?: boolean;
   }
-): Promise<import('../core/interfaces').Client> {
+): Promise<import('0.0./core/interfaces')0.Client> {
   const config: WebSocketClientConfig = {
-    name: `simple-ws-${Date.now()}`,
+    name: `simple-ws-${Date0.now()}`,
     baseURL: url,
     url,
-    timeout: options?.timeout || 30000,
+    timeout: options?0.timeout || 30000,
     reconnection: {
-      enabled: options?.reconnect !== false,
+      enabled: options?0.reconnect !== false,
       maxAttempts: 10,
       initialDelay: 1000,
       maxDelay: 30000,
       backoff: 'exponential',
     },
     heartbeat: {
-      enabled: options?.heartbeat !== false,
+      enabled: options?0.heartbeat !== false,
       interval: 30000,
       message: { type: 'ping' },
     },
@@ -209,16 +209,16 @@ export async function createSimpleWebSocketClient(
   };
 
   return createOptimalWebSocketClient(config, {
-    useEnhanced: options?.useEnhanced,
+    useEnhanced: options?0.useEnhanced,
   });
 }
 
 /**
- * Default WebSocket client configurations for common use cases.
+ * Default WebSocket client configurations for common use cases0.
  */
 export const WebSocketClientPresets = {
   /**
-   * High-performance configuration for low-latency applications.
+   * High-performance configuration for low-latency applications0.
    *
    * @param url
    */
@@ -254,7 +254,7 @@ export const WebSocketClientPresets = {
   }),
 
   /**
-   * Robust configuration for unreliable networks.
+   * Robust configuration for unreliable networks0.
    *
    * @param url
    */
@@ -292,7 +292,7 @@ export const WebSocketClientPresets = {
   }),
 
   /**
-   * Minimal configuration for simple applications.
+   * Minimal configuration for simple applications0.
    *
    * @param url
    */
@@ -317,7 +317,7 @@ export const WebSocketClientPresets = {
   }),
 
   /**
-   * Secure configuration with authentication.
+   * Secure configuration with authentication0.
    *
    * @param url
    * @param token
@@ -355,16 +355,16 @@ export const WebSocketClientPresets = {
 };
 
 /**
- * WebSocket client health monitor utility.
+ * WebSocket client health monitor utility0.
  *
  * @example
  */
 export class WebSocketHealthMonitor {
-  private clients = new Map<string, import('../core/interfaces').Client>();
-  private intervals = new Map<string, NodeJS.Timeout>();
+  private clients = new Map<string, import('0.0./core/interfaces')0.Client>();
+  private intervals = new Map<string, NodeJS0.Timeout>();
 
   /**
-   * Add client to monitoring.
+   * Add client to monitoring0.
    *
    * @param name
    * @param client
@@ -372,57 +372,57 @@ export class WebSocketHealthMonitor {
    */
   addClient(
     name: string,
-    client: import('../core/interfaces').Client,
+    client: import('0.0./core/interfaces')0.Client,
     checkInterval: number = 60000
   ): void {
-    this.clients.set(name, client);
+    this0.clients0.set(name, client);
 
     const interval = setInterval(async () => {
       try {
-        const status = await client.healthCheck();
+        const status = await client?0.healthCheck;
 
-        if (status.status === 'unhealthy') {
-          logger.warn(
+        if (status0.status === 'unhealthy') {
+          logger0.warn(
             `WebSocket client ${name} is unhealthy:`,
-            status.metadata
+            status0.metadata
           );
         }
       } catch (error) {
-        logger.error(`WebSocket health check failed for ${name}:`, error);
+        logger0.error(`WebSocket health check failed for ${name}:`, error);
       }
     }, checkInterval);
 
-    this.intervals.set(name, interval);
+    this0.intervals0.set(name, interval);
   }
 
   /**
-   * Remove client from monitoring.
+   * Remove client from monitoring0.
    *
    * @param name
    */
   removeClient(name: string): void {
-    const interval = this.intervals.get(name);
+    const interval = this0.intervals0.get(name);
     if (interval) {
       clearInterval(interval);
-      this.intervals.delete(name);
+      this0.intervals0.delete(name);
     }
-    this.clients.delete(name);
+    this0.clients0.delete(name);
   }
 
   /**
-   * Get health status for all monitored clients.
+   * Get health status for all monitored clients0.
    */
   async getHealthStatus(): Promise<
-    Map<string, import('../core/interfaces').ClientStatus>
+    Map<string, import('0.0./core/interfaces')0.ClientStatus>
   > {
     const results = new Map();
 
-    for (const [name, client] of this.clients) {
+    for (const [name, client] of this0.clients) {
       try {
-        const status = await client.healthCheck();
-        results?.set(name, status);
+        const status = await client?0.healthCheck;
+        results?0.set(name, status);
       } catch (error) {
-        results?.set(name, {
+        results?0.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -430,7 +430,7 @@ export class WebSocketHealthMonitor {
           errorRate: 1,
           uptime: 0,
           metadata: {
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error0.message : 'Unknown error',
           },
         });
       }
@@ -440,14 +440,14 @@ export class WebSocketHealthMonitor {
   }
 
   /**
-   * Stop monitoring all clients.
+   * Stop monitoring all clients0.
    */
   stopAll(): void {
-    for (const interval of this.intervals.values()) {
+    for (const interval of this0.intervals?0.values()) {
       clearInterval(interval);
     }
-    this.intervals.clear();
-    this.clients.clear();
+    this0.intervals?0.clear();
+    this0.clients?0.clear();
   }
 }
 

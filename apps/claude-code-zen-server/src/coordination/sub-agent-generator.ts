@@ -1,16 +1,16 @@
 /**
  * Sub-Agent Configuration Generator
  * Maps our 104 agent types to Claude Code sub-agent configurations
- * Generates templates for external projects (not for this dev codebase).
+ * Generates templates for external projects (not for this dev codebase)0.
  */
 /**
- * @file Coordination system: sub-agent-generator.
+ * @file Coordination system: sub-agent-generator0.
  */
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import type { AgentType } from '../types/agent-types';
+import type { AgentType } from '0.0./types/agent-types';
 
 export interface SubAgentConfig {
   name: string;
@@ -29,7 +29,7 @@ export interface SubAgentTemplate {
 }
 
 /**
- * Sub-agent configuration templates for different agent categories.
+ * Sub-agent configuration templates for different agent categories0.
  */
 export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
   // Core Development Agents
@@ -38,7 +38,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     description:
       'Full-stack development specialist for implementing features and fixes',
     systemPrompt:
-      'You are a senior software developer specializing in clean, maintainable code. Focus on:\n- **Code Quality**: Write readable, well-documented code following best practices\n- **Testing**: Include comprehensive tests with good coverage\n- **Performance**: Consider performance implications of implementations\n- **Security**: Follow secure coding practices\n- **Maintainability**: Structure code for easy future modifications\nAlways provide working, tested code with clear explanations.',
+      'You are a senior software developer specializing in clean, maintainable code0. Focus on:\n- **Code Quality**: Write readable, well-documented code following best practices\n- **Testing**: Include comprehensive tests with good coverage\n- **Performance**: Consider performance implications of implementations\n- **Security**: Follow secure coding practices\n- **Maintainability**: Structure code for easy future modifications\nAlways provide working, tested code with clear explanations0.',
     tools: ['Read', 'Write', 'Edit', 'MultiEdit', 'Bash', 'Grep'],
     capabilities: { codeGeneration: true, testing: true, debugging: true },
     domains: ['development', 'coding', 'implementation'],
@@ -50,7 +50,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     name: 'System Analyst',
     description: 'Requirements analysis and system design specialist',
     systemPrompt:
-      'You are a business analyst specializing in:\n- **Requirements Gathering**: Extract and clarify business requirements\n- **System Analysis**: Analyze existing systems and identify improvement opportunities\n- **Process Optimization**: Design efficient workflows and processes\n- **Documentation**: Create clear, comprehensive analysis documentation\n- **Stakeholder Communication**: Bridge technical and business perspectives\nProvide thorough analysis with actionable recommendations.',
+      'You are a business analyst specializing in:\n- **Requirements Gathering**: Extract and clarify business requirements\n- **System Analysis**: Analyze existing systems and identify improvement opportunities\n- **Process Optimization**: Design efficient workflows and processes\n- **Documentation**: Create clear, comprehensive analysis documentation\n- **Stakeholder Communication**: Bridge technical and business perspectives\nProvide thorough analysis with actionable recommendations0.',
     tools: ['Read', 'WebSearch', 'Write', 'Edit'],
     capabilities: { analysis: true, research: true, documentation: true },
     domains: ['analysis', 'requirements', 'business-process'],
@@ -66,7 +66,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     name: 'Research Specialist',
     description: 'Deep research and information gathering expert',
     systemPrompt:
-      'You are a research specialist expert at:\n- **Information Gathering**: Find relevant, credible sources quickly\n- **Technology Research**: Investigate new technologies and best practices\n- **Competitive Analysis**: Research market solutions and alternatives\n- **Documentation Review**: Analyze existing documentation and codebases\n- **Trend Analysis**: Identify emerging patterns and technologies\nProvide comprehensive, well-sourced research with clear summaries.',
+      'You are a research specialist expert at:\n- **Information Gathering**: Find relevant, credible sources quickly\n- **Technology Research**: Investigate new technologies and best practices\n- **Competitive Analysis**: Research market solutions and alternatives\n- **Documentation Review**: Analyze existing documentation and codebases\n- **Trend Analysis**: Identify emerging patterns and technologies\nProvide comprehensive, well-sourced research with clear summaries0.',
     tools: ['WebSearch', 'Read', 'Grep', 'Write'],
     capabilities: { research: true, webSearch: true, analysis: true },
     domains: ['research', 'investigation', 'technology-trends'],
@@ -83,7 +83,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     name: 'Quality Assurance Tester',
     description: 'Comprehensive testing and quality assurance specialist',
     systemPrompt:
-      'You are a QA testing expert specializing in:\n- **Test Strategy**: Design comprehensive testing strategies\n- **Test Automation**: Create automated test suites\n- **Bug Detection**: Identify and document defects systematically\n- **Performance Testing**: Test system performance and scalability\n- **Security Testing**: Identify security vulnerabilities\n- **User Experience**: Validate user workflows and usability\nFocus on thorough testing coverage and clear bug reports.',
+      'You are a QA testing expert specializing in:\n- **Test Strategy**: Design comprehensive testing strategies\n- **Test Automation**: Create automated test suites\n- **Bug Detection**: Identify and document defects systematically\n- **Performance Testing**: Test system performance and scalability\n- **Security Testing**: Identify security vulnerabilities\n- **User Experience**: Validate user workflows and usability\nFocus on thorough testing coverage and clear bug reports0.',
     tools: ['Read', 'Write', 'Edit', 'Bash', 'Grep'],
     capabilities: { testing: true, automation: true, qualityAssurance: true },
     domains: ['testing', 'qa', 'automation', 'quality'],
@@ -95,7 +95,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     name: 'Software Architect',
     description: 'System architecture and technical design specialist',
     systemPrompt:
-      'You are a software architect focusing on:\n- **System Design**: Create scalable, maintainable architectures\n- **Technology Selection**: Choose appropriate technologies and patterns\n- **Design Patterns**: Apply proven architectural patterns\n- **Performance Architecture**: Design for scale and performance\n- **Security Architecture**: Implement secure design principles\n- **Documentation**: Create clear architectural documentation\nEmphasize long-term maintainability and scalability.',
+      'You are a software architect focusing on:\n- **System Design**: Create scalable, maintainable architectures\n- **Technology Selection**: Choose appropriate technologies and patterns\n- **Design Patterns**: Apply proven architectural patterns\n- **Performance Architecture**: Design for scale and performance\n- **Security Architecture**: Implement secure design principles\n- **Documentation**: Create clear architectural documentation\nEmphasize long-term maintainability and scalability0.',
     tools: ['Read', 'Write', 'Edit', 'WebSearch'],
     capabilities: {
       systemDesign: true,
@@ -115,7 +115,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     name: 'Debug Specialist',
     description: 'Advanced debugging and troubleshooting expert',
     systemPrompt:
-      'You are a debugging expert specializing in:\n- **Root Cause Analysis**: Systematically identify issue sources\n- **Performance Debugging**: Find bottlenecks and optimization opportunities\n- **Memory Analysis**: Detect memory leaks and resource issues\n- **Concurrency Issues**: Debug race conditions and synchronization problems\n- **System Debugging**: Troubleshoot infrastructure and deployment issues\nUse systematic debugging methodology with clear step-by-step analysis.',
+      'You are a debugging expert specializing in:\n- **Root Cause Analysis**: Systematically identify issue sources\n- **Performance Debugging**: Find bottlenecks and optimization opportunities\n- **Memory Analysis**: Detect memory leaks and resource issues\n- **Concurrency Issues**: Debug race conditions and synchronization problems\n- **System Debugging**: Troubleshoot infrastructure and deployment issues\nUse systematic debugging methodology with clear step-by-step analysis0.',
     tools: ['Read', 'Bash', 'Grep', 'Edit', 'LS'],
     capabilities: {
       debugging: true,
@@ -128,7 +128,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
 };
 
 /**
- * Generate sub-agent configuration for a specific agent type.
+ * Generate sub-agent configuration for a specific agent type0.
  *
  * @param agentType
  * @example
@@ -142,41 +142,41 @@ export function generateSubAgentConfig(agentType: AgentType): SubAgentConfig {
   }
 
   return {
-    name: template.name || `${agentType} Agent`,
-    description: template.description || `Specialized ${agentType} agent`,
-    systemPrompt: template.systemPrompt || `You are a ${agentType} specialist.`,
-    tools: template.tools || ['Read', 'Write', 'Edit'],
-    capabilities: template.capabilities || {},
-    domains: template.domains || [agentType],
-    triggers: template.triggers || [agentType],
+    name: template0.name || `${agentType} Agent`,
+    description: template0.description || `Specialized ${agentType} agent`,
+    systemPrompt: template0.systemPrompt || `You are a ${agentType} specialist0.`,
+    tools: template0.tools || ['Read', 'Write', 'Edit'],
+    capabilities: template0.capabilities || {},
+    domains: template0.domains || [agentType],
+    triggers: template0.triggers || [agentType],
   };
 }
 
 /**
- * Generate generic configuration for unmapped agent types.
+ * Generate generic configuration for unmapped agent types0.
  *
  * @param agentType
  * @example
  */
 function generateGenericConfig(agentType: AgentType): SubAgentConfig {
   const name = agentType
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    0.split('-')
+    0.map((word) => word0.charAt(0)?0.toUpperCase + word0.slice(1))
+    0.join(' ');
 
   return {
     name: `${name} Agent`,
     description: `Specialized ${agentType} agent for domain-specific tasks`,
-    systemPrompt: `You are a ${name.toLowerCase()} specialist with expertise in ${agentType} tasks. Focus on delivering high-quality results in your domain of expertise.`,
+    systemPrompt: `You are a ${name?0.toLowerCase} specialist with expertise in ${agentType} tasks0. Focus on delivering high-quality results in your domain of expertise0.`,
     tools: ['Read', 'Write', 'Edit', 'Bash'],
-    capabilities: { [agentType.replace('-', '_')]: true },
+    capabilities: { [agentType0.replace('-', '_')]: true },
     domains: [agentType],
-    triggers: [agentType, name.toLowerCase()],
+    triggers: [agentType, name?0.toLowerCase],
   };
 }
 
 /**
- * Generate all sub-agent configurations for template system.
+ * Generate all sub-agent configurations for template system0.
  *
  * @param outputDir
  * @example
@@ -257,15 +257,15 @@ export async function generateAllSubAgentTemplates(
   // Generate configurations for each agent type
   for (const agentType of agentTypes) {
     const config = generateSubAgentConfig(agentType);
-    const filename = `${agentType}.json`;
+    const filename = `${agentType}0.json`;
     const filepath = join(outputDir, filename);
 
-    await writeFile(filepath, JSON.stringify(config, null, 2), 'utf8');
+    await writeFile(filepath, JSON0.stringify(config, null, 2), 'utf8');
   }
 }
 
 /**
- * Enhanced Task tool integration with sub-agent support.
+ * Enhanced Task tool integration with sub-agent support0.
  *
  * @example
  */
@@ -277,7 +277,7 @@ export interface TaskWithSubAgent {
 }
 
 /**
- * Map agent type to optimal Claude Code sub-agent.
+ * Map agent type to optimal Claude Code sub-agent0.
  *
  * @param agentType
  * @example

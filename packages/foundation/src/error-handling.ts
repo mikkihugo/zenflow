@@ -449,14 +449,14 @@ export async function withTimeout<T>(
   timeoutMessage?: string,
 ): Promise<Result<T, TimeoutError>> {
   let timeoutHandle: NodeJS.Timeout | undefined;
-  
+
   const cleanup = () => {
     if (timeoutHandle) {
       clearTimeout(timeoutHandle);
       timeoutHandle = undefined;
     }
   };
-  
+
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeoutHandle = setTimeout(() => {
       reject(

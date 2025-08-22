@@ -1,19 +1,19 @@
 /**
- * Event System Type Definitions.
+ * Event System Type Definitions0.
  *
- * Comprehensive TypeScript types for the event bus system.
- * Replaces loose 'any' types with strict, type-safe interfaces.
- * Following Google TypeScript Style Guide.
+ * Comprehensive TypeScript types for the event bus system0.
+ * Replaces loose 'any' types with strict, type-safe interfaces0.
+ * Following Google TypeScript Style Guide0.
  *
- * @file Strict event system type definitions.
+ * @file Strict event system type definitions0.
  */
 
 /**
- * Base event payload structure.
+ * Base event payload structure0.
  *
  * @example
  */
-export interface BaseEventPayload {
+export interface anyPayload {
   readonly timestamp: Date;
   readonly source: string;
   readonly id: string;
@@ -21,7 +21,7 @@ export interface BaseEventPayload {
 }
 
 /**
- * THE COLLECTIVE Events - Borg-style system coordination.
+ * THE COLLECTIVE Events - Borg-style system coordination0.
  *
  * @example
  */
@@ -69,117 +69,117 @@ export interface CollectiveEvents {
 }
 
 // THE COLLECTIVE Event Payloads
-export interface CollectiveInitializedPayload extends BaseEventPayload {
+export interface CollectiveInitializedPayload extends anyPayload {
   readonly status: string;
   readonly cubes: number;
   readonly matrons: number;
   readonly borgEfficiency: number;
 }
 
-export interface CollectiveStatusPayload extends BaseEventPayload {
+export interface CollectiveStatusPayload extends anyPayload {
   readonly status: string;
   readonly activeCubes: number;
   readonly totalDrones: number;
   readonly borgEfficiency: number;
 }
 
-export interface CollectiveShutdownPayload extends BaseEventPayload {
+export interface CollectiveShutdownPayload extends anyPayload {
   readonly reason?: string;
 }
 
-export interface CollectiveHealthPayload extends BaseEventPayload {
+export interface CollectiveHealthPayload extends anyPayload {
   readonly overallStatus: string;
   readonly borgEfficiency: number;
   readonly systemLoad: number;
 }
 
-export interface TaskRequestPayload extends BaseEventPayload {
+export interface TaskRequestPayload extends anyPayload {
   readonly taskId: string;
   readonly type: string;
   readonly priority: string;
   readonly requiredCapabilities: string[];
 }
 
-export interface TaskAssignmentPayload extends BaseEventPayload {
+export interface TaskAssignmentPayload extends anyPayload {
   readonly taskId: string;
   readonly cubeId: string;
   readonly matron: string;
   readonly priority: string;
 }
 
-export interface TaskCompletionPayload extends BaseEventPayload {
+export interface TaskCompletionPayload extends anyPayload {
   readonly taskId: string;
   readonly success: boolean;
   readonly borgEfficiency: number;
 }
 
-export interface CubeStatusPayload extends BaseEventPayload {
+export interface CubeStatusPayload extends anyPayload {
   readonly cubeId: string;
   readonly type: string;
   readonly status: string;
   readonly borgRating: string;
 }
 
-export interface MatronRegistrationPayload extends BaseEventPayload {
+export interface MatronRegistrationPayload extends anyPayload {
   readonly matron: string;
   readonly cube: string;
   readonly capabilities: string[];
 }
 
-export interface MatronShutdownPayload extends BaseEventPayload {
+export interface MatronShutdownPayload extends anyPayload {
   readonly matron: string;
 }
 
-export interface QueenAssignmentPayload extends BaseEventPayload {
+export interface QueenAssignmentPayload extends anyPayload {
   readonly queenId: string;
   readonly matron: string;
 }
 
-export interface QueenRemovalPayload extends BaseEventPayload {
+export interface QueenRemovalPayload extends anyPayload {
   readonly queenId: string;
   readonly matron: string;
 }
 
-export interface DroneSpawnedPayload extends BaseEventPayload {
+export interface DroneSpawnedPayload extends anyPayload {
   readonly droneId: string;
   readonly type: string;
   readonly cubeId: string;
 }
 
-export interface DroneTerminatedPayload extends BaseEventPayload {
+export interface DroneTerminatedPayload extends anyPayload {
   readonly droneId: string;
   readonly reason: string;
 }
 
-export interface DroneStatusPayload extends BaseEventPayload {
+export interface DroneStatusPayload extends anyPayload {
   readonly droneId: string;
   readonly status: string;
   readonly borgEfficiency: number;
 }
 
-export interface SystemStartedPayload extends BaseEventPayload {
+export interface SystemStartedPayload extends anyPayload {
   readonly config: SystemConfig;
   readonly modules: readonly string[];
 }
 
-export interface SystemStoppedPayload extends BaseEventPayload {
+export interface SystemStoppedPayload extends anyPayload {
   readonly reason: 'shutdown' | 'error' | 'restart';
   readonly uptime: number;
 }
 
-export interface SystemErrorPayload extends BaseEventPayload {
+export interface SystemErrorPayload extends anyPayload {
   readonly error: SystemError;
   readonly context?: SystemErrorContext;
 }
 
-export interface SystemHealthChangedPayload extends BaseEventPayload {
+export interface SystemHealthChangedPayload extends anyPayload {
   readonly previousState: HealthState;
   readonly currentState: HealthState;
   readonly services: ServiceHealthMap;
 }
 
 /**
- * Workflow events.
+ * Workflow events0.
  *
  * @example
  */
@@ -195,49 +195,49 @@ export interface WorkflowEvents {
   'workflow:step:failed': WorkflowStepFailedPayload;
 }
 
-export interface WorkflowStartedPayload extends BaseEventPayload {
+export interface WorkflowStartedPayload extends anyPayload {
   readonly workflowId: string;
   readonly workflowName: string;
   readonly context: WorkflowEventContext;
 }
 
-export interface WorkflowCompletedPayload extends BaseEventPayload {
+export interface WorkflowCompletedPayload extends anyPayload {
   readonly workflowId: string;
   readonly duration: number;
   readonly results: WorkflowResults;
 }
 
-export interface WorkflowFailedPayload extends BaseEventPayload {
+export interface WorkflowFailedPayload extends anyPayload {
   readonly workflowId: string;
   readonly error: WorkflowEventError;
   readonly stepIndex?: number;
 }
 
-export interface WorkflowPausedPayload extends BaseEventPayload {
+export interface WorkflowPausedPayload extends anyPayload {
   readonly workflowId: string;
   readonly stepIndex: number;
   readonly reason: string;
 }
 
-export interface WorkflowResumedPayload extends BaseEventPayload {
+export interface WorkflowResumedPayload extends anyPayload {
   readonly workflowId: string;
   readonly stepIndex: number;
 }
 
-export interface WorkflowCancelledPayload extends BaseEventPayload {
+export interface WorkflowCancelledPayload extends anyPayload {
   readonly workflowId: string;
   readonly reason: string;
   readonly stepIndex: number;
 }
 
-export interface WorkflowStepStartedPayload extends BaseEventPayload {
+export interface WorkflowStepStartedPayload extends anyPayload {
   readonly workflowId: string;
   readonly stepIndex: number;
   readonly stepName: string;
   readonly stepType: string;
 }
 
-export interface WorkflowStepCompletedPayload extends BaseEventPayload {
+export interface WorkflowStepCompletedPayload extends anyPayload {
   readonly workflowId: string;
   readonly stepIndex: number;
   readonly stepName: string;
@@ -245,7 +245,7 @@ export interface WorkflowStepCompletedPayload extends BaseEventPayload {
   readonly result: StepEventResult;
 }
 
-export interface WorkflowStepFailedPayload extends BaseEventPayload {
+export interface WorkflowStepFailedPayload extends anyPayload {
   readonly workflowId: string;
   readonly stepIndex: number;
   readonly stepName: string;
@@ -254,7 +254,7 @@ export interface WorkflowStepFailedPayload extends BaseEventPayload {
 }
 
 /**
- * Coordination events.
+ * Coordination events0.
  *
  * @example
  */
@@ -327,53 +327,53 @@ export interface CoordinationEvents {
   'agent:state:updated': AgentStateUpdatedPayload;
 }
 
-export interface AgentCreatedPayload extends BaseEventPayload {
+export interface AgentCreatedPayload extends anyPayload {
   readonly agentId: string;
   readonly agentType: AgentType;
   readonly capabilities: readonly string[];
 }
 
-export interface AgentDestroyedPayload extends BaseEventPayload {
+export interface AgentDestroyedPayload extends anyPayload {
   readonly agentId: string;
   readonly reason: 'shutdown' | 'error' | 'timeout';
   readonly uptime: number;
 }
 
-export interface AgentStatusChangedPayload extends BaseEventPayload {
+export interface AgentStatusChangedPayload extends anyPayload {
   readonly agentId: string;
   readonly previousStatus: AgentStatus;
   readonly currentStatus: AgentStatus;
   readonly reason?: string;
 }
 
-export interface TaskAssignedPayload extends BaseEventPayload {
+export interface TaskAssignedPayload extends anyPayload {
   readonly taskId: string;
   readonly agentId: string;
   readonly taskType: string;
   readonly priority: number;
 }
 
-export interface TaskCompletedPayload extends BaseEventPayload {
+export interface TaskCompletedPayload extends anyPayload {
   readonly taskId: string;
   readonly agentId: string;
   readonly duration: number;
   readonly result: TaskEventResult;
 }
 
-export interface TaskFailedPayload extends BaseEventPayload {
+export interface TaskFailedPayload extends anyPayload {
   readonly taskId: string;
   readonly agentId: string;
   readonly error: TaskEventError;
   readonly retryCount: number;
 }
 
-export interface SwarmInitializedPayload extends BaseEventPayload {
+export interface SwarmInitializedPayload extends anyPayload {
   readonly swarmId: string;
   readonly topology: SwarmTopology;
   readonly agentCount: number;
 }
 
-export interface SwarmTopologyChangedPayload extends BaseEventPayload {
+export interface SwarmTopologyChangedPayload extends anyPayload {
   readonly swarmId: string;
   readonly previousTopology: SwarmTopology;
   readonly currentTopology: SwarmTopology;
@@ -381,7 +381,7 @@ export interface SwarmTopologyChangedPayload extends BaseEventPayload {
 }
 
 // Ephemeral swarm lifecycle event payloads
-export interface AgentSpawnRequestPayload extends BaseEventPayload {
+export interface AgentSpawnRequestPayload extends anyPayload {
   readonly swarmId: string;
   readonly agentId: string;
   readonly agentType: AgentType;
@@ -389,7 +389,7 @@ export interface AgentSpawnRequestPayload extends BaseEventPayload {
   readonly ephemeral: boolean;
 }
 
-export interface SwarmInitializePayload extends BaseEventPayload {
+export interface SwarmInitializePayload extends anyPayload {
   readonly swarmId: string;
   readonly agents: readonly { id: string; type: AgentType }[];
   readonly task: {
@@ -398,34 +398,34 @@ export interface SwarmInitializePayload extends BaseEventPayload {
   };
 }
 
-export interface TaskExecutePayload extends BaseEventPayload {
+export interface TaskExecutePayload extends anyPayload {
   readonly swarmId: string;
   readonly stepId: string;
   readonly agentId?: string;
   readonly description: string;
 }
 
-export interface AgentTerminatePayload extends BaseEventPayload {
+export interface AgentTerminatePayload extends anyPayload {
   readonly swarmId: string;
   readonly agentId: string;
 }
 
-export interface SwarmCleanupPayload extends BaseEventPayload {
+export interface SwarmCleanupPayload extends anyPayload {
   readonly swarmId: string;
   readonly reason: string;
 }
 
-export interface AgentIdlePayload extends BaseEventPayload {
+export interface AgentIdlePayload extends anyPayload {
   readonly swarmId: string;
   readonly agentId: string;
 }
 
 // Hive mind coordination event payloads
-export interface HiveRequestAgentStatesPayload extends BaseEventPayload {
+export interface HiveRequestAgentStatesPayload extends anyPayload {
   readonly requestId: string;
 }
 
-export interface HiveTaskAssignedPayload extends BaseEventPayload {
+export interface HiveTaskAssignedPayload extends anyPayload {
   readonly taskId: string;
   readonly agentId: string;
   readonly swarmId: string;
@@ -437,13 +437,13 @@ export interface HiveTaskAssignedPayload extends BaseEventPayload {
   };
 }
 
-export interface HiveLoadRebalancePayload extends BaseEventPayload {
+export interface HiveLoadRebalancePayload extends anyPayload {
   readonly overloadedSwarmId: string;
   readonly currentLoad: number;
   readonly suggestedReduction: number;
 }
 
-export interface HiveGlobalStatePayload extends BaseEventPayload {
+export interface HiveGlobalStatePayload extends anyPayload {
   readonly availableAgents: number;
   readonly activeSwarms: number;
   readonly globalResources: {
@@ -466,20 +466,20 @@ export interface HiveGlobalStatePayload extends BaseEventPayload {
   readonly taskDistribution: readonly [string, string][];
 }
 
-export interface HiveHeartbeatPayload extends BaseEventPayload {
+export interface HiveHeartbeatPayload extends anyPayload {
   readonly hiveHealth: number;
   readonly activeSwarms: number;
   readonly availableAgents: number;
 }
 
-export interface HiveSwarmUnhealthyPayload extends BaseEventPayload {
+export interface HiveSwarmUnhealthyPayload extends anyPayload {
   readonly swarmId: string;
   readonly lastHeartbeat: Date;
   readonly timeSinceHeartbeat: number;
 }
 
 // Swarm registration and communication event payloads
-export interface SwarmRegisterPayload extends BaseEventPayload {
+export interface SwarmRegisterPayload extends anyPayload {
   readonly swarmId: string;
   readonly hiveMindId?: string;
   readonly topology?: SwarmTopology;
@@ -496,7 +496,7 @@ export interface SwarmRegisterPayload extends BaseEventPayload {
   readonly location?: string;
 }
 
-export interface AgentRegisterPayload extends BaseEventPayload {
+export interface AgentRegisterPayload extends anyPayload {
   readonly swarmId: string;
   readonly hiveMindId?: string;
   readonly agentState: {
@@ -524,24 +524,24 @@ export interface AgentRegisterPayload extends BaseEventPayload {
   readonly networkLatency?: number;
 }
 
-export interface AgentStateUpdatePayload extends BaseEventPayload {
+export interface AgentStateUpdatePayload extends anyPayload {
   readonly agentId: string;
   readonly updates: Record<string, unknown>;
 }
 
-export interface SwarmHeartbeatPayload extends BaseEventPayload {
+export interface SwarmHeartbeatPayload extends anyPayload {
   readonly swarmId: string;
   readonly agentCount?: number;
   readonly activeAgents?: number;
   readonly taskQueue?: number;
 }
 
-export interface SwarmDisconnectPayload extends BaseEventPayload {
+export interface SwarmDisconnectPayload extends anyPayload {
   readonly swarmId: string;
   readonly reason?: string;
 }
 
-export interface SwarmFactRequestPayload extends BaseEventPayload {
+export interface SwarmFactRequestPayload extends anyPayload {
   readonly requestId: string;
   readonly swarmId: string;
   readonly factType:
@@ -554,7 +554,7 @@ export interface SwarmFactRequestPayload extends BaseEventPayload {
 }
 
 // Additional agent event payloads
-export interface AgentHeartbeatPayload extends BaseEventPayload {
+export interface AgentHeartbeatPayload extends anyPayload {
   readonly agentId: string;
   readonly health: number;
   readonly load: number;
@@ -563,7 +563,7 @@ export interface AgentHeartbeatPayload extends BaseEventPayload {
   readonly lastActivity: Date;
 }
 
-export interface AgentRegisteredPayload extends BaseEventPayload {
+export interface AgentRegisteredPayload extends anyPayload {
   readonly agentId: string;
   readonly agentType: AgentType;
   readonly capabilities: readonly string[];
@@ -571,14 +571,14 @@ export interface AgentRegisteredPayload extends BaseEventPayload {
   readonly metadata?: Record<string, unknown>;
 }
 
-export interface AgentCapabilitiesUpdatedPayload extends BaseEventPayload {
+export interface AgentCapabilitiesUpdatedPayload extends anyPayload {
   readonly agentId: string;
   readonly previousCapabilities: readonly string[];
   readonly currentCapabilities: readonly string[];
   readonly updateReason: string;
 }
 
-export interface AgentPerformanceUpdatePayload extends BaseEventPayload {
+export interface AgentPerformanceUpdatePayload extends anyPayload {
   readonly agentId: string;
   readonly metrics: {
     readonly tasksCompleted: number;
@@ -593,7 +593,7 @@ export interface AgentPerformanceUpdatePayload extends BaseEventPayload {
   };
 }
 
-export interface AgentUnavailablePayload extends BaseEventPayload {
+export interface AgentUnavailablePayload extends anyPayload {
   readonly agentId: string;
   readonly reason:
     | 'overloaded'
@@ -605,7 +605,7 @@ export interface AgentUnavailablePayload extends BaseEventPayload {
   readonly alternativeAgents?: readonly string[];
 }
 
-export interface AgentTaskCompletedPayload extends BaseEventPayload {
+export interface AgentTaskCompletedPayload extends anyPayload {
   readonly agentId: string;
   readonly taskId: string;
   readonly taskType: string;
@@ -619,7 +619,7 @@ export interface AgentTaskCompletedPayload extends BaseEventPayload {
   readonly result: TaskEventResult;
 }
 
-export interface AgentTaskFailedPayload extends BaseEventPayload {
+export interface AgentTaskFailedPayload extends anyPayload {
   readonly agentId: string;
   readonly taskId: string;
   readonly taskType: string;
@@ -633,7 +633,7 @@ export interface AgentTaskFailedPayload extends BaseEventPayload {
   readonly diagnostics?: Record<string, unknown>;
 }
 
-export interface AgentErrorPayload extends BaseEventPayload {
+export interface AgentErrorPayload extends anyPayload {
   readonly agentId: string;
   readonly errorType: 'fatal' | 'recoverable' | 'warning';
   readonly error: {
@@ -650,7 +650,7 @@ export interface AgentErrorPayload extends BaseEventPayload {
 }
 
 // Additional task event payloads
-export interface TaskProgressUpdatePayload extends BaseEventPayload {
+export interface TaskProgressUpdatePayload extends anyPayload {
   readonly taskId: string;
   readonly agentId: string;
   readonly progress: {
@@ -667,7 +667,7 @@ export interface TaskProgressUpdatePayload extends BaseEventPayload {
   }[];
 }
 
-export interface TaskCancelPayload extends BaseEventPayload {
+export interface TaskCancelPayload extends anyPayload {
   readonly taskId: string;
   readonly agentId?: string;
   readonly reason:
@@ -685,7 +685,7 @@ export interface TaskCancelPayload extends BaseEventPayload {
   readonly affectedDependencies: readonly string[];
 }
 
-export interface TaskAssignPayload extends BaseEventPayload {
+export interface TaskAssignPayload extends anyPayload {
   readonly taskId: string;
   readonly agentId: string;
   readonly taskType: string;
@@ -708,7 +708,7 @@ export interface TaskAssignPayload extends BaseEventPayload {
 }
 
 // Additional swarm event payloads
-export interface SwarmCreatedPayload extends BaseEventPayload {
+export interface SwarmCreatedPayload extends anyPayload {
   readonly swarmId: string;
   readonly topology: SwarmTopology;
   readonly maxAgents: number;
@@ -723,7 +723,7 @@ export interface SwarmCreatedPayload extends BaseEventPayload {
   };
 }
 
-export interface SwarmCompletedPayload extends BaseEventPayload {
+export interface SwarmCompletedPayload extends anyPayload {
   readonly swarmId: string;
   readonly duration: number;
   readonly tasksCompleted: number;
@@ -743,7 +743,7 @@ export interface SwarmCompletedPayload extends BaseEventPayload {
   }[];
 }
 
-export interface SwarmKnowledgeInjectPayload extends BaseEventPayload {
+export interface SwarmKnowledgeInjectPayload extends anyPayload {
   readonly swarmId: string;
   readonly knowledgeType:
     | 'facts'
@@ -752,7 +752,7 @@ export interface SwarmKnowledgeInjectPayload extends BaseEventPayload {
     | 'constraints'
     | 'preferences';
   readonly knowledge: {
-    readonly content: unknown;
+    readonly content: any;
     readonly metadata: {
       readonly source: string;
       readonly confidence: number;
@@ -770,7 +770,7 @@ export interface SwarmKnowledgeInjectPayload extends BaseEventPayload {
 }
 
 // Network and node event payloads
-export interface NodeConnectedPayload extends BaseEventPayload {
+export interface NodeConnectedPayload extends anyPayload {
   readonly nodeId: string;
   readonly nodeType: 'agent' | 'coordinator' | 'storage' | 'compute';
   readonly endpoint: string;
@@ -783,7 +783,7 @@ export interface NodeConnectedPayload extends BaseEventPayload {
   readonly metadata: Record<string, unknown>;
 }
 
-export interface NodeDisconnectedPayload extends BaseEventPayload {
+export interface NodeDisconnectedPayload extends anyPayload {
   readonly nodeId: string;
   readonly reason:
     | 'clean-shutdown'
@@ -798,7 +798,7 @@ export interface NodeDisconnectedPayload extends BaseEventPayload {
   readonly affectedOperations: readonly string[];
 }
 
-export interface MessageReceivedPayload extends BaseEventPayload {
+export interface MessageReceivedPayload extends anyPayload {
   readonly messageId: string;
   readonly fromNodeId: string;
   readonly toNodeId: string;
@@ -810,7 +810,7 @@ export interface MessageReceivedPayload extends BaseEventPayload {
   readonly deliveryGuarantee: 'at-most-once' | 'at-least-once' | 'exactly-once';
 }
 
-export interface NetworkPartitionPayload extends BaseEventPayload {
+export interface NetworkPartitionPayload extends anyPayload {
   readonly partitionId: string;
   readonly affectedNodes: readonly string[];
   readonly isolatedNodes: readonly string[];
@@ -822,7 +822,7 @@ export interface NetworkPartitionPayload extends BaseEventPayload {
 }
 
 // Additional system event payloads
-export interface SystemResourcePressurePayload extends BaseEventPayload {
+export interface SystemResourcePressurePayload extends anyPayload {
   readonly resourceType:
     | 'cpu'
     | 'memory'
@@ -844,7 +844,7 @@ export interface SystemResourcePressurePayload extends BaseEventPayload {
 }
 
 // Load balancing and workload event payloads
-export interface WorkloadDemandChangePayload extends BaseEventPayload {
+export interface WorkloadDemandChangePayload extends anyPayload {
   readonly resourceType: 'cpu' | 'memory' | 'network' | 'agents' | 'tasks';
   readonly previousDemand: number;
   readonly currentDemand: number;
@@ -863,7 +863,7 @@ export interface WorkloadDemandChangePayload extends BaseEventPayload {
     | 'optimize';
 }
 
-export interface LoadSpikePayload extends BaseEventPayload {
+export interface LoadSpikePayload extends anyPayload {
   readonly resourceType:
     | 'cpu'
     | 'memory'
@@ -882,7 +882,7 @@ export interface LoadSpikePayload extends BaseEventPayload {
 }
 
 // Additional resource pressure event (more specific than system:resource-pressure)
-export interface ResourcePressurePayload extends BaseEventPayload {
+export interface ResourcePressurePayload extends anyPayload {
   readonly resourceType:
     | 'cpu'
     | 'memory'
@@ -901,7 +901,7 @@ export interface ResourcePressurePayload extends BaseEventPayload {
 }
 
 // Node lifecycle event payloads
-export interface NodeJoinedPayload extends BaseEventPayload {
+export interface NodeJoinedPayload extends anyPayload {
   readonly nodeId: string;
   readonly nodeType:
     | 'agent'
@@ -925,7 +925,7 @@ export interface NodeJoinedPayload extends BaseEventPayload {
   readonly joinReason: 'startup' | 'scaling' | 'recovery' | 'migration';
 }
 
-export interface NodeLeftPayload extends BaseEventPayload {
+export interface NodeLeftPayload extends anyPayload {
   readonly nodeId: string;
   readonly nodeType:
     | 'agent'
@@ -947,7 +947,7 @@ export interface NodeLeftPayload extends BaseEventPayload {
   readonly finalMetrics: Record<string, number>;
 }
 
-export interface NodeMetricsUpdatedPayload extends BaseEventPayload {
+export interface NodeMetricsUpdatedPayload extends anyPayload {
   readonly nodeId: string;
   readonly metricsSnapshot: {
     readonly timestamp: Date;
@@ -987,7 +987,7 @@ export interface NodeMetricsUpdatedPayload extends BaseEventPayload {
 }
 
 // Heartbeat event payloads
-export interface HeartbeatSentPayload extends BaseEventPayload {
+export interface HeartbeatSentPayload extends anyPayload {
   readonly heartbeatId: string;
   readonly fromNodeId: string;
   readonly from?: string; // Added missing 'from' property for compatibility
@@ -1009,7 +1009,7 @@ export interface HeartbeatSentPayload extends BaseEventPayload {
 }
 
 // Connection and network event payloads
-export interface ConnectionQualityChangedPayload extends BaseEventPayload {
+export interface ConnectionQualityChangedPayload extends anyPayload {
   readonly connectionId: string;
   readonly previousQuality: 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
   readonly currentQuality: 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
@@ -1022,7 +1022,7 @@ export interface ConnectionQualityChangedPayload extends BaseEventPayload {
   readonly affectedServices: readonly string[];
 }
 
-export interface NetworkFaultDetectedPayload extends BaseEventPayload {
+export interface NetworkFaultDetectedPayload extends anyPayload {
   readonly faultType:
     | 'connection-loss'
     | 'high-latency'
@@ -1041,7 +1041,7 @@ export interface NetworkFaultDetectedPayload extends BaseEventPayload {
 }
 
 // Workload pattern event payloads
-export interface WorkloadPatternChangedPayload extends BaseEventPayload {
+export interface WorkloadPatternChangedPayload extends anyPayload {
   readonly patternType:
     | 'load-distribution'
     | 'task-frequency'
@@ -1060,7 +1060,7 @@ export interface WorkloadPatternChangedPayload extends BaseEventPayload {
 }
 
 // Swarm synchronization event payloads
-export interface SwarmSyncBroadcastPayload extends BaseEventPayload {
+export interface SwarmSyncBroadcastPayload extends anyPayload {
   readonly swarmId: string;
   readonly sourceSwarmId?: string; // Source swarm identifier for sync operations
   readonly syncId: string;
@@ -1073,39 +1073,39 @@ export interface SwarmSyncBroadcastPayload extends BaseEventPayload {
   readonly payload?: {
     // Made optional since some usages don't include this
     readonly type: string;
-    readonly data: unknown;
+    readonly data: any;
     readonly checksum: string;
   };
-  readonly state?: unknown; // Added for sync state data
+  readonly state?: any; // Added for sync state data
   readonly priority?: 'low' | 'medium' | 'high' | 'critical'; // Made optional
   readonly acknowledgeRequired?: boolean; // Made optional
 }
 
-export interface SwarmSyncResponsePayload extends BaseEventPayload {
+export interface SwarmSyncResponsePayload extends anyPayload {
   readonly swarmId: string;
   readonly syncId: string;
   readonly respondingAgentId: string;
   readonly responseType: 'ack' | 'nack' | 'partial' | 'error';
-  readonly responseData?: unknown;
+  readonly responseData?: any;
   readonly processingTime: number;
-  readonly sourceSwarmId?: string; // Added to match usage in swarm-synchronization.ts
+  readonly sourceSwarmId?: string; // Added to match usage in swarm-synchronization0.ts
   readonly error?: {
     readonly code: string;
     readonly message: string;
-    readonly details?: unknown;
+    readonly details?: any;
   };
 }
 
 // Additional agent state event payloads
-export interface AgentStateUpdatedPayload extends BaseEventPayload {
+export interface AgentStateUpdatedPayload extends anyPayload {
   readonly agentId: string;
   readonly swarmId?: string;
-  readonly state: unknown;
+  readonly state: any;
   readonly stateChanges: Record<
     string,
     {
-      readonly previous: unknown;
-      readonly current: unknown;
+      readonly previous: any;
+      readonly current: any;
       readonly changeType: 'created' | 'updated' | 'deleted';
     }
   >;
@@ -1116,7 +1116,7 @@ export interface AgentStateUpdatedPayload extends BaseEventPayload {
 }
 
 /**
- * Neural events.
+ * Neural events0.
  *
  * @example
  */
@@ -1128,21 +1128,21 @@ export interface NeuralEvents {
   'neural:prediction:made': NeuralPredictionMadePayload;
 }
 
-export interface NeuralNetworkCreatedPayload extends BaseEventPayload {
+export interface NeuralNetworkCreatedPayload extends anyPayload {
   readonly networkId: string;
   readonly networkType: NeuralNetworkType;
   readonly layerCount: number;
   readonly parameterCount: number;
 }
 
-export interface NeuralTrainingStartedPayload extends BaseEventPayload {
+export interface NeuralTrainingStartedPayload extends anyPayload {
   readonly networkId: string;
   readonly trainingId: string;
   readonly epochs: number;
   readonly dataSize: number;
 }
 
-export interface NeuralTrainingCompletedPayload extends BaseEventPayload {
+export interface NeuralTrainingCompletedPayload extends anyPayload {
   readonly networkId: string;
   readonly trainingId: string;
   readonly duration: number;
@@ -1150,14 +1150,14 @@ export interface NeuralTrainingCompletedPayload extends BaseEventPayload {
   readonly finalLoss: number;
 }
 
-export interface NeuralTrainingFailedPayload extends BaseEventPayload {
+export interface NeuralTrainingFailedPayload extends anyPayload {
   readonly networkId: string;
   readonly trainingId: string;
   readonly error: NeuralEventError;
   readonly epoch: number;
 }
 
-export interface NeuralPredictionMadePayload extends BaseEventPayload {
+export interface NeuralPredictionMadePayload extends anyPayload {
   readonly networkId: string;
   readonly inputSize: number;
   readonly outputSize: number;
@@ -1166,7 +1166,7 @@ export interface NeuralPredictionMadePayload extends BaseEventPayload {
 }
 
 /**
- * Memory events.
+ * Memory events0.
  *
  * @example
  */
@@ -1179,39 +1179,39 @@ export interface MemoryEvents {
   'memory:sync:completed': MemorySyncCompletedPayload;
 }
 
-export interface MemoryStoreCreatedPayload extends BaseEventPayload {
+export interface MemoryStoreCreatedPayload extends anyPayload {
   readonly storeId: string;
   readonly storeType: MemoryStoreType;
   readonly config: MemoryStoreConfig;
 }
 
-export interface MemoryKeySetPayload extends BaseEventPayload {
+export interface MemoryKeySetPayload extends anyPayload {
   readonly storeId: string;
   readonly key: string;
   readonly valueSize: number;
   readonly ttl?: number;
 }
 
-export interface MemoryKeyGetPayload extends BaseEventPayload {
+export interface MemoryKeyGetPayload extends anyPayload {
   readonly storeId: string;
   readonly key: string;
   readonly hit: boolean;
   readonly responseTime: number;
 }
 
-export interface MemoryKeyDeletedPayload extends BaseEventPayload {
+export interface MemoryKeyDeletedPayload extends anyPayload {
   readonly storeId: string;
   readonly key: string;
   readonly existed: boolean;
 }
 
-export interface MemorySyncStartedPayload extends BaseEventPayload {
+export interface MemorySyncStartedPayload extends anyPayload {
   readonly storeId: string;
   readonly syncType: 'full' | 'incremental';
   readonly targetNodes: readonly string[];
 }
 
-export interface MemorySyncCompletedPayload extends BaseEventPayload {
+export interface MemorySyncCompletedPayload extends anyPayload {
   readonly storeId: string;
   readonly syncId: string;
   readonly duration: number;
@@ -1220,7 +1220,7 @@ export interface MemorySyncCompletedPayload extends BaseEventPayload {
 }
 
 /**
- * Combined event map for type safety.
+ * Combined event map for type safety0.
  */
 export type EventMap = SystemEvents &
   WorkflowEvents &
@@ -1229,18 +1229,16 @@ export type EventMap = SystemEvents &
   MemoryEvents;
 
 /**
- * Event listener types.
+ * Event listener types0.
  */
 export type EventListener<T extends keyof EventMap> = (
   payload: EventMap[T]
 ) => void | Promise<void>;
 
-export type EventListenerAny = (
-  payload: BaseEventPayload
-) => void | Promise<void>;
+export type EventListenerAny = (payload: anyPayload) => void | Promise<void>;
 
 /**
- * Event middleware function.
+ * Event middleware function0.
  */
 export type EventMiddleware<T extends keyof EventMap = keyof EventMap> = (
   event: T,
@@ -1249,25 +1247,25 @@ export type EventMiddleware<T extends keyof EventMap = keyof EventMap> = (
 ) => void | Promise<void>;
 
 /**
- * Supporting types.
+ * Supporting types0.
  *
  * @example
  */
 export interface SystemConfig {
-  readonly [key: string]: unknown;
+  readonly [key: string]: any;
 }
 
 export interface SystemError {
   readonly code: string;
   readonly message: string;
   readonly stack?: string;
-  readonly cause?: unknown;
+  readonly cause?: any;
 }
 
 export interface SystemErrorContext {
   readonly module: string;
   readonly operation: string;
-  readonly [key: string]: unknown;
+  readonly [key: string]: any;
 }
 
 export type HealthState = 'healthy' | 'degraded' | 'unhealthy';
@@ -1277,21 +1275,21 @@ export interface ServiceHealthMap {
 }
 
 export interface WorkflowEventContext {
-  readonly [key: string]: unknown;
+  readonly [key: string]: any;
 }
 
 export interface WorkflowResults {
-  readonly [key: string]: unknown;
+  readonly [key: string]: any;
 }
 
 export interface WorkflowEventError {
   readonly code: string;
   readonly message: string;
-  readonly details?: unknown;
+  readonly details?: any;
 }
 
 export interface StepEventResult {
-  readonly [key: string]: unknown;
+  readonly [key: string]: any;
 }
 
 export type AgentType =
@@ -1304,13 +1302,13 @@ export type AgentStatus = 'idle' | 'busy' | 'error' | 'offline';
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
 
 export interface TaskEventResult {
-  readonly [key: string]: unknown;
+  readonly [key: string]: any;
 }
 
 export interface TaskEventError {
   readonly code: string;
   readonly message: string;
-  readonly details?: unknown;
+  readonly details?: any;
 }
 
 export type NeuralNetworkType =
@@ -1322,17 +1320,17 @@ export type NeuralNetworkType =
 export interface NeuralEventError {
   readonly code: string;
   readonly message: string;
-  readonly details?: unknown;
+  readonly details?: any;
 }
 
 export type MemoryStoreType = 'local' | 'distributed' | 'cache';
 
 export interface MemoryStoreConfig {
-  readonly [key: string]: unknown;
+  readonly [key: string]: any;
 }
 
 /**
- * Event bus configuration.
+ * Event bus configuration0.
  *
  * @example
  */
@@ -1345,7 +1343,7 @@ export interface EventBusConfig {
 }
 
 /**
- * Event metrics.
+ * Event metrics0.
  *
  * @example
  */

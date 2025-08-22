@@ -26,7 +26,7 @@
  * @version 1.0.0
  */
 
-import { getLogger } from '@claude-zen/foundation/logging';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('operations-monitoring');
 

@@ -3,7 +3,7 @@
  * Comprehensive monitoring and analytics for memory operations.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryCoordinator } from '../core/memory-coordinator';
 import type { BackendInterface } from '../core/memory-system';
 import type { PerformanceOptimizer } from '../optimization/performance-optimizer';
@@ -87,7 +87,7 @@ export interface MonitoringConfig {
  *
  * @example
  */
-export class MemoryMonitor extends EventEmitter {
+export class MemoryMonitor extends TypedEventBase {
   private config: MonitoringConfig;
   private metrics: MemoryMetrics[] = [];
   private alerts: MemoryAlert[] = [];
@@ -130,12 +130,12 @@ export class MemoryMonitor extends EventEmitter {
 
   registerCoordinator(coordinator: MemoryCoordinator): void {
     this.coordinator = coordinator;
-    this.emit('coordinatorRegistered');
+    this.emit('coordinatorRegistered', {});
   }
 
   registerOptimizer(optimizer: PerformanceOptimizer): void {
     this.optimizer = optimizer;
-    this.emit('optimizerRegistered');
+    this.emit('optimizerRegistered', {});
   }
 
   /**
@@ -147,9 +147,9 @@ export class MemoryMonitor extends EventEmitter {
     this.collecting = true;
     this.collectInterval = setInterval(() => {
       this.collectMetrics();
-    }, this.config.collectInterval);
+    }, this.configuration.collectInterval);
 
-    this.emit('collectionStarted');
+    this.emit('collectionStarted', {});
   }
 
   /**
@@ -164,7 +164,7 @@ export class MemoryMonitor extends EventEmitter {
       this.collectInterval = null;
     }
 
-    this.emit('collectionStopped');
+    this.emit('collectionStopped', {});
   }
 
   /**
@@ -213,7 +213,7 @@ export class MemoryMonitor extends EventEmitter {
   private async collectMetrics(): Promise<void> {
     try {
       const now = Date.now();
-      const windowMs = this.config.collectInterval * 5; // 5 collection periods
+      const windowMs = this.configuration.collectInterval * 5; // 5 collection periods
       const recentOperations = this.operationHistory.filter(
         (op) => now - op.timestamp < windowMs
       );
@@ -326,7 +326,7 @@ export class MemoryMonitor extends EventEmitter {
 
       // Limit metrics history
       const maxMetrics = Math.floor(
-        this.config.retentionPeriod / this.config.collectInterval
+        this.configuration.retentionPeriod / this.configuration.collectInterval
       );
       if (this.metrics.length > maxMetrics) {
         this.metrics = this.metrics.slice(-Math.floor(maxMetrics * 0.8));
@@ -335,7 +335,7 @@ export class MemoryMonitor extends EventEmitter {
       this.emit('metricsCollected', metrics);
 
       // Check for alerts
-      if (this.config.alerts.enabled) {
+      if (this.configuration.alerts.enabled) {
         this.checkAlerts(metrics);
       }
     } catch (error) {
@@ -349,7 +349,7 @@ export class MemoryMonitor extends EventEmitter {
    * @param metrics
    */
   private checkAlerts(metrics: MemoryMetrics): void {
-    const { thresholds } = this.config.alerts;
+    const { thresholds } = this.configuration.alerts;
 
     // Latency alert
     if (metrics.averageLatency > thresholds.latency) {
@@ -553,7 +553,7 @@ export class MemoryMonitor extends EventEmitter {
 
     return {
       monitoring: {
-        enabled: this.config.enabled,
+        enabled: this.configuration.enabled,
         collecting: this.collecting,
         metricsCollected: this.metrics.length,
         operationsTracked: this.operationHistory.length,

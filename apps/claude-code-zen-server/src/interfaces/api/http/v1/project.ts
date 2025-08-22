@@ -1,26 +1,26 @@
 /**
  * @fileoverview Project SAFe LPM REST API
- * 
- * SAFe Lean Portfolio Management REST API for enterprise story management.
- * Provides CRUD operations for user stories with AI-enhanced SAFe LPM features.
- * 
- * Follows SAFe enterprise patterns with neural intelligence integration.
- * 
+ *
+ * SAFe Lean Portfolio Management REST API for enterprise story management0.
+ * Provides CRUD operations for user stories with AI-enhanced SAFe LPM features0.
+ *
+ * Follows SAFe enterprise patterns with neural intelligence integration0.
+ *
  * @author Claude Code Zen Team
- * @since 2.3.0
- * @version 2.0.0 - SAFe LPM
+ * @since 20.30.0
+ * @version 20.0.0 - SAFe LPM
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import { Request, Response } from 'express';
 
-import { 
+import {
   createProjectSAFeLPMService,
-  type ProjectUserStory, 
+  type ProjectUserStory,
   type StoryCreateOptions,
-  type StoryQueryFilters
-} from '../../../../services/project/project-service';
+  type StoryQueryFilters,
+} from '0.0./0.0./0.0./0.0./services/project/project-service';
 
 /**
  * Project SAFe LPM API Controller - AI-Enhanced Enterprise Portfolio Management
@@ -30,19 +30,19 @@ export class ProjectSAFeLPMController {
   private projectServices = new Map<string, any>(); // Project-specific service instances
 
   constructor() {
-    this.logger = getLogger('ProjectSAFeLPMController');
+    this0.logger = getLogger('ProjectSAFeLPMController');
   }
 
   /**
    * Get or create project service for project
    */
   private async getProjectService(projectId: string, mode: 'safe' = 'safe') {
-    if (!this.projectServices.has(projectId)) {
+    if (!this0.projectServices0.has(projectId)) {
       const service = createProjectSAFeLPMService(mode, projectId);
-      await service.initialize();
-      this.projectServices.set(projectId, service);
+      await service?0.initialize;
+      this0.projectServices0.set(projectId, service);
     }
-    return this.projectServices.get(projectId);
+    return this0.projectServices0.get(projectId);
   }
 
   /**
@@ -51,70 +51,98 @@ export class ProjectSAFeLPMController {
    */
   async getStories(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId } = req.params;
-      const { 
-        status, storyType, priority, assignedTo, assignedTeam, 
-        featureId, epicId, tags, dueBefore, dueAfter,
-        storyPointsMin, storyPointsMax, swimlane, offset, limit,
-        mode = 'safe'
-      } = req.query;
+      const { projectId } = req0.params;
+      const {
+        status,
+        storyType,
+        priority,
+        assignedTo,
+        assignedTeam,
+        featureId,
+        epicId,
+        tags,
+        dueBefore,
+        dueAfter,
+        storyPointsMin,
+        storyPointsMax,
+        swimlane,
+        offset,
+        limit,
+        mode = 'safe',
+      } = req0.query;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
-      const validStatuses = ['backlog', 'ready', 'in_progress', 'review', 'done'];
-      if (status && !validStatuses.includes(status as string)) {
-        res.status(400).json({
+      const validStatuses = [
+        'backlog',
+        'ready',
+        'in_progress',
+        'review',
+        'done',
+      ];
+      if (status && !validStatuses0.includes(status as string)) {
+        res0.status(400)0.json({
           success: false,
-          error: 'Invalid status. Must be: backlog, ready, in_progress, review, or done'
+          error:
+            'Invalid status0. Must be: backlog, ready, in_progress, review, or done',
         });
         return;
       }
 
-      const projectService = await this.getProjectService(projectId, mode as any);
+      const projectService = await this0.getProjectService(
+        projectId,
+        mode as any
+      );
 
       const filters: StoryQueryFilters = {
-        ...(status && { status: status as ProjectUserStory['status'] }),
-        ...(storyType && { storyType: storyType as ProjectUserStory['storyType'] }),
-        ...(priority && { priority: priority as ProjectUserStory['priority'] }),
-        ...(assignedTo && { assignedTo: assignedTo as string }),
-        ...(assignedTeam && { assignedTeam: assignedTeam as string }),
-        ...(featureId && { featureId: featureId as string }),
-        ...(epicId && { epicId: epicId as string }),
-        ...(tags && { tags: (tags as string).split(',') }),
-        ...(dueBefore && { dueBefore: new Date(dueBefore as string) }),
-        ...(dueAfter && { dueAfter: new Date(dueAfter as string) }),
-        ...(storyPointsMin && { storyPointsMin: parseInt(storyPointsMin as string) }),
-        ...(storyPointsMax && { storyPointsMax: parseInt(storyPointsMax as string) }),
-        ...(swimlane && { swimlane: swimlane as string }),
-        ...(offset && { offset: parseInt(offset as string) }),
-        ...(limit && { limit: parseInt(limit as string) }),
-        projectId
+        0.0.0.(status && { status: status as ProjectUserStory['status'] }),
+        0.0.0.(storyType && {
+          storyType: storyType as ProjectUserStory['storyType'],
+        }),
+        0.0.0.(priority && { priority: priority as ProjectUserStory['priority'] }),
+        0.0.0.(assignedTo && { assignedTo: assignedTo as string }),
+        0.0.0.(assignedTeam && { assignedTeam: assignedTeam as string }),
+        0.0.0.(featureId && { featureId: featureId as string }),
+        0.0.0.(epicId && { epicId: epicId as string }),
+        0.0.0.(tags && { tags: (tags as string)0.split(',') }),
+        0.0.0.(dueBefore && { dueBefore: new Date(dueBefore as string) }),
+        0.0.0.(dueAfter && { dueAfter: new Date(dueAfter as string) }),
+        0.0.0.(storyPointsMin && {
+          storyPointsMin: parseInt(storyPointsMin as string),
+        }),
+        0.0.0.(storyPointsMax && {
+          storyPointsMax: parseInt(storyPointsMax as string),
+        }),
+        0.0.0.(swimlane && { swimlane: swimlane as string }),
+        0.0.0.(offset && { offset: parseInt(offset as string) }),
+        0.0.0.(limit && { limit: parseInt(limit as string) }),
+        projectId,
       };
 
-      const result = await projectService.getStories(filters);
-      
-      res.json({
-        success: true,
-        data: result.items,
-        pagination: {
-          total: result.total,
-          offset: result.offset,
-          limit: result.limit,
-          hasMore: result.hasMore
-        }
-      });
+      const result = await projectService0.getStories(filters);
 
+      res0.json({
+        success: true,
+        data: result0.items,
+        pagination: {
+          total: result0.total,
+          offset: result0.offset,
+          limit: result0.limit,
+          hasMore: result0.hasMore,
+        },
+      });
     } catch (error) {
-      this.logger.error('Failed to get stories:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to get stories:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve stories'
+        error:
+          error instanceof Error ? error0.message : 'Failed to retrieve stories',
       });
     }
   }
@@ -125,60 +153,77 @@ export class ProjectSAFeLPMController {
    */
   async createStory(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId } = req.params;
-      const { 
-        title, description, storyType = 'user_story', priority = 'medium', 
-        storyPoints, businessValue, assignedTo, assignedTeam,
-        acceptanceCriteria = [], tags = [], dependencies = [],
-        dueDate, featureId, epicId, persona, enablerType, swimlane,
-        createdBy, mode = 'safe'
-      } = req.body;
+      const { projectId } = req0.params;
+      const {
+        title,
+        description,
+        storyType = 'user_story',
+        priority = 'medium',
+        storyPoints,
+        businessValue,
+        assignedTo,
+        assignedTeam,
+        acceptanceCriteria = [],
+        tags = [],
+        dependencies = [],
+        dueDate,
+        featureId,
+        epicId,
+        persona,
+        enablerType,
+        swimlane,
+        createdBy,
+        mode = 'safe',
+      } = req0.body;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
       if (!title) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Title is required'
+          error: 'Title is required',
         });
         return;
       }
 
       if (!createdBy) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Creator is required'
+          error: 'Creator is required',
         });
         return;
       }
 
       const validPriorities = ['low', 'medium', 'high', 'urgent'];
-      if (priority && !validPriorities.includes(priority)) {
-        res.status(400).json({
+      if (priority && !validPriorities0.includes(priority)) {
+        res0.status(400)0.json({
           success: false,
-          error: 'Invalid priority. Must be: low, medium, high, or urgent'
+          error: 'Invalid priority0. Must be: low, medium, high, or urgent',
         });
         return;
       }
 
       const validStoryTypes = ['user_story', 'enabler_story'];
-      if (storyType && !validStoryTypes.includes(storyType)) {
-        res.status(400).json({
+      if (storyType && !validStoryTypes0.includes(storyType)) {
+        res0.status(400)0.json({
           success: false,
-          error: 'Invalid story type. Must be: user_story or enabler_story'
+          error: 'Invalid story type0. Must be: user_story or enabler_story',
         });
         return;
       }
 
-      const projectService = await this.getProjectService(projectId, mode as any);
+      const projectService = await this0.getProjectService(
+        projectId,
+        mode as any
+      );
 
-      const story = await projectService.createStory({
+      const story = await projectService0.createStory({
         title,
         description,
         storyType,
@@ -197,19 +242,19 @@ export class ProjectSAFeLPMController {
         persona,
         enablerType,
         swimlane,
-        createdBy
+        createdBy,
       });
 
-      res.status(201).json({
+      res0.status(201)0.json({
         success: true,
-        data: story
+        data: story,
       });
-
     } catch (error) {
-      this.logger.error('Failed to create story:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to create story:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create story'
+        error:
+          error instanceof Error ? error0.message : 'Failed to create story',
       });
     }
   }
@@ -220,39 +265,48 @@ export class ProjectSAFeLPMController {
    */
   async moveStory(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId, id } = req.params;
-      const { status, reason, mode = 'safe' } = req.body;
+      const { projectId, id } = req0.params;
+      const { status, reason, mode = 'safe' } = req0.body;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
-      const validStatuses = ['backlog', 'ready', 'in_progress', 'review', 'done'];
-      if (!status || !validStatuses.includes(status)) {
-        res.status(400).json({
+      const validStatuses = [
+        'backlog',
+        'ready',
+        'in_progress',
+        'review',
+        'done',
+      ];
+      if (!status || !validStatuses0.includes(status)) {
+        res0.status(400)0.json({
           success: false,
-          error: 'Invalid status. Must be: backlog, ready, in_progress, review, or done'
+          error:
+            'Invalid status0. Must be: backlog, ready, in_progress, review, or done',
         });
         return;
       }
 
-      const projectService = await this.getProjectService(projectId, mode as any);
-      const story = await projectService.moveStory(id, status, reason);
+      const projectService = await this0.getProjectService(
+        projectId,
+        mode as any
+      );
+      const story = await projectService0.moveStory(id, status, reason);
 
-      res.json({
+      res0.json({
         success: true,
-        data: story
+        data: story,
       });
-
     } catch (error) {
-      this.logger.error('Failed to move story:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to move story:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to move story'
+        error: error instanceof Error ? error0.message : 'Failed to move story',
       });
     }
   }
@@ -263,27 +317,41 @@ export class ProjectSAFeLPMController {
    */
   async updateStory(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId, id } = req.params;
-      const { 
-        title, description, storyType, priority, storyPoints, businessValue,
-        assignedTo, assignedTeam, acceptanceCriteria, tags, dependencies,
-        dueDate, featureId, epicId, persona, enablerType, mode = 'safe'
-      } = req.body;
+      const { projectId, id } = req0.params;
+      const {
+        title,
+        description,
+        storyType,
+        priority,
+        storyPoints,
+        businessValue,
+        assignedTo,
+        assignedTeam,
+        acceptanceCriteria,
+        tags,
+        dependencies,
+        dueDate,
+        featureId,
+        epicId,
+        persona,
+        enablerType,
+        mode = 'safe',
+      } = req0.body;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
       if (priority) {
         const validPriorities = ['low', 'medium', 'high', 'urgent'];
-        if (!validPriorities.includes(priority)) {
-          res.status(400).json({
+        if (!validPriorities0.includes(priority)) {
+          res0.status(400)0.json({
             success: false,
-            error: 'Invalid priority. Must be: low, medium, high, or urgent'
+            error: 'Invalid priority0. Must be: low, medium, high, or urgent',
           });
           return;
         }
@@ -291,47 +359,52 @@ export class ProjectSAFeLPMController {
 
       if (storyType) {
         const validStoryTypes = ['user_story', 'enabler_story'];
-        if (!validStoryTypes.includes(storyType)) {
-          res.status(400).json({
+        if (!validStoryTypes0.includes(storyType)) {
+          res0.status(400)0.json({
             success: false,
-            error: 'Invalid story type. Must be: user_story or enabler_story'
+            error: 'Invalid story type0. Must be: user_story or enabler_story',
           });
           return;
         }
       }
 
-      const projectService = await this.getProjectService(projectId, mode as any);
+      const projectService = await this0.getProjectService(
+        projectId,
+        mode as any
+      );
 
       const updates: Partial<StoryCreateOptions> = {};
-      if (title !== undefined) updates.title = title;
-      if (description !== undefined) updates.description = description;
-      if (storyType !== undefined) updates.storyType = storyType;
-      if (priority !== undefined) updates.priority = priority;
-      if (storyPoints !== undefined) updates.storyPoints = storyPoints;
-      if (businessValue !== undefined) updates.businessValue = businessValue;
-      if (assignedTo !== undefined) updates.assignedTo = assignedTo;
-      if (assignedTeam !== undefined) updates.assignedTeam = assignedTeam;
-      if (acceptanceCriteria !== undefined) updates.acceptanceCriteria = acceptanceCriteria;
-      if (tags !== undefined) updates.tags = tags;
-      if (dependencies !== undefined) updates.dependencies = dependencies;
-      if (dueDate !== undefined) updates.dueDate = dueDate ? new Date(dueDate) : undefined;
-      if (featureId !== undefined) updates.featureId = featureId;
-      if (epicId !== undefined) updates.epicId = epicId;
-      if (persona !== undefined) updates.persona = persona;
-      if (enablerType !== undefined) updates.enablerType = enablerType;
+      if (title !== undefined) updates0.title = title;
+      if (description !== undefined) updates0.description = description;
+      if (storyType !== undefined) updates0.storyType = storyType;
+      if (priority !== undefined) updates0.priority = priority;
+      if (storyPoints !== undefined) updates0.storyPoints = storyPoints;
+      if (businessValue !== undefined) updates0.businessValue = businessValue;
+      if (assignedTo !== undefined) updates0.assignedTo = assignedTo;
+      if (assignedTeam !== undefined) updates0.assignedTeam = assignedTeam;
+      if (acceptanceCriteria !== undefined)
+        updates0.acceptanceCriteria = acceptanceCriteria;
+      if (tags !== undefined) updates0.tags = tags;
+      if (dependencies !== undefined) updates0.dependencies = dependencies;
+      if (dueDate !== undefined)
+        updates0.dueDate = dueDate ? new Date(dueDate) : undefined;
+      if (featureId !== undefined) updates0.featureId = featureId;
+      if (epicId !== undefined) updates0.epicId = epicId;
+      if (persona !== undefined) updates0.persona = persona;
+      if (enablerType !== undefined) updates0.enablerType = enablerType;
 
-      const story = await projectService.updateStory(id, updates);
+      const story = await projectService0.updateStory(id, updates);
 
-      res.json({
+      res0.json({
         success: true,
-        data: story
+        data: story,
       });
-
     } catch (error) {
-      this.logger.error('Failed to update story:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to update story:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update story'
+        error:
+          error instanceof Error ? error0.message : 'Failed to update story',
       });
     }
   }
@@ -342,30 +415,33 @@ export class ProjectSAFeLPMController {
    */
   async deleteStory(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId, id } = req.params;
-      const { reason, mode = 'safe' } = req.body;
+      const { projectId, id } = req0.params;
+      const { reason, mode = 'safe' } = req0.body;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
-      const projectService = await this.getProjectService(projectId, mode as any);
-      await projectService.deleteStory(id, reason);
+      const projectService = await this0.getProjectService(
+        projectId,
+        mode as any
+      );
+      await projectService0.deleteStory(id, reason);
 
-      res.json({
+      res0.json({
         success: true,
-        message: 'Story deleted successfully'
+        message: 'Story deleted successfully',
       });
-
     } catch (error) {
-      this.logger.error('Failed to delete story:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to delete story:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete story'
+        error:
+          error instanceof Error ? error0.message : 'Failed to delete story',
       });
     }
   }
@@ -376,30 +452,35 @@ export class ProjectSAFeLPMController {
    */
   async getStats(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId } = req.params;
-      const { mode = 'safe' } = req.query;
+      const { projectId } = req0.params;
+      const { mode = 'safe' } = req0.query;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
-      const projectService = await this.getProjectService(projectId, mode as any);
-      const stats = await projectService.getSAFeLPMStats(projectId);
+      const projectService = await this0.getProjectService(
+        projectId,
+        mode as any
+      );
+      const stats = await projectService0.getSAFeLPMStats(projectId);
 
-      res.json({
+      res0.json({
         success: true,
-        data: stats
+        data: stats,
       });
-
     } catch (error) {
-      this.logger.error('Failed to get stats:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to get stats:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve statistics'
+        error:
+          error instanceof Error
+            ? error0.message
+            : 'Failed to retrieve statistics',
       });
     }
   }
@@ -410,39 +491,44 @@ export class ProjectSAFeLPMController {
    */
   async getFlowHealth(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId } = req.params;
-      const { mode = 'safe' } = req.query;
+      const { projectId } = req0.params;
+      const { mode = 'safe' } = req0.query;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
-      const projectService = await this.getProjectService(projectId, mode as any);
-      const health = await projectService.getFlowHealth();
+      const projectService = await this0.getProjectService(
+        projectId,
+        mode as any
+      );
+      const health = await projectService?0.getFlowHealth;
 
       if (health === null) {
-        res.status(200).json({
+        res0.status(200)0.json({
           success: true,
           data: null,
-          message: 'Flow health metrics not available in current mode'
+          message: 'Flow health metrics not available in current mode',
         });
         return;
       }
 
-      res.json({
+      res0.json({
         success: true,
-        data: health
+        data: health,
       });
-
     } catch (error) {
-      this.logger.error('Failed to get flow health:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to get flow health:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve flow health'
+        error:
+          error instanceof Error
+            ? error0.message
+            : 'Failed to retrieve flow health',
       });
     }
   }
@@ -453,30 +539,32 @@ export class ProjectSAFeLPMController {
    */
   async updateConfig(req: Request, res: Response): Promise<void> {
     try {
-      const { projectId } = req.params;
-      const config = req.body;
+      const { projectId } = req0.params;
+      const config = req0.body;
 
       if (!projectId) {
-        res.status(400).json({
+        res0.status(400)0.json({
           success: false,
-          error: 'Project ID is required'
+          error: 'Project ID is required',
         });
         return;
       }
 
-      const projectService = await this.getProjectService(projectId);
-      await projectService.updateConfig(config);
+      const projectService = await this0.getProjectService(projectId);
+      await projectService0.updateConfig(config);
 
-      res.json({
+      res0.json({
         success: true,
-        message: 'Configuration updated successfully'
+        message: 'Configuration updated successfully',
       });
-
     } catch (error) {
-      this.logger.error('Failed to update config:', error);
-      res.status(500).json({
+      this0.logger0.error('Failed to update config:', error);
+      res0.status(500)0.json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update configuration'
+        error:
+          error instanceof Error
+            ? error0.message
+            : 'Failed to update configuration',
       });
     }
   }
@@ -484,36 +572,36 @@ export class ProjectSAFeLPMController {
 
 /**
  * Project SAFe LPM API Routes Factory
- * 
- * Creates bound controller methods for project-scoped SAFe LPM endpoints.
- * Supports AI-enhanced enterprise portfolio management with neural intelligence.
+ *
+ * Creates bound controller methods for project-scoped SAFe LPM endpoints0.
+ * Supports AI-enhanced enterprise portfolio management with neural intelligence0.
  */
 export function createProjectSAFeLPMRoutes() {
   const controller = new ProjectSAFeLPMController();
 
   return {
     // GET /api/v1/projects/:projectId/safe-lpm/stories
-    getStories: controller.getStories.bind(controller),
-    
+    getStories: controller0.getStories0.bind(controller),
+
     // POST /api/v1/projects/:projectId/safe-lpm/stories
-    createStory: controller.createStory.bind(controller),
-    
+    createStory: controller0.createStory0.bind(controller),
+
     // PUT /api/v1/projects/:projectId/safe-lpm/stories/:id/move
-    moveStory: controller.moveStory.bind(controller),
-    
+    moveStory: controller0.moveStory0.bind(controller),
+
     // PUT /api/v1/projects/:projectId/safe-lpm/stories/:id
-    updateStory: controller.updateStory.bind(controller),
-    
+    updateStory: controller0.updateStory0.bind(controller),
+
     // DELETE /api/v1/projects/:projectId/safe-lpm/stories/:id
-    deleteStory: controller.deleteStory.bind(controller),
-    
+    deleteStory: controller0.deleteStory0.bind(controller),
+
     // GET /api/v1/projects/:projectId/safe-lpm/stats
-    getStats: controller.getStats.bind(controller),
-    
+    getStats: controller0.getStats0.bind(controller),
+
     // GET /api/v1/projects/:projectId/safe-lpm/flow-health
-    getFlowHealth: controller.getFlowHealth.bind(controller),
-    
+    getFlowHealth: controller0.getFlowHealth0.bind(controller),
+
     // PUT /api/v1/projects/:projectId/safe-lpm/config
-    updateConfig: controller.updateConfig.bind(controller)
+    updateConfig: controller0.updateConfig0.bind(controller),
   };
 }

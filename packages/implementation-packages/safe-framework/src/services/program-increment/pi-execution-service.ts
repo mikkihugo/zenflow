@@ -291,7 +291,7 @@ export interface AlertThresholds {
 /**
  * PI Execution Service for Program Increment execution tracking and management
  */
-export class PIExecutionService extends EventEmitter {
+export class PIExecutionService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly config: PIExecutionConfiguration;
   private readonly piMetrics = new Map<string, PIExecutionMetrics>();

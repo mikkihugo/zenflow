@@ -2,7 +2,7 @@
  * @file Real-time Memory System Monitor
  * Comprehensive monitoring and analytics for memory operations.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryCoordinator } from '../core/memory-coordinator';
 import type { BackendInterface } from '../core/memory-system';
 import type { PerformanceOptimizer } from '../optimization/performance-optimizer';
@@ -72,7 +72,7 @@ export interface MonitoringConfig {
  *
  * @example
  */
-export declare class MemoryMonitor extends EventEmitter {
+export declare class MemoryMonitor extends TypedEventBase {
     private config;
     private metrics;
     private alerts;
@@ -167,7 +167,7 @@ export declare class MemoryMonitor extends EventEmitter {
      */
     getStats(): {
         monitoring: {
-            enabled: boolean;
+            enabled: any;
             collecting: boolean;
             metricsCollected: number;
             operationsTracked: number;

@@ -109,7 +109,7 @@ export interface CoordinationMetrics {
  * Integrates Rust-based ML algorithms with the neural coordination system
  * to provide intelligent optimization, learning, and adaptation capabilities.
  */
-export class MLNeuralCoordinator extends EventEmitter {
+export class MLNeuralCoordinator extends TypedEventBase {
   private logger: Logger;
   private config: NeuralCoordinationConfig;
   private initialized: boolean = false;

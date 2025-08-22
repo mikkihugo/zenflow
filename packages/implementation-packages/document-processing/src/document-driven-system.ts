@@ -14,7 +14,7 @@
 import { existsSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation'
 
 const logger = getLogger('DocumentDriven');
@@ -58,7 +58,7 @@ export interface WorkflowContext {
   swarmSupport: boolean; // Background swarm assistance
 }
 
-export class DocumentDrivenSystem extends EventEmitter {
+export class DocumentDrivenSystem extends TypedEventBase {
   private workspaces: Map<string, WorkflowContext> = new Map();
 
   constructor() {
@@ -73,7 +73,7 @@ export class DocumentDrivenSystem extends EventEmitter {
     logger.info('🚀 Initializing Document-Driven Development System');
 
     logger.info('✅ Document-Driven System ready');
-    this.emit('initialized');
+    this.emit('initialized', { timestamp: new Date() });
   }
 
   /**

@@ -16,7 +16,7 @@
  * @file Coordination system: chaos-engineering.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   getConfig, 
@@ -226,7 +226,7 @@ type SafetyCheck = (
   | Promise<{ safe: boolean; reason?: string }>
   | { safe: boolean; reason?: string };
 
-export class ChaosEngineering extends EventEmitter {
+export class ChaosEngineering extends TypedEventBase {
   private options: Required<ChaosEngineeringOptions>;
   private logger: ReturnType<typeof getLogger>;
   private experiments: Map<string, ChaosExperiment>;
@@ -354,7 +354,7 @@ export class ChaosEngineering extends EventEmitter {
       this.registerBuiltInExperiments();
 
       this.logger.info('Chaos Engineering Framework initialized successfully');
-      this.emit('chaos:initialized');
+      this.emit('chaos:initialized', { timestamp: new Date() });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -1451,7 +1451,7 @@ export class ChaosEngineering extends EventEmitter {
   clearEmergencyStop() {
     this.emergencyStop = false as boolean;
     this.logger.info('Emergency stop cleared');
-    this.emit('emergency:cleared');
+    this.emit('emergency:cleared', { timestamp: new Date() });
   }
 
   /**
@@ -1592,7 +1592,7 @@ export class ChaosEngineering extends EventEmitter {
     this.failureInjectors.clear();
     this.safetyChecks.clear();
 
-    this.emit('chaos:shutdown');
+    this.emit('chaos:shutdown', { timestamp: new Date() });
   }
 }
 

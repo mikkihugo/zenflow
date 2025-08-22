@@ -16,7 +16,7 @@ import {
   type Logger
 } from '@claude-zen/foundation';
 // Database access via infrastructure facade
-import { getDatabaseAccess } from '@claude-zen/strategic-facades/infrastructure';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
 
 export interface RetrainingConfig {
   checkIntervalMs: number;
@@ -86,7 +86,7 @@ export class RetrainingMonitor {
 
     // Check if metrics are enabled via operations facade
     try {
-      const { getPerformanceTracker } = await import('@claude-zen/strategic-facades/operations');
+      const { getPerformanceTracker } = await import('@claude-zen/operations');
       const performanceTracker = await getPerformanceTracker();
       if (!performanceTracker) {
         this.logger.info('Performance tracking not available, retraining monitor will not start');
@@ -257,7 +257,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
       // Use operations facade for LLM access
       let retrainingPlan = 'Automatic retraining plan: Default optimization strategy with learning rate adjustment';
       try {
-        const { getLLMProvider } = await import('@claude-zen/strategic-facades/operations');
+        const { getLLMProvider } = await import('@claude-zen/operations');
         const llm = await getLLMProvider();
         if (llm && llm.complete) {
           retrainingPlan = await llm.complete(retrainingPrompt, {

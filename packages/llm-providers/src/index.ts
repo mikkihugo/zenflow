@@ -98,6 +98,15 @@ export {
 } from './api/github-models';
 export type { GitHubModelsOptions } from './api/github-models';
 
+// GitHub Copilot Chat API (available now)
+export {
+  GitHubCopilotAPI,
+  createGitHubCopilotProvider,
+  executeGitHubCopilotTask,
+  gitHubCopilotConfig,
+} from './api/github-copilot';
+export type { GitHubCopilotOptions } from './api/github-copilot';
+
 // Future API integrations:
 // export { AnthropicProvider } from './api/anthropic';
 // export { OpenAIProvider } from './api/openai';
@@ -108,11 +117,24 @@ export type { GitHubModelsOptions } from './api/github-models';
 // =============================================================================
 // PROVIDER REGISTRY - Factory and management  
 // =============================================================================
-// Note: Provider registry functions are defined in separate modules
-// Future: Add provider registry exports when implemented
 
-// Future GitHub Copilot factories:
-// export { createGitHubCopilotCLI, createGitHubCopilotAPI } from './github';
+// Model Registry with DI support
+export {
+  ModelRegistry,
+  ModelRegistryFactory,
+  ModelRegistryService,
+  createModelRegistryService,
+} from './registry/model-registry';
+export type { ModelInfo, ModelRegistryConfig } from './registry/model-registry';
+
+// GitHub Models Setup with DI
+export {
+  GitHubModelsContainer,
+  setupGitHubModels,
+  setupGitHubModelsDefault,
+  setupGitHubModelsAdvanced,
+} from './registry/github-models-setup';
+export type { GitHubModelsConfig } from './registry/github-models-setup';
 
 export type {
   CLIProvider,
@@ -121,16 +143,26 @@ export type {
   CLIProviderCapabilities,
 } from './types/cli-providers';
 
+export type {
+  APIProvider,
+  APIProviderRegistry,
+  APIProviderFactory,
+  APIProviderCapabilities,
+} from './types/api-providers';
+
 // =============================================================================
 // CONVENIENCE FACTORIES - For intelligence facade use
 // =============================================================================
 
+// API Provider Factory
+export { createAPIProvider, listAPIProviders } from './factories/api-provider-factory';
+
 /**
- * Create an LLM provider instance (INTERNAL USE ONLY)
- * Supports CLI tools (file ops) and direct APIs (inference)
+ * Create a CLI provider instance (INTERNAL USE ONLY)
+ * Supports CLI tools only (file ops, agentic development)
  */
 export function createLLMProvider(
-  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' | 'github-models-api' | 'github-copilot-api' | 'anthropic-api' | 'openai-api' = 'claude-code'
+  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code'
 ): LLMProvider {
   return new LLMProvider(providerId);
 }
@@ -152,13 +184,15 @@ export function listLLMProviders(): Array<{
     { id: 'gemini-cli', name: 'Gemini CLI', type: 'cli' as const, category: 'agentic-dev' as const, available: false }
   ];
   
-  // Future: Add direct API providers
-  // const apiProviders = [
-  //   { id: 'anthropic-api', name: 'Anthropic API', type: 'api', category: 'inference', available: false },
-  //   { id: 'github-copilot-api', name: 'GitHub Copilot Chat API', type: 'api', category: 'conversational', available: false },
-  // ];
+  const apiProviders = [
+    { id: 'github-models-api', name: 'GitHub Models API', type: 'api' as const, category: 'inference' as const, available: true },
+    { id: 'github-copilot-api', name: 'GitHub Copilot Chat API', type: 'api' as const, category: 'conversational' as const, available: true },
+    // Future API providers:
+    // { id: 'anthropic-api', name: 'Anthropic API', type: 'api', category: 'inference', available: false },
+    // { id: 'openai-api', name: 'OpenAI API', type: 'api', category: 'inference', available: false },
+  ];
   
-  return cliProviders;
+  return [...cliProviders, ...apiProviders];
 }
 
 /**
@@ -178,7 +212,7 @@ export function getLLMProviderByCapability(
       return new LLMProvider('github-copilot-api');    // Future: Conversational
     case 'inference':
     default:
-      return new LLMProvider('claude-code');           // Default
+      return new LLMProvider('github-copilot-api');    // Copilot should be default for inference
   }
 }
 
@@ -186,6 +220,7 @@ export function getLLMProviderByCapability(
 // TYPES - Re-export all LLM provider types
 // =============================================================================
 export type * from './types/cli-providers';
+export type * from './types/api-providers';
 export type * from './claude/types';
 // Future: export type * from './github/types';
 // Future: export type * from './api/types';

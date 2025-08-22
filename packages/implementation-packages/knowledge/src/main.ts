@@ -117,7 +117,7 @@ export interface KnowledgeStore {
 // =============================================================================
 
 @injectable()
-export class FoundationKnowledgeStore extends EventEmitter implements KnowledgeStore {
+export class FoundationKnowledgeStore extends TypedEventBase implements KnowledgeStore {
   private items = new Map<UUID, KnowledgeItem>();
   private storage: KeyValueStore | null = null;
   private logger: Logger;

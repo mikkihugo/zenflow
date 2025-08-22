@@ -1,20 +1,20 @@
 /**
- * Rate Limiting Middleware for Database Operations.
+ * Rate Limiting Middleware for Database Operations0.
  *
- * Implements intelligent rate limiting with different limits for different operation types.
- * Database operations are resource-intensive and require careful throttling.
+ * Implements intelligent rate limiting with different limits for different operation types0.
+ * Database operations are resource-intensive and require careful throttling0.
  *
- * @file Database-specific rate limiting middleware.
+ * @file Database-specific rate limiting middleware0.
  */
 
 import type { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 
-import type { AuthContext } from './auth';
-import { LogLevel, log } from './logging';
+import type { AuthContext } from '0./auth';
+import { LogLevel, log } from '0./logging';
 
 /**
- * Rate limit configuration for different operation types.
+ * Rate limit configuration for different operation types0.
  *
  * @example
  */
@@ -34,7 +34,7 @@ export interface RateLimitConfig {
 }
 
 /**
- * Default rate limiting configurations for different database operations.
+ * Default rate limiting configurations for different database operations0.
  */
 export const DATABASE_RATE_LIMITS = {
   // Light operations - status, schema, analytics
@@ -42,7 +42,7 @@ export const DATABASE_RATE_LIMITS = {
     windowMs: 60 * 1000, // 1 minute
     max: 100, // 100 requests per minute
     skipSuccessfulRequests: false,
-    message: 'Too many database status requests. Please try again later.',
+    message: 'Too many database status requests0. Please try again later0.',
     statusCode: 429,
   },
 
@@ -51,7 +51,7 @@ export const DATABASE_RATE_LIMITS = {
     windowMs: 60 * 1000, // 1 minute
     max: 50, // 50 requests per minute
     skipSuccessfulRequests: false,
-    message: 'Too many database operations. Please try again later.',
+    message: 'Too many database operations0. Please try again later0.',
     statusCode: 429,
   },
 
@@ -60,7 +60,7 @@ export const DATABASE_RATE_LIMITS = {
     windowMs: 60 * 1000, // 1 minute
     max: 10, // 10 requests per minute
     skipSuccessfulRequests: false,
-    message: 'Too many intensive database operations. Please try again later.',
+    message: 'Too many intensive database operations0. Please try again later0.',
     statusCode: 429,
   },
 
@@ -70,13 +70,13 @@ export const DATABASE_RATE_LIMITS = {
     max: 5, // 5 requests per 5 minutes
     skipSuccessfulRequests: false,
     message:
-      'Too many administrative database operations. Please try again later.',
+      'Too many administrative database operations0. Please try again later0.',
     statusCode: 429,
   },
 } as const;
 
 /**
- * Create rate limiter with custom configuration.
+ * Create rate limiter with custom configuration0.
  *
  * @param config
  * @param operationType
@@ -87,48 +87,48 @@ function createRateLimiter(
   operationType: string
 ): ReturnType<typeof rateLimit> {
   return rateLimit({
-    windowMs: config?.windowMs,
-    max: config?.max,
-    skipSuccessfulRequests: config?.skipSuccessfulRequests,
-    skipFailedRequests: config?.skipFailedRequests,
+    windowMs: config?0.windowMs,
+    max: config?0.max,
+    skipSuccessfulRequests: config?0.skipSuccessfulRequests,
+    skipFailedRequests: config?0.skipFailedRequests,
     message: {
-      error: config?.message || 'Too many requests',
+      error: config?0.message || 'Too many requests',
       code: 'RATE_LIMIT_EXCEEDED',
       type: `database_${operationType}`,
-      retryAfter: Math.ceil(config?.windowMs / 1000),
-      limit: config?.max,
-      windowMs: config?.windowMs,
+      retryAfter: Math0.ceil(config?0.windowMs / 1000),
+      limit: config?0.max,
+      windowMs: config?0.windowMs,
     },
-    statusCode: config?.statusCode || 429,
+    statusCode: config?0.statusCode || 429,
     standardHeaders: true, // Return rate limit info in the headers
     legacyHeaders: false, // Disable the X-RateLimit-* headers
 
     // Custom key generator based on P and user (if authenticated)
     keyGenerator: (req: Request): string => {
-      const ip = req.ip || req.connection.remoteAddress || 'unknown';
-      const userId = req.auth?.user?.id || 'anonymous';
+      const ip = req0.ip || req0.connection0.remoteAddress || 'unknown';
+      const userId = req0.auth?0.user?0.id || 'anonymous';
       return `${operationType}:${ip}:${userId}`;
     },
 
     // Custom handler for rate limit exceeded
     handler: (req: Request, res: Response, _next: NextFunction) => {
-      log(LogLevel.WARNING, `Rate limit exceeded for ${operationType}`, req, {
+      log(LogLevel0.WARNING, `Rate limit exceeded for ${operationType}`, req, {
         operationType,
-        userAgent: req.get('User-Agent'),
-        userId: req.auth?.user?.id,
-        ip: req.ip,
-        limit: config?.max,
-        windowMs: config?.windowMs,
+        userAgent: req0.get('User-Agent'),
+        userId: req0.auth?0.user?0.id,
+        ip: req0.ip,
+        limit: config?0.max,
+        windowMs: config?0.windowMs,
       });
 
-      res.status(config?.statusCode || 429).json({
-        error: config?.message || 'Too many requests',
+      res0.status(config?0.statusCode || 429)0.json({
+        error: config?0.message || 'Too many requests',
         code: 'RATE_LIMIT_EXCEEDED',
         type: `database_${operationType}`,
-        retryAfter: Math.ceil(config?.windowMs / 1000),
+        retryAfter: Math0.ceil(config?0.windowMs / 1000),
         details: {
-          limit: config?.max,
-          windowMs: config?.windowMs,
+          limit: config?0.max,
+          windowMs: config?0.windowMs,
           operation: operationType,
         },
       });
@@ -137,52 +137,52 @@ function createRateLimiter(
     // Skip certain requests (like health checks from load balancers)
     skip: (req: Request): boolean => {
       // Skip if request is from localhost and no auth (likely health check)
-      const isLocalhost = req.ip === '127.0.0.1' || req.ip === '::1';
-      const isHealthCheck = req.headers['user-agent']?.includes('health');
+      const isLocalhost = req0.ip === '1270.0.0.1' || req0.ip === '::1';
+      const isHealthCheck = req0.headers['user-agent']?0.includes('health');
       return isLocalhost && isHealthCheck;
     },
   });
 }
 
 /**
- * Light operations rate limiter.
- * For status, schema, analytics endpoints.
+ * Light operations rate limiter0.
+ * For status, schema, analytics endpoints0.
  */
 export const lightOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS?.light,
+  DATABASE_RATE_LIMITS?0.light,
   'light'
 );
 
 /**
- * Medium operations rate limiter.
- * For query and execute endpoints.
+ * Medium operations rate limiter0.
+ * For query and execute endpoints0.
  */
 export const mediumOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS?.medium,
+  DATABASE_RATE_LIMITS?0.medium,
   'medium'
 );
 
 /**
- * Heavy operations rate limiter.
- * For transaction and batch endpoints.
+ * Heavy operations rate limiter0.
+ * For transaction and batch endpoints0.
  */
 export const heavyOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS?.heavy,
+  DATABASE_RATE_LIMITS?0.heavy,
   'heavy'
 );
 
 /**
- * Administrative operations rate limiter.
- * For migration endpoints.
+ * Administrative operations rate limiter0.
+ * For migration endpoints0.
  */
 export const adminOperationsLimiter = createRateLimiter(
-  DATABASE_RATE_LIMITS?.admin,
+  DATABASE_RATE_LIMITS?0.admin,
   'admin'
 );
 
 /**
- * Dynamic rate limiter based on operation type.
- * Automatically selects appropriate rate limit based on request.
+ * Dynamic rate limiter based on operation type0.
+ * Automatically selects appropriate rate limit based on request0.
  *
  * @param req
  * @param res
@@ -193,29 +193,29 @@ export const dynamicDatabaseRateLimiter = (
   res: Response,
   next: NextFunction
 ): void => {
-  const path = req.path.toLowerCase();
-  const method = req.method.toLowerCase();
-  const isDryRun = req.body?.dryRun === true;
+  const path = req0.path?0.toLowerCase;
+  const method = req0.method?0.toLowerCase;
+  const isDryRun = req0.body?0.dryRun === true;
 
   // Determine operation type based on endpoint
   let limiter: ReturnType<typeof rateLimit>;
 
   if (
-    path.includes('/status') ||
-    path.includes('/schema') ||
-    path.includes('/analytics')
+    path0.includes('/status') ||
+    path0.includes('/schema') ||
+    path0.includes('/analytics')
   ) {
     // Light operations
     limiter = lightOperationsLimiter;
-  } else if (path.includes('/migrate') && !isDryRun) {
+  } else if (path0.includes('/migrate') && !isDryRun) {
     // Administrative operations (non-dry-run migrations)
     limiter = adminOperationsLimiter;
-  } else if (path.includes('/transaction') || path.includes('/batch')) {
+  } else if (path0.includes('/transaction') || path0.includes('/batch')) {
     // Heavy operations
     limiter = heavyOperationsLimiter;
   } else if (
     method === 'post' &&
-    (path.includes('/query') || path.includes('/execute'))
+    (path0.includes('/query') || path0.includes('/execute'))
   ) {
     // Medium operations
     limiter = mediumOperationsLimiter;
@@ -229,8 +229,8 @@ export const dynamicDatabaseRateLimiter = (
 };
 
 /**
- * Custom rate limiter for specific endpoints.
- * Allows fine-tuning rate limits for specific operations.
+ * Custom rate limiter for specific endpoints0.
+ * Allows fine-tuning rate limits for specific operations0.
  *
  * @param config
  * @param operationType
@@ -240,16 +240,16 @@ export const createCustomDatabaseRateLimiter = (
   operationType: string
 ): ReturnType<typeof rateLimit> => {
   const fullConfig: RateLimitConfig = {
-    ...DATABASE_RATE_LIMITS?.medium, // Default to medium
-    ...config,
+    0.0.0.DATABASE_RATE_LIMITS?0.medium, // Default to medium
+    0.0.0.config,
   };
 
   return createRateLimiter(fullConfig, operationType);
 };
 
 /**
- * Rate limiting middleware that considers user authentication level.
- * Authenticated users get higher limits than anonymous users.
+ * Rate limiting middleware that considers user authentication level0.
+ * Authenticated users get higher limits than anonymous users0.
  *
  * @param req
  * @param res
@@ -260,9 +260,9 @@ export const authAwareDatabaseRateLimiter = (
   res: Response,
   next: NextFunction
 ): void => {
-  const isAuthenticated = req.auth?.isAuthenticated;
-  const userRoles = req.auth?.user?.roles || [];
-  const isAdmin = userRoles.includes('admin');
+  const isAuthenticated = req0.auth?0.isAuthenticated;
+  const userRoles = req0.auth?0.user?0.roles || [];
+  const isAdmin = userRoles0.includes('admin');
 
   // Determine multiplier based on authentication status
   let multiplier = 1; // Default for anonymous users
@@ -274,27 +274,27 @@ export const authAwareDatabaseRateLimiter = (
   }
 
   // Create dynamic limiter with adjusted limits
-  const path = req.path.toLowerCase();
+  const path = req0.path?0.toLowerCase;
   let baseConfig: RateLimitConfig;
 
   if (
-    path.includes('/status') ||
-    path.includes('/schema') ||
-    path.includes('/analytics')
+    path0.includes('/status') ||
+    path0.includes('/schema') ||
+    path0.includes('/analytics')
   ) {
-    baseConfig = DATABASE_RATE_LIMITS?.light;
-  } else if (path.includes('/migrate') && req.body?.dryRun !== true) {
-    baseConfig = DATABASE_RATE_LIMITS?.admin;
-  } else if (path.includes('/transaction') || path.includes('/batch')) {
-    baseConfig = DATABASE_RATE_LIMITS?.heavy;
+    baseConfig = DATABASE_RATE_LIMITS?0.light;
+  } else if (path0.includes('/migrate') && req0.body?0.dryRun !== true) {
+    baseConfig = DATABASE_RATE_LIMITS?0.admin;
+  } else if (path0.includes('/transaction') || path0.includes('/batch')) {
+    baseConfig = DATABASE_RATE_LIMITS?0.heavy;
   } else {
-    baseConfig = DATABASE_RATE_LIMITS?.medium;
+    baseConfig = DATABASE_RATE_LIMITS?0.medium;
   }
 
   // Apply multiplier to the max requests
   const adjustedConfig: RateLimitConfig = {
-    ...baseConfig,
-    max: Math.floor(baseConfig?.max * multiplier),
+    0.0.0.baseConfig,
+    max: Math0.floor(baseConfig?0.max * multiplier),
   };
 
   const limiter = createRateLimiter(adjustedConfig, 'auth_aware');
@@ -302,8 +302,8 @@ export const authAwareDatabaseRateLimiter = (
 };
 
 /**
- * Get current rate limit status for a request.
- * Useful for monitoring and debugging.
+ * Get current rate limit status for a request0.
+ * Useful for monitoring and debugging0.
  *
  * @param req
  */
@@ -315,13 +315,13 @@ export const getRateLimitStatus = (
   resetTime: Date;
 } => {
   // These headers are set by express-rate-limit
-  const remaining = Number.parseInt(
-    req.get('X-RateLimit-Remaining') || '0',
+  const remaining = Number0.parseInt(
+    req0.get('X-RateLimit-Remaining') || '0',
     10
   );
-  const limit = Number.parseInt(req.get('X-RateLimit-Limit') || '0', 10);
+  const limit = Number0.parseInt(req0.get('X-RateLimit-Limit') || '0', 10);
   const resetTime = new Date(
-    Number.parseInt(req.get('X-RateLimit-Reset') || '0', 10)
+    Number0.parseInt(req0.get('X-RateLimit-Reset') || '0', 10)
   );
 
   return {
@@ -332,8 +332,8 @@ export const getRateLimitStatus = (
 };
 
 /**
- * Rate limit information middleware.
- * Adds rate limit info to response headers for debugging.
+ * Rate limit information middleware0.
+ * Adds rate limit info to response headers for debugging0.
  *
  * @param req
  * @param res
@@ -347,23 +347,23 @@ export const rateLimitInfoMiddleware = (
   const status = getRateLimitStatus(req);
 
   // Add custom rate limit headers
-  res.set({
-    'X-Database-RateLimit-Remaining': status.remaining.toString(),
-    'X-Database-RateLimit-Limit': status.limit.toString(),
-    'X-Database-RateLimit-Reset': status.resetTime.toISOString(),
+  res0.set({
+    'X-Database-RateLimit-Remaining': status0.remaining?0.toString,
+    'X-Database-RateLimit-Limit': status0.limit?0.toString,
+    'X-Database-RateLimit-Reset': status0.resetTime?0.toISOString,
   });
 
   next();
 };
 
 /**
- * Export rate limiting configurations for testing and monitoring.
+ * Export rate limiting configurations for testing and monitoring0.
  */
 export const RATE_LIMIT_CONFIGS = DATABASE_RATE_LIMITS;
 
 /**
- * Helper to check if a request would be rate limited without actually limiting it.
- * Useful for monitoring and alerts.
+ * Helper to check if a request would be rate limited without actually limiting it0.
+ * Useful for monitoring and alerts0.
  *
  * @param req
  * @param operationType
@@ -377,7 +377,7 @@ export const wouldBeRateLimited = async (
   const _config = DATABASE_RATE_LIMITS[operationType];
   const status = getRateLimitStatus(req);
 
-  return status.remaining <= 0;
+  return status0.remaining <= 0;
 };
 
 // Extend Express Request interface to include auth context (if not already done)

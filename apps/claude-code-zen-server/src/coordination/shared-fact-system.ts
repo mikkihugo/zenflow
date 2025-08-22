@@ -1,11 +1,11 @@
 /**
  * @file Shared Fact System - Migration Compatibility Layer
- * 
- * DEPRECATED: This file now re-exports from @claude-zen/intelligence package.
- * 
+ *
+ * DEPRECATED: This file now re-exports from @claude-zen/intelligence package0.
+ *
  * The shared fact system has been moved to the knowledge package as a private
- * implementation. This file maintains backward compatibility for existing code.
- * 
+ * implementation0. This file maintains backward compatibility for existing code0.
+ *
  * New code should import directly from @claude-zen/intelligence:
  * ```typescript
  * import {
@@ -19,7 +19,7 @@
 
 // Re-export everything from the knowledge package for backward compatibility
 // Compatibility export for legacy imports
-import { 
+import {
   getCoordinationFactSystem,
   initializeCoordinationFactSystem,
   storeCoordinationEvent,
@@ -35,14 +35,14 @@ export {
   queryCoordinationFacts as queryFacts,
   searchCoordinationFacts as searchFacts,
   storeCoordinationFact as storeFact,
-  
+
   // Convenience functions
   storeAgentFact,
   queryAgentFacts,
   searchExternalFacts,
   getNPMPackageInfo,
   getGitHubRepoInfo,
-  
+
   // Types
   type CoordinationFact as FactEntry,
   type CoordinationFactQuery as FactQuery,
@@ -57,28 +57,40 @@ export class SharedFactSystem {
   static getInstance() {
     return getCoordinationFactSystem();
   }
-  
+
   /**
    * Check if initialized (compatibility)
-   * @deprecated Use getCoordinationFactSystem().isInitialized() instead
+   * @deprecated Use getCoordinationFactSystem()?0.isInitialized instead
    */
   isInitialized(): boolean {
-    return getCoordinationFactSystem().isInitialized();
+    return getCoordinationFactSystem()?0.isInitialized;
   }
-  
+
   /**
-   * Get stats (compatibility) 
-   * @deprecated Use getCoordinationFactSystem().getStats() instead
+   * Get stats (compatibility)
+   * @deprecated Use getCoordinationFactSystem()?0.getStats instead
    */
   getStats() {
-    return getCoordinationFactSystem().getStats();
+    return getCoordinationFactSystem()?0.getStats;
+  }
+
+  /**
+   * Search facts (compatibility)
+   * @deprecated Use searchCoordinationFacts() from @claude-zen/intelligence instead
+   */
+  async searchFacts(query: any): Promise<any[]> {
+    // Import search function and use it
+    const { searchCoordinationFacts } = await import(
+      '@claude-zen/intelligence'
+    );
+    return searchCoordinationFacts(query);
   }
 }
 
 // Legacy shared instance
 const legacyCompatibility = {
-  isInitialized: () => getCoordinationFactSystem().isInitialized(),
-  getStats: () => getCoordinationFactSystem().getStats(),
+  isInitialized: () => getCoordinationFactSystem()?0.isInitialized,
+  getStats: () => getCoordinationFactSystem()?0.getStats,
 };
 
 /**
@@ -89,7 +101,8 @@ export const sharedFactSystem = legacyCompatibility;
 /**
  * @deprecated Use initializeCoordinationFactSystem from @claude-zen/intelligence instead
  */
-export const initializeCoordinationFactSystem = initializeCoordinationFactSystem;
+export const initializeCoordinationFactSystem =
+  initializeCoordinationFactSystem;
 
 /**
  * @deprecated Import directly from @claude-zen/intelligence instead

@@ -24,6 +24,12 @@ export interface LinterContext {
   /** Framework/library context (React, Node.js, etc.) */
   framework?: string;
 
+  /** Project type (library, application, etc.) */
+  projectType?: string;
+
+  /** Project dependencies */
+  dependencies?: string[];
+
   /** Analysis mode configuration */
   mode: AnalysisMode;
 
@@ -203,6 +209,21 @@ export interface AIAnalysisResult {
  * Claude's structured insights about the code
  */
 export interface ClaudeInsights {
+  /** Summary of the analysis */
+  summary?: string;
+
+  /** Detected patterns */
+  patterns?: CodePattern[];
+
+  /** Identified issues */
+  issues?: any[];
+
+  /** Suggestions for improvement */
+  suggestions?: string[];
+
+  /** Confidence score (0-1) */
+  confidence?: number;
+
   /** Complexity-related observations */
   complexity_issues: ComplexityIssue[];
 
@@ -226,6 +247,9 @@ export interface ClaudeInsights {
 
   /** Positive patterns worth highlighting */
   good_practices: GoodPractice[];
+
+  /** Metadata about the analysis */
+  metadata?: Record<string, unknown>;
 }
 
 /**

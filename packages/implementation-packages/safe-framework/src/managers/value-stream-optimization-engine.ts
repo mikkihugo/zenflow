@@ -57,7 +57,7 @@ export interface PerformanceMetrics {
 /**
  * Value Stream Optimization Engine for SAFe flow optimization
  */
-export class ValueStreamOptimizationEngine extends EventEmitter {
+export class ValueStreamOptimizationEngine extends TypedEventBase {
   private readonly logger: Logger;
   private bottleneckAnalysisService: any;
   private flowOptimizationService: any;
@@ -687,7 +687,7 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
     if (this.optimizationTimer) return;
 
     this.optimizationTimer = setInterval(() => {
-      this.emit('optimization-cycle-started');
+      this.emit('optimization-cycle-started', {});
       // Perform periodic optimization activities
     }, this.config.optimizationFrequency);
 

@@ -7,7 +7,7 @@
  * Based on proven pattern-detection framework from fix:zen:compile system.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   type Logger
@@ -134,7 +134,7 @@ interface DeceptionPattern {
  *
  * @example
  */
-export class AIDeceptionDetector extends EventEmitter {
+export class AIDeceptionDetector extends TypedEventBase {
   private patterns: Map<string, DeceptionPattern>;
   private alertHistory: DeceptionAlert[];
   private interventionCount: Map<string, number>;

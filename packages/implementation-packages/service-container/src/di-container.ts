@@ -44,9 +44,9 @@ export enum ResolutionMode {
  */
 export interface ServiceRegistrationOptions<T = unknown> extends BuildResolverOptions<T> {
   /** Service lifetime management */
-  lifetime?: 'transient' | 'singleton' | 'scoped';
+  lifetime?: typeof Lifetime[keyof typeof Lifetime];
   /** Injection mode for constructor/property injection */
-  injectionMode?: 'PROXY' | 'CLASSIC';
+  injectionMode?: typeof InjectionMode[keyof typeof InjectionMode];
   /** Resolution mode for dependency injection strategies */
   resolutionMode?: ResolutionMode;
   /** Service capabilities for discovery */
@@ -88,7 +88,7 @@ export interface DiscoveredService {
   health: 'healthy' | 'unhealthy' | 'unknown';
   performance: {
     resolutionTime: number;
-    lastAccessed: Date;
+    lastAccessed: number;
     accessCount: number;
   };
 }
@@ -113,10 +113,10 @@ export interface ContainerHealthStatus {
 /**
  * Dependency injection container with comprehensive features
  */
-export class DIContainer extends EventEmitter {
+export class DIContainer extends TypedEventBase {
   private container: AwilixContainer;
   private serviceMetadata = new Map<string, ServiceRegistrationOptions>();
-  private performanceMetrics = new Map<string, { resolveTime: number; lastAccessed: number; resolutionCount: number }>();
+  private performanceMetrics = new Map<string, { resolutionTime: number; lastAccessed: number; accessCount: number }>();
   private healthChecks = new Map<string, () => boolean | Promise<boolean>>();
   private interceptors = new Map<string, ServiceInterceptor[]>();
   private dependencyGraph = new Map<string, string[]>();
@@ -186,7 +186,7 @@ export class DIContainer extends EventEmitter {
       // Initialize performance tracking
       this.performanceMetrics.set(name, {
         resolutionTime: 0,
-        lastAccessed: new Date(),
+        lastAccessed: Date.now(),
         accessCount: 0,
       });
 
@@ -227,7 +227,7 @@ export class DIContainer extends EventEmitter {
 
       this.performanceMetrics.set(name, {
         resolutionTime: 0,
-        lastAccessed: new Date(),
+        lastAccessed: Date.now(),
         accessCount: 0,
       });
 
@@ -261,7 +261,7 @@ export class DIContainer extends EventEmitter {
 
       this.performanceMetrics.set(name, {
         resolutionTime: 0,
-        lastAccessed: new Date(),
+        lastAccessed: Date.now(),
         accessCount: 0,
       });
 
@@ -298,9 +298,9 @@ export class DIContainer extends EventEmitter {
 
           // Look for exported services with metadata
           for (const [exportName, exportValue] of Object.entries(module)) {
-            if (this.isService(exportValue)) {
+            if (this.isService(exportValue as UnknownRecord)) {
               const serviceName = exportName.toLowerCase().replace(/service$/, '');
-              const metadata = this.extractServiceMetadata(exportValue);
+              const metadata = this.extractServiceMetadata(exportValue as UnknownRecord);
 
               if (typeof exportValue === 'function') {
                 this.registerClass(serviceName, exportValue as Constructor<JsonValue>, metadata);
@@ -340,7 +340,7 @@ export class DIContainer extends EventEmitter {
       const metrics = this.performanceMetrics.get(name);
       if (metrics) {
         metrics.resolutionTime = resolutionTime;
-        metrics.lastAccessed = new Date();
+        metrics.lastAccessed = Date.now();
         metrics.accessCount++;
       }
 
@@ -364,7 +364,7 @@ export class DIContainer extends EventEmitter {
         if (resolveResult.isOk()) {
           const performance = this.performanceMetrics.get(name) || {
             resolutionTime: 0,
-            lastAccessed: new Date(),
+            lastAccessed: Date.now(),
             accessCount: 0,
           };
 
@@ -395,7 +395,7 @@ export class DIContainer extends EventEmitter {
         if (resolveResult.isOk()) {
           const performance = this.performanceMetrics.get(name) || {
             resolutionTime: 0,
-            lastAccessed: new Date(),
+            lastAccessed: Date.now(),
             accessCount: 0,
           };
 
@@ -520,7 +520,7 @@ export class DIContainer extends EventEmitter {
     // Dispose container
     await this.container.dispose();
 
-    this.emit('disposed');
+    this.emit('disposed', {});
     this.logger.info('✅ Container disposed successfully');
   }
 
@@ -537,7 +537,7 @@ export class DIContainer extends EventEmitter {
    */
   private extractServiceMetadata(exportValue: UnknownRecord): ServiceRegistrationOptions {
     // Look for metadata on the export
-    const metadata = (exportValue as UnknownRecord).__serviceMetadata || {};
+    const metadata = ((exportValue as UnknownRecord)['__serviceMetadata'] || {}) as ServiceRegistrationOptions;
     return {
       lifetime: metadata.lifetime || Lifetime.SINGLETON,
       capabilities: metadata.capabilities || [],
@@ -593,7 +593,7 @@ export class DIContainer extends EventEmitter {
 export function createDIContainer(
   name = 'di-container',
   options: {
-    injectionMode?: InjectionMode;
+    injectionMode?: typeof InjectionMode[keyof typeof InjectionMode];
     resolutionMode?: ResolutionMode;
     strict?: boolean;
   } = {},
@@ -606,7 +606,7 @@ export function createDIContainer(
  */
 export function Service(options: ServiceRegistrationOptions = {}) {
   return function <T extends Constructor<JsonValue>>(constructor: T) {
-    (constructor as UnknownRecord).__serviceMetadata = options;
+    (constructor as UnknownRecord)['__serviceMetadata'] = options;
     return constructor;
   };
 }
@@ -616,8 +616,8 @@ export function Service(options: ServiceRegistrationOptions = {}) {
  */
 export function Capability(...capabilities: string[]) {
   return function <T extends Constructor<JsonValue>>(constructor: T) {
-    const existing = (constructor as UnknownRecord).__serviceMetadata || {};
-    (constructor as UnknownRecord).__serviceMetadata = {
+    const existing = ((constructor as UnknownRecord)['__serviceMetadata'] || {}) as ServiceRegistrationOptions;
+    (constructor as UnknownRecord)['__serviceMetadata'] = {
       ...existing,
       capabilities: [...(existing.capabilities || []), ...capabilities],
     };
@@ -630,8 +630,8 @@ export function Capability(...capabilities: string[]) {
  */
 export function Tag(...tags: string[]) {
   return function <T extends Constructor<JsonValue>>(constructor: T) {
-    const existing = (constructor as UnknownRecord).__serviceMetadata || {};
-    (constructor as UnknownRecord).__serviceMetadata = {
+    const existing = ((constructor as UnknownRecord)['__serviceMetadata'] || {}) as ServiceRegistrationOptions;
+    (constructor as UnknownRecord)['__serviceMetadata'] = {
       ...existing,
       tags: [...(existing.tags || []), ...tags],
     };

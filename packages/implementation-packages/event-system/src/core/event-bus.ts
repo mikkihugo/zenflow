@@ -36,7 +36,7 @@
  * ```
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import compose from 'koa-compose';
 import { 
   getLogger,
@@ -106,7 +106,7 @@ export type EventMiddleware = (
  */
 @injectable()
 @singleton()
-export class EventBus extends EventEmitter {
+export class EventBus extends TypedEventBase {
   private static instance: EventBus | null = null;
   private middleware: EventMiddleware[] = [];
   private metrics: EventMetrics;

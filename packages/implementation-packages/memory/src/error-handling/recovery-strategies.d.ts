@@ -2,7 +2,7 @@
  * @file Recovery Strategies for Memory System Errors
  * Advanced error recovery and fault tolerance mechanisms.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { BackendInterface } from '../core/memory-system';
 import { type MemoryError, MemoryErrorCode } from './memory-errors';
@@ -40,7 +40,7 @@ export interface RecoveryResult {
  *
  * @example
  */
-export declare class RecoveryStrategyManager extends EventEmitter {
+export declare class RecoveryStrategyManager extends TypedEventBase {
     private strategies;
     private recoveryHistory;
     constructor();

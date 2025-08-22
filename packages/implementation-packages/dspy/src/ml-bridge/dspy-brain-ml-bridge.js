@@ -23,7 +23,6 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { EventEmitter } from 'node:events';
 import { getLogger } from '@claude-zen/foundation';
 /**
  * DSPy-Brain ML Bridge - Seamless Integration
@@ -32,7 +31,7 @@ import { getLogger } from '@claude-zen/foundation';
  * Acts as a translation layer that allows DSPy optimizers to leverage advanced
  * neural networks, WASM acceleration, and statistical analysis.
  */
-export class DSPyBrainMLBridge extends EventEmitter {
+export class DSPyBrainMLBridge extends TypedEventBase {
     logger;
     brainCoordinator = null;
     initialized = false;
@@ -94,7 +93,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
             await this.brainCoordinator.initialize();
             this.initialized = true;
             this.logger.info('✅ DSPy-Brain ML Bridge initialized successfully');
-            this.emit('bridge:initialized');
+            this.emit('bridge:initialized', { timestamp: new Date() });
         }
         catch (error) {
             this.logger.error('Failed to initialize DSPy-Brain ML Bridge:', error);

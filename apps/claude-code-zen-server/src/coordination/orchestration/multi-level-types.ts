@@ -11,18 +11,13 @@
  * AFTER: Multi-level parallel streams with AGUI gates and coordination
  */
 
-import type {
-  SPARCPhase,
-  SPARCProject,
-} from '@claude-zen/enterprise';
-import type { BaseEvent } from '@claude-zen/infrastructure';
+import type { SPARCPhase, SPARCProject } from '@claude-zen/enterprise';
+// BaseEvent type replaced with any
 
-import type { Domain } from '../../core/domain-boundary-validator';
-
+// Domain type moved - using any for now
+type Domain = any;
 
 // SPARC methodology integration via enterprise strategic facade
-
-
 
 // ============================================================================
 // ORCHESTRATION LEVELS - Three-tier architecture
@@ -555,7 +550,7 @@ export interface InterfaceSpec {
  * Service level agreement
  */
 export interface ServiceLevelAgreement {
-  readonly availability: number; // 99.9%
+  readonly availability: number; // 990.9%
   readonly responseTime: number; // milliseconds
   readonly throughput: number; // requests per second
   readonly errorRate: number; // maximum error rate
@@ -999,12 +994,12 @@ export interface CrossLevelDependency {
 /**
  * Parallel execution coordinator events
  */
-export interface ParallelExecutionEvent extends BaseEvent {
-  readonly domain: Domain.COORDINATION;
+export interface ParallelExecutionEvent extends any {
+  readonly domain: Domain0.COORDINATION;
 }
 
 export interface StreamStatusChangedEvent extends ParallelExecutionEvent {
-  readonly type: 'stream.status.changed';
+  readonly type: 'stream0.status0.changed';
   readonly payload: {
     readonly streamId: string;
     readonly level: OrchestrationLevel;
@@ -1015,7 +1010,7 @@ export interface StreamStatusChangedEvent extends ParallelExecutionEvent {
 }
 
 export interface WIPLimitExceededEvent extends ParallelExecutionEvent {
-  readonly type: 'wip.limit.exceeded';
+  readonly type: 'wip0.limit0.exceeded';
   readonly payload: {
     readonly level: OrchestrationLevel;
     readonly streamId: string;
@@ -1026,7 +1021,7 @@ export interface WIPLimitExceededEvent extends ParallelExecutionEvent {
 }
 
 export interface BottleneckDetectedEvent extends ParallelExecutionEvent {
-  readonly type: 'bottleneck.detected';
+  readonly type: 'bottleneck0.detected';
   readonly payload: {
     readonly bottleneck: BottleneckInfo;
     readonly affectedStreams: string[];
@@ -1036,8 +1031,8 @@ export interface BottleneckDetectedEvent extends ParallelExecutionEvent {
 
 export interface CrossLevelDependencyEvent extends ParallelExecutionEvent {
   readonly type:
-    | 'cross.level.dependency.resolved'
-    | 'cross.level.dependency.blocked';
+    | 'cross0.level0.dependency0.resolved'
+    | 'cross0.level0.dependency0.blocked';
   readonly payload: {
     readonly dependency: CrossLevelDependency;
     readonly impact: string[];

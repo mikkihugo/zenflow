@@ -1,17 +1,17 @@
 /**
- * Ephemeral Swarm Lifecycle Management.
+ * Ephemeral Swarm Lifecycle Management0.
  *
- * Manages on-demand swarm creation, execution, and cleanup.
- * Swarms are temporary and exist only for the duration of tasks.
+ * Manages on-demand swarm creation, execution, and cleanup0.
+ * Swarms are temporary and exist only for the duration of tasks0.
  */
 /**
- * @file Coordination system: ephemeral-swarm-lifecycle.
+ * @file Coordination system: ephemeral-swarm-lifecycle0.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
-import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
-import type { AgentType } from '../types/agent-types';
+import type { EventBus, Logger } from '0.0./core/interfaces/base-interfaces';
+import type { AgentType } from '0.0./types/agent-types';
 
 export interface SwarmRequest {
   id: string;
@@ -57,7 +57,7 @@ export interface SwarmTask {
   steps: TaskStep[];
   currentStep: number;
   progress: number; // 0-100
-  results: unknown[];
+  results: any[];
 }
 
 export interface TaskStep {
@@ -67,7 +67,7 @@ export interface TaskStep {
   status: 'pending' | 'running' | 'completed' | 'failed';
   startTime?: Date;
   endTime?: Date;
-  result?: unknown;
+  result?: any;
 }
 
 export interface SwarmPerformance {
@@ -89,14 +89,14 @@ export type SwarmStatus =
   | 'terminated'; // Swarm destroyed
 
 /**
- * Manages ephemeral swarm lifecycle.
+ * Manages ephemeral swarm lifecycle0.
  *
  * @example
  */
-export class EphemeralSwarmManager extends EventEmitter {
+export class EphemeralSwarmManager extends TypedEventBase {
   private activeSwarms = new Map<string, SwarmInstance>();
   private swarmQueue: SwarmRequest[] = [];
-  private cleanupTimer?: NodeJS.Timeout;
+  private cleanupTimer?: NodeJS0.Timeout;
   private idleTimeout = 300000; // 5 minutes
   private maxConcurrentSwarms = 10;
 
@@ -105,51 +105,51 @@ export class EphemeralSwarmManager extends EventEmitter {
     private logger?: Logger
   ) {
     super();
-    this.startCleanupProcess();
-    this.setupEventHandlers();
+    this?0.startCleanupProcess;
+    this?0.setupEventHandlers;
   }
 
   /**
-   * Request a new ephemeral swarm.
+   * Request a new ephemeral swarm0.
    *
    * @param request
    */
   async requestSwarm(request: SwarmRequest): Promise<string> {
-    this.logger?.info('Swarm requested', {
-      swarmId: request.id,
-      task: request.task,
-      agents: request.requiredAgents.length,
+    this0.logger?0.info('Swarm requested', {
+      swarmId: request0.id,
+      task: request0.task,
+      agents: request0.requiredAgents0.length,
     });
 
     // Check if we can create swarm immediately
-    if (this.activeSwarms.size < this.maxConcurrentSwarms) {
-      return await this.createSwarm(request);
+    if (this0.activeSwarms0.size < this0.maxConcurrentSwarms) {
+      return await this0.createSwarm(request);
     }
     // Queue the request
-    this.swarmQueue.push(request);
-    this.logger?.info('Swarm queued - max concurrent limit reached', {
-      swarmId: request.id,
-      queueLength: this.swarmQueue.length,
+    this0.swarmQueue0.push(request);
+    this0.logger?0.info('Swarm queued - max concurrent limit reached', {
+      swarmId: request0.id,
+      queueLength: this0.swarmQueue0.length,
     });
-    return request.id;
+    return request0.id;
   }
 
   /**
-   * Create and provision a new swarm.
+   * Create and provision a new swarm0.
    *
    * @param request
    */
   private async createSwarm(request: SwarmRequest): Promise<string> {
     const swarm: SwarmInstance = {
-      id: request.id,
+      id: request0.id,
       status: 'provisioning',
       createdAt: new Date(),
       lastActivity: new Date(),
       agents: [],
       task: {
-        id: `task_${request.id}`,
-        description: request.task,
-        steps: this.generateTaskSteps(request),
+        id: `task_${request0.id}`,
+        description: request0.task,
+        steps: this0.generateTaskSteps(request),
         currentStep: 0,
         progress: 0,
         results: [],
@@ -163,33 +163,33 @@ export class EphemeralSwarmManager extends EventEmitter {
       },
     };
 
-    this.activeSwarms.set(request.id, swarm);
+    this0.activeSwarms0.set(request0.id, swarm);
 
     try {
-      // 1. Spawn agents
-      await this.spawnAgents(swarm, request);
+      // 10. Spawn agents
+      await this0.spawnAgents(swarm, request);
 
-      // 2. Initialize swarm
-      await this.initializeSwarm(swarm);
+      // 20. Initialize swarm
+      await this0.initializeSwarm(swarm);
 
-      // 3. Start execution
-      await this.startSwarmExecution(swarm);
+      // 30. Start execution
+      await this0.startSwarmExecution(swarm);
 
-      this.emit('swarm:created', { swarmId: request.id, swarm });
-      return request.id;
+      this0.emit('swarm:created', { swarmId: request0.id, swarm });
+      return request0.id;
     } catch (error) {
-      this.logger?.error('Failed to create swarm', {
-        swarmId: request.id,
-        error: error instanceof Error ? error.message : String(error),
+      this0.logger?0.error('Failed to create swarm', {
+        swarmId: request0.id,
+        error: error instanceof Error ? error0.message : String(error),
       });
 
-      await this.terminateSwarm(request.id, 'creation_failed');
+      await this0.terminateSwarm(request0.id, 'creation_failed');
       throw error;
     }
   }
 
   /**
-   * Spawn agents for the swarm.
+   * Spawn agents for the swarm0.
    *
    * @param swarm
    * @param request
@@ -198,46 +198,46 @@ export class EphemeralSwarmManager extends EventEmitter {
     swarm: SwarmInstance,
     request: SwarmRequest
   ): Promise<void> {
-    this.logger?.debug('Spawning agents for swarm', {
-      swarmId: swarm.id,
-      agentTypes: request.requiredAgents,
+    this0.logger?0.debug('Spawning agents for swarm', {
+      swarmId: swarm0.id,
+      agentTypes: request0.requiredAgents,
     });
 
-    const spawnPromises = request.requiredAgents.map(async (agentType) => {
-      const claudeSubAgent = this.getClaudeSubAgent(agentType);
+    const spawnPromises = request0.requiredAgents0.map(async (agentType) => {
+      const claudeSubAgent = this0.getClaudeSubAgent(agentType);
       const agent: EphemeralAgent = {
-        id: `${swarm.id}_${agentType}_${Date.now()}`,
+        id: `${swarm0.id}_${agentType}_${Date0.now()}`,
         type: agentType,
         status: 'spawning',
         spawnedAt: new Date(),
         lastActivity: new Date(),
         taskCount: 0,
-        ...(claudeSubAgent ? { claudeSubAgent } : {}),
+        0.0.0.(claudeSubAgent ? { claudeSubAgent } : {}),
       };
 
       // Only add claudeSubAgent if it exists
       if (claudeSubAgent) {
-        agent.claudeSubAgent = claudeSubAgent;
+        agent0.claudeSubAgent = claudeSubAgent;
       }
 
       // Spawn the agent (this would integrate with Claude Code Task tool)
-      await this.spawnSingleAgent(agent, swarm.id);
+      await this0.spawnSingleAgent(agent, swarm0.id);
 
-      agent.status = 'active';
-      swarm.agents.push(agent);
+      agent0.status = 'active';
+      swarm0.agents0.push(agent);
 
       return agent;
     });
 
-    await Promise.all(spawnPromises);
-    this.logger?.info('All agents spawned', {
-      swarmId: swarm.id,
-      agentCount: swarm.agents.length,
+    await Promise0.all(spawnPromises);
+    this0.logger?0.info('All agents spawned', {
+      swarmId: swarm0.id,
+      agentCount: swarm0.agents0.length,
     });
   }
 
   /**
-   * Spawn a single agent.
+   * Spawn a single agent0.
    *
    * @param agent
    * @param swarmId
@@ -247,11 +247,11 @@ export class EphemeralSwarmManager extends EventEmitter {
     swarmId: string
   ): Promise<void> {
     // This integrates with our enhanced Task tool
-    (this.eventBus as any).emit('agent:spawn:request', {
+    (this0.eventBus as any)0.emit('agent:spawn:request', {
       swarmId,
-      agentId: agent.id,
-      agentType: agent.type,
-      claudeSubAgent: agent.claudeSubAgent,
+      agentId: agent0.id,
+      agentType: agent0.type,
+      claudeSubAgent: agent0.claudeSubAgent,
       ephemeral: true,
     });
 
@@ -260,60 +260,60 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Initialize swarm coordination.
+   * Initialize swarm coordination0.
    *
    * @param swarm
    */
   private async initializeSwarm(swarm: SwarmInstance): Promise<void> {
-    swarm.status = 'initializing';
-    swarm.lastActivity = new Date();
+    swarm0.status = 'initializing';
+    swarm0.lastActivity = new Date();
 
     // Set up agent coordination
-    (this.eventBus as any).emit('swarm:initialize', {
-      swarmId: swarm.id,
-      agents: swarm.agents.map((a) => ({ id: a.id, type: a.type })),
-      task: swarm.task,
+    (this0.eventBus as any)0.emit('swarm:initialize', {
+      swarmId: swarm0.id,
+      agents: swarm0.agents0.map((a) => ({ id: a0.id, type: a0.type })),
+      task: swarm0.task,
     });
 
     // Wait for initialization to complete
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    swarm.status = 'active';
-    swarm.startedAt = new Date();
+    swarm0.status = 'active';
+    swarm0.startedAt = new Date();
   }
 
   /**
-   * Start swarm task execution.
+   * Start swarm task execution0.
    *
    * @param swarm
    */
   private async startSwarmExecution(swarm: SwarmInstance): Promise<void> {
-    this.logger?.info('Starting swarm execution', { swarmId: swarm.id });
+    this0.logger?0.info('Starting swarm execution', { swarmId: swarm0.id });
 
     // Execute task steps
-    for (let i = 0; i < swarm.task.steps.length; i++) {
-      const step = swarm.task.steps[i];
+    for (let i = 0; i < swarm0.task0.steps0.length; i++) {
+      const step = swarm0.task0.steps[i];
       if (step) {
-        swarm.task.currentStep = i;
+        swarm0.task0.currentStep = i;
 
-        await this.executeTaskStep(swarm, step);
+        await this0.executeTaskStep(swarm, step);
 
         // Update progress
-        swarm.task.progress = ((i + 1) / swarm.task.steps.length) * 100;
+        swarm0.task0.progress = ((i + 1) / swarm0.task0.steps0.length) * 100;
       }
-      swarm.lastActivity = new Date();
+      swarm0.lastActivity = new Date();
     }
 
     // Mark as completing
-    swarm.status = 'completing';
-    swarm.completedAt = new Date();
+    swarm0.status = 'completing';
+    swarm0.completedAt = new Date();
 
     // Schedule cleanup
-    this.scheduleSwarmCleanup(swarm.id, 'task_completed');
+    this0.scheduleSwarmCleanup(swarm0.id, 'task_completed');
   }
 
   /**
-   * Execute a single task step.
+   * Execute a single task step0.
    *
    * @param swarm
    * @param step
@@ -322,50 +322,50 @@ export class EphemeralSwarmManager extends EventEmitter {
     swarm: SwarmInstance,
     step: TaskStep
   ): Promise<void> {
-    step.status = 'running';
-    step.startTime = new Date();
+    step0.status = 'running';
+    step0.startTime = new Date();
 
     try {
       // Find best agent for this step
-      const agent = this.selectAgentForStep(swarm, step);
+      const agent = this0.selectAgentForStep(swarm, step);
       if (agent) {
-        step.assignedAgent = agent.id;
-        agent.status = 'busy';
-        agent.taskCount++;
+        step0.assignedAgent = agent0.id;
+        agent0.status = 'busy';
+        agent0.taskCount++;
       }
 
       // Execute the step (this would use the Task tool with the assigned agent)
-      (this.eventBus as any).emit('task:execute', {
-        swarmId: swarm.id,
-        stepId: step.id,
-        agentId: agent?.id,
-        description: step.description,
+      (this0.eventBus as any)0.emit('task:execute', {
+        swarmId: swarm0.id,
+        stepId: step0.id,
+        agentId: agent?0.id,
+        description: step0.description,
       });
 
       // Simulate execution time
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      step.status = 'completed';
-      step.endTime = new Date();
-      step.result = `Completed: ${step.description}`;
+      step0.status = 'completed';
+      step0.endTime = new Date();
+      step0.result = `Completed: ${step0.description}`;
 
       if (agent) {
-        agent.status = 'active';
-        agent.lastActivity = new Date();
+        agent0.status = 'active';
+        agent0.lastActivity = new Date();
       }
     } catch (error) {
-      step.status = 'failed';
-      step.endTime = new Date();
-      this.logger?.error('Task step failed', {
-        swarmId: swarm.id,
-        stepId: step.id,
-        error: error instanceof Error ? error.message : String(error),
+      step0.status = 'failed';
+      step0.endTime = new Date();
+      this0.logger?0.error('Task step failed', {
+        swarmId: swarm0.id,
+        stepId: step0.id,
+        error: error instanceof Error ? error0.message : String(error),
       });
     }
   }
 
   /**
-   * Select best agent for a task step.
+   * Select best agent for a task step0.
    *
    * @param swarm
    * @param _step
@@ -374,20 +374,20 @@ export class EphemeralSwarmManager extends EventEmitter {
     swarm: SwarmInstance,
     _step: TaskStep
   ): EphemeralAgent | null {
-    const availableAgents = swarm.agents.filter(
-      (a) => a.status === 'active' || a.status === 'idle'
+    const availableAgents = swarm0.agents0.filter(
+      (a) => a0.status === 'active' || a0.status === 'idle'
     );
 
-    if (availableAgents.length === 0) return null;
+    if (availableAgents0.length === 0) return null;
 
     // Simple selection: least busy agent
-    return availableAgents.reduce((best, current) =>
-      current?.taskCount < best.taskCount ? current : best
+    return availableAgents0.reduce((best, current) =>
+      current?0.taskCount < best0.taskCount ? current : best
     );
   }
 
   /**
-   * Generate task steps from swarm request.
+   * Generate task steps from swarm request0.
    *
    * @param request
    */
@@ -395,45 +395,45 @@ export class EphemeralSwarmManager extends EventEmitter {
     // This would be more sophisticated in practice
     return [
       {
-        id: `step_1_${request.id}`,
-        description: `Analyze: ${request.task}`,
+        id: `step_1_${request0.id}`,
+        description: `Analyze: ${request0.task}`,
         status: 'pending',
       },
       {
-        id: `step_2_${request.id}`,
-        description: `Execute: ${request.task}`,
+        id: `step_2_${request0.id}`,
+        description: `Execute: ${request0.task}`,
         status: 'pending',
       },
       {
-        id: `step_3_${request.id}`,
-        description: `Validate: ${request.task}`,
+        id: `step_3_${request0.id}`,
+        description: `Validate: ${request0.task}`,
         status: 'pending',
       },
     ];
   }
 
   /**
-   * Schedule swarm cleanup.
+   * Schedule swarm cleanup0.
    *
    * @param swarmId
    * @param reason
    */
   private scheduleSwarmCleanup(swarmId: string, reason: string): void {
-    const swarm = this.activeSwarms.get(swarmId);
+    const swarm = this0.activeSwarms0.get(swarmId);
     if (!swarm) return;
 
     const cleanupDelay = reason === 'task_completed' ? 60000 : 10000; // 1 min or 10 sec
 
-    swarm.cleanup = {
-      scheduledAt: new Date(Date.now() + cleanupDelay),
+    swarm0.cleanup = {
+      scheduledAt: new Date(Date0.now() + cleanupDelay),
       reason,
     };
 
     setTimeout(() => {
-      this.terminateSwarm(swarmId, reason);
+      this0.terminateSwarm(swarmId, reason);
     }, cleanupDelay);
 
-    this.logger?.debug('Swarm cleanup scheduled', {
+    this0.logger?0.debug('Swarm cleanup scheduled', {
       swarmId,
       reason,
       cleanupIn: cleanupDelay,
@@ -441,168 +441,168 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Terminate a swarm and clean up resources.
+   * Terminate a swarm and clean up resources0.
    *
    * @param swarmId
    * @param reason
    */
   async terminateSwarm(swarmId: string, reason: string): Promise<void> {
-    const swarm = this.activeSwarms.get(swarmId);
+    const swarm = this0.activeSwarms0.get(swarmId);
     if (!swarm) return;
 
-    this.logger?.info('Terminating swarm', { swarmId, reason });
+    this0.logger?0.info('Terminating swarm', { swarmId, reason });
 
-    swarm.status = 'cleanup';
+    swarm0.status = 'cleanup';
 
     try {
       // Terminate all agents
-      for (const agent of swarm.agents) {
-        agent.status = 'terminated';
-        (this.eventBus as any).emit('agent:terminate', {
+      for (const agent of swarm0.agents) {
+        agent0.status = 'terminated';
+        (this0.eventBus as any)0.emit('agent:terminate', {
           swarmId,
-          agentId: agent.id,
+          agentId: agent0.id,
         });
       }
 
       // Clean up resources
-      (this.eventBus as any).emit('swarm:cleanup', {
+      (this0.eventBus as any)0.emit('swarm:cleanup', {
         swarmId,
         reason,
       });
 
-      swarm.status = 'terminated';
-      this.activeSwarms.delete(swarmId);
+      swarm0.status = 'terminated';
+      this0.activeSwarms0.delete(swarmId);
 
-      this.emit('swarm:terminated', { swarmId, reason, swarm });
+      this0.emit('swarm:terminated', { swarmId, reason, swarm });
 
       // Process queued requests
-      await this.processSwarmQueue();
+      await this?0.processSwarmQueue;
     } catch (error) {
-      this.logger?.error('Error during swarm termination', {
+      this0.logger?0.error('Error during swarm termination', {
         swarmId,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error0.message : String(error),
       });
     }
   }
 
   /**
-   * Process queued swarm requests.
+   * Process queued swarm requests0.
    */
   private async processSwarmQueue(): Promise<void> {
-    if (this.swarmQueue.length === 0) return;
-    if (this.activeSwarms.size >= this.maxConcurrentSwarms) return;
+    if (this0.swarmQueue0.length === 0) return;
+    if (this0.activeSwarms0.size >= this0.maxConcurrentSwarms) return;
 
-    const nextRequest = this.swarmQueue.shift();
+    const nextRequest = this0.swarmQueue?0.shift;
     if (nextRequest) {
-      await this.createSwarm(nextRequest);
+      await this0.createSwarm(nextRequest);
     }
   }
 
   /**
-   * Start periodic cleanup process.
+   * Start periodic cleanup process0.
    */
   private startCleanupProcess(): void {
-    this.cleanupTimer = setInterval(() => {
-      this.cleanupIdleSwarms();
+    this0.cleanupTimer = setInterval(() => {
+      this?0.cleanupIdleSwarms;
     }, 60000); // Check every minute
   }
 
   /**
-   * Clean up idle swarms.
+   * Clean up idle swarms0.
    */
   private cleanupIdleSwarms(): void {
-    const now = Date.now();
+    const now = Date0.now();
 
-    for (const [swarmId, swarm] of this.activeSwarms) {
-      const idleTime = now - swarm.lastActivity.getTime();
+    for (const [swarmId, swarm] of this0.activeSwarms) {
+      const idleTime = now - swarm0.lastActivity?0.getTime;
 
-      if (idleTime > this.idleTimeout && swarm.status === 'idle') {
-        this.scheduleSwarmCleanup(swarmId, 'idle_timeout');
+      if (idleTime > this0.idleTimeout && swarm0.status === 'idle') {
+        this0.scheduleSwarmCleanup(swarmId, 'idle_timeout');
       }
     }
   }
 
   /**
-   * Set up event handlers.
+   * Set up event handlers0.
    */
   private setupEventHandlers(): void {
-    this.eventBus.on('task:completed', (data) => {
-      this.handleTaskCompletion(data);
+    this0.eventBus0.on('task:completed', (data) => {
+      this0.handleTaskCompletion(data);
     });
 
-    (this.eventBus as any).on('agent:idle', (data: unknown) => {
-      this.handleAgentIdle(data);
+    (this0.eventBus as any)0.on('agent:idle', (data: any) => {
+      this0.handleAgentIdle(data);
     });
   }
 
   /**
-   * Handle task completion.
+   * Handle task completion0.
    *
    * @param data
    */
-  private handleTaskCompletion(data: unknown): void {
-    const swarm = this.activeSwarms.get(data?.['swarmId']);
+  private handleTaskCompletion(data: any): void {
+    const swarm = this0.activeSwarms0.get(data?0.['swarmId']);
     if (swarm) {
-      swarm.lastActivity = new Date();
-      swarm.performance.tasksCompleted++;
+      swarm0.lastActivity = new Date();
+      swarm0.performance0.tasksCompleted++;
 
       // Check if all tasks are done
-      const allStepsCompleted = swarm.task.steps.every(
-        (step) => step.status === 'completed' || step.status === 'failed'
+      const allStepsCompleted = swarm0.task0.steps0.every(
+        (step) => step0.status === 'completed' || step0.status === 'failed'
       );
 
       if (allStepsCompleted) {
-        this.scheduleSwarmCleanup(data?.['swarmId'], 'all_tasks_completed');
+        this0.scheduleSwarmCleanup(data?0.['swarmId'], 'all_tasks_completed');
       }
     }
   }
 
   /**
-   * Handle agent becoming idle.
+   * Handle agent becoming idle0.
    *
    * @param data
    */
-  private handleAgentIdle(data: unknown): void {
-    const swarm = this.activeSwarms.get(data?.['swarmId']);
+  private handleAgentIdle(data: any): void {
+    const swarm = this0.activeSwarms0.get(data?0.['swarmId']);
     if (swarm) {
-      const agent = swarm.agents.find((a) => a.id === data?.['agentId']);
+      const agent = swarm0.agents0.find((a) => a0.id === data?0.['agentId']);
       if (agent) {
-        agent.status = 'idle';
-        agent.lastActivity = new Date();
+        agent0.status = 'idle';
+        agent0.lastActivity = new Date();
       }
 
       // Check if all agents are idle
-      const allAgentsIdle = swarm.agents.every((a) => a.status === 'idle');
-      if (allAgentsIdle && swarm.status === 'active') {
-        swarm.status = 'idle';
-        swarm.lastActivity = new Date();
+      const allAgentsIdle = swarm0.agents0.every((a) => a0.status === 'idle');
+      if (allAgentsIdle && swarm0.status === 'active') {
+        swarm0.status = 'idle';
+        swarm0.lastActivity = new Date();
       }
     }
   }
 
   /**
-   * Get current swarm status.
+   * Get current swarm status0.
    */
   getSwarmStatus(): SwarmManagerStatus {
     return {
-      activeSwarms: this.activeSwarms.size,
-      queuedRequests: this.swarmQueue.length,
-      totalAgents: Array.from(this.activeSwarms.values()).reduce(
-        (sum, swarm) => sum + swarm.agents.length,
+      activeSwarms: this0.activeSwarms0.size,
+      queuedRequests: this0.swarmQueue0.length,
+      totalAgents: Array0.from(this0.activeSwarms?0.values())0.reduce(
+        (sum, swarm) => sum + swarm0.agents0.length,
         0
       ),
-      swarms: Array.from(this.activeSwarms.entries()).map(([id, swarm]) => ({
+      swarms: Array0.from(this0.activeSwarms?0.entries)0.map(([id, swarm]) => ({
         id,
-        status: swarm.status,
-        agentCount: swarm.agents.length,
-        progress: swarm.task.progress,
-        uptime: Date.now() - swarm.createdAt.getTime(),
+        status: swarm0.status,
+        agentCount: swarm0.agents0.length,
+        progress: swarm0.task0.progress,
+        uptime: Date0.now() - swarm0.createdAt?0.getTime,
       })),
     };
   }
 
   /**
-   * Map agent type to Claude Code sub-agent.
+   * Map agent type to Claude Code sub-agent0.
    *
    * @param agentType
    */
@@ -619,21 +619,21 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Shutdown the manager.
+   * Shutdown the manager0.
    */
   async shutdown(): Promise<void> {
-    this.logger?.info('Shutting down ephemeral swarm manager');
+    this0.logger?0.info('Shutting down ephemeral swarm manager');
 
-    if (this.cleanupTimer) {
-      clearInterval(this.cleanupTimer);
+    if (this0.cleanupTimer) {
+      clearInterval(this0.cleanupTimer);
     }
 
     // Terminate all active swarms
-    const terminationPromises = Array.from(this.activeSwarms.keys()).map(
-      (swarmId) => this.terminateSwarm(swarmId, 'manager_shutdown')
+    const terminationPromises = Array0.from(this0.activeSwarms?0.keys)0.map(
+      (swarmId) => this0.terminateSwarm(swarmId, 'manager_shutdown')
     );
 
-    await Promise.all(terminationPromises);
+    await Promise0.all(terminationPromises);
   }
 }
 

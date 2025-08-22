@@ -2,14 +2,14 @@
  * @fileoverview Temporary stub for @claude-zen/intelligence/coordinator
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 export interface CoordinatorConfig {
   enabled?: boolean;
   strategy?: string;
 }
 
-export class BrainCoordinator extends EventEmitter {
+export class BrainCoordinator extends TypedEventBase {
   constructor(config?: CoordinatorConfig) {
     super();
   }

@@ -5,7 +5,7 @@
  * Provides REST API and web dashboard for Claude Code Zen system management.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { WebConfig } from './web-config';
 
 export interface WebInterface {
@@ -22,7 +22,7 @@ export interface WebInterface {
   registerMiddleware(middleware: Function): void;
 }
 
-export class ExpressWebInterface extends EventEmitter implements WebInterface {
+export class ExpressWebInterface extends TypedEventBase implements WebInterface {
   private config: WebConfig;
   private server: any = null;
   private app: any = null;
@@ -66,7 +66,7 @@ export class ExpressWebInterface extends EventEmitter implements WebInterface {
       // Default routes
       this.setupDefaultRoutes();
       
-      this.emit('initialized');
+      this.emit('initialized', {});
     } catch (error) {
       console.error('Failed to initialize web interface:', error);
       throw error;
@@ -82,7 +82,7 @@ export class ExpressWebInterface extends EventEmitter implements WebInterface {
       this.server = this.app.listen(this.config.port, this.config.host, () => {
         this.startTime = Date.now();
         console.log(`Web interface listening on http://${this.config.host}:${this.config.port}`);
-        this.emit('started');
+        this.emit('started', {});
         resolve();
       });
 
@@ -110,7 +110,7 @@ export class ExpressWebInterface extends EventEmitter implements WebInterface {
           reject(error);
         } else {
           this.server = null;
-          this.emit('stopped');
+          this.emit('stopped', {});
           resolve();
         }
       });

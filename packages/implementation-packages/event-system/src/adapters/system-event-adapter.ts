@@ -11,7 +11,7 @@
  * management for system events across Claude-Zen.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 // Import logger (using relative path)
 import { getLogger } from '@claude-zen/foundation';
@@ -194,7 +194,7 @@ export class SystemEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new EventEmitter();
+  private eventEmitter = new TypedEventBase();
   private logger: Logger;
   private startTime?: Date;
   private eventCount = 0;
@@ -1107,7 +1107,7 @@ export class SystemEventAdapter implements EventManager {
     // Note: In a real implementation, we would get a reference to the actual CoreSystem instance
     // For now, we'll create a mock wrapper to demonstrate the pattern
 
-    const wrapper = new EventEmitter();
+    const wrapper = new TypedEventBase();
     const wrappedComponent: WrappedSystemComponent = {
       component: null, // Would be actual CoreSystem instance
       wrapper,
@@ -1156,7 +1156,7 @@ export class SystemEventAdapter implements EventManager {
    * Wrap ApplicationCoordinator events with UEL integration.
    */
   private async wrapApplicationCoordinator(): Promise<void> {
-    const wrapper = new EventEmitter();
+    const wrapper = new TypedEventBase();
     const wrappedComponent: WrappedSystemComponent = {
       component: null, // Would be actual ApplicationCoordinator instance
       wrapper,
@@ -1205,7 +1205,7 @@ export class SystemEventAdapter implements EventManager {
    * Wrap ErrorRecoverySystem events with UEL integration.
    */
   private async wrapErrorRecoverySystem(): Promise<void> {
-    const wrapper = new EventEmitter();
+    const wrapper = new TypedEventBase();
     const wrappedComponent: WrappedSystemComponent = {
       component: null, // Would be actual ErrorRecoverySystem instance
       wrapper,

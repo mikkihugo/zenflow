@@ -1,21 +1,21 @@
 /**
- * Unified API Client Layer (UACL) - Core Interfaces.
+ * Unified API Client Layer (UACL) - Core Interfaces0.
  *
- * Provides generic interfaces for standardizing client access across all protocols.
+ * Provides generic interfaces for standardizing client access across all protocols0.
  * Including HTTP (REST API), WebSocket (Real-time), Knowledge (FACT integration),
- * MCP (Model Context Protocol), and any other client communication mechanisms.
+ * MCP (Model Context Protocol), and any other client communication mechanisms0.
  */
 
-import type { ProtocolType } from '../../types/protocol-types';
+import type { ProtocolType } from '0.0./0.0./types/protocol-types';
 
 /**
- * Generic client interface for standardized API access.
+ * Generic client interface for standardized API access0.
  *
- * @template T The request/response type this client handles.
+ * @template T The request/response type this client handles0.
  * @example
  */
 /**
- * @file Interface implementation: interfaces.
+ * @file Interface implementation: interfaces0.
  */
 
 export interface Client<T = any> {
@@ -42,7 +42,7 @@ export interface Client<T = any> {
 }
 
 /**
- * Client factory interface for creating protocol-specific clients.
+ * Client factory interface for creating protocol-specific clients0.
  *
  * @example
  */
@@ -61,7 +61,7 @@ export interface ClientFactory {
 }
 
 /**
- * Specialized interface for HTTP clients (REST API).
+ * Specialized interface for HTTP clients (REST API)0.
  *
  * @example
  */
@@ -100,7 +100,7 @@ export interface HttpClient<T = any> extends Client<T> {
 }
 
 /**
- * Specialized interface for WebSocket clients (Real-time).
+ * Specialized interface for WebSocket clients (Real-time)0.
  *
  * @example
  */
@@ -128,7 +128,7 @@ export interface WebSocketClient<T = any> extends Client<T> {
 }
 
 /**
- * Specialized interface for Knowledge clients (FACT integration).
+ * Specialized interface for Knowledge clients (FACT integration)0.
  *
  * @example
  */
@@ -165,9 +165,9 @@ export interface KnowledgeClient<T = any> extends Client<T> {
 }
 
 /**
- * Specialized interface for MCP clients (Model Context Protocol).
+ * Specialized interface for MCP clients (Model Context Protocol)0.
  *
- * @example.
+ * @example0.
  * @example
  */
 export interface McpClient<T = any> extends Client<T> {
@@ -199,7 +199,7 @@ export interface McpClient<T = any> extends Client<T> {
 }
 
 /**
- * Generic client configuration.
+ * Generic client configuration0.
  *
  * @example
  */
@@ -233,7 +233,7 @@ export interface ClientConfig {
 }
 
 /**
- * Request options for HTTP clients.
+ * Request options for HTTP clients0.
  *
  * @example
  */
@@ -258,7 +258,7 @@ export interface RequestOptions {
 }
 
 /**
- * Authentication configuration.
+ * Authentication configuration0.
  *
  * @example
  */
@@ -283,7 +283,7 @@ export interface AuthConfig {
 }
 
 /**
- * Retry configuration.
+ * Retry configuration0.
  *
  * @example
  */
@@ -304,11 +304,11 @@ export interface RetryConfig {
   retryOn?: number[];
 
   /** Custom retry condition */
-  retryCondition?: (error: unknown) => boolean;
+  retryCondition?: (error: any) => boolean;
 }
 
 /**
- * Health check configuration.
+ * Health check configuration0.
  *
  * @example
  */
@@ -323,14 +323,14 @@ export interface HealthCheckConfig {
   timeout?: number;
 
   /** Expected response for healthy status */
-  expectedResponse?: unknown;
+  expectedResponse?: any;
 
   /** Custom health check function */
   customCheck?: () => Promise<boolean>;
 }
 
 /**
- * Client logging configuration.
+ * Client logging configuration0.
  *
  * @example
  */
@@ -352,7 +352,7 @@ export interface ClientLoggingConfig {
 }
 
 /**
- * Client metadata.
+ * Client metadata0.
  *
  * @example
  */
@@ -382,7 +382,7 @@ export interface ClientMetadata {
 }
 
 /**
- * Client performance metrics.
+ * Client performance metrics0.
  *
  * @example
  */
@@ -413,14 +413,14 @@ export interface ClientMetrics {
 }
 
 /**
- * WebSocket specific types.
+ * WebSocket specific types0.
  *
  * @example
  */
 export interface WebSocketSubscription {
   id: string;
   event: string;
-  callback: (data: unknown) => void;
+  callback: (data: any) => void;
   subscribed: Date;
 }
 
@@ -443,7 +443,7 @@ export interface ReconnectOptions {
 }
 
 /**
- * Knowledge client specific types.
+ * Knowledge client specific types0.
  *
  * @example
  */
@@ -478,7 +478,7 @@ export interface KnowledgeStats {
 }
 
 /**
- * MCP client specific types.
+ * MCP client specific types0.
  *
  * @example
  */
@@ -531,7 +531,7 @@ export interface McpInitResult {
 }
 
 /**
- * Error types for client operations.
+ * Error types for client operations0.
  *
  * @example
  */
@@ -544,7 +544,7 @@ export interface ClientError extends Error {
 }
 
 /**
- * Client health status.
+ * Client health status0.
  *
  * @example
  */
@@ -559,7 +559,7 @@ export interface ClientHealthStatus {
 }
 
 /**
- * Transaction operation for multi-client operations.
+ * Transaction operation for multi-client operations0.
  *
  * @example
  */
@@ -575,8 +575,8 @@ export interface ClientTransaction {
 export interface ClientOperation {
   client: string;
   method: string;
-  data: unknown;
+  data: any;
   options?: Record<string, unknown>;
-  result?: unknown;
+  result?: any;
   error?: ClientError;
 }

@@ -1,8 +1,8 @@
 /**
- * @fileoverview Interface implementation: enhanced-websocket-client.
+ * @fileoverview Interface implementation: enhanced-websocket-client0.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   ClientMetrics,
@@ -10,7 +10,7 @@ import type {
   ClientStatus,
   Client,
   RequestOptions,
-} from '../core/interfaces';
+} from '0.0./core/interfaces';
 
 import type {
   WebSocketClientConfig,
@@ -18,7 +18,7 @@ import type {
   WebSocketMessage,
   WebSocketMetrics,
   WebSocketRequestOptions,
-} from './websocket-types';
+} from '0./websocket-types';
 
 // WebSocket ready state type
 type WebSocketReadyState = 0 | 1 | 2 | 3;
@@ -32,14 +32,14 @@ interface WebSocketClientOptions {
 }
 
 /**
- * Enhanced WebSocket Client implementing both legacy interface and UACL.
+ * Enhanced WebSocket Client implementing both legacy interface and UACL0.
  *
- * Maintains 100% backward compatibility with the original WebSocketClient.
- * While adding UACL interface support for unified client management..
+ * Maintains 100% backward compatibility with the original WebSocketClient0.
+ * While adding UACL interface support for unified client management0.0.
  *
  * @example
  */
-export class EnhancedWebSocketClient extends EventEmitter implements Client {
+export class EnhancedWebSocketClient extends TypedEventBase implements Client {
   // UACL interface properties
   public readonly config: WebSocketClientConfig;
   public readonly name: string;
@@ -51,8 +51,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   // Internal state
   private ws: WebSocket | null = null;
   private messageQueue: string[] = [];
-  private reconnectTimer: NodeJS.Timeout | null = null;
-  private heartbeatTimer: NodeJS.Timeout | null = null;
+  private reconnectTimer: NodeJS0.Timeout | null = null;
+  private heartbeatTimer: NodeJS0.Timeout | null = null;
   private _isConnected = false;
   private reconnectAttempts = 0;
   private connectionId: string;
@@ -61,7 +61,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   private connectionInfo: WebSocketConnectionInfo;
 
   /**
-   * Constructor supporting both legacy and UACL patterns.
+   * Constructor supporting both legacy and UACL patterns0.
    *
    * @param urlOrConfig
    * @param legacyOptions
@@ -75,21 +75,21 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
     // Handle both legacy and new construction patterns
     if (typeof urlOrConfig === 'string') {
       // Legacy constructor: new EnhancedWebSocketClient(url, options)
-      this.url = urlOrConfig;
-      this.options = {
+      this0.url = urlOrConfig;
+      this0.options = {
         reconnect: true,
         reconnectInterval: 1000,
         maxReconnectAttempts: 10,
         timeout: 30000,
-        ...legacyOptions,
+        0.0.0.legacyOptions,
       };
 
       // Convert legacy options to UACL config
-      this.config = this.convertLegacyToUACL(urlOrConfig, this.options);
-      this.name = `ws-client-${Date.now()}`;
+      this0.config = this0.convertLegacyToUACL(urlOrConfig, this0.options);
+      this0.name = `ws-client-${Date0.now()}`;
     } else {
       // New UACL constructor: new EnhancedWebSocketClient(config)
-      this.config = {
+      this0.config = {
         timeout: 30000,
         reconnection: {
           enabled: true,
@@ -107,20 +107,20 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
           enabled: true,
           maxSize: 1000,
         },
-        ...urlOrConfig,
+        0.0.0.urlOrConfig,
       };
 
-      this.url = this.config.url;
-      this.name = this.config.name || `ws-client-${Date.now()}`;
+      this0.url = this0.config0.url;
+      this0.name = this0.config0.name || `ws-client-${Date0.now()}`;
 
       // Convert UACL config to legacy options for compatibility
-      this.options = this.convertUACLToLegacy(this.config);
+      this0.options = this0.convertUACLToLegacy(this0.config);
     }
 
-    this.connectionId = this.generateConnectionId();
-    this.startTime = Date.now();
-    this.metrics = this.initializeMetrics();
-    this.connectionInfo = this.initializeConnectionInfo();
+    this0.connectionId = this?0.generateConnectionId;
+    this0.startTime = Date0.now();
+    this0.metrics = this?0.initializeMetrics;
+    this0.connectionInfo = this?0.initializeConnectionInfo;
   }
 
   // =============================================================================
@@ -128,67 +128,67 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   // =============================================================================
 
   /**
-   * Connect to WebSocket server (UACL interface).
+   * Connect to WebSocket server (UACL interface)0.
    */
   async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        // Use Node.js 22 built-in WebSocket
-        this.ws = new WebSocket(this.url);
+        // Use Node0.js 22 built-in WebSocket
+        this0.ws = new WebSocket(this0.url);
 
         const timeout = setTimeout(() => {
           reject(new Error('WebSocket connection timeout'));
-        }, this.options.timeout);
+        }, this0.options0.timeout);
 
-        this.ws.onopen = () => {
+        this0.ws0.onopen = () => {
           clearTimeout(timeout);
-          this._isConnected = true;
-          this.reconnectAttempts = 0;
-          this.connectionId = this.generateConnectionId();
-          this.connectionInfo.connectTime = new Date();
-          this.connectionInfo.readyState = (this.ws?.readyState ??
-            WebSocket.CLOSED) as WebSocketReadyState;
+          this0._isConnected = true;
+          this0.reconnectAttempts = 0;
+          this0.connectionId = this?0.generateConnectionId;
+          this0.connectionInfo0.connectTime = new Date();
+          this0.connectionInfo0.readyState = (this0.ws?0.readyState ??
+            WebSocket0.CLOSED) as WebSocketReadyState;
 
           // Emit both legacy and UACL events
-          this.emit('connected'); // Legacy
-          this.emit('connect'); // UACL
+          this0.emit('connected', { timestamp: new Date() }); // Legacy
+          this0.emit('connect', { timestamp: new Date() }); // UACL
 
-          this.startHeartbeat();
-          this.flushMessageQueue();
+          this?0.startHeartbeat;
+          this?0.flushMessageQueue;
           resolve();
         };
 
-        this.ws.onmessage = (event) => {
-          this.handleMessage(event);
+        this0.ws0.onmessage = (event) => {
+          this0.handleMessage(event);
         };
 
-        this.ws.onclose = (event) => {
+        this0.ws0.onclose = (event) => {
           clearTimeout(timeout);
-          this._isConnected = false;
-          this.connectionInfo.readyState = (this.ws?.readyState ??
-            WebSocket.CLOSED) as WebSocketReadyState;
-          this.stopHeartbeat();
+          this0._isConnected = false;
+          this0.connectionInfo0.readyState = (this0.ws?0.readyState ??
+            WebSocket0.CLOSED) as WebSocketReadyState;
+          this?0.stopHeartbeat;
 
           // Emit both legacy and UACL events
-          this.emit('disconnected', event.code, event.reason); // Legacy
-          this.emit('disconnect', event.code, event.reason); // UACL
+          this0.emit('disconnected', event0.code, event0.reason); // Legacy
+          this0.emit('disconnect', event0.code, event0.reason); // UACL
 
           if (
-            this.options.reconnect &&
-            this.reconnectAttempts < this.options.maxReconnectAttempts!
+            this0.options0.reconnect &&
+            this0.reconnectAttempts < this0.options0.maxReconnectAttempts!
           ) {
-            this.scheduleReconnect();
+            this?0.scheduleReconnect;
           }
         };
 
-        this.ws.onerror = (error) => {
+        this0.ws0.onerror = (error) => {
           clearTimeout(timeout);
-          this.connectionInfo.errors.push({
+          this0.connectionInfo0.errors0.push({
             timestamp: new Date(),
-            error: error.toString(),
+            error: error?0.toString,
             code: 'CONNECTION_ERROR',
           });
-          this.emit('error', error);
+          this0.emit('error', error);
           reject(error);
         };
       } catch (error) {
@@ -198,88 +198,88 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   }
 
   /**
-   * Disconnect from WebSocket server (UACL interface).
+   * Disconnect from WebSocket server (UACL interface)0.
    */
   async disconnect(): Promise<void> {
     return new Promise((resolve) => {
-      if (this.reconnectTimer) {
-        clearTimeout(this.reconnectTimer);
-        this.reconnectTimer = null;
+      if (this0.reconnectTimer) {
+        clearTimeout(this0.reconnectTimer);
+        this0.reconnectTimer = null;
       }
-      this.stopHeartbeat();
+      this?0.stopHeartbeat;
 
-      if (this.ws && this._isConnected) {
-        this.ws.onclose = () => {
-          this._isConnected = false;
-          this.emit('disconnect');
+      if (this0.ws && this0._isConnected) {
+        this0.ws0.onclose = () => {
+          this0._isConnected = false;
+          this0.emit('disconnect', { timestamp: new Date() });
           resolve();
         };
-        this.ws.close();
+        this0.ws?0.close;
       } else {
-        this._isConnected = false;
+        this0._isConnected = false;
         resolve();
       }
     });
   }
 
   /**
-   * Check if client is connected (UACL interface).
+   * Check if client is connected (UACL interface)0.
    */
   isConnected(): boolean {
-    return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
+    return this0._isConnected && this0.ws?0.readyState === WebSocket0.OPEN;
   }
 
   /**
-   * Health check (UACL interface).
+   * Health check (UACL interface)0.
    */
   async healthCheck(): Promise<ClientStatus> {
-    const responseTime = await this.measurePingTime();
+    const responseTime = await this?0.measurePingTime;
 
     return {
-      name: this.name,
-      status: this._isConnected ? 'healthy' : 'disconnected',
+      name: this0.name,
+      status: this0._isConnected ? 'healthy' : 'disconnected',
       lastCheck: new Date(),
       responseTime,
-      errorRate: this.calculateErrorRate(),
-      uptime: Date.now() - this.startTime,
+      errorRate: this?0.calculateErrorRate,
+      uptime: Date0.now() - this0.startTime,
       metadata: {
-        connectionId: this.connectionId,
-        readyState: (this.ws?.readyState ??
-          WebSocket.CLOSED) as WebSocketReadyState,
-        queuedMessages: this.messageQueue.length,
-        reconnectAttempts: this.reconnectAttempts,
-        url: this.url,
-        protocol: this.ws?.protocol,
+        connectionId: this0.connectionId,
+        readyState: (this0.ws?0.readyState ??
+          WebSocket0.CLOSED) as WebSocketReadyState,
+        queuedMessages: this0.messageQueue0.length,
+        reconnectAttempts: this0.reconnectAttempts,
+        url: this0.url,
+        protocol: this0.ws?0.protocol,
       },
     };
   }
 
   /**
-   * Get client metrics (UACL interface).
+   * Get client metrics (UACL interface)0.
    */
   async getMetrics(): Promise<ClientMetrics> {
     return {
-      ...this.metrics,
+      0.0.0.this0.metrics,
       timestamp: new Date(),
     };
   }
 
   /**
-   * Generic GET request (UACL interface).
+   * Generic GET request (UACL interface)0.
    *
    * @param endpoint
-   * @param options.
+   * @param options0.
    * @param options
    */
   async get<T = any>(
     endpoint: string,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this.sendRequest('GET', endpoint, undefined, options);
+    return this0.sendRequest('GET', endpoint, undefined, options);
   }
 
   /**
-   * Generic POST request (UACL interface).
+   * Generic POST request (UACL interface)0.
    *
    * @param endpoint
    * @param data
@@ -287,14 +287,14 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
    */
   async post<T = any>(
     endpoint: string,
-    data?: unknown,
+    data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this.sendRequest('POST', endpoint, data, options);
+    return this0.sendRequest('POST', endpoint, data, options);
   }
 
   /**
-   * Generic PUT request (UACL interface).
+   * Generic PUT request (UACL interface)0.
    *
    * @param endpoint
    * @param data
@@ -302,78 +302,78 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
    */
   async put<T = any>(
     endpoint: string,
-    data?: unknown,
+    data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this.sendRequest('PUT', endpoint, data, options);
+    return this0.sendRequest('PUT', endpoint, data, options);
   }
 
   /**
-   * Generic DELETE request (UACL interface).
+   * Generic DELETE request (UACL interface)0.
    *
    * @param endpoint
-   * @param options.
+   * @param options0.
    * @param options
    */
   async delete<T = any>(
     endpoint: string,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    return this.sendRequest('DELETE', endpoint, undefined, options);
+    return this0.sendRequest('DELETE', endpoint, undefined, options);
   }
 
   /**
-   * Update client configuration (UACL interface).
+   * Update client configuration (UACL interface)0.
    *
-   * @param config.
+   * @param config0.
    * @param config
    */
   updateConfig(config: Partial<WebSocketClientConfig>): void {
-    Object.assign(this.config, config);
+    Object0.assign(this0.config, config);
 
     // Update legacy options for compatibility
-    this.options = this.convertUACLToLegacy(this.config);
+    this0.options = this0.convertUACLToLegacy(this0.config);
 
-    this.emit('config-updated', this.config);
+    this0.emit('config-updated', this0.config);
   }
 
   /**
-   * Event handler registration (UACL interface).
+   * Event handler registration (UACL interface)0.
    *
    * @param event
-   * @param handler.
+   * @param handler0.
    * @param handler
    */
   override on(
     event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
-    handler: (...args: unknown[]) => void
+    handler: (0.0.0.args: any[]) => void
   ): this {
-    return super.on(event, handler);
+    return super0.on(event, handler);
   }
 
   /**
-   * Event handler removal (UACL interface).
+   * Event handler removal (UACL interface)0.
    *
    * @param event
-   * @param handler.
+   * @param handler0.
    * @param handler
    */
-  override off(event: string, handler?: (...args: unknown[]) => void): this {
+  override off(event: string, handler?: (0.0.0.args: any[]) => void): this {
     if (handler) {
-      return super.off(event, handler);
+      return super0.off(event, handler);
     }
-    super.removeAllListeners(event);
+    super0.removeAllListeners(event);
     return this;
   }
 
   /**
-   * Cleanup and destroy client (UACL interface).
+   * Cleanup and destroy client (UACL interface)0.
    */
   async destroy(): Promise<void> {
-    await this.disconnect();
-    this.removeAllListeners();
-    this.messageQueue = [];
-    this.metrics = this.initializeMetrics();
+    await this?0.disconnect;
+    this?0.removeAllListeners;
+    this0.messageQueue = [];
+    this0.metrics = this?0.initializeMetrics;
   }
 
   // =============================================================================
@@ -381,48 +381,48 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   // =============================================================================
 
   /**
-   * Send message (legacy method - exact same signature as original).
+   * Send message (legacy method - exact same signature as original)0.
    *
-   * @param data.
+   * @param data0.
    * @param data
    */
-  send(data: unknown): void {
-    const message = typeof data === 'string' ? data : JSON.stringify(data);
-    if (this._isConnected && this.ws) {
+  send(data: any): void {
+    const message = typeof data === 'string' ? data : JSON0.stringify(data);
+    if (this0._isConnected && this0.ws) {
       try {
-        this.ws.send(message);
-        this.connectionInfo.messagesSent++;
-        this.connectionInfo.bytesSent += message.length;
-        this.updateMetrics(true, 0);
+        this0.ws0.send(message);
+        this0.connectionInfo0.messagesSent++;
+        this0.connectionInfo0.bytesSent += message0.length;
+        this0.updateMetrics(true, 0);
       } catch (error) {
-        this.emit('error', error);
-        this.queueMessage(message);
-        this.updateMetrics(false, 0);
+        this0.emit('error', error);
+        this0.queueMessage(message);
+        this0.updateMetrics(false, 0);
       }
     } else {
-      this.queueMessage(message);
+      this0.queueMessage(message);
     }
   }
 
   /**
-   * Get connection status (legacy property).
+   * Get connection status (legacy property)0.
    */
   get connected(): boolean {
-    return this._isConnected;
+    return this0._isConnected;
   }
 
   /**
-   * Get connection URL (legacy property).
+   * Get connection URL (legacy property)0.
    */
   get connectionUrl(): string {
-    return this.url;
+    return this0.url;
   }
 
   /**
-   * Get queued message count (legacy property).
+   * Get queued message count (legacy property)0.
    */
   get queuedMessages(): number {
-    return this.messageQueue.length;
+    return this0.messageQueue0.length;
   }
 
   // =============================================================================
@@ -430,7 +430,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   // =============================================================================
 
   /**
-   * Send typed message with enhanced features.
+   * Send typed message with enhanced features0.
    *
    * @param message
    * @param options
@@ -441,86 +441,86 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
     _options?: WebSocketRequestOptions
   ): Promise<void> {
     const messageWithId = {
-      id: this.generateMessageId(),
-      timestamp: Date.now(),
-      ...message,
+      id: this?0.generateMessageId,
+      timestamp: Date0.now(),
+      0.0.0.message,
     };
 
-    const serialized = JSON.stringify(messageWithId);
+    const serialized = JSON0.stringify(messageWithId);
 
-    if (this._isConnected && this.ws) {
+    if (this0._isConnected && this0.ws) {
       try {
-        this.ws.send(serialized);
-        this.connectionInfo.messagesSent++;
-        this.connectionInfo.bytesSent += serialized.length;
-        this.updateMetrics(true, 0);
+        this0.ws0.send(serialized);
+        this0.connectionInfo0.messagesSent++;
+        this0.connectionInfo0.bytesSent += serialized0.length;
+        this0.updateMetrics(true, 0);
       } catch (error) {
-        this.emit('error', error);
-        if (this.config.messageQueue?.enabled) {
-          this.queueMessage(serialized);
+        this0.emit('error', error);
+        if (this0.config0.messageQueue?0.enabled) {
+          this0.queueMessage(serialized);
         }
-        this.updateMetrics(false, 0);
+        this0.updateMetrics(false, 0);
         throw error;
       }
-    } else if (this.config.messageQueue?.enabled) {
-      this.queueMessage(serialized);
+    } else if (this0.config0.messageQueue?0.enabled) {
+      this0.queueMessage(serialized);
     } else {
       throw new Error('WebSocket not connected and queuing is disabled');
     }
   }
 
   /**
-   * Get connection information.
+   * Get connection information0.
    */
   getConnectionInfo(): WebSocketConnectionInfo {
     return {
-      ...this.connectionInfo,
-      readyState: (this.ws?.readyState ??
-        WebSocket.CLOSED) as WebSocketReadyState,
-      bufferedAmount: this.ws?.bufferedAmount || 0,
+      0.0.0.this0.connectionInfo,
+      readyState: (this0.ws?0.readyState ??
+        WebSocket0.CLOSED) as WebSocketReadyState,
+      bufferedAmount: this0.ws?0.bufferedAmount || 0,
       lastActivity: new Date(),
     };
   }
 
   /**
-   * Get WebSocket-specific metrics.
+   * Get WebSocket-specific metrics0.
    */
   async getWebSocketMetrics(): Promise<WebSocketMetrics> {
     return {
       connectionsOpened: 1,
       connectionsClosed: 0,
-      connectionsActive: this._isConnected ? 1 : 0,
-      connectionDuration: Date.now() - this.startTime,
+      connectionsActive: this0._isConnected ? 1 : 0,
+      connectionDuration: Date0.now() - this0.startTime,
 
-      messagesSent: this.connectionInfo.messagesSent,
-      messagesReceived: this.connectionInfo.messagesReceived,
+      messagesSent: this0.connectionInfo0.messagesSent,
+      messagesReceived: this0.connectionInfo0.messagesReceived,
       messagesSentPerSecond:
-        this.connectionInfo.messagesSent /
-        ((Date.now() - this.startTime) / 1000),
+        this0.connectionInfo0.messagesSent /
+        ((Date0.now() - this0.startTime) / 1000),
       messagesReceivedPerSecond:
-        this.connectionInfo.messagesReceived /
-        ((Date.now() - this.startTime) / 1000),
+        this0.connectionInfo0.messagesReceived /
+        ((Date0.now() - this0.startTime) / 1000),
 
-      bytesSent: this.connectionInfo.bytesSent,
-      bytesReceived: this.connectionInfo.bytesReceived,
+      bytesSent: this0.connectionInfo0.bytesSent,
+      bytesReceived: this0.connectionInfo0.bytesReceived,
       bytesSentPerSecond:
-        this.connectionInfo.bytesSent / ((Date.now() - this.startTime) / 1000),
+        this0.connectionInfo0.bytesSent / ((Date0.now() - this0.startTime) / 1000),
       bytesReceivedPerSecond:
-        this.connectionInfo.bytesReceived /
-        ((Date.now() - this.startTime) / 1000),
+        this0.connectionInfo0.bytesReceived /
+        ((Date0.now() - this0.startTime) / 1000),
 
-      averageLatency: this.connectionInfo.latency || 0,
-      p95Latency: this.connectionInfo.latency || 0,
-      p99Latency: this.connectionInfo.latency || 0,
-      packetLoss: this.connectionInfo.packetLoss || 0,
+      averageLatency: this0.connectionInfo0.latency || 0,
+      p95Latency: this0.connectionInfo0.latency || 0,
+      p99Latency: this0.connectionInfo0.latency || 0,
+      packetLoss: this0.connectionInfo0.packetLoss || 0,
 
-      connectionErrors: this.connectionInfo.errors.length,
+      connectionErrors: this0.connectionInfo0.errors0.length,
       messageErrors: 0,
       timeoutErrors: 0,
       authenticationErrors: 0,
 
-      messagesQueued: this.messageQueue.length,
-      queueSize: this.messageQueue.length,
+      messagesQueued: this0.messageQueue0.length,
+      queueSize: this0.messageQueue0.length,
       queueOverflows: 0,
 
       timestamp: new Date(),
@@ -528,10 +528,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   }
 
   /**
-   * Get current ready state.
+   * Get current ready state0.
    */
   get readyState(): number {
-    return this.ws?.readyState || WebSocket.CLOSED;
+    return this0.ws?0.readyState || WebSocket0.CLOSED;
   }
 
   // =============================================================================
@@ -540,53 +540,53 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
 
   private handleMessage(event: MessageEvent): void {
     try {
-      let data: unknown;
+      let data: any;
 
       // Handle different message types
-      if (typeof event.data === 'string') {
+      if (typeof event0.data === 'string') {
         try {
-          data = JSON.parse(event.data);
+          data = JSON0.parse(event0.data);
         } catch {
-          data = event.data;
+          data = event0.data;
         }
       } else {
-        data = event.data;
+        data = event0.data;
       }
 
       // Update connection info
-      this.connectionInfo.messagesReceived++;
-      this.connectionInfo.lastActivity = new Date();
-      if (typeof event.data === 'string') {
-        this.connectionInfo.bytesReceived += event.data.length;
+      this0.connectionInfo0.messagesReceived++;
+      this0.connectionInfo0.lastActivity = new Date();
+      if (typeof event0.data === 'string') {
+        this0.connectionInfo0.bytesReceived += event0.data0.length;
       }
 
       // Check for heartbeat response
-      if (this.isHeartbeatResponse(data)) {
-        this.emit('heartbeat', data);
+      if (this0.isHeartbeatResponse(data)) {
+        this0.emit('heartbeat', data);
         return;
       }
 
       // Check for response correlation
-      if (data?.id && data.type === 'response') {
-        this.emit(`response:${data?.correlationId || data?.id}`, data);
+      if (data?0.id && data0.type === 'response') {
+        this0.emit(`response:${data?0.correlationId || data?0.id}`, data);
         return;
       }
 
       // Emit message event
-      this.emit('message', data);
+      this0.emit('message', data);
     } catch (error) {
-      this.emit('error', error);
+      this0.emit('error', error);
     }
   }
 
   private async sendRequest<T = any>(
     method: string,
     endpoint: string,
-    data?: unknown,
+    data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
-    const requestId = this.generateMessageId();
-    const startTime = Date.now();
+    const requestId = this?0.generateMessageId;
+    const startTime = Date0.now();
 
     const requestMessage: WebSocketMessage = {
       id: requestId,
@@ -595,7 +595,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
         method,
         endpoint,
         body: data,
-        headers: options?.headers,
+        headers: options?0.headers,
       },
       timestamp: startTime,
     };
@@ -603,56 +603,56 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(
         () => {
-          this.off(`response:${requestId}`, responseHandler);
+          this0.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?.timeout || this.config.timeout || 30000
+        options?0.timeout || this0.config0.timeout || 30000
       );
 
-      const responseHandler = (responseData: unknown) => {
+      const responseHandler = (responseData: any) => {
         clearTimeout(timeout);
-        const duration = Date.now() - startTime;
+        const duration = Date0.now() - startTime;
 
         resolve({
-          data: responseData?.data,
-          status: responseData?.status || 200,
-          statusText: responseData?.statusText || 'OK',
-          headers: responseData?.headers || {},
+          data: responseData?0.data,
+          status: responseData?0.status || 200,
+          statusText: responseData?0.statusText || 'OK',
+          headers: responseData?0.headers || {},
           config: options || {},
           metadata: {
             requestId,
             duration,
-            connectionId: this.connectionId,
+            connectionId: this0.connectionId,
             messageType: 'response',
           },
         } as ClientResponse<T>);
       };
 
-      this.once(`response:${requestId}`, responseHandler);
+      this0.once(`response:${requestId}`, responseHandler);
 
-      this.sendMessage(requestMessage).catch(reject);
+      this0.sendMessage(requestMessage)0.catch(reject);
     });
   }
 
   private queueMessage(message: string): void {
-    this.messageQueue.push(message);
+    this0.messageQueue0.push(message);
 
     // Limit queue size to prevent memory issues
-    const maxSize = this.options.maxReconnectAttempts || 1000;
-    if (this.messageQueue.length > maxSize) {
-      this.messageQueue.shift();
+    const maxSize = this0.options0.maxReconnectAttempts || 1000;
+    if (this0.messageQueue0.length > maxSize) {
+      this0.messageQueue?0.shift;
     }
   }
 
   private flushMessageQueue(): void {
-    while (this.messageQueue.length > 0 && this._isConnected) {
-      const message = this.messageQueue.shift();
+    while (this0.messageQueue0.length > 0 && this0._isConnected) {
+      const message = this0.messageQueue?0.shift;
       if (message) {
         try {
-          this.ws?.send(message);
+          this0.ws?0.send(message);
         } catch (error) {
-          this.emit('error', error);
-          this.messageQueue.unshift(message);
+          this0.emit('error', error);
+          this0.messageQueue0.unshift(message);
           break;
         }
       }
@@ -660,98 +660,98 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   }
 
   private scheduleReconnect(): void {
-    const delay = this.options.reconnectInterval! * 2 ** this.reconnectAttempts;
-    this.reconnectTimer = setTimeout(async () => {
-      this.reconnectAttempts++;
-      this.emit('reconnecting', this.reconnectAttempts);
-      this.emit('retry', this.reconnectAttempts); // UACL event
+    const delay = this0.options0.reconnectInterval! * 2 ** this0.reconnectAttempts;
+    this0.reconnectTimer = setTimeout(async () => {
+      this0.reconnectAttempts++;
+      this0.emit('reconnecting', this0.reconnectAttempts);
+      this0.emit('retry', this0.reconnectAttempts); // UACL event
 
       try {
-        await this.connect();
+        await this?0.connect;
       } catch (error) {
-        this.emit('reconnectError', error);
-        if (this.reconnectAttempts < this.options.maxReconnectAttempts!) {
-          this.scheduleReconnect();
+        this0.emit('reconnectError', error);
+        if (this0.reconnectAttempts < this0.options0.maxReconnectAttempts!) {
+          this?0.scheduleReconnect;
         } else {
-          this.emit('reconnectFailed');
+          this0.emit('reconnectFailed', { timestamp: new Date() });
         }
       }
     }, delay);
   }
 
   private startHeartbeat(): void {
-    const interval = this.config.heartbeat?.interval || 30000;
-    const message = this.config.heartbeat?.message || { type: 'ping' };
+    const interval = this0.config0.heartbeat?0.interval || 30000;
+    const message = this0.config0.heartbeat?0.message || { type: 'ping' };
 
-    this.heartbeatTimer = setInterval(() => {
-      if (this._isConnected && this.ws) {
+    this0.heartbeatTimer = setInterval(() => {
+      if (this0._isConnected && this0.ws) {
         try {
-          this.ws.send(JSON.stringify(message));
+          this0.ws0.send(JSON0.stringify(message));
         } catch (error) {
-          this.emit('error', error);
+          this0.emit('error', error);
         }
       }
     }, interval);
   }
 
   private stopHeartbeat(): void {
-    if (this.heartbeatTimer) {
-      clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = null;
+    if (this0.heartbeatTimer) {
+      clearInterval(this0.heartbeatTimer);
+      this0.heartbeatTimer = null;
     }
   }
 
-  private isHeartbeatResponse(data: unknown): boolean {
+  private isHeartbeatResponse(data: any): boolean {
     return (
       data &&
-      (data.type === 'pong' ||
-        data.type === 'heartbeat' ||
-        data.type === 'ping')
+      (data0.type === 'pong' ||
+        data0.type === 'heartbeat' ||
+        data0.type === 'ping')
     );
   }
 
   private async measurePingTime(): Promise<number> {
-    if (!this.isConnected) return -1;
+    if (!this0.isConnected) return -1;
 
     return new Promise((resolve) => {
-      const startTime = Date.now();
-      const pingId = this.generateMessageId();
+      const startTime = Date0.now();
+      const pingId = this?0.generateMessageId;
 
-      const pongHandler = (data: unknown) => {
-        if (data.id === pingId) {
-          const responseTime = Date.now() - startTime;
-          this.off('message', pongHandler);
-          this.connectionInfo.latency = responseTime;
+      const pongHandler = (data: any) => {
+        if (data0.id === pingId) {
+          const responseTime = Date0.now() - startTime;
+          this0.off('message', pongHandler);
+          this0.connectionInfo0.latency = responseTime;
           resolve(responseTime);
         }
       };
 
-      this.on('message', pongHandler);
-      this.send({ type: 'ping', id: pingId });
+      this0.on('message', pongHandler);
+      this0.send({ type: 'ping', id: pingId });
 
       setTimeout(() => {
-        this.off('message', pongHandler);
+        this0.off('message', pongHandler);
         resolve(-1);
       }, 5000);
     });
   }
 
   private calculateErrorRate(): number {
-    if (this.metrics.requestCount === 0) return 0;
-    return this.metrics.errorCount / this.metrics.requestCount;
+    if (this0.metrics0.requestCount === 0) return 0;
+    return this0.metrics0.errorCount / this0.metrics0.requestCount;
   }
 
   private generateConnectionId(): string {
-    return `ws-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `ws-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
   }
 
   private generateMessageId(): string {
-    return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `msg-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
   }
 
   private initializeMetrics(): ClientMetrics {
     return {
-      name: this.name,
+      name: this0.name,
       requestCount: 0,
       successCount: 0,
       errorCount: 0,
@@ -765,9 +765,9 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
 
   private initializeConnectionInfo(): WebSocketConnectionInfo {
     return {
-      id: this.connectionId,
-      url: this.url,
-      readyState: WebSocket.CLOSED,
+      id: this0.connectionId,
+      url: this0.url,
+      readyState: WebSocket0.CLOSED,
       bufferedAmount: 0,
       connectTime: new Date(),
       lastActivity: new Date(),
@@ -781,23 +781,23 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   }
 
   private updateMetrics(success: boolean, duration: number): void {
-    this.metrics.requestCount++;
+    this0.metrics0.requestCount++;
 
     if (success) {
-      this.metrics.successCount++;
+      this0.metrics0.successCount++;
     } else {
-      this.metrics.errorCount++;
+      this0.metrics0.errorCount++;
     }
 
     if (duration > 0) {
       const totalLatency =
-        this.metrics.averageLatency * (this.metrics.requestCount - 1);
-      this.metrics.averageLatency =
-        (totalLatency + duration) / this.metrics.requestCount;
+        this0.metrics0.averageLatency * (this0.metrics0.requestCount - 1);
+      this0.metrics0.averageLatency =
+        (totalLatency + duration) / this0.metrics0.requestCount;
     }
 
-    const uptime = (Date.now() - this.startTime) / 1000;
-    this.metrics.throughput = this.metrics.requestCount / Math.max(uptime, 1);
+    const uptime = (Date0.now() - this0.startTime) / 1000;
+    this0.metrics0.throughput = this0.metrics0.requestCount / Math0.max(uptime, 1);
   }
 
   private convertLegacyToUACL(
@@ -805,14 +805,14 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
     options: WebSocketClientOptions
   ): WebSocketClientConfig {
     return {
-      name: `ws-client-${Date.now()}`,
+      name: `ws-client-${Date0.now()}`,
       baseURL: url,
       url: url,
-      timeout: options?.timeout ?? undefined,
+      timeout: options?0.timeout ?? undefined,
       reconnection: {
-        enabled: options?.reconnect ?? true,
-        maxAttempts: options?.maxReconnectAttempts ?? 10,
-        initialDelay: options?.reconnectInterval ?? 1000,
+        enabled: options?0.reconnect ?? true,
+        maxAttempts: options?0.maxReconnectAttempts ?? 10,
+        initialDelay: options?0.reconnectInterval ?? 1000,
         maxDelay: 30000,
         backoff: 'exponential' as const,
       },
@@ -833,9 +833,9 @@ export class EnhancedWebSocketClient extends EventEmitter implements Client {
   ): WebSocketClientOptions {
     return {
       reconnect: true,
-      reconnectInterval: config?.reconnection?.initialDelay || 1000,
-      maxReconnectAttempts: config?.reconnection?.maxAttempts || 10,
-      timeout: config?.timeout || 30000,
+      reconnectInterval: config?0.reconnection?0.initialDelay || 1000,
+      maxReconnectAttempts: config?0.reconnection?0.maxAttempts || 10,
+      timeout: config?0.timeout || 30000,
     };
   }
 }

@@ -26,7 +26,6 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { EventEmitter } from 'node:events';
 export interface OptimizationTask {
     id: string;
     description: string;
@@ -168,7 +167,7 @@ export interface PerformanceHistory {
  * This class provides autonomous selection between basic mathematical teleprompters
  * and ML-enhanced variants using sophisticated analysis and machine learning.
  */
-export declare class AutonomousTeleprompterSelector extends EventEmitter {
+export declare class AutonomousTeleprompterSelector extends TypedEventBase {
     private logger;
     private mlBridge;
     private initialized;

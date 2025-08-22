@@ -23,7 +23,7 @@
 
 import { ServiceContainer, createServiceContainer, Lifetime } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
@@ -36,7 +36,7 @@ import type { EphemeralSwarm } from './types';
  * Drop-in replacement for SwarmRegistry with enhanced capabilities through ServiceContainer.
  * Maintains exact API compatibility while adding health monitoring, metrics, and discovery.
  */
-export class SwarmRegistry extends EventEmitter {
+export class SwarmRegistry extends TypedEventBase {
   private container: ServiceContainer;
   private logger: Logger;
   private projectRoot: string;
@@ -79,7 +79,7 @@ export class SwarmRegistry extends EventEmitter {
 
       this.initialized = true;
       this.logger.info('✅ SwarmRegistry initialized with ServiceContainer');
-      this.emit('initialized');
+      this.emit('initialized', { timestamp: new Date() });
 
     } catch (error) {
       this.logger.error('❌ Failed to initialize SwarmRegistry:', error);
@@ -293,7 +293,7 @@ export class SwarmRegistry extends EventEmitter {
       this.registryCache = new Map();
       this.saveRegistry(this.registryCache);
 
-      this.emit('registry-cleared');
+      this.emit('registry-cleared', { timestamp: new Date() });
 
     } catch (error) {
       this.logger.error('❌ Failed to clear registry:', error);
@@ -399,7 +399,7 @@ export class SwarmRegistry extends EventEmitter {
 
       this.initialized = false;
       this.logger.info('✅ Swarm registry shut down');
-      this.emit('shutdown');
+      this.emit('shutdown', { timestamp: new Date() });
 
     } catch (error) {
       this.logger.error('❌ Error during registry shutdown:', error);

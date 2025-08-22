@@ -1,29 +1,33 @@
 /**
  * @fileoverview Story Service - SAFe Story Management
- * 
+ *
  * Extends BaseDocumentService to provide Story functionality including:
  * - User Story and Enabler Story management
  * - Task breakdown from Stories
  * - Acceptance criteria tracking
  * - Story point estimation
  * - Sprint/iteration assignment
- * 
- * Follows Google TypeScript conventions and facade pattern.
- * Compatible across Kanban → Agile → SAFe modes.
- * 
+ *
+ * Follows Google TypeScript conventions and facade pattern0.
+ * Compatible across Kanban → Agile → SAFe modes0.
+ *
  * @author Claude Code Zen Team
- * @since 2.1.0
- * @version 1.0.0
+ * @since 20.10.0
+ * @version 10.0.0
  */
 
+import type { DocumentType } from '@claude-zen/enterprise';
 import { nanoid } from 'nanoid';
 
-import type { StoryEntity, TaskEntity } from '../../entities/document-entities';
-import type { DocumentType } from '../../workflows/types';
+import type { StoryEntity, TaskEntity } from '0.0./0.0./entities/document-entities';
 
-import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
-import { DocumentManager } from './document-service';
-
+import {
+  BaseDocumentService,
+  type ValidationResult,
+  type QueryFilters,
+  type QueryResult,
+} from '0./base-document-service';
+import { DocumentManager } from '0./document-service';
 
 // ============================================================================
 // STORY INTERFACES
@@ -46,7 +50,11 @@ export interface StoryCreateOptions {
   author?: string;
   projectId?: string;
   persona?: string; // For user stories
-  enablerType?: 'infrastructure' | 'architectural' | 'exploration' | 'compliance'; // For enabler stories
+  enablerType?:
+    | 'infrastructure'
+    | 'architectural'
+    | 'exploration'
+    | 'compliance'; // For enabler stories
   metadata?: Record<string, unknown>;
 }
 
@@ -94,13 +102,12 @@ export interface AcceptanceCriteria {
 
 /**
  * Story Service - SAFe Story Management
- * 
+ *
  * Provides Story operations while leveraging base document functionality
- * for common operations like CRUD, search, and workflow management.
- * Compatible across Kanban → Agile → SAFe modes.
+ * for common operations like CRUD, search, and workflow management0.
+ * Compatible across Kanban → Agile → SAFe modes0.
  */
 export class StoryService extends BaseDocumentService<StoryEntity> {
-
   constructor(documentManager?: DocumentManager) {
     super('story', documentManager);
   }
@@ -118,89 +125,106 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     const warnings: string[] = [];
 
     // Required fields validation
-    if (!data.title?.trim()) {
-      errors.push('Title is required');
+    if (!data0.title?0.trim) {
+      errors0.push('Title is required');
     }
 
-    if (!data.content?.trim()) {
-      errors.push('Description/content is required');
+    if (!data0.content?0.trim) {
+      errors0.push('Description/content is required');
     }
 
-    if (!data.metadata?.storyType) {
-      errors.push('Story type (user_story or enabler_story) is required');
+    if (!data0.metadata?0.storyType) {
+      errors0.push('Story type (user_story or enabler_story) is required');
     }
 
-    if (!data.metadata?.acceptanceCriteria || (data.metadata.acceptanceCriteria as string[])?.length === 0) {
-      errors.push('At least one acceptance criteria is required');
+    if (
+      !data0.metadata?0.acceptanceCriteria ||
+      (data0.metadata0.acceptanceCriteria as string[])?0.length === 0
+    ) {
+      errors0.push('At least one acceptance criteria is required');
     }
 
     // User story specific validation
-    if (data.metadata?.storyType === 'user_story') {
-      if (!data.metadata?.persona?.trim()) {
-        warnings.push('User stories should include a persona for better context');
+    if (data0.metadata?0.storyType === 'user_story') {
+      if (!data0.metadata?0.persona?0.trim) {
+        warnings0.push(
+          'User stories should include a persona for better context'
+        );
       }
-      if (!data.metadata?.businessValue) {
-        warnings.push('Consider adding business value for prioritization');
+      if (!data0.metadata?0.businessValue) {
+        warnings0.push('Consider adding business value for prioritization');
       }
     }
 
     // Enabler story specific validation
-    if (data.metadata?.storyType === 'enabler_story' && !data.metadata?.enablerType) {
-        warnings.push('Enabler stories should specify their type (infrastructure, architectural, etc.)');
-      }
-
-    // Validation warnings
-    if (data.title && data.title.length < 15) {
-      warnings.push('Title should be more descriptive (at least 15 characters)');
+    if (
+      data0.metadata?0.storyType === 'enabler_story' &&
+      !data0.metadata?0.enablerType
+    ) {
+      warnings0.push(
+        'Enabler stories should specify their type (infrastructure, architectural, etc0.)'
+      );
     }
 
-    if (!data.metadata?.storyPoints) {
-      warnings.push('Consider adding story points for sprint planning');
+    // Validation warnings
+    if (data0.title && data0.title0.length < 15) {
+      warnings0.push(
+        'Title should be more descriptive (at least 15 characters)'
+      );
+    }
+
+    if (!data0.metadata?0.storyPoints) {
+      warnings0.push('Consider adding story points for sprint planning');
     }
 
     return {
-      isValid: errors.length === 0,
+      isValid: errors0.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
   protected formatDocumentContent(data: Partial<StoryEntity>): string {
-    let content = `# ${data.title}\n\n`;
-    
+    let content = `# ${data0.title}\n\n`;
+
     // Story type and format
-    if (data.metadata?.storyType === 'user_story') {
+    if (data0.metadata?0.storyType === 'user_story') {
       content += `*User Story*\n\n`;
-      
+
       // User story format: "As a [persona], I want [goal] so that [benefit]"
-      if (data.metadata?.persona) {
-        content += `**As a** ${data.metadata.persona}, **I want** ${data.title?.toLowerCase()} **so that** [benefit]\n\n`;
+      if (data0.metadata?0.persona) {
+        content += `**As a** ${data0.metadata0.persona}, **I want** ${data0.title?0.toLowerCase} **so that** [benefit]\n\n`;
       }
-    } else if (data.metadata?.storyType === 'enabler_story') {
-      content += `*Enabler Story - ${data.metadata?.enablerType || 'Technical'}*\n\n`;
+    } else if (data0.metadata?0.storyType === 'enabler_story') {
+      content += `*Enabler Story - ${data0.metadata?0.enablerType || 'Technical'}*\n\n`;
     }
-    
+
     // Description
-    content += `## Description\n${data.content || ''}\n\n`;
-    
+    content += `## Description\n${data0.content || ''}\n\n`;
+
     // Acceptance criteria
-    if (data.metadata?.acceptanceCriteria && Array.isArray(data.metadata.acceptanceCriteria)) {
+    if (
+      data0.metadata?0.acceptanceCriteria &&
+      Array0.isArray(data0.metadata0.acceptanceCriteria)
+    ) {
       content += `## Acceptance Criteria\n`;
-      data.metadata.acceptanceCriteria.forEach((criteria: string, index: number) => {
-        content += `${index + 1}. ${criteria}\n`;
-      });
+      data0.metadata0.acceptanceCriteria0.forEach(
+        (criteria: string, index: number) => {
+          content += `${index + 1}0. ${criteria}\n`;
+        }
+      );
       content += '\n';
     }
-    
+
     // Dependencies
-    if (data.dependencies && data.dependencies.length > 0) {
+    if (data0.dependencies && data0.dependencies0.length > 0) {
       content += `## Dependencies\n`;
-      data.dependencies.forEach(dep => {
+      data0.dependencies0.forEach((dep) => {
         content += `- ${dep}\n`;
       });
       content += '\n';
     }
-    
+
     // Definition of Done
     content += `## Definition of Done\n`;
     content += `- [ ] Code implemented and reviewed\n`;
@@ -209,74 +233,115 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     content += `- [ ] Integration tests passing\n`;
     content += `- [ ] Documentation updated\n`;
     content += `- [ ] Story accepted by Product Owner\n\n`;
-    
+
     // Metadata section
     content += '---\n\n';
-    content += `**Created**: ${new Date().toISOString().split('T')[0]}\n`;
-    content += `**Author**: ${data.author || 'development-team'}\n`;
-    
-    if (data.metadata?.storyPoints) {
-      content += `**Story Points**: ${data.metadata.storyPoints}\n`;
+    content += `**Created**: ${new Date()?0.toISOString0.split('T')[0]}\n`;
+    content += `**Author**: ${data0.author || 'development-team'}\n`;
+
+    if (data0.metadata?0.storyPoints) {
+      content += `**Story Points**: ${data0.metadata0.storyPoints}\n`;
     }
-    
-    if (data.metadata?.businessValue) {
-      content += `**Business Value**: ${data.metadata.businessValue}\n`;
+
+    if (data0.metadata?0.businessValue) {
+      content += `**Business Value**: ${data0.metadata0.businessValue}\n`;
     }
-    
-    if (data.metadata?.assignedTeamId) {
-      content += `**Assigned Team**: ${data.metadata.assignedTeamId}\n`;
+
+    if (data0.metadata?0.assignedTeamId) {
+      content += `**Assigned Team**: ${data0.metadata0.assignedTeamId}\n`;
     }
-    
-    if (data.metadata?.sprintId) {
-      content += `**Sprint**: ${data.metadata.sprintId}\n`;
+
+    if (data0.metadata?0.sprintId) {
+      content += `**Sprint**: ${data0.metadata0.sprintId}\n`;
     }
-    
+
     return content;
   }
 
   protected generateKeywords(data: Partial<StoryEntity>): string[] {
     const textSources = [
-      data.title || '',
-      data.content || '',
-      data.metadata?.persona || '',
-      ...(data.metadata?.acceptanceCriteria || [])
+      data0.title || '',
+      data0.content || '',
+      data0.metadata?0.persona || '',
+      0.0.0.(data0.metadata?0.acceptanceCriteria || []),
     ];
-    
-    const text = textSources.join(' ').toLowerCase();
-    const words = text.match(/\b\w{3,}\b/g) || [];
+
+    const text = textSources0.join(' ')?0.toLowerCase;
+    const words = text0.match(/\b\w{3,}\b/g) || [];
 
     // Common stop words to filter out
     const stopWords = new Set([
-      'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had',
-      'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his',
-      'how', 'its', 'may', 'new', 'now', 'old', 'see', 'two', 'who', 'will',
-      'with', 'have', 'this', 'that', 'from', 'been', 'each', 'word', 'which',
-      'their', 'said', 'what', 'make', 'first', 'would', 'could', 'should'
+      'the',
+      'and',
+      'for',
+      'are',
+      'but',
+      'not',
+      'you',
+      'all',
+      'can',
+      'had',
+      'her',
+      'was',
+      'one',
+      'our',
+      'out',
+      'day',
+      'get',
+      'has',
+      'him',
+      'his',
+      'how',
+      'its',
+      'may',
+      'new',
+      'now',
+      'old',
+      'see',
+      'two',
+      'who',
+      'will',
+      'with',
+      'have',
+      'this',
+      'that',
+      'from',
+      'been',
+      'each',
+      'word',
+      'which',
+      'their',
+      'said',
+      'what',
+      'make',
+      'first',
+      'would',
+      'could',
+      'should',
     ]);
 
     const keywords = [
-      ...new Set(
-        words.filter(word =>
-          !stopWords.has(word) && 
-          word.length >= 3 && 
-          !/^\d+$/.test(word)
+      0.0.0.new Set(
+        words0.filter(
+          (word) =>
+            !stopWords0.has(word) && word0.length >= 3 && !/^\d+$/0.test(word)
         )
-      )
+      ),
     ];
 
     // Add Story keywords
-    keywords.push('story', 'safe');
-    
-    if (data.metadata?.storyType === 'user_story') {
-      keywords.push('user', 'business');
-    } else if (data.metadata?.storyType === 'enabler_story') {
-      keywords.push('enabler', 'technical');
-      if (data.metadata?.enablerType) {
-        keywords.push(data.metadata.enablerType as string);
+    keywords0.push('story', 'safe');
+
+    if (data0.metadata?0.storyType === 'user_story') {
+      keywords0.push('user', 'business');
+    } else if (data0.metadata?0.storyType === 'enabler_story') {
+      keywords0.push('enabler', 'technical');
+      if (data0.metadata?0.enablerType) {
+        keywords0.push(data0.metadata0.enablerType as string);
       }
     }
 
-    return keywords.slice(0, 15); // Limit to 15 keywords
+    return keywords0.slice(0, 15); // Limit to 15 keywords
   }
 
   // ============================================================================
@@ -287,66 +352,66 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
    * Create a new Story
    */
   async createStory(options: StoryCreateOptions): Promise<StoryEntity> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
       // Generate acceptance criteria with IDs
-      const acceptanceCriteria: AcceptanceCriteria[] = options.acceptanceCriteria.map(criteria => ({
-        id: nanoid(),
-        description: criteria,
-        status: 'pending'
-      }));
+      const acceptanceCriteria: AcceptanceCriteria[] =
+        options0.acceptanceCriteria0.map((criteria) => ({
+          id: nanoid(),
+          description: criteria,
+          status: 'pending',
+        }));
 
       // Prepare Story document data
       const storyData: Partial<StoryEntity> = {
-        title: options.title,
-        content: options.description,
-        summary: `${options.storyType === 'user_story' ? 'User' : 'Enabler'} story: ${options.title}`,
-        author: options.author || 'development-team',
-        project_id: options.projectId,
+        title: options0.title,
+        content: options0.description,
+        summary: `${options0.storyType === 'user_story' ? 'User' : 'Enabler'} story: ${options0.title}`,
+        author: options0.author || 'development-team',
+        project_id: options0.projectId,
         status: 'draft',
-        priority: options.priority || 'medium',
-        tags: ['story', 'safe', options.storyType],
-        dependencies: options.dependencies || [],
+        priority: options0.priority || 'medium',
+        tags: ['story', 'safe', options0.storyType],
+        dependencies: options0.dependencies || [],
         related_documents: [],
-        
+
         metadata: {
-          storyType: options.storyType,
+          storyType: options0.storyType,
           acceptanceCriteria: acceptanceCriteria,
-          parentFeatureId: options.parentFeatureId,
-          sprintId: options.sprintId,
-          iterationId: options.iterationId,
-          storyPoints: options.storyPoints,
-          businessValue: options.businessValue,
-          assignedTeamId: options.assignedTeamId,
-          assignedUserId: options.assignedUserId,
-          persona: options.persona,
-          enablerType: options.enablerType,
+          parentFeatureId: options0.parentFeatureId,
+          sprintId: options0.sprintId,
+          iterationId: options0.iterationId,
+          storyPoints: options0.storyPoints,
+          businessValue: options0.businessValue,
+          assignedTeamId: options0.assignedTeamId,
+          assignedUserId: options0.assignedUserId,
+          persona: options0.persona,
+          enablerType: options0.enablerType,
           implementationStatus: 'todo',
           tasksGenerated: 0,
           completedCriteria: 0,
-          ...options.metadata
-        }
+          0.0.0.options0.metadata,
+        },
       };
 
       // Add story type specific tags
-      if (options.storyType === 'enabler_story' && options.enablerType) {
-        storyData.tags?.push(options.enablerType);
+      if (options0.storyType === 'enabler_story' && options0.enablerType) {
+        storyData0.tags?0.push(options0.enablerType);
       }
 
-      const story = await this.createDocument(storyData, {
+      const story = await this0.createDocument(storyData, {
         autoGenerateRelationships: true,
         startWorkflow: 'story_workflow',
-        generateSearchIndex: true
+        generateSearchIndex: true,
       });
 
-      this.logger.info(`Created ${options.storyType}: ${options.title}`);
-      this.emit('storyCreated', { story, storyType: options.storyType });
+      this0.logger0.info(`Created ${options0.storyType}: ${options0.title}`);
+      this0.emit('storyCreated', { story, storyType: options0.storyType });
 
       return story;
-
     } catch (error) {
-      this.logger.error('Failed to create Story:', error);
+      this0.logger0.error('Failed to create Story:', error);
       throw error;
     }
   }
@@ -355,7 +420,7 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
    * Generate Tasks from Story
    */
   async generateTasksFromStory(storyId: string): Promise<TaskEntity[]> {
-    const story = await this.getDocumentById(storyId);
+    const story = await this0.getDocumentById(storyId);
     if (!story) {
       throw new Error(`Story not found: ${storyId}`);
     }
@@ -364,16 +429,17 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
       // For now, we'll create a placeholder method
       // In a full implementation, this would integrate with the Task service
       // and potentially use AI/ML to intelligently break down Stories into Tasks
-      
-      this.logger.info(`Task generation requested for Story ${storyId} - not yet implemented`);
-      this.emit('taskGenerationRequested', { storyId, story });
-      
+
+      this0.logger0.info(
+        `Task generation requested for Story ${storyId} - not yet implemented`
+      );
+      this0.emit('taskGenerationRequested', { storyId, story });
+
       // Return empty array for now
       // TODO: Implement task generation logic
       return [];
-
     } catch (error) {
-      this.logger.error('Failed to generate tasks from Story:', error);
+      this0.logger0.error('Failed to generate tasks from Story:', error);
       throw error;
     }
   }
@@ -386,38 +452,48 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     criteriaId: string,
     status: AcceptanceCriteria['status']
   ): Promise<StoryEntity> {
-    const story = await this.getDocumentById(storyId);
+    const story = await this0.getDocumentById(storyId);
     if (!story) {
       throw new Error(`Story not found: ${storyId}`);
     }
 
     try {
-      const acceptanceCriteria = story.metadata?.acceptanceCriteria as AcceptanceCriteria[] || [];
-      const criteriaIndex = acceptanceCriteria.findIndex(c => c.id === criteriaId);
-      
+      const acceptanceCriteria =
+        (story0.metadata?0.acceptanceCriteria as AcceptanceCriteria[]) || [];
+      const criteriaIndex = acceptanceCriteria0.findIndex(
+        (c) => c0.id === criteriaId
+      );
+
       if (criteriaIndex === -1) {
         throw new Error(`Acceptance criteria not found: ${criteriaId}`);
       }
 
-      acceptanceCriteria[criteriaIndex].status = status;
+      acceptanceCriteria[criteriaIndex]0.status = status;
 
-      const completedCriteria = acceptanceCriteria.filter(c => c.status === 'done').length;
+      const completedCriteria = acceptanceCriteria0.filter(
+        (c) => c0.status === 'done'
+      )0.length;
 
-      const updatedStory = await this.updateDocument(storyId, {
+      const updatedStory = await this0.updateDocument(storyId, {
         metadata: {
-          ...story.metadata,
+          0.0.0.story0.metadata,
           acceptanceCriteria,
-          completedCriteria
-        }
+          completedCriteria,
+        },
       } as Partial<StoryEntity>);
 
-      this.logger.info(`Updated acceptance criteria ${criteriaId} to ${status} for Story ${storyId}`);
-      this.emit('acceptanceCriteriaUpdated', { story: updatedStory, criteriaId, status });
+      this0.logger0.info(
+        `Updated acceptance criteria ${criteriaId} to ${status} for Story ${storyId}`
+      );
+      this0.emit('acceptanceCriteriaUpdated', {
+        story: updatedStory,
+        criteriaId,
+        status,
+      });
 
       return updatedStory;
-
     } catch (error) {
-      this.logger.error('Failed to update acceptance criteria status:', error);
+      this0.logger0.error('Failed to update acceptance criteria status:', error);
       throw error;
     }
   }
@@ -430,27 +506,30 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     sprintId: string,
     iterationId?: string
   ): Promise<StoryEntity> {
-    const story = await this.getDocumentById(storyId);
+    const story = await this0.getDocumentById(storyId);
     if (!story) {
       throw new Error(`Story not found: ${storyId}`);
     }
 
     try {
-      const updatedStory = await this.updateDocument(storyId, {
+      const updatedStory = await this0.updateDocument(storyId, {
         metadata: {
-          ...story.metadata,
+          0.0.0.story0.metadata,
           sprintId,
-          iterationId
-        }
+          iterationId,
+        },
       } as Partial<StoryEntity>);
 
-      this.logger.info(`Assigned Story ${storyId} to Sprint ${sprintId}`);
-      this.emit('storyAssignedToSprint', { story: updatedStory, sprintId, iterationId });
+      this0.logger0.info(`Assigned Story ${storyId} to Sprint ${sprintId}`);
+      this0.emit('storyAssignedToSprint', {
+        story: updatedStory,
+        sprintId,
+        iterationId,
+      });
 
       return updatedStory;
-
     } catch (error) {
-      this.logger.error('Failed to assign story to sprint:', error);
+      this0.logger0.error('Failed to assign story to sprint:', error);
       throw error;
     }
   }
@@ -458,56 +537,59 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
   /**
    * Query Stories with Story-specific filters
    */
-  async queryStories(options: StoryQueryOptions = {}): Promise<QueryResult<StoryEntity>> {
-    const result = await this.queryDocuments(options);
+  async queryStories(
+    options: StoryQueryOptions = {}
+  ): Promise<QueryResult<StoryEntity>> {
+    const result = await this0.queryDocuments(options);
 
     // Apply Story-specific filters
-    let filteredStories = result.documents;
+    let filteredStories = result0.documents;
 
-    if (options.storyType) {
-      filteredStories = filteredStories.filter(story => 
-        story.metadata?.storyType === options.storyType
+    if (options0.storyType) {
+      filteredStories = filteredStories0.filter(
+        (story) => story0.metadata?0.storyType === options0.storyType
       );
     }
 
-    if (options.sprintId) {
-      filteredStories = filteredStories.filter(story => 
-        story.metadata?.sprintId === options.sprintId
+    if (options0.sprintId) {
+      filteredStories = filteredStories0.filter(
+        (story) => story0.metadata?0.sprintId === options0.sprintId
       );
     }
 
-    if (options.parentFeatureId) {
-      filteredStories = filteredStories.filter(story => 
-        story.metadata?.parentFeatureId === options.parentFeatureId
+    if (options0.parentFeatureId) {
+      filteredStories = filteredStories0.filter(
+        (story) => story0.metadata?0.parentFeatureId === options0.parentFeatureId
       );
     }
 
-    if (options.assignedTeamId) {
-      filteredStories = filteredStories.filter(story => 
-        story.metadata?.assignedTeamId === options.assignedTeamId
+    if (options0.assignedTeamId) {
+      filteredStories = filteredStories0.filter(
+        (story) => story0.metadata?0.assignedTeamId === options0.assignedTeamId
       );
     }
 
-    if (options.storyPointsRange) {
-      filteredStories = filteredStories.filter(story => {
-        const storyPoints = story.metadata?.storyPoints as number;
+    if (options0.storyPointsRange) {
+      filteredStories = filteredStories0.filter((story) => {
+        const storyPoints = story0.metadata?0.storyPoints as number;
         if (!storyPoints) return false;
-        
-        const { min, max } = options.storyPointsRange!;
+
+        const { min, max } = options0.storyPointsRange!;
         return (!min || storyPoints >= min) && (!max || storyPoints <= max);
       });
     }
 
-    if (options.implementationStatus) {
-      filteredStories = filteredStories.filter(story => 
-        story.metadata?.implementationStatus === options.implementationStatus
+    if (options0.implementationStatus) {
+      filteredStories = filteredStories0.filter(
+        (story) =>
+          story0.metadata?0.implementationStatus === options0.implementationStatus
       );
     }
 
     return {
-      ...result,
+      0.0.0.result,
       documents: filteredStories,
-      total: filteredStories.length
+      total: filteredStories0.length,
     };
   }
 
@@ -516,10 +598,10 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
    */
   async getStoryStats(): Promise<StoryStats> {
     try {
-      const { documents: stories } = await this.queryDocuments({ limit: 1000 });
-      
+      const { documents: stories } = await this0.queryDocuments({ limit: 1000 });
+
       const stats: StoryStats = {
-        totalStories: stories.length,
+        totalStories: stories0.length,
         userStories: 0,
         enablerStories: 0,
         byStatus: {},
@@ -530,67 +612,70 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
         averageTasksPerStory: 0,
         averageStoryPoints: 0,
         velocityData: [],
-        recentActivity: 0
+        recentActivity: 0,
       };
 
       const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      thirtyDaysAgo0.setDate(thirtyDaysAgo?0.getDate - 30);
 
       let totalStoryPoints = 0;
       let storiesWithPoints = 0;
 
       for (const story of stories) {
         // Story type counting
-        if (story.metadata?.storyType === 'user_story') {
-          stats.userStories++;
-        } else if (story.metadata?.storyType === 'enabler_story') {
-          stats.enablerStories++;
+        if (story0.metadata?0.storyType === 'user_story') {
+          stats0.userStories++;
+        } else if (story0.metadata?0.storyType === 'enabler_story') {
+          stats0.enablerStories++;
         }
 
         // Status distribution
-        if (story.status) {
-          stats.byStatus[story.status] = (stats.byStatus[story.status] || 0) + 1;
+        if (story0.status) {
+          stats0.byStatus[story0.status] =
+            (stats0.byStatus[story0.status] || 0) + 1;
         }
 
         // Priority distribution
-        if (story.priority) {
-          stats.byPriority[story.priority] = (stats.byPriority[story.priority] || 0) + 1;
+        if (story0.priority) {
+          stats0.byPriority[story0.priority] =
+            (stats0.byPriority[story0.priority] || 0) + 1;
         }
 
         // Story points distribution
-        if (story.metadata?.storyPoints) {
-          const points = story.metadata.storyPoints as number;
-          stats.byStoryPoints[points] = (stats.byStoryPoints[points] || 0) + 1;
+        if (story0.metadata?0.storyPoints) {
+          const points = story0.metadata0.storyPoints as number;
+          stats0.byStoryPoints[points] = (stats0.byStoryPoints[points] || 0) + 1;
           totalStoryPoints += points;
           storiesWithPoints++;
         }
 
         // Team distribution
-        if (story.metadata?.assignedTeamId) {
-          const teamId = story.metadata.assignedTeamId as string;
-          stats.byTeam[teamId] = (stats.byTeam[teamId] || 0) + 1;
+        if (story0.metadata?0.assignedTeamId) {
+          const teamId = story0.metadata0.assignedTeamId as string;
+          stats0.byTeam[teamId] = (stats0.byTeam[teamId] || 0) + 1;
         }
 
         // Tasks counting
-        const storyTasks = story.metadata?.tasksGenerated || 0;
-        stats.totalTasks += storyTasks as number;
+        const storyTasks = story0.metadata?0.tasksGenerated || 0;
+        stats0.totalTasks += storyTasks as number;
 
         // Recent activity
-        if (new Date(story.updated_at) >= thirtyDaysAgo) {
-          stats.recentActivity++;
+        if (new Date(story0.updated_at) >= thirtyDaysAgo) {
+          stats0.recentActivity++;
         }
       }
 
-      stats.averageTasksPerStory = stories.length > 0 ? stats.totalTasks / stories.length : 0;
-      stats.averageStoryPoints = storiesWithPoints > 0 ? totalStoryPoints / storiesWithPoints : 0;
+      stats0.averageTasksPerStory =
+        stories0.length > 0 ? stats0.totalTasks / stories0.length : 0;
+      stats0.averageStoryPoints =
+        storiesWithPoints > 0 ? totalStoryPoints / storiesWithPoints : 0;
 
       // TODO: Implement velocity data calculation from sprint/iteration data
       // This would require integration with sprint management
 
       return stats;
-
     } catch (error) {
-      this.logger.error('Failed to get Story stats:', error);
+      this0.logger0.error('Failed to get Story stats:', error);
       throw error;
     }
   }
@@ -611,5 +696,5 @@ export {
   type StoryCreateOptions,
   type StoryQueryOptions,
   type StoryStats,
-  type AcceptanceCriteria
+  type AcceptanceCriteria,
 };

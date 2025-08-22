@@ -5,7 +5,7 @@
  * load balancing, health monitoring, and automatic failover.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger,
   withRetry,
@@ -29,7 +29,7 @@ import type {
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { JSONValue } from '../core/memory-system';
 
-export class MemoryCoordinationSystem extends EventEmitter {
+export class MemoryCoordinationSystem extends TypedEventBase {
   private logger: Logger;
   private config: MemoryCoordinationConfig;
   private nodes = new Map<string, MemoryNode>();

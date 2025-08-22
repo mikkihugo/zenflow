@@ -10,6 +10,7 @@ import { getLogger as getLogTapeLogger } from '@logtape/logtape';
 import type { UnknownRecord } from './types/primitives';
 
 export enum LoggingLevel {
+  TRACE = 'trace',
   DEBUG = 'debug',
   INFO = 'info',
   WARN = 'warning',
@@ -26,6 +27,7 @@ export interface LoggingConfig {
 }
 
 export interface Logger {
+  trace(message: string, meta?: unknown): void;
   debug(message: string, meta?: unknown): void;
   info(message: string, meta?: unknown): void;
   warn(message: string, meta?: unknown): void;
@@ -225,7 +227,7 @@ class LoggingConfigurationManager {
 
         console.log(`${timestamp}${level} [${category}] ${message}${props}`);
       },
-    } as Record<string, (record: UnknownRecord) => void>;
+    } as any;
 
     // Add internal collector sink if available
     if (useInternalCollector && internalCollectorSink) {
@@ -236,7 +238,7 @@ class LoggingConfigurationManager {
 
     await configure({
 
-      sinks: sinkConfig as any,
+      sinks: sinkConfig,
       loggers: [
         // Foundation components with internal collector if available
         {
@@ -348,6 +350,7 @@ class LoggingConfigurationManager {
    */
   private mapLogLevelToSeverity(level: string): number {
     const severityMap: Record<string, number> = {
+      trace: 1, // TRACE
       debug: 5, // DEBUG
       info: 9, // INFO
       warning: 13, // WARN
@@ -375,6 +378,11 @@ class LoggingConfigurationManager {
 
     // Wrap with our interface and add extra methods
     const logger: Logger = {
+      trace: (message: string, meta?: unknown) => {
+        if (this.shouldLog('trace', componentLevel)) {
+          logTapeLogger.debug(this.formatMessage(message, meta));
+        }
+      },
       debug: (message: string, meta?: unknown) => {
         if (this.shouldLog('debug', componentLevel)) {
           logTapeLogger.debug(this.formatMessage(message, meta));
@@ -415,7 +423,7 @@ class LoggingConfigurationManager {
     messageLevel: string,
     componentLevel: LoggingLevel,
   ): boolean {
-    const levels = ['debug', 'info', 'warning', 'error'];
+    const levels = ['trace', 'debug', 'info', 'warning', 'error'];
     const messageLevelIndex = levels.indexOf(messageLevel);
     const componentLevelIndex = levels.indexOf(componentLevel);
     return messageLevelIndex >= componentLevelIndex;

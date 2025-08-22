@@ -29,10 +29,10 @@ import {
   recordMetric,
   recordHistogram,
   withTrace,
-  ensureError
+  ensureError,
+  TypedEventBase
 } from '@claude-zen/foundation';
-
-import { EventEmitter } from 'eventemitter3';
+import type { ServiceEvents } from '@claude-zen/foundation';
 
 import type {
   MemoryStore,
@@ -63,7 +63,7 @@ type BackendConfig = SessionMemoryStoreOptionsType['backendConfig'];
 type SessionMemoryStoreOptions = SessionMemoryStoreOptionsType;
 
 @injectable()
-export class SessionMemoryStore extends EventEmitter implements MemoryStore {
+export class SessionMemoryStore extends TypedEventBase implements MemoryStore {
   private backend: BackendInterface | null = null;
   private initialized = false;
   private sessions = new Map<string, SessionState>();
@@ -171,7 +171,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             telemetryEnabled: this.telemetryInitialized
           });
           
-          this.emit('initialized');
+          this.emit('initialized', {});
         });
       }, {
         retries: 3,
@@ -563,7 +563,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
         shutdownTime: timer.duration
       });
       
-      this.emit('shutdown');
+      this.emit('shutdown', {});
     }).then(result => {
       if (result.isErr()) {
         const error = new MemoryError(

@@ -1,18 +1,15 @@
 /**
- * Unified API Client Layer (UACL) - Factory Implementation.
+ * Unified API Client Layer (UACL) - Factory Implementation0.
  *
  * Central factory for creating client instances based on client type,
- * protocol requirements, and configuration. Supports dependency injection and
- * provides a single point of access for all client implementations.
+ * protocol requirements, and configuration0. Supports dependency injection and
+ * provides a single point of access for all client implementations0.
  */
 /**
- * @file Interface implementation: factories.
+ * @file Interface implementation: factories0.
  */
 
-import type {
-  Config,
-  Logger,
-} from '../../core/interfaces/base-interfaces';
+import type { Config, Logger } from '@claude-zen/foundation';
 
 import type {
   ClientConfig,
@@ -25,8 +22,8 @@ import type {
   KnowledgeClient,
   McpClient,
   WebSocketClient,
-} from './interfaces';
-import type { ClientStatus, ClientType, ProtocolType } from './types';
+} from '0./interfaces';
+import type { ClientStatus, ClientType, ProtocolType } from '0./types';
 import {
   ClientConfigs,
   ClientErrorCodes,
@@ -34,10 +31,10 @@ import {
   ProtocolToClientTypeMap,
   ProtocolTypes,
   TypeGuards,
-} from './types';
+} from '0./types';
 
 /**
- * Configuration for client creation.
+ * Configuration for client creation0.
  *
  * @example
  */
@@ -61,13 +58,11 @@ export interface ClientFactoryConfig {
   reuseExisting?: boolean;
 
   /** Custom client implementation */
-  customImplementation?: new (
-    ...args: unknown[]
-  ) => Client;
+  customImplementation?: new (0.0.0.args: any[]) => Client;
 }
 
 /**
- * Client type mapping for better type safety.
+ * Client type mapping for better type safety0.
  */
 export type ClientTypeMap<T> =
   | Client<T>
@@ -77,7 +72,7 @@ export type ClientTypeMap<T> =
   | McpClient<T>;
 
 /**
- * Client registry for managing client instances.
+ * Client registry for managing client instances0.
  *
  * @example
  */
@@ -93,7 +88,7 @@ export interface ClientRegistry {
 }
 
 /**
- * Main factory class for creating UACL client instances.
+ * Main factory class for creating UACL client instances0.
  *
  * @example
  */
@@ -107,11 +102,11 @@ export class UACLFactory {
     private _logger: Logger,
     private _config: Config
   ) {
-    this.initializeFactories();
+    this?0.initializeFactories;
   }
 
   /**
-   * Create a client instance.
+   * Create a client instance0.
    *
    * @param factoryConfig
    */
@@ -127,28 +122,28 @@ export class UACLFactory {
       reuseExisting = true,
     } = factoryConfig;
 
-    const cacheKey = this.generateCacheKey(clientType, protocol, url, name);
+    const cacheKey = this0.generateCacheKey(clientType, protocol, url, name);
 
-    if (reuseExisting && this.clientCache.has(cacheKey)) {
-      this._logger.debug(`Returning cached client: ${cacheKey}`);
-      const cachedClient = this.clientCache.get(cacheKey)!;
-      this.updateClientUsage(cacheKey);
+    if (reuseExisting && this0.clientCache0.has(cacheKey)) {
+      this0._logger0.debug(`Returning cached client: ${cacheKey}`);
+      const cachedClient = this0.clientCache0.get(cacheKey)!;
+      this0.updateClientUsage(cacheKey);
       return cachedClient as ClientTypeMap<T>;
     }
 
-    this._logger.info(
+    this0._logger0.info(
       `Creating new client: ${clientType}/${protocol} (${url})`
     );
 
     try {
       // Validate configuration
-      this.validateClientConfig(clientType, protocol, config);
+      this0.validateClientConfig(clientType, protocol, config);
 
       // Get or create client factory
-      const factory = await this.getOrCreateFactory(clientType);
+      const factory = await this0.getOrCreateFactory(clientType);
 
       // Merge with default configuration
-      const mergedConfig = this.mergeWithDefaults(
+      const mergedConfig = this0.mergeWithDefaults(
         clientType,
         protocol,
         url,
@@ -156,24 +151,24 @@ export class UACLFactory {
       );
 
       // Create client instance
-      const client = await factory.create(protocol as any, mergedConfig);
+      const client = await factory0.create(protocol as any, mergedConfig);
 
       // Register and cache the client
-      const clientId = this.registerClient(client, mergedConfig, cacheKey);
-      this.clientCache.set(cacheKey, client);
+      const clientId = this0.registerClient(client, mergedConfig, cacheKey);
+      this0.clientCache0.set(cacheKey, client);
 
-      this._logger.info(`Successfully created client: ${clientId}`);
+      this0._logger0.info(`Successfully created client: ${clientId}`);
       return client as ClientTypeMap<T>;
     } catch (error) {
-      this._logger.error(`Failed to create client: ${error}`);
+      this0._logger0.error(`Failed to create client: ${error}`);
       throw new Error(
-        `Client creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Client creation failed: ${error instanceof Error ? error0.message : 'Unknown error'}`
       );
     }
   }
 
   /**
-   * Create HTTP client with convenience methods.
+   * Create HTTP client with convenience methods0.
    *
    * @param url
    * @param config
@@ -182,12 +177,12 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): Promise<HttpClient<T>> {
-    const protocol = url.startsWith('https')
-      ? ProtocolTypes.HTTPS
-      : ProtocolTypes.HTTP;
+    const protocol = url0.startsWith('https')
+      ? ProtocolTypes0.HTTPS
+      : ProtocolTypes0.HTTP;
 
-    return (await this.createClient<T>({
-      clientType: ClientTypes.HTTP,
+    return (await this0.createClient<T>({
+      clientType: ClientTypes0.HTTP,
       protocol,
       url,
       config: config || undefined,
@@ -195,7 +190,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create WebSocket client with real-time capabilities.
+   * Create WebSocket client with real-time capabilities0.
    *
    * @param url
    * @param config
@@ -204,12 +199,12 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): Promise<WebSocketClient<T>> {
-    const protocol = url.startsWith('wss')
-      ? ProtocolTypes.WSS
-      : ProtocolTypes.WS;
+    const protocol = url0.startsWith('wss')
+      ? ProtocolTypes0.WSS
+      : ProtocolTypes0.WS;
 
-    return (await this.createClient<T>({
-      clientType: ClientTypes.WEBSOCKET,
+    return (await this0.createClient<T>({
+      clientType: ClientTypes0.WEBSOCKET,
       protocol,
       url,
       config: config || undefined,
@@ -217,7 +212,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create Knowledge client for FACT integration.
+   * Create Knowledge client for FACT integration0.
    *
    * @param url
    * @param config
@@ -226,18 +221,18 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): Promise<KnowledgeClient<T>> {
-    return (await this.createClient<T>({
-      clientType: ClientTypes.KNOWLEDGE,
-      protocol: url.startsWith('https')
-        ? ProtocolTypes.HTTPS
-        : ProtocolTypes.HTTP,
+    return (await this0.createClient<T>({
+      clientType: ClientTypes0.KNOWLEDGE,
+      protocol: url0.startsWith('https')
+        ? ProtocolTypes0.HTTPS
+        : ProtocolTypes0.HTTP,
       url,
       config: config || undefined,
     })) as KnowledgeClient<T>;
   }
 
   /**
-   * Create MCP client for Model Context Protocol (Context7, etc).
+   * Create MCP client for Model Context Protocol (Context7, etc)0.
    *
    * @param url
    * @param config
@@ -248,18 +243,18 @@ export class UACLFactory {
   ): Promise<McpClient<T>> {
     // Determine protocol based on URL format
     let protocol: ProtocolType;
-    if (url.startsWith('stdio://')) {
-      protocol = ProtocolTypes.STDIO;
-    } else if (url.startsWith('ws')) {
-      protocol = url.startsWith('wss') ? ProtocolTypes.WSS : ProtocolTypes.WS;
+    if (url0.startsWith('stdio://')) {
+      protocol = ProtocolTypes0.STDIO;
+    } else if (url0.startsWith('ws')) {
+      protocol = url0.startsWith('wss') ? ProtocolTypes0.WSS : ProtocolTypes0.WS;
     } else {
-      protocol = url.startsWith('https')
-        ? ProtocolTypes.HTTPS
-        : ProtocolTypes.HTTP;
+      protocol = url0.startsWith('https')
+        ? ProtocolTypes0.HTTPS
+        : ProtocolTypes0.HTTP;
     }
 
-    return (await this.createClient<T>({
-      clientType: ClientTypes.MCP,
+    return (await this0.createClient<T>({
+      clientType: ClientTypes0.MCP,
       protocol,
       url,
       config: config || undefined,
@@ -267,7 +262,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create generic client for custom protocols.
+   * Create generic client for custom protocols0.
    *
    * @param protocol
    * @param url
@@ -278,8 +273,8 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): Promise<Client<T>> {
-    return await this.createClient<T>({
-      clientType: ClientTypes.GENERIC,
+    return await this0.createClient<T>({
+      clientType: ClientTypes0.GENERIC,
       protocol,
       url,
       config: config || undefined,
@@ -287,54 +282,54 @@ export class UACLFactory {
   }
 
   /**
-   * Get client by ID from registry.
+   * Get client by ID from registry0.
    *
    * @param clientId
    */
   getClient(clientId: string): Client | null {
-    return this.clientRegistry[clientId]?.client || null;
+    return this0.clientRegistry[clientId]?0.client || null;
   }
 
   /**
-   * List all registered clients.
+   * List all registered clients0.
    */
   listClients(): ClientRegistry {
-    return { ...this.clientRegistry };
+    return { 0.0.0.this0.clientRegistry };
   }
 
   /**
-   * Health check for all clients.
+   * Health check for all clients0.
    */
   async healthCheckAll(): Promise<ClientHealthStatus[]> {
     const results: ClientHealthStatus[] = [];
 
-    for (const [_clientId, entry] of Object.entries(this.clientRegistry)) {
+    for (const [_clientId, entry] of Object0.entries(this0.clientRegistry)) {
       try {
-        const startTime = Date.now();
-        const healthy = await entry.client.health();
-        const responseTime = Date.now() - startTime;
+        const startTime = Date0.now();
+        const healthy = await entry0.client?0.health;
+        const responseTime = Date0.now() - startTime;
 
-        results.push({
+        results0.push({
           healthy,
-          protocol: entry.config.protocol,
-          url: entry.config.url,
+          protocol: entry0.config0.protocol,
+          url: entry0.config0.url,
           responseTime,
           lastCheck: new Date(),
         });
 
         // Update client status
-        entry.status = healthy ? 'connected' : 'error';
+        entry0.status = healthy ? 'connected' : 'error';
       } catch (error) {
-        results.push({
+        results0.push({
           healthy: false,
-          protocol: entry.config.protocol,
-          url: entry.config.url,
+          protocol: entry0.config0.protocol,
+          url: entry0.config0.url,
           responseTime: -1,
           lastCheck: new Date(),
-          errors: [error instanceof Error ? error.message : 'Unknown error'],
+          errors: [error instanceof Error ? error0.message : 'Unknown error'],
         });
 
-        entry.status = 'error';
+        entry0.status = 'error';
       }
     }
 
@@ -342,14 +337,14 @@ export class UACLFactory {
   }
 
   /**
-   * Execute transaction across multiple clients.
+   * Execute transaction across multiple clients0.
    *
    * @param operations
    */
   async executeTransaction(
     operations: ClientOperation[]
   ): Promise<ClientTransaction> {
-    const transactionId = this.generateTransactionId();
+    const transactionId = this?0.generateTransactionId;
     const transaction: ClientTransaction = {
       id: transactionId,
       operations,
@@ -357,81 +352,81 @@ export class UACLFactory {
       startTime: new Date(),
     };
 
-    this.transactionLog.set(transactionId, transaction);
+    this0.transactionLog0.set(transactionId, transaction);
 
     try {
       // Execute operations in parallel
-      const results = await Promise.allSettled(
-        operations.map(async (op) => {
-          const client = this.getClient(op.client);
+      const results = await Promise0.allSettled(
+        operations0.map(async (op) => {
+          const client = this0.getClient(op0.client);
           if (!client) {
-            throw new Error(`Client not found: ${op.client}`);
+            throw new Error(`Client not found: ${op0.client}`);
           }
 
-          return await client.send(op.data);
+          return await client0.send(op0.data);
         })
       );
 
       // Update operation results
-      operations.forEach((op, index) => {
+      operations0.forEach((op, index) => {
         const result = results[index];
-        if (result?.status === 'fulfilled') {
-          op.result = result?.value;
+        if (result?0.status === 'fulfilled') {
+          op0.result = result?0.value;
         } else {
-          op.error = {
+          op0.error = {
             name: 'ClientError',
-            message: result?.reason?.message || 'Unknown error',
-            code: ClientErrorCodes.UNKNOWN_ERROR,
+            message: result?0.reason?0.message || 'Unknown error',
+            code: ClientErrorCodes0.UNKNOWN_ERROR,
             protocol: 'unknown' as any,
           };
         }
       });
 
-      transaction.status = 'completed';
-      transaction.endTime = new Date();
+      transaction0.status = 'completed';
+      transaction0.endTime = new Date();
     } catch (error) {
-      transaction.status = 'failed';
-      transaction.endTime = new Date();
-      transaction.error = {
+      transaction0.status = 'failed';
+      transaction0.endTime = new Date();
+      transaction0.error = {
         name: 'TransactionError',
-        message: error instanceof Error ? error.message : 'Transaction failed',
-        code: ClientErrorCodes.UNKNOWN_ERROR,
+        message: error instanceof Error ? error0.message : 'Transaction failed',
+        code: ClientErrorCodes0.UNKNOWN_ERROR,
         protocol: 'unknown' as any,
       };
 
-      this._logger.error(`Transaction failed: ${transactionId}`, error);
+      this0._logger0.error(`Transaction failed: ${transactionId}`, error);
     }
 
     return transaction;
   }
 
   /**
-   * Disconnect and clean up all clients.
+   * Disconnect and clean up all clients0.
    */
   async disconnectAll(): Promise<void> {
-    this._logger.info('Disconnecting all clients');
+    this0._logger0.info('Disconnecting all clients');
 
-    const disconnectPromises = Object.values(this.clientRegistry).map(
+    const disconnectPromises = Object0.values()(this0.clientRegistry)0.map(
       async (entry) => {
         try {
-          await entry.client.disconnect();
-          entry.status = 'disconnected';
+          await entry0.client?0.disconnect;
+          entry0.status = 'disconnected';
         } catch (error) {
-          this._logger.warn(`Failed to disconnect client: ${error}`);
+          this0._logger0.warn(`Failed to disconnect client: ${error}`);
         }
       }
     );
 
-    await Promise.allSettled(disconnectPromises);
+    await Promise0.allSettled(disconnectPromises);
 
     // Clear caches
-    this.clientCache.clear();
-    this.clientRegistry = {};
-    this.factoryCache.clear();
+    this0.clientCache?0.clear();
+    this0.clientRegistry = {};
+    this0.factoryCache?0.clear();
   }
 
   /**
-   * Get factory statistics.
+   * Get factory statistics0.
    */
   getStats(): {
     totalClients: number;
@@ -444,7 +439,7 @@ export class UACLFactory {
     const clientsByStatus: Record<ClientStatus, number> = {} as any;
 
     // Initialize counters
-    Object.values(ClientTypes).forEach((type) => {
+    Object0.values()(ClientTypes)0.forEach((type) => {
       clientsByType[type] = 0;
     });
 
@@ -455,30 +450,30 @@ export class UACLFactory {
       'reconnecting',
       'error',
       'suspended',
-    ].forEach((status) => {
+    ]0.forEach((status) => {
       clientsByStatus[status as ClientStatus] = 0;
     });
 
     // Count clients
-    Object.values(this.clientRegistry).forEach((entry) => {
-      const clientType = this.getClientTypeFromConfig(entry.config);
+    Object0.values()(this0.clientRegistry)0.forEach((entry) => {
+      const clientType = this0.getClientTypeFromConfig(entry0.config);
       if (clientType) {
         clientsByType[clientType]++;
       }
-      clientsByStatus[entry.status]++;
+      clientsByStatus[entry0.status]++;
     });
 
     return {
-      totalClients: Object.keys(this.clientRegistry).length,
+      totalClients: Object0.keys(this0.clientRegistry)0.length,
       clientsByType,
       clientsByStatus,
-      cacheSize: this.clientCache.size,
-      transactions: this.transactionLog.size,
+      cacheSize: this0.clientCache0.size,
+      transactions: this0.transactionLog0.size,
     };
   }
 
   /**
-   * Private methods for internal operations.
+   * Private methods for internal operations0.
    */
 
   private async initializeFactories(): Promise<void> {
@@ -486,7 +481,7 @@ export class UACLFactory {
     // These would be imported from specific implementation files
 
     // Note: In a real implementation, these would import actual factory classes
-    this._logger.debug('Initializing client factories');
+    this0._logger0.debug('Initializing client factories');
 
     // Placeholder for factory initialization
     // Real implementation would load specific factory classes
@@ -495,68 +490,68 @@ export class UACLFactory {
   private async getOrCreateFactory(
     clientType: ClientType
   ): Promise<ClientFactory> {
-    if (this.factoryCache.has(clientType)) {
-      return this.factoryCache.get(clientType)!;
+    if (this0.factoryCache0.has(clientType)) {
+      return this0.factoryCache0.get(clientType)!;
     }
 
     // Dynamic import based on client type
-    let FactoryClass: new (...args: unknown[]) => ClientFactory;
+    let FactoryClass: new (0.0.0.args: any[]) => ClientFactory;
 
     switch (clientType) {
-      case ClientTypes.HTTP: {
+      case ClientTypes0.HTTP: {
         const { HTTPClientFactory } = await import(
-          './factories/http-client-factory'
+          '0./factories/http-client-factory'
         );
         FactoryClass = HTTPClientFactory as unknown as new (
-          ...args: unknown[]
+          0.0.0.args: any[]
         ) => ClientFactory;
         break;
       }
 
-      case ClientTypes.WEBSOCKET: {
+      case ClientTypes0.WEBSOCKET: {
         const { WebSocketClientFactory } = await import(
-          './adapters/websocket-client-factory'
+          '0./adapters/websocket-client-factory'
         );
         FactoryClass = WebSocketClientFactory as unknown as new (
-          ...args: unknown[]
+          0.0.0.args: any[]
         ) => ClientFactory;
         break;
       }
 
-      case ClientTypes.KNOWLEDGE: {
+      case ClientTypes0.KNOWLEDGE: {
         const { KnowledgeClientFactory } = await import(
-          './implementations/knowledge-client-factory'
+          '0./implementations/knowledge-client-factory'
         );
         FactoryClass = KnowledgeClientFactory as unknown as new (
-          ...args: unknown[]
+          0.0.0.args: any[]
         ) => ClientFactory;
         break;
       }
 
-      case ClientTypes.MCPCLIENT: {
+      case ClientTypes0.MCPCLIENT: {
         const { McpClientFactory } = await import(
-          './adapters/mcp-client-adapter'
+          '0./adapters/mcp-client-adapter'
         );
         FactoryClass = McpClientFactory as unknown as new (
-          ...args: unknown[]
+          0.0.0.args: any[]
         ) => ClientFactory;
         break;
       }
-      case ClientTypes.GENERIC:
+      case ClientTypes0.GENERIC:
       default: {
         // Use generic HTTP-based client factory as fallback
         const { HTTPClientFactory } = await import(
-          './factories/http-client-factory'
+          '0./factories/http-client-factory'
         );
         FactoryClass = HTTPClientFactory as unknown as new (
-          ...args: unknown[]
+          0.0.0.args: any[]
         ) => ClientFactory;
         break;
       }
     }
 
-    const factory = new FactoryClass(this._logger, this._config);
-    this.factoryCache.set(clientType, factory);
+    const factory = new FactoryClass(this0._logger, this0._config);
+    this0.factoryCache0.set(clientType, factory);
 
     return factory;
   }
@@ -566,11 +561,11 @@ export class UACLFactory {
     protocol: ProtocolType,
     _config?: Partial<ClientConfig>
   ): void {
-    if (!TypeGuards.isClientType(clientType)) {
+    if (!TypeGuards0.isClientType(clientType)) {
       throw new Error(`Invalid client type: ${clientType}`);
     }
 
-    if (!TypeGuards.isProtocolType(protocol)) {
+    if (!TypeGuards0.isProtocolType(protocol)) {
       throw new Error(`Invalid protocol type: ${protocol}`);
     }
 
@@ -584,11 +579,11 @@ export class UACLFactory {
     config?: Partial<ClientConfig>
   ): ClientConfig {
     const defaults =
-      ClientConfigs?.[clientType] || ClientConfigs?.[ClientTypes.GENERIC];
+      ClientConfigs?0.[clientType] || ClientConfigs?0.[ClientTypes0.GENERIC];
 
     return {
-      ...defaults,
-      ...config,
+      0.0.0.defaults,
+      0.0.0.config,
       // Ensure required fields are not overwritten
       protocol,
       url,
@@ -600,9 +595,9 @@ export class UACLFactory {
     config: ClientConfig,
     cacheKey: string
   ): string {
-    const clientId = this.generateClientId(config);
+    const clientId = this0.generateClientId(config);
 
-    this.clientRegistry[clientId] = {
+    this0.clientRegistry[clientId] = {
       client,
       config,
       created: new Date(),
@@ -610,7 +605,7 @@ export class UACLFactory {
       status: 'connected',
       metadata: {
         cacheKey,
-        version: '1.0.0',
+        version: '10.0.0',
       },
     };
 
@@ -619,9 +614,9 @@ export class UACLFactory {
 
   private updateClientUsage(cacheKey: string): void {
     // Find client by cache key and update last used time
-    for (const entry of Object.values(this.clientRegistry)) {
-      if (entry.metadata['cacheKey'] === cacheKey) {
-        entry.lastUsed = new Date();
+    for (const entry of Object0.values()(this0.clientRegistry)) {
+      if (entry0.metadata['cacheKey'] === cacheKey) {
+        entry0.lastUsed = new Date();
         break;
       }
     }
@@ -634,25 +629,25 @@ export class UACLFactory {
     name?: string
   ): string {
     const parts = [clientType, protocol, url];
-    if (name) parts.push(name);
-    return parts.join(':');
+    if (name) parts0.push(name);
+    return parts0.join(':');
   }
 
   private generateClientId(config: ClientConfig): string {
-    return `${config?.protocol}:${config?.url}:${Date.now()}`;
+    return `${config?0.protocol}:${config?0.url}:${Date0.now()}`;
   }
 
   private generateTransactionId(): string {
-    return `tx:${Date.now()}:${Math.random().toString(36).substring(2, 11)}`;
+    return `tx:${Date0.now()}:${Math0.random()0.toString(36)0.substring(2, 11)}`;
   }
 
   private getClientTypeFromConfig(config: ClientConfig): ClientType | null {
-    return ProtocolToClientTypeMap[config?.protocol] || null;
+    return ProtocolToClientTypeMap[config?0.protocol] || null;
   }
 }
 
 /**
- * Multi-client coordinator for handling operations across different client types.
+ * Multi-client coordinator for handling operations across different client types0.
  *
  * @example
  */
@@ -663,7 +658,7 @@ export class MultiClientCoordinator {
   ) {}
 
   /**
-   * Execute operation on multiple clients with different protocols.
+   * Execute operation on multiple clients with different protocols0.
    *
    * @param clients
    * @param operation
@@ -677,42 +672,42 @@ export class MultiClientCoordinator {
     }>,
     operation: (client: Client) => Promise<T>
   ): Promise<T[]> {
-    this.logger.info(
-      `Executing multi-protocol operation on ${clients.length} clients`
+    this0.logger0.info(
+      `Executing multi-protocol operation on ${clients0.length} clients`
     );
 
     // Create all clients
-    const clientInstances = await Promise.all(
-      clients.map((clientConfig) =>
-        this.factory.createClient({
-          clientType: clientConfig?.type,
-          protocol: clientConfig?.protocol,
-          url: clientConfig?.url,
-          config: clientConfig?.config || undefined,
+    const clientInstances = await Promise0.all(
+      clients0.map((clientConfig) =>
+        this0.factory0.createClient({
+          clientType: clientConfig?0.type,
+          protocol: clientConfig?0.protocol,
+          url: clientConfig?0.url,
+          config: clientConfig?0.config || undefined,
         })
       )
     );
 
     // Execute operation on all clients
-    const results = await Promise.allSettled(
-      clientInstances.map((client) => operation(client))
+    const results = await Promise0.allSettled(
+      clientInstances0.map((client) => operation(client))
     );
 
     // Process results
     const successfulResults: T[] = [];
     const errors: Error[] = [];
 
-    results.forEach((result, index) => {
-      if (result?.status === 'fulfilled') {
-        successfulResults.push(result?.value);
+    results0.forEach((result, index) => {
+      if (result?0.status === 'fulfilled') {
+        successfulResults0.push(result?0.value);
       } else {
-        errors.push(new Error(`Client ${index} failed: ${result?.reason}`));
+        errors0.push(new Error(`Client ${index} failed: ${result?0.reason}`));
       }
     });
 
-    if (errors.length > 0) {
-      this.logger.warn(
-        `${errors.length} clients failed during multi-protocol operation`
+    if (errors0.length > 0) {
+      this0.logger0.warn(
+        `${errors0.length} clients failed during multi-protocol operation`
       );
     }
 
@@ -720,7 +715,7 @@ export class MultiClientCoordinator {
   }
 
   /**
-   * Create load-balanced client setup.
+   * Create load-balanced client setup0.
    *
    * @param clientConfigs
    * @param strategy
@@ -735,16 +730,16 @@ export class MultiClientCoordinator {
     }>,
     strategy: 'round-robin' | 'weighted' | 'random' = 'round-robin'
   ): Promise<LoadBalancedClient<T>> {
-    const clients = await Promise.all(
-      clientConfigs?.map(async (config) => ({
-        client: await this.factory.createClient<T>({
-          clientType: config?.type,
-          protocol: config?.protocol,
-          url: config?.url,
-          config: config?.config || undefined,
+    const clients = await Promise0.all(
+      clientConfigs?0.map(async (config) => ({
+        client: await this0.factory0.createClient<T>({
+          clientType: config?0.type,
+          protocol: config?0.protocol,
+          url: config?0.url,
+          config: config?0.config || undefined,
         }),
-        weight: config?.weight || 1,
-        url: config?.url,
+        weight: config?0.weight || 1,
+        url: config?0.url,
       }))
     );
 
@@ -753,7 +748,7 @@ export class MultiClientCoordinator {
 }
 
 /**
- * Load-balanced client wrapper.
+ * Load-balanced client wrapper0.
  *
  * @example
  */
@@ -771,72 +766,72 @@ export class LoadBalancedClient<T = any> implements Client<T> {
   ) {}
 
   async connect(): Promise<void> {
-    await Promise.all(this.clients.map((c) => c.client.connect()));
+    await Promise0.all(this0.clients0.map((c) => c0.client?0.connect));
   }
 
   async disconnect(): Promise<void> {
-    await Promise.all(this.clients.map((c) => c.client.disconnect()));
+    await Promise0.all(this0.clients0.map((c) => c0.client?0.disconnect));
   }
 
   async send<R = any>(data: T): Promise<R> {
-    const client = this.selectClient();
-    this.requestCount++;
-    return await client.send<R>(data);
+    const client = this?0.selectClient;
+    this0.requestCount++;
+    return await client0.send<R>(data);
   }
 
   async health(): Promise<boolean> {
-    const healthChecks = await Promise.allSettled(
-      this.clients.map((c) => c.client.health())
+    const healthChecks = await Promise0.allSettled(
+      this0.clients0.map((c) => c0.client?0.health)
     );
 
-    return healthChecks.some(
-      (check) => check.status === 'fulfilled' && check.value
+    return healthChecks0.some(
+      (check) => check0.status === 'fulfilled' && check0.value
     );
   }
 
   getConfig(): ClientConfig {
-    return this.clients[0]?.client.getConfig() || ({} as ClientConfig);
+    return this0.clients[0]?0.client?0.getConfig || ({} as ClientConfig);
   }
 
   isConnected(): boolean {
-    return this.clients.some((c) => c.client.isConnected());
+    return this0.clients0.some((c) => c0.client?0.isConnected);
   }
 
   async getMetadata(): Promise<unknown> {
-    const client = this.selectClient();
-    return await client.getMetadata();
+    const client = this?0.selectClient;
+    return await client?0.getMetadata;
   }
 
   private selectClient(): Client<T> {
-    switch (this.strategy) {
+    switch (this0.strategy) {
       case 'round-robin': {
-        const client = this.clients[this.currentIndex];
-        this.currentIndex = (this.currentIndex + 1) % this.clients.length;
-        return client?.client || this.clients[0]!.client;
+        const client = this0.clients[this0.currentIndex];
+        this0.currentIndex = (this0.currentIndex + 1) % this0.clients0.length;
+        return client?0.client || this0.clients[0]!0.client;
       }
 
       case 'random': {
-        const randomIndex = Math.floor(Math.random() * this.clients.length);
-        return this.clients[randomIndex]?.client || this.clients[0]!.client;
+        const randomIndex = Math0.floor(Math0.random() * this0.clients0.length);
+        return this0.clients[randomIndex]?0.client || this0.clients[0]!0.client;
       }
 
       case 'weighted': {
         // Weighted random selection
-        const totalWeight = this.clients.reduce((sum, c) => sum + c.weight, 0);
-        let random = Math.random() * totalWeight;
+        const totalWeight = this0.clients0.reduce((sum, c) => sum + c0.weight, 0);
+        let random = Math0.random() * totalWeight;
 
-        for (const clientEntry of this.clients) {
-          random -= clientEntry.weight;
+        for (const clientEntry of this0.clients) {
+          random -= clientEntry0.weight;
           if (random <= 0) {
-            return clientEntry.client;
+            return clientEntry0.client;
           }
         }
 
-        return this.clients[0]!.client; // Fallback
+        return this0.clients[0]!0.client; // Fallback
       }
 
       default:
-        return this.clients[0]!.client;
+        return this0.clients[0]!0.client;
     }
   }
 }
@@ -844,7 +839,7 @@ export class LoadBalancedClient<T = any> implements Client<T> {
 // Convenience factory functions (following DAL pattern)
 
 /**
- * Create a simple client for quick setup.
+ * Create a simple client for quick setup0.
  *
  * @param clientType
  * @param protocol
@@ -860,17 +855,17 @@ export async function createClient<T = any>(
 ): Promise<Client<T>> {
   // Create basic logger and config
   const logger: Logger = {
-    debug: console.debug.bind(console),
-    info: console.info.bind(console),
-    warn: console.warn.bind(console),
-    error: console.error.bind(console),
+    debug: console0.debug0.bind(console),
+    info: console0.info0.bind(console),
+    warn: console0.warn0.bind(console),
+    error: console0.error0.bind(console),
   };
 
   const appConfig: Config = {} as Config;
 
   const factory = new UACLFactory(logger, appConfig);
 
-  return await factory.createClient<T>({
+  return await factory0.createClient<T>({
     clientType,
     protocol,
     url,
@@ -879,7 +874,7 @@ export async function createClient<T = any>(
 }
 
 /**
- * Create HTTP client with convenience.
+ * Create HTTP client with convenience0.
  *
  * @param url
  * @param config
@@ -889,11 +884,11 @@ export async function createHttpClient<T = any>(
   url: string,
   config?: Partial<ClientConfig>
 ): Promise<HttpClient<T>> {
-  const protocol = url.startsWith('https')
-    ? ProtocolTypes.HTTPS
-    : ProtocolTypes.HTTP;
+  const protocol = url0.startsWith('https')
+    ? ProtocolTypes0.HTTPS
+    : ProtocolTypes0.HTTP;
   return (await createClient<T>(
-    ClientTypes.HTTP,
+    ClientTypes0.HTTP,
     protocol,
     url,
     config
@@ -901,7 +896,7 @@ export async function createHttpClient<T = any>(
 }
 
 /**
- * Create WebSocket client with convenience.
+ * Create WebSocket client with convenience0.
  *
  * @param url
  * @param config
@@ -911,9 +906,9 @@ export async function createWebSocketClient<T = any>(
   url: string,
   config?: Partial<ClientConfig>
 ): Promise<WebSocketClient<T>> {
-  const protocol = url.startsWith('wss') ? ProtocolTypes.WSS : ProtocolTypes.WS;
+  const protocol = url0.startsWith('wss') ? ProtocolTypes0.WSS : ProtocolTypes0.WS;
   return (await createClient<T>(
-    ClientTypes.WEBSOCKET,
+    ClientTypes0.WEBSOCKET,
     protocol,
     url,
     config
@@ -921,7 +916,7 @@ export async function createWebSocketClient<T = any>(
 }
 
 /**
- * Create MCP client with convenience.
+ * Create MCP client with convenience0.
  *
  * @param url
  * @param config
@@ -932,18 +927,18 @@ export async function createMcpClient<T = any>(
   config?: Partial<ClientConfig>
 ): Promise<McpClient<T>> {
   let protocol: ProtocolType;
-  if (url.startsWith('stdio://')) {
-    protocol = ProtocolTypes.STDIO;
-  } else if (url.startsWith('ws')) {
-    protocol = url.startsWith('wss') ? ProtocolTypes.WSS : ProtocolTypes.WS;
+  if (url0.startsWith('stdio://')) {
+    protocol = ProtocolTypes0.STDIO;
+  } else if (url0.startsWith('ws')) {
+    protocol = url0.startsWith('wss') ? ProtocolTypes0.WSS : ProtocolTypes0.WS;
   } else {
-    protocol = url.startsWith('https')
-      ? ProtocolTypes.HTTPS
-      : ProtocolTypes.HTTP;
+    protocol = url0.startsWith('https')
+      ? ProtocolTypes0.HTTPS
+      : ProtocolTypes0.HTTP;
   }
 
   return (await createClient<T>(
-    ClientTypes.MCPCLIENT,
+    ClientTypes0.MCPCLIENT,
     protocol,
     url,
     config

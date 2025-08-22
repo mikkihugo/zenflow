@@ -5,7 +5,7 @@
  * including round-robin, least-connections, weighted, and resource-aware strategies.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import type { MemoryNode, MemoryLoadMetrics } from './types';
@@ -30,7 +30,7 @@ interface LoadBalancingStats {
   algorithm: string;
 }
 
-export class MemoryLoadBalancer extends EventEmitter {
+export class MemoryLoadBalancer extends TypedEventBase {
   private logger: Logger;
   private config: LoadBalancingConfig;
   private nodes = new Map<string, MemoryNode>();

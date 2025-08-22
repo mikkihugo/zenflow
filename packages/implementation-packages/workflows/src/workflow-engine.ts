@@ -11,7 +11,7 @@
  * - Clean separation of concerns with focused methods
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   type Logger,
@@ -124,7 +124,7 @@ export type {
  * - Enterprise-grade monitoring and analytics
  * - Graceful error handling and recovery
  */
-export class WorkflowEngine extends EventEmitter {
+export class WorkflowEngine extends TypedEventBase {
   private readonly config: Required<WorkflowEngineConfig>;
   private readonly activeWorkflows = new Map<string, WorkflowState>();
   private readonly workflowDefinitions = new Map<string, WorkflowDefinition>();
@@ -262,7 +262,7 @@ export class WorkflowEngine extends EventEmitter {
         recordGauge('workflow_engine_initialized_timestamp', Date.now());
         recordMetric('workflow_engine_initialized_successfully', 1);
         
-        this.emit('initialized');
+        this.emit('initialized', { timestamp: new Date() });
         
         setTraceAttributes({
           'workflow.engine.initialized': true,

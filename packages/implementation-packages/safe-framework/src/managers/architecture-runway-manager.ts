@@ -16,7 +16,7 @@
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger, MemorySystem, TypeSafeEventBus } from '../types';
 import { getLogger, createEvent, EventPriority } from '../types';
 
@@ -141,7 +141,7 @@ export interface CapabilityKPI {
  * });
  * ```
  */
-export class ArchitectureRunwayManager extends EventEmitter {
+export class ArchitectureRunwayManager extends TypedEventBase {
   private logger: Logger;
   private memory: MemorySystem;
   private eventBus: TypeSafeEventBus;

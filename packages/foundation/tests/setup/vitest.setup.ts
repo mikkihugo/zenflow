@@ -58,7 +58,23 @@ export const testUtils = {
 };
 
 declare global {
-  const testUtils: typeof import('./vitest.setup').testUtils;
+  const testUtils: {
+    mockLogger: () => {
+      debug: any;
+      info: any;
+      warn: any;
+      error: any;
+      fatal: any;
+    };
+    createMockConfig: () => {
+      debug: boolean;
+      metrics: boolean;
+      storage: { type: string };
+      neural: { enabled: boolean };
+    };
+    waitFor: (ms: number) => Promise<unknown>;
+    createTestId: () => string;
+  };
 }
 
 // Make testUtils globally available

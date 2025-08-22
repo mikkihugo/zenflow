@@ -26,7 +26,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Core SPARC types
 export interface SPARCProject {
@@ -167,7 +167,7 @@ export interface SPARCWarning {
  * Provides complete SPARC methodology execution with AI coordination,
  * quality gates, metrics tracking, and deliverable generation.
  */
-export class SPARCCommander extends EventEmitter {
+export class SPARCCommander extends TypedEventBase {
   private projects = new Map<string, SPARCProject>();
   private activePhases = new Map<string, SPARCPhase>();
   private configuration: SPARCConfiguration;

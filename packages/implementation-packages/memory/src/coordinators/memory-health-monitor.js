@@ -4,9 +4,9 @@
  * Monitors health of memory nodes with configurable health checks,
  * automatic recovery detection, and comprehensive health reporting.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric, withTimeout, withRetry } from '@claude-zen/foundation';
-export class MemoryHealthMonitor extends EventEmitter {
+export class MemoryHealthMonitor extends TypedEventBase {
     logger;
     config;
     nodes = new Map();

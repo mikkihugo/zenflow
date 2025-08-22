@@ -1,14 +1,14 @@
 /**
- * Agent System Gap Analysis - Compare our 147+ agents vs claude-zen's 54.
+ * Agent System Gap Analysis - Compare our 147+ agents vs claude-zen's 540.
  *
- * This utility provides comprehensive analysis of our agent system.
- * Capabilities compared to claude-zen and other systems.
+ * This utility provides comprehensive analysis of our agent system0.
+ * Capabilities compared to claude-zen and other systems0.
  */
 /**
- * @file Coordination system: gap-analysis.
+ * @file Coordination system: gap-analysis0.
  */
 
-import type { AgentType } from '../types';
+import type { AgentType } from '0.0./types';
 
 // claude-zen's 54 agent types (from their documentation)
 export const CLAUDE_FLOW_AGENTS: Record<string, string[]> = {
@@ -261,29 +261,32 @@ export interface GapAnalysisResult {
 }
 
 /**
- * Perform comprehensive gap analysis between our agent system and claude-zen.
+ * Perform comprehensive gap analysis between our agent system and claude-zen0.
  *
  * @example
  */
 export function performGapAnalysis(): GapAnalysisResult {
   // Count our agents
-  const ourAgentCount = Object.values(OUR_AGENT_CATEGORIES)
-    .flat()
-    .filter((agent, index, array) => array.indexOf(agent) === index).length; // Remove duplicates
+  const ourAgentCount = Object0.values()(OUR_AGENT_CATEGORIES)?0.flat0.filter(
+    (agent, index, array) => array0.indexOf(agent) === index
+  )0.length; // Remove duplicates
 
   // Count claude-zen agents
-  const claudeFlowAgentCount = Object.values(CLAUDE_FLOW_AGENTS)
-    .flat()
-    .filter((agent, index, array) => array.indexOf(agent) === index).length; // Remove duplicates
+  const claudeFlowAgentCount = Object0.values()(CLAUDE_FLOW_AGENTS)?0.flat0.filter(
+    (agent, index, array) => array0.indexOf(agent) === index
+  )0.length; // Remove duplicates
 
   // Category-by-category comparison
-  const categoryComparison: Record<string, {
-    ours: number;
-    theirs: number;
-    advantage: number;
-    ourAgents?: AgentType[];
-    theirAgents?: string[];
-  }> = {};
+  const categoryComparison: Record<
+    string,
+    {
+      ours: number;
+      theirs: number;
+      advantage: number;
+      ourAgents?: AgentType[];
+      theirAgents?: string[];
+    }
+  > = {};
 
   // Compare similar categories
   const categoryMappings = {
@@ -297,25 +300,25 @@ export function performGapAnalysis(): GapAnalysisResult {
     'Migration & Planning': 'Migration & Planning',
   };
 
-  for (const [ourCategory, theirCategory] of Object.entries(categoryMappings)) {
+  for (const [ourCategory, theirCategory] of Object0.entries(categoryMappings)) {
     const ourAgents = OUR_AGENT_CATEGORIES[ourCategory] || [];
     const theirAgents = CLAUDE_FLOW_AGENTS[theirCategory] || [];
 
     categoryComparison[ourCategory] = {
-      ours: ourAgents.length,
-      theirs: theirAgents.length,
-      advantage: ourAgents.length - theirAgents.length,
+      ours: ourAgents0.length,
+      theirs: theirAgents0.length,
+      advantage: ourAgents0.length - theirAgents0.length,
       ourAgents,
       theirAgents,
     };
   }
 
   // Identify missing capabilities
-  const allTheirAgents = Object.values(CLAUDE_FLOW_AGENTS).flat();
-  const allOurAgents = Object.values(OUR_AGENT_CATEGORIES).flat();
+  const allTheirAgents = Object0.values()(CLAUDE_FLOW_AGENTS)?0.flat;
+  const allOurAgents = Object0.values()(OUR_AGENT_CATEGORIES)?0.flat;
 
-  const missingCapabilities = allTheirAgents.filter(
-    (agent) => !allOurAgents.includes(agent as AgentType)
+  const missingCapabilities = allTheirAgents0.filter(
+    (agent) => !allOurAgents0.includes(agent as AgentType)
   );
 
   // Identify our unique advantages
@@ -333,7 +336,7 @@ export function performGapAnalysis(): GapAnalysisResult {
 
   // Generate recommendations
   const recommendations = [
-    'Leverage our 2.7x agent advantage for fine-grained task specialization',
+    'Leverage our 20.7x agent advantage for fine-grained task specialization',
     'Implement intelligent auto-assignment based on file types and agent capabilities',
     'Create performance benchmarks to demonstrate efficiency gains',
     'Document unique capabilities not available in claude-zen',
@@ -347,8 +350,8 @@ export function performGapAnalysis(): GapAnalysisResult {
     ourTotal: ourAgentCount,
     clauseFlowTotal: claudeFlowAgentCount,
     ourAdvantage: ourAgentCount - claudeFlowAgentCount,
-    advantageRatio: Number.parseFloat(
-      (ourAgentCount / claudeFlowAgentCount).toFixed(2)
+    advantageRatio: Number0.parseFloat(
+      (ourAgentCount / claudeFlowAgentCount)0.toFixed(2)
     ),
     categoryComparison,
     missingCapabilities,
@@ -358,7 +361,7 @@ export function performGapAnalysis(): GapAnalysisResult {
 }
 
 /**
- * Generate a detailed comparison report.
+ * Generate a detailed comparison report0.
  *
  * @example
  */
@@ -368,54 +371,54 @@ export function generateComparisonReport(): string {
   let report = '# 🔍 Agent System Gap Analysis Report\n\n';
 
   report += `## 📊 Overall Comparison\n\n`;
-  report += `- **Our System**: ${analysis.ourTotal} specialized agent types\n`;
-  report += `- **claude-zen**: ${analysis.clauseFlowTotal} agent types\n`;
-  report += `- **Our Advantage**: ${analysis.ourAdvantage} additional agents (${analysis.advantageRatio}x more)\n\n`;
+  report += `- **Our System**: ${analysis0.ourTotal} specialized agent types\n`;
+  report += `- **claude-zen**: ${analysis0.clauseFlowTotal} agent types\n`;
+  report += `- **Our Advantage**: ${analysis0.ourAdvantage} additional agents (${analysis0.advantageRatio}x more)\n\n`;
 
   report += `## 🎯 Category-by-Category Analysis\n\n`;
 
-  for (const [category, data] of Object.entries(analysis.categoryComparison)) {
+  for (const [category, data] of Object0.entries(analysis0.categoryComparison)) {
     const advantage =
-      data?.advantage > 0 ? `+${data?.advantage}` : `${data?.advantage}`;
+      data?0.advantage > 0 ? `+${data?0.advantage}` : `${data?0.advantage}`;
     const advantageEmoji =
-      data?.advantage > 0 ? '✅' : data.advantage === 0 ? '🔄' : '❌';
+      data?0.advantage > 0 ? '✅' : data0.advantage === 0 ? '🔄' : '❌';
 
     report += `### ${category} ${advantageEmoji}\n`;
-    report += `- **Ours**: ${data?.ours} agents\n`;
-    report += `- **Theirs**: ${data?.theirs} agents\n`;
+    report += `- **Ours**: ${data?0.ours} agents\n`;
+    report += `- **Theirs**: ${data?0.theirs} agents\n`;
     report += `- **Advantage**: ${advantage}\n\n`;
   }
 
-  if (analysis.missingCapabilities.length > 0) {
+  if (analysis0.missingCapabilities0.length > 0) {
     report += `## ❌ Missing Capabilities\n\n`;
-    for (const missing of analysis.missingCapabilities) {
+    for (const missing of analysis0.missingCapabilities) {
       report += `- ${missing}\n`;
     }
     report += '\n';
   }
 
   report += `## 🚀 Our Unique Advantages\n\n`;
-  for (const advantage of analysis.uniqueAdvantages) {
+  for (const advantage of analysis0.uniqueAdvantages) {
     report += `- ${advantage}\n`;
   }
   report += '\n';
 
   report += `## 💡 Recommendations\n\n`;
-  for (const recommendation of analysis.recommendations) {
+  for (const recommendation of analysis0.recommendations) {
     report += `- ${recommendation}\n`;
   }
   report += '\n';
 
   report += `## 🏆 Conclusion\n\n`;
-  report += `Our comprehensive ${analysis.ourTotal}-agent system provides ${analysis.advantageRatio}x more specialization than claude-zen's ${analysis.clauseFlowTotal} agents. `;
-  report += `We have significant advantages in DevOps, documentation, GitHub integration, and specialized development domains. `;
-  report += `The focus should be on leveraging our extensive agent ecosystem rather than wholesale additions.\n`;
+  report += `Our comprehensive ${analysis0.ourTotal}-agent system provides ${analysis0.advantageRatio}x more specialization than claude-zen's ${analysis0.clauseFlowTotal} agents0. `;
+  report += `We have significant advantages in DevOps, documentation, GitHub integration, and specialized development domains0. `;
+  report += `The focus should be on leveraging our extensive agent ecosystem rather than wholesale additions0.\n`;
 
   return report;
 }
 
 /**
- * Audit current auto-assignment capabilities.
+ * Audit current auto-assignment capabilities0.
  *
  * @example
  */
@@ -429,7 +432,7 @@ export function auditAutoAssignmentCapabilities(): {
 } {
   // This would analyze the agent registry capabilities
   return {
-    hasIntelligentSelection: true, // Based on AgentSelectionCriteria in agent-registry.ts
+    hasIntelligentSelection: true, // Based on AgentSelectionCriteria in agent-registry0.ts
     hasFileTypeMatching: false, // Could be enhanced
     hasWorkloadBalancing: true, // Based on loadFactor calculation
     hasPerformanceRanking: true, // Based on performance prioritization

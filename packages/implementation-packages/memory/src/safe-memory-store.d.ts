@@ -7,7 +7,7 @@
  * Provides type-safe memory operations using discriminated unions.
  * for proper error handling and result discrimination.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { type MemoryResult } from '../utils/type-guards';
 export interface SafeMemoryStoreOptions {
     namespace?: string;
@@ -31,7 +31,7 @@ export interface MemoryMetadata {
  *
  * @example
  */
-export declare class SafeMemoryStore extends EventEmitter {
+export declare class SafeMemoryStore extends TypedEventBase {
     private store;
     private metadata;
     private ttlTimers;

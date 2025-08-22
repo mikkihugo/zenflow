@@ -5,7 +5,7 @@
  * automated tuning, and predictive optimization strategies.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   recordMetric, 
@@ -44,7 +44,7 @@ interface OptimizationAction {
   };
 }
 
-export class MemoryOptimizationEngine extends EventEmitter {
+export class MemoryOptimizationEngine extends TypedEventBase {
   private logger: Logger;
   private config: OptimizationConfig;
   private telemetry: TelemetryManager;

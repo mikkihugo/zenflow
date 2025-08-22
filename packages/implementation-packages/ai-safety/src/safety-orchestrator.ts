@@ -157,7 +157,7 @@ export interface SafetyMetrics {
  * - Phase 3: Human escalation and intervention
  */
 @injectable()
-export class AISafetyOrchestrator extends EventEmitter {
+export class AISafetyOrchestrator extends TypedEventBase {
   private deceptionDetector: AIDeceptionDetector;
   private isMonitoring: boolean;
   private metrics: SafetyMetrics;
@@ -303,7 +303,7 @@ export class AISafetyOrchestrator extends EventEmitter {
     // Apply the proven coordination protocol
     await this.orchestrateSafetyMonitoring();
 
-    this.emit('safety:monitoring-started');
+    this.emit('safety:monitoring-started', {});
   }
 
   /**
@@ -328,7 +328,7 @@ export class AISafetyOrchestrator extends EventEmitter {
         recordMetric('safety_monitoring_stopped', 1);
         
         this.logger.info('🛑 Enterprise AI Safety monitoring STOPPED');
-        this.emit('safety:monitoring-stopped');
+        this.emit('safety:monitoring-stopped', {});
         
         return ok(undefined);
         
@@ -595,7 +595,7 @@ export class AISafetyOrchestrator extends EventEmitter {
     logger.warn('⏸️ EMERGENCY: Pausing all agent sessions');
 
     // This would integrate with agent management system
-    this.emit('safety:emergency-pause');
+    this.emit('safety:emergency-pause', {});
 
     return true;
   }
@@ -621,7 +621,7 @@ export class AISafetyOrchestrator extends EventEmitter {
     logger.error('🛡️ SAFETY PROTOCOLS ACTIVATED');
 
     // Lock down systems, enable enhanced monitoring
-    this.emit('safety:protocols-active');
+    this.emit('safety:protocols-active', {});
   }
 
   /**

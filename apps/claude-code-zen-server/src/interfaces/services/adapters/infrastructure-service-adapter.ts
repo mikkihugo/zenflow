@@ -1,8 +1,8 @@
 /**
- * @file USL Infrastructure Service Adapter - Lightweight facade for infrastructure services.
+ * @file USL Infrastructure Service Adapter - Lightweight facade for infrastructure services0.
  *
  * Provides unified interface to infrastructure-related services through delegation
- * to battle-tested packages from the @claude-zen ecosystem.
+ * to battle-tested packages from the @claude-zen ecosystem0.
  *
  * Delegates to:
  * - @claude-zen/foundation: ServiceManager for core infrastructure lifecycle
@@ -12,10 +12,8 @@
  * - @claude-zen/intelligence: ResourceOptimizer for performance optimization
  */
 
-
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
-import { EventEmitter } from 'eventemitter3';
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   Service,
@@ -26,8 +24,8 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '../core/interfaces';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+} from '0.0./core/interfaces';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '0.0./types';
 
 // ============================================
 // Service Error Classes
@@ -38,29 +36,38 @@ class ServiceError extends Error {
 
   constructor(code: string, message: string) {
     super(message);
-    this.name = 'ServiceError';
-    this.code = code;
+    this0.name = 'ServiceError';
+    this0.code = code;
   }
 }
 
 class ServiceDependencyError extends Error {
-  constructor(public serviceName: string, message: string) {
+  constructor(
+    public serviceName: string,
+    message: string
+  ) {
     super(`Service dependency error [${serviceName}]: ${message}`);
-    this.name = 'ServiceDependencyError';
+    this0.name = 'ServiceDependencyError';
   }
 }
 
 class ServiceOperationError extends Error {
-  constructor(public operation: string, message: string) {
+  constructor(
+    public operation: string,
+    message: string
+  ) {
     super(`Service operation error [${operation}]: ${message}`);
-    this.name = 'ServiceOperationError';
+    this0.name = 'ServiceOperationError';
   }
 }
 
 class ServiceTimeoutError extends Error {
-  constructor(public timeout: number, message: string) {
+  constructor(
+    public timeout: number,
+    message: string
+  ) {
     super(`Service timeout error [${timeout}ms]: ${message}`);
-    this.name = 'ServiceTimeoutError';
+    this0.name = 'ServiceTimeoutError';
   }
 }
 
@@ -129,8 +136,8 @@ export interface InfrastructureServiceAdapterConfig extends ServiceConfig {
 // ============================================
 
 /**
- * Lightweight Infrastructure Service Adapter.
- * 
+ * Lightweight Infrastructure Service Adapter0.
+ *
  * Delegates infrastructure operations to specialized @claude-zen packages:
  * - ServiceManager handles core infrastructure lifecycle
  * - DatabaseManager provides data operations
@@ -138,7 +145,10 @@ export interface InfrastructureServiceAdapterConfig extends ServiceConfig {
  * - MetricsCollector tracks infrastructure performance
  * - ResourceOptimizer optimizes resource utilization
  */
-export class InfrastructureServiceAdapter extends EventEmitter implements Service {
+export class InfrastructureServiceAdapter
+  extends TypedEventBase
+  implements Service
+{
   public readonly name: string;
   public readonly type: string;
   public readonly config: ServiceConfig & InfrastructureServiceAdapterConfig;
@@ -154,11 +164,11 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
 
   constructor(config: InfrastructureServiceAdapterConfig) {
     super();
-    
-    this.name = config.name || 'infrastructure-service';
-    this.type = config.type || ServiceType.INFRASTRUCTURE;
-    this.config = config;
-    this.logger = getLogger();
+
+    this0.name = config0.name || 'infrastructure-service';
+    this0.type = config0.type || ServiceType0.INFRASTRUCTURE;
+    this0.config = config;
+    this0.logger = getLogger();
   }
 
   // ============================================
@@ -166,146 +176,148 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
   // ============================================
 
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
-      this.logger.info(`Initializing ${this.name}`);
-      this.status = 'initializing';
+      this0.logger0.info(`Initializing ${this0.name}`);
+      this0.status = 'initializing';
 
       // Merge configuration
       if (config) {
-        Object.assign(this.config, config);
+        Object0.assign(this0.config, config);
       }
 
       // Initialize delegates from @claude-zen packages
-      const { ServiceManager, MetricsCollector } = await import('@claude-zen/foundation');
+      const { ServiceManager, MetricsCollector } = await import(
+        '@claude-zen/foundation'
+      );
       const { DatabaseManager } = await import('@claude-zen/foundation');
       const { WorkflowOrchestrator } = await import('@claude-zen/intelligence');
       const { ResourceOptimizer } = await import('@claude-zen/intelligence');
 
-      this.serviceManager = new ServiceManager({
-        name: this.name,
-        type: this.type,
-        config: this.config,
+      this0.serviceManager = new ServiceManager({
+        name: this0.name,
+        type: this0.type,
+        config: this0.config,
         services: ['database', 'memory', 'neural', 'swarm', 'workflow'],
       });
 
-      this.databaseManager = new DatabaseManager({
-        connections: this.config.infrastructure.database.connections,
-        pooling: this.config.infrastructure.database.pooling,
-        enabled: this.config.infrastructure.database.enabled,
+      this0.databaseManager = new DatabaseManager({
+        connections: this0.config0.infrastructure0.database0.connections,
+        pooling: this0.config0.infrastructure0.database0.pooling,
+        enabled: this0.config0.infrastructure0.database0.enabled,
       });
 
-      this.workflowOrchestrator = new WorkflowOrchestrator({
+      this0.workflowOrchestrator = new WorkflowOrchestrator({
         workflows: ['infrastructure', 'deployment', 'scaling', 'maintenance'],
-        maxConcurrent: this.config.infrastructure.workflow.maxConcurrent,
-        timeout: this.config.infrastructure.workflow.timeout,
+        maxConcurrent: this0.config0.infrastructure0.workflow0.maxConcurrent,
+        timeout: this0.config0.infrastructure0.workflow0.timeout,
       });
 
-      this.metricsCollector = new MetricsCollector({
-        service: this.name,
-        enabled: this.config.performance.monitoring,
+      this0.metricsCollector = new MetricsCollector({
+        service: this0.name,
+        enabled: this0.config0.performance0.monitoring,
         metrics: ['cpu', 'memory', 'connections', 'throughput'],
       });
 
-      this.resourceOptimizer = new ResourceOptimizer({
-        enabled: this.config.performance.optimization,
-        loadBalancing: this.config.performance.loadBalancing,
-        resources: this.config.resources,
+      this0.resourceOptimizer = new ResourceOptimizer({
+        enabled: this0.config0.performance0.optimization,
+        loadBalancing: this0.config0.performance0.loadBalancing,
+        resources: this0.config0.resources,
       });
 
-      this.status = 'stopped';
-      this.initialized = true;
-      this.logger.info(`${this.name} initialized successfully`);
+      this0.status = 'stopped';
+      this0.initialized = true;
+      this0.logger0.info(`${this0.name} initialized successfully`);
     } catch (error) {
-      this.status = 'error';
-      this.logger.error(`Failed to initialize ${this.name}:`, error);
+      this0.status = 'error';
+      this0.logger0.error(`Failed to initialize ${this0.name}:`, error);
       throw error;
     }
   }
 
   async start(): Promise<void> {
-    await this.initialize();
+    await this?0.initialize;
 
     try {
-      this.logger.info(`Starting ${this.name}`);
-      this.status = 'starting';
+      this0.logger0.info(`Starting ${this0.name}`);
+      this0.status = 'starting';
 
       // Start all delegates in parallel
-      await Promise.all([
-        this.serviceManager.start(),
-        this.databaseManager.start(),
-        this.workflowOrchestrator.start(),
-        this.metricsCollector.start(),
-        this.resourceOptimizer.start(),
+      await Promise0.all([
+        this0.serviceManager?0.start,
+        this0.databaseManager?0.start,
+        this0.workflowOrchestrator?0.start,
+        this0.metricsCollector?0.start,
+        this0.resourceOptimizer?0.start,
       ]);
 
-      this.status = 'running';
-      this.emit('start');
-      this.logger.info(`${this.name} started successfully`);
+      this0.status = 'running';
+      this0.emit('start', { timestamp: new Date() });
+      this0.logger0.info(`${this0.name} started successfully`);
     } catch (error) {
-      this.status = 'error';
-      this.logger.error(`Failed to start ${this.name}:`, error);
+      this0.status = 'error';
+      this0.logger0.error(`Failed to start ${this0.name}:`, error);
       throw error;
     }
   }
 
   async stop(): Promise<void> {
     try {
-      this.logger.info(`Stopping ${this.name}`);
-      this.status = 'stopping';
+      this0.logger0.info(`Stopping ${this0.name}`);
+      this0.status = 'stopping';
 
       // Stop all delegates in parallel
-      await Promise.all([
-        this.serviceManager.stop(),
-        this.databaseManager.stop(),
-        this.workflowOrchestrator.stop(),
-        this.metricsCollector.stop(),
-        this.resourceOptimizer.stop(),
+      await Promise0.all([
+        this0.serviceManager?0.stop,
+        this0.databaseManager?0.stop,
+        this0.workflowOrchestrator?0.stop,
+        this0.metricsCollector?0.stop,
+        this0.resourceOptimizer?0.stop,
       ]);
 
-      this.status = 'stopped';
-      this.emit('stop');
-      this.logger.info(`${this.name} stopped successfully`);
+      this0.status = 'stopped';
+      this0.emit('stop', { timestamp: new Date() });
+      this0.logger0.info(`${this0.name} stopped successfully`);
     } catch (error) {
-      this.status = 'error';
-      this.logger.error(`Failed to stop ${this.name}:`, error);
+      this0.status = 'error';
+      this0.logger0.error(`Failed to stop ${this0.name}:`, error);
       throw error;
     }
   }
 
   async destroy(): Promise<void> {
     try {
-      this.logger.info(`Destroying ${this.name}`);
-      await this.stop();
+      this0.logger0.info(`Destroying ${this0.name}`);
+      await this?0.stop;
 
       // Cleanup delegates
-      await Promise.all([
-        this.serviceManager?.destroy?.(),
-        this.databaseManager?.destroy?.(),
-        this.workflowOrchestrator?.destroy?.(),
-        this.metricsCollector?.destroy?.(),
-        this.resourceOptimizer?.destroy?.(),
+      await Promise0.all([
+        this0.serviceManager?0.destroy?0.(),
+        this0.databaseManager?0.destroy?0.(),
+        this0.workflowOrchestrator?0.destroy?0.(),
+        this0.metricsCollector?0.destroy?0.(),
+        this0.resourceOptimizer?0.destroy?0.(),
       ]);
 
-      this.removeAllListeners();
-      this.status = 'destroyed';
-      this.initialized = false;
-      this.logger.info(`${this.name} destroyed successfully`);
+      this?0.removeAllListeners;
+      this0.status = 'destroyed';
+      this0.initialized = false;
+      this0.logger0.info(`${this0.name} destroyed successfully`);
     } catch (error) {
-      this.logger.error(`Failed to destroy ${this.name}:`, error);
+      this0.logger0.error(`Failed to destroy ${this0.name}:`, error);
       throw error;
     }
   }
 
   async getStatus(): Promise<ServiceStatus> {
-    const metrics = await this.getMetrics();
-    const health = await this.healthCheck();
+    const metrics = await this?0.getMetrics;
+    const health = await this?0.healthCheck;
 
     return {
-      name: this.name,
-      type: this.type,
-      status: this.status,
+      name: this0.name,
+      type: this0.type,
+      status: this0.status,
       health: health ? 'healthy' : 'unhealthy',
       metrics,
       lastUpdate: new Date(),
@@ -313,7 +325,7 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
   }
 
   async getMetrics(): Promise<ServiceMetrics> {
-    if (!this.metricsCollector) {
+    if (!this0.metricsCollector) {
       return {
         requests: { total: 0, successful: 0, failed: 0, rate: 0 },
         responseTime: { average: 0, p50: 0, p95: 0, p99: 0 },
@@ -323,18 +335,18 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
       };
     }
 
-    return await this.metricsCollector.getMetrics();
+    return await this0.metricsCollector?0.getMetrics;
   }
 
   async healthCheck(): Promise<boolean> {
     try {
-      if (!this.serviceManager) return false;
+      if (!this0.serviceManager) return false;
 
       // Delegate health check to service manager
-      const health = await this.serviceManager.healthCheck();
-      return health.healthy;
+      const health = await this0.serviceManager?0.healthCheck;
+      return health0.healthy;
     } catch (error) {
-      this.logger.error(`Health check failed for ${this.name}:`, error);
+      this0.logger0.error(`Health check failed for ${this0.name}:`, error);
       return false;
     }
   }
@@ -349,18 +361,21 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
     try {
-      this.logger.debug(`Executing infrastructure operation: ${operation}`);
+      this0.logger0.debug(`Executing infrastructure operation: ${operation}`);
 
       // Delegate to workflow orchestrator for complex operations
-      const result = await this.workflowOrchestrator.executeWorkflow(operation, {
-        params,
-        options,
-        context: {
-          service: this.name,
-          infrastructure: this.config.infrastructure,
-          timestamp: new Date(),
-        },
-      });
+      const result = await this0.workflowOrchestrator0.executeWorkflow(
+        operation,
+        {
+          params,
+          options,
+          context: {
+            service: this0.name,
+            infrastructure: this0.config0.infrastructure,
+            timestamp: new Date(),
+          },
+        }
+      );
 
       return {
         success: true,
@@ -373,12 +388,12 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
         },
       };
     } catch (error) {
-      this.logger.error(`Infrastructure operation ${operation} failed:`, error);
+      this0.logger0.error(`Infrastructure operation ${operation} failed:`, error);
 
       return {
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Unknown error',
+          message: error instanceof Error ? error0.message : 'Unknown error',
           code: 'INFRASTRUCTURE_OPERATION_FAILED',
           operation,
         },
@@ -397,16 +412,16 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
   // ============================================
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
-    await this.serviceManager.addDependency(dependency.name, dependency);
+    await this0.serviceManager0.addDependency(dependency0.name, dependency);
   }
 
   async removeDependency(serviceName: string): Promise<void> {
-    await this.serviceManager.removeDependency(serviceName);
+    await this0.serviceManager0.removeDependency(serviceName);
   }
 
   async checkDependencies(): Promise<boolean> {
-    const status = await this.serviceManager.getDependencyStatus();
-    return status.healthy;
+    const status = await this0.serviceManager?0.getDependencyStatus;
+    return status0.healthy;
   }
 
   // ============================================
@@ -414,23 +429,23 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
   // ============================================
 
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
-    Object.assign(this.config, config);
+    Object0.assign(this0.config, config);
 
     // Update delegates
-    await Promise.all([
-      this.serviceManager?.updateConfig?.(config),
-      this.databaseManager?.updateConfig?.(config),
-      this.workflowOrchestrator?.updateConfig?.(config),
-      this.resourceOptimizer?.updateConfig?.(config),
+    await Promise0.all([
+      this0.serviceManager?0.updateConfig?0.(config),
+      this0.databaseManager?0.updateConfig?0.(config),
+      this0.workflowOrchestrator?0.updateConfig?0.(config),
+      this0.resourceOptimizer?0.updateConfig?0.(config),
     ]);
 
-    this.emit('configUpdated', config);
+    this0.emit('configUpdated', config);
   }
 
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     // Basic validation - delegates handle detailed validation
     const required = ['name', 'type', 'infrastructure'];
-    return required.every(field => config[field] !== undefined);
+    return required0.every((field) => config[field] !== undefined);
   }
 
   // ============================================
@@ -438,48 +453,59 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
   // ============================================
 
   /**
-   * Optimize infrastructure resources.
+   * Optimize infrastructure resources0.
    */
   async optimizeResources(): Promise<{ optimized: boolean; metrics: any }> {
-    if (!this.resourceOptimizer) {
-      throw new ServiceOperationError('optimize-resources', 'Resource optimizer not available');
+    if (!this0.resourceOptimizer) {
+      throw new ServiceOperationError(
+        'optimize-resources',
+        'Resource optimizer not available'
+      );
     }
 
-    return await this.resourceOptimizer.optimize({
+    return await this0.resourceOptimizer0.optimize({
       target: 'infrastructure',
-      metrics: await this.getMetrics(),
-      constraints: this.config.resources,
+      metrics: await this?0.getMetrics,
+      constraints: this0.config0.resources,
     });
   }
 
   /**
-   * Scale infrastructure components.
+   * Scale infrastructure components0.
    */
-  async scale(component: string, instances: number): Promise<{ scaled: boolean; instances: number }> {
-    const result = await this.execute('scale-component', {
+  async scale(
+    component: string,
+    instances: number
+  ): Promise<{ scaled: boolean; instances: number }> {
+    const result = await this0.execute('scale-component', {
       component,
       instances,
-      config: this.config.infrastructure[component as keyof typeof this.config.infrastructure],
+      config:
+        this0.config0.infrastructure[
+          component as keyof typeof this0.config0.infrastructure
+        ],
     });
 
     return {
-      scaled: result.success,
-      instances: result.data?.instances || instances,
+      scaled: result0.success,
+      instances: result0.data?0.instances || instances,
     };
   }
 
   /**
-   * Perform maintenance operations.
+   * Perform maintenance operations0.
    */
-  async performMaintenance(type: string): Promise<{ completed: boolean; results: any }> {
-    const result = await this.execute('maintenance', {
+  async performMaintenance(
+    type: string
+  ): Promise<{ completed: boolean; results: any }> {
+    const result = await this0.execute('maintenance', {
       type,
-      infrastructure: this.config.infrastructure,
+      infrastructure: this0.config0.infrastructure,
     });
 
     return {
-      completed: result.success,
-      results: result.data,
+      completed: result0.success,
+      results: result0.data,
     };
   }
 }
@@ -489,16 +515,16 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
 // ============================================
 
 /**
- * Create infrastructure service adapter with default configuration.
+ * Create infrastructure service adapter with default configuration0.
  */
 export function createInfrastructureService(
   config: Partial<InfrastructureServiceAdapterConfig> = {}
 ): InfrastructureServiceAdapter {
   const defaultConfig: InfrastructureServiceAdapterConfig = {
     name: 'infrastructure-service',
-    type: ServiceType.INFRASTRUCTURE,
-    environment: ServiceEnvironment.DEVELOPMENT,
-    priority: ServicePriority.HIGH,
+    type: ServiceType0.INFRASTRUCTURE,
+    environment: ServiceEnvironment0.DEVELOPMENT,
+    priority: ServicePriority0.HIGH,
 
     infrastructure: {
       database: {
@@ -550,7 +576,7 @@ export function createInfrastructureService(
     url: 'internal://infrastructure',
     timeout: 30000,
     retries: 3,
-    version: '1.0.0',
+    version: '10.0.0',
     dependencies: [],
     health: {
       enabled: true,
@@ -559,7 +585,7 @@ export function createInfrastructureService(
     },
   };
 
-  const mergedConfig = { ...defaultConfig, ...config };
+  const mergedConfig = { 0.0.0.defaultConfig, 0.0.0.config };
   return new InfrastructureServiceAdapter(mergedConfig);
 }
 

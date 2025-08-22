@@ -78,7 +78,7 @@ export interface WorkflowEngineConfig {
     enableVisualization?: boolean;
     enableAdvancedOrchestration?: boolean;
 }
-export declare class WorkflowEngine extends EventEmitter3 {
+export declare class WorkflowEngine extends TypedEventBase3 {
     private config;
     private activeWorkflows;
     private workflowMetrics;

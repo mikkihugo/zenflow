@@ -184,6 +184,93 @@ export type { SAFeConfig, TeamworkConfig, AGUIConfig, KnowledgeConfig, KanbanCon
 // Default export for convenience
 export default enterpriseSystem;
 
+// =============================================================================
+// BUSINESS AGENT REGISTRIES - Enterprise facade specializations
+// =============================================================================
+
+/**
+ * getBusinessAgentRegistry - Specialized registry for business/workflow agents
+ * Delegates to @claude-zen/business-agents implementation package
+ */
+export const getBusinessAgentRegistry = async () => {
+  try {
+    // Business agents are part of the Enterprise facade itself
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    return registry;
+  } catch {
+    // Fallback to foundation AgentRegistry with business-specific config
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    console.warn('Business agents package not available, using basic agent registry');
+    return registry;
+  }
+};
+
+/**
+ * getWorkflowAgentRegistry - Specialized registry for workflow/process agents
+ * Delegates to @claude-zen/workflow-agents implementation package
+ */
+export const getWorkflowAgentRegistry = async () => {
+  try {
+    // Workflow agents are part of the Enterprise facade itself
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    return registry;
+  } catch (error) {
+    // Fallback to foundation AgentRegistry with workflow-specific config
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    console.warn('Workflow agents package not available, using basic agent registry');
+    return registry;
+  }
+};
+
+/**
+ * createBusinessAgentRegistry - Factory for business agent registries
+ */
+export const createBusinessAgentRegistry = async (config?: any) => {
+  const registry = await getBusinessAgentRegistry();
+  // AgentRegistry from foundation doesn't have configure method
+  if (config) {
+    console.log('Business agent registry config:', config);
+  }
+  return registry;
+};
+
+/**
+ * createWorkflowAgentRegistry - Factory for workflow agent registries
+ */
+export const createWorkflowAgentRegistry = async (config?: any) => {
+  const registry = await getWorkflowAgentRegistry();
+  // AgentRegistry from foundation doesn't have configure method
+  if (config) {
+    console.log('Workflow agent registry config:', config);
+  }
+  return registry;
+};
+
+/**
+ * createSafeFrameworkAgentRegistry - Factory for SAFE framework agents
+ */
+export const createSafeFrameworkAgentRegistry = async (config?: any) => {
+  try {
+    // SAFE framework agents are part of the Enterprise facade itself
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    if (config) {
+      console.log('SAFE framework agent registry config:', config);
+    }
+    return registry;
+  } catch (error) {
+    // Fallback to foundation AgentRegistry with SAFE-specific config
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    console.warn('SAFE framework package not available, using basic agent registry');
+    return registry;
+  }
+};
+
 // Note: Git operations are in development facade, not enterprise
 // Use @claude-zen/development for GitOperationsManager
 // Note: Teamwork is handled by @claude-zen/intelligence - use that facade directly

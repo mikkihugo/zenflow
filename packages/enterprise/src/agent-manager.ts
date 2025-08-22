@@ -5,7 +5,7 @@
  * to @claude-zen/agent-manager package.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import './module-declarations';
 
 // Agent manager system access with real package delegation
@@ -19,7 +19,7 @@ async function loadAgentManagerModule() {
     } catch (error) {
       console.warn('Agent manager package not available, providing compatibility layer');
       agentManagerModuleCache = {
-        AgentManager: class CompatibilityAgentManager extends EventEmitter {
+        AgentManager: class CompatibilityAgentManager extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -44,7 +44,7 @@ async function loadAgentManagerModule() {
             return { id: 'compat-agent', status: 'active' };
           }
         },
-        AgentRegistry: class CompatibilityAgentRegistry extends EventEmitter {
+        AgentRegistry: class CompatibilityAgentRegistry extends TypedEventBase {
           async register() {
             return Promise.resolve();
           }
@@ -58,7 +58,7 @@ async function loadAgentManagerModule() {
             return [];
           }
         },
-        AgentLifecycleManager: class CompatibilityLifecycleManager extends EventEmitter {
+        AgentLifecycleManager: class CompatibilityLifecycleManager extends TypedEventBase {
           async start() {
             return Promise.resolve();
           }

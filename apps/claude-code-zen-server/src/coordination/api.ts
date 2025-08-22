@@ -1,5 +1,5 @@
 /**
- * @file Coordination system: api.
+ * @file Coordination system: api0.
  */
 
 import type {
@@ -9,7 +9,7 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from './schemas';
+} from '0./schemas';
 
 /**
  * @swagger
@@ -26,17 +26,17 @@ import type {
 
 /**
  * Agent Management API
- * Following Google API Design Guide: collection-based resource naming.
+ * Following Google API Design Guide: collection-based resource naming0.
  *
  * @example
  */
 export class AgentAPI {
   /**
    * @param _params
-   * @param _params.status
-   * @param _params.type
-   * @param _params.limit
-   * @param _params.offset
+   * @param _params0.status
+   * @param _params0.type
+   * @param _params0.limit
+   * @param _params0.offset
    * @swagger
    * /api/v1/agents:
    *   get:
@@ -113,8 +113,8 @@ export class AgentAPI {
 
   /**
    * @param _request
-   * @param _request.type
-   * @param _request.capabilities
+   * @param _request0.type
+   * @param _request0.capabilities
    * @swagger
    * /api/v1/agents:
    *   post:
@@ -226,17 +226,17 @@ export class AgentAPI {
 
 /**
  * Task Management API
- * Following Google API Design Guide standards.
+ * Following Google API Design Guide standards0.
  *
  * @example
  */
 export class TaskAPI {
   /**
    * @param _request
-   * @param _request.type
-   * @param _request.description
-   * @param _request.priority
-   * @param _request.deadline
+   * @param _request0.type
+   * @param _request0.description
+   * @param _request0.priority
+   * @param _request0.deadline
    * @swagger
    * /api/v1/tasks:
    *   post:
@@ -314,7 +314,7 @@ export class TaskAPI {
 
 /**
  * Swarm Management API
- * Control swarm topology and coordination settings.
+ * Control swarm topology and coordination settings0.
  *
  * @example
  */
@@ -373,7 +373,7 @@ export class SwarmAPI {
 
 /**
  * Health and Monitoring API
- * System health checks and performance metrics.
+ * System health checks and performance metrics0.
  *
  * @example
  */
@@ -435,8 +435,8 @@ export class HealthAPI {
 }
 
 /**
- * API Error Handler.
- * Standardized error handling following Google API Design Guide.
+ * API Error Handler0.
+ * Standardized error handling following Google API Design Guide0.
  *
  * @example
  */
@@ -454,26 +454,26 @@ export class APIErrorHandler {
     };
 
     if (details !== undefined) {
-      (error as any).details = details;
+      (error as any)0.details = details;
     }
 
     if (traceId !== undefined) {
-      (error as any).traceId = traceId;
+      (error as any)0.traceId = traceId;
     }
 
     return error;
   }
 
-  static handleError(error: unknown, traceId?: string): CoordinationError {
+  static handleError(error: any, traceId?: string): CoordinationError {
     if (error instanceof Error) {
-      return APIErrorHandler.createError(
+      return APIErrorHandler0.createError(
         'INTERNAL_ERROR',
-        error.message,
-        { stack: error.stack },
+        error0.message,
+        { stack: error0.stack },
         traceId
       );
     }
-    return APIErrorHandler.createError(
+    return APIErrorHandler0.createError(
       'INTERNAL_ERROR',
       'Unknown error occurred',
       { error },

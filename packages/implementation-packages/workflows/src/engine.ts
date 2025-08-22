@@ -138,7 +138,7 @@ export interface WorkflowEngineConfig {
 
 @injectable()
 @singleton()
-export class WorkflowEngine extends EventEmitter3 {
+export class WorkflowEngine extends TypedEventBase3 {
   private config: Required<WorkflowEngineConfig>;
   private activeWorkflows = new Map<string, WorkflowState>();
   private workflowMetrics = new Map<string, any>();
@@ -215,7 +215,7 @@ export class WorkflowEngine extends EventEmitter3 {
     }
 
     this.isInitialized = true;
-    this.emit('initialized');
+    this.emit('initialized', { timestamp: new Date() });
   }
 
   private createWorkflowStateMachine(workflowId: string) {

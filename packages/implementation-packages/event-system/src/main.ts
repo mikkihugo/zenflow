@@ -16,7 +16,7 @@
  * PATTERN: Matches memory package's comprehensive foundation integration
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation/logging';
 import { injectable } from '@claude-zen/foundation/di';
 import type { Logger } from '@claude-zen/foundation/logging';
@@ -81,7 +81,7 @@ export class EventSystemError extends ContextError {
 // =============================================================================
 
 @injectable()
-export class FoundationEventBus extends EventEmitter {
+export class FoundationEventBus extends TypedEventBase {
   private config: EventBusConfig;
   private logger: Logger;
   private performanceTracker: PerformanceTracker;

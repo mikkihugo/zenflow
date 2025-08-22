@@ -20,7 +20,7 @@
  * @file Interface management system.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 const { getConfig } = (global as any).claudeZenFoundation;
 import { getLogger } from '@claude-zen/foundation'
@@ -69,7 +69,7 @@ export interface InterfaceStats {
  *
  * @example
  */
-export class InterfaceManager extends EventEmitter {
+export class InterfaceManager extends TypedEventBase {
   private config: Required<InterfaceManagerConfig>;
   private currentMode: InterfaceMode = 'auto';
   private isActive = false;
@@ -98,10 +98,10 @@ export class InterfaceManager extends EventEmitter {
     logger.info('Initializing interface manager');
 
     // Detect appropriate interface mode if auto
-    this.currentMode = this.config.defaultMode === 'auto' ? this.detectInterfaceMode() : this.config.defaultMode;
+    this.currentMode = this.configuration.defaultMode === 'auto' ? this.detectInterfaceMode() : this.configuration.defaultMode;
 
     this.initialized = true;
-    this.emit('initialized');
+    this.emit('initialized', {});
     logger.info(`Interface manager ready (mode: ${this.currentMode})`);
   }
 
@@ -200,7 +200,7 @@ export class InterfaceManager extends EventEmitter {
 
   private async launchWeb(): Promise<void> {
     logger.info(
-      `Web interface would be launched on port ${this.config.webPort}`
+      `Web interface would be launched on port ${this.configuration.webPort}`
     );
     // In a real implementation, this would start the web server
   }

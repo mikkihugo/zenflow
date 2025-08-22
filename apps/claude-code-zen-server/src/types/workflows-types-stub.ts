@@ -1,7 +1,7 @@
 /**
  * @fileoverview Temporary stub for @claude-zen/intelligence/types
- * 
- * This file provides fallback types for @claude-zen/intelligence/types submodule.
+ *
+ * This file provides fallback types for @claude-zen/intelligence/types submodule0.
  */
 
 // Workflow types stub
@@ -48,5 +48,5 @@ export type {
   WorkflowStepResult,
   WorkflowMetadata,
   WorkflowConfig,
-  WorkflowGateConfig
+  WorkflowGateConfig,
 };

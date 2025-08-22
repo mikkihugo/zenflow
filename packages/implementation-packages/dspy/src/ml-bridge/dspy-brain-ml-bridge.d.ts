@@ -23,7 +23,6 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { EventEmitter } from 'node:events';
 export interface DSPyOptimizationTask {
     type: 'teleprompter_optimization';
     teleprompterType: 'miprov2' | 'copro' | 'bootstrap' | 'grpo';
@@ -122,7 +121,7 @@ interface PredictionResult {
  * Acts as a translation layer that allows DSPy optimizers to leverage advanced
  * neural networks, WASM acceleration, and statistical analysis.
  */
-export declare class DSPyBrainMLBridge extends EventEmitter {
+export declare class DSPyBrainMLBridge extends TypedEventBase {
     private logger;
     private brainCoordinator;
     private initialized;

@@ -2,7 +2,7 @@
  * @file Advanced Memory Coordination System
  * Provides advanced coordination capabilities for distributed memory management.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 export interface BackendInterface {
     initialize(): Promise<void>;
     store(key: string, value: unknown, namespace?: string): Promise<unknown>;
@@ -55,10 +55,10 @@ export interface CoordinationDecision {
  *
  * @example
  */
-export declare class MemoryCoordinator extends EventEmitter {
+export declare class MemoryCoordinator extends TypedEventBase {
     private nodes;
     private decisions;
-    private config;
+    private configuration;
     constructor(config: MemoryCoordinationConfig);
     /**
      * Register a memory node for coordination.
@@ -137,7 +137,7 @@ export declare class MemoryCoordinator extends EventEmitter {
             completed: number;
             failed: number;
         };
-        config: MemoryCoordinationConfig;
+        config: any;
     };
     /**
      * Store data across distributed memory nodes.

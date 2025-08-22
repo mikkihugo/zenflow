@@ -4,16 +4,15 @@
  * Self-contained type definitions to eliminate external dependencies
  */
 // Foundation-based implementations for production usage
-import { getGlobalLLM, // Re-enabled in foundation
-getLogger as getFoundationLogger } from '@claude-zen/foundation';
-// Database access from infrastructure facade
-import { getDatabaseAccess // Use infrastructure facade
- } from '@claude-zen/infrastructure';
+import { getLogger as getFoundationLogger } from '@claude-zen/foundation';
+// LLM access from intelligence facade  
+import { getLLMProvider // Use intelligence facade for LLM access
+ } from '@claude-zen/intelligence';
 export class FoundationLLMIntegrationService {
     async analyze(request) {
         try {
-            const llm = getGlobalLLM();
-            llm.setRole('analyst');
+            const llm = await getLLMProvider();
+            // Configure LLM for analysis role
             const prompt = `Analyze the following task and provide insights:
       
 Task: ${request.task}

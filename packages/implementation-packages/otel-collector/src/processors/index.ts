@@ -51,7 +51,7 @@ export interface BaseProcessor {
 /**
  * Processor manager for handling data transformations
  */
-export class ProcessorManager extends EventEmitter {
+export class ProcessorManager extends TypedEventBase {
   private logger: Logger;
   private processors: Map<string, BaseProcessor> = new Map();
   private initialized = false;

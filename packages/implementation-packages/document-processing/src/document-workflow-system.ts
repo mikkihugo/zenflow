@@ -10,13 +10,24 @@
  * @file Document-workflow-system implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { nanoid } from 'nanoid';
 
 import { getLogger } from '@claude-zen/foundation'
-import type { DocumentManager } from "../services/document/document-service"
+// DocumentManager interface - using fallback type if intelligence facade not available
+interface DocumentManager {
+  initialize(): Promise<void>;
+  store(key: string, data: any, category?: string): Promise<void>;
+}
 
 const logger = getLogger('DocumentWorkflowSystem');
+
+// ProductWorkflowEngine interface - using fallback type if not available
+interface ProductWorkflowEngine {
+  initialize(): Promise<void>;
+  startProductWorkflow(type: string, config: any): Promise<{success: boolean; workflowId?: string}>;
+  getActiveProductWorkflows(): Promise<any[]>;
+}
 
 /**
  * Document Workflow System - Main orchestrator for document-based development workflows.
@@ -26,7 +37,7 @@ const logger = getLogger('DocumentWorkflowSystem');
  *
  * @example
  */
-export class DocumentWorkflowSystem extends EventEmitter {
+export class DocumentWorkflowSystem extends TypedEventBase {
   private workflowEngine: ProductWorkflowEngine;
   private documentService: DocumentManager;
   private activeWorkspaces = new Map<string, string>();
@@ -46,7 +57,7 @@ export class DocumentWorkflowSystem extends EventEmitter {
     await this.workflowEngine.initialize();
     await this.documentService.initialize();
 
-    this.emit('initialized');
+    this.emit('initialized', {});
     logger.info('Document Workflow System ready');
   }
 

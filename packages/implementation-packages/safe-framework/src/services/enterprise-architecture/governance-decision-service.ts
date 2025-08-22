@@ -539,7 +539,7 @@ export interface GovernanceDecisionRequest {
 /**
  * Governance Decision Service for enterprise architecture governance management
  */
-export class GovernanceDecisionService extends EventEmitter {
+export class GovernanceDecisionService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly decisions = new Map<string, GovernanceDecision>();
   private workflowEngine: any;

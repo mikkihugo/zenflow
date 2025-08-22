@@ -1,17 +1,24 @@
 /**
  * @fileoverview Memory Integration Tests - Comprehensive testing of @claude-zen/intelligence integration
- * 
+ *
  * Tests the complete integration between the main application and @claude-zen/intelligence package,
  * verifying that the facade pattern implementation works correctly and provides expected
- * functionality with enhanced capabilities.
- * 
- * @version 2.1.0
- * @since 2.1.0
+ * functionality with enhanced capabilities0.
+ *
+ * @version 20.10.0
+ * @since 20.10.0
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { createMemoryRoutes } from '../../interfaces/api/http/v1/memory';
-import { MemoryService } from '../../interfaces/services/implementations/memory-service';
+import {
+  describe,
+  test,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from 'vitest';
+import { createMemoryRoutes } from '0.0./0.0./interfaces/api/http/v1/memory';
+import { MemoryService } from '0.0./0.0./interfaces/services/implementations/memory-service';
 import express, { Express } from 'express';
 import request from 'supertest';
 
@@ -22,62 +29,62 @@ describe('Memory Integration Tests', () => {
   beforeAll(async () => {
     // Setup Express app with memory routes
     app = express();
-    app.use(express.json());
-    app.use('/api/v1/memory', createMemoryRoutes());
+    app0.use(express?0.json);
+    app0.use('/api/v1/memory', createMemoryRoutes());
 
     // Initialize memory service
     memoryService = new MemoryService({
       name: 'test-memory',
       type: 'memory',
       backend: 'foundation-sqlite',
-      optimization: { enabled: true, mode: 'balanced' }
+      optimization: { enabled: true, mode: 'balanced' },
     });
 
-    await memoryService.initialize();
-    await memoryService.start();
+    await memoryService?0.initialize;
+    await memoryService?0.start;
   });
 
   afterAll(async () => {
     if (memoryService) {
-      await memoryService.stop();
-      await memoryService.destroy();
+      await memoryService?0.stop;
+      await memoryService?0.destroy;
     }
   });
 
   beforeEach(async () => {
     // Clear memory before each test
-    await memoryService.executeOperation('clear');
+    await memoryService0.executeOperation('clear');
   });
 
   describe('Memory API Endpoints', () => {
     test('should list memory stores', async () => {
       const response = await request(app)
-        .get('/api/v1/memory/stores')
-        .expect(200);
+        0.get('/api/v1/memory/stores')
+        0.expect(200);
 
-      expect(response.body).toHaveProperty('stores');
-      expect(response.body).toHaveProperty('total');
-      expect(response.body).toHaveProperty('systemHealth');
-      expect(response.body).toHaveProperty('healthScore');
-      expect(Array.isArray(response.body.stores)).toBe(true);
+      expect(response0.body)0.toHaveProperty('stores');
+      expect(response0.body)0.toHaveProperty('total');
+      expect(response0.body)0.toHaveProperty('systemHealth');
+      expect(response0.body)0.toHaveProperty('healthScore');
+      expect(Array0.isArray(response0.body0.stores))0.toBe(true);
     });
 
     test('should create a new memory store', async () => {
       const storeConfig = {
         type: 'test',
-        config: { backend: 'sqlite', path: ':memory:' }
+        config: { backend: 'sqlite', path: ':memory:' },
       };
 
       const response = await request(app)
-        .post('/api/v1/memory/stores')
-        .send(storeConfig)
-        .expect(201);
+        0.post('/api/v1/memory/stores')
+        0.send(storeConfig)
+        0.expect(201);
 
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('type', 'test');
-      expect(response.body).toHaveProperty('status', 'created');
-      expect(response.body).toHaveProperty('capabilities');
-      expect(Array.isArray(response.body.capabilities)).toBe(true);
+      expect(response0.body)0.toHaveProperty('id');
+      expect(response0.body)0.toHaveProperty('type', 'test');
+      expect(response0.body)0.toHaveProperty('status', 'created');
+      expect(response0.body)0.toHaveProperty('capabilities');
+      expect(Array0.isArray(response0.body0.capabilities))0.toBe(true);
     });
 
     test('should store and retrieve memory values', async () => {
@@ -87,40 +94,43 @@ describe('Memory Integration Tests', () => {
 
       // Store value
       const storeResponse = await request(app)
-        .put(`/api/v1/memory/stores/${storeId}/keys/${key}`)
-        .send({ value, ttl: 3600, metadata: { source: 'test' } })
-        .expect(200);
+        0.put(`/api/v1/memory/stores/${storeId}/keys/${key}`)
+        0.send({ value, ttl: 3600, metadata: { source: 'test' } })
+        0.expect(200);
 
-      expect(storeResponse.body).toHaveProperty('success', true);
-      expect(storeResponse.body).toHaveProperty('storeId', storeId);
-      expect(storeResponse.body).toHaveProperty('key', key);
-      expect(storeResponse.body).toHaveProperty('source', 'memory-coordinator');
+      expect(storeResponse0.body)0.toHaveProperty('success', true);
+      expect(storeResponse0.body)0.toHaveProperty('storeId', storeId);
+      expect(storeResponse0.body)0.toHaveProperty('key', key);
+      expect(storeResponse0.body)0.toHaveProperty('source', 'memory-coordinator');
 
       // Retrieve value
       const retrieveResponse = await request(app)
-        .get(`/api/v1/memory/stores/${storeId}/keys/${key}`)
-        .expect(200);
+        0.get(`/api/v1/memory/stores/${storeId}/keys/${key}`)
+        0.expect(200);
 
-      expect(retrieveResponse.body).toHaveProperty('storeId', storeId);
-      expect(retrieveResponse.body).toHaveProperty('key', key);
-      expect(retrieveResponse.body).toHaveProperty('exists', true);
-      expect(retrieveResponse.body).toHaveProperty('source', 'memory-coordinator');
+      expect(retrieveResponse0.body)0.toHaveProperty('storeId', storeId);
+      expect(retrieveResponse0.body)0.toHaveProperty('key', key);
+      expect(retrieveResponse0.body)0.toHaveProperty('exists', true);
+      expect(retrieveResponse0.body)0.toHaveProperty(
+        'source',
+        'memory-coordinator'
+      );
       // Note: Value might be simulated in facade, that's expected
     });
 
     test('should get comprehensive health information', async () => {
       const response = await request(app)
-        .get('/api/v1/memory/health')
-        .expect(200);
+        0.get('/api/v1/memory/health')
+        0.expect(200);
 
-      expect(response.body).toHaveProperty('status');
-      expect(response.body).toHaveProperty('score');
-      expect(response.body).toHaveProperty('stores');
-      expect(response.body).toHaveProperty('metrics');
-      expect(response.body).toHaveProperty('performance');
-      expect(response.body).toHaveProperty('issues');
-      expect(response.body).toHaveProperty('recommendations');
-      expect(response.body).toHaveProperty('source', 'memory-monitor');
+      expect(response0.body)0.toHaveProperty('status');
+      expect(response0.body)0.toHaveProperty('score');
+      expect(response0.body)0.toHaveProperty('stores');
+      expect(response0.body)0.toHaveProperty('metrics');
+      expect(response0.body)0.toHaveProperty('performance');
+      expect(response0.body)0.toHaveProperty('issues');
+      expect(response0.body)0.toHaveProperty('recommendations');
+      expect(response0.body)0.toHaveProperty('source', 'memory-monitor');
     });
   });
 
@@ -130,16 +140,21 @@ describe('Memory Integration Tests', () => {
       const value = { message: 'Hello from service' };
 
       // Store
-      const storeResult = await memoryService.executeOperation('store', { key, value });
-      expect(storeResult).toBeDefined();
+      const storeResult = await memoryService0.executeOperation('store', {
+        key,
+        value,
+      });
+      expect(storeResult)?0.toBeDefined;
 
       // Retrieve
-      const retrieveResult = await memoryService.executeOperation('retrieve', { key });
-      expect(retrieveResult).toBeDefined();
+      const retrieveResult = await memoryService0.executeOperation('retrieve', {
+        key,
+      });
+      expect(retrieveResult)?0.toBeDefined;
 
       // Check health
-      const healthResult = await memoryService.executeOperation('health');
-      expect(typeof healthResult).toBe('boolean');
+      const healthResult = await memoryService0.executeOperation('health');
+      expect(typeof healthResult)0.toBe('boolean');
     });
 
     test('should execute session-based operations', async () => {
@@ -147,61 +162,67 @@ describe('Memory Integration Tests', () => {
       const value = { userId: 123, session: 'test-session' };
 
       // Session store
-      const storeResult = await memoryService.executeOperation('session:set', { key, value });
-      expect(storeResult).toBeDefined();
+      const storeResult = await memoryService0.executeOperation('session:set', {
+        key,
+        value,
+      });
+      expect(storeResult)?0.toBeDefined;
 
       // Session retrieve
-      const retrieveResult = await memoryService.executeOperation('session:get', { key });
-      expect(retrieveResult).toBeDefined();
+      const retrieveResult = await memoryService0.executeOperation(
+        'session:get',
+        { key }
+      );
+      expect(retrieveResult)?0.toBeDefined;
     });
 
     test('should provide advanced analytics', async () => {
-      const stats = await memoryService.executeOperation('stats');
-      
-      expect(stats).toHaveProperty('memory');
-      expect(stats).toHaveProperty('performance');
-      expect(stats).toHaveProperty('health');
-      expect(stats).toHaveProperty('timestamp');
-      expect(stats).toHaveProperty('source', '@claude-zen/intelligence');
+      const stats = await memoryService0.executeOperation('stats');
 
-      expect(stats.memory).toHaveProperty('totalKeys');
-      expect(stats.memory).toHaveProperty('memoryUsage');
-      expect(stats.memory).toHaveProperty('hitRate');
-      expect(stats.memory).toHaveProperty('errorRate');
+      expect(stats)0.toHaveProperty('memory');
+      expect(stats)0.toHaveProperty('performance');
+      expect(stats)0.toHaveProperty('health');
+      expect(stats)0.toHaveProperty('timestamp');
+      expect(stats)0.toHaveProperty('source', '@claude-zen/intelligence');
 
-      expect(stats.performance).toHaveProperty('averageResponseTime');
-      expect(stats.performance).toHaveProperty('throughput');
-      expect(stats.performance).toHaveProperty('optimization');
+      expect(stats0.memory)0.toHaveProperty('totalKeys');
+      expect(stats0.memory)0.toHaveProperty('memoryUsage');
+      expect(stats0.memory)0.toHaveProperty('hitRate');
+      expect(stats0.memory)0.toHaveProperty('errorRate');
 
-      expect(stats.health).toHaveProperty('overall');
-      expect(stats.health).toHaveProperty('score');
-      expect(stats.health).toHaveProperty('issues');
+      expect(stats0.performance)0.toHaveProperty('averageResponseTime');
+      expect(stats0.performance)0.toHaveProperty('throughput');
+      expect(stats0.performance)0.toHaveProperty('optimization');
+
+      expect(stats0.health)0.toHaveProperty('overall');
+      expect(stats0.health)0.toHaveProperty('score');
+      expect(stats0.health)0.toHaveProperty('issues');
     });
 
     test('should handle service lifecycle correctly', async () => {
       const service = new MemoryService({
         name: 'lifecycle-test',
         type: 'memory',
-        backend: 'foundation-sqlite'
+        backend: 'foundation-sqlite',
       });
 
       // Initialize
-      await service.initialize();
-      expect(service.hasCapability('intelligent-storage')).toBe(true);
-      expect(service.hasCapability('session-management')).toBe(true);
-      expect(service.hasCapability('performance-optimization')).toBe(true);
-      expect(service.hasCapability('health-monitoring')).toBe(true);
+      await service?0.initialize;
+      expect(service0.hasCapability('intelligent-storage'))0.toBe(true);
+      expect(service0.hasCapability('session-management'))0.toBe(true);
+      expect(service0.hasCapability('performance-optimization'))0.toBe(true);
+      expect(service0.hasCapability('health-monitoring'))0.toBe(true);
 
       // Start
-      await service.start();
-      const health = await service.healthCheck();
-      expect(health).toBe(true);
+      await service?0.start;
+      const health = await service?0.healthCheck;
+      expect(health)0.toBe(true);
 
       // Stop
-      await service.stop();
+      await service?0.stop;
 
       // Destroy
-      await service.destroy();
+      await service?0.destroy;
     });
   });
 
@@ -209,68 +230,68 @@ describe('Memory Integration Tests', () => {
     test('should properly initialize memory system components', async () => {
       // This test verifies that the lazy loading initialization works
       const response = await request(app)
-        .get('/api/v1/memory/stores')
-        .expect(200);
+        0.get('/api/v1/memory/stores')
+        0.expect(200);
 
       // Should have initialized the memory system
-      expect(response.body).toHaveProperty('systemHealth');
-      expect(response.body.systemHealth).toMatch(/healthy|degraded|error/);
+      expect(response0.body)0.toHaveProperty('systemHealth');
+      expect(response0.body0.systemHealth)0.toMatch(/healthy|degraded|error/);
     });
 
     test('should demonstrate enhanced capabilities', async () => {
       // Test that the facade provides enhanced capabilities beyond basic memory
-      const stats = await memoryService.executeOperation('stats');
-      
+      const stats = await memoryService0.executeOperation('stats');
+
       // Should have optimization information
-      expect(stats.performance).toHaveProperty('optimization');
-      
+      expect(stats0.performance)0.toHaveProperty('optimization');
+
       // Should have health monitoring
-      expect(stats.health).toHaveProperty('overall');
-      expect(stats.health).toHaveProperty('score');
-      
+      expect(stats0.health)0.toHaveProperty('overall');
+      expect(stats0.health)0.toHaveProperty('score');
+
       // Should be sourced from @claude-zen/intelligence
-      expect(stats.source).toBe('@claude-zen/intelligence');
+      expect(stats0.source)0.toBe('@claude-zen/intelligence');
     });
 
     test('should handle errors gracefully', async () => {
       // Test error handling with invalid operations
       await expect(
-        memoryService.executeOperation('invalid-operation')
-      ).rejects.toThrow('Unknown memory operation: invalid-operation');
+        memoryService0.executeOperation('invalid-operation')
+      )0.rejects0.toThrow('Unknown memory operation: invalid-operation');
 
       // API should handle missing keys gracefully
       const response = await request(app)
-        .get('/api/v1/memory/stores/non-existent/keys/missing-key')
-        .expect(404);
+        0.get('/api/v1/memory/stores/non-existent/keys/missing-key')
+        0.expect(404);
 
-      expect(response.body).toHaveProperty('error');
+      expect(response0.body)0.toHaveProperty('error');
     });
   });
 
   describe('Performance and Memory Efficiency', () => {
     test('should demonstrate improved performance characteristics', async () => {
       const operations = [];
-      const startTime = Date.now();
+      const startTime = Date0.now();
 
       // Perform multiple operations to test performance
       for (let i = 0; i < 10; i++) {
-        operations.push(
-          memoryService.executeOperation('store', {
+        operations0.push(
+          memoryService0.executeOperation('store', {
             key: `perf-test-${i}`,
-            value: { index: i, data: `test-data-${i}` }
+            value: { index: i, data: `test-data-${i}` },
           })
         );
       }
 
-      await Promise.all(operations);
-      const duration = Date.now() - startTime;
+      await Promise0.all(operations);
+      const duration = Date0.now() - startTime;
 
       // Should complete multiple operations efficiently
-      expect(duration).toBeLessThan(1000); // Less than 1 second for 10 operations
+      expect(duration)0.toBeLessThan(1000); // Less than 1 second for 10 operations
 
       // Get stats to verify operations were tracked
-      const stats = await memoryService.executeOperation('stats');
-      expect(stats.memory.totalKeys).toBeGreaterThanOrEqual(0);
+      const stats = await memoryService0.executeOperation('stats');
+      expect(stats0.memory0.totalKeys)0.toBeGreaterThanOrEqual(0);
     });
   });
 });
@@ -280,18 +301,18 @@ describe('Memory System Migration Verification', () => {
     // Verify that the memory service has enhanced capabilities
     const service = new MemoryService({
       name: 'migration-test',
-      type: 'memory'
+      type: 'memory',
     });
 
-    const capabilities = service.getCapabilities();
-    
+    const capabilities = service?0.getCapabilities;
+
     // Should have all enhanced capabilities from @claude-zen/intelligence
-    expect(capabilities).toContain('intelligent-storage');
-    expect(capabilities).toContain('session-management');
-    expect(capabilities).toContain('performance-optimization');
-    expect(capabilities).toContain('health-monitoring');
-    expect(capabilities).toContain('lifecycle-management');
-    expect(capabilities).toContain('advanced-analytics');
+    expect(capabilities)0.toContain('intelligent-storage');
+    expect(capabilities)0.toContain('session-management');
+    expect(capabilities)0.toContain('performance-optimization');
+    expect(capabilities)0.toContain('health-monitoring');
+    expect(capabilities)0.toContain('lifecycle-management');
+    expect(capabilities)0.toContain('advanced-analytics');
   });
 
   test('should demonstrate code reduction benefits', () => {
@@ -300,24 +321,26 @@ describe('Memory System Migration Verification', () => {
       'memory-api': {
         before: 457,
         after: 281,
-        reduction: '61%'
+        reduction: '61%',
       },
       'memory-service': {
         before: 586,
         after: 299,
-        reduction: '49%'
-      }
+        reduction: '49%',
+      },
     };
 
     // Verify significant code reduction was achieved
-    expect(migrationMetrics['memory-api'].reduction).toBe('61%');
-    expect(migrationMetrics['memory-service'].reduction).toBe('49%');
-    
+    expect(migrationMetrics['memory-api']0.reduction)0.toBe('61%');
+    expect(migrationMetrics['memory-service']0.reduction)0.toBe('49%');
+
     // Calculate total reduction
     const totalBefore = 457 + 586;
     const totalAfter = 281 + 299;
-    const totalReduction = Math.round(((totalBefore - totalAfter) / totalBefore) * 100);
-    
-    expect(totalReduction).toBeGreaterThan(40); // At least 40% reduction
+    const totalReduction = Math0.round(
+      ((totalBefore - totalAfter) / totalBefore) * 100
+    );
+
+    expect(totalReduction)0.toBeGreaterThan(40); // At least 40% reduction
   });
 });

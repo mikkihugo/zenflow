@@ -4,9 +4,9 @@
  * Provides intelligent memory optimization with real-time performance monitoring,
  * automated tuning, and predictive optimization strategies.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric, TelemetryManager, withTrace } from '@claude-zen/foundation';
-export class MemoryOptimizationEngine extends EventEmitter {
+export class MemoryOptimizationEngine extends TypedEventBase {
     logger;
     config;
     telemetry;

@@ -5,7 +5,7 @@
  * optimization strategies, lifecycle management, and comprehensive monitoring.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   recordMetric, 
@@ -35,7 +35,7 @@ interface ManagedComponent {
   lastHealthCheck: number;
 }
 
-export class MemorySystemManager extends EventEmitter {
+export class MemorySystemManager extends TypedEventBase {
   private logger: Logger;
   private config: MemorySystemConfig;
   private telemetry: TelemetryManager;

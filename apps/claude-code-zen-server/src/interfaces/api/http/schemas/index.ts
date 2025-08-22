@@ -1,10 +1,10 @@
 /**
- * REST API Schemas.
+ * REST API Schemas0.
  *
- * Consolidated OpenAPI 3.0 schemas from all domains.
- * Provides single source of truth for API documentation and validation.
+ * Consolidated OpenAPI 30.0 schemas from all domains0.
+ * Provides single source of truth for API documentation and validation0.
  *
- * @file REST API schemas for all domains.
+ * @file REST API schemas for all domains0.
  */
 
 // Removed broken config import - using simple fallback
@@ -17,29 +17,29 @@ export type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../coordination/schemas';
+} from '@claude-zen/enterprise';
 // Import domain-specific schemas
-export * from './common';
-export * from './neural';
+export * from '0./common';
+export * from '@claude-zen/intelligence';
 
 /**
- * Complete OpenAPI 3.0 Schema Definition
- * Combines all domain schemas into REST API specification.
+ * Complete OpenAPI 30.0 Schema Definition
+ * Combines all domain schemas into REST API specification0.
  */
 export const RestAPISchema = {
-  openapi: '3.0.0',
+  openapi: '30.0.0',
   info: {
     title: 'Claude Code Flow API',
-    version: '1.0.0',
+    version: '10.0.0',
     description:
       'Unified API for coordination, neural networks, memory, and database operations',
     contact: {
       name: 'Claude Code Flow Team',
-      url: 'https://github.com/claude-zen-flow',
+      url: 'https://github0.com/claude-zen-flow',
     },
     license: {
       name: 'MIT',
-      url: 'https://opensource.org/licenses/MIT',
+      url: 'https://opensource0.org/licenses/MIT',
     },
   },
   servers: [
@@ -48,7 +48,7 @@ export const RestAPISchema = {
       description: 'Development server',
     },
     {
-      url: 'https://api.claude-zen-flow.com',
+      url: 'https://api0.claude-zen-flow0.com',
       description: 'Production server',
     },
   ],
@@ -399,7 +399,7 @@ export const RestAPISchema = {
         },
       },
 
-      // Coordination schemas (import.*from.*)
+      // Coordination schemas (import0.*from0.*)
       Agent: {
         type: 'object',
         required: [
@@ -612,7 +612,7 @@ export const RestAPISchema = {
           learningRate: {
             type: 'number',
             minimum: 0.0001,
-            maximum: 1.0,
+            maximum: 10.0,
             default: 0.001,
           },
           batchSize: {

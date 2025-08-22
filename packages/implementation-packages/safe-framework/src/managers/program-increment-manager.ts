@@ -17,7 +17,7 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type {
   Logger,
   MemorySystem,
@@ -112,7 +112,7 @@ export interface PIManagerState {
  * Lightweight facade that orchestrates the complete Program Increment lifecycle through
  * specialized services while maintaining API compatibility with the original implementation.
  */
-export class ProgramIncrementManager extends EventEmitter {
+export class ProgramIncrementManager extends TypedEventBase {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
   private readonly memory: MemorySystem;
@@ -181,7 +181,7 @@ export class ProgramIncrementManager extends EventEmitter {
       await this.loadPersistedState();
 
       // Start tracking if enabled
-      if (this.config.enableContinuousTracking) {
+      if (this.configuration.enableContinuousTracking) {
         this.startContinuousTracking();
       }
 
@@ -190,7 +190,7 @@ export class ProgramIncrementManager extends EventEmitter {
 
       this.initialized = true;
       this.logger.info('Program Increment Manager initialized successfully');
-      this.emit('initialized');
+      this.emit('initialized', {});
 
     } catch (error) {
       this.logger.error('Failed to initialize PI Manager', { error });
@@ -590,7 +590,7 @@ export class ProgramIncrementManager extends EventEmitter {
       } catch (error) {
         this.logger.error('PI tracking update failed', { error });
       }
-    }, this.config.trackingUpdateInterval);
+    }, this.configuration.trackingUpdateInterval);
   }
 
   private registerEventHandlers(): void {
@@ -624,7 +624,7 @@ export class ProgramIncrementManager extends EventEmitter {
       id: `pi-${artId}-${Date.now()}`,
       name: `Program Increment for ART ${artId}`,
       startDate: new Date(),
-      endDate: new Date(Date.now() + this.config.defaultPILengthWeeks * 7 * 24 * 60 * 60 * 1000),
+      endDate: new Date(Date.now() + this.configuration.defaultPILengthWeeks * 7 * 24 * 60 * 60 * 1000),
       status: PIStatus.PLANNING,
       objectives: [],
       features: [],

@@ -4,9 +4,9 @@
  * Provides sophisticated load balancing algorithms for memory operations,
  * including round-robin, least-connections, weighted, and resource-aware strategies.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric } from '@claude-zen/foundation';
-export class MemoryLoadBalancer extends EventEmitter {
+export class MemoryLoadBalancer extends TypedEventBase {
     logger;
     config;
     nodes = new Map();

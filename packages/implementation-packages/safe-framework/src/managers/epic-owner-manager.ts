@@ -97,7 +97,7 @@ interface EpicPerformanceMetrics {
  * - @claude-zen/foundation: Logging, DI, error handling, telemetry
  * - Event-driven approval architecture (clean separation from UI)
  */
-export class EpicOwnerManager extends EventEmitter {
+export class EpicOwnerManager extends TypedEventBase {
   private readonly config: EpicOwnerManagerConfig;
   private readonly logger: Logger;
   private readonly memorySystem: MemorySystem;

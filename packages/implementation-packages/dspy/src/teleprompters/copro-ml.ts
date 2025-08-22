@@ -140,7 +140,7 @@ export interface COPROMLResult {
  * detection, and adaptive feedback processing using battle-tested ML libraries.
  */
 export class COPROML extends Teleprompter {
-  private eventEmitter: EventEmitter = new EventEmitter();
+  private eventEmitter: EventEmitter = new TypedEventBase();
   private logger: Logger;
   private config: COPROMLConfig;
   private initialized: boolean = false;

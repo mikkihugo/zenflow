@@ -1,8 +1,8 @@
 /**
  * Terminal User Interface (TUI) Types
- * 
+ *
  * This module defines types and interfaces for terminal-based user interactions,
- * providing a rich command-line interface for swarm coordination and monitoring.
+ * providing a rich command-line interface for swarm coordination and monitoring0.
  */
 
 export interface TUIConfig {
@@ -55,7 +55,15 @@ export interface TUIWidget {
   /** Widget identifier */
   id: string;
   /** Widget type */
-  type: 'panel' | 'list' | 'chart' | 'progress' | 'text' | 'input' | 'button' | 'table';
+  type:
+    | 'panel'
+    | 'list'
+    | 'chart'
+    | 'progress'
+    | 'text'
+    | 'input'
+    | 'button'
+    | 'table';
   /** Widget title */
   title: string;
   /** Widget position */
@@ -68,7 +76,7 @@ export interface TUIWidget {
   /** Widget visibility */
   visible: boolean;
   /** Widget content */
-  content: unknown;
+  content: any;
   /** Widget properties */
   properties: Record<string, unknown>;
   /** Event handlers */
@@ -92,6 +100,23 @@ export interface TUILayout {
   };
   /** Layout theme */
   theme: TUITheme;
+}
+
+export interface DiscoveredDomain {
+  /** Domain identifier */
+  id: string;
+  /** Domain name */
+  name: string;
+  /** Domain description */
+  description: string;
+  /** Domain type */
+  type: string;
+  /** Domain files */
+  files: string[];
+  /** Domain confidence score */
+  confidence: number;
+  /** Suggested swarm topology for this domain */
+  suggestedTopology?: 'mesh' | 'hierarchical' | 'star' | 'ring' | 'hybrid';
 }
 
 export interface TUIEvent {
@@ -155,13 +180,13 @@ export interface TUIParameter {
   /** Parameter is required */
   required: boolean;
   /** Default value */
-  defaultValue?: unknown;
+  defaultValue?: any;
   /** Parameter validation */
   validation?: {
     pattern?: string;
     min?: number;
     max?: number;
-    enum?: unknown[];
+    enum?: any[];
   };
 }
 
@@ -171,7 +196,7 @@ export interface TUICommandResult {
   /** Result message */
   message: string;
   /** Result data */
-  data?: unknown;
+  data?: any;
   /** Execution time in milliseconds */
   executionTime: number;
   /** Error information */
@@ -313,7 +338,7 @@ export interface TUITableColumn {
   /** Column sortable */
   sortable: boolean;
   /** Column renderer */
-  renderer?: (value: unknown, row: TUITableRow) => string;
+  renderer?: (value: any, row: TUITableRow) => string;
 }
 
 export interface TUITableRow {
@@ -429,7 +454,14 @@ export interface TUIInput {
   /** Input identifier */
   id: string;
   /** Input type */
-  type: 'text' | 'password' | 'number' | 'email' | 'url' | 'search' | 'textarea';
+  type:
+    | 'text'
+    | 'password'
+    | 'number'
+    | 'email'
+    | 'url'
+    | 'search'
+    | 'textarea';
   /** Input placeholder */
   placeholder: string;
   /** Input value */
@@ -514,9 +546,15 @@ export interface TUIApplication {
 
 // Export type aliases for common usage patterns
 export type TUIEventHandler = (event: TUIEvent) => void;
-export type TUICommandHandler = (args: string[], context: TUIContext) => Promise<TUICommandResult>;
-export type TUIWidgetRenderer = (widget: TUIWidget, context: TUIContext) => string;
-export type TUIValidator = (value: unknown) => boolean | string;
+export type TUICommandHandler = (
+  args: string[],
+  context: TUIContext
+) => Promise<TUICommandResult>;
+export type TUIWidgetRenderer = (
+  widget: TUIWidget,
+  context: TUIContext
+) => string;
+export type TUIValidator = (value: any) => boolean | string;
 
 // Export utility types
 export type TUIWidgetType = TUIWidget['type'];
@@ -550,5 +588,5 @@ export type {
   TUINotification,
   TUINotificationAction,
   TUIKeyBinding,
-  TUIApplication
+  TUIApplication,
 };

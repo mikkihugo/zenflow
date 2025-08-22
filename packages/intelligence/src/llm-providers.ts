@@ -48,10 +48,10 @@
  * implementations that maintain interface contracts for compilation compatibility.
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { hasService } from '@claude-zen/foundation/facade-status-manager';
+import { TypedEventBase } from '@claude-zen/foundation';
+import { hasService } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import './module-declarations';
+import './module-declarations.d.ts';
 
 const logger = getLogger('Intelligence/LLMProviders');
 
@@ -97,7 +97,7 @@ export interface LLMProviderInfo {
  * Delegates to @claude-zen/llm-providers package when available.
  * Provides fallback implementations for compilation compatibility.
  */
-export class LLMProvider extends EventEmitter {
+export class LLMProvider extends TypedEventBase {
   private realInstance: any = null;
   private providerId: string;
 
@@ -126,17 +126,8 @@ export class LLMProvider extends EventEmitter {
       return await this.realInstance.execute(request);
     }
 
-    // Fallback implementation
-    logger.warn('Using fallback LLM provider execution');
-    return {
-      success: true,
-      content: `Fallback response for: ${request.messages[request.messages.length - 1]?.content || 'No message'}`,
-      metadata: {
-        provider: this.providerId,
-        fallback: true,
-        executionTime: Date.now(),
-      },
-    };
+    // No fallback - fail clearly when real providers not available
+    throw new Error(`LLM Provider ${this.providerId} not available - @claude-zen/llm-providers package required`);
   }
 
   setRole(role: string): void {
@@ -169,9 +160,8 @@ export async function executeClaudeTask(
     const { executeClaudeTask: realExecuteClaudeTask } = await import('@claude-zen/llm-providers');
     return await realExecuteClaudeTask(prompt, options);
   } catch (error) {
-    // Fallback implementation
-    logger.warn('Using fallback Claude task execution', error);
-    return `Fallback execution result for: ${prompt}`;
+    // No fallback - fail clearly when real providers not available
+    throw new Error(`Claude task execution failed - @claude-zen/llm-providers package required: ${error}`);
   }
 }
 
@@ -185,11 +175,14 @@ export function getLLMProvider(
 ): LLMProvider {
   try {
     const { getLLMProviderByCapability } = require('@claude-zen/llm-providers');
-    return getLLMProviderByCapability(capability);
+    logger.info(`🔍 Requesting LLM provider for capability: ${capability}`);
+    const provider = getLLMProviderByCapability(capability);
+    logger.info(`✅ Selected LLM provider: ${provider.constructor.name} for capability: ${capability}`);
+    return provider;
   } catch (error) {
-    // Fallback implementation
-    logger.warn(`Using fallback LLM provider for capability: ${capability}`, error);
-    return new LLMProvider('claude-code');
+    // No fallback - fail clearly when real providers not available
+    logger.error(`❌ LLM Provider with capability '${capability}' not available`);
+    throw new Error(`LLM Provider with capability '${capability}' not available - @claude-zen/llm-providers package required: ${error}`);
   }
 }
 
@@ -203,11 +196,14 @@ export function createLLMProvider(
 ): LLMProvider {
   try {
     const { createLLMProvider } = require('@claude-zen/llm-providers');
-    return createLLMProvider(providerId);
+    logger.info(`🔍 Creating LLM provider: ${providerId}`);
+    const provider = createLLMProvider(providerId);
+    logger.info(`✅ Created LLM provider: ${provider.constructor.name} (ID: ${providerId})`);
+    return provider;
   } catch (error) {
-    // Fallback implementation
-    logger.warn(`Using fallback LLM provider creation for: ${providerId}`, error);
-    return new LLMProvider(providerId);
+    // No fallback - fail clearly when real providers not available
+    logger.error(`❌ LLM Provider '${providerId}' not available`);
+    throw new Error(`LLM Provider '${providerId}' not available - @claude-zen/llm-providers package required: ${error}`);
   }
 }
 
@@ -219,19 +215,16 @@ export function createLLMProvider(
 export function listLLMProviders(): LLMProviderInfo[] {
   try {
     const { listLLMProviders } = require('@claude-zen/llm-providers');
-    return listLLMProviders();
+    const providers = listLLMProviders();
+    logger.info(`📋 Available LLM providers (${providers.length}):`);
+    providers.forEach((provider: any) => {
+      logger.info(`  - ${provider.name} (${provider.type}, ${provider.category}): ${provider.available ? '✅ Available' : '❌ Unavailable'}`);
+    });
+    return providers;
   } catch (error) {
-    // Fallback implementation
-    logger.warn('Using fallback LLM provider list', error);
-    return [
-      {
-        id: 'claude-code',
-        name: 'Claude Code CLI',
-        type: 'cli',
-        category: 'file-operations',
-        available: false,
-      },
-    ];
+    // No fallback - fail clearly when real providers not available
+    logger.error(`❌ LLM Provider listing failed`);
+    throw new Error(`LLM Provider listing failed - @claude-zen/llm-providers package required: ${error}`);
   }
 }
 
@@ -249,9 +242,8 @@ export async function executeGitHubModelsTask(
     const { executeGitHubModelsTask } = await import('@claude-zen/llm-providers');
     return executeGitHubModelsTask(prompt, options);
   } catch (error) {
-    // Fallback implementation
-    logger.warn('Using fallback GitHub Models task execution', error);
-    return `Fallback GitHub Models result for: ${prompt}`;
+    // No fallback - fail clearly when real providers not available
+    throw new Error(`GitHub Models task execution failed - @claude-zen/llm-providers package required: ${error}`);
   }
 }
 
@@ -264,9 +256,8 @@ export async function executeSwarmCoordinationTask(
     const { executeSwarmCoordinationTask } = await import('@claude-zen/llm-providers');
     return executeSwarmCoordinationTask(task, options);
   } catch (error) {
-    // Fallback implementation
-    logger.warn('Using fallback swarm coordination task execution', error);
-    return `Fallback swarm coordination result for: ${task}`;
+    // No fallback - fail clearly when real providers not available
+    throw new Error(`Swarm coordination task execution failed - @claude-zen/llm-providers package required: ${error}`);
   }
 }
 

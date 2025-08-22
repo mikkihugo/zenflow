@@ -4,9 +4,9 @@
  * Provides sophisticated cache eviction algorithms including LRU, LFU, adaptive
  * strategies with intelligent priority management and performance optimization.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { CacheEvictionConfig, CacheEntry, EvictionReason } from './types';
-export declare class CacheEvictionStrategy extends EventEmitter {
+export declare class CacheEvictionStrategy extends TypedEventBase {
     private logger;
     private config;
     private cache;
@@ -53,7 +53,7 @@ export declare class CacheEvictionStrategy extends EventEmitter {
         maxSize: number;
         memoryUsage: number;
         maxMemory: number;
-        algorithm: "lru" | "lfu" | "fifo" | "ttl" | "adaptive" | "random";
+        algorithm: "lru" | "lfu" | "fifo" | "ttl" | "random" | "adaptive";
         metrics: {
             totalEvictions: number;
             evictionsByReason: Record<EvictionReason, number>;

@@ -10,7 +10,7 @@
  * @file System Integration and Migration Implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 import {
   EventEmitterMigrationHelper,
@@ -49,7 +49,7 @@ interface UELSystem {
  *
  * @example
  */
-export class UELEnhancedEventBus extends EventEmitter {
+export class UELEnhancedEventBus extends TypedEventBase {
   private uelManager?: EventManager;
   private uelEnabled = false;
   private eventMappings = new Map<string, string>();
@@ -99,7 +99,7 @@ export class UELEnhancedEventBus extends EventEmitter {
       this.uelManager = integration.eventManager;
 
       // Initialize migration helper
-      this.migrationHelper = new EventEmitterMigrationHelper(
+      this.migrationHelper = new TypedEventBaseMigrationHelper(
         integration.eventManager as any,
         this.logger
       );
@@ -351,7 +351,7 @@ export class UELEnhancedEventBus extends EventEmitter {
  *
  * @example
  */
-export class UELEnhancedApplicationCoordinator extends EventEmitter {
+export class UELEnhancedApplicationCoordinator extends TypedEventBase {
   private uelSystem?: UELSystem;
 
   /**
@@ -717,7 +717,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
  *
  * @example
  */
-export class UELEnhancedObserverSystem extends EventEmitter {
+export class UELEnhancedObserverSystem extends TypedEventBase {
   private uelEventManager?: EventManagerInterface;
   private observers = new Map<string, EventEmitter>();
   private logger: Logger;
@@ -771,7 +771,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
    * @param type
    */
   createObserver(name: string, type: string = 'custom'): EventEmitter {
-    const observer = new EventEmitter();
+    const observer = new TypedEventBase();
 
     // Wrap with UEL integration if available
     if (this.uelEventManager) {
@@ -1043,14 +1043,14 @@ export class SystemIntegrationFactory {
  * @param logger
  * @example
  */
-export async function enhanceWithUEL<T extends EventEmitter>(
+export async function enhanceWithUEL<T extends TypedEventBase>(
   originalInstance: T,
   name: string,
   eventManager: EventManager,
   managerType: EventManagerType = EventManagerTypes.SYSTEM,
   logger?: Logger
 ): Promise<UELCompatibleEventEmitter> {
-  const migrationHelper = new EventEmitterMigrationHelper(eventManager as any, logger);
+  const migrationHelper = new TypedEventBaseMigrationHelper(eventManager as any, logger);
   return await migrationHelper.wrapEventEmitter(
     originalInstance,
     name,
@@ -1077,7 +1077,7 @@ export function analyzeSystemEventEmitterUsage(
   migrationRecommendations: string[];
   overallComplexity: 'low' | 'medium' | 'high';
 } {
-  const migrationHelper = new EventEmitterMigrationHelper(null as any, logger);
+  const migrationHelper = new TypedEventBaseMigrationHelper(null as any, logger);
   const systemAnalyses: { [key: string]: { eventTypes: string[]; listenerCounts: Record<string, number>; maxListeners: number; recommendations: string[]; migrationComplexity: "high" | "medium" | "low"; } } = {};
   const migrationRecommendations: string[] = [];
 

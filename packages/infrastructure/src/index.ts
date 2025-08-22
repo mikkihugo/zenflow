@@ -26,29 +26,18 @@
  * @version 1.0.0
  */
 
-import { 
-  registerFacade,
-  getLogger
-} from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('infrastructure');
 
-// Register infrastructure facade with expected packages
-registerFacade('infrastructure', [
+// Infrastructure is independent - does not register with Foundation
+logger.info('Infrastructure facade initialized with packages:', [
   '@claude-zen/database',
   '@claude-zen/event-system',
   '@claude-zen/load-balancing',
   '@claude-zen/telemetry',
   '@claude-zen/otel-collector',
   '@claude-zen/service-container'
-], [
-  'Multi-backend database abstraction layer',
-  'Type-safe event bus and management',
-  'Performance optimization and routing',
-  'System telemetry and metrics collection',
-  'OpenTelemetry collection and processing',
-  'Service container and dependency injection',
-  'Infrastructure monitoring and health checks'
 ]);
 
 // =============================================================================
@@ -173,14 +162,14 @@ export const getOtelCollector = async () => {
   return otelModule.createOtelCollector?.() || otelModule.createOtelCollector();
 };
 
-export const getAdvancedServiceContainer = async (name?: string) => {
+export const getServiceContainer = async (name?: string) => {
   const containerModule = await loadServiceContainer();
   return containerModule.createServiceContainer?.(name) || containerModule.createServiceContainer(name);
 };
 
 // Direct exports for commonly used functions
-export { getServiceContainer, getDatabaseAccess } from './database';
-export { createEventSystem } from './events';
+export { getDatabaseAccess } from './database';
+export { createEventSystem, getEventSystemAccess } from './events';
 export { getLoadBalancer, getPerformanceTracker, getTelemetryManager } from './load-balancing';
 
 // =============================================================================
@@ -200,7 +189,7 @@ export const infrastructureSystem = {
   
   // Direct access functions
   getOtelCollector: getOtelCollector,
-  getServiceContainer: getAdvancedServiceContainer,
+  getServiceContainer: getServiceContainer,
   getDatabaseAccess: async () => {
     const { getDatabaseAccess } = await import('./database');
     return getDatabaseAccess();

@@ -35,12 +35,12 @@ import * as path from 'node:path';
 import { getLogger, type Logger } from '@claude-zen/foundation/logging';
 // import { DependencyContainer } from 'tsyringe'; // Optional - commented out for compatibility
 import { Result, ok, err } from 'neverthrow';
-import type { JsonObject, JsonValue, UnknownRecord } from '@claude-zen/foundation/types';
+import type { JsonValue, UnknownRecord } from '@claude-zen/foundation/types';
 
 /**
  * Service registration options
  */
-export interface ServiceRegistrationOptions<T = unknown> extends BuildResolverOptions<T> {
+export interface BasicServiceRegistrationOptions<T = unknown> extends BuildResolverOptions<T> {
   /** Service lifetime management */
   lifetime?: typeof Lifetime.SINGLETON | typeof Lifetime.TRANSIENT | typeof Lifetime.SCOPED;
   /** Service resolution mode (deprecated in newer versions) */
@@ -68,7 +68,7 @@ export interface ServiceDiscoveryOptions extends ListModulesOptions {
   /** Auto-register discovered services */
   autoRegister?: boolean;
   /** Default service options */
-  defaultOptions?: ServiceRegistrationOptions;
+  defaultOptions?: BasicServiceRegistrationOptions;
 }
 
 /**
@@ -168,7 +168,7 @@ export class ServiceContainer {
   registerService<T>(
     name: string,
     implementation: (new (...args: unknown[]) => T) | (() => T) | T,
-    options: ServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {},
   ): Result<void, ServiceContainerError> {
     // Handle different implementation types
     if (typeof implementation === 'function') {
@@ -192,7 +192,7 @@ export class ServiceContainer {
   private registerClass<T>(
     name: string,
     implementation: new (...args: unknown[]) => T,
-    options: ServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {},
   ): Result<void, ServiceContainerError> {
     try {
       const {
@@ -260,7 +260,7 @@ export class ServiceContainer {
   private registerFactoryFunction<T>(
     name: string,
     factory: () => T,
-    options: ServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {},
   ): Result<void, ServiceContainerError> {
     try {
       const {
@@ -322,7 +322,7 @@ export class ServiceContainer {
   registerFactory<T>(
     name: string,
     factory: (container: AwilixContainer) => T,
-    options: ServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {},
   ): Result<void, ServiceContainerError> {
     try {
       const {
@@ -381,7 +381,7 @@ export class ServiceContainer {
   registerInstance<T>(
     name: string,
     instance: T,
-    options: ServiceRegistrationOptions<T> = {},
+    options: BasicServiceRegistrationOptions<T> = {},
   ): Result<void, ServiceContainerError> {
     try {
       const {

@@ -3,7 +3,7 @@
  * Battle-hardened repository analysis with comprehensive metrics and recommendations
  */
 
-import * as fastGlob from 'fast-glob';
+import fastGlob from 'fast-glob';
 import { getLogger } from '@claude-zen/foundation';
 import { ComplexityAnalyzer } from './analyzers/complexity-analyzer.js';
 import { DependencyAnalyzer } from './analyzers/dependency-analyzer.js';
@@ -253,7 +253,7 @@ export class RepositoryAnalyzer {
       '!**/.git/**'
     ];
 
-    const files = await fastGlob(patterns, {
+    const files = await (fastGlob as any)(patterns, {
       cwd: this.repositoryPath,
       absolute: true,
       followSymbolicLinks: false
@@ -262,7 +262,7 @@ export class RepositoryAnalyzer {
     // Filter by file size if specified
     if (options.maxFileSize) {
       const fs = await import('fs/promises');
-      const filteredFiles = [];
+      const filteredFiles: string[] = [];
       
       for (const file of files) {
         try {
@@ -390,8 +390,8 @@ export class RepositoryAnalyzer {
     const highPriorityRecommendations = recommendations.filter(r => r.priority === 'high').length;
     const estimatedImprovementEffort = recommendations.reduce((sum, r) => sum + r.effort.hours, 0);
 
-    const strengths = [];
-    const weaknesses = [];
+    const strengths: string[] = [];
+    const weaknesses: string[] = [];
 
     if (complexityScore > 0.8) strengths.push('Low code complexity');
     else if (complexityScore < 0.5) weaknesses.push('High code complexity');

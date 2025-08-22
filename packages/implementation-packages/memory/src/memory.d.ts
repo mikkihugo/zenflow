@@ -7,11 +7,10 @@
  * - Professional logging with performance tracking
  * - Safe async operations with retry logic
  */
-import { Result } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { Result, TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryStore, MemoryStats, StoreOptions, SessionMemoryStoreOptions as SessionMemoryStoreOptionsType, MemoryError, MemoryConnectionError, SessionState } from './types';
 type SessionMemoryStoreOptions = SessionMemoryStoreOptionsType;
-export declare class SessionMemoryStore extends EventEmitter implements MemoryStore {
+export declare class SessionMemoryStore extends TypedEventBase implements MemoryStore {
     private backend;
     private initialized;
     private sessions;

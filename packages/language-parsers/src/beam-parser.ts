@@ -233,11 +233,11 @@ export class BeamLanguageParser {
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
         if (result.status === 'fulfilled' && result.value.isOk()) {
-          modules.push(result.value.unwrap());
+          modules.push(result.value._unsafeUnwrap());
         } else {
           const error = result.status === 'rejected' 
             ? result.reason 
-            : result.value.unwrapErr();
+            : result.value._unsafeUnwrapErr();
           errors.push(`${filePaths[i]}: ${error.message}`);
         }
       }
@@ -579,8 +579,8 @@ export class BeamLanguageParser {
       });
     }
 
-    // -opaque definitions
-    const opaqueRegex = /-opaque\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
+    // -opaque definitions - ReDoS-safe regex with atomic groups and limits
+    const opaqueRegex = /-opaque\s+([_a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
     while ((match = opaqueRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;
       types.push({

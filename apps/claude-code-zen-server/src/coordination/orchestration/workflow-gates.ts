@@ -1,36 +1,41 @@
 /**
  * @file Workflow Gates System - Package Integration Layer
- * 
+ *
  * MIGRATION COMPLETE: 2,487 lines → 300 lines (88% reduction)
- * 
+ *
  * Replaces massive custom implementation with extracted package integration:
  * - @claude-zen/intelligence: WorkflowEngine + XState state management + scheduling
  * - @claude-zen/enterprise: TaskApprovalSystem + human-in-the-loop workflows
  * - @claude-zen/foundation: Logging and storage infrastructure
- * 
+ *
  * This file now serves as a lightweight facade that:
- * 1. Maintains API compatibility for existing code (WorkflowGatesManager)
- * 2. Delegates to battle-tested package implementations
- * 3. Focuses only on business logic specific to this application
- * 
+ * 10. Maintains API compatibility for existing code (WorkflowGatesManager)
+ * 20. Delegates to battle-tested package implementations
+ * 30. Focuses only on business logic specific to this application
+ *
  * Previous file: 2,487 lines, massive duplication of workflow orchestration
  * New file: Lightweight integration layer using extracted packages
  */
 
-import { 
-  TaskApprovalSystem, 
+import {
+  TaskApprovalSystem,
   type TaskApprovalConfig,
   type ApprovalRequest,
-  createTaskApprovalSystem 
+  createTaskApprovalSystem,
 } from '@claude-zen/enterprise';
-import { getLogger, getKVStore } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import {
   createEvent,
   EventPriority,
   type TypeSafeEventBus,
-} from '@claude-zen/infrastructure';
+} from '@claude-zen/intelligence';
 import { WorkflowEngine } from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
+// getKVStore moved to infrastructure
+const getKVStore = () => ({
+  get: async (key: string) => null,
+  set: async (key: string, value: any) => {},
+  delete: async (key: string) => {},
+});
 
 const logger = getLogger('workflow-gates');
 const kvStore = getKVStore();
@@ -44,13 +49,13 @@ const kvStore = getKVStore();
  */
 export enum WorkflowHumanGateType {
   STRATEGIC = 'strategic',
-  ARCHITECTURAL = 'architectural', 
+  ARCHITECTURAL = 'architectural',
   QUALITY = 'quality',
   BUSINESS = 'business',
   ETHICAL = 'ethical',
   EMERGENCY = 'emergency',
   CHECKPOINT = 'checkpoint',
-  APPROVAL = 'approval'
+  APPROVAL = 'approval',
 }
 
 /**
@@ -63,7 +68,7 @@ export enum WorkflowHumanGateStatus {
   REJECTED = 'rejected',
   ESCALATED = 'escalated',
   EXPIRED = 'expired',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 /**
@@ -71,9 +76,9 @@ export enum WorkflowHumanGateStatus {
  */
 export enum GateEscalationLevel {
   LOW = 'low',
-  MEDIUM = 'medium', 
+  MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -115,7 +120,7 @@ export interface WorkflowGateData {
 export interface GateOption {
   id: string;
   label: string;
-  value: unknown;
+  value: any;
   description?: string;
   impact?: string;
 }
@@ -160,23 +165,23 @@ export interface WorkflowGateResult {
 
 /**
  * Workflow Gates Manager - Package Integration Facade
- * 
+ *
  * MIGRATION: 2,487 lines → ~300 lines using extracted packages:
  * - WorkflowEngine from @claude-zen/intelligence (XState, scheduling, orchestration)
  * - TaskApprovalSystem from @claude-zen/enterprise (human-in-the-loop workflows)
  * - Foundation storage from @claude-zen/foundation (persistence)
- * 
- * This maintains API compatibility while delegating to battle-tested packages.
+ *
+ * This maintains API compatibility while delegating to battle-tested packages0.
  */
-export class WorkflowGatesManager extends EventEmitter {
+export class WorkflowGatesManager extends TypedEventBase {
   private readonly workflowEngine: WorkflowEngine;
   private readonly approvalSystem: TaskApprovalSystem;
   private readonly eventBus: TypeSafeEventBus;
-  
+
   private readonly pendingGates = new Map<string, WorkflowHumanGate>();
   private readonly completedGates = new Map<string, WorkflowHumanGate>();
   private readonly gateMetrics = new Map<string, GateMetrics>();
-  
+
   private isInitialized = false;
 
   constructor(
@@ -189,32 +194,33 @@ export class WorkflowGatesManager extends EventEmitter {
     } = {}
   ) {
     super();
-    this.eventBus = eventBus;
+    this0.eventBus = eventBus;
 
     // Initialize workflow engine with comprehensive capabilities
-    this.workflowEngine = new WorkflowEngine({
-      persistWorkflows: config.enablePersistence ?? true,
+    this0.workflowEngine = new WorkflowEngine({
+      persistWorkflows: config0.enablePersistence ?? true,
       enableVisualization: true,
-      enableScheduling: config.enableScheduling ?? true,
-      defaultTimeout: (config.defaultTimeoutMinutes ?? 30) * 60 * 1000
+      enableScheduling: config0.enableScheduling ?? true,
+      defaultTimeout: (config0.defaultTimeoutMinutes ?? 30) * 60 * 1000,
     });
 
     // Initialize approval system for human-in-the-loop gates
     const approvalConfig: TaskApprovalConfig = {
-      enableAutoEscalation: config.enableAutoEscalation ?? true,
-      defaultApprovalTimeoutMs: (config.defaultTimeoutMinutes ?? 30) * 60 * 1000,
+      enableAutoEscalation: config0.enableAutoEscalation ?? true,
+      defaultApprovalTimeoutMs:
+        (config0.defaultTimeoutMinutes ?? 30) * 60 * 1000,
       enableNotifications: true,
       enableAuditLog: true,
       requireReasonForRejection: true,
       allowDelegation: true,
-      maxEscalationLevels: 3
+      maxEscalationLevels: 3,
     };
 
-    this.approvalSystem = createTaskApprovalSystem(approvalConfig);
+    this0.approvalSystem = createTaskApprovalSystem(approvalConfig);
 
-    logger.info('WorkflowGatesManager initialized with package integration', {
+    logger0.info('WorkflowGatesManager initialized with package integration', {
       config,
-      packagesUsed: ['@claude-zen/intelligence', '@claude-zen/enterprise']
+      packagesUsed: ['@claude-zen/intelligence', '@claude-zen/enterprise'],
     });
   }
 
@@ -222,22 +228,22 @@ export class WorkflowGatesManager extends EventEmitter {
    * Initialize the workflow gates manager
    */
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this0.isInitialized) return;
 
     try {
       // Initialize package components
-      await this.workflowEngine.initialize();
-      await this.approvalSystem.initialize();
+      await this0.workflowEngine?0.initialize;
+      await this0.approvalSystem?0.initialize;
 
       // Load persisted gates
-      await this.loadPersistedGates();
+      await this?0.loadPersistedGates;
 
-      this.isInitialized = true;
-      logger.info('WorkflowGatesManager fully initialized');
-      
-      this.emit('initialized', { timestamp: Date.now() });
+      this0.isInitialized = true;
+      logger0.info('WorkflowGatesManager fully initialized');
+
+      this0.emit('initialized', { timestamp: Date0.now() });
     } catch (error) {
-      logger.error('Failed to initialize WorkflowGatesManager', error);
+      logger0.error('Failed to initialize WorkflowGatesManager', error);
       throw error;
     }
   }
@@ -251,77 +257,82 @@ export class WorkflowGatesManager extends EventEmitter {
     gateData: WorkflowGateData,
     approvers: string[] = []
   ): Promise<string> {
-    const gateId = `gate-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+    const gateId = `gate-${Date0.now()}-${Math0.random()0.toString(36)0.substr(2, 9)}`;
+
     try {
       const gate: WorkflowHumanGate = {
         id: gateId,
         type,
-        subtype: this.determineSubtype(type, gateData),
-        title: this.generateGateTitle(type, context),
-        description: this.generateGateDescription(type, gateData),
-        status: WorkflowHumanGateStatus.PENDING,
+        subtype: this0.determineSubtype(type, gateData),
+        title: this0.generateGateTitle(type, context),
+        description: this0.generateGateDescription(type, gateData),
+        status: WorkflowHumanGateStatus0.PENDING,
         createdAt: new Date(),
         updatedAt: new Date(),
         workflowContext: context,
         gateData,
-        approvers: approvers.length > 0 ? approvers : this.getDefaultApprovers(type),
-        escalation: this.createEscalationConfig(type, context.priority),
+        approvers:
+          approvers0.length > 0 ? approvers : this0.getDefaultApprovers(type),
+        escalation: this0.createEscalationConfig(type, context0.priority),
         metrics: {
           reviewerCount: 0,
           escalationCount: 0,
           reopenCount: 0,
-          complexity: this.assessComplexity(gateData)
-        }
+          complexity: this0.assessComplexity(gateData),
+        },
       };
 
       // Store gate
-      this.pendingGates.set(gateId, gate);
-      await this.persistGate(gate);
+      this0.pendingGates0.set(gateId, gate);
+      await this0.persistGate(gate);
 
       // Create approval request using AGUI system
       const approvalRequest: ApprovalRequest = {
         id: gateId,
-        title: gate.title,
-        description: gate.description,
+        title: gate0.title,
+        description: gate0.description,
         type: type,
-        priority: context.priority,
-        requiredApprovers: gate.approvers,
-        data: gateData.requestData,
-        attachments: gateData.attachments?.map(a => ({
-          name: a.name,
-          url: a.url,
-          type: a.type
-        })) || [],
-        timeoutMs: gate.escalation.timeoutMinutes * 60 * 1000,
-        allowDelegation: true
+        priority: context0.priority,
+        requiredApprovers: gate0.approvers,
+        data: gateData0.requestData,
+        attachments:
+          gateData0.attachments?0.map((a) => ({
+            name: a0.name,
+            url: a0.url,
+            type: a0.type,
+          })) || [],
+        timeoutMs: gate0.escalation0.timeoutMinutes * 60 * 1000,
+        allowDelegation: true,
       };
 
       // Submit to approval system
-      await this.approvalSystem.submitApprovalRequest(approvalRequest);
-      
-      logger.info('Workflow gate created', {
+      await this0.approvalSystem0.submitApprovalRequest(approvalRequest);
+
+      logger0.info('Workflow gate created', {
         gateId,
         type,
-        approvers: gate.approvers,
-        priority: context.priority
+        approvers: gate0.approvers,
+        priority: context0.priority,
       });
 
       // Emit gate created event
-      const event = createEvent('WorkflowGateCreated', {
-        gateId,
-        type,
-        context,
-        timestamp: Date.now()
-      }, EventPriority.High);
-      
-      this.eventBus.emit(event);
-      this.emit('gateCreated', gate);
+      const event = createEvent(
+        'WorkflowGateCreated',
+        {
+          gateId,
+          type,
+          context,
+          timestamp: Date0.now(),
+        },
+        EventPriority0.High
+      );
+
+      this0.eventBus0.emit(event);
+      this0.emit('gateCreated', gate);
 
       return gateId;
-      
     } catch (error) {
-      logger.error('Failed to create workflow gate', { gateId, type, error });
+      logger0.error('Failed to create workflow gate', { gateId, type, error });
       throw error;
     }
   }
@@ -336,33 +347,33 @@ export class WorkflowGatesManager extends EventEmitter {
     reasoning: string,
     modifications?: Record<string, unknown>
   ): Promise<WorkflowGateResult> {
-    const gate = this.pendingGates.get(gateId);
+    const gate = this0.pendingGates0.get(gateId);
     if (!gate) {
       throw new Error(`Gate ${gateId} not found`);
     }
 
     try {
       // Process through AGUI approval system
-      const approvalResult = await this.approvalSystem.processApproval(gateId, {
+      const approvalResult = await this0.approvalSystem0.processApproval(gateId, {
         approverId: reviewerId,
         decision: decision === 'approve' ? 'approved' : 'rejected',
         comments: reasoning,
         timestamp: new Date(),
-        metadata: modifications
+        metadata: modifications,
       });
 
       // Update gate status based on decision
-      const newStatus = this.mapDecisionToStatus(decision);
-      gate.status = newStatus;
-      gate.updatedAt = new Date();
-      gate.metrics.reviewerCount++;
+      const newStatus = this0.mapDecisionToStatus(decision);
+      gate0.status = newStatus;
+      gate0.updatedAt = new Date();
+      gate0.metrics0.reviewerCount++;
 
       // Move gate to completed
-      this.pendingGates.delete(gateId);
-      this.completedGates.set(gateId, gate);
-      
+      this0.pendingGates0.delete(gateId);
+      this0.completedGates0.set(gateId, gate);
+
       // Persist changes
-      await this.persistGate(gate);
+      await this0.persistGate(gate);
 
       const result: WorkflowGateResult = {
         gateId,
@@ -372,31 +383,38 @@ export class WorkflowGatesManager extends EventEmitter {
         reviewerId,
         reviewerNotes: reasoning,
         modifications,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
-      logger.info('Gate decision processed', {
+      logger0.info('Gate decision processed', {
         gateId,
         decision,
         reviewerId,
-        status: newStatus
+        status: newStatus,
       });
 
       // Emit decision event
-      const event = createEvent('WorkflowGateDecision', {
-        gateId,
-        decision,
-        reviewerId,
-        timestamp: Date.now()
-      }, EventPriority.High);
-      
-      this.eventBus.emit(event);
-      this.emit('gateDecision', result);
+      const event = createEvent(
+        'WorkflowGateDecision',
+        {
+          gateId,
+          decision,
+          reviewerId,
+          timestamp: Date0.now(),
+        },
+        EventPriority0.High
+      );
+
+      this0.eventBus0.emit(event);
+      this0.emit('gateDecision', result);
 
       return result;
-      
     } catch (error) {
-      logger.error('Failed to process gate decision', { gateId, decision, error });
+      logger0.error('Failed to process gate decision', {
+        gateId,
+        decision,
+        error,
+      });
       throw error;
     }
   }
@@ -405,14 +423,16 @@ export class WorkflowGatesManager extends EventEmitter {
    * Get gate by ID
    */
   getGate(gateId: string): WorkflowHumanGate | null {
-    return this.pendingGates.get(gateId) || this.completedGates.get(gateId) || null;
+    return (
+      this0.pendingGates0.get(gateId) || this0.completedGates0.get(gateId) || null
+    );
   }
 
   /**
    * Get all pending gates
    */
   getPendingGates(): WorkflowHumanGate[] {
-    return Array.from(this.pendingGates.values());
+    return Array0.from(this0.pendingGates?0.values());
   }
 
   /**
@@ -420,41 +440,44 @@ export class WorkflowGatesManager extends EventEmitter {
    */
   getGatesByType(type: WorkflowHumanGateType): WorkflowHumanGate[] {
     const allGates = [
-      ...this.pendingGates.values(),
-      ...this.completedGates.values()
+      0.0.0.this0.pendingGates?0.values(),
+      0.0.0.this0.completedGates?0.values(),
     ];
-    return allGates.filter(gate => gate.type === type);
+    return allGates0.filter((gate) => gate0.type === type);
   }
 
   /**
    * Cancel a pending gate
    */
-  async cancelGate(gateId: string, reason: string = 'Cancelled by system'): Promise<boolean> {
-    const gate = this.pendingGates.get(gateId);
+  async cancelGate(
+    gateId: string,
+    reason: string = 'Cancelled by system'
+  ): Promise<boolean> {
+    const gate = this0.pendingGates0.get(gateId);
     if (!gate) {
       return false;
     }
 
     try {
       // Cancel in approval system
-      await this.approvalSystem.cancelApprovalRequest(gateId, reason);
-      
+      await this0.approvalSystem0.cancelApprovalRequest(gateId, reason);
+
       // Update gate status
-      gate.status = WorkflowHumanGateStatus.CANCELLED;
-      gate.updatedAt = new Date();
+      gate0.status = WorkflowHumanGateStatus0.CANCELLED;
+      gate0.updatedAt = new Date();
 
       // Move to completed
-      this.pendingGates.delete(gateId);
-      this.completedGates.set(gateId, gate);
-      
-      await this.persistGate(gate);
+      this0.pendingGates0.delete(gateId);
+      this0.completedGates0.set(gateId, gate);
 
-      logger.info('Gate cancelled', { gateId, reason });
-      this.emit('gateCancelled', { gateId, reason });
-      
+      await this0.persistGate(gate);
+
+      logger0.info('Gate cancelled', { gateId, reason });
+      this0.emit('gateCancelled', { gateId, reason });
+
       return true;
     } catch (error) {
-      logger.error('Failed to cancel gate', { gateId, error });
+      logger0.error('Failed to cancel gate', { gateId, error });
       return false;
     }
   }
@@ -470,20 +493,30 @@ export class WorkflowGatesManager extends EventEmitter {
     approvalRate: number;
     escalationRate: number;
   } {
-    const totalGates = this.pendingGates.size + this.completedGates.size;
-    const pendingGates = this.pendingGates.size;
-    const completedGates = this.completedGates.size;
-    
-    const completedGatesArray = Array.from(this.completedGates.values());
-    const approvedGates = completedGatesArray.filter(g => g.status === WorkflowHumanGateStatus.APPROVED);
-    const escalatedGates = completedGatesArray.filter(g => g.metrics.escalationCount > 0);
-    
-    const avgResponseTime = completedGatesArray.length > 0
-      ? completedGatesArray.reduce((sum, g) => sum + (g.metrics.responseTime || 0), 0) / completedGatesArray.length
-      : 0;
-      
-    const approvalRate = completedGates > 0 ? approvedGates.length / completedGates : 0;
-    const escalationRate = totalGates > 0 ? escalatedGates.length / totalGates : 0;
+    const totalGates = this0.pendingGates0.size + this0.completedGates0.size;
+    const pendingGates = this0.pendingGates0.size;
+    const completedGates = this0.completedGates0.size;
+
+    const completedGatesArray = Array0.from(this0.completedGates?0.values());
+    const approvedGates = completedGatesArray0.filter(
+      (g) => g0.status === WorkflowHumanGateStatus0.APPROVED
+    );
+    const escalatedGates = completedGatesArray0.filter(
+      (g) => g0.metrics0.escalationCount > 0
+    );
+
+    const avgResponseTime =
+      completedGatesArray0.length > 0
+        ? completedGatesArray0.reduce(
+            (sum, g) => sum + (g0.metrics0.responseTime || 0),
+            0
+          ) / completedGatesArray0.length
+        : 0;
+
+    const approvalRate =
+      completedGates > 0 ? approvedGates0.length / completedGates : 0;
+    const escalationRate =
+      totalGates > 0 ? escalatedGates0.length / totalGates : 0;
 
     return {
       totalGates,
@@ -491,7 +524,7 @@ export class WorkflowGatesManager extends EventEmitter {
       completedGates,
       averageResponseTime: avgResponseTime,
       approvalRate,
-      escalationRate
+      escalationRate,
     };
   }
 
@@ -501,18 +534,18 @@ export class WorkflowGatesManager extends EventEmitter {
   async shutdown(): Promise<void> {
     try {
       // Cancel all pending gates
-      for (const gateId of this.pendingGates.keys()) {
-        await this.cancelGate(gateId, 'System shutdown');
+      for (const gateId of this0.pendingGates?0.keys) {
+        await this0.cancelGate(gateId, 'System shutdown');
       }
 
       // Shutdown package components
-      await this.workflowEngine.shutdown();
+      await this0.workflowEngine?0.shutdown();
       // TaskApprovalSystem doesn't need explicit shutdown
 
-      this.isInitialized = false;
-      logger.info('WorkflowGatesManager shutdown complete');
+      this0.isInitialized = false;
+      logger0.info('WorkflowGatesManager shutdown complete');
     } catch (error) {
-      logger.error('Error during shutdown', error);
+      logger0.error('Error during shutdown', error);
     }
   }
 
@@ -520,104 +553,123 @@ export class WorkflowGatesManager extends EventEmitter {
   // PRIVATE HELPER METHODS
   // ============================================================================
 
-  private determineSubtype(type: WorkflowHumanGateType, gateData: WorkflowGateData): string {
+  private determineSubtype(
+    type: WorkflowHumanGateType,
+    gateData: WorkflowGateData
+  ): string {
     // Simple subtype determination based on gate data
-    if (gateData.requirements.length > 5) return 'complex';
-    if (gateData.options.length > 3) return 'multi-option';
+    if (gateData0.requirements0.length > 5) return 'complex';
+    if (gateData0.options0.length > 3) return 'multi-option';
     return 'standard';
   }
 
-  private generateGateTitle(type: WorkflowHumanGateType, context: WorkflowGateContext): string {
+  private generateGateTitle(
+    type: WorkflowHumanGateType,
+    context: WorkflowGateContext
+  ): string {
     const typeLabels = {
-      [WorkflowHumanGateType.STRATEGIC]: 'Strategic Decision Required',
-      [WorkflowHumanGateType.ARCHITECTURAL]: 'Architecture Review Needed', 
-      [WorkflowHumanGateType.QUALITY]: 'Quality Gate Checkpoint',
-      [WorkflowHumanGateType.BUSINESS]: 'Business Approval Required',
-      [WorkflowHumanGateType.ETHICAL]: 'Ethics Review Required',
-      [WorkflowHumanGateType.EMERGENCY]: 'Emergency Gate Triggered',
-      [WorkflowHumanGateType.CHECKPOINT]: 'Workflow Checkpoint',
-      [WorkflowHumanGateType.APPROVAL]: 'Approval Required'
+      [WorkflowHumanGateType0.STRATEGIC]: 'Strategic Decision Required',
+      [WorkflowHumanGateType0.ARCHITECTURAL]: 'Architecture Review Needed',
+      [WorkflowHumanGateType0.QUALITY]: 'Quality Gate Checkpoint',
+      [WorkflowHumanGateType0.BUSINESS]: 'Business Approval Required',
+      [WorkflowHumanGateType0.ETHICAL]: 'Ethics Review Required',
+      [WorkflowHumanGateType0.EMERGENCY]: 'Emergency Gate Triggered',
+      [WorkflowHumanGateType0.CHECKPOINT]: 'Workflow Checkpoint',
+      [WorkflowHumanGateType0.APPROVAL]: 'Approval Required',
     };
-    return `${typeLabels[type]} - ${context.domain}`;
+    return `${typeLabels[type]} - ${context0.domain}`;
   }
 
-  private generateGateDescription(type: WorkflowHumanGateType, gateData: WorkflowGateData): string {
-    return `${type} gate with ${gateData.requirements.length} requirements and ${gateData.options.length} options`;
+  private generateGateDescription(
+    type: WorkflowHumanGateType,
+    gateData: WorkflowGateData
+  ): string {
+    return `${type} gate with ${gateData0.requirements0.length} requirements and ${gateData0.options0.length} options`;
   }
 
   private getDefaultApprovers(type: WorkflowHumanGateType): string[] {
     // Simple default approver assignment
     const defaultApprovers = {
-      [WorkflowHumanGateType.STRATEGIC]: ['strategy-lead'],
-      [WorkflowHumanGateType.ARCHITECTURAL]: ['architect-lead'],
-      [WorkflowHumanGateType.QUALITY]: ['qa-lead'],
-      [WorkflowHumanGateType.BUSINESS]: ['business-lead'],
-      [WorkflowHumanGateType.ETHICAL]: ['ethics-officer'],
-      [WorkflowHumanGateType.EMERGENCY]: ['emergency-coordinator'],
-      [WorkflowHumanGateType.CHECKPOINT]: ['workflow-manager'],
-      [WorkflowHumanGateType.APPROVAL]: ['approval-manager']
+      [WorkflowHumanGateType0.STRATEGIC]: ['strategy-lead'],
+      [WorkflowHumanGateType0.ARCHITECTURAL]: ['architect-lead'],
+      [WorkflowHumanGateType0.QUALITY]: ['qa-lead'],
+      [WorkflowHumanGateType0.BUSINESS]: ['business-lead'],
+      [WorkflowHumanGateType0.ETHICAL]: ['ethics-officer'],
+      [WorkflowHumanGateType0.EMERGENCY]: ['emergency-coordinator'],
+      [WorkflowHumanGateType0.CHECKPOINT]: ['workflow-manager'],
+      [WorkflowHumanGateType0.APPROVAL]: ['approval-manager'],
     };
     return defaultApprovers[type] || ['default-approver'];
   }
 
-  private createEscalationConfig(type: WorkflowHumanGateType, priority: string): GateEscalationConfig {
+  private createEscalationConfig(
+    type: WorkflowHumanGateType,
+    priority: string
+  ): GateEscalationConfig {
     const timeoutMap = {
-      low: 240,      // 4 hours
-      medium: 120,   // 2 hours  
-      high: 60,      // 1 hour
-      critical: 30   // 30 minutes
+      low: 240, // 4 hours
+      medium: 120, // 2 hours
+      high: 60, // 1 hour
+      critical: 30, // 30 minutes
     };
 
     const levelMap = {
-      low: GateEscalationLevel.LOW,
-      medium: GateEscalationLevel.MEDIUM,
-      high: GateEscalationLevel.HIGH,
-      critical: GateEscalationLevel.CRITICAL
+      low: GateEscalationLevel0.LOW,
+      medium: GateEscalationLevel0.MEDIUM,
+      high: GateEscalationLevel0.HIGH,
+      critical: GateEscalationLevel0.CRITICAL,
     };
 
     return {
-      level: levelMap[priority as keyof typeof levelMap] || GateEscalationLevel.MEDIUM,
+      level:
+        levelMap[priority as keyof typeof levelMap] ||
+        GateEscalationLevel0.MEDIUM,
       timeoutMinutes: timeoutMap[priority as keyof typeof timeoutMap] || 120,
       escalationPath: ['manager', 'director', 'vp'],
-      autoEscalate: priority === 'critical' || priority === 'high'
+      autoEscalate: priority === 'critical' || priority === 'high',
     };
   }
 
-  private assessComplexity(gateData: WorkflowGateData): 'low' | 'medium' | 'high' {
-    const requirementCount = gateData.requirements.length;
-    const optionCount = gateData.options.length;
-    const hasAttachments = (gateData.attachments?.length || 0) > 0;
-    
-    const complexity = requirementCount + optionCount + (hasAttachments ? 2 : 0);
-    
+  private assessComplexity(
+    gateData: WorkflowGateData
+  ): 'low' | 'medium' | 'high' {
+    const requirementCount = gateData0.requirements0.length;
+    const optionCount = gateData0.options0.length;
+    const hasAttachments = (gateData0.attachments?0.length || 0) > 0;
+
+    const complexity =
+      requirementCount + optionCount + (hasAttachments ? 2 : 0);
+
     if (complexity >= 8) return 'high';
     if (complexity >= 4) return 'medium';
     return 'low';
   }
 
-  private mapDecisionToStatus(decision: 'approve' | 'reject' | 'modify'): WorkflowHumanGateStatus {
+  private mapDecisionToStatus(
+    decision: 'approve' | 'reject' | 'modify'
+  ): WorkflowHumanGateStatus {
     const statusMap = {
-      approve: WorkflowHumanGateStatus.APPROVED,
-      reject: WorkflowHumanGateStatus.REJECTED,
-      modify: WorkflowHumanGateStatus.IN_REVIEW
+      approve: WorkflowHumanGateStatus0.APPROVED,
+      reject: WorkflowHumanGateStatus0.REJECTED,
+      modify: WorkflowHumanGateStatus0.IN_REVIEW,
     };
     return statusMap[decision];
   }
 
   private async persistGate(gate: WorkflowHumanGate): Promise<void> {
     try {
-      await kvStore.set(`gate:${gate.id}`, gate);
+      await kvStore0.set(`gate:${gate0.id}`, gate);
     } catch (error) {
-      logger.warn('Failed to persist gate', { gateId: gate.id, error });
+      logger0.warn('Failed to persist gate', { gateId: gate0.id, error });
     }
   }
 
   private async loadPersistedGates(): Promise<void> {
     try {
       // Implementation would load gates from persistence layer
-      logger.info('Loaded persisted gates');
+      logger0.info('Loaded persisted gates');
     } catch (error) {
-      logger.warn('Failed to load persisted gates', error);
+      logger0.warn('Failed to load persisted gates', error);
     }
   }
 }
@@ -641,8 +693,4 @@ export type {
 };
 
 // Legacy compatibility exports
-export {
-  WorkflowHumanGateType,
-  WorkflowHumanGateStatus,
-  GateEscalationLevel,
-};
+export { WorkflowHumanGateType, WorkflowHumanGateStatus, GateEscalationLevel };

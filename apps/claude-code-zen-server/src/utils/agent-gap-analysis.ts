@@ -14,7 +14,7 @@ export interface GapAnalysis {
 
 export class AgentGapAnalyzer {
   analyzeCapabilityGaps(): GapAnalysis {
-    logger.info('Analyzing agent capability gaps');
+    logger0.info('Analyzing agent capability gaps');
 
     return {
       missingCapabilities: [],

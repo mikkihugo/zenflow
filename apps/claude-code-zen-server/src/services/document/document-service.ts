@@ -1,15 +1,15 @@
 /**
  * @fileoverview Document Service - Lightweight facade delegating to @claude-zen packages
- * 
- * MAJOR REDUCTION: 2,236 → ~500 lines (77.6% reduction) through package delegation
- * 
+ *
+ * MAJOR REDUCTION: 2,236 → ~500 lines (770.6% reduction) through package delegation
+ *
  * Delegates document management functionality to specialized @claude-zen packages:
  * - @claude-zen/foundation: Multi-database document storage and repository management
  * - @claude-zen/intelligence: Document workflow orchestration and state management
  * - @claude-zen/foundation: Performance tracking, telemetry, and core utilities
  * - @claude-zen/monitoring: Document service observability and metrics
  * - @claude-zen/intelligence: Document search, indexing, and semantic understanding
- * 
+ *
  * PERFORMANCE BENEFITS:
  * - Battle-tested document management patterns
  * - Simplified maintenance through package delegation
@@ -17,14 +17,10 @@
  * - Advanced search and indexing capabilities
  */
 
-import { getLogger } from '@claude-zen/foundation'
-import { EventEmitter } from 'eventemitter3';
+import type { DocumentType } from '@claude-zen/enterprise';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type { BaseDocumentEntity } from '@claude-zen/intelligence';
 import { nanoid } from 'nanoid';
-
-import type {
-  BaseDocumentEntity,
-} from '../../database/entities/document-entities';
-import type { DocumentType } from '../../workflows/types';
 
 const logger = getLogger('services-document-service');
 
@@ -45,7 +41,12 @@ export interface DocumentQueryOptions {
   includeWorkflowState?: boolean;
   limit?: number;
   offset?: number;
-  sortBy?: 'created_at' | 'updated_at' | 'title' | 'priority' | 'completion_percentage';
+  sortBy?:
+    | 'created_at'
+    | 'updated_at'
+    | 'title'
+    | 'priority'
+    | 'completion_percentage';
   sortOrder?: 'asc' | 'desc';
 }
 
@@ -65,8 +66,8 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
 
 export interface WorkflowAutomationRule {
   name: string;
-  condition: { type: string; value: unknown };
-  action: { type: string; value: unknown };
+  condition: { type: string; value: any };
+  action: { type: string; value: any };
 }
 
 // ============================================================================
@@ -75,85 +76,98 @@ export interface WorkflowAutomationRule {
 
 /**
  * Document Manager - Facade delegating to @claude-zen packages
- * 
+ *
  * Provides comprehensive document management through intelligent delegation to
- * specialized packages for database operations, workflow orchestration, and search.
+ * specialized packages for database operations, workflow orchestration, and search0.
  */
-export class DocumentManager extends EventEmitter {
+export class DocumentManager extends TypedEventBase {
   // Package delegation instances
   private databaseAccess: any;
   private workflowEngine: any;
   private performanceTracker: any;
   private monitoringSystem: any;
   private knowledgeManager: any;
-  
+
   // Repository facades
   private documentRepository: any;
   private projectRepository: any;
   private relationshipRepository: any;
   private workflowRepository: any;
-  
+
   private initialized = false;
   private databaseType: 'postgresql' | 'sqlite' | 'mysql';
 
   constructor(databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {
     super();
-    this.databaseType = databaseType;
+    this0.databaseType = databaseType;
   }
 
   /**
    * Initialize document manager with package delegation
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
       // Delegate to @claude-zen/infrastructure for document storage
       const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
-      this.databaseAccess = getDatabaseAccess();
-      
+      this0.databaseAccess = getDatabaseAccess();
+
       // Create repository facades
-      this.documentRepository = await createRepository('BaseDocument', this.databaseType);
-      this.projectRepository = await createRepository('Project', this.databaseType);
-      this.relationshipRepository = await createRepository('DocumentRelationship', this.databaseType);
-      this.workflowRepository = await createRepository('DocumentWorkflowState', this.databaseType);
+      this0.documentRepository = await createRepository(
+        'BaseDocument',
+        this0.databaseType
+      );
+      this0.projectRepository = await createRepository(
+        'Project',
+        this0.databaseType
+      );
+      this0.relationshipRepository = await createRepository(
+        'DocumentRelationship',
+        this0.databaseType
+      );
+      this0.workflowRepository = await createRepository(
+        'DocumentWorkflowState',
+        this0.databaseType
+      );
 
       // Delegate to @claude-zen/intelligence for document workflows
       const { WorkflowEngine } = await import('@claude-zen/intelligence');
-      this.workflowEngine = new WorkflowEngine({
+      this0.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: 100,
-        enableVisualization: true
+        enableVisualization: true,
       });
-      await this.workflowEngine.initialize();
-      await this.workflowEngine.registerDocumentWorkflows();
+      await this0.workflowEngine?0.initialize;
+      await this0.workflowEngine?0.registerDocumentWorkflows;
 
       // Delegate to @claude-zen/foundation for performance tracking
       const { PerformanceTracker } = await import('@claude-zen/foundation');
-      this.performanceTracker = new PerformanceTracker();
+      this0.performanceTracker = new PerformanceTracker();
 
       // Delegate to @claude-zen/monitoring for service observability
       const { SystemMonitor } = await import('@claude-zen/foundation');
-      this.monitoringSystem = new SystemMonitor({
+      this0.monitoringSystem = new SystemMonitor({
         serviceName: 'document-service',
         metricsCollection: { enabled: true },
-        performanceTracking: { enabled: true }
+        performanceTracking: { enabled: true },
       });
 
       // Delegate to @claude-zen/intelligence for document search and indexing
       const { KnowledgeManager } = await import('@claude-zen/intelligence');
-      this.knowledgeManager = new KnowledgeManager({
+      this0.knowledgeManager = new KnowledgeManager({
         enableSemantic: true,
         enableGraph: true,
-        domain: 'document-management'
+        domain: 'document-management',
       });
 
-      this.initialized = true;
-      logger.info('Document Manager initialized successfully with @claude-zen package delegation');
-      this.emit('initialized');
-
+      this0.initialized = true;
+      logger0.info(
+        'Document Manager initialized successfully with @claude-zen package delegation'
+      );
+      this0.emit('initialized', {});
     } catch (error) {
-      logger.error('Failed to initialize Document Manager:', error);
+      logger0.error('Failed to initialize Document Manager:', error);
       throw error;
     }
   }
@@ -166,62 +180,67 @@ export class DocumentManager extends EventEmitter {
     data: Partial<T>,
     options: DocumentCreateOptions = {}
   ): Promise<T> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('create_document');
+    const timer = this0.performanceTracker0.startTimer('create_document');
 
     try {
       // Generate document ID
       const documentId = nanoid();
-      
+
       // Prepare document data with workflow delegation
       const documentData = {
-        ...data,
+        0.0.0.data,
         id: documentId,
         document_type: documentType,
         created_at: new Date(),
         updated_at: new Date(),
-        status: data.status || 'draft'
+        status: data0.status || 'draft',
       };
 
       // Use database repository for creation
-      const document = await this.documentRepository.create(documentData);
+      const document = await this0.documentRepository0.create(documentData);
 
       // Start workflow using workflow engine
-      if (options.startWorkflow) {
-        await this.workflowEngine.startWorkflow(options.startWorkflow, {
+      if (options0.startWorkflow) {
+        await this0.workflowEngine0.startWorkflow(options0.startWorkflow, {
           documentId,
           documentType,
-          documentData
+          documentData,
         });
       }
 
       // Generate search index using knowledge manager
-      if (options.generateSearchIndex) {
-        await this.knowledgeManager.indexDocument({
+      if (options0.generateSearchIndex) {
+        await this0.knowledgeManager0.indexDocument({
           id: documentId,
           type: documentType,
           content: documentData,
-          metadata: { createdAt: documentData.created_at }
+          metadata: { createdAt: documentData0.created_at },
         });
       }
 
       // Generate relationships if requested
-      if (options.autoGenerateRelationships) {
-        await this.generateDocumentRelationships(documentId, documentType, documentData);
+      if (options0.autoGenerateRelationships) {
+        await this0.generateDocumentRelationships(
+          documentId,
+          documentType,
+          documentData
+        );
       }
 
-      this.performanceTracker.endTimer('create_document');
-      this.monitoringSystem.recordMetric('documents_created', 1, { type: documentType });
+      this0.performanceTracker0.endTimer('create_document');
+      this0.monitoringSystem0.recordMetric('documents_created', 1, {
+        type: documentType,
+      });
 
-      logger.info(`Created ${documentType} document: ${documentId}`);
-      this.emit('documentCreated', { document, documentType });
+      logger0.info(`Created ${documentType} document: ${documentId}`);
+      this0.emit('documentCreated', { document, documentType });
 
       return document;
-
     } catch (error) {
-      this.performanceTracker.endTimer('create_document');
-      logger.error('Failed to create document:', error);
+      this0.performanceTracker0.endTimer('create_document');
+      logger0.error('Failed to create document:', error);
       throw error;
     }
   }
@@ -233,41 +252,40 @@ export class DocumentManager extends EventEmitter {
     id: string,
     options: DocumentQueryOptions = {}
   ): Promise<T | null> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('get_document');
+    const timer = this0.performanceTracker0.startTimer('get_document');
 
     try {
       // Get document from repository
-      const document = await this.documentRepository.findById(id);
-      
+      const document = await this0.documentRepository0.findById(id);
+
       if (!document) {
-        this.performanceTracker.endTimer('get_document');
+        this0.performanceTracker0.endTimer('get_document');
         return null;
       }
 
       // Include relationships if requested
-      if (options.includeRelationships) {
-        const relationships = await this.relationshipRepository.findMany({
-          where: { source_document_id: id }
+      if (options0.includeRelationships) {
+        const relationships = await this0.relationshipRepository0.findMany({
+          where: { source_document_id: id },
         });
-        document.relationships = relationships;
+        document0.relationships = relationships;
       }
 
       // Include workflow state if requested
-      if (options.includeWorkflowState) {
-        const workflowState = await this.workflowRepository.findOne({
-          where: { document_id: id }
+      if (options0.includeWorkflowState) {
+        const workflowState = await this0.workflowRepository0.findOne({
+          where: { document_id: id },
         });
-        document.workflowState = workflowState;
+        document0.workflowState = workflowState;
       }
 
-      this.performanceTracker.endTimer('get_document');
+      this0.performanceTracker0.endTimer('get_document');
       return document;
-
     } catch (error) {
-      this.performanceTracker.endTimer('get_document');
-      logger.error('Failed to get document:', error);
+      this0.performanceTracker0.endTimer('get_document');
+      logger0.error('Failed to get document:', error);
       throw error;
     }
   }
@@ -280,46 +298,45 @@ export class DocumentManager extends EventEmitter {
     updates: Partial<T>,
     triggerWorkflow: boolean = true
   ): Promise<T> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('update_document');
+    const timer = this0.performanceTracker0.startTimer('update_document');
 
     try {
       // Update document in repository
       const updatedData = {
-        ...updates,
-        updated_at: new Date()
+        0.0.0.updates,
+        updated_at: new Date(),
       };
 
-      const document = await this.documentRepository.update(id, updatedData);
+      const document = await this0.documentRepository0.update(id, updatedData);
 
       // Trigger workflow if status changed and workflows enabled
-      if (triggerWorkflow && updates.status) {
-        await this.workflowEngine.processDocumentEvent('status_change', {
+      if (triggerWorkflow && updates0.status) {
+        await this0.workflowEngine0.processDocumentEvent('status_change', {
           documentId: id,
-          oldStatus: document.status,
-          newStatus: updates.status,
-          documentData: document
+          oldStatus: document0.status,
+          newStatus: updates0.status,
+          documentData: document,
         });
       }
 
       // Update search index
-      await this.knowledgeManager.updateIndex(id, {
+      await this0.knowledgeManager0.updateIndex(id, {
         content: document,
-        metadata: { updatedAt: document.updated_at }
+        metadata: { updatedAt: document0.updated_at },
       });
 
-      this.performanceTracker.endTimer('update_document');
-      this.monitoringSystem.recordMetric('documents_updated', 1);
+      this0.performanceTracker0.endTimer('update_document');
+      this0.monitoringSystem0.recordMetric('documents_updated', 1);
 
-      logger.info(`Updated document: ${id}`);
-      this.emit('documentUpdated', { document, updates });
+      logger0.info(`Updated document: ${id}`);
+      this0.emit('documentUpdated', { document, updates });
 
       return document;
-
     } catch (error) {
-      this.performanceTracker.endTimer('update_document');
-      logger.error('Failed to update document:', error);
+      this0.performanceTracker0.endTimer('update_document');
+      logger0.error('Failed to update document:', error);
       throw error;
     }
   }
@@ -330,53 +347,52 @@ export class DocumentManager extends EventEmitter {
   async searchDocuments<T extends BaseDocumentEntity>(
     options: DocumentSearchOptions
   ): Promise<{ documents: T[]; total: number; facets?: any }> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('search_documents');
+    const timer = this0.performanceTracker0.startTimer('search_documents');
 
     try {
       // Use knowledge manager for advanced search
-      const searchResults = await this.knowledgeManager.search({
-        query: options.query,
-        searchType: options.searchType,
+      const searchResults = await this0.knowledgeManager0.search({
+        query: options0.query,
+        searchType: options0.searchType,
         filters: {
-          documentTypes: options.documentTypes,
-          projectId: options.projectId,
-          status: options.status,
-          priority: options.priority,
-          dateRange: options.dateRange
+          documentTypes: options0.documentTypes,
+          projectId: options0.projectId,
+          status: options0.status,
+          priority: options0.priority,
+          dateRange: options0.dateRange,
         },
-        limit: options.limit,
-        offset: options.offset,
-        sortBy: options.sortBy,
-        sortOrder: options.sortOrder
+        limit: options0.limit,
+        offset: options0.offset,
+        sortBy: options0.sortBy,
+        sortOrder: options0.sortOrder,
       });
 
       // Enrich results with additional data if requested
-      const documents = await Promise.all(
-        searchResults.documents.map(async (doc: any) => {
-          if (options.includeRelationships || options.includeWorkflowState) {
-            return await this.getDocument(doc.id, options);
+      const documents = await Promise0.all(
+        searchResults0.documents0.map(async (doc: any) => {
+          if (options0.includeRelationships || options0.includeWorkflowState) {
+            return await this0.getDocument(doc0.id, options);
           }
           return doc;
         })
       );
 
-      this.performanceTracker.endTimer('search_documents');
-      this.monitoringSystem.recordMetric('document_searches', 1, {
-        searchType: options.searchType,
-        resultCount: documents.length
+      this0.performanceTracker0.endTimer('search_documents');
+      this0.monitoringSystem0.recordMetric('document_searches', 1, {
+        searchType: options0.searchType,
+        resultCount: documents0.length,
       });
 
       return {
         documents,
-        total: searchResults.total,
-        facets: searchResults.facets
+        total: searchResults0.total,
+        facets: searchResults0.facets,
       };
-
     } catch (error) {
-      this.performanceTracker.endTimer('search_documents');
-      logger.error('Failed to search documents:', error);
+      this0.performanceTracker0.endTimer('search_documents');
+      logger0.error('Failed to search documents:', error);
       throw error;
     }
   }
@@ -385,48 +401,47 @@ export class DocumentManager extends EventEmitter {
    * Delete document with cleanup
    */
   async deleteDocument(id: string): Promise<void> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('delete_document');
+    const timer = this0.performanceTracker0.startTimer('delete_document');
 
     try {
       // Get document before deletion for cleanup
-      const document = await this.documentRepository.findById(id);
-      
+      const document = await this0.documentRepository0.findById(id);
+
       if (!document) {
         throw new Error(`Document not found: ${id}`);
       }
 
       // Delete relationships
-      await this.relationshipRepository.deleteMany({
-        where: { 
-          $or: [
-            { source_document_id: id },
-            { target_document_id: id }
-          ]
-        }
+      await this0.relationshipRepository0.deleteMany({
+        where: {
+          $or: [{ source_document_id: id }, { target_document_id: id }],
+        },
       });
 
       // Delete workflow state
-      await this.workflowRepository.deleteMany({
-        where: { document_id: id }
+      await this0.workflowRepository0.deleteMany({
+        where: { document_id: id },
       });
 
       // Remove from search index
-      await this.knowledgeManager.removeFromIndex(id);
+      await this0.knowledgeManager0.removeFromIndex(id);
 
       // Delete the document
-      await this.documentRepository.delete(id);
+      await this0.documentRepository0.delete(id);
 
-      this.performanceTracker.endTimer('delete_document');
-      this.monitoringSystem.recordMetric('documents_deleted', 1);
+      this0.performanceTracker0.endTimer('delete_document');
+      this0.monitoringSystem0.recordMetric('documents_deleted', 1);
 
-      logger.info(`Deleted document: ${id}`);
-      this.emit('documentDeleted', { documentId: id, documentType: document.document_type });
-
+      logger0.info(`Deleted document: ${id}`);
+      this0.emit('documentDeleted', {
+        documentId: id,
+        documentType: document0.document_type,
+      });
     } catch (error) {
-      this.performanceTracker.endTimer('delete_document');
-      logger.error('Failed to delete document:', error);
+      this0.performanceTracker0.endTimer('delete_document');
+      logger0.error('Failed to delete document:', error);
       throw error;
     }
   }
@@ -438,27 +453,30 @@ export class DocumentManager extends EventEmitter {
     projectId: string,
     options: DocumentQueryOptions = {}
   ): Promise<T[]> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
-      const documents = await this.documentRepository.findMany({
+      const documents = await this0.documentRepository0.findMany({
         where: { project_id: projectId },
-        limit: options.limit,
-        offset: options.offset,
-        orderBy: options.sortBy ? { [options.sortBy]: options.sortOrder || 'desc' } : undefined
+        limit: options0.limit,
+        offset: options0.offset,
+        orderBy: options0.sortBy
+          ? { [options0.sortBy]: options0.sortOrder || 'desc' }
+          : undefined,
       });
 
       // Enrich with additional data if requested
-      if (options.includeRelationships || options.includeWorkflowState) {
-        return await Promise.all(
-          documents.map(async (doc: any) => await this.getDocument(doc.id, options))
+      if (options0.includeRelationships || options0.includeWorkflowState) {
+        return await Promise0.all(
+          documents0.map(
+            async (doc: any) => await this0.getDocument(doc0.id, options)
+          )
         );
       }
 
       return documents;
-
     } catch (error) {
-      logger.error('Failed to get documents by project:', error);
+      logger0.error('Failed to get documents by project:', error);
       throw error;
     }
   }
@@ -467,11 +485,11 @@ export class DocumentManager extends EventEmitter {
    * Get workflow status for document
    */
   async getDocumentWorkflowStatus(documentId: string): Promise<any> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
-      const workflowState = await this.workflowRepository.findOne({
-        where: { document_id: documentId }
+      const workflowState = await this0.workflowRepository0.findOne({
+        where: { document_id: documentId },
       });
 
       if (!workflowState) {
@@ -479,18 +497,19 @@ export class DocumentManager extends EventEmitter {
       }
 
       // Get workflow details from workflow engine
-      const workflowStatus = await this.workflowEngine.getWorkflowStatus(workflowState.workflow_id);
-      
-      return {
-        status: workflowStatus?.status || 'unknown',
-        stage: workflowState.current_stage,
-        canTransition: workflowStatus?.status === 'running',
-        nextStages: await this.getNextStages(workflowState.current_stage),
-        workflowId: workflowState.workflow_id
-      };
+      const workflowStatus = await this0.workflowEngine0.getWorkflowStatus(
+        workflowState0.workflow_id
+      );
 
+      return {
+        status: workflowStatus?0.status || 'unknown',
+        stage: workflowState0.current_stage,
+        canTransition: workflowStatus?0.status === 'running',
+        nextStages: await this0.getNextStages(workflowState0.current_stage),
+        workflowId: workflowState0.workflow_id,
+      };
     } catch (error) {
-      logger.error('Failed to get document workflow status:', error);
+      logger0.error('Failed to get document workflow status:', error);
       throw error;
     }
   }
@@ -503,11 +522,11 @@ export class DocumentManager extends EventEmitter {
     toStage: string,
     metadata?: any
   ): Promise<void> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
-      const workflowState = await this.workflowRepository.findOne({
-        where: { document_id: documentId }
+      const workflowState = await this0.workflowRepository0.findOne({
+        where: { document_id: documentId },
       });
 
       if (!workflowState) {
@@ -515,25 +534,30 @@ export class DocumentManager extends EventEmitter {
       }
 
       // Process workflow transition through workflow engine
-      await this.workflowEngine.processDocumentEvent('stage_transition', {
+      await this0.workflowEngine0.processDocumentEvent('stage_transition', {
         documentId,
-        fromStage: workflowState.current_stage,
+        fromStage: workflowState0.current_stage,
         toStage,
-        metadata
+        metadata,
       });
 
       // Update workflow state
-      await this.workflowRepository.update(workflowState.id, {
+      await this0.workflowRepository0.update(workflowState0.id, {
         current_stage: toStage,
         updated_at: new Date(),
-        metadata: { ...workflowState.metadata, ...metadata }
+        metadata: { 0.0.0.workflowState0.metadata, 0.0.0.metadata },
       });
 
-      logger.info(`Transitioned document ${documentId} from ${workflowState.current_stage} to ${toStage}`);
-      this.emit('workflowTransitioned', { documentId, fromStage: workflowState.current_stage, toStage });
-
+      logger0.info(
+        `Transitioned document ${documentId} from ${workflowState0.current_stage} to ${toStage}`
+      );
+      this0.emit('workflowTransitioned', {
+        documentId,
+        fromStage: workflowState0.current_stage,
+        toStage,
+      });
     } catch (error) {
-      logger.error('Failed to transition document workflow:', error);
+      logger0.error('Failed to transition document workflow:', error);
       throw error;
     }
   }
@@ -543,9 +567,9 @@ export class DocumentManager extends EventEmitter {
    */
   getDocumentMetrics(): any {
     return {
-      performance: this.performanceTracker?.getStats() || {},
-      monitoring: this.monitoringSystem?.getMetrics() || {},
-      totalOperations: this.performanceTracker?.getStats()?.totalOperations || 0
+      performance: this0.performanceTracker?0.getStats || {},
+      monitoring: this0.monitoringSystem?0.getMetrics || {},
+      totalOperations: this0.performanceTracker?0.getStats?0.totalOperations || 0,
     };
   }
 
@@ -559,29 +583,30 @@ export class DocumentManager extends EventEmitter {
   ): Promise<void> {
     try {
       // Use knowledge manager to find related documents
-      const relatedDocuments = await this.knowledgeManager.findRelated({
+      const relatedDocuments = await this0.knowledgeManager0.findRelated({
         documentId,
         documentType,
         content: documentData,
-        maxResults: 10
+        maxResults: 10,
       });
 
       // Create relationship entities
       for (const related of relatedDocuments) {
-        await this.relationshipRepository.create({
+        await this0.relationshipRepository0.create({
           id: nanoid(),
           source_document_id: documentId,
-          target_document_id: related.id,
-          relationship_type: related.relationshipType || 'related',
-          strength: related.strength || 0.5,
-          created_at: new Date()
+          target_document_id: related0.id,
+          relationship_type: related0.relationshipType || 'related',
+          strength: related0.strength || 0.5,
+          created_at: new Date(),
         });
       }
 
-      logger.info(`Generated ${relatedDocuments.length} relationships for document: ${documentId}`);
-
+      logger0.info(
+        `Generated ${relatedDocuments0.length} relationships for document: ${documentId}`
+      );
     } catch (error) {
-      logger.error('Failed to generate document relationships:', error);
+      logger0.error('Failed to generate document relationships:', error);
       // Don't throw - relationships are optional
     }
   }
@@ -599,13 +624,12 @@ export class DocumentManager extends EventEmitter {
         implementation: ['testing', 'completed'],
         testing: ['completed', 'implementation'],
         completed: [],
-        active: []
+        active: [],
       };
 
       return stageMap[currentStage] || [];
-
     } catch (error) {
-      logger.error('Failed to get next stages:', error);
+      logger0.error('Failed to get next stages:', error);
       return [];
     }
   }
@@ -615,14 +639,13 @@ export class DocumentManager extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     try {
-      if (this.workflowEngine) {
-        await this.workflowEngine.shutdown();
+      if (this0.workflowEngine) {
+        await this0.workflowEngine?0.shutdown();
       }
 
-      logger.info('Document Manager shutdown completed');
-
+      logger0.info('Document Manager shutdown completed');
     } catch (error) {
-      logger.error('Error during Document Manager shutdown:', error);
+      logger0.error('Error during Document Manager shutdown:', error);
       throw error;
     }
   }
@@ -642,5 +665,5 @@ export function createDocumentManager(
  */
 export default {
   DocumentManager,
-  createDocumentManager
+  createDocumentManager,
 };

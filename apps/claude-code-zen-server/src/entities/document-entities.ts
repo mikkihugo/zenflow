@@ -1,18 +1,18 @@
 /**
- * Database Entities for Document-Driven System.
+ * Database Entities for Document-Driven System0.
  *
  * PURE DATABASE-DRIVEN ARCHITECTURE
- * Replaces file-based document system with database entities.
- * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage.
+ * Replaces file-based document system with database entities0.
+ * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage0.
  */
 /**
- * @file Database layer: document-entities.
+ * @file Database layer: document-entities0.
  */
 
-import type { DocumentType } from '../types/workflow-types';
+import type { DocumentType } from '@claude-zen/enterprise';
 
 /**
- * Base document entity - all documents inherit from this.
+ * Base document entity - all documents inherit from this0.
  *
  * @example
  */
@@ -51,12 +51,12 @@ export interface BaseDocumentEntity {
 }
 
 /**
- * Vision Document Entity.
- * Strategic vision and high-level goals.
+ * Vision Document Entity0.
+ * Strategic vision and high-level goals0.
  *
  * @example
  */
-export interface VisionDocumentEntity extends BaseDocumentEntity {
+export interface any extends BaseDocumentEntity {
   type: 'vision';
 
   // Vision-specific fields
@@ -79,8 +79,8 @@ export interface VisionDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Architecture Runway Entity.
- * SAFe Architecture Runway Items - technical decisions and architectural enablers.
+ * Architecture Runway Entity0.
+ * SAFe Architecture Runway Items - technical decisions and architectural enablers0.
  *
  * @example
  */
@@ -89,7 +89,7 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
 
   // Architecture Runway specific fields
   runway_number: number;
-  runway_id: string; // AR-001, AR-002, etc.
+  runway_id: string; // AR-001, AR-002, etc0.
   context: string;
   decision: string;
   consequences: string[];
@@ -116,19 +116,19 @@ export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Business Epic Entity.
- * SAFe Business Epic - high-level business initiatives that drive value.
+ * Business Epic Entity0.
+ * SAFe Business Epic - high-level business initiatives that drive value0.
  *
  * @example
  */
-export interface BusinessEpicDocumentEntity extends BaseDocumentEntity {
+export interface Businessany extends BaseDocumentEntity {
   type: 'business_epic';
 
   // Business Epic specific fields
   business_objective: string;
   target_audience: string[];
   requirements: string[]; // Kanban mode
-  
+
   // Agile mode additions
   user_stories: Array<{
     id: string;
@@ -139,7 +139,7 @@ export interface BusinessEpicDocumentEntity extends BaseDocumentEntity {
   }>;
   acceptance_criteria: string[];
   definition_of_done: string[];
-  
+
   // SAFe mode additions
   epic_type: 'business' | 'enabler';
   epic_owner: string;
@@ -165,12 +165,12 @@ export interface BusinessEpicDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Program Epic Document Entity.
- * SAFe Program Epic - portfolio epics broken down for ART execution.
+ * Program Epic Document Entity0.
+ * SAFe Program Epic - portfolio epics broken down for ART execution0.
  *
  * @example
  */
-export interface ProgramEpicDocumentEntity extends BaseDocumentEntity {
+export interface Programany extends BaseDocumentEntity {
   type: 'program_epic';
 
   // Program Epic specific fields
@@ -178,7 +178,7 @@ export interface ProgramEpicDocumentEntity extends BaseDocumentEntity {
   art_id: string; // Agile Release Train
   program_increment_id?: string;
   features_generated: number;
-  
+
   // SAFe mode additions
   epic_hypothesis: string;
   success_criteria: string[];
@@ -214,12 +214,12 @@ export interface ProgramEpicDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Feature Document Entity.
- * Individual implementable features with SPARC methodology integration.
+ * Feature Document Entity0.
+ * Individual implementable features with SPARC methodology integration0.
  *
  * @example
  */
-export interface FeatureDocumentEntity extends BaseDocumentEntity {
+export interface any extends BaseDocumentEntity {
   type: 'feature';
 
   // Feature-specific fields
@@ -232,8 +232,8 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
       method: string;
       path: string;
       description: string;
-      parameters?: unknown;
-      responses?: unknown;
+      parameters?: any;
+      responses?: any;
     }>;
   };
 
@@ -303,8 +303,8 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Story Document Entity.
- * SAFe User Stories - small, implementable pieces of functionality.
+ * Story Document Entity0.
+ * SAFe User Stories - small, implementable pieces of functionality0.
  *
  * @example
  */
@@ -316,14 +316,18 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
   story_type: 'user_story' | 'enabler_story';
   acceptance_criteria: string[];
   story_points?: number;
-  
+
   // SAFe mode additions
   sprint_id?: string;
   iteration_id?: string;
   assigned_team_id?: string;
   assigned_user_id?: string;
   persona?: string; // For user stories
-  enabler_type?: 'infrastructure' | 'architectural' | 'exploration' | 'compliance';
+  enabler_type?:
+    | 'infrastructure'
+    | 'architectural'
+    | 'exploration'
+    | 'compliance';
   business_value?: number;
   acceptance_criteria_detailed: Array<{
     id: string;
@@ -336,12 +340,12 @@ export interface StoryDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Task Document Entity.
- * Granular implementation tasks with SPARC methodology integration.
+ * Task Document Entity0.
+ * Granular implementation tasks with SPARC methodology integration0.
  *
  * @example
  */
-export interface TaskDocumentEntity extends BaseDocumentEntity {
+export interface any extends BaseDocumentEntity {
   type: 'task';
 
   // Task-specific fields
@@ -436,8 +440,8 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Document Relationships Entity.
- * Tracks relationships between documents.
+ * Document Relationships Entity0.
+ * Tracks relationships between documents0.
  *
  * @example
  */
@@ -457,8 +461,8 @@ export interface DocumentRelationshipEntity {
 }
 
 /**
- * Document Workflow State Entity.
- * Tracks document workflow progression.
+ * Document Workflow State Entity0.
+ * Tracks document workflow progression0.
  *
  * @example
  */
@@ -487,8 +491,8 @@ export interface DocumentWorkflowStateEntity {
 }
 
 /**
- * Project Entity.
- * Groups related documents into projects with comprehensive SPARC integration.
+ * Project Entity0.
+ * Groups related documents into projects with comprehensive SPARC integration0.
  *
  * @example
  */
@@ -579,8 +583,8 @@ export interface ProjectEntity {
 }
 
 /**
- * Document Search Index Entity.
- * Optimized search and discovery.
+ * Document Search Index Entity0.
+ * Optimized search and discovery0.
  *
  * @example
  */
@@ -618,8 +622,8 @@ export interface DocumentSearchIndexEntity {
 }
 
 /**
- * Database Schema Export.
- * Defines table structures for database creation.
+ * Database Schema Export0.
+ * Defines table structures for database creation0.
  */
 export const DATABASE_SCHEMAS = {
   documents: `
@@ -636,7 +640,7 @@ export const DATABASE_SCHEMAS = {
       parent_document_id TEXT,
       dependencies TEXT, -- JSON array
       related_documents TEXT, -- JSON array
-      version TEXT DEFAULT '1.0.0',
+      version TEXT DEFAULT '10.0.0',
       checksum TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -837,49 +841,43 @@ export const DATABASE_SCHEMAS = {
 } as const;
 
 /**
- * Type guards for document entities.
+ * Type guards for document entities0.
  *
  * @param doc
  * @example
  */
-export function isVisionDocument(
-  doc: BaseDocumentEntity
-): doc is VisionDocumentEntity {
-  return doc.type === 'vision';
+export function isVisionDocument(doc: BaseDocumentEntity): doc is any {
+  return doc0.type === 'vision';
 }
 
 export function isArchitectureRunwayDocument(
   doc: BaseDocumentEntity
 ): doc is ArchitectureRunwayDocumentEntity {
-  return doc.type === 'architecture_runway';
+  return doc0.type === 'architecture_runway';
 }
 
 export function isBusinessEpicDocument(
   doc: BaseDocumentEntity
-): doc is BusinessEpicDocumentEntity {
-  return doc.type === 'business_epic';
+): doc is Businessany {
+  return doc0.type === 'business_epic';
 }
 
 export function isProgramEpicDocument(
   doc: BaseDocumentEntity
-): doc is ProgramEpicDocumentEntity {
-  return doc.type === 'program_epic';
+): doc is Programany {
+  return doc0.type === 'program_epic';
 }
 
 export function isStoryDocument(
   doc: BaseDocumentEntity
 ): doc is StoryDocumentEntity {
-  return doc.type === 'story';
+  return doc0.type === 'story';
 }
 
-export function isFeatureDocument(
-  doc: BaseDocumentEntity
-): doc is FeatureDocumentEntity {
-  return doc.type === 'feature';
+export function isFeatureDocument(doc: BaseDocumentEntity): doc is any {
+  return doc0.type === 'feature';
 }
 
-export function isTaskDocument(
-  doc: BaseDocumentEntity
-): doc is TaskDocumentEntity {
-  return doc.type === 'task';
+export function isTaskDocument(doc: BaseDocumentEntity): doc is any {
+  return doc0.type === 'task';
 }

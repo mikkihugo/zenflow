@@ -221,7 +221,7 @@ export interface PIPlanningConfiguration {
 /**
  * PI Planning Service for Program Increment planning event management
  */
-export class PIPlanningService extends EventEmitter {
+export class PIPlanningService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly planningEvents = new Map<string, PIPlanningEventConfig>();
   private readonly planningResults = new Map<string, PIPlanningResult>();

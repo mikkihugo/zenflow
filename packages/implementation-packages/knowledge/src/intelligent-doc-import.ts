@@ -22,7 +22,7 @@
  * ```
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { readdir, readFile } from 'fs/promises';
 import { extname, join, relative } from 'path';
 import { getLogger } from '@claude-zen/foundation';
@@ -189,7 +189,7 @@ export interface ImportWorkflowResult {
  * const result = await workflow.importAndAnalyze();
  * ```
  */
-export class IntelligentDocImport extends EventEmitter {
+export class IntelligentDocImport extends TypedEventBase {
   private config: IntelligentDocImportConfig;
   private documentManager: DocumentManager;
   private workflowGates: WorkflowGateRequest[] = [];

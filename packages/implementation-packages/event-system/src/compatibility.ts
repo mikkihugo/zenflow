@@ -7,7 +7,7 @@
  * @file Backward Compatibility Implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import type {
   EventManagerType,
@@ -22,7 +22,7 @@ import type { EventManager } from './manager';
  *
  * @example
  */
-export class UELCompatibleEventEmitter extends EventEmitter {
+export class UELCompatibleEventEmitter extends TypedEventBase {
   private uelManager?: EventManager;
   private uelEnabled = false;
   private eventMappings = new Map<string, string>();
@@ -645,7 +645,7 @@ export class CompatibilityFactory {
     logger?: Logger
   ): Promise<void> {
     this.eventManager = eventManager;
-    this.migrationHelper = new EventEmitterMigrationHelper(
+    this.migrationHelper = new TypedEventBaseMigrationHelper(
       eventManager,
       logger
     );

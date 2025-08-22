@@ -26,7 +26,6 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { EventEmitter } from 'node:events';
 import { getLogger } from '@claude-zen/foundation';
 import { DSPyBrainMLBridge } from '../ml-bridge/dspy-brain-ml-bridge';
 /**
@@ -35,7 +34,7 @@ import { DSPyBrainMLBridge } from '../ml-bridge/dspy-brain-ml-bridge';
  * This class provides autonomous selection between basic mathematical teleprompters
  * and ML-enhanced variants using sophisticated analysis and machine learning.
  */
-export class AutonomousTeleprompterSelector extends EventEmitter {
+export class AutonomousTeleprompterSelector extends TypedEventBase {
     logger;
     mlBridge;
     initialized = false;
@@ -78,7 +77,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
             await this.loadPerformanceHistory();
             this.initialized = true;
             this.logger.info(`✅ Autonomous Selector initialized with ${this.availableVariants.size} teleprompter variants`);
-            this.emit('selector:initialized');
+            this.emit('selector:initialized', { timestamp: new Date() });
         }
         catch (error) {
             this.logger.error('Failed to initialize Autonomous Teleprompter Selector:', error);

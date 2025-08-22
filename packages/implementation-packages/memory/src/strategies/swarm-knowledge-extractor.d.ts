@@ -5,7 +5,7 @@
  * leveraging ML tools from Brain, Neural-ML, and SPARC packages for intelligent
  * pattern recognition and knowledge preservation.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 interface SwarmSession {
     sessionId: string;
     swarmId: string;
@@ -84,7 +84,7 @@ interface ExtractionConfig {
     extractionTimeout: number;
     preserveRawData: boolean;
 }
-export declare class SwarmKnowledgeExtractor extends EventEmitter {
+export declare class SwarmKnowledgeExtractor extends TypedEventBase {
     private logger;
     private config;
     private telemetry;
@@ -119,11 +119,11 @@ export declare class SwarmKnowledgeExtractor extends EventEmitter {
     private calculateConfidence;
     getExtractionStats(): {
         initialized: boolean;
-        mlEnabled: boolean;
-        brainEnabled: boolean;
-        sparcEnabled: boolean;
-        minSessionDuration: number;
-        minImportanceThreshold: number;
+        mlEnabled: any;
+        brainEnabled: any;
+        sparcEnabled: any;
+        minSessionDuration: any;
+        minImportanceThreshold: any;
     };
     updateConfig(newConfig: Partial<ExtractionConfig>): void;
     shutdown(): Promise<void>;

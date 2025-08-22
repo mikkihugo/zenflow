@@ -57,7 +57,7 @@
  * ```
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   executeSwarmCoordinationTask,
   getLogger,
@@ -103,7 +103,7 @@ import {
  * "You're not managing agents. You're instantiating intelligence."
  *
  * @class AgentManager
- * @extends EventEmitter
+ * @extends TypedEventBase
  * @since 2.0.0
  *
  * @fires AgentManager#swarm:created - Fired when ephemeral swarm is instantiated
@@ -111,7 +111,7 @@ import {
  * @fires AgentManager#decision:made - Fired when swarm makes intelligent decision
  * @fires AgentManager#coordination:complete - Fired when coordination task finishes
  */
-export class AgentManager extends EventEmitter {
+export class AgentManager extends TypedEventBase {
   /** Foundation logger for consistent logging across the system */
   private readonly logger = getLogger('agent-manager');
 

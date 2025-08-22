@@ -4,11 +4,11 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
 import type {
   RepositoryMetrics,
   AnalysisRecommendation,
   AnalysisOptions,
-  ActionItem,
   EffortEstimate
 } from '../types/index.js';
 
@@ -25,6 +25,9 @@ export class RecommendationEngine {
     this.logger.info('Generating repository improvement recommendations');
 
     const recommendations: AnalysisRecommendation[] = [];
+    
+    // Use analysis options to customize recommendation depth and focus areas
+    const analysisContext = await this.buildAnalysisContext(repository, options);
 
     // Complexity-based recommendations
     recommendations.push(...this.generateComplexityRecommendations(repository));
@@ -699,5 +702,51 @@ export class RecommendationEngine {
       low: 1
     };
     return weights[priority];
+  }
+
+  /**
+   * Build analysis context based on options to customize recommendations
+   */
+  private async buildAnalysisContext(
+    repository: RepositoryMetrics, 
+    options?: AnalysisOptions
+  ): Promise<{
+    focusAreas: string[];
+    depth: 'shallow' | 'moderate' | 'deep';
+    performanceMode: 'fast' | 'balanced' | 'thorough';
+    customThresholds: Record<string, number>;
+  }> {
+    const defaultContext = {
+      focusAreas: ['complexity', 'dependencies', 'maintainability'],
+      depth: 'moderate' as const,
+      performanceMode: 'balanced' as const,
+      customThresholds: {
+        cyclomaticComplexity: 50,
+        maintainabilityIndex: 20,
+        technicalDebt: 100
+      }
+    };
+
+    if (!options) return defaultContext;
+
+    // Customize context based on analysis options
+    const context = { ...defaultContext };
+    
+    if (options.analysisDepth) {
+      context.depth = options.analysisDepth;
+    }
+    
+    if (options.performanceMode) {
+      context.performanceMode = options.performanceMode;
+    }
+
+    // Adjust focus areas based on enabled analysis types
+    context.focusAreas = [];
+    if (options.enableComplexityAnalysis) context.focusAreas.push('complexity');
+    if (options.enableDependencyAnalysis) context.focusAreas.push('dependencies');
+    if (options.enableGitAnalysis) context.focusAreas.push('git-history');
+    if (options.enableDomainAnalysis) context.focusAreas.push('domain-structure');
+
+    return context;
   }
 }

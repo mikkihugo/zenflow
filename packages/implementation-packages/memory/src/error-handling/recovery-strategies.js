@@ -2,14 +2,14 @@
  * @file Recovery Strategies for Memory System Errors
  * Advanced error recovery and fault tolerance mechanisms.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { MemoryErrorCode } from './memory-errors';
 /**
  * Recovery Strategy Registry and Executor.
  *
  * @example
  */
-export class RecoveryStrategyManager extends EventEmitter {
+export class RecoveryStrategyManager extends TypedEventBase {
     strategies = new Map();
     recoveryHistory = [];
     constructor() {

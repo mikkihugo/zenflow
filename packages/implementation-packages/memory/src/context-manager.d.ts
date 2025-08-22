@@ -4,7 +4,7 @@
  * Manages agent and swarm context, replacing the removed hook system's
  * context loading functionality with integrated memory management.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { MemorySystem } from './core/memory-system';
 /**
  * Context loading result (replaces hook context loading)
@@ -100,7 +100,7 @@ export declare const DEFAULT_CONTEXT_CONFIG: ContextManagerConfig;
  * Replaces the removed hook system's context loading with memory-backed
  * context management for agents, swarms, and sessions.
  */
-export declare class ContextManager extends EventEmitter {
+export declare class ContextManager extends TypedEventBase {
     private config;
     private memorySystem;
     private contextCache;

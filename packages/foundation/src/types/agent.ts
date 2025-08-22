@@ -37,7 +37,17 @@
 
 import type { ChildProcess } from 'node:child_process';
 
-import type { UUID, Timestamp, Identifiable, Timestamped } from './index';
+import type { UUID, Timestamp } from './primitives';
+
+// Define local interfaces to avoid circular dependency
+interface Identifiable<T = string> {
+  id: T;
+}
+
+interface Timestamped {
+  createdAt: number;
+  updatedAt: number;
+}
 
 // =============================================================================
 // AGENT STATUS AND LIFECYCLE

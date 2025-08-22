@@ -27,7 +27,7 @@ export class MemoryMonitor {
     return {
       usage: 512,
       available: 1024,
-      total: 1536
+      total: 1536,
     };
   }
 }

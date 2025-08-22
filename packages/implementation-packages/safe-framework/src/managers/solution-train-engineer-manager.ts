@@ -216,13 +216,13 @@ export interface PlatformStrategy {
 /**
  * Solution Train Engineer Manager for SAFe Large Solution coordination
  */
-export class SolutionTrainEngineerManager extends EventEmitter {
+export class SolutionTrainEngineerManager extends TypedEventBase {
   private readonly logger: Logger;
   private multiARTCoordinationService: any;
   private solutionPlanningService: any;
   private solutionArchitectureManagementService: any;
   private initialized = false;
-  private config: SolutionTrainEngineerConfig | null = null;
+  private configuration: SolutionTrainEngineerConfig | null = null;
 
   constructor(config?: SolutionTrainEngineerConfig) {
     super();

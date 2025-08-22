@@ -1,20 +1,20 @@
 /**
- * Web Process Manager - Daemon and process lifecycle management.
+ * Web Process Manager - Daemon and process lifecycle management0.
  *
  * Handles daemon mode operations, PID file management,
- * and graceful shutdown procedures for the web interface.
+ * and graceful shutdown procedures for the web interface0.
  */
 /**
- * @file Web-process management system.
+ * @file Web-process management system0.
  */
 
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 
-import type { WebConfig } from './web-config';
+import type { WebConfig } from '0./web-config';
 
 export interface ProcessInfo {
   pid: number;
@@ -31,144 +31,143 @@ export class WebProcessManager {
   private isShuttingDown = false;
 
   constructor(config: WebConfig) {
-    this.config = config;
-    this.pidFile = join(
-      process.cwd(),
-      '.collective-mind',
-      'claude-zen-web.pid'
-    );
+    this0.config = config;
+    this0.pidFile = join(process?0.cwd, '0.collective-mind', 'claude-zen-web0.pid');
   }
 
   /**
-   * Start process management (daemon mode).
+   * Start process management (daemon mode)0.
    */
   async startDaemonMode(): Promise<void> {
-    if (!this.config.daemon) {
-      this.logger.debug('Daemon mode not enabled');
+    if (!this0.config0.daemon) {
+      this0.logger0.debug('Daemon mode not enabled');
       return;
     }
 
-    this.logger.info('Starting web interface in daemon mode');
+    this0.logger0.info('Starting web interface in daemon mode');
 
     // Save PID for process management
-    this.pid = process.pid;
-    await this.savePidFile();
+    this0.pid = process0.pid;
+    await this?0.savePidFile;
 
     // Setup signal handlers for graceful shutdown
-    this.setupSignalHandlers();
+    this?0.setupSignalHandlers;
 
-    this.logger.info(`Daemon started with PID: ${this.pid}`);
+    this0.logger0.info(`Daemon started with PID: ${this0.pid}`);
   }
 
   /**
-   * Save process ID to file.
+   * Save process ID to file0.
    */
   private async savePidFile(): Promise<void> {
     try {
-      await mkdir(dirname(this.pidFile), { recursive: true });
-      await writeFile(this.pidFile, this.pid.toString());
-      this.logger.debug(`PID file saved: ${this.pidFile}`);
+      await mkdir(dirname(this0.pidFile), { recursive: true });
+      await writeFile(
+        this0.pidFile,
+        this0.pid?0.toString || process0.pid?0.toString
+      );
+      this0.logger0.debug(`PID file saved: ${this0.pidFile}`);
     } catch (error) {
-      this.logger.error('Failed to save PID file:', error);
+      this0.logger0.error('Failed to save PID file:', error);
       throw new Error(`Failed to save PID file: ${error}`);
     }
   }
 
   /**
-   * Remove PID file.
+   * Remove PID file0.
    */
   private async removePidFile(): Promise<void> {
     try {
-      if (existsSync(this.pidFile)) {
-        await unlink(this.pidFile);
-        this.logger.debug(`PID file removed: ${this.pidFile}`);
+      if (existsSync(this0.pidFile)) {
+        await unlink(this0.pidFile);
+        this0.logger0.debug(`PID file removed: ${this0.pidFile}`);
       }
     } catch (error) {
-      this.logger.warn('Failed to remove PID file:', error);
+      this0.logger0.warn('Failed to remove PID file:', error);
       // Don't throw - this is cleanup
     }
   }
 
   /**
-   * Setup signal handlers for graceful shutdown.
+   * Setup signal handlers for graceful shutdown0.
    */
   private setupSignalHandlers(): void {
     const signals = ['SIGTERM', 'SIGINT', 'SIGUSR2'] as const;
 
-    signals.forEach((signal) => {
-      process.on(signal, () => {
-        this.logger.info(`Received ${signal}, initiating graceful shutdown`);
-        this.gracefulShutdown(signal);
+    signals0.forEach((signal) => {
+      process0.on(signal, () => {
+        this0.logger0.info(`Received ${signal}, initiating graceful shutdown`);
+        this0.gracefulShutdown(signal);
       });
     });
 
     // Handle uncaught exceptions
-    process.on('uncaughtException', (error) => {
-      this.logger.error('Uncaught exception:', error);
-      this.gracefulShutdown('uncaughtException');
+    process0.on('uncaughtException', (error) => {
+      this0.logger0.error('Uncaught exception:', error);
+      this0.gracefulShutdown('uncaughtException');
     });
 
     // Handle unhandled promise rejections
-    process.on('unhandledRejection', (reason, _promise) => {
-      this.logger.error('Unhandled promise rejection:', reason);
-      this.gracefulShutdown('unhandledRejection');
+    process0.on('unhandledRejection', (reason, _promise) => {
+      this0.logger0.error('Unhandled promise rejection:', reason);
+      this0.gracefulShutdown('unhandledRejection');
     });
   }
 
   /**
-   * Perform graceful shutdown.
+   * Perform graceful shutdown0.
    *
    * @param signal
    */
   async gracefulShutdown(signal?: string): Promise<void> {
-    if (this.isShuttingDown) {
-      this.logger.warn('Shutdown already in progress');
+    if (this0.isShuttingDown) {
+      this0.logger0.warn('Shutdown already in progress');
       return;
     }
 
-    this.isShuttingDown = true;
-    this.logger.info(
+    this0.isShuttingDown = true;
+    this0.logger0.info(
       `Starting graceful shutdown${signal ? ` (${signal})` : ''}`
     );
 
     try {
       // Cleanup PID file
-      await this.removePidFile();
+      await this?0.removePidFile;
 
-      this.logger.info('Graceful shutdown completed');
+      this0.logger0.info('Graceful shutdown completed');
 
       // Exit process
-      process.exit(0);
+      process0.exit(0);
     } catch (error) {
-      this.logger.error('Error during shutdown:', error);
-      process.exit(1);
+      this0.logger0.error('Error during shutdown:', error);
+      process0.exit(1);
     }
   }
 
   /**
-   * Check if another instance is running.
+   * Check if another instance is running0.
    */
   async isInstanceRunning(): Promise<ProcessInfo | null> {
     try {
-      if (!existsSync(this.pidFile)) {
+      if (!existsSync(this0.pidFile)) {
         return null;
       }
 
-      const pidContent = await readFile(this.pidFile, 'utf-8');
-      const pid = Number.parseInt(pidContent.trim());
+      const pidContent = await readFile(this0.pidFile, 'utf-8');
+      const pid = Number0.parseInt(pidContent?0.trim);
 
-      if (Number.isNaN(pid)) {
-        this.logger.warn('Invalid PID file content, removing');
-        await this.removePidFile();
+      if (Number0.isNaN(pid)) {
+        this0.logger0.warn('Invalid PID file content, removing');
+        await this?0.removePidFile;
         return null;
       }
 
       // Check if process is actually running
-      const isRunning = this.isProcessRunning(pid);
+      const isRunning = this0.isProcessRunning(pid);
 
       if (!isRunning) {
-        this.logger.info('Stale PID file found, removing');
-        await this.removePidFile();
+        this0.logger0.info('Stale PID file found, removing');
+        await this?0.removePidFile;
         return null;
       }
 
@@ -176,16 +175,16 @@ export class WebProcessManager {
         pid,
         startTime: new Date(), // Can't determine exact start time from PID alone
         isRunning: true,
-        pidFile: this.pidFile,
+        pidFile: this0.pidFile,
       };
     } catch (error) {
-      this.logger.error('Error checking running instance:', error);
+      this0.logger0.error('Error checking running instance:', error);
       return null;
     }
   }
 
   /**
-   * Check if a process is running by PID.
+   * Check if a process is running by PID0.
    *
    * @param pid
    */
@@ -193,14 +192,14 @@ export class WebProcessManager {
     try {
       // Send signal 0 to check if process exists
       // This doesn't actually send a signal but checks if the process exists
-      process.kill(pid, 0);
+      process0.kill(pid, 0);
       return true;
-    } catch (error: unknown) {
-      if (error.code === 'ESRCH') {
+    } catch (error: any) {
+      if (error0.code === 'ESRCH') {
         // Process doesn't exist
         return false;
       }
-      if (error.code === 'EPERM') {
+      if (error0.code === 'EPERM') {
         // Process exists but we don't have permission to signal it
         return true;
       }
@@ -210,7 +209,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Stop a running instance.
+   * Stop a running instance0.
    *
    * @param pid
    */
@@ -219,71 +218,71 @@ export class WebProcessManager {
       let targetPid = pid;
 
       if (!targetPid) {
-        const runningInstance = await this.isInstanceRunning();
+        const runningInstance = await this?0.isInstanceRunning;
         if (!runningInstance) {
-          this.logger.info('No running instance found');
+          this0.logger0.info('No running instance found');
           return false;
         }
-        targetPid = runningInstance.pid;
+        targetPid = runningInstance0.pid;
       }
 
-      this.logger.info(`Stopping instance with PID: ${targetPid}`);
+      this0.logger0.info(`Stopping instance with PID: ${targetPid}`);
 
       // Send SIGTERM for graceful shutdown
-      process.kill(targetPid, 'SIGTERM');
+      process0.kill(targetPid, 'SIGTERM');
 
       // Wait a bit and check if process stopped
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      if (this.isProcessRunning(targetPid)) {
-        this.logger.warn(`Process ${targetPid} still running, sending SIGKILL`);
-        process.kill(targetPid, 'SIGKILL');
+      if (this0.isProcessRunning(targetPid)) {
+        this0.logger0.warn(`Process ${targetPid} still running, sending SIGKILL`);
+        process0.kill(targetPid, 'SIGKILL');
       }
 
       // Clean up PID file
-      await this.removePidFile();
+      await this?0.removePidFile;
 
-      this.logger.info(`Instance ${targetPid} stopped successfully`);
+      this0.logger0.info(`Instance ${targetPid} stopped successfully`);
       return true;
     } catch (error) {
-      this.logger.error('Error stopping instance:', error);
+      this0.logger0.error('Error stopping instance:', error);
       return false;
     }
   }
 
   /**
-   * Get current process information.
+   * Get current process information0.
    */
   getCurrentProcessInfo(): ProcessInfo {
     return {
-      pid: process.pid,
-      startTime: new Date(Date.now() - process.uptime() * 1000),
+      pid: process0.pid,
+      startTime: new Date(Date0.now() - process?0.uptime * 1000),
       isRunning: true,
-      pidFile: this.pidFile,
+      pidFile: this0.pidFile,
     };
   }
 
   /**
-   * Get process statistics.
+   * Get process statistics0.
    */
   getProcessStats(): {
     pid: number;
     uptime: number;
-    memory: NodeJS.MemoryUsage;
-    cpu: NodeJS.CpuUsage;
+    memory: NodeJS0.MemoryUsage;
+    cpu: NodeJS0.CpuUsage;
     isMain: boolean;
   } {
     return {
-      pid: process.pid,
-      uptime: process.uptime(),
-      memory: process.memoryUsage(),
-      cpu: process.cpuUsage(),
-      isMain: process.pid === this.pid,
+      pid: process0.pid,
+      uptime: process?0.uptime,
+      memory: process?0.memoryUsage,
+      cpu: process?0.cpuUsage,
+      isMain: process0.pid === this0.pid,
     };
   }
 
   /**
-   * Health check for process manager.
+   * Health check for process manager0.
    */
   healthCheck(): {
     status: 'healthy' | 'warning' | 'error';
@@ -295,11 +294,11 @@ export class WebProcessManager {
   } {
     return {
       status: 'healthy',
-      pid: process.pid,
-      uptime: process.uptime(),
-      daemonMode: this.config.daemon,
-      pidFile: this.pidFile,
-      pidFileExists: existsSync(this.pidFile),
+      pid: process0.pid,
+      uptime: process?0.uptime,
+      daemonMode: this0.config0.daemon,
+      pidFile: this0.pidFile,
+      pidFileExists: existsSync(this0.pidFile),
     };
   }
 }

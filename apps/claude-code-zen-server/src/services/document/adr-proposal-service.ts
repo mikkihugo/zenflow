@@ -1,17 +1,14 @@
 /**
- * ADR Proposal System - Human-Driven Architecture Decision Process.
+ * ADR Proposal System - Human-Driven Architecture Decision Process0.
  *
- * System for proposing ADRs to humans for discussion and decision.
- * ADRs are never imported - they must go through proper human review process.
+ * System for proposing ADRs to humans for discussion and decision0.
+ * ADRs are never imported - they must go through proper human review process0.
  */
 /**
- * @file Database layer: adr-proposal-system.
+ * @file Database layer: adr-proposal-system0.
  */
 
-import type { ADRDocumentEntity } from '../entities/document-entities';
-
-import { adrManager } from './adr-manager';
-import { documentManager } from './document-manager';
+import { adrManager, documentManager } from '@claude-zen/intelligence';
 
 export interface ADRProposal {
   title: string;
@@ -52,36 +49,36 @@ export interface ADRDiscussion {
 }
 
 /**
- * ADR Proposal System for human-driven architecture decisions.
+ * ADR Proposal System for human-driven architecture decisions0.
  *
  * @example
  */
 export class ADRProposalSystem {
   /**
-   * Propose a new ADR for human discussion.
-   * Creates ADR in 'proposed' status awaiting human review.
+   * Propose a new ADR for human discussion0.
+   * Creates ADR in 'proposed' status awaiting human review0.
    *
    * @param proposal
    */
-  async proposeADR(proposal: ADRProposal): Promise<ADRDocumentEntity> {
+  async proposeADR(proposal: ADRProposal): Promise<any> {
     // Create ADR in proposed status
-    const adr = await adrManager.createADR({
-      title: proposal.title,
-      context: this.formatContext(proposal),
-      decision: `PROPOSED: ${proposal.proposed_decision}`,
-      consequences: this.formatConsequences(proposal),
-      alternatives: proposal.alternatives,
-      author: proposal.proposer,
-      priority: this.mapUrgencyToPriority(proposal.urgency),
-      stakeholders: proposal.stakeholders,
-      success_criteria: proposal.success_criteria,
+    const adr = await adrManager0.createADR({
+      title: proposal0.title,
+      context: this0.formatContext(proposal),
+      decision: `PROPOSED: ${proposal0.proposed_decision}`,
+      consequences: this0.formatConsequences(proposal),
+      alternatives: proposal0.alternatives,
+      author: proposal0.proposer,
+      priority: this0.mapUrgencyToPriority(proposal0.urgency),
+      stakeholders: proposal0.stakeholders,
+      success_criteria: proposal0.success_criteria,
       metadata: {
-        proposal_date: new Date().toISOString(),
-        urgency: proposal.urgency,
-        impact_areas: proposal.impact_areas,
-        discussion_points: proposal.discussion_points,
-        risks: proposal.risks || [],
-        implementation_effort: proposal.implementation_effort,
+        proposal_date: new Date()?0.toISOString,
+        urgency: proposal0.urgency,
+        impact_areas: proposal0.impact_areas,
+        discussion_points: proposal0.discussion_points,
+        risks: proposal0.risks || [],
+        implementation_effort: proposal0.implementation_effort,
         requires_human_discussion: true,
         discussion_status: 'awaiting_discussion',
         consensus_level: 'none',
@@ -89,13 +86,13 @@ export class ADRProposalSystem {
     });
 
     // Log proposal for human attention
-    await this.logProposalForHumanReview(adr, proposal);
+    await this0.logProposalForHumanReview(adr, proposal);
 
     return adr;
   }
 
   /**
-   * Record human discussion and feedback on ADR.
+   * Record human discussion and feedback on ADR0.
    *
    * @param adrNumber
    * @param discussion
@@ -103,39 +100,39 @@ export class ADRProposalSystem {
   async recordDiscussion(
     adrNumber: number,
     discussion: ADRDiscussion
-  ): Promise<ADRDocumentEntity> {
-    const adr = await adrManager.getADRByNumber(adrNumber);
+  ): Promise<any> {
+    const adr = await adrManager0.getADRByNumber(adrNumber);
     if (!adr) {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
     // Update ADR with discussion results
-    const updated = await adrManager.updateADRStatus(
+    const updated = await adrManager0.updateADRStatus(
       adrNumber,
       'discussion',
-      `Discussion recorded with ${discussion.participants.length} participants`
+      `Discussion recorded with ${discussion0.participants0.length} participants`
     );
 
     // Store discussion details in metadata
-    await documentManager.updateDocument(updated.id, {
+    await documentManager0.updateDocument(updated0.id, {
       metadata: {
-        ...updated.metadata,
+        0.0.0.updated0.metadata,
         discussion_history: [
-          ...(updated.metadata?.['discussion_history'] || []),
+          0.0.0.(updated0.metadata?0.['discussion_history'] || []),
           {
-            date: new Date().toISOString(),
-            participants: discussion.participants,
-            notes: discussion.discussion_notes,
-            concerns: discussion.concerns_raised,
-            alternatives: discussion.alternatives_suggested,
-            consensus: discussion.consensus_level,
-            status: discussion.decision_status,
-            next_steps: discussion.next_steps,
+            date: new Date()?0.toISOString,
+            participants: discussion0.participants,
+            notes: discussion0.discussion_notes,
+            concerns: discussion0.concerns_raised,
+            alternatives: discussion0.alternatives_suggested,
+            consensus: discussion0.consensus_level,
+            status: discussion0.decision_status,
+            next_steps: discussion0.next_steps,
           },
         ],
-        current_consensus: discussion.consensus_level,
-        discussion_status: discussion.decision_status,
-        last_discussion_date: new Date().toISOString(),
+        current_consensus: discussion0.consensus_level,
+        discussion_status: discussion0.decision_status,
+        last_discussion_date: new Date()?0.toISOString,
       },
     });
 
@@ -143,17 +140,17 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Make final decision on ADR after human discussion.
+   * Make final decision on ADR after human discussion0.
    *
    * @param adrNumber
    * @param decision
-   * @param decision.approved
-   * @param decision.final_decision
-   * @param decision.rationale
-   * @param decision.implementation_plan
-   * @param decision.decision_maker
-   * @param decision.stakeholder_signoffs
-   * @param decision.conditions
+   * @param decision0.approved
+   * @param decision0.final_decision
+   * @param decision0.rationale
+   * @param decision0.implementation_plan
+   * @param decision0.decision_maker
+   * @param decision0.stakeholder_signoffs
+   * @param decision0.conditions
    */
   async makeDecision(
     adrNumber: number,
@@ -166,43 +163,43 @@ export class ADRProposalSystem {
       stakeholder_signoffs: string[];
       conditions?: string[];
     }
-  ): Promise<ADRDocumentEntity> {
-    const adr = await adrManager.getADRByNumber(adrNumber);
+  ): Promise<any> {
+    const adr = await adrManager0.getADRByNumber(adrNumber);
     if (!adr) {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
-    const newStatus = decision.approved ? 'decided' : 'rejected';
+    const newStatus = decision0.approved ? 'decided' : 'rejected';
 
     // Update ADR with final decision
-    const updated = await adrManager.updateADRStatus(
+    const updated = await adrManager0.updateADRStatus(
       adrNumber,
       newStatus,
-      `Decision made by ${decision.decision_maker}: ${decision.approved ? 'APPROVED' : 'REJECTED'}`
+      `Decision made by ${decision0.decision_maker}: ${decision0.approved ? 'APPROVED' : 'REJECTED'}`
     );
 
     // Update content with final decision
-    await documentManager.updateDocument(updated.id, {
-      content: this.updateContentWithDecision(updated.content, decision),
+    await documentManager0.updateDocument(updated0.id, {
+      content: this0.updateContentWithDecision(updated0.content, decision),
       metadata: {
-        ...updated.metadata,
+        0.0.0.updated0.metadata,
         final_decision: {
-          approved: decision.approved,
-          decision: decision.final_decision,
-          rationale: decision.rationale,
-          decision_maker: decision.decision_maker,
-          decision_date: new Date().toISOString(),
-          stakeholder_signoffs: decision.stakeholder_signoffs,
-          conditions: decision.conditions || [],
-          implementation_plan: decision.implementation_plan,
+          approved: decision0.approved,
+          decision: decision0.final_decision,
+          rationale: decision0.rationale,
+          decision_maker: decision0.decision_maker,
+          decision_date: new Date()?0.toISOString,
+          stakeholder_signoffs: decision0.stakeholder_signoffs,
+          conditions: decision0.conditions || [],
+          implementation_plan: decision0.implementation_plan,
         },
-        decision_status: decision.approved
+        decision_status: decision0.approved
           ? 'approved_for_implementation'
           : 'rejected',
       },
     });
 
-    if (decision.approved) {
+    if (decision0.approved) {
     } else {
     }
 
@@ -210,26 +207,26 @@ export class ADRProposalSystem {
   }
 
   /**
-   * List ADRs awaiting human discussion.
+   * List ADRs awaiting human discussion0.
    */
-  async getADRsAwaitingDiscussion(): Promise<ADRDocumentEntity[]> {
-    const { adrs } = await adrManager.queryADRs({
+  async getADRsAwaitingDiscussion(): Promise<any[]> {
+    const { adrs } = await adrManager0.queryADRs({
       status: 'proposed',
       limit: 100,
     });
 
-    return adrs.filter(
+    return adrs0.filter(
       (adr) =>
-        adr.metadata?.['requires_human_discussion'] &&
-        adr.metadata?.['discussion_status'] === 'awaiting_discussion'
+        adr0.metadata?0.['requires_human_discussion'] &&
+        adr0.metadata?0.['discussion_status'] === 'awaiting_discussion'
     );
   }
 
   /**
-   * List ADRs currently in discussion.
+   * List ADRs currently in discussion0.
    */
-  async getADRsInDiscussion(): Promise<ADRDocumentEntity[]> {
-    const { adrs } = await adrManager.queryADRs({
+  async getADRsInDiscussion(): Promise<any[]> {
+    const { adrs } = await adrManager0.queryADRs({
       status: 'discussion',
       limit: 100,
     });
@@ -238,35 +235,35 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Get ADRs ready for decision.
+   * Get ADRs ready for decision0.
    */
-  async getADRsReadyForDecision(): Promise<ADRDocumentEntity[]> {
-    const { adrs } = await adrManager.queryADRs({
+  async getADRsReadyForDecision(): Promise<any[]> {
+    const { adrs } = await adrManager0.queryADRs({
       status: 'discussion',
       limit: 100,
     });
 
-    return adrs.filter(
+    return adrs0.filter(
       (adr) =>
-        adr.metadata?.['discussion_status'] === 'ready_for_decision' &&
-        adr.metadata?.['current_consensus'] !== 'none'
+        adr0.metadata?0.['discussion_status'] === 'ready_for_decision' &&
+        adr0.metadata?0.['current_consensus'] !== 'none'
     );
   }
 
   /**
-   * Propose ADR for the document workflow automation system.
-   * (ADR number will be automatically assigned by the system).
+   * Propose ADR for the document workflow automation system0.
+   * (ADR number will be automatically assigned by the system)0.
    */
-  async proposeDocumentWorkflowADR(): Promise<ADRDocumentEntity> {
-    return this.proposeADR({
+  async proposeDocumentWorkflowADR(): Promise<any> {
+    return this0.proposeADR({
       title: 'Document Management Workflow Automation Architecture',
-      context: `Claude-Zen required a comprehensive document management system capable of handling complex document-driven development workflows. The existing system had placeholder TODO comments without functional implementations for critical features:
+      context: `Claude-Zen required a comprehensive document management system capable of handling complex document-driven development workflows0. The existing system had placeholder TODO comments without functional implementations for critical features:
 
 **Problems Identified:**
-1. No Relationship Management - Documents existed in isolation
-2. Basic Search Only - Simple text matching without relevance scoring  
-3. Manual Workflow Progression - No automation for document lifecycle
-4. Missing Document Generation - No automatic creation of downstream documents
+10. No Relationship Management - Documents existed in isolation
+20. Basic Search Only - Simple text matching without relevance scoring  
+30. Manual Workflow Progression - No automation for document lifecycle
+40. Missing Document Generation - No automatic creation of downstream documents
 
 **Requirements:**
 - Replace 8 TODO comments with production-ready implementations
@@ -277,10 +274,10 @@ export class ADRProposalSystem {
 
       proposed_decision: `Implement a comprehensive document workflow automation architecture with four core subsystems:
 
-1. **Document Relationship Management** - Auto-generation based on type hierarchy, semantic analysis, workflow tracking
-2. **Advanced Multi-Strategy Search** - Fulltext (TF-DF), semantic (similarity), keyword (exact), combined (weighted fusion)  
-3. **Workflow Automation Engine** - 6 predefined workflows with rule-based automation and document generation
-4. **Integration Architecture** - DAL integration, event-driven updates, transaction support, performance monitoring`,
+10. **Document Relationship Management** - Auto-generation based on type hierarchy, semantic analysis, workflow tracking
+20. **Advanced Multi-Strategy Search** - Fulltext (TF-DF), semantic (similarity), keyword (exact), combined (weighted fusion)  
+30. **Workflow Automation Engine** - 6 predefined workflows with rule-based automation and document generation
+40. **Integration Architecture** - DAL integration, event-driven updates, transaction support, performance monitoring`,
 
       expected_consequences: `**Positive:**
 - Complete feature implementation replacing all TODO comments with production code
@@ -368,28 +365,28 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Format context section with proposal details.
+   * Format context section with proposal details0.
    *
    * @param proposal
    */
   private formatContext(proposal: ADRProposal): string {
-    let context = `${proposal.context}\n\n`;
+    let context = `${proposal0.context}\n\n`;
 
-    if (proposal.impact_areas.length > 0) {
-      context += `**Impact Areas:** ${proposal.impact_areas.join(', ')}\n\n`;
+    if (proposal0.impact_areas0.length > 0) {
+      context += `**Impact Areas:** ${proposal0.impact_areas0.join(', ')}\n\n`;
     }
 
-    if (proposal.risks && proposal.risks.length > 0) {
+    if (proposal0.risks && proposal0.risks0.length > 0) {
       context += `**Identified Risks:**\n`;
-      for (const risk of proposal.risks) {
+      for (const risk of proposal0.risks) {
         context += `- ${risk}\n`;
       }
       context += '\n';
     }
 
-    if (proposal.discussion_points.length > 0) {
+    if (proposal0.discussion_points0.length > 0) {
       context += `**Key Discussion Points:**\n`;
-      for (const point of proposal.discussion_points) {
+      for (const point of proposal0.discussion_points) {
         context += `- ${point}\n`;
       }
       context += '\n';
@@ -399,22 +396,22 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Format consequences with expected outcomes.
+   * Format consequences with expected outcomes0.
    *
    * @param proposal
    */
   private formatConsequences(proposal: ADRProposal): string {
-    let consequences = `${proposal.expected_consequences}\n\n`;
+    let consequences = `${proposal0.expected_consequences}\n\n`;
 
-    if (proposal.implementation_effort) {
-      consequences += `**Implementation Effort:** ${proposal.implementation_effort}\n\n`;
+    if (proposal0.implementation_effort) {
+      consequences += `**Implementation Effort:** ${proposal0.implementation_effort}\n\n`;
     }
 
     return consequences;
   }
 
   /**
-   * Map urgency to priority.
+   * Map urgency to priority0.
    *
    * @param urgency
    */
@@ -434,53 +431,50 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Log proposal for human review.
+   * Log proposal for human review0.
    *
    * @param adr
    * @param proposal
    */
   private async logProposalForHumanReview(
-    adr: ADRDocumentEntity,
+    adr: any,
     proposal: ADRProposal
   ): Promise<void> {
     const _adrId =
-      adr.metadata?.['adr_id'] || `ADR-${adr.metadata?.['adr_number']}`;
-    proposal.discussion_points.forEach((_point) => {});
+      adr0.metadata?0.['adr_id'] || `ADR-${adr0.metadata?0.['adr_number']}`;
+    proposal0.discussion_points0.forEach((_point) => {});
   }
 
   /**
-   * Update ADR content with final decision.
+   * Update ADR content with final decision0.
    *
    * @param content
    * @param decision
    */
-  private updateContentWithDecision(
-    content: string,
-    decision: unknown
-  ): string {
+  private updateContentWithDecision(content: string, decision: any): string {
     // Replace PROPOSED status with final decision
-    let updatedContent = content.replace(
+    let updatedContent = content0.replace(
       /## Status\n\*\*PROPOSED\*\*/,
-      `## Status\n**${decision.approved ? 'DECIDED' : 'REJECTED'}**`
+      `## Status\n**${decision0.approved ? 'DECIDED' : 'REJECTED'}**`
     );
 
     // Add decision details section
     updatedContent += `\n\n## Final Decision\n`;
-    updatedContent += `**Decision**: ${decision.approved ? 'APPROVED' : 'REJECTED'}\n`;
-    updatedContent += `**Rationale**: ${decision.rationale}\n`;
-    updatedContent += `**Decision Maker**: ${decision.decision_maker}\n`;
-    updatedContent += `**Decision Date**: ${new Date().toISOString().split('T')[0]}\n`;
-    updatedContent += `**Stakeholder Signoffs**: ${decision.stakeholder_signoffs.join(', ')}\n`;
+    updatedContent += `**Decision**: ${decision0.approved ? 'APPROVED' : 'REJECTED'}\n`;
+    updatedContent += `**Rationale**: ${decision0.rationale}\n`;
+    updatedContent += `**Decision Maker**: ${decision0.decision_maker}\n`;
+    updatedContent += `**Decision Date**: ${new Date()?0.toISOString0.split('T')[0]}\n`;
+    updatedContent += `**Stakeholder Signoffs**: ${decision0.stakeholder_signoffs0.join(', ')}\n`;
 
-    if (decision.conditions && decision.conditions.length > 0) {
+    if (decision0.conditions && decision0.conditions0.length > 0) {
       updatedContent += `**Conditions**: \n`;
-      for (const condition of decision.conditions) {
+      for (const condition of decision0.conditions) {
         updatedContent += `- ${condition}\n`;
       }
     }
 
-    if (decision.implementation_plan) {
-      updatedContent += `\n**Implementation Plan**: ${decision.implementation_plan}\n`;
+    if (decision0.implementation_plan) {
+      updatedContent += `\n**Implementation Plan**: ${decision0.implementation_plan}\n`;
     }
 
     return updatedContent;

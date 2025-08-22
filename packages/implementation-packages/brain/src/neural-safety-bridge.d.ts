@@ -5,7 +5,7 @@
  * neural networks, behavioral intelligence, and cognitive patterns for enhanced
  * safety monitoring and real-time intervention.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 export interface NeuralSafetyConfig {
     enabled: boolean;
     enhancedDetection: boolean;
@@ -40,7 +40,7 @@ export interface EnhancedDeceptionResult {
  * behavioral intelligence, and cognitive pattern analysis for comprehensive
  * AI safety monitoring.
  */
-export declare class NeuralSafetyBridge extends EventEmitter {
+export declare class NeuralSafetyBridge extends TypedEventBase {
     private logger;
     private aiDeceptionDetector;
     private neuralDeceptionDetector;

@@ -204,7 +204,7 @@ export interface MitigationStrategy {
 /**
  * Architecture Principle Service for enterprise architecture principles management
  */
-export class ArchitecturePrincipleService extends EventEmitter {
+export class ArchitecturePrincipleService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly principles = new Map<string, ArchitecturePrinciple>();
   private knowledgeManager: any;

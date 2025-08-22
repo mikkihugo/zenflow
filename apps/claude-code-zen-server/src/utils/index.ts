@@ -1,5 +1,5 @@
 /**
- * @file Main utilities module that re-exports system utility functions including logging, error handling, type guards, and various helper utilities.
+ * @file Main utilities module that re-exports system utility functions including logging, error handling, type guards, and various helper utilities0.
  */
 
 // Use foundation logging and error handling instead of custom implementations
@@ -39,7 +39,7 @@ export {
   withRetry,
   executeAll,
   executeAllSuccessful,
-  transformError
+  transformError,
 } from '@claude-zen/foundation';
 
 // Use foundation error recovery system - comprehensive error recovery framework
@@ -53,7 +53,7 @@ export {
   type ErrorInfo,
   type RecoveryResult,
   type RecoveryActionResult,
-  type ErrorRecoveryConfig
+  type ErrorRecoveryConfig,
 } from '@claude-zen/foundation';
 
 // Type guards from foundation - comprehensive type safety utilities
@@ -72,4 +72,4 @@ export {
 } from '@claude-zen/foundation';
 
 // Agent analysis utilities (excluded from build due to tsconfig exclude)
-// export * from './agent-gap-analysis';
+// export * from '0./agent-gap-analysis';

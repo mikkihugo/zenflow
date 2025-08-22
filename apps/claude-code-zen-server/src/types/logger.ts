@@ -12,26 +12,26 @@ export interface Logger {
    * @param message - Debug message
    * @param meta - Optional metadata
    */
-  debug(message: string, meta?: unknown): void;
+  debug(message: string, meta?: any): void;
 
   /**
    * Log info message
    * @param message - Info message
    * @param meta - Optional metadata
    */
-  info(message: string, meta?: unknown): void;
+  info(message: string, meta?: any): void;
 
   /**
    * Log warning message
    * @param message - Warning message
    * @param meta - Optional metadata
    */
-  warn(message: string, meta?: unknown): void;
+  warn(message: string, meta?: any): void;
 
   /**
    * Log error message
    * @param message - Error message
    * @param meta - Optional metadata
    */
-  error(message: string, meta?: unknown): void;
+  error(message: string, meta?: any): void;
 }

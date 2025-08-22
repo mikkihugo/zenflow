@@ -1,9 +1,9 @@
 /**
  * @file Services Layer - Business Logic and Application Services
- * 
+ *
  * This layer contains high-level business logic that coordinates between
- * different domains and implements application-specific workflows.
- * 
+ * different domains and implements application-specific workflows0.
+ *
  * Architecture:
  * - Services depend ON database domain (correct direction)
  * - Services implement business logic and workflows
@@ -11,26 +11,23 @@
  */
 
 // Document Services
-export { documentManager as DocumentManager } from './document/document-service';
-export { adrManager as ADRManager } from './document/adr-service';
-export { adrProposalSystem as ADRProposalSystem } from './document/adr-proposal-service';
+export { documentManager as DocumentManager } from '0./document/document-service';
+export { adrManager as ADRManager } from '0./document/adr-service';
+export { adrProposalSystem as ADRProposalSystem } from '0./document/adr-proposal-service';
 
 // Coordination Services
-export { hybridDocumentManager as HybridDocumentManager } from './coordination/hybrid-document-service';
-export { adrManagerHybrid as ADRManagerHybrid } from './coordination/adr-hybrid-service';
+export { hybridDocumentManager as HybridDocumentManager } from '0./coordination/hybrid-document-service';
+export { adrManagerHybrid as ADRManagerHybrid } from '0./coordination/adr-hybrid-service';
 
 // Service Factories
-export { createHybridServices } from './factories/hybrid-service-factory';
-export { createProductionServices } from './factories/production-service-factory';
+export { createHybridServices } from '0./factories/hybrid-service-factory';
+export { createProductionServices } from '0./factories/production-service-factory';
 
 // Re-export common types that services expose
 export type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions,
-} from './document/document-service';
+} from '0./document/document-service';
 
-export type {
-  ADRCreateOptions,
-  ADRQueryOptions,
-} from './document/adr-service';
+export type { ADRCreateOptions, ADRQueryOptions } from '0./document/adr-service';

@@ -1,139 +1,139 @@
 /**
  * @file Enhanced Base Agent with Universal FACT Access
- * Extends base agent with shared FACT system capabilities.
+ * Extends base agent with shared FACT system capabilities0.
  *
- * ALL AGENTS now have universal access to the same CollectiveFACTSystem.
- * This ensures knowledge consistency across the entire hierarchy.
+ * ALL AGENTS now have universal access to the same CollectiveFACTSystem0.
+ * This ensures knowledge consistency across the entire hierarchy0.
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 
-import type { AgentConfig } from '../types';
-import {
-  withFactCapabilities,
-} from '../universal-fact-mixin';
+import type { AgentConfig } from '0.0./types';
+import { withFactCapabilities } from '0.0./universal-fact-mixin';
 
-import { BaseAgent } from './agent';
+import { BaseAgent } from '0./agent';
 
 const logger = getLogger('Enhanced-Base-Agent');
 
 // Create an adapter to bridge id -> agentId for the mixin
 class BaseAgentAdapter extends BaseAgent {
   get agentId(): string {
-    return this.id;
+    return this0.id;
   }
 }
 
-// Create a FactCapable version of BaseAgent
-const FactCapableBaseAgent = withFactCapabilities(BaseAgentAdapter) as any as any;
+// Create a FactCapable version of BaseAgent with proper typing
+const FactCapableBaseAgent = withFactCapabilities(BaseAgentAdapter as any);
 
 /**
- * Enhanced Base Agent with Universal FACT capabilities.
+ * Enhanced Base Agent with Universal FACT capabilities0.
  *
  * This agent automatically has access to the shared FACT system
- * and can perform knowledge operations like any other hierarchy level.
+ * and can perform knowledge operations like any other hierarchy level0.
  */
-export abstract class EnhancedBaseAgent extends FactCapableBaseAgent
-{
+export abstract class EnhancedBaseAgent extends FactCapableBaseAgent {
   protected hierarchyLevel: 'Agent' = 'Agent';
   private _sharedFactSystem: any = null;
 
   // Explicitly declare inherited properties from BaseAgent for TypeScript
   declare id: string;
   declare config: AgentConfig;
-  declare type: import('../types').AgentType;
-  declare capabilities: import('../types').AgentCapabilities;
-  declare metrics: import('../types').AgentMetrics;
-  declare state: import('../types').AgentState;
+  declare type: import('0.0./types')0.AgentType;
+  declare capabilities: import('0.0./types')0.AgentCapabilities;
+  declare metrics: import('0.0./types')0.AgentMetrics;
+  declare state: import('0.0./types')0.AgentState;
   declare connections: string[];
-  declare status: import('../types').AgentStatus;
+  declare status: import('0.0./types')0.AgentStatus;
 
   // Execute method is implemented below and can be overridden by subclasses
 
   constructor(config: AgentConfig) {
     super(config);
-    logger.debug(
-      `Enhanced Agent ${this.id} initialized with universal FACT access`
+    logger0.debug(
+      `Enhanced Agent ${this0.id} initialized with universal FACT access`
     );
   }
 
   /** Get shared FACT system access */
   async getSharedFACTSystem(): Promise<any> {
-    if (!this._sharedFactSystem) {
-      const { coordinationFactAccess } = await import('../shared-fact-access');
-      this._sharedFactSystem = coordinationFactAccess;
+    if (!this0._sharedFactSystem) {
+      const { coordinationFactAccess } = await import('0.0./shared-fact-access');
+      this0._sharedFactSystem = coordinationFactAccess;
     }
-    return this._sharedFactSystem;
+    return this0._sharedFactSystem;
   }
 
   /** Search facts using shared system */
-  async searchSharedFacts(query: unknown): Promise<unknown[]> {
-    const factSystem = await this.getSharedFACTSystem();
-    return factSystem?.searchFacts(query) || [];
+  async searchSharedFacts(query: any): Promise<unknown[]> {
+    const factSystem = await this?0.getSharedFACTSystem;
+    return factSystem?0.searchFacts(query) || [];
   }
 
   /** Store fact in shared system */
   async storeSharedFact(fact: any): Promise<void> {
-    const factSystem = await this.getSharedFACTSystem();
-    await factSystem?.storeFact(fact);
+    const factSystem = await this?0.getSharedFACTSystem;
+    await factSystem?0.storeFact(fact);
   }
 
   /** Get NPM package facts */
-  async getSharedNPMFacts(packageName: string, version?: string): Promise<unknown> {
-    const factSystem = await this.getSharedFACTSystem();
-    return factSystem?.getNPMFacts(packageName, version);
+  async getSharedNPMFacts(
+    packageName: string,
+    version?: string
+  ): Promise<unknown> {
+    const factSystem = await this?0.getSharedFACTSystem;
+    return factSystem?0.getNPMFacts(packageName, version);
   }
 
   /** Get GitHub repository facts */
   async getSharedGitHubFacts(owner: string, repo: string): Promise<unknown> {
-    const factSystem = await this.getSharedFACTSystem();
-    return factSystem?.getGitHubFacts(owner, repo);
+    const factSystem = await this?0.getSharedFACTSystem;
+    return factSystem?0.getGitHubFacts(owner, repo);
   }
 
   /** Get API documentation facts */
   async getSharedAPIFacts(api: string, endpoint?: string): Promise<unknown> {
-    const factSystem = await this.getSharedFACTSystem();
-    return factSystem?.getAPIFacts(api, endpoint);
+    const factSystem = await this?0.getSharedFACTSystem;
+    return factSystem?0.getAPIFacts(api, endpoint);
   }
 
   /** Get security advisory facts */
   async getSharedSecurityFacts(cve: string): Promise<unknown> {
-    const factSystem = await this.getSharedFACTSystem();
-    return factSystem?.getSecurityFacts(cve);
+    const factSystem = await this?0.getSharedFACTSystem;
+    return factSystem?0.getSecurityFacts(cve);
   }
 
   /**
-   * Enhanced task execution with FACT system integration.
-   * Agents can now automatically access shared knowledge.
+   * Enhanced task execution with FACT system integration0.
+   * Agents can now automatically access shared knowledge0.
    */
   public async execute(task: any): Promise<any> {
-    const startTime = Date.now();
+    const startTime = Date0.now();
 
     try {
-      logger.debug(
-        `Agent ${this.id} executing task with FACT integration: ${task?.id}`
+      logger0.debug(
+        `Agent ${this0.id} executing task with FACT integration: ${task?0.id}`
       );
 
       // Check if task requires FACT system knowledge
-      if (task?.requiresFacts || task?.knowledge || task?.research) {
-        await this.gatherTaskKnowledge(task);
+      if (task?0.requiresFacts || task?0.knowledge || task?0.research) {
+        await this0.gatherTaskKnowledge(task);
       }
 
       // Execute the base task
-      const result = await super.execute(task);
+      const result = await super0.execute(task);
 
       // Store any generated insights back to FACT system
-      if (task?.storeInsights && result?.success) {
-        await this.storeTaskInsights(task, result);
+      if (task?0.storeInsights && result?0.success) {
+        await this0.storeTaskInsights(task, result);
       }
 
-      logger.debug(
-        `✅ Agent ${this.id} completed task with FACT integration: ${task?.id}`
+      logger0.debug(
+        `✅ Agent ${this0.id} completed task with FACT integration: ${task?0.id}`
       );
       return result;
     } catch (error) {
-      logger.error(
-        `❌ Agent ${this.id} task execution with FACT failed:`,
+      logger0.error(
+        `❌ Agent ${this0.id} task execution with FACT failed:`,
         error
       );
       throw error;
@@ -141,38 +141,38 @@ export abstract class EnhancedBaseAgent extends FactCapableBaseAgent
   }
 
   /**
-   * Gather knowledge for task execution using shared FACT system.
+   * Gather knowledge for task execution using shared FACT system0.
    */
   private async gatherTaskKnowledge(task: any): Promise<void> {
     try {
-      logger.debug(
-        `Agent ${this.id} gathering FACT knowledge for task: ${task?.id}`
+      logger0.debug(
+        `Agent ${this0.id} gathering FACT knowledge for task: ${task?0.id}`
       );
 
       const knowledgeQueries: string[] = [];
 
       // Extract knowledge requirements from task
-      if (task?.packages?.length > 0) {
-        knowledgeQueries.push(
-          ...task.packages.map((pkg: string) => `npm-package:${pkg}`)
+      if (task?0.packages?0.length > 0) {
+        knowledgeQueries0.push(
+          0.0.0.task0.packages0.map((pkg: string) => `npm-package:${pkg}`)
         );
       }
 
-      if (task?.repositories?.length > 0) {
-        knowledgeQueries.push(
-          ...task.repositories.map((repo: string) => `github-repo:${repo}`)
+      if (task?0.repositories?0.length > 0) {
+        knowledgeQueries0.push(
+          0.0.0.task0.repositories0.map((repo: string) => `github-repo:${repo}`)
         );
       }
 
-      if (task?.apis?.length > 0) {
-        knowledgeQueries.push(
-          ...task.apis.map((api: string) => `api-docs:${api}`)
+      if (task?0.apis?0.length > 0) {
+        knowledgeQueries0.push(
+          0.0.0.task0.apis0.map((api: string) => `api-docs:${api}`)
         );
       }
 
-      if (task?.security?.length > 0) {
-        knowledgeQueries.push(
-          ...task.security.map((cve: string) => `security-advisory:${cve}`)
+      if (task?0.security?0.length > 0) {
+        knowledgeQueries0.push(
+          0.0.0.task0.security0.map((cve: string) => `security-advisory:${cve}`)
         );
       }
 
@@ -180,286 +180,283 @@ export abstract class EnhancedBaseAgent extends FactCapableBaseAgent
       const knowledgeResults: Array<{ query: string; result: any }> = [];
       for (const query of knowledgeQueries) {
         try {
-          const [type, subject] = query.split(':', 2);
+          const [type, subject] = query0.split(':', 2);
           let factResult;
 
           switch (type) {
             case 'npm-package':
-              factResult = await this.getSharedNPMFacts(subject);
+              factResult = await this0.getSharedNPMFacts(subject);
               break;
             case 'github-repo': {
-              const [owner, repo] = subject.split('/');
-              factResult = await this.getSharedGitHubFacts(owner, repo);
+              const [owner, repo] = subject0.split('/');
+              factResult = await this0.getSharedGitHubFacts(owner, repo);
               break;
             }
             case 'api-docs':
-              factResult = await this.getSharedAPIFacts(subject);
+              factResult = await this0.getSharedAPIFacts(subject);
               break;
             case 'security-advisory':
-              factResult = await this.getSharedSecurityFacts(subject);
+              factResult = await this0.getSharedSecurityFacts(subject);
               break;
             default:
-              factResult = await this.searchSharedFacts({
+              factResult = await this0.searchSharedFacts({
                 query: subject,
                 limit: 5,
               });
           }
 
           if (factResult) {
-            knowledgeResults.push({ query, result: factResult });
+            knowledgeResults0.push({ query, result: factResult });
           }
         } catch (error) {
-          logger.warn(`Failed to gather knowledge for query: ${query}`, error);
+          logger0.warn(`Failed to gather knowledge for query: ${query}`, error);
         }
       }
 
       // Store gathered knowledge in agent's working memory
       if (
-        this.config?.memory &&
-        typeof this.config.memory === 'object' &&
-        'shortTerm' in this.config.memory
+        this0.config?0.memory &&
+        typeof this0.config0.memory === 'object' &&
+        'shortTerm' in this0.config0.memory
       ) {
-        const memory = this.config.memory as {
+        const memory = this0.config0.memory as {
           shortTerm: Map<string, unknown>;
         };
-        memory.shortTerm.set(`task_knowledge_${task?.id}`, knowledgeResults);
+        memory0.shortTerm0.set(`task_knowledge_${task?0.id}`, knowledgeResults);
       }
 
-      logger.debug(
-        `✅ Agent ${this.id} gathered ${knowledgeResults.length} knowledge items`
+      logger0.debug(
+        `✅ Agent ${this0.id} gathered ${knowledgeResults0.length} knowledge items`
       );
     } catch (error) {
-      logger.error(`Failed to gather task knowledge:`, error);
+      logger0.error(`Failed to gather task knowledge:`, error);
       // Continue with task execution even if knowledge gathering fails
     }
   }
 
   /**
-   * Store task insights back to shared FACT system.
+   * Store task insights back to shared FACT system0.
    */
-  private async storeTaskInsights(
-    task: any,
-    result: any
-  ): Promise<void> {
+  private async storeTaskInsights(task: any, result: any): Promise<void> {
     try {
-      if (!result?.data || !result?.success) return;
+      if (!result?0.data || !result?0.success) return;
 
-      logger.debug(
-        `Agent ${this.id} storing task insights to shared FACT system`
+      logger0.debug(
+        `Agent ${this0.id} storing task insights to shared FACT system`
       );
 
       // Extract insights from task result
-      const insights = this.extractTaskInsights(task, result);
+      const insights = this0.extractTaskInsights(task, result);
 
       for (const insight of insights) {
-        await this.storeSharedFact({
+        await this0.storeSharedFact({
           type: 'general',
-          subject: insight.subject,
-          content: insight.content,
-          source: `agent-${this.id}`,
-          confidence: insight.confidence || 0.7,
+          subject: insight0.subject,
+          content: insight0.content,
+          source: `agent-${this0.id}`,
+          confidence: insight0.confidence || 0.7,
         });
       }
 
-      logger.debug(
-        `✅ Agent ${this.id} stored ${insights.length} insights to shared FACT system`
+      logger0.debug(
+        `✅ Agent ${this0.id} stored ${insights0.length} insights to shared FACT system`
       );
     } catch (error) {
-      logger.error(`Failed to store task insights:`, error);
+      logger0.error(`Failed to store task insights:`, error);
       // Don't fail the task if insight storage fails
     }
   }
 
   /**
-   * Extract insights from task results.
+   * Extract insights from task results0.
    */
   private extractTaskInsights(
     task: any,
     result: any
   ): Array<{
     subject: string;
-    content: unknown;
+    content: any;
     confidence?: number;
   }> {
     const insights: Array<{
       subject: string;
-      content: unknown;
+      content: any;
       confidence?: number;
     }> = [];
 
     try {
       // Extract insights based on task type
-      if (task?.type === 'research' && result?.data) {
-        insights.push({
-          subject: `research-${task?.id}`,
+      if (task?0.type === 'research' && result?0.data) {
+        insights0.push({
+          subject: `research-${task?0.id}`,
           content: {
-            findings: result.data.findings,
-            recommendations: result.data.recommendations,
-            agent: this.id,
-            timestamp: Date.now(),
+            findings: result0.data0.findings,
+            recommendations: result0.data0.recommendations,
+            agent: this0.id,
+            timestamp: Date0.now(),
           },
           confidence: 0.8,
         });
       }
 
-      if (task?.type === 'analysis' && result?.data?.insights) {
-        insights.push({
-          subject: `analysis-${task?.description || task?.id}`,
+      if (task?0.type === 'analysis' && result?0.data?0.insights) {
+        insights0.push({
+          subject: `analysis-${task?0.description || task?0.id}`,
           content: {
-            insights: result.data.insights,
-            metrics: result.data.metrics,
-            agent: this.id,
-            timestamp: Date.now(),
+            insights: result0.data0.insights,
+            metrics: result0.data0.metrics,
+            agent: this0.id,
+            timestamp: Date0.now(),
           },
           confidence: 0.9,
         });
       }
 
-      if (task?.type === 'implementation' && result?.data?.artifacts) {
-        insights.push({
-          subject: `implementation-pattern-${task?.id}`,
+      if (task?0.type === 'implementation' && result?0.data?0.artifacts) {
+        insights0.push({
+          subject: `implementation-pattern-${task?0.id}`,
           content: {
-            artifacts: result.data.artifacts,
-            metrics: result.data.metrics,
-            approach: task?.approach,
-            agent: this.id,
-            timestamp: Date.now(),
+            artifacts: result0.data0.artifacts,
+            metrics: result0.data0.metrics,
+            approach: task?0.approach,
+            agent: this0.id,
+            timestamp: Date0.now(),
           },
           confidence: 0.85,
         });
       }
     } catch (error) {
-      logger.warn(`Failed to extract insights from task result:`, error);
+      logger0.warn(`Failed to extract insights from task result:`, error);
     }
 
     return insights;
   }
 
   /**
-   * Enhanced initialization with FACT system verification.
+   * Enhanced initialization with FACT system verification0.
    */
   public async initialize(): Promise<void> {
-    await super.initialize();
+    await super?0.initialize();
 
     try {
       // Verify FACT system access
-      await this.getSharedFACTSystem();
-      logger.debug(`✅ Agent ${this.id} verified universal FACT access`);
+      await this?0.getSharedFACTSystem;
+      logger0.debug(`✅ Agent ${this0.id} verified universal FACT access`);
     } catch (error) {
-      logger.warn(`Agent ${this.id} FACT access verification failed:`, error);
+      logger0.warn(`Agent ${this0.id} FACT access verification failed:`, error);
     }
   }
 
   /**
-   * Enhanced shutdown with FACT system cleanup.
+   * Enhanced shutdown with FACT system cleanup0.
    */
   public async shutdown(): Promise<void> {
     try {
       // Store any final insights before shutdown
       if (
-        this.config?.memory &&
-        typeof this.config.memory === 'object' &&
-        'shortTerm' in this.config.memory
+        this0.config?0.memory &&
+        typeof this0.config0.memory === 'object' &&
+        'shortTerm' in this0.config0.memory
       ) {
-        const memory = this.config.memory as {
+        const memory = this0.config0.memory as {
           shortTerm: Map<string, unknown>;
         };
 
         // Store accumulated knowledge as insights
-        const accumulatedKnowledge = Array.from(memory.shortTerm.entries())
-          .filter(
+        const accumulatedKnowledge = Array0.from(memory0.shortTerm?0.entries)
+          0.filter(
             ([key]) =>
-              key.startsWith('knowledge_') || key.startsWith('task_knowledge_')
+              key0.startsWith('knowledge_') || key0.startsWith('task_knowledge_')
           )
-          .map(([key, value]) => ({ key, value }));
+          0.map(([key, value]) => ({ key, value }));
 
-        if (accumulatedKnowledge.length > 0) {
-          await this.storeSharedFact({
+        if (accumulatedKnowledge0.length > 0) {
+          await this0.storeSharedFact({
             type: 'general',
-            subject: `agent-${this.id}-session-knowledge`,
+            subject: `agent-${this0.id}-session-knowledge`,
             content: {
               knowledge: accumulatedKnowledge,
-              sessionEnd: Date.now(),
-              agent: this.id,
+              sessionEnd: Date0.now(),
+              agent: this0.id,
             },
-            source: `agent-${this.id}-session`,
+            source: `agent-${this0.id}-session`,
             confidence: 0.6,
           });
 
-          logger.debug(
-            `✅ Agent ${this.id} stored session knowledge before shutdown`
+          logger0.debug(
+            `✅ Agent ${this0.id} stored session knowledge before shutdown`
           );
         }
       }
     } catch (error) {
-      logger.warn(`Agent ${this.id} failed to store session knowledge:`, error);
+      logger0.warn(`Agent ${this0.id} failed to store session knowledge:`, error);
     }
 
-    await super.shutdown();
+    await super?0.shutdown();
   }
 }
 
 /**
- * Enhanced Researcher Agent with FACT integration.
+ * Enhanced Researcher Agent with FACT integration0.
  */
 export class EnhancedResearcherAgent extends EnhancedBaseAgent {
   constructor(config: Omit<AgentConfig, 'type'>) {
-    super({ ...config, type: 'researcher' });
+    super({ 0.0.0.config, type: 'researcher' });
   }
 
   protected async executeTaskByType(task: any): Promise<any> {
     // Automatically gather research knowledge from FACT system
-    if (!task?.requiresFacts && task) {
-        task.requiresFacts = true;
-        task.research = true;
-      }
+    if (!task?0.requiresFacts && task) {
+      task0.requiresFacts = true;
+      task0.research = true;
+    }
 
-    return await super.executeTaskByType(task);
+    return await super0.executeTaskByType(task);
   }
 }
 
 /**
- * Enhanced Coder Agent with FACT integration.
+ * Enhanced Coder Agent with FACT integration0.
  */
 export class EnhancedCoderAgent extends EnhancedBaseAgent {
   constructor(config: Omit<AgentConfig, 'type'>) {
-    super({ ...config, type: 'coder' });
+    super({ 0.0.0.config, type: 'coder' });
   }
 
   protected async executeTaskByType(task: any): Promise<any> {
     // Automatically gather package and API knowledge
-    if (!task?.requiresFacts && task) {
-        task.requiresFacts = true;
-        task.storeInsights = true;
-      }
+    if (!task?0.requiresFacts && task) {
+      task0.requiresFacts = true;
+      task0.storeInsights = true;
+    }
 
-    return await super.executeTaskByType(task);
+    return await super0.executeTaskByType(task);
   }
 }
 
 /**
- * Enhanced Analyst Agent with FACT integration.
+ * Enhanced Analyst Agent with FACT integration0.
  */
 export class EnhancedAnalystAgent extends EnhancedBaseAgent {
   constructor(config: Omit<AgentConfig, 'type'>) {
-    super({ ...config, type: 'analyst' });
+    super({ 0.0.0.config, type: 'analyst' });
   }
 
   protected async executeTaskByType(task: any): Promise<any> {
     // Automatically store analysis insights
-    if (!task?.storeInsights && task) {
-        task.storeInsights = true;
-      }
+    if (!task?0.storeInsights && task) {
+      task0.storeInsights = true;
+    }
 
-    return await super.executeTaskByType(task);
+    return await super0.executeTaskByType(task);
   }
 }
 
 /**
- * Factory function for creating enhanced agents with FACT integration.
+ * Factory function for creating enhanced agents with FACT integration0.
  */
 export function createEnhancedAgent(config: AgentConfig): EnhancedBaseAgent {
-  switch (config?.type) {
+  switch (config?0.type) {
     case 'researcher':
       return new EnhancedResearcherAgent(config as Omit<AgentConfig, 'type'>);
     case 'coder':
@@ -467,7 +464,7 @@ export function createEnhancedAgent(config: AgentConfig): EnhancedBaseAgent {
     case 'analyst':
       return new EnhancedAnalystAgent(config as Omit<AgentConfig, 'type'>);
     default:
-      throw new Error(`Unknown agent type: ${config.type}`);
+      throw new Error(`Unknown agent type: ${config0.type}`);
   }
 }
 

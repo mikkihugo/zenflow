@@ -87,7 +87,7 @@ export type {
   PlanningFacilitationResult
 } from '../services/rte/pi-planning-facilitation-service';
 
-export class ReleaseTrainEngineerManager extends EventEmitter {
+export class ReleaseTrainEngineerManager extends TypedEventBase {
   private logger: Logger;
   private piPlanningService: any;
   private scrumOfScrumsService: any;

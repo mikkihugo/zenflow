@@ -1,5 +1,5 @@
 /**
- * OpenAPI 3.0 Route Documentation
+ * OpenAPI 30.0 Route Documentation
  * JSDoc comments for automatic Swagger generation
  */
 
@@ -30,7 +30,7 @@
  *                 memory:
  *                   used: 45
  *                   total: 128
- *                 version: "1.0.0"
+ *                 version: "10.0.0"
  *                 environment: "development"
  *               message: "System is healthy"
  *               timestamp: "2024-01-15T10:30:00Z"
@@ -174,7 +174,7 @@
  *                   rejected: 2
  *                   completedThisWeek: 8
  *                 performanceMetrics:
- *                   averageApprovalTime: "2.3 days"
+ *                   averageApprovalTime: "20.3 days"
  *                   automationRate: "73%"
  *                   successRate: "94%"
  *               message: "AGU dashboard data retrieved"
@@ -255,10 +255,10 @@
  *                 consultations:
  *                   - id: "cons-001"
  *                     title: "React vs Vue Performance Analysis"
- *                     expert: "Dr. Sarah Chen - Frontend Architecture"
+ *                     expert: "Dr0. Sarah Chen - Frontend Architecture"
  *                     status: "completed"
  *                     createdAt: "2024-01-10T09:00:00Z"
- *                     recommendation: "React with Next.js recommended for this use case"
+ *                     recommendation: "React with Next0.js recommended for this use case"
  *               message: "Matron consultations retrieved successfully"
  *               timestamp: "2024-01-15T10:30:00Z"
  *       500:
@@ -506,7 +506,7 @@
  *               data:
  *                 results:
  *                   - type: "npm-package"
- *                     subject: "react@18.2.0"
+ *                     subject: "react@180.20.0"
  *                     confidence: 0.95
  *                 total: 1
  *                 query: "react"
@@ -562,8 +562,8 @@
  *                 total: 1247
  *                 performance:
  *                   totalQueries: 8645
- *                   avgResponseTime: 23.5
- *                   cacheHitRate: "93.2%"
+ *                   avgResponseTime: 230.5
+ *                   cacheHitRate: "930.2%"
  *               message: "Collective intelligence statistics"
  *               timestamp: "2024-01-15T10:30:00Z"
  */
@@ -588,7 +588,7 @@
  *                 type: string
  *           example:
  *             type: "npm-package"
- *             subject: "react@18.2.0"
+ *             subject: "react@180.20.0"
  *     responses:
  *       200:
  *         description: Refresh completed successfully
@@ -611,8 +611,8 @@
  *               data:
  *                 operation: "refresh"
  *                 result:
- *                   refreshed: "react@18.2.0"
- *               message: "Refreshed fact npm-package:react@18.2.0"
+ *                   refreshed: "react@180.20.0"
+ *               message: "Refreshed fact npm-package:react@180.20.0"
  *               timestamp: "2024-01-15T10:30:00Z"
  *       503:
  *         $ref: '#/components/responses/ServiceUnavailable'

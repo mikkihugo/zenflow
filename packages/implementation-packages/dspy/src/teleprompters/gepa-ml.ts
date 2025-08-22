@@ -182,7 +182,7 @@ export interface GEPAMLResult {
  * for optimizing DSPy module configurations and architectures.
  */
 export class GEPAML extends Teleprompter {
-  private eventEmitter: EventEmitter = new EventEmitter();
+  private eventEmitter: EventEmitter = new TypedEventBase();
   private config: GEPAMLConfig;
   private logger: Logger;
   private mlEngine: MLEngine | null = null;

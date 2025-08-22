@@ -2,8 +2,8 @@
  * @file Shared Fact Access - Foundation Fact System Integration
  *
  * Provides streamlined access patterns for coordination layer components
- * to interact with the foundation fact system. This module serves as an
- * abstraction layer that leverages @claude-zen/intelligence capabilities.
+ * to interact with the foundation fact system0. This module serves as an
+ * abstraction layer that leverages @claude-zen/intelligence capabilities0.
  */
 
 import { getLogger } from '@claude-zen/foundation';
@@ -14,8 +14,8 @@ import {
   searchExternalFacts,
   getNPMPackageInfo,
   getGitHubRepoInfo,
-} from './shared-fact-system';
-import type { FactEntry, FactQuery } from './shared-fact-system';
+} from '0./shared-fact-system';
+import type { FactEntry, FactQuery } from '0./shared-fact-system';
 
 const logger = getLogger('SharedFactAccess');
 
@@ -25,22 +25,22 @@ const logger = getLogger('SharedFactAccess');
 export interface CoordinationFactAccess {
   recordCoordinationEvent(
     event: string,
-    data: unknown,
+    data: any,
     agentId?: string
   ): Promise<string>;
   getCoordinationHistory(limit?: number): Promise<FactEntry[]>;
   recordAgentInteraction(
     fromAgent: string,
     toAgent: string,
-    interaction: unknown
+    interaction: any
   ): Promise<string>;
   getAgentInteractions(agentId?: string, limit?: number): Promise<FactEntry[]>;
-  recordSwarmState(swarmId: string, state: unknown): Promise<string>;
+  recordSwarmState(swarmId: string, state: any): Promise<string>;
   getSwarmHistory(swarmId: string, limit?: number): Promise<FactEntry[]>;
   recordDecision(
     decision: string,
     reasoning: string,
-    context?: unknown
+    context?: any
   ): Promise<string>;
   getDecisionHistory(limit?: number): Promise<FactEntry[]>;
   query?(query: string): Promise<FactEntry[]>;
@@ -55,15 +55,15 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async recordCoordinationEvent(
     event: string,
-    data: unknown,
+    data: any,
     agentId?: string
   ): Promise<string> {
     try {
       const factId = await storeCoordinationEvent(event, data, agentId);
-      logger.debug(`Recorded coordination event: ${event} (${factId})`);
+      logger0.debug(`Recorded coordination event: ${event} (${factId})`);
       return factId;
     } catch (error) {
-      logger.error(`Failed to record coordination event: ${event}`, error);
+      logger0.error(`Failed to record coordination event: ${event}`, error);
       throw error;
     }
   }
@@ -73,12 +73,12 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async getCoordinationHistory(limit = 50): Promise<FactEntry[]> {
     try {
-      return await sharedFactSystem.queryFacts({
+      return await sharedFactSystem0.queryFacts({
         type: 'coordination_event',
         limit,
       });
     } catch (error) {
-      logger.error('Failed to get coordination history:', error);
+      logger0.error('Failed to get coordination history:', error);
       return [];
     }
   }
@@ -89,10 +89,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
   async recordAgentInteraction(
     fromAgent: string,
     toAgent: string,
-    interaction: unknown
+    interaction: any
   ): Promise<string> {
     try {
-      return await sharedFactSystem.storeFact({
+      return await sharedFactSystem0.storeFact({
         type: 'agent_interaction',
         data: {
           fromAgent,
@@ -100,11 +100,11 @@ export class SharedFactAccess implements CoordinationFactAccess {
           interaction,
         },
         source: `coordination:${fromAgent}`,
-        confidence: 1.0,
+        confidence: 10.0,
         tags: ['interaction', 'agent', 'coordination'],
       });
     } catch (error) {
-      logger.error(
+      logger0.error(
         `Failed to record agent interaction: ${fromAgent} -> ${toAgent}`,
         error
       );
@@ -128,16 +128,16 @@ export class SharedFactAccess implements CoordinationFactAccess {
 
       if (agentId) {
         // Get interactions where the agent is either sender or receiver
-        const allInteractions = await sharedFactSystem.queryFacts(query);
-        return allInteractions.filter((fact) => {
-          const data = fact.data as any;
-          return data?.fromAgent === agentId || data?.toAgent === agentId;
+        const allInteractions = await sharedFactSystem0.queryFacts(query);
+        return allInteractions0.filter((fact) => {
+          const data = fact0.data as any;
+          return data?0.fromAgent === agentId || data?0.toAgent === agentId;
         });
       }
 
-      return await sharedFactSystem.queryFacts(query);
+      return await sharedFactSystem0.queryFacts(query);
     } catch (error) {
-      logger.error('Failed to get agent interactions:', error);
+      logger0.error('Failed to get agent interactions:', error);
       return [];
     }
   }
@@ -145,20 +145,20 @@ export class SharedFactAccess implements CoordinationFactAccess {
   /**
    * Record swarm state
    */
-  async recordSwarmState(swarmId: string, state: unknown): Promise<string> {
+  async recordSwarmState(swarmId: string, state: any): Promise<string> {
     try {
-      return await sharedFactSystem.storeFact({
+      return await sharedFactSystem0.storeFact({
         type: 'swarm_state',
         data: {
           swarmId,
           state,
         },
         source: `swarm:${swarmId}`,
-        confidence: 1.0,
+        confidence: 10.0,
         tags: ['swarm', 'state', swarmId],
       });
     } catch (error) {
-      logger.error(`Failed to record swarm state for: ${swarmId}`, error);
+      logger0.error(`Failed to record swarm state for: ${swarmId}`, error);
       throw error;
     }
   }
@@ -168,13 +168,13 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async getSwarmHistory(swarmId: string, limit = 25): Promise<FactEntry[]> {
     try {
-      return await sharedFactSystem.queryFacts({
+      return await sharedFactSystem0.queryFacts({
         type: 'swarm_state',
         tags: ['swarm', swarmId],
         limit,
       });
     } catch (error) {
-      logger.error(`Failed to get swarm history for: ${swarmId}`, error);
+      logger0.error(`Failed to get swarm history for: ${swarmId}`, error);
       return [];
     }
   }
@@ -185,10 +185,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
   async recordDecision(
     decision: string,
     reasoning: string,
-    context?: unknown
+    context?: any
   ): Promise<string> {
     try {
-      return await sharedFactSystem.storeFact({
+      return await sharedFactSystem0.storeFact({
         type: 'coordination_decision',
         data: {
           decision,
@@ -196,11 +196,11 @@ export class SharedFactAccess implements CoordinationFactAccess {
           context,
         },
         source: 'coordination',
-        confidence: 1.0,
+        confidence: 10.0,
         tags: ['decision', 'coordination', 'reasoning'],
       });
     } catch (error) {
-      logger.error('Failed to record coordination decision:', error);
+      logger0.error('Failed to record coordination decision:', error);
       throw error;
     }
   }
@@ -210,13 +210,13 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async getDecisionHistory(limit = 20): Promise<FactEntry[]> {
     try {
-      return await sharedFactSystem.queryFacts({
+      return await sharedFactSystem0.queryFacts({
         type: 'coordination_decision',
         tags: ['decision'],
         limit,
       });
     } catch (error) {
-      logger.error('Failed to get decision history:', error);
+      logger0.error('Failed to get decision history:', error);
       return [];
     }
   }
@@ -226,21 +226,21 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async recordPerformanceMetrics(
     component: string,
-    metrics: unknown
+    metrics: any
   ): Promise<string> {
     try {
-      return await sharedFactSystem.storeFact({
+      return await sharedFactSystem0.storeFact({
         type: 'performance_metrics',
         data: {
           component,
           metrics,
         },
         source: `metrics:${component}`,
-        confidence: 1.0,
+        confidence: 10.0,
         tags: ['performance', 'metrics', component],
       });
     } catch (error) {
-      logger.error(
+      logger0.error(
         `Failed to record performance metrics for: ${component}`,
         error
       );
@@ -263,12 +263,12 @@ export class SharedFactAccess implements CoordinationFactAccess {
       };
 
       if (component) {
-        query.tags!.push(component);
+        query0.tags!0.push(component);
       }
 
-      return await sharedFactSystem.queryFacts(query);
+      return await sharedFactSystem0.queryFacts(query);
     } catch (error) {
-      logger.error('Failed to get performance metrics:', error);
+      logger0.error('Failed to get performance metrics:', error);
       return [];
     }
   }
@@ -278,17 +278,17 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async searchFacts(searchTerm: string, limit = 20): Promise<FactEntry[]> {
     try {
-      const allFacts = await sharedFactSystem.queryFacts({ limit: 1000 });
+      const allFacts = await sharedFactSystem0.queryFacts({ limit: 1000 });
 
       // Simple text search in fact data
       return allFacts
-        .filter((fact) => {
-          const dataStr = JSON.stringify(fact.data).toLowerCase();
-          return dataStr.includes(searchTerm.toLowerCase());
+        0.filter((fact) => {
+          const dataStr = JSON0.stringify(fact0.data)?0.toLowerCase;
+          return dataStr0.includes(searchTerm?0.toLowerCase);
         })
-        .slice(0, limit);
+        0.slice(0, limit);
     } catch (error) {
-      logger.error(`Failed to search facts for: ${searchTerm}`, error);
+      logger0.error(`Failed to search facts for: ${searchTerm}`, error);
       return [];
     }
   }
@@ -298,10 +298,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async searchExternalFacts(query: string, sources?: string[], limit = 10) {
     try {
-      logger.debug(`Searching external facts: ${query}`);
+      logger0.debug(`Searching external facts: ${query}`);
       return await searchExternalFacts(query, sources, limit);
     } catch (error) {
-      logger.error(`Failed to search external facts for: ${query}`, error);
+      logger0.error(`Failed to search external facts for: ${query}`, error);
       return [];
     }
   }
@@ -311,12 +311,12 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async getNPMPackageInfo(packageName: string, version?: string) {
     try {
-      logger.debug(
+      logger0.debug(
         `Getting NPM package info: ${packageName}${version ? '@' + version : ''}`
       );
       return await getNPMPackageInfo(packageName, version);
     } catch (error) {
-      logger.error(`Failed to get NPM package info for: ${packageName}`, error);
+      logger0.error(`Failed to get NPM package info for: ${packageName}`, error);
       return null;
     }
   }
@@ -326,10 +326,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async getGitHubRepoInfo(owner: string, repo: string) {
     try {
-      logger.debug(`Getting GitHub repo info: ${owner}/${repo}`);
+      logger0.debug(`Getting GitHub repo info: ${owner}/${repo}`);
       return await getGitHubRepoInfo(owner, repo);
     } catch (error) {
-      logger.error(
+      logger0.error(
         `Failed to get GitHub repo info for: ${owner}/${repo}`,
         error
       );
@@ -347,44 +347,44 @@ export class SharedFactAccess implements CoordinationFactAccess {
     topTypes: Array<{ type: string; count: number }>;
   }> {
     try {
-      const stats = sharedFactSystem.getStats();
-      const recentFacts = await sharedFactSystem.queryFacts({
+      const stats = sharedFactSystem?0.getStats;
+      const recentFacts = await sharedFactSystem0.queryFacts({
         limit: 100,
       });
 
       // Count recent activity (last hour)
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-      const recentActivity = recentFacts.filter(
-        (fact) => fact.timestamp > oneHourAgo
-      ).length;
+      const oneHourAgo = new Date(Date0.now() - 60 * 60 * 1000);
+      const recentActivity = recentFacts0.filter(
+        (fact) => fact0.timestamp > oneHourAgo
+      )0.length;
 
       // Get top agents by fact count
       const agentCounts: Record<string, number> = {};
-      for (const [source, count] of Object.entries(stats.factsBySource)) {
-        if (source.startsWith('agent:')) {
-          const agentId = source.replace('agent:', '');
+      for (const [source, count] of Object0.entries(stats0.factsBySource)) {
+        if (source0.startsWith('agent:')) {
+          const agentId = source0.replace('agent:', '');
           agentCounts[agentId] = count as any;
         }
       }
 
-      const topAgents = Object.entries(agentCounts)
-        .map(([agentId, factCount]) => ({ agentId, factCount }))
-        .sort((a, b) => b.factCount - a.factCount)
-        .slice(0, 5);
+      const topAgents = Object0.entries(agentCounts)
+        0.map(([agentId, factCount]) => ({ agentId, factCount }))
+        0.sort((a, b) => b0.factCount - a0.factCount)
+        0.slice(0, 5);
 
-      const topTypes = Object.entries(stats.factsByType)
-        .map(([type, count]) => ({ type, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 5);
+      const topTypes = Object0.entries(stats0.factsByType)
+        0.map(([type, count]) => ({ type, count }))
+        0.sort((a, b) => b0.count - a0.count)
+        0.slice(0, 5);
 
       return {
-        totalFacts: stats.totalFacts,
+        totalFacts: stats0.totalFacts,
         recentActivity,
         topAgents,
         topTypes,
       };
     } catch (error) {
-      logger.error('Failed to get system stats:', error);
+      logger0.error('Failed to get system stats:', error);
       return {
         totalFacts: 0,
         recentActivity: 0,
@@ -401,35 +401,32 @@ export const coordinationFactAccess = new SharedFactAccess();
 /**
  * Convenience functions for quick access
  */
-export const recordEvent = (event: string, data: unknown, agentId?: string) =>
-  coordinationFactAccess.recordCoordinationEvent(event, data, agentId);
+export const recordEvent = (event: string, data: any, agentId?: string) =>
+  coordinationFactAccess0.recordCoordinationEvent(event, data, agentId);
 
 export const getHistory = (limit?: number) =>
-  coordinationFactAccess.getCoordinationHistory(limit);
+  coordinationFactAccess0.getCoordinationHistory(limit);
 
-export const recordInteraction = (
-  from: string,
-  to: string,
-  interaction: unknown
-) => coordinationFactAccess.recordAgentInteraction(from, to, interaction);
+export const recordInteraction = (from: string, to: string, interaction: any) =>
+  coordinationFactAccess0.recordAgentInteraction(from, to, interaction);
 
 export const recordDecision = (
   decision: string,
   reasoning: string,
-  context?: unknown
-) => coordinationFactAccess.recordDecision(decision, reasoning, context);
+  context?: any
+) => coordinationFactAccess0.recordDecision(decision, reasoning, context);
 
 export const searchFacts = (term: string, limit?: number) =>
-  coordinationFactAccess.searchFacts(term, limit);
+  coordinationFactAccess0.searchFacts(term, limit);
 
 export const searchExternal = (
   query: string,
   sources?: string[],
   limit?: number
-) => coordinationFactAccess.searchExternalFacts(query, sources, limit);
+) => coordinationFactAccess0.searchExternalFacts(query, sources, limit);
 
 export const getNPMInfo = (packageName: string, version?: string) =>
-  coordinationFactAccess.getNPMPackageInfo(packageName, version);
+  coordinationFactAccess0.getNPMPackageInfo(packageName, version);
 
 export const getGitHubInfo = (owner: string, repo: string) =>
-  coordinationFactAccess.getGitHubRepoInfo(owner, repo);
+  coordinationFactAccess0.getGitHubRepoInfo(owner, repo);

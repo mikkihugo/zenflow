@@ -245,7 +245,7 @@ export interface BanditPerformanceStats {
  * capabilities using battle-tested optimization and statistical libraries.
  */
 export class GRPOML extends Teleprompter {
-  private eventEmitter: EventEmitter = new EventEmitter();
+  private eventEmitter: EventEmitter = new TypedEventBase();
   private logger: Logger;
   private config: GRPOMLConfig;
   private initialized: boolean = false;

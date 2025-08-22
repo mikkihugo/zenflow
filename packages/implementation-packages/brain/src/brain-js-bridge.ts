@@ -32,11 +32,10 @@
 
 import { 
   getLogger, 
-  injectable, 
   type Logger 
 } from '@claude-zen/foundation';
 // Database access via infrastructure facade
-import { getDatabaseAccess } from '@claude-zen/strategic-facades/infrastructure';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
 import {
   Result,
   ok,
@@ -205,7 +204,7 @@ export interface BrainJsNetworkInstance {
  * }
  * ```
  */
-@injectable()
+// @injectable() - removed dependency injection
 export class BrainJsBridge {
   private networks: Map<string, BrainJsNetworkInstance> = new Map();
   private config: BrainJsConfig;
@@ -254,7 +253,7 @@ export class BrainJsBridge {
       // Verify brain.js library availability
       if (!brain) {
         throw new ConfigurationError('brain.js library not available', {
-          config: this.config
+          config: JSON.parse(JSON.stringify(this.config))
         });
       }
 
@@ -265,7 +264,7 @@ export class BrainJsBridge {
         withContext(error, { 
           component: 'BrainJsBridge',
           operation: 'initialize',
-          config: this.config 
+          config: JSON.parse(JSON.stringify(this.config))
         })
       )
     );

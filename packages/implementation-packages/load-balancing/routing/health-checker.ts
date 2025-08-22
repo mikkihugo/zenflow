@@ -8,7 +8,7 @@
  * Comprehensive agent health monitoring and status management.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type { Agent } from '../types';
 
@@ -27,7 +27,7 @@ interface HealthStatus {
   consecutiveFailures: number;
 }
 
-export class HealthChecker extends EventEmitter implements HealthChecker {
+export class HealthChecker extends TypedEventBase implements HealthChecker {
   private healthStatuses: Map<string, HealthStatus> = new Map();
   private checkInterval: number;
   private healthCheckTimer: NodeJS.Timeout | null = null;

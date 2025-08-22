@@ -1,7 +1,7 @@
 /**
  * @fileoverview Temporary stub for @claude-zen/intelligence/types
- * 
- * This file provides fallback types for @claude-zen/intelligence/types submodule.
+ *
+ * This file provides fallback types for @claude-zen/intelligence/types submodule0.
  */
 
 // Brain types stub
@@ -41,5 +41,5 @@ export type {
   BrainCoordinationData,
   NeuralProcessingResult,
   BehavioralPattern,
-  AgentPerformanceData
+  AgentPerformanceData,
 };

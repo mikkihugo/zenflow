@@ -10,7 +10,7 @@
  * • Full Ag2.ai-inspired conversation management and coordination
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Teamwork system access with real package delegation
 let teamworkModuleCache: any = null;
@@ -24,7 +24,7 @@ async function loadTeamworkModule() {
     } catch (error) {
       console.warn('Teamwork package not available, providing minimal compatibility layer');
       teamworkModuleCache = {
-        ConversationOrchestrator: class MinimalConversationOrchestrator extends EventEmitter {
+        ConversationOrchestrator: class MinimalConversationOrchestrator extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -38,7 +38,7 @@ async function loadTeamworkModule() {
             return Promise.resolve();
           }
         },
-        ConversationManager: class MinimalConversationManager extends EventEmitter {
+        ConversationManager: class MinimalConversationManager extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -49,7 +49,7 @@ async function loadTeamworkModule() {
             return Promise.resolve();
           }
         },
-        CollaborationEngine: class MinimalCollaborationEngine extends EventEmitter {
+        CollaborationEngine: class MinimalCollaborationEngine extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -77,20 +77,19 @@ async function loadTeamworkModule() {
  * • Persistent conversation memory and context
  * • Advanced conversation orchestration patterns
  */
-export class ConversationOrchestrator extends EventEmitter {
+export class ConversationOrchestrator extends TypedEventBase {
   private instance: any = null;
+  private orchestratorConfig: any;
 
   constructor(config?: any) {
     super();
-    this.config = config;
+    this.orchestratorConfig = config;
   }
-
-  private config: any;
 
   async initialize(): Promise<void> {
     if (!this.instance) {
       const teamworkModule = await loadTeamworkModule();
-      this.instance = new teamworkModule.ConversationOrchestrator(this.config);
+      this.instance = new teamworkModule.ConversationOrchestrator(this.orchestratorConfig);
       await this.instance.initialize?.();
     }
   }
@@ -123,20 +122,19 @@ export class ConversationOrchestrator extends EventEmitter {
  * • Multi-agent conversation coordination
  * • Advanced conversation memory and context tracking
  */
-export class ConversationManager extends EventEmitter {
+export class ConversationManager extends TypedEventBase {
   private instance: any = null;
+  private managerConfig: any;
 
   constructor(config?: any) {
     super();
-    this.config = config;
+    this.managerConfig = config;
   }
-
-  private config: any;
 
   async initialize(): Promise<void> {
     if (!this.instance) {
       const teamworkModule = await loadTeamworkModule();
-      this.instance = new teamworkModule.ConversationManager(this.config);
+      this.instance = new teamworkModule.ConversationManager(this.managerConfig);
       await this.instance.initialize?.();
     }
   }
@@ -162,21 +160,20 @@ export class ConversationManager extends EventEmitter {
  * • Multi-agent coordination and resource sharing
  * • Intelligent task distribution and management
  */
-export class CollaborationEngine extends EventEmitter {
+export class CollaborationEngine extends TypedEventBase {
   private instance: any = null;
+  private collaborationConfig: any;
 
   constructor(config?: any) {
     super();
-    this.config = config;
+    this.collaborationConfig = config;
   }
-
-  private config: any;
 
   async initialize(): Promise<void> {
     if (!this.instance) {
       const teamworkModule = await loadTeamworkModule();
       this.instance = teamworkModule.CollaborationEngine
-        ? new teamworkModule.CollaborationEngine(this.config)
+        ? new teamworkModule.CollaborationEngine(this.collaborationConfig)
         : null;
       await this.instance?.initialize?.();
     }
@@ -343,5 +340,75 @@ export class ServiceCoordinatorImpl implements ServiceCoordinator {
     // Service unregistration logic - remove service
     console.log(`Unregistering service: ${serviceId}`);
     // In a real implementation, would remove service from registry
+  }
+}
+
+// ===============================================================================
+// AGENT REGISTRY - ConversationAgentRegistry for brain.ts compatibility
+// ===============================================================================
+
+/**
+ * ConversationAgentRegistry - Agent registry for conversation systems
+ * Manages registration and discovery of conversation-capable agents
+ */
+export class ConversationAgentRegistry extends TypedEventBase {
+  private agents = new Map<string, any>();
+
+  constructor(config?: any) {
+    super();
+    if (config) {
+      console.log('ConversationAgentRegistry config:', config);
+    }
+  }
+
+  async initialize(): Promise<void> {
+    // Registry initialization logic
+    this.emit('registry-initialized', { type: 'conversation', agentCount: 0 });
+  }
+
+  async register(agent: any): Promise<void> {
+    const agentId = agent.id || agent.name || `agent-${Date.now()}`;
+    this.agents.set(agentId, agent);
+    this.emit('agent-registered', { agentId, agent });
+  }
+
+  async unregister(agentId: string): Promise<void> {
+    const agent = this.agents.get(agentId);
+    if (agent) {
+      this.agents.delete(agentId);
+      this.emit('agent-unregistered', { agentId, agent });
+    }
+  }
+
+  async findAgents(criteria: any): Promise<any[]> {
+    const allAgents = Array.from(this.agents.values());
+    // Simple filtering based on criteria
+    return allAgents.filter(agent => {
+      if (criteria.type && agent.type !== criteria.type) {
+        return false;
+      }
+      if (criteria.capability && !agent.capabilities?.includes(criteria.capability)) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  async getAgent(agentId: string): Promise<any> {
+    return this.agents.get(agentId) || null;
+  }
+
+  getStatus(): any {
+    return {
+      type: 'conversation-registry',
+      agentCount: this.agents.size,
+      healthy: true,
+      capabilities: ['conversation', 'orchestration', 'management'],
+    };
+  }
+
+  async shutdown(): Promise<void> {
+    this.agents.clear();
+    this.emit('registry-shutdown', { type: 'conversation' });
   }
 }

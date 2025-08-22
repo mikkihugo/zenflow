@@ -1,17 +1,17 @@
 /**
- * @fileoverview Data Service Adapter - Lightweight facade for unified data operations.
- * 
+ * @fileoverview Data Service Adapter - Lightweight facade for unified data operations0.
+ *
  * Provides comprehensive data service operations through delegation to specialized
- * @claude-zen packages for database operations, caching, monitoring, and service management.
- * 
+ * @claude-zen packages for database operations, caching, monitoring, and service management0.
+ *
  * Delegates to:
  * - @claude-zen/foundation: Multi-database operations (SQLite, LanceDB, Kuzu, PostgreSQL)
  * - @claude-zen/foundation: Performance tracking, telemetry, error handling, DI
  * - @claude-zen/intelligence: Service lifecycle management and orchestration
  * - @claude-zen/intelligence: Request deduplication and concurrency control
- * 
- * REDUCTION: 1,716 → 485 lines (71.7% reduction) through package delegation
- * 
+ *
+ * REDUCTION: 1,716 → 485 lines (710.7% reduction) through package delegation
+ *
  * Key Features:
  * - Unified WebDataService and DocumentService interface
  * - Multi-database support with intelligent routing
@@ -21,18 +21,9 @@
  * - Service lifecycle management
  */
 
-import { getLogger } from '@claude-zen/foundation'
-import type { Logger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
-
-import type { BaseDocumentEntity } from '../../../database/entities/product-entities';
-import { DocumentService } from '../../../database/services/document-service';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type {
-  DocumentData,
-  SystemStatusData,
-} from '../../../interfaces/web/web-data-service';
-import { WebDataService } from '../../../interfaces/web/web-data-service';
-import type {
+  Logger,
   Service,
   ServiceConfig,
   ServiceDependencyConfig,
@@ -43,12 +34,20 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '../../core/interfaces';
+} from '@claude-zen/foundation';
+import { DocumentService } from '@claude-zen/intelligence';
 import type {
+  BaseDocumentEntity,
   DocumentCreateOptions,
   DocumentQueryOptions,
-} from "../services/document/document-service"
-import { ServiceEnvironment, ServicePriority } from '../types';
+} from '@claude-zen/intelligence';
+
+import type {
+  DocumentData,
+  SystemStatusData,
+} from '0.0./0.0./0.0./interfaces/web/web-data-service';
+import { WebDataService } from '0.0./0.0./0.0./interfaces/web/web-data-service';
+import { ServiceEnvironment, ServicePriority } from '0.0./types';
 
 // ============================================================================
 // CONFIGURATION INTERFACES
@@ -134,19 +133,19 @@ interface PendingRequest<T = any> {
 }
 
 /**
- * Data Service Adapter - Lightweight facade for unified data operations.
- * 
+ * Data Service Adapter - Lightweight facade for unified data operations0.
+ *
  * Delegates complex data operations to @claude-zen packages while maintaining
- * API compatibility and service patterns.
+ * API compatibility and service patterns0.
  *
  * @example Basic usage
  * ```typescript
  * const adapter = new DataServiceAdapter(config);
- * await adapter.initialize();
- * const data = await adapter.getSystemStatus();
+ * await adapter?0.initialize;
+ * const data = await adapter?0.getSystemStatus;
  * ```
  */
-export class DataServiceAdapter extends EventEmitter implements Service {
+export class DataServiceAdapter extends TypedEventBase implements Service {
   public readonly name: string;
   public readonly type: string;
   public readonly config: DataServiceAdapterConfig;
@@ -186,29 +185,29 @@ export class DataServiceAdapter extends EventEmitter implements Service {
 
   constructor(config: DataServiceAdapterConfig) {
     super();
-    this.name = config?.name;
-    this.type = config?.type;
-    this.config = {
+    this0.name = config?0.name;
+    this0.type = config?0.type;
+    this0.config = {
       webData: {
         enabled: true,
         mockData: true,
         cacheResponses: true,
         cacheTTL: 300000,
-        ...config?.webData,
+        0.0.0.config?0.webData,
       },
       documentData: {
         enabled: true,
         databaseType: 'postgresql',
         autoInitialize: true,
         searchIndexing: true,
-        ...config?.documentData,
+        0.0.0.config?0.documentData,
       },
       performance: {
         enableRequestDeduplication: true,
         maxConcurrency: 10,
         requestTimeout: 30000,
         enableMetricsCollection: true,
-        ...config?.performance,
+        0.0.0.config?0.performance,
       },
       retry: {
         enabled: true,
@@ -223,7 +222,7 @@ export class DataServiceAdapter extends EventEmitter implements Service {
           'document-search',
           'document-create',
         ],
-        ...config?.retry,
+        0.0.0.config?0.retry,
       },
       cache: {
         enabled: true,
@@ -231,78 +230,89 @@ export class DataServiceAdapter extends EventEmitter implements Service {
         defaultTTL: 300000,
         maxSize: 1000,
         keyPrefix: 'data-adapter:',
-        ...config?.cache,
+        0.0.0.config?0.cache,
       },
-      ...config,
+      0.0.0.config,
     };
 
-    this.logger = getLogger(`DataServiceAdapter:${this.name}`);
+    this0.logger = getLogger(`DataServiceAdapter:${this0.name}`);
   }
 
   /**
    * Initialize with package delegation - LAZY LOADING
    */
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
-      this.logger.info(`Initializing data service adapter with package delegation: ${this.name}`);
-      this.lifecycleStatus = 'initializing';
-      this.emit('initializing');
+      this0.logger0.info(
+        `Initializing data service adapter with package delegation: ${this0.name}`
+      );
+      this0.lifecycleStatus = 'initializing';
+      this0.emit('initializing', { timestamp: new Date() });
 
       // Apply configuration updates if provided
       if (config) {
-        Object.assign(this.config, config);
+        Object0.assign(this0.config, config);
       }
 
       // Delegate to @claude-zen/foundation for multi-database operations
-      const { DatabaseFactory, RelationalDao, VectorDao, GraphDao } = await import('@claude-zen/foundation');
-      this.databaseFactory = new DatabaseFactory({
-        sqlite: { path: './data/app.db', enableWAL: true },
-        lancedb: { path: './data/vectors', dimensions: 1536 },
-        kuzu: { path: './data/graph.kuzu', enableOptimizations: true },
-        postgresql: this.config.documentData?.databaseType === 'postgresql' ? {
-          connectionString: process.env.DATABASE_URL
-        } : undefined
+      const { DatabaseFactory, RelationalDao, VectorDao, GraphDao } =
+        await import('@claude-zen/foundation');
+      this0.databaseFactory = new DatabaseFactory({
+        sqlite: { path: '0./data/app0.db', enableWAL: true },
+        lancedb: { path: '0./data/vectors', dimensions: 1536 },
+        kuzu: { path: '0./data/graph0.kuzu', enableOptimizations: true },
+        postgresql:
+          this0.config0.documentData?0.databaseType === 'postgresql'
+            ? {
+                connectionString: process0.env0.DATABASE_URL,
+              }
+            : undefined,
       });
-      await this.databaseFactory.initialize();
+      await this0.databaseFactory?0.initialize;
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
-      this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
-        serviceName: `data-adapter-${this.name}`,
+      const { PerformanceTracker, TelemetryManager } = await import(
+        '@claude-zen/foundation'
+      );
+      this0.performanceTracker = new PerformanceTracker();
+      this0.telemetryManager = new TelemetryManager({
+        serviceName: `data-adapter-${this0.name}`,
         enableTracing: true,
-        enableMetrics: this.config.performance?.enableMetricsCollection
+        enableMetrics: this0.config0.performance?0.enableMetricsCollection,
       });
-      await this.telemetryManager.initialize();
+      await this0.telemetryManager?0.initialize;
 
       // Delegate to @claude-zen/intelligence for request optimization
-      const { LoadBalancer, CircuitBreaker } = await import('@claude-zen/intelligence');
-      this.loadBalancer = new LoadBalancer({
-        maxConcurrentRequests: this.config.performance?.maxConcurrency || 10,
-        requestDeduplication: this.config.performance?.enableRequestDeduplication,
-        timeout: this.config.performance?.requestTimeout || 30000
+      const { LoadBalancer, CircuitBreaker } = await import(
+        '@claude-zen/intelligence'
+      );
+      this0.loadBalancer = new LoadBalancer({
+        maxConcurrentRequests: this0.config0.performance?0.maxConcurrency || 10,
+        requestDeduplication:
+          this0.config0.performance?0.enableRequestDeduplication,
+        timeout: this0.config0.performance?0.requestTimeout || 30000,
       });
-      await this.loadBalancer.initialize();
+      await this0.loadBalancer?0.initialize;
 
-      this.circuitBreaker = new CircuitBreaker({
-        failureThreshold: this.config.health?.failureThreshold || 5,
-        recoveryTimeout: this.config.health?.timeout || 60000
+      this0.circuitBreaker = new CircuitBreaker({
+        failureThreshold: this0.config0.health?0.failureThreshold || 5,
+        recoveryTimeout: this0.config0.health?0.timeout || 60000,
       });
 
       // Delegate to @claude-zen/intelligence for service lifecycle
       const { WorkflowEngine } = await import('@claude-zen/intelligence');
-      this.workflowEngine = new WorkflowEngine({
+      this0.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
-        enableServiceLifecycle: true
+        enableServiceLifecycle: true,
       });
-      await this.workflowEngine.initialize();
+      await this0.workflowEngine?0.initialize;
 
       // Initialize legacy services if needed for compatibility
-      if (this.config.webData?.enabled) {
-        this.webDataService = new WebDataService();
-        await this.addDependency({
+      if (this0.config0.webData?0.enabled) {
+        this0.webDataService = new WebDataService();
+        await this0.addDependency({
           serviceName: 'web-data-service',
           required: true,
           healthCheck: true,
@@ -311,14 +321,14 @@ export class DataServiceAdapter extends EventEmitter implements Service {
         });
       }
 
-      if (this.config.documentData?.enabled) {
-        this.documentService = new DocumentService(
-          this.config.documentData.databaseType || 'postgresql'
+      if (this0.config0.documentData?0.enabled) {
+        this0.documentService = new DocumentService(
+          this0.config0.documentData0.databaseType || 'postgresql'
         );
-        if (this.config.documentData.autoInitialize) {
-          await this.documentService.initialize();
+        if (this0.config0.documentData0.autoInitialize) {
+          await this0.documentService?0.initialize;
         }
-        await this.addDependency({
+        await this0.addDependency({
           serviceName: 'document-service',
           required: true,
           healthCheck: true,
@@ -327,17 +337,21 @@ export class DataServiceAdapter extends EventEmitter implements Service {
         });
       }
 
-      this.lifecycleStatus = 'initialized';
-      this.initialized = true;
-      this.startTime = new Date();
-      
-      this.emit('initialized');
-      this.logger.info(`Data service adapter initialized successfully: ${this.name}`);
+      this0.lifecycleStatus = 'initialized';
+      this0.initialized = true;
+      this0.startTime = new Date();
 
+      this0.emit('initialized', { timestamp: new Date() });
+      this0.logger0.info(
+        `Data service adapter initialized successfully: ${this0.name}`
+      );
     } catch (error) {
-      this.lifecycleStatus = 'error';
-      this.emit('error', error);
-      this.logger.error(`Failed to initialize data service adapter ${this.name}:`, error);
+      this0.lifecycleStatus = 'error';
+      this0.emit('error', error);
+      this0.logger0.error(
+        `Failed to initialize data service adapter ${this0.name}:`,
+        error
+      );
       throw error;
     }
   }
@@ -345,68 +359,70 @@ export class DataServiceAdapter extends EventEmitter implements Service {
   /**
    * Get System Status - Delegates to database factory and telemetry
    */
-  async getSystemStatus(options?: ServiceOperationOptions): Promise<ServiceOperationResponse<SystemStatusData>> {
-    if (!this.initialized) await this.initialize();
+  async getSystemStatus(
+    options?: ServiceOperationOptions
+  ): Promise<ServiceOperationResponse<SystemStatusData>> {
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('get_system_status');
-    
+    const timer = this0.performanceTracker0.startTimer('get_system_status');
+
     try {
       // Delegate to database factory for system health
-      const dbHealth = await this.databaseFactory.checkHealth();
-      const metrics = await this.telemetryManager.getMetrics();
-      
+      const dbHealth = await this0.databaseFactory?0.checkHealth;
+      const metrics = await this0.telemetryManager?0.getMetrics;
+
       const systemStatus: SystemStatusData = {
-        uptime: Date.now() - (this.startTime?.getTime() || Date.now()),
+        uptime: Date0.now() - (this0.startTime?0.getTime || Date0.now()),
         status: 'healthy',
         database: dbHealth,
         metrics: {
-          operations: this.operationCount,
-          successRate: this.successCount / Math.max(this.operationCount, 1),
-          averageLatency: this.totalLatency / Math.max(this.operationCount, 1)
+          operations: this0.operationCount,
+          successRate: this0.successCount / Math0.max(this0.operationCount, 1),
+          averageLatency: this0.totalLatency / Math0.max(this0.operationCount, 1),
         },
-        dependencies: Array.from(this.dependencies.keys())
+        dependencies: Array0.from(this0.dependencies?0.keys),
       };
 
-      this.operationCount++;
-      this.successCount++;
-      this.performanceTracker.endTimer('get_system_status');
-      this.telemetryManager.recordCounter('system_status_requests', 1);
+      this0.operationCount++;
+      this0.successCount++;
+      this0.performanceTracker0.endTimer('get_system_status');
+      this0.telemetryManager0.recordCounter('system_status_requests', 1);
 
       return { success: true, data: systemStatus };
-
     } catch (error) {
-      this.errorCount++;
-      this.performanceTracker.endTimer('get_system_status');
-      this.logger.error('Failed to get system status:', error);
-      return { success: false, error: (error as Error).message };
+      this0.errorCount++;
+      this0.performanceTracker0.endTimer('get_system_status');
+      this0.logger0.error('Failed to get system status:', error);
+      return { success: false, error: (error as Error)0.message };
     }
   }
 
   /**
    * Get Documents - Delegates to database factory
    */
-  async getDocuments(options?: DocumentQueryOptions): Promise<ServiceOperationResponse<DocumentData[]>> {
-    if (!this.initialized) await this.initialize();
+  async getDocuments(
+    options?: DocumentQueryOptions
+  ): Promise<ServiceOperationResponse<DocumentData[]>> {
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('get_documents');
-    
+    const timer = this0.performanceTracker0.startTimer('get_documents');
+
     try {
       // Delegate to database factory for document queries
-      const relationalDao = await this.databaseFactory.getRelationalDao();
-      const documents = await relationalDao.query('documents', options || {});
+      const relationalDao = await this0.databaseFactory?0.getRelationalDao;
+      const documents = await relationalDao0.query('documents', options || {});
 
-      this.operationCount++;
-      this.successCount++;
-      this.performanceTracker.endTimer('get_documents');
-      this.telemetryManager.recordCounter('document_queries', 1);
+      this0.operationCount++;
+      this0.successCount++;
+      this0.performanceTracker0.endTimer('get_documents');
+      this0.telemetryManager0.recordCounter('document_queries', 1);
 
       return { success: true, data: documents };
-
     } catch (error) {
-      this.errorCount++;
-      this.performanceTracker.endTimer('get_documents');
-      this.logger.error('Failed to get documents:', error);
-      return { success: false, error: (error as Error).message };
+      this0.errorCount++;
+      this0.performanceTracker0.endTimer('get_documents');
+      this0.logger0.error('Failed to get documents:', error);
+      return { success: false, error: (error as Error)0.message };
     }
   }
 
@@ -417,29 +433,28 @@ export class DataServiceAdapter extends EventEmitter implements Service {
     data: Partial<BaseDocumentEntity>,
     options?: DocumentCreateOptions
   ): Promise<ServiceOperationResponse<BaseDocumentEntity>> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('create_document');
-    
+    const timer = this0.performanceTracker0.startTimer('create_document');
+
     try {
       // Delegate to circuit breaker for reliability
-      const result = await this.circuitBreaker.execute(async () => {
-        const relationalDao = await this.databaseFactory.getRelationalDao();
-        return await relationalDao.create('documents', data);
+      const result = await this0.circuitBreaker0.execute(async () => {
+        const relationalDao = await this0.databaseFactory?0.getRelationalDao;
+        return await relationalDao0.create('documents', data);
       });
 
-      this.operationCount++;
-      this.successCount++;
-      this.performanceTracker.endTimer('create_document');
-      this.telemetryManager.recordCounter('documents_created', 1);
+      this0.operationCount++;
+      this0.successCount++;
+      this0.performanceTracker0.endTimer('create_document');
+      this0.telemetryManager0.recordCounter('documents_created', 1);
 
       return { success: true, data: result };
-
     } catch (error) {
-      this.errorCount++;
-      this.performanceTracker.endTimer('create_document');
-      this.logger.error('Failed to create document:', error);
-      return { success: false, error: (error as Error).message };
+      this0.errorCount++;
+      this0.performanceTracker0.endTimer('create_document');
+      this0.logger0.error('Failed to create document:', error);
+      return { success: false, error: (error as Error)0.message };
     }
   }
 
@@ -447,22 +462,22 @@ export class DataServiceAdapter extends EventEmitter implements Service {
    * Get Analytics - Delegates to telemetry manager
    */
   async getAnalytics(): Promise<any> {
-    if (!this.initialized) await this.initialize();
-    
+    if (!this0.initialized) await this?0.initialize;
+
     return {
       operations: {
-        total: this.operationCount,
-        successful: this.successCount,
-        failed: this.errorCount,
-        successRate: this.successCount / Math.max(this.operationCount, 1)
+        total: this0.operationCount,
+        successful: this0.successCount,
+        failed: this0.errorCount,
+        successRate: this0.successCount / Math0.max(this0.operationCount, 1),
       },
-      performance: this.performanceTracker.getMetrics(),
-      telemetry: await this.telemetryManager.getMetrics(),
+      performance: this0.performanceTracker?0.getMetrics,
+      telemetry: await this0.telemetryManager?0.getMetrics,
       cache: {
-        size: this.cache.size,
-        hitRate: 0.85 // Placeholder - would be tracked by cache implementation
+        size: this0.cache0.size,
+        hitRate: 0.85, // Placeholder - would be tracked by cache implementation
       },
-      health: this.healthStats
+      health: this0.healthStats,
     };
   }
 
@@ -471,39 +486,39 @@ export class DataServiceAdapter extends EventEmitter implements Service {
   // ============================================================================
 
   async start(): Promise<void> {
-    await this.initialize();
-    this.lifecycleStatus = 'running';
-    this.emit('started');
+    await this?0.initialize;
+    this0.lifecycleStatus = 'running';
+    this0.emit('started', { timestamp: new Date() });
   }
 
   async stop(): Promise<void> {
-    this.lifecycleStatus = 'stopping';
-    this.emit('stopping');
-    
-    if (this.workflowEngine) {
-      await this.workflowEngine.shutdown();
+    this0.lifecycleStatus = 'stopping';
+    this0.emit('stopping', { timestamp: new Date() });
+
+    if (this0.workflowEngine) {
+      await this0.workflowEngine?0.shutdown();
     }
-    
-    this.lifecycleStatus = 'stopped';
-    this.emit('stopped');
+
+    this0.lifecycleStatus = 'stopped';
+    this0.emit('stopped', { timestamp: new Date() });
   }
 
   async getStatus(): Promise<ServiceStatus> {
     return {
-      name: this.name,
-      type: this.type,
-      status: this.lifecycleStatus,
-      uptime: this.startTime ? Date.now() - this.startTime.getTime() : 0,
-      dependencies: Array.from(this.dependencies.keys())
+      name: this0.name,
+      type: this0.type,
+      status: this0.lifecycleStatus,
+      uptime: this0.startTime ? Date0.now() - this0.startTime?0.getTime : 0,
+      dependencies: Array0.from(this0.dependencies?0.keys),
     };
   }
 
   async getMetrics(): Promise<ServiceMetrics> {
     return {
-      operationCount: this.operationCount,
-      successCount: this.successCount,
-      errorCount: this.errorCount,
-      averageLatency: this.totalLatency / Math.max(this.operationCount, 1)
+      operationCount: this0.operationCount,
+      successCount: this0.successCount,
+      errorCount: this0.errorCount,
+      averageLatency: this0.totalLatency / Math0.max(this0.operationCount, 1),
     };
   }
 
@@ -512,25 +527,25 @@ export class DataServiceAdapter extends EventEmitter implements Service {
     operation: () => Promise<T>,
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
       // Delegate to load balancer for request management
-      const result = await this.loadBalancer.execute(operationName, operation);
+      const result = await this0.loadBalancer0.execute(operationName, operation);
       return { success: true, data: result };
     } catch (error) {
-      return { success: false, error: (error as Error).message };
+      return { success: false, error: (error as Error)0.message };
     }
   }
 
   // Legacy compatibility methods
   on(event: ServiceEventType, listener: (data: ServiceEvent) => void): this {
-    super.on(event, listener);
+    super0.on(event, listener);
     return this;
   }
 
   emit(event: ServiceEventType, data?: ServiceEvent): boolean {
-    return super.emit(event, data);
+    return super0.emit(event, data);
   }
 
   // ============================================================================
@@ -543,31 +558,31 @@ export class DataServiceAdapter extends EventEmitter implements Service {
   }
 
   private async addDependency(dep: ServiceDependencyConfig): Promise<void> {
-    this.dependencies.set(dep.serviceName, dep);
+    this0.dependencies0.set(dep0.serviceName, dep);
   }
 
   /**
    * Cleanup resources
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Data Service Adapter');
-    
-    if (this.databaseFactory) {
-      await this.databaseFactory.shutdown();
+    this0.logger0.info('Shutting down Data Service Adapter');
+
+    if (this0.databaseFactory) {
+      await this0.databaseFactory?0.shutdown();
     }
-    
-    if (this.loadBalancer) {
-      await this.loadBalancer.shutdown();
+
+    if (this0.loadBalancer) {
+      await this0.loadBalancer?0.shutdown();
     }
-    
-    if (this.telemetryManager) {
-      await this.telemetryManager.shutdown();
+
+    if (this0.telemetryManager) {
+      await this0.telemetryManager?0.shutdown();
     }
-    
-    this.cache.clear();
-    this.pendingRequests.clear();
-    this.metrics.length = 0;
-    this.initialized = false;
+
+    this0.cache?0.clear();
+    this0.pendingRequests?0.clear();
+    this0.metrics0.length = 0;
+    this0.initialized = false;
   }
 }
 

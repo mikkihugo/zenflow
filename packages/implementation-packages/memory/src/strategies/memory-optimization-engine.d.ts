@@ -4,7 +4,7 @@
  * Provides intelligent memory optimization with real-time performance monitoring,
  * automated tuning, and predictive optimization strategies.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { OptimizationConfig, OptimizationMetrics } from './types';
 interface OptimizationSample {
     timestamp: number;
@@ -28,7 +28,7 @@ interface OptimizationAction {
         measuredAt: number;
     };
 }
-export declare class MemoryOptimizationEngine extends EventEmitter {
+export declare class MemoryOptimizationEngine extends TypedEventBase {
     private logger;
     private config;
     private telemetry;

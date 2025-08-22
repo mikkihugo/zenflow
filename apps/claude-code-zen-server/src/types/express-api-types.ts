@@ -1,13 +1,13 @@
 /**
  * Express API Types - Server-Side Type Safety
- * 
- * Type-safe Express request/response types generated from OpenAPI specification.
- * Provides complete type safety for AI tools interacting with Express routes.
+ *
+ * Type-safe Express request/response types generated from OpenAPI specification0.
+ * Provides complete type safety for AI tools interacting with Express routes0.
  */
 
 import type { Request, Response } from 'express';
 
-import type { paths, components } from './api-types';
+import type { paths, components } from '0./api-types';
 
 // Extract all schema types from OpenAPI components
 export type Schemas = components['schemas'];
@@ -16,7 +16,7 @@ export type Schemas = components['schemas'];
 export type HealthResponse = Schemas['HealthCheck'];
 export interface HealthRequest extends Request {}
 
-// System status types  
+// System status types
 export type SystemStatusResponse = Schemas['SystemStatus'];
 export interface SystemStatusRequest extends Request {}
 
@@ -118,7 +118,9 @@ export type SystemStatusHandler = (
 
 export type GetSwarmsHandler = (
   req: GetSwarmsRequest,
-  res: TypedResponse<ApiResponse<{ swarms: SwarmResponse[]; metrics: SwarmMetrics }>>
+  res: TypedResponse<
+    ApiResponse<{ swarms: SwarmResponse[]; metrics: SwarmMetrics }>
+  >
 ) => Promise<void> | void;
 
 export type CreateSwarmHandler = (
@@ -128,7 +130,9 @@ export type CreateSwarmHandler = (
 
 export type GetTasksHandler = (
   req: GetTasksRequest,
-  res: TypedResponse<ApiResponse<{ tasks: TaskResponse[]; metrics: TaskMetrics }>>
+  res: TypedResponse<
+    ApiResponse<{ tasks: TaskResponse[]; metrics: TaskMetrics }>
+  >
 ) => Promise<void> | void;
 
 export type CreateTaskHandler = (
@@ -165,7 +169,7 @@ export type PathOperations<P extends ApiPaths> = paths[P];
 export type PathMethods<P extends ApiPaths> = keyof PathOperations<P>;
 
 /**
- * Request validation schemas using Zod (already in package.json)
+ * Request validation schemas using Zod (already in package0.json)
  * These can be used with express-validator or zod directly
  */
 export interface ValidationSchemas {
@@ -201,12 +205,12 @@ export interface RouteConfig<TReq extends Request = Request, TRes = any> {
 
 /**
  * Benefits for AI Tools:
- * 
- * 1. **Complete Type Safety** - All Express routes are fully typed
- * 2. **Request/Response Validation** - Automatic validation against OpenAPI
- * 3. **IntelliSense Support** - Full autocomplete for all API endpoints
- * 4. **Error Prevention** - Compile-time checking prevents runtime errors
- * 5. **Schema Consistency** - Types always match OpenAPI specification
- * 6. **Middleware Support** - Type-safe middleware with proper request typing
- * 7. **Route Registration** - Type-safe route configuration and registration
+ *
+ * 10. **Complete Type Safety** - All Express routes are fully typed
+ * 20. **Request/Response Validation** - Automatic validation against OpenAPI
+ * 30. **IntelliSense Support** - Full autocomplete for all API endpoints
+ * 40. **Error Prevention** - Compile-time checking prevents runtime errors
+ * 50. **Schema Consistency** - Types always match OpenAPI specification
+ * 60. **Middleware Support** - Type-safe middleware with proper request typing
+ * 70. **Route Registration** - Type-safe route configuration and registration
  */

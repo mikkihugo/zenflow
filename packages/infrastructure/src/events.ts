@@ -16,7 +16,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { JsonValue, UnknownRecord, Constructor } from '@claude-zen/foundation/types';
+import type { JsonValue, UnknownRecord, Constructor } from '@claude-zen/foundation';
 
 const logger = getLogger('infrastructure-events');
 
@@ -237,5 +237,66 @@ export const eventSystem = {
   getBaseManager: getBaseEventManager,
   createSystem: createEventSystem,
 };
+
+/**
+ * Type-safe event bus class for strategic infrastructure facade.
+ * 
+ * Provides the TypeSafeEventBus class export that many files are looking for.
+ * Delegates to the actual event-system implementation when available.
+ */
+export class TypeSafeEventBus {
+  private busInstance: any;
+  
+  constructor(config?: EventSystemConfig) {
+    // Initialize with fallback bus
+    this.busInstance = getEventBus(config);
+    this.tryLoadRealImplementation(config);
+  }
+  
+  private async tryLoadRealImplementation(config?: EventSystemConfig): Promise<void> {
+    try {
+      const eventSystemModule = await import('@claude-zen/event-system');
+      if (eventSystemModule.TypeSafeEventBus) {
+        this.busInstance = new eventSystemModule.TypeSafeEventBus(config);
+      } else if (eventSystemModule.createTypeSafeEventBus) {
+        this.busInstance = eventSystemModule.createTypeSafeEventBus(config);
+      }
+    } catch (error) {
+      logger.debug('Using fallback TypeSafeEventBus implementation:', error);
+    }
+  }
+  
+  // Delegate all methods to the underlying bus
+  emit(event: string, data?: any): void {
+    return this.busInstance.emit?.(event, data);
+  }
+  
+  on(event: string, handler: (data: any) => void): () => void {
+    return this.busInstance.on?.(event, handler) || (() => {});
+  }
+  
+  off(event: string, handler: (data: any) => void): void {
+    return this.busInstance.off?.(event, handler);
+  }
+  
+  once(event: string, handler: (data: any) => void): void {
+    return this.busInstance.once?.(event, handler);
+  }
+  
+  removeAllListeners(event?: string): void {
+    return this.busInstance.removeAllListeners?.(event);
+  }
+  
+  getMetrics(): any {
+    return this.busInstance.getMetrics?.() || { totalEvents: 0, activeListeners: 0 };
+  }
+}
+
+/**
+ * Factory function for creating TypeSafeEventBus instances
+ */
+export async function getTypeSafeEventBus<TEvents = UnknownRecord>(config?: EventSystemConfig): Promise<TEvents> {
+  return new TypeSafeEventBus(config) as TEvents;
+}
 
 // Type exports for external consumers

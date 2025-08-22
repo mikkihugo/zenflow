@@ -1,44 +1,22 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar, AppRail, AppRailTile } from '@skeletonlabs/skeleton';
+	// Skeleton UI temporarily disabled due to compatibility issues
+	// import '@skeletonlabs/skeleton';
+	// import { AppShell, AppBar, AppRail, AppRailTile } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-	import ProjectSwitcher from '../lib/components/ProjectSwitcher.svelte';
-
-	// Highlight JS
-	import hljs from 'highlight.js/lib/core';
-	import 'highlight.js/styles/github-dark.css';
-	import { storeHighlightJs } from '@skeletonlabs/skeleton';
-	import xml from 'highlight.js/lib/languages/xml'; // for HTML
-	import css from 'highlight.js/lib/languages/css';
-	import javascript from 'highlight.js/lib/languages/javascript';
-	import typescript from 'highlight.js/lib/languages/typescript';
-
-	hljs.registerLanguage('xml', xml); // for HTML
-	hljs.registerLanguage('css', css);
-	hljs.registerLanguage('javascript', javascript);
-	hljs.registerLanguage('typescript', typescript);
-	storeHighlightJs.set(hljs);
-
-	// Floating UI for Popups
-	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup } from '@skeletonlabs/skeleton';
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	// Admin navigation items
 	const navItems = [
 		{ href: '/', icon: '🏠', label: 'Dashboard', title: 'Dashboard Overview' },
+		{ href: '/safe', icon: '🎯', label: 'SAFe Platform', title: 'SAFe 6.0 Production Platform' },
+		{ href: '/safe-production', icon: '🚀', label: 'SAFe Production', title: 'Production SAFe Dashboard' },
 		{ href: '/system', icon: '📊', label: 'System', title: 'System Capability Dashboard' },
 		{ href: '/facades', icon: '🏗️', label: 'Facades', title: 'Strategic Facade Monitor' },
 		{ href: '/swarm', icon: '🐝', label: 'Swarm', title: 'Advanced Swarm Management' },
-		{ href: '/agents', icon: '🤖', label: 'Agents', title: 'Agent Management' },
-		{ href: '/tasks', icon: '✅', label: 'Tasks', title: 'Task Management' },
-		{ href: '/roadmap', icon: '🗺️', label: 'Roadmap', title: 'Strategic Roadmap Tasks' },
+		{ href: '/agui', icon: '🎛️', label: 'AGUI', title: 'Advanced GUI Interface' },
 		{ href: '/memory', icon: '💾', label: 'Memory', title: 'Memory Management' },
 		{ href: '/database', icon: '🗃️', label: 'Database', title: 'Database Management' },
-		{ href: '/performance', icon: '⚡', label: 'Analytics', title: 'Performance Analytics' },
-		{ href: '/logs', icon: '📝', label: 'Logs', title: 'System Logs' },
-		{ href: '/settings', icon: '⚙️', label: 'Settings', title: 'System Settings' },
+		{ href: '/roadmap', icon: '🗺️', label: 'Roadmap', title: 'Strategic Roadmap Tasks' },
 	];
 
 	// Get current tile value based on route

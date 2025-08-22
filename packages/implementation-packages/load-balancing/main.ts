@@ -90,7 +90,7 @@ try {
   osutils = null; // Fallback: use basic system metrics
 }
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { nanoid } from 'nanoid';
 
 // TensorFlow import - optional dependency support
@@ -151,7 +151,7 @@ import {
   TaskPriority,
 } from './types';
 
-export class LoadBalancer extends EventEmitter {
+export class LoadBalancer extends TypedEventBase {
   private agents: Map<string, Agent> = new Map();
   private algorithms: Map<string, LoadBalancingAlgorithm> = new Map();
   private currentAlgorithm!: LoadBalancingAlgorithm;
@@ -161,7 +161,7 @@ export class LoadBalancer extends EventEmitter {
   private autoScaler!: AutoScaler;
   private emergencyHandler!: EmergencyHandler;
   private observers: LoadBalancingObserver[] = [];
-  private config!: LoadBalancingConfig;
+  private loadBalancingConfig!: LoadBalancingConfig;
   private metricsHistory: Map<string, LoadMetrics[]> = new Map();
   private isRunning = false;
   private monitoringInterval: NodeJS.Timeout | null = null;
@@ -195,7 +195,7 @@ export class LoadBalancer extends EventEmitter {
   // ) {
   constructor(config: Partial<LoadBalancingConfig> = {}) {
     super();
-    this.config = this.mergeConfig(config);
+    this.loadBalancingConfig = this.mergeConfig(config);
     
     // Initialize battle-tested dependencies from foundation with comprehensive monitoring
     this.logger = getLogger('load-balancer');
@@ -209,7 +209,7 @@ export class LoadBalancer extends EventEmitter {
     this.circuitBreaker = createCircuitBreaker(
       async () => Promise.resolve(true), // Default circuit breaker function
       {
-        timeout: this.config.circuitBreakerConfig.recoveryTimeout,
+        timeout: this.loadBalancingConfig.circuitBreakerConfig.recoveryTimeout,
         errorThresholdPercentage: 50
       }
     );
@@ -238,7 +238,7 @@ export class LoadBalancer extends EventEmitter {
     
     // Record initialization event
     recordEvent('load_balancer.initialization.started', {
-      algorithm: this.config.algorithm,
+      algorithm: this.loadBalancingConfig.algorithm,
       timestamp: Date.now()
     });
     
@@ -265,14 +265,14 @@ export class LoadBalancer extends EventEmitter {
     );
 
     // Set current algorithm
-    this.currentAlgorithm = this.algorithms.get(this.config.algorithm)!;
-    this.logger.info(`Selected algorithm: ${this.config.algorithm}`);
+    this.currentAlgorithm = this.algorithms.get(this.loadBalancingConfig.algorithm)!;
+    this.logger.info(`Selected algorithm: ${this.loadBalancingConfig.algorithm}`);
 
     // Initialize core components with foundation integration
     this.capacityManager = new AgentCapacityManager();
     this.routingEngine = new IntelligentRoutingEngine(this.capacityManager);
-    this.healthChecker = new HealthChecker(this.config.healthCheckInterval);
-    this.autoScaler = new AutoScalingStrategy(this.config.autoScalingConfig);
+    this.healthChecker = new HealthChecker(this.loadBalancingConfig.healthCheckInterval);
+    this.autoScaler = new AutoScalingStrategy(this.loadBalancingConfig.autoScalingConfig);
     this.emergencyHandler = new EmergencyProtocolHandler();
 
     this.setupEventHandlers();
@@ -286,13 +286,13 @@ export class LoadBalancer extends EventEmitter {
     recordHistogram('load_balancer.initialization_ms', initTime);
     recordEvent('load_balancer.initialization.completed', {
       duration_ms: initTime,
-      algorithm: this.config.algorithm,
+      algorithm: this.loadBalancingConfig.algorithm,
       timestamp: Date.now()
     });
     
     this.logger.info('Load balancing components initialized successfully', {
       initializationTime: initTime,
-      algorithm: this.config.algorithm
+      algorithm: this.loadBalancingConfig.algorithm
     });
   }
   
@@ -479,7 +479,7 @@ export class LoadBalancer extends EventEmitter {
           // Record startup event with full context
           recordEvent('load_balancer.started', {
             agent_count: this.agents.size,
-            algorithm: this.config.algorithm,
+            algorithm: this.loadBalancingConfig.algorithm,
             startup_duration_ms: startupTime,
             timestamp: Date.now(),
             monitoring_enabled: true
@@ -487,12 +487,12 @@ export class LoadBalancer extends EventEmitter {
           
           this.logger.info('Load balancing system started successfully', {
             agentCount: this.agents.size,
-            algorithm: this.config.algorithm,
+            algorithm: this.loadBalancingConfig.algorithm,
             startupTime,
             monitoringEnabled: true
           });
           
-          this.emit('started');
+          this.emit('started', {});
         });
       }
     );
@@ -522,7 +522,7 @@ export class LoadBalancer extends EventEmitter {
         context: { 
           agentCount: this.agents.size,
           startupTime,
-          algorithm: this.config.algorithm
+          algorithm: this.loadBalancingConfig.algorithm
         }
       });
     }
@@ -583,7 +583,7 @@ export class LoadBalancer extends EventEmitter {
             agentCount: this.agents.size
           });
           
-          this.emit('stopped');
+          this.emit('stopped', {});
         });
       }
     );
@@ -606,7 +606,7 @@ export class LoadBalancer extends EventEmitter {
       
       // Don't throw on shutdown failure, just log and continue
       this.isRunning = false;
-      this.emit('stopped');
+      this.emit('stopped', {});
     }
   }
 
@@ -814,7 +814,7 @@ export class LoadBalancer extends EventEmitter {
           }
         } else {
           // Use ML prediction for complex tasks
-          if (this.config.algorithm === LoadBalancingAlgorithmType.ML_PREDICTIVE && this.mlModel) {
+          if (this.loadBalancingConfig.algorithm === LoadBalancingAlgorithmType.ML_PREDICTIVE && this.mlModel) {
             routingResult = await this.mlPredictiveRouting(task, availableAgents, metricsMap);
           } else {
             // Use current algorithm to select agent
@@ -1060,7 +1060,7 @@ export class LoadBalancer extends EventEmitter {
     }
 
     this.currentAlgorithm = newAlgorithm;
-    this.config.algorithm = algorithm;
+    this.loadBalancingConfig.algorithm = algorithm;
 
     // Update algorithm with current metrics
     if (this.currentAlgorithm.updateWeights) {
@@ -1097,7 +1097,7 @@ export class LoadBalancer extends EventEmitter {
       totalAgents,
       healthyAgents,
       unhealthyAgents: totalAgents - healthyAgents,
-      currentAlgorithm: this.config.algorithm,
+      currentAlgorithm: this.loadBalancingConfig.algorithm,
       averageLoad: avgLoad,
       maxLoad,
       minLoad,
@@ -1119,7 +1119,7 @@ export class LoadBalancer extends EventEmitter {
     // Update algorithm if changed
     if (
       newConfig?.algorithm &&
-      newConfig?.algorithm !== this.config.algorithm
+      newConfig?.algorithm !== this.loadBalancingConfig.algorithm
     ) {
       await this.switchAlgorithm(newConfig?.algorithm);
     }
@@ -1130,7 +1130,7 @@ export class LoadBalancer extends EventEmitter {
       // Implementation depends on HealthChecker interface
     }
 
-    this.emit('configuration:updated', this.config);
+    this.emit('configuration:updated', this.loadBalancingConfig);
   }
 
   /**
@@ -1239,7 +1239,7 @@ export class LoadBalancer extends EventEmitter {
   private startMonitoring(): void {
     this.monitoringInterval = setInterval(async () => {
       await this.performMonitoringCycle();
-    }, this.config.healthCheckInterval);
+    }, this.loadBalancingConfig.healthCheckInterval);
   }
 
   /**
@@ -1580,7 +1580,7 @@ export class LoadBalancer extends EventEmitter {
         agentMetrics: {} // Interface not available
       },
       uptime: this.isRunning ? Date.now() - (this.startTime || Date.now()) : 0,
-      algorithm: this.config.algorithm
+      algorithm: this.loadBalancingConfig.algorithm
     };
   }
 

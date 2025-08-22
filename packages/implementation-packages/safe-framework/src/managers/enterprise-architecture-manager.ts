@@ -168,7 +168,7 @@ export interface ArchitecturalDebt {
 /**
  * Enterprise Architecture Manager - Lightweight facade for enterprise architecture management
  */
-export class EnterpriseArchitectureManager extends EventEmitter {
+export class EnterpriseArchitectureManager extends TypedEventBase {
   private readonly logger: Logger;
   private architecturePrincipleService: any;
   private technologyStandardsService: any;
@@ -224,8 +224,8 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       // Delegate to Architecture Health Service for health monitoring
       const { ArchitectureHealthService } = await import('../services/enterprise-architecture/architecture-health-service');
       this.architectureHealthService = new ArchitectureHealthService(this.logger, {
-        enableRealTimeMonitoring: this.config.enableHealthMetrics,
-        monitoringInterval: this.config.healthMetricsInterval / 1000
+        enableRealTimeMonitoring: this.configuration.enableHealthMetrics,
+        monitoringInterval: this.configuration.healthMetricsInterval / 1000
       });
       await this.architectureHealthService.initialize();
 
@@ -237,7 +237,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
 
       this.initialized = true;
       this.logger.info('Enterprise Architecture Manager initialized successfully with service delegation');
-      this.emit('initialized');
+      this.emit('initialized', {});
 
     } catch (error) {
       this.logger.error('Failed to initialize Enterprise Architecture Manager:', error);
@@ -342,7 +342,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
           }
         ],
         thresholds: {
-          minComplianceRate: this.config.complianceThreshold,
+          minComplianceRate: this.configuration.complianceThreshold,
           maxViolationsPerProject: 5,
           criticalViolationThreshold: 0,
           alertThresholds: {
@@ -834,39 +834,39 @@ export class EnterpriseArchitectureManager extends EventEmitter {
    * Start monitoring intervals for periodic tasks
    */
   private startMonitoringIntervals(): void {
-    if (this.config.enablePrincipleValidation) {
+    if (this.configuration.enablePrincipleValidation) {
       const principlesTimer = setInterval(async () => {
         await this.reviewArchitecturePrinciples();
-      }, this.config.principlesReviewInterval);
+      }, this.configuration.principlesReviewInterval);
       this.monitoringTimers.set('principles-review', principlesTimer);
     }
 
-    if (this.config.enableTechnologyStandardCompliance) {
+    if (this.configuration.enableTechnologyStandardCompliance) {
       const complianceTimer = setInterval(async () => {
         await this.performComplianceChecks();
-      }, this.config.complianceCheckInterval);
+      }, this.configuration.complianceCheckInterval);
       this.monitoringTimers.set('compliance-check', complianceTimer);
     }
 
-    if (this.config.enableArchitectureGovernance) {
+    if (this.configuration.enableArchitectureGovernance) {
       const governanceTimer = setInterval(async () => {
         await this.reviewGovernanceDecisions();
-      }, this.config.governanceReviewInterval);
+      }, this.configuration.governanceReviewInterval);
       this.monitoringTimers.set('governance-review', governanceTimer);
     }
 
-    if (this.config.enableHealthMetrics) {
+    if (this.configuration.enableHealthMetrics) {
       const healthTimer = setInterval(async () => {
         await this.calculateArchitectureHealthMetrics();
-      }, this.config.healthMetricsInterval);
+      }, this.configuration.healthMetricsInterval);
       this.monitoringTimers.set('health-metrics', healthTimer);
     }
 
     this.logger.info('Monitoring intervals started', {
-      principlesReview: this.config.enablePrincipleValidation,
-      complianceCheck: this.config.enableTechnologyStandardCompliance,
-      governanceReview: this.config.enableArchitectureGovernance,
-      healthMetrics: this.config.enableHealthMetrics
+      principlesReview: this.configuration.enablePrincipleValidation,
+      complianceCheck: this.configuration.enableTechnologyStandardCompliance,
+      governanceReview: this.configuration.enableArchitectureGovernance,
+      healthMetrics: this.configuration.enableHealthMetrics
     });
   }
 

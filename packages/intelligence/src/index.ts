@@ -31,7 +31,11 @@
 import {
   registerFacade,
   getLogger,
+  TypedEventBase,
 } from '@claude-zen/foundation';
+
+// Re-export foundation utilities for convenience
+export { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('intelligence');
 
@@ -66,9 +70,34 @@ export * from './safety';
 export * from './fact-system';
 export * from './teamwork';
 export * from './workflows';
+export * from './llm-providers';
 
 // Additional exports for missing functions that may not be in brain.ts
 export { getTaskComplexityEstimator } from './brain';
+
+// Memory System Exports - Complete memory capabilities delegation
+export {
+  getMemorySystem,
+  getMemoryManager,
+  getMemoryStorage,
+  getSessionMemory,
+  getMemoryCoordination,
+  createConversationMemory,
+  createLearningMemory,
+  createContextMemory,
+  createKnowledgeGraph,
+  memorySystem,
+  InMemoryConversationMemory,
+} from './brain';
+
+// Agent Registry Exports - Neural Intelligence registries
+export {
+  getNeuralAgentRegistry,
+  getIntelligenceAgentRegistry,
+  createNeuralAgentRegistry,
+  createIntelligenceAgentRegistry,
+  createConversationAgentRegistry,
+} from './brain';
 
 // =============================================================================
 // MAIN SYSTEM OBJECT - For programmatic access to all intelligence capabilities
@@ -82,13 +111,95 @@ export const intelligenceSystem = {
   teamwork: () => import('./teamwork'),
   workflows: () => import('./workflows'),
 
+  // Memory system access - Direct delegation to comprehensive memory implementation
+  memory: async () => {
+    const { memorySystem } = await import('./brain');
+    return memorySystem;
+  },
+  
+  // Convenience memory access functions
+  getMemory: async (config?: any) => {
+    const { getMemorySystem } = await import('./brain');
+    return getMemorySystem(config);
+  },
+  
+  createMemory: async (type: 'conversation' | 'learning' | 'context' | 'knowledge', config?: any) => {
+    const brain = await import('./brain');
+    switch (type) {
+      case 'conversation': return brain.createConversationMemory(config);
+      case 'learning': return brain.createLearningMemory(config);
+      case 'context': return brain.createContextMemory(config);
+      case 'knowledge': return brain.createKnowledgeGraph(config);
+      default: return brain.createConversationMemory(config);
+    }
+  },
+
   // Utilities
   logger: logger,
   init: async () => {
-    logger.info('Intelligence system initialized');
-    return { success: true, message: 'Intelligence ready' };
+    logger.info('Intelligence system initialized with comprehensive memory integration');
+    return { success: true, message: 'Intelligence ready with memory capabilities' };
   },
 };
+
+// =============================================================================
+// MISSING FACADE EXPORTS - Strategic Pattern Completions  
+// =============================================================================
+
+// Workflow system exports (commonly imported)
+export { WorkflowEngine, getWorkflowEngine } from './workflows';
+export type { WorkflowEngineConfig } from './workflows';
+
+// Document type exports (commonly imported)  
+export type { DocumentType } from './types';
+
+// Event system re-exports (for compatibility)
+export { TypedEventBus, createEventBus } from './brain';
+
+// Neural components (compatibility exports - real implementations are in @claude-zen packages)
+export const getLoadBalancer = async () => {
+  console.warn('getLoadBalancer: Use @claude-zen/operations for production load balancing');
+  return { balance: () => ({ selected: 'default' }) };
+};
+
+export const NeuralML = class NeuralMLStub {
+  constructor() {
+    console.warn('NeuralML: Use @claude-zen/neural-ml package for production neural ML');
+  }
+};
+
+export const AdaptiveOptimizer = class AdaptiveOptimizerStub {
+  constructor() {
+    console.warn('AdaptiveOptimizer: Use @claude-zen/neural-ml package for production optimization');
+  }
+};
+
+export const NeuralForecastingEngine = class NeuralForecastingEngineStub {
+  constructor() {
+    console.warn('NeuralForecastingEngine: Use @claude-zen/neural-ml package for production forecasting');
+  }
+};
+
+// DI system re-exports (for compatibility)
+export const CORE_TOKENS = {
+  Logger: 'Logger',
+  Config: 'Config',
+  Database: 'Database',
+  EventBus: 'EventBus',
+};
+
+export const inject = (_token: string) => (_target: any, _key: string) => {
+  console.warn('inject: Use @claude-zen/foundation DI system for production');
+};
+
+export const injectable = (target: any) => {
+  console.warn('injectable: Use @claude-zen/foundation DI system for production');
+  return target;
+};
+
+// EventBus alias
+export { TypedEventBase as EventBus };
+export const Logger = getLogger;
 
 // =============================================================================
 // TYPE EXPORTS - For external consumers

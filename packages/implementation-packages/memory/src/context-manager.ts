@@ -5,7 +5,7 @@
  * context loading functionality with integrated memory management.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '../config/logging-config';
 import { MemorySystem } from './core/memory-system';
 
@@ -123,7 +123,7 @@ export const DEFAULT_CONTEXT_CONFIG: ContextManagerConfig = {
  * Replaces the removed hook system's context loading with memory-backed
  * context management for agents, swarms, and sessions.
  */
-export class ContextManager extends EventEmitter {
+export class ContextManager extends TypedEventBase {
   private config: ContextManagerConfig;
   private memorySystem: MemorySystem;
   private contextCache: Map<string, { data: unknown; timestamp: number }> = new Map();
@@ -447,7 +447,7 @@ export class ContextManager extends EventEmitter {
     }
     
     this.contextCache.clear();
-    this.emit('shutdown');
+    this.emit('shutdown', {});
     logger.info('ContextManager shutdown');
   }
 
@@ -495,7 +495,7 @@ export class ContextManager extends EventEmitter {
   private startAutoSync(): void {
     this.syncTimer = setInterval(() => {
       this.cleanCache();
-      this.emit('auto-sync');
+      this.emit('auto-sync', {});
     }, this.config.syncInterval);
   }
 }

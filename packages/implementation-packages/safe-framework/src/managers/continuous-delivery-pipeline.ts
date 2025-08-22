@@ -17,7 +17,7 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { 
   Logger, 
   MemorySystem, 
@@ -124,7 +124,7 @@ import type { ValueStreamMapper } from './value-stream-mapper';
  * Provides comprehensive CD pipeline management through intelligent service delegation.
  * All complex operations are delegated to specialized services with lazy loading for optimal performance.
  */
-export class ContinuousDeliveryPipelineManager extends EventEmitter {
+export class ContinuousDeliveryPipelineManager extends TypedEventBase {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
   private readonly memory: MemorySystem;
@@ -246,7 +246,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
 
       this.initialized = true;
       this.logger.info('CD Pipeline Manager initialized successfully with service delegation');
-      this.emit('initialized');
+      this.emit('initialized', {});
 
     } catch (error) {
       this.logger.error('Failed to initialize CD Pipeline Manager:', error);

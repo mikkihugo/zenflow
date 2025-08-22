@@ -151,7 +151,7 @@ export async function parseFiles(filePaths: string[], options?: {
       case 'beam': {
         const parser = factory.createBeamParser(options);
         const result = await parser.parseFiles(paths);
-        return result.isOk() ? result.unwrap() : [];
+        return result.isOk() ? result._unsafeUnwrap() : [];
       }
       default:
         return [];

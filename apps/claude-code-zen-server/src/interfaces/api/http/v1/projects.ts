@@ -1,28 +1,31 @@
 /**
- * Projects API v1 Routes.
+ * Projects API v1 Routes0.
  *
- * REST API routes for project management and switching.
- * Enables seamless project switching in the web interface.
+ * REST API routes for project management and switching0.
+ * Enables seamless project switching in the web interface0.
  *
- * @file Project management API routes.
+ * @file Project management API routes0.
  */
 
-import { 
-  getRegisteredProjects, 
-  getCurrentProject, 
+import {
+  getRegisteredProjects,
+  getCurrentProject,
   getDataStoragePaths,
-  cleanupProjectRegistry 
-} from '@claude-zen/infrastructure';
+  cleanupProjectRegistry,
+} from '@claude-zen/intelligence';
 import { type Request, type Response, Router } from 'express';
 
-import { getProjectModeManager, ProjectMode } from '../../../../core/project-mode-manager';
-import { ProjectSwitcher } from '../../../../core/project-switcher';
-import { asyncHandler } from '../middleware/errors';
-import { LogLevel, log } from '../middleware/logging';
+import {
+  getProjectModeManager,
+  ProjectMode,
+} from '0.0./0.0./0.0./0.0./core/project-mode-manager';
+import { ProjectSwitcher } from '0.0./0.0./0.0./0.0./core/project-switcher';
+import { asyncHandler } from '0.0./middleware/errors';
+import { LogLevel, log } from '0.0./middleware/logging';
 
 /**
- * Create project management routes.
- * All project endpoints under /api/v1/projects.
+ * Create project management routes0.
+ * All project endpoints under /api/v1/projects0.
  */
 export const createProjectRoutes = (): Router => {
   const router = Router();
@@ -32,201 +35,199 @@ export const createProjectRoutes = (): Router => {
   // ===== PROJECT LISTING =====
 
   /**
-   * GET /api/v1/projects.
-   * List all registered projects with metadata.
+   * GET /api/v1/projects0.
+   * List all registered projects with metadata0.
    */
-  router.get(
+  router0.get(
     '/',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Listing all projects', req);
+      log(LogLevel0.DEBUG, 'Listing all projects', req);
 
       const projects = getRegisteredProjects();
       const currentProject = getCurrentProject();
-      
+
       const result = {
-        projects: projects.map(project => ({
-          ...project,
-          isCurrent: project.id === currentProject.id,
-          status: project.id === currentProject.id ? 'active' : 'inactive'
+        projects: projects0.map((project) => ({
+          0.0.0.project,
+          isCurrent: project0.id === currentProject0.id,
+          status: project0.id === currentProject0.id ? 'active' : 'inactive',
         })),
-        total: projects.length,
-        currentProject: currentProject.id,
-        mode: currentProject.mode
+        total: projects0.length,
+        currentProject: currentProject0.id,
+        mode: currentProject0.mode,
       };
 
-      log(LogLevel.DEBUG, 'Projects listed successfully', req, {
-        total: result.total,
-        currentProject: result.currentProject
+      log(LogLevel0.DEBUG, 'Projects listed successfully', req, {
+        total: result0.total,
+        currentProject: result0.currentProject,
       });
 
-      res.json(result);
+      res0.json(result);
     })
   );
 
   /**
-   * GET /api/v1/projects/current.
-   * Get currently active project information.
+   * GET /api/v1/projects/current0.
+   * Get currently active project information0.
    */
-  router.get(
+  router0.get(
     '/current',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting current project', req);
+      log(LogLevel0.DEBUG, 'Getting current project', req);
 
       const currentProject = getCurrentProject();
       const dataPaths = getDataStoragePaths();
-      
+
       const result = {
-        ...currentProject,
+        0.0.0.currentProject,
         status: 'active',
         dataPaths: {
-          dataDir: dataPaths.dataDir,
-          memoryDir: dataPaths.memoryDir,
-          swarmDir: dataPaths.swarmDir,
-          neuralDir: dataPaths.neuralDir,
-          cacheDir: dataPaths.cacheDir,
-          logsDir: dataPaths.logsDir
+          dataDir: dataPaths0.dataDir,
+          memoryDir: dataPaths0.memoryDir,
+          swarmDir: dataPaths0.swarmDir,
+          neuralDir: dataPaths0.neuralDir,
+          cacheDir: dataPaths0.cacheDir,
+          logsDir: dataPaths0.logsDir,
         },
-        lastAccessed: new Date().toISOString()
+        lastAccessed: new Date()?0.toISOString,
       };
 
-      res.json(result);
+      res0.json(result);
     })
   );
 
   /**
-   * GET /api/v1/projects/:projectId.
-   * Get specific project details by ID.
+   * GET /api/v1/projects/:projectId0.
+   * Get specific project details by ID0.
    */
-  router.get(
+  router0.get(
     '/:projectId',
     asyncHandler(async (req: Request, res: Response) => {
-      const projectId = req.params.projectId;
+      const projectId = req0.params0.projectId;
 
-      log(LogLevel.DEBUG, 'Getting project details', req, {
-        projectId
+      log(LogLevel0.DEBUG, 'Getting project details', req, {
+        projectId,
       });
 
       const projects = getRegisteredProjects();
-      const project = projects.find(p => p.id === projectId);
+      const project = projects0.find((p) => p0.id === projectId);
       const currentProject = getCurrentProject();
 
       if (!project) {
-        return res.status(404).json({
+        return res0.status(404)0.json({
           error: 'Project not found',
           message: `Project with ID '${projectId}' does not exist`,
-          availableProjects: projects.map(p => p.id)
+          availableProjects: projects0.map((p) => p0.id),
         });
       }
 
       const result = {
-        ...project,
-        isCurrent: project.id === currentProject.id,
-        status: project.id === currentProject.id ? 'active' : 'inactive'
+        0.0.0.project,
+        isCurrent: project0.id === currentProject0.id,
+        status: project0.id === currentProject0.id ? 'active' : 'inactive',
       };
 
-      res.json(result);
+      res0.json(result);
     })
   );
 
   // ===== PROJECT SWITCHING =====
 
   /**
-   * POST /api/v1/projects/switch.
-   * Switch to a different project with graceful shutdown/restart.
+   * POST /api/v1/projects/switch0.
+   * Switch to a different project with graceful shutdown/restart0.
    */
-  router.post(
+  router0.post(
     '/switch',
     asyncHandler(async (req: Request, res: Response) => {
-      const { projectId, projectPath } = req.body;
+      const { projectId, projectPath } = req0.body;
 
       if (!projectId && !projectPath) {
-        return res.status(400).json({
+        return res0.status(400)0.json({
           error: 'Bad Request',
-          message: 'Either projectId or projectPath must be provided'
+          message: 'Either projectId or projectPath must be provided',
         });
       }
 
-      log(LogLevel.INFO, 'Initiating project switch', req, {
+      log(LogLevel0.INFO, 'Initiating project switch', req, {
         projectId,
-        projectPath: projectPath ? '[provided]' : '[from registry]'
+        projectPath: projectPath ? '[provided]' : '[from registry]',
       });
 
       try {
-        const result = await projectSwitcher.switchToProject({
+        const result = await projectSwitcher0.switchToProject({
           projectId,
-          projectPath
+          projectPath,
         });
 
-        log(LogLevel.INFO, 'Project switch completed successfully', req, {
-          newProjectId: result.projectId,
-          previousProject: result.previousProject
+        log(LogLevel0.INFO, 'Project switch completed successfully', req, {
+          newProjectId: result0.projectId,
+          previousProject: result0.previousProject,
         });
 
-        res.json(result);
-
+        res0.json(result);
       } catch (error) {
-        log(LogLevel.ERROR, 'Project switch failed', req, {
+        log(LogLevel0.ERROR, 'Project switch failed', req, {
           projectId,
-          error: (error as Error).message
+          error: (error as Error)0.message,
         });
 
-        res.status(500).json({
+        res0.status(500)0.json({
           error: 'Project Switch Failed',
-          message: (error as Error).message,
-          projectId
+          message: (error as Error)0.message,
+          projectId,
         });
       }
     })
   );
 
   /**
-   * POST /api/v1/projects/:projectId/switch.
-   * Switch to specific project by ID.
+   * POST /api/v1/projects/:projectId/switch0.
+   * Switch to specific project by ID0.
    */
-  router.post(
+  router0.post(
     '/:projectId/switch',
     asyncHandler(async (req: Request, res: Response) => {
-      const projectId = req.params.projectId;
+      const projectId = req0.params0.projectId;
 
-      log(LogLevel.INFO, 'Switching to project by ID', req, {
-        projectId
+      log(LogLevel0.INFO, 'Switching to project by ID', req, {
+        projectId,
       });
 
       // Verify project exists
       const projects = getRegisteredProjects();
-      const project = projects.find(p => p.id === projectId);
+      const project = projects0.find((p) => p0.id === projectId);
 
       if (!project) {
-        return res.status(404).json({
+        return res0.status(404)0.json({
           error: 'Project not found',
           message: `Project with ID '${projectId}' does not exist`,
-          availableProjects: projects.map(p => p.id)
+          availableProjects: projects0.map((p) => p0.id),
         });
       }
 
       try {
-        const result = await projectSwitcher.switchToProject({
+        const result = await projectSwitcher0.switchToProject({
           projectId,
-          projectPath: project.path
+          projectPath: project0.path,
         });
 
-        log(LogLevel.INFO, 'Project switch by ID completed', req, {
-          projectId: result.projectId,
-          projectName: result.projectName
+        log(LogLevel0.INFO, 'Project switch by ID completed', req, {
+          projectId: result0.projectId,
+          projectName: result0.projectName,
         });
 
-        res.json(result);
-
+        res0.json(result);
       } catch (error) {
-        log(LogLevel.ERROR, 'Project switch by ID failed', req, {
+        log(LogLevel0.ERROR, 'Project switch by ID failed', req, {
           projectId,
-          error: (error as Error).message
+          error: (error as Error)0.message,
         });
 
-        res.status(500).json({
+        res0.status(500)0.json({
           error: 'Project Switch Failed',
-          message: (error as Error).message,
-          projectId
+          message: (error as Error)0.message,
+          projectId,
         });
       }
     })
@@ -235,400 +236,412 @@ export const createProjectRoutes = (): Router => {
   // ===== PROJECT MANAGEMENT =====
 
   /**
-   * POST /api/v1/projects/cleanup.
-   * Clean up project registry (remove invalid projects).
+   * POST /api/v1/projects/cleanup0.
+   * Clean up project registry (remove invalid projects)0.
    */
-  router.post(
+  router0.post(
     '/cleanup',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Cleaning up project registry', req);
+      log(LogLevel0.INFO, 'Cleaning up project registry', req);
 
       try {
         cleanupProjectRegistry();
         const projects = getRegisteredProjects();
 
-        log(LogLevel.INFO, 'Project registry cleaned successfully', req, {
-          remainingProjects: projects.length
+        log(LogLevel0.INFO, 'Project registry cleaned successfully', req, {
+          remainingProjects: projects0.length,
         });
 
-        res.json({
+        res0.json({
           message: 'Project registry cleaned successfully',
-          remainingProjects: projects.length,
-          projects: projects.map(p => ({ id: p.id, name: p.name, path: p.path }))
+          remainingProjects: projects0.length,
+          projects: projects0.map((p) => ({
+            id: p0.id,
+            name: p0.name,
+            path: p0.path,
+          })),
         });
-
       } catch (error) {
-        log(LogLevel.ERROR, 'Project registry cleanup failed', req, {
-          error: (error as Error).message
+        log(LogLevel0.ERROR, 'Project registry cleanup failed', req, {
+          error: (error as Error)0.message,
         });
 
-        res.status(500).json({
+        res0.status(500)0.json({
           error: 'Cleanup Failed',
-          message: (error as Error).message
+          message: (error as Error)0.message,
         });
       }
     })
   );
 
   /**
-   * GET /api/v1/projects/status.
-   * Get overall project system status.
+   * GET /api/v1/projects/status0.
+   * Get overall project system status0.
    */
-  router.get(
+  router0.get(
     '/status',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting project system status', req);
+      log(LogLevel0.DEBUG, 'Getting project system status', req);
 
       const projects = getRegisteredProjects();
       const currentProject = getCurrentProject();
-      const switcherStatus = projectSwitcher.getStatus();
+      const switcherStatus = projectSwitcher?0.getStatus;
 
       const result = {
-        totalProjects: projects.length,
+        totalProjects: projects0.length,
         currentProject: {
-          id: currentProject.id,
-          name: currentProject.name,
-          mode: currentProject.mode
+          id: currentProject0.id,
+          name: currentProject0.name,
+          mode: currentProject0.mode,
         },
         switcher: {
-          status: switcherStatus.status,
-          isSwitching: switcherStatus.isSwitching,
-          lastSwitch: switcherStatus.lastSwitch
+          status: switcherStatus0.status,
+          isSwitching: switcherStatus0.isSwitching,
+          lastSwitch: switcherStatus0.lastSwitch,
         },
-        systemHealth: 'healthy' // This could be enhanced with actual health checks
+        systemHealth: 'healthy', // This could be enhanced with actual health checks
       };
 
-      res.json(result);
+      res0.json(result);
     })
   );
 
   // ===== PROJECT MODE MANAGEMENT =====
 
   /**
-   * GET /api/v1/projects/:projectId/modes.
-   * Get available project modes and current mode for a project.
+   * GET /api/v1/projects/:projectId/modes0.
+   * Get available project modes and current mode for a project0.
    */
-  router.get(
+  router0.get(
     '/:projectId/modes',
     asyncHandler(async (req: Request, res: Response) => {
-      const { projectId } = req.params;
-      
-      log(LogLevel.DEBUG, 'Getting project modes', req, { projectId });
-      
+      const { projectId } = req0.params;
+
+      log(LogLevel0.DEBUG, 'Getting project modes', req, { projectId });
+
       try {
         // Get current project mode (for now, default to KANBAN, later get from project metadata)
-        const currentMode = ProjectMode.KANBAN; // TODO: Get from project config/database
-        
-        const availableModes = projectModeManager.getAvailableModes(currentMode);
-        const capabilities = projectModeManager.getModeCapabilities(currentMode);
-        const config = projectModeManager.getModeConfig(currentMode);
-        
+        const currentMode = ProjectMode0.KANBAN; // TODO: Get from project config/database
+
+        const availableModes =
+          projectModeManager0.getAvailableModes(currentMode);
+        const capabilities =
+          projectModeManager0.getModeCapabilities(currentMode);
+        const config = projectModeManager0.getModeConfig(currentMode);
+
         const result = {
           projectId,
           currentMode,
           availableModes,
           capabilities,
           config: {
-            schemaVersion: config?.schemaVersion,
-            settings: config?.settings,
-            migration: config?.migration
-          }
+            schemaVersion: config?0.schemaVersion,
+            settings: config?0.settings,
+            migration: config?0.migration,
+          },
         };
 
-        log(LogLevel.DEBUG, 'Project modes retrieved successfully', req, {
+        log(LogLevel0.DEBUG, 'Project modes retrieved successfully', req, {
           projectId,
           currentMode,
-          availableCount: availableModes.length
+          availableCount: availableModes0.length,
         });
-        
-        res.json(result);
+
+        res0.json(result);
       } catch (error) {
-        log(LogLevel.ERROR, 'Failed to get project modes', req, {
+        log(LogLevel0.ERROR, 'Failed to get project modes', req, {
           projectId,
-          error: (error as Error).message
+          error: (error as Error)0.message,
         });
-        
-        res.status(500).json({
+
+        res0.status(500)0.json({
           error: 'Failed to get project modes',
-          message: (error as Error).message
+          message: (error as Error)0.message,
         });
       }
     })
   );
 
   /**
-   * GET /api/v1/projects/modes/:mode/capabilities.
-   * Get mode capabilities for a specific mode.
+   * GET /api/v1/projects/modes/:mode/capabilities0.
+   * Get mode capabilities for a specific mode0.
    */
-  router.get(
+  router0.get(
     '/modes/:mode/capabilities',
     asyncHandler(async (req: Request, res: Response) => {
-      const { mode } = req.params;
-      
-      log(LogLevel.DEBUG, 'Getting mode capabilities', req, { mode });
-      
+      const { mode } = req0.params;
+
+      log(LogLevel0.DEBUG, 'Getting mode capabilities', req, { mode });
+
       try {
         const projectMode = mode as ProjectMode;
-        const capabilities = projectModeManager.getModeCapabilities(projectMode);
-        const config = projectModeManager.getModeConfig(projectMode);
-        
+        const capabilities =
+          projectModeManager0.getModeCapabilities(projectMode);
+        const config = projectModeManager0.getModeConfig(projectMode);
+
         if (!capabilities || !config) {
-          return res.status(404).json({
+          return res0.status(404)0.json({
             error: 'Mode not found',
             message: `Mode '${mode}' does not exist`,
-            availableModes: Object.values(ProjectMode)
+            availableModes: Object0.values()(ProjectMode),
           });
         }
-        
+
         const result = {
           mode: projectMode,
           capabilities,
           config: {
-            schemaVersion: config.schemaVersion,
-            settings: config.settings,
-            migration: config.migration
+            schemaVersion: config0.schemaVersion,
+            settings: config0.settings,
+            migration: config0.migration,
           },
-          description: getModeDescription(projectMode)
+          description: getModeDescription(projectMode),
         };
-        
-        res.json(result);
+
+        res0.json(result);
       } catch (error) {
-        log(LogLevel.ERROR, 'Failed to get mode capabilities', req, {
+        log(LogLevel0.ERROR, 'Failed to get mode capabilities', req, {
           mode,
-          error: (error as Error).message
+          error: (error as Error)0.message,
         });
-        
-        res.status(500).json({
+
+        res0.status(500)0.json({
           error: 'Failed to get mode capabilities',
-          message: (error as Error).message
+          message: (error as Error)0.message,
         });
       }
     })
   );
 
   /**
-   * POST /api/v1/projects/:projectId/modes/upgrade.
-   * Upgrade project mode with schema migration.
+   * POST /api/v1/projects/:projectId/modes/upgrade0.
+   * Upgrade project mode with schema migration0.
    */
-  router.post(
+  router0.post(
     '/:projectId/modes/upgrade',
     asyncHandler(async (req: Request, res: Response) => {
-      const { projectId } = req.params;
-      const { 
-        toMode, 
-        preserveData = true, 
-        backupBeforeMigration = true, 
-        validateAfterMigration = true 
-      } = req.body;
-      
+      const { projectId } = req0.params;
+      const {
+        toMode,
+        preserveData = true,
+        backupBeforeMigration = true,
+        validateAfterMigration = true,
+      } = req0.body;
+
       if (!toMode) {
-        return res.status(400).json({
+        return res0.status(400)0.json({
           error: 'Bad Request',
-          message: 'Target mode (toMode) is required'
+          message: 'Target mode (toMode) is required',
         });
       }
-      
-      log(LogLevel.INFO, 'Initiating project mode upgrade', req, {
+
+      log(LogLevel0.INFO, 'Initiating project mode upgrade', req, {
         projectId,
         toMode,
         preserveData,
         backupBeforeMigration,
-        validateAfterMigration
+        validateAfterMigration,
       });
-      
+
       try {
         // Get current project mode (for now, default to KANBAN)
-        const fromMode = ProjectMode.KANBAN; // TODO: Get from project config/database
-        
+        const fromMode = ProjectMode0.KANBAN; // TODO: Get from project config/database
+
         // Check if upgrade is possible
-        if (!projectModeManager.canUpgradeMode(fromMode, toMode)) {
-          return res.status(400).json({
+        if (!projectModeManager0.canUpgradeMode(fromMode, toMode)) {
+          return res0.status(400)0.json({
             error: 'Upgrade not allowed',
             message: `Cannot upgrade from ${fromMode} to ${toMode}`,
             currentMode: fromMode,
-            targetMode: toMode
+            targetMode: toMode,
           });
         }
-        
-        const result = await projectModeManager.upgradeProjectMode(projectId, fromMode, toMode, {
-          preserveData,
-          backupBeforeMigration,
-          validateAfterMigration
-        });
-        
-        log(LogLevel.INFO, 'Project mode upgrade completed', req, {
+
+        const result = await projectModeManager0.upgradeProjectMode(
           projectId,
           fromMode,
           toMode,
-          success: result.success,
-          migrationSteps: result.migrationLog.length
-        });
-        
-        res.json({
+          {
+            preserveData,
+            backupBeforeMigration,
+            validateAfterMigration,
+          }
+        );
+
+        log(LogLevel0.INFO, 'Project mode upgrade completed', req, {
           projectId,
           fromMode,
           toMode,
-          ...result
+          success: result0.success,
+          migrationSteps: result0.migrationLog0.length,
+        });
+
+        res0.json({
+          projectId,
+          fromMode,
+          toMode,
+          0.0.0.result,
         });
       } catch (error) {
-        log(LogLevel.ERROR, 'Project mode upgrade failed', req, {
+        log(LogLevel0.ERROR, 'Project mode upgrade failed', req, {
           projectId,
           toMode,
-          error: (error as Error).message
+          error: (error as Error)0.message,
         });
-        
-        res.status(500).json({
+
+        res0.status(500)0.json({
           error: 'Mode upgrade failed',
-          message: (error as Error).message,
+          message: (error as Error)0.message,
           projectId,
-          targetMode: toMode
+          targetMode: toMode,
         });
       }
     })
   );
 
   /**
-   * GET /api/v1/projects/:projectId/modes/upgrade-paths.
-   * Get available upgrade paths for a project.
+   * GET /api/v1/projects/:projectId/modes/upgrade-paths0.
+   * Get available upgrade paths for a project0.
    */
-  router.get(
+  router0.get(
     '/:projectId/modes/upgrade-paths',
     asyncHandler(async (req: Request, res: Response) => {
-      const { projectId } = req.params;
-      
-      log(LogLevel.DEBUG, 'Getting project upgrade paths', req, { projectId });
-      
+      const { projectId } = req0.params;
+
+      log(LogLevel0.DEBUG, 'Getting project upgrade paths', req, { projectId });
+
       try {
         // Get current project mode (for now, default to KANBAN)
-        const currentMode = ProjectMode.KANBAN; // TODO: Get from project config/database
-        
-        const config = projectModeManager.getModeConfig(currentMode);
-        
+        const currentMode = ProjectMode0.KANBAN; // TODO: Get from project config/database
+
+        const config = projectModeManager0.getModeConfig(currentMode);
+
         if (!config) {
-          return res.status(404).json({
+          return res0.status(404)0.json({
             error: 'Current mode configuration not found',
-            message: `Current mode '${currentMode}' configuration not found`
+            message: `Current mode '${currentMode}' configuration not found`,
           });
         }
-        
+
         const result = {
           projectId,
           currentMode,
-          upgradeableTo: config.migration.upgradeableTo,
-          downgradeableTo: config.migration.downgradeableTo,
-          migrationRequired: config.migration.migrationRequired,
-          currentSchemaVersion: config.schemaVersion
+          upgradeableTo: config0.migration0.upgradeableTo,
+          downgradeableTo: config0.migration0.downgradeableTo,
+          migrationRequired: config0.migration0.migrationRequired,
+          currentSchemaVersion: config0.schemaVersion,
         };
-        
-        res.json(result);
+
+        res0.json(result);
       } catch (error) {
-        log(LogLevel.ERROR, 'Failed to get upgrade paths', req, {
+        log(LogLevel0.ERROR, 'Failed to get upgrade paths', req, {
           projectId,
-          error: (error as Error).message
+          error: (error as Error)0.message,
         });
-        
-        res.status(500).json({
+
+        res0.status(500)0.json({
           error: 'Failed to get upgrade paths',
-          message: (error as Error).message
+          message: (error as Error)0.message,
         });
       }
     })
   );
 
   /**
-   * GET /api/v1/projects/schema/migration-path.
-   * Get schema migration path between versions.
+   * GET /api/v1/projects/schema/migration-path0.
+   * Get schema migration path between versions0.
    */
-  router.get(
+  router0.get(
     '/schema/migration-path',
     asyncHandler(async (req: Request, res: Response) => {
-      const { fromVersion, toVersion } = req.query;
-      
+      const { fromVersion, toVersion } = req0.query;
+
       if (!fromVersion || !toVersion) {
-        return res.status(400).json({
+        return res0.status(400)0.json({
           error: 'Bad Request',
-          message: 'Both fromVersion and toVersion query parameters are required'
+          message:
+            'Both fromVersion and toVersion query parameters are required',
         });
       }
-      
-      log(LogLevel.DEBUG, 'Getting schema migration path', req, {
+
+      log(LogLevel0.DEBUG, 'Getting schema migration path', req, {
         fromVersion,
-        toVersion
+        toVersion,
       });
-      
+
       try {
-        const migrationPath = projectModeManager.getSchemaMigrationPath(
+        const migrationPath = projectModeManager0.getSchemaMigrationPath(
           fromVersion as string,
           toVersion as string
         );
-        
+
         const result = {
           fromVersion,
           toVersion,
           migrationPath,
-          totalSteps: migrationPath.length,
-          hasPath: migrationPath.length > 0
+          totalSteps: migrationPath0.length,
+          hasPath: migrationPath0.length > 0,
         };
-        
-        res.json(result);
+
+        res0.json(result);
       } catch (error) {
-        log(LogLevel.ERROR, 'Failed to get migration path', req, {
+        log(LogLevel0.ERROR, 'Failed to get migration path', req, {
           fromVersion,
           toVersion,
-          error: (error as Error).message
+          error: (error as Error)0.message,
         });
-        
-        res.status(500).json({
+
+        res0.status(500)0.json({
           error: 'Failed to get migration path',
-          message: (error as Error).message
+          message: (error as Error)0.message,
         });
       }
     })
   );
 
   /**
-   * GET /api/v1/projects/modes.
-   * Get all available project modes.
+   * GET /api/v1/projects/modes0.
+   * Get all available project modes0.
    */
-  router.get(
+  router0.get(
     '/modes',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting all available project modes', req);
-      
+      log(LogLevel0.DEBUG, 'Getting all available project modes', req);
+
       try {
-        const modes = Object.values(ProjectMode);
-        const modeDetails = modes.map(mode => {
-          const capabilities = projectModeManager.getModeCapabilities(mode);
-          const config = projectModeManager.getModeConfig(mode);
+        const modes = Object0.values()(ProjectMode);
+        const modeDetails = modes0.map((mode) => {
+          const capabilities = projectModeManager0.getModeCapabilities(mode);
+          const config = projectModeManager0.getModeConfig(mode);
           return {
             mode,
             capabilities,
-            schemaVersion: config?.schemaVersion,
+            schemaVersion: config?0.schemaVersion,
             description: getModeDescription(mode),
-            settings: config?.settings,
-            migration: config?.migration
+            settings: config?0.settings,
+            migration: config?0.migration,
           };
         });
-        
+
         const result = {
           modes: modeDetails,
-          total: modes.length,
-          defaultMode: ProjectMode.KANBAN
+          total: modes0.length,
+          defaultMode: ProjectMode0.KANBAN,
         };
-        
-        log(LogLevel.DEBUG, 'Available modes retrieved successfully', req, {
-          total: modes.length
+
+        log(LogLevel0.DEBUG, 'Available modes retrieved successfully', req, {
+          total: modes0.length,
         });
-        
-        res.json(result);
+
+        res0.json(result);
       } catch (error) {
-        log(LogLevel.ERROR, 'Failed to get available modes', req, {
-          error: (error as Error).message
+        log(LogLevel0.ERROR, 'Failed to get available modes', req, {
+          error: (error as Error)0.message,
         });
-        
-        res.status(500).json({
+
+        res0.status(500)0.json({
           error: 'Failed to get available modes',
-          message: (error as Error).message
+          message: (error as Error)0.message,
         });
       }
     })
@@ -638,17 +651,17 @@ export const createProjectRoutes = (): Router => {
 };
 
 /**
- * Helper function to get mode descriptions.
+ * Helper function to get mode descriptions0.
  */
 function getModeDescription(mode: ProjectMode): string {
   switch (mode) {
-    case ProjectMode.KANBAN:
-      return 'Kanban workflow engine with continuous flow, WIP limits, and flow metrics. Schema v1.0.0+.';
+    case ProjectMode0.KANBAN:
+      return 'Kanban workflow engine with continuous flow, WIP limits, and flow metrics0. Schema v10.0.0+0.';
     // TODO: Add when Agile mode is implemented
-    // case ProjectMode.AGILE:
+    // case ProjectMode0.AGILE:
     //   return 'Kanban + Sprint-based development with backlog management and retrospectives';
-    // TODO: Add when SAFe mode is implemented  
-    // case ProjectMode.SAFE:
+    // TODO: Add when SAFe mode is implemented
+    // case ProjectMode0.SAFE:
     //   return 'Kanban + Agile + Scaled enterprise framework with Program Increments, ARTs, and Value Streams';
     default:
       return 'Unknown project mode';
@@ -656,6 +669,6 @@ function getModeDescription(mode: ProjectMode): string {
 }
 
 /**
- * Default export for the project routes.
+ * Default export for the project routes0.
  */
 export default createProjectRoutes;

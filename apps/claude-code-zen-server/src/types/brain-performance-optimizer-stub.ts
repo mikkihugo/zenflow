@@ -29,8 +29,8 @@ export class PerformanceOptimizer {
       improvements: ['memory-usage', 'response-time'],
       metrics: {
         'memory-reduction': 0.2,
-        'speed-improvement': 0.15
-      }
+        'speed-improvement': 0.15,
+      },
     };
   }
 }

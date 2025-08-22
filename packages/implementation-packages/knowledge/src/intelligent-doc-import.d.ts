@@ -20,7 +20,7 @@
  * // Returns: { suggestions: [...], approvalRequired: true }
  * ```
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 interface WorkflowGateRequest {
     id: string;
     type: 'approval' | 'decision' | 'input' | 'confirmation';
@@ -144,7 +144,7 @@ export interface ImportWorkflowResult {
  * const result = await workflow.importAndAnalyze();
  * ```
  */
-export declare class IntelligentDocImport extends EventEmitter {
+export declare class IntelligentDocImport extends TypedEventBase {
     private config;
     private documentManager;
     private workflowGates;

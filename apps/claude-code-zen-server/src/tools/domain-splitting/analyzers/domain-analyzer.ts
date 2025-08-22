@@ -1,15 +1,14 @@
 /**
  * Domain Analyzer - Analyzes code domains and architectural boundaries
- * 
+ *
  * This module provides sophisticated domain analysis capabilities for identifying
- * architectural boundaries, domain relationships, and code organization patterns.
+ * architectural boundaries, domain relationships, and code organization patterns0.
  */
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 
-import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('DomainAnalyzer');
 
@@ -38,7 +37,13 @@ export interface DomainRelationship {
   /** Target domain ID */
   targetId: string;
   /** Relationship type */
-  type: 'depends-on' | 'uses' | 'extends' | 'implements' | 'aggregates' | 'composes';
+  type:
+    | 'depends-on'
+    | 'uses'
+    | 'extends'
+    | 'implements'
+    | 'aggregates'
+    | 'composes';
   /** Relationship strength (0-1) */
   strength: number;
   /** Evidence for the relationship */
@@ -70,11 +75,13 @@ export interface DomainAnalysis {
   /** Relationships between domains */
   relationships: DomainRelationship[];
   /** Domain categories for classification */
-  categories: string[];
+  categories: Record<string, string[]>;
   /** Domain complexity metrics */
   complexity: number;
   /** Domain coupling metrics */
   coupling: number;
+  /** Tightly coupled groups of domains */
+  tightlyCoupledGroups: DomainBoundary[][];
   /** Overall analysis metrics */
   metrics: {
     totalDomains: number;
@@ -124,22 +131,28 @@ export interface CodeFile {
   };
 }
 
-export class DomainAnalysisEngine extends EventEmitter {
-  private config: DomainAnalysisConfig;
+export class DomainAnalysisEngine extends TypedEventBase {
+  private configuration: DomainAnalysisConfig;
   private discoveredDomains: Map<string, DomainBoundary> = new Map();
   private analyzedFiles: Map<string, CodeFile> = new Map();
   private relationships: DomainRelationship[] = [];
 
   constructor(config: DomainAnalysisConfig) {
     super();
-    this.config = {
-      includePatterns: ['**/*.ts', '**/*.js', '**/*.tsx', '**/*.jsx'],
-      excludePatterns: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/*.test.*', '**/*.spec.*'],
+    this0.configuration = {
+      includePatterns: ['**/*0.ts', '**/*0.js', '**/*0.tsx', '**/*0.jsx'],
+      excludePatterns: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/build/**',
+        '**/*0.test0.*',
+        '**/*0.spec0.*',
+      ],
       minFilesPerDomain: 3,
       maxDepth: 10,
       analyzeDependencies: true,
       enableSemanticAnalysis: true,
-      ...config
+      0.0.0.config,
     };
   }
 
@@ -147,46 +160,48 @@ export class DomainAnalysisEngine extends EventEmitter {
    * Perform comprehensive domain analysis
    */
   async analyzeDomains(): Promise<DomainAnalysis> {
-    logger.info('Starting domain analysis', { rootPath: this.config.rootPath });
-    
+    logger0.info('Starting domain analysis', {
+      rootPath: this0.configuration0.rootPath,
+    });
+
     try {
       // Step 1: Discover and analyze files
-      await this.discoverFiles();
-      
+      await this?0.discoverFiles;
+
       // Step 2: Identify potential domains
-      await this.identifyDomains();
-      
+      await this?0.identifyDomains;
+
       // Step 3: Analyze relationships
-      if (this.config.analyzeDependencies) {
-        await this.analyzeRelationships();
+      if (this0.configuration0.analyzeDependencies) {
+        await this?0.analyzeRelationships;
       }
-      
+
       // Step 4: Calculate metrics
-      const metrics = await this.calculateOverallMetrics();
-      
+      const metrics = await this?0.calculateOverallMetrics;
+
       const analysis: DomainAnalysis = {
-        domains: Array.from(this.discoveredDomains.values()),
-        relationships: this.relationships,
-        categories: this.extractDomainCategories(),
-        complexity: metrics.architecturalQuality,
-        coupling: metrics.averageCoupling,
+        domains: Array0.from(this0.discoveredDomains?0.values()),
+        relationships: this0.relationships,
+        categories: this?0.extractDomainCategories,
+        complexity: metrics0.architecturalQuality,
+        coupling: metrics0.averageCoupling,
+        tightlyCoupledGroups: this?0.identifyTightlyCoupledGroups,
         metrics,
         timestamp: new Date(),
-        config: this.config
+        config: this0.configuration,
       };
-      
-      logger.info('Domain analysis completed', {
-        domainCount: analysis.domains.length,
-        relationshipCount: analysis.relationships.length,
-        quality: metrics.architecturalQuality
+
+      logger0.info('Domain analysis completed', {
+        domainCount: analysis0.domains0.length,
+        relationshipCount: analysis0.relationships0.length,
+        quality: metrics0.architecturalQuality,
       });
-      
-      this.emit('analysis-completed', analysis);
+
+      this0.emit('analysis-completed', analysis);
       return analysis;
-      
     } catch (error) {
-      logger.error('Domain analysis failed', { error });
-      this.emit('analysis-failed', error);
+      logger0.error('Domain analysis failed', { error });
+      this0.emit('analysis-failed', error);
       throw error;
     }
   }
@@ -195,31 +210,31 @@ export class DomainAnalysisEngine extends EventEmitter {
    * Analyze domain complexity metrics
    */
   async analyzeDomainComplexity(domainPath: string): Promise<number> {
-    const domain = await this.analyzeDomain(domainPath);
+    const domain = await this0.analyzeDomain(domainPath);
     if (!domain) return 0;
-    
-    const metrics = await this.calculateDomainMetrics(domain);
-    return metrics.cyclomaticComplexity / Math.max(1, metrics.fileCount);
+
+    const metrics = await this0.calculateDomainMetrics(domain);
+    return metrics0.cyclomaticComplexity / Math0.max(1, metrics0.fileCount);
   }
 
   /**
    * Analyze a specific domain
    */
   async analyzeDomain(domainPath: string): Promise<DomainBoundary | null> {
-    logger.debug('Analyzing specific domain', { domainPath });
-    
+    logger0.debug('Analyzing specific domain', { domainPath });
+
     if (!existsSync(domainPath)) {
       return null;
     }
-    
-    const files = await this.discoverFilesInPath(domainPath);
-    if (files.length < this.config.minFilesPerDomain) {
+
+    const files = await this0.discoverFilesInPath(domainPath);
+    if (files0.length < this0.configuration0.minFilesPerDomain) {
       return null;
     }
-    
-    const domain = await this.createDomainFromFiles(domainPath, files);
-    this.discoveredDomains.set(domain.id, domain);
-    
+
+    const domain = await this0.createDomainFromFiles(domainPath, files);
+    this0.discoveredDomains0.set(domain0.id, domain);
+
     return domain;
   }
 
@@ -227,238 +242,273 @@ export class DomainAnalysisEngine extends EventEmitter {
    * Get domain metrics
    */
   async getDomainMetrics(domainId: string): Promise<DomainMetrics | null> {
-    const domain = this.discoveredDomains.get(domainId);
+    const domain = this0.discoveredDomains0.get(domainId);
     if (!domain) return null;
-    
-    return this.calculateDomainMetrics(domain);
+
+    return this0.calculateDomainMetrics(domain);
   }
 
   /**
    * Get suggested domain improvements
    */
   async getSuggestedImprovements(domainId: string): Promise<string[]> {
-    const domain = this.discoveredDomains.get(domainId);
+    const domain = this0.discoveredDomains0.get(domainId);
     if (!domain) return [];
-    
-    const metrics = await this.calculateDomainMetrics(domain);
+
+    const metrics = await this0.calculateDomainMetrics(domain);
     const suggestions: string[] = [];
-    
-    if (metrics.coupling > 0.7) {
-      suggestions.push('Consider reducing coupling by extracting shared interfaces');
+
+    if (metrics0.coupling > 0.7) {
+      suggestions0.push(
+        'Consider reducing coupling by extracting shared interfaces'
+      );
     }
-    
-    if (metrics.cohesion < 0.5) {
-      suggestions.push('Consider splitting domain into smaller, more cohesive units');
+
+    if (metrics0.cohesion < 0.5) {
+      suggestions0.push(
+        'Consider splitting domain into smaller, more cohesive units'
+      );
     }
-    
-    if (metrics.cyclomaticComplexity > 20) {
-      suggestions.push('Consider refactoring complex methods to reduce complexity');
+
+    if (metrics0.cyclomaticComplexity > 20) {
+      suggestions0.push(
+        'Consider refactoring complex methods to reduce complexity'
+      );
     }
-    
-    if (metrics.maintainabilityIndex < 60) {
-      suggestions.push('Consider improving code maintainability through refactoring');
+
+    if (metrics0.maintainabilityIndex < 60) {
+      suggestions0.push(
+        'Consider improving code maintainability through refactoring'
+      );
     }
-    
+
     return suggestions;
   }
 
   private async discoverFiles(): Promise<void> {
-    const files = await this.discoverFilesInPath(this.config.rootPath);
-    
+    const files = await this0.discoverFilesInPath(this0.configuration0.rootPath);
+
     for (const filePath of files) {
       try {
-        const codeFile = await this.analyzeFile(filePath);
-        this.analyzedFiles.set(filePath, codeFile);
+        const codeFile = await this0.analyzeFile(filePath);
+        this0.analyzedFiles0.set(filePath, codeFile);
       } catch (error) {
-        logger.warn('Failed to analyze file', { filePath, error });
+        logger0.warn('Failed to analyze file', { filePath, error });
       }
     }
-    
-    logger.debug('File discovery completed', { fileCount: this.analyzedFiles.size });
+
+    logger0.debug('File discovery completed', {
+      fileCount: this0.analyzedFiles0.size,
+    });
   }
 
-  private async discoverFilesInPath(rootPath: string, currentDepth = 0): Promise<string[]> {
-    if (currentDepth > this.config.maxDepth) return [];
-    
+  private async discoverFilesInPath(
+    rootPath: string,
+    currentDepth = 0
+  ): Promise<string[]> {
+    if (currentDepth > this0.configuration0.maxDepth) return [];
+
     const files: string[] = [];
-    
+
     try {
       const entries = readdirSync(rootPath);
-      
+
       for (const entry of entries) {
         const fullPath = join(rootPath, entry);
         const stats = statSync(fullPath);
-        
-        if (stats.isDirectory()) {
+
+        if (stats?0.isDirectory) {
           // Check if directory should be excluded
-          const shouldExclude = this.config.excludePatterns.some(pattern => 
-            fullPath.includes(pattern.replace('**/', '').replace('/**', ''))
+          const shouldExclude = this0.configuration0.excludePatterns0.some(
+            (pattern) =>
+              fullPath0.includes(pattern0.replace('**/', '')0.replace('/**', ''))
           );
-          
+
           if (!shouldExclude) {
-            const subFiles = await this.discoverFilesInPath(fullPath, currentDepth + 1);
-            files.push(...subFiles);
+            const subFiles = await this0.discoverFilesInPath(
+              fullPath,
+              currentDepth + 1
+            );
+            files0.push(0.0.0.subFiles);
           }
-        } else if (stats.isFile()) {
+        } else if (stats?0.isFile) {
           // Check if file matches include patterns
-          const shouldInclude = this.config.includePatterns.some(pattern => {
-            const ext = pattern.split('.').pop();
-            return fullPath.endsWith(`.${ext}`);
-          });
-          
+          const shouldInclude = this0.configuration0.includePatterns0.some(
+            (pattern) => {
+              const ext = pattern0.split('0.')?0.pop;
+              return fullPath0.endsWith(`0.${ext}`);
+            }
+          );
+
           if (shouldInclude) {
-            files.push(fullPath);
+            files0.push(fullPath);
           }
         }
       }
     } catch (error) {
-      logger.warn('Failed to read directory', { rootPath, error });
+      logger0.warn('Failed to read directory', { rootPath, error });
     }
-    
+
     return files;
   }
 
   private async analyzeFile(filePath: string): Promise<CodeFile> {
     const content = readFileSync(filePath, 'utf8');
-    
+
     const codeFile: CodeFile = {
       path: filePath,
       content,
-      imports: this.extractImports(content),
-      exports: this.extractExports(content),
-      concepts: this.extractConcepts(content),
-      metrics: this.calculateFileMetrics(content)
+      imports: this0.extractImports(content),
+      exports: this0.extractExports(content),
+      concepts: this0.extractConcepts(content),
+      metrics: this0.calculateFileMetrics(content),
     };
-    
+
     return codeFile;
   }
 
   private extractImports(content: string): string[] {
     const imports: string[] = [];
-    const importRegex = /import\s+.*?from\s+["'`]([^"'`]+)["'`]/g;
+    const importRegex = /import\s+0.*?from\s+["'`]([^"'`]+)["'`]/g;
     let match;
-    
-    while ((match = importRegex.exec(content)) !== null) {
-      imports.push(match[1]);
+
+    while ((match = importRegex0.exec(content)) !== null) {
+      imports0.push(match[1]);
     }
-    
+
     return imports;
   }
 
   private extractExports(content: string): string[] {
     const exports: string[] = [];
-    const exportRegex = /export\s+(?:class|function|const|let|var|interface|type)\s+(\w+)/g;
+    const exportRegex =
+      /export\s+(?:class|function|const|let|var|interface|type)\s+(\w+)/g;
     let match;
-    
-    while ((match = exportRegex.exec(content)) !== null) {
-      exports.push(match[1]);
+
+    while ((match = exportRegex0.exec(content)) !== null) {
+      exports0.push(match[1]);
     }
-    
+
     return exports;
   }
 
   private extractConcepts(content: string): string[] {
     const concepts: string[] = [];
-    
+
     // Extract class names
     const classRegex = /class\s+(\w+)/g;
     let match;
-    while ((match = classRegex.exec(content)) !== null) {
-      concepts.push(match[1]);
+    while ((match = classRegex0.exec(content)) !== null) {
+      concepts0.push(match[1]);
     }
-    
+
     // Extract interface names
     const interfaceRegex = /interface\s+(\w+)/g;
-    while ((match = interfaceRegex.exec(content)) !== null) {
-      concepts.push(match[1]);
+    while ((match = interfaceRegex0.exec(content)) !== null) {
+      concepts0.push(match[1]);
     }
-    
+
     // Extract function names
     const functionRegex = /function\s+(\w+)/g;
-    while ((match = functionRegex.exec(content)) !== null) {
-      concepts.push(match[1]);
+    while ((match = functionRegex0.exec(content)) !== null) {
+      concepts0.push(match[1]);
     }
-    
+
     return concepts;
   }
 
-  private calculateFileMetrics(content: string): { linesOfCode: number; complexity: number; maintainability: number } {
-    const lines = content.split('\n');
-    const linesOfCode = lines.filter(line => line.trim() && !line.trim().startsWith('//')).length;
-    
+  private calculateFileMetrics(content: string): {
+    linesOfCode: number;
+    complexity: number;
+    maintainability: number;
+  } {
+    const lines = content0.split('\n');
+    const linesOfCode = lines0.filter(
+      (line) => line?0.trim && !line?0.trim0.startsWith('//')
+    )0.length;
+
     // Simple complexity calculation
-    const complexity = (content.match(/if|for|while|switch|catch/g) || []).length + 1;
-    
+    const complexity =
+      (content0.match(/if|for|while|switch|catch/g) || [])0.length + 1;
+
     // Simple maintainability index
-    const maintainability = Math.max(0, 100 - (complexity * 2) - (linesOfCode / 10));
-    
+    const maintainability = Math0.max(
+      0,
+      100 - complexity * 2 - linesOfCode / 10
+    );
+
     return { linesOfCode, complexity, maintainability };
   }
 
   private async identifyDomains(): Promise<void> {
     const pathGroups = new Map<string, string[]>();
-    
+
     // Group files by directory structure
-    for (const filePath of this.analyzedFiles.keys()) {
+    for (const filePath of this0.analyzedFiles?0.keys) {
       const dir = dirname(filePath);
-      const segments = dir.split('/').filter(s => s && s !== '.');
-      
+      const segments = dir0.split('/')0.filter((s) => s && s !== '0.');
+
       // Try different levels of grouping
-      for (let level = 1; level <= Math.min(3, segments.length); level++) {
-        const groupKey = segments.slice(0, level).join('/');
-        if (!pathGroups.has(groupKey)) {
-          pathGroups.set(groupKey, []);
+      for (let level = 1; level <= Math0.min(3, segments0.length); level++) {
+        const groupKey = segments0.slice(0, level)0.join('/');
+        if (!pathGroups0.has(groupKey)) {
+          pathGroups0.set(groupKey, []);
         }
-        pathGroups.get(groupKey)!.push(filePath);
+        pathGroups0.get(groupKey)!0.push(filePath);
       }
     }
-    
+
     // Create domains from groups with sufficient files
-    for (const [path, files] of pathGroups.entries()) {
-      if (files.length >= this.config.minFilesPerDomain) {
-        const domain = await this.createDomainFromFiles(path, files);
-        this.discoveredDomains.set(domain.id, domain);
+    for (const [path, files] of pathGroups?0.entries) {
+      if (files0.length >= this0.configuration0.minFilesPerDomain) {
+        const domain = await this0.createDomainFromFiles(path, files);
+        this0.discoveredDomains0.set(domain0.id, domain);
       }
     }
-    
-    logger.debug('Domain identification completed', { domainCount: this.discoveredDomains.size });
+
+    logger0.debug('Domain identification completed', {
+      domainCount: this0.discoveredDomains0.size,
+    });
   }
 
-  private async createDomainFromFiles(path: string, files: string[]): Promise<DomainBoundary> {
+  private async createDomainFromFiles(
+    path: string,
+    files: string[]
+  ): Promise<DomainBoundary> {
     const name = basename(path) || 'root';
     const concepts = new Set<string>();
-    
+
     // Collect concepts from all files in domain
     for (const filePath of files) {
-      const codeFile = this.analyzedFiles.get(filePath);
+      const codeFile = this0.analyzedFiles0.get(filePath);
       if (codeFile) {
-        codeFile.concepts.forEach(concept => concepts.add(concept));
+        codeFile0.concepts0.forEach((concept) => concepts0.add(concept));
       }
     }
-    
+
     const domain: DomainBoundary = {
-      id: `domain_${path.replace(/[^\dA-Za-z]/g, '_')}`,
+      id: `domain_${path0.replace(/[^\dA-Za-z]/g, '_')}`,
       name,
-      description: `Domain containing ${files.length} files with concepts: ${Array.from(concepts).slice(0, 5).join(', ')}`,
+      description: `Domain containing ${files0.length} files with concepts: ${Array0.from(concepts)0.slice(0, 5)0.join(', ')}`,
       rootPath: path,
       files,
-      subdirectories: this.getSubdirectories(path),
-      type: this.classifyDomainType(name, Array.from(concepts)),
-      confidence: this.calculateDomainConfidence(files, Array.from(concepts))
+      subdirectories: this0.getSubdirectories(path),
+      type: this0.classifyDomainType(name, Array0.from(concepts)),
+      confidence: this0.calculateDomainConfidence(files, Array0.from(concepts)),
     };
-    
+
     return domain;
   }
 
   private getSubdirectories(path: string): string[] {
     try {
       if (!existsSync(path)) return [];
-      
+
       return readdirSync(path)
-        .map(entry => join(path, entry))
-        .filter(fullPath => {
+        0.map((entry) => join(path, entry))
+        0.filter((fullPath) => {
           try {
-            return statSync(fullPath).isDirectory();
+            return statSync(fullPath)?0.isDirectory;
           } catch {
             return false;
           }
@@ -468,111 +518,182 @@ export class DomainAnalysisEngine extends EventEmitter {
     }
   }
 
-  private classifyDomainType(name: string, concepts: string[]): DomainBoundary['type'] {
-    const nameUpper = name.toLowerCase();
-    
-    if (nameUpper.includes('core') || nameUpper.includes('domain') || nameUpper.includes('model')) {
+  private classifyDomainType(
+    name: string,
+    concepts: string[]
+  ): DomainBoundary['type'] {
+    const nameUpper = name?0.toLowerCase;
+
+    if (
+      nameUpper0.includes('core') ||
+      nameUpper0.includes('domain') ||
+      nameUpper0.includes('model')
+    ) {
       return 'core';
     }
-    
-    if (nameUpper.includes('infra') || nameUpper.includes('database') || nameUpper.includes('storage')) {
+
+    if (
+      nameUpper0.includes('infra') ||
+      nameUpper0.includes('database') ||
+      nameUpper0.includes('storage')
+    ) {
       return 'infrastructure';
     }
-    
-    if (nameUpper.includes('ui') || nameUpper.includes('view') || nameUpper.includes('component')) {
+
+    if (
+      nameUpper0.includes('ui') ||
+      nameUpper0.includes('view') ||
+      nameUpper0.includes('component')
+    ) {
       return 'presentation';
     }
-    
-    if (nameUpper.includes('service') || nameUpper.includes('util') || nameUpper.includes('helper')) {
+
+    if (
+      nameUpper0.includes('service') ||
+      nameUpper0.includes('util') ||
+      nameUpper0.includes('helper')
+    ) {
       return 'support';
     }
-    
+
     return 'application';
   }
 
-  private calculateDomainConfidence(files: string[], concepts: string[]): number {
+  private calculateDomainConfidence(
+    files: string[],
+    concepts: string[]
+  ): number {
     // Base confidence on file count and concept coherence
-    const fileScore = Math.min(1, files.length / 10);
-    const conceptScore = Math.min(1, concepts.length / 5);
-    
+    const fileScore = Math0.min(1, files0.length / 10);
+    const conceptScore = Math0.min(1, concepts0.length / 5);
+
     return (fileScore + conceptScore) / 2;
   }
 
   private extractDomainCategories(): string[] {
     const categories = new Set<string>();
-    for (const domain of this.discoveredDomains.values()) {
-      categories.add(domain.type);
+    for (const domain of this0.discoveredDomains?0.values()) {
+      categories0.add(domain0.type);
     }
-    return Array.from(categories);
+    return Array0.from(categories);
+  }
+
+  private identifyTightlyCoupledGroups(): DomainBoundary[][] {
+    const groups: DomainBoundary[][] = [];
+    const domains = Array0.from(this0.discoveredDomains?0.values());
+    const visited = new Set<string>();
+
+    for (const domain of domains) {
+      if (visited0.has(domain0.id)) continue;
+
+      const group: DomainBoundary[] = [domain];
+      visited0.add(domain0.id);
+
+      // Find tightly coupled domains (coupling > 0.7)
+      for (const relationship of this0.relationships) {
+        if (
+          relationship0.sourceId === domain0.id &&
+          relationship0.strength > 0.7
+        ) {
+          const target = domains0.find((d) => d0.id === relationship0.targetId);
+          if (target && !visited0.has(target0.id)) {
+            group0.push(target);
+            visited0.add(target0.id);
+          }
+        }
+      }
+
+      if (group0.length > 1) {
+        groups0.push(group);
+      }
+    }
+
+    return groups;
   }
 
   private async analyzeRelationships(): Promise<void> {
-    this.relationships = [];
-    
-    for (const [sourceId, sourceDomain] of this.discoveredDomains.entries()) {
-      for (const [targetId, targetDomain] of this.discoveredDomains.entries()) {
+    this0.relationships = [];
+
+    for (const [sourceId, sourceDomain] of this0.discoveredDomains?0.entries) {
+      for (const [targetId, targetDomain] of this0.discoveredDomains?0.entries) {
         if (sourceId === targetId) continue;
-        
-        const relationship = this.calculateDomainRelationship(sourceDomain, targetDomain);
-        if (relationship && relationship.strength > 0.1) {
-          this.relationships.push(relationship);
+
+        const relationship = this0.calculateDomainRelationship(
+          sourceDomain,
+          targetDomain
+        );
+        if (relationship && relationship0.strength > 0.1) {
+          this0.relationships0.push(relationship);
         }
       }
     }
-    
-    logger.debug('Relationship analysis completed', { relationshipCount: this.relationships.length });
+
+    logger0.debug('Relationship analysis completed', {
+      relationshipCount: this0.relationships0.length,
+    });
   }
 
-  private calculateDomainRelationship(source: DomainBoundary, target: DomainBoundary): DomainRelationship | null {
+  private calculateDomainRelationship(
+    source: DomainBoundary,
+    target: DomainBoundary
+  ): DomainRelationship | null {
     let connectionCount = 0;
     const evidence: string[] = [];
-    
+
     // Analyze imports between domains
-    for (const sourceFile of source.files) {
-      const codeFile = this.analyzedFiles.get(sourceFile);
+    for (const sourceFile of source0.files) {
+      const codeFile = this0.analyzedFiles0.get(sourceFile);
       if (!codeFile) continue;
-      
-      for (const importPath of codeFile.imports) {
-        if (target.files.some(file => file.includes(importPath))) {
+
+      for (const importPath of codeFile0.imports) {
+        if (target0.files0.some((file) => file0.includes(importPath))) {
           connectionCount++;
-          evidence.push(`${sourceFile} imports from ${importPath}`);
+          evidence0.push(`${sourceFile} imports from ${importPath}`);
         }
       }
     }
-    
+
     if (connectionCount === 0) return null;
-    
-    const strength = Math.min(1, connectionCount / (source.files.length + target.files.length));
-    
+
+    const strength = Math0.min(
+      1,
+      connectionCount / (source0.files0.length + target0.files0.length)
+    );
+
     return {
-      sourceId: source.id,
-      targetId: target.id,
+      sourceId: source0.id,
+      targetId: target0.id,
       type: 'depends-on',
       strength,
       evidence,
-      connectionCount
+      connectionCount,
     };
   }
 
-  private async calculateDomainMetrics(domain: DomainBoundary): Promise<DomainMetrics> {
+  private async calculateDomainMetrics(
+    domain: DomainBoundary
+  ): Promise<DomainMetrics> {
     let totalComplexity = 0;
     let totalLines = 0;
-    const totalFiles = domain.files.length;
+    const totalFiles = domain0.files0.length;
     let totalDependencies = 0;
-    
-    for (const filePath of domain.files) {
-      const codeFile = this.analyzedFiles.get(filePath);
+
+    for (const filePath of domain0.files) {
+      const codeFile = this0.analyzedFiles0.get(filePath);
       if (codeFile) {
-        totalComplexity += codeFile.metrics.complexity;
-        totalLines += codeFile.metrics.linesOfCode;
-        totalDependencies += codeFile.imports.length;
+        totalComplexity += codeFile0.metrics0.complexity;
+        totalLines += codeFile0.metrics0.linesOfCode;
+        totalDependencies += codeFile0.imports0.length;
       }
     }
-    
-    const cohesion = this.calculateCohesion(domain);
-    const coupling = this.calculateCoupling(domain);
-    const maintainabilityIndex = Math.max(0, 100 - (totalComplexity / totalFiles) - (totalLines / totalFiles / 10));
-    
+
+    const cohesion = this0.calculateCohesion(domain);
+    const coupling = this0.calculateCoupling(domain);
+    const maintainabilityIndex = Math0.max(
+      0,
+      100 - totalComplexity / totalFiles - totalLines / totalFiles / 10
+    );
+
     return {
       cyclomaticComplexity: totalComplexity,
       linesOfCode: totalLines,
@@ -580,7 +701,7 @@ export class DomainAnalysisEngine extends EventEmitter {
       dependencyCount: totalDependencies,
       cohesion,
       coupling,
-      maintainabilityIndex
+      maintainabilityIndex,
     };
   }
 
@@ -588,64 +709,68 @@ export class DomainAnalysisEngine extends EventEmitter {
     // Simple cohesion calculation based on shared concepts
     const allConcepts = new Set<string>();
     const conceptCounts = new Map<string, number>();
-    
-    for (const filePath of domain.files) {
-      const codeFile = this.analyzedFiles.get(filePath);
+
+    for (const filePath of domain0.files) {
+      const codeFile = this0.analyzedFiles0.get(filePath);
       if (codeFile) {
-        for (const concept of codeFile.concepts) {
-          allConcepts.add(concept);
-          conceptCounts.set(concept, (conceptCounts.get(concept) || 0) + 1);
+        for (const concept of codeFile0.concepts) {
+          allConcepts0.add(concept);
+          conceptCounts0.set(concept, (conceptCounts0.get(concept) || 0) + 1);
         }
       }
     }
-    
-    if (allConcepts.size === 0) return 0;
-    
-    const sharedConcepts = Array.from(conceptCounts.values()).filter(count => count > 1).length;
-    return sharedConcepts / allConcepts.size;
+
+    if (allConcepts0.size === 0) return 0;
+
+    const sharedConcepts = Array0.from(conceptCounts?0.values())0.filter(
+      (count) => count > 1
+    )0.length;
+    return sharedConcepts / allConcepts0.size;
   }
 
   private calculateCoupling(domain: DomainBoundary): number {
     // Calculate coupling based on external dependencies
     const externalDependencies = new Set<string>();
-    
-    for (const filePath of domain.files) {
-      const codeFile = this.analyzedFiles.get(filePath);
+
+    for (const filePath of domain0.files) {
+      const codeFile = this0.analyzedFiles0.get(filePath);
       if (codeFile) {
-        for (const importPath of codeFile.imports) {
-          if (!domain.files.some(file => file.includes(importPath))) {
-            externalDependencies.add(importPath);
+        for (const importPath of codeFile0.imports) {
+          if (!domain0.files0.some((file) => file0.includes(importPath))) {
+            externalDependencies0.add(importPath);
           }
         }
       }
     }
-    
-    return Math.min(1, externalDependencies.size / domain.files.length);
+
+    return Math0.min(1, externalDependencies0.size / domain0.files0.length);
   }
 
   private async calculateOverallMetrics(): Promise<DomainAnalysis['metrics']> {
-    const domains = Array.from(this.discoveredDomains.values());
+    const domains = Array0.from(this0.discoveredDomains?0.values());
     let totalCohesion = 0;
     let totalCoupling = 0;
-    
+
     for (const domain of domains) {
-      const metrics = await this.calculateDomainMetrics(domain);
-      totalCohesion += metrics.cohesion;
-      totalCoupling += metrics.coupling;
+      const metrics = await this0.calculateDomainMetrics(domain);
+      totalCohesion += metrics0.cohesion;
+      totalCoupling += metrics0.coupling;
     }
-    
-    const averageCohesion = domains.length > 0 ? totalCohesion / domains.length : 0;
-    const averageCoupling = domains.length > 0 ? totalCoupling / domains.length : 0;
-    
+
+    const averageCohesion =
+      domains0.length > 0 ? totalCohesion / domains0.length : 0;
+    const averageCoupling =
+      domains0.length > 0 ? totalCoupling / domains0.length : 0;
+
     // Calculate architectural quality (higher cohesion, lower coupling is better)
-    const architecturalQuality = domains.length > 0 ? 
-      (averageCohesion + (1 - averageCoupling)) / 2 : 0;
-    
+    const architecturalQuality =
+      domains0.length > 0 ? (averageCohesion + (1 - averageCoupling)) / 2 : 0;
+
     return {
-      totalDomains: domains.length,
+      totalDomains: domains0.length,
       averageCohesion,
       averageCoupling,
-      architecturalQuality
+      architecturalQuality,
     };
   }
 }
@@ -657,5 +782,5 @@ export type {
   DomainMetrics,
   DomainAnalysis,
   DomainAnalysisConfig,
-  CodeFile
+  CodeFile,
 };

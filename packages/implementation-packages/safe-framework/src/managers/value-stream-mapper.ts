@@ -18,7 +18,7 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger, MemorySystem, TypeSafeEventBus, EventPriority, MultiLevelOrchestrationManager } from '../types';
 import { getLogger, createEvent } from '../types';
 import type {
@@ -89,7 +89,7 @@ export interface ValueStreamMapperState {
  * Provides comprehensive value stream mapping with intelligent workflow-to-value-stream conversion,
  * multi-level orchestration integration, and AI-powered mapping optimization through service delegation.
  */
-export class ValueStreamMapper extends EventEmitter {
+export class ValueStreamMapper extends TypedEventBase {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
   private readonly memory: MemorySystem;
@@ -191,7 +191,7 @@ export class ValueStreamMapper extends EventEmitter {
 
       this.initialized = true;
       this.logger.info('Value Stream Mapper initialized successfully');
-      this.emit('initialized');
+      this.emit('initialized', {});
 
     } catch (error) {
       this.logger.error('Failed to initialize Value Stream Mapper:', error);

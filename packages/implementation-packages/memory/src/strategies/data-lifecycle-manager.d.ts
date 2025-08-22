@@ -4,7 +4,7 @@
  * Manages data lifecycle across hot/warm/cold/archive stages with automatic
  * migration, intelligent promotion/demotion, and efficient cleanup.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { LifecycleConfig, LifecycleEntry, LifecycleStage, StrategyMetrics } from './types';
 interface StageStats {
     count: number;
@@ -13,7 +13,7 @@ interface StageStats {
     accessFrequency: number;
     utilizationRate: number;
 }
-export declare class DataLifecycleManager extends EventEmitter {
+export declare class DataLifecycleManager extends TypedEventBase {
     private logger;
     private config;
     private telemetry;

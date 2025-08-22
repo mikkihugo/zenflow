@@ -33,7 +33,8 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from './typed-event-base';
+import type { ServiceEvents } from './typed-event-base';
 
 import type { Logger } from './logging';
 import { getLogger } from './logging';
@@ -131,7 +132,7 @@ export class EnvironmentDetectionError extends Error {
 // ENHANCED ENVIRONMENT DETECTOR WITH FOUNDATION INTEGRATION
 // ============================================================================
 
-export class EnvironmentDetector extends EventEmitter {
+export class EnvironmentDetector extends TypedEventBase<ServiceEvents> {
   private snapshot: EnvironmentSnapshot | null = null;
   private detectionInterval: NodeJS.Timeout | null = null;
   private isDetecting = false;
@@ -144,7 +145,12 @@ export class EnvironmentDetector extends EventEmitter {
     private refreshInterval = 30000, // 30 seconds
     logger?: Logger,
   ) {
-    super();
+    super({
+      enableValidation: true,
+      enableMetrics: true,
+      enableHistory: false,
+      maxListeners: 20
+    });
 
     this.logger = logger || getLogger('EnvironmentDetector');
     // Initialize workspace detector for comprehensive environment analysis
@@ -223,7 +229,10 @@ export class EnvironmentDetector extends EventEmitter {
         suggestions,
       };
 
-      this.emit('environment-detected', this.snapshot);
+      this.emit('service-started', { 
+        serviceName: 'environment-detector', 
+        timestamp: new Date() 
+      });
       this.logger.info('Environment detection completed', {
         toolsFound: tools.filter((t) => t.available).length,
         totalTools: tools.length,

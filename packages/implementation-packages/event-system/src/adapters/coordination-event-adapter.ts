@@ -14,23 +14,23 @@
  * @file Coordination-event adapter implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 
 // Generic interfaces for coordination components - library should not import external dependencies
-interface Orchestrator extends EventEmitter {
+interface Orchestrator extends TypedEventBase {
   readonly id: string;
   readonly type: string;
   [key: string]: any;
 }
 
-interface SwarmCoordinator extends EventEmitter {
+interface SwarmCoordinator extends TypedEventBase {
   readonly id: string;
   readonly type: string;
   [key: string]: any;
 }
 
-interface AgentManager extends EventEmitter {
+interface AgentManager extends TypedEventBase {
   readonly id: string;
   readonly type: string;
   [key: string]: any;
@@ -267,7 +267,7 @@ export class CoordinationEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new EventEmitter();
+  private eventEmitter = new TypedEventBase();
   private logger: Logger;
   private startTime?: Date;
   private eventCount = 0;
@@ -1349,7 +1349,7 @@ export class CoordinationEventAdapter implements EventManager {
     ];
 
     for (const coordinatorName of coordinators) {
-      const wrapper = new EventEmitter();
+      const wrapper = new TypedEventBase();
       const wrappedComponent: WrappedCoordinationComponent = {
         component: null, // Would be actual SwarmCoordinator instance
         componentType: 'swarm',
@@ -1418,7 +1418,7 @@ export class CoordinationEventAdapter implements EventManager {
    * Wrap AgentManager events with UEL integration.
    */
   private async wrapAgentManagers(): Promise<void> {
-    const wrapper = new EventEmitter();
+    const wrapper = new TypedEventBase();
     const wrappedComponent: WrappedCoordinationComponent = {
       component: null, // Would be actual AgentManager instance
       componentType: 'agent',
@@ -1489,7 +1489,7 @@ export class CoordinationEventAdapter implements EventManager {
    * Wrap Orchestrator events with UEL integration.
    */
   private async wrapOrchestrators(): Promise<void> {
-    const wrapper = new EventEmitter();
+    const wrapper = new TypedEventBase();
     const wrappedComponent: WrappedCoordinationComponent = {
       component: null, // Would be actual Orchestrator instance
       componentType: 'orchestrator',
@@ -1557,7 +1557,7 @@ export class CoordinationEventAdapter implements EventManager {
     const protocolTypes = ['topology', 'lifecycle', 'communication'];
 
     for (const protocolType of protocolTypes) {
-      const wrapper = new EventEmitter();
+      const wrapper = new TypedEventBase();
       const wrappedComponent: WrappedCoordinationComponent = {
         component: null, // Would be actual protocol manager instance
         componentType: 'protocol',

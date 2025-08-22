@@ -12,9 +12,9 @@
 // Export all coordination systems
 export { DevelopmentCoordinator, createDevelopmentConfig } from './development-coordinator';
 export { ProjectCoordinator, getProjectCoordinator, createProjectConfig } from './project-coordinator';
-export { DevelopmentManager, createDevelopmentManager, createSAFEDevelopmentManager } from './development-manager';
+// NOTE: DevelopmentManager moved to @claude-zen/sparc package for SAFe 6.0 flow-based development
 
 // Export all types
 export type { DevelopmentCoordinationConfig, DevelopmentTask, CoordinationStatus } from './development-coordinator';
 export type { ProjectCoordinationConfig } from './project-coordinator';
-export type { DevelopmentManagerConfig, DevelopmentTeam, ValueStream, Epic, Feature } from './development-manager';
+// NOTE: DevelopmentManager types moved to @claude-zen/sparc package for SAFe 6.0 flow-based development

@@ -117,7 +117,7 @@ export interface MIPROv2MLResult {
  * using battle-tested Rust crates and npm packages for optimization and analysis.
  */
 export class MIPROv2ML extends Teleprompter {
-  private eventEmitter: EventEmitter = new EventEmitter();
+  private eventEmitter: EventEmitter = new TypedEventBase();
   private logger: Logger;
   private config: MIPROv2MLConfig;
   private initialized: boolean = false;

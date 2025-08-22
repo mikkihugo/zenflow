@@ -1,30 +1,33 @@
 /**
  * @fileoverview Enhanced Service Registry - ServiceContainer-based implementation
- * 
- * Modern service registry using battle-tested ServiceContainer (Awilix) backend.
+ *
+ * Modern service registry using battle-tested ServiceContainer (Awilix) backend0.
  * Provides zero breaking changes migration from custom EnhancedServiceRegistry implementation
- * with enhanced capabilities including health monitoring, service discovery, and metrics.
- * 
- * Production-grade service registry using battle-tested ServiceContainer (Awilix) backend.
- * 
+ * with enhanced capabilities including health monitoring, service discovery, and metrics0.
+ *
+ * Production-grade service registry using battle-tested ServiceContainer (Awilix) backend0.
+ *
  * Key Improvements:
  * - Battle-tested Awilix dependency injection for service management
  * - Health monitoring and metrics collection for all services
- * - Service discovery and capability-based service queries  
+ * - Service discovery and capability-based service queries
  * - Type-safe registration with lifecycle management
  * - Error handling with Result patterns
  * - Event-driven notifications for registry changes
  * - Advanced dependency management and resolution
  * - Auto-recovery and resilience features
- * 
+ *
  * @author Claude Code Zen Team
- * @since 2.1.0
- * @version 2.1.0
+ * @since 20.10.0
+ * @version 20.10.0
  */
 
-import { ServiceContainer, createServiceContainer } from '@claude-zen/foundation';
+import {
+  ServiceContainer,
+  createServiceContainer,
+} from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBus, createTypedEventBus } from '@claude-zen/intelligence';
 
 import type {
   Service,
@@ -36,8 +39,8 @@ import type {
   ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces';
-import { ServiceOperationError } from './core/interfaces';
+} from '0./core/interfaces';
+import { ServiceOperationError } from '0./core/interfaces';
 
 export interface ServiceRegistryConfig {
   /** Health monitoring configuration */
@@ -119,20 +122,21 @@ export interface ServiceDependencyGraph {
   // Circular dependency detection
   cycles: string[][];
 
-  // Topological ordering for startup/shutdown.
+  // Topological ordering for startup/shutdown0.
   startupOrder: string[];
   shutdownOrder: string[];
 }
 
 /**
  * Service Container-based Enhanced Service Registry
- * 
- * Drop-in replacement for EnhancedServiceRegistry with enhanced capabilities through ServiceContainer.
- * Maintains exact API compatibility while adding health monitoring, metrics, and discovery.
+ *
+ * Drop-in replacement for EnhancedServiceRegistry with enhanced capabilities through ServiceContainer0.
+ * Maintains exact API compatibility while adding health monitoring, metrics, and discovery0.
  */
-export class ServiceRegistry extends EventEmitter implements ServiceRegistryInterface {
+export class ServiceRegistry implements ServiceRegistryInterface {
   private container: ServiceContainer;
   private logger: Logger;
+  private eventBus: TypedEventBus<ServiceEvent>;
   private factories = new Map<string, ServiceFactory>();
   private services = new Map<string, Service>();
   private serviceDiscovery = new Map<string, ServiceDiscoveryInfo>();
@@ -142,9 +146,9 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   private config: ServiceRegistryConfig;
 
   // Monitoring intervals
-  private healthMonitoringInterval?: NodeJS.Timeout;
-  private metricsCollectionInterval?: NodeJS.Timeout;
-  private discoveryInterval?: NodeJS.Timeout;
+  private healthMonitoringInterval?: NodeJS0.Timeout;
+  private metricsCollectionInterval?: NodeJS0.Timeout;
+  private discoveryInterval?: NodeJS0.Timeout;
 
   // Performance tracking
   private operationMetrics = new Map<
@@ -158,66 +162,70 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   >();
 
   constructor(config?: Partial<ServiceRegistryConfig>) {
-    super();
-    this.container = createServiceContainer('enhanced-service-registry', {
-      healthCheckFrequency: config?.healthMonitoring?.interval || 30000
+    this0.container = createServiceContainer('enhanced-service-registry', {
+      healthCheckFrequency: config?0.healthMonitoring?0.interval || 30000,
     });
-    this.logger = getLogger('ServiceRegistry');
+    this0.logger = getLogger('ServiceRegistry');
+    this0.eventBus = createTypedEventBus<ServiceEvent>({
+      enableValidation: true,
+      enableMetrics: true,
+      maxListeners: 100,
+    });
 
-    this.config = {
+    this0.config = {
       healthMonitoring: {
-        enabled: config?.healthMonitoring?.enabled ?? true,
-        interval: config?.healthMonitoring?.interval ?? 30000,
-        timeout: config?.healthMonitoring?.timeout ?? 5000,
+        enabled: config?0.healthMonitoring?0.enabled ?? true,
+        interval: config?0.healthMonitoring?0.interval ?? 30000,
+        timeout: config?0.healthMonitoring?0.timeout ?? 5000,
         alertThresholds: {
-          errorRate: config?.healthMonitoring?.alertThresholds?.errorRate ?? 5,
+          errorRate: config?0.healthMonitoring?0.alertThresholds?0.errorRate ?? 5,
           responseTime:
-            config?.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
+            config?0.healthMonitoring?0.alertThresholds?0.responseTime ?? 1000,
           resourceUsage:
-            config?.healthMonitoring?.alertThresholds?.resourceUsage ?? 80,
+            config?0.healthMonitoring?0.alertThresholds?0.resourceUsage ?? 80,
         },
       },
       metricsCollection: {
-        enabled: config?.metricsCollection?.enabled ?? true,
-        interval: config?.metricsCollection?.interval ?? 10000,
-        retention: config?.metricsCollection?.retention ?? 86400000, // 24 hours
+        enabled: config?0.metricsCollection?0.enabled ?? true,
+        interval: config?0.metricsCollection?0.interval ?? 10000,
+        retention: config?0.metricsCollection?0.retention ?? 86400000, // 24 hours
         aggregationWindow:
-          config?.metricsCollection?.aggregationWindow ?? 300000, // 5 minutes
+          config?0.metricsCollection?0.aggregationWindow ?? 300000, // 5 minutes
       },
       discovery: {
-        enabled: config?.discovery?.enabled ?? true,
-        heartbeatInterval: config?.discovery?.heartbeatInterval ?? 10000,
+        enabled: config?0.discovery?0.enabled ?? true,
+        heartbeatInterval: config?0.discovery?0.heartbeatInterval ?? 10000,
         advertisementInterval:
-          config?.discovery?.advertisementInterval ?? 30000,
-        timeoutThreshold: config?.discovery?.timeoutThreshold ?? 60000,
+          config?0.discovery?0.advertisementInterval ?? 30000,
+        timeoutThreshold: config?0.discovery?0.timeoutThreshold ?? 60000,
       },
       autoRecovery: {
-        enabled: config?.autoRecovery?.enabled ?? true,
-        maxRetries: config?.autoRecovery?.maxRetries ?? 3,
-        backoffMultiplier: config?.autoRecovery?.backoffMultiplier ?? 2,
-        recoveryTimeout: config?.autoRecovery?.recoveryTimeout ?? 30000,
+        enabled: config?0.autoRecovery?0.enabled ?? true,
+        maxRetries: config?0.autoRecovery?0.maxRetries ?? 3,
+        backoffMultiplier: config?0.autoRecovery?0.backoffMultiplier ?? 2,
+        recoveryTimeout: config?0.autoRecovery?0.recoveryTimeout ?? 30000,
       },
       dependencyManagement: {
-        enabled: config?.dependencyManagement?.enabled ?? true,
+        enabled: config?0.dependencyManagement?0.enabled ?? true,
         resolutionTimeout:
-          config?.dependencyManagement?.resolutionTimeout ?? 30000,
+          config?0.dependencyManagement?0.resolutionTimeout ?? 30000,
         circularDependencyCheck:
-          config?.dependencyManagement?.circularDependencyCheck ?? true,
+          config?0.dependencyManagement?0.circularDependencyCheck ?? true,
         dependencyHealthCheck:
-          config?.dependencyManagement?.dependencyHealthCheck ?? true,
+          config?0.dependencyManagement?0.dependencyHealthCheck ?? true,
       },
       performance: {
-        enableCaching: config?.performance?.enableCaching ?? true,
+        enableCaching: config?0.performance?0.enableCaching ?? true,
         enableConnectionPooling:
-          config?.performance?.enableConnectionPooling ?? true,
+          config?0.performance?0.enableConnectionPooling ?? true,
         enableServiceMemoization:
-          config?.performance?.enableServiceMemoization ?? true,
+          config?0.performance?0.enableServiceMemoization ?? true,
         maxConcurrentOperations:
-          config?.performance?.maxConcurrentOperations ?? 50,
+          config?0.performance?0.maxConcurrentOperations ?? 50,
       },
     };
 
-    this.initializeMonitoring();
+    this?0.initializeMonitoring;
   }
 
   /**
@@ -226,13 +234,12 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   async initialize(): Promise<void> {
     try {
       // Start ServiceContainer health monitoring
-      this.container.startHealthMonitoring();
+      this0.container?0.startHealthMonitoring;
 
-      this.logger.info('✅ ServiceRegistry initialized with ServiceContainer');
-      this.emit('initialized');
-
+      this0.logger0.info('✅ ServiceRegistry initialized with ServiceContainer');
+      this0.eventBus0.emit('initialized', { timestamp: new Date() });
     } catch (error) {
-      this.logger.error('❌ Failed to initialize ServiceRegistry:', error);
+      this0.logger0.error('❌ Failed to initialize ServiceRegistry:', error);
       throw error;
     }
   }
@@ -249,36 +256,45 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
     factory: ServiceFactory<T>
   ): void {
     try {
-      this.logger.info(`Registering factory for service type: ${type}`);
+      this0.logger0.info(`Registering factory for service type: ${type}`);
 
       // Register with ServiceContainer for enhanced capabilities
-      const registrationResult = this.container.registerInstance(`factory:${type}`, factory, {
-        capabilities: ['service-factory', type],
-        metadata: {
-          type: 'service-factory',
-          serviceType: type,
-          registeredAt: new Date(),
-          version: '1.0.0'
-        },
-        enabled: true,
-        healthCheck: () => this.performFactoryHealthCheck(factory)
-      });
+      const registrationResult = this0.container0.registerInstance(
+        `factory:${type}`,
+        factory,
+        {
+          capabilities: ['service-factory', type],
+          metadata: {
+            type: 'service-factory',
+            serviceType: type,
+            registeredAt: new Date(),
+            version: '10.0.0',
+          },
+          enabled: true,
+          healthCheck: () => this0.performFactoryHealthCheck(factory),
+        }
+      );
 
-      if (registrationResult.isErr()) {
-        throw new Error(`Failed to register factory ${type}: ${registrationResult.error.message}`);
+      if (registrationResult?0.isErr) {
+        throw new Error(
+          `Failed to register factory ${type}: ${registrationResult0.error0.message}`
+        );
       }
 
       // Store for legacy compatibility
-      this.factories.set(type, factory);
+      this0.factories0.set(type, factory);
 
       // Set up factory event handling
-      this.setupFactoryEventHandling(type, factory);
+      this0.setupFactoryEventHandling(type, factory);
 
-      this.emit('factory-registered', type, factory);
-      this.logger.debug(`Factory registered successfully: ${type}`);
-
+      this0.eventBus0.emit('factory-registered', {
+        type,
+        factory,
+        timestamp: new Date(),
+      });
+      this0.logger0.debug(`Factory registered successfully: ${type}`);
     } catch (error) {
-      this.logger.error(`❌ Failed to register factory ${type}:`, error);
+      this0.logger0.error(`❌ Failed to register factory ${type}:`, error);
       throw error;
     }
   }
@@ -291,18 +307,22 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   ): ServiceFactory<T> | undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
-      const result = this.container.resolve<ServiceFactory<T>>(`factory:${type}`);
-      
-      if (result.isOk()) {
-        return result.value;
+      const result = this0.container0.resolve<ServiceFactory<T>>(
+        `factory:${type}`
+      );
+
+      if (result?0.isOk) {
+        return result0.value;
       }
 
       // Fallback to legacy storage
-      return this.factories.get(type) as ServiceFactory<T>;
-
+      return this0.factories0.get(type) as ServiceFactory<T>;
     } catch (error) {
-      this.logger.warn(`⚠️ Failed to resolve factory ${type}, falling back to legacy:`, error);
-      return this.factories.get(type) as ServiceFactory<T>;
+      this0.logger0.warn(
+        `⚠️ Failed to resolve factory ${type}, falling back to legacy:`,
+        error
+      );
+      return this0.factories0.get(type) as ServiceFactory<T>;
     }
   }
 
@@ -310,15 +330,15 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * List factory types (compatible with existing EnhancedServiceRegistry interface)
    */
   listFactoryTypes(): string[] {
-    const containerTypes = this.container.getServiceNames()
-      .filter(name => name.startsWith('factory:'))
-      .map(name => name.replace('factory:', ''));
-    
-    const legacyTypes = Array.from(this.factories.keys());
-    
+    const containerTypes = this0.container?0.getServiceNames
+      0.filter((name) => name0.startsWith('factory:'))
+      0.map((name) => name0.replace('factory:', ''));
+
+    const legacyTypes = Array0.from(this0.factories?0.keys);
+
     // Combine and deduplicate
-    const allTypes = new Set([...containerTypes, ...legacyTypes]);
-    return Array.from(allTypes);
+    const allTypes = new Set([0.0.0.containerTypes, 0.0.0.legacyTypes]);
+    return Array0.from(allTypes);
   }
 
   /**
@@ -326,25 +346,27 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    */
   unregisterFactory(type: string): void {
     try {
-      this.logger.info(`Unregistering factory for service type: ${type}`);
+      this0.logger0.info(`Unregistering factory for service type: ${type}`);
 
-      const factory = this.factories.get(type);
+      const factory = this0.factories0.get(type);
       if (factory) {
         // Stop all services from this factory
-        factory.list().forEach((service) => {
-          this.removeServiceFromRegistry(service.name);
+        factory?0.list0.forEach((service) => {
+          this0.removeServiceFromRegistry(service0.name);
         });
 
         // Disable in ServiceContainer
-        this.container.setServiceEnabled(`factory:${type}`, false);
+        this0.container0.setServiceEnabled(`factory:${type}`, false);
 
-        this.factories.delete(type);
-        this.emit('factory-unregistered', type);
-        this.logger.debug(`Factory unregistered successfully: ${type}`);
+        this0.factories0.delete(type);
+        this0.eventBus0.emit('factory-unregistered', {
+          type,
+          timestamp: new Date(),
+        });
+        this0.logger0.debug(`Factory unregistered successfully: ${type}`);
       }
-
     } catch (error) {
-      this.logger.error(`❌ Failed to unregister factory ${type}:`, error);
+      this0.logger0.error(`❌ Failed to unregister factory ${type}:`, error);
       throw error;
     }
   }
@@ -360,28 +382,28 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
     const allServices = new Map<string, Service>();
 
     // Collect services from ServiceContainer
-    for (const serviceName of this.container.getServiceNames()) {
-      if (!serviceName.startsWith('factory:')) {
-        const result = this.container.resolve<Service>(serviceName);
-        if (result.isOk()) {
-          allServices.set(serviceName, result.value);
+    for (const serviceName of this0.container?0.getServiceNames) {
+      if (!serviceName0.startsWith('factory:')) {
+        const result = this0.container0.resolve<Service>(serviceName);
+        if (result?0.isOk) {
+          allServices0.set(serviceName, result0.value);
         }
       }
     }
 
     // Collect services from all factories
-    for (const factory of this.factories.values()) {
-      factory.list().forEach((service) => {
-        if (!allServices.has(service.name)) {
-          allServices.set(service.name, service);
+    for (const factory of this0.factories?0.values()) {
+      factory?0.list0.forEach((service) => {
+        if (!allServices0.has(service0.name)) {
+          allServices0.set(service0.name, service);
         }
       });
     }
 
     // Include directly registered services
-    this.services.forEach((service, name) => {
-      if (!allServices.has(name)) {
-        allServices.set(name, service);
+    this0.services0.forEach((service, name) => {
+      if (!allServices0.has(name)) {
+        allServices0.set(name, service);
       }
     });
 
@@ -394,34 +416,33 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   findService(name: string): Service | undefined {
     try {
       // Try ServiceContainer first for enhanced resolution
-      const result = this.container.resolve<Service>(name);
-      
-      if (result.isOk()) {
-        return result.value;
+      const result = this0.container0.resolve<Service>(name);
+
+      if (result?0.isOk) {
+        return result0.value;
       }
 
       // Check directly registered services
-      if (this.services.has(name)) {
-        return this.services.get(name);
+      if (this0.services0.has(name)) {
+        return this0.services0.get(name);
       }
 
       // Search in all factories
-      for (const factory of this.factories.values()) {
-        const service = factory.get(name);
+      for (const factory of this0.factories?0.values()) {
+        const service = factory0.get(name);
         if (service) {
           // Cache for faster future lookups
-          if (this.config.performance.enableCaching) {
-            this.services.set(name, service);
+          if (this0.config0.performance0.enableCaching) {
+            this0.services0.set(name, service);
           }
           return service;
         }
       }
 
       return undefined;
-
     } catch (error) {
-      this.logger.warn(`⚠️ Failed to resolve service ${name}:`, error);
-      return this.services.get(name);
+      this0.logger0.warn(`⚠️ Failed to resolve service ${name}:`, error);
+      return this0.services0.get(name);
     }
   }
 
@@ -429,14 +450,14 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * Get services by type (compatible with existing EnhancedServiceRegistry interface)
    */
   getServicesByType(type: string): Service[] {
-    const factory = this.factories.get(type);
+    const factory = this0.factories0.get(type);
     if (factory) {
-      return factory.list();
+      return factory?0.list;
     }
 
     // Fallback: search all services
-    return Array.from(this.getAllServices().values()).filter(
-      (service) => service.type === type
+    return Array0.from(this?0.getAllServices?0.values())0.filter(
+      (service) => service0.type === type
     );
   }
 
@@ -445,12 +466,12 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    */
   getServicesByStatus(status: ServiceLifecycleStatus): Service[] {
     const matchingServices: Service[] = [];
-    const allServices = this.getAllServices();
+    const allServices = this?0.getAllServices;
 
-    for (const service of allServices.values()) {
-      const serviceStatus = this.healthStatuses.get(service.name);
-      if (serviceStatus && serviceStatus.lifecycle === status) {
-        matchingServices.push(service);
+    for (const service of allServices?0.values()) {
+      const serviceStatus = this0.healthStatuses0.get(service0.name);
+      if (serviceStatus && serviceStatus0.lifecycle === status) {
+        matchingServices0.push(service);
       }
     }
 
@@ -465,27 +486,29 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * Start all services (compatible with existing EnhancedServiceRegistry interface)
    */
   async startAllServices(): Promise<void> {
-    this.logger.info('Starting all services with dependency resolution...');
+    this0.logger0.info('Starting all services with dependency resolution0.0.0.');
 
-    if (this.config.dependencyManagement.enabled) {
-      await this.buildDependencyGraph();
-      await this.startServicesInOrder();
+    if (this0.config0.dependencyManagement0.enabled) {
+      await this?0.buildDependencyGraph;
+      await this?0.startServicesInOrder;
     } else {
-      await this.startServicesParallel();
+      await this?0.startServicesParallel;
     }
 
-    this.logger.info('All services started successfully');
+    this0.logger0.info('All services started successfully');
   }
 
   /**
    * Stop all services (compatible with existing EnhancedServiceRegistry interface)
    */
   async stopAllServices(): Promise<void> {
-    this.logger.info('Stopping all services in reverse dependency order...');
+    this0.logger0.info('Stopping all services in reverse dependency order0.0.0.');
 
-    await (this.dependencyGraph ? this.stopServicesInOrder() : this.stopServicesParallel());
+    await (this0.dependencyGraph
+      ? this?0.stopServicesInOrder
+      : this?0.stopServicesParallel);
 
-    this.logger.info('All services stopped successfully');
+    this0.logger0.info('All services stopped successfully');
   }
 
   /**
@@ -493,20 +516,20 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    */
   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
     const results = new Map<string, ServiceStatus>();
-    const allServices = this.getAllServices();
+    const allServices = this?0.getAllServices;
 
-    const healthCheckPromises = Array.from(allServices.entries()).map(
+    const healthCheckPromises = Array0.from(allServices?0.entries)0.map(
       async ([name, service]) => {
         try {
-          const status = await this.performServiceHealthCheck(service);
-          results.set(name, status);
-          this.healthStatuses.set(name, status);
+          const status = await this0.performServiceHealthCheck(service);
+          results0.set(name, status);
+          this0.healthStatuses0.set(name, status);
         } catch (error) {
-          this.logger.error(`Health check failed for service ${name}:`, error);
+          this0.logger0.error(`Health check failed for service ${name}:`, error);
 
           const errorStatus: ServiceStatus = {
             name,
-            type: service.type,
+            type: service0.type,
             lifecycle: 'error',
             health: 'unhealthy',
             lastCheck: new Date(),
@@ -514,17 +537,17 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
             errorCount: 1,
             errorRate: 100,
             metadata: {
-              error: error instanceof Error ? error.message : String(error),
+              error: error instanceof Error ? error0.message : String(error),
             },
           };
 
-          results.set(name, errorStatus);
-          this.healthStatuses.set(name, errorStatus);
+          results0.set(name, errorStatus);
+          this0.healthStatuses0.set(name, errorStatus);
         }
       }
     );
 
-    await Promise.allSettled(healthCheckPromises);
+    await Promise0.allSettled(healthCheckPromises);
     return results;
   }
 
@@ -538,38 +561,38 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
     errorServices: number;
     aggregatedMetrics: ServiceMetrics[];
   }> {
-    const allServices = this.getAllServices();
-    const healthStatuses = await this.healthCheckAll();
-    const containerStats = this.container.getStats();
+    const allServices = this?0.getAllServices;
+    const healthStatuses = await this?0.healthCheckAll;
+    const containerStats = this0.container?0.getStats;
 
-    const totalServices = allServices.size;
-    const runningServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.lifecycle === 'running'
-    ).length;
-    const healthyServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.health === 'healthy'
-    ).length;
-    const errorServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.lifecycle === 'error' || status.health === 'unhealthy'
-    ).length;
+    const totalServices = allServices0.size;
+    const runningServices = Array0.from(healthStatuses?0.values())0.filter(
+      (status) => status0.lifecycle === 'running'
+    )0.length;
+    const healthyServices = Array0.from(healthStatuses?0.values())0.filter(
+      (status) => status0.health === 'healthy'
+    )0.length;
+    const errorServices = Array0.from(healthStatuses?0.values())0.filter(
+      (status) => status0.lifecycle === 'error' || status0.health === 'unhealthy'
+    )0.length;
 
     // Collect metrics from all services
     const aggregatedMetrics: ServiceMetrics[] = [];
-    const metricsPromises = Array.from(allServices.values()).map(
+    const metricsPromises = Array0.from(allServices?0.values())0.map(
       async (service) => {
         try {
-          const metrics = await service.getMetrics();
-          aggregatedMetrics.push(metrics);
+          const metrics = await service?0.getMetrics;
+          aggregatedMetrics0.push(metrics);
         } catch (error) {
-          this.logger.error(
-            `Failed to get metrics for service ${service.name}:`,
+          this0.logger0.error(
+            `Failed to get metrics for service ${service0.name}:`,
             error
           );
         }
       }
     );
 
-    await Promise.allSettled(metricsPromises);
+    await Promise0.allSettled(metricsPromises);
 
     return {
       totalServices,
@@ -584,40 +607,39 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * Shutdown all services (compatible with existing EnhancedServiceRegistry interface)
    */
   async shutdownAll(): Promise<void> {
-    this.logger.info('Shutting down service registry...');
+    this0.logger0.info('Shutting down service registry0.0.0.');
 
     try {
       // Stop monitoring
-      this.stopMonitoring();
+      this?0.stopMonitoring;
 
       // Stop all services
-      await this.stopAllServices();
+      await this?0.stopAllServices;
 
       // Shutdown all factories
-      const shutdownPromises = Array.from(this.factories.values()).map(
-        (factory) => factory.shutdown()
+      const shutdownPromises = Array0.from(this0.factories?0.values())0.map(
+        (factory) => factory?0.shutdown()
       );
-      await Promise.allSettled(shutdownPromises);
+      await Promise0.allSettled(shutdownPromises);
 
       // Dispose ServiceContainer
-      await this.container.dispose();
+      await this0.container?0.dispose;
 
       // Clear all registries
-      this.factories.clear();
-      this.services.clear();
-      this.serviceDiscovery.clear();
-      this.healthStatuses.clear();
-      this.metricsHistory.clear();
-      this.operationMetrics.clear();
+      this0.factories?0.clear();
+      this0.services?0.clear();
+      this0.serviceDiscovery?0.clear();
+      this0.healthStatuses?0.clear();
+      this0.metricsHistory?0.clear();
+      this0.operationMetrics?0.clear();
 
       // Remove all listeners
-      this.removeAllListeners();
+      this?0.removeAllListeners;
 
-      this.logger.info('Service registry shutdown completed');
-      this.emit('shutdown');
-
+      this0.logger0.info('Service registry shutdown completed');
+      this0.eventBus0.emit('shutdown', { timestamp: new Date() });
     } catch (error) {
-      this.logger.error('Error during service registry shutdown:', error);
+      this0.logger0.error('Error during service registry shutdown:', error);
       throw error;
     }
   }
@@ -635,25 +657,25 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
     health?: 'healthy' | 'degraded' | 'unhealthy';
     tags?: string[];
   }): Service[] {
-    const allServices = Array.from(this.getAllServices().values());
+    const allServices = Array0.from(this?0.getAllServices?0.values());
 
     if (!criteria) {
       return allServices;
     }
 
-    return allServices.filter((service) => {
-      const discoveryInfo = this.serviceDiscovery.get(service.name);
+    return allServices0.filter((service) => {
+      const discoveryInfo = this0.serviceDiscovery0.get(service0.name);
 
       // Filter by type
-      if (criteria.type && service.type !== criteria.type) {
+      if (criteria0.type && service0.type !== criteria0.type) {
         return false;
       }
 
       // Filter by capabilities
-      if (criteria.capabilities) {
-        const serviceCapabilities = service.getCapabilities();
-        const hasAllCapabilities = criteria.capabilities.every((cap) =>
-          serviceCapabilities.includes(cap)
+      if (criteria0.capabilities) {
+        const serviceCapabilities = service?0.getCapabilities;
+        const hasAllCapabilities = criteria0.capabilities0.every((cap) =>
+          serviceCapabilities0.includes(cap)
         );
         if (!hasAllCapabilities) {
           return false;
@@ -661,14 +683,18 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       }
 
       // Filter by health
-      if (criteria.health && discoveryInfo && discoveryInfo.health !== criteria.health) {
+      if (
+        criteria0.health &&
+        discoveryInfo &&
+        discoveryInfo0.health !== criteria0.health
+      ) {
         return false;
       }
 
       // Filter by tags
-      if (criteria.tags && discoveryInfo) {
-        const hasAllTags = criteria.tags.every((tag) =>
-          discoveryInfo.tags.includes(tag)
+      if (criteria0.tags && discoveryInfo) {
+        const hasAllTags = criteria0.tags0.every((tag) =>
+          discoveryInfo0.tags0.includes(tag)
         );
         if (!hasAllTags) {
           return false;
@@ -683,7 +709,7 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * Get service discovery info (compatible with existing EnhancedServiceRegistry interface)
    */
   getServiceDiscoveryInfo(): Map<string, ServiceDiscoveryInfo> {
-    return new Map(this.serviceDiscovery);
+    return new Map(this0.serviceDiscovery);
   }
 
   /**
@@ -695,40 +721,52 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   ): void {
     try {
       const discoveryInfo: ServiceDiscoveryInfo = {
-        serviceName: service.name,
-        serviceType: service.type,
-        version: service.config.version || '1.0.0',
-        capabilities: service.getCapabilities(),
-        tags: (service.config as any).tags || [],
-        metadata: { ...service.config.metadata, ...metadata },
+        serviceName: service0.name,
+        serviceType: service0.type,
+        version: service0.config0.version || '10.0.0',
+        capabilities: service?0.getCapabilities,
+        tags: (service0.config as any)0.tags || [],
+        metadata: { 0.0.0.service0.config0.metadata, 0.0.0.metadata },
         lastHeartbeat: new Date(),
         health: 'healthy',
       };
 
-      this.serviceDiscovery.set(service.name, discoveryInfo);
+      this0.serviceDiscovery0.set(service0.name, discoveryInfo);
 
       // Register with ServiceContainer
-      const registrationResult = this.container.registerInstance(service.name, service, {
-        capabilities: service.getCapabilities(),
-        metadata: {
-          type: 'service-instance',
-          serviceType: service.type,
-          discoveryInfo,
-          registeredAt: new Date(),
-          version: service.config.version || '1.0.0'
-        },
-        enabled: true,
-        healthCheck: () => this.performServiceHealthCheckSync(service)
-      });
+      const registrationResult = this0.container0.registerInstance(
+        service0.name,
+        service,
+        {
+          capabilities: service?0.getCapabilities,
+          metadata: {
+            type: 'service-instance',
+            serviceType: service0.type,
+            discoveryInfo,
+            registeredAt: new Date(),
+            version: service0.config0.version || '10.0.0',
+          },
+          enabled: true,
+          healthCheck: () => this0.performServiceHealthCheckSync(service),
+        }
+      );
 
-      if (registrationResult.isErr()) {
-        this.logger.warn(`⚠️ Failed to register service with ServiceContainer: ${registrationResult.error.message}`);
+      if (registrationResult?0.isErr) {
+        this0.logger0.warn(
+          `⚠️ Failed to register service with ServiceContainer: ${registrationResult0.error0.message}`
+        );
       }
 
-      this.emit('service-discovered', service.name, discoveryInfo);
-
+      this0.eventBus0.emit('service-discovered', {
+        serviceName: service0.name,
+        discoveryInfo,
+        timestamp: new Date(),
+      });
     } catch (error) {
-      this.logger.error(`❌ Failed to register service for discovery ${service.name}:`, error);
+      this0.logger0.error(
+        `❌ Failed to register service for discovery ${service0.name}:`,
+        error
+      );
       throw error;
     }
   }
@@ -737,10 +775,10 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * Update service heartbeat (compatible with existing EnhancedServiceRegistry interface)
    */
   updateServiceHeartbeat(serviceName: string): void {
-    const discoveryInfo = this.serviceDiscovery.get(serviceName);
+    const discoveryInfo = this0.serviceDiscovery0.get(serviceName);
     if (discoveryInfo) {
-      discoveryInfo.lastHeartbeat = new Date();
-      this.serviceDiscovery.set(serviceName, discoveryInfo);
+      discoveryInfo0.lastHeartbeat = new Date();
+      this0.serviceDiscovery0.set(serviceName, discoveryInfo);
     }
   }
 
@@ -759,14 +797,14 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       | string,
     handler: (serviceName: string, service?: Service) => void
   ): void {
-    super.on(event, handler);
+    super0.on(event, handler);
   }
 
   off(event: string, handler?: Function): void {
     if (handler) {
-      super.off(event, handler);
+      super0.off(event, handler);
     } else {
-      super.removeAllListeners(event);
+      super0.removeAllListeners(event);
     }
   }
 
@@ -774,13 +812,13 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * Get services by capability (NEW - ServiceContainer enhancement)
    */
   getServicesByCapability(capability: string): Service[] {
-    const serviceInfos = this.container.getServicesByCapability(capability);
+    const serviceInfos = this0.container0.getServicesByCapability(capability);
     const services: Service[] = [];
 
     for (const serviceInfo of serviceInfos) {
-      const result = this.container.resolve<Service>(serviceInfo.name);
-      if (result.isOk()) {
-        services.push(result.value);
+      const result = this0.container0.resolve<Service>(serviceInfo0.name);
+      if (result?0.isOk) {
+        services0.push(result0.value);
       }
     }
 
@@ -791,21 +829,26 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
    * Get health status (NEW - ServiceContainer enhancement)
    */
   async getHealthStatus() {
-    return await this.container.getHealthStatus();
+    return await this0.container?0.getHealthStatus;
   }
 
   /**
    * Enable/disable service (NEW - ServiceContainer enhancement)
    */
   setServiceEnabled(serviceName: string, enabled: boolean) {
-    const result = this.container.setServiceEnabled(serviceName, enabled);
-    
-    if (result.isOk()) {
-      this.logger.debug(`${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} service: ${serviceName}`);
-      this.emit('service-status-changed', serviceName);
+    const result = this0.container0.setServiceEnabled(serviceName, enabled);
+
+    if (result?0.isOk) {
+      this0.logger0.debug(
+        `${enabled ? '✅' : '❌'} ${enabled ? 'Enabled' : 'Disabled'} service: ${serviceName}`
+      );
+      this0.eventBus0.emit('service-status-changed', {
+        serviceName,
+        timestamp: new Date(),
+      });
     }
 
-    return result.isOk();
+    return result?0.isOk;
   }
 
   // ============================================
@@ -813,16 +856,16 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   // ============================================
 
   private initializeMonitoring(): void {
-    if (this.config.healthMonitoring.enabled) {
-      this.startHealthMonitoring();
+    if (this0.config0.healthMonitoring0.enabled) {
+      this?0.startHealthMonitoring;
     }
 
-    if (this.config.metricsCollection.enabled) {
-      this.startMetricsCollection();
+    if (this0.config0.metricsCollection0.enabled) {
+      this?0.startMetricsCollection;
     }
 
-    if (this.config.discovery.enabled) {
-      this.startServiceDiscovery();
+    if (this0.config0.discovery0.enabled) {
+      this?0.startServiceDiscovery;
     }
   }
 
@@ -831,49 +874,53 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       // Basic health check - more sophisticated checks can be added
       if (typeof factory === 'object' && factory !== null) {
         // Check if factory has health check method
-        if ('healthCheck' in factory && typeof factory.healthCheck === 'function') {
-          return factory.healthCheck();
+        if (
+          'healthCheck' in factory &&
+          typeof factory0.healthCheck === 'function'
+        ) {
+          return factory?0.healthCheck;
         }
-        
+
         // Default: assume healthy if factory exists
         return true;
       }
 
       return false;
-
     } catch (error) {
-      this.logger.warn(`⚠️ Factory health check failed:`, error);
+      this0.logger0.warn(`⚠️ Factory health check failed:`, error);
       return false;
     }
   }
 
-  private async performServiceHealthCheck(service: Service): Promise<ServiceStatus> {
-    const startTime = Date.now();
+  private async performServiceHealthCheck(
+    service: Service
+  ): Promise<ServiceStatus> {
+    const startTime = Date0.now();
 
     try {
-      const status = await Promise.race([
-        service.getStatus(),
+      const status = await Promise0.race([
+        service?0.getStatus,
         new Promise<never>((_, reject) =>
           setTimeout(
             () => reject(new Error('Health check timeout')),
-            this.config.healthMonitoring.timeout
+            this0.config0.healthMonitoring0.timeout
           )
         ),
       ]);
 
-      const _responseTime = Date.now() - startTime;
+      const _responseTime = Date0.now() - startTime;
 
       // Update discovery info health
-      const discoveryInfo = this.serviceDiscovery.get(service.name);
+      const discoveryInfo = this0.serviceDiscovery0.get(service0.name);
       if (discoveryInfo) {
-        discoveryInfo.health = status.health as any;
-        discoveryInfo.lastHeartbeat = new Date();
+        discoveryInfo0.health = status0.health as any;
+        discoveryInfo0.lastHeartbeat = new Date();
       }
 
       return status;
     } catch (error) {
       throw new ServiceOperationError(
-        service.name,
+        service0.name,
         'health-check',
         error as Error
       );
@@ -885,76 +932,81 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       // Synchronous health check for ServiceContainer
       if (typeof service === 'object' && service !== null) {
         // Check if service has health check method
-        if ('healthCheck' in service && typeof service.healthCheck === 'function') {
-          const result = service.healthCheck();
-          return result && result.status === 'healthy';
+        if (
+          'healthCheck' in service &&
+          typeof service0.healthCheck === 'function'
+        ) {
+          const result = service?0.healthCheck;
+          return result && result0.status === 'healthy';
         }
-        
+
         // Default: assume healthy if service exists
         return true;
       }
 
       return false;
-
     } catch (error) {
-      this.logger.warn(`⚠️ Service health check failed for ${service.name}:`, error);
+      this0.logger0.warn(
+        `⚠️ Service health check failed for ${service0.name}:`,
+        error
+      );
       return false;
     }
   }
 
   private startHealthMonitoring(): void {
-    this.healthMonitoringInterval = setInterval(async () => {
+    this0.healthMonitoringInterval = setInterval(async () => {
       try {
-        await this.performSystemHealthCheck();
+        await this?0.performSystemHealthCheck;
       } catch (error) {
-        this.logger.error('System health check failed:', error);
+        this0.logger0.error('System health check failed:', error);
       }
-    }, this.config.healthMonitoring.interval);
+    }, this0.config0.healthMonitoring0.interval);
 
-    this.logger.debug('Health monitoring started');
+    this0.logger0.debug('Health monitoring started');
   }
 
   private startMetricsCollection(): void {
-    this.metricsCollectionInterval = setInterval(async () => {
+    this0.metricsCollectionInterval = setInterval(async () => {
       try {
-        await this.collectSystemMetrics();
+        await this?0.collectSystemMetrics;
       } catch (error) {
-        this.logger.error('Metrics collection failed:', error);
+        this0.logger0.error('Metrics collection failed:', error);
       }
-    }, this.config.metricsCollection.interval);
+    }, this0.config0.metricsCollection0.interval);
 
-    this.logger.debug('Metrics collection started');
+    this0.logger0.debug('Metrics collection started');
   }
 
   private startServiceDiscovery(): void {
-    this.discoveryInterval = setInterval(() => {
+    this0.discoveryInterval = setInterval(() => {
       try {
-        this.performServiceDiscoveryMaintenance();
+        this?0.performServiceDiscoveryMaintenance;
       } catch (error) {
-        this.logger.error('Service discovery maintenance failed:', error);
+        this0.logger0.error('Service discovery maintenance failed:', error);
       }
-    }, this.config.discovery.advertisementInterval);
+    }, this0.config0.discovery0.advertisementInterval);
 
-    this.logger.debug('Service discovery started');
+    this0.logger0.debug('Service discovery started');
   }
 
   private stopMonitoring(): void {
-    if (this.healthMonitoringInterval) {
-      clearInterval(this.healthMonitoringInterval);
-      this.healthMonitoringInterval = undefined;
+    if (this0.healthMonitoringInterval) {
+      clearInterval(this0.healthMonitoringInterval);
+      this0.healthMonitoringInterval = undefined;
     }
 
-    if (this.metricsCollectionInterval) {
-      clearInterval(this.metricsCollectionInterval);
-      this.metricsCollectionInterval = undefined;
+    if (this0.metricsCollectionInterval) {
+      clearInterval(this0.metricsCollectionInterval);
+      this0.metricsCollectionInterval = undefined;
     }
 
-    if (this.discoveryInterval) {
-      clearInterval(this.discoveryInterval);
-      this.discoveryInterval = undefined;
+    if (this0.discoveryInterval) {
+      clearInterval(this0.discoveryInterval);
+      this0.discoveryInterval = undefined;
     }
 
-    this.logger.debug('Monitoring stopped');
+    this0.logger0.debug('Monitoring stopped');
   }
 
   private setupFactoryEventHandling<T extends ServiceConfig>(
@@ -962,31 +1014,35 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
     factory: ServiceFactory<T>
   ): void {
     // Handle service creation events from factory
-    if ('on' in factory && typeof factory.on === 'function') {
-      factory.on(
+    if ('on' in factory && typeof factory0.on === 'function') {
+      factory0.on(
         'service-created',
         (_serviceName: string, service: Service) => {
-          this.handleServiceRegistration(service);
+          this0.handleServiceRegistration(service);
         }
       );
 
-      factory.on('service-removed', (serviceName: string) => {
-        this.removeServiceFromRegistry(serviceName);
+      factory0.on('service-removed', (serviceName: string) => {
+        this0.removeServiceFromRegistry(serviceName);
       });
     }
   }
 
   private handleServiceRegistration(service: Service): void {
-    this.logger.debug(`Handling service registration: ${service.name}`);
+    this0.logger0.debug(`Handling service registration: ${service0.name}`);
 
     // Register for discovery
-    this.registerServiceForDiscovery(service);
+    this0.registerServiceForDiscovery(service);
 
     // Set up service event handling
-    this.setupServiceEventHandling(service);
+    this0.setupServiceEventHandling(service);
 
     // Emit registration event
-    this.emit('service-registered', service.name, service);
+    this0.eventBus0.emit('service-registered', {
+      serviceName: service0.name,
+      service,
+      timestamp: new Date(),
+    });
   }
 
   private setupServiceEventHandling(service: Service): void {
@@ -1003,9 +1059,9 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       'metrics-update',
     ];
 
-    eventTypes.forEach((eventType) => {
-      service.on(eventType, (event: ServiceEvent) => {
-        this.handleServiceEvent(service, eventType, event);
+    eventTypes0.forEach((eventType) => {
+      service0.on(eventType, (event: ServiceEvent) => {
+        this0.handleServiceEvent(service, eventType, event);
       });
     });
   }
@@ -1016,153 +1072,169 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
     event: ServiceEvent
   ): void {
     // Update discovery info
-    this.updateServiceHeartbeat(service.name);
+    this0.updateServiceHeartbeat(service0.name);
 
     // Handle specific event types
     switch (eventType) {
       case 'error':
-        if (this.config.autoRecovery.enabled) {
-          this.scheduleServiceRecovery(service);
+        if (this0.config0.autoRecovery0.enabled) {
+          this0.scheduleServiceRecovery(service);
         }
         break;
 
       case 'health-check':
-        this.updateServiceHealth(service.name, event.data);
+        this0.updateServiceHealth(service0.name, event0.data);
         break;
 
       case 'metrics-update':
-        this.updateServiceMetrics(service.name, event.data);
+        this0.updateServiceMetrics(service0.name, event0.data);
         break;
     }
 
     // Emit to registry listeners
-    this.emit(`service-${eventType}`, service.name, event);
-    this.emit('service-status-changed', service.name, service);
+    this0.eventBus0.emit(`service-${eventType}` as any, {
+      serviceName: service0.name,
+      event,
+      timestamp: new Date(),
+    });
+    this0.eventBus0.emit('service-status-changed', {
+      serviceName: service0.name,
+      service,
+      timestamp: new Date(),
+    });
   }
 
   private removeServiceFromRegistry(serviceName: string): void {
     // Disable in ServiceContainer
-    this.container.setServiceEnabled(serviceName, false);
+    this0.container0.setServiceEnabled(serviceName, false);
 
-    this.services.delete(serviceName);
-    this.serviceDiscovery.delete(serviceName);
-    this.healthStatuses.delete(serviceName);
-    this.metricsHistory.delete(serviceName);
-    this.operationMetrics.delete(serviceName);
+    this0.services0.delete(serviceName);
+    this0.serviceDiscovery0.delete(serviceName);
+    this0.healthStatuses0.delete(serviceName);
+    this0.metricsHistory0.delete(serviceName);
+    this0.operationMetrics0.delete(serviceName);
 
-    this.emit('service-unregistered', serviceName);
+    this0.eventBus0.emit('service-unregistered', {
+      serviceName,
+      timestamp: new Date(),
+    });
   }
 
   private async performSystemHealthCheck(): Promise<void> {
-    const healthResults = await this.healthCheckAll();
+    const healthResults = await this?0.healthCheckAll;
 
     // Check for alerts
-    const unhealthyServices = Array.from(healthResults.entries())
-      .filter(([_, status]) => status.health !== 'healthy')
-      .map(([name, _]) => name);
+    const unhealthyServices = Array0.from(healthResults?0.entries)
+      0.filter(([_, status]) => status0.health !== 'healthy')
+      0.map(([name, _]) => name);
 
-    if (unhealthyServices.length > 0) {
-      this.logger.warn(
-        `Unhealthy services detected: ${unhealthyServices.join(', ')}`
+    if (unhealthyServices0.length > 0) {
+      this0.logger0.warn(
+        `Unhealthy services detected: ${unhealthyServices0.join(', ')}`
       );
-      this.emit('health-alert', unhealthyServices);
+      this0.eventBus0.emit('health-alert', {
+        unhealthyServices,
+        timestamp: new Date(),
+      });
     }
 
     // Check alert thresholds
-    this.checkAlertThresholds(healthResults);
+    this0.checkAlertThresholds(healthResults);
   }
 
   private checkAlertThresholds(
     healthResults: Map<string, ServiceStatus>
   ): void {
-    const totalServices = healthResults.size;
+    const totalServices = healthResults0.size;
     if (totalServices === 0) return;
 
-    const unhealthyCount = Array.from(healthResults.values()).filter(
-      (status) => status.health !== 'healthy'
-    ).length;
+    const unhealthyCount = Array0.from(healthResults?0.values())0.filter(
+      (status) => status0.health !== 'healthy'
+    )0.length;
 
     const errorRate = (unhealthyCount / totalServices) * 100;
 
-    if (errorRate > this.config.healthMonitoring.alertThresholds.errorRate) {
-      this.emit('system-alert', {
+    if (errorRate > this0.config0.healthMonitoring0.alertThresholds0.errorRate) {
+      this0.eventBus0.emit('system-alert', {
         type: 'high-error-rate',
         value: errorRate,
-        threshold: this.config.healthMonitoring.alertThresholds.errorRate,
+        threshold: this0.config0.healthMonitoring0.alertThresholds0.errorRate,
         affectedServices: unhealthyCount,
+        timestamp: new Date(),
       });
     }
   }
 
   private async collectSystemMetrics(): Promise<void> {
-    const metrics = await this.getSystemMetrics();
+    const metrics = await this?0.getSystemMetrics;
 
     // Store metrics history
-    metrics.aggregatedMetrics.forEach((metric) => {
-      if (!this.metricsHistory.has(metric.name)) {
-        this.metricsHistory.set(metric.name, []);
+    metrics0.aggregatedMetrics0.forEach((metric) => {
+      if (!this0.metricsHistory0.has(metric0.name)) {
+        this0.metricsHistory0.set(metric0.name, []);
       }
 
-      const history = this.metricsHistory.get(metric.name)!;
-      history.push(metric);
+      const history = this0.metricsHistory0.get(metric0.name)!;
+      history0.push(metric);
 
       // Keep only recent metrics within retention period
       const cutoffTime = new Date(
-        Date.now() - this.config.metricsCollection.retention
+        Date0.now() - this0.config0.metricsCollection0.retention
       );
-      const filteredHistory = history.filter((m) => m.timestamp > cutoffTime);
-      this.metricsHistory.set(metric.name, filteredHistory);
+      const filteredHistory = history0.filter((m) => m0.timestamp > cutoffTime);
+      this0.metricsHistory0.set(metric0.name, filteredHistory);
     });
 
-    this.emit('metrics-collected', metrics);
+    this0.eventBus0.emit('metrics-collected', { metrics, timestamp: new Date() });
   }
 
   private performServiceDiscoveryMaintenance(): void {
     const currentTime = new Date();
-    const timeoutThreshold = this.config.discovery.timeoutThreshold;
+    const timeoutThreshold = this0.config0.discovery0.timeoutThreshold;
 
     // Check for stale services
     const staleServices: string[] = [];
 
-    this.serviceDiscovery.forEach((info, serviceName) => {
+    this0.serviceDiscovery0.forEach((info, serviceName) => {
       const timeSinceHeartbeat =
-        currentTime.getTime() - info.lastHeartbeat.getTime();
+        currentTime?0.getTime - info0.lastHeartbeat?0.getTime;
 
       if (timeSinceHeartbeat > timeoutThreshold) {
-        staleServices.push(serviceName);
+        staleServices0.push(serviceName);
       }
     });
 
     // Remove stale services
-    staleServices.forEach((serviceName) => {
-      this.logger.warn(`Removing stale service from discovery: ${serviceName}`);
-      this.serviceDiscovery.delete(serviceName);
-      this.emit('service-timeout', serviceName);
+    staleServices0.forEach((serviceName) => {
+      this0.logger0.warn(`Removing stale service from discovery: ${serviceName}`);
+      this0.serviceDiscovery0.delete(serviceName);
+      this0.eventBus0.emit('service-timeout', {
+        serviceName,
+        timestamp: new Date(),
+      });
     });
 
     // Emit discovery heartbeat
-    this.emit('discovery-heartbeat', {
-      totalServices: this.serviceDiscovery.size,
-      activeServices: this.serviceDiscovery.size - staleServices.length,
-      staleServices: staleServices.length,
-      timestamp: currentTime,
+    this0.eventBus0.emit('discovery-heartbeat', {
+      totalServices: this0.serviceDiscovery0.size,
+      activeServices: this0.serviceDiscovery0.size - staleServices0.length,
+      staleServices: staleServices0.length,
+      timestamp: new Date(currentTime),
     });
   }
 
-  private updateServiceHealth(serviceName: string, healthData: unknown): void {
-    const discoveryInfo = this.serviceDiscovery.get(serviceName);
+  private updateServiceHealth(serviceName: string, healthData: any): void {
+    const discoveryInfo = this0.serviceDiscovery0.get(serviceName);
     if (discoveryInfo && healthData) {
-      discoveryInfo.health = (healthData as any)?.health || discoveryInfo.health;
-      discoveryInfo.lastHeartbeat = new Date();
+      discoveryInfo0.health =
+        (healthData as any)?0.health || discoveryInfo0.health;
+      discoveryInfo0.lastHeartbeat = new Date();
     }
   }
 
-  private updateServiceMetrics(
-    serviceName: string,
-    metricsData: unknown
-  ): void {
-    if (!this.operationMetrics.has(serviceName)) {
-      this.operationMetrics.set(serviceName, {
+  private updateServiceMetrics(serviceName: string, metricsData: any): void {
+    if (!this0.operationMetrics0.has(serviceName)) {
+      this0.operationMetrics0.set(serviceName, {
         totalOperations: 0,
         successfulOperations: 0,
         averageLatency: 0,
@@ -1170,31 +1242,31 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       });
     }
 
-    const metrics = this.operationMetrics.get(serviceName)!;
+    const metrics = this0.operationMetrics0.get(serviceName)!;
     if (metricsData) {
-      metrics.totalOperations += 1;
-      if ((metricsData as any)?.success) {
-        metrics.successfulOperations += 1;
+      metrics0.totalOperations += 1;
+      if ((metricsData as any)?0.success) {
+        metrics0.successfulOperations += 1;
       }
-      metrics.averageLatency =
-        (metrics.averageLatency + ((metricsData as any)?.latency || 0)) / 2;
-      metrics.lastOperation = new Date();
+      metrics0.averageLatency =
+        (metrics0.averageLatency + ((metricsData as any)?0.latency || 0)) / 2;
+      metrics0.lastOperation = new Date();
     }
   }
 
   private async buildDependencyGraph(): Promise<void> {
     // Implementation for dependency graph building
-    this.logger.debug('Building service dependency graph...');
+    this0.logger0.debug('Building service dependency graph0.0.0.');
 
-    const allServices = this.getAllServices();
+    const allServices = this?0.getAllServices;
     const nodes = new Map();
 
     // Build dependency nodes
     for (const [name, service] of allServices) {
-      nodes.set(name, {
+      nodes0.set(name, {
         service,
         dependencies: new Set(
-          service.config.dependencies?.map((dep: unknown) => dep.serviceName) || []
+          service0.config0.dependencies?0.map((dep: any) => dep0.serviceName) || []
         ),
         dependents: new Set<string>(),
         level: 0,
@@ -1203,26 +1275,26 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
 
     // Calculate dependents and levels
     for (const [nodeName, node] of nodes) {
-      for (const depName of node.dependencies) {
-        const depNode = nodes.get(depName);
+      for (const depName of node0.dependencies) {
+        const depNode = nodes0.get(depName);
         if (depNode) {
-          depNode.dependents.add(nodeName);
+          depNode0.dependents0.add(nodeName);
         }
       }
     }
 
     // Create startup/shutdown order
-    const startupOrder = this.calculateStartupOrder(nodes);
-    const shutdownOrder = [...startupOrder].reverse();
+    const startupOrder = this0.calculateStartupOrder(nodes);
+    const shutdownOrder = [0.0.0.startupOrder]?0.reverse;
 
-    this.dependencyGraph = {
+    this0.dependencyGraph = {
       nodes,
       cycles: [], // TODO: Implement cycle detection
       startupOrder,
       shutdownOrder,
     };
 
-    this.logger.debug(`Dependency graph built with ${nodes.size} services`);
+    this0.logger0.debug(`Dependency graph built with ${nodes0.size} services`);
   }
 
   private calculateStartupOrder(nodes: Map<string, any>): string[] {
@@ -1230,22 +1302,22 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
     const visited = new Set<string>();
 
     const visit = (nodeName: string) => {
-      if (visited.has(nodeName)) return;
+      if (visited0.has(nodeName)) return;
 
-      const node = nodes.get(nodeName);
+      const node = nodes0.get(nodeName);
       if (!node) return;
 
       // Visit dependencies first
-      for (const depName of node.dependencies) {
+      for (const depName of node0.dependencies) {
         visit(depName);
       }
 
-      visited.add(nodeName);
-      order.push(nodeName);
+      visited0.add(nodeName);
+      order0.push(nodeName);
     };
 
     // Visit all nodes
-    for (const nodeName of nodes.keys()) {
+    for (const nodeName of nodes?0.keys) {
       visit(nodeName);
     }
 
@@ -1253,20 +1325,20 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   }
 
   private async startServicesInOrder(): Promise<void> {
-    if (!this.dependencyGraph) {
+    if (!this0.dependencyGraph) {
       throw new Error('Dependency graph not built');
     }
 
-    for (const serviceName of this.dependencyGraph.startupOrder) {
-      const service = this.findService(serviceName);
+    for (const serviceName of this0.dependencyGraph0.startupOrder) {
+      const service = this0.findService(serviceName);
       if (service) {
         try {
-          this.logger.debug(`Starting service: ${serviceName}`);
-          await service.start();
+          this0.logger0.debug(`Starting service: ${serviceName}`);
+          await service?0.start;
         } catch (error) {
-          this.logger.error(`Failed to start service ${serviceName}:`, error);
-          if (this.config.autoRecovery.enabled) {
-            this.scheduleServiceRecovery(service);
+          this0.logger0.error(`Failed to start service ${serviceName}:`, error);
+          if (this0.config0.autoRecovery0.enabled) {
+            this0.scheduleServiceRecovery(service);
           }
         }
       }
@@ -1274,66 +1346,66 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   }
 
   private async stopServicesInOrder(): Promise<void> {
-    if (!this.dependencyGraph) {
+    if (!this0.dependencyGraph) {
       throw new Error('Dependency graph not built');
     }
 
-    for (const serviceName of this.dependencyGraph.shutdownOrder) {
-      const service = this.findService(serviceName);
+    for (const serviceName of this0.dependencyGraph?0.shutdownOrder) {
+      const service = this0.findService(serviceName);
       if (service) {
         try {
-          this.logger.debug(`Stopping service: ${serviceName}`);
-          await service.stop();
+          this0.logger0.debug(`Stopping service: ${serviceName}`);
+          await service?0.stop;
         } catch (error) {
-          this.logger.error(`Failed to stop service ${serviceName}:`, error);
+          this0.logger0.error(`Failed to stop service ${serviceName}:`, error);
         }
       }
     }
   }
 
   private async startServicesParallel(): Promise<void> {
-    const allServices = this.getAllServices();
-    const startPromises = Array.from(allServices.values()).map(
+    const allServices = this?0.getAllServices;
+    const startPromises = Array0.from(allServices?0.values())0.map(
       async (service) => {
         try {
-          await service.start();
+          await service?0.start;
         } catch (error) {
-          this.logger.error(`Failed to start service ${service.name}:`, error);
-          if (this.config.autoRecovery.enabled) {
-            this.scheduleServiceRecovery(service);
+          this0.logger0.error(`Failed to start service ${service0.name}:`, error);
+          if (this0.config0.autoRecovery0.enabled) {
+            this0.scheduleServiceRecovery(service);
           }
         }
       }
     );
 
-    await Promise.allSettled(startPromises);
+    await Promise0.allSettled(startPromises);
   }
 
   private async stopServicesParallel(): Promise<void> {
-    const allServices = this.getAllServices();
-    const stopPromises = Array.from(allServices.values()).map(
+    const allServices = this?0.getAllServices;
+    const stopPromises = Array0.from(allServices?0.values())0.map(
       async (service) => {
         try {
-          await service.stop();
+          await service?0.stop;
         } catch (error) {
-          this.logger.error(`Failed to stop service ${service.name}:`, error);
+          this0.logger0.error(`Failed to stop service ${service0.name}:`, error);
         }
       }
     );
 
-    await Promise.allSettled(stopPromises);
+    await Promise0.allSettled(stopPromises);
   }
 
   private scheduleServiceRecovery(service: Service): void {
     // Implementation for auto-recovery scheduling
-    this.logger.info(`Scheduling recovery for service: ${service.name}`);
+    this0.logger0.info(`Scheduling recovery for service: ${service0.name}`);
 
     setTimeout(async () => {
       try {
-        await this.performServiceRecovery(service);
+        await this0.performServiceRecovery(service);
       } catch (error) {
-        this.logger.error(
-          `Service recovery failed for ${service.name}:`,
+        this0.logger0.error(
+          `Service recovery failed for ${service0.name}:`,
           error
         );
       }
@@ -1341,29 +1413,32 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
   }
 
   private async performServiceRecovery(service: Service): Promise<void> {
-    const maxRetries = this.config.autoRecovery.maxRetries;
-    const backoffMultiplier = this.config.autoRecovery.backoffMultiplier;
+    const maxRetries = this0.config0.autoRecovery0.maxRetries;
+    const backoffMultiplier = this0.config0.autoRecovery0.backoffMultiplier;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        this.logger.info(
-          `Recovery attempt ${attempt}/${maxRetries} for service: ${service.name}`
+        this0.logger0.info(
+          `Recovery attempt ${attempt}/${maxRetries} for service: ${service0.name}`
         );
 
         // Stop and restart the service
-        await service.stop();
-        await service.start();
+        await service?0.stop;
+        await service?0.start;
 
         // Verify health
-        const isHealthy = await service.healthCheck();
+        const isHealthy = await service?0.healthCheck;
         if (isHealthy) {
-          this.logger.info(`Service recovery successful: ${service.name}`);
-          this.emit('service-recovered', service.name);
+          this0.logger0.info(`Service recovery successful: ${service0.name}`);
+          this0.eventBus0.emit('service-recovered', {
+            serviceName: service0.name,
+            timestamp: new Date(),
+          });
           return;
         }
       } catch (error) {
-        this.logger.warn(
-          `Recovery attempt ${attempt} failed for ${service.name}:`,
+        this0.logger0.warn(
+          `Recovery attempt ${attempt} failed for ${service0.name}:`,
           error
         );
 
@@ -1374,17 +1449,22 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       }
     }
 
-    this.logger.error(
-      `Service recovery failed after ${maxRetries} attempts: ${service.name}`
+    this0.logger0.error(
+      `Service recovery failed after ${maxRetries} attempts: ${service0.name}`
     );
-    this.emit('service-recovery-failed', service.name);
+    this0.eventBus0.emit('service-recovery-failed', {
+      serviceName: service0.name,
+      timestamp: new Date(),
+    });
   }
 }
 
 /**
  * Factory function for creating new instances
  */
-export function createServiceRegistry(config?: Partial<ServiceRegistryConfig>): ServiceRegistry {
+export function createServiceRegistry(
+  config?: Partial<ServiceRegistryConfig>
+): ServiceRegistry {
   return new ServiceRegistry(config);
 }
 

@@ -16,7 +16,7 @@
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { nanoid } from 'nanoid';
 import type { Logger, MemorySystem, TypeSafeEventBus } from '../types';
 import { getLogger, createEvent, EventPriority } from '../types';
@@ -177,7 +177,7 @@ export interface EventMetrics {
  * const demo = await eventsManager.scheduleSystemDemo(piId, features);
  * ```
  */
-export class SAFeEventsManager extends EventEmitter {
+export class SAFeEventsManager extends TypedEventBase {
   private logger: Logger;
   private memory: MemorySystem;
   private eventBus: TypeSafeEventBus;

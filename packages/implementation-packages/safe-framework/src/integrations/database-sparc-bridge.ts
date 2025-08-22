@@ -1,21 +1,28 @@
 /**
- * Database-SPARC Bridge.
+ * Database-SPARC Bridge - SAFe 6.0 Integration
  *
- * Connects the database-driven product flow with SPARC swarm coordination.
+ * Connects the database-driven SAFe flow with SPARC SAFe 6.0 Development Manager coordination.
  *
  * Flow:
- * 1. DatabaseDrivenSystem generates Features/Tasks
- * 2. DatabaseSPARCBridge receives assignments
- * 3. SPARCSwarmCoordinator processes using SPARC methodology
- * 4. Results are stored back in database.
+ * 1. DatabaseDrivenSystem generates Features/Capabilities
+ * 2. DatabaseSPARCBridge receives assignments  
+ * 3. Safe6DevelopmentManager processes using SAFe 6.0 + SPARC methodology
+ * 4. Results are stored back in database with flow metrics
+ * 
+ * Uses Strategic Facades for:
+ * - @claude-zen/enterprise (SAFe framework access)
+ * - @claude-zen/infrastructure (database access)
+ * - @claude-zen/development (SPARC access)
  * 
  * @package @claude-zen/safe-framework
- * @version 2.1.0 - Production Package Implementation
+ * @version 6.0.0 - SAFe 6.0 Flow-Based Implementation
  * @author Claude Code Zen Team
  */
 
-import { EventEmitter } from 'eventemitter3';
-import type { Logger } from '@claude-zen/foundation';
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
+import { getSafeFramework } from '@claude-zen/enterprise';
+import { getDatabaseSystem } from '@claude-zen/infrastructure'; 
+import { getSafe6DevelopmentManager, createSafe6SolutionTrainManager } from '@claude-zen/development';
 
 // TODO: Import proper types when available
 interface FeatureDocumentEntity {
@@ -112,7 +119,7 @@ export interface ImplementationResult {
  *
  * @example
  */
-export class DatabaseSPARCBridge extends EventEmitter {
+export class DatabaseSPARCBridge extends TypedEventBase {
   private databaseSystem: DatabaseDrivenSystem;
   private documentService: DocumentManager;
   private sparcSwarm: SPARCSwarmCoordinator;
@@ -157,7 +164,7 @@ export class DatabaseSPARCBridge extends EventEmitter {
     this.setupSPARCListeners();
 
     this.logger.info('✅ Database-SPARC Bridge ready');
-    this.emit('bridge:initialized');
+    this.emit('bridge:initialized', {});
   }
 
   /**

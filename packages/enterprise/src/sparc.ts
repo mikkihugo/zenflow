@@ -15,7 +15,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('sparc-facade');
 
@@ -82,14 +82,14 @@ export interface SPARCProgress {
  *
  * Provides the same interface as the stub but delegates to real implementation
  */
-export class SPARCMethodology extends EventEmitter {
+export class SPARCMethodology extends TypedEventBase {
   private sparcEngine: any;
-  public config: SPARCConfig;
+  public sparcConfig: SPARCConfig;
   public initialized = false;
 
   constructor(config: SPARCConfig = {}) {
     super();
-    this.config = {
+    this.sparcConfig = {
       enabled: true,
       phases: ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'],
       persistence: true,
@@ -97,7 +97,7 @@ export class SPARCMethodology extends EventEmitter {
       defaultTimeout: 30000,
       ...config,
     };
-    logger.debug('SPARCMethodology facade created', this.config);
+    logger.debug('SPARCMethodology facade created', this.sparcConfig);
   }
 
   async initialize(): Promise<void> {
@@ -315,7 +315,7 @@ export function createSPARCCommander(config?: SPARCConfig) {
     execute: async (phase: SPARCPhase, input: any) => await methodology.executePhase(phase, input),
     getStatus: () => ({
       initialized: methodology.initialized,
-      config: methodology.config,
+      config: methodology.sparcConfig,
     }),
     getProjects: () => methodology.getProjects(),
     createProject: methodology.createProject.bind(methodology),

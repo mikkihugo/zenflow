@@ -4,9 +4,9 @@
  * Provides intelligent performance tuning with machine learning-based recommendations,
  * automated parameter adjustment, and continuous optimization feedback loops.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric, TelemetryManager, withTrace } from '@claude-zen/foundation';
-export class PerformanceTuningStrategy extends EventEmitter {
+export class PerformanceTuningStrategy extends TypedEventBase {
     logger;
     config;
     telemetry;

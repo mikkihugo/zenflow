@@ -655,7 +655,7 @@ export interface DimensionConfig {
 /**
  * Architecture Health Service for enterprise architecture health monitoring
  */
-export class ArchitectureHealthService extends EventEmitter {
+export class ArchitectureHealthService extends TypedEventBase {
   private readonly logger: Logger;
   private monitoringSystem: any;
   private factSystem: any;

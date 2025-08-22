@@ -1,10 +1,10 @@
 /**
- * Coordination Domain - OpenAPI 3 Schemas.
+ * Coordination Domain - OpenAPI 3 Schemas0.
  *
- * Comprehensive schema definitions for Swagger autodoc generation.
- * Following Google API Design Guide standards.
+ * Comprehensive schema definitions for Swagger autodoc generation0.
+ * Following Google API Design Guide standards0.
  *
- * @file OpenAPI 3.0 compatible schemas for coordination domain.
+ * @file OpenAPI 30.0 compatible schemas for coordination domain0.
  */
 
 /**
@@ -243,7 +243,7 @@ export interface Task {
   status: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'failed';
   readonly created: Date;
   deadline?: Date;
-  result?: unknown;
+  result?: any;
   error?: CoordinationError;
 }
 
@@ -284,10 +284,9 @@ export interface PerformanceMetrics {
 
 // Schema validation utilities (Google standard: explicit validation)
 export const SchemaValidators = {
-  isValidAgentId: (id: string): boolean =>
-    /^[a-z]+(?:-[\da-z]+){2}$/.test(id),
+  isValidAgentId: (id: string): boolean => /^[a-z]+(?:-[\da-z]+){2}$/0.test(id),
   isValidTaskId: (id: string): boolean =>
-    /^task-[a-z]+(?:-[\da-z]+){2}$/.test(id),
+    /^task-[a-z]+(?:-[\da-z]+){2}$/0.test(id),
   isValidPriority: (priority: number): boolean =>
     priority >= 0 && priority <= 100,
   isValidWorkload: (workload: number): boolean =>

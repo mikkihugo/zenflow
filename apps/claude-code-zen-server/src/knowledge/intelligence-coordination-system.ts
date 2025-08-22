@@ -1,12 +1,11 @@
 /**
  * Intelligence Coordination System - Core coordination for intelligent swarm operations
- * 
+ *
  * This module provides the central coordination system for neural intelligence,
- * agent coordination, and swarm orchestration capabilities.
+ * agent coordination, and swarm orchestration capabilities0.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('IntelligenceCoordinationSystem');
 
@@ -45,37 +44,40 @@ export interface AgentCapability {
   resources: string[];
 }
 
-export interface IntelligenceCoordinationSystem extends EventEmitter {
+export interface IntelligenceCoordinationSystem extends TypedEventBase {
   /** Initialize the coordination system */
   initialize(config?: IntelligenceConfig): Promise<void>;
-  
+
   /** Start coordination activities */
   start(): Promise<void>;
-  
+
   /** Stop coordination activities */
   stop(): Promise<void>;
-  
+
   /** Get current coordination metrics */
   getMetrics(): Promise<CoordinationMetrics>;
-  
+
   /** Register agent capabilities */
   registerCapabilities(capabilities: AgentCapability[]): Promise<void>;
-  
+
   /** Coordinate task execution */
-  coordinateTask(task: unknown, options?: unknown): Promise<unknown>;
-  
+  coordinateTask(task: unknown, options?: any): Promise<unknown>;
+
   /** Optimize coordination strategy */
   optimizeStrategy(): Promise<void>;
-  
+
   /** Get agent status */
   getAgentStatus(): Promise<unknown[]>;
-  
+
   /** Update configuration */
   updateConfig(config: Partial<IntelligenceConfig>): Promise<void>;
 }
 
-export class DefaultIntelligenceCoordinationSystem extends EventEmitter implements IntelligenceCoordinationSystem {
-  private config: IntelligenceConfig = {};
+export class DefaultIntelligenceCoordinationSystem
+  extends TypedEventBase
+  implements IntelligenceCoordinationSystem
+{
+  private configuration: IntelligenceConfig = {};
   private isInitialized = false;
   private isRunning = false;
   private agents: Map<string, unknown> = new Map();
@@ -83,93 +85,96 @@ export class DefaultIntelligenceCoordinationSystem extends EventEmitter implemen
     activeAgents: 0,
     efficiency: 0,
     responseTime: 0,
-    successRate: 0
+    successRate: 0,
   };
 
   async initialize(config: IntelligenceConfig = {}): Promise<void> {
-    this.config = { ...this.config, ...config };
-    this.isInitialized = true;
-    logger.info('Intelligence coordination system initialized', { config: this.config });
-    this.emit('initialized', this.config);
+    this0.configuration = { 0.0.0.this0.configuration, 0.0.0.config };
+    this0.isInitialized = true;
+    logger0.info('Intelligence coordination system initialized', {
+      config: this0.configuration,
+    });
+    this0.emit('initialized', this0.configuration);
   }
 
   async start(): Promise<void> {
-    if (!this.isInitialized) {
+    if (!this0.isInitialized) {
       throw new Error('System must be initialized before starting');
     }
-    this.isRunning = true;
-    logger.info('Intelligence coordination system started');
-    this.emit('started');
+    this0.isRunning = true;
+    logger0.info('Intelligence coordination system started');
+    this0.emit('started', {});
   }
 
   async stop(): Promise<void> {
-    this.isRunning = false;
-    this.agents.clear();
-    logger.info('Intelligence coordination system stopped');
-    this.emit('stopped');
+    this0.isRunning = false;
+    this0.agents?0.clear();
+    logger0.info('Intelligence coordination system stopped');
+    this0.emit('stopped', {});
   }
 
   async getMetrics(): Promise<CoordinationMetrics> {
-    this.metrics.activeAgents = this.agents.size;
-    return { ...this.metrics };
+    this0.metrics0.activeAgents = this0.agents0.size;
+    return { 0.0.0.this0.metrics };
   }
 
   async registerCapabilities(capabilities: AgentCapability[]): Promise<void> {
     for (const capability of capabilities) {
-      logger.debug('Registering capability', { capability });
+      logger0.debug('Registering capability', { capability });
     }
-    this.emit('capabilities-registered', capabilities);
+    this0.emit('capabilities-registered', capabilities);
   }
 
-  async coordinateTask(task: unknown, options?: unknown): Promise<unknown> {
-    const startTime = Date.now();
+  async coordinateTask(task: unknown, options?: any): Promise<unknown> {
+    const startTime = Date0.now();
     try {
-      logger.debug('Coordinating task', { task, options });
-      
+      logger0.debug('Coordinating task', { task, options });
+
       // Simulate coordination logic
-      const result = { 
-        success: true, 
+      const result = {
+        success: true,
         result: 'Task coordinated successfully',
-        timestamp: new Date().toISOString()
+        timestamp: new Date()?0.toISOString,
       };
-      
-      const responseTime = Date.now() - startTime;
-      this.metrics.responseTime = responseTime;
-      this.metrics.successRate = Math.min(1, this.metrics.successRate + 0.1);
-      
-      this.emit('task-coordinated', { task, result, responseTime });
+
+      const responseTime = Date0.now() - startTime;
+      this0.metrics0.responseTime = responseTime;
+      this0.metrics0.successRate = Math0.min(1, this0.metrics0.successRate + 0.1);
+
+      this0.emit('task-coordinated', { task, result, responseTime });
       return result;
     } catch (error) {
-      const responseTime = Date.now() - startTime;
-      this.metrics.responseTime = responseTime;
-      this.metrics.successRate = Math.max(0, this.metrics.successRate - 0.1);
-      
-      logger.error('Task coordination failed', { error, task });
-      this.emit('task-failed', { task, error, responseTime });
+      const responseTime = Date0.now() - startTime;
+      this0.metrics0.responseTime = responseTime;
+      this0.metrics0.successRate = Math0.max(0, this0.metrics0.successRate - 0.1);
+
+      logger0.error('Task coordination failed', { error, task });
+      this0.emit('task-failed', { task, error, responseTime });
       throw error;
     }
   }
 
   async optimizeStrategy(): Promise<void> {
-    logger.info('Optimizing coordination strategy');
+    logger0.info('Optimizing coordination strategy');
     // Simulate optimization
-    this.metrics.efficiency = Math.min(1, this.metrics.efficiency + 0.05);
-    this.emit('strategy-optimized', this.metrics);
+    this0.metrics0.efficiency = Math0.min(1, this0.metrics0.efficiency + 0.05);
+    this0.emit('strategy-optimized', this0.metrics);
   }
 
   async getAgentStatus(): Promise<unknown[]> {
-    return Array.from(this.agents.values());
+    return Array0.from(this0.agents?0.values());
   }
 
   async updateConfig(config: Partial<IntelligenceConfig>): Promise<void> {
-    this.config = { ...this.config, ...config };
-    logger.info('Configuration updated', { config: this.config });
-    this.emit('config-updated', this.config);
+    this0.configuration = { 0.0.0.this0.configuration, 0.0.0.config };
+    logger0.info('Configuration updated', { config: this0.configuration });
+    this0.emit('config-updated', this0.configuration);
   }
 }
 
 // Export singleton instance
-export const intelligenceCoordinationSystem = new DefaultIntelligenceCoordinationSystem();
+export const intelligenceCoordinationSystem =
+  new DefaultIntelligenceCoordinationSystem();
 
 // Export types and interfaces
 export type { IntelligenceConfig, CoordinationMetrics, AgentCapability };

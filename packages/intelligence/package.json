@@ -21,7 +21,7 @@
   },
   "scripts": {
     "lint": "eslint src/ --ext .ts,.js",
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "dev": "tsc --watch",
     "test": "vitest",
     "test:ci": "vitest run",

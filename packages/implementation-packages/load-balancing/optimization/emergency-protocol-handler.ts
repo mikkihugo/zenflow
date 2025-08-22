@@ -8,7 +8,7 @@
  * Advanced emergency response and load shedding system.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type { EmergencyHandler } from '../interfaces';
 
@@ -33,7 +33,7 @@ interface EmergencyAction {
 }
 
 export class EmergencyProtocolHandler
-  extends EventEmitter
+  extends TypedEventBase
   implements EmergencyHandler
 {
   private activeProtocols: Map<string, EmergencyProtocol> = new Map();

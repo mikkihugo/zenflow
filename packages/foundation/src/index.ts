@@ -264,6 +264,34 @@
 // Re-export foundation types for other packages
 export type * from './types';
 
+// Explicit exports for types that export * doesn't handle properly
+export type {
+  JsonValue,
+  JsonObject,
+  JsonArray,
+  JsonPrimitive,
+} from './types/primitives';
+
+export type {
+  UnknownRecord,
+  Constructor,
+  UUID,
+  Timestamp,
+  Priority,
+  Status,
+  Optional,
+  NonEmptyArray,
+  Branded,
+} from './types/primitives';
+
+// Export additional types that implementation packages need
+export type {
+  Entity,
+} from './types/index';
+export type {
+  OperationResult,
+} from './types/patterns';
+
 // =============================================================================
 // LOGGING SYSTEM - Central logging foundation
 // =============================================================================
@@ -331,6 +359,10 @@ export {
   FOUNDATION_TOKENS,
   DependencyResolutionError,
   LifecycleCompat,
+  AgentRegistry,
+  createAgentRegistry,
+  getAgentRegistry,
+  injectable,
 } from './di';
 export type {
   DIContainer,
@@ -414,6 +446,123 @@ export {
   getService,
   hasService,
 } from './facade-status-manager';
+
+// =============================================================================
+// EVENT SYSTEM - TypedEventBase for event-driven programming
+// =============================================================================
+export {
+  TypedEventBase,
+} from './typed-event-base';
+export type {
+  EventMetrics,
+} from './typed-event-base';
+
+// =============================================================================
+// INFRASTRUCTURE REDIRECTS - Storage and KV functionality moved to infrastructure
+// =============================================================================
+
+// Storage functionality moved to @claude-zen/infrastructure
+export const Storage = class StorageRedirect {
+  constructor() {
+    console.warn('Storage: Use @claude-zen/infrastructure for production storage');
+  }
+};
+
+export const getKVStore = async () => {
+  console.warn('getKVStore: Use @claude-zen/infrastructure for production KV storage');
+  return {
+    set: async () => {},
+    get: async () => null,
+    delete: async () => false,
+    clear: async () => {},
+  };
+};
+
+export const getGlobalLLM = async () => {
+  console.warn('getGlobalLLM: Use @claude-zen/intelligence for production LLM access');
+  return {
+    generate: async () => ({ text: '' }),
+    chat: async () => ({ response: '' }),
+  };
+};
+
+export const singleton = () => (target: any) => {
+  console.warn('singleton: Use @claude-zen/foundation DI system for production');
+  return target;
+};
+
+// Telemetry stub functions - moved to @claude-zen/operations
+export const recordMetric = (_name: string, _value: number = 1, _attributes?: Record<string, unknown>) => {
+  console.warn('recordMetric: Use @claude-zen/operations for production telemetry');
+};
+
+export const withTrace = <T>(nameOrFn: string | (() => T), fn?: () => T): T => {
+  console.warn('withTrace: Use @claude-zen/operations for production tracing');
+  if (typeof nameOrFn === 'function') {
+    return nameOrFn();
+  }
+  return fn!();
+};
+
+export const traced = (_name?: string) => {
+  console.warn('traced: Use @claude-zen/operations for production tracing');
+  return (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
+    return descriptor;
+  };
+};
+
+export const metered = (_name?: string) => {
+  console.warn('metered: Use @claude-zen/operations for production metrics');
+  return (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
+    return descriptor;
+  };
+};
+
+// DI-related stubs - moved to strategic facades
+export const inject = () => {
+  console.warn('inject: Use @claude-zen/foundation DI system for production');
+  return () => {};
+};
+
+export const TOKENS = {
+  Logger: 'logger',
+  Config: 'config',
+  Database: 'database',
+};
+
+export const getDatabaseAccess = async () => {
+  console.warn('getDatabaseAccess: Use @claude-zen/infrastructure for production database access');
+  return {
+    query: async () => ({ rows: [] }),
+    execute: async () => ({ changes: 0 }),
+  };
+};
+
+// System monitoring stubs - moved to @claude-zen/operations
+export const SystemMetricsCollector = class SystemMetricsCollectorStub {
+  constructor() {
+    console.warn('SystemMetricsCollector: Use @claude-zen/operations for production system monitoring');
+  }
+  collect() { return {}; }
+  getMetrics() { return {}; }
+};
+
+export const createSystemMetricsCollector = () => {
+  console.warn('createSystemMetricsCollector: Use @claude-zen/operations for production system monitoring');
+  return new SystemMetricsCollector();
+};
+
+// Neural configuration stubs - moved to @claude-zen/intelligence
+export const getNeuralConfig = () => {
+  console.warn('getNeuralConfig: Use @claude-zen/intelligence for production neural configuration');
+  return {
+    enableLearning: false,
+    predictionEnabled: false,
+    smartRoutingEnabled: false,
+    adaptiveCapacity: false,
+    learningRate: 0.1,
+  };
+};
 
 // =============================================================================
 // BATTLE-TESTED UTILITIES - Modern NPM packages for common tasks

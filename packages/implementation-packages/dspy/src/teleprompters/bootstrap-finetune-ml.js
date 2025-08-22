@@ -16,7 +16,6 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { EventEmitter } from 'node:events';
 import { getLogger } from '@claude-zen/foundation';
 import { Teleprompter } from './teleprompter';
 /**
@@ -28,7 +27,7 @@ import { Teleprompter } from './teleprompter';
 export class BootstrapFinetuneML extends Teleprompter {
     config;
     logger;
-    eventEmitter = new EventEmitter();
+    eventEmitter = new TypedEventBase();
     mlEngine = null;
     bayesianOptimizer = null;
     multiObjectiveOptimizer = null;

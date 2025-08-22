@@ -1,13 +1,13 @@
 /**
- * Core Module - Clean Architecture Exports.
+ * Core Module - Clean Architecture Exports0.
  *
- * Central export point for core system functionality with clean, focused architecture.
- * Replaces bloated "Unified" systems with single-responsibility components.
+ * Central export point for core system functionality with clean, focused architecture0.
+ * Replaces bloated "Unified" systems with single-responsibility components0.
  */
 
 // ==================== CLEAN ARCHITECTURE SYSTEMS ====================
 /**
- * @file Core module exports.
+ * @file Core module exports0.
  */
 
 export type {
@@ -18,9 +18,9 @@ export type {
 export type {
   SystemConfig as CoreSystemConfig,
   SystemStatus,
-} from './core-system';
+} from '0./core-system';
 // Main system coordinator
-export { System as CoreSystem } from './core-system';
+export { System as CoreSystem } from '0./core-system';
 export type {
   Document,
   DocumentMetadata,
@@ -28,37 +28,37 @@ export type {
   DocumentStats,
   DocumentType,
   DocumentWorkspace,
-} from './document-processor';
-export { DocumentProcessor } from './document-processor';
+} from '@claude-zen/intelligence';
+export { getDocumentProcessor } from '@claude-zen/enterprise';
 export type {
   DocumentationManagerConfig,
   DocumentationStats,
-} from './documentation-manager';
-export { DocumentationManager } from './documentation-manager';
+} from '@claude-zen/foundation';
+export { DocumentationManager } from '@claude-zen/foundation';
 export type {
   ExporterDefinition,
   ExportOptions,
   ExportResult,
-} from './export-manager';
+} from '@claude-zen/foundation';
 // Management systems
-export { ExportSystem as ExportManager } from './export-manager';
+export { ExportSystem as ExportManager } from '@claude-zen/foundation';
 export type {
   InterfaceManagerConfig,
   InterfaceMode,
   InterfaceStats,
-} from './interface-manager';
-export { InterfaceManager } from './interface-manager';
-// Memory types now available via @claude-zen/foundation package  
+} from '@claude-zen/foundation';
+export { InterfaceManager } from '@claude-zen/foundation';
+// Memory types now available via @claude-zen/foundation package
 // Memory functionality now available via @claude-zen/foundation Storage and getDatabaseAccess
 // Core processing engines
-export { WorkflowEngine } from '../workflows/workflow-engine';
+export { WorkflowEngine } from '@claude-zen/enterprise';
 
 // ==================== LEGACY COMPATIBILITY ====================
 
-export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
+export { ApplicationCoordinator } from '0./application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
 export { DocumentDrivenSystem } from '@claude-zen/document-processing'; // Moved to package - legacy compatibility
-// export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use BrainCoordinator
+// export { MemoryCoordinator } from '0./memory-coordinator'; // Module not found - use BrainCoordinator
 
 // ==================== SHARED UTILITIES ====================
 
@@ -67,9 +67,9 @@ export { DocumentDrivenSystem } from '@claude-zen/document-processing'; // Moved
 export type {
   CrossReference as DocumentLink,
   DocumentationIndex as DocumentIndex,
-} from './documentation-linker';
+} from '@claude-zen/intelligence';
 // Legacy unified systems (still exported but deprecated)
-export { DocumentationIndex as DocumentationLinker } from './documentation-linker';
+export { DocumentationIndex as DocumentationLinker } from '@claude-zen/intelligence';
 // Error handling
 export {
   BaseClaudeZenError,
@@ -80,21 +80,25 @@ export {
   SwarmError,
 } from '@claude-zen/foundation/errors';
 // Core utilities
-export { EventBus } from './event-bus';
+export { EventBus } from '@claude-zen/intelligence';
 // ExportManager already exported above as UnifiedExportSystem
 // Export utilities (legacy)
 export type {
   ExportConfig,
   ExportResult as LegacyExportResult,
-} from './exporters';
-export { ExportSystem, ExportUtils } from './exporters';
+} from '@claude-zen/foundation';
+export { ExportSystem, ExportUtils } from '@claude-zen/foundation';
 export * from '@claude-zen/foundation/helpers';
 export { InterfaceModeDetector } from '@claude-zen/interfaces';
-export type { Logger, LoggerConfig, LogLevel } from '@claude-zen/foundation/logger';
+export type {
+  Logger,
+  LoggerConfig,
+  LogLevel,
+} from '@claude-zen/foundation/logger';
 // Logging system
 export { createLogger, Logger } from '@claude-zen/foundation/logger';
-export type { LogMeta } from './logger-old';
-export { Orchestrator } from './orchestrator';
+export type { LogMeta } from '@claude-zen/foundation';
+export { Orchestrator } from '0./orchestrator';
 export * from '@claude-zen/foundation/orchestrator-provider';
 // External systems
 export { ProductFlowSystem } from '@claude-zen/document-processing';

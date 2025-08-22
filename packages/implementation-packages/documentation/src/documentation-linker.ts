@@ -12,7 +12,7 @@ import { existsSync } from 'node:fs';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('UnifiedDocLinker');
 
@@ -88,7 +88,7 @@ export interface LinkSuggestion {
   autoFixable: boolean;
 }
 
-export class DocumentationLinker extends EventEmitter {
+export class DocumentationLinker extends TypedEventBase {
   private documentationIndex = new Map<string, DocumentationIndex>();
   private codeReferences: CodeReference[] = [];
   private crossReferences: CrossReference[] = [];

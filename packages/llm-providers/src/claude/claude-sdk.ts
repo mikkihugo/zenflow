@@ -99,6 +99,7 @@ export async function executeClaudeTask(
       systemPrompt: config.systemPrompt,
       signal: controller.signal,
       canUseTool: permissionHandler,
+      dangerouslySkipPermissions: config.dangerouslySkipPermissions,
     };
 
     // Execute with retry logic using foundation's withRetry
@@ -126,12 +127,13 @@ export async function executeClaudeTask(
 
     // Use foundation's timeout protection
     const retryResult = await executeWithRetry();
-    if (retryResult.isErr()) {
+    if (retryResult && typeof retryResult === 'object' && 'isErr' in retryResult && retryResult.isErr()) {
       throw retryResult.error;
     }
     
+    const resultValue = retryResult && typeof retryResult === 'object' && 'value' in retryResult ? retryResult.value : retryResult;
     const result = await withTimeout(
-      () => Promise.resolve(retryResult.value),
+      () => Promise.resolve(resultValue),
       config.timeout,
       `Claude SDK request timed out after ${config.timeout}ms`
     );

@@ -5,7 +5,7 @@
  * strategies with intelligent priority management and performance optimization.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   recordMetric, 
@@ -20,7 +20,7 @@ import type {
   StrategyMetrics 
 } from './types';
 
-export class CacheEvictionStrategy extends EventEmitter {
+export class CacheEvictionStrategy extends TypedEventBase {
   private logger: Logger;
   private config: CacheEvictionConfig;
   private cache = new Map<string, CacheEntry>();

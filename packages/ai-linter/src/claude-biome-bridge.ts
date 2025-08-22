@@ -1,10 +1,10 @@
 /**
- * @fileoverview Claude-Biome Bridge - AI-Native Universal Linter
+ * @fileoverview Claude-ESLint Bridge - AI-Native Universal Linter
  *
  * Revolutionary linting system that combines:
  * - Claude's natural language understanding and code generation
  * - ruv-swarm's multi-agent coordination
- * - Biome's high-performance AST analysis and type inference
+ * - ESLint's mature ecosystem and AST analysis
  * - Intelligence coordination system for complex rule generation
  *
  * This bridges the gap between AI-powered analysis and traditional AST-based linting.
@@ -14,7 +14,7 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import type {
   AIAnalysisResult,
@@ -37,7 +37,7 @@ export interface EventBus {
 /**
  * Main Claude-Biome bridge that orchestrates AI-native linting
  */
-export class ClaudeBiomeBridge extends EventEmitter {
+export class ClaudeBiomeBridge extends TypedEventBase {
   private readonly logger: Logger;
   private readonly eventBus: EventBus;
   private readonly swarmCoordinator: unknown; // Will be properly typed when integrated

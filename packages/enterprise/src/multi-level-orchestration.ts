@@ -5,7 +5,7 @@
  * to @claude-zen/multi-level-orchestration package.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import './module-declarations';
 
 // Multi-level orchestration system access with real package delegation
@@ -19,7 +19,7 @@ async function loadOrchestrationModule() {
     } catch (error) {
       console.warn('Multi-level orchestration package not available, providing compatibility layer');
       orchestrationModuleCache = {
-        MultiLevelOrchestrationManager: class CompatibilityOrchestrationManager extends EventEmitter {
+        MultiLevelOrchestrationManager: class CompatibilityOrchestrationManager extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -36,7 +36,7 @@ async function loadOrchestrationModule() {
             return { status: 'compatibility' };
           }
         },
-        PortfolioOrchestrator: class CompatibilityPortfolioOrchestrator extends EventEmitter {
+        PortfolioOrchestrator: class CompatibilityPortfolioOrchestrator extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -44,7 +44,7 @@ async function loadOrchestrationModule() {
             return Promise.resolve();
           }
         },
-        ProgramOrchestrator: class CompatibilityProgramOrchestrator extends EventEmitter {
+        ProgramOrchestrator: class CompatibilityProgramOrchestrator extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -52,7 +52,7 @@ async function loadOrchestrationModule() {
             return Promise.resolve();
           }
         },
-        SwarmExecutionOrchestrator: class CompatibilitySwarmOrchestrator extends EventEmitter {
+        SwarmExecutionOrchestrator: class CompatibilitySwarmOrchestrator extends TypedEventBase {
           async initialize() {
             return this;
           }

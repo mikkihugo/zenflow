@@ -215,14 +215,14 @@ class ApiClient {
     return await this.request('/v1/database/schema');
   }
 
-  async executeQuery(queryData: { sql: string; params?: unknown[] }): Promise<any> {
+  async executeQuery(queryData: { sql: string; params?: any[] }): Promise<any> {
     return await this.request('/v1/database/query', {
       method: 'POST',
       body: JSON.stringify(queryData),
     });
   }
 
-  async executeCommand(commandData: { sql: string; params?: unknown[] }): Promise<any> {
+  async executeCommand(commandData: { sql: string; params?: any[] }): Promise<any> {
     return await this.request('/v1/database/execute', {
       method: 'POST',
       body: JSON.stringify(commandData),
@@ -230,7 +230,7 @@ class ApiClient {
   }
 
   async executeTransaction(transactionData: {
-    operations: Array<{ type: 'query' | 'execute'; sql: string; params?: unknown[] }>;
+    operations: Array<{ type: 'query' | 'execute'; sql: string; params?: any[] }>;
     useTransaction?: boolean;
   }): Promise<any> {
     return await this.request('/v1/database/transaction', {

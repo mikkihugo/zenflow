@@ -4,7 +4,7 @@
  * Provides intelligent performance tuning with machine learning-based recommendations,
  * automated parameter adjustment, and continuous optimization feedback loops.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { PerformanceConfig, TuningAction, TuningRecommendation, StrategyMetrics } from './types';
 interface PerformanceSnapshot {
     timestamp: number;
@@ -35,7 +35,7 @@ interface TuningResult {
     success: boolean;
     timestamp: number;
 }
-export declare class PerformanceTuningStrategy extends EventEmitter {
+export declare class PerformanceTuningStrategy extends TypedEventBase {
     private logger;
     private config;
     private telemetry;

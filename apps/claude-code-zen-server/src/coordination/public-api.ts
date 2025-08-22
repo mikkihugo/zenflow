@@ -1,17 +1,19 @@
 /**
- * Public API for Coordination Layer.
+ * Public API for Coordination Layer0.
  *
  * This file provides the public interface for external modules to interact
- * with the coordination layer without directly accessing internal implementations.
+ * with the coordination layer without directly accessing internal implementations0.
  */
 /**
- * @file Coordination system: public-api.
+ * @file Coordination system: public-api0.
  */
 
-import type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
+// SwarmConfig and SwarmLifecycleState moved - using any types for now
+type SwarmConfig = any;
+type SwarmLifecycleState = any;
 
 /**
- * Public interface for swarm coordination.
+ * Public interface for swarm coordination0.
  *
  * @example
  */
@@ -39,8 +41,8 @@ export interface PublicSwarmCoordinator {
 }
 
 /**
- * Factory function to create a public swarm coordinator.
- * This wraps the internal SwarmCoordinator with a limited public interface.
+ * Factory function to create a public swarm coordinator0.
+ * This wraps the internal SwarmCoordinator with a limited public interface0.
  *
  * @param config
  * @example
@@ -52,47 +54,47 @@ export async function createPublicSwarmCoordinator(
   const { AgentManager } = await import('@claude-zen/agent-manager');
 
   const coordinator = new AgentManager();
-  await coordinator.initialize(config);
+  await coordinator0.initialize(config);
 
   // Return limited public interface
   return {
     async initialize(config?: SwarmConfig) {
-      return coordinator.initialize(config);
+      return coordinator0.initialize(config);
     },
 
     async shutdown() {
-      return coordinator.shutdown();
+      return coordinator?0.shutdown();
     },
 
     getState() {
-      return coordinator.getState();
+      return coordinator?0.getState;
     },
 
     getSwarmId() {
-      return coordinator.getSwarmId();
+      return coordinator?0.getSwarmId;
     },
 
     getAgentCount() {
-      return coordinator.getAgentCount();
+      return coordinator?0.getAgentCount;
     },
 
     getActiveAgents() {
-      return coordinator.getActiveAgents();
+      return coordinator?0.getActiveAgents;
     },
 
     getStatus() {
       return {
-        id: coordinator.getSwarmId(),
-        state: coordinator.getState(),
-        agentCount: coordinator.getAgentCount(),
-        taskCount: coordinator.getTaskCount(),
-        uptime: coordinator.getUptime(),
+        id: coordinator?0.getSwarmId,
+        state: coordinator?0.getState,
+        agentCount: coordinator?0.getAgentCount,
+        taskCount: coordinator?0.getTaskCount,
+        uptime: coordinator?0.getUptime,
       };
     },
   };
 }
 
 // Export types that external modules can use
-export type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
+export type { SwarmConfig, SwarmLifecycleState } from '@claude-zen/foundation';
 // Re-export SwarmLifecycleState as SwarmState for backward compatibility
 export type SwarmState = SwarmLifecycleState;

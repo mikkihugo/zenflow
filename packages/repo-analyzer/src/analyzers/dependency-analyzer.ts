@@ -3,12 +3,13 @@
  * Gold standard dependency analysis with graph theory and advanced metrics
  */
 
-import madge from 'madge';
-import detective from 'detective';
-import precinct from 'precinct';
-import { Graph, alg } from 'graphlib';
-import * as fastGlob from 'fast-glob';
 import { getLogger } from '@claude-zen/foundation';
+
+import detective from 'detective';
+import { Graph, alg } from 'graphlib';
+import madge from 'madge';
+import precinct from 'precinct';
+import fastGlob from 'fast-glob';
 import type {
   DependencyMetrics,
   DependencyGraph,
@@ -128,8 +129,8 @@ export class DependencyAnalyzer {
   /**
    * Build detailed dependency map using detective and precinct
    */
-  private async buildDetailedDependencyMap(files: string[]): Promise<Map<string, DependencyInfo>> {
-    const dependencyMap = new Map<string, DependencyInfo>();
+  private async buildDetailedDependencyMap(files: string[]): Promise<Map<string, FileDependencyInfo>> {
+    const dependencyMap = new Map<string, FileDependencyInfo>();
     const fs = await import('fs/promises');
 
     await Promise.all(files.map(async (filePath) => {
@@ -173,8 +174,8 @@ export class DependencyAnalyzer {
   /**
    * Extract dependencies using multiple detective engines
    */
-  private async extractDependencies(content: string, filePath: string): Promise<DependencyInfo[]> {
-    const dependencies: DependencyInfo[] = [];
+  private async extractDependencies(content: string, filePath: string): Promise<IndividualDependencyInfo[]> {
+    const dependencies: IndividualDependencyInfo[] = [];
 
     try {
       // Use precinct for comprehensive dependency detection
@@ -221,7 +222,7 @@ export class DependencyAnalyzer {
   /**
    * Analyze individual dependency
    */
-  private async analyzeDependency(depName: string, fromFile: string, content: string): Promise<DependencyInfo> {
+  private async analyzeDependency(depName: string, fromFile: string, content: string): Promise<IndividualDependencyInfo> {
     const resolvedPath = await this.resolveDependencyPath(depName, fromFile);
     const weight = this.calculateDependencyWeight(depName, content);
     const type = this.classifyDependency(depName, content);
@@ -331,7 +332,7 @@ export class DependencyAnalyzer {
    */
   private async detectCircularDependencies(
     madgeResult: any, 
-    dependencyMap: Map<string, DependencyInfo>
+    dependencyMap: Map<string, FileDependencyInfo>
   ): Promise<CircularDependency[]> {
     const cycles: CircularDependency[] = [];
 
@@ -371,7 +372,7 @@ export class DependencyAnalyzer {
   /**
    * Calculate impact score of circular dependency
    */
-  private calculateCycleImpact(cycle: string[], dependencyMap: Map<string, DependencyInfo>): number {
+  private calculateCycleImpact(cycle: string[], dependencyMap: Map<string, FileDependencyInfo>): number {
     let totalComplexity = 0;
     let totalSize = 0;
     
@@ -412,7 +413,7 @@ export class DependencyAnalyzer {
   /**
    * Build comprehensive dependency graph
    */
-  private buildDependencyGraph(dependencyMap: Map<string, DependencyInfo>, files: string[]): DependencyGraph {
+  private buildDependencyGraph(dependencyMap: Map<string, FileDependencyInfo>, files: string[]): DependencyGraph {
     const nodes: DependencyNode[] = [];
     const edges: DependencyEdge[] = [];
     const clusters: DependencyCluster[] = [];
@@ -562,7 +563,7 @@ export class DependencyAnalyzer {
     return 'module';
   }
 
-  private calculateNodeStability(filePath: string, dependencyMap: Map<string, DependencyInfo>): number {
+  private calculateNodeStability(filePath: string, dependencyMap: Map<string, FileDependencyInfo>): number {
     const info = dependencyMap.get(filePath);
     if (!info) return 0.5;
     
@@ -654,7 +655,7 @@ export class DependencyAnalyzer {
     };
   }
 
-  private countTotalDependencies(dependencyMap: Map<string, DependencyInfo>): number {
+  private countTotalDependencies(dependencyMap: Map<string, FileDependencyInfo>): number {
     const allDeps = new Set<string>();
     for (const [, info] of dependencyMap) {
       for (const dep of info.dependencies) {
@@ -664,7 +665,7 @@ export class DependencyAnalyzer {
     return allDeps.size;
   }
 
-  private countDirectDependencies(dependencyMap: Map<string, DependencyInfo>): number {
+  private countDirectDependencies(dependencyMap: Map<string, FileDependencyInfo>): number {
     const directDeps = new Set<string>();
     for (const [, info] of dependencyMap) {
       for (const dep of info.dependencies) {
@@ -689,7 +690,17 @@ export class DependencyAnalyzer {
   }
 }
 
-interface DependencyInfo {
+// Primary DependencyInfo interface for file-level analysis
+interface FileDependencyInfo {
+  filePath: string;
+  dependencies: IndividualDependencyInfo[];
+  size: number;
+  lines: number;
+  complexity: number;
+}
+
+// Secondary DependencyInfo interface for individual dependencies
+interface IndividualDependencyInfo {
   name: string;
   type: 'import' | 'require' | 'dynamic-import' | 'type-only';
   resolvedPath: string | null;
@@ -697,10 +708,5 @@ interface DependencyInfo {
   line: number;
 }
 
-interface DependencyInfo {
-  filePath: string;
-  dependencies: DependencyInfo[];
-  size: number;
-  lines: number;
-  complexity: number;
-}
+// Type alias for backward compatibility
+type DependencyInfo = FileDependencyInfo;

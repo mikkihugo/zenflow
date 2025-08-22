@@ -16,10 +16,28 @@
 
 import type { Logger } from '@claude-zen/foundation'
 import { getLogger } from '@claude-zen/foundation'
-import type { Agent, Task } from '../coordination/types';
-import type {
-  WorkflowDefinition,
-} from '../workflows/types';
+// Type imports for domain validation - use fallback types if facade not available
+interface Agent {
+  id: string;
+  capabilities: string[];
+  status: 'idle' | 'busy';
+}
+
+interface Task {
+  id: string;
+  description: string;
+  strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus';
+  dependencies: string[];
+  requiredCapabilities: string[];
+  maxAgents: number;
+  requireConsensus: boolean;
+}
+
+interface WorkflowDefinition {
+  id: string;
+  name: string;
+  version: string;
+}
 
 // ============================================================================
 // CORE TYPE SYSTEM - Foundation for all domain validation

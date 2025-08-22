@@ -3,7 +3,7 @@
  * Provides advanced coordination capabilities for distributed memory management.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // BackendInterface type for compatibility - matches core memory-system.ts
 export interface BackendInterface {
@@ -62,10 +62,10 @@ export interface CoordinationDecision {
  *
  * @example
  */
-export class MemoryCoordinator extends EventEmitter {
+export class MemoryCoordinator extends TypedEventBase {
   private nodes = new Map<string, MemoryNode>();
   private decisions = new Map<string, CoordinationDecision>();
-  private config: MemoryCoordinationConfig;
+  private configuration: MemoryCoordinationConfig;
 
   constructor(config: MemoryCoordinationConfig) {
     super();

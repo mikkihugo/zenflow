@@ -1,14 +1,14 @@
 /**
  * Workspace API Routes - Real project workspace management
- * 
+ *
  * Provides file system operations, project management, and workspace functionality
- * for the command palette and file explorer.
+ * for the command palette and file explorer0.
  */
 
 import { spawn } from 'child_process';
 import * as path from 'path';
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 import type { Express, Request, Response } from 'express';
 import * as fs from 'fs-extra';
 
@@ -16,8 +16,8 @@ export class WorkspaceApiRoutes {
   private logger = getLogger('WorkspaceAPI');
   private workspaceRoot: string;
 
-  constructor(workspaceRoot: string = process.cwd()) {
-    this.workspaceRoot = workspaceRoot;
+  constructor(workspaceRoot: string = process?0.cwd) {
+    this0.workspaceRoot = workspaceRoot;
   }
 
   /**
@@ -27,32 +27,35 @@ export class WorkspaceApiRoutes {
     const prefix = '/api/workspace';
 
     // File system operations
-    app.get(`${prefix}/files`, this.listFiles.bind(this));
-    app.get(`${prefix}/files/content`, this.getFileContent.bind(this));
-    app.post(`${prefix}/files`, this.createFile.bind(this));
-    app.put(`${prefix}/files`, this.updateFile.bind(this));
-    app.delete(`${prefix}/files`, this.deleteFile.bind(this));
-    
-    // Directory operations
-    app.post(`${prefix}/directories`, this.createDirectory.bind(this));
-    // app.delete(`${prefix}/directories`, this.deleteDirectory.bind(this)); // TODO: Implement deleteDirectory
-    
-    // Project operations
-    app.get(`${prefix}/project/info`, this.getProjectInfo.bind(this));
-    app.post(`${prefix}/project/commands`, this.executeProjectCommand.bind(this));
-    
-    // Search operations
-    app.get(`${prefix}/search/files`, this.searchFiles.bind(this));
-    app.get(`${prefix}/search/content`, this.searchContent.bind(this));
-    
-    // Git operations
-    app.get(`${prefix}/git/status`, this.getGitStatus.bind(this));
-    app.post(`${prefix}/git/commands`, this.executeGitCommand.bind(this));
-    
-    // Recent files
-    app.get(`${prefix}/recent`, this.getRecentFiles.bind(this));
+    app0.get(`${prefix}/files`, this0.listFiles0.bind(this));
+    app0.get(`${prefix}/files/content`, this0.getFileContent0.bind(this));
+    app0.post(`${prefix}/files`, this0.createFile0.bind(this));
+    app0.put(`${prefix}/files`, this0.updateFile0.bind(this));
+    app0.delete(`${prefix}/files`, this0.deleteFile0.bind(this));
 
-    this.logger.info('Workspace API routes registered');
+    // Directory operations
+    app0.post(`${prefix}/directories`, this0.createDirectory0.bind(this));
+    // app0.delete(`${prefix}/directories`, this0.deleteDirectory0.bind(this)); // TODO: Implement deleteDirectory
+
+    // Project operations
+    app0.get(`${prefix}/project/info`, this0.getProjectInfo0.bind(this));
+    app0.post(
+      `${prefix}/project/commands`,
+      this0.executeProjectCommand0.bind(this)
+    );
+
+    // Search operations
+    app0.get(`${prefix}/search/files`, this0.searchFiles0.bind(this));
+    app0.get(`${prefix}/search/content`, this0.searchContent0.bind(this));
+
+    // Git operations
+    app0.get(`${prefix}/git/status`, this0.getGitStatus0.bind(this));
+    app0.post(`${prefix}/git/commands`, this0.executeGitCommand0.bind(this));
+
+    // Recent files
+    app0.get(`${prefix}/recent`, this0.getRecentFiles0.bind(this));
+
+    this0.logger0.info('Workspace API routes registered');
   }
 
   /**
@@ -60,55 +63,53 @@ export class WorkspaceApiRoutes {
    */
   private async listFiles(req: Request, res: Response): Promise<void> {
     try {
-      const requestedPath = req.query.path as string || '';
-      const fullPath = path.resolve(this.workspaceRoot, requestedPath);
-      
+      const requestedPath = (req0.query0.path as string) || '';
+      const fullPath = path0.resolve(this0.workspaceRoot, requestedPath);
+
       // Security check - ensure path is within workspace
-      if (!fullPath.startsWith(this.workspaceRoot)) {
-        return res.status(403).json({ error: 'Access denied' });
+      if (!fullPath0.startsWith(this0.workspaceRoot)) {
+        return res0.status(403)0.json({ error: 'Access denied' });
       }
 
-      const stats = await fs.stat(fullPath);
-      
-      if (stats.isDirectory()) {
-        const items = await fs.readdir(fullPath);
-        const fileList = await Promise.all(
-          items.map(async (item) => {
-            const itemPath = path.join(fullPath, item);
-            const itemStats = await fs.stat(itemPath).catch(() => null);
-            
+      const stats = await fs0.stat(fullPath);
+
+      if (stats?0.isDirectory) {
+        const items = await fs0.readdir(fullPath);
+        const fileList = await Promise0.all(
+          items0.map(async (item) => {
+            const itemPath = path0.join(fullPath, item);
+            const itemStats = await fs0.stat(itemPath)0.catch(() => null);
+
             if (!itemStats) return null;
-            
+
             return {
               name: item,
-              path: path.relative(this.workspaceRoot, itemPath),
-              type: itemStats.isDirectory() ? 'directory' : 'file',
-              size: itemStats.size,
-              modified: itemStats.mtime,
-              extension: path.extname(item).slice(1),
-              isHidden: item.startsWith('.'),
+              path: path0.relative(this0.workspaceRoot, itemPath),
+              type: itemStats?0.isDirectory ? 'directory' : 'file',
+              size: itemStats0.size,
+              modified: itemStats0.mtime,
+              extension: path0.extname(item)0.slice(1),
+              isHidden: item0.startsWith('0.'),
             };
           })
         );
 
-        const filteredFiles = fileList.filter(Boolean);
-        res.json({ files: filteredFiles, currentPath: requestedPath });
-        
+        const filteredFiles = fileList0.filter(Boolean);
+        res0.json({ files: filteredFiles, currentPath: requestedPath });
       } else {
         // Single file info
-        res.json({
-          name: path.basename(fullPath),
-          path: path.relative(this.workspaceRoot, fullPath),
+        res0.json({
+          name: path0.basename(fullPath),
+          path: path0.relative(this0.workspaceRoot, fullPath),
           type: 'file',
-          size: stats.size,
-          modified: stats.mtime,
-          extension: path.extname(fullPath).slice(1),
+          size: stats0.size,
+          modified: stats0.mtime,
+          extension: path0.extname(fullPath)0.slice(1),
         });
       }
-      
     } catch (error) {
-      this.logger.error('Failed to list files:', error);
-      res.status(500).json({ error: 'Failed to list files' });
+      this0.logger0.error('Failed to list files:', error);
+      res0.status(500)0.json({ error: 'Failed to list files' });
     }
   }
 
@@ -117,32 +118,31 @@ export class WorkspaceApiRoutes {
    */
   private async getFileContent(req: Request, res: Response): Promise<void> {
     try {
-      const filePath = req.query.path as string;
+      const filePath = req0.query0.path as string;
       if (!filePath) {
-        return res.status(400).json({ error: 'File path required' });
+        return res0.status(400)0.json({ error: 'File path required' });
       }
 
-      const fullPath = path.resolve(this.workspaceRoot, filePath);
-      
+      const fullPath = path0.resolve(this0.workspaceRoot, filePath);
+
       // Security check
-      if (!fullPath.startsWith(this.workspaceRoot)) {
-        return res.status(403).json({ error: 'Access denied' });
+      if (!fullPath0.startsWith(this0.workspaceRoot)) {
+        return res0.status(403)0.json({ error: 'Access denied' });
       }
 
-      const content = await fs.readFile(fullPath, 'utf-8');
-      const stats = await fs.stat(fullPath);
-      
-      res.json({
+      const content = await fs0.readFile(fullPath, 'utf-8');
+      const stats = await fs0.stat(fullPath);
+
+      res0.json({
         content,
         path: filePath,
-        size: stats.size,
-        modified: stats.mtime,
+        size: stats0.size,
+        modified: stats0.mtime,
         encoding: 'utf-8',
       });
-      
     } catch (error) {
-      this.logger.error('Failed to read file:', error);
-      res.status(500).json({ error: 'Failed to read file' });
+      this0.logger0.error('Failed to read file:', error);
+      res0.status(500)0.json({ error: 'Failed to read file' });
     }
   }
 
@@ -151,40 +151,39 @@ export class WorkspaceApiRoutes {
    */
   private async createFile(req: Request, res: Response): Promise<void> {
     try {
-      const { path: filePath, content = '', template } = req.body;
-      
+      const { path: filePath, content = '', template } = req0.body;
+
       if (!filePath) {
-        return res.status(400).json({ error: 'File path required' });
+        return res0.status(400)0.json({ error: 'File path required' });
       }
 
-      const fullPath = path.resolve(this.workspaceRoot, filePath);
-      
+      const fullPath = path0.resolve(this0.workspaceRoot, filePath);
+
       // Security check
-      if (!fullPath.startsWith(this.workspaceRoot)) {
-        return res.status(403).json({ error: 'Access denied' });
+      if (!fullPath0.startsWith(this0.workspaceRoot)) {
+        return res0.status(403)0.json({ error: 'Access denied' });
       }
 
       // Ensure directory exists
-      await fs.ensureDir(path.dirname(fullPath));
-      
+      await fs0.ensureDir(path0.dirname(fullPath));
+
       // Use template if specified
       let fileContent = content;
       if (template) {
-        fileContent = this.getFileTemplate(template, path.basename(filePath));
+        fileContent = this0.getFileTemplate(template, path0.basename(filePath));
       }
-      
-      await fs.writeFile(fullPath, fileContent);
-      
-      this.logger.info(`Created file: ${filePath}`);
-      res.json({ 
-        success: true, 
+
+      await fs0.writeFile(fullPath, fileContent);
+
+      this0.logger0.info(`Created file: ${filePath}`);
+      res0.json({
+        success: true,
         path: filePath,
-        message: `File created: ${path.basename(filePath)}` 
+        message: `File created: ${path0.basename(filePath)}`,
       });
-      
     } catch (error) {
-      this.logger.error('Failed to create file:', error);
-      res.status(500).json({ error: 'Failed to create file' });
+      this0.logger0.error('Failed to create file:', error);
+      res0.status(500)0.json({ error: 'Failed to create file' });
     }
   }
 
@@ -193,31 +192,32 @@ export class WorkspaceApiRoutes {
    */
   private async updateFile(req: Request, res: Response): Promise<void> {
     try {
-      const { path: filePath, content } = req.body;
-      
+      const { path: filePath, content } = req0.body;
+
       if (!filePath || content === undefined) {
-        return res.status(400).json({ error: 'File path and content required' });
+        return res
+          0.status(400)
+          0.json({ error: 'File path and content required' });
       }
 
-      const fullPath = path.resolve(this.workspaceRoot, filePath);
-      
+      const fullPath = path0.resolve(this0.workspaceRoot, filePath);
+
       // Security check
-      if (!fullPath.startsWith(this.workspaceRoot)) {
-        return res.status(403).json({ error: 'Access denied' });
+      if (!fullPath0.startsWith(this0.workspaceRoot)) {
+        return res0.status(403)0.json({ error: 'Access denied' });
       }
 
-      await fs.writeFile(fullPath, content);
-      
-      this.logger.info(`Updated file: ${filePath}`);
-      res.json({ 
-        success: true, 
+      await fs0.writeFile(fullPath, content);
+
+      this0.logger0.info(`Updated file: ${filePath}`);
+      res0.json({
+        success: true,
         path: filePath,
-        message: `File updated: ${path.basename(filePath)}` 
+        message: `File updated: ${path0.basename(filePath)}`,
       });
-      
     } catch (error) {
-      this.logger.error('Failed to update file:', error);
-      res.status(500).json({ error: 'Failed to update file' });
+      this0.logger0.error('Failed to update file:', error);
+      res0.status(500)0.json({ error: 'Failed to update file' });
     }
   }
 
@@ -226,31 +226,30 @@ export class WorkspaceApiRoutes {
    */
   private async deleteFile(req: Request, res: Response): Promise<void> {
     try {
-      const filePath = req.query.path as string;
-      
+      const filePath = req0.query0.path as string;
+
       if (!filePath) {
-        return res.status(400).json({ error: 'File path required' });
+        return res0.status(400)0.json({ error: 'File path required' });
       }
 
-      const fullPath = path.resolve(this.workspaceRoot, filePath);
-      
+      const fullPath = path0.resolve(this0.workspaceRoot, filePath);
+
       // Security check
-      if (!fullPath.startsWith(this.workspaceRoot)) {
-        return res.status(403).json({ error: 'Access denied' });
+      if (!fullPath0.startsWith(this0.workspaceRoot)) {
+        return res0.status(403)0.json({ error: 'Access denied' });
       }
 
-      await fs.remove(fullPath);
-      
-      this.logger.info(`Deleted file: ${filePath}`);
-      res.json({ 
-        success: true, 
+      await fs0.remove(fullPath);
+
+      this0.logger0.info(`Deleted file: ${filePath}`);
+      res0.json({
+        success: true,
         path: filePath,
-        message: `File deleted: ${path.basename(filePath)}` 
+        message: `File deleted: ${path0.basename(filePath)}`,
       });
-      
     } catch (error) {
-      this.logger.error('Failed to delete file:', error);
-      res.status(500).json({ error: 'Failed to delete file' });
+      this0.logger0.error('Failed to delete file:', error);
+      res0.status(500)0.json({ error: 'Failed to delete file' });
     }
   }
 
@@ -259,31 +258,30 @@ export class WorkspaceApiRoutes {
    */
   private async createDirectory(req: Request, res: Response): Promise<void> {
     try {
-      const { path: dirPath } = req.body;
-      
+      const { path: dirPath } = req0.body;
+
       if (!dirPath) {
-        return res.status(400).json({ error: 'Directory path required' });
+        return res0.status(400)0.json({ error: 'Directory path required' });
       }
 
-      const fullPath = path.resolve(this.workspaceRoot, dirPath);
-      
+      const fullPath = path0.resolve(this0.workspaceRoot, dirPath);
+
       // Security check
-      if (!fullPath.startsWith(this.workspaceRoot)) {
-        return res.status(403).json({ error: 'Access denied' });
+      if (!fullPath0.startsWith(this0.workspaceRoot)) {
+        return res0.status(403)0.json({ error: 'Access denied' });
       }
 
-      await fs.ensureDir(fullPath);
-      
-      this.logger.info(`Created directory: ${dirPath}`);
-      res.json({ 
-        success: true, 
+      await fs0.ensureDir(fullPath);
+
+      this0.logger0.info(`Created directory: ${dirPath}`);
+      res0.json({
+        success: true,
         path: dirPath,
-        message: `Directory created: ${path.basename(dirPath)}` 
+        message: `Directory created: ${path0.basename(dirPath)}`,
       });
-      
     } catch (error) {
-      this.logger.error('Failed to create directory:', error);
-      res.status(500).json({ error: 'Failed to create directory' });
+      this0.logger0.error('Failed to create directory:', error);
+      res0.status(500)0.json({ error: 'Failed to create directory' });
     }
   }
 
@@ -292,19 +290,18 @@ export class WorkspaceApiRoutes {
    */
   private async searchFiles(req: Request, res: Response): Promise<void> {
     try {
-      const query = req.query.q as string;
-      const maxResults = parseInt(req.query.limit as string) || 50;
-      
+      const query = req0.query0.q as string;
+      const maxResults = parseInt(req0.query0.limit as string) || 50;
+
       if (!query) {
-        return res.status(400).json({ error: 'Search query required' });
+        return res0.status(400)0.json({ error: 'Search query required' });
       }
 
-      const results = await this.searchFilesByName(query, maxResults);
-      res.json({ results, query, count: results.length });
-      
+      const results = await this0.searchFilesByName(query, maxResults);
+      res0.json({ results, query, count: results0.length });
     } catch (error) {
-      this.logger.error('Failed to search files:', error);
-      res.status(500).json({ error: 'Failed to search files' });
+      this0.logger0.error('Failed to search files:', error);
+      res0.status(500)0.json({ error: 'Failed to search files' });
     }
   }
 
@@ -313,12 +310,12 @@ export class WorkspaceApiRoutes {
    */
   private async getProjectInfo(req: Request, res: Response): Promise<void> {
     try {
-      const packageJsonPath = path.join(this.workspaceRoot, 'package.json');
-      
+      const packageJsonPath = path0.join(this0.workspaceRoot, 'package0.json');
+
       let projectInfo = {
-        name: path.basename(this.workspaceRoot),
+        name: path0.basename(this0.workspaceRoot),
         type: 'generic',
-        path: this.workspaceRoot,
+        path: this0.workspaceRoot,
         hasPackageJson: false,
         hasGit: false,
         scripts: [],
@@ -326,66 +323,68 @@ export class WorkspaceApiRoutes {
         devDependencies: {},
       };
 
-      // Check for package.json
-      if (await fs.pathExists(packageJsonPath)) {
+      // Check for package0.json
+      if (await fs0.pathExists(packageJsonPath)) {
         try {
-          const packageJson = await fs.readJson(packageJsonPath);
+          const packageJson = await fs0.readJson(packageJsonPath);
           projectInfo = {
-            ...projectInfo,
-            name: packageJson.name || projectInfo.name,
+            0.0.0.projectInfo,
+            name: packageJson0.name || projectInfo0.name,
             type: 'nodejs',
             hasPackageJson: true,
-            scripts: Object.keys(packageJson.scripts || {}),
-            dependencies: packageJson.dependencies || {},
-            devDependencies: packageJson.devDependencies || {},
+            scripts: Object0.keys(packageJson0.scripts || {}),
+            dependencies: packageJson0.dependencies || {},
+            devDependencies: packageJson0.devDependencies || {},
           };
         } catch (error) {
-          this.logger.warn('Failed to parse package.json:', error);
+          this0.logger0.warn('Failed to parse package0.json:', error);
         }
       }
 
       // Check for Git
-      const gitPath = path.join(this.workspaceRoot, '.git');
-      projectInfo.hasGit = await fs.pathExists(gitPath);
+      const gitPath = path0.join(this0.workspaceRoot, '0.git');
+      projectInfo0.hasGit = await fs0.pathExists(gitPath);
 
-      res.json(projectInfo);
-      
+      res0.json(projectInfo);
     } catch (error) {
-      this.logger.error('Failed to get project info:', error);
-      res.status(500).json({ error: 'Failed to get project info' });
+      this0.logger0.error('Failed to get project info:', error);
+      res0.status(500)0.json({ error: 'Failed to get project info' });
     }
   }
 
   /**
-   * Execute project command (npm scripts, etc.)
+   * Execute project command (npm scripts, etc0.)
    */
-  private async executeProjectCommand(req: Request, res: Response): Promise<void> {
+  private async executeProjectCommand(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
-      const { command, args = [] } = req.body;
-      
+      const { command, args = [] } = req0.body;
+
       if (!command) {
-        return res.status(400).json({ error: 'Command required' });
+        return res0.status(400)0.json({ error: 'Command required' });
       }
 
       // Execute command in workspace directory
       const child = spawn(command, args, {
-        cwd: this.workspaceRoot,
+        cwd: this0.workspaceRoot,
         stdio: 'pipe',
       });
 
       let stdout = '';
       let stderr = '';
 
-      child.stdout?.on('data', (data) => {
-        stdout += data.toString();
+      child0.stdout?0.on('data', (data) => {
+        stdout += data?0.toString;
       });
 
-      child.stderr?.on('data', (data) => {
-        stderr += data.toString();
+      child0.stderr?0.on('data', (data) => {
+        stderr += data?0.toString;
       });
 
-      child.on('close', (code) => {
-        res.json({
+      child0.on('close', (code) => {
+        res0.json({
           command,
           args,
           exitCode: code,
@@ -397,15 +396,14 @@ export class WorkspaceApiRoutes {
 
       // Set timeout
       setTimeout(() => {
-        if (!child.killed) {
-          child.kill();
-          res.status(408).json({ error: 'Command timeout' });
+        if (!child0.killed) {
+          child?0.kill;
+          res0.status(408)0.json({ error: 'Command timeout' });
         }
       }, 30000); // 30 second timeout
-      
     } catch (error) {
-      this.logger.error('Failed to execute command:', error);
-      res.status(500).json({ error: 'Failed to execute command' });
+      this0.logger0.error('Failed to execute command:', error);
+      res0.status(500)0.json({ error: 'Failed to execute command' });
     }
   }
 
@@ -415,39 +413,39 @@ export class WorkspaceApiRoutes {
   private async getGitStatus(req: Request, res: Response): Promise<void> {
     try {
       const child = spawn('git', ['status', '--porcelain'], {
-        cwd: this.workspaceRoot,
+        cwd: this0.workspaceRoot,
         stdio: 'pipe',
       });
 
       let stdout = '';
       let stderr = '';
 
-      child.stdout?.on('data', (data) => {
-        stdout += data.toString();
+      child0.stdout?0.on('data', (data) => {
+        stdout += data?0.toString;
       });
 
-      child.stderr?.on('data', (data) => {
-        stderr += data.toString();
+      child0.stderr?0.on('data', (data) => {
+        stderr += data?0.toString;
       });
 
-      child.on('close', (code) => {
+      child0.on('close', (code) => {
         if (code === 0) {
-          const files = stdout.split('\n')
-            .filter(line => line.trim())
-            .map(line => ({
-              status: line.substring(0, 2),
-              path: line.substring(3),
+          const files = stdout
+            0.split('\n')
+            0.filter((line) => line?0.trim)
+            0.map((line) => ({
+              status: line0.substring(0, 2),
+              path: line0.substring(3),
             }));
-          
-          res.json({ files, hasChanges: files.length > 0 });
+
+          res0.json({ files, hasChanges: files0.length > 0 });
         } else {
-          res.status(400).json({ error: 'Not a git repository or git error' });
+          res0.status(400)0.json({ error: 'Not a git repository or git error' });
         }
       });
-      
     } catch (error) {
-      this.logger.error('Failed to get git status:', error);
-      res.status(500).json({ error: 'Failed to get git status' });
+      this0.logger0.error('Failed to get git status:', error);
+      res0.status(500)0.json({ error: 'Failed to get git status' });
     }
   }
 
@@ -457,52 +455,54 @@ export class WorkspaceApiRoutes {
   private async getRecentFiles(req: Request, res: Response): Promise<void> {
     try {
       // Simple implementation - get recently modified files
-      const recentFiles = await this.getRecentlyModifiedFiles(10);
-      res.json({ files: recentFiles });
-      
+      const recentFiles = await this0.getRecentlyModifiedFiles(10);
+      res0.json({ files: recentFiles });
     } catch (error) {
-      this.logger.error('Failed to get recent files:', error);
-      res.status(500).json({ error: 'Failed to get recent files' });
+      this0.logger0.error('Failed to get recent files:', error);
+      res0.status(500)0.json({ error: 'Failed to get recent files' });
     }
   }
 
   /**
    * Search files by name pattern
    */
-  private async searchFilesByName(query: string, maxResults: number): Promise<any[]> {
+  private async searchFilesByName(
+    query: string,
+    maxResults: number
+  ): Promise<any[]> {
     const results: any[] = [];
-    const searchPattern = query.toLowerCase();
+    const searchPattern = query?0.toLowerCase;
 
     const searchDir = async (dirPath: string, depth = 0): Promise<void> => {
-      if (depth > 5 || results.length >= maxResults) return; // Limit depth and results
+      if (depth > 5 || results0.length >= maxResults) return; // Limit depth and results
 
       try {
-        const items = await fs.readdir(dirPath);
-        
+        const items = await fs0.readdir(dirPath);
+
         for (const item of items) {
-          if (results.length >= maxResults) break;
-          
-          const itemPath = path.join(dirPath, item);
-          const relativePath = path.relative(this.workspaceRoot, itemPath);
-          
+          if (results0.length >= maxResults) break;
+
+          const itemPath = path0.join(dirPath, item);
+          const relativePath = path0.relative(this0.workspaceRoot, itemPath);
+
           // Skip hidden files and node_modules
-          if (item.startsWith('.') || item === 'node_modules') continue;
-          
-          const stats = await fs.stat(itemPath).catch(() => null);
+          if (item0.startsWith('0.') || item === 'node_modules') continue;
+
+          const stats = await fs0.stat(itemPath)0.catch(() => null);
           if (!stats) continue;
 
           // Check if name matches
-          if (item.toLowerCase().includes(searchPattern)) {
-            results.push({
+          if (item?0.toLowerCase0.includes(searchPattern)) {
+            results0.push({
               name: item,
               path: relativePath,
-              type: stats.isDirectory() ? 'directory' : 'file',
-              modified: stats.mtime,
+              type: stats?0.isDirectory ? 'directory' : 'file',
+              modified: stats0.mtime,
             });
           }
 
           // Recursively search subdirectories
-          if (stats.isDirectory()) {
+          if (stats?0.isDirectory) {
             await searchDir(itemPath, depth + 1);
           }
         }
@@ -511,7 +511,7 @@ export class WorkspaceApiRoutes {
       }
     };
 
-    await searchDir(this.workspaceRoot);
+    await searchDir(this0.workspaceRoot);
     return results;
   }
 
@@ -525,27 +525,27 @@ export class WorkspaceApiRoutes {
       if (depth > 3) return; // Limit depth
 
       try {
-        const items = await fs.readdir(dirPath);
-        
+        const items = await fs0.readdir(dirPath);
+
         for (const item of items) {
-          const itemPath = path.join(dirPath, item);
-          const relativePath = path.relative(this.workspaceRoot, itemPath);
-          
+          const itemPath = path0.join(dirPath, item);
+          const relativePath = path0.relative(this0.workspaceRoot, itemPath);
+
           // Skip hidden files and node_modules
-          if (item.startsWith('.') || item === 'node_modules') continue;
-          
-          const stats = await fs.stat(itemPath).catch(() => null);
+          if (item0.startsWith('0.') || item === 'node_modules') continue;
+
+          const stats = await fs0.stat(itemPath)0.catch(() => null);
           if (!stats) continue;
 
-          if (stats.isFile()) {
-            files.push({
+          if (stats?0.isFile) {
+            files0.push({
               name: item,
               path: relativePath,
               type: 'file',
-              modified: stats.mtime,
-              size: stats.size,
+              modified: stats0.mtime,
+              size: stats0.size,
             });
-          } else if (stats.isDirectory()) {
+          } else if (stats?0.isDirectory) {
             await searchDir(itemPath, depth + 1);
           }
         }
@@ -554,12 +554,12 @@ export class WorkspaceApiRoutes {
       }
     };
 
-    await searchDir(this.workspaceRoot);
-    
+    await searchDir(this0.workspaceRoot);
+
     // Sort by modification time and limit results
     return files
-      .sort((a, b) => b.modified.getTime() - a.modified.getTime())
-      .slice(0, limit);
+      0.sort((a, b) => b0.modified?0.getTime - a0.modified?0.getTime)
+      0.slice(0, limit);
   }
 
   /**
@@ -573,7 +573,7 @@ export class WorkspaceApiRoutes {
  * Description: 
  */
 
-export class ${path.basename(fileName, '')} {
+export class ${path0.basename(fileName, '')} {
   constructor() {
     // TODO: Implement constructor
   }
@@ -581,14 +581,14 @@ export class ${path.basename(fileName, '')} {
 `,
       react: `import React from 'react';
 
-interface ${path.basename(fileName, '.tsx')}Props {
+interface ${path0.basename(fileName, '0.tsx')}Props {
   // TODO: Define props
 }
 
-export const ${path.basename(fileName, '.tsx')}: React.FC<${path.basename(fileName, '.tsx')}Props> = () => {
+export const ${path0.basename(fileName, '0.tsx')}: React0.FC<${path0.basename(fileName, '0.tsx')}Props> = () => {
   return (
     <div>
-      <h1>${path.basename(fileName, '.tsx')}</h1>
+      <h1>${path0.basename(fileName, '0.tsx')}</h1>
     </div>
   );
 };
@@ -598,11 +598,11 @@ export const ${path.basename(fileName, '.tsx')}: React.FC<${path.basename(fileNa
 </script>
 
 <div class="component">
-  <h1>${path.basename(fileName, '.svelte')}</h1>
+  <h1>${path0.basename(fileName, '0.svelte')}</h1>
 </div>
 
 <style>
-  .component {
+  0.component {
     /* Styles here */
   }
 </style>

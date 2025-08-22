@@ -6,7 +6,7 @@
  * @file intelligent-routing processing engine
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type { CapacityManager, RoutingEngine } from '../interfaces';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
@@ -57,7 +57,7 @@ interface RoutingMetrics {
   qosViolations: number;
 }
 
-export class IntelligentRoutingEngine extends EventEmitter implements RoutingEngine {
+export class IntelligentRoutingEngine extends TypedEventBase implements RoutingEngine {
   private routingTable: Map<string, RoutingTable> = new Map();
   private taskAgentMatcher: TaskAgentMatcher;
   private failoverManager: FailoverManager;

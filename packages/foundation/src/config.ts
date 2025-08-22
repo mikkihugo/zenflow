@@ -184,7 +184,7 @@ export interface Config {
 
 export class FoundationConfig {
 
-  private config: convict.Config<any>;
+  private config: any;
   private isInitialized = false;
 
   constructor() {
@@ -208,7 +208,7 @@ export class FoundationConfig {
     this.ensureInitialized();
     try {
 
-      return (this.config as any).get(key);
+      return this.config.get(key as keyof Config);
     } catch (error) {
       logger.error(`Failed to get config key '${key}':`, error);
       throw new Error(`Configuration key '${key}' not found or invalid`);
@@ -218,7 +218,7 @@ export class FoundationConfig {
   getAll(): JsonObject {
     this.ensureInitialized();
 
-    return this.config.getProperties() as any;
+    return this.config.getProperties() as unknown as JsonObject;
   }
 
   validate(): boolean {
@@ -276,5 +276,13 @@ export const configHelpers = {
   reload: reloadConfig,
   isDebug: isDebugMode,
 };
+
+/**
+ * Placeholder for neural config - should be implemented in neural packages
+ */
+export function getNeuralConfig(): Record<string, unknown> {
+  console.warn('getNeuralConfig is a placeholder - implement in neural package');
+  return {};
+}
 
 export default globalConfig;

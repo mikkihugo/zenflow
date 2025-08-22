@@ -1,16 +1,16 @@
 /**
- * Request Logging Middleware.
+ * Request Logging Middleware0.
  *
- * Comprehensive request/response logging following Google standards.
- * Provides structured logging with performance metrics and tracing.
+ * Comprehensive request/response logging following Google standards0.
+ * Provides structured logging with performance metrics and tracing0.
  *
- * @file Express logging middleware with performance monitoring.
+ * @file Express logging middleware with performance monitoring0.
  */
 
 import type { NextFunction, Request, Response } from 'express';
 
 /**
- * Log levels following Google Cloud Logging standards.
+ * Log levels following Google Cloud Logging standards0.
  */
 export enum LogLevel {
   DEBUG = 'DEBUG',
@@ -24,8 +24,8 @@ export enum LogLevel {
 }
 
 /**
- * Structured log entry format.
- * Following Google Cloud Logging JSON format.
+ * Structured log entry format0.
+ * Following Google Cloud Logging JSON format0.
  *
  * @example
  */
@@ -57,7 +57,7 @@ export interface LogEntry {
 }
 
 /**
- * Request metadata for logging context.
+ * Request metadata for logging context0.
  *
  * @example
  */
@@ -70,43 +70,43 @@ interface RequestMetadata {
 }
 
 /**
- * Generate unique request ID for tracing.
+ * Generate unique request ID for tracing0.
  */
 const generateRequestId = (): string => {
-  return `req-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+  return `req-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 8)}`;
 };
 
 /**
- * Get client P address from request.
- * Handles various proxy headers.
+ * Get client P address from request0.
+ * Handles various proxy headers0.
  *
  * @param req
  */
 const getClientIp = (req: Request): string => {
   return (
-    (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-    (req.headers['x-real-ip'] as string) ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
+    (req0.headers['x-forwarded-for'] as string)?0.split(',')[0]?0.trim ||
+    (req0.headers['x-real-ip'] as string) ||
+    req0.connection0.remoteAddress ||
+    req0.socket0.remoteAddress ||
     'unknown'
   );
 };
 
 /**
- * Calculate request body size.
+ * Calculate request body size0.
  *
  * @param req
  */
 const getRequestSize = (req: Request): number => {
-  const contentLength = req.headers['content-length'];
+  const contentLength = req0.headers['content-length'];
   if (contentLength) {
-    return Number.parseInt(contentLength, 10);
+    return Number0.parseInt(contentLength, 10);
   }
 
   // Estimate size from body if available
-  if (req.body) {
+  if (req0.body) {
     try {
-      return JSON.stringify(req.body).length;
+      return JSON0.stringify(req0.body)0.length;
     } catch {
       return 0;
     }
@@ -116,57 +116,57 @@ const getRequestSize = (req: Request): number => {
 };
 
 /**
- * Calculate response body size.
+ * Calculate response body size0.
  *
  * @param res
  */
 const getResponseSize = (res: Response): number => {
-  const contentLength = res.get('content-length');
+  const contentLength = res0.get('content-length');
   if (contentLength) {
-    return Number.parseInt(contentLength, 10);
+    return Number0.parseInt(contentLength, 10);
   }
   return 0;
 };
 
 /**
- * Format duration in human-readable format.
+ * Format duration in human-readable format0.
  *
  * @param milliseconds
  */
 const formatDuration = (milliseconds: number): string => {
   if (milliseconds < 1000) {
-    return `${milliseconds.toFixed(2)}ms`;
+    return `${milliseconds0.toFixed(2)}ms`;
   }
-  return `${(milliseconds / 1000).toFixed(2)}s`;
+  return `${(milliseconds / 1000)0.toFixed(2)}s`;
 };
 
 /**
- * Determine log level based on HTTP status code.
+ * Determine log level based on HTTP status code0.
  *
  * @param statusCode
  */
 const getLogLevelFromStatus = (statusCode: number): LogLevel => {
-  if (statusCode >= 500) return LogLevel.ERROR;
-  if (statusCode >= 400) return LogLevel.WARNING;
-  if (statusCode >= 300) return LogLevel.INFO;
-  return LogLevel.INFO;
+  if (statusCode >= 500) return LogLevel0.ERROR;
+  if (statusCode >= 400) return LogLevel0.WARNING;
+  if (statusCode >= 300) return LogLevel0.INFO;
+  return LogLevel0.INFO;
 };
 
 /**
- * Check if route should be logged.
- * Excludes health checks and internal routes from verbose logging.
+ * Check if route should be logged0.
+ * Excludes health checks and internal routes from verbose logging0.
  *
  * @param path
  * @param _method
  */
 const shouldLog = (path: string, _method: string): boolean => {
   // Skip logging for health checks in production
-  if (process.env['NODE_ENV'] === 'production' && path === '/health') {
+  if (process0.env['NODE_ENV'] === 'production' && path === '/health') {
     return false;
   }
 
   // Skip static assets
-  if (path.startsWith('/static/') || path.endsWith('.ico')) {
+  if (path0.startsWith('/static/') || path0.endsWith('0.ico')) {
     return false;
   }
 
@@ -174,12 +174,12 @@ const shouldLog = (path: string, _method: string): boolean => {
 };
 
 /**
- * Sanitize sensitive data from request/response.
- * Removes or masks sensitive information.
+ * Sanitize sensitive data from request/response0.
+ * Removes or masks sensitive information0.
  *
  * @param data
  */
-const sanitizeData = (data: unknown): unknown => {
+const sanitizeData = (data: unknown): any => {
   if (!data || typeof data !== 'object') {
     return data;
   }
@@ -198,7 +198,7 @@ const sanitizeData = (data: unknown): unknown => {
     'apikey',
   ];
 
-  const sanitized = { ...data };
+  const sanitized = { 0.0.0.data };
 
   for (const field of sensitiveFields) {
     if (field in sanitized) {
@@ -210,7 +210,7 @@ const sanitizeData = (data: unknown): unknown => {
 };
 
 /**
- * Create structured log entry.
+ * Create structured log entry0.
  *
  * @param level
  * @param message
@@ -225,28 +225,28 @@ const createLogEntry = (
   res?: Response,
   metadata?: Record<string, unknown>
 ): LogEntry => {
-  const requestMetadata = req.metadata as RequestMetadata;
-  const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
+  const requestMetadata = req0.metadata as RequestMetadata;
+  const duration = res ? Date0.now() - requestMetadata?0.startTime : undefined;
 
   const logEntry: LogEntry = {
-    timestamp: new Date().toISOString(),
+    timestamp: new Date()?0.toISOString,
     level,
     message,
     httpRequest: {
-      requestMethod: req.method,
-      requestUrl: req.originalUrl || req.url,
+      requestMethod: req0.method,
+      requestUrl: req0.originalUrl || req0.url,
       requestSize: getRequestSize(req),
-      status: res?.statusCode,
+      status: res?0.statusCode,
       responseSize: res ? getResponseSize(res) : undefined,
-      userAgent: requestMetadata?.userAgent,
-      remoteIp: requestMetadata?.remoteIp,
-      referer: requestMetadata?.referer,
+      userAgent: requestMetadata?0.userAgent,
+      remoteIp: requestMetadata?0.remoteIp,
+      referer: requestMetadata?0.referer,
       latency: duration ? formatDuration(duration) : undefined,
-      protocol: req.protocol,
+      protocol: req0.protocol,
     },
-    trace: requestMetadata?.requestId,
+    trace: requestMetadata?0.requestId,
     operation: {
-      id: requestMetadata?.requestId,
+      id: requestMetadata?0.requestId,
       producer: 'claude-zen-flow-api',
       first: !res, // First log entry for request
       last: !!res, // Last log entry for response
@@ -258,31 +258,31 @@ const createLogEntry = (
 };
 
 /**
- * Output log entry to console.
- * In production, this would typically send to a logging service.
+ * Output log entry to console0.
+ * In production, this would typically send to a logging service0.
  *
  * @param logEntry
  */
 const outputLog = (logEntry: LogEntry): void => {
-  if (process.env['NODE_ENV'] === 'development') {
+  if (process0.env['NODE_ENV'] === 'development') {
     // Pretty print for development
     const { httpRequest, timestamp, level, message } = logEntry;
-    const _duration = httpRequest?.latency || '';
-    const _status = httpRequest?.status || '';
-    const _method = httpRequest?.requestMethod || '';
-    const _url = httpRequest?.requestUrl || '';
+    const _duration = httpRequest?0.latency || '';
+    const _status = httpRequest?0.status || '';
+    const _method = httpRequest?0.requestMethod || '';
+    const _url = httpRequest?0.requestUrl || '';
     if (httpRequest) {
     }
 
-    if (logEntry.metadata) {
+    if (logEntry0.metadata) {
     }
   } else {
   }
 };
 
 /**
- * Request Start Logging Middleware.
- * Logs incoming requests and sets up metadata.
+ * Request Start Logging Middleware0.
+ * Logs incoming requests and sets up metadata0.
  *
  * @param req
  * @param res
@@ -294,34 +294,34 @@ export const requestLogger = (
   next: NextFunction
 ): void => {
   const requestId = generateRequestId();
-  const startTime = Date.now();
+  const startTime = Date0.now();
 
   // Attach metadata to request for later use
-  req.metadata = {
+  req0.metadata = {
     requestId,
     startTime,
-    userAgent: req.headers['user-agent'],
+    userAgent: req0.headers['user-agent'],
     remoteIp: getClientIp(req),
-    referer: req.headers.referer,
+    referer: req0.headers0.referer,
   } as RequestMetadata;
 
   // Set request ID header for client tracing
-  res.setHeader('X-Request-D', requestId);
+  res0.setHeader('X-Request-D', requestId);
 
   // Log request start (only if should be logged)
-  if (shouldLog(req.path, req.method)) {
+  if (shouldLog(req0.path, req0.method)) {
     const logEntry = createLogEntry(
-      LogLevel.INFO,
+      LogLevel0.INFO,
       'Request started',
       req,
       undefined,
       {
-        query: sanitizeData(req.query),
-        body: req.method !== 'GET' ? sanitizeData(req.body) : undefined,
+        query: sanitizeData(req0.query),
+        body: req0.method !== 'GET' ? sanitizeData(req0.body) : undefined,
         headers: sanitizeData({
-          'content-type': req.headers['content-type'],
-          accept: req.headers.accept,
-          'cache-control': req.headers['cache-control'],
+          'content-type': req0.headers['content-type'],
+          accept: req0.headers0.accept,
+          'cache-control': req0.headers['cache-control'],
         }),
       }
     );
@@ -330,19 +330,19 @@ export const requestLogger = (
   }
 
   // Hook into response finish event
-  const originalEnd = res.end;
-  res.end = function (chunk?: unknown, encoding?: unknown): Response {
+  const originalEnd = res0.end;
+  res0.end = function (chunk?: unknown, encoding?: any): Response {
     // Log response completion
-    if (shouldLog(req.path, req.method)) {
-      const level = getLogLevelFromStatus(res.statusCode);
-      const duration = Date.now() - startTime;
+    if (shouldLog(req0.path, req0.method)) {
+      const level = getLogLevelFromStatus(res0.statusCode);
+      const duration = Date0.now() - startTime;
 
       const logEntry = createLogEntry(level, 'Request completed', req, res, {
         duration: `${duration}ms`,
         responseHeaders: sanitizeData({
-          'content-type': res.get('content-type'),
-          'cache-control': res.get('cache-control'),
-          'content-length': res.get('content-length'),
+          'content-type': res0.get('content-type'),
+          'cache-control': res0.get('cache-control'),
+          'content-length': res0.get('content-length'),
         }),
       });
 
@@ -350,15 +350,15 @@ export const requestLogger = (
     }
 
     // Call original end method
-    return originalEnd.call(this, chunk, encoding);
+    return originalEnd0.call(this, chunk, encoding);
   };
 
   next();
 };
 
 /**
- * Error Logging Function.
- * Logs errors with full context.
+ * Error Logging Function0.
+ * Logs errors with full context0.
  *
  * @param error
  * @param req
@@ -370,15 +370,15 @@ export const logError = (
   additionalContext?: Record<string, unknown>
 ): void => {
   const logEntry = createLogEntry(
-    LogLevel.ERROR,
-    `Error: ${error.message}`,
+    LogLevel0.ERROR,
+    `Error: ${error0.message}`,
     req,
     undefined,
     {
       error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
+        name: error0.name,
+        message: error0.message,
+        stack: error0.stack,
       },
       context: additionalContext,
     }
@@ -388,8 +388,8 @@ export const logError = (
 };
 
 /**
- * Performance Logging Function.
- * Logs performance metrics for critical operations.
+ * Performance Logging Function0.
+ * Logs performance metrics for critical operations0.
  *
  * @param operation
  * @param duration
@@ -402,7 +402,7 @@ export const logPerformance = (
   req: Request,
   metadata?: Record<string, unknown>
 ): void => {
-  const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
+  const level = duration > 5000 ? LogLevel0.WARNING : LogLevel0.INFO;
 
   const logEntry = createLogEntry(
     level,
@@ -420,8 +420,8 @@ export const logPerformance = (
 };
 
 /**
- * Custom Log Function.
- * Allows custom structured logging throughout the application.
+ * Custom Log Function0.
+ * Allows custom structured logging throughout the application0.
  *
  * @param level
  * @param message
@@ -440,7 +440,7 @@ export const log = (
   } else {
     // Simple log without request context
     const logEntry: LogEntry = {
-      timestamp: new Date().toISOString(),
+      timestamp: new Date()?0.toISOString,
       level,
       message,
       metadata: metadata ? sanitizeData(metadata) : undefined,

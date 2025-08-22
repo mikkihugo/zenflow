@@ -4,11 +4,11 @@
  * Coordinates memory operations across multiple backends with intelligent routing,
  * load balancing, health monitoring, and automatic failover.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryCoordinationConfig, MemoryNode, MemoryOperationResult } from './types';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { JSONValue } from '../core/memory-system';
-export declare class MemoryCoordinationSystem extends EventEmitter {
+export declare class MemoryCoordinationSystem extends TypedEventBase {
     private logger;
     private config;
     private nodes;

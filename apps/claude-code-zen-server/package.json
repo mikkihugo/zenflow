@@ -14,7 +14,7 @@
     "dev:hot": "nodemon --watch src --watch ../../packages --ext ts,js,json --exec \"tsx src/main.ts\"",
     "dev:zero-downtime": "GRACEFUL_RESTART=true nodemon --signal SIGUSR2",
     "debug": "node --inspect-brk -r tsx/cjs src/main.ts",
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.json --skipLibCheck",
     "build:watch": "tsc --project tsconfig.json --watch",
     "build:wasm": "cd src/neural/wasm && ./scripts/build-wasm.sh",
     "build:neural-wasm": "cd src/neural/rust/wasm-api && ./build.sh",

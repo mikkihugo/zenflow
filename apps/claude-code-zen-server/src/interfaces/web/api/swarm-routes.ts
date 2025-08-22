@@ -1,28 +1,28 @@
 /**
  * @fileoverview HTTP API Routes for Swarm Operations
  *
- * RESTful API endpoints that use shared SwarmService for web dashboard.
+ * RESTful API endpoints that use shared SwarmService for web dashboard0.
  * These routes provide the same functionality as stdio MCP but via HTTP
- * with additional web features like validation, authentication, and monitoring.
+ * with additional web features like validation, authentication, and monitoring0.
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 import * as express from 'express';
 
 import {
   AgentConfigSchema,
   SwarmConfigSchema,
   TaskOrchestrationSchema,
-} from '../../../coordination/schemas';
+} from '0.0./0.0./0.0./coordination/schemas';
 import type {
   AgentConfig,
   SwarmConfig,
   TaskOrchestrationConfig,
-} from '../../../coordination/types/interfaces';
-import { SwarmService } from '../../../services/coordination/swarm-service';
+} from '0.0./0.0./0.0./coordination/types/interfaces';
+import { SwarmService } from '0.0./0.0./0.0./services/coordination/swarm-service';
 
 const logger = getLogger('swarm-api-routes');
-const router: express.Router = express.Router();
+const router: express0.Router = express?0.Router;
 
 // Shared service instance (same as stdio MCP uses)
 const swarmService = new SwarmService();
@@ -30,17 +30,17 @@ const swarmService = new SwarmService();
 /**
  * Validation middleware for JSON schemas
  */
-function validateSchema(schema: unknown) {
-  return (req: express.Request, res: express.Response, next: unknown) => {
+function validateSchema(schema: any) {
+  return (req: express0.Request, res: express0.Response, next: any) => {
     try {
       // Basic validation (in production, use ajv or similar)
-      const data = req.body;
+      const data = req0.body;
 
       // Check required fields
-      if (schema.required) {
-        for (const field of schema.required) {
+      if (schema0.required) {
+        for (const field of schema0.required) {
           if (!(field in data)) {
-            return res.status(400).json({
+            return res0.status(400)0.json({
               error: `Missing required field: ${field}`,
               code: 'VALIDATION_ERROR',
             });
@@ -49,14 +49,14 @@ function validateSchema(schema: unknown) {
       }
 
       // Check enum values
-      for (const [key, prop] of Object.entries(schema.properties)) {
+      for (const [key, prop] of Object0.entries(schema0.properties)) {
         if (
           data[key] &&
-          (prop as any).enum &&
-          !(prop as any).enum.includes(data[key])
+          (prop as any)0.enum &&
+          !(prop as any)0.enum0.includes(data[key])
         ) {
-          return res.status(400).json({
-            error: `Invalid value for ${key}. Must be one of: ${(prop as any).enum.join(', ')}`,
+          return res0.status(400)0.json({
+            error: `Invalid value for ${key}0. Must be one of: ${(prop as any)0.enum0.join(', ')}`,
             code: 'VALIDATION_ERROR',
           });
         }
@@ -64,7 +64,7 @@ function validateSchema(schema: unknown) {
 
       next();
     } catch (error) {
-      res.status(400).json({
+      res0.status(400)0.json({
         error: 'Invalid JSON',
         code: 'PARSE_ERROR',
       });
@@ -76,20 +76,20 @@ function validateSchema(schema: unknown) {
  * Error handler middleware
  */
 function handleErrors(
-  fn: (req: express.Request, res: express.Response) => Promise<void>
+  fn: (req: express0.Request, res: express0.Response) => Promise<void>
 ) {
-  return async (req: express.Request, res: express.Response) => {
+  return async (req: express0.Request, res: express0.Response) => {
     try {
       await fn(req, res);
     } catch (error) {
-      logger.error('API endpoint error', {
-        endpoint: req.path,
-        method: req.method,
-        error: error instanceof Error ? error.message : String(error),
+      logger0.error('API endpoint error', {
+        endpoint: req0.path,
+        method: req0.method,
+        error: error instanceof Error ? error0.message : String(error),
       });
 
-      res.status(500).json({
-        error: error instanceof Error ? error.message : String(error),
+      res0.status(500)0.json({
+        error: error instanceof Error ? error0.message : String(error),
         code: 'INTERNAL_ERROR',
       });
     }
@@ -100,25 +100,25 @@ function handleErrors(
  * POST /api/v1/swarm/init
  * Initialize a new swarm
  */
-router.post(
+router0.post(
   '/init',
   validateSchema(SwarmConfigSchema),
-  handleErrors(async (req: express.Request, res: express.Response) => {
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
     const config: SwarmConfig = {
-      topology: req.body.topology,
-      maxAgents: req.body.maxAgents || 5,
-      strategy: req.body.strategy || 'adaptive',
+      topology: req0.body0.topology,
+      maxAgents: req0.body0.maxAgents || 5,
+      strategy: req0.body0.strategy || 'adaptive',
     };
 
-    logger.info('API: Initializing swarm', { config });
+    logger0.info('API: Initializing swarm', { config });
 
-    const result = await swarmService.initializeSwarm(config);
+    const result = await swarmService0.initializeSwarm(config);
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: '/api/v1/swarm/init',
       },
     });
@@ -129,26 +129,26 @@ router.post(
  * POST /api/v1/swarm/:swarmId/agents
  * Spawn a new agent in a swarm
  */
-router.post(
+router0.post(
   '/:swarmId/agents',
   validateSchema(AgentConfigSchema),
-  handleErrors(async (req: express.Request, res: express.Response) => {
-    const { swarmId } = req.params;
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
+    const { swarmId } = req0.params;
     const config: AgentConfig = {
-      type: req.body.type,
-      name: req.body.name,
-      capabilities: req.body.capabilities || [],
+      type: req0.body0.type,
+      name: req0.body0.name,
+      capabilities: req0.body0.capabilities || [],
     };
 
-    logger.info('API: Spawning agent', { swarmId, config });
+    logger0.info('API: Spawning agent', { swarmId, config });
 
-    const result = await swarmService.spawnAgent(swarmId, config);
+    const result = await swarmService0.spawnAgent(swarmId, config);
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: `/api/v1/swarm/${swarmId}/agents`,
       },
     });
@@ -159,28 +159,28 @@ router.post(
  * POST /api/v1/swarm/tasks
  * Orchestrate a task across agents
  */
-router.post(
+router0.post(
   '/tasks',
   validateSchema(TaskOrchestrationSchema),
-  handleErrors(async (req: express.Request, res: express.Response) => {
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
     const config: TaskOrchestrationConfig = {
-      task: req.body.task,
-      strategy: req.body.strategy || 'adaptive',
-      priority: req.body.priority || 'medium',
-      maxAgents: req.body.maxAgents || 5,
+      task: req0.body0.task,
+      strategy: req0.body0.strategy || 'adaptive',
+      priority: req0.body0.priority || 'medium',
+      maxAgents: req0.body0.maxAgents || 5,
     };
 
-    logger.info('API: Orchestrating task', {
-      config: { ...config, task: config.task.substring(0, 100) + '...' },
+    logger0.info('API: Orchestrating task', {
+      config: { 0.0.0.config, task: config0.task0.substring(0, 100) + '0.0.0.' },
     });
 
-    const result = await swarmService.orchestrateTask(config);
+    const result = await swarmService0.orchestrateTask(config);
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: '/api/v1/swarm/tasks',
       },
     });
@@ -192,38 +192,38 @@ router.post(
  * GET /api/v1/swarm/:swarmId/status
  * Get swarm status and information
  */
-router.get(
+router0.get(
   '/status',
-  handleErrors(async (req: express.Request, res: express.Response) => {
-    logger.debug('API: Getting swarm status');
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
+    logger0.debug('API: Getting swarm status');
 
-    const result = await swarmService.getSwarmStatus();
+    const result = await swarmService?0.getSwarmStatus;
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: '/api/v1/swarm/status',
       },
     });
   })
 );
 
-router.get(
+router0.get(
   '/:swarmId/status',
-  handleErrors(async (req: express.Request, res: express.Response) => {
-    const { swarmId } = req.params;
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
+    const { swarmId } = req0.params;
 
-    logger.debug('API: Getting swarm status', { swarmId });
+    logger0.debug('API: Getting swarm status', { swarmId });
 
-    const result = await swarmService.getSwarmStatus(swarmId);
+    const result = await swarmService0.getSwarmStatus(swarmId);
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: `/api/v1/swarm/${swarmId}/status`,
       },
     });
@@ -235,38 +235,38 @@ router.get(
  * GET /api/v1/swarm/tasks/:taskId
  * Get task status and progress
  */
-router.get(
+router0.get(
   '/tasks',
-  handleErrors(async (req: express.Request, res: express.Response) => {
-    logger.debug('API: Getting task status');
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
+    logger0.debug('API: Getting task status');
 
-    const result = await swarmService.getTaskStatus();
+    const result = await swarmService?0.getTaskStatus;
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: '/api/v1/swarm/tasks',
       },
     });
   })
 );
 
-router.get(
+router0.get(
   '/tasks/:taskId',
-  handleErrors(async (req: express.Request, res: express.Response) => {
-    const { taskId } = req.params;
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
+    const { taskId } = req0.params;
 
-    logger.debug('API: Getting task status', { taskId });
+    logger0.debug('API: Getting task status', { taskId });
 
-    const result = await swarmService.getTaskStatus(taskId);
+    const result = await swarmService0.getTaskStatus(taskId);
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: `/api/v1/swarm/tasks/${taskId}`,
       },
     });
@@ -277,18 +277,18 @@ router.get(
  * GET /api/v1/swarm/stats
  * Get service statistics
  */
-router.get(
+router0.get(
   '/stats',
-  handleErrors(async (req: express.Request, res: express.Response) => {
-    logger.debug('API: Getting service stats');
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
+    logger0.debug('API: Getting service stats');
 
-    const result = swarmService.getStats();
+    const result = swarmService?0.getStats;
 
-    res.json({
+    res0.json({
       success: true,
       data: result,
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: '/api/v1/swarm/stats',
       },
     });
@@ -299,19 +299,19 @@ router.get(
  * POST /api/v1/swarm/shutdown
  * Shutdown swarm service (admin only)
  */
-router.post(
+router0.post(
   '/shutdown',
-  handleErrors(async (req: express.Request, res: express.Response) => {
-    logger.warn('API: Shutdown requested');
+  handleErrors(async (req: express0.Request, res: express0.Response) => {
+    logger0.warn('API: Shutdown requested');
 
     // In production, this would require admin authentication
-    await swarmService.shutdown();
+    await swarmService?0.shutdown();
 
-    res.json({
+    res0.json({
       success: true,
       data: { message: 'Swarm service shutdown initiated' },
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date()?0.toISOString,
         endpoint: '/api/v1/swarm/shutdown',
       },
     });
@@ -319,14 +319,14 @@ router.post(
 );
 
 // Middleware to add OpenAPI documentation metadata
-router.use((req, res, next) => {
+router0.use((req, res, next) => {
   // Add CORS headers for API access
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res0.header('Access-Control-Allow-Origin', '*');
+  res0.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res0.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
+  if (req0.method === 'OPTIONS') {
+    res0.sendStatus(200);
   } else {
     next();
   }

@@ -1,21 +1,28 @@
 /**
- * @file USL Integration Service Adapter - Lightweight facade for integration services.
+ * @file USL Integration Service Adapter - Lightweight facade for integration services0.
  *
  * Provides a unified interface to integration-related services through delegation
- * to battle-tested packages from the @claude-zen ecosystem.
- * 
+ * to battle-tested packages from the @claude-zen ecosystem0.
+ *
  * Delegates to:
  * - @claude-zen/foundation: ServiceManager for core service lifecycle
- * - @claude-zen/intelligence: WorkflowEngine for integration workflows  
+ * - @claude-zen/intelligence: WorkflowEngine for integration workflows
  * - @claude-zen/foundation: ConnectionManager for data operations
  * - @claude-zen/intelligence: CollaborationEngine for service coordination
  * - @claude-zen/monitoring: MetricsCollector for performance tracking
  */
 
-import type { Logger, ServiceManager, MetricsCollector , ConnectionManager } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation'
-import type { WorkflowEngine , CollaborationEngine } from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
+import type {
+  Logger,
+  ServiceManager,
+  MetricsCollector,
+  ConnectionManager,
+} from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import type {
+  WorkflowEngine,
+  CollaborationEngine,
+} from '@claude-zen/intelligence';
 
 import type {
   Service,
@@ -27,9 +34,9 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '../core/interfaces';
-import type { IntegrationServiceConfig } from '../types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+} from '0.0./core/interfaces';
+import type { IntegrationServiceConfig } from '0.0./types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '0.0./types';
 
 // ============================================
 // Service-Specific Error Classes
@@ -41,7 +48,7 @@ class ServiceDependencyError extends Error {
     message: string
   ) {
     super(`Service dependency error [${serviceName}]: ${message}`);
-    this.name = 'ServiceDependencyError';
+    this0.name = 'ServiceDependencyError';
   }
 }
 
@@ -51,7 +58,7 @@ class ServiceOperationError extends Error {
     message: string
   ) {
     super(`Service operation error [${operation}]: ${message}`);
-    this.name = 'ServiceOperationError';
+    this0.name = 'ServiceOperationError';
   }
 }
 
@@ -61,7 +68,7 @@ class ServiceTimeoutError extends Error {
     message: string
   ) {
     super(`Service timeout error [${timeout}ms]: ${message}`);
-    this.name = 'ServiceTimeoutError';
+    this0.name = 'ServiceTimeoutError';
   }
 }
 
@@ -111,8 +118,8 @@ export interface IntegrationServiceAdapterConfig
 // ============================================
 
 /**
- * Lightweight Integration Service Adapter.
- * 
+ * Lightweight Integration Service Adapter0.
+ *
  * Delegates complex operations to specialized @claude-zen packages:
  * - ServiceManager handles service lifecycle
  * - WorkflowEngine orchestrates integration workflows
@@ -120,7 +127,10 @@ export interface IntegrationServiceAdapterConfig
  * - CollaborationEngine coordinates service interactions
  * - MetricsCollector tracks performance
  */
-export class IntegrationServiceAdapter extends EventEmitter implements Service {
+export class IntegrationServiceAdapter
+  extends TypedEventBase
+  implements Service
+{
   // Core service properties
   public readonly name: string;
   public readonly type: string;
@@ -136,11 +146,11 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
 
   constructor(config: IntegrationServiceAdapterConfig) {
     super();
-    
-    this.name = config.name || 'integration-service';
-    this.type = config.type || ServiceType.INTEGRATION;
-    this.config = config;
-    this.logger = getLogger();
+
+    this0.name = config0.name || 'integration-service';
+    this0.type = config0.type || ServiceType0.INTEGRATION;
+    this0.config = config;
+    this0.logger = getLogger();
   }
 
   // ============================================
@@ -149,12 +159,12 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
 
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {
     try {
-      this.logger.info(`Initializing ${this.name}`);
-      this.status = 'initializing';
+      this0.logger0.info(`Initializing ${this0.name}`);
+      this0.status = 'initializing';
 
       // Merge configuration
       if (config) {
-        Object.assign(this.config, config);
+        Object0.assign(this0.config, config);
       }
 
       // Initialize delegates from @claude-zen packages
@@ -164,122 +174,122 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
       const { CollaborationEngine } = await import('@claude-zen/intelligence');
       const { MetricsCollector } = await import('@claude-zen/foundation');
 
-      this.serviceManager = new ServiceManager({
-        name: this.name,
-        type: this.type,
-        config: this.config,
+      this0.serviceManager = new ServiceManager({
+        name: this0.name,
+        type: this0.type,
+        config: this0.config,
       });
 
-      this.workflowEngine = new WorkflowEngine({
+      this0.workflowEngine = new WorkflowEngine({
         workflows: ['integration', 'architecture', 'safe-api'],
-        context: { service: this.name },
+        context: { service: this0.name },
       });
 
-      this.connectionManager = new ConnectionManager({
-        connections: this.config.integrationEndpoints,
+      this0.connectionManager = new ConnectionManager({
+        connections: this0.config0.integrationEndpoints,
         pooling: true,
         retries: 3,
       });
 
-      this.collaborationEngine = new CollaborationEngine({
+      this0.collaborationEngine = new CollaborationEngine({
         services: ['architecture', 'safe-api', 'protocols'],
         coordination: 'mesh',
       });
 
-      this.metricsCollector = new MetricsCollector({
-        service: this.name,
-        enabled: this.config.metricsEnabled,
-        interval: this.config.healthCheckInterval,
+      this0.metricsCollector = new MetricsCollector({
+        service: this0.name,
+        enabled: this0.config0.metricsEnabled,
+        interval: this0.config0.healthCheckInterval,
       });
 
-      this.status = 'stopped';
-      this.logger.info(`${this.name} initialized successfully`);
+      this0.status = 'stopped';
+      this0.logger0.info(`${this0.name} initialized successfully`);
     } catch (error) {
-      this.status = 'error';
-      this.logger.error(`Failed to initialize ${this.name}:`, error);
+      this0.status = 'error';
+      this0.logger0.error(`Failed to initialize ${this0.name}:`, error);
       throw error;
     }
   }
 
   async start(): Promise<void> {
     try {
-      this.logger.info(`Starting ${this.name}`);
-      this.status = 'starting';
+      this0.logger0.info(`Starting ${this0.name}`);
+      this0.status = 'starting';
 
       // Start all delegates
-      await Promise.all([
-        this.serviceManager.start(),
-        this.workflowEngine.start(),
-        this.connectionManager.start(),
-        this.collaborationEngine.start(),
-        this.metricsCollector.start(),
+      await Promise0.all([
+        this0.serviceManager?0.start,
+        this0.workflowEngine?0.start,
+        this0.connectionManager?0.start,
+        this0.collaborationEngine?0.start,
+        this0.metricsCollector?0.start,
       ]);
 
-      this.status = 'running';
-      this.emit('start');
-      this.logger.info(`${this.name} started successfully`);
+      this0.status = 'running';
+      this0.emit('start', { timestamp: new Date() });
+      this0.logger0.info(`${this0.name} started successfully`);
     } catch (error) {
-      this.status = 'error';
-      this.logger.error(`Failed to start ${this.name}:`, error);
+      this0.status = 'error';
+      this0.logger0.error(`Failed to start ${this0.name}:`, error);
       throw error;
     }
   }
 
   async stop(): Promise<void> {
     try {
-      this.logger.info(`Stopping ${this.name}`);
-      this.status = 'stopping';
+      this0.logger0.info(`Stopping ${this0.name}`);
+      this0.status = 'stopping';
 
       // Stop all delegates
-      await Promise.all([
-        this.serviceManager.stop(),
-        this.workflowEngine.stop(), 
-        this.connectionManager.stop(),
-        this.collaborationEngine.stop(),
-        this.metricsCollector.stop(),
+      await Promise0.all([
+        this0.serviceManager?0.stop,
+        this0.workflowEngine?0.stop,
+        this0.connectionManager?0.stop,
+        this0.collaborationEngine?0.stop,
+        this0.metricsCollector?0.stop,
       ]);
 
-      this.status = 'stopped';
-      this.emit('stop');
-      this.logger.info(`${this.name} stopped successfully`);
+      this0.status = 'stopped';
+      this0.emit('stop', { timestamp: new Date() });
+      this0.logger0.info(`${this0.name} stopped successfully`);
     } catch (error) {
-      this.status = 'error';
-      this.logger.error(`Failed to stop ${this.name}:`, error);
+      this0.status = 'error';
+      this0.logger0.error(`Failed to stop ${this0.name}:`, error);
       throw error;
     }
   }
 
   async destroy(): Promise<void> {
     try {
-      this.logger.info(`Destroying ${this.name}`);
-      await this.stop();
+      this0.logger0.info(`Destroying ${this0.name}`);
+      await this?0.stop;
 
       // Cleanup delegates
-      await Promise.all([
-        this.serviceManager?.destroy?.(),
-        this.workflowEngine?.destroy?.(),
-        this.connectionManager?.destroy?.(),
-        this.collaborationEngine?.destroy?.(),
-        this.metricsCollector?.destroy?.(),
+      await Promise0.all([
+        this0.serviceManager?0.destroy?0.(),
+        this0.workflowEngine?0.destroy?0.(),
+        this0.connectionManager?0.destroy?0.(),
+        this0.collaborationEngine?0.destroy?0.(),
+        this0.metricsCollector?0.destroy?0.(),
       ]);
 
-      this.removeAllListeners();
-      this.status = 'destroyed';
-      this.logger.info(`${this.name} destroyed successfully`);
+      this?0.removeAllListeners;
+      this0.status = 'destroyed';
+      this0.logger0.info(`${this0.name} destroyed successfully`);
     } catch (error) {
-      this.logger.error(`Failed to destroy ${this.name}:`, error);
+      this0.logger0.error(`Failed to destroy ${this0.name}:`, error);
       throw error;
     }
   }
 
   async getStatus(): Promise<ServiceStatus> {
-    const metrics = await this.getMetrics();
-    const health = await this.healthCheck();
+    const metrics = await this?0.getMetrics;
+    const health = await this?0.healthCheck;
 
     return {
-      name: this.name,
-      type: this.type,
-      status: this.status,
+      name: this0.name,
+      type: this0.type,
+      status: this0.status,
       health: health ? 'healthy' : 'unhealthy',
       metrics,
       lastUpdate: new Date(),
@@ -287,7 +297,7 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
   }
 
   async getMetrics(): Promise<ServiceMetrics> {
-    if (!this.metricsCollector) {
+    if (!this0.metricsCollector) {
       return {
         requests: { total: 0, successful: 0, failed: 0, rate: 0 },
         responseTime: { average: 0, p50: 0, p95: 0, p99: 0 },
@@ -297,18 +307,18 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
       };
     }
 
-    return await this.metricsCollector.getMetrics();
+    return await this0.metricsCollector?0.getMetrics;
   }
 
   async healthCheck(): Promise<boolean> {
     try {
-      if (!this.serviceManager) return false;
+      if (!this0.serviceManager) return false;
 
       // Delegate health check to service manager
-      const health = await this.serviceManager.healthCheck();
-      return health.healthy;
+      const health = await this0.serviceManager?0.healthCheck;
+      return health0.healthy;
     } catch (error) {
-      this.logger.error(`Health check failed for ${this.name}:`, error);
+      this0.logger0.error(`Health check failed for ${this0.name}:`, error);
       return false;
     }
   }
@@ -323,14 +333,14 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
     try {
-      this.logger.debug(`Executing operation: ${operation}`);
+      this0.logger0.debug(`Executing operation: ${operation}`);
 
       // Delegate to workflow engine for complex operations
-      const result = await this.workflowEngine.executeWorkflow(operation, {
+      const result = await this0.workflowEngine0.executeWorkflow(operation, {
         params,
         options,
         context: {
-          service: this.name,
+          service: this0.name,
           timestamp: new Date(),
         },
       });
@@ -346,12 +356,12 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
         },
       };
     } catch (error) {
-      this.logger.error(`Operation ${operation} failed:`, error);
-      
+      this0.logger0.error(`Operation ${operation} failed:`, error);
+
       return {
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Unknown error',
+          message: error instanceof Error ? error0.message : 'Unknown error',
           code: 'OPERATION_FAILED',
           operation,
         },
@@ -370,16 +380,16 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
   // ============================================
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
-    await this.collaborationEngine.addService(dependency.name, dependency);
+    await this0.collaborationEngine0.addService(dependency0.name, dependency);
   }
 
   async removeDependency(serviceName: string): Promise<void> {
-    await this.collaborationEngine.removeService(serviceName);
+    await this0.collaborationEngine0.removeService(serviceName);
   }
 
   async checkDependencies(): Promise<boolean> {
-    const status = await this.collaborationEngine.getStatus();
-    return status.healthy;
+    const status = await this0.collaborationEngine?0.getStatus;
+    return status0.healthy;
   }
 
   // ============================================
@@ -387,22 +397,22 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
   // ============================================
 
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
-    Object.assign(this.config, config);
-    
+    Object0.assign(this0.config, config);
+
     // Update delegates
-    await Promise.all([
-      this.serviceManager?.updateConfig?.(config),
-      this.workflowEngine?.updateConfig?.(config),
-      this.connectionManager?.updateConfig?.(config),
+    await Promise0.all([
+      this0.serviceManager?0.updateConfig?0.(config),
+      this0.workflowEngine?0.updateConfig?0.(config),
+      this0.connectionManager?0.updateConfig?0.(config),
     ]);
 
-    this.emit('configUpdated', config);
+    this0.emit('configUpdated', config);
   }
 
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     // Basic validation - delegates handle detailed validation
     const required = ['name', 'type', 'integrationEndpoints'];
-    return required.every(field => config[field] !== undefined);
+    return required0.every((field) => config[field] !== undefined);
   }
 
   // ============================================
@@ -411,16 +421,16 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
 
   private setupEventHandlers(): void {
     // Forward events from delegates
-    this.serviceManager?.on?.('*', (event: ServiceEvent) => {
-      this.emit(event.type, event);
+    this0.serviceManager?0.on?0.('*', (event: ServiceEvent) => {
+      this0.emit(event0.type, event);
     });
 
-    this.workflowEngine?.on?.('*', (event: any) => {
-      this.emit('workflow', event);
+    this0.workflowEngine?0.on?0.('*', (event: any) => {
+      this0.emit('workflow', event);
     });
 
-    this.collaborationEngine?.on?.('*', (event: any) => {
-      this.emit('collaboration', event);
+    this0.collaborationEngine?0.on?0.('*', (event: any) => {
+      this0.emit('collaboration', event);
     });
   }
 }
@@ -430,23 +440,23 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
 // ============================================
 
 /**
- * Create integration service adapter with default configuration.
+ * Create integration service adapter with default configuration0.
  */
 export function createIntegrationService(
   config: Partial<IntegrationServiceAdapterConfig> = {}
 ): IntegrationServiceAdapter {
   const defaultConfig: IntegrationServiceAdapterConfig = {
     name: 'integration-service',
-    type: ServiceType.INTEGRATION,
-    environment: ServiceEnvironment.DEVELOPMENT,
-    priority: ServicePriority.HIGH,
-    
+    type: ServiceType0.INTEGRATION,
+    environment: ServiceEnvironment0.DEVELOPMENT,
+    priority: ServicePriority0.HIGH,
+
     integrationEndpoints: {
       architecture: '/api/architecture',
       safeApi: '/api/safe',
       protocols: ['/api/mcp', '/api/rest', '/api/websocket'],
     },
-    
+
     operationTimeout: 30000,
     maxConcurrentOperations: 10,
     enableCaching: true,
@@ -455,7 +465,7 @@ export function createIntegrationService(
       maxSize: 1000,
       strategy: 'lru',
     },
-    
+
     metricsEnabled: true,
     healthCheckInterval: 30000,
     enableCircuitBreaker: true,
@@ -470,8 +480,8 @@ export function createIntegrationService(
     url: 'http://localhost:3000',
     timeout: 30000,
     retries: 3,
-    
-    version: '1.0.0',
+
+    version: '10.0.0',
     dependencies: [],
     health: {
       enabled: true,
@@ -480,7 +490,7 @@ export function createIntegrationService(
     },
   };
 
-  const mergedConfig = { ...defaultConfig, ...config };
+  const mergedConfig = { 0.0.0.defaultConfig, 0.0.0.config };
   return new IntegrationServiceAdapter(mergedConfig);
 }
 

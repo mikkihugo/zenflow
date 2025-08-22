@@ -170,7 +170,7 @@ export interface PerformanceHistory {
  * This class provides autonomous selection between basic mathematical teleprompters
  * and ML-enhanced variants using sophisticated analysis and machine learning.
  */
-export class AutonomousTeleprompterSelector extends EventEmitter {
+export class AutonomousTeleprompterSelector extends TypedEventBase {
   private logger: Logger;
   private mlBridge: DSPyBrainMLBridge;
   private initialized: boolean = false;
@@ -222,7 +222,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
       
       this.initialized = true;
       this.logger.info(`✅ Autonomous Selector initialized with ${this.availableVariants.size} teleprompter variants`);
-      this.emit('selector:initialized');
+      this.emit('selector:initialized', { timestamp: new Date() });
 
     } catch (error) {
       this.logger.error('Failed to initialize Autonomous Teleprompter Selector:', error);

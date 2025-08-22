@@ -164,3 +164,14 @@ export interface IntelligenceSystemMetrics {
     knowledgeQueries: number;
   };
 }
+
+// Document Type exports
+export type DocumentType = 
+  | 'text'
+  | 'markdown'
+  | 'json'
+  | 'xml'
+  | 'html'
+  | 'code'
+  | 'configuration'
+  | 'unknown';

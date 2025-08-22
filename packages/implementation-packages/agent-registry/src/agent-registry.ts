@@ -40,7 +40,7 @@ import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
  * Leverages advanced dependency injection features for high-performance agent management
  * with auto-discovery, advanced scoping, and intelligent service graphs.
  */
-export class AgentRegistry extends EventEmitter {
+export class AgentRegistry extends TypedEventBase {
   private container: DIContainer;
   private logger: Logger;
   private agentCache = new Map<string, JsonValue>();
@@ -512,7 +512,7 @@ export class AgentRegistry extends EventEmitter {
       // Dispose container
       await this.container.dispose();
 
-      this.emit('shutdown');
+      this.emit('shutdown', {});
       this.logger.info('✅ Professional Agent Registry shutdown complete');
     } catch (error) {
       this.logger.error('❌ Error during registry shutdown:', error);

@@ -15,7 +15,7 @@
 
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation'
 
 
@@ -108,7 +108,7 @@ export interface ScanResults {
 /**
  * Enhanced document and code scanner with AI-powered analysis
  */
-export class EnhancedDocumentScanner extends EventEmitter {
+export class EnhancedDocumentScanner extends TypedEventBase {
   private config: ScannerConfig;
   private analysisPatterns: Map<AnalysisPattern, RegExp[]>;
   private isScanning = false;

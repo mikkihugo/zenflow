@@ -7,7 +7,13 @@
     "declarationMap": true,
     "sourceMap": true,
     "composite": true,
-    "incremental": true
+    "incremental": true,
+    "moduleResolution": "Node",
+    "target": "ES2022",
+    "module": "ES2022",
+    "downlevelIteration": true,
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false
   },
   "include": [
     "src/**/*"
@@ -20,7 +26,10 @@
   ],
   "references": [
     {
-      "path": "./foundation"
+      "path": "../foundation"
+    },
+    {
+      "path": "../llm-providers"
     },
     {
       "path": "../repo-analyzer"

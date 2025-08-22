@@ -1,14 +1,14 @@
 /**
- * @file USL (Unified Service Layer) Types and Configuration.
+ * @file USL (Unified Service Layer) Types and Configuration0.
  *
- * Centralized type definitions and configuration schemas for all service types.
- * in the Claude-Zen ecosystem.
+ * Centralized type definitions and configuration schemas for all service types0.
+ * in the Claude-Zen ecosystem0.
  */
 
-import type { ServiceConfig, ServiceMetrics } from './core/interfaces';
+import type { ServiceConfig, ServiceMetrics } from '0./core/interfaces';
 
 /**
- * Service type enumeration for all supported service categories.
+ * Service type enumeration for all supported service categories0.
  */
 export enum ServiceType {
   // Data Services
@@ -78,7 +78,7 @@ export enum ServiceStatus {
   RUNNING = 'running',
   STOPPING = 'stopping',
   STOPPED = 'stopped',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 /**
@@ -161,7 +161,7 @@ export interface Service {
 }
 
 /**
- * Service priority levels for initialization and resource allocation.
+ * Service priority levels for initialization and resource allocation0.
  */
 export enum ServicePriority {
   CRITICAL = 0, // System-critical services (database, logging)
@@ -172,7 +172,7 @@ export enum ServicePriority {
 }
 
 /**
- * Service environment configuration.
+ * Service environment configuration0.
  */
 export enum ServiceEnvironment {
   DEVELOPMENT = 'development',
@@ -182,7 +182,7 @@ export enum ServiceEnvironment {
 }
 
 /**
- * Base service configuration with common properties.
+ * Base service configuration with common properties0.
  *
  * @example
  */
@@ -194,12 +194,12 @@ export interface BaseServiceConfig extends ServiceConfig {
 }
 
 /**
- * Data service configuration for data management services.
+ * Data service configuration for data management services0.
  *
  * @example
  */
 export interface DataServiceConfig extends BaseServiceConfig {
-  type: ServiceType.DATA | ServiceType.WEB_DATA | ServiceType.DOCUMENT;
+  type: ServiceType0.DATA | ServiceType0.WEB_DATA | ServiceType0.DOCUMENT;
   dataSource?: {
     type: 'database' | 'memory' | 'file' | 'api';
     connection?: string;
@@ -218,16 +218,16 @@ export interface DataServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Web service configuration for HTTP/WebSocket services.
+ * Web service configuration for HTTP/WebSocket services0.
  *
  * @example
  */
 export interface WebServiceConfig extends BaseServiceConfig {
   type:
-    | ServiceType.WEB
-    | ServiceType.API
-    | ServiceType.SAFE_API
-    | ServiceType.WEBSOCKET;
+    | ServiceType0.WEB
+    | ServiceType0.API
+    | ServiceType0.SAFE_API
+    | ServiceType0.WEBSOCKET;
   server?: {
     host?: string;
     port?: number;
@@ -261,17 +261,17 @@ export interface WebServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Coordination service configuration for swarm and orchestration.
+ * Coordination service configuration for swarm and orchestration0.
  *
  * @example
  */
 export interface CoordinationServiceConfig extends BaseServiceConfig {
   type:
-    | ServiceType.COORDINATION
-    | ServiceType.SWARM
-    | ServiceType.ORCHESTRATION
-    | ServiceType.DAA
-    | ServiceType.SESSION_RECOVERY;
+    | ServiceType0.COORDINATION
+    | ServiceType0.SWARM
+    | ServiceType0.ORCHESTRATION
+    | ServiceType0.DAA
+    | ServiceType0.SESSION_RECOVERY;
   coordination?: {
     topology?: 'mesh' | 'hierarchical' | 'ring' | 'star';
     maxAgents?: number;
@@ -292,15 +292,15 @@ export interface CoordinationServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Neural service configuration for AI and ML services.
+ * Neural service configuration for AI and ML services0.
  *
  * @example
  */
 export interface NeuralServiceConfig extends BaseServiceConfig {
   type:
-    | ServiceType.NEURAL
-    | ServiceType.LEARNING
-    | ServiceType.PATTERN_RECOGNITION;
+    | ServiceType0.NEURAL
+    | ServiceType0.LEARNING
+    | ServiceType0.PATTERN_RECOGNITION;
   model?: {
     type: 'neural-network' | 'transformer' | 'custom';
     path?: string;
@@ -326,12 +326,12 @@ export interface NeuralServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Memory service configuration for caching and session management.
+ * Memory service configuration for caching and session management0.
  *
  * @example
  */
 export interface MemoryServiceConfig extends BaseServiceConfig {
-  type: ServiceType.MEMORY | ServiceType.CACHE | ServiceType.SESSION;
+  type: ServiceType0.MEMORY | ServiceType0.CACHE | ServiceType0.SESSION;
   storage?: {
     type: 'memory' | 'redis' | 'memcached' | 'database';
     connection?: string;
@@ -354,12 +354,12 @@ export interface MemoryServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Database service configuration for database integrations.
+ * Database service configuration for database integrations0.
  *
  * @example
  */
 export interface DatabaseServiceConfig extends BaseServiceConfig {
-  type: ServiceType.DATABASE | ServiceType.VECTOR | ServiceType.GRAPH;
+  type: ServiceType0.DATABASE | ServiceType0.VECTOR | ServiceType0.GRAPH;
   connection?: {
     host?: string;
     port?: number;
@@ -389,12 +389,12 @@ export interface DatabaseServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Interface service configuration for CLI, TUI, MCP services.
+ * Interface service configuration for CLI, TUI, MCP services0.
  *
  * @example
  */
 export interface InterfaceServiceConfig extends BaseServiceConfig {
-  type: ServiceType.CLI | ServiceType.TUI | ServiceType.MCP;
+  type: ServiceType0.CLI | ServiceType0.TUI | ServiceType0.MCP;
   interface?: {
     interactive?: boolean;
     colors?: boolean;
@@ -414,12 +414,12 @@ export interface InterfaceServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Monitoring service configuration for health and performance tracking.
+ * Monitoring service configuration for health and performance tracking0.
  *
  * @example
  */
 export interface MonitoringServiceConfig extends BaseServiceConfig {
-  type: ServiceType.HEALTH | ServiceType.MONITORING | ServiceType.LOGGING;
+  type: ServiceType0.HEALTH | ServiceType0.MONITORING | ServiceType0.LOGGING;
   metrics?: {
     enabled: boolean;
     interval?: number;
@@ -442,12 +442,12 @@ export interface MonitoringServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Workflow service configuration for task and pipeline management.
+ * Workflow service configuration for task and pipeline management0.
  *
  * @example
  */
 export interface WorkflowServiceConfig extends BaseServiceConfig {
-  type: ServiceType.WORKFLOW | ServiceType.TASK | ServiceType.PIPELINE;
+  type: ServiceType0.WORKFLOW | ServiceType0.TASK | ServiceType0.PIPELINE;
   execution?: {
     parallel?: boolean;
     maxConcurrency?: number;
@@ -472,15 +472,15 @@ export interface WorkflowServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Integration service configuration for integration services.
+ * Integration service configuration for integration services0.
  *
  * @example
  */
 export interface IntegrationServiceConfig extends BaseServiceConfig {
   type:
-    | ServiceType.API
-    | ServiceType.SAFE_API
-    | ServiceType.ARCHITECTURE_STORAGE;
+    | ServiceType0.API
+    | ServiceType0.SAFE_API
+    | ServiceType0.ARCHITECTURE_STORAGE;
   integration?: {
     architectureStorage?: boolean;
     safeAPI?: boolean;
@@ -508,15 +508,12 @@ export interface IntegrationServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Infrastructure service configuration for infrastructure and system services.
+ * Infrastructure service configuration for infrastructure and system services0.
  *
  * @example
  */
 export interface InfrastructureServiceConfig extends BaseServiceConfig {
-  type:
-    | ServiceType.NFRASTRUCTURE
-    | ServiceType.SYSTEM
-    | ServiceType.MONITORING;
+  type: ServiceType0.NFRASTRUCTURE | ServiceType0.SYSTEM | ServiceType0.MONITORING;
   facade?: {
     enabled: boolean;
     autoInitialize?: boolean;
@@ -580,7 +577,7 @@ export interface InfrastructureServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Union type for all service configurations.
+ * Union type for all service configurations0.
  */
 export type AnyServiceConfig =
   | DataServiceConfig
@@ -597,13 +594,13 @@ export type AnyServiceConfig =
   | BaseServiceConfig;
 
 /**
- * Service configuration factory for creating typed configurations.
+ * Service configuration factory for creating typed configurations0.
  *
  * @example
  */
 export class ServiceConfigFactory {
   /**
-   * Create a data service configuration.
+   * Create a data service configuration0.
    *
    * @param name
    * @param options
@@ -614,10 +611,10 @@ export class ServiceConfigFactory {
   ): DataServiceConfig {
     return {
       name,
-      type: ServiceType.DATA,
+      type: ServiceType0.DATA,
       enabled: true,
-      priority: ServicePriority.NORMAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.NORMAL,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 30000,
       health: {
         enabled: true,
@@ -634,12 +631,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: false,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create a web service configuration.
+   * Create a web service configuration0.
    *
    * @param name
    * @param options
@@ -650,10 +647,10 @@ export class ServiceConfigFactory {
   ): WebServiceConfig {
     return {
       name,
-      type: ServiceType.WEB,
+      type: ServiceType0.WEB,
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.HIGH,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 30000,
       server: {
         host: 'localhost',
@@ -685,12 +682,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create a coordination service configuration.
+   * Create a coordination service configuration0.
    *
    * @param name
    * @param options
@@ -701,10 +698,10 @@ export class ServiceConfigFactory {
   ): CoordinationServiceConfig {
     return {
       name,
-      type: ServiceType.COORDINATION,
+      type: ServiceType0.COORDINATION,
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.HIGH,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 60000,
       coordination: {
         topology: 'mesh',
@@ -738,12 +735,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create a neural service configuration.
+   * Create a neural service configuration0.
    *
    * @param name
    * @param options
@@ -754,10 +751,10 @@ export class ServiceConfigFactory {
   ): NeuralServiceConfig {
     return {
       name,
-      type: ServiceType.NEURAL,
+      type: ServiceType0.NEURAL,
       enabled: true,
-      priority: ServicePriority.NORMAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.NORMAL,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 120000,
       model: {
         type: 'neural-network',
@@ -792,12 +789,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create a memory service configuration.
+   * Create a memory service configuration0.
    *
    * @param name
    * @param options
@@ -808,10 +805,10 @@ export class ServiceConfigFactory {
   ): MemoryServiceConfig {
     return {
       name,
-      type: ServiceType.MEMORY,
+      type: ServiceType0.MEMORY,
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.HIGH,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 30000,
       storage: {
         type: 'memory',
@@ -844,12 +841,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create a database service configuration.
+   * Create a database service configuration0.
    *
    * @param name
    * @param options
@@ -860,10 +857,10 @@ export class ServiceConfigFactory {
   ): DatabaseServiceConfig {
     return {
       name,
-      type: ServiceType.DATABASE,
+      type: ServiceType0.DATABASE,
       enabled: true,
-      priority: ServicePriority.CRITICAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.CRITICAL,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 60000,
       connection: {
         host: 'localhost',
@@ -900,12 +897,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create a monitoring service configuration.
+   * Create a monitoring service configuration0.
    *
    * @param name
    * @param options
@@ -916,10 +913,10 @@ export class ServiceConfigFactory {
   ): MonitoringServiceConfig {
     return {
       name,
-      type: ServiceType.MONITORING,
+      type: ServiceType0.MONITORING,
       enabled: true,
-      priority: ServicePriority.LOW,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.LOW,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 30000,
       metrics: {
         enabled: true,
@@ -930,9 +927,9 @@ export class ServiceConfigFactory {
       alerts: {
         enabled: false,
         thresholds: {
-          'cpu.usage': 80,
-          'memory.usage': 85,
-          'error.rate': 5,
+          'cpu0.usage': 80,
+          'memory0.usage': 85,
+          'error0.rate': 5,
         },
       },
       storage: {
@@ -954,12 +951,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create an integration service configuration.
+   * Create an integration service configuration0.
    *
    * @param name
    * @param options
@@ -970,10 +967,10 @@ export class ServiceConfigFactory {
   ): IntegrationServiceConfig {
     return {
       name,
-      type: ServiceType.API,
+      type: ServiceType0.API,
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.HIGH,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 30000,
       integration: {
         architectureStorage: true,
@@ -1014,12 +1011,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create an infrastructure service configuration.
+   * Create an infrastructure service configuration0.
    *
    * @param name
    * @param options
@@ -1030,10 +1027,10 @@ export class ServiceConfigFactory {
   ): InfrastructureServiceConfig {
     return {
       name,
-      type: ServiceType.NFRASTRUCTURE,
+      type: ServiceType0.NFRASTRUCTURE,
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.HIGH,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 30000,
       facade: {
         enabled: true,
@@ -1110,12 +1107,12 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 
   /**
-   * Create a workflow service configuration.
+   * Create a workflow service configuration0.
    *
    * @param name
    * @param options
@@ -1126,10 +1123,10 @@ export class ServiceConfigFactory {
   ): WorkflowServiceConfig {
     return {
       name,
-      type: ServiceType.WORKFLOW,
+      type: ServiceType0.WORKFLOW,
       enabled: true,
-      priority: ServicePriority.NORMAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority0.NORMAL,
+      environment: ServiceEnvironment0.DEVELOPMENT,
       timeout: 300000, // 5 minutes
       execution: {
         parallel: true,
@@ -1166,13 +1163,13 @@ export class ServiceConfigFactory {
         trackErrors: true,
         trackMemoryUsage: true,
       },
-      ...options,
+      0.0.0.options,
     };
   }
 }
 
 /**
- * Type guard functions for service configurations.
+ * Type guard functions for service configurations0.
  *
  * @param config
  * @example
@@ -1181,58 +1178,58 @@ export function isDataServiceConfig(
   config: AnyServiceConfig
 ): config is DataServiceConfig {
   return [
-    ServiceType.DATA,
-    ServiceType.WEB_DATA,
-    ServiceType.DOCUMENT,
-  ].includes(config?.type as ServiceType);
+    ServiceType0.DATA,
+    ServiceType0.WEB_DATA,
+    ServiceType0.DOCUMENT,
+  ]0.includes(config?0.type as ServiceType);
 }
 
 export function isWebServiceConfig(
   config: AnyServiceConfig
 ): config is WebServiceConfig {
   return [
-    ServiceType.WEB,
-    ServiceType.API,
-    ServiceType.SAFE_API,
-    ServiceType.WEBSOCKET,
-  ].includes(config?.type as ServiceType);
+    ServiceType0.WEB,
+    ServiceType0.API,
+    ServiceType0.SAFE_API,
+    ServiceType0.WEBSOCKET,
+  ]0.includes(config?0.type as ServiceType);
 }
 
 export function isCoordinationServiceConfig(
   config: AnyServiceConfig
 ): config is CoordinationServiceConfig {
   return [
-    ServiceType.COORDINATION,
-    ServiceType.SWARM,
-    ServiceType.ORCHESTRATION,
-    ServiceType.DAA,
-    ServiceType.SESSION_RECOVERY,
-  ].includes(config?.type as ServiceType);
+    ServiceType0.COORDINATION,
+    ServiceType0.SWARM,
+    ServiceType0.ORCHESTRATION,
+    ServiceType0.DAA,
+    ServiceType0.SESSION_RECOVERY,
+  ]0.includes(config?0.type as ServiceType);
 }
 
 export function isNeuralServiceConfig(
   config: AnyServiceConfig
 ): config is NeuralServiceConfig {
   return [
-    ServiceType.NEURAL,
-    ServiceType.LEARNING,
-    ServiceType.PATTERN_RECOGNITION,
-  ].includes(config?.type as ServiceType);
+    ServiceType0.NEURAL,
+    ServiceType0.LEARNING,
+    ServiceType0.PATTERN_RECOGNITION,
+  ]0.includes(config?0.type as ServiceType);
 }
 
 export function isMemoryServiceConfig(
   config: AnyServiceConfig
 ): config is MemoryServiceConfig {
-  return [ServiceType.MEMORY, ServiceType.CACHE, ServiceType.SESSION].includes(
-    config?.type as ServiceType
+  return [ServiceType0.MEMORY, ServiceType0.CACHE, ServiceType0.SESSION]0.includes(
+    config?0.type as ServiceType
   );
 }
 
 export function isDatabaseServiceConfig(
   config: AnyServiceConfig
 ): config is DatabaseServiceConfig {
-  return [ServiceType.DATABASE, ServiceType.VECTOR, ServiceType.GRAPH].includes(
-    config?.type as ServiceType
+  return [ServiceType0.DATABASE, ServiceType0.VECTOR, ServiceType0.GRAPH]0.includes(
+    config?0.type as ServiceType
   );
 }
 
@@ -1240,28 +1237,28 @@ export function isIntegrationServiceConfig(
   config: AnyServiceConfig
 ): config is IntegrationServiceConfig {
   return [
-    ServiceType.API,
-    ServiceType.SAFE_API,
-    ServiceType.ARCHITECTURE_STORAGE,
-  ].includes(config?.type as ServiceType);
+    ServiceType0.API,
+    ServiceType0.SAFE_API,
+    ServiceType0.ARCHITECTURE_STORAGE,
+  ]0.includes(config?0.type as ServiceType);
 }
 
 export function isInfrastructureServiceConfig(
   config: AnyServiceConfig
 ): config is InfrastructureServiceConfig {
   return [
-    ServiceType.NFRASTRUCTURE,
-    ServiceType.SYSTEM,
-    ServiceType.MONITORING,
-  ].includes(config?.type as ServiceType);
+    ServiceType0.NFRASTRUCTURE,
+    ServiceType0.SYSTEM,
+    ServiceType0.MONITORING,
+  ]0.includes(config?0.type as ServiceType);
 }
 
 export function isMonitoringServiceConfig(
   config: AnyServiceConfig
 ): config is MonitoringServiceConfig {
   return [
-    ServiceType.HEALTH,
-    ServiceType.MONITORING,
-    ServiceType.LOGGING,
-  ].includes(config?.type as ServiceType);
+    ServiceType0.HEALTH,
+    ServiceType0.MONITORING,
+    ServiceType0.LOGGING,
+  ]0.includes(config?0.type as ServiceType);
 }

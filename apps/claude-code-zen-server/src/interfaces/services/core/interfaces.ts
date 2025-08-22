@@ -1,25 +1,25 @@
 /**
- * @file USL (Unified Service Layer) Core Interfaces.
+ * @file USL (Unified Service Layer) Core Interfaces0.
  *
  * Provides unified abstractions for all service implementations across Claude-Zen:
  * - Data services, web services, coordination services, neural services
  * - Consistent initialization, lifecycle management, and monitoring patterns
  * - Factory pattern for service creation and management
  * - Health checks, performance monitoring, and configuration management
- * - Type-safe service registry and discovery system.
+ * - Type-safe service registry and discovery system0.
  */
 
 /**
- * Service authentication configuration.
+ * Service authentication configuration0.
  *
  * @interface ServiceAuthConfig
- * @description Configuration for various authentication methods supported by services.
+ * @description Configuration for various authentication methods supported by services0.
  * @example
  * ```typescript
  * // API Key authentication
  * const apiKeyAuth: ServiceAuthConfig = {
  *   type: 'apikey',
- *   apiKey: process.env['API_KEY'],
+ *   apiKey: process0.env['API_KEY'],
  *   apiKeyHeader: 'X-Custom-API-Key'
  * };
  *
@@ -27,7 +27,7 @@
  * const jwtAuth: ServiceAuthConfig = {
  *   type: 'jwt',
  *   jwt: {
- *     secret: process.env['JWT_SECRET'],
+ *     secret: process0.env['JWT_SECRET'],
  *     expiresIn: '24h',
  *     algorithm: 'HS256'
  *   }
@@ -37,9 +37,9 @@
  * const oauthAuth: ServiceAuthConfig = {
  *   type: 'oauth',
  *   credentials: {
- *     clientId: process.env['OAUTH_CLIENT_ID'],
- *     clientSecret: process.env['OAUTH_CLIENT_SECRET'],
- *     tokenUrl: 'https://auth.example.com/token',
+ *     clientId: process0.env['OAUTH_CLIENT_ID'],
+ *     clientSecret: process0.env['OAUTH_CLIENT_SECRET'],
+ *     tokenUrl: 'https://auth0.example0.com/token',
  *     scope: 'read:data write:data'
  *   }
  * };
@@ -70,7 +70,7 @@ export interface ServiceAuthConfig {
   jwt?: {
     /** JWT signing secret */
     secret: string;
-    /** Token expiration time (e.g., '24h', '7d') */
+    /** Token expiration time (e0.g0., '24h', '7d') */
     expiresIn?: string;
     /** Signing algorithm (default: 'HS256') */
     algorithm?: string;
@@ -81,7 +81,7 @@ export interface ServiceAuthConfig {
 }
 
 /**
- * Service retry configuration with multiple backoff strategies.
+ * Service retry configuration with multiple backoff strategies0.
  *
  * @example
  */
@@ -94,7 +94,7 @@ export interface ServiceRetryConfig {
 }
 
 /**
- * Service health check configuration.
+ * Service health check configuration0.
  *
  * @example
  */
@@ -108,7 +108,7 @@ export interface ServiceHealthConfig {
 }
 
 /**
- * Service performance monitoring configuration.
+ * Service performance monitoring configuration0.
  *
  * @example
  */
@@ -123,7 +123,7 @@ export interface ServiceMonitoringConfig {
 }
 
 /**
- * Service dependency configuration.
+ * Service dependency configuration0.
  *
  * @example
  */
@@ -136,7 +136,7 @@ export interface ServiceDependencyConfig {
 }
 
 /**
- * Base service configuration interface.
+ * Base service configuration interface0.
  *
  * @example
  */
@@ -182,7 +182,7 @@ export interface ServiceConfig {
 }
 
 /**
- * Service lifecycle status.
+ * Service lifecycle status0.
  */
 export type ServiceLifecycleStatus =
   | 'uninitialized'
@@ -196,7 +196,7 @@ export type ServiceLifecycleStatus =
   | 'destroyed';
 
 /**
- * Service health status information.
+ * Service health status information0.
  *
  * @example
  */
@@ -219,7 +219,7 @@ export interface ServiceStatus {
 }
 
 /**
- * Service performance metrics.
+ * Service performance metrics0.
  *
  * @example
  */
@@ -243,7 +243,7 @@ export interface ServiceMetrics {
 }
 
 /**
- * Generic service operation options.
+ * Generic service operation options0.
  *
  * @example
  */
@@ -255,7 +255,7 @@ export interface ServiceOperationOptions {
 }
 
 /**
- * Generic service operation response.
+ * Generic service operation response0.
  *
  * @example
  */
@@ -276,7 +276,7 @@ export interface ServiceOperationResponse<T = any> {
 }
 
 /**
- * Service event types for lifecycle and operations.
+ * Service event types for lifecycle and operations0.
  */
 export type ServiceEventType =
   | 'initializing'
@@ -291,7 +291,7 @@ export type ServiceEventType =
   | 'metrics-update';
 
 /**
- * Service event data.
+ * Service event data0.
  *
  * @example
  */
@@ -299,16 +299,16 @@ export interface ServiceEvent {
   type: ServiceEventType;
   serviceName: string;
   timestamp: Date;
-  data?: unknown;
+  data?: any;
   error?: Error;
 }
 
 /**
- * Core service interface that all services must implement.
+ * Core service interface that all services must implement0.
  *
  * @interface Service
  * @description Base interface that all USL services must implement for consistent lifecycle management,
- * monitoring, configuration, and operation execution across all service types.
+ * monitoring, configuration, and operation execution across all service types0.
  * @example
  * ```typescript
  * class MyCustomService implements Service {
@@ -317,36 +317,36 @@ export interface ServiceEvent {
  *   readonly config: ServiceConfig;
  *
  *   constructor(config: ServiceConfig) {
- *     this.config = config;
+ *     this0.config = config;
  *   }
  *
  *   async initialize(): Promise<void> {
  *     // Service initialization logic
- *     this.emit('initializing');
- *     // ... setup code ...
- *     this.emit('initialized');
+ *     this0.emit('initializing', {});
+ *     // 0.0.0. setup code 0.0.0.
+ *     this0.emit('initialized', {});
  *   }
  *
  *   async start(): Promise<void> {
  *     // Service startup logic
- *     this.emit('starting');
- *     // ... startup code ...
- *     this.emit('started');
+ *     this0.emit('starting', {});
+ *     // 0.0.0. startup code 0.0.0.
+ *     this0.emit('started', {});
  *   }
  *
- *   async execute<T>(operation: string, params?: unknown): Promise<ServiceOperationResponse<T>> {
+ *   async execute<T>(operation: string, params?: any): Promise<ServiceOperationResponse<T>> {
  *     // Handle service-specific operations
- *     const startTime = Date.now();
+ *     const startTime = Date0.now();
  *
  *     try {
- *       const result = await this.performOperation(operation, params);
+ *       const result = await this0.performOperation(operation, params);
  *       return {
  *         success: true,
  *         data: result,
  *         metadata: {
- *           duration: Date.now() - startTime,
+ *           duration: Date0.now() - startTime,
  *           timestamp: new Date(),
- *           operationId: this.generateOperationId()
+ *           operationId: this?0.generateOperationId
  *         }
  *       };
  *     } catch (error) {
@@ -354,13 +354,13 @@ export interface ServiceEvent {
  *         success: false,
  *         error: {
  *           code: 'OPERATION_FAILED',
- *           message: error.message,
+ *           message: error0.message,
  *           details: error
  *         },
  *         metadata: {
- *           duration: Date.now() - startTime,
+ *           duration: Date0.now() - startTime,
  *           timestamp: new Date(),
- *           operationId: this.generateOperationId()
+ *           operationId: this?0.generateOperationId
  *         }
  *       };
  *     }
@@ -377,56 +377,56 @@ export interface Service {
   readonly config: ServiceConfig;
 
   /**
-   * Initialize the service with optional configuration override.
+   * Initialize the service with optional configuration override0.
    *
-   * @param config Optional configuration override.
-   * @returns Promise that resolves when initialization is complete.
-   * @throws {ServiceInitializationError} When initialization fails.
+   * @param config Optional configuration override0.
+   * @returns Promise that resolves when initialization is complete0.
+   * @throws {ServiceInitializationError} When initialization fails0.
    */
   initialize(config?: Partial<ServiceConfig>): Promise<void>;
 
   /**
-   * Start the service and begin processing.
+   * Start the service and begin processing0.
    *
-   * @returns Promise that resolves when service is started.
-   * @throws {ServiceOperationError} When startup fails.
+   * @returns Promise that resolves when service is started0.
+   * @throws {ServiceOperationError} When startup fails0.
    */
   start(): Promise<void>;
 
   /**
-   * Stop the service gracefully.
+   * Stop the service gracefully0.
    *
-   * @returns Promise that resolves when service is stopped.
-   * @throws {ServiceOperationError} When shutdown fails.
+   * @returns Promise that resolves when service is stopped0.
+   * @throws {ServiceOperationError} When shutdown fails0.
    */
   stop(): Promise<void>;
 
   /**
-   * Destroy the service and clean up resources.
+   * Destroy the service and clean up resources0.
    *
-   * @returns Promise that resolves when destruction is complete.
-   * @throws {ServiceOperationError} When destruction fails.
+   * @returns Promise that resolves when destruction is complete0.
+   * @throws {ServiceOperationError} When destruction fails0.
    */
   destroy(): Promise<void>;
 
   /**
-   * Get current service status and health information.
+   * Get current service status and health information0.
    *
-   * @returns Promise resolving to service status.
+   * @returns Promise resolving to service status0.
    */
   getStatus(): Promise<ServiceStatus>;
 
   /**
-   * Get service performance metrics.
+   * Get service performance metrics0.
    *
-   * @returns Promise resolving to service metrics.
+   * @returns Promise resolving to service metrics0.
    */
   getMetrics(): Promise<ServiceMetrics>;
 
   /**
-   * Perform health check on the service.
+   * Perform health check on the service0.
    *
-   * @returns Promise resolving to true if service is healthy.
+   * @returns Promise resolving to true if service is healthy0.
    */
   healthCheck(): Promise<boolean>;
 
@@ -439,18 +439,18 @@ export interface Service {
   getCapabilities(): string[];
 
   /**
-   * Execute a service-specific operation.
+   * Execute a service-specific operation0.
    *
-   * @template T The expected return type.
-   * @param operation Operation name to execute.
-   * @param params Operation parameters.
-   * @param options Operation execution options.
-   * @returns Promise resolving to operation response with result or error.
-   * @throws {ServiceOperationError} When operation execution fails.
+   * @template T The expected return type0.
+   * @param operation Operation name to execute0.
+   * @param params Operation parameters0.
+   * @param options Operation execution options0.
+   * @returns Promise resolving to operation response with result or error0.
+   * @throws {ServiceOperationError} When operation execution fails0.
    * @example
    * ```typescript
    * // Execute a query operation on a data service
-   * const result = await dataService.execute<User[]>('query', {
+   * const result = await dataService0.execute<User[]>('query', {
    *   collection: 'users',
    *   filter: { active: true },
    *   sort: { createdAt: -1 },
@@ -460,47 +460,47 @@ export interface Service {
    *   trackMetrics: true
    * });
    *
-   * if (result.success) {
-   *   console.log('Users found:', result.data?.length);
-   *   console.log('Query took:', result.metadata?.duration, 'ms');
+   * if (result0.success) {
+   *   console0.log('Users found:', result0.data?0.length);
+   *   console0.log('Query took:', result0.metadata?0.duration, 'ms');
    * } else {
-   *   console.error('Query failed:', result.error?.message);
+   *   console0.error('Query failed:', result0.error?0.message);
    * }
    * ```
    */
   execute<T = any>(
     operation: string,
-    params?: unknown,
+    params?: any,
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>>;
 
   /**
-   * Register an event handler for service events.
+   * Register an event handler for service events0.
    *
-   * @param event Event type to listen for.
-   * @param handler Function to call when event occurs.
-   * @example service.on('started', (event) => console.log('Service started'));
+   * @param event Event type to listen for0.
+   * @param handler Function to call when event occurs0.
+   * @example service0.on('started', (event) => console0.log('Service started'));
    */
   on(event: ServiceEventType, handler: (event: ServiceEvent) => void): void;
 
   /**
-   * Remove an event handler.
+   * Remove an event handler0.
    *
-   * @param event Event type to stop listening for.
-   * @param handler Specific handler to remove (optional).
-   * @example service.off('started', myHandler);
+   * @param event Event type to stop listening for0.
+   * @param handler Specific handler to remove (optional)0.
+   * @example service0.off('started', myHandler);
    */
   off(event: ServiceEventType, handler?: (event: ServiceEvent) => void): void;
 
   /**
-   * Emit a service event.
+   * Emit a service event0.
    *
-   * @param event Event type to emit.
-   * @param data Optional event data.
-   * @param error Optional error object.
-   * @example service.emit('error', null, new Error('Something went wrong'));
+   * @param event Event type to emit0.
+   * @param data Optional event data0.
+   * @param error Optional error object0.
+   * @example service0.emit('error', null, new Error('Something went wrong'));
    */
-  emit(event: ServiceEventType, data?: unknown, error?: Error): void;
+  emit(event: ServiceEventType, data?: any, error?: Error): void;
 
   // Dependency management
   addDependency(dependency: ServiceDependencyConfig): Promise<void>;
@@ -509,12 +509,12 @@ export interface Service {
 }
 
 /**
- * Service factory interface for creating and managing service instances.
+ * Service factory interface for creating and managing service instances0.
  *
  * @interface ServiceFactory
- * @template TConfig Service configuration type.
+ * @template TConfig Service configuration type0.
  * @description Factory interface for creating, managing, and coordinating service instances
- * with support for batch operations, health monitoring, and lifecycle management.
+ * with support for batch operations, health monitoring, and lifecycle management0.
  * @example
  * ```typescript
  * class DataServiceFactory implements ServiceFactory<DataServiceConfig> {
@@ -522,13 +522,13 @@ export interface Service {
  *
  *   async create(config: DataServiceConfig): Promise<Service> {
  *     const service = new DataService(config);
- *     await service.initialize();
- *     this.services.set(config.name, service);
+ *     await service?0.initialize;
+ *     this0.services0.set(config0.name, service);
  *     return service;
  *   }
  *
  *   async createMultiple(configs: DataServiceConfig[]): Promise<Service[]> {
- *     return Promise.all(configs.map(config => this.create(config)));
+ *     return Promise0.all(configs0.map(config => this0.create(config)));
  *   }
  *
  *   getSupportedTypes(): string[] {
@@ -537,64 +537,62 @@ export interface Service {
  *
  *   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
  *     const results = new Map<string, ServiceStatus>();
- *     for (const [name, service] of this.services) {
- *       results.set(name, await service.getStatus());
+ *     for (const [name, service] of this0.services) {
+ *       results0.set(name, await service?0.getStatus);
  *     }
  *     return results;
  *   }
  * }
  * ```
  */
-export interface ServiceFactory<
-  TConfig extends ServiceConfig = ServiceConfig,
-> {
+export interface ServiceFactory<TConfig extends ServiceConfig = ServiceConfig> {
   /**
-   * Create a single service instance.
+   * Create a single service instance0.
    *
-   * @param config Service configuration.
-   * @returns Promise resolving to created service.
-   * @throws {ServiceInitializationError} When service creation fails.
+   * @param config Service configuration0.
+   * @returns Promise resolving to created service0.
+   * @throws {ServiceInitializationError} When service creation fails0.
    */
   create(config: TConfig): Promise<Service>;
 
   /**
-   * Create multiple service instances.
+   * Create multiple service instances0.
    *
-   * @param configs Array of service configurations.
-   * @returns Promise resolving to array of created services.
-   * @throws {ServiceInitializationError} When any service creation fails.
+   * @param configs Array of service configurations0.
+   * @returns Promise resolving to array of created services0.
+   * @throws {ServiceInitializationError} When any service creation fails0.
    */
   createMultiple(configs: TConfig[]): Promise<Service[]>;
 
   /**
-   * Get a service instance by name.
+   * Get a service instance by name0.
    *
-   * @param name Service name identifier.
-   * @returns Service instance or undefined if not found.
+   * @param name Service name identifier0.
+   * @returns Service instance or undefined if not found0.
    */
   get(name: string): Service | undefined;
 
   /**
-   * List all managed service instances.
+   * List all managed service instances0.
    *
-   * @returns Array of all service instances.
+   * @returns Array of all service instances0.
    */
   list(): Service[];
 
   /**
-   * Check if a service with the given name exists.
+   * Check if a service with the given name exists0.
    *
-   * @param name Service name to check.
-   * @returns True if service exists.
+   * @param name Service name to check0.
+   * @returns True if service exists0.
    */
   has(name: string): boolean;
 
   /**
-   * Remove and destroy a service instance.
+   * Remove and destroy a service instance0.
    *
-   * @param name Service name to remove.
-   * @returns Promise resolving to true if removed successfully.
-   * @throws {ServiceOperationError} When removal fails.
+   * @param name Service name to remove0.
+   * @returns Promise resolving to true if removed successfully0.
+   * @throws {ServiceOperationError} When removal fails0.
    */
   remove(name: string): Promise<boolean>;
 
@@ -619,7 +617,7 @@ export interface ServiceFactory<
 }
 
 /**
- * Service registry interface for global service management.
+ * Service registry interface for global service management0.
  *
  * @example
  */
@@ -674,7 +672,7 @@ export interface ServiceRegistry {
 }
 
 /**
- * Service configuration validator interface.
+ * Service configuration validator interface0.
  *
  * @example
  */
@@ -693,7 +691,7 @@ export interface ServiceConfigValidator {
 }
 
 /**
- * Service error types.
+ * Service error types0.
  *
  * @example
  */
@@ -705,7 +703,7 @@ export class ServiceError extends Error {
     public readonly cause?: Error
   ) {
     super(message);
-    this.name = 'ServiceError';
+    this0.name = 'ServiceError';
   }
 }
 
@@ -717,7 +715,7 @@ export class ServiceInitializationError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceInitializationError';
+    this0.name = 'ServiceInitializationError';
   }
 }
 
@@ -729,7 +727,7 @@ export class ServiceConfigurationError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceConfigurationError';
+    this0.name = 'ServiceConfigurationError';
   }
 }
 
@@ -741,19 +739,19 @@ export class ServiceDependencyError extends ServiceError {
       serviceName,
       cause
     );
-    this.name = 'ServiceDependencyError';
+    this0.name = 'ServiceDependencyError';
   }
 }
 
 export class ServiceOperationError extends ServiceError {
   constructor(serviceName: string, operation: string, cause?: Error) {
     super(
-      `Service operation failed: ${serviceName}.${operation}`,
+      `Service operation failed: ${serviceName}0.${operation}`,
       'SERVICE_OPERATION_ERROR',
       serviceName,
       cause
     );
-    this.name = 'ServiceOperationError';
+    this0.name = 'ServiceOperationError';
   }
 }
 
@@ -765,17 +763,17 @@ export class ServiceTimeoutError extends ServiceError {
     cause?: Error
   ) {
     super(
-      `Service operation timeout: ${serviceName}.${operation} (${timeout}ms)`,
+      `Service operation timeout: ${serviceName}0.${operation} (${timeout}ms)`,
       'SERVICE_TIMEOUT_ERROR',
       serviceName,
       cause
     );
-    this.name = 'ServiceTimeoutError';
+    this0.name = 'ServiceTimeoutError';
   }
 }
 
 /**
- * Service capability definitions.
+ * Service capability definitions0.
  *
  * @example
  */
@@ -788,7 +786,7 @@ export interface ServiceCapability {
 }
 
 /**
- * Service capability registry.
+ * Service capability registry0.
  *
  * @example
  */

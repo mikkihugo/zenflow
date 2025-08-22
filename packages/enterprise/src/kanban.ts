@@ -5,7 +5,7 @@
  * to @claude-zen/kanban package.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import './module-declarations';
 
 // Kanban system access with real package delegation
@@ -19,7 +19,7 @@ async function loadKanbanModule() {
     } catch (error) {
       console.warn('Kanban package not available, providing compatibility layer');
       kanbanModuleCache = {
-        WorkflowKanban: class CompatibilityWorkflowKanban extends EventEmitter {
+        WorkflowKanban: class CompatibilityWorkflowKanban extends TypedEventBase {
           async initialize() {
             return this;
           }

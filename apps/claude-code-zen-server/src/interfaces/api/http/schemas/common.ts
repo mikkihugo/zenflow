@@ -1,15 +1,15 @@
 /**
- * Common API Schemas.
+ * Common API Schemas0.
  *
- * Shared schemas used across multiple API domains.
- * Following OpenAPI 3.0 standards for consistency.
+ * Shared schemas used across multiple API domains0.
+ * Following OpenAPI 30.0 standards for consistency0.
  *
- * @file Common schemas for API responses and requests.
+ * @file Common schemas for API responses and requests0.
  */
 
 /**
- * Common pagination parameters.
- * Standard across all list endpoints.
+ * Common pagination parameters0.
+ * Standard across all list endpoints0.
  *
  * @example
  */
@@ -19,8 +19,8 @@ export interface PaginationParams {
 }
 
 /**
- * Standard pagination response.
- * Consistent pagination metadata across all endpoints.
+ * Standard pagination response0.
+ * Consistent pagination metadata across all endpoints0.
  *
  * @example
  */
@@ -32,8 +32,8 @@ export interface PaginationResponse {
 }
 
 /**
- * Standard list response wrapper.
- * Generic container for paginated list responses.
+ * Standard list response wrapper0.
+ * Generic container for paginated list responses0.
  *
  * @example
  */
@@ -43,8 +43,8 @@ export interface ListResponse<T> extends PaginationResponse {
 }
 
 /**
- * Standard API error response.
- * Following Google API Design Guide error format.
+ * Standard API error response0.
+ * Following Google API Design Guide error format0.
  *
  * @example
  */
@@ -61,8 +61,8 @@ export interface APIError {
 }
 
 /**
- * Standard success response wrapper.
- * Generic container for successful API responses.
+ * Standard success response wrapper0.
+ * Generic container for successful API responses0.
  *
  * @example
  */
@@ -74,8 +74,8 @@ export interface SuccessResponse<T = unknown> {
 }
 
 /**
- * Standard health check response.
- * Consistent health check format across all services.
+ * Standard health check response0.
+ * Consistent health check format across all services0.
  *
  * @example
  */
@@ -95,8 +95,8 @@ export interface HealthResponse {
 }
 
 /**
- * Standard metrics response.
- * Performance and operational metrics.
+ * Standard metrics response0.
+ * Performance and operational metrics0.
  *
  * @example
  */
@@ -124,8 +124,8 @@ export interface MetricsResponse {
 }
 
 /**
- * Standard sort parameters.
- * Consistent sorting across list endpoints.
+ * Standard sort parameters0.
+ * Consistent sorting across list endpoints0.
  *
  * @example
  */
@@ -135,8 +135,8 @@ export interface SortParams {
 }
 
 /**
- * Standard filter parameters.
- * Common filtering patterns.
+ * Standard filter parameters0.
+ * Common filtering patterns0.
  *
  * @example
  */
@@ -149,8 +149,8 @@ export interface FilterParams {
 }
 
 /**
- * Standard timestamp fields.
- * Common timestamp properties for entities.
+ * Standard timestamp fields0.
+ * Common timestamp properties for entities0.
  *
  * @example
  */
@@ -160,8 +160,8 @@ export interface TimestampFields {
 }
 
 /**
- * Standard identification fields.
- * Common ID and metadata for entities.
+ * Standard identification fields0.
+ * Common ID and metadata for entities0.
  *
  * @example
  */
@@ -172,8 +172,8 @@ export interface EntityFields {
 }
 
 /**
- * Standard audit fields.
- * Audit trail information.
+ * Standard audit fields0.
+ * Audit trail information0.
  *
  * @example
  */
@@ -185,8 +185,8 @@ export interface AuditFields extends TimestampFields {
 }
 
 /**
- * Standard resource state.
- * Common state management for resources.
+ * Standard resource state0.
+ * Common state management for resources0.
  *
  * @example
  */
@@ -197,8 +197,8 @@ export interface ResourceState {
 }
 
 /**
- * Standard configuration fields.
- * Common configuration properties.
+ * Standard configuration fields0.
+ * Common configuration properties0.
  *
  * @example
  */
@@ -210,8 +210,8 @@ export interface ConfigurationFields {
 }
 
 /**
- * Standard validation error detail.
- * Detailed validation error information.
+ * Standard validation error detail0.
+ * Detailed validation error information0.
  *
  * @example
  */
@@ -219,13 +219,13 @@ export interface ValidationError {
   readonly field: string;
   readonly code: string;
   readonly message: string;
-  readonly value?: unknown;
+  readonly value?: any;
   readonly constraint?: string;
 }
 
 /**
- * Batch operation request.
- * Standard format for batch operations.
+ * Batch operation request0.
+ * Standard format for batch operations0.
  *
  * @example
  */
@@ -239,8 +239,8 @@ export interface BatchRequest<T> {
 }
 
 /**
- * Batch operation response.
- * Standard format for batch operation results.
+ * Batch operation response0.
+ * Standard format for batch operation results0.
  *
  * @example
  */
@@ -261,8 +261,8 @@ export interface BatchResponse<T> {
 }
 
 /**
- * Standard async operation response.
- * For long-running operations.
+ * Standard async operation response0.
+ * For long-running operations0.
  *
  * @example
  */
@@ -272,15 +272,15 @@ export interface AsyncOperationResponse {
   readonly progress?: number; // 0-100
   readonly message?: string;
   readonly estimatedCompletion?: string; // SO timestamp
-  readonly result?: unknown;
+  readonly result?: any;
   readonly error?: APIError['error'];
   readonly created: string;
   readonly updated: string;
 }
 
 /**
- * Standard file upload response.
- * For file upload operations.
+ * Standard file upload response0.
+ * For file upload operations0.
  *
  * @example
  */
@@ -296,8 +296,8 @@ export interface FileUploadResponse {
 }
 
 /**
- * Standard rate limit information.
- * Rate limiting metadata in response headers.
+ * Standard rate limit information0.
+ * Rate limiting metadata in response headers0.
  *
  * @example
  */
@@ -308,7 +308,7 @@ export interface RateLimitInfo {
   readonly window: number; // Window size in seconds
 }
 
-// OpenAPI 3.0 Schema definitions for common types
+// OpenAPI 30.0 Schema definitions for common types
 export const Schemas = {
   PaginationParams: {
     type: 'object',

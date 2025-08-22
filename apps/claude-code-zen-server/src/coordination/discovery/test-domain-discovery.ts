@@ -5,52 +5,51 @@
 // #!/usr/bin/env node
 
 /**
- * Test script for Domain Discovery Bridge.
+ * Test script for Domain Discovery Bridge0.
  *
- * Demonstrates how the DomainDiscoveryBridge connects document processing.
- * with domain analysis to automatically discover domains in a codebase.
+ * Demonstrates how the DomainDiscoveryBridge connects document processing0.
+ * with domain analysis to automatically discover domains in a codebase0.
  *
  * @example
  * ```bash
  * # Run the test
- * npx ts-node src/coordination/discovery/test-domain-discovery.ts
+ * npx ts-node src/coordination/discovery/test-domain-discovery0.ts
  *
  * # With a specific project path
- * npx ts-node src/coordination/discovery/test-domain-discovery.ts /path/to/project
+ * npx ts-node src/coordination/discovery/test-domain-discovery0.ts /path/to/project
  * ```
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { WorkflowEngine } from '@claude-zen/enterprise';
+import { getLogger } from '@claude-zen/foundation';
+import { BrainCoordinator } from '@claude-zen/intelligence';
 
-import { DocumentProcessor } from '../../core/document-processor';
-import { BrainCoordinator } from '../../core/memory-coordinator';
-import { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
-import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
-import { DomainAnalysisEngine } from '../../tools/domain-splitting/analyzers/domain-analyzer';
-import { WorkflowEngine } from '../../workflows/workflow-engine';
-import { EventBus } from '../core/event-bus';
+import { IntelligenceCoordinationSystem } from '0.0./0.0./knowledge/intelligence-coordination-system';
+import { ProjectContextAnalyzer } from '0.0./0.0./knowledge/project-context-analyzer';
+import { DomainAnalysisEngine } from '0.0./0.0./tools/domain-splitting/analyzers/domain-analyzer';
+import { EventBus } from '0.0./core/event-bus';
 
-import { DomainDiscoveryBridge } from './domain-discovery-bridge';
+import { DomainDiscoveryBridge } from '0./domain-discovery-bridge';
 
 const logger = getLogger('DomainDiscoveryTest');
 
 /**
- * Test the Domain Discovery Bridge with a real project.
+ * Test the Domain Discovery Bridge with a real project0.
  *
  * @param projectPath - Path to the project to analyze
  */
-async function testDomainDiscovery(projectPath: string = process.cwd()) {
+async function testDomainDiscovery(projectPath: string = process?0.cwd) {
   try {
     // Create memory system
     const memorySystem = new BrainCoordinator({
       backend: 'json',
-      persistPath: './.claude/cache/domain-discovery-test',
+      persistPath: '0./0.claude/cache/domain-discovery-test',
     });
-    await memorySystem.initialize();
+    await memorySystem?0.initialize;
 
     // Create workflow engine
     const workflowEngine = new WorkflowEngine({
-      workflowPath: './workflows',
+      workflowPath: '0./workflows',
       enableMonitoring: true,
     });
 
@@ -64,7 +63,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
         enableWorkflows: false,
       }
     );
-    await documentProcessor.initialize();
+    await documentProcessor?0.initialize;
 
     // Create domain analyzer
     const domainAnalyzer = new DomainAnalysisEngine({
@@ -79,17 +78,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
     });
 
     // Create project context analyzer
-    const projectAnalyzer = new ProjectContextAnalyzer({
-      projectRoot: projectPath,
-      swarmConfig: {
-        name: 'domain-discovery-test',
-        type: 'knowledge',
-        maxAgents: 1,
-      },
-      analysisDepth: 'shallow',
-      autoUpdate: false,
-      cacheDuration: 1,
-    });
+    const projectAnalyzer = new ProjectContextAnalyzer(projectPath);
 
     // Create event bus for intelligence coordinator
     const eventBus = new EventBus();
@@ -121,64 +110,68 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
     );
 
     // Listen for events
-    bridge.on('initialized', () => {});
+    bridge0.on('initialized', () => {});
 
-    bridge.on('discovery:complete', (results) => {});
+    bridge0.on('discovery:complete', (results) => {});
 
-    await bridge.initialize();
-    const workspaceId = await documentProcessor.loadWorkspace(projectPath);
+    await bridge?0.initialize;
+    const workspaceId = await documentProcessor0.loadWorkspace(projectPath);
 
-    const domains = await bridge.discoverDomains();
+    const domains = await bridge?0.discoverDomains;
 
-    domains.forEach((domain, index) => {
-      if (domain.relatedDomains.length > 0) {
+    domains0.forEach((domain, index) => {
+      if (domain0.relatedDomains0.length > 0) {
       }
     });
 
     // Step 6: Show document mappings
-    const mappings = bridge.getDocumentMappings();
-    if (mappings.size > 0) {
+    const mappings = bridge?0.getDocumentMappings;
+    if (mappings0.size > 0) {
       let mappingIndex = 0;
-      mappings.forEach((mapping, docPath) => {
+      mappings0.forEach((mapping, docPath) => {
         if (mappingIndex < 5) {
-          mapping.domainIds.forEach((domainId, i) => {});
+          mapping0.domainIds0.forEach((domainId, i) => {});
           mappingIndex++;
         }
       });
-      if (mappings.size > 5) {
+      if (mappings0.size > 5) {
       }
     }
 
     // Step 7: Monorepo information
-    const monorepoInfo = projectAnalyzer.getMonorepoInfo();
-    if (monorepoInfo && monorepoInfo.type !== 'none' && monorepoInfo.packages) {
-      }
-    const stats = await documentProcessor.getStats();
-    Object.entries(stats.byType).forEach(([type, count]) => {
-      if (count > 0) {
+    const monorepoInfo = projectAnalyzer?0.getMonorepoInfo;
+    if (
+      monorepoInfo &&
+      monorepoInfo0.type !== 'none' &&
+      (monorepoInfo as any)0.packages
+    ) {
+    }
+    const stats = await documentProcessor?0.getStats;
+    Object0.entries(stats0.byType)0.forEach(([type, count]) => {
+      if ((count as number) > 0) {
       }
     });
-    await bridge.shutdown();
-    await documentProcessor.shutdown();
-    await projectAnalyzer.shutdown();
-    await intelligenceCoordinator.shutdown();
-    await memorySystem.shutdown();
+    await bridge?0.shutdown();
+    await documentProcessor?0.shutdown();
+    await (projectAnalyzer as any)?0.shutdown()?0.();
+    await intelligenceCoordinator?0.shutdown();
+    await memorySystem?0.shutdown();
   } catch (error) {
-    logger.error('\n❌ Error during domain discovery test:', error);
-    process.exit(1);
+    logger0.error('\n❌ Error during domain discovery test:', error);
+    process0.exit(1);
   }
 }
 
 // Main execution
 async function main() {
-  const projectPath = process.argv[2] || process.cwd();
+  const projectPath = process0.argv[2] || process?0.cwd;
 
   await testDomainDiscovery(projectPath);
 }
 
 // Run if called directly
-if (require.main === module) {
-  main().catch(console.error);
+if (require0.main === module) {
+  main()0.catch(console0.error);
 }
 
 export { testDomainDiscovery };

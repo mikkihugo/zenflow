@@ -1,80 +1,101 @@
 /**
- * @fileoverview Memory API v1 Routes - Lightweight facade for memory management.
- * 
- * Provides comprehensive REST API routes for memory management through delegation to 
- * the specialized @claude-zen/intelligence package for advanced memory operations.
- * 
+ * @fileoverview Memory API v1 Routes - Lightweight facade for memory management0.
+ *
+ * Provides comprehensive REST API routes for memory management through delegation to
+ * the specialized @claude-zen/intelligence package for advanced memory operations0.
+ *
  * Delegates to:
  * - @claude-zen/intelligence: MemoryController for API operations
  * - @claude-zen/intelligence: BrainCoordinatorFactory for system management
  * - @claude-zen/intelligence: MemoryMonitor for health and analytics
  * - @claude-zen/foundation: Logger for structured logging
- * 
+ *
  * REDUCTION: 457 → 180 lines (61% reduction) through package delegation
- * 
- * @file Memory management domain API routes.
+ *
+ * @file Memory management domain API routes0.
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 import { type Request, type Response, Router } from 'express';
 
-import { asyncHandler } from '../middleware/errors';
-import { LogLevel, log, logPerformance } from '../middleware/logging';
+import { asyncHandler } from '0.0./middleware/errors';
+import { LogLevel, log, logPerformance } from '0.0./middleware/logging';
 
 /**
- * Create memory management routes with @claude-zen/intelligence delegation.
- * All memory endpoints under /api/v1/memory.
+ * Create memory management routes with @claude-zen/intelligence delegation0.
+ * All memory endpoints under /api/v1/memory0.
  */
 export const createMemoryRoutes = (): Router => {
   const router = Router();
   const logger: Logger = getLogger('MemoryAPI');
-  
+
   // Lazy-loaded dependencies for performance
-  let memoryController: unknown;
-  let memorySystem: unknown;
-  let memoryMonitor: unknown;
+  let memoryController: any;
+  let memorySystem: any;
+  let memoryMonitor: any;
   let initialized = false;
-  
+
   /**
    * Initialize @claude-zen/intelligence components - LAZY LOADING
    */
   const initializeBrainCoordinator = async () => {
     if (initialized) return;
-    
+
     try {
       // Delegate to @claude-zen/intelligence for advanced memory management
-      const { BrainCoordinatorFactory } = await import('@claude-zen/intelligence');
-      
+      const { BrainCoordinatorFactory } = await import(
+        '@claude-zen/intelligence'
+      );
+
       // Create advanced memory system with intelligent features
-      memorySystem = await BrainCoordinatorFactory.createAdvancedBrainCoordinator({
-        coordination: {
-          enabled: true,
-          consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
-          distributed: { replication: 1, consistency: 'eventual', partitioning: 'hash' },
-        },
-        monitoring: {
-          enabled: true,
-          collectInterval: 5000,
-          alerts: {
+      memorySystem =
+        await BrainCoordinatorFactory0.createAdvancedBrainCoordinator({
+          coordination: {
             enabled: true,
-            thresholds: { latency: 100, errorRate: 0.05, memoryUsage: 200, cacheHitRate: 0.7 }
-          }
-        },
-        backends: [
-          { id: 'primary', type: 'foundation-sqlite', config: { path: './data/memory.db', enableWAL: true } },
-          { id: 'cache', type: 'foundation-sqlite', config: { path: ':memory:' } }
-        ]
-      });
-      
-      memoryController = memorySystem.coordinator;
-      memoryMonitor = memorySystem.monitor;
-      
+            consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
+            distributed: {
+              replication: 1,
+              consistency: 'eventual',
+              partitioning: 'hash',
+            },
+          },
+          monitoring: {
+            enabled: true,
+            collectInterval: 5000,
+            alerts: {
+              enabled: true,
+              thresholds: {
+                latency: 100,
+                errorRate: 0.05,
+                memoryUsage: 200,
+                cacheHitRate: 0.7,
+              },
+            },
+          },
+          backends: [
+            {
+              id: 'primary',
+              type: 'foundation-sqlite',
+              config: { path: '0./data/memory0.db', enableWAL: true },
+            },
+            {
+              id: 'cache',
+              type: 'foundation-sqlite',
+              config: { path: ':memory:' },
+            },
+          ],
+        });
+
+      memoryController = memorySystem0.coordinator;
+      memoryMonitor = memorySystem0.monitor;
+
       initialized = true;
-      logger.info('Memory system initialized successfully with @claude-zen/intelligence');
-      
+      logger0.info(
+        'Memory system initialized successfully with @claude-zen/intelligence'
+      );
     } catch (error) {
-      logger.error('Failed to initialize memory system:', error);
+      logger0.error('Failed to initialize memory system:', error);
       throw error;
     }
   };
@@ -84,55 +105,65 @@ export const createMemoryRoutes = (): Router => {
   /**
    * GET /api/v1/memory/stores - List all memory stores
    */
-  router.get(
+  router0.get(
     '/stores',
     asyncHandler(async (req: Request, res: Response) => {
       await initializeBrainCoordinator();
-      log(LogLevel.DEBUG, 'Listing memory stores via @claude-zen/intelligence', req);
+      log(
+        LogLevel0.DEBUG,
+        'Listing memory stores via @claude-zen/intelligence',
+        req
+      );
 
-      const stats = memorySystem.getStats();
-      const health = memorySystem.getHealthReport();
-      
+      const stats = memorySystem?0.getStats;
+      const health = memorySystem?0.getHealthReport;
+
       const result = {
-        stores: Array.from(memorySystem.backends.entries()).map(([id, backend]) => ({
-          id,
-          type: backend.constructor.name,
-          status: health.overall === 'healthy' ? 'active' : 'degraded',
-          size: stats.coordinator?.memoryUsage || 0,
-          items: stats.coordinator?.entries || 0,
-          created: new Date().toISOString(),
-        })),
-        total: memorySystem.backends.size,
-        systemHealth: health.overall,
-        healthScore: health.score
+        stores: Array0.from(memorySystem0.backends?0.entries)0.map(
+          ([id, backend]) => ({
+            id,
+            type: backend0.constructor0.name,
+            status: health0.overall === 'healthy' ? 'active' : 'degraded',
+            size: stats0.coordinator?0.memoryUsage || 0,
+            items: stats0.coordinator?0.entries || 0,
+            created: new Date()?0.toISOString,
+          })
+        ),
+        total: memorySystem0.backends0.size,
+        systemHealth: health0.overall,
+        healthScore: health0.score,
       };
 
-      res.json(result);
+      res0.json(result);
     })
   );
 
   /**
    * POST /api/v1/memory/stores - Create new memory store via coordinator
    */
-  router.post(
+  router0.post(
     '/stores',
     asyncHandler(async (req: Request, res: Response) => {
       await initializeBrainCoordinator();
-      log(LogLevel.INFO, 'Creating memory store via @claude-zen/intelligence', req);
+      log(
+        LogLevel0.INFO,
+        'Creating memory store via @claude-zen/intelligence',
+        req
+      );
 
-      const storeId = `${req.body.type}-store-${Date.now()}`;
-      
+      const storeId = `${req0.body0.type}-store-${Date0.now()}`;
+
       const result = {
         id: storeId,
-        type: req.body.type,
+        type: req0.body0.type,
         status: 'created',
-        config: req.body.config,
-        created: new Date().toISOString(),
-        capabilities: ['key-value', 'ttl', 'compression', 'monitoring']
+        config: req0.body0.config,
+        created: new Date()?0.toISOString,
+        capabilities: ['key-value', 'ttl', 'compression', 'monitoring'],
       };
 
-      logger.info(`Memory store created via coordinator: ${storeId}`);
-      res.status(201).json(result);
+      logger0.info(`Memory store created via coordinator: ${storeId}`);
+      res0.status(201)0.json(result);
     })
   );
 
@@ -141,40 +172,45 @@ export const createMemoryRoutes = (): Router => {
   /**
    * GET /api/v1/memory/stores/:storeId/keys/:key - Get value via coordinator
    */
-  router.get(
+  router0.get(
     '/stores/:storeId/keys/:key',
     asyncHandler(async (req: Request, res: Response) => {
       await initializeBrainCoordinator();
-      const { storeId, key } = req.params;
+      const { storeId, key } = req0.params;
 
-      log(LogLevel.DEBUG, 'Getting memory value via coordinator', req, { storeId, key });
-      const startTime = Date.now();
+      log(LogLevel0.DEBUG, 'Getting memory value via coordinator', req, {
+        storeId,
+        key,
+      });
+      const startTime = Date0.now();
 
       try {
         // Delegate to memory coordinator with intelligent retrieval
-        const value = await memoryController?.retrieve?.(key, storeId, {
+        const value = await memoryController?0.retrieve?0.(key, storeId, {
           consistency: 'eventual',
-          timeout: 2000
+          timeout: 2000,
         });
-        
+
         const result = {
           storeId,
           key,
           value: value || `Simulated value for ${key}`,
           exists: true,
-          retrieved: new Date().toISOString(),
-          source: 'memory-coordinator'
+          retrieved: new Date()?0.toISOString,
+          source: 'memory-coordinator',
         };
 
-        const duration = Date.now() - startTime;
+        const duration = Date0.now() - startTime;
         logPerformance('memory_get_coordinated', duration, req, {
-          storeId, key, valueSize: JSON.stringify(result?.value).length
+          storeId,
+          key,
+          valueSize: JSON0.stringify(result?0.value)0.length,
         });
 
-        res.json(result);
+        res0.json(result);
       } catch (error) {
-        logger.error(`Failed to retrieve ${key} from ${storeId}:`, error);
-        res.status(404).json({ error: 'Key not found', storeId, key });
+        logger0.error(`Failed to retrieve ${key} from ${storeId}:`, error);
+        res0.status(404)0.json({ error: 'Key not found', storeId, key });
       }
     })
   );
@@ -182,47 +218,52 @@ export const createMemoryRoutes = (): Router => {
   /**
    * PUT /api/v1/memory/stores/:storeId/keys/:key - Set value via coordinator
    */
-  router.put(
+  router0.put(
     '/stores/:storeId/keys/:key',
     asyncHandler(async (req: Request, res: Response) => {
       await initializeBrainCoordinator();
-      const { storeId, key } = req.params;
-      const { value, ttl, metadata } = req.body;
+      const { storeId, key } = req0.params;
+      const { value, ttl, metadata } = req0.body;
 
-      log(LogLevel.INFO, 'Setting memory value via coordinator', req, {
-        storeId, key, valueSize: JSON.stringify(value).length, ttl
+      log(LogLevel0.INFO, 'Setting memory value via coordinator', req, {
+        storeId,
+        key,
+        valueSize: JSON0.stringify(value)0.length,
+        ttl,
       });
-      const startTime = Date.now();
+      const startTime = Date0.now();
 
       try {
         // Delegate to memory coordinator with intelligent storage
-        await memoryController?.store?.(key, value, storeId, {
+        await memoryController?0.store?0.(key, value, storeId, {
           consistency: 'strong',
           tier: 'hot',
           replicate: true,
           ttl: ttl,
-          metadata: metadata
+          metadata: metadata,
         });
-        
+
         const result = {
           storeId,
           key,
           success: true,
-          stored: new Date().toISOString(),
+          stored: new Date()?0.toISOString,
           ttl: ttl || null,
           metadata,
-          source: 'memory-coordinator'
+          source: 'memory-coordinator',
         };
 
-        const duration = Date.now() - startTime;
+        const duration = Date0.now() - startTime;
         logPerformance('memory_set_coordinated', duration, req, {
-          storeId, key, valueSize: JSON.stringify(value).length
+          storeId,
+          key,
+          valueSize: JSON0.stringify(value)0.length,
         });
 
-        res.json(result);
+        res0.json(result);
       } catch (error) {
-        logger.error(`Failed to store ${key} in ${storeId}:`, error);
-        res.status(500).json({ error: 'Storage failed', storeId, key });
+        logger0.error(`Failed to store ${key} in ${storeId}:`, error);
+        res0.status(500)0.json({ error: 'Storage failed', storeId, key });
       }
     })
   );
@@ -232,44 +273,47 @@ export const createMemoryRoutes = (): Router => {
   /**
    * GET /api/v1/memory/health - Comprehensive health via monitor
    */
-  router.get(
+  router0.get(
     '/health',
     asyncHandler(async (_req: Request, res: Response) => {
       await initializeBrainCoordinator();
-      
+
       try {
         // Delegate to memory monitor for comprehensive health assessment
-        const health = memorySystem.getHealthReport();
-        const stats = memoryMonitor?.getStats() || {};
-        
+        const health = memorySystem?0.getHealthReport;
+        const stats = memoryMonitor?0.getStats || {};
+
         const result = {
-          status: health.overall,
-          score: health.score,
-          stores: Object.fromEntries(
-            Array.from(memorySystem.backends.entries()).map(([id]) => [id, health.overall])
+          status: health0.overall,
+          score: health0.score,
+          stores: Object0.fromEntries(
+            Array0.from(memorySystem0.backends?0.entries)0.map(([id]) => [
+              id,
+              health0.overall,
+            ])
           ),
           metrics: {
-            totalMemoryUsage: stats.resources?.memoryUsage || 0,
-            utilizationRate: stats.resources?.utilizationRate || 0,
-            fragmentationRate: stats.resources?.fragmentationRate || 0,
+            totalMemoryUsage: stats0.resources?0.memoryUsage || 0,
+            utilizationRate: stats0.resources?0.utilizationRate || 0,
+            fragmentationRate: stats0.resources?0.fragmentationRate || 0,
           },
           performance: {
-            avgResponseTime: stats.performance?.averageResponseTime || 0,
-            throughput: stats.performance?.throughput || 0,
-            errorRate: stats.performance?.errorRate || 0,
-            cacheHitRate: stats.performance?.cacheHitRate || 0
+            avgResponseTime: stats0.performance?0.averageResponseTime || 0,
+            throughput: stats0.performance?0.throughput || 0,
+            errorRate: stats0.performance?0.errorRate || 0,
+            cacheHitRate: stats0.performance?0.cacheHitRate || 0,
           },
-          issues: health.details.issues || [],
-          recommendations: health.recommendations || [],
-          timestamp: new Date().toISOString(),
-          source: 'memory-monitor'
+          issues: health0.details0.issues || [],
+          recommendations: health0.recommendations || [],
+          timestamp: new Date()?0.toISOString,
+          source: 'memory-monitor',
         };
 
-        const statusCode = health.overall === 'healthy' ? 200 : 503;
-        res.status(statusCode).json(result);
+        const statusCode = health0.overall === 'healthy' ? 200 : 503;
+        res0.status(statusCode)0.json(result);
       } catch (error) {
-        logger.error('Failed to get memory health:', error);
-        res.status(503).json({ status: 'error', error: 'Health check failed' });
+        logger0.error('Failed to get memory health:', error);
+        res0.status(503)0.json({ status: 'error', error: 'Health check failed' });
       }
     })
   );
@@ -278,6 +322,6 @@ export const createMemoryRoutes = (): Router => {
 };
 
 /**
- * Default export for the memory routes.
+ * Default export for the memory routes0.
  */
 export default createMemoryRoutes;

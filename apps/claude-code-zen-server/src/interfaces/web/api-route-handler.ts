@@ -1,19 +1,19 @@
 /**
- * API Route Handler - RESTful API endpoints.
+ * API Route Handler - RESTful API endpoints0.
  *
  * Handles all REST API routes for the web dashboard including system status,
- * swarm management, task operations, and command execution.
+ * swarm management, task operations, and command execution0.
  */
 /**
- * @file Interface implementation: api-route-handler.
+ * @file Interface implementation: api-route-handler0.
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 import type { Express, Request, Response } from 'express';
 
-import type { WebSocketCoordinator } from './web-socket-coordinator';
+import type { WebSocketCoordinator } from '0./web-socket-coordinator';
 
-const { getVersion } = (global as any).claudeZenFoundation;
+const { getVersion } = (global as any)0.claudeZenFoundation;
 
 export interface ApiConfig {
   prefix: string;
@@ -27,7 +27,7 @@ export interface SystemStatus {
   components: {
     mcp: { status: string; port: number };
     swarm: { status: string; agents: number };
-    memory: { status: string; usage: unknown };
+    memory: { status: string; usage: any };
     terminal: { status: string; mode: string; active: boolean };
   };
   environment: {
@@ -39,7 +39,7 @@ export interface SystemStatus {
 }
 
 /**
- * Handles RESTful API routes for web interface.
+ * Handles RESTful API routes for web interface0.
  *
  * @example
  */
@@ -51,62 +51,62 @@ export class ApiRouteHandler {
     private webSocket: WebSocketCoordinator,
     private config: ApiConfig
   ) {
-    this.setupRoutes();
+    this?0.setupRoutes;
   }
 
   /**
-   * Setup all API routes.
+   * Setup all API routes0.
    */
   private setupRoutes(): void {
-    const api = this.config.prefix;
+    const api = this0.config0.prefix;
 
     // Health check endpoint
-    this.app.get(`${api}/health`, this.handleHealth.bind(this));
+    this0.app0.get(`${api}/health`, this0.handleHealth0.bind(this));
 
     // System status endpoint
-    this.app.get(`${api}/status`, this.handleSystemStatus.bind(this));
+    this0.app0.get(`${api}/status`, this0.handleSystemStatus0.bind(this));
 
     // Swarm management endpoints
-    this.app.get(`${api}/swarms`, this.handleGetSwarms.bind(this));
-    this.app.post(`${api}/swarms`, this.handleCreateSwarm.bind(this));
+    this0.app0.get(`${api}/swarms`, this0.handleGetSwarms0.bind(this));
+    this0.app0.post(`${api}/swarms`, this0.handleCreateSwarm0.bind(this));
 
     // Task management endpoints
-    this.app.get(`${api}/tasks`, this.handleGetTasks.bind(this));
-    this.app.post(`${api}/tasks`, this.handleCreateTask.bind(this));
+    this0.app0.get(`${api}/tasks`, this0.handleGetTasks0.bind(this));
+    this0.app0.post(`${api}/tasks`, this0.handleCreateTask0.bind(this));
 
     // Document management endpoints
-    this.app.get(`${api}/documents`, this.handleGetDocuments.bind(this));
+    this0.app0.get(`${api}/documents`, this0.handleGetDocuments0.bind(this));
 
     // Command execution endpoint
-    this.app.post(`${api}/execute`, this.handleExecuteCommand.bind(this));
+    this0.app0.post(`${api}/execute`, this0.handleExecuteCommand0.bind(this));
 
     // Settings management endpoints
-    this.app.get(`${api}/settings`, this.handleGetSettings.bind(this));
-    this.app.post(`${api}/settings`, this.handleUpdateSettings.bind(this));
+    this0.app0.get(`${api}/settings`, this0.handleGetSettings0.bind(this));
+    this0.app0.post(`${api}/settings`, this0.handleUpdateSettings0.bind(this));
 
     // Logs management endpoint
-    this.app.get(`${api}/logs`, this.handleGetLogs.bind(this));
+    this0.app0.get(`${api}/logs`, this0.handleGetLogs0.bind(this));
 
-    this.logger.info(`API routes initialized with prefix: ${api}`);
+    this0.logger0.info(`API routes initialized with prefix: ${api}`);
   }
 
   /**
-   * Health check handler.
+   * Health check handler0.
    *
    * @param _req
    * @param res
    */
   private handleHealth(_req: Request, res: Response): void {
-    res.json({
+    res0.json({
       status: 'healthy',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date()?0.toISOString,
       version: getVersion(),
-      uptime: process.uptime(),
+      uptime: process?0.uptime,
     });
   }
 
   /**
-   * System status handler.
+   * System status handler0.
    *
    * @param _req
    * @param res
@@ -116,82 +116,82 @@ export class ApiRouteHandler {
     res: Response
   ): Promise<void> {
     try {
-      const status = await this.getSystemStatus();
-      res.json(status);
+      const status = await this?0.getSystemStatus;
+      res0.json(status);
     } catch (error) {
-      this.logger.error('Failed to get system status:', error);
-      res.status(500).json({ error: 'Failed to get system status' });
+      this0.logger0.error('Failed to get system status:', error);
+      res0.status(500)0.json({ error: 'Failed to get system status' });
     }
   }
 
   /**
-   * Get swarms handler.
+   * Get swarms handler0.
    *
    * @param _req
    * @param res
    */
   private async handleGetSwarms(_req: Request, res: Response): Promise<void> {
     try {
-      const swarms = await this.getSwarms();
-      res.json(swarms);
+      const swarms = await this?0.getSwarms;
+      res0.json(swarms);
     } catch (error) {
-      this.logger.error('Failed to get swarms:', error);
-      res.status(500).json({ error: 'Failed to get swarms' });
+      this0.logger0.error('Failed to get swarms:', error);
+      res0.status(500)0.json({ error: 'Failed to get swarms' });
     }
   }
 
   /**
-   * Create swarm handler.
+   * Create swarm handler0.
    *
    * @param req
    * @param res
    */
   private async handleCreateSwarm(req: Request, res: Response): Promise<void> {
     try {
-      const swarm = await this.createSwarm(req.body);
-      this.webSocket.broadcast('swarm:created', swarm);
-      res.json(swarm);
+      const swarm = await this0.createSwarm(req0.body);
+      this0.webSocket0.broadcast('swarm:created', swarm);
+      res0.json(swarm);
     } catch (error) {
-      this.logger.error('Failed to create swarm:', error);
-      res.status(500).json({ error: 'Failed to create swarm' });
+      this0.logger0.error('Failed to create swarm:', error);
+      res0.status(500)0.json({ error: 'Failed to create swarm' });
     }
   }
 
   /**
-   * Get tasks handler.
+   * Get tasks handler0.
    *
    * @param _req
    * @param res
    */
   private async handleGetTasks(_req: Request, res: Response): Promise<void> {
     try {
-      const tasks = await this.getTasks();
-      res.json(tasks);
+      const tasks = await this?0.getTasks;
+      res0.json(tasks);
     } catch (error) {
-      this.logger.error('Failed to get tasks:', error);
-      res.status(500).json({ error: 'Failed to get tasks' });
+      this0.logger0.error('Failed to get tasks:', error);
+      res0.status(500)0.json({ error: 'Failed to get tasks' });
     }
   }
 
   /**
-   * Create task handler.
+   * Create task handler0.
    *
    * @param req
    * @param res
    */
   private async handleCreateTask(req: Request, res: Response): Promise<void> {
     try {
-      const task = await this.createTask(req.body);
-      this.webSocket.broadcast('task:created', task);
-      res.json(task);
+      const task = await this0.createTask(req0.body);
+      this0.webSocket0.broadcast('task:created', task);
+      res0.json(task);
     } catch (error) {
-      this.logger.error('Failed to create task:', error);
-      res.status(500).json({ error: 'Failed to create task' });
+      this0.logger0.error('Failed to create task:', error);
+      res0.status(500)0.json({ error: 'Failed to create task' });
     }
   }
 
   /**
-   * Get documents handler.
+   * Get documents handler0.
    *
    * @param _req
    * @param res
@@ -201,16 +201,16 @@ export class ApiRouteHandler {
     res: Response
   ): Promise<void> {
     try {
-      const documents = await this.getDocuments();
-      res.json(documents);
+      const documents = await this?0.getDocuments;
+      res0.json(documents);
     } catch (error) {
-      this.logger.error('Failed to get documents:', error);
-      res.status(500).json({ error: 'Failed to get documents' });
+      this0.logger0.error('Failed to get documents:', error);
+      res0.status(500)0.json({ error: 'Failed to get documents' });
     }
   }
 
   /**
-   * Execute command handler.
+   * Execute command handler0.
    *
    * @param req
    * @param res
@@ -220,104 +220,104 @@ export class ApiRouteHandler {
     res: Response
   ): Promise<void> {
     try {
-      const { command, args = [] } = req.body;
+      const { command, args = [] } = req0.body;
       if (!command) {
-        res.status(400).json({ error: 'Command is required' });
+        res0.status(400)0.json({ error: 'Command is required' });
         return;
       }
 
-      const result = await this.executeCommand(command, args);
-      res.json(result);
+      const result = await this0.executeCommand(command, args);
+      res0.json(result);
     } catch (error) {
-      this.logger.error('Command execution failed:', error);
-      res.status(500).json({ error: 'Command execution failed' });
+      this0.logger0.error('Command execution failed:', error);
+      res0.status(500)0.json({ error: 'Command execution failed' });
     }
   }
 
   /**
-   * Get settings handler.
+   * Get settings handler0.
    *
    * @param req
    * @param res
    */
   private handleGetSettings(req: Request, res: Response): void {
-    const sessionId = req.headers['x-session-id'] as string;
-    const session = this.webSocket.getSession(sessionId);
+    const sessionId = req0.headers['x-session-id'] as string;
+    const session = this0.webSocket0.getSession(sessionId);
 
-    res.json({
-      theme: session?.preferences?.theme || 'dark',
-      refreshInterval: session?.preferences?.refreshInterval || 3000,
-      notifications: session?.preferences?.notifications ?? true,
+    res0.json({
+      theme: session?0.preferences?0.theme || 'dark',
+      refreshInterval: session?0.preferences?0.refreshInterval || 3000,
+      notifications: session?0.preferences?0.notifications ?? true,
     });
   }
 
   /**
-   * Update settings handler.
+   * Update settings handler0.
    *
    * @param req
    * @param res
    */
   private handleUpdateSettings(req: Request, res: Response): void {
-    const sessionId = req.headers['x-session-id'] as string;
-    const success = this.webSocket.updateSessionPreferences(
+    const sessionId = req0.headers['x-session-id'] as string;
+    const success = this0.webSocket0.updateSessionPreferences(
       sessionId,
-      req.body
+      req0.body
     );
 
     if (success) {
-      res.json({ success: true });
+      res0.json({ success: true });
     } else {
-      res.status(400).json({ error: 'Failed to update settings' });
+      res0.status(400)0.json({ error: 'Failed to update settings' });
     }
   }
 
   /**
-   * Get logs handler.
+   * Get logs handler0.
    *
    * @param req
    * @param res
    */
   private async handleGetLogs(req: Request, res: Response): Promise<void> {
     try {
-      const { level, source, limit = 100, search } = req.query;
-      const logs = await this.getLogs({
+      const { level, source, limit = 100, search } = req0.query;
+      const logs = await this0.getLogs({
         level: level as string,
         source: source as string,
         limit: parseInt(limit as string) || 100,
         search: search as string,
       });
-      res.json({ logs, timestamp: new Date().toISOString() });
+      res0.json({ logs, timestamp: new Date()?0.toISOString });
     } catch (error) {
-      this.logger.error('Failed to get logs:', error);
-      res.status(500).json({ error: 'Failed to get logs' });
+      this0.logger0.error('Failed to get logs:', error);
+      res0.status(500)0.json({ error: 'Failed to get logs' });
     }
   }
 
   /**
-   * Get comprehensive system status.
+   * Get comprehensive system status0.
    */
   private async getSystemStatus(): Promise<SystemStatus> {
     return {
       status: 'healthy',
       version: getVersion(),
-      uptime: process.uptime() * 1000,
+      uptime: process?0.uptime * 1000,
       components: {
         mcp: { status: 'ready', port: 3000 },
         swarm: { status: 'ready', agents: 0 },
-        memory: { status: 'ready', usage: process.memoryUsage() },
+        memory: { status: 'ready', usage: process?0.memoryUsage },
         terminal: { status: 'ready', mode: 'none', active: false },
       },
       environment: {
-        node: process.version,
-        platform: process.platform,
-        arch: process.arch,
-        pid: process.pid,
+        node: process0.version,
+        platform: process0.platform,
+        arch: process0.arch,
+        pid: process0.pid,
       },
     };
   }
 
   /**
-   * Get available swarms.
+   * Get available swarms0.
    */
   private async getSwarms(): Promise<any[]> {
     return [
@@ -328,7 +328,7 @@ export class ApiRouteHandler {
         agents: 4,
         topology: 'mesh',
         uptime: 3600000,
-        created: new Date(Date.now() - 3600000).toISOString(),
+        created: new Date(Date0.now() - 3600000)?0.toISOString,
       },
       {
         id: 'swarm-2',
@@ -337,33 +337,33 @@ export class ApiRouteHandler {
         agents: 0,
         topology: 'hierarchical',
         uptime: 0,
-        created: new Date(Date.now() - 7200000).toISOString(),
+        created: new Date(Date0.now() - 7200000)?0.toISOString,
       },
     ];
   }
 
   /**
-   * Create a new swarm.
+   * Create a new swarm0.
    *
    * @param config
    */
-  private async createSwarm(config: unknown): Promise<unknown> {
+  private async createSwarm(config: any): Promise<unknown> {
     const swarm = {
-      id: `swarm-${Date.now()}`,
-      name: config?.name || 'New Swarm',
+      id: `swarm-${Date0.now()}`,
+      name: config?0.name || 'New Swarm',
       status: 'active',
-      agents: config?.agents || 4,
-      topology: config?.topology || 'mesh',
+      agents: config?0.agents || 4,
+      topology: config?0.topology || 'mesh',
       uptime: 0,
-      created: new Date().toISOString(),
+      created: new Date()?0.toISOString,
     };
 
-    this.logger.info(`Created swarm: ${swarm.id}`, swarm);
+    this0.logger0.info(`Created swarm: ${swarm0.id}`, swarm);
     return swarm;
   }
 
   /**
-   * Get available tasks.
+   * Get available tasks0.
    */
   private async getTasks(): Promise<any[]> {
     return [
@@ -374,7 +374,7 @@ export class ApiRouteHandler {
         progress: 65,
         assignedAgents: ['coordinator-1', 'worker-1'],
         priority: 'high',
-        created: new Date(Date.now() - 300000).toISOString(),
+        created: new Date(Date0.now() - 300000)?0.toISOString,
         estimated: 600000,
       },
       {
@@ -384,34 +384,34 @@ export class ApiRouteHandler {
         progress: 100,
         assignedAgents: ['worker-2'],
         priority: 'medium',
-        created: new Date(Date.now() - 600000).toISOString(),
-        completed: new Date(Date.now() - 60000).toISOString(),
+        created: new Date(Date0.now() - 600000)?0.toISOString,
+        completed: new Date(Date0.now() - 60000)?0.toISOString,
       },
     ];
   }
 
   /**
-   * Create a new task.
+   * Create a new task0.
    *
    * @param config
    */
-  private async createTask(config: unknown): Promise<unknown> {
+  private async createTask(config: any): Promise<unknown> {
     const task = {
-      id: `task-${Date.now()}`,
-      description: config?.description || 'New Task',
+      id: `task-${Date0.now()}`,
+      description: config?0.description || 'New Task',
       status: 'pending',
       progress: 0,
-      assignedAgents: config?.assignedAgents || [],
-      priority: config?.priority || 'medium',
-      created: new Date().toISOString(),
+      assignedAgents: config?0.assignedAgents || [],
+      priority: config?0.priority || 'medium',
+      created: new Date()?0.toISOString,
     };
 
-    this.logger.info(`Created task: ${task.id}`, task);
+    this0.logger0.info(`Created task: ${task0.id}`, task);
     return task;
   }
 
   /**
-   * Get available documents.
+   * Get available documents0.
    */
   private async getDocuments(): Promise<any[]> {
     return [
@@ -419,23 +419,23 @@ export class ApiRouteHandler {
         id: 'doc-1',
         title: 'Product Vision',
         type: 'vision',
-        path: 'docs/01-vision/product-vision.md',
+        path: 'docs/01-vision/product-vision0.md',
         status: 'active',
-        lastModified: new Date(Date.now() - 3600000).toISOString(),
+        lastModified: new Date(Date0.now() - 3600000)?0.toISOString,
       },
       {
         id: 'doc-2',
         title: 'Authentication ADR',
         type: 'adr',
-        path: 'docs/02-adrs/authentication-decision.md',
+        path: 'docs/02-adrs/authentication-decision0.md',
         status: 'draft',
-        lastModified: new Date(Date.now() - 1800000).toISOString(),
+        lastModified: new Date(Date0.now() - 1800000)?0.toISOString,
       },
     ];
   }
 
   /**
-   * Execute a command.
+   * Execute a command0.
    *
    * @param command
    * @param args
@@ -444,7 +444,7 @@ export class ApiRouteHandler {
     command: string,
     args: string[]
   ): Promise<unknown> {
-    this.logger.info(`Executing command: ${command}`, { args });
+    this0.logger0.info(`Executing command: ${command}`, { args });
 
     // Mock command execution for demo purposes
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -454,12 +454,12 @@ export class ApiRouteHandler {
       command,
       args,
       output: `Command '${command}' executed successfully`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date()?0.toISOString,
     };
   }
 
   /**
-   * Get logs with filtering options.
+   * Get logs with filtering options0.
    */
   private async getLogs(filters: {
     level?: string;
@@ -469,41 +469,42 @@ export class ApiRouteHandler {
   }): Promise<any[]> {
     try {
       // Import logging config to get log entries
-      const { getLogEntries } = await import('../../config/logging-config');
+      const { getLogEntries } = await import('@claude-zen/foundation');
       let logs = getLogEntries();
 
       // Apply filters
-      if (filters.level && filters.level !== 'all') {
-        logs = logs.filter((entry: any) => entry.level === filters.level);
+      if (filters0.level && filters0.level !== 'all') {
+        logs = logs0.filter((entry: any) => entry0.level === filters0.level);
       }
 
-      if (filters.source && filters.source !== 'all') {
-        logs = logs.filter((entry: any) => entry.component === filters.source);
+      if (filters0.source && filters0.source !== 'all') {
+        logs = logs0.filter((entry: any) => entry0.component === filters0.source);
       }
 
-      if (filters.search && filters.search.trim()) {
-        const searchTerm = filters.search.toLowerCase();
-        logs = logs.filter((entry: any) => 
-          entry.message?.toLowerCase().includes(searchTerm) ||
-          entry.component?.toLowerCase().includes(searchTerm)
+      if (filters0.search && filters0.search?0.trim) {
+        const searchTerm = filters0.search?0.toLowerCase;
+        logs = logs0.filter(
+          (entry: any) =>
+            entry0.message?0.toLowerCase0.includes(searchTerm) ||
+            entry0.component?0.toLowerCase0.includes(searchTerm)
         );
       }
 
       // Sort by timestamp (newest first)
-      logs.sort((a: any, b: any) => {
-        const dateA = new Date(a.timestamp || 0).getTime();
-        const dateB = new Date(b.timestamp || 0).getTime();
+      logs0.sort((a: any, b: any) => {
+        const dateA = new Date(a0.timestamp || 0)?0.getTime;
+        const dateB = new Date(b0.timestamp || 0)?0.getTime;
         return dateB - dateA;
       });
 
       // Apply limit
-      if (filters.limit && filters.limit > 0) {
-        logs = logs.slice(0, filters.limit);
+      if (filters0.limit && filters0.limit > 0) {
+        logs = logs0.slice(0, filters0.limit);
       }
 
       return logs;
     } catch (error) {
-      this.logger.error('Failed to retrieve logs:', error);
+      this0.logger0.error('Failed to retrieve logs:', error);
       // Return empty array on error
       return [];
     }

@@ -211,7 +211,7 @@ export interface CapacityPlanningConfiguration {
 /**
  * Capacity Planning Service for intelligent resource allocation and team optimization
  */
-export class CapacityPlanningService extends EventEmitter {
+export class CapacityPlanningService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly teamCapacities = new Map<string, TeamCapacity>();
   private readonly allocations = new Map<string, TeamAllocation>();
@@ -382,13 +382,13 @@ export class CapacityPlanningService extends EventEmitter {
         objectives: {
           maximizeUtilization: true,
           balanceLoad: true,
-          matchSkills: this.config.enableSkillMatching,
-          minimizeRisks: this.config.enableRiskAnalysis
+          matchSkills: this.configuration.enableSkillMatching,
+          minimizeRisks: this.configuration.enableRiskAnalysis
         },
         constraints: {
-          bufferPercentage: this.config.bufferPercentage,
-          innovationPercentage: this.config.innovationPercentage,
-          utilizationTarget: this.config.utilizationTarget
+          bufferPercentage: this.configuration.bufferPercentage,
+          innovationPercentage: this.configuration.innovationPercentage,
+          utilizationTarget: this.configuration.utilizationTarget
         }
       });
 
@@ -657,7 +657,7 @@ export class CapacityPlanningService extends EventEmitter {
    */
   private calculateInnovationCapacity(team: any): number {
     const totalCapacity = this.calculateTotalCapacity(team.members);
-    return totalCapacity * (this.config.innovationPercentage / 100);
+    return totalCapacity * (this.configuration.innovationPercentage / 100);
   }
 
   /**
@@ -665,14 +665,14 @@ export class CapacityPlanningService extends EventEmitter {
    */
   private calculateBufferCapacity(team: any): number {
     const totalCapacity = this.calculateTotalCapacity(team.members);
-    return totalCapacity * (this.config.bufferPercentage / 100);
+    return totalCapacity * (this.configuration.bufferPercentage / 100);
   }
 
   /**
    * Prioritize features using intelligent algorithms
    */
   private async prioritizeFeatures(features: FeatureAllocationRequest[]): Promise<FeatureAllocationRequest[]> {
-    if (!this.config.enableIntelligentAllocation) {
+    if (!this.configuration.enableIntelligentAllocation) {
       // Simple priority-based sorting
       const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
       return [...features].sort((a, b) => {
@@ -727,9 +727,9 @@ export class CapacityPlanningService extends EventEmitter {
       existingAllocations,
       strategy: allocationStrategy,
       matchingCriteria: {
-        skillMatch: this.config.enableSkillMatching ? this.config.skillMatchThreshold : 0,
+        skillMatch: this.configuration.enableSkillMatching ? this.configuration.skillMatchThreshold : 0,
         capacityThreshold: 0.8,
-        utilizationTarget: this.config.utilizationTarget / 100
+        utilizationTarget: this.configuration.utilizationTarget / 100
       }
     });
 
@@ -973,7 +973,7 @@ export class CapacityPlanningService extends EventEmitter {
       teamCapacities,
       allocationStrategy,
       context: {
-        utilizationTarget: this.config.utilizationTarget,
+        utilizationTarget: this.configuration.utilizationTarget,
         riskTolerance: 'medium',
         optimizationGoals: ['maximize_value', 'balance_load', 'minimize_risks']
       }

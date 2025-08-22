@@ -1,14 +1,14 @@
 /**
- * Intelligence Module - Simplified Barrel Export.
+ * Intelligence Module - Simplified Barrel Export0.
  *
- * Central export point for AI intelligence functionality using extracted packages.
- * All intelligence functionality now uses extracted @claude-zen packages.
+ * Central export point for AI intelligence functionality using extracted packages0.
+ * All intelligence functionality now uses extracted @claude-zen packages0.
  */
 
 // Re-export intelligence functionality from brain package
 export {
   BehavioralIntelligence,
-  demoBehavioralIntelligence
+  demoBehavioralIntelligence,
 } from '@claude-zen/intelligence';
 
 // Export brain coordination functionality
@@ -17,14 +17,14 @@ export {
   BrainJsBridge,
   NeuralBridge,
   DSPyLLMBridge,
-  RetrainingMonitor
+  RetrainingMonitor,
 } from '@claude-zen/intelligence';
 
 // Export teamwork/conversation functionality
 export {
   ConversationOrchestrator,
   ConversationManager,
-  CollaborationEngine
+  CollaborationEngine,
 } from '@claude-zen/intelligence';
 
 // Export behavioral intelligence types
@@ -32,7 +32,7 @@ export type {
   AgentExecutionData,
   BehavioralPrediction,
   TaskComplexityAnalysis,
-  AgentBehavioralProfile
+  AgentBehavioralProfile,
 } from '@claude-zen/intelligence';
 
 export type {
@@ -44,13 +44,13 @@ export type {
   NeuralConfig,
   NeuralNetwork,
   TrainingData,
-  PredictionResult
+  PredictionResult,
 } from '@claude-zen/intelligence';
 
 // Intelligence utilities using extracted packages
 export const IntelligenceUtils = {
   /**
-   * Get available intelligence capabilities.
+   * Get available intelligence capabilities0.
    */
   getCapabilities: (): string[] => {
     return [
@@ -78,20 +78,20 @@ export const IntelligenceUtils = {
   },
 
   /**
-   * Validate intelligence configuration.
+   * Validate intelligence configuration0.
    */
-  validateConfig: (config: unknown): boolean => {
+  validateConfig: (config: any): boolean => {
     return Boolean(
       config &&
-        (config?.['learningRate'] || config?.['adaptationRate']) &&
-        config?.['patternRecognition'] &&
-        config?.['learning'] &&
-        config?.['optimization']
+        (config?0.['learningRate'] || config?0.['adaptationRate']) &&
+        config?0.['patternRecognition'] &&
+        config?0.['learning'] &&
+        config?0.['optimization']
     );
   },
 
   /**
-   * Get intelligence metrics.
+   * Get intelligence metrics0.
    */
   getMetrics: (): Record<string, unknown> => {
     return {
@@ -109,11 +109,15 @@ export const IntelligenceUtils = {
   },
 
   /**
-   * Initialize intelligence systems using extracted packages.
+   * Initialize intelligence systems using extracted packages0.
    */
-  initialize: async (config: unknown = {}) => {
-    const { BrainCoordinator, BehavioralIntelligence } = await import('@claude-zen/intelligence');
-    const { ConversationOrchestrator } = await import('@claude-zen/intelligence');
+  initialize: async (config: any = {}) => {
+    const { BrainCoordinator, BehavioralIntelligence } = await import(
+      '@claude-zen/intelligence'
+    );
+    const { ConversationOrchestrator } = await import(
+      '@claude-zen/intelligence'
+    );
 
     const defaultConfig = {
       patternRecognition: {
@@ -143,21 +147,23 @@ export const IntelligenceUtils = {
         conversations: true,
         collaboration: true,
       },
-      ...config,
+      0.0.0.config,
     };
 
     return {
-      brainCoordinator: new BrainCoordinator(defaultConfig.brain),
-      behavioralIntelligence: new BehavioralIntelligence(defaultConfig.learning),
-      teamwork: new ConversationOrchestrator(defaultConfig.teamwork),
+      brainCoordinator: new BrainCoordinator(defaultConfig0.brain),
+      behavioralIntelligence: new BehavioralIntelligence(
+        defaultConfig0.learning
+      ),
+      teamwork: new ConversationOrchestrator(defaultConfig0.teamwork),
       config: defaultConfig,
     };
   },
 
   /**
-   * Create behavioral intelligence system using extracted packages.
+   * Create behavioral intelligence system using extracted packages0.
    */
-  createBehavioralIntelligenceSystem: async (config?: unknown) => {
+  createBehavioralIntelligenceSystem: async (config?: any) => {
     const { BehavioralIntelligence } = await import('@claude-zen/intelligence');
 
     const defaultConfig = {
@@ -179,7 +185,7 @@ export const IntelligenceUtils = {
         maxOptimizations: 10,
         validationRequired: true,
       },
-      ...config,
+      0.0.0.config,
     };
 
     return {
@@ -193,36 +199,39 @@ export class IntelligenceFactory {
   private static systems = new Map<string, any>();
 
   /**
-   * Get intelligence system by type.
+   * Get intelligence system by type0.
    */
-  static async getSystem(type: string, config: unknown = {}): Promise<unknown> {
-    if (!IntelligenceFactory.systems.has(type)) {
-      const system = await IntelligenceUtils.initialize(config);
-      IntelligenceFactory.systems.set(type, system);
+  static async getSystem(type: string, config: any = {}): Promise<unknown> {
+    if (!IntelligenceFactory0.systems0.has(type)) {
+      const system = await IntelligenceUtils0.initialize(config);
+      IntelligenceFactory0.systems0.set(type, system);
     }
 
-    return IntelligenceFactory.systems.get(type);
+    return IntelligenceFactory0.systems0.get(type);
   }
 
   /**
-   * Get behavioral intelligence system.
+   * Get behavioral intelligence system0.
    */
-  static async getBehavioralIntelligenceSystem(config: unknown = {}): Promise<unknown> {
-    const key = `behavioral_intelligence_${JSON.stringify(config)}`;
+  static async getBehavioralIntelligenceSystem(
+    config: any = {}
+  ): Promise<unknown> {
+    const key = `behavioral_intelligence_${JSON0.stringify(config)}`;
 
-    if (!IntelligenceFactory.systems.has(key)) {
-      const system = await IntelligenceUtils.createBehavioralIntelligenceSystem(config);
-      IntelligenceFactory.systems.set(key, system);
+    if (!IntelligenceFactory0.systems0.has(key)) {
+      const system =
+        await IntelligenceUtils0.createBehavioralIntelligenceSystem(config);
+      IntelligenceFactory0.systems0.set(key, system);
     }
 
-    return IntelligenceFactory.systems.get(key);
+    return IntelligenceFactory0.systems0.get(key);
   }
 
   /**
-   * Clear all cached systems.
+   * Clear all cached systems0.
    */
   static clearSystems(): void {
-    IntelligenceFactory.systems.clear();
+    IntelligenceFactory0.systems?0.clear();
   }
 }
 

@@ -2,10 +2,10 @@
  * @fileoverview Comprehensive Type Definitions for Swarm Service Results
  *
  * This file defines all the return types for SwarmService methods to replace
- * the `any` types and provide proper type safety throughout the codebase.
+ * the `any` types and provide proper type safety throughout the codebase0.
  *
  * @author Claude Code Zen Team
- * @version 1.0.0
+ * @version 10.0.0
  * @since 2025-08-14
  */
 

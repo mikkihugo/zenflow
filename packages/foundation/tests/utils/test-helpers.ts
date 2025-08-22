@@ -9,6 +9,7 @@ import type { Logger } from '../../src/logging';
 
 // Mock implementations
 export const mockLogger: Logger = {
+  trace: vi.fn(),
   debug: vi.fn(),
   info: vi.fn(), 
   warn: vi.fn(),

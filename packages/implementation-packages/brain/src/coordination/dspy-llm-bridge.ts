@@ -6,12 +6,11 @@
  */
 
 import {
-  injectable,
   getLogger,
   type Logger
 } from '@claude-zen/foundation';
 // Database access via infrastructure facade
-import { getDatabaseAccess } from '@claude-zen/strategic-facades/infrastructure';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
 
 // Simple fallback implementations
 const logger = getLogger('dspy-llm-bridge-fallback');
@@ -74,7 +73,7 @@ export interface LLMBridgeOptions {
 /**
  * Simplified DSPy LLM Bridge with fallback implementations
  */
-@injectable()
+// @injectable() - removed dependency injection
 export class DSPyLLMBridge {
   private logger: Logger;
   private databaseAccess: any; // DatabaseAccess via infrastructure facade

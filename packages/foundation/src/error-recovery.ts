@@ -56,10 +56,11 @@
  * ```
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { Result, ok, err } from 'neverthrow';
 
 import { getLogger, type Logger } from './logging';
+import { TypedEventBase } from './typed-event-base';
+import type { ServiceEvents } from './typed-event-base';
 
 // =============================================================================
 // CORE INTERFACES
@@ -248,20 +249,25 @@ export interface ErrorRecoveryConfig {
  * Provides automatic error recovery with configurable strategies,
  * retry mechanisms, and comprehensive monitoring.
  */
-export class ErrorRecoverySystem extends EventEmitter {
+export class ErrorRecoverySystem extends TypedEventBase<ServiceEvents> {
   private logger: Logger;
   private strategies: Map<string, RecoveryStrategy> = new Map();
   private activeRecoveries: Map<string, Promise<RecoveryResult>> = new Map();
   private recoveryHistory: RecoveryResult[] = [];
-  private config: Required<ErrorRecoveryConfig>;
+  private recoveryConfig: Required<ErrorRecoveryConfig>;
 
   constructor(config: ErrorRecoveryConfig) {
-    super();
+    super({
+      enableValidation: true,
+      enableMetrics: true,
+      enableHistory: false,
+      maxListeners: 30
+    });
 
     this.logger = getLogger('error-recovery-system');
 
     // Set defaults
-    this.config = {
+    this.recoveryConfig = {
       strategies: config.strategies || [],
       defaultTimeout: config.defaultTimeout || 30000,
       maxConcurrentRecoveries: config.maxConcurrentRecoveries || 10,
@@ -274,17 +280,17 @@ export class ErrorRecoverySystem extends EventEmitter {
     };
 
     // Initialize strategies
-    this.config.strategies.forEach((strategy) => {
+    this.recoveryConfig.strategies.forEach((strategy) => {
       this.strategies.set(strategy.id, strategy);
     });
 
     this.logger.info('Error recovery system initialized', {
       strategiesCount: this.strategies.size,
-      autoRecovery: this.config.autoRecovery,
+      autoRecovery: this.recoveryConfig.autoRecovery,
     });
 
     // Start monitoring if enabled
-    if (this.config.monitoring.enabled) {
+    if (this.recoveryConfig.monitoring.enabled) {
       this.startMonitoring();
     }
   }
@@ -322,10 +328,10 @@ export class ErrorRecoverySystem extends EventEmitter {
       }
 
       // Check concurrent recovery limit
-      if (this.activeRecoveries.size >= this.config.maxConcurrentRecoveries) {
+      if (this.activeRecoveries.size >= this.recoveryConfig.maxConcurrentRecoveries) {
         this.logger.warn('Maximum concurrent recoveries reached', {
           current: this.activeRecoveries.size,
-          max: this.config.maxConcurrentRecoveries,
+          max: this.recoveryConfig.maxConcurrentRecoveries,
         });
         return err(new Error('Maximum concurrent recoveries reached'));
       }
@@ -338,7 +344,7 @@ export class ErrorRecoverySystem extends EventEmitter {
         const result = await recoveryPromise;
         this.recoveryHistory.push(result);
 
-        this.emit('recovery:completed', { errorInfo, result });
+        this.emit('service-stopped', { serviceName: 'error-recovery', timestamp: new Date() });
 
         return ok(result);
       } finally {
@@ -359,7 +365,7 @@ export class ErrorRecoverySystem extends EventEmitter {
    */
   addStrategy(strategy: RecoveryStrategy): void {
     this.strategies.set(strategy.id, strategy);
-    this.emit('strategy:added', { strategy });
+    this.emit('service-started', { serviceName: 'recovery-strategy', timestamp: new Date() });
 
     this.logger.info('Recovery strategy added', {
       strategyId: strategy.id,
@@ -374,7 +380,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   removeStrategy(strategyId: string): boolean {
     const removed = this.strategies.delete(strategyId);
     if (removed) {
-      this.emit('strategy:removed', { strategyId });
+      this.emit('service-stopped', { serviceName: 'recovery-strategy', timestamp: new Date() });
       this.logger.info('Recovery strategy removed', { strategyId });
     }
     return removed;
@@ -383,7 +389,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   /**
    * Get recovery metrics and statistics.
    */
-  getMetrics(): {
+  getRecoveryMetrics(): {
     totalRecoveries: number;
     successfulRecoveries: number;
     failedRecoveries: number;
@@ -428,7 +434,7 @@ export class ErrorRecoverySystem extends EventEmitter {
     }
 
     this.activeRecoveries.delete(errorId);
-    this.emit('recovery:cancelled', { errorId });
+    this.emit('service-error', { serviceName: 'error-recovery', error: new Error('Recovery cancelled'), timestamp: new Date() });
 
     this.logger.info('Recovery cancelled', { errorId });
     return true;
@@ -451,7 +457,7 @@ export class ErrorRecoverySystem extends EventEmitter {
     }
 
     this.activeRecoveries.clear();
-    this.emit('shutdown');
+    this.emit('service-stopped', { serviceName: 'error-recovery-system', timestamp: new Date() });
   }
 
   // =============================================================================
@@ -514,7 +520,7 @@ export class ErrorRecoverySystem extends EventEmitter {
       actionsCount: strategy.actions.length,
     });
 
-    this.emit('recovery:started', { errorInfo, strategy });
+    this.emit('service-started', { serviceName: 'error-recovery', timestamp: new Date() });
 
     try {
       // Execute recovery actions in sequence
@@ -663,11 +669,11 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private startMonitoring(): void {
     setInterval(() => {
-      const metrics = this.getMetrics();
-      this.emit('metrics:collected', { metrics, timestamp: new Date() });
+      const metrics = this.getRecoveryMetrics();
+      this.emit('health-check', { serviceName: 'error-recovery', healthy: true, timestamp: new Date() });
 
       this.logger.debug('Recovery system metrics', metrics);
-    }, this.config.monitoring.metricsInterval);
+    }, this.recoveryConfig.monitoring.metricsInterval);
   }
 }
 

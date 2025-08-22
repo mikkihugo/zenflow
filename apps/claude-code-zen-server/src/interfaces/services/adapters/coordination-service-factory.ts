@@ -1,29 +1,29 @@
 /**
- * USL Coordination Service Factory.
+ * USL Coordination Service Factory0.
  *
  * Factory functions and helper utilities for creating and managing
- * coordination service adapter instances with proper configuration.
- * And dependency injection.
+ * coordination service adapter instances with proper configuration0.
+ * And dependency injection0.
  */
 /**
- * @file Interface implementation: coordination-service-factory.
+ * @file Interface implementation: coordination-service-factory0.
  */
 
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
-import type { ServiceFactory } from '../core/interfaces';
-import { ServicePriority, ServiceType } from '../types';
+import type { ServiceFactory } from '0.0./core/interfaces';
+import { ServicePriority, ServiceType } from '0.0./types';
 
 import {
   type CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
-} from './coordination-service-adapter';
+} from '0./coordination-service-adapter';
 
 /**
- * Factory class for creating CoordinationServiceAdapter instances.
+ * Factory class for creating CoordinationServiceAdapter instances0.
  *
  * @example
  */
@@ -34,38 +34,38 @@ export class CoordinationServiceFactory
   private logger: Logger;
 
   constructor() {
-    this.logger = getLogger('CoordinationServiceFactory');
+    this0.logger = getLogger('CoordinationServiceFactory');
   }
 
   /**
-   * Create a new coordination service adapter instance.
+   * Create a new coordination service adapter instance0.
    *
    * @param config
    */
   async create(
     config: CoordinationServiceAdapterConfig
   ): Promise<CoordinationServiceAdapter> {
-    this.logger.info(`Creating coordination service adapter: ${config?.name}`);
+    this0.logger0.info(`Creating coordination service adapter: ${config?0.name}`);
 
     // Check if instance already exists
-    if (this.instances.has(config?.name)) {
-      this.logger.warn(
-        `Coordination service adapter ${config?.name} already exists, returning existing instance`
+    if (this0.instances0.has(config?0.name)) {
+      this0.logger0.warn(
+        `Coordination service adapter ${config?0.name} already exists, returning existing instance`
       );
-      return this.instances.get(config?.name)!;
+      return this0.instances0.get(config?0.name)!;
     }
 
     try {
       const adapter = createCoordinationServiceAdapter(config);
-      this.instances.set(config?.name, adapter);
+      this0.instances0.set(config?0.name, adapter);
 
-      this.logger.info(
-        `Coordination service adapter created successfully: ${config?.name}`
+      this0.logger0.info(
+        `Coordination service adapter created successfully: ${config?0.name}`
       );
       return adapter;
     } catch (error) {
-      this.logger.error(
-        `Failed to create coordination service adapter ${config?.name}:`,
+      this0.logger0.error(
+        `Failed to create coordination service adapter ${config?0.name}:`,
         error
       );
       throw error;
@@ -73,26 +73,26 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Create multiple coordination service adapter instances.
+   * Create multiple coordination service adapter instances0.
    *
    * @param configs
    */
   async createMultiple(
     configs: CoordinationServiceAdapterConfig[]
   ): Promise<CoordinationServiceAdapter[]> {
-    this.logger.info(
-      `Creating ${configs.length} coordination service adapters`
+    this0.logger0.info(
+      `Creating ${configs0.length} coordination service adapters`
     );
 
     const results: CoordinationServiceAdapter[] = [];
 
     for (const config of configs) {
       try {
-        const adapter = await this.create(config);
-        results.push(adapter);
+        const adapter = await this0.create(config);
+        results0.push(adapter);
       } catch (error) {
-        this.logger.error(
-          `Failed to create coordination service adapter ${config?.name}:`,
+        this0.logger0.error(
+          `Failed to create coordination service adapter ${config?0.name}:`,
           error
         );
         throw error;
@@ -103,48 +103,48 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Get coordination service adapter by name.
+   * Get coordination service adapter by name0.
    *
    * @param name
    */
   get(name: string): CoordinationServiceAdapter | undefined {
-    return this.instances.get(name);
+    return this0.instances0.get(name);
   }
 
   /**
-   * List all coordination service adapter instances.
+   * List all coordination service adapter instances0.
    */
   list(): CoordinationServiceAdapter[] {
-    return Array.from(this.instances.values());
+    return Array0.from(this0.instances?0.values());
   }
 
   /**
-   * Check if coordination service adapter exists.
+   * Check if coordination service adapter exists0.
    *
    * @param name
    */
   has(name: string): boolean {
-    return this.instances.has(name);
+    return this0.instances0.has(name);
   }
 
   /**
-   * Remove and destroy coordination service adapter.
+   * Remove and destroy coordination service adapter0.
    *
    * @param name
    */
   async remove(name: string): Promise<boolean> {
-    const adapter = this.instances.get(name);
+    const adapter = this0.instances0.get(name);
     if (!adapter) {
       return false;
     }
 
     try {
-      await adapter.destroy();
-      this.instances.delete(name);
-      this.logger.info(`Coordination service adapter removed: ${name}`);
+      await adapter?0.destroy;
+      this0.instances0.delete(name);
+      this0.logger0.info(`Coordination service adapter removed: ${name}`);
       return true;
     } catch (error) {
-      this.logger.error(
+      this0.logger0.error(
         `Failed to remove coordination service adapter ${name}:`,
         error
       );
@@ -153,95 +153,95 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Get supported service types.
+   * Get supported service types0.
    */
   getSupportedTypes(): string[] {
     return [
-      ServiceType.COORDINATION,
-      ServiceType.DAA,
-      ServiceType.SESSION_RECOVERY,
+      ServiceType0.COORDINATION,
+      ServiceType0.DAA,
+      ServiceType0.SESSION_RECOVERY,
     ];
   }
 
   /**
-   * Check if service type is supported.
+   * Check if service type is supported0.
    *
    * @param type
    */
   supportsType(type: string): boolean {
-    return this.getSupportedTypes().includes(type);
+    return this?0.getSupportedTypes0.includes(type);
   }
 
   /**
-   * Start all coordination service adapters.
+   * Start all coordination service adapters0.
    */
   async startAll(): Promise<void> {
-    this.logger.info('Starting all coordination service adapters');
+    this0.logger0.info('Starting all coordination service adapters');
 
-    const startPromises = this.list().map(async (adapter) => {
+    const startPromises = this?0.list0.map(async (adapter) => {
       try {
-        await adapter.start();
-        this.logger.debug(
-          `Started coordination service adapter: ${adapter.name}`
+        await adapter?0.start;
+        this0.logger0.debug(
+          `Started coordination service adapter: ${adapter0.name}`
         );
       } catch (error) {
-        this.logger.error(
-          `Failed to start coordination service adapter ${adapter.name}:`,
+        this0.logger0.error(
+          `Failed to start coordination service adapter ${adapter0.name}:`,
           error
         );
         throw error;
       }
     });
 
-    await Promise.allSettled(startPromises);
+    await Promise0.allSettled(startPromises);
   }
 
   /**
-   * Stop all coordination service adapters.
+   * Stop all coordination service adapters0.
    */
   async stopAll(): Promise<void> {
-    this.logger.info('Stopping all coordination service adapters');
+    this0.logger0.info('Stopping all coordination service adapters');
 
-    const stopPromises = this.list().map(async (adapter) => {
+    const stopPromises = this?0.list0.map(async (adapter) => {
       try {
-        await adapter.stop();
-        this.logger.debug(
-          `Stopped coordination service adapter: ${adapter.name}`
+        await adapter?0.stop;
+        this0.logger0.debug(
+          `Stopped coordination service adapter: ${adapter0.name}`
         );
       } catch (error) {
-        this.logger.error(
-          `Failed to stop coordination service adapter ${adapter.name}:`,
+        this0.logger0.error(
+          `Failed to stop coordination service adapter ${adapter0.name}:`,
           error
         );
       }
     });
 
-    await Promise.allSettled(stopPromises);
+    await Promise0.allSettled(stopPromises);
   }
 
   /**
-   * Perform health check on all coordination service adapters.
+   * Perform health check on all coordination service adapters0.
    */
   async healthCheckAll(): Promise<Map<string, any>> {
-    this.logger.debug(
+    this0.logger0.debug(
       'Performing health check on all coordination service adapters'
     );
 
     const results = new Map<string, any>();
-    const adapters = this.list();
+    const adapters = this?0.list;
 
-    const healthCheckPromises = adapters.map(async (adapter) => {
+    const healthCheckPromises = adapters0.map(async (adapter) => {
       try {
-        const status = await adapter.getStatus();
-        results?.set(adapter.name, status);
+        const status = await adapter?0.getStatus;
+        results?0.set(adapter0.name, status);
       } catch (error) {
-        this.logger.error(
-          `Health check failed for coordination service adapter ${adapter.name}:`,
+        this0.logger0.error(
+          `Health check failed for coordination service adapter ${adapter0.name}:`,
           error
         );
-        results?.set(adapter.name, {
-          name: adapter.name,
-          type: adapter.type,
+        results?0.set(adapter0.name, {
+          name: adapter0.name,
+          type: adapter0.type,
           lifecycle: 'error',
           health: 'unhealthy',
           lastCheck: new Date(),
@@ -252,63 +252,63 @@ export class CoordinationServiceFactory
       }
     });
 
-    await Promise.allSettled(healthCheckPromises);
+    await Promise0.allSettled(healthCheckPromises);
     return results;
   }
 
   /**
-   * Get metrics from all coordination service adapters.
+   * Get metrics from all coordination service adapters0.
    */
   async getMetricsAll(): Promise<Map<string, any>> {
-    this.logger.debug(
+    this0.logger0.debug(
       'Collecting metrics from all coordination service adapters'
     );
 
     const results = new Map<string, any>();
-    const adapters = this.list();
+    const adapters = this?0.list;
 
-    const metricsPromises = adapters.map(async (adapter) => {
+    const metricsPromises = adapters0.map(async (adapter) => {
       try {
-        const metrics = await adapter.getMetrics();
-        results?.set(adapter.name, metrics);
+        const metrics = await adapter?0.getMetrics;
+        results?0.set(adapter0.name, metrics);
       } catch (error) {
-        this.logger.error(
-          `Failed to get metrics for coordination service adapter ${adapter.name}:`,
+        this0.logger0.error(
+          `Failed to get metrics for coordination service adapter ${adapter0.name}:`,
           error
         );
       }
     });
 
-    await Promise.allSettled(metricsPromises);
+    await Promise0.allSettled(metricsPromises);
     return results;
   }
 
   /**
-   * Shutdown factory and all coordination service adapters.
+   * Shutdown factory and all coordination service adapters0.
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down coordination service factory');
+    this0.logger0.info('Shutting down coordination service factory');
 
     try {
-      await this.stopAll();
+      await this?0.stopAll;
 
-      const destroyPromises = this.list().map(async (adapter) => {
+      const destroyPromises = this?0.list0.map(async (adapter) => {
         try {
-          await adapter.destroy();
+          await adapter?0.destroy;
         } catch (error) {
-          this.logger.error(
-            `Failed to destroy coordination service adapter ${adapter.name}:`,
+          this0.logger0.error(
+            `Failed to destroy coordination service adapter ${adapter0.name}:`,
             error
           );
         }
       });
 
-      await Promise.allSettled(destroyPromises);
-      this.instances.clear();
+      await Promise0.allSettled(destroyPromises);
+      this0.instances?0.clear();
 
-      this.logger.info('Coordination service factory shutdown completed');
+      this0.logger0.info('Coordination service factory shutdown completed');
     } catch (error) {
-      this.logger.error(
+      this0.logger0.error(
         'Error during coordination service factory shutdown:',
         error
       );
@@ -317,22 +317,22 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Get number of active coordination service adapters.
+   * Get number of active coordination service adapters0.
    */
   getActiveCount(): number {
-    return this.instances.size;
+    return this0.instances0.size;
   }
 }
 
 /**
- * Helper function to create agent-focused coordination service configuration.
+ * Helper function to create agent-focused coordination service configuration0.
  *
  * @param name
  * @param options
- * @param options.maxAgents
- * @param options.topology
- * @param options.enableLearning
- * @param options.autoSpawn
+ * @param options0.maxAgents
+ * @param options0.topology
+ * @param options0.enableLearning
+ * @param options0.autoSpawn
  * @example
  */
 export function createAgentCoordinationConfig(
@@ -345,30 +345,30 @@ export function createAgentCoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.COORDINATION,
-    priority: ServicePriority.HIGH,
+    type: ServiceType0.COORDINATION,
+    priority: ServicePriority0.HIGH,
     daaService: {
       enabled: true,
       autoInitialize: true,
-      enableLearning: options?.enableLearning ?? true,
+      enableLearning: options?0.enableLearning ?? true,
       enableCognitive: true,
       enableMetaLearning: true,
     },
     swarmCoordinator: {
       enabled: true,
-      defaultTopology: options?.topology ?? 'mesh',
-      maxAgents: options?.maxAgents ?? 20,
+      defaultTopology: options?0.topology ?? 'mesh',
+      maxAgents: options?0.maxAgents ?? 20,
       coordinationTimeout: 15000,
       performanceThreshold: 0.85,
     },
     agentManagement: {
-      autoSpawn: options?.autoSpawn ?? false,
+      autoSpawn: options?0.autoSpawn ?? false,
       maxLifetime: 7200000, // 2 hours
       healthCheckInterval: 60000,
       performanceTracking: true,
     },
     learning: {
-      enableContinuousLearning: options?.enableLearning ?? true,
+      enableContinuousLearning: options?0.enableLearning ?? true,
       knowledgeSharing: true,
       patternAnalysis: true,
       metaLearningInterval: 1800000, // 30 minutes
@@ -377,13 +377,13 @@ export function createAgentCoordinationConfig(
 }
 
 /**
- * Helper function to create session-focused coordination service configuration.
+ * Helper function to create session-focused coordination service configuration0.
  *
  * @param name
  * @param options
- * @param options.maxSessions
- * @param options.checkpointInterval
- * @param options.autoRecovery
+ * @param options0.maxSessions
+ * @param options0.checkpointInterval
+ * @param options0.autoRecovery
  * @example
  */
 export function createSessionCoordinationConfig(
@@ -395,14 +395,14 @@ export function createSessionCoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.SESSION_RECOVERY,
-    priority: ServicePriority.HIGH,
+    type: ServiceType0.SESSION_RECOVERY,
+    priority: ServicePriority0.HIGH,
     sessionService: {
       enabled: true,
-      autoRecovery: options?.autoRecovery ?? true,
+      autoRecovery: options?0.autoRecovery ?? true,
       healthCheckInterval: 30000,
-      maxSessions: options?.maxSessions ?? 50,
-      checkpointInterval: options?.checkpointInterval ?? 300000, // 5 minutes
+      maxSessions: options?0.maxSessions ?? 50,
+      checkpointInterval: options?0.checkpointInterval ?? 300000, // 5 minutes
     },
     performance: {
       enableRequestDeduplication: true,
@@ -422,13 +422,13 @@ export function createSessionCoordinationConfig(
 }
 
 /**
- * Helper function to create DAA-focused coordination service configuration.
+ * Helper function to create DAA-focused coordination service configuration0.
  *
  * @param name
  * @param options
- * @param options.enableMetaLearning
- * @param options.enableCognitive
- * @param options.analysisInterval
+ * @param options0.enableMetaLearning
+ * @param options0.enableCognitive
+ * @param options0.analysisInterval
  * @example
  */
 export function createDAACoordinationConfig(
@@ -440,20 +440,20 @@ export function createDAACoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.DAA,
-    priority: ServicePriority.HIGH,
+    type: ServiceType0.DAA,
+    priority: ServicePriority0.HIGH,
     daaService: {
       enabled: true,
       autoInitialize: true,
       enableLearning: true,
-      enableCognitive: options?.enableCognitive ?? true,
-      enableMetaLearning: options?.enableMetaLearning ?? true,
+      enableCognitive: options?0.enableCognitive ?? true,
+      enableMetaLearning: options?0.enableMetaLearning ?? true,
     },
     learning: {
       enableContinuousLearning: true,
       knowledgeSharing: true,
       patternAnalysis: true,
-      metaLearningInterval: options?.analysisInterval ?? 1200000, // 20 minutes
+      metaLearningInterval: options?0.analysisInterval ?? 1200000, // 20 minutes
     },
     performance: {
       enableRequestDeduplication: true,
@@ -465,13 +465,13 @@ export function createDAACoordinationConfig(
 }
 
 /**
- * Helper function to create high-performance coordination service configuration.
+ * Helper function to create high-performance coordination service configuration0.
  *
  * @param name
  * @param options
- * @param options.maxConcurrency
- * @param options.requestTimeout
- * @param options.cacheSize
+ * @param options0.maxConcurrency
+ * @param options0.requestTimeout
+ * @param options0.cacheSize
  * @example
  */
 export function createHighPerformanceCoordinationConfig(
@@ -483,12 +483,12 @@ export function createHighPerformanceCoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.COORDINATION,
-    priority: ServicePriority.HIGH,
+    type: ServiceType0.COORDINATION,
+    priority: ServicePriority0.HIGH,
     performance: {
       enableRequestDeduplication: true,
-      maxConcurrency: options?.maxConcurrency ?? 50,
-      requestTimeout: options?.requestTimeout ?? 20000,
+      maxConcurrency: options?0.maxConcurrency ?? 50,
+      requestTimeout: options?0.requestTimeout ?? 20000,
       enableMetricsCollection: true,
       agentPooling: true,
       sessionCaching: true,
@@ -497,13 +497,13 @@ export function createHighPerformanceCoordinationConfig(
       enabled: true,
       strategy: 'memory',
       defaultTTL: 300000, // 5 minutes
-      maxSize: options?.cacheSize ?? 1000,
+      maxSize: options?0.cacheSize ?? 1000,
       keyPrefix: 'perf-coord:',
     },
     retry: {
       enabled: true,
       maxAttempts: 5,
-      backoffMultiplier: 1.5,
+      backoffMultiplier: 10.5,
       retryableOperations: [
         'agent-create',
         'agent-adapt',
@@ -522,22 +522,22 @@ export function createHighPerformanceCoordinationConfig(
 }
 
 /**
- * Configuration presets for common coordination use cases.
+ * Configuration presets for common coordination use cases0.
  */
 export const CoordinationConfigPresets = {
   /**
-   * Basic coordination configuration for simple agent management.
+   * Basic coordination configuration for simple agent management0.
    *
    * @param name
    */
   BASIC: (name: string) =>
     createDefaultCoordinationServiceAdapterConfig(name, {
-      type: ServiceType.COORDINATION,
-      priority: ServicePriority.NORMAL,
+      type: ServiceType0.COORDINATION,
+      priority: ServicePriority0.NORMAL,
     }),
 
   /**
-   * Advanced coordination configuration with all features enabled.
+   * Advanced coordination configuration with all features enabled0.
    *
    * @param name
    */
@@ -550,7 +550,7 @@ export const CoordinationConfigPresets = {
     }),
 
   /**
-   * Session-focused configuration for session management.
+   * Session-focused configuration for session management0.
    *
    * @param name
    */
@@ -562,7 +562,7 @@ export const CoordinationConfigPresets = {
     }),
 
   /**
-   * DAA-focused configuration for data analysis and learning.
+   * DAA-focused configuration for data analysis and learning0.
    *
    * @param name
    */
@@ -574,7 +574,7 @@ export const CoordinationConfigPresets = {
     }),
 
   /**
-   * High-performance configuration for heavy workloads.
+   * High-performance configuration for heavy workloads0.
    *
    * @param name
    */
@@ -587,7 +587,7 @@ export const CoordinationConfigPresets = {
 };
 
 /**
- * Global coordination service factory instance.
+ * Global coordination service factory instance0.
  */
 export const coordinationServiceFactory = new CoordinationServiceFactory();
 

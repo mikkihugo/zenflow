@@ -4,7 +4,7 @@
  * Monitors health of memory nodes with configurable health checks,
  * automatic recovery detection, and comprehensive health reporting.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryNode, MemoryHealthStatus } from './types';
 interface HealthCheckConfig {
     enabled: boolean;
@@ -39,7 +39,7 @@ interface HealthStats {
     unhealthyNodes: number;
     recoveringNodes: number;
 }
-export declare class MemoryHealthMonitor extends EventEmitter {
+export declare class MemoryHealthMonitor extends TypedEventBase {
     private logger;
     private config;
     private nodes;

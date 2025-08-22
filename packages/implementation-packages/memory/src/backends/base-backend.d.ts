@@ -7,7 +7,7 @@
 /**
  * @file Memory management: base-backend.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryConfig } from '../types';
 import type { JSONValue } from '../core/memory-system';
 export interface BackendCapabilities {
@@ -50,8 +50,8 @@ export interface MemoryStats {
     created: number;
     modified: number;
 }
-export declare abstract class BaseMemoryBackend extends EventEmitter {
-    protected config: MemoryConfig;
+export declare abstract class BaseMemoryBackend extends TypedEventBase {
+    protected memoryConfig: MemoryConfig;
     protected isInitialized: boolean;
     protected stats: MemoryStats;
     constructor(config: MemoryConfig);

@@ -1,21 +1,21 @@
 /**
  * @fileoverview Dynamic Capability Mesh Architecture - Index
- * 
+ *
  * Comprehensive capability mesh system that enables dynamic swarm formation,
  * cross-domain coordination, and intelligent resource optimization using
- * matrix organization (Services × Capabilities).
- * 
- * This represents the complete implementation of the user's vision for a 
+ * matrix organization (Services × Capabilities)0.
+ *
+ * This represents the complete implementation of the user's vision for a
  * "full AI system" with dynamic capability mesh architecture, self-optimization,
- * and comprehensive integration with existing learning packages.
- * 
+ * and comprehensive integration with existing learning packages0.
+ *
  * Key Components:
  * - Intelligence Cube Matron (Learning & AI domain coordination)
  * - Collaborative Decision System (Multi-stakeholder problem resolution)
  * - Swarm Migration System (Learning extraction from permanent swarms)
  * - Service-Domain Intersection Queens (Coming next)
  * - Dynamic swarm formation with emergent coordination
- * 
+ *
  * Architecture Benefits:
  * - Capability-based organization instead of business domains
  * - Self-optimizing through comprehensive neural learning
@@ -31,12 +31,12 @@
 
 /**
  * Intelligence Cube Matron - AI, Learning, and Neural Coordination Domain
- * 
+ *
  * Comprehensive AI-powered capability matron that coordinates all intelligence,
- * learning, and neural activities across the system. Integrates with all
- * existing @claude-zen packages for maximum learning and optimization.
+ * learning, and neural activities across the system0. Integrates with all
+ * existing @claude-zen packages for maximum learning and optimization0.
  */
-export { IntelligenceCubeMatron } from './intelligence-cube-matron';
+export { IntelligenceCubeMatron } from '0./intelligence-cube-matron';
 
 // =============================================================================
 // COLLABORATIVE SYSTEMS
@@ -44,19 +44,19 @@ export { IntelligenceCubeMatron } from './intelligence-cube-matron';
 
 /**
  * Collaborative Decision System - Multi-stakeholder Problem Resolution
- * 
+ *
  * Advanced system that enables commanders to meet with matrons and queens
  * to solve complex issues through coordinated discussion, consensus building,
- * and intelligent resource allocation with comprehensive AI learning.
+ * and intelligent resource allocation with comprehensive AI learning0.
  */
-export { 
+export {
   CollaborativeDecisionSystem,
   type ComplexIssue,
   type MeetingParticipant,
   type CollaborativeMeeting,
   type DiscussionPhase,
-  type DecisionOutcome
-} from './collaborative-decision-system';
+  type DecisionOutcome,
+} from '0./collaborative-decision-system';
 
 // =============================================================================
 // SWARM MIGRATION SYSTEM
@@ -64,12 +64,12 @@ export {
 
 /**
  * Swarm Migration System - Learning Extraction from Permanent Swarms
- * 
+ *
  * Critical system for extracting all learned behaviors, patterns, and insights
- * from existing permanent swarms before migrating to dynamic mesh architecture.
- * Ensures no learning is lost during the architectural transition.
+ * from existing permanent swarms before migrating to dynamic mesh architecture0.
+ * Ensures no learning is lost during the architectural transition0.
  */
-export { SwarmMigrationSystem } from './swarm-migration-system';
+export { SwarmMigrationSystem } from '0./swarm-migration-system';
 
 // =============================================================================
 // TYPE DEFINITIONS
@@ -84,30 +84,30 @@ export { SwarmMigrationSystem } from './swarm-migration-system';
 
 /**
  * Dynamic Capability Mesh Architecture Summary
- * 
+ *
  * This system implements a revolutionary approach to AI coordination based on
  * capability domains rather than business domains, enabling:
- * 
+ *
  * **MATRIX ORGANIZATION (Services × Capabilities):**
  * - Intelligence Domain: AI, learning, neural processing, optimization
- * - Integration Domain: Cross-service communication, data flow, APIs  
+ * - Integration Domain: Cross-service communication, data flow, APIs
  * - Security Domain: Safety, authentication, threat detection, compliance
  * - Data Domain: Storage, analytics, processing, transformation
  * - Execution Domain: Task running, resource allocation, performance
  * - Operations Domain: Monitoring, deployment, infrastructure, scaling
- * 
+ *
  * **DYNAMIC SWARM FORMATION:**
  * - Swarms form automatically based on task requirements
  * - Cross-domain expertise assembled intelligently
  * - Self-optimizing through neural learning and behavioral intelligence
  * - Resource allocation optimized through load balancing
- * 
+ *
  * **COLLABORATIVE DECISION-MAKING:**
  * - Complex issues trigger multi-stakeholder meetings
  * - AI-powered consensus building and conflict resolution
  * - Learning from decision outcomes for continuous improvement
  * - Structured discussion patterns with workflow coordination
- * 
+ *
  * **COMPREHENSIVE AI INTEGRATION:**
  * - @claude-zen/intelligence: Autonomous decision-making and behavioral intelligence
  * - @claude-zen/neural-ml: 27+ neural models for learning and prediction
@@ -117,35 +117,36 @@ export { SwarmMigrationSystem } from './swarm-migration-system';
  * - @claude-zen/intelligence: Process coordination and orchestration
  * - @claude-zen/intelligence: Collaborative discussions and consensus building
  * - @claude-zen/foundation: Multi-backend persistent storage
- * 
+ *
  * **SELF-OPTIMIZATION:**
  * - Continuous learning from swarm performance
  * - Behavioral pattern recognition and adaptation
  * - Neural network training from coordination outcomes
  * - Autonomous strategy updates based on performance history
  * - Load balancing optimization through usage analytics
- * 
+ *
  * **EMERGENT COORDINATION:**
  * - Queens emerge at service-domain intersections
  * - Matrons coordinate capability domains
  * - Commanders handle tactical execution
  * - Dynamic topology adaptation based on workload
- * 
+ *
  * This represents the complete implementation of the user's vision for a
  * "full AI system" that "thinks hard" and organizes around AI capabilities
- * rather than human organizational boundaries.
+ * rather than human organizational boundaries0.
  */
 
 export const CAPABILITY_MESH_INFO = {
-  version: '1.0.0-dynamic',
+  version: '10.0.0-dynamic',
   name: '@claude-zen/capability-mesh',
-  description: 'Dynamic capability mesh architecture with AI-powered self-optimization',
+  description:
+    'Dynamic capability mesh architecture with AI-powered self-optimization',
   architecture: 'matrix-organization',
   coordination: 'emergent-swarm-formation',
   learning: 'comprehensive-neural-integration',
   capabilities: [
     'Dynamic swarm formation',
-    'Cross-domain coordination', 
+    'Cross-domain coordination',
     'Collaborative decision-making',
     'Intelligent resource optimization',
     'Workflow orchestration',
@@ -156,16 +157,16 @@ export const CAPABILITY_MESH_INFO = {
     'Consensus building',
     'Load balancing',
     'Process coordination',
-    'Migration with learning preservation'
+    'Migration with learning preservation',
   ],
   integrations: [
     '@claude-zen/intelligence',
-    '@claude-zen/neural-ml', 
+    '@claude-zen/neural-ml',
     '@claude-zen/intelligence',
     '@claude-zen/ai-safety',
     '@claude-zen/intelligence',
     '@claude-zen/intelligence',
     '@claude-zen/intelligence',
-    '@claude-zen/foundation'
-  ]
+    '@claude-zen/foundation',
+  ],
 } as const;

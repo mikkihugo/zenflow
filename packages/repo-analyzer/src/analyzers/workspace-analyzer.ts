@@ -3,9 +3,8 @@
  * Supports Nx, Bazel, Moon, Turbo, Rush, Lerna, Yarn/PNPM workspaces, and Nix
  */
 
-import * as fastGlob from 'fast-glob';
-import { simpleGit } from 'simple-git';
 import { getLogger } from '@claude-zen/foundation';
+
 import type { AnalysisOptions } from '../types/index.js';
 
 export interface WorkspaceInfo {
@@ -636,7 +635,7 @@ export class WorkspaceAnalyzer {
       ignore: ['**/node_modules/**']
     });
 
-    const projects = [];
+    const projects: WorkspaceProject[] = [];
     for (const packageFile of packageFiles) {
       try {
         const content = await fs.readFile(packageFile, 'utf-8');
@@ -686,7 +685,7 @@ export class WorkspaceAnalyzer {
 
   private detectLanguages(projectPath: string): string[] {
     // This would be enhanced with actual file scanning
-    const languages = [];
+    const languages: string[] = [];
     
     if (projectPath.includes('ts') || projectPath.includes('typescript')) {
       languages.push('typescript');
@@ -723,7 +722,7 @@ export class WorkspaceAnalyzer {
   }
 
   private extractNxTargets(config: any): BuildTarget[] {
-    const targets = [];
+    const targets: BuildTarget[] = [];
     
     if (config.targets) {
       for (const [name, target] of Object.entries(config.targets)) {
@@ -743,7 +742,7 @@ export class WorkspaceAnalyzer {
   }
 
   private extractTurboTargets(packageConfig: any, turboConfig: any): BuildTarget[] {
-    const targets = [];
+    const targets: BuildTarget[] = [];
     const scripts = packageConfig.scripts || {};
     const pipeline = turboConfig.pipeline || {};
 
@@ -765,7 +764,7 @@ export class WorkspaceAnalyzer {
   }
 
   private extractMoonTasks(config: any): BuildTarget[] {
-    const targets = [];
+    const targets: BuildTarget[] = [];
     const tasks = config.tasks || {};
 
     for (const [name, task] of Object.entries(tasks)) {
@@ -783,7 +782,7 @@ export class WorkspaceAnalyzer {
   }
 
   private extractPackageJsonTargets(config: any): BuildTarget[] {
-    const targets = [];
+    const targets: BuildTarget[] = [];
     const scripts = config.scripts || {};
 
     for (const [name, script] of Object.entries(scripts)) {
@@ -875,7 +874,7 @@ export class WorkspaceAnalyzer {
   // Tool-specific parsers
   private parseBazelBuildFile(content: string): any[] {
     // Simple Bazel BUILD file parser
-    const targets = [];
+    const targets: any[] = [];
     const lines = content.split('\n');
     
     for (const line of lines) {
@@ -895,7 +894,7 @@ export class WorkspaceAnalyzer {
 
   private parseNixDerivations(content: string): any[] {
     // Simple Nix derivation parser
-    const derivations = [];
+    const derivations: any[] = [];
     
     // Look for common Nix patterns
     const patterns = [

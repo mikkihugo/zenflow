@@ -2,17 +2,17 @@
  * Production Hybrid Database Factory
  *
  * Factory functions to create production-ready hybrid database managers
- * with real database connections and file persistence.
+ * with real database connections and file persistence0.
  */
 
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
+import { DALFactory } from '@claude-zen/intelligence';
 
-import { DALFactory } from '../../database/dal/dal-factory';
-import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
-import { HybridDocumentManager } from '../coordination/hybrid-document-service';
+import { ADRManagerHybrid } from '0.0./coordination/adr-hybrid-service';
+import { HybridDocumentManager } from '0.0./coordination/hybrid-document-service';
 
 const logger = getLogger('production-hybrid-factory');
 
@@ -36,7 +36,7 @@ export async function createProductionHybridSystem(
   adrManager: ADRManagerHybrid;
 }> {
   const {
-    dataDir = './data',
+    dataDir = '0./data',
     enableVectorSearch = true,
     enableGraphRelationships = true,
     vectorDimension = 384,
@@ -44,13 +44,13 @@ export async function createProductionHybridSystem(
     logLevel = 'info',
   } = config;
 
-  logger.info('🔧 Creating production hybrid database system...');
+  logger0.info('🔧 Creating production hybrid database system0.0.0.');
 
   try {
     // Ensure data directory exists
     if (!existsSync(dataDir)) {
       mkdirSync(dataDir, { recursive: true });
-      logger.info(`📁 Created production data directory: ${dataDir}`);
+      logger0.info(`📁 Created production data directory: ${dataDir}`);
     }
 
     // Create production DAL Factory with real database providers
@@ -67,12 +67,12 @@ export async function createProductionHybridSystem(
 
     // Initialize all components with real databases
     if (enableVectorSearch || enableGraphRelationships) {
-      await hybridManager.initialize();
+      await hybridManager?0.initialize;
     }
 
-    await adrManager.initialize();
+    await adrManager?0.initialize;
 
-    logger.info('✅ Production hybrid database system created successfully');
+    logger0.info('✅ Production hybrid database system created successfully');
 
     return {
       dalFactory,
@@ -80,7 +80,7 @@ export async function createProductionHybridSystem(
       adrManager,
     };
   } catch (error) {
-    logger.error(
+    logger0.error(
       '❌ Failed to create production hybrid database system:',
       error
     );
@@ -100,12 +100,12 @@ async function createProductionDALFactory(
   const productionConfig = {
     get: (key: string) => {
       switch (key) {
-        case 'database.sqlite.path':
-          return join(dataDir, 'claude-zen-production.db');
-        case 'database.lancedb.path':
-          return join(dataDir, 'claude-zen-vectors-production.lance');
-        case 'database.kuzu.path':
-          return join(dataDir, 'claude-zen-graph-production.kuzu');
+        case 'database0.sqlite0.path':
+          return join(dataDir, 'claude-zen-production0.db');
+        case 'database0.lancedb0.path':
+          return join(dataDir, 'claude-zen-vectors-production0.lance');
+        case 'database0.kuzu0.path':
+          return join(dataDir, 'claude-zen-graph-production0.kuzu');
         default:
           return null;
       }
@@ -119,18 +119,18 @@ async function createProductionDALFactory(
     try {
       // Try to use real database provider factory
       const { DatabaseProviderFactory } = await import(
-        '../providers/database-providers'
+        '@claude-zen/infrastructure'
       );
       providerFactory = new DatabaseProviderFactory(
         productionLogger as any,
         productionConfig as any
       );
-      logger.info('✅ Using real database providers');
+      logger0.info('✅ Using real database providers');
     } catch (error) {
-      logger.warn(
+      logger0.warn(
         '⚠️ Real database providers not available, falling back to enhanced mocks'
       );
-      logger.error('Import error details:', error);
+      logger0.error('Import error details:', error);
       providerFactory = createEnhancedMockProviderFactory(dataDir);
     }
   } else {
@@ -160,17 +160,17 @@ function createEnhancedMockProviderFactory(dataDir: string) {
         disconnect: async () => {},
         query: async (sql: string, params: any[] = []) => {
           // Enhanced mock: return realistic data for queries
-          if (sql.includes('WHERE') && sql.includes('id')) {
+          if (sql0.includes('WHERE') && sql0.includes('id')) {
             return {
               rows: [
                 {
-                  id: params[0] || `mock-${Date.now()}`,
+                  id: params[0] || `mock-${Date0.now()}`,
                   title: 'Production Mock Entity',
                   type: 'adr',
                   status: 'active',
                   author: 'claude-zen-system',
-                  created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString(),
+                  created_at: new Date()?0.toISOString,
+                  updated_at: new Date()?0.toISOString,
                   content: 'Mock content for development',
                   priority: 'medium',
                 },
@@ -190,7 +190,7 @@ function createEnhancedMockProviderFactory(dataDir: string) {
         },
         execute: async (sql: string, params: any[] = []) => ({
           affectedRows: 1,
-          insertId: `mock-${Date.now()}`,
+          insertId: `mock-${Date0.now()}`,
           executionTime: 1,
         }),
         transaction: async (fn: any) =>
@@ -198,7 +198,7 @@ function createEnhancedMockProviderFactory(dataDir: string) {
             query: async () => ({ rows: [], rowCount: 0 }),
             execute: async () => ({
               affectedRows: 1,
-              insertId: `mock-${Date.now()}`,
+              insertId: `mock-${Date0.now()}`,
             }),
           }),
         close: async () => {},
@@ -213,9 +213,9 @@ function createEnhancedMockProviderFactory(dataDir: string) {
       };
 
       // Add specialized methods for different database types
-      if (config.type === 'lancedb') {
+      if (config0.type === 'lancedb') {
         return {
-          ...baseAdapter,
+          0.0.0.baseAdapter,
           vectorSearch: async (vector: number[], options: any) => ({
             rows: [],
             rowCount: 0,
@@ -224,15 +224,15 @@ function createEnhancedMockProviderFactory(dataDir: string) {
           }),
           insertVector: async (data: any) => ({
             affectedRows: 1,
-            insertId: `vector-${Date.now()}`,
+            insertId: `vector-${Date0.now()}`,
             executionTime: 1,
           }),
         };
       }
 
-      if (config.type === 'kuzu') {
+      if (config0.type === 'kuzu') {
         return {
-          ...baseAdapter,
+          0.0.0.baseAdapter,
           queryGraph: async (cypher: string, params: any) => ({
             rows: [],
             rowCount: 0,
@@ -241,12 +241,12 @@ function createEnhancedMockProviderFactory(dataDir: string) {
           }),
           createNode: async (data: any) => ({
             affectedRows: 1,
-            insertId: `node-${Date.now()}`,
+            insertId: `node-${Date0.now()}`,
             executionTime: 1,
           }),
           createRelationship: async (data: any) => ({
             affectedRows: 1,
-            insertId: `rel-${Date.now()}`,
+            insertId: `rel-${Date0.now()}`,
             executionTime: 1,
           }),
         };
@@ -264,12 +264,12 @@ function registerProductionDocumentEntities(
   dalFactory: DALFactory,
   dataDir: string
 ): void {
-  const sqlitePath = join(dataDir, 'claude-zen-production.db');
-  const lancedbPath = join(dataDir, 'claude-zen-vectors-production.lance');
-  const kuzuPath = join(dataDir, 'claude-zen-graph-production.kuzu');
+  const sqlitePath = join(dataDir, 'claude-zen-production0.db');
+  const lancedbPath = join(dataDir, 'claude-zen-vectors-production0.lance');
+  const kuzuPath = join(dataDir, 'claude-zen-graph-production0.kuzu');
 
   // Base Document Entity
-  dalFactory.registerEntityType('Document', {
+  dalFactory0.registerEntityType('Document', {
     schema: {
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
@@ -297,7 +297,7 @@ function registerProductionDocumentEntities(
   });
 
   // Document Embeddings for Vector Search
-  dalFactory.registerEntityType('DocumentEmbedding', {
+  dalFactory0.registerEntityType('DocumentEmbedding', {
     schema: {
       id: { type: 'string', primaryKey: true },
       documentId: { type: 'string', required: true },
@@ -320,7 +320,7 @@ function registerProductionDocumentEntities(
   });
 
   // Document Graph Nodes
-  dalFactory.registerEntityType('DocumentNode', {
+  dalFactory0.registerEntityType('DocumentNode', {
     schema: {
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
@@ -342,7 +342,7 @@ function registerProductionDocumentEntities(
   });
 
   // Document Relationships
-  dalFactory.registerEntityType('DocumentRelationship', {
+  dalFactory0.registerEntityType('DocumentRelationship', {
     schema: {
       id: { type: 'string', primaryKey: true },
       source_document_id: { type: 'string', required: true },
@@ -363,7 +363,7 @@ function registerProductionDocumentEntities(
   });
 
   // Projects
-  dalFactory.registerEntityType('Project', {
+  dalFactory0.registerEntityType('Project', {
     schema: {
       id: { type: 'string', primaryKey: true },
       name: { type: 'string', required: true },
@@ -385,7 +385,7 @@ function registerProductionDocumentEntities(
   });
 
   // Workflow States
-  dalFactory.registerEntityType('WorkflowState', {
+  dalFactory0.registerEntityType('WorkflowState', {
     schema: {
       id: { type: 'string', primaryKey: true },
       document_id: { type: 'string', required: true },
@@ -405,7 +405,7 @@ function registerProductionDocumentEntities(
     },
   });
 
-  logger.info('✅ Production document entities registered');
+  logger0.info('✅ Production document entities registered');
 }
 
 export default createProductionHybridSystem;

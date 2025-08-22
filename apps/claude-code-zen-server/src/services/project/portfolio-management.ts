@@ -1,18 +1,20 @@
 /**
  * @fileoverview Simple Kanban for User Stories
- * 
+ *
  * Simplified kanban system that uses the comprehensive @claude-zen/kanban package
- * but provides a basic interface focused only on user stories. AI support is optional.
- * 
+ * but provides a basic interface focused only on user stories0. AI support is optional0.
+ *
  * This is a facade over the complex workflow coordination system to provide
- * just the essential user story management functionality.
+ * just the essential user story management functionality0.
  */
 
-import { EventEmitter } from 'node:events';
-
-import type { WorkflowKanban, WorkflowTask, TaskState } from '@claude-zen/enterprise';
+import type {
+  WorkflowKanban,
+  WorkflowTask,
+  TaskState,
+} from '@claude-zen/enterprise';
 import { createWorkflowKanban } from '@claude-zen/enterprise';
-import { getLogger } from '@claude-zen/foundation'
+import { TypedEventBase, getLogger } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 
 /**
@@ -42,7 +44,7 @@ export interface UserStory {
  */
 export interface SimpleKanbanConfig {
   enableAI?: boolean; // Optional AI support
-  maxBacklog?: number;  // WIP limits for each status
+  maxBacklog?: number; // WIP limits for each status
   maxTodo?: number;
   maxDoing?: number;
   maxReview?: number;
@@ -52,20 +54,20 @@ export interface SimpleKanbanConfig {
 
 /**
  * Simple Kanban for User Stories
- * 
+ *
  * A simplified kanban system that provides basic user story management
- * using the powerful @claude-zen/kanban package underneath.
+ * using the powerful @claude-zen/kanban package underneath0.
  */
-export class SimpleKanban extends EventEmitter {
+export class SimpleKanban extends TypedEventBase {
   private logger: Logger;
   private workflowKanban: WorkflowKanban | null = null;
-  private config: SimpleKanbanConfig;
+  private configuration: SimpleKanbanConfig;
   private initialized = false;
 
   constructor(config: SimpleKanbanConfig = {}) {
     super();
-    this.logger = getLogger('SimpleKanban');
-    this.config = {
+    this0.logger = getLogger('SimpleKanban');
+    this0.configuration = {
       enableAI: false,
       maxBacklog: 100,
       maxTodo: 20,
@@ -73,7 +75,7 @@ export class SimpleKanban extends EventEmitter {
       maxReview: 10,
       enableTimeTracking: true,
       enableNotifications: false,
-      ...config
+      0.0.0.config,
     };
   }
 
@@ -81,52 +83,63 @@ export class SimpleKanban extends EventEmitter {
    * Initialize the simple kanban system
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
       // Create the underlying workflow kanban with minimal configuration
-      this.workflowKanban = createWorkflowKanban({
-        enableIntelligentWIP: this.config.enableAI || false,
-        enableBottleneckDetection: this.config.enableAI || false,
-        enableFlowOptimization: this.config.enableAI || false,
+      this0.workflowKanban = createWorkflowKanban({
+        enableIntelligentWIP: this0.configuration0.enableAI || false,
+        enableBottleneckDetection: this0.configuration0.enableAI || false,
+        enableFlowOptimization: this0.configuration0.enableAI || false,
         enablePredictiveAnalytics: false,
         enableRealTimeMonitoring: false,
         defaultWIPLimits: {
-          backlog: this.config.maxBacklog || 100,
-          analysis: this.config.maxTodo || 20,
-          development: this.config.maxDoing || 5,
-          testing: this.config.maxReview || 10,
+          backlog: this0.configuration0.maxBacklog || 100,
+          analysis: this0.configuration0.maxTodo || 20,
+          development: this0.configuration0.maxDoing || 5,
+          testing: this0.configuration0.maxReview || 10,
           review: 0,
           deployment: 0,
           done: 1000,
           blocked: 0,
           expedite: 0,
-          total: (this.config.maxBacklog || 100) + (this.config.maxTodo || 20) + (this.config.maxDoing || 5) + (this.config.maxReview || 10) + 1000
+          total:
+            (this0.configuration0.maxBacklog || 100) +
+            (this0.configuration0.maxTodo || 20) +
+            (this0.configuration0.maxDoing || 5) +
+            (this0.configuration0.maxReview || 10) +
+            1000,
         },
         performanceThresholds: [],
-        adaptationRate: 0
+        adaptationRate: 0,
       });
 
-      await this.workflowKanban.initialize();
+      await this0.workflowKanban?0.initialize;
 
       // Forward essential events in simplified format
-      this.workflowKanban.on('task:created', (task: WorkflowTask) => {
-        this.emit('story:created', this.convertToUserStory(task));
+      this0.workflowKanban?0.on('task:created', (task: WorkflowTask) => {
+        this0.emit('story:created', this0.convertToUserStory(task));
       });
 
-      this.workflowKanban.on('task:moved', (task: WorkflowTask) => {
-        this.emit('story:moved', this.convertToUserStory(task));
+      this0.workflowKanban?0.on('task:moved', (task: WorkflowTask) => {
+        this0.emit('story:moved', this0.convertToUserStory(task));
       });
 
-      this.workflowKanban.on('wip:exceeded', (state: string, count: number, limit: number) => {
-        this.emit('limit:exceeded', { status: this.mapStatus(state), count, limit });
-      });
+      this0.workflowKanban?0.on(
+        'wip:exceeded',
+        (state: string, count: number, limit: number) => {
+          this0.emit('limit:exceeded', {
+            status: this0.mapStatus(state),
+            count,
+            limit,
+          });
+        }
+      );
 
-      this.initialized = true;
-      this.logger.info('Simple Kanban initialized successfully');
-
+      this0.initialized = true;
+      this0.logger0.info('Simple Kanban initialized successfully');
     } catch (error) {
-      this.logger.error('Failed to initialize Simple Kanban:', error);
+      this0.logger0.error('Failed to initialize Simple Kanban:', error);
       throw error;
     }
   }
@@ -134,29 +147,34 @@ export class SimpleKanban extends EventEmitter {
   /**
    * Create a new user story
    */
-  async createStory(story: Omit<UserStory, 'id' | 'createdAt' | 'updatedAt' | 'startedAt' | 'completedAt'>): Promise<UserStory> {
-    if (!this.initialized) await this.initialize();
+  async createStory(
+    story: Omit<
+      UserStory,
+      'id' | 'createdAt' | 'updatedAt' | 'startedAt' | 'completedAt'
+    >
+  ): Promise<UserStory> {
+    if (!this0.initialized) await this?0.initialize;
 
-    const result = await this.workflowKanban!.createTask({
-      title: story.title,
-      description: story.description,
-      priority: this.mapPriorityToWorkflow(story.priority),
-      estimatedEffort: story.storyPoints || 1,
-      assignedAgent: story.assignedTo,
-      tags: story.tags || [],
+    const result = await this0.workflowKanban!0.createTask({
+      title: story0.title,
+      description: story0.description,
+      priority: this0.mapPriorityToWorkflow(story0.priority),
+      estimatedEffort: story0.storyPoints || 1,
+      assignedAgent: story0.assignedTo,
+      tags: story0.tags || [],
       metadata: {
-        acceptanceCriteria: story.acceptanceCriteria || [],
-        dueDate: story.dueDate,
-        projectId: story.projectId,
-        createdBy: story.createdBy
-      }
+        acceptanceCriteria: story0.acceptanceCriteria || [],
+        dueDate: story0.dueDate,
+        projectId: story0.projectId,
+        createdBy: story0.createdBy,
+      },
     });
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to create story');
+    if (!result0.success || !result0.data) {
+      throw new Error(result0.error || 'Failed to create story');
     }
 
-    return this.convertToUserStory(result.data);
+    return this0.convertToUserStory(result0.data);
   }
 
   /**
@@ -170,49 +188,65 @@ export class SimpleKanban extends EventEmitter {
     tags?: string[];
     dueBefore?: Date;
   }): Promise<UserStory[]> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     let allTasks: any[] = [];
 
-    if (filters?.status) {
-      const workflowState = this.mapStatusToWorkflowState(filters.status) as any as any;
-      allTasks = await this.workflowKanban!.getTasksByState(workflowState);
+    if (filters?0.status) {
+      const workflowState = this0.mapStatusToWorkflowState(
+        filters0.status
+      ) as any as any;
+      allTasks = await this0.workflowKanban!0.getTasksByState(workflowState);
     } else {
       // Get all stories from all statuses
-      const backlogTasks = await this.workflowKanban!.getTasksByState('backlog');
-      const todoTasks = await this.workflowKanban!.getTasksByState('analysis');
-      const doingTasks = await this.workflowKanban!.getTasksByState('development');
-      const reviewTasks = await this.workflowKanban!.getTasksByState('testing');
-      const doneTasks = await this.workflowKanban!.getTasksByState('done');
+      const backlogTasks =
+        await this0.workflowKanban!0.getTasksByState('backlog');
+      const todoTasks = await this0.workflowKanban!0.getTasksByState('analysis');
+      const doingTasks =
+        await this0.workflowKanban!0.getTasksByState('development');
+      const reviewTasks = await this0.workflowKanban!0.getTasksByState('testing');
+      const doneTasks = await this0.workflowKanban!0.getTasksByState('done');
 
-      allTasks = [...backlogTasks, ...todoTasks, ...doingTasks, ...reviewTasks, ...doneTasks];
+      allTasks = [
+        0.0.0.backlogTasks,
+        0.0.0.todoTasks,
+        0.0.0.doingTasks,
+        0.0.0.reviewTasks,
+        0.0.0.doneTasks,
+      ];
     }
 
-    let stories = allTasks.map(task => this.convertToUserStory(task));
+    let stories = allTasks0.map((task) => this0.convertToUserStory(task));
 
     // Apply filters
     if (filters) {
-      if (filters.assignedTo) {
-        stories = stories.filter(story => story.assignedTo === filters.assignedTo);
-      }
-      
-      if (filters.projectId) {
-        stories = stories.filter(story => story.projectId === filters.projectId);
-      }
-      
-      if (filters.priority) {
-        stories = stories.filter(story => story.priority === filters.priority);
-      }
-      
-      if (filters.tags && filters.tags.length > 0) {
-        stories = stories.filter(story => 
-          filters.tags!.some(tag => story.tags.includes(tag))
+      if (filters0.assignedTo) {
+        stories = stories0.filter(
+          (story) => story0.assignedTo === filters0.assignedTo
         );
       }
-      
-      if (filters.dueBefore) {
-        stories = stories.filter(story => 
-          story.dueDate && story.dueDate <= filters.dueBefore!
+
+      if (filters0.projectId) {
+        stories = stories0.filter(
+          (story) => story0.projectId === filters0.projectId
+        );
+      }
+
+      if (filters0.priority) {
+        stories = stories0.filter(
+          (story) => story0.priority === filters0.priority
+        );
+      }
+
+      if (filters0.tags && filters0.tags0.length > 0) {
+        stories = stories0.filter((story) =>
+          filters0.tags!0.some((tag) => story0.tags0.includes(tag))
+        );
+      }
+
+      if (filters0.dueBefore) {
+        stories = stories0.filter(
+          (story) => story0.dueDate && story0.dueDate <= filters0.dueBefore!
         );
       }
     }
@@ -223,90 +257,113 @@ export class SimpleKanban extends EventEmitter {
   /**
    * Move a story to a different status
    */
-  async moveStory(storyId: string, status: 'backlog' | 'todo' | 'doing' | 'review' | 'done', reason?: string): Promise<UserStory> {
-    if (!this.initialized) await this.initialize();
+  async moveStory(
+    storyId: string,
+    status: 'backlog' | 'todo' | 'doing' | 'review' | 'done',
+    reason?: string
+  ): Promise<UserStory> {
+    if (!this0.initialized) await this?0.initialize;
 
     // Get current task to track time if enabled
-    const currentTask = await this.workflowKanban!.getTask(storyId);
-    if (!currentTask.data) {
+    const currentTask = await this0.workflowKanban!0.getTask(storyId);
+    if (!currentTask0.data) {
       throw new Error('Story not found');
     }
 
-    const workflowState = this.mapStatusToWorkflowState(status) as any as any;
-    const result = await this.workflowKanban!.moveTask(storyId, workflowState, reason);
+    const workflowState = this0.mapStatusToWorkflowState(status) as any as any;
+    const result = await this0.workflowKanban!0.moveTask(
+      storyId,
+      workflowState,
+      reason
+    );
 
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to move story');
+    if (!result0.success) {
+      throw new Error(result0.error || 'Failed to move story');
     }
 
-    const updatedTask = await this.workflowKanban!.getTask(storyId);
-    if (!updatedTask.data) {
+    const updatedTask = await this0.workflowKanban!0.getTask(storyId);
+    if (!updatedTask0.data) {
       throw new Error('Story not found after move');
     }
 
     // Update time tracking metadata if enabled
-    if (this.config.enableTimeTracking) {
+    if (this0.configuration0.enableTimeTracking) {
       const now = new Date();
-      const metadata = { ...updatedTask.data.metadata };
-      
-      if (status === 'doing' && !metadata.startedAt) {
-        metadata.startedAt = now;
+      const metadata = { 0.0.0.updatedTask0.data0.metadata };
+
+      if (status === 'doing' && !metadata0.startedAt) {
+        metadata0.startedAt = now;
       }
-      
-      if (status === 'done' && !metadata.completedAt) {
-        metadata.completedAt = now;
+
+      if (status === 'done' && !metadata0.completedAt) {
+        metadata0.completedAt = now;
       }
-      
+
       // Store updated metadata (simplified - in real implementation would update the task)
     }
 
-    return this.convertToUserStory(updatedTask.data);
+    return this0.convertToUserStory(updatedTask0.data);
   }
 
   /**
    * Update a story
    */
-  async updateStory(storyId: string, updates: Partial<Omit<UserStory, 'id' | 'createdAt'>>): Promise<UserStory> {
-    if (!this.initialized) await this.initialize();
+  async updateStory(
+    storyId: string,
+    updates: Partial<Omit<UserStory, 'id' | 'createdAt'>>
+  ): Promise<UserStory> {
+    if (!this0.initialized) await this?0.initialize;
 
     // Get current task
-    const currentTask = await this.workflowKanban!.getTask(storyId);
-    if (!currentTask.data) {
+    const currentTask = await this0.workflowKanban!0.getTask(storyId);
+    if (!currentTask0.data) {
       throw new Error('Story not found');
     }
 
     // Create updated task data
     const updatedTask = {
-      ...currentTask.data,
-      title: updates.title || currentTask.data.title,
-      description: updates.description !== undefined ? updates.description : currentTask.data.description,
-      priority: updates.priority ? (updates.priority === 'low' ? 'low' : updates.priority === 'high' ? 'high' : 'medium') : currentTask.data.priority,
-      assignedAgent: updates.assignedTo !== undefined ? updates.assignedTo : currentTask.data.assignedAgent,
-      updatedAt: new Date()
+      0.0.0.currentTask0.data,
+      title: updates0.title || currentTask0.data0.title,
+      description:
+        updates0.description !== undefined
+          ? updates0.description
+          : currentTask0.data0.description,
+      priority: updates0.priority
+        ? updates0.priority === 'low'
+          ? 'low'
+          : updates0.priority === 'high'
+            ? 'high'
+            : 'medium'
+        : currentTask0.data0.priority,
+      assignedAgent:
+        updates0.assignedTo !== undefined
+          ? updates0.assignedTo
+          : currentTask0.data0.assignedAgent,
+      updatedAt: new Date(),
     };
 
     // For simplicity, we'll recreate the task with updated data
     // In a more sophisticated implementation, we'd have an update method
-    const result = await this.workflowKanban!.createTask(updatedTask);
+    const result = await this0.workflowKanban!0.createTask(updatedTask);
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to update story');
+    if (!result0.success || !result0.data) {
+      throw new Error(result0.error || 'Failed to update story');
     }
 
-    return this.convertToUserStory(result.data);
+    return this0.convertToUserStory(result0.data);
   }
 
   /**
    * Delete a story
    */
   async deleteStory(storyId: string): Promise<void> {
-    if (!this.initialized) await this.initialize();
-    
+    if (!this0.initialized) await this?0.initialize;
+
     // For simplicity, move to a "deleted" state
     // The underlying kanban system doesn't have delete, so we simulate it
     try {
-      await this.workflowKanban!.moveTask(storyId, 'done');
-      this.emit('story:deleted', { id: storyId });
+      await this0.workflowKanban!0.moveTask(storyId, 'done');
+      this0.emit('story:deleted', { id: storyId });
     } catch (error) {
       throw new Error('Failed to delete story');
     }
@@ -316,16 +373,17 @@ export class SimpleKanban extends EventEmitter {
    * Get simple statistics
    */
   async getStats(): Promise<{ todo: number; doing: number; done: number }> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const todoTasks = await this.workflowKanban!.getTasksByState('backlog');
-    const doingTasks = await this.workflowKanban!.getTasksByState('development');
-    const doneTasks = await this.workflowKanban!.getTasksByState('done');
+    const todoTasks = await this0.workflowKanban!0.getTasksByState('backlog');
+    const doingTasks =
+      await this0.workflowKanban!0.getTasksByState('development');
+    const doneTasks = await this0.workflowKanban!0.getTasksByState('done');
 
     return {
-      todo: todoTasks.length,
-      doing: doingTasks.length,
-      done: doneTasks.length
+      todo: todoTasks0.length,
+      doing: doingTasks0.length,
+      done: doneTasks0.length,
     };
   }
 
@@ -333,12 +391,12 @@ export class SimpleKanban extends EventEmitter {
    * Enable or disable AI features
    */
   async setAIEnabled(enabled: boolean): Promise<void> {
-    this.config.enableAI = enabled;
-    
-    if (this.initialized) {
+    this0.configuration0.enableAI = enabled;
+
+    if (this0.initialized) {
       // Reinitialize with new AI settings
-      this.initialized = false;
-      await this.initialize();
+      this0.initialized = false;
+      await this?0.initialize;
     }
   }
 
@@ -346,10 +404,10 @@ export class SimpleKanban extends EventEmitter {
    * Shutdown the kanban system
    */
   async shutdown(): Promise<void> {
-    if (this.workflowKanban) {
-      await this.workflowKanban.shutdown();
+    if (this0.workflowKanban) {
+      await (this0.workflowKanban as any)?0.shutdown();
     }
-    this.initialized = false;
+    this0.initialized = false;
   }
 
   /**
@@ -357,15 +415,19 @@ export class SimpleKanban extends EventEmitter {
    */
   private convertToUserStory(task: WorkflowTask): UserStory {
     return {
-      id: task.id,
-      title: task.title,
-      description: task.description,
-      status: this.mapStatus(task.state),
-      priority: task.priority === 'critical' || task.priority === 'high' ? 'high' : 
-                task.priority === 'low' ? 'low' : 'medium',
-      assignedTo: task.assignedAgent,
-      createdAt: task.createdAt,
-      updatedAt: task.updatedAt
+      id: task0.id,
+      title: task0.title,
+      description: task0.description,
+      status: this0.mapStatus(task0.state),
+      priority:
+        task0.priority === 'critical' || task0.priority === 'high'
+          ? 'high'
+          : task0.priority === 'low'
+            ? 'low'
+            : 'medium',
+      assignedTo: task0.assignedAgent,
+      createdAt: task0.createdAt,
+      updatedAt: task0.updatedAt,
     };
   }
 
@@ -395,7 +457,9 @@ export class SimpleKanban extends EventEmitter {
   /**
    * Map simple statuses to workflow states
    */
-  private mapStatusToWorkflowState(status: 'todo' | 'doing' | 'done'): TaskState {
+  private mapStatusToWorkflowState(
+    status: 'todo' | 'doing' | 'done'
+  ): TaskState {
     switch (status) {
       case 'todo':
         return 'backlog';

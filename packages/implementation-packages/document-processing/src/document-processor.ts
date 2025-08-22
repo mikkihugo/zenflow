@@ -26,7 +26,7 @@ import { basename, dirname, join } from 'node:path';
 import { getLogger } from '@claude-zen/foundation'
 import type { WorkflowEngine } from '@claude-zen/intelligence';
 import type { BrainCoordinator } from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('DocumentProcessor');
 
@@ -170,10 +170,10 @@ export interface DocumentStats {
  *
  * @example
  */
-export class DocumentProcessor extends EventEmitter {
+export class DocumentProcessor extends TypedEventBase {
   private memory: BrainCoordinator;
   private workflowEngine: WorkflowEngine | null = null;
-  private config: Required<DocumentProcessorConfig>;
+  private configuration: Required<DocumentProcessorConfig>;
   private workspaces: Map<string, ProcessingContext> = new Map();
   private documentWatchers: Map<string, any> = new Map();
   private initialized = false;
@@ -232,7 +232,7 @@ export class DocumentProcessor extends EventEmitter {
     }
 
     this.initialized = true;
-    this.emit('initialized');
+    this.emit('initialized', {});
     logger.info('Document processor ready');
   }
 

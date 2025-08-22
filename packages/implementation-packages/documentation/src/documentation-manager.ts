@@ -19,11 +19,14 @@
  * @file Documentation management system.
  */
 
-import { Logger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
-import type { BrainCoordinator } from '@claude-zen/intelligence';
+import { getLogger } from '@claude-zen/foundation';
+import { TypedEventBase } from '@claude-zen/foundation';
+// BrainCoordinator interface - using fallback type if intelligence facade not available
+interface BrainCoordinator {
+  store(key: string, data: any, category?: string): Promise<void>;
+}
 
-const logger = new Logger('DocumentationManager');
+const logger = getLogger('DocumentationManager');
 
 /**
  * Documentation manager configuration.
@@ -58,9 +61,9 @@ export interface DocumentationStats {
  *
  * @example
  */
-export class DocumentationManager extends EventEmitter {
+export class DocumentationManager extends TypedEventBase {
   private memory: BrainCoordinator;
-  private config: Required<DocumentationManagerConfig>;
+  private configuration: Required<DocumentationManagerConfig>;
   private stats: DocumentationStats;
   private initialized = false;
 
@@ -90,7 +93,7 @@ export class DocumentationManager extends EventEmitter {
     }
 
     this.initialized = true;
-    this.emit('initialized');
+    this.emit('initialized', {});
     logger.info('Documentation manager ready');
   }
 

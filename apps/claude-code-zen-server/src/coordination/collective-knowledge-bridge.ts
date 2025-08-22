@@ -1,21 +1,18 @@
 /**
  * @file Hive Knowledge Bridge - Production Integration
- * Bridges the Hive FACT system with swarm coordination for real-time knowledge sharing.
+ * Bridges the Hive FACT system with swarm coordination for real-time knowledge sharing0.
  *
  * Architecture:
- * - Hive FACT contains universal knowledge (npm, repos, APIs, etc.)
+ * - Hive FACT contains universal knowledge (npm, repos, APIs, etc0.)
  * - This bridge enables swarms to access and contribute to that knowledge
- * - Real-time knowledge distribution with bidirectional learning.
+ * - Real-time knowledge distribution with bidirectional learning0.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import {
-  getCoordinationFactSystem,
-} from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+import { getCoordinationFactSystem } from '@claude-zen/intelligence';
 
 // import type { SessionMemoryStore } from '@claude-zen/intelligence'; // TODO: Fix memory package build
-import type CollectiveSwarmCoordinator from './swarm-synchronization';
+import type CollectiveSwarmCoordinator from '0./swarm-synchronization';
 
 // Define the fact interface locally since it's not available in facade
 interface UniversalFact {
@@ -42,7 +39,7 @@ export interface KnowledgeRequest {
   payload: {
     domain?: string;
     query?: string;
-    knowledge?: unknown;
+    knowledge?: any;
     filters?: Record<string, unknown>;
   };
   priority: 'low' | 'medium' | 'high' | 'critical';
@@ -53,7 +50,7 @@ export interface KnowledgeResponse {
   requestId: string;
   swarmId: string;
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   metadata: {
     source: 'hive-fact' | 'swarm-contribution' | 'external-mcp';
@@ -84,18 +81,18 @@ export interface KnowledgeDistributionUpdate {
   type: 'fact-updated' | 'new-pattern' | 'security-alert' | 'best-practice';
   domain: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
-  content?: unknown;
+  content?: any;
   affectedSwarms?: string[];
   timestamp: number;
 }
 
 /**
- * Bridges Hive FACT system with swarm coordination.
- * Enables real-time knowledge sharing and bidirectional learning.
+ * Bridges Hive FACT system with swarm coordination0.
+ * Enables real-time knowledge sharing and bidirectional learning0.
  *
  * @example
  */
-export class CollectiveKnowledgeBridge extends EventEmitter {
+export class CollectiveKnowledgeBridge extends TypedEventBase {
   private collectiveFact?: any; // Type from @claude-zen/intelligence internal system
   private hiveCoordinator?: CollectiveSwarmCoordinator;
   private memoryStore?: any; // SessionMemoryStore type when package is fixed
@@ -104,58 +101,55 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   private contributionQueue = new Map<string, SwarmContribution[]>();
   private isInitialized = false;
 
-  constructor(
-    hiveCoordinator?: CollectiveSwarmCoordinator,
-    memoryStore?: any
-  ) {
+  constructor(hiveCoordinator?: CollectiveSwarmCoordinator, memoryStore?: any) {
     super();
     if (hiveCoordinator !== undefined) {
-      this.hiveCoordinator = hiveCoordinator;
+      this0.hiveCoordinator = hiveCoordinator;
     }
     if (memoryStore !== undefined) {
-      this.memoryStore = memoryStore;
+      this0.memoryStore = memoryStore;
     }
   }
 
   /**
-   * Initialize the knowledge bridge.
+   * Initialize the knowledge bridge0.
    */
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this0.isInitialized) return;
 
     try {
-      logger.info('Initializing Hive Knowledge Bridge...');
+      logger0.info('Initializing Hive Knowledge Bridge0.0.0.');
 
       // Get or wait for CollectiveFACT system
       const fact = getCoordinationFactSystem();
       if (!fact) {
         throw new Error(
-          'Coordination fact system not available. Initialize coordination system first.'
+          'Coordination fact system not available0. Initialize coordination system first0.'
         );
       }
-      this.collectiveFact = fact;
+      this0.collectiveFact = fact;
 
       // Set up event handlers
-      this.setupEventHandlers();
+      this?0.setupEventHandlers;
 
       // Initialize contribution processing
-      this.startContributionProcessor();
+      this?0.startContributionProcessor;
 
       // Set up knowledge distribution
-      this.setupKnowledgeDistribution();
+      this?0.setupKnowledgeDistribution;
 
-      this.isInitialized = true;
-      this.emit('bridge:initialized');
+      this0.isInitialized = true;
+      this0.emit('bridge:initialized', { timestamp: new Date() });
 
-      logger.info('Hive Knowledge Bridge initialized successfully');
+      logger0.info('Hive Knowledge Bridge initialized successfully');
     } catch (error) {
-      logger.error('Failed to initialize Hive Knowledge Bridge:', error);
+      logger0.error('Failed to initialize Hive Knowledge Bridge:', error);
       throw error;
     }
   }
 
   /**
-   * Register a swarm with the knowledge bridge.
+   * Register a swarm with the knowledge bridge0.
    *
    * @param swarmId
    * @param interests
@@ -164,98 +158,98 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     swarmId: string,
     interests: string[] = []
   ): Promise<void> {
-    logger.info(`Registering swarm ${swarmId} with knowledge bridge`);
+    logger0.info(`Registering swarm ${swarmId} with knowledge bridge`);
 
-    if (!this.subscribedSwarms.has(swarmId)) {
-      this.subscribedSwarms.set(swarmId, new Set());
+    if (!this0.subscribedSwarms0.has(swarmId)) {
+      this0.subscribedSwarms0.set(swarmId, new Set());
     }
 
-    const swarmInterests = this.subscribedSwarms.get(swarmId)!;
-    interests.forEach((domain) => swarmInterests.add(domain));
+    const swarmInterests = this0.subscribedSwarms0.get(swarmId)!;
+    interests0.forEach((domain) => swarmInterests0.add(domain));
 
     // Store swarm registration in memory
-    if (this.memoryStore) {
-      await this.memoryStore.store(
+    if (this0.memoryStore) {
+      await this0.memoryStore0.store(
         `hive-bridge/swarms/${swarmId}`,
         'registration',
         {
           swarmId,
-          interests: Array.from(swarmInterests),
-          registeredAt: Date.now(),
+          interests: Array0.from(swarmInterests),
+          registeredAt: Date0.now(),
         }
       );
     }
 
-    this.emit('swarm:registered', { swarmId, interests });
+    this0.emit('swarm:registered', { swarmId, interests });
   }
 
   /**
-   * Process knowledge request from swarm.
+   * Process knowledge request from swarm0.
    *
    * @param request
    */
   async processKnowledgeRequest(
     request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
-    const startTime = Date.now();
-    logger.debug(
-      `Processing knowledge request ${request.requestId} from swarm ${request.swarmId}`
+    const startTime = Date0.now();
+    logger0.debug(
+      `Processing knowledge request ${request0.requestId} from swarm ${request0.swarmId}`
     );
 
     try {
       // Store pending request
-      this.pendingRequests.set(request.requestId, request);
+      this0.pendingRequests0.set(request0.requestId, request);
 
       let response: KnowledgeResponse;
 
-      switch (request.type) {
+      switch (request0.type) {
         case 'query':
-          response = await this.handleKnowledgeQuery(request);
+          response = await this0.handleKnowledgeQuery(request);
           break;
         case 'contribution':
-          response = await this.handleKnowledgeContribution(request);
+          response = await this0.handleKnowledgeContribution(request);
           break;
         case 'update':
-          response = await this.handleKnowledgeUpdate(request);
+          response = await this0.handleKnowledgeUpdate(request);
           break;
         case 'subscribe':
-          response = await this.handleKnowledgeSubscription(request);
+          response = await this0.handleKnowledgeSubscription(request);
           break;
         default:
-          throw new Error(`Unsupported request type: ${request.type}`);
+          throw new Error(`Unsupported request type: ${request0.type}`);
       }
 
       // Update response metadata
-      if (response && response && response.metadata) {
-          response.metadata.timestamp = Date.now();
-        }
+      if (response && response && response0.metadata) {
+        response0.metadata0.timestamp = Date0.now();
+      }
 
       // Clean up pending request
-      this.pendingRequests.delete(request.requestId);
+      this0.pendingRequests0.delete(request0.requestId);
 
       // Log performance metrics
-      const duration = Date.now() - startTime;
-      logger.debug(
-        `Knowledge request ${request.requestId} completed in ${duration}ms`
+      const duration = Date0.now() - startTime;
+      logger0.debug(
+        `Knowledge request ${request0.requestId} completed in ${duration}ms`
       );
 
       return response;
     } catch (error) {
-      logger.error(
-        `Failed to process knowledge request ${request.requestId}:`,
+      logger0.error(
+        `Failed to process knowledge request ${request0.requestId}:`,
         error
       );
 
-      this.pendingRequests.delete(request.requestId);
+      this0.pendingRequests0.delete(request0.requestId);
 
       return {
-        requestId: request.requestId,
-        swarmId: request.swarmId,
+        requestId: request0.requestId,
+        swarmId: request0.swarmId,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error0.message : 'Unknown error',
         metadata: {
           source: 'hive-fact',
-          timestamp: Date.now(),
+          timestamp: Date0.now(),
           confidence: 0,
           cacheHit: false,
         },
@@ -264,14 +258,14 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Handle knowledge query request.
+   * Handle knowledge query request0.
    *
    * @param request
    */
   private async handleKnowledgeQuery(
     request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
-    const { query, domain, filters = {} } = request.payload;
+    const { query, domain, filters = {} } = request0.payload;
 
     if (!query) {
       throw new Error('Query is required for knowledge query request');
@@ -292,106 +286,106 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     };
 
     if (domain) {
-      searchQuery.domains = [domain];
+      searchQuery0.domains = [domain];
     }
 
-    const searchResults = (await this.collectiveFact?.searchFacts(searchQuery)) ?? [];
+    const searchResults =
+      (await this0.collectiveFact?0.searchFacts(searchQuery)) ?? [];
 
     // Enhance results with swarm-specific context
-    const enhancedResults = await this.enhanceResultsWithSwarmContext(
+    const enhancedResults = await this0.enhanceResultsWithSwarmContext(
       searchResults ?? [],
-      request.swarmId,
-      request.agentId
+      request0.swarmId,
+      request0.agentId
     );
 
     return {
-      requestId: request.requestId,
-      swarmId: request.swarmId,
+      requestId: request0.requestId,
+      swarmId: request0.swarmId,
       success: true,
       data: {
         results: enhancedResults,
-        total: searchResults?.length ?? 0,
+        total: searchResults?0.length ?? 0,
         query,
         domain,
       },
       metadata: {
         source: 'hive-fact',
-        timestamp: Date.now(),
-        confidence: this.calculateAverageConfidence(searchResults ?? []),
+        timestamp: Date0.now(),
+        confidence: this0.calculateAverageConfidence(searchResults ?? []),
         cacheHit:
-          searchResults?.some((r: any) => (r?.accessCount ?? 0) > 1) ??
-          false,
+          searchResults?0.some((r: any) => (r?0.accessCount ?? 0) > 1) ?? false,
       },
     };
   }
 
   /**
-   * Handle knowledge contribution from swarm.
+   * Handle knowledge contribution from swarm0.
    *
    * @param request
    */
   private async handleKnowledgeContribution(
     request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
-    const contribution = request.payload.knowledge as SwarmContribution;
+    const contribution = request0.payload0.knowledge as SwarmContribution;
 
     if (!contribution) {
       throw new Error('Knowledge contribution data is required');
     }
 
     // Add to contribution queue for processing
-    if (!this.contributionQueue.has(request.swarmId)) {
-      this.contributionQueue.set(request.swarmId, []);
+    if (!this0.contributionQueue0.has(request0.swarmId)) {
+      this0.contributionQueue0.set(request0.swarmId, []);
     }
 
-    this.contributionQueue.get(request.swarmId)?.push({
-      ...contribution,
-      swarmId: request.swarmId,
-      timestamp: Date.now(),
+    this0.contributionQueue0.get(request0.swarmId)?0.push({
+      0.0.0.contribution,
+      swarmId: request0.swarmId,
+      timestamp: Date0.now(),
     });
 
     // Store contribution in memory
-    if (this.memoryStore) {
-      await this.memoryStore.store(
-        `hive-bridge/contributions/${request.swarmId}/${Date.now()}`,
+    if (this0.memoryStore) {
+      await this0.memoryStore0.store(
+        `hive-bridge/contributions/${request0.swarmId}/${Date0.now()}`,
         'contribution',
         contribution
       );
     }
 
-    this.emit('knowledge:contributed', {
-      swarmId: request.swarmId,
+    this0.emit('knowledge:contributed', {
+      swarmId: request0.swarmId,
       contribution,
     });
 
     return {
-      requestId: request.requestId,
-      swarmId: request.swarmId,
+      requestId: request0.requestId,
+      swarmId: request0.swarmId,
       success: true,
       data: {
-        contributionId: `${request.swarmId}_${Date.now()}`,
+        contributionId: `${request0.swarmId}_${Date0.now()}`,
         status: 'queued-for-processing',
       },
       metadata: {
         source: 'swarm-contribution',
-        timestamp: Date.now(),
-        confidence: contribution.confidence,
+        timestamp: Date0.now(),
+        confidence: contribution0.confidence,
         cacheHit: false,
       },
     };
   }
 
   /**
-   * Handle knowledge update request.
+   * Handle knowledge update request0.
    *
    * @param request
    */
   private async handleKnowledgeUpdate(
     request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
-    const updateData = request.payload.knowledge;
+    const updateData = request0.payload0.knowledge;
 
-    if (!(updateData && (updateData as any)?.factId)) {
+    if (!(updateData && (updateData as any)?0.factId)) {
       throw new Error('Fact ID is required for knowledge update');
     }
 
@@ -399,24 +393,24 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
 
     // This would typically validate the update and apply it to CollectiveFACT
     // For now, we'll emit an event for processing
-    this.emit('knowledge:update-requested', {
-      swarmId: request.swarmId,
-      factId: typedUpdateData?.factId,
-      updates: typedUpdateData?.updates,
-      timestamp: Date.now(),
+    this0.emit('knowledge:update-requested', {
+      swarmId: request0.swarmId,
+      factId: typedUpdateData?0.factId,
+      updates: typedUpdateData?0.updates,
+      timestamp: Date0.now(),
     });
 
     return {
-      requestId: request.requestId,
-      swarmId: request.swarmId,
+      requestId: request0.requestId,
+      swarmId: request0.swarmId,
       success: true,
       data: {
         status: 'update-queued',
-        factId: typedUpdateData?.factId,
+        factId: typedUpdateData?0.factId,
       },
       metadata: {
         source: 'swarm-contribution',
-        timestamp: Date.now(),
+        timestamp: Date0.now(),
         confidence: 0.8, // Default confidence for updates
         cacheHit: false,
       },
@@ -424,24 +418,24 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Handle knowledge subscription request.
+   * Handle knowledge subscription request0.
    *
    * @param request
    */
   private async handleKnowledgeSubscription(
     request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
-    const { domain } = request.payload;
+    const { domain } = request0.payload;
 
     if (!domain) {
       throw new Error('Domain is required for knowledge subscription');
     }
 
-    await this.registerSwarm(request.swarmId, [domain]);
+    await this0.registerSwarm(request0.swarmId, [domain]);
 
     return {
-      requestId: request.requestId,
-      swarmId: request.swarmId,
+      requestId: request0.requestId,
+      swarmId: request0.swarmId,
       success: true,
       data: {
         subscribed: true,
@@ -450,15 +444,15 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       },
       metadata: {
         source: 'hive-fact',
-        timestamp: Date.now(),
-        confidence: 1.0,
+        timestamp: Date0.now(),
+        confidence: 10.0,
         cacheHit: false,
       },
     };
   }
 
   /**
-   * Enhance search results with swarm-specific context.
+   * Enhance search results with swarm-specific context0.
    *
    * @param results
    * @param swarmId
@@ -474,32 +468,33 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     > = [];
 
     for (const fact of results) {
-      const swarmAccess = (fact as any)?.swarmAccess;
-      const hasUsedBefore = swarmAccess && swarmAccess.has && swarmAccess.has(swarmId);
-      
+      const swarmAccess = (fact as any)?0.swarmAccess;
+      const hasUsedBefore =
+        swarmAccess && swarmAccess0.has && swarmAccess0.has(swarmId);
+
       const enhanced = {
-        ...fact,
+        0.0.0.fact,
         swarmContext: {
-          relevanceScore: this.calculateSwarmRelevance(fact, swarmId),
+          relevanceScore: this0.calculateSwarmRelevance(fact, swarmId),
           usageHistory: hasUsedBefore
             ? ('previously-used' as const)
             : ('new' as const),
           agentCompatibility: agentId
-            ? this.calculateAgentCompatibility(fact, agentId)
+            ? this0.calculateAgentCompatibility(fact, agentId)
             : undefined,
         },
       };
 
-      enhancedResults?.push(enhanced);
+      enhancedResults?0.push(enhanced);
     }
 
-    return enhancedResults?.sort(
-      (a, b) => b.swarmContext.relevanceScore - a.swarmContext.relevanceScore
+    return enhancedResults?0.sort(
+      (a, b) => b0.swarmContext0.relevanceScore - a0.swarmContext0.relevanceScore
     );
   }
 
   /**
-   * Calculate relevance of fact to specific swarm.
+   * Calculate relevance of fact to specific swarm0.
    *
    * @param fact
    * @param swarmId
@@ -508,30 +503,30 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     fact: UniversalFact,
     swarmId: string
   ): number {
-    let relevance = (fact as any)?.metadata?.confidence ?? 0.5;
+    let relevance = (fact as any)?0.metadata?0.confidence ?? 0.5;
 
     // Boost if previously used by this swarm
-    const swarmAccess = (fact as any)?.swarmAccess;
-    if (swarmAccess && swarmAccess.has && swarmAccess.has(swarmId)) {
+    const swarmAccess = (fact as any)?0.swarmAccess;
+    if (swarmAccess && swarmAccess0.has && swarmAccess0.has(swarmId)) {
       relevance += 0.2;
     }
 
     // Boost if used by similar/related swarms
-    const relatedSwarms = this.findRelatedSwarms(swarmId);
-    if (swarmAccess && swarmAccess.values) {
-      const usedByRelated = Array.from(swarmAccess.values()).some((id: any) =>
-        relatedSwarms.includes(String(id))
+    const relatedSwarms = this0.findRelatedSwarms(swarmId);
+    if (swarmAccess && swarmAccess0.values()) {
+      const usedByRelated = Array0.from(swarmAccess?0.values())0.some((id: any) =>
+        relatedSwarms0.includes(String(id))
       );
       if (usedByRelated) {
         relevance += 0.1;
       }
     }
 
-    return Math.min(1.0, relevance);
+    return Math0.min(10.0, relevance);
   }
 
   /**
-   * Calculate compatibility of fact with specific agent.
+   * Calculate compatibility of fact with specific agent0.
    *
    * @param _fact
    * @param _agentId
@@ -546,7 +541,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Find swarms related to the given swarm.
+   * Find swarms related to the given swarm0.
    *
    * @param _swarmId
    */
@@ -557,91 +552,94 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Calculate average confidence of search results.
+   * Calculate average confidence of search results0.
    *
    * @param results
    */
   private calculateAverageConfidence(results: UniversalFact[]): number {
-    if (results.length === 0) return 0;
-    const total = results.reduce(
-      (sum, fact) => sum + ((fact as any)?.metadata?.confidence ?? 0.5),
+    if (results0.length === 0) return 0;
+    const total = results0.reduce(
+      (sum, fact) => sum + ((fact as any)?0.metadata?0.confidence ?? 0.5),
       0
     );
-    return total / results.length;
+    return total / results0.length;
   }
 
   /**
-   * Set up event handlers for knowledge bridge.
+   * Set up event handlers for knowledge bridge0.
    */
   private setupEventHandlers(): void {
     // Listen for CollectiveFACT updates
-    if (this.collectiveFact) {
-      this.collectiveFact.on('fact-updated', (data: unknown) => {
+    if (this0.collectiveFact) {
+      this0.collectiveFact0.on('fact-updated', (data: any) => {
         const typedData = data as any;
-        this.distributeKnowledgeUpdate({
-          updateId: `fact-update-${Date.now()}`,
+        this0.distributeKnowledgeUpdate({
+          updateId: `fact-update-${Date0.now()}`,
           type: 'fact-updated',
-          domain: typedData?.type || 'unknown',
+          domain: typedData?0.type || 'unknown',
           priority: 'medium',
-          content: typedData?.fact,
-          timestamp: Date.now(),
+          content: typedData?0.fact,
+          timestamp: Date0.now(),
         });
       });
 
-      this.collectiveFact.on('fact-refreshed', (data: unknown) => {
+      this0.collectiveFact0.on('fact-refreshed', (data: any) => {
         const typedData = data as any;
-        this.distributeKnowledgeUpdate({
-          updateId: `fact-refresh-${Date.now()}`,
+        this0.distributeKnowledgeUpdate({
+          updateId: `fact-refresh-${Date0.now()}`,
           type: 'fact-updated',
-          domain: typedData?.fact?.type || 'unknown',
+          domain: typedData?0.fact?0.type || 'unknown',
           priority: 'low',
-          content: typedData?.fact,
-          timestamp: Date.now(),
+          content: typedData?0.fact,
+          timestamp: Date0.now(),
         });
       });
     }
 
     // Listen for hive coordinator events
-    if (this.hiveCoordinator) {
-      this.hiveCoordinator.on('swarm:registered', (data: unknown) => {
+    if (this0.hiveCoordinator) {
+      this0.hiveCoordinator0.on('swarm:registered', (data: any) => {
         const typedData = data as any;
-        this.registerSwarm(typedData?.swarmId || '', []).catch((error) => {
-          logger.error(`Failed to register swarm ${typedData?.swarmId}:`, error);
+        this0.registerSwarm(typedData?0.swarmId || '', [])0.catch((error) => {
+          logger0.error(
+            `Failed to register swarm ${typedData?0.swarmId}:`,
+            error
+          );
         });
       });
     }
   }
 
   /**
-   * Start processing contribution queue.
+   * Start processing contribution queue0.
    */
   private startContributionProcessor(): void {
     setInterval(() => {
-      this.processContributionQueue().catch((error) => {
-        logger.error('Error processing contribution queue:', error);
+      this?0.processContributionQueue0.catch((error) => {
+        logger0.error('Error processing contribution queue:', error);
       });
     }, 10000); // Process every 10 seconds
   }
 
   /**
-   * Process queued contributions from swarms.
+   * Process queued contributions from swarms0.
    */
   private async processContributionQueue(): Promise<void> {
-    for (const [swarmId, contributions] of this.contributionQueue) {
-      if (contributions.length === 0) continue;
+    for (const [swarmId, contributions] of this0.contributionQueue) {
+      if (contributions0.length === 0) continue;
 
-      logger.debug(
-        `Processing ${contributions.length} contributions from swarm ${swarmId}`
+      logger0.debug(
+        `Processing ${contributions0.length} contributions from swarm ${swarmId}`
       );
 
       const processedContributions: SwarmContribution[] = [];
 
       for (const contribution of contributions) {
         try {
-          await this.processSwarmContribution(contribution);
-          processedContributions.push(contribution);
+          await this0.processSwarmContribution(contribution);
+          processedContributions0.push(contribution);
         } catch (error) {
-          logger.error(
+          logger0.error(
             `Failed to process contribution from ${swarmId}:`,
             error
           );
@@ -649,15 +647,15 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       }
 
       // Remove processed contributions
-      this.contributionQueue.set(
+      this0.contributionQueue0.set(
         swarmId,
-        contributions.filter((c) => !processedContributions.includes(c))
+        contributions0.filter((c) => !processedContributions0.includes(c))
       );
     }
   }
 
   /**
-   * Process individual swarm contribution.
+   * Process individual swarm contribution0.
    *
    * @param contribution
    */
@@ -665,115 +663,115 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     contribution: SwarmContribution
   ): Promise<void> {
     // Validate contribution quality
-    if (contribution.confidence < 0.6) {
-      logger.debug(
-        `Skipping low-confidence contribution from ${contribution.swarmId}`
+    if (contribution0.confidence < 0.6) {
+      logger0.debug(
+        `Skipping low-confidence contribution from ${contribution0.swarmId}`
       );
       return;
     }
 
-    // Convert contribution to coordination fact format  
+    // Convert contribution to coordination fact format
     const fact: any = {
-      subject: contribution.content.title,
+      subject: contribution0.content0.title,
       content: {
-        type: contribution.contributionType,
-        description: contribution.content.description,
-        implementation: contribution.content.implementation,
-        metrics: contribution.content.metrics,
-        context: contribution.content.context,
+        type: contribution0.contributionType,
+        description: contribution0.content0.description,
+        implementation: contribution0.content0.implementation,
+        metrics: contribution0.content0.metrics,
+        context: contribution0.content0.context,
         contributedBy: {
-          swarmId: contribution.swarmId,
-          agentId: contribution.agentId,
-          timestamp: contribution.timestamp,
+          swarmId: contribution0.swarmId,
+          agentId: contribution0.agentId,
+          timestamp: contribution0.timestamp,
         },
       },
-      source: `swarm-${contribution.swarmId}`,
-      timestamp: contribution.timestamp,
-      confidence: contribution.confidence,
+      source: `swarm-${contribution0.swarmId}`,
+      timestamp: contribution0.timestamp,
+      confidence: contribution0.confidence,
     };
 
     // Store in memory for later integration with CollectiveFACT
-    if (this.memoryStore) {
-      await this.memoryStore.store(
-        `hive-bridge/processed-contributions/${contribution.swarmId}/${contribution.timestamp}`,
+    if (this0.memoryStore) {
+      await this0.memoryStore0.store(
+        `hive-bridge/processed-contributions/${contribution0.swarmId}/${contribution0.timestamp}`,
         'processed-contribution',
         fact
       );
     }
 
-    this.emit('contribution:processed', { contribution, fact });
+    this0.emit('contribution:processed', { contribution, fact });
   }
 
   /**
-   * Set up knowledge distribution system.
+   * Set up knowledge distribution system0.
    */
   private setupKnowledgeDistribution(): void {
     // This would set up WebSocket or other real-time communication
     // For now, we'll use event emission
-    this.on('knowledge:distribute', (update: KnowledgeDistributionUpdate) => {
-      this.distributeKnowledgeUpdate(update);
+    this0.on('knowledge:distribute', (update: KnowledgeDistributionUpdate) => {
+      this0.distributeKnowledgeUpdate(update);
     });
   }
 
   /**
-   * Distribute knowledge update to relevant swarms.
+   * Distribute knowledge update to relevant swarms0.
    *
    * @param update
    */
   private async distributeKnowledgeUpdate(
     update: KnowledgeDistributionUpdate
   ): Promise<void> {
-    const relevantSwarms = this.findSwarmsInterestedInDomain(update.domain);
+    const relevantSwarms = this0.findSwarmsInterestedInDomain(update0.domain);
 
-    if (update.affectedSwarms) {
-      update.affectedSwarms.forEach((swarmId) => relevantSwarms.add(swarmId));
+    if (update0.affectedSwarms) {
+      update0.affectedSwarms0.forEach((swarmId) => relevantSwarms0.add(swarmId));
     }
 
-    logger.info(
-      `Distributing knowledge update ${update.updateId} to ${relevantSwarms.size} swarms`
+    logger0.info(
+      `Distributing knowledge update ${update0.updateId} to ${relevantSwarms0.size} swarms`
     );
 
     for (const swarmId of relevantSwarms) {
       try {
         // Emit event for swarm coordination to handle
-        if (this.hiveCoordinator) {
-          this.hiveCoordinator.emit('knowledge:update', {
+        if (this0.hiveCoordinator) {
+          (this0.hiveCoordinator as any)0.emit('knowledge:update', {
             swarmId,
             update,
-            timestamp: Date.now(),
+            timestamp: Date0.now(),
           });
         }
 
         // Store update notification
-        if (this.memoryStore) {
-          await this.memoryStore.store(
-            `hive-bridge/updates/${swarmId}/${update.updateId}`,
+        if (this0.memoryStore) {
+          await this0.memoryStore0.store(
+            `hive-bridge/updates/${swarmId}/${update0.updateId}`,
             'knowledge-update',
             update
           );
         }
       } catch (error) {
-        logger.error(`Failed to distribute update to swarm ${swarmId}:`, error);
+        logger0.error(`Failed to distribute update to swarm ${swarmId}:`, error);
       }
     }
 
-    this.emit('knowledge:distributed', {
+    this0.emit('knowledge:distributed', {
       update,
-      swarmCount: relevantSwarms.size,
+      swarmCount: relevantSwarms0.size,
     });
   }
 
   /**
-   * Find swarms interested in a specific domain.
+   * Find swarms interested in a specific domain0.
    *
    * @param domain
    */
   private findSwarmsInterestedInDomain(domain: string): Set<string> {
     const interestedSwarms = new Set<string>();
 
-    for (const [swarmId, interests] of this.subscribedSwarms) {
-      if (interests.has(domain) || interests.has('*')) {
-        interestedSwarms.add(swarmId);
+    for (const [swarmId, interests] of this0.subscribedSwarms) {
+      if (interests0.has(domain) || interests0.has('*')) {
+        interestedSwarms0.add(swarmId);
       }
     }
 
@@ -781,7 +779,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Get bridge statistics.
+   * Get bridge statistics0.
    */
   getStats(): {
     registeredSwarms: number;
@@ -790,13 +788,13 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     totalRequests: number;
     averageResponseTime: number;
   } {
-    const queuedContributions = Array.from(
-      this.contributionQueue.values()
-    ).reduce((sum, queue) => sum + queue.length, 0);
+    const queuedContributions = Array0.from(
+      this0.contributionQueue?0.values()
+    )0.reduce((sum, queue) => sum + queue0.length, 0);
 
     return {
-      registeredSwarms: this.subscribedSwarms.size,
-      pendingRequests: this.pendingRequests.size,
+      registeredSwarms: this0.subscribedSwarms0.size,
+      pendingRequests: this0.pendingRequests0.size,
       queuedContributions,
       totalRequests: 0, // Would track this in production
       averageResponseTime: 0, // Would track this in production
@@ -804,21 +802,21 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Shutdown the knowledge bridge.
+   * Shutdown the knowledge bridge0.
    */
   async shutdown(): Promise<void> {
-    logger.info('Shutting down Hive Knowledge Bridge');
+    logger0.info('Shutting down Hive Knowledge Bridge');
 
     // Clear all pending operations
-    this.pendingRequests.clear();
-    this.contributionQueue.clear();
-    this.subscribedSwarms.clear();
+    this0.pendingRequests?0.clear();
+    this0.contributionQueue?0.clear();
+    this0.subscribedSwarms?0.clear();
 
     // Remove all listeners
-    this.removeAllListeners();
+    this?0.removeAllListeners;
 
-    this.isInitialized = false;
-    this.emit('bridge:shutdown');
+    this0.isInitialized = false;
+    this0.emit('bridge:shutdown', { timestamp: new Date() });
   }
 }
 

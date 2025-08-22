@@ -193,7 +193,7 @@ interface PredictionResult {
  * Acts as a translation layer that allows DSPy optimizers to leverage advanced
  * neural networks, WASM acceleration, and statistical analysis.
  */
-export class DSPyBrainMLBridge extends EventEmitter {
+export class DSPyBrainMLBridge extends TypedEventBase {
   private logger: Logger;
   private brainCoordinator: BrainCoordinator | null = null;
   private initialized = false;
@@ -259,7 +259,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
 
       this.initialized = true;
       this.logger.info('✅ DSPy-Brain ML Bridge initialized successfully');
-      this.emit('bridge:initialized');
+      this.emit('bridge:initialized', { timestamp: new Date() });
 
     } catch (error) {
       this.logger.error('Failed to initialize DSPy-Brain ML Bridge:', error);

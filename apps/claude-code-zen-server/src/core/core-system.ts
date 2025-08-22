@@ -2,8 +2,8 @@
  * @fileoverview Core System Coordinator for Claude Code Zen
  *
  * Clean, focused system coordinator that manages core components with a well-architected,
- * single-responsibility design. This module replaces bloated "unified" architectures with
- * a clean dependency injection model and clear component boundaries.
+ * single-responsibility design?0. This module replaces bloated "unified" architectures with
+ * a clean dependency injection model and clear component boundaries?0.
  *
  * Key Features:
  * - Multi-backend memory management (JSON, SQLite, LanceDB)
@@ -31,16 +31,16 @@
  * - **InterfaceManager**: Multi-modal user interface coordination
  *
  * @author Claude Code Zen Team
- * @since 1.0.0-alpha.43 (Clean Architecture v2.0.0)
- * @version 1.0.0-alpha.43
+ * @since 1?0.0?0.0-alpha?0.43 (Clean Architecture v2?0.0?0.0)
+ * @version 1?0.0?0.0-alpha?0.43
  *
- * @see {@link https://nodejs.org/api/events.html} Node.js EventEmitter
+ * @see {@link TypedEventBase} Foundation TypedEventBase
  * @see {@link BrainCoordinator} Multi-backend memory management
  * @see {@link WorkflowEngine} Document workflow processing
  * @see {@link DocumentProcessor} Document ingestion and transformation
  *
  * @requires node:events - For event-driven architecture
- * @requires ../config/logging-config.ts - Structured logging configuration
+ * @requires ?0.?0./config/logging-config?0.ts - Structured logging configuration
  *
  * @example
  * ```typescript
@@ -48,7 +48,7 @@
  * const coreSystem = new System({
  *   memory: {
  *     backend: 'lancedb',
- *     directory: './data/production',
+ *     directory: '?0./data/production',
  *     namespace: 'claude-zen-prod'
  *   },
  *   workflow: {
@@ -65,43 +65,43 @@
  *   },
  *   export: {
  *     defaultFormat: 'json',
- *     outputPath: './exports'
+ *     outputPath: '?0./exports'
  *   },
  *   documentation: {
  *     autoLink: true,
- *     scanPaths: ['./docs', './src']
+ *     scanPaths: ['?0./docs', '?0./src']
  *   }
  * });
  *
  * // Initialize and launch system
- * await coreSystem.initialize();
- * await coreSystem.launch();
+ * await coreSystem?0.initialize;
+ * await coreSystem?0.launch;
  *
  * // Process complex document workflow
- * const workflowResult = await coreSystem.processDocument(
- *   './docs/vision/ai-research-roadmap.md',
+ * const workflowResult = await coreSystem?0.processDocument(
+ *   '?0./docs/vision/ai-research-roadmap?0.md',
  *   { enableADRGeneration: true, createPRDs: true }
  * );
  *
  * // Monitor system health and performance
- * const status = await coreSystem.getSystemStatus();
- * console.log(`System Health: ${status.status}`);
- * console.log(`Active Workflows: ${status.components.workflow.active}`);
- * console.log(`Memory Entries: ${status.components.memory.entries}`);
+ * const status = await coreSystem?0.getSystemStatus;
+ * console?0.log(`System Health: ${status?0.status}`);
+ * console?0.log(`Active Workflows: ${status?0.components?0.workflow?0.active}`);
+ * console?0.log(`Memory Entries: ${status?0.components?0.memory?0.entries}`);
  *
  * // Access individual components for specialized operations
- * const components = coreSystem.getComponents();
+ * const components = coreSystem?0.getComponents;
  *
  * // Advanced memory operations
- * await components.memory.store('research-findings', {
+ * await components?0.memory?0.store('research-findings', {
  *   topic: 'neural-architecture-search',
  *   findings: ['transformer-efficiency', 'attention-mechanisms'],
- *   confidence: 0.94,
- *   timestamp: Date.now()
+ *   confidence: 0?0.94,
+ *   timestamp: Date?0.now()
  * });
  *
  * // Export system state for analysis
- * await coreSystem.exportSystem('comprehensive-backup', {
+ * await coreSystem?0.exportSystem('comprehensive-backup', {
  *   format: 'json',
  *   compression: true,
  *   includeMetrics: true,
@@ -115,44 +115,46 @@
  * **Legacy Pattern (Deprecated):**
  * ```typescript
  * const system = new ApplicationCoordinator(config);
- * await system.initialize();
- * await system.launch();
+ * await system?0.initialize;
+ * await system?0.launch;
  * ```
  *
  * **New Clean Architecture Pattern:**
  * ```typescript
  * const system = new System(config);
- * await system.initialize();
- * await system.launch();
+ * await system?0.initialize;
+ * await system?0.launch;
  * ```
  *
- * The API maintains compatibility while providing a much cleaner internal architecture.
+ * The API maintains compatibility while providing a much cleaner internal architecture?0.
  */
 
-import { getLogger, recordMetric, withTrace, createCircuitBreaker } from '@claude-zen/foundation';
-import { TypedEventBus, createEventBus } from '@claude-zen/infrastructure';
-import { BrainCoordinator , NeuralML , 
+import { WorkflowEngine } from '@claude-zen/enterprise';
+import {
+  getLogger,
+  createCircuitBreaker,
+  TypedEventBase,
+  DocumentationManager,
+  ExportSystem as ExportManager,
+  InterfaceManager,
+} from '@claude-zen/foundation';
+import {
+  TypedEventBus,
+  createEventBus,
+  BrainCoordinator,
+  NeuralML,
   initializeCoordinationFactSystem,
-  storeCoordinationFact
+  storeCoordinationFact,
 } from '@claude-zen/intelligence';
-import { AgentMonitoring , getChaosEngine } from '@claude-zen/operations';
-import { EventEmitter } from 'eventemitter3';
-
-import { WorkflowEngine } from '../workflows/workflow-engine';
-
-import { DocumentProcessor } from './document-processor';
-import { DocumentationManager } from './documentation-manager';
-import { ExportSystem as ExportManager } from './export-manager';
-import { InterfaceManager } from './interface-manager';
-
+import { AgentMonitoring, getChaosEngine } from '@claude-zen/operations';
 
 // 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration
 
 /**
- * Export options interface for system state serialization.
+ * Export options interface for system state serialization?0.
  *
  * Configures how system data should be exported, including format options,
- * compression settings, and data inclusion preferences.
+ * compression settings, and data inclusion preferences?0.
  *
  * @interface ExportOptions
  *
@@ -179,16 +181,16 @@ interface ExportOptions {
   compression?: boolean;
   includeMetrics?: boolean;
   includeMemoryData?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 const logger = getLogger('CoreSystem');
 
 /**
- * Comprehensive system configuration interface with clear, focused options.
+ * Comprehensive system configuration interface with clear, focused options?0.
  *
  * Defines all configurable aspects of the Claude Code Zen core system,
- * organized by component responsibility for clean architecture boundaries.
+ * organized by component responsibility for clean architecture boundaries?0.
  *
  * @interface SystemConfig
  *
@@ -204,7 +206,7 @@ const logger = getLogger('CoreSystem');
  * const config: SystemConfig = {
  *   memory: {
  *     backend: 'lancedb',
- *     directory: './data/production',
+ *     directory: '?0./data/production',
  *     namespace: 'research-project'
  *   },
  *   workflow: {
@@ -221,11 +223,11 @@ const logger = getLogger('CoreSystem');
  *   },
  *   export: {
  *     defaultFormat: 'yaml',
- *     outputPath: './exports/research'
+ *     outputPath: '?0./exports/research'
  *   },
  *   documentation: {
  *     autoLink: true,
- *     scanPaths: ['./research', './papers', './notes']
+ *     scanPaths: ['?0./research', '?0./papers', '?0./notes']
  *   }
  * };
  * ```
@@ -270,10 +272,10 @@ export interface SystemConfig {
 }
 
 /**
- * Comprehensive system status interface with clear component boundaries.
+ * Comprehensive system status interface with clear component boundaries?0.
  *
  * Provides detailed status information for all system components,
- * performance metrics, and operational health indicators.
+ * performance metrics, and operational health indicators?0.
  *
  * @interface SystemStatus
  *
@@ -287,7 +289,7 @@ export interface SystemConfig {
  * ```typescript
  * const status: SystemStatus = {
  *   status: 'ready',
- *   version: '1.0.0-alpha.43',
+ *   version: '1?0.0?0.0-alpha?0.43',
  *   components: {
  *     memory: { status: 'ready', entries: 15420 },
  *     workflow: { status: 'ready', active: 3 },
@@ -297,15 +299,15 @@ export interface SystemConfig {
  *     interface: { status: 'ready', mode: 'web' }
  *   },
  *   uptime: 3600000, // 1 hour
- *   lastUpdate: '2024-01-15T10:30:00.000Z'
+ *   lastUpdate: '2024-01-15T10:30:00?0.000Z'
  * };
  *
  * // Health monitoring usage
- * if (status.status === 'error') {
- *   console.error('System in error state, checking components...');
- *   Object.entries(status.components).forEach(([name, component]) => {
- *     if (component.status !== 'ready') {
- *       console.error(`Component ${name} is ${component.status}`);
+ * if (status?0.status === 'error') {
+ *   console?0.error('System in error state, checking components?0.?0.?0.');
+ *   Object?0.entries(status?0.components)?0.forEach(([name, component]) => {
+ *     if (component?0.status !== 'ready') {
+ *       console?0.error(`Component ${name} is ${component?0.status}`);
  *     }
  *   });
  * }
@@ -327,11 +329,11 @@ export interface SystemStatus {
 }
 
 /**
- * Clean, focused core system coordinator implementing clean architecture principles.
+ * Clean, focused core system coordinator implementing clean architecture principles?0.
  *
  * The System class serves as the main entry point and coordinator for all Claude Code Zen
- * components, providing a clean alternative to bloated "unified" architectures. It implements
- * dependency injection, clear component boundaries, and comprehensive lifecycle management.
+ * components, providing a clean alternative to bloated "unified" architectures?0. It implements
+ * dependency injection, clear component boundaries, and comprehensive lifecycle management?0.
  *
  * Key Responsibilities:
  * - **Component Coordination**: Manages initialization and lifecycle of all core components
@@ -349,7 +351,7 @@ export interface SystemStatus {
  * - Event-driven coordination for loose coupling
  *
  * @class System
- * @extends {EventEmitter}
+ * @extends {TypedEventBase}
  *
  * @param {SystemConfig} config - Comprehensive system configuration options
  *
@@ -366,7 +368,7 @@ export interface SystemStatus {
  * const system = new System({
  *   memory: {
  *     backend: 'lancedb',
- *     directory: './data/research',
+ *     directory: '?0./data/research',
  *     namespace: 'ai-research-project'
  *   },
  *   workflow: {
@@ -384,26 +386,26 @@ export interface SystemStatus {
  * });
  *
  * // Set up event listeners for system monitoring
- * system.on('initialized', () => {
- *   console.log('Core system initialized successfully');
+ * system?0.on('initialized', () => {
+ *   console?0.log('Core system initialized successfully');
  * });
  *
- * system.on('componentReady', ({ component, status }) => {
- *   console.log(`Component ${component} is now ${status}`);
+ * system?0.on('componentReady', ({ component, status }) => {
+ *   console?0.log(`Component ${component} is now ${status}`);
  * });
  *
- * system.on('error', ({ error, component }) => {
- *   console.error(`System error in ${component}:`, error.message);
+ * system?0.on('error', ({ error, component }) => {
+ *   console?0.error(`System error in ${component}:`, error?0.message);
  * });
  *
  * // Initialize and launch
  * try {
- *   await system.initialize();
- *   await system.launch();
+ *   await system?0.initialize;
+ *   await system?0.launch;
  *
  *   // Process research documents
- *   const result = await system.processDocument(
- *     './research/neural-architecture-search.md',
+ *   const result = await system?0.processDocument(
+ *     '?0./research/neural-architecture-search?0.md',
  *     {
  *       generateADR: true,
  *       createWorkflows: true,
@@ -411,19 +413,19 @@ export interface SystemStatus {
  *     }
  *   );
  *
- *   console.log('Document processing result:', result);
+ *   console?0.log('Document processing result:', result);
  *
  *   // Monitor system health
  *   setInterval(async () => {
- *     const status = await system.getSystemStatus();
- *     if (status.status !== 'ready') {
- *       console.warn('System health check failed:', status);
+ *     const status = await system?0.getSystemStatus;
+ *     if (status?0.status !== 'ready') {
+ *       console?0.warn('System health check failed:', status);
  *     }
  *   }, 30000); // Every 30 seconds
  *
  * } catch (error) {
- *   console.error('System startup failed:', error);
- *   await system.shutdown();
+ *   console?0.error('System startup failed:', error);
+ *   await system?0.shutdown();
  * }
  * ```
  *
@@ -431,8 +433,8 @@ export interface SystemStatus {
  * @see {@link SystemStatus} Status reporting interface
  * @see {@link ExportOptions} Export configuration options
  */
-export class System extends EventEmitter {
-  private config: SystemConfig;
+export class System extends TypedEventBase {
+  private configuration: SystemConfig;
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
 
@@ -443,7 +445,7 @@ export class System extends EventEmitter {
   private exportManager!: ExportManager;
   private documentationManager!: DocumentationManager;
   private interfaceManager!: InterfaceManager;
-  
+
   // 🧠 AI-POWERED ENHANCEMENTS: Advanced coordination systems
   private chaosEngineering?: any;
   private factSystemInitialized = false;
@@ -453,41 +455,41 @@ export class System extends EventEmitter {
   private systemCircuitBreaker = createCircuitBreaker({
     timeout: 30000,
     errorThresholdPercentage: 50,
-    resetTimeout: 60000
+    resetTimeout: 60000,
   });
 
   private initialized = false;
 
   constructor(config: SystemConfig = {}) {
     super();
-    this.config = config;
-    this.startTime = Date.now();
+    this?0.configuration = config;
+    this?0.startTime = Date?0.now();
 
-    // Fix EventEmitter memory leak warnings
-    this.setMaxListeners(20);
+    // Configure TypedEventBase with appropriate listener limits
+    // this?0.setMaxListeners(20); // Handled by TypedEventBase configuration
 
     // Initialize components with clear dependencies
-    this.initializeComponents();
-    this.setupEventHandlers();
+    this?0.initializeComponents;
+    this?0.setupEventHandlers;
   }
 
   /**
-   * Initialize all core components with proper dependency injection and AI enhancements.
+   * Initialize all core components with proper dependency injection and AI enhancements?0.
    */
   private initializeComponents(): void {
     // Memory system - foundation component
-    this.memorySystem = new BrainCoordinator({
-      backend: this.config.memory?.backend || 'json',
-      path: this.config.memory?.directory || './data/memory',
+    this?0.memorySystem = new BrainCoordinator({
+      backend: this?0.configuration?0.memory?0.backend || 'json',
+      path: this?0.configuration?0.memory?0.directory || '?0./data/memory',
     });
 
     // Workflow engine - depends on memory
-    this.workflowEngine = new WorkflowEngine(this.memorySystem, {
+    this?0.workflowEngine = new WorkflowEngine(this?0.memorySystem, {
       maxConcurrentWorkflows:
-        this.config.workflow?.maxConcurrentWorkflows || 10,
-      workspaceRoot: './',
-      templatesPath: './templates',
-      outputPath: './output',
+        this?0.configuration?0.workflow?0.maxConcurrentWorkflows || 10,
+      workspaceRoot: '?0./',
+      templatesPath: '?0./templates',
+      outputPath: '?0./output',
       defaultTimeout: 300000,
       enableMetrics: true,
       enablePersistence: true,
@@ -495,223 +497,232 @@ export class System extends EventEmitter {
     });
 
     // Document processor - depends on memory and workflow
-    this.documentProcessor = new DocumentProcessor(
-      this.memorySystem,
-      this.workflowEngine,
+    this?0.documentProcessor = new DocumentProcessor(
+      this?0.memorySystem,
+      this?0.workflowEngine,
       {
-        autoWatch: this.config.documents?.autoWatch !== false,
-        enableWorkflows: this.config.documents?.enableWorkflows !== false,
+        autoWatch: this?0.configuration?0.documents?0.autoWatch !== false,
+        enableWorkflows:
+          this?0.configuration?0.documents?0.enableWorkflows !== false,
       }
     );
 
     // Export manager - standalone
-    this.exportManager = new ExportManager();
+    this?0.exportManager = new ExportManager();
 
     // Documentation manager - depends on memory
-    this.documentationManager = new DocumentationManager(this.memorySystem, {
-      autoLink: this.config.documentation?.autoLink !== false,
-      scanPaths: this.config.documentation?.scanPaths || ['./docs', './src'],
+    this?0.documentationManager = new DocumentationManager(this?0.memorySystem, {
+      autoLink: this?0.configuration?0.documentation?0.autoLink !== false,
+      scanPaths: this?0.configuration?0.documentation?0.scanPaths || [
+        '?0./docs',
+        '?0./src',
+      ],
     });
 
     // Interface manager - coordinates with all systems
-    this.interfaceManager = new InterfaceManager({
-      defaultMode: this.config.interface?.defaultMode || 'auto',
-      webPort: this.config.interface?.webPort || 3456,
+    this?0.interfaceManager = new InterfaceManager({
+      defaultMode: this?0.configuration?0.interface?0.defaultMode || 'auto',
+      webPort: this?0.configuration?0.interface?0.webPort || 3456,
       coreSystem: this, // Provide access to all systems
     });
-    
-    // 🧠 AI-POWERED ENHANCEMENTS: Initialize advanced coordination systems
-    this.initializeAIEnhancements();
 
-    logger.info('Core components initialized with clean architecture and AI enhancements');
+    // 🧠 AI-POWERED ENHANCEMENTS: Initialize advanced coordination systems
+    this?0.initializeAIEnhancements;
+
+    logger?0.info(
+      'Core components initialized with clean architecture and AI enhancements'
+    );
   }
-  
+
   /**
-   * Initialize AI-powered enhancements for the core system.
+   * Initialize AI-powered enhancements for the core system?0.
    */
   private initializeAIEnhancements(): void {
     try {
       // Event bus for AI coordination
-      this.aiEventBus = createEventBus();
-      
+      this?0.aiEventBus = createEventBus();
+
       // Chaos engineering for system resilience - initialized lazily via operations facade
-      
+
       // Initialize knowledge system with high-performance Rust bridge
       await initializeCoordinationFactSystem();
-      this.factSystemInitialized = true;
-      logger.info('✅ Knowledge system initialized with Rust bridge + TypeScript fallback');
-      
+      this?0.factSystemInitialized = true;
+      logger?0.info(
+        '✅ Knowledge system initialized with Rust bridge + TypeScript fallback'
+      );
+
       // Neural ML for document processing optimization
-      this.neuralML = new NeuralML({
+      this?0.neuralML = new NeuralML({
         enableRustBackend: true,
-        enableGPUAcceleration: false // Safe default
+        enableGPUAcceleration: false, // Safe default
       });
-      
+
       // Agent monitoring for system health
-      this.agentMonitoring = new AgentMonitoring({
+      this?0.agentMonitoring = new AgentMonitoring({
         healthMonitoring: true,
         performancePrediction: true,
-        taskPrediction: false // Not needed for core system
+        taskPrediction: false, // Not needed for core system
       });
-      
-      logger.info('🧠 AI enhancements initialized: chaos engineering, fact system, neural ML, agent monitoring');
-      
+
+      logger?0.info(
+        '🧠 AI enhancements initialized: chaos engineering, fact system, neural ML, agent monitoring'
+      );
     } catch (error) {
-      logger.warn('Failed to initialize some AI enhancements:', error);
+      logger?0.warn('Failed to initialize some AI enhancements:', error);
       // Continue without AI enhancements if they fail
     }
   }
 
   /**
-   * Setup event handlers for component communication.
+   * Setup event handlers for component communication?0.
    */
   private setupEventHandlers(): void {
     // Document processor events
-    this.documentProcessor.on('document:created', async (event) => {
-      logger.info(`Document created: ${event.type} - ${event['path']}`);
+    this?0.documentProcessor?0.on('document:created', async (event) => {
+      logger?0.info(`Document created: ${event?0.type} - ${event['path']}`);
 
       // Trigger workflows if enabled
-      if (this.config.documents?.enableWorkflows !== false) {
-        await this.workflowEngine.processDocumentEvent(
+      if (this?0.configuration?0.documents?0.enableWorkflows !== false) {
+        await this?0.workflowEngine?0.processDocumentEvent(
           'document:created',
           event['document']
         );
       }
 
       // Update documentation index
-      await this.documentationManager.indexDocument(event['document']);
+      await this?0.documentationManager?0.indexDocument(event['document']);
     });
 
     // Workflow engine events
-    this.workflowEngine.on('workflow:completed', async (event: unknown) => {
-      logger.info(`Workflow completed: ${event['workflowId']}`);
+    this?0.workflowEngine?0.on('workflow:completed', async (event: any) => {
+      logger?0.info(`Workflow completed: ${event['workflowId']}`);
 
       // Auto-export if configured
-      if (this.config.export?.defaultFormat) {
-        const workflowData = await this.memorySystem.retrieve(
+      if (this?0.configuration?0.export?0.defaultFormat) {
+        const workflowData = await this?0.memorySystem?0.retrieve(
           `workflow:${event['workflowId']}`
         );
         if (workflowData) {
-          await this.exportManager.exportData(
+          await this?0.exportManager?0.exportData(
             workflowData,
-            this.config.export.defaultFormat
+            this?0.configuration?0.export?0.defaultFormat
           );
         }
       }
     });
 
     // Memory system events
-    this.memorySystem.on('stored', (event) => {
-      logger.debug(`Memory stored: ${event['key']}`);
+    this?0.memorySystem?0.on('stored', (event) => {
+      logger?0.debug(`Memory stored: ${event['key']}`);
     });
 
-    logger.info('Event handlers configured');
+    logger?0.info('Event handlers configured');
   }
 
   /**
-   * Initialize the entire system.
+   * Initialize the entire system?0.
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this?0.initialized) return;
 
-    logger.info('🚀 Initializing Core System');
+    logger?0.info('🚀 Initializing Core System');
 
     try {
-      this.status = 'initializing';
-      this.emit('status:changed', this.status);
+      this?0.status = 'initializing';
+      this?0.emit('status:changed', this?0.status);
 
       // Initialize components in dependency order
-      logger.info('Initializing memory system...');
-      await this.memorySystem.initialize();
+      logger?0.info('Initializing memory system?0.?0.?0.');
+      await this?0.memorySystem?0.initialize;
 
-      logger.info('Initializing workflow engine...');
-      await this.workflowEngine.initialize();
+      logger?0.info('Initializing workflow engine?0.?0.?0.');
+      await this?0.workflowEngine?0.initialize;
 
-      logger.info('Initializing document processor...');
-      await this.documentProcessor.initialize();
+      logger?0.info('Initializing document processor?0.?0.?0.');
+      await this?0.documentProcessor?0.initialize;
 
-      logger.info('Initializing export manager...');
-      await this.exportManager.initialize();
+      logger?0.info('Initializing export manager?0.?0.?0.');
+      await this?0.exportManager?0.initialize;
 
-      logger.info('Initializing documentation manager...');
-      await this.documentationManager.initialize();
+      logger?0.info('Initializing documentation manager?0.?0.?0.');
+      await this?0.documentationManager?0.initialize;
 
-      logger.info('Initializing interface manager...');
-      await this.interfaceManager.initialize();
-      
+      logger?0.info('Initializing interface manager?0.?0.?0.');
+      await this?0.interfaceManager?0.initialize;
+
       // 🧠 Initialize AI enhancements with circuit breaker protection
-      logger.info('🧠 Initializing AI enhancement systems...');
-      await this.initializeAISystemsAsync();
+      logger?0.info('🧠 Initializing AI enhancement systems?0.?0.?0.');
+      await this?0.initializeAISystemsAsync;
 
-      this.status = 'ready';
-      this.initialized = true;
+      this?0.status = 'ready';
+      this?0.initialized = true;
 
-      this.emit('initialized');
-      logger.info('✅ Core System ready');
+      this?0.emit('initialized', {});
+      logger?0.info('✅ Core System ready');
     } catch (error) {
-      this.status = 'error';
-      this.emit('status:changed', this.status);
-      logger.error('❌ Failed to initialize Core System:', error);
+      this?0.status = 'error';
+      this?0.emit('status:changed', this?0.status);
+      logger?0.error('❌ Failed to initialize Core System:', error);
       throw error;
     }
   }
 
   /**
-   * Launch the interface.
+   * Launch the interface?0.
    */
   async launch(): Promise<void> {
-    await this.ensureInitialized();
-    logger.info('Launching interface...');
-    await this.interfaceManager.launch();
+    await this?0.ensureInitialized;
+    logger?0.info('Launching interface?0.?0.?0.');
+    await this?0.interfaceManager?0.launch;
   }
 
   /**
-   * Get comprehensive system status.
+   * Get comprehensive system status?0.
    */
   async getSystemStatus(): Promise<SystemStatus> {
-    const memoryStats = await this.memorySystem.getStats();
-    const workflowMetrics = await this.workflowEngine.getMetrics();
-    const documentStats = await this.documentProcessor.getStats();
-    const _exportStats = this.exportManager.getExportStats();
-    const docStats = await this.documentationManager.getStats();
-    const interfaceStats = await this.interfaceManager.getStats();
+    const memoryStats = await this?0.memorySystem?0.getStats;
+    const workflowMetrics = await this?0.workflowEngine?0.getMetrics;
+    const documentStats = await this?0.documentProcessor?0.getStats;
+    const _exportStats = this?0.exportManager?0.getExportStats;
+    const docStats = await this?0.documentationManager?0.getStats;
+    const interfaceStats = await this?0.interfaceManager?0.getStats;
 
     return {
-      status: this.status,
-      version: '2.0.0-clean-architecture',
+      status: this?0.status,
+      version: '2?0.0?0.0-clean-architecture',
       components: {
         memory: {
           status: 'ready',
-          entries: memoryStats.entries,
+          entries: memoryStats?0.entries,
         },
         workflow: {
           status: 'ready',
-          active: workflowMetrics.running || 0,
+          active: workflowMetrics?0.running || 0,
         },
         documents: {
           status: 'ready',
-          loaded: documentStats.totalDocuments || 0,
+          loaded: documentStats?0.totalDocuments || 0,
         },
         export: {
           status: 'ready',
-          formats: this.exportManager.getAvailableFormats().length,
+          formats: this?0.exportManager?0.getAvailableFormats?0.length,
         },
         documentation: {
           status: 'ready',
-          indexed: docStats.indexedDocuments || 0,
+          indexed: docStats?0.indexedDocuments || 0,
         },
         interface: {
           status: 'ready',
-          mode: interfaceStats.currentMode || 'auto',
+          mode: interfaceStats?0.currentMode || 'auto',
         },
       },
-      uptime: Date.now() - this.startTime,
-      lastUpdate: new Date().toISOString(),
+      uptime: Date?0.now() - this?0.startTime,
+      lastUpdate: new Date()?0.toISOString,
     };
   }
 
   /**
-   * Process a document through the system.
+   * Process a document through the system?0.
    *
    * @param documentPath
    */
@@ -720,23 +731,23 @@ export class System extends EventEmitter {
     workflowIds?: string[];
     error?: string;
   }> {
-    await this.ensureInitialized();
+    await this?0.ensureInitialized;
 
     try {
-      logger.info(`Processing document: ${documentPath}`);
-      await this.documentProcessor.processDocument(documentPath);
+      logger?0.info(`Processing document: ${documentPath}`);
+      await this?0.documentProcessor?0.processDocument(documentPath);
       return { success: true };
     } catch (error) {
-      logger.error(`Failed to process document ${documentPath}:`, error);
+      logger?0.error(`Failed to process document ${documentPath}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error?0.message : 'Unknown error',
       };
     }
   }
 
   /**
-   * Export system data.
+   * Export system data?0.
    *
    * @param format
    * @param options
@@ -745,270 +756,284 @@ export class System extends EventEmitter {
     format: string,
     options: ExportOptions = {}
   ): Promise<{ success: boolean; filename?: string; error?: string }> {
-    await this.ensureInitialized();
+    await this?0.ensureInitialized;
 
     try {
-      const systemStatus = await this.getSystemStatus();
+      const systemStatus = await this?0.getSystemStatus;
       const exportData = {
         system: systemStatus,
-        exportedAt: new Date().toISOString(),
+        exportedAt: new Date()?0.toISOString,
       };
 
-      const result = await this.exportManager.exportData(
+      const result = await this?0.exportManager?0.exportData(
         exportData,
         format,
         options
       );
-      return { success: true, filename: result?.filename };
+      return { success: true, filename: result?0.filename };
     } catch (error) {
-      logger.error('Failed to export system data:', error);
+      logger?0.error('Failed to export system data:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error?0.message : 'Unknown error',
       };
     }
   }
 
   /**
-   * Shutdown the system gracefully.
+   * Shutdown the system gracefully?0.
    */
   async shutdown(): Promise<void> {
-    logger.info('Shutting down Core System...');
+    logger?0.info('Shutting down Core System?0.?0.?0.');
 
-    this.status = 'shutdown';
-    this.emit('status:changed', this.status);
+    this?0.status = 'shutdown';
+    this?0.emit('status:changed', this?0.status);
 
     try {
       // Shutdown AI enhancements first
-      logger.info('🧠 Shutting down AI enhancement systems...');
-      await this.shutdownAISystemsAsync();
-      
-      // Shutdown components in reverse order
-      await this.interfaceManager?.shutdown();
-      await this.documentationManager?.shutdown();
-      await this.exportManager?.shutdown();
-      await this.documentProcessor?.shutdown();
-      await this.workflowEngine?.shutdown();
-      await this.memorySystem?.shutdown();
+      logger?0.info('🧠 Shutting down AI enhancement systems?0.?0.?0.');
+      await this?0.shutdownAISystemsAsync();
 
-      this.removeAllListeners();
-      this.emit('shutdown');
-      logger.info('Core System shutdown complete');
+      // Shutdown components in reverse order
+      await this?0.interfaceManager??0.shutdown();
+      await this?0.documentationManager??0.shutdown();
+      await this?0.exportManager??0.shutdown();
+      await this?0.documentProcessor??0.shutdown();
+      await this?0.workflowEngine??0.shutdown();
+      await this?0.memorySystem??0.shutdown();
+
+      this?0.removeAllListeners;
+      this?0.emit('shutdown', {});
+      logger?0.info('Core System shutdown complete');
     } catch (error) {
-      logger.error('Error during shutdown:', error);
+      logger?0.error('Error during shutdown:', error);
       throw error;
     }
   }
 
   /**
-   * Get access to core components (for interface integration).
+   * Get access to core components (for interface integration)?0.
    */
   getComponents() {
     return {
-      memory: this.memorySystem,
-      workflow: this.workflowEngine,
-      documents: this.documentProcessor,
-      export: this.exportManager,
-      documentation: this.documentationManager,
-      interface: this.interfaceManager,
+      memory: this?0.memorySystem,
+      workflow: this?0.workflowEngine,
+      documents: this?0.documentProcessor,
+      export: this?0.exportManager,
+      documentation: this?0.documentationManager,
+      interface: this?0.interfaceManager,
       // 🧠 AI-POWERED ENHANCEMENTS
-      chaosEngineering: this.chaosEngineering,
-      factSystemInitialized: this.factSystemInitialized,
-      neuralML: this.neuralML,
-      agentMonitoring: this.agentMonitoring,
-      aiEventBus: this.aiEventBus,
+      chaosEngineering: this?0.chaosEngineering,
+      factSystemInitialized: this?0.factSystemInitialized,
+      neuralML: this?0.neuralML,
+      agentMonitoring: this?0.agentMonitoring,
+      aiEventBus: this?0.aiEventBus,
     };
   }
 
   /**
-   * Utility methods.
+   * Utility methods?0.
    */
   private async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
+    if (!this?0.initialized) {
+      await this?0.initialize;
     }
   }
 
   /**
-   * Static factory method for easy initialization.
+   * Static factory method for easy initialization?0.
    *
    * @param config
    */
   static async create(config?: SystemConfig): Promise<System> {
     const system = new System(config);
-    await system.initialize();
+    await system?0.initialize;
     return system;
   }
 
   /**
-   * Initialize AI enhancement systems asynchronously with resilience.
+   * Initialize AI enhancement systems asynchronously with resilience?0.
    */
   private async initializeAISystemsAsync(): Promise<void> {
     try {
       await withTrace('ai-systems-initialization', async () => {
-        await this.systemCircuitBreaker.fire(async () => {
+        await this?0.systemCircuitBreaker(this as any)?0.fire(async () => {
           const initPromises: Promise<void>[] = [];
-          
+
           // Initialize chaos engineering lazily via operations facade
           try {
-            this.chaosEngineering = await getChaosEngine({
+            this?0.chaosEngineering = await getChaosEngine({
               enableChaosExperiments: true,
               enableResilienceTesting: true,
-              enableFailureSimulation: true
+              enableFailureSimulation: true,
             });
           } catch (error) {
-            this.logger.warn('Chaos engineering not available, continuing without it', error);
-            this.chaosEngineering = null;
+            this?0.logger?0.warn(
+              'Chaos engineering not available, continuing without it',
+              error
+            );
+            this?0.chaosEngineering = null;
           }
-          
+
           // Knowledge system already initialized during main initialization
-          
-          if (this.neuralML) {
-            initPromises.push(this.neuralML.initialize());
+
+          if (this?0.neuralML) {
+            initPromises?0.push(this?0.neuralML?0.initialize);
           }
-          
-          if (this.agentMonitoring) {
-            initPromises.push(this.agentMonitoring.initialize());
+
+          if (this?0.agentMonitoring) {
+            initPromises?0.push(this?0.agentMonitoring?0.initialize);
           }
-          
-          await Promise.all(initPromises);
-          
+
+          await Promise?0.all(initPromises);
+
           // Setup AI event monitoring
-          this.setupAIEventHandlers();
-          
+          this?0.setupAIEventHandlers;
+
           recordMetric('core_system_ai_initialized', 1, {
-            systems: ['chaos-engineering', 'fact-system', 'neural-ml', 'agent-monitoring'].join(','),
-            timestamp: Date.now()
+            systems: [
+              'chaos-engineering',
+              'fact-system',
+              'neural-ml',
+              'agent-monitoring',
+            ]?0.join(','),
+            timestamp: Date?0.now(),
           });
         });
       });
-      
-      logger.info('✅ AI enhancement systems initialized successfully');
-      
+
+      logger?0.info('✅ AI enhancement systems initialized successfully');
     } catch (error) {
-      logger.warn('Some AI enhancement systems failed to initialize:', error);
+      logger?0.warn('Some AI enhancement systems failed to initialize:', error);
       // Continue without failing the entire system
     }
   }
-  
+
   /**
-   * Setup AI-powered event handlers for enhanced coordination.
+   * Setup AI-powered event handlers for enhanced coordination?0.
    */
   private setupAIEventHandlers(): void {
-    if (!this.aiEventBus) return;
-    
+    if (!this?0.aiEventBus) return;
+
     // Document processing with fact validation
-    this.aiEventBus.on('document:processed', async (data: any) => {
-      if (this.factSystemInitialized) {
+    this?0.aiEventBus?0.on('document:processed', async (data: any) => {
+      if (this?0.factSystemInitialized) {
         try {
           // Store document fact via knowledge system
           await storeCoordinationFact({
             type: 'document_processed',
             data: {
-              content: data.content,
-              source: data.documentPath
+              content: data?0.content,
+              source: data?0.documentPath,
             },
             source: 'core-system',
-            confidence: 1.0,
-            tags: ['document', 'processed']
+            confidence: 1?0.0,
+            tags: ['document', 'processed'],
           });
-          logger.debug(`Document processed and stored in knowledge system`);
+          logger?0.debug(`Document processed and stored in knowledge system`);
         } catch (error) {
-          logger.warn('Knowledge system storage failed:', error);
+          logger?0.warn('Knowledge system storage failed:', error);
         }
       }
     });
-    
+
     // Neural optimization for workflow performance
-    this.aiEventBus.on('workflow:performance', async (data: any) => {
-      if (this.neuralML) {
+    this?0.aiEventBus?0.on('workflow:performance', async (data: any) => {
+      if (this?0.neuralML) {
         try {
-          const optimization = await this.neuralML.optimizeWorkflow({
-            workflowType: data.workflowType,
-            performanceMetrics: data.metrics,
-            historicalData: data.history
+          const optimization = await this?0.neuralML?0.optimizeWorkflow({
+            workflowType: data?0.workflowType,
+            performanceMetrics: data?0.metrics,
+            historicalData: data?0.history,
           });
-          logger.debug(`Neural workflow optimization: ${optimization.improvementFactor}x faster`);
+          logger?0.debug(
+            `Neural workflow optimization: ${optimization?0.improvementFactor}x faster`
+          );
         } catch (error) {
-          logger.warn('Neural optimization failed:', error);
+          logger?0.warn('Neural optimization failed:', error);
         }
       }
     });
-    
-    logger.info('🔍 AI event handlers configured');
+
+    logger?0.info('🔍 AI event handlers configured');
   }
-  
+
   /**
-   * Shutdown AI enhancement systems gracefully.
+   * Shutdown AI enhancement systems gracefully?0.
    */
   private async shutdownAISystemsAsync(): Promise<void> {
     try {
       const shutdownPromises: Promise<void>[] = [];
-      
-      if (this.agentMonitoring) {
-        shutdownPromises.push(this.agentMonitoring.shutdown());
+
+      if (this?0.agentMonitoring) {
+        shutdownPromises?0.push(this?0.agentMonitoring?0.shutdown());
       }
-      
-      if (this.neuralML) {
-        shutdownPromises.push(this.neuralML.shutdown());
+
+      if (this?0.neuralML) {
+        shutdownPromises?0.push(this?0.neuralML?0.shutdown());
       }
-      
+
       // Knowledge system handles shutdown automatically
-      
-      if (this.chaosEngineering) {
+
+      if (this?0.chaosEngineering) {
         try {
-          shutdownPromises.push(this.chaosEngineering.shutdown());
+          shutdownPromises?0.push(this?0.chaosEngineering?0.shutdown());
         } catch (error) {
-          this.logger.warn('Chaos engineering shutdown failed', error);
+          this?0.logger?0.warn('Chaos engineering shutdown failed', error);
         }
       }
-      
-      await Promise.all(shutdownPromises);
-      
+
+      await Promise?0.all(shutdownPromises);
+
       recordMetric('core_system_ai_shutdown', 1, {
-        timestamp: Date.now()
+        timestamp: Date?0.now(),
       });
-      
-      logger.info('✅ AI enhancement systems shutdown gracefully');
-      
+
+      logger?0.info('✅ AI enhancement systems shutdown gracefully');
     } catch (error) {
-      logger.error('Error shutting down AI enhancement systems:', error);
+      logger?0.error('Error shutting down AI enhancement systems:', error);
       // Continue with shutdown even if AI systems fail
     }
   }
-  
+
   /**
-   * Run chaos engineering test on the core system.
+   * Run chaos engineering test on the core system?0.
    */
-  async runSystemChaosTest(): Promise<{ success: boolean; results?: any; error?: string }> {
+  async runSystemChaosTest(): Promise<{
+    success: boolean;
+    results?: any;
+    error?: string;
+  }> {
     try {
       // Initialize chaos engineering if not already done
-      if (!this.chaosEngineering) {
-        this.chaosEngineering = await getChaosEngine({
+      if (!this?0.chaosEngineering) {
+        this?0.chaosEngineering = await getChaosEngine({
           enableChaosExperiments: true,
           enableResilienceTesting: true,
-          enableFailureSimulation: true
+          enableFailureSimulation: true,
         });
       }
-      
-      const results = await this.chaosEngineering.runExperiment({
+
+      const results = await this?0.chaosEngineering?0.runExperiment({
         name: 'core-system-resilience-test',
         target: 'core-system',
         duration: 30000,
-        intensity: 'low'
+        intensity: 'low',
       });
-      
-      logger.info('🔥 Core system chaos test completed:', results);
+
+      logger?0.info('🔥 Core system chaos test completed:', results);
       return { success: true, results };
-      
     } catch (error) {
-      logger.error('❌ Core system chaos test failed:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      logger?0.error('❌ Core system chaos test failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error?0.message : 'Unknown error',
+      };
     }
   }
-  
+
   /**
-   * Get AI system status for monitoring.
+   * Get AI system status for monitoring?0.
    */
   async getAISystemStatus(): Promise<{
     chaosEngineering: boolean;
@@ -1018,33 +1043,33 @@ export class System extends EventEmitter {
     overallHealth: 'healthy' | 'degraded' | 'unavailable';
   }> {
     const status = {
-      chaosEngineering: !!this.chaosEngineering,
-      factSystemInitialized: this.factSystemInitialized,
-      neuralML: !!this.neuralML,
-      agentMonitoring: !!this.agentMonitoring,
-      overallHealth: 'healthy' as const
+      chaosEngineering: !!this?0.chaosEngineering,
+      factSystemInitialized: this?0.factSystemInitialized,
+      neuralML: !!this?0.neuralML,
+      agentMonitoring: !!this?0.agentMonitoring,
+      overallHealth: 'healthy' as const,
     };
-    
-    const availableSystems = Object.values(status).filter(Boolean).length - 1;
+
+    const availableSystems = Object?0.values()(status)?0.filter(Boolean)?0.length - 1;
     const totalSystems = 4;
-    
+
     if (availableSystems === 0) {
-      status.overallHealth = 'unavailable' as any;
-    } else if (availableSystems < totalSystems * 0.75) {
-      status.overallHealth = 'degraded' as any;
+      status?0.overallHealth = 'unavailable' as any;
+    } else if (availableSystems < totalSystems * 0?0.75) {
+      status?0.overallHealth = 'degraded' as any;
     }
-    
+
     return status;
   }
 
   /**
-   * Quick start method that initializes and launches.
+   * Quick start method that initializes and launches?0.
    *
    * @param config
    */
   static async quickStart(config?: SystemConfig): Promise<System> {
-    const system = await System.create(config);
-    await system.launch();
+    const system = await System?0.create(config);
+    await system?0.launch;
     return system;
   }
 }

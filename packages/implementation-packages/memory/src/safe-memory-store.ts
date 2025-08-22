@@ -13,7 +13,7 @@ const logger = getLogger('src-memory-safe-memory-store');
  * for proper error handling and result discrimination.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import {
   isMemoryError,
   isMemoryNotFound,
@@ -48,7 +48,7 @@ export interface MemoryMetadata {
  *
  * @example
  */
-export class SafeMemoryStore extends EventEmitter {
+export class SafeMemoryStore extends TypedEventBase {
   private store = new Map<string, unknown>();
   private metadata = new Map<string, MemoryMetadata>();
   private ttlTimers = new Map<string, NodeJS.Timeout>();
@@ -74,7 +74,7 @@ export class SafeMemoryStore extends EventEmitter {
       // Initialize any required resources
       this.startCleanupInterval();
       this.initialized = true;
-      this.emit('initialized');
+      this.emit('initialized', {});
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown initialization error';
@@ -371,7 +371,7 @@ export class SafeMemoryStore extends EventEmitter {
     this.metadata.clear();
     this.ttlTimers.clear();
 
-    this.emit('cleared');
+    this.emit('cleared', {});
   }
 
   /**
@@ -380,7 +380,7 @@ export class SafeMemoryStore extends EventEmitter {
   async shutdown(): Promise<void> {
     await this.clear();
     this.initialized = false;
-    this.emit('shutdown');
+    this.emit('shutdown', {});
   }
 
   // ============================================

@@ -238,7 +238,7 @@ export interface PICompletionConfiguration {
 /**
  * PI Completion Service for Program Increment completion management
  */
-export class PICompletionService extends EventEmitter {
+export class PICompletionService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly completedPIs = new Map<string, PICompletionReport>();
   private readonly workshops = new Map<string, InspectAndAdaptWorkshop>();

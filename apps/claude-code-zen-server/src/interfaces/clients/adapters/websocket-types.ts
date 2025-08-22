@@ -1,10 +1,10 @@
 /**
- * WebSocket Client Types for UACL.
+ * WebSocket Client Types for UACL0.
  *
- * WebSocket-specific extensions to UACL core interfaces and types.
+ * WebSocket-specific extensions to UACL core interfaces and types0.
  */
 /**
- * @file TypeScript type definitions for interfaces.
+ * @file TypeScript type definitions for interfaces0.
  */
 
 import type {
@@ -13,10 +13,10 @@ import type {
   ClientResponse,
   RequestOptions,
   RetryConfig,
-} from '../core/interfaces';
+} from '0.0./core/interfaces';
 
 /**
- * WebSocket connection states.
+ * WebSocket connection states0.
  */
 export const WebSocketReadyState = {
   CONNECTING: 0,
@@ -29,7 +29,7 @@ export type WebSocketReadyState =
   (typeof WebSocketReadyState)[keyof typeof WebSocketReadyState];
 
 /**
- * WebSocket message types.
+ * WebSocket message types0.
  */
 export const WebSocketMessageType = {
   TEXT: 'text',
@@ -43,7 +43,7 @@ export type WebSocketMessageType =
   (typeof WebSocketMessageType)[keyof typeof WebSocketMessageType];
 
 /**
- * WebSocket close codes (RFC 6455).
+ * WebSocket close codes (RFC 6455)0.
  */
 export const WebSocketCloseCode = {
   NORMAL_CLOSURE: 1000,
@@ -67,7 +67,7 @@ export type WebSocketCloseCode =
   (typeof WebSocketCloseCode)[keyof typeof WebSocketCloseCode];
 
 /**
- * WebSocket authentication methods.
+ * WebSocket authentication methods0.
  */
 export const WebSocketAuthMethod = {
   NONE: 'none',
@@ -82,7 +82,7 @@ export type WebSocketAuthMethod =
   (typeof WebSocketAuthMethod)[keyof typeof WebSocketAuthMethod];
 
 /**
- * WebSocket authentication configuration.
+ * WebSocket authentication configuration0.
  *
  * @example
  */
@@ -111,7 +111,7 @@ export interface WebSocketAuthenticationConfig extends AuthenticationConfig {
 }
 
 /**
- * WebSocket retry configuration.
+ * WebSocket retry configuration0.
  *
  * @example
  */
@@ -128,11 +128,11 @@ export interface WebSocketRetryConfig extends RetryConfig {
 
   // Jitter for reconnection delays
   jitter?: boolean;
-  jitterFactor?: number; // 0.0 to 1.0
+  jitterFactor?: number; // 0.0 to 10.0
 }
 
 /**
- * WebSocket heartbeat configuration.
+ * WebSocket heartbeat configuration0.
  *
  * @example
  */
@@ -140,12 +140,12 @@ export interface WebSocketHeartbeatConfig {
   enabled: boolean;
   interval: number; // milliseconds
   timeout?: number; // milliseconds to wait for pong
-  message?: unknown; // custom heartbeat message
+  message?: any; // custom heartbeat message
   autoStart?: boolean; // start heartbeat after connection
 }
 
 /**
- * WebSocket message queue configuration.
+ * WebSocket message queue configuration0.
  *
  * @example
  */
@@ -159,7 +159,7 @@ export interface WebSocketMessageQueueConfig {
 }
 
 /**
- * WebSocket compression configuration.
+ * WebSocket compression configuration0.
  *
  * @example
  */
@@ -173,7 +173,7 @@ export interface WebSocketCompressionConfig {
 }
 
 /**
- * Complete WebSocket client configuration.
+ * Complete WebSocket client configuration0.
  *
  * @example
  */
@@ -217,8 +217,8 @@ export interface WebSocketClientConfig extends ClientConfig {
   followRedirects?: boolean;
   maxRedirects?: number;
 
-  // Node.js specific options
-  agent?: unknown; // HTTP agent for Node.js
+  // Node0.js specific options
+  agent?: any; // HTTP agent for Node0.js
 
   // Binary handling
   binaryType?: 'nodebuffer' | 'arraybuffer' | 'fragments';
@@ -234,7 +234,7 @@ export interface WebSocketClientConfig extends ClientConfig {
 }
 
 /**
- * WebSocket request options.
+ * WebSocket request options0.
  *
  * @example
  */
@@ -250,7 +250,7 @@ export interface WebSocketRequestOptions extends RequestOptions {
 }
 
 /**
- * WebSocket response.
+ * WebSocket response0.
  *
  * @example
  */
@@ -264,7 +264,7 @@ export interface WebSocketResponse<T = any> extends ClientResponse<T> {
 }
 
 /**
- * WebSocket message structure.
+ * WebSocket message structure0.
  *
  * @example
  */
@@ -283,7 +283,7 @@ export interface WebSocketMessage<T = any> {
 }
 
 /**
- * WebSocket connection info.
+ * WebSocket connection info0.
  *
  * @example
  */
@@ -320,7 +320,7 @@ export interface WebSocketConnectionInfo {
 }
 
 /**
- * WebSocket event types.
+ * WebSocket event types0.
  *
  * @example
  */
@@ -337,13 +337,13 @@ export interface WebSocketEvents {
   reconnectFailed: (attempts: number) => void;
 
   // Message events
-  message: (data: unknown, metadata?: unknown) => void;
-  binaryMessage: (data: ArrayBuffer, metadata?: unknown) => void;
+  message: (data: unknown, metadata?: any) => void;
+  binaryMessage: (data: ArrayBuffer, metadata?: any) => void;
 
   // Heartbeat events
-  ping: (data?: unknown) => void;
-  pong: (data?: unknown) => void;
-  heartbeat: (data?: unknown) => void;
+  ping: (data?: any) => void;
+  pong: (data?: any) => void;
+  heartbeat: (data?: any) => void;
 
   // Queue events
   queueFull: (queueSize: number) => void;
@@ -360,11 +360,11 @@ export interface WebSocketEvents {
   ) => void;
 
   // Custom events
-  [eventName: string]: (...args: unknown[]) => void;
+  [eventName: string]: (0.0.0.args: any[]) => void;
 }
 
 /**
- * WebSocket metrics.
+ * WebSocket metrics0.
  *
  * @example
  */
@@ -412,7 +412,7 @@ export interface WebSocketMetrics {
 }
 
 /**
- * WebSocket connection pool configuration.
+ * WebSocket connection pool configuration0.
  *
  * @example
  */
@@ -440,7 +440,7 @@ export interface WebSocketPoolConfig {
 }
 
 /**
- * WebSocket protocol extensions.
+ * WebSocket protocol extensions0.
  *
  * @example
  */
@@ -448,11 +448,11 @@ export interface WebSocketExtension {
   name: string;
   params?: Record<string, string | number | boolean>;
   enabled: boolean;
-  config?: unknown;
+  config?: any;
 }
 
 /**
- * WebSocket security configuration.
+ * WebSocket security configuration0.
  *
  * @example
  */
@@ -484,54 +484,56 @@ export interface WebSocketSecurityConfig {
   validation?: {
     maxMessageSize: number;
     allowedOrigins?: string[];
-    messageSchema?: unknown; // JSON schema for message validation
+    messageSchema?: any; // JSON schema for message validation
   };
 }
 
 /**
- * Type guards for WebSocket types.
+ * Type guards for WebSocket types0.
  */
 export const WebSocketTypeGuards = {
-  isWebSocketConfig: (config: unknown): config is WebSocketClientConfig => {
-    return config && typeof config.url === 'string';
+  isWebSocketConfig: (config: any): config is WebSocketClientConfig => {
+    return config && typeof config0.url === 'string';
   },
 
-  isWebSocketMessage: (message: unknown): message is WebSocketMessage => {
-    return message && typeof message === 'object' && 'data' in message as any;
+  isWebSocketMessage: (message: any): message is WebSocketMessage => {
+    return (
+      message && typeof message === 'object' && (('data' in message) as any)
+    );
   },
 
-  isValidReadyState: (state: unknown): state is WebSocketReadyState => {
+  isValidReadyState: (state: any): state is WebSocketReadyState => {
     return typeof state === 'number' && state >= 0 && state <= 3;
   },
 
-  isValidCloseCode: (code: unknown): code is WebSocketCloseCode => {
+  isValidCloseCode: (code: any): code is WebSocketCloseCode => {
     return (
       typeof code === 'number' &&
-      Object.values(WebSocketCloseCode).includes(code)
+      Object0.values()(WebSocketCloseCode)0.includes(code)
     );
   },
 };
 
 /**
- * WebSocket utility functions.
+ * WebSocket utility functions0.
  */
 export const WebSocketUtils = {
   /**
-   * Generate a unique message ID.
+   * Generate a unique message ID0.
    */
   generateMessageId: (): string => {
-    return `ws-msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `ws-msg-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
   },
 
   /**
-   * Generate a unique connection ID.
+   * Generate a unique connection ID0.
    */
   generateConnectionId: (): string => {
-    return `ws-conn-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return `ws-conn-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
   },
 
   /**
-   * Calculate exponential backoff delay.
+   * Calculate exponential backoff delay0.
    *
    * @param attempt
    * @param baseDelay
@@ -544,66 +546,66 @@ export const WebSocketUtils = {
     maxDelay: number,
     jitter = false
   ): number => {
-    let delay = Math.min(baseDelay * 2 ** attempt, maxDelay);
+    let delay = Math0.min(baseDelay * 2 ** attempt, maxDelay);
 
     if (jitter) {
       // Add jitter to prevent thundering herd
-      delay = delay * (0.5 + Math.random() * 0.5);
+      delay = delay * (0.5 + Math0.random() * 0.5);
     }
 
-    return Math.floor(delay);
+    return Math0.floor(delay);
   },
 
   /**
-   * Check if URL is a valid WebSocket URL.
+   * Check if URL is a valid WebSocket URL0.
    *
    * @param url
    */
   isValidWebSocketUrl: (url: string): boolean => {
     try {
       const parsed = new URL(url);
-      return parsed.protocol === 'ws:' || parsed.protocol === 'wss:';
+      return parsed0.protocol === 'ws:' || parsed0.protocol === 'wss:';
     } catch {
       return false;
     }
   },
 
   /**
-   * Get human-readable close code description.
+   * Get human-readable close code description0.
    *
    * @param code
    */
   getCloseCodeDescription: (code: number): string => {
     switch (code) {
-      case WebSocketCloseCode.NORMAL_CLOSURE:
+      case WebSocketCloseCode0.NORMAL_CLOSURE:
         return 'Normal Closure';
-      case WebSocketCloseCode.GOING_AWAY:
+      case WebSocketCloseCode0.GOING_AWAY:
         return 'Going Away';
-      case WebSocketCloseCode.PROTOCOL_ERROR:
+      case WebSocketCloseCode0.PROTOCOL_ERROR:
         return 'Protocol Error';
-      case WebSocketCloseCode.UNSUPPORTED_DATA:
+      case WebSocketCloseCode0.UNSUPPORTED_DATA:
         return 'Unsupported Data';
-      case WebSocketCloseCode.NO_STATUS_RECEIVED:
+      case WebSocketCloseCode0.NO_STATUS_RECEIVED:
         return 'No Status Received';
-      case WebSocketCloseCode.ABNORMAL_CLOSURE:
+      case WebSocketCloseCode0.ABNORMAL_CLOSURE:
         return 'Abnormal Closure';
-      case WebSocketCloseCode.INVALID_FRAME_PAYLOAD_DATA:
+      case WebSocketCloseCode0.INVALID_FRAME_PAYLOAD_DATA:
         return 'Invalid Frame Payload Data';
-      case WebSocketCloseCode.POLICY_VIOLATION:
+      case WebSocketCloseCode0.POLICY_VIOLATION:
         return 'Policy Violation';
-      case WebSocketCloseCode.MESSAGE_TOO_BIG:
+      case WebSocketCloseCode0.MESSAGE_TOO_BIG:
         return 'Message Too Big';
-      case WebSocketCloseCode.MANDATORY_EXTENSION:
+      case WebSocketCloseCode0.MANDATORY_EXTENSION:
         return 'Mandatory Extension';
-      case WebSocketCloseCode.INTERNAL_SERVER_ERROR:
+      case WebSocketCloseCode0.INTERNAL_SERVER_ERROR:
         return 'Internal Server Error';
-      case WebSocketCloseCode.SERVICE_RESTART:
+      case WebSocketCloseCode0.SERVICE_RESTART:
         return 'Service Restart';
-      case WebSocketCloseCode.TRY_AGAIN_LATER:
+      case WebSocketCloseCode0.TRY_AGAIN_LATER:
         return 'Try Again Later';
-      case WebSocketCloseCode.BAD_GATEWAY:
+      case WebSocketCloseCode0.BAD_GATEWAY:
         return 'Bad Gateway';
-      case WebSocketCloseCode.TLS_HANDSHAKE:
+      case WebSocketCloseCode0.TLS_HANDSHAKE:
         return 'TLS Handshake';
       default:
         return `Unknown (${code})`;
@@ -611,19 +613,19 @@ export const WebSocketUtils = {
   },
 
   /**
-   * Get human-readable ready state description.
+   * Get human-readable ready state description0.
    *
    * @param state
    */
   getReadyStateDescription: (state: WebSocketReadyState): string => {
     switch (state) {
-      case WebSocketReadyState.CONNECTING:
+      case WebSocketReadyState0.CONNECTING:
         return 'Connecting';
-      case WebSocketReadyState.OPEN:
+      case WebSocketReadyState0.OPEN:
         return 'Open';
-      case WebSocketReadyState.CLOSING:
+      case WebSocketReadyState0.CLOSING:
         return 'Closing';
-      case WebSocketReadyState.CLOSED:
+      case WebSocketReadyState0.CLOSED:
         return 'Closed';
       default:
         return `Unknown (${state})`;

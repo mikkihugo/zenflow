@@ -60,7 +60,7 @@ import {
   getLogger,
   type Logger
 } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { JsonObject, JsonValue } from '@claude-zen/foundation/types';
 
 /**
@@ -100,7 +100,7 @@ export interface MigrationStats {
 /**
  * Base registry adapter providing common functionality
  */
-export abstract class BaseRegistryAdapter extends EventEmitter {
+export abstract class BaseRegistryAdapter extends TypedEventBase {
   protected readonly container: ReturnType<typeof createServiceContainer>;
   protected readonly logger: Logger;
   protected readonly options: Required<RegistryAdapterOptions>;

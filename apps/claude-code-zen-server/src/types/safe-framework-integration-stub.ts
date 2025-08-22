@@ -63,11 +63,14 @@ export class IntegrationBridge {
     // Stub implementation
   }
 
-  async createIntegration(type: string, config: any): Promise<IntegrationResult> {
+  async createIntegration(
+    type: string,
+    config: any
+  ): Promise<IntegrationResult> {
     // Stub implementation
     return {
       success: true,
-      integrationId: `integration-${Date.now()}`
+      integrationId: `integration-${Date0.now()}`,
     };
   }
 }
@@ -75,7 +78,7 @@ export class IntegrationBridge {
 export type {
   IntegrationBridgeConfig,
   SafeFrameworkIntegration,
-  IntegrationResult
+  IntegrationResult,
 };
 
 export { IntegrationBridge as default };

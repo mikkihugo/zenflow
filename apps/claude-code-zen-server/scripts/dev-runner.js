@@ -4,6 +4,7 @@ import { spawn } from 'child_process';
 import { createServer } from 'http';
 import { readFileSync, watch } from 'fs';
 import { join } from 'path';
+import path from 'path';
 import chalk from 'chalk';
 
 // LogTape syslog bridge - optional feature
@@ -333,9 +334,9 @@ function startFileWatcher() {
         }
         isCheckingTypes = false;
         debounceTimer = null;
-      }, 10000); // 10 second debounce for batch file operations
+      }, 120000); // 2 minute debounce for batch file operations
       
-      console.log(`${colors.magenta}⏱️ TypeScript check scheduled in 10 seconds... (batching file changes)${colors.reset}`);
+      console.log(`${colors.magenta}⏱️ TypeScript check scheduled in 2 minutes... (batching file changes)${colors.reset}`);
     }
   });
 }

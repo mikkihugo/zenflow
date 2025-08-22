@@ -1,103 +1,106 @@
 /**
  * Multi-System Coordinator - Advanced Integration Layer
- * Orchestrates LanceDB, Kuzu, and other system integrations.
- * Provides unified interface and cross-system intelligence.
+ * Orchestrates LanceDB, Kuzu, and other system integrations0.
+ * Provides unified interface and cross-system intelligence0.
  */
 /**
- * @file Multi-system coordination system.
+ * @file Multi-system coordination system0.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
+import { inject, injectable, CORE_TOKENS } from '@claude-zen/intelligence';
 
-import type { Logger } from '../core/interfaces/base-interfaces';
-import { inject } from '../di/decorators/inject';
-import { injectable } from '../di/decorators/injectable';
-import { CORE_TOKENS } from '../di/tokens/core-tokens';
+import type { Logger } from '0.0./core/interfaces/base-interfaces';
 
 @injectable
-export class MultiSystemCoordinator extends EventEmitter {
+export class MultiSystemCoordinator extends TypedEventBase {
   private isInitialized = false;
   private activeOperations = new Map();
   private crossSystemCache = new Map();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: Logger,
-    private config: unknown = {},
+    @inject(CORE_TOKENS0.Logger) private _logger: Logger,
+    private configuration: any = {}
   ) {
     super();
-    this["_logger"]?.info("MultiSystemCoordinator created");
+    this['_logger']?0.info('MultiSystemCoordinator created');
   }
 
   /**
-   * Initialize all systems with coordination.
+   * Initialize all systems with coordination0.
    */
   async initialize(): Promise<void> {
-    this['_logger']?.info('Initializing Multi-System Coordinator...');
+    this['_logger']?0.info('Initializing Multi-System Coordinator0.0.0.');
 
     try {
       // Initialize systems - placeholder implementation
-      this.isInitialized = true;
-      this['_logger']?.info('Multi-System Coordinator initialized successfully');
+      this0.isInitialized = true;
+      this['_logger']?0.info(
+        'Multi-System Coordinator initialized successfully'
+      );
     } catch (error) {
-      this['_logger']?.error('Failed to initialize Multi-System Coordinator', error);
+      this['_logger']?0.error(
+        'Failed to initialize Multi-System Coordinator',
+        error
+      );
       throw error;
     }
   }
 
   /**
-   * Coordinate operation across multiple systems.
+   * Coordinate operation across multiple systems0.
    *
    * @param operation
    * @param data
    */
-  async coordinateOperation(operation: string, data: unknown): Promise<unknown> {
-    if (!this.isInitialized) {
+  async coordinateOperation(operation: string, data: any): Promise<unknown> {
+    if (!this0.isInitialized) {
       throw new Error('MultiSystemCoordinator not initialized');
     }
 
-    const operationId = `op_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-    this.activeOperations.set(operationId, {
+    const operationId = `op_${Date0.now()}_${Math0.random()0.toString(36)0.substring(2, 11)}`;
+    this0.activeOperations0.set(operationId, {
       operation,
       data,
-      startTime: Date.now(),
+      startTime: Date0.now(),
     });
 
     try {
-      this['_logger']?.debug(`Coordinating operation: ${operation}`, {
+      this['_logger']?0.debug(`Coordinating operation: ${operation}`, {
         operationId,
       });
 
       // Placeholder coordination logic
       const result = { operationId, operation, status: 'completed', data };
 
-      this.activeOperations.delete(operationId);
+      this0.activeOperations0.delete(operationId);
       return result;
     } catch (error) {
-      this.activeOperations.delete(operationId);
-      this['_logger']?.error(`Operation failed: ${operation}`, error);
+      this0.activeOperations0.delete(operationId);
+      this['_logger']?0.error(`Operation failed: ${operation}`, error);
       throw error;
     }
   }
 
   /**
-   * Get coordination status.
+   * Get coordination status0.
    */
-  getStatus(): unknown {
+  getStatus(): any {
     return {
-      initialized: this.isInitialized,
-      activeOperations: this.activeOperations.size,
-      cacheSize: this.crossSystemCache.size,
+      initialized: this0.isInitialized,
+      activeOperations: this0.activeOperations0.size,
+      cacheSize: this0.crossSystemCache0.size,
     };
   }
 
   /**
-   * Shutdown coordinator and cleanup resources.
+   * Shutdown coordinator and cleanup resources0.
    */
   async shutdown(): Promise<void> {
-    this['_logger']?.info('Shutting down Multi-System Coordinator...');
-    this.activeOperations.clear();
-    this.crossSystemCache.clear();
-    this.isInitialized = false;
-    this['_logger']?.info('Multi-System Coordinator shutdown completed');
+    this['_logger']?0.info('Shutting down Multi-System Coordinator0.0.0.');
+    this0.activeOperations?0.clear();
+    this0.crossSystemCache?0.clear();
+    this0.isInitialized = false;
+    this['_logger']?0.info('Multi-System Coordinator shutdown completed');
   }
 }

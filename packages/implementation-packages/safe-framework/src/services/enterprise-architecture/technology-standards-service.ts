@@ -352,7 +352,7 @@ export interface ComplianceMitigationStrategy {
 /**
  * Technology Standards Service for enterprise technology standards management
  */
-export class TechnologyStandardsService extends EventEmitter {
+export class TechnologyStandardsService extends TypedEventBase {
   private readonly logger: Logger;
   private readonly standards = new Map<string, TechnologyStandard>();
   private knowledgeManager: any;

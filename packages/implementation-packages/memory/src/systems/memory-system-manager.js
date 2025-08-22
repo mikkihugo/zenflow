@@ -4,14 +4,14 @@
  * Provides a unified interface for managing complex memory systems with coordination,
  * optimization strategies, lifecycle management, and comprehensive monitoring.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric, withTrace, TelemetryManager, createCircuitBreaker } from '@claude-zen/foundation';
 import { MemoryCoordinationSystem } from '../coordinators/memory-coordination-system';
 import { MemoryOptimizationEngine } from '../strategies/memory-optimization-engine';
 import { DataLifecycleManager } from '../strategies/data-lifecycle-manager';
 import { PerformanceTuningStrategy } from '../strategies/performance-tuning-strategy';
 import { CacheEvictionStrategy } from '../strategies/cache-eviction-strategy';
-export class MemorySystemManager extends EventEmitter {
+export class MemorySystemManager extends TypedEventBase {
     logger;
     config;
     telemetry;

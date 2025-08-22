@@ -3,7 +3,7 @@
  * Advanced error recovery and fault tolerance mechanisms.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { BackendInterface } from '../core/memory-system';
 import { type MemoryError, MemoryErrorCode } from './memory-errors';
@@ -48,7 +48,7 @@ export interface RecoveryResult {
  *
  * @example
  */
-export class RecoveryStrategyManager extends EventEmitter {
+export class RecoveryStrategyManager extends TypedEventBase {
   private strategies = new Map<string, RecoveryStrategy>();
   private recoveryHistory: Array<{
     timestamp: number;

@@ -4,9 +4,9 @@
  * Manages data lifecycle across hot/warm/cold/archive stages with automatic
  * migration, intelligent promotion/demotion, and efficient cleanup.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric, TelemetryManager, withTrace } from '@claude-zen/foundation';
-export class DataLifecycleManager extends EventEmitter {
+export class DataLifecycleManager extends TypedEventBase {
     logger;
     config;
     telemetry;
@@ -35,14 +35,14 @@ export class DataLifecycleManager extends EventEmitter {
             await withTrace('data-lifecycle-init', async () => {
                 await this.telemetry.initialize();
                 // Start periodic migration and cleanup
-                if (this.config.enabled) {
+                if (this.configuration.enabled) {
                     this.startPeriodicMigration();
                     this.startPeriodicCleanup();
                 }
                 this.initialized = true;
                 this.logger.info('Data lifecycle manager initialized', {
-                    stages: Object.keys(this.config.stages),
-                    enabled: this.config.enabled
+                    stages: Object.keys(this.configuration.stages),
+                    enabled: this.configuration.enabled
                 });
                 recordMetric('data_lifecycle_initialized', 1);
             });
@@ -53,7 +53,7 @@ export class DataLifecycleManager extends EventEmitter {
         }
     }
     store(key, value, options = {}) {
-        if (!this.config.enabled) {
+        if (!this.configuration.enabled) {
             return;
         }
         const now = Date.now();
@@ -87,7 +87,7 @@ export class DataLifecycleManager extends EventEmitter {
         this.logger.debug(`Data stored in ${stage} stage: ${key}`);
     }
     retrieve(key) {
-        if (!this.config.enabled) {
+        if (!this.configuration.enabled) {
             return null;
         }
         const entry = this.entries.get(key);
@@ -105,14 +105,14 @@ export class DataLifecycleManager extends EventEmitter {
         // Update access tracking
         this.updateAccessTracking(entry);
         // Consider promoting to hotter stage if access frequency is high
-        if (this.config.migration.autoPromote) {
+        if (this.configuration.migration.autoPromote) {
             this.considerPromotion(entry);
         }
         recordMetric('data_lifecycle_retrieved', 1, { stage: entry.stage });
         return { value, entry };
     }
     delete(key) {
-        if (!this.config.enabled) {
+        if (!this.configuration.enabled) {
             return false;
         }
         const entry = this.entries.get(key);
@@ -144,7 +144,7 @@ export class DataLifecycleManager extends EventEmitter {
     canAccommodateInStage(stage, size) {
         if (stage === 'expired')
             return true;
-        const stageConfig = this.config.stages[stage];
+        const stageConfig = this.configuration.stages[stage];
         if (!stageConfig)
             return false;
         const currentSize = this.getStageSize(stage);
@@ -185,13 +185,13 @@ export class DataLifecycleManager extends EventEmitter {
         // Promotion rules based on access patterns
         if (entry.stage === 'warm' || entry.stage === 'cold') {
             const timeSinceLastAccess = now - entry.lastAccessed;
-            const hotThreshold = this.config.stages.hot.accessThreshold;
+            const hotThreshold = this.configuration.stages.hot.accessThreshold;
             if (entry.accessFrequency > hotThreshold && timeSinceLastAccess < 60000) { // Less than 1 minute
                 this.migrate(entry.key, 'hot', 'High access frequency');
             }
         }
         if (entry.stage === 'cold') {
-            const warmThreshold = this.config.stages.warm.accessThreshold;
+            const warmThreshold = this.configuration.stages.warm.accessThreshold;
             if (entry.accessFrequency > warmThreshold) {
                 this.migrate(entry.key, 'warm', 'Moderate access frequency');
             }
@@ -200,15 +200,15 @@ export class DataLifecycleManager extends EventEmitter {
     startPeriodicMigration() {
         this.migrationTimer = setInterval(() => {
             this.performPeriodicMigration();
-        }, this.config.migration.interval);
+        }, this.configuration.migration.interval);
     }
     startPeriodicCleanup() {
         this.cleanupTimer = setInterval(() => {
             this.performPeriodicCleanup();
-        }, this.config.cleanup.interval);
+        }, this.configuration.cleanup.interval);
     }
     async performPeriodicMigration() {
-        if (!this.config.enabled)
+        if (!this.configuration.enabled)
             return;
         try {
             await withTrace('data-lifecycle-migration', async () => {
@@ -216,7 +216,7 @@ export class DataLifecycleManager extends EventEmitter {
                 const entries = Array.from(this.entries.values());
                 let migrated = 0;
                 for (const entry of entries) {
-                    if (migrated >= this.config.migration.batchSize) {
+                    if (migrated >= this.configuration.migration.batchSize) {
                         break;
                     }
                     const migrationNeeded = this.assessMigrationNeed(entry, now);
@@ -242,7 +242,7 @@ export class DataLifecycleManager extends EventEmitter {
         const age = now - entry.createdAt;
         const timeSinceAccess = now - entry.lastAccessed;
         // Check if entry should be demoted
-        const stageConfig = this.config.stages[entry.stage];
+        const stageConfig = this.configuration.stages[entry.stage];
         if (!stageConfig)
             return false;
         // Demote if not accessed recently and exceeds stage duration
@@ -250,7 +250,7 @@ export class DataLifecycleManager extends EventEmitter {
             return true;
         }
         // Promote if access frequency is high for current stage
-        if (this.config.migration.autoPromote && entry.accessFrequency > stageConfig.accessThreshold * 2) {
+        if (this.configuration.migration.autoPromote && entry.accessFrequency > stageConfig.accessThreshold * 2) {
             return true;
         }
         return false;
@@ -259,9 +259,9 @@ export class DataLifecycleManager extends EventEmitter {
         const age = now - entry.createdAt;
         const timeSinceAccess = now - entry.lastAccessed;
         // Promotion logic (if auto-promote enabled)
-        if (this.config.migration.autoPromote) {
-            const hotThreshold = this.config.stages.hot.accessThreshold;
-            const warmThreshold = this.config.stages.warm.accessThreshold;
+        if (this.configuration.migration.autoPromote) {
+            const hotThreshold = this.configuration.stages.hot.accessThreshold;
+            const warmThreshold = this.configuration.stages.warm.accessThreshold;
             if (entry.accessFrequency > hotThreshold && timeSinceAccess < 300000) { // 5 minutes
                 return 'hot';
             }
@@ -271,25 +271,25 @@ export class DataLifecycleManager extends EventEmitter {
         }
         // Demotion logic
         if (entry.stage === 'hot') {
-            const hotDuration = this.config.stages.hot.duration;
+            const hotDuration = this.configuration.stages.hot.duration;
             if (timeSinceAccess > hotDuration || age > hotDuration * 2) {
                 return 'warm';
             }
         }
         if (entry.stage === 'warm') {
-            const warmDuration = this.config.stages.warm.duration;
+            const warmDuration = this.configuration.stages.warm.duration;
             if (timeSinceAccess > warmDuration || age > warmDuration * 2) {
                 return 'cold';
             }
         }
         if (entry.stage === 'cold') {
-            const coldDuration = this.config.stages.cold.duration;
+            const coldDuration = this.configuration.stages.cold.duration;
             if (timeSinceAccess > coldDuration || age > coldDuration * 2) {
-                return this.config.stages.archive.enabled ? 'archive' : 'expired';
+                return this.configuration.stages.archive.enabled ? 'archive' : 'expired';
             }
         }
         if (entry.stage === 'archive') {
-            const archiveDuration = this.config.stages.archive.duration;
+            const archiveDuration = this.configuration.stages.archive.duration;
             if (age > archiveDuration) {
                 return 'expired';
             }
@@ -316,7 +316,7 @@ export class DataLifecycleManager extends EventEmitter {
         this.stageData.get(currentStage)?.delete(key);
         // Handle archival compression
         let finalValue = currentValue;
-        if (targetStage === 'archive' && this.config.stages.archive.enabled) {
+        if (targetStage === 'archive' && this.configuration.stages.archive.enabled) {
             finalValue = this.compressValue(currentValue);
         }
         this.stageData.get(targetStage)?.set(key, finalValue);
@@ -386,7 +386,7 @@ export class DataLifecycleManager extends EventEmitter {
         }
     }
     async performPeriodicCleanup() {
-        if (!this.config.enabled)
+        if (!this.configuration.enabled)
             return;
         try {
             await withTrace('data-lifecycle-cleanup', async () => {
@@ -405,8 +405,8 @@ export class DataLifecycleManager extends EventEmitter {
                 for (const [key, entry] of this.entries) {
                     const age = now - entry.createdAt;
                     const timeSinceAccess = now - entry.lastAccessed;
-                    if (timeSinceAccess > this.config.cleanup.unusedDataThreshold ||
-                        age > this.config.cleanup.expiredDataThreshold) {
+                    if (timeSinceAccess > this.configuration.cleanup.unusedDataThreshold ||
+                        age > this.configuration.cleanup.expiredDataThreshold) {
                         this.delete(key);
                         cleaned++;
                     }
@@ -445,7 +445,7 @@ export class DataLifecycleManager extends EventEmitter {
     getStageUtilization(stage) {
         if (stage === 'expired')
             return 0;
-        const stageConfig = this.config.stages[stage];
+        const stageConfig = this.configuration.stages[stage];
         if (!stageConfig)
             return 0;
         const currentSize = this.getStageSize(stage);
@@ -475,7 +475,7 @@ export class DataLifecycleManager extends EventEmitter {
             if (this.migrationTimer) {
                 clearInterval(this.migrationTimer);
             }
-            if (this.config.enabled) {
+            if (this.configuration.enabled) {
                 this.startPeriodicMigration();
             }
         }
@@ -483,7 +483,7 @@ export class DataLifecycleManager extends EventEmitter {
             if (this.cleanupTimer) {
                 clearInterval(this.cleanupTimer);
             }
-            if (this.config.enabled) {
+            if (this.configuration.enabled) {
                 this.startPeriodicCleanup();
             }
         }

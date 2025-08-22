@@ -16,7 +16,7 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type {
   Logger,
   MemorySystem,
@@ -319,7 +319,7 @@ export interface ReviewFinding {
  * Coordinates system-level design and solution architecture through intelligent delegation
  * to specialized packages for architecture management, workflow orchestration, and compliance.
  */
-export class SystemSolutionArchitectureManager extends EventEmitter {
+export class SystemSolutionArchitectureManager extends TypedEventBase {
   private readonly logger: Logger;
   private readonly config: SystemSolutionArchConfig;
   private readonly memorySystem: MemorySystem;
@@ -365,18 +365,18 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
       // Delegate to Compliance Monitoring Service
       const { ComplianceMonitoringService } = await import('../services/system-solution/compliance-monitoring-service');
       this.complianceMonitoringService = new ComplianceMonitoringService(this.logger, {
-        enableContinuousMonitoring: this.config.enableComplianceMonitoring,
+        enableContinuousMonitoring: this.configuration.enableComplianceMonitoring,
         enableAutomatedRemediation: false,
         enableRealTimeAlerts: true,
-        monitoringInterval: this.config.complianceCheckInterval || 3600000
+        monitoringInterval: this.configuration.complianceCheckInterval || 3600000
       });
       await this.complianceMonitoringService.initialize();
 
       // Delegate to Architecture Review Management Service
       const { ArchitectureReviewManagementService } = await import('../services/system-solution/architecture-review-management-service');
       this.architectureReviewService = new ArchitectureReviewManagementService(this.logger, {
-        maxConcurrentReviews: this.config.maxConcurrentReviews,
-        defaultReviewTimeout: this.config.reviewTimeout || 480,
+        maxConcurrentReviews: this.configuration.maxConcurrentReviews,
+        defaultReviewTimeout: this.configuration.reviewTimeout || 480,
         enableAIAnalysis: true,
         enableAutomatedReviews: true
       });
@@ -466,7 +466,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
         reviewType,
         reviewerId,
         priority: 'medium' as const,
-        deadline: new Date(Date.now() + (this.config.reviewTimeout || 480) * 60000)
+        deadline: new Date(Date.now() + (this.configuration.reviewTimeout || 480) * 60000)
       };
 
       const review = await this.architectureReviewService.initiateArchitectureReview(
@@ -655,11 +655,11 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
 
   private getEnabledFeatures(): string[] {
     const features: string[] = [];
-    if (this.config.enableSystemDesignCoordination) features.push('SystemDesignCoordination');
-    if (this.config.enableSolutionArchitectWorkflow) features.push('SolutionArchitectWorkflow');
-    if (this.config.enableArchitectureReviews) features.push('ArchitectureReviews');
-    if (this.config.enableComplianceMonitoring) features.push('ComplianceMonitoring');
-    if (this.config.enablePerformanceTracking) features.push('PerformanceTracking');
+    if (this.configuration.enableSystemDesignCoordination) features.push('SystemDesignCoordination');
+    if (this.configuration.enableSolutionArchitectWorkflow) features.push('SolutionArchitectWorkflow');
+    if (this.configuration.enableArchitectureReviews) features.push('ArchitectureReviews');
+    if (this.configuration.enableComplianceMonitoring) features.push('ComplianceMonitoring');
+    if (this.configuration.enablePerformanceTracking) features.push('PerformanceTracking');
     return features;
   }
 }

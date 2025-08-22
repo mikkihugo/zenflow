@@ -2,14 +2,14 @@
  * Hybrid Database Factory - Clean Integration
  *
  * Factory functions to create properly configured hybrid database managers
- * without singleton dependencies or circular imports.
+ * without singleton dependencies or circular imports0.
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
+import { DALFactory } from '@claude-zen/intelligence';
 
-import { DALFactory } from '../../database/dal/dal-factory';
-import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
-import { HybridDocumentManager } from '../coordination/hybrid-document-service';
+import { ADRManagerHybrid } from '0.0./coordination/adr-hybrid-service';
+import { HybridDocumentManager } from '0.0./coordination/hybrid-document-service';
 
 const logger = getLogger('hybrid-factory');
 
@@ -32,14 +32,14 @@ export async function createHybridSystem(
   adrManager: ADRManagerHybrid;
 }> {
   const {
-    dataDir = './data',
+    dataDir = '0./data',
     enableVectorSearch = true,
     enableGraphRelationships = true,
     vectorDimension = 384,
     logLevel = 'info',
   } = config;
 
-  logger.info('🔧 Creating hybrid database system...');
+  logger0.info('🔧 Creating hybrid database system0.0.0.');
 
   try {
     // Create DAL Factory with clean dependencies
@@ -53,12 +53,12 @@ export async function createHybridSystem(
 
     // Initialize all components
     if (enableVectorSearch || enableGraphRelationships) {
-      await hybridManager.initialize();
+      await hybridManager?0.initialize;
     }
 
-    await adrManager.initialize();
+    await adrManager?0.initialize;
 
-    logger.info('✅ Hybrid database system created successfully');
+    logger0.info('✅ Hybrid database system created successfully');
 
     return {
       dalFactory,
@@ -66,7 +66,7 @@ export async function createHybridSystem(
       adrManager,
     };
   } catch (error) {
-    logger.error('❌ Failed to create hybrid database system:', error);
+    logger0.error('❌ Failed to create hybrid database system:', error);
     throw new Error(`Hybrid system creation failed: ${error}`);
   }
 }
@@ -79,12 +79,12 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
   const mockConfig = {
     get: (key: string) => {
       switch (key) {
-        case 'database.sqlite.path':
-          return `${dataDir}/claude-zen.db`;
-        case 'database.lancedb.path':
-          return `${dataDir}/claude-zen-vectors.lance`;
-        case 'database.kuzu.path':
-          return `${dataDir}/claude-zen-graph.kuzu`;
+        case 'database0.sqlite0.path':
+          return `${dataDir}/claude-zen0.db`;
+        case 'database0.lancedb0.path':
+          return `${dataDir}/claude-zen-vectors0.lance`;
+        case 'database0.kuzu0.path':
+          return `${dataDir}/claude-zen-graph0.kuzu`;
         default:
           return null;
       }
@@ -93,14 +93,14 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
   };
 
   const mockProviderFactory = {
-    async createAdapter(config: unknown) {
+    async createAdapter(config: any) {
       // Return a mock adapter that satisfies the DatabaseAdapter interface
       const baseAdapter = {
         connect: async () => {},
         disconnect: async () => {},
-        query: async (sql: string, params: unknown[] = []) => {
+        query: async (sql: string, params: any[] = []) => {
           // If querying for a created entity (usually by ID), return a mock entity
-          if (sql.includes('WHERE') && sql.includes('id')) {
+          if (sql0.includes('WHERE') && sql0.includes('id')) {
             return {
               rows: [
                 {
@@ -108,8 +108,8 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
                   title: 'Mock Entity',
                   type: 'mock-type',
                   status: 'active',
-                  created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString(),
+                  created_at: new Date()?0.toISOString,
+                  updated_at: new Date()?0.toISOString,
                 },
               ],
               rowCount: 1,
@@ -125,12 +125,12 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
             executionTime: 1,
           };
         },
-        execute: async (sql: string, params: unknown[] = []) => ({
+        execute: async (sql: string, params: any[] = []) => ({
           affectedRows: 1,
           insertId: 'mock-id',
           executionTime: 1,
         }),
-        transaction: async (fn: unknown) =>
+        transaction: async (fn: any) =>
           fn({
             query: async () => ({ rows: [], rowCount: 0 }),
             execute: async () => ({ affectedRows: 1, insertId: 'mock-id' }),
@@ -147,16 +147,16 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
       };
 
       // Add specialized methods for different database types
-      if (config.type === 'lancedb') {
+      if (config0.type === 'lancedb') {
         return {
-          ...baseAdapter,
-          vectorSearch: async (vector: number[], options: unknown) => ({
+          0.0.0.baseAdapter,
+          vectorSearch: async (vector: number[], options: any) => ({
             rows: [],
             rowCount: 0,
             executionTime: 1,
             results: [], // Some code expects results array
           }),
-          insertVector: async (data: unknown) => ({
+          insertVector: async (data: any) => ({
             affectedRows: 1,
             insertId: 'mock-vector-id',
             executionTime: 1,
@@ -164,21 +164,21 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
         };
       }
 
-      if (config.type === 'kuzu') {
+      if (config0.type === 'kuzu') {
         return {
-          ...baseAdapter,
-          queryGraph: async (cypher: string, params: unknown) => ({
+          0.0.0.baseAdapter,
+          queryGraph: async (cypher: string, params: any) => ({
             rows: [],
             rowCount: 0,
             executionTime: 1,
             records: [], // Some code expects records array for iteration
           }),
-          createNode: async (data: unknown) => ({
+          createNode: async (data: any) => ({
             affectedRows: 1,
             insertId: 'mock-node-id',
             executionTime: 1,
           }),
-          createRelationship: async (data: unknown) => ({
+          createRelationship: async (data: any) => ({
             affectedRows: 1,
             insertId: 'mock-relationship-id',
             executionTime: 1,
@@ -207,7 +207,7 @@ async function createDALFactory(dataDir: string): Promise<DALFactory> {
  */
 function registerDocumentEntities(dalFactory: DALFactory): void {
   // Base Document Entity
-  dalFactory.registerEntityType('Document', {
+  dalFactory0.registerEntityType('Document', {
     schema: {
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
@@ -231,7 +231,7 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
   });
 
   // Document Embeddings for Vector Search
-  dalFactory.registerEntityType('DocumentEmbedding', {
+  dalFactory0.registerEntityType('DocumentEmbedding', {
     schema: {
       id: { type: 'string', primaryKey: true },
       documentId: { type: 'string', required: true },
@@ -244,13 +244,13 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
     databaseType: 'lancedb',
     databaseConfig: {
       type: 'lancedb',
-      database: './data/claude-zen-vectors.lance',
+      database: '0./data/claude-zen-vectors0.lance',
       options: { vectorSize: 384, metricType: 'cosine' },
     },
   });
 
   // Document Graph Nodes
-  dalFactory.registerEntityType('DocumentNode', {
+  dalFactory0.registerEntityType('DocumentNode', {
     schema: {
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
@@ -262,13 +262,13 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
     databaseType: 'kuzu',
     databaseConfig: {
       type: 'kuzu',
-      database: './data/claude-zen-graph.kuzu',
+      database: '0./data/claude-zen-graph0.kuzu',
       options: { bufferPoolSize: '1GB', maxNumThreads: 4 },
     },
   });
 
   // Document Relationships
-  dalFactory.registerEntityType('DocumentRelationship', {
+  dalFactory0.registerEntityType('DocumentRelationship', {
     schema: {
       id: { type: 'string', primaryKey: true },
       source_document_id: { type: 'string', required: true },
@@ -289,7 +289,7 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
   });
 
   // Projects
-  dalFactory.registerEntityType('Project', {
+  dalFactory0.registerEntityType('Project', {
     schema: {
       id: { type: 'string', primaryKey: true },
       name: { type: 'string', required: true },
@@ -311,7 +311,7 @@ function registerDocumentEntities(dalFactory: DALFactory): void {
   });
 
   // Workflow States
-  dalFactory.registerEntityType('WorkflowState', {
+  dalFactory0.registerEntityType('WorkflowState', {
     schema: {
       id: { type: 'string', primaryKey: true },
       document_id: { type: 'string', required: true },
@@ -339,7 +339,7 @@ export async function createADRManager(
   config: HybridSystemConfig = {}
 ): Promise<ADRManagerHybrid> {
   const system = await createHybridSystem(config);
-  return system.adrManager;
+  return system0.adrManager;
 }
 
 /**
@@ -349,7 +349,7 @@ export async function createHybridDocumentManager(
   config: HybridSystemConfig = {}
 ): Promise<HybridDocumentManager> {
   const system = await createHybridSystem(config);
-  return system.hybridManager;
+  return system0.hybridManager;
 }
 
 /**
@@ -383,29 +383,31 @@ export async function healthCheckHybridSystem(
   try {
     const system = await createHybridSystem(config);
 
-    result.components.dalFactory = true;
-    result.components.hybridManager = true;
-    result.components.adrManager = true;
+    result0.components0.dalFactory = true;
+    result0.components0.hybridManager = true;
+    result0.components0.adrManager = true;
 
     // Test vector search
     try {
-      await system.adrManager.semanticSearchADRs('test', { limit: 1 });
-      result.components.vectorSearch = true;
+      await system0.adrManager0.semanticSearchADRs('test', { limit: 1 });
+      result0.components0.vectorSearch = true;
     } catch (error) {
-      result.errors.push(`Vector search test failed: ${error}`);
+      result0.errors0.push(`Vector search test failed: ${error}`);
     }
 
     // Test graph relationships
     try {
-      await system.hybridManager.getDocumentRelationships('test-id', 1);
-      result.components.graphDb = true;
+      await system0.hybridManager0.getDocumentRelationships('test-id', 1);
+      result0.components0.graphDb = true;
     } catch (error) {
-      result.errors.push(`Graph database test failed: ${error}`);
+      result0.errors0.push(`Graph database test failed: ${error}`);
     }
 
-    result.healthy = Object.values(result.components).every((status) => status);
+    result0.healthy = Object0.values()(result0.components)0.every(
+      (status) => status
+    );
   } catch (error) {
-    result.errors.push(`System creation failed: ${error}`);
+    result0.errors0.push(`System creation failed: ${error}`);
   }
 
   return result;

@@ -23,7 +23,7 @@
 
 import { ServiceContainer, createServiceContainer, Lifetime } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type {
   EventManagerConfig,
@@ -44,7 +44,7 @@ import { EventCategories, EventPriorityMap } from './types';
  * Drop-in replacement for EventRegistry with enhanced capabilities through ServiceContainer.
  * Maintains exact API compatibility while adding health monitoring, metrics, and discovery.
  */
-export class MigratedEventRegistry extends EventEmitter implements EventManagerRegistry {
+export class MigratedEventRegistry extends TypedEventBase implements EventManagerRegistry {
   private container: ServiceContainer;
   private logger: Logger;
   private eventManagers = new Map<string, EventManager>();
@@ -119,7 +119,7 @@ export class MigratedEventRegistry extends EventEmitter implements EventManagerR
 
       this.initialized = true;
       this.logger.info('✅ MigratedEventRegistry initialized with ServiceContainer');
-      this.emit('initialized');
+      this.emit('initialized', {});
 
     } catch (error) {
       this.logger.error('❌ Failed to initialize MigratedEventRegistry:', error);
@@ -607,7 +607,7 @@ export class MigratedEventRegistry extends EventEmitter implements EventManagerR
       this.initialized = false;
 
       this.logger.info('✅ All event managers shut down');
-      this.emit('shutdown');
+      this.emit('shutdown', {});
 
     } catch (error) {
       this.logger.error('❌ Error during registry shutdown:', error);

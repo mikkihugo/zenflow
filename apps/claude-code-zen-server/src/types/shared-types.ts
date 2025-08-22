@@ -1,15 +1,15 @@
 /**
- * Shared Types Module.
+ * Shared Types Module0.
  *
  * Contains interfaces and types that are shared across multiple domains
- * to prevent circular dependencies and maintain clean architecture.
+ * to prevent circular dependencies and maintain clean architecture0.
  */
 
 // ============================================
 // Core Swarm Types (moved from coordination)
 // ============================================
 /**
- * @file TypeScript type definitions.
+ * @file TypeScript type definitions0.
  */
 
 export interface ZenSwarm {
@@ -94,7 +94,7 @@ export type CoordinationStrategy = 'parallel' | 'sequential' | 'adaptive';
 
 export interface MemoryEntry {
   key: string;
-  value: unknown;
+  value: any;
   timestamp: Date;
   ttl?: number;
   metadata?: Record<string, unknown>;
@@ -102,7 +102,7 @@ export interface MemoryEntry {
 
 export interface StorageProvider {
   get(key: string): Promise<unknown>;
-  set(key: string, value: unknown, ttl?: number): Promise<void>;
+  set(key: string, value: any, ttl?: number): Promise<void>;
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   keys(): Promise<string[]>;
@@ -127,7 +127,7 @@ export interface Message {
   from: string;
   to: string;
   type: string;
-  payload: unknown;
+  payload: any;
   timestamp: Date;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
 }
@@ -151,7 +151,7 @@ export type TaskType =
 
 export interface ComponentConfig {
   enabled: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface SystemHealth {
@@ -239,7 +239,7 @@ export interface ModelMetadata {
   learningRate: number;
   epochs: number;
   batchSize: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // ============================================
@@ -260,12 +260,12 @@ export interface APIResponse<T = any> {
 export interface APIError {
   code: string;
   message: string;
-  details?: unknown;
+  details?: any;
   stack?: string;
 }
 
 // ============================================
-// Utility Types.
+// Utility Types0.
 // ============================================
 
 export type DeepPartial<T> = {
@@ -289,15 +289,15 @@ export interface CoordinationProvider {
 }
 
 export interface MemoryProvider {
-  store(key: string, value: unknown, ttl?: number): Promise<void>;
+  store(key: string, value: any, ttl?: number): Promise<void>;
   retrieve(key: string): Promise<unknown>;
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
 }
 
 export interface LoggingProvider {
-  debug(message: string, ...args: unknown[]): void;
-  info(message: string, ...args: unknown[]): void;
-  warn(message: string, ...args: unknown[]): void;
-  error(message: string, ...args: unknown[]): void;
+  debug(message: string, 0.0.0.args: any[]): void;
+  info(message: string, 0.0.0.args: any[]): void;
+  warn(message: string, 0.0.0.args: any[]): void;
+  error(message: string, 0.0.0.args: any[]): void;
 }

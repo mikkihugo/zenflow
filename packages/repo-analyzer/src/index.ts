@@ -38,9 +38,10 @@ export type {
   ComplexityMetrics,
   DependencyMetrics,
   GitMetrics,
-  WorkspaceInfo,
   ExportFormat
 } from './types/index.js';
+
+export { RepositoryAnalyzer } from './repository-analyzer.js';
 
 /**
  * Quick analysis function for simple use cases
@@ -49,6 +50,7 @@ export async function analyzeRepository(
   repositoryPath: string, 
   options?: import('./types/index.js').AnalysisOptions
 ): Promise<import('./types/index.js').AnalysisResult> {
+  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
   const analyzer = new RepositoryAnalyzer(repositoryPath);
   return analyzer.analyze(options);
 }
@@ -64,6 +66,7 @@ export async function getRepositoryHealthScore(
   breakdown: Record<string, number>;
   criticalIssues: string[];
 }> {
+  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
   const analyzer = new RepositoryAnalyzer(repositoryPath);
   return analyzer.getHealthScore(options);
 }
@@ -71,7 +74,8 @@ export async function getRepositoryHealthScore(
 /**
  * Factory function for creating repository analyzer
  */
-export function createRepositoryAnalyzer(repositoryPath: string): RepositoryAnalyzer {
+export async function createRepositoryAnalyzer(repositoryPath: string): Promise<import('./repository-analyzer.js').RepositoryAnalyzer> {
+  const { RepositoryAnalyzer } = await import('./repository-analyzer.js');
   return new RepositoryAnalyzer(repositoryPath);
 }
 

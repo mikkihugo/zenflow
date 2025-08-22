@@ -405,6 +405,126 @@ export interface Auditable {
 }
 
 // =============================================================================
+// COORDINATION PATTERNS - System coordination and health
+// =============================================================================
+
+/**
+ * Coordination request for system operations
+ */
+export interface CoordinationRequest {
+  /** Unique identifier for this request */
+  id: UUID;
+  /** Type of coordination operation */
+  operation: string;
+  /** Request parameters */
+  params?: Record<string, unknown>;
+  /** Request priority */
+  priority?: 'low' | 'normal' | 'high' | 'critical';
+  /** Request timeout in milliseconds */
+  timeout?: number;
+  /** Request metadata */
+  metadata?: Record<string, unknown>;
+  /** When the request was created */
+  createdAt: Timestamp;
+}
+
+/**
+ * Coordination response for system operations
+ */
+export interface CoordinationResponse<T = unknown> {
+  /** ID of the original request */
+  requestId: UUID;
+  /** Whether the operation succeeded */
+  success: boolean;
+  /** Response data (present if success is true) */
+  data?: T;
+  /** Error information (present if success is false) */
+  error?: {
+    code: string;
+    message: string;
+    details?: Record<string, unknown>;
+  };
+  /** Response metadata */
+  metadata?: Record<string, unknown>;
+  /** When the response was created */
+  completedAt: Timestamp;
+  /** How long the operation took */
+  duration: number;
+}
+
+/**
+ * Basic lifecycle interface for system components
+ */
+export interface Lifecycle {
+  /** Initialize the component */
+  initialize(): Promise<void>;
+  /** Start the component */
+  start(): Promise<void>;
+  /** Stop the component */
+  stop(): Promise<void>;
+  /** Check if the component is running */
+  isRunning(): boolean;
+}
+
+/**
+ * System health status information
+ */
+export interface SystemHealth {
+  /** Overall system status */
+  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+  /** Overall health score (0-100) */
+  score: number;
+  /** Individual component health checks */
+  components: Record<string, ComponentHealth>;
+  /** System-wide metrics */
+  metrics: {
+    uptime: number;
+    memory: {
+      used: number;
+      total: number;
+      percentage: number;
+    };
+    cpu: {
+      percentage: number;
+      loadAverage: number[];
+    };
+    disk: {
+      used: number;
+      total: number;
+      percentage: number;
+    };
+  };
+  /** When health check was performed */
+  timestamp: Timestamp;
+  /** Health check duration */
+  checkDuration: number;
+}
+
+/**
+ * Individual component health information
+ */
+export interface ComponentHealth {
+  /** Component status */
+  status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
+  /** Component health score (0-100) */
+  score: number;
+  /** Component-specific metrics */
+  metrics?: Record<string, unknown>;
+  /** Last successful check */
+  lastSuccess?: Timestamp;
+  /** Last failure */
+  lastFailure?: Timestamp;
+  /** Error details if unhealthy */
+  error?: {
+    message: string;
+    code?: string;
+    details?: Record<string, unknown>;
+  };
+  /** Response time in milliseconds */
+  responseTime?: number;
+}
+
+// =============================================================================
 // UTILITY HELPER FUNCTIONS
 // =============================================================================
 

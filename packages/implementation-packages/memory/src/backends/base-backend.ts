@@ -8,7 +8,7 @@
  * @file Memory management: base-backend.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemoryConfig } from '../types';
 import type { JSONValue } from '../core/memory-system';
 
@@ -59,14 +59,14 @@ export interface MemoryStats {
   modified: number;
 }
 
-export abstract class BaseMemoryBackend extends EventEmitter {
-  protected config: MemoryConfig;
+export abstract class BaseMemoryBackend extends TypedEventBase {
+  protected memoryConfig: MemoryConfig;
   protected isInitialized: boolean = false;
   protected stats: MemoryStats;
 
   constructor(config: MemoryConfig) {
     super();
-    this.config = config;
+    this.memoryConfig = config;
     this.stats = {
       totalEntries: 0,
       totalSize: 0,
@@ -98,7 +98,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
     if (!this.isInitialized) {
       await this.initialize();
       this.isInitialized = true;
-      this.emit('initialized');
+      this.emit('initialized', { timestamp: new Date() });
     }
   }
 
@@ -112,7 +112,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   }
 
   public getConfig(): MemoryConfig {
-    return { ...this.config };
+    return { ...this.memoryConfig };
   }
 
   public isReady(): boolean {

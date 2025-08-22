@@ -5,7 +5,7 @@
  * automatic recovery detection, and comprehensive health reporting.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   recordMetric, 
@@ -51,7 +51,7 @@ interface HealthStats {
   recoveringNodes: number;
 }
 
-export class MemoryHealthMonitor extends EventEmitter {
+export class MemoryHealthMonitor extends TypedEventBase {
   private logger: Logger;
   private config: HealthCheckConfig;
   private nodes = new Map<string, MemoryNode>();

@@ -7,7 +7,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Operations facade provides performance tracking and telemetry
 // Operations facade would provide recordMetric, withTrace when needed
@@ -74,18 +74,18 @@ export interface EnhancedDeceptionResult {
  * behavioral intelligence, and cognitive pattern analysis for comprehensive
  * AI safety monitoring.
  */
-export class NeuralSafetyBridge extends EventEmitter {
+export class NeuralSafetyBridge extends TypedEventBase {
   private logger = getLogger('neural-safety-bridge');
   private aiDeceptionDetector: any; // AIDeceptionDetector
   private neuralDeceptionDetector: any; // NeuralDeceptionDetector
   private neuralBridge!: NeuralBridge; // Initialized in initialize()
   private behavioralIntelligence!: BehavioralIntelligence; // Initialized in initialize()
-  private config: NeuralSafetyConfig;
+  private neuralSafetyConfig: NeuralSafetyConfig;
   private isInitialized = false;
 
   constructor(config: NeuralSafetyConfig) {
     super();
-    this.config = config;
+    this.neuralSafetyConfig = config;
     this.aiDeceptionDetector = new AIDeceptionDetector();
     this.neuralDeceptionDetector = new NeuralDeceptionDetector();
     
@@ -118,15 +118,15 @@ export class NeuralSafetyBridge extends EventEmitter {
       // await this.behavioralIntelligence.initialize();
 
       // Set up real-time monitoring if enabled
-      if (this.config.realTimeMonitoring) {
+      if (this.neuralSafetyConfig.realTimeMonitoring) {
         this.setupRealTimeMonitoring();
       }
 
       this.isInitialized = true;
       
       this.logger.info('Neural Safety Bridge initialized with metrics', {
-        enhancedDetection: this.config.enhancedDetection.toString(),
-        behavioralLearning: this.config.behavioralLearning.toString()
+        enhancedDetection: this.neuralSafetyConfig.enhancedDetection.toString(),
+        behavioralLearning: this.neuralSafetyConfig.behavioralLearning.toString()
       });
 
       this.logger.info('✅ Neural Safety Bridge initialized with brain system integration');
@@ -410,7 +410,7 @@ export class NeuralSafetyBridge extends EventEmitter {
       reasoning.push(`Neural patterns: ${neuralPatterns.join(', ')}`);
     }
 
-    const isDeceptive = deceptionIndicators >= 2 || combinedConfidence > this.config.interventionThreshold;
+    const isDeceptive = deceptionIndicators >= 2 || combinedConfidence > this.neuralSafetyConfig.interventionThreshold;
     const interventionRequired = deceptionIndicators >= 3 || 
                                  behavioralAnalysis.riskLevel === 'CRITICAL' ||
                                  standardDetection.some(a => a.severity === 'CRITICAL');

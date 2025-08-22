@@ -11,7 +11,7 @@
  * @file Interface implementation: communication-event-factory.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 import type {
   EventManagerMetrics,
@@ -36,7 +36,7 @@ import {
  * @example
  */
 export class CommunicationEventFactory
-  extends EventEmitter
+  extends TypedEventBase
   implements EventManagerFactory<CommunicationEventAdapterConfig>
 {
   private adapters = new Map<string, CommunicationEventAdapter>();
@@ -437,7 +437,7 @@ export class CommunicationEventFactory
       this.removeAllListeners();
 
       this.logger.info('Communication Event Factory shutdown completed');
-      this.emit('factory-shutdown');
+      this.emit('factory-shutdown', {});
     } catch (error) {
       this.logger.error(
         'Failed to shutdown Communication Event Factory:',

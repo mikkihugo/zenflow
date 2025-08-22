@@ -136,7 +136,7 @@ export interface BootstrapMLResult {
  * for more effective few-shot learning and bootstrapping.
  */
 export class BootstrapML extends Teleprompter {
-  private eventEmitter: EventEmitter = new EventEmitter();
+  private eventEmitter: EventEmitter = new TypedEventBase();
   private config: BootstrapMLConfig;
   private logger: Logger;
   private mlEngine: MLEngine | null = null;

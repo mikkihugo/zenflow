@@ -1,16 +1,16 @@
 /**
- * Product Flow Entities - Clean Naming and Proper SPARC Integration.
+ * Product Flow Entities - Clean Naming and Proper SPARC Integration0.
  *
- * MISSION ACCOMPLISHED: Renamed from document-entities.ts to product-entities.ts
+ * MISSION ACCOMPLISHED: Renamed from document-entities0.ts to product-entities0.ts
  * - Clean Product Flow naming throughout (no generic "document" terminology)
  * - Proper SPARC integration in Features and Tasks
- * - Clear separation: Product Flow = WHAT, SPARC = HOW.
+ * - Clear separation: Product Flow = WHAT, SPARC = HOW0.
  */
 /**
- * @file Database layer: product-entities.
+ * @file Database layer: product-entities0.
  */
 
-import type { DocumentType } from '../types/workflow-types';
+import type { DocumentType } from '@claude-zen/enterprise';
 
 // Additional entities for compatibility with tests
 export interface ProjectEntity {
@@ -60,7 +60,7 @@ export interface DocumentRelationshipEntity {
 }
 
 /**
- * Base entity for all Product Flow documents.
+ * Base entity for all Product Flow documents0.
  *
  * @example
  */
@@ -100,12 +100,12 @@ export interface BaseProductEntity {
 }
 
 /**
- * Vision Document Entity.
- * Strategic vision and high-level goals.
+ * Vision Document Entity0.
+ * Strategic vision and high-level goals0.
  *
  * @example
  */
-export interface VisionDocumentEntity extends BaseProductEntity {
+export interface any extends BaseProductEntity {
   type: 'vision';
 
   // Vision-specific fields
@@ -128,12 +128,12 @@ export interface VisionDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Architecture Decision Record Entity.
- * Technical decisions and rationale.
+ * Architecture Decision Record Entity0.
+ * Technical decisions and rationale0.
  *
  * @example
  */
-export interface ADRDocumentEntity extends BaseProductEntity {
+export interface any extends BaseProductEntity {
   type: 'adr';
 
   // ADR-specific fields
@@ -151,12 +151,12 @@ export interface ADRDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Product Requirements Document Entity.
- * Detailed feature specifications.
+ * Product Requirements Document Entity0.
+ * Detailed feature specifications0.
  *
  * @example
  */
-export interface PRDDocumentEntity extends BaseProductEntity {
+export interface any extends BaseProductEntity {
   type: 'prd';
 
   // PRD-specific fields
@@ -194,12 +194,12 @@ export interface PRDDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Epic Document Entity.
- * Large feature groupings.
+ * Epic Document Entity0.
+ * Large feature groupings0.
  *
  * @example
  */
-export interface EpicDocumentEntity extends BaseProductEntity {
+export interface any extends BaseProductEntity {
   type: 'epic';
 
   // Epic-specific fields
@@ -228,11 +228,11 @@ export interface EpicDocumentEntity extends BaseProductEntity {
 
 /**
  * Feature Document Entity - ENHANCED with PROPER SPARC NTEGRATION
- * Individual implementable features with SPARC methodology as implementation tool.
+ * Individual implementable features with SPARC methodology as implementation tool0.
  *
  * @example
  */
-export interface FeatureDocumentEntity extends BaseProductEntity {
+export interface any extends BaseProductEntity {
   type: 'feature';
 
   // Feature-specific fields (Business Requirements - WHAT to build)
@@ -245,8 +245,8 @@ export interface FeatureDocumentEntity extends BaseProductEntity {
       method: string;
       path: string;
       description: string;
-      parameters?: unknown;
-      responses?: unknown;
+      parameters?: any;
+      responses?: any;
     }>;
   };
 
@@ -338,11 +338,11 @@ export interface FeatureDocumentEntity extends BaseProductEntity {
 
 /**
  * Task Document Entity - ENHANCED with PROPER SPARC NTEGRATION
- * Granular implementation tasks with SPARC methodology details.
+ * Granular implementation tasks with SPARC methodology details0.
  *
  * @example
  */
-export interface TaskDocumentEntity extends BaseProductEntity {
+export interface any extends BaseProductEntity {
   type: 'task';
 
   // Task-specific fields (Business Requirements - WHAT to implement)
@@ -447,8 +447,8 @@ export interface TaskDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Product Flow Relationship Entity.
- * Tracks relationships between Product Flow documents.
+ * Product Flow Relationship Entity0.
+ * Tracks relationships between Product Flow documents0.
  *
  * @example
  */
@@ -468,8 +468,8 @@ export interface ProductRelationshipEntity {
 }
 
 /**
- * Product Workflow State Entity.
- * Tracks Product Flow workflow progression.
+ * Product Workflow State Entity0.
+ * Tracks Product Flow workflow progression0.
  *
  * @example
  */
@@ -506,7 +506,7 @@ export interface ProductWorkflowStateEntity {
 
 /**
  * Product Project Entity - ENHANCED with COMPREHENSIVE SPARC NTEGRATION
- * Groups related Product Flow documents with SPARC methodology support.
+ * Groups related Product Flow documents with SPARC methodology support0.
  *
  * @example
  */
@@ -609,8 +609,8 @@ export interface ProductProjectEntity {
 }
 
 /**
- * Product Search Index Entity.
- * Optimized search and discovery for Product Flow.
+ * Product Search Index Entity0.
+ * Optimized search and discovery for Product Flow0.
  *
  * @example
  */
@@ -656,7 +656,7 @@ export interface ProductSearchIndexEntity {
 }
 
 /**
- * Database Schema Export - UPDATED for Product Flow naming.
+ * Database Schema Export - UPDATED for Product Flow naming0.
  */
 export const PRODUCT_DATABASE_SCHEMAS = {
   product_documents: `
@@ -673,7 +673,7 @@ export const PRODUCT_DATABASE_SCHEMAS = {
       parent_document_id TEXT,
       dependencies TEXT, -- JSON array
       related_documents TEXT, -- JSON array
-      version TEXT DEFAULT '1.0.0',
+      version TEXT DEFAULT '10.0.0',
       checksum TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -870,7 +870,7 @@ export const PRODUCT_DATABASE_SCHEMAS = {
       
       -- Quality and benefits tracking
       quality_improvement_score REAL DEFAULT 0.0,
-      delivery_speed_multiplier REAL DEFAULT 1.0,
+      delivery_speed_multiplier REAL DEFAULT 10.0,
       maintainability_score REAL DEFAULT 0.0,
       
       -- Timestamps
@@ -893,45 +893,33 @@ export const PRODUCT_DATABASE_SCHEMAS = {
 } as const;
 
 /**
- * Type guards for Product Flow entities.
+ * Type guards for Product Flow entities0.
  *
  * @param doc
  * @example
  */
-export function isVisionDocument(
-  doc: BaseProductEntity
-): doc is VisionDocumentEntity {
-  return doc.type === 'vision';
+export function isVisionDocument(doc: BaseProductEntity): doc is any {
+  return doc0.type === 'vision';
 }
 
-export function isADRDocument(
-  doc: BaseProductEntity
-): doc is ADRDocumentEntity {
-  return doc.type === 'adr';
+export function isADRDocument(doc: BaseProductEntity): doc is any {
+  return doc0.type === 'adr';
 }
 
-export function isPRDDocument(
-  doc: BaseProductEntity
-): doc is PRDDocumentEntity {
-  return doc.type === 'prd';
+export function isPRDDocument(doc: BaseProductEntity): doc is any {
+  return doc0.type === 'prd';
 }
 
-export function isEpicDocument(
-  doc: BaseProductEntity
-): doc is EpicDocumentEntity {
-  return doc.type === 'epic';
+export function isEpicDocument(doc: BaseProductEntity): doc is any {
+  return doc0.type === 'epic';
 }
 
-export function isFeatureDocument(
-  doc: BaseProductEntity
-): doc is FeatureDocumentEntity {
-  return doc.type === 'feature';
+export function isFeatureDocument(doc: BaseProductEntity): doc is any {
+  return doc0.type === 'feature';
 }
 
-export function isTaskDocument(
-  doc: BaseProductEntity
-): doc is TaskDocumentEntity {
-  return doc.type === 'task';
+export function isTaskDocument(doc: BaseProductEntity): doc is any {
+  return doc0.type === 'task';
 }
 
 // Alias BaseDocumentEntity to BaseProductEntity for compatibility

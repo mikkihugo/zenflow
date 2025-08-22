@@ -1,8 +1,8 @@
 /**
  * @file Memory Types - Coordination Memory Management
- * 
- * Type definitions for memory and state management within the coordination layer.
- * These types support persistent memory, working memory, and shared memory systems.
+ *
+ * Type definitions for memory and state management within the coordination layer0.
+ * These types support persistent memory, working memory, and shared memory systems0.
  */
 
 /**
@@ -13,12 +13,12 @@ export type MemoryId = string;
 /**
  * Memory entry types
  */
-export type MemoryType = 
-  | 'working'      // Temporary working memory
-  | 'persistent'   // Long-term persistent memory
-  | 'shared'       // Shared between agents
-  | 'cached'       // Cached data with TTL
-  | 'session'      // Session-specific memory
+export type MemoryType =
+  | 'working' // Temporary working memory
+  | 'persistent' // Long-term persistent memory
+  | 'shared' // Shared between agents
+  | 'cached' // Cached data with TTL
+  | 'session' // Session-specific memory
   | 'configuration'; // Configuration memory
 
 /**
@@ -29,7 +29,11 @@ export type MemoryPriority = 'low' | 'medium' | 'high' | 'critical';
 /**
  * Memory access patterns
  */
-export type MemoryAccessPattern = 'read-only' | 'write-only' | 'read-write' | 'append-only';
+export type MemoryAccessPattern =
+  | 'read-only'
+  | 'write-only'
+  | 'read-write'
+  | 'append-only';
 
 /**
  * Basic memory entry structure
@@ -38,7 +42,7 @@ export interface MemoryEntry {
   id: MemoryId;
   type: MemoryType;
   key: string;
-  value: unknown;
+  value: any;
   timestamp: Date;
   lastAccessed: Date;
   priority: MemoryPriority;
@@ -111,7 +115,9 @@ export interface MemoryManager {
   /**
    * Store a memory entry
    */
-  store(entry: Omit<MemoryEntry, 'id' | 'timestamp' | 'lastAccessed'>): Promise<MemoryOperationResult>;
+  store(
+    entry: Omit<MemoryEntry, 'id' | 'timestamp' | 'lastAccessed'>
+  ): Promise<MemoryOperationResult>;
 
   /**
    * Retrieve memory entries
@@ -126,7 +132,10 @@ export interface MemoryManager {
   /**
    * Update a memory entry
    */
-  update(id: MemoryId, updates: Partial<MemoryEntry>): Promise<MemoryOperationResult>;
+  update(
+    id: MemoryId,
+    updates: Partial<MemoryEntry>
+  ): Promise<MemoryOperationResult>;
 
   /**
    * Delete memory entries
@@ -156,7 +165,10 @@ export interface MemoryManager {
   /**
    * Import memory data
    */
-  import(data: string | Buffer, format?: 'json' | 'binary'): Promise<MemoryOperationResult>;
+  import(
+    data: string | Buffer,
+    format?: 'json' | 'binary'
+  ): Promise<MemoryOperationResult>;
 }
 
 /**
@@ -164,11 +176,11 @@ export interface MemoryManager {
  */
 export interface WorkingMemory {
   agentId: string;
-  
+
   /**
    * Store working data
    */
-  store(key: string, value: unknown, ttl?: number): Promise<void>;
+  store(key: string, value: any, ttl?: number): Promise<void>;
 
   /**
    * Retrieve working data
@@ -208,7 +220,12 @@ export interface SharedMemory {
   /**
    * Store shared data
    */
-  store(namespace: string, key: string, value: unknown, ttl?: number): Promise<void>;
+  store(
+    namespace: string,
+    key: string,
+    value: any,
+    ttl?: number
+  ): Promise<void>;
 
   /**
    * Retrieve shared data
@@ -238,13 +255,16 @@ export interface SharedMemory {
   /**
    * Subscribe to changes in namespace
    */
-  subscribe(namespace: string, callback: (key: string, value: unknown) => void): () => void;
+  subscribe(
+    namespace: string,
+    callback: (key: string, value: any) => void
+  ): () => void;
 }
 
 /**
  * Memory event types
  */
-export type MemoryEventType = 
+export type MemoryEventType =
   | 'entry_created'
   | 'entry_updated'
   | 'entry_deleted'
@@ -290,10 +310,10 @@ export interface MemoryTransaction {
   operations: Array<{
     type: 'store' | 'update' | 'delete';
     key: string;
-    value?: unknown;
+    value?: any;
     namespace?: string;
   }>;
-  
+
   /**
    * Commit the transaction
    */
@@ -310,7 +330,7 @@ export interface MemoryTransaction {
   addOperation(
     type: 'store' | 'update' | 'delete',
     key: string,
-    value?: unknown,
+    value?: any,
     namespace?: string
   ): void;
 }
@@ -322,7 +342,7 @@ export interface MemoryCompression {
   /**
    * Compress memory data
    */
-  compress(data: unknown): Promise<Buffer>;
+  compress(data: any): Promise<Buffer>;
 
   /**
    * Decompress memory data
@@ -332,7 +352,7 @@ export interface MemoryCompression {
   /**
    * Get compression ratio
    */
-  getCompressionRatio(original: unknown, compressed: Buffer): number;
+  getCompressionRatio(original: any, compressed: Buffer): number;
 }
 
 /**

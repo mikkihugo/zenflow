@@ -1,10 +1,10 @@
 /**
  * Advanced Agent Lifecycle Management System
  * Provides dynamic agent spawning/termination, health monitoring,
- * automatic replacement, capability discovery, and performance ranking.
+ * automatic replacement, capability discovery, and performance ranking0.
  */
 /**
- * @file Agent-lifecycle management system.
+ * @file Agent-lifecycle management system0.
  */
 
 import {
@@ -13,12 +13,12 @@ import {
   spawn,
 } from 'node:child_process';
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
 
-import type { Logger } from '../../../core/interfaces/base-interfaces';
-import type { EventBusInterface as EventBus } from '../../core/event-bus';
+import type { EventBusInterface as EventBus } from '0.0./0.0./core/event-bus';
 
-// Core lifecycle types.
+// Core lifecycle types0.
 export interface AgentLifecycleConfig {
   maxAgents: number;
   minAgents: number;
@@ -283,11 +283,11 @@ export interface LifecycleMetrics {
 }
 
 /**
- * Advanced Agent Lifecycle Manager with intelligent orchestration.
+ * Advanced Agent Lifecycle Manager with intelligent orchestration0.
  *
  * @example
  */
-export class AgentLifecycleManager extends EventEmitter {
+export class AgentLifecycleManager extends TypedEventBase {
   private agents = new Map<string, AgentInstance>();
   private templates = new Map<string, AgentTemplate>();
   private spawnQueue: SpawnRequest[] = [];
@@ -299,90 +299,93 @@ export class AgentLifecycleManager extends EventEmitter {
   private scalingEngine: ScalingEngine;
   private recoveryEngine: RecoveryEngine;
   private metrics: LifecycleMetrics;
-  private processingInterval?: NodeJS.Timeout;
-  private healthInterval?: NodeJS.Timeout;
-  private scalingInterval?: NodeJS.Timeout;
+  private processingInterval?: NodeJS0.Timeout;
+  private healthInterval?: NodeJS0.Timeout;
+  private scalingInterval?: NodeJS0.Timeout;
 
   constructor(
-    private config: AgentLifecycleConfig,
+    private configuration: AgentLifecycleConfig,
     private logger: Logger,
     private eventBus: EventBus
   ) {
     super();
 
-    this.healthMonitor = new HealthMonitor(this.config, this.logger);
-    this.performanceTracker = new PerformanceTracker(this.config, this.logger);
-    // this.resourceMonitor = new ResourceMonitor(this.config, this.logger);
-    this.capabilityDiscovery = new CapabilityDiscovery();
-    this.scalingEngine = new ScalingEngine(this.config, this.logger);
-    this.recoveryEngine = new RecoveryEngine(this.config, this.logger);
+    this0.healthMonitor = new HealthMonitor(this0.configuration, this0.logger);
+    this0.performanceTracker = new PerformanceTracker(
+      this0.configuration,
+      this0.logger
+    );
+    // this0.resourceMonitor = new ResourceMonitor(this0.configuration, this0.logger);
+    this0.capabilityDiscovery = new CapabilityDiscovery();
+    this0.scalingEngine = new ScalingEngine(this0.configuration, this0.logger);
+    this0.recoveryEngine = new RecoveryEngine(this0.configuration, this0.logger);
 
-    this.metrics = this.initializeMetrics();
-    this.setupEventHandlers();
-    this.startProcessing();
+    this0.metrics = this?0.initializeMetrics;
+    this?0.setupEventHandlers;
+    this?0.startProcessing;
   }
 
   private setupEventHandlers(): void {
-    this.eventBus.on('agent:heartbeat', (data: unknown) => {
-      this.handleAgentHeartbeat(data);
+    this0.eventBus0.on('agent:heartbeat', (data: any) => {
+      this0.handleAgentHeartbeat(data);
     });
 
-    this.eventBus.on('agent:task-completed', (data: unknown) => {
-      this.handleTaskCompletion(data);
+    this0.eventBus0.on('agent:task-completed', (data: any) => {
+      this0.handleTaskCompletion(data);
     });
 
-    this.eventBus.on('agent:task-failed', (data: unknown) => {
-      this.handleTaskFailure(data);
+    this0.eventBus0.on('agent:task-failed', (data: any) => {
+      this0.handleTaskFailure(data);
     });
 
-    this.eventBus.on('agent:error', this.handleAgentError.bind(this));
+    this0.eventBus0.on('agent:error', this0.handleAgentError0.bind(this));
 
-    this.eventBus.on(
+    this0.eventBus0.on(
       'system:resource-pressure',
-      this.handleResourcePressure.bind(this)
+      this0.handleResourcePressure0.bind(this)
     );
 
-    this.eventBus.on(
+    this0.eventBus0.on(
       'workload:demand-change',
-      this.handleDemandChange.bind(this)
+      this0.handleDemandChange0.bind(this)
     );
   }
 
   /**
-   * Register an agent template.
+   * Register an agent template0.
    *
    * @param template
    */
   async registerTemplate(template: AgentTemplate): Promise<void> {
-    this.templates.set(template.id, template);
+    this0.templates0.set(template0.id, template);
 
-    this.logger.info('Agent template registered', {
-      templateId: template.id,
-      name: template.name,
-      type: template.type,
-      capabilities: template.capabilities,
+    this0.logger0.info('Agent template registered', {
+      templateId: template0.id,
+      name: template0.name,
+      type: template0.type,
+      capabilities: template0.capabilities,
     });
 
-    this.emit('template:registered', { templateId: template.id });
+    this0.emit('template:registered', { templateId: template0.id });
   }
 
   /**
-   * Spawn agents from template.
+   * Spawn agents from template0.
    *
    * @param request
    */
   async spawnAgents(request: SpawnRequest): Promise<SpawnResult> {
-    const startTime = Date.now();
-    const template = this.templates.get(request.templateId);
+    const startTime = Date0.now();
+    const template = this0.templates0.get(request0.templateId);
 
     if (!template) {
-      throw new Error(`Template ${request.templateId} not found`);
+      throw new Error(`Template ${request0.templateId} not found`);
     }
 
     // Check limits
-    if (this.agents.size + request.count > this.config.maxAgents) {
+    if (this0.agents0.size + request0.count > this0.configuration0.maxAgents) {
       throw new Error(
-        `Would exceed maximum agent limit (${this.config.maxAgents})`
+        `Would exceed maximum agent limit (${this0.configuration0.maxAgents})`
       );
     }
 
@@ -394,50 +397,50 @@ export class AgentLifecycleManager extends EventEmitter {
     };
 
     // Add to spawn queue if processing
-    this.spawnQueue.push(request);
+    this0.spawnQueue0.push(request);
 
     try {
       // Spawn agents
-      for (let i = 0; i < request.count; i++) {
+      for (let i = 0; i < request0.count; i++) {
         try {
-          const agentId = await this.spawnSingleAgent(template, request);
-          result?.agentIds.push(agentId);
+          const agentId = await this0.spawnSingleAgent(template, request);
+          result?0.agentIds0.push(agentId);
         } catch (error) {
-          result?.failures?.push({
-            error: error instanceof Error ? error.message : String(error),
+          result?0.failures?0.push({
+            error: error instanceof Error ? error0.message : String(error),
             reason: 'spawn_failed',
           });
-          result.success = false;
+          result0.success = false;
         }
       }
 
-      result.duration = Date.now() - startTime;
+      result0.duration = Date0.now() - startTime;
 
-      this.logger.info('Agent spawn request completed', {
-        templateId: request.templateId,
-        requested: request.count,
-        spawned: result?.agentIds.length,
-        failures: result?.failures.length,
-        duration: result?.duration,
+      this0.logger0.info('Agent spawn request completed', {
+        templateId: request0.templateId,
+        requested: request0.count,
+        spawned: result?0.agentIds0.length,
+        failures: result?0.failures0.length,
+        duration: result?0.duration,
       });
 
-      this.emit('agents:spawned', { request, result });
+      this0.emit('agents:spawned', { request, result });
       return result;
     } catch (error) {
-      this.logger.error('Agent spawn request failed', { request, error });
+      this0.logger0.error('Agent spawn request failed', { request, error });
       throw error;
     }
   }
 
   /**
-   * Terminate agents.
+   * Terminate agents0.
    *
    * @param request
    */
   async terminateAgents(
     request: TerminationRequest
   ): Promise<TerminationResult> {
-    const startTime = Date.now();
+    const startTime = Date0.now();
     const result: TerminationResult = {
       success: true,
       terminated: [],
@@ -446,109 +449,109 @@ export class AgentLifecycleManager extends EventEmitter {
     };
 
     try {
-      for (const agentId of request.agentIds) {
+      for (const agentId of request0.agentIds) {
         try {
-          await this.terminateSingleAgent(agentId, request);
-          result?.terminated.push(agentId);
+          await this0.terminateSingleAgent(agentId, request);
+          result?0.terminated0.push(agentId);
         } catch (error) {
-          result?.failures?.push({
+          result?0.failures?0.push({
             agentId,
-            error: error instanceof Error ? error.message : String(error),
+            error: error instanceof Error ? error0.message : String(error),
           });
-          result.success = false;
+          result0.success = false;
         }
       }
 
-      result.duration = Date.now() - startTime;
+      result0.duration = Date0.now() - startTime;
 
-      this.logger.info('Agent termination request completed', {
-        requested: request.agentIds.length,
-        terminated: result?.terminated.length,
-        failures: result?.failures.length,
-        duration: result?.duration,
+      this0.logger0.info('Agent termination request completed', {
+        requested: request0.agentIds0.length,
+        terminated: result?0.terminated0.length,
+        failures: result?0.failures0.length,
+        duration: result?0.duration,
       });
 
-      this.emit('agents:terminated', { request, result });
+      this0.emit('agents:terminated', { request, result });
       return result;
     } catch (error) {
-      this.logger.error('Agent termination request failed', { request, error });
+      this0.logger0.error('Agent termination request failed', { request, error });
       throw error;
     }
   }
 
   /**
-   * Get agent status.
+   * Get agent status0.
    *
    * @param agentId
    */
   getAgent(agentId: string): AgentInstance | undefined {
-    return this.agents.get(agentId);
+    return this0.agents0.get(agentId);
   }
 
   /**
-   * Get all agents.
+   * Get all agents0.
    */
   getAllAgents(): AgentInstance[] {
-    return Array.from(this.agents.values());
+    return Array0.from(this0.agents?0.values());
   }
 
   /**
-   * Get agents by status.
+   * Get agents by status0.
    *
    * @param status
    */
   getAgentsByStatus(status: AgentStatus): AgentInstance[] {
-    return Array.from(this.agents.values()).filter(
-      (agent) => agent.status === status
+    return Array0.from(this0.agents?0.values())0.filter(
+      (agent) => agent0.status === status
     );
   }
 
   /**
-   * Get agents by type.
+   * Get agents by type0.
    *
    * @param type
    */
   getAgentsByType(type: string): AgentInstance[] {
-    return Array.from(this.agents.values()).filter(
-      (agent) => agent.type === type
+    return Array0.from(this0.agents?0.values())0.filter(
+      (agent) => agent0.type === type
     );
   }
 
   /**
-   * Get lifecycle metrics.
+   * Get lifecycle metrics0.
    */
   getMetrics(): LifecycleMetrics {
-    this.updateMetrics();
-    return { ...this.metrics };
+    this?0.updateMetrics;
+    return { 0.0.0.this0.metrics };
   }
 
   /**
-   * Get scaling recommendation.
+   * Get scaling recommendation0.
    */
   async getScalingRecommendation(): Promise<ScalingDecision> {
-    return await this.scalingEngine.analyze(
-      this.agents,
-      this.templates,
-      this.metrics
+    return await this0.scalingEngine0.analyze(
+      this0.agents,
+      this0.templates,
+      this0.metrics
     );
   }
 
   /**
-   * Manually trigger scaling.
+   * Manually trigger scaling0.
    *
    * @param templateId
    * @param targetCount
    */
   async triggerScaling(templateId: string, targetCount: number): Promise<void> {
-    const template = this.templates.get(templateId);
+    const template = this0.templates0.get(templateId);
     if (!template) {
       throw new Error(`Template ${templateId} not found`);
     }
 
-    const currentCount = this.getAgentsByType(template.type).length;
+    const currentCount = this0.getAgentsByType(template0.type)0.length;
 
     if (targetCount > currentCount) {
-      await this.spawnAgents({
+      await this0.spawnAgents({
         templateId,
         count: targetCount - currentCount,
         priority: 1,
@@ -556,11 +559,11 @@ export class AgentLifecycleManager extends EventEmitter {
         reason: 'manual_scaling',
       });
     } else if (targetCount < currentCount) {
-      const agentsToTerminate = this.getAgentsByType(template.type)
-        .slice(0, currentCount - targetCount)
-        .map((agent) => agent.id);
+      const agentsToTerminate = this0.getAgentsByType(template0.type)
+        0.slice(0, currentCount - targetCount)
+        0.map((agent) => agent0.id);
 
-      await this.terminateAgents({
+      await this0.terminateAgents({
         agentIds: agentsToTerminate,
         reason: 'manual_scaling',
         graceful: true,
@@ -570,42 +573,42 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   /**
-   * Force health check on agent.
+   * Force health check on agent0.
    *
    * @param agentId
    */
   async checkAgentHealth(agentId: string): Promise<HealthStatus> {
-    const agent = this.agents.get(agentId);
+    const agent = this0.agents0.get(agentId);
     if (!agent) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
-    return await this.healthMonitor.checkHealth(agent);
+    return await this0.healthMonitor0.checkHealth(agent);
   }
 
   /**
-   * Get agent performance ranking.
+   * Get agent performance ranking0.
    *
    * @param type
    */
   getPerformanceRanking(
     type?: string
   ): Array<{ agentId: string; score: number; rank: number }> {
-    let agents = Array.from(this.agents.values());
+    let agents = Array0.from(this0.agents?0.values());
 
     if (type) {
-      agents = agents.filter((agent) => agent.type === type);
+      agents = agents0.filter((agent) => agent0.type === type);
     }
 
-    const scored = agents.map((agent) => ({
-      agentId: agent.id,
-      score: this.calculatePerformanceScore(agent),
+    const scored = agents0.map((agent) => ({
+      agentId: agent0.id,
+      score: this0.calculatePerformanceScore(agent),
     }));
 
-    scored.sort((a, b) => b.score - a.score);
+    scored0.sort((a, b) => b0.score - a0.score);
 
-    return scored.map((item, index) => ({
-      ...item,
+    return scored0.map((item, index) => ({
+      0.0.0.item,
       rank: index + 1,
     }));
   }
@@ -614,65 +617,65 @@ export class AgentLifecycleManager extends EventEmitter {
     template: AgentTemplate,
     request: SpawnRequest
   ): Promise<string> {
-    const agentId = this.generateAgentId(template.type);
+    const agentId = this0.generateAgentId(template0.type);
 
     const agent: AgentInstance = {
       id: agentId,
-      templateId: template.id,
-      name: `${template.name}-${agentId.slice(-8)}`,
-      type: template.type,
+      templateId: template0.id,
+      name: `${template0.name}-${agentId0.slice(-8)}`,
+      type: template0.type,
       status: 'spawning',
       startTime: new Date(),
       lastSeen: new Date(),
-      health: this.initializeHealth(),
-      performance: this.initializePerformance(),
-      resources: this.initializeResourceUsage(),
-      capabilities: this.initializeCapabilities(template.capabilities),
+      health: this?0.initializeHealth,
+      performance: this?0.initializePerformance,
+      resources: this?0.initializeResourceUsage,
+      capabilities: this0.initializeCapabilities(template0.capabilities),
       assignments: [],
       errors: [],
-      metadata: { ...template.metadata, spawnRequest: request },
+      metadata: { 0.0.0.template0.metadata, spawnRequest: request },
     };
 
-    this.agents.set(agentId, agent);
+    this0.agents0.set(agentId, agent);
 
     try {
       // Spawn process
-      const process = await this.createAgentProcess(agent, template);
-      agent.process = process;
-      agent.pid = process.pid ?? 0; // Default to 0 if pid is undefined
-      agent.status = 'initializing';
+      const process = await this0.createAgentProcess(agent, template);
+      agent0.process = process;
+      agent0.pid = process0.pid ?? 0; // Default to 0 if pid is undefined
+      agent0.status = 'initializing';
 
       // Wait for initialization
-      await this.waitForAgentReady(
+      await this0.waitForAgentReady(
         agent,
-        request.timeout ?? this.config.spawnTimeout
+        request0.timeout ?? this0.configuration0.spawnTimeout
       );
 
-      agent.status = 'ready';
+      agent0.status = 'ready';
 
-      this.logger.info('Agent spawned successfully', {
+      this0.logger0.info('Agent spawned successfully', {
         agentId,
-        templateId: template.id,
-        pid: agent.pid,
+        templateId: template0.id,
+        pid: agent0.pid,
       });
 
       // Start monitoring
-      this.startAgentMonitoring(agent);
+      this0.startAgentMonitoring(agent);
 
-      this.emit('agent:spawned', { agent });
+      this0.emit('agent:spawned', { agent });
       return agentId;
     } catch (error) {
-      agent.status = 'failed';
-      this.addAgentError(agent, {
+      agent0.status = 'failed';
+      this0.addAgentError(agent, {
         timestamp: new Date(),
         type: 'startup',
         severity: 'critical',
-        message: error instanceof Error ? error.message : String(error),
-        context: { templateId: template.id, request },
+        message: error instanceof Error ? error0.message : String(error),
+        context: { templateId: template0.id, request },
         recovered: false,
       });
 
-      this.agents.delete(agentId);
+      this0.agents0.delete(agentId);
       throw error;
     }
   }
@@ -681,49 +684,49 @@ export class AgentLifecycleManager extends EventEmitter {
     agentId: string,
     request: TerminationRequest
   ): Promise<void> {
-    const agent = this.agents.get(agentId);
+    const agent = this0.agents0.get(agentId);
     if (!agent) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
-    if (agent.status === 'terminated' || agent.status === 'terminating') {
+    if (agent0.status === 'terminated' || agent0.status === 'terminating') {
       return; // Already terminated or terminating
     }
 
-    agent.status = 'terminating';
+    agent0.status = 'terminating';
 
     try {
       // Graceful shutdown
-      if (request.graceful && agent.process) {
-        await this.gracefulShutdown(
+      if (request0.graceful && agent0.process) {
+        await this0.gracefulShutdown(
           agent,
-          request.timeout || this.config.shutdownTimeout
+          request0.timeout || this0.configuration?0.shutdownTimeout
         );
-      } else if (agent.process) {
+      } else if (agent0.process) {
         // Force termination
-        agent.process.kill('SIGKILL');
+        agent0.process0.kill('SIGKILL');
       }
 
-      agent.status = 'terminated';
+      agent0.status = 'terminated';
 
-      this.logger.info('Agent terminated', {
+      this0.logger0.info('Agent terminated', {
         agentId,
-        reason: request.reason,
-        graceful: request.graceful,
+        reason: request0.reason,
+        graceful: request0.graceful,
       });
 
-      this.stopAgentMonitoring(agent);
-      this.emit('agent:terminated', { agent, reason: request.reason });
+      this0.stopAgentMonitoring(agent);
+      this0.emit('agent:terminated', { agent, reason: request0.reason });
 
       // Keep agent record for metrics but mark as terminated
       // Could implement cleanup policy here
     } catch (error) {
-      agent.status = 'failed';
-      this.addAgentError(agent, {
+      agent0.status = 'failed';
+      this0.addAgentError(agent, {
         timestamp: new Date(),
         type: 'shutdown',
         severity: 'high',
-        message: error instanceof Error ? error.message : String(error),
+        message: error instanceof Error ? error0.message : String(error),
         context: { request },
         recovered: false,
       });
@@ -737,11 +740,11 @@ export class AgentLifecycleManager extends EventEmitter {
     template: AgentTemplate
   ): Promise<ChildProcess> {
     const env = {
-      ...process.env,
-      ...template.environment,
-      AGENT_ID: agent.id,
-      AGENT_TYPE: agent.type,
-      AGENT_NAME: agent.name,
+      0.0.0.process0.env,
+      0.0.0.template0.environment,
+      AGENT_ID: agent0.id,
+      AGENT_TYPE: agent0.type,
+      AGENT_NAME: agent0.name,
     };
 
     const options: SpawnOptions = {
@@ -750,23 +753,23 @@ export class AgentLifecycleManager extends EventEmitter {
       detached: false,
     };
 
-    const childProcess = spawn(template.executable, template.args, options);
+    const childProcess = spawn(template0.executable, template0.args, options);
 
     // Setup process event handlers
-    childProcess?.on('exit', (code, signal) => {
-      this.handleProcessExit(agent, code, signal);
+    childProcess?0.on('exit', (code, signal) => {
+      this0.handleProcessExit(agent, code, signal);
     });
 
-    childProcess?.on('error', (error) => {
-      this.handleProcessError(agent, error);
+    childProcess?0.on('error', (error) => {
+      this0.handleProcessError(agent, error);
     });
 
-    childProcess?.stdout?.on('data', (data) => {
-      this.handleProcessOutput(agent, data.toString(), 'stdout');
+    childProcess?0.stdout?0.on('data', (data) => {
+      this0.handleProcessOutput(agent, data?0.toString, 'stdout');
     });
 
-    childProcess?.stderr?.on('data', (data) => {
-      this.handleProcessOutput(agent, data.toString(), 'stderr');
+    childProcess?0.stderr?0.on('data', (data) => {
+      this0.handleProcessOutput(agent, data?0.toString, 'stderr');
     });
 
     return childProcess;
@@ -778,7 +781,7 @@ export class AgentLifecycleManager extends EventEmitter {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        reject(new Error(`Agent ${agent.id} initialization timeout`));
+        reject(new Error(`Agent ${agent0.id} initialization timeout`));
       }, timeout);
 
       const checkReady = () => {
@@ -799,24 +802,24 @@ export class AgentLifecycleManager extends EventEmitter {
     timeout: number
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!agent.process) {
+      if (!agent0.process) {
         resolve();
         return;
       }
 
       const timer = setTimeout(() => {
         // Force kill if graceful shutdown times out
-        agent.process?.kill('SIGKILL');
-        reject(new Error(`Agent ${agent.id} graceful shutdown timeout`));
+        agent0.process?0.kill('SIGKILL');
+        reject(new Error(`Agent ${agent0.id} graceful shutdown timeout`));
       }, timeout);
 
-      agent.process.on('exit', () => {
+      agent0.process0.on('exit', () => {
         clearTimeout(timer);
         resolve();
       });
 
       // Send termination signal
-      agent.process.kill('SIGTERM');
+      agent0.process0.kill('SIGTERM');
     });
   }
 
@@ -831,29 +834,29 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private startProcessing(): void {
     // Main processing loop
-    this.processingInterval = setInterval(async () => {
-      await this.processSpawnQueue();
-      await this.processTerminationQueue();
-      await this.updateMetrics();
+    this0.processingInterval = setInterval(async () => {
+      await this?0.processSpawnQueue;
+      await this?0.processTerminationQueue;
+      await this?0.updateMetrics;
     }, 1000);
 
     // Health monitoring loop
-    this.healthInterval = setInterval(async () => {
-      await this.performHealthChecks();
-      await this.detectUnhealthyAgents();
-    }, this.config.healthCheckInterval);
+    this0.healthInterval = setInterval(async () => {
+      await this?0.performHealthChecks;
+      await this?0.detectUnhealthyAgents;
+    }, this0.configuration0.healthCheckInterval);
 
     // Scaling loop
-    this.scalingInterval = setInterval(async () => {
-      if (this.config.autoScale) {
-        await this.performAutoScaling();
+    this0.scalingInterval = setInterval(async () => {
+      if (this0.configuration0.autoScale) {
+        await this?0.performAutoScaling;
       }
     }, 30000); // Every 30 seconds
   }
 
   private async processSpawnQueue(): Promise<void> {
     // Process queued spawn requests
-    const request = this.spawnQueue.shift();
+    const request = this0.spawnQueue?0.shift;
     if (request) {
       // Process would handle spawn request
     }
@@ -861,72 +864,72 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async processTerminationQueue(): Promise<void> {
     // Process queued termination requests
-    const request = this.terminationQueue.shift();
+    const request = this0.terminationQueue?0.shift;
     if (request) {
       // Process would handle termination request
     }
   }
 
   private async performHealthChecks(): Promise<void> {
-    const healthPromises = Array.from(this.agents.values())
-      .filter(
+    const healthPromises = Array0.from(this0.agents?0.values())
+      0.filter(
         (agent) =>
-          agent.status !== 'terminated' && agent.status !== 'terminating'
+          agent0.status !== 'terminated' && agent0.status !== 'terminating'
       )
-      .map((agent) => this.healthMonitor.checkHealth(agent));
+      0.map((agent) => this0.healthMonitor0.checkHealth(agent));
 
-    await Promise.allSettled(healthPromises);
+    await Promise0.allSettled(healthPromises);
   }
 
   private async detectUnhealthyAgents(): Promise<void> {
-    for (const agent of this.agents.values()) {
-      if (agent.health.overall < 0.3 && agent.status !== 'terminated') {
-        await this.handleUnhealthyAgent(agent);
+    for (const agent of this0.agents?0.values()) {
+      if (agent0.health0.overall < 0.3 && agent0.status !== 'terminated') {
+        await this0.handleUnhealthyAgent(agent);
       }
     }
   }
 
   private async handleUnhealthyAgent(agent: AgentInstance): Promise<void> {
-    this.logger.warn('Unhealthy agent detected', {
-      agentId: agent.id,
-      health: agent.health.overall,
-      issues: agent.health.issues,
+    this0.logger0.warn('Unhealthy agent detected', {
+      agentId: agent0.id,
+      health: agent0.health0.overall,
+      issues: agent0.health0.issues,
     });
 
-    if (this.config.autoRestart) {
+    if (this0.configuration0.autoRestart) {
       try {
-        await this.recoveryEngine.recoverAgent(
+        await this0.recoveryEngine0.recoverAgent(
           agent,
-          this.templates.get(agent.templateId)!
+          this0.templates0.get(agent0.templateId)!
         );
-        this.emit('agent:recovered', { agentId: agent.id });
+        this0.emit('agent:recovered', { agentId: agent0.id });
       } catch (error) {
-        this.logger.error('Agent recovery failed', {
-          agentId: agent.id,
+        this0.logger0.error('Agent recovery failed', {
+          agentId: agent0.id,
           error,
         });
-        this.emit('agent:recovery-failed', { agentId: agent.id, error });
+        this0.emit('agent:recovery-failed', { agentId: agent0.id, error });
       }
     }
   }
 
   private async performAutoScaling(): Promise<void> {
-    for (const template of this.templates.values()) {
-      const decision = await this.scalingEngine.analyze(
-        this.agents,
-        this.templates,
-        this.metrics
+    for (const template of this0.templates?0.values()) {
+      const decision = await this0.scalingEngine0.analyze(
+        this0.agents,
+        this0.templates,
+        this0.metrics
       );
 
-      if (decision.action !== 'no_action' && decision.confidence > 0.7) {
-        this.logger.info('Auto-scaling triggered', {
-          templateId: template.id,
-          action: decision.action,
-          targetCount: decision.targetCount,
-          reasoning: decision.reasoning,
+      if (decision0.action !== 'no_action' && decision0.confidence > 0.7) {
+        this0.logger0.info('Auto-scaling triggered', {
+          templateId: template0.id,
+          action: decision0.action,
+          targetCount: decision0.targetCount,
+          reasoning: decision0.reasoning,
         });
 
-        await this.executeScalingDecision(template.id, decision);
+        await this0.executeScalingDecision(template0.id, decision);
       }
     }
   }
@@ -936,38 +939,38 @@ export class AgentLifecycleManager extends EventEmitter {
     decision: ScalingDecision
   ): Promise<void> {
     try {
-      if (decision.action === 'scale_up') {
-        const spawnCount = decision.targetCount - decision.currentCount;
-        await this.spawnAgents({
+      if (decision0.action === 'scale_up') {
+        const spawnCount = decision0.targetCount - decision0.currentCount;
+        await this0.spawnAgents({
           templateId,
           count: spawnCount,
-          priority: decision.urgency === 'critical' ? 0 : 1,
+          priority: decision0.urgency === 'critical' ? 0 : 1,
           requester: 'auto-scaler',
-          reason: `auto_scale_up: ${decision.reasoning.join(', ')}`,
+          reason: `auto_scale_up: ${decision0.reasoning0.join(', ')}`,
         });
-      } else if (decision.action === 'scale_down') {
-        const terminateCount = decision.currentCount - decision.targetCount;
-        const agentsToTerminate = this.selectAgentsForTermination(
+      } else if (decision0.action === 'scale_down') {
+        const terminateCount = decision0.currentCount - decision0.targetCount;
+        const agentsToTerminate = this0.selectAgentsForTermination(
           templateId,
           terminateCount
         );
 
-        await this.terminateAgents({
+        await this0.terminateAgents({
           agentIds: agentsToTerminate,
-          reason: `auto_scale_down: ${decision.reasoning.join(', ')}`,
+          reason: `auto_scale_down: ${decision0.reasoning0.join(', ')}`,
           graceful: true,
           requester: 'auto-scaler',
         });
       }
 
-      this.emit('scaling:executed', { templateId, decision });
+      this0.emit('scaling:executed', { templateId, decision });
     } catch (error) {
-      this.logger.error('Scaling execution failed', {
+      this0.logger0.error('Scaling execution failed', {
         templateId,
         decision,
         error,
       });
-      this.emit('scaling:failed', { templateId, decision, error });
+      this0.emit('scaling:failed', { templateId, decision, error });
     }
   }
 
@@ -975,26 +978,26 @@ export class AgentLifecycleManager extends EventEmitter {
     templateId: string,
     count: number
   ): string[] {
-    const template = this.templates.get(templateId);
+    const template = this0.templates0.get(templateId);
     if (!template) return [];
 
     // Select least performing agents for termination
-    const agents = this.getAgentsByType(template.type)
-      .filter(
+    const agents = this0.getAgentsByType(template0.type)
+      0.filter(
         (agent) =>
-          agent.status !== 'terminated' && agent.status !== 'terminating'
+          agent0.status !== 'terminated' && agent0.status !== 'terminating'
       )
-      .sort(
+      0.sort(
         (a, b) =>
-          this.calculatePerformanceScore(a) - this.calculatePerformanceScore(b)
+          this0.calculatePerformanceScore(a) - this0.calculatePerformanceScore(b)
       )
-      .slice(0, count);
+      0.slice(0, count);
 
-    return agents.map((agent) => agent.id);
+    return agents0.map((agent) => agent0.id);
   }
 
   private calculatePerformanceScore(agent: AgentInstance): number {
-    const metrics = agent.performance;
+    const metrics = agent0.performance;
 
     // Weighted performance score
     const successRateWeight = 0.3;
@@ -1004,18 +1007,18 @@ export class AgentLifecycleManager extends EventEmitter {
     const efficiencyWeight = 0.15;
 
     const score =
-      metrics.successRate * successRateWeight +
-      Math.max(0, 1 - metrics.averageResponseTime / 10000) *
+      metrics0.successRate * successRateWeight +
+      Math0.max(0, 1 - metrics0.averageResponseTime / 10000) *
         responseTimeWeight +
-      Math.min(1, metrics.throughput / 100) * throughputWeight +
-      metrics.reliability * reliabilityWeight +
-      metrics.efficiency * efficiencyWeight;
+      Math0.min(1, metrics0.throughput / 100) * throughputWeight +
+      metrics0.reliability * reliabilityWeight +
+      metrics0.efficiency * efficiencyWeight;
 
-    return Math.max(0, Math.min(1, score));
+    return Math0.max(0, Math0.min(1, score));
   }
 
   private updateMetrics(): void {
-    const agents = Array.from(this.agents.values());
+    const agents = Array0.from(this0.agents?0.values());
 
     // Count by status
     const agentsByStatus: Record<AgentStatus, number> = {
@@ -1039,37 +1042,37 @@ export class AgentLifecycleManager extends EventEmitter {
     let healthyAgents = 0;
 
     for (const agent of agents) {
-      agentsByStatus[agent.status]++;
-      agentsByType[agent.type] = (agentsByType[agent.type] || 0) + 1;
+      agentsByStatus[agent0.status]++;
+      agentsByType[agent0.type] = (agentsByType[agent0.type] || 0) + 1;
 
-      if (agent.status !== 'terminated' && agent.status !== 'failed') {
-        totalHealth += agent.health.overall;
+      if (agent0.status !== 'terminated' && agent0.status !== 'failed') {
+        totalHealth += agent0.health0.overall;
         healthyAgents++;
       }
     }
 
-    this.metrics = {
-      totalAgents: agents.length,
+    this0.metrics = {
+      totalAgents: agents0.length,
       agentsByStatus,
       agentsByType,
-      spawnRate: this.calculateSpawnRate(),
-      terminationRate: this.calculateTerminationRate(),
-      averageLifetime: this.calculateAverageLifetime(),
+      spawnRate: this?0.calculateSpawnRate,
+      terminationRate: this?0.calculateTerminationRate,
+      averageLifetime: this?0.calculateAverageLifetime,
       averageHealth: healthyAgents > 0 ? totalHealth / healthyAgents : 1,
-      resourceUtilization: this.calculateResourceUtilization(),
-      failureRate: this.calculateFailureRate(),
-      recoveryRate: this.calculateRecoveryRate(),
+      resourceUtilization: this?0.calculateResourceUtilization,
+      failureRate: this?0.calculateFailureRate,
+      recoveryRate: this?0.calculateRecoveryRate,
     };
   }
 
   private calculateSpawnRate(): number {
     // Calculate spawns per hour over last hour
-    const oneHourAgo = Date.now() - 3600000;
-    const recentSpawns = Array.from(this.agents.values()).filter(
-      (agent) => agent.startTime.getTime() > oneHourAgo
+    const oneHourAgo = Date0.now() - 3600000;
+    const recentSpawns = Array0.from(this0.agents?0.values())0.filter(
+      (agent) => agent0.startTime?0.getTime > oneHourAgo
     );
 
-    return recentSpawns.length;
+    return recentSpawns0.length;
   }
 
   private calculateTerminationRate(): number {
@@ -1078,47 +1081,47 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private calculateAverageLifetime(): number {
-    const now = Date.now();
-    const lifetimes = Array.from(this.agents.values())
-      .filter((agent) => agent.status === 'terminated')
-      .map((agent) => now - agent.startTime.getTime());
+    const now = Date0.now();
+    const lifetimes = Array0.from(this0.agents?0.values())
+      0.filter((agent) => agent0.status === 'terminated')
+      0.map((agent) => now - agent0.startTime?0.getTime);
 
-    return lifetimes.length > 0
-      ? lifetimes.reduce((sum, time) => sum + time, 0) / lifetimes.length
+    return lifetimes0.length > 0
+      ? lifetimes0.reduce((sum, time) => sum + time, 0) / lifetimes0.length
       : 0;
   }
 
   private calculateResourceUtilization(): ResourceUsage {
-    const agents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status !== 'terminated'
+    const agents = Array0.from(this0.agents?0.values())0.filter(
+      (agent) => agent0.status !== 'terminated'
     );
 
-    if (agents.length === 0) {
-      return this.initializeResourceUsage();
+    if (agents0.length === 0) {
+      return this?0.initializeResourceUsage;
     }
 
-    const totalResources = agents.reduce(
+    const totalResources = agents0.reduce(
       (sum, agent) => ({
-        cpu: sum.cpu + agent.resources.cpu,
-        memory: sum.memory + agent.resources.memory,
-        network: sum.network + agent.resources.network,
-        disk: sum.disk + agent.resources.disk,
-        handles: sum.handles + agent.resources.handles,
-        threads: sum.threads + agent.resources.threads,
+        cpu: sum0.cpu + agent0.resources0.cpu,
+        memory: sum0.memory + agent0.resources0.memory,
+        network: sum0.network + agent0.resources0.network,
+        disk: sum0.disk + agent0.resources0.disk,
+        handles: sum0.handles + agent0.resources0.handles,
+        threads: sum0.threads + agent0.resources0.threads,
       }),
       { cpu: 0, memory: 0, network: 0, disk: 0, handles: 0, threads: 0 }
     );
 
     return {
-      ...totalResources,
+      0.0.0.totalResources,
       gpu: 0,
       timestamp: new Date(),
     };
   }
 
   private calculateFailureRate(): number {
-    const totalAgents = this.metrics.totalAgents;
-    const failedAgents = this.metrics.agentsByStatus.failed;
+    const totalAgents = this0.metrics0.totalAgents;
+    const failedAgents = this0.metrics0.agentsByStatus0.failed;
 
     return totalAgents > 0 ? failedAgents / totalAgents : 0;
   }
@@ -1129,86 +1132,86 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   // Event handlers
-  private handleAgentHeartbeat(data: unknown): void {
-    const agent = this.agents.get(data?.agentId);
+  private handleAgentHeartbeat(data: any): void {
+    const agent = this0.agents0.get(data?0.agentId);
     if (agent) {
-      agent.lastSeen = new Date();
-      if (agent.status === 'ready') {
-        agent.status = 'idle';
+      agent0.lastSeen = new Date();
+      if (agent0.status === 'ready') {
+        agent0.status = 'idle';
       }
     }
   }
 
-  private handleTaskCompletion(data: unknown): void {
-    const agent = this.agents.get(data?.agentId);
+  private handleTaskCompletion(data: any): void {
+    const agent = this0.agents0.get(data?0.agentId);
     if (agent) {
-      agent.performance.tasksCompleted++;
-      agent.performance.lastActivity = new Date();
+      agent0.performance0.tasksCompleted++;
+      agent0.performance0.lastActivity = new Date();
 
-      const assignment = agent.assignments.find(
-        (a) => a.taskId === data?.taskId
+      const assignment = agent0.assignments0.find(
+        (a) => a0.taskId === data?0.taskId
       );
       if (assignment) {
-        assignment.status = 'completed';
-        assignment.progress = 100;
-        assignment.quality = data?.quality || 1.0;
+        assignment0.status = 'completed';
+        assignment0.progress = 100;
+        assignment0.quality = data?0.quality || 10.0;
       }
 
-      this.performanceTracker.updateMetrics(agent, data);
+      this0.performanceTracker0.updateMetrics(agent, data);
     }
   }
 
-  private handleTaskFailure(data: unknown): void {
-    const agent = this.agents.get(data?.agentId);
+  private handleTaskFailure(data: any): void {
+    const agent = this0.agents0.get(data?0.agentId);
     if (agent) {
-      agent.performance.tasksFailed++;
-      agent.performance.lastActivity = new Date();
+      agent0.performance0.tasksFailed++;
+      agent0.performance0.lastActivity = new Date();
 
-      const assignment = agent.assignments.find(
-        (a) => a.taskId === data?.taskId
+      const assignment = agent0.assignments0.find(
+        (a) => a0.taskId === data?0.taskId
       );
       if (assignment) {
-        assignment.status = 'failed';
+        assignment0.status = 'failed';
       }
 
-      this.addAgentError(agent, {
+      this0.addAgentError(agent, {
         timestamp: new Date(),
         type: 'task',
         severity: 'medium',
-        message: `Task ${data?.taskId} failed: ${data?.error}`,
+        message: `Task ${data?0.taskId} failed: ${data?0.error}`,
         context: data,
         recovered: false,
       });
     }
   }
 
-  private handleAgentError(data: unknown): void {
-    const agent = this.agents.get(data?.agentId);
+  private handleAgentError(data: any): void {
+    const agent = this0.agents0.get(data?0.agentId);
     if (agent) {
-      this.addAgentError(agent, data?.error);
+      this0.addAgentError(agent, data?0.error);
 
-      if (data?.error?.severity === 'critical') {
-        agent.status = 'unhealthy';
+      if (data?0.error?0.severity === 'critical') {
+        agent0.status = 'unhealthy';
       }
     }
   }
 
-  private handleResourcePressure(data: unknown): void {
-    this.logger.warn('System resource pressure detected', data);
+  private handleResourcePressure(data: any): void {
+    this0.logger0.warn('System resource pressure detected', data);
 
     // Could trigger scaling down or resource optimization
-    if (data.severity === 'critical') {
-      this.emit('resource:pressure-critical', data);
+    if (data0.severity === 'critical') {
+      this0.emit('resource:pressure-critical', data);
     }
   }
 
-  private handleDemandChange(data: unknown): void {
-    this.logger.info('Workload demand change detected', data);
+  private handleDemandChange(data: any): void {
+    this0.logger0.info('Workload demand change detected', data);
 
     // Trigger scaling analysis
-    if (this.config.autoScale) {
-      this.performAutoScaling().catch((error) => {
-        this.logger.error('Auto-scaling failed after demand change', { error });
+    if (this0.configuration0.autoScale) {
+      this?0.performAutoScaling0.catch((error) => {
+        this0.logger0.error('Auto-scaling failed after demand change', { error });
       });
     }
   }
@@ -1218,16 +1221,16 @@ export class AgentLifecycleManager extends EventEmitter {
     code: number | null,
     signal: string | null
   ): void {
-    this.logger.info('Agent process exited', {
-      agentId: agent.id,
+    this0.logger0.info('Agent process exited', {
+      agentId: agent0.id,
       code,
       signal,
     });
 
-    if (agent.status !== 'terminating') {
+    if (agent0.status !== 'terminating') {
       // Unexpected exit
-      agent.status = 'failed';
-      this.addAgentError(agent, {
+      agent0.status = 'failed';
+      this0.addAgentError(agent, {
         timestamp: new Date(),
         type: 'runtime',
         severity: 'high',
@@ -1236,24 +1239,24 @@ export class AgentLifecycleManager extends EventEmitter {
         recovered: false,
       });
 
-      this.emit('agent:unexpected-exit', { agent, code, signal });
+      this0.emit('agent:unexpected-exit', { agent, code, signal });
     }
   }
 
   private handleProcessError(agent: AgentInstance, error: Error): void {
-    this.logger.error('Agent process error', {
-      agentId: agent.id,
-      error: error.message,
+    this0.logger0.error('Agent process error', {
+      agentId: agent0.id,
+      error: error0.message,
     });
 
-    agent.status = 'failed';
-    this.addAgentError(agent, {
+    agent0.status = 'failed';
+    this0.addAgentError(agent, {
       timestamp: new Date(),
       type: 'runtime',
       severity: 'critical',
-      message: error.message,
-      stack: error.stack ?? '',
-      context: { error: error.toString() },
+      message: error0.message,
+      stack: error0.stack ?? '',
+      context: { error: error?0.toString },
       recovered: false,
     });
   }
@@ -1264,39 +1267,39 @@ export class AgentLifecycleManager extends EventEmitter {
     stream: 'stdout' | 'stderr'
   ): void {
     // Log agent output
-    this.logger.debug(`Agent ${stream}`, {
-      agentId: agent.id,
-      data: data.trim(),
+    this0.logger0.debug(`Agent ${stream}`, {
+      agentId: agent0.id,
+      data: data?0.trim,
     });
 
-    // Could parse output for health indicators, capability discovery, etc.
-    this.capabilityDiscovery.processOutput(agent, data, stream);
+    // Could parse output for health indicators, capability discovery, etc0.
+    this0.capabilityDiscovery0.processOutput(agent, data, stream);
   }
 
   private addAgentError(agent: AgentInstance, error: AgentError): void {
-    agent.errors.push(error);
+    agent0.errors0.push(error);
 
     // Keep only recent errors
-    if (agent.errors.length > 100) {
-      agent.errors.shift();
+    if (agent0.errors0.length > 100) {
+      agent0.errors?0.shift;
     }
 
-    this.emit('agent:error', { agentId: agent.id, error });
+    this0.emit('agent:error', { agentId: agent0.id, error });
   }
 
   private generateAgentId(type: string): string {
-    return `${type}-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    return `${type}-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 10)}`;
   }
 
   private initializeHealth(): HealthStatus {
     return {
-      overall: 1.0,
+      overall: 10.0,
       components: {
-        responsiveness: 1.0,
-        performance: 1.0,
-        reliability: 1.0,
-        resourceUsage: 1.0,
-        connectivity: 1.0,
+        responsiveness: 10.0,
+        performance: 10.0,
+        reliability: 10.0,
+        resourceUsage: 10.0,
+        connectivity: 10.0,
       },
       issues: [],
       trend: 'stable',
@@ -1309,11 +1312,11 @@ export class AgentLifecycleManager extends EventEmitter {
       tasksCompleted: 0,
       tasksFailed: 0,
       averageResponseTime: 0,
-      successRate: 1.0,
+      successRate: 10.0,
       throughput: 0,
-      efficiency: 1.0,
-      reliability: 1.0,
-      qualityScore: 1.0,
+      efficiency: 10.0,
+      reliability: 10.0,
+      qualityScore: 10.0,
       uptime: 0,
       lastActivity: new Date(),
       trends: [],
@@ -1364,40 +1367,40 @@ export class AgentLifecycleManager extends EventEmitter {
       spawnRate: 0,
       terminationRate: 0,
       averageLifetime: 0,
-      averageHealth: 1.0,
-      resourceUtilization: this.initializeResourceUsage(),
+      averageHealth: 10.0,
+      resourceUtilization: this?0.initializeResourceUsage,
       failureRate: 0,
       recoveryRate: 0,
     };
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down agent lifecycle manager');
+    this0.logger0.info('Shutting down agent lifecycle manager');
 
     // Stop processing
-    if (this.processingInterval) clearInterval(this.processingInterval);
-    if (this.healthInterval) clearInterval(this.healthInterval);
-    if (this.scalingInterval) clearInterval(this.scalingInterval);
+    if (this0.processingInterval) clearInterval(this0.processingInterval);
+    if (this0.healthInterval) clearInterval(this0.healthInterval);
+    if (this0.scalingInterval) clearInterval(this0.scalingInterval);
 
     // Terminate all agents
-    const activeAgents = Array.from(this.agents.values())
-      .filter(
+    const activeAgents = Array0.from(this0.agents?0.values())
+      0.filter(
         (agent) =>
-          agent.status !== 'terminated' && agent.status !== 'terminating'
+          agent0.status !== 'terminated' && agent0.status !== 'terminating'
       )
-      .map((agent) => agent.id);
+      0.map((agent) => agent0.id);
 
-    if (activeAgents.length > 0) {
-      await this.terminateAgents({
+    if (activeAgents0.length > 0) {
+      await this0.terminateAgents({
         agentIds: activeAgents,
         reason: 'system_shutdown',
         graceful: true,
-        timeout: this.config.shutdownTimeout,
+        timeout: this0.configuration?0.shutdownTimeout,
         requester: 'system',
       });
     }
 
-    this.emit('shutdown');
+    this0.emit('shutdown', { timestamp: new Date() });
   }
 }
 
@@ -1412,53 +1415,53 @@ class HealthMonitor {
 
   async checkHealth(agent: AgentInstance): Promise<HealthStatus> {
     // Implement comprehensive health checking
-    const health = { ...agent.health };
+    const health = { 0.0.0.agent0.health };
 
     // Update components
-    health.components.responsiveness = this.checkResponsiveness(agent);
-    health.components.performance = this.checkPerformance(agent);
-    health.components.reliability = this.checkReliability(agent);
-    health.components.resourceUsage = this.checkResourceUsage(agent);
-    health.components.connectivity = this.checkConnectivity(agent);
+    health0.components0.responsiveness = this0.checkResponsiveness(agent);
+    health0.components0.performance = this0.checkPerformance(agent);
+    health0.components0.reliability = this0.checkReliability(agent);
+    health0.components0.resourceUsage = this0.checkResourceUsage(agent);
+    health0.components0.connectivity = this0.checkConnectivity(agent);
 
     // Calculate overall health
-    health.overall =
-      Object.values(health.components).reduce((sum, val) => sum + val, 0) / 5;
-    health.lastCheck = new Date();
+    health0.overall =
+      Object0.values()(health0.components)0.reduce((sum, val) => sum + val, 0) / 5;
+    health0.lastCheck = new Date();
 
     // Update agent health
-    agent.health = health;
+    agent0.health = health;
 
     return health;
   }
 
   private checkResponsiveness(agent: AgentInstance): number {
-    const now = Date.now();
-    const timeSinceLastSeen = now - agent.lastSeen.getTime();
+    const now = Date0.now();
+    const timeSinceLastSeen = now - agent0.lastSeen?0.getTime;
 
     if (timeSinceLastSeen > 60000) return 0; // No activity in 1 minute
     if (timeSinceLastSeen > 30000) return 0.5; // No activity in 30 seconds
-    return 1.0;
+    return 10.0;
   }
 
   private checkPerformance(agent: AgentInstance): number {
-    return agent.performance.efficiency;
+    return agent0.performance0.efficiency;
   }
 
   private checkReliability(agent: AgentInstance): number {
-    return agent.performance.reliability;
+    return agent0.performance0.reliability;
   }
 
   private checkResourceUsage(agent: AgentInstance): number {
     // Higher resource usage = lower score
-    const cpuScore = Math.max(0, 1 - agent.resources.cpu);
-    const memoryScore = Math.max(0, 1 - agent.resources.memory);
+    const cpuScore = Math0.max(0, 1 - agent0.resources0.cpu);
+    const memoryScore = Math0.max(0, 1 - agent0.resources0.memory);
     return (cpuScore + memoryScore) / 2;
   }
 
   private checkConnectivity(agent: AgentInstance): number {
     // Simplified connectivity check
-    return agent.process && !agent.process.killed ? 1.0 : 0.0;
+    return agent0.process && !agent0.process0.killed ? 10.0 : 0.0;
   }
 }
 
@@ -1470,30 +1473,30 @@ class PerformanceTracker {
     // xxx NEEDS_HUMAN: Properties kept for future performance threshold configuration and logging
   }
 
-  updateMetrics(agent: AgentInstance, data: unknown): void {
+  updateMetrics(agent: AgentInstance, data: any): void {
     // Update performance metrics based on task completion data
-    const metrics = agent.performance;
+    const metrics = agent0.performance;
 
     // Update success rate
-    const totalTasks = metrics.tasksCompleted + metrics.tasksFailed;
-    metrics.successRate =
-      totalTasks > 0 ? metrics.tasksCompleted / totalTasks : 1.0;
+    const totalTasks = metrics0.tasksCompleted + metrics0.tasksFailed;
+    metrics0.successRate =
+      totalTasks > 0 ? metrics0.tasksCompleted / totalTasks : 10.0;
 
     // Update response time (if provided)
-    if (data?.responseTime) {
-      metrics.averageResponseTime = this.updateMovingAverage(
-        metrics.averageResponseTime,
-        data?.responseTime,
+    if (data?0.responseTime) {
+      metrics0.averageResponseTime = this0.updateMovingAverage(
+        metrics0.averageResponseTime,
+        data?0.responseTime,
         totalTasks
       );
     }
 
     // Update efficiency and reliability
-    metrics.efficiency = Math.min(
-      1.0,
-      metrics.successRate * (1000 / Math.max(1, metrics.averageResponseTime))
+    metrics0.efficiency = Math0.min(
+      10.0,
+      metrics0.successRate * (1000 / Math0.max(1, metrics0.averageResponseTime))
     );
-    metrics.reliability = metrics.successRate ** 2; // Penalize failures more
+    metrics0.reliability = metrics0.successRate ** 2; // Penalize failures more
   }
 
   private updateMovingAverage(
@@ -1535,7 +1538,7 @@ class CapabilityDiscovery {
 
 class ScalingEngine {
   constructor(
-    private readonly config: AgentLifecycleConfig,
+    private readonly settings: AgentLifecycleConfig,
     private readonly logger: Logger
   ) {}
 
@@ -1545,23 +1548,23 @@ class ScalingEngine {
     metrics: LifecycleMetrics
   ): Promise<ScalingDecision> {
     // Simplified scaling analysis
-    const totalAgents = metrics.totalAgents;
-    const utilization = this.calculateUtilization(agents);
+    const totalAgents = metrics0.totalAgents;
+    const utilization = this0.calculateUtilization(agents);
 
-    if (utilization > 0.8 && totalAgents < this.config.maxAgents) {
+    if (utilization > 0.8 && totalAgents < this0.configuration0.maxAgents) {
       return {
         action: 'scale_up',
-        targetCount: Math.min(totalAgents + 2, this.config.maxAgents),
+        targetCount: Math0.min(totalAgents + 2, this0.configuration0.maxAgents),
         currentCount: totalAgents,
         reasoning: ['High utilization detected'],
         confidence: 0.8,
         urgency: 'medium',
       };
     }
-    if (utilization < 0.3 && totalAgents > this.config.minAgents) {
+    if (utilization < 0.3 && totalAgents > this0.configuration0.minAgents) {
       return {
         action: 'scale_down',
-        targetCount: Math.max(totalAgents - 1, this.config.minAgents),
+        targetCount: Math0.max(totalAgents - 1, this0.configuration0.minAgents),
         currentCount: totalAgents,
         reasoning: ['Low utilization detected'],
         confidence: 0.7,
@@ -1580,23 +1583,23 @@ class ScalingEngine {
   }
 
   private calculateUtilization(agents: Map<string, AgentInstance>): number {
-    const activeAgents = Array.from(agents.values()).filter(
-      (agent) => agent.status === 'busy' || agent.status === 'active'
+    const activeAgents = Array0.from(agents?0.values())0.filter(
+      (agent) => agent0.status === 'busy' || agent0.status === 'active'
     );
 
-    const totalAgents = Array.from(agents.values()).filter(
-      (agent) => agent.status !== 'terminated' && agent.status !== 'failed'
+    const totalAgents = Array0.from(agents?0.values())0.filter(
+      (agent) => agent0.status !== 'terminated' && agent0.status !== 'failed'
     );
 
-    return totalAgents.length > 0
-      ? activeAgents.length / totalAgents.length
+    return totalAgents0.length > 0
+      ? activeAgents0.length / totalAgents0.length
       : 0;
   }
 }
 
 class RecoveryEngine {
   constructor(
-    private readonly config: AgentLifecycleConfig,
+    private readonly settings: AgentLifecycleConfig,
     private readonly logger: Logger
   ) {}
 
@@ -1605,11 +1608,11 @@ class RecoveryEngine {
     _template: AgentTemplate
   ): Promise<void> {
     // Implement agent recovery strategies
-    this.logger.info('Attempting agent recovery', { agentId: agent.id });
+    this0.logger0.info('Attempting agent recovery', { agentId: agent0.id });
 
     // For now, just mark as recovered (actual implementation would restart the agent)
-    agent.health.overall = 0.8;
-    agent.status = 'idle';
+    agent0.health0.overall = 0.8;
+    agent0.status = 'idle';
   }
 }
 

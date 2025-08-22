@@ -6,7 +6,7 @@
  * pattern recognition and knowledge preservation.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   recordMetric, 
@@ -108,7 +108,7 @@ interface ExtractionConfig {
   preserveRawData: boolean;        // Keep raw session data in archive
 }
 
-export class SwarmKnowledgeExtractor extends EventEmitter {
+export class SwarmKnowledgeExtractor extends TypedEventBase {
   private logger: Logger;
   private config: ExtractionConfig;
   private telemetry: TelemetryManager;
@@ -146,7 +146,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
             cold: { maxAge: 604800000, maxSize: 1000000000 } // 1 week
           },
           archival: {
-            enabled: this.config.preserveRawData,
+            enabled: this.configuration.preserveRawData,
             compression: true,
             retentionPeriod: 2592000000 // 30 days
           },
@@ -159,25 +159,25 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         await this.lifecycleManager.initialize();
 
         // Initialize ML tools if enabled
-        if (this.config.mlEnabled) {
+        if (this.configuration.mlEnabled) {
           await this.initializeMLTools();
         }
 
         // Initialize Brain coordinator if enabled
-        if (this.config.brainEnabled) {
+        if (this.configuration.brainEnabled) {
           await this.initializeBrainTools();
         }
 
         // Initialize SPARC engine if enabled
-        if (this.config.sparcEnabled) {
+        if (this.configuration.sparcEnabled) {
           await this.initializeSPARCTools();
         }
 
         this.initialized = true;
         this.logger.info('Swarm knowledge extractor initialized', {
-          mlEnabled: this.config.mlEnabled,
-          brainEnabled: this.config.brainEnabled,
-          sparcEnabled: this.config.sparcEnabled
+          mlEnabled: this.configuration.mlEnabled,
+          brainEnabled: this.configuration.brainEnabled,
+          sparcEnabled: this.configuration.sparcEnabled
         });
 
         recordMetric('swarm_knowledge_extractor_initialized', 1);
@@ -225,7 +225,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
           this.extractPerformanceMetrics(sessionData),
           this.extractLearningOutcomes(sessionData),
           this.extractFailurePatterns(sessionData),
-          this.config.sparcEnabled ? this.extractSPARCInsights(sessionData) : Promise.resolve(undefined)
+          this.configuration.sparcEnabled ? this.extractSPARCInsights(sessionData) : Promise.resolve(undefined)
         ]);
 
         // Calculate importance and confidence using ML if available
@@ -335,7 +335,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 
     } catch (error) {
       this.logger.warn('Failed to initialize ML tools, continuing without ML:', error);
-      this.config.mlEnabled = false;
+      this.configuration.mlEnabled = false;
     }
   }
 
@@ -360,7 +360,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 
     } catch (error) {
       this.logger.warn('Failed to initialize Brain tools, continuing without Brain:', error);
-      this.config.brainEnabled = false;
+      this.configuration.brainEnabled = false;
     }
   }
 
@@ -379,14 +379,14 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 
     } catch (error) {
       this.logger.warn('Failed to initialize SPARC tools, continuing without SPARC:', error);
-      this.config.sparcEnabled = false;
+      this.configuration.sparcEnabled = false;
     }
   }
 
   private shouldExtract(sessionData: SwarmSession): boolean {
     const sessionDuration = sessionData.endTime - sessionData.startTime;
     
-    return sessionDuration >= this.config.minSessionDuration &&
+    return sessionDuration >= this.configuration.minSessionDuration &&
            sessionData.decisions.length > 0 &&
            sessionData.participants.length > 1;
   }
@@ -634,11 +634,11 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
   getExtractionStats() {
     return {
       initialized: this.initialized,
-      mlEnabled: this.config.mlEnabled,
-      brainEnabled: this.config.brainEnabled,
-      sparcEnabled: this.config.sparcEnabled,
-      minSessionDuration: this.config.minSessionDuration,
-      minImportanceThreshold: this.config.minImportanceThreshold
+      mlEnabled: this.configuration.mlEnabled,
+      brainEnabled: this.configuration.brainEnabled,
+      sparcEnabled: this.configuration.sparcEnabled,
+      minSessionDuration: this.configuration.minSessionDuration,
+      minImportanceThreshold: this.configuration.minImportanceThreshold
     };
   }
 

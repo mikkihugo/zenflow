@@ -41,8 +41,7 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
     }
     return useValue ? value : void 0;
 };
-import { getLogger, ok, err, safeAsync, withRetry, PerformanceTracker, BasicTelemetryManager, Storage, injectable, createErrorAggregator, createCircuitBreaker, recordMetric, recordHistogram, withTrace, ensureError } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { getLogger, ok, err, safeAsync, withRetry, PerformanceTracker, BasicTelemetryManager, Storage, injectable, createErrorAggregator, createCircuitBreaker, recordMetric, recordHistogram, withTrace, ensureError, TypedEventBase } from '@claude-zen/foundation';
 const logger = getLogger('memory:store');
 const performanceTracker = new PerformanceTracker();
 // Initialize telemetry for memory operations
@@ -57,7 +56,7 @@ let SessionMemoryStore = (() => {
     let _classDescriptor;
     let _classExtraInitializers = [];
     let _classThis;
-    let _classSuper = EventEmitter;
+    let _classSuper = TypedEventBase;
     var SessionMemoryStore = class extends _classSuper {
         static { _classThis = this; }
         static {
@@ -150,7 +149,7 @@ let SessionMemoryStore = (() => {
                         hasCircuitBreaker: !!this.circuitBreaker,
                         telemetryEnabled: this.telemetryInitialized
                     });
-                    this.emit('initialized');
+                    this.emit('initialized', {});
                 });
             }, {
                 retries: 3,
@@ -463,7 +462,7 @@ let SessionMemoryStore = (() => {
                 logger.info('Session memory store shutdown successfully', {
                     shutdownTime: timer.duration
                 });
-                this.emit('shutdown');
+                this.emit('shutdown', {});
             }).then(result => {
                 if (result.isErr()) {
                     const error = new MemoryError('Failed to shutdown session memory store', { originalError: result.error.message });

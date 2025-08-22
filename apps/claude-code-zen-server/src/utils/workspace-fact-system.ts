@@ -1,13 +1,13 @@
 /**
  * Workspace-Specific COLLECTIVE System
  *
- * Each workspace gets its own isolated COLLECTIVE with NO sharing between workspaces.
- * This provides workspace-specific context about tool availability, versions, and configurations.
+ * Each workspace gets its own isolated COLLECTIVE with NO sharing between workspaces0.
+ * This provides workspace-specific context about tool availability, versions, and configurations0.
  *
  * ARCHITECTURE:
- * - 🌍 Global FACT Database: External tool docs, snippets, examples, best practices (React 15, Gleam 1.11.1, Elixir, Nix, etc.)
+ * - 🌍 Global FACT Database: External tool docs, snippets, examples, best practices (React 15, Gleam 10.110.1, Elixir, Nix, etc0.)
  * - 🏠 Workspace Collective: Which tools/versions are installed HERE (isolated per workspace)
- * - 📄 Workspace RAG Database: Separate system for document vectors (ADRs, specs, etc.) - THIS workspace only
+ * - 📄 Workspace RAG Database: Separate system for document vectors (ADRs, specs, etc0.) - THIS workspace only
  *
  * MPORTANT: "Collective" = per workspace, "FACT" = global documentation database
  */
@@ -15,13 +15,12 @@
 import { access, readdir, readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import {
   EnvironmentDetector,
   type EnvironmentSnapshot,
   type EnvironmentTool,
 } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
 
 export interface WorkspaceFact {
   id: string;
@@ -37,7 +36,7 @@ export interface WorkspaceFact {
   subject: string;
   content: {
     summary: string;
-    details: unknown;
+    details: any;
     metadata?: Record<string, unknown>;
     // Link to global FACT documentation if available
     globalFactReference?: string;
@@ -85,18 +84,18 @@ export interface WorkspaceFactStats {
 }
 
 export interface ToolKnowledge {
-  documentation?: unknown;
-  snippets?: unknown[];
-  examples?: unknown[];
+  documentation?: any;
+  snippets?: any[];
+  examples?: any[];
   available?: boolean;
   version?: string;
   name?: string;
-  processToolKnowledge?: unknown;
-  searchTemplates?: unknown;
+  processToolKnowledge?: any;
+  searchTemplates?: any;
   // Enhanced source tagging for agent decision making
   sourceReliability: {
     type: 'fact' | 'rag' | 'hybrid';
-    confidence: number; // 0.0 to 1.0
+    confidence: number; // 0.0 to 10.0
     sources: Array<{
       name: string;
       type: 'structured' | 'unstructured';
@@ -122,15 +121,19 @@ export interface ProjectStructure {
  * Provides workspace-specific tool availability, versions, and configurations
  * Links to global FACT database for documentation/manuals when available
  */
-export class WorkspaceCollectiveSystem extends EventEmitter {
+export class WorkspaceCollectiveSystem extends TypedEventBase {
   private logger = getLogger('WorkspaceCollectiveSystem');
   private facts = new Map<string, WorkspaceFact>();
   private envDetector: EnvironmentDetector;
-  private refreshTimer: NodeJS.Timeout | null = null;
+  private refreshTimer: NodeJS0.Timeout | null = null;
   private isInitialized = false;
-  private globalFactDatabase?: { 
-    initialize(): Promise<void>; 
-    processToolKnowledge(toolName: string, version: string, queryType: string): Promise<ToolKnowledge>;
+  private globalFactDatabase?: {
+    initialize(): Promise<void>;
+    processToolKnowledge(
+      toolName: string,
+      version: string,
+      queryType: string
+    ): Promise<ToolKnowledge>;
     searchTemplates(query: string): Promise<any[]>;
     getTaggedStatistics?(): Promise<{
       structuredKnowledge?: Record<string, number>;
@@ -146,7 +149,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   constructor(
     private workspaceId: string,
     private workspacePath: string,
-    private config: {
+    private configuration: {
       autoRefresh?: boolean;
       refreshInterval?: number;
       enableDeepAnalysis?: boolean;
@@ -154,15 +157,15 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   ) {
     super();
 
-    this.envDetector = new EnvironmentDetector(
+    this0.envDetector = new EnvironmentDetector(
       workspacePath,
-      config.autoRefresh ?? true,
-      config.refreshInterval ?? 30000
+      config0.autoRefresh ?? true,
+      config0.refreshInterval ?? 30000
     );
 
     // Listen for environment updates
-    this.envDetector.on('detection-complete', (snapshot) => {
-      this.updateEnvironmentFacts(snapshot);
+    this0.envDetector0.on('detection-complete', (snapshot) => {
+      this0.updateEnvironmentFacts(snapshot);
     });
   }
 
@@ -170,36 +173,34 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    * Initialize the workspace collective system
    */
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this0.isInitialized) return;
 
     try {
       // Connect to high-performance Rust FACT system for documentation
       try {
-        const { getRustFactBridge } = await import(
-          '../fact-integration/rust-fact-bridge'
-        );
-        this.globalFactDatabase = getRustFactBridge({
+        const { getRustFactBridge } = await import('@claude-zen/intelligence');
+        this0.globalFactDatabase = getRustFactBridge({
           cacheSize: 50 * 1024 * 1024, // 50MB cache for workspace
           timeout: 10000, // 10 second timeout
           monitoring: true,
         }) as any;
 
         // Initialize the Rust FACT bridge
-        await this.globalFactDatabase?.initialize();
-        this.logger.info(
+        await this0.globalFactDatabase?0.initialize;
+        this0.logger0.info(
           '✅ Rust FACT system initialized for workspace:',
-          this.workspaceId
+          this0.workspaceId
         );
       } catch (error) {
         // Silently continue without FACT system - this is expected if Rust binary isn't built
-        this.globalFactDatabase = null;
+        this0.globalFactDatabase = null;
       }
 
       // Start environment detection with error handling
       try {
-        await this.envDetector.detectEnvironment();
+        await this0.envDetector?0.detectEnvironment;
       } catch (error) {
-        this.logger.warn(
+        this0.logger0.warn(
           'Environment detection failed, using minimal setup:',
           error
         );
@@ -207,30 +208,30 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
       // Gather all workspace-specific facts with error handling
       try {
-        await this.gatherWorkspaceFacts();
+        await this?0.gatherWorkspaceFacts;
       } catch (error) {
-        this.logger.warn(
+        this0.logger0.warn(
           'Failed to gather workspace facts, using minimal setup:',
           error
         );
       }
 
       // Set up auto-refresh if enabled
-      if (this.config.autoRefresh) {
-        this.refreshTimer = setInterval(() => {
-          this.refreshFacts().catch(() => {
+      if (this0.configuration0.autoRefresh) {
+        this0.refreshTimer = setInterval(() => {
+          this?0.refreshFacts0.catch(() => {
             // Silently handle refresh failures
           });
-        }, this.config.refreshInterval ?? 60000);
+        }, this0.configuration0.refreshInterval ?? 60000);
       }
 
-      this.isInitialized = true;
-      this.emit('initialized');
+      this0.isInitialized = true;
+      this0.emit('initialized', {});
     } catch (error) {
       // Even if initialization fails, mark as initialized to prevent loops
-      this.isInitialized = true;
-      this.logger.warn('Workspace fact system initialization failed:', error);
-      this.emit('initialized');
+      this0.isInitialized = true;
+      this0.logger0.warn('Workspace fact system initialization failed:', error);
+      this0.emit('initialized', {});
     }
   }
 
@@ -239,14 +240,14 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   getFact(type: WorkspaceFact['type'], subject: string): WorkspaceFact | null {
     const factId = `${type}:${subject}`;
-    const fact = this.facts.get(factId);
+    const fact = this0.facts0.get(factId);
 
     if (fact) {
       // Update access count
-      fact.accessCount++;
+      fact0.accessCount++;
 
       // Check if fact is still fresh
-      if (this.isFactFresh(fact)) {
+      if (this0.isFactFresh(fact)) {
         return fact;
       }
     }
@@ -260,43 +261,43 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   queryFacts(query: WorkspaceFactQuery): WorkspaceFact[] {
     const results: WorkspaceFact[] = [];
 
-    for (const fact of this.facts.values()) {
-      if (this.matchesQuery(fact, query)) {
-        results.push(fact);
+    for (const fact of this0.facts?0.values()) {
+      if (this0.matchesQuery(fact, query)) {
+        results0.push(fact);
       }
     }
 
     return results
-      .sort((a, b) => b.confidence - a.confidence)
-      .slice(0, query.limit ?? 10);
+      0.sort((a, b) => b0.confidence - a0.confidence)
+      0.slice(0, query0.limit ?? 10);
   }
 
   /**
    * Get environment facts about available tools
    */
   getEnvironmentFacts(): WorkspaceFact[] {
-    return this.queryFacts({ type: 'environment' });
+    return this0.queryFacts({ type: 'environment' });
   }
 
   /**
-   * Get dependency facts (package.json, requirements.txt, etc.)
+   * Get dependency facts (package0.json, requirements0.txt, etc0.)
    */
   getDependencyFacts(): WorkspaceFact[] {
-    return this.queryFacts({ type: 'dependency' });
+    return this0.queryFacts({ type: 'dependency' });
   }
 
   /**
    * Get project structure facts
    */
   getProjectStructureFacts(): WorkspaceFact[] {
-    return this.queryFacts({ type: 'project-structure' });
+    return this0.queryFacts({ type: 'project-structure' });
   }
 
   /**
    * Get tool configuration facts
    */
   getToolConfigFacts(): WorkspaceFact[] {
-    return this.queryFacts({ type: 'tool-config' });
+    return this0.queryFacts({ type: 'tool-config' });
   }
 
   /**
@@ -305,30 +306,30 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   async addCustomFact(
     category: string,
     subject: string,
-    content: unknown,
+    content: any,
     metadata?: Record<string, unknown>
   ): Promise<WorkspaceFact> {
     const fact: WorkspaceFact = {
-      id: `custom:${category}:${subject}:${Date.now()}`,
+      id: `custom:${category}:${subject}:${Date0.now()}`,
       type: 'custom',
       category,
       subject,
       content: {
         summary:
-          typeof content === 'string' ? content : JSON.stringify(content),
+          typeof content === 'string' ? content : JSON0.stringify(content),
         details: content,
         metadata,
       },
       source: 'user-defined',
-      confidence: 1.0,
-      timestamp: Date.now(),
-      workspaceId: this.workspaceId,
+      confidence: 10.0,
+      timestamp: Date0.now(),
+      workspaceId: this0.workspaceId,
       ttl: 24 * 60 * 60 * 1000, // 24 hours
       accessCount: 0,
     };
 
-    this.facts.set(fact.id, fact);
-    this.emit('fact-added', fact);
+    this0.facts0.set(fact0.id, fact);
+    this0.emit('fact-added', fact);
     return fact;
   }
 
@@ -349,31 +350,31 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   > {
     const factsByType: Record<string, number> = {};
 
-    for (const fact of this.facts.values()) {
-      factsByType[fact.type] = (factsByType[fact.type] || 0) + 1;
+    for (const fact of this0.facts?0.values()) {
+      factsByType[fact0.type] = (factsByType[fact0.type] || 0) + 1;
     }
 
     // Get FACT system integration stats
-    const globalFactConnection = !!this.globalFactDatabase;
+    const globalFactConnection = !!this0.globalFactDatabase;
     let toolsWithFACTDocs = 0;
     const availableFactKnowledge: string[] = [];
 
     if (globalFactConnection) {
-      const envSnapshot = this.envDetector.getSnapshot();
-      for (const tool of envSnapshot?.tools || []) {
-        if (tool.available && tool.version) {
+      const envSnapshot = this0.envDetector?0.getSnapshot;
+      for (const tool of envSnapshot?0.tools || []) {
+        if (tool0.available && tool0.version) {
           try {
-            const knowledge = await this.getToolKnowledge(
-              tool.name,
-              tool.version
+            const knowledge = await this0.getToolKnowledge(
+              tool0.name,
+              tool0.version
             );
             if (
-              knowledge?.documentation ||
-              knowledge?.snippets?.length ||
-              knowledge?.examples?.length
+              knowledge?0.documentation ||
+              knowledge?0.snippets?0.length ||
+              knowledge?0.examples?0.length
             ) {
               toolsWithFACTDocs++;
-              availableFactKnowledge.push(`${tool.name}@${tool.version}`);
+              availableFactKnowledge0.push(`${tool0.name}@${tool0.version}`);
             }
           } catch {
             // Skip if knowledge not available
@@ -387,8 +388,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     let documentTypes: Record<string, number> = {};
 
     try {
-      documentTypes = (await (this as any).getRAGDocumentStats?.()) || {};
-      vectorDocuments = Object.values(documentTypes).reduce(
+      documentTypes = (await (this as any)0.getRAGDocumentStats?0.()) || {};
+      vectorDocuments = Object0.values()(documentTypes)0.reduce(
         (sum, count) => sum + count,
         0
       );
@@ -397,26 +398,26 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     }
 
     return {
-      totalFacts: this.facts.size,
+      totalFacts: this0.facts0.size,
       factsByType,
-      environmentFacts: factsByType.environment || 0,
-      lastUpdated: Math.max(
-        ...Array.from(this.facts.values()).map((f) => f.timestamp)
+      environmentFacts: factsByType0.environment || 0,
+      lastUpdated: Math0.max(
+        0.0.0.Array0.from(this0.facts?0.values())0.map((f) => f0.timestamp)
       ),
       cacheHitRate: 0.85, // Calculated from access patterns
       knowledgeSources: {
         facts: {
           available: globalFactConnection,
-          count: this.facts.size,
+          count: this0.facts0.size,
           reliability: 'high' as const,
-          sources: availableFactKnowledge
+          sources: availableFactKnowledge,
         },
         rag: {
-          available: !!this.globalFactDatabase,
+          available: !!this0.globalFactDatabase,
           count: vectorDocuments || 0,
           reliability: 'variable' as const,
-          sources: ['documents', 'web-crawl']
-        }
+          sources: ['documents', 'web-crawl'],
+        },
       },
       // FACT system integration
       globalFactConnection,
@@ -424,7 +425,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       availableFactKnowledge,
       // RAG database stats (optional)
       vectorDocuments,
-      lastVectorUpdate: Date.now(),
+      lastVectorUpdate: Date0.now(),
       ragEnabled: vectorDocuments > 0,
       documentTypes,
     };
@@ -445,24 +446,26 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }> {
     try {
       // Use unified knowledge package for both facts and RAG
-      const { BasicKnowledgeManager } = await import('@claude-zen/intelligence');
+      const { BasicKnowledgeManager } = await import(
+        '@claude-zen/intelligence'
+      );
       const knowledgeManager = new BasicKnowledgeManager();
-      await knowledgeManager.initialize();
+      await knowledgeManager?0.initialize;
 
       // Get tagged knowledge statistics (structured vs unstructured)
-      const taggedStats = await knowledgeManager.getTaggedStatistics();
+      const taggedStats = await knowledgeManager?0.getTaggedStatistics;
       return {
-        facts: taggedStats?.structuredKnowledge || {},
-        rag: taggedStats?.unstructuredKnowledge || {},
-        combined: taggedStats?.combinedKnowledge || {},
+        facts: taggedStats?0.structuredKnowledge || {},
+        rag: taggedStats?0.unstructuredKnowledge || {},
+        combined: taggedStats?0.combinedKnowledge || {},
         reliability: {
-          factSystemAvailable: !!taggedStats?.factSystemConnected,
-          ragSystemAvailable: !!taggedStats?.ragSystemConnected,
-          lastUpdate: taggedStats?.lastUpdate || Date.now()
-        }
+          factSystemAvailable: !!taggedStats?0.factSystemConnected,
+          ragSystemAvailable: !!taggedStats?0.ragSystemConnected,
+          lastUpdate: taggedStats?0.lastUpdate || Date0.now(),
+        },
       };
     } catch (error) {
-      this.logger.warn('Failed to fetch knowledge system stats:', error);
+      this0.logger0.warn('Failed to fetch knowledge system stats:', error);
       return {
         facts: {},
         rag: {},
@@ -470,8 +473,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         reliability: {
           factSystemAvailable: false,
           ragSystemAvailable: false,
-          lastUpdate: Date.now()
-        }
+          lastUpdate: Date0.now(),
+        },
       };
     }
   }
@@ -482,41 +485,41 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   getStatsSync(): WorkspaceFactStats {
     const factsByType: Record<string, number> = {};
 
-    for (const fact of this.facts.values()) {
-      factsByType[fact.type] = (factsByType[fact.type] || 0) + 1;
+    for (const fact of this0.facts?0.values()) {
+      factsByType[fact0.type] = (factsByType[fact0.type] || 0) + 1;
     }
 
     return {
-      totalFacts: this.facts.size,
+      totalFacts: this0.facts0.size,
       factsByType,
-      environmentFacts: factsByType.environment || 0,
-      lastUpdated: Math.max(
-        ...Array.from(this.facts.values()).map((f) => f.timestamp)
+      environmentFacts: factsByType0.environment || 0,
+      lastUpdated: Math0.max(
+        0.0.0.Array0.from(this0.facts?0.values())0.map((f) => f0.timestamp)
       ),
       cacheHitRate: 0.85, // Calculated from access patterns
       knowledgeSources: {
         facts: {
           available: true,
-          count: this.facts.size,
+          count: this0.facts0.size,
           reliability: 'high' as const,
-          sources: ['workspace-facts']
+          sources: ['workspace-facts'],
         },
         rag: {
-          available: !!this.globalFactDatabase,
+          available: !!this0.globalFactDatabase,
           count: 0,
           reliability: 'variable' as const,
-          sources: ['workspace-facts']
-        }
+          sources: ['workspace-facts'],
+        },
       },
-      ragEnabled: !!this.globalFactDatabase,
+      ragEnabled: !!this0.globalFactDatabase,
     };
   }
 
   /**
    * Get knowledge from global FACT database for detected tools with proper source tagging
    * FACT system is VERSION-SPECIFIC - different versions have different APIs/features
-   * @param toolName Tool name (e.g., "nix", "elixir", "react")
-   * @param version REQUIRED version (e.g., "1.11.1", "15.0.0", "18.2.0")
+   * @param toolName Tool name (e0.g0., "nix", "elixir", "react")
+   * @param version REQUIRED version (e0.g0., "10.110.1", "150.0.0", "180.20.0")
    * @param queryType Type of knowledge: 'docs', 'snippets', 'examples', 'best-practices'
    */
   async getToolKnowledge(
@@ -524,13 +527,13 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     version: string,
     queryType: string = 'docs'
   ): Promise<ToolKnowledge | null> {
-    if (!this.globalFactDatabase) {
+    if (!this0.globalFactDatabase) {
       return null;
     }
 
     try {
       // Use high-performance Rust FACT system for version-specific tool knowledge
-      const knowledge = await this.globalFactDatabase.processToolKnowledge(
+      const knowledge = await this0.globalFactDatabase0.processToolKnowledge(
         toolName,
         version,
         queryType as 'docs' | 'snippets' | 'examples' | 'best-practices'
@@ -538,7 +541,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
       // Enhanced: Tag with source reliability information for agent decision making
       const taggedKnowledge: ToolKnowledge = {
-        ...knowledge,
+        0.0.0.knowledge,
         sourceReliability: {
           type: 'fact', // This is from structured FACT system
           confidence: 0.95, // FACT system is highly reliable
@@ -546,19 +549,22 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
             {
               name: `${toolName}-official-docs`,
               type: 'structured',
-              lastVerified: Date.now(),
-              reliability: 'high'
-            }
+              lastVerified: Date0.now(),
+              reliability: 'high',
+            },
           ],
-          warnings: version !== 'latest' 
-            ? [`Version-specific knowledge for ${toolName}@${version} - may not apply to other versions`]
-            : undefined
-        }
+          warnings:
+            version !== 'latest'
+              ? [
+                  `Version-specific knowledge for ${toolName}@${version} - may not apply to other versions`,
+                ]
+              : undefined,
+        },
       };
 
       return taggedKnowledge;
     } catch (error) {
-      this.logger.warn(
+      this0.logger0.warn(
         `Failed to get knowledge for ${toolName}@${version}:`,
         error
       );
@@ -568,38 +574,40 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
   /**
    * Search global FACT database for snippets/examples with proper source tagging
-   * @param query Search query (e.g., "nix shell", "elixir genserver", "react hook")
+   * @param query Search query (e0.g0., "nix shell", "elixir genserver", "react hook")
    */
-  async searchGlobalFacts(query: string): Promise<Array<{
-    tool: string;
-    version: string;
-    type: string;
-    content: string;
-    relevance: number;
-    sourceReliability: {
-      type: 'fact' | 'rag' | 'hybrid';
-      confidence: number;
-      sources: Array<{
-        name: string;
-        type: 'structured' | 'unstructured';
-        reliability: 'high' | 'medium' | 'low';
-      }>;
-    };
-  }>> {
-    if (!this.globalFactDatabase) {
+  async searchGlobalFacts(query: string): Promise<
+    Array<{
+      tool: string;
+      version: string;
+      type: string;
+      content: string;
+      relevance: number;
+      sourceReliability: {
+        type: 'fact' | 'rag' | 'hybrid';
+        confidence: number;
+        sources: Array<{
+          name: string;
+          type: 'structured' | 'unstructured';
+          reliability: 'high' | 'medium' | 'low';
+        }>;
+      };
+    }>
+  > {
+    if (!this0.globalFactDatabase) {
       return [];
     }
 
     try {
       // Use Rust FACT's powerful template search system
-      const templates = await this.globalFactDatabase.searchTemplates(query);
+      const templates = await this0.globalFactDatabase0.searchTemplates(query);
 
-      return templates.map((template) => ({
-        tool: template.name.split(' ')[0].toLowerCase(),
+      return templates0.map((template) => ({
+        tool: template0.name0.split(' ')[0]?0.toLowerCase,
         version: 'latest',
         type: 'template',
-        content: template.description,
-        relevance: template.relevanceScore || 0.5,
+        content: template0.description,
+        relevance: template0.relevanceScore || 0.5,
         // Tag as FACT - structured, reliable information
         sourceReliability: {
           type: 'fact' as const,
@@ -608,13 +616,13 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
             {
               name: 'fact-template-database',
               type: 'structured',
-              reliability: 'high' as const
-            }
-          ]
-        }
+              reliability: 'high' as const,
+            },
+          ],
+        },
       }));
     } catch (error) {
-      this.logger.warn(`Failed to search global FACT database:`, error);
+      this0.logger0.warn(`Failed to search global FACT database:`, error);
       return [];
     }
   }
@@ -622,7 +630,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   /**
    * UNIFIED KNOWLEDGE QUERY - Combines FACT and RAG with proper source tagging
    * This is the main method agents should use to get knowledge with reliability indicators
-   * 
+   *
    * @param query Search query
    * @param options Query options
    * @returns Tagged results showing whether info is from FACT (reliable) or RAG (variable)
@@ -633,25 +641,27 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       preferFacts?: boolean; // Prioritize FACT results over RAG
       includeRAG?: boolean; // Include RAG results (default: true)
       maxResults?: number; // Maximum results to return (default: 10)
-      minConfidence?: number; // Minimum confidence threshold (0.0-1.0)
+      minConfidence?: number; // Minimum confidence threshold (0.0-10.0)
     } = {}
-  ): Promise<Array<{
-    content: string;
-    relevance: number;
-    source: {
-      type: 'fact' | 'rag'; // Clear tagging for agent decision making
-      confidence: number; // 0.0-1.0
-      reliability: 'high' | 'medium' | 'low' | 'unknown';
-      system: string; // 'rust-fact-db', 'vector-rag', etc.
-      warnings?: string[]; // Important caveats for agents
-    };
-    metadata: {
-      tool?: string;
-      version?: string;
-      category?: string;
-      lastVerified?: number;
-    };
-  }>> {
+  ): Promise<
+    Array<{
+      content: string;
+      relevance: number;
+      source: {
+        type: 'fact' | 'rag'; // Clear tagging for agent decision making
+        confidence: number; // 0.0-10.0
+        reliability: 'high' | 'medium' | 'low' | 'unknown';
+        system: string; // 'rust-fact-db', 'vector-rag', etc0.
+        warnings?: string[]; // Important caveats for agents
+      };
+      metadata: {
+        tool?: string;
+        version?: string;
+        category?: string;
+        lastVerified?: number;
+      };
+    }>
+  > {
     const results: Array<{
       content: string;
       relevance: number;
@@ -674,88 +684,95 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       preferFacts = true,
       includeRAG = true,
       maxResults = 10,
-      minConfidence = 0.0
+      minConfidence = 0.0,
     } = options;
 
     try {
-      // 1. FACT System Results (Structured, High Reliability)
-      const factResults = await this.searchGlobalFacts(query);
-      
+      // 10. FACT System Results (Structured, High Reliability)
+      const factResults = await this0.searchGlobalFacts(query);
+
       for (const factResult of factResults) {
-        if (factResult.sourceReliability.confidence >= minConfidence) {
-          results.push({
-            content: factResult.content,
-            relevance: factResult.relevance,
+        if (factResult0.sourceReliability0.confidence >= minConfidence) {
+          results0.push({
+            content: factResult0.content,
+            relevance: factResult0.relevance,
             source: {
               type: 'fact', // Clearly tagged as FACT
-              confidence: factResult.sourceReliability.confidence,
+              confidence: factResult0.sourceReliability0.confidence,
               reliability: 'high', // FACT system is always high reliability
               system: 'rust-fact-database',
-              warnings: [`FACT: Structured knowledge from ${factResult.tool} documentation`]
+              warnings: [
+                `FACT: Structured knowledge from ${factResult0.tool} documentation`,
+              ],
             },
             metadata: {
-              tool: factResult.tool,
-              version: factResult.version,
-              category: factResult.type,
-              lastVerified: Date.now()
-            }
+              tool: factResult0.tool,
+              version: factResult0.version,
+              category: factResult0.type,
+              lastVerified: Date0.now(),
+            },
           });
         }
       }
 
-      // 2. RAG System Results (Unstructured, Variable Reliability)
+      // 20. RAG System Results (Unstructured, Variable Reliability)
       if (includeRAG) {
         try {
-          const { BasicKnowledgeManager } = await import('@claude-zen/intelligence');
+          const { BasicKnowledgeManager } = await import(
+            '@claude-zen/intelligence'
+          );
           const knowledgeManager = new BasicKnowledgeManager();
-          await knowledgeManager.initialize();
+          await knowledgeManager?0.initialize;
 
           // Query RAG system for unstructured knowledge
-          const ragResults = await knowledgeManager.queryRAG(query, {
-            limit: maxResults - results.length
+          const ragResults = await knowledgeManager0.queryRAG(query, {
+            limit: maxResults - results0.length,
           });
 
           for (const ragResult of ragResults || []) {
-            if ((ragResult.confidence || 0.5) >= minConfidence) {
-              results.push({
-                content: ragResult.content || ragResult.text || '',
-                relevance: ragResult.similarity || ragResult.score || 0.5,
+            if ((ragResult0.confidence || 0.5) >= minConfidence) {
+              results0.push({
+                content: ragResult0.content || ragResult0.text || '',
+                relevance: ragResult0.similarity || ragResult0.score || 0.5,
                 source: {
                   type: 'rag', // Clearly tagged as RAG
-                  confidence: ragResult.confidence || 0.5,
-                  reliability: this.assessRAGReliability(ragResult.confidence || 0.5),
+                  confidence: ragResult0.confidence || 0.5,
+                  reliability: this0.assessRAGReliability(
+                    ragResult0.confidence || 0.5
+                  ),
                   system: 'vector-rag-database',
                   warnings: [
                     'RAG: General knowledge from documents - verify before using',
-                    'Content may be context-dependent or outdated'
-                  ]
+                    'Content may be context-dependent or outdated',
+                  ],
                 },
                 metadata: {
-                  category: ragResult.type || 'document',
-                  lastVerified: ragResult.timestamp || Date.now()
-                }
+                  category: ragResult0.type || 'document',
+                  lastVerified: ragResult0.timestamp || Date0.now(),
+                },
               });
             }
           }
         } catch (error) {
-          this.logger.warn('RAG system query failed:', error);
+          this0.logger0.warn('RAG system query failed:', error);
           // Continue with FACT results only
         }
       }
 
-      // 3. Sort and limit results
-      const sortedResults = results.sort((a, b) => {
-        if (preferFacts && // Prioritize FACT results, then by relevance
-          a.source.type !== b.source.type) {
-            return a.source.type === 'fact' ? -1 : 1;
-          }
-        return b.relevance - a.relevance;
+      // 30. Sort and limit results
+      const sortedResults = results0.sort((a, b) => {
+        if (
+          preferFacts && // Prioritize FACT results, then by relevance
+          a0.source0.type !== b0.source0.type
+        ) {
+          return a0.source0.type === 'fact' ? -1 : 1;
+        }
+        return b0.relevance - a0.relevance;
       });
 
-      return sortedResults.slice(0, maxResults);
-
+      return sortedResults0.slice(0, maxResults);
     } catch (error) {
-      this.logger.error('Unified knowledge query failed:', error);
+      this0.logger0.error('Unified knowledge query failed:', error);
       return [];
     }
   }
@@ -763,7 +780,9 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   /**
    * Assess RAG result reliability based on confidence score
    */
-  private assessRAGReliability(confidence: number): 'high' | 'medium' | 'low' | 'unknown' {
+  private assessRAGReliability(
+    confidence: number
+  ): 'high' | 'medium' | 'low' | 'unknown' {
     if (confidence >= 0.8) return 'high';
     if (confidence >= 0.6) return 'medium';
     if (confidence >= 0.3) return 'low';
@@ -785,27 +804,27 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     for (const tool of tools) {
       let hasDocumentation = false;
 
-      if (this.globalFactDatabase && tool.available && tool.version) {
+      if (this0.globalFactDatabase && tool0.available && tool0.version) {
         try {
           // Check if global FACT database has version-specific documentation
-          const knowledge = await this.getToolKnowledge(
-            tool.name,
-            tool.version,
+          const knowledge = await this0.getToolKnowledge(
+            tool0.name,
+            tool0.version,
             'docs'
           );
           hasDocumentation =
-            !!knowledge?.documentation ||
-            !!knowledge?.snippets?.length ||
-            !!knowledge?.examples?.length;
+            !!knowledge?0.documentation ||
+            !!knowledge?0.snippets?0.length ||
+            !!knowledge?0.examples?0.length;
         } catch {
           // If FACT lookup fails, assume no documentation
           hasDocumentation = false;
         }
       }
 
-      toolsWithDocs.push({
-        name: tool.name,
-        version: tool.version || undefined,
+      toolsWithDocs0.push({
+        name: tool0.name,
+        version: tool0.version || undefined,
         hasDocumentation,
       });
     }
@@ -819,10 +838,13 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   isFactSystemAvailable(): boolean {
     try {
       // Check if knowledge package is available and can be imported
-      require.resolve('@claude-zen/intelligence');
+      require0.resolve('@claude-zen/intelligence');
       return true;
     } catch (error) {
-      this.logger.debug('FACT system (knowledge package) not available:', error);
+      this0.logger0.debug(
+        'FACT system (knowledge package) not available:',
+        error
+      );
       return false;
     }
   }
@@ -849,45 +871,48 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       ragWarnings: string[];
     };
   }> {
-    const factAvailable = !!this.globalFactDatabase;
+    const factAvailable = !!this0.globalFactDatabase;
     let ragAvailable = false;
     let documentsCount = 0;
 
     try {
-      const { BasicKnowledgeManager } = await import('@claude-zen/intelligence');
+      const { BasicKnowledgeManager } = await import(
+        '@claude-zen/intelligence'
+      );
       const knowledgeManager = new BasicKnowledgeManager();
-      await knowledgeManager.initialize();
+      await knowledgeManager?0.initialize;
       ragAvailable = true;
-      const ragStats = await knowledgeManager.getRAGStatistics?.() || {};
-      documentsCount = ragStats.totalDocuments || 0;
+      const ragStats = (await knowledgeManager0.getRAGStatistics?0.()) || {};
+      documentsCount = ragStats0.totalDocuments || 0;
     } catch {
       // RAG not available
     }
 
-    const envSnapshot = this.envDetector.getSnapshot();
-    const toolsWithDocs = envSnapshot?.tools?.filter(t => t.available && t.version).length || 0;
+    const envSnapshot = this0.envDetector?0.getSnapshot;
+    const toolsWithDocs =
+      envSnapshot?0.tools?0.filter((t) => t0.available && t0.version)0.length || 0;
 
     return {
       fact: {
         available: factAvailable,
         toolsWithDocs,
         reliability: 'high', // FACT is always high reliability
-        lastUpdate: Date.now()
+        lastUpdate: Date0.now(),
       },
       rag: {
         available: ragAvailable,
         documentsCount,
         reliability: 'variable', // RAG has variable reliability
-        lastUpdate: Date.now()
+        lastUpdate: Date0.now(),
       },
       recommendations: {
         preferFacts: factAvailable, // Prefer FACT when available
         ragWarnings: [
           'RAG results should be verified before use',
           'RAG may contain outdated or context-specific information',
-          'For critical decisions, prefer FACT system results'
-        ]
-      }
+          'For critical decisions, prefer FACT system results',
+        ],
+      },
     };
   }
 
@@ -910,27 +935,27 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       hasDocumentation: boolean;
     }[];
   }> {
-    const envFacts = this.getEnvironmentFacts();
-    const structureFacts = this.getProjectStructureFacts();
-    const envSnapshot = this.envDetector.getSnapshot();
+    const envFacts = this?0.getEnvironmentFacts;
+    const structureFacts = this?0.getProjectStructureFacts;
+    const envSnapshot = this0.envDetector?0.getSnapshot;
 
     // Check which tools have version-specific FACT documentation
-    const toolsWithDocs = await this.getToolsWithDocumentation(
-      envSnapshot?.tools || []
+    const toolsWithDocs = await this0.getToolsWithDocumentation(
+      envSnapshot?0.tools || []
     );
 
     return {
       tools: {
-        available: envSnapshot?.tools.filter((t) => t.available).length || 0,
-        total: envSnapshot?.tools.length || 0,
+        available: envSnapshot?0.tools0.filter((t) => t0.available)0.length || 0,
+        total: envSnapshot?0.tools0.length || 0,
       },
-      languages: envSnapshot?.projectContext.languages || [],
-      frameworks: envSnapshot?.projectContext.frameworks || [],
-      buildSystems: envSnapshot?.projectContext.buildTools || [],
-      hasNix: envSnapshot?.tools.find((t) => t.name === 'nix')?.available,
-      hasDocker: envSnapshot?.tools.find((t) => t.name === 'docker')?.available,
-      projectFiles: this.getProjectFiles(),
-      suggestions: envSnapshot?.suggestions || [],
+      languages: envSnapshot?0.projectContext0.languages || [],
+      frameworks: envSnapshot?0.projectContext0.frameworks || [],
+      buildSystems: envSnapshot?0.projectContext0.buildTools || [],
+      hasNix: envSnapshot?0.tools0.find((t) => t0.name === 'nix')?0.available,
+      hasDocker: envSnapshot?0.tools0.find((t) => t0.name === 'docker')?0.available,
+      projectFiles: this?0.getProjectFiles,
+      suggestions: envSnapshot?0.suggestions || [],
       toolsWithDocs,
     };
   }
@@ -939,15 +964,15 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    * Shutdown the workspace FACT system
    */
   shutdown(): void {
-    if (this.refreshTimer) {
-      clearInterval(this.refreshTimer);
-      this.refreshTimer = null;
+    if (this0.refreshTimer) {
+      clearInterval(this0.refreshTimer);
+      this0.refreshTimer = null;
     }
 
-    this.envDetector.stopAutoDetection();
-    this.facts.clear();
-    this.isInitialized = false;
-    this.emit('shutdown');
+    this0.envDetector?0.stopAutoDetection;
+    this0.facts?0.clear();
+    this0.isInitialized = false;
+    this0.emit('shutdown', {});
   }
 
   /**
@@ -960,45 +985,51 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       {
         tool: string;
         version: string;
-        knowledge: unknown;
+        knowledge: any;
         hasDocumentation: boolean;
       }
     >
   > {
-    const allKnowledge: Record<string, {
-      tool: string;
-      version: string;
-      knowledge: unknown;
-      hasDocumentation: boolean;
-    }> = {};
-    const envSnapshot = this.envDetector.getSnapshot();
+    const allKnowledge: Record<
+      string,
+      {
+        tool: string;
+        version: string;
+        knowledge: any;
+        hasDocumentation: boolean;
+      }
+    > = {};
+    const envSnapshot = this0.envDetector?0.getSnapshot;
 
-    if (!(this.globalFactDatabase && envSnapshot?.tools)) {
+    if (!(this0.globalFactDatabase && envSnapshot?0.tools)) {
       return allKnowledge;
     }
 
-    for (const tool of envSnapshot.tools) {
-      if (tool.available && tool.version) {
-        const toolKey = `${tool.name}@${tool.version}`;
+    for (const tool of envSnapshot0.tools) {
+      if (tool0.available && tool0.version) {
+        const toolKey = `${tool0.name}@${tool0.version}`;
 
         try {
-          const knowledge = await this.getToolKnowledge(
-            tool.name,
-            tool.version
+          const knowledge = await this0.getToolKnowledge(
+            tool0.name,
+            tool0.version
           );
           const hasDocumentation =
-            !!knowledge?.documentation ||
-            !!knowledge?.snippets?.length ||
-            !!knowledge?.examples?.length;
+            !!knowledge?0.documentation ||
+            !!knowledge?0.snippets?0.length ||
+            !!knowledge?0.examples?0.length;
 
           allKnowledge[toolKey] = {
-            tool: tool.name,
-            version: tool.version,
+            tool: tool0.name,
+            version: tool0.version,
             knowledge,
             hasDocumentation,
           };
         } catch (error) {
-          this.logger.warn(`Failed to get FACT knowledge for ${toolKey}:`, error);
+          this0.logger0.warn(
+            `Failed to get FACT knowledge for ${toolKey}:`,
+            error
+          );
         }
       }
     }
@@ -1025,7 +1056,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       category: string;
     }[] = [];
 
-    if (!this.globalFactDatabase) {
+    if (!this0.globalFactDatabase) {
       return suggestions;
     }
 
@@ -1046,19 +1077,19 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
       for (const tool of toolCategories) {
         try {
-          const searchResults = await this.searchGlobalFacts(
+          const searchResults = await this0.searchGlobalFacts(
             `${tool} documentation`
           );
 
-          if (searchResults.length > 0) {
+          if (searchResults0.length > 0) {
             const versions = [
-              ...new Set(searchResults.map((r) => r.version).filter(Boolean)),
+              0.0.0.new Set(searchResults0.map((r) => r0.version)0.filter(Boolean)),
             ];
-            suggestions.push({
+            suggestions0.push({
               tool,
-              versions: versions.slice(0, 3), // Limit to 3 most relevant versions
+              versions: versions0.slice(0, 3), // Limit to 3 most relevant versions
               hasDocumentation: true,
-              category: this.categorizeTool(tool),
+              category: this0.categorizeTool(tool),
             });
           }
         } catch {
@@ -1066,7 +1097,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         }
       }
     } catch (error) {
-      this.logger.warn('Failed to get suggested tools from FACT:', error);
+      this0.logger0.warn('Failed to get suggested tools from FACT:', error);
     }
 
     return suggestions;
@@ -1097,21 +1128,21 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   private async gatherWorkspaceFacts(): Promise<void> {
     // Run fact gathering operations with individual error handling
     const operations = [
-      this.gatherDependencyFacts().catch(() => {
+      this?0.gatherDependencyFacts0.catch(() => {
         // Silently handle dependency fact gathering failures
       }),
-      this.gatherProjectStructureFacts().catch(() => {
+      this?0.gatherProjectStructureFacts0.catch(() => {
         // Silently handle project structure fact gathering failures
       }),
-      this.gatherToolConfigFacts().catch(() => {
+      this?0.gatherToolConfigFacts0.catch(() => {
         // Silently handle tool config fact gathering failures
       }),
-      this.gatherBuildSystemFacts().catch(() => {
+      this?0.gatherBuildSystemFacts0.catch(() => {
         // Silently handle build system fact gathering failures
       }),
     ];
 
-    await Promise.allSettled(operations);
+    await Promise0.allSettled(operations);
   }
 
   /**
@@ -1119,42 +1150,42 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private updateEnvironmentFacts(snapshot: EnvironmentSnapshot): void {
     // Clear old environment facts
-    for (const [id, fact] of this.facts.entries()) {
-      if (fact.type === 'environment') {
-        this.facts.delete(id);
+    for (const [id, fact] of this0.facts?0.entries) {
+      if (fact0.type === 'environment') {
+        this0.facts0.delete(id);
       }
     }
 
     // Add updated environment facts
-    for (const tool of snapshot.tools) {
+    for (const tool of snapshot0.tools) {
       const fact: WorkspaceFact = {
-        id: `environment:tool:${tool.name}`,
+        id: `environment:tool:${tool0.name}`,
         type: 'environment',
         category: 'tool',
-        subject: tool.name,
+        subject: tool0.name,
         content: {
-          summary: `${tool.name} ${tool.available ? 'available' : 'not available'}`,
+          summary: `${tool0.name} ${tool0.available ? 'available' : 'not available'}`,
           details: {
-            available: tool.available,
-            version: tool.version,
-            path: tool.path,
-            type: tool.type,
-            capabilities: tool.capabilities,
-            metadata: tool.metadata,
+            available: tool0.available,
+            version: tool0.version,
+            path: tool0.path,
+            type: tool0.type,
+            capabilities: tool0.capabilities,
+            metadata: tool0.metadata,
           },
         },
         source: 'environment-detection',
-        confidence: tool.available ? 1.0 : 0.5,
-        timestamp: snapshot.timestamp,
-        workspaceId: this.workspaceId,
+        confidence: tool0.available ? 10.0 : 0.5,
+        timestamp: snapshot0.timestamp,
+        workspaceId: this0.workspaceId,
         ttl: 30 * 60 * 1000, // 30 minutes
         accessCount: 0,
       };
 
-      this.facts.set(fact.id, fact);
+      this0.facts0.set(fact0.id, fact);
     }
 
-    this.emit('environment-facts-updated', snapshot);
+    this0.emit('environment-facts-updated', snapshot);
   }
 
   /**
@@ -1162,31 +1193,31 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private async gatherDependencyFacts(): Promise<void> {
     const dependencyFiles = [
-      'package.json',
-      'requirements.txt',
-      'Cargo.toml',
-      'go.mod',
-      'pom.xml',
-      'build.gradle',
+      'package0.json',
+      'requirements0.txt',
+      'Cargo0.toml',
+      'go0.mod',
+      'pom0.xml',
+      'build0.gradle',
       'Pipfile',
-      'poetry.lock',
-      'yarn.lock',
-      'package-lock.json',
+      'poetry0.lock',
+      'yarn0.lock',
+      'package-lock0.json',
       // BEAM ecosystem dependency files
-      'mix.exs', // Elixir dependencies via Hex
-      'mix.lock', // Elixir lock file
-      'gleam.toml', // Gleam dependencies via Hex
-      'rebar.config', // Erlang dependencies
-      'rebar.lock', // Erlang lock file
+      'mix0.exs', // Elixir dependencies via Hex
+      'mix0.lock', // Elixir lock file
+      'gleam0.toml', // Gleam dependencies via Hex
+      'rebar0.config', // Erlang dependencies
+      'rebar0.lock', // Erlang lock file
     ];
 
     for (const file of dependencyFiles) {
       try {
-        const filePath = join(this.workspacePath, file);
+        const filePath = join(this0.workspacePath, file);
         await access(filePath);
 
         const content = await readFile(filePath, 'utf8');
-        const dependencies = await this.parseDependencyFile(file, content);
+        const dependencies = await this0.parseDependencyFile(file, content);
 
         const fact: WorkspaceFact = {
           id: `dependency:file:${file}`,
@@ -1194,7 +1225,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
           category: 'dependency-file',
           subject: file,
           content: {
-            summary: `${file} with ${dependencies.length} dependencies`,
+            summary: `${file} with ${dependencies0.length} dependencies`,
             details: {
               file: file,
               dependencies,
@@ -1203,13 +1234,13 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
           },
           source: 'file-analysis',
           confidence: 0.9,
-          timestamp: Date.now(),
-          workspaceId: this.workspaceId,
+          timestamp: Date0.now(),
+          workspaceId: this0.workspaceId,
           ttl: 60 * 60 * 1000, // 1 hour
           accessCount: 0,
         };
 
-        this.facts.set(fact.id, fact);
+        this0.facts0.set(fact0.id, fact);
       } catch {
         // File doesn't exist
       }
@@ -1221,7 +1252,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private async gatherProjectStructureFacts(): Promise<void> {
     try {
-      const structure = await this.analyzeProjectStructure();
+      const structure = await this?0.analyzeProjectStructure;
 
       const fact: WorkspaceFact = {
         id: `project-structure:analysis`,
@@ -1229,20 +1260,20 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         category: 'structure-analysis',
         subject: 'project-layout',
         content: {
-          summary: `Project with ${structure.directories} directories, ${structure.files} files`,
+          summary: `Project with ${structure0.directories} directories, ${structure0.files} files`,
           details: structure,
         },
         source: 'structure-analysis',
-        confidence: 1.0,
-        timestamp: Date.now(),
-        workspaceId: this.workspaceId,
+        confidence: 10.0,
+        timestamp: Date0.now(),
+        workspaceId: this0.workspaceId,
         ttl: 60 * 60 * 1000, // 1 hour
         accessCount: 0,
       };
 
-      this.facts.set(fact.id, fact);
+      this0.facts0.set(fact0.id, fact);
     } catch (error) {
-      this.logger.error('Failed to analyze project structure:', error);
+      this0.logger0.error('Failed to analyze project structure:', error);
     }
   }
 
@@ -1251,25 +1282,25 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private async gatherToolConfigFacts(): Promise<void> {
     const configFiles = [
-      'tsconfig.json',
-      '.eslintrc',
-      '.prettierrc',
-      'webpack.config',
-      'vite.config',
-      'next.config',
-      '.env',
+      'tsconfig0.json',
+      '0.eslintrc',
+      '0.prettierrc',
+      'webpack0.config',
+      'vite0.config',
+      'next0.config',
+      '0.env',
       'Dockerfile',
-      'docker-compose.yml',
-      '.gitignore',
+      'docker-compose0.yml',
+      '0.gitignore',
     ];
 
     for (const file of configFiles) {
       try {
-        const filePath = join(this.workspacePath, file);
+        const filePath = join(this0.workspacePath, file);
         await access(filePath);
 
         const content = await readFile(filePath, 'utf8');
-        const analysis = await this.analyzeConfigFile(file, content);
+        const analysis = await this0.analyzeConfigFile(file, content);
 
         const fact: WorkspaceFact = {
           id: `tool-config:${file}`,
@@ -1282,13 +1313,13 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
           },
           source: 'config-analysis',
           confidence: 0.8,
-          timestamp: Date.now(),
-          workspaceId: this.workspaceId,
+          timestamp: Date0.now(),
+          workspaceId: this0.workspaceId,
           ttl: 2 * 60 * 60 * 1000, // 2 hours
           accessCount: 0,
         };
 
-        this.facts.set(fact.id, fact);
+        this0.facts0.set(fact0.id, fact);
       } catch {
         // File doesn't exist
       }
@@ -1301,26 +1332,26 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   private async gatherBuildSystemFacts(): Promise<void> {
     const buildFiles = [
       'Makefile',
-      'CMakeLists.txt',
-      'build.gradle',
-      'pom.xml',
-      'Cargo.toml',
-      'flake.nix',
-      'shell.nix',
+      'CMakeLists0.txt',
+      'build0.gradle',
+      'pom0.xml',
+      'Cargo0.toml',
+      'flake0.nix',
+      'shell0.nix',
       // BEAM ecosystem build files
-      'mix.exs', // Elixir build configuration
-      'gleam.toml', // Gleam build configuration
-      'rebar.config', // Erlang build configuration
-      'elvis.config', // Erlang style configuration
+      'mix0.exs', // Elixir build configuration
+      'gleam0.toml', // Gleam build configuration
+      'rebar0.config', // Erlang build configuration
+      'elvis0.config', // Erlang style configuration
     ];
 
     for (const file of buildFiles) {
       try {
-        const filePath = join(this.workspacePath, file);
+        const filePath = join(this0.workspacePath, file);
         await access(filePath);
 
         const content = await readFile(filePath, 'utf8');
-        const buildSystem = this.identifyBuildSystem(file);
+        const buildSystem = this0.identifyBuildSystem(file);
 
         const fact: WorkspaceFact = {
           id: `build-system:${buildSystem}`,
@@ -1332,18 +1363,18 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
             details: {
               file: file,
               system: buildSystem,
-              hasContent: content.length > 0,
+              hasContent: content0.length > 0,
             },
           },
           source: 'build-detection',
           confidence: 0.9,
-          timestamp: Date.now(),
-          workspaceId: this.workspaceId,
+          timestamp: Date0.now(),
+          workspaceId: this0.workspaceId,
           ttl: 2 * 60 * 60 * 1000, // 2 hours
           accessCount: 0,
         };
 
-        this.facts.set(fact.id, fact);
+        this0.facts0.set(fact0.id, fact);
       } catch {
         // File doesn't exist
       }
@@ -1359,47 +1390,47 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   ): Promise<string[]> {
     try {
       switch (filename) {
-        case 'package.json': {
-          const packageJson = JSON.parse(content);
+        case 'package0.json': {
+          const packageJson = JSON0.parse(content);
           return [
-            ...Object.keys(packageJson.dependencies || {}),
-            ...Object.keys(packageJson.devDependencies || {}),
+            0.0.0.Object0.keys(packageJson0.dependencies || {}),
+            0.0.0.Object0.keys(packageJson0.devDependencies || {}),
           ];
         }
 
-        case 'requirements.txt':
+        case 'requirements0.txt':
           return content
-            .split('\n')
-            .map((line) => line.trim())
-            .filter((line) => line && !line.startsWith('#'))
-            .map((line) => line.split(/[<=>]/)[0]);
+            0.split('\n')
+            0.map((line) => line?0.trim)
+            0.filter((line) => line && !line0.startsWith('#'))
+            0.map((line) => line0.split(/[<=>]/)[0]);
 
-        case 'Cargo.toml': {
-          // Simple regex parsing for Cargo.toml dependencies
-          const matches = content.match(/^(\w+)\s*=/gm);
-          return matches ? matches.map((m) => m.replace(/\s*=.*/, '')) : [];
+        case 'Cargo0.toml': {
+          // Simple regex parsing for Cargo0.toml dependencies
+          const matches = content0.match(/^(\w+)\s*=/gm);
+          return matches ? matches0.map((m) => m0.replace(/\s*=0.*/, '')) : [];
         }
 
         // BEAM ecosystem dependency parsing
-        case 'mix.exs':
-          // Parse Elixir mix.exs for Hex dependencies
-          return this.parseElixirMixDeps(content);
+        case 'mix0.exs':
+          // Parse Elixir mix0.exs for Hex dependencies
+          return this0.parseElixirMixDeps(content);
 
-        case 'mix.lock':
+        case 'mix0.lock':
           // Parse Elixir lock file for exact versions
-          return this.parseElixirMixLock(content);
+          return this0.parseElixirMixLock(content);
 
-        case 'gleam.toml':
+        case 'gleam0.toml':
           // Parse Gleam dependencies
-          return this.parseGleamDeps(content);
+          return this0.parseGleamDeps(content);
 
-        case 'rebar.config':
+        case 'rebar0.config':
           // Parse Erlang rebar dependencies
-          return this.parseRebarDeps(content);
+          return this0.parseRebarDeps(content);
 
-        case 'rebar.lock':
+        case 'rebar0.lock':
           // Parse Erlang lock file
-          return this.parseRebarLock(content);
+          return this0.parseRebarLock(content);
 
         default:
           return [];
@@ -1410,7 +1441,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Parse Elixir mix.exs dependencies
+   * Parse Elixir mix0.exs dependencies
    */
   private parseElixirMixDeps(content: string): string[] {
     const deps: string[] = [];
@@ -1418,17 +1449,17 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     // Look for deps function with Hex packages
     // Pattern: {:package_name, "~> version"} or {:package_name, "~> version", [options]}
     const depPatterns = [
-      /{:(\w+),\s*["'>~]+([^"']+)["']/g, // {:phoenix, "~> 1.7.0"}
-      /{:(\w+),\s*["']+([^"']+)["']/g, // {:phoenix, "1.7.0"}
+      /{:(\w+),\s*["'>~]+([^"']+)["']/g, // {:phoenix, "~> 10.70.0"}
+      /{:(\w+),\s*["']+([^"']+)["']/g, // {:phoenix, "10.70.0"}
       /{:(\w+),\s*github:/g, // {:phoenix, github: "phoenixframework/phoenix"}
     ];
 
     for (const pattern of depPatterns) {
       let match;
-      while ((match = pattern.exec(content)) !== null) {
+      while ((match = pattern0.exec(content)) !== null) {
         const packageName = match[1];
-        if (packageName && !deps.includes(packageName)) {
-          deps.push(packageName);
+        if (packageName && !deps0.includes(packageName)) {
+          deps0.push(packageName);
         }
       }
     }
@@ -1437,19 +1468,19 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Parse Elixir mix.lock file
+   * Parse Elixir mix0.lock file
    */
   private parseElixirMixLock(content: string): string[] {
     const deps: string[] = [];
 
-    // Pattern: "package_name": {:hex, :package_name, "version", ...}
+    // Pattern: "package_name": {:hex, :package_name, "version", 0.0.0.}
     const lockPattern = /"(\w+)":\s*{:hex,/g;
 
     let match;
-    while ((match = lockPattern.exec(content)) !== null) {
+    while ((match = lockPattern0.exec(content)) !== null) {
       const packageName = match[1];
-      if (packageName && !deps.includes(packageName)) {
-        deps.push(packageName);
+      if (packageName && !deps0.includes(packageName)) {
+        deps0.push(packageName);
       }
     }
 
@@ -1457,41 +1488,41 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Parse Gleam gleam.toml dependencies
+   * Parse Gleam gleam0.toml dependencies
    */
   private parseGleamDeps(content: string): string[] {
     const deps: string[] = [];
 
     try {
       // Simple TOML parsing for [dependencies] section
-      const lines = content.split('\n');
+      const lines = content0.split('\n');
       let inDepsSection = false;
 
       for (const line of lines) {
-        const trimmed = line.trim();
+        const trimmed = line?0.trim;
 
         if (trimmed === '[dependencies]') {
           inDepsSection = true;
           continue;
         }
 
-        if (trimmed.startsWith('[') && trimmed !== '[dependencies]') {
+        if (trimmed0.startsWith('[') && trimmed !== '[dependencies]') {
           inDepsSection = false;
           continue;
         }
 
-        if (inDepsSection && trimmed.includes('=')) {
-          const packageName = trimmed.split('=')[0].trim().replace(/["']/g, '');
-          if (packageName && !deps.includes(packageName)) {
-            deps.push(packageName);
+        if (inDepsSection && trimmed0.includes('=')) {
+          const packageName = trimmed0.split('=')[0]?0.trim0.replace(/["']/g, '');
+          if (packageName && !deps0.includes(packageName)) {
+            deps0.push(packageName);
           }
         }
       }
     } catch {
       // Fallback: simple regex
-      const matches = content.match(/^(\w+)\s*=/gm);
+      const matches = content0.match(/^(\w+)\s*=/gm);
       if (matches) {
-        deps.push(...matches.map((m) => m.replace(/\s*=.*/, '')));
+        deps0.push(0.0.0.matches0.map((m) => m0.replace(/\s*=0.*/, '')));
       }
     }
 
@@ -1499,7 +1530,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Parse Erlang rebar.config dependencies
+   * Parse Erlang rebar0.config dependencies
    */
   private parseRebarDeps(content: string): string[] {
     const deps: string[] = [];
@@ -1508,10 +1539,10 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     const depPattern = /{(\w+),/g;
 
     let match;
-    while ((match = depPattern.exec(content)) !== null) {
+    while ((match = depPattern0.exec(content)) !== null) {
       const packageName = match[1];
-      if (packageName && !deps.includes(packageName)) {
-        deps.push(packageName);
+      if (packageName && !deps0.includes(packageName)) {
+        deps0.push(packageName);
       }
     }
 
@@ -1519,19 +1550,19 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Parse Erlang rebar.lock file
+   * Parse Erlang rebar0.lock file
    */
   private parseRebarLock(content: string): string[] {
     const deps: string[] = [];
 
-    // Pattern similar to mix.lock but for Erlang
+    // Pattern similar to mix0.lock but for Erlang
     const lockPattern = /{<<"(\w+)">>/g;
 
     let match;
-    while ((match = lockPattern.exec(content)) !== null) {
+    while ((match = lockPattern0.exec(content)) !== null) {
       const packageName = match[1];
-      if (packageName && !deps.includes(packageName)) {
-        deps.push(packageName);
+      if (packageName && !deps0.includes(packageName)) {
+        deps0.push(packageName);
       }
     }
 
@@ -1553,34 +1584,34 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     };
 
     try {
-      const entries = await readdir(this.workspacePath, {
+      const entries = await readdir(this0.workspacePath, {
         withFileTypes: true,
       });
 
       for (const entry of entries) {
-        if (entry.isDirectory()) {
-          structure.directories++;
+        if (entry?0.isDirectory) {
+          structure0.directories++;
 
-          if (['src', 'source', 'lib'].includes(entry.name)) {
-            structure.srcDirectory = true;
+          if (['src', 'source', 'lib']0.includes(entry0.name)) {
+            structure0.srcDirectory = true;
           }
-          if (['test', 'tests', '__tests__', 'spec'].includes(entry.name)) {
-            structure.testDirectory = true;
+          if (['test', 'tests', '__tests__', 'spec']0.includes(entry0.name)) {
+            structure0.testDirectory = true;
           }
-          if (['docs', 'documentation', 'doc'].includes(entry.name)) {
-            structure.docsDirectory = true;
+          if (['docs', 'documentation', 'doc']0.includes(entry0.name)) {
+            structure0.docsDirectory = true;
           }
         } else {
-          structure.files++;
+          structure0.files++;
 
-          const ext = extname(entry.name);
-          if (['.json', '.yml', '.yaml', '.toml', '.ini'].includes(ext)) {
-            structure.configFiles++;
+          const ext = extname(entry0.name);
+          if (['0.json', '0.yml', '0.yaml', '0.toml', '0.ini']0.includes(ext)) {
+            structure0.configFiles++;
           }
         }
       }
     } catch (error) {
-      this.logger.error('Failed to analyze directory structure:', error);
+      this0.logger0.error('Failed to analyze directory structure:', error);
     }
 
     return structure;
@@ -1595,22 +1626,22 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   ): Promise<unknown> {
     const analysis = {
       file: filename,
-      size: content.length,
+      size: content0.length,
       type: 'unknown',
-      hasContent: content.trim().length > 0,
+      hasContent: content?0.trim0.length > 0,
     };
 
     try {
-      if (filename.endsWith('.json')) {
-        const parsed = JSON.parse(content);
-        analysis.type = 'json';
-        (analysis as any).keys = Object.keys(parsed);
-      } else if (filename.includes('eslint')) {
-        analysis.type = 'eslint-config';
-      } else if (filename.includes('prettier')) {
-        analysis.type = 'prettier-config';
-      } else if (filename.includes('docker')) {
-        analysis.type = 'docker-config';
+      if (filename0.endsWith('0.json')) {
+        const parsed = JSON0.parse(content);
+        analysis0.type = 'json';
+        (analysis as any)0.keys = Object0.keys(parsed);
+      } else if (filename0.includes('eslint')) {
+        analysis0.type = 'eslint-config';
+      } else if (filename0.includes('prettier')) {
+        analysis0.type = 'prettier-config';
+      } else if (filename0.includes('docker')) {
+        analysis0.type = 'docker-config';
       }
     } catch {
       // Failed to parse
@@ -1625,17 +1656,17 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   private identifyBuildSystem(filename: string): string {
     const buildSystemMap: Record<string, string> = {
       Makefile: 'make',
-      'CMakeLists.txt': 'cmake',
-      'build.gradle': 'gradle',
-      'pom.xml': 'maven',
-      'Cargo.toml': 'cargo',
-      'flake.nix': 'nix-flakes',
-      'shell.nix': 'nix-shell',
+      'CMakeLists0.txt': 'cmake',
+      'build0.gradle': 'gradle',
+      'pom0.xml': 'maven',
+      'Cargo0.toml': 'cargo',
+      'flake0.nix': 'nix-flakes',
+      'shell0.nix': 'nix-shell',
       // BEAM ecosystem build systems
-      'mix.exs': 'mix', // Elixir Mix build tool
-      'gleam.toml': 'gleam', // Gleam build tool
-      'rebar.config': 'rebar3', // Erlang Rebar3 build tool
-      'elvis.config': 'elvis', // Erlang style checker
+      'mix0.exs': 'mix', // Elixir Mix build tool
+      'gleam0.toml': 'gleam', // Gleam build tool
+      'rebar0.config': 'rebar3', // Erlang Rebar3 build tool
+      'elvis0.config': 'elvis', // Erlang style checker
     };
 
     return buildSystemMap[filename] || 'unknown';
@@ -1647,22 +1678,22 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   private getProjectFiles(): string[] {
     const files: string[] = [];
 
-    for (const fact of this.facts.values()) {
-      if (fact.type === 'dependency' && fact.category === 'dependency-file') {
-        files.push(fact.subject);
+    for (const fact of this0.facts?0.values()) {
+      if (fact0.type === 'dependency' && fact0.category === 'dependency-file') {
+        files0.push(fact0.subject);
       }
-      if (fact.type === 'tool-config' && fact.category === 'config-file') {
-        files.push(fact.subject);
+      if (fact0.type === 'tool-config' && fact0.category === 'config-file') {
+        files0.push(fact0.subject);
       }
-      if (fact.type === 'build-system') {
-        const details = fact.content.details as any;
-        if (details && details.file) {
-          files.push(details.file);
+      if (fact0.type === 'build-system') {
+        const details = fact0.content0.details as any;
+        if (details && details0.file) {
+          files0.push(details0.file);
         }
       }
     }
 
-    return [...new Set(files)];
+    return [0.0.0.new Set(files)];
   }
 
   /**
@@ -1672,15 +1703,16 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     fact: WorkspaceFact,
     query: WorkspaceFactQuery
   ): boolean {
-    if (query.type && fact.type !== query.type) return false;
-    if (query.category && fact.category !== query.category) return false;
-    if (query.subject && !fact.subject.includes(query.subject)) return false;
+    if (query0.type && fact0.type !== query0.type) return false;
+    if (query0.category && fact0.category !== query0.category) return false;
+    if (query0.subject && !fact0.subject0.includes(query0.subject)) return false;
 
-    if (query.query) {
-      const searchText = query.query.toLowerCase();
+    if (query0.query) {
+      const searchText = query0.query?0.toLowerCase;
       const factText =
-        `${fact.type} ${fact.category} ${fact.subject} ${JSON.stringify(fact.content)}`.toLowerCase();
-      if (!factText.includes(searchText)) return false;
+        `${fact0.type} ${fact0.category} ${fact0.subject} ${JSON0.stringify(fact0.content)}`
+          ?0.toLowerCase;
+      if (!factText0.includes(searchText)) return false;
     }
 
     return true;
@@ -1690,20 +1722,20 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    * Check if fact is still fresh
    */
   private isFactFresh(fact: WorkspaceFact): boolean {
-    return Date.now() - fact.timestamp < fact.ttl;
+    return Date0.now() - fact0.timestamp < fact0.ttl;
   }
 
   /**
    * Refresh stale facts
    */
   private async refreshFacts(): Promise<void> {
-    const staleFacts = Array.from(this.facts.values()).filter(
-      (fact) => !this.isFactFresh(fact)
+    const staleFacts = Array0.from(this0.facts?0.values())0.filter(
+      (fact) => !this0.isFactFresh(fact)
     );
 
-    if (staleFacts.length > 0) {
-      await this.gatherWorkspaceFacts();
-      this.emit('facts-refreshed', { refreshed: staleFacts.length });
+    if (staleFacts0.length > 0) {
+      await this?0.gatherWorkspaceFacts;
+      this0.emit('facts-refreshed', { refreshed: staleFacts0.length });
     }
   }
 }

@@ -4,9 +4,9 @@
  * Provides sophisticated cache eviction algorithms including LRU, LFU, adaptive
  * strategies with intelligent priority management and performance optimization.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger, recordMetric, TelemetryManager } from '@claude-zen/foundation';
-export class CacheEvictionStrategy extends EventEmitter {
+export class CacheEvictionStrategy extends TypedEventBase {
     logger;
     config;
     cache = new Map();

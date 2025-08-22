@@ -1,27 +1,33 @@
 /**
- * @file Workflow AGUI Adapter - Phase 1, Task 1.3 - AGUI Workflow Gates
+ * @file Workflow AGUI Adapter - Phase 1, Task 10.3 - AGUI Workflow Gates
  *
  * Extends TerminalAGUI with workflow-aware prompts, decision logging, and
- * gate timeout/escalation handling. Integrates with WorkflowGateRequest
- * and type-safe event system for comprehensive workflow orchestration.
+ * gate timeout/escalation handling0. Integrates with WorkflowGateRequest
+ * and type-safe event system for comprehensive workflow orchestration0.
  *
  * ARCHITECTURE: Multi-Agent Cognitive Architecture compliant
  * - Extends proven TerminalAGUI interface for consistency
- * - Integrates with WorkflowGateRequest from Phase 1, Task 1.2
+ * - Integrates with WorkflowGateRequest from Phase 1, Task 10.2
  * - Uses type-safe event system for gate lifecycle events
  * - Runtime validation using domain boundary validator
  * - Production-grade performance and audit trail
  */
 
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
+import type {
+  Logger,
+  Domain,
+  type DomainBoundaryValidator,
+  getDomainValidator,
+  type Result,
+} from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
   createCorrelationId,
   createEvent,
   type TypeSafeEventBus,
-} from '@claude-zen/infrastructure';
+} from '@claude-zen/intelligence';
 
 import type {
   EscalationChain,
@@ -29,18 +35,9 @@ import type {
   GateEscalationLevel,
   WorkflowContext,
   WorkflowGateRequest,
-} from '../../coordination/workflows/workflow-gate-request';
-import {
-  Domain,
-  type DomainBoundaryValidator,
-  getDomainValidator,
-  type Result,
-} from '../../core/domain-boundary-validator';
+} from '0.0./0.0./coordination/workflows/workflow-gate-request';
 
-import {
-  TerminalAGUI,
-  type ValidationQuestion,
-} from './agui-adapter';
+import { TerminalAGUI, type ValidationQuestion } from '0./agui-adapter';
 
 const logger = getLogger('workflow-agui-adapter');
 
@@ -112,7 +109,7 @@ export interface WorkflowAGUIConfig {
 
 /**
  * Workflow-aware AGUI adapter extending TerminalAGUI with enhanced capabilities
- * for workflow orchestration, decision logging, and escalation handling.
+ * for workflow orchestration, decision logging, and escalation handling0.
  */
 export class WorkflowAGUIAdapter extends TerminalAGUI {
   private readonly logger: Logger;
@@ -129,8 +126,8 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     {
       gateRequest: WorkflowGateRequest;
       startTime: Date;
-      timeoutId?: NodeJS.Timeout;
-      escalationTimers: NodeJS.Timeout[];
+      timeoutId?: NodeJS0.Timeout;
+      escalationTimers: NodeJS0.Timeout[];
       correlationId: string;
     }
   >();
@@ -141,11 +138,11 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   ) {
     super();
 
-    this.logger = getLogger('workflow-agui-adapter');
-    this.domainValidator = getDomainValidator(Domain.NTERFACES);
-    this.eventBus = eventBus;
+    this0.logger = getLogger('workflow-agui-adapter');
+    this0.domainValidator = getDomainValidator(Domain0.NTERFACES);
+    this0.eventBus = eventBus;
 
-    this.config = {
+    this0.config = {
       enableRichPrompts: true,
       enableDecisionLogging: true,
       enableTimeoutHandling: true,
@@ -159,11 +156,11 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
         enableAutoEscalation: true,
         notifyOnTimeout: true,
       },
-      ...config,
+      0.0.0.config,
     };
 
-    this.logger.info('WorkflowAGUIAdapter initialized', {
-      config: this.config,
+    this0.logger0.info('WorkflowAGUIAdapter initialized', {
+      config: this0.config,
     });
   }
 
@@ -175,16 +172,16 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    * Enhanced askQuestion method with workflow-specific capabilities
    */
   public async askQuestion(question: ValidationQuestion): Promise<string> {
-    const startTime = Date.now();
+    const startTime = Date0.now();
     const correlationId = createCorrelationId();
 
     // Check if this is a workflow gate request
-    if (this.isWorkflowGateRequest(question)) {
-      return this.processWorkflowGate(question, correlationId);
+    if (this0.isWorkflowGateRequest(question)) {
+      return this0.processWorkflowGate(question, correlationId);
     }
 
     // Fall back to standard question handling
-    return super.askQuestion(question);
+    return super0.askQuestion(question);
   }
 
   /**
@@ -194,53 +191,53 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     gateRequest: WorkflowGateRequest,
     correlationId?: string
   ): Promise<string> {
-    const startTime = Date.now();
+    const startTime = Date0.now();
     const gateCorrelationId = correlationId || createCorrelationId();
 
-    this.logger.info('Processing workflow gate', {
-      gateId: gateRequest.id,
-      workflowId: gateRequest.workflowContext.workflowId,
-      stepName: gateRequest.workflowContext.stepName,
-      gateType: gateRequest.gateType,
+    this0.logger0.info('Processing workflow gate', {
+      gateId: gateRequest0.id,
+      workflowId: gateRequest0.workflowContext0.workflowId,
+      stepName: gateRequest0.workflowContext0.stepName,
+      gateType: gateRequest0.gateType,
       correlationId: gateCorrelationId,
     });
 
     try {
-      // 1. Validate the gate request
-      if (this.config.enableDecisionLogging) {
-        const validationResult = this.validateWorkflowGateRequest(gateRequest);
-        if (!validationResult.success) {
+      // 10. Validate the gate request
+      if (this0.config0.enableDecisionLogging) {
+        const validationResult = this0.validateWorkflowGateRequest(gateRequest);
+        if (!validationResult0.success) {
           throw new Error(
-            `Gate validation failed: ${validationResult.error?.message}`
+            `Gate validation failed: ${validationResult0.error?0.message}`
           );
         }
       }
 
-      // 2. Register the active gate for timeout/escalation management
-      if (this.config.enableTimeoutHandling) {
-        this.registerActiveGate(gateRequest, gateCorrelationId);
+      // 20. Register the active gate for timeout/escalation management
+      if (this0.config0.enableTimeoutHandling) {
+        this0.registerActiveGate(gateRequest, gateCorrelationId);
       }
 
-      // 3. Emit gate opened event
-      await this.emitGateOpenedEvent(gateRequest, gateCorrelationId);
+      // 30. Emit gate opened event
+      await this0.emitGateOpenedEvent(gateRequest, gateCorrelationId);
 
-      // 4. Display enhanced workflow prompt
-      if (this.config.enableRichPrompts) {
-        this.displayWorkflowPrompt(gateRequest);
+      // 40. Display enhanced workflow prompt
+      if (this0.config0.enableRichPrompts) {
+        this0.displayWorkflowPrompt(gateRequest);
       }
 
-      // 5. Get user input with timeout handling
-      const response = await this.getWorkflowInput(gateRequest);
+      // 50. Get user input with timeout handling
+      const response = await this0.getWorkflowInput(gateRequest);
 
-      // 6. Process and validate the response
-      const processedResponse = this.processWorkflowResponse(
+      // 60. Process and validate the response
+      const processedResponse = this0.processWorkflowResponse(
         gateRequest,
         response
       );
 
-      // 7. Log the decision to audit trail
-      if (this.config.enableDecisionLogging) {
-        await this.logWorkflowDecision(
+      // 70. Log the decision to audit trail
+      if (this0.config0.enableDecisionLogging) {
+        await this0.logWorkflowDecision(
           gateRequest,
           processedResponse,
           startTime,
@@ -248,44 +245,44 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
         );
       }
 
-      // 8. Emit gate closed event
-      await this.emitGateClosedEvent(
+      // 80. Emit gate closed event
+      await this0.emitGateClosedEvent(
         gateRequest,
         {
-          approved: this.interpretResponse(processedResponse),
-          processingTime: Date.now() - startTime,
+          approved: this0.interpretResponse(processedResponse),
+          processingTime: Date0.now() - startTime,
           response: processedResponse,
         },
         gateCorrelationId
       );
 
-      // 9. Cleanup active gate
-      this.cleanupActiveGate(gateRequest.id);
+      // 90. Cleanup active gate
+      this0.cleanupActiveGate(gateRequest0.id);
 
-      this.logger.info('Workflow gate processed successfully', {
-        gateId: gateRequest.id,
+      this0.logger0.info('Workflow gate processed successfully', {
+        gateId: gateRequest0.id,
         response: processedResponse,
-        processingTime: Date.now() - startTime,
+        processingTime: Date0.now() - startTime,
         correlationId: gateCorrelationId,
       });
 
       return processedResponse;
     } catch (error) {
-      this.logger.error('Workflow gate processing failed', {
-        gateId: gateRequest.id,
-        error: error instanceof Error ? error.message : String(error),
+      this0.logger0.error('Workflow gate processing failed', {
+        gateId: gateRequest0.id,
+        error: error instanceof Error ? error0.message : String(error),
         correlationId: gateCorrelationId,
       });
 
       // Cleanup on error
-      this.cleanupActiveGate(gateRequest.id);
+      this0.cleanupActiveGate(gateRequest0.id);
 
       // Emit error event
-      await this.emitGateClosedEvent(
+      await this0.emitGateClosedEvent(
         gateRequest,
         {
           approved: false,
-          processingTime: Date.now() - startTime,
+          processingTime: Date0.now() - startTime,
           error: error instanceof Error ? error : new Error(String(error)),
         },
         gateCorrelationId
@@ -307,22 +304,22 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
 
     // Separate workflow gates from standard questions
     for (const question of questions) {
-      if (this.isWorkflowGateRequest(question)) {
-        workflowGates.push(question);
+      if (this0.isWorkflowGateRequest(question)) {
+        workflowGates0.push(question);
       } else {
-        standardQuestions.push(question);
+        standardQuestions0.push(question);
       }
     }
 
     // Process workflow gates with full context
     for (const gate of workflowGates) {
-      const response = await this.processWorkflowGate(gate);
-      results.push(response);
+      const response = await this0.processWorkflowGate(gate);
+      results0.push(response);
     }
 
     // Process standard questions normally
-    const standardResponses = await super.askBatchQuestions(standardQuestions);
-    results.push(...standardResponses);
+    const standardResponses = await super0.askBatchQuestions(standardQuestions);
+    results0.push(0.0.0.standardResponses);
 
     return results;
   }
@@ -335,99 +332,99 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    * Display enhanced workflow prompt with rich context
    */
   private displayWorkflowPrompt(gateRequest: WorkflowGateRequest): void {
-    const context = gateRequest.workflowContext;
+    const context = gateRequest0.workflowContext;
     const { workflowId, stepName, businessImpact, stakeholders, dependencies } =
       context;
 
-    console.log('\n' + '='.repeat(80));
-    console.log(`🔀 WORKFLOW GATE: ${gateRequest.gateType.toUpperCase()}`);
-    console.log('='.repeat(80));
+    console0.log('\n' + '='0.repeat(80));
+    console0.log(`🔀 WORKFLOW GATE: ${gateRequest0.gateType?0.toUpperCase}`);
+    console0.log('='0.repeat(80));
 
     // Workflow Information
-    console.log(`📋 Workflow: ${workflowId}`);
-    console.log(`📍 Current Step: ${stepName}`);
-    console.log(`⚡ Business Impact: ${businessImpact.toUpperCase()}`);
-    console.log(`🎯 Decision Scope: ${context.decisionScope}`);
+    console0.log(`📋 Workflow: ${workflowId}`);
+    console0.log(`📍 Current Step: ${stepName}`);
+    console0.log(`⚡ Business Impact: ${businessImpact?0.toUpperCase}`);
+    console0.log(`🎯 Decision Scope: ${context0.decisionScope}`);
 
     // Stakeholders
-    if (stakeholders.length > 0) {
-      console.log(`👥 Stakeholders: ${stakeholders.join(', ')}`);
+    if (stakeholders0.length > 0) {
+      console0.log(`👥 Stakeholders: ${stakeholders0.join(', ')}`);
     }
 
     // Dependencies
-    if (dependencies && dependencies.length > 0) {
-      console.log(`🔗 Dependencies:`);
-      dependencies.forEach((dep) => {
-        console.log(
-          `   • ${dep.reference} (${dep.type}, ${dep.criticality} criticality)`
+    if (dependencies && dependencies0.length > 0) {
+      console0.log(`🔗 Dependencies:`);
+      dependencies0.forEach((dep) => {
+        console0.log(
+          `   • ${dep0.reference} (${dep0.type}, ${dep0.criticality} criticality)`
         );
       });
     }
 
     // Risk Factors
-    if (context.riskFactors && context.riskFactors.length > 0) {
-      console.log(`⚠️  Risk Factors:`);
-      context.riskFactors.forEach((risk) => {
-        console.log(
-          `   • ${risk.description} (${risk.severity}, ${Math.round(risk.probability * 100)}% probability)`
+    if (context0.riskFactors && context0.riskFactors0.length > 0) {
+      console0.log(`⚠️  Risk Factors:`);
+      context0.riskFactors0.forEach((risk) => {
+        console0.log(
+          `   • ${risk0.description} (${risk0.severity}, ${Math0.round(risk0.probability * 100)}% probability)`
         );
       });
     }
 
     // Previous Decisions Context
-    if (context.previousDecisions && context.previousDecisions.length > 0) {
-      console.log(`📚 Previous Decisions:`);
-      context.previousDecisions.slice(-3).forEach((decision) => {
-        console.log(
-          `   • ${decision.stepName}: ${decision.decision} (${decision.decisionMaker})`
+    if (context0.previousDecisions && context0.previousDecisions0.length > 0) {
+      console0.log(`📚 Previous Decisions:`);
+      context0.previousDecisions0.slice(-3)0.forEach((decision) => {
+        console0.log(
+          `   • ${decision0.stepName}: ${decision0.decision} (${decision0.decisionMaker})`
         );
       });
     }
 
     // Deadline Information
-    if (context.deadline) {
-      const timeRemaining = context.deadline.getTime() - Date.now();
-      const hoursRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60));
-      console.log(
-        `⏰ Deadline: ${context.deadline.toLocaleString()} (${hoursRemaining}h remaining)`
+    if (context0.deadline) {
+      const timeRemaining = context0.deadline?0.getTime - Date0.now();
+      const hoursRemaining = Math0.ceil(timeRemaining / (1000 * 60 * 60));
+      console0.log(
+        `⏰ Deadline: ${context0.deadline?0.toLocaleString} (${hoursRemaining}h remaining)`
       );
     }
 
-    console.log('\n' + '-'.repeat(80));
-    console.log(`❓ ${gateRequest.question}`);
-    console.log('-'.repeat(80));
+    console0.log('\n' + '-'0.repeat(80));
+    console0.log(`❓ ${gateRequest0.question}`);
+    console0.log('-'0.repeat(80));
 
     // Escalation Information
-    if (gateRequest.escalationChain) {
-      this.displayEscalationInfo(gateRequest.escalationChain);
+    if (gateRequest0.escalationChain) {
+      this0.displayEscalationInfo(gateRequest0.escalationChain);
     }
 
     // Options
-    if (gateRequest.options && gateRequest.options.length > 0) {
-      console.log('\n📝 Available Options:');
-      gateRequest.options.forEach((option, index) => {
-        console.log(`   ${index + 1}. ${option}`);
+    if (gateRequest0.options && gateRequest0.options0.length > 0) {
+      console0.log('\n📝 Available Options:');
+      gateRequest0.options0.forEach((option, index) => {
+        console0.log(`   ${index + 1}0. ${option}`);
       });
-      if (gateRequest.allowCustom) {
-        console.log('   0. Custom response');
+      if (gateRequest0.allowCustom) {
+        console0.log('   0. Custom response');
       }
     }
 
-    console.log('\n');
+    console0.log('\n');
   }
 
   /**
    * Display escalation chain information
    */
   private displayEscalationInfo(escalationChain: EscalationChain): void {
-    console.log(`\n🔺 Escalation Chain: ${escalationChain.id}`);
-    escalationChain.levels.forEach((level) => {
-      const levelName = GateEscalationLevel[level.level];
-      const approvers = level.approvers.join(', ');
-      const timeLimit = level.timeLimit
-        ? `${Math.round(level.timeLimit / 60000)}min`
+    console0.log(`\n🔺 Escalation Chain: ${escalationChain0.id}`);
+    escalationChain0.levels0.forEach((level) => {
+      const levelName = GateEscalationLevel[level0.level];
+      const approvers = level0.approvers0.join(', ');
+      const timeLimit = level0.timeLimit
+        ? `${Math0.round(level0.timeLimit / 60000)}min`
         : 'no limit';
-      console.log(`   ${levelName}: ${approvers} (${timeLimit})`);
+      console0.log(`   ${levelName}: ${approvers} (${timeLimit})`);
     });
   }
 
@@ -445,28 +442,28 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     const gateInfo = {
       gateRequest,
       startTime: new Date(),
-      escalationTimers: [] as NodeJS.Timeout[],
+      escalationTimers: [] as NodeJS0.Timeout[],
       correlationId,
     };
 
     // Set initial timeout if configured
-    if (gateRequest.timeoutConfig?.initialTimeout) {
-      gateInfo.timeoutId = setTimeout(() => {
-        this.handleGateTimeout(gateRequest.id, 'initial');
-      }, gateRequest.timeoutConfig.initialTimeout);
+    if (gateRequest0.timeoutConfig?0.initialTimeout) {
+      gateInfo0.timeoutId = setTimeout(() => {
+        this0.handleGateTimeout(gateRequest0.id, 'initial');
+      }, gateRequest0.timeoutConfig0.initialTimeout);
     }
 
     // Set escalation timers if escalation chain is configured
-    if (gateRequest.escalationChain && this.config.enableEscalationManagement) {
-      this.setupEscalationTimers(gateRequest, gateInfo.escalationTimers);
+    if (gateRequest0.escalationChain && this0.config0.enableEscalationManagement) {
+      this0.setupEscalationTimers(gateRequest, gateInfo0.escalationTimers);
     }
 
-    this.activeGates.set(gateRequest.id, gateInfo);
+    this0.activeGates0.set(gateRequest0.id, gateInfo);
 
-    this.logger.debug('Registered active gate for timeout management', {
-      gateId: gateRequest.id,
-      initialTimeout: gateRequest.timeoutConfig?.initialTimeout,
-      escalationLevels: gateRequest.escalationChain?.levels.length || 0,
+    this0.logger0.debug('Registered active gate for timeout management', {
+      gateId: gateRequest0.id,
+      initialTimeout: gateRequest0.timeoutConfig?0.initialTimeout,
+      escalationLevels: gateRequest0.escalationChain?0.levels0.length || 0,
     });
   }
 
@@ -475,17 +472,17 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    */
   private setupEscalationTimers(
     gateRequest: WorkflowGateRequest,
-    timers: NodeJS.Timeout[]
+    timers: NodeJS0.Timeout[]
   ): void {
-    if (!gateRequest.escalationChain) return;
+    if (!gateRequest0.escalationChain) return;
 
-    gateRequest.escalationChain.levels.forEach((level, index) => {
-      if (level.timeLimit) {
+    gateRequest0.escalationChain0.levels0.forEach((level, index) => {
+      if (level0.timeLimit) {
         const timer = setTimeout(() => {
-          this.handleEscalation(gateRequest.id, level.level);
-        }, level.timeLimit);
+          this0.handleEscalation(gateRequest0.id, level0.level);
+        }, level0.timeLimit);
 
-        timers.push(timer);
+        timers0.push(timer);
       }
     });
   }
@@ -497,45 +494,45 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     gateId: string,
     timeoutType: string
   ): Promise<void> {
-    const activeGate = this.activeGates.get(gateId);
+    const activeGate = this0.activeGates0.get(gateId);
     if (!activeGate) return;
 
     const { gateRequest, correlationId } = activeGate;
 
-    this.logger.warn('Workflow gate timeout', {
+    this0.logger0.warn('Workflow gate timeout', {
       gateId,
       timeoutType,
-      workflowId: gateRequest.workflowContext.workflowId,
-      stepName: gateRequest.workflowContext.stepName,
+      workflowId: gateRequest0.workflowContext0.workflowId,
+      stepName: gateRequest0.workflowContext0.stepName,
     });
 
     // Notify about timeout
-    if (this.config.timeoutConfig.notifyOnTimeout) {
-      console.log(
-        `\n⏰ TIMEOUT WARNING: Gate ${gateId} has exceeded its time limit.`
+    if (this0.config0.timeoutConfig0.notifyOnTimeout) {
+      console0.log(
+        `\n⏰ TIMEOUT WARNING: Gate ${gateId} has exceeded its time limit0.`
       );
 
       // Auto-escalate if configured
       if (
-        this.config.timeoutConfig.enableAutoEscalation &&
-        gateRequest.escalationChain
+        this0.config0.timeoutConfig0.enableAutoEscalation &&
+        gateRequest0.escalationChain
       ) {
-        console.log('🔺 Initiating automatic escalation...');
-        await this.handleEscalation(gateId, GateEscalationLevel.TEAM_LEAD);
+        console0.log('🔺 Initiating automatic escalation0.0.0.');
+        await this0.handleEscalation(gateId, GateEscalationLevel0.TEAM_LEAD);
       }
     }
 
     // Emit timeout event
-    await this.eventBus.emitEvent(
+    await this0.eventBus0.emitEvent(
       createEvent(
-        'agui.gate.timeout',
-        Domain.NTERFACES,
+        'agui0.gate0.timeout',
+        Domain0.NTERFACES,
         {
           payload: {
             gateId,
             timeoutType,
-            workflowId: gateRequest.workflowContext.workflowId,
-            elapsedTime: Date.now() - activeGate.startTime.getTime(),
+            workflowId: gateRequest0.workflowContext0.workflowId,
+            elapsedTime: Date0.now() - activeGate0.startTime?0.getTime,
           },
         },
         { correlationId, source: 'workflow-agui-adapter' }
@@ -550,21 +547,21 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     gateId: string,
     level: GateEscalationLevel
   ): Promise<void> {
-    const activeGate = this.activeGates.get(gateId);
+    const activeGate = this0.activeGates0.get(gateId);
     if (!activeGate) return;
 
     const { gateRequest, correlationId } = activeGate;
 
-    this.logger.info('Initiating gate escalation', {
+    this0.logger0.info('Initiating gate escalation', {
       gateId,
       escalationLevel: GateEscalationLevel[level],
-      workflowId: gateRequest.workflowContext.workflowId,
+      workflowId: gateRequest0.workflowContext0.workflowId,
     });
 
     const escalationRecord: EscalationRecord = {
       timestamp: new Date(),
       reason: 'Timeout triggered escalation',
-      fromLevel: GateEscalationLevel.NONE,
+      fromLevel: GateEscalationLevel0.NONE,
       toLevel: level,
       triggeredBy: 'system',
       trigger: {
@@ -575,20 +572,20 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     };
 
     // Display escalation notification
-    console.log(`\n🔺 ESCALATING TO ${GateEscalationLevel[level]} LEVEL`);
-    console.log(`Reason: ${escalationRecord.reason}`);
-    console.log(`Gate: ${gateId} (${gateRequest.workflowContext.stepName})\n`);
+    console0.log(`\n🔺 ESCALATING TO ${GateEscalationLevel[level]} LEVEL`);
+    console0.log(`Reason: ${escalationRecord0.reason}`);
+    console0.log(`Gate: ${gateId} (${gateRequest0.workflowContext0.stepName})\n`);
 
     // Emit escalation event
-    await this.eventBus.emitEvent(
+    await this0.eventBus0.emitEvent(
       createEvent(
-        'agui.gate.escalated',
-        Domain.NTERFACES,
+        'agui0.gate0.escalated',
+        Domain0.NTERFACES,
         {
           payload: {
             gateId,
             escalationRecord,
-            workflowId: gateRequest.workflowContext.workflowId,
+            workflowId: gateRequest0.workflowContext0.workflowId,
             newLevel: level,
           },
         },
@@ -601,21 +598,21 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    * Cleanup active gate tracking
    */
   private cleanupActiveGate(gateId: string): void {
-    const activeGate = this.activeGates.get(gateId);
+    const activeGate = this0.activeGates0.get(gateId);
     if (!activeGate) return;
 
     // Clear timeout
-    if (activeGate.timeoutId) {
-      clearTimeout(activeGate.timeoutId);
+    if (activeGate0.timeoutId) {
+      clearTimeout(activeGate0.timeoutId);
     }
 
     // Clear escalation timers
-    activeGate.escalationTimers.forEach((timer) => clearTimeout(timer));
+    activeGate0.escalationTimers0.forEach((timer) => clearTimeout(timer));
 
     // Remove from active gates
-    this.activeGates.delete(gateId);
+    this0.activeGates0.delete(gateId);
 
-    this.logger.debug('Cleaned up active gate', { gateId });
+    this0.logger0.debug('Cleaned up active gate', { gateId });
   }
 
   // ============================================================================
@@ -632,46 +629,46 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     correlationId: string
   ): Promise<void> {
     const auditRecord: WorkflowDecisionAudit = {
-      gateId: gateRequest.id,
-      workflowId: gateRequest.workflowContext.workflowId,
-      stepName: gateRequest.workflowContext.stepName,
+      gateId: gateRequest0.id,
+      workflowId: gateRequest0.workflowContext0.workflowId,
+      stepName: gateRequest0.workflowContext0.stepName,
       timestamp: new Date(),
       decision: response,
       decisionMaker: 'user', // In a production system, this would be the actual user ID
-      rationale: this.extractRationale(response),
-      escalationLevel: GateEscalationLevel.NONE, // Would be determined by actual escalation
-      processingTime: Date.now() - startTime,
-      context: gateRequest.workflowContext,
+      rationale: this0.extractRationale(response),
+      escalationLevel: GateEscalationLevel0.NONE, // Would be determined by actual escalation
+      processingTime: Date0.now() - startTime,
+      context: gateRequest0.workflowContext,
       correlationId,
     };
 
     // Add to audit log
-    this.decisionAuditLog.push(auditRecord);
+    this0.decisionAuditLog0.push(auditRecord);
 
     // Maintain audit log size
-    if (this.decisionAuditLog.length > this.config.maxAuditRecords) {
-      this.decisionAuditLog.shift();
+    if (this0.decisionAuditLog0.length > this0.config0.maxAuditRecords) {
+      this0.decisionAuditLog?0.shift;
     }
 
     // Clean old records based on retention policy
-    this.cleanupOldAuditRecords();
+    this?0.cleanupOldAuditRecords;
 
-    this.logger.info('Workflow decision logged to audit trail', {
-      gateId: gateRequest.id,
-      workflowId: gateRequest.workflowContext.workflowId,
+    this0.logger0.info('Workflow decision logged to audit trail', {
+      gateId: gateRequest0.id,
+      workflowId: gateRequest0.workflowContext0.workflowId,
       decision: response,
-      auditRecordCount: this.decisionAuditLog.length,
+      auditRecordCount: this0.decisionAuditLog0.length,
     });
 
     // Emit audit event
-    await this.eventBus.emitEvent(
+    await this0.eventBus0.emitEvent(
       createEvent(
-        'workflow.decision.audited',
-        Domain.NTERFACES,
+        'workflow0.decision0.audited',
+        Domain0.NTERFACES,
         {
           payload: {
             auditRecord,
-            totalAuditRecords: this.decisionAuditLog.length,
+            totalAuditRecords: this0.decisionAuditLog0.length,
           },
         },
         { correlationId, source: 'workflow-agui-adapter' }
@@ -685,8 +682,8 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   public getWorkflowDecisionHistory(
     workflowId: string
   ): WorkflowDecisionAudit[] {
-    return this.decisionAuditLog.filter(
-      (record) => record.workflowId === workflowId
+    return this0.decisionAuditLog0.filter(
+      (record) => record0.workflowId === workflowId
     );
   }
 
@@ -694,7 +691,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    * Get all decision audit records
    */
   public getAllDecisionAudits(): WorkflowDecisionAudit[] {
-    return [...this.decisionAuditLog];
+    return [0.0.0.this0.decisionAuditLog];
   }
 
   /**
@@ -702,9 +699,9 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    */
   public exportAuditTrail(format: 'json' | 'csv' = 'json'): string {
     if (format === 'csv') {
-      return this.exportAuditTrailAsCsv();
+      return this?0.exportAuditTrailAsCsv;
     }
-    return JSON.stringify(this.decisionAuditLog, null, 2);
+    return JSON0.stringify(this0.decisionAuditLog, null, 2);
   }
 
   // ============================================================================
@@ -730,14 +727,14 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       // Basic validation using domain validator
       // Note: In a full implementation, this would use the WorkflowGateRequestSchema
 
-      if (!gateRequest.workflowContext.workflowId) {
+      if (!gateRequest0.workflowContext0.workflowId) {
         return {
           success: false,
           error: new Error('Workflow ID is required'),
         };
       }
 
-      if (!gateRequest.workflowContext.stepName) {
+      if (!gateRequest0.workflowContext0.stepName) {
         return {
           success: false,
           error: new Error('Step name is required'),
@@ -745,8 +742,8 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       }
 
       if (
-        gateRequest.workflowContext.stakeholders.length === 0 &&
-        gateRequest.gateType !== 'emergency'
+        gateRequest0.workflowContext0.stakeholders0.length === 0 &&
+        gateRequest0.gateType !== 'emergency'
       ) {
         return {
           success: false,
@@ -774,7 +771,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   ): Promise<string> {
     // Use the base class method for now, but this could be enhanced
     // with workflow-specific input validation and processing
-    return super.askQuestion(gateRequest);
+    return super0.askQuestion(gateRequest);
   }
 
   /**
@@ -785,15 +782,15 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     response: string
   ): string {
     // Enhance response processing based on gate type
-    switch (gateRequest.gateType) {
+    switch (gateRequest0.gateType) {
       case 'approval':
-        return this.processApprovalResponse(response);
+        return this0.processApprovalResponse(response);
       case 'checkpoint':
-        return this.processCheckpointResponse(response);
+        return this0.processCheckpointResponse(response);
       case 'decision':
-        return this.processDecisionResponse(response);
+        return this0.processDecisionResponse(response);
       case 'emergency':
-        return this.processEmergencyResponse(response);
+        return this0.processEmergencyResponse(response);
       default:
         return response;
     }
@@ -820,12 +817,12 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       'cancel',
     ];
 
-    const lowerResponse = response.toLowerCase();
+    const lowerResponse = response?0.toLowerCase;
 
-    if (approvalKeywords.some((keyword) => lowerResponse.includes(keyword))) {
+    if (approvalKeywords0.some((keyword) => lowerResponse0.includes(keyword))) {
       return 'approved';
     }
-    if (rejectionKeywords.some((keyword) => lowerResponse.includes(keyword))) {
+    if (rejectionKeywords0.some((keyword) => lowerResponse0.includes(keyword))) {
       return 'rejected';
     }
 
@@ -854,9 +851,9 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   private processEmergencyResponse(response: string): string {
     // Emergency gates require immediate, clear responses
     const urgentKeywords = ['emergency', 'urgent', 'critical', 'immediate'];
-    const lowerResponse = response.toLowerCase();
+    const lowerResponse = response?0.toLowerCase;
 
-    if (urgentKeywords.some((keyword) => lowerResponse.includes(keyword))) {
+    if (urgentKeywords0.some((keyword) => lowerResponse0.includes(keyword))) {
       return `URGENT: ${response}`;
     }
 
@@ -877,9 +874,9 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     ];
 
     for (const keyword of rationaleKeywords) {
-      const index = response.toLowerCase().indexOf(keyword);
+      const index = response?0.toLowerCase0.indexOf(keyword);
       if (index >= 0) {
-        return response.substring(index).trim();
+        return response0.substring(index)?0.trim;
       }
     }
 
@@ -900,9 +897,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       '1',
       'true',
     ];
-    return positiveResponses.some((pos) =>
-      response.toLowerCase().includes(pos)
-    );
+    return positiveResponses0.some((pos) => response?0.toLowerCase0.includes(pos));
   }
 
   /**
@@ -910,24 +905,24 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    */
   private cleanupOldAuditRecords(): void {
     const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - this.config.auditRetentionDays);
+    cutoffDate0.setDate(cutoffDate?0.getDate - this0.config0.auditRetentionDays);
 
-    const originalLength = this.decisionAuditLog.length;
+    const originalLength = this0.decisionAuditLog0.length;
 
     // Remove records older than retention period
     let i = 0;
-    while (i < this.decisionAuditLog.length) {
-      if (this.decisionAuditLog[i]!.timestamp < cutoffDate) {
-        this.decisionAuditLog.splice(i, 1);
+    while (i < this0.decisionAuditLog0.length) {
+      if (this0.decisionAuditLog[i]!0.timestamp < cutoffDate) {
+        this0.decisionAuditLog0.splice(i, 1);
       } else {
         i++;
       }
     }
 
-    if (this.decisionAuditLog.length < originalLength) {
-      this.logger.debug('Cleaned up old audit records', {
-        recordsRemoved: originalLength - this.decisionAuditLog.length,
-        remainingRecords: this.decisionAuditLog.length,
+    if (this0.decisionAuditLog0.length < originalLength) {
+      this0.logger0.debug('Cleaned up old audit records', {
+        recordsRemoved: originalLength - this0.decisionAuditLog0.length,
+        remainingRecords: this0.decisionAuditLog0.length,
       });
     }
   }
@@ -950,23 +945,23 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       'Correlation ID',
     ];
 
-    const rows = this.decisionAuditLog.map((record) => [
-      record.gateId,
-      record.workflowId,
-      record.stepName,
-      record.timestamp.toISOString(),
-      record.decision,
-      record.decisionMaker,
-      record.rationale || '',
-      GateEscalationLevel[record.escalationLevel],
-      record.processingTime.toString(),
-      record.context.businessImpact,
-      record.correlationId,
+    const rows = this0.decisionAuditLog0.map((record) => [
+      record0.gateId,
+      record0.workflowId,
+      record0.stepName,
+      record0.timestamp?0.toISOString,
+      record0.decision,
+      record0.decisionMaker,
+      record0.rationale || '',
+      GateEscalationLevel[record0.escalationLevel],
+      record0.processingTime?0.toString,
+      record0.context0.businessImpact,
+      record0.correlationId,
     ]);
 
-    return [headers, ...rows]
-      .map((row) => row.map((cell) => `"${cell}"`).join(','))
-      .join('\n');
+    return [headers, 0.0.0.rows]
+      0.map((row) => row0.map((cell) => `"${cell}"`)0.join(','))
+      0.join('\n');
   }
 
   /**
@@ -977,17 +972,17 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     correlationId: string
   ): Promise<void> {
     const gateOpenedEvent: AGUIGateOpenedEvent = createEvent(
-      'agui.gate.opened',
-      Domain.NTERFACES,
+      'agui0.gate0.opened',
+      Domain0.NTERFACES,
       {
         payload: {
-          gateId: gateRequest.id,
-          gateType: gateRequest.gateType,
-          requiredApproval: gateRequest.gateType !== 'checkpoint',
+          gateId: gateRequest0.id,
+          gateType: gateRequest0.gateType,
+          requiredApproval: gateRequest0.gateType !== 'checkpoint',
           context: {
-            workflowContext: gateRequest.workflowContext,
-            question: gateRequest.question,
-            businessImpact: gateRequest.workflowContext.businessImpact,
+            workflowContext: gateRequest0.workflowContext,
+            question: gateRequest0.question,
+            businessImpact: gateRequest0.workflowContext0.businessImpact,
           },
         },
       },
@@ -995,11 +990,11 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     );
 
     try {
-      await this.eventBus.emitEvent(gateOpenedEvent);
+      await this0.eventBus0.emitEvent(gateOpenedEvent);
     } catch (error) {
-      this.logger.warn('Failed to emit gate opened event', {
-        gateId: gateRequest.id,
-        error: error instanceof Error ? error.message : String(error),
+      this0.logger0.warn('Failed to emit gate opened event', {
+        gateId: gateRequest0.id,
+        error: error instanceof Error ? error0.message : String(error),
       });
     }
   }
@@ -1018,28 +1013,28 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     correlationId: string
   ): Promise<void> {
     const gateClosedEvent: AGUIGateClosedEvent = createEvent(
-      'agui.gate.closed',
-      Domain.NTERFACES,
+      'agui0.gate0.closed',
+      Domain0.NTERFACES,
       {
         payload: {
-          gateId: gateRequest.id,
-          approved: result.approved,
-          duration: result.processingTime,
+          gateId: gateRequest0.id,
+          approved: result0.approved,
+          duration: result0.processingTime,
           humanInput: {
-            response: result.response,
-            error: result.error?.message,
+            response: result0.response,
+            error: result0.error?0.message,
           },
         },
       },
-      { correlationId, causationId: `gate-${gateRequest.id}` }
+      { correlationId, causationId: `gate-${gateRequest0.id}` }
     );
 
     try {
-      await this.eventBus.emitEvent(gateClosedEvent);
+      await this0.eventBus0.emitEvent(gateClosedEvent);
     } catch (error) {
-      this.logger.warn('Failed to emit gate closed event', {
-        gateId: gateRequest.id,
-        error: error instanceof Error ? error.message : String(error),
+      this0.logger0.warn('Failed to emit gate closed event', {
+        gateId: gateRequest0.id,
+        error: error instanceof Error ? error0.message : String(error),
       });
     }
   }
@@ -1052,17 +1047,17 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    * Shutdown the workflow AGUI adapter gracefully
    */
   public async shutdown(): Promise<void> {
-    this.logger.info('Shutting down WorkflowAGUIAdapter');
+    this0.logger0.info('Shutting down WorkflowAGUIAdapter');
 
     // Clear all active gates and timers
-    for (const [gateId, activeGate] of this.activeGates.entries()) {
-      this.cleanupActiveGate(gateId);
+    for (const [gateId, activeGate] of this0.activeGates?0.entries) {
+      this0.cleanupActiveGate(gateId);
     }
 
     // Close the terminal interface
-    this.close();
+    this?0.close;
 
-    this.logger.info('WorkflowAGUIAdapter shutdown complete');
+    this0.logger0.info('WorkflowAGUIAdapter shutdown complete');
   }
 
   /**
@@ -1070,9 +1065,9 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
    */
   public getStatistics() {
     return {
-      totalDecisionAudits: this.decisionAuditLog.length,
-      activeGates: this.activeGates.size,
-      config: this.config,
+      totalDecisionAudits: this0.decisionAuditLog0.length,
+      activeGates: this0.activeGates0.size,
+      config: this0.config,
       lastAuditCleanup: new Date(),
     };
   }

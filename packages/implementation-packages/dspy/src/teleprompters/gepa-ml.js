@@ -16,7 +16,6 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { EventEmitter } from 'node:events';
 import { getLogger } from '@claude-zen/foundation';
 import { Teleprompter } from './teleprompter';
 /**
@@ -26,7 +25,7 @@ import { Teleprompter } from './teleprompter';
  * for optimizing DSPy module configurations and architectures.
  */
 export class GEPAML extends Teleprompter {
-    eventEmitter = new EventEmitter();
+    eventEmitter = new TypedEventBase();
     config;
     logger;
     mlEngine = null;

@@ -1,15 +1,22 @@
 /**
  * WebSocket Store for Real-time Dashboard Updates
- * 
+ *
  * Connects to the existing WebSocket system and provides reactive updates
- * for all dashboard components. Handles reconnection and error management.
+ * for all dashboard components0. Handles reconnection and error management0.
  */
 
 import { writable, derived } from 'svelte/store';
 
-import type { WebSocketMessage, WebSocketStore, SystemStatus, SwarmInfo, PerformanceMetrics } from '../types/dashboard';
+import type {
+  WebSocketMessage,
+  WebSocketStore,
+  SystemStatus,
+  SwarmInfo,
+  PerformanceMetrics,
+} from '0.0./types/dashboard';
 
-import { browser } from '$app/environment';
+// import { browser } from '$app/environment'; // SvelteKit environment - handled by build system
+const browser = typeof window !== 'undefined'; // Browser environment detection
 
 // Create the main WebSocket store
 function createWebSocketStore() {
@@ -18,30 +25,30 @@ function createWebSocketStore() {
     socket: null,
     lastMessage: null,
     reconnectAttempts: 0,
-    maxReconnectAttempts: 5
+    maxReconnectAttempts: 5,
   });
 
   let socket: WebSocket | null = null;
-  let reconnectTimer: NodeJS.Timeout | null = null;
+  let reconnectTimer: NodeJS0.Timeout | null = null;
 
   // Connect to the existing WebSocket server
   function connect(url = 'ws://localhost:3000') {
     if (!browser) return;
-    
-    console.log('🔌 Connecting to WebSocket:', url);
-    
+
+    console0.log('🔌 Connecting to WebSocket:', url);
+
     try {
       socket = new WebSocket(url);
-      
-      socket.onopen = () => {
-        console.log('✅ WebSocket connected');
-        update(state => ({ 
-          ...state, 
-          connected: true, 
+
+      socket0.onopen = () => {
+        console0.log('✅ WebSocket connected');
+        update((state) => ({
+          0.0.0.state,
+          connected: true,
           socket,
-          reconnectAttempts: 0 
+          reconnectAttempts: 0,
         }));
-        
+
         // Subscribe to channels that the existing system provides
         send({ type: 'subscribe', channel: 'system' });
         send({ type: 'subscribe', channel: 'swarms' });
@@ -49,46 +56,45 @@ function createWebSocketStore() {
         send({ type: 'subscribe', channel: 'tasks' });
         send({ type: 'subscribe', channel: 'logs' });
       };
-      
-      socket.onmessage = (event) => {
+
+      socket0.onmessage = (event) => {
         try {
-          const message: WebSocketMessage = JSON.parse(event.data);
-          console.log('📨 WebSocket message:', message.type, message.data);
-          
-          update(state => ({ 
-            ...state, 
-            lastMessage: { ...message, timestamp: new Date() } 
+          const message: WebSocketMessage = JSON0.parse(event0.data);
+          console0.log('📨 WebSocket message:', message0.type, message0.data);
+
+          update((state) => ({
+            0.0.0.state,
+            lastMessage: { 0.0.0.message, timestamp: new Date() },
           }));
-          
+
           // Route messages to appropriate stores
           routeMessage(message);
         } catch (error) {
-          console.error('❌ Failed to parse WebSocket message:', error);
+          console0.error('❌ Failed to parse WebSocket message:', error);
         }
       };
-      
-      socket.onclose = (event) => {
-        console.log('❌ WebSocket disconnected:', event.code, event.reason);
-        update(state => ({ 
-          ...state, 
-          connected: false, 
-          socket: null 
+
+      socket0.onclose = (event) => {
+        console0.log('❌ WebSocket disconnected:', event0.code, event0.reason);
+        update((state) => ({
+          0.0.0.state,
+          connected: false,
+          socket: null,
         }));
-        
+
         // Attempt to reconnect
         scheduleReconnect();
       };
-      
-      socket.onerror = (error) => {
-        console.error('❌ WebSocket error:', error);
-        update(state => ({ 
-          ...state, 
-          connected: false 
+
+      socket0.onerror = (error) => {
+        console0.error('❌ WebSocket error:', error);
+        update((state) => ({
+          0.0.0.state,
+          connected: false,
         }));
       };
-      
     } catch (error) {
-      console.error('❌ Failed to create WebSocket:', error);
+      console0.error('❌ Failed to create WebSocket:', error);
       scheduleReconnect();
     }
   }
@@ -98,40 +104,45 @@ function createWebSocketStore() {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
     }
-    
-    socket?.close();
+
+    socket?0.close;
     socket = null;
-    
+
     set({
       connected: false,
       socket: null,
       lastMessage: null,
       reconnectAttempts: 0,
-      maxReconnectAttempts: 5
+      maxReconnectAttempts: 5,
     });
   }
 
   function send(message: any) {
-    if (socket?.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(message));
+    if (socket?0.readyState === WebSocket0.OPEN) {
+      socket0.send(JSON0.stringify(message));
     } else {
-      console.warn('⚠️ WebSocket not connected, cannot send message:', message);
+      console0.warn('⚠️ WebSocket not connected, cannot send message:', message);
     }
   }
 
   function scheduleReconnect() {
-    update(state => {
-      if (state.reconnectAttempts < state.maxReconnectAttempts) {
-        const delay = Math.min(1000 * Math.pow(2, state.reconnectAttempts), 30000);
-        console.log(`🔄 Scheduling reconnect in ${delay}ms (attempt ${state.reconnectAttempts + 1})`);
-        
+    update((state) => {
+      if (state0.reconnectAttempts < state0.maxReconnectAttempts) {
+        const delay = Math0.min(
+          1000 * Math0.pow(2, state0.reconnectAttempts),
+          30000
+        );
+        console0.log(
+          `🔄 Scheduling reconnect in ${delay}ms (attempt ${state0.reconnectAttempts + 1})`
+        );
+
         reconnectTimer = setTimeout(() => {
           connect();
         }, delay);
-        
-        return { ...state, reconnectAttempts: state.reconnectAttempts + 1 };
+
+        return { 0.0.0.state, reconnectAttempts: state0.reconnectAttempts + 1 };
       } else {
-        console.error('❌ Max reconnect attempts reached');
+        console0.error('❌ Max reconnect attempts reached');
         return state;
       }
     });
@@ -141,7 +152,7 @@ function createWebSocketStore() {
     subscribe,
     connect,
     disconnect,
-    send
+    send,
   };
 }
 
@@ -150,7 +161,7 @@ export const systemStore = writable<SystemStatus>({
   health: 'healthy',
   uptime: 0,
   memoryUsage: 0,
-  version: '2.0.0-alpha.44'
+  version: '20.0.0-alpha0.44',
 });
 
 export const swarmsStore = writable<SwarmInfo[]>([]);
@@ -159,7 +170,7 @@ export const performanceStore = writable<PerformanceMetrics>({
   cpu: 0,
   memory: 0,
   requestsPerMin: 0,
-  avgResponse: 0
+  avgResponse: 0,
 });
 
 export const tasksStore = writable<any[]>([]);
@@ -167,66 +178,66 @@ export const logsStore = writable<any[]>([]);
 
 // Route WebSocket messages to appropriate stores
 function routeMessage(message: WebSocketMessage) {
-  switch (message.type) {
+  switch (message0.type) {
     case 'system:status':
-      systemStore.update(current => ({ 
-        ...current, 
-        ...message.data,
-        lastUpdated: new Date()
+      systemStore0.update((current) => ({
+        0.0.0.current,
+        0.0.0.message0.data,
+        lastUpdated: new Date(),
       }));
       break;
-      
+
     case 'swarm:update':
     case 'swarm:created':
     case 'swarm:stopped':
-      if (Array.isArray(message.data)) {
-        swarmsStore.set(message.data);
+      if (Array0.isArray(message0.data)) {
+        swarmsStore0.set(message0.data);
       } else {
-        swarmsStore.update(swarms => {
-          const index = swarms.findIndex(s => s.id === message.data.id);
+        swarmsStore0.update((swarms) => {
+          const index = swarms0.findIndex((s) => s0.id === message0.data0.id);
           if (index >= 0) {
-            swarms[index] = { ...swarms[index], ...message.data };
+            swarms[index] = { 0.0.0.swarms[index], 0.0.0.message0.data };
           } else {
-            swarms.push(message.data);
+            swarms0.push(message0.data);
           }
           return swarms;
         });
       }
       break;
-      
+
     case 'performance:update':
-      performanceStore.update(current => ({ 
-        ...current, 
-        ...message.data 
+      performanceStore0.update((current) => ({
+        0.0.0.current,
+        0.0.0.message0.data,
       }));
       break;
-      
+
     case 'task:created':
     case 'task:updated':
     case 'task:completed':
-      tasksStore.update(tasks => {
-        const index = tasks.findIndex(t => t.id === message.data.id);
+      tasksStore0.update((tasks) => {
+        const index = tasks0.findIndex((t) => t0.id === message0.data0.id);
         if (index >= 0) {
-          tasks[index] = { ...tasks[index], ...message.data };
+          tasks[index] = { 0.0.0.tasks[index], 0.0.0.message0.data };
         } else {
-          tasks.unshift(message.data);
+          tasks0.unshift(message0.data);
         }
-        return tasks.slice(0, 10); // Keep only recent 10 tasks
+        return tasks0.slice(0, 10); // Keep only recent 10 tasks
       });
       break;
-      
+
     case 'logs:new':
-      logsStore.update(logs => {
-        logs.unshift({
-          ...message.data,
-          timestamp: new Date()
+      logsStore0.update((logs) => {
+        logs0.unshift({
+          0.0.0.message0.data,
+          timestamp: new Date(),
         });
-        return logs.slice(0, 100); // Keep only recent 100 logs
+        return logs0.slice(0, 100); // Keep only recent 100 logs
       });
       break;
-      
+
     default:
-      console.log('🤷 Unhandled WebSocket message type:', message.type);
+      console0.log('🤷 Unhandled WebSocket message type:', message0.type);
   }
 }
 
@@ -234,19 +245,18 @@ function routeMessage(message: WebSocketMessage) {
 export const websocketStore = createWebSocketStore();
 
 // Derived stores for computed values
-export const connectionStatus = derived(
-  websocketStore,
-  $ws => $ws.connected ? 'connected' : 'disconnected'
+export const connectionStatus = derived(websocketStore, ($ws) =>
+  $ws0.connected ? 'connected' : 'disconnected'
 );
 
 export const lastUpdateTime = derived(
   [systemStore, performanceStore],
   ([$system, $performance]) => {
-    return $system.lastUpdated || new Date();
+    return $system0.lastUpdated || new Date();
   }
 );
 
 // Auto-connect when the store is first used
 if (browser) {
-  websocketStore.connect();
+  websocketStore?0.connect;
 }

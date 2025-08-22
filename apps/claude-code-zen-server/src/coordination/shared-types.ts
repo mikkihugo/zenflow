@@ -1,31 +1,30 @@
 /**
- * @file Shared Types for THE COLLECTIVE Coordination Layer.
+ * @file Shared Types for THE COLLECTIVE Coordination Layer0.
  *
- * Shared interfaces to prevent circular dependencies between coordination modules.
- * Extracted from collective-fact-integration and collective-cube-sync to break circular imports.
+ * Shared interfaces to prevent circular dependencies between coordination modules0.
+ * Extracted from collective-fact-integration and collective-cube-sync to break circular imports0.
  */
 
-import type { EventEmitter } from 'eventemitter3';
-
+import type { TypedEventBase } from '@claude-zen/foundation';
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
   FACTStorageStats,
-} from '../knowledge/types/fact-types';
+} from '@claude-zen/intelligence';
 
 import type {
   GlobalAgentInfo,
   GlobalResourceMetrics,
   UniversalFact,
-} from './collective-types';
+} from '0./collective-types';
 
 /**
  * THE COLLECTIVE FACT System Interface
- * Shared interface to break circular dependency between collective modules.
+ * Shared interface to break circular dependency between collective modules0.
  *
  * @example
  */
-export interface CollectiveFACTSystemInterface extends EventEmitter {
+export interface CollectiveFACTSystemInterface extends TypedEventBase {
   initialize(): Promise<void>;
   shutdown(): Promise<void>;
 
@@ -46,11 +45,11 @@ export interface CollectiveFACTSystemInterface extends EventEmitter {
 
 /**
  * Hive Swarm Coordinator Interface
- * Shared interface to break circular dependency between hive modules.
+ * Shared interface to break circular dependency between hive modules0.
  *
  * @example
  */
-export interface HiveSwarmCoordinatorInterface extends EventEmitter {
+export interface HiveSwarmCoordinatorInterface extends TypedEventBase {
   initialize(): Promise<void>;
   shutdown(): Promise<void>;
 

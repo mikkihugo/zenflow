@@ -10,7 +10,7 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation'
 
 const logger = getLogger('UnifiedExport');
@@ -45,7 +45,7 @@ export interface ExporterDefinition {
   supports?: string[];
 }
 
-export class ExportSystem extends EventEmitter {
+export class ExportSystem extends TypedEventBase {
   private exporters = new Map<string, ExporterDefinition>();
   private exportHistory: ExportResult[] = [];
   private initialized = false;
@@ -63,7 +63,7 @@ export class ExportSystem extends EventEmitter {
 
     logger.info('Initializing unified export system');
     this.initialized = true;
-    this.emit('initialized');
+    this.emit('initialized', {});
     logger.info('Unified export system ready');
   }
 
@@ -717,7 +717,7 @@ export class ExportSystem extends EventEmitter {
 
   clearHistory(): void {
     this.exportHistory = [];
-    this.emit('history:cleared');
+    this.emit('history:cleared', {});
   }
 
   /**
@@ -741,7 +741,7 @@ export class ExportSystem extends EventEmitter {
     logger.info('Shutting down unified export system...');
     this.removeAllListeners();
     this.initialized = false;
-    this.emit('shutdown');
+    this.emit('shutdown', {});
     logger.info('Unified export system shutdown complete');
   }
 }

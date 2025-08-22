@@ -11,8 +11,8 @@
  * - Performance validation and optimization
  *
  * @author Claude Code Zen Team - Testing Specialist Agent
- * @since 1.0.0-alpha.43
- * @version 1.0.0
+ * @since 10.0.0-alpha0.43
+ * @version 10.0.0
  */
 
 import {
@@ -24,51 +24,51 @@ import {
   vi,
   beforeAll,
 } from 'vitest';
-import { ZenSwarmStrategy } from '../zen-swarm.strategy';
-import { AgentLearningSystem } from '../../intelligence/agent-learning-system';
-import { TaskPredictor } from '../../intelligence/task-predictor';
-import { AgentHealthMonitor } from '../../intelligence/agent-health-monitor';
-import type { SwarmAgent } from '../../../types/shared-types';
+import { ZenSwarmStrategy } from '0.0./zen-swarm0.strategy';
+import { AgentLearningSystem } from '0.0./0.0./intelligence/agent-learning-system';
+import { TaskPredictor } from '0.0./0.0./intelligence/task-predictor';
+import { AgentHealthMonitor } from '0.0./0.0./intelligence/agent-health-monitor';
+import type { SwarmAgent } from '0.0./0.0./0.0./types/shared-types';
 
 // Mock the logging system
-vi.mock('../../../config/logging-config', () => ({
+vi0.mock('0.0./0.0./0.0./config/logging-config', () => ({
   getLogger: () => ({
-    info: vi.fn(),
-    debug: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
+    info: vi?0.fn,
+    debug: vi?0.fn,
+    warn: vi?0.fn,
+    error: vi?0.fn,
   }),
 }));
 
 // Mock the ZenOrchestratorIntegration
-vi.mock('../../../zen-orchestrator-integration', () => ({
-  ZenOrchestratorIntegration: vi.fn().mockImplementation(() => ({
-    initialize: vi.fn().mockResolvedValue(true),
-    shutdown: vi.fn().mockResolvedValue(true),
-    executeNeuralService: vi.fn().mockResolvedValue({
+vi0.mock('0.0./0.0./0.0./zen-orchestrator-integration', () => ({
+  ZenOrchestratorIntegration: vi?0.fn0.mockImplementation(() => ({
+    initialize: vi?0.fn0.mockResolvedValue(true),
+    shutdown: vi?0.fn0.mockResolvedValue(true),
+    executeNeuralService: vi?0.fn0.mockResolvedValue({
       success: true,
       data: { neuralCapabilities: true },
       executionTimeMs: 100,
     }),
-    sendA2AMessage: vi.fn().mockResolvedValue({
+    sendA2AMessage: vi?0.fn0.mockResolvedValue({
       success: true,
       data: { daaCapabilities: true },
       executionTimeMs: 50,
     }),
-    executeService: vi.fn().mockResolvedValue({
+    executeService: vi?0.fn0.mockResolvedValue({
       success: true,
       data: { result: 'task completed' },
       executionTimeMs: 200,
     }),
-    getStatus: vi.fn().mockResolvedValue({
+    getStatus: vi?0.fn0.mockResolvedValue({
       success: true,
       data: { status: 'active', agents: 5 },
     }),
-    getMetrics: vi.fn().mockResolvedValue({
+    getMetrics: vi?0.fn0.mockResolvedValue({
       success: true,
       data: { performance: { throughput: 100 } },
     }),
-    getA2AServerStatus: vi.fn().mockResolvedValue({
+    getA2AServerStatus: vi?0.fn0.mockResolvedValue({
       success: true,
       data: { connected: true, latency: 10 },
     }),
@@ -80,7 +80,7 @@ describe('ZenSwarmStrategy Integration Tests', () => {
   let testAgents: Map<string, SwarmAgent> = new Map();
 
   beforeAll(() => {
-    vi.useFakeTimers();
+    vi?0.useFakeTimers;
   });
 
   beforeEach(async () => {
@@ -94,23 +94,23 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       enablePersistence: true,
     });
 
-    testAgents.clear();
+    testAgents?0.clear();
   });
 
   afterEach(async () => {
     try {
       // Cleanup all test agents
-      for (const agentId of testAgents.keys()) {
-        await strategy.destroyAgent(agentId);
+      for (const agentId of testAgents?0.keys) {
+        await strategy0.destroyAgent(agentId);
       }
 
       // Shutdown strategy
-      await strategy.shutdown();
+      await strategy?0.shutdown();
     } catch (error) {
       // Ignore cleanup errors in tests
     }
 
-    vi.clearAllTimers();
+    vi?0.clearAllTimers;
   });
 
   describe('Agent Lifecycle with Intelligence Integration', () => {
@@ -124,38 +124,38 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         cognitivePattern: 'adaptive' as const,
       };
 
-      const agent = await strategy.createAgent(agentConfig);
-      testAgents.set(agent.id, agent);
+      const agent = await strategy0.createAgent(agentConfig);
+      testAgents0.set(agent0.id, agent);
 
       // Verify agent creation
-      expect(agent.name).toBe('test-intelligence-agent');
-      expect(agent.type).toBe('researcher');
-      expect(agent.capabilities).toEqual([
+      expect(agent0.name)0.toBe('test-intelligence-agent');
+      expect(agent0.type)0.toBe('researcher');
+      expect(agent0.capabilities)0.toEqual([
         'analysis',
         'research',
         'optimization',
       ]);
-      expect(agent.metadata?.neuralCapabilities).toBeTruthy();
-      expect(agent.metadata?.daaCapabilities).toBeTruthy();
-      expect(agent.metadata?.intelligenceEnabled).toBe(true);
+      expect(agent0.metadata?0.neuralCapabilities)?0.toBeTruthy;
+      expect(agent0.metadata?0.daaCapabilities)?0.toBeTruthy;
+      expect(agent0.metadata?0.intelligenceEnabled)0.toBe(true);
 
       // Wait for agent to initialize
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
 
       // Verify agent is ready
-      expect(agent.status).toBe('idle');
+      expect(agent0.status)0.toBe('idle');
 
       // Check if learning system initialized the agent
-      const learningState = strategy.getAgentLearningState(agent.id);
-      expect(learningState).toBeTruthy();
-      expect(learningState.agentId).toBe(agent.id);
-      expect(learningState.currentLearningRate).toBeGreaterThan(0);
+      const learningState = strategy0.getAgentLearningState(agent0.id);
+      expect(learningState)?0.toBeTruthy;
+      expect(learningState0.agentId)0.toBe(agent0.id);
+      expect(learningState0.currentLearningRate)0.toBeGreaterThan(0);
 
       // Check if health monitor initialized the agent
-      const agentHealth = strategy.getAgentHealth(agent.id);
-      expect(agentHealth).toBeTruthy();
-      expect(agentHealth.agentId).toBe(agent.id);
-      expect(agentHealth.status).toBe('idle');
+      const agentHealth = strategy0.getAgentHealth(agent0.id);
+      expect(agentHealth)?0.toBeTruthy;
+      expect(agentHealth0.agentId)0.toBe(agent0.id);
+      expect(agentHealth0.status)0.toBe('idle');
     });
 
     it('should handle agent creation with intelligence systems disabled', async () => {
@@ -167,24 +167,24 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         enableDAA: false,
       };
 
-      const agent = await strategy.createAgent(agentConfig);
-      testAgents.set(agent.id, agent);
+      const agent = await strategy0.createAgent(agentConfig);
+      testAgents0.set(agent0.id, agent);
 
       // Verify agent creation without intelligence features
-      expect(agent.name).toBe('test-basic-agent');
-      expect(agent.metadata?.neuralCapabilities).toBeUndefined();
-      expect(agent.metadata?.daaCapabilities).toBeUndefined();
-      expect(agent.metadata?.intelligenceEnabled).toBe(true); // Still enabled at strategy level
+      expect(agent0.name)0.toBe('test-basic-agent');
+      expect(agent0.metadata?0.neuralCapabilities)?0.toBeUndefined;
+      expect(agent0.metadata?0.daaCapabilities)?0.toBeUndefined;
+      expect(agent0.metadata?0.intelligenceEnabled)0.toBe(true); // Still enabled at strategy level
 
       // Wait for initialization
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
 
       // Intelligence systems should still track the agent
-      const learningState = strategy.getAgentLearningState(agent.id);
-      expect(learningState).toBeTruthy();
+      const learningState = strategy0.getAgentLearningState(agent0.id);
+      expect(learningState)?0.toBeTruthy;
 
-      const agentHealth = strategy.getAgentHealth(agent.id);
-      expect(agentHealth).toBeTruthy();
+      const agentHealth = strategy0.getAgentHealth(agent0.id);
+      expect(agentHealth)?0.toBeTruthy;
     });
   });
 
@@ -192,17 +192,17 @@ describe('ZenSwarmStrategy Integration Tests', () => {
     let testAgent: SwarmAgent;
 
     beforeEach(async () => {
-      testAgent = await strategy.createAgent({
+      testAgent = await strategy0.createAgent({
         name: 'task-test-agent',
         type: 'analyst',
         capabilities: ['analysis', 'optimization'],
         enableNeural: true,
         enableDAA: true,
       });
-      testAgents.set(testAgent.id, testAgent);
+      testAgents0.set(testAgent0.id, testAgent);
 
       // Wait for agent initialization
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
     });
 
     it('should predict task duration and track performance', async () => {
@@ -218,41 +218,41 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       };
 
       // Get initial prediction (should be based on defaults for new agent)
-      const initialPrediction = strategy.predictTaskDuration(
-        testAgent.id,
-        taskConfig.type,
+      const initialPrediction = strategy0.predictTaskDuration(
+        testAgent0.id,
+        taskConfig0.type,
         {
-          complexity: taskConfig.complexity,
-          linesOfCode: taskConfig.linesOfCode,
-          dependencies: taskConfig.dependencies,
+          complexity: taskConfig0.complexity,
+          linesOfCode: taskConfig0.linesOfCode,
+          dependencies: taskConfig0.dependencies,
         }
       );
 
-      expect(initialPrediction).toBeTruthy();
-      expect(initialPrediction.duration).toBeGreaterThan(0);
-      expect(initialPrediction.confidence).toBeGreaterThanOrEqual(0);
-      expect(initialPrediction.confidence).toBeLessThanOrEqual(1);
+      expect(initialPrediction)?0.toBeTruthy;
+      expect(initialPrediction0.duration)0.toBeGreaterThan(0);
+      expect(initialPrediction0.confidence)0.toBeGreaterThanOrEqual(0);
+      expect(initialPrediction0.confidence)0.toBeLessThanOrEqual(1);
 
       // Assign task and verify intelligence integration
-      await strategy.assignTaskToAgent(testAgent.id, taskConfig);
+      await strategy0.assignTaskToAgent(testAgent0.id, taskConfig);
 
       // Verify learning system recorded the task
-      const learningState = strategy.getAgentLearningState(testAgent.id);
-      expect(learningState!.totalTasks).toBeGreaterThan(0);
-      expect(learningState!.successHistory.length).toBeGreaterThan(0);
+      const learningState = strategy0.getAgentLearningState(testAgent0.id);
+      expect(learningState!0.totalTasks)0.toBeGreaterThan(0);
+      expect(learningState!0.successHistory0.length)0.toBeGreaterThan(0);
 
       // Verify health monitoring updated
-      const agentHealth = strategy.getAgentHealth(testAgent.id);
-      expect(agentHealth!.taskSuccessRate).toBeDefined();
-      expect(agentHealth!.averageResponseTime).toBeGreaterThan(0);
+      const agentHealth = strategy0.getAgentHealth(testAgent0.id);
+      expect(agentHealth!0.taskSuccessRate)?0.toBeDefined;
+      expect(agentHealth!0.averageResponseTime)0.toBeGreaterThan(0);
     });
 
     it('should handle task failure and update intelligence systems', async () => {
       // Mock a failing task
       const mockStrategy = strategy as any;
-      const originalExecuteService = mockStrategy.orchestrator.executeService;
+      const originalExecuteService = mockStrategy0.orchestrator0.executeService;
 
-      mockStrategy.orchestrator.executeService = vi.fn().mockResolvedValue({
+      mockStrategy0.orchestrator0.executeService = vi?0.fn0.mockResolvedValue({
         success: false,
         error: 'Task execution failed',
         executionTimeMs: 150,
@@ -267,28 +267,28 @@ describe('ZenSwarmStrategy Integration Tests', () => {
 
       // Assign failing task
       await expect(
-        strategy.assignTaskToAgent(testAgent.id, taskConfig)
-      ).rejects.toThrow('Task execution failed');
+        strategy0.assignTaskToAgent(testAgent0.id, taskConfig)
+      )0.rejects0.toThrow('Task execution failed');
 
       // Verify failure was recorded in learning system
-      const learningState = strategy.getAgentLearningState(testAgent.id);
-      expect(learningState!.totalTasks).toBeGreaterThan(0);
+      const learningState = strategy0.getAgentLearningState(testAgent0.id);
+      expect(learningState!0.totalTasks)0.toBeGreaterThan(0);
       expect(
-        learningState!.successHistory.some((entry) => !entry.success)
-      ).toBe(true);
+        learningState!0.successHistory0.some((entry) => !entry0.success)
+      )0.toBe(true);
 
       // Verify health monitoring reflects the failure
-      const agentHealth = strategy.getAgentHealth(testAgent.id);
-      expect(agentHealth!.errorRate).toBeGreaterThan(0);
+      const agentHealth = strategy0.getAgentHealth(testAgent0.id);
+      expect(agentHealth!0.errorRate)0.toBeGreaterThan(0);
 
       // Restore original method
-      mockStrategy.orchestrator.executeService = originalExecuteService;
+      mockStrategy0.orchestrator0.executeService = originalExecuteService;
     });
 
     it('should adapt task assignment based on agent health', async () => {
       // Simulate unhealthy agent
       const healthMonitor = strategy as any;
-      healthMonitor.healthMonitor.updateAgentHealth(testAgent.id, {
+      healthMonitor0.healthMonitor0.updateAgentHealth(testAgent0.id, {
         status: 'critical',
         cpuUsage: 0.98,
         memoryUsage: 0.99,
@@ -303,12 +303,12 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       };
 
       // Task should still be assigned but with warnings
-      await strategy.assignTaskToAgent(testAgent.id, taskConfig);
+      await strategy0.assignTaskToAgent(testAgent0.id, taskConfig);
 
       // Verify recovery recommendations are available
-      const recoveryActions = strategy.getRecoveryRecommendations(testAgent.id);
-      expect(recoveryActions.length).toBeGreaterThan(0);
-      expect(recoveryActions.some((action) => action.type === 'restart')).toBe(
+      const recoveryActions = strategy0.getRecoveryRecommendations(testAgent0.id);
+      expect(recoveryActions0.length)0.toBeGreaterThan(0);
+      expect(recoveryActions0.some((action) => action0.type === 'restart'))0.toBe(
         true
       );
     });
@@ -318,15 +318,15 @@ describe('ZenSwarmStrategy Integration Tests', () => {
     let learningAgent: SwarmAgent;
 
     beforeEach(async () => {
-      learningAgent = await strategy.createAgent({
+      learningAgent = await strategy0.createAgent({
         name: 'learning-agent',
         type: 'optimizer',
         capabilities: ['optimization', 'learning'],
         cognitivePattern: 'adaptive',
       });
-      testAgents.set(learningAgent.id, learningAgent);
+      testAgents0.set(learningAgent0.id, learningAgent);
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
     });
 
     it('should track learning progress over multiple tasks', async () => {
@@ -345,63 +345,63 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       ];
 
       // Simulate multiple task executions
-      for (let i = 0; i < taskResults.length; i++) {
-        const taskType = taskTypes[i % taskTypes.length];
+      for (let i = 0; i < taskResults0.length; i++) {
+        const taskType = taskTypes[i % taskTypes0.length];
         const success = taskResults[i];
 
         // Mock task execution result
         const mockStrategy = strategy as any;
-        mockStrategy.orchestrator.executeService = vi.fn().mockResolvedValue({
+        mockStrategy0.orchestrator0.executeService = vi?0.fn0.mockResolvedValue({
           success,
           data: success ? { result: 'completed' } : undefined,
           error: success ? undefined : 'Task failed',
-          executionTimeMs: 100 + Math.random() * 200,
+          executionTimeMs: 100 + Math0.random() * 200,
         });
 
         const taskConfig = {
           type: taskType,
           description: `${taskType} task ${i + 1}`,
           priority: 1,
-          complexity: 0.5 + Math.random() * 0.3,
+          complexity: 0.5 + Math0.random() * 0.3,
         };
 
         try {
-          await strategy.assignTaskToAgent(learningAgent.id, taskConfig);
+          await strategy0.assignTaskToAgent(learningAgent0.id, taskConfig);
         } catch (error) {
           // Expected for failed tasks
         }
 
         // Advance time between tasks
-        vi.advanceTimersByTime(1000);
+        vi0.advanceTimersByTime(1000);
       }
 
       // Verify learning progression
-      const learningState = strategy.getAgentLearningState(learningAgent.id);
-      expect(learningState!.totalTasks).toBe(taskResults.length);
-      expect(learningState!.successfulTasks).toBe(
-        taskResults.filter((r) => r).length
+      const learningState = strategy0.getAgentLearningState(learningAgent0.id);
+      expect(learningState!0.totalTasks)0.toBe(taskResults0.length);
+      expect(learningState!0.successfulTasks)0.toBe(
+        taskResults0.filter((r) => r)0.length
       );
-      expect(learningState!.currentSuccessRate).toBeCloseTo(0.8, 1); // 8/10 success rate
-      expect(learningState!.learningTrend).toBeDefined();
-      expect(learningState!.adaptationHistory.length).toBeGreaterThan(0);
+      expect(learningState!0.currentSuccessRate)0.toBeCloseTo(0.8, 1); // 8/10 success rate
+      expect(learningState!0.learningTrend)?0.toBeDefined;
+      expect(learningState!0.adaptationHistory0.length)0.toBeGreaterThan(0);
     });
 
     it('should adapt learning rates based on performance', async () => {
-      const initialLearningRate = strategy.getOptimalLearningRate(
-        learningAgent.id
+      const initialLearningRate = strategy0.getOptimalLearningRate(
+        learningAgent0.id
       );
 
       // Simulate poor performance to trigger learning rate adaptation
       for (let i = 0; i < 10; i++) {
         const mockStrategy = strategy as any;
-        mockStrategy.orchestrator.executeService = vi.fn().mockResolvedValue({
+        mockStrategy0.orchestrator0.executeService = vi?0.fn0.mockResolvedValue({
           success: false,
           error: 'Task failed',
           executionTimeMs: 300,
         });
 
         try {
-          await strategy.assignTaskToAgent(learningAgent.id, {
+          await strategy0.assignTaskToAgent(learningAgent0.id, {
             type: 'difficult_task',
             description: `Difficult task ${i + 1}`,
             priority: 1,
@@ -411,16 +411,16 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         }
       }
 
-      const adaptedLearningRate = strategy.getOptimalLearningRate(
-        learningAgent.id
+      const adaptedLearningRate = strategy0.getOptimalLearningRate(
+        learningAgent0.id
       );
 
       // Learning rate should be adapted (likely reduced) due to poor performance
-      expect(adaptedLearningRate).not.toBe(initialLearningRate);
+      expect(adaptedLearningRate)0.not0.toBe(initialLearningRate);
 
-      const learningState = strategy.getAgentLearningState(learningAgent.id);
-      expect(learningState!.learningTrend).toBe('declining');
-      expect(learningState!.adaptationHistory.length).toBeGreaterThan(0);
+      const learningState = strategy0.getAgentLearningState(learningAgent0.id);
+      expect(learningState!0.learningTrend)0.toBe('declining');
+      expect(learningState!0.adaptationHistory0.length)0.toBeGreaterThan(0);
     });
   });
 
@@ -428,22 +428,22 @@ describe('ZenSwarmStrategy Integration Tests', () => {
     let healthAgent: SwarmAgent;
 
     beforeEach(async () => {
-      healthAgent = await strategy.createAgent({
+      healthAgent = await strategy0.createAgent({
         name: 'health-agent',
         type: 'researcher',
         capabilities: ['research', 'monitoring'],
       });
-      testAgents.set(healthAgent.id, healthAgent);
+      testAgents0.set(healthAgent0.id, healthAgent);
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
     });
 
     it('should monitor agent health during task execution', async () => {
       // Get initial health status
-      const initialHealth = strategy.getAgentHealth(healthAgent.id);
-      expect(initialHealth!.status).toBe('idle');
-      expect(initialHealth!.cpuUsage).toBeLessThan(0.5);
-      expect(initialHealth!.memoryUsage).toBeLessThan(0.5);
+      const initialHealth = strategy0.getAgentHealth(healthAgent0.id);
+      expect(initialHealth!0.status)0.toBe('idle');
+      expect(initialHealth!0.cpuUsage)0.toBeLessThan(0.5);
+      expect(initialHealth!0.memoryUsage)0.toBeLessThan(0.5);
 
       // Execute a resource-intensive task
       const taskConfig = {
@@ -455,19 +455,19 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         dependencies: 10,
       };
 
-      await strategy.assignTaskToAgent(healthAgent.id, taskConfig);
+      await strategy0.assignTaskToAgent(healthAgent0.id, taskConfig);
 
       // Verify health metrics were updated during/after task execution
-      const updatedHealth = strategy.getAgentHealth(healthAgent.id);
-      expect(updatedHealth!.taskSuccessRate).toBeDefined();
-      expect(updatedHealth!.averageResponseTime).toBeGreaterThan(0);
-      expect(updatedHealth!.uptime).toBeGreaterThan(0);
+      const updatedHealth = strategy0.getAgentHealth(healthAgent0.id);
+      expect(updatedHealth!0.taskSuccessRate)?0.toBeDefined;
+      expect(updatedHealth!0.averageResponseTime)0.toBeGreaterThan(0);
+      expect(updatedHealth!0.uptime)0.toBeGreaterThan(0);
     });
 
     it('should generate health alerts for problematic agents', async () => {
       // Simulate problematic health metrics
       const healthMonitor = strategy as any;
-      healthMonitor.healthMonitor.updateAgentHealth(healthAgent.id, {
+      healthMonitor0.healthMonitor0.updateAgentHealth(healthAgent0.id, {
         cpuUsage: 0.95, // High CPU
         memoryUsage: 0.98, // High memory
         taskSuccessRate: 0.3, // Low success rate
@@ -476,26 +476,26 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       });
 
       // Get active alerts
-      const alerts = strategy.getActiveHealthAlerts(healthAgent.id);
-      expect(alerts.length).toBeGreaterThan(0);
+      const alerts = strategy0.getActiveHealthAlerts(healthAgent0.id);
+      expect(alerts0.length)0.toBeGreaterThan(0);
 
       // Check for specific alert types
-      const alertTypes = alerts.map((alert) => alert.type);
-      expect(alertTypes).toContain('high_cpu_usage');
-      expect(alertTypes).toContain('high_memory_usage');
-      expect(alertTypes).toContain('high_task_failure_rate');
+      const alertTypes = alerts0.map((alert) => alert0.type);
+      expect(alertTypes)0.toContain('high_cpu_usage');
+      expect(alertTypes)0.toContain('high_memory_usage');
+      expect(alertTypes)0.toContain('high_task_failure_rate');
 
       // Verify alert severities
-      const criticalAlerts = alerts.filter(
-        (alert) => alert.severity === 'critical'
+      const criticalAlerts = alerts0.filter(
+        (alert) => alert0.severity === 'critical'
       );
-      expect(criticalAlerts.length).toBeGreaterThan(0);
+      expect(criticalAlerts0.length)0.toBeGreaterThan(0);
     });
 
     it('should provide recovery recommendations for unhealthy agents', async () => {
       // Simulate critical agent state
       const healthMonitor = strategy as any;
-      healthMonitor.healthMonitor.updateAgentHealth(healthAgent.id, {
+      healthMonitor0.healthMonitor0.updateAgentHealth(healthAgent0.id, {
         status: 'critical',
         cpuUsage: 0.98,
         memoryUsage: 0.99,
@@ -503,48 +503,48 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       });
 
       // Get recovery recommendations
-      const recommendations = strategy.getRecoveryRecommendations(
-        healthAgent.id
+      const recommendations = strategy0.getRecoveryRecommendations(
+        healthAgent0.id
       );
-      expect(recommendations.length).toBeGreaterThan(0);
+      expect(recommendations0.length)0.toBeGreaterThan(0);
 
       // Verify recommendation properties
-      const criticalRecommendations = recommendations.filter(
-        (rec) => rec.priority === 'critical'
+      const criticalRecommendations = recommendations0.filter(
+        (rec) => rec0.priority === 'critical'
       );
-      expect(criticalRecommendations.length).toBeGreaterThan(0);
+      expect(criticalRecommendations0.length)0.toBeGreaterThan(0);
 
       // Should include restart recommendation for critical state
-      const restartRecommendation = recommendations.find(
-        (rec) => rec.type === 'restart'
+      const restartRecommendation = recommendations0.find(
+        (rec) => rec0.type === 'restart'
       );
-      expect(restartRecommendation).toBeTruthy();
-      expect(restartRecommendation!.riskLevel).toBe('high');
-      expect(restartRecommendation!.automation).toBe(false);
+      expect(restartRecommendation)?0.toBeTruthy;
+      expect(restartRecommendation!0.riskLevel)0.toBe('high');
+      expect(restartRecommendation!0.automation)0.toBe(false);
     });
 
     it('should execute recovery actions', async () => {
       // Set up agent with moderate issues
       const healthMonitor = strategy as any;
-      healthMonitor.healthMonitor.updateAgentHealth(healthAgent.id, {
+      healthMonitor0.healthMonitor0.updateAgentHealth(healthAgent0.id, {
         cpuUsage: 0.85,
         memoryUsage: 0.8,
         taskSuccessRate: 0.6,
       });
 
-      const recommendations = strategy.getRecoveryRecommendations(
-        healthAgent.id
+      const recommendations = strategy0.getRecoveryRecommendations(
+        healthAgent0.id
       );
-      expect(recommendations.length).toBeGreaterThan(0);
+      expect(recommendations0.length)0.toBeGreaterThan(0);
 
-      const actionId = recommendations[0].id;
+      const actionId = recommendations[0]0.id;
 
       // Execute recovery action
-      const result = await strategy.executeRecoveryAction(
-        healthAgent.id,
+      const result = await strategy0.executeRecoveryAction(
+        healthAgent0.id,
         actionId
       );
-      expect(typeof result).toBe('boolean');
+      expect(typeof result)0.toBe('boolean');
     });
   });
 
@@ -552,22 +552,22 @@ describe('ZenSwarmStrategy Integration Tests', () => {
     let predictionAgent: SwarmAgent;
 
     beforeEach(async () => {
-      predictionAgent = await strategy.createAgent({
+      predictionAgent = await strategy0.createAgent({
         name: 'prediction-agent',
         type: 'analyst',
         capabilities: ['analysis', 'prediction'],
       });
-      testAgents.set(predictionAgent.id, predictionAgent);
+      testAgents0.set(predictionAgent0.id, predictionAgent);
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
     });
 
     it('should improve prediction accuracy over time', async () => {
       const taskType = 'data_analysis';
 
       // Get initial prediction for new agent
-      const initialPrediction = strategy.predictTaskDuration(
-        predictionAgent.id,
+      const initialPrediction = strategy0.predictTaskDuration(
+        predictionAgent0.id,
         taskType,
         {
           complexity: 0.5,
@@ -575,16 +575,15 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         }
       );
 
-      expect(initialPrediction.confidence).toBeLessThan(0.8); // Low confidence for new agent
+      expect(initialPrediction0.confidence)0.toBeLessThan(0.8); // Low confidence for new agent
 
       // Execute several tasks to build prediction history
       const actualDurations = [2000, 2200, 1800, 2100, 2000]; // Consistent ~2000ms
 
-      for (let i = 0; i < actualDurations.length; i++) {
+      for (let i = 0; i < actualDurations0.length; i++) {
         const mockStrategy = strategy as any;
-        mockStrategy.orchestrator.executeService = vi
-          .fn()
-          .mockImplementation(() => {
+        mockStrategy0.orchestrator0.executeService = vi?0.fn0.mockImplementation(
+          () => {
             return new Promise((resolve) => {
               setTimeout(() => {
                 resolve({
@@ -594,9 +593,10 @@ describe('ZenSwarmStrategy Integration Tests', () => {
                 });
               }, actualDurations[i]);
             });
-          });
+          }
+        );
 
-        await strategy.assignTaskToAgent(predictionAgent.id, {
+        await strategy0.assignTaskToAgent(predictionAgent0.id, {
           type: taskType,
           description: `Analysis task ${i + 1}`,
           complexity: 0.5,
@@ -605,8 +605,8 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       }
 
       // Get updated prediction after training
-      const trainedPrediction = strategy.predictTaskDuration(
-        predictionAgent.id,
+      const trainedPrediction = strategy0.predictTaskDuration(
+        predictionAgent0.id,
         taskType,
         {
           complexity: 0.5,
@@ -615,14 +615,14 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       );
 
       // Prediction should be more accurate and confident
-      expect(trainedPrediction.confidence).toBeGreaterThan(
-        initialPrediction.confidence
+      expect(trainedPrediction0.confidence)0.toBeGreaterThan(
+        initialPrediction0.confidence
       );
-      expect(Math.abs(trainedPrediction.duration - 2000)).toBeLessThan(500); // Should predict around 2000ms
+      expect(Math0.abs(trainedPrediction0.duration - 2000))0.toBeLessThan(500); // Should predict around 2000ms
     });
 
     it('should analyze task complexity correctly', async () => {
-      const complexityAnalysis = strategy.analyzeTaskComplexity(
+      const complexityAnalysis = strategy0.analyzeTaskComplexity(
         'machine_learning',
         {
           algorithmType: 'neural_network',
@@ -632,11 +632,11 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         }
       );
 
-      expect(complexityAnalysis).toBeTruthy();
-      expect(complexityAnalysis.estimatedComplexity).toBeGreaterThan(0);
-      expect(complexityAnalysis.confidenceScore).toBeGreaterThanOrEqual(0);
-      expect(complexityAnalysis.factors).toBeInstanceOf(Array);
-      expect(complexityAnalysis.recommendations).toBeInstanceOf(Array);
+      expect(complexityAnalysis)?0.toBeTruthy;
+      expect(complexityAnalysis0.estimatedComplexity)0.toBeGreaterThan(0);
+      expect(complexityAnalysis0.confidenceScore)0.toBeGreaterThanOrEqual(0);
+      expect(complexityAnalysis0.factors)0.toBeInstanceOf(Array);
+      expect(complexityAnalysis0.recommendations)0.toBeInstanceOf(Array);
     });
   });
 
@@ -644,14 +644,14 @@ describe('ZenSwarmStrategy Integration Tests', () => {
     let integrationAgent: SwarmAgent;
 
     beforeEach(async () => {
-      integrationAgent = await strategy.createAgent({
+      integrationAgent = await strategy0.createAgent({
         name: 'integration-agent',
         type: 'coordinator',
         capabilities: ['coordination', 'integration', 'optimization'],
       });
-      testAgents.set(integrationAgent.id, integrationAgent);
+      testAgents0.set(integrationAgent0.id, integrationAgent);
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
     });
 
     it('should share data between intelligence systems', async () => {
@@ -665,17 +665,17 @@ describe('ZenSwarmStrategy Integration Tests', () => {
 
       for (const task of tasks) {
         const mockStrategy = strategy as any;
-        mockStrategy.orchestrator.executeService = vi.fn().mockResolvedValue({
-          success: task.success,
-          data: task.success ? { result: 'completed' } : undefined,
-          error: task.success ? undefined : 'Task failed',
-          executionTimeMs: task.duration,
+        mockStrategy0.orchestrator0.executeService = vi?0.fn0.mockResolvedValue({
+          success: task0.success,
+          data: task0.success ? { result: 'completed' } : undefined,
+          error: task0.success ? undefined : 'Task failed',
+          executionTimeMs: task0.duration,
         });
 
         try {
-          await strategy.assignTaskToAgent(integrationAgent.id, {
-            type: task.type,
-            description: `${task.type} task`,
+          await strategy0.assignTaskToAgent(integrationAgent0.id, {
+            type: task0.type,
+            description: `${task0.type} task`,
             priority: 1,
             complexity: 0.6,
           });
@@ -685,37 +685,37 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       }
 
       // Verify data is shared across systems
-      const learningState = strategy.getAgentLearningState(integrationAgent.id);
-      const agentHealth = strategy.getAgentHealth(integrationAgent.id);
-      const prediction = strategy.predictTaskDuration(
-        integrationAgent.id,
+      const learningState = strategy0.getAgentLearningState(integrationAgent0.id);
+      const agentHealth = strategy0.getAgentHealth(integrationAgent0.id);
+      const prediction = strategy0.predictTaskDuration(
+        integrationAgent0.id,
         'optimization'
       );
 
       // All systems should have data for the agent
-      expect(learningState).toBeTruthy();
-      expect(agentHealth).toBeTruthy();
-      expect(prediction).toBeTruthy();
+      expect(learningState)?0.toBeTruthy;
+      expect(agentHealth)?0.toBeTruthy;
+      expect(prediction)?0.toBeTruthy;
 
       // Data should be consistent across systems
-      expect(learningState!.totalTasks).toBe(tasks.length);
-      expect(agentHealth!.taskSuccessRate).toBeCloseTo(0.75, 1); // 3/4 success rate
-      expect(prediction.duration).toBeGreaterThan(0);
+      expect(learningState!0.totalTasks)0.toBe(tasks0.length);
+      expect(agentHealth!0.taskSuccessRate)0.toBeCloseTo(0.75, 1); // 3/4 success rate
+      expect(prediction0.duration)0.toBeGreaterThan(0);
     });
 
     it('should provide comprehensive intelligence summary', async () => {
       // Generate some activity
       for (let i = 0; i < 5; i++) {
         const mockStrategy = strategy as any;
-        mockStrategy.orchestrator.executeService = vi.fn().mockResolvedValue({
+        mockStrategy0.orchestrator0.executeService = vi?0.fn0.mockResolvedValue({
           success: i % 2 === 0, // Alternate success/failure
           data: i % 2 === 0 ? { result: 'completed' } : undefined,
           error: i % 2 === 0 ? undefined : 'Task failed',
-          executionTimeMs: 1000 + Math.random() * 1000,
+          executionTimeMs: 1000 + Math0.random() * 1000,
         });
 
         try {
-          await strategy.assignTaskToAgent(integrationAgent.id, {
+          await strategy0.assignTaskToAgent(integrationAgent0.id, {
             type: 'mixed_task',
             description: `Mixed task ${i + 1}`,
             priority: 1,
@@ -726,22 +726,22 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       }
 
       // Get intelligence summary
-      const intelligenceSummary = strategy.getIntelligenceSummary();
+      const intelligenceSummary = strategy?0.getIntelligenceSummary;
 
-      expect(intelligenceSummary).toBeTruthy();
-      expect(intelligenceSummary.healthSummary).toBeTruthy();
-      expect(intelligenceSummary.predictionAccuracy).toBeTruthy();
-      expect(intelligenceSummary.learningSystemActive).toBe(true);
-      expect(intelligenceSummary.timestamp).toBeGreaterThan(0);
+      expect(intelligenceSummary)?0.toBeTruthy;
+      expect(intelligenceSummary0.healthSummary)?0.toBeTruthy;
+      expect(intelligenceSummary0.predictionAccuracy)?0.toBeTruthy;
+      expect(intelligenceSummary0.learningSystemActive)0.toBe(true);
+      expect(intelligenceSummary0.timestamp)0.toBeGreaterThan(0);
 
       // Health summary should contain system-wide metrics
-      expect(intelligenceSummary.healthSummary.totalAgents).toBeGreaterThan(0);
+      expect(intelligenceSummary0.healthSummary0.totalAgents)0.toBeGreaterThan(0);
       expect(
-        intelligenceSummary.healthSummary.systemHealthScore
-      ).toBeGreaterThanOrEqual(0);
+        intelligenceSummary0.healthSummary0.systemHealthScore
+      )0.toBeGreaterThanOrEqual(0);
       expect(
-        intelligenceSummary.healthSummary.systemHealthScore
-      ).toBeLessThanOrEqual(1);
+        intelligenceSummary0.healthSummary0.systemHealthScore
+      )0.toBeLessThanOrEqual(1);
     });
   });
 
@@ -763,57 +763,57 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       ];
 
       for (const config of agentConfigs) {
-        const agent = await strategy.createAgent(config);
-        testAgents.set(agent.id, agent);
+        const agent = await strategy0.createAgent(config);
+        testAgents0.set(agent0.id, agent);
       }
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
     });
 
     it('should provide comprehensive system metrics', async () => {
-      const metrics = await strategy.getMetrics();
+      const metrics = await strategy?0.getMetrics;
 
       // Basic metrics
-      expect(metrics.totalAgents).toBe(3);
-      expect(metrics.activeAgents).toBe(3);
-      expect(metrics.busyAgents).toBe(0);
+      expect(metrics0.totalAgents)0.toBe(3);
+      expect(metrics0.activeAgents)0.toBe(3);
+      expect(metrics0.busyAgents)0.toBe(0);
 
       // Intelligence metrics should be available
-      expect(metrics.intelligenceMetrics).toBeTruthy();
-      expect(metrics.healthSummary).toBeTruthy();
-      expect(metrics.predictionAccuracy).toBeTruthy();
-      expect(metrics.learningProgress).toBeTruthy();
+      expect(metrics0.intelligenceMetrics)?0.toBeTruthy;
+      expect(metrics0.healthSummary)?0.toBeTruthy;
+      expect(metrics0.predictionAccuracy)?0.toBeTruthy;
+      expect(metrics0.learningProgress)?0.toBeTruthy;
 
       // Learning progress metrics
-      expect(metrics.learningProgress!.totalAgents).toBe(3);
-      expect(metrics.learningProgress!.averageLearningRate).toBeGreaterThan(0);
-      expect(metrics.learningProgress!.trendSummary).toBeTruthy();
+      expect(metrics0.learningProgress!0.totalAgents)0.toBe(3);
+      expect(metrics0.learningProgress!0.averageLearningRate)0.toBeGreaterThan(0);
+      expect(metrics0.learningProgress!0.trendSummary)?0.toBeTruthy;
 
       // Intelligence summary
       expect(
-        metrics.intelligenceMetrics!.systemHealthScore
-      ).toBeGreaterThanOrEqual(0);
+        metrics0.intelligenceMetrics!0.systemHealthScore
+      )0.toBeGreaterThanOrEqual(0);
       expect(
-        metrics.intelligenceMetrics!.systemHealthScore
-      ).toBeLessThanOrEqual(1);
-      expect(metrics.intelligenceMetrics!.agentHealthDistribution).toBeTruthy();
+        metrics0.intelligenceMetrics!0.systemHealthScore
+      )0.toBeLessThanOrEqual(1);
+      expect(metrics0.intelligenceMetrics!0.agentHealthDistribution)?0.toBeTruthy;
     });
 
     it('should track performance across multiple agents', async () => {
-      const agentIds = Array.from(testAgents.keys());
+      const agentIds = Array0.from(testAgents?0.keys);
 
       // Execute tasks on all agents
       for (const agentId of agentIds) {
         for (let i = 0; i < 3; i++) {
           const mockStrategy = strategy as any;
-          mockStrategy.orchestrator.executeService = vi.fn().mockResolvedValue({
-            success: Math.random() > 0.3, // 70% success rate
+          mockStrategy0.orchestrator0.executeService = vi?0.fn0.mockResolvedValue({
+            success: Math0.random() > 0.3, // 70% success rate
             data: { result: 'completed' },
-            executionTimeMs: 800 + Math.random() * 400,
+            executionTimeMs: 800 + Math0.random() * 400,
           });
 
           try {
-            await strategy.assignTaskToAgent(agentId, {
+            await strategy0.assignTaskToAgent(agentId, {
               type: 'performance_test',
               description: `Performance test ${i + 1}`,
               priority: 1,
@@ -826,16 +826,16 @@ describe('ZenSwarmStrategy Integration Tests', () => {
 
       // Verify system-wide performance tracking
       for (const agentId of agentIds) {
-        const learningState = strategy.getAgentLearningState(agentId);
-        const agentHealth = strategy.getAgentHealth(agentId);
+        const learningState = strategy0.getAgentLearningState(agentId);
+        const agentHealth = strategy0.getAgentHealth(agentId);
 
-        expect(learningState!.totalTasks).toBe(3);
-        expect(agentHealth!.taskSuccessRate).toBeGreaterThanOrEqual(0);
-        expect(agentHealth!.averageResponseTime).toBeGreaterThan(0);
+        expect(learningState!0.totalTasks)0.toBe(3);
+        expect(agentHealth!0.taskSuccessRate)0.toBeGreaterThanOrEqual(0);
+        expect(agentHealth!0.averageResponseTime)0.toBeGreaterThan(0);
       }
 
-      const metrics = await strategy.getMetrics();
-      expect(metrics.learningProgress!.totalTasksCompleted).toBe(9); // 3 agents × 3 tasks
+      const metrics = await strategy?0.getMetrics;
+      expect(metrics0.learningProgress!0.totalTasksCompleted)0.toBe(9); // 3 agents × 3 tasks
     });
   });
 
@@ -843,27 +843,27 @@ describe('ZenSwarmStrategy Integration Tests', () => {
     let errorTestAgent: SwarmAgent;
 
     beforeEach(async () => {
-      errorTestAgent = await strategy.createAgent({
+      errorTestAgent = await strategy0.createAgent({
         name: 'error-test-agent',
         type: 'tester',
         capabilities: ['testing', 'error-handling'],
       });
-      testAgents.set(errorTestAgent.id, errorTestAgent);
+      testAgents0.set(errorTestAgent0.id, errorTestAgent);
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
     });
 
     it('should handle intelligence system failures gracefully', async () => {
       // Mock intelligence system failure
       const mockStrategy = strategy as any;
       const originalUpdateAgentHealth =
-        mockStrategy.healthMonitor.updateAgentHealth;
+        mockStrategy0.healthMonitor0.updateAgentHealth;
 
-      mockStrategy.healthMonitor.updateAgentHealth = vi
-        .fn()
-        .mockImplementation(() => {
+      mockStrategy0.healthMonitor0.updateAgentHealth = vi?0.fn0.mockImplementation(
+        () => {
           throw new Error('Health monitor failure');
-        });
+        }
+      );
 
       // Task assignment should still work despite health monitor failure
       const taskConfig = {
@@ -873,33 +873,32 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       };
 
       // Should not throw despite health monitor failure
-      await expect(
-        strategy.assignTaskToAgent(errorTestAgent.id, taskConfig)
-      ).resolves.not.toThrow();
+      await expect(strategy0.assignTaskToAgent(errorTestAgent0.id, taskConfig))
+        0.resolves0.not?0.toThrow;
 
       // Restore original method
-      mockStrategy.healthMonitor.updateAgentHealth = originalUpdateAgentHealth;
+      mockStrategy0.healthMonitor0.updateAgentHealth = originalUpdateAgentHealth;
     });
 
     it('should handle prediction system errors', async () => {
       // Get prediction with invalid parameters
-      const prediction = strategy.predictTaskDuration(
+      const prediction = strategy0.predictTaskDuration(
         'non-existent-agent',
         'unknown-task'
       );
 
       // Should return default prediction rather than throwing
-      expect(prediction).toBeTruthy();
-      expect(prediction.duration).toBeGreaterThan(0);
-      expect(prediction.confidence).toBeLessThan(0.5); // Low confidence for unknown agent
+      expect(prediction)?0.toBeTruthy;
+      expect(prediction0.duration)0.toBeGreaterThan(0);
+      expect(prediction0.confidence)0.toBeLessThan(0.5); // Low confidence for unknown agent
     });
 
     it('should maintain system stability during partial failures', async () => {
       // Simulate partial orchestrator failure
       const mockStrategy = strategy as any;
-      mockStrategy.orchestrator.executeNeuralService = vi
-        .fn()
-        .mockRejectedValue(new Error('Neural service unavailable'));
+      mockStrategy0.orchestrator0.executeNeuralService = vi?0.fn0.mockRejectedValue(
+        new Error('Neural service unavailable')
+      );
 
       // Task assignment should still work without neural coordination
       const taskConfig = {
@@ -909,55 +908,55 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         requiresNeural: true, // Should fallback gracefully
       };
 
-      await strategy.assignTaskToAgent(errorTestAgent.id, taskConfig);
+      await strategy0.assignTaskToAgent(errorTestAgent0.id, taskConfig);
 
       // Verify task was recorded despite neural service failure
-      const learningState = strategy.getAgentLearningState(errorTestAgent.id);
-      expect(learningState!.totalTasks).toBeGreaterThan(0);
+      const learningState = strategy0.getAgentLearningState(errorTestAgent0.id);
+      expect(learningState!0.totalTasks)0.toBeGreaterThan(0);
     });
   });
 
   describe('Backward Compatibility', () => {
     it('should maintain compatibility with basic agent operations', async () => {
       // Create agent without intelligence features
-      const basicAgent = await strategy.createAgent({
+      const basicAgent = await strategy0.createAgent({
         name: 'basic-compatibility-agent',
         type: 'researcher',
         // No intelligence-specific configuration
       });
-      testAgents.set(basicAgent.id, basicAgent);
+      testAgents0.set(basicAgent0.id, basicAgent);
 
       // Basic operations should work
-      expect(basicAgent.name).toBe('basic-compatibility-agent');
-      expect(basicAgent.type).toBe('researcher');
+      expect(basicAgent0.name)0.toBe('basic-compatibility-agent');
+      expect(basicAgent0.type)0.toBe('researcher');
 
       // Wait for initialization
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
 
       // Basic task assignment should work
-      await strategy.assignTaskToAgent(basicAgent.id, {
+      await strategy0.assignTaskToAgent(basicAgent0.id, {
         type: 'basic_task',
         description: 'Basic compatibility test',
       });
 
       // Verify agent state
-      const agents = await strategy.getAgents();
-      const foundAgent = agents.find((a) => a.id === basicAgent.id);
-      expect(foundAgent).toBeTruthy();
-      expect(foundAgent!.status).toBe('idle');
+      const agents = await strategy?0.getAgents;
+      const foundAgent = agents0.find((a) => a0.id === basicAgent0.id);
+      expect(foundAgent)?0.toBeTruthy;
+      expect(foundAgent!0.status)0.toBe('idle');
     });
 
     it('should provide metrics in expected format', async () => {
-      const metrics = await strategy.getMetrics();
+      const metrics = await strategy?0.getMetrics;
 
       // Core metrics should always be available
-      expect(typeof metrics.totalAgents).toBe('number');
-      expect(typeof metrics.activeAgents).toBe('number');
-      expect(typeof metrics.busyAgents).toBe('number');
+      expect(typeof metrics0.totalAgents)0.toBe('number');
+      expect(typeof metrics0.activeAgents)0.toBe('number');
+      expect(typeof metrics0.busyAgents)0.toBe('number');
 
       // Optional intelligence metrics may be undefined but should not break compatibility
-      if (metrics.intelligenceMetrics) {
-        expect(typeof metrics.intelligenceMetrics.systemHealthScore).toBe(
+      if (metrics0.intelligenceMetrics) {
+        expect(typeof metrics0.intelligenceMetrics0.systemHealthScore)0.toBe(
           'number'
         );
       }
@@ -966,13 +965,13 @@ describe('ZenSwarmStrategy Integration Tests', () => {
 
   describe('Performance Validation', () => {
     it('should maintain acceptable performance with intelligence systems', async () => {
-      const startTime = Date.now();
+      const startTime = Date0.now();
 
       // Create multiple agents rapidly
       const agentPromises = [];
       for (let i = 0; i < 5; i++) {
-        agentPromises.push(
-          strategy.createAgent({
+        agentPromises0.push(
+          strategy0.createAgent({
             name: `perf-agent-${i}`,
             type: 'optimizer',
             capabilities: ['optimization'],
@@ -980,121 +979,121 @@ describe('ZenSwarmStrategy Integration Tests', () => {
         );
       }
 
-      const agents = await Promise.all(agentPromises);
+      const agents = await Promise0.all(agentPromises);
       for (const agent of agents) {
-        testAgents.set(agent.id, agent);
+        testAgents0.set(agent0.id, agent);
       }
 
-      const creationTime = Date.now() - startTime;
+      const creationTime = Date0.now() - startTime;
 
       // Agent creation should be reasonably fast even with intelligence systems
-      expect(creationTime).toBeLessThan(1000); // Should complete within 1 second
+      expect(creationTime)0.toBeLessThan(1000); // Should complete within 1 second
 
       // Wait for all agents to initialize
-      vi.advanceTimersByTime(2000);
+      vi0.advanceTimersByTime(2000);
 
       // Verify all agents are properly initialized
       for (const agent of agents) {
-        const learningState = strategy.getAgentLearningState(agent.id);
-        const agentHealth = strategy.getAgentHealth(agent.id);
+        const learningState = strategy0.getAgentLearningState(agent0.id);
+        const agentHealth = strategy0.getAgentHealth(agent0.id);
 
-        expect(learningState).toBeTruthy();
-        expect(agentHealth).toBeTruthy();
+        expect(learningState)?0.toBeTruthy;
+        expect(agentHealth)?0.toBeTruthy;
       }
     });
 
     it('should handle concurrent task assignments efficiently', async () => {
       // Create test agent
-      const concurrentAgent = await strategy.createAgent({
+      const concurrentAgent = await strategy0.createAgent({
         name: 'concurrent-agent',
         type: 'coordinator',
         capabilities: ['coordination', 'multitasking'],
       });
-      testAgents.set(concurrentAgent.id, concurrentAgent);
+      testAgents0.set(concurrentAgent0.id, concurrentAgent);
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
 
-      const startTime = Date.now();
+      const startTime = Date0.now();
 
       // Simulate concurrent task assignments (in sequence for this agent)
       const taskPromises = [];
       for (let i = 0; i < 5; i++) {
-        const taskPromise = strategy.assignTaskToAgent(concurrentAgent.id, {
+        const taskPromise = strategy0.assignTaskToAgent(concurrentAgent0.id, {
           type: 'concurrent_task',
           description: `Concurrent task ${i + 1}`,
           priority: 1,
         });
-        taskPromises.push(taskPromise);
+        taskPromises0.push(taskPromise);
 
         // Small delay between task assignments
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
-      await Promise.all(taskPromises);
-      const executionTime = Date.now() - startTime;
+      await Promise0.all(taskPromises);
+      const executionTime = Date0.now() - startTime;
 
       // Should handle multiple tasks efficiently
-      expect(executionTime).toBeLessThan(3000); // Should complete within 3 seconds
+      expect(executionTime)0.toBeLessThan(3000); // Should complete within 3 seconds
 
       // Verify all tasks were recorded
-      const learningState = strategy.getAgentLearningState(concurrentAgent.id);
-      expect(learningState!.totalTasks).toBe(5);
+      const learningState = strategy0.getAgentLearningState(concurrentAgent0.id);
+      expect(learningState!0.totalTasks)0.toBe(5);
     });
   });
 
   describe('Memory and Resource Management', () => {
     it('should manage memory efficiently during extended operations', async () => {
       // Create agent for memory testing
-      const memoryAgent = await strategy.createAgent({
+      const memoryAgent = await strategy0.createAgent({
         name: 'memory-agent',
         type: 'analyst',
         capabilities: ['analysis', 'memory-management'],
       });
-      testAgents.set(memoryAgent.id, memoryAgent);
+      testAgents0.set(memoryAgent0.id, memoryAgent);
 
-      vi.advanceTimersByTime(1500);
+      vi0.advanceTimersByTime(1500);
 
       // Execute many tasks to test memory management
       for (let i = 0; i < 50; i++) {
-        await strategy.assignTaskToAgent(memoryAgent.id, {
+        await strategy0.assignTaskToAgent(memoryAgent0.id, {
           type: 'memory_test',
           description: `Memory test task ${i + 1}`,
           priority: 1,
           metadata: {
             iteration: i,
-            data: new Array(100).fill(Math.random()), // Some test data
+            data: new Array(100)0.fill(Math0.random()), // Some test data
           },
         });
 
         // Advance time to trigger memory management
         if (i % 10 === 0) {
-          vi.advanceTimersByTime(1000);
+          vi0.advanceTimersByTime(1000);
         }
       }
 
       // Verify memory management
-      const learningState = strategy.getAgentLearningState(memoryAgent.id);
+      const learningState = strategy0.getAgentLearningState(memoryAgent0.id);
 
       // Learning system should maintain manageable history size
-      expect(learningState!.successHistory.length).toBeLessThanOrEqual(50); // Should respect window size
-      expect(learningState!.adaptationHistory.length).toBeLessThanOrEqual(20); // Should limit adaptation history
+      expect(learningState!0.successHistory0.length)0.toBeLessThanOrEqual(50); // Should respect window size
+      expect(learningState!0.adaptationHistory0.length)0.toBeLessThanOrEqual(20); // Should limit adaptation history
     });
 
     it('should cleanup resources properly on shutdown', async () => {
       // Create temporary agents
       const tempAgents = [];
       for (let i = 0; i < 3; i++) {
-        const agent = await strategy.createAgent({
+        const agent = await strategy0.createAgent({
           name: `temp-agent-${i}`,
           type: 'tester',
           capabilities: ['testing'],
         });
-        tempAgents.push(agent);
+        tempAgents0.push(agent);
       }
 
       // Execute some tasks
       for (const agent of tempAgents) {
-        await strategy.assignTaskToAgent(agent.id, {
+        await strategy0.assignTaskToAgent(agent0.id, {
           type: 'cleanup_test',
           description: 'Test cleanup behavior',
           priority: 1,
@@ -1102,11 +1101,11 @@ describe('ZenSwarmStrategy Integration Tests', () => {
       }
 
       // Shutdown should not throw errors
-      await expect(strategy.shutdown()).resolves.not.toThrow();
+      await expect(strategy?0.shutdown())0.resolves0.not?0.toThrow;
 
       // Verify agents are properly cleaned up
-      const metrics = await strategy.getMetrics();
-      expect(metrics.totalAgents).toBe(0);
+      const metrics = await strategy?0.getMetrics;
+      expect(metrics0.totalAgents)0.toBe(0);
     });
   });
 });

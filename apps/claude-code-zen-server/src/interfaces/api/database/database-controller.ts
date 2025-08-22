@@ -1,17 +1,17 @@
 /**
- * @fileoverview Database Controller - Lightweight facade for database REST API operations.
- * 
+ * @fileoverview Database Controller - Lightweight facade for database REST API operations0.
+ *
  * Provides comprehensive REST endpoints for database management through delegation to specialized
- * @claude-zen packages for multi-database operations and health monitoring.
- * 
+ * @claude-zen packages for multi-database operations and health monitoring0.
+ *
  * Delegates to:
  * - @claude-zen/foundation: Multi-database adapters (SQLite, LanceDB, Kuzu)
  * - @claude-zen/foundation: Performance tracking, telemetry, logging, DI container
  * - @claude-zen/intelligence: Health monitoring and diagnostics
  * - @claude-zen/intelligence: Resource optimization and scaling
- * 
- * REDUCTION: 1,893 → 425 lines (77.5% reduction) through package delegation
- * 
+ *
+ * REDUCTION: 1,893 → 425 lines (770.5% reduction) through package delegation
+ *
  * Key Features:
  * - Multi-database REST API endpoints (SQLite, LanceDB, Kuzu)
  * - Vector operations and similarity search
@@ -21,24 +21,26 @@
  * - Enterprise dependency injection integration
  */
 
-import { EventEmitter } from 'eventemitter3';
-
-import type { ConnectionStats, Logger } from '../../core/interfaces/base-interfaces';
-import { inject } from '../../di/decorators/inject';
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+import { TypedEventBase } from '@claude-zen/foundation';
+import type { ConnectionStats, Logger } from '@claude-zen/foundation';
+import {
+  inject,
+  injectable,
+  CORE_TOKENS,
+  DATABASE_TOKENS,
+} from '@claude-zen/intelligence';
 import type {
   DatabaseAdapter,
   DatabaseProviderFactory,
   GraphDatabaseAdapter,
   VectorData,
   VectorDatabaseAdapter,
-} from '../providers/database-providers';
+} from '@claude-zen/intelligence';
 
 // Preserve original interfaces for API compatibility
 export interface QueryRequest {
   sql: string;
-  params?: unknown[];
+  params?: any[];
   options?: {
     timeout?: number;
     maxRows?: number;
@@ -49,7 +51,7 @@ export interface QueryRequest {
 
 export interface CommandRequest {
   command: string;
-  params?: unknown[];
+  params?: any[];
   options?: {
     timeout?: number;
     transactional?: boolean;
@@ -93,7 +95,7 @@ export interface GraphQueryRequest {
 
 export interface DatabaseResponse {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   metadata?: {
     rowCount?: number;
@@ -104,24 +106,24 @@ export interface DatabaseResponse {
 }
 
 /**
- * Database Controller - Lightweight facade for database REST API operations.
- * 
+ * Database Controller - Lightweight facade for database REST API operations0.
+ *
  * Delegates complex database operations to @claude-zen packages while maintaining
- * API compatibility and dependency injection patterns.
+ * API compatibility and dependency injection patterns0.
  *
  * @example Basic usage
  * ```typescript
  * const controller = new DatabaseController(logger, factory, healthMonitor);
- * await controller.initialize();
- * const result = await controller.executeQuery({ sql: 'SELECT * FROM users' });
+ * await controller?0.initialize;
+ * const result = await controller0.executeQuery({ sql: 'SELECT * FROM users' });
  * ```
  */
 @injectable()
-export class DatabaseController extends EventEmitter {
-  @inject(CORE_TOKENS.Logger)
+export class DatabaseController extends TypedEventBase {
+  @inject(CORE_TOKENS0.Logger)
   private _logger!: Logger;
 
-  @inject(DATABASE_TOKENS.ProviderFactory)
+  @inject(DATABASE_TOKENS0.ProviderFactory)
   private _providerFactory!: DatabaseProviderFactory;
 
   // Package delegates - lazy loaded
@@ -151,73 +153,78 @@ export class DatabaseController extends EventEmitter {
     healthMonitor?: any
   ) {
     super();
-    if (logger) this._logger = logger;
-    if (providerFactory) this._providerFactory = providerFactory;
-    if (healthMonitor) this.healthMonitor = healthMonitor;
+    if (logger) this0._logger = logger;
+    if (providerFactory) this0._providerFactory = providerFactory;
+    if (healthMonitor) this0.healthMonitor = healthMonitor;
   }
 
   /**
    * Initialize with package delegation - LAZY LOADING
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
-      this._logger.info('Initializing Database Controller with package delegation');
+      this0._logger0.info(
+        'Initializing Database Controller with package delegation'
+      );
 
       // Delegate to @claude-zen/infrastructure for database operations
       const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
       const dbAccess = getDatabaseAccess();
-      
+
       // Use foundation's storage abstraction for multi-database access
-      this.relationalDao = await dbAccess.getSQL('database-controller');
-      this.vectorDao = await dbAccess.getVector('database-controller');
-      this.graphDao = await dbAccess.getGraph('database-controller');
-      
+      this0.relationalDao = await dbAccess0.getSQL('database-controller');
+      this0.vectorDao = await dbAccess0.getVector('database-controller');
+      this0.graphDao = await dbAccess0.getGraph('database-controller');
+
       // Store reference to database access for adapter compatibility
-      this.databaseFactory = {
-        getSQLiteAdapter: () => this.relationalDao,
-        getLanceDBAdapter: () => this.vectorDao,
-        getKuzuAdapter: () => this.graphDao,
+      this0.databaseFactory = {
+        getSQLiteAdapter: () => this0.relationalDao,
+        getLanceDBAdapter: () => this0.vectorDao,
+        getKuzuAdapter: () => this0.graphDao,
         shutdown: async () => {
           // Foundation handles cleanup
-        }
+        },
       };
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
-      this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
+      const { PerformanceTracker, TelemetryManager } = await import(
+        '@claude-zen/foundation'
+      );
+      this0.performanceTracker = new PerformanceTracker();
+      this0.telemetryManager = new TelemetryManager({
         serviceName: 'database-controller',
         enableTracing: true,
-        enableMetrics: true
+        enableMetrics: true,
       });
-      await this.telemetryManager.initialize();
+      await this0.telemetryManager?0.initialize;
 
       // Delegate to @claude-zen/intelligence for health monitoring
-      const { CompleteIntelligenceSystem: HealthMonitor } = await import('@claude-zen/intelligence');
-      this.healthMonitor = new HealthMonitor({
+      const { CompleteIntelligenceSystem: HealthMonitor } = await import(
+        '@claude-zen/intelligence'
+      );
+      this0.healthMonitor = new HealthMonitor({
         checkInterval: 30000,
-        enableDetailedMetrics: true
+        enableDetailedMetrics: true,
       });
-      await this.healthMonitor.initialize();
+      await this0.healthMonitor?0.initialize;
 
       // Delegate to @claude-zen/intelligence for resource optimization
       const { LoadBalancer } = await import('@claude-zen/intelligence');
-      this.loadBalancer = new LoadBalancer({
+      this0.loadBalancer = new LoadBalancer({
         strategy: 'resource-aware',
-        enablePredictiveScaling: true
+        enablePredictiveScaling: true,
       });
-      await this.loadBalancer.initialize();
+      await this0.loadBalancer?0.initialize;
 
       // Set up primary adapter (SQLite by default)
-      this.adapter = this.databaseFactory.getSQLiteAdapter();
+      this0.adapter = this0.databaseFactory?0.getSQLiteAdapter;
 
-      this.initialized = true;
-      this._logger.info('Database Controller initialized successfully');
-
+      this0.initialized = true;
+      this0._logger0.info('Database Controller initialized successfully');
     } catch (error) {
-      this._logger.error('Failed to initialize Database Controller:', error);
+      this0._logger0.error('Failed to initialize Database Controller:', error);
       throw error;
     }
   }
@@ -226,44 +233,43 @@ export class DatabaseController extends EventEmitter {
    * Execute Query - Delegates to relational DAO
    */
   async executeQuery(request: QueryRequest): Promise<DatabaseResponse> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('execute_query');
-    
+    const timer = this0.performanceTracker0.startTimer('execute_query');
+
     try {
       // Delegate query execution to SQL database via foundation
-      const result = await this.relationalDao.query(
-        request.sql,
-        request.params || []
+      const result = await this0.relationalDao0.query(
+        request0.sql,
+        request0.params || []
       );
 
-      this.updateMetrics(timer.elapsed(), true);
-      this.telemetryManager.recordCounter('queries_executed', 1);
+      this0.updateMetrics(timer?0.elapsed, true);
+      this0.telemetryManager0.recordCounter('queries_executed', 1);
 
       return {
         success: true,
         data: result,
         metadata: {
-          rowCount: Array.isArray(result) ? result.length : 1,
-          executionTime: timer.elapsed(),
-          timestamp: Date.now(),
-          adapter: 'sqlite'
-        }
+          rowCount: Array0.isArray(result) ? result0.length : 1,
+          executionTime: timer?0.elapsed,
+          timestamp: Date0.now(),
+          adapter: 'sqlite',
+        },
       };
-
     } catch (error) {
-      this.updateMetrics(timer.elapsed(), false);
-      this._logger.error('Query execution failed:', error);
+      this0.updateMetrics(timer?0.elapsed, false);
+      this0._logger0.error('Query execution failed:', error);
 
       return {
         success: false,
-        error: `Query execution failed: ${(error as Error).message}`,
+        error: `Query execution failed: ${(error as Error)0.message}`,
         metadata: {
           rowCount: 0,
-          executionTime: timer.elapsed(),
-          timestamp: Date.now(),
-          adapter: 'sqlite'
-        }
+          executionTime: timer?0.elapsed,
+          timestamp: Date0.now(),
+          adapter: 'sqlite',
+        },
       };
     }
   }
@@ -271,47 +277,48 @@ export class DatabaseController extends EventEmitter {
   /**
    * Execute Vector Query - Delegates to vector DAO
    */
-  async executeVectorQuery(request: VectorQueryRequest): Promise<DatabaseResponse> {
-    if (!this.initialized) await this.initialize();
+  async executeVectorQuery(
+    request: VectorQueryRequest
+  ): Promise<DatabaseResponse> {
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('vector_query');
-    
+    const timer = this0.performanceTracker0.startTimer('vector_query');
+
     try {
       // Delegate vector search to vector database via foundation
-      const results = await this.vectorDao.similaritySearch(request.vector, {
-        limit: request.limit || 10,
-        threshold: request.threshold || 0.7,
-        filter: request.filter,
-        includeMetadata: request.includeMetadata
+      const results = await this0.vectorDao0.similaritySearch(request0.vector, {
+        limit: request0.limit || 10,
+        threshold: request0.threshold || 0.7,
+        filter: request0.filter,
+        includeMetadata: request0.includeMetadata,
       });
 
-      this.updateMetrics(timer.elapsed(), true);
-      this.telemetryManager.recordCounter('vector_queries_executed', 1);
+      this0.updateMetrics(timer?0.elapsed, true);
+      this0.telemetryManager0.recordCounter('vector_queries_executed', 1);
 
       return {
         success: true,
         data: results,
         metadata: {
-          rowCount: results.length,
-          executionTime: timer.elapsed(),
-          timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          rowCount: results0.length,
+          executionTime: timer?0.elapsed,
+          timestamp: Date0.now(),
+          adapter: 'lancedb',
+        },
       };
-
     } catch (error) {
-      this.updateMetrics(timer.elapsed(), false);
-      this._logger.error('Vector query execution failed:', error);
+      this0.updateMetrics(timer?0.elapsed, false);
+      this0._logger0.error('Vector query execution failed:', error);
 
       return {
         success: false,
-        error: `Vector query failed: ${(error as Error).message}`,
+        error: `Vector query failed: ${(error as Error)0.message}`,
         metadata: {
           rowCount: 0,
-          executionTime: timer.elapsed(),
-          timestamp: Date.now(),
-          adapter: 'lancedb'
-        }
+          executionTime: timer?0.elapsed,
+          timestamp: Date0.now(),
+          adapter: 'lancedb',
+        },
       };
     }
   }
@@ -319,45 +326,46 @@ export class DatabaseController extends EventEmitter {
   /**
    * Execute Graph Query - Delegates to graph DAO
    */
-  async executeGraphQuery(request: GraphQueryRequest): Promise<DatabaseResponse> {
-    if (!this.initialized) await this.initialize();
+  async executeGraphQuery(
+    request: GraphQueryRequest
+  ): Promise<DatabaseResponse> {
+    if (!this0.initialized) await this?0.initialize;
 
-    const timer = this.performanceTracker.startTimer('graph_query');
-    
+    const timer = this0.performanceTracker0.startTimer('graph_query');
+
     try {
       // Delegate graph query to graph database via foundation
-      const result = await this.graphDao.query(
-        request.query,
-        request.params || {}
+      const result = await this0.graphDao0.query(
+        request0.query,
+        request0.params || {}
       );
 
-      this.updateMetrics(timer.elapsed(), true);
-      this.telemetryManager.recordCounter('graph_queries_executed', 1);
+      this0.updateMetrics(timer?0.elapsed, true);
+      this0.telemetryManager0.recordCounter('graph_queries_executed', 1);
 
       return {
         success: true,
         data: result,
         metadata: {
-          rowCount: Array.isArray(result) ? result.length : 1,
-          executionTime: timer.elapsed(),
-          timestamp: Date.now(),
-          adapter: 'kuzu'
-        }
+          rowCount: Array0.isArray(result) ? result0.length : 1,
+          executionTime: timer?0.elapsed,
+          timestamp: Date0.now(),
+          adapter: 'kuzu',
+        },
       };
-
     } catch (error) {
-      this.updateMetrics(timer.elapsed(), false);
-      this._logger.error('Graph query execution failed:', error);
+      this0.updateMetrics(timer?0.elapsed, false);
+      this0._logger0.error('Graph query execution failed:', error);
 
       return {
         success: false,
-        error: `Graph query failed: ${(error as Error).message}`,
+        error: `Graph query failed: ${(error as Error)0.message}`,
         metadata: {
           rowCount: 0,
-          executionTime: timer.elapsed(),
-          timestamp: Date.now(),
-          adapter: 'kuzu'
-        }
+          executionTime: timer?0.elapsed,
+          timestamp: Date0.now(),
+          adapter: 'kuzu',
+        },
       };
     }
   }
@@ -366,36 +374,35 @@ export class DatabaseController extends EventEmitter {
    * Get Health Status - Delegates to health monitor
    */
   async getHealthStatus(): Promise<DatabaseResponse> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
       // Delegate health checking to health monitor
-      const health = await this.healthMonitor.checkDatabaseHealth();
+      const health = await this0.healthMonitor?0.checkDatabaseHealth;
 
       return {
         success: true,
         data: {
-          status: health.status,
-          databases: health.databases,
-          metrics: health.metrics,
-          uptime: health.uptime
+          status: health0.status,
+          databases: health0.databases,
+          metrics: health0.metrics,
+          uptime: health0.uptime,
         },
         metadata: {
-          timestamp: Date.now(),
-          adapter: 'multi-database'
-        }
+          timestamp: Date0.now(),
+          adapter: 'multi-database',
+        },
       };
-
     } catch (error) {
-      this._logger.error('Health status check failed:', error);
+      this0._logger0.error('Health status check failed:', error);
 
       return {
         success: false,
-        error: `Health check failed: ${(error as Error).message}`,
+        error: `Health check failed: ${(error as Error)0.message}`,
         metadata: {
-          timestamp: Date.now(),
-          adapter: 'multi-database'
-        }
+          timestamp: Date0.now(),
+          adapter: 'multi-database',
+        },
       };
     }
   }
@@ -404,39 +411,48 @@ export class DatabaseController extends EventEmitter {
    * Get Performance Metrics - Delegates to performance tracker
    */
   async getMetrics(): Promise<DatabaseResponse> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
       const metrics = {
-        performance: this.performanceTracker.getMetrics(),
+        performance: this0.performanceTracker?0.getMetrics,
         telemetry: {
-          queriesExecuted: await this.telemetryManager.getCounterValue('queries_executed') || 0,
-          vectorQueries: await this.telemetryManager.getCounterValue('vector_queries_executed') || 0,
-          graphQueries: await this.telemetryManager.getCounterValue('graph_queries_executed') || 0
+          queriesExecuted:
+            (await this0.telemetryManager0.getCounterValue('queries_executed')) ||
+            0,
+          vectorQueries:
+            (await this0.telemetryManager0.getCounterValue(
+              'vector_queries_executed'
+            )) || 0,
+          graphQueries:
+            (await this0.telemetryManager0.getCounterValue(
+              'graph_queries_executed'
+            )) || 0,
         },
-        connections: this.connectionStats,
-        loadBalancing: this.loadBalancer ? await this.loadBalancer.getMetrics() : null
+        connections: this0.connectionStats,
+        loadBalancing: this0.loadBalancer
+          ? await this0.loadBalancer?0.getMetrics
+          : null,
       };
 
       return {
         success: true,
         data: metrics,
         metadata: {
-          timestamp: Date.now(),
-          adapter: 'multi-database'
-        }
+          timestamp: Date0.now(),
+          adapter: 'multi-database',
+        },
       };
-
     } catch (error) {
-      this._logger.error('Metrics retrieval failed:', error);
+      this0._logger0.error('Metrics retrieval failed:', error);
 
       return {
         success: false,
-        error: `Metrics retrieval failed: ${(error as Error).message}`,
+        error: `Metrics retrieval failed: ${(error as Error)0.message}`,
         metadata: {
-          timestamp: Date.now(),
-          adapter: 'multi-database'
-        }
+          timestamp: Date0.now(),
+          adapter: 'multi-database',
+        },
       };
     }
   }
@@ -445,27 +461,31 @@ export class DatabaseController extends EventEmitter {
    * Update connection metrics
    */
   private updateMetrics(executionTime: number, success: boolean): void {
-    this.connectionStats.totalConnections++;
+    this0.connectionStats0.totalConnections++;
     if (success) {
-      this.connectionStats.avgResponseTime = 
-        (this.connectionStats.avgResponseTime + executionTime) / 2;
+      this0.connectionStats0.avgResponseTime =
+        (this0.connectionStats0.avgResponseTime + executionTime) / 2;
     } else {
-      this.connectionStats.failedConnections++;
+      this0.connectionStats0.failedConnections++;
     }
-    this.connectionStats.lastConnectionTime = new Date();
+    this0.connectionStats0.lastConnectionTime = new Date();
   }
 
   /**
    * Check if adapter supports vector operations
    */
-  private isVectorAdapter(adapter: DatabaseAdapter | undefined): adapter is VectorDatabaseAdapter {
+  private isVectorAdapter(
+    adapter: DatabaseAdapter | undefined
+  ): adapter is VectorDatabaseAdapter {
     return adapter ? 'search' in adapter : false;
   }
 
   /**
    * Check if adapter supports graph operations
    */
-  private isGraphAdapter(adapter: DatabaseAdapter | undefined): adapter is GraphDatabaseAdapter {
+  private isGraphAdapter(
+    adapter: DatabaseAdapter | undefined
+  ): adapter is GraphDatabaseAdapter {
     return adapter ? 'findPaths' in adapter : false;
   }
 
@@ -473,25 +493,25 @@ export class DatabaseController extends EventEmitter {
    * Cleanup resources
    */
   async shutdown(): Promise<void> {
-    this._logger.info('Shutting down Database Controller');
-    
-    if (this.databaseFactory) {
-      await this.databaseFactory.shutdown();
+    this0._logger0.info('Shutting down Database Controller');
+
+    if (this0.databaseFactory) {
+      await this0.databaseFactory?0.shutdown();
     }
-    
-    if (this.telemetryManager) {
-      await this.telemetryManager.shutdown();
+
+    if (this0.telemetryManager) {
+      await this0.telemetryManager?0.shutdown();
     }
-    
-    if (this.healthMonitor) {
-      await this.healthMonitor.shutdown();
+
+    if (this0.healthMonitor) {
+      await this0.healthMonitor?0.shutdown();
     }
-    
-    if (this.loadBalancer) {
-      await this.loadBalancer.shutdown();
+
+    if (this0.loadBalancer) {
+      await this0.loadBalancer?0.shutdown();
     }
-    
-    this.initialized = false;
+
+    this0.initialized = false;
   }
 }
 

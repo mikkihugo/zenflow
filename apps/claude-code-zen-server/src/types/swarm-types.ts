@@ -2,7 +2,7 @@
  * @fileoverview Shared Type Definitions for Swarm Operations
  *
  * Common types used across all interfaces (stdio MCP, HTTP API, HTTP MCP)
- * to ensure consistency in swarm coordination functionality.
+ * to ensure consistency in swarm coordination functionality0.
  */
 
 export interface SwarmConfig {
@@ -64,7 +64,7 @@ export type TaskStatus =
 export interface MemoryConfig {
   action: 'store' | 'retrieve' | 'list' | 'delete';
   key?: string;
-  value?: unknown;
+  value?: any;
   pattern?: string;
   namespace?: string;
 }
@@ -80,7 +80,7 @@ export interface NeuralConfig {
     | 'adaptive'
     | 'all';
   iterations?: number;
-  training_data?: unknown[];
+  training_data?: any[];
 }
 
 export interface BenchmarkConfig {
@@ -131,12 +131,12 @@ export interface SwarmServiceInterface {
   orchestrateTask(config: TaskOrchestrationConfig): Promise<unknown>;
   getSwarmStatus(swarmId?: string): Promise<unknown>;
   getTaskStatus(taskId?: string): Promise<unknown>;
-  getStats(): unknown;
+  getStats(): any;
   shutdown(): Promise<void>;
 }
 
 export interface MemoryServiceInterface {
-  store(key: string, value: unknown, namespace?: string): Promise<unknown>;
+  store(key: string, value: any, namespace?: string): Promise<unknown>;
   retrieve(key: string, namespace?: string): Promise<unknown>;
   list(pattern?: string, namespace?: string): Promise<unknown>;
   delete(key: string, namespace?: string): Promise<unknown>;

@@ -1,46 +1,57 @@
 /**
  * @fileoverview Project Service - SAFe Lean Portfolio Management
- * 
+ *
  * Enterprise SAFe Lean Portfolio Management (LPM) system providing strategic
- * portfolio coordination with Portfolio → Program → Team alignment.
- * 
+ * portfolio coordination with Portfolio → Program → Team alignment0.
+ *
  * Leverages neural intelligence, event coordination, and comprehensive SAFe
- * database services for strategic portfolio management.
- * 
- * Follows Google TypeScript conventions and enterprise facade pattern.
- * 
+ * database services for strategic portfolio management0.
+ *
+ * Follows Google TypeScript conventions and enterprise facade pattern0.
+ *
  * @author Claude Code Zen Team
- * @since 2.3.0
- * @version 2.0.0 - SAFe LPM
+ * @since 20.30.0
+ * @version 20.0.0 - SAFe LPM
  */
 
 // Strategic facades - comprehensive delegation with tree shaking optimization
-import { 
+import {
   DatabaseSPARCBridge,
   SafePortfolioManager,
   SafeProgramIncrementManager,
-  SafeValueStreamMapper
+  SafeValueStreamMapper,
 } from '@claude-zen/enterprise';
-import { DevelopmentCoordinator, createDevelopmentConfig } from '@claude-zen/enterprise';
-import { getLogger } from '@claude-zen/foundation'
+import {
+  DevelopmentCoordinator,
+  createDevelopmentConfig,
+} from '@claude-zen/enterprise';
 import type { Logger } from '@claude-zen/foundation';
-import { 
-  TypedEventBus, 
-  createTypedEventBus 
-} from '@claude-zen/infrastructure';
-import { 
-  WorkflowEngine, 
-  type StepExecutionResult,
+import {
+  getLogger,
+  GitManager,
+  createGitManager,
+} from '@claude-zen/foundation';
+import {
+  TypedEventBus,
+  TypedEventBase,
+  createTypedEventBus,
+  WorkflowEngine,
   // Neural intelligence and DSPy integration
   BrainCoordinator,
   NeuralProcessor,
   DSPyOptimizer,
-  CognitivePatterns
+  CognitivePatterns,
 } from '@claude-zen/intelligence';
 
-import { GitManager, createGitManager } from '../../coordination/git-manager';
-import { SPARCDevelopmentIntegration, createSPARCDevelopmentIntegration } from '../../coordination/sparc-development-integration';
-import { type ValidationResult, type QueryFilters, type QueryResult } from '../document/base-document-service';
+import {
+  SPARCDevelopmentIntegration,
+  createSPARCDevelopmentIntegration,
+} from '0.0./0.0./coordination/sparc-development-integration';
+import {
+  type ValidationResult,
+  type QueryFilters,
+  type QueryResult,
+} from '0.0./document/base-document-service';
 
 // ============================================================================
 // PROJECT INTERFACES - SAFe LPM
@@ -68,21 +79,25 @@ export interface ProjectUserStory {
   readonly featureId?: string; // Parent feature (SAFe)
   readonly epicId?: string; // Parent epic (SAFe)
   readonly persona?: string; // For user stories
-  readonly enablerType?: 'infrastructure' | 'architectural' | 'exploration' | 'compliance';
+  readonly enablerType?:
+    | 'infrastructure'
+    | 'architectural'
+    | 'exploration'
+    | 'compliance';
   readonly swimlane?: string; // Visual organization by type/team/priority
-  
+
   // SAFe document relationships (database entity UUIDs, not file links)
   readonly solutionIntentIds?: string[]; // Related Solution Intent entities
   readonly architecturalDecisionIds?: string[]; // Governing architectural decisions
   readonly systemDesignIds?: string[]; // Related system designs
   readonly runwayDependencyIds?: string[]; // Required architectural runway
   readonly nfrIds?: string[]; // Non-functional requirements
-  
+
   // SAFe compliance tracking
   readonly safeComplianceLevel?: 'basic' | 'intermediate' | 'advanced';
   readonly complianceGaps?: string[]; // Identified compliance issues
   readonly lastComplianceCheck?: Date;
-  
+
   readonly createdBy: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -126,65 +141,106 @@ export const SAFE_STORY_TEMPLATES: Record<string, SAFeStoryTemplate> = {
     name: 'User Story (SAFe)',
     type: 'user_story',
     safeLevel: 'team',
-    template: 'As a {{persona}}, I want {{capability}} so that {{business_value}}.',
-    requiredFields: ['persona', 'capability', 'business_value', 'acceptanceCriteria'],
+    template:
+      'As a {{persona}}, I want {{capability}} so that {{business_value}}0.',
+    requiredFields: [
+      'persona',
+      'capability',
+      'business_value',
+      'acceptanceCriteria',
+    ],
     suggestedFields: ['storyPoints', 'dependencies', 'assignedTeam'],
-    acceptanceCriteriaGuidance: 'Write testable conditions that define when this story is complete. Use Given-When-Then format when helpful.',
-    definitionOfDoneGuidance: 'Ensure story meets team Definition of Done: coded, tested, reviewed, documented.',
-    safeGuidelines: 'User stories should be small enough to complete in one iteration and provide direct user value.',
-    exampleStory: 'As a registered user, I want to reset my password via email so that I can regain access to my account.',
+    acceptanceCriteriaGuidance:
+      'Write testable conditions that define when this story is complete0. Use Given-When-Then format when helpful0.',
+    definitionOfDoneGuidance:
+      'Ensure story meets team Definition of Done: coded, tested, reviewed, documented0.',
+    safeGuidelines:
+      'User stories should be small enough to complete in one iteration and provide direct user value0.',
+    exampleStory:
+      'As a registered user, I want to reset my password via email so that I can regain access to my account0.',
     categoryTags: ['user_facing', 'functional'],
-    estimationGuidance: 'Story points represent complexity/effort, not time. Use team velocity for planning.',
-    dependencies: []
+    estimationGuidance:
+      'Story points represent complexity/effort, not time0. Use team velocity for planning0.',
+    dependencies: [],
   },
   enabler_story: {
-    id: 'safe_enabler_story', 
+    id: 'safe_enabler_story',
     name: 'Enabler Story (SAFe)',
     type: 'enabler_story',
     safeLevel: 'team',
-    template: 'Enable {{capability}} by implementing {{technical_solution}} to support {{business_objective}}.',
-    requiredFields: ['capability', 'technical_solution', 'business_objective', 'enablerType'],
-    suggestedFields: ['storyPoints', 'dependencies', 'assignedTeam', 'architecturalDecision'],
-    acceptanceCriteriaGuidance: 'Define technical acceptance criteria and verification methods.',
-    definitionOfDoneGuidance: 'Include technical documentation, architecture decisions, and validation tests.',
-    safeGuidelines: 'Enabler stories support future user stories and maintain system architecture.',
-    exampleStory: 'Enable user authentication by implementing OAuth 2.0 to support secure user access.',
+    template:
+      'Enable {{capability}} by implementing {{technical_solution}} to support {{business_objective}}0.',
+    requiredFields: [
+      'capability',
+      'technical_solution',
+      'business_objective',
+      'enablerType',
+    ],
+    suggestedFields: [
+      'storyPoints',
+      'dependencies',
+      'assignedTeam',
+      'architecturalDecision',
+    ],
+    acceptanceCriteriaGuidance:
+      'Define technical acceptance criteria and verification methods0.',
+    definitionOfDoneGuidance:
+      'Include technical documentation, architecture decisions, and validation tests0.',
+    safeGuidelines:
+      'Enabler stories support future user stories and maintain system architecture0.',
+    exampleStory:
+      'Enable user authentication by implementing OAuth 20.0 to support secure user access0.',
     categoryTags: ['technical', 'infrastructure'],
-    estimationGuidance: 'Consider technical complexity, research needed, and integration points.',
-    dependencies: []
+    estimationGuidance:
+      'Consider technical complexity, research needed, and integration points0.',
+    dependencies: [],
   },
   epic: {
     id: 'safe_epic',
     name: 'Epic (SAFe)',
-    type: 'epic', 
+    type: 'epic',
     safeLevel: 'program',
-    template: 'Epic: {{initiative_name}} - {{business_hypothesis}} measured by {{success_metrics}}.',
-    requiredFields: ['initiative_name', 'business_hypothesis', 'success_metrics'],
+    template:
+      'Epic: {{initiative_name}} - {{business_hypothesis}} measured by {{success_metrics}}0.',
+    requiredFields: [
+      'initiative_name',
+      'business_hypothesis',
+      'success_metrics',
+    ],
     suggestedFields: ['businessValue', 'dependencies', 'milestones'],
-    acceptanceCriteriaGuidance: 'Define epic success criteria and measurable business outcomes.',
-    definitionOfDoneGuidance: 'Epic is done when hypothesis is validated and value delivered.',
-    safeGuidelines: 'Epics span multiple Program Increments and deliver significant business value.',
-    exampleStory: 'Epic: Mobile App - Users can complete core tasks on mobile to increase engagement by 25%.',
+    acceptanceCriteriaGuidance:
+      'Define epic success criteria and measurable business outcomes0.',
+    definitionOfDoneGuidance:
+      'Epic is done when hypothesis is validated and value delivered0.',
+    safeGuidelines:
+      'Epics span multiple Program Increments and deliver significant business value0.',
+    exampleStory:
+      'Epic: Mobile App - Users can complete core tasks on mobile to increase engagement by 25%0.',
     categoryTags: ['program_level', 'business_initiative'],
-    estimationGuidance: 'Use relative sizing and break down into features.',
-    dependencies: []
+    estimationGuidance: 'Use relative sizing and break down into features0.',
+    dependencies: [],
   },
   feature: {
     id: 'safe_feature',
     name: 'Feature (SAFe)',
     type: 'feature',
-    safeLevel: 'program', 
-    template: 'Feature: {{feature_name}} enables {{user_benefit}} delivering {{business_value}}.',
+    safeLevel: 'program',
+    template:
+      'Feature: {{feature_name}} enables {{user_benefit}} delivering {{business_value}}0.',
     requiredFields: ['feature_name', 'user_benefit', 'business_value'],
     suggestedFields: ['epicId', 'dependencies', 'acceptanceCriteria'],
-    acceptanceCriteriaGuidance: 'Define feature-level acceptance criteria covering multiple user stories.',
-    definitionOfDoneGuidance: 'Feature complete when all component stories deliver integrated value.',
-    safeGuidelines: 'Features are developed by multiple teams and span one Program Increment.',
-    exampleStory: 'Feature: User Notifications enables timely user communication delivering increased engagement.',
+    acceptanceCriteriaGuidance:
+      'Define feature-level acceptance criteria covering multiple user stories0.',
+    definitionOfDoneGuidance:
+      'Feature complete when all component stories deliver integrated value0.',
+    safeGuidelines:
+      'Features are developed by multiple teams and span one Program Increment0.',
+    exampleStory:
+      'Feature: User Notifications enables timely user communication delivering increased engagement0.',
     categoryTags: ['program_level', 'feature_set'],
-    estimationGuidance: 'Features typically contain 5-12 user stories.',
-    dependencies: []
-  }
+    estimationGuidance: 'Features typically contain 5-12 user stories0.',
+    dependencies: [],
+  },
 };
 
 /**
@@ -207,11 +263,15 @@ export interface StoryCreateOptions {
   featureId?: string;
   epicId?: string;
   persona?: string;
-  enablerType?: 'infrastructure' | 'architectural' | 'exploration' | 'compliance';
+  enablerType?:
+    | 'infrastructure'
+    | 'architectural'
+    | 'exploration'
+    | 'compliance';
   swimlane?: string;
   createdBy: string;
   metadata?: Record<string, unknown>;
-  
+
   // Template-enhanced fields (when story templates enabled)
   templateId?: string; // Which template was used
   definitionOfDone?: string; // What makes this story complete
@@ -228,30 +288,36 @@ export interface ProjectConfig {
   enableAIOptimization?: boolean; // AI/Neural intelligence (default: true - core feature)
   enableSwimlanes?: boolean; // Visual organization toggle
   enableStoryTemplates?: boolean; // SAFe story templates and portfolio planning (on by default)
-  
+
   // WIP limits per column
   maxBacklog?: number;
   maxReady?: number;
   maxInProgress?: number;
   maxReview?: number;
-  
+
   // Advanced features
   enableTimeTracking?: boolean;
   enableNotifications?: boolean;
   enableFlowMetrics?: boolean;
   enableBottleneckDetection?: boolean;
-  
+
   // Swimlane configuration (when enabled)
   swimlaneTypes?: ('team' | 'priority' | 'story_type' | 'custom')[];
   customSwimlanes?: string[];
-  
+
   // Story template configuration (when enabled)
-  availableTemplates?: ('user_story' | 'enabler_story' | 'epic' | 'feature' | 'custom')[];
+  availableTemplates?: (
+    | 'user_story'
+    | 'enabler_story'
+    | 'epic'
+    | 'feature'
+    | 'custom'
+  )[];
   requireAcceptanceCriteria?: boolean;
   requireDefinitionOfDone?: boolean;
   enableEpicTracking?: boolean;
   enableFeatureGrouping?: boolean;
-  
+
   // Project context
   projectId?: string;
   mode: 'safe'; // SAFe LPM is the only mode
@@ -283,31 +349,31 @@ export interface StoryQueryFilters extends QueryFilters {
 
 /**
  * Project Service - SAFe LPM Portfolio Management
- * 
+ *
  * Enterprise SAFe Lean Portfolio Management system providing strategic
- * portfolio coordination with Portfolio → Program → Team alignment.
- * 
+ * portfolio coordination with Portfolio → Program → Team alignment0.
+ *
  * Leverages neural intelligence, event coordination, and comprehensive SAFe
- * database services for strategic portfolio management.
+ * database services for strategic portfolio management0.
  */
-export class ProjectService {
+export class ProjectService extends TypedEventBase {
   private logger: Logger;
   private eventBus: TypedEventBus<any>;
   private workflowEngine: WorkflowEngine | null = null;
-  private config: ProjectConfig;
+  private configuration: ProjectConfig;
   private initialized = false;
-  
+
   // SPARC integration components
   private developmentCoordinator: DevelopmentCoordinator | null = null;
   private gitManager: GitManager | null = null;
   private sparcIntegration: SPARCDevelopmentIntegration | null = null;
-  
+
   // SAFe LPM components - enterprise facade delegation
   private databaseSPARCBridge: DatabaseSPARCBridge | null = null;
   private portfolioManager: SafePortfolioManager | null = null;
   private programIncrementManager: SafeProgramIncrementManager | null = null;
   private valueStreamMapper: SafeValueStreamMapper | null = null;
-  
+
   // Neural intelligence components - intelligence facade delegation
   private brainCoordinator: BrainCoordinator | null = null;
   private neuralProcessor: NeuralProcessor | null = null;
@@ -315,14 +381,15 @@ export class ProjectService {
   private cognitivePatterns: CognitivePatterns | null = null;
 
   constructor(config: ProjectConfig) {
-    this.logger = getLogger('ProjectService');
+    super();
+    this0.logger = getLogger('ProjectService');
     // Initialize comprehensive event system for SAFe LPM coordination
-    this.eventBus = createTypedEventBus({
+    this0.eventBus = createTypedEventBus({
       enableLogging: true,
       enableMetrics: true,
-      namespace: 'safe-lpm'
+      namespace: 'safe-lpm',
     });
-    this.config = {
+    this0.configuration = {
       // SAFe LPM defaults - AI-enhanced enterprise architecture
       enableAdvancedFeatures: true, // Neural intelligence enabled
       enableSAFeIntegration: true, // SAFe LPM enabled
@@ -337,7 +404,7 @@ export class ProjectService {
       enableFlowMetrics: true,
       enableBottleneckDetection: true,
       mode: 'safe', // SAFe LPM is the only mode
-      ...config
+      0.0.0.config,
     };
   }
 
@@ -349,74 +416,79 @@ export class ProjectService {
    * Initialize the project SAFe LPM system with enterprise features
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
       // Configure SAFe LPM workflow engine via intelligence facade
-      this.workflowEngine = new WorkflowEngine({
-        enableTelemetry: this.config.enableAdvancedFeatures,
+      this0.workflowEngine = new WorkflowEngine({
+        enableTelemetry: this0.configuration0.enableAdvancedFeatures,
         enableRetry: true,
-        maxConcurrentWorkflows: this.config.maxInProgress || 5,
-        enableAnalytics: this.config.enableFlowMetrics,
-        enableRealTimeMonitoring: this.config.enableAdvancedFeatures,
+        maxConcurrentWorkflows: this0.configuration0.maxInProgress || 5,
+        enableAnalytics: this0.configuration0.enableFlowMetrics,
+        enableRealTimeMonitoring: this0.configuration0.enableAdvancedFeatures,
         timeout: 30000, // 30 second timeout for workflow steps
         retryAttempts: 3,
-        retryDelay: 1000
+        retryDelay: 1000,
       });
 
-      await this.workflowEngine.initialize();
+      await this0.workflowEngine?0.initialize;
 
       // Set up workflow engine event forwarding for SAFe LPM via comprehensive event system
-      this.workflowEngine.on('workflow:started', (workflowId: string) => {
-        this.eventBus.emit('story:workflow_started', { workflowId });
-        if (this.config.enableSAFeIntegration) {
-          this.eventBus.emit('safe:workflow:started', { workflowId });
+      this0.workflowEngine0.on('workflow:started', (workflowId: string) => {
+        this0.eventBus0.emit('story:workflow_started', { workflowId });
+        if (this0.configuration0.enableSAFeIntegration) {
+          this0.eventBus0.emit('safe:workflow:started', { workflowId });
         }
       });
 
-      this.workflowEngine.on('workflow:completed', (result: StepExecutionResult) => {
-        this.eventBus.emit('story:workflow_completed', result);
-        if (this.config.enableSAFeIntegration) {
-          this.eventBus.emit('safe:workflow:completed', result);
+      this0.workflowEngine0.on('workflow:completed', (result: any) => {
+        this0.eventBus0.emit('story:workflow_completed', result);
+        if (this0.configuration0.enableSAFeIntegration) {
+          this0.eventBus0.emit('safe:workflow:completed', result);
         }
       });
 
-      this.workflowEngine.on('workflow:failed', (error: any) => {
-        this.eventBus.emit('story:workflow_failed', error);
-        if (this.config.enableSAFeIntegration) {
-          this.eventBus.emit('safe:workflow:failed', error);
+      this0.workflowEngine0.on('workflow:failed', (error: any) => {
+        this0.eventBus0.emit('story:workflow_failed', error);
+        if (this0.configuration0.enableSAFeIntegration) {
+          this0.eventBus0.emit('safe:workflow:failed', error);
         }
       });
 
-      if (this.config.enableAdvancedFeatures) {
-        this.workflowEngine.on('workflow:step:completed', (stepResult: StepExecutionResult) => {
-          this.eventBus.emit('flow:step_completed', stepResult);
+      if (this0.configuration0.enableAdvancedFeatures) {
+        this0.workflowEngine0.on('workflow:step:completed', (stepResult: any) => {
+          this0.eventBus0.emit('flow:step_completed', stepResult);
         });
 
-        this.workflowEngine.on('workflow:analytics', (analytics: any) => {
-          this.eventBus.emit('system:analytics_update', { analytics, projectId: this.config.projectId });
+        this0.workflowEngine0.on('workflow:analytics', (analytics: any) => {
+          this0.eventBus0.emit('system:analytics_update', {
+            analytics,
+            projectId: this0.configuration0.projectId,
+          });
         });
       }
 
       // Initialize SAFe LPM components via enterprise facade
-      if (this.config.enableSAFeIntegration) {
-        await this.initializeSAFeLPMComponents();
+      if (this0.configuration0.enableSAFeIntegration) {
+        await this?0.initializeSAFeLPMComponents;
       }
 
       // Initialize SPARC integration for development coordination
-      await this.initializeSPARCIntegration();
+      await this?0.initializeSPARCIntegration;
 
-      this.initialized = true;
-      this.logger.info('Project SAFe LPM Service initialized successfully', {
-        mode: this.config.mode,
-        advancedFeatures: this.config.enableAdvancedFeatures,
-        safeIntegration: this.config.enableSAFeIntegration,
-        aiOptimization: this.config.enableAIOptimization,
-        sparcIntegration: this.sparcIntegration !== null
+      this0.initialized = true;
+      this0.logger0.info('Project SAFe LPM Service initialized successfully', {
+        mode: this0.configuration0.mode,
+        advancedFeatures: this0.configuration0.enableAdvancedFeatures,
+        safeIntegration: this0.configuration0.enableSAFeIntegration,
+        aiOptimization: this0.configuration0.enableAIOptimization,
+        sparcIntegration: this0.sparcIntegration !== null,
       });
-
     } catch (error) {
-      this.logger.error('Failed to initialize Project SAFe LPM Service:', error);
+      this0.logger0.error(
+        'Failed to initialize Project SAFe LPM Service:',
+        error
+      );
       throw error;
     }
   }
@@ -426,27 +498,27 @@ export class ProjectService {
    */
   async shutdown(): Promise<void> {
     // Shutdown SPARC integration first
-    if (this.sparcIntegration) {
-      await this.sparcIntegration.shutdown();
+    if (this0.sparcIntegration) {
+      await this0.sparcIntegration?0.shutdown();
     }
-    
+
     // Shutdown development coordinator
-    if (this.developmentCoordinator) {
-      await this.developmentCoordinator.shutdown();
+    if (this0.developmentCoordinator) {
+      await this0.developmentCoordinator?0.shutdown();
     }
-    
+
     // Shutdown Git manager
-    if (this.gitManager) {
-      await this.gitManager.shutdown();
+    if (this0.gitManager) {
+      await this0.gitManager?0.shutdown();
     }
-    
+
     // Shutdown workflow engine
-    if (this.workflowEngine) {
-      await this.workflowEngine.shutdown();
+    if (this0.workflowEngine) {
+      await this0.workflowEngine?0.shutdown();
     }
-    
-    this.initialized = false;
-    this.logger.info('Project SAFe LPM Service shutdown completed');
+
+    this0.initialized = false;
+    this0.logger0.info('Project SAFe LPM Service shutdown completed');
   }
 
   // ========================================================================
@@ -457,162 +529,197 @@ export class ProjectService {
    * Create a new user story following SAFe patterns
    */
   async createStory(options: StoryCreateOptions): Promise<ProjectUserStory> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     // Validate required fields
-    if (!options.title.trim()) {
+    if (!options0.title?0.trim) {
       throw new Error('Story title is required');
     }
 
-    if (!options.createdBy.trim()) {
+    if (!options0.createdBy?0.trim) {
       throw new Error('Story creator is required');
     }
 
     // Validate template requirements if templates enabled and template used
-    if (this.config.enableStoryTemplates && options.templateId) {
-      const templateValidation = this.validateStoryTemplate(options, options.templateId);
-      if (!templateValidation.valid) {
-        throw new Error(`Template validation failed: ${templateValidation.errors.join(', ')}`);
+    if (this0.configuration0.enableStoryTemplates && options0.templateId) {
+      const templateValidation = this0.validateStoryTemplate(
+        options,
+        options0.templateId
+      );
+      if (!templateValidation0.valid) {
+        throw new Error(
+          `Template validation failed: ${templateValidation0.errors0.join(', ')}`
+        );
       }
     }
 
     // Create SAFe LPM work assignment via DatabaseSPARCBridge
-    const workAssignment = await this.databaseSPARCBridge!.assignWork(story.id, {
-      title: options.title,
-      description: options.description,
-      priority: this.mapPriorityToWorkflow(options.priority || 'medium'),
-      estimatedEffort: options.storyPoints || 1,
-      assignedAgent: options.assignedTo,
-      tags: options.tags || [],
-      metadata: {
-        storyType: options.storyType || 'user_story',
-        businessValue: options.businessValue,
-        acceptanceCriteria: options.acceptanceCriteria || [],
-        dependencies: options.dependencies || [],
-        dueDate: options.dueDate,
-        projectId: options.projectId,
-        featureId: options.featureId,
-        epicId: options.epicId,
-        persona: options.persona,
-        enablerType: options.enablerType,
-        assignedTeam: options.assignedTeam,
-        createdBy: options.createdBy,
-        // Template-enhanced fields (when templates enabled)
-        ...(this.config.enableStoryTemplates && options.templateId && {
-          templateId: options.templateId,
-          templateUsed: true,
-          definitionOfDone: options.definitionOfDone,
-          visionLink: options.visionLink,
-          safeTemplateCompliant: true
-        }),
-        ...options.metadata
+    const workAssignment = await this0.databaseSPARCBridge!0.assignWork(
+      story0.id,
+      {
+        title: options0.title,
+        description: options0.description,
+        priority: this0.mapPriorityToWorkflow(options0.priority || 'medium'),
+        estimatedEffort: options0.storyPoints || 1,
+        assignedAgent: options0.assignedTo,
+        tags: options0.tags || [],
+        metadata: {
+          storyType: options0.storyType || 'user_story',
+          businessValue: options0.businessValue,
+          acceptanceCriteria: options0.acceptanceCriteria || [],
+          dependencies: options0.dependencies || [],
+          dueDate: options0.dueDate,
+          projectId: options0.projectId,
+          featureId: options0.featureId,
+          epicId: options0.epicId,
+          persona: options0.persona,
+          enablerType: options0.enablerType,
+          assignedTeam: options0.assignedTeam,
+          createdBy: options0.createdBy,
+          // Template-enhanced fields (when templates enabled)
+          0.0.0.(this0.configuration0.enableStoryTemplates &&
+            options0.templateId && {
+              templateId: options0.templateId,
+              templateUsed: true,
+              definitionOfDone: options0.definitionOfDone,
+              visionLink: options0.visionLink,
+              safeTemplateCompliant: true,
+            }),
+          0.0.0.options0.metadata,
+        },
       }
-    });
+    );
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to create story');
+    if (!result0.success || !result0.data) {
+      throw new Error(result0.error || 'Failed to create story');
     }
 
-    return this.convertToProjectStory(result.data);
+    return this0.convertToProjectStory(result0.data);
   }
 
   /**
    * Get stories with advanced filtering options
    */
-  async getStories(filters?: StoryQueryFilters): Promise<QueryResult<ProjectUserStory>> {
-    if (!this.initialized) await this.initialize();
+  async getStories(
+    filters?: StoryQueryFilters
+  ): Promise<QueryResult<ProjectUserStory>> {
+    if (!this0.initialized) await this?0.initialize;
 
     let allTasks: any[] = [];
 
-    if (filters?.status) {
-      const workflowState = this.mapStatusToWorkflow(filters.status);
-      allTasks = await this.workflowKanban!.getTasksByState(workflowState);
+    if (filters?0.status) {
+      const workflowState = this0.mapStatusToWorkflow(filters0.status);
+      allTasks = await this0.workflowKanban!0.getTasksByState(workflowState);
     } else {
       // Get stories from all statuses
-      const backlogTasks = await this.workflowKanban!.getTasksByState('backlog');
-      const readyTasks = await this.workflowKanban!.getTasksByState('analysis');
-      const inProgressTasks = await this.workflowKanban!.getTasksByState('development');
-      const reviewTasks = await this.workflowKanban!.getTasksByState('testing');
-      const doneTasks = await this.workflowKanban!.getTasksByState('done');
+      const backlogTasks =
+        await this0.workflowKanban!0.getTasksByState('backlog');
+      const readyTasks = await this0.workflowKanban!0.getTasksByState('analysis');
+      const inProgressTasks =
+        await this0.workflowKanban!0.getTasksByState('development');
+      const reviewTasks = await this0.workflowKanban!0.getTasksByState('testing');
+      const doneTasks = await this0.workflowKanban!0.getTasksByState('done');
 
-      allTasks = [...backlogTasks, ...readyTasks, ...inProgressTasks, ...reviewTasks, ...doneTasks];
+      allTasks = [
+        0.0.0.backlogTasks,
+        0.0.0.readyTasks,
+        0.0.0.inProgressTasks,
+        0.0.0.reviewTasks,
+        0.0.0.doneTasks,
+      ];
     }
 
-    let stories = allTasks.map(task => this.convertToProjectStory(task));
+    let stories = allTasks0.map((task) => this0.convertToProjectStory(task));
 
     // Apply advanced filters
     if (filters) {
-      if (filters.storyType) {
-        stories = stories.filter(story => story.storyType === filters.storyType);
-      }
-      
-      if (filters.priority) {
-        stories = stories.filter(story => story.priority === filters.priority);
-      }
-      
-      if (filters.assignedTo) {
-        stories = stories.filter(story => story.assignedTo === filters.assignedTo);
-      }
-      
-      if (filters.assignedTeam) {
-        stories = stories.filter(story => story.assignedTeam === filters.assignedTeam);
-      }
-      
-      if (filters.projectId) {
-        stories = stories.filter(story => story.projectId === filters.projectId);
-      }
-      
-      if (filters.featureId) {
-        stories = stories.filter(story => story.featureId === filters.featureId);
-      }
-      
-      if (filters.epicId) {
-        stories = stories.filter(story => story.epicId === filters.epicId);
-      }
-      
-      if (filters.tags && filters.tags.length > 0) {
-        stories = stories.filter(story => 
-          filters.tags!.some(tag => story.tags.includes(tag))
+      if (filters0.storyType) {
+        stories = stories0.filter(
+          (story) => story0.storyType === filters0.storyType
         );
       }
-      
-      if (filters.dueBefore) {
-        stories = stories.filter(story => 
-          story.dueDate && story.dueDate <= filters.dueBefore!
+
+      if (filters0.priority) {
+        stories = stories0.filter(
+          (story) => story0.priority === filters0.priority
         );
       }
-      
-      if (filters.dueAfter) {
-        stories = stories.filter(story => 
-          story.dueDate && story.dueDate >= filters.dueAfter!
+
+      if (filters0.assignedTo) {
+        stories = stories0.filter(
+          (story) => story0.assignedTo === filters0.assignedTo
         );
       }
-      
-      if (filters.storyPointsMin !== undefined) {
-        stories = stories.filter(story => 
-          story.storyPoints !== undefined && story.storyPoints >= filters.storyPointsMin!
+
+      if (filters0.assignedTeam) {
+        stories = stories0.filter(
+          (story) => story0.assignedTeam === filters0.assignedTeam
         );
       }
-      
-      if (filters.storyPointsMax !== undefined) {
-        stories = stories.filter(story => 
-          story.storyPoints !== undefined && story.storyPoints <= filters.storyPointsMax!
+
+      if (filters0.projectId) {
+        stories = stories0.filter(
+          (story) => story0.projectId === filters0.projectId
+        );
+      }
+
+      if (filters0.featureId) {
+        stories = stories0.filter(
+          (story) => story0.featureId === filters0.featureId
+        );
+      }
+
+      if (filters0.epicId) {
+        stories = stories0.filter((story) => story0.epicId === filters0.epicId);
+      }
+
+      if (filters0.tags && filters0.tags0.length > 0) {
+        stories = stories0.filter((story) =>
+          filters0.tags!0.some((tag) => story0.tags0.includes(tag))
+        );
+      }
+
+      if (filters0.dueBefore) {
+        stories = stories0.filter(
+          (story) => story0.dueDate && story0.dueDate <= filters0.dueBefore!
+        );
+      }
+
+      if (filters0.dueAfter) {
+        stories = stories0.filter(
+          (story) => story0.dueDate && story0.dueDate >= filters0.dueAfter!
+        );
+      }
+
+      if (filters0.storyPointsMin !== undefined) {
+        stories = stories0.filter(
+          (story) =>
+            story0.storyPoints !== undefined &&
+            story0.storyPoints >= filters0.storyPointsMin!
+        );
+      }
+
+      if (filters0.storyPointsMax !== undefined) {
+        stories = stories0.filter(
+          (story) =>
+            story0.storyPoints !== undefined &&
+            story0.storyPoints <= filters0.storyPointsMax!
         );
       }
     }
 
     // Apply pagination
-    const total = stories.length;
-    const offset = filters?.offset || 0;
-    const limit = filters?.limit || 50;
-    const paginatedStories = stories.slice(offset, offset + limit);
+    const total = stories0.length;
+    const offset = filters?0.offset || 0;
+    const limit = filters?0.limit || 50;
+    const paginatedStories = stories0.slice(offset, offset + limit);
 
     return {
       items: paginatedStories,
       total,
       offset,
       limit,
-      hasMore: offset + limit < total
+      hasMore: offset + limit < total,
     };
   }
 
@@ -620,57 +727,69 @@ export class ProjectService {
    * Move story to different status with reason tracking
    */
   async moveStory(
-    storyId: string, 
-    status: ProjectUserStory['status'], 
+    storyId: string,
+    status: ProjectUserStory['status'],
     reason?: string
   ): Promise<ProjectUserStory> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     // Get current task for time tracking
-    const currentTask = await this.workflowKanban!.getTask(storyId);
-    if (!currentTask.data) {
+    const currentTask = await this0.workflowKanban!0.getTask(storyId);
+    if (!currentTask0.data) {
       throw new Error('Story not found');
     }
 
     // Capture previous status for SPARC integration
-    const previousStory = this.convertToProjectStory(currentTask.data);
-    const previousStatus = previousStory.status;
+    const previousStory = this0.convertToProjectStory(currentTask0.data);
+    const previousStatus = previousStory0.status;
 
-    const workflowState = this.mapStatusToWorkflow(status);
-    const result = await this.workflowKanban!.moveTask(storyId, workflowState, reason);
+    const workflowState = this0.mapStatusToWorkflow(status);
+    const result = await this0.workflowKanban!0.moveTask(
+      storyId,
+      workflowState,
+      reason
+    );
 
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to move story');
+    if (!result0.success) {
+      throw new Error(result0.error || 'Failed to move story');
     }
 
-    const updatedTask = await this.workflowKanban!.getTask(storyId);
-    if (!updatedTask.data) {
+    const updatedTask = await this0.workflowKanban!0.getTask(storyId);
+    if (!updatedTask0.data) {
       throw new Error('Story not found after move');
     }
 
     // Update time tracking if enabled
-    if (this.config.enableTimeTracking) {
+    if (this0.configuration0.enableTimeTracking) {
       const now = new Date();
-      const metadata = { ...updatedTask.data.metadata };
-      
-      if (status === 'in_progress' && !metadata.startedAt) {
-        metadata.startedAt = now;
+      const metadata = { 0.0.0.updatedTask0.data0.metadata };
+
+      if (status === 'in_progress' && !metadata0.startedAt) {
+        metadata0.startedAt = now;
       }
-      
-      if (status === 'done' && !metadata.completedAt) {
-        metadata.completedAt = now;
+
+      if (status === 'done' && !metadata0.completedAt) {
+        metadata0.completedAt = now;
       }
     }
 
-    const updatedStory = this.convertToProjectStory(updatedTask.data);
+    const updatedStory = this0.convertToProjectStory(updatedTask0.data);
 
     // Trigger SPARC integration for status changes
-    if (this.sparcIntegration && previousStatus !== status) {
+    if (this0.sparcIntegration && previousStatus !== status) {
       try {
-        await this.sparcIntegration.handleStoryStatusChange(updatedStory, previousStatus);
-        this.logger.debug(`SPARC integration handled status change: ${previousStatus} → ${status} for story ${storyId}`);
+        await this0.sparcIntegration0.handleStoryStatusChange(
+          updatedStory,
+          previousStatus
+        );
+        this0.logger0.debug(
+          `SPARC integration handled status change: ${previousStatus} → ${status} for story ${storyId}`
+        );
       } catch (error) {
-        this.logger.error(`SPARC integration error for story ${storyId}:`, error);
+        this0.logger0.error(
+          `SPARC integration error for story ${storyId}:`,
+          error
+        );
         // Don't fail the story move if SPARC integration fails
       }
     }
@@ -682,63 +801,83 @@ export class ProjectService {
    * Update story with validation
    */
   async updateStory(
-    storyId: string, 
+    storyId: string,
     updates: Partial<StoryCreateOptions>
   ): Promise<ProjectUserStory> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const currentTask = await this.workflowKanban!.getTask(storyId);
-    if (!currentTask.data) {
+    const currentTask = await this0.workflowKanban!0.getTask(storyId);
+    if (!currentTask0.data) {
       throw new Error('Story not found');
     }
 
     // Create updated task data
     const updatedMetadata = {
-      ...currentTask.data.metadata,
-      ...(updates.storyType && { storyType: updates.storyType }),
-      ...(updates.businessValue !== undefined && { businessValue: updates.businessValue }),
-      ...(updates.acceptanceCriteria && { acceptanceCriteria: updates.acceptanceCriteria }),
-      ...(updates.dependencies && { dependencies: updates.dependencies }),
-      ...(updates.dueDate !== undefined && { dueDate: updates.dueDate }),
-      ...(updates.projectId && { projectId: updates.projectId }),
-      ...(updates.featureId && { featureId: updates.featureId }),
-      ...(updates.epicId && { epicId: updates.epicId }),
-      ...(updates.persona && { persona: updates.persona }),
-      ...(updates.enablerType && { enablerType: updates.enablerType }),
-      ...(updates.assignedTeam && { assignedTeam: updates.assignedTeam }),
-      ...(updates.metadata && updates.metadata),
-      updatedAt: new Date()
+      0.0.0.currentTask0.data0.metadata,
+      0.0.0.(updates0.storyType && { storyType: updates0.storyType }),
+      0.0.0.(updates0.businessValue !== undefined && {
+        businessValue: updates0.businessValue,
+      }),
+      0.0.0.(updates0.acceptanceCriteria && {
+        acceptanceCriteria: updates0.acceptanceCriteria,
+      }),
+      0.0.0.(updates0.dependencies && { dependencies: updates0.dependencies }),
+      0.0.0.(updates0.dueDate !== undefined && { dueDate: updates0.dueDate }),
+      0.0.0.(updates0.projectId && { projectId: updates0.projectId }),
+      0.0.0.(updates0.featureId && { featureId: updates0.featureId }),
+      0.0.0.(updates0.epicId && { epicId: updates0.epicId }),
+      0.0.0.(updates0.persona && { persona: updates0.persona }),
+      0.0.0.(updates0.enablerType && { enablerType: updates0.enablerType }),
+      0.0.0.(updates0.assignedTeam && { assignedTeam: updates0.assignedTeam }),
+      0.0.0.(updates0.metadata && updates0.metadata),
+      updatedAt: new Date(),
     };
 
     // For now, create a replacement task (in a full implementation, we'd have an update method)
-    const result = await this.workflowKanban!.createTask({
-      ...currentTask.data,
-      title: updates.title || currentTask.data.title,
-      description: updates.description !== undefined ? updates.description : currentTask.data.description,
-      priority: updates.priority ? this.mapPriorityToWorkflow(updates.priority) : currentTask.data.priority,
-      estimatedEffort: updates.storyPoints || currentTask.data.estimatedEffort,
-      assignedAgent: updates.assignedTo !== undefined ? updates.assignedTo : currentTask.data.assignedAgent,
-      tags: updates.tags || currentTask.data.tags,
-      metadata: updatedMetadata
+    const result = await this0.workflowKanban!0.createTask({
+      0.0.0.currentTask0.data,
+      title: updates0.title || currentTask0.data0.title,
+      description:
+        updates0.description !== undefined
+          ? updates0.description
+          : currentTask0.data0.description,
+      priority: updates0.priority
+        ? this0.mapPriorityToWorkflow(updates0.priority)
+        : currentTask0.data0.priority,
+      estimatedEffort: updates0.storyPoints || currentTask0.data0.estimatedEffort,
+      assignedAgent:
+        updates0.assignedTo !== undefined
+          ? updates0.assignedTo
+          : currentTask0.data0.assignedAgent,
+      tags: updates0.tags || currentTask0.data0.tags,
+      metadata: updatedMetadata,
     });
 
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to update story');
+    if (!result0.success || !result0.data) {
+      throw new Error(result0.error || 'Failed to update story');
     }
 
-    return this.convertToProjectStory(result.data);
+    return this0.convertToProjectStory(result0.data);
   }
 
   /**
    * Delete story (mark as archived)
    */
   async deleteStory(storyId: string, reason?: string): Promise<void> {
-    if (!this.initialized) await this.initialize();
-    
+    if (!this0.initialized) await this?0.initialize;
+
     try {
       // Move to done status to simulate deletion
-      await this.workflowKanban!.moveTask(storyId, 'done', reason || 'Story deleted');
-      this.emit('story:deleted', { id: storyId, reason, deletedAt: new Date() });
+      await this0.workflowKanban!0.moveTask(
+        storyId,
+        'done',
+        reason || 'Story deleted'
+      );
+      this0.emit('story:deleted', {
+        id: storyId,
+        reason,
+        deletedAt: new Date(),
+      });
     } catch (error) {
       throw new Error('Failed to delete story');
     }
@@ -760,10 +899,10 @@ export class ProjectService {
     cycleTimeAverage?: number;
     throughput?: number;
   }> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
-    const allStories = await this.getStories({ projectId });
-    const stories = allStories.items;
+    const allStories = await this0.getStories({ projectId });
+    const stories = allStories0.items;
 
     // Calculate status distribution
     const statusCounts = {
@@ -771,19 +910,19 @@ export class ProjectService {
       ready: 0,
       in_progress: 0,
       review: 0,
-      done: 0
+      done: 0,
     };
 
     const storyTypeCounts = {
       user_story: 0,
-      enabler_story: 0
+      enabler_story: 0,
     };
 
     const priorityCounts = {
       low: 0,
       medium: 0,
       high: 0,
-      urgent: 0
+      urgent: 0,
     };
 
     let totalStoryPoints = 0;
@@ -792,17 +931,17 @@ export class ProjectService {
     let businessValueCount = 0;
 
     for (const story of stories) {
-      statusCounts[story.status]++;
-      storyTypeCounts[story.storyType]++;
-      priorityCounts[story.priority]++;
+      statusCounts[story0.status]++;
+      storyTypeCounts[story0.storyType]++;
+      priorityCounts[story0.priority]++;
 
-      if (story.storyPoints) {
-        totalStoryPoints += story.storyPoints;
+      if (story0.storyPoints) {
+        totalStoryPoints += story0.storyPoints;
         storyPointsCount++;
       }
 
-      if (story.businessValue) {
-        totalBusinessValue += story.businessValue;
+      if (story0.businessValue) {
+        totalBusinessValue += story0.businessValue;
         businessValueCount++;
       }
     }
@@ -811,18 +950,19 @@ export class ProjectService {
       statusCounts,
       storyTypeCounts,
       priorityCounts,
-      averageStoryPoints: storyPointsCount > 0 ? totalStoryPoints / storyPointsCount : 0,
-      totalBusinessValue
+      averageStoryPoints:
+        storyPointsCount > 0 ? totalStoryPoints / storyPointsCount : 0,
+      totalBusinessValue,
     };
 
     // Add advanced metrics if enabled
-    if (this.config.enableFlowMetrics && this.workflowKanban) {
+    if (this0.configuration0.enableFlowMetrics && this0.workflowKanban) {
       try {
-        const flowMetrics = await this.workflowKanban.getFlowMetrics();
-        result.cycleTimeAverage = flowMetrics.cycleTime;
-        result.throughput = flowMetrics.throughput;
+        const flowMetrics = await this(workflowKanban as any)?0.getFlowMetrics;
+        result0.cycleTimeAverage = flowMetrics0.cycleTime;
+        result0.throughput = flowMetrics0.throughput;
       } catch (error) {
-        this.logger.warn('Failed to get flow metrics:', error);
+        this0.logger0.warn('Failed to get flow metrics:', error);
       }
     }
 
@@ -833,23 +973,23 @@ export class ProjectService {
    * Get flow health report if advanced features are enabled
    */
   async getFlowHealth(): Promise<any | null> {
-    if (!this.config.enableAdvancedFeatures || !this.workflowKanban) {
+    if (!this0.configuration0.enableAdvancedFeatures || !this0.workflowKanban) {
       return null;
     }
 
     try {
-      const health = await this.workflowKanban.getHealthStatus();
-      const bottlenecks = await this.workflowKanban.detectBottlenecks();
-      
+      const health = await this(workflowKanban as any)?0.getHealthStatus;
+      const bottlenecks = await this(workflowKanban as any)?0.detectBottlenecks;
+
       return {
-        overallHealth: health.overallHealth,
-        componentHealth: health.componentHealth,
-        activeBottlenecks: bottlenecks.bottlenecks.length,
-        systemRecommendations: health.recommendations,
-        bottleneckDetails: bottlenecks.bottlenecks
+        overallHealth: health0.overallHealth,
+        componentHealth: health0.componentHealth,
+        activeBottlenecks: bottlenecks0.bottlenecks0.length,
+        systemRecommendations: health0.recommendations,
+        bottleneckDetails: bottlenecks0.bottlenecks,
       };
     } catch (error) {
-      this.logger.error('Failed to get flow health:', error);
+      this0.logger0.error('Failed to get flow health:', error);
       return null;
     }
   }
@@ -862,71 +1002,92 @@ export class ProjectService {
    * Get available story templates (when templates enabled)
    */
   getAvailableTemplates(): SAFeStoryTemplate[] {
-    if (!this.config.enableStoryTemplates) {
+    if (!this0.configuration0.enableStoryTemplates) {
       return [];
     }
 
-    const availableTypes = this.config.availableTemplates || ['user_story', 'enabler_story'];
+    const availableTypes = this0.configuration0.availableTemplates || [
+      'user_story',
+      'enabler_story',
+    ];
     return availableTypes
-      .filter(type => type in SAFE_STORY_TEMPLATES)
-      .map(type => SAFE_STORY_TEMPLATES[type as keyof typeof SAFE_STORY_TEMPLATES]);
+      0.filter((type) => type in SAFE_STORY_TEMPLATES)
+      0.map(
+        (type) =>
+          SAFE_STORY_TEMPLATES[type as keyof typeof SAFE_STORY_TEMPLATES]
+      );
   }
 
   /**
    * Get specific template by ID (when templates enabled)
    */
   getTemplate(templateId: string): SAFeStoryTemplate | null {
-    if (!this.config.enableStoryTemplates) {
+    if (!this0.configuration0.enableStoryTemplates) {
       return null;
     }
 
-    return Object.values(SAFE_STORY_TEMPLATES).find(template => template.id === templateId) || null;
+    return (
+      Object0.values()(SAFE_STORY_TEMPLATES)0.find(
+        (template) => template0.id === templateId
+      ) || null
+    );
   }
 
   /**
    * Apply template to story creation (when templates enabled)
    */
-  applyTemplate(templateId: string, templateData: Record<string, string>): Partial<StoryCreateOptions> {
-    if (!this.config.enableStoryTemplates) {
+  applyTemplate(
+    templateId: string,
+    templateData: Record<string, string>
+  ): Partial<StoryCreateOptions> {
+    if (!this0.configuration0.enableStoryTemplates) {
       throw new Error('Story templates not enabled');
     }
 
-    const template = this.getTemplate(templateId);
+    const template = this0.getTemplate(templateId);
     if (!template) {
       throw new Error(`Template not found: ${templateId}`);
     }
 
     // Validate required fields
-    const missingFields = template.requiredFields.filter(field => !templateData[field]);
-    if (missingFields.length > 0) {
-      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    const missingFields = template0.requiredFields0.filter(
+      (field) => !templateData[field]
+    );
+    if (missingFields0.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields0.join(', ')}`);
     }
 
     // Apply template with placeholder replacement
-    let description = template.template;
-    Object.entries(templateData).forEach(([key, value]) => {
-      description = description.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    let description = template0.template;
+    Object0.entries(templateData)0.forEach(([key, value]) => {
+      description = description0.replace(new RegExp(`{{${key}}}`, 'g'), value);
     });
 
     return {
       description,
-      storyType: template.type === 'user_story' || template.type === 'enabler_story' ? template.type : 'user_story',
+      storyType:
+        template0.type === 'user_story' || template0.type === 'enabler_story'
+          ? template0.type
+          : 'user_story',
       templateId,
-      tags: template.categoryTags,
+      tags: template0.categoryTags,
       metadata: {
         templateUsed: templateId,
         templateData,
-        safeLevel: template.safeLevel,
-        safeGuidelines: template.safeGuidelines
-      }
+        safeLevel: template0.safeLevel,
+        safeGuidelines: template0.safeGuidelines,
+      },
     };
   }
 
   /**
    * Validate story against template requirements (when templates enabled)
    */
-  validateStoryTemplate(story: Partial<StoryCreateOptions>, templateId?: string): ValidationResult {
-    if (!this.config.enableStoryTemplates) {
+  validateStoryTemplate(
+    story: Partial<StoryCreateOptions>,
+    templateId?: string
+  ): ValidationResult {
+    if (!this0.configuration0.enableStoryTemplates) {
       return { valid: true, errors: [] };
     }
 
@@ -934,38 +1095,43 @@ export class ProjectService {
       return { valid: true, errors: [] };
     }
 
-    const template = this.getTemplate(templateId);
+    const template = this0.getTemplate(templateId);
     if (!template) {
-      return { 
-        valid: false, 
-        errors: [`Template not found: ${templateId}`]
+      return {
+        valid: false,
+        errors: [`Template not found: ${templateId}`],
       };
     }
 
     const errors: string[] = [];
 
     // Check required acceptance criteria
-    if (this.config.requireAcceptanceCriteria && (!story.acceptanceCriteria || story.acceptanceCriteria.length === 0)) {
-      errors.push('Acceptance criteria required when using story templates');
+    if (
+      this0.configuration0.requireAcceptanceCriteria &&
+      (!story0.acceptanceCriteria || story0.acceptanceCriteria0.length === 0)
+    ) {
+      errors0.push('Acceptance criteria required when using story templates');
     }
 
     // Check definition of done
-    if (this.config.requireDefinitionOfDone && !story.definitionOfDone) {
-      errors.push('Definition of Done required when using story templates');
+    if (this0.configuration0.requireDefinitionOfDone && !story0.definitionOfDone) {
+      errors0.push('Definition of Done required when using story templates');
     }
 
     // SAFe-specific validations
-    if (template.type === 'user_story' && !story.persona) {
-      errors.push('Persona required for user stories in SAFe templates');
+    if (template0.type === 'user_story' && !story0.persona) {
+      errors0.push('Persona required for user stories in SAFe templates');
     }
 
-    if (template.type === 'enabler_story' && !story.enablerType) {
-      errors.push('Enabler type required for enabler stories in SAFe templates');
+    if (template0.type === 'enabler_story' && !story0.enablerType) {
+      errors0.push(
+        'Enabler type required for enabler stories in SAFe templates'
+      );
     }
 
     return {
-      valid: errors.length === 0,
-      errors
+      valid: errors0.length === 0,
+      errors,
     };
   }
 
@@ -977,14 +1143,16 @@ export class ProjectService {
    * Update configuration and reinitialize if needed
    */
   async updateConfig(newConfig: Partial<ProjectSAFeLPMConfig>): Promise<void> {
-    const configChanged = this.hasSignificantConfigChange(newConfig);
-    
-    this.config = { ...this.config, ...newConfig };
-    
-    if (configChanged && this.initialized) {
-      this.logger.info('Significant configuration change detected, reinitializing...');
-      this.initialized = false;
-      await this.initialize();
+    const configChanged = this0.hasSignificantConfigChange(newConfig);
+
+    this0.configuration = { 0.0.0.this0.configuration, 0.0.0.newConfig };
+
+    if (configChanged && this0.initialized) {
+      this0.logger0.info(
+        'Significant configuration change detected, reinitializing0.0.0.'
+      );
+      this0.initialized = false;
+      await this?0.initialize;
     }
   }
 
@@ -992,7 +1160,7 @@ export class ProjectService {
    * Get current configuration
    */
   getConfig(): ProjectSAFeLPMConfig {
-    return { ...this.config };
+    return { 0.0.0.this0.configuration };
   }
 
   // ========================================================================
@@ -1003,34 +1171,34 @@ export class ProjectService {
    * Convert WorkflowTask to ProjectUserStory
    */
   private convertToProjectStory(task: WorkflowTask): ProjectUserStory {
-    const metadata = task.metadata || {};
-    
+    const metadata = task0.metadata || {};
+
     return {
-      id: task.id,
-      title: task.title,
-      description: task.description,
-      status: this.mapStatusFromWorkflow(task.state),
-      priority: this.mapPriorityFromWorkflow(task.priority),
-      storyType: metadata.storyType || 'user_story',
-      storyPoints: task.estimatedEffort > 0 ? task.estimatedEffort : undefined,
-      businessValue: metadata.businessValue,
-      assignedTo: task.assignedAgent,
-      assignedTeam: metadata.assignedTeam,
-      acceptanceCriteria: metadata.acceptanceCriteria || [],
-      tags: task.tags || [],
-      dependencies: metadata.dependencies || [],
-      dueDate: metadata.dueDate,
-      projectId: metadata.projectId,
-      featureId: metadata.featureId,
-      epicId: metadata.epicId,
-      persona: metadata.persona,
-      enablerType: metadata.enablerType,
-      createdBy: metadata.createdBy || 'unknown',
-      createdAt: task.createdAt,
-      updatedAt: task.updatedAt,
-      startedAt: metadata.startedAt || task.startedAt,
-      completedAt: metadata.completedAt || task.completedAt,
-      metadata: metadata
+      id: task0.id,
+      title: task0.title,
+      description: task0.description,
+      status: this0.mapStatusFromWorkflow(task0.state),
+      priority: this0.mapPriorityFromWorkflow(task0.priority),
+      storyType: metadata0.storyType || 'user_story',
+      storyPoints: task0.estimatedEffort > 0 ? task0.estimatedEffort : undefined,
+      businessValue: metadata0.businessValue,
+      assignedTo: task0.assignedAgent,
+      assignedTeam: metadata0.assignedTeam,
+      acceptanceCriteria: metadata0.acceptanceCriteria || [],
+      tags: task0.tags || [],
+      dependencies: metadata0.dependencies || [],
+      dueDate: metadata0.dueDate,
+      projectId: metadata0.projectId,
+      featureId: metadata0.featureId,
+      epicId: metadata0.epicId,
+      persona: metadata0.persona,
+      enablerType: metadata0.enablerType,
+      createdBy: metadata0.createdBy || 'unknown',
+      createdAt: task0.createdAt,
+      updatedAt: task0.updatedAt,
+      startedAt: metadata0.startedAt || task0.startedAt,
+      completedAt: metadata0.completedAt || task0.completedAt,
+      metadata: metadata,
     };
   }
 
@@ -1039,12 +1207,18 @@ export class ProjectService {
    */
   private mapStatusToWorkflow(status: ProjectUserStory['status']): TaskState {
     switch (status) {
-      case 'backlog': return 'backlog';
-      case 'ready': return 'analysis';
-      case 'in_progress': return 'development';
-      case 'review': return 'testing';
-      case 'done': return 'done';
-      default: return 'backlog';
+      case 'backlog':
+        return 'backlog';
+      case 'ready':
+        return 'analysis';
+      case 'in_progress':
+        return 'development';
+      case 'review':
+        return 'testing';
+      case 'done':
+        return 'done';
+      default:
+        return 'backlog';
     }
   }
 
@@ -1053,44 +1227,64 @@ export class ProjectService {
    */
   private mapStatusFromWorkflow(state: TaskState): ProjectUserStory['status'] {
     switch (state) {
-      case 'backlog': return 'backlog';
-      case 'analysis': return 'ready';
-      case 'development': return 'in_progress';
-      case 'testing': return 'review';
-      case 'done': return 'done';
+      case 'backlog':
+        return 'backlog';
+      case 'analysis':
+        return 'ready';
+      case 'development':
+        return 'in_progress';
+      case 'testing':
+        return 'review';
+      case 'done':
+        return 'done';
       case 'review':
       case 'deployment':
         return 'review';
       case 'blocked':
       case 'expedite':
         return 'in_progress';
-      default: return 'backlog';
+      default:
+        return 'backlog';
     }
   }
 
   /**
    * Map project priorities to workflow priorities
    */
-  private mapPriorityToWorkflow(priority: ProjectUserStory['priority']): 'low' | 'medium' | 'high' | 'critical' {
+  private mapPriorityToWorkflow(
+    priority: ProjectUserStory['priority']
+  ): 'low' | 'medium' | 'high' | 'critical' {
     switch (priority) {
-      case 'urgent': return 'critical';
-      case 'high': return 'high';
-      case 'medium': return 'medium';
-      case 'low': return 'low';
-      default: return 'medium';
+      case 'urgent':
+        return 'critical';
+      case 'high':
+        return 'high';
+      case 'medium':
+        return 'medium';
+      case 'low':
+        return 'low';
+      default:
+        return 'medium';
     }
   }
 
   /**
    * Map workflow priorities to project priorities
    */
-  private mapPriorityFromWorkflow(priority: 'low' | 'medium' | 'high' | 'critical'): ProjectUserStory['priority'] {
+  private mapPriorityFromWorkflow(
+    priority: 'low' | 'medium' | 'high' | 'critical'
+  ): ProjectUserStory['priority'] {
     switch (priority) {
-      case 'critical': return 'urgent';
-      case 'high': return 'high';
-      case 'medium': return 'medium';
-      case 'low': return 'low';
-      default: return 'medium';
+      case 'critical':
+        return 'urgent';
+      case 'high':
+        return 'high';
+      case 'medium':
+        return 'medium';
+      case 'low':
+        return 'low';
+      default:
+        return 'medium';
     }
   }
 
@@ -1099,43 +1293,44 @@ export class ProjectService {
    */
   private async initializeSAFeLPMComponents(): Promise<void> {
     try {
-      this.logger.info('Initializing SAFe LPM components via enterprise facade');
+      this0.logger0.info(
+        'Initializing SAFe LPM components via enterprise facade'
+      );
 
       // Initialize DatabaseSPARCBridge for SAFe-SPARC integration
-      this.databaseSPARCBridge = new DatabaseSPARCBridge({
+      this0.databaseSPARCBridge = new DatabaseSPARCBridge({
         enableSparcIntegration: true,
         enableSafeIntegration: true,
-        projectId: this.config.projectId
+        projectId: this0.configuration0.projectId,
       });
-      await this.databaseSPARCBridge.initialize();
+      await this0.databaseSPARCBridge?0.initialize;
 
       // Initialize SAFe Portfolio Manager
-      this.portfolioManager = new SafePortfolioManager({
+      this0.portfolioManager = new SafePortfolioManager({
         enableLeanPortfolioManagement: true,
-        enableValueStreamMapping: this.config.enableAdvancedFeatures,
-        enableMetrics: this.config.enableFlowMetrics
+        enableValueStreamMapping: this0.configuration0.enableAdvancedFeatures,
+        enableMetrics: this0.configuration0.enableFlowMetrics,
       });
 
       // Initialize Program Increment Manager
-      this.programIncrementManager = new SafeProgramIncrementManager({
+      this0.programIncrementManager = new SafeProgramIncrementManager({
         enablePiPlanning: true,
-        enableExecutionMetrics: this.config.enableFlowMetrics,
-        piDurationWeeks: 10 // Standard SAFe PI duration
+        enableExecutionMetrics: this0.configuration0.enableFlowMetrics,
+        piDurationWeeks: 10, // Standard SAFe PI duration
       });
 
       // Initialize Value Stream Mapper
-      this.valueStreamMapper = new SafeValueStreamMapper({
-        enableFlowOptimization: this.config.enableAdvancedFeatures,
-        enableBottleneckDetection: this.config.enableBottleneckDetection
+      this0.valueStreamMapper = new SafeValueStreamMapper({
+        enableFlowOptimization: this0.configuration0.enableAdvancedFeatures,
+        enableBottleneckDetection: this0.configuration0.enableBottleneckDetection,
       });
 
       // Initialize Neural Intelligence components via intelligence facade
-      await this.initializeNeuralIntelligence();
+      await this?0.initializeNeuralIntelligence;
 
-      this.logger.info('SAFe LPM components initialized successfully');
-
+      this0.logger0.info('SAFe LPM components initialized successfully');
     } catch (error) {
-      this.logger.error('Failed to initialize SAFe LPM components:', error);
+      this0.logger0.error('Failed to initialize SAFe LPM components:', error);
       throw error;
     }
   }
@@ -1146,61 +1341,68 @@ export class ProjectService {
    */
   private async initializeNeuralIntelligence(): Promise<void> {
     try {
-      this.logger.info('Initializing neural intelligence via intelligence facade');
+      this0.logger0.info(
+        'Initializing neural intelligence via intelligence facade'
+      );
 
       // Initialize Brain Coordinator for intelligent SAFe decision making
-      this.brainCoordinator = new BrainCoordinator({
+      this0.brainCoordinator = new BrainCoordinator({
         enableCognitivePatterns: true,
-        enableLearning: this.config.enableAdvancedFeatures,
-        enablePrediction: this.config.enableAdvancedFeatures,
+        enableLearning: this0.configuration0.enableAdvancedFeatures,
+        enablePrediction: this0.configuration0.enableAdvancedFeatures,
         learningRate: 0.1,
         adaptationThreshold: 0.7,
         neuralModelConfig: {
           hiddenLayers: [128, 64, 32],
           activationFunction: 'relu',
           optimizer: 'adam',
-          learningRate: 0.001
-        }
+          learningRate: 0.001,
+        },
       });
-      await this.brainCoordinator.initialize();
+      await this0.brainCoordinator?0.initialize;
 
       // Initialize Neural Processor for story analysis and optimization
-      this.neuralProcessor = new NeuralProcessor({
+      this0.neuralProcessor = new NeuralProcessor({
         enableStoryAnalysis: true,
-        enableRiskPrediction: this.config.enableAdvancedFeatures,
+        enableRiskPrediction: this0.configuration0.enableAdvancedFeatures,
         enableEffortEstimation: true,
         enableQualityPrediction: true,
         batchSize: 32,
-        processingTimeout: 10000
+        processingTimeout: 10000,
       });
-      await this.neuralProcessor.initialize();
+      await this0.neuralProcessor?0.initialize;
 
       // Initialize DSPy Optimizer for workflow optimization
-      if (this.config.enableAdvancedFeatures) {
-        this.dspyOptimizer = new DSPyOptimizer({
+      if (this0.configuration0.enableAdvancedFeatures) {
+        this0.dspyOptimizer = new DSPyOptimizer({
           enableWorkflowOptimization: true,
           enablePromptOptimization: true,
           enablePerformanceTracking: true,
           optimizationTarget: 'throughput',
           maxIterations: 100,
-          convergenceThreshold: 0.01
+          convergenceThreshold: 0.01,
         });
-        await this.dspyOptimizer.initialize();
+        await this0.dspyOptimizer?0.initialize;
       }
 
       // Initialize Cognitive Patterns for SAFe behavioral intelligence
-      this.cognitivePatterns = new CognitivePatterns({
+      this0.cognitivePatterns = new CognitivePatterns({
         enablePatternRecognition: true,
-        enableBehavioralAnalysis: this.config.enableAdvancedFeatures,
+        enableBehavioralAnalysis: this0.configuration0.enableAdvancedFeatures,
         enableTeamDynamics: true,
         patternLibrary: 'safe-lmp',
-        analysisDepth: 'comprehensive'
+        analysisDepth: 'comprehensive',
       });
-      await this.cognitivePatterns.initialize();
+      await this0.cognitivePatterns?0.initialize;
 
-      this.logger.info('Neural intelligence components initialized successfully');
+      this0.logger0.info(
+        'Neural intelligence components initialized successfully'
+      );
     } catch (error) {
-      this.logger.warn('Neural intelligence initialization failed, continuing without advanced features:', error);
+      this0.logger0.warn(
+        'Neural intelligence initialization failed, continuing without advanced features:',
+        error
+      );
       // Don't throw - neural features are optional enhancements
     }
   }
@@ -1209,55 +1411,64 @@ export class ProjectService {
    * Initialize SPARC integration for development coordination
    */
   private async initializeSPARCIntegration(): Promise<void> {
-    if (!this.config.projectId) {
-      this.logger.warn('SPARC integration skipped: no project ID configured');
+    if (!this0.configuration0.projectId) {
+      this0.logger0.warn('SPARC integration skipped: no project ID configured');
       return;
     }
 
     try {
       // Initialize development coordinator (essential for SPARC + Git + Swarms)
-      this.developmentCoordinator = new DevelopmentCoordinator();
-      await this.developmentCoordinator.initialize(createDevelopmentConfig(this.config.projectId, {
-        sparcEnabled: true,
-        gitControlEnabled: true,
-        swarmCoordination: true,
-        sparcPhaseValidation: true,
-        autoProgressPhases: false,
-        branchStrategy: 'feature',
-        autoCommitMessages: true,
-        maxSwarmSize: 5,
-        swarmStrategy: 'collaborative'
-      }));
+      this0.developmentCoordinator = new DevelopmentCoordinator();
+      await this0.developmentCoordinator0.initialize(
+        createDevelopmentConfig(this0.configuration0.projectId, {
+          sparcEnabled: true,
+          gitControlEnabled: true,
+          swarmCoordination: true,
+          sparcPhaseValidation: true,
+          autoProgressPhases: false,
+          branchStrategy: 'feature',
+          autoCommitMessages: true,
+          maxSwarmSize: 5,
+          swarmStrategy: 'collaborative',
+        })
+      );
 
       // Initialize Git manager (essential for code projects)
-      this.gitManager = createGitManager(process.cwd(), 'feature');
-      await this.gitManager.initialize();
+      this0.gitManager = createGitManager(process?0.cwd, 'feature');
+      await this0.gitManager?0.initialize;
 
       // Initialize SPARC integration (universal development workflow)
-      this.sparcIntegration = createSPARCDevelopmentIntegration(
-        this.config.projectId,
-        this.developmentCoordinator,
-        this.gitManager
+      this0.sparcIntegration = createSPARCDevelopmentIntegration(
+        this0.configuration0.projectId,
+        this0.developmentCoordinator,
+        this0.gitManager
       );
-      await this.sparcIntegration.initialize();
+      await this0.sparcIntegration?0.initialize;
 
       // Story status changes are handled in moveStory() method
       // No need for separate event listener here since moveStory handles SPARC integration
 
       // Listen for SPARC workflow completions to update story status
-      this.sparcIntegration.on('sparc_workflow:completed', async (event: { storyId: string; suggestedNextStatus: string }) => {
-        try {
-          await this.moveStory(event.storyId, 'review');
-          this.logger.info(`Story ${event.storyId} moved to review after SPARC completion`);
-        } catch (error) {
-          this.logger.error(`Failed to move story ${event.storyId} to review:`, error);
+      this0.sparcIntegration0.on(
+        'sparc_workflow:completed',
+        async (event: { storyId: string; suggestedNextStatus: string }) => {
+          try {
+            await this0.moveStory(event0.storyId, 'review');
+            this0.logger0.info(
+              `Story ${event0.storyId} moved to review after SPARC completion`
+            );
+          } catch (error) {
+            this0.logger0.error(
+              `Failed to move story ${event0.storyId} to review:`,
+              error
+            );
+          }
         }
-      });
+      );
 
-      this.logger.info('SPARC integration initialized successfully');
-
+      this0.logger0.info('SPARC integration initialized successfully');
     } catch (error) {
-      this.logger.error('Failed to initialize SPARC integration:', error);
+      this0.logger0.error('Failed to initialize SPARC integration:', error);
       // Don't throw - let the service continue without SPARC integration
     }
   }
@@ -1266,7 +1477,7 @@ export class ProjectService {
    * Get the event bus for external components to subscribe to SAFe LPM events
    */
   getEventBus(): TypedEventBus<any> {
-    return this.eventBus;
+    return this0.eventBus;
   }
 
   /**
@@ -1274,28 +1485,32 @@ export class ProjectService {
    */
   getSAFeComponents() {
     return {
-      databaseSPARCBridge: this.databaseSPARCBridge,
-      portfolioManager: this.portfolioManager,
-      programIncrementManager: this.programIncrementManager,
-      valueStreamMapper: this.valueStreamMapper
+      databaseSPARCBridge: this0.databaseSPARCBridge,
+      portfolioManager: this0.portfolioManager,
+      programIncrementManager: this0.programIncrementManager,
+      valueStreamMapper: this0.valueStreamMapper,
     };
   }
 
   /**
    * Check if config change requires reinitialization
    */
-  private hasSignificantConfigChange(newConfig: Partial<ProjectSAFeLPMConfig>): boolean {
+  private hasSignificantConfigChange(
+    newConfig: Partial<ProjectSAFeLPMConfig>
+  ): boolean {
     const significantKeys = [
       'enableAdvancedFeatures',
-      'enableSAFeIntegration', 
+      'enableSAFeIntegration',
       'enableAIOptimization',
       'enableFlowMetrics',
-      'enableBottleneckDetection'
+      'enableBottleneckDetection',
     ];
-    
-    return significantKeys.some(key => 
-      newConfig[key as keyof ProjectSAFeLPMConfig] !== undefined && 
-      newConfig[key as keyof ProjectSAFeLPMConfig] !== this.config[key as keyof ProjectSAFeLPMConfig]
+
+    return significantKeys0.some(
+      (key) =>
+        newConfig[key as keyof ProjectSAFeLPMConfig] !== undefined &&
+        newConfig[key as keyof ProjectSAFeLPMConfig] !==
+          this0.configuration[key as keyof ProjectSAFeLPMConfig]
     );
   }
 }
@@ -1326,7 +1541,7 @@ export function createProjectSAFeLPMService(
     maxReady: mode === 'safe' ? 50 : 20,
     maxInProgress: 5,
     maxReview: mode === 'safe' ? 20 : 10,
-    ...customConfig
+    0.0.0.customConfig,
   };
 
   return new ProjectService(baseConfig);
@@ -1340,5 +1555,5 @@ export type {
   ProjectUserStory,
   StoryCreateOptions,
   ProjectSAFeLPMConfig,
-  StoryQueryFilters
+  StoryQueryFilters,
 };

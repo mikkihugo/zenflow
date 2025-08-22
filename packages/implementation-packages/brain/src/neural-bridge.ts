@@ -6,8 +6,6 @@
 
 import { 
   getLogger, 
-  inject, 
-  TOKENS, 
   type Logger 
 } from '@claude-zen/foundation';
 
@@ -98,7 +96,7 @@ export class NeuralBridge {
   private smartNeuralCoordinator: SmartNeuralCoordinator | null = null; // Smart neural backend
 
   constructor(
-    @inject(TOKENS.Logger) private foundationLogger: Logger,
+    private foundationLogger: Logger = getLogger('Neural'),
     config: NeuralConfig = {}
   ) {
     this.config = {
@@ -128,7 +126,7 @@ export class NeuralBridge {
 
     try {
       // Initialize database access for model persistence via infrastructure facade
-      const { getDatabaseAccess } = await import('@claude-zen/strategic-facades/infrastructure');
+      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
       this.dbAccess = getDatabaseAccess();
       
       // Initialize SmartNeuralCoordinator for intelligent neural backend

@@ -16,7 +16,8 @@
  * @since 2.0.0
  */
 
-import { getLogger, EnhancedError, getGlobalLLM } from '@claude-zen/foundation';
+import { getLogger, EnhancedError } from '@claude-zen/foundation';
+import { getLLMProvider } from '@claude-zen/intelligence';
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';

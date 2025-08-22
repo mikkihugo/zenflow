@@ -319,7 +319,7 @@ export type {
   IncidentPriority
 } from '../services/devsecops/security-incident-response-service';
 
-export class DevSecOpsManager extends EventEmitter {
+export class DevSecOpsManager extends TypedEventBase {
   private logger: Logger;
   private securityScanningService: any;
   private complianceMonitoringService: any;
@@ -387,9 +387,9 @@ export class DevSecOpsManager extends EventEmitter {
         scanType: this.mapAssessmentToScanType(assessmentConfig.assessmentType),
         tools: assessmentConfig.tools || this.getDefaultTools(),
         targets: this.convertScopeToTargets(assessmentConfig.scope),
-        standards: this.config.security.securityStandards,
+        standards: this.configuration.security.securityStandards,
         schedule: {
-          frequency: this.config.securityScanFrequency,
+          frequency: this.configuration.securityScanFrequency,
           timeWindow: '0 2 * * *', // 2 AM daily
           maxDuration: 120,
           parallelScans: 3
@@ -459,7 +459,7 @@ export class DevSecOpsManager extends EventEmitter {
         }
       } else {
         // Get status for all configured frameworks
-        for (const framework of this.config.compliance.frameworks) {
+        for (const framework of this.configuration.compliance.frameworks) {
           const status = await this.complianceMonitoringService.getComplianceStatus(framework.id);
           if (status) {
             statuses.push(status);
@@ -587,29 +587,29 @@ export class DevSecOpsManager extends EventEmitter {
    */
   private async configureServices(): Promise<void> {
     // Configure security scanning if enabled
-    if (this.config.enableVulnerabilityScanning && this.securityScanningService) {
+    if (this.configuration.enableVulnerabilityScanning && this.securityScanningService) {
       // Configuration would be passed to service
       this.logger.info('Security scanning configured');
     }
 
     // Configure compliance monitoring if enabled
-    if (this.config.enableComplianceAutomation && this.complianceMonitoringService) {
+    if (this.configuration.enableComplianceAutomation && this.complianceMonitoringService) {
       const complianceConfig = {
         monitoringId: 'main-compliance',
-        frameworks: this.config.compliance.frameworks,
-        automatedScanning: this.config.compliance.enableAutomatedScanning,
-        reportingEnabled: this.config.compliance.enableComplianceReporting,
-        auditTrailEnabled: this.config.compliance.enableAuditTrail,
+        frameworks: this.configuration.compliance.frameworks,
+        automatedScanning: this.configuration.compliance.enableAutomatedScanning,
+        reportingEnabled: this.configuration.compliance.enableComplianceReporting,
+        auditTrailEnabled: this.configuration.compliance.enableAuditTrail,
         reportingSchedule: {
           frequency: 'monthly' as const,
-          format: this.config.compliance.reportingFormat,
+          format: this.configuration.compliance.reportingFormat,
           recipients: ['compliance@example.com'],
           customReports: []
         },
         thresholds: {
-          minimumCompliance: this.config.compliance.complianceThreshold,
-          warningThreshold: this.config.compliance.complianceThreshold - 10,
-          criticalThreshold: this.config.compliance.complianceThreshold - 20,
+          minimumCompliance: this.configuration.compliance.complianceThreshold,
+          warningThreshold: this.configuration.compliance.complianceThreshold - 10,
+          criticalThreshold: this.configuration.compliance.complianceThreshold - 20,
           maxNonCompliantDays: 30,
           escalationRules: []
         }
@@ -619,7 +619,7 @@ export class DevSecOpsManager extends EventEmitter {
     }
 
     // Configure incident response if enabled
-    if (this.config.enableIncidentResponse && this.incidentResponseService) {
+    if (this.configuration.enableIncidentResponse && this.incidentResponseService) {
       this.logger.info('Incident response configured');
     }
   }
@@ -638,7 +638,7 @@ export class DevSecOpsManager extends EventEmitter {
   }
 
   private getDefaultTools(): SecurityTool[] {
-    return this.config.security.securityToolsIntegration.filter(tool => tool.enabled);
+    return this.configuration.security.securityToolsIntegration.filter(tool => tool.enabled);
   }
 
   private convertScopeToTargets(scope: AssessmentScope): any[] {

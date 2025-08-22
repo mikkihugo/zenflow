@@ -14,7 +14,7 @@ export type Priority = 'low' | 'medium' | 'high' | 'critical';
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
 /**
- * Server instance interface - wraps Express.Server with additional metadata
+ * Server instance interface - wraps Express0.Server with additional metadata
  */
 export interface ServerInstance {
   id: string;
@@ -24,7 +24,7 @@ export interface ServerInstance {
   uptime?: number;
   // Express server instance methods
   close?: (callback?: (err?: Error) => void) => void;
-  on?: (event: string, listener: (...args: unknown[]) => void) => void;
+  on?: (event: string, listener: (0.0.0.args: any[]) => void) => void;
 }
 
 /**
@@ -33,7 +33,7 @@ export interface ServerInstance {
 export interface BaseError {
   code: string;
   message: string;
-  details?: unknown;
+  details?: any;
   timestamp: Date;
 }
 
@@ -57,7 +57,7 @@ export interface TestResult {
 export interface CommandResult {
   success: boolean;
   message?: string;
-  data?: unknown;
+  data?: any;
   error?: BaseError;
   timestamp: Date;
   // CLI execution specific fields
@@ -71,7 +71,7 @@ export interface CommandResult {
 export interface BaseApiResponse {
   success: boolean;
   message?: string;
-  data?: unknown;
+  data?: any;
   error?: BaseError;
   timestamp: Date;
   requestId?: string;
@@ -96,27 +96,30 @@ export interface NeuralNetworkInterface {
   id: string;
   config: NeuralConfig;
   isInitialized: boolean;
-  
+
   /**
    * Initialize the neural network
    */
   initialize(config: NeuralConfig): Promise<void>;
-  
+
   /**
    * Train the network with data
    */
-  train(inputs: number[][], outputs: number[][]): Promise<{
+  train(
+    inputs: number[][],
+    outputs: number[][]
+  ): Promise<{
     finalError: number;
     epochsCompleted: number;
     duration: number;
     converged: boolean;
   }>;
-  
+
   /**
    * Predict output for given input
    */
   predict(inputs: number[]): Promise<number[]>;
-  
+
   /**
    * Get network status
    */
@@ -125,12 +128,12 @@ export interface NeuralNetworkInterface {
     accuracy?: number;
     lastTrained?: Date;
   };
-  
+
   /**
    * Destroy the network and cleanup resources
    */
   destroy(): Promise<void>;
-  
+
   /**
    * Export network configuration and weights
    */
@@ -139,7 +142,7 @@ export interface NeuralNetworkInterface {
     biases: number[][];
     config: NeuralConfig;
   }>;
-  
+
   /**
    * Import network configuration and weights
    */
@@ -148,7 +151,7 @@ export interface NeuralNetworkInterface {
     biases: number[][];
     config: NeuralConfig;
   }): Promise<void>;
-  
+
   /**
    * Get performance metrics (optional method)
    */
@@ -169,18 +172,18 @@ export interface WasmNeuralBinding {
   /**
    * Load WASM module
    */
-  loadWasm(): Promise<WebAssembly.Module | Record<string, unknown>>;
-  
+  loadWasm(): Promise<WebAssembly0.Module | Record<string, unknown>>;
+
   /**
    * Check if WASM is available
    */
   isWasmAvailable(): boolean;
-  
+
   /**
    * Get WASM capabilities
    */
   getWasmCapabilities(): string[];
-  
+
   /**
    * Create neural network instance
    */
@@ -191,34 +194,70 @@ export interface WasmNeuralBinding {
  * Agent-related types
  */
 export type AgentId = string;
-export type AgentType = 
+export type AgentType =
   // Core hierarchy types
-  | 'queen' | 'commander' | 'cube' | 'matron' | 'drone' | 'worker'
+  | 'queen'
+  | 'commander'
+  | 'cube'
+  | 'matron'
+  | 'drone'
+  | 'worker'
   // Queen types
-  | 'primary' | 'secondary' | 'backup'
+  | 'primary'
+  | 'secondary'
+  | 'backup'
   // Specialized agent types
-  | 'coder' | 'analyst' | 'researcher' | 'architect' | 'optimizer'
-  | 'ui-designer' | 'ux-designer' | 'accessibility-specialist'
-  | 'ops' | 'coordinator' | 'data'
+  | 'coder'
+  | 'analyst'
+  | 'researcher'
+  | 'architect'
+  | 'optimizer'
+  | 'ui-designer'
+  | 'ux-designer'
+  | 'accessibility-specialist'
+  | 'ops'
+  | 'coordinator'
+  | 'data'
   // Performance specialized
-  | 'performance-analyzer' | 'cache-optimizer' | 'memory-optimizer'
-  | 'latency-optimizer' | 'bottleneck-analyzer'
+  | 'performance-analyzer'
+  | 'cache-optimizer'
+  | 'memory-optimizer'
+  | 'latency-optimizer'
+  | 'bottleneck-analyzer'
   // Migration and modernization
-  | 'legacy-analyzer' | 'modernization-agent' | 'migration-coordinator'
-  | 'migration-plan' | 'system-architect' | 'database-architect'
+  | 'legacy-analyzer'
+  | 'modernization-agent'
+  | 'migration-coordinator'
+  | 'migration-plan'
+  | 'system-architect'
+  | 'database-architect'
   // Testing specialists
-  | 'unit-tester' | 'integration-tester' | 'e2e-tester'
-  | 'performance-tester' | 'tdd-london-swarm' | 'production-validator'
+  | 'unit-tester'
+  | 'integration-tester'
+  | 'e2e-tester'
+  | 'performance-tester'
+  | 'tdd-london-swarm'
+  | 'production-validator'
   // Development specialists
-  | 'developer' | 'fullstack-dev' | 'dev-backend-api' | 'api-dev'
-  | 'analyze-code-quality' | 'security-analyzer' | 'refactoring-analyzer'
+  | 'developer'
+  | 'fullstack-dev'
+  | 'dev-backend-api'
+  | 'api-dev'
+  | 'analyze-code-quality'
+  | 'security-analyzer'
+  | 'refactoring-analyzer'
   | 'user-guide-writer';
 
-export type AgentStatus = 
+export type AgentStatus =
   // Basic states
-  | 'idle' | 'active' | 'busy' | 'error' | 'offline'
+  | 'idle'
+  | 'active'
+  | 'busy'
+  | 'error'
+  | 'offline'
   // Extended states
-  | 'initializing' | 'terminated';
+  | 'initializing'
+  | 'terminated';
 
 export interface AgentCapabilities {
   canCoordinate: boolean;
@@ -286,7 +325,7 @@ export interface QueenTemplate {
     autonomyLevel?: number;
     learningEnabled?: boolean;
     adaptationEnabled?: boolean;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   environment?: Partial<QueenEnvironment>;
 }
@@ -333,11 +372,14 @@ export interface QueenHealth {
   issues: string[];
   queenId?: string; // Queen ID for queen-coordinator
   metrics?: Record<string, unknown>; // Health metrics for queen-coordinator
-  components?: Record<string, {
-    status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
-    lastCheck?: Date;
-    metrics?: Record<string, unknown>;
-  }>; // Optional components used by queen-coordinator
+  components?: Record<
+    string,
+    {
+      status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
+      lastCheck?: Date;
+      metrics?: Record<string, unknown>;
+    }
+  >; // Optional components used by queen-coordinator
   overall?: {
     status: 'healthy' | 'degraded' | 'critical' | 'unhealthy';
     score: number;
@@ -392,7 +434,7 @@ export interface QueenEnvironment {
     availableMemory?: number;
     availableCpu?: number;
     availableDisk?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 
@@ -427,7 +469,7 @@ export interface CompleteAgentState {
     autonomyLevel: number;
     learningEnabled: boolean;
     adaptationEnabled: boolean;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   environment: {
     platform?: string;
@@ -436,13 +478,13 @@ export interface CompleteAgentState {
     workingDirectory?: string;
     tempDirectory?: string;
     logDirectory?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   lastHeartbeat: Date;
   errors: Array<{
     code: string;
     message: string;
-    details?: unknown;
+    details?: any;
     timestamp: Date;
   }>;
 }
@@ -473,7 +515,7 @@ export interface QueenMetrics extends AgentMetrics {
 
 export interface TaskCompletionData {
   taskId: string;
-  result: unknown;
+  result: any;
   duration: number;
   success: boolean;
   swarmId: string;
@@ -509,20 +551,20 @@ export type QueenStatus = AgentStatus;
  * Event Bus and Logger interfaces
  * Re-export from event-system package for better integration
  */
-export type { SystemEvent } from '@claude-zen/infrastructure';
+export type { SystemEvent } from '@claude-zen/intelligence';
 
 // Use the comprehensive EventBus from event-system package instead of basic interface
 export interface EventBus {
-  emit(event: string | symbol, ...args: unknown[]): boolean;
-  on(event: string | symbol, handler: (...args: unknown[]) => void): this;
-  off(event: string | symbol, handler: (...args: unknown[]) => void): this;
+  emit(event: string | symbol, 0.0.0.args: any[]): boolean;
+  on(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
+  off(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
   // Add the missing emitSystemEvent method
   emitSystemEvent(event: SystemEvent): boolean;
 }
 
 export interface Logger {
-  debug(message: string, ...args: unknown[]): void;
-  info(message: string, ...args: unknown[]): void;
-  warn(message: string, ...args: unknown[]): void;
-  error(message: string, ...args: unknown[]): void;
+  debug(message: string, 0.0.0.args: any[]): void;
+  info(message: string, 0.0.0.args: any[]): void;
+  warn(message: string, 0.0.0.args: any[]): void;
+  error(message: string, 0.0.0.args: any[]): void;
 }

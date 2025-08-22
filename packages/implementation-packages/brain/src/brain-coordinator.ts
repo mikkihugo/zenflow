@@ -17,7 +17,7 @@ import {
 import { 
   getPerformanceTracker, 
   getAgentHealthMonitor
-} from '@claude-zen/strategic-facades/operations';
+} from '@claude-zen/operations';
 
 const logger = getLogger('brain-coordinator');
 

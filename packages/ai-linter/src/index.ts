@@ -17,7 +17,7 @@
  */
 
 // Core AI Linter Components
-export { AIRuleGenerator } from './ai-rule-generator';
+export { AIRuleGenerator } from './ai-rule-generator.js';
 export type {
   AIRuleGeneratorConfig,
   RuleGenerationStrategy,
@@ -28,10 +28,14 @@ export type {
   QualityRequirement,
   TeamPreferences,
   RuleFeedback,
-} from './ai-rule-generator';
+} from './ai-rule-generator.js';
 
-export { ClaudeBiomeBridge, createClaudeBiomeBridge } from './claude-biome-bridge';
-export type { EventBus } from './claude-biome-bridge';
+export { ClaudeESLintBridge, createClaudeESLintBridge } from './claude-eslint-bridge.js';
+export type { EventBus } from './claude-eslint-bridge.js';
+
+// Claude SDK Integration
+export { ClaudeSDKIntegration, createClaudeSDKIntegration } from './claude-sdk-integration.js';
+export type { ClaudeAnalysisConfig } from './claude-sdk-integration.js';
 
 // Type Definitions
 export type {
@@ -64,41 +68,10 @@ export type {
   PerformanceSettings,
   CacheSettings,
   CustomRuleTemplate,
-} from './types/ai-linter-types';
+} from './types/ai-linter-types.js';
 
-export type {
-  // Biome Integration Types
-  BiomeConfiguration,
-  VCSConfiguration,
-  AssistConfiguration,
-  FormatterConfiguration,
-  LinterConfiguration,
-  LinterRules,
-  RuleConfiguration,
-  AIRuleConfiguration,
-  AIRuleTemplate,
-  BiomeRule,
-  BiomeRuleMetadata,
-  RuleEffectiveness,
-  JavaScriptConfiguration,
-  JavaScriptFormatterConfiguration,
-  JavaScriptParserConfiguration,
-  TypeScriptConfiguration,
-  TypeScriptParserConfiguration,
-  JSONConfiguration,
-  JSONFormatterConfiguration,
-  JSONParserConfiguration,
-  CSSConfiguration,
-  CSSFormatterConfiguration,
-  CSSLinterConfiguration,
-  FilesConfiguration,
-  OverrideConfiguration,
-  AIExtensions,
-  AIRuleGenerationSettings,
-  ClaudeIntegrationSettings,
-  SwarmCoordinationSettings,
-  AIMonitoringSettings,
-} from './types/biome-types';
+// ESLint Integration Types (using existing ESLint ecosystem) 
+export type { ESLintAIConfig } from './claude-eslint-bridge.js';
 
 /**
  * Create a comprehensive AI linter configuration with sensible defaults
@@ -138,98 +111,15 @@ export function createDefaultAILinterConfig(): import('./types/ai-linter-types')
 }
 
 /**
- * Create default Biome configuration with AI extensions
+ * Create default ESLint AI configuration that works with our existing setup
  */
-export function createDefaultBiomeConfig(): import('./types/biome-types').BiomeConfiguration {
+export function createDefaultESLintAIConfig(): import('./claude-eslint-bridge.js').ESLintAIConfig {
   return {
-    $schema: 'https://biomejs.dev/schemas/1.6.3/schema.json',
-    vcs: {
-      enabled: true,
-      clientKind: 'git',
-      useIgnoreFile: true,
-      defaultBranch: 'main',
-    },
-    formatter: {
-      enabled: true,
-      formatWithErrors: false,
-      lineWidth: 100,
-      indentStyle: 'space',
-      indentWidth: 2,
-    },
-    linter: {
-      enabled: true,
-      rules: {
-        recommended: true,
-        complexity: {},
-        correctness: {},
-        style: {},
-        suspicious: {},
-        performance: {},
-        security: {},
-        a11y: {},
-        aiGenerated: {},
-      },
-      aiRules: {
-        enabled: true,
-        confidenceThreshold: 0.8,
-        allowDynamicUpdates: true,
-        generationFrequency: 'on-change',
-        customTemplates: [],
-      },
-    },
-    javascript: {
-      formatter: {
-        quoteStyle: 'single',
-        semicolons: 'asNeeded',
-        trailingCommas: 'es5',
-        arrowParentheses: 'asNeeded',
-      },
-    },
-    typescript: {
-      formatter: {
-        quoteStyle: 'single',
-        semicolons: 'asNeeded',
-        trailingCommas: 'es5',
-        arrowParentheses: 'asNeeded',
-      },
-    },
-    files: {
-      ignoreUnknown: true,
-      maxSize: 1048576, // 1MB
-    },
-    aiExtensions: {
-      enabled: true,
-      ruleGeneration: {
-        autoGenerate: true,
-        triggers: ['file-change', 'manual'],
-        approvalProcess: 'hybrid',
-        customCategories: ['team-specific', 'project-specific'],
-      },
-      claude: {
-        enabled: true,
-        analysisDepth: 'medium',
-        realTimeAnalysis: true,
-        batchSettings: {
-          batchSize: 5,
-          processingInterval: 1000,
-        },
-      },
-      swarm: {
-        enabled: true,
-        topology: 'hierarchical',
-        maxAgents: 6,
-        strategy: 'adaptive',
-      },
-      monitoring: {
-        enabled: true,
-        collectMetrics: true,
-        logDecisions: true,
-        exportMetrics: {
-          format: 'json',
-          interval: 60000,
-          destination: './ai-linter-metrics.json',
-        },
-      },
+    enableAIRules: true,
+    confidenceThreshold: 0.8,
+    focusAreas: ['complexity', 'maintainability', 'type-safety', 'performance'],
+    eslintConfig: {
+      // Use our existing ESLint configuration
     },
   };
 }
@@ -268,7 +158,7 @@ export function createLinterContext(
 /**
  * Default AI rule generator configuration
  */
-export function createDefaultRuleGeneratorConfig(): import('./ai-rule-generator').AIRuleGeneratorConfig {
+export function createDefaultRuleGeneratorConfig(): import('./ai-rule-generator.js').AIRuleGeneratorConfig {
   return {
     autoGenerate: true,
     confidenceThreshold: 0.8,

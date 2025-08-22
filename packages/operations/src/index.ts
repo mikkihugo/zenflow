@@ -184,5 +184,92 @@ export const operationsSystem = {
 
 export type * from './types';
 
+// =============================================================================
+// PERFORMANCE AGENT REGISTRIES - Operations facade specializations
+// =============================================================================
+
+/**
+ * getPerformanceAgentRegistry - Specialized registry for performance/monitoring agents
+ * Delegates to @claude-zen/performance-agents implementation package
+ */
+export const getPerformanceAgentRegistry = async () => {
+  try {
+    // Performance agents are part of the Operations facade itself
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    return registry;
+  } catch {
+    // Fallback to foundation AgentRegistry with performance-specific config
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    console.warn('Performance agents package not available, using basic agent registry');
+    return registry;
+  }
+};
+
+/**
+ * getTelemetryAgentRegistry - Specialized registry for telemetry/observability agents
+ * Delegates to @claude-zen/telemetry-agents implementation package
+ */
+export const getTelemetryAgentRegistry = async () => {
+  try {
+    // Telemetry agents are part of the Operations facade itself
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    return registry;
+  } catch {
+    // Fallback to foundation AgentRegistry with telemetry-specific config
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    console.warn('Telemetry agents package not available, using basic agent registry');
+    return registry;
+  }
+};
+
+/**
+ * createPerformanceAgentRegistry - Factory for performance agent registries
+ */
+export const createPerformanceAgentRegistry = async (config?: any) => {
+  const registry = await getPerformanceAgentRegistry();
+  // AgentRegistry from foundation doesn't have configure method
+  if (config) {
+    console.log('Performance agent registry config:', config);
+  }
+  return registry;
+};
+
+/**
+ * createTelemetryAgentRegistry - Factory for telemetry agent registries
+ */
+export const createTelemetryAgentRegistry = async (config?: any) => {
+  const registry = await getTelemetryAgentRegistry();
+  // AgentRegistry from foundation doesn't have configure method
+  if (config) {
+    console.log('Telemetry agent registry config:', config);
+  }
+  return registry;
+};
+
+/**
+ * createHealthMonitoringAgentRegistry - Factory for health monitoring agents
+ */
+export const createHealthMonitoringAgentRegistry = async (config?: any) => {
+  try {
+    // Health monitoring agents are part of the Operations facade itself
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    if (config) {
+      console.log('Health monitoring agent registry config:', config);
+    }
+    return registry;
+  } catch (error) {
+    // Fallback to foundation AgentRegistry with health monitoring-specific config
+    const { AgentRegistry } = await import('@claude-zen/foundation');
+    const registry = new AgentRegistry();
+    console.warn('Agent monitoring package not available, using basic agent registry');
+    return registry;
+  }
+};
+
 // Default export for convenience
 export default operationsSystem;

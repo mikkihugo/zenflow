@@ -1,33 +1,33 @@
 /**
  * @fileoverview System Configuration Types
- * 
+ *
  * System-level configuration types for hardware detection,
- * capability assessment, and performance optimization.
+ * capability assessment, and performance optimization0.
  */
 
-import type { ClaudeZenCoreConfig } from './core-config';
+import type { ClaudeZenCoreConfig } from '0./core-config';
 
 /**
  * System Information Interface
  */
 export interface SystemInfo {
-  memory: number;      // Total system memory in MB
-  cpus: number;        // Number of CPU cores
-  platform: string;   // Operating system platform
-  architecture: string; // System architecture (x64, arm64, etc.)
-  nodeVersion: string; // Node.js version
-  processes: number;   // Number of running processes
+  memory: number; // Total system memory in MB
+  cpus: number; // Number of CPU cores
+  platform: string; // Operating system platform
+  architecture: string; // System architecture (x64, arm64, etc0.)
+  nodeVersion: string; // Node0.js version
+  processes: number; // Number of running processes
 }
 
 /**
  * System Capabilities Interface
  */
 export interface SystemCapabilities {
-  hasGPU: boolean;        // GPU acceleration available
-  hasDocker: boolean;     // Docker container runtime available
+  hasGPU: boolean; // GPU acceleration available
+  hasDocker: boolean; // Docker container runtime available
   hasKubernetes: boolean; // Kubernetes orchestration available
-  hasWASM: boolean;       // WebAssembly runtime support
-  hasRedis: boolean;      // Redis cache server available
+  hasWASM: boolean; // WebAssembly runtime support
+  hasRedis: boolean; // Redis cache server available
   hasPostgreSQL: boolean; // PostgreSQL database available
 }
 
@@ -35,10 +35,10 @@ export interface SystemCapabilities {
  * Performance Metrics Interface
  */
 export interface PerformanceMetrics {
-  memoryUsage: number;    // Current memory usage percentage
-  cpuUsage: number;       // Current CPU usage percentage
+  memoryUsage: number; // Current memory usage percentage
+  cpuUsage: number; // Current CPU usage percentage
   networkLatency: number; // Network round-trip latency in ms
-  diskIO: number;         // Disk I/O operations per second
+  diskIO: number; // Disk I/O operations per second
   activeConnections: number; // Number of active network connections
 }
 
@@ -241,6 +241,6 @@ export const DEFAULT_SYSTEM_CONFIG: Partial<SystemConfiguration> = {
     autoScale: true,
     maxWorkers: 4,
     memoryThreshold: 0.8,
-    cpuThreshold: 0.7
-  }
+    cpuThreshold: 0.7,
+  },
 };

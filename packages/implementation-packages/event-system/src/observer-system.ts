@@ -7,7 +7,7 @@ import { getLogger, type Logger } from '@claude-zen/foundation';
 
 const logger = getLogger('interfaces-events-observer-system');
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Event type definitions with strong typing
 export interface SystemEvent {
@@ -499,7 +499,7 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
 }
 
 // Main event manager with priority handling and error recovery
-export class SystemEventManager extends EventEmitter {
+export class SystemEventManager extends TypedEventBase {
   private observers: Map<string, SystemObserver[]> = new Map();
   private eventQueue: PriorityQueue<{
     event: SystemEvent;

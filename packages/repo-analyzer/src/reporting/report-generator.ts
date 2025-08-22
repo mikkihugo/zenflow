@@ -4,6 +4,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
 import type { AnalysisResult, ExportFormat } from '../types/index.js';
 
 export class ReportGenerator {
@@ -15,7 +16,7 @@ export class ReportGenerator {
   async generateReport(result: AnalysisResult, format: ExportFormat, outputPath?: string): Promise<string> {
     this.logger.info(`Generating ${format.toUpperCase()} report`);
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[.:]/g, '-');
     const defaultPath = outputPath || `./repo-analysis-${timestamp}.${this.getFileExtension(format)}`;
 
     switch (format) {
@@ -533,5 +534,29 @@ ${result.repository.dependencies.dependencyGraph.edges.map(edge =>
       test: 'lightpink'
     };
     return colors[type] || 'white';
+  }
+
+  /**
+   * Build comprehensive report metadata for enhanced reporting
+   */
+  private async buildReportMetadata(result: AnalysisResult, format: ExportFormat): Promise<{
+    generatedAt: string;
+    format: string;
+    analysisScope: string;
+    totalMetrics: Record<string, number>;
+    qualityScore: number;
+  }> {
+    return {
+      generatedAt: new Date().toISOString(),
+      format: format.toUpperCase(),
+      analysisScope: `${result.repository.totalFiles} files, ${result.repository.totalLines} lines`,
+      totalMetrics: {
+        files: result.repository.totalFiles,
+        lines: result.repository.totalLines,
+        recommendations: result.recommendations.length,
+        domains: result.domains.length
+      },
+      qualityScore: result.summary.overallScore
+    };
   }
 }

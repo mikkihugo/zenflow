@@ -16,7 +16,7 @@
  * - Performance optimized for production workloads
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 import type {
@@ -701,7 +701,7 @@ export interface EventSystemConfig {
 /**
  * Type-safe event bus with domain boundary validation
  */
-export class TypeSafeEventBus extends EventEmitter implements EventBus {
+export class TypeSafeEventBus extends TypedEventBase implements EventBus {
   private readonly logger: Logger;
   private readonly domainValidators = new Map<
     Domain,

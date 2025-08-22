@@ -4,7 +4,7 @@
  * Manages agent and swarm context, replacing the removed hook system's
  * context loading functionality with integrated memory management.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { getLogger } from '../config/logging-config';
 const logger = getLogger('context-manager');
 /**
@@ -29,7 +29,7 @@ export const DEFAULT_CONTEXT_CONFIG = {
  * Replaces the removed hook system's context loading with memory-backed
  * context management for agents, swarms, and sessions.
  */
-export class ContextManager extends EventEmitter {
+export class ContextManager extends TypedEventBase {
     config;
     memorySystem;
     contextCache = new Map();
@@ -288,7 +288,7 @@ export class ContextManager extends EventEmitter {
             this.syncTimer = undefined;
         }
         this.contextCache.clear();
-        this.emit('shutdown');
+        this.emit('shutdown', {});
         logger.info('ContextManager shutdown');
     }
     /**
@@ -330,7 +330,7 @@ export class ContextManager extends EventEmitter {
     startAutoSync() {
         this.syncTimer = setInterval(() => {
             this.cleanCache();
-            this.emit('auto-sync');
+            this.emit('auto-sync', {});
         }, this.config.syncInterval);
     }
 }

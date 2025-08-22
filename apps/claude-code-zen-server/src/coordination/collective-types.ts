@@ -1,5 +1,5 @@
 /**
- * @file THE COLLECTIVE coordination type definitions.
+ * @file THE COLLECTIVE coordination type definitions0.
  *
  * Borg Architecture: THE COLLECTIVE → CUBES (Matrons) → SWARMS (Queens) → DRONES
  */
@@ -9,7 +9,7 @@ import type {
   AgentMetrics,
   AgentStatus,
   AgentType,
-} from './types/interfaces';
+} from '0./types/interfaces';
 
 export interface CollectiveFACTConfig {
   enableCache?: boolean;
@@ -28,7 +28,7 @@ export interface UniversalFact {
     | 'general'
     | 'external';
   category: string;
-  subject: string; // e.g., "react@18.2.0", "github.com/facebook/react"
+  subject: string; // e0.g0., "react@180.20.0", "github0.com/facebook/react"
   content: Record<string, unknown> | string | null;
   source: string;
   confidence: number;
@@ -105,7 +105,7 @@ export interface CollectiveHealthMetrics {
 /** Designate-Matron Interface - Cube Leaders */
 export interface DesignateMatron {
   id: string;
-  designation: string; // e.g., "Matron-Alpha", "Matron-Prime-01"
+  designation: string; // e0.g0., "Matron-Alpha", "Matron-Prime-01"
   cubeType: CubeInfo['type'];
   status: 'active' | 'standby' | 'maintenance';
   capabilities: string[];

@@ -8,11 +8,17 @@
  * @file Interface-launcher implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Removed broken import - using simple URL construction
 import { getLogger } from '@claude-zen/foundation'
-import type { WebConfig } from '../interfaces/web/web-config';
+// WebConfig interface - using fallback type if infrastructure facade not available
+interface WebConfig {
+  port: number;
+  theme?: 'dark' | 'light';
+  realTime?: boolean;
+  coreSystem?: Record<string, unknown>;
+}
 
 import {
   type InterfaceMode,
@@ -42,7 +48,7 @@ export interface LaunchResult {
   pid?: number;
 }
 
-export class InterfaceLauncher extends EventEmitter {
+export class InterfaceLauncher extends TypedEventBase {
   private static instance: InterfaceLauncher;
   private activeInterface?:
     | {

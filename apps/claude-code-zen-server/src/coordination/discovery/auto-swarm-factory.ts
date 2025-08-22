@@ -1,24 +1,23 @@
 /**
- * @file Auto-Swarm Factory - Creates optimized swarms based on domain characteristics.
+ * @file Auto-Swarm Factory - Creates optimized swarms based on domain characteristics0.
  *
- * This is the CRITICAL component that enables zero-manual-initialization swarm creation.
+ * This is the CRITICAL component that enables zero-manual-initialization swarm creation0.
  * It uses confidence scores from Progressive Confidence Builder to automatically:
  * - Select optimal topology (mesh, hierarchical, star, ring)
  * - Determine agent types and counts
  * - Configure persistent swarm settings
- * - Register with HiveSwarmCoordinator.
+ * - Register with HiveSwarmCoordinator0.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
-import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
-// import type { SessionMemoryStore } from '../../memory/memory'; // Missing - using fallback
-// import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator'; // Missing - using fallback
+import type { AGUIInterface } from '0.0./0.0./interfaces/agui/agui-adapter';
+// import type { SessionMemoryStore } from '0.0./0.0./memory/memory'; // Missing - using fallback
+// import type { SwarmCoordinator } from '0.0./swarm/core/swarm-coordinator'; // Missing - using fallback
 
 // Define fallback types for missing modules
 interface SessionMemoryStore {
-  get(key: string): Promise<any>;
+  get(key: string): Promise<unknown>;
   set(key: string, value: any): Promise<void>;
   store(key: string, type: string, value: any): Promise<void>;
 }
@@ -31,7 +30,7 @@ interface SwarmCoordinator {
 
 interface HiveSwarmCoordinator {
   registerSwarm(swarm: any): Promise<void>;
-  getSwarmMetrics(): Promise<any>;
+  getSwarmMetrics(): Promise<unknown>;
 }
 
 const logger = getLogger('AutoSwarmFactory');
@@ -97,7 +96,7 @@ export interface SwarmConfig {
     expectedThroughput: number; // tasks/second
     resourceLimits: {
       memory: string;
-      cpu: number; // cores.
+      cpu: number; // cores0.
     };
   };
   created: number;
@@ -137,7 +136,7 @@ export interface ConfidentDomain {
   }>;
   research: Array<{
     query: string;
-    results: unknown[];
+    results: any[];
     insights: string[];
     confidence: number;
   }>;
@@ -149,15 +148,15 @@ export interface ConfidentDomain {
 }
 
 /**
- * Auto-Swarm Factory - The final piece for complete automation.
+ * Auto-Swarm Factory - The final piece for complete automation0.
  *
- * This factory analyzes confident domains and automatically creates.
- * Optimized swarm configurations without manual intervention..
+ * This factory analyzes confident domains and automatically creates0.
+ * Optimized swarm configurations without manual intervention0.0.
  *
  * @example
  */
-export class AutoSwarmFactory extends EventEmitter {
-  private config: AutoSwarmFactoryConfig;
+export class AutoSwarmFactory extends TypedEventBase {
+  private configuration: AutoSwarmFactoryConfig;
   private createdSwarms: Map<string, SwarmConfig> = new Map();
   private domainAnalysisCache: Map<string, DomainCharacteristics> = new Map();
 
@@ -170,7 +169,7 @@ export class AutoSwarmFactory extends EventEmitter {
   ) {
     super();
 
-    this.config = {
+    this0.configuration = {
       enableHumanValidation: true,
       defaultPersistenceBackend: 'sqlite',
       maxSwarmsPerDomain: 3,
@@ -180,153 +179,155 @@ export class AutoSwarmFactory extends EventEmitter {
         memoryLimit: '2GB',
         cpuLimit: 8,
       },
-      ...config,
+      0.0.0.config,
     };
 
-    logger.info('Auto-Swarm Factory initialized', { config: this.config });
+    logger0.info('Auto-Swarm Factory initialized', {
+      config: this0.configuration,
+    });
   }
 
   /**
-   * Main entry point - Create swarms for all confident domains.
+   * Main entry point - Create swarms for all confident domains0.
    *
    * @param confidentDomains
    */
   async createSwarmsForDomains(
     confidentDomains: Map<string, ConfidentDomain>
   ): Promise<SwarmConfig[]> {
-    logger.info(
-      `🏭 Auto-Swarm Factory starting for ${confidentDomains.size} domains`
+    logger0.info(
+      `🏭 Auto-Swarm Factory starting for ${confidentDomains0.size} domains`
     );
 
     const configs: SwarmConfig[] = [];
-    const domainArray = Array.from(confidentDomains.entries());
+    const domainArray = Array0.from(confidentDomains?0.entries);
 
     // Emit start event
-    this.emit('factory:start', {
-      domainCount: confidentDomains.size,
-      timestamp: Date.now(),
+    this0.emit('factory:start', {
+      domainCount: confidentDomains0.size,
+      timestamp: Date0.now(),
     });
 
     try {
       // Process domains in parallel for speed
-      const swarmPromises = domainArray.map(async ([name, domain]) => {
+      const swarmPromises = domainArray0.map(async ([name, domain]) => {
         try {
-          const config = await this.createSwarmForDomain(domain);
-          configs.push(config);
+          const config = await this0.createSwarmForDomain(domain);
+          configs0.push(config);
           return config;
         } catch (error) {
-          logger.error(`Failed to create swarm for domain ${name}:`, error);
-          this.emit('factory:domain-error', { domain: name, error });
+          logger0.error(`Failed to create swarm for domain ${name}:`, error);
+          this0.emit('factory:domain-error', { domain: name, error });
           return null;
         }
       });
 
-      const results = await Promise.all(swarmPromises);
-      const successfulConfigs = results.filter(Boolean) as SwarmConfig[];
+      const results = await Promise0.all(swarmPromises);
+      const successfulConfigs = results0.filter(Boolean) as SwarmConfig[];
 
       // Validate resource constraints
-      await this.validateResourceConstraints(successfulConfigs);
+      await this0.validateResourceConstraints(successfulConfigs);
 
       // Human validation if enabled
-      if (this.config.enableHumanValidation && this.agui) {
-        await this.performHumanValidation(successfulConfigs);
+      if (this0.configuration0.enableHumanValidation && this0.agui) {
+        await this0.performHumanValidation(successfulConfigs);
       }
 
       // Initialize all approved swarms
-      await this.initializeSwarms(successfulConfigs);
+      await this0.initializeSwarms(successfulConfigs);
 
-      logger.info(
-        `🎉 Auto-Swarm Factory completed: ${successfulConfigs.length}/${confidentDomains.size} swarms created`
+      logger0.info(
+        `🎉 Auto-Swarm Factory completed: ${successfulConfigs0.length}/${confidentDomains0.size} swarms created`
       );
 
-      this.emit('factory:complete', {
-        total: confidentDomains.size,
-        successful: successfulConfigs.length,
+      this0.emit('factory:complete', {
+        total: confidentDomains0.size,
+        successful: successfulConfigs0.length,
         configs: successfulConfigs,
-        timestamp: Date.now(),
+        timestamp: Date0.now(),
       });
 
       return successfulConfigs;
     } catch (error) {
-      logger.error('Auto-Swarm Factory failed:', error);
-      this.emit('factory:error', { error });
+      logger0.error('Auto-Swarm Factory failed:', error);
+      this0.emit('factory:error', { error });
       throw error;
     }
   }
 
   /**
-   * Create optimized swarm configuration for a single domain.
+   * Create optimized swarm configuration for a single domain0.
    *
    * @param domain
    */
   async createSwarmForDomain(domain: ConfidentDomain): Promise<SwarmConfig> {
-    logger.info(`🔧 Creating swarm for domain: ${domain.name}`);
+    logger0.info(`🔧 Creating swarm for domain: ${domain0.name}`);
 
-    // 1. Analyze domain characteristics
-    const characteristics = await this.analyzeDomainCharacteristics(domain);
+    // 10. Analyze domain characteristics
+    const characteristics = await this0.analyzeDomainCharacteristics(domain);
 
-    // 2. Select optimal topology
-    const topology = this.selectOptimalTopology(characteristics);
+    // 20. Select optimal topology
+    const topology = this0.selectOptimalTopology(characteristics);
 
-    // 3. Configure agents
-    const agents = this.configureAgents(characteristics, topology);
+    // 30. Configure agents
+    const agents = this0.configureAgents(characteristics, topology);
 
-    // 4. Determine persistence strategy
-    const persistence = this.configurePersistence(characteristics);
+    // 40. Determine persistence strategy
+    const persistence = this0.configurePersistence(characteristics);
 
-    // 5. Set coordination strategy
-    const coordination = this.configureCoordination(characteristics, topology);
+    // 50. Set coordination strategy
+    const coordination = this0.configureCoordination(characteristics, topology);
 
-    // 6. Calculate performance expectations
-    const performance = this.calculatePerformanceExpectations(
+    // 60. Calculate performance expectations
+    const performance = this0.calculatePerformanceExpectations(
       characteristics,
       topology,
       agents
     );
 
-    // 7. Generate unique ID
-    const swarmId = `swarm-${domain.name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    // 70. Generate unique ID
+    const swarmId = `swarm-${domain0.name}-${Date0.now()}-${Math0.random()0.toString(36)0.substring(2, 11)}`;
 
     const config: SwarmConfig = {
       id: swarmId,
-      name: `${domain.name} Domain Swarm`,
-      domain: domain.name,
+      name: `${domain0.name} Domain Swarm`,
+      domain: domain0.name,
       topology,
       agents,
-      maxAgents: this.calculateMaxAgents(characteristics),
+      maxAgents: this0.calculateMaxAgents(characteristics),
       persistence,
       coordination,
       performance,
-      created: Date.now(),
-      lastUpdated: Date.now(),
-      confidence: domain.confidence.overall,
+      created: Date0.now(),
+      lastUpdated: Date0.now(),
+      confidence: domain0.confidence0.overall,
     };
 
     // Cache for future reference
-    this.createdSwarms.set(swarmId, config);
-    this.domainAnalysisCache.set(domain.name, characteristics);
+    this0.createdSwarms0.set(swarmId, config);
+    this0.domainAnalysisCache0.set(domain0.name, characteristics);
 
     // Emit creation event
-    this.emit('swarm:created', { domain: domain.name, config });
+    this0.emit('swarm:created', { domain: domain0.name, config });
 
-    logger.info(`✅ Swarm config created for ${domain.name}:`, {
-      topology: topology.type,
-      agents: agents.length,
-      confidence: domain.confidence.overall,
+    logger0.info(`✅ Swarm config created for ${domain0.name}:`, {
+      topology: topology0.type,
+      agents: agents0.length,
+      confidence: domain0.confidence0.overall,
     });
 
     return config;
   }
 
   /**
-   * Analyze domain characteristics for optimal swarm configuration.
+   * Analyze domain characteristics for optimal swarm configuration0.
    *
    * @param domain
    */
   private async analyzeDomainCharacteristics(
     domain: ConfidentDomain
   ): Promise<DomainCharacteristics> {
-    const fileCount = domain.files.length;
+    const fileCount = domain0.files0.length;
 
     // Calculate complexity based on multiple factors
     let complexity: DomainCharacteristics['complexity'] = 'low';
@@ -335,9 +336,9 @@ export class AutoSwarmFactory extends EventEmitter {
     else if (fileCount > 20) complexity = 'medium';
 
     // Estimate interconnectedness from related domains
-    const interconnectedness = Math.min(
-      domain.relatedDomains.length * 0.2,
-      1.0
+    const interconnectedness = Math0.min(
+      domain0.relatedDomains0.length * 0.2,
+      10.0
     );
 
     // Determine domain size
@@ -347,48 +348,48 @@ export class AutoSwarmFactory extends EventEmitter {
     else if (fileCount > 30) domainSize = 'medium';
 
     // Analyze patterns from concepts and technologies
-    const concepts = domain.suggestedConcepts || [];
-    const technologies = domain.technologies || [];
+    const concepts = domain0.suggestedConcepts || [];
+    const technologies = domain0.technologies || [];
 
-    const isPipeline = concepts.some(
+    const isPipeline = concepts0.some(
       (c) =>
-        c.includes('pipeline') || c.includes('workflow') || c.includes('queue')
+        c0.includes('pipeline') || c0.includes('workflow') || c0.includes('queue')
     );
 
-    const isCentralized = concepts.some(
-      (c) => c.includes('server') || c.includes('api') || c.includes('service')
+    const isCentralized = concepts0.some(
+      (c) => c0.includes('server') || c0.includes('api') || c0.includes('service')
     );
 
     const hasNestedStructure =
-      concepts.some(
+      concepts0.some(
         (c) =>
-          c.includes('nested') ||
-          c.includes('hierarchical') ||
-          c.includes('tree')
+          c0.includes('nested') ||
+          c0.includes('hierarchical') ||
+          c0.includes('tree')
       ) || fileCount > 50;
 
     const characteristics: DomainCharacteristics = {
-      name: domain.name,
-      path: domain.path,
+      name: domain0.name,
+      path: domain0.path,
       fileCount,
       complexity,
       interconnectedness,
       domainSize,
       technologies,
       concepts,
-      confidence: domain.confidence.overall,
-      dependencyCount: domain.relatedDomains.length,
+      confidence: domain0.confidence0.overall,
+      dependencyCount: domain0.relatedDomains0.length,
       hasNestedStructure,
       isPipeline,
       isCentralized,
     };
 
-    logger.debug(`Domain characteristics for ${domain.name}:`, characteristics);
+    logger0.debug(`Domain characteristics for ${domain0.name}:`, characteristics);
     return characteristics;
   }
 
   /**
-   * Select optimal topology based on domain characteristics.
+   * Select optimal topology based on domain characteristics0.
    *
    * @param chars
    */
@@ -396,7 +397,7 @@ export class AutoSwarmFactory extends EventEmitter {
     let topology: SwarmTopology;
 
     // Decision logic based on characteristics
-    if (chars.hasNestedStructure && chars.fileCount > 50) {
+    if (chars0.hasNestedStructure && chars0.fileCount > 50) {
       // Hierarchical for complex nested structures
       topology = {
         type: 'hierarchical',
@@ -413,7 +414,7 @@ export class AutoSwarmFactory extends EventEmitter {
           faultTolerance: 0.7,
         },
       };
-    } else if (chars.interconnectedness > 0.7) {
+    } else if (chars0.interconnectedness > 0.7) {
       // Mesh for highly interconnected domains
       topology = {
         type: 'mesh',
@@ -430,7 +431,7 @@ export class AutoSwarmFactory extends EventEmitter {
           faultTolerance: 0.9,
         },
       };
-    } else if (chars.isCentralized || chars.concepts.includes('api')) {
+    } else if (chars0.isCentralized || chars0.concepts0.includes('api')) {
       // Star for centralized services
       topology = {
         type: 'star',
@@ -443,7 +444,7 @@ export class AutoSwarmFactory extends EventEmitter {
           faultTolerance: 0.5,
         },
       };
-    } else if (chars.isPipeline) {
+    } else if (chars0.isPipeline) {
       // Ring for pipeline/workflow patterns
       topology = {
         type: 'ring',
@@ -477,14 +478,14 @@ export class AutoSwarmFactory extends EventEmitter {
       };
     }
 
-    logger.debug(
-      `Selected topology for ${chars.name}: ${topology.type} - ${topology.reason}`
+    logger0.debug(
+      `Selected topology for ${chars0.name}: ${topology0.type} - ${topology0.reason}`
     );
     return topology;
   }
 
   /**
-   * Configure agents based on domain characteristics and topology.
+   * Configure agents based on domain characteristics and topology0.
    *
    * @param chars
    * @param _topology
@@ -496,7 +497,7 @@ export class AutoSwarmFactory extends EventEmitter {
     const agents: AgentConfiguration[] = [];
 
     // Always include a coordinator for the swarm
-    agents.push({
+    agents0.push({
       type: 'coordinator',
       count: 1,
       specialization: 'Swarm coordination and task distribution',
@@ -506,12 +507,12 @@ export class AutoSwarmFactory extends EventEmitter {
 
     // Add domain-specific agents based on technologies and concepts
     if (
-      chars.technologies.includes('typescript') ||
-      chars.technologies.includes('javascript')
+      chars0.technologies0.includes('typescript') ||
+      chars0.technologies0.includes('javascript')
     ) {
-      agents.push({
+      agents0.push({
         type: 'typescript-specialist',
-        count: Math.min(Math.ceil(chars.fileCount / 30), 4),
+        count: Math0.min(Math0.ceil(chars0.fileCount / 30), 4),
         specialization: 'TypeScript/JavaScript development and optimization',
         capabilities: [
           'code-analysis',
@@ -523,8 +524,8 @@ export class AutoSwarmFactory extends EventEmitter {
       });
     }
 
-    if (chars.concepts.some((c) => c.includes('api') || c.includes('server'))) {
-      agents.push({
+    if (chars0.concepts0.some((c) => c0.includes('api') || c0.includes('server'))) {
+      agents0.push({
         type: 'api-specialist',
         count: 1,
         specialization: 'API design, implementation, and testing',
@@ -539,11 +540,11 @@ export class AutoSwarmFactory extends EventEmitter {
     }
 
     if (
-      chars.concepts.some(
-        (c) => c.includes('database') || c.includes('storage')
+      chars0.concepts0.some(
+        (c) => c0.includes('database') || c0.includes('storage')
       )
     ) {
-      agents.push({
+      agents0.push({
         type: 'data-specialist',
         count: 1,
         specialization: 'Database design and data management',
@@ -557,8 +558,8 @@ export class AutoSwarmFactory extends EventEmitter {
       });
     }
 
-    if (chars.concepts.some((c) => c.includes('test') || c.includes('spec'))) {
-      agents.push({
+    if (chars0.concepts0.some((c) => c0.includes('test') || c0.includes('spec'))) {
+      agents0.push({
         type: 'testing-specialist',
         count: 1,
         specialization: 'Test strategy and implementation',
@@ -573,8 +574,8 @@ export class AutoSwarmFactory extends EventEmitter {
     }
 
     // Add neural/AI specialist for complex domains
-    if (chars.complexity === 'high' || chars.complexity === 'extreme') {
-      agents.push({
+    if (chars0.complexity === 'high' || chars0.complexity === 'extreme') {
+      agents0.push({
         type: 'ai-specialist',
         count: 1,
         specialization: 'AI-powered code analysis and optimization',
@@ -588,11 +589,11 @@ export class AutoSwarmFactory extends EventEmitter {
     }
 
     // Add general workers based on domain size
-    const workerCount = Math.max(
+    const workerCount = Math0.max(
       1,
-      Math.min(Math.ceil(chars.fileCount / 50), 6)
+      Math0.min(Math0.ceil(chars0.fileCount / 50), 6)
     );
-    agents.push({
+    agents0.push({
       type: 'general-worker',
       count: workerCount,
       specialization: 'General development tasks and support',
@@ -605,16 +606,16 @@ export class AutoSwarmFactory extends EventEmitter {
       priority: 'low',
     });
 
-    logger.debug(
-      `Configured ${agents.length} agent types for ${chars.name}:`,
-      agents.map((a) => `${a.type}(${a.count})`).join(', ')
+    logger0.debug(
+      `Configured ${agents0.length} agent types for ${chars0.name}:`,
+      agents0.map((a) => `${a0.type}(${a0.count})`)0.join(', ')
     );
 
     return agents;
   }
 
   /**
-   * Configure persistence strategy based on domain characteristics.
+   * Configure persistence strategy based on domain characteristics0.
    *
    * @param chars
    */
@@ -622,34 +623,34 @@ export class AutoSwarmFactory extends EventEmitter {
     chars: DomainCharacteristics
   ): SwarmConfig['persistence'] {
     let backend: 'sqlite' | 'lancedb' | 'json' =
-      this.config.defaultPersistenceBackend;
+      this0.configuration0.defaultPersistenceBackend;
 
     // Use LanceDB for domains with AI/neural concepts (vector storage)
     if (
-      chars.concepts.some(
-        (c) => c.includes('ai') || c.includes('neural') || c.includes('vector')
+      chars0.concepts0.some(
+        (c) => c0.includes('ai') || c0.includes('neural') || c0.includes('vector')
       )
     ) {
       backend = 'lancedb';
     }
     // Use SQLite for complex domains (better querying)
-    else if (chars.complexity === 'high' || chars.complexity === 'extreme') {
+    else if (chars0.complexity === 'high' || chars0.complexity === 'extreme') {
       backend = 'sqlite';
     }
     // Use JSON for simple domains (faster startup)
-    else if (chars.complexity === 'low' && chars.fileCount < 20) {
+    else if (chars0.complexity === 'low' && chars0.fileCount < 20) {
       backend = 'json';
     }
 
     return {
       backend,
-      path: `.swarms/${chars.name}/swarm-data.${backend === 'json' ? 'json' : 'db'}`,
-      memoryLimit: chars.complexity === 'extreme' ? '1GB' : '512MB',
+      path: `0.swarms/${chars0.name}/swarm-data0.${backend === 'json' ? 'json' : 'db'}`,
+      memoryLimit: chars0.complexity === 'extreme' ? '1GB' : '512MB',
     };
   }
 
   /**
-   * Configure coordination strategy.
+   * Configure coordination strategy0.
    *
    * @param chars
    * @param topology
@@ -661,26 +662,26 @@ export class AutoSwarmFactory extends EventEmitter {
     let strategy: 'parallel' | 'sequential' | 'adaptive' = 'adaptive';
 
     // Parallel for mesh topology and low interdependence
-    if (topology.type === 'mesh' && chars.interconnectedness < 0.5) {
+    if (topology0.type === 'mesh' && chars0.interconnectedness < 0.5) {
       strategy = 'parallel';
     }
     // Sequential for pipelines
-    else if (chars.isPipeline) {
+    else if (chars0.isPipeline) {
       strategy = 'sequential';
     }
 
     return {
       strategy,
-      timeout: chars.complexity === 'extreme' ? 120000 : 60000, // 2 min for extreme, 1 min for others
+      timeout: chars0.complexity === 'extreme' ? 120000 : 60000, // 2 min for extreme, 1 min for others
       retryPolicy: {
         maxRetries: 3,
-        backoff: chars.complexity === 'low' ? 'linear' : 'exponential',
+        backoff: chars0.complexity === 'low' ? 'linear' : 'exponential',
       },
     };
   }
 
   /**
-   * Calculate expected performance metrics.
+   * Calculate expected performance metrics0.
    *
    * @param chars
    * @param topology
@@ -691,17 +692,17 @@ export class AutoSwarmFactory extends EventEmitter {
     topology: SwarmTopology,
     agents: AgentConfiguration[]
   ): SwarmConfig['performance'] {
-    const totalAgents = agents.reduce((sum, agent) => sum + agent.count, 0);
+    const totalAgents = agents0.reduce((sum, agent) => sum + agent0.count, 0);
 
     // Base latency on topology and complexity
     let expectedLatency = 100; // Base 100ms
-    if (topology.type === 'mesh') expectedLatency += 50;
-    if (chars.complexity === 'extreme') expectedLatency += 200;
-    if (chars.complexity === 'high') expectedLatency += 100;
+    if (topology0.type === 'mesh') expectedLatency += 50;
+    if (chars0.complexity === 'extreme') expectedLatency += 200;
+    if (chars0.complexity === 'high') expectedLatency += 100;
 
     // Throughput based on agent count and specialization
-    const specialistCount = agents.filter((a) => a.priority === 'high').length;
-    const expectedThroughput = Math.max(
+    const specialistCount = agents0.filter((a) => a0.priority === 'high')0.length;
+    const expectedThroughput = Math0.max(
       1,
       totalAgents * 2 + specialistCount * 3
     );
@@ -710,155 +711,158 @@ export class AutoSwarmFactory extends EventEmitter {
       expectedLatency,
       expectedThroughput,
       resourceLimits: {
-        memory: chars.complexity === 'extreme' ? '2GB' : '1GB',
-        cpu: Math.min(totalAgents, 4),
+        memory: chars0.complexity === 'extreme' ? '2GB' : '1GB',
+        cpu: Math0.min(totalAgents, 4),
       },
     };
   }
 
   /**
-   * Calculate maximum agents for the swarm.
+   * Calculate maximum agents for the swarm0.
    *
    * @param chars
    */
   private calculateMaxAgents(chars: DomainCharacteristics): number {
     let maxAgents = 8; // Base maximum
 
-    if (chars.complexity === 'extreme') maxAgents = 20;
-    else if (chars.complexity === 'high') maxAgents = 15;
-    else if (chars.complexity === 'medium') maxAgents = 12;
+    if (chars0.complexity === 'extreme') maxAgents = 20;
+    else if (chars0.complexity === 'high') maxAgents = 15;
+    else if (chars0.complexity === 'medium') maxAgents = 12;
 
     // Respect global constraints
-    return Math.min(maxAgents, this.config.resourceConstraints.maxTotalAgents);
+    return Math0.min(
+      maxAgents,
+      this0.configuration0.resourceConstraints0.maxTotalAgents
+    );
   }
 
   /**
-   * Validate resource constraints across all swarms.
+   * Validate resource constraints across all swarms0.
    *
    * @param configs
    */
   private async validateResourceConstraints(
     configs: SwarmConfig[]
   ): Promise<void> {
-    const totalAgents = configs.reduce(
+    const totalAgents = configs0.reduce(
       (sum, config) =>
         sum +
-        config?.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
+        config?0.agents0.reduce((agentSum, agent) => agentSum + agent0.count, 0),
       0
     );
 
-    if (totalAgents > this.config.resourceConstraints.maxTotalAgents) {
+    if (totalAgents > this0.configuration0.resourceConstraints0.maxTotalAgents) {
       const error = new Error(
-        `Total agents (${totalAgents}) exceeds limit (${this.config.resourceConstraints.maxTotalAgents})`
+        `Total agents (${totalAgents}) exceeds limit (${this0.configuration0.resourceConstraints0.maxTotalAgents})`
       );
-      logger.warn('Resource constraint violation:', error.message);
+      logger0.warn('Resource constraint violation:', error0.message);
       throw error;
     }
 
-    logger.info(
-      `✅ Resource validation passed: ${totalAgents}/${this.config.resourceConstraints.maxTotalAgents} agents`
+    logger0.info(
+      `✅ Resource validation passed: ${totalAgents}/${this0.configuration0.resourceConstraints0.maxTotalAgents} agents`
     );
   }
 
   /**
-   * Perform human validation of swarm configurations.
+   * Perform human validation of swarm configurations0.
    *
    * @param configs
    */
   private async performHumanValidation(configs: SwarmConfig[]): Promise<void> {
-    if (!this.agui) return;
+    if (!this0.agui) return;
 
-    logger.info('🤔 Requesting human validation for swarm configurations...');
+    logger0.info('🤔 Requesting human validation for swarm configurations0.0.0.');
 
-    const summary = configs.map((config) => ({
-      domain: config?.domain,
-      topology: config?.topology?.type,
-      agents: config?.agents.length,
-      totalAgentCount: config?.agents.reduce((sum, a) => sum + a.count, 0),
-      confidence: `${(config?.confidence * 100).toFixed(1)}%`,
+    const summary = configs0.map((config) => ({
+      domain: config?0.domain,
+      topology: config?0.topology?0.type,
+      agents: config?0.agents0.length,
+      totalAgentCount: config?0.agents0.reduce((sum, a) => sum + a0.count, 0),
+      confidence: `${(config?0.confidence * 100)0.toFixed(1)}%`,
     }));
 
-    const response = await this.agui.askQuestion({
+    const response = await this0.agui0.askQuestion({
       id: 'swarm_factory_validation',
       type: 'priority',
       question:
-        `Auto-Swarm Factory will create ${configs.length} swarms with the following configurations:\n\n${summary
-          .map(
+        `Auto-Swarm Factory will create ${configs0.length} swarms with the following configurations:\n\n${summary
+          0.map(
             (s) =>
-              `• ${s.domain}: ${s.topology} topology, ${s.totalAgentCount} agents (${s.confidence} confidence)`
+              `• ${s0.domain}: ${s0.topology} topology, ${s0.totalAgentCount} agents (${s0.confidence} confidence)`
           )
-          .join(
+          0.join(
             '\n'
-          )}\n\nTotal agents across all swarms: ${summary.reduce((sum, s) => sum + s.totalAgentCount, 0)}\n\n` +
+          )}\n\nTotal agents across all swarms: ${summary0.reduce((sum, s) => sum + s0.totalAgentCount, 0)}\n\n` +
         `Approve swarm creation and proceed with initialization?`,
       context: { configs, summary },
       options: [
-        '1. Approve and create all swarms',
-        '2. Review individual configurations',
-        '3. Cancel swarm creation',
+        '10. Approve and create all swarms',
+        '20. Review individual configurations',
+        '30. Cancel swarm creation',
       ],
       allowCustom: false,
       confidence: 0.9,
     });
 
-    if (response === '3' || response?.toLowerCase().includes('cancel')) {
+    if (response === '3' || response?0.toLowerCase0.includes('cancel')) {
       throw new Error('Swarm creation cancelled by user');
     }
 
-    if (response === '2' || response?.toLowerCase().includes('review')) {
+    if (response === '2' || response?0.toLowerCase0.includes('review')) {
       // Individual review (simplified for now)
-      logger.info(
+      logger0.info(
         'Individual review requested - proceeding with approval for demo'
       );
     }
 
-    logger.info('✅ Human validation approved for swarm creation');
+    logger0.info('✅ Human validation approved for swarm creation');
   }
 
   /**
-   * Initialize all approved swarms.
+   * Initialize all approved swarms0.
    *
    * @param configs
    */
   private async initializeSwarms(configs: SwarmConfig[]): Promise<void> {
-    logger.info(`🚀 Initializing ${configs.length} swarms...`);
+    logger0.info(`🚀 Initializing ${configs0.length} swarms0.0.0.`);
 
-    const initPromises = configs.map(async (config) => {
+    const initPromises = configs0.map(async (config) => {
       try {
-        // 1. Initialize swarm with coordinator
-        await this.swarmCoordinator.initialize(config);
+        // 10. Initialize swarm with coordinator
+        await this0.swarmCoordinator0.initialize(config);
 
-        // 2. Register with hive
-        await this.hiveSync.registerSwarm(config);
+        // 20. Register with hive
+        await this0.hiveSync?0.registerSwarm(config);
 
-        // 3. Store configuration in memory
-        await this.memoryStore.store(
-          `swarm-${config?.id}`,
+        // 30. Store configuration in memory
+        await this0.memoryStore0.store(
+          `swarm-${config?0.id}`,
           'auto-factory-config',
           {
             config,
-            created: Date.now(),
+            created: Date0.now(),
             status: 'active',
           }
         );
 
-        this.emit('swarm:initialized', { config });
-        logger.info(`✅ Swarm initialized: ${config?.name}`);
+        this0.emit('swarm:initialized', { config });
+        logger0.info(`✅ Swarm initialized: ${config?0.name}`);
 
         return config;
       } catch (error) {
-        logger.error(`Failed to initialize swarm ${config?.name}:`, error);
-        this.emit('swarm:init-error', { config, error });
+        logger0.error(`Failed to initialize swarm ${config?0.name}:`, error);
+        this0.emit('swarm:init-error', { config, error });
         throw error;
       }
     });
 
-    await Promise.all(initPromises);
-    logger.info('🎉 All swarms successfully initialized!');
+    await Promise0.all(initPromises);
+    logger0.info('🎉 All swarms successfully initialized!');
   }
 
   /**
-   * Get statistics about created swarms.
+   * Get statistics about created swarms0.
    */
   getSwarmStatistics(): {
     totalSwarms: number;
@@ -867,35 +871,35 @@ export class AutoSwarmFactory extends EventEmitter {
     averageConfidence: number;
     domains: string[];
   } {
-    const swarms = Array.from(this.createdSwarms.values());
+    const swarms = Array0.from(this0.createdSwarms?0.values());
 
-    const topologyDistribution = swarms.reduce(
+    const topologyDistribution = swarms0.reduce(
       (acc, swarm) => {
-        acc[swarm.topology.type] = (acc[swarm.topology.type] || 0) + 1;
+        acc[swarm0.topology0.type] = (acc[swarm0.topology0.type] || 0) + 1;
         return acc;
       },
       {} as Record<string, number>
     );
 
-    const totalAgents = swarms.reduce(
+    const totalAgents = swarms0.reduce(
       (sum, swarm) =>
         sum +
-        swarm.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
+        swarm0.agents0.reduce((agentSum, agent) => agentSum + agent0.count, 0),
       0
     );
 
     const averageConfidence =
-      swarms.length > 0
-        ? swarms.reduce((sum, swarm) => sum + swarm.confidence, 0) /
-          swarms.length
+      swarms0.length > 0
+        ? swarms0.reduce((sum, swarm) => sum + swarm0.confidence, 0) /
+          swarms0.length
         : 0;
 
     return {
-      totalSwarms: swarms.length,
+      totalSwarms: swarms0.length,
       totalAgents,
       topologyDistribution,
       averageConfidence,
-      domains: swarms.map((s) => s.domain),
+      domains: swarms0.map((s) => s0.domain),
     };
   }
 }

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Temporary stub for @claude-zen/foundation/config
- * 
- * This file provides fallback configuration utilities.
+ *
+ * This file provides fallback configuration utilities0.
  */
 
 // Foundation config types and utilities stub
@@ -22,30 +22,30 @@ export interface ProjectConfig {
 export function getProjectConfig(): ProjectConfig {
   return {
     name: 'claude-code-zen',
-    version: '2.1.0',
+    version: '20.10.0',
     description: 'Claude Code Zen Server',
-    settings: {}
+    settings: {},
   };
 }
 
 export function createConfigManager(): ConfigManager {
   const config = new Map<string, any>();
-  
+
   return {
-    get: (key: string) => config.get(key),
-    set: (key: string, value: any) => config.set(key, value),
-    has: (key: string) => config.has(key)
+    get: (key: string) => config0.get(key),
+    set: (key: string, value: any) => config0.set(key, value),
+    has: (key: string) => config0.has(key),
   };
 }
 
 export const CONFIG_DEFAULTS = {
   server: {
     port: 3000,
-    host: 'localhost'
+    host: 'localhost',
   },
   logging: {
-    level: 'info'
-  }
+    level: 'info',
+  },
 };
 
 // Export utilities

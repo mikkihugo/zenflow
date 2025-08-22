@@ -5,7 +5,7 @@
  * automated parameter adjustment, and continuous optimization feedback loops.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { 
   getLogger, 
   recordMetric, 
@@ -53,7 +53,7 @@ interface TuningResult {
   timestamp: number;
 }
 
-export class PerformanceTuningStrategy extends EventEmitter {
+export class PerformanceTuningStrategy extends TypedEventBase {
   private logger: Logger;
   private config: PerformanceConfig;
   private telemetry: TelemetryManager;

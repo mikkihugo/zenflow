@@ -196,7 +196,7 @@ export interface BootstrapFinetuneMLResult {
 export class BootstrapFinetuneML extends Teleprompter {
   private config: BootstrapFinetuneMLConfig;
   private logger: Logger;
-  private eventEmitter: EventEmitter = new EventEmitter();
+  private eventEmitter: EventEmitter = new TypedEventBase();
   private mlEngine: MLEngine | null = null;
   private bayesianOptimizer: BayesianOptimizer | null = null;
   private multiObjectiveOptimizer: MultiObjectiveOptimizer | null = null;

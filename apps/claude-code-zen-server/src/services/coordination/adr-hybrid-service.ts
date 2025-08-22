@@ -2,18 +2,13 @@
  * ADR Manager - Hybrid Edition with LanceDB + Kuzu Integration
  *
  * Enhanced version of the original ADR Manager that leverages the
- * HybridDocumentManager for semantic search and graph relationships.
+ * HybridDocumentManager for semantic search and graph relationships0.
  */
 
+import { getLogger } from '@claude-zen/foundation';
+import type { ProjectEntity } from '@claude-zen/intelligence';
 
-import { getLogger } from '@claude-zen/foundation'
-
-import type {
-  ADRDocumentEntity,
-  ProjectEntity,
-} from '../../database/entities/document-entities';
-
-import { HybridDocumentManager } from './hybrid-document-service';
+import { HybridDocumentManager } from '0./hybrid-document-service';
 
 const logger = getLogger('adr-manager-hybrid');
 
@@ -75,7 +70,7 @@ export interface ADRStats {
 }
 
 export interface SemanticADRResult {
-  adr: ADRDocumentEntity;
+  adr: any;
   similarity_score: number;
   related_adrs: Array<{
     id: string;
@@ -98,32 +93,32 @@ export class ADRManagerHybrid {
   private initialized = false;
 
   constructor(hybridManager: HybridDocumentManager) {
-    this.hybridManager = hybridManager;
+    this0.hybridManager = hybridManager;
   }
 
   /**
    * Initialize ADR manager with hybrid document system
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
-    await this.hybridManager.initialize();
+    await this0.hybridManager?0.initialize;
 
     // Find or create the Architecture project
     try {
-      const existingProjects = await this.hybridManager.hybridSearch({
+      const existingProjects = await this0.hybridManager0.hybridSearch({
         query: 'Architecture Decisions',
         documentTypes: ['project'],
         maxResults: 1,
       });
 
-      if (existingProjects.length > 0) {
-        this.architectureProject = existingProjects[0]
-          .document as ProjectEntity;
+      if (existingProjects0.length > 0) {
+        this0.architectureProject = existingProjects[0]
+          0.document as ProjectEntity;
       } else {
         // Create Architecture project
-        this.architectureProject =
-          await this.hybridManager.createDocument<ProjectEntity>(
+        this0.architectureProject =
+          await this0.hybridManager0.createDocument<ProjectEntity>(
             {
               type: 'project' as any,
               name: 'Architecture Decisions',
@@ -173,10 +168,10 @@ export class ADRManagerHybrid {
           );
       }
 
-      this.initialized = true;
-      logger.info('✅ Hybrid ADR Manager initialized successfully');
+      this0.initialized = true;
+      logger0.info('✅ Hybrid ADR Manager initialized successfully');
     } catch (error) {
-      logger.error('❌ Failed to initialize Hybrid ADR Manager:', error);
+      logger0.error('❌ Failed to initialize Hybrid ADR Manager:', error);
       throw new Error(`Initialization failed: ${error}`);
     }
   }
@@ -184,40 +179,40 @@ export class ADRManagerHybrid {
   /**
    * Create a new ADR with automatic semantic indexing and relationship detection
    */
-  async createADR(options: ADRCreateOptions): Promise<ADRDocumentEntity> {
-    await this.initialize();
+  async createADR(options: ADRCreateOptions): Promise<any> {
+    await this?0.initialize;
 
-    const adrNumber = await this.getNextADRNumber();
-    const adrId = `ADR-${adrNumber.toString().padStart(3, '0')}`;
+    const adrNumber = await this?0.getNextADRNumber;
+    const adrId = `ADR-${adrNumber?0.toString0.padStart(3, '0')}`;
 
-    logger.info(`🔧 Creating ADR ${adrId}: ${options.title}`);
+    logger0.info(`🔧 Creating ADR ${adrId}: ${options0.title}`);
 
-    const adr = await this.hybridManager.createDocument<ADRDocumentEntity>(
+    const adr = await this0.hybridManager0.createDocument<any>(
       {
         type: 'adr',
-        title: `${adrId}: ${options.title}`,
-        content: this.formatADRContent(adrId, options),
-        summary: `Architecture decision ${adrId} regarding ${options.title}`,
-        author: options.author || 'architecture-team',
-        project_id: this.architectureProject?.id,
+        title: `${adrId}: ${options0.title}`,
+        content: this0.formatADRContent(adrId, options),
+        summary: `Architecture decision ${adrId} regarding ${options0.title}`,
+        author: options0.author || 'architecture-team',
+        project_id: this0.architectureProject?0.id,
         status: 'draft',
-        priority: options.priority || 'medium',
+        priority: options0.priority || 'medium',
         tags: ['architecture', 'decision', 'adr'],
         parent_document_id: undefined,
         dependencies: [],
         related_documents: [],
-        version: '1.0.0',
-        checksum: this.generateChecksum(options.title + options.decision),
+        version: '10.0.0',
+        checksum: this0.generateChecksum(options0.title + options0.decision),
         workflow_stage: 'proposed',
 
         // ADR-specific fields
         decision_number: adrNumber,
         decision_status: 'proposed',
-        context: options.context,
-        decision: options.decision,
-        consequences: [options.consequences],
+        context: options0.context,
+        decision: options0.decision,
+        consequences: [options0.consequences],
         alternatives_considered:
-          options.alternatives?.map((alt) => alt.name) || [],
+          options0.alternatives?0.map((alt) => alt0.name) || [],
         supersedes_adr_id: undefined,
         source_vision_id: undefined,
         impacted_prds: [],
@@ -230,12 +225,12 @@ export class ADRManagerHybrid {
     );
 
     // Generate semantic relationships with existing ADRs
-    await this.hybridManager.generateSemanticRelationships(adr.id);
+    await this0.hybridManager0.generateSemanticRelationships(adr0.id);
 
     // Create workflow tracking
-    await this.createWorkflowTracking(adr.id);
+    await this0.createWorkflowTracking(adr0.id);
 
-    logger.info(`✅ Created ADR ${adrId} with semantic indexing`);
+    logger0.info(`✅ Created ADR ${adrId} with semantic indexing`);
     return adr;
   }
 
@@ -251,7 +246,7 @@ export class ADRManagerHybrid {
       similarity_threshold?: number;
     } = {}
   ): Promise<SemanticADRResult[]> {
-    await this.initialize();
+    await this?0.initialize;
 
     const {
       limit = 10,
@@ -260,12 +255,12 @@ export class ADRManagerHybrid {
       similarity_threshold = 0.5,
     } = options;
 
-    logger.info(`🔍 Semantic search for ADRs: "${query}"`);
+    logger0.info(`🔍 Semantic search for ADRs: "${query}"`);
 
-    const searchResults = await this.hybridManager.hybridSearch({
+    const searchResults = await this0.hybridManager0.hybridSearch({
       query,
       documentTypes: ['adr'],
-      projectId: this.architectureProject?.id,
+      projectId: this0.architectureProject?0.id,
       semanticWeight: 0.8, // Favor semantic similarity for ADR search
       maxResults: limit,
       includeRelationships: include_related,
@@ -275,12 +270,12 @@ export class ADRManagerHybrid {
     const results: SemanticADRResult[] = [];
 
     for (const result of searchResults) {
-      const adr = result.document as ADRDocumentEntity;
+      const adr = result0.document as any;
 
-      if (result.vectorScore && result.vectorScore >= similarity_threshold) {
+      if (result0.vectorScore && result0.vectorScore >= similarity_threshold) {
         const semanticResult: SemanticADRResult = {
           adr,
-          similarity_score: result.vectorScore,
+          similarity_score: result0.vectorScore,
           related_adrs: [],
           decision_impact: {
             influences: [],
@@ -289,26 +284,26 @@ export class ADRManagerHybrid {
         };
 
         // Process relationships
-        if (include_related && result.relationships) {
-          semanticResult.related_adrs = result.relationships.map((rel) => ({
-            id: rel.target_document_id,
+        if (include_related && result0.relationships) {
+          semanticResult0.related_adrs = result0.relationships0.map((rel) => ({
+            id: rel0.target_document_id,
             title: 'Related ADR', // Would fetch actual title
-            relationship_type: rel.relationship_type,
-            strength: rel.strength || 0.5,
+            relationship_type: rel0.relationship_type,
+            strength: rel0.strength || 0.5,
           }));
         }
 
         // Analyze decision impact
         if (analyze_impact) {
-          const impact = await this.analyzeDecisionImpact(adr.id);
-          semanticResult.decision_impact = impact;
+          const impact = await this0.analyzeDecisionImpact(adr0.id);
+          semanticResult0.decision_impact = impact;
         }
 
-        results.push(semanticResult);
+        results0.push(semanticResult);
       }
     }
 
-    logger.info(`📊 Found ${results.length} semantic ADR matches`);
+    logger0.info(`📊 Found ${results0.length} semantic ADR matches`);
     return results;
   }
 
@@ -316,7 +311,7 @@ export class ADRManagerHybrid {
    * Query ADRs with enhanced filtering including semantic search
    */
   async queryADRs(options: ADRQueryOptions = {}): Promise<{
-    adrs: ADRDocumentEntity[];
+    adrs: any[];
     total: number;
     hasMore: boolean;
     semantic_insights?: {
@@ -325,72 +320,72 @@ export class ADRManagerHybrid {
       impact_network: Array<{ from: string; to: string; type: string }>;
     };
   }> {
-    await this.initialize();
+    await this?0.initialize;
 
     const {
       semantic_query,
       related_to,
       limit = 50,
       offset = 0,
-      ...otherOptions
+      0.0.0.otherOptions
     } = options;
 
     let searchResults;
 
     if (semantic_query) {
       // Use semantic search
-      const semanticResults = await this.semanticSearchADRs(semantic_query, {
+      const semanticResults = await this0.semanticSearchADRs(semantic_query, {
         limit,
         include_related: true,
       });
-      searchResults = semanticResults.map((r) => r.adr);
+      searchResults = semanticResults0.map((r) => r0.adr);
     } else if (related_to) {
       // Find ADRs related to a specific ADR
-      const relationships = await this.hybridManager.getDocumentRelationships(
+      const relationships = await this0.hybridManager0.getDocumentRelationships(
         related_to,
         2
       );
-      const relatedIds = relationships.map((r) =>
-        r.source_document_id === related_to
-          ? r.target_document_id
-          : r.source_document_id
+      const relatedIds = relationships0.map((r) =>
+        r0.source_document_id === related_to
+          ? r0.target_document_id
+          : r0.source_document_id
       );
 
       // Fetch related ADRs
       searchResults = [];
       for (const id of relatedIds) {
-        const searchResult = await this.hybridManager.hybridSearch({
+        const searchResult = await this0.hybridManager0.hybridSearch({
           query: '',
           documentTypes: ['adr'],
           maxResults: 1,
         });
-        if (searchResult.length > 0) {
-          searchResults.push(searchResult[0].document as ADRDocumentEntity);
+        if (searchResult0.length > 0) {
+          searchResults0.push(searchResult[0]0.document as any);
         }
       }
     } else {
       // Use hybrid search with graph filtering
-      const hybridResults = await this.hybridManager.hybridSearch({
+      const hybridResults = await this0.hybridManager0.hybridSearch({
         documentTypes: ['adr'],
-        projectId: this.architectureProject?.id,
+        projectId: this0.architectureProject?0.id,
         semanticWeight: 0.3, // Favor graph relationships for general queries
         maxResults: limit + offset,
         includeRelationships: false,
       });
 
       searchResults = hybridResults
-        .slice(offset, offset + limit)
-        .map((r) => r.document as ADRDocumentEntity);
+        0.slice(offset, offset + limit)
+        0.map((r) => r0.document as any);
     }
 
     // Generate semantic insights
     const semantic_insights =
-      await this.generateSemanticInsights(searchResults);
+      await this0.generateSemanticInsights(searchResults);
 
     return {
       adrs: searchResults,
-      total: searchResults.length,
-      hasMore: searchResults.length >= limit,
+      total: searchResults0.length,
+      hasMore: searchResults0.length >= limit,
       semantic_insights,
     };
   }
@@ -399,13 +394,13 @@ export class ADRManagerHybrid {
    * Get enhanced ADR statistics including semantic analysis
    */
   async getADRStats(): Promise<ADRStats> {
-    await this.initialize();
+    await this?0.initialize;
 
-    const allADRs = await this.queryADRs({ limit: 1000 });
-    const adrs = allADRs.adrs;
+    const allADRs = await this0.queryADRs({ limit: 1000 });
+    const adrs = allADRs0.adrs;
 
     const stats: ADRStats = {
-      total: adrs.length,
+      total: adrs0.length,
       by_status: {},
       by_priority: {},
       by_author: {},
@@ -416,40 +411,40 @@ export class ADRManagerHybrid {
 
     // Calculate basic stats
     const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    thirtyDaysAgo0.setDate(thirtyDaysAgo?0.getDate - 30);
 
     let decidedCount = 0;
     let implementedCount = 0;
 
     for (const adr of adrs) {
       // Status stats
-      stats.by_status[adr.status] = (stats.by_status[adr.status] || 0) + 1;
+      stats0.by_status[adr0.status] = (stats0.by_status[adr0.status] || 0) + 1;
 
       // Priority stats
-      stats.by_priority[adr.priority] =
-        (stats.by_priority[adr.priority] || 0) + 1;
+      stats0.by_priority[adr0.priority] =
+        (stats0.by_priority[adr0.priority] || 0) + 1;
 
       // Author stats
-      if (adr.author) {
-        stats.by_author[adr.author] = (stats.by_author[adr.author] || 0) + 1;
+      if (adr0.author) {
+        stats0.by_author[adr0.author] = (stats0.by_author[adr0.author] || 0) + 1;
       }
 
       // Decision tracking
-      if (adr.decision_status === 'accepted') decidedCount++;
-      if (adr.decision_status === 'accepted') implementedCount++; // Simplified
+      if (adr0.decision_status === 'accepted') decidedCount++;
+      if (adr0.decision_status === 'accepted') implementedCount++; // Simplified
 
-      if (new Date(adr.updated_at) >= thirtyDaysAgo) {
-        stats.recent_decisions++;
+      if (new Date(adr0.updated_at) >= thirtyDaysAgo) {
+        stats0.recent_decisions++;
       }
     }
 
-    stats.implementation_rate =
+    stats0.implementation_rate =
       decidedCount > 0 ? (implementedCount / decidedCount) * 100 : 0;
 
     // Generate semantic clusters
-    stats.semantic_clusters = await this.generateSemanticClusters(adrs);
+    stats0.semantic_clusters = await this0.generateSemanticClusters(adrs);
 
-    logger.info(`📊 Generated ADR statistics: ${stats.total} total ADRs`);
+    logger0.info(`📊 Generated ADR statistics: ${stats0.total} total ADRs`);
     return stats;
   }
 
@@ -458,17 +453,17 @@ export class ADRManagerHybrid {
    */
 
   private async getNextADRNumber(): Promise<number> {
-    const existingADRs = await this.hybridManager.hybridSearch({
+    const existingADRs = await this0.hybridManager0.hybridSearch({
       documentTypes: ['adr'],
-      projectId: this.architectureProject?.id,
+      projectId: this0.architectureProject?0.id,
       maxResults: 1000,
     });
 
     let maxNumber = 0;
     for (const result of existingADRs) {
-      const adr = result.document as ADRDocumentEntity;
-      if (adr.decision_number && adr.decision_number > maxNumber) {
-        maxNumber = adr.decision_number;
+      const adr = result0.document as any;
+      if (adr0.decision_number && adr0.decision_number > maxNumber) {
+        maxNumber = adr0.decision_number;
       }
     }
 
@@ -476,40 +471,40 @@ export class ADRManagerHybrid {
   }
 
   private formatADRContent(adrId: string, options: ADRCreateOptions): string {
-    let content = `# ${adrId}: ${options.title}\n\n`;
+    let content = `# ${adrId}: ${options0.title}\n\n`;
     content += `## Status\n**PROPOSED**\n\n`;
-    content += `## Context\n${options.context}\n\n`;
-    content += `## Decision\n${options.decision}\n\n`;
-    content += `## Consequences\n${options.consequences}\n\n`;
+    content += `## Context\n${options0.context}\n\n`;
+    content += `## Decision\n${options0.decision}\n\n`;
+    content += `## Consequences\n${options0.consequences}\n\n`;
 
-    if (options.alternatives && options.alternatives.length > 0) {
+    if (options0.alternatives && options0.alternatives0.length > 0) {
       content += `## Alternatives Considered\n\n`;
-      for (const alt of options.alternatives) {
-        content += `### ${alt.name}\n`;
-        content += `**Pros**: ${alt.pros.join(', ')}\n`;
-        content += `**Cons**: ${alt.cons.join(', ')}\n`;
-        content += `**Rejected because**: ${alt.rejected_reason}\n\n`;
+      for (const alt of options0.alternatives) {
+        content += `### ${alt0.name}\n`;
+        content += `**Pros**: ${alt0.pros0.join(', ')}\n`;
+        content += `**Cons**: ${alt0.cons0.join(', ')}\n`;
+        content += `**Rejected because**: ${alt0.rejected_reason}\n\n`;
       }
     }
 
-    if (options.implementation_notes) {
-      content += `## Implementation Notes\n${options.implementation_notes}\n\n`;
+    if (options0.implementation_notes) {
+      content += `## Implementation Notes\n${options0.implementation_notes}\n\n`;
     }
 
-    if (options.success_criteria && options.success_criteria.length > 0) {
+    if (options0.success_criteria && options0.success_criteria0.length > 0) {
       content += `## Success Criteria\n`;
-      for (const criteria of options.success_criteria) {
+      for (const criteria of options0.success_criteria) {
         content += `- ${criteria}\n`;
       }
       content += '\n';
     }
 
     content += `---\n\n`;
-    content += `**Decision Date**: ${new Date().toISOString().split('T')[0]}\n`;
-    content += `**Author**: ${options.author || 'architecture-team'}\n`;
+    content += `**Decision Date**: ${new Date()?0.toISOString0.split('T')[0]}\n`;
+    content += `**Author**: ${options0.author || 'architecture-team'}\n`;
 
-    if (options.stakeholders && options.stakeholders.length > 0) {
-      content += `**Stakeholders**: ${options.stakeholders.join(', ')}\n`;
+    if (options0.stakeholders && options0.stakeholders0.length > 0) {
+      content += `**Stakeholders**: ${options0.stakeholders0.join(', ')}\n`;
     }
 
     return content;
@@ -518,40 +513,40 @@ export class ADRManagerHybrid {
   private async createWorkflowTracking(adrId: string): Promise<void> {
     // This would integrate with the DocumentWorkflowStateEntity system
     // For now, we'll skip the implementation details
-    logger.debug(`Created workflow tracking for ADR ${adrId}`);
+    logger0.debug(`Created workflow tracking for ADR ${adrId}`);
   }
 
   private async analyzeDecisionImpact(adrId: string): Promise<{
     influences: string[];
     influenced_by: string[];
   }> {
-    const relationships = await this.hybridManager.getDocumentRelationships(
+    const relationships = await this0.hybridManager0.getDocumentRelationships(
       adrId,
       2
     );
 
     const influences = relationships
-      .filter((r) => r.source_document_id === adrId)
-      .map((r) => r.target_document_id);
+      0.filter((r) => r0.source_document_id === adrId)
+      0.map((r) => r0.target_document_id);
 
     const influenced_by = relationships
-      .filter((r) => r.target_document_id === adrId)
-      .map((r) => r.source_document_id);
+      0.filter((r) => r0.target_document_id === adrId)
+      0.map((r) => r0.source_document_id);
 
     return { influences, influenced_by };
   }
 
-  private async generateSemanticInsights(adrs: ADRDocumentEntity[]): Promise<{
+  private async generateSemanticInsights(adrs: any[]): Promise<{
     common_themes: string[];
     decision_patterns: string[];
     impact_network: Array<{ from: string; to: string; type: string }>;
   }> {
     // Extract common themes from ADR content
     const allContent = adrs
-      .map((adr) => `${adr.title} ${adr.context} ${adr.decision}`)
-      .join(' ');
-    const words = allContent.toLowerCase().match(/\b\w{4,}\b/g) || [];
-    const wordFreq = words.reduce(
+      0.map((adr) => `${adr0.title} ${adr0.context} ${adr0.decision}`)
+      0.join(' ');
+    const words = allContent?0.toLowerCase0.match(/\b\w{4,}\b/g) || [];
+    const wordFreq = words0.reduce(
       (freq, word) => {
         freq[word] = (freq[word] || 0) + 1;
         return freq;
@@ -559,10 +554,10 @@ export class ADRManagerHybrid {
       {} as Record<string, number>
     );
 
-    const common_themes = Object.entries(wordFreq)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([word]) => word);
+    const common_themes = Object0.entries(wordFreq)
+      0.sort((a, b) => b[1] - a[1])
+      0.slice(0, 10)
+      0.map(([word]) => word);
 
     // Identify decision patterns
     const decision_patterns = [
@@ -577,15 +572,15 @@ export class ADRManagerHybrid {
       [];
 
     for (const adr of adrs) {
-      const relationships = await this.hybridManager.getDocumentRelationships(
-        adr.id,
+      const relationships = await this0.hybridManager0.getDocumentRelationships(
+        adr0.id,
         1
       );
       for (const rel of relationships) {
-        impact_network.push({
-          from: rel.source_document_id,
-          to: rel.target_document_id,
-          type: rel.relationship_type,
+        impact_network0.push({
+          from: rel0.source_document_id,
+          to: rel0.target_document_id,
+          type: rel0.relationship_type,
         });
       }
     }
@@ -593,7 +588,7 @@ export class ADRManagerHybrid {
     return { common_themes, decision_patterns, impact_network };
   }
 
-  private async generateSemanticClusters(adrs: ADRDocumentEntity[]): Promise<
+  private async generateSemanticClusters(adrs: any[]): Promise<
     Array<{
       theme: string;
       count: number;
@@ -606,48 +601,48 @@ export class ADRManagerHybrid {
     const clusters = [
       {
         theme: 'Database Architecture',
-        count: adrs.filter(
+        count: adrs0.filter(
           (adr) =>
-            adr.content.toLowerCase().includes('database') ||
-            adr.content.toLowerCase().includes('storage')
-        ).length,
+            adr0.content?0.toLowerCase0.includes('database') ||
+            adr0.content?0.toLowerCase0.includes('storage')
+        )0.length,
         adrs: adrs
-          .filter(
+          0.filter(
             (adr) =>
-              adr.content.toLowerCase().includes('database') ||
-              adr.content.toLowerCase().includes('storage')
+              adr0.content?0.toLowerCase0.includes('database') ||
+              adr0.content?0.toLowerCase0.includes('storage')
           )
-          .map((adr) => adr.id),
+          0.map((adr) => adr0.id),
       },
       {
         theme: 'API Design',
-        count: adrs.filter(
+        count: adrs0.filter(
           (adr) =>
-            adr.content.toLowerCase().includes('api') ||
-            adr.content.toLowerCase().includes('endpoint')
-        ).length,
+            adr0.content?0.toLowerCase0.includes('api') ||
+            adr0.content?0.toLowerCase0.includes('endpoint')
+        )0.length,
         adrs: adrs
-          .filter(
+          0.filter(
             (adr) =>
-              adr.content.toLowerCase().includes('api') ||
-              adr.content.toLowerCase().includes('endpoint')
+              adr0.content?0.toLowerCase0.includes('api') ||
+              adr0.content?0.toLowerCase0.includes('endpoint')
           )
-          .map((adr) => adr.id),
+          0.map((adr) => adr0.id),
       },
     ];
 
-    return clusters.filter((cluster) => cluster.count > 0);
+    return clusters0.filter((cluster) => cluster0.count > 0);
   }
 
   private generateChecksum(content: string): string {
     // Simple checksum for content integrity
     let hash = 0;
-    for (let i = 0; i < content.length; i++) {
-      const char = content.charCodeAt(i);
+    for (let i = 0; i < content0.length; i++) {
+      const char = content0.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
-    return Math.abs(hash).toString(36);
+    return Math0.abs(hash)0.toString(36);
   }
 }
 

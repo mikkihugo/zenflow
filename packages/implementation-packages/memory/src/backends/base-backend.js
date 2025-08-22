@@ -7,14 +7,14 @@
 /**
  * @file Memory management: base-backend.
  */
-import { EventEmitter } from 'eventemitter3';
-export class BaseMemoryBackend extends EventEmitter {
-    config;
+import { TypedEventBase } from '@claude-zen/foundation';
+export class BaseMemoryBackend extends TypedEventBase {
+    memoryConfig;
     isInitialized = false;
     stats;
     constructor(config) {
         super();
-        this.config = config;
+        this.memoryConfig = config;
         this.stats = {
             totalEntries: 0,
             totalSize: 0,
@@ -30,7 +30,7 @@ export class BaseMemoryBackend extends EventEmitter {
         if (!this.isInitialized) {
             await this.initialize();
             this.isInitialized = true;
-            this.emit('initialized');
+            this.emit('initialized', { timestamp: new Date() });
         }
     }
     async getStats() {
@@ -41,7 +41,7 @@ export class BaseMemoryBackend extends EventEmitter {
         return { ...this.stats };
     }
     getConfig() {
-        return { ...this.config };
+        return { ...this.memoryConfig };
     }
     isReady() {
         return this.isInitialized;

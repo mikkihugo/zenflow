@@ -5,7 +5,7 @@
  * to @claude-zen/coordination-core package.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import './module-declarations';
 
 // Coordination core system access with real package delegation
@@ -19,7 +19,7 @@ async function loadCoordinationCoreModule() {
     } catch (error) {
       console.warn('Coordination core package not available, providing compatibility layer');
       coordinationCoreModuleCache = {
-        QueenCoordinator: class CompatibilityQueenCoordinator extends EventEmitter {
+        QueenCoordinator: class CompatibilityQueenCoordinator extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -29,11 +29,11 @@ async function loadCoordinationCoreModule() {
           async coordinate() {
             return { status: 'compatibility' };
           }
-          getMetrics() {
-            return { coordination: 0, efficiency: 0 };
+          override getMetrics() {
+            return { coordination: 0, efficiency: 0 } as any;
           }
         },
-        SwarmCommander: class CompatibilitySwarmCommander extends EventEmitter {
+        SwarmCommander: class CompatibilitySwarmCommander extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -44,7 +44,7 @@ async function loadCoordinationCoreModule() {
             return { status: 'compatibility' };
           }
         },
-        CoordinationEventBus: class CompatibilityEventBus extends EventEmitter {
+        CoordinationEventBus: class CompatibilityEventBus extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -58,7 +58,7 @@ async function loadCoordinationCoreModule() {
             return () => {};
           }
         },
-        CoordinationEngine: class CompatibilityEngine extends EventEmitter {
+        CoordinationEngine: class CompatibilityEngine extends TypedEventBase {
           async initialize() {
             return this;
           }
@@ -69,7 +69,7 @@ async function loadCoordinationCoreModule() {
             return { status: 'compatibility' };
           }
         },
-        TaskCoordinator: class CompatibilityTaskCoordinator extends EventEmitter {
+        TaskCoordinator: class CompatibilityTaskCoordinator extends TypedEventBase {
           async initialize() {
             return this;
           }

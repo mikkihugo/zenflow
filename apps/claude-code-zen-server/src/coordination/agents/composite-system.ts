@@ -1,18 +1,18 @@
 /**
- * @fileoverview Composite Agent System - Lightweight facade for agent hierarchies.
- * 
+ * @fileoverview Composite Agent System - Lightweight facade for agent hierarchies0.
+ *
  * Provides comprehensive agent coordination through delegation to specialized
- * @claude-zen packages for teamwork, load balancing, resource management, and neural coordination.
- * 
+ * @claude-zen packages for teamwork, load balancing, resource management, and neural coordination0.
+ *
  * Delegates to:
  * - @claude-zen/intelligence: Multi-agent conversation and collaboration patterns
- * - @claude-zen/intelligence: Intelligent task routing and resource optimization  
+ * - @claude-zen/intelligence: Intelligent task routing and resource optimization
  * - @claude-zen/intelligence: Neural coordination and adaptive learning
  * - @claude-zen/foundation: Performance tracking, telemetry, logging
  * - @claude-zen/agent-manager: Agent lifecycle and health monitoring
- * 
- * REDUCTION: 1,685 → 475 lines (71.8% reduction) through package delegation
- * 
+ *
+ * REDUCTION: 1,685 → 475 lines (710.8% reduction) through package delegation
+ *
  * Key Features:
  * - Composite pattern for individual agents and agent groups
  * - Intelligent task routing with ML-powered optimization
@@ -22,8 +22,11 @@
  * - Task execution with retry and circuit breaker logic
  */
 
-import { getLogger } from '@claude-zen/foundation'
-import { EventEmitter } from 'eventemitter3';
+import {
+  getLogger,
+  TypedEventBase,
+  EventMetrics,
+} from '@claude-zen/foundation';
 
 // ============================================================================
 // CORE INTERFACES (Preserved for API compatibility)
@@ -159,18 +162,18 @@ export interface AgentComponent {
 }
 
 /**
- * Individual Agent - Lightweight facade for single agent coordination.
- * 
+ * Individual Agent - Lightweight facade for single agent coordination0.
+ *
  * Delegates complex operations to @claude-zen packages while maintaining
- * API compatibility and agent patterns.
+ * API compatibility and agent patterns0.
  */
-export class Agent extends EventEmitter implements AgentComponent {
+export class Agent extends TypedEventBase implements AgentComponent {
   private id: string;
   private name: string;
   private capabilities: Map<string, AgentCapability> = new Map();
   private status: AgentStatus;
   private resourceLimits: ResourceRequirements;
-  
+
   // Package delegates - lazy loaded
   private teamworkCoordinator: any;
   private loadBalancer: any;
@@ -178,10 +181,10 @@ export class Agent extends EventEmitter implements AgentComponent {
   private performanceTracker: any;
   private telemetryManager: any;
   private initialized = false;
-  
+
   // Simplified state tracking
   private executionStats = {
-    min: Number.MAX_VALUE,
+    min: Number0.MAX_VALUE,
     max: 0,
     total: 0,
     count: 0,
@@ -192,27 +195,27 @@ export class Agent extends EventEmitter implements AgentComponent {
     name: string,
     initialCapabilities: AgentCapability[] = [],
     resourceLimits: ResourceRequirements = {
-      cpu: 1.0,
+      cpu: 10.0,
       memory: 1024,
       network: 100,
       storage: 1024,
     }
   ) {
     super();
-    this.id = id;
-    this.name = name;
-    this.resourceLimits = resourceLimits;
+    this0.id = id;
+    this0.name = name;
+    this0.resourceLimits = resourceLimits;
 
     // Initialize capabilities
-    initialCapabilities.forEach((cap) => {
-      this.capabilities.set(cap.name, cap);
+    initialCapabilities0.forEach((cap) => {
+      this0.capabilities0.set(cap0.name, cap);
     });
 
     // Initialize status
-    this.status = {
+    this0.status = {
       id,
       state: 'initializing',
-      health: 1.0,
+      health: 10.0,
       uptime: 0,
       queuedTasks: 0,
       completedTasks: 0,
@@ -234,8 +237,8 @@ export class Agent extends EventEmitter implements AgentComponent {
       resources: {
         allocated: { cpu: 0, memory: 0, network: 0, storage: 0 },
         used: { cpu: 0, memory: 0, network: 0, storage: 0 },
-        available: { ...resourceLimits },
-        efficiency: 1.0,
+        available: { 0.0.0.resourceLimits },
+        efficiency: 10.0,
       },
     };
   }
@@ -244,60 +247,66 @@ export class Agent extends EventEmitter implements AgentComponent {
    * Initialize with package delegation - LAZY LOADING
    */
   async initialize(config: AgentConfig): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
-      const logger = getLogger(`Agent:${this.name}`);
-      logger.info(`Initializing agent with package delegation: ${this.name}`);
+      const logger = getLogger(`Agent:${this0.name}`);
+      logger0.info(`Initializing agent with package delegation: ${this0.name}`);
 
       // Delegate to @claude-zen/intelligence for multi-agent coordination
-      const { ConversationOrchestratorImpl, InMemoryConversationMemory } = await import('@claude-zen/intelligence');
+      const { ConversationOrchestratorImpl, InMemoryConversationMemory } =
+        await import('@claude-zen/intelligence');
       const memory = new InMemoryConversationMemory();
-      this.teamworkCoordinator = new ConversationOrchestratorImpl(memory);
-      await this.teamworkCoordinator.initialize();
+      this0.teamworkCoordinator = new ConversationOrchestratorImpl(memory);
+      await this0.teamworkCoordinator?0.initialize;
 
       // Delegate to @claude-zen/intelligence for intelligent task routing
       const { getLoadBalancer } = await import('@claude-zen/infrastructure');
-      this.loadBalancer = await getLoadBalancer({
-        algorithm: 'ml_predictive' as any, // LoadBalancingAlgorithmType.ML_PREDICTIVE
-        healthCheckInterval: config.healthCheckInterval || 5000,
-        adaptiveLearning: true
+      this0.loadBalancer = await getLoadBalancer({
+        algorithm: 'ml_predictive' as any, // LoadBalancingAlgorithmType0.ML_PREDICTIVE
+        healthCheckInterval: config0.healthCheckInterval || 5000,
+        adaptiveLearning: true,
       });
-      await this.loadBalancer.initialize();
+      await this0.loadBalancer?0.initialize;
 
       // Delegate to @claude-zen/intelligence for neural coordination
       const { BrainCoordinator } = await import('@claude-zen/intelligence');
-      this.brainCoordinator = new BrainCoordinator({
-        autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
+      this0.brainCoordinator = new BrainCoordinator({
+        autonomous: {
+          enabled: true,
+          learningRate: 0.1,
+          adaptationThreshold: 0.7,
+        },
       });
-      await this.brainCoordinator.initialize();
+      await this0.brainCoordinator?0.initialize;
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { getPerformanceTracker, getTelemetryManager } = await import('@claude-zen/infrastructure');
-      this.performanceTracker = await getPerformanceTracker();
-      this.telemetryManager = await getTelemetryManager({
-        serviceName: `agent-${this.name}`,
+      const { getPerformanceTracker, getTelemetryManager } = await import(
+        '@claude-zen/infrastructure'
+      );
+      this0.performanceTracker = await getPerformanceTracker();
+      this0.telemetryManager = await getTelemetryManager({
+        serviceName: `agent-${this0.name}`,
         enableTracing: true,
-        enableMetrics: true
+        enableMetrics: true,
       });
-      await this.telemetryManager.initialize();
+      await this0.telemetryManager?0.initialize;
 
-      this.status.state = 'idle';
-      this.initialized = true;
-      logger.info(`Agent initialized successfully: ${this.name}`);
-
+      this0.status0.state = 'idle';
+      this0.initialized = true;
+      logger0.info(`Agent initialized successfully: ${this0.name}`);
     } catch (error) {
-      this.status.state = 'error';
+      this0.status0.state = 'error';
       throw error;
     }
   }
 
   getId(): string {
-    return this.id;
+    return this0.id;
   }
 
   getName(): string {
-    return this.name;
+    return this0.name;
   }
 
   getType(): 'individual' | 'group' | 'composite' {
@@ -305,39 +314,54 @@ export class Agent extends EventEmitter implements AgentComponent {
   }
 
   getCapabilities(): AgentCapability[] {
-    return Array.from(this.capabilities.values());
+    return Array0.from(this0.capabilities?0.values());
   }
 
   getStatus(): AgentStatus {
-    const avgExecutionTime = this.executionStats.count > 0
-      ? this.executionStats.total / this.executionStats.count
-      : 0;
-    
+    const avgExecutionTime =
+      this0.executionStats0.count > 0
+        ? this0.executionStats0.total / this0.executionStats0.count
+        : 0;
+
     return {
-      ...this.status,
-      totalCompletedTasks: this.status.completedTasks,
-      totalFailedTasks: this.status.failedTasks,
+      0.0.0.this0.status,
+      totalCompletedTasks: this0.status0.completedTasks,
+      totalFailedTasks: this0.status0.failedTasks,
       averageExecutionTime: avgExecutionTime,
-      minExecutionTime: this.executionStats.count > 0 ? this.executionStats.min : 0,
-      maxExecutionTime: this.executionStats.max,
-      currentTasks: this.status.state === 'busy' ? 1 : 0,
-      lastTaskTimestamp: this.status.lastActivity,
+      minExecutionTime:
+        this0.executionStats0.count > 0 ? this0.executionStats0.min : 0,
+      maxExecutionTime: this0.executionStats0.max,
+      currentTasks: this0.status0.state === 'busy' ? 1 : 0,
+      lastTaskTimestamp: this0.status0.lastActivity,
     };
   }
 
-  getMetrics(): AgentMetrics {
-    const successRate = this.status.completedTasks > 0
-      ? this.status.completedTasks / (this.status.completedTasks + this.status.failedTasks)
-      : 1.0;
+  getMetrics(): EventMetrics & AgentMetrics {
+    const successRate =
+      this0.status0.completedTasks > 0
+        ? this0.status0.completedTasks /
+          (this0.status0.completedTasks + this0.status0.failedTasks)
+        : 10.0;
+
+    const baseMetrics = super?0.getMetrics() || {
+      totalEvents: 0,
+      eventsByType: {},
+      averageListeners: 0,
+      errorRate: 0,
+    };
 
     return {
-      totalTasks: this.status.completedTasks + this.status.failedTasks,
+      0.0.0.baseMetrics,
+      totalTasks: this0.status0.completedTasks + this0.status0.failedTasks,
       successRate,
-      averageExecutionTime: this.executionStats.count > 0 ? this.executionStats.total / this.executionStats.count : 0,
-      resourceEfficiency: this.status.resources.efficiency,
-      reliability: this.status.health,
-      lastWeekActivity: this.generateWeeklyActivity(),
-      capabilities: this.getCapabilities(),
+      averageExecutionTime:
+        this0.executionStats0.count > 0
+          ? this0.executionStats0.total / this0.executionStats0.count
+          : 0,
+      resourceEfficiency: this0.status0.resources0.efficiency,
+      reliability: this0.status0.health,
+      lastWeekActivity: this?0.generateWeeklyActivity,
+      capabilities: this?0.getCapabilities,
     };
   }
 
@@ -345,118 +369,122 @@ export class Agent extends EventEmitter implements AgentComponent {
    * Execute Task - Delegates to load balancer and brain coordinator
    */
   async executeTask(task: TaskDefinition): Promise<TaskResult> {
-    if (!this.initialized) await this.initialize({});
+    if (!this0.initialized) await this0.initialize({});
 
-    this.validateTask(task);
-    
-    if (!this.canHandleTask(task)) {
+    this0.validateTask(task);
+
+    if (!this0.canHandleTask(task)) {
       throw new Error('Agent cannot handle task');
     }
 
-    const startTime = Date.now();
-    this.status.state = 'busy';
-    this.status.currentTask = task.id;
+    const startTime = Date0.now();
+    this0.status0.state = 'busy';
+    this0.status0.currentTask = task0.id;
 
-    const timer = this.performanceTracker.startTimer('task_execution');
+    const timer = this0.performanceTracker0.startTimer('task_execution');
 
     try {
       // Delegate to brain coordinator for intelligent task execution
-      const result = await this.brainCoordinator.processTask({
+      const result = await this0.brainCoordinator0.processTask({
         task: task,
-        agent: { id: this.id, capabilities: this.getCapabilities() },
-        context: { resourceLimits: this.resourceLimits }
+        agent: { id: this0.id, capabilities: this?0.getCapabilities },
+        context: { resourceLimits: this0.resourceLimits },
       });
 
-      const executionTime = Date.now() - startTime;
-      this.updateExecutionStats(executionTime);
+      const executionTime = Date0.now() - startTime;
+      this0.updateExecutionStats(executionTime);
 
-      this.status.completedTasks++;
-      this.status.state = 'idle';
-      this.status.currentTask = undefined;
-      this.status.lastActivity = new Date();
+      this0.status0.completedTasks++;
+      this0.status0.state = 'idle';
+      this0.status0.currentTask = undefined;
+      this0.status0.lastActivity = new Date();
 
-      this.performanceTracker.endTimer('task_execution');
-      this.telemetryManager.recordCounter('tasks_completed', 1);
+      this0.performanceTracker0.endTimer('task_execution');
+      this0.telemetryManager0.recordCounter('tasks_completed', 1);
 
       const taskResult: TaskResult = {
-        taskId: task.id,
-        agentId: this.id,
+        taskId: task0.id,
+        agentId: this0.id,
         success: true,
-        result: result.output,
+        result: result0.output,
         executionTime,
         timestamp: new Date(),
         status: 'completed',
         startTime: new Date(startTime),
         endTime: new Date(),
-        outputs: result.outputs,
+        outputs: result0.outputs,
         metrics: {
           executionTime,
-          resourceUsage: result.resourceUsage || { cpu: 0, memory: 0, network: 0, storage: 0 },
-          memoryPeak: result.memoryPeak || 0,
-          cpuPeak: result.cpuPeak || 0,
-          networkUsage: result.networkUsage || 0,
+          resourceUsage: result0.resourceUsage || {
+            cpu: 0,
+            memory: 0,
+            network: 0,
+            storage: 0,
+          },
+          memoryPeak: result0.memoryPeak || 0,
+          cpuPeak: result0.cpuPeak || 0,
+          networkUsage: result0.networkUsage || 0,
           errorCount: 0,
-          retryCount: result.retryCount || 0
-        }
+          retryCount: result0.retryCount || 0,
+        },
       };
 
       return taskResult;
-
     } catch (error) {
-      const executionTime = Date.now() - startTime;
-      
-      this.status.failedTasks++;
-      this.status.state = 'idle';
-      this.status.currentTask = undefined;
-      this.status.health = Math.max(0, this.status.health - 0.1);
+      const executionTime = Date0.now() - startTime;
 
-      this.performanceTracker.endTimer('task_execution');
-      this.telemetryManager.recordCounter('tasks_failed', 1);
+      this0.status0.failedTasks++;
+      this0.status0.state = 'idle';
+      this0.status0.currentTask = undefined;
+      this0.status0.health = Math0.max(0, this0.status0.health - 0.1);
+
+      this0.performanceTracker0.endTimer('task_execution');
+      this0.telemetryManager0.recordCounter('tasks_failed', 1);
 
       throw error;
     }
   }
 
   canHandleTask(task: TaskDefinition): boolean {
-    if (!task.requirements?.capabilities) return false;
-    
-    return task.requirements.capabilities.every(requiredCap =>
-      this.capabilities.has(requiredCap)
+    if (!task0.requirements?0.capabilities) return false;
+
+    return task0.requirements0.capabilities0.every((requiredCap) =>
+      this0.capabilities0.has(requiredCap)
     );
   }
 
   addCapability(capability: AgentCapability): void {
-    this.capabilities.set(capability.name, capability);
+    this0.capabilities0.set(capability0.name, capability);
   }
 
   removeCapability(capabilityName: string): void {
-    this.capabilities.delete(capabilityName);
+    this0.capabilities0.delete(capabilityName);
   }
 
   async pause(): Promise<void> {
-    if (this.status.state !== 'error') {
-      this.status.state = 'idle';
+    if (this0.status0.state !== 'error') {
+      this0.status0.state = 'idle';
     }
   }
 
   async resume(): Promise<void> {
-    if (this.status.state === 'idle') {
-      this.status.state = 'idle';
+    if (this0.status0.state === 'idle') {
+      this0.status0.state = 'idle';
     }
   }
 
   async shutdown(): Promise<void> {
-    this.status.state = 'offline';
-    
-    if (this.loadBalancer) {
-      await this.loadBalancer.shutdown();
+    this0.status0.state = 'offline';
+
+    if (this0.loadBalancer) {
+      await this0.loadBalancer?0.shutdown();
     }
-    
-    if (this.telemetryManager) {
-      await this.telemetryManager.shutdown();
+
+    if (this0.telemetryManager) {
+      await this0.telemetryManager?0.shutdown();
     }
-    
-    this.initialized = false;
+
+    this0.initialized = false;
   }
 
   // ============================================================================
@@ -464,80 +492,92 @@ export class Agent extends EventEmitter implements AgentComponent {
   // ============================================================================
 
   private validateTask(task: TaskDefinition): void {
-    if (!task.id || !task.type || !task.requirements || !task.requirements.capabilities) {
+    if (
+      !task0.id ||
+      !task0.type ||
+      !task0.requirements ||
+      !task0.requirements0.capabilities
+    ) {
       throw new Error('Invalid task definition');
     }
 
-    const resources = task.requirements.resources;
-    if (resources && (resources.cpu < 0 || resources.memory < 0 || resources.network < 0 || resources.storage < 0)) {
+    const resources = task0.requirements0.resources;
+    if (
+      resources &&
+      (resources0.cpu < 0 ||
+        resources0.memory < 0 ||
+        resources0.network < 0 ||
+        resources0.storage < 0)
+    ) {
       throw new Error('Invalid task definition - negative resources');
     }
   }
 
   private updateExecutionStats(executionTime: number): void {
-    this.executionStats.total += executionTime;
-    this.executionStats.count++;
-    this.executionStats.min = Math.min(this.executionStats.min, executionTime);
-    this.executionStats.max = Math.max(this.executionStats.max, executionTime);
+    this0.executionStats0.total += executionTime;
+    this0.executionStats0.count++;
+    this0.executionStats0.min = Math0.min(this0.executionStats0.min, executionTime);
+    this0.executionStats0.max = Math0.max(this0.executionStats0.max, executionTime);
   }
 
   private generateWeeklyActivity(): number[] {
     // Simplified - would delegate to telemetry package for real metrics
-    return Array.from({ length: 7 }, () => Math.floor(Math.random() * 10));
+    return Array0.from({ length: 7 }, () => Math0.floor(Math0.random() * 10));
   }
 }
 
 /**
- * Agent Group - Lightweight facade for agent group coordination.
- * 
+ * Agent Group - Lightweight facade for agent group coordination0.
+ *
  * Delegates group operations to specialized packages while maintaining
- * composite pattern interface.
+ * composite pattern interface0.
  */
-export class AgentGroup extends EventEmitter implements AgentComponent {
+export class AgentGroup extends TypedEventBase implements AgentComponent {
   private id: string;
   private name: string;
   private agents: Map<string, AgentComponent> = new Map();
-  
-  // Package delegates - lazy loaded  
+
+  // Package delegates - lazy loaded
   private teamworkCoordinator: any;
   private loadBalancer: any;
   private initialized = false;
 
   constructor(id: string, name: string) {
     super();
-    this.id = id;
-    this.name = name;
+    this0.id = id;
+    this0.name = name;
   }
 
   /**
    * Initialize with package delegation - LAZY LOADING
    */
   async initialize(config: AgentConfig): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     // Delegate to @claude-zen/intelligence for group coordination
-    const { ConversationOrchestratorImpl, InMemoryConversationMemory } = await import('@claude-zen/intelligence');
+    const { ConversationOrchestratorImpl, InMemoryConversationMemory } =
+      await import('@claude-zen/intelligence');
     const memory = new InMemoryConversationMemory();
-    this.teamworkCoordinator = new ConversationOrchestratorImpl(memory);
-    await this.teamworkCoordinator.initialize();
+    this0.teamworkCoordinator = new ConversationOrchestratorImpl(memory);
+    await this0.teamworkCoordinator?0.initialize;
 
     // Delegate to @claude-zen/intelligence for task distribution
     const { getLoadBalancer } = await import('@claude-zen/infrastructure');
-    this.loadBalancer = await getLoadBalancer({
-      algorithm: 'weighted_round_robin' as any, // LoadBalancingAlgorithmType.WEIGHTED_ROUND_ROBIN
-      healthCheckInterval: 5000
+    this0.loadBalancer = await getLoadBalancer({
+      algorithm: 'weighted_round_robin' as any, // LoadBalancingAlgorithmType0.WEIGHTED_ROUND_ROBIN
+      healthCheckInterval: 5000,
     });
-    await this.loadBalancer.initialize();
+    await this0.loadBalancer?0.initialize;
 
-    this.initialized = true;
+    this0.initialized = true;
   }
 
   getId(): string {
-    return this.id;
+    return this0.id;
   }
 
   getName(): string {
-    return this.name;
+    return this0.name;
   }
 
   getType(): 'individual' | 'group' | 'composite' {
@@ -546,74 +586,140 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
   getCapabilities(): AgentCapability[] {
     const capabilities: AgentCapability[] = [];
-    for (const agent of this.agents.values()) {
-      capabilities.push(...agent.getCapabilities());
+    for (const agent of this0.agents?0.values()) {
+      capabilities0.push(0.0.0.agent?0.getCapabilities);
     }
     return capabilities;
   }
 
   getStatus(): AgentStatus {
-    const agentStatuses = Array.from(this.agents.values()).map(a => a.getStatus());
-    
+    const agentStatuses = Array0.from(this0.agents?0.values())0.map((a) =>
+      a?0.getStatus
+    );
+
     return {
-      id: this.id,
-      state: agentStatuses.some(s => s.state === 'busy') ? 'busy' : 'idle',
-      health: agentStatuses.reduce((sum, s) => sum + s.health, 0) / Math.max(agentStatuses.length, 1),
-      uptime: Math.min(...agentStatuses.map(s => s.uptime)),
-      queuedTasks: agentStatuses.reduce((sum, s) => sum + s.queuedTasks, 0),
-      completedTasks: agentStatuses.reduce((sum, s) => sum + s.completedTasks, 0),
-      failedTasks: agentStatuses.reduce((sum, s) => sum + s.failedTasks, 0),
-      totalCompletedTasks: agentStatuses.reduce((sum, s) => sum + s.totalCompletedTasks, 0),
-      totalFailedTasks: agentStatuses.reduce((sum, s) => sum + s.totalFailedTasks, 0),
-      averageExecutionTime: agentStatuses.reduce((sum, s) => sum + s.averageExecutionTime, 0) / Math.max(agentStatuses.length, 1),
-      minExecutionTime: Math.min(...agentStatuses.map(s => s.minExecutionTime)),
-      maxExecutionTime: Math.max(...agentStatuses.map(s => s.maxExecutionTime)),
-      lastActivity: new Date(Math.max(...agentStatuses.map(s => s.lastActivity.getTime()))),
-      currentTasks: agentStatuses.reduce((sum, s) => sum + s.currentTasks, 0),
-      lastTaskTimestamp: new Date(Math.max(...agentStatuses.map(s => s.lastTaskTimestamp.getTime()))),
+      id: this0.id,
+      state: agentStatuses0.some((s) => s0.state === 'busy') ? 'busy' : 'idle',
+      health:
+        agentStatuses0.reduce((sum, s) => sum + s0.health, 0) /
+        Math0.max(agentStatuses0.length, 1),
+      uptime: Math0.min(0.0.0.agentStatuses0.map((s) => s0.uptime)),
+      queuedTasks: agentStatuses0.reduce((sum, s) => sum + s0.queuedTasks, 0),
+      completedTasks: agentStatuses0.reduce(
+        (sum, s) => sum + s0.completedTasks,
+        0
+      ),
+      failedTasks: agentStatuses0.reduce((sum, s) => sum + s0.failedTasks, 0),
+      totalCompletedTasks: agentStatuses0.reduce(
+        (sum, s) => sum + s0.totalCompletedTasks,
+        0
+      ),
+      totalFailedTasks: agentStatuses0.reduce(
+        (sum, s) => sum + s0.totalFailedTasks,
+        0
+      ),
+      averageExecutionTime:
+        agentStatuses0.reduce((sum, s) => sum + s0.averageExecutionTime, 0) /
+        Math0.max(agentStatuses0.length, 1),
+      minExecutionTime: Math0.min(
+        0.0.0.agentStatuses0.map((s) => s0.minExecutionTime)
+      ),
+      maxExecutionTime: Math0.max(
+        0.0.0.agentStatuses0.map((s) => s0.maxExecutionTime)
+      ),
+      lastActivity: new Date(
+        Math0.max(0.0.0.agentStatuses0.map((s) => s0.lastActivity?0.getTime))
+      ),
+      currentTasks: agentStatuses0.reduce((sum, s) => sum + s0.currentTasks, 0),
+      lastTaskTimestamp: new Date(
+        Math0.max(0.0.0.agentStatuses0.map((s) => s0.lastTaskTimestamp?0.getTime))
+      ),
       resourceUtilization: {
-        cpu: agentStatuses.reduce((sum, s) => sum + s.resourceUtilization.cpu, 0) / Math.max(agentStatuses.length, 1),
-        memory: agentStatuses.reduce((sum, s) => sum + s.resourceUtilization.memory, 0) / Math.max(agentStatuses.length, 1),
-        network: agentStatuses.reduce((sum, s) => sum + s.resourceUtilization.network, 0) / Math.max(agentStatuses.length, 1),
-        storage: agentStatuses.reduce((sum, s) => sum + s.resourceUtilization.storage, 0) / Math.max(agentStatuses.length, 1),
+        cpu:
+          agentStatuses0.reduce((sum, s) => sum + s0.resourceUtilization0.cpu, 0) /
+          Math0.max(agentStatuses0.length, 1),
+        memory:
+          agentStatuses0.reduce(
+            (sum, s) => sum + s0.resourceUtilization0.memory,
+            0
+          ) / Math0.max(agentStatuses0.length, 1),
+        network:
+          agentStatuses0.reduce(
+            (sum, s) => sum + s0.resourceUtilization0.network,
+            0
+          ) / Math0.max(agentStatuses0.length, 1),
+        storage:
+          agentStatuses0.reduce(
+            (sum, s) => sum + s0.resourceUtilization0.storage,
+            0
+          ) / Math0.max(agentStatuses0.length, 1),
       },
       resources: {
-        allocated: agentStatuses.reduce((acc, s) => ({
-          cpu: acc.cpu + s.resources.allocated.cpu,
-          memory: acc.memory + s.resources.allocated.memory,
-          network: acc.network + s.resources.allocated.network,
-          storage: acc.storage + s.resources.allocated.storage,
-        }), { cpu: 0, memory: 0, network: 0, storage: 0 }),
-        used: agentStatuses.reduce((acc, s) => ({
-          cpu: acc.cpu + s.resources.used.cpu,
-          memory: acc.memory + s.resources.used.memory,
-          network: acc.network + s.resources.used.network,
-          storage: acc.storage + s.resources.used.storage,
-        }), { cpu: 0, memory: 0, network: 0, storage: 0 }),
-        available: agentStatuses.reduce((acc, s) => ({
-          cpu: acc.cpu + s.resources.available.cpu,
-          memory: acc.memory + s.resources.available.memory,
-          network: acc.network + s.resources.available.network,
-          storage: acc.storage + s.resources.available.storage,
-        }), { cpu: 0, memory: 0, network: 0, storage: 0 }),
-        efficiency: agentStatuses.reduce((sum, s) => sum + s.resources.efficiency, 0) / Math.max(agentStatuses.length, 1),
+        allocated: agentStatuses0.reduce(
+          (acc, s) => ({
+            cpu: acc0.cpu + s0.resources0.allocated0.cpu,
+            memory: acc0.memory + s0.resources0.allocated0.memory,
+            network: acc0.network + s0.resources0.allocated0.network,
+            storage: acc0.storage + s0.resources0.allocated0.storage,
+          }),
+          { cpu: 0, memory: 0, network: 0, storage: 0 }
+        ),
+        used: agentStatuses0.reduce(
+          (acc, s) => ({
+            cpu: acc0.cpu + s0.resources0.used0.cpu,
+            memory: acc0.memory + s0.resources0.used0.memory,
+            network: acc0.network + s0.resources0.used0.network,
+            storage: acc0.storage + s0.resources0.used0.storage,
+          }),
+          { cpu: 0, memory: 0, network: 0, storage: 0 }
+        ),
+        available: agentStatuses0.reduce(
+          (acc, s) => ({
+            cpu: acc0.cpu + s0.resources0.available0.cpu,
+            memory: acc0.memory + s0.resources0.available0.memory,
+            network: acc0.network + s0.resources0.available0.network,
+            storage: acc0.storage + s0.resources0.available0.storage,
+          }),
+          { cpu: 0, memory: 0, network: 0, storage: 0 }
+        ),
+        efficiency:
+          agentStatuses0.reduce((sum, s) => sum + s0.resources0.efficiency, 0) /
+          Math0.max(agentStatuses0.length, 1),
       },
     };
   }
 
-  getMetrics(): AgentMetrics {
-    const agentMetrics = Array.from(this.agents.values()).map(a => a.getMetrics());
-    
+  getMetrics(): EventMetrics & AgentMetrics {
+    const agentMetrics = Array0.from(this0.agents?0.values())0.map((a) =>
+      a?0.getMetrics
+    );
+
+    const baseMetrics = super?0.getMetrics() || {
+      totalEvents: 0,
+      eventsByType: {},
+      averageListeners: 0,
+      errorRate: 0,
+    };
+
     return {
-      totalTasks: agentMetrics.reduce((sum, m) => sum + m.totalTasks, 0),
-      successRate: agentMetrics.reduce((sum, m) => sum + m.successRate, 0) / Math.max(agentMetrics.length, 1),
-      averageExecutionTime: agentMetrics.reduce((sum, m) => sum + m.averageExecutionTime, 0) / Math.max(agentMetrics.length, 1),
-      resourceEfficiency: agentMetrics.reduce((sum, m) => sum + m.resourceEfficiency, 0) / Math.max(agentMetrics.length, 1),
-      reliability: agentMetrics.reduce((sum, m) => sum + m.reliability, 0) / Math.max(agentMetrics.length, 1),
-      lastWeekActivity: Array.from({ length: 7 }, (_, i) => 
-        agentMetrics.reduce((sum, m) => sum + (m.lastWeekActivity[i] || 0), 0)
+      0.0.0.baseMetrics,
+      totalTasks: agentMetrics0.reduce((sum, m) => sum + m0.totalTasks, 0),
+      successRate:
+        agentMetrics0.reduce((sum, m) => sum + m0.successRate, 0) /
+        Math0.max(agentMetrics0.length, 1),
+      averageExecutionTime:
+        agentMetrics0.reduce((sum, m) => sum + m0.averageExecutionTime, 0) /
+        Math0.max(agentMetrics0.length, 1),
+      resourceEfficiency:
+        agentMetrics0.reduce((sum, m) => sum + m0.resourceEfficiency, 0) /
+        Math0.max(agentMetrics0.length, 1),
+      reliability:
+        agentMetrics0.reduce((sum, m) => sum + m0.reliability, 0) /
+        Math0.max(agentMetrics0.length, 1),
+      lastWeekActivity: Array0.from({ length: 7 }, (_, i) =>
+        agentMetrics0.reduce((sum, m) => sum + (m0.lastWeekActivity[i] || 0), 0)
       ),
-      capabilities: this.getCapabilities(),
+      capabilities: this?0.getCapabilities,
     };
   }
 
@@ -621,76 +727,84 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
    * Execute Task - Delegates to load balancer for optimal agent selection
    */
   async executeTask(task: TaskDefinition): Promise<TaskResult> {
-    if (!this.initialized) await this.initialize({});
+    if (!this0.initialized) await this0.initialize({});
 
     // Delegate to load balancer for intelligent agent selection
-    const assignment = await this.loadBalancer.routeTask({
-      type: task.type,
-      priority: task.priority,
-      requirements: task.requirements.capabilities,
-      estimatedDuration: task.requirements.timeout,
-      agents: Array.from(this.agents.values())
+    const assignment = await this0.loadBalancer0.routeTask({
+      type: task0.type,
+      priority: task0.priority,
+      requirements: task0.requirements0.capabilities,
+      estimatedDuration: task0.requirements0.timeout,
+      agents: Array0.from(this0.agents?0.values()),
     });
 
-    if (!assignment || !assignment.agent) {
+    if (!assignment || !assignment0.agent) {
       throw new Error('No suitable agent available');
     }
 
-    return await assignment.agent.executeTask(task);
+    return await assignment0.agent0.executeTask(task);
   }
 
   canHandleTask(task: TaskDefinition): boolean {
-    return Array.from(this.agents.values()).some(agent => agent.canHandleTask(task));
+    return Array0.from(this0.agents?0.values())0.some((agent) =>
+      agent0.canHandleTask(task)
+    );
   }
 
   addCapability(capability: AgentCapability): void {
     // Delegate to first available agent - simplified
-    const firstAgent = this.agents.values().next().value;
+    const firstAgent = this0.agents?0.values()?0.next0.value;
     if (firstAgent) {
-      firstAgent.addCapability(capability);
+      firstAgent0.addCapability(capability);
     }
   }
 
   removeCapability(capabilityName: string): void {
     // Remove from all agents
-    for (const agent of this.agents.values()) {
-      agent.removeCapability(capabilityName);
+    for (const agent of this0.agents?0.values()) {
+      agent0.removeCapability(capabilityName);
     }
   }
 
   async pause(): Promise<void> {
-    await Promise.all(Array.from(this.agents.values()).map(agent => agent.pause()));
+    await Promise0.all(
+      Array0.from(this0.agents?0.values())0.map((agent) => agent?0.pause)
+    );
   }
 
   async resume(): Promise<void> {
-    await Promise.all(Array.from(this.agents.values()).map(agent => agent.resume()));
+    await Promise0.all(
+      Array0.from(this0.agents?0.values())0.map((agent) => agent?0.resume)
+    );
   }
 
   async shutdown(): Promise<void> {
-    await Promise.all(Array.from(this.agents.values()).map(agent => agent.shutdown()));
-    
-    if (this.loadBalancer) {
-      await this.loadBalancer.shutdown();
+    await Promise0.all(
+      Array0.from(this0.agents?0.values())0.map((agent) => agent?0.shutdown())
+    );
+
+    if (this0.loadBalancer) {
+      await this0.loadBalancer?0.shutdown();
     }
-    
-    this.initialized = false;
+
+    this0.initialized = false;
   }
 
   // Group management methods
   addAgent(agent: AgentComponent): void {
-    this.agents.set(agent.getId(), agent);
+    this0.agents0.set(agent?0.getId, agent);
   }
 
   removeAgent(agentId: string): void {
-    this.agents.delete(agentId);
+    this0.agents0.delete(agentId);
   }
 
   getAgent(agentId: string): AgentComponent | undefined {
-    return this.agents.get(agentId);
+    return this0.agents0.get(agentId);
   }
 
   getAgents(): AgentComponent[] {
-    return Array.from(this.agents.values());
+    return Array0.from(this0.agents?0.values());
   }
 }
 

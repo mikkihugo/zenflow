@@ -1,11 +1,11 @@
 /**
  * @fileoverview Claude Code Zen SAFe-SPARC Integration Extensions
- * 
+ *
  * **APPLICATION-SPECIFIC INTEGRATION TYPES**
- * 
+ *
  * This file extends the base SAFe-SPARC integration types from @claude-zen/enterprise
- * with Claude Code Zen specific business logic, workflows, and agent behaviors.
- * 
+ * with Claude Code Zen specific business logic, workflows, and agent behaviors0.
+ *
  * **ARCHITECTURE PATTERN:**
  * - Base types: @claude-zen/enterprise (reusable across organizations)
  * - Extensions: This file (Claude Code Zen specific business logic)
@@ -17,7 +17,7 @@ import type {
   IntegratedWorkflow,
   IntegrationConfiguration,
   QualityGate,
-  IntegratedMetrics
+  IntegratedMetrics,
 } from '@claude-zen/enterprise';
 import type { AgentType, ConversationPattern } from '@claude-zen/intelligence';
 
@@ -132,7 +132,11 @@ export interface HumanInTheLoopConfig {
  * Approval requirements for human oversight
  */
 export interface ApprovalRequirement {
-  readonly trigger: 'high-risk-decision' | 'budget-threshold' | 'compliance-critical' | 'novel-approach';
+  readonly trigger:
+    | 'high-risk-decision'
+    | 'budget-threshold'
+    | 'compliance-critical'
+    | 'novel-approach';
   readonly approverRole: string;
   readonly requiredApprovers: number;
   readonly timeout: number; // minutes
@@ -143,7 +147,10 @@ export interface ApprovalRequirement {
  */
 export interface NeuralDecisionPoint {
   readonly decisionId: string;
-  readonly context: 'feature-complexity-assessment' | 'architecture-pattern-selection' | 'risk-mitigation-strategy';
+  readonly context:
+    | 'feature-complexity-assessment'
+    | 'architecture-pattern-selection'
+    | 'risk-mitigation-strategy';
   readonly neuralModel: string;
   readonly inputFeatures: string[];
   readonly outputActions: string[];
@@ -157,7 +164,11 @@ export interface SwarmCoordinationPoint {
   readonly coordinationId: string;
   readonly triggerEvent: string;
   readonly participantTypes: AgentType[];
-  readonly coordinationPattern: 'consensus' | 'leader-follower' | 'democratic' | 'expertise-weighted';
+  readonly coordinationPattern:
+    | 'consensus'
+    | 'leader-follower'
+    | 'democratic'
+    | 'expertise-weighted';
   readonly timeoutSeconds: number;
 }
 
@@ -211,7 +222,11 @@ export interface AIValidationConfig {
  * AI validators for quality gates
  */
 export interface AIValidator {
-  readonly validatorType: 'code-quality' | 'architecture-compliance' | 'security-scan' | 'performance-check';
+  readonly validatorType:
+    | 'code-quality'
+    | 'architecture-compliance'
+    | 'security-scan'
+    | 'performance-check';
   readonly model: string;
   readonly weight: number; // 0-1
   readonly timeout: number; // seconds
@@ -377,11 +392,11 @@ export function createClaudeZenIntegrationConfig(): ClaudeZenIntegrationConfig {
     // Base configuration
     enabledFeatures: [
       'auto-sparc-project-creation',
-      'real-time-progress-sync', 
+      'real-time-progress-sync',
       'automated-quality-gates',
       'predictive-analytics',
       'cross-framework-reporting',
-      'intelligent-escalation'
+      'intelligent-escalation',
     ],
     synchronizationSettings: {
       syncInterval: 30000, // 30 seconds
@@ -390,8 +405,8 @@ export function createClaudeZenIntegrationConfig(): ClaudeZenIntegrationConfig {
       retryPolicy: {
         maxRetries: 3,
         backoffStrategy: 'exponential',
-        baseDelay: 1000
-      }
+        baseDelay: 1000,
+      },
     },
     escalationSettings: {
       enableAutoEscalation: true,
@@ -400,25 +415,25 @@ export function createClaudeZenIntegrationConfig(): ClaudeZenIntegrationConfig {
           metric: 'quality-gate-failure-rate',
           threshold: 0.3,
           timeWindow: 3600000, // 1 hour
-          severity: 'high'
-        }
+          severity: 'high',
+        },
       ],
       notificationChannels: ['email', 'slack', 'dashboard'],
-      maxEscalationLevels: 3
+      maxEscalationLevels: 3,
     },
     metricsSettings: {
       collectionInterval: 15000, // 15 seconds
       retentionPeriod: 90, // days
       enablePredictiveAnalytics: true,
       enableRealTimeAlerts: true,
-      dashboardRefreshRate: 5000 // 5 seconds
+      dashboardRefreshRate: 5000, // 5 seconds
     },
     qualityGateSettings: {
       enableAutomatedGates: true,
       requireManualApproval: false,
       parallelValidation: true,
       validationTimeout: 300000, // 5 minutes
-      failureHandling: 'warn'
+      failureHandling: 'warn',
     },
 
     // Claude-specific extensions
@@ -427,28 +442,28 @@ export function createClaudeZenIntegrationConfig(): ClaudeZenIntegrationConfig {
       maxNeuralAgents: 20,
       consensusThreshold: 0.8,
       learningEnabled: true,
-      crossDomainTransfer: true
+      crossDomainTransfer: true,
     },
     swarmIntelligence: {
       enableSwarmIntelligence: true,
       maxSwarmSize: 50,
       emergentBehaviors: true,
       collectiveLearning: true,
-      distributedDecisionMaking: true
+      distributedDecisionMaking: true,
     },
     knowledgeManagement: {
       enableCrossAgentKnowledge: true,
       knowledgeRetention: 365, // 1 year
       semanticSearch: true,
       expertiseDiscovery: true,
-      knowledgeValidation: true
+      knowledgeValidation: true,
     },
     performanceOptimization: {
       enablePerformanceOptimization: true,
       cacheStrategy: 'adaptive',
       prefetching: true,
       loadBalancing: true,
-      resourceMonitoring: true
-    }
+      resourceMonitoring: true,
+    },
   };
 }

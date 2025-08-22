@@ -1,11 +1,11 @@
 /**
- * WebSocket API Module.
+ * WebSocket API Module0.
  *
- * WebSocket-based real-time communication interface.
+ * WebSocket-based real-time communication interface0.
  */
 /**
- * @file Websocket module exports.
+ * @file Websocket module exports0.
  */
 
-export * from './client';
-export { WebSocketClient as default } from './client';
+export * from '0./client';
+export { WebSocketClient as default } from '0./client';

@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type {
   Logger,
   MemorySystem,
@@ -46,7 +46,7 @@ interface ProductManagerState {
 /**
  * Product Management Manager - Lightweight facade for product management coordination
  */
-export class ProductManagementManager extends EventEmitter {
+export class ProductManagementManager extends TypedEventBase {
   private readonly config: ProductManagerConfig;
   private readonly logger: Logger;
   private readonly memorySystem: MemorySystem;

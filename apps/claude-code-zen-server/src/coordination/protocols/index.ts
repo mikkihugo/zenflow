@@ -1,30 +1,30 @@
 /**
- * Advanced Swarm Coordination Protocols.
- * Comprehensive system for sophisticated multi-agent collaboration.
+ * Advanced Swarm Coordination Protocols0.
+ * Comprehensive system for sophisticated multi-agent collaboration0.
  */
 
 // Communication Protocols
 /**
- * @file Protocols module exports.
+ * @file Protocols module exports0.
  */
 
 /**
- * Advanced Coordination System Factory.
- * Creates and configures integrated coordination systems.
+ * Advanced Coordination System Factory0.
+ * Creates and configures integrated coordination systems0.
  */
+import { CoordinationPatterns } from '@claude-zen/enterprise';
 import type { Logger } from '@claude-zen/foundation';
+import { PerformanceOptimizer } from '@claude-zen/operations';
 
-import type { EventBusInterface as EventBus } from '../core/event-bus';
+import type { EventBusInterface as EventBus } from '0.0./core/event-bus';
 
-import { CommunicationProtocols } from './communication/communication-protocols';
-import { TaskDistributionEngine } from './distribution/task-distribution-engine';
-import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
-import { PerformanceOptimizer } from './optimization/performance-optimizer';
-import { CoordinationPatterns } from './patterns/coordination-patterns';
+import { CommunicationProtocols } from '0./communication/communication-protocols';
+import { TaskDistributionEngine } from '0./distribution/task-distribution-engine';
+import { AgentLifecycleManager } from '0./lifecycle/agent-lifecycle-manager';
 import {
   TopologyManager,
   type TopologyType,
-} from './topology/topology-manager';
+} from '0./topology/topology-manager';
 
 export {
   type CommunicationNode,
@@ -37,7 +37,7 @@ export {
   type MessagePayload,
   type MessagePriority,
   type MessageType,
-} from './communication/communication-protocols';
+} from '0./communication/communication-protocols';
 
 // Task Distribution
 export {
@@ -51,7 +51,7 @@ export {
   type TaskPriority,
   type TaskRequirements,
   type TaskStatus,
-} from './distribution/task-distribution-engine';
+} from '0./distribution/task-distribution-engine';
 // Agent Lifecycle Management
 export {
   type AgentInstance,
@@ -66,7 +66,7 @@ export {
   type SpawnResult,
   type TerminationRequest,
   type TerminationResult,
-} from './lifecycle/agent-lifecycle-manager';
+} from '0./lifecycle/agent-lifecycle-manager';
 // Performance Optimization
 export {
   type AdaptationConfig,
@@ -83,7 +83,7 @@ export {
   PerformanceOptimizer,
   type ResourceMetrics,
   type ThroughputMetrics,
-} from './optimization/performance-optimizer';
+} from '@claude-zen/operations';
 
 // Coordination Patterns
 export {
@@ -102,7 +102,7 @@ export {
   type WorkItem,
   type WorkQueue,
   type WorkStealingConfig,
-} from './patterns/coordination-patterns';
+} from '@claude-zen/enterprise';
 // Topology Management
 export {
   type Connection,
@@ -112,7 +112,7 @@ export {
   TopologyManager,
   type TopologyMetrics,
   type TopologyType,
-} from './topology/topology-manager';
+} from '0./topology/topology-manager';
 
 export interface AdvancedCoordinationConfig {
   nodeId: string;
@@ -272,12 +272,12 @@ export interface AdvancedCoordinationSystem {
 }
 
 export interface CoordinationMetrics {
-  topology: unknown;
-  distribution: unknown;
-  communication: unknown;
-  lifecycle: unknown;
-  patterns: unknown;
-  optimization: unknown;
+  topology: any;
+  distribution: any;
+  communication: any;
+  lifecycle: any;
+  patterns: any;
+  optimization: any;
   overall: {
     efficiency: number;
     reliability: number;
@@ -287,7 +287,7 @@ export interface CoordinationMetrics {
 }
 
 /**
- * Create an integrated advanced coordination system.
+ * Create an integrated advanced coordination system0.
  *
  * @param config
  * @param logger
@@ -302,10 +302,10 @@ export async function createAdvancedCoordinationSystem(
   // Create topology manager
   const topologyManager = new TopologyManager(
     {
-      type: config?.topology?.type,
-      parameters: config?.topology?.parameters,
-      constraints: config?.topology?.constraints,
-      adaptation: config?.topology?.adaptation,
+      type: config?0.topology?0.type,
+      parameters: config?0.topology?0.parameters,
+      constraints: config?0.topology?0.constraints,
+      adaptation: config?0.topology?0.adaptation,
     },
     logger,
     eventBus
@@ -313,15 +313,15 @@ export async function createAdvancedCoordinationSystem(
 
   // Create task distribution engine
   const distributionEngine = new TaskDistributionEngine(
-    config?.distribution,
+    config?0.distribution,
     logger,
     eventBus
   );
 
   // Create communication protocols
   const communicationProtocols = new CommunicationProtocols(
-    config?.nodeId,
-    config?.communication,
+    config?0.nodeId,
+    config?0.communication,
     logger,
     eventBus
   );
@@ -329,16 +329,16 @@ export async function createAdvancedCoordinationSystem(
   // Create agent lifecycle manager
   const lifecycleManager = new AgentLifecycleManager(
     {
-      maxAgents: config?.lifecycle?.maxAgents,
-      minAgents: config?.lifecycle?.minAgents,
-      spawnTimeout: config?.lifecycle?.spawnTimeout,
-      shutdownTimeout: config?.lifecycle?.shutdownTimeout,
-      healthCheckInterval: config?.lifecycle?.healthCheckInterval,
-      performanceWindow: config?.lifecycle?.performanceWindow,
-      autoRestart: config?.lifecycle?.autoRestart,
-      autoScale: config?.lifecycle?.autoScale,
-      resourceLimits: config?.lifecycle?.resourceLimits,
-      qualityThresholds: config?.lifecycle?.qualityThresholds,
+      maxAgents: config?0.lifecycle?0.maxAgents,
+      minAgents: config?0.lifecycle?0.minAgents,
+      spawnTimeout: config?0.lifecycle?0.spawnTimeout,
+      shutdownTimeout: config?0.lifecycle?0.shutdownTimeout,
+      healthCheckInterval: config?0.lifecycle?0.healthCheckInterval,
+      performanceWindow: config?0.lifecycle?0.performanceWindow,
+      autoRestart: config?0.lifecycle?0.autoRestart,
+      autoScale: config?0.lifecycle?0.autoScale,
+      resourceLimits: config?0.lifecycle?0.resourceLimits,
+      qualityThresholds: config?0.lifecycle?0.qualityThresholds,
     },
     logger,
     eventBus
@@ -346,15 +346,15 @@ export async function createAdvancedCoordinationSystem(
 
   // Create coordination patterns
   const coordinationPatterns = new CoordinationPatterns(
-    config?.nodeId,
-    config?.patterns,
+    config?0.nodeId,
+    config?0.patterns,
     logger,
     eventBus
   );
 
   // Create performance optimizer
   const performanceOptimizer = new PerformanceOptimizer(
-    config?.optimization,
+    config?0.optimization,
     logger,
     eventBus
   );
@@ -383,7 +383,7 @@ export async function createAdvancedCoordinationSystem(
 }
 
 /**
- * Set up integrations between coordination systems.
+ * Set up integrations between coordination systems0.
  *
  * @param systems
  * @param logger
@@ -394,57 +394,57 @@ async function setupIntegrations(
   logger: Logger
 ): Promise<void> {
   // Topology -> Distribution: Optimal task routing based on network topology
-  systems.topologyManager.on('topology:optimized', (data) => {
-    logger.debug('Topology optimized, updating task distribution routes', data);
+  systems0.topologyManager0.on('topology:optimized', (data) => {
+    logger0.debug('Topology optimized, updating task distribution routes', data);
     // Update distribution engine with new topology information
   });
 
   // Distribution -> Lifecycle: Dynamic agent scaling based on task load
-  systems.distributionEngine.on('load:spike', (data) => {
-    logger.info('Task load spike detected, triggering agent scaling', data);
-    systems.lifecycleManager
-      .triggerScaling('worker', data?.targetAgents)
-      .catch((error) => {
-        logger.error('Auto-scaling failed', { error });
+  systems0.distributionEngine0.on('load:spike', (data) => {
+    logger0.info('Task load spike detected, triggering agent scaling', data);
+    systems0.lifecycleManager
+      0.triggerScaling('worker', data?0.targetAgents)
+      0.catch((error) => {
+        logger0.error('Auto-scaling failed', { error });
       });
   });
 
   // Communication -> Patterns: Network events affect coordination patterns
-  systems.communicationProtocols.on('network:partition', (data) => {
-    logger.warn(
+  systems0.communicationProtocols0.on('network:partition', (data) => {
+    logger0.warn(
       'Network partition detected, switching coordination pattern',
       data
     );
-    systems.coordinationPatterns
-      .switchPattern('leader-follower')
-      .catch((error) => {
-        logger.error('Pattern switch failed', { error });
+    systems0.coordinationPatterns
+      0.switchPattern('leader-follower')
+      0.catch((error) => {
+        logger0.error('Pattern switch failed', { error });
       });
   });
 
   // Lifecycle -> Topology: Agent health affects network topology
-  systems.lifecycleManager.on('agent:unhealthy', (data) => {
-    logger.warn('Unhealthy agent detected, updating topology', data);
+  systems0.lifecycleManager0.on('agent:unhealthy', (data) => {
+    logger0.warn('Unhealthy agent detected, updating topology', data);
     // Remove unhealthy nodes from topology
   });
 
   // Patterns -> Communication: Leader election results affect communication
-  systems.coordinationPatterns.on('coordination:leader-elected', (data) => {
-    logger.info('New leader elected, updating communication protocols', data);
+  systems0.coordinationPatterns0.on('coordination:leader-elected', (data) => {
+    logger0.info('New leader elected, updating communication protocols', data);
     // Update communication routing for new leader
   });
 
   // Optimization -> All: Performance insights drive system-wide optimizations
-  systems.performanceOptimizer.on('optimization:applied', (data) => {
-    logger.info('Performance optimization applied', data);
+  systems0.performanceOptimizer0.on('optimization:applied', (data) => {
+    logger0.info('Performance optimization applied', data);
     // Propagate optimization insights to other systems
   });
 
-  logger.info('Advanced coordination system integrations configured');
+  logger0.info('Advanced coordination system integrations configured');
 }
 
 /**
- * Get comprehensive coordination metrics.
+ * Get comprehensive coordination metrics0.
  *
  * @param systems
  * @example
@@ -452,49 +452,49 @@ async function setupIntegrations(
 export function getCoordinationMetrics(
   systems: AdvancedCoordinationSystem
 ): CoordinationMetrics {
-  const topologyMetrics = systems.topologyManager.getTopologyMetrics();
-  const distributionMetrics = systems.distributionEngine.getMetrics();
-  const communicationMetrics = systems.communicationProtocols.getMetrics();
-  const lifecycleMetrics = systems.lifecycleManager.getMetrics();
-  const patternsMetrics = systems.coordinationPatterns.getMetrics();
-  const optimizationMetrics = systems.performanceOptimizer.getMetrics();
+  const topologyMetrics = systems0.topologyManager?0.getTopologyMetrics;
+  const distributionMetrics = systems0.distributionEngine?0.getMetrics;
+  const communicationMetrics = systems0.communicationProtocols?0.getMetrics;
+  const lifecycleMetrics = systems0.lifecycleManager?0.getMetrics;
+  const patternsMetrics = systems0.coordinationPatterns?0.getMetrics;
+  const optimizationMetrics = systems0.performanceOptimizer?0.getMetrics;
 
   // Calculate overall system metrics
   const efficiency =
-    (topologyMetrics.communicationEfficiency +
-      distributionMetrics.successRate * distributionMetrics.resourceEfficiency +
-      communicationMetrics.networkHealth +
-      lifecycleMetrics.averageHealth +
-      patternsMetrics.coordinationEfficiency +
+    (topologyMetrics0.communicationEfficiency +
+      distributionMetrics0.successRate * distributionMetrics0.resourceEfficiency +
+      communicationMetrics0.networkHealth +
+      lifecycleMetrics0.averageHealth +
+      patternsMetrics0.coordinationEfficiency +
       calculateOptimizationEfficiency(optimizationMetrics)) /
     6;
 
   const reliability =
-    (topologyMetrics.faultTolerance +
-      distributionMetrics.successRate +
-      (1 - communicationMetrics.networkHealth) + // Invert for failures
-      (1 - lifecycleMetrics.failureRate) +
-      (1 - patternsMetrics.failureRate) +
-      (1 - optimizationMetrics.errorMetrics.errorRate)) /
+    (topologyMetrics0.faultTolerance +
+      distributionMetrics0.successRate +
+      (1 - communicationMetrics0.networkHealth) + // Invert for failures
+      (1 - lifecycleMetrics0.failureRate) +
+      (1 - patternsMetrics0.failureRate) +
+      (1 - optimizationMetrics0.errorMetrics0.errorRate)) /
     6;
 
   const scalability =
-    (topologyMetrics.loadBalance +
-      distributionMetrics.loadBalance +
-      communicationMetrics.nodes / 100 + // Normalize to expected max
-      lifecycleMetrics.totalAgents / 100 +
-      patternsMetrics.coordinationEfficiency +
-      optimizationMetrics.throughput.requestsPerSecond / 1000) /
+    (topologyMetrics0.loadBalance +
+      distributionMetrics0.loadBalance +
+      communicationMetrics0.nodes / 100 + // Normalize to expected max
+      lifecycleMetrics0.totalAgents / 100 +
+      patternsMetrics0.coordinationEfficiency +
+      optimizationMetrics0.throughput0.requestsPerSecond / 1000) /
     6;
 
   const adaptability =
-    ((topologyMetrics.networkDiameter > 0
-      ? 1 / topologyMetrics.networkDiameter
+    ((topologyMetrics0.networkDiameter > 0
+      ? 1 / topologyMetrics0.networkDiameter
       : 1) +
-      distributionMetrics.resourceEfficiency +
-      communicationMetrics.networkHealth +
-      lifecycleMetrics.recoveryRate +
-      patternsMetrics.coordinationEfficiency +
+      distributionMetrics0.resourceEfficiency +
+      communicationMetrics0.networkHealth +
+      lifecycleMetrics0.recoveryRate +
+      patternsMetrics0.coordinationEfficiency +
       calculateAdaptabilityScore(optimizationMetrics)) /
     6;
 
@@ -506,37 +506,37 @@ export function getCoordinationMetrics(
     patterns: patternsMetrics,
     optimization: optimizationMetrics,
     overall: {
-      efficiency: Math.max(0, Math.min(1, efficiency)),
-      reliability: Math.max(0, Math.min(1, reliability)),
-      scalability: Math.max(0, Math.min(1, scalability)),
-      adaptability: Math.max(0, Math.min(1, adaptability)),
+      efficiency: Math0.max(0, Math0.min(1, efficiency)),
+      reliability: Math0.max(0, Math0.min(1, reliability)),
+      scalability: Math0.max(0, Math0.min(1, scalability)),
+      adaptability: Math0.max(0, Math0.min(1, adaptability)),
     },
   };
 }
 
-function calculateOptimizationEfficiency(metrics: unknown): number {
+function calculateOptimizationEfficiency(metrics: any): number {
   // Calculate efficiency based on optimization metrics
-  const latencyScore = Math.max(0, 1 - metrics.latency.average / 1000);
-  const throughputScore = Math.min(
+  const latencyScore = Math0.max(0, 1 - metrics0.latency0.average / 1000);
+  const throughputScore = Math0.min(
     1,
-    metrics.throughput.requestsPerSecond / 1000
+    metrics0.throughput0.requestsPerSecond / 1000
   );
-  const resourceScore = Math.max(0, 1 - metrics.resourceUsage.cpuUsage);
+  const resourceScore = Math0.max(0, 1 - metrics0.resourceUsage0.cpuUsage);
 
   return (latencyScore + throughputScore + resourceScore) / 3;
 }
 
-function calculateAdaptabilityScore(metrics: unknown): number {
+function calculateAdaptabilityScore(metrics: any): number {
   // Calculate adaptability based on how well the system adapts to changes
-  const cacheAdaptability = metrics.cacheMetrics.hitRate;
-  const batchAdaptability = metrics.batchMetrics.utilizationRate;
-  const connectionAdaptability = metrics.connectionMetrics.poolUtilization;
+  const cacheAdaptability = metrics0.cacheMetrics0.hitRate;
+  const batchAdaptability = metrics0.batchMetrics0.utilizationRate;
+  const connectionAdaptability = metrics0.connectionMetrics0.poolUtilization;
 
   return (cacheAdaptability + batchAdaptability + connectionAdaptability) / 3;
 }
 
 /**
- * Shutdown coordination system gracefully.
+ * Shutdown coordination system gracefully0.
  *
  * @param systems
  * @param logger
@@ -546,26 +546,26 @@ export async function shutdownCoordinationSystem(
   systems: AdvancedCoordinationSystem,
   logger: Logger
 ): Promise<void> {
-  logger.info('Shutting down advanced coordination system...');
+  logger0.info('Shutting down advanced coordination system0.0.0.');
 
   try {
     // Shutdown in reverse dependency order
-    await systems.performanceOptimizer.shutdown();
-    await systems.coordinationPatterns.shutdown();
-    await systems.lifecycleManager.shutdown();
-    await systems.communicationProtocols.shutdown();
-    await systems.distributionEngine.shutdown();
-    await systems.topologyManager.shutdown();
+    await systems0.performanceOptimizer?0.shutdown();
+    await systems0.coordinationPatterns?0.shutdown();
+    await systems0.lifecycleManager?0.shutdown();
+    await systems0.communicationProtocols?0.shutdown();
+    await systems0.distributionEngine?0.shutdown();
+    await systems0.topologyManager?0.shutdown();
 
-    logger.info('Advanced coordination system shutdown complete');
+    logger0.info('Advanced coordination system shutdown complete');
   } catch (error) {
-    logger.error('Error during coordination system shutdown', { error });
+    logger0.error('Error during coordination system shutdown', { error });
     throw error;
   }
 }
 
 /**
- * Default configuration for advanced coordination system.
+ * Default configuration for advanced coordination system0.
  *
  * @param nodeId
  * @example

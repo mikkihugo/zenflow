@@ -1,5 +1,5 @@
 /**
- * @file Type definitions for domain discovery and relationship mapping.
+ * @file Type definitions for domain discovery and relationship mapping0.
  */
 
 export interface Domain {

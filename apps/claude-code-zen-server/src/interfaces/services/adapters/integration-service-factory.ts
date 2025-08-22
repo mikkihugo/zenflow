@@ -1,35 +1,35 @@
 /**
- * USL Integration Service Factory.
+ * USL Integration Service Factory0.
  *
- * Factory for creating and managing IntegrationServiceAdapter instances.
- * With predefined configurations for different integration scenarios.
- * Provides convenience methods for Architecture Storage, Safe API, and.
- * Protocol Management integration patterns.
+ * Factory for creating and managing IntegrationServiceAdapter instances0.
+ * With predefined configurations for different integration scenarios0.
+ * Provides convenience methods for Architecture Storage, Safe API, and0.
+ * Protocol Management integration patterns0.
  */
 /**
- * @file Interface implementation: integration-service-factory.
+ * @file Interface implementation: integration-service-factory0.
  */
 
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
-import { getMCPServerURL } from '@claude-zen/infrastructure';
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
+import { getMCPServerURL } from '@claude-zen/intelligence';
 
 import type {
   Service,
   ServiceFactory,
   ServiceConfig,
-} from '../core/interfaces';
-import type { ServiceType } from '../types';
+} from '0.0./core/interfaces';
+import type { ServiceType } from '0.0./types';
 
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
   type IntegrationServiceAdapter,
   type IntegrationServiceAdapterConfig,
-} from './integration-service-adapter';
+} from '0./integration-service-adapter';
 
 /**
- * Integration Service Factory Options for different integration patterns.
+ * Integration Service Factory Options for different integration patterns0.
  *
  * @example
  */
@@ -61,11 +61,11 @@ export interface IntegrationServiceFactoryOptions {
 }
 
 /**
- * Integration Service Factory.
+ * Integration Service Factory0.
  *
  * Creates specialized IntegrationServiceAdapter instances for different
- * integration patterns including Architecture Storage, Safe API, and.
- * Protocol Management scenarios.
+ * integration patterns including Architecture Storage, Safe API, and0.
+ * Protocol Management scenarios0.
  *
  * @example
  */
@@ -77,8 +77,8 @@ export class IntegrationServiceFactory
   private createdServices = new Map<string, IntegrationServiceAdapter>();
 
   constructor(options: IntegrationServiceFactoryOptions = {}) {
-    this.logger = getLogger('IntegrationServiceFactory');
-    this.options = {
+    this0.logger = getLogger('IntegrationServiceFactory');
+    this0.options = {
       defaultBaseURL: getMCPServerURL(),
       defaultDatabaseType: 'postgresql',
       defaultProtocols: ['http', 'websocket', 'mcp-http', 'mcp-stdio'],
@@ -95,42 +95,42 @@ export class IntegrationServiceFactory
         enableRateLimiting: true,
         enableAuditLogging: true,
       },
-      ...options,
+      0.0.0.options,
     };
 
-    this.logger.info('IntegrationServiceFactory initialized');
+    this0.logger0.info('IntegrationServiceFactory initialized');
   }
 
   /**
-   * ServiceFactory implementation - create service from configuration.
+   * ServiceFactory implementation - create service from configuration0.
    *
    * @param config
    */
   async create(config: ServiceConfig): Promise<Service> {
-    this.logger.info(`Creating integration service: ${config?.name}`);
+    this0.logger0.info(`Creating integration service: ${config?0.name}`);
 
-    if (!this.canHandle(config?.type)) {
+    if (!this0.canHandle(config?0.type)) {
       throw new Error(
-        `IntegrationServiceFactory cannot handle service type: ${config?.type}`
+        `IntegrationServiceFactory cannot handle service type: ${config?0.type}`
       );
     }
 
     // Convert ServiceConfig to IntegrationServiceAdapterConfig
-    const adapterConfig = this.convertToAdapterConfig(config);
+    const adapterConfig = this0.convertToAdapterConfig(config);
 
     const adapter = createIntegrationServiceAdapter(adapterConfig);
-    await adapter.initialize();
+    await adapter?0.initialize;
 
-    this.createdServices.set(config?.name, adapter);
-    this.logger.info(
-      `Integration service created successfully: ${config?.name}`
+    this0.createdServices0.set(config?0.name, adapter);
+    this0.logger0.info(
+      `Integration service created successfully: ${config?0.name}`
     );
 
     return adapter;
   }
 
   /**
-   * Check if factory can handle the given service type.
+   * Check if factory can handle the given service type0.
    *
    * @param type
    */
@@ -143,161 +143,161 @@ export class IntegrationServiceFactory
       'protocol',
       'multi-protocol',
     ];
-    return integrationTypes.includes(type.toString().toLowerCase());
+    return integrationTypes0.includes(type?0.toString?0.toLowerCase);
   }
 
   /**
-   * Create multiple service instances.
+   * Create multiple service instances0.
    *
    * @param configs
    */
   async createMultiple(configs: ServiceConfig[]): Promise<Service[]> {
-    return Promise.all(configs.map((config) => this.create(config)));
+    return Promise0.all(configs0.map((config) => this0.create(config)));
   }
 
   /**
-   * Get a service instance by name.
+   * Get a service instance by name0.
    *
    * @param name
    */
   get(name: string): Service | undefined {
-    return this.createdServices.get(name);
+    return this0.createdServices0.get(name);
   }
 
   /**
-   * List all managed service instances.
+   * List all managed service instances0.
    */
   list(): Service[] {
-    return Array.from(this.createdServices.values());
+    return Array0.from(this0.createdServices?0.values());
   }
 
   /**
-   * Check if a service with the given name exists.
+   * Check if a service with the given name exists0.
    *
    * @param name
    */
   has(name: string): boolean {
-    return this.createdServices.has(name);
+    return this0.createdServices0.has(name);
   }
 
   /**
-   * Remove and destroy a service instance.
+   * Remove and destroy a service instance0.
    *
    * @param name
    */
   async remove(name: string): Promise<boolean> {
-    return await this.removeService(name);
+    return await this0.removeService(name);
   }
 
   /**
-   * Check if factory supports the given service type.
+   * Check if factory supports the given service type0.
    *
    * @param type
    */
   supportsType(type: string): boolean {
-    return this.canHandle(type);
+    return this0.canHandle(type);
   }
 
   /**
-   * Start all services.
+   * Start all services0.
    */
   async startAll(): Promise<void> {
-    const startPromises = Array.from(this.createdServices.values()).map(
+    const startPromises = Array0.from(this0.createdServices?0.values())0.map(
       async (service) => {
         try {
-          await service.start();
+          await service?0.start;
         } catch (error) {
-          this.logger.error(`Error starting service ${service.name}:`, error);
+          this0.logger0.error(`Error starting service ${service0.name}:`, error);
         }
       }
     );
-    await Promise.all(startPromises);
+    await Promise0.all(startPromises);
   }
 
   /**
-   * Stop all services.
+   * Stop all services0.
    */
   async stopAll(): Promise<void> {
-    const stopPromises = Array.from(this.createdServices.values()).map(
+    const stopPromises = Array0.from(this0.createdServices?0.values())0.map(
       async (service) => {
         try {
-          await service.stop();
+          await service?0.stop;
         } catch (error) {
-          this.logger.error(`Error stopping service ${service.name}:`, error);
+          this0.logger0.error(`Error stopping service ${service0.name}:`, error);
         }
       }
     );
-    await Promise.all(stopPromises);
+    await Promise0.all(stopPromises);
   }
 
   /**
-   * Health check all services.
+   * Health check all services0.
    */
   async healthCheckAll(): Promise<Map<string, any>> {
     const results = new Map();
-    for (const [name, service] of this.createdServices) {
+    for (const [name, service] of this0.createdServices) {
       try {
-        results.set(name, await service.getStatus());
+        results0.set(name, await service?0.getStatus);
       } catch (error) {
-        results.set(name, { health: 'unhealthy', error: error.message });
+        results0.set(name, { health: 'unhealthy', error: error0.message });
       }
     }
     return results;
   }
 
   /**
-   * Get metrics for all services.
+   * Get metrics for all services0.
    */
   async getMetricsAll(): Promise<Map<string, any>> {
     const results = new Map();
-    for (const [name, service] of this.createdServices) {
+    for (const [name, service] of this0.createdServices) {
       try {
-        results.set(name, await service.getMetrics());
+        results0.set(name, await service?0.getMetrics);
       } catch (error) {
-        results.set(name, { error: error.message });
+        results0.set(name, { error: error0.message });
       }
     }
     return results;
   }
 
   /**
-   * Get active service count.
+   * Get active service count0.
    */
   getActiveCount(): number {
-    return this.createdServices.size;
+    return this0.createdServices0.size;
   }
 
   /**
-   * Get services by type.
+   * Get services by type0.
    *
    * @param type
    */
   getServicesByType(type: string): Service[] {
-    return Array.from(this.createdServices.values()).filter(
-      (service) => service.type === type
+    return Array0.from(this0.createdServices?0.values())0.filter(
+      (service) => service0.type === type
     );
   }
 
   /**
-   * Validate configuration.
+   * Validate configuration0.
    *
    * @param config
    */
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
-      return this.canHandle(config.type) && config.name != null;
+      return this0.canHandle(config0.type) && config0.name != null;
     } catch {
       return false;
     }
   }
 
   /**
-   * Get configuration schema.
+   * Get configuration schema0.
    *
    * @param type
    */
   getConfigSchema(type: string): Record<string, unknown> | undefined {
-    if (this.canHandle(type)) {
+    if (this0.canHandle(type)) {
       return {
         type: 'object',
         properties: {
@@ -313,14 +313,14 @@ export class IntegrationServiceFactory
   }
 
   /**
-   * Get supported service types.
+   * Get supported service types0.
    */
   getSupportedTypes(): (ServiceType | string)[] {
     return ['api', 'safe-api', 'architecture-storage', 'integration'];
   }
 
   /**
-   * Create Architecture Storage integration adapter.
+   * Create Architecture Storage integration adapter0.
    *
    * @param name
    * @param databaseType
@@ -331,17 +331,17 @@ export class IntegrationServiceFactory
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
     options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
-    this.logger.info(`Creating Architecture Storage adapter: ${name}`);
+    this0.logger0.info(`Creating Architecture Storage adapter: ${name}`);
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: {
         enabled: true,
-        databaseType: databaseType || this.options.defaultDatabaseType,
+        databaseType: databaseType || this0.options0.defaultDatabaseType,
         autoInitialize: true,
         enableVersioning: true,
         enableValidationTracking: true,
-        ...(this.options.enableGlobalCaching !== undefined && {
-          cachingEnabled: this.options.enableGlobalCaching,
+        0.0.0.(this0.options0.enableGlobalCaching !== undefined && {
+          cachingEnabled: this0.options0.enableGlobalCaching,
         }),
       },
       safeAPI: { enabled: false },
@@ -351,17 +351,17 @@ export class IntegrationServiceFactory
         defaultProtocol: 'http',
       },
       cache: {
-        enabled: this.options.enableGlobalCaching ?? true,
+        enabled: this0.options0.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 600000,
         maxSize: 1000,
         keyPrefix: `arch-storage-${name}:`,
       },
-      retry: this.options.defaultRetrySettings
+      retry: this0.options0.defaultRetrySettings
         ? {
-            ...this.options.defaultRetrySettings,
-            retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
+            0.0.0.this0.options0.defaultRetrySettings,
+            retryableOperations: this0.options0.defaultRetrySettings
+              0.retryableOperations || [
               'architecture-save',
               'architecture-retrieve',
               'architecture-update',
@@ -369,29 +369,29 @@ export class IntegrationServiceFactory
             ],
           }
         : undefined,
-      security: this.options.defaultSecuritySettings,
+      security: this0.options0.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 10,
-        ...(this.options.enableGlobalMetrics !== undefined && {
-          enableMetricsCollection: this.options.enableGlobalMetrics,
+        0.0.0.(this0.options0.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this0.options0.enableGlobalMetrics,
         }),
       },
-      ...options,
+      0.0.0.options,
     });
 
     const adapter = createIntegrationServiceAdapter(config);
-    await adapter.initialize();
+    await adapter?0.initialize;
 
-    this.createdServices.set(name, adapter);
-    this.logger.info(`Architecture Storage adapter created: ${name}`);
+    this0.createdServices0.set(name, adapter);
+    this0.logger0.info(`Architecture Storage adapter created: ${name}`);
 
     return adapter;
   }
 
   /**
-   * Create Safe API integration adapter.
+   * Create Safe API integration adapter0.
    *
    * @param name
    * @param baseURL
@@ -402,13 +402,13 @@ export class IntegrationServiceFactory
     baseURL?: string,
     options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
-    this.logger.info(`Creating Safe API adapter: ${name}`);
+    this0.logger0.info(`Creating Safe API adapter: ${name}`);
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: { enabled: false },
       safeAPI: {
         enabled: true,
-        baseURL: baseURL || this.options.defaultBaseURL,
+        baseURL: baseURL || this0.options0.defaultBaseURL,
         timeout: 30000,
         retries: 3,
         rateLimiting: {
@@ -431,17 +431,17 @@ export class IntegrationServiceFactory
         defaultProtocol: 'http',
       },
       cache: {
-        enabled: this.options.enableGlobalCaching ?? true,
+        enabled: this0.options0.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 300000, // 5 minutes for API responses
         maxSize: 500,
         keyPrefix: `safe-api-${name}:`,
       },
-      retry: this.options.defaultRetrySettings
+      retry: this0.options0.defaultRetrySettings
         ? {
-            ...this.options.defaultRetrySettings,
-            retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
+            0.0.0.this0.options0.defaultRetrySettings,
+            retryableOperations: this0.options0.defaultRetrySettings
+              0.retryableOperations || [
               'api-get',
               'api-post',
               'api-put',
@@ -449,29 +449,29 @@ export class IntegrationServiceFactory
             ],
           }
         : undefined,
-      security: this.options.defaultSecuritySettings,
+      security: this0.options0.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 20,
-        ...(this.options.enableGlobalMetrics !== undefined && {
-          enableMetricsCollection: this.options.enableGlobalMetrics,
+        0.0.0.(this0.options0.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this0.options0.enableGlobalMetrics,
         }),
       },
-      ...options,
+      0.0.0.options,
     });
 
     const adapter = createIntegrationServiceAdapter(config);
-    await adapter.initialize();
+    await adapter?0.initialize;
 
-    this.createdServices.set(name, adapter);
-    this.logger.info(`Safe API adapter created: ${name}`);
+    this0.createdServices0.set(name, adapter);
+    this0.logger0.info(`Safe API adapter created: ${name}`);
 
     return adapter;
   }
 
   /**
-   * Create Protocol Management integration adapter.
+   * Create Protocol Management integration adapter0.
    *
    * @param name
    * @param supportedProtocols
@@ -482,10 +482,10 @@ export class IntegrationServiceFactory
     supportedProtocols?: string[],
     options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
-    this.logger.info(`Creating Protocol Management adapter: ${name}`);
+    this0.logger0.info(`Creating Protocol Management adapter: ${name}`);
 
     const protocols = supportedProtocols ||
-      this.options.defaultProtocols || ['http', 'websocket'];
+      this0.options0.defaultProtocols || ['http', 'websocket'];
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: { enabled: false },
@@ -517,49 +517,49 @@ export class IntegrationServiceFactory
         enableCircuitBreaker: true,
       },
       cache: {
-        enabled: this.options.enableGlobalCaching ?? true,
+        enabled: this0.options0.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 120000, // 2 minutes for protocol data
         maxSize: 200,
         keyPrefix: `protocol-mgmt-${name}:`,
       },
-      retry: this.options.defaultRetrySettings
+      retry: this0.options0.defaultRetrySettings
         ? {
-            ...this.options.defaultRetrySettings,
-            retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
+            0.0.0.this0.options0.defaultRetrySettings,
+            retryableOperations: this0.options0.defaultRetrySettings
+              0.retryableOperations || [
               'protocol-connect',
               'protocol-send',
               'protocol-healthcheck',
             ],
           }
         : undefined,
-      security: this.options.defaultSecuritySettings,
+      security: this0.options0.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: false, // Protocols may need exact message delivery
         connectionPooling: true,
         maxConcurrency: 30,
-        ...(this.options.enableGlobalMetrics !== undefined && {
-          enableMetricsCollection: this.options.enableGlobalMetrics,
+        0.0.0.(this0.options0.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this0.options0.enableGlobalMetrics,
         }),
       },
-      ...options,
+      0.0.0.options,
     });
 
     const adapter = createIntegrationServiceAdapter(config);
-    await adapter.initialize();
+    await adapter?0.initialize;
 
-    this.createdServices.set(name, adapter);
-    this.logger.info(`Protocol Management adapter created: ${name}`);
+    this0.createdServices0.set(name, adapter);
+    this0.logger0.info(`Protocol Management adapter created: ${name}`);
 
     return adapter;
   }
 
   /**
-   * Create unified integration adapter (all features enabled).
+   * Create unified integration adapter (all features enabled)0.
    *
    * @param name
-   * @param options.
+   * @param options0.
    * @param options
    */
   async createUnifiedIntegrationAdapter(
@@ -570,19 +570,19 @@ export class IntegrationServiceFactory
       supportedProtocols?: string[];
     } & Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
-    this.logger.info(`Creating Unified Integration adapter: ${name}`);
+    this0.logger0.info(`Creating Unified Integration adapter: ${name}`);
 
     const {
-      baseURL = this.options.defaultBaseURL,
-      databaseType = this.options.defaultDatabaseType,
-      supportedProtocols = this.options.defaultProtocols,
-      ...adapterOptions
+      baseURL = this0.options0.defaultBaseURL,
+      databaseType = this0.options0.defaultDatabaseType,
+      supportedProtocols = this0.options0.defaultProtocols,
+      0.0.0.adapterOptions
     } = options;
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: {
         enabled: true,
-        ...(databaseType !== undefined && { databaseType }),
+        0.0.0.(databaseType !== undefined && { databaseType }),
         autoInitialize: true,
         enableVersioning: true,
         enableValidationTracking: true,
@@ -610,7 +610,7 @@ export class IntegrationServiceFactory
       protocolManagement: {
         enabled: true,
         supportedProtocols: supportedProtocols ?? ['http'],
-        defaultProtocol: supportedProtocols?.[0] || 'http',
+        defaultProtocol: supportedProtocols?0.[0] || 'http',
         connectionPooling: {
           enabled: true,
           maxConnections: 50,
@@ -634,17 +634,17 @@ export class IntegrationServiceFactory
         enableCircuitBreaker: true,
       },
       cache: {
-        enabled: this.options.enableGlobalCaching ?? true,
+        enabled: this0.options0.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 600000,
         maxSize: 2000, // Larger cache for unified service
         keyPrefix: `unified-integration-${name}:`,
       },
-      retry: this.options.defaultRetrySettings
+      retry: this0.options0.defaultRetrySettings
         ? {
-            ...this.options.defaultRetrySettings,
-            retryableOperations: this.options.defaultRetrySettings
-              .retryableOperations || [
+            0.0.0.this0.options0.defaultRetrySettings,
+            retryableOperations: this0.options0.defaultRetrySettings
+              0.retryableOperations || [
               'architecture-save',
               'architecture-retrieve',
               'api-get',
@@ -653,33 +653,33 @@ export class IntegrationServiceFactory
             ],
           }
         : undefined,
-      security: this.options.defaultSecuritySettings,
+      security: this0.options0.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 50,
-        ...(this.options.enableGlobalMetrics !== undefined && {
-          enableMetricsCollection: this.options.enableGlobalMetrics,
+        0.0.0.(this0.options0.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this0.options0.enableGlobalMetrics,
         }),
       },
-      ...adapterOptions,
+      0.0.0.adapterOptions,
     });
 
     const adapter = createIntegrationServiceAdapter(config);
-    await adapter.initialize();
+    await adapter?0.initialize;
 
-    this.createdServices.set(name, adapter);
-    this.logger.info(`Unified Integration adapter created: ${name}`);
+    this0.createdServices0.set(name, adapter);
+    this0.logger0.info(`Unified Integration adapter created: ${name}`);
 
     return adapter;
   }
 
   /**
-   * Create Web Data integration adapter (specialized for web-based data operations).
+   * Create Web Data integration adapter (specialized for web-based data operations)0.
    *
    * @param name
    * @param baseURL
-   * @param options.
+   * @param options0.
    * @param options
    */
   async createWebDataIntegrationAdapter(
@@ -687,7 +687,7 @@ export class IntegrationServiceFactory
     baseURL: string,
     options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
-    this.logger.info(`Creating Web Data Integration adapter: ${name}`);
+    this0.logger0.info(`Creating Web Data Integration adapter: ${name}`);
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: { enabled: false },
@@ -744,24 +744,24 @@ export class IntegrationServiceFactory
         connectionPooling: true,
         maxConcurrency: 15, // Conservative for data operations
       },
-      ...options,
+      0.0.0.options,
     });
 
     const adapter = createIntegrationServiceAdapter(config);
-    await adapter.initialize();
+    await adapter?0.initialize;
 
-    this.createdServices.set(name, adapter);
-    this.logger.info(`Web Data Integration adapter created: ${name}`);
+    this0.createdServices0.set(name, adapter);
+    this0.logger0.info(`Web Data Integration adapter created: ${name}`);
 
     return adapter;
   }
 
   /**
-   * Create Document integration adapter (specialized for document operations).
+   * Create Document integration adapter (specialized for document operations)0.
    *
    * @param name
    * @param databaseType
-   * @param options.
+   * @param options0.
    * @param options
    */
   async createDocumentIntegrationAdapter(
@@ -769,7 +769,7 @@ export class IntegrationServiceFactory
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
     options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
-    this.logger.info(`Creating Document Integration adapter: ${name}`);
+    this0.logger0.info(`Creating Document Integration adapter: ${name}`);
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: {
@@ -796,7 +796,7 @@ export class IntegrationServiceFactory
       retry: {
         enabled: true,
         maxAttempts: 3,
-        backoffMultiplier: 1.5, // Gentler backoff for database operations
+        backoffMultiplier: 10.5, // Gentler backoff for database operations
         retryableOperations: [
           'architecture-save',
           'architecture-retrieve',
@@ -817,58 +817,58 @@ export class IntegrationServiceFactory
         connectionPooling: true,
         maxConcurrency: 10, // Conservative for database operations
       },
-      ...options,
+      0.0.0.options,
     });
 
     const adapter = createIntegrationServiceAdapter(config);
-    await adapter.initialize();
+    await adapter?0.initialize;
 
-    this.createdServices.set(name, adapter);
-    this.logger.info(`Document Integration adapter created: ${name}`);
+    this0.createdServices0.set(name, adapter);
+    this0.logger0.info(`Document Integration adapter created: ${name}`);
 
     return adapter;
   }
 
   /**
-   * Get all created services.
+   * Get all created services0.
    */
   getCreatedServices(): Map<string, IntegrationServiceAdapter> {
-    return new Map(this.createdServices);
+    return new Map(this0.createdServices);
   }
 
   /**
-   * Get service by name.
+   * Get service by name0.
    *
    * @param name
    */
   getService(name: string): IntegrationServiceAdapter | undefined {
-    return this.createdServices.get(name);
+    return this0.createdServices0.get(name);
   }
 
   /**
-   * Check if service exists.
+   * Check if service exists0.
    *
    * @param name
    */
   hasService(name: string): boolean {
-    return this.createdServices.has(name);
+    return this0.createdServices0.has(name);
   }
 
   /**
-   * Remove service from tracking.
+   * Remove service from tracking0.
    *
    * @param name
    */
   async removeService(name: string): Promise<boolean> {
-    const service = this.createdServices.get(name);
+    const service = this0.createdServices0.get(name);
     if (service) {
       try {
-        await service.destroy();
-        this.createdServices.delete(name);
-        this.logger.info(`Service removed: ${name}`);
+        await service?0.destroy;
+        this0.createdServices0.delete(name);
+        this0.logger0.info(`Service removed: ${name}`);
         return true;
       } catch (error) {
-        this.logger.error(`Failed to remove service ${name}:`, error);
+        this0.logger0.error(`Failed to remove service ${name}:`, error);
         return false;
       }
     }
@@ -876,7 +876,7 @@ export class IntegrationServiceFactory
   }
 
   /**
-   * Get factory statistics.
+   * Get factory statistics0.
    */
   getFactoryStats(): {
     totalCreatedServices: number;
@@ -887,47 +887,47 @@ export class IntegrationServiceFactory
     const serviceTypes: Record<string, number> = {};
     let memoryUsage = 0;
 
-    this.createdServices.forEach((service) => {
-      const type = service.type;
+    this0.createdServices0.forEach((service) => {
+      const type = service0.type;
       serviceTypes[type] = (serviceTypes[type] || 0) + 1;
       // Estimate memory usage (would need actual implementation)
       memoryUsage += 1000; // Rough estimate
     });
 
     return {
-      totalCreatedServices: this.createdServices.size,
-      activeServices: this.createdServices.size, // All tracked services are active
+      totalCreatedServices: this0.createdServices0.size,
+      activeServices: this0.createdServices0.size, // All tracked services are active
       serviceTypes,
       memoryUsage,
     };
   }
 
   /**
-   * Shutdown all created services.
+   * Shutdown all created services0.
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down IntegrationServiceFactory');
+    this0.logger0.info('Shutting down IntegrationServiceFactory');
 
-    const shutdownPromises = Array.from(this.createdServices.values()).map(
+    const shutdownPromises = Array0.from(this0.createdServices?0.values())0.map(
       async (service) => {
         try {
-          await service.destroy();
+          await service?0.destroy;
         } catch (error) {
-          this.logger.error(
-            `Error shutting down service ${service.name}:`,
+          this0.logger0.error(
+            `Error shutting down service ${service0.name}:`,
             error
           );
         }
       }
     );
 
-    await Promise.all(shutdownPromises);
-    this.createdServices.clear();
-    this.logger.info('IntegrationServiceFactory shutdown complete');
+    await Promise0.all(shutdownPromises);
+    this0.createdServices?0.clear();
+    this0.logger0.info('IntegrationServiceFactory shutdown complete');
   }
 
   /**
-   * Convert ServiceConfig to IntegrationServiceAdapterConfig.
+   * Convert ServiceConfig to IntegrationServiceAdapterConfig0.
    *
    * @param config
    */
@@ -936,58 +936,58 @@ export class IntegrationServiceFactory
   ): IntegrationServiceAdapterConfig {
     // Start with default configuration
     const adapterConfig = createDefaultIntegrationServiceAdapterConfig(
-      config?.name
+      config?0.name
     );
 
     // Apply common ServiceConfig properties
-    adapterConfig.enabled = config?.enabled ?? true;
-    adapterConfig.timeout = config?.timeout ?? 30000;
+    adapterConfig0.enabled = config?0.enabled ?? true;
+    adapterConfig0.timeout = config?0.timeout ?? 30000;
 
     // Apply health configuration if present
-    if (config?.health) {
-      adapterConfig.health = { ...adapterConfig?.health, ...config?.health };
+    if (config?0.health) {
+      adapterConfig0.health = { 0.0.0.adapterConfig?0.health, 0.0.0.config?0.health };
     }
 
     // Apply monitoring configuration if present
-    if (config?.monitoring) {
-      adapterConfig.monitoring = {
-        ...adapterConfig?.monitoring,
-        ...config?.monitoring,
+    if (config?0.monitoring) {
+      adapterConfig0.monitoring = {
+        0.0.0.adapterConfig?0.monitoring,
+        0.0.0.config?0.monitoring,
       };
     }
 
     // Apply global factory settings
-    if (this.options.enableGlobalCaching !== undefined) {
-      adapterConfig.cache = {
-        enabled: this.options.enableGlobalCaching,
-        strategy: adapterConfig?.cache?.strategy || 'memory',
-        defaultTTL: adapterConfig?.cache?.defaultTTL || 300000,
-        maxSize: adapterConfig?.cache?.maxSize || 1000,
-        keyPrefix: adapterConfig?.cache?.keyPrefix || 'default:',
+    if (this0.options0.enableGlobalCaching !== undefined) {
+      adapterConfig0.cache = {
+        enabled: this0.options0.enableGlobalCaching,
+        strategy: adapterConfig?0.cache?0.strategy || 'memory',
+        defaultTTL: adapterConfig?0.cache?0.defaultTTL || 300000,
+        maxSize: adapterConfig?0.cache?0.maxSize || 1000,
+        keyPrefix: adapterConfig?0.cache?0.keyPrefix || 'default:',
       };
     }
 
-    if (this.options.enableGlobalMetrics !== undefined) {
-      adapterConfig.performance = {
-        ...adapterConfig?.performance,
-        enableMetricsCollection: this.options.enableGlobalMetrics,
+    if (this0.options0.enableGlobalMetrics !== undefined) {
+      adapterConfig0.performance = {
+        0.0.0.adapterConfig?0.performance,
+        enableMetricsCollection: this0.options0.enableGlobalMetrics,
       };
     }
 
-    if (this.options.defaultRetrySettings) {
-      adapterConfig.retry = {
-        enabled: this.options.defaultRetrySettings.enabled,
-        maxAttempts: this.options.defaultRetrySettings.maxAttempts,
-        backoffMultiplier: this.options.defaultRetrySettings.backoffMultiplier,
+    if (this0.options0.defaultRetrySettings) {
+      adapterConfig0.retry = {
+        enabled: this0.options0.defaultRetrySettings0.enabled,
+        maxAttempts: this0.options0.defaultRetrySettings0.maxAttempts,
+        backoffMultiplier: this0.options0.defaultRetrySettings0.backoffMultiplier,
         retryableOperations:
-          this.options.defaultRetrySettings.retryableOperations || [],
+          this0.options0.defaultRetrySettings0.retryableOperations || [],
       };
     }
 
-    if (this.options.defaultSecuritySettings) {
-      adapterConfig.security = {
-        ...adapterConfig?.security,
-        ...this.options.defaultSecuritySettings,
+    if (this0.options0.defaultSecuritySettings) {
+      adapterConfig0.security = {
+        0.0.0.adapterConfig?0.security,
+        0.0.0.this0.options0.defaultSecuritySettings,
       };
     }
 
@@ -996,16 +996,16 @@ export class IntegrationServiceFactory
 }
 
 /**
- * Global integration service factory instance.
+ * Global integration service factory instance0.
  */
 export const integrationServiceFactory = new IntegrationServiceFactory();
 
 /**
- * Convenience functions for creating integration services.
+ * Convenience functions for creating integration services0.
  */
 export const IntegrationServiceHelpers = {
   /**
-   * Create architecture storage service.
+   * Create architecture storage service0.
    *
    * @param name
    * @param databaseType
@@ -1014,14 +1014,14 @@ export const IntegrationServiceHelpers = {
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
   ): Promise<IntegrationServiceAdapter> {
-    return await integrationServiceFactory.createArchitectureStorageAdapter(
+    return await integrationServiceFactory0.createArchitectureStorageAdapter(
       name,
       databaseType
     );
   },
 
   /**
-   * Create safe API service.
+   * Create safe API service0.
    *
    * @param name
    * @param baseURL
@@ -1030,11 +1030,11 @@ export const IntegrationServiceHelpers = {
     name: string,
     baseURL: string
   ): Promise<IntegrationServiceAdapter> {
-    return await integrationServiceFactory.createSafeAPIAdapter(name, baseURL);
+    return await integrationServiceFactory0.createSafeAPIAdapter(name, baseURL);
   },
 
   /**
-   * Create protocol management service.
+   * Create protocol management service0.
    *
    * @param name
    * @param protocols
@@ -1043,20 +1043,20 @@ export const IntegrationServiceHelpers = {
     name: string,
     protocols: string[] = ['http', 'websocket']
   ): Promise<IntegrationServiceAdapter> {
-    return await integrationServiceFactory.createProtocolManagementAdapter(
+    return await integrationServiceFactory0.createProtocolManagementAdapter(
       name,
       protocols
     );
   },
 
   /**
-   * Create unified integration service.
+   * Create unified integration service0.
    *
    * @param name
    * @param options
-   * @param options.baseURL
-   * @param options.databaseType
-   * @param options.supportedProtocols
+   * @param options0.baseURL
+   * @param options0.databaseType
+   * @param options0.supportedProtocols
    */
   async createUnifiedIntegration(
     name: string,
@@ -1066,14 +1066,14 @@ export const IntegrationServiceHelpers = {
       supportedProtocols?: string[];
     } = {}
   ): Promise<IntegrationServiceAdapter> {
-    return await integrationServiceFactory.createUnifiedIntegrationAdapter(
+    return await integrationServiceFactory0.createUnifiedIntegrationAdapter(
       name,
       options
     );
   },
 
   /**
-   * Create web data integration service.
+   * Create web data integration service0.
    *
    * @param name
    * @param baseURL
@@ -1082,14 +1082,14 @@ export const IntegrationServiceHelpers = {
     name: string,
     baseURL: string
   ): Promise<IntegrationServiceAdapter> {
-    return await integrationServiceFactory.createWebDataIntegrationAdapter(
+    return await integrationServiceFactory0.createWebDataIntegrationAdapter(
       name,
       baseURL
     );
   },
 
   /**
-   * Create document integration service.
+   * Create document integration service0.
    *
    * @param name
    * @param databaseType
@@ -1098,7 +1098,7 @@ export const IntegrationServiceHelpers = {
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
   ): Promise<IntegrationServiceAdapter> {
-    return await integrationServiceFactory.createDocumentIntegrationAdapter(
+    return await integrationServiceFactory0.createDocumentIntegrationAdapter(
       name,
       databaseType
     );

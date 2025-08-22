@@ -92,7 +92,7 @@ declare module 'escomplex' {
   ): ComplexityReport;
 
   export function analyzeModule(
-    ast: unknown,
+    ast: any,
     options?: AnalyzeOptions
   ): ComplexityReport;
 }

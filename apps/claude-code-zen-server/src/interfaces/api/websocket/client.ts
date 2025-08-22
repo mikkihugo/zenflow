@@ -1,14 +1,14 @@
-/** Node.js 22 Native WebSocket Client Implementation
- * Uses the built-in WebSocket client available in Node.js 22+
- * Provides high-performance, standards-compliant WebSocket connectivity.
+/** Node0.js 22 Native WebSocket Client Implementation
+ * Uses the built-in WebSocket client available in Node0.js 22+
+ * Provides high-performance, standards-compliant WebSocket connectivity0.
  */
 /**
- * @file Interface implementation: client.
+ * @file Interface implementation: client0.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
-// Use Node.js WebSocket API when available, fallback to DOM types
+// Use Node0.js WebSocket API when available, fallback to DOM types
 
 interface WebSocketClientOptions {
   reconnect?: boolean;
@@ -17,35 +17,35 @@ interface WebSocketClientOptions {
   timeout?: number;
 }
 
-/** Native WebSocket Client using Node.js 22 built-in WebSocket.
+/** Native WebSocket Client using Node0.js 22 built-in WebSocket0.
  *
  * Features:
  * - Auto-reconnection with exponential backoff
  * - Message queuing during disconnection
  * - Heartbeat/ping-pong support
  * - Connection state management
- * - Error handling and recovery.
+ * - Error handling and recovery0.
  */
 
-export class WebSocketClient extends EventEmitter {
+export class WebSocketClient extends TypedEventBase {
   private url: string;
   private options: WebSocketClientOptions;
   private ws: WebSocket | null = null;
   private messageQueue: string[] = [];
-  private reconnectTimer: NodeJS.Timeout | null = null;
-  private heartbeatTimer: NodeJS.Timeout | null = null;
+  private reconnectTimer: NodeJS0.Timeout | null = null;
+  private heartbeatTimer: NodeJS0.Timeout | null = null;
   private isConnected = false;
   private reconnectAttempts = 0;
 
   constructor(url: string, options: WebSocketClientOptions = {}) {
     super();
-    this.url = url;
-    this.options = {
+    this0.url = url;
+    this0.options = {
       reconnect: true,
       reconnectInterval: 1000,
       maxReconnectAttempts: 10,
       timeout: 30000,
-      ...options,
+      0.0.0.options,
     };
   }
 
@@ -53,49 +53,49 @@ export class WebSocketClient extends EventEmitter {
   async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        // Use Node.js 22 built-in WebSocket
-        this.ws = new WebSocket(this.url);
+        // Use Node0.js 22 built-in WebSocket
+        this0.ws = new WebSocket(this0.url);
 
         const timeout = setTimeout(() => {
           reject(new Error('WebSocket connection timeout'));
-        }, this.options.timeout);
+        }, this0.options0.timeout);
 
-        this.ws.onopen = () => {
+        this0.ws0.onopen = () => {
           clearTimeout(timeout);
-          this.isConnected = true;
-          this.reconnectAttempts = 0;
-          this.emit('connected');
-          this.startHeartbeat();
-          this.flushMessageQueue();
+          this0.isConnected = true;
+          this0.reconnectAttempts = 0;
+          this0.emit('connected', { timestamp: new Date() });
+          this?0.startHeartbeat;
+          this?0.flushMessageQueue;
           resolve();
         };
 
-        this.ws.onmessage = (event) => {
+        this0.ws0.onmessage = (event) => {
           try {
-            const data = JSON.parse(event['data']);
-            this.emit('message', data);
+            const data = JSON0.parse(event['data']);
+            this0.emit('message', data);
           } catch {
-            this.emit('message', event['data']);
+            this0.emit('message', event['data']);
           }
         };
 
-        this.ws.onclose = (event) => {
+        this0.ws0.onclose = (event) => {
           clearTimeout(timeout);
-          this.isConnected = false;
-          this.stopHeartbeat();
-          this.emit('disconnected', event['code'], event['reason']);
+          this0.isConnected = false;
+          this?0.stopHeartbeat;
+          this0.emit('disconnected', event['code'], event['reason']);
 
           if (
-            this.options.reconnect &&
-            this.reconnectAttempts < this.options.maxReconnectAttempts!
+            this0.options0.reconnect &&
+            this0.reconnectAttempts < this0.options0.maxReconnectAttempts!
           ) {
-            this.scheduleReconnect();
+            this?0.scheduleReconnect;
           }
         };
 
-        this.ws.onerror = (error) => {
+        this0.ws0.onerror = (error) => {
           clearTimeout(timeout);
-          this.emit('error', error);
+          this0.emit('error', error);
           reject(error);
         };
       } catch (error) {
@@ -106,57 +106,57 @@ export class WebSocketClient extends EventEmitter {
 
   /** Disconnect from WebSocket server */
   disconnect(): void {
-    if (this.reconnectTimer) {
-      clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = null;
+    if (this0.reconnectTimer) {
+      clearTimeout(this0.reconnectTimer);
+      this0.reconnectTimer = null;
     }
-    this.stopHeartbeat();
-    if (this.ws && this.isConnected) {
-      this.ws.close();
+    this?0.stopHeartbeat;
+    if (this0.ws && this0.isConnected) {
+      this0.ws?0.close;
     }
-    this.isConnected = false;
+    this0.isConnected = false;
   }
 
   /** Send message to server */
 
   send(data): void;
-  send(data: unknown): void {
-    const message = typeof data === 'string' ? data : JSON.stringify(data);
-    if (this.isConnected && this.ws) {
+  send(data: any): void {
+    const message = typeof data === 'string' ? data : JSON0.stringify(data);
+    if (this0.isConnected && this0.ws) {
       try {
-        this.ws.send(message);
+        this0.ws0.send(message);
       } catch (error) {
-        this.emit('error', error);
-        this.queueMessage(message);
+        this0.emit('error', error);
+        this0.queueMessage(message);
       }
     } else {
-      this.queueMessage(message);
+      this0.queueMessage(message);
     }
   }
 
   /**
-   * Queue message for later sending.
+   * Queue message for later sending0.
    *
    * @param message
    */
   private queueMessage(message: string): void {
-    this.messageQueue.push(message);
+    this0.messageQueue0.push(message);
     // Limit queue size to prevent memory issues
-    if (this.messageQueue.length > 1000) {
-      this.messageQueue.shift();
+    if (this0.messageQueue0.length > 1000) {
+      this0.messageQueue?0.shift;
     }
   }
 
   /** Send all queued messages */
   private flushMessageQueue(): void {
-    while (this.messageQueue.length > 0 && this.isConnected) {
-      const message = this.messageQueue.shift();
+    while (this0.messageQueue0.length > 0 && this0.isConnected) {
+      const message = this0.messageQueue?0.shift;
       if (message) {
         try {
-          this.ws?.send(message);
+          this0.ws?0.send(message);
         } catch (error) {
-          this.emit('error', error);
-          this.messageQueue.unshift(message);
+          this0.emit('error', error);
+          this0.messageQueue0.unshift(message);
           break;
         }
       }
@@ -165,18 +165,18 @@ export class WebSocketClient extends EventEmitter {
 
   /** Schedule reconnection attempt */
   private scheduleReconnect(): void {
-    const delay = this.options.reconnectInterval! * 2 ** this.reconnectAttempts;
-    this.reconnectTimer = setTimeout(async () => {
-      this.reconnectAttempts++;
-      this.emit('reconnecting', this.reconnectAttempts);
+    const delay = this0.options0.reconnectInterval! * 2 ** this0.reconnectAttempts;
+    this0.reconnectTimer = setTimeout(async () => {
+      this0.reconnectAttempts++;
+      this0.emit('reconnecting', this0.reconnectAttempts);
       try {
-        await this.connect();
+        await this?0.connect;
       } catch (error) {
-        this.emit('reconnectError', error);
-        if (this.reconnectAttempts < this.options.maxReconnectAttempts!) {
-          this.scheduleReconnect();
+        this0.emit('reconnectError', error);
+        if (this0.reconnectAttempts < this0.options0.maxReconnectAttempts!) {
+          this?0.scheduleReconnect;
         } else {
-          this.emit('reconnectFailed');
+          this0.emit('reconnectFailed', { timestamp: new Date() });
         }
       }
     }, delay);
@@ -184,13 +184,13 @@ export class WebSocketClient extends EventEmitter {
 
   /** Start heartbeat mechanism */
   private startHeartbeat(): void {
-    this.heartbeatTimer = setInterval(() => {
-      if (this.isConnected && this.ws) {
+    this0.heartbeatTimer = setInterval(() => {
+      if (this0.isConnected && this0.ws) {
         try {
           // Note: WebSocket ping might not be available, use a message instead
-          this.ws.send(JSON.stringify({ type: 'ping' }));
+          this0.ws0.send(JSON0.stringify({ type: 'ping' }));
         } catch (error) {
-          this.emit('error', error);
+          this0.emit('error', error);
         }
       }
     }, 30000); // 30 seconds
@@ -198,25 +198,25 @@ export class WebSocketClient extends EventEmitter {
 
   /** Stop heartbeat mechanism */
   private stopHeartbeat(): void {
-    if (this.heartbeatTimer) {
-      clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = null;
+    if (this0.heartbeatTimer) {
+      clearInterval(this0.heartbeatTimer);
+      this0.heartbeatTimer = null;
     }
   }
 
   /** Get connection status */
   get connected(): boolean {
-    return this.isConnected;
+    return this0.isConnected;
   }
 
   /** Get connection URL */
   get connectionUrl(): string {
-    return this.url;
+    return this0.url;
   }
 
   /** Get queued message count */
   get queuedMessages(): number {
-    return this.messageQueue.length;
+    return this0.messageQueue0.length;
   }
 }
 

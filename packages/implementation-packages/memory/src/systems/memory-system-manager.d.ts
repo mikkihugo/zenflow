@@ -4,7 +4,7 @@
  * Provides a unified interface for managing complex memory systems with coordination,
  * optimization strategies, lifecycle management, and comprehensive monitoring.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { MemorySystemConfig, MemorySystemStatus, SystemMetrics } from './types';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { JSONValue } from '../core/memory-system';
@@ -15,7 +15,7 @@ interface ManagedComponent {
     healthy: boolean;
     lastHealthCheck: number;
 }
-export declare class MemorySystemManager extends EventEmitter {
+export declare class MemorySystemManager extends TypedEventBase {
     private logger;
     private config;
     private telemetry;

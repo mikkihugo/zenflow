@@ -1,16 +1,16 @@
 /**
- * UACL Client Adapters.
+ * UACL Client Adapters0.
  *
- * Adapters that convert existing clients to UACL interface compliance.
+ * Adapters that convert existing clients to UACL interface compliance0.
  */
 
 // Core MCP adapter and factory
 /**
- * @file Adapters module exports.
+ * @file Adapters module exports0.
  */
 
-export * from './mcp-client-adapter';
+export * from '0./mcp-client-adapter';
 // Demonstrations and examples
-export * from './mcp-client-demo';
+export * from '@claude-zen/intelligence';
 // Integration and migration utilities
-export * from './mcp-integration-example';
+export * from '@claude-zen/intelligence';

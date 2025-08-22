@@ -9,7 +9,7 @@
  */
 
 // Using Awilix DI - no reflect-metadata needed
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type {
   DatabaseAdapter,
   Logger,
@@ -63,7 +63,7 @@ export class CoordinationDao<T>
   extends BaseDao<T>
   implements CoordinationRepository<T>, DataAccessObject<T>
 {
-  private eventEmitter = new EventEmitter();
+  private eventEmitter = new TypedEventBase();
   private locks = new Map<string, LockInfo>();
   private subscriptions = new Map<string, Subscription>();
   private publishedMessages = 0 as number;

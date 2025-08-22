@@ -64,6 +64,7 @@ export interface ClaudeSDKOptions extends BaseClaudeCodeOptions {
   includeMetadata?: boolean;
   preserveHistory?: boolean;
   sessionId?: string;
+  dangerouslySkipPermissions?: boolean;
 }
 
 // =============================================================================
@@ -169,4 +170,5 @@ export const DEFAULT_SDK_OPTIONS: Omit<Required<ClaudeSDKOptions>, 'customPermis
   includeMetadata: false,
   preserveHistory: true,
   sessionId: '',
+  dangerouslySkipPermissions: false,
 } as const;

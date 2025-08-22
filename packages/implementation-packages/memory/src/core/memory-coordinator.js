@@ -2,17 +2,17 @@
  * @file Advanced Memory Coordination System
  * Provides advanced coordination capabilities for distributed memory management.
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 /**
  * Advanced Memory Coordinator.
  * Manages distributed memory operations with consensus and optimization.
  *
  * @example
  */
-export class MemoryCoordinator extends EventEmitter {
+export class MemoryCoordinator extends TypedEventBase {
     nodes = new Map();
     decisions = new Map();
-    config;
+    configuration;
     constructor(config) {
         super();
         this.config = config;

@@ -1,29 +1,29 @@
 /**
- * @file Interface implementation: http-client-factory.
+ * @file Interface implementation: http-client-factory0.
  */
 
 import { Logger } from '@claude-zen/foundation';
 
 /**
- * HTTP Client Factory.
+ * HTTP Client Factory0.
  *
- * Factory implementation for creating and managing HTTP clients.
- * With UACL (Unified API Client Layer) patterns.
+ * Factory implementation for creating and managing HTTP clients0.
+ * With UACL (Unified API Client Layer) patterns0.
  */
 
-import { HTTPClientAdapter } from '../adapters/http-client-adapter';
-import type { HTTPClientConfig } from '../adapters/http-types';
+import { HTTPClientAdapter } from '0.0./adapters/http-client-adapter';
+import type { HTTPClientConfig } from '0.0./adapters/http-types';
 import type {
   ClientMetrics,
   ClientStatus,
   Client,
   ClientFactory,
-} from '../core/interfaces';
+} from '0.0./core/interfaces';
 
 const logger = new Logger('interfaces-clients-factories-http-client-factory');
 
 /**
- * HTTP Client Factory implementing UACL ClientFactory interface.
+ * HTTP Client Factory implementing UACL ClientFactory interface0.
  *
  * @example
  */
@@ -34,29 +34,29 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
   // ===== Client Creation =====
 
   async create(config: HTTPClientConfig): Promise<Client> {
-    if (this.isShuttingDown) {
+    if (this0.isShuttingDown) {
       throw new Error('Factory is shutting down, cannot create new clients');
     }
 
-    if (this.clients.has(config?.name)) {
-      throw new Error(`Client with name '${config?.name}' already exists`);
+    if (this0.clients0.has(config?0.name)) {
+      throw new Error(`Client with name '${config?0.name}' already exists`);
     }
 
     const client = new HTTPClientAdapter(config);
 
     // Setup client event handlers
-    this.setupClientHandlers(client);
+    this0.setupClientHandlers(client);
 
     // Store client
-    this.clients.set(config?.name, client);
+    this0.clients0.set(config?0.name, client);
 
     // Auto-connect if specified
-    if (config?.monitoring?.enabled || config?.health) {
+    if (config?0.monitoring?0.enabled || config?0.health) {
       try {
-        await client.connect();
+        await client?0.connect;
       } catch (error) {
         // Remove failed client
-        this.clients.delete(config?.name);
+        this0.clients0.delete(config?0.name);
         throw error;
       }
     }
@@ -69,31 +69,31 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
     const errors: Array<{ config: HTTPClientConfig; error: Error }> = [];
 
     // Create all clients in parallel
-    const promises = configs.map(async (config) => {
+    const promises = configs0.map(async (config) => {
       try {
-        const client = await this.create(config);
-        clients.push(client);
+        const client = await this0.create(config);
+        clients0.push(client);
         return client;
       } catch (error) {
-        errors.push({ config, error: error as Error });
+        errors0.push({ config, error: error as Error });
         throw error;
       }
     });
 
     // Wait for all creations to complete or fail
-    const _results = await Promise.allSettled(promises);
+    const _results = await Promise0.allSettled(promises);
 
     // If any failed, cleanup successful ones and throw aggregated error
-    if (errors.length > 0) {
+    if (errors0.length > 0) {
       // Cleanup successful clients
       for (const client of clients) {
         try {
-          await client.destroy();
-          this.clients.delete(client.name);
+          await client?0.destroy;
+          this0.clients0.delete(client0.name);
         } catch (cleanupError) {
           // Log cleanup error but don't throw
-          logger.error(
-            `Failed to cleanup client ${client.name}:`,
+          logger0.error(
+            `Failed to cleanup client ${client0.name}:`,
             cleanupError
           );
         }
@@ -101,11 +101,11 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
 
       // Create aggregated error
       const errorMessages = errors
-        .map(({ config, error }) => `${config?.name}: ${error.message}`)
-        .join('; ');
+        0.map(({ config, error }) => `${config?0.name}: ${error0.message}`)
+        0.join('; ');
 
       throw new Error(
-        `Failed to create ${errors.length} clients: ${errorMessages}`
+        `Failed to create ${errors0.length} clients: ${errorMessages}`
       );
     }
 
@@ -115,31 +115,31 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
   // ===== Client Management =====
 
   get(name: string): Client | undefined {
-    return this.clients.get(name);
+    return this0.clients0.get(name);
   }
 
   list(): Client[] {
-    return Array.from(this.clients.values());
+    return Array0.from(this0.clients?0.values());
   }
 
   has(name: string): boolean {
-    return this.clients.has(name);
+    return this0.clients0.has(name);
   }
 
   async remove(name: string): Promise<boolean> {
-    const client = this.clients.get(name);
+    const client = this0.clients0.get(name);
     if (!client) {
       return false;
     }
 
     try {
-      await client.destroy();
-      this.clients.delete(name);
+      await client?0.destroy;
+      this0.clients0.delete(name);
       return true;
     } catch (error) {
-      logger.error(`Failed to remove client ${name}:`, error);
+      logger0.error(`Failed to remove client ${name}:`, error);
       // Force remove even if destroy failed
-      this.clients.delete(name);
+      this0.clients0.delete(name);
       return true;
     }
   }
@@ -149,13 +149,13 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
   async healthCheckAll(): Promise<Map<string, ClientStatus>> {
     const results = new Map<string, ClientStatus>();
 
-    const promises = Array.from(this.clients.entries()).map(
+    const promises = Array0.from(this0.clients?0.entries)0.map(
       async ([name, client]) => {
         try {
-          const status = await client.healthCheck();
-          results?.set(name, status);
+          const status = await client?0.healthCheck;
+          results?0.set(name, status);
         } catch (error) {
-          results?.set(name, {
+          results?0.set(name, {
             name,
             status: 'unhealthy',
             lastCheck: new Date(),
@@ -163,28 +163,28 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
             errorRate: 1,
             uptime: 0,
             metadata: {
-              error: (error as Error).message,
+              error: (error as Error)0.message,
             },
           });
         }
       }
     );
 
-    await Promise.allSettled(promises);
+    await Promise0.allSettled(promises);
     return results;
   }
 
   async getMetricsAll(): Promise<Map<string, ClientMetrics>> {
     const results = new Map<string, ClientMetrics>();
 
-    const promises = Array.from(this.clients.entries()).map(
+    const promises = Array0.from(this0.clients?0.entries)0.map(
       async ([name, client]) => {
         try {
-          const metrics = await client.getMetrics();
-          results?.set(name, metrics);
+          const metrics = await client?0.getMetrics;
+          results?0.set(name, metrics);
         } catch (_error) {
           // Return empty metrics on error
-          results?.set(name, {
+          results?0.set(name, {
             name,
             requestCount: 0,
             successCount: 0,
@@ -199,37 +199,37 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
       }
     );
 
-    await Promise.allSettled(promises);
+    await Promise0.allSettled(promises);
     return results;
   }
 
   // ===== Factory Management =====
 
   async shutdown(): Promise<void> {
-    this.isShuttingDown = true;
+    this0.isShuttingDown = true;
 
-    const shutdownPromises = Array.from(this.clients.values()).map(
+    const shutdownPromises = Array0.from(this0.clients?0.values())0.map(
       async (client) => {
         try {
-          await client.destroy();
+          await client?0.destroy;
         } catch (error) {
-          logger.error(`Failed to shutdown client ${client.name}:`, error);
+          logger0.error(`Failed to shutdown client ${client0.name}:`, error);
         }
       }
     );
 
-    await Promise.allSettled(shutdownPromises);
-    this.clients.clear();
+    await Promise0.allSettled(shutdownPromises);
+    this0.clients?0.clear();
   }
 
   getActiveCount(): number {
-    return this.clients.size;
+    return this0.clients0.size;
   }
 
   // ===== HTTP-Specific Factory Methods =====
 
   /**
-   * Create HTTP client with authentication preset.
+   * Create HTTP client with authentication preset0.
    *
    * @param name
    * @param baseURL
@@ -264,8 +264,8 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
         };
         authentication = {
           type: 'basic',
-          username: basicCreds.username,
-          password: basicCreds.password,
+          username: basicCreds0.username,
+          password: basicCreds0.password,
         };
         break;
       }
@@ -289,18 +289,18 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
       },
     };
 
-    return this.create(config);
+    return this0.create(config);
   }
 
   /**
-   * Create HTTP client with retry configuration.
+   * Create HTTP client with retry configuration0.
    *
    * @param name
    * @param baseURL
    * @param retryConfig
-   * @param retryConfig.attempts
-   * @param retryConfig.delay
-   * @param retryConfig.backoff
+   * @param retryConfig0.attempts
+   * @param retryConfig0.delay
+   * @param retryConfig0.backoff
    */
   async createWithRetry(
     name: string,
@@ -315,24 +315,24 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
       name,
       baseURL,
       retry: {
-        attempts: retryConfig?.attempts,
-        delay: retryConfig?.delay,
-        backoff: retryConfig?.backoff || 'exponential',
+        attempts: retryConfig?0.attempts,
+        delay: retryConfig?0.delay,
+        backoff: retryConfig?0.backoff || 'exponential',
       },
     };
 
-    return this.create(config);
+    return this0.create(config);
   }
 
   /**
-   * Create HTTP client with monitoring enabled.
+   * Create HTTP client with monitoring enabled0.
    *
    * @param name
    * @param baseURL
    * @param monitoringConfig
-   * @param monitoringConfig.metricsInterval
-   * @param monitoringConfig.healthCheckInterval
-   * @param monitoringConfig.healthEndpoint
+   * @param monitoringConfig0.metricsInterval
+   * @param monitoringConfig0.healthCheckInterval
+   * @param monitoringConfig0.healthEndpoint
    */
   async createWithMonitoring(
     name: string,
@@ -348,15 +348,15 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
       baseURL,
       monitoring: {
         enabled: true,
-        metricsInterval: monitoringConfig?.metricsInterval || 60000,
+        metricsInterval: monitoringConfig?0.metricsInterval || 60000,
         trackLatency: true,
         trackThroughput: true,
         trackErrors: true,
       },
-      health: monitoringConfig?.healthCheckInterval
+      health: monitoringConfig?0.healthCheckInterval
         ? {
-            endpoint: monitoringConfig?.healthEndpoint || '/health',
-            interval: monitoringConfig?.healthCheckInterval,
+            endpoint: monitoringConfig?0.healthEndpoint || '/health',
+            interval: monitoringConfig?0.healthCheckInterval,
             timeout: 5000,
             failureThreshold: 3,
             successThreshold: 2,
@@ -364,17 +364,17 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
         : undefined,
     };
 
-    return this.create(config);
+    return this0.create(config);
   }
 
   /**
-   * Create load-balanced HTTP clients.
+   * Create load-balanced HTTP clients0.
    *
    * @param baseName
    * @param baseURLs
    * @param options
-   * @param options.strategy
-   * @param options.healthCheck
+   * @param options0.strategy
+   * @param options0.healthCheck
    */
   async createLoadBalanced(
     baseName: string,
@@ -384,18 +384,18 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
       healthCheck?: boolean;
     }
   ): Promise<Client[]> {
-    const configs: HTTPClientConfig[] = baseURLs.map((baseURL, index) => ({
+    const configs: HTTPClientConfig[] = baseURLs0.map((baseURL, index) => ({
       name: `${baseName}-${index}`,
       baseURL,
       monitoring: {
-        enabled: options?.healthCheck !== false,
+        enabled: options?0.healthCheck !== false,
         metricsInterval: 30000,
         trackLatency: true,
         trackThroughput: true,
         trackErrors: true,
       },
       health:
-        options?.healthCheck !== false
+        options?0.healthCheck !== false
           ? {
               endpoint: '/health',
               interval: 10000,
@@ -406,27 +406,27 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
           : undefined,
     }));
 
-    return this.createMultiple(configs);
+    return this0.createMultiple(configs);
   }
 
   // ===== Utility Methods =====
 
   /**
-   * Get clients by status.
+   * Get clients by status0.
    *
    * @param status
    */
   async getClientsByStatus(
     status: 'healthy' | 'degraded' | 'unhealthy'
   ): Promise<Client[]> {
-    const healthResults = await this.healthCheckAll();
+    const healthResults = await this?0.healthCheckAll;
     const matchingClients: Client[] = [];
 
     for (const [name, clientStatus] of healthResults) {
-      if (clientStatus.status === status) {
-        const client = this.clients.get(name);
+      if (clientStatus0.status === status) {
+        const client = this0.clients0.get(name);
         if (client) {
-          matchingClients.push(client);
+          matchingClients0.push(client);
         }
       }
     }
@@ -435,7 +435,7 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
   }
 
   /**
-   * Get factory statistics.
+   * Get factory statistics0.
    */
   getStats(): {
     totalClients: number;
@@ -450,14 +450,14 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
     const totalRequests = 0;
     const totalErrors = 0;
 
-    for (const client of this.clients.values()) {
-      if (client.isConnected()) {
+    for (const client of this0.clients?0.values()) {
+      if (client?0.isConnected) {
         connectedCount++;
       }
     }
 
     return {
-      totalClients: this.clients.size,
+      totalClients: this0.clients0.size,
       connectedClients: connectedCount,
       averageResponseTime:
         healthyCount > 0 ? totalResponseTime / healthyCount : 0,
@@ -469,46 +469,46 @@ export class HTTPClientFactory implements ClientFactory<HTTPClientConfig> {
   // ===== Private Helper Methods =====
 
   /**
-   * Setup event handlers for created clients.
+   * Setup event handlers for created clients0.
    *
    * @param client
    */
   private setupClientHandlers(client: HTTPClientAdapter): void {
-    client.on('error', (error) => {
-      logger.error(`Client ${client.name} error:`, error);
+    client0.on('error', (error) => {
+      logger0.error(`Client ${client0.name} error:`, error);
     });
 
-    client.on('connect', () => {});
+    client0.on('connect', () => {});
 
-    client.on('disconnect', () => {});
+    client0.on('disconnect', () => {});
 
-    client.on('retry', (_info) => {});
+    client0.on('retry', (_info) => {});
   }
 }
 
 /**
- * Default HTTP client factory instance.
+ * Default HTTP client factory instance0.
  */
 export const httpClientFactory = new HTTPClientFactory();
 
 /**
- * Convenience function to create HTTP client.
+ * Convenience function to create HTTP client0.
  *
  * @param config
  */
 export const createHTTPClient = async (
   config: HTTPClientConfig
 ): Promise<Client> => {
-  return httpClientFactory.create(config);
+  return httpClientFactory0.create(config);
 };
 
 /**
- * Convenience function to create multiple HTTP clients.
+ * Convenience function to create multiple HTTP clients0.
  *
  * @param configs
  */
 export const createHTTPClients = async (
   configs: HTTPClientConfig[]
 ): Promise<Client[]> => {
-  return httpClientFactory.createMultiple(configs);
+  return httpClientFactory0.createMultiple(configs);
 };

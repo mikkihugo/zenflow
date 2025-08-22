@@ -48,7 +48,7 @@ export interface CoordinationStatus {
  * Provides portfolio-level coordination, value stream management, and
  * lean budgeting without complex hierarchies.
  */
-export class ProjectCoordinator extends EventEmitter {
+export class ProjectCoordinator extends TypedEventBase {
   private logger: Logger;
   private projects = new Map<string, ProjectCoordinationConfig>();
   private initialized = false;
@@ -67,7 +67,7 @@ export class ProjectCoordinator extends EventEmitter {
     this.logger.info('Initializing project coordinator for SAFe LPM');
     this.initialized = true;
     
-    this.emit('coordinator:initialized');
+    this.emit('coordinator:initialized', {});
   }
 
   /**

@@ -1,26 +1,26 @@
 /**
- * @file Main entry point for REST API layer.
+ * @file Main entry point for REST API layer0.
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
 
 /**
- * REST API Layer - Main Entry Point.
+ * REST API Layer - Main Entry Point0.
  *
- * Central export point for the REST API layer.
- * Following Google Code Standards with explicit exports.
- * Clean separation between API layer and business domains.
+ * Central export point for the REST API layer0.
+ * Following Google Code Standards with explicit exports0.
+ * Clean separation between API layer and business domains0.
  */
 
-import { getCORSOrigins, getMCPServerURL } from '@claude-zen/infrastructure';
-
-import { APIClient } from './client';
-// Import server types for internal use
 import {
   type APIClientConfig,
   APIServer,
   type APIServerConfig,
-} from './server';
+} from '@claude-zen/foundation';
+import { getCORSOrigins, getMCPServerURL } from '@claude-zen/intelligence';
+
+import { APIClient } from '0./client';
+// Import server types for internal use
 
 const logger = getLogger('interfaces-api-http-index');
 
@@ -28,10 +28,10 @@ export type {
   APIClientConfig,
   PaginationOptions,
   RequestOptions,
-} from './client';
+} from '0./client';
 // ===== API CLIENT SDK =====
-export { APIClient, apiClient, createAPIClient } from './client';
-export type { AuthContext, User } from './middleware/auth';
+export { APIClient, apiClient, createAPIClient } from '0./client';
+export type { AuthContext, User } from '0./middleware/auth';
 export {
   authMiddleware,
   getCurrentUser,
@@ -39,7 +39,7 @@ export {
   hasRole,
   isAdmin,
   optionalAuthMiddleware,
-} from './middleware/auth';
+} from '0./middleware/auth';
 // ===== MIDDLEWARE =====
 export {
   APIError as APIErrorClass,
@@ -51,14 +51,14 @@ export {
   createValidationError,
   errorHandler,
   notFoundHandler,
-} from './middleware/errors';
+} from '0./middleware/errors';
 export {
   LogLevel,
   log,
   logError,
   logPerformance,
   requestLogger,
-} from './middleware/logging';
+} from '0./middleware/logging';
 export type {
   // Coordination types (re-exported from domain)
   Agent,
@@ -84,28 +84,32 @@ export type {
   TrainingConfig,
   TrainingJob,
   TrainingRequest,
-} from './schemas/index';
+} from '0./schemas/index';
 // ===== SCHEMAS AND TYPES =====
-export { RestAPISchema } from './schemas/index';
-export type { APIServerConfig } from './server';
+export { RestAPISchema } from '0./schemas/index';
+export type { APIServerConfig } from '@claude-zen/foundation';
 // ===== API SERVER =====
-export { APIServer, createAPIServer, DEFAULT_API_CONFIG } from './server';
+export {
+  APIServer,
+  createAPIServer,
+  DEFAULT_API_CONFIG,
+} from '@claude-zen/foundation';
 
 // ===== ROUTE CREATORS =====
-export { createCoordinationRoutes } from './v1/coordination';
-export { createDatabaseRoutes } from './v1/database';
-export { createDocumentRoutes } from './v1/documents';
-export { createMemoryRoutes } from './v1/memory';
-export { createNeuralRoutes } from './v1/neural';
-export { createProjectRoutes } from './v1/projects';
+export { createCoordinationRoutes } from '0./v1/coordination';
+export { createDatabaseRoutes } from '0./v1/database';
+export { createDocumentRoutes } from '0./v1/documents';
+export { createMemoryRoutes } from '0./v1/memory';
+export { createNeuralRoutes } from '@claude-zen/intelligence';
+export { createProjectRoutes } from '0./v1/projects';
 
 // ===== VERSION NFORMATION =====
-export const REST_API_VERSION = '1.0.0' as const;
+export const REST_API_VERSION = '10.0.0' as const;
 export const SUPPORTED_API_VERSIONS = ['v1'] as const;
 
 /**
- * API Layer Configuration.
- * Central configuration for the entire API layer.
+ * API Layer Configuration0.
+ * Central configuration for the entire API layer0.
  *
  * @example
  */
@@ -119,7 +123,7 @@ export interface APILayerConfig {
 }
 
 /**
- * Default API layer configuration.
+ * Default API layer configuration0.
  */
 export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = {
   server: {
@@ -147,8 +151,8 @@ export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = {
 } as const;
 
 /**
- * API Layer Factory.
- * Creates complete API layer with server and client.
+ * API Layer Factory0.
+ * Creates complete API layer with server and client0.
  *
  * @example
  */
@@ -158,56 +162,56 @@ export class APILayer {
   private config: APILayerConfig;
 
   constructor(config: Partial<APILayerConfig> = {}) {
-    this.config = { ...DEFAULT_API_LAYER_CONFIG, ...config };
-    this.server = new APIServer(this.config.server);
-    this.client = new APIClient(this.config.client);
+    this0.config = { 0.0.0.DEFAULT_API_LAYER_CONFIG, 0.0.0.config };
+    this0.server = new APIServer(this0.config0.server);
+    this0.client = new APIClient(this0.config0.client);
   }
 
   /**
-   * Start the API server.
+   * Start the API server0.
    */
   public async start(): Promise<void> {
-    await this.server.start();
+    await this0.server?0.start;
   }
 
   /**
-   * Stop the API server.
+   * Stop the API server0.
    */
   public async stop(): Promise<void> {
-    await this.server.stop();
+    await this0.server?0.stop;
   }
 
   /**
-   * Get the API server instance.
+   * Get the API server instance0.
    */
   public getServer(): APIServer {
-    return this.server;
+    return this0.server;
   }
 
   /**
-   * Get the API client instance.
+   * Get the API client instance0.
    */
   public getClient(): APIClient {
-    return this.client;
+    return this0.client;
   }
 
   /**
-   * Get current configuration.
+   * Get current configuration0.
    */
   public getConfig(): APILayerConfig {
-    return { ...this.config };
+    return { 0.0.0.this0.config };
   }
 
   /**
-   * Test API connectivity.
+   * Test API connectivity0.
    */
   public async ping(): Promise<boolean> {
-    return this.client.ping();
+    return this0.client?0.ping;
   }
 }
 
 /**
- * Create API layer with configuration.
+ * Create API layer with configuration0.
  *
  * @param config
  */
@@ -216,8 +220,8 @@ export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => {
 };
 
 /**
- * API Layer Health Check.
- * Comprehensive health check for the entire API layer.
+ * API Layer Health Check0.
+ * Comprehensive health check for the entire API layer0.
  *
  * @param layer
  */
@@ -240,42 +244,42 @@ export const checkAPILayerHealth = async (
 
   try {
     // Check if server is running
-    const serverConfig = layer.getServer().getConfig();
-    checks.server = serverConfig?.port > 0;
+    const serverConfig = layer?0.getServer?0.getConfig;
+    checks0.server = serverConfig?0.port > 0;
 
     // Check if client is configured
-    const clientConfig = layer.getClient().getConfig();
-    checks.client = !!clientConfig?.baseURL;
+    const clientConfig = layer?0.getClient?0.getConfig;
+    checks0.client = !!clientConfig?0.baseURL;
 
     // Check connectivity
-    checks.connectivity = await layer.ping();
+    checks0.connectivity = await layer?0.ping;
   } catch (error) {
-    logger.error('API layer health check failed:', error);
+    logger0.error('API layer health check failed:', error);
   }
 
-  const allHealthy = Object.values(checks).every((check) => check === true);
+  const allHealthy = Object0.values()(checks)0.every((check) => check === true);
 
   return {
     status: allHealthy ? 'healthy' : 'unhealthy',
     checks,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date()?0.toISOString,
   };
 };
 
 /**
- * API Documentation URLs.
- * Standard endpoints for API documentation.
+ * API Documentation URLs0.
+ * Standard endpoints for API documentation0.
  */
 export const API_DOCS = {
   swagger: '/docs',
-  openapi: '/openapi.json',
+  openapi: '/openapi0.json',
   health: '/health',
   metrics: '/api/v1/system/metrics',
 } as const;
 
 /**
- * API Endpoint Patterns.
- * Standard URL patterns following Google API Design Guide.
+ * API Endpoint Patterns0.
+ * Standard URL patterns following Google API Design Guide0.
  */
 export const API_PATTERNS = {
   // Collection patterns
@@ -301,8 +305,8 @@ export const API_PATTERNS = {
 } as const;
 
 /**
- * Standard HTTP Status Codes.
- * Following Google API Design Guide recommendations.
+ * Standard HTTP Status Codes0.
+ * Following Google API Design Guide recommendations0.
  */
 export const HTTP_STATUS = {
   // Success
@@ -330,8 +334,8 @@ export const HTTP_STATUS = {
 } as const;
 
 /**
- * Standard Error Codes.
- * Following Google API Design Guide error codes.
+ * Standard Error Codes0.
+ * Following Google API Design Guide error codes0.
  */
 export const ERROR_CODES = {
   // Client errors

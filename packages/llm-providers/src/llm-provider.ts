@@ -26,7 +26,8 @@ import {
   withRetry,
   validateInput,
   z,
-  getConfig
+  getConfig,
+  TypedEventBase
 } from '@claude-zen/foundation';
 import { EventEmitter } from 'events';
 
@@ -67,12 +68,12 @@ const CLIProviderConfigSchema = z.object({
 const logger = getLogger('llm-provider');
 
 // Generic LLM Provider with pluggable CLI tool backends and event system integration
-export class LLMProvider extends EventEmitter {
+export class LLMProvider extends TypedEventBase {
   private cliProvider: CLIProvider | null = null;
   private requestCount = 0;
   private lastRequestTime = 0;
   private providerId: string;
-  private config: CLIProviderConfig;
+  private llmConfig: CLIProviderConfig;
 
   constructor(providerId: string = 'claude-code', config: Partial<CLIProviderConfig> = {}) {
     super();
@@ -85,7 +86,7 @@ export class LLMProvider extends EventEmitter {
       logger.error('Configuration validation failed', { error: configResult.error, providerId });
       throw error;
     }
-    this.config = configResult.value;
+    this.llmConfig = configResult.value;
     
     // Initialize provider lazily to avoid circular dependencies
     this.initializeProvider().catch(error => {
@@ -100,7 +101,7 @@ export class LLMProvider extends EventEmitter {
     // Emit provider initialization event
     this.emit('provider:initialized', { 
       providerId: this.providerId, 
-      config: this.config,
+      config: this.llmConfig,
       timestamp: Date.now() 
     });
   }
@@ -114,9 +115,8 @@ export class LLMProvider extends EventEmitter {
           this.cliProvider = new ClaudeProvider();
           break;
         case 'github-models-api':
-          const { GitHubModelsAPI } = await import('./api/github-models');
-          this.cliProvider = new GitHubModelsAPI({ token: process.env.GITHUB_TOKEN || '' });
-          break;
+        case 'github-copilot-api':
+          throw new Error(`Provider ${this.providerId} is an API provider, not a CLI provider. Use createAPIProvider() instead.`);
         case 'cursor-cli':
           const { CursorCLI } = await import('./cursor');
           this.cliProvider = new CursorCLI();
@@ -246,8 +246,8 @@ export class LLMProvider extends EventEmitter {
         return await withRetry(
           async () => await this.cliProvider!.execute(validationResult.value),
           {
-            retries: this.config.retries,
-            minTimeout: this.config.retryDelay,
+            retries: this.llmConfig.retries,
+            minTimeout: this.llmConfig.retryDelay,
           }
         );
       };
@@ -263,7 +263,7 @@ export class LLMProvider extends EventEmitter {
         return err(cliError);
       }
       
-      const timeout = this.config.timeout || 30000; // Default 30 seconds
+      const timeout = this.llmConfig.timeout || 30000; // Default 30 seconds
       const result = await withTimeout(
         () => Promise.resolve(retryResult.value),
         timeout,
@@ -302,8 +302,8 @@ export class LLMProvider extends EventEmitter {
         details: { 
           providerId: this.providerId,
           requestCount: this.requestCount,
-          configuredTimeout: this.config.timeout,
-          configuredRetries: this.config.retries
+          configuredTimeout: this.llmConfig.timeout,
+          configuredRetries: this.llmConfig.retries
         },
         cause: error instanceof Error ? error : undefined
       };

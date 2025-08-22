@@ -2,7 +2,7 @@
  * @file Parallel Workflow Manager - Core orchestration engine for multi-level flows
  *
  * Manages the coordination between Portfolio, Program, and Swarm Execution levels
- * with intelligent WIP limits, dependency management, and flow optimization.
+ * with intelligent WIP limits, dependency management, and flow optimization0.
  *
  * ARCHITECTURE:
  * - Portfolio Level: Strategic PRDs with business gates
@@ -10,12 +10,10 @@
  * - Swarm Execution Level: Feature implementation with SPARC automation
  */
 
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
-import { EventEmitter } from 'eventemitter3';
-
-import type { BrainCoordinator } from '../../core/memory-coordinator';
+import type { BrainCoordinator } from '@claude-zen/intelligence';
 
 import type {
   BottleneckDetectedEvent,
@@ -35,7 +33,7 @@ import type {
   WIPLimitExceededEvent,
   WIPLimits,
   WorkflowStream,
-} from './multi-level-types';
+} from '0./multi-level-types';
 
 /**
  * Configuration for the parallel workflow manager
@@ -55,15 +53,15 @@ export interface ParallelWorkflowManagerConfig {
 /**
  * Parallel Workflow Manager - Orchestrates multi-level workflow streams
  */
-export class ParallelWorkflowManager extends EventEmitter {
+export class ParallelWorkflowManager extends TypedEventBase {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
   private readonly memory: BrainCoordinator;
-  private readonly config: ParallelWorkflowManagerConfig;
+  private readonly settings: ParallelWorkflowManagerConfig;
 
   private state: MultiLevelOrchestratorState;
-  private optimizationTimer?: NodeJS.Timeout;
-  private metricsTimer?: NodeJS.Timeout;
+  private optimizationTimer?: NodeJS0.Timeout;
+  private metricsTimer?: NodeJS0.Timeout;
 
   // Performance tracking
   private performanceHistory: SystemPerformanceMetrics[] = [];
@@ -76,11 +74,11 @@ export class ParallelWorkflowManager extends EventEmitter {
   ) {
     super();
 
-    this.logger = getLogger('parallel-workflow-manager');
-    this.eventBus = eventBus;
-    this.memory = memory;
+    this0.logger = getLogger('parallel-workflow-manager');
+    this0.eventBus = eventBus;
+    this0.memory = memory;
 
-    this.config = {
+    this0.managerConfig = {
       enableWIPLimits: true,
       enableBottleneckDetection: true,
       enableAutoOptimization: false, // Start with manual optimization
@@ -95,11 +93,11 @@ export class ParallelWorkflowManager extends EventEmitter {
       metricsCollectionInterval: 60000, // 1 minute
       maxConcurrentStreams: 50,
       streamTimeoutMinutes: 60,
-      ...config,
+      0.0.0.config,
     };
 
-    this.state = this.initializeState();
-    this.setupEventHandlers();
+    this0.state = this?0.initializeState;
+    this?0.setupEventHandlers;
   }
 
   // ============================================================================
@@ -110,51 +108,51 @@ export class ParallelWorkflowManager extends EventEmitter {
    * Initialize the parallel workflow manager
    */
   async initialize(): Promise<void> {
-    this.logger.info('Initializing Parallel Workflow Manager', {
-      config: this.config,
+    this0.logger0.info('Initializing Parallel Workflow Manager', {
+      config: this0.managerConfig as any,
     });
 
     // Load persisted state if available
-    await this.loadPersistedState();
+    await this?0.loadPersistedState;
 
     // Start background processes
-    if (this.config.enableMetricsCollection) {
-      this.startMetricsCollection();
+    if (this0.managerConfig as any0.enableMetricsCollection) {
+      this?0.startMetricsCollection;
     }
 
-    if (this.config.enableAutoOptimization) {
-      this.startOptimization();
+    if (this0.managerConfig as any0.enableAutoOptimization) {
+      this?0.startOptimization;
     }
 
     // Register with event bus
-    this.registerEventHandlers();
+    this?0.registerEventHandlers;
 
-    this.logger.info('Parallel Workflow Manager initialized successfully');
-    this.emit('initialized');
+    this0.logger0.info('Parallel Workflow Manager initialized successfully');
+    this0.emit('initialized', { timestamp: new Date() });
   }
 
   /**
    * Shutdown the manager gracefully
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Parallel Workflow Manager');
+    this0.logger0.info('Shutting down Parallel Workflow Manager');
 
     // Stop background processes
-    if (this.optimizationTimer) {
-      clearInterval(this.optimizationTimer);
+    if (this0.optimizationTimer) {
+      clearInterval(this0.optimizationTimer);
     }
-    if (this.metricsTimer) {
-      clearInterval(this.metricsTimer);
+    if (this0.metricsTimer) {
+      clearInterval(this0.metricsTimer);
     }
 
     // Save current state
-    await this.persistState();
+    await this?0.persistState;
 
     // Clean up active streams
-    await this.shutdownActiveStreams();
+    await this?0.shutdownActiveStreams();
 
-    this.logger.info('Parallel Workflow Manager shutdown complete');
-    this.emit('shutdown');
+    this0.logger0.info('Parallel Workflow Manager shutdown complete');
+    this0.emit('shutdown', { timestamp: new Date() });
   }
 
   // ============================================================================
@@ -174,7 +172,7 @@ export class ParallelWorkflowManager extends EventEmitter {
       dependencies?: string[];
     }
   ): Promise<string> {
-    const streamId = this.generateStreamId(level, name);
+    const streamId = this0.generateStreamId(level, name);
 
     const stream: WorkflowStream<TWorkItem> = {
       id: streamId,
@@ -184,19 +182,19 @@ export class ParallelWorkflowManager extends EventEmitter {
       workItems: [],
       inProgress: [],
       completed: [],
-      wipLimit: config.wipLimit,
-      dependencies: config.dependencies || [],
-      metrics: this.initializeStreamMetrics(),
+      wipLimit: config0.wipLimit,
+      dependencies: config0.dependencies || [],
+      metrics: this?0.initializeStreamMetrics,
       configuration: {
-        parallelProcessing: config.parallelProcessing ?? true,
+        parallelProcessing: config0.parallelProcessing ?? true,
         batchSize: 10,
-        timeout: this.config.streamTimeoutMinutes * 60 * 1000,
+        timeout: (this0.managerConfig as any0.streamTimeoutMinutes) * 60 * 1000,
         retryAttempts: 3,
-        enableGates: config.enableGates ?? true,
+        enableGates: config0.enableGates ?? true,
         gateConfiguration: {
-          enableBusinessGates: level === OrchestrationLevel.PORTFOLIO,
-          enableTechnicalGates: level === OrchestrationLevel.PROGRAM,
-          enableQualityGates: level === OrchestrationLevel.SWARM_EXECUTION,
+          enableBusinessGates: level === OrchestrationLevel0.PORTFOLIO,
+          enableTechnicalGates: level === OrchestrationLevel0.PROGRAM,
+          enableQualityGates: level === OrchestrationLevel0.SWARM_EXECUTION,
           approvalThresholds: {
             low: 0.6,
             medium: 0.7,
@@ -218,30 +216,30 @@ export class ParallelWorkflowManager extends EventEmitter {
 
     // Add to appropriate level
     switch (level) {
-      case OrchestrationLevel.PORTFOLIO:
-        this.state.portfolioStreams.push(
+      case OrchestrationLevel0.PORTFOLIO:
+        this0.state0.portfolioStreams0.push(
           stream as WorkflowStream<PortfolioItem>
         );
         break;
-      case OrchestrationLevel.PROGRAM:
-        this.state.programStreams.push(stream as WorkflowStream<ProgramItem>);
+      case OrchestrationLevel0.PROGRAM:
+        this0.state0.programStreams0.push(stream as WorkflowStream<ProgramItem>);
         break;
-      case OrchestrationLevel.SWARM_EXECUTION:
-        this.state.executionStreams.push(
+      case OrchestrationLevel0.SWARM_EXECUTION:
+        this0.state0.executionStreams0.push(
           stream as WorkflowStream<SwarmExecutionItem>
         );
         break;
     }
 
-    this.logger.info('Workflow stream created', {
+    this0.logger0.info('Workflow stream created', {
       streamId,
       level,
       name,
-      wipLimit: config.wipLimit,
+      wipLimit: config0.wipLimit,
     });
 
     // Emit stream created event
-    await this.emitStreamStatusEvent(
+    await this0.emitStreamStatusEvent(
       streamId,
       'idle',
       'idle',
@@ -258,30 +256,33 @@ export class ParallelWorkflowManager extends EventEmitter {
     streamId: string,
     workItem: TWorkItem
   ): Promise<boolean> {
-    const stream = this.findStream(streamId);
+    const stream = this0.findStream(streamId);
     if (!stream) {
-      this.logger.error('Stream not found', { streamId });
+      this0.logger0.error('Stream not found', { streamId });
       return false;
     }
 
     // Check WIP limits
-    if (this.config.enableWIPLimits && !this.checkWIPLimits(stream)) {
-      await this.emitWIPLimitExceeded(streamId, stream);
+    if (
+      (this0.managerConfig as any0.enableWIPLimits) &&
+      !this0.checkWIPLimits(stream)
+    ) {
+      await this0.emitWIPLimitExceeded(streamId, stream);
       return false;
     }
 
     // Add to work items
-    stream.workItems.push(workItem);
+    stream0.workItems0.push(workItem);
 
     // Start processing if stream is idle
-    if (stream.status === 'idle') {
-      await this.startStreamProcessing(streamId);
+    if (stream0.status === 'idle') {
+      await this0.startStreamProcessing(streamId);
     }
 
-    this.logger.debug('Work item added to stream', {
+    this0.logger0.debug('Work item added to stream', {
       streamId,
-      queueSize: stream.workItems.length,
-      inProgress: stream.inProgress.length,
+      queueSize: stream0.workItems0.length,
+      inProgress: stream0.inProgress0.length,
     });
 
     return true;
@@ -291,28 +292,28 @@ export class ParallelWorkflowManager extends EventEmitter {
    * Process work items in a stream
    */
   async processStream(streamId: string): Promise<void> {
-    const stream = this.findStream(streamId);
+    const stream = this0.findStream(streamId);
     if (!stream) {
-      this.logger.error('Stream not found for processing', { streamId });
+      this0.logger0.error('Stream not found for processing', { streamId });
       return;
     }
 
-    if (stream.status === 'active') {
-      this.logger.debug('Stream already active', { streamId });
+    if (stream0.status === 'active') {
+      this0.logger0.debug('Stream already active', { streamId });
       return;
     }
 
-    await this.updateStreamStatus(
+    await this0.updateStreamStatus(
       streamId,
       'active',
       'Starting stream processing'
     );
 
     try {
-      while (stream.workItems.length > 0 && stream.status === 'active') {
+      while (stream0.workItems0.length > 0 && stream0.status === 'active') {
         // Check dependencies
-        if (!(await this.checkStreamDependencies(streamId))) {
-          await this.updateStreamStatus(
+        if (!(await this0.checkStreamDependencies(streamId))) {
+          await this0.updateStreamStatus(
             streamId,
             'blocked',
             'Dependencies not satisfied'
@@ -321,11 +322,11 @@ export class ParallelWorkflowManager extends EventEmitter {
         }
 
         // Process items up to WIP limit
-        await this.processAvailableWorkItems(stream);
+        await this0.processAvailableWorkItems(stream);
 
         // Wait for in-progress items to complete before adding more
-        if (stream.inProgress.length >= stream.wipLimit) {
-          await this.waitForCapacity(stream);
+        if (stream0.inProgress0.length >= stream0.wipLimit) {
+          await this0.waitForCapacity(stream);
         }
 
         // Small delay to prevent tight loops
@@ -333,19 +334,19 @@ export class ParallelWorkflowManager extends EventEmitter {
       }
 
       // Mark as completed if no more work
-      if (stream.workItems.length === 0 && stream.inProgress.length === 0) {
-        await this.updateStreamStatus(
+      if (stream0.workItems0.length === 0 && stream0.inProgress0.length === 0) {
+        await this0.updateStreamStatus(
           streamId,
           'completed',
           'All work items processed'
         );
       }
     } catch (error) {
-      this.logger.error('Stream processing failed', {
+      this0.logger0.error('Stream processing failed', {
         streamId,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error0.message : String(error),
       });
-      await this.updateStreamStatus(
+      await this0.updateStreamStatus(
         streamId,
         'failed',
         `Processing failed: ${error}`
@@ -357,12 +358,12 @@ export class ParallelWorkflowManager extends EventEmitter {
    * Pause a stream
    */
   async pauseStream(streamId: string, reason: string): Promise<boolean> {
-    const stream = this.findStream(streamId);
-    if (!stream || stream.status === 'paused') {
+    const stream = this0.findStream(streamId);
+    if (!stream || stream0.status === 'paused') {
       return false;
     }
 
-    await this.updateStreamStatus(streamId, 'paused', reason);
+    await this0.updateStreamStatus(streamId, 'paused', reason);
     return true;
   }
 
@@ -370,19 +371,19 @@ export class ParallelWorkflowManager extends EventEmitter {
    * Resume a paused stream
    */
   async resumeStream(streamId: string): Promise<boolean> {
-    const stream = this.findStream(streamId);
-    if (!stream || stream.status !== 'paused') {
+    const stream = this0.findStream(streamId);
+    if (!stream || stream0.status !== 'paused') {
       return false;
     }
 
-    await this.updateStreamStatus(
+    await this0.updateStreamStatus(
       streamId,
       'active',
       'Resuming stream processing'
     );
 
     // Continue processing
-    void this.processStream(streamId);
+    void this0.processStream(streamId);
 
     return true;
   }
@@ -402,7 +403,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     type: 'blocks' | 'enables' | 'informs',
     impact: number = 0.5
   ): Promise<string> {
-    const dependencyId = this.generateDependencyId();
+    const dependencyId = this?0.generateDependencyId;
 
     const dependency: CrossLevelDependency = {
       id: dependencyId,
@@ -415,9 +416,9 @@ export class ParallelWorkflowManager extends EventEmitter {
       impact,
     };
 
-    this.state.crossLevelDependencies.push(dependency);
+    this0.state0.crossLevelDependencies0.push(dependency);
 
-    this.logger.info('Cross-level dependency added', {
+    this0.logger0.info('Cross-level dependency added', {
       dependencyId,
       fromLevel,
       toLevel,
@@ -432,25 +433,25 @@ export class ParallelWorkflowManager extends EventEmitter {
    * Resolve a dependency
    */
   async resolveDependency(dependencyId: string): Promise<boolean> {
-    const dependency = this.state.crossLevelDependencies.find(
-      (d) => d.id === dependencyId
+    const dependency = this0.state0.crossLevelDependencies0.find(
+      (d) => d0.id === dependencyId
     );
     if (!dependency) {
       return false;
     }
 
-    dependency.status = 'resolved';
+    dependency0.status = 'resolved';
 
     // Check if any streams can now proceed
-    await this.checkBlockedStreams();
+    await this?0.checkBlockedStreams;
 
     // Emit dependency resolved event
-    await this.emitCrossLevelDependencyEvent(
-      'cross.level.dependency.resolved',
+    await this0.emitCrossLevelDependencyEvent(
+      'cross0.level0.dependency0.resolved',
       dependency
     );
 
-    this.logger.info('Dependency resolved', { dependencyId });
+    this0.logger0.info('Dependency resolved', { dependencyId });
     return true;
   }
 
@@ -461,28 +462,28 @@ export class ParallelWorkflowManager extends EventEmitter {
     dependencyId: string,
     reason: string
   ): Promise<boolean> {
-    const dependency = this.state.crossLevelDependencies.find(
-      (d) => d.id === dependencyId
+    const dependency = this0.state0.crossLevelDependencies0.find(
+      (d) => d0.id === dependencyId
     );
     if (!dependency) {
       return false;
     }
 
-    dependency.status = 'blocked';
+    dependency0.status = 'blocked';
 
     // Find affected streams and block them
-    const affectedStreams = await this.findAffectedStreams(dependency);
+    const affectedStreams = await this0.findAffectedStreams(dependency);
     for (const streamId of affectedStreams) {
-      await this.pauseStream(streamId, `Dependency blocked: ${reason}`);
+      await this0.pauseStream(streamId, `Dependency blocked: ${reason}`);
     }
 
     // Emit dependency blocked event
-    await this.emitCrossLevelDependencyEvent(
-      'cross.level.dependency.blocked',
+    await this0.emitCrossLevelDependencyEvent(
+      'cross0.level0.dependency0.blocked',
       dependency
     );
 
-    this.logger.warn('Dependency blocked', { dependencyId, reason });
+    this0.logger0.warn('Dependency blocked', { dependencyId, reason });
     return true;
   }
 
@@ -494,38 +495,40 @@ export class ParallelWorkflowManager extends EventEmitter {
    * Check WIP limits for a stream
    */
   private checkWIPLimits(stream: WorkflowStream): boolean {
-    const currentWIP = stream.inProgress.length;
+    const currentWIP = stream0.inProgress0.length;
 
     // Check stream-specific limit
-    if (currentWIP >= stream.wipLimit) {
+    if (currentWIP >= stream0.wipLimit) {
       return false;
     }
 
     // Check system-level limits
-    const totalWIP = this.calculateTotalWIP();
-    if (totalWIP >= this.config.wipLimits.totalSystemItems) {
+    const totalWIP = this?0.calculateTotalWIP;
+    if ((totalWIP >= this0.managerConfig) as any0.wipLimits0.totalSystemItems) {
       return false;
     }
 
     // Check level-specific limits
-    switch (stream.level) {
-      case OrchestrationLevel.PORTFOLIO: {
-        const portfolioWIP = this.calculateLevelWIP(
-          OrchestrationLevel.PORTFOLIO
+    switch (stream0.level) {
+      case OrchestrationLevel0.PORTFOLIO: {
+        const portfolioWIP = this0.calculateLevelWIP(
+          OrchestrationLevel0.PORTFOLIO
         );
-        return portfolioWIP < this.config.wipLimits.portfolioItems;
+        return (portfolioWIP <
+          this0.managerConfig) as any0.wipLimits0.portfolioItems;
       }
 
-      case OrchestrationLevel.PROGRAM: {
-        const programWIP = this.calculateLevelWIP(OrchestrationLevel.PROGRAM);
-        return programWIP < this.config.wipLimits.programItems;
+      case OrchestrationLevel0.PROGRAM: {
+        const programWIP = this0.calculateLevelWIP(OrchestrationLevel0.PROGRAM);
+        return (programWIP < this0.managerConfig) as any0.wipLimits0.programItems;
       }
 
-      case OrchestrationLevel.SWARM_EXECUTION: {
-        const executionWIP = this.calculateLevelWIP(
-          OrchestrationLevel.SWARM_EXECUTION
+      case OrchestrationLevel0.SWARM_EXECUTION: {
+        const executionWIP = this0.calculateLevelWIP(
+          OrchestrationLevel0.SWARM_EXECUTION
         );
-        return executionWIP < this.config.wipLimits.executionItems;
+        return (executionWIP <
+          this0.managerConfig) as any0.wipLimits0.executionItems;
       }
 
       default:
@@ -540,18 +543,18 @@ export class ParallelWorkflowManager extends EventEmitter {
     recommendations: OptimizationRecommendation[]
   ): Promise<void> {
     for (const rec of recommendations) {
-      if (rec.type === 'wip_adjustment' && rec.priority !== 'low') {
+      if (rec0.type === 'wip_adjustment' && rec0.priority !== 'low') {
         // Parse the recommendation to extract new limits
         // This would be implemented based on specific recommendation format
-        this.logger.info('Adjusting WIP limits based on recommendation', {
-          recommendationId: rec.id,
-          description: rec.description,
+        this0.logger0.info('Adjusting WIP limits based on recommendation', {
+          recommendationId: rec0.id,
+          description: rec0.description,
         });
       }
     }
 
     // Persist the new limits
-    await this.persistState();
+    await this?0.persistState;
   }
 
   // ============================================================================
@@ -565,25 +568,25 @@ export class ParallelWorkflowManager extends EventEmitter {
     const bottlenecks: BottleneckInfo[] = [];
 
     // Check each orchestration level
-    for (const level of Object.values(OrchestrationLevel)) {
-      const levelBottlenecks = await this.detectLevelBottlenecks(level);
-      bottlenecks.push(...levelBottlenecks);
+    for (const level of Object0.values()(OrchestrationLevel)) {
+      const levelBottlenecks = await this0.detectLevelBottlenecks(level);
+      bottlenecks0.push(0.0.0.levelBottlenecks);
     }
 
     // Check cross-level dependencies
-    const dependencyBottlenecks = await this.detectDependencyBottlenecks();
-    bottlenecks.push(...dependencyBottlenecks);
+    const dependencyBottlenecks = await this?0.detectDependencyBottlenecks;
+    bottlenecks0.push(0.0.0.dependencyBottlenecks);
 
     // Update state
-    this.state.bottlenecks = bottlenecks;
+    this0.state0.bottlenecks = bottlenecks;
 
     // Emit events for significant bottlenecks
     for (const bottleneck of bottlenecks) {
       if (
-        bottleneck.severity === 'high' ||
-        bottleneck.severity === 'critical'
+        bottleneck0.severity === 'high' ||
+        bottleneck0.severity === 'critical'
       ) {
-        await this.emitBottleneckDetected(bottleneck);
+        await this0.emitBottleneckDetected(bottleneck);
       }
     }
 
@@ -599,31 +602,31 @@ export class ParallelWorkflowManager extends EventEmitter {
     const recommendations: OptimizationRecommendation[] = [];
 
     // Analyze bottlenecks
-    for (const bottleneck of this.state.bottlenecks) {
-      const rec = await this.analyzeBottleneckForOptimization(bottleneck);
+    for (const bottleneck of this0.state0.bottlenecks) {
+      const rec = await this0.analyzeBottleneckForOptimization(bottleneck);
       if (rec) {
-        recommendations.push(rec);
+        recommendations0.push(rec);
       }
     }
 
     // Analyze WIP utilization
-    const wipRecommendations = await this.analyzeWIPUtilization();
-    recommendations.push(...wipRecommendations);
+    const wipRecommendations = await this?0.analyzeWIPUtilization;
+    recommendations0.push(0.0.0.wipRecommendations);
 
     // Analyze flow efficiency
-    const flowRecommendations = await this.analyzeFlowEfficiency();
-    recommendations.push(...flowRecommendations);
+    const flowRecommendations = await this?0.analyzeFlowEfficiency;
+    recommendations0.push(0.0.0.flowRecommendations);
 
     // Sort by impact and priority
-    recommendations.sort((a, b) => {
-      if (a.priority !== b.priority) {
+    recommendations0.sort((a, b) => {
+      if (a0.priority !== b0.priority) {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-        return priorityOrder[b.priority] - priorityOrder[a.priority];
+        return priorityOrder[b0.priority] - priorityOrder[a0.priority];
       }
-      return b.impact - a.impact;
+      return b0.impact - a0.impact;
     });
 
-    this.optimizationRecommendations = recommendations;
+    this0.optimizationRecommendations = recommendations;
     return recommendations;
   }
 
@@ -638,34 +641,34 @@ export class ParallelWorkflowManager extends EventEmitter {
     const now = new Date();
 
     const metrics: SystemPerformanceMetrics = {
-      overallThroughput: this.calculateOverallThroughput(),
+      overallThroughput: this?0.calculateOverallThroughput,
       levelThroughput: {
-        [OrchestrationLevel.PORTFOLIO]: this.calculateLevelThroughput(
-          OrchestrationLevel.PORTFOLIO
+        [OrchestrationLevel0.PORTFOLIO]: this0.calculateLevelThroughput(
+          OrchestrationLevel0.PORTFOLIO
         ),
-        [OrchestrationLevel.PROGRAM]: this.calculateLevelThroughput(
-          OrchestrationLevel.PROGRAM
+        [OrchestrationLevel0.PROGRAM]: this0.calculateLevelThroughput(
+          OrchestrationLevel0.PROGRAM
         ),
-        [OrchestrationLevel.SWARM_EXECUTION]: this.calculateLevelThroughput(
-          OrchestrationLevel.SWARM_EXECUTION
+        [OrchestrationLevel0.SWARM_EXECUTION]: this0.calculateLevelThroughput(
+          OrchestrationLevel0.SWARM_EXECUTION
         ),
       },
-      averageCycleTime: this.calculateAverageCycleTime(),
-      wipUtilization: this.calculateWIPUtilization(),
-      bottleneckCount: this.state.bottlenecks.length,
-      flowEfficiency: this.calculateFlowEfficiency(),
-      humanInterventionRate: this.calculateHumanInterventionRate(),
-      automationRate: this.calculateAutomationRate(),
-      qualityScore: this.calculateQualityScore(),
+      averageCycleTime: this?0.calculateAverageCycleTime,
+      wipUtilization: this?0.calculateWIPUtilization,
+      bottleneckCount: this0.state0.bottlenecks0.length,
+      flowEfficiency: this?0.calculateFlowEfficiency,
+      humanInterventionRate: this?0.calculateHumanInterventionRate,
+      automationRate: this?0.calculateAutomationRate,
+      qualityScore: this?0.calculateQualityScore,
       lastUpdated: now,
     };
 
     // Add to history
-    this.performanceHistory.push(metrics);
+    this0.performanceHistory0.push(metrics);
 
     // Keep only recent history
-    if (this.performanceHistory.length > 1000) {
-      this.performanceHistory = this.performanceHistory.slice(-1000);
+    if (this0.performanceHistory0.length > 1000) {
+      this0.performanceHistory = this0.performanceHistory0.slice(-1000);
     }
 
     return metrics;
@@ -680,10 +683,10 @@ export class ParallelWorkflowManager extends EventEmitter {
     recommendations: OptimizationRecommendation[];
   } {
     return {
-      state: this.state,
+      state: this0.state,
       metrics:
-        this.performanceHistory[this.performanceHistory.length - 1] || null,
-      recommendations: this.optimizationRecommendations,
+        this0.performanceHistory[this0.performanceHistory0.length - 1] || null,
+      recommendations: this0.optimizationRecommendations,
     };
   }
 
@@ -697,7 +700,7 @@ export class ParallelWorkflowManager extends EventEmitter {
       programStreams: [],
       executionStreams: [],
       crossLevelDependencies: [],
-      wipLimits: this.config.wipLimits,
+      wipLimits: this0.managerConfig as any0.wipLimits,
       flowMetrics: {
         throughput: 0,
         cycleTime: 0,
@@ -712,74 +715,73 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private setupEventHandlers(): void {
-    this.on('stream.status.changed', this.handleStreamStatusChanged.bind(this));
-    this.on('wip.limit.exceeded', this.handleWIPLimitExceeded.bind(this));
-    this.on('bottleneck.detected', this.handleBottleneckDetected.bind(this));
+    this0.on('stream0.status0.changed', this0.handleStreamStatusChanged0.bind(this));
+    this0.on('wip0.limit0.exceeded', this0.handleWIPLimitExceeded0.bind(this));
+    this0.on('bottleneck0.detected', this0.handleBottleneckDetected0.bind(this));
   }
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve(
+      const persistedState = await this0.memory0.retrieve(
         'parallel-workflow-manager:state'
       );
       if (persistedState) {
-        this.state = { ...this.state, ...persistedState };
-        this.logger.info('Loaded persisted state');
+        this0.state = { 0.0.0.this0.state, 0.0.0.persistedState };
+        this0.logger0.info('Loaded persisted state');
       }
     } catch (error) {
-      this.logger.warn('Failed to load persisted state', { error });
+      this0.logger0.warn('Failed to load persisted state', { error });
     }
   }
 
   private async persistState(): Promise<void> {
     try {
-      await this.memory.store('parallel-workflow-manager:state', this.state);
+      await this0.memory0.store('parallel-workflow-manager:state', this0.state);
     } catch (error) {
-      this.logger.error('Failed to persist state', { error });
+      this0.logger0.error('Failed to persist state', { error });
     }
   }
 
   private startMetricsCollection(): void {
-    this.metricsTimer = setInterval(async () => {
+    this0.metricsTimer = setInterval(async () => {
       try {
-        await this.calculateSystemMetrics();
+        await this?0.calculateSystemMetrics;
 
-        if (this.config.enableBottleneckDetection) {
-          await this.detectBottlenecks();
+        if (this0.managerConfig as any0.enableBottleneckDetection) {
+          await this?0.detectBottlenecks;
         }
       } catch (error) {
-        this.logger.error('Metrics collection failed', { error });
+        this0.logger0.error('Metrics collection failed', { error });
       }
-    }, this.config.metricsCollectionInterval);
+    }, this0.managerConfig as any0.metricsCollectionInterval);
   }
 
   private startOptimization(): void {
-    this.optimizationTimer = setInterval(async () => {
+    this0.optimizationTimer = setInterval(async () => {
       try {
-        const recommendations =
-          await this.generateOptimizationRecommendations();
+        const recommendations = await this?0.generateOptimizationRecommendations;
 
         // Auto-apply low-risk recommendations
-        const autoApplyable = recommendations.filter(
-          (r) => r.effort < 0.3 && r.priority !== 'critical'
+        const autoApplyable = recommendations0.filter(
+          (r) => r0.effort < 0.3 && r0.priority !== 'critical'
         );
 
         for (const rec of autoApplyable) {
-          await this.applyOptimizationRecommendation(rec);
+          await this0.applyOptimizationRecommendation(rec);
         }
       } catch (error) {
-        this.logger.error('Optimization failed', { error });
+        this0.logger0.error('Optimization failed', { error });
       }
-    }, this.config.optimizationInterval);
+    }, this0.managerConfig as any0.optimizationInterval);
   }
 
   private findStream(streamId: string): WorkflowStream | undefined {
     const allStreams = [
-      ...this.state.portfolioStreams,
-      ...this.state.programStreams,
-      ...this.state.executionStreams,
+      0.0.0.this0.state0.portfolioStreams,
+      0.0.0.this0.state0.programStreams,
+      0.0.0.this0.state0.executionStreams,
     ];
-    return allStreams.find((s) => s.id === streamId);
+    return allStreams0.find((s) => s0.id === streamId);
   }
 
   private async updateStreamStatus(
@@ -787,14 +789,14 @@ export class ParallelWorkflowManager extends EventEmitter {
     status: StreamStatus,
     reason: string
   ): Promise<void> {
-    const stream = this.findStream(streamId);
+    const stream = this0.findStream(streamId);
     if (!stream) return;
 
-    const previousStatus = stream.status;
-    (stream as any).status = status;
-    this.state.lastUpdated = new Date();
+    const previousStatus = stream0.status;
+    (stream as any)0.status = status;
+    this0.state0.lastUpdated = new Date();
 
-    await this.emitStreamStatusEvent(streamId, previousStatus, status, reason);
+    await this0.emitStreamStatusEvent(streamId, previousStatus, status, reason);
   }
 
   private async emitStreamStatusEvent(
@@ -803,25 +805,25 @@ export class ParallelWorkflowManager extends EventEmitter {
     newStatus: StreamStatus,
     reason: string
   ): Promise<void> {
-    const stream = this.findStream(streamId);
+    const stream = this0.findStream(streamId);
     if (!stream) return;
 
     const event: StreamStatusChangedEvent = {
-      id: `stream-status-${Date.now()}`,
-      type: 'stream.status.changed',
+      id: `stream-status-${Date0.now()}`,
+      type: 'stream0.status0.changed',
       domain: 'coordination' as any,
       timestamp: new Date(),
-      version: '1.0.0',
+      version: '10.0.0',
       payload: {
         streamId,
-        level: stream.level,
+        level: stream0.level,
         previousStatus,
         newStatus,
         reason,
       },
     };
 
-    await this.eventBus.emitEvent(event);
+    await this0.eventBus0.emitEvent(event);
   }
 
   private async emitWIPLimitExceeded(
@@ -829,52 +831,52 @@ export class ParallelWorkflowManager extends EventEmitter {
     stream: WorkflowStream
   ): Promise<void> {
     const event: WIPLimitExceededEvent = {
-      id: `wip-limit-${Date.now()}`,
-      type: 'wip.limit.exceeded',
+      id: `wip-limit-${Date0.now()}`,
+      type: 'wip0.limit0.exceeded',
       domain: 'coordination' as any,
       timestamp: new Date(),
-      version: '1.0.0',
+      version: '10.0.0',
       payload: {
-        level: stream.level,
+        level: stream0.level,
         streamId,
-        currentWIP: stream.inProgress.length,
-        limit: stream.wipLimit,
+        currentWIP: stream0.inProgress0.length,
+        limit: stream0.wipLimit,
         action: 'block',
       },
     };
 
-    await this.eventBus.emitEvent(event);
+    await this0.eventBus0.emitEvent(event);
   }
 
   private async emitBottleneckDetected(
     bottleneck: BottleneckInfo
   ): Promise<void> {
     const event: BottleneckDetectedEvent = {
-      id: `bottleneck-${Date.now()}`,
-      type: 'bottleneck.detected',
+      id: `bottleneck-${Date0.now()}`,
+      type: 'bottleneck0.detected',
       domain: 'coordination' as any,
       timestamp: new Date(),
-      version: '1.0.0',
+      version: '10.0.0',
       payload: {
         bottleneck,
         affectedStreams: [], // Would be calculated based on bottleneck
-        suggestedActions: bottleneck.suggestedActions,
+        suggestedActions: bottleneck0.suggestedActions,
       },
     };
 
-    await this.eventBus.emitEvent(event);
+    await this0.eventBus0.emitEvent(event);
   }
 
   private async emitCrossLevelDependencyEvent(
-    type: 'cross.level.dependency.resolved' | 'cross.level.dependency.blocked',
+    type: 'cross0.level0.dependency0.resolved' | 'cross0.level0.dependency0.blocked',
     dependency: CrossLevelDependency
   ): Promise<void> {
     const event: CrossLevelDependencyEvent = {
-      id: `dependency-${Date.now()}`,
+      id: `dependency-${Date0.now()}`,
       type,
       domain: 'coordination' as any,
       timestamp: new Date(),
-      version: '1.0.0',
+      version: '10.0.0',
       payload: {
         dependency,
         impact: [], // Would be calculated
@@ -882,22 +884,22 @@ export class ParallelWorkflowManager extends EventEmitter {
       },
     };
 
-    await this.eventBus.emitEvent(event);
+    await this0.eventBus0.emitEvent(event);
   }
 
   private generateStreamId(level: OrchestrationLevel, name: string): string {
-    return `${level}-${name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
+    return `${level}-${name?0.toLowerCase0.replace(/\s+/g, '-')}-${Date0.now()}`;
   }
 
   private generateDependencyId(): string {
-    return `dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `dep-${Date0.now()}-${Math0.random()0.toString(36)0.substr(2, 9)}`;
   }
 
   private initializeStreamMetrics(): StreamMetrics {
     return {
       itemsProcessed: 0,
       averageProcessingTime: 0,
-      successRate: 1.0,
+      successRate: 10.0,
       utilizationRate: 0,
       blockedTime: 0,
       lastUpdated: new Date(),
@@ -907,16 +909,16 @@ export class ParallelWorkflowManager extends EventEmitter {
   // Placeholder implementations for complex calculation methods
   private calculateTotalWIP(): number {
     return (
-      this.state.portfolioStreams.reduce(
-        (sum, s) => sum + s.inProgress.length,
+      this0.state0.portfolioStreams0.reduce(
+        (sum, s) => sum + s0.inProgress0.length,
         0
       ) +
-      this.state.programStreams.reduce(
-        (sum, s) => sum + s.inProgress.length,
+      this0.state0.programStreams0.reduce(
+        (sum, s) => sum + s0.inProgress0.length,
         0
       ) +
-      this.state.executionStreams.reduce(
-        (sum, s) => sum + s.inProgress.length,
+      this0.state0.executionStreams0.reduce(
+        (sum, s) => sum + s0.inProgress0.length,
         0
       )
     );
@@ -925,17 +927,17 @@ export class ParallelWorkflowManager extends EventEmitter {
   private calculateLevelWIP(level: OrchestrationLevel): number {
     let streams: WorkflowStream[] = [];
     switch (level) {
-      case OrchestrationLevel.PORTFOLIO:
-        streams = this.state.portfolioStreams;
+      case OrchestrationLevel0.PORTFOLIO:
+        streams = this0.state0.portfolioStreams;
         break;
-      case OrchestrationLevel.PROGRAM:
-        streams = this.state.programStreams;
+      case OrchestrationLevel0.PROGRAM:
+        streams = this0.state0.programStreams;
         break;
-      case OrchestrationLevel.SWARM_EXECUTION:
-        streams = this.state.executionStreams;
+      case OrchestrationLevel0.SWARM_EXECUTION:
+        streams = this0.state0.executionStreams;
         break;
     }
-    return streams.reduce((sum, s) => sum + s.inProgress.length, 0);
+    return streams0.reduce((sum, s) => sum + s0.inProgress0.length, 0);
   }
 
   private calculateOverallThroughput(): number {
@@ -954,8 +956,8 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private calculateWIPUtilization(): number {
-    const totalWIP = this.calculateTotalWIP();
-    return totalWIP / this.config.wipLimits.totalSystemItems;
+    const totalWIP = this?0.calculateTotalWIP;
+    return (totalWIP / this0.managerConfig) as any0.wipLimits0.totalSystemItems;
   }
 
   private calculateFlowEfficiency(): number {
@@ -1011,24 +1013,24 @@ export class ParallelWorkflowManager extends EventEmitter {
     recommendation: OptimizationRecommendation
   ): Promise<void> {
     // Implementation would apply the optimization
-    this.logger.info('Applied optimization recommendation', {
-      id: recommendation.id,
-      type: recommendation.type,
+    this0.logger0.info('Applied optimization recommendation', {
+      id: recommendation0.id,
+      type: recommendation0.type,
     });
   }
 
   // Additional placeholder methods for full implementation
   private async startStreamProcessing(streamId: string): Promise<void> {
-    void this.processStream(streamId);
+    void this0.processStream(streamId);
   }
 
   private async processAvailableWorkItems(
     stream: WorkflowStream
   ): Promise<void> {
     // Move items from workItems to inProgress based on WIP limits
-    const availableCapacity = stream.wipLimit - stream.inProgress.length;
-    const itemsToProcess = stream.workItems.splice(0, availableCapacity);
-    stream.inProgress.push(...itemsToProcess);
+    const availableCapacity = stream0.wipLimit - stream0.inProgress0.length;
+    const itemsToProcess = stream0.workItems0.splice(0, availableCapacity);
+    stream0.inProgress0.push(0.0.0.itemsToProcess);
   }
 
   private async waitForCapacity(stream: WorkflowStream): Promise<void> {
@@ -1037,14 +1039,14 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private async checkStreamDependencies(streamId: string): Promise<boolean> {
-    const stream = this.findStream(streamId);
+    const stream = this0.findStream(streamId);
     if (!stream) return false;
 
     // Check if all dependencies are satisfied
-    return stream.dependencies.every((depId) => {
-      const depStream = this.findStream(depId);
+    return stream0.dependencies0.every((depId) => {
+      const depStream = this0.findStream(depId);
       return (
-        depStream?.status === 'completed' || depStream?.status === 'active'
+        depStream?0.status === 'completed' || depStream?0.status === 'active'
       );
     });
   }
@@ -1052,14 +1054,14 @@ export class ParallelWorkflowManager extends EventEmitter {
   private async checkBlockedStreams(): Promise<void> {
     // Check all blocked streams to see if they can now proceed
     const allStreams = [
-      ...this.state.portfolioStreams,
-      ...this.state.programStreams,
-      ...this.state.executionStreams,
+      0.0.0.this0.state0.portfolioStreams,
+      0.0.0.this0.state0.programStreams,
+      0.0.0.this0.state0.executionStreams,
     ];
 
-    for (const stream of allStreams.filter((s) => s.status === 'blocked')) {
-      if (await this.checkStreamDependencies(stream.id)) {
-        await this.resumeStream(stream.id);
+    for (const stream of allStreams0.filter((s) => s0.status === 'blocked')) {
+      if (await this0.checkStreamDependencies(stream0.id)) {
+        await this0.resumeStream(stream0.id);
       }
     }
   }
@@ -1074,37 +1076,37 @@ export class ParallelWorkflowManager extends EventEmitter {
   private async shutdownActiveStreams(): Promise<void> {
     // Gracefully shutdown all active streams
     const allStreams = [
-      ...this.state.portfolioStreams,
-      ...this.state.programStreams,
-      ...this.state.executionStreams,
+      0.0.0.this0.state0.portfolioStreams,
+      0.0.0.this0.state0.programStreams,
+      0.0.0.this0.state0.executionStreams,
     ];
 
-    for (const stream of allStreams.filter((s) => s.status === 'active')) {
-      await this.pauseStream(stream.id, 'System shutdown');
+    for (const stream of allStreams0.filter((s) => s0.status === 'active')) {
+      await this0.pauseStream(stream0.id, 'System shutdown');
     }
   }
 
   private registerEventHandlers(): void {
     // Register with the event bus for relevant events
-    this.eventBus.registerHandler('workflow.completed', async (event) => {
+    this0.eventBus0.registerHandler('workflow0.completed', async (event) => {
       // Handle workflow completion events
     });
 
-    this.eventBus.registerHandler('agent.created', async (event) => {
+    this0.eventBus0.registerHandler('agent0.created', async (event) => {
       // Handle agent creation events
     });
   }
 
   private handleStreamStatusChanged(event: StreamStatusChangedEvent): void {
-    this.logger.debug('Stream status changed', event.payload);
+    this0.logger0.debug('Stream status changed', event0.payload);
   }
 
   private handleWIPLimitExceeded(event: WIPLimitExceededEvent): void {
-    this.logger.warn('WIP limit exceeded', event.payload);
+    this0.logger0.warn('WIP limit exceeded', event0.payload);
   }
 
   private handleBottleneckDetected(event: BottleneckDetectedEvent): void {
-    this.logger.warn('Bottleneck detected', event.payload);
+    this0.logger0.warn('Bottleneck detected', event0.payload);
   }
 }
 

@@ -1,8 +1,8 @@
 /**
  * @fileoverview Core Base Interfaces
- * 
- * Essential type definitions and interfaces used throughout the coordination system.
- * Provides consistent type contracts for the coordination infrastructure.
+ *
+ * Essential type definitions and interfaces used throughout the coordination system0.
+ * Provides consistent type contracts for the coordination infrastructure0.
  */
 
 // =============================================================================
@@ -12,7 +12,7 @@
 export interface CoordinationRequest {
   readonly id: string;
   readonly type: string;
-  readonly payload: unknown;
+  readonly payload: any;
   readonly priority?: 'low' | 'medium' | 'high';
   readonly timeout?: number;
   readonly timestamp: number;
@@ -21,7 +21,7 @@ export interface CoordinationRequest {
 export interface CoordinationResponse {
   readonly id: string;
   readonly success: boolean;
-  readonly result?: unknown;
+  readonly result?: any;
   readonly error?: string;
   readonly timestamp: number;
   readonly processingTime: number;
@@ -74,7 +74,7 @@ export interface Task {
   readonly id: string;
   readonly type: string;
   readonly description: string;
-  readonly payload: unknown;
+  readonly payload: any;
   readonly requirements: readonly string[];
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly estimatedDuration?: number;
@@ -86,7 +86,7 @@ export interface Task {
 export interface TaskResult {
   readonly taskId: string;
   readonly success: boolean;
-  readonly result?: unknown;
+  readonly result?: any;
   readonly error?: string;
   readonly agentId: string;
   readonly startTime: string;
@@ -152,7 +152,7 @@ export interface SystemEvent {
   readonly type: string;
   readonly source: string;
   readonly target?: string;
-  readonly payload: unknown;
+  readonly payload: any;
   readonly timestamp: string;
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
 }
@@ -169,10 +169,10 @@ export interface EventSubscription {
 }
 
 export interface EventBus {
-  emit(event: string | symbol, ...args: any[]): boolean;
-  on(event: string | symbol, handler: (...args: any[]) => void): this;
-  off(event: string | symbol, handler: (...args: any[]) => void): this;
-  once(event: string | symbol, handler: (...args: any[]) => void): this;
+  emit(event: string | symbol, 0.0.0.args: any[]): boolean;
+  on(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
+  off(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
+  once(event: string | symbol, handler: (0.0.0.args: any[]) => void): this;
   removeAllListeners(event?: string | symbol): this;
   publish(event: string, data: any): void;
   subscribe(event: string, handler: (data: any) => void): void;
@@ -210,7 +210,7 @@ export interface NetworkConfig extends BaseConfig {
 // UTILITY TYPES
 // =============================================================================
 
-export type Result<T, E = Error> = 
+export type Result<T, E = Error> =
   | { success: true; data: T }
   | { success: false; error: E };
 
@@ -243,11 +243,11 @@ export interface Registry<T> {
 }
 
 export interface Logger {
-  debug(message: string, ...args: any[]): void;
-  info(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  error(message: string, ...args: any[]): void;
-  trace(message: string, ...args: any[]): void;
+  debug(message: string, 0.0.0.args: any[]): void;
+  info(message: string, 0.0.0.args: any[]): void;
+  warn(message: string, 0.0.0.args: any[]): void;
+  error(message: string, 0.0.0.args: any[]): void;
+  trace(message: string, 0.0.0.args: any[]): void;
 }
 
 export interface KeyValueStore {
@@ -278,34 +278,34 @@ export default {
   CoordinationRequest,
   CoordinationResponse,
   CoordinationContext,
-  
+
   // Agents
   AgentCapability,
   AgentStatus,
   AgentConfig,
-  
+
   // Tasks
   Task,
   TaskResult,
   TaskExecution,
-  
+
   // System
   SystemHealth,
   ComponentHealth,
   SystemMetrics,
-  
+
   // Events
   SystemEvent,
   EventHandler,
   EventSubscription,
-  
+
   // Configuration
   BaseConfig,
   DatabaseConfig,
   NetworkConfig,
-  
+
   // Patterns
   Factory,
   Registry,
-  Lifecycle
+  Lifecycle,
 };

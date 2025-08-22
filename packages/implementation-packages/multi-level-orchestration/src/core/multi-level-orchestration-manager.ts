@@ -19,7 +19,7 @@
  * @since 2024-01-01
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import { nanoid } from 'nanoid';
 
 // ============================================================================
@@ -262,8 +262,8 @@ export interface OrchestrationWarning {
  * Provides complete orchestration across Portfolio → Program → Swarm execution levels
  * with intelligent WIP management, flow optimization, and cross-level coordination.
  */
-export class MultiLevelOrchestrationManager extends EventEmitter {
-  private readonly config: MultiLevelOrchestrationConfig;
+export class MultiLevelOrchestrationManager extends TypedEventBase {
+  private readonly orchestrationConfig: MultiLevelOrchestrationConfig;
   private readonly state: MultiLevelOrchestratorState;
   private readonly transitionConfigs = new Map<string, LevelTransitionConfig>();
   private readonly intervals = new Map<string, NodeJS.Timeout>();
@@ -273,7 +273,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
   constructor(config?: Partial<MultiLevelOrchestrationConfig>) {
     super();
     
-    this.config = {
+    this.orchestrationConfig = {
       enableLevelTransitions: true,
       enableCrosslevelDependencyResolution: true,
       enableIntelligentWorkflowStateManagement: true,
@@ -320,7 +320,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
           program: 0,
           'swarm-execution': 0
         },
-        limits: this.config.wipLimits,
+        limits: this.orchestrationConfig.wipLimits,
         utilization: {
           portfolio: 0,
           program: 0,
@@ -369,35 +369,35 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     this.isRunning = true;
     
     // Start management intervals
-    if (this.config.enableCrosslevelDependencyResolution) {
+    if (this.orchestrationConfig.enableCrosslevelDependencyResolution) {
       this.intervals.set('dependency', setInterval(
         () => this.resolveCrossLevelDependencies(),
-        this.config.dependencyResolutionInterval
+        this.orchestrationConfig.dependencyResolutionInterval
       ));
     }
 
-    if (this.config.enableFlowControlWithBackpressure) {
+    if (this.orchestrationConfig.enableFlowControlWithBackpressure) {
       this.intervals.set('flow', setInterval(
         () => this.manageFlowControl(),
-        this.config.flowControlInterval
+        this.orchestrationConfig.flowControlInterval
       ));
     }
 
-    if (this.config.enableLoadBalancing) {
+    if (this.orchestrationConfig.enableLoadBalancing) {
       this.intervals.set('balance', setInterval(
         () => this.performLoadBalancing(),
-        this.config.loadBalancingInterval
+        this.orchestrationConfig.loadBalancingInterval
       ));
     }
 
-    if (this.config.enableIntelligentWorkflowStateManagement) {
+    if (this.orchestrationConfig.enableIntelligentWorkflowStateManagement) {
       this.intervals.set('state', setInterval(
         () => this.updateSystemState(),
-        this.config.stateManagementInterval
+        this.orchestrationConfig.stateManagementInterval
       ));
     }
 
-    this.emit('orchestrator:started', { config: this.config });
+    this.emit('orchestrator:started', { config: this.orchestrationConfig });
   }
 
   /**
@@ -418,7 +418,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     this.intervals.clear();
 
     this.isRunning = false;
-    this.emit('orchestrator:stopped');
+    this.emit('orchestrator:stopped', {});
   }
 
   /**
@@ -433,10 +433,10 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     };
 
     // Check WIP limits
-    if (this.config.enableWIPLimitsEnforcement) {
+    if (this.orchestrationConfig.enableWIPLimitsEnforcement) {
       const currentWIP = this.state.portfolioItems.size;
-      if (currentWIP >= this.config.wipLimits.portfolio) {
-        throw new Error(`Portfolio WIP limit exceeded: ${currentWIP}/${this.config.wipLimits.portfolio}`);
+      if (currentWIP >= this.orchestrationConfig.wipLimits.portfolio) {
+        throw new Error(`Portfolio WIP limit exceeded: ${currentWIP}/${this.orchestrationConfig.wipLimits.portfolio}`);
       }
     }
 
@@ -461,10 +461,10 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     };
 
     // Check WIP limits
-    if (this.config.enableWIPLimitsEnforcement) {
+    if (this.orchestrationConfig.enableWIPLimitsEnforcement) {
       const currentWIP = this.state.programItems.size;
-      if (currentWIP >= this.config.wipLimits.program) {
-        throw new Error(`Program WIP limit exceeded: ${currentWIP}/${this.config.wipLimits.program}`);
+      if (currentWIP >= this.orchestrationConfig.wipLimits.program) {
+        throw new Error(`Program WIP limit exceeded: ${currentWIP}/${this.orchestrationConfig.wipLimits.program}`);
       }
     }
 
@@ -494,10 +494,10 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     };
 
     // Check WIP limits
-    if (this.config.enableWIPLimitsEnforcement) {
+    if (this.orchestrationConfig.enableWIPLimitsEnforcement) {
       const currentWIP = this.state.swarmExecutionItems.size;
-      if (currentWIP >= this.config.wipLimits.swarmExecution) {
-        throw new Error(`Swarm execution WIP limit exceeded: ${currentWIP}/${this.config.wipLimits.swarmExecution}`);
+      if (currentWIP >= this.orchestrationConfig.wipLimits.swarmExecution) {
+        throw new Error(`Swarm execution WIP limit exceeded: ${currentWIP}/${this.orchestrationConfig.wipLimits.swarmExecution}`);
       }
     }
 
@@ -537,7 +537,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
 
     try {
       // Process level transitions
-      if (this.config.enableLevelTransitions) {
+      if (this.orchestrationConfig.enableLevelTransitions) {
         const transitionsResult = await this.processLevelTransitions();
         result.transitionsCompleted = transitionsResult.completed;
         result.errors.push(...transitionsResult.errors);
@@ -545,14 +545,14 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
       }
 
       // Resolve cross-level dependencies
-      if (this.config.enableCrosslevelDependencyResolution) {
+      if (this.orchestrationConfig.enableCrosslevelDependencyResolution) {
         const dependenciesResult = await this.resolveCrossLevelDependencies();
         result.dependenciesResolved = dependenciesResult.resolved;
         result.errors.push(...dependenciesResult.errors);
       }
 
       // Enforce WIP limits
-      if (this.config.enableWIPLimitsEnforcement) {
+      if (this.orchestrationConfig.enableWIPLimitsEnforcement) {
         const wipResult = await this.enforceWIPLimits();
         result.violations.push(...wipResult.violations);
         result.warnings.push(...wipResult.warnings);
@@ -687,7 +687,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
         if (transition.status === 'in-progress') {
           // Check for timeout
           const elapsed = Date.now() - transition.startedAt.getTime();
-          if (elapsed > this.config.transitionTimeout) {
+          if (elapsed > this.orchestrationConfig.transitionTimeout) {
             transition.status = 'failed';
             result.errors.push({
               level: transition.fromLevel,
@@ -796,7 +796,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     };
 
     // Check individual limits
-    for (const [level, limit] of Object.entries(this.config.wipLimits)) {
+    for (const [level, limit] of Object.entries(this.orchestrationConfig.wipLimits)) {
       if (level !== 'total' && current[level as OrchestrationLevel] > limit) {
         const violation = `${level} WIP limit exceeded: ${current[level as OrchestrationLevel]}/${limit}`;
         result.violations.push(violation);
@@ -821,11 +821,11 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     };
 
     this.state.wipStatus.utilization.portfolio = 
-      this.state.wipStatus.current.portfolio / this.config.wipLimits.portfolio;
+      this.state.wipStatus.current.portfolio / this.orchestrationConfig.wipLimits.portfolio;
     this.state.wipStatus.utilization.program = 
-      this.state.wipStatus.current.program / this.config.wipLimits.program;
+      this.state.wipStatus.current.program / this.orchestrationConfig.wipLimits.program;
     this.state.wipStatus.utilization['swarm-execution'] = 
-      this.state.wipStatus.current['swarm-execution'] / this.config.wipLimits.swarmExecution;
+      this.state.wipStatus.current['swarm-execution'] / this.orchestrationConfig.wipLimits.swarmExecution;
   }
 
   private updateFlowMetrics(): void {
@@ -838,7 +838,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
       throughput: totalItems / 24, // items per hour (mock)
       leadTime: 120, // minutes (mock)
       cycleTime: 60, // minutes (mock)
-      wipUtilization: totalItems / this.config.wipLimits.total,
+      wipUtilization: totalItems / this.orchestrationConfig.wipLimits.total,
       bottleneckLevel: this.identifyBottleneckLevel(),
       queueDepth: {
         portfolio: this.state.portfolioItems.size,

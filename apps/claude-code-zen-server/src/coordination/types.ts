@@ -2,17 +2,17 @@
  * @file Coordination Domain Types - Comprehensive Agent and Swarm Types
  *
  * Single source of truth for all coordination-related types including the comprehensive
- * AgentType enumeration (140+ types), swarm configurations, and task orchestration.
+ * AgentType enumeration (140+ types), swarm configurations, and task orchestration0.
  *
- * Following domain architecture standard with complete type definitions.
+ * Following domain architecture standard with complete type definitions0.
  */
 
 // Re-export comprehensive AgentType from master registry (140+ types)
 // This prevents "Type X is not assignable" errors in coordination domain
 // Import SwarmAgent type from shared types
-import type { SwarmAgent } from '../types/shared-types';
+import type { SwarmAgent } from '0.0./types/shared-types';
 
-export type { AgentType } from '../types/agent-types';
+export type { AgentType } from '0.0./types/agent-types';
 
 // Additional agent-related types
 export type AgentId = string;
@@ -129,15 +129,15 @@ export interface AgentConfig {
   trustedAgents?: string[];
   expertise?: Record<string, unknown>;
   preferences?: Record<string, unknown>;
-  cognitiveProfile?: unknown;
-  memory?: unknown;
+  cognitiveProfile?: any;
+  memory?: any;
   capabilities?: AgentCapabilities;
 }
 
 export interface Message {
   id: string;
   type: MessageType;
-  payload: unknown;
+  payload: any;
   timestamp: Date;
   sender?: string;
   recipient?: string;
@@ -160,7 +160,7 @@ export type MessageType =
 
 export interface ExecutionResult {
   success: boolean;
-  result?: unknown;
+  result?: any;
   error?: string;
   timestamp: Date;
   metrics?: {
@@ -168,7 +168,7 @@ export interface ExecutionResult {
     memoryUsage?: number;
     cpuUsage?: number;
   };
-  data?: unknown;
+  data?: any;
   executionTime?: number;
   agentId?: string;
   metadata?: Record<string, unknown>;

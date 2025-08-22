@@ -10,7 +10,7 @@
  * - Memory and database integration optional
  * - Clean separation of concerns with focused methods
  */
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 import type { WorkflowGateRequest, WorkflowGateResult } from './workflow-base-types';
 interface WorkflowGatesManager {
     processGate(request: WorkflowGateRequest): Promise<WorkflowGateResult>;
@@ -48,7 +48,7 @@ export type { DocumentContent, StepExecutionResult, WorkflowContext, WorkflowDat
  * - Enterprise-grade monitoring and analytics
  * - Graceful error handling and recovery
  */
-export declare class WorkflowEngine extends EventEmitter {
+export declare class WorkflowEngine extends TypedEventBase {
     private readonly config;
     private readonly activeWorkflows;
     private readonly workflowDefinitions;

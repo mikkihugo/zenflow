@@ -1,7 +1,10 @@
 /**
- * @fileoverview Database Strategic Facade - Simple Delegation
+ * @fileoverview Database Strategic Facade - Infrastructure Layer
  *
+ * Provides database access, storage systems, and persistence.
  * Delegates to @claude-zen/database implementation packages.
+ * 
+ * Note: DI containers and agent registries are handled by Foundation layer.
  */
 
 // Simple fallback implementations
@@ -34,70 +37,11 @@ export function getDatabaseAccess() {
   };
 }
 
-// Agent registry exports for compatibility
-export function getAgentRegistry() {
-  return {
-    register: async (agent: any) => ({ id: agent.id || 'agent-' + Date.now(), registered: true }),
-    unregister: async (agentId: string) => ({ id: agentId, unregistered: true }),
-    findById: async (agentId: string) => ({ id: agentId, status: 'active' }),
-    findByCapability: async (capability: string) => {
-      console.log(`Finding agents with capability: ${capability}`);
-      return [];
-    },
-    getAll: async () => [],
-    getStatus: () => ({ healthy: true, agents: 0 })
-  };
-}
+// Infrastructure does not provide agent registries - use Foundation registry system
+// This facade is for database and storage access only
 
-export function createNewAgentRegistry() {
-  return getAgentRegistry();
-}
-
-export async function registerAgent(agent: any) {
-  const registry = getAgentRegistry();
-  return registry.register(agent);
-}
-
-export async function getAllAgents() {
-  const registry = getAgentRegistry();
-  return registry.getAll();
-}
-
-export async function findAgentsByCapability(capability: string) {
-  const registry = getAgentRegistry();
-  return registry.findByCapability(capability);
-}
-
-// Service container implementation
-export function getServiceContainer(name?: string) {
-  // Enhanced service container with optional naming for debugging and logging
-  const services = new Map<string, any>();
-  const containerName = name || 'default-container';
-  
-  return Promise.resolve({
-    name: containerName,
-    register: (key: string, factory: (container: any) => any) => {
-      // Register service with container name for debugging
-      console.debug(`Registering service '${key}' in container '${containerName}'`);
-      services.set(key, factory);
-    },
-    resolve: (key: string) => {
-      const factory = services.get(key);
-      if (factory) {
-        const container = {
-          resolve: (k: string) => {
-            const f = services.get(k);
-            return f ? (typeof f === 'function' ? f() : f) : null;
-          }
-        };
-        return factory(container);
-      }
-      return null;
-    },
-    has: (key: string) => services.has(key),
-    clear: () => services.clear()
-  });
-}
+// Infrastructure does not provide service containers - use Foundation DI system
+// This facade is for database and storage access only
 
 // Try to delegate to real implementation
 try {

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Collaborative Decision System - Lightweight facade for decision coordination
- * 
+ *
  * Provides collaborative decision-making capabilities through delegation to specialized
- * @claude-zen packages for coordinated discussion, consensus building, and resource allocation.
- * 
+ * @claude-zen packages for coordinated discussion, consensus building, and resource allocation0.
+ *
  * Delegates to:
  * - @claude-zen/intelligence: ConversationOrchestrator for collaborative discussions
  * - @claude-zen/intelligence: DecisionWorkflow for structured decision processes
@@ -12,13 +12,11 @@
  * - @claude-zen/intelligence: BehavioralIntelligence for decision optimization
  */
 
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
+import type { Logger, EventBus } from '@claude-zen/foundation';
 
-import type { EventBus } from '../../core/interfaces/base-interfaces';
-import type { CoordinationFactAccess } from '../shared-fact-access';
-import { withFactCapabilities } from '../universal-fact-mixin';
-
+import type { CoordinationFactAccess } from '0.0./shared-fact-access';
+import { withFactCapabilities } from '0.0./universal-fact-mixin';
 
 // Coordination event type (simplified)
 type CoordinationEvent = any;
@@ -93,22 +91,24 @@ export interface DecisionOutcome {
 class BaseDecisionSystem {
   protected logger: Logger;
   agentId: string;
-  
+
   constructor(agentId: string = 'collaborative-decision-system') {
-    this.logger = getLogger('CollaborativeDecisionSystem');
-    this.agentId = agentId;
+    this0.logger = getLogger('CollaborativeDecisionSystem');
+    this0.agentId = agentId;
   }
 }
 
-const FactCapableDecisionSystem = withFactCapabilities(BaseDecisionSystem) as any as any;
+const FactCapableDecisionSystem = withFactCapabilities(
+  BaseDecisionSystem as any
+);
 
 // ============================================
 // Collaborative Decision System
 // ============================================
 
 /**
- * Lightweight Collaborative Decision System.
- * 
+ * Lightweight Collaborative Decision System0.
+ *
  * Delegates complex decision operations to specialized @claude-zen packages:
  * - ConversationOrchestrator handles multi-party discussions
  * - DecisionWorkflow orchestrates structured decision processes
@@ -121,7 +121,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
   private consensusEngine: any;
   private learningSystem: any;
   private eventManager: any;
-  
+
   private activeMeetings = new Map<string, CollaborativeMeeting>();
   private initialized = false;
 
@@ -130,101 +130,117 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
     private factAccess: CoordinationFactAccess
   ) {
     super('collaborative-decision-system');
-    this.setupEventHandlers();
+    this?0.setupEventHandlers;
   }
 
   /**
-   * Initialize the collaborative decision system.
+   * Initialize the collaborative decision system0.
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this0.initialized) return;
 
     try {
-      this.logger.info('🚀 Initializing collaborative decision system');
+      this0.logger0.info('🚀 Initializing collaborative decision system');
 
       // Initialize delegates from @claude-zen packages
-      const { ConversationOrchestrator } = await import('@claude-zen/intelligence');
+      const { ConversationOrchestrator } = await import(
+        '@claude-zen/intelligence'
+      );
       const { WorkflowEngine } = await import('@claude-zen/intelligence');
-      const { default: knowledgeModule } = await import('@claude-zen/intelligence');
-      const FactSystem = (knowledgeModule as any).FactSystem || class FactSystem { static create() { return {}; } };
-      const { BehavioralIntelligence } = await import('@claude-zen/intelligence');
+      const { default: knowledgeModule } = await import(
+        '@claude-zen/intelligence'
+      );
+      const FactSystem =
+        (knowledgeModule as any)0.FactSystem ||
+        class FactSystem {
+          static create() {
+            return {};
+          }
+        };
+      const { BehavioralIntelligence } = await import(
+        '@claude-zen/intelligence'
+      );
 
-      this.conversationOrchestrator = new ConversationOrchestrator();
+      this0.conversationOrchestrator = new ConversationOrchestrator();
 
-      this.decisionWorkflow = new WorkflowEngine();
+      this0.decisionWorkflow = new WorkflowEngine();
 
       // FactSystem requires configuration - provide minimal config for now
       const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
-      this.consensusEngine = new FactSystem({
+      this0.consensusEngine = new FactSystem({
         database: getDatabaseAccess(),
         useRustEngine: false, // Disable Rust engine for simplicity
-        cacheSize: 1000
+        cacheSize: 1000,
       });
 
-      this.learningSystem = new BehavioralIntelligence();
+      this0.learningSystem = new BehavioralIntelligence();
 
       // Initialize proper event system
       const { createEventSystem } = await import('@claude-zen/infrastructure');
-      this.eventManager = createEventSystem({
+      this0.eventManager = createEventSystem({
         enableMetrics: true,
         enableValidation: true,
         neuralProcessing: {
           enableLearning: true,
           predictionEnabled: true,
-          smartRoutingEnabled: true
-        }
+          smartRoutingEnabled: true,
+        },
       });
 
-      this.initialized = true;
-      this.logger.info('✅ Collaborative decision system initialized');
+      this0.initialized = true;
+      this0.logger0.info('✅ Collaborative decision system initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize collaborative decision system:', error);
+      this0.logger0.error(
+        'Failed to initialize collaborative decision system:',
+        error
+      );
       throw error;
     }
   }
 
   /**
-   * Resolve a complex issue through collaborative decision making.
+   * Resolve a complex issue through collaborative decision making0.
    */
   async resolveComplexIssue(issue: ComplexIssue): Promise<DecisionOutcome> {
-    await this.initialize();
+    await this?0.initialize;
 
     try {
-      this.logger.info(`🎯 Resolving complex issue: ${issue.id}`);
+      this0.logger0.info(`🎯 Resolving complex issue: ${issue0.id}`);
 
       // Create collaborative meeting through workflow
-      const meeting = await this.createCollaborativeMeeting(issue);
-      
+      const meeting = await this0.createCollaborativeMeeting(issue);
+
       // Start conversation orchestration
-      const conversation = await this.conversationOrchestrator.startConversation({
-        id: meeting.id,
-        participants: meeting.participants.map(p => ({
-          id: p.id,
-          name: p.name,
-          role: p.role,
-        })),
-        context: {
-          issue,
-          phases: meeting.phases,
-        },
-      });
+      const conversation =
+        await this0.conversationOrchestrator0.startConversation({
+          id: meeting0.id,
+          participants: meeting0.participants0.map((p) => ({
+            id: p0.id,
+            name: p0.name,
+            role: p0.role,
+          })),
+          context: {
+            issue,
+            phases: meeting0.phases,
+          },
+        });
 
       // Execute decision workflow
-      const workflowResult = await this.decisionWorkflow.startWorkflow({
-        id: `decision-${issue.id}`,
+      const workflowResult = await this0.decisionWorkflow0.startWorkflow({
+        id: `decision-${issue0.id}`,
         type: 'collaborative-decision',
         data: {
           issue,
           meeting,
-          conversation: conversation.id,
+          conversation: conversation0.id,
         },
       });
 
-      // Build consensus through fact-based analysis  
-      const facts = await this.gatherRelevantFacts(issue);
-      await this.consensusEngine.store(`consensus-${issue.id}`, {
+      // Build consensus through fact-based analysis
+      const facts = await this0.gatherRelevantFacts(issue);
+      await this0.consensusEngine0.store(`consensus-${issue0.id}`, {
         issue,
-        participants: meeting.participants,
+        participants: meeting0.participants,
         facts,
       });
       const consensus = {
@@ -235,39 +251,41 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
 
       // Learn from decision outcome
       const outcome: DecisionOutcome = {
-        decision: `Resolution for issue: ${issue.description}`,
-        rationale: `Collaborative decision made with ${meeting.participants.length} participants`,
-        consensus: consensus.achieved,
-        votes: consensus.votes,
+        decision: `Resolution for issue: ${issue0.description}`,
+        rationale: `Collaborative decision made with ${meeting0.participants0.length} participants`,
+        consensus: consensus0.achieved,
+        votes: consensus0.votes,
         actions: [],
       };
 
-      await this.learningSystem.recordExecution?.({
+      await this0.learningSystem0.recordExecution?0.({
         agentId: 'collaborative-decision-system',
         taskType: 'complex-issue-resolution',
         context: {
           issue,
           outcome,
-          consensusAchieved: consensus.achieved,
-          participantSatisfaction: consensus.satisfaction,
-          decisionTime: Date.now() - meeting.startTime.getTime(),
+          consensusAchieved: consensus0.achieved,
+          participantSatisfaction: consensus0.satisfaction,
+          decisionTime: Date0.now() - meeting0.startTime?0.getTime,
         },
       });
 
-      this.logger.info(`✅ Complex issue resolved: ${issue.id}`);
+      this0.logger0.info(`✅ Complex issue resolved: ${issue0.id}`);
       return outcome;
     } catch (error) {
-      this.logger.error(`Failed to resolve complex issue ${issue.id}:`, error);
+      this0.logger0.error(`Failed to resolve complex issue ${issue0.id}:`, error);
       throw error;
     }
   }
 
   /**
-   * Create a collaborative meeting for an issue.
+   * Create a collaborative meeting for an issue0.
    */
-  private async createCollaborativeMeeting(issue: ComplexIssue): Promise<CollaborativeMeeting> {
+  private async createCollaborativeMeeting(
+    issue: ComplexIssue
+  ): Promise<CollaborativeMeeting> {
     // Determine required participants based on domains
-    const participants = await this.selectOptimalParticipants(issue);
+    const participants = await this0.selectOptimalParticipants(issue);
 
     // Create meeting phases
     const phases: DiscussionPhase[] = [
@@ -276,7 +294,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
         name: 'Issue Analysis',
         type: 'analysis',
         duration: 900000, // 15 minutes
-        participants: participants.map(p => p.id),
+        participants: participants0.map((p) => p0.id),
         status: 'pending',
       },
       {
@@ -284,7 +302,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
         name: 'Collaborative Discussion',
         type: 'discussion',
         duration: 1800000, // 30 minutes
-        participants: participants.map(p => p.id),
+        participants: participants0.map((p) => p0.id),
         status: 'pending',
       },
       {
@@ -292,13 +310,13 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
         name: 'Consensus Building',
         type: 'consensus',
         duration: 900000, // 15 minutes
-        participants: participants.map(p => p.id),
+        participants: participants0.map((p) => p0.id),
         status: 'pending',
       },
     ];
 
     const meeting: CollaborativeMeeting = {
-      id: `meeting-${issue.id}-${Date.now()}`,
+      id: `meeting-${issue0.id}-${Date0.now()}`,
       issue,
       participants,
       phases,
@@ -306,32 +324,34 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
       status: 'planned',
     };
 
-    this.activeMeetings.set(meeting.id, meeting);
+    this0.activeMeetings0.set(meeting0.id, meeting);
     return meeting;
   }
 
   /**
-   * Select optimal participants for an issue.
+   * Select optimal participants for an issue0.
    */
-  private async selectOptimalParticipants(issue: ComplexIssue): Promise<MeetingParticipant[]> {
+  private async selectOptimalParticipants(
+    issue: ComplexIssue
+  ): Promise<MeetingParticipant[]> {
     // Use behavioral intelligence for participant selection optimization
-    const prediction = await this.learningSystem.predictBehavior?.({
+    const prediction = await this0.learningSystem0.predictBehavior?0.({
       agentId: 'participant-selector',
       taskType: 'participant-selection',
       context: {
-        domains: issue.domains,
-        severity: issue.severity,
-        expertise: issue.requiredExpertise || [],
+        domains: issue0.domains,
+        severity: issue0.severity,
+        expertise: issue0.requiredExpertise || [],
       },
     });
 
     // Default participants based on domains
     const participants: MeetingParticipant[] = [];
 
-    for (const domain of issue.domains) {
-      participants.push({
+    for (const domain of issue0.domains) {
+      participants0.push({
         id: `${domain}-matron`,
-        name: `${domain.charAt(0).toUpperCase() + domain.slice(1)} Matron`,
+        name: `${domain0.charAt(0)?0.toUpperCase + domain0.slice(1)} Matron`,
         type: 'matron',
         domain,
         expertise: [domain],
@@ -341,7 +361,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
     }
 
     // Add commander for coordination
-    participants.push({
+    participants0.push({
       id: 'decision-commander',
       name: 'Decision Commander',
       type: 'commander',
@@ -352,8 +372,8 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
     });
 
     // Add queen for high-severity issues
-    if (issue.severity === 'critical' || issue.severity === 'high') {
-      participants.push({
+    if (issue0.severity === 'critical' || issue0.severity === 'high') {
+      participants0.push({
         id: 'strategic-queen',
         name: 'Strategic Queen',
         type: 'queen',
@@ -368,86 +388,91 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
   }
 
   /**
-   * Gather relevant facts for an issue.
+   * Gather relevant facts for an issue0.
    */
   private async gatherRelevantFacts(issue: ComplexIssue): Promise<any[]> {
     try {
       // Use fact access to gather relevant information
       const searchQueries = [
-        `issue-type:${issue.type}`,
-        `domains:${issue.domains.join(',')}`,
-        `severity:${issue.severity}`,
+        `issue-type:${issue0.type}`,
+        `domains:${issue0.domains0.join(',')}`,
+        `severity:${issue0.severity}`,
       ];
 
-      const facts = [];
+      const facts: any[] = [];
       for (const query of searchQueries) {
         try {
-          const results = await this.factAccess.query?.(query) || [];
-          facts.push(...results);
+          const results = (await this0.factAccess0.query?0.(query)) || [];
+          facts0.push(0.0.0.results);
         } catch (error) {
-          this.logger.warn(`Failed to search facts for query: ${query}`, error);
+          this0.logger0.warn(`Failed to search facts for query: ${query}`, error);
         }
       }
 
       return facts;
     } catch (error) {
-      this.logger.error('Failed to gather relevant facts:', error);
+      this0.logger0.error('Failed to gather relevant facts:', error);
       return [];
     }
   }
 
   /**
-   * Handle complex issue events.
+   * Handle complex issue events0.
    */
-  private async handleComplexIssue(event: { issue: ComplexIssue }): Promise<void> {
+  private async handleComplexIssue(event: {
+    issue: ComplexIssue;
+  }): Promise<void> {
     try {
-      const outcome = await this.resolveComplexIssue(event.issue);
-      
+      const outcome = await this0.resolveComplexIssue(event0.issue);
+
       // Emit decision made event
-      this.eventBus.emit('decision:made', {
+      this0.eventBus0.emit('decision:made', {
         type: 'decision:made',
         payload: {
-          issue: event.issue,
+          issue: event0.issue,
           outcome,
           timestamp: new Date(),
         },
       });
     } catch (error) {
-      this.logger.error('Failed to handle complex issue:', error);
+      this0.logger0.error('Failed to handle complex issue:', error);
     }
   }
 
   /**
-   * Setup event handlers for coordination events.
+   * Setup event handlers for coordination events0.
    */
   private setupEventHandlers(): void {
-    this.eventBus.on('issue:complex', async (event: CoordinationEvent) => {
-      await this.handleComplexIssue({ issue: event.payload as ComplexIssue });
+    this0.eventBus0.on('issue:complex', async (event: CoordinationEvent) => {
+      await this0.handleComplexIssue({ issue: event0.payload as ComplexIssue });
     });
 
-    this.eventBus.on('meeting:consensus:needed', async (event: CoordinationEvent) => {
-      // Handle consensus building requests
-      this.logger.info('Consensus needed for meeting:', event.payload);
-    });
+    this0.eventBus0.on(
+      'meeting:consensus:needed',
+      async (event: CoordinationEvent) => {
+        // Handle consensus building requests
+        this0.logger0.info('Consensus needed for meeting:', event0.payload);
+      }
+    );
   }
 
   /**
-   * Get event handlers for the event manager.
+   * Get event handlers for the event manager0.
    */
   private getEventHandlers(): Record<string, Function> {
     return {
-      'issue:complex': this.handleComplexIssue.bind(this),
+      'issue:complex': this0.handleComplexIssue0.bind(this),
       'meeting:consensus:needed': async (event: any) => {
-        this.logger.info('Consensus needed:', event);
+        this0.logger0.info('Consensus needed:', event);
       },
       'decision:made': async (event: any) => {
-        this.logger.info('Decision made:', event);
+        this0.logger0.info('Decision made:', event);
       },
     };
   }
 
   /**
-   * Get system metrics.
+   * Get system metrics0.
    */
   async getMetrics(): Promise<{
     activeMeetings: number;
@@ -455,48 +480,51 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
     averageConsensusTime: number;
     consensusRate: number;
   }> {
-    if (!this.learningSystem) {
+    if (!this0.learningSystem) {
       return {
-        activeMeetings: this.activeMeetings.size,
+        activeMeetings: this0.activeMeetings0.size,
         totalDecisions: 0,
         averageConsensusTime: 0,
         consensusRate: 0,
       };
     }
 
-    const metrics = await this.learningSystem.getSystemMetrics?.();
+    const metrics = await this0.learningSystem0.getSystemMetrics?0.();
     return {
-      activeMeetings: this.activeMeetings.size,
-      totalDecisions: metrics?.totalPredictions || 0,
-      averageConsensusTime: metrics?.averageProcessingTime || 0,
-      consensusRate: metrics?.predictionAccuracy || 0,
+      activeMeetings: this0.activeMeetings0.size,
+      totalDecisions: metrics?0.totalPredictions || 0,
+      averageConsensusTime: metrics?0.averageProcessingTime || 0,
+      consensusRate: metrics?0.predictionAccuracy || 0,
     };
   }
 
   /**
-   * Cleanup resources.
+   * Cleanup resources0.
    */
   async destroy(): Promise<void> {
     try {
       // Stop all active conversations
-      for (const meeting of this.activeMeetings.values()) {
-        await this.conversationOrchestrator?.stopConversation?.(meeting.id);
+      for (const meeting of this0.activeMeetings?0.values()) {
+        await this0.conversationOrchestrator?0.stopConversation?0.(meeting0.id);
       }
 
       // Cleanup delegates
-      await Promise.all([
-        this.conversationOrchestrator?.destroy?.(),
-        this.decisionWorkflow?.destroy?.(),
-        this.consensusEngine?.destroy?.(),
-        this.learningSystem?.destroy?.(),
-        this.eventManager?.destroy?.(),
+      await Promise0.all([
+        this0.conversationOrchestrator?0.destroy?0.(),
+        this0.decisionWorkflow?0.destroy?0.(),
+        this0.consensusEngine?0.destroy?0.(),
+        this0.learningSystem?0.destroy?0.(),
+        this0.eventManager?0.destroy?0.(),
       ]);
 
-      this.activeMeetings.clear();
-      this.initialized = false;
-      this.logger.info('✅ Collaborative decision system destroyed');
+      this0.activeMeetings?0.clear();
+      this0.initialized = false;
+      this0.logger0.info('✅ Collaborative decision system destroyed');
     } catch (error) {
-      this.logger.error('Failed to destroy collaborative decision system:', error);
+      this0.logger0.error(
+        'Failed to destroy collaborative decision system:',
+        error
+      );
     }
   }
 }
@@ -506,7 +534,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
 // ============================================
 
 /**
- * Create a collaborative decision system with default configuration.
+ * Create a collaborative decision system with default configuration0.
  */
 export function createCollaborativeDecisionSystem(
   eventBus: EventBus,

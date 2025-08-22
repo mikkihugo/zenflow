@@ -6,7 +6,7 @@
  * @file Coordination system: auto-scaling-strategy
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 import type { AutoScaler } from '../interfaces';
 import { AgentStatus } from '../types';
@@ -28,21 +28,21 @@ interface ScalingHistory {
   newCount: number;
 }
 
-export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
-  private config: AutoScalingConfig;
+export class AutoScalingStrategy extends TypedEventBase implements AutoScaler {
+  private autoScalingConfig: AutoScalingConfig;
   private scalingHistory: ScalingHistory[] = [];
   private lastScalingAction: Date = new Date(0);
   private currentAgentCount: number = 0;
 
   constructor(config: AutoScalingConfig) {
     super();
-    this.config = config;
+    this.autoScalingConfig = config;
   }
 
   public async shouldScaleUp(
     metrics: Map<string, LoadMetrics>
   ): Promise<boolean> {
-    if (!this.config.enabled) return false;
+    if (!this.autoScalingConfig.enabled) return false;
 
     const decision = await this.makeScalingDecision(metrics);
     return decision.action === 'scale_up';
@@ -51,7 +51,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   public async shouldScaleDown(
     metrics: Map<string, LoadMetrics>
   ): Promise<boolean> {
-    if (!this.config.enabled) return false;
+    if (!this.autoScalingConfig.enabled) return false;
 
     const decision = await this.makeScalingDecision(metrics);
     return decision.action === 'scale_down';
@@ -113,7 +113,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   ): Promise<ScalingDecision> {
     // Check cooldown period
     const timeSinceLastAction = Date.now() - this.lastScalingAction.getTime();
-    if (timeSinceLastAction < this.config.cooldownPeriod) {
+    if (timeSinceLastAction < this.autoScalingConfig.cooldownPeriod) {
       return {
         action: 'no_action',
         targetCount: this.currentAgentCount,
@@ -131,11 +131,11 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
 
     // Scale up conditions
     if ((
-      avgUtilization > this.config.scaleUpThreshold ||
+      avgUtilization > this.autoScalingConfig.scaleUpThreshold ||
       maxUtilization > 0.95
-    ) && agentCount < this.config.maxAgents) {
+    ) && agentCount < this.autoScalingConfig.maxAgents) {
         const targetCount = Math.min(
-          this.config.maxAgents,
+          this.autoScalingConfig.maxAgents,
           Math.ceil(agentCount * 1.5) // Scale by 50%
         );
 
@@ -150,11 +150,11 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
 
     // Scale down conditions
     if (
-      avgUtilization < this.config.scaleDownThreshold &&
+      avgUtilization < this.autoScalingConfig.scaleDownThreshold &&
       maxUtilization < 0.6
-     && agentCount > this.config.minAgents) {
+     && agentCount > this.autoScalingConfig.minAgents) {
         const targetCount = Math.max(
-          this.config.minAgents,
+          this.autoScalingConfig.minAgents,
           Math.floor(agentCount * 0.8) // Scale down by 20%
         );
 

@@ -27,7 +27,7 @@
  * @version 2.1.0
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 // Module cache for lazy loading
 let workflowsModuleCache: any = null;
@@ -46,18 +46,18 @@ async function loadWorkflowsModule() {
       console.warn('Workflows package not available, providing minimal compatibility layer');
       // Provide minimal compatibility
       workflowsModuleCache = {
-        WorkflowEngine: class WorkflowEngineStub extends EventEmitter {
-          private config: any;
+        WorkflowEngine: class WorkflowEngineStub extends TypedEventBase {
+          private stubConfig: any;
 
           constructor(config?: any) {
             super();
-            this.config = config || { maxConcurrentWorkflows: 10 };
+            this.stubConfig = config || { maxConcurrentWorkflows: 10 };
           }
           async initialize() {
-            console.log('WorkflowEngine initialized with config:', this.config);
+            console.log('WorkflowEngine initialized with config:', this.stubConfig);
           }
           async startWorkflow() {
-            return { success: true, maxConcurrent: this.config.maxConcurrentWorkflows };
+            return { success: true, maxConcurrent: this.stubConfig.maxConcurrentWorkflows };
           }
           async pauseWorkflow() {}
           async resumeWorkflow() {}
@@ -90,19 +90,19 @@ async function loadWorkflowsModule() {
  * • Type-safe workflow orchestration
  * • Tree-shakable exports for optimal bundle size
  */
-export class WorkflowEngine extends EventEmitter {
+export class WorkflowEngine extends TypedEventBase {
   private instance: any = null;
-  private config: any;
+  private workflowConfig: any;
 
   constructor(config?: any) {
     super();
-    this.config = config;
+    this.workflowConfig = config;
   }
 
   async initialize(): Promise<void> {
     if (!this.instance) {
       const workflowsModule = await loadWorkflowsModule();
-      this.instance = new workflowsModule.WorkflowEngine(this.config);
+      this.instance = new workflowsModule.WorkflowEngine(this.workflowConfig);
       await this.instance.initialize?.();
     }
   }

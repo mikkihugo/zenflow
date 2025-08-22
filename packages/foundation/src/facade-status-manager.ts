@@ -84,8 +84,7 @@
  * • Real-time status updates and event emission
  */
 
-import { EventEmitter } from 'eventemitter3';
-
+import { TypedEventBase } from './typed-event-base';
 import { getLogger } from './logging';
 import type { JsonObject, JsonValue } from './types/primitives';
 // import { createContainer, AwilixContainer, asFunction, asValue, Lifetime } from 'awilix';
@@ -203,9 +202,22 @@ export interface SystemStatus {
 }
 
 /**
- * Central facade status manager with Awilix integration
+ * Facade status events interface for type safety
  */
-export class FacadeStatusManager extends EventEmitter {
+interface FacadeStatusEvents {
+  'facade-registered': { facadeName: string; timestamp: Date };
+  'facade-health-changed': { facadeName: string; healthy: boolean; timestamp: Date };
+  'system-status-changed': { status: string; healthScore: number; timestamp: Date };
+  'package-loaded': { packageName: string; version?: string; timestamp: Date };
+  'package-failed': { packageName: string; error: Error; timestamp: Date };
+  'service-resolved': { serviceName: string; timestamp: Date };
+  'service-resolution-failed': { serviceName: string; error: Error; timestamp: Date };
+}
+
+/**
+ * Central facade status manager with Awilix integration and typed events
+ */
+export class FacadeStatusManager extends TypedEventBase<FacadeStatusEvents> {
   private static instance: FacadeStatusManager | null = null;
   private packageCache = new Map<string, PackageInfo>();
   private facadeStatus = new Map<string, FacadeStatus>();
@@ -215,7 +227,12 @@ export class FacadeStatusManager extends EventEmitter {
   private statusUpdateInterval: NodeJS.Timeout | null = null;
 
   constructor() {
-    super();
+    super({
+      enableValidation: true,
+      enableMetrics: true,
+      enableHistory: false,
+      maxListeners: 50
+    });
     this.container = createContainer();
     this.initializeStatusTracking();
   }
@@ -361,7 +378,7 @@ export class FacadeStatusManager extends EventEmitter {
     this.packageCacheExpiry.set(packageName, Date.now() + this.CACHE_DURATION);
 
     // Emit status change event
-    this.emit('packageStatusChanged', packageName, packageInfo);
+    this.emit('package-loaded', { packageName, version: packageInfo.version, timestamp: new Date() });
 
     return packageInfo;
   }
@@ -450,7 +467,7 @@ export class FacadeStatusManager extends EventEmitter {
     });
 
     // Emit facade registration event
-    this.emit('facadeRegistered', facadeName, facadeStatus);
+    this.emit('facade-registered', { facadeName, timestamp: new Date() });
 
     logger.info(`Facade ${facadeName} registered`, {
       capability,
@@ -616,7 +633,8 @@ export class FacadeStatusManager extends EventEmitter {
         );
       }
 
-      this.emit('systemStatusUpdated', this.getSystemStatus());
+      const systemStatus = this.getSystemStatus();
+      this.emit('system-status-changed', { status: systemStatus.overall, healthScore: systemStatus.healthScore, timestamp: new Date() });
     } catch (error) {
       logger.error('Error updating system status', error);
     }

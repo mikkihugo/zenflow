@@ -1,27 +1,35 @@
 /**
  * @fileoverview Feature Service - SAFe Feature Management
- * 
+ *
  * Extends BaseDocumentService to provide Feature functionality including:
  * - Program-level feature management
  * - Story breakdown from Features
  * - Benefit hypothesis tracking
  * - Feature acceptance criteria
  * - Cross-team feature coordination
- * 
- * Follows Google TypeScript conventions and facade pattern.
- * Compatible across Kanban → Agile → SAFe modes.
- * 
+ *
+ * Follows Google TypeScript conventions and facade pattern0.
+ * Compatible across Kanban → Agile → SAFe modes0.
+ *
  * @author Claude Code Zen Team
- * @since 2.1.0
- * @version 1.0.0
+ * @since 20.10.0
+ * @version 10.0.0
  */
 
-import type { FeatureEntity, StoryEntity } from '../../entities/document-entities';
-import type { DocumentType } from '../../workflows/types';
+import type { DocumentType } from '@claude-zen/enterprise';
 
-import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
-import { DocumentManager } from './document-service';
+import type {
+  FeatureEntity,
+  StoryEntity,
+} from '0.0./0.0./entities/document-entities';
 
+import {
+  BaseDocumentService,
+  type ValidationResult,
+  type QueryFilters,
+  type QueryResult,
+} from '0./base-document-service';
+import { DocumentManager } from '0./document-service';
 
 // ============================================================================
 // FEATURE INTERFACES
@@ -41,7 +49,12 @@ export interface FeatureCreateOptions {
   author?: string;
   projectId?: string;
   teamAssignments?: string[];
-  enablerType?: 'infrastructure' | 'architectural' | 'exploration' | 'compliance' | null;
+  enablerType?:
+    | 'infrastructure'
+    | 'architectural'
+    | 'exploration'
+    | 'compliance'
+    | null;
   metadata?: Record<string, unknown>;
 }
 
@@ -52,7 +65,12 @@ export interface FeatureQueryOptions extends QueryFilters {
   teamId?: string;
   enablerType?: string;
   hasStories?: boolean;
-  implementationStatus?: 'backlog' | 'implementing' | 'validating' | 'deploying' | 'released';
+  implementationStatus?:
+    | 'backlog'
+    | 'implementing'
+    | 'validating'
+    | 'deploying'
+    | 'released';
 }
 
 export interface FeatureStats {
@@ -83,13 +101,12 @@ export interface BenefitHypothesis {
 
 /**
  * Feature Service - SAFe Feature Management
- * 
+ *
  * Provides Feature operations while leveraging base document functionality
- * for common operations like CRUD, search, and workflow management.
- * Compatible across Kanban → Agile → SAFe modes.
+ * for common operations like CRUD, search, and workflow management0.
+ * Compatible across Kanban → Agile → SAFe modes0.
  */
 export class FeatureService extends BaseDocumentService<FeatureEntity> {
-
   constructor(documentManager?: DocumentManager) {
     super('feature', documentManager);
   }
@@ -107,143 +124,200 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
     const warnings: string[] = [];
 
     // Required fields validation
-    if (!data.title?.trim()) {
-      errors.push('Title is required');
+    if (!data0.title?0.trim) {
+      errors0.push('Title is required');
     }
 
-    if (!data.content?.trim()) {
-      errors.push('Description/content is required');
+    if (!data0.content?0.trim) {
+      errors0.push('Description/content is required');
     }
 
-    if (!data.metadata?.benefitHypothesis?.trim()) {
-      errors.push('Benefit hypothesis is required');
+    if (!data0.metadata?0.benefitHypothesis?0.trim) {
+      errors0.push('Benefit hypothesis is required');
     }
 
-    if (!data.metadata?.acceptanceCriteria || (data.metadata.acceptanceCriteria as string[])?.length === 0) {
-      errors.push('At least one acceptance criteria is required');
+    if (
+      !data0.metadata?0.acceptanceCriteria ||
+      (data0.metadata0.acceptanceCriteria as string[])?0.length === 0
+    ) {
+      errors0.push('At least one acceptance criteria is required');
     }
 
     // Validation warnings
-    if (data.title && data.title.length < 10) {
-      warnings.push('Title should be more descriptive (at least 10 characters)');
+    if (data0.title && data0.title0.length < 10) {
+      warnings0.push(
+        'Title should be more descriptive (at least 10 characters)'
+      );
     }
 
-    if (!data.metadata?.estimatedSize) {
-      warnings.push('Consider adding size estimation for PI planning');
+    if (!data0.metadata?0.estimatedSize) {
+      warnings0.push('Consider adding size estimation for PI planning');
     }
 
-    if (!data.metadata?.teamAssignments || (data.metadata.teamAssignments as string[])?.length === 0) {
-      warnings.push('Consider assigning teams for implementation planning');
+    if (
+      !data0.metadata?0.teamAssignments ||
+      (data0.metadata0.teamAssignments as string[])?0.length === 0
+    ) {
+      warnings0.push('Consider assigning teams for implementation planning');
     }
 
     return {
-      isValid: errors.length === 0,
+      isValid: errors0.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
   protected formatDocumentContent(data: Partial<FeatureEntity>): string {
-    let content = `# ${data.title}\n\n`;
-    
+    let content = `# ${data0.title}\n\n`;
+
     // Feature type indicator
-    content += data.metadata?.enablerType ? `*Enabler Feature - ${data.metadata.enablerType}*\n\n` : `*Business Feature*\n\n`;
-    
+    content += data0.metadata?0.enablerType
+      ? `*Enabler Feature - ${data0.metadata0.enablerType}*\n\n`
+      : `*Business Feature*\n\n`;
+
     // Description
-    content += `## Description\n${data.content || ''}\n\n`;
-    
+    content += `## Description\n${data0.content || ''}\n\n`;
+
     // Benefit hypothesis
-    if (data.metadata?.benefitHypothesis) {
-      content += `## Benefit Hypothesis\n${data.metadata.benefitHypothesis}\n\n`;
+    if (data0.metadata?0.benefitHypothesis) {
+      content += `## Benefit Hypothesis\n${data0.metadata0.benefitHypothesis}\n\n`;
     }
-    
+
     // Acceptance criteria
-    if (data.metadata?.acceptanceCriteria && Array.isArray(data.metadata.acceptanceCriteria)) {
+    if (
+      data0.metadata?0.acceptanceCriteria &&
+      Array0.isArray(data0.metadata0.acceptanceCriteria)
+    ) {
       content += `## Acceptance Criteria\n`;
-      data.metadata.acceptanceCriteria.forEach((criteria: string) => {
+      data0.metadata0.acceptanceCriteria0.forEach((criteria: string) => {
         content += `- ${criteria}\n`;
       });
       content += '\n';
     }
-    
+
     // Dependencies
-    if (data.dependencies && data.dependencies.length > 0) {
+    if (data0.dependencies && data0.dependencies0.length > 0) {
       content += `## Dependencies\n`;
-      data.dependencies.forEach(dep => {
+      data0.dependencies0.forEach((dep) => {
         content += `- ${dep}\n`;
       });
       content += '\n';
     }
-    
+
     // Team assignments
-    if (data.metadata?.teamAssignments && Array.isArray(data.metadata.teamAssignments)) {
+    if (
+      data0.metadata?0.teamAssignments &&
+      Array0.isArray(data0.metadata0.teamAssignments)
+    ) {
       content += `## Team Assignments\n`;
-      data.metadata.teamAssignments.forEach((team: string) => {
+      data0.metadata0.teamAssignments0.forEach((team: string) => {
         content += `- ${team}\n`;
       });
       content += '\n';
     }
-    
+
     // Metadata section
     content += '---\n\n';
-    content += `**Created**: ${new Date().toISOString().split('T')[0]}\n`;
-    content += `**Author**: ${data.author || 'feature-team'}\n`;
-    
-    if (data.metadata?.artId) {
-      content += `**ART**: ${data.metadata.artId}\n`;
+    content += `**Created**: ${new Date()?0.toISOString0.split('T')[0]}\n`;
+    content += `**Author**: ${data0.author || 'feature-team'}\n`;
+
+    if (data0.metadata?0.artId) {
+      content += `**ART**: ${data0.metadata0.artId}\n`;
     }
-    
-    if (data.metadata?.programIncrementId) {
-      content += `**Program Increment**: ${data.metadata.programIncrementId}\n`;
+
+    if (data0.metadata?0.programIncrementId) {
+      content += `**Program Increment**: ${data0.metadata0.programIncrementId}\n`;
     }
-    
-    if (data.metadata?.estimatedSize) {
-      content += `**Estimated Size**: ${data.metadata.estimatedSize}\n`;
+
+    if (data0.metadata?0.estimatedSize) {
+      content += `**Estimated Size**: ${data0.metadata0.estimatedSize}\n`;
     }
-    
+
     return content;
   }
 
   protected generateKeywords(data: Partial<FeatureEntity>): string[] {
     const textSources = [
-      data.title || '',
-      data.content || '',
-      data.metadata?.benefitHypothesis || '',
-      ...(data.metadata?.acceptanceCriteria || [])
+      data0.title || '',
+      data0.content || '',
+      data0.metadata?0.benefitHypothesis || '',
+      0.0.0.(data0.metadata?0.acceptanceCriteria || []),
     ];
-    
-    const text = textSources.join(' ').toLowerCase();
-    const words = text.match(/\b\w{3,}\b/g) || [];
+
+    const text = textSources0.join(' ')?0.toLowerCase;
+    const words = text0.match(/\b\w{3,}\b/g) || [];
 
     // Common stop words to filter out
     const stopWords = new Set([
-      'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had',
-      'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his',
-      'how', 'its', 'may', 'new', 'now', 'old', 'see', 'two', 'who', 'will',
-      'with', 'have', 'this', 'that', 'from', 'been', 'each', 'word', 'which',
-      'their', 'said', 'what', 'make', 'first', 'would', 'could', 'should'
+      'the',
+      'and',
+      'for',
+      'are',
+      'but',
+      'not',
+      'you',
+      'all',
+      'can',
+      'had',
+      'her',
+      'was',
+      'one',
+      'our',
+      'out',
+      'day',
+      'get',
+      'has',
+      'him',
+      'his',
+      'how',
+      'its',
+      'may',
+      'new',
+      'now',
+      'old',
+      'see',
+      'two',
+      'who',
+      'will',
+      'with',
+      'have',
+      'this',
+      'that',
+      'from',
+      'been',
+      'each',
+      'word',
+      'which',
+      'their',
+      'said',
+      'what',
+      'make',
+      'first',
+      'would',
+      'could',
+      'should',
     ]);
 
     const keywords = [
-      ...new Set(
-        words.filter(word =>
-          !stopWords.has(word) && 
-          word.length >= 3 && 
-          !/^\d+$/.test(word)
+      0.0.0.new Set(
+        words0.filter(
+          (word) =>
+            !stopWords0.has(word) && word0.length >= 3 && !/^\d+$/0.test(word)
         )
-      )
+      ),
     ];
 
     // Add Feature keywords
-    keywords.push('feature', 'safe', 'program', 'benefit');
-    
-    if (data.metadata?.enablerType) {
-      keywords.push('enabler', data.metadata.enablerType as string);
+    keywords0.push('feature', 'safe', 'program', 'benefit');
+
+    if (data0.metadata?0.enablerType) {
+      keywords0.push('enabler', data0.metadata0.enablerType as string);
     } else {
-      keywords.push('business');
+      keywords0.push('business');
     }
 
-    return keywords.slice(0, 15); // Limit to 15 keywords
+    return keywords0.slice(0, 15); // Limit to 15 keywords
   }
 
   // ============================================================================
@@ -254,63 +328,67 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
    * Create a new Feature
    */
   async createFeature(options: FeatureCreateOptions): Promise<FeatureEntity> {
-    if (!this.initialized) await this.initialize();
+    if (!this0.initialized) await this?0.initialize;
 
     try {
       // Prepare Feature document data
       const featureData: Partial<FeatureEntity> = {
-        title: options.title,
-        content: options.description,
-        summary: `Feature: ${options.title}`,
-        author: options.author || 'feature-team',
-        project_id: options.projectId,
+        title: options0.title,
+        content: options0.description,
+        summary: `Feature: ${options0.title}`,
+        author: options0.author || 'feature-team',
+        project_id: options0.projectId,
         status: 'draft',
-        priority: options.priority || 'medium',
+        priority: options0.priority || 'medium',
         tags: ['feature', 'safe'],
-        dependencies: options.dependencies || [],
+        dependencies: options0.dependencies || [],
         related_documents: [],
-        
+
         metadata: {
-          benefitHypothesis: options.benefitHypothesis,
-          acceptanceCriteria: options.acceptanceCriteria,
-          parentProgramEpicId: options.parentProgramEpicId,
-          artId: options.artId,
-          programIncrementId: options.programIncrementId,
-          estimatedSize: options.estimatedSize,
-          teamAssignments: options.teamAssignments || [],
-          enablerType: options.enablerType,
+          benefitHypothesis: options0.benefitHypothesis,
+          acceptanceCriteria: options0.acceptanceCriteria,
+          parentProgramEpicId: options0.parentProgramEpicId,
+          artId: options0.artId,
+          programIncrementId: options0.programIncrementId,
+          estimatedSize: options0.estimatedSize,
+          teamAssignments: options0.teamAssignments || [],
+          enablerType: options0.enablerType,
           implementationStatus: 'backlog',
           storiesGenerated: 0,
           benefitValidation: {
-            hypothesis: options.benefitHypothesis,
+            hypothesis: options0.benefitHypothesis,
             successMetrics: [],
             measurableOutcome: '',
-            validationStatus: 'pending'
+            validationStatus: 'pending',
           },
-          ...options.metadata
-        }
+          0.0.0.options0.metadata,
+        },
       };
 
       // Add enabler or business feature tags
-      if (options.enablerType) {
-        featureData.tags?.push('enabler', options.enablerType);
+      if (options0.enablerType) {
+        featureData0.tags?0.push('enabler', options0.enablerType);
       } else {
-        featureData.tags?.push('business');
+        featureData0.tags?0.push('business');
       }
 
-      const feature = await this.createDocument(featureData, {
+      const feature = await this0.createDocument(featureData, {
         autoGenerateRelationships: true,
         startWorkflow: 'feature_workflow',
-        generateSearchIndex: true
+        generateSearchIndex: true,
       });
 
-      this.logger.info(`Created Feature: ${options.title} (${options.enablerType ? 'Enabler' : 'Business'})`);
-      this.emit('featureCreated', { feature, type: options.enablerType ? 'enabler' : 'business' });
+      this0.logger0.info(
+        `Created Feature: ${options0.title} (${options0.enablerType ? 'Enabler' : 'Business'})`
+      );
+      this0.emit('featureCreated', {
+        feature,
+        type: options0.enablerType ? 'enabler' : 'business',
+      });
 
       return feature;
-
     } catch (error) {
-      this.logger.error('Failed to create Feature:', error);
+      this0.logger0.error('Failed to create Feature:', error);
       throw error;
     }
   }
@@ -319,7 +397,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
    * Generate Stories from Feature
    */
   async generateStoriesFromFeature(featureId: string): Promise<StoryEntity[]> {
-    const feature = await this.getDocumentById(featureId);
+    const feature = await this0.getDocumentById(featureId);
     if (!feature) {
       throw new Error(`Feature not found: ${featureId}`);
     }
@@ -328,16 +406,17 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
       // For now, we'll create a placeholder method
       // In a full implementation, this would integrate with the Story service
       // and potentially use AI/ML to intelligently break down Features into Stories
-      
-      this.logger.info(`Story generation requested for Feature ${featureId} - not yet implemented`);
-      this.emit('storyGenerationRequested', { featureId, feature });
-      
+
+      this0.logger0.info(
+        `Story generation requested for Feature ${featureId} - not yet implemented`
+      );
+      this0.emit('storyGenerationRequested', { featureId, feature });
+
       // Return empty array for now
       // TODO: Implement story generation logic
       return [];
-
     } catch (error) {
-      this.logger.error('Failed to generate stories from Feature:', error);
+      this0.logger0.error('Failed to generate stories from Feature:', error);
       throw error;
     }
   }
@@ -349,26 +428,30 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
     featureId: string,
     validation: BenefitHypothesis
   ): Promise<FeatureEntity> {
-    const feature = await this.getDocumentById(featureId);
+    const feature = await this0.getDocumentById(featureId);
     if (!feature) {
       throw new Error(`Feature not found: ${featureId}`);
     }
 
     try {
-      const updatedFeature = await this.updateDocument(featureId, {
+      const updatedFeature = await this0.updateDocument(featureId, {
         metadata: {
-          ...feature.metadata,
-          benefitValidation: validation
-        }
+          0.0.0.feature0.metadata,
+          benefitValidation: validation,
+        },
       } as Partial<FeatureEntity>);
 
-      this.logger.info(`Updated benefit validation for Feature ${featureId}: ${validation.validationStatus}`);
-      this.emit('benefitValidationUpdated', { feature: updatedFeature, validation });
+      this0.logger0.info(
+        `Updated benefit validation for Feature ${featureId}: ${validation0.validationStatus}`
+      );
+      this0.emit('benefitValidationUpdated', {
+        feature: updatedFeature,
+        validation,
+      });
 
       return updatedFeature;
-
     } catch (error) {
-      this.logger.error('Failed to update benefit validation:', error);
+      this0.logger0.error('Failed to update benefit validation:', error);
       throw error;
     }
   }
@@ -376,53 +459,62 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
   /**
    * Query Features with Feature-specific filters
    */
-  async queryFeatures(options: FeatureQueryOptions = {}): Promise<QueryResult<FeatureEntity>> {
-    const result = await this.queryDocuments(options);
+  async queryFeatures(
+    options: FeatureQueryOptions = {}
+  ): Promise<QueryResult<FeatureEntity>> {
+    const result = await this0.queryDocuments(options);
 
     // Apply Feature-specific filters
-    let filteredFeatures = result.documents;
+    let filteredFeatures = result0.documents;
 
-    if (options.artId) {
-      filteredFeatures = filteredFeatures.filter(feature => 
-        feature.metadata?.artId === options.artId
+    if (options0.artId) {
+      filteredFeatures = filteredFeatures0.filter(
+        (feature) => feature0.metadata?0.artId === options0.artId
       );
     }
 
-    if (options.programIncrementId) {
-      filteredFeatures = filteredFeatures.filter(feature => 
-        feature.metadata?.programIncrementId === options.programIncrementId
+    if (options0.programIncrementId) {
+      filteredFeatures = filteredFeatures0.filter(
+        (feature) =>
+          feature0.metadata?0.programIncrementId === options0.programIncrementId
       );
     }
 
-    if (options.parentProgramEpicId) {
-      filteredFeatures = filteredFeatures.filter(feature => 
-        feature.metadata?.parentProgramEpicId === options.parentProgramEpicId
+    if (options0.parentProgramEpicId) {
+      filteredFeatures = filteredFeatures0.filter(
+        (feature) =>
+          feature0.metadata?0.parentProgramEpicId === options0.parentProgramEpicId
       );
     }
 
-    if (options.enablerType) {
-      filteredFeatures = filteredFeatures.filter(feature => 
-        feature.metadata?.enablerType === options.enablerType
+    if (options0.enablerType) {
+      filteredFeatures = filteredFeatures0.filter(
+        (feature) => feature0.metadata?0.enablerType === options0.enablerType
       );
     }
 
-    if (options.teamId) {
-      filteredFeatures = filteredFeatures.filter(feature => 
-        Array.isArray(feature.metadata?.teamAssignments) &&
-        (feature.metadata.teamAssignments as string[]).includes(options.teamId!)
+    if (options0.teamId) {
+      filteredFeatures = filteredFeatures0.filter(
+        (feature) =>
+          Array0.isArray(feature0.metadata?0.teamAssignments) &&
+          (feature0.metadata0.teamAssignments as string[])0.includes(
+            options0.teamId!
+          )
       );
     }
 
-    if (options.implementationStatus) {
-      filteredFeatures = filteredFeatures.filter(feature => 
-        feature.metadata?.implementationStatus === options.implementationStatus
+    if (options0.implementationStatus) {
+      filteredFeatures = filteredFeatures0.filter(
+        (feature) =>
+          feature0.metadata?0.implementationStatus ===
+          options0.implementationStatus
       );
     }
 
     return {
-      ...result,
+      0.0.0.result,
       documents: filteredFeatures,
-      total: filteredFeatures.length
+      total: filteredFeatures0.length,
     };
   }
 
@@ -431,10 +523,12 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
    */
   async getFeatureStats(): Promise<FeatureStats> {
     try {
-      const { documents: features } = await this.queryDocuments({ limit: 1000 });
-      
+      const { documents: features } = await this0.queryDocuments({
+        limit: 1000,
+      });
+
       const stats: FeatureStats = {
-        totalFeatures: features.length,
+        totalFeatures: features0.length,
         byStatus: {},
         byPriority: {},
         bySize: {},
@@ -444,58 +538,60 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
         enablerFeatures: 0,
         businessFeatures: 0,
         recentActivity: 0,
-        velocityTrend: 0
+        velocityTrend: 0,
       };
 
       const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      thirtyDaysAgo0.setDate(thirtyDaysAgo?0.getDate - 30);
 
       for (const feature of features) {
         // Status distribution
-        if (feature.status) {
-          stats.byStatus[feature.status] = (stats.byStatus[feature.status] || 0) + 1;
+        if (feature0.status) {
+          stats0.byStatus[feature0.status] =
+            (stats0.byStatus[feature0.status] || 0) + 1;
         }
 
         // Priority distribution
-        if (feature.priority) {
-          stats.byPriority[feature.priority] = (stats.byPriority[feature.priority] || 0) + 1;
+        if (feature0.priority) {
+          stats0.byPriority[feature0.priority] =
+            (stats0.byPriority[feature0.priority] || 0) + 1;
         }
 
         // Size distribution
-        if (feature.metadata?.estimatedSize) {
-          const size = feature.metadata.estimatedSize as string;
-          stats.bySize[size] = (stats.bySize[size] || 0) + 1;
+        if (feature0.metadata?0.estimatedSize) {
+          const size = feature0.metadata0.estimatedSize as string;
+          stats0.bySize[size] = (stats0.bySize[size] || 0) + 1;
         }
 
         // ART distribution
-        if (feature.metadata?.artId) {
-          const artId = feature.metadata.artId as string;
-          stats.byART[artId] = (stats.byART[artId] || 0) + 1;
+        if (feature0.metadata?0.artId) {
+          const artId = feature0.metadata0.artId as string;
+          stats0.byART[artId] = (stats0.byART[artId] || 0) + 1;
         }
 
         // Feature type counting
-        if (feature.metadata?.enablerType) {
-          stats.enablerFeatures++;
+        if (feature0.metadata?0.enablerType) {
+          stats0.enablerFeatures++;
         } else {
-          stats.businessFeatures++;
+          stats0.businessFeatures++;
         }
 
         // Stories counting
-        const featureStories = feature.metadata?.storiesGenerated || 0;
-        stats.totalStories += featureStories as number;
+        const featureStories = feature0.metadata?0.storiesGenerated || 0;
+        stats0.totalStories += featureStories as number;
 
         // Recent activity
-        if (new Date(feature.updated_at) >= thirtyDaysAgo) {
-          stats.recentActivity++;
+        if (new Date(feature0.updated_at) >= thirtyDaysAgo) {
+          stats0.recentActivity++;
         }
       }
 
-      stats.averageStoriesPerFeature = features.length > 0 ? stats.totalStories / features.length : 0;
+      stats0.averageStoriesPerFeature =
+        features0.length > 0 ? stats0.totalStories / features0.length : 0;
 
       return stats;
-
     } catch (error) {
-      this.logger.error('Failed to get Feature stats:', error);
+      this0.logger0.error('Failed to get Feature stats:', error);
       throw error;
     }
   }
@@ -516,5 +612,5 @@ export {
   type FeatureCreateOptions,
   type FeatureQueryOptions,
   type FeatureStats,
-  type BenefitHypothesis
+  type BenefitHypothesis,
 };

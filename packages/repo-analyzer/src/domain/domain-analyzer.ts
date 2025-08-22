@@ -589,7 +589,7 @@ export class DomainAnalyzer {
   }
 
   private extractImports(content: string): string[] {
-    const imports = [];
+    const imports: string[] = [];
     
     // ES6 imports
     const importRegex = /import\s+(?:[\w*{}\s,]+\s+from\s+)?['"]([@\w.-/]+)['"]/g;

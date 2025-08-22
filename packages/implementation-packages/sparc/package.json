@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "@claude-zen/event-system": "link:../event-system",
-    "@claude-zen/foundation": "workspace:*"
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/workflows": "link:../workflows"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

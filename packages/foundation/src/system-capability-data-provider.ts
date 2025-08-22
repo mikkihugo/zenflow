@@ -23,7 +23,6 @@
 
 import { facadeStatusManager, getSystemStatus } from './facade-status-manager';
 import { getLogger } from './logging';
-import type { JsonValue, JsonObject } from './types/primitives';
 
 const logger = getLogger('system-capability-dashboard');
 
@@ -287,64 +286,32 @@ export function createHealthDataProviders() {
  */
 export function startSystemMonitoring(): void {
   facadeStatusManager.on(
-    'packageStatusChanged',
-    (packageName: string, packageInfo: JsonValue) => {
-      if (
-        packageInfo &&
-        typeof packageInfo === 'object' &&
-        !Array.isArray(packageInfo)
-      ) {
-        const info = packageInfo as JsonObject;
-        if (info['status'] === 'registered') {
-          logger.info(`📦 Package ${packageName} registered successfully`, {
-            serviceName: info['serviceName'] || 'unknown',
-            loadTime: info['loadTime'] || 'unknown',
-          });
-        } else if (info['status'] === 'unavailable') {
-          logger.warn(`⚠️ Package ${packageName} unavailable`, {
-            error: info['error'] || 'unknown error',
-          });
-        }
-      }
+    'package-loaded',
+    (data: { packageName: string; version?: string; timestamp: Date }) => {
+      logger.info(`📦 Package ${data.packageName} loaded successfully`, {
+        version: data.version || 'unknown',
+        timestamp: data.timestamp.toISOString(),
+      });
     },
   );
 
   facadeStatusManager.on(
-    'facadeRegistered',
-    (facadeName: string, facadeStatus: JsonValue) => {
-      if (
-        facadeStatus &&
-        typeof facadeStatus === 'object' &&
-        !Array.isArray(facadeStatus)
-      ) {
-        const status = facadeStatus as JsonObject;
-        logger.info(`🏗️ Facade ${facadeName} registered`, {
-          capability: status['capability'] || 'unknown',
-          healthScore: status['healthScore'] || 0,
-          registeredServices: Array.isArray(status['registeredServices'])
-            ? status['registeredServices'].length
-            : 0,
-        });
-      }
+    'facade-registered',
+    (data: { facadeName: string; timestamp: Date }) => {
+      logger.info(`🏗️ Facade ${data.facadeName} registered`, {
+        timestamp: data.timestamp.toISOString(),
+      });
     },
   );
 
   facadeStatusManager.on(
-    'systemStatusUpdated',
-    async (systemStatus: JsonValue) => {
-      if (
-        systemStatus &&
-        typeof systemStatus === 'object' &&
-        !Array.isArray(systemStatus)
-      ) {
-        const status = systemStatus as JsonObject;
-        logger.debug('📊 System status updated', {
-          overall: status['overall'] || 'unknown',
-          healthScore: status['healthScore'] || 0,
-          availablePackages: status['availablePackages'] || 0,
-          totalPackages: status['totalPackages'] || 0,
-        });
-      }
+    'system-status-changed',
+    (data: { status: string; healthScore: number; timestamp: Date }) => {
+      logger.debug('📊 System status updated', {
+        overall: data.status,
+        healthScore: data.healthScore,
+        timestamp: data.timestamp.toISOString(),
+      });
     },
   );
 

@@ -109,7 +109,7 @@ const createLogger = (name: string): Logger => ({
   ) => logger.error(`[ERROR] ${name}: ${message}`, { ...meta, error }),
 });
 
-import { EventEmitter } from 'eventemitter3';
+import { TypedEventBase } from '@claude-zen/foundation';
 
 /**
  * Monitoring event adapter configuration extending UEL EventManagerConfig.
@@ -346,7 +346,7 @@ export class MonitoringEventAdapter implements EventManager {
 
   // Event manager state
   private running = false;
-  private eventEmitter = new EventEmitter();
+  private eventEmitter = new TypedEventBase();
   private logger: Logger;
   private startTime?: Date;
   private eventCount = 0;
@@ -1533,7 +1533,7 @@ export class MonitoringEventAdapter implements EventManager {
     ];
 
     for (const monitorName of monitors) {
-      const wrapper = new EventEmitter();
+      const wrapper = new TypedEventBase();
       const wrappedComponent: WrappedMonitoringComponent = {
         component: {} as RealTimePerformanceMonitor, // Would be actual RealTimePerformanceMonitor instance
         componentType: 'performance',
@@ -1615,7 +1615,7 @@ export class MonitoringEventAdapter implements EventManager {
     ];
 
     for (const componentName of components) {
-      const wrapper = new EventEmitter();
+      const wrapper = new TypedEventBase();
       const wrappedComponent: WrappedMonitoringComponent = {
         component: {} as PerformanceAnalyzer, // Would be actual health monitoring instance
         componentType: 'health',
@@ -1702,7 +1702,7 @@ export class MonitoringEventAdapter implements EventManager {
     ];
 
     for (const analyzerName of analyzers) {
-      const wrapper = new EventEmitter();
+      const wrapper = new TypedEventBase();
       const wrappedComponent: WrappedMonitoringComponent = {
         component: {} as PerformanceAnalyzer, // Would be actual PerformanceAnalyzer instance
         componentType: 'analytics',
@@ -1774,7 +1774,7 @@ export class MonitoringEventAdapter implements EventManager {
    * Wrap alert management events with UEL integration.
    */
   private async wrapAlertManagement(): Promise<void> {
-    const wrapper = new EventEmitter();
+    const wrapper = new TypedEventBase();
     const wrappedComponent: WrappedMonitoringComponent = {
       component: {} as MetricsCollector, // Would be actual alert manager instance
       componentType: 'alert',
@@ -1844,7 +1844,7 @@ export class MonitoringEventAdapter implements EventManager {
     ];
 
     for (const dashboardName of dashboards) {
-      const wrapper = new EventEmitter();
+      const wrapper = new TypedEventBase();
       const wrappedComponent: WrappedMonitoringComponent = {
         component: {} as RealTimePerformanceMonitor, // Would be actual dashboard instance
         componentType: 'dashboard',

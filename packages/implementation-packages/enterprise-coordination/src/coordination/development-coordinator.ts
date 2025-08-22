@@ -64,7 +64,7 @@ export interface DevelopmentTask {
  * 
  * These are core development features, separate from optional AI project management.
  */
-export class DevelopmentCoordinator extends EventEmitter {
+export class DevelopmentCoordinator extends TypedEventBase {
   private logger: Logger;
   private config: DevelopmentCoordinationConfig | null = null;
   private activeTasks = new Map<string, DevelopmentTask>();
